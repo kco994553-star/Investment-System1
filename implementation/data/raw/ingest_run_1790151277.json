@@ -1,0 +1,179 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "data/raw",
+  "n_requested": 34,
+  "n_ok": 34,
+  "n_failed": 0,
+  "log": [
+    {
+      "artifact_id": "companyfacts:0000937966",
+      "status": "OK",
+      "bytes": 1837771
+    },
+    {
+      "artifact_id": "submissions:0000937966",
+      "status": "OK",
+      "bytes": 96944
+    },
+    {
+      "artifact_id": "companyfacts:0000707549",
+      "status": "OK",
+      "bytes": 4073021
+    },
+    {
+      "artifact_id": "submissions:0000707549",
+      "status": "OK",
+      "bytes": 165808
+    },
+    {
+      "artifact_id": "companyfacts:0000319201",
+      "status": "OK",
+      "bytes": 4908679
+    },
+    {
+      "artifact_id": "submissions:0000319201",
+      "status": "OK",
+      "bytes": 159120
+    },
+    {
+      "artifact_id": "companyfacts:0001045810",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001045810",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000002488",
+      "status": "OK",
+      "bytes": 3672449
+    },
+    {
+      "artifact_id": "submissions:0000002488",
+      "status": "OK",
+      "bytes": 162204
+    },
+    {
+      "artifact_id": "companyfacts:0001730168",
+      "status": "OK",
+      "bytes": 2351559
+    },
+    {
+      "artifact_id": "submissions:0001730168",
+      "status": "OK",
+      "bytes": 159312
+    },
+    {
+      "artifact_id": "companyfacts:0000804328",
+      "status": "OK",
+      "bytes": 4357830
+    },
+    {
+      "artifact_id": "submissions:0000804328",
+      "status": "OK",
+      "bytes": 159532
+    },
+    {
+      "artifact_id": "companyfacts:0000050863",
+      "status": "OK",
+      "bytes": 4311809
+    },
+    {
+      "artifact_id": "submissions:0000050863",
+      "status": "OK",
+      "bytes": 159463
+    },
+    {
+      "artifact_id": "companyfacts:0000789019",
+      "status": "OK",
+      "bytes": 4881196
+    },
+    {
+      "artifact_id": "submissions:0000789019",
+      "status": "OK",
+      "bytes": 185250
+    },
+    {
+      "artifact_id": "companyfacts:0001652044",
+      "status": "OK",
+      "bytes": 3164517
+    },
+    {
+      "artifact_id": "submissions:0001652044",
+      "status": "OK",
+      "bytes": 154521
+    },
+    {
+      "artifact_id": "companyfacts:0001018724",
+      "status": "OK",
+      "bytes": 4478611
+    },
+    {
+      "artifact_id": "submissions:0001018724",
+      "status": "OK",
+      "bytes": 159857
+    },
+    {
+      "artifact_id": "companyfacts:0000101829",
+      "status": "OK",
+      "bytes": 5137052
+    },
+    {
+      "artifact_id": "submissions:0000101829",
+      "status": "OK",
+      "bytes": 149881
+    },
+    {
+      "artifact_id": "companyfacts:0000310764",
+      "status": "OK",
+      "bytes": 3746862
+    },
+    {
+      "artifact_id": "submissions:0000310764",
+      "status": "OK",
+      "bytes": 163479
+    },
+    {
+      "artifact_id": "companyfacts:0001551182",
+      "status": "OK",
+      "bytes": 2931687
+    },
+    {
+      "artifact_id": "submissions:0001551182",
+      "status": "OK",
+      "bytes": 166972
+    },
+    {
+      "artifact_id": "companyfacts:0000048898",
+      "status": "OK",
+      "bytes": 3758038
+    },
+    {
+      "artifact_id": "submissions:0000048898",
+      "status": "OK",
+      "bytes": 163878
+    },
+    {
+      "artifact_id": "companyfacts:0001996810",
+      "status": "OK",
+      "bytes": 722319
+    },
+    {
+      "artifact_id": "submissions:0001996810",
+      "status": "OK",
+      "bytes": 34763
+    },
+    {
+      "artifact_id": "companyfacts:0001024478",
+      "status": "OK",
+      "bytes": 4112455
+    },
+    {
+      "artifact_id": "submissions:0001024478",
+      "status": "OK",
+      "bytes": 160992
+    }
+  ],
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}

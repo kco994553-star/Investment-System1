@@ -1,0 +1,23 @@
+{
+  "kind": "LIVE_ATTEMPT",
+  "track": "US",
+  "stage2": false,
+  "parses": {
+    "nvda": {
+      "ok": true,
+      "evidence": "LIVE_FETCH",
+      "revenue": 96221000000.0,
+      "revenue_prev": 177837000000.0,
+      "source_kind": "LIVE_FETCH",
+      "synthetic": false
+    },
+    "msft": {
+      "ok": true,
+      "evidence": "LIVE_FETCH",
+      "revenue": 19953000000.0,
+      "revenue_prev": 36148000000.0,
+      "source_kind": "LIVE_FETCH",
+      "synthetic": false
+    }
+  }
+}

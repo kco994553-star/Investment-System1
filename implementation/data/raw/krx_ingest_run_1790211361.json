@@ -1,0 +1,35 @@
+{
+  "kind": "KRX_REAL_DATA_INGEST_RUN",
+  "as_of": "20260923",
+  "n_requested": 4,
+  "n_ok": 4,
+  "n_failed": 0,
+  "log": [
+    {
+      "artifact_id": "krx:kospi_daily:20260923",
+      "status": "OK",
+      "bytes": 293132,
+      "rows": 942
+    },
+    {
+      "artifact_id": "krx:kosdaq_daily:20260923",
+      "status": "OK",
+      "bytes": 595358,
+      "rows": 1821
+    },
+    {
+      "artifact_id": "krx:kospi_basic:20260923",
+      "status": "OK",
+      "bytes": 278288,
+      "rows": 942
+    },
+    {
+      "artifact_id": "krx:kosdaq_basic:20260923",
+      "status": "OK",
+      "bytes": 561419,
+      "rows": 1821
+    }
+  ],
+  "real_data_verified": false,
+  "note": "Raw KRX ingest only; downstream PIT/eligibility verification remains required."
+}

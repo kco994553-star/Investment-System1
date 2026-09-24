@@ -1,0 +1,73 @@
+{
+  "kind": "VERTICAL_SLICE",
+  "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+  "rule_status": "PROVISIONAL_RESEARCH",
+  "official_selection": false,
+  "full_pit_pass": false,
+  "v_refit": false,
+  "investable": [
+    "nvda",
+    "msft",
+    "amzn",
+    "avgo",
+    "amd",
+    "qcom",
+    "lrcx",
+    "intc"
+  ],
+  "missing_ok": [],
+  "selected": [
+    "nvda",
+    "msft",
+    "amzn",
+    "avgo",
+    "amd",
+    "lrcx",
+    "qcom",
+    "intc"
+  ],
+  "n_selected": 8,
+  "equal_weight_realized": 0.14865754812009574,
+  "ranks": [
+    {
+      "id": "nvda",
+      "rank": 1,
+      "eligible": true
+    },
+    {
+      "id": "msft",
+      "rank": 2,
+      "eligible": true
+    },
+    {
+      "id": "amzn",
+      "rank": 3,
+      "eligible": true
+    },
+    {
+      "id": "avgo",
+      "rank": 4,
+      "eligible": true
+    },
+    {
+      "id": "amd",
+      "rank": 5,
+      "eligible": true
+    },
+    {
+      "id": "lrcx",
+      "rank": 6,
+      "eligible": true
+    },
+    {
+      "id": "qcom",
+      "rank": 7,
+      "eligible": true
+    },
+    {
+      "id": "intc",
+      "rank": 8,
+      "eligible": true
+    }
+  ]
+}

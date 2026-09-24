@@ -1,0 +1,34 @@
+{
+  "kind": "SYNTHETIC",
+  "track": "US",
+  "portfolio_version": "us-working-PROVISIONAL",
+  "names": 17,
+  "weight_sum": 1.0,
+  "excluded": {
+    "hanmi": "KR_DEFERRED",
+    "tokyo_electron": "C-08_NON_US"
+  },
+  "kr_deferred": [
+    "hanmi"
+  ],
+  "v_null": true,
+  "company_ids": [
+    "asml",
+    "lrcx",
+    "klac",
+    "nvda",
+    "amd",
+    "avgo",
+    "qcom",
+    "intc",
+    "msft",
+    "googl",
+    "amzn",
+    "rtx",
+    "stry",
+    "etn",
+    "hubb",
+    "gev",
+    "rok"
+  ]
+}

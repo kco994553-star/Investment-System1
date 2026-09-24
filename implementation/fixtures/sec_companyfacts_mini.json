@@ -1,0 +1,44 @@
+{
+  "cik": 1045810,
+  "entityName": "NVIDIA CORP fixture",
+  "facts": {
+    "us-gaap": {
+      "RevenueFromContractWithCustomerExcludingAssessedTax": {
+        "units": {
+          "USD": [
+            {"end": "2024-01-28", "val": 60922000000, "filed": "2024-02-21"},
+            {"end": "2025-01-26", "val": 130497000000, "filed": "2025-02-26"}
+          ]
+        }
+      },
+      "NetIncomeLoss": {
+        "units": {
+          "USD": [
+            {"end": "2025-01-26", "val": 72880000000, "filed": "2025-02-26"}
+          ]
+        }
+      },
+      "CashAndCashEquivalentsAtCarryingValue": {
+        "units": {
+          "USD": [
+            {"end": "2025-01-26", "val": 8589000000, "filed": "2025-02-26"}
+          ]
+        }
+      },
+      "LongTermDebt": {
+        "units": {
+          "USD": [
+            {"end": "2025-01-26", "val": 8463000000, "filed": "2025-02-26"}
+          ]
+        }
+      },
+      "StockholdersEquity": {
+        "units": {
+          "USD": [
+            {"end": "2025-01-26", "val": 79327000000, "filed": "2025-02-26"}
+          ]
+        }
+      }
+    }
+  }
+}

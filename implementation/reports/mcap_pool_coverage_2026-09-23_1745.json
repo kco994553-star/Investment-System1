@@ -1,0 +1,36 @@
+{
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "sec_tickers_n": 10459,
+  "facts_blobs": 325,
+  "yahoo_blobs": 287,
+  "n_candidates_input": 598,
+  "n_ranked": 254,
+  "n_selected": 254,
+  "cutoff_mcap": 425700052.4078064,
+  "candidate_pool_complete": false,
+  "justified_official_top500": false,
+  "excluded_reasons": {
+    "MISSING_INPUT": 343,
+    "NON_POSITIVE": 1
+  },
+  "top15": [
+    "AAPL",
+    "NVDA",
+    "MSFT",
+    "AMZN",
+    "TSLA",
+    "AVGO",
+    "LLY",
+    "WMT",
+    "JPM",
+    "BRK-A",
+    "ORCL",
+    "UNH",
+    "COST",
+    "PG",
+    "HD"
+  ],
+  "wf_steps": 3,
+  "real_data_verified": false,
+  "full_pit_pass": false
+}

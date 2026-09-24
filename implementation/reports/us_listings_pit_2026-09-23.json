@@ -1,0 +1,190 @@
+{
+  "meta": {
+    "official_pass": false,
+    "full_pit_pass": false,
+    "real_data_verified": false,
+    "macro": "UNAVAILABLE",
+    "q_by_as_of": {
+      "asml": [
+        33.905664073859796
+      ],
+      "lrcx": [
+        15.999190149741594
+      ],
+      "klac": [
+        21.354102139139982
+      ],
+      "nvda": [
+        30.123704489251544
+      ],
+      "amd": [
+        28.284375992378536
+      ],
+      "avgo": [
+        25.404581526758182
+      ],
+      "qcom": [
+        12.37743880408274
+      ],
+      "intc": [
+        6.980351162658695
+      ],
+      "msft": [
+        29.270768354533374
+      ],
+      "googl": [
+        29.429761739268585
+      ],
+      "amzn": [
+        27.544446831184338
+      ],
+      "rtx": [
+        19.333600442422945
+      ],
+      "stry": [
+        25.0
+      ],
+      "etn": [
+        22.427499271349458
+      ],
+      "hubb": [
+        10.0
+      ],
+      "gev": [
+        5.729221393296207
+      ],
+      "rok": [
+        25.86729801006953
+      ]
+    },
+    "store": "/tmp/us17.json",
+    "count": 1,
+    "kind": "PIT_MULTI_ASOF_CANDIDATE",
+    "universe": "US_LISTINGS",
+    "n_names": 17,
+    "portfolio_expected_role": "GENERIC_INPUT"
+  },
+  "row_flags": {
+    "as_of": "2026-09-14T00:00:00+00:00",
+    "names": 17,
+    "gate": "PASS",
+    "macro": "UNAVAILABLE",
+    "decision_source": "integration",
+    "portfolio_role": "GENERIC_INPUT",
+    "portfolio_version": "generic-equal-weight",
+    "profile_id": "profile-balanced-provisional",
+    "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+    "lookahead": {
+      "future_bars": 103,
+      "future_filings_blocked": true
+    },
+    "official_pass": false,
+    "real_data_verified": false,
+    "full_pit_pass": false,
+    "kind": "PIT_BACKTEST_CANDIDATE"
+  },
+  "quality": {
+    "asml": {
+      "cov": "PARTIAL",
+      "Q": 33.905664073859796,
+      "G": 58.37921919690105,
+      "rev": 32667300000.0
+    },
+    "lrcx": {
+      "cov": "PARTIAL",
+      "Q": 15.999190149741594,
+      "G": 66.49332478242002,
+      "rev": 23232690000.0
+    },
+    "klac": {
+      "cov": "PARTIAL",
+      "Q": 21.354102139139982,
+      "G": 53.50499880045014,
+      "rev": 13579476000.0
+    },
+    "nvda": {
+      "cov": "PARTIAL",
+      "Q": 30.123704489251544,
+      "G": 68.41171309812114,
+      "rev": 215938000000.0
+    },
+    "amd": {
+      "cov": "PARTIAL",
+      "Q": 28.284375992378536,
+      "G": 65.7280682031589,
+      "rev": 34639000000.0
+    },
+    "avgo": {
+      "cov": "PARTIAL",
+      "Q": 25.404581526758182,
+      "G": 64.60394566187384,
+      "rev": 63887000000.0
+    },
+    "qcom": {
+      "cov": "PARTIAL",
+      "Q": 12.37743880408274,
+      "G": 41.59935951114073,
+      "rev": 44284000000.0
+    },
+    "intc": {
+      "cov": "PARTIAL",
+      "Q": 6.980351162658695,
+      "G": 29.62023456180745,
+      "rev": 52853000000.0
+    },
+    "msft": {
+      "cov": "PARTIAL",
+      "Q": 29.270768354533374,
+      "G": 59.720132153841575,
+      "rev": 331839000000.0
+    },
+    "googl": {
+      "cov": "PARTIAL",
+      "Q": 29.429761739268585,
+      "G": 57.59570676488576,
+      "rev": 402836000000.0
+    },
+    "amzn": {
+      "cov": "PARTIAL",
+      "Q": 27.544446831184338,
+      "G": 55.64184874829788,
+      "rev": 716924000000.0
+    },
+    "rtx": {
+      "cov": "PARTIAL",
+      "Q": 19.333600442422945,
+      "G": 53.117823263049345,
+      "rev": 88603000000.0
+    },
+    "stry": {
+      "cov": "PARTIAL",
+      "Q": 25.0,
+      "G": 52.08479949063109,
+      "rev": 7171000000.0
+    },
+    "etn": {
+      "cov": "PARTIAL",
+      "Q": 22.427499271349458,
+      "G": 49.15117690287536,
+      "rev": 27448000000.0
+    },
+    "hubb": {
+      "cov": "PARTIAL",
+      "Q": 10.0,
+      "G": 33.32914297872572,
+      "rev": 1492700000.0
+    },
+    "gev": {
+      "cov": "PARTIAL",
+      "Q": 5.729221393296207,
+      "G": 53.396141606233776,
+      "rev": 38068000000.0
+    },
+    "rok": {
+      "cov": "PARTIAL",
+      "Q": 25.86729801006953,
+      "G": 36.095183818608085,
+      "rev": 8342000000.0
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "kind": "PIT_MULTI_ASOF_CANDIDATE",
+  "official_pass": false,
+  "full_pit_pass": false,
+  "real_data_verified": false,
+  "macro": "UNAVAILABLE",
+  "rows": [
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "names": 3,
+      "quality": {
+        "nvda": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 30.123704489251544,
+          "G": 68.41171309812114,
+          "synthetic": false,
+          "pit_price": 218.2899932861328,
+          "revenue": 215938000000.0,
+          "revenue_prev": 130497000000.0,
+          "net_income": 120067000000.0,
+          "equity": 157293000000.0,
+          "cash": 10605000000.0,
+          "ebit": 130387000000.0,
+          "fcf": 102579265000.0,
+          "eps": 4.9
+        },
+        "msft": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 29.270768354533374,
+          "G": 59.720132153841575,
+          "synthetic": false,
+          "pit_price": 495.6300048828125,
+          "revenue": 331839000000.0,
+          "revenue_prev": 281724000000.0,
+          "net_income": 133749000000.0,
+          "equity": 442387000000.0,
+          "cash": 20935000000.0,
+          "ebit": 155237000000.0,
+          "fcf": 66987000000.0,
+          "eps": 17.95
+        },
+        "asml": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 33.905664073859796,
+          "G": 43.37921919690105,
+          "synthetic": false,
+          "pit_price": 1698.300048828125,
+          "revenue": 32667300000.0,
+          "revenue_prev": 28262900000.0,
+          "net_income": 9609400000.0,
+          "equity": 19612200000.0,
+          "cash": 12916000000.0,
+          "ebit": 11301400000.0,
+          "fcf": 11084900000.0,
+          "eps": null
+        }
+      },
+      "gate": "PASS",
+      "macro": "UNAVAILABLE",
+      "decision_source": "integration",
+      "portfolio_role": "GENERIC_INPUT",
+      "portfolio_version": "generic-equal-weight",
+      "profile_id": "profile-balanced-provisional",
+      "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+      "lookahead": {
+        "future_bars": 18,
+        "future_filings_blocked": true
+      },
+      "official_pass": false,
+      "real_data_verified": false,
+      "full_pit_pass": false,
+      "kind": "PIT_BACKTEST_CANDIDATE"
+    }
+  ],
+  "q_by_as_of": {
+    "nvda": [
+      30.123704489251544
+    ],
+    "msft": [
+      29.270768354533374
+    ],
+    "asml": [
+      33.905664073859796
+    ]
+  },
+  "store": "/tmp/gfac.json",
+  "count": 1
+}

@@ -1,0 +1,186 @@
+{
+  "kind": "LIVE_ATTEMPT",
+  "track": "US",
+  "as_of": "2026-09-23T00:28:19.507964+00:00",
+  "stage2": false,
+  "real_data_verified": false,
+  "ok": 17,
+  "failed": {},
+  "excluded": {
+    "hanmi": "KR_DEFERRED",
+    "tokyo_electron": "C-08_NON_US"
+  },
+  "working_weight_sum": 1.0,
+  "prices": {
+    "asml": {
+      "price": 1747.9,
+      "currency": "USD",
+      "yahoo": "ASML",
+      "cik": "0000937966",
+      "exchange": "NASDAQ",
+      "observed_at": "2026-09-22T20:00:01+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "lrcx": {
+      "price": 310.96,
+      "currency": "USD",
+      "yahoo": "LRCX",
+      "cik": "0000707549",
+      "exchange": "NASDAQ",
+      "observed_at": "2026-09-22T20:00:01+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "klac": {
+      "price": 188.32,
+      "currency": "USD",
+      "yahoo": "KLAC",
+      "cik": "0000319201",
+      "exchange": "NASDAQ",
+      "observed_at": "2026-09-22T20:00:00+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "nvda": {
+      "price": 228.87,
+      "currency": "USD",
+      "yahoo": "NVDA",
+      "cik": "0001045810",
+      "exchange": "NASDAQ",
+      "observed_at": "2026-09-22T20:00:00+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "amd": {
+      "price": 623.77,
+      "currency": "USD",
+      "yahoo": "AMD",
+      "cik": "0000002488",
+      "exchange": "NASDAQ",
+      "observed_at": "2026-09-22T20:00:01+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "avgo": {
+      "price": 364.54,
+      "currency": "USD",
+      "yahoo": "AVGO",
+      "cik": "0001730168",
+      "exchange": "NASDAQ",
+      "observed_at": "2026-09-22T20:00:01+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "qcom": {
+      "price": 198.27,
+      "currency": "USD",
+      "yahoo": "QCOM",
+      "cik": "0000804328",
+      "exchange": "NASDAQ",
+      "observed_at": "2026-09-22T20:00:00+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "intc": {
+      "price": 123.86,
+      "currency": "USD",
+      "yahoo": "INTC",
+      "cik": "0000050863",
+      "exchange": "NASDAQ",
+      "observed_at": "2026-09-22T20:00:01+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "msft": {
+      "price": 498.0,
+      "currency": "USD",
+      "yahoo": "MSFT",
+      "cik": "0000789019",
+      "exchange": "NASDAQ",
+      "observed_at": "2026-09-22T20:00:01+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "googl": {
+      "price": 351.16,
+      "currency": "USD",
+      "yahoo": "GOOGL",
+      "cik": "0001652044",
+      "exchange": "NASDAQ",
+      "observed_at": "2026-09-22T20:00:01+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "amzn": {
+      "price": 254.98,
+      "currency": "USD",
+      "yahoo": "AMZN",
+      "cik": "0001018724",
+      "exchange": "NASDAQ",
+      "observed_at": "2026-09-22T20:00:01+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "rtx": {
+      "price": 190.99,
+      "currency": "USD",
+      "yahoo": "RTX",
+      "cik": "0000101829",
+      "exchange": "NYSE",
+      "observed_at": "2026-09-22T20:00:02+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "stry": {
+      "price": 275.09,
+      "currency": "USD",
+      "yahoo": "SYK",
+      "cik": "0000310764",
+      "exchange": "NYSE",
+      "observed_at": "2026-09-22T20:03:29+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "etn": {
+      "price": 442.49,
+      "currency": "USD",
+      "yahoo": "ETN",
+      "cik": "0001551182",
+      "exchange": "NYSE",
+      "observed_at": "2026-09-22T20:00:03+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "hubb": {
+      "price": 458.83,
+      "currency": "USD",
+      "yahoo": "HUBB",
+      "cik": "0000048898",
+      "exchange": "NYSE",
+      "observed_at": "2026-09-22T20:00:02+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "gev": {
+      "price": 950.28,
+      "currency": "USD",
+      "yahoo": "GEV",
+      "cik": "0001996810",
+      "exchange": "NYSE",
+      "observed_at": "2026-09-22T20:00:03+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "rok": {
+      "price": 427.19,
+      "currency": "USD",
+      "yahoo": "ROK",
+      "cik": "0001024478",
+      "exchange": "NYSE",
+      "observed_at": "2026-09-22T20:00:02+00:00",
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    }
+  }
+}

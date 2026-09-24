@@ -1,0 +1,134 @@
+{
+  "kind": "LIVE_FETCH_OUTCOME_PROBE",
+  "universe": "US_LISTINGS",
+  "portfolio_role": "GENERIC_INPUT",
+  "predict_as_of": "2025-06-30T00:00:00+00:00",
+  "horizon_as_of": "2026-09-14T00:00:00+00:00",
+  "linked": 17,
+  "skipped": 0,
+  "outcomes": {
+    "asml": {
+      "status": "LINKED",
+      "parent": "tr_d9a5d5b7465c",
+      "child": "tr_5f52c6031854",
+      "realized_return": 1.1336767671113335,
+      "parent_payload_intact": true
+    },
+    "lrcx": {
+      "status": "LINKED",
+      "parent": "tr_a2dcf996e65b",
+      "child": "tr_7f0f55893443",
+      "realized_return": 2.068107104771841,
+      "parent_payload_intact": true
+    },
+    "klac": {
+      "status": "LINKED",
+      "parent": "tr_d4f7062a659d",
+      "child": "tr_42af34bcde6f",
+      "realized_return": 1.029959436556346,
+      "parent_payload_intact": true
+    },
+    "nvda": {
+      "status": "LINKED",
+      "parent": "tr_d2c8dfd4f0b3",
+      "child": "tr_e429fbfae40b",
+      "realized_return": 0.3837717482480685,
+      "parent_payload_intact": true
+    },
+    "amd": {
+      "status": "LINKED",
+      "parent": "tr_fb1eca957c46",
+      "child": "tr_87d881a4f6e4",
+      "realized_return": 2.588971654578613,
+      "parent_payload_intact": true
+    },
+    "avgo": {
+      "status": "LINKED",
+      "parent": "tr_7f5ddfc4b037",
+      "child": "tr_7e8277be8513",
+      "realized_return": 0.3439390459685243,
+      "parent_payload_intact": true
+    },
+    "qcom": {
+      "status": "LINKED",
+      "parent": "tr_3b848e8cdc2c",
+      "child": "tr_f0bbffc3f496",
+      "realized_return": 0.14778610399133707,
+      "parent_payload_intact": true
+    },
+    "intc": {
+      "status": "LINKED",
+      "parent": "tr_ec295ab1ad7c",
+      "child": "tr_d2ca040bfb2c",
+      "realized_return": 3.5368003533932777,
+      "parent_payload_intact": true
+    },
+    "msft": {
+      "status": "LINKED",
+      "parent": "tr_23f78229e3b6",
+      "child": "tr_94ecf91975a0",
+      "realized_return": -0.0006250706881230084,
+      "parent_payload_intact": true
+    },
+    "googl": {
+      "status": "LINKED",
+      "parent": "tr_f11e0c874752",
+      "child": "tr_8fbb27aa688b",
+      "realized_return": 0.8960398942166685,
+      "parent_payload_intact": true
+    },
+    "amzn": {
+      "status": "LINKED",
+      "parent": "tr_774f77aa8992",
+      "child": "tr_eac940c4c0df",
+      "realized_return": 0.14993280461254122,
+      "parent_payload_intact": true
+    },
+    "rtx": {
+      "status": "LINKED",
+      "parent": "tr_8a25e86e6a36",
+      "child": "tr_1f63319b2441",
+      "realized_return": 0.36651450070133884,
+      "parent_payload_intact": true
+    },
+    "stry": {
+      "status": "LINKED",
+      "parent": "tr_2cbc87ff1088",
+      "child": "tr_d554b8882df8",
+      "realized_return": -0.2998094114957638,
+      "parent_payload_intact": true
+    },
+    "etn": {
+      "status": "LINKED",
+      "parent": "tr_484e5fec0900",
+      "child": "tr_395a54bcc07f",
+      "realized_return": 0.20422948754954895,
+      "parent_payload_intact": true
+    },
+    "hubb": {
+      "status": "LINKED",
+      "parent": "tr_3aa0f30c0a9d",
+      "child": "tr_740b3c3c0781",
+      "realized_return": 0.1322610777263855,
+      "parent_payload_intact": true
+    },
+    "gev": {
+      "status": "LINKED",
+      "parent": "tr_3efcd29b1704",
+      "child": "tr_9363dd9ede22",
+      "realized_return": 0.8421084343646528,
+      "parent_payload_intact": true
+    },
+    "rok": {
+      "status": "LINKED",
+      "parent": "tr_ce763209e84c",
+      "child": "tr_c949204230cb",
+      "realized_return": 0.2983482309424461,
+      "parent_payload_intact": true
+    }
+  },
+  "official_pass": false,
+  "real_data_verified": false,
+  "full_pit_pass": false,
+  "store": "/tmp/us17_out.json"
+}

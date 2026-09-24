@@ -1,0 +1,153 @@
+{
+  "kind": "PIT_MULTI_ASOF_CANDIDATE",
+  "official_pass": false,
+  "full_pit_pass": false,
+  "real_data_verified": false,
+  "macro": "UNAVAILABLE",
+  "rows": [
+    {
+      "as_of": "2025-06-30T00:00:00+00:00",
+      "names": 3,
+      "quality": {
+        "nvda": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 15.012069242971103,
+          "G": 56.79038709933899,
+          "synthetic": false,
+          "pit_price": 157.75,
+          "revenue": 130497000000.0,
+          "revenue_prev": 60922000000.0,
+          "net_income": 72880000000.0,
+          "equity": 79327000000.0,
+          "cash": 8589000000.0,
+          "ebit": 81453000000.0
+        },
+        "msft": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 13.642410717928215,
+          "G": 43.02619052318817,
+          "synthetic": false,
+          "pit_price": 495.94000244140625,
+          "revenue": 245122000000.0,
+          "revenue_prev": 211915000000.0,
+          "net_income": 88136000000.0,
+          "equity": 268477000000.0,
+          "cash": 18315000000.0,
+          "ebit": 109433000000.0
+        },
+        "asml": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 19.00640061706336,
+          "G": 32.17524642648763,
+          "synthetic": false,
+          "pit_price": 795.9500122070312,
+          "revenue": 28262900000.0,
+          "revenue_prev": 27558500000.0,
+          "net_income": 7571600000.0,
+          "equity": 18476800000.0,
+          "cash": 12735900000.0,
+          "ebit": 9022600000.0
+        }
+      },
+      "gate": "PASS",
+      "macro": "UNAVAILABLE",
+      "decision_source": "integration",
+      "profile_id": "profile-balanced-provisional",
+      "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+      "lookahead": {
+        "future_bars": 927,
+        "future_filings_blocked": true
+      },
+      "official_pass": false,
+      "real_data_verified": false,
+      "full_pit_pass": false,
+      "kind": "PIT_BACKTEST_CANDIDATE"
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "names": 3,
+      "quality": {
+        "nvda": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 15.123704489251544,
+          "G": 53.41171309812115,
+          "synthetic": false,
+          "pit_price": 218.2899932861328,
+          "revenue": 215938000000.0,
+          "revenue_prev": 130497000000.0,
+          "net_income": 120067000000.0,
+          "equity": 157293000000.0,
+          "cash": 10605000000.0,
+          "ebit": 130387000000.0
+        },
+        "msft": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 14.270768354533374,
+          "G": 44.720132153841575,
+          "synthetic": false,
+          "pit_price": 495.6300048828125,
+          "revenue": 331839000000.0,
+          "revenue_prev": 281724000000.0,
+          "net_income": 133749000000.0,
+          "equity": 442387000000.0,
+          "cash": 20935000000.0,
+          "ebit": 155237000000.0
+        },
+        "asml": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 18.905664073859793,
+          "G": 43.37921919690105,
+          "synthetic": false,
+          "pit_price": 1698.300048828125,
+          "revenue": 32667300000.0,
+          "revenue_prev": 28262900000.0,
+          "net_income": 9609400000.0,
+          "equity": 19612200000.0,
+          "cash": 12916000000.0,
+          "ebit": 11301400000.0
+        }
+      },
+      "gate": "PASS",
+      "macro": "UNAVAILABLE",
+      "decision_source": "integration",
+      "profile_id": "profile-balanced-provisional",
+      "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+      "lookahead": {
+        "future_bars": 18,
+        "future_filings_blocked": true
+      },
+      "official_pass": false,
+      "real_data_verified": false,
+      "full_pit_pass": false,
+      "kind": "PIT_BACKTEST_CANDIDATE"
+    }
+  ],
+  "q_by_as_of": {
+    "nvda": [
+      15.012069242971103,
+      15.123704489251544
+    ],
+    "msft": [
+      13.642410717928215,
+      14.270768354533374
+    ],
+    "asml": [
+      19.00640061706336,
+      18.905664073859793
+    ]
+  },
+  "store": "/tmp/stmt.json",
+  "count": 2
+}

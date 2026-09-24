@@ -1,0 +1,18 @@
+{
+  "kind": "SYNTHETIC",
+  "company_id": "jpm",
+  "profile_kind": "FINANCIAL",
+  "note": "Synthetic bank fixture for FINANCIAL path. Not JPM official research.",
+  "cik": "0000019617",
+  "rotce": 0.17,
+  "cet1": 0.151,
+  "nim": 0.027,
+  "credit_quality": 72,
+  "capital_return": 65,
+  "deposit_funding": 70,
+  "revenue": 180000,
+  "revenue_prev": 170000,
+  "competitive_advantage_rubric": 70,
+  "management_quality_rubric": 68,
+  "growth_durability_rubric": 62
+}

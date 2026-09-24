@@ -1,0 +1,362 @@
+{
+  "kind": "NEW IMPLEMENTATION",
+  "implementation_line": "investment_system_impl-v0.2.0",
+  "evidence_class": "SYNTHETIC VERIFIED",
+  "as_of": "2026-09-14T00:00:00+00:00",
+  "qgv_snapshots": [
+    {
+      "qgv_snapshot_id": "qgv_1687ec0aeffa",
+      "company_id": "nvda",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 82.0,
+      "G_score": 82.0,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 82.0,
+      "attractiveness_10": 8.2,
+      "type_adjusted_score_100": 82.0,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "synthetic_fixture"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 81.99999999999999,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 82.0,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_1429f649ce76",
+      "company_id": "msft",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 75.0,
+      "G_score": 75.0,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 75.0,
+      "attractiveness_10": 7.5,
+      "type_adjusted_score_100": 75.0,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "synthetic_fixture"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 74.99999999999999,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 75.0,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_a132fea880e8",
+      "company_id": "asml",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 71.0,
+      "G_score": 71.0,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 71.0,
+      "attractiveness_10": 7.1,
+      "type_adjusted_score_100": 71.0,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "synthetic_fixture"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 70.99999999999999,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 71.0,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    }
+  ],
+  "leaderboard": {
+    "leaderboard_snapshot_id": "lb_eff3228d0715",
+    "universe_id": "synthetic-demo",
+    "generated_at": "2026-09-14T00:00:00+00:00",
+    "rows": [
+      {
+        "rank": 1,
+        "company_id": "nvda",
+        "ticker": "NVDA",
+        "qgv_snapshot_id": "qgv_1687ec0aeffa",
+        "Q_score": 82.0,
+        "G_score": 82.0,
+        "V_score": null,
+        "total_score": 82.0,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 2,
+        "company_id": "msft",
+        "ticker": "MSFT",
+        "qgv_snapshot_id": "qgv_1429f649ce76",
+        "Q_score": 75.0,
+        "G_score": 75.0,
+        "V_score": null,
+        "total_score": 75.0,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 3,
+        "company_id": "asml",
+        "ticker": "ASML",
+        "qgv_snapshot_id": "qgv_a132fea880e8",
+        "Q_score": 71.0,
+        "G_score": 71.0,
+        "V_score": null,
+        "total_score": 71.0,
+        "freshness": "SYNTHETIC"
+      }
+    ],
+    "implementation_kind": "NEW IMPLEMENTATION",
+    "recomputed_qgv": false
+  },
+  "portfolio_weight_sum": 1.0,
+  "macro_version": "v0.1.1",
+  "integration": {
+    "as_of": "2026-09-14T00:00:00+00:00",
+    "gate": "PASS",
+    "gate_reasons": [],
+    "target_weights": {
+      "asml": 0.09,
+      "lrcx": 0.06,
+      "klac": 0.055,
+      "tokyo_electron": 0.05,
+      "hanmi": 0.045,
+      "nvda": 0.08,
+      "amd": 0.05,
+      "avgo": 0.05,
+      "qcom": 0.04,
+      "intc": 0.03,
+      "msft": 0.07,
+      "googl": 0.07,
+      "amzn": 0.06,
+      "rtx": 0.06,
+      "stry": 0.055,
+      "etn": 0.05,
+      "hubb": 0.035,
+      "gev": 0.03,
+      "rok": 0.02
+    },
+    "order_intents": [],
+    "policy_status": "PROVISIONAL",
+    "qgv_refs": [
+      "qgv_a132fea880e8",
+      "qgv_1687ec0aeffa",
+      "qgv_1429f649ce76"
+    ],
+    "technical_ref": "ta_fd3a17c54d23",
+    "macro_ref": "mac_ee8a37c75329",
+    "implementation_kind": "NEW IMPLEMENTATION"
+  },
+  "track_record_id": "tr_f74d922a7240",
+  "compatibility": [
+    {
+      "name": "qgv-analysis-python",
+      "module": "QGV Analysis",
+      "recorded_pass": "299",
+      "present_in_hub": false,
+      "comparable": false,
+      "note": "original freeze suite Missing"
+    },
+    {
+      "name": "qgv-analysis-js",
+      "module": "QGV Analysis",
+      "recorded_pass": "27",
+      "present_in_hub": false,
+      "comparable": false,
+      "note": "original freeze suite Missing"
+    },
+    {
+      "name": "qgv-analysis-browser-e2e",
+      "module": "QGV Analysis",
+      "recorded_pass": "NOT RUN",
+      "present_in_hub": false,
+      "comparable": false,
+      "note": "never recorded as run"
+    },
+    {
+      "name": "qgv-sim-v0.6.8",
+      "module": "QGV Simulation",
+      "recorded_pass": "103/103",
+      "present_in_hub": false,
+      "comparable": false,
+      "note": "local package Missing"
+    },
+    {
+      "name": "qgv-portfolio-rc26",
+      "module": "QGV Portfolio",
+      "recorded_pass": "366/366",
+      "present_in_hub": false,
+      "comparable": false,
+      "note": "RC26 package Missing"
+    },
+    {
+      "name": "leaderboard-python",
+      "module": "Leaderboard",
+      "recorded_pass": "313+8",
+      "present_in_hub": false,
+      "comparable": false,
+      "note": "package Missing"
+    },
+    {
+      "name": "technical-159",
+      "module": "Technical",
+      "recorded_pass": "159/159",
+      "present_in_hub": false,
+      "comparable": false,
+      "note": "v0.6 package Missing"
+    },
+    {
+      "name": "macro-v0.1.1",
+      "module": "Macro",
+      "recorded_pass": "28/28",
+      "present_in_hub": false,
+      "comparable": false,
+      "note": "confirmed package Missing"
+    }
+  ]
+}

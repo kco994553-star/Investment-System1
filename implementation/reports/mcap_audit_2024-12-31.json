@@ -1,0 +1,18 @@
+{
+  "kind": "PIT_MCAP_STORE_COVERAGE_AUDIT",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "chart_range": "5y",
+  "listings": 598,
+  "companyfacts": 598,
+  "price": 298,
+  "rankable": 297,
+  "missing_companyfacts": 0,
+  "missing_price": 240,
+  "missing_shares": 47,
+  "ambiguous_shares": 13,
+  "non_positive": 1,
+  "top_cutoff_mcap_if_500_rankable": null,
+  "candidate_pool_complete": false,
+  "justified_official_top500": false,
+  "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
+}

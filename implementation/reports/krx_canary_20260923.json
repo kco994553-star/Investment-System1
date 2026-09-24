@@ -1,0 +1,10 @@
+{
+  "kind": "KRX_REAL_DATA_INGEST_RUN",
+  "as_of": "20260923",
+  "n_ok": 4,
+  "n_failed": 0,
+  "rows": {"kospi_daily": 942, "kosdaq_daily": 1821, "kospi_basic": 942, "kosdaq_basic": 1821},
+  "key_persisted": false,
+  "real_data_verified": false,
+  "full_pit_pass": false
+}

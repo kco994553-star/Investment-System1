@@ -1,0 +1,122 @@
+{
+  "kind": "US17_5Y_PIT_PROBE",
+  "official_pass": false,
+  "real_data_verified": false,
+  "full_pit_pass": false,
+  "summary": {
+    "kind": "MULTI_ASOF_PIT_SUMMARY",
+    "official_pass": false,
+    "real_data_verified": false,
+    "full_pit_pass": false,
+    "oos": false,
+    "calibrated": false,
+    "as_ofs": [
+      "2024-12-31T00:00:00+00:00",
+      "2025-06-30T00:00:00+00:00"
+    ],
+    "macro": [
+      "UNAVAILABLE",
+      "UNAVAILABLE"
+    ],
+    "macro_vintage": [
+      null,
+      null
+    ],
+    "ablation_ready": true,
+    "v_coverage": [
+      {
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "present": {
+          "fundamental_value": 16,
+          "reverse_dcf": 16,
+          "peer_relative_value": 16,
+          "historical_valuation": 15,
+          "margin_of_safety": 16,
+          "sector_context": 0,
+          "theme_premium_discount": 0
+        },
+        "n": 17
+      },
+      {
+        "as_of": "2025-06-30T00:00:00+00:00",
+        "present": {
+          "fundamental_value": 16,
+          "reverse_dcf": 16,
+          "peer_relative_value": 16,
+          "historical_valuation": 15,
+          "margin_of_safety": 16,
+          "sector_context": 0,
+          "theme_premium_discount": 0
+        },
+        "n": 17
+      }
+    ],
+    "compatibility_counts": [
+      {
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "labels": {
+          "ALIGNED": 1,
+          "ENTRY_CONFLICT": 0,
+          "FUNDAMENTAL_CONFLICT": 0,
+          "ALIGNED_NEGATIVE": 15,
+          "INSUFFICIENT": 1
+        }
+      },
+      {
+        "as_of": "2025-06-30T00:00:00+00:00",
+        "labels": {
+          "ALIGNED": 1,
+          "ENTRY_CONFLICT": 0,
+          "FUNDAMENTAL_CONFLICT": 11,
+          "ALIGNED_NEGATIVE": 5,
+          "INSUFFICIENT": 0
+        }
+      }
+    ]
+  },
+  "ablation": {
+    "kind": "ABLATION_PIT_DATASET",
+    "official_pass": false,
+    "full_pit_pass": false,
+    "n_names": 17,
+    "predict_as_of": "2024-12-31T00:00:00+00:00",
+    "outcome_as_of": "2025-06-30T00:00:00+00:00",
+    "arms": {
+      "qgv": {
+        "n": 1,
+        "period_return": 0.1475412626965995,
+        "mutates_inputs": false
+      },
+      "technical": {
+        "n": 1,
+        "period_return": 0.1475412626965995,
+        "mutates_inputs": false
+      },
+      "macro": {
+        "n": 17,
+        "period_return": 0.16658677043224515,
+        "mutates_inputs": false
+      },
+      "qgv+technical": {
+        "n": 1,
+        "period_return": 0.1475412626965995,
+        "mutates_inputs": false
+      },
+      "qgv+macro": {
+        "n": 1,
+        "period_return": 0.1475412626965995,
+        "mutates_inputs": false
+      },
+      "technical+macro": {
+        "n": 1,
+        "period_return": 0.1475412626965995,
+        "mutates_inputs": false
+      },
+      "qgv+technical+macro": {
+        "n": 1,
+        "period_return": 0.1475412626965995,
+        "mutates_inputs": false
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "kind": "LIVE_ATTEMPT",
+  "as_of": "2026-09-23T00:23:15.803155+00:00",
+  "stage2": false,
+  "real_data_verified": false,
+  "yahoo": {
+    "nvda": {
+      "ok": true,
+      "price": 228.87,
+      "currency": "USD",
+      "source": "yahoo-chart",
+      "evidence": "LIVE_FETCH"
+    },
+    "jpm": {
+      "ok": true,
+      "price": 340.0,
+      "currency": "USD",
+      "source": "yahoo-chart",
+      "evidence": "LIVE_FETCH"
+    },
+    "msft": {
+      "ok": true,
+      "price": 498.0,
+      "currency": "USD",
+      "source": "yahoo-chart",
+      "evidence": "LIVE_FETCH"
+    }
+  },
+  "jpm_synthetic": {
+    "profile": "FINANCIAL",
+    "Q": 35.34166666666667,
+    "V": null,
+    "synthetic": true
+  },
+  "jpm_sec": {
+    "ok": true,
+    "evidence": "LIVE_FETCH",
+    "Q": 5.607299654146136,
+    "V": null,
+    "source_kind": "NEW IMPLEMENTATION",
+    "synthetic": false
+  }
+}

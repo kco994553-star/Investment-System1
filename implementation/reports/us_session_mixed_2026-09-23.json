@@ -1,0 +1,344 @@
+{
+  "kind": "SESSION_MIXED",
+  "track": "US",
+  "qgv_kind": "SYNTHETIC",
+  "price_kind": "LIVE_FETCH",
+  "stage2": false,
+  "real_data_verified": false,
+  "as_of_session": "2026-09-23T00:35:15.533878+00:00",
+  "historical_as_of_attached": false,
+  "names": 17,
+  "priced": 17,
+  "portfolio_version": "us-working-PROVISIONAL",
+  "excluded": {
+    "hanmi": "KR_DEFERRED",
+    "tokyo_electron": "C-08_NON_US"
+  },
+  "rows": [
+    {
+      "company_id": "asml",
+      "yahoo": "ASML",
+      "exchange": "NASDAQ",
+      "cik": "0000937966",
+      "target_weight": 0.09944751381215469,
+      "Q": 91.33928571428571,
+      "G": 75.93737373737375,
+      "V": null,
+      "price": 1747.9,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "lrcx",
+      "yahoo": "LRCX",
+      "exchange": "NASDAQ",
+      "cik": "0000707549",
+      "target_weight": 0.06629834254143646,
+      "Q": 80.81666666666668,
+      "G": 73.82820512820511,
+      "V": null,
+      "price": 310.96,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "klac",
+      "yahoo": "KLAC",
+      "exchange": "NASDAQ",
+      "cik": "0000319201",
+      "target_weight": 0.06077348066298342,
+      "Q": 78.39999999999999,
+      "G": 70.43048128342248,
+      "V": null,
+      "price": 188.32,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "nvda",
+      "yahoo": "NVDA",
+      "exchange": "NASDAQ",
+      "cik": "0001045810",
+      "target_weight": 0.08839779005524862,
+      "Q": 90.79230769230769,
+      "G": 92.99074074074073,
+      "V": null,
+      "price": 228.87,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "amd",
+      "yahoo": "AMD",
+      "exchange": "NASDAQ",
+      "cik": "0000002488",
+      "target_weight": 0.05524861878453039,
+      "Q": 64.12222222222222,
+      "G": 69.14545454545454,
+      "V": null,
+      "price": 623.77,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "avgo",
+      "yahoo": "AVGO",
+      "exchange": "NASDAQ",
+      "cik": "0001730168",
+      "target_weight": 0.05524861878453039,
+      "Q": 74.35000000000001,
+      "G": 78.46661433804289,
+      "V": null,
+      "price": 364.54,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "qcom",
+      "yahoo": "QCOM",
+      "exchange": "NASDAQ",
+      "cik": "0000804328",
+      "target_weight": 0.04419889502762431,
+      "Q": 76.37051282051281,
+      "G": 58.39008547008546,
+      "V": null,
+      "price": 198.27,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "intc",
+      "yahoo": "INTC",
+      "exchange": "NASDAQ",
+      "cik": "0000050863",
+      "target_weight": 0.03314917127071823,
+      "Q": 32.37358490566038,
+      "G": 34.46944444444445,
+      "V": null,
+      "price": 123.86,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "msft",
+      "yahoo": "MSFT",
+      "exchange": "NASDAQ",
+      "cik": "0000789019",
+      "target_weight": 0.07734806629834255,
+      "Q": 90.33061224489795,
+      "G": 74.69137466307276,
+      "V": null,
+      "price": 498.0,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "googl",
+      "yahoo": "GOOGL",
+      "exchange": "NASDAQ",
+      "cik": "0001652044",
+      "target_weight": 0.07734806629834255,
+      "Q": 87.25,
+      "G": 73.75293579481922,
+      "V": null,
+      "price": 351.16,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "amzn",
+      "yahoo": "AMZN",
+      "exchange": "NASDAQ",
+      "cik": "0001018724",
+      "target_weight": 0.06629834254143646,
+      "Q": 77.408934169279,
+      "G": 72.50249971014495,
+      "V": null,
+      "price": 254.98,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "rtx",
+      "yahoo": "RTX",
+      "exchange": "NYSE",
+      "cik": "0000101829",
+      "target_weight": 0.06629834254143646,
+      "Q": 56.38214285714285,
+      "G": 63.627492618669095,
+      "V": null,
+      "price": 190.99,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "stry",
+      "yahoo": "SYK",
+      "exchange": "NYSE",
+      "cik": "0000310764",
+      "target_weight": 0.06077348066298342,
+      "Q": 74.29545454545455,
+      "G": 63.062906504065054,
+      "V": null,
+      "price": 275.09,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "etn",
+      "yahoo": "ETN",
+      "exchange": "NYSE",
+      "cik": "0001551182",
+      "target_weight": 0.05524861878453039,
+      "Q": 70.64375,
+      "G": 64.85711545838127,
+      "V": null,
+      "price": 442.49,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "hubb",
+      "yahoo": "HUBB",
+      "exchange": "NYSE",
+      "cik": "0000048898",
+      "target_weight": 0.038674033149171276,
+      "Q": 69.35000000000001,
+      "G": 58.96346153846154,
+      "V": null,
+      "price": 458.83,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "gev",
+      "yahoo": "GEV",
+      "exchange": "NYSE",
+      "cik": "0001996810",
+      "target_weight": 0.03314917127071823,
+      "Q": 55.41617647058825,
+      "G": 72.65333333333332,
+      "V": null,
+      "price": 950.28,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    },
+    {
+      "company_id": "rok",
+      "yahoo": "ROK",
+      "exchange": "NYSE",
+      "cik": "0001024478",
+      "target_weight": 0.022099447513812154,
+      "Q": 64.97983193277311,
+      "G": 55.637678175483046,
+      "V": null,
+      "price": 427.19,
+      "price_evidence": "LIVE_FETCH",
+      "synthetic_qgv": true
+    }
+  ],
+  "holdings": [
+    {
+      "company_id": "asml",
+      "ticker": "ASML",
+      "target_weight": 0.09944751381215469,
+      "price": 1747.9
+    },
+    {
+      "company_id": "lrcx",
+      "ticker": "LRCX",
+      "target_weight": 0.06629834254143646,
+      "price": 310.96
+    },
+    {
+      "company_id": "klac",
+      "ticker": "KLAC",
+      "target_weight": 0.06077348066298342,
+      "price": 188.32
+    },
+    {
+      "company_id": "nvda",
+      "ticker": "NVDA",
+      "target_weight": 0.08839779005524862,
+      "price": 228.87
+    },
+    {
+      "company_id": "amd",
+      "ticker": "AMD",
+      "target_weight": 0.05524861878453039,
+      "price": 623.77
+    },
+    {
+      "company_id": "avgo",
+      "ticker": "AVGO",
+      "target_weight": 0.05524861878453039,
+      "price": 364.54
+    },
+    {
+      "company_id": "qcom",
+      "ticker": "QCOM",
+      "target_weight": 0.04419889502762431,
+      "price": 198.27
+    },
+    {
+      "company_id": "intc",
+      "ticker": "INTC",
+      "target_weight": 0.03314917127071823,
+      "price": 123.86
+    },
+    {
+      "company_id": "msft",
+      "ticker": "MSFT",
+      "target_weight": 0.07734806629834255,
+      "price": 498.0
+    },
+    {
+      "company_id": "googl",
+      "ticker": "GOOGL",
+      "target_weight": 0.07734806629834255,
+      "price": 351.16
+    },
+    {
+      "company_id": "amzn",
+      "ticker": "AMZN",
+      "target_weight": 0.06629834254143646,
+      "price": 254.98
+    },
+    {
+      "company_id": "rtx",
+      "ticker": "RTX",
+      "target_weight": 0.06629834254143646,
+      "price": 190.99
+    },
+    {
+      "company_id": "stry",
+      "ticker": "SYK",
+      "target_weight": 0.06077348066298342,
+      "price": 275.09
+    },
+    {
+      "company_id": "etn",
+      "ticker": "ETN",
+      "target_weight": 0.05524861878453039,
+      "price": 442.49
+    },
+    {
+      "company_id": "hubb",
+      "ticker": "HUBB",
+      "target_weight": 0.038674033149171276,
+      "price": 458.83
+    },
+    {
+      "company_id": "gev",
+      "ticker": "GEV",
+      "target_weight": 0.03314917127071823,
+      "price": 950.28
+    },
+    {
+      "company_id": "rok",
+      "ticker": "ROK",
+      "target_weight": 0.022099447513812154,
+      "price": 427.19
+    }
+  ]
+}

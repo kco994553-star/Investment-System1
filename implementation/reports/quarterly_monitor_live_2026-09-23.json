@@ -1,0 +1,20 @@
+{
+  "nvda": {
+    "n": 55,
+    "status": "READY",
+    "latest": "2026-07-26",
+    "rev_yoy": 1.1837637873904954
+  },
+  "msft": {
+    "n": 54,
+    "status": "READY",
+    "latest": "2026-03-31",
+    "rev_yoy": 0.1903435202205883
+  },
+  "asml": {
+    "n": 0,
+    "status": "MISSING",
+    "latest": null,
+    "rev_yoy": null
+  }
+}

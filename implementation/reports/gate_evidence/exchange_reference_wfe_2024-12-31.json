@@ -1,0 +1,18 @@
+{
+  "source": "World Federation of Exchanges (WFE), \"Market Statistics - February 2025\" (WFE Focus), Total Dec'24 column",
+  "source_url": "https://focus.world-exchanges.org/issue/february-2025/market-statistics",
+  "source_vintage": "2025-01-31",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "nyse_total": 2132,
+  "nyse_domestic": 1584,
+  "nyse_foreign": 548,
+  "nasdaq_us_total": 3289,
+  "nasdaq_us_domestic": 2425,
+  "nasdaq_us_foreign": 864,
+  "cboe_bzx_total": 1,
+  "total_estimate_low": 3400,
+  "total_estimate_high": 3700,
+  "estimate_basis": "US common-stock operating-company range implied by CRSP US Total Market Index (~3,626-3,659, Q1 2024 vintage) and Russell 3000E holdings (~3,404); NYSE+Nasdaq WFE total of 5,421 includes ~1,400+ foreign-domiciled issuers/ADRs excluded from a US-domestic-only definition.",
+  "retrieved_via": "Claude web research task, 2026-09-24 (Investment-System1 relay session)",
+  "note": "Sizes the universe only. Never used to set candidate_pool_complete=True by itself (see build_universe_completeness_gate docstring)."
+}

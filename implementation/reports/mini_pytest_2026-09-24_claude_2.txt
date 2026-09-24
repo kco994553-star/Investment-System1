@@ -1,0 +1,52 @@
+Run: 2026-09-24 (Claude, continued session) | runner: tools/mini_pytest.py shim
+{
+  "kind": "PIT_MCAP_STORE_COVERAGE_AUDIT",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "chart_range": "5y",
+  "listings": 0,
+  "companyfacts": 0,
+  "price": 0,
+  "rankable": 0,
+  "missing_companyfacts": 0,
+  "missing_price": 0,
+  "missing_shares": 0,
+  "ambiguous_shares": 0,
+  "non_positive": 0,
+  "top_cutoff_mcap_if_500_rankable": null,
+  "candidate_pool_complete": false,
+  "justified_official_top500": false,
+  "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
+}
+{
+  "kind": "CANDIDATE_HYGIENE_AUDIT_HEURISTIC",
+  "n_total": 1,
+  "n_flagged": 1,
+  "n_clean": 0,
+  "flagged": {
+    "PREFERRED_SHARE_SUFFIX": [
+      "a"
+    ],
+    "FIVE_LETTER_F_OR_Y_OTC_ADR_SHAPE": []
+  },
+  "clean_company_ids": [],
+  "note": "PATTERN HEURISTIC ONLY, not authoritative. Flags likely preferred-share and foreign-OTC-ADR tickers so a network-enabled pass can prioritize fetching genuine common-equity candidates first and verify each flagged ticker's real SEC security type before excluding it. Never auto-applied to ranking or any gate."
+}
+{
+  "kind": "PIT_MCAP_STORE_COVERAGE_AUDIT",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "chart_range": "5y",
+  "listings": 0,
+  "companyfacts": 0,
+  "price": 0,
+  "rankable": 0,
+  "missing_companyfacts": 0,
+  "missing_price": 0,
+  "missing_shares": 0,
+  "ambiguous_shares": 0,
+  "non_positive": 0,
+  "top_cutoff_mcap_if_500_rankable": null,
+  "candidate_pool_complete": false,
+  "justified_official_top500": false,
+  "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
+}
+166 passed, 0 failed in 4.23s (runner: mini_pytest shim, not pytest)

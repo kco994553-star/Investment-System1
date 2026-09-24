@@ -1,0 +1,17 @@
+{
+  "kind": "TOP500_SUFFICIENCY_GATE",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "passed": false,
+  "rankable": 297,
+  "cutoff_mcap": null,
+  "n_references_supplied": 0,
+  "n_references_usable": 0,
+  "references": [],
+  "reasons": [
+    "NO_LARGE_CAP_REFERENCE_SUPPLIED",
+    "FEWER_THAN_500_RANKABLE",
+    "NO_CUTOFF_MCAP_COMPUTED",
+    "NO_REFERENCE_PASSED_ITS_OWN_CHECKS"
+  ],
+  "note": "Does not require universe completeness. Passes only when >=1 independently sourced, dated (PIT) large-cap reference has every member present, rankable, and inside the computed top 500 -- i.e. positive evidence no plausible missed company changes the top 500."
+}

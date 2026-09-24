@@ -1,0 +1,32 @@
+{
+  "pack": {
+    "availability": "LIVE_FETCH",
+    "vintage": "CURRENT_REVISED_NOT_ALFRED",
+    "source": "fredgraph.csv",
+    "real_data_verified": false,
+    "values": {
+      "growth": 0.014204223973108832,
+      "inflation": 0.03353016322755642,
+      "rates": 4.97,
+      "liquidity": 6740619.0,
+      "risk": 2.71
+    },
+    "as_of_used": {
+      "growth": "2026-08-01",
+      "inflation": "2026-08-01",
+      "rates": "2026-09-14",
+      "liquidity": "2026-09-09",
+      "risk": "2026-09-14"
+    },
+    "missing": []
+  },
+  "regime": "NEUTRAL",
+  "state": "NORMAL",
+  "synthetic": false,
+  "env": {
+    "availability": "LIVE_FETCH",
+    "vintage": "CURRENT_REVISED_NOT_ALFRED",
+    "source": "fredgraph.csv",
+    "missing": []
+  }
+}

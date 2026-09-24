@@ -1,0 +1,27 @@
+{
+  "kind": "KRX_REAL_DATA_INGEST_RUN",
+  "as_of": "20260923",
+  "n_requested": 4,
+  "n_ok": 0,
+  "n_failed": 4,
+  "log": [
+    {
+      "artifact_id": "krx:kospi_daily:20260923",
+      "status": "HTTP_401"
+    },
+    {
+      "artifact_id": "krx:kosdaq_daily:20260923",
+      "status": "HTTP_401"
+    },
+    {
+      "artifact_id": "krx:kospi_basic:20260923",
+      "status": "HTTP_401"
+    },
+    {
+      "artifact_id": "krx:kosdaq_basic:20260923",
+      "status": "HTTP_401"
+    }
+  ],
+  "real_data_verified": false,
+  "note": "Raw KRX ingest only; downstream PIT/eligibility verification remains required."
+}

@@ -1,0 +1,245 @@
+{
+  "n": 34,
+  "matched": 31,
+  "rows": [
+    {
+      "company_id": "asml",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2023-02-15"
+    },
+    {
+      "company_id": "asml",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2024-02-14"
+    },
+    {
+      "company_id": "lrcx",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2023-08-15"
+    },
+    {
+      "company_id": "lrcx",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2024-08-29"
+    },
+    {
+      "company_id": "klac",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2023-08-04"
+    },
+    {
+      "company_id": "klac",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2024-08-05"
+    },
+    {
+      "company_id": "nvda",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "Revenues",
+      "index_filed": "2023-02-24"
+    },
+    {
+      "company_id": "nvda",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "Revenues",
+      "index_filed": "2024-02-21"
+    },
+    {
+      "company_id": "amd",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2023-02-27"
+    },
+    {
+      "company_id": "amd",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2024-01-31"
+    },
+    {
+      "company_id": "avgo",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2023-12-14"
+    },
+    {
+      "company_id": "avgo",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2024-12-20"
+    },
+    {
+      "company_id": "qcom",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "Revenues",
+      "index_filed": "2023-11-01"
+    },
+    {
+      "company_id": "qcom",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "Revenues",
+      "index_filed": "2024-11-06"
+    },
+    {
+      "company_id": "intc",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2023-01-27"
+    },
+    {
+      "company_id": "intc",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2024-01-26"
+    },
+    {
+      "company_id": "msft",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2023-07-27"
+    },
+    {
+      "company_id": "msft",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2024-07-30"
+    },
+    {
+      "company_id": "googl",
+      "as_of": "2023-12-31",
+      "match": false,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": null
+    },
+    {
+      "company_id": "googl",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2024-01-31"
+    },
+    {
+      "company_id": "amzn",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2023-02-03"
+    },
+    {
+      "company_id": "amzn",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2024-02-02"
+    },
+    {
+      "company_id": "rtx",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "Revenues",
+      "index_filed": "2023-02-07"
+    },
+    {
+      "company_id": "rtx",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "Revenues",
+      "index_filed": "2024-02-05"
+    },
+    {
+      "company_id": "stry",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "Revenues",
+      "index_filed": "2023-02-10"
+    },
+    {
+      "company_id": "stry",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "Revenues",
+      "index_filed": "2024-02-14"
+    },
+    {
+      "company_id": "etn",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2023-02-23"
+    },
+    {
+      "company_id": "etn",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2024-02-29"
+    },
+    {
+      "company_id": "hubb",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2023-02-09"
+    },
+    {
+      "company_id": "hubb",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2024-02-08"
+    },
+    {
+      "company_id": "gev",
+      "as_of": "2023-12-31",
+      "match": false,
+      "concept": null,
+      "index_filed": null
+    },
+    {
+      "company_id": "gev",
+      "as_of": "2024-12-31",
+      "match": false,
+      "concept": null,
+      "index_filed": null
+    },
+    {
+      "company_id": "rok",
+      "as_of": "2023-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2023-11-08"
+    },
+    {
+      "company_id": "rok",
+      "as_of": "2024-12-31",
+      "match": true,
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "index_filed": "2024-11-12"
+    }
+  ],
+  "full_pit_pass": false
+}

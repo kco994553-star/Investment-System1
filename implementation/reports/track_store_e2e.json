@@ -1,0 +1,357 @@
+[
+  {
+    "track_record_id": "tr_1313dacfe438",
+    "record_type": "qgv_PREDICTION",
+    "subject_id": "us-working",
+    "decision_at": "2026-09-14T00:00:00+00:00",
+    "source_snapshot_refs": [
+      "qgv_debbb3342617",
+      "qgv_007abe0744a4",
+      "qgv_947dbfe701a0",
+      "qgv_d2f022086c6e",
+      "qgv_473814cc0eb1",
+      "qgv_6a47972a905d",
+      "qgv_27f9b19ceda5",
+      "qgv_4e1b99d918e1",
+      "qgv_c389506776d1",
+      "qgv_9347efa02a03",
+      "qgv_e283c2555e46",
+      "qgv_c82870f717a1",
+      "qgv_2478ddf43592",
+      "qgv_a97d831c0909",
+      "qgv_680d91d00217",
+      "qgv_a3904908b2c1",
+      "qgv_f85be4c5d4f0"
+    ],
+    "payload": {
+      "prediction_id": "pred_f97270da06e1",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "system_version": "investment_system_impl-v0.2.0",
+      "module_version": "v1.7.6",
+      "profile_id": "profile-balanced-provisional",
+      "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+      "input_snapshot_ids": [
+        "qgv_debbb3342617",
+        "qgv_007abe0744a4",
+        "qgv_947dbfe701a0",
+        "qgv_d2f022086c6e",
+        "qgv_473814cc0eb1",
+        "qgv_6a47972a905d",
+        "qgv_27f9b19ceda5",
+        "qgv_4e1b99d918e1",
+        "qgv_c389506776d1",
+        "qgv_9347efa02a03",
+        "qgv_e283c2555e46",
+        "qgv_c82870f717a1",
+        "qgv_2478ddf43592",
+        "qgv_a97d831c0909",
+        "qgv_680d91d00217",
+        "qgv_a3904908b2c1",
+        "qgv_f85be4c5d4f0"
+      ],
+      "prediction": {
+        "Q": {
+          "asml": 91.33928571428571,
+          "lrcx": 80.81666666666668,
+          "klac": 78.39999999999999,
+          "nvda": 90.79230769230769,
+          "amd": 64.12222222222222,
+          "avgo": 74.35000000000001,
+          "qcom": 76.37051282051281,
+          "intc": 32.37358490566038,
+          "msft": 90.33061224489795,
+          "googl": 87.25,
+          "amzn": 77.408934169279,
+          "rtx": 56.38214285714285,
+          "stry": 74.29545454545455,
+          "etn": 70.64375,
+          "hubb": 69.35000000000001,
+          "gev": 55.41617647058825,
+          "rok": 64.97983193277311
+        },
+        "V": null
+      },
+      "decision": {
+        "kind": "snapshot_only"
+      },
+      "scope": "qgv",
+      "evaluation_horizon": "1d",
+      "outcome": null,
+      "error": null,
+      "calibration_result": null,
+      "purpose": "TRACK_RECORD",
+      "not_backtest": true,
+      "immutable": true,
+      "kind": "TRACK_RECORD"
+    },
+    "outcome_window": null,
+    "outcome_metrics": null,
+    "immutable": true
+  },
+  {
+    "track_record_id": "tr_1d8dec28df59",
+    "record_type": "technical_PREDICTION",
+    "subject_id": "us-working",
+    "decision_at": "2026-09-14T00:00:00+00:00",
+    "source_snapshot_refs": [
+      "ta_09d4affd6b26",
+      "ta_b60278b1497f",
+      "ta_a87c71b95715",
+      "ta_1c3c42ba00b2",
+      "ta_80448d6d298b",
+      "ta_34873413eb5a",
+      "ta_3d961aba8867",
+      "ta_4759f7064729",
+      "ta_cf6ebcf76bdd",
+      "ta_310778cbf419",
+      "ta_884c0be09e17",
+      "ta_89caba9e657d",
+      "ta_1a8c11d06d3a",
+      "ta_e2ee28930676",
+      "ta_689d7b016960",
+      "ta_809e209a41d3",
+      "ta_725914743a7f"
+    ],
+    "payload": {
+      "prediction_id": "pred_c8732eac288e",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "system_version": "investment_system_impl-v0.2.0",
+      "module_version": "v0.6-STRUCTURAL-FREEZE",
+      "profile_id": "profile-balanced-provisional",
+      "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+      "input_snapshot_ids": [
+        "ta_09d4affd6b26",
+        "ta_b60278b1497f",
+        "ta_a87c71b95715",
+        "ta_1c3c42ba00b2",
+        "ta_80448d6d298b",
+        "ta_34873413eb5a",
+        "ta_3d961aba8867",
+        "ta_4759f7064729",
+        "ta_cf6ebcf76bdd",
+        "ta_310778cbf419",
+        "ta_884c0be09e17",
+        "ta_89caba9e657d",
+        "ta_1a8c11d06d3a",
+        "ta_e2ee28930676",
+        "ta_689d7b016960",
+        "ta_809e209a41d3",
+        "ta_725914743a7f"
+      ],
+      "prediction": {
+        "regime": {
+          "asml": "RANGE",
+          "lrcx": "RANGE",
+          "klac": "RANGE",
+          "nvda": "RANGE",
+          "amd": "RANGE",
+          "avgo": "RANGE",
+          "qcom": "RANGE",
+          "intc": "RANGE",
+          "msft": "RANGE",
+          "googl": "RANGE",
+          "amzn": "RANGE",
+          "rtx": "RANGE",
+          "stry": "RANGE",
+          "etn": "RANGE",
+          "hubb": "RANGE",
+          "gev": "RANGE",
+          "rok": "RANGE"
+        }
+      },
+      "decision": {
+        "kind": "snapshot_only"
+      },
+      "scope": "technical",
+      "evaluation_horizon": "1d",
+      "outcome": null,
+      "error": null,
+      "calibration_result": null,
+      "purpose": "TRACK_RECORD",
+      "not_backtest": true,
+      "immutable": true,
+      "kind": "TRACK_RECORD"
+    },
+    "outcome_window": null,
+    "outcome_metrics": null,
+    "immutable": true
+  },
+  {
+    "track_record_id": "tr_a5901c833fec",
+    "record_type": "macro_PREDICTION",
+    "subject_id": "market",
+    "decision_at": "2026-09-14T00:00:00+00:00",
+    "source_snapshot_refs": [
+      "mac_38834914ac2e"
+    ],
+    "payload": {
+      "prediction_id": "pred_d75acddf19fd",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "system_version": "investment_system_impl-v0.2.0",
+      "module_version": "v0.1.1",
+      "profile_id": "profile-balanced-provisional",
+      "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+      "input_snapshot_ids": [
+        "mac_38834914ac2e"
+      ],
+      "prediction": {
+        "state": "NORMAL",
+        "regime": "NEUTRAL"
+      },
+      "decision": {
+        "kind": "snapshot_only"
+      },
+      "scope": "macro",
+      "evaluation_horizon": "1d",
+      "outcome": null,
+      "error": null,
+      "calibration_result": null,
+      "purpose": "TRACK_RECORD",
+      "not_backtest": true,
+      "immutable": true,
+      "kind": "TRACK_RECORD"
+    },
+    "outcome_window": null,
+    "outcome_metrics": null,
+    "immutable": true
+  },
+  {
+    "track_record_id": "tr_305d02c34b85",
+    "record_type": "integrated_PREDICTION",
+    "subject_id": "us-working",
+    "decision_at": "2026-09-14T00:00:00+00:00",
+    "source_snapshot_refs": [
+      "tr_1313dacfe438",
+      "tr_1d8dec28df59",
+      "tr_a5901c833fec"
+    ],
+    "payload": {
+      "prediction_id": "pred_5ee2aad9e920",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "system_version": "investment_system_impl-v0.2.0",
+      "module_version": "integration-v1.2-PROVISIONAL",
+      "profile_id": "profile-balanced-provisional",
+      "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+      "input_snapshot_ids": [
+        "tr_1313dacfe438",
+        "tr_1d8dec28df59",
+        "tr_a5901c833fec"
+      ],
+      "prediction": {
+        "expected_return": 0.0,
+        "gate": "PASS"
+      },
+      "decision": {
+        "source": "integration",
+        "target_weights": {
+          "asml": 0.09944751381215469,
+          "lrcx": 0.06629834254143646,
+          "klac": 0.06077348066298342,
+          "nvda": 0.08839779005524862,
+          "amd": 0.05524861878453039,
+          "avgo": 0.05524861878453039,
+          "qcom": 0.04419889502762431,
+          "intc": 0.03314917127071823,
+          "msft": 0.07734806629834254,
+          "googl": 0.07734806629834254,
+          "amzn": 0.06629834254143646,
+          "rtx": 0.06629834254143646,
+          "stry": 0.06077348066298342,
+          "etn": 0.05524861878453039,
+          "hubb": 0.03867403314917127,
+          "gev": 0.03314917127071823,
+          "rok": 0.022099447513812154
+        },
+        "orders_from_modules": false
+      },
+      "scope": "integrated",
+      "evaluation_horizon": "1d",
+      "outcome": null,
+      "error": null,
+      "calibration_result": null,
+      "purpose": "TRACK_RECORD",
+      "not_backtest": true,
+      "immutable": true,
+      "kind": "TRACK_RECORD"
+    },
+    "outcome_window": null,
+    "outcome_metrics": null,
+    "immutable": true
+  },
+  {
+    "track_record_id": "tr_2bb4ad781323",
+    "record_type": "OUTCOME",
+    "subject_id": "us-working",
+    "decision_at": "2026-09-14T00:00:00+00:00",
+    "source_snapshot_refs": [
+      "tr_1313dacfe438",
+      "tr_1d8dec28df59",
+      "tr_a5901c833fec",
+      "tr_305d02c34b85"
+    ],
+    "payload": {
+      "prediction_id": "pred_5ee2aad9e920",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "system_version": "investment_system_impl-v0.2.0",
+      "module_version": "integration-v1.2-PROVISIONAL",
+      "profile_id": "profile-balanced-provisional",
+      "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+      "input_snapshot_ids": [
+        "tr_1313dacfe438",
+        "tr_1d8dec28df59",
+        "tr_a5901c833fec"
+      ],
+      "prediction": {
+        "expected_return": 0.0,
+        "gate": "PASS"
+      },
+      "decision": {
+        "source": "integration",
+        "target_weights": {
+          "asml": 0.09944751381215469,
+          "lrcx": 0.06629834254143646,
+          "klac": 0.06077348066298342,
+          "nvda": 0.08839779005524862,
+          "amd": 0.05524861878453039,
+          "avgo": 0.05524861878453039,
+          "qcom": 0.04419889502762431,
+          "intc": 0.03314917127071823,
+          "msft": 0.07734806629834254,
+          "googl": 0.07734806629834254,
+          "amzn": 0.06629834254143646,
+          "rtx": 0.06629834254143646,
+          "stry": 0.06077348066298342,
+          "etn": 0.05524861878453039,
+          "hubb": 0.03867403314917127,
+          "gev": 0.03314917127071823,
+          "rok": 0.022099447513812154
+        },
+        "orders_from_modules": false
+      },
+      "scope": "integrated",
+      "evaluation_horizon": "1d",
+      "outcome": null,
+      "error": null,
+      "calibration_result": null,
+      "purpose": "TRACK_RECORD",
+      "not_backtest": true,
+      "immutable": true,
+      "kind": "TRACK_RECORD"
+    },
+    "outcome_window": "1d",
+    "outcome_metrics": {
+      "realized": {
+        "realized_return": 0.0
+      },
+      "error": {
+        "expected_return": 0.0,
+        "realized_return": 0.0,
+        "delta": 0.0
+      },
+      "calibration_result": null,
+      "official_pass": false,
+      "parent_mutated": false
+    },
+    "immutable": true
+  }
+]

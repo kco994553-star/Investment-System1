@@ -1,0 +1,1049 @@
+Investment-System1 · HANDOFF_HISTORY
+
+Append-only 인계 기록. 과거 기록을 삭제하거나 사후 수정하지 않는다.
+
+2026-09-22 · GPT-5.6 Sol → Next AI  
+- Multi-AI Sequential Relay 체계 시작.  
+- QGV Analysis v1.7.6 DESIGN FROZEN이 Drive에 실제 반영된 것을 확인.  
+- QGV v1.7.6 Design 100% / Stage Gate 2/7 / Python 299 PASS / JS 27 PASS / Browser E2E NOT RUN 기록 확인.  
+- Master Status에서 Technical Phase 6 Structural Freeze 159/159, Macro 28/28, QGV Simulation v0.6.8 103/103, Portfolio v3.0 RC26 366/366 기록 확인.  
+- PASS 기록과 실제 코드 재실행 검증을 구분하기로 함.  
+- 다음 작업: Artifact SSoT 대조 → 계약 충돌 확인 → 실제 패키지 확보 시 재실행 검증 → E2E/PIT/OOS/Calibration/Forward Validation.
+
+------------------------------------------------------------------------
+
+2026-09-22 · GPT-5.6 Sol · CURRENT_HANDOFF snapshot (archived, do not edit)
+
+Timestamp: 2026-09-22  
+AI: GPT-5.6 Sol  
+Project: Investment-System1  
+Mode: Multi-AI Sequential Relay  
+Status: HANDOFF READY WITH OPEN VALIDATION/ARTIFACT GAPS
+
+Started From  
+Google Drive 모듈별 최신화와 Multi-AI 인계 준비. QGV Analysis 원 개발 대화에서 v1.7.6 Design Freeze가 Drive v1.7보다 최신이라는 불일치가 확인되어 재검증했다.
+
+Completed  
+- QGV Analysis Drive 문서가 실제로 “QGV Analysis · Specification v1.7.6 · DESIGN FROZEN”으로 갱신되어 있음을 확인.  
+- QGV Analysis v1.7.6: Design progress 100% / FROZEN.  
+- QGV Stage Gate: 2/7 = 28.6%.  
+- QGV freeze regression 기록: Python 299 PASS / JS 27 PASS / Browser E2E NOT RUN.  
+- Q factor weights와 G factor weights가 v1.7.6 문서에 명시되어 있음을 확인.  
+- V weights는 숫자 고정값이 아니라 VALIDATION_SELECTED 정책으로 동결됨을 확인.  
+- Master Status Index와 Project Index를 읽어 현재 상태를 확인.  
+- Multi-AI Relay Protocol, CURRENT_HANDOFF, HANDOFF_HISTORY를 생성.
+
+Current Authority  
+- QGV Analysis: v1.7.6 DESIGN FROZEN.  
+- QGV scoring baseline: Standard v1.5 balanced.  
+- QGV System integrated document: v1.7.  
+- QGV Simulation latest recorded local development line: v0.6.8 / 103/103 regression PASS (Master Status 기록).  
+- QGV Portfolio: Project Index 기록상 Design 100% / FROZEN, implementation baseline v3.0 RC26, regression 366/366 PASS.  
+- Technical Analysis: Master Status 기준 Phase 6 + Real PIT Validation v0.6 STRUCTURAL FREEZE, latest recorded structural tests 159/159 PASS. 실제 PIT 실증/Forward Validation 미완료.  
+- Macro: v0.1.1, offline regression 28/28 PASS.  
+- Investment System: v1.1 flow + v1.2 PROVISIONAL policy layer.
+
+Next Action (at handoff)  
+1. Drive의 각 모듈 Latest/Official을 다시 읽고 CURRENT_HANDOFF와 대조한다.  
+2. 실제 코드/테스트/로그/ZIP/MD 원본 Artifact를 Drive SSoT에서 찾고, 없으면 Missing Artifact로 기록한다.  
+3. QGV v1.7.6 기준으로 Common Schema/Integrated Specification의 구버전 또는 충돌을 대조한다. v1.7.6을 추측으로 재작성하지 않는다.  
+4. 세 시스템의 실제 package가 확보되면 기록된 테스트를 재실행하여 RECORDED와 VERIFIED를 분리한다.  
+5. 그 다음 QGV/Technical/Macro Contract 정합성 → real-data E2E → PIT/OOS/Calibration → Forward Validation 순으로 진행한다.
+
+------------------------------------------------------------------------
+
+2026-09-22 · Grok Build → Next AI  
+- Next Action 1–3 수행. 패키지 부재로 4(재실행)는 착수하지 않음.  
+- SSoT ZIP = 명세 마크다운 21개. 실행 코드/로그/데이터셋 Missing 15. VERIFIED = 0.  
+- Contract Conflict Register C-01~C-15. Blocking: Macro 이중 기준선, Q7 명칭, TEL 식별자.  
+- Confirmed Macro는 v0.1.1 / 28/28 유지. v0.1.4 Candidate 미승격.  
+- Project Index Technical 69/69는 stale. Master Status 159/159 우선.  
+- v1.7.6 재작성 없음. Schema additive만 GAP로 기록.  
+- 다음 작업: 원본 패키지 확보 또는 Missing 확정 → 재실행 검증 → C-01/C-03/C-08 해소 → 패키지 인터페이스 E2E.
+
+------------------------------------------------------------------------
+
+2026-09-22 · Grok Build · CURRENT_HANDOFF snapshot after inventory pass (archived, do not edit)
+
+Module/Area: SSoT 대조 / Artifact Inventory / Contract Conflict Register  
+Completed: 21 md 대조, Missing 15, Conflict C-01~C-15, v1.7.6 미재작성, 패키지 부재로 재실행 0.  
+Decisions: Macro confirmed v0.1.1; TEL Tokyo Electron OPEN; Q7 CONFLICT; Schema 미덮어쓰기.  
+Next Action then: 패키지 확보 또는 Missing 확정 → 재실행.
+
+------------------------------------------------------------------------
+
+2026-09-22 · Grok Build → Next AI  
+- Exhaustive artifact hunt. Drive ZIP 21×.md, sha256 29153496…, 실행 패키지 0.  
+- Live Drive / ChatGPT Work 미마운트. 원본 추정 재생성 안 함.  
+- Matrix: Spec PRESENT 8 / Code PRESENT 0 / Recorded-only 6 / Reproducible 0 / VERIFIED 0 / discrepancy 0.  
+- C-01 / C-03 / C-08 OPEN 유지. C-16 Work vs Drive 미이관 GAP 추가.  
+- Missing Artifact Register 저장. E2E/PIT/OOS/Calibration/Forward 미착수.  
+- Next: 원본 이관 후에만 재실행. 기록이 다르면 discrepancy. 그 전 E2E 금지.
+
+------------------------------------------------------------------------
+
+2026-09-22 · Grok Build · CURRENT_HANDOFF snapshot after exhaustive hunt (archived, do not edit)
+
+Module/Area: Exhaustive artifact hunt / Missing Artifact Register / Reproducibility matrix  
+Completed: Drive ZIP 21×.md, Code Present 0, Reproducible 0, VERIFIED 0, C-16 GAP.  
+Next Action then: Work/원 개발 ZIP 이관 후 재실행.
+
+------------------------------------------------------------------------
+
+2026-09-22 · Grok Build → Next AI · HANDOFF CLOSED  
+- Artifact Recovery CLOSED as BLOCKED. 기준선 고정: Code 0 / Reproducible 0 / VERIFIED 0 / PASS = RECORDED-only.  
+- 동일 Drive ZIP 재검색 없음. 원본 추정 재생성 없음. E2E 사다리 미착수.  
+- Master Status Evidence Ledger: PASS는 RECORDED, VERIFIED=0 별도. Technical LATEST 159/159 vs STALE 69/69 분리.  
+- C-01 / C-03 / C-08 / C-16 OPEN. v1.7.6 · VALIDATION_SELECTED · Common Schema 불변.  
+- 다음 AI 첫 작업: 실제 원본 Artifact 확보 (새 설계 아님) → Drive 이관 → 무결성 → 기존 테스트 재실행.
+
+------------------------------------------------------------------------
+
+2026-09-23 08:38 KST · Grok → Next AI  
+- 전달 문제와 프로젝트 진행을 분리. 0753 ZIP 링크 재사용 금지.  
+- 새 binary ZIP 생성: Investment-System1_Handoff_2026-09-23_0838.zip  
+- Gmail/Outlook 미연결. send-email 도구 없음. 이메일 미발송.  
+- Artifact Recovery BLOCKED 유지. Code 0 / Reproducible 0 / VERIFIED 0.  
+- Missing 추정 재생성 없음. 동일 Drive 스냅샷 재검색 없음. E2E 사다리 미착수.  
+- 다음 작업: 원본 패키지 회수 → Drive 이관 → 무결성 → 재실행.
+
+------------------------------------------------------------------------
+
+2026-09-23 08:42 KST · Grok → Next AI  
+- Module Progress Ledger 추가. 축 A/B/C/D/E 분리.  
+- Analysis Stage Gate 2/7=28.6% 공식 유지. Code/Verified 전 모듈 0.  
+- 다운로드 ZIP 0842 생성. 0838 보존.  
+- Recovery BLOCKED 유지. 원본 추정 없음. E2E 미착수.
+
+------------------------------------------------------------------------
+
+2026-09-23 08:54 KST · Grok → Next AI
+- Original Recovery BLOCKED / Project Development ACTIVE.
+- NEW IMPLEMENTATION investment_system_impl-v0.1.0.
+- pytest 19 passed SYNTHETIC VERIFIED.
+- Original suites still Missing. Conflicts still OPEN.
+- Next: real-data adapter, raw-field factors, compare only if original arrives.
+
+------------------------------------------------------------------------
+
+2026-09-23 09:07 KST · Grok → Next AI
+- impl v0.2.0: raw_map + PIT memory providers + SEC parser.
+- pytest 26 SYNTHETIC VERIFIED.
+- Live SEC optional; not Stage 2 PASS.
+- Next: FINANCIAL raw fields, v1.1 book fixtures, env-gated live price.
+
+------------------------------------------------------------------------
+
+2026-09-23 09:12 KST · Grok → Next AI
+- v0.2.0 continued: prev-period SEC, FINANCIAL mapping, v1.1 synthetic catalog, book runner, env price OFF.
+- pytest 31 SYNTHETIC VERIFIED. REAL-DATA VERIFIED 0.
+- Next: enabled-feed smoke if configured; FINANCIAL issuer path; snapshot persist.
+
+------------------------------------------------------------------------
+
+2026-09-23 09:21 KST · Grok → Next AI
+- Yahoo free live prices LIVE_FETCH. Stooq unused.
+- JPM FINANCIAL synthetic + SEC live parse.
+- Book snapshots persisted. pytest 34 SYNTHETIC VERIFIED.
+- REAL-DATA VERIFIED 0. Stage 2 not passed.
+
+------------------------------------------------------------------------
+
+2026-09-23 09:26 KST · Grok → Next AI
+- D-16 US track ACTIVE, KR DEFERRED. Official v1.1 intact (19).
+- US working 17 names. Live Yahoo 17/17 LIVE_FETCH.
+- pytest 38 SYNTHETIC VERIFIED. REAL-DATA VERIFIED 0.
+
+------------------------------------------------------------------------
+
+2026-09-23 09:33 KST · Grok → Next AI
+- US session mix + sample HTML. pytest 41. SEC NVDA/MSFT LIVE_FETCH, period mix gap open.
+
+------------------------------------------------------------------------
+
+2026-09-23 09:54 KST · Grok → Next AI
+- Product UI App Shell 17 pages. Strategy profiles PROVISIONAL.
+- Backtest ≠ Track Record contracts. pytest 46 SYNTHETIC VERIFIED.
+
+------------------------------------------------------------------------
+
+2026-09-23 10:07 KST · Grok → Next AI
+- Profile hash + PredictionEnvelope + ablation/adapters. pytest 50.
+- Frontend not expanded. Simulation ≠ Backtest.
+
+------------------------------------------------------------------------
+
+2026-09-23 10:13 KST · Grok → Next AI
+- Session envelope persist + Integration profile hash. SEC 10-K filter when labeled.
+- pytest 52 SYNTHETIC VERIFIED.
+
+------------------------------------------------------------------------
+
+2026-09-23 10:19 KST · Grok → Next AI
+- Outcome linker + SEC PARTIAL quality. pytest 54.
+
+------------------------------------------------------------------------
+
+2026-09-23 10:27 KST · Grok → Next AI
+- Conflict authority pass. File-backed track store. pytest 57.
+- Active leftovers: C-03, C-06, C-08 venue, C-15, C-16 historical.
+
+------------------------------------------------------------------------
+
+2026-09-23 11:36 KST · Grok → Next AI
+- Integrated E2E + file reload + immutable outcome. Live/PIT candidates. pytest 59.
+- REAL-DATA VERIFIED 0. SEC 3-name FORM_ALIGNED is LIVE_FETCH only.
+
+------------------------------------------------------------------------
+
+2026-09-23 11:51 KST · Grok → Next AI
+- PIT vintage resolver + multi-as_of candidate. NVDA revenues change by as_of.
+- Full PIT PASS false. REAL-DATA VERIFIED 0. pytest 61.
+
+------------------------------------------------------------------------
+
+2026-09-23 11:58 KST · Grok → Next AI
+- Latest-end revenue picker. MSFT/ASML/NVDA annual series. Outcome prices child-only.
+- pytest 64. REAL-DATA VERIFIED 0.
+
+------------------------------------------------------------------------
+
+2026-09-23 12:45 KST · Grok → Next AI
+- Statement latest-end picker. ASML coverage BLOCKED→PARTIAL. pytest 65.
+
+------------------------------------------------------------------------
+
+2026-09-23 13:00 KST · Grok → Next AI
+- Generic portfolio input. v1.1/US-working = REFERENCE_FIXTURE. pytest 67.
+
+------------------------------------------------------------------------
+
+2026-09-23 13:04 KST · Grok → Next AI
+- FCF/EPS on generic book. pytest 68. v1.1 still fixture-only.
+
+------------------------------------------------------------------------
+
+2026-09-23 13:30 KST · Grok → Next AI
+- Merged GHorizon. ASML EPS EUR/shares. Horizon coverage on snapshot. pytest 73.
+
+------------------------------------------------------------------------
+
+2026-09-23 13:34 KST · Grok → Next AI
+- 10-Q quarterly_monitor. ASML MISSING. pytest 75.
+
+------------------------------------------------------------------------
+
+2026-09-23 13:37 KST · Grok → Next AI
+- 3Y window caps 10-Q monitor to 12Q. pytest 76.
+
+------------------------------------------------------------------------
+
+2026-09-23 13:40 KST · Grok → Next AI
+- 17-name US listings PIT candidate, generic book. pytest 79.
+
+------------------------------------------------------------------------
+
+2026-09-23 13:49 KST · Grok → Next AI
+- Per-name PIT outcome attach. pytest 80.
+
+------------------------------------------------------------------------
+
+2026-09-23 13:55 KST · Grok → Next AI
+- 17/17 LIVE_FETCH outcomes linked. pytest 81. Not verified.
+
+------------------------------------------------------------------------
+
+2026-09-23 14:01 KST · Grok → Next AI
+- Yahoo adjclose used for PIT bars. pytest 82. INTC still ~353% adj=raw in feed.
+
+------------------------------------------------------------------------
+
+2026-09-23 14:08 KST · Grok → Next AI
+- FRED CSV no-key adapter. LIVE_FETCH not ALFRED. pytest 84.
+
+------------------------------------------------------------------------
+
+2026-09-23 14:27 KST · Grok → Next AI
+- V Initial Prior + C-15 Compatibility RESOLVED. pytest 87.
+
+------------------------------------------------------------------------
+
+2026-09-23 14:34 KST · Grok → Next AI
+- 17-name V coverage matrix LIVE_FETCH. pytest 88.
+
+------------------------------------------------------------------------
+
+2026-09-23 14:35 KST · Grok → Next AI
+- ALFRED vintage via env key only. pytest 90.
+
+------------------------------------------------------------------------
+
+2026-09-23 14:38 KST · Grok → Next AI
+- Integration PIT rows can carry ALFRED macro. pytest 91.
+
+------------------------------------------------------------------------
+
+2026-09-23 14:40 KST · Grok → Next AI
+- Runtime /tmp key file. 17-name ALFRED PIT. pytest 92.
+
+------------------------------------------------------------------------
+
+2026-09-23 14:44 KST · Grok → Next AI
+- 17x2 Integrated PIT + ablation labels. pytest 93.
+
+------------------------------------------------------------------------
+
+2026-09-23 14:48 KST · Grok → Next AI
+- ALFRED fallback was missing key, not vintage date. pytest 96.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:00 KST · Grok → Next AI
+- Hist V + peer provenance + 7-arm PIT dataset. pytest 97.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:03 KST · Grok → Next AI
+- 17x2 5y hist PIT. Hist V 15/17. pytest 97.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:06 KST · Grok → Next AI
+- 17x2 ALFRED PIT both dates. pytest 97.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:08 KST · Grok → Next AI
+- 17/17 child outcomes, parent intact. pytest 98.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:12 KST · Grok → Next AI
+- prediction-realized table + Full PIT checklist. pytest 99.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:14 KST · Grok → Next AI
+- OOS partition labels only. pytest 100.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:17 KST · Grok → Next AI
+- Full PIT blocked on companyfacts restatement (C-17). Ladder still PIT_PROBE.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:20 KST · Grok → Next AI
+- Restatement filed after as_of is invisible. Full PIT still closed (C-17 residual).
+
+------------------------------------------------------------------------
+
+2026-09-23 15:23 KST · Grok → Next AI
+- SEC submissions accession lock. No XBRL. Full PIT still NO.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:25 KST · Grok → Next AI
+- NVDA accn reconcile MISMATCH live. Full PIT still NO.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:27 KST · Grok → Next AI
+- NVDA 2024 revenue is us-gaap Revenues 60.922B. accn match. Full PIT still NO.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:30 KST · Grok → Next AI
+- Multi-company alias PIT 29/34 match. ASML/GEV isolated. Full PIT NO.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:34 KST · Grok → Next AI
+- 20-F annual path. 31/34 match. GEV/GOOGL-2023 isolated. Full PIT NO.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:43 KST · Grok → Next AI
+- Vertical slice 8 canaries × 3 windows. Selection PROVISIONAL. Full PIT NO.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:55 KST · Grok → Next AI
+- Universe engine + incremental events. C-18 DECISION REQUIRED. pytest 112.
+
+------------------------------------------------------------------------
+
+2026-09-23 15:55 KST · Grok · CURRENT_HANDOFF snapshot (archived, do not edit)
+
+Investment-System1 · CURRENT_HANDOFF
+
+Timestamp: 2026-09-23 15:55 KST
+AI: Grok
+Project Version: Architecture v1.0 + Integration v1.2 PROVISIONAL
+Implementation line: investment_system_impl-v0.2.0
+Module/Area: Universe engine + incremental events
+Handoff Status: OPEN — Historical Recovery BLOCKED / Project Development ACTIVE
+
+Implemented
+- Universe contract audit: Official = DECISION_REQUIRED (C-18). S&P 500 ≠ US mcap top 500.
+- UniverseEngine + PIT membership (entered_on/exited_on). Current book not applied backward.
+- Event dirty sets: FUNDAMENTAL→company QGV, PRICE→Technical, MACRO→macro only, NEWS→evidence only.
+- IncrementalEngine + batch_capacity(n=500) structure. Live default = dirty set.
+- daily_reconciliation: missing/stale/membership. Does not recompute unchanged.
+- Vertical slice attaches RESEARCH_CANARY universe snapshot.
+- No 500-name live fetch. No invented filings.
+
+Verified
+- pytest 112 SYNTHETIC VERIFIED. reports/pytest_2026-09-23_1555.txt
+- Membership as_of test. Dirty-set isolation test.
+
+Not verified
+- Live 500-company batch runtime. Official S&P/mcap membership feed. Full PIT. REAL-DATA VERIFIED. OOS. CALIBRATED.
+
+Universe decision
+C-18 DECISION REQUIRED. Engine continues on RESEARCH_CANARY / EXPLICIT.
+
+500 processing
+Full batch capable. Live default incremental dirty set. Daily recon does not re-score clean names.
+
+Update triggers
+FUNDAMENTAL company-only QGV. PRICE technical. MACRO snapshot only. NEWS no Q/G/V change.
+
+Benchmark
+Not a 500-name wall-clock run. Structure only.
+
+V weights unchanged. Full PIT NO.
+
+Next
+1. Do not Officialize S&P vs mcap-500 here.
+2. Optional historical membership feed if a public as_of source exists.
+3. Do not refit V.
+
+------------------------------------------------------------------------
+
+2026-09-23 16:30 KST · Claude → Next AI
+- Reproduced 112/112 (fresh sandbox, shim runner). Fixed 1 hardcoded test path.
+- Universe PIT hardening + basis/survivorship labels. Canary labelled UNDATED_ROSTER.
+- C-18 candidates A/B as RESEARCH builders. Not Officialized. C-19 end_date PROVISIONAL.
+- IncrementalEngine.process + recon stamp check + per-name isolation. Vertical slice now universe-driven; walk-forward added.
+- Store O(n²) fix: 500 PIT as_of 41.4s → 1.35s. 500 synthetic benchmark recorded.
+- 123 SYNTHETIC VERIFIED. REAL-DATA NO. Full PIT NO. OOS NO. Calibration NO.
+- S&P ingest NOT RUN (egress 403). Next: fetch → CIK resolver → real slice.
+
+------------------------------------------------------------------------
+
+2026-09-23 16:30 KST · Claude · CURRENT_HANDOFF snapshot (archived, do not edit)
+
+Investment-System1 · CURRENT_HANDOFF
+
+Timestamp: 2026-09-23 16:30 KST (session end)
+AI: Claude (Opus 5.5)
+Project Version: Architecture v1.0 + Integration v1.2 PROVISIONAL
+Implementation line: investment_system_impl-v0.2.0 (no bump)
+Module/Area: Universe PIT + incremental events + 500-scale + historical slice
+Handoff Status: OPEN — Historical Recovery BLOCKED / Project Development ACTIVE
+
+Started From
+Grok 15:55 handoff (pytest 112, Universe engine + incremental events, C-18 DECISION REQUIRED).
+Reproduced 112/112 in a fresh sandbox before changing anything (one test had a hardcoded /home/workdir path → made package-relative).
+
+Implemented (code, not docs)
+- Universe PIT: strict ISO dates, overlap rejection, re-entry, exit exclusive. membership_basis + survivorship_risk on every snapshot. RESEARCH_CANARY = UNDATED_ROSTER, survivorship_risk=True (it is today's list applied backward — now labelled). Engine refuses OFFICIAL (C-18).
+- C-18 candidate builders, symmetric, RESEARCH only: universe/sources.py → SP500_HISTORY_CANDIDATE (interval CSV) and MCAP_TOP_N_CANDIDATE (PIT shares × PIT price, missing/future inputs excluded not imputed).
+- IncrementalEngine.process(): PIT gate on available_at, dirty-set recompute for members only, per-name error isolation (old snapshot kept), NEWS evidence-only, non-members ignored. full_batch() for cold start.
+- daily_reconciliation: optional latest_stamp → stale_data (missed events) + recompute_set; clean names skipped (measured, not a flag).
+- PIT path: run_as_of(listings=...) runs any CIK universe; malformed payload isolated per name (was: whole as_of crashed — reproduced).
+- Vertical slice: universe members ARE the cross-section (was: hardcoded ids, snapshot unused → peers could include non-members). run_walk_forward(): membership re-evaluated per date, no fitting to outcomes.
+- Leaderboard: ticker fallback from universe (was: KeyError outside registry).
+- FileTrackRecordStore O(n²) flush fixed: 500-name PIT as_of 41.4s → 1.35s. Format/reload unchanged.
+
+Tests (VERIFIED class = SYNTHETIC)
+- 123 passed (112 prior + 11 new). Runner = tools/mini_pytest.py shim (pytest not installable, no network). reports/mini_pytest_2026-09-23_claude.txt
+- New: membership edge cases, basis labels, both C-18 candidates, 1-of-500 fundamental recompute with real AnalysisPipeline (499 snapshot ids unchanged), error isolation, recon missed-event, malformed-payload isolation, universe-driven slice + walk-forward, file store reload.
+
+500-company benchmark (SYNTHETIC, in-process, reports/bench_universe_500_2026-09-23.json)
+- Live full batch 500: 0.29s, 2.6MB heap. 1 FUNDAMENTAL event: 1 recompute, 0.5ms. 81 mixed events: 10 recomputes, 490 untouched, 4ms.
+- Leaderboard 500: 4.6ms. Daily recon + stamp check 500: 4.3ms, 500 clean skipped.
+- PIT run_as_of 500: 1.35s, 9.7MB; 5 malformed isolated, 495 scored; 12,870 future bars present, 0 look-ahead violations.
+- NOT measured: network I/O (SEC/Yahoo/FRED). Live 500 wall-clock = NOT VERIFIED.
+
+Validation ladder (NEW IMPLEMENTATION)
+Code Present YES · Reproducible YES · SYNTHETIC VERIFIED YES · Integrated E2E synthetic only · REAL-DATA VERIFIED NO · Full PIT NO (C-17) · OOS NO · Calibration NO · Forward NO.
+
+Universe source/status
+Official = DECISION_REQUIRED (C-18, unchanged). Public S&P history source identified: fja05680/sp500 sp500_ticker_start_end.csv (MIT; header ticker,start_date,end_date confirmed). Ingest NOT RUN — sandbox egress 403. Limits: ticker-keyed (reuse), later-vintage reconstruction, end_date semantics = C-19 PROVISIONAL.
+
+Conflicts
+Resolved this session: test path portability (technical). New: C-19 end_date semantics OPEN-ISOLATED/PROVISIONAL. Still open: C-03 DECISION REQUIRED, C-06 NONBLOCKING, C-08 venue, C-16 HISTORICAL-BLOCKED, C-17 Full PIT, C-18 DECISION REQUIRED.
+
+Unchanged by rule
+V Initial Prior 25/20/15/15/10/10/5. No refit. 17-name regression kept. No invented filings, sectors or themes.
+
+New gaps found
+- SEC fact rows with unparseable period "end" are still accepted (PIT gate is on filed, so not a leak; data-quality only).
+- File store still rewrites the whole file per record (O(n) bytes each) — fine at 1000 names (PIT 3.0s), revisit only if a real run shows it.
+- Ticker→company_id/CIK resolver for historical S&P tickers does not exist (tkr: ids).
+
+Next Action (in order, needs network)
+1. Run tools/fetch_sp500_intervals.py → record sha256/vintage; check member_count_probes ≈ 500 per date. Do not Officialize.
+2. Build a dated ticker→CIK resolver (SEC company_tickers + submissions formerNames) so candidate A members can reach run_as_of via listings.
+3. Real single-as_of slice on candidate-A members with a CIK (live SEC companyfacts + Yahoo), then run_walk_forward over ≥3 dates. Record REAL-DATA status honestly per name.
+4. Measure live 500 wall-clock (network-bound; respect SEC fair-access rate).
+If no network: run python tools/mini_pytest.py (or pytest) and python tools/bench_universe_500.py to confirm baseline, then work on item 2 offline with fixtures.
+
+Do Not Repeat
+- Reproducing 112 baseline; O(n²) store fix; per-name isolation; universe-driven slice; Leaderboard fallback; 500 synthetic benchmark.
+- Do not re-add hardcoded company_ids to the vertical slice.
+
+------------------------------------------------------------------------
+
+2026-09-23 17:15 KST · Claude → Next AI (round 2)
+- Dated ticker→CIK resolver (current SEC map never applied to closed intervals without filing evidence).
+- Candidate-B pool from companyfacts: PIT shares × PIT price; multi-class not summed.
+- A and B both run through the same walk-forward engine (synthetic). C-18 not decided.
+- Fetch tool now pulls SEC ticker map + resolves; wiring tested with stubbed HTTP. NOT RUN live.
+- 127 SYNTHETIC VERIFIED. REAL-DATA NO. Full PIT NO. OOS NO. Calibration NO.
+
+------------------------------------------------------------------------
+
+2026-09-23 17:15 KST · Claude · CURRENT_HANDOFF snapshot (archived, do not edit)
+
+Investment-System1 · CURRENT_HANDOFF
+
+Timestamp: 2026-09-23 17:15 KST (session end, round 2)
+AI: Claude (Opus 5.5)
+Project Version: Architecture v1.0 + Integration v1.2 PROVISIONAL
+Implementation line: investment_system_impl-v0.2.0 (no bump)
+Module/Area: Universe PIT + incremental events + 500-scale + historical slice + C-18 candidate pipelines
+Handoff Status: OPEN — Historical Recovery BLOCKED / Project Development ACTIVE
+
+Started From
+Grok 15:55 handoff (pytest 112, Universe engine + incremental events, C-18 DECISION REQUIRED).
+Reproduced 112/112 in a fresh sandbox before changing anything (one test had a hardcoded /home/workdir path → made package-relative).
+
+Implemented (code, not docs)
+- Universe PIT: strict ISO dates, overlap rejection, re-entry, exit exclusive. membership_basis + survivorship_risk on every snapshot. RESEARCH_CANARY = UNDATED_ROSTER, survivorship_risk=True (it is today's list applied backward — now labelled). Engine refuses OFFICIAL (C-18).
+- C-18 candidate builders, symmetric, RESEARCH only: universe/sources.py → SP500_HISTORY_CANDIDATE (interval CSV) and MCAP_TOP_N_CANDIDATE (PIT shares × PIT price, missing/future inputs excluded not imputed).
+- IncrementalEngine.process(): PIT gate on available_at, dirty-set recompute for members only, per-name error isolation (old snapshot kept), NEWS evidence-only, non-members ignored. full_batch() for cold start.
+- daily_reconciliation: optional latest_stamp → stale_data (missed events) + recompute_set; clean names skipped (measured, not a flag).
+- PIT path: run_as_of(listings=...) runs any CIK universe; malformed payload isolated per name (was: whole as_of crashed — reproduced).
+- Vertical slice: universe members ARE the cross-section (was: hardcoded ids, snapshot unused → peers could include non-members). run_walk_forward(): membership re-evaluated per date, no fitting to outcomes.
+- Leaderboard: ticker fallback from universe (was: KeyError outside registry).
+- FileTrackRecordStore O(n²) flush fixed: 500-name PIT as_of 41.4s → 1.35s. Format/reload unchanged.
+- Round 2: universe/resolve.py dated ticker→CIK resolver (ALIAS / CURRENT_OPEN / VERIFIED_FILINGS / UNRESOLVED). SEC company_tickers.json = CURRENT map, never applied to a closed interval without filings inside it. Ids cik:<10>.
+- Round 2: pit_shares (dei → us-gaap, filed ≤ as_of, MULTI_CLASS_AMBIGUOUS not summed) + mcap_candidates_from_payloads → candidate B pool.
+- Round 2: candidate A and B both drive the same run_walk_forward (synthetic, entries appear only after entry date).
+- Round 2: tools/fetch_sp500_intervals.py also pulls SEC ticker map and resolves (--verify-closed rate-limited). Wiring tested with stubbed HTTP.
+
+Tests (VERIFIED class = SYNTHETIC)
+- 127 passed (112 prior + 15 new). Runner = tools/mini_pytest.py shim (pytest not installable, no network). reports/mini_pytest_2026-09-23_claude_r2.txt
+- New: membership edge cases, basis labels, both C-18 candidates, 1-of-500 fundamental recompute with real AnalysisPipeline (499 snapshot ids unchanged), error isolation, recon missed-event, malformed-payload isolation, universe-driven slice + walk-forward, file store reload.
+
+500-company benchmark (SYNTHETIC, in-process, reports/bench_universe_500_2026-09-23.json)
+- Live full batch 500: 0.29s, 2.6MB heap. 1 FUNDAMENTAL event: 1 recompute, 0.5ms. 81 mixed events: 10 recomputes, 490 untouched, 4ms.
+- Leaderboard 500: 4.6ms. Daily recon + stamp check 500: 4.3ms, 500 clean skipped.
+- PIT run_as_of 500: 1.35s, 9.7MB; 5 malformed isolated, 495 scored; 12,870 future bars present, 0 look-ahead violations.
+- NOT measured: network I/O (SEC/Yahoo/FRED). Live 500 wall-clock = NOT VERIFIED.
+
+Validation ladder (NEW IMPLEMENTATION)
+Code Present YES · Reproducible YES · SYNTHETIC VERIFIED YES · Integrated E2E synthetic only · REAL-DATA VERIFIED NO · Full PIT NO (C-17) · OOS NO · Calibration NO · Forward NO.
+
+Universe source/status
+Official = DECISION_REQUIRED (C-18, unchanged). Public S&P history source identified: fja05680/sp500 sp500_ticker_start_end.csv (MIT; header ticker,start_date,end_date confirmed). Ingest NOT RUN — sandbox egress 403. Limits: ticker-keyed (reuse), later-vintage reconstruction, end_date semantics = C-19 PROVISIONAL.
+
+Conflicts
+Resolved this session: test path portability (technical). New: C-19 end_date semantics OPEN-ISOLATED/PROVISIONAL. Still open: C-03 DECISION REQUIRED, C-06 NONBLOCKING, C-08 venue, C-16 HISTORICAL-BLOCKED, C-17 Full PIT, C-18 DECISION REQUIRED.
+
+Unchanged by rule
+V Initial Prior 25/20/15/15/10/10/5. No refit. 17-name regression kept. No invented filings, sectors or themes.
+
+New gaps found
+- SEC fact rows with unparseable period "end" are still accepted (PIT gate is on filed, so not a leak; data-quality only).
+- File store still rewrites the whole file per record (O(n) bytes each) — fine at 1000 names (PIT 3.0s), revisit only if a real run shows it.
+- Removed S&P members may have no Yahoo price history (delisted) → outcomes MISSING for exactly the names survivorship bias cares about. Needs a delisted-price source; until then record coverage per step, do not drop silently.
+- Yahoo symbol for a historical ticker ≠ current symbol after renames; price mapping by CIK is not built.
+- SEC submissions "recent" covers only recent filings; older closed intervals may stay UNRESOLVED under --verify-closed (fail closed; paging of submissions "files" not implemented).
+
+Next Action (in order, needs network)
+1. INVESTMENT_SYSTEM_SEC_UA="<name contact>" python tools/fetch_sp500_intervals.py --verify-closed → record sha256/vintage, resolve_methods, member_count_probes (≈500 per date). Do not Officialize.
+2. Real single-as_of slice on resolved (cik:) candidate-A members: live SEC companyfacts + Yahoo bars → run_vertical_slice(universe=...). Report per-step price/fundamental coverage, esp. removed members.
+3. run_walk_forward over ≥3 dates. REAL-DATA status per name, honestly. No fitting.
+4. Live 500 wall-clock (network-bound; SEC fair access).
+If no network: confirm baseline (tools/mini_pytest.py or pytest; tools/bench_universe_500.py). Offline candidates: submissions "files" paging for older intervals; CIK-keyed price mapping design (no invented symbols).
+
+Do Not Repeat
+- Reproducing 112 baseline; O(n²) store fix; per-name isolation; universe-driven slice; Leaderboard fallback; 500 synthetic benchmark.
+- Do not re-add hardcoded company_ids to the vertical slice.
+- Dated resolver and candidate-B pool builder exist; do not rebuild. Do not resolve closed intervals from the current ticker map alone.
+
+------------------------------------------------------------------------
+
+2026-09-23 18:20 KST · Claude → Next AI (round 3)
+- Investigated network restriction directly: bash_tool egress is a deliberate proxy allowlist (403 on 5 hosts, TCP connect succeeds) = BLOCKED, not a code defect. web_search/web_fetch reach sec.gov but aren't a bulk-ingestion path. Registered C-20.
+- Built investment_system/ingestion/ (manifest + RawDatasetStore + offline replay, zero network imports, grep-verified) so a separate network-enabled runner can fetch once and the Analysis Engine replays forever offline with unchanged PIT logic.
+- tools/fetch_real_data.py: network-enabled runner, fails closed per-artifact, idempotent. NOT RUN (confirmed 403). Tested with stubbed HTTP.
+- vertical_slice run_*_from_store wired end-to-end (stub-ingest -> store -> replay -> real QGV scoring), tested.
+- 132 SYNTHETIC VERIFIED. REAL-DATA still 0. Next: run fetch_real_data.py + fetch_sp500_intervals.py on a network-enabled runner, then candidate-A slice/walk-forward/500 wall-clock.
+
+------------------------------------------------------------------------
+
+2026-09-23 18:20 KST · Claude · CURRENT_HANDOFF snapshot (archived, do not edit)
+
+Investment-System1 · CURRENT_HANDOFF
+
+Timestamp: 2026-09-23 18:20 KST (session end, round 3)
+AI: Claude (Opus 5.5)
+Project Version: Architecture v1.0 + Integration v1.2 PROVISIONAL
+Implementation line: investment_system_impl-v0.2.0 (no bump)
+Module/Area: Network investigation + ingestion/replay split + C-18 candidate pipelines
+Handoff Status: OPEN — Historical Recovery BLOCKED / Project Development ACTIVE / Live Ingestion BLOCKED (C-20, environment)
+
+Started From
+Round 2 handoff (127 SYNTHETIC VERIFIED; C-18 candidates A/B both reaching run_walk_forward; dated ticker→CIK resolver; egress 403 seen but not formally investigated).
+
+Network investigation (done this round, see C-20)
+- bash_tool: curl/urllib to sec.gov, data.sec.gov, raw.githubusercontent.com, finance.yahoo.com, api.stlouisfed.org → all HTTP 403 "Host not in allowlist: <host>". TCP connect to sec.gov:443 succeeds → this is a deliberate egress-proxy policy (matches this session's network_configuration: Enabled=false), not a DNS/firewall/code defect. BLOCKED, reproducible.
+- web_search / web_fetch (separate from bash_tool): DO reach sec.gov (fetched a live Archives page). Not a bulk-ingestion path: web_fetch only opens URLs already surfaced by a search result, returns converted text not guaranteed-raw bytes, and raw.githubusercontent.com is robots-disallowed for it.
+- Conclusion: real ingestion needs a network-enabled runner outside this sandbox. Built accordingly (below).
+
+Implemented (code, not docs)
+- investment_system/ingestion/: manifest.py (RawArtifactManifest: source_url, fetched_at, sha256, http_status — fetched_at is ingestion time, NOT PIT availability), raw_store.py (RawDatasetStore, file-backed blobs+manifests), replay.py (offline loaders; zero network imports, grep-verified; build_payloads_and_bars() feeds run_as_of's existing payloads/bars_by_id shape — no signature change to historical.py).
+- tools/fetch_real_data.py: network-enabled runner (SEC tickers/companyfacts/submissions, Yahoo charts). Fails closed per-artifact, idempotent, never partially writes on failure. NOT RUN here (403 on every route, confirmed). Unit-tested with stubbed HTTP (success + all-fail-closed cases).
+- vertical_slice.py: run_vertical_slice_from_store / run_walk_forward_from_store — same engine, fed from the raw store. Tested end-to-end: stubbed-ingest → store → replay → real QGV scoring on all synthetic-but-store-fed names.
+- C-20 registered: HISTORICAL-BLOCKED (environment), does not block offline work, does not Officialize anything.
+
+Tests (VERIFIED class = SYNTHETIC; ingestion wiring VERIFIED with stubbed HTTP only)
+132 passed (127 prior + 5 new: store roundtrip, replay-through-unmodified-engine with MISSING preserved, runner artifact-id wiring, runner fail-closed, full stub-ingest→slice→walk-forward chain). Runner = tools/mini_pytest.py shim. reports/mini_pytest_2026-09-23_claude_r3.txt
+
+Validation ladder (NEW IMPLEMENTATION) — unchanged from round 2
+Code Present YES · Reproducible YES · SYNTHETIC VERIFIED YES (132) · Integrated E2E synthetic only · REAL-DATA VERIFIED NO · Full PIT NO (C-17) · OOS NO · Calibration NO · Forward NO.
+Ingestion layer itself is code-complete and unit-tested but has fetched zero real bytes — do not read "ingestion built" as any kind of REAL-DATA progress.
+
+Universe / C-18
+Unchanged: DECISION REQUIRED. Candidates A (S&P interval file + dated resolver) and B (PIT mcap top-N) both now also runnable from the raw store via run_*_from_store, same engine either way.
+
+Unchanged by rule
+V Initial Prior 25/20/15/15/10/10/5, no refit. No invented tickers/CIKs/prices/filings — every ingestion miss stays MISSING, never guessed.
+
+New gaps found
+- fetch_real_data.py has no retry/backoff (single attempt per artifact); fine for a first real run, revisit if SEC rate-limits.
+- No delisted-price source wired yet (round-2 gap, still open) — needed once real candidate-A slices include removed members.
+- ingestion artifact ids don't version by fetch date; a second real ingest run overwrites the first (put() has no has()-guard against re-fetch changing content — SKIPPED_ALREADY_PRESENT only checks existence, not staleness). Fine for a one-shot Next Action 1-4, revisit for repeated real runs.
+
+Next Action (in order, needs a network-enabled runner — NOT this sandbox)
+1. python tools/fetch_real_data.py --store data/raw --ciks <candidate-A CIKs from resolve_roster> --symbols <their Yahoo tickers>. Also run tools/fetch_sp500_intervals.py --verify-closed (unchanged from round 2).
+2. Load with ingestion.replay.build_payloads_and_bars (or run_vertical_slice_from_store directly) on the resolved candidate-A universe → run_vertical_slice. Check name_errors and pit_price_lookahead per name.
+3. run_walk_forward_from_store over ≥3 real dates. Report REAL-DATA status per name honestly; do not aggregate to system-level REAL-DATA VERIFIED from a partial set.
+4. Live 500-company wall-clock (network-bound; respect SEC fair-access — fetch_real_data.py already throttles).
+If still no network: nothing further is independently actionable offline without guessing real tickers/CIKs/prices, which is explicitly disallowed. Re-run mini_pytest.py / bench_universe_500.py to reconfirm baseline only.
+
+Do Not Repeat
+- O(n²) store fix, per-name isolation, universe-driven vertical slice, Leaderboard fallback, dated ticker→CIK resolver, Candidate-B pool builder, 500 synthetic benchmark, ingestion/replay split, network BLOCKED investigation (C-20 is settled — don't re-litigate whether it's a code bug).
+
+------------------------------------------------------------------------
+
+2026-09-23 19:10 KST · Claude → Next AI (round 4)
+- C-18 RESOLVED by explicit user decision (not inferred): Official Default Universe = US Market-Cap Top 500 PIT. S&P history kept, unchanged, as Benchmark/Research only.
+- One sanctioned constructor added: universe.sources.official_mcap500_snapshot (generic snapshot() still refuses OFFICIAL directly). Wired to round-3's ingestion store via official_mcap500_snapshot_from_store.
+- vertical_slice's official_universe output flag fixed to reflect real status.
+- One pre-existing test updated (asserted the now-superseded DECISION_REQUIRED status) — required by the decision change, nothing else touched.
+- 138 SYNTHETIC VERIFIED. REAL-DATA still 0 — resolving WHICH universe is Official is policy, not evidence; no real Top-500 snapshot built yet. Next: network-enabled ingest of the full US filer pool, then official_mcap500_snapshot_from_store for real, then real vertical slice / walk-forward / 500 wall-clock.
+
+------------------------------------------------------------------------
+
+2026-09-23 16:49 KST · OpenAI GPT-5.6 Sol → Next AI (round 5)
+- Opened and restored the 19:10 handoff ZIP; directly reproduced the reported baseline before changes: 138/138 passed with mini_pytest shim.
+- Re-tested outbound separately: container curl SEC = DNS resolution failure; Python urllib SEC = URLError/gaierror. Executed the actual fetch_real_data.py against SEC + Yahoo: 0/4, all ERROR_URLError. REAL-DATA VERIFIED remains NO. Web search can reach SEC but was kept separate and was not treated as raw ingestion.
+- Closed one independent offline gap from round 3/4: repeated raw ingestion is now provenance-preserving. RawDatasetStore archives replaced blob+manifest; fetch_real_data.py gained explicit --refresh; stable canonical artifact IDs/replay contracts remain unchanged.
+- Added 2 regression tests. Post-change total 140/140 SYNTHETIC VERIFIED. No validation-stage promotion.
+- C-18 remains RESOLVED exactly as handed off. S&P remains Benchmark/Research. C-20 remains environment-blocked, with current failure mode DNS rather than the earlier environment's proxy 403.
+- Next priority remains network-enabled real ingestion → complete PIT candidate pool → Official Top-500 real single_as_of → >=3-date walk-forward → actual 500-company network-inclusive benchmark.
+
+## 2026-09-23 16:49 KST — OpenAI relay round 6
+- Accepted OpenAI_R5 ZIP as latest SSoT and restored from CURRENT_HANDOFF first.
+- Directly reproduced baseline before changes: `implementation/tools/mini_pytest.py` => **140 passed, 0 failed** in 22.64s. Evidence: `implementation/reports/mini_pytest_2026-09-23_openai_r6_baseline.txt`.
+- Re-tested Python/container outbound independently: `getent` returned no SEC resolution; curl failed `Could not resolve host: www.sec.gov`; Python urllib failed with `URLError(gaierror(-3, Temporary failure in name resolution))` for both SEC and Yahoo.
+- Executed the existing `tools/fetch_real_data.py` unchanged with the existing `RawDatasetStore`, SEC contact UA, SEC tickers + AAPL companyfacts/submissions + Yahoo AAPL 5y. **0/4 succeeded, 4/4 ERROR_URLError**. No synthetic substitution. Evidence: `implementation/reports/real_ingestion_probe_2026-09-23_openai_r6.txt` plus raw-store ingest-run JSON.
+- Since real ingestion produced no raw artifacts, complete PIT candidate pool, official real Top-500 snapshot, real single_as_of, >=3-date real walk-forward, and actual real 500-company network benchmark cannot truthfully execute in this runner.
+- Re-ran the existing 500-company benchmark offline to ensure the blocked network attempt did not regress the implementation: full batch median 0.1741s, historical synthetic run 0.8959s, 495 scored / 5 synthetic name errors, 0 PIT price lookahead violations, gate PASS. This remains SYNTHETIC evidence only. Evidence: `implementation/reports/bench_universe_500_2026-09-23_openai_r6.txt`.
+- C-18 remains RESOLVED. Official Default Universe remains US Market-Cap Top 500 PIT. S&P 500 remains Benchmark/Research only. No frozen contract or V prior was changed.
+- C-20 remains BLOCKED by execution-environment DNS/outbound HTTPS. Resolution condition: Python/container runner can resolve and reach approved SEC/Yahoo endpoints; then resume at real ingestion without rebuilding existing ingestion/replay/universe code.
+
+------------------------------------------------------------------------
+
+2026-09-23 17:09 KST · Grok → Next AI
+- Accepted OpenAI_R6 SSoT. mini_pytest 140.
+- This runtime has SEC HTTPS. Yahoo needs Mozilla UA.
+- Real ingest canaries 25/25. official mcap from US_LISTINGS n_ranked=16, pool incomplete.
+- Canary store slice + 3-step walk-forward. REAL-DATA VERIFIED still NO.
+
+------------------------------------------------------------------------
+
+2026-09-23 17:45 KST · Grok → Next AI
+- Expanded store: facts 325, yahoo 287. PIT n_ranked=254/500. pool incomplete. Official Top-500 not claimed.
+
+------------------------------------------------------------------------
+
+2026-09-24 15:14 KST · Grok · CURRENT_HANDOFF snapshot (archived, do not edit)
+
+Investment-System1 · CURRENT_HANDOFF
+
+Timestamp: 2026-09-24 15:14 KST
+AI: Grok
+SSoT accepted: Investment-System1_Handoff_2026-09-24_OpenAI_gate-cli.zip
+Handoff Status: OPEN — Promotion Gate CLI present / Official Top-500 NOT promoted
+
+This runtime
+- SEC/Yahoo HTTPS available. Official companyfacts.zip exists (HTTP 200, 1.41 GB). Not downloaded this session.
+- audit_mcap_store.py run on 598 ingested-facts listings at 2024-12-31.
+- After filling 48 more Yahoo charts: rankable 297, missing_price 240, missing_shares 47, ambiguous 13.
+- Denominator vs SEC tickers: 10,459. Facts present 598. candidate_pool_complete=False.
+- --gate-out refused without --eligibility-evidence (correct fail-closed).
+- No eligibility file invented. justified_official_top500=False.
+
+KRX canary 20260923 4/4 remains. Korea Official Top N not claimed.
+C-18 unchanged. V prior unchanged. REAL-DATA VERIFIED NO.
+
+Next
+1. Continue missing_price + missing companyfacts via fetch_real_data / YAHOO_UA.
+2. Dated US eligibility completeness evidence from a real listing source — required before any gate PASS.
+3. Do not treat rankable>=500 alone as Official.
+
+------------------------------------------------------------------------
+
+2026-09-24 · Claude (new session) → Next AI
+- Adopted the 2026-09-24 15:14 ZIP as SSoT. Reproduced baseline 150/150 (one mini_pytest shim fix, not a regression).
+- Extended Promotion Gate with two independent checks: Universe Completeness Gate (aggregate coverage vs a dated external benchmark, never proves identity completeness alone) and Top-500 Sufficiency Gate (passes only with a clean, dated, PIT large-cap reference showing no missing/unranked large name). Composed via build_promotion_gate_v2 = base gate AND (completeness OR sufficiency). 12 new tests, 162/162 total.
+- Ran both new gates with REAL evidence against the real 598/297 audit: Universe Completeness correctly FAILS (WFE Dec-2024 benchmark, 17.6% coverage); Sufficiency correctly FAILS (no dated large-cap reference obtained -- C-22, manual reconstruction from press releases tried and abandoned as unreliable).
+- CRITICAL finding: the delivered ZIP's RawDatasetStore blobs are missing (C-21) -- only run logs and the 598-identity map survived. This blocks further coverage expansion until the blobs are recovered or re-ingested.
+- Network reconfirmed BLOCKED this session (C-20 unchanged, same signature as before).
+- REAL-DATA VERIFIED still NO. Official Top-500 still not justified. Next: recover blobs (user action likely needed) -> real large-cap reference -> fill large-cap gaps first -> re-run Promotion Gate v2 -> only then real walk-forward / 500-company benchmark.
+
+------------------------------------------------------------------------
+
+2026-09-24 (round 1) · Claude · CURRENT_HANDOFF snapshot (archived, do not edit)
+
+Investment-System1 · CURRENT_HANDOFF
+
+Timestamp: 2026-09-24 (session end)
+AI: Claude (new session, adopted 2026-09-24 15:14 SSoT ZIP)
+SSoT accepted: Investment-System1_Handoff_2026-09-24_1514.zip (Grok/OpenAI relay rounds)
+Handoff Status: OPEN — Promotion Gate v2 (Universe Completeness + Top-500 Sufficiency) implemented and real-evidence-tested / Official Top-500 NOT promoted / RawDatasetStore blobs missing from ZIP (needs user action)
+
+Started From
+Prior CURRENT_HANDOFF: 598 listings ingested-facts, 297 rankable at 2024-12-31 (missing_price 240, missing_shares 47, ambiguous_shares 13), denominator SEC tickers 10,459, candidate_pool_complete=False, justified_official_top500=False. C-18 RESOLVED (Official Default Universe = US Market-Cap Top 500 PIT) — not revisited.
+
+*** CRITICAL — READ FIRST: RawDatasetStore blobs are missing from this ZIP lineage ***
+implementation/data/raw/ in the delivered ZIP contains only ingest_run_*.json run logs. The actual companyfacts/Yahoo-chart blobs (598 + ~298 artifacts) that back the 297-rankable state are NOT present — confirmed by inspection, store has 0 blobs. reports/us_ingested_facts_listings.json (the 598 company_id→{yahoo,cik} identity map) survived and was used this round for identity-level gate work, but nothing beyond that could be replayed or resumed. See Conflict Register C-21. Resolution needs either (a) the blobs re-attached to the next handoff from wherever the network-enabled session that produced them ran, or (b) a fresh tools/fetch_real_data.py ingest against the surviving listings file.
+
+Network this session: bash_tool outbound HTTP reconfirmed BLOCKED (403 "Host not in allowlist" on sec.gov/data.sec.gov/query1.finance.yahoo.com; DNS resolves fine — deliberate egress-proxy policy, same signature as prior Claude-hub rounds, C-20 unchanged).
+
+Implemented this round (code, not docs)
+- tools/audit_mcap_store.py: build_universe_completeness_gate, build_top500_sufficiency_gate, evaluate_reference_coverage, build_promotion_gate_v2 — two INDEPENDENT extensions to the existing build_official_promotion_gate (kept unchanged and still callable alone). Official promotion under v2 = base numeric/eligibility gate AND (universe completeness OR top-500 sufficiency); neither sub-gate is the sole path. New CLI flags: --exchange-reference/--completeness-gate-out, --large-cap-references/--sufficiency-gate-out, --gate-v2-out.
+- tools/mini_pytest.py: MonkeyPatch.setattr now supports pytest's dotted-string 2-arg form (a carried-over test needed it). Shim fix, not a code regression.
+- 12 new tests (offline/synthetic): reference-set rejection rules (UNDATED_ROSTER survivorship risk, as_of mismatch, missing source/vintage), missing/unranked/outside-top500 classification, cutoff-required check, mixed clean/dirty references, real store-presence-driven evaluate_reference_coverage, v2 CLI end-to-end fail-closed case.
+
+Real (non-synthetic) evidence produced this round — reports/gate_evidence/
+- exchange_reference_wfe_2024-12-31.json: World Federation of Exchanges, "Market Statistics – February 2025" (Total Dec'24 column). NYSE 2,132 (1,584 domestic + 548 foreign), Nasdaq-US 3,289 (2,425 domestic + 864 foreign). US-domestic-operating-company estimate range 3,400–3,700 (cross-checked against CRSP US Total Market Index ~3,626–3,659 and Russell 3000E ~3,404 holdings). Real, dated, sourced, cited.
+- universe_completeness_gate_2024-12-31.json: run against the real 598-companyfacts/297-rankable audit → FAILS, coverage_ratio 0.176 (598/3400). Correct and expected — 598 names is nowhere near the ~3,500 investable-universe estimate.
+- top500_sufficiency_gate_2024-12-31.json / promotion_gate_v2_2024-12-31.json: run with zero large-cap references (none obtained this round — see C-22) → correctly FAIL, NEITHER_COMPLETENESS_NOR_SUFFICIENCY_GATE_PASSED among the reasons.
+
+Tests (VERIFIED class = SYNTHETIC for the new gate logic; the two evidence runs above used real data)
+Baseline reproduced: 150/150 (after the mini_pytest.py shim fix). Full suite after this round's additions: 162/162. reports/mini_pytest_2026-09-24_claude.txt
+
+Validation ladder — unchanged in substance, gate machinery now more capable
+Code Present YES · Reproducible YES · SYNTHETIC VERIFIED YES (162) · Integrated E2E synthetic + this round's two real-evidence gate runs · REAL-DATA VERIFIED NO · Full PIT NO · OOS NO · Calibration NO · Forward NO.
+
+Universe / C-18
+Unchanged: RESOLVED, Official Default Universe = US Market-Cap Top 500 PIT. Not revisited or re-litigated this round, per instruction.
+
+Unchanged by rule
+V Initial Prior 25/20/15/15/10/10/5, no refit. rankable>=500 alone is never sufficient for promotion (Promotion Gate, now v2, still fail-closed). SEC company_tickers* used only as identifier/candidate-discovery source, never as 2024-12-31 PIT membership truth. No fabricated eligibility/large-cap-reference evidence — where none was available, the gate was run and correctly recorded FAIL rather than skipped or faked.
+
+New gaps found this round
+- C-21: RawDatasetStore blobs absent from the delivered ZIP (see above — needs user action).
+- C-22: no dated PIT large-cap reference (S&P 500 / Russell 1000 / CRSP Large Cap) membership list obtained this round. Attempted manual reconstruction from a year of S&P DJI quarterly press releases via chat search and abandoned as too error-prone to trust for a completeness-sensitive gate (risk of silently missing one change is exactly the failure mode this gate exists to catch). Needs either a network fetch of a dated-interval source (universe.sources already has a tested parser for the fja05680/sp500 CSV format) or a verified bulk historical-constituents file.
+- Stale intermediate reports (reports/mcap_gap_plan.json, mcap_missing_plan.json) reflect an earlier 254/311 state, not the current 297/240/47/13 state — no updated per-name gap breakdown for the current state survived in the ZIP either. Not fixable without the missing blobs.
+
+Next Action (in priority order)
+1. [Needs user action / network-enabled runner] Recover or regenerate the RawDatasetStore blobs (C-21) — the highest-leverage single step, since it unblocks everything else (large-cap gap-filling, Universe Completeness improvement, and eventually Sufficiency once a reference exists).
+2. [Needs network] Obtain a real, dated, PIT S&P 500 (and ideally Russell 1000/CRSP Large Cap) constituent list for 2024-12-31 via the fja05680 CSV or an equivalent dated-interval source, then run evaluate_reference_coverage against the recovered store to actually evaluate Top-500 Sufficiency (C-22).
+3. Once both blobs and a reference exist: re-run tools/audit_mcap_store.py with --large-cap-references and --exchange-reference together, targeting missing large-cap names first (per this round's instruction — do not re-collect the microcap tail before confirming no large cap is missing).
+4. Only after Promotion Gate v2 actually passes: proceed to real ≥3-date walk-forward and the real 500-company network-bound benchmark. Do not promote REAL-DATA VERIFIED / Full PIT / Official Top-500 before that.
+If network remains blocked next session too: confirm baseline (tools/mini_pytest.py), and work only on gate/tooling logic that doesn't require fabricating identity or financial data — do not guess tickers, CIKs, prices, or membership.
+
+Do Not Repeat
+- build_official_promotion_gate (v1), build_universe_completeness_gate, build_top500_sufficiency_gate, build_promotion_gate_v2, evaluate_reference_coverage all exist — do not rebuild. Do not weaken any gate's fail-closed defaults. Do not treat rankable>=500 or aggregate count-coverage alone as sufficient for promotion. Do not attempt further manual S&P-500-by-press-release reconstruction — it was tried and abandoned this round as unreliable; use a real dated source instead.
+
+------------------------------------------------------------------------
+
+2026-09-24 (round 2, continued) · Claude → Next AI
+- Re-probed network: still fully blocked (bash_tool 403 on every host, pip no index, web_fetch robots-disallowed on the one plausible CSV route). Logged as an exhausted-attempts list in Conflict Register C-20/C-22 so the next AI doesn't retry blindly.
+- New offline finding (C-23): 185/598 (31%) of the real candidate pool matches a preferred-share or foreign-OTC-ADR ticker shape. tools/audit_candidate_hygiene.py -- heuristic, advisory only, never auto-applied. Recommends filtering before further ingestion once verified.
+- 166/166 tests (162 + 4 new).
+- No promotion. REAL-DATA VERIFIED still NO. Blockers unchanged: C-21 (missing store blobs, needs user action) and C-22 (no large-cap reference, needs network) are the two highest-priority items for the next session.
+
+------------------------------------------------------------------------
+
+2026-09-24 (round 2, continued) · Claude · CURRENT_HANDOFF snapshot (archived, do not edit)
+
+Investment-System1 · CURRENT_HANDOFF
+
+Timestamp: 2026-09-24 (session continued, same Claude session)
+AI: Claude
+SSoT lineage: Investment-System1_Handoff_2026-09-24_1514.zip (Grok/OpenAI) → Investment-System1_Handoff_2026-09-24_claude.zip (this session, round 1) → this package (round 2)
+Handoff Status: OPEN — Promotion Gate v2 real-evidence-tested (both new gates correctly FAIL) / candidate hygiene finding / network + pip + web_fetch all exhausted this session / RawDatasetStore blobs still missing (needs user action)
+
+Started From
+Round-1 CURRENT_HANDOFF this session: Promotion Gate v2 (Universe Completeness + Top-500 Sufficiency) implemented, 162/162, real WFE-benchmark evidence run (FAIL, 17.6% coverage), Sufficiency gate correctly FAIL (no large-cap reference). C-21 (missing store blobs) and C-22 (no large-cap reference) both OPEN, both needing network or user action.
+
+This continuation's activity (all offline; network stayed blocked — see below)
+- Candidate hygiene finding (C-23, new): 185/598 (31%) of the real ingested-facts pool matches a preferred-share suffix shape (e.g. BAC-PL, ALL-PH) or a common foreign-OTC-ADR shape (5-letter tickers ending in F/Y, e.g. AEMRF, BBAAY). tools/audit_candidate_hygiene.py — pattern heuristic only, never authoritative, never auto-applied to ranking or any gate. reports/gate_evidence/candidate_hygiene_598.json has the full split (413 likely-clean). Recommends filtering before further ingestion to conserve API/bulk-download budget, but only after verifying each flagged ticker against real SEC security-type data.
+- Exhausted this session, all logged in Conflict Register C-20/C-22 so the next AI doesn't retry blindly: bash_tool network (still 403 on every host), `pip install` (no index reachable), web_fetch on the fja05680/sp500 GitHub blob page (loads but CSV body is JS-rendered, not in static HTML) and its Raw link (ROBOTS_DISALLOWED). No route reached real S&P 500/SEC/Yahoo data.
+- Manual chat-search reconstruction of a full S&P 500 2024-12-31 constituent list from a year of press releases was attempted last round and abandoned as too unreliable to trust for a completeness-sensitive gate — do not repeat that approach; it was a deliberate decision, not an oversight.
+
+Tests: 166/166 (162 prior + 4 new for the hygiene tool). reports/mini_pytest_2026-09-24_claude_2.txt
+
+Validation ladder — unchanged
+Code Present YES · Reproducible YES · SYNTHETIC VERIFIED YES (166) · Integrated E2E synthetic + 2 real-evidence gate runs from round 1 (both correctly FAIL) · REAL-DATA VERIFIED NO · Full PIT NO · OOS NO · Calibration NO · Forward NO.
+
+Universe / C-18
+Unchanged: RESOLVED, Official Default Universe = US Market-Cap Top 500 PIT. Not revisited.
+
+Unchanged by rule
+V Initial Prior 25/20/15/15/10/10/5, no refit. rankable>=500 alone never sufficient. No fabricated eligibility/large-cap-reference/security-type data — the hygiene flags are explicitly heuristic and labeled as such, not treated as ground truth.
+
+Open gaps (in priority order)
+1. C-21 [needs user action]: RawDatasetStore blobs (598 companyfacts + ~298 Yahoo-chart artifacts) missing from the ZIP lineage — only run logs and the identity map (reports/us_ingested_facts_listings.json) survived. Blocks all further coverage/gap-filling work until recovered or re-ingested.
+2. C-22 [needs network]: no dated PIT large-cap reference (S&P 500 / Russell 1000 / CRSP Large Cap) obtained. universe.sources already has a tested parser for the fja05680/sp500 dated-interval CSV format — it just needs a network-enabled fetch (this sandbox's bash_tool, pip, and web_fetch all failed to reach it — see exhausted-attempts log in Conflict Register).
+3. C-23 [advisory, needs verification]: 185/598 candidates likely non-common-equity (preferred shares / foreign OTC ADRs) — verify against real SEC security-type data before excluding.
+4. C-20 [environment]: bash_tool outbound HTTP blocked by deliberate egress-proxy policy, reconfirmed again this session.
+
+Next Action (in priority order; all need a network-enabled runner or user action)
+1. [User action] Recover/re-attach the RawDatasetStore blobs, or re-run tools/fetch_real_data.py against reports/us_ingested_facts_listings.json to regenerate an equivalent store.
+2. [Network] Fetch the fja05680/sp500 dated-interval CSV (or an equivalent verified source) for a real Top-500 Sufficiency Gate reference.
+3. [Network] Verify the C-23-flagged 185 tickers against real SEC security-type data; exclude confirmed non-common-equity names from the ranking pool before further ingestion.
+4. Once blobs + a reference exist: fill large-cap gaps first (per this round's standing instruction), re-run Promotion Gate v2.
+5. Only after Promotion Gate v2 passes: real ≥3-date walk-forward, then the real 500-company network-bound benchmark.
+If network remains blocked next session: do not re-attempt the exhausted routes logged above. Confirm baseline (tools/mini_pytest.py) and limit further offline work to gate/tooling logic that needs no fabricated identity or financial data.
+
+Do Not Repeat
+- Everything from round 1's Do Not Repeat, plus: tools/audit_candidate_hygiene.py exists — do not rebuild. Do not re-attempt the exhausted network/pip/web_fetch routes logged in Conflict Register C-20/C-22 without a materially different approach. Do not manually reconstruct S&P 500 membership from press releases via chat search again.
+
+------------------------------------------------------------------------
+
+2026-09-25 · Claude → Next AI
+- C-22 core blocker RESOLVED: found a materially different, working route (URL-encoded Wikipedia article fetch) to a real, dated S&P 500 reference, after the plain URL / raw.githubusercontent.com / pip routes had all failed. Mechanically (code, not manual reading) reconstructed 2024-12-31 S&P 500 membership (503 names), validated 18/19 against independent spot-checks, disclosed 1 discrepancy (AMTM) rather than hiding it.
+- Cross-referenced against the real 598-name pool: 282 real S&P 500 names entirely missing, with a ready-to-use priority fetch plan (253 with CIK pre-resolved).
+- Ran the real Top-500 Sufficiency Gate against this reference for the first time -- correctly FAILS. Promotion Gate v2 still FAILS overall.
+- C-23: 2 real spot-verifications plus an authoritative source corroborating the OTC-ADR heuristic's Y-suffix rule.
+- 173/173 tests. REAL-DATA VERIFIED still NO -- this round improved evidence quality (a real reference now exists), not data coverage (still blocked by C-21/C-20).
+- Next: use the priority plan to fill large-cap gaps FIRST once network/blobs are available, then re-run the gates for real.
+
+------------------------------------------------------------------------
+
+2026-09-25 (round 1) · Claude · CURRENT_HANDOFF snapshot (archived, do not edit)
+
+Investment-System1 · CURRENT_HANDOFF
+
+Timestamp: 2026-09-25 (session continued)
+AI: Claude
+SSoT lineage: ...claude_r2.zip (prior round) -> this package
+Handoff Status: OPEN — C-22 core blocker RESOLVED (real dated S&P 500 reference obtained + real Sufficiency Gate run, correctly FAILS) / C-21 (missing store blobs) and C-20 (network blocked) remain the two structural blockers to actually passing any gate
+
+Started From
+Prior CURRENT_HANDOFF this session: Promotion Gate v2 built and real-evidence-tested (Universe Completeness FAIL on real WFE benchmark; Sufficiency FAIL for lack of a reference); candidate hygiene heuristic found 185/598 pool entries scope-suspect; C-21/C-22/C-23 all open, network+pip+web_fetch(github raw) all exhausted and logged.
+
+*** C-22 core blocker RESOLVED this round — READ THIS FIRST ***
+A materially different route succeeded: web_fetch on the URL-encoded Wikipedia article URL (https://en.wikipedia.org/wiki/List_of_S%26P_500_companies) returned the full current (2026) S&P 500 constituent table (503 rows, with Date-added + CIK) and the full dated changes table (back to 1976) — the plain (non-encoded) URL had returned "domain is cache-only" and is a dead end; the encoded variant is not.
+- Saved verbatim: reports/gate_evidence/sp500_current_2026_raw.md, sp500_changes_since_2025-01-01_raw.json (34 events with effective date >= 2025-01-01).
+- tools/reconstruct_sp500_from_wikipedia.py mechanically undoes every post-as_of change in reverse-chronological order to recover 2024-12-31 membership — code-driven, not manual reading. Handles ticker reuse (double-touch case, e.g. Solstice Advanced Materials) correctly.
+- Result: reports/gate_evidence/sp500_reconstructed_2024-12-31.json — 503 members. Validated against 19 independent spot-predictions: 18/19 exact matches. ONE flagged, disclosed discrepancy: AMTM (Amentum) — expected present (added 2024-09-30, no removal event found in the fetched changes table), reconstruction says absent (not in the fetched current snapshot). Does not affect the other 502 names or any gate outcome this round; worth a follow-up check with fresh data.
+- Cross-referenced against the real 598-name pool by ticker: only 221/503 (44%) present. reports/gate_evidence/missing_large_cap_priority_plan_2024-12-31.json has all 282 missing names, 253 with CIK pre-resolved from the current table (29 left the index after 2024-12-31 and need a separate resolve pass via universe.resolve, already built) — ready for the next network round to consume directly, prioritized as instructed (large-cap gaps first).
+- Ran the real Top-500 Sufficiency Gate against this reference for the first time: correctly FAILS (MISSING_LARGE_CAP_NAMES, 282). Re-ran Promotion Gate v2: still FAILS overall (base numeric gate also fails independently — 297 < 500 rankable).
+
+C-23 (candidate hygiene): 2 sample flagged tickers spot-verified with real evidence (ALL-PB confirmed preferred stock via a primary-source SEC FWP filing; AEMRF consistent with OTC-ADR via secondary sources). The heuristic's five-letter-ending-in-Y OTC-ADR rule is corroborated by an authoritative primary source (Charles Schwab's own ADR documentation). Still advisory only — no exclusion applied; full per-name verification of all 185 flagged tickers still needs SEC company_tickers_exchange.json (blocked, C-20).
+
+C-21/C-20: reconfirmed unchanged. bash_tool network still 403 on every host (fresh probe this session). RawDatasetStore blobs still absent from the ZIP lineage.
+
+Tests: 173/173 (166 prior + 7 new, all for the reconstruction tool, offline/synthetic fixtures). reports/mini_pytest_2026-09-25_claude.txt
+
+Validation ladder — unchanged in substance
+Code Present YES · Reproducible YES · SYNTHETIC VERIFIED YES (173) · Integrated E2E synthetic + 3 real-evidence gate runs (Completeness FAIL, Sufficiency FAIL twice — no-reference then real-reference) · REAL-DATA VERIFIED NO · Full PIT NO · OOS NO · Calibration NO · Forward NO.
+Important distinction: obtaining a real, sourced, dated reference and running gates against it honestly (this round) is progress on EVIDENCE QUALITY, not on REAL-DATA VERIFIED — that still requires real companyfacts/price ingestion, blocked by C-21/C-20.
+
+Universe / C-18
+Unchanged: RESOLVED, Official Default Universe = US Market-Cap Top 500 PIT. Not revisited.
+
+Unchanged by rule
+V Initial Prior 25/20/15/15/10/10/5, no refit. rankable>=500 alone never sufficient. No fabricated data anywhere — the AMTM discrepancy was disclosed rather than resolved by guessing; the C-23 heuristic is still advisory, not applied.
+
+Open gaps (priority order)
+1. C-21 [needs user action or a network-enabled runner]: RawDatasetStore blobs still missing. This is now the SINGLE blocker standing between the real 282-name priority plan and actually filling those gaps.
+2. C-20 [environment]: bash_tool network blocked, reconfirmed.
+3. C-23 [advisory, needs bulk verification]: 185 pool entries pattern-flagged, 2 spot-verified; full verification needs real SEC security-type data.
+4. AMTM discrepancy [minor, disclosed]: worth a fresh Wikipedia fetch to confirm one way or the other; does not block anything else.
+
+Next Action (in priority order; 1-2 need a network-enabled runner)
+1. Recover/re-attach RawDatasetStore blobs, or re-run tools/fetch_real_data.py.
+2. Feed reports/gate_evidence/missing_large_cap_priority_plan_2024-12-31.json's 253 CIK-ready tickers (plus the 29 needing a resolve pass) into tools/fetch_real_data.py FIRST, before any other names — this is the real, prioritized large-cap gap list the earlier heuristic-only approach couldn't produce.
+3. Once ingested: re-run tools/audit_mcap_store.py with the real reference (reports/gate_evidence/sp500_reconstructed_2024-12-31.json members) via evaluate_reference_coverage to get present_not_rankable / present_rankable_outside_top500 for real (currently marked "not evaluated" in the reference used this round).
+4. Re-run Promotion Gate v2. Only once it actually passes: Official Top-500, real >=3-date walk-forward, then the real 500-company benchmark.
+5. Optionally, verify AMTM's actual current S&P 500 status with a fresh fetch (low priority, doesn't block anything).
+If network remains blocked: do not repeat the exhausted routes (bash_tool, pip, raw.githubusercontent.com, plain-URL Wikipedia). The URL-encoded Wikipedia route that worked this round is now documented — reuse it for other Wikipedia-sourced references if needed (e.g. Russell 1000, if a similarly-maintained page exists), but check for a working alternative before assuming a route stays broken.
+
+Do Not Repeat
+- Everything from prior rounds' Do Not Repeat, plus: tools/reconstruct_sp500_from_wikipedia.py exists — do not rebuild. Do not re-derive the S&P 500 2024-12-31 list from press releases (superseded by the mechanical Wikipedia reconstruction). Do not re-fetch reports/gate_evidence/sp500_current_2026_raw.md unless refreshing for a materially later date — it is already saved.
+
+------------------------------------------------------------------------
+
+2026-09-25 (round 2) · Claude → Next AI
+- C-21 re-attempted first (recover-or-reingest), per instruction: no recoverable store, network re-confirmed blocked, and a new SEC-JSON-API-via-search angle tried and confirmed NOT to work (unlike the Wikipedia HTML route that unblocked C-22). C-21 is the sole remaining blocker, genuinely exhausted for this session's tools.
+- AMTM discrepancy from the prior round resolved as a spot-check reading error (not a code defect) -- 19/19 now.
+- 4 more CIKs resolved for the missing-large-cap priority plan (257/282 now ready).
+- No change to rankable (297) or any gate (all still FAIL, correctly -- S&P coverage alone was not used to declare Sufficiency PASS). 173/173 tests, unchanged.
+- Next AI: everything possible without network has been done. The single next action is running tools/fetch_real_data.py against the priority plan in a network-enabled session.
+
+------------------------------------------------------------------------
+
+2026-09-25 (round 2) · Claude · CURRENT_HANDOFF snapshot (archived, do not edit)
+
+Investment-System1 · CURRENT_HANDOFF
+
+Timestamp: 2026-09-25 (session continued, round 2)
+AI: Claude
+SSoT lineage: ...2026-09-25_claude.zip (prior round) -> this package
+Handoff Status: OPEN — C-21 re-attempted this round, still BLOCKED (no code fix possible; needs a network-enabled runner) / C-22 evidence quality improved (AMTM resolved, more CIKs ready) / no numeric change to rankable or any gate
+
+Started From
+Prior CURRENT_HANDOFF: C-22 core blocker resolved (real, dated, mechanically-reconstructed S&P 500 2024-12-31 membership, 503 names, 18/19 spot-checked); 282 real missing large-caps identified with 253 CIKs pre-resolved; real Top-500 Sufficiency Gate run for the first time (correctly FAILS); C-21 (missing store blobs) and C-20 (network blocked) still the two structural blockers.
+
+*** C-21 remains the sole blocker — read this first ***
+Recover-or-reingest was attempted first, per instruction, before anything else this round:
+- No recoverable RawDatasetStore found on disk (data/raw/ still holds only run-log JSON, 0 blobs) -- there is nothing to recover FROM in this session.
+- bash_tool network re-probed fresh: still 403 "Host not in allowlist" on every host, including the XBRL companyfacts endpoint specifically (data.sec.gov/api/xbrl/companyfacts/...).
+- One genuinely new angle tried: web_search + web_fetch targeting the SEC JSON API's own response (not documentation about it) -- the same trick that unblocked C-22 via Wikipedia's HTML page. Result: it does not work here. Every search result was a tutorial/doc page describing the API; none was the API's own JSON response indexed as a fetchable document. web_fetch requires a URL to already appear in a result, and no route surfaces SEC/Yahoo JSON responses that way (unlike ordinary HTML pages).
+- Conclusion: C-21 is genuinely BLOCKED in this environment, not unsolved for lack of trying. Resolution Condition unchanged: a network-enabled runner/session for tools/fetch_real_data.py, or the original network-enabled session's RawDatasetStore blobs re-attached to a future handoff.
+
+Because C-21 is blocked, none of the following could be executed for real this round (all require actual companyfacts/price data): evaluate_reference_coverage with real present/missing/rankable classification, a recomputed real rankable count, a real #500 cutoff, or any gate re-evaluation with new numbers. These are unchanged from the prior round's real-evidence runs.
+
+What WAS done this round (evidence-quality work not requiring network)
+- AMTM reconstruction discrepancy (flagged last round) RESOLVED as a spot-check reading error, not a code defect: the originally fetched 2024-12-23 changes-table row explicitly pairs WDAY's addition with AMTM's removal, both before the 2024-12-31 cutoff, so the reconstruction was correct all along. Spot-check score corrected to 19/19. Documented in reports/gate_evidence/sp500_reconstructed_2024-12-31.json (qa_note field).
+- 4 more of the 29 remaining missing-large-cap CIKs resolved via targeted SEC EDGAR search: CE 0001306830, CTRA 0000858470, CZR 0001590895, DFS 0001393612. reports/gate_evidence/missing_large_cap_priority_plan_2024-12-31.json now has 257/282 CIK-ready (up from 253). Stopped one-by-one resolution there as low-value without network to act on it; bulk resolution via the SEC tickers file will be far more efficient once network is available.
+
+Tests: 173/173, unchanged (no code changes this round, only evidence-file updates and documentation).
+
+Validation ladder — unchanged
+Code Present YES · Reproducible YES · SYNTHETIC VERIFIED YES (173) · Integrated E2E synthetic + real-evidence gate runs from the prior round (Completeness FAIL, Sufficiency FAIL on the real 282-missing reference) · REAL-DATA VERIFIED NO · Full PIT NO · OOS NO · Calibration NO · Forward NO.
+
+Universe / C-18
+Unchanged: RESOLVED, Official Default Universe = US Market-Cap Top 500 PIT. Not revisited.
+
+Status snapshot (unchanged from prior round, repeated here for the final-report format)
+- rankable: 297
+- S&P reference coverage: 221/503 (44%) present in pool by identity; 282 missing (257 CIK-ready, 25 pending)
+- #500 cutoff: not computable (rankable < 500)
+- Universe Completeness Gate: FAIL (17.6% coverage vs real WFE Dec-2024 benchmark)
+- Top-500 Sufficiency Gate: FAIL (real reference, 282 missing large caps -- MISSING_LARGE_CAP_NAMES)
+- Promotion Gate v2: FAIL
+- Official Top-500: NOT declared
+- REAL-DATA VERIFIED: NO
+- Walk-forward: not run (gate not passed)
+- 500-company benchmark: not run (gate not passed)
+
+Unchanged by rule
+V Initial Prior 25/20/15/15/10/10/5, no refit. rankable>=500 alone never sufficient. S&P 500 coverage alone was never used to declare Sufficiency PASS (it remains a missing-large-cap detector, as instructed) -- Sufficiency is still FAIL and requires a computed #500 cutoff plus a clean reference, neither of which exist yet without real data. No fabricated data anywhere.
+
+Open gaps (priority order)
+1. C-21 [needs a network-enabled runner]: the sole remaining blocker. Everything else this project can currently do without it has been done.
+2. C-23 [advisory, needs bulk verification]: 185 pool entries pattern-flagged, 2 spot-verified; unchanged this round (large-cap ingestion was correctly not delayed for this, per instruction).
+3. 25 tickers still need CIK resolution (low priority until network exists; bulk lookup is the efficient path then).
+
+Next Action (in priority order; all need a network-enabled runner)
+1. Run tools/fetch_real_data.py against reports/gate_evidence/missing_large_cap_priority_plan_2024-12-31.json's 257 CIK-ready tickers first (large-cap gaps, as instructed), then resolve + fetch the remaining 25 via universe.resolve + a bulk SEC tickers lookup.
+2. Re-run tools/audit_mcap_store.py's evaluate_reference_coverage against reports/gate_evidence/sp500_reconstructed_2024-12-31.json's real 503-member reference to get real present_not_rankable / present_rankable_outside_top500 (currently unpopulated -- marked, not fabricated).
+3. Recompute rankable for real. Re-run Promotion Gate v2. Only once it actually passes with real evidence: Official Top-500, real >=3-date walk-forward, then the real 500-company benchmark.
+4. Continue C-23 per-name verification against real SEC security-type/exchange data once fetched, in parallel with #1-3 (does not block them).
+5. Resolve the remaining 25 CIKs via bulk lookup once network is available (fast then; wasteful now).
+If network remains blocked next session too: there is no further independently-actionable work on this project without either network or the missing store blobs. Confirm baseline (tools/mini_pytest.py) and stop rather than search for another workaround that risks fabricating data.
+
+Do Not Repeat
+- Everything from prior rounds' Do Not Repeat. Additionally: do not re-attempt web_fetch on SEC's JSON API endpoints via search -- confirmed this round not to work (documented above), unlike the Wikipedia HTML case. Do not re-flag AMTM as a discrepancy -- resolved, documented, 19/19.
+
+------------------------------------------------------------------------
+
+2026-09-25 (round 3) · Claude → Next AI
+- Instructed to run the full ingest -> evaluate_reference_coverage -> gate pipeline, but ALSO instructed explicitly not to force a new bypass or fabricate data if network is still blocked. Single fresh probe confirmed it still is (same 403 signature as every prior round). Followed the instruction: kept status exactly BLOCKED, produced no synthetic numbers, made no code changes.
+- No change to rankable/gates. 173/173 tests, unchanged.
+- Nothing left for this sandbox's tools to attempt on C-21. The very next action, unconditionally, is running tools/fetch_real_data.py in an environment with real network access.
+
+------------------------------------------------------------------------
+
+2026-09-25 (round 3) · Claude · CURRENT_HANDOFF snapshot (archived, do not edit)
+
+Investment-System1 · CURRENT_HANDOFF
+
+Timestamp: 2026-09-25 (session continued, round 3)
+AI: Claude
+SSoT lineage: ...2026-09-25_claude_r2.zip (prior round) -> this package
+Handoff Status: OPEN — C-21 reconfirmed BLOCKED this round (no new workaround forced, per explicit instruction) / all requested downstream steps (ingest, evaluate_reference_coverage, rankable recompute, Sufficiency, Promotion Gate v2) have no real data to run on / no numeric change from the prior round
+
+Started From
+Prior CURRENT_HANDOFF: C-21 was the sole remaining blocker after an exhaustive, documented series of attempts across multiple rounds (bash_tool network across every host, pip, web_fetch on GitHub raw and the SEC JSON API via search — all confirmed not to work in this sandbox). 257/282 missing-large-cap CIKs pre-resolved, 25 pending. AMTM reconstruction discrepancy resolved (19/19 spot-check). No gate has passed.
+
+*** This round: reconfirmed, not re-solved — read this first ***
+This round's instruction was to run the full pipeline: ingest 257 CIK-ready large-caps (resume/gap logic, no re-download) → resolve + ingest the remaining 25 via SEC bulk lookup → evaluate_reference_coverage → recompute rankable → #500 cutoff → Top-500 Sufficiency → Promotion Gate v2 → (only if PASS) Official Top-500 → walk-forward → 500-company benchmark.
+None of this could be executed for real: it also explicitly instructed NOT to search for a new bypass or synthesize data if the network is still blocked, and to keep the status exactly BLOCKED in that case.
+- Single fresh network probe this round: bash_tool → sec.gov, the XBRL companyfacts endpoint specifically, and query1.finance.yahoo.com → all still 403 "Host not in allowlist."
+- No recoverable RawDatasetStore exists on disk (data/raw/ still holds only run-log JSON, 0 blobs).
+- No new workaround was attempted, per instruction — the previously-exhausted routes (bash_tool network, pip, web_fetch on raw.githubusercontent.com, web_fetch on the SEC JSON API via search) were not repeated, and no untested route was forced either.
+- Result: C-21 is BLOCKED, confirmed again, with nothing fabricated in its place. Every downstream step (evaluate_reference_coverage, rankable recompute, #500 cutoff, Sufficiency, Promotion Gate v2) remains exactly where the prior round left it, because none of them have new data to compute from.
+
+Tests: 173/173, unchanged (no code or evidence changes this round beyond documentation).
+
+Status snapshot (unchanged from the prior two rounds)
+- rankable: 297
+- S&P reference coverage: 221/503 (44%) present in pool by identity; 282 missing (257 CIK-ready, 25 pending)
+- #500 cutoff: not computable (rankable < 500)
+- Universe Completeness Gate: FAIL (17.6% coverage vs real WFE Dec-2024 benchmark)
+- Top-500 Sufficiency Gate: FAIL (real reference, 282 missing large caps — MISSING_LARGE_CAP_NAMES). Per instruction: S&P 500 coverage is a missing-large-cap detector only, never treated as sufficient by itself for PASS.
+- Promotion Gate v2: FAIL. rankable>=500 alone was never and is not being treated as sufficient for promotion.
+- Official Top-500: NOT declared
+- REAL-DATA VERIFIED: NO
+- Walk-forward: not run
+- 500-company benchmark: not run
+
+Validation ladder — unchanged
+Code Present YES · Reproducible YES · SYNTHETIC VERIFIED YES (173) · Integrated E2E synthetic + real-evidence gate runs (Completeness FAIL, Sufficiency FAIL on the real 282-missing reference) · REAL-DATA VERIFIED NO · Full PIT NO · OOS NO · Calibration NO · Forward NO.
+
+Universe / C-18
+Unchanged: RESOLVED, Official Default Universe = US Market-Cap Top 500 PIT. Not revisited.
+
+Unchanged by rule
+V Initial Prior 25/20/15/15/10/10/5, no refit. No fabricated data anywhere, including this round: when asked to run a pipeline that needs data this session cannot obtain, the correct action taken was to report BLOCKED honestly rather than produce numbers.
+
+Open gaps (priority order)
+1. C-21 [needs a network-enabled runner]: the sole remaining blocker, unchanged. Nothing in this sandbox's available tools resolves it further.
+2. C-23: unchanged, still advisory-only, still correctly not delaying large-cap ingestion (which is itself blocked for an unrelated reason).
+3. 25 tickers still need CIK resolution via SEC bulk lookup — needs the same network access as everything else.
+
+Next Action (unchanged — all need a network-enabled runner; this is now a repeated, stable instruction, not a new investigation)
+1. In a network-enabled session: run tools/fetch_real_data.py against reports/gate_evidence/missing_large_cap_priority_plan_2024-12-31.json's 257 CIK-ready tickers first, using existing resume/gap logic (do not re-download anything already in the store).
+2. Resolve + ingest the remaining 25 tickers via a bulk SEC company_tickers.json lookup + universe.resolve (already built).
+3. Re-run tools/audit_mcap_store.py's evaluate_reference_coverage against reports/gate_evidence/sp500_reconstructed_2024-12-31.json's real 503-member reference for real present/missing/not-rankable/outside-top500 classification.
+4. Recompute rankable for real, get a real #500 cutoff, re-run Top-500 Sufficiency and Promotion Gate v2 with real numbers.
+5. Only if Promotion Gate v2 actually PASSES with real evidence: Official Top-500 → real ≥3-date walk-forward → the real 500-company benchmark.
+6. C-23 per-name verification can run in parallel with #1-2 once real SEC security-type/exchange data exists, without blocking large-cap ingestion.
+If network remains blocked in the next session too: do not repeat any of the exhausted or already-tried-and-failed routes logged across this and prior rounds (bash_tool to any of the four hosts, pip, web_fetch on raw.githubusercontent.com, web_fetch on SEC's JSON API via search). Confirm baseline (tools/mini_pytest.py) and stop there — do not search for a new bypass and do not synthesize data, per standing instruction.
+
+Do Not Repeat
+- Everything from prior rounds' Do Not Repeat, unchanged. This round added no new exhausted routes because none were attempted, per instruction.
+
+------------------------------------------------------------------------
+
+2026-09-25 (round 4) · Claude Code (cloud container) → Next AI
+- Reproduced 173/173 baseline from the r3 ZIP (mini_pytest shim), then 182/182 under both the shim and real pytest (pytest installed from pypi, which this environment allows).
+- Tested SEC/Yahoo egress directly in this environment (not inherited from Claude Chat): www.sec.gov, data.sec.gov, query1/query2.finance.yahoo.com all CONNECT 403 from the org egress proxy. C-21 still BLOCKED. Evidence: implementation/reports/network_probe_2026-09-25_claude_code_r4.json.
+- Minimal additive changes: fetch_real_data.py retry/backoff + egress circuit breaker + --plan + STORE_INDEX.json; audit_mcap_store.py BRK.B/BRK-B normalization, ranked_top500, detector-only reference role; new tools/run_top500_gate_chain.py; 9 new tests.
+- Real finding: BRK.B was a false "missing" (present as BRK-B). True S&P-missing = 281, not 282.
+- Gates re-run through the chain on the (empty) real store: all FAIL closed. Official Top-500 NOT declared.

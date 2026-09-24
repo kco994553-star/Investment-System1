@@ -1,0 +1,20 @@
+{
+  "chart": {
+    "result": [
+      {
+        "meta": {
+          "currency": "USD",
+          "symbol": "NVDA",
+          "regularMarketPrice": 123.45,
+          "regularMarketTime": 1727000000
+        },
+        "indicators": {
+          "quote": [
+            {"close": [120.0, 121.0, 123.45]}
+          ]
+        }
+      }
+    ],
+    "error": null
+  }
+}

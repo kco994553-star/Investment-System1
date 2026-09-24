@@ -1,0 +1,37 @@
+{
+  "key_present": true,
+  "key_length": 32,
+  "alfred": {
+    "availability": "ALFRED_VINTAGE",
+    "vintage": "ALFRED_AS_OF",
+    "source": "fred/series/observations realtime_end=as_of",
+    "real_data_verified": false,
+    "as_of_used": {
+      "growth": "2025-05-01",
+      "inflation": "2025-05-01",
+      "rates": "2025-06-27",
+      "liquidity": "2025-06-25",
+      "risk": "2025-06-30"
+    },
+    "missing": [],
+    "key_present": true,
+    "values": {
+      "growth": 0.005973021867416772,
+      "inflation": 0.023759340869898393,
+      "rates": 4.29,
+      "liquidity": 6662200.0,
+      "risk": 2.96
+    }
+  },
+  "csv_values": {
+    "growth": 0.005793208714095943,
+    "inflation": 0.02680453865910226,
+    "rates": 4.24,
+    "liquidity": 6662200.0,
+    "risk": 2.96
+  },
+  "snap_avail": "ALFRED_VINTAGE",
+  "snap_vintage": "ALFRED_AS_OF",
+  "regime": "NEUTRAL",
+  "verified": false
+}

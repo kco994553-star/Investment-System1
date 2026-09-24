@@ -1,0 +1,8 @@
+{
+  "kind": "RAW_DATASET_STORE_INDEX",
+  "store_dir": "data/raw",
+  "n_artifacts": 0,
+  "n_blobs_on_disk": 0,
+  "artifacts": [],
+  "note": "Reproducible manifest: re-fetch any artifact from source_url and compare sha256."
+}

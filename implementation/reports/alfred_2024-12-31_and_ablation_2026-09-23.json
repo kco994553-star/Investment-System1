@@ -1,0 +1,29 @@
+{
+  "key_present": false,
+  "alfred_availability": "UNAVAILABLE",
+  "alfred_missing": [
+    "INDPRO",
+    "CPIAUCSL",
+    "DGS10",
+    "WALCL",
+    "BAMLH0A0HYM2"
+  ],
+  "alfred_values": {},
+  "as_of_used": {},
+  "snap_avail": "LIVE_FETCH",
+  "snap_vintage": "CURRENT_REVISED_NOT_ALFRED",
+  "fallback_reason": "ALFRED_NOT_ATTEMPTED",
+  "verified": false,
+  "available_at_ok": true,
+  "ablation_kind": "ABLATION_SYNTHETIC",
+  "ablation_official": false,
+  "ablation_keys": [
+    "qgv",
+    "technical",
+    "macro",
+    "qgv+technical",
+    "qgv+macro",
+    "technical+macro",
+    "qgv+technical+macro"
+  ]
+}

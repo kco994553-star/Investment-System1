@@ -1,0 +1,39 @@
+{
+  "kind": "OFFICIAL_MCAP500_PROMOTION_GATE_V2",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "passed": false,
+  "candidate_pool_complete": false,
+  "justified_official_top500": false,
+  "base_gate": {
+    "kind": "OFFICIAL_MCAP500_PROMOTION_GATE",
+    "as_of": "2024-12-31T00:00:00+00:00",
+    "passed": false,
+    "candidate_pool_complete": false,
+    "justified_official_top500": false,
+    "rankable": 297,
+    "listings": 598,
+    "eligibility_source": null,
+    "source_vintage": null,
+    "reasons": [
+      "MISSING_ELIGIBILITY_SOURCE",
+      "MISSING_SOURCE_VINTAGE",
+      "ELIGIBILITY_COMPLETENESS_NOT_ATTESTED",
+      "EVIDENCE_AS_OF_MISMATCH",
+      "FEWER_THAN_500_RANKABLE",
+      "ELIGIBLE_LISTINGS_NOT_FULLY_RANKABLE"
+    ],
+    "note": "Fail-closed. >=500 ranked alone never proves Official Top-500 completeness."
+  },
+  "completeness_gate_passed": false,
+  "sufficiency_gate_passed": false,
+  "reasons": [
+    "MISSING_ELIGIBILITY_SOURCE",
+    "MISSING_SOURCE_VINTAGE",
+    "ELIGIBILITY_COMPLETENESS_NOT_ATTESTED",
+    "EVIDENCE_AS_OF_MISMATCH",
+    "FEWER_THAN_500_RANKABLE",
+    "ELIGIBLE_LISTINGS_NOT_FULLY_RANKABLE",
+    "NEITHER_COMPLETENESS_NOR_SUFFICIENCY_GATE_PASSED"
+  ],
+  "note": "Fail-closed. Requires base numeric/eligibility checks AND (universe completeness OR top-500 sufficiency)."
+}

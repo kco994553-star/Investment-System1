@@ -1,0 +1,67 @@
+{
+  "kind": "PIT_MCAP_STORE_COVERAGE_AUDIT",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "chart_range": "5y",
+  "listings": 0,
+  "companyfacts": 0,
+  "price": 0,
+  "rankable": 0,
+  "missing_companyfacts": 0,
+  "missing_price": 0,
+  "missing_shares": 0,
+  "ambiguous_shares": 0,
+  "non_positive": 0,
+  "top_cutoff_mcap_if_500_rankable": null,
+  "candidate_pool_complete": false,
+  "justified_official_top500": false,
+  "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
+}
+{
+  "kind": "CANDIDATE_HYGIENE_AUDIT_HEURISTIC",
+  "n_total": 1,
+  "n_flagged": 1,
+  "n_clean": 0,
+  "flagged": {
+    "PREFERRED_SHARE_SUFFIX": [
+      "a"
+    ],
+    "FIVE_LETTER_F_OR_Y_OTC_ADR_SHAPE": []
+  },
+  "clean_company_ids": [],
+  "note": "PATTERN HEURISTIC ONLY, not authoritative. Flags likely preferred-share and foreign-OTC-ADR tickers so a network-enabled pass can prioritize fetching genuine common-equity candidates first and verify each flagged ticker's real SEC security type before excluding it. Never auto-applied to ranking or any gate."
+}
+{
+  "kind": "SP500_PIT_RECONSTRUCTION",
+  "as_of": "2024-12-31",
+  "source": "Wikipedia 'List of S&P 500 companies' current snapshot + dated changes table (fetched 2026-09-25)",
+  "method": "current snapshot with every post-as_of change mechanically undone in reverse-chronological order",
+  "n_current_input": 3,
+  "n_events_applied": 1,
+  "n_reconstructed": 3,
+  "n_dropped_as_stale_after_undo": 0,
+  "stale_dropped": [],
+  "membership_basis": "RECONSTRUCTED_LATER_VINTAGE",
+  "survivorship_risk": false,
+  "official": false,
+  "c18_relation": "candidate reference for Top-500 Sufficiency Gate; NOT the Official universe (C-18 is US mcap Top 500, resolved separately)"
+}
+members: 3
+{
+  "kind": "PIT_MCAP_STORE_COVERAGE_AUDIT",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "chart_range": "5y",
+  "listings": 0,
+  "companyfacts": 0,
+  "price": 0,
+  "rankable": 0,
+  "missing_companyfacts": 0,
+  "missing_price": 0,
+  "missing_shares": 0,
+  "ambiguous_shares": 0,
+  "non_positive": 0,
+  "top_cutoff_mcap_if_500_rankable": null,
+  "candidate_pool_complete": false,
+  "justified_official_top500": false,
+  "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
+}
+182 passed, 0 failed in 8.85s (runner: mini_pytest shim, not pytest)

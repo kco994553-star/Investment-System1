@@ -1,0 +1,71 @@
+{
+  "kind": "REAL_DATA_CANDIDATE",
+  "stage2": false,
+  "real_data_verified": false,
+  "reason": "SEC period_quality not FORM_ALIGNED across book; Yahoo unofficial; single-day sample.",
+  "as_of_session": "2026-09-23T02:39:17.038445+00:00",
+  "pit_as_of": "2026-09-14T00:00:00+00:00",
+  "live_prices": {
+    "nvda": {
+      "price": 228.87,
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "msft": {
+      "price": 498.0,
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    },
+    "asml": {
+      "price": 1747.9,
+      "evidence": "LIVE_FETCH",
+      "historical_as_of_attached": false
+    }
+  },
+  "pit_prices": {
+    "nvda": {
+      "price": 218.2899932861328,
+      "observed_at": "2026-09-11T13:30:00+00:00",
+      "available_at": "2026-09-11T13:30:00+00:00",
+      "evidence": "LIVE_FETCH",
+      "pit_ok": true
+    },
+    "msft": {
+      "price": 495.6300048828125,
+      "observed_at": "2026-09-11T13:30:00+00:00",
+      "available_at": "2026-09-11T13:30:00+00:00",
+      "evidence": "LIVE_FETCH",
+      "pit_ok": true
+    },
+    "asml": {
+      "price": 1698.300048828125,
+      "observed_at": "2026-09-11T13:30:00+00:00",
+      "available_at": "2026-09-11T13:30:00+00:00",
+      "evidence": "LIVE_FETCH",
+      "pit_ok": true
+    }
+  },
+  "sec": {
+    "nvda": {
+      "ok": true,
+      "evidence": "LIVE_FETCH",
+      "period_quality": "FORM_ALIGNED",
+      "real_data_verified": false,
+      "revenue": 215938000000.0
+    },
+    "msft": {
+      "ok": true,
+      "evidence": "LIVE_FETCH",
+      "period_quality": "FORM_ALIGNED",
+      "real_data_verified": false,
+      "revenue": 16039000000.0
+    },
+    "asml": {
+      "ok": true,
+      "evidence": "LIVE_FETCH",
+      "period_quality": "FORM_ALIGNED",
+      "real_data_verified": false,
+      "revenue": null
+    }
+  }
+}

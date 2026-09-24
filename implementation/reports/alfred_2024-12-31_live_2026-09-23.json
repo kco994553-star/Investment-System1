@@ -1,0 +1,18 @@
+{
+  "key_present": true,
+  "alfred_availability": "ALFRED_VINTAGE",
+  "alfred_missing": [],
+  "alfred_n_values": 5,
+  "as_of_used": {
+    "growth": "2024-11-01",
+    "inflation": "2024-11-01",
+    "rates": "2024-12-30",
+    "liquidity": "2024-12-25",
+    "risk": "2024-12-31"
+  },
+  "snap_avail": "ALFRED_VINTAGE",
+  "snap_vintage": "ALFRED_AS_OF",
+  "fallback_reason": null,
+  "available_at_ok": true,
+  "real_data_verified": false
+}

@@ -1,0 +1,13 @@
+{
+  "slice": {
+    "n_selected": 8,
+    "missing_ok": [],
+    "equal_weight_realized": 0.14865754972321787,
+    "full_pit_pass": false,
+    "real_data_verified": false
+  },
+  "walk_forward_kind": "WALK_FORWARD_SLICES",
+  "real_data_verified": false,
+  "full_pit_pass": false,
+  "source": "RawDatasetStore replay"
+}

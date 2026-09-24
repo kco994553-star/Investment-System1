@@ -1,0 +1,13 @@
+{
+  "kind": "ACCN_RECONCILE",
+  "full_pit_pass": false,
+  "match": true,
+  "concept": "Revenues",
+  "fact_accn": "000104581024000029",
+  "index_accn": "000104581024000029",
+  "fact_filed": "2024-02-21",
+  "fact_end": "2024-01-28",
+  "fact_value": 60922000000.0,
+  "index_filed": "2024-02-21",
+  "note": "latest-end across revenue aliases; match is pointer-only"
+}

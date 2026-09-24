@@ -1,0 +1,25 @@
+{
+  "official_n_from_us_listings": 16,
+  "n_ranked": 16,
+  "candidate_pool_complete": false,
+  "slice_selected": 8,
+  "wf_steps": [
+    {
+      "as_of": "2023-12-31T00:00:00+00:00",
+      "n_linked": 8,
+      "equal_weight_realized": 0.3605830703281774
+    },
+    {
+      "as_of": "2024-06-30T00:00:00+00:00",
+      "n_linked": 8,
+      "equal_weight_realized": -0.05585238879853592
+    },
+    {
+      "as_of": "2024-12-31T00:00:00+00:00",
+      "n_linked": 8,
+      "equal_weight_realized": 0.14865754972321787
+    }
+  ],
+  "real_data_verified": false,
+  "full_pit_pass": false
+}

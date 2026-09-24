@@ -1,0 +1,11 @@
+{
+  "kind": "KRX_NETWORK_DIAGNOSIS",
+  "dns_openapi.krx.co.kr": "RESOLVED",
+  "dns_data-dbg.krx.co.kr": "RESOLVED",
+  "https_openapi_root": "HTTP_200",
+  "https_data-dbg_api": "REACHED_JSON",
+  "canary_stk_bydd_trd": "HTTP_401 respCode=401 Unauthorized API Call",
+  "interpretation": "Network/DNS blocker is lifted in this runtime. 401 is key-or-service-subscription, not DNS. Official docs: key alone is insufficient; each stock API must be applied under openapi.krx.co.kr 서비스 이용.",
+  "key_persisted": false,
+  "real_data_verified": false
+}

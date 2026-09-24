@@ -1,0 +1,71 @@
+{
+  "kind": "MULTI_ASOF_PIT_SUMMARY",
+  "official_pass": false,
+  "real_data_verified": false,
+  "full_pit_pass": false,
+  "oos": false,
+  "calibrated": false,
+  "as_ofs": [
+    "2024-12-31T00:00:00+00:00",
+    "2025-06-30T00:00:00+00:00"
+  ],
+  "macro": [
+    "LIVE_FETCH",
+    "LIVE_FETCH"
+  ],
+  "macro_vintage": [
+    "CURRENT_REVISED_NOT_ALFRED",
+    "CURRENT_REVISED_NOT_ALFRED"
+  ],
+  "ablation_ready": true,
+  "v_coverage": [
+    {
+      "as_of": "2024-12-31T00:00:00+00:00",
+      "present": {
+        "fundamental_value": 16,
+        "reverse_dcf": 16,
+        "peer_relative_value": 0,
+        "historical_valuation": 0,
+        "margin_of_safety": 16,
+        "sector_context": 0,
+        "theme_premium_discount": 0
+      },
+      "n": 17
+    },
+    {
+      "as_of": "2025-06-30T00:00:00+00:00",
+      "present": {
+        "fundamental_value": 16,
+        "reverse_dcf": 16,
+        "peer_relative_value": 0,
+        "historical_valuation": 0,
+        "margin_of_safety": 16,
+        "sector_context": 0,
+        "theme_premium_discount": 0
+      },
+      "n": 17
+    }
+  ],
+  "compatibility_counts": [
+    {
+      "as_of": "2024-12-31T00:00:00+00:00",
+      "labels": {
+        "ALIGNED": 1,
+        "ENTRY_CONFLICT": 0,
+        "FUNDAMENTAL_CONFLICT": 0,
+        "ALIGNED_NEGATIVE": 15,
+        "INSUFFICIENT": 1
+      }
+    },
+    {
+      "as_of": "2025-06-30T00:00:00+00:00",
+      "labels": {
+        "ALIGNED": 1,
+        "ENTRY_CONFLICT": 0,
+        "FUNDAMENTAL_CONFLICT": 11,
+        "ALIGNED_NEGATIVE": 5,
+        "INSUFFICIENT": 0
+      }
+    }
+  ]
+}

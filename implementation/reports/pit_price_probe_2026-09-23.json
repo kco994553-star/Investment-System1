@@ -1,0 +1,11 @@
+{
+  "kind": "PIT_PRICE_PROBE",
+  "official_pass": false,
+  "real_data_verified": false,
+  "as_of": "2026-09-14T00:00:00+00:00",
+  "bars": 20,
+  "future_bars_excluded": 6,
+  "pit_price": 218.2899932861328,
+  "stamp_available": true,
+  "evidence": "LIVE_FETCH"
+}

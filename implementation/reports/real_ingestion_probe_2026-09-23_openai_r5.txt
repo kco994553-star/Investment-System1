@@ -1,0 +1,31 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "/tmp/invest-real-probe",
+  "n_requested": 4,
+  "n_ok": 0,
+  "n_failed": 4,
+  "log": [
+    {
+      "artifact_id": "sec_tickers",
+      "status": "ERROR_URLError",
+      "url": "https://www.sec.gov/files/company_tickers.json"
+    },
+    {
+      "artifact_id": "companyfacts:0000320193",
+      "status": "ERROR_URLError",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json"
+    },
+    {
+      "artifact_id": "submissions:0000320193",
+      "status": "ERROR_URLError",
+      "url": "https://data.sec.gov/submissions/CIK0000320193.json"
+    },
+    {
+      "artifact_id": "yahoo_chart:AAPL:1y",
+      "status": "ERROR_URLError",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?interval=1d&range=1y"
+    }
+  ],
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}

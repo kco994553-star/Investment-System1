@@ -1,0 +1,25 @@
+{
+  "kind": "SYNTHETIC",
+  "note": "Fixture prices for official v1.1 book. Not a live market feed.",
+  "prices": {
+    "asml": {"price": 900, "currency": "USD"},
+    "lrcx": {"price": 90, "currency": "USD"},
+    "klac": {"price": 700, "currency": "USD"},
+    "tokyo_electron": {"price": 200, "currency": "USD"},
+    "hanmi": {"price": 40, "currency": "KRW"},
+    "nvda": {"price": 150, "currency": "USD"},
+    "amd": {"price": 155, "currency": "USD"},
+    "avgo": {"price": 1700, "currency": "USD"},
+    "qcom": {"price": 190, "currency": "USD"},
+    "intc": {"price": 32, "currency": "USD"},
+    "msft": {"price": 420, "currency": "USD"},
+    "googl": {"price": 175, "currency": "USD"},
+    "amzn": {"price": 200, "currency": "USD"},
+    "rtx": {"price": 115, "currency": "USD"},
+    "stry": {"price": 360, "currency": "USD"},
+    "etn": {"price": 330, "currency": "USD"},
+    "hubb": {"price": 410, "currency": "USD"},
+    "gev": {"price": 170, "currency": "USD"},
+    "rok": {"price": 295, "currency": "USD"}
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "kind": "NETWORK_EGRESS_PROBE",
+  "date": "2026-09-25",
+  "environment": "Claude Code on the web, managed cloud container (not the Claude Chat sandbox of rounds 1-3)",
+  "method": "real terminal: curl via the session HTTPS proxy + urllib (tools/fetch_real_data.py --plan)",
+  "results": {
+    "www.sec.gov:443": "CONNECT 403 (egress proxy: connect_rejected, organization policy)",
+    "data.sec.gov:443": "CONNECT 403 (companyfacts + submissions endpoints)",
+    "query1.finance.yahoo.com:443": "CONNECT 403",
+    "query2.finance.yahoo.com:443": "CONNECT 403",
+    "efts.sec.gov:443": "CONNECT 403",
+    "fred.stlouisfed.org:443": "CONNECT 403 (seen in proxy status log)",
+    "pypi.org": "200 (allowed; used to install real pytest)"
+  },
+  "fetch_real_data_run": "data/raw/ingest_run_1790289959.json: 793 artifacts requested, 3 real requests sent (one per host), 793 EGRESS_BLOCKED, 0 written",
+  "conclusion": "C-21 still BLOCKED in this environment by the environment's network policy, independently verified (not inherited from the prior Claude Chat 403 result). Fix: allow www.sec.gov, data.sec.gov, query1.finance.yahoo.com in the environment's Network access settings, or supply SEC companyfacts.zip / Stooq bulk archives for tools/import_bulk_real_data.py.",
+  "policy_note": "Proxy README: 403 policy denials must not be retried or routed around; none were."
+}

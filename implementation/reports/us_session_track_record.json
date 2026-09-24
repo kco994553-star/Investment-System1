@@ -1,0 +1,83 @@
+{
+  "envelope": {
+    "prediction_id": "pred_d6d2a16b0690",
+    "as_of": "2026-09-24T22:47:18.919452+00:00",
+    "system_version": "investment_system_impl-v0.2.0",
+    "module_version": "v1.7.6",
+    "profile_id": "profile-balanced-provisional",
+    "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+    "input_snapshot_ids": [
+      "qgv_24a8b77db532",
+      "qgv_26a9b8da0663",
+      "qgv_d3b4742ec81e",
+      "qgv_01aa26e957a5",
+      "qgv_bc4655893c6d",
+      "qgv_d937afd005d8",
+      "qgv_6f486dc53033",
+      "qgv_ed63f7284118",
+      "qgv_301dad336588",
+      "qgv_dd6d9a0643ed",
+      "qgv_5f2aa30ae364",
+      "qgv_a455dfe38ef8",
+      "qgv_245b255a06e2",
+      "qgv_50d45d7067b6",
+      "qgv_bbeccead2ab5",
+      "qgv_35aa6139d77d",
+      "qgv_e5e61c18e211"
+    ],
+    "prediction": {
+      "Q_by_id": {
+        "asml": 91.33928571428571,
+        "lrcx": 80.81666666666668,
+        "klac": 78.39999999999999,
+        "nvda": 90.79230769230769,
+        "amd": 64.12222222222222,
+        "avgo": 74.35000000000001,
+        "qcom": 76.37051282051281,
+        "intc": 32.37358490566038,
+        "msft": 90.33061224489795,
+        "googl": 87.25,
+        "amzn": 77.408934169279,
+        "rtx": 56.38214285714285,
+        "stry": 74.29545454545455,
+        "etn": 70.64375,
+        "hubb": 69.35000000000001,
+        "gev": 55.41617647058825,
+        "rok": 64.97983193277311
+      }
+    },
+    "decision": {
+      "gate": "PASS",
+      "target_weights": {
+        "asml": 0.058823529411764684,
+        "lrcx": 0.058823529411764684,
+        "klac": 0.058823529411764684,
+        "nvda": 0.058823529411764684,
+        "amd": 0.058823529411764684,
+        "avgo": 0.058823529411764684,
+        "qcom": 0.058823529411764684,
+        "intc": 0.058823529411764684,
+        "msft": 0.058823529411764684,
+        "googl": 0.058823529411764684,
+        "amzn": 0.058823529411764684,
+        "rtx": 0.058823529411764684,
+        "stry": 0.058823529411764684,
+        "etn": 0.058823529411764684,
+        "hubb": 0.058823529411764684,
+        "gev": 0.058823529411764684,
+        "rok": 0.058823529411764684
+      },
+      "source": "integration"
+    },
+    "scope": "integrated",
+    "evaluation_horizon": "20d",
+    "outcome": null,
+    "error": null,
+    "calibration_result": null,
+    "purpose": "TRACK_RECORD",
+    "not_backtest": true,
+    "immutable": true,
+    "kind": "TRACK_RECORD"
+  },
+  "historical_as_of_attached": false
+}

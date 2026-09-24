@@ -1,0 +1,81 @@
+{
+  "kind": "UNIVERSE_500_BENCHMARK",
+  "evidence_class": "SYNTHETIC",
+  "n_companies": 500,
+  "measured": "in-process compute (+ local JSON track store for PIT path)",
+  "not_measured": "network I/O to SEC/Yahoo/FRED (sandbox egress disabled)",
+  "live_wall_clock_verified": false,
+  "real_data_verified": false,
+  "environment": {
+    "python": "3.13.5",
+    "machine": "x86_64",
+    "cpus": 5
+  },
+  "generated_at": "2026-09-23T08:05:34.671588+00:00",
+  "results": {
+    "live_full_batch": {
+      "median_s": 0.1741,
+      "runs_s": [
+        0.1644,
+        0.1741,
+        0.2322
+      ],
+      "peak_heap_mb": 2.64,
+      "qgv_recomputed": 500,
+      "errors": 0
+    },
+    "incremental_1_fundamental": {
+      "median_s": 0.0004,
+      "runs_s": [
+        0.0004,
+        0.0004,
+        0.0004
+      ],
+      "peak_heap_mb": 0.04,
+      "qgv_calls_per_run": 1
+    },
+    "incremental_mixed_81_events": {
+      "median_s": 0.0027,
+      "runs_s": [
+        0.0029,
+        0.0027,
+        0.0027
+      ],
+      "peak_heap_mb": 0.09,
+      "qgv_calls_per_run": 10,
+      "untouched_qgv": 490
+    },
+    "leaderboard_rebuild": {
+      "median_s": 0.0026,
+      "runs_s": [
+        0.003,
+        0.0026,
+        0.0025
+      ],
+      "peak_heap_mb": 0.14
+    },
+    "daily_recon_stamp_check": {
+      "median_s": 0.0024,
+      "runs_s": [
+        0.0028,
+        0.0024,
+        0.0024
+      ],
+      "peak_heap_mb": 0.09,
+      "recompute_set": 0,
+      "clean_skipped": 500
+    },
+    "pit_historical_run_as_of": {
+      "median_s": 0.8959,
+      "runs_s": [
+        0.8959
+      ],
+      "peak_heap_mb": 9.8,
+      "pit_price_lookahead_violations": 0,
+      "names_scored": 495,
+      "name_errors": 5,
+      "gate": "PASS",
+      "future_bars_seen_not_used": 12870
+    }
+  }
+}

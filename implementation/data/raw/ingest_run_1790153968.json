@@ -1,0 +1,599 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "data/raw",
+  "n_requested": 120,
+  "n_ok": 105,
+  "n_failed": 15,
+  "log": [
+    {
+      "artifact_id": "companyfacts:0002070829",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0002070829.json"
+    },
+    {
+      "artifact_id": "submissions:0002070829",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000887028",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000887028.json"
+    },
+    {
+      "artifact_id": "submissions:0000887028",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000946770",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000946770.json"
+    },
+    {
+      "artifact_id": "submissions:0000946770",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001830056",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001830056.json"
+    },
+    {
+      "artifact_id": "submissions:0001830056",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001103838",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001103838.json"
+    },
+    {
+      "artifact_id": "submissions:0001103838",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001169486",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001169486.json"
+    },
+    {
+      "artifact_id": "submissions:0001169486",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0002039784",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0002039784.json"
+    },
+    {
+      "artifact_id": "submissions:0002039784",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0002098326",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0002098326.json"
+    },
+    {
+      "artifact_id": "submissions:0002098326",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001107457",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001107457.json"
+    },
+    {
+      "artifact_id": "submissions:0001107457",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000895564",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000895564.json"
+    },
+    {
+      "artifact_id": "submissions:0000895564",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000850918",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000850918.json"
+    },
+    {
+      "artifact_id": "submissions:0000850918",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001274152",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001274152.json"
+    },
+    {
+      "artifact_id": "submissions:0001274152",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001385157",
+      "status": "OK",
+      "bytes": 3935830
+    },
+    {
+      "artifact_id": "submissions:0001385157",
+      "status": "OK",
+      "bytes": 150080
+    },
+    {
+      "artifact_id": "companyfacts:0000277135",
+      "status": "OK",
+      "bytes": 3631121
+    },
+    {
+      "artifact_id": "submissions:0000277135",
+      "status": "OK",
+      "bytes": 159847
+    },
+    {
+      "artifact_id": "companyfacts:0001140859",
+      "status": "OK",
+      "bytes": 3903114
+    },
+    {
+      "artifact_id": "submissions:0001140859",
+      "status": "OK",
+      "bytes": 161683
+    },
+    {
+      "artifact_id": "companyfacts:0000092230",
+      "status": "OK",
+      "bytes": 6021355
+    },
+    {
+      "artifact_id": "submissions:0000092230",
+      "status": "OK",
+      "bytes": 163787
+    },
+    {
+      "artifact_id": "companyfacts:0001280452",
+      "status": "OK",
+      "bytes": 3535560
+    },
+    {
+      "artifact_id": "submissions:0001280452",
+      "status": "OK",
+      "bytes": 163636
+    },
+    {
+      "artifact_id": "companyfacts:0000797468",
+      "status": "OK",
+      "bytes": 3830831
+    },
+    {
+      "artifact_id": "submissions:0000797468",
+      "status": "OK",
+      "bytes": 156643
+    },
+    {
+      "artifact_id": "companyfacts:0000004977",
+      "status": "OK",
+      "bytes": 5286453
+    },
+    {
+      "artifact_id": "submissions:0000004977",
+      "status": "OK",
+      "bytes": 162735
+    },
+    {
+      "artifact_id": "companyfacts:0000929869",
+      "status": "OK",
+      "bytes": 735256
+    },
+    {
+      "artifact_id": "submissions:0000929869",
+      "status": "OK",
+      "bytes": 166007
+    },
+    {
+      "artifact_id": "companyfacts:0000849395",
+      "status": "OK",
+      "bytes": 1514914
+    },
+    {
+      "artifact_id": "submissions:0000849395",
+      "status": "OK",
+      "bytes": 172408
+    },
+    {
+      "artifact_id": "companyfacts:0001413447",
+      "status": "OK",
+      "bytes": 2693762
+    },
+    {
+      "artifact_id": "submissions:0001413447",
+      "status": "OK",
+      "bytes": 163420
+    },
+    {
+      "artifact_id": "companyfacts:0001601046",
+      "status": "OK",
+      "bytes": 3516936
+    },
+    {
+      "artifact_id": "submissions:0001601046",
+      "status": "OK",
+      "bytes": 162209
+    },
+    {
+      "artifact_id": "companyfacts:0001035983",
+      "status": "OK",
+      "bytes": 3165569
+    },
+    {
+      "artifact_id": "submissions:0001035983",
+      "status": "OK",
+      "bytes": 157772
+    },
+    {
+      "artifact_id": "companyfacts:0001701605",
+      "status": "OK",
+      "bytes": 2186492
+    },
+    {
+      "artifact_id": "submissions:0001701605",
+      "status": "OK",
+      "bytes": 159115
+    },
+    {
+      "artifact_id": "companyfacts:0000073309",
+      "status": "OK",
+      "bytes": 3937394
+    },
+    {
+      "artifact_id": "submissions:0000073309",
+      "status": "OK",
+      "bytes": 157640
+    },
+    {
+      "artifact_id": "companyfacts:0000815556",
+      "status": "OK",
+      "bytes": 2685368
+    },
+    {
+      "artifact_id": "submissions:0000815556",
+      "status": "OK",
+      "bytes": 158189
+    },
+    {
+      "artifact_id": "companyfacts:0000097210",
+      "status": "OK",
+      "bytes": 5116469
+    },
+    {
+      "artifact_id": "submissions:0000097210",
+      "status": "OK",
+      "bytes": 156827
+    },
+    {
+      "artifact_id": "companyfacts:0000715957",
+      "status": "OK",
+      "bytes": 5611229
+    },
+    {
+      "artifact_id": "submissions:0000715957",
+      "status": "OK",
+      "bytes": 155678
+    },
+    {
+      "artifact_id": "companyfacts:0000003570",
+      "status": "OK",
+      "bytes": 3490860
+    },
+    {
+      "artifact_id": "submissions:0000003570",
+      "status": "OK",
+      "bytes": 167204
+    },
+    {
+      "artifact_id": "companyfacts:0001393311",
+      "status": "OK",
+      "bytes": 3172557
+    },
+    {
+      "artifact_id": "submissions:0001393311",
+      "status": "OK",
+      "bytes": 158481
+    },
+    {
+      "artifact_id": "companyfacts:0001243429",
+      "status": "OK",
+      "bytes": 1163460
+    },
+    {
+      "artifact_id": "submissions:0001243429",
+      "status": "OK",
+      "bytes": 165530
+    },
+    {
+      "artifact_id": "companyfacts:0001037868",
+      "status": "OK",
+      "bytes": 3625250
+    },
+    {
+      "artifact_id": "submissions:0001037868",
+      "status": "OK",
+      "bytes": 159641
+    },
+    {
+      "artifact_id": "companyfacts:0001539838",
+      "status": "OK",
+      "bytes": 3588068
+    },
+    {
+      "artifact_id": "submissions:0001539838",
+      "status": "OK",
+      "bytes": 164947
+    },
+    {
+      "artifact_id": "companyfacts:0000726728",
+      "status": "OK",
+      "bytes": 3235550
+    },
+    {
+      "artifact_id": "submissions:0000726728",
+      "status": "OK",
+      "bytes": 164592
+    },
+    {
+      "artifact_id": "companyfacts:0001090012",
+      "status": "OK",
+      "bytes": 5068693
+    },
+    {
+      "artifact_id": "submissions:0001090012",
+      "status": "OK",
+      "bytes": 159159
+    },
+    {
+      "artifact_id": "companyfacts:0001755672",
+      "status": "OK",
+      "bytes": 2167024
+    },
+    {
+      "artifact_id": "submissions:0001755672",
+      "status": "OK",
+      "bytes": 100276
+    },
+    {
+      "artifact_id": "companyfacts:0001032208",
+      "status": "OK",
+      "bytes": 5087076
+    },
+    {
+      "artifact_id": "submissions:0001032208",
+      "status": "OK",
+      "bytes": 172902
+    },
+    {
+      "artifact_id": "companyfacts:0001842726",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001842726.json"
+    },
+    {
+      "artifact_id": "submissions:0001842726",
+      "status": "OK",
+      "bytes": 3865
+    },
+    {
+      "artifact_id": "companyfacts:0001121788",
+      "status": "OK",
+      "bytes": 3717394
+    },
+    {
+      "artifact_id": "submissions:0001121788",
+      "status": "OK",
+      "bytes": 160585
+    },
+    {
+      "artifact_id": "companyfacts:0000320187",
+      "status": "OK",
+      "bytes": 3022251
+    },
+    {
+      "artifact_id": "submissions:0000320187",
+      "status": "OK",
+      "bytes": 160650
+    },
+    {
+      "artifact_id": "companyfacts:0000721371",
+      "status": "OK",
+      "bytes": 3689931
+    },
+    {
+      "artifact_id": "submissions:0000721371",
+      "status": "OK",
+      "bytes": 167099
+    },
+    {
+      "artifact_id": "companyfacts:0000037996",
+      "status": "OK",
+      "bytes": 3672318
+    },
+    {
+      "artifact_id": "submissions:0000037996",
+      "status": "OK",
+      "bytes": 159870
+    },
+    {
+      "artifact_id": "companyfacts:0000027904",
+      "status": "OK",
+      "bytes": 3369064
+    },
+    {
+      "artifact_id": "submissions:0000027904",
+      "status": "OK",
+      "bytes": 154789
+    },
+    {
+      "artifact_id": "companyfacts:0001604821",
+      "status": "OK",
+      "bytes": 2170664
+    },
+    {
+      "artifact_id": "submissions:0001604821",
+      "status": "OK",
+      "bytes": 156607
+    },
+    {
+      "artifact_id": "companyfacts:0001136808",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001136808.json"
+    },
+    {
+      "artifact_id": "submissions:0001136808",
+      "status": "OK",
+      "bytes": 45570
+    },
+    {
+      "artifact_id": "companyfacts:0001120193",
+      "status": "OK",
+      "bytes": 4265891
+    },
+    {
+      "artifact_id": "submissions:0001120193",
+      "status": "OK",
+      "bytes": 156764
+    },
+    {
+      "artifact_id": "companyfacts:0002071868",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0002071868.json"
+    },
+    {
+      "artifact_id": "submissions:0002071868",
+      "status": "OK",
+      "bytes": 1649
+    },
+    {
+      "artifact_id": "companyfacts:0002089271",
+      "status": "OK",
+      "bytes": 85792
+    },
+    {
+      "artifact_id": "submissions:0002089271",
+      "status": "OK",
+      "bytes": 13510
+    },
+    {
+      "artifact_id": "companyfacts:0001736297",
+      "status": "OK",
+      "bytes": 528491
+    },
+    {
+      "artifact_id": "submissions:0001736297",
+      "status": "OK",
+      "bytes": 65186
+    },
+    {
+      "artifact_id": "companyfacts:0001973832",
+      "status": "OK",
+      "bytes": 444373
+    },
+    {
+      "artifact_id": "submissions:0001973832",
+      "status": "OK",
+      "bytes": 36179
+    },
+    {
+      "artifact_id": "companyfacts:0001679788",
+      "status": "OK",
+      "bytes": 1414117
+    },
+    {
+      "artifact_id": "submissions:0001679788",
+      "status": "OK",
+      "bytes": 159473
+    },
+    {
+      "artifact_id": "companyfacts:0001099800",
+      "status": "OK",
+      "bytes": 4072206
+    },
+    {
+      "artifact_id": "submissions:0001099800",
+      "status": "OK",
+      "bytes": 144344
+    },
+    {
+      "artifact_id": "companyfacts:0001456346",
+      "status": "OK",
+      "bytes": 1067085
+    },
+    {
+      "artifact_id": "submissions:0001456346",
+      "status": "OK",
+      "bytes": 68739
+    },
+    {
+      "artifact_id": "companyfacts:0001065088",
+      "status": "OK",
+      "bytes": 4107528
+    },
+    {
+      "artifact_id": "submissions:0001065088",
+      "status": "OK",
+      "bytes": 158113
+    },
+    {
+      "artifact_id": "companyfacts:0000093751",
+      "status": "OK",
+      "bytes": 6124478
+    },
+    {
+      "artifact_id": "submissions:0000093751",
+      "status": "OK",
+      "bytes": 162855
+    },
+    {
+      "artifact_id": "companyfacts:0000010795",
+      "status": "OK",
+      "bytes": 3478858
+    },
+    {
+      "artifact_id": "submissions:0000010795",
+      "status": "OK",
+      "bytes": 168380
+    },
+    {
+      "artifact_id": "companyfacts:0001650372",
+      "status": "OK",
+      "bytes": 1359970
+    },
+    {
+      "artifact_id": "submissions:0001650372",
+      "status": "OK",
+      "bytes": 164451
+    },
+    {
+      "artifact_id": "companyfacts:0000065984",
+      "status": "OK",
+      "bytes": 4823074
+    },
+    {
+      "artifact_id": "submissions:0000065984",
+      "status": "OK",
+      "bytes": 167623
+    },
+    {
+      "artifact_id": "companyfacts:0000936395",
+      "status": "OK",
+      "bytes": 3774615
+    },
+    {
+      "artifact_id": "submissions:0000936395",
+      "status": "OK",
+      "bytes": 160024
+    }
+  ],
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}

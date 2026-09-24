@@ -1,0 +1,12 @@
+{
+  "kind": "US17_CHILD_OUTCOME_PROBE",
+  "official_pass": false,
+  "real_data_verified": false,
+  "full_pit_pass": false,
+  "n_names": 17,
+  "linked": 17,
+  "skipped": 0,
+  "parent_intact": 17,
+  "n_returns": 17,
+  "median_return": 0.1493
+}

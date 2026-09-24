@@ -1,0 +1,256 @@
+{
+  "kind": "V_COVERAGE_MATRIX",
+  "lifecycle": "PROVISIONAL_INITIAL_PRIOR",
+  "real_data_verified": false,
+  "calibrated": false,
+  "n": 17,
+  "present": {
+    "fundamental_value": 16,
+    "reverse_dcf": 16,
+    "peer_relative_value": 0,
+    "historical_valuation": 0,
+    "margin_of_safety": 16,
+    "sector_context": 0,
+    "theme_premium_discount": 0
+  },
+  "rows": [
+    {
+      "company_id": "asml",
+      "V": 0.0,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "lrcx",
+      "V": 2.831034982342546,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "klac",
+      "V": 0.0,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "nvda",
+      "V": 20.0,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "amd",
+      "V": 6.225195527115252,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "avgo",
+      "V": 0.0,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "qcom",
+      "V": 7.191221902653607,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "intc",
+      "V": null,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": false,
+        "reverse_dcf": false,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": false,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "msft",
+      "V": 21.19401276125528,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "googl",
+      "V": 14.613322632839633,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "amzn",
+      "V": 6.993236024577897,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "rtx",
+      "V": 0.0907267293622418,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "stry",
+      "V": 0.0,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "etn",
+      "V": 0.0,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "hubb",
+      "V": 0.0,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "gev",
+      "V": 0.0,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    },
+    {
+      "company_id": "rok",
+      "V": 0.0,
+      "policy": "PROVISIONAL_INITIAL_PRIOR",
+      "factors": {
+        "fundamental_value": true,
+        "reverse_dcf": true,
+        "peer_relative_value": false,
+        "historical_valuation": false,
+        "margin_of_safety": true,
+        "sector_context": false,
+        "theme_premium_discount": false
+      }
+    }
+  ]
+}

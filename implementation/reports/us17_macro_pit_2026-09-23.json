@@ -1,0 +1,10 @@
+{
+  "macro": "ALFRED_VINTAGE",
+  "macro_vintage": "ALFRED_AS_OF",
+  "macro_regime": "NEUTRAL",
+  "names": 17,
+  "gate": "PASS",
+  "portfolio_role": "GENERIC_INPUT",
+  "official_pass": false,
+  "real_data_verified": false
+}

@@ -1,0 +1,29 @@
+{
+  "kind": "CANDIDATE_HYGIENE_SPOT_VERIFICATION",
+  "method": "Real, sourced spot-check of a sample of C-23-flagged tickers via web search, to add real evidence on top of the pattern heuristic. NOT a bulk/complete verification of all 185 flagged tickers -- that still needs SEC company_tickers_exchange.json security-type/exchange fields, blocked by C-20.",
+  "findings": [
+    {
+      "ticker": "ALL-PB",
+      "category": "PREFERRED_SHARE_SUFFIX",
+      "verified": true,
+      "evidence": "SEC Form FWP (Allstate Corp, filed 2023-05-16, sec.gov/Archives/edgar/data/899051/000110465923061165/tm2310215d6_fwp.htm) confirms Allstate issues NYSE-listed Depositary Shares representing Fixed Rate Noncumulative Perpetual Preferred Stock series (e.g. Series J, symbol 'ALL PR J'), the same naming family as ALL-PB. Primary-source confirmation this is preferred stock, not common equity.",
+      "conclusion": "Confirmed preferred share. Correctly flagged; should be excluded from a common-stock Top-500 ranking once verified security type is checked per-name."
+    },
+    {
+      "ticker": "AEMRF",
+      "category": "FIVE_LETTER_F_OR_Y_OTC_ADR_SHAPE",
+      "verified": true,
+      "evidence": "Multiple secondary sources (24/7 Wall St, TradingView) associate AEMRF with AEM-family tickers (Agnico Eagle Mines / AEM Holdings context), consistent with an OTC-traded foreign-ordinary/ADR ticker rather than a primary US listing.",
+      "conclusion": "Consistent with OTC ADR classification. Secondary-source only for this specific ticker; not SEC-primary."
+    }
+  ],
+  "pattern_level_corroboration": {
+    "five_letter_Y_suffix": {
+      "source": "Charles Schwab, 'Learn about trading American Depositary Receipts (ADRs) and international stock types'",
+      "source_url": "https://international.schwab.com/investment-products/adr-stock-and-otc-stock",
+      "quote_paraphrased": "Schwab documents that five-letter ticker symbols ending in 'Y' ('Y-shares') are a recognized market convention for ADRs trading on the US OTC market.",
+      "significance": "This is an authoritative, primary-source (broker documentation) confirmation of the general pattern rule used by tools/audit_candidate_hygiene.py's FIVE_LETTER_F_OR_Y_OTC_ADR_SHAPE heuristic for the 'Y' suffix specifically -- strengthens confidence in the heuristic as a real market convention, not an invented one."
+    }
+  },
+  "status": "Heuristic corroborated for the Y-suffix convention by an authoritative source, and one example each spot-verified per category. Still NOT sufficient to auto-exclude any of the 185 flagged tickers from the ranking pool -- per-name verification against real SEC security-type/exchange data remains the resolution condition for C-23. No exclusion applied to the candidate pool this round."
+}

@@ -1,0 +1,46 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "data/raw",
+  "n_requested": 7,
+  "n_ok": 5,
+  "n_failed": 2,
+  "log": [
+    {
+      "artifact_id": "sec_tickers",
+      "status": "OK",
+      "bytes": 800703
+    },
+    {
+      "artifact_id": "companyfacts:0000320193",
+      "status": "OK",
+      "bytes": 3789099
+    },
+    {
+      "artifact_id": "submissions:0000320193",
+      "status": "OK",
+      "bytes": 164033
+    },
+    {
+      "artifact_id": "companyfacts:0001045810",
+      "status": "OK",
+      "bytes": 4092966
+    },
+    {
+      "artifact_id": "submissions:0001045810",
+      "status": "OK",
+      "bytes": 160132
+    },
+    {
+      "artifact_id": "yahoo_chart:AAPL:5y",
+      "status": "HTTP_429",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_chart:NVDA:5y",
+      "status": "HTTP_429",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/NVDA?interval=1d&range=5y"
+    }
+  ],
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}

@@ -1,0 +1,20 @@
+{
+  "kind": "INTEGRATED_E2E_SYNTHETIC",
+  "official_pass": false,
+  "real_data_verified": false,
+  "as_of": "2026-09-14T00:00:00+00:00",
+  "names": 17,
+  "gate": "PASS",
+  "profile_id": "profile-balanced-provisional",
+  "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+  "qgv_record": "tr_1313dacfe438",
+  "technical_record": "tr_1d8dec28df59",
+  "macro_record": "tr_a5901c833fec",
+  "integrated_record": "tr_305d02c34b85",
+  "outcome_record": "tr_2bb4ad781323",
+  "parent_immutable": true,
+  "reloaded": true,
+  "v_all_none": true,
+  "decision_source": "integration",
+  "store_path": "/tmp/track_store_e2e.json"
+}

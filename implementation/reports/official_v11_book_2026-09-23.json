@@ -1,0 +1,13 @@
+{
+  "as_of": "2026-09-14T00:00:00+00:00",
+  "kind": "SYNTHETIC",
+  "names": 19,
+  "missing_official": [],
+  "portfolio_weight_sum": 1.0,
+  "leaderboard_id": "lb_20cb708766f2",
+  "recomputed_qgv": false,
+  "gate": "PASS",
+  "policy_status": "PROVISIONAL",
+  "v_production_all_none": true,
+  "synthetic_all": true
+}

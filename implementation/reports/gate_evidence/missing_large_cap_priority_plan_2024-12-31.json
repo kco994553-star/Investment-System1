@@ -1,0 +1,1454 @@
+{
+  "kind": "MISSING_LARGE_CAP_INGESTION_PRIORITY_PLAN",
+  "as_of": "2024-12-31",
+  "reference": "S&P 500 reconstructed from Wikipedia (reports/gate_evidence/sp500_reconstructed_2024-12-31.json)",
+  "n_reference_members": 503,
+  "n_already_in_pool": 221,
+  "n_missing": 282,
+  "n_missing_with_cik": 257,
+  "n_missing_needing_cik_lookup": 25,
+  "missing_needing_cik_lookup": [
+    "ANSS",
+    "BWA",
+    "CAG",
+    "CPB",
+    "DAY",
+    "EMN",
+    "ENPH",
+    "EPAM",
+    "FMC",
+    "HES",
+    "HOLX",
+    "IPG",
+    "JNPR",
+    "K",
+    "KMX",
+    "LKQ",
+    "LW",
+    "MHK",
+    "MKTX",
+    "MOH",
+    "MTCH",
+    "PAYC",
+    "POOL",
+    "TFX",
+    "WBA"
+  ],
+  "priority_fetch_plan": [
+    {
+      "ticker": "A",
+      "security": "Agilent Technologies",
+      "cik": "0001090872"
+    },
+    {
+      "ticker": "ACGL",
+      "security": "Arch Capital Group",
+      "cik": "0000947484"
+    },
+    {
+      "ticker": "ADM",
+      "security": "Archer Daniels Midland",
+      "cik": "0000007084"
+    },
+    {
+      "ticker": "ADSK",
+      "security": "Autodesk",
+      "cik": "0000769397"
+    },
+    {
+      "ticker": "AEE",
+      "security": "Ameren",
+      "cik": "0001002910"
+    },
+    {
+      "ticker": "AES",
+      "security": "AES Corporation",
+      "cik": "0000874761"
+    },
+    {
+      "ticker": "AIG",
+      "security": "American International Group",
+      "cik": "0000005272"
+    },
+    {
+      "ticker": "AIZ",
+      "security": "Assurant",
+      "cik": "0001267238"
+    },
+    {
+      "ticker": "AKAM",
+      "security": "Akamai Technologies",
+      "cik": "0001086222"
+    },
+    {
+      "ticker": "ALB",
+      "security": "Albemarle Corporation",
+      "cik": "0000915913"
+    },
+    {
+      "ticker": "ALGN",
+      "security": "Align Technology",
+      "cik": "0001097149"
+    },
+    {
+      "ticker": "ALLE",
+      "security": "Allegion",
+      "cik": "0001579241"
+    },
+    {
+      "ticker": "AMCR",
+      "security": "Amcor",
+      "cik": "0001748790"
+    },
+    {
+      "ticker": "AMP",
+      "security": "Ameriprise Financial",
+      "cik": "0000820027"
+    },
+    {
+      "ticker": "ANSS",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "AOS",
+      "security": "A. O. Smith",
+      "cik": "0000091142"
+    },
+    {
+      "ticker": "APA",
+      "security": "APA Corporation",
+      "cik": "0001841666"
+    },
+    {
+      "ticker": "APTV",
+      "security": "Aptiv",
+      "cik": "0001521332"
+    },
+    {
+      "ticker": "ARE",
+      "security": "Alexandria Real Estate Equities",
+      "cik": "0001035443"
+    },
+    {
+      "ticker": "ATO",
+      "security": "Atmos Energy",
+      "cik": "0000731802"
+    },
+    {
+      "ticker": "AVB",
+      "security": "AvalonBay Communities",
+      "cik": "0000915912"
+    },
+    {
+      "ticker": "AVY",
+      "security": "Avery Dennison",
+      "cik": "0000008818"
+    },
+    {
+      "ticker": "AWK",
+      "security": "American Water Works",
+      "cik": "0001410636"
+    },
+    {
+      "ticker": "AXON",
+      "security": "Axon Enterprise",
+      "cik": "0001069183"
+    },
+    {
+      "ticker": "AZO",
+      "security": "AutoZone",
+      "cik": "0000866787"
+    },
+    {
+      "ticker": "BALL",
+      "security": "Ball Corporation",
+      "cik": "0000009389"
+    },
+    {
+      "ticker": "BAX",
+      "security": "Baxter International",
+      "cik": "0000010456"
+    },
+    {
+      "ticker": "BBY",
+      "security": "Best Buy",
+      "cik": "0000764478"
+    },
+    {
+      "ticker": "BEN",
+      "security": "Franklin Resources",
+      "cik": "0000038777"
+    },
+    {
+      "ticker": "BF.B",
+      "security": "Brown-Forman",
+      "cik": "0000014693"
+    },
+    {
+      "ticker": "BG",
+      "security": "Bunge Global",
+      "cik": "0001996862"
+    },
+    {
+      "ticker": "BIIB",
+      "security": "Biogen",
+      "cik": "0000875045"
+    },
+    {
+      "ticker": "BLDR",
+      "security": "Builders FirstSource",
+      "cik": "0001316835"
+    },
+    {
+      "ticker": "BR",
+      "security": "Broadridge Financial Solutions",
+      "cik": "0001383312"
+    },
+    {
+      "ticker": "BRK.B",
+      "security": "Berkshire Hathaway",
+      "cik": "0001067983"
+    },
+    {
+      "ticker": "BRO",
+      "security": "Brown & Brown",
+      "cik": "0000079282"
+    },
+    {
+      "ticker": "BWA",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "BXP",
+      "security": "BXP, Inc.",
+      "cik": "0001037540"
+    },
+    {
+      "ticker": "CAG",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "CARR",
+      "security": "Carrier Global",
+      "cik": "0001783180"
+    },
+    {
+      "ticker": "CBOE",
+      "security": "Cboe Global Markets",
+      "cik": "0001374310"
+    },
+    {
+      "ticker": "CBRE",
+      "security": "CBRE Group",
+      "cik": "0001138118"
+    },
+    {
+      "ticker": "CCI",
+      "security": "Crown Castle",
+      "cik": "0001051470"
+    },
+    {
+      "ticker": "CCL",
+      "security": "Carnival Corporation",
+      "cik": "0000815097"
+    },
+    {
+      "ticker": "CDW",
+      "security": "CDW Corporation",
+      "cik": "0001402057"
+    },
+    {
+      "ticker": "CE",
+      "security": null,
+      "cik": "0001306830",
+      "cik_source": "web search, SEC EDGAR filing path cross-check, 2026-09-25"
+    },
+    {
+      "ticker": "CF",
+      "security": "CF Industries",
+      "cik": "0001324404"
+    },
+    {
+      "ticker": "CFG",
+      "security": "Citizens Financial Group",
+      "cik": "0000759944"
+    },
+    {
+      "ticker": "CHD",
+      "security": "Church & Dwight",
+      "cik": "0000313927"
+    },
+    {
+      "ticker": "CHRW",
+      "security": "C.H. Robinson",
+      "cik": "0001043277"
+    },
+    {
+      "ticker": "CHTR",
+      "security": "Charter Communications",
+      "cik": "0001091667"
+    },
+    {
+      "ticker": "CINF",
+      "security": "Cincinnati Financial",
+      "cik": "0000020286"
+    },
+    {
+      "ticker": "CLX",
+      "security": "Clorox",
+      "cik": "0000021076"
+    },
+    {
+      "ticker": "CMG",
+      "security": "Chipotle Mexican Grill",
+      "cik": "0001058090"
+    },
+    {
+      "ticker": "CMS",
+      "security": "CMS Energy",
+      "cik": "0000811156"
+    },
+    {
+      "ticker": "CNC",
+      "security": "Centene Corporation",
+      "cik": "0001071739"
+    },
+    {
+      "ticker": "CNP",
+      "security": "CenterPoint Energy",
+      "cik": "0001130310"
+    },
+    {
+      "ticker": "COO",
+      "security": "Cooper Companies (The)",
+      "cik": "0000711404"
+    },
+    {
+      "ticker": "CPAY",
+      "security": "Corpay",
+      "cik": "0001175454"
+    },
+    {
+      "ticker": "CPB",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "CPRT",
+      "security": "Copart",
+      "cik": "0000900075"
+    },
+    {
+      "ticker": "CPT",
+      "security": "Camden Property Trust",
+      "cik": "0000906345"
+    },
+    {
+      "ticker": "CRL",
+      "security": "Charles River Laboratories",
+      "cik": "0001100682"
+    },
+    {
+      "ticker": "CSGP",
+      "security": "CoStar Group",
+      "cik": "0001057352"
+    },
+    {
+      "ticker": "CTRA",
+      "security": null,
+      "cik": "0000858470",
+      "cik_source": "web search, SEC EDGAR filing path cross-check, 2026-09-25"
+    },
+    {
+      "ticker": "CTSH",
+      "security": "Cognizant",
+      "cik": "0001058290"
+    },
+    {
+      "ticker": "CZR",
+      "security": null,
+      "cik": "0001590895",
+      "cik_source": "web search, SEC EDGAR filing path cross-check, 2026-09-25"
+    },
+    {
+      "ticker": "DAY",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "DD",
+      "security": "DuPont",
+      "cik": "0001666700"
+    },
+    {
+      "ticker": "DECK",
+      "security": "Deckers Brands",
+      "cik": "0000910521"
+    },
+    {
+      "ticker": "DFS",
+      "security": null,
+      "cik": "0001393612",
+      "cik_source": "web search, SEC EDGAR filing path cross-check, 2026-09-25"
+    },
+    {
+      "ticker": "DG",
+      "security": "Dollar General",
+      "cik": "0000029534"
+    },
+    {
+      "ticker": "DGX",
+      "security": "Quest Diagnostics",
+      "cik": "0001022079"
+    },
+    {
+      "ticker": "DHI",
+      "security": "D. R. Horton",
+      "cik": "0000882184"
+    },
+    {
+      "ticker": "DLTR",
+      "security": "Dollar Tree",
+      "cik": "0000935703"
+    },
+    {
+      "ticker": "DOC",
+      "security": "Healthpeak Properties",
+      "cik": "0000765880"
+    },
+    {
+      "ticker": "DOV",
+      "security": "Dover Corporation",
+      "cik": "0000029905"
+    },
+    {
+      "ticker": "DOW",
+      "security": "Dow Inc.",
+      "cik": "0001751788"
+    },
+    {
+      "ticker": "DPZ",
+      "security": "Domino's",
+      "cik": "0001286681"
+    },
+    {
+      "ticker": "DRI",
+      "security": "Darden Restaurants",
+      "cik": "0000940944"
+    },
+    {
+      "ticker": "DTE",
+      "security": "DTE Energy",
+      "cik": "0000936340"
+    },
+    {
+      "ticker": "DVA",
+      "security": "DaVita",
+      "cik": "0000927066"
+    },
+    {
+      "ticker": "DXCM",
+      "security": "Dexcom",
+      "cik": "0001093557"
+    },
+    {
+      "ticker": "EA",
+      "security": "Electronic Arts",
+      "cik": "0000712515"
+    },
+    {
+      "ticker": "ED",
+      "security": "Consolidated Edison",
+      "cik": "0001047862"
+    },
+    {
+      "ticker": "EFX",
+      "security": "Equifax",
+      "cik": "0000033185"
+    },
+    {
+      "ticker": "EG",
+      "security": "Everest Group",
+      "cik": "0001095073"
+    },
+    {
+      "ticker": "EIX",
+      "security": "Edison International",
+      "cik": "0000827052"
+    },
+    {
+      "ticker": "EL",
+      "security": "Estee Lauder Companies (The)",
+      "cik": "0001001250"
+    },
+    {
+      "ticker": "EMN",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "ENPH",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "EPAM",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "EQR",
+      "security": "Equity Residential",
+      "cik": "0000906107"
+    },
+    {
+      "ticker": "EQT",
+      "security": "EQT Corporation",
+      "cik": "0000033213"
+    },
+    {
+      "ticker": "ERIE",
+      "security": "Erie Indemnity",
+      "cik": "0000922621"
+    },
+    {
+      "ticker": "ES",
+      "security": "Eversource Energy",
+      "cik": "0000072741"
+    },
+    {
+      "ticker": "ESS",
+      "security": "Essex Property Trust",
+      "cik": "0000920522"
+    },
+    {
+      "ticker": "EVRG",
+      "security": "Evergy",
+      "cik": "0001711269"
+    },
+    {
+      "ticker": "EXC",
+      "security": "Exelon",
+      "cik": "0001109357"
+    },
+    {
+      "ticker": "EXPD",
+      "security": "Expeditors International",
+      "cik": "0000746515"
+    },
+    {
+      "ticker": "EXPE",
+      "security": "Expedia Group",
+      "cik": "0001324424"
+    },
+    {
+      "ticker": "EXR",
+      "security": "Extra Space Storage",
+      "cik": "0001289490"
+    },
+    {
+      "ticker": "FDS",
+      "security": "FactSet",
+      "cik": "0001013237"
+    },
+    {
+      "ticker": "FE",
+      "security": "FirstEnergy",
+      "cik": "0001031296"
+    },
+    {
+      "ticker": "FFIV",
+      "security": "F5, Inc.",
+      "cik": "0001048695"
+    },
+    {
+      "ticker": "FICO",
+      "security": "Fair Isaac",
+      "cik": "0000814547"
+    },
+    {
+      "ticker": "FIS",
+      "security": "Fidelity National Information Services",
+      "cik": "0001136893"
+    },
+    {
+      "ticker": "FISV",
+      "security": "Fiserv",
+      "cik": "0000798354"
+    },
+    {
+      "ticker": "FITB",
+      "security": "Fifth Third Bancorp",
+      "cik": "0000035527"
+    },
+    {
+      "ticker": "FMC",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "FOX",
+      "security": "Fox Corporation (Class B)",
+      "cik": "0001754301"
+    },
+    {
+      "ticker": "FOXA",
+      "security": "Fox Corporation (Class A)",
+      "cik": "0001754301"
+    },
+    {
+      "ticker": "FRT",
+      "security": "Federal Realty Investment Trust",
+      "cik": "0000034903"
+    },
+    {
+      "ticker": "FSLR",
+      "security": "First Solar",
+      "cik": "0001274494"
+    },
+    {
+      "ticker": "FTV",
+      "security": "Fortive",
+      "cik": "0001659166"
+    },
+    {
+      "ticker": "GDDY",
+      "security": "GoDaddy",
+      "cik": "0001609711"
+    },
+    {
+      "ticker": "GEHC",
+      "security": "GE HealthCare",
+      "cik": "0001932393"
+    },
+    {
+      "ticker": "GEN",
+      "security": "Gen Digital",
+      "cik": "0000849399"
+    },
+    {
+      "ticker": "GIS",
+      "security": "General Mills",
+      "cik": "0000040704"
+    },
+    {
+      "ticker": "GL",
+      "security": "Globe Life",
+      "cik": "0000320335"
+    },
+    {
+      "ticker": "GNRC",
+      "security": "Generac",
+      "cik": "0001474735"
+    },
+    {
+      "ticker": "GPC",
+      "security": "Genuine Parts Company",
+      "cik": "0000040987"
+    },
+    {
+      "ticker": "GPN",
+      "security": "Global Payments",
+      "cik": "0001123360"
+    },
+    {
+      "ticker": "HAL",
+      "security": "Halliburton",
+      "cik": "0000045012"
+    },
+    {
+      "ticker": "HAS",
+      "security": "Hasbro",
+      "cik": "0000046080"
+    },
+    {
+      "ticker": "HBAN",
+      "security": "Huntington Bancshares",
+      "cik": "0000049196"
+    },
+    {
+      "ticker": "HES",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "HIG",
+      "security": "Hartford (The)",
+      "cik": "0000874766"
+    },
+    {
+      "ticker": "HII",
+      "security": "Huntington Ingalls Industries",
+      "cik": "0001501585"
+    },
+    {
+      "ticker": "HOLX",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "HPQ",
+      "security": "HP Inc.",
+      "cik": "0000047217"
+    },
+    {
+      "ticker": "HRL",
+      "security": "Hormel Foods",
+      "cik": "0000048465"
+    },
+    {
+      "ticker": "HSIC",
+      "security": "Henry Schein",
+      "cik": "0001000228"
+    },
+    {
+      "ticker": "HST",
+      "security": "Host Hotels & Resorts",
+      "cik": "0001070750"
+    },
+    {
+      "ticker": "HSY",
+      "security": "Hershey Company (The)",
+      "cik": "0000047111"
+    },
+    {
+      "ticker": "HUM",
+      "security": "Humana",
+      "cik": "0000049071"
+    },
+    {
+      "ticker": "IDXX",
+      "security": "Idexx Laboratories",
+      "cik": "0000874716"
+    },
+    {
+      "ticker": "IEX",
+      "security": "IDEX Corporation",
+      "cik": "0000832101"
+    },
+    {
+      "ticker": "IFF",
+      "security": "International Flavors & Fragrances",
+      "cik": "0000051253"
+    },
+    {
+      "ticker": "INCY",
+      "security": "Incyte",
+      "cik": "0000879169"
+    },
+    {
+      "ticker": "INVH",
+      "security": "Invitation Homes",
+      "cik": "0001687229"
+    },
+    {
+      "ticker": "IP",
+      "security": "International Paper",
+      "cik": "0000051434"
+    },
+    {
+      "ticker": "IPG",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "IQV",
+      "security": "IQVIA",
+      "cik": "0001478242"
+    },
+    {
+      "ticker": "IR",
+      "security": "Ingersoll Rand",
+      "cik": "0001699150"
+    },
+    {
+      "ticker": "IRM",
+      "security": "Iron Mountain",
+      "cik": "0001020569"
+    },
+    {
+      "ticker": "IT",
+      "security": "Gartner",
+      "cik": "0000749251"
+    },
+    {
+      "ticker": "IVZ",
+      "security": "Invesco",
+      "cik": "0000914208"
+    },
+    {
+      "ticker": "J",
+      "security": "Jacobs Solutions",
+      "cik": "0000052988"
+    },
+    {
+      "ticker": "JBHT",
+      "security": "J.B. Hunt",
+      "cik": "0000728535"
+    },
+    {
+      "ticker": "JBL",
+      "security": "Jabil",
+      "cik": "0000898293"
+    },
+    {
+      "ticker": "JKHY",
+      "security": "Jack Henry & Associates",
+      "cik": "0000779152"
+    },
+    {
+      "ticker": "JNPR",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "K",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "KDP",
+      "security": "Keurig Dr Pepper",
+      "cik": "0001418135"
+    },
+    {
+      "ticker": "KEY",
+      "security": "KeyCorp",
+      "cik": "0000091576"
+    },
+    {
+      "ticker": "KHC",
+      "security": "Kraft Heinz",
+      "cik": "0001637459"
+    },
+    {
+      "ticker": "KIM",
+      "security": "Kimco Realty",
+      "cik": "0000879101"
+    },
+    {
+      "ticker": "KMB",
+      "security": "Kimberly-Clark",
+      "cik": "0000055785"
+    },
+    {
+      "ticker": "KMX",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "KR",
+      "security": "Kroger",
+      "cik": "0000056873"
+    },
+    {
+      "ticker": "KVUE",
+      "security": "Kenvue",
+      "cik": "0001944048"
+    },
+    {
+      "ticker": "L",
+      "security": "Loews Corporation",
+      "cik": "0000060086"
+    },
+    {
+      "ticker": "LDOS",
+      "security": "Leidos",
+      "cik": "0001336920"
+    },
+    {
+      "ticker": "LEN",
+      "security": "Lennar",
+      "cik": "0000920760"
+    },
+    {
+      "ticker": "LH",
+      "security": "Labcorp",
+      "cik": "0000920148"
+    },
+    {
+      "ticker": "LHX",
+      "security": "L3Harris",
+      "cik": "0000202058"
+    },
+    {
+      "ticker": "LII",
+      "security": "Lennox International",
+      "cik": "0001069202"
+    },
+    {
+      "ticker": "LKQ",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "LNT",
+      "security": "Alliant Energy",
+      "cik": "0000352541"
+    },
+    {
+      "ticker": "LULU",
+      "security": "Lululemon Athletica",
+      "cik": "0001397187"
+    },
+    {
+      "ticker": "LUV",
+      "security": "Southwest Airlines",
+      "cik": "0000092380"
+    },
+    {
+      "ticker": "LVS",
+      "security": "Las Vegas Sands",
+      "cik": "0001300514"
+    },
+    {
+      "ticker": "LW",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "LYB",
+      "security": "LyondellBasell",
+      "cik": "0001489393"
+    },
+    {
+      "ticker": "LYV",
+      "security": "Live Nation Entertainment",
+      "cik": "0001335258"
+    },
+    {
+      "ticker": "MAA",
+      "security": "Mid-America Apartment Communities",
+      "cik": "0000912595"
+    },
+    {
+      "ticker": "MAS",
+      "security": "Masco",
+      "cik": "0000062996"
+    },
+    {
+      "ticker": "MCHP",
+      "security": "Microchip Technology",
+      "cik": "0000827054"
+    },
+    {
+      "ticker": "MGM",
+      "security": "MGM Resorts",
+      "cik": "0000789570"
+    },
+    {
+      "ticker": "MHK",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "MKC",
+      "security": "McCormick & Company",
+      "cik": "0000063754"
+    },
+    {
+      "ticker": "MKTX",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "MLM",
+      "security": "Martin Marietta Materials",
+      "cik": "0000916076"
+    },
+    {
+      "ticker": "MOH",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "MOS",
+      "security": "Mosaic Company (The)",
+      "cik": "0001285785"
+    },
+    {
+      "ticker": "MSCI",
+      "security": "MSCI Inc.",
+      "cik": "0001408198"
+    },
+    {
+      "ticker": "MTB",
+      "security": "M&T Bank",
+      "cik": "0000036270"
+    },
+    {
+      "ticker": "MTCH",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "MTD",
+      "security": "Mettler Toledo",
+      "cik": "0001037646"
+    },
+    {
+      "ticker": "NCLH",
+      "security": "Norwegian Cruise Line Holdings",
+      "cik": "0001513761"
+    },
+    {
+      "ticker": "NDSN",
+      "security": "Nordson Corporation",
+      "cik": "0000072331"
+    },
+    {
+      "ticker": "NI",
+      "security": "NiSource",
+      "cik": "0001111711"
+    },
+    {
+      "ticker": "NRG",
+      "security": "NRG Energy",
+      "cik": "0001013871"
+    },
+    {
+      "ticker": "NTAP",
+      "security": "NetApp",
+      "cik": "0001002047"
+    },
+    {
+      "ticker": "NTRS",
+      "security": "Northern Trust",
+      "cik": "0000073124"
+    },
+    {
+      "ticker": "NVR",
+      "security": "NVR, Inc.",
+      "cik": "0000906163"
+    },
+    {
+      "ticker": "NWS",
+      "security": "News Corp (Class B)",
+      "cik": "0001564708"
+    },
+    {
+      "ticker": "NWSA",
+      "security": "News Corp (Class A)",
+      "cik": "0001564708"
+    },
+    {
+      "ticker": "ODFL",
+      "security": "Old Dominion",
+      "cik": "0000878927"
+    },
+    {
+      "ticker": "OMC",
+      "security": "Omnicom Group",
+      "cik": "0000029989"
+    },
+    {
+      "ticker": "ON",
+      "security": "ON Semiconductor",
+      "cik": "0001097864"
+    },
+    {
+      "ticker": "OTIS",
+      "security": "Otis Worldwide",
+      "cik": "0001781335"
+    },
+    {
+      "ticker": "PAYC",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "PAYX",
+      "security": "Paychex",
+      "cik": "0000723531"
+    },
+    {
+      "ticker": "PCG",
+      "security": "PG&E Corporation",
+      "cik": "0001004980"
+    },
+    {
+      "ticker": "PEG",
+      "security": "Public Service Enterprise Group",
+      "cik": "0000788784"
+    },
+    {
+      "ticker": "PFG",
+      "security": "Principal Financial Group",
+      "cik": "0001126328"
+    },
+    {
+      "ticker": "PHM",
+      "security": "PulteGroup",
+      "cik": "0000822416"
+    },
+    {
+      "ticker": "PKG",
+      "security": "Packaging Corporation of America",
+      "cik": "0000075677"
+    },
+    {
+      "ticker": "PNR",
+      "security": "Pentair",
+      "cik": "0000077360"
+    },
+    {
+      "ticker": "PNW",
+      "security": "Pinnacle West Capital",
+      "cik": "0000764622"
+    },
+    {
+      "ticker": "PODD",
+      "security": "Insulet Corporation",
+      "cik": "0001145197"
+    },
+    {
+      "ticker": "POOL",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "PPG",
+      "security": "PPG Industries",
+      "cik": "0000079879"
+    },
+    {
+      "ticker": "PPL",
+      "security": "PPL Corporation",
+      "cik": "0000922224"
+    },
+    {
+      "ticker": "PRU",
+      "security": "Prudential Financial",
+      "cik": "0001137774"
+    },
+    {
+      "ticker": "PSKY",
+      "security": "Paramount Skydance Corporation",
+      "cik": "0002041610"
+    },
+    {
+      "ticker": "PTC",
+      "security": "PTC Inc.",
+      "cik": "0000857005"
+    },
+    {
+      "ticker": "PYPL",
+      "security": "PayPal",
+      "cik": "0001633917"
+    },
+    {
+      "ticker": "REG",
+      "security": "Regency Centers",
+      "cik": "0000910606"
+    },
+    {
+      "ticker": "RF",
+      "security": "Regions Financial Corporation",
+      "cik": "0001281761"
+    },
+    {
+      "ticker": "RJF",
+      "security": "Raymond James Financial",
+      "cik": "0000720005"
+    },
+    {
+      "ticker": "RL",
+      "security": "Ralph Lauren Corporation",
+      "cik": "0001037038"
+    },
+    {
+      "ticker": "RMD",
+      "security": "ResMed",
+      "cik": "0000943819"
+    },
+    {
+      "ticker": "ROL",
+      "security": "Rollins, Inc.",
+      "cik": "0000084839"
+    },
+    {
+      "ticker": "ROP",
+      "security": "Roper Technologies",
+      "cik": "0000882835"
+    },
+    {
+      "ticker": "RVTY",
+      "security": "Revvity",
+      "cik": "0000031791"
+    },
+    {
+      "ticker": "SBAC",
+      "security": "SBA Communications",
+      "cik": "0001034054"
+    },
+    {
+      "ticker": "SJM",
+      "security": "J.M. Smucker Company (The)",
+      "cik": "0000091419"
+    },
+    {
+      "ticker": "SMCI",
+      "security": "Supermicro",
+      "cik": "0001375365"
+    },
+    {
+      "ticker": "SNA",
+      "security": "Snap-on",
+      "cik": "0000091440"
+    },
+    {
+      "ticker": "SOLV",
+      "security": "Solventum",
+      "cik": "0001964738"
+    },
+    {
+      "ticker": "STE",
+      "security": "Steris",
+      "cik": "0001757898"
+    },
+    {
+      "ticker": "STLD",
+      "security": "Steel Dynamics",
+      "cik": "0001022671"
+    },
+    {
+      "ticker": "STZ",
+      "security": "Constellation Brands",
+      "cik": "0000016918"
+    },
+    {
+      "ticker": "SW",
+      "security": "Smurfit Westrock",
+      "cik": "0002005951"
+    },
+    {
+      "ticker": "SWK",
+      "security": "Stanley Black & Decker",
+      "cik": "0000093556"
+    },
+    {
+      "ticker": "SWKS",
+      "security": "Skyworks Solutions",
+      "cik": "0000004127"
+    },
+    {
+      "ticker": "SYF",
+      "security": "Synchrony Financial",
+      "cik": "0001601712"
+    },
+    {
+      "ticker": "SYY",
+      "security": "Sysco",
+      "cik": "0000096021"
+    },
+    {
+      "ticker": "TAP",
+      "security": "Molson Coors Beverage Company",
+      "cik": "0000024545"
+    },
+    {
+      "ticker": "TDY",
+      "security": "Teledyne Technologies",
+      "cik": "0001094285"
+    },
+    {
+      "ticker": "TECH",
+      "security": "Bio-Techne",
+      "cik": "0000842023"
+    },
+    {
+      "ticker": "TFX",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "TPL",
+      "security": "Texas Pacific Land Corporation",
+      "cik": "0001811074"
+    },
+    {
+      "ticker": "TPR",
+      "security": "Tapestry, Inc.",
+      "cik": "0001116132"
+    },
+    {
+      "ticker": "TRMB",
+      "security": "Trimble Inc.",
+      "cik": "0000864749"
+    },
+    {
+      "ticker": "TROW",
+      "security": "T. Rowe Price",
+      "cik": "0001113169"
+    },
+    {
+      "ticker": "TSCO",
+      "security": "Tractor Supply",
+      "cik": "0000916365"
+    },
+    {
+      "ticker": "TSN",
+      "security": "Tyson Foods",
+      "cik": "0000100493"
+    },
+    {
+      "ticker": "TTWO",
+      "security": "Take-Two Interactive",
+      "cik": "0000946581"
+    },
+    {
+      "ticker": "TXT",
+      "security": "Textron",
+      "cik": "0000217346"
+    },
+    {
+      "ticker": "TYL",
+      "security": "Tyler Technologies",
+      "cik": "0000860731"
+    },
+    {
+      "ticker": "UAL",
+      "security": "United Airlines Holdings",
+      "cik": "0000100517"
+    },
+    {
+      "ticker": "UDR",
+      "security": "UDR, Inc.",
+      "cik": "0000074208"
+    },
+    {
+      "ticker": "UHS",
+      "security": "Universal Health Services",
+      "cik": "0000352915"
+    },
+    {
+      "ticker": "ULTA",
+      "security": "Ulta Beauty",
+      "cik": "0001403568"
+    },
+    {
+      "ticker": "VICI",
+      "security": "Vici Properties",
+      "cik": "0001705696"
+    },
+    {
+      "ticker": "VLTO",
+      "security": "Veralto",
+      "cik": "0001967680"
+    },
+    {
+      "ticker": "VMC",
+      "security": "Vulcan Materials Company",
+      "cik": "0001396009"
+    },
+    {
+      "ticker": "VRSK",
+      "security": "Verisk Analytics",
+      "cik": "0001442145"
+    },
+    {
+      "ticker": "VRSN",
+      "security": "Verisign",
+      "cik": "0001014473"
+    },
+    {
+      "ticker": "VST",
+      "security": "Vistra Corp.",
+      "cik": "0001692819"
+    },
+    {
+      "ticker": "VTR",
+      "security": "Ventas",
+      "cik": "0000740260"
+    },
+    {
+      "ticker": "VTRS",
+      "security": "Viatris",
+      "cik": "0001792044"
+    },
+    {
+      "ticker": "WAB",
+      "security": "Wabtec",
+      "cik": "0000943452"
+    },
+    {
+      "ticker": "WAT",
+      "security": "Waters Corporation",
+      "cik": "0001000697"
+    },
+    {
+      "ticker": "WBA",
+      "security": null,
+      "cik": null
+    },
+    {
+      "ticker": "WDAY",
+      "security": "Workday, Inc.",
+      "cik": "0001327811"
+    },
+    {
+      "ticker": "WEC",
+      "security": "WEC Energy Group",
+      "cik": "0000783325"
+    },
+    {
+      "ticker": "WRB",
+      "security": "W. R. Berkley Corporation",
+      "cik": "0000011544"
+    },
+    {
+      "ticker": "WST",
+      "security": "West Pharmaceutical Services",
+      "cik": "0000105770"
+    },
+    {
+      "ticker": "WTW",
+      "security": "Willis Towers Watson",
+      "cik": "0001140536"
+    },
+    {
+      "ticker": "WY",
+      "security": "Weyerhaeuser",
+      "cik": "0000106535"
+    },
+    {
+      "ticker": "WYNN",
+      "security": "Wynn Resorts",
+      "cik": "0001174922"
+    },
+    {
+      "ticker": "XEL",
+      "security": "Xcel Energy",
+      "cik": "0000072903"
+    },
+    {
+      "ticker": "XYL",
+      "security": "Xylem Inc.",
+      "cik": "0001524472"
+    },
+    {
+      "ticker": "YUM",
+      "security": "Yum! Brands",
+      "cik": "0001041061"
+    },
+    {
+      "ticker": "ZBH",
+      "security": "Zimmer Biomet",
+      "cik": "0001136869"
+    },
+    {
+      "ticker": "ZBRA",
+      "security": "Zebra Technologies",
+      "cik": "0000877212"
+    },
+    {
+      "ticker": "ZTS",
+      "security": "Zoetis",
+      "cik": "0001555280"
+    }
+  ],
+  "note": "Priority order for the next network-enabled tools/fetch_real_data.py run: fetch these CIKs/tickers before expanding the pool with non-S&P names. tickers in missing_needing_cik_lookup are S&P members as of 2024-12-31 that have since left the index (e.g. removed/renamed in 2025-2026) -- their CIK was not in the current snapshot and needs a separate ticker->CIK resolution pass (universe.resolve already has a tested resolver for this). 2026-09-25 update: 4 more CIKs resolved via targeted search (CE, CTRA, CZR, DFS) -- 257/282 now CIK-ready, 25 still need resolution (bulk-lookup via the SEC tickers file, once network is available, is far more efficient than continuing one-by-one search for the remainder). 2026-09-25 Claude Code r4 correction: BRK.B is already in the pool as BRK-B (share-class ticker format mismatch), so true missing = 281 (256 CIK-ready + 25 needing CIK). The entry is left in the list (fetch is a SKIPPED no-op once present); evaluate_reference_coverage now normalizes BRK.B/BRK-B."
+}

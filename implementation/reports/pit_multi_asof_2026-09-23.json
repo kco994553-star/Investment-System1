@@ -1,0 +1,184 @@
+{
+  "kind": "PIT_MULTI_ASOF_CANDIDATE",
+  "official_pass": false,
+  "full_pit_pass": false,
+  "real_data_verified": false,
+  "macro": "UNAVAILABLE",
+  "rows": [
+    {
+      "as_of": "2024-06-30T00:00:00+00:00",
+      "names": 3,
+      "quality": {
+        "nvda": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 4.501616821509471,
+          "G": 55.82102565595077,
+          "synthetic": false,
+          "pit_price": null,
+          "revenue": 60922000000.0,
+          "revenue_prev": 26974000000.0
+        },
+        "msft": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 4.260729537786377,
+          "G": 35.735783084797674,
+          "synthetic": false,
+          "pit_price": null,
+          "revenue": 211915000000.0,
+          "revenue_prev": 198270000000.0
+        },
+        "asml": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "BLOCKED",
+          "V": null,
+          "Q": null,
+          "G": 40.0,
+          "synthetic": false,
+          "pit_price": null,
+          "revenue": 27558500000.0,
+          "revenue_prev": 21173400000.0
+        }
+      },
+      "gate": "PASS",
+      "macro": "UNAVAILABLE",
+      "decision_source": "integration",
+      "profile_id": "profile-balanced-provisional",
+      "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+      "lookahead": {
+        "future_bars": 1500,
+        "future_filings_blocked": true
+      },
+      "official_pass": false,
+      "real_data_verified": false,
+      "full_pit_pass": false,
+      "kind": "PIT_BACKTEST_CANDIDATE"
+    },
+    {
+      "as_of": "2025-06-30T00:00:00+00:00",
+      "names": 3,
+      "quality": {
+        "nvda": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 5.012069242971103,
+          "G": 56.79038709933899,
+          "synthetic": false,
+          "pit_price": 157.75,
+          "revenue": 130497000000.0,
+          "revenue_prev": 60922000000.0
+        },
+        "msft": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 3.6424107179282155,
+          "G": 43.02619052318817,
+          "synthetic": false,
+          "pit_price": 495.94000244140625,
+          "revenue": 245122000000.0,
+          "revenue_prev": 211915000000.0
+        },
+        "asml": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "BLOCKED",
+          "V": null,
+          "Q": null,
+          "G": 22.044813759820023,
+          "synthetic": false,
+          "pit_price": 795.9500122070312,
+          "revenue": 28262900000.0,
+          "revenue_prev": 27558500000.0
+        }
+      },
+      "gate": "PASS",
+      "macro": "UNAVAILABLE",
+      "decision_source": "integration",
+      "profile_id": "profile-balanced-provisional",
+      "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+      "lookahead": {
+        "future_bars": 927,
+        "future_filings_blocked": true
+      },
+      "official_pass": false,
+      "real_data_verified": false,
+      "full_pit_pass": false,
+      "kind": "PIT_BACKTEST_CANDIDATE"
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "names": 3,
+      "quality": {
+        "nvda": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 5.123704489251544,
+          "G": 53.41171309812115,
+          "synthetic": false,
+          "pit_price": 218.2899932861328,
+          "revenue": 215938000000.0,
+          "revenue_prev": 130497000000.0
+        },
+        "msft": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "PARTIAL",
+          "V": null,
+          "Q": 4.270768354533373,
+          "G": 44.720132153841575,
+          "synthetic": false,
+          "pit_price": 495.6300048828125,
+          "revenue": 331839000000.0,
+          "revenue_prev": 281724000000.0
+        },
+        "asml": {
+          "period_quality": "FORM_ALIGNED",
+          "coverage": "BLOCKED",
+          "V": null,
+          "Q": null,
+          "G": 32.46694429800197,
+          "synthetic": false,
+          "pit_price": 1698.300048828125,
+          "revenue": 32667300000.0,
+          "revenue_prev": 28262900000.0
+        }
+      },
+      "gate": "PASS",
+      "macro": "UNAVAILABLE",
+      "decision_source": "integration",
+      "profile_id": "profile-balanced-provisional",
+      "parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+      "lookahead": {
+        "future_bars": 18,
+        "future_filings_blocked": true
+      },
+      "official_pass": false,
+      "real_data_verified": false,
+      "full_pit_pass": false,
+      "kind": "PIT_BACKTEST_CANDIDATE"
+    }
+  ],
+  "q_by_as_of": {
+    "nvda": [
+      4.501616821509471,
+      5.012069242971103,
+      5.123704489251544
+    ],
+    "msft": [
+      4.260729537786377,
+      3.6424107179282155,
+      4.270768354533373
+    ],
+    "asml": [
+      null,
+      null,
+      null
+    ]
+  },
+  "store": "/tmp/pit_multi4.json",
+  "count": 3
+}

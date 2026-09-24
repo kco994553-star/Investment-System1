@@ -1,0 +1,1653 @@
+{
+  "as_of": "2026-09-14T00:00:00+00:00",
+  "kind": "SYNTHETIC",
+  "names": 19,
+  "missing_official": [],
+  "portfolio_weight_sum": 1.0,
+  "leaderboard_id": "lb_48429d2719bb",
+  "recomputed_qgv": false,
+  "gate": "PASS",
+  "policy_status": "PROVISIONAL",
+  "v_production_all_none": true,
+  "synthetic_all": true,
+  "snapshots": [
+    {
+      "qgv_snapshot_id": "qgv_dc96c8074f4f",
+      "company_id": "asml",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 91.33928571428571,
+      "G_score": 75.93737373737375,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 83.6383,
+      "attractiveness_10": 8.36,
+      "type_adjusted_score_100": 83.6383,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 67.84656084656083,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 71.0925925925926,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_asml"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_b3bf675cd29c",
+      "company_id": "lrcx",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 80.81666666666668,
+      "G_score": 73.82820512820511,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 77.3224,
+      "attractiveness_10": 7.73,
+      "type_adjusted_score_100": 77.3224,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 58.254208754208754,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 58.792845117845125,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_lrcx"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_737ebd7af0c3",
+      "company_id": "klac",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 78.39999999999999,
+      "G_score": 70.43048128342248,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 74.4152,
+      "attractiveness_10": 7.44,
+      "type_adjusted_score_100": 74.4152,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 57.03968253968254,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 56.96785714285714,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_klac"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_bfc3c229edca",
+      "company_id": "tokyo_electron",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 81.48611111111111,
+      "G_score": 69.35952380952382,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 75.4228,
+      "attractiveness_10": 7.54,
+      "type_adjusted_score_100": 75.4228,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 56.98809523809524,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 57.670833333333334,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_tokyo_electron"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_3d49cf5b0062",
+      "company_id": "hanmi",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 69.67916666666666,
+      "G_score": 85.7,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 77.6896,
+      "attractiveness_10": 7.77,
+      "type_adjusted_score_100": 77.6896,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 62.139550264550266,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 64.72986111111112,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_hanmi"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_fc36426bdcd4",
+      "company_id": "nvda",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 90.79230769230769,
+      "G_score": 92.99074074074073,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 91.8915,
+      "attractiveness_10": 9.19,
+      "type_adjusted_score_100": 91.8915,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 72.49206349206348,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 74.35,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_nvda"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_cafb38ac83e0",
+      "company_id": "amd",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 64.12222222222222,
+      "G_score": 69.14545454545454,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 66.6338,
+      "attractiveness_10": 6.66,
+      "type_adjusted_score_100": 66.6338,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 58.20803159973666,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 57.656067588325655,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_amd"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_57cb3412633f",
+      "company_id": "avgo",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 74.35000000000001,
+      "G_score": 78.46661433804289,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 76.4083,
+      "attractiveness_10": 7.64,
+      "type_adjusted_score_100": 76.4083,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 64.01917690152985,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 65.13092006033183,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_avgo"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_405aa65a8921",
+      "company_id": "qcom",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 76.37051282051281,
+      "G_score": 58.39008547008546,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 67.3803,
+      "attractiveness_10": 6.74,
+      "type_adjusted_score_100": 67.3803,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 56.515733778891665,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 57.3687134502924,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_qcom"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_713b83066d85",
+      "company_id": "intc",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 32.37358490566038,
+      "G_score": 34.46944444444445,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 33.4215,
+      "attractiveness_10": 3.34,
+      "type_adjusted_score_100": 33.4215,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 33.64351851851852,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 32.99236111111111,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_intc"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_c40f97aa4fd8",
+      "company_id": "msft",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 90.33061224489795,
+      "G_score": 74.69137466307276,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 82.511,
+      "attractiveness_10": 8.25,
+      "type_adjusted_score_100": 82.511,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 65.36734693877551,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 66.71666666666667,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_msft"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_a4cb2ef2b5b2",
+      "company_id": "googl",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 87.25,
+      "G_score": 73.75293579481922,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 80.5015,
+      "attractiveness_10": 8.05,
+      "type_adjusted_score_100": 80.5015,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 63.5079365079365,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 65.41428571428571,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_googl"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_fbe3a591fcf2",
+      "company_id": "amzn",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 77.408934169279,
+      "G_score": 72.50249971014495,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 74.9557,
+      "attractiveness_10": 7.5,
+      "type_adjusted_score_100": 74.9557,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 63.88095238095238,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 65.925,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_amzn"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_a8725a61fb34",
+      "company_id": "rtx",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 56.38214285714285,
+      "G_score": 63.627492618669095,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 60.0048,
+      "attractiveness_10": 6.0,
+      "type_adjusted_score_100": 60.0048,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 53.420059811364155,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 54.71570048309178,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_rtx"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_cb86e3783ab6",
+      "company_id": "stry",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 74.29545454545455,
+      "G_score": 63.062906504065054,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 68.6792,
+      "attractiveness_10": 6.87,
+      "type_adjusted_score_100": 68.6792,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 55.267195767195766,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 56.35648148148149,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_stry"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_5a750259f25e",
+      "company_id": "etn",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 70.64375,
+      "G_score": 64.85711545838127,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 67.7504,
+      "attractiveness_10": 6.78,
+      "type_adjusted_score_100": 67.7504,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 54.630591630591624,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 55.16717171717172,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_etn"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_ad26da3d9cb5",
+      "company_id": "hubb",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 69.35000000000001,
+      "G_score": 58.96346153846154,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 64.1567,
+      "attractiveness_10": 6.42,
+      "type_adjusted_score_100": 64.1567,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 54.22299651567944,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 55.39715447154471,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_hubb"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_213626445bf2",
+      "company_id": "gev",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 55.41617647058825,
+      "G_score": 72.65333333333332,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 64.0348,
+      "attractiveness_10": 6.4,
+      "type_adjusted_score_100": 64.0348,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 59.01333866880084,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 59.64439775910364,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_gev"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    },
+    {
+      "qgv_snapshot_id": "qgv_f72c299bddcf",
+      "company_id": "rok",
+      "analyzed_at": "2026-09-14T00:00:00+00:00",
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "qgv_system_version": "v1.7",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_analysis_contract": "v1.7.6",
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 64.97983193277311,
+      "G_score": 55.637678175483046,
+      "V_score": null,
+      "V_policy_status": "VALIDATION_SELECTED",
+      "total_score": 60.3088,
+      "attractiveness_10": 6.03,
+      "type_adjusted_score_100": 60.3088,
+      "confidence": "MEDIUM",
+      "key_drivers": [
+        "raw_map",
+        "SYNTHETIC"
+      ],
+      "peer_weights": {},
+      "factor_breakdown": {
+        "q_notes": [],
+        "g_notes": [],
+        "q_coverage": "READY",
+        "g_coverage": "READY"
+      },
+      "v_candidates": [
+        {
+          "candidate_id": "equal_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.14285714285714285,
+            "peer_relative_value": 0.14285714285714285,
+            "historical_valuation": 0.14285714285714285,
+            "sector_context": 0.14285714285714285,
+            "theme_premium_discount": 0.14285714285714285,
+            "reverse_dcf": 0.14285714285714285,
+            "margin_of_safety": 0.14285714285714285
+          },
+          "v_score": 51.420500403551245,
+          "blocked_reason": null
+        },
+        {
+          "candidate_id": "mos_tilt_research",
+          "lifecycle": "RESEARCH",
+          "weights": {
+            "fundamental_value": 0.15,
+            "peer_relative_value": 0.15,
+            "historical_valuation": 0.1,
+            "sector_context": 0.1,
+            "theme_premium_discount": 0.1,
+            "reverse_dcf": 0.15,
+            "margin_of_safety": 0.25
+          },
+          "v_score": 51.92401129943502,
+          "blocked_reason": null
+        }
+      ],
+      "data_stamp_refs": [
+        "fix_fundamentals_rok"
+      ],
+      "coverage_state": "SYNTHETIC",
+      "quality_states": [
+        "SYNTHETIC"
+      ],
+      "revision_parent_id": null,
+      "synthetic": true
+    }
+  ],
+  "leaderboard": {
+    "leaderboard_snapshot_id": "lb_48429d2719bb",
+    "universe_id": "official-v1.1-synthetic",
+    "generated_at": "2026-09-14T00:00:00+00:00",
+    "rows": [
+      {
+        "rank": 1,
+        "company_id": "nvda",
+        "ticker": "NVDA",
+        "qgv_snapshot_id": "qgv_fc36426bdcd4",
+        "Q_score": 90.79230769230769,
+        "G_score": 92.99074074074073,
+        "V_score": null,
+        "total_score": 91.8915,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 2,
+        "company_id": "asml",
+        "ticker": "ASML",
+        "qgv_snapshot_id": "qgv_dc96c8074f4f",
+        "Q_score": 91.33928571428571,
+        "G_score": 75.93737373737375,
+        "V_score": null,
+        "total_score": 83.6383,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 3,
+        "company_id": "msft",
+        "ticker": "MSFT",
+        "qgv_snapshot_id": "qgv_c40f97aa4fd8",
+        "Q_score": 90.33061224489795,
+        "G_score": 74.69137466307276,
+        "V_score": null,
+        "total_score": 82.511,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 4,
+        "company_id": "googl",
+        "ticker": "GOOGL",
+        "qgv_snapshot_id": "qgv_a4cb2ef2b5b2",
+        "Q_score": 87.25,
+        "G_score": 73.75293579481922,
+        "V_score": null,
+        "total_score": 80.5015,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 5,
+        "company_id": "hanmi",
+        "ticker": "042700",
+        "qgv_snapshot_id": "qgv_3d49cf5b0062",
+        "Q_score": 69.67916666666666,
+        "G_score": 85.7,
+        "V_score": null,
+        "total_score": 77.6896,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 6,
+        "company_id": "lrcx",
+        "ticker": "LRCX",
+        "qgv_snapshot_id": "qgv_b3bf675cd29c",
+        "Q_score": 80.81666666666668,
+        "G_score": 73.82820512820511,
+        "V_score": null,
+        "total_score": 77.3224,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 7,
+        "company_id": "avgo",
+        "ticker": "AVGO",
+        "qgv_snapshot_id": "qgv_57cb3412633f",
+        "Q_score": 74.35000000000001,
+        "G_score": 78.46661433804289,
+        "V_score": null,
+        "total_score": 76.4083,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 8,
+        "company_id": "tokyo_electron",
+        "ticker": "TEL",
+        "qgv_snapshot_id": "qgv_bfc3c229edca",
+        "Q_score": 81.48611111111111,
+        "G_score": 69.35952380952382,
+        "V_score": null,
+        "total_score": 75.4228,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 9,
+        "company_id": "amzn",
+        "ticker": "AMZN",
+        "qgv_snapshot_id": "qgv_fbe3a591fcf2",
+        "Q_score": 77.408934169279,
+        "G_score": 72.50249971014495,
+        "V_score": null,
+        "total_score": 74.9557,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 10,
+        "company_id": "klac",
+        "ticker": "KLAC",
+        "qgv_snapshot_id": "qgv_737ebd7af0c3",
+        "Q_score": 78.39999999999999,
+        "G_score": 70.43048128342248,
+        "V_score": null,
+        "total_score": 74.4152,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 11,
+        "company_id": "stry",
+        "ticker": "SYK",
+        "qgv_snapshot_id": "qgv_cb86e3783ab6",
+        "Q_score": 74.29545454545455,
+        "G_score": 63.062906504065054,
+        "V_score": null,
+        "total_score": 68.6792,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 12,
+        "company_id": "etn",
+        "ticker": "ETN",
+        "qgv_snapshot_id": "qgv_5a750259f25e",
+        "Q_score": 70.64375,
+        "G_score": 64.85711545838127,
+        "V_score": null,
+        "total_score": 67.7504,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 13,
+        "company_id": "qcom",
+        "ticker": "QCOM",
+        "qgv_snapshot_id": "qgv_405aa65a8921",
+        "Q_score": 76.37051282051281,
+        "G_score": 58.39008547008546,
+        "V_score": null,
+        "total_score": 67.3803,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 14,
+        "company_id": "amd",
+        "ticker": "AMD",
+        "qgv_snapshot_id": "qgv_cafb38ac83e0",
+        "Q_score": 64.12222222222222,
+        "G_score": 69.14545454545454,
+        "V_score": null,
+        "total_score": 66.6338,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 15,
+        "company_id": "hubb",
+        "ticker": "HUBB",
+        "qgv_snapshot_id": "qgv_ad26da3d9cb5",
+        "Q_score": 69.35000000000001,
+        "G_score": 58.96346153846154,
+        "V_score": null,
+        "total_score": 64.1567,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 16,
+        "company_id": "gev",
+        "ticker": "GEV",
+        "qgv_snapshot_id": "qgv_213626445bf2",
+        "Q_score": 55.41617647058825,
+        "G_score": 72.65333333333332,
+        "V_score": null,
+        "total_score": 64.0348,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 17,
+        "company_id": "rok",
+        "ticker": "ROK",
+        "qgv_snapshot_id": "qgv_f72c299bddcf",
+        "Q_score": 64.97983193277311,
+        "G_score": 55.637678175483046,
+        "V_score": null,
+        "total_score": 60.3088,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 18,
+        "company_id": "rtx",
+        "ticker": "RTX",
+        "qgv_snapshot_id": "qgv_a8725a61fb34",
+        "Q_score": 56.38214285714285,
+        "G_score": 63.627492618669095,
+        "V_score": null,
+        "total_score": 60.0048,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 19,
+        "company_id": "intc",
+        "ticker": "INTC",
+        "qgv_snapshot_id": "qgv_713b83066d85",
+        "Q_score": 32.37358490566038,
+        "G_score": 34.46944444444445,
+        "V_score": null,
+        "total_score": 33.4215,
+        "freshness": "SYNTHETIC"
+      }
+    ],
+    "implementation_kind": "NEW IMPLEMENTATION",
+    "recomputed_qgv": false
+  },
+  "integration": {
+    "as_of": "2026-09-14T00:00:00+00:00",
+    "gate": "PASS",
+    "gate_reasons": [],
+    "target_weights": {
+      "asml": 0.09,
+      "lrcx": 0.06,
+      "klac": 0.055,
+      "tokyo_electron": 0.05,
+      "hanmi": 0.045,
+      "nvda": 0.08,
+      "amd": 0.05,
+      "avgo": 0.05,
+      "qcom": 0.04,
+      "intc": 0.03,
+      "msft": 0.07,
+      "googl": 0.07,
+      "amzn": 0.06,
+      "rtx": 0.06,
+      "stry": 0.055,
+      "etn": 0.05,
+      "hubb": 0.035,
+      "gev": 0.03,
+      "rok": 0.02
+    },
+    "order_intents": [],
+    "policy_status": "PROVISIONAL",
+    "qgv_refs": [
+      "qgv_dc96c8074f4f",
+      "qgv_b3bf675cd29c",
+      "qgv_737ebd7af0c3",
+      "qgv_bfc3c229edca",
+      "qgv_3d49cf5b0062",
+      "qgv_fc36426bdcd4",
+      "qgv_cafb38ac83e0",
+      "qgv_57cb3412633f",
+      "qgv_405aa65a8921",
+      "qgv_713b83066d85",
+      "qgv_c40f97aa4fd8",
+      "qgv_a4cb2ef2b5b2",
+      "qgv_fbe3a591fcf2",
+      "qgv_a8725a61fb34",
+      "qgv_cb86e3783ab6",
+      "qgv_5a750259f25e",
+      "qgv_ad26da3d9cb5",
+      "qgv_213626445bf2",
+      "qgv_f72c299bddcf"
+    ],
+    "technical_ref": "ta_b641ce60edc0",
+    "macro_ref": "mac_5e43883468d3",
+    "implementation_kind": "NEW IMPLEMENTATION"
+  }
+}

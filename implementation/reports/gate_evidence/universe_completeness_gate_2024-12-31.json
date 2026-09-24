@@ -1,0 +1,16 @@
+{
+  "kind": "UNIVERSE_COMPLETENESS_GATE",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "passed": false,
+  "companyfacts": 598,
+  "rankable": 297,
+  "benchmark_source": "World Federation of Exchanges (WFE), \"Market Statistics - February 2025\" (WFE Focus), Total Dec'24 column",
+  "benchmark_source_vintage": "2025-01-31",
+  "benchmark_low": 3400,
+  "benchmark_high": 3700,
+  "coverage_ratio": 0.17588235294117646,
+  "reasons": [
+    "COMPANYFACTS_COVERAGE_BELOW_BENCHMARK_LOW_ESTIMATE"
+  ],
+  "note": "Sizes the universe only; identity completeness (candidate_pool_complete) is never set True by this gate. An independent path to Official promotion -- see build_top500_sufficiency_gate for the other."
+}
