@@ -13,6 +13,10 @@ on:
         description: "PIT as-of date for the gate chain"
         default: "2024-12-31"
         required: true
+      sec_user_agent:
+        description: "SEC contact User-Agent (used only if secret SEC_USER_AGENT is unset; visible in run metadata)"
+        default: ""
+        required: false
       skip_fetch:
         description: "true = only re-run the gate chain on the cached store"
         default: "false"
@@ -30,7 +34,7 @@ jobs:
       run:
         working-directory: implementation
     env:
-      INVESTMENT_SYSTEM_SEC_UA: ${{ secrets.SEC_USER_AGENT }}
+      INVESTMENT_SYSTEM_SEC_UA: ${{ secrets.SEC_USER_AGENT || inputs.sec_user_agent }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -39,7 +43,7 @@ jobs:
       - name: Require SEC contact User-Agent (SEC fair-access policy)
         run: |
           if [ -z "$INVESTMENT_SYSTEM_SEC_UA" ]; then
-            echo "::error::Set repository secret SEC_USER_AGENT, e.g. 'Name contact@example.com'"; exit 1; fi
+            echo "::error::Set repository secret SEC_USER_AGENT (or the sec_user_agent input), e.g. 'Name contact@example.com'"; exit 1; fi
       - name: Restore persistent raw store
         uses: actions/cache/restore@v4
         with:
