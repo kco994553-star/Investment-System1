@@ -1,8 +1,8 @@
 {
   "kind": "RAW_DATASET_STORE_INDEX",
   "store_dir": "data/raw",
-  "n_artifacts": 2912,
-  "n_blobs_on_disk": 2912,
+  "n_artifacts": 2967,
+  "n_blobs_on_disk": 2967,
   "artifacts": [
     {
       "artifact_id": "companyfacts:0000001800",
@@ -10886,6 +10886,465 @@
       "http_status": 200
     },
     {
+      "artifact_id": "xbrl_instance:0000012927:0000012927-24-000082",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/12927/000001292724000082/ba-20240930_htm.xml",
+      "sha256": "cc72aea8c6e35eaa3dbc7c938362024468f8d405a22fe67b29e535f0d19ef489",
+      "bytes": 1905097,
+      "fetched_at": "2026-09-25T10:52:59.142330+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000014272:0000014272-24-000147",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/14272/000001427224000147/bmy-20240930_htm.xml",
+      "sha256": "4aff0076e4c6163a8a0156b42946c4a560e0b0f462d47f840b52b714d78b645b",
+      "bytes": 2793701,
+      "fetched_at": "2026-09-25T10:52:59.445164+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000016918:0000016918-24-000178",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/16918/000001691824000178/stz-20240831_htm.xml",
+      "sha256": "00b10c2afcc1729cb84e2d422ea480cfbde4049b2dd08746e092f36372c70e78",
+      "bytes": 1739700,
+      "fetched_at": "2026-09-25T10:52:59.689518+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000036104:0000036104-24-000072",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36104/000003610424000072/usb-20240930_htm.xml",
+      "sha256": "60ab6c8e16d0cb15f71cefbd8ab6e98c67394d858085f0714c5b2dd5fe5451f7",
+      "bytes": 6189865,
+      "fetched_at": "2026-09-25T10:52:59.970731+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000037996:0000037996-24-000185",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/37996/000003799624000185/f-20240930_htm.xml",
+      "sha256": "64e864f2613e86bf4f044dfc1068d509a4a7be5edcc4d75c4155cef9ce6f0a65",
+      "bytes": 3156606,
+      "fetched_at": "2026-09-25T10:53:00.239869+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000048465:0000048465-24-000051",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/48465/000004846524000051/hrl-20241027_htm.xml",
+      "sha256": "ca2be75b38861d6f98bdf8b29f34f5f2e4661a8e8d8677f298e7f5a3e7fc1118",
+      "bytes": 3117757,
+      "fetched_at": "2026-09-25T10:53:00.498769+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000063754:0000063754-24-000064",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/63754/000006375424000064/mkc-20240831_htm.xml",
+      "sha256": "69da8dfbe4a185212141dd320896074b514e81b7915bf4ebbae77074f24d6fae",
+      "bytes": 1352560,
+      "fetched_at": "2026-09-25T10:53:00.734311+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000092122:0000092122-24-000089",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/92122/000009212224000089/so-20240930_htm.xml",
+      "sha256": "7c494d9c2530280e87e9e124431c1a55db8c03b183acad34584cb2f40eeec058",
+      "bytes": 5830756,
+      "fetched_at": "2026-09-25T10:53:01.026268+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000092230:0000092230-24-000079",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/92230/000009223024000079/tfc-20240930_htm.xml",
+      "sha256": "35303daab35d8b3e41c2b10a13a30e134284e3d2855313cd5e99e48461d49cb2",
+      "bytes": 9161098,
+      "fetched_at": "2026-09-25T10:53:01.331002+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000100493:0000100493-24-000119",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/100493/000010049324000119/tsn-20240928_htm.xml",
+      "sha256": "30a7b17c2c253898d16c7170ac576ebb7932579ea8ef5d44b82d0d60bf3146e1",
+      "bytes": 3397028,
+      "fetched_at": "2026-09-25T10:53:01.607275+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000316709:0000316709-24-000069",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/316709/000031670924000069/schw-20240930_htm.xml",
+      "sha256": "47aeae67a08db47da6fd98bafb4fe3715519783f95c48b2efdc62cacb1198309",
+      "bytes": 5325345,
+      "fetched_at": "2026-09-25T10:53:01.886304+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000352915:0000950170-24-124103",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/352915/000095017024124103/uhs-20240930_htm.xml",
+      "sha256": "7c28361912410edc4d6881526bda00138515dd8c548e1916503b830a20d7ca35",
+      "bytes": 2300465,
+      "fetched_at": "2026-09-25T10:53:02.133896+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000732717:0000732717-24-000059",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/732717/000073271724000059/t-20240930_htm.xml",
+      "sha256": "d288c201f33d65f0404afd2e2f53e2b328905e79b93521144a68825a18a7c1a1",
+      "bytes": 2442358,
+      "fetched_at": "2026-09-25T10:53:02.405350+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000753308:0000753308-24-000057",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/753308/000075330824000057/nee-20240930_htm.xml",
+      "sha256": "8755bb2797203e20d994d58e8c10b92adadaeeac26f0d2f3f9d660d60f5f3004",
+      "bytes": 2936648,
+      "fetched_at": "2026-09-25T10:53:02.669676+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000797468:0000797468-24-000164",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/797468/000079746824000164/oxy-20240930_htm.xml",
+      "sha256": "8d1efb2088e4d7935820c763ac32b89a54942298ea331421af77874bb75d8585",
+      "bytes": 1599463,
+      "fetched_at": "2026-09-25T10:53:02.919109+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000895728:0000895728-24-000028",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895728/000089572824000028/enb-20240930_htm.xml",
+      "sha256": "b59f505370fb9936c468a21aa391b517af360a37bf3333281411429a31a96060",
+      "bytes": 2991153,
+      "fetched_at": "2026-09-25T10:53:03.202612+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000899051:0000899051-24-000083",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/899051/000089905124000083/all-20240930_htm.xml",
+      "sha256": "e284263c736ebb110b52d2519ae761dfd293a7674b90f0f8c2a070f9b42ca77e",
+      "bytes": 5822538,
+      "fetched_at": "2026-09-25T10:53:03.550314+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000920760:0001628280-24-041915",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/920760/000162828024041915/len-20240831_htm.xml",
+      "sha256": "07acf2162b527de264157fd32bd6a83f57e41c49f861b90df89d0665deae3215",
+      "bytes": 2236242,
+      "fetched_at": "2026-09-25T10:53:03.808815+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000922621:0000922621-24-000023",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/922621/000092262124000023/erie-20240930_htm.xml",
+      "sha256": "b511b35a36e880c043aa1b980c7d326cec94d66d28c5d6aed0fc45b67c9e7d8b",
+      "bytes": 2165315,
+      "fetched_at": "2026-09-25T10:53:04.056067+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000927628:0000927628-24-000306",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/927628/000092762824000306/cof-20240930_htm.xml",
+      "sha256": "ae4e32b8e6d10bcfa1696fdfa2371cc9f7e31350388f782c3056aaf49dae3f74",
+      "bytes": 8704462,
+      "fetched_at": "2026-09-25T10:53:04.367066+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001001250:0001001250-24-000177",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1001250/000100125024000177/el-20240930_htm.xml",
+      "sha256": "e0e5b0a6cfe9408b418bbeb193002d29423f4c49077282473642820d4d769e69",
+      "bytes": 2156419,
+      "fetched_at": "2026-09-25T10:53:04.646367+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001032208:0001032208-24-000046",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1032208/000103220824000046/sre-20240930_htm.xml",
+      "sha256": "1c900d3127bb0bc59b112900975371a6dc484160963f45c60a775f8aeca9d9a4",
+      "bytes": 5627611,
+      "fetched_at": "2026-09-25T10:53:04.905999+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001037038:0001037038-24-000029",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1037038/000103703824000029/rl-20240928_htm.xml",
+      "sha256": "f21bac85570a1e2e7ca76418ced3bcf58acb3be79c55c67bfe70f3d25599e044",
+      "bytes": 1779757,
+      "fetched_at": "2026-09-25T10:53:05.153230+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001045609:0000950170-24-117407",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045609/000095017024117407/pld-20240930_htm.xml",
+      "sha256": "50a3bcf4be505da609e76c883070f10ce5aadd4cdde8e5d5c261dacddd2cd8b6",
+      "bytes": 5331039,
+      "fetched_at": "2026-09-25T10:53:05.458316+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001050446:0000950170-24-119263",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1050446/000095017024119263/mstr-20240930_htm.xml",
+      "sha256": "9a76a7ab4fe4da7bdc69fcb153aca4c10149dd5a99f465fca8074d9bcb78918a",
+      "bytes": 3608065,
+      "fetched_at": "2026-09-25T10:53:05.684173+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001061219:0001061219-24-000021",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1061219/000106121924000021/form10q_htm.xml",
+      "sha256": "66cfa2dbbba3252f35a9e75c93a9cc108f0c9214d74afa4fbaa4a01dabb2d39f",
+      "bytes": 4171509,
+      "fetched_at": "2026-09-25T10:53:05.932497+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001063761:0001558370-24-014946",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1063761/000155837024014946/spg-20240930x10q_htm.xml",
+      "sha256": "e858d5f3d7b52075d30e4c4e70c13c67b12fa5c46cbcf9b621b7465a8cf442d8",
+      "bytes": 2994591,
+      "fetched_at": "2026-09-25T10:53:06.188713+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001067983:0000950170-24-120241",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1067983/000095017024120241/brka-20240930_htm.xml",
+      "sha256": "a7486309f282e11874c2c987914b42cb2690b27783d969186353f4462f6b6f99",
+      "bytes": 5454469,
+      "fetched_at": "2026-09-25T10:53:06.461013+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001099219:0001099219-24-000257",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1099219/000109921924000257/met-20240930_htm.xml",
+      "sha256": "c9b0616c083e4cfdbf0888f63a030a9f7333ac69c1d42dcd5569615f406cc47e",
+      "bytes": 12792902,
+      "fetched_at": "2026-09-25T10:53:06.774359+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001164727:0001164727-24-000061",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1164727/000116472724000061/nem-20240930_htm.xml",
+      "sha256": "dd7ccaa1ab4c221e494262daeab4f38818f0a2ff63d1ce178338e70a00c65a58",
+      "bytes": 3535081,
+      "fetched_at": "2026-09-25T10:53:07.067130+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001166691:0001166691-24-000056",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1166691/000116669124000056/cmcsa-20240930_htm.xml",
+      "sha256": "3a5fc68581c23fd0fca098f254bfab7dc0f542a3716ae5843497d2a38df1097f",
+      "bytes": 978558,
+      "fetched_at": "2026-09-25T10:53:07.298176+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001276187:0001276187-24-000108",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1276187/000127618724000108/et-20240930_htm.xml",
+      "sha256": "96399da5f85677f9dbe5442f1b6c6b3cace509177452429e55cd0c64d1e2b8c0",
+      "bytes": 2435331,
+      "fetched_at": "2026-09-25T10:53:07.591903+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001283699:0001283699-24-000142",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1283699/000128369924000142/tmus-20240930_htm.xml",
+      "sha256": "2bc385abf78feda46ce67697af3ad74f3e99d05a0517970aeb329b5323070daa",
+      "bytes": 1624328,
+      "fetched_at": "2026-09-25T10:53:07.847217+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001297996:0001558370-24-014149",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1297996/000155837024014149/dlr-20240930x10q_htm.xml",
+      "sha256": "286337f15b7179c0f20f26d243cab23fc908ec3bfb4c19196a473e8220c26d0c",
+      "bytes": 3575975,
+      "fetched_at": "2026-09-25T10:53:08.114738+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001326160:0001326160-24-000181",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1326160/000132616024000181/duk-20240930_htm.xml",
+      "sha256": "fde0ac00ff244c3c2cbb2d40b44d57e81d0066f8d3cb7e2895f9647b93f6fa03",
+      "bytes": 10303792,
+      "fetched_at": "2026-09-25T10:53:08.544644+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001326801:0001326801-24-000081",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1326801/000132680124000081/meta-20240930_htm.xml",
+      "sha256": "49c472afc65465fb13aa1438e309c342ecb89a6d5876d865619be7125eb07971",
+      "bytes": 1292880,
+      "fetched_at": "2026-09-25T10:53:08.764203+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001341439:0000950170-24-134973",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1341439/000095017024134973/orcl-20241130_htm.xml",
+      "sha256": "4b5b301ded8c339b416c5203c17dea235473900d0525d02bab2639a3d0a78ee4",
+      "bytes": 2046264,
+      "fetched_at": "2026-09-25T10:53:08.999318+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001390777:0001390777-24-000133",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1390777/000139077724000133/bk-20240930_htm.xml",
+      "sha256": "67acd714c69f5409d27fd20483201ad92a6f567f9903874a6a10163b0b9c3a34",
+      "bytes": 7899318,
+      "fetched_at": "2026-09-25T10:53:09.294522+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001393311:0001393311-24-000193",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1393311/000139331124000193/psa-20240930_htm.xml",
+      "sha256": "b4817e99f8edeafa19c17a7529fc68b0dc1d5863fd4acda36b75d737381f06da",
+      "bytes": 1075574,
+      "fetched_at": "2026-09-25T10:53:09.541045+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001404912:0001404912-24-000029",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1404912/000140491224000029/kkr-20240930_htm.xml",
+      "sha256": "2b64f3f35b4af827775c4f8ce394c4d978ef1cf17ddf2725143fba8a2b9255f8",
+      "bytes": 13900661,
+      "fetched_at": "2026-09-25T10:53:10.008553+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001477333:0001477333-24-000085",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1477333/000147733324000085/cloud-20240930_htm.xml",
+      "sha256": "1bdb256bdc2d1fd82e1e847c8efa6ad0bead7425911400cea85db80c680c7456",
+      "bytes": 1155051,
+      "fetched_at": "2026-09-25T10:53:10.298615+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001506307:0001506307-24-000119",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1506307/000150630724000119/kmi-20240930_htm.xml",
+      "sha256": "194fa3c8e11687937454b98c73fe057a0f608c038fda49da0b6bafdd3727d8b4",
+      "bytes": 2101214,
+      "fetched_at": "2026-09-25T10:53:10.540570+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001559720:0001559720-24-000032",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1559720/000155972024000032/abnb-20240930_htm.xml",
+      "sha256": "82283d68508fc801293db633f9d36b97730657ae0b4a96368c6e24b6d4786e97",
+      "bytes": 1146489,
+      "fetched_at": "2026-09-25T10:53:10.790282+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001564708:0001564708-24-000599",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1564708/000156470824000599/nws-20240930_htm.xml",
+      "sha256": "44fad76ad8104c34f35f835c489fb9d980cbb06b6324b9f680e97f93b6ad264b",
+      "bytes": 1368545,
+      "fetched_at": "2026-09-25T10:53:11.052361+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001645590:0001645590-24-000139",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1645590/000164559024000139/hpe-20241031_htm.xml",
+      "sha256": "e67d5ddabfba973da91f8ccde4dc9bc977329013e99c89b8aa0e05eac1483221",
+      "bytes": 4893799,
+      "fetched_at": "2026-09-25T10:53:11.332519+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001650372:0001650372-24-000056",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1650372/000165037224000056/team-20240930_htm.xml",
+      "sha256": "bb8e90950c291b25355576075570b096f791ab51fc732e4bc01927f51cc9e95b",
+      "bytes": 1134894,
+      "fetched_at": "2026-09-25T10:53:11.563219+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001652044:0001652044-24-000118",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204424000118/goog-20240930_htm.xml",
+      "sha256": "df3321b40e2662338a29f3ba1c30615b9bbbf4ab9497e054a2e5c34bb00789a8",
+      "bytes": 2306265,
+      "fetched_at": "2026-09-25T10:53:11.792935+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001679788:0001679788-24-000187",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1679788/000167978824000187/coin-20240930_htm.xml",
+      "sha256": "eb9e5dc5db0e16a01968a3e7d364dfecf58e5215e5a50e6630cfce597a45e966",
+      "bytes": 2011166,
+      "fetched_at": "2026-09-25T10:53:12.043976+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001754301:0001628280-24-044851",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1754301/000162828024044851/fox-20240930_htm.xml",
+      "sha256": "abd15002f461cae7db6e7c4a30646fd2e89acb71eb90e15ee4d9e673bfe6d2af",
+      "bytes": 662429,
+      "fetched_at": "2026-09-25T10:53:12.277214+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001792789:0001628280-24-044312",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1792789/000162828024044312/dash-20240930_htm.xml",
+      "sha256": "d0d2ff27f0cb4282497ed57d343a6b9a840a1b6a0b9506ff0e2f101c18374d7b",
+      "bytes": 1189417,
+      "fetched_at": "2026-09-25T10:53:12.502033+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0001858681:0001858681-24-000120",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1858681/000185868124000120/apo-20240930_htm.xml",
+      "sha256": "c53e973f7b37dd1a15b38c5437d4db825d1888c8866652f7df5246dfc33e5f74",
+      "bytes": 13030195,
+      "fetched_at": "2026-09-25T10:53:12.793646+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "yahoo_chart:A:5y",
       "source_kind": "YAHOO_CHART",
       "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/A?interval=1d&range=5y",
@@ -14999,6 +15458,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "yahoo_chart:LEN-B:5y",
+      "source_kind": "YAHOO_CHART",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LEN-B?interval=1d&range=5y",
+      "sha256": "b74d8d63f5528ec03ca12b7088975cc82bed8345f1a523af4ff7876f71b848d3",
+      "bytes": 135641,
+      "fetched_at": "2026-09-25T10:59:24.449267+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "yahoo_chart:LEN:5y",
       "source_kind": "YAHOO_CHART",
       "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LEN?interval=1d&range=5y",
@@ -15410,6 +15878,15 @@
       "sha256": "c4f2d897d8215cee0888953b24b91e87c254bb1002db40d26e46ed8dc16340cf",
       "bytes": 135617,
       "fetched_at": "2026-09-25T08:25:31.909435+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_chart:MKC-V:5y",
+      "source_kind": "YAHOO_CHART",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MKC-V?interval=1d&range=5y",
+      "sha256": "bbe9043dc35fb2a3c3c95d362633eef052abff40b0a9ce687157e72a9cb8163f",
+      "bytes": 124970,
+      "fetched_at": "2026-09-25T10:59:25.057502+00:00",
       "http_status": 200
     },
     {
@@ -22667,6 +23144,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "yahoo_events:LEN-B:5y",
+      "source_kind": "YAHOO_SPLIT_EVENTS",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LEN-B?interval=1mo&range=5y&events=split",
+      "sha256": "8c43359adadc9247535a905efd9ecd7fe2a106ea66107253d3cf68502aa838a4",
+      "bytes": 7889,
+      "fetched_at": "2026-09-25T10:59:24.741957+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "yahoo_events:LEN:5y",
       "source_kind": "YAHOO_SPLIT_EVENTS",
       "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LEN?interval=1mo&range=5y&events=split",
@@ -23051,6 +23537,15 @@
       "sha256": "5b2ceab6630b52585c8562e56c0169d1a37d0e7d1c4c085c2e49ebff1fb0d6a7",
       "bytes": 7897,
       "fetched_at": "2026-09-25T09:03:25.134549+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_events:MKC-V:5y",
+      "source_kind": "YAHOO_SPLIT_EVENTS",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MKC-V?interval=1mo&range=5y&events=split",
+      "sha256": "946a84b221203c9efd589f48303e71b3b9ed9dcac3fc98c26ab6d7e17dc1cf4e",
+      "bytes": 7289,
+      "fetched_at": "2026-09-25T10:59:25.320968+00:00",
       "http_status": 200
     },
     {

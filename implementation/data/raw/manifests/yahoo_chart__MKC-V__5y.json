@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MKC-V:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MKC-V?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T10:59:25.057502+00:00",
+  "sha256": "bbe9043dc35fb2a3c3c95d362633eef052abff40b0a9ce687157e72a9cb8163f",
+  "bytes": 124970,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
