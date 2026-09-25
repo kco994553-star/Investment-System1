@@ -1,0 +1,1085 @@
+{
+  "kind": "COVER_XBRL_INGEST_RUN",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "n_issuers": 110,
+  "n_filings": 51,
+  "n_class_symbols": 34,
+  "n_requested": 178,
+  "n_ok": 119,
+  "n_failed": 59,
+  "filings": {
+    "0000012927": {
+      "form": "10-Q",
+      "filed": "2024-10-23",
+      "accn": "0000012927-24-000082",
+      "primary_document": "ba-20240930.htm",
+      "artifact_id": "xbrl_instance:0000012927:0000012927-24-000082"
+    },
+    "0000014272": {
+      "form": "10-Q",
+      "filed": "2024-10-31",
+      "accn": "0000014272-24-000147",
+      "primary_document": "bmy-20240930.htm",
+      "artifact_id": "xbrl_instance:0000014272:0000014272-24-000147"
+    },
+    "0000016918": {
+      "form": "10-Q",
+      "filed": "2024-10-03",
+      "accn": "0000016918-24-000178",
+      "primary_document": "stz-20240831.htm",
+      "artifact_id": "xbrl_instance:0000016918:0000016918-24-000178"
+    },
+    "0000036104": {
+      "form": "10-Q",
+      "filed": "2024-11-05",
+      "accn": "0000036104-24-000072",
+      "primary_document": "usb-20240930.htm",
+      "artifact_id": "xbrl_instance:0000036104:0000036104-24-000072"
+    },
+    "0000037996": {
+      "form": "10-Q",
+      "filed": "2024-10-29",
+      "accn": "0000037996-24-000185",
+      "primary_document": "f-20240930.htm",
+      "artifact_id": "xbrl_instance:0000037996:0000037996-24-000185"
+    },
+    "0000048465": {
+      "form": "10-K",
+      "filed": "2024-12-05",
+      "accn": "0000048465-24-000051",
+      "primary_document": "hrl-20241027.htm",
+      "artifact_id": "xbrl_instance:0000048465:0000048465-24-000051"
+    },
+    "0000063754": {
+      "form": "10-Q",
+      "filed": "2024-10-01",
+      "accn": "0000063754-24-000064",
+      "primary_document": "mkc-20240831.htm",
+      "artifact_id": "xbrl_instance:0000063754:0000063754-24-000064"
+    },
+    "0000092122": {
+      "form": "10-Q",
+      "filed": "2024-10-31",
+      "accn": "0000092122-24-000089",
+      "primary_document": "so-20240930.htm",
+      "artifact_id": "xbrl_instance:0000092122:0000092122-24-000089"
+    },
+    "0000092230": {
+      "form": "10-Q",
+      "filed": "2024-11-01",
+      "accn": "0000092230-24-000079",
+      "primary_document": "tfc-20240930.htm",
+      "artifact_id": "xbrl_instance:0000092230:0000092230-24-000079"
+    },
+    "0000100493": {
+      "form": "10-K",
+      "filed": "2024-11-12",
+      "accn": "0000100493-24-000119",
+      "primary_document": "tsn-20240928.htm",
+      "artifact_id": "xbrl_instance:0000100493:0000100493-24-000119"
+    },
+    "0000316709": {
+      "form": "10-Q",
+      "filed": "2024-11-08",
+      "accn": "0000316709-24-000069",
+      "primary_document": "schw-20240930.htm",
+      "artifact_id": "xbrl_instance:0000316709:0000316709-24-000069"
+    },
+    "0000352915": {
+      "form": "10-Q",
+      "filed": "2024-11-08",
+      "accn": "0000950170-24-124103",
+      "primary_document": "uhs-20240930.htm",
+      "artifact_id": "xbrl_instance:0000352915:0000950170-24-124103"
+    },
+    "0000732717": {
+      "form": "10-Q",
+      "filed": "2024-10-29",
+      "accn": "0000732717-24-000059",
+      "primary_document": "t-20240930.htm",
+      "artifact_id": "xbrl_instance:0000732717:0000732717-24-000059"
+    },
+    "0000753308": {
+      "form": "10-Q",
+      "filed": "2024-10-23",
+      "accn": "0000753308-24-000057",
+      "primary_document": "nee-20240930.htm",
+      "artifact_id": "xbrl_instance:0000753308:0000753308-24-000057"
+    },
+    "0000797468": {
+      "form": "10-Q",
+      "filed": "2024-11-12",
+      "accn": "0000797468-24-000164",
+      "primary_document": "oxy-20240930.htm",
+      "artifact_id": "xbrl_instance:0000797468:0000797468-24-000164"
+    },
+    "0000895728": {
+      "form": "10-Q",
+      "filed": "2024-11-01",
+      "accn": "0000895728-24-000028",
+      "primary_document": "enb-20240930.htm",
+      "artifact_id": "xbrl_instance:0000895728:0000895728-24-000028"
+    },
+    "0000899051": {
+      "form": "10-Q",
+      "filed": "2024-10-30",
+      "accn": "0000899051-24-000083",
+      "primary_document": "all-20240930.htm",
+      "artifact_id": "xbrl_instance:0000899051:0000899051-24-000083"
+    },
+    "0000920760": {
+      "form": "10-Q",
+      "filed": "2024-10-02",
+      "accn": "0001628280-24-041915",
+      "primary_document": "len-20240831.htm",
+      "artifact_id": "xbrl_instance:0000920760:0001628280-24-041915"
+    },
+    "0000922621": {
+      "form": "10-Q",
+      "filed": "2024-10-31",
+      "accn": "0000922621-24-000023",
+      "primary_document": "erie-20240930.htm",
+      "artifact_id": "xbrl_instance:0000922621:0000922621-24-000023"
+    },
+    "0000927628": {
+      "form": "10-Q",
+      "filed": "2024-10-31",
+      "accn": "0000927628-24-000306",
+      "primary_document": "cof-20240930.htm",
+      "artifact_id": "xbrl_instance:0000927628:0000927628-24-000306"
+    },
+    "0001001250": {
+      "form": "10-Q",
+      "filed": "2024-10-31",
+      "accn": "0001001250-24-000177",
+      "primary_document": "el-20240930.htm",
+      "artifact_id": "xbrl_instance:0001001250:0001001250-24-000177"
+    },
+    "0001032208": {
+      "form": "10-Q",
+      "filed": "2024-11-06",
+      "accn": "0001032208-24-000046",
+      "primary_document": "sre-20240930.htm",
+      "artifact_id": "xbrl_instance:0001032208:0001032208-24-000046"
+    },
+    "0001037038": {
+      "form": "10-Q",
+      "filed": "2024-11-07",
+      "accn": "0001037038-24-000029",
+      "primary_document": "rl-20240928.htm",
+      "artifact_id": "xbrl_instance:0001037038:0001037038-24-000029"
+    },
+    "0001045609": {
+      "form": "10-Q",
+      "filed": "2024-10-25",
+      "accn": "0000950170-24-117407",
+      "primary_document": "pld-20240930.htm",
+      "artifact_id": "xbrl_instance:0001045609:0000950170-24-117407"
+    },
+    "0001050446": {
+      "form": "10-Q",
+      "filed": "2024-10-31",
+      "accn": "0000950170-24-119263",
+      "primary_document": "mstr-20240930.htm",
+      "artifact_id": "xbrl_instance:0001050446:0000950170-24-119263"
+    },
+    "0001061219": {
+      "form": "10-Q",
+      "filed": "2024-11-08",
+      "accn": "0001061219-24-000021",
+      "primary_document": "form10q.htm",
+      "artifact_id": "xbrl_instance:0001061219:0001061219-24-000021"
+    },
+    "0001063761": {
+      "form": "10-Q",
+      "filed": "2024-11-08",
+      "accn": "0001558370-24-014946",
+      "primary_document": "spg-20240930x10q.htm",
+      "artifact_id": "xbrl_instance:0001063761:0001558370-24-014946"
+    },
+    "0001067983": {
+      "form": "10-Q",
+      "filed": "2024-11-04",
+      "accn": "0000950170-24-120241",
+      "primary_document": "brka-20240930.htm",
+      "artifact_id": "xbrl_instance:0001067983:0000950170-24-120241"
+    },
+    "0001099219": {
+      "form": "10-Q",
+      "filed": "2024-11-01",
+      "accn": "0001099219-24-000257",
+      "primary_document": "met-20240930.htm",
+      "artifact_id": "xbrl_instance:0001099219:0001099219-24-000257"
+    },
+    "0001164727": {
+      "form": "10-Q",
+      "filed": "2024-10-24",
+      "accn": "0001164727-24-000061",
+      "primary_document": "nem-20240930.htm",
+      "artifact_id": "xbrl_instance:0001164727:0001164727-24-000061"
+    },
+    "0001166691": {
+      "form": "10-Q",
+      "filed": "2024-10-31",
+      "accn": "0001166691-24-000056",
+      "primary_document": "cmcsa-20240930.htm",
+      "artifact_id": "xbrl_instance:0001166691:0001166691-24-000056"
+    },
+    "0001276187": {
+      "form": "10-Q",
+      "filed": "2024-11-07",
+      "accn": "0001276187-24-000108",
+      "primary_document": "et-20240930.htm",
+      "artifact_id": "xbrl_instance:0001276187:0001276187-24-000108"
+    },
+    "0001283699": {
+      "form": "10-Q",
+      "filed": "2024-10-23",
+      "accn": "0001283699-24-000142",
+      "primary_document": "tmus-20240930.htm",
+      "artifact_id": "xbrl_instance:0001283699:0001283699-24-000142"
+    },
+    "0001297996": {
+      "form": "10-Q",
+      "filed": "2024-11-01",
+      "accn": "0001558370-24-014149",
+      "primary_document": "dlr-20240930x10q.htm",
+      "artifact_id": "xbrl_instance:0001297996:0001558370-24-014149"
+    },
+    "0001326160": {
+      "form": "10-Q",
+      "filed": "2024-11-07",
+      "accn": "0001326160-24-000181",
+      "primary_document": "duk-20240930.htm",
+      "artifact_id": "xbrl_instance:0001326160:0001326160-24-000181"
+    },
+    "0001326801": {
+      "form": "10-Q",
+      "filed": "2024-10-31",
+      "accn": "0001326801-24-000081",
+      "primary_document": "meta-20240930.htm",
+      "artifact_id": "xbrl_instance:0001326801:0001326801-24-000081"
+    },
+    "0001341439": {
+      "form": "10-Q",
+      "filed": "2024-12-10",
+      "accn": "0000950170-24-134973",
+      "primary_document": "orcl-20241130.htm",
+      "artifact_id": "xbrl_instance:0001341439:0000950170-24-134973"
+    },
+    "0001390777": {
+      "form": "10-Q",
+      "filed": "2024-11-01",
+      "accn": "0001390777-24-000133",
+      "primary_document": "bk-20240930.htm",
+      "artifact_id": "xbrl_instance:0001390777:0001390777-24-000133"
+    },
+    "0001393311": {
+      "form": "10-Q",
+      "filed": "2024-10-30",
+      "accn": "0001393311-24-000193",
+      "primary_document": "psa-20240930.htm",
+      "artifact_id": "xbrl_instance:0001393311:0001393311-24-000193"
+    },
+    "0001404912": {
+      "form": "10-Q",
+      "filed": "2024-11-05",
+      "accn": "0001404912-24-000029",
+      "primary_document": "kkr-20240930.htm",
+      "artifact_id": "xbrl_instance:0001404912:0001404912-24-000029"
+    },
+    "0001477333": {
+      "form": "10-Q",
+      "filed": "2024-11-07",
+      "accn": "0001477333-24-000085",
+      "primary_document": "cloud-20240930.htm",
+      "artifact_id": "xbrl_instance:0001477333:0001477333-24-000085"
+    },
+    "0001506307": {
+      "form": "10-Q",
+      "filed": "2024-10-18",
+      "accn": "0001506307-24-000119",
+      "primary_document": "kmi-20240930.htm",
+      "artifact_id": "xbrl_instance:0001506307:0001506307-24-000119"
+    },
+    "0001559720": {
+      "form": "10-Q",
+      "filed": "2024-11-07",
+      "accn": "0001559720-24-000032",
+      "primary_document": "abnb-20240930.htm",
+      "artifact_id": "xbrl_instance:0001559720:0001559720-24-000032"
+    },
+    "0001564708": {
+      "form": "10-Q",
+      "filed": "2024-11-08",
+      "accn": "0001564708-24-000599",
+      "primary_document": "nws-20240930.htm",
+      "artifact_id": "xbrl_instance:0001564708:0001564708-24-000599"
+    },
+    "0001645590": {
+      "form": "10-K",
+      "filed": "2024-12-19",
+      "accn": "0001645590-24-000139",
+      "primary_document": "hpe-20241031.htm",
+      "artifact_id": "xbrl_instance:0001645590:0001645590-24-000139"
+    },
+    "0001650372": {
+      "form": "10-Q",
+      "filed": "2024-11-01",
+      "accn": "0001650372-24-000056",
+      "primary_document": "team-20240930.htm",
+      "artifact_id": "xbrl_instance:0001650372:0001650372-24-000056"
+    },
+    "0001652044": {
+      "form": "10-Q",
+      "filed": "2024-10-30",
+      "accn": "0001652044-24-000118",
+      "primary_document": "goog-20240930.htm",
+      "artifact_id": "xbrl_instance:0001652044:0001652044-24-000118"
+    },
+    "0001679788": {
+      "form": "10-Q",
+      "filed": "2024-10-30",
+      "accn": "0001679788-24-000187",
+      "primary_document": "coin-20240930.htm",
+      "artifact_id": "xbrl_instance:0001679788:0001679788-24-000187"
+    },
+    "0001754301": {
+      "form": "10-Q",
+      "filed": "2024-11-04",
+      "accn": "0001628280-24-044851",
+      "primary_document": "fox-20240930.htm",
+      "artifact_id": "xbrl_instance:0001754301:0001628280-24-044851"
+    },
+    "0001792789": {
+      "form": "10-Q",
+      "filed": "2024-10-30",
+      "accn": "0001628280-24-044312",
+      "primary_document": "dash-20240930.htm",
+      "artifact_id": "xbrl_instance:0001792789:0001628280-24-044312"
+    },
+    "0001858681": {
+      "form": "10-Q",
+      "filed": "2024-11-06",
+      "accn": "0001858681-24-000120",
+      "primary_document": "apo-20240930.htm",
+      "artifact_id": "xbrl_instance:0001858681:0001858681-24-000120"
+    }
+  },
+  "log": [
+    {
+      "artifact_id": "xbrl_instance:0000002809",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000012927:0000012927-24-000082",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000014272:0000014272-24-000147",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000016918:0000016918-24-000178",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000019617",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000036104:0000036104-24-000072",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000037996:0000037996-24-000185",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000047710",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000048465:0000048465-24-000051",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000063754:0000063754-24-000064",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000067088",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000070858",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000072971",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000092122:0000092122-24-000089",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000092230:0000092230-24-000079",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000093751",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000100493:0000100493-24-000119",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000217410",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000312069",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000313807",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000313838",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000316709:0000316709-24-000069",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000352915:0000950170-24-124103",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000353278",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000732717:0000732717-24-000059",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000753308:0000753308-24-000057",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000797468:0000797468-24-000164",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000811809",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000831001",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000842180",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000844150",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000863064",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000886982",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000891478",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000895421",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000895728:0000895728-24-000028",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000899051:0000899051-24-000083",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000901832",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000920760:0001628280-24-041915",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000922621:0000922621-24-000023",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000924613",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000927628:0000927628-24-000306",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000927971",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000929869",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000937966",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000947263",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001000184",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001000275",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001001085",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001001250:0001001250-24-000177",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001002242",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001004315",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001022837",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001032208:0001032208-24-000046",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001037038:0001037038-24-000029",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001039765",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001045520",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001045609:0000950170-24-117407",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001050446:0000950170-24-119263",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001061219:0001061219-24-000021",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001063761:0001558370-24-014946",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001067983:0000950170-24-120241",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001086888",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001089113",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001094517",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001099219:0001099219-24-000257",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001110646",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001114448",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001119639",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001121404",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001129137",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001131399",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001140625",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001158838",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001159508",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001160106",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001164727:0001164727-24-000061",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001166691:0001166691-24-000056",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001243429",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001276187:0001276187-24-000108",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001283699:0001283699-24-000142",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001297996:0001558370-24-014149",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001303523",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001306965",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001326160:0001326160-24-000181",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001326801:0001326801-24-000081",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001335730",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001341439:0000950170-24-134973",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001390777:0001390777-24-000133",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001393311:0001393311-24-000193",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001395064",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001404912:0001404912-24-000029",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001477333:0001477333-24-000085",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001506307:0001506307-24-000119",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001513845",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001559720:0001559720-24-000032",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001564708:0001564708-24-000599",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001577552",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001645590:0001645590-24-000139",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001650372:0001650372-24-000056",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001652044:0001652044-24-000118",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001668717",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001679788:0001679788-24-000187",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001691493",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001754301:0001628280-24-044851",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001792789:0001628280-24-044312",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001858681:0001858681-24-000120",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001937926",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0002023554",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "xbrl_instance:0002089271",
+      "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"
+    },
+    {
+      "artifact_id": "yahoo_chart:ABNB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ABNB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BRK-A:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BRK-A:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BRK-B:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BRK-B:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CMCSA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CMCSA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:COIN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:COIN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DASH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DASH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ENB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ENB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EPD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EPD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ERIE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ERIE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:F:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:F:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FOX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FOX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FOXA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FOXA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:GOOG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:GOOG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:GOOGL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:GOOGL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:HRL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:HRL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LEN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LEN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LEN-B:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LEN-B:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:META:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:META:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MKC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MKC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MKC-V:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MKC-V:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MSTR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MSTR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NEM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NEM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NET:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NET:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NWS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NWS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NWSA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NWSA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:RL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:RL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:SCHW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:SCHW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:SPG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:SPG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:STZ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:STZ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TEAM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TEAM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TSN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TSN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:UHS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:UHS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "real_data_verified": false
+}

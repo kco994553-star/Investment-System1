@@ -1542,13 +1542,13 @@
     "chart_range": "5y",
     "listings": 533,
     "companyfacts": 533,
-    "price": 516,
+    "price": 517,
     "rankable": 510,
     "missing_companyfacts": 0,
     "missing_price": 13,
-    "missing_shares": 4,
+    "missing_shares": 3,
     "ambiguous_shares": 0,
-    "non_positive": 6,
+    "non_positive": 7,
     "top_cutoff_mcap_if_500_rankable": 7482394692.349243,
     "candidate_pool_complete": false,
     "justified_official_top500": false,
@@ -15886,22 +15886,6 @@
       "mcap": null,
       "share_concepts_present": null
     },
-    "PSKY": {
-      "yahoo": "PSKY",
-      "cik": "0002041610",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 10.34000015258789,
-      "adjclose": 10.038987159729004,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 10.34000015258789,
-      "mcap": null,
-      "share_concepts_present": {}
-    },
     "WBA": {
       "yahoo": "WBA",
       "cik": "0001618921",
@@ -15925,8 +15909,8 @@
       "role": "MISSING_LARGE_CAP_DETECTOR",
       "n_members": 503,
       "n_missing_from_pool": 0,
-      "n_present_not_rankable": 14,
-      "n_present_rankable_outside_top500": 10,
+      "n_present_not_rankable": 13,
+      "n_present_rankable_outside_top500": 11,
       "missing_from_pool": []
     }
   ],
@@ -15974,7 +15958,6 @@
           "IPG",
           "JNPR",
           "K",
-          "PSKY",
           "WBA"
         ],
         "present_rankable_outside_top500": [
@@ -15985,6 +15968,7 @@
           "CZR",
           "FMC",
           "HII",
+          "PSKY",
           "SMCI",
           "TAP",
           "TSCO"

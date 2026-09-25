@@ -1,0 +1,343 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "data/raw",
+  "n_requested": 66,
+  "n_ok": 66,
+  "n_failed": 0,
+  "log": [
+    {
+      "artifact_id": "yahoo_chart:AEMRF:5y",
+      "status": "OK",
+      "bytes": 3272
+    },
+    {
+      "artifact_id": "yahoo_chart:AIQD:5y",
+      "status": "OK",
+      "bytes": 9316
+    },
+    {
+      "artifact_id": "yahoo_chart:AIQU:5y",
+      "status": "OK",
+      "bytes": 9649
+    },
+    {
+      "artifact_id": "yahoo_chart:AVB:5y",
+      "status": "OK",
+      "bytes": 1290
+    },
+    {
+      "artifact_id": "yahoo_chart:BKFOF:5y",
+      "status": "OK",
+      "bytes": 17287
+    },
+    {
+      "artifact_id": "yahoo_chart:BKFPF:5y",
+      "status": "OK",
+      "bytes": 45804
+    },
+    {
+      "artifact_id": "yahoo_chart:BNKD:5y",
+      "status": "OK",
+      "bytes": 41878
+    },
+    {
+      "artifact_id": "yahoo_chart:BNKU:5y",
+      "status": "OK",
+      "bytes": 43366
+    },
+    {
+      "artifact_id": "yahoo_chart:BNY-PK:5y",
+      "status": "OK",
+      "bytes": 42534
+    },
+    {
+      "artifact_id": "yahoo_chart:BRCFF:5y",
+      "status": "OK",
+      "bytes": 40778
+    },
+    {
+      "artifact_id": "yahoo_chart:BRZD:5y",
+      "status": "OK",
+      "bytes": 3822
+    },
+    {
+      "artifact_id": "yahoo_chart:BRZL:5y",
+      "status": "OK",
+      "bytes": 3772
+    },
+    {
+      "artifact_id": "yahoo_chart:C-PN:5y",
+      "status": "OK",
+      "bytes": 5249
+    },
+    {
+      "artifact_id": "yahoo_chart:C-PR:5y",
+      "status": "OK",
+      "bytes": 18209
+    },
+    {
+      "artifact_id": "yahoo_chart:CELG-RI:5y",
+      "status": "OK",
+      "bytes": 1220
+    },
+    {
+      "artifact_id": "yahoo_chart:CNDIF:5y",
+      "status": "OK",
+      "bytes": 22596
+    },
+    {
+      "artifact_id": "yahoo_chart:DUKU:5y",
+      "status": "OK",
+      "bytes": 4316
+    },
+    {
+      "artifact_id": "yahoo_chart:EA:5y",
+      "status": "OK",
+      "bytes": 1278
+    },
+    {
+      "artifact_id": "yahoo_chart:EP-PC:5y",
+      "status": "OK",
+      "bytes": 4972
+    },
+    {
+      "artifact_id": "yahoo_chart:EQR:5y",
+      "status": "OK",
+      "bytes": 1271
+    },
+    {
+      "artifact_id": "yahoo_chart:F-PB:5y",
+      "status": "OK",
+      "bytes": 1213
+    },
+    {
+      "artifact_id": "yahoo_chart:F-PC:5y",
+      "status": "OK",
+      "bytes": 1234
+    },
+    {
+      "artifact_id": "yahoo_chart:F-PD:5y",
+      "status": "OK",
+      "bytes": 1227
+    },
+    {
+      "artifact_id": "yahoo_chart:FNGU:5y",
+      "status": "OK",
+      "bytes": 44944
+    },
+    {
+      "artifact_id": "yahoo_chart:GOOGM:5y",
+      "status": "OK",
+      "bytes": 9605
+    },
+    {
+      "artifact_id": "yahoo_chart:GOOGN:5y",
+      "status": "OK",
+      "bytes": 9545
+    },
+    {
+      "artifact_id": "yahoo_chart:HONA:5y",
+      "status": "OK",
+      "bytes": 8402
+    },
+    {
+      "artifact_id": "yahoo_chart:HYGD:5y",
+      "status": "OK",
+      "bytes": 4518
+    },
+    {
+      "artifact_id": "yahoo_chart:HYGU:5y",
+      "status": "OK",
+      "bytes": 4515
+    },
+    {
+      "artifact_id": "yahoo_chart:JPND:5y",
+      "status": "OK",
+      "bytes": 3775
+    },
+    {
+      "artifact_id": "yahoo_chart:JPNU:5y",
+      "status": "OK",
+      "bytes": 3839
+    },
+    {
+      "artifact_id": "yahoo_chart:KKR-PD:5y",
+      "status": "OK",
+      "bytes": 41862
+    },
+    {
+      "artifact_id": "yahoo_chart:KKRT:5y",
+      "status": "OK",
+      "bytes": 36707
+    },
+    {
+      "artifact_id": "yahoo_chart:LQDD:5y",
+      "status": "OK",
+      "bytes": 4482
+    },
+    {
+      "artifact_id": "yahoo_chart:LQDU:5y",
+      "status": "OK",
+      "bytes": 4571
+    },
+    {
+      "artifact_id": "yahoo_chart:MER-PK:5y",
+      "status": "OK",
+      "bytes": 1328
+    },
+    {
+      "artifact_id": "yahoo_chart:MNGU:5y",
+      "status": "OK",
+      "bytes": 3206
+    },
+    {
+      "artifact_id": "yahoo_chart:NEE-PN:5y",
+      "status": "OK",
+      "bytes": 1226
+    },
+    {
+      "artifact_id": "yahoo_chart:NEE-PU:5y",
+      "status": "OK",
+      "bytes": 1223
+    },
+    {
+      "artifact_id": "yahoo_chart:NEE-PV:5y",
+      "status": "OK",
+      "bytes": 16014
+    },
+    {
+      "artifact_id": "yahoo_chart:NEE-PW:5y",
+      "status": "OK",
+      "bytes": 1229
+    },
+    {
+      "artifact_id": "yahoo_chart:NRGD:5y",
+      "status": "OK",
+      "bytes": 40737
+    },
+    {
+      "artifact_id": "yahoo_chart:NRGU:5y",
+      "status": "OK",
+      "bytes": 43027
+    },
+    {
+      "artifact_id": "yahoo_chart:ORCL-PD:5y",
+      "status": "OK",
+      "bytes": 17474
+    },
+    {
+      "artifact_id": "yahoo_chart:OXY-WT:5y",
+      "status": "OK",
+      "bytes": 1162
+    },
+    {
+      "artifact_id": "yahoo_chart:PSA-PT:5y",
+      "status": "OK",
+      "bytes": 5880
+    },
+    {
+      "artifact_id": "yahoo_chart:PSA-PU:5y",
+      "status": "OK",
+      "bytes": 5829
+    },
+    {
+      "artifact_id": "yahoo_chart:SMHD:5y",
+      "status": "OK",
+      "bytes": 5022
+    },
+    {
+      "artifact_id": "yahoo_chart:SMHU:5y",
+      "status": "OK",
+      "bytes": 5020
+    },
+    {
+      "artifact_id": "yahoo_chart:SNDK:5y",
+      "status": "OK",
+      "bytes": 42561
+    },
+    {
+      "artifact_id": "yahoo_chart:SOJF:5y",
+      "status": "OK",
+      "bytes": 46668
+    },
+    {
+      "artifact_id": "yahoo_chart:SOMN:5y",
+      "status": "OK",
+      "bytes": 24631
+    },
+    {
+      "artifact_id": "yahoo_chart:STRC:5y",
+      "status": "OK",
+      "bytes": 30413
+    },
+    {
+      "artifact_id": "yahoo_chart:STRD:5y",
+      "status": "OK",
+      "bytes": 33150
+    },
+    {
+      "artifact_id": "yahoo_chart:STRF:5y",
+      "status": "OK",
+      "bytes": 38490
+    },
+    {
+      "artifact_id": "yahoo_chart:STRK:5y",
+      "status": "OK",
+      "bytes": 40764
+    },
+    {
+      "artifact_id": "yahoo_chart:TAWN:5y",
+      "status": "OK",
+      "bytes": 3843
+    },
+    {
+      "artifact_id": "yahoo_chart:TMUSI:5y",
+      "status": "OK",
+      "bytes": 31383
+    },
+    {
+      "artifact_id": "yahoo_chart:TMUSL:5y",
+      "status": "OK",
+      "bytes": 31399
+    },
+    {
+      "artifact_id": "yahoo_chart:TMUSZ:5y",
+      "status": "OK",
+      "bytes": 31744
+    },
+    {
+      "artifact_id": "yahoo_chart:TPEI:5y",
+      "status": "OK",
+      "bytes": 3746
+    },
+    {
+      "artifact_id": "yahoo_chart:VYLD:5y",
+      "status": "OK",
+      "bytes": 41886
+    },
+    {
+      "artifact_id": "yahoo_chart:XLCD:5y",
+      "status": "OK",
+      "bytes": 2291
+    },
+    {
+      "artifact_id": "yahoo_chart:XLCU:5y",
+      "status": "OK",
+      "bytes": 2220
+    },
+    {
+      "artifact_id": "yahoo_chart:XLPD:5y",
+      "status": "OK",
+      "bytes": 2293
+    },
+    {
+      "artifact_id": "yahoo_chart:XLPU:5y",
+      "status": "OK",
+      "bytes": 2264
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "plan_resolution": null,
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}
