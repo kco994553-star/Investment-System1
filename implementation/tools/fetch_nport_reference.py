@@ -70,6 +70,13 @@ def nport_filings_for(submissions: dict, as_of: str) -> list[dict]:
     return out
 
 
+def raw_xml_doc(primary_document: str) -> str:
+    """submissions list NPORT-P primaryDocument as 'xslFormNPORT-P_X01/primary_doc.xml', which EDGAR serves as an
+    XSL-rendered HTML page; the raw XML is the same file name without the xsl* directory."""
+    parts = primary_document.split("/")
+    return "/".join(p for p in parts if not p.lower().startswith("xsl")) or primary_document
+
+
 def series_names(index_headers: bytes) -> list[str]:
     """Series names in an EDGAR index-headers page (SGML header shown as text, tags possibly HTML-escaped)."""
     text = index_headers.decode("utf-8", errors="replace").replace("&lt;", "<").replace("&gt;", ">")
@@ -194,9 +201,14 @@ def main() -> None:
         if chosen is None:
             report["status"] = "SERIES_FILING_NOT_FOUND"
         else:
-            nid = f"nport:{chosen['accn']}"
-            get(nid, DOC_URL.format(cik=int(REGISTRANT_CIK), nodash=chosen["accn"].replace("-", ""), doc=chosen["doc"]), "SEC_NPORT")
-            doc = parse_nport(store.get_bytes(nid)) if store.has(nid) else {"holdings": []}
+            nid = f"nport_xml:{chosen['accn']}"
+            doc_url = DOC_URL.format(cik=int(REGISTRANT_CIK), nodash=chosen["accn"].replace("-", ""), doc=raw_xml_doc(chosen["doc"]))
+            get(nid, doc_url, "SEC_NPORT_XML")
+            try:
+                doc = parse_nport(store.get_bytes(nid)) if store.has(nid) else {"holdings": []}
+            except ET.ParseError as e:
+                doc = {"holdings": [], "parse_error": str(e)}
+                report["parse_error"] = str(e)
             eq = [h for h in doc["holdings"] if h["asset_cat"] == "EC"]
             report.update({"filing": chosen, "nport_report_date": doc.get("report_date"), "nport_series": doc.get("series_name"),
                            "n_holdings": len(doc["holdings"]), "n_equity_common": len(eq)})
@@ -213,7 +225,7 @@ def main() -> None:
                 no_ticker = sorted(c for c in members if c not in pool_ciks and not tick.get(c))
                 ref = {"name": "RUSSELL1000_IWB_NPORT", "kind": "SEC_NPORT_FUND_HOLDINGS",
                        "source": f"SEC Form NPORT-P {chosen['accn']} ({a.series_name}), report date {a.as_of}",
-                       "source_url": DOC_URL.format(cik=int(REGISTRANT_CIK), nodash=chosen["accn"].replace("-", ""), doc=chosen["doc"]),
+                       "source_url": doc_url,
                        "source_vintage": chosen["filed"], "as_of": a.as_of + "T00:00:00+00:00",
                        "membership_basis": "DATED_FUND_HOLDINGS", "reference_role": "SUPERSET_REFERENCE", "survivorship_risk": False,
                        "member_id_type": "CIK10", "members": sorted(members), "member_names": {c: v["names"] for c, v in members.items()},

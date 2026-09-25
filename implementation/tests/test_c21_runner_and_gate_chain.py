@@ -788,3 +788,10 @@ def test_chain_superset_with_cik_members(tmp_path):
     assert ok["top500_sufficiency_gate"]["passed"] is True
     bad = chain.run_chain(store, listings, "2024-12-31", [], [{**ref, "members": ref["members"] + ["0009999999"]}], None, None)
     assert bad["top500_sufficiency_gate"]["references"][0]["missing_from_pool"] == ["CIK0009999999"]
+
+
+def test_nport_raw_xml_path_strips_xsl_rendering_directory():
+    """Run #21: the submissions primaryDocument 'xslFormNPORT-P_X01/primary_doc.xml' is an XSL-rendered HTML page."""
+    fnr = _mod("fnr_xsl", "fetch_nport_reference.py")
+    assert fnr.raw_xml_doc("xslFormNPORT-P_X01/primary_doc.xml") == "primary_doc.xml"
+    assert fnr.raw_xml_doc("primary_doc.xml") == "primary_doc.xml"
