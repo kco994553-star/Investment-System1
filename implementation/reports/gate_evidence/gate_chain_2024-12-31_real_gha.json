@@ -16748,7 +16748,7 @@
   },
   "reference_coverage": [
     {
-      "name": null,
+      "name": "SP500_PIT_RECONSTRUCTION",
       "role": "MISSING_LARGE_CAP_DETECTOR",
       "n_members": 503,
       "n_missing_from_pool": 0,
@@ -16783,9 +16783,9 @@
     "n_references_usable": 0,
     "references": [
       {
-        "name": "UNNAMED",
+        "name": "SP500_PIT_RECONSTRUCTION",
         "source": "Wikipedia 'List of S&P 500 companies' current snapshot + dated changes table (fetched 2026-09-25)",
-        "source_vintage": null,
+        "source_vintage": "2026-09-25",
         "n_members": 503,
         "missing_from_pool": [],
         "present_not_rankable": [
@@ -16819,8 +16819,6 @@
           "TSCO"
         ],
         "reasons": [
-          "MISSING_REFERENCE_VINTAGE",
-          "REFERENCE_AS_OF_MISMATCH",
           "REFERENCE_MEMBERS_PRESENT_BUT_NOT_RANKABLE",
           "REFERENCE_MEMBERS_RANKED_OUTSIDE_TOP500"
         ],
