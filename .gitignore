@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .pytest_cache/
 *.zip
+# Raw blobs live in the actions cache / run artifact (multi-GB); manifests + STORE_INDEX stay in git.
+implementation/data/raw/blobs/*
+!implementation/data/raw/blobs/.gitkeep
+implementation/data/raw/history/*
+!implementation/data/raw/history/.gitkeep
