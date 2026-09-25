@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-09-25T15:01:00+09:00",
+  "artifact": "/mnt/data/companyfacts.zip",
+  "received_bytes": 948238703,
+  "sha256": "01ba5438c08443461d3512f988d50e0b38ddcc34895324218f49431447a580ab",
+  "split_parts": 10,
+  "split_sum_bytes": 948238703,
+  "first_signature": "504b0304",
+  "zipfile_is_zipfile": false,
+  "eocd_found": false,
+  "zip64_eocd_found": false,
+  "complete_local_entries_before_truncation": 9577,
+  "truncated_entry": "CIK0001436425.json",
+  "truncated_entry_local_header_offset": 947973522,
+  "truncated_entry_compressed_size": 286046,
+  "missing_bytes_to_finish_truncated_entry_only": 20941,
+  "conclusion": "SOURCE_OR_TRANSFER_ARTIFACT_TRUNCATED_BEFORE_END_OF_ENTRY_AND_CENTRAL_DIRECTORY",
+  "promotion_effect": "FAIL_CLOSED_NO_INGESTION_NO_REAL_DATA_PROMOTION"
+}

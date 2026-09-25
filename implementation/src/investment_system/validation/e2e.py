@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -23,7 +25,7 @@ from .records import ScopedTrackStore
 
 
 def default_store_path() -> Path:
-    return Path(__file__).resolve().parents[3] / "reports" / "track_store.json"
+    return Path(os.environ.get("INVESTMENT_SYSTEM_REPORTS_DIR") or Path(__file__).resolve().parents[3] / "reports") / "track_store.json"
 
 
 def _record(store: ScopedTrackStore, scope: TrackScope, subject: str, as_of: datetime, refs: tuple[str, ...], profile, prediction: dict, decision: dict, module_version: str):

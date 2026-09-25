@@ -1047,3 +1047,166 @@ Do Not Repeat
 - Minimal additive changes: fetch_real_data.py retry/backoff + egress circuit breaker + --plan + STORE_INDEX.json; audit_mcap_store.py BRK.B/BRK-B normalization, ranked_top500, detector-only reference role; new tools/run_top500_gate_chain.py; 9 new tests.
 - Real finding: BRK.B was a false "missing" (present as BRK-B). True S&P-missing = 281, not 282.
 - Gates re-run through the chain on the (empty) real store: all FAIL closed. Official Top-500 NOT declared.
+Investment-System1 · CURRENT_HANDOFF
+
+Timestamp: 2026-09-25 (round 4)
+AI: Claude Code (claude.ai/code cloud container, real terminal)
+SSoT lineage: ...2026-09-25_claude_r3.zip -> Investment-System1_Handoff_2026-09-25_claude_code_r4.zip (this package)
+Repo: kco994553-star/Investment-System1, branch claude/investment-system-top500-validation-alrugm (this package is also committed there)
+Handoff Status: OPEN — C-21 still BLOCKED, now verified in a second, independent environment (egress-policy 403 on SEC + Yahoo). Runner/gate chain hardened so the next network-enabled session is a two-command run. No gate passed. Nothing fabricated.
+
+Started From
+r3 CURRENT_HANDOFF: C-21 sole blocker (no network in Claude Chat sandbox + RawDatasetStore blobs lost from ZIP). 257/282 missing large-caps CIK-ready, 25 pending. 173/173.
+
+This round (read first)
+1. Baseline: 173/173 reproduced from the r3 ZIP with tools/mini_pytest.py before any change.
+2. Network, tested directly in this environment's real terminal (curl + urllib through the session proxy):
+   www.sec.gov, data.sec.gov (companyfacts, submissions), query1/query2.finance.yahoo.com, efts.sec.gov -> CONNECT 403 "connect_rejected (organization policy)".
+   pypi.org -> 200 (allowed). So this is the environment's network policy, not a code defect and not the old Claude Chat result reused.
+   Per the proxy rules, 403 policy denials were not retried or routed around.
+   Evidence: implementation/reports/network_probe_2026-09-25_claude_code_r4.json, implementation/data/raw/ingest_run_1790289959.json
+   (fetch_real_data.py --plan: 793 artifacts, 3 real requests (one per host), 793 EGRESS_BLOCKED, 0 written).
+3. Fix for the user (not something the agent can do): in the cloud environment settings -> Network access, allow
+   www.sec.gov, data.sec.gov, query1.finance.yahoo.com (or a broader access level). Alternative without network:
+   upload SEC companyfacts.zip (+ Stooq d_us_txt.zip) and run tools/import_bulk_real_data.py (already built, offline).
+4. Minimal additive code changes (no redesign, existing behaviour/tests unchanged):
+   - tools/fetch_real_data.py: retry + exponential backoff (2/4/8/16s, Retry-After honoured) for HTTP 429/5xx and transient
+     network errors; no retry for other 4xx; egress-policy denial -> per-host circuit breaker (EGRESS_BLOCKED, no further
+     requests to that host); --plan <priority plan JSON> (CIK-ready names + ticker->CIK via stored sec_tickers for the rest,
+     UNRESOLVED reported, never invented; Yahoo symbol BRK.B -> BRK-B); every run writes <store>/STORE_INDEX.json.
+     Resume unchanged: store.has() -> SKIPPED_ALREADY_PRESENT, no re-download.
+   - tools/audit_mcap_store.py: evaluate_reference_coverage normalizes share-class tickers (BRK.B == BRK-B) and reads the
+     price by the listing's Yahoo symbol; new ranked_top500() (#500 cutoff, same rules as audit()); Sufficiency Gate honours
+     reference_role == "MISSING_LARGE_CAP_DETECTOR" (such a reference can FAIL the gate but can never make it PASS ->
+     reason ONLY_DETECTOR_REFERENCES_PASSED). Legacy behaviour without the role is unchanged.
+   - tools/run_top500_gate_chain.py (new, offline): listings(+plan names) -> audit/rankable -> ranked_top500/#500 cutoff ->
+     evaluate_reference_coverage (S&P 500 forced to detector role) -> Universe Completeness -> Top-500 Sufficiency ->
+     Promotion Gate v2. Declares Official only if v2 passes; walk-forward/benchmark reported NOT_RUN otherwise.
+   - tests/test_c21_runner_and_gate_chain.py: 9 tests (retry, no-retry 404, egress breaker, plan resolution + resume,
+     BRK.B/BRK-B, detector-only cannot pass, ranked_top500 == audit cutoff, chain fail-closed empty store, chain with full
+     detector coverage still not Official).
+5. Real finding: BRK.B was counted as "missing from pool" only because the reference uses BRK.B and the pool uses BRK-B.
+   True S&P-2024-12-31 members missing from the 598 pool = 281 (256 CIK-ready + 25 needing CIK), not 282.
+6. Store reality check: data/raw has 0 blobs (C-21). The 221 "present" names' blobs are also gone, so the next run must fetch
+   the prior 598-listing pool too, not only the 282. Full resume plan: reports/gate_evidence/c21_resume_plan_2024-12-31.json
+   (854 listings, 579 companyfacts CIKs, 854 price artifacts missing).
+
+Tests: 182/182 (mini_pytest shim) and 182/182 (real pytest 8.x). reports/mini_pytest_2026-09-25_claude_code_r4.txt, reports/pytest_2026-09-25_claude_code_r4.txt
+
+Status snapshot
+- Raw artifacts in persistent RawDatasetStore (implementation/data/raw): 0 blobs, 0 manifests; 10 ingest-run logs; STORE_INDEX.json (n_artifacts 0)
+- Reference coverage (S&P 500 reconstructed 2024-12-31, 503 members), identity vs 598 pool: 222 present / 281 missing (was reported 221/282; BRK.B fix)
+- Missing large caps: 281 (256 CIK-ready, 25 need CIK: ANSS BWA CAG CPB DAY EMN ENPH EPAM FMC HES HOLX IPG JNPR K KMX LKQ LW MHK MKTX MOH MTCH PAYC POOL TFX WBA)
+- rankable: last real computation 297 (r2 audit, blobs since lost); on the current real store the chain computes 0 (reports/gate_evidence/gate_chain_2024-12-31_claude_code_r4.json)
+- #500 cutoff: not computable
+- Universe Completeness Gate: FAIL (COMPANYFACTS_COVERAGE_BELOW_BENCHMARK_LOW_ESTIMATE)
+- Top-500 Sufficiency Gate: FAIL (FEWER_THAN_500_RANKABLE, NO_CUTOFF_MCAP_COMPUTED, NO_REFERENCE_PASSED_ITS_OWN_CHECKS). S&P 500 is detector-only.
+- Promotion Gate v2: FAIL (no eligibility evidence; <500 rankable; neither completeness nor sufficiency)
+- Official US Market-Cap Top 500 PIT: NOT declared
+- REAL-DATA VERIFIED: NO
+- Walk-forward (>=3 dates, real): NOT RUN (gate v2 failed)
+- 500-company real benchmark: NOT RUN (gate v2 failed)
+
+Validation ladder: Code Present YES · Reproducible YES · SYNTHETIC VERIFIED YES (182, real pytest too) · REAL-DATA VERIFIED NO · Full PIT NO · OOS NO · Calibration NO · Forward NO.
+
+Unchanged by rule
+C-18 RESOLVED (Official Default Universe = US Market-Cap Top 500 PIT). V Initial Prior 25/20/15/15/10/10/5, no refit. rankable>=500 alone never promotes. S&P 500 = missing-large-cap detector only (now enforced in code). No fabricated data.
+
+Raw data persistence policy
+- Persistent store = implementation/data/raw in the git branch above (RawDatasetStore: blobs/, manifests/, history/).
+- Always keep in git + ZIP: manifests/, STORE_INDEX.json (url + sha256 + bytes per artifact), ingest_run_*.json, resume plans.
+- Blobs: keep in git/ZIP while total size is modest; if the store grows past ~500 MB (SEC companyfacts for ~800 names is
+  likely 1-3 GB), ship manifests + STORE_INDEX only and keep blobs in external storage; STORE_INDEX makes every blob
+  re-fetchable and sha256-verifiable. Never let the ZIP silently drop manifests again (that was the original C-21 loss).
+
+Next Action (network-enabled session; run from implementation/)
+0. Set a real SEC contact: export INVESTMENT_SYSTEM_SEC_UA="<name> <contact email>"
+1. python tools/fetch_real_data.py --store data/raw --plan reports/gate_evidence/missing_large_cap_priority_plan_2024-12-31.json
+   (sec_tickers first, 255 unique CIKs companyfacts+submissions, 282 Yahoo charts; the 25 CIK-less names resolve from sec_tickers;
+   re-run the same command to resume — present artifacts are skipped; names delisted in 2025-26 that stay UNRESOLVED need
+   a dated resolver pass via universe.resolve / submissions, never a guess.)
+2. python tools/fetch_real_data.py --store data/raw --skip-tickers --ciks <c21_resume_plan.ciks> --symbols <c21_resume_plan.symbols>
+   (re-ingests the lost 598-pool blobs; resumable).
+3. python tools/run_top500_gate_chain.py --store data/raw --as-of 2024-12-31 --out reports/gate_evidence/gate_chain_2024-12-31_real.json
+   (+ --eligibility-evidence <dated eligibility attestation> when one exists; + --sufficiency-reference for an independent
+   dated PIT large-cap ranking reference if obtained — S&P alone cannot pass).
+4. Only if promotion_gate_v2.passed: official_mcap500_snapshot_from_store -> run_walk_forward_from_store (>=3 real dates)
+   -> tools/bench_universe_500.py on the real 500.
+5. C-23 per-name verification (advisory) in parallel once real submissions exist.
+
+Do Not Repeat
+- Everything in prior rounds' Do Not Repeat.
+- In this claude.ai/code environment: do not retry SEC/Yahoo while the Network access setting is unchanged; the proxy
+  denial is policy (verified 2026-09-25). Check once with fetch_real_data.py (the breaker sends one request per host) and stop.
+- Do not re-count BRK.B as missing.
+
+------------------------------------------------------------------------
+
+2026-09-25 (GPT relay round 5) · CURRENT_HANDOFF snapshot (archived, do not edit)
+
+Investment-System1 · CURRENT_HANDOFF
+
+Timestamp: 2026-09-25 (GPT relay round 5)
+AI: GPT-5.6 Sol (container execution)
+SSoT lineage: Investment-System1_Handoff_2026-09-25_claude_code_r4.zip -> Investment-System1_Handoff_2026-09-25_gpt_r5.zip
+Handoff Status: OPEN — R4 baseline reproduced 182/182. C-21 remains BLOCKED, but blocker narrowed: user-supplied SEC companyfacts artifact is byte-truncated before the end of a local ZIP member and has no central directory. No bulk ingestion or REAL-DATA promotion performed.
+
+Started From
+Claude Code R4 CURRENT_HANDOFF. C-18 RESOLVED: Official Default Universe = US Market-Cap Top 500 PIT. Current RawDatasetStore has 0 blobs. R4 gate state remains FAIL closed.
+
+Completed
+1. Unpacked R4 SSoT and read CURRENT_HANDOFF + Multi-AI Relay Protocol first.
+2. Reproduced baseline with `python tools/mini_pytest.py`: 182 passed, 0 failed in 31.72s.
+3. Received 10 binary split parts through Google Drive connector. Sizes: part001..part009 = 104,857,600 bytes each; part010 = 4,520,303 bytes. Sum = 948,238,703 bytes, matching Drive-reported source size.
+4. Inspected reconstructed `/mnt/data/companyfacts.zip`: SHA-256 `01ba5438c08443461d3512f988d50e0b38ddcc34895324218f49431447a580ab`; begins with valid local ZIP signature PK0304, but Python `zipfile.is_zipfile` = false and EOCD/ZIP64-EOCD are absent.
+5. Sequentially parsed ZIP local-file records without decompression. 9,577 complete local entries are structurally present. The next entry `CIK0001436425.json` begins at byte 947,973,522 and declares compressed size 286,046 bytes, but the artifact ends 20,941 bytes before that member itself finishes. Therefore this is not merely a missing central directory: the supplied source/transfer artifact is truncated in file data.
+6. Fail-closed decision: did NOT feed this artifact into `tools/import_bulk_real_data.py`, did NOT populate RawDatasetStore with partial companyfacts, and did NOT promote REAL-DATA VERIFIED / Official Top-500.
+
+Files Changed
+- implementation/reports/gate_evidence/sec_bulk_integrity_2026-09-25_gpt_r5.json (new evidence)
+- Investment-System1 · CURRENT_HANDOFF.md (this handoff)
+- Investment-System1 · HANDOFF_HISTORY.md (R4 handoff appended)
+No production code changed.
+
+Tests
+- R4 baseline: 182/182 PASS using tools/mini_pytest.py after fresh extraction.
+- No production code changed, so no new code regression surface introduced.
+- SEC bulk integrity: FAIL. Artifact is truncated; no valid EOCD; 9,577 complete entries followed by truncated `CIK0001436425.json`.
+
+Decisions
+- C-18 remains RESOLVED and MUST NOT be reopened. Official Default Universe = US Market-Cap Top 500 PIT.
+- Treat the current 948,238,703-byte companyfacts artifact as INVALID/INCOMPLETE for official ingestion despite exact agreement between split-part sum and Drive metadata. Agreement proves transfer fidelity to the Drive object, not completeness of the original SEC ZIP.
+- Do not attempt to manufacture a central directory and call the artifact valid: at least one member payload is itself truncated, and all subsequent SEC entries/central-directory bytes are absent.
+- Preserve fail-closed gates. No fabricated completion evidence.
+
+Provisional
+- The 9,577 complete local entries could be salvaged only as explicitly PARTIAL diagnostic data in a future task, never as completeness evidence. No salvage ingestion was performed in this round.
+
+Open Issues
+- C-21 BLOCKED: need a complete official SEC companyfacts.zip (or network-enabled SEC fetch) before bulk companyfacts ingestion.
+- Historical price coverage still required after SEC fundamentals are solved; companyfacts alone cannot satisfy Promotion Gate v2.
+- C-17 filing vintage/restatement remains unresolved.
+- C-23 per-name verification remains advisory/pending real submissions.
+
+Next Action
+1. Obtain a fresh complete SEC companyfacts.zip from the SEC source. Before splitting/uploading, verify the source ZIP locally with an archive Test function; size alone is insufficient.
+2. Split the VERIFIED source into raw binary chunks <256 MiB and transfer them. Reassemble and require: exact split sum, PK local header, EOCD/ZIP64 EOCD, `zipfile.ZipFile` open success, and full `testzip()` success.
+3. Only after integrity PASS, run existing `tools/import_bulk_real_data.py` into RawDatasetStore; do not redesign ingestion.
+4. Run `tools/run_top500_gate_chain.py` and record Completeness/Sufficiency/Promotion Gate v2 evidence.
+5. Only if Promotion Gate v2 passes: `official_mcap500_snapshot_from_store` -> real single_as_of -> >=3-date real walk-forward -> actual 500-company network benchmark.
+6. Obtain/ingest historical price data as required by the gate; SEC companyfacts alone is insufficient.
+
+Do Not Repeat
+- Do not retry repairing the current 948,238,703-byte object by merely adding a ZIP central directory; member data is truncated by 20,941 bytes before even reaching the missing central directory.
+- Do not claim the 10-part transfer was corrupt: the parts sum exactly to the Drive object's reported size. The Drive object itself is incomplete as a ZIP.
+- Do not ingest the 9,577 recoverable entries as if they were a complete SEC companyfacts universe.
+- Do not reopen C-18, refit V priors, or use S&P 500 as an Official universe/sufficiency proof.
+- Do not run real walk-forward/500-company benchmark until Promotion Gate v2 passes.
+
+------------------------------------------------------------------------
+
+2026-09-25 (round 6) · Claude Code (cloud container) → Next AI
+- Adopted gpt_r5 ZIP as SSoT; 182/182 reproduced. Egress re-probed: SEC/Yahoo/Stooq still 403. Drive holds only the truncated r5 archive.
+- import_bulk_real_data.py: fail-closed integrity gate (sha256, PK, EOCD/ZipFile open, testzip CRC) before any store write; --verify-only; archive sha256 in manifests; STORE_INDEX after import.
+- Tests no longer rewrite committed reports/ evidence (INVESTMENT_SYSTEM_REPORTS_DIR set in tests/__init__.py).
+- 186/186 (shim + real pytest). Gates unchanged: all FAIL closed. Official Top-500 NOT declared.

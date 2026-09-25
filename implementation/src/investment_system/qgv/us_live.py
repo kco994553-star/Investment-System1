@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -23,7 +25,7 @@ from ..integration.engine import IntegrationEngine
 
 
 def persist(payload: dict, name: str) -> Path:
-    root = Path(__file__).resolve().parents[3] / "reports"
+    root = Path(os.environ.get("INVESTMENT_SYSTEM_REPORTS_DIR") or Path(__file__).resolve().parents[3] / "reports")
     root.mkdir(exist_ok=True)
     path = root / name
     path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
@@ -135,7 +137,7 @@ def evaluate_current_session(live_prices: dict | None = None) -> dict:
         profile_id=profile.profile_id,
         parameter_set_hash=profile.parameter_set_hash(),
     )
-    store_path = Path(__file__).resolve().parents[3] / "reports" / "track_store.json"
+    store_path = Path(os.environ.get("INVESTMENT_SYSTEM_REPORTS_DIR") or Path(__file__).resolve().parents[3] / "reports") / "track_store.json"
     store = ScopedTrackStore(FileTrackRecordStore(store_path))
     rec = store.record(
         TrackScope.INTEGRATED,

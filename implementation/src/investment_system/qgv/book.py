@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 import json
 from datetime import datetime
 from pathlib import Path
@@ -18,7 +20,7 @@ from .portfolio import OFFICIAL_V11_TARGETS, PortfolioEngine
 
 
 def persist_book(payload: dict, path: Path | None = None) -> Path:
-    root = Path(__file__).resolve().parents[3] / "reports"
+    root = Path(os.environ.get("INVESTMENT_SYSTEM_REPORTS_DIR") or Path(__file__).resolve().parents[3] / "reports")
     root.mkdir(exist_ok=True)
     path = path or root / "official_v11_book_snapshots.json"
     path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")

@@ -1,0 +1,16 @@
+{
+  "kind": "NETWORK_EGRESS_PROBE",
+  "date": "2026-09-25",
+  "environment": "Claude Code on the web, managed cloud container (same environment as r4; Network access setting not changed)",
+  "results": {
+    "www.sec.gov / data.sec.gov": "CONNECT 403 (egress policy)",
+    "query1.finance.yahoo.com": "CONNECT 403",
+    "static.stooq.com / stooq.com": "CONNECT 403",
+    "www.nasdaqtrader.com": "CONNECT 403",
+    "huggingface.co": "CONNECT 403",
+    "raw.githubusercontent.com": "reachable (301) -- NOT used: third-party mirrors are not official SEC/price provenance and would route around the sec.gov policy block",
+    "pypi.org / files.pythonhosted.org": "reachable"
+  },
+  "google_drive": "Only the r5-inspected companyfacts.zip (948,238,703 bytes, 2026-09-25T02:03Z) and its 10 split parts exist; no newer or complete archive, no Stooq/price archive.",
+  "conclusion": "C-21 still BLOCKED. Needs either Network access for www.sec.gov, data.sec.gov, query1.finance.yahoo.com, or a COMPLETE companyfacts.zip plus a price archive."
+}

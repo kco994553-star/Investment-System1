@@ -568,3 +568,10 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - New tools/run_top500_gate_chain.py (offline coverage -> rankable -> #500 -> Completeness -> Sufficiency -> Promotion Gate v2).
 - S&P-missing corrected 282 -> 281. All gates FAIL closed on the real (empty) store. Official Top-500 not declared.
 - 182 passed (mini_pytest shim) and 182 passed (real pytest). REAL-DATA VERIFIED still NO.
+
+## 2026-09-25 · round 6 · Claude Code (cloud container)
+
+- gpt_r5 SSoT adopted; 182/182 reproduced. Egress still 403 for SEC/Yahoo/Stooq; Drive has only the truncated companyfacts.zip.
+- import_bulk_real_data.py: fail-closed verify_archive() (sha256, PK, EOCD, testzip CRC, member count) before any store write; --verify-only, --report-out, --sec-sha256/--stooq-sha256; archive sha256 in manifest notes; STORE_INDEX after import.
+- Tests no longer rewrite committed reports/ evidence (INVESTMENT_SYSTEM_REPORTS_DIR, set by tests/__init__.py).
+- 186 passed (shim) / 186 passed (real pytest). Gates unchanged: FAIL closed. Official Top-500 not declared. REAL-DATA VERIFIED NO.
