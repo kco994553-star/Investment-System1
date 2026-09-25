@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000922621:0000922621-24-000023",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/922621/000092262124000023/erie-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-25T10:53:04.056067+00:00",
+  "sha256": "b511b35a36e880c043aa1b980c7d326cec94d66d28c5d6aed0fc45b67c9e7d8b",
+  "bytes": 2165315,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001652044:0001652044-24-000118",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204424000118/goog-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-25T10:53:11.792935+00:00",
+  "sha256": "df3321b40e2662338a29f3ba1c30615b9bbbf4ab9497e054a2e5c34bb00789a8",
+  "bytes": 2306265,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

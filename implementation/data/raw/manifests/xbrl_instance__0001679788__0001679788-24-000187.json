@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001679788:0001679788-24-000187",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1679788/000167978824000187/coin-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-25T10:53:12.043976+00:00",
+  "sha256": "eb9e5dc5db0e16a01968a3e7d364dfecf58e5215e5a50e6630cfce597a45e966",
+  "bytes": 2011166,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

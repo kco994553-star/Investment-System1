@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001792789:0001628280-24-044312",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1792789/000162828024044312/dash-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-25T10:53:12.502033+00:00",
+  "sha256": "d0d2ff27f0cb4282497ed57d343a6b9a840a1b6a0b9506ff0e2f101c18374d7b",
+  "bytes": 1189417,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
