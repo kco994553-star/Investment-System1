@@ -87,17 +87,21 @@ jobs:
           SYMS=$(python -c "import json;print(','.join(json.load(open('reports/gate_evidence/c21_resume_plan_2024-12-31.json'))['symbols']))")
           python tools/fetch_real_data.py --store data/raw --skip-tickers --with-split-events --ciks "$CIKS" --symbols "$SYMS" > /tmp/run_resume.json
           python -c "import json,collections;d=json.load(open('/tmp/run_resume.json'));print(d['n_requested'],d['n_ok'],d['n_failed'],collections.Counter(r['status'] for r in d['log']))"
-      - name: Refresh only present-but-empty Yahoo charts (HTTP 200 with no bars; old bytes archived in history/)
+      - name: Refresh once the Yahoo charts with no bar on/before as_of (HTTP 200 but truncated; old bytes archived in history/)
         if: inputs.skip_fetch != 'true'
         run: |
-          EMPTY=$(python - <<'PY'
-          import sys
+          EMPTY=$(AS_OF="${{ inputs.as_of }}" python - <<'PY'
+          import os, sys
+          from datetime import datetime
           sys.path.insert(0, 'src')
           from investment_system.ingestion.raw_store import RawDatasetStore
           from investment_system.ingestion.replay import load_price_bars
           st = RawDatasetStore('data/raw')
-          syms = [a.split(':')[1] for a in st.list_ids() if a.startswith('yahoo_chart:') and a.endswith(':5y') and st.has(a)]
-          print(','.join(s for s in syms if not load_price_bars(st, s, '5y')))
+          d = datetime.fromisoformat(os.environ['AS_OF'] + 'T23:59:59+00:00')
+          ids = [a for a in st.list_ids() if a.startswith('yahoo_chart:') and a.endswith(':5y') and st.has(a)]
+          # never refreshed before (no history) and no usable as-of bar -> one refresh only
+          print(','.join(a.split(':')[1] for a in ids if not st.list_history(a)
+                         and not any(b['observed_at'] <= d for b in load_price_bars(st, a.split(':')[1], '5y'))))
           PY
           )
           echo "empty charts: ${EMPTY:-none}"

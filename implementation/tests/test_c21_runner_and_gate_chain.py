@@ -458,3 +458,13 @@ def test_pit_cik_replacement_only_after_verification(tmp_path):
     rows, _ = chain.extend_listings(store, {"xom": {"yahoo": "XOM", "cik": "0002115436"}, "psky": {"yahoo": "PSKY", "cik": "0002041610"}}, None, v)
     assert rows["xom"]["cik"] == "0000034088" and rows["xom"]["cik_replaced_from"] == "0002115436"
     assert rows["psky"]["cik"] == "0002041610"  # candidate not verified (no submissions in store) -> unchanged
+
+
+def test_pit_cik_replacement_also_applies_to_plan_added_names(tmp_path):
+    chain = _mod("chain_pitplan", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    store.put("submissions:0000813828", json.dumps({"name": "Paramount Global"}).encode(), "u", "SEC", "application/json", "t", 200)
+    v = chain.verify_cik_candidates(store, {"candidates": [{"ticker": "PSKY", "cik": "0000813828",
+                                                            "expect_name_tokens": ["PARAMOUNT GLOBAL"], "replaces_current_cik": True}]})
+    rows, unresolved = chain.extend_listings(store, {}, {"priority_fetch_plan": [{"ticker": "PSKY", "cik": "0002041610"}]}, v)
+    assert rows["plan:psky"]["cik"] == "0000813828" and unresolved == []

@@ -75,7 +75,8 @@ def extend_listings(store: RawDatasetStore, listings: dict, plan: dict | None,
         if not t or t in have:
             continue
         v = (verified_ciks or {}).get(t) or {}
-        cik = row.get("cik") or tmap.get(t) or tmap.get(t.replace("-", ".")) or (v.get("cik") if v.get("verified") else None)
+        pit = v["cik"] if v.get("verified") and v.get("replace") else None  # same PIT identity rule as listed names
+        cik = pit or row.get("cik") or tmap.get(t) or tmap.get(t.replace("-", ".")) or (v.get("cik") if v.get("verified") else None)
         if not cik:
             unresolved.append(t)
             continue
