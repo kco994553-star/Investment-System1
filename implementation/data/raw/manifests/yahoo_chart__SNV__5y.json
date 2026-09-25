@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SNV:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/snv/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-25T23:43:41.019623+00:00",
+  "sha256": "5a3d46c0c0669a5ec24908abf29b371b03c23460fc7bdfc0e5102da450e2aa92",
+  "bytes": 25643,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:SNV",
+  "source_url": "https://api.tiingo.com/tiingo/daily/snv/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:43:39.506480+00:00",
+  "sha256": "74ca5c4e67e2f43c0f3497a5c475aab079329a8ecd466ab169a241ca88762277",
+  "bytes": 379159,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

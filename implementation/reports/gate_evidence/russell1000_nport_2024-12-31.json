@@ -422,7 +422,6 @@
     "0000916540",
     "0000917251",
     "0000918646",
-    "0000919092",
     "0000920148",
     "0000920371",
     "0000920522",
@@ -460,6 +459,7 @@
     "0001003078",
     "0001004434",
     "0001004980",
+    "0001005284",
     "0001012100",
     "0001013237",
     "0001013462",
@@ -1257,9 +1257,6 @@
     ],
     "0001524472": [
       "XYLEM INC."
-    ],
-    "0000919092": [
-      "U.S. BANCORP"
     ],
     "0001786431": [
       "REYNOLDS CONSUMER PRODUCTS INC."
@@ -3139,6 +3136,9 @@
     "0001262039": [
       "FORTINET, INC."
     ],
+    "0001005284": [
+      "UNIVERSAL DISPLAY CORPORATION"
+    ],
     "0001604821": [
       "NATERA, INC."
     ],
@@ -4002,17 +4002,6 @@
       "pit_registrant_candidates": []
     },
     {
-      "name": "UNIVERSAL DISPLAY CORPORATION",
-      "cusip": "91347P105",
-      "isin": "US91347P1057",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 5023139.6,
-      "name_matches": 0,
-      "candidates": [],
-      "pit_registrant_candidates": []
-    },
-    {
       "name": "SKECHERS U.S.A., INC.",
       "cusip": "830566105",
       "isin": "US8305661055",
@@ -4044,20 +4033,20 @@
       "name_matches": 0,
       "candidates": [],
       "pit_registrant_candidates": []
+    },
+    {
+      "name": "U.S. BANCORP",
+      "cusip": "902973304",
+      "name_matches": 1,
+      "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
+      "candidates": [
+        "0000919092"
+      ]
     }
   ],
   "members_not_in_pool_without_current_ticker": [
-    "0000018349",
-    "0000034088",
-    "0000055067",
-    "0000072333",
-    "0000801337",
-    "0000919092",
     "0001013462",
-    "0001163302",
-    "0001487712",
-    "0001618563",
-    "0001618921"
+    "0001163302"
   ],
   "note": "Russell 1000 fund holdings as reported to the SEC for the as_of date (filed after as_of: a dated historical record, used for validation, not as information available at as_of)."
 }

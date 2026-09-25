@@ -1,8 +1,8 @@
 {
   "kind": "RAW_DATASET_STORE_INDEX",
   "store_dir": "data/raw",
-  "n_artifacts": 5347,
-  "n_blobs_on_disk": 5347,
+  "n_artifacts": 5368,
+  "n_blobs_on_disk": 5368,
   "artifacts": [
     {
       "artifact_id": "companyfacts:0000001800",
@@ -371,6 +371,15 @@
       "sha256": "01ddc6ffa741f0a7da440e2949b2ed19cec14fab35435a398e3f3d0100019715",
       "bytes": 5868239,
       "fetched_at": "2026-09-25T08:26:20.373735+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "companyfacts:0000018349",
+      "source_kind": "SEC_COMPANYFACTS",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000018349.json",
+      "sha256": "ea0fa3bb63abca93429c9e491d83a6e298e09e3f971ea35a8a9adeba5f4fda12",
+      "bytes": 5449460,
+      "fetched_at": "2026-09-25T23:42:20.255490+00:00",
       "http_status": 200
     },
     {
@@ -1253,6 +1262,15 @@
       "sha256": "9782d1eab6bdd78c49f6ab6de3749a577fe54cd33d3afd29bd105474f124eb2e",
       "bytes": 3296476,
       "fetched_at": "2026-09-25T08:23:09.569886+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "companyfacts:0000072333",
+      "source_kind": "SEC_COMPANYFACTS",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000072333.json",
+      "sha256": "a72970b5bc5f46bd40049d73663bfc2a4d84f91aa7c7c43d8169da953942d59d",
+      "bytes": 2879480,
+      "fetched_at": "2026-09-25T23:42:20.765474+00:00",
       "http_status": 200
     },
     {
@@ -2747,6 +2765,15 @@
       "sha256": "62b723b2f1c23d39bce05a62d34e6649645ef1efa9955c6d11d9a3b60726d23f",
       "bytes": 5539285,
       "fetched_at": "2026-09-25T12:46:59.241522+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "companyfacts:0000801337",
+      "source_kind": "SEC_COMPANYFACTS",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000801337.json",
+      "sha256": "8fd7414809e7f8176360feb0a34dffb14bbcf39e6112b680281b6a0a330c60ac",
+      "bytes": 7255568,
+      "fetched_at": "2026-09-25T23:42:21.906034+00:00",
       "http_status": 200
     },
     {
@@ -4322,6 +4349,15 @@
       "sha256": "d93dbac689a7ffa7aee181522d98656237d07e111cb17eaaaab910dd66b56b3c",
       "bytes": 3313889,
       "fetched_at": "2026-09-25T08:23:19.212900+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "companyfacts:0001005284",
+      "source_kind": "SEC_COMPANYFACTS",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001005284.json",
+      "sha256": "767bd443b58334777b5a811b927484e007b7f2d4982a931d584f21f7e40485bb",
+      "bytes": 3200163,
+      "fetched_at": "2026-09-25T23:42:22.339003+00:00",
       "http_status": 200
     },
     {
@@ -7088,6 +7124,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "companyfacts:0001487712",
+      "source_kind": "SEC_COMPANYFACTS",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001487712.json",
+      "sha256": "1df5d0c316f2f6570d25e1dbba8c550c04d1c2476de47050bdf249ddd269934d",
+      "bytes": 2213070,
+      "fetched_at": "2026-09-25T23:42:23.096104+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "companyfacts:0001489393",
       "source_kind": "SEC_COMPANYFACTS",
       "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001489393.json",
@@ -7931,6 +7976,15 @@
       "sha256": "912e0d8135e74580a2223364fa7650b06606ad670fbb1a6ae5aa3afeae3bca91",
       "bytes": 2357894,
       "fetched_at": "2026-09-25T12:29:51.690424+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "companyfacts:0001618563",
+      "source_kind": "SEC_COMPANYFACTS",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001618563.json",
+      "sha256": "360e575b50fb177a1bee5f3760f8df3b8c9c2dee8d9ba6d2517e38d8f7e22115",
+      "bytes": 2308326,
+      "fetched_at": "2026-09-25T23:42:23.913589+00:00",
       "http_status": 200
     },
     {
@@ -14870,6 +14924,15 @@
       "sha256": "97d095e36335b0176c725bc4ee2154d7ed7dc2797c60fbd7e6e6f254d9568a9e",
       "bytes": 165256,
       "fetched_at": "2026-09-25T08:23:19.502960+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions:0001005284",
+      "source_kind": "SEC_SUBMISSIONS",
+      "source_url": "https://data.sec.gov/submissions/CIK0001005284.json",
+      "sha256": "2b7f19453abad02139cd7e4f453beff6d1694c0d9e7336e48bc1a067481fdeb8",
+      "bytes": 156064,
+      "fetched_at": "2026-09-25T23:42:22.626311+00:00",
       "http_status": 200
     },
     {
@@ -22649,6 +22712,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "tiingo_eod:AL",
+      "source_kind": "TIINGO_EOD_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/daily/al/prices?startDate=2020-01-02&format=json",
+      "sha256": "ffa2df0ab6794cb1fef8c0f30cb05e1ccb5d6413291cf290eecd46ffefa8fbec",
+      "bytes": 414683,
+      "fetched_at": "2026-09-25T23:43:31.158641+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "tiingo_eod:AMED",
       "source_kind": "TIINGO_EOD_JSON",
       "source_url": "https://api.tiingo.com/tiingo/daily/amed/prices?startDate=2020-01-02&format=json",
@@ -22709,6 +22781,15 @@
       "sha256": "fb03a119de441aac485501d9419f3a7b7fbd9b67e3bdee96d46d3acf647aee2e",
       "bytes": 335215,
       "fetched_at": "2026-09-25T23:29:27.367378+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "tiingo_eod:BK",
+      "source_kind": "TIINGO_EOD_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/daily/bk/prices?startDate=2020-01-02&format=json",
+      "sha256": "87327d796125c41a242213b716931a203f954859adf7aa51c85e862c415cebe1",
+      "bytes": 1090,
+      "fetched_at": "2026-09-25T23:43:32.754455+00:00",
       "http_status": 200
     },
     {
@@ -22789,7 +22870,7 @@
       "source_url": "https://api.tiingo.com/tiingo/daily/eqr/prices?startDate=2020-01-02&format=json",
       "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "bytes": 2,
-      "fetched_at": "2026-09-25T23:29:43.341367+00:00",
+      "fetched_at": "2026-09-25T23:43:34.328500+00:00",
       "http_status": 200
     },
     {
@@ -22892,6 +22973,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "tiingo_eod:JWN",
+      "source_kind": "TIINGO_EOD_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/daily/jwn/prices?startDate=2020-01-02&format=json",
+      "sha256": "fbd727b7d70a4eaca5fd00a3674c621c2dedf843997d0dd726169724856f8cbf",
+      "bytes": 341866,
+      "fetched_at": "2026-09-25T23:43:36.057738+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "tiingo_eod:K",
       "source_kind": "TIINGO_EOD_JSON",
       "source_url": "https://api.tiingo.com/tiingo/daily/k/prices?startDate=2020-01-02&format=json",
@@ -22943,6 +23033,15 @@
       "sha256": "e0e40ca584752f4b5cd64cc460824127590d91c2106ca769c4faf93c6f4f8d20",
       "bytes": 443292,
       "fetched_at": "2026-09-25T23:29:07.634433+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "tiingo_eod:NSA",
+      "source_kind": "TIINGO_EOD_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/daily/nsa/prices?startDate=2020-01-02&format=json",
+      "sha256": "b473660d236e95628d8c045d8c3a447ca6d5d6d2bab6676f3f53b2c7e045cdbf",
+      "bytes": 412792,
+      "fetched_at": "2026-09-25T23:43:37.749155+00:00",
       "http_status": 200
     },
     {
@@ -23000,6 +23099,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "tiingo_eod:SNV",
+      "source_kind": "TIINGO_EOD_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/daily/snv/prices?startDate=2020-01-02&format=json",
+      "sha256": "74ca5c4e67e2f43c0f3497a5c475aab079329a8ecd466ab169a241ca88762277",
+      "bytes": 379159,
+      "fetched_at": "2026-09-25T23:43:39.506480+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "tiingo_eod:SPR",
       "source_kind": "TIINGO_EOD_JSON",
       "source_url": "https://api.tiingo.com/tiingo/daily/spr/prices?startDate=2020-01-02&format=json",
@@ -23014,7 +23122,7 @@
       "source_url": "https://api.tiingo.com/tiingo/daily/sq/prices?startDate=2020-01-02&format=json",
       "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "bytes": 2,
-      "fetched_at": "2026-09-25T23:30:20.371584+00:00",
+      "fetched_at": "2026-09-25T23:43:41.122355+00:00",
       "http_status": 200
     },
     {
@@ -23024,6 +23132,15 @@
       "sha256": "b9709d05d7c1c4ae86e2bc166cec24eb5c797c94652d099ee10ae560855f8ef4",
       "bytes": 353431,
       "fetched_at": "2026-09-25T23:30:22.149538+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "tiingo_eod:WBS",
+      "source_kind": "TIINGO_EOD_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/daily/wbs/prices?startDate=2020-01-02&format=json",
+      "sha256": "6a4a4d713af31167e3e901b4ebda1c3c3cd5f0d6ccb839fc6e2469d8926023a4",
+      "bytes": 418811,
+      "fetched_at": "2026-09-25T23:43:42.877412+00:00",
       "http_status": 200
     },
     {
@@ -24653,6 +24770,15 @@
       "sha256": "823e584074c13cb549fc0c4e43ff4b8f667f74a3d3c0de807135ec88ffa8d590",
       "bytes": 134049,
       "fetched_at": "2026-09-25T08:24:22.909511+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_chart:AL:5y",
+      "source_kind": "TIINGO_DAILY_RAW",
+      "source_url": "https://api.tiingo.com/tiingo/daily/al/prices?startDate=2020-01-02&format=json",
+      "sha256": "698d23a90bbd6d6cf35ccba9a8793f885af36f0fd6fa99e7b2dbfe663329b21b",
+      "bytes": 28343,
+      "fetched_at": "2026-09-25T23:43:32.673360+00:00",
       "http_status": 200
     },
     {
@@ -30290,6 +30416,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "yahoo_chart:JWN:5y",
+      "source_kind": "TIINGO_DAILY_RAW",
+      "source_url": "https://api.tiingo.com/tiingo/daily/jwn/prices?startDate=2020-01-02&format=json",
+      "sha256": "8eaa5c32ae6fbd9410c172af765dc32bf32bae31fadbfa7bf407b6c285d71e34",
+      "bytes": 23018,
+      "fetched_at": "2026-09-25T23:43:37.569903+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "yahoo_chart:K:5y",
       "source_kind": "TIINGO_DAILY_RAW",
       "source_url": "https://api.tiingo.com/tiingo/daily/k/prices?startDate=2020-01-02&format=json",
@@ -32117,6 +32252,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "yahoo_chart:NSA:5y",
+      "source_kind": "TIINGO_DAILY_RAW",
+      "source_url": "https://api.tiingo.com/tiingo/daily/nsa/prices?startDate=2020-01-02&format=json",
+      "sha256": "27c490e00ace5ae24fc72b95213188672cfd98e0492fd9d81ceb20a98937a5ce",
+      "bytes": 27982,
+      "fetched_at": "2026-09-25T23:43:39.263753+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "yahoo_chart:NSC:5y",
       "source_kind": "YAHOO_CHART",
       "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NSC?interval=1d&range=5y",
@@ -32402,6 +32546,15 @@
       "sha256": "5c8afa7b16fda71b53d9a985511481a12bcbb0d30fdf7b8d32e27774264e5e0d",
       "bytes": 132301,
       "fetched_at": "2026-09-25T12:33:17.537197+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_chart:OLED:5y",
+      "source_kind": "YAHOO_CHART",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OLED?interval=1d&range=5y",
+      "sha256": "51129d1ea2844db0558799f170cb66abc6bfaaf01bfa65d90c1b384aecbc789b",
+      "bytes": 135211,
+      "fetched_at": "2026-09-25T23:42:30.109878+00:00",
       "http_status": 200
     },
     {
@@ -32822,9 +32975,9 @@
       "artifact_id": "yahoo_chart:PINC:5y",
       "source_kind": "YAHOO_CHART",
       "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PINC?interval=1d&range=5y",
-      "sha256": "6fa907f16f945a46cbf972d13a7e7a3afdd5a9f7dfbce20b76ad50ad4c4111f8",
-      "bytes": 9035,
-      "fetched_at": "2026-09-25T23:28:10.570807+00:00",
+      "sha256": "81265707c8f2cb5735f3bd841bbdde28e9ff2e0e96ef1558c8569f9ecca4fb0d",
+      "bytes": 9031,
+      "fetched_at": "2026-09-25T23:42:01.953580+00:00",
       "http_status": 200
     },
     {
@@ -34184,6 +34337,15 @@
       "sha256": "9b3f75c33083c566100e13a091f8d0a8b75f49641e0fc6a1d06d60848a669d45",
       "bytes": 130586,
       "fetched_at": "2026-09-25T08:34:30.808100+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_chart:SNV:5y",
+      "source_kind": "TIINGO_DAILY_RAW",
+      "source_url": "https://api.tiingo.com/tiingo/daily/snv/prices?startDate=2020-01-02&format=json",
+      "sha256": "5a3d46c0c0669a5ec24908abf29b371b03c23460fc7bdfc0e5102da450e2aa92",
+      "bytes": 25643,
+      "fetched_at": "2026-09-25T23:43:41.019623+00:00",
       "http_status": 200
     },
     {
@@ -35786,6 +35948,15 @@
       "sha256": "21d8c174403505a4919980d79ed482e88726ba14d096c7fe19d5252c5b67db44",
       "bytes": 137734,
       "fetched_at": "2026-09-25T08:35:00.959205+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_chart:WBS:5y",
+      "source_kind": "TIINGO_DAILY_RAW",
+      "source_url": "https://api.tiingo.com/tiingo/daily/wbs/prices?startDate=2020-01-02&format=json",
+      "sha256": "7e83778732590b5c443199e3276e8d3f1e63938ad8ae04bd87c7fafddf4a8ef5",
+      "bytes": 28323,
+      "fetched_at": "2026-09-25T23:43:44.391707+00:00",
       "http_status": 200
     },
     {
@@ -44231,6 +44402,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "yahoo_events:OLED:5y",
+      "source_kind": "YAHOO_SPLIT_EVENTS",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OLED?interval=1mo&range=5y&events=split",
+      "sha256": "296a69ae4277a377cbaa3e8a08125433836c8a5708346edc0f21eb024cd489e2",
+      "bytes": 7794,
+      "fetched_at": "2026-09-25T23:42:30.317908+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "yahoo_events:OLLI:5y",
       "source_kind": "YAHOO_SPLIT_EVENTS",
       "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OLLI?interval=1mo&range=5y&events=split",
@@ -47558,6 +47738,15 @@
       "sha256": "a728cedcf045b6ee49523f202cf91f2e7519350b0be7957c8ad111151974547c",
       "bytes": 7873,
       "fetched_at": "2026-09-25T09:04:56.499033+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_events:WBS:5y",
+      "source_kind": "YAHOO_SPLIT_EVENTS",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WBS?interval=1mo&range=5y&events=split",
+      "sha256": "820566fe2f7068e499dde87c791ab08852ce6f431f98f2f9b1232f6fe0945604",
+      "bytes": 1335,
+      "fetched_at": "2026-09-25T23:42:32.216912+00:00",
       "http_status": 200
     },
     {

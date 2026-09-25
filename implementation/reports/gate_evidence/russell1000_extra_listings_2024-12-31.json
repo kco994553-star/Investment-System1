@@ -608,6 +608,13 @@
     "symbol_basis": "SEC_TICKERS_CURRENT",
     "reference_name": "STIFEL FINANCIAL CORP."
   },
+  "r1000:0000801337": {
+    "yahoo": "WBS",
+    "cik": "0000801337",
+    "cik_method": "SEC_CIK_LOOKUP",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "WEBSTER FINANCIAL CORPORATION"
+  },
   "r1000:0001570585": {
     "yahoo": "LBTYA",
     "cik": "0001570585",
@@ -937,6 +944,13 @@
     "symbol_basis": "SEC_TICKERS_CURRENT",
     "reference_name": "ZOOM COMMUNICATIONS, INC."
   },
+  "r1000:0001618563": {
+    "yahoo": "NSA",
+    "cik": "0001618563",
+    "cik_method": "SEC_CIK_LOOKUP",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "NATIONAL STORAGE AFFILIATES TRUST"
+  },
   "r1000:0000004447": {
     "yahoo": "HES",
     "cik": "0000004447",
@@ -1105,12 +1119,26 @@
     "symbol_basis": "SEC_TICKERS_CURRENT",
     "reference_name": "ANNALY CAPITAL MANAGEMENT, INC."
   },
+  "r1000:0000034088": {
+    "yahoo": "XOM",
+    "cik": "0000034088",
+    "cik_method": "SEC_CIK_LOOKUP",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "EXXON MOBIL CORPORATION"
+  },
   "r1000:0001043604": {
     "yahoo": "JNPR",
     "cik": "0001043604",
     "cik_method": "SEC_CIK_LOOKUP",
     "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
     "reference_name": "JUNIPER NETWORKS, INC."
+  },
+  "r1000:0000018349": {
+    "yahoo": "SNV",
+    "cik": "0000018349",
+    "cik_method": "SEC_CIK_LOOKUP",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "SYNOVUS FINANCIAL CORP."
   },
   "r1000:0001834622": {
     "yahoo": "HAYW",
@@ -2113,6 +2141,13 @@
     "symbol_basis": "SEC_TICKERS_CURRENT",
     "reference_name": "DXC TECHNOLOGY COMPANY"
   },
+  "r1000:0000055067": {
+    "yahoo": "K",
+    "cik": "0000055067",
+    "cik_method": "SEC_CIK_LOOKUP",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "KELLANOVA"
+  },
   "r1000:0002074176": {
     "yahoo": "VNOM",
     "cik": "0002074176",
@@ -2260,6 +2295,13 @@
     "symbol_basis": "SEC_TICKERS_CURRENT",
     "reference_name": "FTI CONSULTING, INC."
   },
+  "r1000:0001487712": {
+    "yahoo": "AL",
+    "cik": "0001487712",
+    "cik_method": "SEC_CIK_LOOKUP",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "AIR LEASE CORPORATION"
+  },
   "r1000:0001477294": {
     "yahoo": "ST",
     "cik": "0001477294",
@@ -2315,6 +2357,13 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "symbol_basis": "SEC_TICKERS_CURRENT",
     "reference_name": "CREDIT ACCEPTANCE CORPORATION"
+  },
+  "r1000:0001005284": {
+    "yahoo": "OLED",
+    "cik": "0001005284",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "symbol_basis": "SEC_TICKERS_CURRENT",
+    "reference_name": "UNIVERSAL DISPLAY CORPORATION"
   },
   "r1000:0000933974": {
     "yahoo": "AZTA",
@@ -3177,6 +3226,13 @@
     "symbol_basis": "SEC_TICKERS_CURRENT",
     "reference_name": "IRIDIUM COMMUNICATIONS INC."
   },
+  "r1000:0000072333": {
+    "yahoo": "JWN",
+    "cik": "0000072333",
+    "cik_method": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "NORDSTROM, INC."
+  },
   "r1000:0001577916": {
     "yahoo": "PINC",
     "cik": "0001577916",
@@ -3253,5 +3309,12 @@
     "cik_method": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT",
     "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
     "reference_name": "THE INTERPUBLIC GROUP OF COMPANIES, INC."
+  },
+  "r1000:0001618921": {
+    "yahoo": "WBA",
+    "cik": "0001618921",
+    "cik_method": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "WALGREENS BOOTS ALLIANCE, INC."
   }
 }

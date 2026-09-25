@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:AL",
+  "source_url": "https://api.tiingo.com/tiingo/daily/al/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:43:31.158641+00:00",
+  "sha256": "ffa2df0ab6794cb1fef8c0f30cb05e1ccb5d6413291cf290eecd46ffefa8fbec",
+  "bytes": 414683,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -2,7 +2,7 @@
   "artifact_id": "tiingo_eod:SQ",
   "source_url": "https://api.tiingo.com/tiingo/daily/sq/prices?startDate=2020-01-02&format=json",
   "source_kind": "TIINGO_EOD_JSON",
-  "fetched_at": "2026-09-25T23:30:20.371584+00:00",
+  "fetched_at": "2026-09-25T23:43:41.122355+00:00",
   "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
   "bytes": 2,
   "content_type": "application/json",

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:OLED:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OLED?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T23:42:30.317908+00:00",
+  "sha256": "296a69ae4277a377cbaa3e8a08125433836c8a5708346edc0f21eb024cd489e2",
+  "bytes": 7794,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
