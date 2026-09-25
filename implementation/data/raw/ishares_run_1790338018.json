@@ -1,0 +1,19 @@
+{
+  "kind": "ISHARES_REFERENCE_RUN",
+  "as_of": "2024-12-31",
+  "log": [
+    {
+      "artifact_id": "ishares_holdings:IWB:20241231",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_cik_lookup",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    }
+  ],
+  "file_as_of": null,
+  "n_equity_rows": 0,
+  "status": "REJECTED_DATE_MISMATCH_OR_TOO_FEW_ROWS",
+  "response_head": "<!DOCTYPE html>\n<html xmlns=\"http://www.w3.org/1999/xhtml\" prefix=\"og: http://ogp.me/ns#\" lang=\"en-US\" xml:lang=\"en-US\">\n<head>\n<link rel=\"preload\" href=\"/blk-one02-c-assets/include/bundles/minified-dbef7c11ac684591907648438985ea14.css\" as=\"style\" />\n<link rel=\"preload\" href=\"/blk-one02-c-assets/include/bundles/minified-99143fd66f7d0e9a9660b3cba2550cb8.css\" as=\"style\" />\n<link rel=\"preload\" href=\"/blk-one02-c-assets/include/bundles/minified-263fb27e3673ccad4daa96e97787cd09.css\" as=\"style\" />\n<link rel=\"preload\" href=\"/blk-one02-c-assets/include/bundles/minified-6061a72b8f2a9618f765e4ec178f8957.css\" as=\"style\" />\n<link rel=\"preload\" href=\"/blk-one02-c-assets/include/bundles/minified-582bc06ab99e75ad464ef123eabc31c4.css\" as=\"style\" />\n<link rel=\"preload\" href=\"/blk-one02-c-assets/include/bundles/minified-b3db407ea14a48409d26830195699641.css\" as=\"style\" />\n<link rel=\"preload\" href=\"/blk-one02-c-assets/include/bundles/minified-15ccc9b15c0304f307a060ec9c6d504.css\" as=\"style\" />\n<link rel=\"preload\" href=\"/blk-one02-c-assets/include/bundles/minified-bcc17d66ca66b2742f8c240497925528.css\" as=\"style\" />\n<link rel=\"preload\" href=\"/blk-one02-c-assets/include/bundles/minified-1a0331f618bde941beef49653b72c743.css\" as=\"style\" />\n<link rel=\"preload\" href=\"/blk-one02-c-assets/include/bundles/minified-c394ac053ae4f3fab8de5546ea30b7e7.css\" as=\"style\" />\n<script nonce=\"QXbvlb1+JOLawrFrkqVrjw==\">\n//<![CDATA[\nvar vice= { config: { viceAccountId: 'blackrock', viceSiteId: 'isharesprod', viceZoneId: ",
+  "content_type": "text/csv;charset=UTF-8"
+}
