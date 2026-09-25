@@ -113,3 +113,13 @@ def test_both_c18_candidates_run_through_the_same_slice_engine(tmp_path):
         assert res["fit_to_outcomes"] is False and res["real_data_verified"] is False
         assert all(s["n_linked"] >= 1 for s in res["steps"])
     assert uni_b(T0).universe_kind is UniverseKind.MCAP_TOP_N_CANDIDATE
+
+
+def test_pit_shares_same_filing_two_dates_is_not_multiclass():
+    """10-Q balance sheets report shares at period end AND prior year end in one filing."""
+    p = _with_shares(companyfacts(1), [
+        {"end": "2023-12-31", "val": 90, "filed": "2024-11-01", "form": "10-Q", "accn": "q"},
+        {"end": "2024-09-30", "val": 100, "filed": "2024-11-01", "form": "10-Q", "accn": "q"},
+    ])
+    s = pit_shares(p, T0)
+    assert s["status"] == "OK" and s["shares"] == 100

@@ -425,7 +425,22 @@ def row_detail(store: RawDatasetStore, m: dict, as_of: datetime, chart_range: st
             "close": bar.get("close") if bar else None, "adjclose": bar.get("adjclose") if bar else None,
             "split_events": "MISSING" if splits is None else len(splits),
             "split_factor_after_as_of": split_factor_after(splits, as_of), "mcap_price": px,
-            "mcap": (sh["shares"] * px) if (sh["shares"] and px) else None}
+            "mcap": (sh["shares"] * px) if (sh["shares"] and px) else None,
+            "share_concepts_present": _share_concepts(cf, as_of) if sh["shares"] is None and cf is not None else None}
+
+
+def _share_concepts(cf: dict, as_of: datetime) -> dict:
+    """Diagnostic only: share-count concepts in the payload with their latest as-of row."""
+    out = {}
+    for tax, concepts in (cf.get("facts") or {}).items():
+        for name, node in concepts.items():
+            if "Shares" not in name or not any(k in name for k in ("Outstanding", "Issued", "Treasury")):
+                continue
+            rows = [r for r in (node.get("units") or {}).get("shares") or [] if str(r.get("filed") or "") <= as_of.date().isoformat()]
+            if rows:
+                r = max(rows, key=lambda x: (str(x.get("filed")), str(x.get("end"))))
+                out[f"{tax}:{name}"] = {k: r.get(k) for k in ("end", "val", "filed", "form")}
+    return out
 
 
 def evaluate_reference_coverage(store: RawDatasetStore, listings: dict, ranked_top500_tickers: set[str],

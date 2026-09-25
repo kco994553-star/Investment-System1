@@ -174,6 +174,10 @@ def pit_shares(payload: dict, as_of: datetime) -> dict:
             continue
         latest = max(r["_filed"] for r in rows)
         top = [r for r in rows if r["_filed"] == latest]
+        # One filing often reports the concept at several dates (e.g. period end and prior
+        # year end); only different values at the SAME latest date indicate share classes.
+        last_end = max(str(r.get("end") or "") for r in top)
+        top = [r for r in top if str(r.get("end") or "") == last_end]
         vals = {float(r["val"]) for r in top}
         if len(vals) > 1:
             return {"status": "MULTI_CLASS_AMBIGUOUS", "shares": None, "source": f"{taxonomy}:{concept}", "available_at": latest}
