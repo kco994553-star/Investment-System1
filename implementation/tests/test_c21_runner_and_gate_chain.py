@@ -154,7 +154,7 @@ def test_gate_chain_fails_closed_on_empty_store(tmp_path):
     rep = chain.run_chain(RawDatasetStore(tmp_path), {"a": {"cik": "1", "yahoo": "AAA"}}, "2024-12-31", [ref], [], None, None)
     assert rep["store"]["status"] == "EMPTY_NO_RAW_DATA" and rep["rankable"] == 0 and rep["cutoff_500_mcap"] is None
     assert rep["promotion_gate_v2"]["passed"] is False and rep["official_top500_declared"] is False
-    assert rep["walk_forward"] == "NOT_RUN_GATE_V2_FAILED" and rep["real_data_verified"] is False
+    assert rep["walk_forward"] == "NOT_RUN_OFFICIAL_BLOCKED" and rep["real_data_verified"] is False
     assert rep["reference_coverage"][0]["missing_from_pool"] == ["BBB"]
 
 
@@ -230,3 +230,56 @@ def test_runner_does_not_throttle_skipped_artifacts(tmp_path, monkeypatch):
     monkeypatch.setattr(mod.time, "sleep", lambda s: sleeps.append(s))
     mod.run(Path(tmp_path), ["1"], [], "5y", 0.15, skip_tickers=False)
     assert sleeps == [0.15]  # only submissions:0000000001 was actually requested
+
+
+def _events(splits):
+    return {"chart": {"result": [{"events": {"splits": {str(int(d.timestamp())): {"date": int(d.timestamp()), "numerator": n, "denominator": 1}
+                                                        for d, n in splits}}}], "error": None}}
+
+
+def test_mcap_price_uses_close_not_adjclose_and_undoes_later_splits(tmp_path):
+    amc = _mod("amc_split", "audit_mcap_store.py")
+    store = RawDatasetStore(tmp_path)
+    d = amc._dt(AS_OF)
+    bar = {"price": 76.0, "close": 80.0, "adjclose": 76.0}
+    assert amc.mcap_price(bar, None, d) == 80.0  # dividend-adjusted adjclose is not a traded price
+    store.put("yahoo_events:ORLY:5y", json.dumps(_events([(datetime(2025, 6, 10, tzinfo=UTC), 15),
+                                                          (datetime(2020, 1, 2, tzinfo=UTC), 2)])).encode(),
+              "u", "YAHOO", "application/json", "t", 200)
+    splits = amc.load_splits(store, "ORLY")
+    assert amc.split_factor_after(splits, d) == 15.0  # only the post-as_of split
+    assert amc.mcap_price(bar, splits, d) == 1200.0
+    assert amc.load_splits(store, "NONE") is None
+
+
+def test_audit_applies_split_factor(tmp_path):
+    amc = _mod("amc_split_audit", "audit_mcap_store.py")
+    store = RawDatasetStore(tmp_path)
+    _put_name(store, 1, "ORLY", 58_000_000, 80.0)
+    store.put("yahoo_events:ORLY:5y", json.dumps(_events([(datetime(2025, 6, 10, tzinfo=UTC), 15)])).encode(),
+              "u", "YAHOO", "application/json", "t", 200)
+    top = amc.ranked_top500(store, {"o": {"cik": "1", "yahoo": "ORLY"}}, amc._dt(AS_OF))
+    assert top[0]["mcap"] == 58_000_000 * 80.0 * 15
+
+
+def test_foreign_issuer_row_blocks_official_even_if_gates_were_to_pass(tmp_path):
+    chain = _mod("chain_fpi", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    store.put("submissions:0000000007", json.dumps({"filings": {"recent": {"form": ["20-F", "6-K"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    det = {"cik": "0000000007", "split_events": 0}
+    assert chain.mcap_quality_flags(store, det) == ["FOREIGN_ISSUER_ADR_RATIO_UNRESOLVED"]
+    assert chain.mcap_quality_flags(store, {"cik": "0000000008", "split_events": "MISSING"}) == ["SPLIT_EVENTS_MISSING"]
+    _put_name(store, 7, "ADRX", 1000, 5.0)
+    rep = chain.run_chain(store, {"x": {"cik": "0000000007", "yahoo": "ADRX"}}, "2024-12-31", [], [], None, None)
+    assert "TOP500_ROWS_FOREIGN_ISSUER_ADR_RATIO_UNRESOLVED" in rep["official_blockers"]
+    assert rep["top500"][0]["detail"]["mcap"] == 5000.0 and rep["official_top500_declared"] is False
+
+
+def test_runner_with_split_events_writes_events_artifact(tmp_path, monkeypatch):
+    mod = _mod("frd_events", "fetch_real_data.py")
+    urls = []
+    monkeypatch.setattr(mod, "urlopen", lambda req, timeout=0: (urls.append(req.full_url), _R(b"{}"))[1])
+    monkeypatch.setattr(mod.time, "sleep", lambda s: None)
+    mod.run(Path(tmp_path), [], ["ORLY"], "5y", 0.0, skip_tickers=True, with_split_events=True)
+    assert set(RawDatasetStore(tmp_path).list_ids()) == {"yahoo_chart:ORLY:5y", "yahoo_events:ORLY:5y"}
+    assert any("events=split" in u for u in urls)

@@ -109,6 +109,22 @@ def company_level_listings(store: RawDatasetStore, listings: dict) -> tuple[dict
                  "methods": methods, "multi_line_issuers": dropped}
 
 
+FOREIGN_FORMS = {"20-F", "20-F/A", "40-F", "40-F/A"}
+
+
+def mcap_quality_flags(store: RawDatasetStore, detail: dict) -> list[str]:
+    """Reasons a row's PIT market cap is not yet trustworthy for Official promotion
+    (contract: duplicate listings/share classes/ADR must be resolved first)."""
+    flags = []
+    sub = load_submissions(store, str(detail.get("cik") or "")) or {}
+    forms = set(((sub.get("filings") or {}).get("recent") or {}).get("form") or [])
+    if forms & FOREIGN_FORMS:
+        flags.append("FOREIGN_ISSUER_ADR_RATIO_UNRESOLVED")  # SEC shares are ordinary shares; the US line may be an ADR
+    if detail.get("split_events") == "MISSING":
+        flags.append("SPLIT_EVENTS_MISSING")
+    return flags
+
+
 def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs: list[dict],
               sufficiency_refs: list[dict], exchange_reference: dict | None, eligibility_evidence: dict | None,
               plan: dict | None = None, chart_range: str = "5y", cik_candidates: dict | None = None) -> dict:
@@ -136,7 +152,21 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     sufficiency = amc.build_top500_sufficiency_gate(audit, refs)
     gate_v2 = amc.build_promotion_gate_v2(audit, eligibility_evidence, completeness, sufficiency)
     n_blobs = sum(1 for aid in store.list_ids() if store.has(aid))
-    official = bool(gate_v2["passed"])
+    top_rows = []
+    for r in top:
+        det = amc.row_detail(store, listings[r["company_id"]], d, chart_range)
+        top_rows.append({**r, "cik": listings[r["company_id"]].get("cik"), "detail": det,
+                         "quality_flags": mcap_quality_flags(store, det)})
+    flag_counts: dict[str, int] = {}
+    for r in top_rows:
+        for f in r["quality_flags"]:
+            flag_counts[f] = flag_counts.get(f, 0) + 1
+    by_norm = {amc._norm_ticker(m.get("yahoo")): m for m in row_listings.values()}
+    not_rankable_detail = {t: amc.row_detail(store, by_norm[amc._norm_ticker(t)], d, chart_range)
+                           for ref in refs for t in ref["present_not_rankable"] if amc._norm_ticker(t) in by_norm}
+    official_blockers = ([] if gate_v2["passed"] else ["PROMOTION_GATE_V2_FAILED"]) + \
+        [f"TOP500_ROWS_{k}" for k in sorted(flag_counts)]
+    official = not official_blockers
     return {
         "kind": "TOP500_GATE_CHAIN_RUN", "as_of": audit["as_of"],
         "store": {"dir": str(store.root), "n_artifacts": n_blobs,
@@ -146,7 +176,8 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "row_level_audit": {k: row_audit[k] for k in ("listings", "rankable", "top_cutoff_mcap_if_500_rankable")},
         "company_dedupe": dedupe,
         "audit": audit, "rankable": audit["rankable"], "cutoff_500_mcap": cutoff,
-        "top500": [{**r, "cik": listings[r["company_id"]].get("cik")} for r in top],
+        "top500": top_rows, "top500_quality_flag_counts": flag_counts,
+        "reference_not_rankable_detail": not_rankable_detail,
         "reference_coverage": [{"name": r.get("name"), "role": r.get("reference_role") or "SUFFICIENCY",
                                 "n_members": len(r.get("members") or []),
                                 "n_missing_from_pool": len(r["missing_from_pool"]),
@@ -155,10 +186,10 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
                                 "missing_from_pool": r["missing_from_pool"]} for r in refs],
         "universe_completeness_gate": completeness, "top500_sufficiency_gate": sufficiency,
         "promotion_gate_v2": gate_v2,
-        "official_top500_declared": official,
+        "official_top500_declared": official, "official_blockers": official_blockers,
         "real_data_verified": False,
-        "walk_forward": "NOT_RUN_GATE_V2_FAILED" if not official else "PENDING",
-        "benchmark_500": "NOT_RUN_GATE_V2_FAILED" if not official else "PENDING",
+        "walk_forward": "NOT_RUN_OFFICIAL_BLOCKED" if not official else "PENDING",
+        "benchmark_500": "NOT_RUN_OFFICIAL_BLOCKED" if not official else "PENDING",
         "note": "Fail-closed chain. S&P 500 is a missing-large-cap detector only and cannot by itself pass Sufficiency.",
     }
 

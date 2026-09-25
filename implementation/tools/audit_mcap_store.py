@@ -21,6 +21,39 @@ def _dt(s:str)->datetime:
     d=datetime.fromisoformat(s.replace('Z','+00:00'))
     return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
 
+def load_splits(store:RawDatasetStore, symbol:str, chart_range:str='5y')->list[tuple[datetime,float]]|None:
+    """Split events from the yahoo_events:<SYM>:<range> artifact (fetch_real_data.py --with-split-events).
+    None = artifact absent (split status unknown)."""
+    aid=f'yahoo_events:{str(symbol or "").upper()}:{chart_range}'
+    if not symbol or not store.has(aid):
+        return None
+    try:
+        res=(json.loads(store.get_bytes(aid)).get('chart') or {}).get('result') or [{}]
+        ev=((res[0] or {}).get('events') or {}).get('splits') or {}
+    except (ValueError, AttributeError):
+        return None
+    out=[]
+    for v in ev.values():
+        try:
+            num,den=float(v['numerator']),float(v['denominator'])
+            if num>0 and den>0:
+                out.append((datetime.fromtimestamp(int(v['date']),tz=timezone.utc),num/den))
+        except (KeyError,TypeError,ValueError):
+            continue
+    return sorted(out)
+
+def split_factor_after(splits:list|None, as_of:datetime)->float:
+    f=1.0
+    for d,r in splits or []:
+        if d>as_of: f*=r
+    return f
+
+def mcap_price(bar:dict, splits:list|None, as_of:datetime)->float:
+    """As-of traded price for market cap: Yahoo 'close' is split-adjusted back in time (never use the
+    dividend-adjusted 'adjclose'); undo splits that happened after as_of."""
+    close=bar.get('close')
+    return (close if close is not None else bar['price'])*split_factor_after(splits,as_of)
+
 def audit(store:RawDatasetStore,listings:dict,as_of:datetime,chart_range='5y')->dict:
     counts={'listings':len(listings),'companyfacts':0,'price':0,'rankable':0,'missing_companyfacts':0,'missing_price':0,
             'missing_shares':0,'ambiguous_shares':0,'non_positive':0}
@@ -37,7 +70,7 @@ def audit(store:RawDatasetStore,listings:dict,as_of:datetime,chart_range='5y')->
         if not bars:
             counts['missing_price']+=1; continue
         counts['price']+=1
-        px=bars[-1]['price']
+        px=mcap_price(bars[-1],load_splits(store,str(m.get('yahoo','')),chart_range),as_of)
         if sh['shares']<=0 or px<=0:
             counts['non_positive']+=1; continue
         counts['rankable']+=1
@@ -73,6 +106,7 @@ def audit_many(store:RawDatasetStore,listings:dict,as_ofs:list[datetime],chart_r
         cf=load_companyfacts(store,str(m.get('cik',''))) if m.get('cik') else None
         bars=load_price_bars(store,str(m.get('yahoo','')),chart_range) if m.get('yahoo') else []
         bar_times=[b['observed_at'] for b in bars]
+        splits=load_splits(store,str(m.get('yahoo','')),chart_range) if bars else None
         for st in states:
             c=st['counts']; d=st['as_of']
             if cf is None:
@@ -84,7 +118,7 @@ def audit_many(store:RawDatasetStore,listings:dict,as_ofs:list[datetime],chart_r
             idx=bisect_right(bar_times,d)-1
             if idx<0:
                 c['missing_price']+=1; continue
-            c['price']+=1; px=bars[idx]['price']
+            c['price']+=1; px=mcap_price(bars[idx],splits,d)
             if sh['shares']<=0 or px<=0:
                 c['non_positive']+=1; continue
             c['rankable']+=1
@@ -368,11 +402,30 @@ def ranked_top500(store: RawDatasetStore, listings: dict, as_of: datetime, chart
         if sh["shares"] is None:
             continue
         bars = [b for b in load_price_bars(store, str(m.get("yahoo", "")), chart_range) if b["observed_at"] <= as_of] if m.get("yahoo") else []
-        if not bars or sh["shares"] <= 0 or bars[-1]["price"] <= 0:
+        px = mcap_price(bars[-1], load_splits(store, str(m.get("yahoo", "")), chart_range), as_of) if bars else 0
+        if not bars or sh["shares"] <= 0 or px <= 0:
             continue
-        _top500_push(heap, sh["shares"] * bars[-1]["price"], cid, m.get("yahoo"))
+        _top500_push(heap, sh["shares"] * px, cid, m.get("yahoo"))
     rows = sorted(heap, reverse=True)
     return [{"rank": i + 1, "company_id": cid, "yahoo": sym, "mcap": mc} for i, (mc, cid, sym) in enumerate(rows)]
+
+
+def row_detail(store: RawDatasetStore, m: dict, as_of: datetime, chart_range: str = "5y") -> dict:
+    """Per-issuer PIT market-cap inputs, for diagnosis and data-quality flags."""
+    cf = load_companyfacts(store, str(m.get("cik", ""))) if m.get("cik") else None
+    sh = pit_shares(cf, as_of) if cf is not None else {"status": "NO_COMPANYFACTS", "shares": None, "source": None, "available_at": None}
+    sym = str(m.get("yahoo") or "")
+    bars = [b for b in load_price_bars(store, sym, chart_range) if b["observed_at"] <= as_of] if sym else []
+    splits = load_splits(store, sym, chart_range)
+    bar = bars[-1] if bars else None
+    px = mcap_price(bar, splits, as_of) if bar else None
+    return {"yahoo": sym, "cik": m.get("cik"), "shares_status": sh["status"], "shares": sh["shares"],
+            "shares_source": sh["source"], "shares_available_at": str(sh["available_at"]) if sh["available_at"] else None,
+            "price_observed_at": bar["observed_at"].isoformat() if bar else None,
+            "close": bar.get("close") if bar else None, "adjclose": bar.get("adjclose") if bar else None,
+            "split_events": "MISSING" if splits is None else len(splits),
+            "split_factor_after_as_of": split_factor_after(splits, as_of), "mcap_price": px,
+            "mcap": (sh["shares"] * px) if (sh["shares"] and px) else None}
 
 
 def evaluate_reference_coverage(store: RawDatasetStore, listings: dict, ranked_top500_tickers: set[str],

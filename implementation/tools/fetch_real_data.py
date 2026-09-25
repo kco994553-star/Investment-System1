@@ -63,6 +63,9 @@ SEC_TICKERS_URL = "https://www.sec.gov/files/company_tickers.json"
 SEC_FACTS_URL = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
 SEC_SUBS_URL = "https://data.sec.gov/submissions/CIK{cik}.json"
 YAHOO_CHART_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range={range}"
+# Small monthly payload whose only purpose is the split history (Yahoo closes are split-adjusted
+# back in time; audit_mcap_store.mcap_price undoes splits after as_of with it).
+YAHOO_EVENTS_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1mo&range={range}&events=split"
 
 
 def _get(url: str, ua: str) -> tuple[bytes, int, str]:
@@ -174,7 +177,7 @@ def _throttle(log: list[dict], sleep: float) -> None:
 
 
 def run(store_dir: Path, ciks: list[str], symbols: list[str], chart_range: str, sleep: float, skip_tickers: bool, refresh: bool = False,
-        plan: dict | None = None) -> dict:
+        plan: dict | None = None, with_split_events: bool = False) -> dict:
     store = RawDatasetStore(store_dir)
     _BLOCKED_HOSTS.clear()
     log: list[dict] = []
@@ -196,6 +199,10 @@ def run(store_dir: Path, ciks: list[str], symbols: list[str], chart_range: str, 
         aid = f"yahoo_chart:{sym.upper()}:{chart_range}"
         _fetch_one(store, aid, YAHOO_CHART_URL.format(symbol=sym.upper(), range=chart_range), "YAHOO_CHART", YAHOO_UA, log, refresh)
         _throttle(log, sleep)
+        if with_split_events:
+            eid = f"yahoo_events:{sym.upper()}:{chart_range}"
+            _fetch_one(store, eid, YAHOO_EVENTS_URL.format(symbol=sym.upper(), range=chart_range), "YAHOO_SPLIT_EVENTS", YAHOO_UA, log, refresh)
+            _throttle(log, sleep)
     ok = sum(1 for r in log if r["status"] in ("OK", "SKIPPED_ALREADY_PRESENT"))
     report = {
         "kind": "REAL_DATA_INGEST_RUN",
@@ -223,9 +230,10 @@ if __name__ == "__main__":
     ap.add_argument("--sleep", type=float, default=0.15)
     ap.add_argument("--skip-tickers", action="store_true")
     ap.add_argument("--refresh", action="store_true", help="re-fetch existing ids; previous bytes+manifest are archived under store/history")
+    ap.add_argument("--with-split-events", action="store_true", help="also fetch yahoo_events:<SYM>:<range> (split history) per symbol")
     ap.add_argument("--plan", type=Path, help="missing-large-cap priority plan JSON (reports/gate_evidence/missing_large_cap_priority_plan_*.json)")
     a = ap.parse_args()
     ciks = [c.strip() for c in a.ciks.split(",") if c.strip()]
     symbols = [s.strip() for s in a.symbols.split(",") if s.strip()]
     plan = json.loads(a.plan.read_text(encoding="utf-8")) if a.plan else None
-    print(json.dumps(run(Path(a.store), ciks, symbols, a.chart_range, a.sleep, a.skip_tickers, a.refresh, plan), indent=2))
+    print(json.dumps(run(Path(a.store), ciks, symbols, a.chart_range, a.sleep, a.skip_tickers, a.refresh, plan, a.with_split_events), indent=2))
