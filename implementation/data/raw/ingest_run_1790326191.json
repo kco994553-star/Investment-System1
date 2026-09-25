@@ -1,0 +1,93 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "data/raw",
+  "n_requested": 16,
+  "n_ok": 16,
+  "n_failed": 0,
+  "log": [
+    {
+      "artifact_id": "companyfacts:0001013462",
+      "status": "OK",
+      "bytes": 3246828
+    },
+    {
+      "artifact_id": "submissions:0001013462",
+      "status": "OK",
+      "bytes": 165421
+    },
+    {
+      "artifact_id": "companyfacts:0001725057",
+      "status": "OK",
+      "bytes": 1887033
+    },
+    {
+      "artifact_id": "submissions:0001725057",
+      "status": "OK",
+      "bytes": 131723
+    },
+    {
+      "artifact_id": "companyfacts:0000004447",
+      "status": "OK",
+      "bytes": 3918627
+    },
+    {
+      "artifact_id": "submissions:0000004447",
+      "status": "OK",
+      "bytes": 158720
+    },
+    {
+      "artifact_id": "companyfacts:0000859737",
+      "status": "OK",
+      "bytes": 4475358
+    },
+    {
+      "artifact_id": "submissions:0000859737",
+      "status": "OK",
+      "bytes": 160320
+    },
+    {
+      "artifact_id": "companyfacts:0000051644",
+      "status": "OK",
+      "bytes": 4301361
+    },
+    {
+      "artifact_id": "submissions:0000051644",
+      "status": "OK",
+      "bytes": 164776
+    },
+    {
+      "artifact_id": "companyfacts:0001043604",
+      "status": "OK",
+      "bytes": 4542601
+    },
+    {
+      "artifact_id": "submissions:0001043604",
+      "status": "OK",
+      "bytes": 161187
+    },
+    {
+      "artifact_id": "companyfacts:0000055067",
+      "status": "OK",
+      "bytes": 4557642
+    },
+    {
+      "artifact_id": "submissions:0000055067",
+      "status": "OK",
+      "bytes": 149571
+    },
+    {
+      "artifact_id": "companyfacts:0001618921",
+      "status": "OK",
+      "bytes": 2799693
+    },
+    {
+      "artifact_id": "submissions:0001618921",
+      "status": "OK",
+      "bytes": 163138
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "plan_resolution": null,
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}

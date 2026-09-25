@@ -3,71 +3,4432 @@
   "as_of": "2024-12-31T00:00:00+00:00",
   "store": {
     "dir": "data/raw",
-    "n_artifacts": 2053,
+    "n_artifacts": 2069,
     "status": "PRESENT"
   },
-  "listings": 871,
-  "plan_names_unresolved": [
-    "ANSS",
-    "DAY",
-    "HES",
-    "HOLX",
-    "IPG",
-    "JNPR",
-    "K",
-    "WBA"
-  ],
+  "listings": 604,
+  "plan_names_unresolved": [],
+  "cik_candidate_verification": {
+    "ANSS": {
+      "cik": "0001013462",
+      "verified": true,
+      "sec_name": "ANSYS INC",
+      "status": "VERIFIED_SEC_SUBMISSIONS_NAME"
+    },
+    "DAY": {
+      "cik": "0001725057",
+      "verified": true,
+      "sec_name": "Dayforce, Inc.",
+      "status": "VERIFIED_SEC_SUBMISSIONS_NAME"
+    },
+    "HES": {
+      "cik": "0000004447",
+      "verified": true,
+      "sec_name": "HESS CORP",
+      "status": "VERIFIED_SEC_SUBMISSIONS_NAME"
+    },
+    "HOLX": {
+      "cik": "0000859737",
+      "verified": true,
+      "sec_name": "HOLOGIC INC",
+      "status": "VERIFIED_SEC_SUBMISSIONS_NAME"
+    },
+    "IPG": {
+      "cik": "0000051644",
+      "verified": true,
+      "sec_name": "INTERPUBLIC GROUP OF COMPANIES, INC.",
+      "status": "VERIFIED_SEC_SUBMISSIONS_NAME"
+    },
+    "JNPR": {
+      "cik": "0001043604",
+      "verified": true,
+      "sec_name": "JUNIPER NETWORKS INC",
+      "status": "VERIFIED_SEC_SUBMISSIONS_NAME"
+    },
+    "K": {
+      "cik": "0000055067",
+      "verified": true,
+      "sec_name": "KELLANOVA",
+      "status": "VERIFIED_SEC_SUBMISSIONS_NAME"
+    },
+    "WBA": {
+      "cik": "0001618921",
+      "verified": true,
+      "sec_name": "Walgreens Boots Alliance, Inc.",
+      "status": "VERIFIED_SEC_SUBMISSIONS_NAME"
+    }
+  },
+  "ranking_basis": "COMPANY_LEVEL_ONE_LINE_PER_CIK",
+  "row_level_audit": {
+    "listings": 879,
+    "rankable": 731,
+    "top_cutoff_mcap_if_500_rankable": 22006108796.860588
+  },
+  "company_dedupe": {
+    "n_rows": 879,
+    "n_companies": 604,
+    "n_dropped_rows": 275,
+    "methods": {
+      "SINGLE_LINE": 515,
+      "SEC_SUBMISSIONS_PRIMARY": 89,
+      "SHORTEST_SYMBOL_FALLBACK": 0
+    },
+    "multi_line_issuers": [
+      {
+        "cik": "0001652044",
+        "kept": "GOOGL",
+        "dropped": [
+          "GOOG",
+          "GOOGM",
+          "GOOGN"
+        ]
+      },
+      {
+        "cik": "0001067983",
+        "kept": "BRK-B",
+        "dropped": [
+          "BRK-A"
+        ]
+      },
+      {
+        "cik": "0000019617",
+        "kept": "JPM",
+        "dropped": [
+          "AMJB",
+          "JPM-PC",
+          "JPM-PD",
+          "JPM-PJ",
+          "JPM-PK",
+          "JPM-PL",
+          "JPM-PM",
+          "VYLD"
+        ]
+      },
+      {
+        "cik": "0000937966",
+        "kept": "ASML",
+        "dropped": [
+          "ASMLF"
+        ]
+      },
+      {
+        "cik": "0001341439",
+        "kept": "ORCL",
+        "dropped": [
+          "ORCL-PD"
+        ]
+      },
+      {
+        "cik": "0000070858",
+        "kept": "BAC",
+        "dropped": [
+          "BAC-PB",
+          "BAC-PE",
+          "BAC-PK",
+          "BAC-PL",
+          "BAC-PM",
+          "BAC-PN",
+          "BAC-PO",
+          "BAC-PP",
+          "BAC-PQ",
+          "BAC-PS",
+          "BACRP",
+          "BML-PG",
+          "BML-PH",
+          "BML-PJ",
+          "BML-PL",
+          "MER-PK"
+        ]
+      },
+      {
+        "cik": "0001089113",
+        "kept": "HSBC",
+        "dropped": [
+          "HBCYF"
+        ]
+      },
+      {
+        "cik": "0000895421",
+        "kept": "MS",
+        "dropped": [
+          "MS-PA",
+          "MS-PE",
+          "MS-PF",
+          "MS-PI",
+          "MS-PK",
+          "MS-PL",
+          "MS-PO",
+          "MS-PP",
+          "MS-PQ"
+        ]
+      },
+      {
+        "cik": "0001577552",
+        "kept": "BABA",
+        "dropped": [
+          "BABAF",
+          "BBAAY"
+        ]
+      },
+      {
+        "cik": "0001000275",
+        "kept": "RY",
+        "dropped": [
+          "RYLBF"
+        ]
+      },
+      {
+        "cik": "0000886982",
+        "kept": "GS",
+        "dropped": [
+          "GS-PA",
+          "GS-PC",
+          "GS-PD",
+          "GSCE"
+        ]
+      },
+      {
+        "cik": "0001306965",
+        "kept": "SHEL",
+        "dropped": [
+          "RYDAF"
+        ]
+      },
+      {
+        "cik": "0001114448",
+        "kept": "NVS",
+        "dropped": [
+          "NVSEF"
+        ]
+      },
+      {
+        "cik": "0000072971",
+        "kept": "WFC",
+        "dropped": [
+          "WFC-PA",
+          "WFC-PC",
+          "WFC-PD",
+          "WFC-PL",
+          "WFC-PY",
+          "WFC-PZ",
+          "WFCNP"
+        ]
+      },
+      {
+        "cik": "0000067088",
+        "kept": "MUFG",
+        "dropped": [
+          "MBFJF"
+        ]
+      },
+      {
+        "cik": "0001000184",
+        "kept": "SAP",
+        "dropped": [
+          "SAPGF"
+        ]
+      },
+      {
+        "cik": "0001094517",
+        "kept": "TM",
+        "dropped": [
+          "TOYOF"
+        ]
+      },
+      {
+        "cik": "0000831001",
+        "kept": "C",
+        "dropped": [
+          "C-PN",
+          "C-PR"
+        ]
+      },
+      {
+        "cik": "0000811809",
+        "kept": "BHP",
+        "dropped": [
+          "BHPLF"
+        ]
+      },
+      {
+        "cik": "0000891478",
+        "kept": "SAN",
+        "dropped": [
+          "BCDRF"
+        ]
+      },
+      {
+        "cik": "0000947263",
+        "kept": "TD",
+        "dropped": [
+          "TDBCP"
+        ]
+      },
+      {
+        "cik": "0000353278",
+        "kept": "NVO",
+        "dropped": [
+          "NONOF"
+        ]
+      },
+      {
+        "cik": "0000316709",
+        "kept": "SCHW",
+        "dropped": [
+          "SCHW-PD",
+          "SCHW-PJ"
+        ]
+      },
+      {
+        "cik": "0001283699",
+        "kept": "TMUS",
+        "dropped": [
+          "TMUSI",
+          "TMUSL",
+          "TMUSZ"
+        ]
+      },
+      {
+        "cik": "0000732717",
+        "kept": "T",
+        "dropped": [
+          "T-PA",
+          "T-PC",
+          "TBB"
+        ]
+      },
+      {
+        "cik": "0000753308",
+        "kept": "NEE",
+        "dropped": [
+          "NEE-PN",
+          "NEE-PS",
+          "NEE-PT",
+          "NEE-PU",
+          "NEE-PV",
+          "NEE-PW"
+        ]
+      },
+      {
+        "cik": "0001022837",
+        "kept": "SMFG",
+        "dropped": [
+          "SMFNF"
+        ]
+      },
+      {
+        "cik": "0000863064",
+        "kept": "RIO",
+        "dropped": [
+          "RTPPF"
+        ]
+      },
+      {
+        "cik": "0000047710",
+        "kept": "HTHIY",
+        "dropped": [
+          "HTHIF"
+        ]
+      },
+      {
+        "cik": "0000012927",
+        "kept": "BA",
+        "dropped": [
+          "BA-PA"
+        ]
+      },
+      {
+        "cik": "0000842180",
+        "kept": "BBVA",
+        "dropped": [
+          "BBVXF"
+        ]
+      },
+      {
+        "cik": "0001668717",
+        "kept": "BUD",
+        "dropped": [
+          "BUDFF"
+        ]
+      },
+      {
+        "cik": "0001158838",
+        "kept": "ATEYY",
+        "dropped": [
+          "ADTTF"
+        ]
+      },
+      {
+        "cik": "0000313838",
+        "kept": "SONY",
+        "dropped": [
+          "SNEJF"
+        ]
+      },
+      {
+        "cik": "0001119639",
+        "kept": "PBR",
+        "dropped": [
+          "PBR-A"
+        ]
+      },
+      {
+        "cik": "0000217410",
+        "kept": "UL",
+        "dropped": [
+          "UNLYF"
+        ]
+      },
+      {
+        "cik": "0001335730",
+        "kept": "MFG",
+        "dropped": [
+          "MZHOF"
+        ]
+      },
+      {
+        "cik": "0001045609",
+        "kept": "PLD",
+        "dropped": [
+          "PLDGP"
+        ]
+      },
+      {
+        "cik": "0001164727",
+        "kept": "NEM",
+        "dropped": [
+          "NEMCL"
+        ]
+      },
+      {
+        "cik": "0000014272",
+        "kept": "BMY",
+        "dropped": [
+          "CELG-RI"
+        ]
+      },
+      {
+        "cik": "0000927628",
+        "kept": "COF",
+        "dropped": [
+          "COF-PI",
+          "COF-PJ",
+          "COF-PK",
+          "COF-PL",
+          "COF-PN"
+        ]
+      },
+      {
+        "cik": "0000927971",
+        "kept": "BMO",
+        "dropped": [
+          "AIQD",
+          "AIQU",
+          "BERZ",
+          "BNKD",
+          "BNKU",
+          "BRZD",
+          "BRZL",
+          "BULZ",
+          "CARD",
+          "CARU",
+          "DULL",
+          "FLYD",
+          "FLYU",
+          "FNGD",
+          "FNGO",
+          "FNGS",
+          "FNGU",
+          "GDXD",
+          "GDXU",
+          "HYGD",
+          "HYGU",
+          "JETD",
+          "JETU",
+          "JPND",
+          "JPNU",
+          "LQDD",
+          "LQDU",
+          "MNGU",
+          "NRGD",
+          "NRGU",
+          "OILD",
+          "OILU",
+          "SHNY",
+          "SMHD",
+          "SMHU",
+          "SPYU",
+          "TAWN",
+          "TPEI",
+          "WTID",
+          "WTIU",
+          "XLCD",
+          "XLCU",
+          "XLPD",
+          "XLPU"
+        ]
+      },
+      {
+        "cik": "0001303523",
+        "kept": "BTI",
+        "dropped": [
+          "BTAFF"
+        ]
+      },
+      {
+        "cik": "0000313807",
+        "kept": "BP",
+        "dropped": [
+          "BPAQF",
+          "BPPFF"
+        ]
+      },
+      {
+        "cik": "0000895728",
+        "kept": "ENB",
+        "dropped": [
+          "EBBGF",
+          "EBBNF",
+          "EBGEF",
+          "EBRGF",
+          "EBRZF",
+          "ENBFF",
+          "ENBGF",
+          "ENBHF",
+          "ENBMF",
+          "ENBNF",
+          "ENBOF",
+          "ENBRF",
+          "ENBSF",
+          "ENFFF",
+          "ENNPF"
+        ]
+      },
+      {
+        "cik": "0001140625",
+        "kept": "EQNR",
+        "dropped": [
+          "STOHF"
+        ]
+      },
+      {
+        "cik": "0001390777",
+        "kept": "BNY",
+        "dropped": [
+          "BNY-PK"
+        ]
+      },
+      {
+        "cik": "0001045520",
+        "kept": "CM",
+        "dropped": [
+          "CNDIF"
+        ]
+      },
+      {
+        "cik": "0001039765",
+        "kept": "ING",
+        "dropped": [
+          "INGVF"
+        ]
+      },
+      {
+        "cik": "0001121404",
+        "kept": "SNY",
+        "dropped": [
+          "SNYNF"
+        ]
+      },
+      {
+        "cik": "0000002809",
+        "kept": "AEM",
+        "dropped": [
+          "AEMRF"
+        ]
+      },
+      {
+        "cik": "0001131399",
+        "kept": "GSK",
+        "dropped": [
+          "GLAXF"
+        ]
+      },
+      {
+        "cik": "0000092122",
+        "kept": "SO",
+        "dropped": [
+          "SOJC",
+          "SOJD",
+          "SOJE",
+          "SOJF",
+          "SOMN"
+        ]
+      },
+      {
+        "cik": "0000036104",
+        "kept": "USB",
+        "dropped": [
+          "USB-PA",
+          "USB-PH",
+          "USB-PP",
+          "USB-PQ",
+          "USB-PR",
+          "USB-PS"
+        ]
+      },
+      {
+        "cik": "0001326160",
+        "kept": "DUK",
+        "dropped": [
+          "DUK-PA",
+          "DUKB",
+          "DUKU"
+        ]
+      },
+      {
+        "cik": "0001404912",
+        "kept": "KKR",
+        "dropped": [
+          "KKR-PD",
+          "KKRS",
+          "KKRT"
+        ]
+      },
+      {
+        "cik": "0001061219",
+        "kept": "EPD",
+        "dropped": [
+          "EPDU"
+        ]
+      },
+      {
+        "cik": "0001160106",
+        "kept": "LYG",
+        "dropped": [
+          "LLDTF",
+          "LLOBF"
+        ]
+      },
+      {
+        "cik": "0001001085",
+        "kept": "BN",
+        "dropped": [
+          "BAMGF",
+          "BAMKF",
+          "BKAMF",
+          "BKFAF",
+          "BKFDF",
+          "BKFOF",
+          "BKFPF",
+          "BKPA",
+          "BNH",
+          "BNJ",
+          "BRCFF",
+          "BRFAF",
+          "BRFCF",
+          "BROXF",
+          "BRPSF",
+          "BXDIF"
+        ]
+      },
+      {
+        "cik": "0000312069",
+        "kept": "BCS",
+        "dropped": [
+          "BCLYF"
+        ]
+      },
+      {
+        "cik": "0001166691",
+        "kept": "CMCSA",
+        "dropped": [
+          "CCZ"
+        ]
+      },
+      {
+        "cik": "0001645590",
+        "kept": "HPE",
+        "dropped": [
+          "HPE-PC"
+        ]
+      },
+      {
+        "cik": "0001002242",
+        "kept": "E",
+        "dropped": [
+          "EIPAF"
+        ]
+      },
+      {
+        "cik": "0001063761",
+        "kept": "SPG",
+        "dropped": [
+          "SPG-PJ"
+        ]
+      },
+      {
+        "cik": "0001004315",
+        "kept": "NGG",
+        "dropped": [
+          "NEWEN",
+          "NGGTF",
+          "NMKBP",
+          "NMKCP",
+          "NMPWP"
+        ]
+      },
+      {
+        "cik": "0001110646",
+        "kept": "NTES",
+        "dropped": [
+          "NETTF"
+        ]
+      },
+      {
+        "cik": "0001858681",
+        "kept": "APO",
+        "dropped": [
+          "APOS"
+        ]
+      },
+      {
+        "cik": "0000844150",
+        "kept": "NWG",
+        "dropped": [
+          "RBSPF"
+        ]
+      },
+      {
+        "cik": "0001086888",
+        "kept": "MFC",
+        "dropped": [
+          "MNLCF",
+          "MNQFF",
+          "MNUFF",
+          "MNUPF"
+        ]
+      },
+      {
+        "cik": "0001276187",
+        "kept": "ET",
+        "dropped": [
+          "ET-PI"
+        ]
+      },
+      {
+        "cik": "0001506307",
+        "kept": "KMI",
+        "dropped": [
+          "EP-PC"
+        ]
+      },
+      {
+        "cik": "0001159508",
+        "kept": "DB",
+        "dropped": [
+          "ADZCF",
+          "DEENF",
+          "DGP",
+          "DGZ",
+          "DZZ",
+          "OLOXF"
+        ]
+      },
+      {
+        "cik": "0001297996",
+        "kept": "DLR",
+        "dropped": [
+          "DLR-PJ",
+          "DLR-PK",
+          "DLR-PL"
+        ]
+      },
+      {
+        "cik": "0001129137",
+        "kept": "AMX",
+        "dropped": [
+          "AMXOF"
+        ]
+      },
+      {
+        "cik": "0000899051",
+        "kept": "ALL",
+        "dropped": [
+          "ALL-PB",
+          "ALL-PH",
+          "ALL-PI",
+          "ALL-PJ"
+        ]
+      },
+      {
+        "cik": "0001099219",
+        "kept": "MET",
+        "dropped": [
+          "MET-PA",
+          "MET-PE",
+          "MET-PF"
+        ]
+      },
+      {
+        "cik": "0001395064",
+        "kept": "TAK",
+        "dropped": [
+          "TKPHF"
+        ]
+      },
+      {
+        "cik": "0001050446",
+        "kept": "MSTR",
+        "dropped": [
+          "STRC",
+          "STRD",
+          "STRF",
+          "STRK"
+        ]
+      },
+      {
+        "cik": "0000924613",
+        "kept": "NOK",
+        "dropped": [
+          "NOKBF"
+        ]
+      },
+      {
+        "cik": "0000092230",
+        "kept": "TFC",
+        "dropped": [
+          "TFC-PI",
+          "TFC-PO",
+          "TFC-PR"
+        ]
+      },
+      {
+        "cik": "0000797468",
+        "kept": "OXY",
+        "dropped": [
+          "OXY-WT"
+        ]
+      },
+      {
+        "cik": "0000929869",
+        "kept": "RELX",
+        "dropped": [
+          "RLXXF"
+        ]
+      },
+      {
+        "cik": "0001393311",
+        "kept": "PSA",
+        "dropped": [
+          "PSA-PF",
+          "PSA-PG",
+          "PSA-PH",
+          "PSA-PI",
+          "PSA-PJ",
+          "PSA-PK",
+          "PSA-PL",
+          "PSA-PM",
+          "PSA-PN",
+          "PSA-PO",
+          "PSA-PP",
+          "PSA-PQ",
+          "PSA-PR",
+          "PSA-PS",
+          "PSA-PT",
+          "PSA-PU"
+        ]
+      },
+      {
+        "cik": "0001243429",
+        "kept": "MT",
+        "dropped": [
+          "AMSYF",
+          "ARCXF"
+        ]
+      },
+      {
+        "cik": "0001032208",
+        "kept": "SRE",
+        "dropped": [
+          "SREA"
+        ]
+      },
+      {
+        "cik": "0000037996",
+        "kept": "F",
+        "dropped": [
+          "F-PB",
+          "F-PC",
+          "F-PD"
+        ]
+      },
+      {
+        "cik": "0000093751",
+        "kept": "STT",
+        "dropped": [
+          "STT-PG"
+        ]
+      },
+      {
+        "cik": "0001754301",
+        "kept": "FOXA",
+        "dropped": [
+          "FOX"
+        ]
+      },
+      {
+        "cik": "0001564708",
+        "kept": "NWSA",
+        "dropped": [
+          "NWS"
+        ]
+      }
+    ]
+  },
   "audit": {
     "kind": "PIT_MCAP_STORE_COVERAGE_AUDIT",
     "as_of": "2024-12-31T00:00:00+00:00",
     "chart_range": "5y",
-    "listings": 871,
-    "companyfacts": 871,
-    "price": 735,
-    "rankable": 731,
+    "listings": 604,
+    "companyfacts": 604,
+    "price": 549,
+    "rankable": 546,
     "missing_companyfacts": 0,
-    "missing_price": 63,
-    "missing_shares": 57,
-    "ambiguous_shares": 16,
-    "non_positive": 4,
-    "top_cutoff_mcap_if_500_rankable": 22006108796.860588,
+    "missing_price": 13,
+    "missing_shares": 29,
+    "ambiguous_shares": 13,
+    "non_positive": 3,
+    "top_cutoff_mcap_if_500_rankable": 10990428988.930275,
     "candidate_pool_complete": false,
     "justified_official_top500": false,
     "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
   },
-  "rankable": 731,
-  "cutoff_500_mcap": 22006108796.860588,
+  "rankable": 546,
+  "cutoff_500_mcap": 10990428988.930275,
+  "top500": [
+    {
+      "rank": 1,
+      "company_id": "aapl",
+      "yahoo": "AAPL",
+      "mcap": 3784744351834.5796,
+      "cik": "0000320193"
+    },
+    {
+      "rank": 2,
+      "company_id": "nvda",
+      "yahoo": "NVDA",
+      "mcap": 3358350440979.004,
+      "cik": "0001045810"
+    },
+    {
+      "rank": 3,
+      "company_id": "msft",
+      "yahoo": "MSFT",
+      "mcap": 3115664523257.3193,
+      "cik": "0000789019"
+    },
+    {
+      "rank": 4,
+      "company_id": "tm",
+      "yahoo": "TM",
+      "mcap": 2585460996651.8423,
+      "cik": "0001094517"
+    },
+    {
+      "rank": 5,
+      "company_id": "amzn",
+      "yahoo": "AMZN",
+      "mcap": 2326971968159.667,
+      "cik": "0001018724"
+    },
+    {
+      "rank": 6,
+      "company_id": "baba",
+      "yahoo": "BABA",
+      "mcap": 1596055327185.33,
+      "cik": "0001577552"
+    },
+    {
+      "rank": 7,
+      "company_id": "tsla",
+      "yahoo": "TSLA",
+      "mcap": 1339911014018.7795,
+      "cik": "0001318605"
+    },
+    {
+      "rank": 8,
+      "company_id": "avgo",
+      "yahoo": "AVGO",
+      "mcap": 1088360026717.1555,
+      "cik": "0001730168"
+    },
+    {
+      "rank": 9,
+      "company_id": "hsbc",
+      "yahoo": "HSBC",
+      "mcap": 869644530866.623,
+      "cik": "0001089113"
+    },
+    {
+      "rank": 10,
+      "company_id": "amx",
+      "yahoo": "AMX",
+      "mcap": 858884395313.263,
+      "cik": "0001129137"
+    },
+    {
+      "rank": 11,
+      "company_id": "lly",
+      "yahoo": "LLY",
+      "mcap": 725673800685.0814,
+      "cik": "0000059478"
+    },
+    {
+      "rank": 12,
+      "company_id": "wmt",
+      "yahoo": "WMT",
+      "mcap": 716125032411.7711,
+      "cik": "0000104169"
+    },
+    {
+      "rank": 13,
+      "company_id": "jpm",
+      "yahoo": "JPM",
+      "mcap": 650561996481.1001,
+      "cik": "0000019617"
+    },
+    {
+      "rank": 14,
+      "company_id": "orcl",
+      "yahoo": "ORCL",
+      "mcap": 457826351146.5454,
+      "cik": "0001341439"
+    },
+    {
+      "rank": 15,
+      "company_id": "unh",
+      "yahoo": "UNH",
+      "mcap": 447245913244.96075,
+      "cik": "0000731766"
+    },
+    {
+      "rank": 16,
+      "company_id": "cost",
+      "yahoo": "COST",
+      "mcap": 405453445614.2102,
+      "cik": "0000909832"
+    },
+    {
+      "rank": 17,
+      "company_id": "pg",
+      "yahoo": "PG",
+      "mcap": 375027674323.16846,
+      "cik": "0000080424"
+    },
+    {
+      "rank": 18,
+      "company_id": "shel",
+      "yahoo": "SHEL",
+      "mcap": 374454977633.6293,
+      "cik": "0001306965"
+    },
+    {
+      "rank": 19,
+      "company_id": "hd",
+      "yahoo": "HD",
+      "mcap": 369415088283.3286,
+      "cik": "0000354950"
+    },
+    {
+      "rank": 20,
+      "company_id": "jnj",
+      "yahoo": "JNJ",
+      "mcap": 329557648407.99585,
+      "cik": "0000200406"
+    },
+    {
+      "rank": 21,
+      "company_id": "bac",
+      "yahoo": "BAC",
+      "mcap": 324092436898.6472,
+      "cik": "0000070858"
+    },
+    {
+      "rank": 22,
+      "company_id": "crm",
+      "yahoo": "CRM",
+      "mcap": 317045355926.5137,
+      "cik": "0001108524"
+    },
+    {
+      "rank": 23,
+      "company_id": "sap",
+      "yahoo": "SAP",
+      "mcap": 297773184746.9165,
+      "cik": "0001000184"
+    },
+    {
+      "rank": 24,
+      "company_id": "abbv",
+      "yahoo": "ABBV",
+      "mcap": 293901866240.78815,
+      "cik": "0001551152"
+    },
+    {
+      "rank": 25,
+      "company_id": "ntes",
+      "yahoo": "NTES",
+      "mcap": 273818766868.1408,
+      "cik": "0001110646"
+    },
+    {
+      "rank": 26,
+      "company_id": "asml",
+      "yahoo": "ASML",
+      "mcap": 269991202936.7353,
+      "cik": "0000937966"
+    },
+    {
+      "rank": 27,
+      "company_id": "ko",
+      "yahoo": "KO",
+      "mcap": 254609472104.69342,
+      "cik": "0000021344"
+    },
+    {
+      "rank": 28,
+      "company_id": "tmus",
+      "yahoo": "TMUS",
+      "mcap": 248146224592.39954,
+      "cik": "0001283699"
+    },
+    {
+      "rank": 29,
+      "company_id": "hdb",
+      "yahoo": "HDB",
+      "mcap": 240635341703.40054,
+      "cik": "0001144967"
+    },
+    {
+      "rank": 30,
+      "company_id": "cvx",
+      "yahoo": "CVX",
+      "mcap": 239043913077.82364,
+      "cik": "0000093410"
+    },
+    {
+      "rank": 31,
+      "company_id": "mrk",
+      "yahoo": "MRK",
+      "mcap": 234974283096.23706,
+      "cik": "0000310158"
+    },
+    {
+      "rank": 32,
+      "company_id": "bhp",
+      "yahoo": "BHP",
+      "mcap": 232746243315.86926,
+      "cik": "0000811809"
+    },
+    {
+      "rank": 33,
+      "company_id": "csco",
+      "yahoo": "CSCO",
+      "mcap": 226510488122.52924,
+      "cik": "0000858877"
+    },
+    {
+      "rank": 34,
+      "company_id": "wfc",
+      "yahoo": "WFC",
+      "mcap": 225727563304.01892,
+      "cik": "0000072971"
+    },
+    {
+      "rank": 35,
+      "company_id": "hthiy",
+      "yahoo": "HTHIY",
+      "mcap": 222548644574.80872,
+      "cik": "0000047710"
+    },
+    {
+      "rank": 36,
+      "company_id": "ngg",
+      "yahoo": "NGG",
+      "mcap": 219268967071.02063,
+      "cik": "0001004315"
+    },
+    {
+      "rank": 37,
+      "company_id": "acn",
+      "yahoo": "ACN",
+      "mcap": 216911325643.0964,
+      "cik": "0001467373"
+    },
+    {
+      "rank": 38,
+      "company_id": "axp",
+      "yahoo": "AXP",
+      "mcap": 205546755779.73175,
+      "cik": "0000004962"
+    },
+    {
+      "rank": 39,
+      "company_id": "mcd",
+      "yahoo": "MCD",
+      "mcap": 198903799213.2458,
+      "cik": "0000063908"
+    },
+    {
+      "rank": 40,
+      "company_id": "amd",
+      "yahoo": "AMD",
+      "mcap": 198696535406.172,
+      "cik": "0000002488"
+    },
+    {
+      "rank": 41,
+      "company_id": "tmo",
+      "yahoo": "TMO",
+      "mcap": 197212808292.37823,
+      "cik": "0000097745"
+    },
+    {
+      "rank": 42,
+      "company_id": "dis",
+      "yahoo": "DIS",
+      "mcap": 196948201860.8009,
+      "cik": "0001744489"
+    },
+    {
+      "rank": 43,
+      "company_id": "adbe",
+      "yahoo": "ADBE",
+      "mcap": 196241154626.46484,
+      "cik": "0000796343"
+    },
+    {
+      "rank": 44,
+      "company_id": "ibm",
+      "yahoo": "IBM",
+      "mcap": 194560332167.36182,
+      "cik": "0000051143"
+    },
+    {
+      "rank": 45,
+      "company_id": "lin",
+      "yahoo": "LIN",
+      "mcap": 194316555635.8961,
+      "cik": "0001707925"
+    },
+    {
+      "rank": 46,
+      "company_id": "pep",
+      "yahoo": "PEP",
+      "mcap": 194246501760.16272,
+      "cik": "0000077476"
+    },
+    {
+      "rank": 47,
+      "company_id": "ms",
+      "yahoo": "MS",
+      "mcap": 193874277262.66214,
+      "cik": "0000895421"
+    },
+    {
+      "rank": 48,
+      "company_id": "bcs",
+      "yahoo": "BCS",
+      "mcap": 191803682882.38336,
+      "cik": "0000312069"
+    },
+    {
+      "rank": 49,
+      "company_id": "abt",
+      "yahoo": "ABT",
+      "mcap": 188505065779.1272,
+      "cik": "0000001800"
+    },
+    {
+      "rank": 50,
+      "company_id": "isrg",
+      "yahoo": "ISRG",
+      "mcap": 187692328163.4085,
+      "cik": "0001035267"
+    },
+    {
+      "rank": 51,
+      "company_id": "nvs",
+      "yahoo": "NVS",
+      "mcap": 186144232884.63712,
+      "cik": "0001114448"
+    },
+    {
+      "rank": 52,
+      "company_id": "ge",
+      "yahoo": "GE",
+      "mcap": 180414724431.31274,
+      "cik": "0000040545"
+    },
+    {
+      "rank": 53,
+      "company_id": "pm",
+      "yahoo": "PM",
+      "mcap": 177164507845.63873,
+      "cik": "0001413329"
+    },
+    {
+      "rank": 54,
+      "company_id": "lyg",
+      "yahoo": "LYG",
+      "mcap": 176502749023.54047,
+      "cik": "0001160106"
+    },
+    {
+      "rank": 55,
+      "company_id": "gs",
+      "yahoo": "GS",
+      "mcap": 173896556864.1883,
+      "cik": "0000886982"
+    },
+    {
+      "rank": 56,
+      "company_id": "intu",
+      "yahoo": "INTU",
+      "mcap": 173716355385.13184,
+      "cik": "0000896878"
+    },
+    {
+      "rank": 57,
+      "company_id": "cat",
+      "yahoo": "CAT",
+      "mcap": 171606182998.31323,
+      "cik": "0000018230"
+    },
+    {
+      "rank": 58,
+      "company_id": "qcom",
+      "yahoo": "QCOM",
+      "mcap": 165392259033.20312,
+      "cik": "0000804328"
+    },
+    {
+      "rank": 59,
+      "company_id": "dhr",
+      "yahoo": "DHR",
+      "mcap": 164143836797.45535,
+      "cik": "0000313616"
+    },
+    {
+      "rank": 60,
+      "company_id": "ry",
+      "yahoo": "RY",
+      "mcap": 164077034085.53653,
+      "cik": "0001000275"
+    },
+    {
+      "rank": 61,
+      "company_id": "txn",
+      "yahoo": "TXN",
+      "mcap": 163321252063.8503,
+      "cik": "0000097476"
+    },
+    {
+      "rank": 62,
+      "company_id": "blk",
+      "yahoo": "BLK",
+      "mcap": 153411361388.87695,
+      "cik": "0002012383"
+    },
+    {
+      "rank": 63,
+      "company_id": "ul",
+      "yahoo": "UL",
+      "mcap": 151866541995.07693,
+      "cik": "0000217410"
+    },
+    {
+      "rank": 64,
+      "company_id": "t",
+      "yahoo": "T",
+      "mcap": 149881480719.47443,
+      "cik": "0000732717"
+    },
+    {
+      "rank": 65,
+      "company_id": "rtx",
+      "yahoo": "RTX",
+      "mcap": 148937202967.74118,
+      "cik": "0000101829"
+    },
+    {
+      "rank": 66,
+      "company_id": "vz",
+      "yahoo": "VZ",
+      "mcap": 148500370198.01547,
+      "cik": "0000732712"
+    },
+    {
+      "rank": 67,
+      "company_id": "v",
+      "yahoo": "V",
+      "mcap": 146048381229.6529,
+      "cik": "0001403161"
+    },
+    {
+      "rank": 68,
+      "company_id": "spgi",
+      "yahoo": "SPGI",
+      "mcap": 144132550775.14648,
+      "cik": "0000064040"
+    },
+    {
+      "rank": 69,
+      "company_id": "mufg",
+      "yahoo": "MUFG",
+      "mcap": 142057661758.75485,
+      "cik": "0000067088"
+    },
+    {
+      "rank": 70,
+      "company_id": "hon",
+      "yahoo": "HON",
+      "mcap": 140633994410.5243,
+      "cik": "0000773840"
+    },
+    {
+      "rank": 71,
+      "company_id": "nee",
+      "yahoo": "NEE",
+      "mcap": 140047923736.68594,
+      "cik": "0000753308"
+    },
+    {
+      "rank": 72,
+      "company_id": "syk",
+      "yahoo": "SYK",
+      "mcap": 135785584495.25449,
+      "cik": "0000310764"
+    },
+    {
+      "rank": 73,
+      "company_id": "gsk",
+      "yahoo": "GSK",
+      "mcap": 135541713174.39082,
+      "cik": "0001131399"
+    },
+    {
+      "rank": 74,
+      "company_id": "low",
+      "yahoo": "LOW",
+      "mcap": 134489023325.30548,
+      "cik": "0000060667"
+    },
+    {
+      "rank": 75,
+      "company_id": "tjx",
+      "yahoo": "TJX",
+      "mcap": 133220479723.68732,
+      "cik": "0000109198"
+    },
+    {
+      "rank": 76,
+      "company_id": "unp",
+      "yahoo": "UNP",
+      "mcap": 132869341514.89757,
+      "cik": "0000100885"
+    },
+    {
+      "rank": 77,
+      "company_id": "pfe",
+      "yahoo": "PFE",
+      "mcap": 132766866604.11395,
+      "cik": "0000078003"
+    },
+    {
+      "rank": 78,
+      "company_id": "amgn",
+      "yahoo": "AMGN",
+      "mcap": 132281573472.3382,
+      "cik": "0000318154"
+    },
+    {
+      "rank": 79,
+      "company_id": "bsx",
+      "yahoo": "BSX",
+      "mcap": 132172849304.57645,
+      "cik": "0000885725"
+    },
+    {
+      "rank": 80,
+      "company_id": "amat",
+      "yahoo": "AMAT",
+      "mcap": 131363534460.22961,
+      "cik": "0000006951"
+    },
+    {
+      "rank": 81,
+      "company_id": "arm",
+      "yahoo": "ARM",
+      "mcap": 130988016687.07407,
+      "cik": "0001973239"
+    },
+    {
+      "rank": 82,
+      "company_id": "kkr",
+      "yahoo": "KKR",
+      "mcap": 130317368542.18753,
+      "cik": "0001404912"
+    },
+    {
+      "rank": 83,
+      "company_id": "pgr",
+      "yahoo": "PGR",
+      "mcap": 129212456446.09575,
+      "cik": "0000080661"
+    },
+    {
+      "rank": 84,
+      "company_id": "etn",
+      "yahoo": "ETN",
+      "mcap": 128610439648.4375,
+      "cik": "0001551182"
+    },
+    {
+      "rank": 85,
+      "company_id": "uber",
+      "yahoo": "UBER",
+      "mcap": 127963956644.16724,
+      "cik": "0001543151"
+    },
+    {
+      "rank": 86,
+      "company_id": "c",
+      "yahoo": "C",
+      "mcap": 127605312354.9029,
+      "cik": "0000831001"
+    },
+    {
+      "rank": 87,
+      "company_id": "tte",
+      "yahoo": "TTE",
+      "mcap": 120523654318.72072,
+      "cik": "0000879764"
+    },
+    {
+      "rank": 88,
+      "company_id": "plan:fisv",
+      "yahoo": "FISV",
+      "mcap": 117350869899.13307,
+      "cik": "0000798354"
+    },
+    {
+      "rank": 89,
+      "company_id": "bx",
+      "yahoo": "BX",
+      "mcap": 116829359187.88344,
+      "cik": "0001393818"
+    },
+    {
+      "rank": 90,
+      "company_id": "adp",
+      "yahoo": "ADP",
+      "mcap": 114223991649.2243,
+      "cik": "0000008670"
+    },
+    {
+      "rank": 91,
+      "company_id": "de",
+      "yahoo": "DE",
+      "mcap": 112708698146.29138,
+      "cik": "0000315189"
+    },
+    {
+      "rank": 92,
+      "company_id": "gild",
+      "yahoo": "GILD",
+      "mcap": 109579041745.7345,
+      "cik": "0000882095"
+    },
+    {
+      "rank": 93,
+      "company_id": "lmt",
+      "yahoo": "LMT",
+      "mcap": 109315361234.12976,
+      "cik": "0000936468"
+    },
+    {
+      "rank": 94,
+      "company_id": "cb",
+      "yahoo": "CB",
+      "mcap": 109299158316.012,
+      "cik": "0000896159"
+    },
+    {
+      "rank": 95,
+      "company_id": "ba",
+      "yahoo": "BA",
+      "mcap": 109143372723.64946,
+      "cik": "0000012927"
+    },
+    {
+      "rank": 96,
+      "company_id": "cop",
+      "yahoo": "COP",
+      "mcap": 105676353121.22647,
+      "cik": "0001163165"
+    },
+    {
+      "rank": 97,
+      "company_id": "bmy",
+      "yahoo": "BMY",
+      "mcap": 104775173404.0841,
+      "cik": "0000014272"
+    },
+    {
+      "rank": 98,
+      "company_id": "adi",
+      "yahoo": "ADI",
+      "mcap": 102861430602.2279,
+      "cik": "0000006281"
+    },
+    {
+      "rank": 99,
+      "company_id": "vrtx",
+      "yahoo": "VRTX",
+      "mcap": 102844323533.33405,
+      "cik": "0000875320"
+    },
+    {
+      "rank": 100,
+      "company_id": "mrsh",
+      "yahoo": "MRSH",
+      "mcap": 100860344963.12206,
+      "cik": "0000062709"
+    },
+    {
+      "rank": 101,
+      "company_id": "ubs",
+      "yahoo": "UBS",
+      "mcap": 100018127357.50137,
+      "cik": "0001610520"
+    },
+    {
+      "rank": 102,
+      "company_id": "sbux",
+      "yahoo": "SBUX",
+      "mcap": 98258805790.71045,
+      "cik": "0000829224"
+    },
+    {
+      "rank": 103,
+      "company_id": "mdt",
+      "yahoo": "MDT",
+      "mcap": 97282195089.13528,
+      "cik": "0001613103"
+    },
+    {
+      "rank": 104,
+      "company_id": "mrvl",
+      "yahoo": "MRVL",
+      "mcap": 96176980630.49316,
+      "cik": "0001835632"
+    },
+    {
+      "rank": 105,
+      "company_id": "mu",
+      "yahoo": "MU",
+      "mcap": 94685173674.28098,
+      "cik": "0000723125"
+    },
+    {
+      "rank": 106,
+      "company_id": "schw",
+      "yahoo": "SCHW",
+      "mcap": 93192732180.20018,
+      "cik": "0000316709"
+    },
+    {
+      "rank": 107,
+      "company_id": "plan:chtr",
+      "yahoo": "CHTR",
+      "mcap": 92977010028.70532,
+      "cik": "0001091667"
+    },
+    {
+      "rank": 108,
+      "company_id": "pld",
+      "yahoo": "PLD",
+      "mcap": 91841544378.0899,
+      "cik": "0001045609"
+    },
+    {
+      "rank": 109,
+      "company_id": "apo",
+      "yahoo": "APO",
+      "mcap": 91752600002.5409,
+      "cik": "0001858681"
+    },
+    {
+      "rank": 110,
+      "company_id": "lrcx",
+      "yahoo": "LRCX",
+      "mcap": 91719646660.42328,
+      "cik": "0000707549"
+    },
+    {
+      "rank": 111,
+      "company_id": "gev",
+      "yahoo": "GEV",
+      "mcap": 90722214335.03235,
+      "cik": "0001996810"
+    },
+    {
+      "rank": 112,
+      "company_id": "spot",
+      "yahoo": "SPOT",
+      "mcap": 89067413400.88486,
+      "cik": "0001639920"
+    },
+    {
+      "rank": 113,
+      "company_id": "td",
+      "yahoo": "TD",
+      "mcap": 88249705057.40459,
+      "cik": "0000947263"
+    },
+    {
+      "rank": 114,
+      "company_id": "meli",
+      "yahoo": "MELI",
+      "mcap": 87290742750.45776,
+      "cik": "0001099590"
+    },
+    {
+      "rank": 115,
+      "company_id": "eqix",
+      "yahoo": "EQIX",
+      "mcap": 86955396758.26868,
+      "cik": "0001101239"
+    },
+    {
+      "rank": 116,
+      "company_id": "e",
+      "yahoo": "E",
+      "mcap": 85573014705.78674,
+      "cik": "0001002242"
+    },
+    {
+      "rank": 117,
+      "company_id": "intc",
+      "yahoo": "INTC",
+      "mcap": 85483658683.77686,
+      "cik": "0000050863"
+    },
+    {
+      "rank": 118,
+      "company_id": "so",
+      "yahoo": "SO",
+      "mcap": 85243530357.58392,
+      "cik": "0000092122"
+    },
+    {
+      "rank": 119,
+      "company_id": "plan:pypl",
+      "yahoo": "PYPL",
+      "mcap": 84702300591.96152,
+      "cik": "0001633917"
+    },
+    {
+      "rank": 120,
+      "company_id": "pbr",
+      "yahoo": "PBR",
+      "mcap": 84699577884.34274,
+      "cik": "0001119639"
+    },
+    {
+      "rank": 121,
+      "company_id": "mco",
+      "yahoo": "MCO",
+      "mcap": 84589610156.25,
+      "cik": "0001059556"
+    },
+    {
+      "rank": 122,
+      "company_id": "enb",
+      "yahoo": "ENB",
+      "mcap": 84342787654.2103,
+      "cik": "0000895728"
+    },
+    {
+      "rank": 123,
+      "company_id": "shw",
+      "yahoo": "SHW",
+      "mcap": 83963166507.38425,
+      "cik": "0000089800"
+    },
+    {
+      "rank": 124,
+      "company_id": "ice",
+      "yahoo": "ICE",
+      "mcap": 83939196425.27408,
+      "cik": "0001571949"
+    },
+    {
+      "rank": 125,
+      "company_id": "bud",
+      "yahoo": "BUD",
+      "mcap": 83759509704.91548,
+      "cik": "0001668717"
+    },
+    {
+      "rank": 126,
+      "company_id": "cdns",
+      "yahoo": "CDNS",
+      "mcap": 82789025162.47559,
+      "cik": "0000813672"
+    },
+    {
+      "rank": 127,
+      "company_id": "elv",
+      "yahoo": "ELV",
+      "mcap": 82697413460.02075,
+      "cik": "0001156039"
+    },
+    {
+      "rank": 128,
+      "company_id": "tt",
+      "yahoo": "TT",
+      "mcap": 82271266544.06473,
+      "cik": "0001466258"
+    },
+    {
+      "rank": 129,
+      "company_id": "plan:cmg",
+      "yahoo": "CMG",
+      "mcap": 81878213577.91519,
+      "cik": "0001058090"
+    },
+    {
+      "rank": 130,
+      "company_id": "relx",
+      "yahoo": "RELX",
+      "mcap": 81829030565.4797,
+      "cik": "0000929869"
+    },
+    {
+      "rank": 131,
+      "company_id": "bti",
+      "yahoo": "BTI",
+      "mcap": 80974964547.7108,
+      "cik": "0001303523"
+    },
+    {
+      "rank": 132,
+      "company_id": "ph",
+      "yahoo": "PH",
+      "mcap": 80683969233.39954,
+      "cik": "0000076334"
+    },
+    {
+      "rank": 133,
+      "company_id": "amt",
+      "yahoo": "AMT",
+      "mcap": 80545701707.1731,
+      "cik": "0001053507"
+    },
+    {
+      "rank": 134,
+      "company_id": "ups",
+      "yahoo": "UPS",
+      "mcap": 79920644021.75528,
+      "cik": "0001090727"
+    },
+    {
+      "rank": 135,
+      "company_id": "wm",
+      "yahoo": "WM",
+      "mcap": 78983950450.30705,
+      "cik": "0000823768"
+    },
+    {
+      "rank": 136,
+      "company_id": "mo",
+      "yahoo": "MO",
+      "mcap": 78557191069.79369,
+      "cik": "0000764180"
+    },
+    {
+      "rank": 137,
+      "company_id": "duk",
+      "yahoo": "DUK",
+      "mcap": 78251509331.52432,
+      "cik": "0001326160"
+    },
+    {
+      "rank": 138,
+      "company_id": "race",
+      "yahoo": "RACE",
+      "mcap": 77328905181.90582,
+      "cik": "0001648416"
+    },
+    {
+      "rank": 139,
+      "company_id": "mar",
+      "yahoo": "MAR",
+      "mcap": 76686960282.07104,
+      "cik": "0001048286"
+    },
+    {
+      "rank": 140,
+      "company_id": "aon",
+      "yahoo": "AON",
+      "mcap": 76575125215.35358,
+      "cik": "0000315293"
+    },
+    {
+      "rank": 141,
+      "company_id": "msi",
+      "yahoo": "MSI",
+      "mcap": 76011194138.2619,
+      "cik": "0000068505"
+    },
+    {
+      "rank": 142,
+      "company_id": "well",
+      "yahoo": "WELL",
+      "mcap": 75630329652.4213,
+      "cik": "0000766704"
+    },
+    {
+      "rank": 143,
+      "company_id": "umc",
+      "yahoo": "UMC",
+      "mcap": 75390813206.76328,
+      "cik": "0001033767"
+    },
+    {
+      "rank": 144,
+      "company_id": "mdlz",
+      "yahoo": "MDLZ",
+      "mcap": 75306367619.75705,
+      "cik": "0001103982"
+    },
+    {
+      "rank": 145,
+      "company_id": "snps",
+      "yahoo": "SNPS",
+      "mcap": 75239512756.70483,
+      "cik": "0000883241"
+    },
+    {
+      "rank": 146,
+      "company_id": "hca",
+      "yahoo": "HCA",
+      "mcap": 74627348886.93848,
+      "cik": "0000860730"
+    },
+    {
+      "rank": 147,
+      "company_id": "ci",
+      "yahoo": "CI",
+      "mcap": 73739539318.4353,
+      "cik": "0001739940"
+    },
+    {
+      "rank": 148,
+      "company_id": "ctas",
+      "yahoo": "CTAS",
+      "mcap": 72919784847.8421,
+      "cik": "0000723254"
+    },
+    {
+      "rank": 149,
+      "company_id": "ftnt",
+      "yahoo": "FTNT",
+      "mcap": 72912643055.61479,
+      "cik": "0001262039"
+    },
+    {
+      "rank": 150,
+      "company_id": "itw",
+      "yahoo": "ITW",
+      "mcap": 72081654887.39014,
+      "cik": "0000049826"
+    },
+    {
+      "rank": 151,
+      "company_id": "pnc",
+      "yahoo": "PNC",
+      "mcap": 71973805085.14594,
+      "cik": "0000713676"
+    },
+    {
+      "rank": 152,
+      "company_id": "mck",
+      "yahoo": "MCK",
+      "mcap": 71929772300.83875,
+      "cik": "0000927653"
+    },
+    {
+      "rank": 153,
+      "company_id": "san",
+      "yahoo": "SAN",
+      "mcap": 71364935521.43446,
+      "cik": "0000891478"
+    },
+    {
+      "rank": 154,
+      "company_id": "cl",
+      "yahoo": "CL",
+      "mcap": 71132038704.83658,
+      "cik": "0000021665"
+    },
+    {
+      "rank": 155,
+      "company_id": "plan:zts",
+      "yahoo": "ZTS",
+      "mcap": 71122615851.11366,
+      "cik": "0001555280"
+    },
+    {
+      "rank": 156,
+      "company_id": "ceg",
+      "yahoo": "CEG",
+      "mcap": 70079996271.69017,
+      "cik": "0001868275"
+    },
+    {
+      "rank": 157,
+      "company_id": "gd",
+      "yahoo": "GD",
+      "mcap": 70039906270.8193,
+      "cik": "0000040533"
+    },
+    {
+      "rank": 158,
+      "company_id": "usb",
+      "yahoo": "USB",
+      "mcap": 70015028427.0705,
+      "cik": "0000036104"
+    },
+    {
+      "rank": 159,
+      "company_id": "emr",
+      "yahoo": "EMR",
+      "mcap": 68886735014.34326,
+      "cik": "0000032604"
+    },
+    {
+      "rank": 160,
+      "company_id": "mmm",
+      "yahoo": "MMM",
+      "mcap": 68056103057.930595,
+      "cik": "0000066740"
+    },
+    {
+      "rank": 161,
+      "company_id": "tdg",
+      "yahoo": "TDG",
+      "mcap": 67339571979.95703,
+      "cik": "0001260221"
+    },
+    {
+      "rank": 162,
+      "company_id": "bmo",
+      "yahoo": "BMO",
+      "mcap": 67327727129.85626,
+      "cik": "0000927971"
+    },
+    {
+      "rank": 163,
+      "company_id": "cmcsa",
+      "yahoo": "CMCSA",
+      "mcap": 67149189256.77162,
+      "cik": "0001166691"
+    },
+    {
+      "rank": 164,
+      "company_id": "cp",
+      "yahoo": "CP",
+      "mcap": 66465182956.5258,
+      "cik": "0000016875"
+    },
+    {
+      "rank": 165,
+      "company_id": "cof",
+      "yahoo": "COF",
+      "mcap": 66252428530.30371,
+      "cik": "0000927628"
+    },
+    {
+      "rank": 166,
+      "company_id": "noc",
+      "yahoo": "NOC",
+      "mcap": 66004365054.67822,
+      "cik": "0001133421"
+    },
+    {
+      "rank": 167,
+      "company_id": "rio",
+      "yahoo": "RIO",
+      "mcap": 65978458856.4814,
+      "cik": "0000863064"
+    },
+    {
+      "rank": 168,
+      "company_id": "regn",
+      "yahoo": "REGN",
+      "mcap": 65394815268.77014,
+      "cik": "0000872589"
+    },
+    {
+      "rank": 169,
+      "company_id": "ecl",
+      "yahoo": "ECL",
+      "mcap": 65203884525.003174,
+      "cik": "0000031462"
+    },
+    {
+      "rank": 170,
+      "company_id": "scco",
+      "yahoo": "SCCO",
+      "mcap": 64870227059.57215,
+      "cik": "0001001838"
+    },
+    {
+      "rank": 171,
+      "company_id": "plan:adsk",
+      "yahoo": "ADSK",
+      "mcap": 63968949737.54883,
+      "cik": "0000769397"
+    },
+    {
+      "rank": 172,
+      "company_id": "eog",
+      "yahoo": "EOG",
+      "mcap": 63959351099.19245,
+      "cik": "0000821189"
+    },
+    {
+      "rank": 173,
+      "company_id": "ma",
+      "yahoo": "MA",
+      "mcap": 63715348863.47467,
+      "cik": "0001141391"
+    },
+    {
+      "rank": 174,
+      "company_id": "bns",
+      "yahoo": "BNS",
+      "mcap": 62871564069.24251,
+      "cik": "0000009631"
+    },
+    {
+      "rank": 175,
+      "company_id": "cni",
+      "yahoo": "CNI",
+      "mcap": 62585786406.369934,
+      "cik": "0000016868"
+    },
+    {
+      "rank": 176,
+      "company_id": "eqnr",
+      "yahoo": "EQNR",
+      "mcap": 62476822056.59929,
+      "cik": "0001140625"
+    },
+    {
+      "rank": 177,
+      "company_id": "wmb",
+      "yahoo": "WMB",
+      "mcap": 62440994392.6826,
+      "cik": "0000107263"
+    },
+    {
+      "rank": 178,
+      "company_id": "rsg",
+      "yahoo": "RSG",
+      "mcap": 61811009874.31229,
+      "cik": "0001060391"
+    },
+    {
+      "rank": 179,
+      "company_id": "crh",
+      "yahoo": "CRH",
+      "mcap": 61631718479.85924,
+      "cik": "0000849395"
+    },
+    {
+      "rank": 180,
+      "company_id": "apd",
+      "yahoo": "APD",
+      "mcap": 61381234399.48993,
+      "cik": "0000002969"
+    },
+    {
+      "rank": 181,
+      "company_id": "ajg",
+      "yahoo": "AJG",
+      "mcap": 61311821453.85742,
+      "cik": "0000354190"
+    },
+    {
+      "rank": 182,
+      "company_id": "plan:amcr",
+      "yahoo": "AMCR",
+      "mcap": 61013802069.06259,
+      "cik": "0001748790"
+    },
+    {
+      "rank": 183,
+      "company_id": "rcl",
+      "yahoo": "RCL",
+      "mcap": 60781045809.77234,
+      "cik": "0000884887"
+    },
+    {
+      "rank": 184,
+      "company_id": "nke",
+      "yahoo": "NKE",
+      "mcap": 60780681451.12363,
+      "cik": "0000320187"
+    },
+    {
+      "rank": 185,
+      "company_id": "csx",
+      "yahoo": "CSX",
+      "mcap": 60469377528.55405,
+      "cik": "0000277948"
+    },
+    {
+      "rank": 186,
+      "company_id": "panw",
+      "yahoo": "PANW",
+      "mcap": 60436018998.71826,
+      "cik": "0001327567"
+    },
+    {
+      "rank": 187,
+      "company_id": "epd",
+      "yahoo": "EPD",
+      "mcap": 60366703167.73191,
+      "cik": "0001061219"
+    },
+    {
+      "rank": 188,
+      "company_id": "hlt",
+      "yahoo": "HLT",
+      "mcap": 60284414462.789246,
+      "cik": "0001585689"
+    },
+    {
+      "rank": 189,
+      "company_id": "plan:carr",
+      "yahoo": "CARR",
+      "mcap": 59919744480.17679,
+      "cik": "0001783180"
+    },
+    {
+      "rank": 190,
+      "company_id": "et",
+      "yahoo": "ET",
+      "mcap": 59057119926.37786,
+      "cik": "0001276187"
+    },
+    {
+      "rank": 191,
+      "company_id": "gm",
+      "yahoo": "GM",
+      "mcap": 58015601684.94385,
+      "cik": "0001467858"
+    },
+    {
+      "rank": 192,
+      "company_id": "tgt",
+      "yahoo": "TGT",
+      "mcap": 57678293541.012146,
+      "cik": "0000027419"
+    },
+    {
+      "rank": 193,
+      "company_id": "plan:wday",
+      "yahoo": "WDAY",
+      "mcap": 57640000000.0,
+      "cik": "0001327811"
+    },
+    {
+      "rank": 194,
+      "company_id": "cm",
+      "yahoo": "CM",
+      "mcap": 57567473037.94318,
+      "cik": "0001045520"
+    },
+    {
+      "rank": 195,
+      "company_id": "kmi",
+      "yahoo": "KMI",
+      "mcap": 56601576106.78763,
+      "cik": "0001506307"
+    },
+    {
+      "rank": 196,
+      "company_id": "plan:cprt",
+      "yahoo": "CPRT",
+      "mcap": 56009907037.419365,
+      "cik": "0000900075"
+    },
+    {
+      "rank": 197,
+      "company_id": "dlr",
+      "yahoo": "DLR",
+      "mcap": 55568871727.76779,
+      "cik": "0001297996"
+    },
+    {
+      "rank": 198,
+      "company_id": "sny",
+      "yahoo": "SNY",
+      "mcap": 55342650822.517525,
+      "cik": "0001121404"
+    },
+    {
+      "rank": 199,
+      "company_id": "afl",
+      "yahoo": "AFL",
+      "mcap": 55112981969.12936,
+      "cik": "0000004977"
+    },
+    {
+      "rank": 200,
+      "company_id": "plan:rop",
+      "yahoo": "ROP",
+      "mcap": 55011669763.04126,
+      "cik": "0000882835"
+    },
+    {
+      "rank": 201,
+      "company_id": "bny",
+      "yahoo": "BNY",
+      "mcap": 54131139572.98645,
+      "cik": "0001390777"
+    },
+    {
+      "rank": 202,
+      "company_id": "oke",
+      "yahoo": "OKE",
+      "mcap": 53878895398.632034,
+      "cik": "0001039684"
+    },
+    {
+      "rank": 203,
+      "company_id": "met",
+      "yahoo": "MET",
+      "mcap": 53712034592.03753,
+      "cik": "0001099219"
+    },
+    {
+      "rank": 204,
+      "company_id": "fcx",
+      "yahoo": "FCX",
+      "mcap": 53626892656.54072,
+      "cik": "0000831259"
+    },
+    {
+      "rank": 205,
+      "company_id": "plan:azo",
+      "yahoo": "AZO",
+      "mcap": 53463094278.046875,
+      "cik": "0000866787"
+    },
+    {
+      "rank": 206,
+      "company_id": "tfc",
+      "yahoo": "TFC",
+      "mcap": 53220220993.29486,
+      "cik": "0000092230"
+    },
+    {
+      "rank": 207,
+      "company_id": "trv",
+      "yahoo": "TRV",
+      "mcap": 52983415246.63136,
+      "cik": "0000086312"
+    },
+    {
+      "rank": 208,
+      "company_id": "fdx",
+      "yahoo": "FDX",
+      "mcap": 52570730427.298706,
+      "cik": "0001048911"
+    },
+    {
+      "rank": 209,
+      "company_id": "pcar",
+      "yahoo": "PCAR",
+      "mcap": 52497017003.34747,
+      "cik": "0000075362"
+    },
+    {
+      "rank": 210,
+      "company_id": "sre",
+      "yahoo": "SRE",
+      "mcap": 52385243796.83276,
+      "cik": "0001032208"
+    },
+    {
+      "rank": 211,
+      "company_id": "bbva",
+      "yahoo": "BBVA",
+      "mcap": 52168881167.33545,
+      "cik": "0000842180"
+    },
+    {
+      "rank": 212,
+      "company_id": "plan:pcg",
+      "yahoo": "PCG",
+      "mcap": 51859483610.79806,
+      "cik": "0001004980"
+    },
+    {
+      "rank": 213,
+      "company_id": "cvs",
+      "yahoo": "CVS",
+      "mcap": 51815692292.97014,
+      "cik": "0000064803"
+    },
+    {
+      "rank": 214,
+      "company_id": "jci",
+      "yahoo": "JCI",
+      "mcap": 51535161451.67619,
+      "cik": "0000833444"
+    },
+    {
+      "rank": 215,
+      "company_id": "snow",
+      "yahoo": "SNOW",
+      "mcap": 51155597402.9541,
+      "cik": "0001640147"
+    },
+    {
+      "rank": 216,
+      "company_id": "nxpi",
+      "yahoo": "NXPI",
+      "mcap": 51086012298.3194,
+      "cik": "0001413447"
+    },
+    {
+      "rank": 217,
+      "company_id": "nsc",
+      "yahoo": "NSC",
+      "mcap": 51067583158.61963,
+      "cik": "0000702165"
+    },
+    {
+      "rank": 218,
+      "company_id": "slb",
+      "yahoo": "SLB",
+      "mcap": 50919069921.318695,
+      "cik": "0000087347"
+    },
+    {
+      "rank": 219,
+      "company_id": "gww",
+      "yahoo": "GWW",
+      "mcap": 50779243528.45703,
+      "cik": "0000277135"
+    },
+    {
+      "rank": 220,
+      "company_id": "plan:amp",
+      "yahoo": "AMP",
+      "mcap": 50327756830.80261,
+      "cik": "0000820027"
+    },
+    {
+      "rank": 221,
+      "company_id": "ing",
+      "yahoo": "ING",
+      "mcap": 49780713542.85202,
+      "cik": "0001039765"
+    },
+    {
+      "rank": 222,
+      "company_id": "bdx",
+      "yahoo": "BDX",
+      "mcap": 49432973870.70923,
+      "cik": "0000010795"
+    },
+    {
+      "rank": 223,
+      "company_id": "all",
+      "yahoo": "ALL",
+      "mcap": 49288729760.22203,
+      "cik": "0000899051"
+    },
+    {
+      "rank": 224,
+      "company_id": "rost",
+      "yahoo": "ROST",
+      "mcap": 49139373484.74994,
+      "cik": "0000745732"
+    },
+    {
+      "rank": 225,
+      "company_id": "plan:fico",
+      "yahoo": "FICO",
+      "mcap": 49028155470.381226,
+      "cik": "0000814547"
+    },
+    {
+      "rank": 226,
+      "company_id": "psa",
+      "yahoo": "PSA",
+      "mcap": 48256001492.12869,
+      "cik": "0001393311"
+    },
+    {
+      "rank": 227,
+      "company_id": "plan:payx",
+      "yahoo": "PAYX",
+      "mcap": 47253196395.49179,
+      "cik": "0000723531"
+    },
+    {
+      "rank": 228,
+      "company_id": "plan:vst",
+      "yahoo": "VST",
+      "mcap": 47194577360.00145,
+      "cik": "0001692819"
+    },
+    {
+      "rank": 229,
+      "company_id": "lng",
+      "yahoo": "LNG",
+      "mcap": 47031575216.348206,
+      "cik": "0000003570"
+    },
+    {
+      "rank": 230,
+      "company_id": "pwr",
+      "yahoo": "PWR",
+      "mcap": 46999990431.385345,
+      "cik": "0001050915"
+    },
+    {
+      "rank": 231,
+      "company_id": "cmi",
+      "yahoo": "CMI",
+      "mcap": 46382013917.152954,
+      "cik": "0000026172"
+    },
+    {
+      "rank": 232,
+      "company_id": "aep",
+      "yahoo": "AEP",
+      "mcap": 46313709461.996346,
+      "cik": "0000004904"
+    },
+    {
+      "rank": 233,
+      "company_id": "plan:axon",
+      "yahoo": "AXON",
+      "mcap": 46082286790.82666,
+      "cik": "0001069183"
+    },
+    {
+      "rank": 234,
+      "company_id": "plan:msci",
+      "yahoo": "MSCI",
+      "mcap": 45893606010.495605,
+      "cik": "0001408198"
+    },
+    {
+      "rank": 235,
+      "company_id": "uri",
+      "yahoo": "URI",
+      "mcap": 45641289812.36798,
+      "cik": "0001067701"
+    },
+    {
+      "rank": 236,
+      "company_id": "fang",
+      "yahoo": "FANG",
+      "mcap": 44939144560.52481,
+      "cik": "0001539838"
+    },
+    {
+      "rank": 237,
+      "company_id": "plan:lulu",
+      "yahoo": "LULU",
+      "mcap": 44806176530.0354,
+      "cik": "0001397187"
+    },
+    {
+      "rank": 238,
+      "company_id": "hwm",
+      "yahoo": "HWM",
+      "mcap": 44616812054.01355,
+      "cik": "0000004281"
+    },
+    {
+      "rank": 239,
+      "company_id": "now",
+      "yahoo": "NOW",
+      "mcap": 43989238616.94336,
+      "cik": "0001373715"
+    },
+    {
+      "rank": 240,
+      "company_id": "plan:dhi",
+      "yahoo": "DHI",
+      "mcap": 43905706070.17929,
+      "cik": "0000882184"
+    },
+    {
+      "rank": 241,
+      "company_id": "oxy",
+      "yahoo": "OXY",
+      "mcap": 43877098043.67419,
+      "cik": "0000797468"
+    },
+    {
+      "rank": 242,
+      "company_id": "ew",
+      "yahoo": "EW",
+      "mcap": 43786750740.05127,
+      "cik": "0001099800"
+    },
+    {
+      "rank": 243,
+      "company_id": "psx",
+      "yahoo": "PSX",
+      "mcap": 43663682402.47994,
+      "cik": "0001534701"
+    },
+    {
+      "rank": 244,
+      "company_id": "su",
+      "yahoo": "SU",
+      "mcap": 43613885903.78961,
+      "cik": "0000311337"
+    },
+    {
+      "rank": 245,
+      "company_id": "vrt",
+      "yahoo": "VRT",
+      "mcap": 43506908631.88757,
+      "cik": "0001674101"
+    },
+    {
+      "rank": 246,
+      "company_id": "ndaq",
+      "yahoo": "NDAQ",
+      "mcap": 43501931072.329834,
+      "cik": "0001120193"
+    },
+    {
+      "rank": 247,
+      "company_id": "plan:aig",
+      "yahoo": "AIG",
+      "mcap": 43468019354.62475,
+      "cik": "0000005272"
+    },
+    {
+      "rank": 248,
+      "company_id": "cor",
+      "yahoo": "COR",
+      "mcap": 42843788943.507385,
+      "cik": "0001140859"
+    },
+    {
+      "rank": 249,
+      "company_id": "plan:kr",
+      "yahoo": "KR",
+      "mcap": 42688242996.161156,
+      "cik": "0000056873"
+    },
+    {
+      "rank": 250,
+      "company_id": "asx",
+      "yahoo": "ASX",
+      "mcap": 42529975478.79943,
+      "cik": "0001122411"
+    },
+    {
+      "rank": 251,
+      "company_id": "mplx",
+      "yahoo": "MPLX",
+      "mcap": 42468421916.465256,
+      "cik": "0001552000"
+    },
+    {
+      "rank": 252,
+      "company_id": "mpc",
+      "yahoo": "MPC",
+      "mcap": 42144396885.88245,
+      "cik": "0001510295"
+    },
+    {
+      "rank": 253,
+      "company_id": "o",
+      "yahoo": "O",
+      "mcap": 41933331084.42097,
+      "cik": "0000726728"
+    },
+    {
+      "rank": 254,
+      "company_id": "d",
+      "yahoo": "D",
+      "mcap": 41889648120.73941,
+      "cik": "0000715957"
+    },
+    {
+      "rank": 255,
+      "company_id": "tel",
+      "yahoo": "TEL",
+      "mcap": 41772996239.18262,
+      "cik": "0001385157"
+    },
+    {
+      "rank": 256,
+      "company_id": "aph",
+      "yahoo": "APH",
+      "mcap": 41366406385.60952,
+      "cik": "0000820313"
+    },
+    {
+      "rank": 257,
+      "company_id": "ame",
+      "yahoo": "AME",
+      "mcap": 41338864138.0957,
+      "cik": "0001037868"
+    },
+    {
+      "rank": 258,
+      "company_id": "nem",
+      "yahoo": "NEM",
+      "mcap": 41154786782.166824,
+      "cik": "0001164727"
+    },
+    {
+      "rank": 259,
+      "company_id": "plan:fis",
+      "yahoo": "FIS",
+      "mcap": 41110394049.08443,
+      "cik": "0001136893"
+    },
+    {
+      "rank": 260,
+      "company_id": "plan:kdp",
+      "yahoo": "KDP",
+      "mcap": 41069270093.41214,
+      "cik": "0001418135"
+    },
+    {
+      "rank": 261,
+      "company_id": "plan:kmb",
+      "yahoo": "KMB",
+      "mcap": 40292462824.19895,
+      "cik": "0000055785"
+    },
+    {
+      "rank": 262,
+      "company_id": "plan:cbre",
+      "yahoo": "CBRE",
+      "mcap": 39864964083.12988,
+      "cik": "0001138118"
+    },
+    {
+      "rank": 263,
+      "company_id": "plan:peg",
+      "yahoo": "PEG",
+      "mcap": 39734640479.190506,
+      "cik": "0000788784"
+    },
+    {
+      "rank": 264,
+      "company_id": "glw",
+      "yahoo": "GLW",
+      "mcap": 39567590995.84959,
+      "cik": "0000024741"
+    },
+    {
+      "rank": 265,
+      "company_id": "bkr",
+      "yahoo": "BKR",
+      "mcap": 39238176373.57399,
+      "cik": "0001701605"
+    },
+    {
+      "rank": 266,
+      "company_id": "grmn",
+      "yahoo": "GRMN",
+      "mcap": 38679988604.82454,
+      "cik": "0001121788"
+    },
+    {
+      "rank": 267,
+      "company_id": "plan:dd",
+      "yahoo": "DD",
+      "mcap": 38524371647.61102,
+      "cik": "0001666700"
+    },
+    {
+      "rank": 268,
+      "company_id": "nflx",
+      "yahoo": "NFLX",
+      "mcap": 38489610645.82233,
+      "cik": "0001065280"
+    },
+    {
+      "rank": 269,
+      "company_id": "plan:pru",
+      "yahoo": "PRU",
+      "mcap": 38475231262.20703,
+      "cik": "0001137774"
+    },
+    {
+      "rank": 270,
+      "company_id": "dal",
+      "yahoo": "DAL",
+      "mcap": 38414629073.592125,
+      "cik": "0000027904"
+    },
+    {
+      "rank": 271,
+      "company_id": "plan:lhx",
+      "yahoo": "LHX",
+      "mcap": 38409065024.23352,
+      "cik": "0000202058"
+    },
+    {
+      "rank": 272,
+      "company_id": "plan:vrsk",
+      "yahoo": "VRSK",
+      "mcap": 38368784026.38135,
+      "cik": "0001442145"
+    },
+    {
+      "rank": 273,
+      "company_id": "ctva",
+      "yahoo": "CTVA",
+      "mcap": 38222320023.27728,
+      "cik": "0001755672"
+    },
+    {
+      "rank": 274,
+      "company_id": "aem",
+      "yahoo": "AEM",
+      "mcap": 37980482193.55425,
+      "cik": "0000002809"
+    },
+    {
+      "rank": 275,
+      "company_id": "plan:a",
+      "yahoo": "A",
+      "mcap": 37853544600.00952,
+      "cik": "0001090872"
+    },
+    {
+      "rank": 276,
+      "company_id": "plan:it",
+      "yahoo": "IT",
+      "mcap": 37444837167.58057,
+      "cik": "0000749251"
+    },
+    {
+      "rank": 277,
+      "company_id": "plan:odfl",
+      "yahoo": "ODFL",
+      "mcap": 37420355816.51172,
+      "cik": "0000878927"
+    },
+    {
+      "rank": 278,
+      "company_id": "trgp",
+      "yahoo": "TRGP",
+      "mcap": 37371380987.322784,
+      "cik": "0001389170"
+    },
+    {
+      "rank": 279,
+      "company_id": "plan:kvue",
+      "yahoo": "KVUE",
+      "mcap": 37225536942.139,
+      "cik": "0001944048"
+    },
+    {
+      "rank": 280,
+      "company_id": "plan:ctsh",
+      "yahoo": "CTSH",
+      "mcap": 36782782043.013916,
+      "cik": "0001058290"
+    },
+    {
+      "rank": 281,
+      "company_id": "argx",
+      "yahoo": "ARGX",
+      "mcap": 36698216081.14014,
+      "cik": "0001697862"
+    },
+    {
+      "rank": 282,
+      "company_id": "plan:xel",
+      "yahoo": "XEL",
+      "mcap": 36433402598.22052,
+      "cik": "0000072903"
+    },
+    {
+      "rank": 283,
+      "company_id": "plan:ir",
+      "yahoo": "IR",
+      "mcap": 36417783295.38208,
+      "cik": "0001699150"
+    },
+    {
+      "rank": 284,
+      "company_id": "vlo",
+      "yahoo": "VLO",
+      "mcap": 36169019340.591095,
+      "cik": "0001035002"
+    },
+    {
+      "rank": 285,
+      "company_id": "plan:yum",
+      "yahoo": "YUM",
+      "mcap": 36027471177.159546,
+      "cik": "0001041061"
+    },
+    {
+      "rank": 286,
+      "company_id": "plan:iqv",
+      "yahoo": "IQV",
+      "mcap": 35837174446.10596,
+      "cik": "0001478242"
+    },
+    {
+      "rank": 287,
+      "company_id": "plan:gehc",
+      "yahoo": "GEHC",
+      "mcap": 35792281489.47201,
+      "cik": "0001932393"
+    },
+    {
+      "rank": 288,
+      "company_id": "plan:hsy",
+      "yahoo": "HSY",
+      "mcap": 35754117188.05467,
+      "cik": "0000047111"
+    },
+    {
+      "rank": 289,
+      "company_id": "plan:syy",
+      "yahoo": "SYY",
+      "mcap": 35734247741.4505,
+      "cik": "0000096021"
+    },
+    {
+      "rank": 290,
+      "company_id": "plan:otis",
+      "yahoo": "OTIS",
+      "mcap": 35727070617.65341,
+      "cik": "0001781335"
+    },
+    {
+      "rank": 291,
+      "company_id": "plan:cci",
+      "yahoo": "CCI",
+      "mcap": 35706411311.881836,
+      "cik": "0001051470"
+    },
+    {
+      "rank": 292,
+      "company_id": "plan:exc",
+      "yahoo": "EXC",
+      "mcap": 35500713540.876236,
+      "cik": "0001109357"
+    },
+    {
+      "rank": 293,
+      "company_id": "plan:lvs",
+      "yahoo": "LVS",
+      "mcap": 35367254553.4788,
+      "cik": "0001300514"
+    },
+    {
+      "rank": 294,
+      "company_id": "anet",
+      "yahoo": "ANET",
+      "mcap": 35100048999.22975,
+      "cik": "0001596532"
+    },
+    {
+      "rank": 295,
+      "company_id": "plan:acgl",
+      "yahoo": "ACGL",
+      "mcap": 34572866031.67018,
+      "cik": "0000947484"
+    },
+    {
+      "rank": 296,
+      "company_id": "plan:idxx",
+      "yahoo": "IDXX",
+      "mcap": 33797895066.0,
+      "cik": "0000874716"
+    },
+    {
+      "rank": 297,
+      "company_id": "plan:vmc",
+      "yahoo": "VMC",
+      "mcap": 33648326584.655228,
+      "cik": "0001396009"
+    },
+    {
+      "rank": 298,
+      "company_id": "f",
+      "yahoo": "F",
+      "mcap": 33137107386.73359,
+      "cik": "0000037996"
+    },
+    {
+      "rank": 299,
+      "company_id": "plan:rmd",
+      "yahoo": "RMD",
+      "mcap": 33121121700.197876,
+      "cik": "0000943819"
+    },
+    {
+      "rank": 300,
+      "company_id": "plan:khc",
+      "yahoo": "KHC",
+      "mcap": 32933313505.958107,
+      "cik": "0001637459"
+    },
+    {
+      "rank": 301,
+      "company_id": "plan:wab",
+      "yahoo": "WAB",
+      "mcap": 32544327067.129395,
+      "cik": "0000943452"
+    },
+    {
+      "rank": 302,
+      "company_id": "plan:ttwo",
+      "yahoo": "TTWO",
+      "mcap": 32410277556.001022,
+      "cik": "0000946581"
+    },
+    {
+      "rank": 303,
+      "company_id": "plan:ual",
+      "yahoo": "UAL",
+      "mcap": 32298901837.90512,
+      "cik": "0000100517"
+    },
+    {
+      "rank": 304,
+      "company_id": "db",
+      "yahoo": "DB",
+      "mcap": 32017124933.062935,
+      "cik": "0001159508"
+    },
+    {
+      "rank": 305,
+      "company_id": "plan:gis",
+      "yahoo": "GIS",
+      "mcap": 31841399694.228172,
+      "cik": "0000040704"
+    },
+    {
+      "rank": 306,
+      "company_id": "plan:mlm",
+      "yahoo": "MLM",
+      "mcap": 31479130557.69171,
+      "cik": "0000916076"
+    },
+    {
+      "rank": 307,
+      "company_id": "rok",
+      "yahoo": "ROK",
+      "mcap": 31425544104.35269,
+      "cik": "0001024478"
+    },
+    {
+      "rank": 308,
+      "company_id": "plan:deck",
+      "yahoo": "DECK",
+      "mcap": 31259467416.347595,
+      "cik": "0000910521"
+    },
+    {
+      "rank": 309,
+      "company_id": "plan:efx",
+      "yahoo": "EFX",
+      "mcap": 31104414922.046432,
+      "cik": "0000033185"
+    },
+    {
+      "rank": 310,
+      "company_id": "plan:rjf",
+      "yahoo": "RJF",
+      "mcap": 30953211813.8656,
+      "cik": "0000720005"
+    },
+    {
+      "rank": 311,
+      "company_id": "plan:wtw",
+      "yahoo": "WTW",
+      "mcap": 30896259794.65625,
+      "cik": "0001140536"
+    },
+    {
+      "rank": 312,
+      "company_id": "plan:hig",
+      "yahoo": "HIG",
+      "mcap": 30736442951.063232,
+      "cik": "0000874766"
+    },
+    {
+      "rank": 313,
+      "company_id": "cnq",
+      "yahoo": "CNQ",
+      "mcap": 30710330144.943237,
+      "cik": "0001017413"
+    },
+    {
+      "rank": 314,
+      "company_id": "plan:cnc",
+      "yahoo": "CNC",
+      "mcap": 30473651708.14514,
+      "cik": "0001071739"
+    },
+    {
+      "rank": 315,
+      "company_id": "plan:dxcm",
+      "yahoo": "DXCM",
+      "mcap": 30466440420.0,
+      "cik": "0001093557"
+    },
+    {
+      "rank": 316,
+      "company_id": "plan:lyv",
+      "yahoo": "LYV",
+      "mcap": 30440654995.493088,
+      "cik": "0001335258"
+    },
+    {
+      "rank": 317,
+      "company_id": "plan:hum",
+      "yahoo": "HUM",
+      "mcap": 29866226064.633224,
+      "cik": "0000049071"
+    },
+    {
+      "rank": 318,
+      "company_id": "plan:mtb",
+      "yahoo": "MTB",
+      "mcap": 29754211169.439056,
+      "cik": "0000036270"
+    },
+    {
+      "rank": 319,
+      "company_id": "plan:csgp",
+      "yahoo": "CSGP",
+      "mcap": 29443292385.830284,
+      "cik": "0001057352"
+    },
+    {
+      "rank": 320,
+      "company_id": "plan:mchp",
+      "yahoo": "MCHP",
+      "mcap": 29237917392.821434,
+      "cik": "0000827054"
+    },
+    {
+      "rank": 321,
+      "company_id": "plan:ed",
+      "yahoo": "ED",
+      "mcap": 29138008683.322906,
+      "cik": "0001047862"
+    },
+    {
+      "rank": 322,
+      "company_id": "mpwr",
+      "yahoo": "MPWR",
+      "mcap": 29040704373.779297,
+      "cik": "0001280452"
+    },
+    {
+      "rank": 323,
+      "company_id": "ebay",
+      "yahoo": "EBAY",
+      "mcap": 29012737495.422363,
+      "cik": "0001065088"
+    },
+    {
+      "rank": 324,
+      "company_id": "plan:exr",
+      "yahoo": "EXR",
+      "mcap": 28832501866.229218,
+      "cik": "0001289490"
+    },
+    {
+      "rank": 325,
+      "company_id": "plan:bro",
+      "yahoo": "BRO",
+      "mcap": 28760120210.07538,
+      "cik": "0000079282"
+    },
+    {
+      "rank": 326,
+      "company_id": "plan:irm",
+      "yahoo": "IRM",
+      "mcap": 28711183213.75303,
+      "cik": "0001020569"
+    },
+    {
+      "rank": 327,
+      "company_id": "plan:ccl",
+      "yahoo": "CCL",
+      "mcap": 28454571914.21099,
+      "cik": "0000815097"
+    },
+    {
+      "rank": 328,
+      "company_id": "plan:hpq",
+      "yahoo": "HPQ",
+      "mcap": 28212983996.012802,
+      "cik": "0000047217"
+    },
+    {
+      "rank": 329,
+      "company_id": "plan:wec",
+      "yahoo": "WEC",
+      "mcap": 28093839778.423553,
+      "cik": "0000783325"
+    },
+    {
+      "rank": 330,
+      "company_id": "plan:eix",
+      "yahoo": "EIX",
+      "mcap": 28041873031.35932,
+      "cik": "0000827052"
+    },
+    {
+      "rank": 331,
+      "company_id": "plan:gddy",
+      "yahoo": "GDDY",
+      "mcap": 28001063304.309464,
+      "cik": "0001609711"
+    },
+    {
+      "rank": 332,
+      "company_id": "cah",
+      "yahoo": "CAH",
+      "mcap": 27934781294.44599,
+      "cik": "0000721371"
+    },
+    {
+      "rank": 333,
+      "company_id": "keys",
+      "yahoo": "KEYS",
+      "mcap": 27910254056.7912,
+      "cik": "0001601046"
+    },
+    {
+      "rank": 334,
+      "company_id": "plan:xyl",
+      "yahoo": "XYL",
+      "mcap": 27607967140.094994,
+      "cik": "0001524472"
+    },
+    {
+      "rank": 335,
+      "company_id": "plan:gpn",
+      "yahoo": "GPN",
+      "mcap": 27597659350.630074,
+      "cik": "0001123360"
+    },
+    {
+      "rank": 336,
+      "company_id": "stt",
+      "yahoo": "STT",
+      "mcap": 27436016386.80683,
+      "cik": "0000093751"
+    },
+    {
+      "rank": 337,
+      "company_id": "plan:vici",
+      "yahoo": "VICI",
+      "mcap": 27434091525.18709,
+      "cik": "0001705696"
+    },
+    {
+      "rank": 338,
+      "company_id": "plan:eqt",
+      "yahoo": "EQT",
+      "mcap": 27229900955.368042,
+      "cik": "0000033213"
+    },
+    {
+      "rank": 339,
+      "company_id": "hpe",
+      "yahoo": "HPE",
+      "mcap": 27085766732.563942,
+      "cik": "0001645590"
+    },
+    {
+      "rank": 340,
+      "company_id": "plan:on",
+      "yahoo": "ON",
+      "mcap": 27021105025.650803,
+      "cik": "0001097864"
+    },
+    {
+      "rank": 341,
+      "company_id": "plan:fitb",
+      "yahoo": "FITB",
+      "mcap": 26961371876.459167,
+      "cik": "0000035527"
+    },
+    {
+      "rank": 342,
+      "company_id": "cve",
+      "yahoo": "CVE",
+      "mcap": 26766612816.483437,
+      "cik": "0001475260"
+    },
+    {
+      "rank": 343,
+      "company_id": "nue",
+      "yahoo": "NUE",
+      "mcap": 26486435439.454834,
+      "cik": "0000073309"
+    },
+    {
+      "rank": 344,
+      "company_id": "sony",
+      "yahoo": "SONY",
+      "mcap": 26454326343.589096,
+      "cik": "0000313838"
+    },
+    {
+      "rank": 345,
+      "company_id": "plan:ppg",
+      "yahoo": "PPG",
+      "mcap": 26426035827.63672,
+      "cik": "0000079879"
+    },
+    {
+      "rank": 346,
+      "company_id": "plan:sw",
+      "yahoo": "SW",
+      "mcap": 26362531813.281494,
+      "cik": "0002005951"
+    },
+    {
+      "rank": 347,
+      "company_id": "b",
+      "yahoo": "B",
+      "mcap": 26146302827.058235,
+      "cik": "0000756894"
+    },
+    {
+      "rank": 348,
+      "company_id": "plan:mtd",
+      "yahoo": "MTD",
+      "mcap": 26054283748.9563,
+      "cik": "0001037646"
+    },
+    {
+      "rank": 349,
+      "company_id": "wbd",
+      "yahoo": "WBD",
+      "mcap": 25782765730.954933,
+      "cik": "0001437107"
+    },
+    {
+      "rank": 350,
+      "company_id": "mnst",
+      "yahoo": "MNST",
+      "mcap": 25543228250.056107,
+      "cik": "0000865752"
+    },
+    {
+      "rank": 351,
+      "company_id": "plan:br",
+      "yahoo": "BR",
+      "mcap": 25475512151.578186,
+      "cik": "0001383312"
+    },
+    {
+      "rank": 352,
+      "company_id": "wpm",
+      "yahoo": "WPM",
+      "mcap": 25194122030.058327,
+      "cik": "0001323404"
+    },
+    {
+      "rank": 353,
+      "company_id": "plan:dov",
+      "yahoo": "DOV",
+      "mcap": 25091890584.995667,
+      "cik": "0000029905"
+    },
+    {
+      "rank": 354,
+      "company_id": "plan:chd",
+      "yahoo": "CHD",
+      "mcap": 25074469282.843895,
+      "cik": "0000313927"
+    },
+    {
+      "rank": 355,
+      "company_id": "plan:nvr",
+      "yahoo": "NVR",
+      "mcap": 25051659439.277344,
+      "cik": "0000906163"
+    },
+    {
+      "rank": 356,
+      "company_id": "plan:vlto",
+      "yahoo": "VLTO",
+      "mcap": 25011081783.554077,
+      "cik": "0001967680"
+    },
+    {
+      "rank": 357,
+      "company_id": "plan:dow",
+      "yahoo": "DOW",
+      "mcap": 24846466233.571243,
+      "cik": "0001751788"
+    },
+    {
+      "rank": 358,
+      "company_id": "vale",
+      "yahoo": "VALE",
+      "mcap": 24784718862.876892,
+      "cik": "0000917851"
+    },
+    {
+      "rank": 359,
+      "company_id": "plan:tyl",
+      "yahoo": "TYL",
+      "mcap": 24782091718.001404,
+      "cik": "0000860731"
+    },
+    {
+      "rank": 360,
+      "company_id": "plan:syf",
+      "yahoo": "SYF",
+      "mcap": 24577182978.698708,
+      "cik": "0001601712"
+    },
+    {
+      "rank": 361,
+      "company_id": "nok",
+      "yahoo": "NOK",
+      "mcap": 24151690268.0364,
+      "cik": "0000924613"
+    },
+    {
+      "rank": 362,
+      "company_id": "plan:wst",
+      "yahoo": "WST",
+      "mcap": 23681754498.249023,
+      "cik": "0000105770"
+    },
+    {
+      "rank": 363,
+      "company_id": "plan:dte",
+      "yahoo": "DTE",
+      "mcap": 23557961846.40538,
+      "cik": "0000936340"
+    },
+    {
+      "rank": 364,
+      "company_id": "plan:cpay",
+      "yahoo": "CPAY",
+      "mcap": 23532336704.31848,
+      "cik": "0001175454"
+    },
+    {
+      "rank": 365,
+      "company_id": "plan:vtr",
+      "yahoo": "VTR",
+      "mcap": 23393824889.113045,
+      "cik": "0000740260"
+    },
+    {
+      "rank": 366,
+      "company_id": "plan:awk",
+      "yahoo": "AWK",
+      "mcap": 23152779022.10739,
+      "cik": "0001410636"
+    },
+    {
+      "rank": 367,
+      "company_id": "plan:trow",
+      "yahoo": "TROW",
+      "mcap": 23100301760.945663,
+      "cik": "0001113169"
+    },
+    {
+      "rank": 368,
+      "company_id": "plan:ntap",
+      "yahoo": "NTAP",
+      "mcap": 22912504622.64972,
+      "cik": "0001002047"
+    },
+    {
+      "rank": 369,
+      "company_id": "plan:aee",
+      "yahoo": "AEE",
+      "mcap": 22760571372.515953,
+      "cik": "0001002910"
+    },
+    {
+      "rank": 370,
+      "company_id": "plan:hal",
+      "yahoo": "HAL",
+      "mcap": 22687874086.46187,
+      "cik": "0000045012"
+    },
+    {
+      "rank": 371,
+      "company_id": "plan:ppl",
+      "yahoo": "PPL",
+      "mcap": 22608765539.07692,
+      "cik": "0000922224"
+    },
+    {
+      "rank": 372,
+      "company_id": "plan:cdw",
+      "yahoo": "CDW",
+      "mcap": 22403452635.178802,
+      "cik": "0001402057"
+    },
+    {
+      "rank": 373,
+      "company_id": "fnv",
+      "yahoo": "FNV",
+      "mcap": 22246011729.482086,
+      "cik": "0001456346"
+    },
+    {
+      "rank": 374,
+      "company_id": "plan:hban",
+      "yahoo": "HBAN",
+      "mcap": 22186064135.890503,
+      "cik": "0000049196"
+    },
+    {
+      "rank": 375,
+      "company_id": "plan:ptc",
+      "yahoo": "PTC",
+      "mcap": 22062907272.72583,
+      "cik": "0000857005"
+    },
+    {
+      "rank": 376,
+      "company_id": "plan:wat",
+      "yahoo": "WAT",
+      "mcap": 22024998128.521362,
+      "cik": "0001000697"
+    },
+    {
+      "rank": 377,
+      "company_id": "hubb",
+      "yahoo": "HUBB",
+      "mcap": 22008507166.741425,
+      "cik": "0000048898"
+    },
+    {
+      "rank": 378,
+      "company_id": "plan:phm",
+      "yahoo": "PHM",
+      "mcap": 22006108796.860588,
+      "cik": "0000822416"
+    },
+    {
+      "rank": 379,
+      "company_id": "plan:rol",
+      "yahoo": "ROL",
+      "mcap": 21957467608.30597,
+      "cik": "0000084839"
+    },
+    {
+      "rank": 380,
+      "company_id": "plan:biib",
+      "yahoo": "BIIB",
+      "mcap": 21885588030.360107,
+      "cik": "0000875045"
+    },
+    {
+      "rank": 381,
+      "company_id": "plan:tdy",
+      "yahoo": "TDY",
+      "mcap": 21680798310.81839,
+      "cik": "0001094285"
+    },
+    {
+      "rank": 382,
+      "company_id": "alab",
+      "yahoo": "ALAB",
+      "mcap": 21637692275.834854,
+      "cik": "0001736297"
+    },
+    {
+      "rank": 383,
+      "company_id": "plan:cinf",
+      "yahoo": "CINF",
+      "mcap": 21623831603.215485,
+      "cik": "0000020286"
+    },
+    {
+      "rank": 384,
+      "company_id": "plan:lii",
+      "yahoo": "LII",
+      "mcap": 21508348909.448242,
+      "cik": "0001069202"
+    },
+    {
+      "rank": 385,
+      "company_id": "plan:wrb",
+      "yahoo": "WRB",
+      "mcap": 21467615746.120605,
+      "cik": "0000011544"
+    },
+    {
+      "rank": 386,
+      "company_id": "plan:fe",
+      "yahoo": "FE",
+      "mcap": 21285926372.106674,
+      "cik": "0001031296"
+    },
+    {
+      "rank": 387,
+      "company_id": "plan:sbac",
+      "yahoo": "SBAC",
+      "mcap": 21001688934.9104,
+      "cik": "0001034054"
+    },
+    {
+      "rank": 388,
+      "company_id": "plan:lyb",
+      "yahoo": "LYB",
+      "mcap": 20937778661.26284,
+      "cik": "0001489393"
+    },
+    {
+      "rank": 389,
+      "company_id": "ntra",
+      "yahoo": "NTRA",
+      "mcap": 20931900779.695557,
+      "cik": "0001604821"
+    },
+    {
+      "rank": 390,
+      "company_id": "plan:dri",
+      "yahoo": "DRI",
+      "mcap": 20812617844.09076,
+      "cik": "0000940944"
+    },
+    {
+      "rank": 391,
+      "company_id": "plan:ato",
+      "yahoo": "ATO",
+      "mcap": 20754362150.756577,
+      "cik": "0000731802"
+    },
+    {
+      "rank": 392,
+      "company_id": "plan:zbh",
+      "yahoo": "ZBH",
+      "mcap": 20665949392.34436,
+      "cik": "0001136869"
+    },
+    {
+      "rank": 393,
+      "company_id": "plan:iff",
+      "yahoo": "IFF",
+      "mcap": 20645741398.62623,
+      "cik": "0000051253"
+    },
+    {
+      "rank": 394,
+      "company_id": "ter",
+      "yahoo": "TER",
+      "mcap": 20520848632.915146,
+      "cik": "0000097210"
+    },
+    {
+      "rank": 395,
+      "company_id": "plan:cboe",
+      "yahoo": "CBOE",
+      "mcap": 20243261276.037598,
+      "cik": "0001374310"
+    },
+    {
+      "rank": 396,
+      "company_id": "plan:ulta",
+      "yahoo": "ULTA",
+      "mcap": 20190602762.16449,
+      "cik": "0001403568"
+    },
+    {
+      "rank": 397,
+      "company_id": "tak",
+      "yahoo": "TAK",
+      "mcap": 20053657501.897877,
+      "cik": "0001395064"
+    },
+    {
+      "rank": 398,
+      "company_id": "dvn",
+      "yahoo": "DVN",
+      "mcap": 20052120331.00128,
+      "cik": "0001090012"
+    },
+    {
+      "rank": 399,
+      "company_id": "plan:rf",
+      "yahoo": "RF",
+      "mcap": 20016150041.206886,
+      "cik": "0001281761"
+    },
+    {
+      "rank": 400,
+      "company_id": "plan:ste",
+      "yahoo": "STE",
+      "mcap": 19919822683.87471,
+      "cik": "0001757898"
+    },
+    {
+      "rank": 401,
+      "company_id": "plan:cnp",
+      "yahoo": "CNP",
+      "mcap": 19916582585.906082,
+      "cik": "0001130310"
+    },
+    {
+      "rank": 402,
+      "company_id": "fast",
+      "yahoo": "FAST",
+      "mcap": 19846214895.858364,
+      "cik": "0000815556"
+    },
+    {
+      "rank": 403,
+      "company_id": "plan:zbra",
+      "yahoo": "ZBRA",
+      "mcap": 19798994062.619507,
+      "cik": "0000877212"
+    },
+    {
+      "rank": 404,
+      "company_id": "plan:ntrs",
+      "yahoo": "NTRS",
+      "mcap": 19526270291.570793,
+      "cik": "0000073124"
+    },
+    {
+      "rank": 405,
+      "company_id": "plan:ftv",
+      "yahoo": "FTV",
+      "mcap": 19467748821.470467,
+      "cik": "0001659166"
+    },
+    {
+      "rank": 406,
+      "company_id": "plan:luv",
+      "yahoo": "LUV",
+      "mcap": 19436057866.95334,
+      "cik": "0000092380"
+    },
+    {
+      "rank": 407,
+      "company_id": "plan:es",
+      "yahoo": "ES",
+      "mcap": 19364202978.995647,
+      "cik": "0000072741"
+    },
+    {
+      "rank": 408,
+      "company_id": "plan:vrsn",
+      "yahoo": "VRSN",
+      "mcap": 19358742028.808594,
+      "cik": "0001014473"
+    },
+    {
+      "rank": 409,
+      "company_id": "plan:pkg",
+      "yahoo": "PKG",
+      "mcap": 19335560634.417633,
+      "cik": "0000075677"
+    },
+    {
+      "rank": 410,
+      "company_id": "smfg",
+      "yahoo": "SMFG",
+      "mcap": 19152143058.69793,
+      "cik": "0001022837"
+    },
+    {
+      "rank": 411,
+      "company_id": "plan:wy",
+      "yahoo": "WY",
+      "mcap": 19103446253.92914,
+      "cik": "0000106535"
+    },
+    {
+      "rank": 412,
+      "company_id": "plan:fslr",
+      "yahoo": "FSLR",
+      "mcap": 19063771121.354248,
+      "cik": "0001274494"
+    },
+    {
+      "rank": 413,
+      "company_id": "plan:cms",
+      "yahoo": "CMS",
+      "mcap": 18873003860.151215,
+      "cik": "0000811156"
+    },
+    {
+      "rank": 414,
+      "company_id": "itub",
+      "yahoo": "ITUB",
+      "mcap": 18869960989.625847,
+      "cik": "0001132597"
+    },
+    {
+      "rank": 415,
+      "company_id": "plan:lh",
+      "yahoo": "LH",
+      "mcap": 18791411288.45967,
+      "cik": "0000920148"
+    },
+    {
+      "rank": 416,
+      "company_id": "plan:ldos",
+      "yahoo": "LDOS",
+      "mcap": 18736725786.12062,
+      "cik": "0001336920"
+    },
+    {
+      "rank": 417,
+      "company_id": "plan:clx",
+      "yahoo": "CLX",
+      "mcap": 18592622204.418915,
+      "cik": "0000021076"
+    },
+    {
+      "rank": 418,
+      "company_id": "plan:podd",
+      "yahoo": "PODD",
+      "mcap": 18473326916.488647,
+      "cik": "0001145197"
+    },
+    {
+      "rank": 419,
+      "company_id": "mt",
+      "yahoo": "MT",
+      "mcap": 18368280662.728348,
+      "cik": "0001243429"
+    },
+    {
+      "rank": 420,
+      "company_id": "plan:l",
+      "yahoo": "L",
+      "mcap": 18297414707.176712,
+      "cik": "0000060086"
+    },
+    {
+      "rank": 421,
+      "company_id": "plan:coo",
+      "yahoo": "COO",
+      "mcap": 18247839556.087784,
+      "cik": "0000711404"
+    },
+    {
+      "rank": 422,
+      "company_id": "plan:nrg",
+      "yahoo": "NRG",
+      "mcap": 18237603588.159256,
+      "cik": "0001013871"
+    },
+    {
+      "rank": 423,
+      "company_id": "plan:invh",
+      "yahoo": "INVH",
+      "mcap": 18147832027.499565,
+      "cik": "0001687229"
+    },
+    {
+      "rank": 424,
+      "company_id": "plan:cfg",
+      "yahoo": "CFG",
+      "mcap": 18110210685.297924,
+      "cik": "0000759944"
+    },
+    {
+      "rank": 425,
+      "company_id": "stx",
+      "yahoo": "STX",
+      "mcap": 17896838913.450356,
+      "cik": "0001137789"
+    },
+    {
+      "rank": 426,
+      "company_id": "plan:fds",
+      "yahoo": "FDS",
+      "mcap": 17877725747.32483,
+      "cik": "0001013237"
+    },
+    {
+      "rank": 427,
+      "company_id": "plan:trmb",
+      "yahoo": "TRMB",
+      "mcap": 17303748232.807777,
+      "cik": "0000864749"
+    },
+    {
+      "rank": 428,
+      "company_id": "plan:ip",
+      "yahoo": "IP",
+      "mcap": 17273907728.059364,
+      "cik": "0000051434"
+    },
+    {
+      "rank": 429,
+      "company_id": "plan:sna",
+      "yahoo": "SNA",
+      "mcap": 17043874166.50238,
+      "cik": "0000091440"
+    },
+    {
+      "rank": 430,
+      "company_id": "plan:ess",
+      "yahoo": "ESS",
+      "mcap": 17027755270.648956,
+      "cik": "0000920522"
+    },
+    {
+      "rank": 431,
+      "company_id": "plan:stld",
+      "yahoo": "STLD",
+      "mcap": 16918009023.4684,
+      "cik": "0001022671"
+    },
+    {
+      "rank": 432,
+      "company_id": "plan:jbht",
+      "yahoo": "JBHT",
+      "mcap": 16883115444.05481,
+      "cik": "0000728535"
+    },
+    {
+      "rank": 433,
+      "company_id": "plan:bby",
+      "yahoo": "BBY",
+      "mcap": 16755540416.710167,
+      "cik": "0000764478"
+    },
+    {
+      "rank": 434,
+      "company_id": "plan:pfg",
+      "yahoo": "PFG",
+      "mcap": 16593257595.29586,
+      "cik": "0001126328"
+    },
+    {
+      "rank": 435,
+      "company_id": "plan:maa",
+      "yahoo": "MAA",
+      "mcap": 16576447041.089127,
+      "cik": "0000912595"
+    },
+    {
+      "rank": 436,
+      "company_id": "plan:moh",
+      "yahoo": "MOH",
+      "mcap": 16552536279.296875,
+      "cik": "0001179929"
+    },
+    {
+      "rank": 437,
+      "company_id": "plan:bldr",
+      "yahoo": "BLDR",
+      "mcap": 16499733020.661621,
+      "cik": "0001316835"
+    },
+    {
+      "rank": 438,
+      "company_id": "plan:ni",
+      "yahoo": "NI",
+      "mcap": 16333586023.961735,
+      "cik": "0001111711"
+    },
+    {
+      "rank": 439,
+      "company_id": "plan:gen",
+      "yahoo": "GEN",
+      "mcap": 16331238168.315754,
+      "cik": "0000849399"
+    },
+    {
+      "rank": 440,
+      "company_id": "plan:dgx",
+      "yahoo": "DGX",
+      "mcap": 16324822135.039474,
+      "cik": "0001022079"
+    },
+    {
+      "rank": 441,
+      "company_id": "plan:pnr",
+      "yahoo": "PNR",
+      "mcap": 16257256153.937332,
+      "cik": "0000077360"
+    },
+    {
+      "rank": 442,
+      "company_id": "plan:jbl",
+      "yahoo": "JBL",
+      "mcap": 16182288428.924927,
+      "cik": "0000898293"
+    },
+    {
+      "rank": 443,
+      "company_id": "plan:j",
+      "yahoo": "J",
+      "mcap": 16097264913.478394,
+      "cik": "0000052988"
+    },
+    {
+      "rank": 444,
+      "company_id": "plan:dltr",
+      "yahoo": "DLTR",
+      "mcap": 16078438241.389572,
+      "cik": "0000935703"
+    },
+    {
+      "rank": 445,
+      "company_id": "plan:dg",
+      "yahoo": "DG",
+      "mcap": 16002560697.07634,
+      "cik": "0000029534"
+    },
+    {
+      "rank": 446,
+      "company_id": "plan:ball",
+      "yahoo": "BALL",
+      "mcap": 16001661237.54055,
+      "cik": "0000009389"
+    },
+    {
+      "rank": 447,
+      "company_id": "plan:key",
+      "yahoo": "KEY",
+      "mcap": 15715048988.705057,
+      "cik": "0000091576"
+    },
+    {
+      "rank": 448,
+      "company_id": "plan:nwsa",
+      "yahoo": "NWSA",
+      "mcap": 15679477878.570557,
+      "cik": "0001564708"
+    },
+    {
+      "rank": 449,
+      "company_id": "plan:omc",
+      "yahoo": "OMC",
+      "mcap": 15647450731.739136,
+      "cik": "0000029989"
+    },
+    {
+      "rank": 450,
+      "company_id": "etr",
+      "yahoo": "ETR",
+      "mcap": 15515026956.246506,
+      "cik": "0000065984"
+    },
+    {
+      "rank": 451,
+      "company_id": "wdc",
+      "yahoo": "WDC",
+      "mcap": 15503112687.332829,
+      "cik": "0000106040"
+    },
+    {
+      "rank": 452,
+      "company_id": "plan:algn",
+      "yahoo": "ALGN",
+      "mcap": 15421829271.493835,
+      "cik": "0001097149"
+    },
+    {
+      "rank": 453,
+      "company_id": "plan:iex",
+      "yahoo": "IEX",
+      "mcap": 15415152660.273865,
+      "cik": "0000832101"
+    },
+    {
+      "rank": 454,
+      "company_id": "plan:are",
+      "yahoo": "ARE",
+      "mcap": 15391489429.716461,
+      "cik": "0001035443"
+    },
+    {
+      "rank": 455,
+      "company_id": "plan:expd",
+      "yahoo": "EXPD",
+      "mcap": 15244094486.940056,
+      "cik": "0000746515"
+    },
+    {
+      "rank": 456,
+      "company_id": "fix",
+      "yahoo": "FIX",
+      "mcap": 15203869273.437561,
+      "cik": "0001035983"
+    },
+    {
+      "rank": 457,
+      "company_id": "plan:gpc",
+      "yahoo": "GPC",
+      "mcap": 15174948090.848732,
+      "cik": "0000040987"
+    },
+    {
+      "rank": 458,
+      "company_id": "plan:mas",
+      "yahoo": "MAS",
+      "mcap": 15154282439.068436,
+      "cik": "0000062996"
+    },
+    {
+      "rank": 459,
+      "company_id": "mrna",
+      "yahoo": "MRNA",
+      "mcap": 15154125808.209766,
+      "cik": "0001682852"
+    },
+    {
+      "rank": 460,
+      "company_id": "plan:eg",
+      "yahoo": "EG",
+      "mcap": 15016091702.3703,
+      "cik": "0001095073"
+    },
+    {
+      "rank": 461,
+      "company_id": "plan:tpr",
+      "yahoo": "TPR",
+      "mcap": 14954837059.679031,
+      "cik": "0001116132"
+    },
+    {
+      "rank": 462,
+      "company_id": "plan:ffiv",
+      "yahoo": "FFIV",
+      "mcap": 14799080864.770279,
+      "cik": "0001048695"
+    },
+    {
+      "rank": 463,
+      "company_id": "cohr",
+      "yahoo": "COHR",
+      "mcap": 14668331486.483582,
+      "cik": "0000820318"
+    },
+    {
+      "rank": 464,
+      "company_id": "cme",
+      "yahoo": "CME",
+      "mcap": 14642987118.333801,
+      "cik": "0001156375"
+    },
+    {
+      "rank": 465,
+      "company_id": "plan:avy",
+      "yahoo": "AVY",
+      "mcap": 14479098897.323517,
+      "cik": "0000008818"
+    },
+    {
+      "rank": 466,
+      "company_id": "plan:kim",
+      "yahoo": "KIM",
+      "mcap": 14433925240.935656,
+      "cik": "0000879101"
+    },
+    {
+      "rank": 467,
+      "company_id": "plan:lnt",
+      "yahoo": "LNT",
+      "mcap": 14405021921.52021,
+      "cik": "0000352541"
+    },
+    {
+      "rank": 468,
+      "company_id": "plan:akam",
+      "yahoo": "AKAM",
+      "mcap": 14355690415.394897,
+      "cik": "0001086222"
+    },
+    {
+      "rank": 469,
+      "company_id": "plan:bax",
+      "yahoo": "BAX",
+      "mcap": 14338338353.240955,
+      "cik": "0000010456"
+    },
+    {
+      "rank": 470,
+      "company_id": "plan:txt",
+      "yahoo": "TXT",
+      "mcap": 14178742495.333328,
+      "cik": "0000217346"
+    },
+    {
+      "rank": 471,
+      "company_id": "plan:aptv",
+      "yahoo": "APTV",
+      "mcap": 14127998414.74443,
+      "cik": "0001521332"
+    },
+    {
+      "rank": 472,
+      "company_id": "plan:cf",
+      "yahoo": "CF",
+      "mcap": 14072648270.516098,
+      "cik": "0001324404"
+    },
+    {
+      "rank": 473,
+      "company_id": "plan:dpz",
+      "yahoo": "DPZ",
+      "mcap": 14053948084.203003,
+      "cik": "0001286681"
+    },
+    {
+      "rank": 474,
+      "company_id": "plan:vtrs",
+      "yahoo": "VTRS",
+      "mcap": 13738352468.916695,
+      "cik": "0001792044"
+    },
+    {
+      "rank": 475,
+      "company_id": "plan:rvty",
+      "yahoo": "RVTY",
+      "mcap": 13481439233.867798,
+      "cik": "0000031791"
+    },
+    {
+      "rank": 476,
+      "company_id": "plan:epam",
+      "yahoo": "EPAM",
+      "mcap": 13311384072.91986,
+      "cik": "0001352010"
+    },
+    {
+      "rank": 477,
+      "company_id": "plan:swks",
+      "yahoo": "SWKS",
+      "mcap": 13292692631.151375,
+      "cik": "0000004127"
+    },
+    {
+      "rank": 478,
+      "company_id": "plan:evrg",
+      "yahoo": "EVRG",
+      "mcap": 13272144817.517666,
+      "cik": "0001711269"
+    },
+    {
+      "rank": 479,
+      "company_id": "plan:incy",
+      "yahoo": "INCY",
+      "mcap": 13181129683.826859,
+      "cik": "0000879169"
+    },
+    {
+      "rank": 480,
+      "company_id": "plan:udr",
+      "yahoo": "UDR",
+      "mcap": 13129700497.127266,
+      "cik": "0000074208"
+    },
+    {
+      "rank": 481,
+      "company_id": "plan:kmx",
+      "yahoo": "KMX",
+      "mcap": 12713091044.226746,
+      "cik": "0001170010"
+    },
+    {
+      "rank": 482,
+      "company_id": "plan:jkhy",
+      "yahoo": "JKHY",
+      "mcap": 12456741569.992447,
+      "cik": "0000779152"
+    },
+    {
+      "rank": 483,
+      "company_id": "plan:pool",
+      "yahoo": "POOL",
+      "mcap": 12454004521.792755,
+      "cik": "0000945841"
+    },
+    {
+      "rank": 484,
+      "company_id": "plan:doc",
+      "yahoo": "DOC",
+      "mcap": 12446110263.451982,
+      "cik": "0000765880"
+    },
+    {
+      "rank": 485,
+      "company_id": "plan:reg",
+      "yahoo": "REG",
+      "mcap": 12428788045.809814,
+      "cik": "0000910606"
+    },
+    {
+      "rank": 486,
+      "company_id": "plan:dva",
+      "yahoo": "DVA",
+      "mcap": 12282779449.46289,
+      "cik": "0000927066"
+    },
+    {
+      "rank": 487,
+      "company_id": "mfg",
+      "yahoo": "MFG",
+      "mcap": 12266561309.755516,
+      "cik": "0001335730"
+    },
+    {
+      "rank": 488,
+      "company_id": "cien",
+      "yahoo": "CIEN",
+      "mcap": 12081247034.541664,
+      "cik": "0000936395"
+    },
+    {
+      "rank": 489,
+      "company_id": "plan:chrw",
+      "yahoo": "CHRW",
+      "mcap": 11836648301.023224,
+      "cik": "0001043277"
+    },
+    {
+      "rank": 490,
+      "company_id": "plan:cag",
+      "yahoo": "CAG",
+      "mcap": 11630380901.47675,
+      "cik": "0000023217"
+    },
+    {
+      "rank": 491,
+      "company_id": "plan:payc",
+      "yahoo": "PAYC",
+      "mcap": 11621966192.328506,
+      "cik": "0001590955"
+    },
+    {
+      "rank": 492,
+      "company_id": "plan:ndsn",
+      "yahoo": "NDSN",
+      "mcap": 11587441539.995453,
+      "cik": "0000072331"
+    },
+    {
+      "rank": 493,
+      "company_id": "plan:cpt",
+      "yahoo": "CPT",
+      "mcap": 11555904602.701912,
+      "cik": "0000906345"
+    },
+    {
+      "rank": 494,
+      "company_id": "plan:solv",
+      "yahoo": "SOLV",
+      "mcap": 11410406850.703583,
+      "cik": "0001964738"
+    },
+    {
+      "rank": 495,
+      "company_id": "plan:swk",
+      "yahoo": "SWK",
+      "mcap": 11406825824.218964,
+      "cik": "0000093556"
+    },
+    {
+      "rank": 496,
+      "company_id": "plan:tech",
+      "yahoo": "TECH",
+      "mcap": 11372334609.355164,
+      "cik": "0000842023"
+    },
+    {
+      "rank": 497,
+      "company_id": "plan:nclh",
+      "yahoo": "NCLH",
+      "mcap": 11322488158.5,
+      "cik": "0001513761"
+    },
+    {
+      "rank": 498,
+      "company_id": "plan:cpb",
+      "yahoo": "CPB",
+      "mcap": 11249359474.057709,
+      "cik": "0000016732"
+    },
+    {
+      "rank": 499,
+      "company_id": "plan:alle",
+      "yahoo": "ALLE",
+      "mcap": 11168495909.112717,
+      "cik": "0001579241"
+    },
+    {
+      "rank": 500,
+      "company_id": "plan:hst",
+      "yahoo": "HST",
+      "mcap": 10990428988.930275,
+      "cik": "0001070750"
+    }
+  ],
   "reference_coverage": [
     {
       "name": null,
       "role": "MISSING_LARGE_CAP_DETECTOR",
       "n_members": 503,
-      "n_missing_from_pool": 8,
-      "n_present_not_rankable": 26,
-      "n_present_rankable_outside_top500": 157,
-      "missing_from_pool": [
-        "ANSS",
-        "DAY",
-        "HES",
-        "HOLX",
-        "IPG",
-        "JNPR",
-        "K",
-        "WBA"
-      ]
+      "n_missing_from_pool": 0,
+      "n_present_not_rankable": 34,
+      "n_present_rankable_outside_top500": 44,
+      "missing_from_pool": []
     }
   ],
   "universe_completeness_gate": {
     "kind": "UNIVERSE_COMPLETENESS_GATE",
     "as_of": "2024-12-31T00:00:00+00:00",
     "passed": false,
-    "companyfacts": 871,
-    "rankable": 731,
+    "companyfacts": 604,
+    "rankable": 546,
     "benchmark_source": "World Federation of Exchanges (WFE), \"Market Statistics - February 2025\" (WFE Focus), Total Dec'24 column",
     "benchmark_source_vintage": "2025-01-31",
     "benchmark_low": 3400,
     "benchmark_high": 3700,
-    "coverage_ratio": 0.2561764705882353,
+    "coverage_ratio": 0.1776470588235294,
     "reasons": [
       "COMPANYFACTS_COVERAGE_BELOW_BENCHMARK_LOW_ESTIMATE"
     ],
@@ -77,8 +4438,8 @@
     "kind": "TOP500_SUFFICIENCY_GATE",
     "as_of": "2024-12-31T00:00:00+00:00",
     "passed": false,
-    "rankable": 731,
-    "cutoff_mcap": 22006108796.860588,
+    "rankable": 546,
+    "cutoff_mcap": 10990428988.930275,
     "n_references_supplied": 1,
     "n_references_usable": 0,
     "references": [
@@ -87,23 +4448,16 @@
         "source": "Wikipedia 'List of S&P 500 companies' current snapshot + dated changes table (fetched 2026-09-25)",
         "source_vintage": null,
         "n_members": 503,
-        "missing_from_pool": [
-          "ANSS",
-          "DAY",
-          "HES",
-          "HOLX",
-          "IPG",
-          "JNPR",
-          "K",
-          "WBA"
-        ],
+        "missing_from_pool": [],
         "present_not_rankable": [
           "ABNB",
           "ADM",
+          "ANSS",
           "AVB",
           "BF.B",
           "CRWD",
           "CTRA",
+          "DAY",
           "DELL",
           "DFS",
           "EA",
@@ -113,7 +4467,12 @@
           "EXPE",
           "GOOG",
           "GOOGL",
+          "HES",
+          "HOLX",
           "HRL",
+          "IPG",
+          "JNPR",
+          "K",
           "LEN",
           "META",
           "MKC",
@@ -123,171 +4482,58 @@
           "STZ",
           "TSN",
           "UHS",
+          "WBA",
           "XOM"
         ],
         "present_rankable_outside_top500": [
           "AES",
           "AIZ",
-          "AKAM",
           "ALB",
-          "ALGN",
-          "ALLE",
           "AOS",
           "APA",
-          "APTV",
-          "ARE",
-          "ATO",
-          "AVY",
-          "BALL",
-          "BAX",
-          "BBY",
           "BEN",
           "BG",
-          "BIIB",
           "BKNG",
-          "BLDR",
           "BRK.B",
           "BWA",
           "BXP",
-          "CAG",
-          "CBOE",
           "CE",
-          "CF",
-          "CFG",
-          "CHRW",
-          "CINF",
-          "CLX",
-          "CME",
-          "CMS",
-          "CNP",
-          "COO",
-          "CPB",
-          "CPT",
           "CRL",
           "CZR",
-          "DG",
-          "DGX",
-          "DLTR",
-          "DOC",
-          "DPZ",
-          "DRI",
-          "DVA",
-          "DVN",
-          "EG",
           "EMN",
           "ENPH",
-          "EPAM",
-          "ES",
-          "ESS",
-          "ETR",
-          "EVRG",
-          "EXPD",
-          "FAST",
-          "FDS",
-          "FE",
-          "FFIV",
           "FMC",
           "FOX",
           "FOXA",
           "FRT",
-          "FSLR",
-          "FTV",
-          "GEN",
           "GL",
           "GNRC",
-          "GPC",
           "HAS",
           "HII",
           "HSIC",
-          "HST",
-          "IEX",
-          "IFF",
-          "INCY",
-          "INVH",
-          "IP",
           "IVZ",
-          "J",
-          "JBHT",
-          "JBL",
-          "JKHY",
-          "KEY",
-          "KIM",
           "KLAC",
-          "KMX",
-          "L",
-          "LDOS",
-          "LH",
-          "LII",
           "LKQ",
-          "LNT",
-          "LUV",
           "LW",
-          "LYB",
-          "MAA",
-          "MAS",
           "MGM",
           "MHK",
           "MKTX",
-          "MOH",
           "MOS",
-          "MRNA",
           "MTCH",
-          "NCLH",
-          "NDSN",
-          "NI",
-          "NRG",
-          "NTRS",
-          "NWS",
-          "NWSA",
-          "OMC",
           "ORLY",
-          "PAYC",
-          "PFG",
-          "PKG",
-          "PNR",
           "PNW",
-          "PODD",
-          "POOL",
-          "REG",
-          "RF",
-          "ROL",
-          "RVTY",
-          "SBAC",
           "SJM",
           "SMCI",
-          "SNA",
-          "SOLV",
           "SPG",
-          "STE",
-          "STLD",
-          "STX",
-          "SWK",
-          "SWKS",
           "TAP",
-          "TDY",
-          "TECH",
-          "TER",
           "TFX",
           "TPL",
-          "TPR",
-          "TRMB",
           "TSCO",
-          "TXT",
-          "UDR",
-          "ULTA",
-          "VRSN",
-          "VTRS",
-          "WDC",
-          "WRB",
-          "WY",
-          "WYNN",
-          "ZBH",
-          "ZBRA"
+          "WYNN"
         ],
         "reasons": [
           "MISSING_REFERENCE_VINTAGE",
           "REFERENCE_AS_OF_MISMATCH",
-          "MISSING_LARGE_CAP_NAMES",
           "REFERENCE_MEMBERS_PRESENT_BUT_NOT_RANKABLE",
           "REFERENCE_MEMBERS_RANKED_OUTSIDE_TOP500"
         ],
@@ -312,8 +4558,8 @@
       "passed": false,
       "candidate_pool_complete": false,
       "justified_official_top500": false,
-      "rankable": 731,
-      "listings": 871,
+      "rankable": 546,
+      "listings": 604,
       "eligibility_source": null,
       "source_vintage": null,
       "reasons": [
