@@ -1,8 +1,8 @@
 {
   "kind": "RAW_DATASET_STORE_INDEX",
   "store_dir": "data/raw",
-  "n_artifacts": 2988,
-  "n_blobs_on_disk": 2988,
+  "n_artifacts": 3243,
+  "n_blobs_on_disk": 3243,
   "artifacts": [
     {
       "artifact_id": "companyfacts:0000001800",
@@ -10922,6 +10922,2247 @@
       "http_status": 200
     },
     {
+      "artifact_id": "submissions_page:CIK0000009631-submissions-002.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000009631-submissions-002.json",
+      "sha256": "837c4d53960d088a75ec89b4ea514d5ca24b7bbfdb0970c1ed9b9e7f265f2ba3",
+      "bytes": 336539,
+      "fetched_at": "2026-09-25T11:20:00.927959+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000009631-submissions-003.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000009631-submissions-003.json",
+      "sha256": "e6b4d43af8e581fc7ba4f75facafefbb8ba7e3d39dd955277238b7d28f2ee990",
+      "bytes": 355450,
+      "fetched_at": "2026-09-25T11:20:01.671078+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000009631-submissions-004.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000009631-submissions-004.json",
+      "sha256": "f8d8d7e46a726e7e2fa6aa5762e82d07a312c183f68473ca249682d5b3557de5",
+      "bytes": 349049,
+      "fetched_at": "2026-09-25T11:20:02.362417+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000009631-submissions-005.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000009631-submissions-005.json",
+      "sha256": "56261af35918a4712ed9ce695acc01c210dac57081240ae1725638ffeb67625d",
+      "bytes": 355421,
+      "fetched_at": "2026-09-25T11:20:02.729694+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000009631-submissions-006.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000009631-submissions-006.json",
+      "sha256": "7de2caecf93eb272817bc33f1a60a23f2c45c95d7f48218b7b323524a5fee347",
+      "bytes": 349675,
+      "fetched_at": "2026-09-25T11:20:03.077238+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000009631-submissions-007.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000009631-submissions-007.json",
+      "sha256": "d469d704b61f04015101edea1a1476ac62ee39b7907e52cb8fb12ba46e34a794",
+      "bytes": 32732,
+      "fetched_at": "2026-09-25T11:20:03.464810+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-008.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-008.json",
+      "sha256": "92979fadd7748ef0e3891ca7c2b0a80ae206c7a77a0e897b1086282e938a8ab6",
+      "bytes": 368656,
+      "fetched_at": "2026-09-25T11:20:03.895660+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-009.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-009.json",
+      "sha256": "474c1a2911cdc894b08354372e62b7c23a7ddcc273ea9ead073b1ae2d06b35f6",
+      "bytes": 366515,
+      "fetched_at": "2026-09-25T11:20:04.341958+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-010.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-010.json",
+      "sha256": "c7e820632f98725e26130c19fded47e71bdfa2ed23344c7288822fd7657c53c2",
+      "bytes": 377522,
+      "fetched_at": "2026-09-25T11:20:04.703725+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-011.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-011.json",
+      "sha256": "d034ebe79c9493dfe2b77b8861c6da49d91d0fe9478fe865bf3b37ea339a92aa",
+      "bytes": 371246,
+      "fetched_at": "2026-09-25T11:20:05.094500+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-012.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-012.json",
+      "sha256": "e4886e90b934f0f69a46bdc0615251c381ff4f53c842f49a9c43e650e0f7986c",
+      "bytes": 368145,
+      "fetched_at": "2026-09-25T11:20:05.520021+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-013.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-013.json",
+      "sha256": "bb1abc6f9579798119f7d25969e448bc82968341dcfe491052c905b683e25335",
+      "bytes": 363101,
+      "fetched_at": "2026-09-25T11:20:05.912886+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-014.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-014.json",
+      "sha256": "edcd413ed941035cd562b1175c5dfbe6b56a42f8b40fff9bb51d78d7e248f812",
+      "bytes": 357361,
+      "fetched_at": "2026-09-25T11:20:06.283676+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-015.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-015.json",
+      "sha256": "bd259d32cbcc161c9d6209c316e4e0d400b9ad288417a379cdf577cbf9d114f3",
+      "bytes": 364490,
+      "fetched_at": "2026-09-25T11:20:06.588678+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-016.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-016.json",
+      "sha256": "07bf57b0d2202f15272ca771f5aa1134650a9b1a77fea762261ec45936e33a1a",
+      "bytes": 360930,
+      "fetched_at": "2026-09-25T11:20:07.035604+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-017.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-017.json",
+      "sha256": "9f24c1dcc8eb14067c987a97a3634f1967beaf57d7d2284fe054be2c1266c6aa",
+      "bytes": 351806,
+      "fetched_at": "2026-09-25T11:20:07.395927+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-018.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-018.json",
+      "sha256": "65a8d7ea1621eaafa654c30c3b8c112c52bb1a3bbd9d1c4b7d19d50c637fef81",
+      "bytes": 363509,
+      "fetched_at": "2026-09-25T11:20:07.768729+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-019.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-019.json",
+      "sha256": "5b524174afe4a5dec4421acc04fb83374fd7df7272c2804838f8903da9bb751b",
+      "bytes": 363098,
+      "fetched_at": "2026-09-25T11:20:08.134568+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-020.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-020.json",
+      "sha256": "f0b895231789c3026575639f5bd77d1f1b8a66b648e7b794070420225c8edcb5",
+      "bytes": 364551,
+      "fetched_at": "2026-09-25T11:20:08.489445+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-021.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-021.json",
+      "sha256": "c78cf1be681891739c5c19c550abeb55dab660eb73e7116113c150b937721eb1",
+      "bytes": 355981,
+      "fetched_at": "2026-09-25T11:20:09.028660+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-022.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-022.json",
+      "sha256": "7df3f5618ce652e838d363e050d7e5a745ad8e44f3032e618035dc88408bba82",
+      "bytes": 364287,
+      "fetched_at": "2026-09-25T11:20:09.376492+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-023.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-023.json",
+      "sha256": "55059c8ffe6a437ad6cc5a89910628ac9c68512518687dc27c9f412e723eeab3",
+      "bytes": 372591,
+      "fetched_at": "2026-09-25T11:20:09.776789+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-024.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-024.json",
+      "sha256": "60d651f9aaf23b1935b6a30525b8e53fc3f1dc6eede7bbd2a755ac1fdb24e8fc",
+      "bytes": 352029,
+      "fetched_at": "2026-09-25T11:20:10.304689+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-025.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-025.json",
+      "sha256": "8788835cfee681cadc94fc4e29fa7be1176c3ad7bcfbc35f59c5f1ed4ae21bda",
+      "bytes": 357319,
+      "fetched_at": "2026-09-25T11:20:10.665271+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-026.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-026.json",
+      "sha256": "ea010116859e8d572907cd1e484ff04ce641762d7b6f03d82a6afd9c1ff2d638",
+      "bytes": 355250,
+      "fetched_at": "2026-09-25T11:20:11.037907+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-027.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-027.json",
+      "sha256": "7ab454ecb6b2e19d3f8a279bc0ebf187a7aa53d7d7913facace0eb40c37c61d0",
+      "bytes": 359738,
+      "fetched_at": "2026-09-25T11:20:11.498012+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-028.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-028.json",
+      "sha256": "30f29253c3ccbf25925fc60d9548d18af49bac17c0e03a469b896a1a35c06cce",
+      "bytes": 364821,
+      "fetched_at": "2026-09-25T11:20:11.839556+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-029.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-029.json",
+      "sha256": "b0bd2e8b9c8840511d11faf2089af3047f1af7e8b2e0296b84d4991b0877da23",
+      "bytes": 355954,
+      "fetched_at": "2026-09-25T11:20:12.337734+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-030.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-030.json",
+      "sha256": "65ac7b05099a5e71547521207ca35d34c8fd1817b3c1ee25bf3237ae18a8be16",
+      "bytes": 363932,
+      "fetched_at": "2026-09-25T11:20:12.758456+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-031.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-031.json",
+      "sha256": "2f0b97b3308c25c0f2ad3dc60dd7d3d992a46a4ae2e3c9692759231f9830a9cf",
+      "bytes": 360656,
+      "fetched_at": "2026-09-25T11:20:13.100805+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-032.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-032.json",
+      "sha256": "51796fe7e843152d0b46baf01742c6a7202265e1c8b28d619ddd77085b9456bf",
+      "bytes": 355843,
+      "fetched_at": "2026-09-25T11:20:13.482365+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-033.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-033.json",
+      "sha256": "4824fe6c21e66edc36e493ec0c1b4cd7b58a71998be6bd87f2f9e4e6d16aa1e2",
+      "bytes": 378309,
+      "fetched_at": "2026-09-25T11:20:13.815133+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-034.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-034.json",
+      "sha256": "77f7ffeb5a9778a235b1b9b645d57e407eddeb683d3ab1eda2d3e5483b1de8e6",
+      "bytes": 347650,
+      "fetched_at": "2026-09-25T11:20:14.284830+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-035.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-035.json",
+      "sha256": "666292ee761d8f79fda90130e875a1d690f80d4d49569410b5ddfe9c93a73922",
+      "bytes": 346183,
+      "fetched_at": "2026-09-25T11:20:14.640208+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-036.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-036.json",
+      "sha256": "f3849dbe6387f37c36e8eefca299a33d236315d086121c01519e75ac96b2626c",
+      "bytes": 352071,
+      "fetched_at": "2026-09-25T11:20:15.009735+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-037.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-037.json",
+      "sha256": "23e3955e6929ad372bfc6309cb38d7cfe888751ca4395d80e1c7da245676ad01",
+      "bytes": 355515,
+      "fetched_at": "2026-09-25T11:20:15.388788+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-038.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-038.json",
+      "sha256": "baed14fe70cc7a50b5f68f1c2da25ee70fa2178853d5824384967be487f526aa",
+      "bytes": 354638,
+      "fetched_at": "2026-09-25T11:20:15.721780+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-039.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-039.json",
+      "sha256": "787e74d09f00247df359109230dc4aa78d1d3a7deb5d9311cdc6d8ca9fa45404",
+      "bytes": 354645,
+      "fetched_at": "2026-09-25T11:20:16.081663+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-040.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-040.json",
+      "sha256": "663313a7a4645cc1322954a8a5b4befb4e15a5858d9dc90106c1873dc85aa225",
+      "bytes": 346084,
+      "fetched_at": "2026-09-25T11:20:16.561917+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-041.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-041.json",
+      "sha256": "d411c3f514007f3253d1317eecd4e43074e014b58b13e3851bff5879f33c51d5",
+      "bytes": 355873,
+      "fetched_at": "2026-09-25T11:20:16.917802+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-042.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-042.json",
+      "sha256": "8fd2d5e8ed27d438bf5385248bb4a9c5d560d60cc7866c609d7bb2a42713c442",
+      "bytes": 360951,
+      "fetched_at": "2026-09-25T11:20:17.310598+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-043.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-043.json",
+      "sha256": "456146cef353bbe68792b2aaac2e859e4a994c10dac32bb7cf53bdcc80c7875f",
+      "bytes": 354709,
+      "fetched_at": "2026-09-25T11:20:17.655744+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-044.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-044.json",
+      "sha256": "b71dfc8f0c4201780cf9af216a7b45fcba88a55b420a564584340f3d824eb66e",
+      "bytes": 349790,
+      "fetched_at": "2026-09-25T11:20:18.008009+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-045.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-045.json",
+      "sha256": "1b9331486cd13445a2f93c93dbea8650a5d30b85c3207654293afe9309b65de5",
+      "bytes": 349476,
+      "fetched_at": "2026-09-25T11:20:18.348815+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-046.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-046.json",
+      "sha256": "e4fac4be6213408e22ff6a56983f11e1ecff577cc04c8fe7521ffbe1f9eab44f",
+      "bytes": 350610,
+      "fetched_at": "2026-09-25T11:20:18.673292+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-047.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-047.json",
+      "sha256": "0f987a45c8ceac4e9185a6df61fc0f3a853f5cd8527ae07c283633c04391c621",
+      "bytes": 352248,
+      "fetched_at": "2026-09-25T11:20:19.130726+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-048.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-048.json",
+      "sha256": "2d5f578fd9b0481b31450accd76faddb0e3076bfdf0cff51b285f92bc2049be1",
+      "bytes": 353793,
+      "fetched_at": "2026-09-25T11:20:19.599072+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-049.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-049.json",
+      "sha256": "96124121c98b2361ce393afac044fb1117a3d532dd46757b551a05a62ae70b6c",
+      "bytes": 349736,
+      "fetched_at": "2026-09-25T11:20:20.010257+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-050.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-050.json",
+      "sha256": "1c94403a604d7ad88c677ebffa356cc3bfbcdd38804a58e63a03d08377cf1874",
+      "bytes": 354641,
+      "fetched_at": "2026-09-25T11:20:20.362604+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-051.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-051.json",
+      "sha256": "88150757caaac453bdfb291cf9d4b4e3be557bec2ebe0577e1884fc4bc28ba2c",
+      "bytes": 348234,
+      "fetched_at": "2026-09-25T11:20:20.757162+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-052.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-052.json",
+      "sha256": "9bbf806707c925f39390de2d2008f4ea17c6f07e541e51a896aaafb13760b7ad",
+      "bytes": 347934,
+      "fetched_at": "2026-09-25T11:20:21.134706+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-053.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-053.json",
+      "sha256": "d4230e3cf5e2128f69a5bf77a2f410093bb0ca3566cf931bfd281b9bd81d6ae0",
+      "bytes": 353647,
+      "fetched_at": "2026-09-25T11:20:21.556876+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-054.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-054.json",
+      "sha256": "17444b67585172333befbca7e8b7a129c3bbcff67ff2a4a25de414080988943c",
+      "bytes": 350005,
+      "fetched_at": "2026-09-25T11:20:21.897969+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-055.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-055.json",
+      "sha256": "b3f19edda8cf3d459dfa02dbe27d37e492402533853161acef2eade483a58a8e",
+      "bytes": 348736,
+      "fetched_at": "2026-09-25T11:20:22.285557+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-056.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-056.json",
+      "sha256": "f7a45796c550ede791738e6693ac9a1f82a4aadd29141af7a25fcf09b43c0d78",
+      "bytes": 356019,
+      "fetched_at": "2026-09-25T11:20:22.721258+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-057.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-057.json",
+      "sha256": "39c2d91d659236edf3177761af876db0a8b3cab9a9618b90b51a96de8339ee5b",
+      "bytes": 336600,
+      "fetched_at": "2026-09-25T11:20:23.125536+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-058.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-058.json",
+      "sha256": "a6a897d3058c406018a9a14d5ab6158ce5ed015da9bf6d7e6bac5579d9edecfb",
+      "bytes": 336528,
+      "fetched_at": "2026-09-25T11:20:23.447675+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-059.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-059.json",
+      "sha256": "79bf879d424d296c92e5b699af6b47922d4463ea0b224379ef8cfe5545676e70",
+      "bytes": 336665,
+      "fetched_at": "2026-09-25T11:20:23.924427+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-060.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-060.json",
+      "sha256": "ccbddf9078432b64a7bbe7843c700382f0a5a9acb9bebd366fbe6263dd1fabed",
+      "bytes": 340624,
+      "fetched_at": "2026-09-25T11:20:24.296643+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-061.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-061.json",
+      "sha256": "5f0f3b6e1b2a9b74f2edcaac4453c1c347a3d7d86768af8f5b25a0d81ab15ac3",
+      "bytes": 336123,
+      "fetched_at": "2026-09-25T11:20:24.667907+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-062.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-062.json",
+      "sha256": "bff562f6bd50a1198c6329beb92a815cd8d567e6656b2b72f46d2604610e3f98",
+      "bytes": 336901,
+      "fetched_at": "2026-09-25T11:20:25.037414+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-063.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-063.json",
+      "sha256": "00ae3d50bd2b363be2c65c80a9327137bbccbcbcff91f9a47997b5305f3d1518",
+      "bytes": 336377,
+      "fetched_at": "2026-09-25T11:20:25.515893+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-064.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-064.json",
+      "sha256": "595751ee9971d0893c666da04c2c159f59cab11a4ee926a33b20d78bd0cba34a",
+      "bytes": 338515,
+      "fetched_at": "2026-09-25T11:20:25.843871+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-065.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-065.json",
+      "sha256": "d56acfa5452b29c98e8f60ca10f34485d13eae274949163cfa8697f5877366ba",
+      "bytes": 334133,
+      "fetched_at": "2026-09-25T11:20:26.200762+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-066.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-066.json",
+      "sha256": "7d0e5629e076cde07764e20833044ca0f39cd3ff8671dbbd3aee18f7d27103c2",
+      "bytes": 329605,
+      "fetched_at": "2026-09-25T11:20:26.646292+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-067.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-067.json",
+      "sha256": "0815251aca66f9866233e91d7a701bc095201afc63b4e4b3680dd84f869cc37f",
+      "bytes": 324643,
+      "fetched_at": "2026-09-25T11:20:27.006312+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-068.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-068.json",
+      "sha256": "b242e574ee7cdff3d1d448500991c7cd9339150d6d5273357bbf8d6e6496e1e2",
+      "bytes": 325300,
+      "fetched_at": "2026-09-25T11:20:27.382200+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-069.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-069.json",
+      "sha256": "9d4f62da602bcb71932a5ac1d202ab2adc256e8779d7c1400ec6dffe51deaa25",
+      "bytes": 316965,
+      "fetched_at": "2026-09-25T11:20:27.739669+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000019617-submissions-070.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000019617-submissions-070.json",
+      "sha256": "ee35e93e611e77c8a64ddf2ddf213c4d0720f51a10bdeb0666621062d668b6f3",
+      "bytes": 137297,
+      "fetched_at": "2026-09-25T11:20:28.148340+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-004.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-004.json",
+      "sha256": "2ce1d20657c3e8ced7da855ebc114d4d61c57f9768d7ba93a209a1865f2fc1bd",
+      "bytes": 313903,
+      "fetched_at": "2026-09-25T11:20:28.470051+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-005.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-005.json",
+      "sha256": "d95bcec84d21e90c2514f941c6e102fd96436f3bc60797a6332f5c5dbd137239",
+      "bytes": 314544,
+      "fetched_at": "2026-09-25T11:20:28.731129+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-006.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-006.json",
+      "sha256": "d97e40820d1e9eaca150dba4763df939f39fb514ba458154fb0c64ff5ff1e5c7",
+      "bytes": 318795,
+      "fetched_at": "2026-09-25T11:20:29.125806+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-007.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-007.json",
+      "sha256": "c7b092af6aaa1225d918e46bd678e9a723ebda3b3aea11762a44969911266ae5",
+      "bytes": 309247,
+      "fetched_at": "2026-09-25T11:20:29.392922+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-008.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-008.json",
+      "sha256": "4ce922ad2df00986b8e37d048d9c52c092508924377a5c6a078602c79a1d33dc",
+      "bytes": 318384,
+      "fetched_at": "2026-09-25T11:20:29.637565+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-009.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-009.json",
+      "sha256": "76e8d9a357cddff8627fdae394d8a416f1f9921f3acbd3f56a43a2e8aa6c0851",
+      "bytes": 313200,
+      "fetched_at": "2026-09-25T11:20:29.932020+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-010.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-010.json",
+      "sha256": "9fed1150e69abf0aa31a7268c702d00ccb2457491b42a3c8d3ad679a213fc04d",
+      "bytes": 310376,
+      "fetched_at": "2026-09-25T11:20:30.178353+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-011.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-011.json",
+      "sha256": "9443245f910819aced0a4b646335830049304c0087a99025a120a36f7df6066a",
+      "bytes": 314210,
+      "fetched_at": "2026-09-25T11:20:30.520082+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-012.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-012.json",
+      "sha256": "7104b7df0c253f6eae61d08fada2b0d5b7d383ae1f8bcaeb8e67908aed855a63",
+      "bytes": 313848,
+      "fetched_at": "2026-09-25T11:20:30.768460+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-013.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-013.json",
+      "sha256": "c9af754f6187bd959b55d8c8c9c5a8432595ecb06df7625e25134739bfbf2c6e",
+      "bytes": 337757,
+      "fetched_at": "2026-09-25T11:20:31.161260+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-014.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-014.json",
+      "sha256": "1587e0be815da02f72caaa1b4c32adbfced488394b4dea6f06eaa35e5ba6bb10",
+      "bytes": 339435,
+      "fetched_at": "2026-09-25T11:20:31.428801+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-015.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-015.json",
+      "sha256": "ba1f85c692a912f7ac35d33209b507ddb76d84fe339d96dc2f1a7d7eb7c29c59",
+      "bytes": 321879,
+      "fetched_at": "2026-09-25T11:20:31.696414+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-016.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-016.json",
+      "sha256": "71ff6b994a07fb3b6613b7056839de5c6ca65e30f6213b5145142dce5c3afca6",
+      "bytes": 325501,
+      "fetched_at": "2026-09-25T11:20:32.009456+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-017.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-017.json",
+      "sha256": "6e3d2e861d798f48c0371257ce09d13fbbe33f000a1eb18c9ba304493f1b522a",
+      "bytes": 330532,
+      "fetched_at": "2026-09-25T11:20:32.275580+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-018.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-018.json",
+      "sha256": "fa8e7614f934ae925cc592c411052a3cb06da66422dee66ecd6364cb29d01635",
+      "bytes": 330821,
+      "fetched_at": "2026-09-25T11:20:32.646508+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-019.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-019.json",
+      "sha256": "1f2dc8c76aa1f34bb6e9554f2e8e76853fb4f26330f20645a19422fe4a8424ed",
+      "bytes": 331010,
+      "fetched_at": "2026-09-25T11:20:32.959485+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-020.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-020.json",
+      "sha256": "9eb00b2def338bfdeb47029810e8f6984b75117b873153a7eb4a76b44fbc308d",
+      "bytes": 313379,
+      "fetched_at": "2026-09-25T11:20:33.269521+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000070858-submissions-021.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000070858-submissions-021.json",
+      "sha256": "e1a4a57bb970152c463363a90e3df5f27c3efdffb3a4e6203497006512c24b23",
+      "bytes": 64525,
+      "fetched_at": "2026-09-25T11:20:33.499597+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000072971-submissions-001.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000072971-submissions-001.json",
+      "sha256": "2c7f24c46d070467eea9b5f7cb486feecb107969c61f11f550bf398206391ac3",
+      "bytes": 343221,
+      "fetched_at": "2026-09-25T11:20:34.004321+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000072971-submissions-002.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000072971-submissions-002.json",
+      "sha256": "d663e202b7b1f3de68f431080ac84549a5d985e0775ee41b46eeb76c8737f35e",
+      "bytes": 372866,
+      "fetched_at": "2026-09-25T11:20:34.359798+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000072971-submissions-003.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000072971-submissions-003.json",
+      "sha256": "bf9ec113914a0e6ee2a0d30e45bdb67a514f75b85088afd487a56fbcfd247b4e",
+      "bytes": 358932,
+      "fetched_at": "2026-09-25T11:20:34.775873+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000072971-submissions-004.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000072971-submissions-004.json",
+      "sha256": "c593b56a5c69935b004f5e08cc05bd79b95827b52555114b93b61dda92233390",
+      "bytes": 344380,
+      "fetched_at": "2026-09-25T11:20:35.133619+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000072971-submissions-005.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000072971-submissions-005.json",
+      "sha256": "8759562e041b3c03e5cd63edab7414cc936adff2095e7768d1e80f3b8401a52c",
+      "bytes": 330583,
+      "fetched_at": "2026-09-25T11:20:35.455162+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000072971-submissions-006.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000072971-submissions-006.json",
+      "sha256": "3c2f3e27dbf0dd8722baddd84b5ae239e263b0d9f1db9d558fe690ce461a66e6",
+      "bytes": 318927,
+      "fetched_at": "2026-09-25T11:20:35.829900+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000072971-submissions-007.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000072971-submissions-007.json",
+      "sha256": "041f339797f9ec8890bacbbc88f291d3f6a70c0a4cdd3f44be8e954cb4025e8c",
+      "bytes": 319532,
+      "fetched_at": "2026-09-25T11:20:36.162461+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000072971-submissions-008.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000072971-submissions-008.json",
+      "sha256": "9971941ebc79b3ef436723ea7fde241d4feba014237818a4e59c0b068d13cf5b",
+      "bytes": 301380,
+      "fetched_at": "2026-09-25T11:20:36.585403+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000072971-submissions-009.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000072971-submissions-009.json",
+      "sha256": "864b5bbf8e1fa4f836a678bb06529037cd04376b5ac2bb07c0c23e760dd68649",
+      "bytes": 36561,
+      "fetched_at": "2026-09-25T11:20:36.909663+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-004.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-004.json",
+      "sha256": "16bf5f54e85a2ccf100af913f5f70766b9cd2f1c2688ca0a8128452504e2b0f5",
+      "bytes": 361214,
+      "fetched_at": "2026-09-25T11:20:37.441178+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-005.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-005.json",
+      "sha256": "17d953a0b615b50c1b5a3b615ea4cddb4662dac22f2ddda94e50a74e1cb0d472",
+      "bytes": 358170,
+      "fetched_at": "2026-09-25T11:20:37.774614+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-006.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-006.json",
+      "sha256": "4abf83fc64b1100847c76c727eaf1d2090e844e6aaa93a0a9a57d51960aff791",
+      "bytes": 361276,
+      "fetched_at": "2026-09-25T11:20:38.120579+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-007.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-007.json",
+      "sha256": "8965a0a0d7e57f773c7376e5e7393b740ef4c25fe87ce028130051b430b42144",
+      "bytes": 371687,
+      "fetched_at": "2026-09-25T11:20:38.574470+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-008.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-008.json",
+      "sha256": "ac54d9a34f50292e988fe16e68700beced2133ddb72345d45ba370c9f0d0ca43",
+      "bytes": 369776,
+      "fetched_at": "2026-09-25T11:20:38.942153+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-009.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-009.json",
+      "sha256": "d201ea3cddfe6dff3b1631a69fc3f078e147f715b1b12b5878e8409d49933a82",
+      "bytes": 366502,
+      "fetched_at": "2026-09-25T11:20:39.302142+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-010.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-010.json",
+      "sha256": "1114bfac342c1f73d6c3683a85f80bd765d1f3877f625a764618c0ec9ad73a35",
+      "bytes": 377596,
+      "fetched_at": "2026-09-25T11:20:39.744173+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-011.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-011.json",
+      "sha256": "0898404d1e5bebef94e37544a3f4e6d2c426664480d3fcc17bfb73df6cf65ff2",
+      "bytes": 379406,
+      "fetched_at": "2026-09-25T11:20:40.176163+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-012.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-012.json",
+      "sha256": "b616edafbb6ea814ae29b1e2f2c5912b3a4cc05200d646486a85f07ec8ba9c58",
+      "bytes": 377555,
+      "fetched_at": "2026-09-25T11:20:40.579057+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-013.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-013.json",
+      "sha256": "4d7ae23889869bba24341691676e7155921a187e12420e803b9054b29f51f954",
+      "bytes": 394500,
+      "fetched_at": "2026-09-25T11:20:40.931224+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-014.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-014.json",
+      "sha256": "39ae1c1b517c81cdf2ad077cf8c296c88000129b92010ef1f30077a5c1ddac50",
+      "bytes": 379746,
+      "fetched_at": "2026-09-25T11:20:41.392310+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-015.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-015.json",
+      "sha256": "902d7ecca99c3395c06854af33449d856ef726a210f3540f4fdc18b3f52f5290",
+      "bytes": 375165,
+      "fetched_at": "2026-09-25T11:20:41.869341+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-016.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-016.json",
+      "sha256": "74f1c55df6bb1cd020f91edfde44ad51f6fe686839559c8de77db87cb5752ca4",
+      "bytes": 379082,
+      "fetched_at": "2026-09-25T11:20:42.266455+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-017.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-017.json",
+      "sha256": "a75b0e224090e002b691411cf2d94edb1e5da4713ee8a986a627efd14b3ff0dc",
+      "bytes": 381376,
+      "fetched_at": "2026-09-25T11:20:42.675605+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-018.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-018.json",
+      "sha256": "304ad59b8dd4394df1833d51c8ba6dc4785f66c52961d89754d7999c3258a394",
+      "bytes": 377094,
+      "fetched_at": "2026-09-25T11:20:42.999971+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-019.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-019.json",
+      "sha256": "2343b0c2d54bdf26d3e1141eaea47f42d9a405a0ca411c530e2f5c0a73b38d26",
+      "bytes": 377201,
+      "fetched_at": "2026-09-25T11:20:43.369130+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-020.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-020.json",
+      "sha256": "eb166c39ee3640c2714bb9d89a897f0efa632f5f0d42586c10d48a8914908960",
+      "bytes": 392310,
+      "fetched_at": "2026-09-25T11:20:43.746829+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-021.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-021.json",
+      "sha256": "dd73d3b38fd5f3b1a1745429ef5f7164420057125c6857b36b7d7b06fb3468a0",
+      "bytes": 373251,
+      "fetched_at": "2026-09-25T11:20:44.122879+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-022.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-022.json",
+      "sha256": "942190bd3485c7efb793aa942400b133d5f3ab302168387f707b243f73333a18",
+      "bytes": 379648,
+      "fetched_at": "2026-09-25T11:20:44.470201+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-023.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-023.json",
+      "sha256": "1b4fd4cd4e4a54183fa4bca82b59ba61adcbaad66d51c099d66a0b49bf287008",
+      "bytes": 376309,
+      "fetched_at": "2026-09-25T11:20:44.844922+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-024.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-024.json",
+      "sha256": "a53837131b903d4116f585997028b03b9f5a8d7c4cb75ed1e8baa91a02841abb",
+      "bytes": 383115,
+      "fetched_at": "2026-09-25T11:20:45.218340+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-025.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-025.json",
+      "sha256": "f3d832f2ed1173f2723ebb476d1b09ffefa8e0bc272b50414e0720ec3efc9042",
+      "bytes": 381168,
+      "fetched_at": "2026-09-25T11:20:45.581808+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-026.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-026.json",
+      "sha256": "e6c41d8c5105015516b2499ce356fd3cc2fd46b15cc8a4294a4cd11f2af93c4b",
+      "bytes": 373839,
+      "fetched_at": "2026-09-25T11:20:46.016286+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-027.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-027.json",
+      "sha256": "a78d30dfa5223757b4ccd59424da02379e8b13ccf924f954bd2ef6acd3cc7384",
+      "bytes": 377687,
+      "fetched_at": "2026-09-25T11:20:46.393544+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-028.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-028.json",
+      "sha256": "cfebfebb5d551d4141be7a96b1335b9dd9441228475b6ee9b54729ea031b26a4",
+      "bytes": 376817,
+      "fetched_at": "2026-09-25T11:20:46.877057+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-029.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-029.json",
+      "sha256": "dd58e5c5389e2a5800d7c9ee1f94340735e4936822ed6d7562618948602a2cf6",
+      "bytes": 373295,
+      "fetched_at": "2026-09-25T11:20:47.285940+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-030.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-030.json",
+      "sha256": "eee9d95a9d6e20816ad26cf166b2594af14165ef733e1a245d5402fa6273ef61",
+      "bytes": 371234,
+      "fetched_at": "2026-09-25T11:20:47.673049+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-031.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-031.json",
+      "sha256": "80423d0e58ca76b1266c7cc695bf50477ce21c27f02325e76f6635764520a859",
+      "bytes": 368987,
+      "fetched_at": "2026-09-25T11:20:48.020621+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-032.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-032.json",
+      "sha256": "b9aac95d06322e242ecb0779799cecfab8a22e974101058a8be2ebfb8cfa5ec0",
+      "bytes": 365554,
+      "fetched_at": "2026-09-25T11:20:48.566978+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-033.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-033.json",
+      "sha256": "e10ed90711172918bc3abaa5bdc50adf766dea57e912427b7ed3e0a56aa77256",
+      "bytes": 360998,
+      "fetched_at": "2026-09-25T11:20:48.984718+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-034.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-034.json",
+      "sha256": "c951bbf4298afba6164d3ccc4b75e14dacb76685dfec5a050f4d0f652c13dce0",
+      "bytes": 351780,
+      "fetched_at": "2026-09-25T11:20:49.507236+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-035.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-035.json",
+      "sha256": "89aee5a9c29089702f86a228348a788b66a6d72b10988b02768e9eb3dc5f11ef",
+      "bytes": 349970,
+      "fetched_at": "2026-09-25T11:20:49.911021+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-036.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-036.json",
+      "sha256": "cf1f03467fe80850c212613a87d1f5acc2125dfc96d6dbeb6316ed5e10a92629",
+      "bytes": 329269,
+      "fetched_at": "2026-09-25T11:20:50.302666+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-037.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-037.json",
+      "sha256": "1c7de00087c2a2ba9fd07b336fd342ac5ad865fa762f45295bedfaba2c76e076",
+      "bytes": 322413,
+      "fetched_at": "2026-09-25T11:20:50.673208+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-038.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-038.json",
+      "sha256": "ce0dcee9003b7148cb08729c52dd3f95b1552ace83ce07a93288797b37636bad",
+      "bytes": 321851,
+      "fetched_at": "2026-09-25T11:20:51.040019+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-039.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-039.json",
+      "sha256": "6a19cb357ac78736b279c7bfc1d8c71822c70bbd46820016082b35c31cb20a4a",
+      "bytes": 292277,
+      "fetched_at": "2026-09-25T11:20:51.356210+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000831001-submissions-040.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000831001-submissions-040.json",
+      "sha256": "0f568341c57c56a7d085444f980a115ae92161853342e7c7952f15a4a843f835",
+      "bytes": 51027,
+      "fetched_at": "2026-09-25T11:20:51.712621+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-004.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-004.json",
+      "sha256": "d7c3760a67b44c8ec0a5498a0e867ef19e24a0ac76c287e5925044c9818b22b5",
+      "bytes": 321223,
+      "fetched_at": "2026-09-25T11:20:52.080134+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-005.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-005.json",
+      "sha256": "68cefd511c53935e4a6b57d9e31ac039814478676624341be3f8acfbfefff643",
+      "bytes": 321194,
+      "fetched_at": "2026-09-25T11:20:52.470739+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-006.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-006.json",
+      "sha256": "351ae1d7b5db8c73236eade3c4b473dee98ca1be227ea2999c927b0457155382",
+      "bytes": 333505,
+      "fetched_at": "2026-09-25T11:20:52.872356+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-007.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-007.json",
+      "sha256": "80affdd9da22285362be356ec99947285c9b3957060559b5a723701dc2510b23",
+      "bytes": 324088,
+      "fetched_at": "2026-09-25T11:20:53.320510+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-008.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-008.json",
+      "sha256": "fb3f4128e7f21f39f39325d932c96619400a7c214d405e7692686d576063515b",
+      "bytes": 322427,
+      "fetched_at": "2026-09-25T11:20:53.693095+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-009.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-009.json",
+      "sha256": "b298f5898bb21acf85fa70fa8d94f420b795adafddc4eb1af1cc66df7dc6dc7d",
+      "bytes": 323158,
+      "fetched_at": "2026-09-25T11:20:54.090351+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-010.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-010.json",
+      "sha256": "e135f454006c0535f80def7869f4ea74818c5f9d7b0741f4610ae2a106910359",
+      "bytes": 323802,
+      "fetched_at": "2026-09-25T11:20:54.419275+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-011.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-011.json",
+      "sha256": "c613ed32b94e06b13d8584b6b8241bcf5ec303b101e15b0d7c71157a43a9fff4",
+      "bytes": 322630,
+      "fetched_at": "2026-09-25T11:20:54.855699+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-012.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-012.json",
+      "sha256": "6d395802e3021347273e8670098f23db9b1fa114f7c15848500a740e5ad7fdc1",
+      "bytes": 317418,
+      "fetched_at": "2026-09-25T11:20:55.213682+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-013.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-013.json",
+      "sha256": "4049c4833d66eccd51af51c3c92563630f734e11dbff31735607e85e69f9142d",
+      "bytes": 307122,
+      "fetched_at": "2026-09-25T11:20:55.655936+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-014.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-014.json",
+      "sha256": "87bb364617ee43c8886b12f7cad42747a66fd6c76faaaff547d042227eddd67b",
+      "bytes": 310071,
+      "fetched_at": "2026-09-25T11:20:56.080085+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-015.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-015.json",
+      "sha256": "b5abdd29e695459531d7ea0d93de5bfeb43d93aa69a82c3062763a7df567bf8e",
+      "bytes": 309878,
+      "fetched_at": "2026-09-25T11:20:56.457039+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-016.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-016.json",
+      "sha256": "6d4cffb86a86fb423274e9511bd8ff005087bbc574fd410d4d0e1403600fc935",
+      "bytes": 310678,
+      "fetched_at": "2026-09-25T11:20:56.863185+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-017.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-017.json",
+      "sha256": "4b722f99e7005c453ab67dc31a828d1e6a068f5a9e4fa49bde59e443fe6c359f",
+      "bytes": 308270,
+      "fetched_at": "2026-09-25T11:20:57.230494+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-018.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-018.json",
+      "sha256": "ec238a0a4208c07372576b538028a664fed0e0a6e5683de9e36df80d1af6d7d0",
+      "bytes": 308757,
+      "fetched_at": "2026-09-25T11:20:57.778747+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-019.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-019.json",
+      "sha256": "9f480310041068f728bece6f5cda50c2daae6de829cbe5fa4eb527f716fc12db",
+      "bytes": 311448,
+      "fetched_at": "2026-09-25T11:20:58.167877+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-020.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-020.json",
+      "sha256": "552efdcdff21947f406a1b9981efab23885395a707d0a78e45a72e423986c14c",
+      "bytes": 308132,
+      "fetched_at": "2026-09-25T11:20:58.510464+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-021.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-021.json",
+      "sha256": "1dcf9a403f140d8345607654ff27f400ebac25f36d07b9858ee284f41119b422",
+      "bytes": 307033,
+      "fetched_at": "2026-09-25T11:20:58.885356+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-022.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-022.json",
+      "sha256": "d6f61520b481771842e317921f687eed872b749dc842b57a67237de59b31148d",
+      "bytes": 309315,
+      "fetched_at": "2026-09-25T11:20:59.206004+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-023.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-023.json",
+      "sha256": "d93fa951991a6394fdbc73fb1ea03871869e6822a7b267914a8d50ed86a58db7",
+      "bytes": 308303,
+      "fetched_at": "2026-09-25T11:20:59.559773+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-024.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-024.json",
+      "sha256": "8082132d18f8a0130e23e6642f60177d9d83b64e68d41768db84f4a94ad7a65e",
+      "bytes": 307738,
+      "fetched_at": "2026-09-25T11:20:59.960318+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-025.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-025.json",
+      "sha256": "5c9097427a6bb24d854b792c0b928e334842279e65f600ed4086197727942e33",
+      "bytes": 308915,
+      "fetched_at": "2026-09-25T11:21:00.384798+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-026.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-026.json",
+      "sha256": "e0a01707a390de13ef0b100ca7eb582230f16e2cb9d9d7a407b58252e9c0cb26",
+      "bytes": 329222,
+      "fetched_at": "2026-09-25T11:21:00.763620+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-027.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-027.json",
+      "sha256": "2f49ee3d1e471ea3bc048395f1fd46d8bec1f4698d039696579577c97fdcb331",
+      "bytes": 411953,
+      "fetched_at": "2026-09-25T11:21:01.130217+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-028.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-028.json",
+      "sha256": "ababdb6a7c0427f6bd9c95d8fd68f52fec3aae802e4009a1a650d3e857a2b9ba",
+      "bytes": 405638,
+      "fetched_at": "2026-09-25T11:21:01.540659+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-029.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-029.json",
+      "sha256": "a81be5a6933fe52aee1b07b35c78658104ad2a3d6d0b74c3c491ef3dfac2279e",
+      "bytes": 405794,
+      "fetched_at": "2026-09-25T11:21:02.020008+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-030.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-030.json",
+      "sha256": "9ae5627bd28f6b1332999fb84de07639600dd2136035960134951e40ad636fa4",
+      "bytes": 406632,
+      "fetched_at": "2026-09-25T11:21:02.499227+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-031.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-031.json",
+      "sha256": "9216dcc3f8af6e790bd6ffa2e06c2da5fe3b85f52bea7c994765b38234556bf0",
+      "bytes": 409356,
+      "fetched_at": "2026-09-25T11:21:02.907418+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-032.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-032.json",
+      "sha256": "6eac5a6455e0ecd70296dbf79f220a19df74abeb72a9032128c4fecb42da00d3",
+      "bytes": 404664,
+      "fetched_at": "2026-09-25T11:21:03.318308+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-033.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-033.json",
+      "sha256": "9cbb626cabd189b7701dfe015116729f18e4cd08da822079b4a8c610eaa3bef4",
+      "bytes": 405942,
+      "fetched_at": "2026-09-25T11:21:03.678122+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-034.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-034.json",
+      "sha256": "fd8be96e683d9722ad8d60ced7a72d6c46b538e23af121483cad79e1a29979b1",
+      "bytes": 403882,
+      "fetched_at": "2026-09-25T11:21:04.036404+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-035.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-035.json",
+      "sha256": "7c58e141a3a94087e634322974f18e16b00a0650f2ea0781140a88f95b180aa5",
+      "bytes": 400319,
+      "fetched_at": "2026-09-25T11:21:04.433640+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-036.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-036.json",
+      "sha256": "2325986807db8439b681f3fced90d50daf735e7a2718927f88b7846b22a9cc27",
+      "bytes": 382256,
+      "fetched_at": "2026-09-25T11:21:04.811756+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-037.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-037.json",
+      "sha256": "f153007c3340ea58bd06d395510de6df26cf93bc16985a27cf9625ff87ba939a",
+      "bytes": 353662,
+      "fetched_at": "2026-09-25T11:21:05.259361+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000886982-submissions-038.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000886982-submissions-038.json",
+      "sha256": "110b6d82cfa4ad0a7fc073ce6c0ecfee15c900c7eccf9ee356b8bc8a4ca30ebd",
+      "bytes": 281151,
+      "fetched_at": "2026-09-25T11:21:05.717427+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-006.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-006.json",
+      "sha256": "5fcda6911ddac05e143caa7ee65fda61deca26554ce31ec8a759248964aaa03a",
+      "bytes": 402782,
+      "fetched_at": "2026-09-25T11:21:06.113779+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-007.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-007.json",
+      "sha256": "e606605150aa1965f087833b5b4205e7e70b52fade1e7ede3c00d81cff4ed925",
+      "bytes": 402110,
+      "fetched_at": "2026-09-25T11:21:06.477431+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-008.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-008.json",
+      "sha256": "adbfc6999025c309c3d905ae01571913ae4b6c141a666172f541cb6f7ae86451",
+      "bytes": 393119,
+      "fetched_at": "2026-09-25T11:21:06.839568+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-009.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-009.json",
+      "sha256": "538f7121e55f4de19ee7e10b640ffb303e6a4ab87d35a29a1ffbb47380bd6419",
+      "bytes": 393946,
+      "fetched_at": "2026-09-25T11:21:07.226181+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-010.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-010.json",
+      "sha256": "a4d397e1c7c3ea11a45f440342e6f741db6289a1ba3be88764f61b88b3ea3610",
+      "bytes": 385399,
+      "fetched_at": "2026-09-25T11:21:07.606829+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-011.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-011.json",
+      "sha256": "8619cfaeb716cd4ef40fc718b9ad9f3b4c1738d3c1397fefa7eb19b79fa7d5bc",
+      "bytes": 389218,
+      "fetched_at": "2026-09-25T11:21:07.938534+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-012.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-012.json",
+      "sha256": "e656a98d228cef016c9582a4179274924dee1d2bfe536a4dd034446071be3cf1",
+      "bytes": 378417,
+      "fetched_at": "2026-09-25T11:21:08.307548+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-013.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-013.json",
+      "sha256": "5a11bb63f98cda87af751c0b72de7bf325b47fc9cf2bd605cdc2880194e1487b",
+      "bytes": 371711,
+      "fetched_at": "2026-09-25T11:21:08.694255+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-014.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-014.json",
+      "sha256": "d2b4b278e41dff54b79c33afa548c5181835d9d02e1e4f9d3301b8bd8b5260c8",
+      "bytes": 381515,
+      "fetched_at": "2026-09-25T11:21:09.148762+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-015.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-015.json",
+      "sha256": "182c40b078df0c9b79c83729cf21520626a967edf1b32f137c21d0c08adb764b",
+      "bytes": 379731,
+      "fetched_at": "2026-09-25T11:21:09.538166+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-016.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-016.json",
+      "sha256": "a964e64f06fffa422517d9f74266b8b0f8388efbf8bb45e6d4ff32c5bb8bf344",
+      "bytes": 372847,
+      "fetched_at": "2026-09-25T11:21:09.945898+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-017.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-017.json",
+      "sha256": "6a4ab7dc75a9b4131bc3a27f6eff8019f4d6527461c8eec2d8c7ad3a159ff880",
+      "bytes": 380416,
+      "fetched_at": "2026-09-25T11:21:10.326547+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-018.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-018.json",
+      "sha256": "2a05b03a18e48d6f10fff9b199b961936bfcc472cc5d1689e0b8b0ec95960883",
+      "bytes": 378638,
+      "fetched_at": "2026-09-25T11:21:10.812743+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-019.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-019.json",
+      "sha256": "d6877e0ddf97fdd8cc0c4d35a3d7b9ee2c9f4e92b92752ee956b87ec5c0b095d",
+      "bytes": 383458,
+      "fetched_at": "2026-09-25T11:21:11.291441+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-020.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-020.json",
+      "sha256": "551b01361d44f94142d01c805555feae109f51517b86c407540e5321a28fdadf",
+      "bytes": 370750,
+      "fetched_at": "2026-09-25T11:21:11.927907+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-021.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-021.json",
+      "sha256": "9d445e47b7f60092d58bb8a974f9376efaeb9f3bbaaf81f27bdfde20119f74ee",
+      "bytes": 364385,
+      "fetched_at": "2026-09-25T11:21:12.305669+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-022.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-022.json",
+      "sha256": "b673a9d2e2baa07abea028048d30723d5e1fe391d7dd25f58e8ac165ac61d2f6",
+      "bytes": 371257,
+      "fetched_at": "2026-09-25T11:21:12.674204+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-023.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-023.json",
+      "sha256": "e0860d10ccc43d863bad86a430ea4ef2440dee1abf3c84138cca6bb7c6ee4478",
+      "bytes": 373629,
+      "fetched_at": "2026-09-25T11:21:13.025282+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-024.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-024.json",
+      "sha256": "00b1761428a8c1372f8806f162bbce28de71dbbabc110d94faa9554efa336ab6",
+      "bytes": 371709,
+      "fetched_at": "2026-09-25T11:21:13.404282+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-025.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-025.json",
+      "sha256": "6610afc476ab7ad665b1c1b5d295d031f4872a445312532493b4ae615640cca3",
+      "bytes": 369935,
+      "fetched_at": "2026-09-25T11:21:13.732889+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-026.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-026.json",
+      "sha256": "161a72a490ef1b8bc15ce87f946a3357a8eb67473c7d7eafa52f704e40704808",
+      "bytes": 354552,
+      "fetched_at": "2026-09-25T11:21:14.169728+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-027.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-027.json",
+      "sha256": "47d32e6abff4bf6aacf87497411cee99693781fac36ddf79645ba6b514d88fc4",
+      "bytes": 336887,
+      "fetched_at": "2026-09-25T11:21:14.584050+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-028.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-028.json",
+      "sha256": "45eece2f659d2d345167b06a97408b032ced27355554d93288dd8de0e0ea5e9d",
+      "bytes": 335781,
+      "fetched_at": "2026-09-25T11:21:14.930059+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-029.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-029.json",
+      "sha256": "099288d9a4ac612dfd12b2c190363ac9937e84bae72926405a3b1741a7126f5b",
+      "bytes": 331198,
+      "fetched_at": "2026-09-25T11:21:15.336405+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-030.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-030.json",
+      "sha256": "97fa6d54972c8a458da4513d5e9e7fedfb622487cade0cff2b3f41980880a95d",
+      "bytes": 334902,
+      "fetched_at": "2026-09-25T11:21:15.680416+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-031.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-031.json",
+      "sha256": "020c5b5c97cc4c7ad761766ec8daaf90f74fdd946847f226cd1a0af774cba03b",
+      "bytes": 333014,
+      "fetched_at": "2026-09-25T11:21:16.325301+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-032.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-032.json",
+      "sha256": "349672e1aeb319e2a994c726daa81b39eafc9d4dc1a1ff6fc71f1ef0d91ba12e",
+      "bytes": 330849,
+      "fetched_at": "2026-09-25T11:21:16.677639+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-033.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-033.json",
+      "sha256": "278ea7ee8e9600c2742600bff5234d24c1ea7aeb13988b3d1fc703576d748caf",
+      "bytes": 327887,
+      "fetched_at": "2026-09-25T11:21:17.078905+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-034.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-034.json",
+      "sha256": "d811813caca2514117951d006e2915a98d9ef609dd28d9b72d740d7b6e171fbb",
+      "bytes": 328144,
+      "fetched_at": "2026-09-25T11:21:17.515368+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-035.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-035.json",
+      "sha256": "cb0ceae841cdb9a9a76e15edcdcae32c3e96ea24f5e0a2b141b5263573936320",
+      "bytes": 330249,
+      "fetched_at": "2026-09-25T11:21:17.885466+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-036.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-036.json",
+      "sha256": "cf6b15c2aae785b3f865014490ff7a5239784ce8489f6117b5bf7f2017907e8b",
+      "bytes": 328958,
+      "fetched_at": "2026-09-25T11:21:18.366558+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-037.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-037.json",
+      "sha256": "526e95bfebd06cda57417047a06f985e6f22569ff5af0df17f5a46c747f12d53",
+      "bytes": 330049,
+      "fetched_at": "2026-09-25T11:21:18.893866+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-038.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-038.json",
+      "sha256": "9e853e12a36117418530a574624c645e38c1f4a22681108c46af48f26a438733",
+      "bytes": 328485,
+      "fetched_at": "2026-09-25T11:21:19.329821+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-039.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-039.json",
+      "sha256": "5f39e530f2fc12058f6a7aa4acd392afe9f6a5d0fc3e9fa2c77f4fe38cb929e8",
+      "bytes": 334194,
+      "fetched_at": "2026-09-25T11:21:19.722402+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-040.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-040.json",
+      "sha256": "5a8d2adba023f0f2159dc01ea8357c2ff1a0bb52bd51b3c2586c6b18fc2ae8fe",
+      "bytes": 326838,
+      "fetched_at": "2026-09-25T11:21:20.124619+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-041.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-041.json",
+      "sha256": "668beff7f47b305f7f8d7148ee00dbe7d4a520fe398fd6710614b0a35a8c3f9d",
+      "bytes": 323068,
+      "fetched_at": "2026-09-25T11:21:20.557075+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-042.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-042.json",
+      "sha256": "fa138e5577b50ceff88859a21a65c25abc159379edcf0d405ae1d7212328c03d",
+      "bytes": 314900,
+      "fetched_at": "2026-09-25T11:21:20.924620+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-043.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-043.json",
+      "sha256": "c4e9574afbfcf58703bf8a77fdbedf14d754fb4d12365c24e2769224b7fcecbe",
+      "bytes": 320008,
+      "fetched_at": "2026-09-25T11:21:21.312667+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-044.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-044.json",
+      "sha256": "3fb69041ed4653196b9f636bfa4dd95203558f5f5f2c385c65dfc15410d995c6",
+      "bytes": 305360,
+      "fetched_at": "2026-09-25T11:21:21.756941+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000895421-submissions-045.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000895421-submissions-045.json",
+      "sha256": "ac88e9cb992adc182761b3a9a3c5e2754cfd844e7a686137eed5a0f24fb14129",
+      "bytes": 114217,
+      "fetched_at": "2026-09-25T11:21:22.111656+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000927971-submissions-003.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000927971-submissions-003.json",
+      "sha256": "1f2cb4f968858a19ae77eece10fa88ca2731f309fe635532c74001a44df07af0",
+      "bytes": 322039,
+      "fetched_at": "2026-09-25T11:21:22.467662+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000927971-submissions-004.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000927971-submissions-004.json",
+      "sha256": "4b93382098e41d16735fc51ac0a120ebd6051bf8e88ca7c95cfc55e63b81d546",
+      "bytes": 331643,
+      "fetched_at": "2026-09-25T11:21:22.786772+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000927971-submissions-005.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000927971-submissions-005.json",
+      "sha256": "ab715745f66e96f68700c9ca19e234a68db9571aff2b0f7a235bf419ad72bfe6",
+      "bytes": 324022,
+      "fetched_at": "2026-09-25T11:21:23.191386+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000927971-submissions-006.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000927971-submissions-006.json",
+      "sha256": "40536e8052467684d00f238dd63cef5ce0409d0ea41574be6a81e298531dc086",
+      "bytes": 318353,
+      "fetched_at": "2026-09-25T11:21:23.542711+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000927971-submissions-007.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000927971-submissions-007.json",
+      "sha256": "ce8ac107aa58835f1d1c2eaaff5fb2d8b82166089fdde28d691162a91fda71c5",
+      "bytes": 320388,
+      "fetched_at": "2026-09-25T11:21:23.903678+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000927971-submissions-008.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000927971-submissions-008.json",
+      "sha256": "1e76c4b3063e6697d3f932e5755ce57ebf294e6b1eaa72523517b20815ba89f2",
+      "bytes": 318728,
+      "fetched_at": "2026-09-25T11:21:24.243769+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000927971-submissions-009.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000927971-submissions-009.json",
+      "sha256": "66ab64e3541a6789a0fe365a829410c4cbeadd158d0c2cf0bb54bf05ade787ba",
+      "bytes": 319972,
+      "fetched_at": "2026-09-25T11:21:24.619392+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000927971-submissions-010.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000927971-submissions-010.json",
+      "sha256": "633bb8f40834cec6fafd8355d2de725cbace5e15ca5b253ecb3ba6d4ae1bedf8",
+      "bytes": 320312,
+      "fetched_at": "2026-09-25T11:21:25.076218+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000927971-submissions-011.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000927971-submissions-011.json",
+      "sha256": "584c61b3cef34d224e819bf3c33a62ffd3b9d4e0d6e949f9ee1bb5d21d31ae80",
+      "bytes": 318658,
+      "fetched_at": "2026-09-25T11:21:25.447411+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000927971-submissions-012.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000927971-submissions-012.json",
+      "sha256": "fe7ed4c847d4a1e897cf3e9502d75d53f09198313d827ea90d558b2e6a70db82",
+      "bytes": 318958,
+      "fetched_at": "2026-09-25T11:21:25.893853+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000927971-submissions-013.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000927971-submissions-013.json",
+      "sha256": "b22f16e836face6042acdd982ba4871c3062eae286518f59987f33816497686b",
+      "bytes": 323934,
+      "fetched_at": "2026-09-25T11:21:26.422705+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000927971-submissions-014.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000927971-submissions-014.json",
+      "sha256": "b8a9584b4f2d6953c24bfa138b5a7d3011dfae7d38485635848c94628f886524",
+      "bytes": 39297,
+      "fetched_at": "2026-09-25T11:21:26.734205+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000947263-submissions-002.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000947263-submissions-002.json",
+      "sha256": "60a006416f41f3232a2bdfa1c83b500b8e3c0976ef72b3898c09ad81b0334e66",
+      "bytes": 360715,
+      "fetched_at": "2026-09-25T11:21:27.147735+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000947263-submissions-003.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000947263-submissions-003.json",
+      "sha256": "c15bb21f3ce0049450688de422346aa81a2eabab5b61b29a1ffef77076d74546",
+      "bytes": 358693,
+      "fetched_at": "2026-09-25T11:21:27.535829+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000947263-submissions-004.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000947263-submissions-004.json",
+      "sha256": "f4c64ac2de267b36f1358f34e748d25591ee3f0061638aa4feb15c9c7161f294",
+      "bytes": 361554,
+      "fetched_at": "2026-09-25T11:21:27.879836+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000947263-submissions-005.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000947263-submissions-005.json",
+      "sha256": "20109b9d408af6a6f55b3b51e0bfa27817bcfa487c978a854fd7e5fee48fa866",
+      "bytes": 361926,
+      "fetched_at": "2026-09-25T11:21:28.363580+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000947263-submissions-006.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000947263-submissions-006.json",
+      "sha256": "f9b95c476638332d5e45a7acadc7257c8d71d03164be2b0c0356deddb1b7f36f",
+      "bytes": 363044,
+      "fetched_at": "2026-09-25T11:21:28.728777+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000947263-submissions-007.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000947263-submissions-007.json",
+      "sha256": "91064bdfd6cde07e2e288ee7763e2fb1675d9e66850e867b72b003e988806b48",
+      "bytes": 347546,
+      "fetched_at": "2026-09-25T11:21:29.115157+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0000947263-submissions-008.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0000947263-submissions-008.json",
+      "sha256": "837bc20b9845b39b01bf3a717f3a748ca8e31220736bdd383e2de3c4eb31f69a",
+      "bytes": 306886,
+      "fetched_at": "2026-09-25T11:21:29.478731+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-002.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-002.json",
+      "sha256": "d7736d08716b5b103cfdf6d2d8006e8c772e3258a76ff0414b282b9bb0f3c011",
+      "bytes": 348936,
+      "fetched_at": "2026-09-25T11:21:29.858230+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-003.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-003.json",
+      "sha256": "991bdf57e411c85f2956ecbf0a671699558aab164373e3d6ac2b6727550bea97",
+      "bytes": 348817,
+      "fetched_at": "2026-09-25T11:21:30.290672+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-004.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-004.json",
+      "sha256": "9d12d4f9fedf61959eed4c68124fba0919f40c8320de162ed56bdbc3a8de3643",
+      "bytes": 378496,
+      "fetched_at": "2026-09-25T11:21:30.682281+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-005.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-005.json",
+      "sha256": "1a65493bc8fe7fbc222eb0d8c20a8390954d46913791ac54bfd372dbaa96c0e8",
+      "bytes": 386196,
+      "fetched_at": "2026-09-25T11:21:31.169581+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-006.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-006.json",
+      "sha256": "c17121dc413ed3953798b7e8aa37dad1a6de9f8241efc45253a7abeb406ae0a9",
+      "bytes": 387968,
+      "fetched_at": "2026-09-25T11:21:31.543285+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-007.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-007.json",
+      "sha256": "1ac3432d39c7dd42d54b25da20b3627d371725da5b9c90aa27b022f74ffaedda",
+      "bytes": 380780,
+      "fetched_at": "2026-09-25T11:21:31.948136+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-008.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-008.json",
+      "sha256": "237f742b6df07438f5f9157fc13281a018f844f3f15d7137bfd2b10cb014abee",
+      "bytes": 375284,
+      "fetched_at": "2026-09-25T11:21:32.425395+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-009.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-009.json",
+      "sha256": "f293da37a26691bf60c83e04e71cdc6e703e8d7c0e6653407d67d9dedc45208d",
+      "bytes": 365546,
+      "fetched_at": "2026-09-25T11:21:32.842767+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-010.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-010.json",
+      "sha256": "65e96ae4c996648fbc8f1a9f5aa0cfe4203eaf1e67c991eec157b5863291e026",
+      "bytes": 350380,
+      "fetched_at": "2026-09-25T11:21:33.296451+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-011.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-011.json",
+      "sha256": "8a445eb93d07926d3df6ac8fef15f165b644eaabbf4fd9bfbdae0d651fc61706",
+      "bytes": 348397,
+      "fetched_at": "2026-09-25T11:21:33.953679+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-012.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-012.json",
+      "sha256": "b7c52b10332d8bdfc0949c6a20209a156a9bd6c6c9a9fc7a6036b6b686b0ac58",
+      "bytes": 346278,
+      "fetched_at": "2026-09-25T11:21:34.328411+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-013.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-013.json",
+      "sha256": "381cb0cdccce2bff627530ede5501f7fa136240c373c753698f621937f6ad159",
+      "bytes": 329976,
+      "fetched_at": "2026-09-25T11:21:34.694532+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-014.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-014.json",
+      "sha256": "92acf9b85313315cab735df3dade787ed4994b2a29d2d8714edaefddd02e1ed6",
+      "bytes": 335495,
+      "fetched_at": "2026-09-25T11:21:35.050044+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-015.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-015.json",
+      "sha256": "6207e1229cdc2d33a5e09f48f409b6a176e9338b56018f324ecd7da07f280edd",
+      "bytes": 334101,
+      "fetched_at": "2026-09-25T11:21:35.467398+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-016.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-016.json",
+      "sha256": "67b1b0c0aba2c4d844033a427988114dc68aba2d1aa7e3e65840638dcbdf789d",
+      "bytes": 319557,
+      "fetched_at": "2026-09-25T11:21:35.868950+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001000275-submissions-017.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001000275-submissions-017.json",
+      "sha256": "5b3f19e3d5f48609f25e56db11140a29ce370550d94d10c0769c06b378f6505b",
+      "bytes": 12333,
+      "fetched_at": "2026-09-25T11:21:36.131683+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001045520-submissions-001.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001045520-submissions-001.json",
+      "sha256": "ffa723b366b1fac4fc1832d5d9dfd1148654f3f27ea907b0b9e10fd3ed4c8d1e",
+      "bytes": 323504,
+      "fetched_at": "2026-09-25T11:21:36.422488+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001045520-submissions-002.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001045520-submissions-002.json",
+      "sha256": "db2800e35b884c7b64c4ad49138c1fe3e9d6ce5f5c1f29ccab7eced2f3bec113",
+      "bytes": 323214,
+      "fetched_at": "2026-09-25T11:21:36.683632+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001045520-submissions-003.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001045520-submissions-003.json",
+      "sha256": "c14ed1ea70928077016083f4f2cc897136fb0947835ee040a88258b64d4e1057",
+      "bytes": 322005,
+      "fetched_at": "2026-09-25T11:21:37.068674+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001045520-submissions-004.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001045520-submissions-004.json",
+      "sha256": "3fd3623e895f489dbc5aaffbf304c3cbce05f580ac4a953b095505825fa94c28",
+      "bytes": 318447,
+      "fetched_at": "2026-09-25T11:21:37.624006+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001045520-submissions-005.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0001045520-submissions-005.json",
+      "sha256": "22b02956c18aab863fb6be0acbc871af90c4e6bde8b09201a0c98b45cd359264",
+      "bytes": 134521,
+      "fetched_at": "2026-09-25T11:21:37.903396+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions_page:CIK0002012383-submissions-002.json",
+      "source_kind": "SEC_SUBMISSIONS_PAGE",
+      "source_url": "https://data.sec.gov/submissions/CIK0002012383-submissions-002.json",
+      "sha256": "e9a5f5a18e803a76c51f5e9c0b7cf38184ff46bea0c04867ac22d6d1f1f1f303",
+      "bytes": 266665,
+      "fetched_at": "2026-09-25T11:21:38.305954+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "xbrl_instance:0000012927:0000012927-24-000082",
       "source_kind": "SEC_XBRL_INSTANCE",
       "source_url": "https://www.sec.gov/Archives/edgar/data/12927/000001292724000082/ba-20240930_htm.xml",
@@ -10946,6 +13187,15 @@
       "sha256": "00b10c2afcc1729cb84e2d422ea480cfbde4049b2dd08746e092f36372c70e78",
       "bytes": 1739700,
       "fetched_at": "2026-09-25T10:52:59.689518+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000019617:0000019617-24-000611",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000001961724000611/jpm-20240930_htm.xml",
+      "sha256": "58ceced7855a34c373d8d4f481e46195db5e763bf4a80a5c2d6356236646a0cc",
+      "bytes": 13422230,
+      "fetched_at": "2026-09-25T11:21:38.993770+00:00",
       "http_status": 200
     },
     {
@@ -10982,6 +13232,24 @@
       "sha256": "69da8dfbe4a185212141dd320896074b514e81b7915bf4ebbae77074f24d6fae",
       "bytes": 1352560,
       "fetched_at": "2026-09-25T10:53:00.734311+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000070858:0000070858-24-000280",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/70858/000007085824000280/bac-20240930_htm.xml",
+      "sha256": "bd1d94db3fd1f998457bf8636489f3107025a75ac7010386b97f470db3c6a20f",
+      "bytes": 14293883,
+      "fetched_at": "2026-09-25T11:21:40.038356+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000072971:0000072971-24-000243",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/72971/000007297124000243/wfc-20240930_htm.xml",
+      "sha256": "d0c66ce61289d0caa8523e94c4bf09c2762bc396c42fe33fc31fada8c69dad2e",
+      "bytes": 13564286,
+      "fetched_at": "2026-09-25T11:21:40.489085+00:00",
       "http_status": 200
     },
     {
@@ -11054,6 +13322,33 @@
       "sha256": "8d1efb2088e4d7935820c763ac32b89a54942298ea331421af77874bb75d8585",
       "bytes": 1599463,
       "fetched_at": "2026-09-25T10:53:02.919109+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000831001:0000831001-24-000134",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000083100124000134/c-20240930_htm.xml",
+      "sha256": "396c6f1786b5f1bc695c5747eacde098f8f3a9ec64c7acbdc45e4428c6f73557",
+      "bytes": 18690796,
+      "fetched_at": "2026-09-25T11:21:41.324831+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000886982:0000886982-24-000025",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000088698224000025/gs-20240930_htm.xml",
+      "sha256": "48f1c618e0a10b4efbf9404f47e94024142007fd6d583fdd30694c0c967a301a",
+      "bytes": 11090973,
+      "fetched_at": "2026-09-25T11:21:41.953699+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "xbrl_instance:0000895421:0000895421-24-000491",
+      "source_kind": "SEC_XBRL_INSTANCE",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000089542124000491/ms-20240930_htm.xml",
+      "sha256": "cbef2d2be887f79f76f12a3a752c20c1cdd7d49fb32393c9f1ccbf12a814accf",
+      "bytes": 10112709,
+      "fetched_at": "2026-09-25T11:21:42.468919+00:00",
       "http_status": 200
     },
     {

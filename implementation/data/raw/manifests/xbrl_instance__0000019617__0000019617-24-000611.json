@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000019617:0000019617-24-000611",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000001961724000611/jpm-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-25T11:21:38.993770+00:00",
+  "sha256": "58ceced7855a34c373d8d4f481e46195db5e763bf4a80a5c2d6356236646a0cc",
+  "bytes": 13422230,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
