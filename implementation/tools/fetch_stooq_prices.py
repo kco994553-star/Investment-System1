@@ -112,6 +112,8 @@ def run(store_dir: Path, as_of: datetime, symbols: list[str], chart_range: str =
         diff = abs(s[1] - y["close"]) / y["close"]
         calib.append({"symbol": c, "stooq_date": s[0], "stooq_close": s[1], "yahoo_date": y["observed_at"].date().isoformat(),
                       "yahoo_close": y["close"], "rel_diff": diff, "status": "OK" if diff <= CALIBRATION_TOLERANCE else "MISMATCH"})
+    sample = next((store.get_bytes(f"stooq_csv:{c}") for c in CONTROLS
+                   if store.has(f"stooq_csv:{c}") and not is_stooq_csv(store.get_bytes(f"stooq_csv:{c}"))), None)
     ok = [r for r in calib if r["status"] == "OK"]
     calibrated = len(ok) >= 3 and all(r["status"] in ("OK", "UNAVAILABLE") for r in calib)
     written, results = [], {}
@@ -136,6 +138,7 @@ def run(store_dir: Path, as_of: datetime, symbols: list[str], chart_range: str =
         written.append(sym)
         results[sym] = "WRITTEN_STOOQ_FALLBACK"
     report = {"kind": "STOOQ_FALLBACK_RUN", "as_of": as_of.isoformat(), "calibration": calib, "calibrated": calibrated,
+              "non_csv_response_head": sample[:600].decode("utf-8", errors="replace") if sample else None,
               "tolerance": CALIBRATION_TOLERANCE, "n_targets": len(symbols), "results": results, "written": written,
               "log": log, "egress_blocked_hosts": sorted(frd._BLOCKED_HOSTS), "real_data_verified": False}
     (store_dir / f"stooq_run_{int(datetime.now(timezone.utc).timestamp())}.json").write_text(json.dumps(report, indent=2))

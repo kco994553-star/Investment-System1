@@ -155,6 +155,9 @@ def main() -> None:
         report.update({"file_as_of": file_as_of, "n_equity_rows": len(holdings)})
         if file_as_of != a.as_of or len(holdings) < 900:
             report["status"] = "REJECTED_DATE_MISMATCH_OR_TOO_FEW_ROWS"  # never use a holdings file for another date
+            body = store.get_bytes(aid)
+            report["response_head"] = body[:1500].decode("utf-8-sig", errors="replace")  # public file; for diagnosis
+            report["content_type"] = store.get_manifest(aid).get("content_type")
         else:
             rd = lambda p: json.loads(p.read_text(encoding="utf-8")) if p and p.exists() else None  # noqa: E731
             rows, _ = chain.extend_listings(store, rd(a.listings) or {}, rd(a.plan))
