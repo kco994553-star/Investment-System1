@@ -575,3 +575,10 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - import_bulk_real_data.py: fail-closed verify_archive() (sha256, PK, EOCD, testzip CRC, member count) before any store write; --verify-only, --report-out, --sec-sha256/--stooq-sha256; archive sha256 in manifest notes; STORE_INDEX after import.
 - Tests no longer rewrite committed reports/ evidence (INVESTMENT_SYSTEM_REPORTS_DIR, set by tests/__init__.py).
 - 186 passed (shim) / 186 passed (real pytest). Gates unchanged: FAIL closed. Official Top-500 not declared. REAL-DATA VERIFIED NO.
+
+## 2026-09-25 · round 7 · Claude Code (+ GitHub Actions runner)
+
+- New .github/workflows/c21-real-data.yml (manual dispatch) runs existing fetch + gate-chain tools on a GitHub-hosted runner with real egress. 2,912 real raw artifacts ingested (2.35 GB; blobs in Actions artifact/cache, manifests + STORE_INDEX in git).
+- Company-level ranking (one line per CIK); PIT market-cap price = close x post-as_of split factor (new yahoo_events artifacts); pit_shares latest-date-within-filing fix; SEC-name-verified delisted CIK candidates; Official blocked by top-500 quality flags.
+- Real result 2024-12-31: 604 issuers, 554 rankable, #500 cutoff $12.43B, S&P missing 0. Gates FAIL; Official not declared.
+- 194 passed (shim) / 194 passed (real pytest).
