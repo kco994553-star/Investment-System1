@@ -117,12 +117,18 @@ def parse_nport(xml_bytes: bytes) -> dict:
 
 
 SUFFIXES = {"INC", "CORP", "CORPORATION", "CO", "COMPANY", "LTD", "PLC", "LLC", "LP", "HOLDINGS", "HOLDING",
-            "GROUP", "THE", "SA", "NV", "AG", "CLASS", "A", "B", "C", "INCORPORATED", "COM", "NEW", "DEL", "REIT"}
+            "GROUP", "THE", "SA", "NV", "N", "V", "AG", "CLASS", "A", "B", "C", "INCORPORATED", "INCORPORATION", "COM",
+            "NEW", "DEL", "REIT", "PUBLIC", "LIMITED", "NATIONAL", "ASSOCIATION", "AND"}
 
 
 def norm_name(n: str) -> str:
-    words = re.sub(r"[^A-Z0-9 ]", " ", str(n or "").upper().replace("&", " AND ")).split()
-    return " ".join(w for w in words if w not in SUFFIXES)
+    """Order-insensitive token key. SEC titles carry state tags ('/MA/', '/DE/') and reorder names
+    ('BERKLEY W R CORP'); fund reports spell out forms ('PUBLIC LIMITED COMPANY')."""
+    s = str(n or "").upper().replace("&", " AND ")
+    s = re.sub(r"/[A-Z ]{1,4}/", " ", s)       # state/country tags
+    s = re.sub(r"['\u2019`]", "", s)           # LOWE'S -> LOWES
+    words = re.sub(r"[^A-Z0-9 ]", " ", s).split()
+    return " ".join(sorted(w for w in words if w not in SUFFIXES))
 
 
 def name_index(store: RawDatasetStore) -> tuple[dict[str, set[str]], dict[str, set[str]], dict[str, str]]:
@@ -145,12 +151,18 @@ def name_index(store: RawDatasetStore) -> tuple[dict[str, set[str]], dict[str, s
 def resolve(holdings: list[dict], cur: dict, hist: dict) -> tuple[dict[str, dict], list[dict]]:
     """CIK10 -> {names, cusips}; unresolved holdings. Share classes of one issuer collapse to one CIK."""
     members, unresolved = {}, []
+    current_ciks = {c for cs in cur.values() for c in cs}
     for h in holdings:
         k = norm_name(h["name"])
         c = cur.get(k) or set()
         method = "SEC_TICKERS_TITLE"
         if len(c) != 1:
             c, method = hist.get(k) or set(), "SEC_CIK_LOOKUP"
+            if len(c) > 1:
+                # several historical entities share the name: accept only if exactly one is a current SEC registrant
+                active = {x for x in c if x in current_ciks}
+                if len(active) == 1:
+                    c, method = active, "SEC_CIK_LOOKUP_UNIQUE_ACTIVE"
         if len(c) != 1:
             unresolved.append({**h, "name_matches": len(c)})
             continue

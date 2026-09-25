@@ -795,3 +795,25 @@ def test_nport_raw_xml_path_strips_xsl_rendering_directory():
     fnr = _mod("fnr_xsl", "fetch_nport_reference.py")
     assert fnr.raw_xml_doc("xslFormNPORT-P_X01/primary_doc.xml") == "primary_doc.xml"
     assert fnr.raw_xml_doc("primary_doc.xml") == "primary_doc.xml"
+
+
+def test_nport_name_normalisation_cases_from_run_22():
+    fnr = _mod("fnr_norm", "fetch_nport_reference.py")
+    n = fnr.norm_name
+    assert n("AMERICAN TOWER CORPORATION") == n("AMERICAN TOWER CORP /MA/")
+    assert n("W. R. BERKLEY CORPORATION") == n("BERKLEY W R CORP")
+    assert n("LOWE'S COMPANIES, INC.") == n("LOWES COMPANIES INC")
+    assert n("MEDTRONIC PUBLIC LIMITED COMPANY") == n("Medtronic plc")
+    assert n("Schlumberger N.V.") == n("SCHLUMBERGER LIMITED/NV")
+    assert n("APPLE INC") != n("APPLIED MATERIALS INC")
+
+
+def test_nport_historical_name_collision_resolved_only_by_a_unique_active_cik():
+    fnr = _mod("fnr_active", "fetch_nport_reference.py")
+    k = fnr.norm_name("DUN & BRADSTREET HOLDINGS, INC.")
+    cur = {fnr.norm_name("Something Else Inc"): {"0000000001"}, "X": {"0001799208"}}
+    hist = {k: {"0000030312", "0001115222", "0001799208"}}
+    members, unresolved = fnr.resolve([{"name": "DUN & BRADSTREET HOLDINGS, INC.", "cusip": "x"}], cur, hist)
+    assert list(members) == ["0001799208"] and members["0001799208"]["method"] == "SEC_CIK_LOOKUP_UNIQUE_ACTIVE"
+    members, unresolved = fnr.resolve([{"name": "DUN & BRADSTREET HOLDINGS, INC.", "cusip": "x"}], {}, hist)
+    assert members == {} and unresolved[0]["name_matches"] == 3  # no active registrant to disambiguate -> not guessed
