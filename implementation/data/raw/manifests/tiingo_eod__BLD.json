@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:BLD",
+  "source_url": "https://api.tiingo.com/tiingo/daily/bld/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:29.178267+00:00",
+  "sha256": "943def80d654fb05383dc0874b288d5ab8b5f1466a537ff4cd4eed64166b54ef",
+  "bytes": 369823,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

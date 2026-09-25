@@ -1,12 +1,12 @@
 {
   "artifact_id": "yahoo_chart:EA:5y",
-  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EA?interval=1d&range=5y",
-  "source_kind": "YAHOO_CHART",
-  "fetched_at": "2026-09-25T11:11:23.090319+00:00",
-  "sha256": "5ffa317ee595a2cd21e6cfaa92e41148ecab9bb8cdcf31215d5d05fa2d662111",
-  "bytes": 1278,
-  "content_type": "application/json;charset=utf-8",
-  "fetcher": "tools/fetch_real_data.py v1",
+  "source_url": "https://api.tiingo.com/tiingo/daily/ea/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-25T23:29:43.220881+00:00",
+  "sha256": "526001e353858e3bac51547a1a99ac574de08662765900d745b3978d1c45d308",
+  "bytes": 29723,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
   "http_status": 200,
-  "notes": ""
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
 }

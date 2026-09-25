@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:LBRDK",
+  "source_url": "https://api.tiingo.com/tiingo/daily/lbrdk/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:30:04.693581+00:00",
+  "sha256": "5add072cd7753645fd65d7f354d9dd2605a370e71424e7238d477109bede751b",
+  "bytes": 415583,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

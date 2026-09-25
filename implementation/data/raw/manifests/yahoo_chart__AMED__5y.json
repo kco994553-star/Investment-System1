@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AMED:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/amed/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-25T23:29:18.168374+00:00",
+  "sha256": "6e97887fd89455a3d7ca0a6af6846e84865300516e835ce4cbaeb6a83a37d7d5",
+  "bytes": 24707,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

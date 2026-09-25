@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CTRA:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/ctra/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-25T23:29:37.849688+00:00",
+  "sha256": "f4c0f7f4ba0a3cd5860a4d1f64b02c1fab1e97d187e37b75cc412f0ebc630e8a",
+  "bytes": 27116,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

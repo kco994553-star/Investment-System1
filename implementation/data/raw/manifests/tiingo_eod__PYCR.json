@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:PYCR",
+  "source_url": "https://api.tiingo.com/tiingo/daily/pycr/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:30:13.357639+00:00",
+  "sha256": "9fbdba95662a68c92255c0e9c3c49aa594147145f0b78ff3b86614fcc953e0f2",
+  "bytes": 205649,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

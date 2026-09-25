@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:MASI",
+  "source_url": "https://api.tiingo.com/tiingo/daily/masi/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:30:08.215761+00:00",
+  "sha256": "31a6f58b5f8196415257515f6789b45bbe7c9ed7cd7793f81b6227315444c337",
+  "bytes": 366929,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

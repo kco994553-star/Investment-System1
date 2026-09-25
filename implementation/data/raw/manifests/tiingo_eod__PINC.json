@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:PINC",
+  "source_url": "https://api.tiingo.com/tiingo/daily/pinc/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:30:11.642583+00:00",
+  "sha256": "4ffd688a82ce5a16ee2c0ae3950198166ecbeb814ae9ac5f9e71741a29b2958c",
+  "bytes": 17812,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

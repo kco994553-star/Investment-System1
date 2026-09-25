@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FYBR:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/fybr/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-25T23:29:48.380893+00:00",
+  "sha256": "5a40d76fdd14ec8bed83d8d9b4eadf30515d892d4d4f9f40c77f9a0178785fdc",
+  "bytes": 20169,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

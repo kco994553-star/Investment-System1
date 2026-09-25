@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:AVB",
+  "source_url": "https://api.tiingo.com/tiingo/daily/avb/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:22.021938+00:00",
+  "sha256": "a1bb2ee97633aa87eb2792f37329d5f5d9a406775090da066bd4b012321f04ba",
+  "bytes": 429782,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:HES",
+  "source_url": "https://api.tiingo.com/tiingo/daily/hes/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:50.450855+00:00",
+  "sha256": "a0a76d7cfbf136d6b6aa2c6ca805dddc199f88c4521a95b0f6d3f8f7cdd5ff3d",
+  "bytes": 357327,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:DFS",
+  "source_url": "https://api.tiingo.com/tiingo/daily/dfs/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:39.919380+00:00",
+  "sha256": "fa5d0da55c453550a0a07a8821668e7998786c0bdc06fcda07b519f65ad956a6",
+  "bytes": 345113,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

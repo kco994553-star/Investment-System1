@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LBRDA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LBRDA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T23:28:09.150809+00:00",
+  "sha256": "09da31699950d11f6dfc15f8b1e4a7fe0177813d8e23f291ef11757501270781",
+  "bytes": 131031,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

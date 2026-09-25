@@ -3,10 +3,10 @@
   "as_of": "2024-12-31T00:00:00+00:00",
   "store": {
     "dir": "data/raw",
-    "n_artifacts": 5141,
+    "n_artifacts": 5347,
     "status": "PRESENT"
   },
-  "listings": 952,
+  "listings": 976,
   "plan_names_unresolved": [],
   "cik_candidate_verification": {
     "ANSS": {
@@ -82,18 +82,18 @@
   },
   "ranking_basis": "COMPANY_LEVEL_ONE_LINE_PER_CIK; US_DOMESTIC_FILERS; COVER_XBRL_CLASS_SUM_FOR_MULTI_CLASS",
   "row_level_audit": {
-    "listings": 1314,
-    "rankable": 1132,
-    "top_cutoff_mcap_if_500_rankable": 24791453951.238945
+    "listings": 1339,
+    "rankable": 1162,
+    "top_cutoff_mcap_if_500_rankable": 25295077389.79538
   },
   "company_dedupe": {
-    "n_rows": 1314,
-    "n_companies": 1039,
-    "n_dropped_rows": 275,
+    "n_rows": 1339,
+    "n_companies": 1063,
+    "n_dropped_rows": 276,
     "methods": {
-      "SINGLE_LINE": 950,
+      "SINGLE_LINE": 973,
       "SEC_SUBMISSIONS_PRIMARY": 89,
-      "SHORTEST_SYMBOL_FALLBACK": 0
+      "SHORTEST_SYMBOL_FALLBACK": 1
     },
     "multi_line_issuers": [
       {
@@ -892,6 +892,13 @@
         ]
       },
       {
+        "cik": "0000813828",
+        "kept": "PARA",
+        "dropped": [
+          "PSKY"
+        ]
+      },
+      {
         "cik": "0001754301",
         "kept": "FOXA",
         "dropped": [
@@ -909,8 +916,8 @@
   },
   "eligibility": {
     "rule": "US_DOMESTIC_FILER_AT_AS_OF: the latest periodic report the issuer filed on or before as_of is a 10-K/10-Q. Foreign private issuers at as_of (20-F/40-F) are excluded from the US Market-Cap Top 500 (user decision 2026-09-25; their US lines are mostly ADRs whose ratio is not in SEC data). Issuers with no SEC filing by as_of did not exist as registrants then and are excluded. Basis: SEC submissions 'recent' + older filing pages, filingDate <= as_of (PIT; today's forms are not applied backward). An issuer with neither a periodic report nor a traded price by as_of was not listed then (excluded).",
-    "n_in": 1039,
-    "n_kept": 952,
+    "n_in": 1063,
+    "n_kept": 976,
     "excluded_foreign_private_issuers": [
       "AEM",
       "AMX",
@@ -1415,6 +1422,34 @@
         }
       ]
     },
+    "LBRDA": {
+      "mcap": 10513732584.403303,
+      "status": "COVER_CLASS_SUM_LOWER_BOUND",
+      "source": "xbrl_instance:0001611983:0001558370-24-014821",
+      "classes": [
+        {
+          "member": "CommonClassAMember",
+          "shares": 18236186.0,
+          "date": "2024-10-31",
+          "symbol": "LBRDA",
+          "price": 74.23999786376953
+        },
+        {
+          "member": "CommonClassBMember",
+          "shares": 2022532.0,
+          "date": "2024-10-31",
+          "symbol": null,
+          "price": null
+        },
+        {
+          "member": "CommonClassCMember",
+          "shares": 122589376.0,
+          "date": "2024-10-31",
+          "symbol": "LBRDK",
+          "price": 74.72
+        }
+      ]
+    },
     "DDS": {
       "mcap": 5244737624.629761,
       "status": "COVER_CLASS_SUM_LOWER_BOUND",
@@ -1667,6 +1702,27 @@
         }
       ]
     },
+    "PARA": {
+      "mcap": 1952074109.3700004,
+      "status": "COVER_CLASS_SUM",
+      "source": "xbrl_instance:0000813828:0000813828-24-000079",
+      "classes": [
+        {
+          "member": "CommonClassAMember",
+          "shares": 40702683.0,
+          "date": "2024-11-06",
+          "symbol": "PARAA",
+          "price": 22.11
+        },
+        {
+          "member": "CommonClassBMember",
+          "shares": 626272493.0,
+          "date": "2024-11-06",
+          "symbol": "PARA",
+          "price": 1.6800000000000004
+        }
+      ]
+    },
     "W": {
       "mcap": 4445369974.966564,
       "status": "COVER_CLASS_SUM_LOWER_BOUND",
@@ -1683,6 +1739,27 @@
           "member": "CommonClassBMember",
           "shares": 25691295.0,
           "date": "2024-10-25",
+          "symbol": null,
+          "price": null
+        }
+      ]
+    },
+    "HCP": {
+      "mcap": 5529555107.56,
+      "status": "COVER_CLASS_SUM_LOWER_BOUND",
+      "source": "xbrl_instance:0001720671:0001720671-24-000023",
+      "classes": [
+        {
+          "member": "CommonClassAMember",
+          "shares": 161635636.0,
+          "date": "2024-12-02",
+          "symbol": "HCP",
+          "price": 34.21
+        },
+        {
+          "member": "CommonClassBMember",
+          "shares": 42811733.0,
+          "date": "2024-12-02",
           "symbol": null,
           "price": null
         }
@@ -2220,6 +2297,69 @@
         }
       ]
     },
+    "AZEK": {
+      "mcap": 6860459003.58,
+      "status": "COVER_CLASS_SUM_LOWER_BOUND",
+      "source": "xbrl_instance:0001782754:0001628280-24-048629",
+      "classes": [
+        {
+          "member": "CommonClassAMember",
+          "shares": 143015614.0,
+          "date": "2024-10-31",
+          "symbol": "AZEK",
+          "price": 47.97
+        },
+        {
+          "member": "CommonClassBMember",
+          "shares": 0.0,
+          "date": "2024-10-31",
+          "symbol": null,
+          "price": null
+        }
+      ]
+    },
+    "INFA": {
+      "mcap": 6778661733.58,
+      "status": "COVER_CLASS_SUM_LOWER_BOUND",
+      "source": "xbrl_instance:0001868778:0001868778-24-000039",
+      "classes": [
+        {
+          "member": "CommonClassAMember",
+          "shares": 261320807.0,
+          "date": "2024-10-29",
+          "symbol": "INFA",
+          "price": 25.94
+        },
+        {
+          "member": "CommonStockClassB1Member",
+          "shares": 44049523.0,
+          "date": "2024-10-29",
+          "symbol": null,
+          "price": null
+        }
+      ]
+    },
+    "CFLT": {
+      "mcap": 7285758068.88,
+      "status": "COVER_CLASS_SUM_LOWER_BOUND",
+      "source": "xbrl_instance:0001699838:0000950170-24-119042",
+      "classes": [
+        {
+          "member": "CommonClassAMember",
+          "shares": 258085656.0,
+          "date": "2024-10-23",
+          "symbol": "CFLT",
+          "price": 28.23
+        },
+        {
+          "member": "CommonClassBMember",
+          "shares": 69909245.0,
+          "date": "2024-10-23",
+          "symbol": null,
+          "price": null
+        }
+      ]
+    },
     "EL": {
       "mcap": 17318617187.342102,
       "status": "COVER_CLASS_SUM_LOWER_BOUND",
@@ -2367,27 +2507,6 @@
         }
       ]
     },
-    "PSKY": {
-      "mcap": 1052137788.2400002,
-      "status": "COVER_CLASS_SUM_LOWER_BOUND",
-      "source": "xbrl_instance:0000813828:0000813828-24-000079",
-      "classes": [
-        {
-          "member": "CommonClassAMember",
-          "shares": 40702683.0,
-          "date": "2024-11-06",
-          "symbol": "PARAA",
-          "price": null
-        },
-        {
-          "member": "CommonClassBMember",
-          "shares": 626272493.0,
-          "date": "2024-11-06",
-          "symbol": "PARA",
-          "price": 1.6800000000000004
-        }
-      ]
-    },
     "RL": {
       "mcap": 9339207580.0531,
       "status": "COVER_CLASS_SUM_LOWER_BOUND",
@@ -2513,35 +2632,125 @@
     "PPLI": "NO_PRICED_CLASS"
   },
   "lower_bound_issuers_outside_top500": [
-    "AMH",
-    "APPF",
-    "BROS",
-    "BSY",
-    "CNM",
-    "DBX",
-    "DDS",
-    "DLB",
-    "EVR",
-    "GTLB",
     "H",
-    "LAMR",
-    "LYFT",
-    "NYT",
-    "OKTA",
-    "PATH",
-    "PSKY",
     "RKT",
-    "RL",
-    "S",
-    "SAM",
-    "SNDR",
     "TKO",
-    "TPG",
-    "UAA",
-    "UHS",
-    "VIRT",
-    "W"
+    "TPG"
   ],
+  "lower_bound_settled_outside_by_upper_bound": {
+    "GTLB": {
+      "lower_bound": 7973564172.363281,
+      "upper_bound": 9165081198.120117
+    },
+    "LBRDA": {
+      "lower_bound": 10513732584.403303,
+      "upper_bound": 10664856175.443304
+    },
+    "DDS": {
+      "lower_bound": 5244737624.629761,
+      "upper_bound": 6998959210.135803
+    },
+    "UAA": {
+      "lower_bound": 3091412399.6616545,
+      "upper_bound": 3374246900.9758177
+    },
+    "NYT": {
+      "lower_bound": 8560093306.729996,
+      "upper_bound": 8601050087.055222
+    },
+    "AMH": {
+      "lower_bound": 13663027070.192596,
+      "upper_bound": 13686550248.774025
+    },
+    "DLB": {
+      "lower_bound": 4665258095.889282,
+      "upper_bound": 7449719017.542419
+    },
+    "W": {
+      "lower_bound": 4445369974.966564,
+      "upper_bound": 5591715530.425301
+    },
+    "HCP": {
+      "lower_bound": 5529555107.56,
+      "upper_bound": 6994144493.490001
+    },
+    "LAMR": {
+      "lower_bound": 10673001560.668167,
+      "upper_bound": 12423167316.724113
+    },
+    "SAM": {
+      "lower_bound": 2807604253.174713,
+      "upper_bound": 3424178440.552643
+    },
+    "APPF": {
+      "lower_bound": 5706038139.332123,
+      "upper_bound": 8982685559.447327
+    },
+    "DBX": {
+      "lower_bound": 6991492046.0,
+      "upper_bound": 9369337793.75
+    },
+    "VIRT": {
+      "lower_bound": 3089180352.4603844,
+      "upper_bound": 5557064762.640896
+    },
+    "LYFT": {
+      "lower_bound": 5302035235.442946,
+      "upper_bound": 5413359945.520035
+    },
+    "SNDR": {
+      "lower_bound": 2702004421.5163193,
+      "upper_bound": 5136429336.177727
+    },
+    "BROS": {
+      "lower_bound": 5981408074.709805,
+      "upper_bound": 8102784805.410908
+    },
+    "OKTA": {
+      "lower_bound": 13029477411.743622,
+      "upper_bound": 13646701184.733292
+    },
+    "BSY": {
+      "lower_bound": 13832091623.570114,
+      "upper_bound": 14381051937.35614
+    },
+    "CNM": {
+      "lower_bound": 9655917651.241814,
+      "upper_bound": 10086635561.055347
+    },
+    "PATH": {
+      "lower_bound": 5951442239.018724,
+      "upper_bound": 7001890229.666788
+    },
+    "EVR": {
+      "lower_bound": 10579304281.046814,
+      "upper_bound": 10579332071.046204
+    },
+    "S": {
+      "lower_bound": 6627475035.627068,
+      "upper_bound": 7217329661.043076
+    },
+    "AZEK": {
+      "lower_bound": 6860459003.58,
+      "upper_bound": 6860459003.58
+    },
+    "INFA": {
+      "lower_bound": 6778661733.58,
+      "upper_bound": 7921306360.2
+    },
+    "CFLT": {
+      "lower_bound": 7285758068.88,
+      "upper_bound": 9259296055.23
+    },
+    "RL": {
+      "lower_bound": 9339207580.0531,
+      "upper_bound": 14420477519.483643
+    },
+    "UHS": {
+      "lower_bound": 10472942714.377075,
+      "upper_bound": 11766292311.66211
+    }
+  },
   "unrankable_issuers": {
     "XYZ": {
       "reason": "SHARES_MISSING",
@@ -2571,45 +2780,10 @@
       "price_observed_at": "2024-12-30T14:30:00+00:00",
       "pit_filer_status": "DOMESTIC"
     },
-    "ANSS": {
+    "PINC": {
       "reason": "NO_AS_OF_PRICE",
-      "cik": "0001013462",
-      "shares": 87449954.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
-    },
-    "AVB": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0000915912",
-      "shares": 142237233.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
-    },
-    "CTRA": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0000858470",
-      "shares": 736613020.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
-    },
-    "DAY": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0001725057",
-      "shares": 157700000.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
-    },
-    "DFS": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0001393612",
-      "shares": 251226920.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
-    },
-    "EA": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0000712515",
-      "shares": 262272821.0,
+      "cik": "0001577916",
+      "shares": 96108595.0,
       "price_observed_at": null,
       "pit_filer_status": "DOMESTIC"
     },
@@ -2619,70 +2793,28 @@
       "shares": 379429476.0,
       "price_observed_at": null,
       "pit_filer_status": "DOMESTIC"
-    },
-    "HES": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0000004447",
-      "shares": 308118241.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
-    },
-    "HOLX": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0000859737",
-      "shares": 226941217.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
-    },
-    "IPG": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0000051644",
-      "shares": 372508618.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
-    },
-    "JNPR": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0001043604",
-      "shares": 331089057.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
-    },
-    "K": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0000055067",
-      "shares": 344697894.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
-    },
-    "WBA": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0001618921",
-      "shares": 864617130.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
     }
   },
   "audit": {
     "kind": "PIT_MCAP_STORE_COVERAGE_AUDIT",
     "as_of": "2024-12-31T00:00:00+00:00",
     "chart_range": "5y",
-    "listings": 952,
-    "companyfacts": 951,
-    "price": 936,
-    "rankable": 935,
+    "listings": 976,
+    "companyfacts": 975,
+    "price": 971,
+    "rankable": 970,
     "missing_companyfacts": 1,
-    "missing_price": 14,
+    "missing_price": 3,
     "missing_shares": 1,
     "ambiguous_shares": 0,
     "non_positive": 1,
-    "top_cutoff_mcap_if_500_rankable": 14407896748.144775,
+    "top_cutoff_mcap_if_500_rankable": 14776680263.355867,
     "candidate_pool_complete": false,
     "justified_official_top500": false,
     "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
   },
-  "rankable": 935,
-  "cutoff_500_mcap": 14407896748.144775,
+  "rankable": 970,
+  "cutoff_500_mcap": 14776680263.355867,
   "top500": [
     {
       "rank": 1,
@@ -9595,6 +9727,33 @@
     },
     {
       "rank": 236,
+      "company_id": "plan:dfs",
+      "yahoo": "DFS",
+      "mcap": 43321570084.8,
+      "cik": "0001393612",
+      "detail": {
+        "yahoo": "DFS",
+        "cik": "0001393612",
+        "shares_status": "OK",
+        "shares": 251226920.0,
+        "shares_source": "dei:EntityCommonStockSharesOutstanding",
+        "shares_available_at": "2024-12-23 00:00:00+00:00",
+        "price_observed_at": "2024-12-30T21:00:00+00:00",
+        "close": 172.44,
+        "adjclose": null,
+        "split_events": 0,
+        "split_factor_after_as_of": 1.0,
+        "mcap_price": 172.44,
+        "mcap": 43321570084.8,
+        "share_concepts_present": null,
+        "pit_filer_status": "DOMESTIC"
+      },
+      "cover_override": null,
+      "quality_flags": [],
+      "notes": []
+    },
+    {
+      "rank": 237,
       "company_id": "tel",
       "yahoo": "TEL",
       "mcap": 42741292623.82739,
@@ -9621,7 +9780,7 @@
       "notes": []
     },
     {
-      "rank": 237,
+      "rank": 238,
       "company_id": "nem",
       "yahoo": "NEM",
       "mcap": 42122667723.0,
@@ -9648,7 +9807,7 @@
       "notes": []
     },
     {
-      "rank": 238,
+      "rank": 239,
       "company_id": "plan:peg",
       "yahoo": "PEG",
       "mcap": 42085101920.05533,
@@ -9675,7 +9834,7 @@
       "notes": []
     },
     {
-      "rank": 239,
+      "rank": 240,
       "company_id": "plan:pru",
       "yahoo": "PRU",
       "mcap": 42061400543.21289,
@@ -9702,7 +9861,7 @@
       "notes": []
     },
     {
-      "rank": 240,
+      "rank": 241,
       "company_id": "ame",
       "yahoo": "AME",
       "mcap": 41806551353.811035,
@@ -9729,7 +9888,7 @@
       "notes": []
     },
     {
-      "rank": 241,
+      "rank": 242,
       "company_id": "fast",
       "yahoo": "FAST",
       "mcap": 41201995671.4135,
@@ -9756,7 +9915,7 @@
       "notes": []
     },
     {
-      "rank": 242,
+      "rank": 243,
       "company_id": "plan:kvue",
       "yahoo": "KVUE",
       "mcap": 40607513121.94054,
@@ -9783,7 +9942,7 @@
       "notes": []
     },
     {
-      "rank": 243,
+      "rank": 244,
       "company_id": "glw",
       "yahoo": "GLW",
       "mcap": 40532922734.36709,
@@ -9810,7 +9969,7 @@
       "notes": []
     },
     {
-      "rank": 244,
+      "rank": 245,
       "company_id": "bkr",
       "yahoo": "BKR",
       "mcap": 40511185261.5531,
@@ -9837,7 +9996,34 @@
       "notes": []
     },
     {
-      "rank": 245,
+      "rank": 246,
+      "company_id": "r1000:0000004447",
+      "yahoo": "HES",
+      "mcap": 40274135281.11,
+      "cik": "0000004447",
+      "detail": {
+        "yahoo": "HES",
+        "cik": "0000004447",
+        "shares_status": "OK",
+        "shares": 308118241.0,
+        "shares_source": "dei:EntityCommonStockSharesOutstanding",
+        "shares_available_at": "2024-11-06 00:00:00+00:00",
+        "price_observed_at": "2024-12-30T21:00:00+00:00",
+        "close": 130.71,
+        "adjclose": null,
+        "split_events": 0,
+        "split_factor_after_as_of": 1.0,
+        "mcap_price": 130.71,
+        "mcap": 40274135281.11,
+        "share_concepts_present": null,
+        "pit_filer_status": "DOMESTIC"
+      },
+      "cover_override": null,
+      "quality_flags": [],
+      "notes": []
+    },
+    {
+      "rank": 247,
       "company_id": "team",
       "yahoo": "TEAM",
       "mcap": 39895697042.447205,
@@ -9911,7 +10097,7 @@
       ]
     },
     {
-      "rank": 246,
+      "rank": 248,
       "company_id": "plan:stz",
       "yahoo": "STZ",
       "mcap": 39876284531.52612,
@@ -10003,7 +10189,7 @@
       ]
     },
     {
-      "rank": 247,
+      "rank": 249,
       "company_id": "plan:cbre",
       "yahoo": "CBRE",
       "mcap": 39864964083.12988,
@@ -10030,7 +10216,7 @@
       "notes": []
     },
     {
-      "rank": 248,
+      "rank": 250,
       "company_id": "grmn",
       "yahoo": "GRMN",
       "mcap": 39786144218.38811,
@@ -10057,7 +10243,7 @@
       "notes": []
     },
     {
-      "rank": 249,
+      "rank": 251,
       "company_id": "plan:lhx",
       "yahoo": "LHX",
       "mcap": 39629308437.21753,
@@ -10084,7 +10270,7 @@
       "notes": []
     },
     {
-      "rank": 250,
+      "rank": 252,
       "company_id": "dal",
       "yahoo": "DAL",
       "mcap": 39181476526.8168,
@@ -10111,7 +10297,7 @@
       "notes": []
     },
     {
-      "rank": 251,
+      "rank": 253,
       "company_id": "plan:cci",
       "yahoo": "CCI",
       "mcap": 39018226583.72461,
@@ -10138,7 +10324,7 @@
       "notes": []
     },
     {
-      "rank": 252,
+      "rank": 254,
       "company_id": "plan:vrsk",
       "yahoo": "VRSK",
       "mcap": 38937418840.1499,
@@ -10165,7 +10351,7 @@
       "notes": []
     },
     {
-      "rank": 253,
+      "rank": 255,
       "company_id": "ctva",
       "yahoo": "CTVA",
       "mcap": 38873293023.8533,
@@ -10192,7 +10378,7 @@
       "notes": []
     },
     {
-      "rank": 254,
+      "rank": 256,
       "company_id": "plan:xel",
       "yahoo": "XEL",
       "mcap": 38812997441.61392,
@@ -10219,7 +10405,7 @@
       "notes": []
     },
     {
-      "rank": 255,
+      "rank": 257,
       "company_id": "trgp",
       "yahoo": "TRGP",
       "mcap": 38762949319.42195,
@@ -10246,7 +10432,7 @@
       "notes": []
     },
     {
-      "rank": 256,
+      "rank": 258,
       "company_id": "f",
       "yahoo": "F",
       "mcap": 38565953234.67286,
@@ -10295,7 +10481,34 @@
       ]
     },
     {
-      "rank": 257,
+      "rank": 259,
+      "company_id": "plan:ea",
+      "yahoo": "EA",
+      "mcap": 38433459189.34,
+      "cik": "0000712515",
+      "detail": {
+        "yahoo": "EA",
+        "cik": "0000712515",
+        "shares_status": "OK",
+        "shares": 262272821.0,
+        "shares_source": "dei:EntityCommonStockSharesOutstanding",
+        "shares_available_at": "2024-11-01 00:00:00+00:00",
+        "price_observed_at": "2024-12-30T21:00:00+00:00",
+        "close": 146.54,
+        "adjclose": null,
+        "split_events": 0,
+        "split_factor_after_as_of": 1.0,
+        "mcap_price": 146.54,
+        "mcap": 38433459189.34,
+        "share_concepts_present": null,
+        "pit_filer_status": "DOMESTIC"
+      },
+      "cover_override": null,
+      "quality_flags": [],
+      "notes": []
+    },
+    {
+      "rank": 260,
       "company_id": "plan:a",
       "yahoo": "A",
       "mcap": 38389719971.89938,
@@ -10322,7 +10535,7 @@
       "notes": []
     },
     {
-      "rank": 258,
+      "rank": 261,
       "company_id": "r1000:0001315098",
       "yahoo": "RBLX",
       "mcap": 38370599059.64661,
@@ -10349,7 +10562,7 @@
       "notes": []
     },
     {
-      "rank": 259,
+      "rank": 262,
       "company_id": "plan:ctsh",
       "yahoo": "CTSH",
       "mcap": 38054511955.0,
@@ -10376,7 +10589,7 @@
       "notes": []
     },
     {
-      "rank": 260,
+      "rank": 263,
       "company_id": "vlo",
       "yahoo": "VLO",
       "mcap": 37860426257.15027,
@@ -10403,7 +10616,7 @@
       "notes": []
     },
     {
-      "rank": 261,
+      "rank": 264,
       "company_id": "plan:odfl",
       "yahoo": "ODFL",
       "mcap": 37848842921.46289,
@@ -10430,7 +10643,7 @@
       "notes": []
     },
     {
-      "rank": 262,
+      "rank": 265,
       "company_id": "plan:exc",
       "yahoo": "EXC",
       "mcap": 37811891510.92813,
@@ -10457,7 +10670,7 @@
       "notes": []
     },
     {
-      "rank": 263,
+      "rank": 266,
       "company_id": "plan:hsy",
       "yahoo": "HSY",
       "mcap": 37749226553.6104,
@@ -10484,7 +10697,7 @@
       "notes": []
     },
     {
-      "rank": 264,
+      "rank": 267,
       "company_id": "plan:syy",
       "yahoo": "SYY",
       "mcap": 37510025295.82062,
@@ -10511,7 +10724,7 @@
       "notes": []
     },
     {
-      "rank": 265,
+      "rank": 268,
       "company_id": "plan:it",
       "yahoo": "IT",
       "mcap": 37444837167.58057,
@@ -10538,7 +10751,7 @@
       "notes": []
     },
     {
-      "rank": 266,
+      "rank": 269,
       "company_id": "plan:yum",
       "yahoo": "YUM",
       "mcap": 37261675138.403595,
@@ -10565,7 +10778,7 @@
       "notes": []
     },
     {
-      "rank": 267,
+      "rank": 270,
       "company_id": "plan:otis",
       "yahoo": "OTIS",
       "mcap": 36978060584.77432,
@@ -10592,7 +10805,7 @@
       "notes": []
     },
     {
-      "rank": 268,
+      "rank": 271,
       "company_id": "plan:len",
       "yahoo": "LEN",
       "mcap": 36808607254.944984,
@@ -10694,7 +10907,7 @@
       "notes": []
     },
     {
-      "rank": 269,
+      "rank": 272,
       "company_id": "plan:lvs",
       "yahoo": "LVS",
       "mcap": 36758827777.751076,
@@ -10721,7 +10934,7 @@
       "notes": []
     },
     {
-      "rank": 270,
+      "rank": 273,
       "company_id": "plan:khc",
       "yahoo": "KHC",
       "mcap": 36710550519.861786,
@@ -10748,7 +10961,7 @@
       "notes": []
     },
     {
-      "rank": 271,
+      "rank": 274,
       "company_id": "plan:ir",
       "yahoo": "IR",
       "mcap": 36480683267.594055,
@@ -10775,7 +10988,7 @@
       "notes": []
     },
     {
-      "rank": 272,
+      "rank": 275,
       "company_id": "r1000:0001404655",
       "yahoo": "HUBS",
       "mcap": 36111202555.81641,
@@ -10802,7 +11015,7 @@
       "notes": []
     },
     {
-      "rank": 273,
+      "rank": 276,
       "company_id": "r1000:0001834584",
       "yahoo": "CPNG",
       "mcap": 36086534403.7289,
@@ -10894,7 +11107,7 @@
       ]
     },
     {
-      "rank": 274,
+      "rank": 277,
       "company_id": "plan:gehc",
       "yahoo": "GEHC",
       "mcap": 35910215452.26716,
@@ -10921,7 +11134,7 @@
       "notes": []
     },
     {
-      "rank": 275,
+      "rank": 278,
       "company_id": "plan:iqv",
       "yahoo": "IQV",
       "mcap": 35837174446.10596,
@@ -10948,7 +11161,7 @@
       "notes": []
     },
     {
-      "rank": 276,
+      "rank": 279,
       "company_id": "anet",
       "yahoo": "ANET",
       "mcap": 35100048999.22975,
@@ -10975,7 +11188,7 @@
       "notes": []
     },
     {
-      "rank": 277,
+      "rank": 280,
       "company_id": "plan:gis",
       "yahoo": "GIS",
       "mcap": 34931523723.721504,
@@ -11002,7 +11215,7 @@
       "notes": []
     },
     {
-      "rank": 278,
+      "rank": 281,
       "company_id": "r1000:0002011641",
       "yahoo": "FERG",
       "mcap": 34706564904.471405,
@@ -11029,7 +11242,7 @@
       "notes": []
     },
     {
-      "rank": 279,
+      "rank": 282,
       "company_id": "plan:acgl",
       "yahoo": "ACGL",
       "mcap": 34572866031.67018,
@@ -11056,7 +11269,7 @@
       "notes": []
     },
     {
-      "rank": 280,
+      "rank": 283,
       "company_id": "r1000:0001393052",
       "yahoo": "VEEV",
       "mcap": 34332229347.091583,
@@ -11083,7 +11296,7 @@
       "notes": []
     },
     {
-      "rank": 281,
+      "rank": 284,
       "company_id": "plan:vmc",
       "yahoo": "VMC",
       "mcap": 34092935107.062775,
@@ -11110,7 +11323,7 @@
       "notes": []
     },
     {
-      "rank": 282,
+      "rank": 285,
       "company_id": "plan:idxx",
       "yahoo": "IDXX",
       "mcap": 33797895066.0,
@@ -11137,7 +11350,7 @@
       "notes": []
     },
     {
-      "rank": 283,
+      "rank": 286,
       "company_id": "plan:rmd",
       "yahoo": "RMD",
       "mcap": 33689623707.0,
@@ -11164,7 +11377,7 @@
       "notes": []
     },
     {
-      "rank": 284,
+      "rank": 287,
       "company_id": "net",
       "yahoo": "NET",
       "mcap": 33331970552.52426,
@@ -11250,7 +11463,7 @@
       ]
     },
     {
-      "rank": 285,
+      "rank": 288,
       "company_id": "plan:wab",
       "yahoo": "WAB",
       "mcap": 32822323178.234497,
@@ -11277,7 +11490,7 @@
       "notes": []
     },
     {
-      "rank": 286,
+      "rank": 289,
       "company_id": "plan:ttwo",
       "yahoo": "TTWO",
       "mcap": 32410277556.001022,
@@ -11304,7 +11517,7 @@
       "notes": []
     },
     {
-      "rank": 287,
+      "rank": 290,
       "company_id": "plan:ual",
       "yahoo": "UAL",
       "mcap": 32298901837.90512,
@@ -11331,7 +11544,7 @@
       "notes": []
     },
     {
-      "rank": 288,
+      "rank": 291,
       "company_id": "rok",
       "yahoo": "ROK",
       "mcap": 32247846176.52185,
@@ -11358,7 +11571,7 @@
       "notes": []
     },
     {
-      "rank": 289,
+      "rank": 292,
       "company_id": "plan:mlm",
       "yahoo": "MLM",
       "mcap": 31796669154.25,
@@ -11385,7 +11598,7 @@
       "notes": []
     },
     {
-      "rank": 290,
+      "rank": 293,
       "company_id": "plan:dd",
       "yahoo": "DD",
       "mcap": 31743712264.3554,
@@ -11412,7 +11625,7 @@
       "notes": []
     },
     {
-      "rank": 291,
+      "rank": 294,
       "company_id": "plan:rjf",
       "yahoo": "RJF",
       "mcap": 31694284749.497253,
@@ -11439,7 +11652,7 @@
       "notes": []
     },
     {
-      "rank": 292,
+      "rank": 295,
       "company_id": "plan:hig",
       "yahoo": "HIG",
       "mcap": 31676388050.50518,
@@ -11466,7 +11679,7 @@
       "notes": []
     },
     {
-      "rank": 293,
+      "rank": 296,
       "company_id": "plan:efx",
       "yahoo": "EFX",
       "mcap": 31635033419.608612,
@@ -11493,7 +11706,7 @@
       "notes": []
     },
     {
-      "rank": 294,
+      "rank": 297,
       "company_id": "plan:wtw",
       "yahoo": "WTW",
       "mcap": 31551245865.632812,
@@ -11520,7 +11733,7 @@
       "notes": []
     },
     {
-      "rank": 295,
+      "rank": 298,
       "company_id": "plan:mtb",
       "yahoo": "MTB",
       "mcap": 31286093147.399048,
@@ -11547,7 +11760,34 @@
       "notes": []
     },
     {
-      "rank": 296,
+      "rank": 299,
+      "company_id": "plan:avb",
+      "yahoo": "AVB",
+      "mcap": 31262321441.07,
+      "cik": "0000915912",
+      "detail": {
+        "yahoo": "AVB",
+        "cik": "0000915912",
+        "shares_status": "OK",
+        "shares": 142237233.0,
+        "shares_source": "dei:EntityCommonStockSharesOutstanding",
+        "shares_available_at": "2024-11-12 00:00:00+00:00",
+        "price_observed_at": "2024-12-30T21:00:00+00:00",
+        "close": 219.79,
+        "adjclose": null,
+        "split_events": 0,
+        "split_factor_after_as_of": 1.0,
+        "mcap_price": 219.79,
+        "mcap": 31262321441.07,
+        "share_concepts_present": null,
+        "pit_filer_status": "DOMESTIC"
+      },
+      "cover_override": null,
+      "quality_flags": [],
+      "notes": []
+    },
+    {
+      "rank": 300,
       "company_id": "plan:deck",
       "yahoo": "DECK",
       "mcap": 31259467416.347595,
@@ -11574,7 +11814,7 @@
       "notes": []
     },
     {
-      "rank": 297,
+      "rank": 301,
       "company_id": "plan:exr",
       "yahoo": "EXR",
       "mcap": 31214580535.25,
@@ -11601,7 +11841,7 @@
       "notes": []
     },
     {
-      "rank": 298,
+      "rank": 302,
       "company_id": "plan:ed",
       "yahoo": "ED",
       "mcap": 30886112128.99933,
@@ -11628,7 +11868,7 @@
       "notes": []
     },
     {
-      "rank": 299,
+      "rank": 303,
       "company_id": "plan:eix",
       "yahoo": "EIX",
       "mcap": 30848133552.068886,
@@ -11655,7 +11895,7 @@
       "notes": []
     },
     {
-      "rank": 300,
+      "rank": 304,
       "company_id": "plan:mchp",
       "yahoo": "MCHP",
       "mcap": 30674023992.491188,
@@ -11682,7 +11922,7 @@
       "notes": []
     },
     {
-      "rank": 301,
+      "rank": 305,
       "company_id": "plan:hum",
       "yahoo": "HUM",
       "mcap": 30615787409.740738,
@@ -11709,7 +11949,7 @@
       "notes": []
     },
     {
-      "rank": 302,
+      "rank": 306,
       "company_id": "plan:hpq",
       "yahoo": "HPQ",
       "mcap": 30600341127.35605,
@@ -11736,7 +11976,7 @@
       "notes": []
     },
     {
-      "rank": 303,
+      "rank": 307,
       "company_id": "plan:vici",
       "yahoo": "VICI",
       "mcap": 30581592187.731316,
@@ -11763,7 +12003,7 @@
       "notes": []
     },
     {
-      "rank": 304,
+      "rank": 308,
       "company_id": "plan:cnc",
       "yahoo": "CNC",
       "mcap": 30473651708.14514,
@@ -11790,7 +12030,7 @@
       "notes": []
     },
     {
-      "rank": 305,
+      "rank": 309,
       "company_id": "plan:dxcm",
       "yahoo": "DXCM",
       "mcap": 30466440420.0,
@@ -11817,7 +12057,7 @@
       "notes": []
     },
     {
-      "rank": 306,
+      "rank": 310,
       "company_id": "r1000:0001178670",
       "yahoo": "ALNY",
       "mcap": 30440785512.656662,
@@ -11844,7 +12084,7 @@
       "notes": []
     },
     {
-      "rank": 307,
+      "rank": 311,
       "company_id": "plan:lyv",
       "yahoo": "LYV",
       "mcap": 30440654995.493088,
@@ -11871,7 +12111,7 @@
       "notes": []
     },
     {
-      "rank": 308,
+      "rank": 312,
       "company_id": "plan:irm",
       "yahoo": "IRM",
       "mcap": 30428906585.445984,
@@ -11898,7 +12138,7 @@
       "notes": []
     },
     {
-      "rank": 309,
+      "rank": 313,
       "company_id": "plan:wec",
       "yahoo": "WEC",
       "mcap": 29803752068.028854,
@@ -11925,7 +12165,7 @@
       "notes": []
     },
     {
-      "rank": 310,
+      "rank": 314,
       "company_id": "ebay",
       "yahoo": "EBAY",
       "mcap": 29726740657.806396,
@@ -11952,7 +12192,34 @@
       "notes": []
     },
     {
-      "rank": 311,
+      "rank": 315,
+      "company_id": "plan:anss",
+      "yahoo": "ANSS",
+      "mcap": 29551088455.68,
+      "cik": "0001013462",
+      "detail": {
+        "yahoo": "ANSS",
+        "cik": "0001013462",
+        "shares_status": "OK",
+        "shares": 87449954.0,
+        "shares_source": "dei:EntityCommonStockSharesOutstanding",
+        "shares_available_at": "2024-11-06 00:00:00+00:00",
+        "price_observed_at": "2024-12-30T21:00:00+00:00",
+        "close": 337.92,
+        "adjclose": null,
+        "split_events": 0,
+        "split_factor_after_as_of": 1.0,
+        "mcap_price": 337.92,
+        "mcap": 29551088455.68,
+        "share_concepts_present": null,
+        "pit_filer_status": "DOMESTIC"
+      },
+      "cover_override": null,
+      "quality_flags": [],
+      "notes": []
+    },
+    {
+      "rank": 316,
       "company_id": "mpwr",
       "yahoo": "MPWR",
       "mcap": 29446048190.91797,
@@ -11979,7 +12246,7 @@
       "notes": []
     },
     {
-      "rank": 312,
+      "rank": 317,
       "company_id": "plan:csgp",
       "yahoo": "CSGP",
       "mcap": 29443292385.830284,
@@ -12006,7 +12273,7 @@
       "notes": []
     },
     {
-      "rank": 313,
+      "rank": 318,
       "company_id": "hood",
       "yahoo": "HOOD",
       "mcap": 29229183587.836487,
@@ -12055,7 +12322,7 @@
       ]
     },
     {
-      "rank": 314,
+      "rank": 319,
       "company_id": "plan:bro",
       "yahoo": "BRO",
       "mcap": 29164895585.226974,
@@ -12082,7 +12349,7 @@
       "notes": []
     },
     {
-      "rank": 315,
+      "rank": 320,
       "company_id": "plan:ccl",
       "yahoo": "CCL",
       "mcap": 28911828010.74212,
@@ -12109,7 +12376,7 @@
       "notes": []
     },
     {
-      "rank": 316,
+      "rank": 321,
       "company_id": "stt",
       "yahoo": "STT",
       "mcap": 28810832649.470245,
@@ -12136,7 +12403,7 @@
       "notes": []
     },
     {
-      "rank": 317,
+      "rank": 322,
       "company_id": "plan:fitb",
       "yahoo": "FITB",
       "mcap": 28645611107.174316,
@@ -12163,7 +12430,7 @@
       "notes": []
     },
     {
-      "rank": 318,
+      "rank": 323,
       "company_id": "cah",
       "yahoo": "CAH",
       "mcap": 28537878070.625534,
@@ -12190,7 +12457,7 @@
       "notes": []
     },
     {
-      "rank": 319,
+      "rank": 324,
       "company_id": "plan:xyl",
       "yahoo": "XYL",
       "mcap": 28249609768.27664,
@@ -12217,7 +12484,7 @@
       "notes": []
     },
     {
-      "rank": 320,
+      "rank": 325,
       "company_id": "plan:gpn",
       "yahoo": "GPN",
       "mcap": 28205663029.04396,
@@ -12244,7 +12511,7 @@
       "notes": []
     },
     {
-      "rank": 321,
+      "rank": 326,
       "company_id": "hpe",
       "yahoo": "HPE",
       "mcap": 28148145857.03992,
@@ -12271,7 +12538,7 @@
       "notes": []
     },
     {
-      "rank": 322,
+      "rank": 327,
       "company_id": "r1000:0001713683",
       "yahoo": "ZS",
       "mcap": 28099215779.202026,
@@ -12298,7 +12565,7 @@
       "notes": []
     },
     {
-      "rank": 323,
+      "rank": 328,
       "company_id": "plan:gddy",
       "yahoo": "GDDY",
       "mcap": 28001063304.309464,
@@ -12325,7 +12592,7 @@
       "notes": []
     },
     {
-      "rank": 324,
+      "rank": 329,
       "company_id": "keys",
       "yahoo": "KEYS",
       "mcap": 27910254056.7912,
@@ -12352,7 +12619,7 @@
       "notes": []
     },
     {
-      "rank": 325,
+      "rank": 330,
       "company_id": "plan:sw",
       "yahoo": "SW",
       "mcap": 27890770169.853333,
@@ -12379,7 +12646,34 @@
       "notes": []
     },
     {
-      "rank": 326,
+      "rank": 331,
+      "company_id": "plan:k",
+      "yahoo": "K",
+      "mcap": 27858483793.079998,
+      "cik": "0000055067",
+      "detail": {
+        "yahoo": "K",
+        "cik": "0000055067",
+        "shares_status": "OK",
+        "shares": 344697894.0,
+        "shares_source": "dei:EntityCommonStockSharesOutstanding",
+        "shares_available_at": "2024-10-31 00:00:00+00:00",
+        "price_observed_at": "2024-12-30T21:00:00+00:00",
+        "close": 80.82,
+        "adjclose": null,
+        "split_events": 0,
+        "split_factor_after_as_of": 1.0,
+        "mcap_price": 80.82,
+        "mcap": 27858483793.079998,
+        "share_concepts_present": null,
+        "pit_filer_status": "DOMESTIC"
+      },
+      "cover_override": null,
+      "quality_flags": [],
+      "notes": []
+    },
+    {
+      "rank": 332,
       "company_id": "plan:eqt",
       "yahoo": "EQT",
       "mcap": 27799507651.046753,
@@ -12406,7 +12700,7 @@
       "notes": []
     },
     {
-      "rank": 327,
+      "rank": 333,
       "company_id": "plan:ppg",
       "yahoo": "PPG",
       "mcap": 27628879150.390625,
@@ -12433,7 +12727,7 @@
       "notes": []
     },
     {
-      "rank": 328,
+      "rank": 334,
       "company_id": "plan:dow",
       "yahoo": "DOW",
       "mcap": 27611615292.170372,
@@ -12460,7 +12754,7 @@
       "notes": []
     },
     {
-      "rank": 329,
+      "rank": 335,
       "company_id": "r1000:0000798941",
       "yahoo": "FCNCA",
       "mcap": 27434937240.700684,
@@ -12540,7 +12834,7 @@
       ]
     },
     {
-      "rank": 330,
+      "rank": 336,
       "company_id": "nue",
       "yahoo": "NUE",
       "mcap": 27205424591.07843,
@@ -12567,7 +12861,7 @@
       "notes": []
     },
     {
-      "rank": 331,
+      "rank": 337,
       "company_id": "cvna",
       "yahoo": "CVNA",
       "mcap": 27057844267.732315,
@@ -12616,7 +12910,7 @@
       ]
     },
     {
-      "rank": 332,
+      "rank": 338,
       "company_id": "plan:on",
       "yahoo": "ON",
       "mcap": 27021105025.650803,
@@ -12643,7 +12937,7 @@
       "notes": []
     },
     {
-      "rank": 333,
+      "rank": 339,
       "company_id": "plan:br",
       "yahoo": "BR",
       "mcap": 26358551582.0,
@@ -12670,7 +12964,7 @@
       "notes": []
     },
     {
-      "rank": 334,
+      "rank": 340,
       "company_id": "plan:mtd",
       "yahoo": "MTD",
       "mcap": 26054283748.9563,
@@ -12697,7 +12991,7 @@
       "notes": []
     },
     {
-      "rank": 335,
+      "rank": 341,
       "company_id": "plan:ftv",
       "yahoo": "FTV",
       "mcap": 26035073978.89323,
@@ -12724,7 +13018,7 @@
       "notes": []
     },
     {
-      "rank": 336,
+      "rank": 342,
       "company_id": "wbd",
       "yahoo": "WBD",
       "mcap": 25782765730.954933,
@@ -12751,7 +13045,7 @@
       "notes": []
     },
     {
-      "rank": 337,
+      "rank": 343,
       "company_id": "plan:chd",
       "yahoo": "CHD",
       "mcap": 25631642784.605827,
@@ -12778,7 +13072,7 @@
       "notes": []
     },
     {
-      "rank": 338,
+      "rank": 344,
       "company_id": "plan:dov",
       "yahoo": "DOV",
       "mcap": 25561608109.94397,
@@ -12805,7 +13099,7 @@
       "notes": []
     },
     {
-      "rank": 339,
+      "rank": 345,
       "company_id": "plan:tpl",
       "yahoo": "TPL",
       "mcap": 25443109543.885437,
@@ -12832,7 +13126,7 @@
       "notes": []
     },
     {
-      "rank": 340,
+      "rank": 346,
       "company_id": "plan:syf",
       "yahoo": "SYF",
       "mcap": 25326853302.334763,
@@ -12859,7 +13153,7 @@
       "notes": []
     },
     {
-      "rank": 341,
+      "rank": 347,
       "company_id": "plan:trow",
       "yahoo": "TROW",
       "mcap": 25295077389.79538,
@@ -12886,7 +13180,7 @@
       "notes": []
     },
     {
-      "rank": 342,
+      "rank": 348,
       "company_id": "plan:vlto",
       "yahoo": "VLTO",
       "mcap": 25227866656.056404,
@@ -12913,7 +13207,7 @@
       "notes": []
     },
     {
-      "rank": 343,
+      "rank": 349,
       "company_id": "plan:nvr",
       "yahoo": "NVR",
       "mcap": 25051659439.277344,
@@ -12940,7 +13234,7 @@
       "notes": []
     },
     {
-      "rank": 344,
+      "rank": 350,
       "company_id": "plan:dte",
       "yahoo": "DTE",
       "mcap": 24965976274.32083,
@@ -12967,7 +13261,7 @@
       "notes": []
     },
     {
-      "rank": 345,
+      "rank": 351,
       "company_id": "plan:tyl",
       "yahoo": "TYL",
       "mcap": 24782091718.001404,
@@ -12994,7 +13288,7 @@
       "notes": []
     },
     {
-      "rank": 346,
+      "rank": 352,
       "company_id": "plan:vtr",
       "yahoo": "VTR",
       "mcap": 24536432553.877354,
@@ -13021,7 +13315,7 @@
       "notes": []
     },
     {
-      "rank": 347,
+      "rank": 353,
       "company_id": "r1000:0001397911",
       "yahoo": "LPLA",
       "mcap": 24484125564.071625,
@@ -13048,7 +13342,7 @@
       "notes": []
     },
     {
-      "rank": 348,
+      "rank": 354,
       "company_id": "plan:awk",
       "yahoo": "AWK",
       "mcap": 24213616353.021736,
@@ -13075,7 +13369,7 @@
       "notes": []
     },
     {
-      "rank": 349,
+      "rank": 355,
       "company_id": "plan:adm",
       "yahoo": "ADM",
       "mcap": 23960173200.36316,
@@ -13102,7 +13396,7 @@
       "notes": []
     },
     {
-      "rank": 350,
+      "rank": 356,
       "company_id": "plan:aee",
       "yahoo": "AEE",
       "mcap": 23922067211.67901,
@@ -13129,7 +13423,7 @@
       "notes": []
     },
     {
-      "rank": 351,
+      "rank": 357,
       "company_id": "plan:ppl",
       "yahoo": "PPL",
       "mcap": 23902848011.528854,
@@ -13156,7 +13450,7 @@
       "notes": []
     },
     {
-      "rank": 352,
+      "rank": 358,
       "company_id": "plan:wst",
       "yahoo": "WST",
       "mcap": 23813917328.617126,
@@ -13183,7 +13477,7 @@
       "notes": []
     },
     {
-      "rank": 353,
+      "rank": 359,
       "company_id": "plan:lyb",
       "yahoo": "LYB",
       "mcap": 23765704113.527916,
@@ -13210,7 +13504,7 @@
       "notes": []
     },
     {
-      "rank": 354,
+      "rank": 360,
       "company_id": "plan:hban",
       "yahoo": "HBAN",
       "mcap": 23724409920.519287,
@@ -13237,7 +13531,7 @@
       "notes": []
     },
     {
-      "rank": 355,
+      "rank": 361,
       "company_id": "plan:hal",
       "yahoo": "HAL",
       "mcap": 23684412711.30741,
@@ -13264,7 +13558,7 @@
       "notes": []
     },
     {
-      "rank": 356,
+      "rank": 362,
       "company_id": "plan:ntap",
       "yahoo": "NTAP",
       "mcap": 23683164897.450623,
@@ -13291,7 +13585,7 @@
       "notes": []
     },
     {
-      "rank": 357,
+      "rank": 363,
       "company_id": "plan:cpay",
       "yahoo": "CPAY",
       "mcap": 23532336704.31848,
@@ -13318,7 +13612,7 @@
       "notes": []
     },
     {
-      "rank": 358,
+      "rank": 364,
       "company_id": "plan:cdw",
       "yahoo": "CDW",
       "mcap": 23101325961.079285,
@@ -13345,7 +13639,7 @@
       "notes": []
     },
     {
-      "rank": 359,
+      "rank": 365,
       "company_id": "r1000:0000895126",
       "yahoo": "EXE",
       "mcap": 23066512687.365326,
@@ -13372,7 +13666,7 @@
       "notes": []
     },
     {
-      "rank": 360,
+      "rank": 366,
       "company_id": "plan:expe",
       "yahoo": "EXPE",
       "mcap": 22997201517.39502,
@@ -13399,7 +13693,7 @@
       "notes": []
     },
     {
-      "rank": 361,
+      "rank": 367,
       "company_id": "r1000:0000719955",
       "yahoo": "WSM",
       "mcap": 22959369692.721817,
@@ -13426,7 +13720,7 @@
       "notes": []
     },
     {
-      "rank": 362,
+      "rank": 368,
       "company_id": "plan:fe",
       "yahoo": "FE",
       "mcap": 22845205686.804016,
@@ -13453,7 +13747,7 @@
       "notes": []
     },
     {
-      "rank": 363,
+      "rank": 369,
       "company_id": "hubb",
       "yahoo": "HUBB",
       "mcap": 22498157566.341614,
@@ -13480,7 +13774,7 @@
       "notes": []
     },
     {
-      "rank": 364,
+      "rank": 370,
       "company_id": "plan:rol",
       "yahoo": "ROL",
       "mcap": 22476595718.66092,
@@ -13507,7 +13801,7 @@
       "notes": []
     },
     {
-      "rank": 365,
+      "rank": 371,
       "company_id": "plan:cinf",
       "yahoo": "CINF",
       "mcap": 22374943604.872833,
@@ -13534,7 +13828,7 @@
       "notes": []
     },
     {
-      "rank": 366,
+      "rank": 372,
       "company_id": "plan:phm",
       "yahoo": "PHM",
       "mcap": 22325246348.83223,
@@ -13561,7 +13855,7 @@
       "notes": []
     },
     {
-      "rank": 367,
+      "rank": 373,
       "company_id": "plan:wrb",
       "yahoo": "WRB",
       "mcap": 22300165076.8396,
@@ -13588,7 +13882,7 @@
       "notes": []
     },
     {
-      "rank": 368,
+      "rank": 374,
       "company_id": "r1000:0001096343",
       "yahoo": "MKL",
       "mcap": 22190168080.566406,
@@ -13615,7 +13909,7 @@
       "notes": []
     },
     {
-      "rank": 369,
+      "rank": 375,
       "company_id": "plan:ptc",
       "yahoo": "PTC",
       "mcap": 22062907272.72583,
@@ -13642,7 +13936,7 @@
       "notes": []
     },
     {
-      "rank": 370,
+      "rank": 376,
       "company_id": "plan:wat",
       "yahoo": "WAT",
       "mcap": 22024998128.521362,
@@ -13669,7 +13963,7 @@
       "notes": []
     },
     {
-      "rank": 371,
+      "rank": 377,
       "company_id": "plan:dri",
       "yahoo": "DRI",
       "mcap": 21945564404.536194,
@@ -13696,7 +13990,7 @@
       "notes": []
     },
     {
-      "rank": 372,
+      "rank": 378,
       "company_id": "plan:biib",
       "yahoo": "BIIB",
       "mcap": 21885588030.360107,
@@ -13723,7 +14017,7 @@
       "notes": []
     },
     {
-      "rank": 373,
+      "rank": 379,
       "company_id": "plan:lii",
       "yahoo": "LII",
       "mcap": 21872337339.316406,
@@ -13750,7 +14044,7 @@
       "notes": []
     },
     {
-      "rank": 374,
+      "rank": 380,
       "company_id": "plan:sbac",
       "yahoo": "SBAC",
       "mcap": 21861499072.63916,
@@ -13777,7 +14071,7 @@
       "notes": []
     },
     {
-      "rank": 375,
+      "rank": 381,
       "company_id": "r1000:0001089063",
       "yahoo": "DKS",
       "mcap": 21730023476.80838,
@@ -13804,7 +14098,7 @@
       "notes": []
     },
     {
-      "rank": 376,
+      "rank": 382,
       "company_id": "r1000:0001585521",
       "yahoo": "ZM",
       "mcap": 21683541077.362587,
@@ -13896,7 +14190,7 @@
       ]
     },
     {
-      "rank": 377,
+      "rank": 383,
       "company_id": "plan:tdy",
       "yahoo": "TDY",
       "mcap": 21680798310.81839,
@@ -13923,7 +14217,7 @@
       "notes": []
     },
     {
-      "rank": 378,
+      "rank": 384,
       "company_id": "plan:foxa",
       "yahoo": "FOXA",
       "mcap": 21656791867.30734,
@@ -13970,7 +14264,7 @@
       "notes": []
     },
     {
-      "rank": 379,
+      "rank": 385,
       "company_id": "alab",
       "yahoo": "ALAB",
       "mcap": 21637692275.834854,
@@ -13997,7 +14291,7 @@
       "notes": []
     },
     {
-      "rank": 380,
+      "rank": 386,
       "company_id": "plan:ato",
       "yahoo": "ATO",
       "mcap": 21589655981.509827,
@@ -14024,7 +14318,7 @@
       "notes": []
     },
     {
-      "rank": 381,
+      "rank": 387,
       "company_id": "plan:rf",
       "yahoo": "RF",
       "mcap": 21503716541.218395,
@@ -14051,7 +14345,7 @@
       "notes": []
     },
     {
-      "rank": 382,
+      "rank": 388,
       "company_id": "plan:iff",
       "yahoo": "IFF",
       "mcap": 21467088108.755836,
@@ -14078,7 +14372,7 @@
       "notes": []
     },
     {
-      "rank": 383,
+      "rank": 389,
       "company_id": "r1000:0001110803",
       "yahoo": "ILMN",
       "mcap": 21184203161.621094,
@@ -14105,7 +14399,7 @@
       "notes": []
     },
     {
-      "rank": 384,
+      "rank": 390,
       "company_id": "r1000:0000105634",
       "yahoo": "EME",
       "mcap": 21034441477.75,
@@ -14132,7 +14426,7 @@
       "notes": []
     },
     {
-      "rank": 385,
+      "rank": 391,
       "company_id": "dvn",
       "yahoo": "DVN",
       "mcap": 21001092548.942566,
@@ -14159,7 +14453,7 @@
       "notes": []
     },
     {
-      "rank": 386,
+      "rank": 392,
       "company_id": "plan:es",
       "yahoo": "ES",
       "mcap": 20994839305.557392,
@@ -14186,7 +14480,7 @@
       "notes": []
     },
     {
-      "rank": 387,
+      "rank": 393,
       "company_id": "plan:zbh",
       "yahoo": "ZBH",
       "mcap": 20982369548.562378,
@@ -14213,7 +14507,7 @@
       "notes": []
     },
     {
-      "rank": 388,
+      "rank": 394,
       "company_id": "ntra",
       "yahoo": "NTRA",
       "mcap": 20931900779.695557,
@@ -14240,7 +14534,7 @@
       "notes": []
     },
     {
-      "rank": 389,
+      "rank": 395,
       "company_id": "plan:cnp",
       "yahoo": "CNP",
       "mcap": 20744479145.357155,
@@ -14267,7 +14561,7 @@
       "notes": []
     },
     {
-      "rank": 390,
+      "rank": 396,
       "company_id": "ter",
       "yahoo": "TER",
       "mcap": 20634546738.38626,
@@ -14294,7 +14588,7 @@
       "notes": []
     },
     {
-      "rank": 391,
+      "rank": 397,
       "company_id": "wdc",
       "yahoo": "WDC",
       "mcap": 20611137606.51617,
@@ -14321,7 +14615,7 @@
       "notes": []
     },
     {
-      "rank": 392,
+      "rank": 398,
       "company_id": "plan:cboe",
       "yahoo": "CBOE",
       "mcap": 20511090574.348206,
@@ -14348,7 +14642,7 @@
       "notes": []
     },
     {
-      "rank": 393,
+      "rank": 399,
       "company_id": "r1000:0001474432",
       "yahoo": "P",
       "mcap": 20383285861.220566,
@@ -14375,7 +14669,7 @@
       "notes": []
     },
     {
-      "rank": 394,
+      "rank": 400,
       "company_id": "plan:ntrs",
       "yahoo": "NTRS",
       "mcap": 20364966519.979637,
@@ -14402,7 +14696,7 @@
       "notes": []
     },
     {
-      "rank": 395,
+      "rank": 401,
       "company_id": "r1000:0001511737",
       "yahoo": "UI",
       "mcap": 20289658402.933502,
@@ -14429,7 +14723,7 @@
       "notes": []
     },
     {
-      "rank": 396,
+      "rank": 402,
       "company_id": "plan:wy",
       "yahoo": "WY",
       "mcap": 20264371536.52954,
@@ -14456,7 +14750,7 @@
       "notes": []
     },
     {
-      "rank": 397,
+      "rank": 403,
       "company_id": "plan:mkc",
       "yahoo": "MKC",
       "mcap": 20248669887.195946,
@@ -14534,7 +14828,7 @@
       "notes": []
     },
     {
-      "rank": 398,
+      "rank": 404,
       "company_id": "plan:ste",
       "yahoo": "STE",
       "mcap": 20242898801.898514,
@@ -14561,7 +14855,7 @@
       "notes": []
     },
     {
-      "rank": 399,
+      "rank": 405,
       "company_id": "plan:pkg",
       "yahoo": "PKG",
       "mcap": 20202520355.258453,
@@ -14588,7 +14882,7 @@
       "notes": []
     },
     {
-      "rank": 400,
+      "rank": 406,
       "company_id": "plan:ulta",
       "yahoo": "ULTA",
       "mcap": 20190602762.16449,
@@ -14615,7 +14909,7 @@
       "notes": []
     },
     {
-      "rank": 401,
+      "rank": 407,
       "company_id": "plan:luv",
       "yahoo": "LUV",
       "mcap": 20127181893.253735,
@@ -14642,7 +14936,7 @@
       "notes": []
     },
     {
-      "rank": 402,
+      "rank": 408,
       "company_id": "plan:clx",
       "yahoo": "CLX",
       "mcap": 19980780124.909637,
@@ -14669,7 +14963,7 @@
       "notes": []
     },
     {
-      "rank": 403,
+      "rank": 409,
       "company_id": "plan:cms",
       "yahoo": "CMS",
       "mcap": 19908034734.31286,
@@ -14696,7 +14990,7 @@
       "notes": []
     },
     {
-      "rank": 404,
+      "rank": 410,
       "company_id": "plan:zbra",
       "yahoo": "ZBRA",
       "mcap": 19798994062.619507,
@@ -14723,7 +15017,7 @@
       "notes": []
     },
     {
-      "rank": 405,
+      "rank": 411,
       "company_id": "plan:vrsn",
       "yahoo": "VRSN",
       "mcap": 19710110586.54785,
@@ -14750,7 +15044,7 @@
       "notes": []
     },
     {
-      "rank": 406,
+      "rank": 412,
       "company_id": "plan:invh",
       "yahoo": "INVH",
       "mcap": 19499232318.00191,
@@ -14777,7 +15071,7 @@
       "notes": []
     },
     {
-      "rank": 407,
+      "rank": 413,
       "company_id": "plan:cfg",
       "yahoo": "CFG",
       "mcap": 19196915822.690083,
@@ -14804,7 +15098,7 @@
       "notes": []
     },
     {
-      "rank": 408,
+      "rank": 414,
       "company_id": "plan:lh",
       "yahoo": "LH",
       "mcap": 19140845390.343536,
@@ -14831,7 +15125,7 @@
       "notes": []
     },
     {
-      "rank": 409,
+      "rank": 415,
       "company_id": "plan:ldos",
       "yahoo": "LDOS",
       "mcap": 19103617971.20668,
@@ -14858,7 +15152,7 @@
       "notes": []
     },
     {
-      "rank": 410,
+      "rank": 416,
       "company_id": "plan:fslr",
       "yahoo": "FSLR",
       "mcap": 19063771121.354248,
@@ -14885,7 +15179,7 @@
       "notes": []
     },
     {
-      "rank": 411,
+      "rank": 417,
       "company_id": "plan:erie",
       "yahoo": "ERIE",
       "mcap": 19001259019.37256,
@@ -14953,7 +15247,34 @@
       ]
     },
     {
-      "rank": 412,
+      "rank": 418,
+      "company_id": "plan:ctra",
+      "yahoo": "CTRA",
+      "mcap": 18798364270.4,
+      "cik": "0000858470",
+      "detail": {
+        "yahoo": "CTRA",
+        "cik": "0000858470",
+        "shares_status": "OK",
+        "shares": 736613020.0,
+        "shares_source": "dei:EntityCommonStockSharesOutstanding",
+        "shares_available_at": "2024-11-01 00:00:00+00:00",
+        "price_observed_at": "2024-12-30T21:00:00+00:00",
+        "close": 25.52,
+        "adjclose": null,
+        "split_events": 0,
+        "split_factor_after_as_of": 1.0,
+        "mcap_price": 25.52,
+        "mcap": 18798364270.4,
+        "share_concepts_present": null,
+        "pit_filer_status": "DOMESTIC"
+      },
+      "cover_override": null,
+      "quality_flags": [],
+      "notes": []
+    },
+    {
+      "rank": 419,
       "company_id": "r1000:0001402436",
       "yahoo": "SSNC",
       "mcap": 18739857918.51004,
@@ -14980,7 +15301,7 @@
       "notes": []
     },
     {
-      "rank": 413,
+      "rank": 420,
       "company_id": "plan:nrg",
       "yahoo": "NRG",
       "mcap": 18666491581.041756,
@@ -15007,7 +15328,7 @@
       "notes": []
     },
     {
-      "rank": 414,
+      "rank": 421,
       "company_id": "plan:ip",
       "yahoo": "IP",
       "mcap": 18638455074.002975,
@@ -15034,7 +15355,7 @@
       "notes": []
     },
     {
-      "rank": 415,
+      "rank": 422,
       "company_id": "r1000:0001261333",
       "yahoo": "DOCU",
       "mcap": 18525521413.1743,
@@ -15061,7 +15382,7 @@
       "notes": []
     },
     {
-      "rank": 416,
+      "rank": 423,
       "company_id": "r1000:0001176948",
       "yahoo": "ARES",
       "mcap": 18498569911.84372,
@@ -15088,7 +15409,7 @@
       "notes": []
     },
     {
-      "rank": 417,
+      "rank": 424,
       "company_id": "plan:podd",
       "yahoo": "PODD",
       "mcap": 18473326916.488647,
@@ -15115,7 +15436,7 @@
       "notes": []
     },
     {
-      "rank": 418,
+      "rank": 425,
       "company_id": "plan:l",
       "yahoo": "L",
       "mcap": 18378178786.899628,
@@ -15142,7 +15463,7 @@
       "notes": []
     },
     {
-      "rank": 419,
+      "rank": 426,
       "company_id": "plan:bby",
       "yahoo": "BBY",
       "mcap": 18354352191.3238,
@@ -15169,7 +15490,7 @@
       "notes": []
     },
     {
-      "rank": 420,
+      "rank": 427,
       "company_id": "plan:fds",
       "yahoo": "FDS",
       "mcap": 18336455426.36139,
@@ -15196,7 +15517,7 @@
       "notes": []
     },
     {
-      "rank": 421,
+      "rank": 428,
       "company_id": "stx",
       "yahoo": "STX",
       "mcap": 18303648155.555267,
@@ -15223,7 +15544,7 @@
       "notes": []
     },
     {
-      "rank": 422,
+      "rank": 429,
       "company_id": "plan:coo",
       "yahoo": "COO",
       "mcap": 18247839556.087784,
@@ -15250,7 +15571,7 @@
       "notes": []
     },
     {
-      "rank": 423,
+      "rank": 430,
       "company_id": "plan:ess",
       "yahoo": "ESS",
       "mcap": 18174843973.484802,
@@ -15277,7 +15598,7 @@
       "notes": []
     },
     {
-      "rank": 424,
+      "rank": 431,
       "company_id": "r1000:0001883685",
       "yahoo": "DKNG",
       "mcap": 18090988372.83912,
@@ -15375,7 +15696,7 @@
       ]
     },
     {
-      "rank": 425,
+      "rank": 432,
       "company_id": "r1000:0001579298",
       "yahoo": "BURL",
       "mcap": 18079389164.2854,
@@ -15402,7 +15723,7 @@
       "notes": []
     },
     {
-      "rank": 426,
+      "rank": 433,
       "company_id": "r1000:0001552033",
       "yahoo": "TRU",
       "mcap": 18076975000.0,
@@ -15429,7 +15750,7 @@
       "notes": []
     },
     {
-      "rank": 427,
+      "rank": 434,
       "company_id": "r1000:0001527166",
       "yahoo": "CG",
       "mcap": 18070057469.453487,
@@ -15456,7 +15777,7 @@
       "notes": []
     },
     {
-      "rank": 428,
+      "rank": 435,
       "company_id": "plan:maa",
       "yahoo": "MAA",
       "mcap": 17887358949.92125,
@@ -15483,7 +15804,7 @@
       "notes": []
     },
     {
-      "rank": 429,
+      "rank": 436,
       "company_id": "plan:sna",
       "yahoo": "SNA",
       "mcap": 17850415935.248352,
@@ -15510,7 +15831,7 @@
       "notes": []
     },
     {
-      "rank": 430,
+      "rank": 437,
       "company_id": "plan:bf-b",
       "yahoo": "BF-B",
       "mcap": 17826472576.904297,
@@ -15537,7 +15858,7 @@
       "notes": []
     },
     {
-      "rank": 431,
+      "rank": 438,
       "company_id": "plan:pfg",
       "yahoo": "PFG",
       "mcap": 17664499167.307533,
@@ -15564,7 +15885,7 @@
       "notes": []
     },
     {
-      "rank": 432,
+      "rank": 439,
       "company_id": "r1000:0001441816",
       "yahoo": "MDB",
       "mcap": 17419417383.079468,
@@ -15591,7 +15912,7 @@
       "notes": []
     },
     {
-      "rank": 433,
+      "rank": 440,
       "company_id": "r1000:0001650164",
       "yahoo": "TOST",
       "mcap": 17370480503.082275,
@@ -15640,7 +15961,7 @@
       ]
     },
     {
-      "rank": 434,
+      "rank": 441,
       "company_id": "plan:stld",
       "yahoo": "STLD",
       "mcap": 17325480895.614853,
@@ -15667,7 +15988,7 @@
       "notes": []
     },
     {
-      "rank": 435,
+      "rank": 442,
       "company_id": "plan:el",
       "yahoo": "EL",
       "mcap": 17318617187.342102,
@@ -15741,7 +16062,7 @@
       ]
     },
     {
-      "rank": 436,
+      "rank": 443,
       "company_id": "plan:trmb",
       "yahoo": "TRMB",
       "mcap": 17303748232.807777,
@@ -15768,7 +16089,7 @@
       "notes": []
     },
     {
-      "rank": 437,
+      "rank": 444,
       "company_id": "r1000:0001506293",
       "yahoo": "PINS",
       "mcap": 17293059487.845413,
@@ -15817,7 +16138,7 @@
       ]
     },
     {
-      "rank": 438,
+      "rank": 445,
       "company_id": "plan:jbht",
       "yahoo": "JBHT",
       "mcap": 17174366249.44516,
@@ -15844,7 +16165,7 @@
       "notes": []
     },
     {
-      "rank": 439,
+      "rank": 446,
       "company_id": "plan:ni",
       "yahoo": "NI",
       "mcap": 17130787564.224072,
@@ -15871,7 +16192,7 @@
       "notes": []
     },
     {
-      "rank": 440,
+      "rank": 447,
       "company_id": "plan:hrl",
       "yahoo": "HRL",
       "mcap": 17129203585.263618,
@@ -15945,7 +16266,7 @@
       ]
     },
     {
-      "rank": 441,
+      "rank": 448,
       "company_id": "plan:are",
       "yahoo": "ARE",
       "mcap": 17091749463.53209,
@@ -15972,7 +16293,7 @@
       "notes": []
     },
     {
-      "rank": 442,
+      "rank": 449,
       "company_id": "plan:key",
       "yahoo": "KEY",
       "mcap": 16960852495.49112,
@@ -15999,7 +16320,7 @@
       "notes": []
     },
     {
-      "rank": 443,
+      "rank": 450,
       "company_id": "r1000:0001818874",
       "yahoo": "SOFI",
       "mcap": 16960845780.435204,
@@ -16026,7 +16347,7 @@
       "notes": []
     },
     {
-      "rank": 444,
+      "rank": 451,
       "company_id": "plan:gen",
       "yahoo": "GEN",
       "mcap": 16871691561.460209,
@@ -16053,7 +16374,7 @@
       "notes": []
     },
     {
-      "rank": 445,
+      "rank": 452,
       "company_id": "plan:dgx",
       "yahoo": "DGX",
       "mcap": 16850544011.819,
@@ -16080,7 +16401,7 @@
       "notes": []
     },
     {
-      "rank": 446,
+      "rank": 453,
       "company_id": "r1000:0001617640",
       "yahoo": "ZG",
       "mcap": 16782149244.687286,
@@ -16173,7 +16494,7 @@
       ]
     },
     {
-      "rank": 447,
+      "rank": 454,
       "company_id": "plan:omc",
       "yahoo": "OMC",
       "mcap": 16742889095.902313,
@@ -16200,7 +16521,7 @@
       "notes": []
     },
     {
-      "rank": 448,
+      "rank": 455,
       "company_id": "r1000:0000790051",
       "yahoo": "CSL",
       "mcap": 16710878604.875214,
@@ -16227,7 +16548,7 @@
       "notes": []
     },
     {
-      "rank": 449,
+      "rank": 456,
       "company_id": "r1000:0001046102",
       "yahoo": "RBA",
       "mcap": 16667417613.209366,
@@ -16254,7 +16575,7 @@
       "notes": []
     },
     {
-      "rank": 450,
+      "rank": 457,
       "company_id": "r1000:0001447669",
       "yahoo": "TWLO",
       "mcap": 16660537589.420906,
@@ -16281,7 +16602,7 @@
       "notes": []
     },
     {
-      "rank": 451,
+      "rank": 458,
       "company_id": "plan:dg",
       "yahoo": "DG",
       "mcap": 16646174499.227905,
@@ -16308,7 +16629,7 @@
       "notes": []
     },
     {
-      "rank": 452,
+      "rank": 459,
       "company_id": "plan:pnr",
       "yahoo": "PNR",
       "mcap": 16585903186.21907,
@@ -16335,7 +16656,7 @@
       "notes": []
     },
     {
-      "rank": 453,
+      "rank": 460,
       "company_id": "r1000:0001056696",
       "yahoo": "MANH",
       "mcap": 16559952042.717407,
@@ -16362,7 +16683,7 @@
       "notes": []
     },
     {
-      "rank": 454,
+      "rank": 461,
       "company_id": "plan:moh",
       "yahoo": "MOH",
       "mcap": 16552536279.296875,
@@ -16389,7 +16710,7 @@
       "notes": []
     },
     {
-      "rank": 455,
+      "rank": 462,
       "company_id": "plan:j",
       "yahoo": "J",
       "mcap": 16549573478.306828,
@@ -16416,7 +16737,7 @@
       "notes": []
     },
     {
-      "rank": 456,
+      "rank": 463,
       "company_id": "r1000:0000105016",
       "yahoo": "WSO",
       "mcap": 16536757001.786407,
@@ -16544,7 +16865,7 @@
       ]
     },
     {
-      "rank": 457,
+      "rank": 464,
       "company_id": "plan:bldr",
       "yahoo": "BLDR",
       "mcap": 16499733020.661621,
@@ -16571,7 +16892,7 @@
       "notes": []
     },
     {
-      "rank": 458,
+      "rank": 465,
       "company_id": "r1000:0001618732",
       "yahoo": "NTNX",
       "mcap": 16496342024.454788,
@@ -16598,7 +16919,7 @@
       "notes": []
     },
     {
-      "rank": 459,
+      "rank": 466,
       "company_id": "plan:ball",
       "yahoo": "BALL",
       "mcap": 16410444151.278069,
@@ -16625,7 +16946,34 @@
       "notes": []
     },
     {
-      "rank": 460,
+      "rank": 467,
+      "company_id": "r1000:0000859737",
+      "yahoo": "HOLX",
+      "mcap": 16401041752.589998,
+      "cik": "0000859737",
+      "detail": {
+        "yahoo": "HOLX",
+        "cik": "0000859737",
+        "shares_status": "OK",
+        "shares": 226941217.0,
+        "shares_source": "dei:EntityCommonStockSharesOutstanding",
+        "shares_available_at": "2024-11-27 00:00:00+00:00",
+        "price_observed_at": "2024-12-30T21:00:00+00:00",
+        "close": 72.27,
+        "adjclose": null,
+        "split_events": 0,
+        "split_factor_after_as_of": 1.0,
+        "mcap_price": 72.27,
+        "mcap": 16401041752.589998,
+        "share_concepts_present": null,
+        "pit_filer_status": "DOMESTIC"
+      },
+      "cover_override": null,
+      "quality_flags": [],
+      "notes": []
+    },
+    {
+      "rank": 468,
       "company_id": "r1000:0001443646",
       "yahoo": "BAH",
       "mcap": 16400909497.826294,
@@ -16652,7 +17000,7 @@
       "notes": []
     },
     {
-      "rank": 461,
+      "rank": 469,
       "company_id": "plan:tsn",
       "yahoo": "TSN",
       "mcap": 16333781152.76767,
@@ -16738,7 +17086,7 @@
       ]
     },
     {
-      "rank": 462,
+      "rank": 470,
       "company_id": "etr",
       "yahoo": "ETR",
       "mcap": 16241407060.5,
@@ -16765,7 +17113,7 @@
       "notes": []
     },
     {
-      "rank": 463,
+      "rank": 471,
       "company_id": "plan:jbl",
       "yahoo": "JBL",
       "mcap": 16222336949.573822,
@@ -16792,7 +17140,7 @@
       "notes": []
     },
     {
-      "rank": 464,
+      "rank": 472,
       "company_id": "r1000:0000096223",
       "yahoo": "JEF",
       "mcap": 16207675540.768776,
@@ -16819,7 +17167,7 @@
       "notes": []
     },
     {
-      "rank": 465,
+      "rank": 473,
       "company_id": "plan:nwsa",
       "yahoo": "NWSA",
       "mcap": 16168099764.29181,
@@ -16866,7 +17214,7 @@
       "notes": []
     },
     {
-      "rank": 466,
+      "rank": 474,
       "company_id": "r1000:0001773383",
       "yahoo": "DT",
       "mcap": 16147985080.649529,
@@ -16893,7 +17241,7 @@
       "notes": []
     },
     {
-      "rank": 467,
+      "rank": 475,
       "company_id": "plan:gpc",
       "yahoo": "GPC",
       "mcap": 16103205881.909431,
@@ -16920,7 +17268,7 @@
       "notes": []
     },
     {
-      "rank": 468,
+      "rank": 476,
       "company_id": "plan:dltr",
       "yahoo": "DLTR",
       "mcap": 16078438241.389572,
@@ -16947,7 +17295,7 @@
       "notes": []
     },
     {
-      "rank": 469,
+      "rank": 477,
       "company_id": "r1000:0001082554",
       "yahoo": "UTHR",
       "mcap": 15966666429.132446,
@@ -16974,7 +17322,7 @@
       "notes": []
     },
     {
-      "rank": 470,
+      "rank": 478,
       "company_id": "r1000:0000110621",
       "yahoo": "RPM",
       "mcap": 15848357428.746567,
@@ -17001,7 +17349,7 @@
       "notes": []
     },
     {
-      "rank": 471,
+      "rank": 479,
       "company_id": "plan:iex",
       "yahoo": "IEX",
       "mcap": 15813298548.293518,
@@ -17028,7 +17376,7 @@
       "notes": []
     },
     {
-      "rank": 472,
+      "rank": 480,
       "company_id": "r1000:0001665918",
       "yahoo": "USFD",
       "mcap": 15758302666.286232,
@@ -17055,7 +17403,34 @@
       "notes": []
     },
     {
-      "rank": 473,
+      "rank": 481,
+      "company_id": "r1000:0001897982",
+      "yahoo": "AZPN",
+      "mcap": 15746017545.05,
+      "cik": "0001897982",
+      "detail": {
+        "yahoo": "AZPN",
+        "cik": "0001897982",
+        "shares_status": "OK",
+        "shares": 63249719.0,
+        "shares_source": "dei:EntityCommonStockSharesOutstanding",
+        "shares_available_at": "2024-11-04 00:00:00+00:00",
+        "price_observed_at": "2024-12-30T21:00:00+00:00",
+        "close": 248.95,
+        "adjclose": null,
+        "split_events": 0,
+        "split_factor_after_as_of": 1.0,
+        "mcap_price": 248.95,
+        "mcap": 15746017545.05,
+        "share_concepts_present": null,
+        "pit_filer_status": "DOMESTIC"
+      },
+      "cover_override": null,
+      "quality_flags": [],
+      "notes": []
+    },
+    {
+      "rank": 482,
       "company_id": "plan:kim",
       "yahoo": "KIM",
       "mcap": 15658910776.04002,
@@ -17082,7 +17457,7 @@
       "notes": []
     },
     {
-      "rank": 474,
+      "rank": 483,
       "company_id": "plan:mas",
       "yahoo": "MAS",
       "mcap": 15646108996.105293,
@@ -17109,7 +17484,7 @@
       "notes": []
     },
     {
-      "rank": 475,
+      "rank": 484,
       "company_id": "r1000:0000912593",
       "yahoo": "SUI",
       "mcap": 15630790280.135635,
@@ -17136,7 +17511,7 @@
       "notes": []
     },
     {
-      "rank": 476,
+      "rank": 485,
       "company_id": "plan:expd",
       "yahoo": "EXPD",
       "mcap": 15509326933.972458,
@@ -17163,7 +17538,7 @@
       "notes": []
     },
     {
-      "rank": 477,
+      "rank": 486,
       "company_id": "r1000:0001758730",
       "yahoo": "TW",
       "mcap": 15472376489.756592,
@@ -17226,7 +17601,7 @@
       ]
     },
     {
-      "rank": 478,
+      "rank": 487,
       "company_id": "plan:eg",
       "yahoo": "EG",
       "mcap": 15458537138.015442,
@@ -17253,7 +17628,7 @@
       "notes": []
     },
     {
-      "rank": 479,
+      "rank": 488,
       "company_id": "r1000:0001166003",
       "yahoo": "XPO",
       "mcap": 15433726168.823547,
@@ -17280,7 +17655,7 @@
       "notes": []
     },
     {
-      "rank": 480,
+      "rank": 489,
       "company_id": "cme",
       "yahoo": "CME",
       "mcap": 15429988690.63797,
@@ -17307,7 +17682,7 @@
       "notes": []
     },
     {
-      "rank": 481,
+      "rank": 490,
       "company_id": "plan:algn",
       "yahoo": "ALGN",
       "mcap": 15421829271.493835,
@@ -17334,7 +17709,7 @@
       "notes": []
     },
     {
-      "rank": 482,
+      "rank": 491,
       "company_id": "r1000:0001331875",
       "yahoo": "FNF",
       "mcap": 15345686900.79537,
@@ -17361,7 +17736,7 @@
       "notes": []
     },
     {
-      "rank": 483,
+      "rank": 492,
       "company_id": "plan:tpr",
       "yahoo": "TPR",
       "mcap": 15338412993.883133,
@@ -17388,7 +17763,7 @@
       "notes": []
     },
     {
-      "rank": 484,
+      "rank": 493,
       "company_id": "fix",
       "yahoo": "FIX",
       "mcap": 15279529527.955627,
@@ -17415,7 +17790,7 @@
       "notes": []
     },
     {
-      "rank": 485,
+      "rank": 494,
       "company_id": "plan:lnt",
       "yahoo": "LNT",
       "mcap": 15224031124.507172,
@@ -17442,7 +17817,7 @@
       "notes": []
     },
     {
-      "rank": 486,
+      "rank": 495,
       "company_id": "mrna",
       "yahoo": "MRNA",
       "mcap": 15154125808.209766,
@@ -17469,7 +17844,7 @@
       "notes": []
     },
     {
-      "rank": 487,
+      "rank": 496,
       "company_id": "plan:avy",
       "yahoo": "AVY",
       "mcap": 15044062811.476028,
@@ -17496,7 +17871,7 @@
       "notes": []
     },
     {
-      "rank": 488,
+      "rank": 497,
       "company_id": "r1000:0001101302",
       "yahoo": "ENTG",
       "mcap": 15030337176.182762,
@@ -17523,7 +17898,7 @@
       "notes": []
     },
     {
-      "rank": 489,
+      "rank": 498,
       "company_id": "plan:ffiv",
       "yahoo": "FFIV",
       "mcap": 14799080864.770279,
@@ -17550,7 +17925,7 @@
       "notes": []
     },
     {
-      "rank": 490,
+      "rank": 499,
       "company_id": "r1000:0000726958",
       "yahoo": "CASY",
       "mcap": 14798769232.895142,
@@ -17577,7 +17952,7 @@
       "notes": []
     },
     {
-      "rank": 491,
+      "rank": 500,
       "company_id": "plan:vtrs",
       "yahoo": "VTRS",
       "mcap": 14776680263.355867,
@@ -17602,349 +17977,10 @@
       "cover_override": null,
       "quality_flags": [],
       "notes": []
-    },
-    {
-      "rank": 492,
-      "company_id": "r1000:0001333986",
-      "yahoo": "EQH",
-      "mcap": 14729991259.203556,
-      "cik": "0001333986",
-      "detail": {
-        "yahoo": "EQH",
-        "cik": "0001333986",
-        "shares_status": "OK",
-        "shares": 313337413.0,
-        "shares_source": "dei:EntityCommonStockSharesOutstanding",
-        "shares_available_at": "2024-11-05 00:00:00+00:00",
-        "price_observed_at": "2024-12-30T14:30:00+00:00",
-        "close": 47.0099983215332,
-        "adjclose": 45.09413146972656,
-        "split_events": 0,
-        "split_factor_after_as_of": 1.0,
-        "mcap_price": 47.0099983215332,
-        "mcap": 14729991259.203556,
-        "share_concepts_present": null,
-        "pit_filer_status": "DOMESTIC"
-      },
-      "cover_override": null,
-      "quality_flags": [],
-      "notes": []
-    },
-    {
-      "rank": 493,
-      "company_id": "cohr",
-      "yahoo": "COHR",
-      "mcap": 14668331486.483582,
-      "cik": "0000820318",
-      "detail": {
-        "yahoo": "COHR",
-        "cik": "0000820318",
-        "shares_status": "OK",
-        "shares": 154663982.0,
-        "shares_source": "dei:EntityCommonStockSharesOutstanding",
-        "shares_available_at": "2024-11-06 00:00:00+00:00",
-        "price_observed_at": "2024-12-30T14:30:00+00:00",
-        "close": 94.83999633789062,
-        "adjclose": 94.83999633789062,
-        "split_events": 0,
-        "split_factor_after_as_of": 1.0,
-        "mcap_price": 94.83999633789062,
-        "mcap": 14668331486.483582,
-        "share_concepts_present": null,
-        "pit_filer_status": "DOMESTIC"
-      },
-      "cover_override": null,
-      "quality_flags": [],
-      "notes": []
-    },
-    {
-      "rank": 494,
-      "company_id": "plan:cf",
-      "yahoo": "CF",
-      "mcap": 14622894421.443329,
-      "cik": "0001324404",
-      "detail": {
-        "yahoo": "CF",
-        "cik": "0001324404",
-        "shares_status": "OK",
-        "shares": 174019929.0,
-        "shares_source": "dei:EntityCommonStockSharesOutstanding",
-        "shares_available_at": "2024-10-31 00:00:00+00:00",
-        "price_observed_at": "2024-12-30T14:30:00+00:00",
-        "close": 84.02999877929688,
-        "adjclose": 80.86802673339844,
-        "split_events": 0,
-        "split_factor_after_as_of": 1.0,
-        "mcap_price": 84.02999877929688,
-        "mcap": 14622894421.443329,
-        "share_concepts_present": null,
-        "pit_filer_status": "DOMESTIC"
-      },
-      "cover_override": null,
-      "quality_flags": [],
-      "notes": []
-    },
-    {
-      "rank": 495,
-      "company_id": "plan:bax",
-      "yahoo": "BAX",
-      "mcap": 14618122015.52785,
-      "cik": "0000010456",
-      "detail": {
-        "yahoo": "BAX",
-        "cik": "0000010456",
-        "shares_status": "OK",
-        "shares": 510587581.0,
-        "shares_source": "dei:EntityCommonStockSharesOutstanding",
-        "shares_available_at": "2024-11-12 00:00:00+00:00",
-        "price_observed_at": "2024-12-30T14:30:00+00:00",
-        "close": 28.6299991607666,
-        "adjclose": 28.082035064697266,
-        "split_events": 0,
-        "split_factor_after_as_of": 1.0,
-        "mcap_price": 28.6299991607666,
-        "mcap": 14618122015.52785,
-        "share_concepts_present": null,
-        "pit_filer_status": "DOMESTIC"
-      },
-      "cover_override": null,
-      "quality_flags": [],
-      "notes": []
-    },
-    {
-      "rank": 496,
-      "company_id": "r1000:0001262823",
-      "yahoo": "WLK",
-      "mcap": 14601672503.771072,
-      "cik": "0001262823",
-      "detail": {
-        "yahoo": "WLK",
-        "cik": "0001262823",
-        "shares_status": "OK",
-        "shares": 128705799.0,
-        "shares_source": "dei:EntityCommonStockSharesOutstanding",
-        "shares_available_at": "2024-11-06 00:00:00+00:00",
-        "price_observed_at": "2024-12-30T14:30:00+00:00",
-        "close": 113.44999694824219,
-        "adjclose": 108.50647735595703,
-        "split_events": 0,
-        "split_factor_after_as_of": 1.0,
-        "mcap_price": 113.44999694824219,
-        "mcap": 14601672503.771072,
-        "share_concepts_present": null,
-        "pit_filer_status": "DOMESTIC"
-      },
-      "cover_override": null,
-      "quality_flags": [],
-      "notes": []
-    },
-    {
-      "rank": 497,
-      "company_id": "r1000:0001370946",
-      "yahoo": "OC",
-      "mcap": 14548162684.238434,
-      "cik": "0001370946",
-      "detail": {
-        "yahoo": "OC",
-        "cik": "0001370946",
-        "shares_status": "OK",
-        "shares": 85784321.0,
-        "shares_source": "dei:EntityCommonStockSharesOutstanding",
-        "shares_available_at": "2024-11-06 00:00:00+00:00",
-        "price_observed_at": "2024-12-30T14:30:00+00:00",
-        "close": 169.58999633789062,
-        "adjclose": 163.1256866455078,
-        "split_events": 0,
-        "split_factor_after_as_of": 1.0,
-        "mcap_price": 169.58999633789062,
-        "mcap": 14548162684.238434,
-        "share_concepts_present": null,
-        "pit_filer_status": "DOMESTIC"
-      },
-      "cover_override": null,
-      "quality_flags": [],
-      "notes": []
-    },
-    {
-      "rank": 498,
-      "company_id": "plan:dpz",
-      "yahoo": "DPZ",
-      "mcap": 14528293826.313293,
-      "cik": "0001286681",
-      "detail": {
-        "yahoo": "DPZ",
-        "cik": "0001286681",
-        "shares_status": "OK",
-        "shares": 34531978.0,
-        "shares_source": "dei:EntityCommonStockSharesOutstanding",
-        "shares_available_at": "2024-10-10 00:00:00+00:00",
-        "price_observed_at": "2024-12-30T14:30:00+00:00",
-        "close": 420.7200012207031,
-        "adjclose": 406.98358154296875,
-        "split_events": 0,
-        "split_factor_after_as_of": 1.0,
-        "mcap_price": 420.7200012207031,
-        "mcap": 14528293826.313293,
-        "share_concepts_present": null,
-        "pit_filer_status": "DOMESTIC"
-      },
-      "cover_override": null,
-      "quality_flags": [],
-      "notes": []
-    },
-    {
-      "rank": 499,
-      "company_id": "r1000:0001289419",
-      "yahoo": "MORN",
-      "mcap": 14480701974.107391,
-      "cik": "0001289419",
-      "detail": {
-        "yahoo": "MORN",
-        "cik": "0001289419",
-        "shares_status": "OK",
-        "shares": 42884181.0,
-        "shares_source": "dei:EntityCommonStockSharesOutstanding",
-        "shares_available_at": "2024-10-25 00:00:00+00:00",
-        "price_observed_at": "2024-12-30T14:30:00+00:00",
-        "close": 337.6700134277344,
-        "adjclose": 332.7258605957031,
-        "split_events": 0,
-        "split_factor_after_as_of": 1.0,
-        "mcap_price": 337.6700134277344,
-        "mcap": 14480701974.107391,
-        "share_concepts_present": null,
-        "pit_filer_status": "DOMESTIC"
-      },
-      "cover_override": null,
-      "quality_flags": [],
-      "notes": []
-    },
-    {
-      "rank": 500,
-      "company_id": "r1000:0000861884",
-      "yahoo": "RS",
-      "mcap": 14407896748.144775,
-      "cik": "0000861884",
-      "detail": {
-        "yahoo": "RS",
-        "cik": "0000861884",
-        "shares_status": "OK",
-        "shares": 54120264.0,
-        "shares_source": "dei:EntityCommonStockSharesOutstanding",
-        "shares_available_at": "2024-10-31 00:00:00+00:00",
-        "price_observed_at": "2024-12-30T14:30:00+00:00",
-        "close": 266.2200012207031,
-        "adjclose": 259.0342712402344,
-        "split_events": 0,
-        "split_factor_after_as_of": 1.0,
-        "mcap_price": 266.2200012207031,
-        "mcap": 14407896748.144775,
-        "share_concepts_present": null,
-        "pit_filer_status": "DOMESTIC"
-      },
-      "cover_override": null,
-      "quality_flags": [],
-      "notes": []
     }
   ],
   "top500_quality_flag_counts": {},
   "reference_not_rankable_detail": {
-    "ANSS": {
-      "yahoo": "ANSS",
-      "cik": "0001013462",
-      "shares_status": "OK",
-      "shares": 87449954.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-11-06 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": "MISSING",
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
-    "AVB": {
-      "yahoo": "AVB",
-      "cik": "0000915912",
-      "shares_status": "OK",
-      "shares": 142237233.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-11-12 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": 1,
-      "split_factor_after_as_of": 2.793,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
-    "CTRA": {
-      "yahoo": "CTRA",
-      "cik": "0000858470",
-      "shares_status": "OK",
-      "shares": 736613020.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-11-01 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": "MISSING",
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
-    "DAY": {
-      "yahoo": "DAY",
-      "cik": "0001725057",
-      "shares_status": "OK",
-      "shares": 157700000.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-10-30 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": "MISSING",
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
-    "DFS": {
-      "yahoo": "DFS",
-      "cik": "0001393612",
-      "shares_status": "OK",
-      "shares": 251226920.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-12-23 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": "MISSING",
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
-    "EA": {
-      "yahoo": "EA",
-      "cik": "0000712515",
-      "shares_status": "OK",
-      "shares": 262272821.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-11-01 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
     "EQR": {
       "yahoo": "EQR",
       "cik": "0000906107",
@@ -17961,368 +17997,6 @@
       "mcap": null,
       "share_concepts_present": null
     },
-    "HES": {
-      "yahoo": "HES",
-      "cik": "0000004447",
-      "shares_status": "OK",
-      "shares": 308118241.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-11-06 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": "MISSING",
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
-    "HOLX": {
-      "yahoo": "HOLX",
-      "cik": "0000859737",
-      "shares_status": "OK",
-      "shares": 226941217.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-11-27 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": "MISSING",
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
-    "IPG": {
-      "yahoo": "IPG",
-      "cik": "0000051644",
-      "shares_status": "OK",
-      "shares": 372508618.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-10-23 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": "MISSING",
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
-    "JNPR": {
-      "yahoo": "JNPR",
-      "cik": "0001043604",
-      "shares_status": "OK",
-      "shares": 331089057.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-10-31 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": "MISSING",
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
-    "K": {
-      "yahoo": "K",
-      "cik": "0000055067",
-      "shares_status": "OK",
-      "shares": 344697894.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-10-31 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": "MISSING",
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
-    "RL": {
-      "yahoo": "RL",
-      "cik": "0001037038",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 232.22000122070312,
-      "adjclose": 228.13589477539062,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 232.22000122070312,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities": {
-          "end": "2013-03-30",
-          "val": 950000,
-          "filed": "2013-05-23",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesNewIssues": {
-          "end": "2010-07-03",
-          "val": 10000000,
-          "filed": "2013-05-23",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2022-04-02",
-          "val": 0,
-          "filed": "2022-05-24",
-          "form": "10-K"
-        },
-        "us-gaap:TreasuryStockShares": {
-          "end": "2011-04-02",
-          "val": 25800000,
-          "filed": "2011-05-26",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-28",
-          "val": 64300000,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-28",
-          "val": 62900000,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        }
-      }
-    },
-    "UHS": {
-      "yahoo": "UHS",
-      "cik": "0000352915",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 178.3699951171875,
-      "adjclose": 177.0122833251953,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 178.3699951171875,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:StockIssuedDuringPeriodSharesRestrictedStockAwardForfeited": {
-          "end": "2010-12-31",
-          "val": 8000,
-          "filed": "2012-02-27",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesShareBasedCompensation": {
-          "end": "2019-12-31",
-          "val": 1800000,
-          "filed": "2020-02-26",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2023-12-31",
-          "val": 2575468,
-          "filed": "2024-02-27",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment": {
-          "end": "2024-09-30",
-          "val": 1297000,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 68170000,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 66873000,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        }
-      }
-    },
-    "WBA": {
-      "yahoo": "WBA",
-      "cik": "0001618921",
-      "shares_status": "OK",
-      "shares": 864617130.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-10-15 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": "MISSING",
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
-    "DDS": {
-      "yahoo": "DDS",
-      "cik": "0000028917",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 440.07000732421875,
-      "adjclose": 420.2819519042969,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 440.07000732421875,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:StockIssuedDuringPeriodSharesShareBasedCompensation": {
-          "end": "2022-01-29",
-          "val": 14806,
-          "filed": "2022-03-29",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesShareBasedCompensationGross": {
-          "end": "2024-11-02",
-          "val": 3600,
-          "filed": "2024-12-06",
-          "form": "10-Q"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2013-02-02",
-          "val": 2245000,
-          "filed": "2015-03-25",
-          "form": "10-K"
-        },
-        "us-gaap:TreasuryStockShares": {
-          "end": "2022-01-29",
-          "val": 105196293,
-          "filed": "2022-03-29",
-          "form": "10-K"
-        },
-        "us-gaap:TreasuryStockSharesAcquired": {
-          "end": "2024-11-02",
-          "val": 293583,
-          "filed": "2024-12-06",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-11-02",
-          "val": 16191000,
-          "filed": "2024-12-06",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-11-02",
-          "val": 16191000,
-          "filed": "2024-12-06",
-          "form": "10-Q"
-        }
-      }
-    },
-    "NYT": {
-      "yahoo": "NYT",
-      "cik": "0000071691",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 52.459999084472656,
-      "adjclose": 51.366790771484375,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 52.459999084472656,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:PreferredStockSharesIssued": {
-          "end": "2023-12-31",
-          "val": 0,
-          "filed": "2024-02-20",
-          "form": "10-K"
-        },
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2023-12-31",
-          "val": 0,
-          "filed": "2024-02-20",
-          "form": "10-K"
-        },
-        "us-gaap:SharesOutstanding": {
-          "end": "2011-12-25",
-          "val": 18166000,
-          "filed": "2012-02-23",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities": {
-          "end": "2014-12-28",
-          "val": 1426,
-          "filed": "2017-02-22",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesEmployeeBenefitPlan": {
-          "end": "2015-12-27",
-          "val": 0,
-          "filed": "2017-02-22",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesEmployeeStockPurchasePlans": {
-          "end": "2024-09-30",
-          "val": 112800,
-          "filed": "2024-11-04",
-          "form": "10-Q"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesOther": {
-          "end": "2012-12-30",
-          "val": 0,
-          "filed": "2013-02-28",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesRestrictedStockAwardForfeited": {
-          "end": "2011-12-25",
-          "val": 0,
-          "filed": "2012-02-23",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesRestrictedStockAwardGross": {
-          "end": "2024-09-30",
-          "val": 597221,
-          "filed": "2024-11-04",
-          "form": "10-Q"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2023-12-31",
-          "val": 0,
-          "filed": "2024-02-20",
-          "form": "10-K"
-        },
-        "us-gaap:TreasuryStockSharesAcquired": {
-          "end": "2019-12-29",
-          "val": 0,
-          "filed": "2020-02-27",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment": {
-          "end": "2014-09-28",
-          "val": 0,
-          "filed": "2014-11-05",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 165834000,
-          "filed": "2024-11-04",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 164535000,
-          "filed": "2024-11-04",
-          "form": "10-Q"
-        }
-      }
-    },
     "WOLF": {
       "yahoo": "WOLF",
       "cik": "0000895419",
@@ -18338,472 +18012,6 @@
       "mcap_price": null,
       "mcap": null,
       "share_concepts_present": null
-    },
-    "SAM": {
-      "yahoo": "SAM",
-      "cik": "0000949870",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 298.1499938964844,
-      "adjclose": 298.1499938964844,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 298.1499938964844,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2024-09-28",
-          "val": 6164,
-          "filed": "2024-10-24",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment": {
-          "end": "2012-03-31",
-          "val": 690000,
-          "filed": "2012-05-02",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-28",
-          "val": 11871000,
-          "filed": "2024-10-24",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-28",
-          "val": 11878000,
-          "filed": "2024-10-24",
-          "form": "10-Q"
-        }
-      }
-    },
-    "BSY": {
-      "yahoo": "BSY",
-      "cik": "0001031308",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 47.58000183105469,
-      "adjclose": 47.01176071166992,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 47.58000183105469,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:PreferredStockSharesIssued": {
-          "end": "2024-09-30",
-          "val": 0,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        },
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 0,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment": {
-          "end": "2024-06-30",
-          "val": 1361265,
-          "filed": "2024-08-06",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 333724425,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 314820679,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2022-12-31",
-          "val": 900000,
-          "filed": "2024-02-27",
-          "form": "10-K"
-        }
-      }
-    },
-    "LAMR": {
-      "yahoo": "LAMR",
-      "cik": "0001090425",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 121.37000274658203,
-      "adjclose": 111.19173431396484,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 121.37000274658203,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities": {
-          "end": "2017-12-31",
-          "val": 190280,
-          "filed": "2020-02-20",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesEmployeeStockPurchasePlans": {
-          "end": "2024-09-30",
-          "val": 27799,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesNewIssues": {
-          "end": "2019-12-31",
-          "val": 266410,
-          "filed": "2022-02-25",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesPurchaseOfAssets": {
-          "end": "2018-12-31",
-          "val": 163137,
-          "filed": "2021-02-26",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesShareBasedCompensation": {
-          "end": "2024-06-30",
-          "val": 5652,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2024-09-30",
-          "val": 34850,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:TreasuryStockShares": {
-          "end": "2022-09-30",
-          "val": 783696,
-          "filed": "2022-11-04",
-          "form": "10-Q"
-        },
-        "us-gaap:TreasuryStockSharesAcquired": {
-          "end": "2024-03-31",
-          "val": 49623,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:TreasuryStockSharesRetired": {
-          "end": "2014-12-31",
-          "val": 17270930,
-          "filed": "2017-02-24",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 102547490,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 102223918,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:PreferredStockSharesIssued": {
-          "end": "2024-09-30",
-          "val": 5720,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 5720,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:TreasuryStockCommonShares": {
-          "end": "2024-09-30",
-          "val": 890558,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        }
-      }
-    },
-    "DLB": {
-      "yahoo": "DLB",
-      "cik": "0001308547",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 78.05999755859375,
-      "adjclose": 75.32555389404297,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 78.05999755859375,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:ShareBasedCompensationSharesAuthorizedUnderStockOptionPlansExercisePriceRangeNumberOfOutstandingOptions": {
-          "end": "2017-09-29",
-          "val": 8741000,
-          "filed": "2017-11-16",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2024-09-27",
-          "val": 462000,
-          "filed": "2024-11-19",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-27",
-          "val": 97325000,
-          "filed": "2024-11-19",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-27",
-          "val": 95544000,
-          "filed": "2024-11-19",
-          "form": "10-K"
-        }
-      }
-    },
-    "UAA": {
-      "yahoo": "UAA",
-      "cik": "0001336917",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 8.210000038146973,
-      "adjclose": 8.210000038146973,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 8.210000038146973,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2024-09-30",
-          "val": 0,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockSplits": {
-          "end": "2014-04-14",
-          "val": 1,
-          "filed": "2016-02-22",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment": {
-          "end": "2024-09-30",
-          "val": 0,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 433950000,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 433950000,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        }
-      }
-    },
-    "EVR": {
-      "yahoo": "EVR",
-      "cik": "0001360901",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 277.8999938964844,
-      "adjclose": 272.2976379394531,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 277.8999938964844,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:TreasuryStockShares": {
-          "end": "2023-09-30",
-          "val": 44324803,
-          "filed": "2023-11-02",
-          "form": "10-Q"
-        },
-        "us-gaap:TreasuryStockSharesAcquired": {
-          "end": "2024-09-30",
-          "val": 2203000,
-          "filed": "2024-11-06",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 41325000,
-          "filed": "2024-11-06",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 38411000,
-          "filed": "2024-11-06",
-          "form": "10-Q"
-        },
-        "us-gaap:TreasuryStockCommonShares": {
-          "end": "2024-09-30",
-          "val": 46543420,
-          "filed": "2024-11-06",
-          "form": "10-Q"
-        }
-      }
-    },
-    "APPF": {
-      "yahoo": "APPF",
-      "cik": "0001433195",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 247.22999572753906,
-      "adjclose": 247.22999572753906,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 247.22999572753906,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:PreferredStockSharesIssued": {
-          "end": "2023-12-31",
-          "val": 0,
-          "filed": "2024-02-01",
-          "form": "10-K"
-        },
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2023-12-31",
-          "val": 0,
-          "filed": "2024-02-01",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2024-09-30",
-          "val": 250000,
-          "filed": "2024-10-25",
-          "form": "10-Q"
-        },
-        "us-gaap:TemporaryEquitySharesIssued": {
-          "end": "2015-12-31",
-          "val": 0,
-          "filed": "2016-02-29",
-          "form": "10-K"
-        },
-        "us-gaap:TemporaryEquitySharesOutstanding": {
-          "end": "2015-12-31",
-          "val": 0,
-          "filed": "2016-02-29",
-          "form": "10-K"
-        },
-        "us-gaap:TreasuryStockShares": {
-          "end": "2021-12-31",
-          "val": 419000,
-          "filed": "2022-02-28",
-          "form": "10-K"
-        },
-        "us-gaap:TreasuryStockSharesAcquired": {
-          "end": "2020-12-31",
-          "val": 48002,
-          "filed": "2023-02-09",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 36752000,
-          "filed": "2024-10-25",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesIssuedBasic": {
-          "end": "2024-09-30",
-          "val": 36214000,
-          "filed": "2024-10-25",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 36211000,
-          "filed": "2024-10-25",
-          "form": "10-Q"
-        }
-      }
-    },
-    "DBX": {
-      "yahoo": "DBX",
-      "cik": "0001467623",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 30.25,
-      "adjclose": 30.25,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 30.25,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:PreferredStockSharesIssued": {
-          "end": "2023-12-31",
-          "val": 0,
-          "filed": "2024-02-16",
-          "form": "10-K"
-        },
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2023-12-31",
-          "val": 0,
-          "filed": "2024-02-16",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesNewIssues": {
-          "end": "2018-03-27",
-          "val": 26822409,
-          "filed": "2020-02-21",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2023-12-31",
-          "val": 200000,
-          "filed": "2024-02-16",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 327100000,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 323900000,
-          "filed": "2024-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:CommonStockSharesIssued": {
-          "end": "2021-12-31",
-          "val": 292700000,
-          "filed": "2023-02-23",
-          "form": "10-K"
-        }
-      }
     },
     "H": {
       "yahoo": "H",
@@ -18935,47 +18143,6 @@
         }
       }
     },
-    "AMH": {
-      "yahoo": "AMH",
-      "cik": "0001562401",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 37.040000915527344,
-      "adjclose": 34.622920989990234,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 37.040000915527344,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:PreferredStockSharesIssued": {
-          "end": "2024-09-30",
-          "val": 9200000,
-          "filed": "2024-10-30",
-          "form": "10-Q"
-        },
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 9200000,
-          "filed": "2024-10-30",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 367294979,
-          "filed": "2024-10-30",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 366757369,
-          "filed": "2024-10-30",
-          "form": "10-Q"
-        }
-      }
-    },
     "OZK": {
       "yahoo": "OZK",
       "cik": "0001569650",
@@ -18992,405 +18159,21 @@
       "mcap": null,
       "share_concepts_present": null
     },
-    "LBTYA": {
-      "yahoo": "LBTYA",
-      "cik": "0001570585",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 12.529999732971191,
-      "adjclose": 12.529999732971191,
-      "split_events": 1,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 12.529999732971191,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 370673984,
-          "filed": "2024-10-29",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 370673984,
-          "filed": "2024-10-29",
-          "form": "10-Q"
-        }
-      }
-    },
-    "S": {
-      "yahoo": "S",
-      "cik": "0001583708",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 22.459999084472656,
-      "adjclose": 22.459999084472656,
+    "PINC": {
+      "yahoo": "PINC",
+      "cik": "0001577916",
+      "shares_status": "OK",
+      "shares": 96108595.0,
+      "shares_source": "dei:EntityCommonStockSharesOutstanding",
+      "shares_available_at": "2024-11-05 00:00:00+00:00",
+      "price_observed_at": null,
+      "close": null,
+      "adjclose": null,
       "split_events": 0,
       "split_factor_after_as_of": 1.0,
-      "mcap_price": 22.459999084472656,
+      "mcap_price": null,
       "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:PreferredStockSharesIssued": {
-          "end": "2024-10-31",
-          "val": 0,
-          "filed": "2024-12-04",
-          "form": "10-Q"
-        },
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2024-10-31",
-          "val": 0,
-          "filed": "2024-12-04",
-          "form": "10-Q"
-        },
-        "us-gaap:TemporaryEquitySharesIssued": {
-          "end": "2022-01-31",
-          "val": 0,
-          "filed": "2022-04-07",
-          "form": "10-K"
-        },
-        "us-gaap:TemporaryEquitySharesOutstanding": {
-          "end": "2024-01-31",
-          "val": 0,
-          "filed": "2024-03-27",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-10-31",
-          "val": 312583956,
-          "filed": "2024-12-04",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-10-31",
-          "val": 312583956,
-          "filed": "2024-12-04",
-          "form": "10-Q"
-        }
-      }
-    },
-    "VIRT": {
-      "yahoo": "VIRT",
-      "cik": "0001592386",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 35.939998626708984,
-      "adjclose": 34.55331039428711,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 35.939998626708984,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:TreasuryStockCommonShares": {
-          "end": "2024-09-30",
-          "val": 50831294,
-          "filed": "2024-10-28",
-          "form": "10-Q"
-        },
-        "us-gaap:TreasuryStockShares": {
-          "end": "2016-06-30",
-          "val": 169649,
-          "filed": "2016-08-12",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 88340592,
-          "filed": "2024-10-28",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 88093082,
-          "filed": "2024-10-28",
-          "form": "10-Q"
-        }
-      }
-    },
-    "W": {
-      "yahoo": "W",
-      "cik": "0001616707",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 44.619998931884766,
-      "adjclose": 44.619998931884766,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 44.619998931884766,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:PreferredStockSharesIssued": {
-          "end": "2023-12-31",
-          "val": 0,
-          "filed": "2024-02-22",
-          "form": "10-K"
-        },
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2023-12-31",
-          "val": 0,
-          "filed": "2024-02-22",
-          "form": "10-K"
-        },
-        "us-gaap:TemporaryEquitySharesIssued": {
-          "end": "2024-09-30",
-          "val": 0,
-          "filed": "2024-11-01",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment": {
-          "end": "2022-12-31",
-          "val": 0,
-          "filed": "2023-02-23",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 122000000,
-          "filed": "2024-11-01",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 122000000,
-          "filed": "2024-11-01",
-          "form": "10-Q"
-        }
-      }
-    },
-    "GTLB": {
-      "yahoo": "GTLB",
-      "cik": "0001653482",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 56.470001220703125,
-      "adjclose": 56.470001220703125,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 56.470001220703125,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:PreferredStockSharesIssued": {
-          "end": "2024-10-31",
-          "val": 0,
-          "filed": "2024-12-06",
-          "form": "10-Q"
-        },
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2024-10-31",
-          "val": 0,
-          "filed": "2024-12-06",
-          "form": "10-Q"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2024-10-31",
-          "val": 1778000,
-          "filed": "2024-12-06",
-          "form": "10-Q"
-        },
-        "us-gaap:TemporaryEquitySharesIssued": {
-          "end": "2024-01-31",
-          "val": 0,
-          "filed": "2024-03-26",
-          "form": "10-K"
-        },
-        "us-gaap:TemporaryEquitySharesOutstanding": {
-          "end": "2024-01-31",
-          "val": 0,
-          "filed": "2024-03-26",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-10-31",
-          "val": 159756000,
-          "filed": "2024-12-06",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-10-31",
-          "val": 159756000,
-          "filed": "2024-12-06",
-          "form": "10-Q"
-        }
-      }
-    },
-    "OKTA": {
-      "yahoo": "OKTA",
-      "cik": "0001660134",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 79.63999938964844,
-      "adjclose": 79.63999938964844,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 79.63999938964844,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:PreferredStockSharesIssued": {
-          "end": "2024-10-31",
-          "val": 0,
-          "filed": "2024-12-04",
-          "form": "10-Q"
-        },
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2024-10-31",
-          "val": 0,
-          "filed": "2024-12-04",
-          "form": "10-Q"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesRestrictedStockAwardNetOfForfeitures": {
-          "end": "2020-01-31",
-          "val": 0,
-          "filed": "2020-03-06",
-          "form": "10-K"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2024-01-31",
-          "val": 879000,
-          "filed": "2024-03-01",
-          "form": "10-K"
-        },
-        "us-gaap:TemporaryEquitySharesIssued": {
-          "end": "2018-01-31",
-          "val": 0,
-          "filed": "2018-03-12",
-          "form": "10-K"
-        },
-        "us-gaap:TemporaryEquitySharesOutstanding": {
-          "end": "2020-01-31",
-          "val": 0,
-          "filed": "2020-03-06",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-10-31",
-          "val": 169768000,
-          "filed": "2024-12-04",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-10-31",
-          "val": 168775000,
-          "filed": "2024-12-04",
-          "form": "10-Q"
-        }
-      }
-    },
-    "SNDR": {
-      "yahoo": "SNDR",
-      "cik": "0001692063",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 29.31999969482422,
-      "adjclose": 28.592741012573242,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 29.31999969482422,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:StockIssuedDuringPeriodSharesIssuedForServices": {
-          "end": "2017-09-30",
-          "val": 100000,
-          "filed": "2017-11-08",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 176100000,
-          "filed": "2024-11-06",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 175600000,
-          "filed": "2024-11-06",
-          "form": "10-Q"
-        }
-      }
-    },
-    "PATH": {
-      "yahoo": "PATH",
-      "cik": "0001734722",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 12.739999771118164,
-      "adjclose": 12.739999771118164,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 12.739999771118164,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:PreferredStockSharesIssued": {
-          "end": "2024-10-31",
-          "val": 0,
-          "filed": "2024-12-09",
-          "form": "10-Q"
-        },
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2024-10-31",
-          "val": 0,
-          "filed": "2024-12-09",
-          "form": "10-Q"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesStockOptionsExercised": {
-          "end": "2024-10-31",
-          "val": 2673000,
-          "filed": "2024-12-09",
-          "form": "10-Q"
-        },
-        "us-gaap:TemporaryEquitySharesIssued": {
-          "end": "2021-01-31",
-          "val": 294257000,
-          "filed": "2023-03-24",
-          "form": "10-K"
-        },
-        "us-gaap:TemporaryEquitySharesOutstanding": {
-          "end": "2022-01-31",
-          "val": 0,
-          "filed": "2024-03-27",
-          "form": "10-K"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-10-31",
-          "val": 562950000,
-          "filed": "2024-12-09",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-10-31",
-          "val": 562950000,
-          "filed": "2024-12-09",
-          "form": "10-Q"
-        },
-        "us-gaap:TreasuryStockCommonShares": {
-          "end": "2024-10-31",
-          "val": 36877000,
-          "filed": "2024-12-09",
-          "form": "10-Q"
-        }
-      }
+      "share_concepts_present": null
     },
     "RKT": {
       "yahoo": "RKT",
@@ -19423,100 +18206,6 @@
           "end": "2024-09-30",
           "val": 139475981,
           "filed": "2024-11-12",
-          "form": "10-Q"
-        }
-      }
-    },
-    "CNM": {
-      "yahoo": "CNM",
-      "cik": "0001856525",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 50.77000045776367,
-      "adjclose": 50.77000045776367,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 50.77000045776367,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2024-10-27",
-          "val": 0,
-          "filed": "2024-12-03",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment": {
-          "end": "2024-10-27",
-          "val": 9973183,
-          "filed": "2024-12-03",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-10-27",
-          "val": 202146712,
-          "filed": "2024-12-03",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesIssuedBasic": {
-          "end": "2021-08-01",
-          "val": 138978366,
-          "filed": "2021-09-14",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-10-27",
-          "val": 192173529,
-          "filed": "2024-12-03",
-          "form": "10-Q"
-        },
-        "us-gaap:StockIssuedDuringPeriodSharesRestrictedStockAwardForfeited": {
-          "end": "2023-01-29",
-          "val": 0,
-          "filed": "2023-03-28",
-          "form": "10-K"
-        }
-      }
-    },
-    "BROS": {
-      "yahoo": "BROS",
-      "cik": "0001866581",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 52.54999923706055,
-      "adjclose": 52.54999923706055,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 52.54999923706055,
-      "mcap": null,
-      "share_concepts_present": {
-        "us-gaap:PreferredStockSharesIssued": {
-          "end": "2024-09-30",
-          "val": 0,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        },
-        "us-gaap:PreferredStockSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 0,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-          "end": "2024-09-30",
-          "val": 100070000,
-          "filed": "2024-11-07",
-          "form": "10-Q"
-        },
-        "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-          "end": "2024-09-30",
-          "val": 99756000,
-          "filed": "2024-11-07",
           "form": "10-Q"
         }
       }
@@ -19604,38 +18293,25 @@
       "role": "MISSING_LARGE_CAP_DETECTOR",
       "n_members": 503,
       "n_missing_from_pool": 0,
-      "n_present_not_rankable": 15,
-      "n_present_rankable_outside_top500": 65,
+      "n_present_not_rankable": 1,
+      "n_present_rankable_outside_top500": 74,
       "missing_from_pool": []
     },
     {
       "name": "RUSSELL1000_IWB_NPORT",
       "role": "SUPERSET_REFERENCE",
-      "n_members": 971,
-      "n_missing_from_pool": 20,
-      "n_present_not_rankable": 40,
-      "n_present_rankable_outside_top500": 408,
+      "n_members": 985,
+      "n_missing_from_pool": 7,
+      "n_present_not_rankable": 9,
+      "n_present_rankable_outside_top500": 466,
       "missing_from_pool": [
         "CIK0000018349",
-        "CIK0000020520",
-        "CIK0000028412",
-        "CIK0000058492",
+        "CIK0000072333",
         "CIK0000801337",
-        "CIK0000896262",
         "CIK0000919092",
-        "CIK0000937556",
-        "CIK0001124140",
-        "CIK0001274173",
-        "CIK0001366561",
+        "CIK0001163302",
         "CIK0001487712",
-        "CIK0001492422",
-        "CIK0001509589",
-        "CIK0001611983",
-        "CIK0001618563",
-        "CIK0001633931",
-        "CIK0001720671",
-        "CIK0001782754",
-        "CIK0001839439"
+        "CIK0001618563"
       ]
     }
   ],
@@ -19643,13 +18319,13 @@
     "kind": "UNIVERSE_COMPLETENESS_GATE",
     "as_of": "2024-12-31T00:00:00+00:00",
     "passed": false,
-    "companyfacts": 951,
-    "rankable": 935,
+    "companyfacts": 975,
+    "rankable": 970,
     "benchmark_source": "World Federation of Exchanges (WFE), \"Market Statistics - February 2025\" (WFE Focus), Total Dec'24 column",
     "benchmark_source_vintage": "2025-01-31",
     "benchmark_low": 3400,
     "benchmark_high": 3700,
-    "coverage_ratio": 0.2797058823529412,
+    "coverage_ratio": 0.2867647058823529,
     "reasons": [
       "COMPANYFACTS_COVERAGE_BELOW_BENCHMARK_LOW_ESTIMATE"
     ],
@@ -19659,8 +18335,8 @@
     "kind": "TOP500_SUFFICIENCY_GATE",
     "as_of": "2024-12-31T00:00:00+00:00",
     "passed": false,
-    "rankable": 935,
-    "cutoff_mcap": 14407896748.144775,
+    "rankable": 970,
+    "cutoff_mcap": 14776680263.355867,
     "n_references_supplied": 2,
     "n_references_usable": 0,
     "references": [
@@ -19671,21 +18347,7 @@
         "n_members": 503,
         "missing_from_pool": [],
         "present_not_rankable": [
-          "ANSS",
-          "AVB",
-          "CTRA",
-          "DAY",
-          "DFS",
-          "EA",
-          "EQR",
-          "HES",
-          "HOLX",
-          "IPG",
-          "JNPR",
-          "K",
-          "RL",
-          "UHS",
-          "WBA"
+          "EQR"
         ],
         "present_rankable_outside_top500": [
           "AES",
@@ -19697,18 +18359,22 @@
           "AOS",
           "APA",
           "APTV",
+          "BAX",
           "BEN",
           "BG",
           "BWA",
           "BXP",
           "CAG",
           "CE",
+          "CF",
           "CHRW",
           "CPB",
           "CPT",
           "CRL",
           "CZR",
+          "DAY",
           "DOC",
+          "DPZ",
           "DVA",
           "EMN",
           "ENPH",
@@ -19723,8 +18389,10 @@
           "HSIC",
           "HST",
           "INCY",
+          "IPG",
           "IVZ",
           "JKHY",
+          "JNPR",
           "KMX",
           "LKQ",
           "LW",
@@ -19740,6 +18408,7 @@
           "POOL",
           "PSKY",
           "REG",
+          "RL",
           "RVTY",
           "SJM",
           "SMCI",
@@ -19752,6 +18421,8 @@
           "TSCO",
           "TXT",
           "UDR",
+          "UHS",
+          "WBA",
           "WYNN"
         ],
         "reasons": [
@@ -19766,68 +18437,24 @@
         "name": "RUSSELL1000_IWB_NPORT",
         "source": "SEC Form NPORT-P 0001752724-25-034052 (iShares Russell 1000 ETF), report date 2024-12-31",
         "source_vintage": "2025-02-24",
-        "n_members": 971,
+        "n_members": 985,
         "missing_from_pool": [
           "CIK0000018349",
-          "CIK0000020520",
-          "CIK0000028412",
-          "CIK0000058492",
+          "CIK0000072333",
           "CIK0000801337",
-          "CIK0000896262",
           "CIK0000919092",
-          "CIK0000937556",
-          "CIK0001124140",
-          "CIK0001274173",
-          "CIK0001366561",
+          "CIK0001163302",
           "CIK0001487712",
-          "CIK0001492422",
-          "CIK0001509589",
-          "CIK0001611983",
-          "CIK0001618563",
-          "CIK0001633931",
-          "CIK0001720671",
-          "CIK0001782754",
-          "CIK0001839439"
+          "CIK0001618563"
         ],
         "present_not_rankable": [
-          "AMH",
-          "ANSS",
-          "APPF",
-          "AVB",
-          "BROS",
-          "BSY",
-          "CNM",
-          "CTRA",
-          "DBX",
-          "DDS",
-          "DFS",
-          "DLB",
-          "EA",
           "EQR",
-          "EVR",
-          "GTLB",
           "H",
-          "HES",
-          "HOLX",
-          "JNPR",
-          "K",
-          "LAMR",
-          "LBTYA",
-          "NYT",
-          "OKTA",
           "OZK",
-          "PATH",
+          "PINC",
           "RKT",
-          "RL",
-          "S",
-          "SAM",
-          "SNDR",
           "TKO",
           "TPG",
-          "UAA",
-          "UHS",
-          "VIRT",
-          "W",
           "WOLF",
           "XYZ"
         ],
@@ -19857,13 +18484,17 @@
           "ALSN",
           "AM",
           "AMCR",
+          "AMED",
           "AMG",
+          "AMH",
           "AMKR",
           "AMTM",
           "AN",
           "AOS",
           "APA",
           "APG",
+          "APLS",
+          "APPF",
           "APTV",
           "AR",
           "ARMK",
@@ -19877,22 +18508,28 @@
           "AXS",
           "AXTA",
           "AYI",
+          "AZEK",
           "AZTA",
+          "BAX",
           "BBWI",
           "BC",
           "BEN",
+          "BERY",
           "BFAM",
           "BG",
           "BHF",
           "BILL",
           "BIO",
           "BJ",
+          "BLD",
           "BMRN",
           "BOKF",
           "BPOP",
           "BRBR",
           "BRKR",
+          "BROS",
           "BRX",
+          "BSY",
           "BWA",
           "BWXT",
           "BXP",
@@ -19910,6 +18547,8 @@
           "CE",
           "CELH",
           "CERT",
+          "CF",
+          "CFLT",
           "CFR",
           "CGNX",
           "CHDN",
@@ -19918,12 +18557,16 @@
           "CHRD",
           "CHRW",
           "CIEN",
+          "CIVI",
           "CLF",
           "CLH",
           "CLVT",
+          "CMA",
           "CNA",
           "CNH",
+          "CNM",
           "CNXC",
+          "COHR",
           "COKE",
           "COLB",
           "COLD",
@@ -19944,11 +18587,16 @@
           "CXT",
           "CZR",
           "DAR",
+          "DAY",
+          "DBX",
           "DCI",
+          "DDS",
           "DINO",
           "DJT",
+          "DLB",
           "DOC",
           "DOCS",
+          "DPZ",
           "DTM",
           "DUOL",
           "DV",
@@ -19966,12 +18614,15 @@
           "ENPH",
           "EPAM",
           "EPR",
+          "EQH",
           "ESAB",
           "ESI",
           "ESTC",
           "ETSY",
+          "EVR",
           "EVRG",
           "EWBC",
+          "EXAS",
           "EXEL",
           "EXP",
           "FAF",
@@ -19991,6 +18642,7 @@
           "FRT",
           "FTI",
           "FTRE",
+          "FYBR",
           "G",
           "GAP",
           "GGG",
@@ -20004,11 +18656,13 @@
           "GPK",
           "GRAL",
           "GTES",
+          "GTLB",
           "GTM",
           "GWRE",
           "GXO",
           "HAS",
           "HAYW",
+          "HCP",
           "HEI",
           "HHH",
           "HII",
@@ -20023,17 +18677,22 @@
           "IBKR",
           "IDA",
           "INCY",
+          "INFA",
           "INGM",
           "INGR",
           "INSP",
           "IONS",
+          "IPG",
           "IPGP",
           "IRDM",
+          "ITCI",
           "ITT",
           "IVZ",
           "JAZZ",
+          "JHG",
           "JKHY",
           "JLL",
+          "JNPR",
           "KBR",
           "KD",
           "KEX",
@@ -20044,10 +18703,14 @@
           "KRC",
           "KSS",
           "LAD",
+          "LAMR",
           "LAZ",
+          "LBRDA",
+          "LBTYA",
           "LCID",
           "LEA",
           "LECO",
+          "LEG",
           "LFUS",
           "LINE",
           "LITE",
@@ -20063,6 +18726,7 @@
           "LYFT",
           "M",
           "MAN",
+          "MASI",
           "MAT",
           "MDU",
           "MEDP",
@@ -20071,6 +18735,7 @@
           "MIDD",
           "MKSI",
           "MKTX",
+          "MORN",
           "MOS",
           "MP",
           "MPT",
@@ -20098,9 +18763,12 @@
           "NVT",
           "NWL",
           "NXST",
+          "NYT",
+          "OC",
           "OGE",
           "OGN",
           "OHI",
+          "OKTA",
           "OLLI",
           "OLN",
           "OMF",
@@ -20109,6 +18777,8 @@
           "OSK",
           "OVV",
           "PAG",
+          "PARA",
+          "PATH",
           "PAYC",
           "PB",
           "PCOR",
@@ -20129,9 +18799,9 @@
           "PR",
           "PRGO",
           "PRI",
-          "PSKY",
           "PSN",
           "PVH",
+          "PYCR",
           "QDEL",
           "QRVO",
           "QS",
@@ -20148,6 +18818,7 @@
           "RHI",
           "RITM",
           "RIVN",
+          "RL",
           "RLI",
           "RNG",
           "RNR",
@@ -20156,14 +18827,18 @@
           "RPRX",
           "RRC",
           "RRX",
+          "RS",
           "RVTY",
           "RYAN",
           "RYN",
+          "S",
           "SAIA",
           "SAIC",
+          "SAM",
           "SARO",
           "SCI",
           "SEB",
+          "SEE",
           "SEG",
           "SEIC",
           "SF",
@@ -20174,12 +18849,15 @@
           "SJM",
           "SLGN",
           "SLM",
+          "SMAR",
           "SMCI",
           "SMG",
+          "SNDR",
           "SNX",
           "SOLV",
           "SON",
           "SPB",
+          "SPR",
           "SRPT",
           "SSD",
           "ST",
@@ -20201,18 +18879,22 @@
           "TREX",
           "TRIP",
           "TSCO",
+          "TTC",
           "TTEK",
           "TXG",
           "TXRH",
           "TXT",
           "U",
+          "UAA",
           "UDR",
           "UGI",
           "UHAL",
+          "UHS",
           "UNM",
           "UWMC",
           "VAC",
           "VFC",
+          "VIRT",
           "VKTX",
           "VMI",
           "VNO",
@@ -20220,7 +18902,9 @@
           "VOYA",
           "VSTS",
           "VVV",
+          "W",
           "WAL",
+          "WBA",
           "WCC",
           "WEN",
           "WEX",
@@ -20228,6 +18912,7 @@
           "WH",
           "WHR",
           "WING",
+          "WLK",
           "WMS",
           "WPC",
           "WSC",
@@ -20282,8 +18967,8 @@
       "passed": false,
       "candidate_pool_complete": false,
       "justified_official_top500": false,
-      "rankable": 935,
-      "listings": 952,
+      "rankable": 970,
+      "listings": 976,
       "eligibility_source": null,
       "source_vintage": null,
       "reasons": [

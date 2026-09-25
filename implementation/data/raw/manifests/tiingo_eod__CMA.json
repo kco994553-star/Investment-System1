@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:CMA",
+  "source_url": "https://api.tiingo.com/tiingo/daily/cma/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:34.525954+00:00",
+  "sha256": "5958ad11b5c063fd9f1b00bb6d235ac88b713b95ef49f3896c28e31eb6fa89cc",
+  "bytes": 384436,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

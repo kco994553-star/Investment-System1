@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:BERY",
+  "source_url": "https://api.tiingo.com/tiingo/daily/bery/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:27.367378+00:00",
+  "sha256": "fb03a119de441aac485501d9419f3a7b7fbd9b67e3bdee96d46d3acf647aee2e",
+  "bytes": 335215,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

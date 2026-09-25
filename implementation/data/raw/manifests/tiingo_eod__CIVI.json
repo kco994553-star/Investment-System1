@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:CIVI",
+  "source_url": "https://api.tiingo.com/tiingo/daily/civi/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:32.691537+00:00",
+  "sha256": "c2896e6a7b82c3b1b77272d650f4213f8d60a0896e67d0802fc97f8aaf9f8fc8",
+  "bytes": 382442,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

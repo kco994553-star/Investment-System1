@@ -1,0 +1,895 @@
+{
+  "kind": "NPORT_REFERENCE_RUN",
+  "as_of": "2024-12-31",
+  "series_name": "iShares Russell 1000 ETF",
+  "n_candidate_filings": 87,
+  "filing": {
+    "accn": "0001752724-25-034052",
+    "filed": "2025-02-24",
+    "doc": "xslFormNPORT-P_X01/primary_doc.xml"
+  },
+  "nport_report_date": "2024-12-31",
+  "nport_series": "iShares Russell 1000 ETF",
+  "n_holdings": 1011,
+  "n_equity_common": 1007,
+  "status": "OK",
+  "n_members_cik": 985,
+  "n_unresolved": 6,
+  "n_as_of_ticker_from_cover": 29,
+  "n_extra": 465,
+  "n_not_in_pool_without_current_ticker": 11,
+  "log": [
+    {
+      "artifact_id": "submissions:0001100663",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_cik_lookup",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001100663-submissions-001.json",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043926",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043923",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043927",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043925",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043924",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043922",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043921",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043853",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043851",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043850",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043852",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043849",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043848",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043847",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043803",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043801",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043802",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043800",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043799",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043798",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043797",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041407",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041401",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041398",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041395",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041390",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041393",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041391",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041389",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041388",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041386",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041384",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041382",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041381",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041377",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041378",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041373",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041371",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041375",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041369",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041370",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037904",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037905",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037890",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037892",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037887",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037885",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037886",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037879",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037877",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037874",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037869",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037870",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037866",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037865",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037860",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037851",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037853",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037846",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037849",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037840",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037829",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037843",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037833",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037823",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037818",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037814",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037819",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-034063",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-034052",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "nport_xml:0001752724-25-034052",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000072333",
+      "status": "OK",
+      "bytes": 165266
+    },
+    {
+      "artifact_id": "submissions:0001099772",
+      "status": "OK",
+      "bytes": 1370
+    },
+    {
+      "artifact_id": "submissions:0001168461",
+      "status": "OK",
+      "bytes": 1374
+    },
+    {
+      "artifact_id": "submissions:0000317155",
+      "status": "OK",
+      "bytes": 1392
+    },
+    {
+      "artifact_id": "submissions:0001146318",
+      "status": "OK",
+      "bytes": 2852
+    },
+    {
+      "artifact_id": "submissions:0001163302",
+      "status": "OK",
+      "bytes": 163563
+    },
+    {
+      "artifact_id": "submissions:0001030916",
+      "status": "OK",
+      "bytes": 45130
+    },
+    {
+      "artifact_id": "submissions:0001085411",
+      "status": "OK",
+      "bytes": 3249
+    },
+    {
+      "artifact_id": "submissions:0001577916",
+      "status": "OK",
+      "bytes": 154488
+    },
+    {
+      "artifact_id": "submissions:0001753697",
+      "status": "OK",
+      "bytes": 1410
+    },
+    {
+      "artifact_id": "submissions:0000356942",
+      "status": "OK",
+      "bytes": 2671
+    },
+    {
+      "artifact_id": "submissions:0000929940",
+      "status": "OK",
+      "bytes": 158766
+    },
+    {
+      "artifact_id": "submissions:0001897982",
+      "status": "OK",
+      "bytes": 49461
+    },
+    {
+      "artifact_id": "submissions:0001080099",
+      "status": "OK",
+      "bytes": 160573
+    },
+    {
+      "artifact_id": "submissions:0001868778",
+      "status": "OK",
+      "bytes": 67589
+    },
+    {
+      "artifact_id": "submissions:0001655888",
+      "status": "OK",
+      "bytes": 114807
+    },
+    {
+      "artifact_id": "submissions:0001823945",
+      "status": "OK",
+      "bytes": 102656
+    },
+    {
+      "artifact_id": "submissions:0001858703",
+      "status": "OK",
+      "bytes": 16606
+    },
+    {
+      "artifact_id": "submissions:0002012649",
+      "status": "OK",
+      "bytes": 2949
+    },
+    {
+      "artifact_id": "submissions:0002019033",
+      "status": "OK",
+      "bytes": 2952
+    },
+    {
+      "artifact_id": "submissions:0001496678",
+      "status": "OK",
+      "bytes": 1434
+    },
+    {
+      "artifact_id": "submissions:0001725057",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001171179",
+      "status": "OK",
+      "bytes": 2327
+    },
+    {
+      "artifact_id": "submissions:0001653183",
+      "status": "OK",
+      "bytes": 1731
+    },
+    {
+      "artifact_id": "submissions:0001699838",
+      "status": "OK",
+      "bytes": 120933
+    },
+    {
+      "artifact_id": "submissions:0000737758",
+      "status": "OK",
+      "bytes": 159309
+    },
+    {
+      "artifact_id": "submissions:0001886787",
+      "status": "OK",
+      "bytes": 1426
+    },
+    {
+      "artifact_id": "submissions:0001941131",
+      "status": "OK",
+      "bytes": 19902
+    },
+    {
+      "artifact_id": "submissions:0001349682",
+      "status": "OK",
+      "bytes": 3552
+    },
+    {
+      "artifact_id": "submissions:0001364885",
+      "status": "OK",
+      "bytes": 155348
+    },
+    {
+      "artifact_id": "submissions:0001476515",
+      "status": "OK",
+      "bytes": 5799
+    },
+    {
+      "artifact_id": "submissions:0000088204",
+      "status": "OK",
+      "bytes": 17508
+    },
+    {
+      "artifact_id": "submissions:0001012100",
+      "status": "OK",
+      "bytes": 161459
+    },
+    {
+      "artifact_id": "submissions:0001176407",
+      "status": "OK",
+      "bytes": 2820
+    },
+    {
+      "artifact_id": "submissions:0001567514",
+      "status": "OK",
+      "bytes": 160583
+    },
+    {
+      "artifact_id": "submissions:0000919465",
+      "status": "OK",
+      "bytes": 50245
+    },
+    {
+      "artifact_id": "submissions:0001378992",
+      "status": "OK",
+      "bytes": 155600
+    },
+    {
+      "artifact_id": "submissions:0000051644",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000944048",
+      "status": "OK",
+      "bytes": 1529
+    },
+    {
+      "artifact_id": "submissions:0001618921",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001669077",
+      "status": "OK",
+      "bytes": 3577
+    },
+    {
+      "artifact_id": "submissions:0000004447",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000004447:0001628280-24-045716",
+      "status": "OK",
+      "bytes": 1069558
+    },
+    {
+      "artifact_id": "submissions:0000018349",
+      "status": "OK",
+      "bytes": 161859
+    },
+    {
+      "artifact_id": "xbrl_instance:0000018349:0000018349-24-000140",
+      "status": "OK",
+      "bytes": 6186704
+    },
+    {
+      "artifact_id": "submissions:0000020520",
+      "status": "OK",
+      "bytes": 162269
+    },
+    {
+      "artifact_id": "xbrl_instance:0000020520:0001562762-24-000252",
+      "status": "OK",
+      "bytes": 5510543
+    },
+    {
+      "artifact_id": "submissions:0000028412",
+      "status": "OK",
+      "bytes": 162007
+    },
+    {
+      "artifact_id": "xbrl_instance:0000028412:0000028412-24-000349",
+      "status": "OK",
+      "bytes": 5604063
+    },
+    {
+      "artifact_id": "submissions:0000034088",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000034088:0000034088-24-000068",
+      "status": "OK",
+      "bytes": 1007949
+    },
+    {
+      "artifact_id": "submissions:0000051644",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000051644:0000051644-24-000049",
+      "status": "OK",
+      "bytes": 1303688
+    },
+    {
+      "artifact_id": "submissions:0000055067",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000055067:0001628280-24-044436",
+      "status": "OK",
+      "bytes": 1484142
+    },
+    {
+      "artifact_id": "submissions:0000058492",
+      "status": "OK",
+      "bytes": 159310
+    },
+    {
+      "artifact_id": "xbrl_instance:0000058492:0000058492-24-000648",
+      "status": "OK",
+      "bytes": 1763747
+    },
+    {
+      "artifact_id": "submissions:0000072333",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000072333:0000072333-24-000124",
+      "status": "OK",
+      "bytes": 413221
+    },
+    {
+      "artifact_id": "submissions:0000801337",
+      "status": "OK",
+      "bytes": 163224
+    },
+    {
+      "artifact_id": "xbrl_instance:0000801337:0000801337-24-000028",
+      "status": "OK",
+      "bytes": 5676608
+    },
+    {
+      "artifact_id": "submissions:0000813828",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000813828:0000813828-24-000079",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000859737",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000859737:0000859737-24-000024",
+      "status": "OK",
+      "bytes": 3409815
+    },
+    {
+      "artifact_id": "submissions:0000896262",
+      "status": "OK",
+      "bytes": 160988
+    },
+    {
+      "artifact_id": "xbrl_instance:0000896262:0000896262-24-000051",
+      "status": "OK",
+      "bytes": 847153
+    },
+    {
+      "artifact_id": "submissions:0000919092",
+      "status": "OK",
+      "bytes": 1374
+    },
+    {
+      "artifact_id": "submissions:0000937556",
+      "status": "OK",
+      "bytes": 167912
+    },
+    {
+      "artifact_id": "xbrl_instance:0000937556:0000937556-24-000109",
+      "status": "OK",
+      "bytes": 2032185
+    },
+    {
+      "artifact_id": "submissions:0001012100",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001012100:0001628280-24-046171",
+      "status": "OK",
+      "bytes": 2914065
+    },
+    {
+      "artifact_id": "submissions:0001013462",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001013462:0001013462-24-000028",
+      "status": "OK",
+      "bytes": 972233
+    },
+    {
+      "artifact_id": "submissions:0001043604",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001043604:0001043604-24-000154",
+      "status": "OK",
+      "bytes": 1899990
+    },
+    {
+      "artifact_id": "submissions:0001124140",
+      "status": "OK",
+      "bytes": 158175
+    },
+    {
+      "artifact_id": "xbrl_instance:0001124140:0001124140-24-000083",
+      "status": "OK",
+      "bytes": 2188975
+    },
+    {
+      "artifact_id": "submissions:0001163302",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001163302:0001163302-24-000068",
+      "status": "OK",
+      "bytes": 2709183
+    },
+    {
+      "artifact_id": "submissions:0001274173",
+      "status": "OK",
+      "bytes": 163804
+    },
+    {
+      "artifact_id": "xbrl_instance:0001274173:0001437749-24-032700",
+      "status": "OK",
+      "bytes": 1879426
+    },
+    {
+      "artifact_id": "submissions:0001364885",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001364885:0001628280-24-045353",
+      "status": "OK",
+      "bytes": 1370390
+    },
+    {
+      "artifact_id": "submissions:0001366561",
+      "status": "OK",
+      "bytes": 163301
+    },
+    {
+      "artifact_id": "xbrl_instance:0001366561:0001366561-24-000222",
+      "status": "OK",
+      "bytes": 1112516
+    },
+    {
+      "artifact_id": "submissions:0001378992",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001378992:0001140361-24-047881",
+      "status": "OK",
+      "bytes": 2903937
+    },
+    {
+      "artifact_id": "submissions:0001487712",
+      "status": "OK",
+      "bytes": 157821
+    },
+    {
+      "artifact_id": "xbrl_instance:0001487712:0001628280-24-046236",
+      "status": "OK",
+      "bytes": 671796
+    },
+    {
+      "artifact_id": "submissions:0001492422",
+      "status": "OK",
+      "bytes": 156276
+    },
+    {
+      "artifact_id": "xbrl_instance:0001492422:0000950170-24-121062",
+      "status": "OK",
+      "bytes": 1601219
+    },
+    {
+      "artifact_id": "submissions:0001509589",
+      "status": "OK",
+      "bytes": 163112
+    },
+    {
+      "artifact_id": "xbrl_instance:0001509589:0001509589-24-000082",
+      "status": "OK",
+      "bytes": 1414544
+    },
+    {
+      "artifact_id": "submissions:0001567514",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001567514:0001628280-24-044196",
+      "status": "OK",
+      "bytes": 584897
+    },
+    {
+      "artifact_id": "submissions:0001577916",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001577916:0001577916-24-000012",
+      "status": "OK",
+      "bytes": 1192494
+    },
+    {
+      "artifact_id": "submissions:0001611983",
+      "status": "OK",
+      "bytes": 145097
+    },
+    {
+      "artifact_id": "xbrl_instance:0001611983:0001558370-24-014821",
+      "status": "OK",
+      "bytes": 1590174
+    },
+    {
+      "artifact_id": "submissions:0001618563",
+      "status": "OK",
+      "bytes": 119370
+    },
+    {
+      "artifact_id": "xbrl_instance:0001618563:0001628280-24-044549",
+      "status": "OK",
+      "bytes": 1002475
+    },
+    {
+      "artifact_id": "submissions:0001618921",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001618921:0001618921-24-000084",
+      "status": "OK",
+      "bytes": 3483992
+    },
+    {
+      "artifact_id": "submissions:0001633931",
+      "status": "OK",
+      "bytes": 123627
+    },
+    {
+      "artifact_id": "xbrl_instance:0001633931:0001558370-24-014779",
+      "status": "OK",
+      "bytes": 9786
+    },
+    {
+      "artifact_id": "submissions:0001699838",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001699838:0000950170-24-119042",
+      "status": "OK",
+      "bytes": 2518941
+    },
+    {
+      "artifact_id": "submissions:0001720671",
+      "status": "OK",
+      "bytes": 101696
+    },
+    {
+      "artifact_id": "xbrl_instance:0001720671:0001720671-24-000023",
+      "status": "OK",
+      "bytes": 884549
+    },
+    {
+      "artifact_id": "submissions:0001725057",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001725057:0000950170-24-118595",
+      "status": "OK",
+      "bytes": 2753799
+    },
+    {
+      "artifact_id": "submissions:0001782754",
+      "status": "OK",
+      "bytes": 111764
+    },
+    {
+      "artifact_id": "xbrl_instance:0001782754:0001628280-24-048629",
+      "status": "OK",
+      "bytes": 1985600
+    },
+    {
+      "artifact_id": "submissions:0001839439",
+      "status": "OK",
+      "bytes": 49136
+    },
+    {
+      "artifact_id": "xbrl_instance:0001839439:0001839439-24-000080",
+      "status": "OK",
+      "bytes": 583142
+    },
+    {
+      "artifact_id": "submissions:0001868778",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001868778:0001868778-24-000039",
+      "status": "OK",
+      "bytes": 1255945
+    },
+    {
+      "artifact_id": "submissions:0001897982",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001897982:0001897982-24-000075",
+      "status": "OK",
+      "bytes": 723962
+    }
+  ]
+}

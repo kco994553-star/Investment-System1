@@ -112,6 +112,7 @@
     "0000051143",
     "0000051253",
     "0000051434",
+    "0000051644",
     "0000052827",
     "0000052988",
     "0000055067",
@@ -142,6 +143,7 @@
     "0000070858",
     "0000071691",
     "0000072331",
+    "0000072333",
     "0000072741",
     "0000072903",
     "0000072971",
@@ -264,6 +266,7 @@
     "0000731802",
     "0000732712",
     "0000732717",
+    "0000737758",
     "0000740260",
     "0000745732",
     "0000746515",
@@ -457,6 +460,7 @@
     "0001003078",
     "0001004434",
     "0001004980",
+    "0001012100",
     "0001013237",
     "0001013462",
     "0001013857",
@@ -589,6 +593,7 @@
     "0001156375",
     "0001158449",
     "0001163165",
+    "0001163302",
     "0001164727",
     "0001166003",
     "0001166691",
@@ -662,6 +667,7 @@
     "0001360604",
     "0001360901",
     "0001361658",
+    "0001364885",
     "0001365135",
     "0001366561",
     "0001370637",
@@ -669,6 +675,7 @@
     "0001373715",
     "0001374310",
     "0001375365",
+    "0001378992",
     "0001381197",
     "0001381668",
     "0001383312",
@@ -772,6 +779,7 @@
     "0001562401",
     "0001564708",
     "0001567094",
+    "0001567514",
     "0001567683",
     "0001569650",
     "0001570585",
@@ -781,6 +789,7 @@
     "0001571996",
     "0001573516",
     "0001575965",
+    "0001577916",
     "0001579091",
     "0001579241",
     "0001579298",
@@ -818,6 +827,7 @@
     "0001618563",
     "0001618673",
     "0001618732",
+    "0001618921",
     "0001623925",
     "0001627223",
     "0001633917",
@@ -866,6 +876,7 @@
     "0001692819",
     "0001699031",
     "0001699150",
+    "0001699838",
     "0001701605",
     "0001703056",
     "0001705696",
@@ -879,6 +890,7 @@
     "0001720671",
     "0001722482",
     "0001722684",
+    "0001725057",
     "0001730168",
     "0001734722",
     "0001736297",
@@ -948,11 +960,13 @@
     "0001867072",
     "0001868159",
     "0001868275",
+    "0001868778",
     "0001874178",
     "0001877322",
     "0001880661",
     "0001883685",
     "0001897762",
+    "0001897982",
     "0001902733",
     "0001906324",
     "0001915657",
@@ -3911,54 +3925,51 @@
     ],
     "0000005272": [
       "AMERICAN INTERNATIONAL GROUP, INC."
+    ],
+    "0000072333": [
+      "NORDSTROM, INC."
+    ],
+    "0001163302": [
+      "UNITED STATES STEEL CORPORATION"
+    ],
+    "0001577916": [
+      "PREMIER, INC."
+    ],
+    "0001897982": [
+      "ASPEN TECHNOLOGY, INC."
+    ],
+    "0001868778": [
+      "Informatica Inc"
+    ],
+    "0001725057": [
+      "DAYFORCE, INC."
+    ],
+    "0001699838": [
+      "CONFLUENT, INC."
+    ],
+    "0000737758": [
+      "THE TORO COMPANY"
+    ],
+    "0001364885": [
+      "SPIRIT AEROSYSTEMS HOLDINGS, INC."
+    ],
+    "0001012100": [
+      "SEALED AIR CORPORATION"
+    ],
+    "0001567514": [
+      "Intra-Cellular Therapies Inc"
+    ],
+    "0001378992": [
+      "BERRY GLOBAL GROUP, INC."
+    ],
+    "0000051644": [
+      "THE INTERPUBLIC GROUP OF COMPANIES, INC."
+    ],
+    "0001618921": [
+      "WALGREENS BOOTS ALLIANCE, INC."
     ]
   },
   "unresolved_holdings": [
-    {
-      "name": "NORDSTROM, INC.",
-      "cusip": "655664100",
-      "isin": "US6556641008",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 1684245.15,
-      "name_matches": 3
-    },
-    {
-      "name": "UNITED STATES STEEL CORPORATION",
-      "cusip": "912909108",
-      "isin": "US9129091081",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 5601755.94,
-      "name_matches": 3
-    },
-    {
-      "name": "PREMIER, INC.",
-      "cusip": "74051N102",
-      "isin": "US74051N1028",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 1612217.6,
-      "name_matches": 4
-    },
-    {
-      "name": "ASPEN TECHNOLOGY, INC.",
-      "cusip": "29109X106",
-      "isin": "US29109X1063",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 4908973.95,
-      "name_matches": 3
-    },
-    {
-      "name": "Informatica Inc",
-      "cusip": "45674M101",
-      "isin": "US45674M1018",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 1551832.71,
-      "name_matches": 2
-    },
     {
       "name": "BLUE OWL CAPITAL INC.",
       "cusip": "09581B103",
@@ -3966,16 +3977,18 @@
       "asset_cat": "EC",
       "country": "US",
       "value": 8623877.6,
-      "name_matches": 5
-    },
-    {
-      "name": "DAYFORCE, INC.",
-      "cusip": "15677J108",
-      "isin": "US15677J1088",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 8098851.52,
-      "name_matches": 2
+      "name_matches": 5,
+      "candidates": [
+        "0001655888",
+        "0001823945",
+        "0001858703",
+        "0002012649",
+        "0002019033"
+      ],
+      "pit_registrant_candidates": [
+        "0001655888",
+        "0001823945"
+      ]
     },
     {
       "name": "LIBERTY MEDIA CORP - FORMULA ONE GROUP",
@@ -3984,7 +3997,9 @@
       "asset_cat": "EC",
       "country": "US",
       "value": 14400846.56,
-      "name_matches": 0
+      "name_matches": 0,
+      "candidates": [],
+      "pit_registrant_candidates": []
     },
     {
       "name": "UNIVERSAL DISPLAY CORPORATION",
@@ -3993,34 +4008,9 @@
       "asset_cat": "EC",
       "country": "US",
       "value": 5023139.6,
-      "name_matches": 0
-    },
-    {
-      "name": "CONFLUENT, INC.",
-      "cusip": "20717M103",
-      "isin": "US20717M1036",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 5210849.28,
-      "name_matches": 3
-    },
-    {
-      "name": "THE TORO COMPANY",
-      "cusip": "891092108",
-      "isin": "US8910921084",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 6152240.7,
-      "name_matches": 3
-    },
-    {
-      "name": "SPIRIT AEROSYSTEMS HOLDINGS, INC.",
-      "cusip": "848574109",
-      "isin": "US8485741099",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 2954804.16,
-      "name_matches": 3
+      "name_matches": 0,
+      "candidates": [],
+      "pit_registrant_candidates": []
     },
     {
       "name": "SKECHERS U.S.A., INC.",
@@ -4029,7 +4019,9 @@
       "asset_cat": "EC",
       "country": "US",
       "value": 6465462.2,
-      "name_matches": 0
+      "name_matches": 0,
+      "candidates": [],
+      "pit_registrant_candidates": []
     },
     {
       "name": "ESC GCI LIBERTY INC SR",
@@ -4038,7 +4030,9 @@
       "asset_cat": "EC",
       "country": "US",
       "value": 0.0,
-      "name_matches": 0
+      "name_matches": 0,
+      "candidates": [],
+      "pit_registrant_candidates": []
     },
     {
       "name": "LIBERTY MEDIA CORP - FORMULA ONE GROUP",
@@ -4047,82 +4041,23 @@
       "asset_cat": "EC",
       "country": "US",
       "value": 1310855.92,
-      "name_matches": 0
-    },
-    {
-      "name": "SEALED AIR CORPORATION",
-      "cusip": "81211K100",
-      "isin": "US81211K1007",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 3519301.07,
-      "name_matches": 2
-    },
-    {
-      "name": "Intra-Cellular Therapies Inc",
-      "cusip": "46116X101",
-      "isin": "US46116X1019",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 6351445.44,
-      "name_matches": 2
-    },
-    {
-      "name": "BERRY GLOBAL GROUP, INC.",
-      "cusip": "08579W103",
-      "isin": "US08579W1036",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 5575200.7,
-      "name_matches": 2
-    },
-    {
-      "name": "THE INTERPUBLIC GROUP OF COMPANIES, INC.",
-      "cusip": "460690100",
-      "isin": "US4606901001",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 7800908.1,
-      "name_matches": 2
-    },
-    {
-      "name": "WALGREENS BOOTS ALLIANCE, INC.",
-      "cusip": "931427108",
-      "isin": "US9314271084",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 4947456.42,
-      "name_matches": 2
+      "name_matches": 0,
+      "candidates": [],
+      "pit_registrant_candidates": []
     }
   ],
   "members_not_in_pool_without_current_ticker": [
-    "0000004447",
     "0000018349",
-    "0000020520",
-    "0000028412",
     "0000034088",
     "0000055067",
-    "0000058492",
+    "0000072333",
     "0000801337",
-    "0000813828",
-    "0000859737",
-    "0000896262",
     "0000919092",
-    "0000937556",
     "0001013462",
-    "0001043604",
-    "0001124140",
-    "0001274173",
-    "0001366561",
+    "0001163302",
     "0001487712",
-    "0001492422",
-    "0001509589",
-    "0001611983",
     "0001618563",
-    "0001633931",
-    "0001720671",
-    "0001782754",
-    "0001839439"
+    "0001618921"
   ],
   "note": "Russell 1000 fund holdings as reported to the SEC for the as_of date (filed after as_of: a dated historical record, used for validation, not as information available at as_of)."
 }

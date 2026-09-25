@@ -1,0 +1,419 @@
+{
+  "kind": "TIINGO_FALLBACK_RUN",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "n_targets": 40,
+  "targets": [
+    "AMED",
+    "ANSS",
+    "APLS",
+    "AVB",
+    "AZEK",
+    "AZPN",
+    "BERY",
+    "BLD",
+    "CFLT",
+    "CIVI",
+    "CMA",
+    "CTRA",
+    "DAY",
+    "DFS",
+    "EA",
+    "EQR",
+    "EXAS",
+    "FYBR",
+    "HCP",
+    "HES",
+    "HOLX",
+    "INFA",
+    "IPG",
+    "ITCI",
+    "JHG",
+    "JNPR",
+    "K",
+    "LBRDK",
+    "LEG",
+    "MASI",
+    "PARAA",
+    "PINC",
+    "PYCR",
+    "SEE",
+    "SMAR",
+    "SPR",
+    "SQ",
+    "WBA",
+    "WOLF",
+    "WSOB"
+  ],
+  "status": "OK",
+  "calibration": [
+    {
+      "symbol": "AAPL",
+      "tiingo_date": "2024-12-30",
+      "tiingo_close": 252.2,
+      "yahoo_date": "2024-12-30",
+      "yahoo_close": 252.1999969482422,
+      "rel_diff": 1.2100546542661593e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "MSFT",
+      "tiingo_date": "2024-12-30",
+      "tiingo_close": 424.83,
+      "yahoo_date": "2024-12-30",
+      "yahoo_close": 424.8299865722656,
+      "rel_diff": 3.1607313004021484e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "JPM",
+      "tiingo_date": "2024-12-30",
+      "tiingo_close": 239.32,
+      "yahoo_date": "2024-12-30",
+      "yahoo_close": 239.32000732421875,
+      "rel_diff": 3.0604289372675495e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "XOM",
+      "tiingo_date": "2024-12-30",
+      "tiingo_close": 105.76,
+      "yahoo_date": "2024-12-30",
+      "yahoo_close": 105.76000213623047,
+      "rel_diff": 2.0198850420619257e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "PG",
+      "tiingo_date": "2024-12-30",
+      "tiingo_close": 167.09,
+      "yahoo_date": "2024-12-30",
+      "yahoo_close": 167.08999633789062,
+      "rel_diff": 2.1916987603525113e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "KO",
+      "tiingo_date": "2024-12-30",
+      "tiingo_close": 62.03,
+      "yahoo_date": "2024-12-30",
+      "yahoo_close": 62.029998779296875,
+      "rel_diff": 1.9679238274373305e-08,
+      "status": "OK"
+    }
+  ],
+  "calibrated": true,
+  "tolerance": 0.005,
+  "results": {
+    "AMED": "WRITTEN_TIINGO_FALLBACK",
+    "ANSS": "WRITTEN_TIINGO_FALLBACK",
+    "APLS": "WRITTEN_TIINGO_FALLBACK",
+    "AVB": "WRITTEN_TIINGO_FALLBACK",
+    "AZEK": "WRITTEN_TIINGO_FALLBACK",
+    "AZPN": "WRITTEN_TIINGO_FALLBACK",
+    "BERY": "WRITTEN_TIINGO_FALLBACK",
+    "BLD": "WRITTEN_TIINGO_FALLBACK",
+    "CFLT": "WRITTEN_TIINGO_FALLBACK",
+    "CIVI": "WRITTEN_TIINGO_FALLBACK",
+    "CMA": "WRITTEN_TIINGO_FALLBACK",
+    "CTRA": "WRITTEN_TIINGO_FALLBACK",
+    "DAY": "WRITTEN_TIINGO_FALLBACK",
+    "DFS": "WRITTEN_TIINGO_FALLBACK",
+    "EA": "WRITTEN_TIINGO_FALLBACK",
+    "EQR": "NO_TIINGO_DATA",
+    "EXAS": "WRITTEN_TIINGO_FALLBACK",
+    "FYBR": "WRITTEN_TIINGO_FALLBACK",
+    "HCP": "WRITTEN_TIINGO_FALLBACK",
+    "HES": "WRITTEN_TIINGO_FALLBACK",
+    "HOLX": "WRITTEN_TIINGO_FALLBACK",
+    "INFA": "WRITTEN_TIINGO_FALLBACK",
+    "IPG": "WRITTEN_TIINGO_FALLBACK",
+    "ITCI": "WRITTEN_TIINGO_FALLBACK",
+    "JHG": "WRITTEN_TIINGO_FALLBACK",
+    "JNPR": "WRITTEN_TIINGO_FALLBACK",
+    "K": "WRITTEN_TIINGO_FALLBACK",
+    "LBRDK": "WRITTEN_TIINGO_FALLBACK",
+    "LEG": "WRITTEN_TIINGO_FALLBACK",
+    "MASI": "WRITTEN_TIINGO_FALLBACK",
+    "PARAA": "WRITTEN_TIINGO_FALLBACK",
+    "PINC": "NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF",
+    "PYCR": "WRITTEN_TIINGO_FALLBACK",
+    "SEE": "WRITTEN_TIINGO_FALLBACK",
+    "SMAR": "WRITTEN_TIINGO_FALLBACK",
+    "SPR": "WRITTEN_TIINGO_FALLBACK",
+    "SQ": "NO_TIINGO_DATA",
+    "WBA": "WRITTEN_TIINGO_FALLBACK",
+    "WOLF": "NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF",
+    "WSOB": "NO_TIINGO_DATA"
+  },
+  "written": [
+    "AMED",
+    "ANSS",
+    "APLS",
+    "AVB",
+    "AZEK",
+    "AZPN",
+    "BERY",
+    "BLD",
+    "CFLT",
+    "CIVI",
+    "CMA",
+    "CTRA",
+    "DAY",
+    "DFS",
+    "EA",
+    "EXAS",
+    "FYBR",
+    "HCP",
+    "HES",
+    "HOLX",
+    "INFA",
+    "IPG",
+    "ITCI",
+    "JHG",
+    "JNPR",
+    "K",
+    "LBRDK",
+    "LEG",
+    "MASI",
+    "PARAA",
+    "PYCR",
+    "SEE",
+    "SMAR",
+    "SPR",
+    "WBA"
+  ],
+  "log": [
+    {
+      "artifact_id": "tiingo_eod:AAPL",
+      "status": "OK",
+      "bytes": 443111
+    },
+    {
+      "artifact_id": "tiingo_eod:MSFT",
+      "status": "OK",
+      "bytes": 443292
+    },
+    {
+      "artifact_id": "tiingo_eod:JPM",
+      "status": "OK",
+      "bytes": 439361
+    },
+    {
+      "artifact_id": "tiingo_eod:XOM",
+      "status": "OK",
+      "bytes": 436471
+    },
+    {
+      "artifact_id": "tiingo_eod:PG",
+      "status": "OK",
+      "bytes": 439682
+    },
+    {
+      "artifact_id": "tiingo_eod:KO",
+      "status": "OK",
+      "bytes": 430231
+    },
+    {
+      "artifact_id": "tiingo_eod:AMED",
+      "status": "OK",
+      "bytes": 314341
+    },
+    {
+      "artifact_id": "tiingo_eod:ANSS",
+      "status": "OK",
+      "bytes": 348736
+    },
+    {
+      "artifact_id": "tiingo_eod:APLS",
+      "status": "OK",
+      "bytes": 352003
+    },
+    {
+      "artifact_id": "tiingo_eod:AVB",
+      "status": "OK",
+      "bytes": 429782
+    },
+    {
+      "artifact_id": "tiingo_eod:AZEK",
+      "status": "OK",
+      "bytes": 279560
+    },
+    {
+      "artifact_id": "tiingo_eod:AZPN",
+      "status": "OK",
+      "bytes": 295598
+    },
+    {
+      "artifact_id": "tiingo_eod:BERY",
+      "status": "OK",
+      "bytes": 335215
+    },
+    {
+      "artifact_id": "tiingo_eod:BLD",
+      "status": "OK",
+      "bytes": 369823
+    },
+    {
+      "artifact_id": "tiingo_eod:CFLT",
+      "status": "OK",
+      "bytes": 262292
+    },
+    {
+      "artifact_id": "tiingo_eod:CIVI",
+      "status": "OK",
+      "bytes": 382442
+    },
+    {
+      "artifact_id": "tiingo_eod:CMA",
+      "status": "OK",
+      "bytes": 384436
+    },
+    {
+      "artifact_id": "tiingo_eod:CTRA",
+      "status": "OK",
+      "bytes": 401999
+    },
+    {
+      "artifact_id": "tiingo_eod:DAY",
+      "status": "OK",
+      "bytes": 337455
+    },
+    {
+      "artifact_id": "tiingo_eod:DFS",
+      "status": "OK",
+      "bytes": 345113
+    },
+    {
+      "artifact_id": "tiingo_eod:EA",
+      "status": "OK",
+      "bytes": 429240
+    },
+    {
+      "artifact_id": "tiingo_eod:EQR",
+      "status": "OK",
+      "bytes": 2
+    },
+    {
+      "artifact_id": "tiingo_eod:EXAS",
+      "status": "OK",
+      "bytes": 347691
+    },
+    {
+      "artifact_id": "tiingo_eod:FYBR",
+      "status": "OK",
+      "bytes": 260787
+    },
+    {
+      "artifact_id": "tiingo_eod:HCP",
+      "status": "OK",
+      "bytes": 177720
+    },
+    {
+      "artifact_id": "tiingo_eod:HES",
+      "status": "OK",
+      "bytes": 357327
+    },
+    {
+      "artifact_id": "tiingo_eod:HOLX",
+      "status": "OK",
+      "bytes": 347360
+    },
+    {
+      "artifact_id": "tiingo_eod:INFA",
+      "status": "OK",
+      "bytes": 241222
+    },
+    {
+      "artifact_id": "tiingo_eod:IPG",
+      "status": "OK",
+      "bytes": 373270
+    },
+    {
+      "artifact_id": "tiingo_eod:ITCI",
+      "status": "OK",
+      "bytes": 289765
+    },
+    {
+      "artifact_id": "tiingo_eod:JHG",
+      "status": "OK",
+      "bytes": 405367
+    },
+    {
+      "artifact_id": "tiingo_eod:JNPR",
+      "status": "OK",
+      "bytes": 348399
+    },
+    {
+      "artifact_id": "tiingo_eod:K",
+      "status": "OK",
+      "bytes": 377005
+    },
+    {
+      "artifact_id": "tiingo_eod:LBRDK",
+      "status": "OK",
+      "bytes": 415583
+    },
+    {
+      "artifact_id": "tiingo_eod:LEG",
+      "status": "OK",
+      "bytes": 418809
+    },
+    {
+      "artifact_id": "tiingo_eod:MASI",
+      "status": "OK",
+      "bytes": 366929
+    },
+    {
+      "artifact_id": "tiingo_eod:PARAA",
+      "status": "OK",
+      "bytes": 349178
+    },
+    {
+      "artifact_id": "tiingo_eod:PINC",
+      "status": "OK",
+      "bytes": 17812
+    },
+    {
+      "artifact_id": "tiingo_eod:PYCR",
+      "status": "OK",
+      "bytes": 205649
+    },
+    {
+      "artifact_id": "tiingo_eod:SEE",
+      "status": "OK",
+      "bytes": 395850
+    },
+    {
+      "artifact_id": "tiingo_eod:SMAR",
+      "status": "OK",
+      "bytes": 279653
+    },
+    {
+      "artifact_id": "tiingo_eod:SPR",
+      "status": "OK",
+      "bytes": 350305
+    },
+    {
+      "artifact_id": "tiingo_eod:SQ",
+      "status": "OK",
+      "bytes": 2
+    },
+    {
+      "artifact_id": "tiingo_eod:WBA",
+      "status": "OK",
+      "bytes": 353431
+    },
+    {
+      "artifact_id": "tiingo_eod:WOLF",
+      "status": "OK",
+      "bytes": 55065
+    },
+    {
+      "artifact_id": "tiingo_eod:WSOB",
+      "status": "HTTP_404",
+      "url": "https://api.tiingo.com/tiingo/daily/wsob/prices?startDate=2020-01-02&format=json"
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "real_data_verified": false
+}

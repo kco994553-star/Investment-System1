@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:HOLX",
+  "source_url": "https://api.tiingo.com/tiingo/daily/holx/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:52.242311+00:00",
+  "sha256": "70aeb30c121b086cb0f83ed3539fed0c0fd3fd81f2c283751b38101f251c890a",
+  "bytes": 347360,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

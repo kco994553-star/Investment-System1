@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AZPN:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/azpn/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-25T23:29:27.106920+00:00",
+  "sha256": "8ef4ca025043bc4d324fe079c36dc2163a2fb3e9f50884ca36f43039345b7bfd",
+  "bytes": 23393,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

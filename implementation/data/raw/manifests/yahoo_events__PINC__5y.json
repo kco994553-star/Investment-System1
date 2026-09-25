@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PINC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PINC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T23:28:10.776585+00:00",
+  "sha256": "0b25692ac228c80dffe499824b54750cbb87a815ae9537b4bf7ebd12d0fe2ad8",
+  "bytes": 1632,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

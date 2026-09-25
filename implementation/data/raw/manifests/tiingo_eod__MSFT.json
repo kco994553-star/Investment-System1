@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:MSFT",
+  "source_url": "https://api.tiingo.com/tiingo/daily/msft/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:07.634433+00:00",
+  "sha256": "e0e40ca584752f4b5cd64cc460824127590d91c2106ca769c4faf93c6f4f8d20",
+  "bytes": 443292,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

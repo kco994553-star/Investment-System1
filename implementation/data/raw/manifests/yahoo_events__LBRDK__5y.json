@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LBRDK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LBRDK?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T23:28:53.533489+00:00",
+  "sha256": "b952ee3a0e5a0ee72ecd9140a945ed1a9d6b5d1cb894fd46f04a9d4d321fcbc1",
+  "bytes": 1334,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

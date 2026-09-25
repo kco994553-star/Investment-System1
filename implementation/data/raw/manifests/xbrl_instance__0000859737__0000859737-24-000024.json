@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000859737:0000859737-24-000024",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/859737/000085973724000024/holx-20240928_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-25T23:27:20.115977+00:00",
+  "sha256": "9b27ff9f5cd097bf51d45cb23b128c3a3c6f957d3d4be11360d2b36387f8756f",
+  "bytes": 3409815,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

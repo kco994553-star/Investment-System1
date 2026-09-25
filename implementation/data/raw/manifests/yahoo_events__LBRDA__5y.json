@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LBRDA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LBRDA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T23:28:09.357053+00:00",
+  "sha256": "42af9f641e6f704faddc10d5d9d3d12a96648b8e8c139b1791e5dfdd92aea4cf",
+  "bytes": 7577,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:ITCI",
+  "source_url": "https://api.tiingo.com/tiingo/daily/itci/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:57.543356+00:00",
+  "sha256": "952df6b27e4edeba1695bdc3a6fda2a2f07be8ded7ebed1128775c3aed6c5918",
+  "bytes": 289765,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

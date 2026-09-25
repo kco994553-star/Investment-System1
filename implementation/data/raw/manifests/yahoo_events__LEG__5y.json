@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LEG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LEG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T23:28:09.866685+00:00",
+  "sha256": "5fd8980e69aa83f85ff477505aa68bc7ebd0b5825618aee5067949dbb68a3f2f",
+  "bytes": 1325,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

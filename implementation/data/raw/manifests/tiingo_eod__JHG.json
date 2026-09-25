@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:JHG",
+  "source_url": "https://api.tiingo.com/tiingo/daily/jhg/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:59.325457+00:00",
+  "sha256": "3f2ab3a089c12245722d12fafaf090ad3c113ca6506a9372a19fdeeb33aed189",
+  "bytes": 405367,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:WBA",
+  "source_url": "https://api.tiingo.com/tiingo/daily/wba/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:30:22.149538+00:00",
+  "sha256": "b9709d05d7c1c4ae86e2bc166cec24eb5c797c94652d099ee10ae560855f8ef4",
+  "bytes": 353431,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

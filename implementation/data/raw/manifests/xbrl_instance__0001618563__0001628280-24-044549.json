@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001618563:0001628280-24-044549",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1618563/000162828024044549/nsa-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-25T23:27:38.667437+00:00",
+  "sha256": "301c8ebf3754eba05746ff3123d30026eb1f0c5d731e4254e2fe288cb15fd5d6",
+  "bytes": 1002475,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

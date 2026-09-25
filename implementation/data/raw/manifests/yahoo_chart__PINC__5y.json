@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PINC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PINC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T23:28:10.570807+00:00",
+  "sha256": "6fa907f16f945a46cbf972d13a7e7a3afdd5a9f7dfbce20b76ad50ad4c4111f8",
+  "bytes": 9035,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

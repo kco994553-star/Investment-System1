@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:SMAR",
+  "source_url": "https://api.tiingo.com/tiingo/daily/smar/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:30:16.938813+00:00",
+  "sha256": "50bb6bb3fb3b056b17c4cb74969135f454dbfb7e0abefffc1fb1f2a5bcc5a8ea",
+  "bytes": 279653,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

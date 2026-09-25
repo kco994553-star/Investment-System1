@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:HCP",
+  "source_url": "https://api.tiingo.com/tiingo/daily/hcp/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:48.589744+00:00",
+  "sha256": "0fb595f0d6a8aa505d93f8b413d5b8645a377ef0e88704195d6e568ef58986fe",
+  "bytes": 177720,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

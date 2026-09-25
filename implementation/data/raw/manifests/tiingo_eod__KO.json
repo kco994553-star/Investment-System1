@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:KO",
+  "source_url": "https://api.tiingo.com/tiingo/daily/ko/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:14.874153+00:00",
+  "sha256": "15a21e7b3e01994b121f927505d65e3c0d74e826d62338a5b183ace373837760",
+  "bytes": 430231,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

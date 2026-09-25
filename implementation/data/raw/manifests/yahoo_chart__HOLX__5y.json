@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HOLX:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/holx/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-25T23:29:53.750684+00:00",
+  "sha256": "09c8df9782e01a34eb3cf79f241498a6aecf30aa579fcd4bcb73a846f0a76130",
+  "bytes": 26753,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

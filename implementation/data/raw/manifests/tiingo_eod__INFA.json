@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:INFA",
+  "source_url": "https://api.tiingo.com/tiingo/daily/infa/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-25T23:29:53.990739+00:00",
+  "sha256": "6e1d7b1f9c734e8ec2628b9edd8ff72fdbf5e5a3923a36612b2f95882fc60d81",
+  "bytes": 241222,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
