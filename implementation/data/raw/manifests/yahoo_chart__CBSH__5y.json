@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CBSH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CBSH?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:16.968895+00:00",
+  "sha256": "1a68c19529cbea7ed9035070cc2b5a9da119e3fc689df0f83e919cce8101ae9c",
+  "bytes": 137404,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

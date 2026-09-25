@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CPRI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CPRI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:47:18.158594+00:00",
+  "sha256": "c340b5f1cf9a261d4b9e0b01654cd2eb309e710753a21390bd52a5c3e0cbe1dc",
+  "bytes": 7780,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

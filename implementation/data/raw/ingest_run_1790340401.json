@@ -1,0 +1,18 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "data/raw",
+  "n_requested": 1,
+  "n_ok": 1,
+  "n_failed": 0,
+  "log": [
+    {
+      "artifact_id": "yahoo_chart:WOLF:5y",
+      "status": "OK",
+      "bytes": 27259
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "plan_resolution": null,
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}

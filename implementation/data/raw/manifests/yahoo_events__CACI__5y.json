@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CACI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CACI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:47:16.195001+00:00",
+  "sha256": "238910d8f7c71451e71a45c2dac37e51e4b3174984b6a38ad15e1445f399bd91",
+  "bytes": 7592,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

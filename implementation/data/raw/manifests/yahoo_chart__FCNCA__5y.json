@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FCNCA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FCNCA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:19.437872+00:00",
+  "sha256": "68ad6dc92eacb7e31ba43e186491b5ef23258bde4a2b577736b7ab9298821781",
+  "bytes": 128726,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

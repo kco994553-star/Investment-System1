@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RPM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RPM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:25.358193+00:00",
+  "sha256": "582245edb116a30a7ba9d3b01c74bdbf8ce1d2e00d753b24538bf4605f30931d",
+  "bytes": 136018,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

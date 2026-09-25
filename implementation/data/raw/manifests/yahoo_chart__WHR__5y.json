@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WHR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WHR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:27.770922+00:00",
+  "sha256": "f7e6be03bbdc6bbd6907981882f2624db81d9628cf647f276ec043e7016fe3d9",
+  "bytes": 133961,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TDC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TDC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:47:26.560641+00:00",
+  "sha256": "bf7512aae8d6c8d4c5fee81c97645dcc000eb949f6c94bcfed802abe5f4b8dee",
+  "bytes": 7822,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

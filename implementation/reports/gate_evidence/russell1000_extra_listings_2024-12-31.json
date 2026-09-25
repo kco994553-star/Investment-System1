@@ -83,6 +83,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "VORNADO REALTY TRUST"
   },
+  "r1000:0000088121": {
+    "yahoo": "SEB",
+    "cik": "0000088121",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "SEABOARD CORPORATION"
+  },
   "r1000:0001101302": {
     "yahoo": "ENTG",
     "cik": "0001101302",
@@ -131,6 +137,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "BIRKENSTOCK HOLDING PLC"
   },
+  "r1000:0001060822": {
+    "yahoo": "CRI",
+    "cik": "0001060822",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "CARTER'S, INC."
+  },
   "r1000:0001618673": {
     "yahoo": "PFGC",
     "cik": "0001618673",
@@ -158,7 +170,7 @@
   "r1000:0000884614": {
     "yahoo": "UGI",
     "cik": "0000884614",
-    "cik_method": "SEC_CIK_LOOKUP",
+    "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "UGI CORPORATION"
   },
   "r1000:0001770787": {
@@ -203,6 +215,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "THE GAP, INC."
   },
+  "r1000:0000078239": {
+    "yahoo": "PVH",
+    "cik": "0000078239",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "PVH CORP."
+  },
   "r1000:0001674862": {
     "yahoo": "ASH",
     "cik": "0001674862",
@@ -232,6 +250,12 @@
     "cik": "0001786431",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "REYNOLDS CONSUMER PRODUCTS INC."
+  },
+  "r1000:0000109380": {
+    "yahoo": "ZION",
+    "cik": "0000109380",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "ZIONS BANCORPORATION, NATIONAL ASSOCIATION"
   },
   "r1000:0001048477": {
     "yahoo": "BMRN",
@@ -281,11 +305,23 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "FIRST INDUSTRIAL REALTY TRUST, INC."
   },
+  "r1000:0000016058": {
+    "yahoo": "CACI",
+    "cik": "0000016058",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "CACI INTERNATIONAL INC."
+  },
   "r1000:0001571123": {
     "yahoo": "SAIC",
     "cik": "0001571123",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "SCIENCE APPLICATIONS INTERNATIONAL CORPORATION"
+  },
+  "r1000:0001398659": {
+    "yahoo": "G",
+    "cik": "0001398659",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "GENPACT LIMITED"
   },
   "r1000:0001029199": {
     "yahoo": "EEFT",
@@ -316,6 +352,12 @@
     "cik": "0000912593",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "SUN COMMUNITIES, INC."
+  },
+  "r1000:0000106640": {
+    "yahoo": "WHR",
+    "cik": "0000106640",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "WHIRLPOOL CORPORATION"
   },
   "r1000:0000020212": {
     "yahoo": "CHDN",
@@ -502,6 +544,12 @@
     "cik": "0000719955",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "WILLIAMS-SONOMA, INC."
+  },
+  "r1000:0001361658": {
+    "yahoo": "TNL",
+    "cik": "0001361658",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "TRAVEL + LEISURE CO."
   },
   "r1000:0000887343": {
     "yahoo": "COLB",
@@ -695,6 +743,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "MONGODB, INC."
   },
+  "r1000:0000798941": {
+    "yahoo": "FCNCA",
+    "cik": "0000798941",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "FIRST CITIZENS BANCSHARES, INC."
+  },
   "r1000:0001069157": {
     "yahoo": "EWBC",
     "cik": "0001069157",
@@ -706,6 +760,12 @@
     "cik": "0001308547",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "DOLBY LABORATORIES, INC."
+  },
+  "r1000:0000110621": {
+    "yahoo": "RPM",
+    "cik": "0000110621",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "RPM INTERNATIONAL INC."
   },
   "r1000:0001819928": {
     "yahoo": "DV",
@@ -863,6 +923,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "MACOM TECHNOLOGY SOLUTIONS HOLDINGS, INC."
   },
+  "r1000:0002011641": {
+    "yahoo": "FERG",
+    "cik": "0002011641",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "FERGUSON ENTERPRISES INC."
+  },
   "r1000:0001636519": {
     "yahoo": "MSGS",
     "cik": "0001636519",
@@ -881,6 +947,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "YETI HOLDINGS, INC."
   },
+  "r1000:0000726958": {
+    "yahoo": "CASY",
+    "cik": "0000726958",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "CASEY'S GENERAL STORES, INC."
+  },
   "r1000:0001019849": {
     "yahoo": "PAG",
     "cik": "0001019849",
@@ -898,6 +970,12 @@
     "cik": "0001722482",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "AVANTOR, INC."
+  },
+  "r1000:0001214816": {
+    "yahoo": "AXS",
+    "cik": "0001214816",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "AXIS CAPITAL HOLDINGS LIMITED"
   },
   "r1000:0001370946": {
     "yahoo": "OC",
@@ -977,6 +1055,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "BANK OZK"
   },
+  "r1000:0001585364": {
+    "yahoo": "PRGO",
+    "cik": "0001585364",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "PERRIGO COMPANY PUBLIC LIMITED COMPANY"
+  },
   "r1000:0001096343": {
     "yahoo": "MKL",
     "cik": "0001096343",
@@ -1043,6 +1127,18 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "REINSURANCE GROUP OF AMERICA, INCORPORATED"
   },
+  "r1000:0001720635": {
+    "yahoo": "NVT",
+    "cik": "0001720635",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "NVENT ELECTRIC PUBLIC LIMITED COMPANY"
+  },
+  "r1000:0000103379": {
+    "yahoo": "VFC",
+    "cik": "0000103379",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "F.N.B. CORPORATION"
+  },
   "r1000:0001433195": {
     "yahoo": "APPF",
     "cik": "0001433195",
@@ -1060,6 +1156,12 @@
     "cik": "0000350698",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "AUTONATION, INC."
+  },
+  "r1000:0001530721": {
+    "yahoo": "CPRI",
+    "cik": "0001530721",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "Capri Holdings Limited"
   },
   "r1000:0000025232": {
     "yahoo": "CUZ",
@@ -1186,6 +1288,12 @@
     "cik": "0001867072",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "KYNDRYL HOLDINGS, INC."
+  },
+  "r1000:0000022356": {
+    "yahoo": "CBSH",
+    "cik": "0000022356",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "COMMERCE BANCSHARES, INC."
   },
   "r1000:0001604028": {
     "yahoo": "WMS",
@@ -1457,6 +1565,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "CULLEN/FROST BANKERS, INC."
   },
+  "r1000:0000717605": {
+    "yahoo": "HXL",
+    "cik": "0000717605",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "HEXCEL CORPORATION"
+  },
   "r1000:0001988894": {
     "yahoo": "AS",
     "cik": "0001988894",
@@ -1468,6 +1582,12 @@
     "cik": "0000074260",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "OLD REPUBLIC INTERNATIONAL CORPORATION"
+  },
+  "r1000:0001062579": {
+    "yahoo": "DOX",
+    "cik": "0001062579",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "Amdocs Limited"
   },
   "r1000:0000851205": {
     "yahoo": "CGNX",
@@ -1499,12 +1619,6 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "FIVE BELOW, INC."
   },
-  "r1000:0000103379": {
-    "yahoo": "VFC",
-    "cik": "0000103379",
-    "cik_method": "SEC_TICKERS_TITLE",
-    "reference_name": "V.F. CORPORATION"
-  },
   "r1000:0001607678": {
     "yahoo": "VKTX",
     "cik": "0001607678",
@@ -1534,6 +1648,12 @@
     "cik": "0000814453",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "NEWELL BRANDS INC."
+  },
+  "r1000:0000885639": {
+    "yahoo": "KSS",
+    "cik": "0000885639",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "KOHL'S CORPORATION"
   },
   "r1000:0001866581": {
     "yahoo": "BROS",
@@ -1679,6 +1799,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "BATH & BODY WORKS, INC."
   },
+  "r1000:0000816761": {
+    "yahoo": "TDC",
+    "cik": "0000816761",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "TERADATA CORPORATION"
+  },
   "r1000:0002025410": {
     "yahoo": "SARO",
     "cik": "0002025410",
@@ -1793,6 +1919,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "Qiagen N.V."
   },
+  "r1000:0001046311": {
+    "yahoo": "CHH",
+    "cik": "0001046311",
+    "cik_method": "SEC_CIK_LOOKUP_UNIQUE_ACTIVE",
+    "reference_name": "CHOICE HOTELS INTERNATIONAL, INC."
+  },
   "r1000:0001158449": {
     "yahoo": "AAP",
     "cik": "0001158449",
@@ -1834,6 +1966,12 @@
     "cik": "0001787425",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "XP Inc."
+  },
+  "r1000:0000063276": {
+    "yahoo": "MAT",
+    "cik": "0000063276",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "MATTEL, INC."
   },
   "r1000:0001334036": {
     "yahoo": "CROX",
@@ -1883,6 +2021,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "CORE & MAIN, INC."
   },
+  "r1000:0001800227": {
+    "yahoo": "PPLI",
+    "cik": "0001800227",
+    "cik_method": "SEC_CIK_LOOKUP_UNIQUE_ACTIVE",
+    "reference_name": "IAC INC."
+  },
   "r1000:0001013857": {
     "yahoo": "PEGA",
     "cik": "0001013857",
@@ -1918,6 +2062,12 @@
     "cik": "0000070318",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "TENET HEALTHCARE CORPORATION"
+  },
+  "r1000:0000802481": {
+    "yahoo": "PPC",
+    "cik": "0000802481",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "PILGRIM'S PRIDE CORPORATION"
   },
   "r1000:0001447669": {
     "yahoo": "TWLO",
@@ -2177,6 +2327,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "GLOBALFOUNDRIES INC."
   },
+  "r1000:0001603923": {
+    "yahoo": "WFRD",
+    "cik": "0001603923",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "WEATHERFORD INTERNATIONAL PUBLIC LIMITED COMPANY"
+  },
   "r1000:0001773383": {
     "yahoo": "DT",
     "cik": "0001773383",
@@ -2338,6 +2494,12 @@
     "cik": "0001802768",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "ROYALTY PHARMA PLC"
+  },
+  "r1000:0001232524": {
+    "yahoo": "JAZZ",
+    "cik": "0001232524",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "JAZZ PHARMACEUTICALS PUBLIC LIMITED COMPANY"
   },
   "r1000:0000785161": {
     "yahoo": "EHC",

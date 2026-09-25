@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CACI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CACI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:15.991627+00:00",
+  "sha256": "2f2b75430b0673850a5dadd371634d5942bd029899e17a79975c3f66fea5c2a6",
+  "bytes": 131322,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

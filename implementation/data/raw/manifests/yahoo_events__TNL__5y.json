@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TNL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TNL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:47:27.058047+00:00",
+  "sha256": "e327db9da69d460c14cf709055617aa0fc3ff680f4341223487913c19b4b5cbf",
+  "bytes": 7833,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

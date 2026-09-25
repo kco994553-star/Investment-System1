@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PRGO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PRGO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:24.307797+00:00",
+  "sha256": "a06234a3a70df60fc8844e65bfcdfe8f2bef3aec4e4f12a7562bf91e7690a912",
+  "bytes": 137312,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

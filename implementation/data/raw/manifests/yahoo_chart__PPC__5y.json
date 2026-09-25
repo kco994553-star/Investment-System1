@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PPC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PPC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:23.307651+00:00",
+  "sha256": "d79e6ee8a327a57766815a001f256061ea2f772c0cce5109870998cff12c6d4e",
+  "bytes": 137186,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

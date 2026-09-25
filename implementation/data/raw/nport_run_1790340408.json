@@ -1,0 +1,318 @@
+{
+  "kind": "NPORT_REFERENCE_RUN",
+  "as_of": "2024-12-31",
+  "series_name": "iShares Russell 1000 ETF",
+  "n_candidate_filings": 87,
+  "filing": {
+    "accn": "0001752724-25-034052",
+    "filed": "2025-02-24",
+    "doc": "xslFormNPORT-P_X01/primary_doc.xml"
+  },
+  "nport_report_date": "2024-12-31",
+  "nport_series": "iShares Russell 1000 ETF",
+  "n_holdings": 1011,
+  "n_equity_common": 1007,
+  "status": "OK",
+  "n_members_cik": 963,
+  "n_unresolved": 28,
+  "n_extra": 431,
+  "n_not_in_pool_without_current_ticker": 33,
+  "log": [
+    {
+      "artifact_id": "submissions:0001100663",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_cik_lookup",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001100663-submissions-001.json",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043926",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043923",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043927",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043925",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043924",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043922",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043921",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043853",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043851",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043850",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043852",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043849",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043848",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043847",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043803",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043801",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043802",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043800",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043799",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043798",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043797",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041407",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041401",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041398",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041395",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041390",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041393",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041391",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041389",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041388",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041386",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041384",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041382",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041381",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041377",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041378",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041373",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041371",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041375",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041369",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041370",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037904",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037905",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037890",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037892",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037887",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037885",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037886",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037879",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037877",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037874",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037869",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037870",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037866",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037865",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037860",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037851",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037853",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037846",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037849",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037840",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037829",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037843",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037833",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037823",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037818",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037814",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037819",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-034063",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-034052",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "nport_xml:0001752724-25-034052",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    }
+  ]
+}

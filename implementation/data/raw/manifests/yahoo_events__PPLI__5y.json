@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PPLI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PPLI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:47:24.030287+00:00",
+  "sha256": "dbdfae115f668ce822f44579f2e5e6fd15a2037514fb10a15a6ad8d60fbb35f5",
+  "bytes": 8112,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

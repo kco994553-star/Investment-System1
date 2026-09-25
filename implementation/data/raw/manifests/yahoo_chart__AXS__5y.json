@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AXS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AXS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:15.535471+00:00",
+  "sha256": "96d08641d0ede7460ada93224c7b870c00841e0757d3047e83101ef4f4979aa1",
+  "bytes": 134355,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

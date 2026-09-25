@@ -34,6 +34,7 @@
     "0000009389",
     "0000010456",
     "0000010795",
+    "0000011544",
     "0000012208",
     "0000012659",
     "0000012927",
@@ -41,6 +42,7 @@
     "0000014693",
     "0000014930",
     "0000015615",
+    "0000016058",
     "0000016732",
     "0000016918",
     "0000018230",
@@ -50,10 +52,12 @@
     "0000020212",
     "0000020286",
     "0000020520",
+    "0000021076",
     "0000021175",
     "0000021271",
     "0000021344",
     "0000021665",
+    "0000022356",
     "0000023217",
     "0000024545",
     "0000025232",
@@ -76,7 +80,6 @@
     "0000033213",
     "0000034088",
     "0000034903",
-    "0000035159",
     "0000035527",
     "0000036270",
     "0000036377",
@@ -97,16 +100,16 @@
     "0000046619",
     "0000047111",
     "0000047217",
+    "0000048465",
     "0000048898",
     "0000049071",
-    "0000049195",
+    "0000049196",
     "0000049600",
     "0000049826",
     "0000050863",
     "0000051143",
     "0000051253",
     "0000051434",
-    "0000051644",
     "0000052827",
     "0000052988",
     "0000055067",
@@ -119,21 +122,26 @@
     "0000059558",
     "0000060086",
     "0000060519",
+    "0000060667",
     "0000062709",
+    "0000062996",
+    "0000063276",
     "0000063754",
+    "0000063908",
     "0000064040",
     "0000064803",
+    "0000065984",
     "0000066570",
     "0000066740",
     "0000067716",
     "0000068505",
     "0000070145",
     "0000070318",
+    "0000070858",
     "0000071691",
     "0000072331",
     "0000072741",
     "0000072903",
-    "0000072945",
     "0000073124",
     "0000073309",
     "0000074208",
@@ -142,21 +150,27 @@
     "0000075362",
     "0000075677",
     "0000076334",
+    "0000077360",
     "0000077476",
     "0000078003",
     "0000078128",
+    "0000078239",
     "0000079282",
     "0000079879",
     "0000080424",
+    "0000080661",
     "0000082811",
     "0000084246",
     "0000084839",
     "0000085535",
     "0000085961",
     "0000086312",
+    "0000087347",
+    "0000088121",
     "0000088204",
     "0000089089",
     "0000089800",
+    "0000091142",
     "0000091419",
     "0000091440",
     "0000091576",
@@ -187,10 +201,15 @@
     "0000105770",
     "0000106040",
     "0000106535",
+    "0000106640",
     "0000107263",
     "0000108312",
     "0000109177",
+    "0000109198",
+    "0000109380",
+    "0000110621",
     "0000200406",
+    "0000202058",
     "0000216228",
     "0000217346",
     "0000275880",
@@ -198,10 +217,13 @@
     "0000277948",
     "0000310158",
     "0000310764",
+    "0000313616",
+    "0000313927",
     "0000315189",
     "0000315213",
     "0000315293",
     "0000315852",
+    "0000316709",
     "0000317540",
     "0000318154",
     "0000319201",
@@ -223,6 +245,7 @@
     "0000712515",
     "0000713676",
     "0000715957",
+    "0000717605",
     "0000719955",
     "0000720005",
     "0000720672",
@@ -232,6 +255,8 @@
     "0000723531",
     "0000723612",
     "0000726728",
+    "0000726958",
+    "0000728535",
     "0000730263",
     "0000730272",
     "0000731766",
@@ -245,7 +270,6 @@
     "0000750004",
     "0000751364",
     "0000753308",
-    "0000755230",
     "0000763901",
     "0000764065",
     "0000764180",
@@ -257,6 +281,7 @@
     "0000769397",
     "0000769520",
     "0000772406",
+    "0000773840",
     "0000775158",
     "0000776867",
     "0000779152",
@@ -270,21 +295,26 @@
     "0000794170",
     "0000794367",
     "0000796343",
+    "0000797468",
     "0000798354",
+    "0000798941",
     "0000801337",
+    "0000802481",
     "0000811156",
     "0000812011",
     "0000813672",
     "0000813828",
-    "0000814445",
     "0000814453",
     "0000814547",
     "0000815097",
     "0000815556",
+    "0000816761",
     "0000818479",
     "0000820027",
+    "0000820313",
     "0000820318",
     "0000821189",
+    "0000822416",
     "0000822818",
     "0000823768",
     "0000824142",
@@ -295,9 +325,11 @@
     "0000831001",
     "0000831259",
     "0000831641",
+    "0000832101",
     "0000833444",
     "0000842023",
     "0000842162",
+    "0000849395",
     "0000849399",
     "0000849869",
     "0000851205",
@@ -331,11 +363,13 @@
     "0000879101",
     "0000879169",
     "0000882095",
+    "0000882184",
     "0000882835",
     "0000883241",
     "0000884614",
     "0000884887",
     "0000885550",
+    "0000885639",
     "0000885725",
     "0000886982",
     "0000887343",
@@ -346,6 +380,7 @@
     "0000895417",
     "0000895419",
     "0000895421",
+    "0000896159",
     "0000896262",
     "0000896622",
     "0000896878",
@@ -355,7 +390,6 @@
     "0000899051",
     "0000899689",
     "0000900075",
-    "0000905036",
     "0000906107",
     "0000906163",
     "0000906345",
@@ -374,6 +408,7 @@
     "0000915912",
     "0000915913",
     "0000916076",
+    "0000916365",
     "0000916540",
     "0000917251",
     "0000918646",
@@ -390,7 +425,6 @@
     "0000927628",
     "0000927653",
     "0000929008",
-    "0000930809",
     "0000931015",
     "0000933974",
     "0000935703",
@@ -408,6 +442,7 @@
     "0000947484",
     "0000949870",
     "0001000228",
+    "0001000697",
     "0001001250",
     "0001001838",
     "0001002047",
@@ -459,8 +494,10 @@
     "0001045810",
     "0001046102",
     "0001046257",
+    "0001046311",
     "0001047127",
     "0001047862",
+    "0001048286",
     "0001048477",
     "0001048695",
     "0001048911",
@@ -469,12 +506,16 @@
     "0001050797",
     "0001050915",
     "0001051470",
+    "0001053507",
     "0001056696",
     "0001057352",
     "0001057877",
     "0001058090",
     "0001058290",
+    "0001059556",
     "0001060391",
+    "0001060822",
+    "0001062579",
     "0001063761",
     "0001065088",
     "0001065280",
@@ -490,13 +531,13 @@
     "0001071739",
     "0001075531",
     "0001082554",
-    "0001085917",
     "0001086222",
     "0001089063",
     "0001090012",
     "0001090425",
     "0001090727",
     "0001090872",
+    "0001091667",
     "0001093557",
     "0001094285",
     "0001095073",
@@ -515,8 +556,8 @@
     "0001110803",
     "0001111711",
     "0001111928",
+    "0001113169",
     "0001116132",
-    "0001117931",
     "0001120193",
     "0001121788",
     "0001123360",
@@ -524,10 +565,12 @@
     "0001126328",
     "0001128928",
     "0001130310",
+    "0001133421",
     "0001136869",
     "0001136893",
     "0001137774",
     "0001138118",
+    "0001140536",
     "0001140859",
     "0001141391",
     "0001142417",
@@ -539,10 +582,11 @@
     "0001163165",
     "0001163302",
     "0001163976",
+    "0001164727",
     "0001166003",
     "0001166691",
     "0001170010",
-    "0001170279",
+    "0001174922",
     "0001175454",
     "0001176948",
     "0001177394",
@@ -552,7 +596,9 @@
     "0001179929",
     "0001206264",
     "0001212545",
+    "0001214816",
     "0001219601",
+    "0001232524",
     "0001237831",
     "0001260221",
     "0001261333",
@@ -567,8 +613,8 @@
     "0001281761",
     "0001282637",
     "0001283699",
-    "0001284721",
     "0001285785",
+    "0001286681",
     "0001287865",
     "0001288847",
     "0001289419",
@@ -591,7 +637,6 @@
     "0001324404",
     "0001324424",
     "0001324948",
-    "0001326159",
     "0001326160",
     "0001326380",
     "0001326801",
@@ -609,6 +654,7 @@
     "0001357615",
     "0001360604",
     "0001360901",
+    "0001361658",
     "0001365135",
     "0001366561",
     "0001370637",
@@ -629,6 +675,7 @@
     "0001396009",
     "0001397187",
     "0001397911",
+    "0001398659",
     "0001402057",
     "0001402436",
     "0001403161",
@@ -658,6 +705,7 @@
     "0001463101",
     "0001465128",
     "0001466258",
+    "0001467373",
     "0001467623",
     "0001467858",
     "0001468174",
@@ -697,6 +745,7 @@
     "0001527166",
     "0001528396",
     "0001528849",
+    "0001530721",
     "0001530950",
     "0001531152",
     "0001534701",
@@ -706,6 +755,7 @@
     "0001539838",
     "0001543151",
     "0001551152",
+    "0001551182",
     "0001552033",
     "0001555280",
     "0001556593",
@@ -726,11 +776,13 @@
     "0001573516",
     "0001575965",
     "0001579091",
+    "0001579241",
     "0001579298",
     "0001581068",
     "0001583708",
     "0001584207",
     "0001584509",
+    "0001585364",
     "0001585521",
     "0001585689",
     "0001590714",
@@ -742,6 +794,7 @@
     "0001600033",
     "0001601046",
     "0001601712",
+    "0001603923",
     "0001604028",
     "0001604778",
     "0001604821",
@@ -751,6 +804,7 @@
     "0001611052",
     "0001611647",
     "0001611983",
+    "0001613103",
     "0001616707",
     "0001616862",
     "0001617406",
@@ -810,10 +864,12 @@
     "0001703056",
     "0001705696",
     "0001707753",
+    "0001707925",
     "0001709048",
     "0001711269",
     "0001713683",
     "0001718512",
+    "0001720635",
     "0001720671",
     "0001722482",
     "0001722684",
@@ -830,6 +886,7 @@
     "0001754301",
     "0001755672",
     "0001757073",
+    "0001757898",
     "0001758730",
     "0001759509",
     "0001764046",
@@ -853,6 +910,7 @@
     "0001794515",
     "0001794669",
     "0001796209",
+    "0001800227",
     "0001802768",
     "0001803599",
     "0001805284",
@@ -905,8 +963,10 @@
     "0001996810",
     "0001996862",
     "0002000178",
+    "0002005951",
     "0002009684",
     "0002011286",
+    "0002011641",
     "0002012383",
     "0002015845",
     "0002025410",
@@ -988,6 +1048,9 @@
     "0000014930": [
       "BRUNSWICK CORPORATION"
     ],
+    "0001613103": [
+      "MEDTRONIC PUBLIC LIMITED COMPANY"
+    ],
     "0001713683": [
       "ZSCALER, INC."
     ],
@@ -1009,6 +1072,9 @@
     "0001699031": [
       "Grail Inc"
     ],
+    "0001053507": [
+      "AMERICAN TOWER CORPORATION"
+    ],
     "0001584207": [
       "ONEMAIN HOLDINGS, INC."
     ],
@@ -1020,6 +1086,9 @@
     ],
     "0000899689": [
       "VORNADO REALTY TRUST"
+    ],
+    "0000088121": [
+      "SEABOARD CORPORATION"
     ],
     "0001047862": [
       "CONSOLIDATED EDISON, INC."
@@ -1050,6 +1119,12 @@
     ],
     "0000076334": [
       "PARKER-HANNIFIN CORPORATION"
+    ],
+    "0000011544": [
+      "W. R. BERKLEY CORPORATION"
+    ],
+    "0001060822": [
+      "CARTER'S, INC."
     ],
     "0001618673": [
       "PERFORMANCE FOOD GROUP COMPANY"
@@ -1111,17 +1186,27 @@
     "0001527166": [
       "THE CARLYLE GROUP INC."
     ],
+    "0001059556": [
+      "DUN & BRADSTREET HOLDINGS, INC.",
+      "MOODY'S CORPORATION"
+    ],
     "0000039911": [
       "THE GAP, INC."
     ],
     "0000277948": [
       "CSX Corporation"
     ],
+    "0000078239": [
+      "PVH CORP."
+    ],
     "0000320187": [
       "NIKE, INC."
     ],
     "0001674862": [
       "ASHLAND INC."
+    ],
+    "0000773840": [
+      "HONEYWELL INTERNATIONAL INCORPORATION"
     ],
     "0001902733": [
       "NCINO, INC."
@@ -1134,6 +1219,9 @@
     ],
     "0001701605": [
       "BAKER HUGHES COMPANY"
+    ],
+    "0000080661": [
+      "THE PROGRESSIVE CORPORATION"
     ],
     "0001403161": [
       "VISA INC."
@@ -1153,6 +1241,9 @@
     ],
     "0001786431": [
       "REYNOLDS CONSUMER PRODUCTS INC."
+    ],
+    "0000109380": [
+      "ZIONS BANCORPORATION, NATIONAL ASSOCIATION"
     ],
     "0000060086": [
       "LOEWS CORPORATION"
@@ -1192,11 +1283,17 @@
     "0000779152": [
       "JACK HENRY & ASSOCIATES, INC."
     ],
+    "0000060667": [
+      "LOWE'S COMPANIES, INC."
+    ],
     "0001306830": [
       "CELANESE CORPORATION"
     ],
     "0000921825": [
       "FIRST INDUSTRIAL REALTY TRUST, INC."
+    ],
+    "0000016058": [
+      "CACI INTERNATIONAL INC."
     ],
     "0000860731": [
       "TYLER TECHNOLOGIES, INC."
@@ -1206,6 +1303,12 @@
     ],
     "0000352541": [
       "ALLIANT ENERGY CORPORATION"
+    ],
+    "0000202058": [
+      "L3HARRIS TECHNOLOGIES, INC."
+    ],
+    "0001398659": [
+      "GENPACT LIMITED"
     ],
     "0001029199": [
       "EURONET WORLDWIDE, INC."
@@ -1255,7 +1358,7 @@
     "0000045012": [
       "HALLIBURTON COMPANY"
     ],
-    "0001170279": [
+    "0000106640": [
       "WHIRLPOOL CORPORATION"
     ],
     "0000910521": [
@@ -1263,6 +1366,9 @@
     ],
     "0001478242": [
       "IQVIA HOLDINGS INC"
+    ],
+    "0000849395": [
+      "CRH PUBLIC LIMITED COMPANY"
     ],
     "0000009389": [
       "BALL CORPORATION"
@@ -1356,6 +1462,9 @@
     ],
     "0000763901": [
       "Popular, Inc."
+    ],
+    "0001140536": [
+      "Willis Towers Watson Public Limited Company"
     ],
     "0001604778": [
       "QORVO, INC."
@@ -1472,6 +1581,9 @@
     "0000719955": [
       "WILLIAMS-SONOMA, INC."
     ],
+    "0001361658": [
+      "TRAVEL + LEISURE CO."
+    ],
     "0001506307": [
       "KINDER MORGAN, INC."
     ],
@@ -1481,7 +1593,7 @@
     "0001408198": [
       "MSCI INC."
     ],
-    "0001085917": [
+    "0000070858": [
       "BANK OF AMERICA CORPORATION"
     ],
     "0001883685": [
@@ -1531,6 +1643,9 @@
     ],
     "0000936468": [
       "LOCKHEED MARTIN CORPORATION"
+    ],
+    "0000087347": [
+      "Schlumberger N.V."
     ],
     "0001404912": [
       "KKR & CO. INC."
@@ -1597,6 +1712,9 @@
     ],
     "0001097149": [
       "ALIGN TECHNOLOGY, INC."
+    ],
+    "0000077360": [
+      "PENTAIR PUBLIC LIMITED COMPANY"
     ],
     "0001739104": [
       "ELANCO ANIMAL HEALTH INCORPORATED"
@@ -1667,6 +1785,9 @@
     "0001441816": [
       "MONGODB, INC."
     ],
+    "0000798941": [
+      "FIRST CITIZENS BANCSHARES, INC."
+    ],
     "0001585689": [
       "HILTON WORLDWIDE HOLDINGS INC."
     ],
@@ -1675,6 +1796,9 @@
     ],
     "0001308547": [
       "DOLBY LABORATORIES, INC."
+    ],
+    "0000110621": [
+      "RPM INTERNATIONAL INC."
     ],
     "0000849399": [
       "GEN DIGITAL INC."
@@ -1703,6 +1827,9 @@
     "0000073309": [
       "NUCOR CORPORATION"
     ],
+    "0001174922": [
+      "WYNN RESORTS, LIMITED"
+    ],
     "0000037785": [
       "FMC CORPORATION"
     ],
@@ -1717,6 +1844,9 @@
     ],
     "0000029989": [
       "OMNICOM GROUP INC."
+    ],
+    "0001579241": [
+      "ALLEGION PUBLIC LIMITED COMPANY"
     ],
     "0001627223": [
       "THE CHEMOURS COMPANY"
@@ -1736,6 +1866,9 @@
     "0000014693": [
       "BROWN-FORMAN CORPORATION",
       "BROWN-FORMAN CORPORATION"
+    ],
+    "0000916365": [
+      "TRACTOR SUPPLY COMPANY"
     ],
     "0001048911": [
       "FEDEX CORPORATION"
@@ -1808,6 +1941,9 @@
     "0000831259": [
       "FREEPORT-MCMORAN INC."
     ],
+    "0001091667": [
+      "CHARTER COMMUNICATIONS, INC."
+    ],
     "0001749723": [
       "NEW FORTRESS ENERGY INC."
     ],
@@ -1874,7 +2010,7 @@
     "0001156375": [
       "CME GROUP INC."
     ],
-    "0000035159": [
+    "0002011641": [
       "FERGUSON ENTERPRISES INC."
     ],
     "0001636519": [
@@ -1889,17 +2025,29 @@
     "0001022671": [
       "STEEL DYNAMICS, INC."
     ],
+    "0001757898": [
+      "STERIS PUBLIC LIMITED COMPANY"
+    ],
     "0001670592": [
       "YETI HOLDINGS, INC."
     ],
     "0000040533": [
       "GENERAL DYNAMICS CORPORATION"
     ],
+    "0001113169": [
+      "T. ROWE PRICE GROUP, INC."
+    ],
+    "0000726958": [
+      "CASEY'S GENERAL STORES, INC."
+    ],
     "0000315189": [
       "DEERE & COMPANY"
     ],
     "0001374310": [
       "CBOE GLOBAL MARKETS, INC."
+    ],
+    "0000822416": [
+      "PULTEGROUP, INC."
     ],
     "0001019849": [
       "PENSKE AUTOMOTIVE GROUP, INC."
@@ -1931,6 +2079,9 @@
     "0001722482": [
       "AVANTOR, INC."
     ],
+    "0001214816": [
+      "AXIS CAPITAL HOLDINGS LIMITED"
+    ],
     "0001103982": [
       "Mondelez International, Inc."
     ],
@@ -1951,6 +2102,9 @@
     ],
     "0000815097": [
       "Carnival Corporation"
+    ],
+    "0000896159": [
+      "Chubb Limited"
     ],
     "0000721371": [
       "CARDINAL HEALTH, INC."
@@ -1988,7 +2142,7 @@
     "0001692819": [
       "VISTRA CORP."
     ],
-    "0000905036": [
+    "0001048286": [
       "MARRIOTT INTERNATIONAL, INC."
     ],
     "0000812011": [
@@ -2051,6 +2205,9 @@
     "0001335258": [
       "LIVE NATION ENTERTAINMENT, INC."
     ],
+    "0001585364": [
+      "PERRIGO COMPANY PUBLIC LIMITED COMPANY"
+    ],
     "0001096343": [
       "Markel Group Inc."
     ],
@@ -2096,8 +2253,15 @@
     "0000898174": [
       "REINSURANCE GROUP OF AMERICA, INCORPORATED"
     ],
+    "0001720635": [
+      "NVENT ELECTRIC PUBLIC LIMITED COMPANY"
+    ],
     "0000711404": [
       "THE COOPER COMPANIES, INC."
+    ],
+    "0000103379": [
+      "F.N.B. CORPORATION",
+      "V.F. CORPORATION"
     ],
     "0001108524": [
       "SALESFORCE, INC."
@@ -2120,8 +2284,11 @@
     "0000350698": [
       "AUTONATION, INC."
     ],
-    "0001117931": [
+    "0000021076": [
       "THE CLOROX COMPANY"
+    ],
+    "0001530721": [
+      "Capri Holdings Limited"
     ],
     "0000922224": [
       "PPL CORPORATION"
@@ -2131,6 +2298,9 @@
     ],
     "0000025232": [
       "COUSINS PROPERTIES INCORPORATED"
+    ],
+    "0000065984": [
+      "ENTERGY CORPORATION"
     ],
     "0000007536": [
       "ARROW ELECTRONICS, INC."
@@ -2279,16 +2449,22 @@
     "0000720005": [
       "RAYMOND JAMES FINANCIAL, INC."
     ],
+    "0000022356": [
+      "COMMERCE BANCSHARES, INC."
+    ],
     "0001604028": [
       "ADVANCED DRAINAGE SYSTEMS, INC."
     ],
     "0001474432": [
       "PURE STORAGE, INC."
     ],
+    "0002005951": [
+      "SMURFIT WESTROCK PUBLIC LIMITED COMPANY"
+    ],
     "0001818874": [
       "SOFI TECHNOLOGIES, INC."
     ],
-    "0000930809": [
+    "0001000697": [
       "WATERS CORPORATION"
     ],
     "0001592386": [
@@ -2299,6 +2475,9 @@
     ],
     "0001177394": [
       "TD SYNNEX CORPORATION"
+    ],
+    "0000063908": [
+      "MCDONALD'S CORPORATION"
     ],
     "0001282637": [
       "NewMarket Corporation"
@@ -2341,6 +2520,9 @@
     ],
     "0001075531": [
       "BOOKING HOLDINGS INC."
+    ],
+    "0001707925": [
+      "LINDE PUBLIC LIMITED COMPANY"
     ],
     "0001759509": [
       "LYFT, INC."
@@ -2395,6 +2577,9 @@
     ],
     "0001274494": [
       "FIRST SOLAR, INC."
+    ],
+    "0000091142": [
+      "A. O. SMITH CORPORATION"
     ],
     "0001705696": [
       "VICI PROPERTIES INC."
@@ -2465,7 +2650,7 @@
     "0000052827": [
       "RAYONIER INC."
     ],
-    "0000755230": [
+    "0000313616": [
       "DANAHER CORPORATION"
     ],
     "0001692063": [
@@ -2492,7 +2677,7 @@
     "0001383312": [
       "BROADRIDGE FINANCIAL SOLUTIONS, INC."
     ],
-    "0000814445": [
+    "0000109198": [
       "THE TJX COMPANIES, INC."
     ],
     "0001068851": [
@@ -2500,6 +2685,9 @@
     ],
     "0001366561": [
       "SMARTSHEET INC."
+    ],
+    "0000832101": [
+      "IDEX CORPORATION"
     ],
     "0001561550": [
       "DATADOG, INC."
@@ -2561,11 +2749,17 @@
     "0001095073": [
       "Everest Group, Ltd."
     ],
+    "0000717605": [
+      "HEXCEL CORPORATION"
+    ],
     "0001988894": [
       "Amer Sports, Inc"
     ],
     "0000074260": [
       "OLD REPUBLIC INTERNATIONAL CORPORATION"
+    ],
+    "0001062579": [
+      "Amdocs Limited"
     ],
     "0000021344": [
       "THE COCA-COLA COMPANY"
@@ -2588,6 +2782,9 @@
     "0001551152": [
       "ABBVIE INC."
     ],
+    "0001551182": [
+      "EATON CORPORATION PUBLIC LIMITED COMPANY"
+    ],
     "0001590955": [
       "PAYCOM SOFTWARE, INC."
     ],
@@ -2600,14 +2797,14 @@
     "0001024478": [
       "ROCKWELL AUTOMATION, INC."
     ],
+    "0000882184": [
+      "D.R. HORTON, INC."
+    ],
     "0000877212": [
       "ZEBRA TECHNOLOGIES CORPORATION"
     ],
     "0000707549": [
       "LAM RESEARCH CORPORATION"
-    ],
-    "0000103379": [
-      "V.F. CORPORATION"
     ],
     "0001510295": [
       "MARATHON PETROLEUM CORPORATION"
@@ -2635,6 +2832,12 @@
     ],
     "0000814453": [
       "NEWELL BRANDS INC."
+    ],
+    "0000885639": [
+      "KOHL'S CORPORATION"
+    ],
+    "0000728535": [
+      "J. B. HUNT TRANSPORT SERVICES, INC."
     ],
     "0001666700": [
       "DUPONT DE NEMOURS, INC."
@@ -2780,6 +2983,9 @@
     "0000097745": [
       "THERMO FISHER SCIENTIFIC INCORPORATED"
     ],
+    "0000816761": [
+      "TERADATA CORPORATION"
+    ],
     "0002025410": [
       "STANDARDAERO, INC."
     ],
@@ -2794,6 +3000,9 @@
     ],
     "0001442145": [
       "VERISK ANALYTICS, INC."
+    ],
+    "0000820313": [
+      "AMPHENOL CORPORATION"
     ],
     "0001472787": [
       "FIRST AMERICAN FINANCIAL CORPORATION"
@@ -2911,6 +3120,9 @@
     "0001015820": [
       "Qiagen N.V."
     ],
+    "0001046311": [
+      "CHOICE HOTELS INTERNATIONAL, INC."
+    ],
     "0001158449": [
       "ADVANCE AUTO PARTS, INC."
     ],
@@ -2938,6 +3150,9 @@
     "0001120193": [
       "NASDAQ, INC."
     ],
+    "0000048465": [
+      "HORMEL FOODS CORPORATION"
+    ],
     "0000823768": [
       "WASTE MANAGEMENT, INC."
     ],
@@ -2947,7 +3162,10 @@
     "0001787425": [
       "XP Inc."
     ],
-    "0001284721": [
+    "0000316709": [
+      "THE CHARLES SCHWAB CORPORATION"
+    ],
+    "0000063276": [
       "MATTEL, INC."
     ],
     "0000101829": [
@@ -2983,6 +3201,9 @@
     "0001018963": [
       "ATI INC"
     ],
+    "0001164727": [
+      "NEWMONT CORPORATION"
+    ],
     "0000004457": [
       "U-Haul Holding Company",
       "U-Haul Holding Company"
@@ -2995,6 +3216,9 @@
     ],
     "0000352915": [
       "UNIVERSAL HEALTH SERVICES, INC."
+    ],
+    "0001800227": [
+      "IAC INC."
     ],
     "0000012927": [
       "THE BOEING COMPANY"
@@ -3037,6 +3261,9 @@
     ],
     "0000070318": [
       "TENET HEALTHCARE CORPORATION"
+    ],
+    "0000802481": [
+      "PILGRIM'S PRIDE CORPORATION"
     ],
     "0001413329": [
       "Philip Morris International Inc."
@@ -3086,7 +3313,7 @@
     "0001734722": [
       "UIPATH, INC."
     ],
-    "0000072945": [
+    "0001133421": [
       "Northrop Grumman Corporation"
     ],
     "0000915389": [
@@ -3106,6 +3333,9 @@
     ],
     "0000072331": [
       "NORDSON CORPORATION"
+    ],
+    "0001286681": [
+      "DOMINO'S PIZZA, INC."
     ],
     "0000036270": [
       "M&T BANK CORPORATION"
@@ -3169,6 +3399,9 @@
     ],
     "0000354190": [
       "ARTHUR J. GALLAGHER & CO."
+    ],
+    "0001467373": [
+      "ACCENTURE PUBLIC LIMITED COMPANY"
     ],
     "0001311370": [
       "Lazard, Inc."
@@ -3316,6 +3549,9 @@
     ],
     "0001116132": [
       "TAPESTRY, INC."
+    ],
+    "0001603923": [
+      "WEATHERFORD INTERNATIONAL PUBLIC LIMITED COMPANY"
     ],
     "0001773383": [
       "DYNATRACE, INC."
@@ -3476,8 +3712,14 @@
     "0000023217": [
       "CONAGRA BRANDS, INC."
     ],
+    "0000062996": [
+      "MASCO CORPORATION"
+    ],
     "0000020286": [
       "CINCINNATI FINANCIAL CORPORATION"
+    ],
+    "0001232524": [
+      "JAZZ PHARMACEUTICALS PUBLIC LIMITED COMPANY"
     ],
     "0001013237": [
       "FACTSET RESEARCH SYSTEMS INC."
@@ -3500,14 +3742,14 @@
     "0000785161": [
       "ENCOMPASS HEALTH CORPORATION"
     ],
-    "0000051644": [
-      "THE INTERPUBLIC GROUP OF COMPANIES, INC."
-    ],
     "0001996862": [
       "Bunge Global SA"
     ],
-    "0000049195": [
+    "0000049196": [
       "HUNTINGTON BANCSHARES INCORPORATED"
+    ],
+    "0000797468": [
+      "OCCIDENTAL PETROLEUM CORPORATION"
     ],
     "0000821189": [
       "EOG RESOURCES, INC."
@@ -3527,7 +3769,7 @@
     "0001418135": [
       "KEURIG DR PEPPER INC."
     ],
-    "0001326159": [
+    "0000313927": [
       "CHURCH & DWIGHT CO., INC."
     ],
     "0001138118": [
@@ -3641,132 +3883,6 @@
   },
   "unresolved_holdings": [
     {
-      "name": "MEDTRONIC PUBLIC LIMITED COMPANY",
-      "cusip": "G5960L103",
-      "isin": "IE00BTN1Y115",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 75902295.52,
-      "name_matches": 0
-    },
-    {
-      "name": "AMERICAN TOWER CORPORATION",
-      "cusip": "03027X100",
-      "isin": "US03027X1000",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 63263427.89,
-      "name_matches": 4
-    },
-    {
-      "name": "SEABOARD CORPORATION",
-      "cusip": "811543107",
-      "isin": "US8115431079",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 352300.7,
-      "name_matches": 2
-    },
-    {
-      "name": "W. R. BERKLEY CORPORATION",
-      "cusip": "084423102",
-      "isin": "US0844231029",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 12767074.32,
-      "name_matches": 0
-    },
-    {
-      "name": "CARTER'S, INC.",
-      "cusip": "146229109",
-      "isin": "US1462291097",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 1486214.94,
-      "name_matches": 0
-    },
-    {
-      "name": "DUN & BRADSTREET HOLDINGS, INC.",
-      "cusip": "26484T106",
-      "isin": "US26484T1060",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 2788273.88,
-      "name_matches": 3
-    },
-    {
-      "name": "PVH CORP.",
-      "cusip": "693656100",
-      "isin": "US6936561009",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 4224395.25,
-      "name_matches": 0
-    },
-    {
-      "name": "HONEYWELL INTERNATIONAL INCORPORATION",
-      "cusip": "438516106",
-      "isin": "US4385161066",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 109163827.29,
-      "name_matches": 0
-    },
-    {
-      "name": "THE PROGRESSIVE CORPORATION",
-      "cusip": "743315103",
-      "isin": "US7433151039",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 103870935.0,
-      "name_matches": 0
-    },
-    {
-      "name": "ZIONS BANCORPORATION, NATIONAL ASSOCIATION",
-      "cusip": "989701107",
-      "isin": "US9897011071",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 5908910.0,
-      "name_matches": 0
-    },
-    {
-      "name": "LOWE'S COMPANIES, INC.",
-      "cusip": "548661107",
-      "isin": "US5486611073",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 104535348.4,
-      "name_matches": 0
-    },
-    {
-      "name": "CACI INTERNATIONAL INC.",
-      "cusip": "127190304",
-      "isin": "US1271903049",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 6573652.14,
-      "name_matches": 0
-    },
-    {
-      "name": "L3HARRIS TECHNOLOGIES, INC.",
-      "cusip": "502431109",
-      "isin": "US5024311095",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 29420485.08,
-      "name_matches": 0
-    },
-    {
-      "name": "GENPACT LIMITED",
-      "cusip": "G3922B107",
-      "isin": "BMG3922B1072",
-      "asset_cat": "EC",
-      "country": "BM",
-      "value": 5547035.45,
-      "name_matches": 0
-    },
-    {
       "name": "NORDSTROM, INC.",
       "cusip": "655664100",
       "isin": "US6556641008",
@@ -3776,112 +3892,13 @@
       "name_matches": 3
     },
     {
-      "name": "CRH PUBLIC LIMITED COMPANY",
-      "cusip": "G25508105",
-      "isin": "IE0001827041",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 46987207.2,
-      "name_matches": 0
-    },
-    {
-      "name": "MOODY'S CORPORATION",
-      "cusip": "615369105",
-      "isin": "US6153691059",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 55311391.02,
-      "name_matches": 0
-    },
-    {
-      "name": "Willis Towers Watson Public Limited Company",
-      "cusip": "G96629103",
-      "isin": "IE00BDB6Q211",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 23667474.68,
-      "name_matches": 0
-    },
-    {
       "name": "CITIZENS FINANCIAL GROUP, INC.",
       "cusip": "174610105",
       "isin": "US1746101054",
       "asset_cat": "EC",
       "country": "US",
       "value": 14528013.68,
-      "name_matches": 0
-    },
-    {
-      "name": "TRAVEL + LEISURE CO.",
-      "cusip": "894164102",
-      "isin": "US8941641024",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 2528654.9,
-      "name_matches": 0
-    },
-    {
-      "name": "Schlumberger N.V.",
-      "cusip": "806857108",
-      "isin": "AN8068571086",
-      "asset_cat": "EC",
-      "country": "CW",
-      "value": 40128062.58,
-      "name_matches": 0
-    },
-    {
-      "name": "PENTAIR PUBLIC LIMITED COMPANY",
-      "cusip": "G7S00T104",
-      "isin": "IE00BLS09M33",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 12378820.64,
-      "name_matches": 0
-    },
-    {
-      "name": "FIRST CITIZENS BANCSHARES, INC.",
-      "cusip": "31946M103",
-      "isin": "US31946M1036",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 18689661.9,
-      "name_matches": 0
-    },
-    {
-      "name": "RPM INTERNATIONAL INC.",
-      "cusip": "749685103",
-      "isin": "US7496851038",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 11502910.44,
-      "name_matches": 0
-    },
-    {
-      "name": "WYNN RESORTS, LIMITED",
-      "cusip": "983134107",
-      "isin": "US9831341071",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 6572370.96,
-      "name_matches": 0
-    },
-    {
-      "name": "ALLEGION PUBLIC LIMITED COMPANY",
-      "cusip": "G0176J109",
-      "isin": "IE00BFRT3W74",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 8445587.04,
-      "name_matches": 0
-    },
-    {
-      "name": "TRACTOR SUPPLY COMPANY",
-      "cusip": "892356106",
-      "isin": "US8923561067",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 21120002.4,
-      "name_matches": 0
+      "name_matches": 4
     },
     {
       "name": "MP MATERIALS CORP",
@@ -3902,33 +3919,6 @@
       "name_matches": 2
     },
     {
-      "name": "CHARTER COMMUNICATIONS, INC.",
-      "cusip": "16119P108",
-      "isin": "US16119P1084",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 23770756.73,
-      "name_matches": 4
-    },
-    {
-      "name": "STERIS PUBLIC LIMITED COMPANY",
-      "cusip": "G8473T100",
-      "isin": "IE00BFY8C754",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 15062614.56,
-      "name_matches": 0
-    },
-    {
-      "name": "T. ROWE PRICE GROUP, INC.",
-      "cusip": "74144T108",
-      "isin": "US74144T1088",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 18334150.8,
-      "name_matches": 2
-    },
-    {
       "name": "PREMIER, INC.",
       "cusip": "74051N102",
       "isin": "US74051N1028",
@@ -3938,94 +3928,13 @@
       "name_matches": 4
     },
     {
-      "name": "CASEY'S GENERAL STORES, INC.",
-      "cusip": "147528103",
-      "isin": "US1475281036",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 10837286.73,
-      "name_matches": 0
-    },
-    {
-      "name": "PULTEGROUP, INC.",
-      "cusip": "745867101",
-      "isin": "US7458671010",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 16623911.7,
-      "name_matches": 0
-    },
-    {
-      "name": "AXIS CAPITAL HOLDINGS LIMITED",
-      "cusip": "G0692U109",
-      "isin": "BMG0692U1099",
-      "asset_cat": "EC",
-      "country": "BM",
-      "value": 5037338.04,
-      "name_matches": 0
-    },
-    {
-      "name": "Chubb Limited",
-      "cusip": "H1467J104",
-      "isin": "CH0044328745",
-      "asset_cat": "EC",
-      "country": "CH",
-      "value": 82864856.7,
-      "name_matches": 0
-    },
-    {
       "name": "ASPEN TECHNOLOGY, INC.",
       "cusip": "29109X106",
       "isin": "US29109X1063",
       "asset_cat": "EC",
       "country": "US",
       "value": 4908973.95,
-      "name_matches": 2
-    },
-    {
-      "name": "PERRIGO COMPANY PUBLIC LIMITED COMPANY",
-      "cusip": "G97822103",
-      "isin": "IE00BGH1M568",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 2598406.86,
-      "name_matches": 0
-    },
-    {
-      "name": "NVENT ELECTRIC PUBLIC LIMITED COMPANY",
-      "cusip": "G6700G107",
-      "isin": "IE00BDVJJQ56",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 8279804.16,
-      "name_matches": 0
-    },
-    {
-      "name": "F.N.B. CORPORATION",
-      "cusip": "302520101",
-      "isin": "US3025201019",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 3972479.72,
-      "name_matches": 0
-    },
-    {
-      "name": "Capri Holdings Limited",
-      "cusip": "G1890L107",
-      "isin": "VGG1890L1076",
-      "asset_cat": "EC",
-      "country": "VG",
-      "value": 1778095.8,
-      "name_matches": 0
-    },
-    {
-      "name": "ENTERGY CORPORATION",
-      "cusip": "29364G103",
-      "isin": "US29364G1031",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 23924242.8,
-      "name_matches": 2
+      "name_matches": 3
     },
     {
       "name": "VERTEX PHARMACEUTICALS INCORPORATED",
@@ -4037,48 +3946,12 @@
       "name_matches": 0
     },
     {
-      "name": "COMMERCE BANCSHARES, INC.",
-      "cusip": "200525103",
-      "isin": "US2005251036",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 5779501.74,
-      "name_matches": 0
-    },
-    {
-      "name": "SMURFIT WESTROCK PUBLIC LIMITED COMPANY",
-      "cusip": "G8267P108",
-      "isin": "IE00028FXN24",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 20667374.64,
-      "name_matches": 0
-    },
-    {
       "name": "VERISIGN, INC.",
       "cusip": "92343E102",
       "isin": "US92343E1029",
       "asset_cat": "EC",
       "country": "US",
       "value": 12942657.52,
-      "name_matches": 0
-    },
-    {
-      "name": "MCDONALD'S CORPORATION",
-      "cusip": "580135101",
-      "isin": "US5801351017",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 154920404.79,
-      "name_matches": 0
-    },
-    {
-      "name": "LINDE PUBLIC LIMITED COMPANY",
-      "cusip": "G54950103",
-      "isin": "IE000S9YS762",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 149179657.06,
       "name_matches": 0
     },
     {
@@ -4100,30 +3973,12 @@
       "name_matches": 2
     },
     {
-      "name": "A. O. SMITH CORPORATION",
-      "cusip": "831865209",
-      "isin": "US8318652091",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 6115572.18,
-      "name_matches": 0
-    },
-    {
       "name": "LITTELFUSE, INC.",
       "cusip": "537008104",
       "isin": "US5370081045",
       "asset_cat": "EC",
       "country": "US",
       "value": 4181373.6,
-      "name_matches": 0
-    },
-    {
-      "name": "IDEX CORPORATION",
-      "cusip": "45167R104",
-      "isin": "US45167R1041",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 11837233.11,
       "name_matches": 0
     },
     {
@@ -4136,33 +3991,6 @@
       "name_matches": 5
     },
     {
-      "name": "HEXCEL CORPORATION",
-      "cusip": "428291108",
-      "isin": "US4282911084",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 3882634.8,
-      "name_matches": 0
-    },
-    {
-      "name": "Amdocs Limited",
-      "cusip": "G02602103",
-      "isin": "GB0022569080",
-      "asset_cat": "EC",
-      "country": "GG",
-      "value": 7282620.18,
-      "name_matches": 0
-    },
-    {
-      "name": "EATON CORPORATION PUBLIC LIMITED COMPANY",
-      "cusip": "G29183103",
-      "isin": "IE00B8KQN827",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 97132375.34,
-      "name_matches": 0
-    },
-    {
       "name": "DAYFORCE, INC.",
       "cusip": "15677J108",
       "isin": "US15677J1088",
@@ -4170,33 +3998,6 @@
       "country": "US",
       "value": 8098851.52,
       "name_matches": 2
-    },
-    {
-      "name": "D.R. HORTON, INC.",
-      "cusip": "23331A109",
-      "isin": "US23331A1097",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 30245163.3,
-      "name_matches": 0
-    },
-    {
-      "name": "KOHL'S CORPORATION",
-      "cusip": "500255104",
-      "isin": "US5002551043",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 1143501.84,
-      "name_matches": 0
-    },
-    {
-      "name": "J. B. HUNT TRANSPORT SERVICES, INC.",
-      "cusip": "445658107",
-      "isin": "US4456581077",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 10381589.12,
-      "name_matches": 0
     },
     {
       "name": "CORNING INCORPORATED",
@@ -4226,24 +4027,6 @@
       "name_matches": 0
     },
     {
-      "name": "TERADATA CORPORATION",
-      "cusip": "88076W103",
-      "isin": "US88076W1036",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 2330175.75,
-      "name_matches": 0
-    },
-    {
-      "name": "AMPHENOL CORPORATION",
-      "cusip": "032095101",
-      "isin": "US0320951017",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 60913622.7,
-      "name_matches": 0
-    },
-    {
       "name": "UNIVERSAL DISPLAY CORPORATION",
       "cusip": "91347P105",
       "isin": "US91347P1057",
@@ -4251,15 +4034,6 @@
       "country": "US",
       "value": 5023139.6,
       "name_matches": 0
-    },
-    {
-      "name": "CHOICE HOTELS INTERNATIONAL, INC.",
-      "cusip": "169905106",
-      "isin": "US1699051066",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 3015229.26,
-      "name_matches": 2
     },
     {
       "name": "CONFLUENT, INC.",
@@ -4277,7 +4051,7 @@
       "asset_cat": "EC",
       "country": "US",
       "value": 6152240.7,
-      "name_matches": 2
+      "name_matches": 3
     },
     {
       "name": "SPIRIT AEROSYSTEMS HOLDINGS, INC.",
@@ -4287,69 +4061,6 @@
       "country": "US",
       "value": 2954804.16,
       "name_matches": 3
-    },
-    {
-      "name": "HORMEL FOODS CORPORATION",
-      "cusip": "440452100",
-      "isin": "US4404521001",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 6771277.24,
-      "name_matches": 0
-    },
-    {
-      "name": "THE CHARLES SCHWAB CORPORATION",
-      "cusip": "808513105",
-      "isin": "US8085131055",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 81882073.65,
-      "name_matches": 2
-    },
-    {
-      "name": "NEWMONT CORPORATION",
-      "cusip": "651639106",
-      "isin": "US6516391066",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 31764478.5,
-      "name_matches": 0
-    },
-    {
-      "name": "IAC INC.",
-      "cusip": "44891N208",
-      "isin": "US44891N2080",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 2319896.64,
-      "name_matches": 5
-    },
-    {
-      "name": "PILGRIM'S PRIDE CORPORATION",
-      "cusip": "72147K108",
-      "isin": "US72147K1088",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 1322528.43,
-      "name_matches": 0
-    },
-    {
-      "name": "DOMINO'S PIZZA, INC.",
-      "cusip": "25754A201",
-      "isin": "US25754A2015",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 10791190.08,
-      "name_matches": 0
-    },
-    {
-      "name": "ACCENTURE PUBLIC LIMITED COMPANY",
-      "cusip": "G1151C101",
-      "isin": "IE00B4BNMY34",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 163708994.4,
-      "name_matches": 0
     },
     {
       "name": "SKECHERS U.S.A., INC.",
@@ -4367,15 +4078,6 @@
       "asset_cat": "EC",
       "country": "US",
       "value": 0.0,
-      "name_matches": 0
-    },
-    {
-      "name": "WEATHERFORD INTERNATIONAL PUBLIC LIMITED COMPANY",
-      "cusip": "G48833118",
-      "isin": "IE00BLNN3691",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 3820529.31,
       "name_matches": 0
     },
     {
@@ -4406,30 +4108,12 @@
       "name_matches": 2
     },
     {
-      "name": "MASCO CORPORATION",
-      "cusip": "574599106",
-      "isin": "US5745991068",
+      "name": "THE INTERPUBLIC GROUP OF COMPANIES, INC.",
+      "cusip": "460690100",
+      "isin": "US4606901001",
       "asset_cat": "EC",
       "country": "US",
-      "value": 11803220.22,
-      "name_matches": 0
-    },
-    {
-      "name": "JAZZ PHARMACEUTICALS PUBLIC LIMITED COMPANY",
-      "cusip": "G50871105",
-      "isin": "IE00B4Q5ZN47",
-      "asset_cat": "EC",
-      "country": "IE",
-      "value": 5641501.5,
-      "name_matches": 0
-    },
-    {
-      "name": "OCCIDENTAL PETROLEUM CORPORATION",
-      "cusip": "674599105",
-      "isin": "US6745991058",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 24939895.14,
+      "value": 7800908.1,
       "name_matches": 2
     },
     {
@@ -4458,35 +4142,22 @@
     "0000021271",
     "0000028412",
     "0000034088",
-    "0000035159",
-    "0000049195",
-    "0000051644",
     "0000055067",
     "0000058492",
-    "0000072945",
     "0000088204",
     "0000105598",
-    "0000755230",
     "0000801337",
     "0000813828",
-    "0000814445",
     "0000859737",
     "0000896262",
-    "0000905036",
     "0000919092",
-    "0000930809",
     "0000937556",
     "0001013462",
     "0001043604",
-    "0001085917",
-    "0001117931",
     "0001124140",
     "0001163302",
     "0001163976",
-    "0001170279",
     "0001274173",
-    "0001284721",
-    "0001326159",
     "0001366561",
     "0001487712",
     "0001492422",

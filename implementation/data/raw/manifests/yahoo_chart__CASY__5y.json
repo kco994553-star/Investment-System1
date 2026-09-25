@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CASY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CASY?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:16.462409+00:00",
+  "sha256": "25320753255cbee023d0421f3524ba366d9da9435d1b434409985fc778c64c7f",
+  "bytes": 132966,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

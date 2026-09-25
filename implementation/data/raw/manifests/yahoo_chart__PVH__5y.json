@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PVH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PVH?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:24.840882+00:00",
+  "sha256": "b7e43b0b47abd51815f3dfb93d24af7b26d9cc31533e6508c66ef7ee528564fa",
+  "bytes": 133678,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

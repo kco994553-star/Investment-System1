@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NVT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NVT?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:47:23.053999+00:00",
+  "sha256": "5519d60350cb62af0cb13c04ba6a9a892c822db729ae0197b3d465e9b1298e93",
+  "bytes": 7663,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ZION:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ZION?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:28.294979+00:00",
+  "sha256": "5197208148dc2cbc26df55f74242ab3b48c4af9377738348f63fa27923358f5f",
+  "bytes": 136350,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

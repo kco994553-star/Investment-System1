@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:KSS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KSS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:47:22.063763+00:00",
+  "sha256": "c973af99998e6f2bf2cd9cf5e01140a41503ea8ce72dd801ccf33c3b5b0a6646",
+  "bytes": 7959,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PPC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PPC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:47:23.554462+00:00",
+  "sha256": "4cc3482067b3c4338d24f29db7889570a38f1f6504886cb52fc17e6a47fd43cc",
+  "bytes": 7918,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

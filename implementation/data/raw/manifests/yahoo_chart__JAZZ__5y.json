@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:JAZZ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/JAZZ?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:21.399002+00:00",
+  "sha256": "56f138536a51e4a62ee93c2e12fa551bc2a3235865a79533a6f0c20f442510f0",
+  "bytes": 136103,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

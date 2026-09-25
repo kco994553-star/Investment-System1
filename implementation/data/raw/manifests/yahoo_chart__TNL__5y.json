@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TNL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TNL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:26.824980+00:00",
+  "sha256": "3238be1565fd9e46b6cf700dc450d4229c030873eec42c8acb26463b72d1f3d3",
+  "bytes": 135034,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

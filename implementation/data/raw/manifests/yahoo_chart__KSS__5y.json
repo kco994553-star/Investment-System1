@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:KSS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KSS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:21.847958+00:00",
+  "sha256": "a1770155390dbb9bd7acaf5492dd856a32b0a17114369ad6143ef066e6958e50",
+  "bytes": 137876,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

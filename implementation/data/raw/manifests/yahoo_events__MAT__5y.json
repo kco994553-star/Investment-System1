@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MAT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MAT?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:47:22.584567+00:00",
+  "sha256": "6626a81a4f37796e01af28160b066c6c9edf7d53c9531e2c5d358e84942ea040",
+  "bytes": 7911,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

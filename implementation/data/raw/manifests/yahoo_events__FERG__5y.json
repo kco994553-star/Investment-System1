@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FERG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FERG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:47:20.159386+00:00",
+  "sha256": "40cf1ffd5d34a14745708e89a95305ef2af6305284e2663965c23e9f6d4c8d42",
+  "bytes": 7894,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

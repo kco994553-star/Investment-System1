@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:G:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/G?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:47:20.403517+00:00",
+  "sha256": "4b0009f4fc8a2cc50f69c0d7d880c3e22392f7d52122b31e4809a0f192b827b7",
+  "bytes": 135938,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
