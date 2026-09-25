@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:OHI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OHI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:17.267417+00:00",
+  "sha256": "871d84c48a0fd1c5d110c39fbd2fee28d2cb80ba0889f90be8a00075d64b4a23",
+  "bytes": 7785,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

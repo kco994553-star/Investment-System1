@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:VKTX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VKTX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:18.065433+00:00",
+  "sha256": "3612654b8ffeb37262ea01e84331f998c0828691eec295a226c7a45c395b8295",
+  "bytes": 134423,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

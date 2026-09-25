@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:VAC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VAC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:15.762428+00:00",
+  "sha256": "fd688d8f9a66ce44f90c251a413e5b82db0c91b4f065ea96e9f14c65c995c998",
+  "bytes": 133968,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

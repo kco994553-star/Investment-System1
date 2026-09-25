@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LECO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LECO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:52.293173+00:00",
+  "sha256": "f17be985c407f02a826d60fd1031d7acab5e9c73b7e02c39702b6a587da92891",
+  "bytes": 7882,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

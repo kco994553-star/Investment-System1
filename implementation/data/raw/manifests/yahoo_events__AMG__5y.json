@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AMG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:18.534742+00:00",
+  "sha256": "ad0e57acf1f5ad3098990a973d32a963c3fd922e29507b3df3f40cec75629d81",
+  "bytes": 7821,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

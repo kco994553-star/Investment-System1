@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MTDR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MTDR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:05.237821+00:00",
+  "sha256": "da59c90d65e4dcfec29c4c444216c32cf02ba36c1f2dab02b6a52a24b80fa5f7",
+  "bytes": 135630,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SAM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SAM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:49.031835+00:00",
+  "sha256": "88a1127516588d8b953c5ba2ec0ac6ac48722d47b2e2e12fa645b9b36a48ebd5",
+  "bytes": 7658,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

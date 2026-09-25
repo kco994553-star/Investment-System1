@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:WOLF",
+  "source_url": "https://stooq.com/q/d/l/?s=wolf.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T12:35:38.655440+00:00",
+  "sha256": "9190b919b59c2bbf16de2296a2d3e11abe65aef71fa1e0009882cce1d30f8e93",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

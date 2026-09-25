@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:WSC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WSC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:27.898951+00:00",
+  "sha256": "40aae4c6c31a2f3c7434185967afc5739632aff1e8408e6651df3f73d82e00fe",
+  "bytes": 7863,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

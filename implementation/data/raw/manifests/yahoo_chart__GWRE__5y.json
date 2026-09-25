@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GWRE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GWRE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:32.370371+00:00",
+  "sha256": "e23eedcff85067eed109ab4f8d64cd7a78d98f2c7c91e03e044ae280a7faa2c6",
+  "bytes": 134708,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

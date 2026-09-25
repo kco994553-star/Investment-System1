@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:QRVO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/QRVO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:33.428746+00:00",
+  "sha256": "b99c45f4bc3ca1faccae4698c9b187fa379ae17b010c798b579b45846c2f32a9",
+  "bytes": 7743,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

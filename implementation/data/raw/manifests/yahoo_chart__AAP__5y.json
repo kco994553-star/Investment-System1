@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AAP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AAP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:10.004001+00:00",
+  "sha256": "599a80418a78f378c98e55324a937a74ffb09bce74ab915a6fac1cac0ad74ba7",
+  "bytes": 135267,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

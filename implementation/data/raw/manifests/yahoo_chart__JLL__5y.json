@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:JLL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/JLL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:44.422945+00:00",
+  "sha256": "32e2c3329ed6353a3a13e3c8e13f804d340e0c6c9940fa19177c1944fe590b53",
+  "bytes": 134954,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

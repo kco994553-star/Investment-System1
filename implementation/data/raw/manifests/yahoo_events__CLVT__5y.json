@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CLVT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CLVT?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:48.300126+00:00",
+  "sha256": "baa635557f236d6fe6f456501d3ce8519905630e962a5bc8c57dc5080fcf7d6f",
+  "bytes": 7849,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

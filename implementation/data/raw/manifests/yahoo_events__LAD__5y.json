@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LAD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LAD?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:49.264032+00:00",
+  "sha256": "f31bbe015daa06a5608980741bbeee160fb0a6cb928709ed72f1cc1d76fe6b08",
+  "bytes": 7729,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

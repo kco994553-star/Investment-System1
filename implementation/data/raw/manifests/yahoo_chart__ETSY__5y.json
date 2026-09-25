@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ETSY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ETSY?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:13.914459+00:00",
+  "sha256": "9a5acf8d6e16f37ffeae3935cff4be936f860d18d26ca7d2cd5ea5c4d43c9502",
+  "bytes": 133977,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

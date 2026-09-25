@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:APPF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/APPF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:21.488014+00:00",
+  "sha256": "686433a2d499407d8abcf83ef8628ef724e89dc60c54f6282ce047a8fe8dfab3",
+  "bytes": 7755,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,8093 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "data/raw",
+  "n_requested": 1616,
+  "n_ok": 1615,
+  "n_failed": 1,
+  "log": [
+    {
+      "artifact_id": "companyfacts:0000004457",
+      "status": "OK",
+      "bytes": 4386050
+    },
+    {
+      "artifact_id": "submissions:0000004457",
+      "status": "OK",
+      "bytes": 159340
+    },
+    {
+      "artifact_id": "companyfacts:0000005513",
+      "status": "OK",
+      "bytes": 5137701
+    },
+    {
+      "artifact_id": "submissions:0000005513",
+      "status": "OK",
+      "bytes": 163609
+    },
+    {
+      "artifact_id": "companyfacts:0000006201",
+      "status": "OK",
+      "bytes": 3409249
+    },
+    {
+      "artifact_id": "submissions:0000006201",
+      "status": "OK",
+      "bytes": 166318
+    },
+    {
+      "artifact_id": "companyfacts:0000007431",
+      "status": "OK",
+      "bytes": 3743292
+    },
+    {
+      "artifact_id": "submissions:0000007431",
+      "status": "OK",
+      "bytes": 161150
+    },
+    {
+      "artifact_id": "companyfacts:0000007536",
+      "status": "OK",
+      "bytes": 3330030
+    },
+    {
+      "artifact_id": "submissions:0000007536",
+      "status": "OK",
+      "bytes": 158380
+    },
+    {
+      "artifact_id": "companyfacts:0000008858",
+      "status": "OK",
+      "bytes": 3168635
+    },
+    {
+      "artifact_id": "submissions:0000008858",
+      "status": "OK",
+      "bytes": 158426
+    },
+    {
+      "artifact_id": "companyfacts:0000012208",
+      "status": "OK",
+      "bytes": 4022621
+    },
+    {
+      "artifact_id": "submissions:0000012208",
+      "status": "OK",
+      "bytes": 168090
+    },
+    {
+      "artifact_id": "companyfacts:0000012659",
+      "status": "OK",
+      "bytes": 4620261
+    },
+    {
+      "artifact_id": "submissions:0000012659",
+      "status": "OK",
+      "bytes": 151880
+    },
+    {
+      "artifact_id": "companyfacts:0000014930",
+      "status": "OK",
+      "bytes": 4657010
+    },
+    {
+      "artifact_id": "submissions:0000014930",
+      "status": "OK",
+      "bytes": 164990
+    },
+    {
+      "artifact_id": "companyfacts:0000015615",
+      "status": "OK",
+      "bytes": 4005771
+    },
+    {
+      "artifact_id": "submissions:0000015615",
+      "status": "OK",
+      "bytes": 159920
+    },
+    {
+      "artifact_id": "companyfacts:0000019584",
+      "status": "OK",
+      "bytes": 3029148
+    },
+    {
+      "artifact_id": "submissions:0000019584",
+      "status": "OK",
+      "bytes": 157921
+    },
+    {
+      "artifact_id": "companyfacts:0000020212",
+      "status": "OK",
+      "bytes": 3397276
+    },
+    {
+      "artifact_id": "submissions:0000020212",
+      "status": "OK",
+      "bytes": 152693
+    },
+    {
+      "artifact_id": "companyfacts:0000021175",
+      "status": "OK",
+      "bytes": 4483270
+    },
+    {
+      "artifact_id": "submissions:0000021175",
+      "status": "OK",
+      "bytes": 162189
+    },
+    {
+      "artifact_id": "companyfacts:0000025232",
+      "status": "OK",
+      "bytes": 2965658
+    },
+    {
+      "artifact_id": "submissions:0000025232",
+      "status": "OK",
+      "bytes": 162870
+    },
+    {
+      "artifact_id": "companyfacts:0000025445",
+      "status": "OK",
+      "bytes": 3833813
+    },
+    {
+      "artifact_id": "submissions:0000025445",
+      "status": "OK",
+      "bytes": 160743
+    },
+    {
+      "artifact_id": "companyfacts:0000026324",
+      "status": "OK",
+      "bytes": 3646770
+    },
+    {
+      "artifact_id": "submissions:0000026324",
+      "status": "OK",
+      "bytes": 160795
+    },
+    {
+      "artifact_id": "companyfacts:0000028917",
+      "status": "OK",
+      "bytes": 2854249
+    },
+    {
+      "artifact_id": "submissions:0000028917",
+      "status": "OK",
+      "bytes": 162639
+    },
+    {
+      "artifact_id": "companyfacts:0000029644",
+      "status": "OK",
+      "bytes": 3551621
+    },
+    {
+      "artifact_id": "submissions:0000029644",
+      "status": "OK",
+      "bytes": 159222
+    },
+    {
+      "artifact_id": "companyfacts:0000030625",
+      "status": "OK",
+      "bytes": 4065820
+    },
+    {
+      "artifact_id": "submissions:0000030625",
+      "status": "OK",
+      "bytes": 165994
+    },
+    {
+      "artifact_id": "companyfacts:0000030697",
+      "status": "OK",
+      "bytes": 3772235
+    },
+    {
+      "artifact_id": "submissions:0000030697",
+      "status": "OK",
+      "bytes": 155173
+    },
+    {
+      "artifact_id": "companyfacts:0000036377",
+      "status": "OK",
+      "bytes": 3275845
+    },
+    {
+      "artifact_id": "submissions:0000036377",
+      "status": "OK",
+      "bytes": 138881
+    },
+    {
+      "artifact_id": "companyfacts:0000036966",
+      "status": "OK",
+      "bytes": 6355495
+    },
+    {
+      "artifact_id": "submissions:0000036966",
+      "status": "OK",
+      "bytes": 159050
+    },
+    {
+      "artifact_id": "companyfacts:0000039263",
+      "status": "OK",
+      "bytes": 6280600
+    },
+    {
+      "artifact_id": "submissions:0000039263",
+      "status": "OK",
+      "bytes": 164376
+    },
+    {
+      "artifact_id": "companyfacts:0000039911",
+      "status": "OK",
+      "bytes": 3839863
+    },
+    {
+      "artifact_id": "submissions:0000039911",
+      "status": "OK",
+      "bytes": 159945
+    },
+    {
+      "artifact_id": "companyfacts:0000040729",
+      "status": "OK",
+      "bytes": 7304879
+    },
+    {
+      "artifact_id": "submissions:0000040729",
+      "status": "OK",
+      "bytes": 165692
+    },
+    {
+      "artifact_id": "companyfacts:0000042888",
+      "status": "OK",
+      "bytes": 3495938
+    },
+    {
+      "artifact_id": "submissions:0000042888",
+      "status": "OK",
+      "bytes": 156805
+    },
+    {
+      "artifact_id": "companyfacts:0000046619",
+      "status": "OK",
+      "bytes": 3756501
+    },
+    {
+      "artifact_id": "submissions:0000046619",
+      "status": "OK",
+      "bytes": 163655
+    },
+    {
+      "artifact_id": "companyfacts:0000049600",
+      "status": "OK",
+      "bytes": 2997627
+    },
+    {
+      "artifact_id": "submissions:0000049600",
+      "status": "OK",
+      "bytes": 164124
+    },
+    {
+      "artifact_id": "companyfacts:0000052827",
+      "status": "OK",
+      "bytes": 4036884
+    },
+    {
+      "artifact_id": "submissions:0000052827",
+      "status": "OK",
+      "bytes": 158596
+    },
+    {
+      "artifact_id": "companyfacts:0000056047",
+      "status": "OK",
+      "bytes": 3569431
+    },
+    {
+      "artifact_id": "submissions:0000056047",
+      "status": "OK",
+      "bytes": 151875
+    },
+    {
+      "artifact_id": "companyfacts:0000059527",
+      "status": "OK",
+      "bytes": 3764979
+    },
+    {
+      "artifact_id": "submissions:0000059527",
+      "status": "OK",
+      "bytes": 158506
+    },
+    {
+      "artifact_id": "companyfacts:0000059558",
+      "status": "OK",
+      "bytes": 4804821
+    },
+    {
+      "artifact_id": "submissions:0000059558",
+      "status": "OK",
+      "bytes": 167002
+    },
+    {
+      "artifact_id": "companyfacts:0000060519",
+      "status": "OK",
+      "bytes": 4484730
+    },
+    {
+      "artifact_id": "submissions:0000060519",
+      "status": "OK",
+      "bytes": 160123
+    },
+    {
+      "artifact_id": "companyfacts:0000066570",
+      "status": "OK",
+      "bytes": 3944180
+    },
+    {
+      "artifact_id": "submissions:0000066570",
+      "status": "OK",
+      "bytes": 146200
+    },
+    {
+      "artifact_id": "companyfacts:0000067716",
+      "status": "OK",
+      "bytes": 4796061
+    },
+    {
+      "artifact_id": "submissions:0000067716",
+      "status": "OK",
+      "bytes": 162795
+    },
+    {
+      "artifact_id": "companyfacts:0000070145",
+      "status": "OK",
+      "bytes": 3992145
+    },
+    {
+      "artifact_id": "submissions:0000070145",
+      "status": "OK",
+      "bytes": 165510
+    },
+    {
+      "artifact_id": "companyfacts:0000070318",
+      "status": "OK",
+      "bytes": 4458748
+    },
+    {
+      "artifact_id": "submissions:0000070318",
+      "status": "OK",
+      "bytes": 158276
+    },
+    {
+      "artifact_id": "companyfacts:0000071691",
+      "status": "OK",
+      "bytes": 3987144
+    },
+    {
+      "artifact_id": "submissions:0000071691",
+      "status": "OK",
+      "bytes": 160961
+    },
+    {
+      "artifact_id": "companyfacts:0000074260",
+      "status": "OK",
+      "bytes": 3650444
+    },
+    {
+      "artifact_id": "submissions:0000074260",
+      "status": "OK",
+      "bytes": 172139
+    },
+    {
+      "artifact_id": "companyfacts:0000074303",
+      "status": "OK",
+      "bytes": 5428091
+    },
+    {
+      "artifact_id": "submissions:0000074303",
+      "status": "OK",
+      "bytes": 165007
+    },
+    {
+      "artifact_id": "companyfacts:0000078128",
+      "status": "OK",
+      "bytes": 3640725
+    },
+    {
+      "artifact_id": "submissions:0000078128",
+      "status": "OK",
+      "bytes": 159105
+    },
+    {
+      "artifact_id": "companyfacts:0000082811",
+      "status": "OK",
+      "bytes": 4401962
+    },
+    {
+      "artifact_id": "submissions:0000082811",
+      "status": "OK",
+      "bytes": 164019
+    },
+    {
+      "artifact_id": "companyfacts:0000084246",
+      "status": "OK",
+      "bytes": 3847252
+    },
+    {
+      "artifact_id": "submissions:0000084246",
+      "status": "OK",
+      "bytes": 158641
+    },
+    {
+      "artifact_id": "companyfacts:0000085535",
+      "status": "OK",
+      "bytes": 2490124
+    },
+    {
+      "artifact_id": "submissions:0000085535",
+      "status": "OK",
+      "bytes": 165101
+    },
+    {
+      "artifact_id": "companyfacts:0000085961",
+      "status": "OK",
+      "bytes": 4076360
+    },
+    {
+      "artifact_id": "submissions:0000085961",
+      "status": "OK",
+      "bytes": 163580
+    },
+    {
+      "artifact_id": "companyfacts:0000089089",
+      "status": "OK",
+      "bytes": 4293737
+    },
+    {
+      "artifact_id": "submissions:0000089089",
+      "status": "OK",
+      "bytes": 159638
+    },
+    {
+      "artifact_id": "companyfacts:0000091767",
+      "status": "OK",
+      "bytes": 4255591
+    },
+    {
+      "artifact_id": "submissions:0000091767",
+      "status": "OK",
+      "bytes": 143981
+    },
+    {
+      "artifact_id": "companyfacts:0000096223",
+      "status": "OK",
+      "bytes": 6414695
+    },
+    {
+      "artifact_id": "submissions:0000096223",
+      "status": "OK",
+      "bytes": 175024
+    },
+    {
+      "artifact_id": "companyfacts:0000098362",
+      "status": "OK",
+      "bytes": 4797606
+    },
+    {
+      "artifact_id": "submissions:0000098362",
+      "status": "OK",
+      "bytes": 163322
+    },
+    {
+      "artifact_id": "companyfacts:0000102729",
+      "status": "OK",
+      "bytes": 4079015
+    },
+    {
+      "artifact_id": "submissions:0000102729",
+      "status": "OK",
+      "bytes": 153329
+    },
+    {
+      "artifact_id": "companyfacts:0000103379",
+      "status": "OK",
+      "bytes": 5227136
+    },
+    {
+      "artifact_id": "submissions:0000103379",
+      "status": "OK",
+      "bytes": 159043
+    },
+    {
+      "artifact_id": "companyfacts:0000105016",
+      "status": "OK",
+      "bytes": 2776779
+    },
+    {
+      "artifact_id": "submissions:0000105016",
+      "status": "OK",
+      "bytes": 161779
+    },
+    {
+      "artifact_id": "companyfacts:0000105634",
+      "status": "OK",
+      "bytes": 3617203
+    },
+    {
+      "artifact_id": "submissions:0000105634",
+      "status": "OK",
+      "bytes": 172692
+    },
+    {
+      "artifact_id": "companyfacts:0000108312",
+      "status": "OK",
+      "bytes": 4380932
+    },
+    {
+      "artifact_id": "submissions:0000108312",
+      "status": "OK",
+      "bytes": 157828
+    },
+    {
+      "artifact_id": "companyfacts:0000109177",
+      "status": "OK",
+      "bytes": 4647564
+    },
+    {
+      "artifact_id": "submissions:0000109177",
+      "status": "OK",
+      "bytes": 170022
+    },
+    {
+      "artifact_id": "companyfacts:0000216228",
+      "status": "OK",
+      "bytes": 5090131
+    },
+    {
+      "artifact_id": "submissions:0000216228",
+      "status": "OK",
+      "bytes": 163655
+    },
+    {
+      "artifact_id": "companyfacts:0000275880",
+      "status": "OK",
+      "bytes": 1920070
+    },
+    {
+      "artifact_id": "submissions:0000275880",
+      "status": "OK",
+      "bytes": 71079
+    },
+    {
+      "artifact_id": "companyfacts:0000315213",
+      "status": "OK",
+      "bytes": 2621537
+    },
+    {
+      "artifact_id": "submissions:0000315213",
+      "status": "OK",
+      "bytes": 153957
+    },
+    {
+      "artifact_id": "companyfacts:0000315852",
+      "status": "OK",
+      "bytes": 4676110
+    },
+    {
+      "artifact_id": "submissions:0000315852",
+      "status": "OK",
+      "bytes": 161213
+    },
+    {
+      "artifact_id": "companyfacts:0000317540",
+      "status": "OK",
+      "bytes": 3638861
+    },
+    {
+      "artifact_id": "submissions:0000317540",
+      "status": "OK",
+      "bytes": 136880
+    },
+    {
+      "artifact_id": "companyfacts:0000350698",
+      "status": "OK",
+      "bytes": 3409892
+    },
+    {
+      "artifact_id": "submissions:0000350698",
+      "status": "OK",
+      "bytes": 164917
+    },
+    {
+      "artifact_id": "companyfacts:0000350894",
+      "status": "OK",
+      "bytes": 4109054
+    },
+    {
+      "artifact_id": "submissions:0000350894",
+      "status": "OK",
+      "bytes": 163262
+    },
+    {
+      "artifact_id": "companyfacts:0000355811",
+      "status": "OK",
+      "bytes": 3069065
+    },
+    {
+      "artifact_id": "submissions:0000355811",
+      "status": "OK",
+      "bytes": 162127
+    },
+    {
+      "artifact_id": "companyfacts:0000701985",
+      "status": "OK",
+      "bytes": 3904513
+    },
+    {
+      "artifact_id": "submissions:0000701985",
+      "status": "OK",
+      "bytes": 152998
+    },
+    {
+      "artifact_id": "companyfacts:0000704532",
+      "status": "OK",
+      "bytes": 3180268
+    },
+    {
+      "artifact_id": "submissions:0000704532",
+      "status": "OK",
+      "bytes": 160100
+    },
+    {
+      "artifact_id": "companyfacts:0000719955",
+      "status": "OK",
+      "bytes": 2987162
+    },
+    {
+      "artifact_id": "submissions:0000719955",
+      "status": "OK",
+      "bytes": 157751
+    },
+    {
+      "artifact_id": "companyfacts:0000720672",
+      "status": "OK",
+      "bytes": 5725867
+    },
+    {
+      "artifact_id": "submissions:0000720672",
+      "status": "OK",
+      "bytes": 157993
+    },
+    {
+      "artifact_id": "companyfacts:0000723612",
+      "status": "OK",
+      "bytes": 3849583
+    },
+    {
+      "artifact_id": "submissions:0000723612",
+      "status": "OK",
+      "bytes": 167921
+    },
+    {
+      "artifact_id": "companyfacts:0000730263",
+      "status": "OK",
+      "bytes": 3526341
+    },
+    {
+      "artifact_id": "submissions:0000730263",
+      "status": "OK",
+      "bytes": 162797
+    },
+    {
+      "artifact_id": "companyfacts:0000730272",
+      "status": "OK",
+      "bytes": 3744851
+    },
+    {
+      "artifact_id": "submissions:0000730272",
+      "status": "OK",
+      "bytes": 156771
+    },
+    {
+      "artifact_id": "companyfacts:0000750004",
+      "status": "OK",
+      "bytes": 3929250
+    },
+    {
+      "artifact_id": "submissions:0000750004",
+      "status": "OK",
+      "bytes": 159951
+    },
+    {
+      "artifact_id": "companyfacts:0000751364",
+      "status": "OK",
+      "bytes": 3449656
+    },
+    {
+      "artifact_id": "submissions:0000751364",
+      "status": "OK",
+      "bytes": 162572
+    },
+    {
+      "artifact_id": "companyfacts:0000763901",
+      "status": "OK",
+      "bytes": 7478375
+    },
+    {
+      "artifact_id": "submissions:0000763901",
+      "status": "OK",
+      "bytes": 154219
+    },
+    {
+      "artifact_id": "companyfacts:0000764065",
+      "status": "OK",
+      "bytes": 4851766
+    },
+    {
+      "artifact_id": "submissions:0000764065",
+      "status": "OK",
+      "bytes": 165288
+    },
+    {
+      "artifact_id": "companyfacts:0000766421",
+      "status": "OK",
+      "bytes": 3666062
+    },
+    {
+      "artifact_id": "submissions:0000766421",
+      "status": "OK",
+      "bytes": 163864
+    },
+    {
+      "artifact_id": "companyfacts:0000769520",
+      "status": "OK",
+      "bytes": 3323645
+    },
+    {
+      "artifact_id": "submissions:0000769520",
+      "status": "OK",
+      "bytes": 159420
+    },
+    {
+      "artifact_id": "companyfacts:0000772406",
+      "status": "OK",
+      "bytes": 2873572
+    },
+    {
+      "artifact_id": "submissions:0000772406",
+      "status": "OK",
+      "bytes": 161668
+    },
+    {
+      "artifact_id": "companyfacts:0000775158",
+      "status": "OK",
+      "bytes": 4272340
+    },
+    {
+      "artifact_id": "submissions:0000775158",
+      "status": "OK",
+      "bytes": 184760
+    },
+    {
+      "artifact_id": "companyfacts:0000776867",
+      "status": "OK",
+      "bytes": 3832599
+    },
+    {
+      "artifact_id": "submissions:0000776867",
+      "status": "OK",
+      "bytes": 168182
+    },
+    {
+      "artifact_id": "companyfacts:0000785161",
+      "status": "OK",
+      "bytes": 4550933
+    },
+    {
+      "artifact_id": "submissions:0000785161",
+      "status": "OK",
+      "bytes": 159329
+    },
+    {
+      "artifact_id": "companyfacts:0000790051",
+      "status": "OK",
+      "bytes": 4009726
+    },
+    {
+      "artifact_id": "submissions:0000790051",
+      "status": "OK",
+      "bytes": 162436
+    },
+    {
+      "artifact_id": "companyfacts:0000793952",
+      "status": "OK",
+      "bytes": 4452885
+    },
+    {
+      "artifact_id": "submissions:0000793952",
+      "status": "OK",
+      "bytes": 155753
+    },
+    {
+      "artifact_id": "companyfacts:0000794170",
+      "status": "OK",
+      "bytes": 3782367
+    },
+    {
+      "artifact_id": "submissions:0000794170",
+      "status": "OK",
+      "bytes": 159026
+    },
+    {
+      "artifact_id": "companyfacts:0000794367",
+      "status": "OK",
+      "bytes": 3797273
+    },
+    {
+      "artifact_id": "submissions:0000794367",
+      "status": "OK",
+      "bytes": 164366
+    },
+    {
+      "artifact_id": "companyfacts:0000812011",
+      "status": "OK",
+      "bytes": 3690628
+    },
+    {
+      "artifact_id": "submissions:0000812011",
+      "status": "OK",
+      "bytes": 162504
+    },
+    {
+      "artifact_id": "companyfacts:0000814453",
+      "status": "OK",
+      "bytes": 3984331
+    },
+    {
+      "artifact_id": "submissions:0000814453",
+      "status": "OK",
+      "bytes": 165806
+    },
+    {
+      "artifact_id": "companyfacts:0000818479",
+      "status": "OK",
+      "bytes": 4860482
+    },
+    {
+      "artifact_id": "submissions:0000818479",
+      "status": "OK",
+      "bytes": 157754
+    },
+    {
+      "artifact_id": "companyfacts:0000822818",
+      "status": "OK",
+      "bytes": 3723754
+    },
+    {
+      "artifact_id": "submissions:0000822818",
+      "status": "OK",
+      "bytes": 153837
+    },
+    {
+      "artifact_id": "companyfacts:0000824142",
+      "status": "OK",
+      "bytes": 3471695
+    },
+    {
+      "artifact_id": "submissions:0000824142",
+      "status": "OK",
+      "bytes": 163689
+    },
+    {
+      "artifact_id": "companyfacts:0000825542",
+      "status": "OK",
+      "bytes": 4410721
+    },
+    {
+      "artifact_id": "submissions:0000825542",
+      "status": "OK",
+      "bytes": 162058
+    },
+    {
+      "artifact_id": "companyfacts:0000831641",
+      "status": "OK",
+      "bytes": 3600528
+    },
+    {
+      "artifact_id": "submissions:0000831641",
+      "status": "OK",
+      "bytes": 162492
+    },
+    {
+      "artifact_id": "companyfacts:0000842162",
+      "status": "OK",
+      "bytes": 3818154
+    },
+    {
+      "artifact_id": "submissions:0000842162",
+      "status": "OK",
+      "bytes": 157509
+    },
+    {
+      "artifact_id": "companyfacts:0000849869",
+      "status": "OK",
+      "bytes": 2925109
+    },
+    {
+      "artifact_id": "submissions:0000849869",
+      "status": "OK",
+      "bytes": 162816
+    },
+    {
+      "artifact_id": "companyfacts:0000851205",
+      "status": "OK",
+      "bytes": 3946579
+    },
+    {
+      "artifact_id": "submissions:0000851205",
+      "status": "OK",
+      "bytes": 163749
+    },
+    {
+      "artifact_id": "companyfacts:0000853816",
+      "status": "OK",
+      "bytes": 3200681
+    },
+    {
+      "artifact_id": "submissions:0000853816",
+      "status": "OK",
+      "bytes": 160472
+    },
+    {
+      "artifact_id": "companyfacts:0000855658",
+      "status": "OK",
+      "bytes": 3010057
+    },
+    {
+      "artifact_id": "submissions:0000855658",
+      "status": "OK",
+      "bytes": 154428
+    },
+    {
+      "artifact_id": "companyfacts:0000860748",
+      "status": "OK",
+      "bytes": 5032537
+    },
+    {
+      "artifact_id": "submissions:0000860748",
+      "status": "OK",
+      "bytes": 164756
+    },
+    {
+      "artifact_id": "companyfacts:0000861884",
+      "status": "OK",
+      "bytes": 3196776
+    },
+    {
+      "artifact_id": "submissions:0000861884",
+      "status": "OK",
+      "bytes": 166759
+    },
+    {
+      "artifact_id": "companyfacts:0000866291",
+      "status": "OK",
+      "bytes": 1390675
+    },
+    {
+      "artifact_id": "submissions:0000866291",
+      "status": "OK",
+      "bytes": 84173
+    },
+    {
+      "artifact_id": "companyfacts:0000868857",
+      "status": "OK",
+      "bytes": 4219413
+    },
+    {
+      "artifact_id": "submissions:0000868857",
+      "status": "OK",
+      "bytes": 155941
+    },
+    {
+      "artifact_id": "companyfacts:0000871763",
+      "status": "OK",
+      "bytes": 3361935
+    },
+    {
+      "artifact_id": "submissions:0000871763",
+      "status": "OK",
+      "bytes": 163407
+    },
+    {
+      "artifact_id": "companyfacts:0000873303",
+      "status": "OK",
+      "bytes": 2956446
+    },
+    {
+      "artifact_id": "submissions:0000873303",
+      "status": "OK",
+      "bytes": 160552
+    },
+    {
+      "artifact_id": "companyfacts:0000874015",
+      "status": "OK",
+      "bytes": 2689063
+    },
+    {
+      "artifact_id": "submissions:0000874015",
+      "status": "OK",
+      "bytes": 159927
+    },
+    {
+      "artifact_id": "companyfacts:0000875357",
+      "status": "OK",
+      "bytes": 6009682
+    },
+    {
+      "artifact_id": "submissions:0000875357",
+      "status": "OK",
+      "bytes": 161714
+    },
+    {
+      "artifact_id": "companyfacts:0000876437",
+      "status": "OK",
+      "bytes": 3598741
+    },
+    {
+      "artifact_id": "submissions:0000876437",
+      "status": "OK",
+      "bytes": 162749
+    },
+    {
+      "artifact_id": "companyfacts:0000884614",
+      "status": "OK",
+      "bytes": 4038216
+    },
+    {
+      "artifact_id": "submissions:0000884614",
+      "status": "OK",
+      "bytes": 161373
+    },
+    {
+      "artifact_id": "companyfacts:0000885550",
+      "status": "OK",
+      "bytes": 3218897
+    },
+    {
+      "artifact_id": "submissions:0000885550",
+      "status": "OK",
+      "bytes": 164046
+    },
+    {
+      "artifact_id": "companyfacts:0000887343",
+      "status": "OK",
+      "bytes": 5122388
+    },
+    {
+      "artifact_id": "submissions:0000887343",
+      "status": "OK",
+      "bytes": 162908
+    },
+    {
+      "artifact_id": "companyfacts:0000887936",
+      "status": "OK",
+      "bytes": 3520093
+    },
+    {
+      "artifact_id": "submissions:0000887936",
+      "status": "OK",
+      "bytes": 164418
+    },
+    {
+      "artifact_id": "companyfacts:0000888491",
+      "status": "OK",
+      "bytes": 3629080
+    },
+    {
+      "artifact_id": "submissions:0000888491",
+      "status": "OK",
+      "bytes": 161730
+    },
+    {
+      "artifact_id": "companyfacts:0000895126",
+      "status": "OK",
+      "bytes": 4841176
+    },
+    {
+      "artifact_id": "submissions:0000895126",
+      "status": "OK",
+      "bytes": 166058
+    },
+    {
+      "artifact_id": "companyfacts:0000895417",
+      "status": "OK",
+      "bytes": 3961869
+    },
+    {
+      "artifact_id": "submissions:0000895417",
+      "status": "OK",
+      "bytes": 165740
+    },
+    {
+      "artifact_id": "companyfacts:0000895419",
+      "status": "OK",
+      "bytes": 4576147
+    },
+    {
+      "artifact_id": "submissions:0000895419",
+      "status": "OK",
+      "bytes": 167732
+    },
+    {
+      "artifact_id": "companyfacts:0000896622",
+      "status": "OK",
+      "bytes": 3855065
+    },
+    {
+      "artifact_id": "submissions:0000896622",
+      "status": "OK",
+      "bytes": 170756
+    },
+    {
+      "artifact_id": "companyfacts:0000898174",
+      "status": "OK",
+      "bytes": 5505711
+    },
+    {
+      "artifact_id": "submissions:0000898174",
+      "status": "OK",
+      "bytes": 159505
+    },
+    {
+      "artifact_id": "companyfacts:0000899689",
+      "status": "OK",
+      "bytes": 4435223
+    },
+    {
+      "artifact_id": "submissions:0000899689",
+      "status": "OK",
+      "bytes": 156688
+    },
+    {
+      "artifact_id": "companyfacts:0000906553",
+      "status": "OK",
+      "bytes": 3876572
+    },
+    {
+      "artifact_id": "submissions:0000906553",
+      "status": "OK",
+      "bytes": 172303
+    },
+    {
+      "artifact_id": "companyfacts:0000908937",
+      "status": "OK",
+      "bytes": 3848685
+    },
+    {
+      "artifact_id": "submissions:0000908937",
+      "status": "OK",
+      "bytes": 145282
+    },
+    {
+      "artifact_id": "companyfacts:0000912593",
+      "status": "OK",
+      "bytes": 3712445
+    },
+    {
+      "artifact_id": "submissions:0000912593",
+      "status": "OK",
+      "bytes": 170177
+    },
+    {
+      "artifact_id": "companyfacts:0000913144",
+      "status": "OK",
+      "bytes": 4599499
+    },
+    {
+      "artifact_id": "submissions:0000913144",
+      "status": "OK",
+      "bytes": 163884
+    },
+    {
+      "artifact_id": "companyfacts:0000914475",
+      "status": "OK",
+      "bytes": 2485089
+    },
+    {
+      "artifact_id": "submissions:0000914475",
+      "status": "OK",
+      "bytes": 158716
+    },
+    {
+      "artifact_id": "companyfacts:0000916540",
+      "status": "OK",
+      "bytes": 4393223
+    },
+    {
+      "artifact_id": "submissions:0000916540",
+      "status": "OK",
+      "bytes": 153016
+    },
+    {
+      "artifact_id": "companyfacts:0000917251",
+      "status": "OK",
+      "bytes": 3280929
+    },
+    {
+      "artifact_id": "submissions:0000917251",
+      "status": "OK",
+      "bytes": 164574
+    },
+    {
+      "artifact_id": "companyfacts:0000918646",
+      "status": "OK",
+      "bytes": 3745398
+    },
+    {
+      "artifact_id": "submissions:0000918646",
+      "status": "OK",
+      "bytes": 155466
+    },
+    {
+      "artifact_id": "companyfacts:0000920371",
+      "status": "OK",
+      "bytes": 3823779
+    },
+    {
+      "artifact_id": "submissions:0000920371",
+      "status": "OK",
+      "bytes": 165257
+    },
+    {
+      "artifact_id": "companyfacts:0000921082",
+      "status": "OK",
+      "bytes": 3740234
+    },
+    {
+      "artifact_id": "submissions:0000921082",
+      "status": "OK",
+      "bytes": 162923
+    },
+    {
+      "artifact_id": "companyfacts:0000921738",
+      "status": "OK",
+      "bytes": 3997438
+    },
+    {
+      "artifact_id": "submissions:0000921738",
+      "status": "OK",
+      "bytes": 155191
+    },
+    {
+      "artifact_id": "companyfacts:0000921825",
+      "status": "OK",
+      "bytes": 3366251
+    },
+    {
+      "artifact_id": "submissions:0000921825",
+      "status": "OK",
+      "bytes": 164318
+    },
+    {
+      "artifact_id": "companyfacts:0000929008",
+      "status": "OK",
+      "bytes": 3667580
+    },
+    {
+      "artifact_id": "submissions:0000929008",
+      "status": "OK",
+      "bytes": 153938
+    },
+    {
+      "artifact_id": "companyfacts:0000931015",
+      "status": "OK",
+      "bytes": 3867024
+    },
+    {
+      "artifact_id": "submissions:0000931015",
+      "status": "OK",
+      "bytes": 163204
+    },
+    {
+      "artifact_id": "companyfacts:0000933974",
+      "status": "OK",
+      "bytes": 4252887
+    },
+    {
+      "artifact_id": "submissions:0000933974",
+      "status": "OK",
+      "bytes": 159834
+    },
+    {
+      "artifact_id": "companyfacts:0000939767",
+      "status": "OK",
+      "bytes": 2914988
+    },
+    {
+      "artifact_id": "submissions:0000939767",
+      "status": "OK",
+      "bytes": 163143
+    },
+    {
+      "artifact_id": "companyfacts:0000944695",
+      "status": "OK",
+      "bytes": 4636963
+    },
+    {
+      "artifact_id": "submissions:0000944695",
+      "status": "OK",
+      "bytes": 171199
+    },
+    {
+      "artifact_id": "companyfacts:0000949870",
+      "status": "OK",
+      "bytes": 2872013
+    },
+    {
+      "artifact_id": "submissions:0000949870",
+      "status": "OK",
+      "bytes": 163834
+    },
+    {
+      "artifact_id": "companyfacts:0001003078",
+      "status": "OK",
+      "bytes": 3018036
+    },
+    {
+      "artifact_id": "submissions:0001003078",
+      "status": "OK",
+      "bytes": 164438
+    },
+    {
+      "artifact_id": "companyfacts:0001004434",
+      "status": "OK",
+      "bytes": 3458414
+    },
+    {
+      "artifact_id": "submissions:0001004434",
+      "status": "OK",
+      "bytes": 158942
+    },
+    {
+      "artifact_id": "companyfacts:0001013857",
+      "status": "OK",
+      "bytes": 3365331
+    },
+    {
+      "artifact_id": "submissions:0001013857",
+      "status": "OK",
+      "bytes": 160056
+    },
+    {
+      "artifact_id": "companyfacts:0001015328",
+      "status": "OK",
+      "bytes": 7213242
+    },
+    {
+      "artifact_id": "submissions:0001015328",
+      "status": "OK",
+      "bytes": 163038
+    },
+    {
+      "artifact_id": "companyfacts:0001015820",
+      "status": "OK",
+      "bytes": 1705636
+    },
+    {
+      "artifact_id": "submissions:0001015820",
+      "status": "OK",
+      "bytes": 82450
+    },
+    {
+      "artifact_id": "companyfacts:0001018963",
+      "status": "OK",
+      "bytes": 4309114
+    },
+    {
+      "artifact_id": "submissions:0001018963",
+      "status": "OK",
+      "bytes": 161811
+    },
+    {
+      "artifact_id": "companyfacts:0001019849",
+      "status": "OK",
+      "bytes": 3549702
+    },
+    {
+      "artifact_id": "submissions:0001019849",
+      "status": "OK",
+      "bytes": 162364
+    },
+    {
+      "artifact_id": "companyfacts:0001021635",
+      "status": "OK",
+      "bytes": 3806210
+    },
+    {
+      "artifact_id": "submissions:0001021635",
+      "status": "OK",
+      "bytes": 168221
+    },
+    {
+      "artifact_id": "companyfacts:0001021860",
+      "status": "OK",
+      "bytes": 4127097
+    },
+    {
+      "artifact_id": "submissions:0001021860",
+      "status": "OK",
+      "bytes": 158736
+    },
+    {
+      "artifact_id": "companyfacts:0001023128",
+      "status": "OK",
+      "bytes": 3174213
+    },
+    {
+      "artifact_id": "submissions:0001023128",
+      "status": "OK",
+      "bytes": 163263
+    },
+    {
+      "artifact_id": "companyfacts:0001024305",
+      "status": "OK",
+      "bytes": 4062047
+    },
+    {
+      "artifact_id": "submissions:0001024305",
+      "status": "OK",
+      "bytes": 164487
+    },
+    {
+      "artifact_id": "companyfacts:0001025378",
+      "status": "OK",
+      "bytes": 4827556
+    },
+    {
+      "artifact_id": "submissions:0001025378",
+      "status": "OK",
+      "bytes": 162793
+    },
+    {
+      "artifact_id": "companyfacts:0001025996",
+      "status": "OK",
+      "bytes": 3406183
+    },
+    {
+      "artifact_id": "submissions:0001025996",
+      "status": "OK",
+      "bytes": 165869
+    },
+    {
+      "artifact_id": "companyfacts:0001029199",
+      "status": "OK",
+      "bytes": 3817626
+    },
+    {
+      "artifact_id": "submissions:0001029199",
+      "status": "OK",
+      "bytes": 166456
+    },
+    {
+      "artifact_id": "companyfacts:0001031308",
+      "status": "OK",
+      "bytes": 1752263
+    },
+    {
+      "artifact_id": "submissions:0001031308",
+      "status": "OK",
+      "bytes": 148170
+    },
+    {
+      "artifact_id": "companyfacts:0001032033",
+      "status": "OK",
+      "bytes": 5170483
+    },
+    {
+      "artifact_id": "submissions:0001032033",
+      "status": "OK",
+      "bytes": 163541
+    },
+    {
+      "artifact_id": "companyfacts:0001037976",
+      "status": "OK",
+      "bytes": 3747675
+    },
+    {
+      "artifact_id": "submissions:0001037976",
+      "status": "OK",
+      "bytes": 157523
+    },
+    {
+      "artifact_id": "companyfacts:0001042046",
+      "status": "OK",
+      "bytes": 5086334
+    },
+    {
+      "artifact_id": "submissions:0001042046",
+      "status": "OK",
+      "bytes": 163124
+    },
+    {
+      "artifact_id": "companyfacts:0001043219",
+      "status": "OK",
+      "bytes": 4105032
+    },
+    {
+      "artifact_id": "submissions:0001043219",
+      "status": "OK",
+      "bytes": 165587
+    },
+    {
+      "artifact_id": "companyfacts:0001045450",
+      "status": "OK",
+      "bytes": 4005768
+    },
+    {
+      "artifact_id": "submissions:0001045450",
+      "status": "OK",
+      "bytes": 163860
+    },
+    {
+      "artifact_id": "companyfacts:0001046102",
+      "status": "OK",
+      "bytes": 2653002
+    },
+    {
+      "artifact_id": "submissions:0001046102",
+      "status": "OK",
+      "bytes": 154484
+    },
+    {
+      "artifact_id": "companyfacts:0001046257",
+      "status": "OK",
+      "bytes": 3258305
+    },
+    {
+      "artifact_id": "submissions:0001046257",
+      "status": "OK",
+      "bytes": 157274
+    },
+    {
+      "artifact_id": "companyfacts:0001047127",
+      "status": "OK",
+      "bytes": 3859175
+    },
+    {
+      "artifact_id": "submissions:0001047127",
+      "status": "OK",
+      "bytes": 157875
+    },
+    {
+      "artifact_id": "companyfacts:0001048477",
+      "status": "OK",
+      "bytes": 3582470
+    },
+    {
+      "artifact_id": "submissions:0001048477",
+      "status": "OK",
+      "bytes": 153395
+    },
+    {
+      "artifact_id": "companyfacts:0001049502",
+      "status": "OK",
+      "bytes": 3839109
+    },
+    {
+      "artifact_id": "submissions:0001049502",
+      "status": "OK",
+      "bytes": 158927
+    },
+    {
+      "artifact_id": "companyfacts:0001050797",
+      "status": "OK",
+      "bytes": 3506523
+    },
+    {
+      "artifact_id": "submissions:0001050797",
+      "status": "OK",
+      "bytes": 161167
+    },
+    {
+      "artifact_id": "companyfacts:0001056696",
+      "status": "OK",
+      "bytes": 2517897
+    },
+    {
+      "artifact_id": "submissions:0001056696",
+      "status": "OK",
+      "bytes": 157763
+    },
+    {
+      "artifact_id": "companyfacts:0001057877",
+      "status": "OK",
+      "bytes": 3897902
+    },
+    {
+      "artifact_id": "submissions:0001057877",
+      "status": "OK",
+      "bytes": 168357
+    },
+    {
+      "artifact_id": "companyfacts:0001068851",
+      "status": "OK",
+      "bytes": 4494447
+    },
+    {
+      "artifact_id": "submissions:0001068851",
+      "status": "OK",
+      "bytes": 158343
+    },
+    {
+      "artifact_id": "companyfacts:0001069157",
+      "status": "OK",
+      "bytes": 5351165
+    },
+    {
+      "artifact_id": "submissions:0001069157",
+      "status": "OK",
+      "bytes": 160782
+    },
+    {
+      "artifact_id": "companyfacts:0001069878",
+      "status": "OK",
+      "bytes": 2454351
+    },
+    {
+      "artifact_id": "submissions:0001069878",
+      "status": "OK",
+      "bytes": 159620
+    },
+    {
+      "artifact_id": "companyfacts:0001082554",
+      "status": "OK",
+      "bytes": 3132027
+    },
+    {
+      "artifact_id": "submissions:0001082554",
+      "status": "OK",
+      "bytes": 160378
+    },
+    {
+      "artifact_id": "companyfacts:0001089063",
+      "status": "OK",
+      "bytes": 3063047
+    },
+    {
+      "artifact_id": "submissions:0001089063",
+      "status": "OK",
+      "bytes": 163958
+    },
+    {
+      "artifact_id": "companyfacts:0001090425",
+      "status": "OK",
+      "bytes": 3387873
+    },
+    {
+      "artifact_id": "submissions:0001090425",
+      "status": "OK",
+      "bytes": 169636
+    },
+    {
+      "artifact_id": "companyfacts:0001096343",
+      "status": "OK",
+      "bytes": 4359876
+    },
+    {
+      "artifact_id": "submissions:0001096343",
+      "status": "OK",
+      "bytes": 164548
+    },
+    {
+      "artifact_id": "companyfacts:0001101302",
+      "status": "OK",
+      "bytes": 3667030
+    },
+    {
+      "artifact_id": "submissions:0001101302",
+      "status": "OK",
+      "bytes": 161880
+    },
+    {
+      "artifact_id": "companyfacts:0001109354",
+      "status": "OK",
+      "bytes": 3987261
+    },
+    {
+      "artifact_id": "submissions:0001109354",
+      "status": "OK",
+      "bytes": 157467
+    },
+    {
+      "artifact_id": "companyfacts:0001110803",
+      "status": "OK",
+      "bytes": 3583861
+    },
+    {
+      "artifact_id": "submissions:0001110803",
+      "status": "OK",
+      "bytes": 157443
+    },
+    {
+      "artifact_id": "companyfacts:0001111928",
+      "status": "OK",
+      "bytes": 3541929
+    },
+    {
+      "artifact_id": "submissions:0001111928",
+      "status": "OK",
+      "bytes": 164600
+    },
+    {
+      "artifact_id": "companyfacts:0001128928",
+      "status": "OK",
+      "bytes": 4316469
+    },
+    {
+      "artifact_id": "submissions:0001128928",
+      "status": "OK",
+      "bytes": 158569
+    },
+    {
+      "artifact_id": "companyfacts:0001142417",
+      "status": "OK",
+      "bytes": 3077420
+    },
+    {
+      "artifact_id": "submissions:0001142417",
+      "status": "OK",
+      "bytes": 153657
+    },
+    {
+      "artifact_id": "companyfacts:0001144215",
+      "status": "OK",
+      "bytes": 3465775
+    },
+    {
+      "artifact_id": "submissions:0001144215",
+      "status": "OK",
+      "bytes": 164823
+    },
+    {
+      "artifact_id": "companyfacts:0001158449",
+      "status": "OK",
+      "bytes": 3494659
+    },
+    {
+      "artifact_id": "submissions:0001158449",
+      "status": "OK",
+      "bytes": 163183
+    },
+    {
+      "artifact_id": "companyfacts:0001166003",
+      "status": "OK",
+      "bytes": 3631667
+    },
+    {
+      "artifact_id": "submissions:0001166003",
+      "status": "OK",
+      "bytes": 167579
+    },
+    {
+      "artifact_id": "companyfacts:0001176948",
+      "status": "OK",
+      "bytes": 1455574
+    },
+    {
+      "artifact_id": "submissions:0001176948",
+      "status": "OK",
+      "bytes": 165849
+    },
+    {
+      "artifact_id": "companyfacts:0001177394",
+      "status": "OK",
+      "bytes": 3558129
+    },
+    {
+      "artifact_id": "submissions:0001177394",
+      "status": "OK",
+      "bytes": 159143
+    },
+    {
+      "artifact_id": "companyfacts:0001177609",
+      "status": "OK",
+      "bytes": 2402185
+    },
+    {
+      "artifact_id": "submissions:0001177609",
+      "status": "OK",
+      "bytes": 174254
+    },
+    {
+      "artifact_id": "companyfacts:0001177702",
+      "status": "OK",
+      "bytes": 2230993
+    },
+    {
+      "artifact_id": "submissions:0001177702",
+      "status": "OK",
+      "bytes": 166787
+    },
+    {
+      "artifact_id": "companyfacts:0001178670",
+      "status": "OK",
+      "bytes": 2536725
+    },
+    {
+      "artifact_id": "submissions:0001178670",
+      "status": "OK",
+      "bytes": 162132
+    },
+    {
+      "artifact_id": "companyfacts:0001206264",
+      "status": "OK",
+      "bytes": 3685151
+    },
+    {
+      "artifact_id": "submissions:0001206264",
+      "status": "OK",
+      "bytes": 172225
+    },
+    {
+      "artifact_id": "companyfacts:0001212545",
+      "status": "OK",
+      "bytes": 5974583
+    },
+    {
+      "artifact_id": "submissions:0001212545",
+      "status": "OK",
+      "bytes": 163244
+    },
+    {
+      "artifact_id": "companyfacts:0001219601",
+      "status": "OK",
+      "bytes": 3809496
+    },
+    {
+      "artifact_id": "submissions:0001219601",
+      "status": "OK",
+      "bytes": 160409
+    },
+    {
+      "artifact_id": "companyfacts:0001237831",
+      "status": "OK",
+      "bytes": 3229793
+    },
+    {
+      "artifact_id": "submissions:0001237831",
+      "status": "OK",
+      "bytes": 124062
+    },
+    {
+      "artifact_id": "companyfacts:0001261333",
+      "status": "OK",
+      "bytes": 1919742
+    },
+    {
+      "artifact_id": "submissions:0001261333",
+      "status": "OK",
+      "bytes": 161021
+    },
+    {
+      "artifact_id": "companyfacts:0001262823",
+      "status": "OK",
+      "bytes": 3506083
+    },
+    {
+      "artifact_id": "submissions:0001262823",
+      "status": "OK",
+      "bytes": 152109
+    },
+    {
+      "artifact_id": "companyfacts:0001273813",
+      "status": "OK",
+      "bytes": 4579020
+    },
+    {
+      "artifact_id": "submissions:0001273813",
+      "status": "OK",
+      "bytes": 162745
+    },
+    {
+      "artifact_id": "companyfacts:0001282637",
+      "status": "OK",
+      "bytes": 3545005
+    },
+    {
+      "artifact_id": "submissions:0001282637",
+      "status": "OK",
+      "bytes": 167147
+    },
+    {
+      "artifact_id": "companyfacts:0001287865",
+      "status": "OK",
+      "bytes": 2811119
+    },
+    {
+      "artifact_id": "submissions:0001287865",
+      "status": "OK",
+      "bytes": 161227
+    },
+    {
+      "artifact_id": "companyfacts:0001288847",
+      "status": "OK",
+      "bytes": 2927313
+    },
+    {
+      "artifact_id": "submissions:0001288847",
+      "status": "OK",
+      "bytes": 162972
+    },
+    {
+      "artifact_id": "companyfacts:0001289419",
+      "status": "OK",
+      "bytes": 3931495
+    },
+    {
+      "artifact_id": "submissions:0001289419",
+      "status": "OK",
+      "bytes": 170694
+    },
+    {
+      "artifact_id": "companyfacts:0001289460",
+      "status": "OK",
+      "bytes": 3052565
+    },
+    {
+      "artifact_id": "submissions:0001289460",
+      "status": "OK",
+      "bytes": 157146
+    },
+    {
+      "artifact_id": "companyfacts:0001298675",
+      "status": "OK",
+      "bytes": 2719345
+    },
+    {
+      "artifact_id": "submissions:0001298675",
+      "status": "OK",
+      "bytes": 155285
+    },
+    {
+      "artifact_id": "companyfacts:0001302215",
+      "status": "OK",
+      "bytes": 2198922
+    },
+    {
+      "artifact_id": "submissions:0001302215",
+      "status": "OK",
+      "bytes": 137856
+    },
+    {
+      "artifact_id": "companyfacts:0001307954",
+      "status": "OK",
+      "bytes": 4385732
+    },
+    {
+      "artifact_id": "submissions:0001307954",
+      "status": "OK",
+      "bytes": 165994
+    },
+    {
+      "artifact_id": "companyfacts:0001308547",
+      "status": "OK",
+      "bytes": 4787638
+    },
+    {
+      "artifact_id": "submissions:0001308547",
+      "status": "OK",
+      "bytes": 158312
+    },
+    {
+      "artifact_id": "companyfacts:0001309108",
+      "status": "OK",
+      "bytes": 4121161
+    },
+    {
+      "artifact_id": "submissions:0001309108",
+      "status": "OK",
+      "bytes": 164531
+    },
+    {
+      "artifact_id": "companyfacts:0001311370",
+      "status": "OK",
+      "bytes": 3708110
+    },
+    {
+      "artifact_id": "submissions:0001311370",
+      "status": "OK",
+      "bytes": 158190
+    },
+    {
+      "artifact_id": "companyfacts:0001315098",
+      "status": "OK",
+      "bytes": 1327696
+    },
+    {
+      "artifact_id": "submissions:0001315098",
+      "status": "OK",
+      "bytes": 158430
+    },
+    {
+      "artifact_id": "companyfacts:0001321732",
+      "status": "OK",
+      "bytes": 2650684
+    },
+    {
+      "artifact_id": "submissions:0001321732",
+      "status": "OK",
+      "bytes": 154500
+    },
+    {
+      "artifact_id": "companyfacts:0001324948",
+      "status": "OK",
+      "bytes": 3485465
+    },
+    {
+      "artifact_id": "submissions:0001324948",
+      "status": "OK",
+      "bytes": 164080
+    },
+    {
+      "artifact_id": "companyfacts:0001326380",
+      "status": "OK",
+      "bytes": 3484307
+    },
+    {
+      "artifact_id": "submissions:0001326380",
+      "status": "OK",
+      "bytes": 163829
+    },
+    {
+      "artifact_id": "companyfacts:0001331875",
+      "status": "OK",
+      "bytes": 4831868
+    },
+    {
+      "artifact_id": "submissions:0001331875",
+      "status": "OK",
+      "bytes": 159276
+    },
+    {
+      "artifact_id": "companyfacts:0001333986",
+      "status": "OK",
+      "bytes": 3386101
+    },
+    {
+      "artifact_id": "submissions:0001333986",
+      "status": "OK",
+      "bytes": 159832
+    },
+    {
+      "artifact_id": "companyfacts:0001334036",
+      "status": "OK",
+      "bytes": 3518686
+    },
+    {
+      "artifact_id": "submissions:0001334036",
+      "status": "OK",
+      "bytes": 162667
+    },
+    {
+      "artifact_id": "companyfacts:0001336917",
+      "status": "OK",
+      "bytes": 3186274
+    },
+    {
+      "artifact_id": "submissions:0001336917",
+      "status": "OK",
+      "bytes": 159365
+    },
+    {
+      "artifact_id": "companyfacts:0001341766",
+      "status": "OK",
+      "bytes": 1935848
+    },
+    {
+      "artifact_id": "submissions:0001341766",
+      "status": "OK",
+      "bytes": 160323
+    },
+    {
+      "artifact_id": "companyfacts:0001357615",
+      "status": "OK",
+      "bytes": 4946539
+    },
+    {
+      "artifact_id": "submissions:0001357615",
+      "status": "OK",
+      "bytes": 167156
+    },
+    {
+      "artifact_id": "companyfacts:0001360604",
+      "status": "OK",
+      "bytes": 3148847
+    },
+    {
+      "artifact_id": "submissions:0001360604",
+      "status": "OK",
+      "bytes": 166302
+    },
+    {
+      "artifact_id": "companyfacts:0001360901",
+      "status": "OK",
+      "bytes": 4052007
+    },
+    {
+      "artifact_id": "submissions:0001360901",
+      "status": "OK",
+      "bytes": 157027
+    },
+    {
+      "artifact_id": "companyfacts:0001365135",
+      "status": "OK",
+      "bytes": 4137700
+    },
+    {
+      "artifact_id": "submissions:0001365135",
+      "status": "OK",
+      "bytes": 152369
+    },
+    {
+      "artifact_id": "companyfacts:0001370637",
+      "status": "OK",
+      "bytes": 2567320
+    },
+    {
+      "artifact_id": "submissions:0001370637",
+      "status": "OK",
+      "bytes": 158144
+    },
+    {
+      "artifact_id": "companyfacts:0001370946",
+      "status": "OK",
+      "bytes": 3811686
+    },
+    {
+      "artifact_id": "submissions:0001370946",
+      "status": "OK",
+      "bytes": 156860
+    },
+    {
+      "artifact_id": "companyfacts:0001381668",
+      "status": "OK",
+      "bytes": 4687196
+    },
+    {
+      "artifact_id": "submissions:0001381668",
+      "status": "OK",
+      "bytes": 164824
+    },
+    {
+      "artifact_id": "companyfacts:0001384905",
+      "status": "OK",
+      "bytes": 2696603
+    },
+    {
+      "artifact_id": "submissions:0001384905",
+      "status": "OK",
+      "bytes": 157216
+    },
+    {
+      "artifact_id": "companyfacts:0001393052",
+      "status": "OK",
+      "bytes": 2860947
+    },
+    {
+      "artifact_id": "submissions:0001393052",
+      "status": "OK",
+      "bytes": 160504
+    },
+    {
+      "artifact_id": "companyfacts:0001397911",
+      "status": "OK",
+      "bytes": 3656910
+    },
+    {
+      "artifact_id": "submissions:0001397911",
+      "status": "OK",
+      "bytes": 164804
+    },
+    {
+      "artifact_id": "companyfacts:0001402436",
+      "status": "OK",
+      "bytes": 3418647
+    },
+    {
+      "artifact_id": "submissions:0001402436",
+      "status": "OK",
+      "bytes": 151255
+    },
+    {
+      "artifact_id": "companyfacts:0001404655",
+      "status": "OK",
+      "bytes": 2530368
+    },
+    {
+      "artifact_id": "submissions:0001404655",
+      "status": "OK",
+      "bytes": 155232
+    },
+    {
+      "artifact_id": "companyfacts:0001408075",
+      "status": "OK",
+      "bytes": 3819732
+    },
+    {
+      "artifact_id": "submissions:0001408075",
+      "status": "OK",
+      "bytes": 158334
+    },
+    {
+      "artifact_id": "companyfacts:0001411207",
+      "status": "OK",
+      "bytes": 3139707
+    },
+    {
+      "artifact_id": "submissions:0001411207",
+      "status": "OK",
+      "bytes": 171966
+    },
+    {
+      "artifact_id": "companyfacts:0001418819",
+      "status": "OK",
+      "bytes": 3013645
+    },
+    {
+      "artifact_id": "submissions:0001418819",
+      "status": "OK",
+      "bytes": 163098
+    },
+    {
+      "artifact_id": "companyfacts:0001420800",
+      "status": "OK",
+      "bytes": 3973650
+    },
+    {
+      "artifact_id": "submissions:0001420800",
+      "status": "OK",
+      "bytes": 157615
+    },
+    {
+      "artifact_id": "companyfacts:0001423689",
+      "status": "OK",
+      "bytes": 2308894
+    },
+    {
+      "artifact_id": "submissions:0001423689",
+      "status": "OK",
+      "bytes": 169840
+    },
+    {
+      "artifact_id": "companyfacts:0001428439",
+      "status": "OK",
+      "bytes": 1988382
+    },
+    {
+      "artifact_id": "submissions:0001428439",
+      "status": "OK",
+      "bytes": 171049
+    },
+    {
+      "artifact_id": "companyfacts:0001433195",
+      "status": "OK",
+      "bytes": 2301056
+    },
+    {
+      "artifact_id": "submissions:0001433195",
+      "status": "OK",
+      "bytes": 152722
+    },
+    {
+      "artifact_id": "companyfacts:0001433270",
+      "status": "OK",
+      "bytes": 2870074
+    },
+    {
+      "artifact_id": "submissions:0001433270",
+      "status": "OK",
+      "bytes": 159147
+    },
+    {
+      "artifact_id": "companyfacts:0001434588",
+      "status": "OK",
+      "bytes": 2846255
+    },
+    {
+      "artifact_id": "submissions:0001434588",
+      "status": "OK",
+      "bytes": 160695
+    },
+    {
+      "artifact_id": "companyfacts:0001437578",
+      "status": "OK",
+      "bytes": 3034652
+    },
+    {
+      "artifact_id": "submissions:0001437578",
+      "status": "OK",
+      "bytes": 164074
+    },
+    {
+      "artifact_id": "companyfacts:0001441816",
+      "status": "OK",
+      "bytes": 2058849
+    },
+    {
+      "artifact_id": "submissions:0001441816",
+      "status": "OK",
+      "bytes": 162556
+    },
+    {
+      "artifact_id": "companyfacts:0001443646",
+      "status": "OK",
+      "bytes": 3030345
+    },
+    {
+      "artifact_id": "submissions:0001443646",
+      "status": "OK",
+      "bytes": 164389
+    },
+    {
+      "artifact_id": "companyfacts:0001447669",
+      "status": "OK",
+      "bytes": 2350578
+    },
+    {
+      "artifact_id": "submissions:0001447669",
+      "status": "OK",
+      "bytes": 161334
+    },
+    {
+      "artifact_id": "companyfacts:0001455863",
+      "status": "OK",
+      "bytes": 2267730
+    },
+    {
+      "artifact_id": "submissions:0001455863",
+      "status": "OK",
+      "bytes": 126878
+    },
+    {
+      "artifact_id": "companyfacts:0001465128",
+      "status": "OK",
+      "bytes": 4657704
+    },
+    {
+      "artifact_id": "submissions:0001465128",
+      "status": "OK",
+      "bytes": 150539
+    },
+    {
+      "artifact_id": "companyfacts:0001467623",
+      "status": "OK",
+      "bytes": 2030313
+    },
+    {
+      "artifact_id": "submissions:0001467623",
+      "status": "OK",
+      "bytes": 162901
+    },
+    {
+      "artifact_id": "companyfacts:0001468174",
+      "status": "OK",
+      "bytes": 4145823
+    },
+    {
+      "artifact_id": "submissions:0001468174",
+      "status": "OK",
+      "bytes": 159070
+    },
+    {
+      "artifact_id": "companyfacts:0001472787",
+      "status": "OK",
+      "bytes": 4725776
+    },
+    {
+      "artifact_id": "submissions:0001472787",
+      "status": "OK",
+      "bytes": 160111
+    },
+    {
+      "artifact_id": "companyfacts:0001474432",
+      "status": "OK",
+      "bytes": 2614934
+    },
+    {
+      "artifact_id": "submissions:0001474432",
+      "status": "OK",
+      "bytes": 158329
+    },
+    {
+      "artifact_id": "companyfacts:0001475922",
+      "status": "OK",
+      "bytes": 4607641
+    },
+    {
+      "artifact_id": "submissions:0001475922",
+      "status": "OK",
+      "bytes": 157384
+    },
+    {
+      "artifact_id": "companyfacts:0001477294",
+      "status": "OK",
+      "bytes": 3189727
+    },
+    {
+      "artifact_id": "submissions:0001477294",
+      "status": "OK",
+      "bytes": 163612
+    },
+    {
+      "artifact_id": "companyfacts:0001479094",
+      "status": "OK",
+      "bytes": 3098369
+    },
+    {
+      "artifact_id": "submissions:0001479094",
+      "status": "OK",
+      "bytes": 156612
+    },
+    {
+      "artifact_id": "companyfacts:0001486159",
+      "status": "OK",
+      "bytes": 3656702
+    },
+    {
+      "artifact_id": "submissions:0001486159",
+      "status": "OK",
+      "bytes": 162641
+    },
+    {
+      "artifact_id": "companyfacts:0001486957",
+      "status": "OK",
+      "bytes": 4224901
+    },
+    {
+      "artifact_id": "submissions:0001486957",
+      "status": "OK",
+      "bytes": 165687
+    },
+    {
+      "artifact_id": "companyfacts:0001492691",
+      "status": "OK",
+      "bytes": 3808383
+    },
+    {
+      "artifact_id": "submissions:0001492691",
+      "status": "OK",
+      "bytes": 157498
+    },
+    {
+      "artifact_id": "companyfacts:0001493594",
+      "status": "OK",
+      "bytes": 3462931
+    },
+    {
+      "artifact_id": "submissions:0001493594",
+      "status": "OK",
+      "bytes": 157046
+    },
+    {
+      "artifact_id": "companyfacts:0001506293",
+      "status": "OK",
+      "bytes": 1233712
+    },
+    {
+      "artifact_id": "submissions:0001506293",
+      "status": "OK",
+      "bytes": 161214
+    },
+    {
+      "artifact_id": "companyfacts:0001507079",
+      "status": "OK",
+      "bytes": 1826984
+    },
+    {
+      "artifact_id": "submissions:0001507079",
+      "status": "OK",
+      "bytes": 120501
+    },
+    {
+      "artifact_id": "companyfacts:0001511737",
+      "status": "OK",
+      "bytes": 3016654
+    },
+    {
+      "artifact_id": "submissions:0001511737",
+      "status": "OK",
+      "bytes": 71034
+    },
+    {
+      "artifact_id": "companyfacts:0001512673",
+      "status": "OK",
+      "bytes": 2726025
+    },
+    {
+      "artifact_id": "submissions:0001512673",
+      "status": "OK",
+      "bytes": 157182
+    },
+    {
+      "artifact_id": "companyfacts:0001515673",
+      "status": "OK",
+      "bytes": 1880462
+    },
+    {
+      "artifact_id": "submissions:0001515673",
+      "status": "OK",
+      "bytes": 160250
+    },
+    {
+      "artifact_id": "companyfacts:0001516513",
+      "status": "OK",
+      "bytes": 1399744
+    },
+    {
+      "artifact_id": "submissions:0001516513",
+      "status": "OK",
+      "bytes": 73188
+    },
+    {
+      "artifact_id": "companyfacts:0001519751",
+      "status": "OK",
+      "bytes": 3390249
+    },
+    {
+      "artifact_id": "submissions:0001519751",
+      "status": "OK",
+      "bytes": 159283
+    },
+    {
+      "artifact_id": "companyfacts:0001520006",
+      "status": "OK",
+      "bytes": 2982205
+    },
+    {
+      "artifact_id": "submissions:0001520006",
+      "status": "OK",
+      "bytes": 164048
+    },
+    {
+      "artifact_id": "companyfacts:0001520697",
+      "status": "OK",
+      "bytes": 3457609
+    },
+    {
+      "artifact_id": "submissions:0001520697",
+      "status": "OK",
+      "bytes": 160242
+    },
+    {
+      "artifact_id": "companyfacts:0001524358",
+      "status": "OK",
+      "bytes": 3209927
+    },
+    {
+      "artifact_id": "submissions:0001524358",
+      "status": "OK",
+      "bytes": 159404
+    },
+    {
+      "artifact_id": "companyfacts:0001526520",
+      "status": "OK",
+      "bytes": 3181544
+    },
+    {
+      "artifact_id": "submissions:0001526520",
+      "status": "OK",
+      "bytes": 159537
+    },
+    {
+      "artifact_id": "companyfacts:0001527166",
+      "status": "OK",
+      "bytes": 3495117
+    },
+    {
+      "artifact_id": "submissions:0001527166",
+      "status": "OK",
+      "bytes": 161863
+    },
+    {
+      "artifact_id": "companyfacts:0001528396",
+      "status": "OK",
+      "bytes": 3626573
+    },
+    {
+      "artifact_id": "submissions:0001528396",
+      "status": "OK",
+      "bytes": 160948
+    },
+    {
+      "artifact_id": "companyfacts:0001528849",
+      "status": "OK",
+      "bytes": 3174083
+    },
+    {
+      "artifact_id": "submissions:0001528849",
+      "status": "OK",
+      "bytes": 159565
+    },
+    {
+      "artifact_id": "companyfacts:0001530950",
+      "status": "OK",
+      "bytes": 3621203
+    },
+    {
+      "artifact_id": "submissions:0001530950",
+      "status": "OK",
+      "bytes": 161338
+    },
+    {
+      "artifact_id": "companyfacts:0001531152",
+      "status": "OK",
+      "bytes": 1987444
+    },
+    {
+      "artifact_id": "submissions:0001531152",
+      "status": "OK",
+      "bytes": 135160
+    },
+    {
+      "artifact_id": "companyfacts:0001535929",
+      "status": "OK",
+      "bytes": 5713921
+    },
+    {
+      "artifact_id": "submissions:0001535929",
+      "status": "OK",
+      "bytes": 160021
+    },
+    {
+      "artifact_id": "companyfacts:0001552033",
+      "status": "OK",
+      "bytes": 3400332
+    },
+    {
+      "artifact_id": "submissions:0001552033",
+      "status": "OK",
+      "bytes": 163963
+    },
+    {
+      "artifact_id": "companyfacts:0001556593",
+      "status": "OK",
+      "bytes": 3930217
+    },
+    {
+      "artifact_id": "submissions:0001556593",
+      "status": "OK",
+      "bytes": 132989
+    },
+    {
+      "artifact_id": "companyfacts:0001557860",
+      "status": "OK",
+      "bytes": 678918
+    },
+    {
+      "artifact_id": "submissions:0001557860",
+      "status": "OK",
+      "bytes": 59856
+    },
+    {
+      "artifact_id": "companyfacts:0001562088",
+      "status": "OK",
+      "bytes": 965205
+    },
+    {
+      "artifact_id": "submissions:0001562088",
+      "status": "OK",
+      "bytes": 124811
+    },
+    {
+      "artifact_id": "companyfacts:0001562401",
+      "status": "OK",
+      "bytes": 2557984
+    },
+    {
+      "artifact_id": "submissions:0001562401",
+      "status": "OK",
+      "bytes": 164013
+    },
+    {
+      "artifact_id": "companyfacts:0001567094",
+      "status": "OK",
+      "bytes": 3368551
+    },
+    {
+      "artifact_id": "submissions:0001567094",
+      "status": "OK",
+      "bytes": 115950
+    },
+    {
+      "artifact_id": "companyfacts:0001567683",
+      "status": "OK",
+      "bytes": 2743568
+    },
+    {
+      "artifact_id": "submissions:0001567683",
+      "status": "OK",
+      "bytes": 161217
+    },
+    {
+      "artifact_id": "companyfacts:0001569650",
+      "status": "HTTP_404",
+      "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001569650.json"
+    },
+    {
+      "artifact_id": "submissions:0001569650",
+      "status": "OK",
+      "bytes": 16482
+    },
+    {
+      "artifact_id": "companyfacts:0001570585",
+      "status": "OK",
+      "bytes": 3867826
+    },
+    {
+      "artifact_id": "submissions:0001570585",
+      "status": "OK",
+      "bytes": 167496
+    },
+    {
+      "artifact_id": "companyfacts:0001571123",
+      "status": "OK",
+      "bytes": 2565514
+    },
+    {
+      "artifact_id": "submissions:0001571123",
+      "status": "OK",
+      "bytes": 153748
+    },
+    {
+      "artifact_id": "companyfacts:0001571283",
+      "status": "OK",
+      "bytes": 2976943
+    },
+    {
+      "artifact_id": "submissions:0001571283",
+      "status": "OK",
+      "bytes": 136596
+    },
+    {
+      "artifact_id": "companyfacts:0001573516",
+      "status": "OK",
+      "bytes": 2919424
+    },
+    {
+      "artifact_id": "submissions:0001573516",
+      "status": "OK",
+      "bytes": 159362
+    },
+    {
+      "artifact_id": "companyfacts:0001575965",
+      "status": "OK",
+      "bytes": 2863666
+    },
+    {
+      "artifact_id": "submissions:0001575965",
+      "status": "OK",
+      "bytes": 153464
+    },
+    {
+      "artifact_id": "companyfacts:0001579091",
+      "status": "OK",
+      "bytes": 782711
+    },
+    {
+      "artifact_id": "submissions:0001579091",
+      "status": "OK",
+      "bytes": 81492
+    },
+    {
+      "artifact_id": "companyfacts:0001579298",
+      "status": "OK",
+      "bytes": 3072149
+    },
+    {
+      "artifact_id": "submissions:0001579298",
+      "status": "OK",
+      "bytes": 158204
+    },
+    {
+      "artifact_id": "companyfacts:0001581068",
+      "status": "OK",
+      "bytes": 2566480
+    },
+    {
+      "artifact_id": "submissions:0001581068",
+      "status": "OK",
+      "bytes": 152649
+    },
+    {
+      "artifact_id": "companyfacts:0001583708",
+      "status": "OK",
+      "bytes": 1047917
+    },
+    {
+      "artifact_id": "submissions:0001583708",
+      "status": "OK",
+      "bytes": 125711
+    },
+    {
+      "artifact_id": "companyfacts:0001584207",
+      "status": "OK",
+      "bytes": 3630455
+    },
+    {
+      "artifact_id": "submissions:0001584207",
+      "status": "OK",
+      "bytes": 154293
+    },
+    {
+      "artifact_id": "companyfacts:0001584509",
+      "status": "OK",
+      "bytes": 2800280
+    },
+    {
+      "artifact_id": "submissions:0001584509",
+      "status": "OK",
+      "bytes": 162391
+    },
+    {
+      "artifact_id": "companyfacts:0001585521",
+      "status": "OK",
+      "bytes": 1684326
+    },
+    {
+      "artifact_id": "submissions:0001585521",
+      "status": "OK",
+      "bytes": 162178
+    },
+    {
+      "artifact_id": "companyfacts:0001590714",
+      "status": "OK",
+      "bytes": 3162264
+    },
+    {
+      "artifact_id": "submissions:0001590714",
+      "status": "OK",
+      "bytes": 154338
+    },
+    {
+      "artifact_id": "companyfacts:0001591698",
+      "status": "OK",
+      "bytes": 2408117
+    },
+    {
+      "artifact_id": "submissions:0001591698",
+      "status": "OK",
+      "bytes": 161324
+    },
+    {
+      "artifact_id": "companyfacts:0001592386",
+      "status": "OK",
+      "bytes": 2926342
+    },
+    {
+      "artifact_id": "submissions:0001592386",
+      "status": "OK",
+      "bytes": 124216
+    },
+    {
+      "artifact_id": "companyfacts:0001600033",
+      "status": "OK",
+      "bytes": 2175679
+    },
+    {
+      "artifact_id": "submissions:0001600033",
+      "status": "OK",
+      "bytes": 149723
+    },
+    {
+      "artifact_id": "companyfacts:0001604028",
+      "status": "OK",
+      "bytes": 3253979
+    },
+    {
+      "artifact_id": "submissions:0001604028",
+      "status": "OK",
+      "bytes": 159172
+    },
+    {
+      "artifact_id": "companyfacts:0001604778",
+      "status": "OK",
+      "bytes": 2624201
+    },
+    {
+      "artifact_id": "submissions:0001604778",
+      "status": "OK",
+      "bytes": 150681
+    },
+    {
+      "artifact_id": "companyfacts:0001607678",
+      "status": "OK",
+      "bytes": 1589580
+    },
+    {
+      "artifact_id": "submissions:0001607678",
+      "status": "OK",
+      "bytes": 104531
+    },
+    {
+      "artifact_id": "companyfacts:0001609550",
+      "status": "OK",
+      "bytes": 1670250
+    },
+    {
+      "artifact_id": "submissions:0001609550",
+      "status": "OK",
+      "bytes": 141920
+    },
+    {
+      "artifact_id": "companyfacts:0001611052",
+      "status": "OK",
+      "bytes": 1253848
+    },
+    {
+      "artifact_id": "submissions:0001611052",
+      "status": "OK",
+      "bytes": 132309
+    },
+    {
+      "artifact_id": "companyfacts:0001611647",
+      "status": "OK",
+      "bytes": 1982099
+    },
+    {
+      "artifact_id": "submissions:0001611647",
+      "status": "OK",
+      "bytes": 157077
+    },
+    {
+      "artifact_id": "companyfacts:0001616707",
+      "status": "OK",
+      "bytes": 1982897
+    },
+    {
+      "artifact_id": "submissions:0001616707",
+      "status": "OK",
+      "bytes": 161114
+    },
+    {
+      "artifact_id": "companyfacts:0001616862",
+      "status": "OK",
+      "bytes": 3121771
+    },
+    {
+      "artifact_id": "submissions:0001616862",
+      "status": "OK",
+      "bytes": 159996
+    },
+    {
+      "artifact_id": "companyfacts:0001617406",
+      "status": "OK",
+      "bytes": 1775637
+    },
+    {
+      "artifact_id": "submissions:0001617406",
+      "status": "OK",
+      "bytes": 152474
+    },
+    {
+      "artifact_id": "companyfacts:0001617640",
+      "status": "OK",
+      "bytes": 2357894
+    },
+    {
+      "artifact_id": "submissions:0001617640",
+      "status": "OK",
+      "bytes": 158741
+    },
+    {
+      "artifact_id": "companyfacts:0001618673",
+      "status": "OK",
+      "bytes": 2214711
+    },
+    {
+      "artifact_id": "submissions:0001618673",
+      "status": "OK",
+      "bytes": 157095
+    },
+    {
+      "artifact_id": "companyfacts:0001618732",
+      "status": "OK",
+      "bytes": 2268455
+    },
+    {
+      "artifact_id": "submissions:0001618732",
+      "status": "OK",
+      "bytes": 160830
+    },
+    {
+      "artifact_id": "companyfacts:0001623925",
+      "status": "OK",
+      "bytes": 1307484
+    },
+    {
+      "artifact_id": "submissions:0001623925",
+      "status": "OK",
+      "bytes": 128346
+    },
+    {
+      "artifact_id": "companyfacts:0001627223",
+      "status": "OK",
+      "bytes": 3207470
+    },
+    {
+      "artifact_id": "submissions:0001627223",
+      "status": "OK",
+      "bytes": 166266
+    },
+    {
+      "artifact_id": "companyfacts:0001635088",
+      "status": "OK",
+      "bytes": 947604
+    },
+    {
+      "artifact_id": "submissions:0001635088",
+      "status": "OK",
+      "bytes": 150032
+    },
+    {
+      "artifact_id": "companyfacts:0001636222",
+      "status": "OK",
+      "bytes": 1879469
+    },
+    {
+      "artifact_id": "submissions:0001636222",
+      "status": "OK",
+      "bytes": 140219
+    },
+    {
+      "artifact_id": "companyfacts:0001636519",
+      "status": "OK",
+      "bytes": 2487198
+    },
+    {
+      "artifact_id": "submissions:0001636519",
+      "status": "OK",
+      "bytes": 129079
+    },
+    {
+      "artifact_id": "companyfacts:0001637207",
+      "status": "OK",
+      "bytes": 2521701
+    },
+    {
+      "artifact_id": "submissions:0001637207",
+      "status": "OK",
+      "bytes": 143213
+    },
+    {
+      "artifact_id": "companyfacts:0001639300",
+      "status": "OK",
+      "bytes": 2088002
+    },
+    {
+      "artifact_id": "submissions:0001639300",
+      "status": "OK",
+      "bytes": 145577
+    },
+    {
+      "artifact_id": "companyfacts:0001639438",
+      "status": "OK",
+      "bytes": 684406
+    },
+    {
+      "artifact_id": "submissions:0001639438",
+      "status": "OK",
+      "bytes": 65370
+    },
+    {
+      "artifact_id": "companyfacts:0001646972",
+      "status": "OK",
+      "bytes": 1973067
+    },
+    {
+      "artifact_id": "submissions:0001646972",
+      "status": "OK",
+      "bytes": 160040
+    },
+    {
+      "artifact_id": "companyfacts:0001647088",
+      "status": "OK",
+      "bytes": 2536416
+    },
+    {
+      "artifact_id": "submissions:0001647088",
+      "status": "OK",
+      "bytes": 134227
+    },
+    {
+      "artifact_id": "companyfacts:0001650164",
+      "status": "OK",
+      "bytes": 1269697
+    },
+    {
+      "artifact_id": "submissions:0001650164",
+      "status": "OK",
+      "bytes": 160053
+    },
+    {
+      "artifact_id": "companyfacts:0001650729",
+      "status": "OK",
+      "bytes": 2347507
+    },
+    {
+      "artifact_id": "submissions:0001650729",
+      "status": "OK",
+      "bytes": 139304
+    },
+    {
+      "artifact_id": "companyfacts:0001653482",
+      "status": "OK",
+      "bytes": 1317872
+    },
+    {
+      "artifact_id": "submissions:0001653482",
+      "status": "OK",
+      "bytes": 107141
+    },
+    {
+      "artifact_id": "companyfacts:0001658566",
+      "status": "OK",
+      "bytes": 1801268
+    },
+    {
+      "artifact_id": "submissions:0001658566",
+      "status": "OK",
+      "bytes": 158742
+    },
+    {
+      "artifact_id": "companyfacts:0001660134",
+      "status": "OK",
+      "bytes": 2010072
+    },
+    {
+      "artifact_id": "submissions:0001660134",
+      "status": "OK",
+      "bytes": 158605
+    },
+    {
+      "artifact_id": "companyfacts:0001665918",
+      "status": "OK",
+      "bytes": 2400479
+    },
+    {
+      "artifact_id": "submissions:0001665918",
+      "status": "OK",
+      "bytes": 165823
+    },
+    {
+      "artifact_id": "companyfacts:0001668397",
+      "status": "OK",
+      "bytes": 2051283
+    },
+    {
+      "artifact_id": "submissions:0001668397",
+      "status": "OK",
+      "bytes": 140551
+    },
+    {
+      "artifact_id": "companyfacts:0001669162",
+      "status": "OK",
+      "bytes": 2665003
+    },
+    {
+      "artifact_id": "submissions:0001669162",
+      "status": "OK",
+      "bytes": 106743
+    },
+    {
+      "artifact_id": "companyfacts:0001670592",
+      "status": "OK",
+      "bytes": 1539975
+    },
+    {
+      "artifact_id": "submissions:0001670592",
+      "status": "OK",
+      "bytes": 93912
+    },
+    {
+      "artifact_id": "companyfacts:0001671933",
+      "status": "OK",
+      "bytes": 1656962
+    },
+    {
+      "artifact_id": "submissions:0001671933",
+      "status": "OK",
+      "bytes": 159471
+    },
+    {
+      "artifact_id": "companyfacts:0001674862",
+      "status": "OK",
+      "bytes": 2807170
+    },
+    {
+      "artifact_id": "submissions:0001674862",
+      "status": "OK",
+      "bytes": 159337
+    },
+    {
+      "artifact_id": "companyfacts:0001674910",
+      "status": "OK",
+      "bytes": 2057160
+    },
+    {
+      "artifact_id": "submissions:0001674910",
+      "status": "OK",
+      "bytes": 158676
+    },
+    {
+      "artifact_id": "companyfacts:0001675149",
+      "status": "OK",
+      "bytes": 2575919
+    },
+    {
+      "artifact_id": "submissions:0001675149",
+      "status": "OK",
+      "bytes": 135776
+    },
+    {
+      "artifact_id": "companyfacts:0001681459",
+      "status": "OK",
+      "bytes": 2903619
+    },
+    {
+      "artifact_id": "submissions:0001681459",
+      "status": "OK",
+      "bytes": 124787
+    },
+    {
+      "artifact_id": "companyfacts:0001685040",
+      "status": "OK",
+      "bytes": 2927956
+    },
+    {
+      "artifact_id": "submissions:0001685040",
+      "status": "OK",
+      "bytes": 97443
+    },
+    {
+      "artifact_id": "companyfacts:0001688568",
+      "status": "OK",
+      "bytes": 3150358
+    },
+    {
+      "artifact_id": "submissions:0001688568",
+      "status": "OK",
+      "bytes": 146573
+    },
+    {
+      "artifact_id": "companyfacts:0001692063",
+      "status": "OK",
+      "bytes": 2165013
+    },
+    {
+      "artifact_id": "submissions:0001692063",
+      "status": "OK",
+      "bytes": 138679
+    },
+    {
+      "artifact_id": "companyfacts:0001699031",
+      "status": "OK",
+      "bytes": 454925
+    },
+    {
+      "artifact_id": "submissions:0001699031",
+      "status": "OK",
+      "bytes": 41772
+    },
+    {
+      "artifact_id": "companyfacts:0001703056",
+      "status": "OK",
+      "bytes": 2003925
+    },
+    {
+      "artifact_id": "submissions:0001703056",
+      "status": "OK",
+      "bytes": 167438
+    },
+    {
+      "artifact_id": "companyfacts:0001707753",
+      "status": "OK",
+      "bytes": 1851335
+    },
+    {
+      "artifact_id": "submissions:0001707753",
+      "status": "OK",
+      "bytes": 131941
+    },
+    {
+      "artifact_id": "companyfacts:0001709048",
+      "status": "OK",
+      "bytes": 775352
+    },
+    {
+      "artifact_id": "submissions:0001709048",
+      "status": "OK",
+      "bytes": 45452
+    },
+    {
+      "artifact_id": "companyfacts:0001713683",
+      "status": "OK",
+      "bytes": 2024165
+    },
+    {
+      "artifact_id": "submissions:0001713683",
+      "status": "OK",
+      "bytes": 140850
+    },
+    {
+      "artifact_id": "companyfacts:0001718512",
+      "status": "OK",
+      "bytes": 2666998
+    },
+    {
+      "artifact_id": "submissions:0001718512",
+      "status": "OK",
+      "bytes": 114866
+    },
+    {
+      "artifact_id": "companyfacts:0001722482",
+      "status": "OK",
+      "bytes": 1630318
+    },
+    {
+      "artifact_id": "submissions:0001722482",
+      "status": "OK",
+      "bytes": 127114
+    },
+    {
+      "artifact_id": "companyfacts:0001722684",
+      "status": "OK",
+      "bytes": 1869440
+    },
+    {
+      "artifact_id": "submissions:0001722684",
+      "status": "OK",
+      "bytes": 164033
+    },
+    {
+      "artifact_id": "companyfacts:0001734722",
+      "status": "OK",
+      "bytes": 1458186
+    },
+    {
+      "artifact_id": "submissions:0001734722",
+      "status": "OK",
+      "bytes": 109522
+    },
+    {
+      "artifact_id": "companyfacts:0001739104",
+      "status": "OK",
+      "bytes": 1601828
+    },
+    {
+      "artifact_id": "submissions:0001739104",
+      "status": "OK",
+      "bytes": 158673
+    },
+    {
+      "artifact_id": "companyfacts:0001749723",
+      "status": "OK",
+      "bytes": 2255163
+    },
+    {
+      "artifact_id": "submissions:0001749723",
+      "status": "OK",
+      "bytes": 70744
+    },
+    {
+      "artifact_id": "companyfacts:0001757073",
+      "status": "OK",
+      "bytes": 1827444
+    },
+    {
+      "artifact_id": "submissions:0001757073",
+      "status": "OK",
+      "bytes": 90403
+    },
+    {
+      "artifact_id": "companyfacts:0001758730",
+      "status": "OK",
+      "bytes": 1619374
+    },
+    {
+      "artifact_id": "submissions:0001758730",
+      "status": "OK",
+      "bytes": 129543
+    },
+    {
+      "artifact_id": "companyfacts:0001759509",
+      "status": "OK",
+      "bytes": 1808094
+    },
+    {
+      "artifact_id": "submissions:0001759509",
+      "status": "OK",
+      "bytes": 136815
+    },
+    {
+      "artifact_id": "companyfacts:0001764046",
+      "status": "OK",
+      "bytes": 2561383
+    },
+    {
+      "artifact_id": "submissions:0001764046",
+      "status": "OK",
+      "bytes": 112141
+    },
+    {
+      "artifact_id": "companyfacts:0001770787",
+      "status": "OK",
+      "bytes": 1462264
+    },
+    {
+      "artifact_id": "submissions:0001770787",
+      "status": "OK",
+      "bytes": 107085
+    },
+    {
+      "artifact_id": "companyfacts:0001771515",
+      "status": "OK",
+      "bytes": 1603662
+    },
+    {
+      "artifact_id": "submissions:0001771515",
+      "status": "OK",
+      "bytes": 142270
+    },
+    {
+      "artifact_id": "companyfacts:0001772016",
+      "status": "OK",
+      "bytes": 1061829
+    },
+    {
+      "artifact_id": "submissions:0001772016",
+      "status": "OK",
+      "bytes": 96492
+    },
+    {
+      "artifact_id": "companyfacts:0001773383",
+      "status": "OK",
+      "bytes": 1543440
+    },
+    {
+      "artifact_id": "submissions:0001773383",
+      "status": "OK",
+      "bytes": 121812
+    },
+    {
+      "artifact_id": "companyfacts:0001783398",
+      "status": "OK",
+      "bytes": 1058537
+    },
+    {
+      "artifact_id": "submissions:0001783398",
+      "status": "OK",
+      "bytes": 86459
+    },
+    {
+      "artifact_id": "companyfacts:0001786352",
+      "status": "OK",
+      "bytes": 1651509
+    },
+    {
+      "artifact_id": "submissions:0001786352",
+      "status": "OK",
+      "bytes": 146239
+    },
+    {
+      "artifact_id": "companyfacts:0001786431",
+      "status": "OK",
+      "bytes": 1126358
+    },
+    {
+      "artifact_id": "submissions:0001786431",
+      "status": "OK",
+      "bytes": 70458
+    },
+    {
+      "artifact_id": "companyfacts:0001786842",
+      "status": "OK",
+      "bytes": 1467237
+    },
+    {
+      "artifact_id": "submissions:0001786842",
+      "status": "OK",
+      "bytes": 68654
+    },
+    {
+      "artifact_id": "companyfacts:0001787425",
+      "status": "OK",
+      "bytes": 517443
+    },
+    {
+      "artifact_id": "submissions:0001787425",
+      "status": "OK",
+      "bytes": 50297
+    },
+    {
+      "artifact_id": "companyfacts:0001791863",
+      "status": "OK",
+      "bytes": 554674
+    },
+    {
+      "artifact_id": "submissions:0001791863",
+      "status": "OK",
+      "bytes": 38517
+    },
+    {
+      "artifact_id": "companyfacts:0001792580",
+      "status": "OK",
+      "bytes": 2139394
+    },
+    {
+      "artifact_id": "submissions:0001792580",
+      "status": "OK",
+      "bytes": 134274
+    },
+    {
+      "artifact_id": "companyfacts:0001794515",
+      "status": "OK",
+      "bytes": 1588411
+    },
+    {
+      "artifact_id": "submissions:0001794515",
+      "status": "OK",
+      "bytes": 159320
+    },
+    {
+      "artifact_id": "companyfacts:0001794669",
+      "status": "OK",
+      "bytes": 1613123
+    },
+    {
+      "artifact_id": "submissions:0001794669",
+      "status": "OK",
+      "bytes": 84869
+    },
+    {
+      "artifact_id": "companyfacts:0001796209",
+      "status": "OK",
+      "bytes": 1676778
+    },
+    {
+      "artifact_id": "submissions:0001796209",
+      "status": "OK",
+      "bytes": 87138
+    },
+    {
+      "artifact_id": "companyfacts:0001802768",
+      "status": "OK",
+      "bytes": 1058874
+    },
+    {
+      "artifact_id": "submissions:0001802768",
+      "status": "OK",
+      "bytes": 100397
+    },
+    {
+      "artifact_id": "companyfacts:0001803599",
+      "status": "OK",
+      "bytes": 1446870
+    },
+    {
+      "artifact_id": "submissions:0001803599",
+      "status": "OK",
+      "bytes": 90996
+    },
+    {
+      "artifact_id": "companyfacts:0001805284",
+      "status": "OK",
+      "bytes": 1321962
+    },
+    {
+      "artifact_id": "submissions:0001805284",
+      "status": "OK",
+      "bytes": 112669
+    },
+    {
+      "artifact_id": "companyfacts:0001810806",
+      "status": "OK",
+      "bytes": 1317843
+    },
+    {
+      "artifact_id": "submissions:0001810806",
+      "status": "OK",
+      "bytes": 152893
+    },
+    {
+      "artifact_id": "companyfacts:0001811210",
+      "status": "OK",
+      "bytes": 1529292
+    },
+    {
+      "artifact_id": "submissions:0001811210",
+      "status": "OK",
+      "bytes": 91614
+    },
+    {
+      "artifact_id": "companyfacts:0001811414",
+      "status": "OK",
+      "bytes": 1180255
+    },
+    {
+      "artifact_id": "submissions:0001811414",
+      "status": "OK",
+      "bytes": 157508
+    },
+    {
+      "artifact_id": "companyfacts:0001818201",
+      "status": "OK",
+      "bytes": 1533688
+    },
+    {
+      "artifact_id": "submissions:0001818201",
+      "status": "OK",
+      "bytes": 93024
+    },
+    {
+      "artifact_id": "companyfacts:0001818874",
+      "status": "OK",
+      "bytes": 1703863
+    },
+    {
+      "artifact_id": "submissions:0001818874",
+      "status": "OK",
+      "bytes": 157228
+    },
+    {
+      "artifact_id": "companyfacts:0001819928",
+      "status": "OK",
+      "bytes": 1250192
+    },
+    {
+      "artifact_id": "submissions:0001819928",
+      "status": "OK",
+      "bytes": 100086
+    },
+    {
+      "artifact_id": "companyfacts:0001820953",
+      "status": "OK",
+      "bytes": 1800270
+    },
+    {
+      "artifact_id": "submissions:0001820953",
+      "status": "OK",
+      "bytes": 116946
+    },
+    {
+      "artifact_id": "companyfacts:0001821825",
+      "status": "OK",
+      "bytes": 1388813
+    },
+    {
+      "artifact_id": "submissions:0001821825",
+      "status": "OK",
+      "bytes": 74634
+    },
+    {
+      "artifact_id": "companyfacts:0001822479",
+      "status": "OK",
+      "bytes": 1445874
+    },
+    {
+      "artifact_id": "submissions:0001822479",
+      "status": "OK",
+      "bytes": 62269
+    },
+    {
+      "artifact_id": "companyfacts:0001827090",
+      "status": "OK",
+      "bytes": 1278932
+    },
+    {
+      "artifact_id": "submissions:0001827090",
+      "status": "OK",
+      "bytes": 75220
+    },
+    {
+      "artifact_id": "companyfacts:0001828016",
+      "status": "OK",
+      "bytes": 1332189
+    },
+    {
+      "artifact_id": "submissions:0001828016",
+      "status": "OK",
+      "bytes": 59087
+    },
+    {
+      "artifact_id": "companyfacts:0001834584",
+      "status": "OK",
+      "bytes": 1125394
+    },
+    {
+      "artifact_id": "submissions:0001834584",
+      "status": "OK",
+      "bytes": 65902
+    },
+    {
+      "artifact_id": "companyfacts:0001834622",
+      "status": "OK",
+      "bytes": 1335708
+    },
+    {
+      "artifact_id": "submissions:0001834622",
+      "status": "OK",
+      "bytes": 87601
+    },
+    {
+      "artifact_id": "companyfacts:0001842022",
+      "status": "OK",
+      "bytes": 1111251
+    },
+    {
+      "artifact_id": "submissions:0001842022",
+      "status": "OK",
+      "bytes": 52405
+    },
+    {
+      "artifact_id": "companyfacts:0001849253",
+      "status": "OK",
+      "bytes": 1344192
+    },
+    {
+      "artifact_id": "submissions:0001849253",
+      "status": "OK",
+      "bytes": 85812
+    },
+    {
+      "artifact_id": "companyfacts:0001849635",
+      "status": "OK",
+      "bytes": 817713
+    },
+    {
+      "artifact_id": "submissions:0001849635",
+      "status": "OK",
+      "bytes": 114312
+    },
+    {
+      "artifact_id": "companyfacts:0001852244",
+      "status": "OK",
+      "bytes": 1170120
+    },
+    {
+      "artifact_id": "submissions:0001852244",
+      "status": "OK",
+      "bytes": 73522
+    },
+    {
+      "artifact_id": "companyfacts:0001856525",
+      "status": "OK",
+      "bytes": 1067775
+    },
+    {
+      "artifact_id": "submissions:0001856525",
+      "status": "OK",
+      "bytes": 76303
+    },
+    {
+      "artifact_id": "companyfacts:0001866581",
+      "status": "OK",
+      "bytes": 1111540
+    },
+    {
+      "artifact_id": "submissions:0001866581",
+      "status": "OK",
+      "bytes": 108010
+    },
+    {
+      "artifact_id": "companyfacts:0001867072",
+      "status": "OK",
+      "bytes": 1366576
+    },
+    {
+      "artifact_id": "submissions:0001867072",
+      "status": "OK",
+      "bytes": 68419
+    },
+    {
+      "artifact_id": "companyfacts:0001868159",
+      "status": "OK",
+      "bytes": 764314
+    },
+    {
+      "artifact_id": "submissions:0001868159",
+      "status": "OK",
+      "bytes": 32856
+    },
+    {
+      "artifact_id": "companyfacts:0001877322",
+      "status": "OK",
+      "bytes": 1233204
+    },
+    {
+      "artifact_id": "submissions:0001877322",
+      "status": "OK",
+      "bytes": 90059
+    },
+    {
+      "artifact_id": "companyfacts:0001880661",
+      "status": "OK",
+      "bytes": 995094
+    },
+    {
+      "artifact_id": "submissions:0001880661",
+      "status": "OK",
+      "bytes": 80764
+    },
+    {
+      "artifact_id": "companyfacts:0001883685",
+      "status": "OK",
+      "bytes": 914931
+    },
+    {
+      "artifact_id": "submissions:0001883685",
+      "status": "OK",
+      "bytes": 139019
+    },
+    {
+      "artifact_id": "companyfacts:0001897762",
+      "status": "OK",
+      "bytes": 472872
+    },
+    {
+      "artifact_id": "submissions:0001897762",
+      "status": "OK",
+      "bytes": 25652
+    },
+    {
+      "artifact_id": "companyfacts:0001902733",
+      "status": "OK",
+      "bytes": 1316994
+    },
+    {
+      "artifact_id": "submissions:0001902733",
+      "status": "OK",
+      "bytes": 116015
+    },
+    {
+      "artifact_id": "companyfacts:0001906324",
+      "status": "OK",
+      "bytes": 1268070
+    },
+    {
+      "artifact_id": "submissions:0001906324",
+      "status": "OK",
+      "bytes": 79099
+    },
+    {
+      "artifact_id": "companyfacts:0001915657",
+      "status": "OK",
+      "bytes": 1399759
+    },
+    {
+      "artifact_id": "submissions:0001915657",
+      "status": "OK",
+      "bytes": 78087
+    },
+    {
+      "artifact_id": "companyfacts:0001944013",
+      "status": "OK",
+      "bytes": 870426
+    },
+    {
+      "artifact_id": "submissions:0001944013",
+      "status": "OK",
+      "bytes": 47390
+    },
+    {
+      "artifact_id": "companyfacts:0001957132",
+      "status": "OK",
+      "bytes": 383787
+    },
+    {
+      "artifact_id": "submissions:0001957132",
+      "status": "OK",
+      "bytes": 31133
+    },
+    {
+      "artifact_id": "companyfacts:0001965040",
+      "status": "OK",
+      "bytes": 836612
+    },
+    {
+      "artifact_id": "submissions:0001965040",
+      "status": "OK",
+      "bytes": 54548
+    },
+    {
+      "artifact_id": "companyfacts:0001967649",
+      "status": "OK",
+      "bytes": 690243
+    },
+    {
+      "artifact_id": "submissions:0001967649",
+      "status": "OK",
+      "bytes": 59930
+    },
+    {
+      "artifact_id": "companyfacts:0001973266",
+      "status": "OK",
+      "bytes": 907574
+    },
+    {
+      "artifact_id": "submissions:0001973266",
+      "status": "OK",
+      "bytes": 62278
+    },
+    {
+      "artifact_id": "companyfacts:0001977102",
+      "status": "OK",
+      "bytes": 395320
+    },
+    {
+      "artifact_id": "submissions:0001977102",
+      "status": "OK",
+      "bytes": 23984
+    },
+    {
+      "artifact_id": "companyfacts:0001981792",
+      "status": "OK",
+      "bytes": 935214
+    },
+    {
+      "artifact_id": "submissions:0001981792",
+      "status": "OK",
+      "bytes": 49409
+    },
+    {
+      "artifact_id": "companyfacts:0001988894",
+      "status": "OK",
+      "bytes": 552363
+    },
+    {
+      "artifact_id": "submissions:0001988894",
+      "status": "OK",
+      "bytes": 27039
+    },
+    {
+      "artifact_id": "companyfacts:0002000178",
+      "status": "OK",
+      "bytes": 471704
+    },
+    {
+      "artifact_id": "submissions:0002000178",
+      "status": "OK",
+      "bytes": 26513
+    },
+    {
+      "artifact_id": "companyfacts:0002009684",
+      "status": "OK",
+      "bytes": 450350
+    },
+    {
+      "artifact_id": "submissions:0002009684",
+      "status": "OK",
+      "bytes": 29656
+    },
+    {
+      "artifact_id": "companyfacts:0002011286",
+      "status": "OK",
+      "bytes": 511766
+    },
+    {
+      "artifact_id": "submissions:0002011286",
+      "status": "OK",
+      "bytes": 31682
+    },
+    {
+      "artifact_id": "companyfacts:0002015845",
+      "status": "OK",
+      "bytes": 520182
+    },
+    {
+      "artifact_id": "submissions:0002015845",
+      "status": "OK",
+      "bytes": 22859
+    },
+    {
+      "artifact_id": "companyfacts:0002025410",
+      "status": "OK",
+      "bytes": 548964
+    },
+    {
+      "artifact_id": "submissions:0002025410",
+      "status": "OK",
+      "bytes": 32309
+    },
+    {
+      "artifact_id": "companyfacts:0002074176",
+      "status": "OK",
+      "bytes": 237891
+    },
+    {
+      "artifact_id": "submissions:0002074176",
+      "status": "OK",
+      "bytes": 17182
+    },
+    {
+      "artifact_id": "companyfacts:0002078416",
+      "status": "OK",
+      "bytes": 208289
+    },
+    {
+      "artifact_id": "submissions:0002078416",
+      "status": "OK",
+      "bytes": 13670
+    },
+    {
+      "artifact_id": "companyfacts:0002082866",
+      "status": "OK",
+      "bytes": 563413
+    },
+    {
+      "artifact_id": "submissions:0002082866",
+      "status": "OK",
+      "bytes": 27035
+    },
+    {
+      "artifact_id": "yahoo_chart:AA:5y",
+      "status": "OK",
+      "bytes": 135943
+    },
+    {
+      "artifact_id": "yahoo_events:AA:5y",
+      "status": "OK",
+      "bytes": 7825
+    },
+    {
+      "artifact_id": "yahoo_chart:AAL:5y",
+      "status": "OK",
+      "bytes": 139795
+    },
+    {
+      "artifact_id": "yahoo_events:AAL:5y",
+      "status": "OK",
+      "bytes": 7981
+    },
+    {
+      "artifact_id": "yahoo_chart:AAON:5y",
+      "status": "OK",
+      "bytes": 134151
+    },
+    {
+      "artifact_id": "yahoo_events:AAON:5y",
+      "status": "OK",
+      "bytes": 7827
+    },
+    {
+      "artifact_id": "yahoo_chart:AAP:5y",
+      "status": "OK",
+      "bytes": 135267
+    },
+    {
+      "artifact_id": "yahoo_events:AAP:5y",
+      "status": "OK",
+      "bytes": 7798
+    },
+    {
+      "artifact_id": "yahoo_chart:ACHC:5y",
+      "status": "OK",
+      "bytes": 134099
+    },
+    {
+      "artifact_id": "yahoo_events:ACHC:5y",
+      "status": "OK",
+      "bytes": 7765
+    },
+    {
+      "artifact_id": "yahoo_chart:ACI:5y",
+      "status": "OK",
+      "bytes": 137901
+    },
+    {
+      "artifact_id": "yahoo_events:ACI:5y",
+      "status": "OK",
+      "bytes": 7864
+    },
+    {
+      "artifact_id": "yahoo_chart:ACM:5y",
+      "status": "OK",
+      "bytes": 133154
+    },
+    {
+      "artifact_id": "yahoo_events:ACM:5y",
+      "status": "OK",
+      "bytes": 7651
+    },
+    {
+      "artifact_id": "yahoo_chart:ADC:5y",
+      "status": "OK",
+      "bytes": 132947
+    },
+    {
+      "artifact_id": "yahoo_events:ADC:5y",
+      "status": "OK",
+      "bytes": 7732
+    },
+    {
+      "artifact_id": "yahoo_chart:ADT:5y",
+      "status": "OK",
+      "bytes": 133915
+    },
+    {
+      "artifact_id": "yahoo_events:ADT:5y",
+      "status": "OK",
+      "bytes": 7584
+    },
+    {
+      "artifact_id": "yahoo_chart:AFG:5y",
+      "status": "OK",
+      "bytes": 137125
+    },
+    {
+      "artifact_id": "yahoo_events:AFG:5y",
+      "status": "OK",
+      "bytes": 7854
+    },
+    {
+      "artifact_id": "yahoo_chart:AFRM:5y",
+      "status": "OK",
+      "bytes": 135083
+    },
+    {
+      "artifact_id": "yahoo_events:AFRM:5y",
+      "status": "OK",
+      "bytes": 7824
+    },
+    {
+      "artifact_id": "yahoo_chart:AGNC:5y",
+      "status": "OK",
+      "bytes": 137399
+    },
+    {
+      "artifact_id": "yahoo_events:AGNC:5y",
+      "status": "OK",
+      "bytes": 7902
+    },
+    {
+      "artifact_id": "yahoo_chart:AGO:5y",
+      "status": "OK",
+      "bytes": 133458
+    },
+    {
+      "artifact_id": "yahoo_events:AGO:5y",
+      "status": "OK",
+      "bytes": 7732
+    },
+    {
+      "artifact_id": "yahoo_chart:ALGM:5y",
+      "status": "OK",
+      "bytes": 136128
+    },
+    {
+      "artifact_id": "yahoo_events:ALGM:5y",
+      "status": "OK",
+      "bytes": 7720
+    },
+    {
+      "artifact_id": "yahoo_chart:ALK:5y",
+      "status": "OK",
+      "bytes": 134772
+    },
+    {
+      "artifact_id": "yahoo_events:ALK:5y",
+      "status": "OK",
+      "bytes": 7739
+    },
+    {
+      "artifact_id": "yahoo_chart:ALLY:5y",
+      "status": "OK",
+      "bytes": 136914
+    },
+    {
+      "artifact_id": "yahoo_events:ALLY:5y",
+      "status": "OK",
+      "bytes": 7932
+    },
+    {
+      "artifact_id": "yahoo_chart:ALNY:5y",
+      "status": "OK",
+      "bytes": 133294
+    },
+    {
+      "artifact_id": "yahoo_events:ALNY:5y",
+      "status": "OK",
+      "bytes": 7648
+    },
+    {
+      "artifact_id": "yahoo_chart:ALSN:5y",
+      "status": "OK",
+      "bytes": 135182
+    },
+    {
+      "artifact_id": "yahoo_events:ALSN:5y",
+      "status": "OK",
+      "bytes": 7803
+    },
+    {
+      "artifact_id": "yahoo_chart:AM:5y",
+      "status": "OK",
+      "bytes": 138222
+    },
+    {
+      "artifact_id": "yahoo_events:AM:5y",
+      "status": "OK",
+      "bytes": 7885
+    },
+    {
+      "artifact_id": "yahoo_chart:AMG:5y",
+      "status": "OK",
+      "bytes": 136638
+    },
+    {
+      "artifact_id": "yahoo_events:AMG:5y",
+      "status": "OK",
+      "bytes": 7821
+    },
+    {
+      "artifact_id": "yahoo_chart:AMH:5y",
+      "status": "OK",
+      "bytes": 137422
+    },
+    {
+      "artifact_id": "yahoo_events:AMH:5y",
+      "status": "OK",
+      "bytes": 7899
+    },
+    {
+      "artifact_id": "yahoo_chart:AMKR:5y",
+      "status": "OK",
+      "bytes": 137300
+    },
+    {
+      "artifact_id": "yahoo_events:AMKR:5y",
+      "status": "OK",
+      "bytes": 7949
+    },
+    {
+      "artifact_id": "yahoo_chart:AMTM:5y",
+      "status": "OK",
+      "bytes": 55183
+    },
+    {
+      "artifact_id": "yahoo_events:AMTM:5y",
+      "status": "OK",
+      "bytes": 3976
+    },
+    {
+      "artifact_id": "yahoo_chart:AN:5y",
+      "status": "OK",
+      "bytes": 135799
+    },
+    {
+      "artifact_id": "yahoo_events:AN:5y",
+      "status": "OK",
+      "bytes": 7825
+    },
+    {
+      "artifact_id": "yahoo_chart:APG:5y",
+      "status": "OK",
+      "bytes": 139191
+    },
+    {
+      "artifact_id": "yahoo_events:APG:5y",
+      "status": "OK",
+      "bytes": 8070
+    },
+    {
+      "artifact_id": "yahoo_chart:APPF:5y",
+      "status": "OK",
+      "bytes": 135307
+    },
+    {
+      "artifact_id": "yahoo_events:APPF:5y",
+      "status": "OK",
+      "bytes": 7755
+    },
+    {
+      "artifact_id": "yahoo_chart:AR:5y",
+      "status": "OK",
+      "bytes": 136774
+    },
+    {
+      "artifact_id": "yahoo_events:AR:5y",
+      "status": "OK",
+      "bytes": 7816
+    },
+    {
+      "artifact_id": "yahoo_chart:ARES:5y",
+      "status": "OK",
+      "bytes": 135419
+    },
+    {
+      "artifact_id": "yahoo_events:ARES:5y",
+      "status": "OK",
+      "bytes": 7893
+    },
+    {
+      "artifact_id": "yahoo_chart:ARMK:5y",
+      "status": "OK",
+      "bytes": 138679
+    },
+    {
+      "artifact_id": "yahoo_events:ARMK:5y",
+      "status": "OK",
+      "bytes": 7999
+    },
+    {
+      "artifact_id": "yahoo_chart:ARW:5y",
+      "status": "OK",
+      "bytes": 137370
+    },
+    {
+      "artifact_id": "yahoo_events:ARW:5y",
+      "status": "OK",
+      "bytes": 7804
+    },
+    {
+      "artifact_id": "yahoo_chart:AS:5y",
+      "status": "OK",
+      "bytes": 72589
+    },
+    {
+      "artifact_id": "yahoo_events:AS:5y",
+      "status": "OK",
+      "bytes": 4726
+    },
+    {
+      "artifact_id": "yahoo_chart:ASH:5y",
+      "status": "OK",
+      "bytes": 133788
+    },
+    {
+      "artifact_id": "yahoo_events:ASH:5y",
+      "status": "OK",
+      "bytes": 7704
+    },
+    {
+      "artifact_id": "yahoo_chart:ATI:5y",
+      "status": "OK",
+      "bytes": 135050
+    },
+    {
+      "artifact_id": "yahoo_events:ATI:5y",
+      "status": "OK",
+      "bytes": 7902
+    },
+    {
+      "artifact_id": "yahoo_chart:ATR:5y",
+      "status": "OK",
+      "bytes": 137612
+    },
+    {
+      "artifact_id": "yahoo_events:ATR:5y",
+      "status": "OK",
+      "bytes": 7912
+    },
+    {
+      "artifact_id": "yahoo_chart:AVT:5y",
+      "status": "OK",
+      "bytes": 135110
+    },
+    {
+      "artifact_id": "yahoo_events:AVT:5y",
+      "status": "OK",
+      "bytes": 7824
+    },
+    {
+      "artifact_id": "yahoo_chart:AVTR:5y",
+      "status": "OK",
+      "bytes": 138062
+    },
+    {
+      "artifact_id": "yahoo_events:AVTR:5y",
+      "status": "OK",
+      "bytes": 7929
+    },
+    {
+      "artifact_id": "yahoo_chart:AWI:5y",
+      "status": "OK",
+      "bytes": 134672
+    },
+    {
+      "artifact_id": "yahoo_events:AWI:5y",
+      "status": "OK",
+      "bytes": 7785
+    },
+    {
+      "artifact_id": "yahoo_chart:AXTA:5y",
+      "status": "OK",
+      "bytes": 137370
+    },
+    {
+      "artifact_id": "yahoo_events:AXTA:5y",
+      "status": "OK",
+      "bytes": 7815
+    },
+    {
+      "artifact_id": "yahoo_chart:AYI:5y",
+      "status": "OK",
+      "bytes": 135636
+    },
+    {
+      "artifact_id": "yahoo_events:AYI:5y",
+      "status": "OK",
+      "bytes": 7694
+    },
+    {
+      "artifact_id": "yahoo_chart:AZTA:5y",
+      "status": "OK",
+      "bytes": 134815
+    },
+    {
+      "artifact_id": "yahoo_events:AZTA:5y",
+      "status": "OK",
+      "bytes": 7855
+    },
+    {
+      "artifact_id": "yahoo_chart:BAH:5y",
+      "status": "OK",
+      "bytes": 135145
+    },
+    {
+      "artifact_id": "yahoo_events:BAH:5y",
+      "status": "OK",
+      "bytes": 7841
+    },
+    {
+      "artifact_id": "yahoo_chart:BBWI:5y",
+      "status": "OK",
+      "bytes": 136901
+    },
+    {
+      "artifact_id": "yahoo_events:BBWI:5y",
+      "status": "OK",
+      "bytes": 7872
+    },
+    {
+      "artifact_id": "yahoo_chart:BC:5y",
+      "status": "OK",
+      "bytes": 132819
+    },
+    {
+      "artifact_id": "yahoo_events:BC:5y",
+      "status": "OK",
+      "bytes": 7661
+    },
+    {
+      "artifact_id": "yahoo_chart:BEPC:5y",
+      "status": "OK",
+      "bytes": 136225
+    },
+    {
+      "artifact_id": "yahoo_events:BEPC:5y",
+      "status": "OK",
+      "bytes": 8049
+    },
+    {
+      "artifact_id": "yahoo_chart:BFAM:5y",
+      "status": "OK",
+      "bytes": 134641
+    },
+    {
+      "artifact_id": "yahoo_events:BFAM:5y",
+      "status": "OK",
+      "bytes": 7810
+    },
+    {
+      "artifact_id": "yahoo_chart:BHF:5y",
+      "status": "OK",
+      "bytes": 134097
+    },
+    {
+      "artifact_id": "yahoo_events:BHF:5y",
+      "status": "OK",
+      "bytes": 7777
+    },
+    {
+      "artifact_id": "yahoo_chart:BILL:5y",
+      "status": "OK",
+      "bytes": 134182
+    },
+    {
+      "artifact_id": "yahoo_events:BILL:5y",
+      "status": "OK",
+      "bytes": 7754
+    },
+    {
+      "artifact_id": "yahoo_chart:BIO:5y",
+      "status": "OK",
+      "bytes": 131781
+    },
+    {
+      "artifact_id": "yahoo_events:BIO:5y",
+      "status": "OK",
+      "bytes": 7635
+    },
+    {
+      "artifact_id": "yahoo_chart:BIRK:5y",
+      "status": "OK",
+      "bytes": 79529
+    },
+    {
+      "artifact_id": "yahoo_events:BIRK:5y",
+      "status": "OK",
+      "bytes": 4912
+    },
+    {
+      "artifact_id": "yahoo_chart:BJ:5y",
+      "status": "OK",
+      "bytes": 132851
+    },
+    {
+      "artifact_id": "yahoo_events:BJ:5y",
+      "status": "OK",
+      "bytes": 7783
+    },
+    {
+      "artifact_id": "yahoo_chart:BMRN:5y",
+      "status": "OK",
+      "bytes": 133040
+    },
+    {
+      "artifact_id": "yahoo_events:BMRN:5y",
+      "status": "OK",
+      "bytes": 7722
+    },
+    {
+      "artifact_id": "yahoo_chart:BOKF:5y",
+      "status": "OK",
+      "bytes": 134561
+    },
+    {
+      "artifact_id": "yahoo_events:BOKF:5y",
+      "status": "OK",
+      "bytes": 7738
+    },
+    {
+      "artifact_id": "yahoo_chart:BPOP:5y",
+      "status": "OK",
+      "bytes": 134229
+    },
+    {
+      "artifact_id": "yahoo_events:BPOP:5y",
+      "status": "OK",
+      "bytes": 7800
+    },
+    {
+      "artifact_id": "yahoo_chart:BRBR:5y",
+      "status": "OK",
+      "bytes": 135068
+    },
+    {
+      "artifact_id": "yahoo_events:BRBR:5y",
+      "status": "OK",
+      "bytes": 7808
+    },
+    {
+      "artifact_id": "yahoo_chart:BRKR:5y",
+      "status": "OK",
+      "bytes": 134410
+    },
+    {
+      "artifact_id": "yahoo_events:BRKR:5y",
+      "status": "OK",
+      "bytes": 7741
+    },
+    {
+      "artifact_id": "yahoo_chart:BROS:5y",
+      "status": "OK",
+      "bytes": 132813
+    },
+    {
+      "artifact_id": "yahoo_events:BROS:5y",
+      "status": "OK",
+      "bytes": 7659
+    },
+    {
+      "artifact_id": "yahoo_chart:BRX:5y",
+      "status": "OK",
+      "bytes": 138782
+    },
+    {
+      "artifact_id": "yahoo_events:BRX:5y",
+      "status": "OK",
+      "bytes": 8064
+    },
+    {
+      "artifact_id": "yahoo_chart:BSY:5y",
+      "status": "OK",
+      "bytes": 135388
+    },
+    {
+      "artifact_id": "yahoo_events:BSY:5y",
+      "status": "OK",
+      "bytes": 7781
+    },
+    {
+      "artifact_id": "yahoo_chart:BURL:5y",
+      "status": "OK",
+      "bytes": 134584
+    },
+    {
+      "artifact_id": "yahoo_events:BURL:5y",
+      "status": "OK",
+      "bytes": 7845
+    },
+    {
+      "artifact_id": "yahoo_chart:BWXT:5y",
+      "status": "OK",
+      "bytes": 133359
+    },
+    {
+      "artifact_id": "yahoo_events:BWXT:5y",
+      "status": "OK",
+      "bytes": 7756
+    },
+    {
+      "artifact_id": "yahoo_chart:BYD:5y",
+      "status": "OK",
+      "bytes": 133320
+    },
+    {
+      "artifact_id": "yahoo_events:BYD:5y",
+      "status": "OK",
+      "bytes": 7719
+    },
+    {
+      "artifact_id": "yahoo_chart:CACC:5y",
+      "status": "OK",
+      "bytes": 128847
+    },
+    {
+      "artifact_id": "yahoo_events:CACC:5y",
+      "status": "OK",
+      "bytes": 7397
+    },
+    {
+      "artifact_id": "yahoo_chart:CAR:5y",
+      "status": "OK",
+      "bytes": 134073
+    },
+    {
+      "artifact_id": "yahoo_events:CAR:5y",
+      "status": "OK",
+      "bytes": 7779
+    },
+    {
+      "artifact_id": "yahoo_chart:CART:5y",
+      "status": "OK",
+      "bytes": 82015
+    },
+    {
+      "artifact_id": "yahoo_events:CART:5y",
+      "status": "OK",
+      "bytes": 5273
+    },
+    {
+      "artifact_id": "yahoo_chart:CAVA:5y",
+      "status": "OK",
+      "bytes": 86213
+    },
+    {
+      "artifact_id": "yahoo_events:CAVA:5y",
+      "status": "OK",
+      "bytes": 5342
+    },
+    {
+      "artifact_id": "yahoo_chart:CC:5y",
+      "status": "OK",
+      "bytes": 137994
+    },
+    {
+      "artifact_id": "yahoo_events:CC:5y",
+      "status": "OK",
+      "bytes": 7980
+    },
+    {
+      "artifact_id": "yahoo_chart:CCC:5y",
+      "status": "OK",
+      "bytes": 135241
+    },
+    {
+      "artifact_id": "yahoo_events:CCC:5y",
+      "status": "OK",
+      "bytes": 7908
+    },
+    {
+      "artifact_id": "yahoo_chart:CCK:5y",
+      "status": "OK",
+      "bytes": 134170
+    },
+    {
+      "artifact_id": "yahoo_events:CCK:5y",
+      "status": "OK",
+      "bytes": 7664
+    },
+    {
+      "artifact_id": "yahoo_chart:CELH:5y",
+      "status": "OK",
+      "bytes": 136979
+    },
+    {
+      "artifact_id": "yahoo_events:CELH:5y",
+      "status": "OK",
+      "bytes": 8004
+    },
+    {
+      "artifact_id": "yahoo_chart:CERT:5y",
+      "status": "OK",
+      "bytes": 136440
+    },
+    {
+      "artifact_id": "yahoo_events:CERT:5y",
+      "status": "OK",
+      "bytes": 7919
+    },
+    {
+      "artifact_id": "yahoo_chart:CFR:5y",
+      "status": "OK",
+      "bytes": 137000
+    },
+    {
+      "artifact_id": "yahoo_events:CFR:5y",
+      "status": "OK",
+      "bytes": 7904
+    },
+    {
+      "artifact_id": "yahoo_chart:CG:5y",
+      "status": "OK",
+      "bytes": 136546
+    },
+    {
+      "artifact_id": "yahoo_events:CG:5y",
+      "status": "OK",
+      "bytes": 7833
+    },
+    {
+      "artifact_id": "yahoo_chart:CGNX:5y",
+      "status": "OK",
+      "bytes": 135287
+    },
+    {
+      "artifact_id": "yahoo_events:CGNX:5y",
+      "status": "OK",
+      "bytes": 7781
+    },
+    {
+      "artifact_id": "yahoo_chart:CHDN:5y",
+      "status": "OK",
+      "bytes": 135549
+    },
+    {
+      "artifact_id": "yahoo_events:CHDN:5y",
+      "status": "OK",
+      "bytes": 7940
+    },
+    {
+      "artifact_id": "yahoo_chart:CHE:5y",
+      "status": "OK",
+      "bytes": 131026
+    },
+    {
+      "artifact_id": "yahoo_events:CHE:5y",
+      "status": "OK",
+      "bytes": 7479
+    },
+    {
+      "artifact_id": "yahoo_chart:CHRD:5y",
+      "status": "OK",
+      "bytes": 135250
+    },
+    {
+      "artifact_id": "yahoo_events:CHRD:5y",
+      "status": "OK",
+      "bytes": 7847
+    },
+    {
+      "artifact_id": "yahoo_chart:CLF:5y",
+      "status": "OK",
+      "bytes": 138022
+    },
+    {
+      "artifact_id": "yahoo_events:CLF:5y",
+      "status": "OK",
+      "bytes": 7955
+    },
+    {
+      "artifact_id": "yahoo_chart:CLH:5y",
+      "status": "OK",
+      "bytes": 135269
+    },
+    {
+      "artifact_id": "yahoo_events:CLH:5y",
+      "status": "OK",
+      "bytes": 7803
+    },
+    {
+      "artifact_id": "yahoo_chart:CLVT:5y",
+      "status": "OK",
+      "bytes": 135094
+    },
+    {
+      "artifact_id": "yahoo_events:CLVT:5y",
+      "status": "OK",
+      "bytes": 7849
+    },
+    {
+      "artifact_id": "yahoo_chart:CNA:5y",
+      "status": "OK",
+      "bytes": 135291
+    },
+    {
+      "artifact_id": "yahoo_events:CNA:5y",
+      "status": "OK",
+      "bytes": 7871
+    },
+    {
+      "artifact_id": "yahoo_chart:CNH:5y",
+      "status": "OK",
+      "bytes": 139961
+    },
+    {
+      "artifact_id": "yahoo_events:CNH:5y",
+      "status": "OK",
+      "bytes": 7964
+    },
+    {
+      "artifact_id": "yahoo_chart:CNM:5y",
+      "status": "OK",
+      "bytes": 135412
+    },
+    {
+      "artifact_id": "yahoo_events:CNM:5y",
+      "status": "OK",
+      "bytes": 7776
+    },
+    {
+      "artifact_id": "yahoo_chart:CNXC:5y",
+      "status": "OK",
+      "bytes": 134959
+    },
+    {
+      "artifact_id": "yahoo_events:CNXC:5y",
+      "status": "OK",
+      "bytes": 7793
+    },
+    {
+      "artifact_id": "yahoo_chart:COKE:5y",
+      "status": "OK",
+      "bytes": 133886
+    },
+    {
+      "artifact_id": "yahoo_events:COKE:5y",
+      "status": "OK",
+      "bytes": 7835
+    },
+    {
+      "artifact_id": "yahoo_chart:COLB:5y",
+      "status": "OK",
+      "bytes": 138255
+    },
+    {
+      "artifact_id": "yahoo_events:COLB:5y",
+      "status": "OK",
+      "bytes": 8028
+    },
+    {
+      "artifact_id": "yahoo_chart:COLD:5y",
+      "status": "OK",
+      "bytes": 138553
+    },
+    {
+      "artifact_id": "yahoo_events:COLD:5y",
+      "status": "OK",
+      "bytes": 7964
+    },
+    {
+      "artifact_id": "yahoo_chart:COLM:5y",
+      "status": "OK",
+      "bytes": 133033
+    },
+    {
+      "artifact_id": "yahoo_events:COLM:5y",
+      "status": "OK",
+      "bytes": 7734
+    },
+    {
+      "artifact_id": "yahoo_chart:COTY:5y",
+      "status": "OK",
+      "bytes": 135773
+    },
+    {
+      "artifact_id": "yahoo_events:COTY:5y",
+      "status": "OK",
+      "bytes": 7834
+    },
+    {
+      "artifact_id": "yahoo_chart:CPNG:5y",
+      "status": "OK",
+      "bytes": 137664
+    },
+    {
+      "artifact_id": "yahoo_events:CPNG:5y",
+      "status": "OK",
+      "bytes": 7866
+    },
+    {
+      "artifact_id": "yahoo_chart:CR:5y",
+      "status": "OK",
+      "bytes": 94433
+    },
+    {
+      "artifact_id": "yahoo_events:CR:5y",
+      "status": "OK",
+      "bytes": 5779
+    },
+    {
+      "artifact_id": "yahoo_chart:CROX:5y",
+      "status": "OK",
+      "bytes": 134524
+    },
+    {
+      "artifact_id": "yahoo_events:CROX:5y",
+      "status": "OK",
+      "bytes": 7555
+    },
+    {
+      "artifact_id": "yahoo_chart:CRUS:5y",
+      "status": "OK",
+      "bytes": 133892
+    },
+    {
+      "artifact_id": "yahoo_events:CRUS:5y",
+      "status": "OK",
+      "bytes": 7764
+    },
+    {
+      "artifact_id": "yahoo_chart:CSL:5y",
+      "status": "OK",
+      "bytes": 134548
+    },
+    {
+      "artifact_id": "yahoo_events:CSL:5y",
+      "status": "OK",
+      "bytes": 7758
+    },
+    {
+      "artifact_id": "yahoo_chart:CUBE:5y",
+      "status": "OK",
+      "bytes": 136090
+    },
+    {
+      "artifact_id": "yahoo_events:CUBE:5y",
+      "status": "OK",
+      "bytes": 7811
+    },
+    {
+      "artifact_id": "yahoo_chart:CUZ:5y",
+      "status": "OK",
+      "bytes": 137989
+    },
+    {
+      "artifact_id": "yahoo_events:CUZ:5y",
+      "status": "OK",
+      "bytes": 7958
+    },
+    {
+      "artifact_id": "yahoo_chart:CW:5y",
+      "status": "OK",
+      "bytes": 133158
+    },
+    {
+      "artifact_id": "yahoo_events:CW:5y",
+      "status": "OK",
+      "bytes": 7771
+    },
+    {
+      "artifact_id": "yahoo_chart:CWEN:5y",
+      "status": "OK",
+      "bytes": 136773
+    },
+    {
+      "artifact_id": "yahoo_events:CWEN:5y",
+      "status": "OK",
+      "bytes": 7823
+    },
+    {
+      "artifact_id": "yahoo_chart:CXT:5y",
+      "status": "OK",
+      "bytes": 135702
+    },
+    {
+      "artifact_id": "yahoo_events:CXT:5y",
+      "status": "OK",
+      "bytes": 7907
+    },
+    {
+      "artifact_id": "yahoo_chart:DAR:5y",
+      "status": "OK",
+      "bytes": 135014
+    },
+    {
+      "artifact_id": "yahoo_events:DAR:5y",
+      "status": "OK",
+      "bytes": 7719
+    },
+    {
+      "artifact_id": "yahoo_chart:DBX:5y",
+      "status": "OK",
+      "bytes": 137819
+    },
+    {
+      "artifact_id": "yahoo_events:DBX:5y",
+      "status": "OK",
+      "bytes": 7876
+    },
+    {
+      "artifact_id": "yahoo_chart:DCI:5y",
+      "status": "OK",
+      "bytes": 133638
+    },
+    {
+      "artifact_id": "yahoo_events:DCI:5y",
+      "status": "OK",
+      "bytes": 7724
+    },
+    {
+      "artifact_id": "yahoo_chart:DDS:5y",
+      "status": "OK",
+      "bytes": 130789
+    },
+    {
+      "artifact_id": "yahoo_events:DDS:5y",
+      "status": "OK",
+      "bytes": 7586
+    },
+    {
+      "artifact_id": "yahoo_chart:DINO:5y",
+      "status": "OK",
+      "bytes": 135656
+    },
+    {
+      "artifact_id": "yahoo_events:DINO:5y",
+      "status": "OK",
+      "bytes": 7813
+    },
+    {
+      "artifact_id": "yahoo_chart:DJT:5y",
+      "status": "OK",
+      "bytes": 133042
+    },
+    {
+      "artifact_id": "yahoo_events:DJT:5y",
+      "status": "OK",
+      "bytes": 7738
+    },
+    {
+      "artifact_id": "yahoo_chart:DKNG:5y",
+      "status": "OK",
+      "bytes": 137560
+    },
+    {
+      "artifact_id": "yahoo_events:DKNG:5y",
+      "status": "OK",
+      "bytes": 7938
+    },
+    {
+      "artifact_id": "yahoo_chart:DKS:5y",
+      "status": "OK",
+      "bytes": 136446
+    },
+    {
+      "artifact_id": "yahoo_events:DKS:5y",
+      "status": "OK",
+      "bytes": 7765
+    },
+    {
+      "artifact_id": "yahoo_chart:DLB:5y",
+      "status": "OK",
+      "bytes": 131997
+    },
+    {
+      "artifact_id": "yahoo_events:DLB:5y",
+      "status": "OK",
+      "bytes": 7611
+    },
+    {
+      "artifact_id": "yahoo_chart:DOCS:5y",
+      "status": "OK",
+      "bytes": 134295
+    },
+    {
+      "artifact_id": "yahoo_events:DOCS:5y",
+      "status": "OK",
+      "bytes": 7655
+    },
+    {
+      "artifact_id": "yahoo_chart:DOCU:5y",
+      "status": "OK",
+      "bytes": 133926
+    },
+    {
+      "artifact_id": "yahoo_events:DOCU:5y",
+      "status": "OK",
+      "bytes": 7643
+    },
+    {
+      "artifact_id": "yahoo_chart:DT:5y",
+      "status": "OK",
+      "bytes": 135200
+    },
+    {
+      "artifact_id": "yahoo_events:DT:5y",
+      "status": "OK",
+      "bytes": 7690
+    },
+    {
+      "artifact_id": "yahoo_chart:DTM:5y",
+      "status": "OK",
+      "bytes": 135241
+    },
+    {
+      "artifact_id": "yahoo_events:DTM:5y",
+      "status": "OK",
+      "bytes": 7798
+    },
+    {
+      "artifact_id": "yahoo_chart:DUOL:5y",
+      "status": "OK",
+      "bytes": 131404
+    },
+    {
+      "artifact_id": "yahoo_events:DUOL:5y",
+      "status": "OK",
+      "bytes": 7571
+    },
+    {
+      "artifact_id": "yahoo_chart:DV:5y",
+      "status": "OK",
+      "bytes": 136624
+    },
+    {
+      "artifact_id": "yahoo_events:DV:5y",
+      "status": "OK",
+      "bytes": 7875
+    },
+    {
+      "artifact_id": "yahoo_chart:DXC:5y",
+      "status": "OK",
+      "bytes": 137644
+    },
+    {
+      "artifact_id": "yahoo_events:DXC:5y",
+      "status": "OK",
+      "bytes": 7858
+    },
+    {
+      "artifact_id": "yahoo_chart:ECG:5y",
+      "status": "OK",
+      "bytes": 51117
+    },
+    {
+      "artifact_id": "yahoo_events:ECG:5y",
+      "status": "OK",
+      "bytes": 3699
+    },
+    {
+      "artifact_id": "yahoo_chart:EEFT:5y",
+      "status": "OK",
+      "bytes": 134032
+    },
+    {
+      "artifact_id": "yahoo_events:EEFT:5y",
+      "status": "OK",
+      "bytes": 7731
+    },
+    {
+      "artifact_id": "yahoo_chart:EGP:5y",
+      "status": "OK",
+      "bytes": 136952
+    },
+    {
+      "artifact_id": "yahoo_events:EGP:5y",
+      "status": "OK",
+      "bytes": 7829
+    },
+    {
+      "artifact_id": "yahoo_chart:EHC:5y",
+      "status": "OK",
+      "bytes": 135647
+    },
+    {
+      "artifact_id": "yahoo_events:EHC:5y",
+      "status": "OK",
+      "bytes": 7970
+    },
+    {
+      "artifact_id": "yahoo_chart:ELAN:5y",
+      "status": "OK",
+      "bytes": 137729
+    },
+    {
+      "artifact_id": "yahoo_events:ELAN:5y",
+      "status": "OK",
+      "bytes": 7994
+    },
+    {
+      "artifact_id": "yahoo_chart:ELF:5y",
+      "status": "OK",
+      "bytes": 133996
+    },
+    {
+      "artifact_id": "yahoo_events:ELF:5y",
+      "status": "OK",
+      "bytes": 7569
+    },
+    {
+      "artifact_id": "yahoo_chart:ELS:5y",
+      "status": "OK",
+      "bytes": 134435
+    },
+    {
+      "artifact_id": "yahoo_events:ELS:5y",
+      "status": "OK",
+      "bytes": 7709
+    },
+    {
+      "artifact_id": "yahoo_chart:EME:5y",
+      "status": "OK",
+      "bytes": 133388
+    },
+    {
+      "artifact_id": "yahoo_events:EME:5y",
+      "status": "OK",
+      "bytes": 7704
+    },
+    {
+      "artifact_id": "yahoo_chart:ENOV:5y",
+      "status": "OK",
+      "bytes": 135009
+    },
+    {
+      "artifact_id": "yahoo_events:ENOV:5y",
+      "status": "OK",
+      "bytes": 7852
+    },
+    {
+      "artifact_id": "yahoo_chart:ENTG:5y",
+      "status": "OK",
+      "bytes": 135925
+    },
+    {
+      "artifact_id": "yahoo_events:ENTG:5y",
+      "status": "OK",
+      "bytes": 7784
+    },
+    {
+      "artifact_id": "yahoo_chart:EPR:5y",
+      "status": "OK",
+      "bytes": 134129
+    },
+    {
+      "artifact_id": "yahoo_events:EPR:5y",
+      "status": "OK",
+      "bytes": 7769
+    },
+    {
+      "artifact_id": "yahoo_chart:EQH:5y",
+      "status": "OK",
+      "bytes": 137619
+    },
+    {
+      "artifact_id": "yahoo_events:EQH:5y",
+      "status": "OK",
+      "bytes": 7927
+    },
+    {
+      "artifact_id": "yahoo_chart:ESAB:5y",
+      "status": "OK",
+      "bytes": 121295
+    },
+    {
+      "artifact_id": "yahoo_events:ESAB:5y",
+      "status": "OK",
+      "bytes": 7037
+    },
+    {
+      "artifact_id": "yahoo_chart:ESI:5y",
+      "status": "OK",
+      "bytes": 138140
+    },
+    {
+      "artifact_id": "yahoo_events:ESI:5y",
+      "status": "OK",
+      "bytes": 7957
+    },
+    {
+      "artifact_id": "yahoo_chart:ESTC:5y",
+      "status": "OK",
+      "bytes": 132600
+    },
+    {
+      "artifact_id": "yahoo_events:ESTC:5y",
+      "status": "OK",
+      "bytes": 7688
+    },
+    {
+      "artifact_id": "yahoo_chart:ETSY:5y",
+      "status": "OK",
+      "bytes": 133977
+    },
+    {
+      "artifact_id": "yahoo_events:ETSY:5y",
+      "status": "OK",
+      "bytes": 7751
+    },
+    {
+      "artifact_id": "yahoo_chart:EVR:5y",
+      "status": "OK",
+      "bytes": 135661
+    },
+    {
+      "artifact_id": "yahoo_events:EVR:5y",
+      "status": "OK",
+      "bytes": 7861
+    },
+    {
+      "artifact_id": "yahoo_chart:EWBC:5y",
+      "status": "OK",
+      "bytes": 133968
+    },
+    {
+      "artifact_id": "yahoo_events:EWBC:5y",
+      "status": "OK",
+      "bytes": 7760
+    },
+    {
+      "artifact_id": "yahoo_chart:EXE:5y",
+      "status": "OK",
+      "bytes": 133365
+    },
+    {
+      "artifact_id": "yahoo_events:EXE:5y",
+      "status": "OK",
+      "bytes": 7677
+    },
+    {
+      "artifact_id": "yahoo_chart:EXEL:5y",
+      "status": "OK",
+      "bytes": 136652
+    },
+    {
+      "artifact_id": "yahoo_events:EXEL:5y",
+      "status": "OK",
+      "bytes": 7950
+    },
+    {
+      "artifact_id": "yahoo_chart:EXP:5y",
+      "status": "OK",
+      "bytes": 136750
+    },
+    {
+      "artifact_id": "yahoo_events:EXP:5y",
+      "status": "OK",
+      "bytes": 7860
+    },
+    {
+      "artifact_id": "yahoo_chart:FAF:5y",
+      "status": "OK",
+      "bytes": 134349
+    },
+    {
+      "artifact_id": "yahoo_events:FAF:5y",
+      "status": "OK",
+      "bytes": 7739
+    },
+    {
+      "artifact_id": "yahoo_chart:FBIN:5y",
+      "status": "OK",
+      "bytes": 135378
+    },
+    {
+      "artifact_id": "yahoo_events:FBIN:5y",
+      "status": "OK",
+      "bytes": 7961
+    },
+    {
+      "artifact_id": "yahoo_chart:FCN:5y",
+      "status": "OK",
+      "bytes": 135457
+    },
+    {
+      "artifact_id": "yahoo_events:FCN:5y",
+      "status": "OK",
+      "bytes": 7641
+    },
+    {
+      "artifact_id": "yahoo_chart:FHB:5y",
+      "status": "OK",
+      "bytes": 138185
+    },
+    {
+      "artifact_id": "yahoo_events:FHB:5y",
+      "status": "OK",
+      "bytes": 7985
+    },
+    {
+      "artifact_id": "yahoo_chart:FHN:5y",
+      "status": "OK",
+      "bytes": 138435
+    },
+    {
+      "artifact_id": "yahoo_events:FHN:5y",
+      "status": "OK",
+      "bytes": 7907
+    },
+    {
+      "artifact_id": "yahoo_chart:FIVE:5y",
+      "status": "OK",
+      "bytes": 135166
+    },
+    {
+      "artifact_id": "yahoo_events:FIVE:5y",
+      "status": "OK",
+      "bytes": 7862
+    },
+    {
+      "artifact_id": "yahoo_chart:FIVN:5y",
+      "status": "OK",
+      "bytes": 134669
+    },
+    {
+      "artifact_id": "yahoo_events:FIVN:5y",
+      "status": "OK",
+      "bytes": 7715
+    },
+    {
+      "artifact_id": "yahoo_chart:FLO:5y",
+      "status": "OK",
+      "bytes": 137987
+    },
+    {
+      "artifact_id": "yahoo_events:FLO:5y",
+      "status": "OK",
+      "bytes": 7969
+    },
+    {
+      "artifact_id": "yahoo_chart:FLS:5y",
+      "status": "OK",
+      "bytes": 135564
+    },
+    {
+      "artifact_id": "yahoo_events:FLS:5y",
+      "status": "OK",
+      "bytes": 7862
+    },
+    {
+      "artifact_id": "yahoo_chart:FND:5y",
+      "status": "OK",
+      "bytes": 133568
+    },
+    {
+      "artifact_id": "yahoo_events:FND:5y",
+      "status": "OK",
+      "bytes": 7764
+    },
+    {
+      "artifact_id": "yahoo_chart:FNF:5y",
+      "status": "OK",
+      "bytes": 138409
+    },
+    {
+      "artifact_id": "yahoo_events:FNF:5y",
+      "status": "OK",
+      "bytes": 8230
+    },
+    {
+      "artifact_id": "yahoo_chart:FOUR:5y",
+      "status": "OK",
+      "bytes": 131156
+    },
+    {
+      "artifact_id": "yahoo_events:FOUR:5y",
+      "status": "OK",
+      "bytes": 7656
+    },
+    {
+      "artifact_id": "yahoo_chart:FR:5y",
+      "status": "OK",
+      "bytes": 135488
+    },
+    {
+      "artifact_id": "yahoo_events:FR:5y",
+      "status": "OK",
+      "bytes": 7838
+    },
+    {
+      "artifact_id": "yahoo_chart:FRPT:5y",
+      "status": "OK",
+      "bytes": 133406
+    },
+    {
+      "artifact_id": "yahoo_events:FRPT:5y",
+      "status": "OK",
+      "bytes": 7765
+    },
+    {
+      "artifact_id": "yahoo_chart:FTI:5y",
+      "status": "OK",
+      "bytes": 136389
+    },
+    {
+      "artifact_id": "yahoo_events:FTI:5y",
+      "status": "OK",
+      "bytes": 7841
+    },
+    {
+      "artifact_id": "yahoo_chart:FTRE:5y",
+      "status": "OK",
+      "bytes": 88608
+    },
+    {
+      "artifact_id": "yahoo_events:FTRE:5y",
+      "status": "OK",
+      "bytes": 5499
+    },
+    {
+      "artifact_id": "yahoo_chart:GAP:5y",
+      "status": "OK",
+      "bytes": 138422
+    },
+    {
+      "artifact_id": "yahoo_events:GAP:5y",
+      "status": "OK",
+      "bytes": 8035
+    },
+    {
+      "artifact_id": "yahoo_chart:GFS:5y",
+      "status": "OK",
+      "bytes": 132442
+    },
+    {
+      "artifact_id": "yahoo_events:GFS:5y",
+      "status": "OK",
+      "bytes": 7690
+    },
+    {
+      "artifact_id": "yahoo_chart:GGG:5y",
+      "status": "OK",
+      "bytes": 132628
+    },
+    {
+      "artifact_id": "yahoo_events:GGG:5y",
+      "status": "OK",
+      "bytes": 7682
+    },
+    {
+      "artifact_id": "yahoo_chart:GLOB:5y",
+      "status": "OK",
+      "bytes": 134922
+    },
+    {
+      "artifact_id": "yahoo_events:GLOB:5y",
+      "status": "OK",
+      "bytes": 7711
+    },
+    {
+      "artifact_id": "yahoo_chart:GLPI:5y",
+      "status": "OK",
+      "bytes": 136332
+    },
+    {
+      "artifact_id": "yahoo_events:GLPI:5y",
+      "status": "OK",
+      "bytes": 7846
+    },
+    {
+      "artifact_id": "yahoo_chart:GME:5y",
+      "status": "OK",
+      "bytes": 136070
+    },
+    {
+      "artifact_id": "yahoo_events:GME:5y",
+      "status": "OK",
+      "bytes": 8002
+    },
+    {
+      "artifact_id": "yahoo_chart:GMED:5y",
+      "status": "OK",
+      "bytes": 132328
+    },
+    {
+      "artifact_id": "yahoo_events:GMED:5y",
+      "status": "OK",
+      "bytes": 7760
+    },
+    {
+      "artifact_id": "yahoo_chart:GNTX:5y",
+      "status": "OK",
+      "bytes": 138187
+    },
+    {
+      "artifact_id": "yahoo_events:GNTX:5y",
+      "status": "OK",
+      "bytes": 7909
+    },
+    {
+      "artifact_id": "yahoo_chart:GO:5y",
+      "status": "OK",
+      "bytes": 136313
+    },
+    {
+      "artifact_id": "yahoo_events:GO:5y",
+      "status": "OK",
+      "bytes": 7886
+    },
+    {
+      "artifact_id": "yahoo_chart:GPK:5y",
+      "status": "OK",
+      "bytes": 138508
+    },
+    {
+      "artifact_id": "yahoo_events:GPK:5y",
+      "status": "OK",
+      "bytes": 7843
+    },
+    {
+      "artifact_id": "yahoo_chart:GRAL:5y",
+      "status": "OK",
+      "bytes": 60831
+    },
+    {
+      "artifact_id": "yahoo_events:GRAL:5y",
+      "status": "OK",
+      "bytes": 4097
+    },
+    {
+      "artifact_id": "yahoo_chart:GTES:5y",
+      "status": "OK",
+      "bytes": 137926
+    },
+    {
+      "artifact_id": "yahoo_events:GTES:5y",
+      "status": "OK",
+      "bytes": 8056
+    },
+    {
+      "artifact_id": "yahoo_chart:GTLB:5y",
+      "status": "OK",
+      "bytes": 132864
+    },
+    {
+      "artifact_id": "yahoo_events:GTLB:5y",
+      "status": "OK",
+      "bytes": 7593
+    },
+    {
+      "artifact_id": "yahoo_chart:GTM:5y",
+      "status": "OK",
+      "bytes": 135954
+    },
+    {
+      "artifact_id": "yahoo_events:GTM:5y",
+      "status": "OK",
+      "bytes": 7923
+    },
+    {
+      "artifact_id": "yahoo_chart:GWRE:5y",
+      "status": "OK",
+      "bytes": 134708
+    },
+    {
+      "artifact_id": "yahoo_events:GWRE:5y",
+      "status": "OK",
+      "bytes": 7822
+    },
+    {
+      "artifact_id": "yahoo_chart:GXO:5y",
+      "status": "OK",
+      "bytes": 134182
+    },
+    {
+      "artifact_id": "yahoo_events:GXO:5y",
+      "status": "OK",
+      "bytes": 7690
+    },
+    {
+      "artifact_id": "yahoo_chart:H:5y",
+      "status": "OK",
+      "bytes": 136154
+    },
+    {
+      "artifact_id": "yahoo_events:H:5y",
+      "status": "OK",
+      "bytes": 7806
+    },
+    {
+      "artifact_id": "yahoo_chart:HAYW:5y",
+      "status": "OK",
+      "bytes": 137645
+    },
+    {
+      "artifact_id": "yahoo_events:HAYW:5y",
+      "status": "OK",
+      "bytes": 7942
+    },
+    {
+      "artifact_id": "yahoo_chart:HEI:5y",
+      "status": "OK",
+      "bytes": 135052
+    },
+    {
+      "artifact_id": "yahoo_events:HEI:5y",
+      "status": "OK",
+      "bytes": 7850
+    },
+    {
+      "artifact_id": "yahoo_chart:HHH:5y",
+      "status": "OK",
+      "bytes": 132885
+    },
+    {
+      "artifact_id": "yahoo_events:HHH:5y",
+      "status": "OK",
+      "bytes": 7784
+    },
+    {
+      "artifact_id": "yahoo_chart:HIW:5y",
+      "status": "OK",
+      "bytes": 137999
+    },
+    {
+      "artifact_id": "yahoo_events:HIW:5y",
+      "status": "OK",
+      "bytes": 8049
+    },
+    {
+      "artifact_id": "yahoo_chart:HLI:5y",
+      "status": "OK",
+      "bytes": 135636
+    },
+    {
+      "artifact_id": "yahoo_events:HLI:5y",
+      "status": "OK",
+      "bytes": 7792
+    },
+    {
+      "artifact_id": "yahoo_chart:HOG:5y",
+      "status": "OK",
+      "bytes": 137118
+    },
+    {
+      "artifact_id": "yahoo_events:HOG:5y",
+      "status": "OK",
+      "bytes": 7803
+    },
+    {
+      "artifact_id": "yahoo_chart:HR:5y",
+      "status": "OK",
+      "bytes": 139422
+    },
+    {
+      "artifact_id": "yahoo_events:HR:5y",
+      "status": "OK",
+      "bytes": 7994
+    },
+    {
+      "artifact_id": "yahoo_chart:HRB:5y",
+      "status": "OK",
+      "bytes": 136536
+    },
+    {
+      "artifact_id": "yahoo_events:HRB:5y",
+      "status": "OK",
+      "bytes": 7829
+    },
+    {
+      "artifact_id": "yahoo_chart:HUBS:5y",
+      "status": "OK",
+      "bytes": 128758
+    },
+    {
+      "artifact_id": "yahoo_events:HUBS:5y",
+      "status": "OK",
+      "bytes": 7385
+    },
+    {
+      "artifact_id": "yahoo_chart:HUN:5y",
+      "status": "OK",
+      "bytes": 138252
+    },
+    {
+      "artifact_id": "yahoo_events:HUN:5y",
+      "status": "OK",
+      "bytes": 7902
+    },
+    {
+      "artifact_id": "yahoo_chart:IDA:5y",
+      "status": "OK",
+      "bytes": 136522
+    },
+    {
+      "artifact_id": "yahoo_events:IDA:5y",
+      "status": "OK",
+      "bytes": 7855
+    },
+    {
+      "artifact_id": "yahoo_chart:ILMN:5y",
+      "status": "OK",
+      "bytes": 137349
+    },
+    {
+      "artifact_id": "yahoo_events:ILMN:5y",
+      "status": "OK",
+      "bytes": 8045
+    },
+    {
+      "artifact_id": "yahoo_chart:INGM:5y",
+      "status": "OK",
+      "bytes": 53350
+    },
+    {
+      "artifact_id": "yahoo_events:INGM:5y",
+      "status": "OK",
+      "bytes": 3848
+    },
+    {
+      "artifact_id": "yahoo_chart:INGR:5y",
+      "status": "OK",
+      "bytes": 135598
+    },
+    {
+      "artifact_id": "yahoo_events:INGR:5y",
+      "status": "OK",
+      "bytes": 7814
+    },
+    {
+      "artifact_id": "yahoo_chart:INSP:5y",
+      "status": "OK",
+      "bytes": 133531
+    },
+    {
+      "artifact_id": "yahoo_events:INSP:5y",
+      "status": "OK",
+      "bytes": 7757
+    },
+    {
+      "artifact_id": "yahoo_chart:IONS:5y",
+      "status": "OK",
+      "bytes": 133652
+    },
+    {
+      "artifact_id": "yahoo_events:IONS:5y",
+      "status": "OK",
+      "bytes": 7776
+    },
+    {
+      "artifact_id": "yahoo_chart:IPGP:5y",
+      "status": "OK",
+      "bytes": 133408
+    },
+    {
+      "artifact_id": "yahoo_events:IPGP:5y",
+      "status": "OK",
+      "bytes": 7756
+    },
+    {
+      "artifact_id": "yahoo_chart:IRDM:5y",
+      "status": "OK",
+      "bytes": 136347
+    },
+    {
+      "artifact_id": "yahoo_events:IRDM:5y",
+      "status": "OK",
+      "bytes": 7777
+    },
+    {
+      "artifact_id": "yahoo_chart:ITT:5y",
+      "status": "OK",
+      "bytes": 135137
+    },
+    {
+      "artifact_id": "yahoo_events:ITT:5y",
+      "status": "OK",
+      "bytes": 7823
+    },
+    {
+      "artifact_id": "yahoo_chart:JEF:5y",
+      "status": "OK",
+      "bytes": 136717
+    },
+    {
+      "artifact_id": "yahoo_events:JEF:5y",
+      "status": "OK",
+      "bytes": 8084
+    },
+    {
+      "artifact_id": "yahoo_chart:JLL:5y",
+      "status": "OK",
+      "bytes": 134954
+    },
+    {
+      "artifact_id": "yahoo_events:JLL:5y",
+      "status": "OK",
+      "bytes": 7868
+    },
+    {
+      "artifact_id": "yahoo_chart:KBR:5y",
+      "status": "OK",
+      "bytes": 135596
+    },
+    {
+      "artifact_id": "yahoo_events:KBR:5y",
+      "status": "OK",
+      "bytes": 7764
+    },
+    {
+      "artifact_id": "yahoo_chart:KD:5y",
+      "status": "OK",
+      "bytes": 134243
+    },
+    {
+      "artifact_id": "yahoo_events:KD:5y",
+      "status": "OK",
+      "bytes": 7838
+    },
+    {
+      "artifact_id": "yahoo_chart:KEX:5y",
+      "status": "OK",
+      "bytes": 134482
+    },
+    {
+      "artifact_id": "yahoo_events:KEX:5y",
+      "status": "OK",
+      "bytes": 7795
+    },
+    {
+      "artifact_id": "yahoo_chart:KMPR:5y",
+      "status": "OK",
+      "bytes": 134957
+    },
+    {
+      "artifact_id": "yahoo_events:KMPR:5y",
+      "status": "OK",
+      "bytes": 7767
+    },
+    {
+      "artifact_id": "yahoo_chart:KNSL:5y",
+      "status": "OK",
+      "bytes": 131903
+    },
+    {
+      "artifact_id": "yahoo_events:KNSL:5y",
+      "status": "OK",
+      "bytes": 7512
+    },
+    {
+      "artifact_id": "yahoo_chart:KNX:5y",
+      "status": "OK",
+      "bytes": 135803
+    },
+    {
+      "artifact_id": "yahoo_events:KNX:5y",
+      "status": "OK",
+      "bytes": 7824
+    },
+    {
+      "artifact_id": "yahoo_chart:KRC:5y",
+      "status": "OK",
+      "bytes": 135733
+    },
+    {
+      "artifact_id": "yahoo_events:KRC:5y",
+      "status": "OK",
+      "bytes": 7887
+    },
+    {
+      "artifact_id": "yahoo_chart:LAD:5y",
+      "status": "OK",
+      "bytes": 132566
+    },
+    {
+      "artifact_id": "yahoo_events:LAD:5y",
+      "status": "OK",
+      "bytes": 7729
+    },
+    {
+      "artifact_id": "yahoo_chart:LAMR:5y",
+      "status": "OK",
+      "bytes": 135914
+    },
+    {
+      "artifact_id": "yahoo_events:LAMR:5y",
+      "status": "OK",
+      "bytes": 7882
+    },
+    {
+      "artifact_id": "yahoo_chart:LAZ:5y",
+      "status": "OK",
+      "bytes": 134910
+    },
+    {
+      "artifact_id": "yahoo_events:LAZ:5y",
+      "status": "OK",
+      "bytes": 7789
+    },
+    {
+      "artifact_id": "yahoo_chart:LBTYA:5y",
+      "status": "OK",
+      "bytes": 138819
+    },
+    {
+      "artifact_id": "yahoo_events:LBTYA:5y",
+      "status": "OK",
+      "bytes": 8082
+    },
+    {
+      "artifact_id": "yahoo_chart:LCID:5y",
+      "status": "OK",
+      "bytes": 125831
+    },
+    {
+      "artifact_id": "yahoo_events:LCID:5y",
+      "status": "OK",
+      "bytes": 7524
+    },
+    {
+      "artifact_id": "yahoo_chart:LEA:5y",
+      "status": "OK",
+      "bytes": 136545
+    },
+    {
+      "artifact_id": "yahoo_events:LEA:5y",
+      "status": "OK",
+      "bytes": 7812
+    },
+    {
+      "artifact_id": "yahoo_chart:LECO:5y",
+      "status": "OK",
+      "bytes": 136249
+    },
+    {
+      "artifact_id": "yahoo_events:LECO:5y",
+      "status": "OK",
+      "bytes": 7882
+    },
+    {
+      "artifact_id": "yahoo_chart:LINE:5y",
+      "status": "OK",
+      "bytes": 58462
+    },
+    {
+      "artifact_id": "yahoo_events:LINE:5y",
+      "status": "OK",
+      "bytes": 3964
+    },
+    {
+      "artifact_id": "yahoo_chart:LLYVA:5y",
+      "status": "OK",
+      "bytes": 83932
+    },
+    {
+      "artifact_id": "yahoo_events:LLYVA:5y",
+      "status": "OK",
+      "bytes": 5299
+    },
+    {
+      "artifact_id": "yahoo_chart:LNC:5y",
+      "status": "OK",
+      "bytes": 136381
+    },
+    {
+      "artifact_id": "yahoo_events:LNC:5y",
+      "status": "OK",
+      "bytes": 7788
+    },
+    {
+      "artifact_id": "yahoo_chart:LNWO:5y",
+      "status": "OK",
+      "bytes": 130505
+    },
+    {
+      "artifact_id": "yahoo_events:LNWO:5y",
+      "status": "OK",
+      "bytes": 7527
+    },
+    {
+      "artifact_id": "yahoo_chart:LOAR:5y",
+      "status": "OK",
+      "bytes": 63910
+    },
+    {
+      "artifact_id": "yahoo_events:LOAR:5y",
+      "status": "OK",
+      "bytes": 4279
+    },
+    {
+      "artifact_id": "yahoo_chart:LOPE:5y",
+      "status": "OK",
+      "bytes": 135759
+    },
+    {
+      "artifact_id": "yahoo_events:LOPE:5y",
+      "status": "OK",
+      "bytes": 7800
+    },
+    {
+      "artifact_id": "yahoo_chart:LPLA:5y",
+      "status": "OK",
+      "bytes": 135207
+    },
+    {
+      "artifact_id": "yahoo_events:LPLA:5y",
+      "status": "OK",
+      "bytes": 7836
+    },
+    {
+      "artifact_id": "yahoo_chart:LPX:5y",
+      "status": "OK",
+      "bytes": 133511
+    },
+    {
+      "artifact_id": "yahoo_events:LPX:5y",
+      "status": "OK",
+      "bytes": 7749
+    },
+    {
+      "artifact_id": "yahoo_chart:LSCC:5y",
+      "status": "OK",
+      "bytes": 134370
+    },
+    {
+      "artifact_id": "yahoo_events:LSCC:5y",
+      "status": "OK",
+      "bytes": 7678
+    },
+    {
+      "artifact_id": "yahoo_chart:LSTR:5y",
+      "status": "OK",
+      "bytes": 137568
+    },
+    {
+      "artifact_id": "yahoo_events:LSTR:5y",
+      "status": "OK",
+      "bytes": 7806
+    },
+    {
+      "artifact_id": "yahoo_chart:LYFT:5y",
+      "status": "OK",
+      "bytes": 138837
+    },
+    {
+      "artifact_id": "yahoo_events:LYFT:5y",
+      "status": "OK",
+      "bytes": 7936
+    },
+    {
+      "artifact_id": "yahoo_chart:M:5y",
+      "status": "OK",
+      "bytes": 139381
+    },
+    {
+      "artifact_id": "yahoo_events:M:5y",
+      "status": "OK",
+      "bytes": 8032
+    },
+    {
+      "artifact_id": "yahoo_chart:MAN:5y",
+      "status": "OK",
+      "bytes": 133876
+    },
+    {
+      "artifact_id": "yahoo_events:MAN:5y",
+      "status": "OK",
+      "bytes": 7726
+    },
+    {
+      "artifact_id": "yahoo_chart:MANH:5y",
+      "status": "OK",
+      "bytes": 135838
+    },
+    {
+      "artifact_id": "yahoo_events:MANH:5y",
+      "status": "OK",
+      "bytes": 7906
+    },
+    {
+      "artifact_id": "yahoo_chart:MDB:5y",
+      "status": "OK",
+      "bytes": 131267
+    },
+    {
+      "artifact_id": "yahoo_events:MDB:5y",
+      "status": "OK",
+      "bytes": 7622
+    },
+    {
+      "artifact_id": "yahoo_chart:MDU:5y",
+      "status": "OK",
+      "bytes": 140634
+    },
+    {
+      "artifact_id": "yahoo_events:MDU:5y",
+      "status": "OK",
+      "bytes": 8230
+    },
+    {
+      "artifact_id": "yahoo_chart:MEDP:5y",
+      "status": "OK",
+      "bytes": 132595
+    },
+    {
+      "artifact_id": "yahoo_events:MEDP:5y",
+      "status": "OK",
+      "bytes": 7716
+    },
+    {
+      "artifact_id": "yahoo_chart:MIDD:5y",
+      "status": "OK",
+      "bytes": 140446
+    },
+    {
+      "artifact_id": "yahoo_events:MIDD:5y",
+      "status": "OK",
+      "bytes": 8235
+    },
+    {
+      "artifact_id": "yahoo_chart:MKL:5y",
+      "status": "OK",
+      "bytes": 127882
+    },
+    {
+      "artifact_id": "yahoo_events:MKL:5y",
+      "status": "OK",
+      "bytes": 7468
+    },
+    {
+      "artifact_id": "yahoo_chart:MKSI:5y",
+      "status": "OK",
+      "bytes": 134837
+    },
+    {
+      "artifact_id": "yahoo_events:MKSI:5y",
+      "status": "OK",
+      "bytes": 7787
+    },
+    {
+      "artifact_id": "yahoo_chart:MORN:5y",
+      "status": "OK",
+      "bytes": 134780
+    },
+    {
+      "artifact_id": "yahoo_events:MORN:5y",
+      "status": "OK",
+      "bytes": 7791
+    },
+    {
+      "artifact_id": "yahoo_chart:MPT:5y",
+      "status": "OK",
+      "bytes": 136539
+    },
+    {
+      "artifact_id": "yahoo_events:MPT:5y",
+      "status": "OK",
+      "bytes": 7917
+    },
+    {
+      "artifact_id": "yahoo_chart:MSA:5y",
+      "status": "OK",
+      "bytes": 136648
+    },
+    {
+      "artifact_id": "yahoo_events:MSA:5y",
+      "status": "OK",
+      "bytes": 7872
+    },
+    {
+      "artifact_id": "yahoo_chart:MSGS:5y",
+      "status": "OK",
+      "bytes": 133846
+    },
+    {
+      "artifact_id": "yahoo_events:MSGS:5y",
+      "status": "OK",
+      "bytes": 7719
+    },
+    {
+      "artifact_id": "yahoo_chart:MSM:5y",
+      "status": "OK",
+      "bytes": 132917
+    },
+    {
+      "artifact_id": "yahoo_events:MSM:5y",
+      "status": "OK",
+      "bytes": 7683
+    },
+    {
+      "artifact_id": "yahoo_chart:MTDR:5y",
+      "status": "OK",
+      "bytes": 135630
+    },
+    {
+      "artifact_id": "yahoo_events:MTDR:5y",
+      "status": "OK",
+      "bytes": 7877
+    },
+    {
+      "artifact_id": "yahoo_chart:MTG:5y",
+      "status": "OK",
+      "bytes": 139179
+    },
+    {
+      "artifact_id": "yahoo_events:MTG:5y",
+      "status": "OK",
+      "bytes": 8006
+    },
+    {
+      "artifact_id": "yahoo_chart:MTN:5y",
+      "status": "OK",
+      "bytes": 135059
+    },
+    {
+      "artifact_id": "yahoo_events:MTN:5y",
+      "status": "OK",
+      "bytes": 7797
+    },
+    {
+      "artifact_id": "yahoo_chart:MTSI:5y",
+      "status": "OK",
+      "bytes": 133832
+    },
+    {
+      "artifact_id": "yahoo_events:MTSI:5y",
+      "status": "OK",
+      "bytes": 7752
+    },
+    {
+      "artifact_id": "yahoo_chart:MTZ:5y",
+      "status": "OK",
+      "bytes": 132810
+    },
+    {
+      "artifact_id": "yahoo_events:MTZ:5y",
+      "status": "OK",
+      "bytes": 7586
+    },
+    {
+      "artifact_id": "yahoo_chart:MUSA:5y",
+      "status": "OK",
+      "bytes": 133627
+    },
+    {
+      "artifact_id": "yahoo_events:MUSA:5y",
+      "status": "OK",
+      "bytes": 7674
+    },
+    {
+      "artifact_id": "yahoo_chart:NBIX:5y",
+      "status": "OK",
+      "bytes": 134489
+    },
+    {
+      "artifact_id": "yahoo_events:NBIX:5y",
+      "status": "OK",
+      "bytes": 7688
+    },
+    {
+      "artifact_id": "yahoo_chart:NCNO:5y",
+      "status": "OK",
+      "bytes": 135788
+    },
+    {
+      "artifact_id": "yahoo_events:NCNO:5y",
+      "status": "OK",
+      "bytes": 7851
+    },
+    {
+      "artifact_id": "yahoo_chart:NEU:5y",
+      "status": "OK",
+      "bytes": 130495
+    },
+    {
+      "artifact_id": "yahoo_events:NEU:5y",
+      "status": "OK",
+      "bytes": 7560
+    },
+    {
+      "artifact_id": "yahoo_chart:NFE:5y",
+      "status": "OK",
+      "bytes": 137550
+    },
+    {
+      "artifact_id": "yahoo_events:NFE:5y",
+      "status": "OK",
+      "bytes": 5162
+    },
+    {
+      "artifact_id": "yahoo_chart:NFG:5y",
+      "status": "OK",
+      "bytes": 133825
+    },
+    {
+      "artifact_id": "yahoo_events:NFG:5y",
+      "status": "OK",
+      "bytes": 7693
+    },
+    {
+      "artifact_id": "yahoo_chart:NLY:5y",
+      "status": "OK",
+      "bytes": 138771
+    },
+    {
+      "artifact_id": "yahoo_events:NLY:5y",
+      "status": "OK",
+      "bytes": 8228
+    },
+    {
+      "artifact_id": "yahoo_chart:NNN:5y",
+      "status": "OK",
+      "bytes": 135778
+    },
+    {
+      "artifact_id": "yahoo_events:NNN:5y",
+      "status": "OK",
+      "bytes": 7815
+    },
+    {
+      "artifact_id": "yahoo_chart:NOV:5y",
+      "status": "OK",
+      "bytes": 139215
+    },
+    {
+      "artifact_id": "yahoo_events:NOV:5y",
+      "status": "OK",
+      "bytes": 7952
+    },
+    {
+      "artifact_id": "yahoo_chart:NTNX:5y",
+      "status": "OK",
+      "bytes": 135296
+    },
+    {
+      "artifact_id": "yahoo_events:NTNX:5y",
+      "status": "OK",
+      "bytes": 7861
+    },
+    {
+      "artifact_id": "yahoo_chart:NVST:5y",
+      "status": "OK",
+      "bytes": 136566
+    },
+    {
+      "artifact_id": "yahoo_events:NVST:5y",
+      "status": "OK",
+      "bytes": 7928
+    },
+    {
+      "artifact_id": "yahoo_chart:NWL:5y",
+      "status": "OK",
+      "bytes": 135885
+    },
+    {
+      "artifact_id": "yahoo_events:NWL:5y",
+      "status": "OK",
+      "bytes": 7708
+    },
+    {
+      "artifact_id": "yahoo_chart:NXST:5y",
+      "status": "OK",
+      "bytes": 136013
+    },
+    {
+      "artifact_id": "yahoo_events:NXST:5y",
+      "status": "OK",
+      "bytes": 7852
+    },
+    {
+      "artifact_id": "yahoo_chart:NYT:5y",
+      "status": "OK",
+      "bytes": 135295
+    },
+    {
+      "artifact_id": "yahoo_events:NYT:5y",
+      "status": "OK",
+      "bytes": 7828
+    },
+    {
+      "artifact_id": "yahoo_chart:OC:5y",
+      "status": "OK",
+      "bytes": 135377
+    },
+    {
+      "artifact_id": "yahoo_events:OC:5y",
+      "status": "OK",
+      "bytes": 7796
+    },
+    {
+      "artifact_id": "yahoo_chart:OGE:5y",
+      "status": "OK",
+      "bytes": 136241
+    },
+    {
+      "artifact_id": "yahoo_events:OGE:5y",
+      "status": "OK",
+      "bytes": 7846
+    },
+    {
+      "artifact_id": "yahoo_chart:OGN:5y",
+      "status": "OK",
+      "bytes": 137742
+    },
+    {
+      "artifact_id": "yahoo_events:OGN:5y",
+      "status": "OK",
+      "bytes": 7806
+    },
+    {
+      "artifact_id": "yahoo_chart:OHI:5y",
+      "status": "OK",
+      "bytes": 136880
+    },
+    {
+      "artifact_id": "yahoo_events:OHI:5y",
+      "status": "OK",
+      "bytes": 7785
+    },
+    {
+      "artifact_id": "yahoo_chart:OKTA:5y",
+      "status": "OK",
+      "bytes": 132301
+    },
+    {
+      "artifact_id": "yahoo_events:OKTA:5y",
+      "status": "OK",
+      "bytes": 7659
+    },
+    {
+      "artifact_id": "yahoo_chart:OLLI:5y",
+      "status": "OK",
+      "bytes": 133871
+    },
+    {
+      "artifact_id": "yahoo_events:OLLI:5y",
+      "status": "OK",
+      "bytes": 7808
+    },
+    {
+      "artifact_id": "yahoo_chart:OLN:5y",
+      "status": "OK",
+      "bytes": 136219
+    },
+    {
+      "artifact_id": "yahoo_events:OLN:5y",
+      "status": "OK",
+      "bytes": 7801
+    },
+    {
+      "artifact_id": "yahoo_chart:OMF:5y",
+      "status": "OK",
+      "bytes": 134587
+    },
+    {
+      "artifact_id": "yahoo_events:OMF:5y",
+      "status": "OK",
+      "bytes": 7755
+    },
+    {
+      "artifact_id": "yahoo_chart:ONTO:5y",
+      "status": "OK",
+      "bytes": 133078
+    },
+    {
+      "artifact_id": "yahoo_events:ONTO:5y",
+      "status": "OK",
+      "bytes": 7668
+    },
+    {
+      "artifact_id": "yahoo_chart:ORI:5y",
+      "status": "OK",
+      "bytes": 137390
+    },
+    {
+      "artifact_id": "yahoo_events:ORI:5y",
+      "status": "OK",
+      "bytes": 7938
+    },
+    {
+      "artifact_id": "yahoo_chart:OSK:5y",
+      "status": "OK",
+      "bytes": 134899
+    },
+    {
+      "artifact_id": "yahoo_events:OSK:5y",
+      "status": "OK",
+      "bytes": 7828
+    },
+    {
+      "artifact_id": "yahoo_chart:OVV:5y",
+      "status": "OK",
+      "bytes": 136331
+    },
+    {
+      "artifact_id": "yahoo_events:OVV:5y",
+      "status": "OK",
+      "bytes": 7859
+    },
+    {
+      "artifact_id": "yahoo_chart:OZK:5y",
+      "status": "OK",
+      "bytes": 135206
+    },
+    {
+      "artifact_id": "yahoo_events:OZK:5y",
+      "status": "OK",
+      "bytes": 7731
+    },
+    {
+      "artifact_id": "yahoo_chart:P:5y",
+      "status": "OK",
+      "bytes": 134846
+    },
+    {
+      "artifact_id": "yahoo_events:P:5y",
+      "status": "OK",
+      "bytes": 7828
+    },
+    {
+      "artifact_id": "yahoo_chart:PAG:5y",
+      "status": "OK",
+      "bytes": 136846
+    },
+    {
+      "artifact_id": "yahoo_events:PAG:5y",
+      "status": "OK",
+      "bytes": 7882
+    },
+    {
+      "artifact_id": "yahoo_chart:PATH:5y",
+      "status": "OK",
+      "bytes": 137945
+    },
+    {
+      "artifact_id": "yahoo_events:PATH:5y",
+      "status": "OK",
+      "bytes": 7883
+    },
+    {
+      "artifact_id": "yahoo_chart:PB:5y",
+      "status": "OK",
+      "bytes": 133402
+    },
+    {
+      "artifact_id": "yahoo_events:PB:5y",
+      "status": "OK",
+      "bytes": 7760
+    },
+    {
+      "artifact_id": "yahoo_chart:PCOR:5y",
+      "status": "OK",
+      "bytes": 132559
+    },
+    {
+      "artifact_id": "yahoo_events:PCOR:5y",
+      "status": "OK",
+      "bytes": 7665
+    },
+    {
+      "artifact_id": "yahoo_chart:PCTY:5y",
+      "status": "OK",
+      "bytes": 136897
+    },
+    {
+      "artifact_id": "yahoo_events:PCTY:5y",
+      "status": "OK",
+      "bytes": 7868
+    },
+    {
+      "artifact_id": "yahoo_chart:PEGA:5y",
+      "status": "OK",
+      "bytes": 135767
+    },
+    {
+      "artifact_id": "yahoo_events:PEGA:5y",
+      "status": "OK",
+      "bytes": 7915
+    },
+    {
+      "artifact_id": "yahoo_chart:PEN:5y",
+      "status": "OK",
+      "bytes": 133799
+    },
+    {
+      "artifact_id": "yahoo_events:PEN:5y",
+      "status": "OK",
+      "bytes": 7787
+    },
+    {
+      "artifact_id": "yahoo_chart:PENN:5y",
+      "status": "OK",
+      "bytes": 137525
+    },
+    {
+      "artifact_id": "yahoo_events:PENN:5y",
+      "status": "OK",
+      "bytes": 7926
+    },
+    {
+      "artifact_id": "yahoo_chart:PFGC:5y",
+      "status": "OK",
+      "bytes": 133834
+    },
+    {
+      "artifact_id": "yahoo_events:PFGC:5y",
+      "status": "OK",
+      "bytes": 7736
+    },
+    {
+      "artifact_id": "yahoo_chart:PII:5y",
+      "status": "OK",
+      "bytes": 133674
+    },
+    {
+      "artifact_id": "yahoo_events:PII:5y",
+      "status": "OK",
+      "bytes": 7689
+    },
+    {
+      "artifact_id": "yahoo_chart:PINS:5y",
+      "status": "OK",
+      "bytes": 137209
+    },
+    {
+      "artifact_id": "yahoo_events:PINS:5y",
+      "status": "OK",
+      "bytes": 7937
+    },
+    {
+      "artifact_id": "yahoo_chart:PK:5y",
+      "status": "OK",
+      "bytes": 139107
+    },
+    {
+      "artifact_id": "yahoo_events:PK:5y",
+      "status": "OK",
+      "bytes": 7962
+    },
+    {
+      "artifact_id": "yahoo_chart:PLNT:5y",
+      "status": "OK",
+      "bytes": 132758
+    },
+    {
+      "artifact_id": "yahoo_events:PLNT:5y",
+      "status": "OK",
+      "bytes": 7710
+    },
+    {
+      "artifact_id": "yahoo_chart:PLTK:5y",
+      "status": "OK",
+      "bytes": 135413
+    },
+    {
+      "artifact_id": "yahoo_events:PLTK:5y",
+      "status": "OK",
+      "bytes": 7819
+    },
+    {
+      "artifact_id": "yahoo_chart:PNFP:5y",
+      "status": "OK",
+      "bytes": 133444
+    },
+    {
+      "artifact_id": "yahoo_events:PNFP:5y",
+      "status": "OK",
+      "bytes": 7739
+    },
+    {
+      "artifact_id": "yahoo_chart:POST:5y",
+      "status": "OK",
+      "bytes": 134307
+    },
+    {
+      "artifact_id": "yahoo_events:POST:5y",
+      "status": "OK",
+      "bytes": 7895
+    },
+    {
+      "artifact_id": "yahoo_chart:PR:5y",
+      "status": "OK",
+      "bytes": 137781
+    },
+    {
+      "artifact_id": "yahoo_events:PR:5y",
+      "status": "OK",
+      "bytes": 7986
+    },
+    {
+      "artifact_id": "yahoo_chart:PRI:5y",
+      "status": "OK",
+      "bytes": 135784
+    },
+    {
+      "artifact_id": "yahoo_events:PRI:5y",
+      "status": "OK",
+      "bytes": 7783
+    },
+    {
+      "artifact_id": "yahoo_chart:PSN:5y",
+      "status": "OK",
+      "bytes": 133298
+    },
+    {
+      "artifact_id": "yahoo_events:PSN:5y",
+      "status": "OK",
+      "bytes": 7568
+    },
+    {
+      "artifact_id": "yahoo_chart:QDEL:5y",
+      "status": "OK",
+      "bytes": 134078
+    },
+    {
+      "artifact_id": "yahoo_events:QDEL:5y",
+      "status": "OK",
+      "bytes": 7767
+    },
+    {
+      "artifact_id": "yahoo_chart:QGEN:5y",
+      "status": "OK",
+      "bytes": 137172
+    },
+    {
+      "artifact_id": "yahoo_events:QGEN:5y",
+      "status": "OK",
+      "bytes": 7906
+    },
+    {
+      "artifact_id": "yahoo_chart:QRVO:5y",
+      "status": "OK",
+      "bytes": 134289
+    },
+    {
+      "artifact_id": "yahoo_events:QRVO:5y",
+      "status": "OK",
+      "bytes": 7743
+    },
+    {
+      "artifact_id": "yahoo_chart:QS:5y",
+      "status": "OK",
+      "bytes": 135120
+    },
+    {
+      "artifact_id": "yahoo_events:QS:5y",
+      "status": "OK",
+      "bytes": 7718
+    },
+    {
+      "artifact_id": "yahoo_chart:R:5y",
+      "status": "OK",
+      "bytes": 134296
+    },
+    {
+      "artifact_id": "yahoo_events:R:5y",
+      "status": "OK",
+      "bytes": 7770
+    },
+    {
+      "artifact_id": "yahoo_chart:RARE:5y",
+      "status": "OK",
+      "bytes": 134325
+    },
+    {
+      "artifact_id": "yahoo_events:RARE:5y",
+      "status": "OK",
+      "bytes": 7807
+    },
+    {
+      "artifact_id": "yahoo_chart:RBA:5y",
+      "status": "OK",
+      "bytes": 135308
+    },
+    {
+      "artifact_id": "yahoo_events:RBA:5y",
+      "status": "OK",
+      "bytes": 7763
+    },
+    {
+      "artifact_id": "yahoo_chart:RBC:5y",
+      "status": "OK",
+      "bytes": 133611
+    },
+    {
+      "artifact_id": "yahoo_events:RBC:5y",
+      "status": "OK",
+      "bytes": 7745
+    },
+    {
+      "artifact_id": "yahoo_chart:RBLX:5y",
+      "status": "OK",
+      "bytes": 135472
+    },
+    {
+      "artifact_id": "yahoo_events:RBLX:5y",
+      "status": "OK",
+      "bytes": 7897
+    },
+    {
+      "artifact_id": "yahoo_chart:REXR:5y",
+      "status": "OK",
+      "bytes": 136012
+    },
+    {
+      "artifact_id": "yahoo_events:REXR:5y",
+      "status": "OK",
+      "bytes": 7915
+    },
+    {
+      "artifact_id": "yahoo_chart:REYN:5y",
+      "status": "OK",
+      "bytes": 137478
+    },
+    {
+      "artifact_id": "yahoo_events:REYN:5y",
+      "status": "OK",
+      "bytes": 7836
+    },
+    {
+      "artifact_id": "yahoo_chart:RGA:5y",
+      "status": "OK",
+      "bytes": 136936
+    },
+    {
+      "artifact_id": "yahoo_events:RGA:5y",
+      "status": "OK",
+      "bytes": 7916
+    },
+    {
+      "artifact_id": "yahoo_chart:RGEN:5y",
+      "status": "OK",
+      "bytes": 135655
+    },
+    {
+      "artifact_id": "yahoo_events:RGEN:5y",
+      "status": "OK",
+      "bytes": 7806
+    },
+    {
+      "artifact_id": "yahoo_chart:RGLD:5y",
+      "status": "OK",
+      "bytes": 135384
+    },
+    {
+      "artifact_id": "yahoo_events:RGLD:5y",
+      "status": "OK",
+      "bytes": 7796
+    },
+    {
+      "artifact_id": "yahoo_chart:RH:5y",
+      "status": "OK",
+      "bytes": 131002
+    },
+    {
+      "artifact_id": "yahoo_events:RH:5y",
+      "status": "OK",
+      "bytes": 7640
+    },
+    {
+      "artifact_id": "yahoo_chart:RHI:5y",
+      "status": "OK",
+      "bytes": 134705
+    },
+    {
+      "artifact_id": "yahoo_events:RHI:5y",
+      "status": "OK",
+      "bytes": 7688
+    },
+    {
+      "artifact_id": "yahoo_chart:RITM:5y",
+      "status": "OK",
+      "bytes": 137272
+    },
+    {
+      "artifact_id": "yahoo_events:RITM:5y",
+      "status": "OK",
+      "bytes": 7864
+    },
+    {
+      "artifact_id": "yahoo_chart:RKT:5y",
+      "status": "OK",
+      "bytes": 136737
+    },
+    {
+      "artifact_id": "yahoo_events:RKT:5y",
+      "status": "OK",
+      "bytes": 7789
+    },
+    {
+      "artifact_id": "yahoo_chart:RLI:5y",
+      "status": "OK",
+      "bytes": 133707
+    },
+    {
+      "artifact_id": "yahoo_events:RLI:5y",
+      "status": "OK",
+      "bytes": 7774
+    },
+    {
+      "artifact_id": "yahoo_chart:RNG:5y",
+      "status": "OK",
+      "bytes": 136254
+    },
+    {
+      "artifact_id": "yahoo_events:RNG:5y",
+      "status": "OK",
+      "bytes": 7844
+    },
+    {
+      "artifact_id": "yahoo_chart:RNR:5y",
+      "status": "OK",
+      "bytes": 135737
+    },
+    {
+      "artifact_id": "yahoo_events:RNR:5y",
+      "status": "OK",
+      "bytes": 7804
+    },
+    {
+      "artifact_id": "yahoo_chart:ROIV:5y",
+      "status": "OK",
+      "bytes": 135459
+    },
+    {
+      "artifact_id": "yahoo_events:ROIV:5y",
+      "status": "OK",
+      "bytes": 7814
+    },
+    {
+      "artifact_id": "yahoo_chart:ROKU:5y",
+      "status": "OK",
+      "bytes": 133415
+    },
+    {
+      "artifact_id": "yahoo_events:ROKU:5y",
+      "status": "OK",
+      "bytes": 7670
+    },
+    {
+      "artifact_id": "yahoo_chart:RPRX:5y",
+      "status": "OK",
+      "bytes": 136672
+    },
+    {
+      "artifact_id": "yahoo_events:RPRX:5y",
+      "status": "OK",
+      "bytes": 7786
+    },
+    {
+      "artifact_id": "yahoo_chart:RRC:5y",
+      "status": "OK",
+      "bytes": 137107
+    },
+    {
+      "artifact_id": "yahoo_events:RRC:5y",
+      "status": "OK",
+      "bytes": 7822
+    },
+    {
+      "artifact_id": "yahoo_chart:RRX:5y",
+      "status": "OK",
+      "bytes": 137187
+    },
+    {
+      "artifact_id": "yahoo_events:RRX:5y",
+      "status": "OK",
+      "bytes": 7935
+    },
+    {
+      "artifact_id": "yahoo_chart:RS:5y",
+      "status": "OK",
+      "bytes": 134467
+    },
+    {
+      "artifact_id": "yahoo_events:RS:5y",
+      "status": "OK",
+      "bytes": 7682
+    },
+    {
+      "artifact_id": "yahoo_chart:RYAN:5y",
+      "status": "OK",
+      "bytes": 134952
+    },
+    {
+      "artifact_id": "yahoo_events:RYAN:5y",
+      "status": "OK",
+      "bytes": 7825
+    },
+    {
+      "artifact_id": "yahoo_chart:RYN:5y",
+      "status": "OK",
+      "bytes": 136770
+    },
+    {
+      "artifact_id": "yahoo_events:RYN:5y",
+      "status": "OK",
+      "bytes": 7925
+    },
+    {
+      "artifact_id": "yahoo_chart:S:5y",
+      "status": "OK",
+      "bytes": 137075
+    },
+    {
+      "artifact_id": "yahoo_events:S:5y",
+      "status": "OK",
+      "bytes": 7786
+    },
+    {
+      "artifact_id": "yahoo_chart:SAIA:5y",
+      "status": "OK",
+      "bytes": 132864
+    },
+    {
+      "artifact_id": "yahoo_events:SAIA:5y",
+      "status": "OK",
+      "bytes": 7578
+    },
+    {
+      "artifact_id": "yahoo_chart:SAIC:5y",
+      "status": "OK",
+      "bytes": 135577
+    },
+    {
+      "artifact_id": "yahoo_events:SAIC:5y",
+      "status": "OK",
+      "bytes": 7912
+    },
+    {
+      "artifact_id": "yahoo_chart:SAM:5y",
+      "status": "OK",
+      "bytes": 132338
+    },
+    {
+      "artifact_id": "yahoo_events:SAM:5y",
+      "status": "OK",
+      "bytes": 7658
+    },
+    {
+      "artifact_id": "yahoo_chart:SARO:5y",
+      "status": "OK",
+      "bytes": 54751
+    },
+    {
+      "artifact_id": "yahoo_events:SARO:5y",
+      "status": "OK",
+      "bytes": 3800
+    },
+    {
+      "artifact_id": "yahoo_chart:SCI:5y",
+      "status": "OK",
+      "bytes": 133161
+    },
+    {
+      "artifact_id": "yahoo_events:SCI:5y",
+      "status": "OK",
+      "bytes": 7672
+    },
+    {
+      "artifact_id": "yahoo_chart:SEG:5y",
+      "status": "OK",
+      "bytes": 58210
+    },
+    {
+      "artifact_id": "yahoo_events:SEG:5y",
+      "status": "OK",
+      "bytes": 4114
+    },
+    {
+      "artifact_id": "yahoo_chart:SEIC:5y",
+      "status": "OK",
+      "bytes": 133615
+    },
+    {
+      "artifact_id": "yahoo_events:SEIC:5y",
+      "status": "OK",
+      "bytes": 7773
+    },
+    {
+      "artifact_id": "yahoo_chart:SF:5y",
+      "status": "OK",
+      "bytes": 136654
+    },
+    {
+      "artifact_id": "yahoo_events:SF:5y",
+      "status": "OK",
+      "bytes": 7974
+    },
+    {
+      "artifact_id": "yahoo_chart:SGI:5y",
+      "status": "OK",
+      "bytes": 135249
+    },
+    {
+      "artifact_id": "yahoo_events:SGI:5y",
+      "status": "OK",
+      "bytes": 7781
+    },
+    {
+      "artifact_id": "yahoo_chart:SHC:5y",
+      "status": "OK",
+      "bytes": 137696
+    },
+    {
+      "artifact_id": "yahoo_events:SHC:5y",
+      "status": "OK",
+      "bytes": 7912
+    },
+    {
+      "artifact_id": "yahoo_chart:SIRI:5y",
+      "status": "OK",
+      "bytes": 131181
+    },
+    {
+      "artifact_id": "yahoo_events:SIRI:5y",
+      "status": "OK",
+      "bytes": 7657
+    },
+    {
+      "artifact_id": "yahoo_chart:SITE:5y",
+      "status": "OK",
+      "bytes": 136678
+    },
+    {
+      "artifact_id": "yahoo_events:SITE:5y",
+      "status": "OK",
+      "bytes": 7891
+    },
+    {
+      "artifact_id": "yahoo_chart:SLGN:5y",
+      "status": "OK",
+      "bytes": 135519
+    },
+    {
+      "artifact_id": "yahoo_events:SLGN:5y",
+      "status": "OK",
+      "bytes": 7704
+    },
+    {
+      "artifact_id": "yahoo_chart:SLM:5y",
+      "status": "OK",
+      "bytes": 138490
+    },
+    {
+      "artifact_id": "yahoo_events:SLM:5y",
+      "status": "OK",
+      "bytes": 7932
+    },
+    {
+      "artifact_id": "yahoo_chart:SMG:5y",
+      "status": "OK",
+      "bytes": 133493
+    },
+    {
+      "artifact_id": "yahoo_events:SMG:5y",
+      "status": "OK",
+      "bytes": 7728
+    },
+    {
+      "artifact_id": "yahoo_chart:SN:5y",
+      "status": "OK",
+      "bytes": 84928
+    },
+    {
+      "artifact_id": "yahoo_events:SN:5y",
+      "status": "OK",
+      "bytes": 5345
+    },
+    {
+      "artifact_id": "yahoo_chart:SNDR:5y",
+      "status": "OK",
+      "bytes": 137388
+    },
+    {
+      "artifact_id": "yahoo_events:SNDR:5y",
+      "status": "OK",
+      "bytes": 7919
+    },
+    {
+      "artifact_id": "yahoo_chart:SNX:5y",
+      "status": "OK",
+      "bytes": 135619
+    },
+    {
+      "artifact_id": "yahoo_events:SNX:5y",
+      "status": "OK",
+      "bytes": 7883
+    },
+    {
+      "artifact_id": "yahoo_chart:SOFI:5y",
+      "status": "OK",
+      "bytes": 136919
+    },
+    {
+      "artifact_id": "yahoo_events:SOFI:5y",
+      "status": "OK",
+      "bytes": 8009
+    },
+    {
+      "artifact_id": "yahoo_chart:SON:5y",
+      "status": "OK",
+      "bytes": 135285
+    },
+    {
+      "artifact_id": "yahoo_events:SON:5y",
+      "status": "OK",
+      "bytes": 7769
+    },
+    {
+      "artifact_id": "yahoo_chart:SPB:5y",
+      "status": "OK",
+      "bytes": 132491
+    },
+    {
+      "artifact_id": "yahoo_events:SPB:5y",
+      "status": "OK",
+      "bytes": 7674
+    },
+    {
+      "artifact_id": "yahoo_chart:SRPT:5y",
+      "status": "OK",
+      "bytes": 134325
+    },
+    {
+      "artifact_id": "yahoo_events:SRPT:5y",
+      "status": "OK",
+      "bytes": 7682
+    },
+    {
+      "artifact_id": "yahoo_chart:SSD:5y",
+      "status": "OK",
+      "bytes": 136137
+    },
+    {
+      "artifact_id": "yahoo_events:SSD:5y",
+      "status": "OK",
+      "bytes": 7828
+    },
+    {
+      "artifact_id": "yahoo_chart:SSNC:5y",
+      "status": "OK",
+      "bytes": 134022
+    },
+    {
+      "artifact_id": "yahoo_events:SSNC:5y",
+      "status": "OK",
+      "bytes": 7694
+    },
+    {
+      "artifact_id": "yahoo_chart:ST:5y",
+      "status": "OK",
+      "bytes": 136475
+    },
+    {
+      "artifact_id": "yahoo_events:ST:5y",
+      "status": "OK",
+      "bytes": 7892
+    },
+    {
+      "artifact_id": "yahoo_chart:STAG:5y",
+      "status": "OK",
+      "bytes": 136220
+    },
+    {
+      "artifact_id": "yahoo_events:STAG:5y",
+      "status": "OK",
+      "bytes": 7864
+    },
+    {
+      "artifact_id": "yahoo_chart:STWD:5y",
+      "status": "OK",
+      "bytes": 138403
+    },
+    {
+      "artifact_id": "yahoo_events:STWD:5y",
+      "status": "OK",
+      "bytes": 7952
+    },
+    {
+      "artifact_id": "yahoo_chart:SUI:5y",
+      "status": "OK",
+      "bytes": 138141
+    },
+    {
+      "artifact_id": "yahoo_events:SUI:5y",
+      "status": "OK",
+      "bytes": 7934
+    },
+    {
+      "artifact_id": "yahoo_chart:TFSL:5y",
+      "status": "OK",
+      "bytes": 137360
+    },
+    {
+      "artifact_id": "yahoo_events:TFSL:5y",
+      "status": "OK",
+      "bytes": 7863
+    },
+    {
+      "artifact_id": "yahoo_chart:THC:5y",
+      "status": "OK",
+      "bytes": 134134
+    },
+    {
+      "artifact_id": "yahoo_events:THC:5y",
+      "status": "OK",
+      "bytes": 7646
+    },
+    {
+      "artifact_id": "yahoo_chart:THG:5y",
+      "status": "OK",
+      "bytes": 137274
+    },
+    {
+      "artifact_id": "yahoo_events:THG:5y",
+      "status": "OK",
+      "bytes": 7884
+    },
+    {
+      "artifact_id": "yahoo_chart:THO:5y",
+      "status": "OK",
+      "bytes": 133541
+    },
+    {
+      "artifact_id": "yahoo_events:THO:5y",
+      "status": "OK",
+      "bytes": 7697
+    },
+    {
+      "artifact_id": "yahoo_chart:TKO:5y",
+      "status": "OK",
+      "bytes": 134842
+    },
+    {
+      "artifact_id": "yahoo_events:TKO:5y",
+      "status": "OK",
+      "bytes": 7834
+    },
+    {
+      "artifact_id": "yahoo_chart:TKR:5y",
+      "status": "OK",
+      "bytes": 132912
+    },
+    {
+      "artifact_id": "yahoo_events:TKR:5y",
+      "status": "OK",
+      "bytes": 7705
+    },
+    {
+      "artifact_id": "yahoo_chart:TOL:5y",
+      "status": "OK",
+      "bytes": 136112
+    },
+    {
+      "artifact_id": "yahoo_events:TOL:5y",
+      "status": "OK",
+      "bytes": 7862
+    },
+    {
+      "artifact_id": "yahoo_chart:TOST:5y",
+      "status": "OK",
+      "bytes": 135991
+    },
+    {
+      "artifact_id": "yahoo_events:TOST:5y",
+      "status": "OK",
+      "bytes": 7890
+    },
+    {
+      "artifact_id": "yahoo_chart:TPG:5y",
+      "status": "OK",
+      "bytes": 127303
+    },
+    {
+      "artifact_id": "yahoo_events:TPG:5y",
+      "status": "OK",
+      "bytes": 7314
+    },
+    {
+      "artifact_id": "yahoo_chart:TREX:5y",
+      "status": "OK",
+      "bytes": 133611
+    },
+    {
+      "artifact_id": "yahoo_events:TREX:5y",
+      "status": "OK",
+      "bytes": 7776
+    },
+    {
+      "artifact_id": "yahoo_chart:TRIP:5y",
+      "status": "OK",
+      "bytes": 138334
+    },
+    {
+      "artifact_id": "yahoo_events:TRIP:5y",
+      "status": "OK",
+      "bytes": 7934
+    },
+    {
+      "artifact_id": "yahoo_chart:TRU:5y",
+      "status": "OK",
+      "bytes": 134137
+    },
+    {
+      "artifact_id": "yahoo_events:TRU:5y",
+      "status": "OK",
+      "bytes": 7665
+    },
+    {
+      "artifact_id": "yahoo_chart:TTD:5y",
+      "status": "OK",
+      "bytes": 134487
+    },
+    {
+      "artifact_id": "yahoo_events:TTD:5y",
+      "status": "OK",
+      "bytes": 7808
+    },
+    {
+      "artifact_id": "yahoo_chart:TTEK:5y",
+      "status": "OK",
+      "bytes": 138749
+    },
+    {
+      "artifact_id": "yahoo_events:TTEK:5y",
+      "status": "OK",
+      "bytes": 8047
+    },
+    {
+      "artifact_id": "yahoo_chart:TW:5y",
+      "status": "OK",
+      "bytes": 134923
+    },
+    {
+      "artifact_id": "yahoo_events:TW:5y",
+      "status": "OK",
+      "bytes": 7775
+    },
+    {
+      "artifact_id": "yahoo_chart:TWLO:5y",
+      "status": "OK",
+      "bytes": 133998
+    },
+    {
+      "artifact_id": "yahoo_events:TWLO:5y",
+      "status": "OK",
+      "bytes": 7631
+    },
+    {
+      "artifact_id": "yahoo_chart:TXG:5y",
+      "status": "OK",
+      "bytes": 135718
+    },
+    {
+      "artifact_id": "yahoo_events:TXG:5y",
+      "status": "OK",
+      "bytes": 7753
+    },
+    {
+      "artifact_id": "yahoo_chart:TXRH:5y",
+      "status": "OK",
+      "bytes": 135168
+    },
+    {
+      "artifact_id": "yahoo_events:TXRH:5y",
+      "status": "OK",
+      "bytes": 7776
+    },
+    {
+      "artifact_id": "yahoo_chart:U:5y",
+      "status": "OK",
+      "bytes": 136335
+    },
+    {
+      "artifact_id": "yahoo_events:U:5y",
+      "status": "OK",
+      "bytes": 7906
+    },
+    {
+      "artifact_id": "yahoo_chart:UAA:5y",
+      "status": "OK",
+      "bytes": 134394
+    },
+    {
+      "artifact_id": "yahoo_events:UAA:5y",
+      "status": "OK",
+      "bytes": 7685
+    },
+    {
+      "artifact_id": "yahoo_chart:UGI:5y",
+      "status": "OK",
+      "bytes": 136799
+    },
+    {
+      "artifact_id": "yahoo_events:UGI:5y",
+      "status": "OK",
+      "bytes": 7828
+    },
+    {
+      "artifact_id": "yahoo_chart:UHAL:5y",
+      "status": "OK",
+      "bytes": 133329
+    },
+    {
+      "artifact_id": "yahoo_events:UHAL:5y",
+      "status": "OK",
+      "bytes": 7793
+    },
+    {
+      "artifact_id": "yahoo_chart:UI:5y",
+      "status": "OK",
+      "bytes": 130384
+    },
+    {
+      "artifact_id": "yahoo_events:UI:5y",
+      "status": "OK",
+      "bytes": 7493
+    },
+    {
+      "artifact_id": "yahoo_chart:UNM:5y",
+      "status": "OK",
+      "bytes": 135279
+    },
+    {
+      "artifact_id": "yahoo_events:UNM:5y",
+      "status": "OK",
+      "bytes": 7730
+    },
+    {
+      "artifact_id": "yahoo_chart:USFD:5y",
+      "status": "OK",
+      "bytes": 134374
+    },
+    {
+      "artifact_id": "yahoo_events:USFD:5y",
+      "status": "OK",
+      "bytes": 7717
+    },
+    {
+      "artifact_id": "yahoo_chart:UTHR:5y",
+      "status": "OK",
+      "bytes": 133422
+    },
+    {
+      "artifact_id": "yahoo_events:UTHR:5y",
+      "status": "OK",
+      "bytes": 7704
+    },
+    {
+      "artifact_id": "yahoo_chart:UWMC:5y",
+      "status": "OK",
+      "bytes": 135505
+    },
+    {
+      "artifact_id": "yahoo_events:UWMC:5y",
+      "status": "OK",
+      "bytes": 7724
+    },
+    {
+      "artifact_id": "yahoo_chart:VAC:5y",
+      "status": "OK",
+      "bytes": 133968
+    },
+    {
+      "artifact_id": "yahoo_events:VAC:5y",
+      "status": "OK",
+      "bytes": 7743
+    },
+    {
+      "artifact_id": "yahoo_chart:VEEV:5y",
+      "status": "OK",
+      "bytes": 134261
+    },
+    {
+      "artifact_id": "yahoo_events:VEEV:5y",
+      "status": "OK",
+      "bytes": 7697
+    },
+    {
+      "artifact_id": "yahoo_chart:VFC:5y",
+      "status": "OK",
+      "bytes": 138092
+    },
+    {
+      "artifact_id": "yahoo_events:VFC:5y",
+      "status": "OK",
+      "bytes": 7978
+    },
+    {
+      "artifact_id": "yahoo_chart:VIRT:5y",
+      "status": "OK",
+      "bytes": 136567
+    },
+    {
+      "artifact_id": "yahoo_events:VIRT:5y",
+      "status": "OK",
+      "bytes": 7840
+    },
+    {
+      "artifact_id": "yahoo_chart:VKTX:5y",
+      "status": "OK",
+      "bytes": 134423
+    },
+    {
+      "artifact_id": "yahoo_events:VKTX:5y",
+      "status": "OK",
+      "bytes": 7724
+    },
+    {
+      "artifact_id": "yahoo_chart:VMI:5y",
+      "status": "OK",
+      "bytes": 133162
+    },
+    {
+      "artifact_id": "yahoo_events:VMI:5y",
+      "status": "OK",
+      "bytes": 7651
+    },
+    {
+      "artifact_id": "yahoo_chart:VNO:5y",
+      "status": "OK",
+      "bytes": 137403
+    },
+    {
+      "artifact_id": "yahoo_events:VNO:5y",
+      "status": "OK",
+      "bytes": 7809
+    },
+    {
+      "artifact_id": "yahoo_chart:VNOM:5y",
+      "status": "OK",
+      "bytes": 136043
+    },
+    {
+      "artifact_id": "yahoo_events:VNOM:5y",
+      "status": "OK",
+      "bytes": 7806
+    },
+    {
+      "artifact_id": "yahoo_chart:VNT:5y",
+      "status": "OK",
+      "bytes": 136989
+    },
+    {
+      "artifact_id": "yahoo_events:VNT:5y",
+      "status": "OK",
+      "bytes": 7829
+    },
+    {
+      "artifact_id": "yahoo_chart:VOYA:5y",
+      "status": "OK",
+      "bytes": 133202
+    },
+    {
+      "artifact_id": "yahoo_events:VOYA:5y",
+      "status": "OK",
+      "bytes": 7607
+    },
+    {
+      "artifact_id": "yahoo_chart:VSTS:5y",
+      "status": "OK",
+      "bytes": 81884
+    },
+    {
+      "artifact_id": "yahoo_events:VSTS:5y",
+      "status": "OK",
+      "bytes": 5262
+    },
+    {
+      "artifact_id": "yahoo_chart:VVV:5y",
+      "status": "OK",
+      "bytes": 136219
+    },
+    {
+      "artifact_id": "yahoo_events:VVV:5y",
+      "status": "OK",
+      "bytes": 7811
+    },
+    {
+      "artifact_id": "yahoo_chart:W:5y",
+      "status": "OK",
+      "bytes": 134344
+    },
+    {
+      "artifact_id": "yahoo_events:W:5y",
+      "status": "OK",
+      "bytes": 7595
+    },
+    {
+      "artifact_id": "yahoo_chart:WAL:5y",
+      "status": "OK",
+      "bytes": 133443
+    },
+    {
+      "artifact_id": "yahoo_events:WAL:5y",
+      "status": "OK",
+      "bytes": 7839
+    },
+    {
+      "artifact_id": "yahoo_chart:WCC:5y",
+      "status": "OK",
+      "bytes": 136399
+    },
+    {
+      "artifact_id": "yahoo_events:WCC:5y",
+      "status": "OK",
+      "bytes": 7880
+    },
+    {
+      "artifact_id": "yahoo_chart:WEN:5y",
+      "status": "OK",
+      "bytes": 138335
+    },
+    {
+      "artifact_id": "yahoo_events:WEN:5y",
+      "status": "OK",
+      "bytes": 7919
+    },
+    {
+      "artifact_id": "yahoo_chart:WEX:5y",
+      "status": "OK",
+      "bytes": 136280
+    },
+    {
+      "artifact_id": "yahoo_events:WEX:5y",
+      "status": "OK",
+      "bytes": 7900
+    },
+    {
+      "artifact_id": "yahoo_chart:WH:5y",
+      "status": "OK",
+      "bytes": 132630
+    },
+    {
+      "artifact_id": "yahoo_events:WH:5y",
+      "status": "OK",
+      "bytes": 7688
+    },
+    {
+      "artifact_id": "yahoo_chart:WING:5y",
+      "status": "OK",
+      "bytes": 134398
+    },
+    {
+      "artifact_id": "yahoo_events:WING:5y",
+      "status": "OK",
+      "bytes": 7695
+    },
+    {
+      "artifact_id": "yahoo_chart:WLK:5y",
+      "status": "OK",
+      "bytes": 135298
+    },
+    {
+      "artifact_id": "yahoo_events:WLK:5y",
+      "status": "OK",
+      "bytes": 7782
+    },
+    {
+      "artifact_id": "yahoo_chart:WMS:5y",
+      "status": "OK",
+      "bytes": 136519
+    },
+    {
+      "artifact_id": "yahoo_events:WMS:5y",
+      "status": "OK",
+      "bytes": 7935
+    },
+    {
+      "artifact_id": "yahoo_chart:WOLF:5y",
+      "status": "OK",
+      "bytes": 27186
+    },
+    {
+      "artifact_id": "yahoo_events:WOLF:5y",
+      "status": "OK",
+      "bytes": 2550
+    },
+    {
+      "artifact_id": "yahoo_chart:WPC:5y",
+      "status": "OK",
+      "bytes": 135124
+    },
+    {
+      "artifact_id": "yahoo_events:WPC:5y",
+      "status": "OK",
+      "bytes": 7855
+    },
+    {
+      "artifact_id": "yahoo_chart:WSC:5y",
+      "status": "OK",
+      "bytes": 136959
+    },
+    {
+      "artifact_id": "yahoo_events:WSC:5y",
+      "status": "OK",
+      "bytes": 7863
+    },
+    {
+      "artifact_id": "yahoo_chart:WSM:5y",
+      "status": "OK",
+      "bytes": 135344
+    },
+    {
+      "artifact_id": "yahoo_events:WSM:5y",
+      "status": "OK",
+      "bytes": 7954
+    },
+    {
+      "artifact_id": "yahoo_chart:WSO:5y",
+      "status": "OK",
+      "bytes": 133378
+    },
+    {
+      "artifact_id": "yahoo_events:WSO:5y",
+      "status": "OK",
+      "bytes": 7694
+    },
+    {
+      "artifact_id": "yahoo_chart:WTFC:5y",
+      "status": "OK",
+      "bytes": 134613
+    },
+    {
+      "artifact_id": "yahoo_events:WTFC:5y",
+      "status": "OK",
+      "bytes": 7773
+    },
+    {
+      "artifact_id": "yahoo_chart:WTM:5y",
+      "status": "OK",
+      "bytes": 124130
+    },
+    {
+      "artifact_id": "yahoo_events:WTM:5y",
+      "status": "OK",
+      "bytes": 7325
+    },
+    {
+      "artifact_id": "yahoo_chart:WTRG:5y",
+      "status": "OK",
+      "bytes": 136216
+    },
+    {
+      "artifact_id": "yahoo_events:WTRG:5y",
+      "status": "OK",
+      "bytes": 7921
+    },
+    {
+      "artifact_id": "yahoo_chart:WU:5y",
+      "status": "OK",
+      "bytes": 137066
+    },
+    {
+      "artifact_id": "yahoo_events:WU:5y",
+      "status": "OK",
+      "bytes": 7992
+    },
+    {
+      "artifact_id": "yahoo_chart:WWD:5y",
+      "status": "OK",
+      "bytes": 135603
+    },
+    {
+      "artifact_id": "yahoo_events:WWD:5y",
+      "status": "OK",
+      "bytes": 7815
+    },
+    {
+      "artifact_id": "yahoo_chart:XP:5y",
+      "status": "OK",
+      "bytes": 139087
+    },
+    {
+      "artifact_id": "yahoo_events:XP:5y",
+      "status": "OK",
+      "bytes": 8011
+    },
+    {
+      "artifact_id": "yahoo_chart:XPO:5y",
+      "status": "OK",
+      "bytes": 136437
+    },
+    {
+      "artifact_id": "yahoo_events:XPO:5y",
+      "status": "OK",
+      "bytes": 7910
+    },
+    {
+      "artifact_id": "yahoo_chart:XRAY:5y",
+      "status": "OK",
+      "bytes": 137689
+    },
+    {
+      "artifact_id": "yahoo_events:XRAY:5y",
+      "status": "OK",
+      "bytes": 7904
+    },
+    {
+      "artifact_id": "yahoo_chart:XYZ:5y",
+      "status": "OK",
+      "bytes": 133478
+    },
+    {
+      "artifact_id": "yahoo_events:XYZ:5y",
+      "status": "OK",
+      "bytes": 7550
+    },
+    {
+      "artifact_id": "yahoo_chart:YETI:5y",
+      "status": "OK",
+      "bytes": 134823
+    },
+    {
+      "artifact_id": "yahoo_events:YETI:5y",
+      "status": "OK",
+      "bytes": 7769
+    },
+    {
+      "artifact_id": "yahoo_chart:ZG:5y",
+      "status": "OK",
+      "bytes": 133726
+    },
+    {
+      "artifact_id": "yahoo_events:ZG:5y",
+      "status": "OK",
+      "bytes": 7775
+    },
+    {
+      "artifact_id": "yahoo_chart:ZM:5y",
+      "status": "OK",
+      "bytes": 133192
+    },
+    {
+      "artifact_id": "yahoo_events:ZM:5y",
+      "status": "OK",
+      "bytes": 7703
+    },
+    {
+      "artifact_id": "yahoo_chart:ZS:5y",
+      "status": "OK",
+      "bytes": 134144
+    },
+    {
+      "artifact_id": "yahoo_events:ZS:5y",
+      "status": "OK",
+      "bytes": 7728
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "plan_resolution": null,
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}

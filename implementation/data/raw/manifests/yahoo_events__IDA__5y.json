@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:IDA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/IDA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:39.544866+00:00",
+  "sha256": "d7f66d64964c7519783b3bbbe562667346e7575bc2fb963498877d5502a57e6a",
+  "bytes": 7855,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

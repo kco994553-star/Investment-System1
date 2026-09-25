@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ELS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ELS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:09.435117+00:00",
+  "sha256": "9cc9c36dd9c3bc3fa57bbae5070dd22d1771f95622145b27b2b11d675ae87039",
+  "bytes": 134435,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

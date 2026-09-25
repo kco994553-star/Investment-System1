@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:WOLF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WOLF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:26.900600+00:00",
+  "sha256": "171d0bfdbde058faaebd40690add7136b3d85774fdad30e22e858517b5e3e03a",
+  "bytes": 2550,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:UHAL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UHAL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:12.707463+00:00",
+  "sha256": "475610ef98599aa3714799812c301feb7e3e78ee96e310d3a368cd06269588a6",
+  "bytes": 133329,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

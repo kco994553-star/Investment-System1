@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SIRI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SIRI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:52.764668+00:00",
+  "sha256": "c36e10813424b4741ca19373a1bcec54508e0374a110c8a669dcc735187b969b",
+  "bytes": 131181,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

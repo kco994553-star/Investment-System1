@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GXO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GXO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:32.854414+00:00",
+  "sha256": "5b573f8c09d0ec1a9fc723b6248c096845cf96b574966bafe544a1cb5b76e329",
+  "bytes": 134182,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

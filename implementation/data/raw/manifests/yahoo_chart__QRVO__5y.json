@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:QRVO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/QRVO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:33.214669+00:00",
+  "sha256": "b84f88008517f07904595aabe863bc7f3db3a1f9b24415640aa32eeb0dd4000e",
+  "bytes": 134289,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

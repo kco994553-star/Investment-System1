@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ASH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ASH?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:24.211033+00:00",
+  "sha256": "ea9bfb69435111965edd2fa01e8b02e70336f1be6e37125d9b698be13e493003",
+  "bytes": 133788,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

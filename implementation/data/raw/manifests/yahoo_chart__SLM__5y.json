@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SLM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SLM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:54.330686+00:00",
+  "sha256": "7fb8c981d7d6c7f4e6fc5ff5e5aeab10b6b6ce2746a725a873ad4bb7fc130f5d",
+  "bytes": 138490,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

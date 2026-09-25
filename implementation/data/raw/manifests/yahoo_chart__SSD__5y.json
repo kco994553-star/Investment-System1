@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SSD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SSD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:59.120446+00:00",
+  "sha256": "b91203210ae942909a8c6d5b2a408b9f20be08bd1daceee1b40997f1f73c2808",
+  "bytes": 136137,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

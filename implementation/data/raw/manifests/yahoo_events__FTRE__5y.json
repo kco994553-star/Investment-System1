@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FTRE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FTRE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:25.032601+00:00",
+  "sha256": "33d104f7027dfc21a7d7a152889e67a5becdc99e92053cf96f50261cef780b16",
+  "bytes": 5499,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:USFD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/USFD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:14.293050+00:00",
+  "sha256": "59e8ffa1c93c9de225c810a9bbf1d1033d8e7aec7401f0db0c631ce2e946a6f4",
+  "bytes": 134374,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

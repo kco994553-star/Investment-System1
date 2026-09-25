@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:INGM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/INGM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:40.469752+00:00",
+  "sha256": "0e58eb9e887940984f5c231a17c6a47deaf902c896e268f05e8b37b40ed4bfac",
+  "bytes": 3848,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

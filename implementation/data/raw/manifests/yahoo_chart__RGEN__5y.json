@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RGEN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RGEN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:38.392242+00:00",
+  "sha256": "c291014ab14dff07fe389688f00b4b6f6f5b4af725c55b1928bfc9b8ca67f543",
+  "bytes": 135655,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

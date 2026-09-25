@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GME:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GME?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:27.835785+00:00",
+  "sha256": "dd518b75eb581f696cb310218b0496edc5a0591ce516d637c08d5a8db7bc2f31",
+  "bytes": 136070,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

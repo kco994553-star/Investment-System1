@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BIO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BIO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:32.698984+00:00",
+  "sha256": "b08a6d6af6e376727b961e3c24af5e2b0cc214c9cf751a610fdedc0f6fabcd8c",
+  "bytes": 7635,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

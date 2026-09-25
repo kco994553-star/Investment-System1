@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GPK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GPK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:30.011829+00:00",
+  "sha256": "5ca7bf37d3036fbfdee71928330ba126044b4cdd17a0d1a6fc834dbede274ba6",
+  "bytes": 138508,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:EWBC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EWBC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:14.914566+00:00",
+  "sha256": "b49946758a3eed076977d2cefbdf904691d0236b5d5c538406ee6ee44238828f",
+  "bytes": 133968,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

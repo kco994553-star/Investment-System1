@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TREX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TREX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:06.769027+00:00",
+  "sha256": "205a15994dcb2171d11ae71fb20f65efaec914f6f22f399da0700a6ec9a8ea1b",
+  "bytes": 133611,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BIRK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BIRK?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:33.154723+00:00",
+  "sha256": "83f8dee765eccc939787412ae3f8b213eca387fa23b83529b321db76759b22cb",
+  "bytes": 4912,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

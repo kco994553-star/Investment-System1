@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CLF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CLF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:47.037801+00:00",
+  "sha256": "fc7fe66f9a45938053b75c0f01f16319599ca9e49e5885540968c906698fc9fc",
+  "bytes": 138022,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

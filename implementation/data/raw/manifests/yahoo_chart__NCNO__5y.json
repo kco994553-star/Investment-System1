@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NCNO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NCNO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:08.862043+00:00",
+  "sha256": "ec5d6e93c9a617fe515f739d9fb24ab8e57fadaf3e26001a515603e288d520b6",
+  "bytes": 135788,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

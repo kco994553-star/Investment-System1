@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BHF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BHF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:31.532902+00:00",
+  "sha256": "5d49227e40013232e3452823f0ac7d71a559371c4ff2335b56ba7e536370e957",
+  "bytes": 134097,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

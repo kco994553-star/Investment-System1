@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:VIRT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VIRT?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:17.343122+00:00",
+  "sha256": "44cf986ce0d6e2a6d07683c75e4b5966804b5b91621f9bfc89d54fd25d61d4e1",
+  "bytes": 136567,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

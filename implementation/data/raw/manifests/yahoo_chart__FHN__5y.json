@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FHN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FHN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:19.046391+00:00",
+  "sha256": "c275b5208a5cc198d4f359454ab1d5168a8d001d22cb8a4a448dece80ccb6c02",
+  "bytes": 138435,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

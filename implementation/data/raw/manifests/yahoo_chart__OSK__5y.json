@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:OSK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OSK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:20.695986+00:00",
+  "sha256": "60209c05058d47031eb3bbaf3e6e9d2438b4f26a371db71950bbd718ea0930bb",
+  "bytes": 134899,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

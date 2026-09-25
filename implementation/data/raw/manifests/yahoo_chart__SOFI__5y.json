@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SOFI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SOFI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:56.979490+00:00",
+  "sha256": "8d549db9ddb16d98d12b6a04273ef4543e676d9f0a554182b90fe4401d0cf2dd",
+  "bytes": 136919,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

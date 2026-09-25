@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:KEX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KEX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:46.524578+00:00",
+  "sha256": "8749b7040629f6e97c4885e56af7fa2887ca8baf68a97f94666a98493fddd157",
+  "bytes": 7795,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

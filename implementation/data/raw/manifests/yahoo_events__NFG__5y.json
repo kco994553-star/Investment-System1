@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NFG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NFG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:10.733281+00:00",
+  "sha256": "3013f8f5b4e1a5ce8a8a19f05354501daae8abe0da2c50815412e7ebf775603d",
+  "bytes": 7693,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

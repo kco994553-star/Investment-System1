@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RLI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RLI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:41.511383+00:00",
+  "sha256": "2859226ad51de9a6405e940e3e4df51630b872cba8dda44a0adc72fb9bf46166",
+  "bytes": 133707,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BROS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BROS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:36.380061+00:00",
+  "sha256": "5b9bca95af50c1020e51698a4eb398571e3813e60bf7390b5673867c4a7b6c07",
+  "bytes": 132813,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DUOL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DUOL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:04.990907+00:00",
+  "sha256": "21c0e3f7b4037772fe4d52b413e30d0c5c7bea81663a28906c40f1cba540675d",
+  "bytes": 131404,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

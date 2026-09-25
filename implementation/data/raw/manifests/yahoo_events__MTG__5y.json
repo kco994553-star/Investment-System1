@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MTG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MTG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:06.019197+00:00",
+  "sha256": "c2f76270604291f746e9ab14e1f9bdce950e640ec8889a405f3dc148eb5d4a84",
+  "bytes": 8006,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AGNC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AGNC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:14.174434+00:00",
+  "sha256": "b890fed5592a608762fde1e7e4109fd46f52192b95dbd8bc2131871e8dc50bf2",
+  "bytes": 137399,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

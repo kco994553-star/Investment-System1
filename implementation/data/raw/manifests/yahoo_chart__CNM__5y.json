@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CNM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CNM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:49.581988+00:00",
+  "sha256": "f8fae4ce30b9b2a2b0b4d20fec4e06887980225b32ccbf5147a11a7e0678855d",
+  "bytes": 135412,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

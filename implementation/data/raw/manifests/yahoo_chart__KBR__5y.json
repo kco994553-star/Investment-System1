@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:KBR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KBR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:44.962119+00:00",
+  "sha256": "b89177fa9adf7172e2fd0c50d63a68c98414a1409e310679684c07665544c476",
+  "bytes": 135596,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

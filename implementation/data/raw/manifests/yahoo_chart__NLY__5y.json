@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NLY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NLY?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:11.021970+00:00",
+  "sha256": "6a30083fa79aac3d6af7aad636a4ecb8ef93d74e0b3efab0ed82f6464fbcb38a",
+  "bytes": 138771,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

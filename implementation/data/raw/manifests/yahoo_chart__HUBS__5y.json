@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HUBS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HUBS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:38.208087+00:00",
+  "sha256": "4421a54a41f14a580a514452bdf6955e6fb3a00a226dfe7c5ea0083ca35fd86f",
+  "bytes": 128758,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

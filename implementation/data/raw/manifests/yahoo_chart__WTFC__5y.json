@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WTFC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WTFC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:29.237073+00:00",
+  "sha256": "0a01262eec33a95cd9745876b77191a1bb54a61ec241c74df238640feeb2fef3",
+  "bytes": 134613,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

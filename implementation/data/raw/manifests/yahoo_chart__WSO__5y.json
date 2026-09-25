@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WSO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WSO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:28.736239+00:00",
+  "sha256": "85074d09f31ece7d5d9dc72274e1a24d4ba78274e16df9485dcf33cca40cef9a",
+  "bytes": 133378,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

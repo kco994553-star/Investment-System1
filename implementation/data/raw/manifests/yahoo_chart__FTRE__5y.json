@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FTRE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FTRE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:24.819572+00:00",
+  "sha256": "15a7b3a8e07c24b319cd34b820f2c53161d2d6167f1c7fe3ec4bff11e21ec8ff",
+  "bytes": 88608,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

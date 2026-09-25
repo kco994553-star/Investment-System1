@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BYD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BYD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:38.829996+00:00",
+  "sha256": "7bab5a030c2d435dc1dd23113b13967905edaa394f5e624656cafcc1f86a4601",
+  "bytes": 133320,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

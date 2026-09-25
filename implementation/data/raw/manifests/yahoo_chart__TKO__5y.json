@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TKO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TKO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:04.285068+00:00",
+  "sha256": "98b08d00a016ae6619816ce1109573d27ac1c811a3be486adae269a55ff8cbbc",
+  "bytes": 134842,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

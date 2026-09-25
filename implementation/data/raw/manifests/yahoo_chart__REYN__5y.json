@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:REYN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/REYN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:37.313082+00:00",
+  "sha256": "c72ff8c8dea811d5d5b8d7c7f09fad6b5660832f616f7f9f8c39471b7fd585b3",
+  "bytes": 137478,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

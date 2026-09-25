@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CROX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CROX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:54.353838+00:00",
+  "sha256": "a9023502c8e2953cbd8c684ea980caf53a18695dcd7fe4a3a9c8e5ee78e32171",
+  "bytes": 7555,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

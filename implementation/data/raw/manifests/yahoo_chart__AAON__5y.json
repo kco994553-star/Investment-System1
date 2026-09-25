@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AAON:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AAON?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:09.511792+00:00",
+  "sha256": "41003d7b0e63cdc17d95716993c8b6acb4e528c9e7821768db5c55026f344f66",
+  "bytes": 134151,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

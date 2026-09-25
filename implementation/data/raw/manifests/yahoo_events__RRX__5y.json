@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RRX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RRX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:45.462929+00:00",
+  "sha256": "836923c199e11f617229abfcc466cc67cdb6128e65905131d6b3cdd77f693a20",
+  "bytes": 7935,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

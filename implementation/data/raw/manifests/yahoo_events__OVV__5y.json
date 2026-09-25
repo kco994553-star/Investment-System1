@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:OVV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OVV?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:21.459001+00:00",
+  "sha256": "25cf7ca9e9d469c0b69a3202ff5919b20adc10d659887b26ac0cc2543795edc6",
+  "bytes": 7859,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

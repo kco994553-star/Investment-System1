@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SPB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SPB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:58.006499+00:00",
+  "sha256": "d73918b137b80f727502b63b207337c46ee531d9673f53927845fe7ff755ef74",
+  "bytes": 132491,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

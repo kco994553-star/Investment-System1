@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CNXC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CNXC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:50.268528+00:00",
+  "sha256": "e92ddaf6034497c7d2cb61e6dec32ccbf41b3f10b883829f41c1e257a3d5a9d8",
+  "bytes": 7793,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

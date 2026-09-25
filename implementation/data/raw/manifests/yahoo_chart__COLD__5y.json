@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:COLD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/COLD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:51.593488+00:00",
+  "sha256": "4997dbef79071dbb277651bcd89c10b4d1abe8774089eb843a69804454895e44",
+  "bytes": 138553,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

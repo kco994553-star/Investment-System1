@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TKR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TKR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:05.084278+00:00",
+  "sha256": "4dc3284fe9f1828d2788876cadb0775362905826e4dbda12ea4e8bd779e5bb7b",
+  "bytes": 7705,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GGG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GGG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:26.347934+00:00",
+  "sha256": "03b710c4c82fd9d33b1018c214d7a81d2c4b709e9ba3f91748d66990183a5fcb",
+  "bytes": 132628,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

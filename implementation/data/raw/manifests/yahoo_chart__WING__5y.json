@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WING:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WING?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:25.165174+00:00",
+  "sha256": "1a9f68df9918c427f7373f2353541c50e5dab3ac4e4a65bdbf7c211699901352",
+  "bytes": 134398,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

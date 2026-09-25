@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LAD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LAD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:49.035082+00:00",
+  "sha256": "c78279266603d0a62754e44d5cd224fa1a71776832c09d8f2c8945f817e1044e",
+  "bytes": 132566,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

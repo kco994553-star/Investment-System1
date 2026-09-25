@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GNTX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GNTX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:28.930439+00:00",
+  "sha256": "61548bcac41febce353538dda5f9fb005087114ea7f9e48a66505782d5c0b89a",
+  "bytes": 138187,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BILL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BILL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:31.988303+00:00",
+  "sha256": "0f48bb7c8cc05aafa3896f00092044b3d6599f0b9991fc8de798789c57eb1b6e",
+  "bytes": 134182,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

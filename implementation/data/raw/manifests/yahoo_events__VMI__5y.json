@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:VMI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VMI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:18.773993+00:00",
+  "sha256": "28a64b81d04bf55b8aba7165cddcd4a6cdfe2e0f86bbb6155838b38f1dab2dc6",
+  "bytes": 7651,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

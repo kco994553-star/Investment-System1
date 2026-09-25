@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ESAB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ESAB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:12.492164+00:00",
+  "sha256": "09bd62bc9ecc53fcb959fbce7de63c10e76b234a36f0843ca905e019ead849a3",
+  "bytes": 121295,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

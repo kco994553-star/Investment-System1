@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TFSL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TFSL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:02.131902+00:00",
+  "sha256": "6de78a99f349d7fe5a86de2ee9fe17513de564a7c59f7c2c4e24bf881eed24e7",
+  "bytes": 137360,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PENN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PENN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:26.516397+00:00",
+  "sha256": "a9fedb1b8c0dea5e5300c509c641dbcce3587ccbad6c110d4d364f03c48fb21e",
+  "bytes": 7926,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

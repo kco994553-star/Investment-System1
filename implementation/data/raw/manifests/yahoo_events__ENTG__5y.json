@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ENTG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ENTG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:11.219599+00:00",
+  "sha256": "fa39aa94cc59065b04444590e3c3e0b077146c973d892323d4e14e72e2ea83b2",
+  "bytes": 7784,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

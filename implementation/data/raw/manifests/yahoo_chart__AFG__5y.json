@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AFG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AFG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:13.143879+00:00",
+  "sha256": "2174b381213489fa6d3717550ebbfbad8780fea331ede8d92c6963c9ff0d562b",
+  "bytes": 137125,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

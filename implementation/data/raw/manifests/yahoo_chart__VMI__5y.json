@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:VMI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VMI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:18.534713+00:00",
+  "sha256": "ebac2070e48da201e56d42595f3e1cd4d31f5bcfd90709aeb84fc298557f0593",
+  "bytes": 133162,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

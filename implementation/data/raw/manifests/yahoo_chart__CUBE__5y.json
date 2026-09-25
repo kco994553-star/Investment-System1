@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CUBE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CUBE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:55.647897+00:00",
+  "sha256": "13f6cf022fb11fdd64c8b57b2bad305e265f28e8c48aa6524c76048668f7ce68",
+  "bytes": 136090,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MTZ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MTZ?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:07.494813+00:00",
+  "sha256": "8bf9ff8444dcacb2426ad0f0b8a1f5fba58110fe97012f91e002fce9458283ff",
+  "bytes": 7586,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

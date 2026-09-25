@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SRPT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SRPT?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:58.541549+00:00",
+  "sha256": "5e75fc18acfaecd4f3188d9a05c9272e4ec003b61eb2953225913e2827e56abd",
+  "bytes": 134325,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

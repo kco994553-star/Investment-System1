@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GLPI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GLPI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:27.355928+00:00",
+  "sha256": "46ccb0b69006637bcd685b24d2be15d3a0e0def966990c452c70930ded15d3c8",
+  "bytes": 136332,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

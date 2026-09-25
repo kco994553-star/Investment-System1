@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:HOG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HOG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:36.769390+00:00",
+  "sha256": "932ec4c7e5c52b40c10a9764cbce17cee7f479abc040e83d75da74f046f30832",
+  "bytes": 7803,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

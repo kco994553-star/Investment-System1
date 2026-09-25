@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ALSN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ALSN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:17.275224+00:00",
+  "sha256": "67d5cf52933f18be17046439caa4ec5d83d6032c6d147f77b0987891ff84e1b6",
+  "bytes": 135182,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

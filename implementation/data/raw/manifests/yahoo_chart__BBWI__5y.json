@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BBWI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BBWI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:29.429360+00:00",
+  "sha256": "6f4612c16866f777a5b6d0d0c1d96a9943a5a4970bc20696e79dbc92b93d1d57",
+  "bytes": 136901,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

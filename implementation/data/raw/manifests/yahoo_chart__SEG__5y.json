@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SEG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SEG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:50.238992+00:00",
+  "sha256": "db2a327881a0f9392ed620aa6b5e4ee26bd5f1f7e165f7eb454bf8bea553f43b",
+  "bytes": 58210,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

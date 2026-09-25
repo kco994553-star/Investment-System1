@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RNR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RNR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:42.765521+00:00",
+  "sha256": "049074a8d86e8ad0e964f8d553d86c9b57fce18cd11e41d96bb53cebd4f9a5ef",
+  "bytes": 7804,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

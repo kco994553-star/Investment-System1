@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:INSP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/INSP?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:41.602765+00:00",
+  "sha256": "8e40c31ace9c8b6bed67f61652113655b004f87d97c85376feaf9636a2b47556",
+  "bytes": 7757,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

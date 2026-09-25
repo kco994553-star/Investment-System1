@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AFG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AFG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:13.396802+00:00",
+  "sha256": "0755170cf95d80674bc44e09d8861e160c1370184e4aa8dc018945db4e5ef173",
+  "bytes": 7854,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ELF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ELF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:09.163346+00:00",
+  "sha256": "14212fd83531805e22ab19cc5dd6a0845327277b1a2e1828ec5d62dc922fd6bb",
+  "bytes": 7569,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RNG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RNG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:42.028927+00:00",
+  "sha256": "a4e15ec2402bacc91a13f142a3e04ad4657f2f6172f48fddc0fbf2a48380b55e",
+  "bytes": 136254,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

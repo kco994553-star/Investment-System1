@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:GME:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GME?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:28.103832+00:00",
+  "sha256": "346f281cb14d7832faac96cd7ace0b82d655407b05a80ddd60d169cbd3209902",
+  "bytes": 8002,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

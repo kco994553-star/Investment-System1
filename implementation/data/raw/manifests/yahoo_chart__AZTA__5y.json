@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AZTA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AZTA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:28.424974+00:00",
+  "sha256": "647cd08e65ed4732252c958e1f8711718ae3a00be171bc2d9cf82a72f3e17db7",
+  "bytes": 134815,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:IONS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/IONS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:42.104950+00:00",
+  "sha256": "9f6799d10793735ec8e55ee47e5c43e694ff9ef998e9f981b6b7a5011b233a0f",
+  "bytes": 7776,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

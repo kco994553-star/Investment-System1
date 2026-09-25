@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NXST:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NXST?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:14.194785+00:00",
+  "sha256": "27f07b602f1ffc54666c14d4c7cf4831df1475898d3878fd552d46fb3d72de74",
+  "bytes": 136013,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

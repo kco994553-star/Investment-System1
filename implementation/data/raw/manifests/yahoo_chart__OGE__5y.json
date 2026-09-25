@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:OGE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OGE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:15.977276+00:00",
+  "sha256": "42d13a530ad0bb8f225d263bbe0d2f39030b47ef89ba1fd4ef8f9844ef92634a",
+  "bytes": 136241,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

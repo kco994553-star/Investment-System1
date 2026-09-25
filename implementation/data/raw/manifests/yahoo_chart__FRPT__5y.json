@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FRPT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FRPT?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:23.839751+00:00",
+  "sha256": "1b35c675a4f84730f0bf50ed2f68eccc811690e97051b852d80e2994402493ae",
+  "bytes": 133406,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

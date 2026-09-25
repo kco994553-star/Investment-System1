@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:OLN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OLN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:18.550706+00:00",
+  "sha256": "dafbde2c63d2751ad4060eb53407a9f18189d379ff829f6f79c5be941ebca0fb",
+  "bytes": 136219,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

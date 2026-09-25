@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FBIN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FBIN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:17.553625+00:00",
+  "sha256": "03d4b654dc085f4f8143f7b55fd4462b3a2258db25718d12647c552785373292",
+  "bytes": 135378,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:COLB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/COLB?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:51.344297+00:00",
+  "sha256": "423d5efac11751483a14ceb0fdbab65d95960533fb3bcd955b44db46533342fa",
+  "bytes": 8028,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CXT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CXT?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:58.020886+00:00",
+  "sha256": "050ab41c41d72a6342e0c4606cdec41263c463551bee81a81bb780d7d6d16df8",
+  "bytes": 7907,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

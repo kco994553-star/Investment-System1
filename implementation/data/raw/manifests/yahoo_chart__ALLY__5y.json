@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ALLY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ALLY?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:16.214920+00:00",
+  "sha256": "491b3e8652913c0df71a52e3abb79f8082b6522e036bf6583a55ae80869094ba",
+  "bytes": 136914,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

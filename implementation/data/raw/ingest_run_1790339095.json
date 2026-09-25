@@ -1,0 +1,5880 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "data/raw",
+  "n_requested": 1109,
+  "n_ok": 1089,
+  "n_failed": 20,
+  "log": [
+    {
+      "artifact_id": "sec_tickers",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001090872",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001090872",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000947484",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000947484",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000007084",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000007084",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000769397",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000769397",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001002910",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001002910",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000874761",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000874761",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000005272",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000005272",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001267238",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001267238",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001086222",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001086222",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000915913",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000915913",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001097149",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001097149",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001579241",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001579241",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001748790",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001748790",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000820027",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000820027",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000091142",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000091142",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001841666",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001841666",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001521332",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001521332",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001035443",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001035443",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000731802",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000731802",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000915912",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000915912",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000008818",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000008818",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001410636",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001410636",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001069183",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001069183",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000866787",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000866787",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000009389",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000009389",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000010456",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000010456",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000764478",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000764478",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000038777",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000038777",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000014693",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000014693",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001996862",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001996862",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000875045",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000875045",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001316835",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001316835",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001383312",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001383312",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001067983",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001067983",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000079282",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000079282",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000908255",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000908255",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001037540",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001037540",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000023217",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000023217",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001783180",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001783180",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001374310",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001374310",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001138118",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001138118",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001051470",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001051470",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000815097",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000815097",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001402057",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001402057",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001306830",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001306830",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001324404",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001324404",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000759944",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000759944",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000313927",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000313927",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001043277",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001043277",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001091667",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001091667",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000020286",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000020286",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000021076",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000021076",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001058090",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001058090",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000811156",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000811156",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001071739",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001071739",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001130310",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001130310",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000711404",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000711404",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001175454",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001175454",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000016732",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000016732",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000900075",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000900075",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000906345",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000906345",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001100682",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001100682",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001057352",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001057352",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000858470",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000858470",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001058290",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001058290",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001590895",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001590895",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001666700",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001666700",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000910521",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000910521",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001393612",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001393612",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000029534",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000029534",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001022079",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001022079",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000882184",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000882184",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000935703",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000935703",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000765880",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000765880",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000029905",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000029905",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001751788",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001751788",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001286681",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001286681",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000940944",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000940944",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000936340",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000936340",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000927066",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000927066",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001093557",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001093557",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000712515",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000712515",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001047862",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001047862",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000033185",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000033185",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001095073",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001095073",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000827052",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000827052",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001001250",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001001250",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000915389",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000915389",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001463101",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001463101",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001352010",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001352010",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000906107",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000906107",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000033213",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000033213",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000922621",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000922621",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000072741",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000072741",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000920522",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000920522",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001711269",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001711269",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001109357",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001109357",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000746515",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000746515",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001324424",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001324424",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001289490",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001289490",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001013237",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001013237",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001031296",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001031296",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001048695",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001048695",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000814547",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000814547",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001136893",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001136893",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000798354",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000798354",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000035527",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000035527",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000037785",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000037785",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001754301",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001754301",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000034903",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000034903",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001274494",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001274494",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001659166",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001659166",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001609711",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001609711",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001932393",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001932393",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000849399",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000849399",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000040704",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000040704",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000320335",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000320335",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001474735",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001474735",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000040987",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000040987",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001123360",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001123360",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000045012",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000045012",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000046080",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000046080",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000049196",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000049196",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000874766",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000874766",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001501585",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001501585",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000047217",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000047217",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000048465",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000048465",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001000228",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001000228",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001070750",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001070750",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000047111",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000047111",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000049071",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000049071",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000874716",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000874716",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000832101",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000832101",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000051253",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000051253",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000879169",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000879169",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001687229",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001687229",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000051434",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000051434",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001478242",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001478242",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001699150",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001699150",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001020569",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001020569",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000749251",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000749251",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000914208",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000914208",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000052988",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000052988",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000728535",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000728535",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000898293",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000898293",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000779152",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000779152",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001418135",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001418135",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000091576",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000091576",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001637459",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001637459",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000879101",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000879101",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000055785",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000055785",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001170010",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001170010",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000056873",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000056873",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001944048",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001944048",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000060086",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000060086",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001336920",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001336920",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000920760",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000920760",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000920148",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000920148",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000202058",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000202058",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001069202",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001069202",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001065696",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001065696",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000352541",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000352541",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001397187",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001397187",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000092380",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000092380",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001300514",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001300514",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001679273",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001679273",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001489393",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001489393",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001335258",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001335258",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000912595",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000912595",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000062996",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000062996",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000827054",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000827054",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000789570",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000789570",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000851968",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000851968",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000063754",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000063754",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001278021",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001278021",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000916076",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000916076",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001179929",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001179929",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001285785",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001285785",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001408198",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001408198",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000036270",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000036270",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000891103",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000891103",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001037646",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001037646",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001513761",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001513761",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000072331",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000072331",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001111711",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001111711",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001013871",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001013871",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001002047",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001002047",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000073124",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000073124",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000906163",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000906163",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001564708",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001564708",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000878927",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000878927",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000029989",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000029989",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001097864",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001097864",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001781335",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001781335",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001590955",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001590955",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000723531",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000723531",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001004980",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001004980",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000788784",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000788784",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001126328",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001126328",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000822416",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000822416",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000075677",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000075677",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000077360",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000077360",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000764622",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000764622",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001145197",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001145197",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000945841",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000945841",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000079879",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000079879",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000922224",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000922224",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001137774",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001137774",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0002041610",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0002041610",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000857005",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000857005",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001633917",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001633917",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000910606",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000910606",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001281761",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001281761",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000720005",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000720005",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001037038",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001037038",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000943819",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000943819",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000084839",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000084839",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000882835",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000882835",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000031791",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000031791",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001034054",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001034054",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000091419",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000091419",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001375365",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001375365",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000091440",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000091440",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001964738",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001964738",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001757898",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001757898",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001022671",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001022671",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000016918",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000016918",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0002005951",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0002005951",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000093556",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000093556",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000004127",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000004127",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001601712",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001601712",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000096021",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000096021",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000024545",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000024545",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001094285",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001094285",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000842023",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000842023",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000096943",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000096943",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001811074",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001811074",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001116132",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001116132",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000864749",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000864749",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001113169",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001113169",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000916365",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000916365",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000100493",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000100493",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000946581",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000946581",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000217346",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000217346",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000860731",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000860731",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000100517",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000100517",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000074208",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000074208",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000352915",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000352915",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001403568",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001403568",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001705696",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001705696",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001967680",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001967680",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001396009",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001396009",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001442145",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001442145",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001014473",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001014473",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001692819",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001692819",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000740260",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000740260",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001792044",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001792044",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000943452",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000943452",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001000697",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001000697",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001327811",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001327811",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000783325",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000783325",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000011544",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000011544",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000105770",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000105770",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001140536",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001140536",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000106535",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000106535",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001174922",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001174922",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000072903",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000072903",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001524472",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001524472",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001041061",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001041061",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001136869",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001136869",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000877212",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000877212",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001555280",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001555280",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:A:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:A:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ACGL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ACGL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ADM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ADM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ADSK:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ADSK:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:AEE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AEE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:AES:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AES:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:AIG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AIG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:AIZ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AIZ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:AKAM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AKAM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ALB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ALB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ALGN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ALGN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ALLE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ALLE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:AMCR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AMCR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:AMP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AMP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ANSS:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/ANSS?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_events:ANSS:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/ANSS?interval=1mo&range=5y&events=split"
+    },
+    {
+      "artifact_id": "yahoo_chart:AOS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AOS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:APA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:APA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:APTV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:APTV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ARE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ARE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ATO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ATO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:AVB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AVB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:AVY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AVY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:AWK:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AWK:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:AXON:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AXON:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:AZO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:AZO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BALL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BALL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BAX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BAX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BBY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BBY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BEN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BEN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BF-B:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BF-B:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BIIB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BIIB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BLDR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BLDR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BRK-B:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BRK-B:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BRO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BRO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BWA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BWA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:BXP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:BXP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CAG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CAG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CARR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CARR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CBOE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CBOE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CBRE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CBRE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CCI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CCI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CCL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CCL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CDW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CDW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CF:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CF:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CFG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CFG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CHD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CHD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CHRW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CHRW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CHTR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CHTR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CINF:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CINF:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CLX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CLX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CMG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CMG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CMS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CMS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CNC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CNC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CNP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CNP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:COO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:COO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CPAY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CPAY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CPB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CPB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CPRT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CPRT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CPT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CPT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CRL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CRL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CSGP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CSGP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CTRA:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/CTRA?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_events:CTRA:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/CTRA?interval=1mo&range=5y&events=split"
+    },
+    {
+      "artifact_id": "yahoo_chart:CTSH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CTSH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:CZR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:CZR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DAY:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/DAY?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_events:DAY:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/DAY?interval=1mo&range=5y&events=split"
+    },
+    {
+      "artifact_id": "yahoo_chart:DD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DECK:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DECK:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DFS:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/DFS?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_events:DFS:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/DFS?interval=1mo&range=5y&events=split"
+    },
+    {
+      "artifact_id": "yahoo_chart:DG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DGX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DGX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DHI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DHI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DLTR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DLTR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DOC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DOC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DOV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DOV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DOW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DOW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DPZ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DPZ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DRI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DRI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DTE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DTE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DVA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DVA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:DXCM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:DXCM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ED:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ED:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EFX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EFX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EIX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EIX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EMN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EMN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ENPH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ENPH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EPAM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EPAM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EQR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EQR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EQT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EQT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ERIE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ERIE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ES:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ES:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ESS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ESS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EVRG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EVRG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EXC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EXC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EXPD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EXPD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EXPE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EXPE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:EXR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:EXR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FDS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FDS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FFIV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FFIV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FICO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FICO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FIS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FIS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FISV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FISV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FITB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FITB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FMC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FMC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FOX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FOX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FOXA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FOXA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FRT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FRT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FSLR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FSLR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:FTV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:FTV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:GDDY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:GDDY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:GEHC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:GEHC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:GEN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:GEN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:GIS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:GIS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:GL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:GL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:GNRC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:GNRC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:GPC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:GPC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:GPN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:GPN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:HAL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:HAL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:HAS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:HAS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:HBAN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:HBAN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:HES:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/HES?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_events:HES:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/HES?interval=1mo&range=5y&events=split"
+    },
+    {
+      "artifact_id": "yahoo_chart:HIG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:HIG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:HII:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:HII:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:HOLX:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/HOLX?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_events:HOLX:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/HOLX?interval=1mo&range=5y&events=split"
+    },
+    {
+      "artifact_id": "yahoo_chart:HPQ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:HPQ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:HRL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:HRL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:HSIC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:HSIC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:HST:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:HST:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:HSY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:HSY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:HUM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:HUM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:IDXX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:IDXX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:IEX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:IEX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:IFF:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:IFF:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:INCY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:INCY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:INVH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:INVH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:IP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:IP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:IPG:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/IPG?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_events:IPG:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/IPG?interval=1mo&range=5y&events=split"
+    },
+    {
+      "artifact_id": "yahoo_chart:IQV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:IQV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:IR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:IR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:IRM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:IRM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:IT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:IT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:IVZ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:IVZ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:J:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:J:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:JBHT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:JBHT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:JBL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:JBL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:JKHY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:JKHY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:JNPR:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/JNPR?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_events:JNPR:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/JNPR?interval=1mo&range=5y&events=split"
+    },
+    {
+      "artifact_id": "yahoo_chart:K:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/K?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_events:K:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/K?interval=1mo&range=5y&events=split"
+    },
+    {
+      "artifact_id": "yahoo_chart:KDP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:KDP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:KEY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:KEY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:KHC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:KHC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:KIM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:KIM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:KMB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:KMB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:KMX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:KMX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:KR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:KR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:KVUE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:KVUE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:L:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:L:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LDOS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LDOS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LEN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LEN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LHX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LHX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LII:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LII:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LKQ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LKQ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LNT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LNT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LULU:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LULU:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LUV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LUV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LVS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LVS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LYB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LYB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:LYV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:LYV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MAA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MAA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MAS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MAS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MCHP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MCHP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MGM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MGM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MHK:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MHK:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MKC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MKC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MKTX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MKTX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MLM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MLM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MOH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MOH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MOS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MOS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MSCI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MSCI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MTB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MTB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MTCH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MTCH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:MTD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:MTD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NCLH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NCLH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NDSN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NDSN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NRG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NRG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NTAP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NTAP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NTRS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NTRS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NVR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NVR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NWS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NWS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:NWSA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:NWSA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ODFL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ODFL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:OMC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:OMC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ON:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ON:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:OTIS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:OTIS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PAYC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PAYC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PAYX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PAYX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PCG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PCG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PEG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PEG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PFG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PFG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PHM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PHM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PKG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PKG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PNR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PNR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PNW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PNW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PODD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PODD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:POOL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:POOL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PPG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PPG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PPL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PPL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PRU:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PRU:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PSKY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PSKY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PTC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PTC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:PYPL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:PYPL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:REG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:REG:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:RF:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:RF:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:RJF:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:RJF:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:RL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:RL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:RMD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:RMD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ROL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ROL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ROP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ROP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:RVTY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:RVTY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:SBAC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:SBAC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:SJM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:SJM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:SMCI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:SMCI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:SNA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:SNA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:SOLV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:SOLV:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:STE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:STE:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:STLD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:STLD:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:STZ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:STZ:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:SW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:SW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:SWK:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:SWK:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:SWKS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:SWKS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:SYF:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:SYF:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:SYY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:SYY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TAP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TAP:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TDY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TDY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TECH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TECH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TFX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TFX:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TPL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TPL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TPR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TPR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TRMB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TRMB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TROW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TROW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TSCO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TSCO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TSN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TSN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TTWO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TTWO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TXT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TXT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:TYL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:TYL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:UAL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:UAL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:UDR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:UDR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:UHS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:UHS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ULTA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ULTA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:VICI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:VICI:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:VLTO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:VLTO:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:VMC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:VMC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:VRSK:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:VRSK:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:VRSN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:VRSN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:VST:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:VST:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:VTR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:VTR:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:VTRS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:VTRS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:WAB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:WAB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:WAT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:WAT:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:WBA:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/WBA?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_events:WBA:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/WBA?interval=1mo&range=5y&events=split"
+    },
+    {
+      "artifact_id": "yahoo_chart:WDAY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:WDAY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:WEC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:WEC:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:WRB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:WRB:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:WST:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:WST:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:WTW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:WTW:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:WY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:WY:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:WYNN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:WYNN:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:XEL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:XEL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:XYL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:XYL:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:YUM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:YUM:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ZBH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ZBH:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ZBRA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ZBRA:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_chart:ZTS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "yahoo_events:ZTS:5y",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "plan_resolution": [
+    {
+      "ticker": "A",
+      "cik": "0001090872",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ACGL",
+      "cik": "0000947484",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ADM",
+      "cik": "0000007084",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ADSK",
+      "cik": "0000769397",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AEE",
+      "cik": "0001002910",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AES",
+      "cik": "0000874761",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AIG",
+      "cik": "0000005272",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AIZ",
+      "cik": "0001267238",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AKAM",
+      "cik": "0001086222",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ALB",
+      "cik": "0000915913",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ALGN",
+      "cik": "0001097149",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ALLE",
+      "cik": "0001579241",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AMCR",
+      "cik": "0001748790",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AMP",
+      "cik": "0000820027",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ANSS",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "AOS",
+      "cik": "0000091142",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "APA",
+      "cik": "0001841666",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "APTV",
+      "cik": "0001521332",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ARE",
+      "cik": "0001035443",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ATO",
+      "cik": "0000731802",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AVB",
+      "cik": "0000915912",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AVY",
+      "cik": "0000008818",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AWK",
+      "cik": "0001410636",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AXON",
+      "cik": "0001069183",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AZO",
+      "cik": "0000866787",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BALL",
+      "cik": "0000009389",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BAX",
+      "cik": "0000010456",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BBY",
+      "cik": "0000764478",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BEN",
+      "cik": "0000038777",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BF.B",
+      "cik": "0000014693",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BG",
+      "cik": "0001996862",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BIIB",
+      "cik": "0000875045",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BLDR",
+      "cik": "0001316835",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BR",
+      "cik": "0001383312",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BRK.B",
+      "cik": "0001067983",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BRO",
+      "cik": "0000079282",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BWA",
+      "cik": "0000908255",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "BXP",
+      "cik": "0001037540",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CAG",
+      "cik": "0000023217",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "CARR",
+      "cik": "0001783180",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CBOE",
+      "cik": "0001374310",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CBRE",
+      "cik": "0001138118",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CCI",
+      "cik": "0001051470",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CCL",
+      "cik": "0000815097",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CDW",
+      "cik": "0001402057",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CE",
+      "cik": "0001306830",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CF",
+      "cik": "0001324404",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CFG",
+      "cik": "0000759944",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CHD",
+      "cik": "0000313927",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CHRW",
+      "cik": "0001043277",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CHTR",
+      "cik": "0001091667",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CINF",
+      "cik": "0000020286",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CLX",
+      "cik": "0000021076",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CMG",
+      "cik": "0001058090",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CMS",
+      "cik": "0000811156",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CNC",
+      "cik": "0001071739",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CNP",
+      "cik": "0001130310",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "COO",
+      "cik": "0000711404",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CPAY",
+      "cik": "0001175454",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CPB",
+      "cik": "0000016732",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "CPRT",
+      "cik": "0000900075",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CPT",
+      "cik": "0000906345",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CRL",
+      "cik": "0001100682",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CSGP",
+      "cik": "0001057352",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CTRA",
+      "cik": "0000858470",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CTSH",
+      "cik": "0001058290",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CZR",
+      "cik": "0001590895",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DAY",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "DD",
+      "cik": "0001666700",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DECK",
+      "cik": "0000910521",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DFS",
+      "cik": "0001393612",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DG",
+      "cik": "0000029534",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DGX",
+      "cik": "0001022079",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DHI",
+      "cik": "0000882184",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DLTR",
+      "cik": "0000935703",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DOC",
+      "cik": "0000765880",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DOV",
+      "cik": "0000029905",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DOW",
+      "cik": "0001751788",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DPZ",
+      "cik": "0001286681",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DRI",
+      "cik": "0000940944",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DTE",
+      "cik": "0000936340",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DVA",
+      "cik": "0000927066",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DXCM",
+      "cik": "0001093557",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EA",
+      "cik": "0000712515",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ED",
+      "cik": "0001047862",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EFX",
+      "cik": "0000033185",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EG",
+      "cik": "0001095073",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EIX",
+      "cik": "0000827052",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EL",
+      "cik": "0001001250",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EMN",
+      "cik": "0000915389",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "ENPH",
+      "cik": "0001463101",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "EPAM",
+      "cik": "0001352010",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "EQR",
+      "cik": "0000906107",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EQT",
+      "cik": "0000033213",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ERIE",
+      "cik": "0000922621",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ES",
+      "cik": "0000072741",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ESS",
+      "cik": "0000920522",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EVRG",
+      "cik": "0001711269",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EXC",
+      "cik": "0001109357",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EXPD",
+      "cik": "0000746515",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EXPE",
+      "cik": "0001324424",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EXR",
+      "cik": "0001289490",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FDS",
+      "cik": "0001013237",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FE",
+      "cik": "0001031296",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FFIV",
+      "cik": "0001048695",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FICO",
+      "cik": "0000814547",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FIS",
+      "cik": "0001136893",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FISV",
+      "cik": "0000798354",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FITB",
+      "cik": "0000035527",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FMC",
+      "cik": "0000037785",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "FOX",
+      "cik": "0001754301",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FOXA",
+      "cik": "0001754301",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FRT",
+      "cik": "0000034903",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FSLR",
+      "cik": "0001274494",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FTV",
+      "cik": "0001659166",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GDDY",
+      "cik": "0001609711",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GEHC",
+      "cik": "0001932393",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GEN",
+      "cik": "0000849399",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GIS",
+      "cik": "0000040704",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GL",
+      "cik": "0000320335",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GNRC",
+      "cik": "0001474735",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GPC",
+      "cik": "0000040987",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GPN",
+      "cik": "0001123360",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HAL",
+      "cik": "0000045012",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HAS",
+      "cik": "0000046080",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HBAN",
+      "cik": "0000049196",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HES",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "HIG",
+      "cik": "0000874766",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HII",
+      "cik": "0001501585",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HOLX",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "HPQ",
+      "cik": "0000047217",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HRL",
+      "cik": "0000048465",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HSIC",
+      "cik": "0001000228",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HST",
+      "cik": "0001070750",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HSY",
+      "cik": "0000047111",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HUM",
+      "cik": "0000049071",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IDXX",
+      "cik": "0000874716",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IEX",
+      "cik": "0000832101",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IFF",
+      "cik": "0000051253",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "INCY",
+      "cik": "0000879169",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "INVH",
+      "cik": "0001687229",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IP",
+      "cik": "0000051434",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IPG",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "IQV",
+      "cik": "0001478242",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IR",
+      "cik": "0001699150",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IRM",
+      "cik": "0001020569",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IT",
+      "cik": "0000749251",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IVZ",
+      "cik": "0000914208",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "J",
+      "cik": "0000052988",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "JBHT",
+      "cik": "0000728535",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "JBL",
+      "cik": "0000898293",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "JKHY",
+      "cik": "0000779152",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "JNPR",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "K",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "KDP",
+      "cik": "0001418135",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "KEY",
+      "cik": "0000091576",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "KHC",
+      "cik": "0001637459",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "KIM",
+      "cik": "0000879101",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "KMB",
+      "cik": "0000055785",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "KMX",
+      "cik": "0001170010",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "KR",
+      "cik": "0000056873",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "KVUE",
+      "cik": "0001944048",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "L",
+      "cik": "0000060086",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LDOS",
+      "cik": "0001336920",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LEN",
+      "cik": "0000920760",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LH",
+      "cik": "0000920148",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LHX",
+      "cik": "0000202058",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LII",
+      "cik": "0001069202",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LKQ",
+      "cik": "0001065696",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "LNT",
+      "cik": "0000352541",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LULU",
+      "cik": "0001397187",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LUV",
+      "cik": "0000092380",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LVS",
+      "cik": "0001300514",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LW",
+      "cik": "0001679273",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "LYB",
+      "cik": "0001489393",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LYV",
+      "cik": "0001335258",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MAA",
+      "cik": "0000912595",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MAS",
+      "cik": "0000062996",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MCHP",
+      "cik": "0000827054",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MGM",
+      "cik": "0000789570",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MHK",
+      "cik": "0000851968",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "MKC",
+      "cik": "0000063754",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MKTX",
+      "cik": "0001278021",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "MLM",
+      "cik": "0000916076",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MOH",
+      "cik": "0001179929",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "MOS",
+      "cik": "0001285785",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MSCI",
+      "cik": "0001408198",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MTB",
+      "cik": "0000036270",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MTCH",
+      "cik": "0000891103",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "MTD",
+      "cik": "0001037646",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NCLH",
+      "cik": "0001513761",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NDSN",
+      "cik": "0000072331",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NI",
+      "cik": "0001111711",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NRG",
+      "cik": "0001013871",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NTAP",
+      "cik": "0001002047",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NTRS",
+      "cik": "0000073124",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NVR",
+      "cik": "0000906163",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NWS",
+      "cik": "0001564708",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NWSA",
+      "cik": "0001564708",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ODFL",
+      "cik": "0000878927",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "OMC",
+      "cik": "0000029989",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ON",
+      "cik": "0001097864",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "OTIS",
+      "cik": "0001781335",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PAYC",
+      "cik": "0001590955",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "PAYX",
+      "cik": "0000723531",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PCG",
+      "cik": "0001004980",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PEG",
+      "cik": "0000788784",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PFG",
+      "cik": "0001126328",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PHM",
+      "cik": "0000822416",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PKG",
+      "cik": "0000075677",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PNR",
+      "cik": "0000077360",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PNW",
+      "cik": "0000764622",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PODD",
+      "cik": "0001145197",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "POOL",
+      "cik": "0000945841",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "PPG",
+      "cik": "0000079879",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PPL",
+      "cik": "0000922224",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PRU",
+      "cik": "0001137774",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PSKY",
+      "cik": "0002041610",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PTC",
+      "cik": "0000857005",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PYPL",
+      "cik": "0001633917",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "REG",
+      "cik": "0000910606",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "RF",
+      "cik": "0001281761",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "RJF",
+      "cik": "0000720005",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "RL",
+      "cik": "0001037038",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "RMD",
+      "cik": "0000943819",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ROL",
+      "cik": "0000084839",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ROP",
+      "cik": "0000882835",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "RVTY",
+      "cik": "0000031791",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SBAC",
+      "cik": "0001034054",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SJM",
+      "cik": "0000091419",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SMCI",
+      "cik": "0001375365",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SNA",
+      "cik": "0000091440",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SOLV",
+      "cik": "0001964738",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "STE",
+      "cik": "0001757898",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "STLD",
+      "cik": "0001022671",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "STZ",
+      "cik": "0000016918",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SW",
+      "cik": "0002005951",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SWK",
+      "cik": "0000093556",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SWKS",
+      "cik": "0000004127",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SYF",
+      "cik": "0001601712",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SYY",
+      "cik": "0000096021",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TAP",
+      "cik": "0000024545",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TDY",
+      "cik": "0001094285",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TECH",
+      "cik": "0000842023",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TFX",
+      "cik": "0000096943",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "TPL",
+      "cik": "0001811074",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TPR",
+      "cik": "0001116132",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TRMB",
+      "cik": "0000864749",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TROW",
+      "cik": "0001113169",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TSCO",
+      "cik": "0000916365",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TSN",
+      "cik": "0000100493",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TTWO",
+      "cik": "0000946581",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TXT",
+      "cik": "0000217346",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TYL",
+      "cik": "0000860731",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "UAL",
+      "cik": "0000100517",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "UDR",
+      "cik": "0000074208",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "UHS",
+      "cik": "0000352915",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ULTA",
+      "cik": "0001403568",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VICI",
+      "cik": "0001705696",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VLTO",
+      "cik": "0001967680",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VMC",
+      "cik": "0001396009",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VRSK",
+      "cik": "0001442145",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VRSN",
+      "cik": "0001014473",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VST",
+      "cik": "0001692819",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VTR",
+      "cik": "0000740260",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VTRS",
+      "cik": "0001792044",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WAB",
+      "cik": "0000943452",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WAT",
+      "cik": "0001000697",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WBA",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "WDAY",
+      "cik": "0001327811",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WEC",
+      "cik": "0000783325",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WRB",
+      "cik": "0000011544",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WST",
+      "cik": "0000105770",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WTW",
+      "cik": "0001140536",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WY",
+      "cik": "0000106535",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WYNN",
+      "cik": "0001174922",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "XEL",
+      "cik": "0000072903",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "XYL",
+      "cik": "0001524472",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "YUM",
+      "cik": "0001041061",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ZBH",
+      "cik": "0001136869",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ZBRA",
+      "cik": "0000877212",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ZTS",
+      "cik": "0001555280",
+      "method": "PLAN_CIK"
+    }
+  ],
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:KEX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KEX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:46.307640+00:00",
+  "sha256": "e9ed327d32ea997ffa3672f6e358bdabbf8b65acb7677b3cb533c550f60f6674",
+  "bytes": 134482,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

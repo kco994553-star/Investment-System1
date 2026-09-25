@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:WSOB",
+  "source_url": "https://stooq.com/q/d/l/?s=wsob.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T12:35:39.785526+00:00",
+  "sha256": "7cd0c8e107f48e6ed5f64cdb2df0642982c12971258390bd67092791f1356f69",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

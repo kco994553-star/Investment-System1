@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:UGI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UGI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:12.128344+00:00",
+  "sha256": "a5f4e16aabff478776a62f5ce479550a2d3c925a88021155f7908bc90578a8fa",
+  "bytes": 136799,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

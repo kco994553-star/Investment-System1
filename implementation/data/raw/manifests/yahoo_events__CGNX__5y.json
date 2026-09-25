@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CGNX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CGNX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:45.117238+00:00",
+  "sha256": "1f35048360fca550a20065e330baea49f4a3c2fafc4bd3e538fd8ea5336fe59e",
+  "bytes": 7781,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

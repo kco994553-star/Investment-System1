@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SHC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SHC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:52.264110+00:00",
+  "sha256": "a6d810520f2fb1473c1ba2968c5264f4a53e4ea7396abef0af7cb5770891253b",
+  "bytes": 137696,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

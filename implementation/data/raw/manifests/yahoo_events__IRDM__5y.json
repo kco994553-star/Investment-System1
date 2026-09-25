@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:IRDM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/IRDM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:43.085108+00:00",
+  "sha256": "31ebc6e3f05e12fc7bf140f82cd0b6512ce097d5f220f350b1d3d9259e59e4a7",
+  "bytes": 7777,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ZG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ZG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:34.449397+00:00",
+  "sha256": "3ee1637171fa8077bf8d12cefd509bbd4856326bf1a5e2cbc88ef368c1dd2c81",
+  "bytes": 133726,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

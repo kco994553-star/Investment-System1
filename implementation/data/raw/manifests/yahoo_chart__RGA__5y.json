@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RGA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RGA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:37.844693+00:00",
+  "sha256": "ed9e7a66495d9a883475914afcfe0b818c5f8f4e391447b0c8bd43c8f897a1d3",
+  "bytes": 136936,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:OGN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OGN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:16.744700+00:00",
+  "sha256": "82100b05eb047395253df1471fb83936343a65e8f6e66a307a622858ea7dfac1",
+  "bytes": 7806,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

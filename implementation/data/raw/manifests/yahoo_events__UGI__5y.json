@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:UGI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UGI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:12.385099+00:00",
+  "sha256": "4fb350c3ec19eef472d5bfb32e3fa78294ab8881ac9aca9fb43ccaf96d4e1fff",
+  "bytes": 7828,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

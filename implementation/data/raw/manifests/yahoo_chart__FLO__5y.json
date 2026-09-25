@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FLO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FLO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:20.618655+00:00",
+  "sha256": "9e5ef7ad8b9aec93a954726de75f64e682cfe67252e4f7ca2e845545d088cf58",
+  "bytes": 137987,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

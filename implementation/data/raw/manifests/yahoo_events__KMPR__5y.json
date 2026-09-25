@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:KMPR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KMPR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:47.061778+00:00",
+  "sha256": "769c418de527c9a9c924b52e34af694601182f52ea4ba94636b7f428ba703f8b",
+  "bytes": 7767,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

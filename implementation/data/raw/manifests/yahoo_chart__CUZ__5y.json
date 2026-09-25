@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CUZ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CUZ?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:56.201700+00:00",
+  "sha256": "9cad5526ca741466e71d9bf938a2f2132b3b6ab7acce44c752b87e2138663b50",
+  "bytes": 137989,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

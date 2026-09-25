@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NBIX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NBIX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:08.616407+00:00",
+  "sha256": "74f4bfe19bf5133831638ce1c8dd64c9fbcaf2659ecc05d07d4704e0dce479fa",
+  "bytes": 7688,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

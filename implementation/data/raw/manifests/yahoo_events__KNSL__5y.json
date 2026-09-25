@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:KNSL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KNSL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:47.786776+00:00",
+  "sha256": "197238c1de660776db51517d0609c6bbc2121e7440c2aafc34531f40fcdb790f",
+  "bytes": 7512,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PENN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PENN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:26.300620+00:00",
+  "sha256": "84a06d3c77edb8f37c6eabb17337b5812312495b599a0988d4fb1f6896d1eefd",
+  "bytes": 137525,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

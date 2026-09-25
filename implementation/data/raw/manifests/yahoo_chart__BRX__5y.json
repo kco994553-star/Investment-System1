@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BRX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BRX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:36.879396+00:00",
+  "sha256": "49220315790a643f14c9dde9ecfa41657d7fca33e35b426f11a91ed9031aa618",
+  "bytes": 138782,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

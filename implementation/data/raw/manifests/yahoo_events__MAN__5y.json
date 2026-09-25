@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MAN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MAN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:58.837634+00:00",
+  "sha256": "3e3579b74db8614fcc4fa1c36a7c8025583821c4d1bd340b3b90076494e9b953",
+  "bytes": 7726,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

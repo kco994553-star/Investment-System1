@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MIDD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MIDD?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:01.457646+00:00",
+  "sha256": "c7c0ab277e48744ff4164e8c927cdd4b82d907c9bfb16eedd1bb4c5969cd99a3",
+  "bytes": 8235,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

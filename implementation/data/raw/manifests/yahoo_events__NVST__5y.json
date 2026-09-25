@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NVST:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NVST?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:13.313314+00:00",
+  "sha256": "3ac657e7a9bc98ab95629cc644333088051c44da7f865d2f1f5be814167338e0",
+  "bytes": 7928,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GTES:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GTES?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:30.955804+00:00",
+  "sha256": "f9a93b5a75332a6f18f60374a7b89be95fd93295825b4419467505079b149f61",
+  "bytes": 137926,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

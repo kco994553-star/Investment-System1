@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:APPF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/APPF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:21.238061+00:00",
+  "sha256": "bc171d692520d872107a9bcc9276f77cd5500a27b0201d76ac0675862712cc8b",
+  "bytes": 135307,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

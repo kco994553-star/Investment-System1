@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AMTM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMTM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:20.000571+00:00",
+  "sha256": "cd04b4c718f9eb0ee8f0eb22927647668f19ce6bb954ff392145892d8cfd273e",
+  "bytes": 3976,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

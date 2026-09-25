@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ATI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ATI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:24.738153+00:00",
+  "sha256": "9120e7ea02641a36ebe86a28d0ff8bc2c5f09cdb368e309b81c29e4a8edc31a3",
+  "bytes": 135050,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

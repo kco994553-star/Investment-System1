@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BOKF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BOKF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:34.378776+00:00",
+  "sha256": "6ab794f56fe1231868d5cb57c976ad76d0d41a9b334b0656648655168ff15668",
+  "bytes": 134561,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

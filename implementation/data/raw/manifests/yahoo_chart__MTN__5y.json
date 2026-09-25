@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MTN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MTN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:06.309961+00:00",
+  "sha256": "5022ddd9276669b2db2a74a2ed2f11f44ceace787d4ee50d202dada10574b761",
+  "bytes": 135059,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

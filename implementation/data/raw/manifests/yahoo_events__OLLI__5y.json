@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:OLLI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OLLI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:18.240067+00:00",
+  "sha256": "764d69ef21be6cd6fd9c365948818e34f43a737da569f37eab4b03140580b290",
+  "bytes": 7808,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

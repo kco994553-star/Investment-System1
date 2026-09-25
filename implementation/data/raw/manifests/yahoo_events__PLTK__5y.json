@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PLTK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PLTK?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:29.511604+00:00",
+  "sha256": "eb6dd8ca47fc5887285fb83b68de83aa7d06128b6db79699ca8c0e51a071473e",
+  "bytes": 7819,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GAP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GAP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:25.325469+00:00",
+  "sha256": "4576aeffd13c61b6cff30e34c7bb0b645e971e2cefc04f772a963aa5161247d5",
+  "bytes": 138422,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HOG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HOG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:36.524545+00:00",
+  "sha256": "b203d5d9d69abd8fb7cc12c1c9538d75d0d34f78ee4a306b5c97d6b8774dd656",
+  "bytes": 137118,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

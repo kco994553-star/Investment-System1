@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ILMN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ILMN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:39.813077+00:00",
+  "sha256": "9c24dc0f7557d8ac23ac7304796ad912934485cec97963ce623bb1cff089fa02",
+  "bytes": 137349,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

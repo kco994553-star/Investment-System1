@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MDB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MDB?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:59.853290+00:00",
+  "sha256": "3cd96f3c2e2d40d8c7cbcd40e9252e397ee6155c74228e2b0785dd56034ec099",
+  "bytes": 7622,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

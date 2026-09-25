@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DCI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DCI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:59.314494+00:00",
+  "sha256": "8b26270f7dc33190d061546bfa45dc289ba8a5c2437c3d6e432d2faccd59d4d1",
+  "bytes": 133638,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

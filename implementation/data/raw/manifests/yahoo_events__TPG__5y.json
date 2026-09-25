@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TPG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TPG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:06.525839+00:00",
+  "sha256": "93fd91cde9cb82b5a028f98b2f09174f5dbea0088037d6ee58ef9b6f997799ed",
+  "bytes": 7314,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

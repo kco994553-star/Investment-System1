@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RRC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RRC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:44.575478+00:00",
+  "sha256": "1e3cfffc28715de44de397fb34bbc76965d4d21c993ab9295638a1aa34e5e9bf",
+  "bytes": 137107,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

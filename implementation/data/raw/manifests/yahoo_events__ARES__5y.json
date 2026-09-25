@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ARES:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ARES?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:22.451652+00:00",
+  "sha256": "c08171cd6c0ef5eb9677970ef42f760254c43238b3b0035562814848a20aaae8",
+  "bytes": 7893,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

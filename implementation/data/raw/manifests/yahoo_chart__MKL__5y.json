@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MKL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MKL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:01.749501+00:00",
+  "sha256": "b24bcc150a0f82307390d27cb5f9185f33b77eef8baf4a4876063d3ca3b2809d",
+  "bytes": 127882,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

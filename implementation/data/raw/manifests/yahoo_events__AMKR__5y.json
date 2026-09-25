@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AMKR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMKR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:19.564857+00:00",
+  "sha256": "5c0e09e0f754da8023fb6588bbd366c7a6d9246d90eb1181fb19f9ff45c206f5",
+  "bytes": 7949,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

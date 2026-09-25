@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HUN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HUN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:38.716491+00:00",
+  "sha256": "b789977eed262ee5f8b66624a9c6e8939728567d5769e2c3ea5306cd2b20cb6d",
+  "bytes": 138252,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TRIP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TRIP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:07.239006+00:00",
+  "sha256": "328fca4cc9d7e15ebd73e99932d4aea106750888d97835e4173f2c4d8f98d4d6",
+  "bytes": 138334,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

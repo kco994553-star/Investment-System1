@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SLGN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SLGN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:53.788764+00:00",
+  "sha256": "b55f4744289096f7b0c4dbfce9daaa560bda68f2477ce953648a67a2f6700b1e",
+  "bytes": 135519,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

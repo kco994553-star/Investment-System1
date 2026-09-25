@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:KNX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KNX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:48.268523+00:00",
+  "sha256": "dcde110813ce8d68322ab7bec53402697e4d2b63c346669ca0439055bbb6ca12",
+  "bytes": 7824,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

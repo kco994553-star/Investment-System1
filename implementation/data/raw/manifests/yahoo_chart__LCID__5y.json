@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LCID:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LCID?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:51.102876+00:00",
+  "sha256": "11c72c7af28126bc1fb7c12da2bdb87de6c0f15bc1e92bd640836724dde9ba3e",
+  "bytes": 125831,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

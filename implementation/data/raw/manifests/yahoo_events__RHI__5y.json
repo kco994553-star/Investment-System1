@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RHI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RHI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:40.237419+00:00",
+  "sha256": "5bee92bc6b25b262714084880e473bc20ae59609677aeb66752f633d4ef7d21d",
+  "bytes": 7688,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

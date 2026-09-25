@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:WAL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WAL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:22.795098+00:00",
+  "sha256": "720ec6c11176d99e7bff9c911a795569ec607c30461478854e2ef8f7b50b8c3c",
+  "bytes": 7839,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

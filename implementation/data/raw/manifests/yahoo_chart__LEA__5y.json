@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LEA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LEA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:51.574926+00:00",
+  "sha256": "64ded83b361e35aa8a02f08bf0dfb48352a17cc82d6f0236652b82dd083450f0",
+  "bytes": 136545,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

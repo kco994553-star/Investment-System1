@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:REXR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/REXR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:37.007358+00:00",
+  "sha256": "633cf15709a4ce1c7b4b16a4625e172ce25ba88898e7933c36ecb04473e6d751",
+  "bytes": 7915,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

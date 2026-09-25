@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TWLO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TWLO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:09.609099+00:00",
+  "sha256": "3754c4dae22e355d964c77e60d31c3ec14752d28ee77738d132f17cf486b609b",
+  "bytes": 133998,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

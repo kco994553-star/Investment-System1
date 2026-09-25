@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AMG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:18.309298+00:00",
+  "sha256": "bd23aa2e711c616c3e8ae7a07bf9cd7f9f2ccce32d31c28126784c12cd3c9421",
+  "bytes": 136638,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

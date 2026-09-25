@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WEX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WEX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:24.123093+00:00",
+  "sha256": "6ae0663290367f5bbf6e9ffe920c34843c09b662d8a7c8eed1145316aa387a49",
+  "bytes": 136280,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

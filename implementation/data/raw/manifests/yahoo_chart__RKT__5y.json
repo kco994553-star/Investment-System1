@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RKT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RKT?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:40.989756+00:00",
+  "sha256": "80988acff580a6aba4a3b2c0cded2248e4100a63a1cbe2fa3ad6186fcf98539c",
+  "bytes": 136737,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:EQH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EQH?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:12.023130+00:00",
+  "sha256": "84433007f77919e7d5ed369292421efbd00647702fb61becca3410af407fa749",
+  "bytes": 137619,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

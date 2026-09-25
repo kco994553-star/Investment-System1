@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BWXT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BWXT?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:38.317869+00:00",
+  "sha256": "12e4b54714c7024aed657d99ae35cc824dcc57845e2d325b1346b4030c71a2b3",
+  "bytes": 133359,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

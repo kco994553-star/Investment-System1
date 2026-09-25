@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LBTYK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LBTYK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:35:24.003750+00:00",
+  "sha256": "c778a29e523b34d4e035f7af9d351199086c16bcc72e3a379f3a3d33940b0797",
+  "bytes": 139465,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

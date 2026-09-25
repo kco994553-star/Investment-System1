@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WLK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WLK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:25.684392+00:00",
+  "sha256": "b682cbe911d1440c40c0fac3774d2e0ef6bf7d1f1570d5cfb546ee51900da4ec",
+  "bytes": 135298,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

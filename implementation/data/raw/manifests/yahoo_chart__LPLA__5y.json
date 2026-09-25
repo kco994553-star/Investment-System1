@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LPLA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LPLA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:55.462493+00:00",
+  "sha256": "7a67f63584f1ef13dc8c9bf8b76b5218c14c7c2c046e787503892281e9f08ad9",
+  "bytes": 135207,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

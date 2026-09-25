@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RYN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RYN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:47.073397+00:00",
+  "sha256": "5188b727554f862327154e438b59ec95c1e235801361df0ffd0940f5786f77d1",
+  "bytes": 7925,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

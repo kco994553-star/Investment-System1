@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SAIC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SAIC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:48.316485+00:00",
+  "sha256": "b89dc0b69d0a11a2f8bf8f3f7d9375f3968e920bbf5dec0e8f7f32d8541212ba",
+  "bytes": 135577,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

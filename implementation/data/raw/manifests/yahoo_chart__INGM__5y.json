@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:INGM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/INGM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:40.248857+00:00",
+  "sha256": "802b4d49186c929217acbd699891dacf113aa935738a75422ad1e3c2c2341fe0",
+  "bytes": 53350,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

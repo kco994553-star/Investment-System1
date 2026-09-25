@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:THC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/THC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:02.623095+00:00",
+  "sha256": "5b84e6235fa9c0273c9805e4b47aceb51348cff5ec49eccf9a788c1f100bfbf0",
+  "bytes": 134134,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

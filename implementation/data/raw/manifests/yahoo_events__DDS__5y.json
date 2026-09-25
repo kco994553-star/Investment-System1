@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DDS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DDS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:00.112376+00:00",
+  "sha256": "027435b98e4af29509c6b42805a463be5d97737f7a77ce2c18b756cfe0feea2e",
+  "bytes": 7586,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

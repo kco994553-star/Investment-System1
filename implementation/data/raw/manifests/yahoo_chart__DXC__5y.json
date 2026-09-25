@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DXC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DXC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:05.959578+00:00",
+  "sha256": "842acfbaee7aeadabb0e7e4ee4deacf2a8f77d02a9ac49882672d89c5cfec107",
+  "bytes": 137644,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

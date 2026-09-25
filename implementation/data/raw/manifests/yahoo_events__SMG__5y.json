@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SMG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SMG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:55.136032+00:00",
+  "sha256": "19b7fe357b11df3cb1db6992b2f0b6c70bfe28e69b6f04d607115ce09c3dd8fa",
+  "bytes": 7728,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

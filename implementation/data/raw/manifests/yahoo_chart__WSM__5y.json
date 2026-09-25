@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WSM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WSM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:28.195147+00:00",
+  "sha256": "794f30d3053118b443d15bba1cfe338f6ea90dae03a047c4bea581a8de702cde",
+  "bytes": 135344,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

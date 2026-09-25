@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:IONS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/IONS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:41.889565+00:00",
+  "sha256": "dd0d7b6a6d0d07528c953951739585aceb5db82ce76f3e6def7a924748e642ab",
+  "bytes": 133652,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

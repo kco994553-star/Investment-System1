@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DINO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DINO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:00.667191+00:00",
+  "sha256": "2abd7e0f6838af793727e69c73776e826cd3779fd425203aae14ac677fafe466",
+  "bytes": 7813,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AWI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AWI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:27.118552+00:00",
+  "sha256": "58334d83af505c5c92edea7abb056f42759e3bfd17646f9d549cee6a31cad053",
+  "bytes": 7785,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

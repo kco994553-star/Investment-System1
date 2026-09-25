@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:OSK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OSK?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:20.956943+00:00",
+  "sha256": "01fd9979760a9f6935a79da41e1f352aa23dff483856b2f8df0b329a100d6943",
+  "bytes": 7828,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

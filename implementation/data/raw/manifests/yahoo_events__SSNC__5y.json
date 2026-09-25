@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SSNC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SSNC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:59.836977+00:00",
+  "sha256": "5c4ca0207c12a20d7a6623067be247cbdabcda9ba60318077fc1dce79330b68c",
+  "bytes": 7694,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

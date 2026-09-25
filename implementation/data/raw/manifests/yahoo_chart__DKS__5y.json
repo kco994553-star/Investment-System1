@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DKS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DKS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:01.988603+00:00",
+  "sha256": "f01dc41ff3a2ac6d27e46e480a4b6192ec9fa06506f6623d20029545755191c6",
+  "bytes": 136446,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LBTYA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LBTYA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:50.599475+00:00",
+  "sha256": "a6341960cb1fada97f2ed4bde9018b7f7aead209d98af4af70e6156bd140eb5f",
+  "bytes": 138819,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:XRAY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/XRAY?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:33.266084+00:00",
+  "sha256": "c08a597ba0cc9a46eb85dbab6a5ec19448f6a205410738b6ed52b6d23cbefe7b",
+  "bytes": 7904,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

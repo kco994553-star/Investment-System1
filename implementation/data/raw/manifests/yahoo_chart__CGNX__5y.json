@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CGNX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CGNX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:44.870894+00:00",
+  "sha256": "cfc3e30377fe39fd3eb07b1fb9f3f52af609d4eb57bc4d0a2b6f588e45ffe000",
+  "bytes": 135287,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SGI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SGI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:51.760153+00:00",
+  "sha256": "967492b4c8d3026507a78e87fdb16a8011742dd638c8ed5e71ee6c2ff6a123e2",
+  "bytes": 135249,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

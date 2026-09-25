@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CELH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CELH?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:43.152645+00:00",
+  "sha256": "429791fd5ec5ff7d258ec9bfb95815793c08ed9ded1a2b2b4fa76e436987727a",
+  "bytes": 8004,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BEPC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BEPC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:30.559335+00:00",
+  "sha256": "3ee433c3bd046b9b6d032a71db72298211f222bc2217bb467169219c108da286",
+  "bytes": 136225,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

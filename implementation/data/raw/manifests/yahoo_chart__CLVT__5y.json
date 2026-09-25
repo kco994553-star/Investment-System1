@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CLVT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CLVT?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:48.086727+00:00",
+  "sha256": "c3975340a3407c60a2fb52cda42d448683e426a8deff01402cdfd80eb36bb13d",
+  "bytes": 135094,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

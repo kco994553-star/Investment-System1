@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RARE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RARE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:35.038772+00:00",
+  "sha256": "7bcf57dc819958e099632a97554fef33697f7324c4de19c730a10abb5812e3ac",
+  "bytes": 7807,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

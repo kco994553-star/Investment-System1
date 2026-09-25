@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SGI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SGI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:51.997156+00:00",
+  "sha256": "9bb7482ca441d46fc32ad54b8f905a95996c7422ba8c2a0f6014528387e1a6bc",
+  "bytes": 7781,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

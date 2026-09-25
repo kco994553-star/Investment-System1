@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:UNM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UNM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:14.028170+00:00",
+  "sha256": "2e99905c8f887f79960cb71293741470eff0b8110d922cde27d169d08f299838",
+  "bytes": 7730,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

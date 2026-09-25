@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CFR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CFR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:44.109941+00:00",
+  "sha256": "9cd64910a6d6c7cf42f6e13c6d1fb4191a79c2f40c0aa55d0fb2ddd1c0b172e6",
+  "bytes": 7904,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

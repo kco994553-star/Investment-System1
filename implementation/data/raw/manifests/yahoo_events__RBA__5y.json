@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RBA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RBA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:35.592330+00:00",
+  "sha256": "d7d620d682fd51bb0d458d97f2813210c10ac0222d78948215961cc5cb99fb14",
+  "bytes": 7763,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:VSTS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VSTS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:21.340415+00:00",
+  "sha256": "46fc0eaf8fd0cb59df084f749e043cb2b45a1a633760175f372f38fcc264ad2e",
+  "bytes": 5262,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

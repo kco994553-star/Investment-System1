@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:GLOB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GLOB?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:27.101912+00:00",
+  "sha256": "0e70e8eb0899a49d727c8f1149685c84dc3e2b3e179d3ab725e50226dd3a4124",
+  "bytes": 7711,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

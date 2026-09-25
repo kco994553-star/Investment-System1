@@ -1,0 +1,153 @@
+{
+  "kind": "STOOQ_FALLBACK_RUN",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "calibration": [
+    {
+      "symbol": "AAPL",
+      "status": "UNAVAILABLE"
+    },
+    {
+      "symbol": "MSFT",
+      "status": "UNAVAILABLE"
+    },
+    {
+      "symbol": "JPM",
+      "status": "UNAVAILABLE"
+    },
+    {
+      "symbol": "XOM",
+      "status": "UNAVAILABLE"
+    },
+    {
+      "symbol": "PG",
+      "status": "UNAVAILABLE"
+    },
+    {
+      "symbol": "KO",
+      "status": "UNAVAILABLE"
+    }
+  ],
+  "calibrated": false,
+  "non_csv_response_head": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"robots\" content=\"noindex,nofollow\"></head><body><noscript>This site requires JavaScript to verify your browser. Please enable JavaScript and reload.</noscript><script nonce=\"GZmWY0xl4CyAYLF9ZBo9qQ\">\n(async()=>{const c=\"AAAAAGq2Yjmffyfr9JNpoTCjK4XXbckLrLeH9wi96KvbqeZxf_0GEJ6GYZU\",d=4,t=\"0\".repeat(d),e=new TextEncoder;let n=0;while(1){const h=await crypto.subtle.digest(\"SHA-256\",e.encode(c+n)),x=Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,\"0\")).join(\"\");if(x.startsWith(t))break;n++}const r=await fetch(\"/__verify\",{me",
+  "tolerance": 0.005,
+  "n_targets": 17,
+  "results": {
+    "ANSS": "NO_STOOQ_DATA",
+    "AVB": "NO_STOOQ_DATA",
+    "CTRA": "NO_STOOQ_DATA",
+    "DAY": "NO_STOOQ_DATA",
+    "DFS": "NO_STOOQ_DATA",
+    "EA": "NO_STOOQ_DATA",
+    "EQR": "NO_STOOQ_DATA",
+    "HES": "NO_STOOQ_DATA",
+    "HOLX": "NO_STOOQ_DATA",
+    "IPG": "NO_STOOQ_DATA",
+    "JNPR": "NO_STOOQ_DATA",
+    "K": "NO_STOOQ_DATA",
+    "PARAA": "NO_STOOQ_DATA",
+    "SQ": "NO_STOOQ_DATA",
+    "WBA": "NO_STOOQ_DATA",
+    "WOLF": "NO_STOOQ_DATA",
+    "WSOB": "NO_STOOQ_DATA"
+  },
+  "written": [],
+  "log": [
+    {
+      "artifact_id": "stooq_csv:AAPL",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:MSFT",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:JPM",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:XOM",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:PG",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:KO",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:ANSS",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:AVB",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:CTRA",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:DAY",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:DFS",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:EA",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:EQR",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:HES",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:HOLX",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:IPG",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:JNPR",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:K",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:PARAA",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:SQ",
+      "status": "OK",
+      "bytes": 796
+    },
+    {
+      "artifact_id": "stooq_csv:WBA",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "stooq_csv:WOLF",
+      "status": "OK",
+      "bytes": 796
+    },
+    {
+      "artifact_id": "stooq_csv:WSOB",
+      "status": "OK",
+      "bytes": 796
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "real_data_verified": false
+}

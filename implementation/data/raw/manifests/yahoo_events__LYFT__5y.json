@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LYFT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LYFT?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:57.710564+00:00",
+  "sha256": "96624d93ea7f420ef18d5237ffc2a1b178d59e675fc391d5eb5dc9ec9296fb09",
+  "bytes": 7936,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

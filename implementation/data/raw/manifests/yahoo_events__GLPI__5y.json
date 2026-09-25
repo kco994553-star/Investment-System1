@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:GLPI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GLPI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:27.576483+00:00",
+  "sha256": "f2722a1207e477d22d2e41890277eb243c1ca82334c543aa30849a845e7e821e",
+  "bytes": 7846,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

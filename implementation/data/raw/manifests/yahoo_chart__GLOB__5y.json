@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GLOB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GLOB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:26.881483+00:00",
+  "sha256": "45a0f274f05569adc1eb1864a27461f45b996df473965d3d4bbb3a82a4f78887",
+  "bytes": 134922,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

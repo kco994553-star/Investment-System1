@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RNG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RNG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:42.244546+00:00",
+  "sha256": "fc834356287feaf578db3b5ccc5194ab6f937111e7ecff741d38a547e3729572",
+  "bytes": 7844,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

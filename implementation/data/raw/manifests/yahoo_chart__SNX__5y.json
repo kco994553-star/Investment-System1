@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SNX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SNX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:56.485330+00:00",
+  "sha256": "17a53cb34b3d0659d98bcc6f58c05155a019925ed5461c577487c7802dfd01ac",
+  "bytes": 135619,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

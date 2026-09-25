@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AGNC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AGNC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:14.397520+00:00",
+  "sha256": "94266edb8e76f72d581c381cb4e77832bf6bab8be6861b2b6c5815b073c79619",
+  "bytes": 7902,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

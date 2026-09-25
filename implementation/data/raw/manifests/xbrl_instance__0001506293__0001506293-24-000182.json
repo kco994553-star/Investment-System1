@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001506293:0001506293-24-000182",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1506293/000150629324000182/pins-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-25T12:35:13.454109+00:00",
+  "sha256": "a7645d151a2c95ce623d4a2293adb8dc7e6251ca26596d99a5d27c709efae723",
+  "bytes": 739282,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

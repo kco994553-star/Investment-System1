@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:EGP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EGP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:07.452006+00:00",
+  "sha256": "33f753bf6aa0de338d6da36212e86ecebaaadd9be7b03dac1998c8f561b3efc2",
+  "bytes": 136952,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

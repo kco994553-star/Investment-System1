@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BURL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BURL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:37.840881+00:00",
+  "sha256": "a1961dcafe6822347ae082af753185f1d22ed22851b6f9e97401393c24a7f782",
+  "bytes": 134584,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

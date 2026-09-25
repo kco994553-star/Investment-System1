@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:KNSL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KNSL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:47.554302+00:00",
+  "sha256": "549d5449b7000cc757d78925853fba4e44b80af9a9c8f7925cd1a63d465bd94d",
+  "bytes": 131903,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PII:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PII?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:27.589047+00:00",
+  "sha256": "574b6b2fbd423004af12f49d4c14fe230954621d2b9e868ceff9c06444bcf73b",
+  "bytes": 7689,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

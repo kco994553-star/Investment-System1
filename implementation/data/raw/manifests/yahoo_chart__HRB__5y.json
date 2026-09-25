@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HRB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HRB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:37.693473+00:00",
+  "sha256": "9a413c1c81b3e71143b1ff3474aa8bbff8b24c51a2281d1d47a7c827d6b84764",
+  "bytes": 136536,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

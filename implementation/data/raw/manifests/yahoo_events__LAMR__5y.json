@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LAMR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LAMR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:49.802807+00:00",
+  "sha256": "3d5b1556a6408043d0cf487a3a34c39c9745affd1a2fd9d8027a8351c21c32da",
+  "bytes": 7882,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

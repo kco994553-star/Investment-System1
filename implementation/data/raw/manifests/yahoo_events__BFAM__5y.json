@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BFAM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BFAM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:31.242062+00:00",
+  "sha256": "dd469eb017c429bfee316060fb311fb1d6e0ad05d79a888fb0a51ac4b40af788",
+  "bytes": 7810,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

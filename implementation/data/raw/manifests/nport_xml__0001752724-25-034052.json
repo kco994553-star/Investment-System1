@@ -1,0 +1,12 @@
+{
+  "artifact_id": "nport_xml:0001752724-25-034052",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1100663/000175272425034052/primary_doc.xml",
+  "source_kind": "SEC_NPORT_XML",
+  "fetched_at": "2026-09-25T12:25:04.073857+00:00",
+  "sha256": "1c9162bf36195494f709f310502e389edeb8a08e8c645d7cbdd34d57a0a11639",
+  "bytes": 968291,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

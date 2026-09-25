@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CELH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CELH?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:42.891777+00:00",
+  "sha256": "c143a772373107774721211b5e64f79123d47202b797f2ab548faf4dfd1ecc39",
+  "bytes": 136979,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

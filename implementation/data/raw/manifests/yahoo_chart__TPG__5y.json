@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TPG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TPG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:06.310546+00:00",
+  "sha256": "9ec78bced2d1f82ea2812d320cbbfafa2f1c6c756bd85d481dc82954e8b24db4",
+  "bytes": 127303,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

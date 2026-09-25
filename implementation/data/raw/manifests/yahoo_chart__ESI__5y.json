@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ESI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ESI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:12.984815+00:00",
+  "sha256": "ee6a8077294394d45f35873e341ef3100d5c1865c0d8b1b183a1c571d6f11bd7",
+  "bytes": 138140,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

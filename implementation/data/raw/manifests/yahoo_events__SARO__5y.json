@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SARO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SARO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:49.464921+00:00",
+  "sha256": "06aa833eeac12d9769319cc245794a755c0dd8f82f956ff9fbfbbb9629b8bc74",
+  "bytes": 3800,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

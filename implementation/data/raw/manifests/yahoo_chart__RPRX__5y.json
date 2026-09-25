@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RPRX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RPRX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:44.027135+00:00",
+  "sha256": "7794c6a249434a556f1e55455675cb51e8d8b38f3e7a2df0a6acc2d410cd5a9c",
+  "bytes": 136672,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

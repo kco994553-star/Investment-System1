@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ATI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ATI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:24.966038+00:00",
+  "sha256": "3af127213e1d890c4c7321b010e4337fef30fa62e8822f2d59da4834ba41d65e",
+  "bytes": 7902,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

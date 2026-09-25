@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PEGA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PEGA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:25.322410+00:00",
+  "sha256": "e2a4d948a362f013abee6d7682038fc6628dd51aa17ffdb8f19d297911fdb2bc",
+  "bytes": 135767,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

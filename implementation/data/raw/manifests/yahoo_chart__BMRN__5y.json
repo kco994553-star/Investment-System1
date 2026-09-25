@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BMRN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BMRN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:33.877567+00:00",
+  "sha256": "75da64cd3d606b56fdbec36c3976bec345dca0612fa6d0ebc806af789a5eebc2",
+  "bytes": 133040,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

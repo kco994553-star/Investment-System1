@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ENOV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ENOV?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:10.470613+00:00",
+  "sha256": "6c1b413ed30d2add56b1ce280f16768a119f9669f5db542ff011576882375ce0",
+  "bytes": 135009,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SAIA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SAIA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:47.807538+00:00",
+  "sha256": "265817de848420284c2dba5cb15a664ca69a06df8f906b4f70865aedffa54563",
+  "bytes": 132864,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BFAM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BFAM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:31.023489+00:00",
+  "sha256": "8e5962e287efdb3b5c3b30a1f222285840524bf6d8fbc97802aff881a693872f",
+  "bytes": 134641,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

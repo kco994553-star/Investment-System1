@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ESTC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ESTC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:13.470005+00:00",
+  "sha256": "35becf563d562b0ea5b99c2c1cf690e04cb3219af9df3c0dbb6aeaa7d2637ce2",
+  "bytes": 132600,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

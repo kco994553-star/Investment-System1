@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ALNY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ALNY?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:16.704707+00:00",
+  "sha256": "ed02cfafff6d203d83e6aad9a01eff0ffb45a8c7fca0af9b950f638d03d1e4fd",
+  "bytes": 133294,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

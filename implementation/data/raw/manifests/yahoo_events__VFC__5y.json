@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:VFC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VFC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:17.040561+00:00",
+  "sha256": "646bb9d032114d76f35c383ea22ac712a3fe3927cb88725c7faa77bb4e9e4e3f",
+  "bytes": 7978,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

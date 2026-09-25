@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LOPE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LOPE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:54.954451+00:00",
+  "sha256": "62efac6b8a891ccae7e09ecf398ebdf849b6c3fa4a4bc18ff5a054f5f1bc6100",
+  "bytes": 135759,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

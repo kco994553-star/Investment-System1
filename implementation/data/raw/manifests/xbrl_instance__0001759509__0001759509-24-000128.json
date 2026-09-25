@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001759509:0001759509-24-000128",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1759509/000175950924000128/lyft-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-25T12:35:17.633008+00:00",
+  "sha256": "f90af492c83baf8fca3c4ce333e99714c1dab5eb4ab3778c47f5ffb643ad2bac",
+  "bytes": 1739466,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

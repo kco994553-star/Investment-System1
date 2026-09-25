@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ESI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ESI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:13.204455+00:00",
+  "sha256": "b6bfe0049feb8e92ebceb9c4fe1bbcd36c0269ae85098ea4c6c3f3383e043bc2",
+  "bytes": 7957,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

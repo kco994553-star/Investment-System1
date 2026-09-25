@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AVT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AVT?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:25.786822+00:00",
+  "sha256": "49d44356a449a2f23715ddc637e7def0d14e7bf759d1ce632b37ef6310d1ddd4",
+  "bytes": 135110,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

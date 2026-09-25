@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:COTY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/COTY?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:52.863621+00:00",
+  "sha256": "9255e7c0f49180a00d93fda6468adac1dbd95964cb2b3441d0942a8d859da577",
+  "bytes": 7834,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

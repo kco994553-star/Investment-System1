@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BURL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BURL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:38.082658+00:00",
+  "sha256": "cc9c838201e1502af25635b2b1d597cca74c5e4c9267850668566bd5c5e0acf2",
+  "bytes": 7845,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DBX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DBX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:58.816395+00:00",
+  "sha256": "af4b6d5c8956f354ed2aa44f389f4442dec6c69ef284694d2988eb011d69e5ca",
+  "bytes": 137819,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

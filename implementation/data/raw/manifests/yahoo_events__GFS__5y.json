@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:GFS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GFS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:26.041966+00:00",
+  "sha256": "62f5055c44e6c5575c367a14bcc710f8eb94a63446175c4816bd5778ecc6709d",
+  "bytes": 7690,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

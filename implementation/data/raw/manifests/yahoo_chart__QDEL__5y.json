@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:QDEL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/QDEL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:32.194914+00:00",
+  "sha256": "c88ec443874231b5773b1e846a97d99f7b12738523620591d80f1ec398a6b056",
+  "bytes": 134078,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

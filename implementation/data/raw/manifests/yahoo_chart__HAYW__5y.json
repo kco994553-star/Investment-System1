@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HAYW:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HAYW?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:33.822134+00:00",
+  "sha256": "bcc0294e9d0a2468345021efa9c8a98f2e7b9545d6245a2c381d2e9e784585e8",
+  "bytes": 137645,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

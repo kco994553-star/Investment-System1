@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LCID:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LCID?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:51.315987+00:00",
+  "sha256": "1ef1a093d11249d88eb38244692c49fd73e6c427b67e35c77c6c30d6bef813ac",
+  "bytes": 7524,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

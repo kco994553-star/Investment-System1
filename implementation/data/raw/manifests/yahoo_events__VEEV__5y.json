@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:VEEV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VEEV?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:16.488082+00:00",
+  "sha256": "fee1a1f8ceee7cbc774ea68008f13591fa4256bf8751a0eaf721b8d764b0ef1e",
+  "bytes": 7697,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

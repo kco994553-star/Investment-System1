@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TXRH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TXRH?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:10.639744+00:00",
+  "sha256": "d7c2a730bf23cb3e54f95b1c8371263c6751dcbf9d6a00d0e57230d949b686c8",
+  "bytes": 135168,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:COLB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/COLB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:51.112495+00:00",
+  "sha256": "b415d1973a5b32d34b3743e67d142ad782e42128f8e0272c6fd11e20b01cd47a",
+  "bytes": 138255,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

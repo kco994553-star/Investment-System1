@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:XRAY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/XRAY?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:33.025258+00:00",
+  "sha256": "c11b3834f788e61afdedf27c2670aa914619f3f11f6c47bb4d983deac0ea865d",
+  "bytes": 137689,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

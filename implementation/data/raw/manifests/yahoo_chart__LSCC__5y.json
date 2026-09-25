@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LSCC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LSCC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:56.489269+00:00",
+  "sha256": "ad3b19d2b7338e605e40eb8afd52f0ca98bd3aa6b618e8cdef65685362088345",
+  "bytes": 134370,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TRU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TRU?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:07.701304+00:00",
+  "sha256": "441a4952fd8dd68a5f8e9ed2ccd02aa3e8640d0ca9d601e4b0efa30beddcc662",
+  "bytes": 134137,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

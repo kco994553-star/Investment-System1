@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TWLO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TWLO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:34:09.823966+00:00",
+  "sha256": "f3e8b3c27abe4d9e3e4df65ccf3f44342af645443e5c2727e053c1e88d269f42",
+  "bytes": 7631,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SON:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SON?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:57.442081+00:00",
+  "sha256": "8809bfe7959158498f809d1cbfb501ae4ddbe3c7ab6150eae82c1dfc0e2fa521",
+  "bytes": 135285,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

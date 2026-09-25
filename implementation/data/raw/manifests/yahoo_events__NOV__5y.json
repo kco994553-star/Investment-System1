@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NOV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NOV?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:12.355477+00:00",
+  "sha256": "1a8d2eb1873273248c7f3dff78778354663a1211940e7ee58f80ea9bc03da3ff",
+  "bytes": 7952,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

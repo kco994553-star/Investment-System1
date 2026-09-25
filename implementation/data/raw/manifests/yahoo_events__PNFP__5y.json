@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PNFP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PNFP?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:30.003893+00:00",
+  "sha256": "359420c2ce7ee30eba70b3d4f363bdfc418922484c243df53317159bad5afc37",
+  "bytes": 7739,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

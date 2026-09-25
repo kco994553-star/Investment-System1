@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:QGEN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/QGEN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:32.690865+00:00",
+  "sha256": "1dd0e278545681739a9c06ace4ae6ed7a07516da937551e0505c09befc443813",
+  "bytes": 137172,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

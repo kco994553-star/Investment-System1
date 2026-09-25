@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BRX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BRX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:37.104037+00:00",
+  "sha256": "165443f4d198a8afc48ac5ec2d716c7c261fadf69af3aaeed9cb0ef12f98f590",
+  "bytes": 8064,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

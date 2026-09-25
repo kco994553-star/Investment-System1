@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ALGM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ALGM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:15.176957+00:00",
+  "sha256": "50f4af534ca7d5bdcb70e23ccd85e13bee643c6e59c5039891b6a7ecaff7acf7",
+  "bytes": 136128,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

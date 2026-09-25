@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CAR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CAR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:40.119194+00:00",
+  "sha256": "4bb6c5048bcfabdd2cd8d664725b4aed4fda3afe189dc268a81876b4c1b80491",
+  "bytes": 7779,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

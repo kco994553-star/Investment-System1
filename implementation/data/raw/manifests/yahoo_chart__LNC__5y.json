@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LNC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LNC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:53.497181+00:00",
+  "sha256": "efd1cf233256d13be77fbba8c01b78dc8fd7ca94ff97d84539e1194ab7447297",
+  "bytes": 136381,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RARE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RARE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:34.823731+00:00",
+  "sha256": "b99c129c19790bbf17daa27107ce488af8a9abc8fe6738eb181d4d85f80d2524",
+  "bytes": 134325,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

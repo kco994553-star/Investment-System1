@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ARMK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ARMK?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:22.954653+00:00",
+  "sha256": "5ce369dfabae39d8e9bb05bbe8743278aab9dab6cc76a6f9cb835d0a75e5e802",
+  "bytes": 7999,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

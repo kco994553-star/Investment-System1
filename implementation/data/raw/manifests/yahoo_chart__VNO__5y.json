@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:VNO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VNO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:34:19.027481+00:00",
+  "sha256": "5087b9e8ec810f00de0792ae96cd9296c93e948fe188525dd9db7975b9eba68c",
+  "bytes": 137403,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FIVN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FIVN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:20.297089+00:00",
+  "sha256": "9c5b2aa2679ead36ff0f5fcea0c3effe7ce08283e881079ebcae4d0571bf794d",
+  "bytes": 7715,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

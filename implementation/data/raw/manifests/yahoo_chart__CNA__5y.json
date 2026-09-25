@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CNA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CNA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:48.604649+00:00",
+  "sha256": "4e91ab24ff2660a98f3691f228f60b493f7b7688444434c078af467b775ccc6e",
+  "bytes": 135291,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

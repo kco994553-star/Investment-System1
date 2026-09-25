@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SNDR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SNDR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:55.985921+00:00",
+  "sha256": "90d1fc95d7df81ea9ef2fa5da6352d9d9663a354537d47892d3cf413106efd3e",
+  "bytes": 137388,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

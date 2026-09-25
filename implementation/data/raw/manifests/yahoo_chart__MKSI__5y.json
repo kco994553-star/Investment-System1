@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MKSI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MKSI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:02.220460+00:00",
+  "sha256": "914096227e23439a2b07b8a8476e4a5ca9bc3305a35e4e7d383d6b2efc0a297a",
+  "bytes": 134837,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

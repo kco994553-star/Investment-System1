@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SAIC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SAIC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:48.541655+00:00",
+  "sha256": "77a0a6b3628331421f29ef89def8bfdf9d68eb4f350d85874ac21703d6873da5",
+  "bytes": 7912,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

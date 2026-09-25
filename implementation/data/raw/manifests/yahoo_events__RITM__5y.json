@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RITM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RITM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:40.759024+00:00",
+  "sha256": "669300dac4bf018b4a7d5d9c6cba1f47538a94a049b8bfbb9ab7d935b18ab5af",
+  "bytes": 7864,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

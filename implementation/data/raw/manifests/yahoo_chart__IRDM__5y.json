@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:IRDM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/IRDM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:42.864157+00:00",
+  "sha256": "7a436a939718b1fc54524e536bc95729a6c87545b1a35f69d81bc6c24617c24c",
+  "bytes": 136347,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

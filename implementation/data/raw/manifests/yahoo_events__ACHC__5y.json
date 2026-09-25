@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ACHC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ACHC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:10.690954+00:00",
+  "sha256": "735400976593296240e1d61d33a1151c10b0b1e8a6154ee9fbb06ef8c333d999",
+  "bytes": 7765,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ITT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ITT?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:32:43.374545+00:00",
+  "sha256": "676c5b4f3170594fe790f3f8e48caa2cc895ef244707167b688c230aa942a2fc",
+  "bytes": 135137,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

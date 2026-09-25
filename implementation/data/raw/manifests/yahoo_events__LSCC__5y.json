@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LSCC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LSCC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:56.703700+00:00",
+  "sha256": "8821019ad05fb413e2e3b6a0a565a8391cf82e505d75f01f40368dd3f72b5c47",
+  "bytes": 7678,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

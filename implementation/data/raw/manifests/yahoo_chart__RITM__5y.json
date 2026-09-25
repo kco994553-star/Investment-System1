@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RITM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RITM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:40.535551+00:00",
+  "sha256": "790ca1c8e72b2917bf412b46ef674d0466001b3b7c726bcc376fed45d3d5a519",
+  "bytes": 137272,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

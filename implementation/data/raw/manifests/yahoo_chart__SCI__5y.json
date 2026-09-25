@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SCI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SCI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:49.739075+00:00",
+  "sha256": "9edd0be02df8f3d6d601c940375683e0e53b70a3a1aa5bab95f45017635961f2",
+  "bytes": 133161,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

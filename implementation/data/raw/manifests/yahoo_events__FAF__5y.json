@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FAF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FAF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:32:17.313270+00:00",
+  "sha256": "6c0478d667f3311fb223af53b223ac89fa6490bdcd86eaaedeb72ed3c145ce1a",
+  "bytes": 7739,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

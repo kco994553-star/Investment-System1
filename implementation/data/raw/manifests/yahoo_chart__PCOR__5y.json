@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PCOR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PCOR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:24.309753+00:00",
+  "sha256": "85d4c678e36592000816f8944bd75fdafe91e73562130aaaf2f624e05b56598c",
+  "bytes": 132559,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

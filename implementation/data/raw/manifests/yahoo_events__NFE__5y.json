@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NFE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NFE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:10.097558+00:00",
+  "sha256": "29dcbd52c0586439fee4c26302d78e4a3b4cd083f075e197d703538029e4a08f",
+  "bytes": 5162,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

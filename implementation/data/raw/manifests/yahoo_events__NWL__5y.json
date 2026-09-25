@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NWL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NWL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:13.902338+00:00",
+  "sha256": "4408719c651d66b4d00f3263321d8e3371f6ec8cd01ba45dfc89d03a88a390e5",
+  "bytes": 7708,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

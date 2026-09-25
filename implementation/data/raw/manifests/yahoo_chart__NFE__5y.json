@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NFE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NFE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:33:09.880379+00:00",
+  "sha256": "15f273dfb43efe6535142aba6ee8312a70ba11a5e3c00af5514a630767384c58",
+  "bytes": 137550,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

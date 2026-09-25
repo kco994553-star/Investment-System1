@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BPOP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BPOP?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:31:35.175687+00:00",
+  "sha256": "5ad5e31088877c1b063081d7957866e04584c10fa92d8bac4b476236e3f25e30",
+  "bytes": 7800,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

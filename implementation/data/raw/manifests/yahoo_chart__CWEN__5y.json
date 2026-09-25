@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CWEN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CWEN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:31:57.276255+00:00",
+  "sha256": "ca142346830626c491544f85ad9fb008a393e846e18a49b4bad079715762e29f",
+  "bytes": 136773,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

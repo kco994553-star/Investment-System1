@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MEDP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MEDP?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:33:00.963654+00:00",
+  "sha256": "fbdc4b1791fd50569afb753e734e1f092334441d940540814dcc19192e11c7cf",
+  "bytes": 7716,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
