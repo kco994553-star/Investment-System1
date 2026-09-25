@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PARA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PARA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T11:27:43.388406+00:00",
+  "sha256": "6cba0fc84ef46c99ce7957fca8e90c123a85839875cf6a5338f437aeb8140697",
+  "bytes": 5880,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

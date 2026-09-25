@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TAP-A:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TAP-A?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T11:27:44.124659+00:00",
+  "sha256": "0fca8722f9f737e79cd4cd615e83a1ae58f6763d12f4d08951be7c100f961d44",
+  "bytes": 109198,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

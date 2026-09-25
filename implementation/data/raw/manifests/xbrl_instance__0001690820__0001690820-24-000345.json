@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001690820:0001690820-24-000345",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1690820/000169082024000345/cvna-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-25T11:27:39.758396+00:00",
+  "sha256": "6fcbed2510926533cbffaaa7575f5c60f9883bc2d0af8313c86be09c7be6ba9c",
+  "bytes": 1734638,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

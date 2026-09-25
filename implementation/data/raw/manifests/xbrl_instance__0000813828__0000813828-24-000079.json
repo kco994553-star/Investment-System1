@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000813828:0000813828-24-000079",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/813828/000081382824000079/para-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-25T11:27:34.950629+00:00",
+  "sha256": "62352d5c4bf6efe1c907ff7a4a24bd326a7f28e9e812b7499df9debd356e4589",
+  "bytes": 1567825,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
