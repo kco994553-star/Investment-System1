@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SRE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SRE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:35.314171+00:00",
+  "sha256": "dd14a7c9f20a8735f94e88f4c85765b6a32e7ffecafc65e0c7a3d49c0e421f18",
+  "bytes": 133138,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

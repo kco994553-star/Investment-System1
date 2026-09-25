@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:11.451321+00:00",
+  "sha256": "b06da79145c993c4c0eb2abf661b718fd42791d7e7f1858266d10d02a4f19a3e",
+  "bytes": 133320,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

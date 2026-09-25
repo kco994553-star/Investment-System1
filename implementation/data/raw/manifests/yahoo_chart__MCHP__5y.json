@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MCHP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MCHP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:31.327701+00:00",
+  "sha256": "c62aa30fcbf8d20d03680e47a8c6503c0fe62211bcc5a28921a0c2a800465de9",
+  "bytes": 133606,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

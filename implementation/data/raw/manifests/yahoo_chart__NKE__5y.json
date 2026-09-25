@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NKE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NKE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:46.796223+00:00",
+  "sha256": "f7761db21968b9e7b43902958644a8dc1082f1169d44e263197bf53a0aa697e8",
+  "bytes": 135901,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

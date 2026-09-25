@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GLAXF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GLAXF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:47.292021+00:00",
+  "sha256": "ea2d7156d41b94fff7bbdbff3d33900ca9d831467d36895c62069a850cf5c912",
+  "bytes": 125346,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

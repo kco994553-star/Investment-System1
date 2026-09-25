@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:VTR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VTR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:58.175217+00:00",
+  "sha256": "99de6556e5b6a0e675d2f175324180968f45a720deecfd15c383bc3f486236b9",
+  "bytes": 135077,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

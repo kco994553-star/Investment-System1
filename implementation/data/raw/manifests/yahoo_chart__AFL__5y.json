@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AFL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AFL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:21.073272+00:00",
+  "sha256": "c584a0a97f787966d037327664b82e2c09623b109d41691104d1bba05b3d4833",
+  "bytes": 135983,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PNW:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PNW?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:41.607624+00:00",
+  "sha256": "476a1c0589893782d7dd060528b302a24f61d445fcb3eff0d1fde313a56b3d8c",
+  "bytes": 133105,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

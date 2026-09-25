@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HST:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HST?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:16.303234+00:00",
+  "sha256": "4fc1a3f8814f92ada3d4c62665adc00acd2365b4427fdbf54ae1a9f7b2440bdb",
+  "bytes": 139518,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

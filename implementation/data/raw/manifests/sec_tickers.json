@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_tickers",
+  "source_url": "https://www.sec.gov/files/company_tickers.json",
+  "source_kind": "SEC_TICKERS",
+  "fetched_at": "2026-09-25T08:20:49.704034+00:00",
+  "sha256": "3749c0b4a6197feb35e91a6704b3836e45f245dbc2dec1ffa559d1c028852d23",
+  "bytes": 797091,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

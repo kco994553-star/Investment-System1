@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:KHC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KHC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:24.278653+00:00",
+  "sha256": "82b3b129b3f0719d5d9b8da62a303a4de393480195807c68b5d6af5d629d22b4",
+  "bytes": 138449,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DLR-PK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DLR-PK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:21.783708+00:00",
+  "sha256": "62d16b67f635f26b475a4d42039b12e50674fe2af922a9adbfd483f2cdf6136a",
+  "bytes": 135225,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

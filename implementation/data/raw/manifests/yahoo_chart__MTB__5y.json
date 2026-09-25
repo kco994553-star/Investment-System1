@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MTB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MTB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:34.114144+00:00",
+  "sha256": "85c2bb2845b4e874440fb4b0f7d1b578883ff916e40191f1fcae5f4d21c7e910",
+  "bytes": 137284,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DTE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DTE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:53.723063+00:00",
+  "sha256": "5f696decab979609bcab2c37c53d1e7fbecf7e3b2ca842946e145e661494083c",
+  "bytes": 137628,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

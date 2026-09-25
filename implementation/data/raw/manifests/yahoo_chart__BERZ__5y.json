@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BERZ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BERZ?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:44.240614+00:00",
+  "sha256": "a9f8f2afb4264cfbc3b53d0952a68320c60a00180b5e031928ae9ce26606eb55",
+  "bytes": 96353,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

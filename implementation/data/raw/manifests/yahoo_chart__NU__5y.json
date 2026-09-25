@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NU?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:53.046063+00:00",
+  "sha256": "ae1a6e170b149775b2d0fe4b00a86b89ede89a8d5f7988933522477a09be9d4e",
+  "bytes": 131565,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

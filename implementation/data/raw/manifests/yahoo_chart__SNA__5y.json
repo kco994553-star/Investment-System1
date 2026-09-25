@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SNA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SNA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:47.861926+00:00",
+  "sha256": "7425cbaaf1b21aa058d43e41b2276e4aa24e4f5309d8d3d7957ac53cf0e6998e",
+  "bytes": 134666,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CIEN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CIEN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:04.212717+00:00",
+  "sha256": "b54dc6fe300c79b6cfc51bf428914a3ea16ebd70bb9927ba27d66b81debaa7bc",
+  "bytes": 133125,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

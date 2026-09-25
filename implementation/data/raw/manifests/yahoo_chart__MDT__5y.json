@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MDT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MDT?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:20.881747+00:00",
+  "sha256": "7143f6428e89f597db0c7d232a2bf9b64d09fa7b528a949e9f4a32b2e0debf53",
+  "bytes": 133010,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

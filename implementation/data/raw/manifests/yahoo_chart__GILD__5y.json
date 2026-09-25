@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GILD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GILD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:46.636086+00:00",
+  "sha256": "d0b02ac3c46f177fe707bb639b5feb23bc046f9ab3843eed66c754a22261241e",
+  "bytes": 134769,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

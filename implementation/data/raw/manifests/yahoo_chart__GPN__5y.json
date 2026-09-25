@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GPN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GPN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:11.632512+00:00",
+  "sha256": "71d14b9a5872f038d4c0decc6cfbc58dd54a1848dcc0ce5f94bd86e3b1ddd672",
+  "bytes": 136172,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

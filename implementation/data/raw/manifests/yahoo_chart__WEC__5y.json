@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WEC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WEC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:59.912215+00:00",
+  "sha256": "cc91838c30b9974b14d5c0a31d24a7d388f676f2fc81f9ec80181439ed17a9de",
+  "bytes": 135298,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

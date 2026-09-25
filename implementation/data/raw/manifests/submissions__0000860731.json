@@ -1,0 +1,12 @@
+{
+  "artifact_id": "submissions:0000860731",
+  "source_url": "https://data.sec.gov/submissions/CIK0000860731.json",
+  "source_kind": "SEC_SUBMISSIONS",
+  "fetched_at": "2026-09-25T08:23:58.127621+00:00",
+  "sha256": "dc38d4a3abeddcc1f464b21cd6401d4d9c0bec9342c40532e12a54977050f834",
+  "bytes": 161262,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

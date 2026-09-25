@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SPOT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SPOT?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:34.676502+00:00",
+  "sha256": "6bd79f8dfeb08fd7fa4e95f8ef90ffa11f5a5851a965eff92ad1b6dc3a39edd9",
+  "bytes": 130346,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

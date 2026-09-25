@@ -1,0 +1,5559 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "data/raw",
+  "n_requested": 827,
+  "n_ok": 817,
+  "n_failed": 10,
+  "log": [
+    {
+      "artifact_id": "sec_tickers",
+      "status": "OK",
+      "bytes": 797091
+    },
+    {
+      "artifact_id": "companyfacts:0001090872",
+      "status": "OK",
+      "bytes": 5118475
+    },
+    {
+      "artifact_id": "submissions:0001090872",
+      "status": "OK",
+      "bytes": 158120
+    },
+    {
+      "artifact_id": "companyfacts:0000947484",
+      "status": "OK",
+      "bytes": 5066221
+    },
+    {
+      "artifact_id": "submissions:0000947484",
+      "status": "OK",
+      "bytes": 159334
+    },
+    {
+      "artifact_id": "companyfacts:0000007084",
+      "status": "OK",
+      "bytes": 4631900
+    },
+    {
+      "artifact_id": "submissions:0000007084",
+      "status": "OK",
+      "bytes": 142838
+    },
+    {
+      "artifact_id": "companyfacts:0000769397",
+      "status": "OK",
+      "bytes": 4196572
+    },
+    {
+      "artifact_id": "submissions:0000769397",
+      "status": "OK",
+      "bytes": 161641
+    },
+    {
+      "artifact_id": "companyfacts:0001002910",
+      "status": "OK",
+      "bytes": 4153441
+    },
+    {
+      "artifact_id": "submissions:0001002910",
+      "status": "OK",
+      "bytes": 162550
+    },
+    {
+      "artifact_id": "companyfacts:0000874761",
+      "status": "OK",
+      "bytes": 6184354
+    },
+    {
+      "artifact_id": "submissions:0000874761",
+      "status": "OK",
+      "bytes": 161849
+    },
+    {
+      "artifact_id": "companyfacts:0000005272",
+      "status": "OK",
+      "bytes": 6911912
+    },
+    {
+      "artifact_id": "submissions:0000005272",
+      "status": "OK",
+      "bytes": 149566
+    },
+    {
+      "artifact_id": "companyfacts:0001267238",
+      "status": "OK",
+      "bytes": 4952081
+    },
+    {
+      "artifact_id": "submissions:0001267238",
+      "status": "OK",
+      "bytes": 158711
+    },
+    {
+      "artifact_id": "companyfacts:0001086222",
+      "status": "OK",
+      "bytes": 3881335
+    },
+    {
+      "artifact_id": "submissions:0001086222",
+      "status": "OK",
+      "bytes": 162466
+    },
+    {
+      "artifact_id": "companyfacts:0000915913",
+      "status": "OK",
+      "bytes": 4652928
+    },
+    {
+      "artifact_id": "submissions:0000915913",
+      "status": "OK",
+      "bytes": 162888
+    },
+    {
+      "artifact_id": "companyfacts:0001097149",
+      "status": "OK",
+      "bytes": 3304311
+    },
+    {
+      "artifact_id": "submissions:0001097149",
+      "status": "OK",
+      "bytes": 161659
+    },
+    {
+      "artifact_id": "companyfacts:0001579241",
+      "status": "OK",
+      "bytes": 2913178
+    },
+    {
+      "artifact_id": "submissions:0001579241",
+      "status": "OK",
+      "bytes": 159678
+    },
+    {
+      "artifact_id": "companyfacts:0001748790",
+      "status": "OK",
+      "bytes": 2264165
+    },
+    {
+      "artifact_id": "submissions:0001748790",
+      "status": "OK",
+      "bytes": 108857
+    },
+    {
+      "artifact_id": "companyfacts:0000820027",
+      "status": "OK",
+      "bytes": 5259737
+    },
+    {
+      "artifact_id": "submissions:0000820027",
+      "status": "OK",
+      "bytes": 157195
+    },
+    {
+      "artifact_id": "companyfacts:0000091142",
+      "status": "OK",
+      "bytes": 3084281
+    },
+    {
+      "artifact_id": "submissions:0000091142",
+      "status": "OK",
+      "bytes": 158200
+    },
+    {
+      "artifact_id": "companyfacts:0001841666",
+      "status": "OK",
+      "bytes": 1430520
+    },
+    {
+      "artifact_id": "submissions:0001841666",
+      "status": "OK",
+      "bytes": 128609
+    },
+    {
+      "artifact_id": "companyfacts:0001521332",
+      "status": "OK",
+      "bytes": 4628363
+    },
+    {
+      "artifact_id": "submissions:0001521332",
+      "status": "OK",
+      "bytes": 157259
+    },
+    {
+      "artifact_id": "companyfacts:0001035443",
+      "status": "OK",
+      "bytes": 3949841
+    },
+    {
+      "artifact_id": "submissions:0001035443",
+      "status": "OK",
+      "bytes": 162036
+    },
+    {
+      "artifact_id": "companyfacts:0000731802",
+      "status": "OK",
+      "bytes": 3515042
+    },
+    {
+      "artifact_id": "submissions:0000731802",
+      "status": "OK",
+      "bytes": 158933
+    },
+    {
+      "artifact_id": "companyfacts:0000915912",
+      "status": "OK",
+      "bytes": 3767773
+    },
+    {
+      "artifact_id": "submissions:0000915912",
+      "status": "OK",
+      "bytes": 157214
+    },
+    {
+      "artifact_id": "companyfacts:0000008818",
+      "status": "OK",
+      "bytes": 3315703
+    },
+    {
+      "artifact_id": "submissions:0000008818",
+      "status": "OK",
+      "bytes": 159172
+    },
+    {
+      "artifact_id": "companyfacts:0001410636",
+      "status": "OK",
+      "bytes": 3883448
+    },
+    {
+      "artifact_id": "submissions:0001410636",
+      "status": "OK",
+      "bytes": 168010
+    },
+    {
+      "artifact_id": "companyfacts:0001069183",
+      "status": "OK",
+      "bytes": 3387723
+    },
+    {
+      "artifact_id": "submissions:0001069183",
+      "status": "OK",
+      "bytes": 162390
+    },
+    {
+      "artifact_id": "companyfacts:0000866787",
+      "status": "OK",
+      "bytes": 3394306
+    },
+    {
+      "artifact_id": "submissions:0000866787",
+      "status": "OK",
+      "bytes": 147007
+    },
+    {
+      "artifact_id": "companyfacts:0000009389",
+      "status": "OK",
+      "bytes": 3930147
+    },
+    {
+      "artifact_id": "submissions:0000009389",
+      "status": "OK",
+      "bytes": 168891
+    },
+    {
+      "artifact_id": "companyfacts:0000010456",
+      "status": "OK",
+      "bytes": 4713125
+    },
+    {
+      "artifact_id": "submissions:0000010456",
+      "status": "OK",
+      "bytes": 167033
+    },
+    {
+      "artifact_id": "companyfacts:0000764478",
+      "status": "OK",
+      "bytes": 4052819
+    },
+    {
+      "artifact_id": "submissions:0000764478",
+      "status": "OK",
+      "bytes": 146331
+    },
+    {
+      "artifact_id": "companyfacts:0000038777",
+      "status": "OK",
+      "bytes": 4377457
+    },
+    {
+      "artifact_id": "submissions:0000038777",
+      "status": "OK",
+      "bytes": 157504
+    },
+    {
+      "artifact_id": "companyfacts:0000014693",
+      "status": "OK",
+      "bytes": 3121380
+    },
+    {
+      "artifact_id": "submissions:0000014693",
+      "status": "OK",
+      "bytes": 164022
+    },
+    {
+      "artifact_id": "companyfacts:0001996862",
+      "status": "OK",
+      "bytes": 817535
+    },
+    {
+      "artifact_id": "submissions:0001996862",
+      "status": "OK",
+      "bytes": 71630
+    },
+    {
+      "artifact_id": "companyfacts:0000875045",
+      "status": "OK",
+      "bytes": 4606215
+    },
+    {
+      "artifact_id": "submissions:0000875045",
+      "status": "OK",
+      "bytes": 158993
+    },
+    {
+      "artifact_id": "companyfacts:0001316835",
+      "status": "OK",
+      "bytes": 2833447
+    },
+    {
+      "artifact_id": "submissions:0001316835",
+      "status": "OK",
+      "bytes": 155889
+    },
+    {
+      "artifact_id": "companyfacts:0001383312",
+      "status": "OK",
+      "bytes": 3663198
+    },
+    {
+      "artifact_id": "submissions:0001383312",
+      "status": "OK",
+      "bytes": 144758
+    },
+    {
+      "artifact_id": "companyfacts:0001067983",
+      "status": "OK",
+      "bytes": 2797863
+    },
+    {
+      "artifact_id": "submissions:0001067983",
+      "status": "OK",
+      "bytes": 161264
+    },
+    {
+      "artifact_id": "companyfacts:0000079282",
+      "status": "OK",
+      "bytes": 3872320
+    },
+    {
+      "artifact_id": "submissions:0000079282",
+      "status": "OK",
+      "bytes": 157635
+    },
+    {
+      "artifact_id": "companyfacts:0000908255",
+      "status": "OK",
+      "bytes": 5067771
+    },
+    {
+      "artifact_id": "submissions:0000908255",
+      "status": "OK",
+      "bytes": 149771
+    },
+    {
+      "artifact_id": "companyfacts:0001037540",
+      "status": "OK",
+      "bytes": 4395080
+    },
+    {
+      "artifact_id": "submissions:0001037540",
+      "status": "OK",
+      "bytes": 162828
+    },
+    {
+      "artifact_id": "companyfacts:0000023217",
+      "status": "OK",
+      "bytes": 4847091
+    },
+    {
+      "artifact_id": "submissions:0000023217",
+      "status": "OK",
+      "bytes": 157911
+    },
+    {
+      "artifact_id": "companyfacts:0001783180",
+      "status": "OK",
+      "bytes": 1872029
+    },
+    {
+      "artifact_id": "submissions:0001783180",
+      "status": "OK",
+      "bytes": 86993
+    },
+    {
+      "artifact_id": "companyfacts:0001374310",
+      "status": "OK",
+      "bytes": 3850614
+    },
+    {
+      "artifact_id": "submissions:0001374310",
+      "status": "OK",
+      "bytes": 153984
+    },
+    {
+      "artifact_id": "companyfacts:0001138118",
+      "status": "OK",
+      "bytes": 4279716
+    },
+    {
+      "artifact_id": "submissions:0001138118",
+      "status": "OK",
+      "bytes": 147392
+    },
+    {
+      "artifact_id": "companyfacts:0001051470",
+      "status": "OK",
+      "bytes": 3822923
+    },
+    {
+      "artifact_id": "submissions:0001051470",
+      "status": "OK",
+      "bytes": 166410
+    },
+    {
+      "artifact_id": "companyfacts:0000815097",
+      "status": "OK",
+      "bytes": 2729358
+    },
+    {
+      "artifact_id": "submissions:0000815097",
+      "status": "OK",
+      "bytes": 162460
+    },
+    {
+      "artifact_id": "companyfacts:0001402057",
+      "status": "OK",
+      "bytes": 3031026
+    },
+    {
+      "artifact_id": "submissions:0001402057",
+      "status": "OK",
+      "bytes": 162619
+    },
+    {
+      "artifact_id": "companyfacts:0001306830",
+      "status": "OK",
+      "bytes": 5402252
+    },
+    {
+      "artifact_id": "submissions:0001306830",
+      "status": "OK",
+      "bytes": 165731
+    },
+    {
+      "artifact_id": "companyfacts:0001324404",
+      "status": "OK",
+      "bytes": 4101859
+    },
+    {
+      "artifact_id": "submissions:0001324404",
+      "status": "OK",
+      "bytes": 159524
+    },
+    {
+      "artifact_id": "companyfacts:0000759944",
+      "status": "OK",
+      "bytes": 4907248
+    },
+    {
+      "artifact_id": "submissions:0000759944",
+      "status": "OK",
+      "bytes": 163597
+    },
+    {
+      "artifact_id": "companyfacts:0000313927",
+      "status": "OK",
+      "bytes": 3845215
+    },
+    {
+      "artifact_id": "submissions:0000313927",
+      "status": "OK",
+      "bytes": 157112
+    },
+    {
+      "artifact_id": "companyfacts:0001043277",
+      "status": "OK",
+      "bytes": 3251409
+    },
+    {
+      "artifact_id": "submissions:0001043277",
+      "status": "OK",
+      "bytes": 156440
+    },
+    {
+      "artifact_id": "companyfacts:0001091667",
+      "status": "OK",
+      "bytes": 3211294
+    },
+    {
+      "artifact_id": "submissions:0001091667",
+      "status": "OK",
+      "bytes": 163557
+    },
+    {
+      "artifact_id": "companyfacts:0000020286",
+      "status": "OK",
+      "bytes": 4245190
+    },
+    {
+      "artifact_id": "submissions:0000020286",
+      "status": "OK",
+      "bytes": 167087
+    },
+    {
+      "artifact_id": "companyfacts:0000021076",
+      "status": "OK",
+      "bytes": 3712366
+    },
+    {
+      "artifact_id": "submissions:0000021076",
+      "status": "OK",
+      "bytes": 149520
+    },
+    {
+      "artifact_id": "companyfacts:0001058090",
+      "status": "OK",
+      "bytes": 3012708
+    },
+    {
+      "artifact_id": "submissions:0001058090",
+      "status": "OK",
+      "bytes": 160548
+    },
+    {
+      "artifact_id": "companyfacts:0000811156",
+      "status": "OK",
+      "bytes": 3900928
+    },
+    {
+      "artifact_id": "submissions:0000811156",
+      "status": "OK",
+      "bytes": 163153
+    },
+    {
+      "artifact_id": "companyfacts:0001071739",
+      "status": "OK",
+      "bytes": 3887314
+    },
+    {
+      "artifact_id": "submissions:0001071739",
+      "status": "OK",
+      "bytes": 163738
+    },
+    {
+      "artifact_id": "companyfacts:0001130310",
+      "status": "OK",
+      "bytes": 4247126
+    },
+    {
+      "artifact_id": "submissions:0001130310",
+      "status": "OK",
+      "bytes": 162544
+    },
+    {
+      "artifact_id": "companyfacts:0000711404",
+      "status": "OK",
+      "bytes": 3817101
+    },
+    {
+      "artifact_id": "submissions:0000711404",
+      "status": "OK",
+      "bytes": 161842
+    },
+    {
+      "artifact_id": "companyfacts:0001175454",
+      "status": "OK",
+      "bytes": 3768777
+    },
+    {
+      "artifact_id": "submissions:0001175454",
+      "status": "OK",
+      "bytes": 158004
+    },
+    {
+      "artifact_id": "companyfacts:0000016732",
+      "status": "OK",
+      "bytes": 4753156
+    },
+    {
+      "artifact_id": "submissions:0000016732",
+      "status": "OK",
+      "bytes": 168036
+    },
+    {
+      "artifact_id": "companyfacts:0000900075",
+      "status": "OK",
+      "bytes": 3416768
+    },
+    {
+      "artifact_id": "submissions:0000900075",
+      "status": "OK",
+      "bytes": 159889
+    },
+    {
+      "artifact_id": "companyfacts:0000906345",
+      "status": "OK",
+      "bytes": 3770290
+    },
+    {
+      "artifact_id": "submissions:0000906345",
+      "status": "OK",
+      "bytes": 159641
+    },
+    {
+      "artifact_id": "companyfacts:0001100682",
+      "status": "OK",
+      "bytes": 4702065
+    },
+    {
+      "artifact_id": "submissions:0001100682",
+      "status": "OK",
+      "bytes": 160039
+    },
+    {
+      "artifact_id": "companyfacts:0001057352",
+      "status": "OK",
+      "bytes": 3409046
+    },
+    {
+      "artifact_id": "submissions:0001057352",
+      "status": "OK",
+      "bytes": 164461
+    },
+    {
+      "artifact_id": "companyfacts:0000858470",
+      "status": "OK",
+      "bytes": 3950166
+    },
+    {
+      "artifact_id": "submissions:0000858470",
+      "status": "OK",
+      "bytes": 161691
+    },
+    {
+      "artifact_id": "companyfacts:0001058290",
+      "status": "OK",
+      "bytes": 3708102
+    },
+    {
+      "artifact_id": "submissions:0001058290",
+      "status": "OK",
+      "bytes": 161591
+    },
+    {
+      "artifact_id": "companyfacts:0001590895",
+      "status": "OK",
+      "bytes": 2742668
+    },
+    {
+      "artifact_id": "submissions:0001590895",
+      "status": "OK",
+      "bytes": 161013
+    },
+    {
+      "artifact_id": "companyfacts:0001666700",
+      "status": "OK",
+      "bytes": 3203317
+    },
+    {
+      "artifact_id": "submissions:0001666700",
+      "status": "OK",
+      "bytes": 167089
+    },
+    {
+      "artifact_id": "companyfacts:0000910521",
+      "status": "OK",
+      "bytes": 3007990
+    },
+    {
+      "artifact_id": "submissions:0000910521",
+      "status": "OK",
+      "bytes": 161974
+    },
+    {
+      "artifact_id": "companyfacts:0001393612",
+      "status": "OK",
+      "bytes": 5115498
+    },
+    {
+      "artifact_id": "submissions:0001393612",
+      "status": "OK",
+      "bytes": 157071
+    },
+    {
+      "artifact_id": "companyfacts:0000029534",
+      "status": "OK",
+      "bytes": 2509741
+    },
+    {
+      "artifact_id": "submissions:0000029534",
+      "status": "OK",
+      "bytes": 171311
+    },
+    {
+      "artifact_id": "companyfacts:0001022079",
+      "status": "OK",
+      "bytes": 4149346
+    },
+    {
+      "artifact_id": "submissions:0001022079",
+      "status": "OK",
+      "bytes": 163582
+    },
+    {
+      "artifact_id": "companyfacts:0000882184",
+      "status": "OK",
+      "bytes": 3064917
+    },
+    {
+      "artifact_id": "submissions:0000882184",
+      "status": "OK",
+      "bytes": 169195
+    },
+    {
+      "artifact_id": "companyfacts:0000935703",
+      "status": "OK",
+      "bytes": 2970211
+    },
+    {
+      "artifact_id": "submissions:0000935703",
+      "status": "OK",
+      "bytes": 163740
+    },
+    {
+      "artifact_id": "companyfacts:0000765880",
+      "status": "OK",
+      "bytes": 4793526
+    },
+    {
+      "artifact_id": "submissions:0000765880",
+      "status": "OK",
+      "bytes": 162953
+    },
+    {
+      "artifact_id": "companyfacts:0000029905",
+      "status": "OK",
+      "bytes": 4932713
+    },
+    {
+      "artifact_id": "submissions:0000029905",
+      "status": "OK",
+      "bytes": 168469
+    },
+    {
+      "artifact_id": "companyfacts:0001751788",
+      "status": "OK",
+      "bytes": 2601897
+    },
+    {
+      "artifact_id": "submissions:0001751788",
+      "status": "OK",
+      "bytes": 105558
+    },
+    {
+      "artifact_id": "companyfacts:0001286681",
+      "status": "OK",
+      "bytes": 2916228
+    },
+    {
+      "artifact_id": "submissions:0001286681",
+      "status": "OK",
+      "bytes": 155990
+    },
+    {
+      "artifact_id": "companyfacts:0000940944",
+      "status": "OK",
+      "bytes": 4175015
+    },
+    {
+      "artifact_id": "submissions:0000940944",
+      "status": "OK",
+      "bytes": 144897
+    },
+    {
+      "artifact_id": "companyfacts:0000936340",
+      "status": "OK",
+      "bytes": 5013393
+    },
+    {
+      "artifact_id": "submissions:0000936340",
+      "status": "OK",
+      "bytes": 167485
+    },
+    {
+      "artifact_id": "companyfacts:0000927066",
+      "status": "OK",
+      "bytes": 4484160
+    },
+    {
+      "artifact_id": "submissions:0000927066",
+      "status": "OK",
+      "bytes": 162850
+    },
+    {
+      "artifact_id": "companyfacts:0001093557",
+      "status": "OK",
+      "bytes": 3044975
+    },
+    {
+      "artifact_id": "submissions:0001093557",
+      "status": "OK",
+      "bytes": 159205
+    },
+    {
+      "artifact_id": "companyfacts:0000712515",
+      "status": "OK",
+      "bytes": 3754176
+    },
+    {
+      "artifact_id": "submissions:0000712515",
+      "status": "OK",
+      "bytes": 157851
+    },
+    {
+      "artifact_id": "companyfacts:0001047862",
+      "status": "OK",
+      "bytes": 4133552
+    },
+    {
+      "artifact_id": "submissions:0001047862",
+      "status": "OK",
+      "bytes": 169192
+    },
+    {
+      "artifact_id": "companyfacts:0000033185",
+      "status": "OK",
+      "bytes": 3636051
+    },
+    {
+      "artifact_id": "submissions:0000033185",
+      "status": "OK",
+      "bytes": 148420
+    },
+    {
+      "artifact_id": "companyfacts:0001095073",
+      "status": "OK",
+      "bytes": 4665003
+    },
+    {
+      "artifact_id": "submissions:0001095073",
+      "status": "OK",
+      "bytes": 158960
+    },
+    {
+      "artifact_id": "companyfacts:0000827052",
+      "status": "OK",
+      "bytes": 4000028
+    },
+    {
+      "artifact_id": "submissions:0000827052",
+      "status": "OK",
+      "bytes": 167425
+    },
+    {
+      "artifact_id": "companyfacts:0001001250",
+      "status": "OK",
+      "bytes": 3862713
+    },
+    {
+      "artifact_id": "submissions:0001001250",
+      "status": "OK",
+      "bytes": 160775
+    },
+    {
+      "artifact_id": "companyfacts:0000915389",
+      "status": "OK",
+      "bytes": 4364521
+    },
+    {
+      "artifact_id": "submissions:0000915389",
+      "status": "OK",
+      "bytes": 160741
+    },
+    {
+      "artifact_id": "companyfacts:0001463101",
+      "status": "OK",
+      "bytes": 3069157
+    },
+    {
+      "artifact_id": "submissions:0001463101",
+      "status": "OK",
+      "bytes": 168172
+    },
+    {
+      "artifact_id": "companyfacts:0001352010",
+      "status": "OK",
+      "bytes": 2921586
+    },
+    {
+      "artifact_id": "submissions:0001352010",
+      "status": "OK",
+      "bytes": 164462
+    },
+    {
+      "artifact_id": "companyfacts:0000906107",
+      "status": "OK",
+      "bytes": 4752175
+    },
+    {
+      "artifact_id": "submissions:0000906107",
+      "status": "OK",
+      "bytes": 157904
+    },
+    {
+      "artifact_id": "companyfacts:0000033213",
+      "status": "OK",
+      "bytes": 4013294
+    },
+    {
+      "artifact_id": "submissions:0000033213",
+      "status": "OK",
+      "bytes": 161496
+    },
+    {
+      "artifact_id": "companyfacts:0000922621",
+      "status": "OK",
+      "bytes": 2700382
+    },
+    {
+      "artifact_id": "submissions:0000922621",
+      "status": "OK",
+      "bytes": 156879
+    },
+    {
+      "artifact_id": "companyfacts:0000072741",
+      "status": "OK",
+      "bytes": 3792139
+    },
+    {
+      "artifact_id": "submissions:0000072741",
+      "status": "OK",
+      "bytes": 162371
+    },
+    {
+      "artifact_id": "companyfacts:0000920522",
+      "status": "OK",
+      "bytes": 3628203
+    },
+    {
+      "artifact_id": "submissions:0000920522",
+      "status": "OK",
+      "bytes": 167844
+    },
+    {
+      "artifact_id": "companyfacts:0001711269",
+      "status": "OK",
+      "bytes": 2092477
+    },
+    {
+      "artifact_id": "submissions:0001711269",
+      "status": "OK",
+      "bytes": 119715
+    },
+    {
+      "artifact_id": "companyfacts:0001109357",
+      "status": "OK",
+      "bytes": 5355142
+    },
+    {
+      "artifact_id": "submissions:0001109357",
+      "status": "OK",
+      "bytes": 169977
+    },
+    {
+      "artifact_id": "companyfacts:0000746515",
+      "status": "OK",
+      "bytes": 3170162
+    },
+    {
+      "artifact_id": "submissions:0000746515",
+      "status": "OK",
+      "bytes": 158957
+    },
+    {
+      "artifact_id": "companyfacts:0001324424",
+      "status": "OK",
+      "bytes": 3468129
+    },
+    {
+      "artifact_id": "submissions:0001324424",
+      "status": "OK",
+      "bytes": 147429
+    },
+    {
+      "artifact_id": "companyfacts:0001289490",
+      "status": "OK",
+      "bytes": 3423532
+    },
+    {
+      "artifact_id": "submissions:0001289490",
+      "status": "OK",
+      "bytes": 157076
+    },
+    {
+      "artifact_id": "companyfacts:0001013237",
+      "status": "OK",
+      "bytes": 3836507
+    },
+    {
+      "artifact_id": "submissions:0001013237",
+      "status": "OK",
+      "bytes": 162169
+    },
+    {
+      "artifact_id": "companyfacts:0001031296",
+      "status": "OK",
+      "bytes": 4500092
+    },
+    {
+      "artifact_id": "submissions:0001031296",
+      "status": "OK",
+      "bytes": 159654
+    },
+    {
+      "artifact_id": "companyfacts:0001048695",
+      "status": "OK",
+      "bytes": 3541838
+    },
+    {
+      "artifact_id": "submissions:0001048695",
+      "status": "OK",
+      "bytes": 157895
+    },
+    {
+      "artifact_id": "companyfacts:0000814547",
+      "status": "OK",
+      "bytes": 3377242
+    },
+    {
+      "artifact_id": "submissions:0000814547",
+      "status": "OK",
+      "bytes": 167110
+    },
+    {
+      "artifact_id": "companyfacts:0001136893",
+      "status": "OK",
+      "bytes": 4428829
+    },
+    {
+      "artifact_id": "submissions:0001136893",
+      "status": "OK",
+      "bytes": 161784
+    },
+    {
+      "artifact_id": "companyfacts:0000798354",
+      "status": "OK",
+      "bytes": 3870514
+    },
+    {
+      "artifact_id": "submissions:0000798354",
+      "status": "OK",
+      "bytes": 159061
+    },
+    {
+      "artifact_id": "companyfacts:0000035527",
+      "status": "OK",
+      "bytes": 7321381
+    },
+    {
+      "artifact_id": "submissions:0000035527",
+      "status": "OK",
+      "bytes": 163160
+    },
+    {
+      "artifact_id": "companyfacts:0000037785",
+      "status": "OK",
+      "bytes": 5567486
+    },
+    {
+      "artifact_id": "submissions:0000037785",
+      "status": "OK",
+      "bytes": 159900
+    },
+    {
+      "artifact_id": "companyfacts:0001754301",
+      "status": "OK",
+      "bytes": 1500033
+    },
+    {
+      "artifact_id": "submissions:0001754301",
+      "status": "OK",
+      "bytes": 106799
+    },
+    {
+      "artifact_id": "companyfacts:0000034903",
+      "status": "OK",
+      "bytes": 3167945
+    },
+    {
+      "artifact_id": "submissions:0000034903",
+      "status": "OK",
+      "bytes": 163357
+    },
+    {
+      "artifact_id": "companyfacts:0001274494",
+      "status": "OK",
+      "bytes": 4716981
+    },
+    {
+      "artifact_id": "submissions:0001274494",
+      "status": "OK",
+      "bytes": 157451
+    },
+    {
+      "artifact_id": "companyfacts:0001659166",
+      "status": "OK",
+      "bytes": 2475947
+    },
+    {
+      "artifact_id": "submissions:0001659166",
+      "status": "OK",
+      "bytes": 162747
+    },
+    {
+      "artifact_id": "companyfacts:0001609711",
+      "status": "OK",
+      "bytes": 2340290
+    },
+    {
+      "artifact_id": "submissions:0001609711",
+      "status": "OK",
+      "bytes": 162859
+    },
+    {
+      "artifact_id": "companyfacts:0001932393",
+      "status": "OK",
+      "bytes": 1141702
+    },
+    {
+      "artifact_id": "submissions:0001932393",
+      "status": "OK",
+      "bytes": 72036
+    },
+    {
+      "artifact_id": "companyfacts:0000849399",
+      "status": "OK",
+      "bytes": 4178537
+    },
+    {
+      "artifact_id": "submissions:0000849399",
+      "status": "OK",
+      "bytes": 162328
+    },
+    {
+      "artifact_id": "companyfacts:0000040704",
+      "status": "OK",
+      "bytes": 4499420
+    },
+    {
+      "artifact_id": "submissions:0000040704",
+      "status": "OK",
+      "bytes": 157356
+    },
+    {
+      "artifact_id": "companyfacts:0000320335",
+      "status": "OK",
+      "bytes": 4818556
+    },
+    {
+      "artifact_id": "submissions:0000320335",
+      "status": "OK",
+      "bytes": 177332
+    },
+    {
+      "artifact_id": "companyfacts:0001474735",
+      "status": "OK",
+      "bytes": 3502700
+    },
+    {
+      "artifact_id": "submissions:0001474735",
+      "status": "OK",
+      "bytes": 152387
+    },
+    {
+      "artifact_id": "companyfacts:0000040987",
+      "status": "OK",
+      "bytes": 3415215
+    },
+    {
+      "artifact_id": "submissions:0000040987",
+      "status": "OK",
+      "bytes": 158597
+    },
+    {
+      "artifact_id": "companyfacts:0001123360",
+      "status": "OK",
+      "bytes": 4102359
+    },
+    {
+      "artifact_id": "submissions:0001123360",
+      "status": "OK",
+      "bytes": 157668
+    },
+    {
+      "artifact_id": "companyfacts:0000045012",
+      "status": "OK",
+      "bytes": 3211355
+    },
+    {
+      "artifact_id": "submissions:0000045012",
+      "status": "OK",
+      "bytes": 181522
+    },
+    {
+      "artifact_id": "companyfacts:0000046080",
+      "status": "OK",
+      "bytes": 3982697
+    },
+    {
+      "artifact_id": "submissions:0000046080",
+      "status": "OK",
+      "bytes": 163908
+    },
+    {
+      "artifact_id": "companyfacts:0000049196",
+      "status": "OK",
+      "bytes": 6280899
+    },
+    {
+      "artifact_id": "submissions:0000049196",
+      "status": "OK",
+      "bytes": 146166
+    },
+    {
+      "artifact_id": "companyfacts:0000874766",
+      "status": "OK",
+      "bytes": 5937353
+    },
+    {
+      "artifact_id": "submissions:0000874766",
+      "status": "OK",
+      "bytes": 149229
+    },
+    {
+      "artifact_id": "companyfacts:0001501585",
+      "status": "OK",
+      "bytes": 3011192
+    },
+    {
+      "artifact_id": "submissions:0001501585",
+      "status": "OK",
+      "bytes": 157258
+    },
+    {
+      "artifact_id": "companyfacts:0000047217",
+      "status": "OK",
+      "bytes": 4957401
+    },
+    {
+      "artifact_id": "submissions:0000047217",
+      "status": "OK",
+      "bytes": 162512
+    },
+    {
+      "artifact_id": "companyfacts:0000048465",
+      "status": "OK",
+      "bytes": 3433849
+    },
+    {
+      "artifact_id": "submissions:0000048465",
+      "status": "OK",
+      "bytes": 156119
+    },
+    {
+      "artifact_id": "companyfacts:0001000228",
+      "status": "OK",
+      "bytes": 4076915
+    },
+    {
+      "artifact_id": "submissions:0001000228",
+      "status": "OK",
+      "bytes": 158573
+    },
+    {
+      "artifact_id": "companyfacts:0001070750",
+      "status": "OK",
+      "bytes": 2963060
+    },
+    {
+      "artifact_id": "submissions:0001070750",
+      "status": "OK",
+      "bytes": 160644
+    },
+    {
+      "artifact_id": "companyfacts:0000047111",
+      "status": "OK",
+      "bytes": 4529555
+    },
+    {
+      "artifact_id": "submissions:0000047111",
+      "status": "OK",
+      "bytes": 160393
+    },
+    {
+      "artifact_id": "companyfacts:0000049071",
+      "status": "OK",
+      "bytes": 4360644
+    },
+    {
+      "artifact_id": "submissions:0000049071",
+      "status": "OK",
+      "bytes": 173938
+    },
+    {
+      "artifact_id": "companyfacts:0000874716",
+      "status": "OK",
+      "bytes": 4000153
+    },
+    {
+      "artifact_id": "submissions:0000874716",
+      "status": "OK",
+      "bytes": 154183
+    },
+    {
+      "artifact_id": "companyfacts:0000832101",
+      "status": "OK",
+      "bytes": 3907740
+    },
+    {
+      "artifact_id": "submissions:0000832101",
+      "status": "OK",
+      "bytes": 162287
+    },
+    {
+      "artifact_id": "companyfacts:0000051253",
+      "status": "OK",
+      "bytes": 3897926
+    },
+    {
+      "artifact_id": "submissions:0000051253",
+      "status": "OK",
+      "bytes": 146087
+    },
+    {
+      "artifact_id": "companyfacts:0000879169",
+      "status": "OK",
+      "bytes": 2962865
+    },
+    {
+      "artifact_id": "submissions:0000879169",
+      "status": "OK",
+      "bytes": 158204
+    },
+    {
+      "artifact_id": "companyfacts:0001687229",
+      "status": "OK",
+      "bytes": 2493286
+    },
+    {
+      "artifact_id": "submissions:0001687229",
+      "status": "OK",
+      "bytes": 115306
+    },
+    {
+      "artifact_id": "companyfacts:0000051434",
+      "status": "OK",
+      "bytes": 4844984
+    },
+    {
+      "artifact_id": "submissions:0000051434",
+      "status": "OK",
+      "bytes": 160406
+    },
+    {
+      "artifact_id": "companyfacts:0001478242",
+      "status": "OK",
+      "bytes": 3160028
+    },
+    {
+      "artifact_id": "submissions:0001478242",
+      "status": "OK",
+      "bytes": 162633
+    },
+    {
+      "artifact_id": "companyfacts:0001699150",
+      "status": "OK",
+      "bytes": 2609507
+    },
+    {
+      "artifact_id": "submissions:0001699150",
+      "status": "OK",
+      "bytes": 141031
+    },
+    {
+      "artifact_id": "companyfacts:0001020569",
+      "status": "OK",
+      "bytes": 4688101
+    },
+    {
+      "artifact_id": "submissions:0001020569",
+      "status": "OK",
+      "bytes": 163020
+    },
+    {
+      "artifact_id": "companyfacts:0000749251",
+      "status": "OK",
+      "bytes": 3626732
+    },
+    {
+      "artifact_id": "submissions:0000749251",
+      "status": "OK",
+      "bytes": 156816
+    },
+    {
+      "artifact_id": "companyfacts:0000914208",
+      "status": "OK",
+      "bytes": 4183982
+    },
+    {
+      "artifact_id": "submissions:0000914208",
+      "status": "OK",
+      "bytes": 162397
+    },
+    {
+      "artifact_id": "companyfacts:0000052988",
+      "status": "OK",
+      "bytes": 4350229
+    },
+    {
+      "artifact_id": "submissions:0000052988",
+      "status": "OK",
+      "bytes": 158229
+    },
+    {
+      "artifact_id": "companyfacts:0000728535",
+      "status": "OK",
+      "bytes": 2374661
+    },
+    {
+      "artifact_id": "submissions:0000728535",
+      "status": "OK",
+      "bytes": 165800
+    },
+    {
+      "artifact_id": "companyfacts:0000898293",
+      "status": "OK",
+      "bytes": 3847726
+    },
+    {
+      "artifact_id": "submissions:0000898293",
+      "status": "OK",
+      "bytes": 145497
+    },
+    {
+      "artifact_id": "companyfacts:0000779152",
+      "status": "OK",
+      "bytes": 3321994
+    },
+    {
+      "artifact_id": "submissions:0000779152",
+      "status": "OK",
+      "bytes": 172471
+    },
+    {
+      "artifact_id": "companyfacts:0001418135",
+      "status": "OK",
+      "bytes": 5131878
+    },
+    {
+      "artifact_id": "submissions:0001418135",
+      "status": "OK",
+      "bytes": 161499
+    },
+    {
+      "artifact_id": "companyfacts:0000091576",
+      "status": "OK",
+      "bytes": 6308337
+    },
+    {
+      "artifact_id": "submissions:0000091576",
+      "status": "OK",
+      "bytes": 161683
+    },
+    {
+      "artifact_id": "companyfacts:0001637459",
+      "status": "OK",
+      "bytes": 3417827
+    },
+    {
+      "artifact_id": "submissions:0001637459",
+      "status": "OK",
+      "bytes": 143681
+    },
+    {
+      "artifact_id": "companyfacts:0000879101",
+      "status": "OK",
+      "bytes": 4823878
+    },
+    {
+      "artifact_id": "submissions:0000879101",
+      "status": "OK",
+      "bytes": 161778
+    },
+    {
+      "artifact_id": "companyfacts:0000055785",
+      "status": "OK",
+      "bytes": 3570577
+    },
+    {
+      "artifact_id": "submissions:0000055785",
+      "status": "OK",
+      "bytes": 147432
+    },
+    {
+      "artifact_id": "companyfacts:0001170010",
+      "status": "OK",
+      "bytes": 4114028
+    },
+    {
+      "artifact_id": "submissions:0001170010",
+      "status": "OK",
+      "bytes": 162892
+    },
+    {
+      "artifact_id": "companyfacts:0000056873",
+      "status": "OK",
+      "bytes": 3897385
+    },
+    {
+      "artifact_id": "submissions:0000056873",
+      "status": "OK",
+      "bytes": 155247
+    },
+    {
+      "artifact_id": "companyfacts:0001944048",
+      "status": "OK",
+      "bytes": 986820
+    },
+    {
+      "artifact_id": "submissions:0001944048",
+      "status": "OK",
+      "bytes": 78525
+    },
+    {
+      "artifact_id": "companyfacts:0000060086",
+      "status": "OK",
+      "bytes": 4676787
+    },
+    {
+      "artifact_id": "submissions:0000060086",
+      "status": "OK",
+      "bytes": 155753
+    },
+    {
+      "artifact_id": "companyfacts:0001336920",
+      "status": "OK",
+      "bytes": 4043826
+    },
+    {
+      "artifact_id": "submissions:0001336920",
+      "status": "OK",
+      "bytes": 161781
+    },
+    {
+      "artifact_id": "companyfacts:0000920760",
+      "status": "OK",
+      "bytes": 2884767
+    },
+    {
+      "artifact_id": "submissions:0000920760",
+      "status": "OK",
+      "bytes": 158660
+    },
+    {
+      "artifact_id": "companyfacts:0000920148",
+      "status": "OK",
+      "bytes": 4414191
+    },
+    {
+      "artifact_id": "submissions:0000920148",
+      "status": "OK",
+      "bytes": 159404
+    },
+    {
+      "artifact_id": "companyfacts:0000202058",
+      "status": "OK",
+      "bytes": 4274516
+    },
+    {
+      "artifact_id": "submissions:0000202058",
+      "status": "OK",
+      "bytes": 160744
+    },
+    {
+      "artifact_id": "companyfacts:0001069202",
+      "status": "OK",
+      "bytes": 4266684
+    },
+    {
+      "artifact_id": "submissions:0001069202",
+      "status": "OK",
+      "bytes": 157300
+    },
+    {
+      "artifact_id": "companyfacts:0001065696",
+      "status": "OK",
+      "bytes": 4041062
+    },
+    {
+      "artifact_id": "submissions:0001065696",
+      "status": "OK",
+      "bytes": 165404
+    },
+    {
+      "artifact_id": "companyfacts:0000352541",
+      "status": "OK",
+      "bytes": 3390539
+    },
+    {
+      "artifact_id": "submissions:0000352541",
+      "status": "OK",
+      "bytes": 164057
+    },
+    {
+      "artifact_id": "companyfacts:0001397187",
+      "status": "OK",
+      "bytes": 2968163
+    },
+    {
+      "artifact_id": "submissions:0001397187",
+      "status": "OK",
+      "bytes": 172060
+    },
+    {
+      "artifact_id": "companyfacts:0000092380",
+      "status": "OK",
+      "bytes": 4083360
+    },
+    {
+      "artifact_id": "submissions:0000092380",
+      "status": "OK",
+      "bytes": 170867
+    },
+    {
+      "artifact_id": "companyfacts:0001300514",
+      "status": "OK",
+      "bytes": 3623714
+    },
+    {
+      "artifact_id": "submissions:0001300514",
+      "status": "OK",
+      "bytes": 167139
+    },
+    {
+      "artifact_id": "companyfacts:0001679273",
+      "status": "OK",
+      "bytes": 2286080
+    },
+    {
+      "artifact_id": "submissions:0001679273",
+      "status": "OK",
+      "bytes": 123159
+    },
+    {
+      "artifact_id": "companyfacts:0001489393",
+      "status": "OK",
+      "bytes": 3802383
+    },
+    {
+      "artifact_id": "submissions:0001489393",
+      "status": "OK",
+      "bytes": 165939
+    },
+    {
+      "artifact_id": "companyfacts:0001335258",
+      "status": "OK",
+      "bytes": 3656744
+    },
+    {
+      "artifact_id": "submissions:0001335258",
+      "status": "OK",
+      "bytes": 162233
+    },
+    {
+      "artifact_id": "companyfacts:0000912595",
+      "status": "OK",
+      "bytes": 2438300
+    },
+    {
+      "artifact_id": "submissions:0000912595",
+      "status": "OK",
+      "bytes": 159497
+    },
+    {
+      "artifact_id": "companyfacts:0000062996",
+      "status": "OK",
+      "bytes": 4320793
+    },
+    {
+      "artifact_id": "submissions:0000062996",
+      "status": "OK",
+      "bytes": 147854
+    },
+    {
+      "artifact_id": "companyfacts:0000827054",
+      "status": "OK",
+      "bytes": 4312449
+    },
+    {
+      "artifact_id": "submissions:0000827054",
+      "status": "OK",
+      "bytes": 161687
+    },
+    {
+      "artifact_id": "companyfacts:0000789570",
+      "status": "OK",
+      "bytes": 3835130
+    },
+    {
+      "artifact_id": "submissions:0000789570",
+      "status": "OK",
+      "bytes": 159563
+    },
+    {
+      "artifact_id": "companyfacts:0000851968",
+      "status": "OK",
+      "bytes": 3703342
+    },
+    {
+      "artifact_id": "submissions:0000851968",
+      "status": "OK",
+      "bytes": 160733
+    },
+    {
+      "artifact_id": "companyfacts:0000063754",
+      "status": "OK",
+      "bytes": 3303371
+    },
+    {
+      "artifact_id": "submissions:0000063754",
+      "status": "OK",
+      "bytes": 184089
+    },
+    {
+      "artifact_id": "companyfacts:0001278021",
+      "status": "OK",
+      "bytes": 3422431
+    },
+    {
+      "artifact_id": "submissions:0001278021",
+      "status": "OK",
+      "bytes": 158528
+    },
+    {
+      "artifact_id": "companyfacts:0000916076",
+      "status": "OK",
+      "bytes": 4038680
+    },
+    {
+      "artifact_id": "submissions:0000916076",
+      "status": "OK",
+      "bytes": 159967
+    },
+    {
+      "artifact_id": "companyfacts:0001179929",
+      "status": "OK",
+      "bytes": 3741092
+    },
+    {
+      "artifact_id": "submissions:0001179929",
+      "status": "OK",
+      "bytes": 165618
+    },
+    {
+      "artifact_id": "companyfacts:0001285785",
+      "status": "OK",
+      "bytes": 4462479
+    },
+    {
+      "artifact_id": "submissions:0001285785",
+      "status": "OK",
+      "bytes": 174412
+    },
+    {
+      "artifact_id": "companyfacts:0001408198",
+      "status": "OK",
+      "bytes": 4129490
+    },
+    {
+      "artifact_id": "submissions:0001408198",
+      "status": "OK",
+      "bytes": 161251
+    },
+    {
+      "artifact_id": "companyfacts:0000036270",
+      "status": "OK",
+      "bytes": 6092109
+    },
+    {
+      "artifact_id": "submissions:0000036270",
+      "status": "OK",
+      "bytes": 158920
+    },
+    {
+      "artifact_id": "companyfacts:0000891103",
+      "status": "OK",
+      "bytes": 4500284
+    },
+    {
+      "artifact_id": "submissions:0000891103",
+      "status": "OK",
+      "bytes": 159931
+    },
+    {
+      "artifact_id": "companyfacts:0001037646",
+      "status": "OK",
+      "bytes": 3649530
+    },
+    {
+      "artifact_id": "submissions:0001037646",
+      "status": "OK",
+      "bytes": 172453
+    },
+    {
+      "artifact_id": "companyfacts:0001513761",
+      "status": "OK",
+      "bytes": 2696136
+    },
+    {
+      "artifact_id": "submissions:0001513761",
+      "status": "OK",
+      "bytes": 167639
+    },
+    {
+      "artifact_id": "companyfacts:0000072331",
+      "status": "OK",
+      "bytes": 3296476
+    },
+    {
+      "artifact_id": "submissions:0000072331",
+      "status": "OK",
+      "bytes": 163666
+    },
+    {
+      "artifact_id": "companyfacts:0001111711",
+      "status": "OK",
+      "bytes": 4928709
+    },
+    {
+      "artifact_id": "submissions:0001111711",
+      "status": "OK",
+      "bytes": 159997
+    },
+    {
+      "artifact_id": "companyfacts:0001013871",
+      "status": "OK",
+      "bytes": 5098815
+    },
+    {
+      "artifact_id": "submissions:0001013871",
+      "status": "OK",
+      "bytes": 148230
+    },
+    {
+      "artifact_id": "companyfacts:0001002047",
+      "status": "OK",
+      "bytes": 4320731
+    },
+    {
+      "artifact_id": "submissions:0001002047",
+      "status": "OK",
+      "bytes": 156836
+    },
+    {
+      "artifact_id": "companyfacts:0000073124",
+      "status": "OK",
+      "bytes": 5854501
+    },
+    {
+      "artifact_id": "submissions:0000073124",
+      "status": "OK",
+      "bytes": 162674
+    },
+    {
+      "artifact_id": "companyfacts:0000906163",
+      "status": "OK",
+      "bytes": 2125245
+    },
+    {
+      "artifact_id": "submissions:0000906163",
+      "status": "OK",
+      "bytes": 161440
+    },
+    {
+      "artifact_id": "companyfacts:0001564708",
+      "status": "OK",
+      "bytes": 3145500
+    },
+    {
+      "artifact_id": "submissions:0001564708",
+      "status": "OK",
+      "bytes": 169264
+    },
+    {
+      "artifact_id": "companyfacts:0000878927",
+      "status": "OK",
+      "bytes": 2277855
+    },
+    {
+      "artifact_id": "submissions:0000878927",
+      "status": "OK",
+      "bytes": 154361
+    },
+    {
+      "artifact_id": "companyfacts:0000029989",
+      "status": "OK",
+      "bytes": 3705814
+    },
+    {
+      "artifact_id": "submissions:0000029989",
+      "status": "OK",
+      "bytes": 157110
+    },
+    {
+      "artifact_id": "companyfacts:0001097864",
+      "status": "OK",
+      "bytes": 4623403
+    },
+    {
+      "artifact_id": "submissions:0001097864",
+      "status": "OK",
+      "bytes": 146846
+    },
+    {
+      "artifact_id": "companyfacts:0001781335",
+      "status": "OK",
+      "bytes": 1854950
+    },
+    {
+      "artifact_id": "submissions:0001781335",
+      "status": "OK",
+      "bytes": 96511
+    },
+    {
+      "artifact_id": "companyfacts:0001590955",
+      "status": "OK",
+      "bytes": 2348695
+    },
+    {
+      "artifact_id": "submissions:0001590955",
+      "status": "OK",
+      "bytes": 156532
+    },
+    {
+      "artifact_id": "companyfacts:0000723531",
+      "status": "OK",
+      "bytes": 3497237
+    },
+    {
+      "artifact_id": "submissions:0000723531",
+      "status": "OK",
+      "bytes": 157270
+    },
+    {
+      "artifact_id": "companyfacts:0001004980",
+      "status": "OK",
+      "bytes": 3313889
+    },
+    {
+      "artifact_id": "submissions:0001004980",
+      "status": "OK",
+      "bytes": 165256
+    },
+    {
+      "artifact_id": "companyfacts:0000788784",
+      "status": "OK",
+      "bytes": 4180713
+    },
+    {
+      "artifact_id": "submissions:0000788784",
+      "status": "OK",
+      "bytes": 150104
+    },
+    {
+      "artifact_id": "companyfacts:0001126328",
+      "status": "OK",
+      "bytes": 5209023
+    },
+    {
+      "artifact_id": "submissions:0001126328",
+      "status": "OK",
+      "bytes": 185423
+    },
+    {
+      "artifact_id": "companyfacts:0000822416",
+      "status": "OK",
+      "bytes": 3563712
+    },
+    {
+      "artifact_id": "submissions:0000822416",
+      "status": "OK",
+      "bytes": 165229
+    },
+    {
+      "artifact_id": "companyfacts:0000075677",
+      "status": "OK",
+      "bytes": 3581237
+    },
+    {
+      "artifact_id": "submissions:0000075677",
+      "status": "OK",
+      "bytes": 158411
+    },
+    {
+      "artifact_id": "companyfacts:0000077360",
+      "status": "OK",
+      "bytes": 4798391
+    },
+    {
+      "artifact_id": "submissions:0000077360",
+      "status": "OK",
+      "bytes": 153849
+    },
+    {
+      "artifact_id": "companyfacts:0000764622",
+      "status": "OK",
+      "bytes": 4127165
+    },
+    {
+      "artifact_id": "submissions:0000764622",
+      "status": "OK",
+      "bytes": 163092
+    },
+    {
+      "artifact_id": "companyfacts:0001145197",
+      "status": "OK",
+      "bytes": 3472092
+    },
+    {
+      "artifact_id": "submissions:0001145197",
+      "status": "OK",
+      "bytes": 159550
+    },
+    {
+      "artifact_id": "companyfacts:0000945841",
+      "status": "OK",
+      "bytes": 2970271
+    },
+    {
+      "artifact_id": "submissions:0000945841",
+      "status": "OK",
+      "bytes": 169173
+    },
+    {
+      "artifact_id": "companyfacts:0000079879",
+      "status": "OK",
+      "bytes": 5422503
+    },
+    {
+      "artifact_id": "submissions:0000079879",
+      "status": "OK",
+      "bytes": 161051
+    },
+    {
+      "artifact_id": "companyfacts:0000922224",
+      "status": "OK",
+      "bytes": 4983953
+    },
+    {
+      "artifact_id": "submissions:0000922224",
+      "status": "OK",
+      "bytes": 156842
+    },
+    {
+      "artifact_id": "companyfacts:0001137774",
+      "status": "OK",
+      "bytes": 6704512
+    },
+    {
+      "artifact_id": "submissions:0001137774",
+      "status": "OK",
+      "bytes": 158724
+    },
+    {
+      "artifact_id": "companyfacts:0002041610",
+      "status": "OK",
+      "bytes": 396792
+    },
+    {
+      "artifact_id": "submissions:0002041610",
+      "status": "OK",
+      "bytes": 32834
+    },
+    {
+      "artifact_id": "companyfacts:0000857005",
+      "status": "OK",
+      "bytes": 3852152
+    },
+    {
+      "artifact_id": "submissions:0000857005",
+      "status": "OK",
+      "bytes": 160738
+    },
+    {
+      "artifact_id": "companyfacts:0001633917",
+      "status": "OK",
+      "bytes": 3016984
+    },
+    {
+      "artifact_id": "submissions:0001633917",
+      "status": "OK",
+      "bytes": 159529
+    },
+    {
+      "artifact_id": "companyfacts:0000910606",
+      "status": "OK",
+      "bytes": 2473828
+    },
+    {
+      "artifact_id": "submissions:0000910606",
+      "status": "OK",
+      "bytes": 154265
+    },
+    {
+      "artifact_id": "companyfacts:0001281761",
+      "status": "OK",
+      "bytes": 6634151
+    },
+    {
+      "artifact_id": "submissions:0001281761",
+      "status": "OK",
+      "bytes": 150183
+    },
+    {
+      "artifact_id": "companyfacts:0000720005",
+      "status": "OK",
+      "bytes": 5453435
+    },
+    {
+      "artifact_id": "submissions:0000720005",
+      "status": "OK",
+      "bytes": 148741
+    },
+    {
+      "artifact_id": "companyfacts:0001037038",
+      "status": "OK",
+      "bytes": 4074172
+    },
+    {
+      "artifact_id": "submissions:0001037038",
+      "status": "OK",
+      "bytes": 167990
+    },
+    {
+      "artifact_id": "companyfacts:0000943819",
+      "status": "OK",
+      "bytes": 3425843
+    },
+    {
+      "artifact_id": "submissions:0000943819",
+      "status": "OK",
+      "bytes": 155714
+    },
+    {
+      "artifact_id": "companyfacts:0000084839",
+      "status": "OK",
+      "bytes": 2994179
+    },
+    {
+      "artifact_id": "submissions:0000084839",
+      "status": "OK",
+      "bytes": 162928
+    },
+    {
+      "artifact_id": "companyfacts:0000882835",
+      "status": "OK",
+      "bytes": 3434191
+    },
+    {
+      "artifact_id": "submissions:0000882835",
+      "status": "OK",
+      "bytes": 158226
+    },
+    {
+      "artifact_id": "companyfacts:0000031791",
+      "status": "OK",
+      "bytes": 4243204
+    },
+    {
+      "artifact_id": "submissions:0000031791",
+      "status": "OK",
+      "bytes": 158751
+    },
+    {
+      "artifact_id": "companyfacts:0001034054",
+      "status": "OK",
+      "bytes": 4031191
+    },
+    {
+      "artifact_id": "submissions:0001034054",
+      "status": "OK",
+      "bytes": 160127
+    },
+    {
+      "artifact_id": "companyfacts:0000091419",
+      "status": "OK",
+      "bytes": 3533934
+    },
+    {
+      "artifact_id": "submissions:0000091419",
+      "status": "OK",
+      "bytes": 160313
+    },
+    {
+      "artifact_id": "companyfacts:0001375365",
+      "status": "OK",
+      "bytes": 3602296
+    },
+    {
+      "artifact_id": "submissions:0001375365",
+      "status": "OK",
+      "bytes": 163808
+    },
+    {
+      "artifact_id": "companyfacts:0000091440",
+      "status": "OK",
+      "bytes": 4315702
+    },
+    {
+      "artifact_id": "submissions:0000091440",
+      "status": "OK",
+      "bytes": 158532
+    },
+    {
+      "artifact_id": "companyfacts:0001964738",
+      "status": "OK",
+      "bytes": 559481
+    },
+    {
+      "artifact_id": "submissions:0001964738",
+      "status": "OK",
+      "bytes": 42589
+    },
+    {
+      "artifact_id": "companyfacts:0001757898",
+      "status": "OK",
+      "bytes": 2278696
+    },
+    {
+      "artifact_id": "submissions:0001757898",
+      "status": "OK",
+      "bytes": 107691
+    },
+    {
+      "artifact_id": "companyfacts:0001022671",
+      "status": "OK",
+      "bytes": 3260937
+    },
+    {
+      "artifact_id": "submissions:0001022671",
+      "status": "OK",
+      "bytes": 179579
+    },
+    {
+      "artifact_id": "companyfacts:0000016918",
+      "status": "OK",
+      "bytes": 3810307
+    },
+    {
+      "artifact_id": "submissions:0000016918",
+      "status": "OK",
+      "bytes": 161378
+    },
+    {
+      "artifact_id": "companyfacts:0002005951",
+      "status": "OK",
+      "bytes": 609101
+    },
+    {
+      "artifact_id": "submissions:0002005951",
+      "status": "OK",
+      "bytes": 68128
+    },
+    {
+      "artifact_id": "companyfacts:0000093556",
+      "status": "OK",
+      "bytes": 5126627
+    },
+    {
+      "artifact_id": "submissions:0000093556",
+      "status": "OK",
+      "bytes": 158526
+    },
+    {
+      "artifact_id": "companyfacts:0000004127",
+      "status": "OK",
+      "bytes": 3243173
+    },
+    {
+      "artifact_id": "submissions:0000004127",
+      "status": "OK",
+      "bytes": 160234
+    },
+    {
+      "artifact_id": "companyfacts:0001601712",
+      "status": "OK",
+      "bytes": 2762314
+    },
+    {
+      "artifact_id": "submissions:0001601712",
+      "status": "OK",
+      "bytes": 160569
+    },
+    {
+      "artifact_id": "companyfacts:0000096021",
+      "status": "OK",
+      "bytes": 3957153
+    },
+    {
+      "artifact_id": "submissions:0000096021",
+      "status": "OK",
+      "bytes": 161066
+    },
+    {
+      "artifact_id": "companyfacts:0000024545",
+      "status": "OK",
+      "bytes": 4466489
+    },
+    {
+      "artifact_id": "submissions:0000024545",
+      "status": "OK",
+      "bytes": 167599
+    },
+    {
+      "artifact_id": "companyfacts:0001094285",
+      "status": "OK",
+      "bytes": 3567445
+    },
+    {
+      "artifact_id": "submissions:0001094285",
+      "status": "OK",
+      "bytes": 167601
+    },
+    {
+      "artifact_id": "companyfacts:0000842023",
+      "status": "OK",
+      "bytes": 3510958
+    },
+    {
+      "artifact_id": "submissions:0000842023",
+      "status": "OK",
+      "bytes": 168236
+    },
+    {
+      "artifact_id": "companyfacts:0000096943",
+      "status": "OK",
+      "bytes": 4128690
+    },
+    {
+      "artifact_id": "submissions:0000096943",
+      "status": "OK",
+      "bytes": 165639
+    },
+    {
+      "artifact_id": "companyfacts:0001811074",
+      "status": "OK",
+      "bytes": 1111764
+    },
+    {
+      "artifact_id": "submissions:0001811074",
+      "status": "OK",
+      "bytes": 150084
+    },
+    {
+      "artifact_id": "companyfacts:0001116132",
+      "status": "OK",
+      "bytes": 3860830
+    },
+    {
+      "artifact_id": "submissions:0001116132",
+      "status": "OK",
+      "bytes": 151723
+    },
+    {
+      "artifact_id": "companyfacts:0000864749",
+      "status": "OK",
+      "bytes": 3842293
+    },
+    {
+      "artifact_id": "submissions:0000864749",
+      "status": "OK",
+      "bytes": 163446
+    },
+    {
+      "artifact_id": "companyfacts:0001113169",
+      "status": "OK",
+      "bytes": 2969556
+    },
+    {
+      "artifact_id": "submissions:0001113169",
+      "status": "OK",
+      "bytes": 163720
+    },
+    {
+      "artifact_id": "companyfacts:0000916365",
+      "status": "OK",
+      "bytes": 3145587
+    },
+    {
+      "artifact_id": "submissions:0000916365",
+      "status": "OK",
+      "bytes": 170945
+    },
+    {
+      "artifact_id": "companyfacts:0000100493",
+      "status": "OK",
+      "bytes": 3547540
+    },
+    {
+      "artifact_id": "submissions:0000100493",
+      "status": "OK",
+      "bytes": 165117
+    },
+    {
+      "artifact_id": "companyfacts:0000946581",
+      "status": "OK",
+      "bytes": 3317337
+    },
+    {
+      "artifact_id": "submissions:0000946581",
+      "status": "OK",
+      "bytes": 158303
+    },
+    {
+      "artifact_id": "companyfacts:0000217346",
+      "status": "OK",
+      "bytes": 3582404
+    },
+    {
+      "artifact_id": "submissions:0000217346",
+      "status": "OK",
+      "bytes": 161346
+    },
+    {
+      "artifact_id": "companyfacts:0000860731",
+      "status": "OK",
+      "bytes": 3051282
+    },
+    {
+      "artifact_id": "submissions:0000860731",
+      "status": "OK",
+      "bytes": 161262
+    },
+    {
+      "artifact_id": "companyfacts:0000100517",
+      "status": "OK",
+      "bytes": 3570715
+    },
+    {
+      "artifact_id": "submissions:0000100517",
+      "status": "OK",
+      "bytes": 162200
+    },
+    {
+      "artifact_id": "companyfacts:0000074208",
+      "status": "OK",
+      "bytes": 4050628
+    },
+    {
+      "artifact_id": "submissions:0000074208",
+      "status": "OK",
+      "bytes": 159075
+    },
+    {
+      "artifact_id": "companyfacts:0000352915",
+      "status": "OK",
+      "bytes": 3518923
+    },
+    {
+      "artifact_id": "submissions:0000352915",
+      "status": "OK",
+      "bytes": 162138
+    },
+    {
+      "artifact_id": "companyfacts:0001403568",
+      "status": "OK",
+      "bytes": 2514554
+    },
+    {
+      "artifact_id": "submissions:0001403568",
+      "status": "OK",
+      "bytes": 156239
+    },
+    {
+      "artifact_id": "companyfacts:0001705696",
+      "status": "OK",
+      "bytes": 1753175
+    },
+    {
+      "artifact_id": "submissions:0001705696",
+      "status": "OK",
+      "bytes": 129025
+    },
+    {
+      "artifact_id": "companyfacts:0001967680",
+      "status": "OK",
+      "bytes": 604267
+    },
+    {
+      "artifact_id": "submissions:0001967680",
+      "status": "OK",
+      "bytes": 49028
+    },
+    {
+      "artifact_id": "companyfacts:0001396009",
+      "status": "OK",
+      "bytes": 5059198
+    },
+    {
+      "artifact_id": "submissions:0001396009",
+      "status": "OK",
+      "bytes": 162482
+    },
+    {
+      "artifact_id": "companyfacts:0001442145",
+      "status": "OK",
+      "bytes": 4631368
+    },
+    {
+      "artifact_id": "submissions:0001442145",
+      "status": "OK",
+      "bytes": 156255
+    },
+    {
+      "artifact_id": "companyfacts:0001014473",
+      "status": "OK",
+      "bytes": 3335619
+    },
+    {
+      "artifact_id": "submissions:0001014473",
+      "status": "OK",
+      "bytes": 162361
+    },
+    {
+      "artifact_id": "companyfacts:0001692819",
+      "status": "OK",
+      "bytes": 2587779
+    },
+    {
+      "artifact_id": "submissions:0001692819",
+      "status": "OK",
+      "bytes": 159687
+    },
+    {
+      "artifact_id": "companyfacts:0000740260",
+      "status": "OK",
+      "bytes": 4543836
+    },
+    {
+      "artifact_id": "submissions:0000740260",
+      "status": "OK",
+      "bytes": 162911
+    },
+    {
+      "artifact_id": "companyfacts:0001792044",
+      "status": "OK",
+      "bytes": 1642605
+    },
+    {
+      "artifact_id": "submissions:0001792044",
+      "status": "OK",
+      "bytes": 84603
+    },
+    {
+      "artifact_id": "companyfacts:0000943452",
+      "status": "OK",
+      "bytes": 4158876
+    },
+    {
+      "artifact_id": "submissions:0000943452",
+      "status": "OK",
+      "bytes": 161139
+    },
+    {
+      "artifact_id": "companyfacts:0001000697",
+      "status": "OK",
+      "bytes": 4401557
+    },
+    {
+      "artifact_id": "submissions:0001000697",
+      "status": "OK",
+      "bytes": 157944
+    },
+    {
+      "artifact_id": "companyfacts:0001327811",
+      "status": "OK",
+      "bytes": 3342756
+    },
+    {
+      "artifact_id": "submissions:0001327811",
+      "status": "OK",
+      "bytes": 162057
+    },
+    {
+      "artifact_id": "companyfacts:0000783325",
+      "status": "OK",
+      "bytes": 4185336
+    },
+    {
+      "artifact_id": "submissions:0000783325",
+      "status": "OK",
+      "bytes": 171179
+    },
+    {
+      "artifact_id": "companyfacts:0000011544",
+      "status": "OK",
+      "bytes": 4505894
+    },
+    {
+      "artifact_id": "submissions:0000011544",
+      "status": "OK",
+      "bytes": 167685
+    },
+    {
+      "artifact_id": "companyfacts:0000105770",
+      "status": "OK",
+      "bytes": 4162704
+    },
+    {
+      "artifact_id": "submissions:0000105770",
+      "status": "OK",
+      "bytes": 159296
+    },
+    {
+      "artifact_id": "companyfacts:0001140536",
+      "status": "OK",
+      "bytes": 5025456
+    },
+    {
+      "artifact_id": "submissions:0001140536",
+      "status": "OK",
+      "bytes": 157267
+    },
+    {
+      "artifact_id": "companyfacts:0000106535",
+      "status": "OK",
+      "bytes": 3476958
+    },
+    {
+      "artifact_id": "submissions:0000106535",
+      "status": "OK",
+      "bytes": 154920
+    },
+    {
+      "artifact_id": "companyfacts:0001174922",
+      "status": "OK",
+      "bytes": 3785113
+    },
+    {
+      "artifact_id": "submissions:0001174922",
+      "status": "OK",
+      "bytes": 168627
+    },
+    {
+      "artifact_id": "companyfacts:0000072903",
+      "status": "OK",
+      "bytes": 4328029
+    },
+    {
+      "artifact_id": "submissions:0000072903",
+      "status": "OK",
+      "bytes": 152494
+    },
+    {
+      "artifact_id": "companyfacts:0001524472",
+      "status": "OK",
+      "bytes": 3946943
+    },
+    {
+      "artifact_id": "submissions:0001524472",
+      "status": "OK",
+      "bytes": 158445
+    },
+    {
+      "artifact_id": "companyfacts:0001041061",
+      "status": "OK",
+      "bytes": 3684493
+    },
+    {
+      "artifact_id": "submissions:0001041061",
+      "status": "OK",
+      "bytes": 159292
+    },
+    {
+      "artifact_id": "companyfacts:0001136869",
+      "status": "OK",
+      "bytes": 4177232
+    },
+    {
+      "artifact_id": "submissions:0001136869",
+      "status": "OK",
+      "bytes": 175461
+    },
+    {
+      "artifact_id": "companyfacts:0000877212",
+      "status": "OK",
+      "bytes": 4390372
+    },
+    {
+      "artifact_id": "submissions:0000877212",
+      "status": "OK",
+      "bytes": 161525
+    },
+    {
+      "artifact_id": "companyfacts:0001555280",
+      "status": "OK",
+      "bytes": 3534449
+    },
+    {
+      "artifact_id": "submissions:0001555280",
+      "status": "OK",
+      "bytes": 164204
+    },
+    {
+      "artifact_id": "yahoo_chart:A:5y",
+      "status": "OK",
+      "bytes": 137775
+    },
+    {
+      "artifact_id": "yahoo_chart:ACGL:5y",
+      "status": "OK",
+      "bytes": 133818
+    },
+    {
+      "artifact_id": "yahoo_chart:ADM:5y",
+      "status": "OK",
+      "bytes": 134008
+    },
+    {
+      "artifact_id": "yahoo_chart:ADSK:5y",
+      "status": "OK",
+      "bytes": 135265
+    },
+    {
+      "artifact_id": "yahoo_chart:AEE:5y",
+      "status": "OK",
+      "bytes": 134637
+    },
+    {
+      "artifact_id": "yahoo_chart:AES:5y",
+      "status": "OK",
+      "bytes": 139086
+    },
+    {
+      "artifact_id": "yahoo_chart:AIG:5y",
+      "status": "OK",
+      "bytes": 134591
+    },
+    {
+      "artifact_id": "yahoo_chart:AIZ:5y",
+      "status": "OK",
+      "bytes": 137031
+    },
+    {
+      "artifact_id": "yahoo_chart:AKAM:5y",
+      "status": "OK",
+      "bytes": 134049
+    },
+    {
+      "artifact_id": "yahoo_chart:ALB:5y",
+      "status": "OK",
+      "bytes": 133617
+    },
+    {
+      "artifact_id": "yahoo_chart:ALGN:5y",
+      "status": "OK",
+      "bytes": 133731
+    },
+    {
+      "artifact_id": "yahoo_chart:ALLE:5y",
+      "status": "OK",
+      "bytes": 137935
+    },
+    {
+      "artifact_id": "yahoo_chart:AMCR:5y",
+      "status": "OK",
+      "bytes": 128686
+    },
+    {
+      "artifact_id": "yahoo_chart:AMP:5y",
+      "status": "OK",
+      "bytes": 133581
+    },
+    {
+      "artifact_id": "yahoo_chart:ANSS:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/ANSS?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_chart:AOS:5y",
+      "status": "OK",
+      "bytes": 133692
+    },
+    {
+      "artifact_id": "yahoo_chart:APA:5y",
+      "status": "OK",
+      "bytes": 137880
+    },
+    {
+      "artifact_id": "yahoo_chart:APTV:5y",
+      "status": "OK",
+      "bytes": 134190
+    },
+    {
+      "artifact_id": "yahoo_chart:ARE:5y",
+      "status": "OK",
+      "bytes": 136347
+    },
+    {
+      "artifact_id": "yahoo_chart:ATO:5y",
+      "status": "OK",
+      "bytes": 137705
+    },
+    {
+      "artifact_id": "yahoo_chart:AVB:5y",
+      "status": "OK",
+      "bytes": 1290
+    },
+    {
+      "artifact_id": "yahoo_chart:AVY:5y",
+      "status": "OK",
+      "bytes": 137378
+    },
+    {
+      "artifact_id": "yahoo_chart:AWK:5y",
+      "status": "OK",
+      "bytes": 137731
+    },
+    {
+      "artifact_id": "yahoo_chart:AXON:5y",
+      "status": "OK",
+      "bytes": 130762
+    },
+    {
+      "artifact_id": "yahoo_chart:AZO:5y",
+      "status": "OK",
+      "bytes": 124642
+    },
+    {
+      "artifact_id": "yahoo_chart:BALL:5y",
+      "status": "OK",
+      "bytes": 135220
+    },
+    {
+      "artifact_id": "yahoo_chart:BAX:5y",
+      "status": "OK",
+      "bytes": 136271
+    },
+    {
+      "artifact_id": "yahoo_chart:BBY:5y",
+      "status": "OK",
+      "bytes": 133243
+    },
+    {
+      "artifact_id": "yahoo_chart:BEN:5y",
+      "status": "OK",
+      "bytes": 138258
+    },
+    {
+      "artifact_id": "yahoo_chart:BF-B:5y",
+      "status": "OK",
+      "bytes": 135889
+    },
+    {
+      "artifact_id": "yahoo_chart:BG:5y",
+      "status": "OK",
+      "bytes": 134497
+    },
+    {
+      "artifact_id": "yahoo_chart:BIIB:5y",
+      "status": "OK",
+      "bytes": 134643
+    },
+    {
+      "artifact_id": "yahoo_chart:BLDR:5y",
+      "status": "OK",
+      "bytes": 134174
+    },
+    {
+      "artifact_id": "yahoo_chart:BR:5y",
+      "status": "OK",
+      "bytes": 137224
+    },
+    {
+      "artifact_id": "yahoo_chart:BRK-B:5y",
+      "status": "OK",
+      "bytes": 132376
+    },
+    {
+      "artifact_id": "yahoo_chart:BRO:5y",
+      "status": "OK",
+      "bytes": 134937
+    },
+    {
+      "artifact_id": "yahoo_chart:BWA:5y",
+      "status": "OK",
+      "bytes": 137273
+    },
+    {
+      "artifact_id": "yahoo_chart:BXP:5y",
+      "status": "OK",
+      "bytes": 134447
+    },
+    {
+      "artifact_id": "yahoo_chart:CAG:5y",
+      "status": "OK",
+      "bytes": 138587
+    },
+    {
+      "artifact_id": "yahoo_chart:CARR:5y",
+      "status": "OK",
+      "bytes": 134969
+    },
+    {
+      "artifact_id": "yahoo_chart:CBOE:5y",
+      "status": "OK",
+      "bytes": 136092
+    },
+    {
+      "artifact_id": "yahoo_chart:CBRE:5y",
+      "status": "OK",
+      "bytes": 135223
+    },
+    {
+      "artifact_id": "yahoo_chart:CCI:5y",
+      "status": "OK",
+      "bytes": 135365
+    },
+    {
+      "artifact_id": "yahoo_chart:CCL:5y",
+      "status": "OK",
+      "bytes": 139827
+    },
+    {
+      "artifact_id": "yahoo_chart:CDW:5y",
+      "status": "OK",
+      "bytes": 137375
+    },
+    {
+      "artifact_id": "yahoo_chart:CE:5y",
+      "status": "OK",
+      "bytes": 136268
+    },
+    {
+      "artifact_id": "yahoo_chart:CF:5y",
+      "status": "OK",
+      "bytes": 133630
+    },
+    {
+      "artifact_id": "yahoo_chart:CFG:5y",
+      "status": "OK",
+      "bytes": 136809
+    },
+    {
+      "artifact_id": "yahoo_chart:CHD:5y",
+      "status": "OK",
+      "bytes": 135071
+    },
+    {
+      "artifact_id": "yahoo_chart:CHRW:5y",
+      "status": "OK",
+      "bytes": 135321
+    },
+    {
+      "artifact_id": "yahoo_chart:CHTR:5y",
+      "status": "OK",
+      "bytes": 132747
+    },
+    {
+      "artifact_id": "yahoo_chart:CINF:5y",
+      "status": "OK",
+      "bytes": 137515
+    },
+    {
+      "artifact_id": "yahoo_chart:CLX:5y",
+      "status": "OK",
+      "bytes": 136768
+    },
+    {
+      "artifact_id": "yahoo_chart:CMG:5y",
+      "status": "OK",
+      "bytes": 138011
+    },
+    {
+      "artifact_id": "yahoo_chart:CMS:5y",
+      "status": "OK",
+      "bytes": 134961
+    },
+    {
+      "artifact_id": "yahoo_chart:CNC:5y",
+      "status": "OK",
+      "bytes": 133458
+    },
+    {
+      "artifact_id": "yahoo_chart:CNP:5y",
+      "status": "OK",
+      "bytes": 137938
+    },
+    {
+      "artifact_id": "yahoo_chart:COO:5y",
+      "status": "OK",
+      "bytes": 133697
+    },
+    {
+      "artifact_id": "yahoo_chart:CPAY:5y",
+      "status": "OK",
+      "bytes": 134473
+    },
+    {
+      "artifact_id": "yahoo_chart:CPB:5y",
+      "status": "OK",
+      "bytes": 136741
+    },
+    {
+      "artifact_id": "yahoo_chart:CPRT:5y",
+      "status": "OK",
+      "bytes": 136849
+    },
+    {
+      "artifact_id": "yahoo_chart:CPT:5y",
+      "status": "OK",
+      "bytes": 137356
+    },
+    {
+      "artifact_id": "yahoo_chart:CRL:5y",
+      "status": "OK",
+      "bytes": 135111
+    },
+    {
+      "artifact_id": "yahoo_chart:CSGP:5y",
+      "status": "OK",
+      "bytes": 132991
+    },
+    {
+      "artifact_id": "yahoo_chart:CTRA:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/CTRA?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_chart:CTSH:5y",
+      "status": "OK",
+      "bytes": 134190
+    },
+    {
+      "artifact_id": "yahoo_chart:CZR:5y",
+      "status": "OK",
+      "bytes": 135684
+    },
+    {
+      "artifact_id": "yahoo_chart:DAY:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/DAY?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_chart:DD:5y",
+      "status": "OK",
+      "bytes": 137389
+    },
+    {
+      "artifact_id": "yahoo_chart:DECK:5y",
+      "status": "OK",
+      "bytes": 136381
+    },
+    {
+      "artifact_id": "yahoo_chart:DFS:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/DFS?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_chart:DG:5y",
+      "status": "OK",
+      "bytes": 136238
+    },
+    {
+      "artifact_id": "yahoo_chart:DGX:5y",
+      "status": "OK",
+      "bytes": 137214
+    },
+    {
+      "artifact_id": "yahoo_chart:DHI:5y",
+      "status": "OK",
+      "bytes": 135858
+    },
+    {
+      "artifact_id": "yahoo_chart:DLTR:5y",
+      "status": "OK",
+      "bytes": 135927
+    },
+    {
+      "artifact_id": "yahoo_chart:DOC:5y",
+      "status": "OK",
+      "bytes": 138739
+    },
+    {
+      "artifact_id": "yahoo_chart:DOV:5y",
+      "status": "OK",
+      "bytes": 137192
+    },
+    {
+      "artifact_id": "yahoo_chart:DOW:5y",
+      "status": "OK",
+      "bytes": 136529
+    },
+    {
+      "artifact_id": "yahoo_chart:DPZ:5y",
+      "status": "OK",
+      "bytes": 131157
+    },
+    {
+      "artifact_id": "yahoo_chart:DRI:5y",
+      "status": "OK",
+      "bytes": 136955
+    },
+    {
+      "artifact_id": "yahoo_chart:DTE:5y",
+      "status": "OK",
+      "bytes": 137628
+    },
+    {
+      "artifact_id": "yahoo_chart:DVA:5y",
+      "status": "OK",
+      "bytes": 134970
+    },
+    {
+      "artifact_id": "yahoo_chart:DXCM:5y",
+      "status": "OK",
+      "bytes": 134416
+    },
+    {
+      "artifact_id": "yahoo_chart:EA:5y",
+      "status": "OK",
+      "bytes": 1278
+    },
+    {
+      "artifact_id": "yahoo_chart:ED:5y",
+      "status": "OK",
+      "bytes": 134924
+    },
+    {
+      "artifact_id": "yahoo_chart:EFX:5y",
+      "status": "OK",
+      "bytes": 136496
+    },
+    {
+      "artifact_id": "yahoo_chart:EG:5y",
+      "status": "OK",
+      "bytes": 133192
+    },
+    {
+      "artifact_id": "yahoo_chart:EIX:5y",
+      "status": "OK",
+      "bytes": 133770
+    },
+    {
+      "artifact_id": "yahoo_chart:EL:5y",
+      "status": "OK",
+      "bytes": 134545
+    },
+    {
+      "artifact_id": "yahoo_chart:EMN:5y",
+      "status": "OK",
+      "bytes": 133675
+    },
+    {
+      "artifact_id": "yahoo_chart:ENPH:5y",
+      "status": "OK",
+      "bytes": 134789
+    },
+    {
+      "artifact_id": "yahoo_chart:EPAM:5y",
+      "status": "OK",
+      "bytes": 132588
+    },
+    {
+      "artifact_id": "yahoo_chart:EQR:5y",
+      "status": "OK",
+      "bytes": 1271
+    },
+    {
+      "artifact_id": "yahoo_chart:EQT:5y",
+      "status": "OK",
+      "bytes": 136359
+    },
+    {
+      "artifact_id": "yahoo_chart:ERIE:5y",
+      "status": "OK",
+      "bytes": 134087
+    },
+    {
+      "artifact_id": "yahoo_chart:ES:5y",
+      "status": "OK",
+      "bytes": 134265
+    },
+    {
+      "artifact_id": "yahoo_chart:ESS:5y",
+      "status": "OK",
+      "bytes": 134795
+    },
+    {
+      "artifact_id": "yahoo_chart:EVRG:5y",
+      "status": "OK",
+      "bytes": 134984
+    },
+    {
+      "artifact_id": "yahoo_chart:EXC:5y",
+      "status": "OK",
+      "bytes": 136731
+    },
+    {
+      "artifact_id": "yahoo_chart:EXPD:5y",
+      "status": "OK",
+      "bytes": 137984
+    },
+    {
+      "artifact_id": "yahoo_chart:EXPE:5y",
+      "status": "OK",
+      "bytes": 135977
+    },
+    {
+      "artifact_id": "yahoo_chart:EXR:5y",
+      "status": "OK",
+      "bytes": 137504
+    },
+    {
+      "artifact_id": "yahoo_chart:FDS:5y",
+      "status": "OK",
+      "bytes": 133677
+    },
+    {
+      "artifact_id": "yahoo_chart:FE:5y",
+      "status": "OK",
+      "bytes": 136672
+    },
+    {
+      "artifact_id": "yahoo_chart:FFIV:5y",
+      "status": "OK",
+      "bytes": 134697
+    },
+    {
+      "artifact_id": "yahoo_chart:FICO:5y",
+      "status": "OK",
+      "bytes": 129538
+    },
+    {
+      "artifact_id": "yahoo_chart:FIS:5y",
+      "status": "OK",
+      "bytes": 134766
+    },
+    {
+      "artifact_id": "yahoo_chart:FISV:5y",
+      "status": "OK",
+      "bytes": 136459
+    },
+    {
+      "artifact_id": "yahoo_chart:FITB:5y",
+      "status": "OK",
+      "bytes": 137311
+    },
+    {
+      "artifact_id": "yahoo_chart:FMC:5y",
+      "status": "OK",
+      "bytes": 136162
+    },
+    {
+      "artifact_id": "yahoo_chart:FOX:5y",
+      "status": "OK",
+      "bytes": 136871
+    },
+    {
+      "artifact_id": "yahoo_chart:FOXA:5y",
+      "status": "OK",
+      "bytes": 136796
+    },
+    {
+      "artifact_id": "yahoo_chart:FRT:5y",
+      "status": "OK",
+      "bytes": 135440
+    },
+    {
+      "artifact_id": "yahoo_chart:FSLR:5y",
+      "status": "OK",
+      "bytes": 134061
+    },
+    {
+      "artifact_id": "yahoo_chart:FTV:5y",
+      "status": "OK",
+      "bytes": 138187
+    },
+    {
+      "artifact_id": "yahoo_chart:GDDY:5y",
+      "status": "OK",
+      "bytes": 134050
+    },
+    {
+      "artifact_id": "yahoo_chart:GEHC:5y",
+      "status": "OK",
+      "bytes": 99263
+    },
+    {
+      "artifact_id": "yahoo_chart:GEN:5y",
+      "status": "OK",
+      "bytes": 138696
+    },
+    {
+      "artifact_id": "yahoo_chart:GIS:5y",
+      "status": "OK",
+      "bytes": 134741
+    },
+    {
+      "artifact_id": "yahoo_chart:GL:5y",
+      "status": "OK",
+      "bytes": 136254
+    },
+    {
+      "artifact_id": "yahoo_chart:GNRC:5y",
+      "status": "OK",
+      "bytes": 134662
+    },
+    {
+      "artifact_id": "yahoo_chart:GPC:5y",
+      "status": "OK",
+      "bytes": 137776
+    },
+    {
+      "artifact_id": "yahoo_chart:GPN:5y",
+      "status": "OK",
+      "bytes": 136172
+    },
+    {
+      "artifact_id": "yahoo_chart:HAL:5y",
+      "status": "OK",
+      "bytes": 137721
+    },
+    {
+      "artifact_id": "yahoo_chart:HAS:5y",
+      "status": "OK",
+      "bytes": 133982
+    },
+    {
+      "artifact_id": "yahoo_chart:HBAN:5y",
+      "status": "OK",
+      "bytes": 140057
+    },
+    {
+      "artifact_id": "yahoo_chart:HES:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/HES?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_chart:HIG:5y",
+      "status": "OK",
+      "bytes": 135958
+    },
+    {
+      "artifact_id": "yahoo_chart:HII:5y",
+      "status": "OK",
+      "bytes": 134854
+    },
+    {
+      "artifact_id": "yahoo_chart:HOLX:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/HOLX?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_chart:HPQ:5y",
+      "status": "OK",
+      "bytes": 138026
+    },
+    {
+      "artifact_id": "yahoo_chart:HRL:5y",
+      "status": "OK",
+      "bytes": 137869
+    },
+    {
+      "artifact_id": "yahoo_chart:HSIC:5y",
+      "status": "OK",
+      "bytes": 131747
+    },
+    {
+      "artifact_id": "yahoo_chart:HST:5y",
+      "status": "OK",
+      "bytes": 139518
+    },
+    {
+      "artifact_id": "yahoo_chart:HSY:5y",
+      "status": "OK",
+      "bytes": 136192
+    },
+    {
+      "artifact_id": "yahoo_chart:HUM:5y",
+      "status": "OK",
+      "bytes": 132430
+    },
+    {
+      "artifact_id": "yahoo_chart:IDXX:5y",
+      "status": "OK",
+      "bytes": 131444
+    },
+    {
+      "artifact_id": "yahoo_chart:IEX:5y",
+      "status": "OK",
+      "bytes": 137278
+    },
+    {
+      "artifact_id": "yahoo_chart:IFF:5y",
+      "status": "OK",
+      "bytes": 134251
+    },
+    {
+      "artifact_id": "yahoo_chart:INCY:5y",
+      "status": "OK",
+      "bytes": 133784
+    },
+    {
+      "artifact_id": "yahoo_chart:INVH:5y",
+      "status": "OK",
+      "bytes": 137655
+    },
+    {
+      "artifact_id": "yahoo_chart:IP:5y",
+      "status": "OK",
+      "bytes": 136345
+    },
+    {
+      "artifact_id": "yahoo_chart:IPG:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/IPG?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_chart:IQV:5y",
+      "status": "OK",
+      "bytes": 136790
+    },
+    {
+      "artifact_id": "yahoo_chart:IR:5y",
+      "status": "OK",
+      "bytes": 134197
+    },
+    {
+      "artifact_id": "yahoo_chart:IRM:5y",
+      "status": "OK",
+      "bytes": 135238
+    },
+    {
+      "artifact_id": "yahoo_chart:IT:5y",
+      "status": "OK",
+      "bytes": 133677
+    },
+    {
+      "artifact_id": "yahoo_chart:IVZ:5y",
+      "status": "OK",
+      "bytes": 139111
+    },
+    {
+      "artifact_id": "yahoo_chart:J:5y",
+      "status": "OK",
+      "bytes": 139327
+    },
+    {
+      "artifact_id": "yahoo_chart:JBHT:5y",
+      "status": "OK",
+      "bytes": 136863
+    },
+    {
+      "artifact_id": "yahoo_chart:JBL:5y",
+      "status": "OK",
+      "bytes": 135038
+    },
+    {
+      "artifact_id": "yahoo_chart:JKHY:5y",
+      "status": "OK",
+      "bytes": 137344
+    },
+    {
+      "artifact_id": "yahoo_chart:JNPR:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/JNPR?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_chart:K:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/K?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_chart:KDP:5y",
+      "status": "OK",
+      "bytes": 138314
+    },
+    {
+      "artifact_id": "yahoo_chart:KEY:5y",
+      "status": "OK",
+      "bytes": 139655
+    },
+    {
+      "artifact_id": "yahoo_chart:KHC:5y",
+      "status": "OK",
+      "bytes": 138449
+    },
+    {
+      "artifact_id": "yahoo_chart:KIM:5y",
+      "status": "OK",
+      "bytes": 139144
+    },
+    {
+      "artifact_id": "yahoo_chart:KMB:5y",
+      "status": "OK",
+      "bytes": 138552
+    },
+    {
+      "artifact_id": "yahoo_chart:KMX:5y",
+      "status": "OK",
+      "bytes": 133147
+    },
+    {
+      "artifact_id": "yahoo_chart:KR:5y",
+      "status": "OK",
+      "bytes": 135344
+    },
+    {
+      "artifact_id": "yahoo_chart:KVUE:5y",
+      "status": "OK",
+      "bytes": 94716
+    },
+    {
+      "artifact_id": "yahoo_chart:L:5y",
+      "status": "OK",
+      "bytes": 134981
+    },
+    {
+      "artifact_id": "yahoo_chart:LDOS:5y",
+      "status": "OK",
+      "bytes": 135215
+    },
+    {
+      "artifact_id": "yahoo_chart:LEN:5y",
+      "status": "OK",
+      "bytes": 138161
+    },
+    {
+      "artifact_id": "yahoo_chart:LH:5y",
+      "status": "OK",
+      "bytes": 136853
+    },
+    {
+      "artifact_id": "yahoo_chart:LHX:5y",
+      "status": "OK",
+      "bytes": 135393
+    },
+    {
+      "artifact_id": "yahoo_chart:LII:5y",
+      "status": "OK",
+      "bytes": 133345
+    },
+    {
+      "artifact_id": "yahoo_chart:LKQ:5y",
+      "status": "OK",
+      "bytes": 136890
+    },
+    {
+      "artifact_id": "yahoo_chart:LNT:5y",
+      "status": "OK",
+      "bytes": 135675
+    },
+    {
+      "artifact_id": "yahoo_chart:LULU:5y",
+      "status": "OK",
+      "bytes": 132658
+    },
+    {
+      "artifact_id": "yahoo_chart:LUV:5y",
+      "status": "OK",
+      "bytes": 137186
+    },
+    {
+      "artifact_id": "yahoo_chart:LVS:5y",
+      "status": "OK",
+      "bytes": 135637
+    },
+    {
+      "artifact_id": "yahoo_chart:LW:5y",
+      "status": "OK",
+      "bytes": 134801
+    },
+    {
+      "artifact_id": "yahoo_chart:LYB:5y",
+      "status": "OK",
+      "bytes": 133785
+    },
+    {
+      "artifact_id": "yahoo_chart:LYV:5y",
+      "status": "OK",
+      "bytes": 134697
+    },
+    {
+      "artifact_id": "yahoo_chart:MAA:5y",
+      "status": "OK",
+      "bytes": 137510
+    },
+    {
+      "artifact_id": "yahoo_chart:MAS:5y",
+      "status": "OK",
+      "bytes": 135288
+    },
+    {
+      "artifact_id": "yahoo_chart:MCHP:5y",
+      "status": "OK",
+      "bytes": 133606
+    },
+    {
+      "artifact_id": "yahoo_chart:MGM:5y",
+      "status": "OK",
+      "bytes": 135837
+    },
+    {
+      "artifact_id": "yahoo_chart:MHK:5y",
+      "status": "OK",
+      "bytes": 135617
+    },
+    {
+      "artifact_id": "yahoo_chart:MKC:5y",
+      "status": "OK",
+      "bytes": 133865
+    },
+    {
+      "artifact_id": "yahoo_chart:MKTX:5y",
+      "status": "OK",
+      "bytes": 135610
+    },
+    {
+      "artifact_id": "yahoo_chart:MLM:5y",
+      "status": "OK",
+      "bytes": 132217
+    },
+    {
+      "artifact_id": "yahoo_chart:MOH:5y",
+      "status": "OK",
+      "bytes": 132160
+    },
+    {
+      "artifact_id": "yahoo_chart:MOS:5y",
+      "status": "OK",
+      "bytes": 137153
+    },
+    {
+      "artifact_id": "yahoo_chart:MSCI:5y",
+      "status": "OK",
+      "bytes": 130420
+    },
+    {
+      "artifact_id": "yahoo_chart:MTB:5y",
+      "status": "OK",
+      "bytes": 137284
+    },
+    {
+      "artifact_id": "yahoo_chart:MTCH:5y",
+      "status": "OK",
+      "bytes": 137073
+    },
+    {
+      "artifact_id": "yahoo_chart:MTD:5y",
+      "status": "OK",
+      "bytes": 132638
+    },
+    {
+      "artifact_id": "yahoo_chart:NCLH:5y",
+      "status": "OK",
+      "bytes": 139212
+    },
+    {
+      "artifact_id": "yahoo_chart:NDSN:5y",
+      "status": "OK",
+      "bytes": 136381
+    },
+    {
+      "artifact_id": "yahoo_chart:NI:5y",
+      "status": "OK",
+      "bytes": 137932
+    },
+    {
+      "artifact_id": "yahoo_chart:NRG:5y",
+      "status": "OK",
+      "bytes": 135480
+    },
+    {
+      "artifact_id": "yahoo_chart:NTAP:5y",
+      "status": "OK",
+      "bytes": 135416
+    },
+    {
+      "artifact_id": "yahoo_chart:NTRS:5y",
+      "status": "OK",
+      "bytes": 135016
+    },
+    {
+      "artifact_id": "yahoo_chart:NVR:5y",
+      "status": "OK",
+      "bytes": 112575
+    },
+    {
+      "artifact_id": "yahoo_chart:NWS:5y",
+      "status": "OK",
+      "bytes": 138036
+    },
+    {
+      "artifact_id": "yahoo_chart:NWSA:5y",
+      "status": "OK",
+      "bytes": 138953
+    },
+    {
+      "artifact_id": "yahoo_chart:ODFL:5y",
+      "status": "OK",
+      "bytes": 137673
+    },
+    {
+      "artifact_id": "yahoo_chart:OMC:5y",
+      "status": "OK",
+      "bytes": 133275
+    },
+    {
+      "artifact_id": "yahoo_chart:ON:5y",
+      "status": "OK",
+      "bytes": 134139
+    },
+    {
+      "artifact_id": "yahoo_chart:OTIS:5y",
+      "status": "OK",
+      "bytes": 133358
+    },
+    {
+      "artifact_id": "yahoo_chart:PAYC:5y",
+      "status": "OK",
+      "bytes": 134376
+    },
+    {
+      "artifact_id": "yahoo_chart:PAYX:5y",
+      "status": "OK",
+      "bytes": 138428
+    },
+    {
+      "artifact_id": "yahoo_chart:PCG:5y",
+      "status": "OK",
+      "bytes": 140145
+    },
+    {
+      "artifact_id": "yahoo_chart:PEG:5y",
+      "status": "OK",
+      "bytes": 134733
+    },
+    {
+      "artifact_id": "yahoo_chart:PFG:5y",
+      "status": "OK",
+      "bytes": 133712
+    },
+    {
+      "artifact_id": "yahoo_chart:PHM:5y",
+      "status": "OK",
+      "bytes": 137427
+    },
+    {
+      "artifact_id": "yahoo_chart:PKG:5y",
+      "status": "OK",
+      "bytes": 137702
+    },
+    {
+      "artifact_id": "yahoo_chart:PNR:5y",
+      "status": "OK",
+      "bytes": 135603
+    },
+    {
+      "artifact_id": "yahoo_chart:PNW:5y",
+      "status": "OK",
+      "bytes": 133105
+    },
+    {
+      "artifact_id": "yahoo_chart:PODD:5y",
+      "status": "OK",
+      "bytes": 133706
+    },
+    {
+      "artifact_id": "yahoo_chart:POOL:5y",
+      "status": "OK",
+      "bytes": 133428
+    },
+    {
+      "artifact_id": "yahoo_chart:PPG:5y",
+      "status": "OK",
+      "bytes": 137810
+    },
+    {
+      "artifact_id": "yahoo_chart:PPL:5y",
+      "status": "OK",
+      "bytes": 137721
+    },
+    {
+      "artifact_id": "yahoo_chart:PRU:5y",
+      "status": "OK",
+      "bytes": 136074
+    },
+    {
+      "artifact_id": "yahoo_chart:PSKY:5y",
+      "status": "OK",
+      "bytes": 138989
+    },
+    {
+      "artifact_id": "yahoo_chart:PTC:5y",
+      "status": "OK",
+      "bytes": 136374
+    },
+    {
+      "artifact_id": "yahoo_chart:PYPL:5y",
+      "status": "OK",
+      "bytes": 135344
+    },
+    {
+      "artifact_id": "yahoo_chart:REG:5y",
+      "status": "OK",
+      "bytes": 134152
+    },
+    {
+      "artifact_id": "yahoo_chart:RF:5y",
+      "status": "OK",
+      "bytes": 139380
+    },
+    {
+      "artifact_id": "yahoo_chart:RJF:5y",
+      "status": "OK",
+      "bytes": 137133
+    },
+    {
+      "artifact_id": "yahoo_chart:RL:5y",
+      "status": "OK",
+      "bytes": 135732
+    },
+    {
+      "artifact_id": "yahoo_chart:RMD:5y",
+      "status": "OK",
+      "bytes": 135554
+    },
+    {
+      "artifact_id": "yahoo_chart:ROL:5y",
+      "status": "OK",
+      "bytes": 136442
+    },
+    {
+      "artifact_id": "yahoo_chart:ROP:5y",
+      "status": "OK",
+      "bytes": 131894
+    },
+    {
+      "artifact_id": "yahoo_chart:RVTY:5y",
+      "status": "OK",
+      "bytes": 136244
+    },
+    {
+      "artifact_id": "yahoo_chart:SBAC:5y",
+      "status": "OK",
+      "bytes": 136803
+    },
+    {
+      "artifact_id": "yahoo_chart:SJM:5y",
+      "status": "OK",
+      "bytes": 137512
+    },
+    {
+      "artifact_id": "yahoo_chart:SMCI:5y",
+      "status": "OK",
+      "bytes": 137492
+    },
+    {
+      "artifact_id": "yahoo_chart:SNA:5y",
+      "status": "OK",
+      "bytes": 134666
+    },
+    {
+      "artifact_id": "yahoo_chart:SOLV:5y",
+      "status": "OK",
+      "bytes": 65933
+    },
+    {
+      "artifact_id": "yahoo_chart:STE:5y",
+      "status": "OK",
+      "bytes": 136686
+    },
+    {
+      "artifact_id": "yahoo_chart:STLD:5y",
+      "status": "OK",
+      "bytes": 136987
+    },
+    {
+      "artifact_id": "yahoo_chart:STZ:5y",
+      "status": "OK",
+      "bytes": 135272
+    },
+    {
+      "artifact_id": "yahoo_chart:SW:5y",
+      "status": "OK",
+      "bytes": 131603
+    },
+    {
+      "artifact_id": "yahoo_chart:SWK:5y",
+      "status": "OK",
+      "bytes": 133858
+    },
+    {
+      "artifact_id": "yahoo_chart:SWKS:5y",
+      "status": "OK",
+      "bytes": 135294
+    },
+    {
+      "artifact_id": "yahoo_chart:SYF:5y",
+      "status": "OK",
+      "bytes": 135991
+    },
+    {
+      "artifact_id": "yahoo_chart:SYY:5y",
+      "status": "OK",
+      "bytes": 133122
+    },
+    {
+      "artifact_id": "yahoo_chart:TAP:5y",
+      "status": "OK",
+      "bytes": 135873
+    },
+    {
+      "artifact_id": "yahoo_chart:TDY:5y",
+      "status": "OK",
+      "bytes": 131490
+    },
+    {
+      "artifact_id": "yahoo_chart:TECH:5y",
+      "status": "OK",
+      "bytes": 134421
+    },
+    {
+      "artifact_id": "yahoo_chart:TFX:5y",
+      "status": "OK",
+      "bytes": 136370
+    },
+    {
+      "artifact_id": "yahoo_chart:TPL:5y",
+      "status": "OK",
+      "bytes": 135894
+    },
+    {
+      "artifact_id": "yahoo_chart:TPR:5y",
+      "status": "OK",
+      "bytes": 136538
+    },
+    {
+      "artifact_id": "yahoo_chart:TRMB:5y",
+      "status": "OK",
+      "bytes": 134245
+    },
+    {
+      "artifact_id": "yahoo_chart:TROW:5y",
+      "status": "OK",
+      "bytes": 136946
+    },
+    {
+      "artifact_id": "yahoo_chart:TSCO:5y",
+      "status": "OK",
+      "bytes": 138016
+    },
+    {
+      "artifact_id": "yahoo_chart:TSN:5y",
+      "status": "OK",
+      "bytes": 135162
+    },
+    {
+      "artifact_id": "yahoo_chart:TTWO:5y",
+      "status": "OK",
+      "bytes": 135842
+    },
+    {
+      "artifact_id": "yahoo_chart:TXT:5y",
+      "status": "OK",
+      "bytes": 132240
+    },
+    {
+      "artifact_id": "yahoo_chart:TYL:5y",
+      "status": "OK",
+      "bytes": 131526
+    },
+    {
+      "artifact_id": "yahoo_chart:UAL:5y",
+      "status": "OK",
+      "bytes": 135645
+    },
+    {
+      "artifact_id": "yahoo_chart:UDR:5y",
+      "status": "OK",
+      "bytes": 136792
+    },
+    {
+      "artifact_id": "yahoo_chart:UHS:5y",
+      "status": "OK",
+      "bytes": 136639
+    },
+    {
+      "artifact_id": "yahoo_chart:ULTA:5y",
+      "status": "OK",
+      "bytes": 130166
+    },
+    {
+      "artifact_id": "yahoo_chart:VICI:5y",
+      "status": "OK",
+      "bytes": 138411
+    },
+    {
+      "artifact_id": "yahoo_chart:VLTO:5y",
+      "status": "OK",
+      "bytes": 80543
+    },
+    {
+      "artifact_id": "yahoo_chart:VMC:5y",
+      "status": "OK",
+      "bytes": 135872
+    },
+    {
+      "artifact_id": "yahoo_chart:VRSK:5y",
+      "status": "OK",
+      "bytes": 136806
+    },
+    {
+      "artifact_id": "yahoo_chart:VRSN:5y",
+      "status": "OK",
+      "bytes": 136230
+    },
+    {
+      "artifact_id": "yahoo_chart:VST:5y",
+      "status": "OK",
+      "bytes": 135747
+    },
+    {
+      "artifact_id": "yahoo_chart:VTR:5y",
+      "status": "OK",
+      "bytes": 135077
+    },
+    {
+      "artifact_id": "yahoo_chart:VTRS:5y",
+      "status": "OK",
+      "bytes": 137711
+    },
+    {
+      "artifact_id": "yahoo_chart:WAB:5y",
+      "status": "OK",
+      "bytes": 135566
+    },
+    {
+      "artifact_id": "yahoo_chart:WAT:5y",
+      "status": "OK",
+      "bytes": 133351
+    },
+    {
+      "artifact_id": "yahoo_chart:WBA:5y",
+      "status": "HTTP_404",
+      "url": "https://query1.finance.yahoo.com/v8/finance/chart/WBA?interval=1d&range=5y"
+    },
+    {
+      "artifact_id": "yahoo_chart:WDAY:5y",
+      "status": "OK",
+      "bytes": 135465
+    },
+    {
+      "artifact_id": "yahoo_chart:WEC:5y",
+      "status": "OK",
+      "bytes": 135298
+    },
+    {
+      "artifact_id": "yahoo_chart:WRB:5y",
+      "status": "OK",
+      "bytes": 136598
+    },
+    {
+      "artifact_id": "yahoo_chart:WST:5y",
+      "status": "OK",
+      "bytes": 133997
+    },
+    {
+      "artifact_id": "yahoo_chart:WTW:5y",
+      "status": "OK",
+      "bytes": 135180
+    },
+    {
+      "artifact_id": "yahoo_chart:WY:5y",
+      "status": "OK",
+      "bytes": 138439
+    },
+    {
+      "artifact_id": "yahoo_chart:WYNN:5y",
+      "status": "OK",
+      "bytes": 133843
+    },
+    {
+      "artifact_id": "yahoo_chart:XEL:5y",
+      "status": "OK",
+      "bytes": 134469
+    },
+    {
+      "artifact_id": "yahoo_chart:XYL:5y",
+      "status": "OK",
+      "bytes": 137224
+    },
+    {
+      "artifact_id": "yahoo_chart:YUM:5y",
+      "status": "OK",
+      "bytes": 137966
+    },
+    {
+      "artifact_id": "yahoo_chart:ZBH:5y",
+      "status": "OK",
+      "bytes": 137232
+    },
+    {
+      "artifact_id": "yahoo_chart:ZBRA:5y",
+      "status": "OK",
+      "bytes": 133008
+    },
+    {
+      "artifact_id": "yahoo_chart:ZTS:5y",
+      "status": "OK",
+      "bytes": 136857
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "plan_resolution": [
+    {
+      "ticker": "A",
+      "cik": "0001090872",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ACGL",
+      "cik": "0000947484",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ADM",
+      "cik": "0000007084",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ADSK",
+      "cik": "0000769397",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AEE",
+      "cik": "0001002910",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AES",
+      "cik": "0000874761",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AIG",
+      "cik": "0000005272",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AIZ",
+      "cik": "0001267238",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AKAM",
+      "cik": "0001086222",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ALB",
+      "cik": "0000915913",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ALGN",
+      "cik": "0001097149",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ALLE",
+      "cik": "0001579241",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AMCR",
+      "cik": "0001748790",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AMP",
+      "cik": "0000820027",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ANSS",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "AOS",
+      "cik": "0000091142",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "APA",
+      "cik": "0001841666",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "APTV",
+      "cik": "0001521332",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ARE",
+      "cik": "0001035443",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ATO",
+      "cik": "0000731802",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AVB",
+      "cik": "0000915912",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AVY",
+      "cik": "0000008818",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AWK",
+      "cik": "0001410636",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AXON",
+      "cik": "0001069183",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "AZO",
+      "cik": "0000866787",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BALL",
+      "cik": "0000009389",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BAX",
+      "cik": "0000010456",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BBY",
+      "cik": "0000764478",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BEN",
+      "cik": "0000038777",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BF.B",
+      "cik": "0000014693",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BG",
+      "cik": "0001996862",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BIIB",
+      "cik": "0000875045",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BLDR",
+      "cik": "0001316835",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BR",
+      "cik": "0001383312",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BRK.B",
+      "cik": "0001067983",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BRO",
+      "cik": "0000079282",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "BWA",
+      "cik": "0000908255",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "BXP",
+      "cik": "0001037540",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CAG",
+      "cik": "0000023217",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "CARR",
+      "cik": "0001783180",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CBOE",
+      "cik": "0001374310",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CBRE",
+      "cik": "0001138118",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CCI",
+      "cik": "0001051470",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CCL",
+      "cik": "0000815097",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CDW",
+      "cik": "0001402057",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CE",
+      "cik": "0001306830",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CF",
+      "cik": "0001324404",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CFG",
+      "cik": "0000759944",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CHD",
+      "cik": "0000313927",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CHRW",
+      "cik": "0001043277",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CHTR",
+      "cik": "0001091667",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CINF",
+      "cik": "0000020286",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CLX",
+      "cik": "0000021076",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CMG",
+      "cik": "0001058090",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CMS",
+      "cik": "0000811156",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CNC",
+      "cik": "0001071739",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CNP",
+      "cik": "0001130310",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "COO",
+      "cik": "0000711404",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CPAY",
+      "cik": "0001175454",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CPB",
+      "cik": "0000016732",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "CPRT",
+      "cik": "0000900075",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CPT",
+      "cik": "0000906345",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CRL",
+      "cik": "0001100682",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CSGP",
+      "cik": "0001057352",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CTRA",
+      "cik": "0000858470",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CTSH",
+      "cik": "0001058290",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "CZR",
+      "cik": "0001590895",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DAY",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "DD",
+      "cik": "0001666700",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DECK",
+      "cik": "0000910521",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DFS",
+      "cik": "0001393612",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DG",
+      "cik": "0000029534",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DGX",
+      "cik": "0001022079",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DHI",
+      "cik": "0000882184",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DLTR",
+      "cik": "0000935703",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DOC",
+      "cik": "0000765880",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DOV",
+      "cik": "0000029905",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DOW",
+      "cik": "0001751788",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DPZ",
+      "cik": "0001286681",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DRI",
+      "cik": "0000940944",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DTE",
+      "cik": "0000936340",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DVA",
+      "cik": "0000927066",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "DXCM",
+      "cik": "0001093557",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EA",
+      "cik": "0000712515",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ED",
+      "cik": "0001047862",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EFX",
+      "cik": "0000033185",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EG",
+      "cik": "0001095073",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EIX",
+      "cik": "0000827052",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EL",
+      "cik": "0001001250",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EMN",
+      "cik": "0000915389",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "ENPH",
+      "cik": "0001463101",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "EPAM",
+      "cik": "0001352010",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "EQR",
+      "cik": "0000906107",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EQT",
+      "cik": "0000033213",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ERIE",
+      "cik": "0000922621",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ES",
+      "cik": "0000072741",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ESS",
+      "cik": "0000920522",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EVRG",
+      "cik": "0001711269",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EXC",
+      "cik": "0001109357",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EXPD",
+      "cik": "0000746515",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EXPE",
+      "cik": "0001324424",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "EXR",
+      "cik": "0001289490",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FDS",
+      "cik": "0001013237",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FE",
+      "cik": "0001031296",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FFIV",
+      "cik": "0001048695",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FICO",
+      "cik": "0000814547",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FIS",
+      "cik": "0001136893",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FISV",
+      "cik": "0000798354",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FITB",
+      "cik": "0000035527",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FMC",
+      "cik": "0000037785",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "FOX",
+      "cik": "0001754301",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FOXA",
+      "cik": "0001754301",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FRT",
+      "cik": "0000034903",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FSLR",
+      "cik": "0001274494",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "FTV",
+      "cik": "0001659166",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GDDY",
+      "cik": "0001609711",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GEHC",
+      "cik": "0001932393",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GEN",
+      "cik": "0000849399",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GIS",
+      "cik": "0000040704",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GL",
+      "cik": "0000320335",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GNRC",
+      "cik": "0001474735",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GPC",
+      "cik": "0000040987",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "GPN",
+      "cik": "0001123360",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HAL",
+      "cik": "0000045012",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HAS",
+      "cik": "0000046080",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HBAN",
+      "cik": "0000049196",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HES",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "HIG",
+      "cik": "0000874766",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HII",
+      "cik": "0001501585",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HOLX",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "HPQ",
+      "cik": "0000047217",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HRL",
+      "cik": "0000048465",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HSIC",
+      "cik": "0001000228",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HST",
+      "cik": "0001070750",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HSY",
+      "cik": "0000047111",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "HUM",
+      "cik": "0000049071",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IDXX",
+      "cik": "0000874716",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IEX",
+      "cik": "0000832101",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IFF",
+      "cik": "0000051253",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "INCY",
+      "cik": "0000879169",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "INVH",
+      "cik": "0001687229",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IP",
+      "cik": "0000051434",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IPG",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "IQV",
+      "cik": "0001478242",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IR",
+      "cik": "0001699150",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IRM",
+      "cik": "0001020569",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IT",
+      "cik": "0000749251",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "IVZ",
+      "cik": "0000914208",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "J",
+      "cik": "0000052988",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "JBHT",
+      "cik": "0000728535",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "JBL",
+      "cik": "0000898293",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "JKHY",
+      "cik": "0000779152",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "JNPR",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "K",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "KDP",
+      "cik": "0001418135",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "KEY",
+      "cik": "0000091576",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "KHC",
+      "cik": "0001637459",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "KIM",
+      "cik": "0000879101",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "KMB",
+      "cik": "0000055785",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "KMX",
+      "cik": "0001170010",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "KR",
+      "cik": "0000056873",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "KVUE",
+      "cik": "0001944048",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "L",
+      "cik": "0000060086",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LDOS",
+      "cik": "0001336920",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LEN",
+      "cik": "0000920760",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LH",
+      "cik": "0000920148",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LHX",
+      "cik": "0000202058",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LII",
+      "cik": "0001069202",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LKQ",
+      "cik": "0001065696",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "LNT",
+      "cik": "0000352541",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LULU",
+      "cik": "0001397187",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LUV",
+      "cik": "0000092380",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LVS",
+      "cik": "0001300514",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LW",
+      "cik": "0001679273",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "LYB",
+      "cik": "0001489393",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "LYV",
+      "cik": "0001335258",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MAA",
+      "cik": "0000912595",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MAS",
+      "cik": "0000062996",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MCHP",
+      "cik": "0000827054",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MGM",
+      "cik": "0000789570",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MHK",
+      "cik": "0000851968",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "MKC",
+      "cik": "0000063754",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MKTX",
+      "cik": "0001278021",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "MLM",
+      "cik": "0000916076",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MOH",
+      "cik": "0001179929",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "MOS",
+      "cik": "0001285785",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MSCI",
+      "cik": "0001408198",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MTB",
+      "cik": "0000036270",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "MTCH",
+      "cik": "0000891103",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "MTD",
+      "cik": "0001037646",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NCLH",
+      "cik": "0001513761",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NDSN",
+      "cik": "0000072331",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NI",
+      "cik": "0001111711",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NRG",
+      "cik": "0001013871",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NTAP",
+      "cik": "0001002047",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NTRS",
+      "cik": "0000073124",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NVR",
+      "cik": "0000906163",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NWS",
+      "cik": "0001564708",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "NWSA",
+      "cik": "0001564708",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ODFL",
+      "cik": "0000878927",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "OMC",
+      "cik": "0000029989",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ON",
+      "cik": "0001097864",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "OTIS",
+      "cik": "0001781335",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PAYC",
+      "cik": "0001590955",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "PAYX",
+      "cik": "0000723531",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PCG",
+      "cik": "0001004980",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PEG",
+      "cik": "0000788784",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PFG",
+      "cik": "0001126328",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PHM",
+      "cik": "0000822416",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PKG",
+      "cik": "0000075677",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PNR",
+      "cik": "0000077360",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PNW",
+      "cik": "0000764622",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PODD",
+      "cik": "0001145197",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "POOL",
+      "cik": "0000945841",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "PPG",
+      "cik": "0000079879",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PPL",
+      "cik": "0000922224",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PRU",
+      "cik": "0001137774",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PSKY",
+      "cik": "0002041610",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PTC",
+      "cik": "0000857005",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "PYPL",
+      "cik": "0001633917",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "REG",
+      "cik": "0000910606",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "RF",
+      "cik": "0001281761",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "RJF",
+      "cik": "0000720005",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "RL",
+      "cik": "0001037038",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "RMD",
+      "cik": "0000943819",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ROL",
+      "cik": "0000084839",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ROP",
+      "cik": "0000882835",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "RVTY",
+      "cik": "0000031791",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SBAC",
+      "cik": "0001034054",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SJM",
+      "cik": "0000091419",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SMCI",
+      "cik": "0001375365",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SNA",
+      "cik": "0000091440",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SOLV",
+      "cik": "0001964738",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "STE",
+      "cik": "0001757898",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "STLD",
+      "cik": "0001022671",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "STZ",
+      "cik": "0000016918",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SW",
+      "cik": "0002005951",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SWK",
+      "cik": "0000093556",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SWKS",
+      "cik": "0000004127",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SYF",
+      "cik": "0001601712",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "SYY",
+      "cik": "0000096021",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TAP",
+      "cik": "0000024545",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TDY",
+      "cik": "0001094285",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TECH",
+      "cik": "0000842023",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TFX",
+      "cik": "0000096943",
+      "method": "SEC_TICKERS_CURRENT"
+    },
+    {
+      "ticker": "TPL",
+      "cik": "0001811074",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TPR",
+      "cik": "0001116132",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TRMB",
+      "cik": "0000864749",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TROW",
+      "cik": "0001113169",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TSCO",
+      "cik": "0000916365",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TSN",
+      "cik": "0000100493",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TTWO",
+      "cik": "0000946581",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TXT",
+      "cik": "0000217346",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "TYL",
+      "cik": "0000860731",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "UAL",
+      "cik": "0000100517",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "UDR",
+      "cik": "0000074208",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "UHS",
+      "cik": "0000352915",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ULTA",
+      "cik": "0001403568",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VICI",
+      "cik": "0001705696",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VLTO",
+      "cik": "0001967680",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VMC",
+      "cik": "0001396009",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VRSK",
+      "cik": "0001442145",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VRSN",
+      "cik": "0001014473",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VST",
+      "cik": "0001692819",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VTR",
+      "cik": "0000740260",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "VTRS",
+      "cik": "0001792044",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WAB",
+      "cik": "0000943452",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WAT",
+      "cik": "0001000697",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WBA",
+      "cik": null,
+      "method": "UNRESOLVED"
+    },
+    {
+      "ticker": "WDAY",
+      "cik": "0001327811",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WEC",
+      "cik": "0000783325",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WRB",
+      "cik": "0000011544",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WST",
+      "cik": "0000105770",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WTW",
+      "cik": "0001140536",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WY",
+      "cik": "0000106535",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "WYNN",
+      "cik": "0001174922",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "XEL",
+      "cik": "0000072903",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "XYL",
+      "cik": "0001524472",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "YUM",
+      "cik": "0001041061",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ZBH",
+      "cik": "0001136869",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ZBRA",
+      "cik": "0000877212",
+      "method": "PLAN_CIK"
+    },
+    {
+      "ticker": "ZTS",
+      "cik": "0001555280",
+      "method": "PLAN_CIK"
+    }
+  ],
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}

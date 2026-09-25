@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MNUFF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MNUFF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:27.416978+00:00",
+  "sha256": "556f243baa3cdac64dd87fbe119bd5340ee35cf37bfd86d9806f4b1394b41e72",
+  "bytes": 117832,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

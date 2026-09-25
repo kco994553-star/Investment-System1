@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TSCO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TSCO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:53.584299+00:00",
+  "sha256": "0af94ff9af81c281a42f78352630957be7a2632fe4def2ddc9564a0fdd05d368",
+  "bytes": 138016,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

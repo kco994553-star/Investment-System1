@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DULL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DULL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:24.490123+00:00",
+  "sha256": "9e8092024976476bf934a21e47d3bc1a94db9529ef5bdabc804ef0516a3763db",
+  "bytes": 65239,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

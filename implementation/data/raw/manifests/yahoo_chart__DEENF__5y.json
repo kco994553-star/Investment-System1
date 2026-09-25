@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DEENF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DEENF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:18.551253+00:00",
+  "sha256": "460bb4f1dd0676dc5892d91916c45ce97ee5b8218b4008aafa1e8cb66c2889c2",
+  "bytes": 1016,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

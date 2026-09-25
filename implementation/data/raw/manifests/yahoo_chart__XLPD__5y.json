@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:XLPD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/XLPD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:35:07.784497+00:00",
+  "sha256": "b85f314814854aa8b7cfda5a8dd7c13b60a0d01a0533fd089c7881ef6f316688",
+  "bytes": 2293,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

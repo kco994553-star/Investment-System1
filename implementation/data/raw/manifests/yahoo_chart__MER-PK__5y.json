@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MER-PK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MER-PK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:21.589221+00:00",
+  "sha256": "2876b32ba6776c30a35275e173edb31383076a6b7c25b7a7eef2431c3c02cc12",
+  "bytes": 1328,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

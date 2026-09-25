@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:UBER:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UBER?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:51.965209+00:00",
+  "sha256": "bc093d1af1a4e52014116d2f8104e985ccaeb16811dbed49b01c81cb4d9c8b12",
+  "bytes": 134172,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

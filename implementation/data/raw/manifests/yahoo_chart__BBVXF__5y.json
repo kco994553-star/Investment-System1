@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BBVXF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BBVXF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:42.192514+00:00",
+  "sha256": "53564790d91f00f7908cc5f1352bb0dba11045819161a964180e63ea82194f4a",
+  "bytes": 128081,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

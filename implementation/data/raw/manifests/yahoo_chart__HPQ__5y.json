@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HPQ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HPQ?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:14.949914+00:00",
+  "sha256": "d24531ab578fdeb601fa9aa8180fd4ddb0419a3fa2a37c0e4c63b58372671058",
+  "bytes": 138026,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

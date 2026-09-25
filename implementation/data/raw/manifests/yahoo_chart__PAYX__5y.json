@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PAYX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PAYX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:39.204587+00:00",
+  "sha256": "448753b564a8b3dbe0a1c31ecf290ce46961c349b405e85645e4e6cf878d5b8f",
+  "bytes": 138428,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

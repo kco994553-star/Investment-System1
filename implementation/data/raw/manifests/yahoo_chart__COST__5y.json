@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:COST:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/COST?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:11.148461+00:00",
+  "sha256": "2153c9086b3853804469079e5a6a3259754e2892a67d7e6028fd4c92ff0d51f0",
+  "bytes": 128508,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

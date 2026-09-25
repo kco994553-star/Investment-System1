@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NWG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NWG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:55.825447+00:00",
+  "sha256": "5429342ad7bf424bfdaf6db4be4d857211036cab78dc388af61c176d4eefa04c",
+  "bytes": 136678,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

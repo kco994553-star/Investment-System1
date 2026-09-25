@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WRB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WRB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:26:00.233180+00:00",
+  "sha256": "487698c80006a866e4ea69a0c9aa78dc43c0fa532bc3f3dfdea868f9664bb7eb",
+  "bytes": 136598,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

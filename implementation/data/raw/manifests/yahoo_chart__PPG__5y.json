@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PPG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PPG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:42.541523+00:00",
+  "sha256": "c4da13528a56c91af2ae5541aec20cc335e16115e92c61f04d5ebba87d3c1e41",
+  "bytes": 137810,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

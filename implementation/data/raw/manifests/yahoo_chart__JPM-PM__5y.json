@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:JPM-PM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/JPM-PM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:07.335460+00:00",
+  "sha256": "4a59c188b3621b4df6085a8e6c22307883a0c2c0a27f0f12e26e0e4d902c34df",
+  "bytes": 137320,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AEP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AEP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:20.627248+00:00",
+  "sha256": "b75bace2e7b43f638c6870a8d2be029a164b5362f51fe037d20565899e4794c2",
+  "bytes": 135205,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

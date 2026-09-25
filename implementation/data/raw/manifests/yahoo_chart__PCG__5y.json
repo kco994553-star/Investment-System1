@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PCG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PCG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:39.521055+00:00",
+  "sha256": "25d432c40ecf4ec008c7da2fe63fbe2745556b402a98b1e4567a92f0ef6a2ada",
+  "bytes": 140145,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

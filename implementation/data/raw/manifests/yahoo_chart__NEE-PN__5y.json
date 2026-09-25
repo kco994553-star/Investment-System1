@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NEE-PN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NEE-PN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:41.237006+00:00",
+  "sha256": "f7e1665976d4fbfb5b730054526f712c837e7bfb272e74e2b04b41e2152e96f4",
+  "bytes": 1226,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

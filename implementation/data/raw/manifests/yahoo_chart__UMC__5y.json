@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:UMC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UMC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:53.302322+00:00",
+  "sha256": "f40fec9cfe07ce340f0a603aa37ab879133b5b99e992bdcd34ec9ca7fd2273a5",
+  "bytes": 135498,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

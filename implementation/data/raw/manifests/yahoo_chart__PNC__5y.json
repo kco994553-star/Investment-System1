@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PNC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PNC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:08.692815+00:00",
+  "sha256": "2781356e2a263990f9a789bef40e5f495a514b5f18c31652c293d15eb61ebc94",
+  "bytes": 137303,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

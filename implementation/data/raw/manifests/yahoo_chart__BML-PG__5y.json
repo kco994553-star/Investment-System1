@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BML-PG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BML-PG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:48.204815+00:00",
+  "sha256": "90c962d926e5ff1910dd9e86eea4bc1ddd66969bb074ed8f675e7f937ccc36d4",
+  "bytes": 134559,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

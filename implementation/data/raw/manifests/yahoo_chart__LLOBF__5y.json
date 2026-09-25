@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LLOBF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LLOBF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:13.519399+00:00",
+  "sha256": "c7c1ac3a7e88f159f37915bd923bc917d2fc5726c65461d554fe5f7fba72b6c7",
+  "bytes": 110157,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BNY-PK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BNY-PK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:52.322562+00:00",
+  "sha256": "bce34f713f7cc30beadb0e5d17a4d3daf498567b473110bd0548acc58e9af1a2",
+  "bytes": 42522,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

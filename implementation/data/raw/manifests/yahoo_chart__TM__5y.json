@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:46.316977+00:00",
+  "sha256": "d48e82a90a67ba37c317a198bac8b1e0bf5aef65649628a45ec28ee96538ed6c",
+  "bytes": 135035,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

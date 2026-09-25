@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TAK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TAK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:40.913043+00:00",
+  "sha256": "d6b67db61dd3d768b5c60da6cfa0210d749f9a35509470402ef2ac12d9c88f5f",
+  "bytes": 139413,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CINF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CINF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:41.456999+00:00",
+  "sha256": "78c92d61c48403cc920bfe6d338d3641bd452d91bd0aa50358e3e334bf131729",
+  "bytes": 137515,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:EFX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EFX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:55.815208+00:00",
+  "sha256": "fb49d7a7c15486a08e8385334a8e9dd50231e04421a8d234ac970a56db45fbe0",
+  "bytes": 136496,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

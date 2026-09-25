@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:EBAY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EBAY?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:26.114474+00:00",
+  "sha256": "f068ccdaba5e57e2b93ee0f806c29019f0235374a1a2ee9122d10d3fe916dde4",
+  "bytes": 135546,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:UNP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UNP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:54.278236+00:00",
+  "sha256": "3e47b111d83b900e485382ef80871b0c7f0ad0282062efa296318b7ff11febcd",
+  "bytes": 137142,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

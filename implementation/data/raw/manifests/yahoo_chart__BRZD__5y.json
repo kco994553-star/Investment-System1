@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BRZD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BRZD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:55.404792+00:00",
+  "sha256": "1b45dbe4a7745ba1c6f165611b40fb8da5a61db106ff1ad8dd239d4f6425ec0c",
+  "bytes": 3822,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

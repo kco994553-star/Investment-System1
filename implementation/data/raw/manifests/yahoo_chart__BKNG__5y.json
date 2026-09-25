@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BKNG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BKNG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:46.908928+00:00",
+  "sha256": "7053b9c2c1d9d9a5bb74f4ae0eabc6c56bc8bca20fda937d6e4982398c58c1ab",
+  "bytes": 138759,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

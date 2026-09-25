@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SMHD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SMHD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:29.308215+00:00",
+  "sha256": "6d049040a71e10abe1a599512fd38f46a67654351b56f372da56e83229ae212f",
+  "bytes": 5022,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

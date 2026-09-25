@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AMP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:25.089416+00:00",
+  "sha256": "9dbd892db6aab84977d047c9bd509a1ee32173d19f15aea7494860584e5eecd5",
+  "bytes": 133581,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

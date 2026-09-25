@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TXN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TXN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:51.237801+00:00",
+  "sha256": "c2f992caf190e263748b2070f2adcd3e3e67afcc8c11d9a6e01a7d6182aeff84",
+  "bytes": 137387,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

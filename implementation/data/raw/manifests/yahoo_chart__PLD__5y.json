@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PLD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PLD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:07.000318+00:00",
+  "sha256": "add3a775daa23adecfe67e71b53eaac157bf344c577c16b9d69ca0585c4886f4",
+  "bytes": 138203,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

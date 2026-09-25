@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WTID:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WTID?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:35:06.083166+00:00",
+  "sha256": "c4589a077843894c57ee6627911d54469093b09fb2b7f067a2bc34993e8c3f7c",
+  "bytes": 97577,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

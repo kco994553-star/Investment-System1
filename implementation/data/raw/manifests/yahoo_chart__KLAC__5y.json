@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:KLAC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KLAC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:10.242595+00:00",
+  "sha256": "da24c3f8a5ee258ca464d3c146842bdfa1cd7e1b5619b83a9f508d047146e50c",
+  "bytes": 137088,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

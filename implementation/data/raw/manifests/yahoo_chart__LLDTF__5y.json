@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LLDTF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LLDTF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:13.234454+00:00",
+  "sha256": "35b560c4e327a36fc74cedf3b597777e3396244b080b47a9b61c96b1cc7d2d7a",
+  "bytes": 133662,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

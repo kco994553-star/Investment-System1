@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NMKCP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NMKCP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:47.662925+00:00",
+  "sha256": "30bdb2ed0c4a9142cf2ebc7c8cf9455c10ef2d5b593d11a6695ab870e126af21",
+  "bytes": 103491,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

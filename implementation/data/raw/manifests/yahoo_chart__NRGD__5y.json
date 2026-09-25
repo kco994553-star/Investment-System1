@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NRGD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NRGD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:50.702391+00:00",
+  "sha256": "fcda21bbac2e1c1148f0a7bd15a674949d398c542308108ace69e260639e4972",
+  "bytes": 40737,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

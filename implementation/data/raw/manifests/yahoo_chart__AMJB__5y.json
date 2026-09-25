@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AMJB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMJB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:26.081967+00:00",
+  "sha256": "9dc041ccbb5979d5b158f5dde8d0af5ec0760a79cc7a80672106e511f4067118",
+  "bytes": 73009,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FTNT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FTNT?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:44.189849+00:00",
+  "sha256": "1998ea1ad462a2cd05b7a160837ec050e27247cd40114abc2a754f94c4bbaeaf",
+  "bytes": 134786,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GIS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GIS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:09.864180+00:00",
+  "sha256": "193566741f36b94845514a79f0d878377c0e83a1018e36066d36f23a4bf4c60d",
+  "bytes": 134741,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

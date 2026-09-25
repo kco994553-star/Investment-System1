@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:KMB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KMB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:24.942119+00:00",
+  "sha256": "8404bde51d8ec8c5dd0624c6373bddc84781cc51417d179163c8d83b04346c18",
+  "bytes": 138552,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

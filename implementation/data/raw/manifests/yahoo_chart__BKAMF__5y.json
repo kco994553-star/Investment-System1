@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BKAMF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BKAMF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:45.526913+00:00",
+  "sha256": "464a809025d84c263c140a509ccc12d2acaea0a4782df3f44352c42f089ea1b3",
+  "bytes": 133072,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

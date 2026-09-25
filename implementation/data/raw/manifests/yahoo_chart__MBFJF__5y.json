@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MBFJF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MBFJF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:18.518577+00:00",
+  "sha256": "dd791f0af0be3ebb2cfb63320e79e63c8c1f04bec0bd9d24fa48b70c2dee495b",
+  "bytes": 128284,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

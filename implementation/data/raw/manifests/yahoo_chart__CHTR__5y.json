@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CHTR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CHTR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:41.009639+00:00",
+  "sha256": "496fffbea589046c41eddf8e0f74cb289be6c18e37af4941b752870c83455cde",
+  "bytes": 132747,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

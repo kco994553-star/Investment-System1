@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SNY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SNY?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:31.100998+00:00",
+  "sha256": "7fec1f7da8e6fe5234e90b8f4b74e6d1d2b7a1355cffeecb8f433397784276b6",
+  "bytes": 136212,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

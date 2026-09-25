@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:COR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/COR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:10.858511+00:00",
+  "sha256": "92f4e04e182f059c4b7c1e36288bdee7dfb76d1c77d6218ff50545f82a4a2229",
+  "bytes": 136372,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

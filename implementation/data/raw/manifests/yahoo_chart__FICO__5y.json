@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FICO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FICO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:04.260130+00:00",
+  "sha256": "7f192736eab047cdf56d42064f9790f16b8b6ba2946dda63d184266655b1d6f0",
+  "bytes": 129538,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

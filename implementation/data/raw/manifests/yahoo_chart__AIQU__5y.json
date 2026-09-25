@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AIQU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AIQU?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:21.681622+00:00",
+  "sha256": "6511fb067776a2208bcfd23d6b31063d28269cd07cc52cb29507083367c14ea0",
+  "bytes": 9649,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

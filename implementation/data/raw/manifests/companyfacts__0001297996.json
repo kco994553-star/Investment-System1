@@ -1,0 +1,12 @@
+{
+  "artifact_id": "companyfacts:0001297996",
+  "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001297996.json",
+  "source_kind": "SEC_COMPANYFACTS",
+  "fetched_at": "2026-09-25T08:30:00.331935+00:00",
+  "sha256": "1f5fcfd178c7d6e26d50f0d0419ed3fba35c68bffa838ed16ee33e436a47ed14",
+  "bytes": 3707577,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:JETD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/JETD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:04.471980+00:00",
+  "sha256": "b1ca4625fc025aec2040c77e7fbc35b518f6a286ac581fe1fd4372050c1f8345",
+  "bytes": 88482,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:EVRG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EVRG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:00.865855+00:00",
+  "sha256": "08842752ba764a276db4815087291669e2818e00758b62ffda0a0b9ecb17cb9a",
+  "bytes": 134984,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

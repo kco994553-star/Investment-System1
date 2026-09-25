@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AIG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AIG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:22.048266+00:00",
+  "sha256": "90855bd753afdabbeadda96c48a58e0b077d6ba38cafa53add5d81cfe0c2a6d4",
+  "bytes": 134591,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

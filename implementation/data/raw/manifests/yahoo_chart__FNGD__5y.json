@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FNGD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FNGD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:42.146289+00:00",
+  "sha256": "327da4ebeb25acdc6e940604f8724879ac792924455c188187b4efd9d4f8e1ff",
+  "bytes": 96800,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

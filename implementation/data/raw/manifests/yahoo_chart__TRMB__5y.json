@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TRMB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TRMB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:52.914348+00:00",
+  "sha256": "3b96cf9b612e04bf0495fb6eef7218d2ccb4b8cae8d408255b9c17cdd228316f",
+  "bytes": 134245,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

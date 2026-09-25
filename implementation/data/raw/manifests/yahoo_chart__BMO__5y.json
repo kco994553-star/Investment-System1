@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BMO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BMO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:49.480502+00:00",
+  "sha256": "fb67fc8d613da5c728c819f8f1b3b59c8a73dac96e5a8ff6c991662be8ab21c0",
+  "bytes": 134196,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

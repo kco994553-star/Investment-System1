@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BMY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BMY?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:49.768934+00:00",
+  "sha256": "b76c9957a585fc991f9a30b7522198db8f012e91456f575a41ec34205660a4d7",
+  "bytes": 136202,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

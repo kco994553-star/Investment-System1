@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:KVUE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KVUE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:25.979432+00:00",
+  "sha256": "1b5f56edb0bafe84e8cdc3ca9668dc7c4e75b6b4d87d053eeb6fa63de6120afb",
+  "bytes": 94716,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

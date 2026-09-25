@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HPE-PC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HPE-PC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:55.739232+00:00",
+  "sha256": "d96d25e03e9038a84140a761e47d54c283c3aa90b303e483c0e9b6ad0016dc5e",
+  "bytes": 53943,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MTCH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MTCH?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:34.477169+00:00",
+  "sha256": "9c67fec0d97abd6a3e21fa63da5e8687d2b739c4feed6d710fcfdc6d3a06b089",
+  "bytes": 137073,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

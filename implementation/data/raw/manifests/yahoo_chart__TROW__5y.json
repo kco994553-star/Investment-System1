@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TROW:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TROW?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:53.227724+00:00",
+  "sha256": "43b84c1199bf9fe9667fc196dece1bc8bfe66daefaf7183014b8372d2ba634c5",
+  "bytes": 136946,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

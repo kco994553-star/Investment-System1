@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:IQV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/IQV?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:20.213586+00:00",
+  "sha256": "8026303b8b75f779c2e3aed4cd7ca4bd6c0a44fb7a13c1391980d0beb71800f4",
+  "bytes": 136790,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

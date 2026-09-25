@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:IVZ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/IVZ?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:21.596828+00:00",
+  "sha256": "cb9776531e6c31993ac2776e777c39d4a5507f02ffa0dd0d340834411857ecf7",
+  "bytes": 139111,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

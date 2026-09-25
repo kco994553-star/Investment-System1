@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SMFNF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SMFNF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:29.047620+00:00",
+  "sha256": "1f11201aa2f8e045b6af7de82a3ccdeafcde47b7cbecffdcf18baa7eb3bb9f70",
+  "bytes": 133431,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

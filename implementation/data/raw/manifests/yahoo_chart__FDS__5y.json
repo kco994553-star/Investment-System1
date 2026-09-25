@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FDS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FDS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:03.039623+00:00",
+  "sha256": "4fb193b1fc539b015bfd788065a9c66db1c5c01b15eaec7d4f3c46f62385d9d7",
+  "bytes": 133677,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

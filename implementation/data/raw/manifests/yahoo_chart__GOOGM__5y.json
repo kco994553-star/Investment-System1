@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GOOGM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GOOGM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:48.990579+00:00",
+  "sha256": "131e26973792fba0f2c01ca8d5cc77ae35981185e3e5f4742c94088e5db17eb8",
+  "bytes": 9605,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

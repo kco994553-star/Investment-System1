@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AZO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AZO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:29.609962+00:00",
+  "sha256": "6e9691cc56ac41ebe7c8ca5535e3093a73cdaabe39255d2c90b55c1bb492e17a",
+  "bytes": 124642,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

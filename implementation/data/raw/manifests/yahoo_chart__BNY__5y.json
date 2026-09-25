@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BNY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BNY?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:52.061663+00:00",
+  "sha256": "72907f311070266ea83b81218817e233551e512edebe4f7c1e2797b974da6cfb",
+  "bytes": 135717,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

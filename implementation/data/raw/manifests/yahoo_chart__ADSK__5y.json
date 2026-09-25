@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ADSK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ADSK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:20.634193+00:00",
+  "sha256": "0872c6db253d379daad9a8b659f8534b9be4485503c93511bb3c8ccba07b1cba",
+  "bytes": 135265,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NEMCL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NEMCL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:43.822458+00:00",
+  "sha256": "9fe2cf325b634b1c731be6c26a82e9ab579487f0577de07ce533434ac8c93946",
+  "bytes": 44788,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

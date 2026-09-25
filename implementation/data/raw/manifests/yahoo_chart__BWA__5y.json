@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BWA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BWA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:34.831343+00:00",
+  "sha256": "84a779c5fe86aa966132e76bf45d46f0a5f65bb400b05910ec42c3914f132db8",
+  "bytes": 137273,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

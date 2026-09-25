@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SREA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SREA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:35.596560+00:00",
+  "sha256": "f0ede542a04938e640a2e54c5ab04843cede444c43ee052aa79f43bcbfba2242",
+  "bytes": 135438,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

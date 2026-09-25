@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DOV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DOV?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:51.985402+00:00",
+  "sha256": "7ec11d848f3fde5c5a819a830bc1e8c5928fad0e7d330dc16bc6c1c06262e35a",
+  "bytes": 137192,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

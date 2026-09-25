@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RLXXF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RLXXF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:20.623787+00:00",
+  "sha256": "844945754bb3a823f1d893e0516ffac6d199ffd0ba5fc9c0b78ba1161de07777",
+  "bytes": 129014,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

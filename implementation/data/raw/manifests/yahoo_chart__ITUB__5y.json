@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ITUB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ITUB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:03.015067+00:00",
+  "sha256": "068f889206b3c1b92b48f33e090855291ce46d7a63c9c64e328ad5b7e09c898b",
+  "bytes": 138893,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

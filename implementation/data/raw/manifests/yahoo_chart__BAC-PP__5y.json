@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BAC-PP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BAC-PP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:39.039822+00:00",
+  "sha256": "a4ee5bba015825cad5dbc539560ad88411ca17b5b0fa54c64a0c044fb17bdc4d",
+  "bytes": 136829,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

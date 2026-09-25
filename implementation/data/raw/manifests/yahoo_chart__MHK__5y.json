@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MHK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MHK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:31.909435+00:00",
+  "sha256": "c4f2d897d8215cee0888953b24b91e87c254bb1002db40d26e46ed8dc16340cf",
+  "bytes": 135617,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

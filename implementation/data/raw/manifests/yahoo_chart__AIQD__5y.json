@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AIQD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AIQD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:21.449701+00:00",
+  "sha256": "69ad1039a6178949f5fc0932405ace78dd6ddb74e2c21f713e06a07e16bf9466",
+  "bytes": 9316,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

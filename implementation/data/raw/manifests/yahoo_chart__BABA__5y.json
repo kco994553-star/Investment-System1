@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BABA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BABA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:36.008275+00:00",
+  "sha256": "3645e6de654a8c937dad8d9e93c6d50270671de8682a3d6fdd2f1377fb6e544e",
+  "bytes": 136390,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

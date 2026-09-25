@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ETN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ETN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:36.251737+00:00",
+  "sha256": "6bdd544c00f12ef74135bb7534d63c55e2a081d9d7e1b5f692788abbb276f506",
+  "bytes": 135073,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

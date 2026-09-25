@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RSG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RSG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:22.041440+00:00",
+  "sha256": "02c51a88c62fd0e9e8b59266b01b8991ad0e7358652b7403d20de0dbcef689a8",
+  "bytes": 137929,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

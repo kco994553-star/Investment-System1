@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CAH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CAH?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:59.566488+00:00",
+  "sha256": "f8a788d51fb9a132a4236a6eaa6bd585584ed06739e692c8f1a5c0e808905d74",
+  "bytes": 136307,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BLDR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BLDR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:33.112988+00:00",
+  "sha256": "4c86f0ad174ea38e0bc426fd63774058f7acd0ac6315ce48f599adc70744ec89",
+  "bytes": 134174,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CVE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CVE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:15.059049+00:00",
+  "sha256": "c5907479e72c22c6a3729f6c3bec882e1ab24dd98820b7693df27bd6644432fb",
+  "bytes": 139221,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

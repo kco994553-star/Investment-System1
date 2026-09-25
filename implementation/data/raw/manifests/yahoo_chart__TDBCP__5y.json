@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TDBCP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TDBCP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:42.288081+00:00",
+  "sha256": "e632b3e0e47353bde6e0e7d87a0d6e2eb876acfb6aaf743eeb544e8d29920c2c",
+  "bytes": 52693,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:EXC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EXC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:01.301526+00:00",
+  "sha256": "1ba9a75fcbcd5a793e93548be291d58e5f6255c573bf15609ab8a05d380bd2aa",
+  "bytes": 136731,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

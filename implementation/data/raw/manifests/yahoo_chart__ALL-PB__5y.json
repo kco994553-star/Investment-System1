@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ALL-PB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ALL-PB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:23.398984+00:00",
+  "sha256": "f0ce5a3c940a79d07b9ed5973933ae3b28b71fe2ee4c915463210512714d209f",
+  "bytes": 135889,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

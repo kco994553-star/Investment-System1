@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:EQIX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EQIX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:34.228709+00:00",
+  "sha256": "54d70cbc88004efb9e6f3f74fdee6fcbf12dfd32e433d25b4ea59e412a4451e7",
+  "bytes": 129745,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

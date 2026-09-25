@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LKQ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LKQ?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:28.185518+00:00",
+  "sha256": "7974164775140359c8255b3e66a3bd361d8d8164d08d6a2c58968e485ae243a3",
+  "bytes": 136890,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ECL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ECL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:27.874067+00:00",
+  "sha256": "27b797b9b6da946480c02ca44cbf2f92303591a316a224b2015be87ce1a87fed",
+  "bytes": 135807,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

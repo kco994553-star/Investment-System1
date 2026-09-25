@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ICE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ICE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:59.686281+00:00",
+  "sha256": "905aa748e6e0c22c014a0e2111680047ff5dbf0e86e47a955e5d87909b6e9154",
+  "bytes": 137722,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

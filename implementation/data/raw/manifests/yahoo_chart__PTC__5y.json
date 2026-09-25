@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PTC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PTC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:43.859888+00:00",
+  "sha256": "6fc011344fcaae1cd2bc843e4e8a0fc76af04abc6b1d0d31a125f0714993caff",
+  "bytes": 136374,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

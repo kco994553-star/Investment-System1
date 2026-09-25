@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PODD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PODD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:41.892271+00:00",
+  "sha256": "728edf2574e051dfc20d2ad59101f6edc87934a8da1c474ba6c5304820495433",
+  "bytes": 133706,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

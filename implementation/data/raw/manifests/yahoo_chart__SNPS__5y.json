@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SNPS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SNPS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:30.808100+00:00",
+  "sha256": "9b3f75c33083c566100e13a091f8d0a8b75f49641e0fc6a1d06d60848a669d45",
+  "bytes": 130586,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

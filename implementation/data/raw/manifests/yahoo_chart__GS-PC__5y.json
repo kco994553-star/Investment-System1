@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GS-PC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GS-PC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:50.757919+00:00",
+  "sha256": "813139da90bbdae4ff9c4380fad8b5204c88281902133a9c7fa6b35a0e572efa",
+  "bytes": 135342,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

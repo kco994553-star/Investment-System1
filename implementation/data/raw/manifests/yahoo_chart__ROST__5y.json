@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ROST:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ROST?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:21.674473+00:00",
+  "sha256": "6c670af55040deea1474509b36c1af727b751e5c924736314d4c70eb6fc7b82c",
+  "bytes": 137671,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

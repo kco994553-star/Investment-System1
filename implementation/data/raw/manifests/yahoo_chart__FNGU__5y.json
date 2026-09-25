@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FNGU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FNGU?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:42.969901+00:00",
+  "sha256": "a277e682acb0dc252f578d1e2edce4e5861b358000cf97736d012823a07cc91c",
+  "bytes": 44945,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

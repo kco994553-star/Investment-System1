@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ED:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ED?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:55.402374+00:00",
+  "sha256": "de944f68971d62e896c46f4416b236af442e4596cc7a6d3d10364403c1b5942d",
+  "bytes": 134924,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

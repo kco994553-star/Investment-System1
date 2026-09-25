@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AME:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AME?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:25.483272+00:00",
+  "sha256": "744b140f54bb678dbdf3add0e47ce96b6abd0ba7a383691ab292024731e9b826",
+  "bytes": 137660,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

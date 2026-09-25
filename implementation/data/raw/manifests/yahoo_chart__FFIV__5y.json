@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FFIV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FFIV?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:03.884493+00:00",
+  "sha256": "ae10d99f45af935fa889516a272e49eb690a57aabb8d89efcf995b09ab2eb30f",
+  "bytes": 134697,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

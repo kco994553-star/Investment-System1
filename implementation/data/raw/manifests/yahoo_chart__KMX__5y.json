@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:KMX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KMX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:25.266981+00:00",
+  "sha256": "20a9326d1b099ff9e6ba29339e9a5e12113184c4ab7794d9ebfc9e40d002f0e3",
+  "bytes": 133147,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

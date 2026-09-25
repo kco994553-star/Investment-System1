@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BAMGF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BAMGF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:40.800228+00:00",
+  "sha256": "a971b733424c905b91dc7966904ecb78752d88154133484d1dd327518e670c28",
+  "bytes": 115014,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NXPI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NXPI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:56.538431+00:00",
+  "sha256": "91df96b33fb74b738dfd811976ad2cbb49bf9affbf4debe7bf308fe657ca4d47",
+  "bytes": 137001,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

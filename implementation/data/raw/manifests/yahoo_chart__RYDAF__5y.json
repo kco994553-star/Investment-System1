@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RYDAF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RYDAF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:23.440143+00:00",
+  "sha256": "a099c0d18ccfb4a846d45487bffdd877f62c113a750eadca28fcbac00da61a73",
+  "bytes": 125521,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

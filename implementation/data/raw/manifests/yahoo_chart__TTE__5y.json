@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TTE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TTE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:50.777500+00:00",
+  "sha256": "f616745c2b79561cd7653f8f1522d210b87a88fc8119ada99c69e0ecabb1bc44",
+  "bytes": 135734,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BCS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BCS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:43.204834+00:00",
+  "sha256": "81a84d42be59e727f64ea794425c1da658c39b0f96fb46c04153e7d5fd4a1583",
+  "bytes": 137415,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

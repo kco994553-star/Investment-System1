@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MSTR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MSTR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:37.309490+00:00",
+  "sha256": "d257e11a8511a44350bc8995cbd52ce18c80b5346e9890926835be002bd58204",
+  "bytes": 134845,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

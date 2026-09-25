@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MS-PO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MS-PO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:35.087201+00:00",
+  "sha256": "1931b3d5ff47716587d104184cbe04d939ef5a0ed7f804cd4dd80f19b2ebda48",
+  "bytes": 135466,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

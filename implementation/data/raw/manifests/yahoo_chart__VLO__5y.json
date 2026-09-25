@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:VLO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VLO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:58.156334+00:00",
+  "sha256": "896042a7938bafcec06df2222d04df46c290f66af8ddbf8e74e6425caec0a38e",
+  "bytes": 136441,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

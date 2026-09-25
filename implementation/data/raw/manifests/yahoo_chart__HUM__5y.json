@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HUM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HUM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:17.241098+00:00",
+  "sha256": "1f90c0fe3a74f477b3ca276710ea13b282fedbc4b4e08e12084e6c7f682e1210",
+  "bytes": 132430,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CNC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CNC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:43.167882+00:00",
+  "sha256": "65a9711edfc53e044b70331849fee3bf8c17ba51302ffbba94a13d2f19f6bea6",
+  "bytes": 133458,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

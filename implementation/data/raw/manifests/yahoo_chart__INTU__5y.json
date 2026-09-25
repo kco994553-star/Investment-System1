@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:INTU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/INTU?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:01.446626+00:00",
+  "sha256": "c5d36cf8016c9e5115eac523e762805fa3087ed921428de485372f74e44dbc64",
+  "bytes": 131490,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

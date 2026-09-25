@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AXON:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AXON?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:29.186877+00:00",
+  "sha256": "de1d4a728ab9bc7e1296030692a07a2c4652e2f9b5a386d877f4ac48320947be",
+  "bytes": 130762,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

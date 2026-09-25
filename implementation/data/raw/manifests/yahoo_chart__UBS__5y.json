@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:UBS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UBS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:52.263808+00:00",
+  "sha256": "a9e935f862298c45bd5ce3694b015d3c35b3c97eeae3b61639f5cf10ab883166",
+  "bytes": 138559,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

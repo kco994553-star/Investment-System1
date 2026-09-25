@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LYV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LYV?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:30.318364+00:00",
+  "sha256": "555524f51d29278d58330c6fe2c36923636cd92d903f95bc0bcef724691a7881",
+  "bytes": 134697,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

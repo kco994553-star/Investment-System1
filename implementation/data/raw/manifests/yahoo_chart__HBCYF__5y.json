@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HBCYF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HBCYF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:52.805091+00:00",
+  "sha256": "5d8708f9a3791a865fb8aa90ae80429fe2d10bbc0771b0f90b86b43e585c4a88",
+  "bytes": 129169,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

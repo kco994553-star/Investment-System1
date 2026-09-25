@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SNDK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SNDK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:29.927929+00:00",
+  "sha256": "c4fd207c187f0aeb2da57e08c19e6c9b4906d578fdc8832c52a3287c86cac151",
+  "bytes": 42562,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

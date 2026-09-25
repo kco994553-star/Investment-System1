@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BRZL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BRZL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:55.628440+00:00",
+  "sha256": "0490113c6d560b610c27ffca837184836ca029bcca5a4b57e97fbce10a1d6347",
+  "bytes": 3772,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

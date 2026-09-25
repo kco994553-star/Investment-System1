@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ODFL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ODFL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:37.648196+00:00",
+  "sha256": "9692b404f39f3c3c09089f021b079e404301bf9d54a0df148982b3fcfa01d372",
+  "bytes": 137673,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

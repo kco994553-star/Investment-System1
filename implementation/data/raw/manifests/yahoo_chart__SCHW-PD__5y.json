@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SCHW-PD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SCHW-PD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:25.996433+00:00",
+  "sha256": "9995979619ffd517e7e1982823f400a58bac8220625ed82128782e2acdf78f36",
+  "bytes": 136309,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

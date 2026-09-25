@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MPC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MPC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:28.767828+00:00",
+  "sha256": "c97e92a9f9e3dc50469a98a1449d9f708dcccfe204e48263c8ad41fbd2f0f8cc",
+  "bytes": 135884,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:OMC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OMC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:37.977856+00:00",
+  "sha256": "f00eceac8f1ff54a82060182ac78e8166cab46cc1459e09cd7904b0bffb0f774",
+  "bytes": 133275,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

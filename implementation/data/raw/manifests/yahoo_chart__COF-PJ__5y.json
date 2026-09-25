@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:COF-PJ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/COF-PJ?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:08.663944+00:00",
+  "sha256": "31dba70bbd0f15846b306a79f0f6376f163a7448f144c562b3ae4164aaec6ef8",
+  "bytes": 136727,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

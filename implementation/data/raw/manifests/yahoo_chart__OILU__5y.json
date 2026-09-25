@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:OILU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OILU?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:57.977140+00:00",
+  "sha256": "faaf08e22dbaf85527be1917863c74226f4673549c6ce26ca4394b6f03a1772d",
+  "bytes": 130221,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

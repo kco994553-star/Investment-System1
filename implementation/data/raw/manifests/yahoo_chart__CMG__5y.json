@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CMG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CMG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:42.324807+00:00",
+  "sha256": "9192daaa164c87eefccaf29a7c06851e14d6c590a5db25aa57da9a1868233928",
+  "bytes": 138011,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

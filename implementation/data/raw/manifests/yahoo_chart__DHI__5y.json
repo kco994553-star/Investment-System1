@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DHI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DHI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:50.726800+00:00",
+  "sha256": "4cd9f41c8ab4e05e2297a7d94f947303f92af010e5f53d0cf224ce18446796dc",
+  "bytes": 135858,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LIN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LIN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:12.630240+00:00",
+  "sha256": "bddc85ea4c48fc7e6a6ab7ba561777ff40e7dd03f49ed34c76d8ccdff225e8a4",
+  "bytes": 133893,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

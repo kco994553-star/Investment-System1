@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DASH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DASH?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:17.131869+00:00",
+  "sha256": "c7e4c30c2f32bd711868be7b07ef9593a27e0670ee6ee5d7355e3403bc924fc3",
+  "bytes": 134138,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

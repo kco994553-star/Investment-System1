@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:STOHF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/STOHF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:36.173536+00:00",
+  "sha256": "0d9e59f6ad8270c470d01f246c7baa412d1c81da2795fa2d0364df7629396ea1",
+  "bytes": 129081,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

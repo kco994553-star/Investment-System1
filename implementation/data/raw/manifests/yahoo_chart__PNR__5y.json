@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PNR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PNR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:41.279683+00:00",
+  "sha256": "810713ec89bb75d201cd0205d4db593052724d8078df5a4be86be26a11835e43",
+  "bytes": 135603,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:VICI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VICI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:56.258193+00:00",
+  "sha256": "f61e485a8037ec75db462a462d06030d256c54a092bf209c581811795d3fa96b",
+  "bytes": 138411,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

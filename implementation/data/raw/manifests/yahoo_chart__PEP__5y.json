@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PEP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PEP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:04.332543+00:00",
+  "sha256": "a418296cd1829a49d77a414b67c6bb7c39ecea23d69be3f6a5a81521162db06c",
+  "bytes": 138152,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

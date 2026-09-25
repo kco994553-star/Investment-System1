@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NTAP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NTAP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:36.230907+00:00",
+  "sha256": "5e85c95968dd25d64340a9e67dfa5e7c0bcd9e687e9e9ef1063cf542f9b863a9",
+  "bytes": 135416,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

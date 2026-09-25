@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:INVH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/INVH?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:19.366152+00:00",
+  "sha256": "54b41bfa2acc31cda22e6b10939fea1ac7be4c11e28d02f2998211e47f8fd6d8",
+  "bytes": 137655,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

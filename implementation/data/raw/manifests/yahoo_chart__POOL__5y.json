@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:POOL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/POOL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:42.169037+00:00",
+  "sha256": "c1d1b589454ce1c7339e581a2cddd1f046d7889a6503147ca44b05d13dbfccb1",
+  "bytes": 133428,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

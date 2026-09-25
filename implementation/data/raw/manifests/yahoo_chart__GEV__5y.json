@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GEV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GEV?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:46.359431+00:00",
+  "sha256": "037fe4b0145b6f13e619329ed4583daa92d54f5d2d3d6597eeac7a1317e3c687",
+  "bytes": 63880,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

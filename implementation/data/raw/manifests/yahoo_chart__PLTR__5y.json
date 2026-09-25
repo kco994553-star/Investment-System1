@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PLTR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PLTR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:07.849331+00:00",
+  "sha256": "c98cc5f2ae0e8321e886a10726dc94a1f39a25be0546d9a1d5d2faf005a52d75",
+  "bytes": 137730,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

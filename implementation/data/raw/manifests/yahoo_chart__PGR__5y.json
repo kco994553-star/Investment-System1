@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PGR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PGR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:05.833427+00:00",
+  "sha256": "03e751446de872309c9a8170bd55038c59d61fe1ecb0697681203639415c19ed",
+  "bytes": 136641,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

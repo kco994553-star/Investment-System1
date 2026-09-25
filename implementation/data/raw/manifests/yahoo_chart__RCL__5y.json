@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RCL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RCL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:18.756035+00:00",
+  "sha256": "111690131a82c585e2841baee3c569620927f1be3624895b3cacc04f52ab6d64",
+  "bytes": 132536,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

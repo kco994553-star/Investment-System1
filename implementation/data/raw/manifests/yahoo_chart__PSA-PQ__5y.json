@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PSA-PQ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PSA-PQ?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:15.028476+00:00",
+  "sha256": "af4aef7e66a97939f4a44d0d3383a39bdb2f689052d3dd7102a9fceb777754b2",
+  "bytes": 135605,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

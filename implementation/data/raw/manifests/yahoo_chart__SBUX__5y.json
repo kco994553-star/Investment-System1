@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SBUX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SBUX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:25.014952+00:00",
+  "sha256": "a27dfa1186f0983c580ecd49b8e808a1f014ee19ba030b4bbd302729b9ebdbb6",
+  "bytes": 134521,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

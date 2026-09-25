@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FDX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FDX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:40.124273+00:00",
+  "sha256": "d4a2ee262b93e68a0690166d14f1c2bbe92f58c88bde062771b18df95e246d8e",
+  "bytes": 140156,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

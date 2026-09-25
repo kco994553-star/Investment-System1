@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NGG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NGG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:45.808256+00:00",
+  "sha256": "8bc0afddb692ac83e415659c3891ad08b1601ce79a2f73539843229450696bb5",
+  "bytes": 133949,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LULU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LULU?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:28.748185+00:00",
+  "sha256": "fe4366c108e01a41cfeb33b624af8e210283061aac0bc73f5c4eedcca6b4e594",
+  "bytes": 132658,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

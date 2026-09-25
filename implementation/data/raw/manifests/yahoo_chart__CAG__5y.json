@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CAG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CAG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:35.740659+00:00",
+  "sha256": "d331e58870b72f417ae32c6e855d46a87c038ccda540573e633ecdc67d11f151",
+  "bytes": 138587,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

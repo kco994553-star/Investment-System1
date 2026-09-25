@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WMB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WMB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:35:04.878989+00:00",
+  "sha256": "ec74ab696b794b2a2e7f9a5221188a864d45e552043bc8f024d02fb3881cf854",
+  "bytes": 136997,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

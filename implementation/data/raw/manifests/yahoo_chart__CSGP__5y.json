@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CSGP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CSGP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:46.756115+00:00",
+  "sha256": "013e9090ec2c68f5cd68f24b28bb4baff499a4dee0db352168eadb9ca0af39b1",
+  "bytes": 132991,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

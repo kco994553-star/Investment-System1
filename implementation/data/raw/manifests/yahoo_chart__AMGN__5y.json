@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AMGN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMGN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:25.837044+00:00",
+  "sha256": "76dac28da17393be1ff6aee4ff31a9406696398989296b2e8db28d3b541bdf1d",
+  "bytes": 134817,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SOMN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SOMN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:33.163674+00:00",
+  "sha256": "5fcdd0193cd0f0a51565050d64398b45f7390fce1d3e63d6038d4556eda8c6eb",
+  "bytes": 24631,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

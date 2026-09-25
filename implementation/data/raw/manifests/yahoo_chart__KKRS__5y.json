@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:KKRS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KKRS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:09.677466+00:00",
+  "sha256": "3f8701fa5dfe567119fdbeda517e919a71b4acfbdd989fd36ae0346299eb796d",
+  "bytes": 135319,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

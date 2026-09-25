@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PSKY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PSKY?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:43.590139+00:00",
+  "sha256": "86fb74f434dd25f3193f5106759e9cf514524f4faf9681416583838e8d49d88b",
+  "bytes": 138989,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

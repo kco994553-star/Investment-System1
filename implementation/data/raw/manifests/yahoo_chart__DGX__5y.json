@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DGX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DGX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:50.263108+00:00",
+  "sha256": "21a8be6c835f576b2794eba131b2a09b6f565879bd0717efeb4c00cdc3361fbd",
+  "bytes": 137214,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

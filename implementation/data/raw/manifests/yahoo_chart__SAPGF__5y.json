@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SAPGF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SAPGF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:24.575329+00:00",
+  "sha256": "3b46ff8e2dd2823c275a40778e0024f6b29756c863de509a8d30f4e3b2f6c05d",
+  "bytes": 125181,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

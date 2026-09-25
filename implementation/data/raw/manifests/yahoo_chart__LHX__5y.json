@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LHX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LHX?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:27.637379+00:00",
+  "sha256": "9da3ea11197fafed43ad1afe572467a6cc15b169edfd1e05060578b2b1788361",
+  "bytes": 135393,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

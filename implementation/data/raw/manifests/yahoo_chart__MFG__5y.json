@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MFG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MFG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:24.572645+00:00",
+  "sha256": "d93f84e542947593efa88f08acdde0ca578406d7846aeffe2eb908eac1b9bacc",
+  "bytes": 136024,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

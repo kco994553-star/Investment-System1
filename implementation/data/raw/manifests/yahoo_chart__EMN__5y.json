@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:EMN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EMN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:57.588350+00:00",
+  "sha256": "51b6b7e860f6d705c9c16a3ee5398e82ef30f072b57209acd7fcaefc8891bcc0",
+  "bytes": 133675,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

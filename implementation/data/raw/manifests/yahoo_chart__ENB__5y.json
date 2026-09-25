@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ENB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ENB?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:30.032319+00:00",
+  "sha256": "11e929a6aeb24486d30478e27bd323a3b0210be8fb334add4b6d202387a6c710",
+  "bytes": 136246,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

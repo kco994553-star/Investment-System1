@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AMZN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMZN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:27.823555+00:00",
+  "sha256": "1e5f64958b556639b89ab609271802f5255a766f1549096d356d39a2aea3c72b",
+  "bytes": 137882,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

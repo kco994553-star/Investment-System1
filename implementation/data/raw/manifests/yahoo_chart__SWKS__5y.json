@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SWKS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SWKS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:49.950144+00:00",
+  "sha256": "bb9ae441dcd29947176d92692ceed1cdf3c02eac0f61dbba8ba9a8403fb61f66",
+  "bytes": 135294,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

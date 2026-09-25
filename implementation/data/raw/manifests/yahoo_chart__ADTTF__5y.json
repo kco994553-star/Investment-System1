@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ADTTF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ADTTF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:19.381053+00:00",
+  "sha256": "eb0ab4c0e41a4128ec06d99310aaa03af56b8f93105303846d7d9194ca3aeefa",
+  "bytes": 119809,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RACE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RACE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:18.174261+00:00",
+  "sha256": "f934f7cf8b9fd7a1101c7ca642abfe6ff27e63843c65b78e64084464313c80fe",
+  "bytes": 133660,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

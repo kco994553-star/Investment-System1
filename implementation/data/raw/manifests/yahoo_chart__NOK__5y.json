@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NOK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NOK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:48.971200+00:00",
+  "sha256": "b7c10953497b0138d11bf6e66ff0622cf8423dfba4fca017f906d8d5badbd462",
+  "bytes": 137159,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

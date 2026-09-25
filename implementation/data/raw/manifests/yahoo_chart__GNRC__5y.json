@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GNRC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GNRC?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:10.742659+00:00",
+  "sha256": "32e76d8ca82bba451531377bf2efd3fe5df95a520d822872d26e4af641dafc9f",
+  "bytes": 134662,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

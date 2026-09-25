@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NVSEF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NVSEF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:55.374616+00:00",
+  "sha256": "743b69a6c228eedf7cd8661b797625124efd57ec6e3804c89de816aadf15b84d",
+  "bytes": 122720,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

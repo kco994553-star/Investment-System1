@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DUKU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DUKU?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:24.235115+00:00",
+  "sha256": "3dc29311232ad411b918c4dff10a90d0af5ccbd866143590a280486c20b36be0",
+  "bytes": 4316,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BAC-PL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BAC-PL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:37.887790+00:00",
+  "sha256": "8ec7aa18a91e92cdaf9a2ef286575927329aea1d7c366a69d6f9645fd0768506",
+  "bytes": 118237,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NUE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NUE?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:53.462614+00:00",
+  "sha256": "5e2e0c1761e110817b4e9107e0a7fb9aa4c04667cafd426b8e962b7a0fc50c14",
+  "bytes": 136177,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

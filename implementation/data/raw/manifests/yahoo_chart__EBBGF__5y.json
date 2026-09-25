@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:EBBGF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EBBGF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:26.386202+00:00",
+  "sha256": "d292739278d1c372dd12bd3a8cd0337ec5912b19771c29f1c69c1ca1c56c5fd3",
+  "bytes": 128319,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

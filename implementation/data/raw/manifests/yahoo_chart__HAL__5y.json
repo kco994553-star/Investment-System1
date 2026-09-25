@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HAL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HAL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:12.087503+00:00",
+  "sha256": "69df54d246d7dc5bfee10f8e32e32ed45ff07729b41bd204c97738111c82eaf5",
+  "bytes": 137721,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

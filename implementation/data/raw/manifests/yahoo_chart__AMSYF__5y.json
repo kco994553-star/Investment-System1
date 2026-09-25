@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AMSYF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMSYF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:26.513028+00:00",
+  "sha256": "2dd3f4841355e831e1e664a7ebebedec51ff6e0fd4de2c39912402baa550fb70",
+  "bytes": 127001,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

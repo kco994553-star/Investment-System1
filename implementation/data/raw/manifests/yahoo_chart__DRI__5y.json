@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DRI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DRI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:53.268379+00:00",
+  "sha256": "b400bbbcba29cb1881c108de42c0e7967e246520b6e5f43f8411c5427b3dd9aa",
+  "bytes": 136955,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

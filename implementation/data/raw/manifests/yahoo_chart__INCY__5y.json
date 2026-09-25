@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:INCY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/INCY?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:25:18.948440+00:00",
+  "sha256": "fd78dd583b5e2acdd3167ec2ab75d5369064d459d30e24539d7550f82cffe1c0",
+  "bytes": 133784,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

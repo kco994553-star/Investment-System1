@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ISRG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ISRG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:02.475812+00:00",
+  "sha256": "4cb97778a853c0f05f41ae36a4d5a4f41901f54a8396ebfdeb4fc4f83571d178",
+  "bytes": 132089,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

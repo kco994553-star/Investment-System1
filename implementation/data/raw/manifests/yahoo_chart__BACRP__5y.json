@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BACRP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BACRP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:40.001780+00:00",
+  "sha256": "e3a6dd730b336162255310cc7b9c8535cbef73d494e4d9285b61dde09dbbf1d1",
+  "bytes": 80469,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

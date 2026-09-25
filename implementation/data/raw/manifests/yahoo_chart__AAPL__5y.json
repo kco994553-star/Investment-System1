@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AAPL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:16.403250+00:00",
+  "sha256": "9c0614c9ffacbefa57fa2c408e7ae4278cc71645b3e05aa29f1f86439f317a2f",
+  "bytes": 138889,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

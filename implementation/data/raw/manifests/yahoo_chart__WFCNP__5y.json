@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WFCNP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WFCNP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:35:04.203539+00:00",
+  "sha256": "21799bf55fa33b849c4feed20545874eeaad6ffff3d62f1e438e29c84fb72290",
+  "bytes": 102296,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

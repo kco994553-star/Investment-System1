@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LMT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LMT?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:14.144016+00:00",
+  "sha256": "4bdbf52941c8c45c6dcfde4b8f699a673b679b41e7d812cd5871f6b71c5a9749",
+  "bytes": 129991,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

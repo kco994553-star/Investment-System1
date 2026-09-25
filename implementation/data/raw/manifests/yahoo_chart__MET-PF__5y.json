@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MET-PF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MET-PF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:23.324707+00:00",
+  "sha256": "328606a4c5f53fc1f5506b2a92d77ea6182eca53f4cb12733019da22be6479d9",
+  "bytes": 136628,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

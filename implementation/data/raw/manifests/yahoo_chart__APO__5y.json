@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:APO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/APO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:29.664403+00:00",
+  "sha256": "4666d17d83aec91520fbfc62e6517a1a4fd9c9ba1567f71c0d6720dbd3860bb2",
+  "bytes": 135498,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

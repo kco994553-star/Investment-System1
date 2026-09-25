@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:UNLYF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UNLYF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:53.897309+00:00",
+  "sha256": "d8b5b19e39da5f2b3edce995246613f1e078aa9d5f8299a66ec4867ff609df27",
+  "bytes": 132322,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

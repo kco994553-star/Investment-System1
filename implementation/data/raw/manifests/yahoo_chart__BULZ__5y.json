@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BULZ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BULZ?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:57.538689+00:00",
+  "sha256": "a35c540acc7356d357e26bb69df419328ba8793a63eebf156628d832a7987b41",
+  "bytes": 138446,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

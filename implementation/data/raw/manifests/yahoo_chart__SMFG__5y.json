@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SMFG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SMFG?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:28.791798+00:00",
+  "sha256": "9bb57cfeefde57a9d06cb8addcb75855bd29808558d2079c9f7e380cda14956e",
+  "bytes": 136892,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

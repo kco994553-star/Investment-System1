@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DVA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DVA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:24:54.150163+00:00",
+  "sha256": "37dbcff7d7709515b531c9216596a034068c923463ce8ee4044d880d0c78ecea",
+  "bytes": 134970,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

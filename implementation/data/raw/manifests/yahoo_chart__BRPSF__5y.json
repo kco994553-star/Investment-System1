@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BRPSF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BRPSF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:31:55.149238+00:00",
+  "sha256": "f827c942cffaa7377dc78ce44dc572e2583e2533e37db54f6352240c46506a43",
+  "bytes": 61906,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

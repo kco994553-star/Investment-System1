@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:GSK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GSK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:32:51.790922+00:00",
+  "sha256": "5c41afd0400a1bfdee3b7135668d9e990fe35da6da125786070ad415b91cd38a",
+  "bytes": 137254,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

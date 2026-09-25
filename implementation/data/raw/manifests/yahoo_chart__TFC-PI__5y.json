@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TFC-PI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TFC-PI?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:44.422907+00:00",
+  "sha256": "40401cfafc091345a3d9c34eefd9a6781e690fb7c648fbd59055d8432196c88f",
+  "bytes": 134166,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

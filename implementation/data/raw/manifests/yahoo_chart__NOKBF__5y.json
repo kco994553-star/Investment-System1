@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NOKBF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NOKBF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:33:49.371834+00:00",
+  "sha256": "989b49187962c36853de1f74ab250f3f2769cc01299bb93df1ac8ea34309ded9",
+  "bytes": 131973,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

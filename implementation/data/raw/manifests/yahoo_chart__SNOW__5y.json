@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SNOW:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SNOW?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T08:34:30.466996+00:00",
+  "sha256": "8b5a04f715529d490210d157c8ac2829a59c34e143138df8da8f5d3d8983f93c",
+  "bytes": 133470,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
