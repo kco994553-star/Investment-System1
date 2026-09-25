@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import re
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timedelta
 
 CLASS_AXIS = "StatementClassOfStockAxis"
 PERIODIC_FORMS = ("10-K", "10-Q", "10-K/A", "10-Q/A")
@@ -59,14 +59,25 @@ def pit_filer_status(submissions: dict, as_of: datetime, pages_complete: bool = 
     return "DOMESTIC" if periodic[-1][1] in DOMESTIC_PERIODIC else "FOREIGN"
 
 
+PAGE_LOOKBACK_DAYS = 400  # a 10-K/10-Q or 20-F/40-F is always filed within ~13 months
+
+
+def page_window(as_of: datetime) -> tuple[str, str]:
+    return (as_of - timedelta(days=PAGE_LOOKBACK_DAYS)).date().isoformat(), as_of.date().isoformat()
+
+
 def pages_needed(submissions: dict, as_of: datetime) -> list[str]:
-    """Older submissions pages to fetch when 'recent' holds no filing on or before as_of."""
+    """Older submissions pages to fetch when 'recent' holds no PERIODIC report filed on or before as_of
+    (large filers: 'recent' can end in a run of prospectus filings). Only pages overlapping the
+    lookback window before as_of are needed."""
     filings = submissions.get("filings") or {}
     rec = filings.get("recent") or {}
-    cut = as_of.date().isoformat()
-    if any(d and str(d) <= cut for d in rec.get("filingDate") or []):
+    lo, hi = page_window(as_of)
+    if any(d and str(d) <= hi and f in DOMESTIC_PERIODIC | FOREIGN_PERIODIC
+           for f, d in zip(rec.get("form") or [], rec.get("filingDate") or [])):
         return []
-    return [str(f["name"]) for f in filings.get("files") or [] if f.get("name") and str(f.get("filingFrom") or "") <= cut]
+    return [str(f["name"]) for f in filings.get("files") or []
+            if f.get("name") and str(f.get("filingFrom") or "") <= hi and str(f.get("filingTo") or "9999") >= lo]
 
 
 def instance_name(primary_document: str) -> str:

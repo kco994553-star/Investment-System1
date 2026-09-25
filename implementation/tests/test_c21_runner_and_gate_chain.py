@@ -534,3 +534,37 @@ def test_fetch_submission_pages_requests_only_needed_pages(tmp_path, monkeypatch
     n = fcx.fetch_submission_pages(store, ["0000019617", "0000000005"], amc_dt(), [])
     assert n == 1 and urls == ["https://data.sec.gov/submissions/CIK0000019617-submissions-001.json"]
     assert store.has("submissions_page:CIK0000019617-submissions-001.json")
+
+
+def test_pages_needed_when_recent_has_only_prospectuses_before_as_of_and_only_window_pages(tmp_path):
+    """STT/DB pattern (run #16): 'recent' reaches back before as_of but only with 424B2/FWP filings."""
+    from investment_system.ingestion.replay import load_submissions_merged
+    from investment_system.providers.sec_cover_shares import pages_needed, pit_filer_status
+    store = RawDatasetStore(tmp_path)
+    sub = {"filings": {"recent": {"form": ["424B2", "FWP"], "filingDate": ["2025-01-10", "2024-12-15"]},
+                       "files": [{"name": "CIK0000093751-submissions-001.json", "filingFrom": "2024-06-01", "filingTo": "2024-12-14"},
+                                 {"name": "CIK0000093751-submissions-002.json", "filingFrom": "2019-01-01", "filingTo": "2022-12-31"}]}}
+    assert pages_needed(sub, amc_dt()) == ["CIK0000093751-submissions-001.json"]  # 2019-22 page is outside the window
+    store.put("submissions:0000093751", json.dumps(sub).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put("submissions_page:CIK0000093751-submissions-001.json", json.dumps({"form": ["10-Q"], "filingDate": ["2024-11-01"]}).encode(),
+              "u", "SEC", "application/json", "t", 200)
+    merged, complete = load_submissions_merged(store, "93751", amc_dt())
+    assert complete is True  # the out-of-window page is not required
+    assert pit_filer_status(merged, amc_dt(), complete) == "DOMESTIC"
+    assert pages_needed({"filings": {"recent": {"form": ["10-Q"], "filingDate": ["2024-11-01"]}}}, amc_dt()) == []
+
+
+def test_zero_companyfacts_shares_needs_cover_and_cover_resolves_it(tmp_path):
+    """CRWD/HOOD/DDOG/CVNA/PSKY/TAP pattern (run #16): companyfacts reports 0 undimensioned shares."""
+    fcx = _mod("fcx_zero", "fetch_cover_xbrl.py")
+    chain = _mod("chain_zero", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    _put_name(store, 1535527, "CRWD", 0, 350.0)  # companyfacts shares = 0
+    assert fcx.needs_cover(store, {"c": {"cik": "0001535527", "yahoo": "CRWD"}}, amc_dt()) == ["0001535527"]
+    aid = _sub_with_filing(store, "0001535527")
+    store.put(aid, _instance([("CommonClassAMember", 240_000_000), ("CommonClassBMember", 5_000_000)], [(None, "CRWD")],
+                             [(None, "Class A common stock")]), "u", "SEC", "application/xml", "t", 200)
+    rep = chain.run_chain(store, {"c": {"cik": "0001535527", "yahoo": "CRWD"}}, "2024-12-31", [], [], None, None)
+    o = rep["cover_overrides"]["CRWD"]
+    assert o["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and o["mcap"] == 240_000_000 * 350.0
+    assert "CRWD" not in rep["unrankable_issuers"]

@@ -38,19 +38,26 @@ def submission_page_id(name: str) -> str:
     return f"submissions_page:{name}"
 
 
-def load_submissions_merged(store: RawDatasetStore, cik: str) -> tuple[dict | None, bool]:
+def load_submissions_merged(store: RawDatasetStore, cik: str, as_of=None) -> tuple[dict | None, bool]:
     """(submissions with 'recent' extended by every stored older page, pages_complete).
-    SEC keeps only the latest ~1000 filings in 'recent'; older ones live in filings.files pages."""
+    SEC keeps only the latest ~1000 filings in 'recent'; older ones live in filings.files pages.
+    With as_of, completeness only requires the pages that pages_needed(as_of) asks for."""
     sub = load_submissions(store, cik)
     if sub is None:
         return None, False
     filings = sub.get("filings") or {}
     rec = {k: list(v) for k, v in (filings.get("recent") or {}).items() if isinstance(v, list)}
+    needed = None
+    if as_of is not None:
+        from ..providers.sec_cover_shares import pages_needed
+        needed = set(pages_needed(sub, as_of))
     complete = True
     for f in filings.get("files") or []:
-        aid = submission_page_id(str(f.get("name") or ""))
+        name = str(f.get("name") or "")
+        aid = submission_page_id(name)
         if not store.has(aid):
-            complete = False
+            if needed is None or name in needed:
+                complete = False
             continue
         page = json.loads(store.get_bytes(aid))
         for k in list(rec):

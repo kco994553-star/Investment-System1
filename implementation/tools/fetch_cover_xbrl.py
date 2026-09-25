@@ -52,7 +52,9 @@ def needs_cover(store: RawDatasetStore, row_listings: dict, as_of: datetime) -> 
     out = []
     for c, n in sorted(lines.items()):
         cf = load_companyfacts(store, c)
-        if n > 1 or cf is None or pit_shares(cf, as_of)["status"] != "OK":
+        sh = pit_shares(cf, as_of) if cf is not None else None
+        # a zero/negative companyfacts count (e.g. a converted class reported alone) is unresolved too
+        if n > 1 or sh is None or sh["status"] != "OK" or not (sh["shares"] or 0) > 0:
             out.append(c)
     return out
 

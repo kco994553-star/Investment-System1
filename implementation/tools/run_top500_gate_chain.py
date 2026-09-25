@@ -130,7 +130,7 @@ ELIGIBILITY_RULE = ("US_DOMESTIC_FILER_AT_AS_OF: the latest periodic report the 
 
 
 def _filer_status(store: RawDatasetStore, cik: str, as_of) -> str:
-    sub, complete = load_submissions_merged(store, cik) if cik else (None, False)
+    sub, complete = load_submissions_merged(store, cik, as_of) if cik else (None, False)
     return pit_filer_status(sub, as_of, complete) if sub else "UNKNOWN"
 
 
@@ -183,7 +183,8 @@ def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_ra
             continue
         if len(classes) == 1 and classes[0]["member"] is None:
             cf = load_companyfacts(store, c)
-            if cf is not None and pit_shares(cf, as_of)["status"] == "OK":
+            sh = pit_shares(cf, as_of) if cf is not None else None
+            if sh and sh["status"] == "OK" and (sh["shares"] or 0) > 0:
                 continue  # companyfacts already resolves a single class
             px = _as_of_price(store, str(m.get("yahoo") or ""), as_of, chart_range)
             if px:
