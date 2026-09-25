@@ -2,7 +2,7 @@
   "artifact_id": "yahoo_chart:MNUPF:5y",
   "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MNUPF?interval=1d&range=5y",
   "source_kind": "YAHOO_CHART",
-  "fetched_at": "2026-09-25T08:33:27.727649+00:00",
+  "fetched_at": "2026-09-25T11:06:17.039499+00:00",
   "sha256": "4890749a7096f7eac978c436f262a6847cc80059e48d60830888cc45a4a3c152",
   "bytes": 1017,
   "content_type": "application/json;charset=utf-8",

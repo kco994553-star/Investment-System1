@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BWA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BWA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T11:06:00.657728+00:00",
+  "sha256": "aa33d8d9669651667734d36ac3ce7a18d817bec6676341a66b67c89ba951512d",
+  "bytes": 7991,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

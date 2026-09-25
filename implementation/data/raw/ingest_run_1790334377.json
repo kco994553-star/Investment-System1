@@ -1,0 +1,38 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "data/raw",
+  "n_requested": 5,
+  "n_ok": 5,
+  "n_failed": 0,
+  "log": [
+    {
+      "artifact_id": "yahoo_chart:BPPFF:5y",
+      "status": "OK",
+      "bytes": 984
+    },
+    {
+      "artifact_id": "yahoo_chart:BRFAF:5y",
+      "status": "OK",
+      "bytes": 1004
+    },
+    {
+      "artifact_id": "yahoo_chart:DEENF:5y",
+      "status": "OK",
+      "bytes": 1016
+    },
+    {
+      "artifact_id": "yahoo_chart:ENBSF:5y",
+      "status": "OK",
+      "bytes": 992
+    },
+    {
+      "artifact_id": "yahoo_chart:MNUPF:5y",
+      "status": "OK",
+      "bytes": 1017
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "plan_resolution": null,
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}

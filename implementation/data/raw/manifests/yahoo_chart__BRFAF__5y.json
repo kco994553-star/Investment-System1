@@ -2,7 +2,7 @@
   "artifact_id": "yahoo_chart:BRFAF:5y",
   "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BRFAF?interval=1d&range=5y",
   "source_kind": "YAHOO_CHART",
-  "fetched_at": "2026-09-25T08:31:53.852128+00:00",
+  "fetched_at": "2026-09-25T11:06:16.377973+00:00",
   "sha256": "806d574143b55ddca1037bd86ea57c3eb7068f8e2f4ea41a86c0c983c012cc15",
   "bytes": 1004,
   "content_type": "application/json;charset=utf-8",

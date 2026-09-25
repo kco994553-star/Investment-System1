@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CPB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CPB?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T11:06:01.158262+00:00",
+  "sha256": "7a05053b780a95dcec7de6caea80228c3533d080488443367d0e2fcd3c17b570",
+  "bytes": 7882,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

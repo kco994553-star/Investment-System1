@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TFX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TFX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T11:06:07.582382+00:00",
+  "sha256": "0c9128c1d2d839c25d1a53c3f5f792264611e76e9a6c0dc390a356424fdc4bc4",
+  "bytes": 7796,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
