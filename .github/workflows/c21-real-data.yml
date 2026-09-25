@@ -17,8 +17,13 @@ on:
         description: "true = only re-run the gate chain on the cached store"
         default: "false"
         required: true
+      seed_run_id:
+        description: "run whose c21-raw-store-<id> artifact seeds the store when no cache exists"
+        default: "36117017112"
+        required: true
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: c21-real-data
   cancel-in-progress: false
@@ -37,15 +42,31 @@ jobs:
         with:
           python-version: "3.11"
       - name: Require SEC contact User-Agent (SEC fair-access policy)
+        if: inputs.skip_fetch != 'true'
         run: |
           if [ -z "$INVESTMENT_SYSTEM_SEC_UA" ]; then
             echo "::error::Set repository secret SEC_USER_AGENT, e.g. 'Name contact@example.com'"; exit 1; fi
       - name: Restore persistent raw store
+        id: restore
         uses: actions/cache/restore@v4
         with:
           path: implementation/data/raw
-          key: c21-raw-store-v1-${{ github.run_id }}
-          restore-keys: c21-raw-store-v1-
+          key: c21-raw-store-v2-${{ github.run_id }}
+          restore-keys: c21-raw-store-v2-
+      - name: Seed raw store from a previous run artifact (no cache yet)
+        if: steps.restore.outputs.cache-matched-key == ''
+        uses: actions/download-artifact@v4
+        with:
+          name: c21-raw-store-${{ inputs.seed_run_id }}
+          run-id: ${{ inputs.seed_run_id }}
+          github-token: ${{ github.token }}
+          path: /tmp/seed
+      - name: Merge seeded blobs into the store
+        if: steps.restore.outputs.cache-matched-key == ''
+        run: |
+          SRC=$(dirname "$(find /tmp/seed -type d -path '*data/raw/blobs' | head -1)")
+          test -n "$SRC" && cp -rn "$SRC"/. data/raw/ || echo "::warning::no seed store found"
+          echo "blobs after seed: $(ls data/raw/blobs | wc -l)"
       - name: Offline test baseline
         run: python tools/mini_pytest.py | tail -1
       - name: Fetch missing-large-cap priority plan (257 CIK-ready + 25 via sec_tickers)
@@ -75,18 +96,22 @@ jobs:
       - name: Fetch cover-page XBRL share classes (multi-class / unresolved-shares issuers) + class prices
         if: inputs.skip_fetch != 'true'
         run: python tools/fetch_cover_xbrl.py --store data/raw --as-of "${{ inputs.as_of }}"
-      - name: Save persistent raw store
+      - name: Recount store
+        id: store2
         if: always()
+        run: echo "blobs=$(ls data/raw/blobs 2>/dev/null | grep -vc '^.gitkeep$' || true)" >> "$GITHUB_OUTPUT"
+      - name: Save persistent raw store (never an empty store)
+        if: always() && steps.store2.outputs.blobs != '' && steps.store2.outputs.blobs != '0'
         uses: actions/cache/save@v4
         with:
           path: implementation/data/raw
-          key: c21-raw-store-v1-${{ github.run_id }}
+          key: c21-raw-store-v2-${{ github.run_id }}
       - name: Gate chain (coverage -> rankable -> #500 -> Completeness -> Sufficiency -> Promotion Gate v2)
         run: |
           python tools/run_top500_gate_chain.py --store data/raw --as-of "${{ inputs.as_of }}" \
             --out "reports/gate_evidence/gate_chain_${{ inputs.as_of }}_real_gha.json"
       - name: Upload raw store + evidence artifact
-        if: always()
+        if: always() && steps.store2.outputs.blobs != '' && steps.store2.outputs.blobs != '0'
         uses: actions/upload-artifact@v4
         with:
           name: c21-raw-store-${{ github.run_id }}
