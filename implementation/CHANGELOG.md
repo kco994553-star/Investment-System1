@@ -588,3 +588,11 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - Secret-only SEC UA; never cache an empty store; artifact seed; robust evidence commit.
 - PIT eligibility (filings <= as_of, older submissions pages), foreign private issuers excluded, cover-page XBRL class sums (lower bound when a class is unpriced), PIT CIK corrections (XOM, PSKY), zero-share and truncated-chart handling, reference normalisation, unrankable diagnostics.
 - Run #18: 530 eligible, 516 rankable, #500 cutoff $8.223B. Gates FAIL; Official not declared. 212 tests (shim + pytest).
+
+## 2026-09-25 · round 9 · Claude Code (+ Actions runs #19-#24)
+
+- tools/fetch_stooq_prices.py (calibrated, fail-closed) — Stooq blocks scripted requests (JS proof-of-work), nothing written.
+- _stooq_to_chart look-ahead fix (bars stamped 21:00 UTC).
+- tools/fetch_nport_reference.py: Russell 1000 ETF holdings from SEC NPORT-P for as_of; CIK resolution by unique normalised name.
+- SUPERSET_REFERENCE sufficiency role; eligibility evidence derived only from a passed superset; UNKNOWN + no price -> not listed.
+- Run #24: 952 eligible, 935 rankable, cutoff $14.408B; Sufficiency/Promotion Gate v2 FAIL; 226 tests.
