@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RIVN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RIVN?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:57:47.885158+00:00",
+  "sha256": "63a280d783c9410abc45b768be9560985ba826e9c11a58b6c6399d2716dc0906",
+  "bytes": 135495,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,8 +1,8 @@
 {
   "kind": "RAW_DATASET_STORE_INDEX",
   "store_dir": "data/raw",
-  "n_artifacts": 5125,
-  "n_blobs_on_disk": 5125,
+  "n_artifacts": 5141,
+  "n_blobs_on_disk": 5141,
   "artifacts": [
     {
       "artifact_id": "companyfacts:0000001800",
@@ -3353,6 +3353,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "companyfacts:0000880266",
+      "source_kind": "SEC_COMPANYFACTS",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000880266.json",
+      "sha256": "2489ee92809ea71ec526dabd50262e442e2915030aa2abc7c5834fea1503cb50",
+      "bytes": 4113230,
+      "fetched_at": "2026-09-25T12:57:36.748428+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "companyfacts:0000882095",
       "source_kind": "SEC_COMPANYFACTS",
       "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000882095.json",
@@ -3467,6 +3476,15 @@
       "sha256": "7bfec6b30eda25ef8ce5da076f5eba7aca41ae20681481c3f6b711258bd3eac9",
       "bytes": 3629080,
       "fetched_at": "2026-09-25T12:26:58.957456+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "companyfacts:0000889331",
+      "source_kind": "SEC_COMPANYFACTS",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000889331.json",
+      "sha256": "8c492c3adb7371b6e58125a958fe456779f3bf8ca48e514d5870abb4d227dc6a",
+      "bytes": 3741340,
+      "fetched_at": "2026-09-25T12:57:39.401509+00:00",
       "http_status": 200
     },
     {
@@ -8717,6 +8735,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "companyfacts:0001801368",
+      "source_kind": "SEC_COMPANYFACTS",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001801368.json",
+      "sha256": "3f70f12400f91ab79e751c01b0d107521309db335c01948888ca0e6481a9df21",
+      "bytes": 1432143,
+      "fetched_at": "2026-09-25T12:57:44.369012+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "companyfacts:0001802768",
       "source_kind": "SEC_COMPANYFACTS",
       "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001802768.json",
@@ -8975,6 +9002,15 @@
       "sha256": "a8687375ee9f368b8d024f1541f8aafbb4f082c1f0b27dfea8abf79fa7e16a08",
       "bytes": 1466762,
       "fetched_at": "2026-09-25T08:31:09.094474+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "companyfacts:0001874178",
+      "source_kind": "SEC_COMPANYFACTS",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001874178.json",
+      "sha256": "43ea11fc419dd2c41ae0726647c54b33910d0354d64aa4a3bbb47b554be26896",
+      "bytes": 996167,
+      "fetched_at": "2026-09-25T12:57:45.800602+00:00",
       "http_status": 200
     },
     {
@@ -13559,6 +13595,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "submissions:0000880266",
+      "source_kind": "SEC_SUBMISSIONS",
+      "source_url": "https://data.sec.gov/submissions/CIK0000880266.json",
+      "sha256": "0e0e3231ce14a3612f4f6f4b7671eb2a0c745abcc61d1ddfb48076ad2de6d6dc",
+      "bytes": 159756,
+      "fetched_at": "2026-09-25T12:57:37.903801+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "submissions:0000882095",
       "source_kind": "SEC_SUBMISSIONS",
       "source_url": "https://data.sec.gov/submissions/CIK0000882095.json",
@@ -13673,6 +13718,15 @@
       "sha256": "55845d96ae83a5d907ccd4a5da4a14fe6da9368c8139068e734fa2cee360795f",
       "bytes": 161730,
       "fetched_at": "2026-09-25T12:26:59.375584+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions:0000889331",
+      "source_kind": "SEC_SUBMISSIONS",
+      "source_url": "https://data.sec.gov/submissions/CIK0000889331.json",
+      "sha256": "b53aee7a78db74d637ee4478ed7d29297e8df521881ac8b9555df17362b8e7a7",
+      "bytes": 149105,
+      "fetched_at": "2026-09-25T12:57:40.654991+00:00",
       "http_status": 200
     },
     {
@@ -18941,6 +18995,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "submissions:0001801368",
+      "source_kind": "SEC_SUBMISSIONS",
+      "source_url": "https://data.sec.gov/submissions/CIK0001801368.json",
+      "sha256": "d5e6f17bb1a24e7f82717f12eb30b3671d60b5d0f385c151da7079eb1b26f7d9",
+      "bytes": 85969,
+      "fetched_at": "2026-09-25T12:57:44.610552+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "submissions:0001802768",
       "source_kind": "SEC_SUBMISSIONS",
       "source_url": "https://data.sec.gov/submissions/CIK0001802768.json",
@@ -19199,6 +19262,15 @@
       "sha256": "cd6ed3167c5261e16c2439851c252840ca389340ab2f40e7476a861d7aaac391",
       "bytes": 61594,
       "fetched_at": "2026-09-25T08:31:09.326997+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions:0001874178",
+      "source_kind": "SEC_SUBMISSIONS",
+      "source_url": "https://data.sec.gov/submissions/CIK0001874178.json",
+      "sha256": "a5cb7408c43160dfec7f933c89d28ec04bab72855dbbbf68be6cc710fa3b7052",
+      "bytes": 85127,
+      "fetched_at": "2026-09-25T12:57:46.060150+00:00",
       "http_status": 200
     },
     {
@@ -23015,6 +23087,15 @@
       "sha256": "bd5e61234b8b77db218dacb67819a8a6f81334504c9b49f838720cf47a417a30",
       "bytes": 135083,
       "fetched_at": "2026-09-25T12:31:13.691078+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_chart:AGCO:5y",
+      "source_kind": "YAHOO_CHART",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AGCO?interval=1d&range=5y",
+      "sha256": "e5a29c283d3b33afa0c9066051385f098596e796e392319165a1a33e308e7cec",
+      "bytes": 136712,
+      "fetched_at": "2026-09-25T12:57:46.407984+00:00",
       "http_status": 200
     },
     {
@@ -28850,6 +28931,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "yahoo_chart:LFUS:5y",
+      "source_kind": "YAHOO_CHART",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LFUS?interval=1d&range=5y",
+      "sha256": "ad2341c68cd6297df2b602d0080cc8a46d16eafb4804c4d2f579abee2ffc30f3",
+      "bytes": 134740,
+      "fetched_at": "2026-09-25T12:57:46.956234+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "yahoo_chart:LH:5y",
       "source_kind": "YAHOO_CHART",
       "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LH?interval=1d&range=5y",
@@ -29576,6 +29666,15 @@
       "sha256": "1a38b9483dd14cb0637ae55e33b44cb514e184387cdcb2fd56caf182c93fee7a",
       "bytes": 137153,
       "fetched_at": "2026-09-25T08:25:33.528215+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_chart:MP:5y",
+      "source_kind": "YAHOO_CHART",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MP?interval=1d&range=5y",
+      "sha256": "95917461e5b0e60e368ec525d59179bfdc099b7990f2828cfa0ac8ecac2d8962",
+      "bytes": 135597,
+      "fetched_at": "2026-09-25T12:57:47.429165+00:00",
       "http_status": 200
     },
     {
@@ -31637,6 +31736,15 @@
       "sha256": "790ca1c8e72b2917bf412b46ef674d0466001b3b7c726bcc376fed45d3d5a519",
       "bytes": 137272,
       "fetched_at": "2026-09-25T12:33:40.535551+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_chart:RIVN:5y",
+      "source_kind": "YAHOO_CHART",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RIVN?interval=1d&range=5y",
+      "sha256": "63a280d783c9410abc45b768be9560985ba826e9c11a58b6c6399d2716dc0906",
+      "bytes": 135495,
+      "fetched_at": "2026-09-25T12:57:47.885158+00:00",
       "http_status": 200
     },
     {
@@ -34706,6 +34814,15 @@
       "sha256": "2b4856d1d63ff04c82dec6b4485f1b09f455cb39117ccb77cee41ff87f07279d",
       "bytes": 7824,
       "fetched_at": "2026-09-25T12:31:13.908999+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_events:AGCO:5y",
+      "source_kind": "YAHOO_SPLIT_EVENTS",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AGCO?interval=1mo&range=5y&events=split",
+      "sha256": "5278f125d895a7b37a4c4cf5da65b3e2816e0ac4b30047050da3cfbea9f5d127",
+      "bytes": 7989,
+      "fetched_at": "2026-09-25T12:57:46.656924+00:00",
       "http_status": 200
     },
     {
@@ -40541,6 +40658,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "yahoo_events:LFUS:5y",
+      "source_kind": "YAHOO_SPLIT_EVENTS",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LFUS?interval=1mo&range=5y&events=split",
+      "sha256": "1529b89de8aff72f2a56a4fe9fb73ddbdf11ef8427e408718e2f19cf0cf05020",
+      "bytes": 7820,
+      "fetched_at": "2026-09-25T12:57:47.182203+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "yahoo_events:LH:5y",
       "source_kind": "YAHOO_SPLIT_EVENTS",
       "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LH?interval=1mo&range=5y&events=split",
@@ -41267,6 +41393,15 @@
       "sha256": "4dd2356dfd27886eeca39c3fbe9b333ac488b3938ae8974e78f10002fd741957",
       "bytes": 7816,
       "fetched_at": "2026-09-25T09:03:28.378384+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_events:MP:5y",
+      "source_kind": "YAHOO_SPLIT_EVENTS",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MP?interval=1mo&range=5y&events=split",
+      "sha256": "c2d7d53c85e4bac2ca2654d0ec7378b8fd9e1972502f04b611fbf75b3d612aaa",
+      "bytes": 7811,
+      "fetched_at": "2026-09-25T12:57:47.644172+00:00",
       "http_status": 200
     },
     {
@@ -43328,6 +43463,15 @@
       "sha256": "669300dac4bf018b4a7d5d9c6cba1f47538a94a049b8bfbb9ab7d935b18ab5af",
       "bytes": 7864,
       "fetched_at": "2026-09-25T12:33:40.759024+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_events:RIVN:5y",
+      "source_kind": "YAHOO_SPLIT_EVENTS",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RIVN?interval=1mo&range=5y&events=split",
+      "sha256": "a90278e3684e9665f352b1c031b136f0ca906f3e6c1724d817e02add70d5f09f",
+      "bytes": 7770,
+      "fetched_at": "2026-09-25T12:57:48.117114+00:00",
       "http_status": 200
     },
     {

@@ -815,6 +815,12 @@
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "REXFORD INDUSTRIAL REALTY, INC"
   },
+  "r1000:0001801368": {
+    "yahoo": "MP",
+    "cik": "0001801368",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "MP MATERIALS CORP"
+  },
   "r1000:0001611647": {
     "yahoo": "FRPT",
     "cik": "0001611647",
@@ -1457,6 +1463,12 @@
     "cik_method": "SEC_CIK_LOOKUP",
     "reference_name": "MKS INSTRUMENTS, INC."
   },
+  "r1000:0000889331": {
+    "yahoo": "LFUS",
+    "cik": "0000889331",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "LITTELFUSE, INC."
+  },
   "r1000:0000750004": {
     "yahoo": "LNWO",
     "cik": "0000750004",
@@ -1540,6 +1552,12 @@
     "cik": "0000730263",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "THOR INDUSTRIES, INC."
+  },
+  "r1000:0001874178": {
+    "yahoo": "RIVN",
+    "cik": "0001874178",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "RIVIAN AUTOMOTIVE, INC."
   },
   "r1000:0001581068": {
     "yahoo": "BRX",
@@ -1922,7 +1940,7 @@
   "r1000:0001046311": {
     "yahoo": "CHH",
     "cik": "0001046311",
-    "cik_method": "SEC_CIK_LOOKUP_UNIQUE_ACTIVE",
+    "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "CHOICE HOTELS INTERNATIONAL, INC."
   },
   "r1000:0001158449": {
@@ -2554,6 +2572,12 @@
     "cik": "0000029644",
     "cik_method": "SEC_TICKERS_TITLE",
     "reference_name": "DONALDSON COMPANY, INC."
+  },
+  "r1000:0000880266": {
+    "yahoo": "AGCO",
+    "cik": "0000880266",
+    "cik_method": "SEC_TICKERS_TITLE",
+    "reference_name": "AGCO CORPORATION"
   },
   "r1000:0001178670": {
     "yahoo": "ALNY",

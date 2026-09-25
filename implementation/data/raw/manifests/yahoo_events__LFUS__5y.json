@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LFUS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LFUS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:57:47.182203+00:00",
+  "sha256": "1529b89de8aff72f2a56a4fe9fb73ddbdf11ef8427e408718e2f19cf0cf05020",
+  "bytes": 7820,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

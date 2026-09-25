@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AGCO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AGCO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T12:57:46.656924+00:00",
+  "sha256": "5278f125d895a7b37a4c4cf5da65b3e2816e0ac4b30047050da3cfbea9f5d127",
+  "bytes": 7989,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LFUS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LFUS?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-25T12:57:46.956234+00:00",
+  "sha256": "ad2341c68cd6297df2b602d0080cc8a46d16eafb4804c4d2f579abee2ffc30f3",
+  "bytes": 134740,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
