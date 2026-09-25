@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_cik_lookup",
+  "source_url": "https://www.sec.gov/Archives/edgar/cik-lookup-data.txt",
+  "source_kind": "SEC_CIK_LOOKUP",
+  "fetched_at": "2026-09-25T11:59:18.662855+00:00",
+  "sha256": "09f9b30587a2547635269e1f92e7b226b0db495a636ff4d21b68bc8529e13463",
+  "bytes": 40186578,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

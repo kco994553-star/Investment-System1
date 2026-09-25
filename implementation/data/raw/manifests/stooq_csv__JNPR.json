@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:JNPR",
+  "source_url": "https://stooq.com/q/d/l/?s=jnpr.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T12:00:08.626778+00:00",
+  "sha256": "e6e72b5ffbe99d7ac09e7ca3004558e2266ae45e9e9f65d819a3ebd60e766bc6",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

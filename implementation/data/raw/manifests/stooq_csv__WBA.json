@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:WBA",
+  "source_url": "https://stooq.com/q/d/l/?s=wba.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T12:00:11.463670+00:00",
+  "sha256": "b25190f615cbbd4b8912727bccc6e7de8f5027e3c1d3bad9d484c16370c0ecc3",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

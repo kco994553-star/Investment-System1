@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:XOM",
+  "source_url": "https://stooq.com/q/d/l/?s=xom.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T11:59:56.571649+00:00",
+  "sha256": "69bd83d64ba44faf3a5cd6eddadc33a2b361062135fe7678f1ce3d7d6de4cd11",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:PG",
+  "source_url": "https://stooq.com/q/d/l/?s=pg.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T11:59:57.607622+00:00",
+  "sha256": "c3c484d577dc22a71041bf2af807e54e70cdbd8c0a4569888112ee67ba4d7a1c",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

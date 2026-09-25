@@ -1,0 +1,12 @@
+{
+  "artifact_id": "ishares_holdings:IWB:20241231",
+  "source_url": "https://www.ishares.com/us/products/239707/ishares-russell-1000-etf/1467271812596.ajax?fileType=csv&fileName=IWB_holdings&dataType=fund&asOfDate=20241231",
+  "source_kind": "ISHARES_FUND_HOLDINGS",
+  "fetched_at": "2026-09-25T11:59:17.609096+00:00",
+  "sha256": "452a3531abd87363acfe563c3b1579a1985f472ff16c398ead94dee20c44b442",
+  "bytes": 1453659,
+  "content_type": "text/csv;charset=UTF-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

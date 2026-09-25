@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:AAPL",
+  "source_url": "https://stooq.com/q/d/l/?s=aapl.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T11:59:53.449610+00:00",
+  "sha256": "e4046e469862e2293c27d76c712a7af9976c23ae1b308f7b1d074c39227ac951",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

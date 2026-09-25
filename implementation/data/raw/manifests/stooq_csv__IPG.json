@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:IPG",
+  "source_url": "https://stooq.com/q/d/l/?s=ipg.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T12:00:07.755603+00:00",
+  "sha256": "3b0b6d173a00b0f65281321685252051151255ab7081f5f49757efe7d566c0ac",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

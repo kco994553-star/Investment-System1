@@ -1,0 +1,19 @@
+{
+  "kind": "ISHARES_REFERENCE_RUN",
+  "as_of": "2024-12-31",
+  "log": [
+    {
+      "artifact_id": "ishares_holdings:IWB:20241231",
+      "status": "OK",
+      "bytes": 1453659
+    },
+    {
+      "artifact_id": "sec_cik_lookup",
+      "status": "OK",
+      "bytes": 40186578
+    }
+  ],
+  "file_as_of": null,
+  "n_equity_rows": 0,
+  "status": "REJECTED_DATE_MISMATCH_OR_TOO_FEW_ROWS"
+}

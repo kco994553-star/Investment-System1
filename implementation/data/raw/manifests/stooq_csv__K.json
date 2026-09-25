@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:K",
+  "source_url": "https://stooq.com/q/d/l/?s=k.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T12:00:09.731599+00:00",
+  "sha256": "f82aef608ba5f90296dd2b0ffa95927fad1ac2b76aada8f1d5e33d72c68a70da",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

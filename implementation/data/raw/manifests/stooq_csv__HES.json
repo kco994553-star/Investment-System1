@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:HES",
+  "source_url": "https://stooq.com/q/d/l/?s=hes.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T12:00:05.999250+00:00",
+  "sha256": "b107137dd9eacabac67bcb6763cc37190a184720eeace344fea5c98c881c7834",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:PARAA",
+  "source_url": "https://stooq.com/q/d/l/?s=paraa.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T12:00:10.600589+00:00",
+  "sha256": "457e1942d47843f659a9b05b15cb8f23de6249d5bdd19504613cfbf650c8da24",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

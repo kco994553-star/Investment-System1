@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:JPM",
+  "source_url": "https://stooq.com/q/d/l/?s=jpm.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T11:59:55.399019+00:00",
+  "sha256": "3d97ec928d76ce6c9fe17c0694748ffbbd2e7891ba7bcf49ccfa7e0fcf76bf8c",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

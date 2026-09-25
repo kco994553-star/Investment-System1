@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:CTRA",
+  "source_url": "https://stooq.com/q/d/l/?s=ctra.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T12:00:01.680708+00:00",
+  "sha256": "79b57ddb7aa7cf241cbea71e60730dcd3bea7421e1e464336988863b133d6278",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

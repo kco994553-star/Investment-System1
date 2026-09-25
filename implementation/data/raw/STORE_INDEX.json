@@ -1,8 +1,8 @@
 {
   "kind": "RAW_DATASET_STORE_INDEX",
   "store_dir": "data/raw",
-  "n_artifacts": 3256,
-  "n_blobs_on_disk": 3256,
+  "n_artifacts": 3278,
+  "n_blobs_on_disk": 3278,
   "artifacts": [
     {
       "artifact_id": "companyfacts:0000001800",
@@ -5459,12 +5459,210 @@
       "http_status": 200
     },
     {
+      "artifact_id": "ishares_holdings:IWB:20241231",
+      "source_kind": "ISHARES_FUND_HOLDINGS",
+      "source_url": "https://www.ishares.com/us/products/239707/ishares-russell-1000-etf/1467271812596.ajax?fileType=csv&fileName=IWB_holdings&dataType=fund&asOfDate=20241231",
+      "sha256": "452a3531abd87363acfe563c3b1579a1985f472ff16c398ead94dee20c44b442",
+      "bytes": 1453659,
+      "fetched_at": "2026-09-25T11:59:17.609096+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_cik_lookup",
+      "source_kind": "SEC_CIK_LOOKUP",
+      "source_url": "https://www.sec.gov/Archives/edgar/cik-lookup-data.txt",
+      "sha256": "09f9b30587a2547635269e1f92e7b226b0db495a636ff4d21b68bc8529e13463",
+      "bytes": 40186578,
+      "fetched_at": "2026-09-25T11:59:18.662855+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "sec_tickers",
       "source_kind": "SEC_TICKERS",
       "source_url": "https://www.sec.gov/files/company_tickers.json",
       "sha256": "3749c0b4a6197feb35e91a6704b3836e45f245dbc2dec1ffa559d1c028852d23",
       "bytes": 797091,
       "fetched_at": "2026-09-25T08:20:49.704034+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:AAPL",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=aapl.us&i=d",
+      "sha256": "e4046e469862e2293c27d76c712a7af9976c23ae1b308f7b1d074c39227ac951",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T11:59:53.449610+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:ANSS",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=anss.us&i=d",
+      "sha256": "8a8e95f7129fc579e6035338260887f330cf5a39b8f16340123f20e5ed82a2f7",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T11:59:59.696348+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:AVB",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=avb.us&i=d",
+      "sha256": "6b51b5c605ffe6e86d2a6d5f01055448a52933b4374768d155b386a869c09f34",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:00.561811+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:CTRA",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=ctra.us&i=d",
+      "sha256": "79b57ddb7aa7cf241cbea71e60730dcd3bea7421e1e464336988863b133d6278",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:01.680708+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:DAY",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=day.us&i=d",
+      "sha256": "9fdf89a76ddbd616173c12de16643123b42a099e278f8a04bdc1463e0782378b",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:02.549507+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:DFS",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=dfs.us&i=d",
+      "sha256": "012270f65c5513a89403dcaf6825d26a83ae107e26aea1263ff98f608408b871",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:03.416535+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:EA",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=ea.us&i=d",
+      "sha256": "4d31b5e75fef18b8825b3f7d67815f989bdb0fe401164c290ad9f32f60044d09",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:04.275184+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:EQR",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=eqr.us&i=d",
+      "sha256": "a5305aef5822f93031b5e7edcee91fcba0c6c9b4929430d8eb97af0c872788fb",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:05.139097+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:HES",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=hes.us&i=d",
+      "sha256": "b107137dd9eacabac67bcb6763cc37190a184720eeace344fea5c98c881c7834",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:05.999250+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:HOLX",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=holx.us&i=d",
+      "sha256": "d4bec5b8fa4aebc08a6b1edd1a5876e2a3005b373eaf3c6149a888a0a9202ade",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:06.883721+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:IPG",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=ipg.us&i=d",
+      "sha256": "3b0b6d173a00b0f65281321685252051151255ab7081f5f49757efe7d566c0ac",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:07.755603+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:JNPR",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=jnpr.us&i=d",
+      "sha256": "e6e72b5ffbe99d7ac09e7ca3004558e2266ae45e9e9f65d819a3ebd60e766bc6",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:08.626778+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:JPM",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=jpm.us&i=d",
+      "sha256": "3d97ec928d76ce6c9fe17c0694748ffbbd2e7891ba7bcf49ccfa7e0fcf76bf8c",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T11:59:55.399019+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:K",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=k.us&i=d",
+      "sha256": "f82aef608ba5f90296dd2b0ffa95927fad1ac2b76aada8f1d5e33d72c68a70da",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:09.731599+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:KO",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=ko.us&i=d",
+      "sha256": "7beb27364fa8c41b3662f27bd2822dc11c61d533880a7f2ea264971897d140bf",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T11:59:58.602333+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:MSFT",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=msft.us&i=d",
+      "sha256": "c1a17b6c50103c9beb8f8dcacd52e77328765d3fa9b2c2aa91273e355ab32311",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T11:59:54.517256+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:PARAA",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=paraa.us&i=d",
+      "sha256": "457e1942d47843f659a9b05b15cb8f23de6249d5bdd19504613cfbf650c8da24",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:10.600589+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:PG",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=pg.us&i=d",
+      "sha256": "c3c484d577dc22a71041bf2af807e54e70cdbd8c0a4569888112ee67ba4d7a1c",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T11:59:57.607622+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:WBA",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=wba.us&i=d",
+      "sha256": "b25190f615cbbd4b8912727bccc6e7de8f5027e3c1d3bad9d484c16370c0ecc3",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T12:00:11.463670+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "stooq_csv:XOM",
+      "source_kind": "STOOQ_DAILY_CSV",
+      "source_url": "https://stooq.com/q/d/l/?s=xom.us&i=d",
+      "sha256": "69bd83d64ba44faf3a5cd6eddadc33a2b361062135fe7678f1ce3d7d6de4cd11",
+      "bytes": 796,
+      "fetched_at": "2026-09-25T11:59:56.571649+00:00",
       "http_status": 200
     },
     {

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:MSFT",
+  "source_url": "https://stooq.com/q/d/l/?s=msft.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T11:59:54.517256+00:00",
+  "sha256": "c1a17b6c50103c9beb8f8dcacd52e77328765d3fa9b2c2aa91273e355ab32311",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

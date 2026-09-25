@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:EQR",
+  "source_url": "https://stooq.com/q/d/l/?s=eqr.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T12:00:05.139097+00:00",
+  "sha256": "a5305aef5822f93031b5e7edcee91fcba0c6c9b4929430d8eb97af0c872788fb",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

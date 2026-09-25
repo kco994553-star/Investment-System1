@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:HOLX",
+  "source_url": "https://stooq.com/q/d/l/?s=holx.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T12:00:06.883721+00:00",
+  "sha256": "d4bec5b8fa4aebc08a6b1edd1a5876e2a3005b373eaf3c6149a888a0a9202ade",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

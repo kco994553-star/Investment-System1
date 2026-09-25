@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:AVB",
+  "source_url": "https://stooq.com/q/d/l/?s=avb.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-25T12:00:00.561811+00:00",
+  "sha256": "6b51b5c605ffe6e86d2a6d5f01055448a52933b4374768d155b386a869c09f34",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
