@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:EG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:20.390362+00:00",
+  "sha256": "07c65d15ee23ec0665710cf9f0c646553f5d557508b165f0cef33fe96c768abd",
+  "bytes": 7512,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

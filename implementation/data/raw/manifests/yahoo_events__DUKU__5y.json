@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DUKU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DUKU?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:15.489498+00:00",
+  "sha256": "2c655078e9a7c943bd66e595a80a753a99e4d2113fb859732fc14b1ff940ad94",
+  "bytes": 1345,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MNUPF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MNUPF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:27.731938+00:00",
+  "sha256": "2d6d3d9e81356c68f9ae944c1398a1ff4c1446d4db30990852c6667a8eadde88",
+  "bytes": 1018,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

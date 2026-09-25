@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AKAM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AKAM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:04.339757+00:00",
+  "sha256": "cc31228f6c238d683e9e29d0b9cc9beba50abe8bf2ff28e8bc5e29749d5f6d09",
+  "bytes": 7667,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

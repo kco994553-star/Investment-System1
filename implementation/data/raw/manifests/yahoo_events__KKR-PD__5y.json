@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:KKR-PD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KKR-PD?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:09.625066+00:00",
+  "sha256": "d417736d598f6bbbaf5f325d23274c7ab3cc41cdf501c8e5c459707a51e29f16",
+  "bytes": 3231,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

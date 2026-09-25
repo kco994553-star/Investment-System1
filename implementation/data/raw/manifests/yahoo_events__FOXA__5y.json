@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FOXA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FOXA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:38.850768+00:00",
+  "sha256": "222c58fab91be6952bd8b449c9bd453714f60c53171850e40974f008d20751ca",
+  "bytes": 7854,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

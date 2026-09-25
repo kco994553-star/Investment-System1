@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CRH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CRH?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:01.071192+00:00",
+  "sha256": "4ae1d275ddff9eebe2975f1cbdf13b0f6a6afbc5750f42d8e6e24f9c2b6bb086",
+  "bytes": 7753,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

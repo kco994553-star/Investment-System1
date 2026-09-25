@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:JPM-PL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/JPM-PL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:06.769205+00:00",
+  "sha256": "0f6122b2dac5d33ea1d0e0e763dc158816c101be16c7ca3ffc683c6b9be106e3",
+  "bytes": 7823,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

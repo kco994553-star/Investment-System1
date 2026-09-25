@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BRO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BRO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:40.250846+00:00",
+  "sha256": "dfb3ae26586e82f8584c5fc043f66e156fe1ebf2d3961b2132deb1e25a2c21be",
+  "bytes": 7694,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

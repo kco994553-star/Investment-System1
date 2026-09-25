@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CMG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CMG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:54.109185+00:00",
+  "sha256": "f9c56577e95d30e7ebbad3c11234123e039ca5056316b830823a5a69206d2769",
+  "bytes": 8022,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

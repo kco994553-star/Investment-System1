@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BSX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BSX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:41.875800+00:00",
+  "sha256": "74fd0bbe2bb83af62df34d769cb87b76ce0bd897ce6654fe3bdd00de42327fb2",
+  "bytes": 7784,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

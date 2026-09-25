@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TOYOF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TOYOF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:40.767466+00:00",
+  "sha256": "0c2f0735929007e43efabdc136e216f3c3e17df4a0db30df297d767d6e319f30",
+  "bytes": 7458,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

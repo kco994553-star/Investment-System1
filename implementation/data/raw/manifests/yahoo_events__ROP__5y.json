@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ROP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ROP?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:12.762819+00:00",
+  "sha256": "7f9488837fda45848456d23becc7b2311a36bcfde60a3c3dd92311508463cfc9",
+  "bytes": 7626,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

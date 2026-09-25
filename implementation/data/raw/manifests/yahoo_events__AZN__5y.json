@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AZN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AZN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:18.145272+00:00",
+  "sha256": "7dcf756b6739e1ae90d384d6f951c554be1ed77452afefb774b110f78518f9ae",
+  "bytes": 7988,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

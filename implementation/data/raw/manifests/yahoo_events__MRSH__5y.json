@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MRSH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MRSH?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:30.164322+00:00",
+  "sha256": "6127baee79cbb2d67c8a39de08827fa32aa0d28ca89911f9e51ecc5667576b79",
+  "bytes": 7922,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

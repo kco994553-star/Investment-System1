@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MBFJF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MBFJF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:20.422857+00:00",
+  "sha256": "1e19a8d3499d9018403246e88d5acaa90cedb929b1e0baedd907a96807dbedcd",
+  "bytes": 7584,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

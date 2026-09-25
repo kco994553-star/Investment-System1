@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MNQFF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MNQFF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:26.907849+00:00",
+  "sha256": "ff00f6bfb4771723103bc7140b8a6eca27d39e40a096f7ae37c6cbbde934c88b",
+  "bytes": 7447,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

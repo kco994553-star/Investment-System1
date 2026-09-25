@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AXP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AXP?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:17.856353+00:00",
+  "sha256": "fb80d9e1c6ba4c4db83675a5a68dafba17595ca8eb2bbb833e861293035f981b",
+  "bytes": 7785,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

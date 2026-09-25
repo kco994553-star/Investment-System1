@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:T-PC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/T-PC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:33.371577+00:00",
+  "sha256": "0b7776ac3a5236548064e5d8318cf66c529542b8117e84dbc526b5582b0ace93",
+  "bytes": 7851,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

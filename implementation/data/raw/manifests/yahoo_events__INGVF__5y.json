@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:INGVF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/INGVF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:59.270696+00:00",
+  "sha256": "0ae983f132629dde01357b26b7b20810d3e29c86d04ae204207aa005578e45bd",
+  "bytes": 7623,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

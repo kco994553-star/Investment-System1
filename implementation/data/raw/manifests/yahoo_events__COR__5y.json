@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:COR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/COR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:59.368970+00:00",
+  "sha256": "cfcfce0938fc1852162619f0cbf116f53f9fb77a88ba0dd2ffa75736876d1879",
+  "bytes": 7898,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

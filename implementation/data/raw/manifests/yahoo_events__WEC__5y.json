@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:WEC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WEC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:57.344162+00:00",
+  "sha256": "bf6a8a3ce4fdc087516eeeab8e310c2ffdc0239ceb03b806bdda4393ece4923b",
+  "bytes": 7825,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

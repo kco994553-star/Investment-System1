@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PBR-A:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PBR-A?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:55.024350+00:00",
+  "sha256": "9e660f972f7eeeedd966fa295dbddae913cabc7905538d66c3c5c97ea2db2cfa",
+  "bytes": 8113,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

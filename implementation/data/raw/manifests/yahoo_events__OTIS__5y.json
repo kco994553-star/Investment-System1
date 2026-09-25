@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:OTIS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OTIS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:53.194422+00:00",
+  "sha256": "61bdab81916662c43475937c42d46f9ef6c6e01c1d2dcff10f27854daa955781",
+  "bytes": 7739,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

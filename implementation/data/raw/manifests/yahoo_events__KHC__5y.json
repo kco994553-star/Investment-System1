@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:KHC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/KHC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:08.763677+00:00",
+  "sha256": "5149685520c7d622d653b04b3e047ffbd12b60801b370e60c40a5b40f32a8a75",
+  "bytes": 8064,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

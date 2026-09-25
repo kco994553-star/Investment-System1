@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:INCY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/INCY?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:58.700755+00:00",
+  "sha256": "2c2f7201dfd399f46ddfd946834c2011d98d92cce0911e7d78d10a362cd7c378",
+  "bytes": 7626,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

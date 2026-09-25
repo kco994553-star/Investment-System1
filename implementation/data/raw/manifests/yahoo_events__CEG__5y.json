@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CEG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CEG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:49.713013+00:00",
+  "sha256": "c16ec98d6075f86e876ae137feb0125a376e290fe4e07df460cbe94002bf1064",
+  "bytes": 7153,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

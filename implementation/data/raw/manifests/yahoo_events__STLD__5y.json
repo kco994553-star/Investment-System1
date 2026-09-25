@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:STLD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/STLD?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:27.878770+00:00",
+  "sha256": "3ea95541ba6a81f533a55db605c455fa6307af61888a837b2d3006334b966b81",
+  "bytes": 7915,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

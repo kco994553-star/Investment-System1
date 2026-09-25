@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:COST:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/COST?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:59.650342+00:00",
+  "sha256": "f3f459153b4bce3b391c2c212aba1f18303f061c32129483f5e56c6b7a1bfe10",
+  "bytes": 7335,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

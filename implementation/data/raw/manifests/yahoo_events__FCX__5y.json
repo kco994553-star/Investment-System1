@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FCX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FCX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:33.685447+00:00",
+  "sha256": "2451bf4289871d298650923d61a36a1f213bb19ea8b2f108005375b7e66ad73c",
+  "bytes": 7902,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

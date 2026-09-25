@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RACE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RACE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:08.634493+00:00",
+  "sha256": "8de09281dd6e3980926073930bed1beacbaa30248b2a769e40d461dcf8e540b7",
+  "bytes": 7686,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

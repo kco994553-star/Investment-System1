@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PPL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PPL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:01.665131+00:00",
+  "sha256": "e0806e0f238679343fdbe4e385c1efd17514d2e6860bd7072425d125c29777a1",
+  "bytes": 7895,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

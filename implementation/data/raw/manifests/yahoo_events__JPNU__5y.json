@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:JPNU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/JPNU?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:07.580314+00:00",
+  "sha256": "46be8ec50403dbed0b75d714b5cf389018f554beb1bd35789cf3ac682b5b1851",
+  "bytes": 1421,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

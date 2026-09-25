@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BABA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BABA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:19.566810+00:00",
+  "sha256": "41af288b4023d580daa21c692d92f75e34992a9bd8ec222b760a50d2b737738a",
+  "bytes": 7894,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

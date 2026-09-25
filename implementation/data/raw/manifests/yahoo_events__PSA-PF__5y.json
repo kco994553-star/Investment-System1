@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PSA-PF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PSA-PF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:02.560779+00:00",
+  "sha256": "0ebab4cce2b7bf1c2301267020ae6e6c54855f58d042d5d644afd15c33725974",
+  "bytes": 7877,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

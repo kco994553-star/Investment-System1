@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NVO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NVO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:47.871434+00:00",
+  "sha256": "0c65c1986fff3107d7b53eb79b422d2e787c10ea5e4b3e37e481789e717acac6",
+  "bytes": 7919,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

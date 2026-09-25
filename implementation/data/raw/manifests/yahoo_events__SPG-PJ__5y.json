@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SPG-PJ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SPG-PJ?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:25.916613+00:00",
+  "sha256": "8e1eb3ff804abed697c5192f90b27d520bca300ada7e8858ddff6b873031696c",
+  "bytes": 7107,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

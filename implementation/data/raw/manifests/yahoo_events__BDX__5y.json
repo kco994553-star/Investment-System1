@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BDX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BDX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:27.357724+00:00",
+  "sha256": "aa180669d4c529fe0e429c8ad0e400a2d66544443ad314206a3bbca4a662c71a",
+  "bytes": 8315,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

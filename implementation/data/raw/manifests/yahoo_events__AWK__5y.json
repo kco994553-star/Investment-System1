@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AWK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AWK?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:17.275653+00:00",
+  "sha256": "0e3ff6cfbf6d6f6196df994c8e1a9378a0bb2f8901b09529d305a4804cb2751e",
+  "bytes": 7917,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

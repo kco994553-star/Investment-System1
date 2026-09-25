@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FIX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FIX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:36.344556+00:00",
+  "sha256": "41d3a2a75474184c9bbc10b6ac8f316def86358e9bb49b92a2bc5985da4d61ad",
+  "bytes": 7627,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

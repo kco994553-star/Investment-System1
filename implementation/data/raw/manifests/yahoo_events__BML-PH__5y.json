@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BML-PH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BML-PH?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:33.654468+00:00",
+  "sha256": "0af85f643eb948662462f5550ca849f428bddc760e19fc5443bd077646c481bc",
+  "bytes": 7843,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

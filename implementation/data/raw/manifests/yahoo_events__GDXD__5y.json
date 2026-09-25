@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:GDXD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GDXD?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:40.907470+00:00",
+  "sha256": "730c0ac3f1e08cb098f56d96ab24aaebeb3a011fc6ab583ce0f54ba08fa963e4",
+  "bytes": 5508,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

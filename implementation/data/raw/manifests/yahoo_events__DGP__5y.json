@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DGP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DGP?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:09.705993+00:00",
+  "sha256": "c010027a077beb174e56620bb81f272a30272c7fadcb5f47f033610c114f9604",
+  "bytes": 7501,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

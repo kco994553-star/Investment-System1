@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:UMC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UMC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:47.767254+00:00",
+  "sha256": "5857570400adc0d395c4f55bdfc2eca6f6fd15b23b4ce15618f27b7be3b3971b",
+  "bytes": 7822,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

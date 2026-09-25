@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DRI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DRI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:14.042565+00:00",
+  "sha256": "b8a0abad592ddde18b157e72365ac39857620b6b392c50b45b3f1cfd813fb304",
+  "bytes": 7872,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

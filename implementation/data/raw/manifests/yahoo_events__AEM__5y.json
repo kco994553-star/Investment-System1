@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AEM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AEM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:01.436570+00:00",
+  "sha256": "f5edf0df534e8db82fac1fd7e28755328409659973be0a96ce13f8a457d1d4eb",
+  "bytes": 7804,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

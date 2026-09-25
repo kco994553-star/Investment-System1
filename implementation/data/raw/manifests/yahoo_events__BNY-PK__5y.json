@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BNY-PK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BNY-PK?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:37.159355+00:00",
+  "sha256": "824e6b8b72eee576977dc16b115d10d7ad57d4d35ace1b4de360ad38021c1e2d",
+  "bytes": 3270,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

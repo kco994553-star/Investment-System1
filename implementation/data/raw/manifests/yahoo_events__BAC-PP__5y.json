@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BAC-PP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BAC-PP?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:22.368197+00:00",
+  "sha256": "311b4d9842acc522504c03fb56ea59dc3009aeeb2712ab969bd7fa496916b2e0",
+  "bytes": 7877,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

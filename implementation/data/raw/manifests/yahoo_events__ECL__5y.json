@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ECL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ECL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:19.461132+00:00",
+  "sha256": "490040dbef43ea08b50e4aa9da20e9dd69990ee73e833caa0ef2ee21c22933b6",
+  "bytes": 7864,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AMX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:09.694999+00:00",
+  "sha256": "cdea6be574b84ef5eb944b6872d877c2943acca1dda0d9a86a8a93ebba5adc8a",
+  "bytes": 8002,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

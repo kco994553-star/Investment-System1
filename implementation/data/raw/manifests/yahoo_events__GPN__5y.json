@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:GPN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GPN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:46.014090+00:00",
+  "sha256": "627258b152ae364ac506dbfc93cac0319fc2df6dc02f2fbb0140a1bdc1eaa722",
+  "bytes": 7836,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NONOF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NONOF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:44.094161+00:00",
+  "sha256": "7839022fb1f616730b186a24e8e21f47fecabb77d37296059eceb7b7d4ab6b36",
+  "bytes": 7175,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

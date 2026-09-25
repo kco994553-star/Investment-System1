@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AIQD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AIQD?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:03.213077+00:00",
+  "sha256": "354298cb2ade40ce00a1b377c6534d774e65e463f56da399193e9f9232c6ba90",
+  "bytes": 1640,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

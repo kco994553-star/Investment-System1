@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:VMC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VMC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:53.012460+00:00",
+  "sha256": "139e5a3a2ae139a16745743f16c1b15b7ab54522da7ffd3a194cf3bfed5332b0",
+  "bytes": 7824,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

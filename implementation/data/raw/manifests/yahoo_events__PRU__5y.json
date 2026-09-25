@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PRU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PRU?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:01.953698+00:00",
+  "sha256": "040b73e47ba608b2ef000ff9abe6c5f90675f5552c218b8626607c5bff354536",
+  "bytes": 7770,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

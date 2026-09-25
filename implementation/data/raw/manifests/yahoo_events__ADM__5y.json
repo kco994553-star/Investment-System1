@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ADM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ADM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:00:59.420375+00:00",
+  "sha256": "e1efc6ea9a4f28916fd2df80bb6c9fe172da78b3c4a927b49ee3dd408560e47d",
+  "bytes": 7738,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BERZ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BERZ?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:28.208804+00:00",
+  "sha256": "bb27e987482040f92c31cba4454baf6fe1cb115605abbd758f41c4079c6829be",
+  "bytes": 6130,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

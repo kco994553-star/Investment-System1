@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:GEV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GEV?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:42.308211+00:00",
+  "sha256": "60316f74c253ed0ef0c8677bda793da53539daee333170a10117b903de1b313e",
+  "bytes": 4333,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

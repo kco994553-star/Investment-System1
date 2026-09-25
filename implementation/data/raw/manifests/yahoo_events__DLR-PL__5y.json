@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DLR-PL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DLR-PL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:12.307402+00:00",
+  "sha256": "88a5270425f8ccae968d52fcb198720ea1ebbfa14b2d17342d67407c59ab279b",
+  "bytes": 7941,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

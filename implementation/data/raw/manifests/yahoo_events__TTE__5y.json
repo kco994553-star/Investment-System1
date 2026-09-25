@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TTE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TTE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:44.242297+00:00",
+  "sha256": "217c0233b51e282b2dde4a97c3bc076cafc0661c002d121f6243989fe840c1c0",
+  "bytes": 7844,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

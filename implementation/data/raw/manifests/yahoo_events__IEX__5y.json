@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:IEX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/IEX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:58.131107+00:00",
+  "sha256": "b9ec3123fb0c65f48961f1b44fece60bd09a4f61b3f2d43a6bd1d7ddfb82636b",
+  "bytes": 7863,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

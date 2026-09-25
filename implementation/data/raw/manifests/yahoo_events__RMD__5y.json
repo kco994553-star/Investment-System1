@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RMD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RMD?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:11.830056+00:00",
+  "sha256": "a6b996971bebc87839e68bfc042fc8632ba15b986b1ae852ffd951cbade9465d",
+  "bytes": 7806,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

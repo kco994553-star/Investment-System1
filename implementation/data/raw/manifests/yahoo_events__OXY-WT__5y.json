@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:OXY-WT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OXY-WT?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:53.868708+00:00",
+  "sha256": "8ea65c5e43654f0c566a6367e4a0bf183844d802151676e7cea4660e2faf57d8",
+  "bytes": 1163,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

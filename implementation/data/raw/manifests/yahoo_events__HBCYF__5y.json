@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:HBCYF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HBCYF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:49.672968+00:00",
+  "sha256": "3888b6b19162026bdde10efcbd12eb6d6f31c8e9d7efb1f48f8d171c587431f1",
+  "bytes": 7583,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

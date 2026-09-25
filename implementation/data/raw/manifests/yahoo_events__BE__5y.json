@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:27.631125+00:00",
+  "sha256": "28fb11d75b4338dfa6e9f7be22817d63f4e9740fadf99b6b8193bc9f594b569e",
+  "bytes": 7849,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

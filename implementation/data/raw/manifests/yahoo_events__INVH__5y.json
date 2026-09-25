@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:INVH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/INVH?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:00.122832+00:00",
+  "sha256": "3dbad04759ea7000237544e75b32becc03999baee7e70653993600af199760a4",
+  "bytes": 7897,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

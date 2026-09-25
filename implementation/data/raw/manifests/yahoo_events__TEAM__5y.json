@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TEAM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TEAM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:35.916979+00:00",
+  "sha256": "681c82177cd4e8a5dc86bdcbab229ea6d6742aa260c5213d447682230a62cb25",
+  "bytes": 7761,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

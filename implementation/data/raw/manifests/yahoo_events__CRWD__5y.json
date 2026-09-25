@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CRWD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CRWD?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:01.885424+00:00",
+  "sha256": "a676f39c8635a7f9a8d653e3203d12a9f7734c65a56ac0c79e934cc681273d20",
+  "bytes": 7741,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

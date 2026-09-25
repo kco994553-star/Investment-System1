@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:QCOM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/QCOM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:08.356182+00:00",
+  "sha256": "94c4cda5e52fda26932142888d231d008de395ec3a9172a7b621766fb1790452",
+  "bytes": 8041,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

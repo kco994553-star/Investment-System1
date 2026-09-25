@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MPC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MPC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:28.664401+00:00",
+  "sha256": "a498c3a6d0f82bea33eaee518ea89135fbee3fa03dc6523bd36101698cac0eed",
+  "bytes": 7865,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

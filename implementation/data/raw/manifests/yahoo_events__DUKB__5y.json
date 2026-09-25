@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DUKB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DUKB?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:15.216867+00:00",
+  "sha256": "8cbb351dff3a2851c4a9cde0b475e2d1d1d229e789e642e27fbf4d209a39b684",
+  "bytes": 7624,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

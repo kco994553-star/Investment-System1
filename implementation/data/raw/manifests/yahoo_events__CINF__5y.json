@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CINF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CINF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:52.273325+00:00",
+  "sha256": "11ea57f06ed014f21baee820077b53a62bea558afc1125b9bfc55c0cbb2aa7eb",
+  "bytes": 7913,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

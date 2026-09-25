@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CBOE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CBOE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:47.330597+00:00",
+  "sha256": "3328eeb7d08a866d9700988c71fd20d72ad55ab8237d2cdec55d8747eb8b0a4e",
+  "bytes": 7887,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

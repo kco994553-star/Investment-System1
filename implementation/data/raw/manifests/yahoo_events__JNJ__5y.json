@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:JNJ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/JNJ?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:05.016781+00:00",
+  "sha256": "867e73be8b5bf18af7cf348445fcf79e1b56bfb8046e6e011d35028fbc358ad4",
+  "bytes": 7849,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:XYL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/XYL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:05:05.286974+00:00",
+  "sha256": "f28ed1f316966a08c140d48bee960ba83ab163cfada4b0133800e915a7e04f14",
+  "bytes": 7801,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

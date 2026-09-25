@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DULL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DULL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:15.759902+00:00",
+  "sha256": "e8e7b5bcd9e95ad702999c66dd0e32e7abdda19e8c207ea01e79a7558992f4aa",
+  "bytes": 4574,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

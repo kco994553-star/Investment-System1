@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CHTR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CHTR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:51.399203+00:00",
+  "sha256": "6d85a45e518177f25ff71e5515c6b9c6540810ce9012b331c72ce87fd9c827fd",
+  "bytes": 7737,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

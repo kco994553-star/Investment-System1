@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CFG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CFG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:50.540506+00:00",
+  "sha256": "0370132b445ebbb809102e44e211170049d7a17e0bd9c3eae8ab2df5e682cd86",
+  "bytes": 7835,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

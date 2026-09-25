@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:EQNR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EQNR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:27.216019+00:00",
+  "sha256": "d28e360392c3788080d81b0108365496c74fa12b0d30d218c31840da2245ed7e",
+  "bytes": 7965,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

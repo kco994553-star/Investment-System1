@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MSI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MSI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:34.134328+00:00",
+  "sha256": "f3b147299cdc18276a2c5f57f5839de5dc2aadf50e0f5ca8c970b59596ee5a87",
+  "bytes": 7774,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BKFOF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BKFOF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:31.078175+00:00",
+  "sha256": "b992d4b7ae5743650c411368db6cde2e5e82f04b090008577035865d51c2f19f",
+  "bytes": 1859,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

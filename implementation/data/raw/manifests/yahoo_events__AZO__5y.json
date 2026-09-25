@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AZO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AZO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:18.414224+00:00",
+  "sha256": "5ee09b9e38d9d35286b06ef431d96ad87d38125f5d169309a343dcc835cb65ba",
+  "bytes": 7201,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

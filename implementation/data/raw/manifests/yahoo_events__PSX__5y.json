@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PSX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PSX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:07.236897+00:00",
+  "sha256": "a310b44a731b4e4cc02dd86a2a464dfbde8da5c9bef6ef41d814e3e5cadd33fc",
+  "bytes": 7796,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

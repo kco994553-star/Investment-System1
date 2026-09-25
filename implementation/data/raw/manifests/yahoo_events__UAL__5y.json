@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:UAL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UAL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:45.703040+00:00",
+  "sha256": "1652417572b4171172497e2e52b844b83713f0f7cc6ab656ae83680c54824612",
+  "bytes": 7794,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:XLPU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/XLPU?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:05:04.673627+00:00",
+  "sha256": "b8a30ffa6cdc67c8333aefb9845b9ab74332693dc377a21666c7e28fed572bd6",
+  "bytes": 1309,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

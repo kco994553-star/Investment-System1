@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:USB-PA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/USB-PA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:49.897497+00:00",
+  "sha256": "320bbbf2839ee48b667e65ca8b4d65c88e3a590d99f1def9e849cc874a3eaa2a",
+  "bytes": 6495,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AMCR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMCR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:07.416054+00:00",
+  "sha256": "fa959af8f7e3cd852c7f0703f5fe39da7b5154cfdb03126fbbc6fdd116753736",
+  "bytes": 7500,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

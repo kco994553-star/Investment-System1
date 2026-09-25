@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MAA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MAA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:19.545219+00:00",
+  "sha256": "b3c134c6c3c43fb26acf2f2b2ed33de586c4ff1c0f6dcd870d2ca02fff304ba8",
+  "bytes": 7989,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

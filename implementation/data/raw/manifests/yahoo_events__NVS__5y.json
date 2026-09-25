@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NVS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NVS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:48.433662+00:00",
+  "sha256": "72d294fb7d9e8884708d90a95ae4ccbd62600e612a78bc85d7ca8b0754fc27db",
+  "bytes": 7781,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

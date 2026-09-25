@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:EBBGF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EBBGF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:18.056938+00:00",
+  "sha256": "c2a9bb47ff12366f5e03397e21cdee5443c3e4c3c51986bcff80cef7b70f3159",
+  "bytes": 7543,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

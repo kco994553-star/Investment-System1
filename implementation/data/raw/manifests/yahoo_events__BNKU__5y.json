@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BNKU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BNKU?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:36.228207+00:00",
+  "sha256": "9d9e3b112ac2811b9323425743e0611d6800e46fffd0611880d1b154fcadc12b",
+  "bytes": 3375,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

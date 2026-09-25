@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:OILU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OILU?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:50.979304+00:00",
+  "sha256": "b8639a8656e1ef1ef402b7adcfdc896b192386c76cb35de69e3a0aa781281e89",
+  "bytes": 7385,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TMUSZ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TMUSZ?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:40.490918+00:00",
+  "sha256": "6bec02863ad6555375a122feceae5ea89fcc35af1f8dfbe1af5a37622b018588",
+  "bytes": 2725,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AEE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AEE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:01.123275+00:00",
+  "sha256": "aa25d796048c651f32bc8e1b997dc40d3613d7f42c3def432158fe102e086540",
+  "bytes": 7790,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

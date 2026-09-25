@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MPLX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MPLX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:28.983309+00:00",
+  "sha256": "b038235ed2a115f56098ec16dce489baf7f7cfeb915d2209aea16eadba20b78a",
+  "bytes": 7733,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

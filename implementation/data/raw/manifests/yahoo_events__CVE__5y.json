@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CVE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CVE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:04.490896+00:00",
+  "sha256": "aa681fe09d205ffd012d6696a9dbfcbbd477649c68a8645c44659b8e7923d452",
+  "bytes": 8103,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

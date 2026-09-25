@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RTX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RTX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:13.941693+00:00",
+  "sha256": "95f2d747af853640c7655ac96ddaf869a5fddb70fe2712b95b9c6f64bf660e15",
+  "bytes": 7872,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

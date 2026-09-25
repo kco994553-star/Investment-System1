@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TEL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TEL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:36.481107+00:00",
+  "sha256": "64b8bb545f31b38de502bba908bf3e328fd15fae16bba5562d36cd5817d76616",
+  "bytes": 7756,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MCK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MCK?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:21.392431+00:00",
+  "sha256": "6213767ef99cbb69ac7b5881889064cf1283a941a179cd716cf432d1b5ea903f",
+  "bytes": 7505,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

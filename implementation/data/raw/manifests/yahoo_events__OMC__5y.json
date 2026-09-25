@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:OMC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OMC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:51.838051+00:00",
+  "sha256": "8c069175fdad57004ead07ace21f0f05f7185c9c6a4b83f13d7cd46abf7936f6",
+  "bytes": 7695,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

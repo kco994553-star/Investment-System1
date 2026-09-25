@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BUDFF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BUDFF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:43.074873+00:00",
+  "sha256": "ea4043063592bf3b51f50ca1f3a16159337b50ba0b487744c49a902fc7852153",
+  "bytes": 7498,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

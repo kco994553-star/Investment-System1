@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ITUB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ITUB?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:02.118444+00:00",
+  "sha256": "c77ed2e26419797e06438a1e35dd09ae5d6f901d91948495a03734050212cabc",
+  "bytes": 8291,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

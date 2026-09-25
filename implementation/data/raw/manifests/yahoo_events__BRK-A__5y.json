@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BRK-A:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BRK-A?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:39.670839+00:00",
+  "sha256": "ab8a90431bc256c5d9b06c59d441cd7f6fef5b5b61c110d892e8bc6e60857f75",
+  "bytes": 5013,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

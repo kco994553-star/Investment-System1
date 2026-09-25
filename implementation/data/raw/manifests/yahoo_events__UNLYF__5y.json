@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:UNLYF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UNLYF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:48.423188+00:00",
+  "sha256": "4d51c80e2978f87d5e701fcc126f26b7e8b98614886ce23bfe56422894210b7f",
+  "bytes": 7795,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

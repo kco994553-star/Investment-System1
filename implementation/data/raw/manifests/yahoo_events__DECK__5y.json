@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DECK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DECK?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:08.012770+00:00",
+  "sha256": "e49a1f868e6f2b0f5b7c7943d0ec02e1c38542b812a61035b6dcc3ae01b20fdf",
+  "bytes": 7942,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

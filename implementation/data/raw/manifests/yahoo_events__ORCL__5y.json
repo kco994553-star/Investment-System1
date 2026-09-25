@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ORCL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ORCL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:52.388886+00:00",
+  "sha256": "bb6c48984073d28e6cb34037ce431b6138e8afb8308fbe5f6136b253a95606bc",
+  "bytes": 7914,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

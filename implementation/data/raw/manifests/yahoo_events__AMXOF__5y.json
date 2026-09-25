@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AMXOF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMXOF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:09.975555+00:00",
+  "sha256": "180978a8954c3e258f29185fc93b3e17ddea72df252bb439f676d44a0049997c",
+  "bytes": 7714,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

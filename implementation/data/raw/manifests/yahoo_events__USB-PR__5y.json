@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:USB-PR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/USB-PR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:51.016631+00:00",
+  "sha256": "3d0db4e6d8b5593f51dbd787154c7a53c418ce9e36f0c4fe3e89497bdfe9e65a",
+  "bytes": 7924,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

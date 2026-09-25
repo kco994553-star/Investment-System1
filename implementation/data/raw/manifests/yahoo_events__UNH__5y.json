@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:UNH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UNH?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:48.062898+00:00",
+  "sha256": "9eb2dc06123a80caafc6ee95eef4f6bcb8c641f8164b9c6c989416a87437eea6",
+  "bytes": 7568,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

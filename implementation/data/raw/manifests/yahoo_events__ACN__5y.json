@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ACN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ACN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:00:58.537778+00:00",
+  "sha256": "42e37020b5bea017a3199cdb9f80c379a4271fa55273a5000757e93baeada785",
+  "bytes": 7756,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

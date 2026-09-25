@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ENB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ENB?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:22.240506+00:00",
+  "sha256": "fb59730cc9827e240d815207642e271c8c2443b22a34832dc9ec8c847a1601b8",
+  "bytes": 7854,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

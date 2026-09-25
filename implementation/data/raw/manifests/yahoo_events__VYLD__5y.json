@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:VYLD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VYLD?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:55.281013+00:00",
+  "sha256": "f618dd21dcf5497737ca49b70c4bd8eb27f7ca570712184b4ca0d1a6cd023a5d",
+  "bytes": 3303,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

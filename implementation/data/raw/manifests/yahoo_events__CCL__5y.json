@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CCL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CCL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:48.248191+00:00",
+  "sha256": "34e20e62d01078f11758d34c9f9987d87bf28f33d1761a44011c0d97a8fbbdcb",
+  "bytes": 8029,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

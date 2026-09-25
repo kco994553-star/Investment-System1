@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CELG-RI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CELG-RI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:49.981510+00:00",
+  "sha256": "ed3b947bc7f1bc3a332f086d4094848b3299ea4338911a2e849ca2369534b5ff",
+  "bytes": 1221,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

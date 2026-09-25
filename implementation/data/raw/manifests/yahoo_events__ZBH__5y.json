@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ZBH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ZBH?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:05:05.868261+00:00",
+  "sha256": "da27cba2551cc042d5d3863df41c67f7158f9c3f9f2a39b13c06bd31c246abb0",
+  "bytes": 7995,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

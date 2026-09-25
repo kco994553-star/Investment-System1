@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CNDIF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CNDIF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:55.278192+00:00",
+  "sha256": "52a4c634e40afb7c58d5071812894c8f78382c3b20ca24b8fa118f06ca4714bb",
+  "bytes": 2320,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

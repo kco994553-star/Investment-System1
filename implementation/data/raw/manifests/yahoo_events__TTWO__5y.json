@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TTWO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TTWO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:44.509115+00:00",
+  "sha256": "cb1e3826a39c7b2f6816e254cd9a802f2b433c009f98703f71f2ee00cf4ab15b",
+  "bytes": 7694,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

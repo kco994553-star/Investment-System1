@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FSLR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FSLR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:39.410057+00:00",
+  "sha256": "6e8f8361997a2d6c91d69a06f2c63b97f24067c55c4233585f44baf559bb9229",
+  "bytes": 7749,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

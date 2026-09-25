@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CDW:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CDW?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:49.135681+00:00",
+  "sha256": "3290d8e6834ff96f83b4f06b097101beffcfb97cf7465529ea99daed2dde7a05",
+  "bytes": 7954,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

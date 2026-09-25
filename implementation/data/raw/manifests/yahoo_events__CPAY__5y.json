@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CPAY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CPAY?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:00.213199+00:00",
+  "sha256": "170b8aef80d4636d02aff3e5bc0e8bfc2908499012e56d48ee6fd661bc6dc1cb",
+  "bytes": 7859,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RVTY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RVTY?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:14.250435+00:00",
+  "sha256": "fe15a530948486f06f686b408b6dc6d4b2a55323627f80d6482d51cee5457ade",
+  "bytes": 7873,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

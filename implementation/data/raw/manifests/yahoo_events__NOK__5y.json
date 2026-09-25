@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NOK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NOK?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:43.467496+00:00",
+  "sha256": "1d170936241cf399971dfe7b80b19c95093360ce3608a89e05006eda382cd653",
+  "bytes": 7851,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

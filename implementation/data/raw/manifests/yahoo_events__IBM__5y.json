@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:IBM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/IBM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:57.260089+00:00",
+  "sha256": "be3009fe63b35d3d58167fc37b72856e71aa0c9306407e09cc392d1d9237e687",
+  "bytes": 8022,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

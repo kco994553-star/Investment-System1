@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PCAR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PCAR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:55.332772+00:00",
+  "sha256": "3a4b7985934160b28659a71e33c382eedbc0596e8162517bcf7e0569f95162eb",
+  "bytes": 7910,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

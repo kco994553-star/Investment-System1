@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RIO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RIO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:10.672408+00:00",
+  "sha256": "d00209074b940ed35d55da70194c5475e15bae5f3c75e4f86999b4c58f0b169d",
+  "bytes": 7675,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

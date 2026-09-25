@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MRVL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MRVL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:30.448814+00:00",
+  "sha256": "cc5aba488299300c0967c8d354c3ca889d2cb27253d4909525cc424c48f4d1fd",
+  "bytes": 7848,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

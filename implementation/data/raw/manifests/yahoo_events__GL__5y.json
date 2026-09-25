@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:GL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:43.205107+00:00",
+  "sha256": "29fb0aa5ce7e29ce7dba877afd0a681e7e44d855fb4d1faee04169fd9348bcca",
+  "bytes": 7806,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

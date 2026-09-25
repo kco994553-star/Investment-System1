@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LVS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LVS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:18.091166+00:00",
+  "sha256": "f42686b3b4b19fb1b47e0bf252e77ae60310dd8193ca982a9827430ad0d0adef",
+  "bytes": 7908,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

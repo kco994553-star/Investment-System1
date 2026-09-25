@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SNA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SNA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:21.428430+00:00",
+  "sha256": "41adf9431d612bf0c69c7899187c024f84e121dbcf885c71993b01c29a22e312",
+  "bytes": 7711,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

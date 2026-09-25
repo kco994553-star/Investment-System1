@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MS-PO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MS-PO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:32.692671+00:00",
+  "sha256": "50efe9fac377a9e0019b0e950b92bc47655a82064095b3633c5997ef37bbdad3",
+  "bytes": 7790,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DASH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DASH?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:06.548087+00:00",
+  "sha256": "d6239f9390d140893377fb085c3299b09ac247c117c975885feedadb3077055a",
+  "bytes": 7607,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

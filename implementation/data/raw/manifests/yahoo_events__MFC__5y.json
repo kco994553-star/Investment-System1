@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MFC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MFC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:24.555394+00:00",
+  "sha256": "f90906524f901ac7be7d874b3acc23ef7b41739d8163400ebcb2721501ccd5b2",
+  "bytes": 7949,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

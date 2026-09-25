@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NEE-PT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NEE-PT?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:38.380042+00:00",
+  "sha256": "8dea7c68fd9bdc81f2df30f2137e3bd0a35d264474fa92d88c8dfbb5ead39303",
+  "bytes": 3579,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

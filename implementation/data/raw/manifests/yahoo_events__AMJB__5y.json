@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AMJB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMJB?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:08.548365+00:00",
+  "sha256": "f6fb9c4a2f7d013e5ca8a0a9195e67b0c73c7894574d78fc19bd731763068c9f",
+  "bytes": 4722,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CBRE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CBRE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:47.666921+00:00",
+  "sha256": "4f7737b05eac673a343fe37a94bf0dadd9a695fd70857bcbf5fdc505d7a1d6c2",
+  "bytes": 7844,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

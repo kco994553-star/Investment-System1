@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NKE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NKE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:42.020394+00:00",
+  "sha256": "8a9e654bc15753c365b965f25aca0c3ac57a879295265c09859fc9124c9ce38e",
+  "bytes": 7847,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

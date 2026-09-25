@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:APOS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/APOS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:12.617248+00:00",
+  "sha256": "9fdf7585ccf5135b44f2c116fd9dad296e7c96ee304c54301482fed1544b0fe0",
+  "bytes": 5263,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

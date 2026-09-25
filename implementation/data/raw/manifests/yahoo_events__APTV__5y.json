@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:APTV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/APTV?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:13.163741+00:00",
+  "sha256": "7a36ca6834157f83b0186fe16934464d5964768f14fe6586b591e8efe82e6160",
+  "bytes": 7678,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

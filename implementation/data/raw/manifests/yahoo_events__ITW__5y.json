@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ITW:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ITW?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:02.415190+00:00",
+  "sha256": "a1f1f3944e6b17ccfb029870901a8e7e28105a304d51af4ed31802732ebee94d",
+  "bytes": 7787,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

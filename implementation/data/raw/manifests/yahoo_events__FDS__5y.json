@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FDS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FDS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:33.982276+00:00",
+  "sha256": "f095a2b53bd374b1b617666dbe59c3065b78c955c8c3a54c9c7b9f8fe0e77e12",
+  "bytes": 7700,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

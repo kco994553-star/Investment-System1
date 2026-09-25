@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TROW:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TROW?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:42.489093+00:00",
+  "sha256": "dafe0d858417f0fb679131e4c369b88b1cb43fc2feda809a3b0c46062afe5b00",
+  "bytes": 7841,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

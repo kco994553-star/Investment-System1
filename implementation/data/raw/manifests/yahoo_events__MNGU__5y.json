@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MNGU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MNGU?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:26.362675+00:00",
+  "sha256": "233f56161d211dce4a8d2a8122a86e117875b6800312071ec15f75b367ee5331",
+  "bytes": 1433,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

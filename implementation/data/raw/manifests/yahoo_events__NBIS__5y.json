@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NBIS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NBIS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:36.400006+00:00",
+  "sha256": "493ff1dee09482237141867b6c7a73687ce75385cf9b7a9cc37dffa23ca23467",
+  "bytes": 3719,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NUE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NUE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:47.279177+00:00",
+  "sha256": "5826ccecc5c07bc9e75fc4befeb3b973e37228b76c7e962b5d3f6ec1a4160896",
+  "bytes": 7880,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CZR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CZR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:05.673395+00:00",
+  "sha256": "49eb64da917d72d49f41bfb8c9c2d238a9fe4c28e402e9fa60bae061bd344be5",
+  "bytes": 7765,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

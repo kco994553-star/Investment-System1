@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SMHU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SMHU?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:21.128621+00:00",
+  "sha256": "6c0ebefb29150b71a9316a76de1b355fa8f471a3a329acdec2fd1464384cd8b9",
+  "bytes": 1409,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

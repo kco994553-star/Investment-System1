@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TSCO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TSCO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:43.083490+00:00",
+  "sha256": "521f369a63ed1f9215d01dc950f9be6fbb4e93ccf3044a9dc14d881bc8bb6021",
+  "bytes": 8079,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

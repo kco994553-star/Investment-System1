@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FTNT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FTNT?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:39.683836+00:00",
+  "sha256": "e9b6a610499f7ccc5accc143c58eaddbdd2bb81a74d08d12fb3786ee2dff7bde",
+  "bytes": 8018,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

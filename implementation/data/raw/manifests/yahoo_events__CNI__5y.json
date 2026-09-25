@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CNI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CNI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:55.565108+00:00",
+  "sha256": "f71c84ec9926c69b04e0ecc60443fff6dbe3ce7c6b8efe5b1eb169b3335603f3",
+  "bytes": 8028,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

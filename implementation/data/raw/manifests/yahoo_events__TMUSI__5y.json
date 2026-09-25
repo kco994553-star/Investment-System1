@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TMUSI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TMUSI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:39.952232+00:00",
+  "sha256": "46d4efd9ecdfa2467ab58a46b2f5310856116391537d43ef588329074041722e",
+  "bytes": 2755,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

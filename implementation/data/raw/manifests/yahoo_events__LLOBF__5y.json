@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LLOBF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LLOBF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:14.875099+00:00",
+  "sha256": "d92653c7487e62698be7ab95291c867543318f5c13b725bec92f29d475be42a9",
+  "bytes": 6624,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

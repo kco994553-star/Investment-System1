@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BML-PG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BML-PG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:33.371153+00:00",
+  "sha256": "57dd4283ac10529d1c1cc08cc6f80072123d9d0d74c27a2e5023cb8e820dc84a",
+  "bytes": 7736,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

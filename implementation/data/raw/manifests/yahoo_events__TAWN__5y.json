@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TAWN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TAWN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:34.228933+00:00",
+  "sha256": "9614b288a65c8ab9eee1c571911b9e0096b50cd03de637ca9617e5e073273f7e",
+  "bytes": 1418,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

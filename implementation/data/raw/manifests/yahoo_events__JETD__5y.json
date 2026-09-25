@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:JETD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/JETD?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:04.141276+00:00",
+  "sha256": "a0a5513e9ed080d44e295c618a9c5c63cc9bbd86b140a437ea2fc5fe60396482",
+  "bytes": 5563,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

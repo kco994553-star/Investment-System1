@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:UDR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UDR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:46.614997+00:00",
+  "sha256": "af191ff45b040ba72e665b8064e1f496c01361d8132193503b39245a9a32f72d",
+  "bytes": 7876,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

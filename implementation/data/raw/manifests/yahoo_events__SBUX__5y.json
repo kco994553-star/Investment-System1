@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SBUX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SBUX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:16.606845+00:00",
+  "sha256": "6de1cb9a50cfd2147334866dc1a38f4e0413c260477a4e2fc1ad390d811ed199",
+  "bytes": 7768,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

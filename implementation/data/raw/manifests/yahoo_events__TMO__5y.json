@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TMO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TMO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:39.403210+00:00",
+  "sha256": "f68ef3bdd5d03ce7efb3a55c74ead8b27a21a6b0ce8a724d3a952b27643de87b",
+  "bytes": 7554,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

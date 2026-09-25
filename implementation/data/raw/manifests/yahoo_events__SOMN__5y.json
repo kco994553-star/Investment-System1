@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SOMN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SOMN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:25.020143+00:00",
+  "sha256": "613bc7ef3dcb903a9e003b86a0b058fcf3c6c94ebfd28dbafac743dad2fc1fb9",
+  "bytes": 2398,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AAPL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:00:57.110756+00:00",
+  "sha256": "d5a255ee2b6a34093a9cf7a3469ed8b4a8f0aafadb65d16239594eb3c69c9791",
+  "bytes": 7871,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

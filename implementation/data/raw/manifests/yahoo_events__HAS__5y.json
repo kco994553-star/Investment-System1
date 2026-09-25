@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:HAS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HAS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:49.088186+00:00",
+  "sha256": "065dd286cb4858d7372bc7d94d3c5ba7e12f0751f54cb3346e509ff7d6d21862",
+  "bytes": 7648,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

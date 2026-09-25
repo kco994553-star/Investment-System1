@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CTVA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CTVA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:04.201437+00:00",
+  "sha256": "8af6963c7aed474938d31440e07383eec111ad335d32a367c8074f6f65f02586",
+  "bytes": 7818,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

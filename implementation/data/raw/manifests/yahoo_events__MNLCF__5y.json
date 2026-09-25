@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MNLCF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MNLCF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:26.635145+00:00",
+  "sha256": "02c20614ac15de1c5358b677c085d73708b6d864fe799cf3943460e1ce7bfd8f",
+  "bytes": 5773,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

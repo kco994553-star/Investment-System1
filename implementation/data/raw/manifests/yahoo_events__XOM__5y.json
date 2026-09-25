@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:XOM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/XOM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:05:05.001016+00:00",
+  "sha256": "9a9c8f9b5c5b5b128861bcf20b0c1f05492784119a03ae28d1a983cf27e15d4d",
+  "bytes": 7992,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

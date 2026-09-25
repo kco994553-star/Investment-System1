@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BCLYF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BCLYF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:26.750629+00:00",
+  "sha256": "93f4b571a5a625b738878f0b2d9813722fc6aa1da25dfee622a85a80f9bddf9b",
+  "bytes": 7628,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

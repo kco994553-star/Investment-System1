@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:AMD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMD?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:07.687947+00:00",
+  "sha256": "63599110012b4fd906314139877afa301d502ea570cd7ae23994fb126d3cff08",
+  "bytes": 7909,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BNS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BNS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:36.521119+00:00",
+  "sha256": "218433efbb196c0a0f071d0eb412491e2817dbfee552fd6efa00bac65f3b093f",
+  "bytes": 7772,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:COIN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/COIN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:58.464176+00:00",
+  "sha256": "21dfafbede050c0dff9ba760f3d855e2d7c2c8935b8e8b3158e64b2a069fa51b",
+  "bytes": 7763,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

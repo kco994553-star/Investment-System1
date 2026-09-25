@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ISRG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ISRG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:01.550767+00:00",
+  "sha256": "6a26e09b24fdf38af5e946132b6f94cfbbfa66e8fdb6c919b3649b9c04843f36",
+  "bytes": 7728,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

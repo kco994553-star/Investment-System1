@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DELL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DELL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:08.621235+00:00",
+  "sha256": "3fa1becebe37ec2b7933b94c11ff2f2bc86a84adc469cb25b6623a472d297204",
+  "bytes": 8002,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

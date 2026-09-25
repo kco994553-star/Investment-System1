@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BAMKF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BAMKF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:24.355048+00:00",
+  "sha256": "49db1954d425462fabd13af13246e56f09c3a59e6d5716ed30de01e48bda1136",
+  "bytes": 6103,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

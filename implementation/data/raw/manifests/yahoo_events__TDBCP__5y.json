@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TDBCP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TDBCP?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:35.068659+00:00",
+  "sha256": "b7ddecf7044a9e73e00ebfa197a0114c23f9517ba06a0226a5beac32bded7ecb",
+  "bytes": 3592,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

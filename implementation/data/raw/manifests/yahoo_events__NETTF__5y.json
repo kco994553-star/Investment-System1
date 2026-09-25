@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NETTF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NETTF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:40.312313+00:00",
+  "sha256": "1df2d8d37ad4675e7fca14b8a91fb7467db8105c8e358f58c9d8dbbceb5c2cab",
+  "bytes": 7811,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

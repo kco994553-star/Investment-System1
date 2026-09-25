@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ABNB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ABNB?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:00:57.664085+00:00",
+  "sha256": "de4b4c18cad8f3069a06b4118ffb5ad35f7b774f03445b71cefaf2d916061e57",
+  "bytes": 7819,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

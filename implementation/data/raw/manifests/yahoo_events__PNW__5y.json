@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PNW:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PNW?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:00.792461+00:00",
+  "sha256": "a95d4a59aa00fcaf8d74e20877adbb3fb1c4fefa23d96b85d52dd5d6ae2b1b58",
+  "bytes": 7727,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:GM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:44.073399+00:00",
+  "sha256": "d969ee46060a55b6d1b1149973cbb17744b156a84080ef50522177a56faeee98",
+  "bytes": 7824,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

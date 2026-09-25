@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NFLX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NFLX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:40.860955+00:00",
+  "sha256": "64dee3f6cd93a1ee3a1f5b6535a64c880af7d0f55e47f41c4e3eba965e9b5b3c",
+  "bytes": 8090,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:WFC-PL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WFC-PL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:59.105659+00:00",
+  "sha256": "f6b4ec22dfa8754137a2afa7d0b70ed8f955f6c3de3ded6dded340fed92f16e0",
+  "bytes": 6737,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

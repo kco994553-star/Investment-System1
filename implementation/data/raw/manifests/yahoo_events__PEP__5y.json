@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PEP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PEP?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:56.568848+00:00",
+  "sha256": "801b6c65c7ab462ccf39a7d04d2efcde99ea2274fb6584b83033a92ce9b4f6b1",
+  "bytes": 8007,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

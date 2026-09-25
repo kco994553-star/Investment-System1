@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DVN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DVN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:16.323593+00:00",
+  "sha256": "18c90c5ad1b709144f7b6bee9f56bac6b77e35959801b002c32c3c4647c778da",
+  "bytes": 7937,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

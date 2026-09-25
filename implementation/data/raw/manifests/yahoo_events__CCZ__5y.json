@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CCZ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CCZ?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:48.521870+00:00",
+  "sha256": "2a349cd5d45633df759e06490bb4b1918db7bc4fcf2edb39b6950d3c833e1e1d",
+  "bytes": 6741,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

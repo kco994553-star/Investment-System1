@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BKR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BKR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:32.458821+00:00",
+  "sha256": "d57e5637e0162276e15efc541c35b9e4e53da0528ccd0d30537a45f95f4736bd",
+  "bytes": 7910,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

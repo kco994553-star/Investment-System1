@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:HTHIF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HTHIF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:54.928135+00:00",
+  "sha256": "7fc06f9e8eb5d20d4033db6797ca81fb99a738631347e2460515213a5a047a57",
+  "bytes": 7673,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

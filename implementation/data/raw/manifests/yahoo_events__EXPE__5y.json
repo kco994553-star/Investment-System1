@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:EXPE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EXPE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:31.401250+00:00",
+  "sha256": "43e80872f5604daf2837d577d75a3c5ef29bcc9706df8d9bbc3d5a1bb9b740a3",
+  "bytes": 7785,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

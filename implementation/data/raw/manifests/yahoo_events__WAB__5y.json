@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:WAB:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WAB?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:55.889848+00:00",
+  "sha256": "afe684e265f3d05402397757a33fd9485498fbee496d746413f21db414f217d1",
+  "bytes": 7928,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

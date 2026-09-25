@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:EOG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EOG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:25.537553+00:00",
+  "sha256": "36d91501e6d2ea6f1b156c9316497ee8c603a71f1eaba10ecac3f2e9861bc56c",
+  "bytes": 7878,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

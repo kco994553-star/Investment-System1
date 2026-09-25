@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:EMR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EMR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:21.944896+00:00",
+  "sha256": "4ecb501d775fa718edae30524fc97b75d8ec371dcc6b4ba3b60d60883d3afc13",
+  "bytes": 7811,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

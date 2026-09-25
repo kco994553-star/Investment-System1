@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SOJE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SOJE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:24.206592+00:00",
+  "sha256": "f29422c85186c651e74f20bfcabb96c98fae3f0d3b85e54825556f939516c873",
+  "bytes": 7764,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

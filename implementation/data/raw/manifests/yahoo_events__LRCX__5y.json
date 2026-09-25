@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LRCX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LRCX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:17.218190+00:00",
+  "sha256": "49c45ad2a878e4dba3735220146e5426cdea68c5bc93489bf5e4b3c498228e5e",
+  "bytes": 7953,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

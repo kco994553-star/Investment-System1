@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PLTR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PLTR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:59.600343+00:00",
+  "sha256": "2a0da5261ed22552dde36f8cc445ff318db4acf9b88c89ff3d395d40843f18fa",
+  "bytes": 7869,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

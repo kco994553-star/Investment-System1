@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MUFG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MUFG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:35.851759+00:00",
+  "sha256": "adacdf6f1ad93ebd0bdf69a893ef3d71b785b48db581d3e7b61096e8e2a25869",
+  "bytes": 7906,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

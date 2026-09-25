@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:EVRG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EVRG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:30.237037+00:00",
+  "sha256": "8c325c84de46e20863859b41f3c8bab7121f9b1056285fe9d1ce68d25615492f",
+  "bytes": 7731,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

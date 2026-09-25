@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ARCXF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ARCXF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:13.434753+00:00",
+  "sha256": "4e9a70996f6d75fddf825fd81a1d7514888ffd0842e10506d86eee6e0ad2d073",
+  "bytes": 8208,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

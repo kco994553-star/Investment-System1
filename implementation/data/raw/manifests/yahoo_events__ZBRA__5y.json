@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ZBRA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ZBRA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:05:06.138773+00:00",
+  "sha256": "2ad0deb0891246822fa911c34f5d0775734f4bdf648b5c975c7e8ec210857a64",
+  "bytes": 7712,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

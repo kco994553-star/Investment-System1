@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:GSCE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GSCE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:47.877905+00:00",
+  "sha256": "e989ca1729b38dc1ec3286db5f020cefd6e953ec9e014c822cac36e8ef070225",
+  "bytes": 6276,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ODFL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ODFL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:50.441252+00:00",
+  "sha256": "43f7b12a76baa11ecd881da82994c218e54c5f55e17629205309f97333443876",
+  "bytes": 7934,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

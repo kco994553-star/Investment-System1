@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BRZL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BRZL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:41.606730+00:00",
+  "sha256": "5f8385470491e846ae0109ad1c2a1ba84b4d7e6a00a325b115f92bca03d9219b",
+  "bytes": 1413,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

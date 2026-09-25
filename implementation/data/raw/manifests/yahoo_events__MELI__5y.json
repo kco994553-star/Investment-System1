@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MELI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MELI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:22.571796+00:00",
+  "sha256": "8920ede9b041c4c3cedf0ff39b6a5841d4bb4aaac4f789a400e470e6288bc8fb",
+  "bytes": 7314,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FNV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FNV?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:38.296326+00:00",
+  "sha256": "3140560ba251ba1d09ece2ad89b4dcccac160a3eea55566542e16b6cb24d33be",
+  "bytes": 7752,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

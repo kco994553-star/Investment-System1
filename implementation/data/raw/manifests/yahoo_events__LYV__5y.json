@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LYV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LYV?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:18.940542+00:00",
+  "sha256": "a165fb25d0e3acc0c41f9adc2b8a47f430f3920c35ab019f283c34c259fe0931",
+  "bytes": 7673,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

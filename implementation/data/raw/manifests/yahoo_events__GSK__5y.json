@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:GSK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/GSK?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:48.178362+00:00",
+  "sha256": "b4e25f3cc69f1144743ddfdc1e507a1d98e7c4dc5633ebd741962849e72cfa36",
+  "bytes": 8063,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

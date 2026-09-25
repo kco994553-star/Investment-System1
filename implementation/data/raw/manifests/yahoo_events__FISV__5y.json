@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FISV:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FISV?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:35.685795+00:00",
+  "sha256": "7512336d7a6dea9208e1f06955c86f53365ccf0cf3189d108d6c919bae0e3195",
+  "bytes": 7877,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

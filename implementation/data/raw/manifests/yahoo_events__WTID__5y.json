@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:WTID:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WTID?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:05:02.118712+00:00",
+  "sha256": "ee644b7b9a7027cc0b459836c0de18f09e16eb09f5854cf20d5a6b82cfb5db08",
+  "bytes": 6018,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

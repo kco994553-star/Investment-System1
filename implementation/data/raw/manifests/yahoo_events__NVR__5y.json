@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NVR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NVR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:48.143796+00:00",
+  "sha256": "cd7f9fe4a33b4192f2d5228d438c8edad1de03e53f26527dd5210d8b8c8dcbe9",
+  "bytes": 6686,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

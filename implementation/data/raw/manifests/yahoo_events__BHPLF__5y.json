@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BHPLF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BHPLF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:29.382762+00:00",
+  "sha256": "0d63379fc8f349f986be4edc0d21d88e9c35c2ee71b6930c5a8be86b2739421e",
+  "bytes": 7416,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

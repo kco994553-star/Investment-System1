@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ROL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ROL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:12.462355+00:00",
+  "sha256": "9ca2c3eed24d63740700f9e8fd7e51de7566c99bd572f33119769bd4b7f06e02",
+  "bytes": 7789,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

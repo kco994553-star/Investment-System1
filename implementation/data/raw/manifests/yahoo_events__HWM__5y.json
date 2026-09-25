@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:HWM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HWM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:56.107683+00:00",
+  "sha256": "b4a0232d9420fc7fa9e31ba45680738f95e0f794bf483d43c93a7f3d3e2c15a2",
+  "bytes": 7837,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

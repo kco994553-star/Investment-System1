@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SCHW:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SCHW?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:17.205857+00:00",
+  "sha256": "0826d1a5cffe8816c4c2b63820b8eae919669dd348e361b35d4cf1e3e4323ff1",
+  "bytes": 7813,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

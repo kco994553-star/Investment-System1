@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NSC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NSC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:45.568835+00:00",
+  "sha256": "6b0f8a7bda1cc6abd737cd544dd35e6496e91b28cdf10d16bbfe84d108693ea2",
+  "bytes": 7790,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

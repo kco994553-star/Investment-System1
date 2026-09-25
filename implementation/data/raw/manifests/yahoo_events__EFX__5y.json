@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:EFX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EFX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:20.096709+00:00",
+  "sha256": "c7600fe0cc62ea3673095826e9a46d49c1098e2eabb99c2eb5985b47cf287648",
+  "bytes": 7856,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

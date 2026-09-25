@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ORLY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ORLY?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:52.921845+00:00",
+  "sha256": "fe1b82987cf08e3f54caefc373ac0399313a4e106cd7e9f1c46ed4d340b2bfe3",
+  "bytes": 8036,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

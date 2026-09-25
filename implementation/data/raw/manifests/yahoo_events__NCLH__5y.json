@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NCLH:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NCLH?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:36.669016+00:00",
+  "sha256": "fabbff2fc11b15091d77fff32c34dd3fce550789a262f738e87ea55395ecc3a7",
+  "bytes": 8032,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

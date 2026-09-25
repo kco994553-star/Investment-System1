@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RELX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RELX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:10.065177+00:00",
+  "sha256": "625315e325a71550a8b94eeeaf6391e19db66604c554176edc0dee0c4e9c6813",
+  "bytes": 7863,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

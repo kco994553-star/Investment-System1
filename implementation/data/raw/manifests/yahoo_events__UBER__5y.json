@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:UBER:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UBER?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:45.971116+00:00",
+  "sha256": "ba6846a2074794461916fc4a3c0b7178ed70c6f9ca1a368f683458ffbec3789b",
+  "bytes": 7693,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

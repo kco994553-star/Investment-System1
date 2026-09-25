@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:STRC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/STRC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:28.429124+00:00",
+  "sha256": "1e088a8fc6fa283786585067054bc6cd054920e075cb2b42f511574bd0b99574",
+  "bytes": 2728,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

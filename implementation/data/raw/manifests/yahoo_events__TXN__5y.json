@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TXN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TXN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:44.829584+00:00",
+  "sha256": "3979fe21a863567f81321070ef585d54a641e2ed92398169b1fbe6dc5feed222",
+  "bytes": 7956,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

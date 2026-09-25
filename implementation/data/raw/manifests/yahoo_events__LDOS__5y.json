@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LDOS:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LDOS?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:12.537950+00:00",
+  "sha256": "3c80f1cef4efd6bd168408be92e29a0a288039ac1263681f695a45c659db110b",
+  "bytes": 7742,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

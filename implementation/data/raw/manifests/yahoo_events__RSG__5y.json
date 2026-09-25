@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:RSG:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/RSG?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:13.347895+00:00",
+  "sha256": "6f0059630c14735e52b022eb9d98610c7e06630b9277c1d8d5b44f07ae0d8bbd",
+  "bytes": 7953,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CARU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CARU?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:46.431655+00:00",
+  "sha256": "97a04d4c7d1b67bf104684aac89f9e4aa8f40220934a497b6fce922acaf3df17",
+  "bytes": 4161,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

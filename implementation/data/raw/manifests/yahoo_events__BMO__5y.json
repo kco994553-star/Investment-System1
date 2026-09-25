@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BMO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BMO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:34.519722+00:00",
+  "sha256": "c08ea1fef4be1263bd31e97e351fc793ce4c6362e62f88fec6e2858ee491237f",
+  "bytes": 7777,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TAK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TAK?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:33.655396+00:00",
+  "sha256": "e34d556d0eb5fe4cd8e4c9c83bd5b0640c33cfde4a28d570bb06e1b00bcecc4f",
+  "bytes": 7955,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:WBD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WBD?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:56.499033+00:00",
+  "sha256": "a728cedcf045b6ee49523f202cf91f2e7519350b0be7957c8ad111151974547c",
+  "bytes": 7873,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

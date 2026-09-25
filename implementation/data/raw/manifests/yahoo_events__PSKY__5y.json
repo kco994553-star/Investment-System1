@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PSKY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PSKY?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:06.960374+00:00",
+  "sha256": "75ff99c76fc23e0780fde083c0090cc5ed314de53453abeb4c447eb31fd64820",
+  "bytes": 8009,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

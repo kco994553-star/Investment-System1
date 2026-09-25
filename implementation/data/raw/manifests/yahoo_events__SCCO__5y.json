@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SCCO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SCCO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:16.906757+00:00",
+  "sha256": "255132c6017dc0e19719e8bc87912f863856f44c7e07c556b78391a71add75ec",
+  "bytes": 8739,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

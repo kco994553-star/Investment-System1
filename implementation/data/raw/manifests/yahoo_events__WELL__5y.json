@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:WELL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WELL?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:57.654580+00:00",
+  "sha256": "f56b65133e676137eb32c01746a1787a9fe1d749c7a84da632267acae326db7e",
+  "bytes": 7789,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SONY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SONY?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:04:25.320275+00:00",
+  "sha256": "a6b8563a1a9035cd62a9f6dc5bacd7179c747aa1675acb17c4309adf2cc013dd",
+  "bytes": 8096,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

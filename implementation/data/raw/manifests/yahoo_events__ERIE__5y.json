@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ERIE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ERIE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:28.117895+00:00",
+  "sha256": "948f922f462aa7138fd186749b4f70567b920779ff6b9051fabb91898e6e849d",
+  "bytes": 7711,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

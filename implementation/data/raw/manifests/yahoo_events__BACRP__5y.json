@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:BACRP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BACRP?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:23.211860+00:00",
+  "sha256": "41f455e7fa136cfa58ebf250e17cae591d4c53aa2bd1f69f3d870a8bdca6e853",
+  "bytes": 5125,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DXCM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DXCM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:02:16.593857+00:00",
+  "sha256": "b92bdc685f40aaf87f641fb031613bd08e4781633bf29303365ea1a6e79ead2e",
+  "bytes": 7950,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:LIN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LIN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:14.039716+00:00",
+  "sha256": "30d28b985301d9322343aef34be0642e7551aef73121fe59157d9ea058cf77c7",
+  "bytes": 7694,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

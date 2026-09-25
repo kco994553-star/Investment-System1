@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:COO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/COO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:01:58.769910+00:00",
+  "sha256": "f4a24395be3fca946e17394c5c5b3a926c095d11cf575adef4aa8bce43d8eedd",
+  "bytes": 7913,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

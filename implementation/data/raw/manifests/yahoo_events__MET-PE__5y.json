@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MET-PE:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MET-PE?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:03:23.703636+00:00",
+  "sha256": "3401b9dadc0056475d2af059338311d4e7e46ba78eaf661450bc1d9e53cd5f8d",
+  "bytes": 7829,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:WTIU:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WTIU?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-25T09:05:02.385567+00:00",
+  "sha256": "de88fec2fe2a8caad2075cbaee14a3b9586db5bda504b10d7b1c62c5dc7af68e",
+  "bytes": 5973,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
