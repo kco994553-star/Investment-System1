@@ -21,10 +21,16 @@ def _dt(s:str)->datetime:
     d=datetime.fromisoformat(s.replace('Z','+00:00'))
     return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
 
+RAW_CLOSE_SOURCE_KINDS={'TIINGO_DAILY_RAW'}
+
+
 def load_splits(store:RawDatasetStore, symbol:str, chart_range:str='5y')->list[tuple[datetime,float]]|None:
     """Split events from the yahoo_events:<SYM>:<range> artifact (fetch_real_data.py --with-split-events).
     None = artifact absent (split status unknown)."""
     aid=f'yahoo_events:{str(symbol or "").upper()}:{chart_range}'
+    chart=f'yahoo_chart:{str(symbol or "").upper()}:{chart_range}'
+    if symbol and store.has(chart) and store.get_manifest(chart).get('source_kind') in RAW_CLOSE_SOURCE_KINDS:
+        return []  # raw (not split-adjusted) closes: nothing to undo
     if not symbol or not store.has(aid):
         return None
     try:

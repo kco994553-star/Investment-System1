@@ -828,3 +828,85 @@ def test_nport_name_normalisation_cases_from_run_23():
     members, unresolved = fnr.resolve([{"name": "TARGET CORPORATION", "cusip": "x"}],
                                       {n("TARGET CORP"): {"0000027419", "0000999999"}}, {}, pool_ciks={"0000027419"})
     assert list(members) == ["0000027419"] and members["0000027419"]["method"] == "SEC_TICKERS_TITLE_UNIQUE_IN_POOL"
+
+
+def test_equal_economics_upper_bound_settles_small_unlisted_classes_only(tmp_path):
+    """Rule (b), user decision 2026-09-25 (NYT-like settled outside; RKT-like stays undetermined)."""
+    chain = _mod("chain_ub", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    listings = {}
+    for i in range(1, 501):
+        _put_name(store, i, f"T{i}", 1000, 100.0 + i)  # cutoff = 1000 * 101 = 101,000
+        store.put(f"submissions:{str(i).zfill(10)}", json.dumps({"filings": {"recent": {"form": ["10-Q"], "filingDate": ["2024-11-01"]}}}).encode(),
+                  "u", "SEC", "application/json", "t", 200)
+        listings[f"c{i}"] = {"cik": str(i).zfill(10), "yahoo": f"T{i}"}
+    for cik, sym, a_sh, b_sh in (("0000700001", "NYTX", 500, 10), ("0000700002", "RKTX", 100, 5000)):
+        _put_name(store, int(cik), sym, 1, 20.0)
+        aid = _sub_with_filing(store, cik)
+        store.put(aid, _instance([("CommonClassAMember", a_sh), ("CommonClassBMember", b_sh)], [(None, sym)], [(None, "Class A Common Stock")]),
+                  "u", "SEC", "application/xml", "t", 200)
+        listings[sym.lower()] = {"cik": cik, "yahoo": sym}
+    ref = {"name": "SP", "source": "s", "source_vintage": "v", "as_of": AS_OF, "membership_basis": "DATED_INTERVALS",
+           "members": ["NYTX", "RKTX"]}
+    rep = chain.run_chain(store, listings, "2024-12-31", [ref], [], None, None)
+    assert rep["cutoff_500_mcap"] == 101_000.0
+    assert rep["lower_bound_settled_outside_by_upper_bound"] == {"NYTX": {"lower_bound": 10_000.0, "upper_bound": 10_200.0}}
+    assert rep["lower_bound_issuers_outside_top500"] == ["RKTX"]  # UB 102,000 >= cutoff -> undetermined
+    cov = rep["reference_coverage"][0]
+    r = rep["top500_sufficiency_gate"]["references"][0]
+    assert "NYTX" in r["present_rankable_outside_top500"] and r["present_not_rankable"] == ["RKTX"]
+
+
+def _tiingo_json(rows):
+    return json.dumps([{"date": f"{d}T00:00:00.000Z", "close": c, "adjClose": c * 0.9} for d, c in rows]).encode()
+
+
+def test_tiingo_fallback_raw_close_header_token_and_calibration(tmp_path, monkeypatch):
+    ftp = _mod("ftp", "fetch_tiingo_prices.py")
+    store = RawDatasetStore(tmp_path)
+    for c in ftp.CONTROLS:
+        _yahoo_close(store, c, 100.0)
+    store.put("yahoo_events:ANSS:5y", json.dumps(_events([(datetime(2025, 3, 1, tzinfo=UTC), 2)])).encode(), "u", "Y", "application/json", "t", 200)
+    frd = ftp._load("fetch_real_data")
+    monkeypatch.setattr(ftp, "_load", lambda name: frd)
+    seen = []
+
+    def fake(req, timeout=0):
+        seen.append((req.full_url, req.get_header("Authorization")))
+        if "/anss/" in req.full_url:
+            return _R(_tiingo_json([("2024-12-30", 337.5), ("2025-07-10", 360.0)]))
+        if "/gone/" in req.full_url:
+            return _R(b'{"detail": "Error: Ticker GONE not found"}')
+        return _R(_tiingo_json([("2024-12-30", 100.1)]))
+
+    monkeypatch.setattr(frd, "urlopen", fake)
+    monkeypatch.setattr(frd.time, "sleep", lambda s: None)
+    rep = ftp.run(Path(tmp_path), amc_dt(), ["ANSS", "GONE"], "secret-token-123")
+    assert rep["calibrated"] is True and rep["results"] == {"ANSS": "WRITTEN_TIINGO_FALLBACK", "GONE": "NO_TIINGO_DATA"}
+    assert all("secret-token-123" not in u and a == "Token secret-token-123" for u, a in seen)
+    raw_run = json.dumps(rep) + "".join(json.dumps(store.get_manifest(i)) for i in store.list_ids())
+    assert "secret-token-123" not in raw_run  # never in reports or manifests
+    amc = _mod("amc_tiingo", "audit_mcap_store.py")
+    bars = [b for b in load_bars(store, "ANSS") if b["observed_at"] <= amc_dt()]
+    assert bars[-1]["close"] == 337.5 and amc.load_splits(store, "ANSS") == []  # raw close: no split undo
+    assert amc.mcap_price(bars[-1], amc.load_splits(store, "ANSS"), amc_dt()) == 337.5
+
+
+def test_tiingo_without_key_writes_nothing(tmp_path):
+    ftp = _mod("ftp_nokey", "fetch_tiingo_prices.py")
+    rep = ftp.run(Path(tmp_path), amc_dt(), ["ANSS"], None)
+    assert rep["status"] == "NO_TIINGO_API_KEY" and rep["written"] == []
+
+
+def test_nport_pit_registrant_tie_break_and_as_of_symbol(tmp_path):
+    fnr = _mod("fnr_pit", "fetch_nport_reference.py")
+    store = RawDatasetStore(tmp_path)
+    # old dormant entity with the same name vs the registrant filing 10-Qs at as_of (NORDSTROM-like)
+    store.put("submissions:0000000070", json.dumps({"filings": {"recent": {"form": ["10-K"], "filingDate": ["1998-03-01"],
+              "accessionNumber": ["o"], "primaryDocument": ["o.htm"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    aid = _sub_with_filing(store, "0000072333")
+    assert fnr.pit_registrant(store, "0000072333", amc_dt()) is True
+    assert fnr.pit_registrant(store, "0000000070", amc_dt()) is False
+    store.put(aid, _instance([(None, 165_000_000)], [(None, "JWN")]), "u", "SEC", "application/xml", "t", 200)
+    assert fnr.as_of_symbol(store, "0000072333", amc_dt()) == "JWN"
+    assert fnr.as_of_symbol(store, "0000000070", amc_dt()) is None

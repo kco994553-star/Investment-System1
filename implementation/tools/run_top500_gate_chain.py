@@ -288,6 +288,14 @@ def eligibility_evidence_from_superset(sufficiency: dict, refs: list[dict], audi
     return None
 
 
+def equal_economics_upper_bound(override: dict) -> float | None:
+    """Lower bound + every unpriced class valued at the issuer's highest priced class price per share."""
+    priced = [c["price"] for c in override.get("classes") or [] if c.get("price")]
+    if not priced:
+        return None
+    return override["mcap"] + sum(c["shares"] * max(priced) for c in override["classes"] if not c.get("price"))
+
+
 def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs: list[dict],
               sufficiency_refs: list[dict], exchange_reference: dict | None, eligibility_evidence: dict | None,
               plan: dict | None = None, chart_range: str = "5y", cik_candidates: dict | None = None) -> dict:
@@ -308,15 +316,46 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     ranked_ciks = {str(listings[c].get("cik") or "").zfill(10) for c in ranked_cids}
     # every line of a ranked issuer counts as ranked for reference identity (GOOG == GOOGL issuer)
     ranked = {m.get("yahoo") for m in row_listings.values() if str(m.get("cik") or "").zfill(10) in ranked_ciks and m.get("yahoo")}
+    # A lower-bound issuer ranked outside the top 500 might belong inside it. Rule (b), user decision 2026-09-25:
+    # an unpriced share class is worth at most the highest priced class of the same issuer per share
+    # (equal economics). If even that upper bound is below the #500 cutoff the issuer is settled outside.
+    lb_settled, lb_outside = {}, []
+    for c, o in overrides.items():
+        if not o["status"].endswith("LOWER_BOUND") or c in ranked_cids:
+            continue
+        ub = equal_economics_upper_bound(o)
+        if cutoff is not None and ub is not None and ub < cutoff:
+            lb_settled[listings[c].get("yahoo")] = {"lower_bound": o["mcap"], "upper_bound": ub}
+        else:
+            lb_outside.append(listings[c].get("yahoo"))
+    lb_outside.sort()
+    # issuers whose market cap is determined by an override (ranked in the top 500, or settled outside by the
+    # upper bound) are rankable for reference coverage; undetermined lower bounds stay not rankable.
+    settled_syms = set(lb_settled)
+    determined_ciks = {str(listings[c].get("cik") or "").zfill(10) for c in overrides
+                       if c in ranked_cids or listings[c].get("yahoo") in settled_syms or not overrides[c]["status"].endswith("LOWER_BOUND")}
+    cik_of = {amc._norm_ticker(m.get("yahoo")): str(m.get("cik") or "").zfill(10) for m in row_listings.values()}
+
+    undetermined_ciks = {str(listings[c].get("cik") or "").zfill(10) for c in overrides} - determined_ciks
+
+    def _determined(cov: dict) -> dict:
+        keep, moved = [], []
+        for t in cov["present_not_rankable"]:
+            (moved if cik_of.get(amc._norm_ticker(t)) in determined_ciks else keep).append(t)
+        outside, undetermined = [], []
+        for t in list(cov["present_rankable_outside_top500"]) + moved:
+            (undetermined if cik_of.get(amc._norm_ticker(t)) in undetermined_ciks else outside).append(t)
+        return {**cov, "present_not_rankable": keep + undetermined, "present_rankable_outside_top500": outside,
+                "determined_by_cover_override": moved, "membership_undetermined_lower_bound": undetermined}
     refs = []
     detector_refs = [normalize_reference(r) for r in detector_refs]
     sufficiency_refs = [normalize_reference(r) for r in sufficiency_refs]
     for ref in detector_refs:
-        refs.append({**amc.evaluate_reference_coverage(store, row_listings, ranked, ref, chart_range),
+        refs.append({**_determined(amc.evaluate_reference_coverage(store, row_listings, ranked, ref, chart_range)),
                      "reference_role": "MISSING_LARGE_CAP_DETECTOR"})
     for ref in sufficiency_refs:
         mapped, excluded_rule = map_superset_members(ref, row_listings, listings_pre_elig, listings, amc)
-        cov = amc.evaluate_reference_coverage(store, row_listings, ranked, {**ref, "members": mapped}, chart_range)
+        cov = _determined(amc.evaluate_reference_coverage(store, row_listings, ranked, {**ref, "members": mapped}, chart_range))
         refs.append({**cov, "members": ref.get("members"), "excluded_by_eligibility_rule": excluded_rule})
     completeness = amc.build_universe_completeness_gate(audit, exchange_reference) if exchange_reference else None
     sufficiency = amc.build_top500_sufficiency_gate(audit, refs)
@@ -342,9 +381,6 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     by_norm = {amc._norm_ticker(m.get("yahoo")): m for m in row_listings.values()}
     not_rankable_detail = {t: amc.row_detail(store, by_norm[amc._norm_ticker(t)], d, chart_range)
                            for ref in refs for t in ref["present_not_rankable"] if amc._norm_ticker(t) in by_norm}
-    # A lower-bound issuer ranked outside the top 500 might belong inside it: membership is undetermined.
-    lb_outside = sorted(listings[c].get("yahoo") for c, o in overrides.items()
-                        if o["status"].endswith("LOWER_BOUND") and c not in ranked_cids)
     # Diagnostic only: why each eligible issuer is not rankable (base gate: ELIGIBLE_LISTINGS_NOT_FULLY_RANKABLE).
     unrankable = {}
     for cid, m in listings.items():
@@ -371,7 +407,8 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "company_dedupe": dedupe, "eligibility": eligibility,
         "cover_overrides": {listings[c].get("yahoo"): {k: v for k, v in o.items()} for c, o in overrides.items()},
         "cover_unresolved": {listings[c].get("yahoo"): v for c, v in cover_unresolved.items()},
-        "lower_bound_issuers_outside_top500": lb_outside, "unrankable_issuers": unrankable,
+        "lower_bound_issuers_outside_top500": lb_outside, "lower_bound_settled_outside_by_upper_bound": lb_settled,
+        "unrankable_issuers": unrankable,
         "audit": audit, "rankable": audit["rankable"], "cutoff_500_mcap": cutoff,
         "top500": top_rows, "top500_quality_flag_counts": flag_counts,
         "reference_not_rankable_detail": not_rankable_detail,

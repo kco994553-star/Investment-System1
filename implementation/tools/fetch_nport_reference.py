@@ -32,6 +32,8 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from investment_system.ingestion.raw_store import RawDatasetStore  # noqa: E402
 from investment_system.ingestion.replay import load_submissions_merged  # noqa: E402
+from investment_system.providers.sec_cover_shares import (  # noqa: E402
+    class_symbols, instance_name, pages_needed, parse_cover, pit_filer_status, select_filing)
 
 GE = ROOT / "reports" / "gate_evidence"
 REGISTRANT_CIK = "0001100663"  # iShares Trust (verified against the submissions name at run time)
@@ -179,13 +181,35 @@ def resolve(holdings: list[dict], cur: dict, hist: dict, pool_ciks: set[str] | N
                 elif len(c & pool_ciks) == 1:
                     c, method = c & pool_ciks, "SEC_CIK_LOOKUP_UNIQUE_IN_POOL"
         if len(c) != 1:
-            unresolved.append({**h, "name_matches": len(c)})
+            unresolved.append({**h, "name_matches": len(c), "candidates": sorted(c)[:8]})
             continue
         cik = next(iter(c))
         m = members.setdefault(cik, {"names": [], "cusips": [], "method": method})
         m["names"].append(h["name"])
         m["cusips"].append(h["cusip"])
     return members, unresolved
+
+
+def pit_registrant(store: RawDatasetStore, cik: str, as_of: datetime, lookback_days: int = 400) -> bool:
+    """Domestic filer at as_of with a 10-K/10-Q filed within lookback_days before as_of (from stored submissions)."""
+    sub, complete = load_submissions_merged(store, cik, as_of)
+    if not sub or pit_filer_status(sub, as_of, complete) != "DOMESTIC":
+        return False
+    f = select_filing(sub, as_of)
+    return bool(f) and (as_of.date() - datetime.fromisoformat(f["filed"]).date()).days <= lookback_days
+
+
+def as_of_symbol(store: RawDatasetStore, cik: str, as_of: datetime) -> str | None:
+    """Ticker the issuer registered AT as_of: dei:TradingSymbol on the latest 10-K/10-Q cover filed <= as_of."""
+    f = select_filing(load_submissions_merged(store, cik, as_of)[0] or {}, as_of)
+    aid = f"xbrl_instance:{cik}:{f['accn']}" if f else None
+    if not aid or not store.has(aid):
+        return None
+    try:
+        syms = [s for s in class_symbols(parse_cover(store.get_bytes(aid))).values() if s and " " not in s]
+    except Exception:  # noqa: BLE001
+        return None
+    return sorted(syms, key=len)[0].replace(".", "-") if syms else None
 
 
 def main() -> None:
@@ -247,9 +271,39 @@ def main() -> None:
                 rows, _ = chain.extend_listings(store, rd(a.listings) or {}, rd(a.plan))
                 pool_ciks = {str(m.get("cik") or "").zfill(10) for m in rows.values()}
                 members, unresolved = resolve(eq, cur, hist, pool_ciks)
-                extra = {f"r1000:{c}": {"yahoo": tick[c], "cik": c, "cik_method": v["method"], "reference_name": v["names"][0]}
-                         for c, v in members.items() if c not in pool_ciks and tick.get(c)}
-                no_ticker = sorted(c for c in members if c not in pool_ciks and not tick.get(c))
+                # (1) name collisions: accept the unique candidate that was a domestic SEC registrant at as_of
+                cover_mod = _load("fetch_cover_xbrl")
+                still = []
+                for u in unresolved:
+                    cands = u.get("candidates") or []
+                    for c in cands:
+                        get(f"submissions:{c}", SUBMISSIONS_URL.format(cik=c), "SEC_SUBMISSIONS")
+                    ok = [c for c in cands if pit_registrant(store, c, d)]
+                    if 1 < len(cands) and len(ok) == 1:
+                        m = members.setdefault(ok[0], {"names": [], "cusips": [], "method": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT"})
+                        m["names"].append(u["name"])
+                        m["cusips"].append(u.get("cusip"))
+                    else:
+                        still.append({**u, "pit_registrant_candidates": ok})
+                unresolved = still
+                # (2) members not in the pool without a current ticker: ticker AT as_of from the cover page
+                as_of_ticker = {}
+                for c in sorted(c for c in members if c not in pool_ciks and not tick.get(c)):
+                    get(f"submissions:{c}", SUBMISSIONS_URL.format(cik=c), "SEC_SUBMISSIONS")
+                    for name in pages_needed(load_submissions_merged(store, c)[0] or {}, d):
+                        get(f"submissions_page:{name}", cover_mod.SUBMISSIONS_PAGE_URL.format(name=name), "SEC_SUBMISSIONS_PAGE")
+                    f = select_filing(load_submissions_merged(store, c, d)[0] or {}, d)
+                    if f:
+                        get(f"xbrl_instance:{c}:{f['accn']}", cover_mod.ARCHIVE_URL.format(
+                            cik=int(c), accn=f["accn"].replace("-", ""), doc=instance_name(f["primary_document"])), "SEC_XBRL_INSTANCE")
+                    sym = as_of_symbol(store, c, d)
+                    if sym:
+                        as_of_ticker[c] = sym
+                extra = {f"r1000:{c}": {"yahoo": tick.get(c) or as_of_ticker[c], "cik": c, "cik_method": v["method"],
+                                        "symbol_basis": "SEC_TICKERS_CURRENT" if tick.get(c) else "COVER_TRADING_SYMBOL_AT_AS_OF",
+                                        "reference_name": v["names"][0]}
+                         for c, v in members.items() if c not in pool_ciks and (tick.get(c) or as_of_ticker.get(c))}
+                no_ticker = sorted(c for c in members if c not in pool_ciks and not tick.get(c) and not as_of_ticker.get(c))
                 ref = {"name": "RUSSELL1000_IWB_NPORT", "kind": "SEC_NPORT_FUND_HOLDINGS",
                        "source": f"SEC Form NPORT-P {chosen['accn']} ({a.series_name}), report date {a.as_of}",
                        "source_url": doc_url,
@@ -262,6 +316,7 @@ def main() -> None:
                 (GE / f"russell1000_nport_{a.as_of}.json").write_text(json.dumps(ref, indent=2) + "\n", encoding="utf-8")
                 (GE / f"russell1000_extra_listings_{a.as_of}.json").write_text(json.dumps(extra, indent=2) + "\n", encoding="utf-8")
                 report.update({"status": "OK", "n_members_cik": len(members), "n_unresolved": len(unresolved),
+                               "n_as_of_ticker_from_cover": len(as_of_ticker),
                                "n_extra": len(extra), "n_not_in_pool_without_current_ticker": len(no_ticker)})
     report["log"] = log
     (store.root / f"nport_run_{int(datetime.now(timezone.utc).timestamp())}.json").write_text(json.dumps(report, indent=2))

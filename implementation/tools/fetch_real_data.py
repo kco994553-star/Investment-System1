@@ -69,8 +69,9 @@ YAHOO_CHART_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?in
 YAHOO_EVENTS_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1mo&range={range}&events=split"
 
 
-def _get(url: str, ua: str) -> tuple[bytes, int, str]:
-    req = Request(url, headers={"User-Agent": ua, "Accept": "*/*"})
+def _get(url: str, ua: str, headers: dict | None = None) -> tuple[bytes, int, str]:
+    # headers: e.g. an API token sent as a header so it never appears in URLs, logs or manifests
+    req = Request(url, headers={"User-Agent": ua, "Accept": "*/*", **(headers or {})})
     with urlopen(req, timeout=20) as resp:
         return resp.read(), resp.status, resp.headers.get("Content-Type", "application/octet-stream")
 
@@ -86,11 +87,11 @@ def _is_egress_denial(e: BaseException) -> bool:
     return "Tunnel connection failed: 403" in str(reason) or "Host not in allowlist" in str(reason)
 
 
-def _get_with_retry(url: str, ua: str) -> tuple[bytes, int, str]:
+def _get_with_retry(url: str, ua: str, headers: dict | None = None) -> tuple[bytes, int, str]:
     delay = BACKOFF_BASE
     for attempt in range(MAX_RETRIES + 1):
         try:
-            return _get(url, ua)
+            return _get(url, ua, headers) if headers else _get(url, ua)
         except HTTPError as e:
             if e.code not in RETRY_STATUS or attempt == MAX_RETRIES:
                 raise
@@ -105,7 +106,8 @@ def _get_with_retry(url: str, ua: str) -> tuple[bytes, int, str]:
     raise AssertionError("unreachable")
 
 
-def _fetch_one(store: RawDatasetStore, artifact_id: str, url: str, source_kind: str, ua: str, log: list[dict], refresh: bool = False) -> bool:
+def _fetch_one(store: RawDatasetStore, artifact_id: str, url: str, source_kind: str, ua: str, log: list[dict], refresh: bool = False,
+               headers: dict | None = None) -> bool:
     if store.has(artifact_id) and not refresh:
         log.append({"artifact_id": artifact_id, "status": "SKIPPED_ALREADY_PRESENT"})
         return True
@@ -114,7 +116,7 @@ def _fetch_one(store: RawDatasetStore, artifact_id: str, url: str, source_kind: 
         log.append({"artifact_id": artifact_id, "status": "EGRESS_BLOCKED", "url": url})
         return False
     try:
-        body, status, ctype = _get_with_retry(url, ua)
+        body, status, ctype = _get_with_retry(url, ua, headers) if headers else _get_with_retry(url, ua)
     except HTTPError as e:
         log.append({"artifact_id": artifact_id, "status": f"HTTP_{e.code}", "url": url})
         return False

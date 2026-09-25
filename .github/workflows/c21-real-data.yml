@@ -136,12 +136,15 @@ jobs:
           X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
           EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
           python tools/fetch_cover_xbrl.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA
-      - name: Stooq fallback prices for eligible issuers/classes with no as-of Yahoo bar (calibrated, fail-closed)
+      - name: Tiingo fallback prices for eligible issuers/classes with no as-of Yahoo bar (calibrated, fail-closed)
         if: inputs.skip_fetch != 'true'
+        env:
+          TIINGO_API_KEY: ${{ secrets.TIINGO_API_KEY }}
         run: |
+          [ -z "$TIINGO_API_KEY" ] && echo "::warning::repository secret TIINGO_API_KEY is not set; no Tiingo prices"
           X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
           EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
-          python tools/fetch_stooq_prices.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA | head -c 6000
+          python tools/fetch_tiingo_prices.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA | head -c 6000
       - name: Recount store
         id: store2
         if: always()
