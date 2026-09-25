@@ -165,6 +165,14 @@ def write_store_index(store: RawDatasetStore) -> dict:
     return index
 
 
+def _throttle(log: list[dict], sleep: float) -> None:
+    """Sleep only after a request was actually sent (skips / breaker hits cost nothing)."""
+    last = log[-1] if log else {}
+    sent = last.get("status") not in (None, "SKIPPED_ALREADY_PRESENT", "EGRESS_BLOCKED") or "error" in last
+    if sent:
+        time.sleep(sleep)
+
+
 def run(store_dir: Path, ciks: list[str], symbols: list[str], chart_range: str, sleep: float, skip_tickers: bool, refresh: bool = False,
         plan: dict | None = None) -> dict:
     store = RawDatasetStore(store_dir)
@@ -173,7 +181,7 @@ def run(store_dir: Path, ciks: list[str], symbols: list[str], chart_range: str, 
     resolution: list[dict] | None = None
     if not skip_tickers:
         _fetch_one(store, "sec_tickers", SEC_TICKERS_URL, "SEC_TICKERS", UA, log, refresh)
-        time.sleep(sleep)
+        _throttle(log, sleep)
     if plan is not None:
         pc, ps, resolution = plan_targets(store, plan)
         ciks = list(dict.fromkeys(list(ciks) + pc))
@@ -181,13 +189,13 @@ def run(store_dir: Path, ciks: list[str], symbols: list[str], chart_range: str, 
     for cik in ciks:
         c10 = str(int(cik)).zfill(10)
         _fetch_one(store, f"companyfacts:{c10}", SEC_FACTS_URL.format(cik=c10), "SEC_COMPANYFACTS", UA, log, refresh)
-        time.sleep(sleep)
+        _throttle(log, sleep)
         _fetch_one(store, f"submissions:{c10}", SEC_SUBS_URL.format(cik=c10), "SEC_SUBMISSIONS", UA, log, refresh)
-        time.sleep(sleep)
+        _throttle(log, sleep)
     for sym in symbols:
         aid = f"yahoo_chart:{sym.upper()}:{chart_range}"
         _fetch_one(store, aid, YAHOO_CHART_URL.format(symbol=sym.upper(), range=chart_range), "YAHOO_CHART", YAHOO_UA, log, refresh)
-        time.sleep(sleep)
+        _throttle(log, sleep)
     ok = sum(1 for r in log if r["status"] in ("OK", "SKIPPED_ALREADY_PRESENT"))
     report = {
         "kind": "REAL_DATA_INGEST_RUN",

@@ -218,3 +218,15 @@ def test_cik_candidates_accepted_only_after_sec_name_verification(tmp_path):
     plan = {"priority_fetch_plan": [{"ticker": "ANSS", "cik": None}, {"ticker": "BAD", "cik": None}]}
     out, unresolved = chain.extend_listings(store, {}, plan, v)
     assert out["plan:anss"]["cik"] == "0001013462" and unresolved == ["BAD"]
+
+
+def test_runner_does_not_throttle_skipped_artifacts(tmp_path, monkeypatch):
+    mod = _mod("frd_throttle", "fetch_real_data.py")
+    store = RawDatasetStore(tmp_path)
+    store.put("sec_tickers", b"{}", "u", "SEC_TICKERS", "application/json", "t", 200)
+    store.put("companyfacts:0000000001", b"{}", "u", "SEC", "application/json", "t", 200)
+    sleeps = []
+    monkeypatch.setattr(mod, "urlopen", lambda req, timeout=0: _R(b"{}"))
+    monkeypatch.setattr(mod.time, "sleep", lambda s: sleeps.append(s))
+    mod.run(Path(tmp_path), ["1"], [], "5y", 0.15, skip_tickers=False)
+    assert sleeps == [0.15]  # only submissions:0000000001 was actually requested
