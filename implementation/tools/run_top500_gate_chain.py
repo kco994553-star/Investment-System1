@@ -256,13 +256,17 @@ def map_superset_members(ref: dict, row_listings: dict, pre_elig: dict, eligible
     issuer the documented eligibility rule excluded (foreign private / not registered at as_of): those are
     consistent with the rule, not missing. Members with no pool line keep their ticker (-> missing_from_pool)."""
     by_nodot = {_nodot(m.get("yahoo")): m for m in row_listings.values() if m.get("yahoo")}
+    # CIK-identified members (e.g. SEC N-PORT holdings) map to the issuer's primary eligible line
+    by_cik = {str(m.get("cik") or "").zfill(10): m for m in list(row_listings.values()) + list(pre_elig.values()) if m.get("cik")}
+    by_cik.update({str(m.get("cik") or "").zfill(10): m for m in pre_elig.values() if m.get("cik")})
+    cik_ids = ref.get("member_id_type") == "CIK10"
     elig_ciks = {str(m.get("cik") or "").zfill(10) for m in eligible.values()}
     pre_ciks = {str(m.get("cik") or "").zfill(10) for m in pre_elig.values()}
     mapped, excluded = [], []
     for t in ref.get("members") or []:
-        m = by_nodot.get(_nodot(t))
+        m = by_cik.get(str(t).zfill(10)) if cik_ids else by_nodot.get(_nodot(t))
         if m is None:
-            mapped.append(t)
+            mapped.append(f"CIK{t}" if cik_ids else t)  # not in the pool -> reported as missing_from_pool
             continue
         c = str(m.get("cik") or "").zfill(10)
         if c in pre_ciks and c not in elig_ciks:

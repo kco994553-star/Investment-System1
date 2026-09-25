@@ -736,3 +736,55 @@ def test_chain_superset_maps_class_tickers_counts_rule_exclusions_and_derives_el
     missing = chain.run_chain(store, listings, "2024-12-31", [], [{**ref, "members": members + ["NOTINPOOL"]}], None, None)
     assert missing["top500_sufficiency_gate"]["passed"] is False and missing["eligibility_evidence_derived_from_superset"] is None
     assert missing["promotion_gate_v2"]["passed"] is False and missing["official_top500_declared"] is False
+
+
+NPORT_XML = b"""<?xml version="1.0"?><edgarSubmission xmlns="http://www.sec.gov/edgar/nport"><formData>
+<genInfo><seriesName>iShares Russell 1000 ETF</seriesName><repPdDate>2024-12-31</repPdDate></genInfo>
+<invstOrSecs>
+<invstOrSec><name>APPLE INC</name><cusip>037833100</cusip><identifiers><isin value="US0378331005"/></identifiers><valUSD>100</valUSD><assetCat>EC</assetCat><invCountry>US</invCountry></invstOrSec>
+<invstOrSec><name>ALPHABET INC</name><cusip>02079K305</cusip><valUSD>50</valUSD><assetCat>EC</assetCat><invCountry>US</invCountry></invstOrSec>
+<invstOrSec><name>ALPHABET INC</name><cusip>02079K107</cusip><valUSD>45</valUSD><assetCat>EC</assetCat><invCountry>US</invCountry></invstOrSec>
+<invstOrSec><name>ANSYS INC</name><cusip>03662Q105</cusip><valUSD>5</valUSD><assetCat>EC</assetCat><invCountry>US</invCountry></invstOrSec>
+<invstOrSec><name>TWIN NAME CORP</name><cusip>000000001</cusip><valUSD>1</valUSD><assetCat>EC</assetCat><invCountry>US</invCountry></invstOrSec>
+<invstOrSec><name>BLACKROCK CASH FUND</name><cusip>000000002</cusip><valUSD>1</valUSD><assetCat>STIV</assetCat><invCountry>US</invCountry></invstOrSec>
+</invstOrSecs></formData></edgarSubmission>"""
+
+
+def test_nport_parse_series_filings_and_name_resolution(tmp_path):
+    fnr = _mod("fnr", "fetch_nport_reference.py")
+    doc = fnr.parse_nport(NPORT_XML)
+    assert doc["report_date"] == "2024-12-31" and doc["series_name"] == "iShares Russell 1000 ETF"
+    eq = [h for h in doc["holdings"] if h["asset_cat"] == "EC"]
+    assert len(eq) == 5 and eq[0]["isin"] == "US0378331005"
+    hdr = b"<html><pre>&lt;SERIES-NAME&gt;iShares Russell 1000 ETF\n&lt;SERIES-NAME&gt;iShares Russell 1000 Growth ETF\n</pre></html>"
+    assert fnr.series_names(hdr) == ["iShares Russell 1000 ETF", "iShares Russell 1000 Growth ETF"]
+    sub = {"filings": {"recent": {"form": ["NPORT-P", "NPORT-P", "497K"], "reportDate": ["2024-12-31", "2024-11-30", ""],
+                                  "filingDate": ["2025-02-27", "2025-01-28", "2025-01-01"], "accessionNumber": ["a", "b", "c"],
+                                  "primaryDocument": ["primary_doc.xml", "primary_doc.xml", "x.htm"]}}}
+    assert [f["accn"] for f in fnr.nport_filings_for(sub, "2024-12-31")] == ["a"]
+    store = RawDatasetStore(tmp_path)
+    store.put("sec_tickers", json.dumps({"0": {"cik_str": 320193, "ticker": "AAPL", "title": "Apple Inc."},
+                                         "1": {"cik_str": 1652044, "ticker": "GOOGL", "title": "Alphabet Inc."}}).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put("sec_cik_lookup", b"ANSYS INC:0001013462:\nTWIN NAME CORP:0000000011:\nTWIN NAME CORPORATION:0000000012:\n", "u", "SEC", "text/plain", "t", 200)
+    cur, hist, tick = fnr.name_index(store)
+    members, unresolved = fnr.resolve(eq, cur, hist)
+    assert set(members) == {"0000320193", "0001652044", "0001013462"}  # two Alphabet classes -> one issuer
+    assert members["0001652044"]["cusips"] == ["02079K305", "02079K107"] and members["0001013462"]["method"] == "SEC_CIK_LOOKUP"
+    assert [u["name"] for u in unresolved] == ["TWIN NAME CORP"] and tick["0000320193"] == "AAPL"
+
+
+def test_chain_superset_with_cik_members(tmp_path):
+    chain = _mod("chain_cikref", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    listings = {}
+    for i in range(1, 911):
+        _put_name(store, i, f"T{i}", i * 10, 1.0)
+        store.put(f"submissions:{str(i).zfill(10)}", json.dumps({"filings": {"recent": {"form": ["10-Q"], "filingDate": ["2024-11-01"]}}}).encode(),
+                  "u", "SEC", "application/json", "t", 200)
+        listings[f"c{i}"] = {"cik": str(i).zfill(10), "yahoo": f"T{i}"}
+    ref = {"name": "R1000", "source": "SEC NPORT-P x", "source_vintage": "2025-02-27", "as_of": AS_OF, "membership_basis": "DATED_FUND_HOLDINGS",
+           "reference_role": "SUPERSET_REFERENCE", "member_id_type": "CIK10", "members": [str(i).zfill(10) for i in range(1, 911)]}
+    ok = chain.run_chain(store, listings, "2024-12-31", [], [ref], None, None)
+    assert ok["top500_sufficiency_gate"]["passed"] is True
+    bad = chain.run_chain(store, listings, "2024-12-31", [], [{**ref, "members": ref["members"] + ["0009999999"]}], None, None)
+    assert bad["top500_sufficiency_gate"]["references"][0]["missing_from_pool"] == ["CIK0009999999"]

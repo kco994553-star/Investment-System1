@@ -115,9 +115,9 @@ jobs:
           CIKS=$(python -c "import json;print(','.join(c['cik'] for c in json.load(open('reports/gate_evidence/delisted_cik_candidates_2024-12-31.json'))['candidates']))")
           python tools/fetch_real_data.py --store data/raw --skip-tickers --ciks "$CIKS" > /tmp/run_cand.json
           python -c "import json,collections;d=json.load(open('/tmp/run_cand.json'));print(d['n_requested'],d['n_ok'],d['n_failed'],collections.Counter(r['status'] for r in d['log']))"
-      - name: Fetch independent PIT reference (iShares Russell 1000 IWB holdings for as_of) and resolve members
+      - name: Fetch independent PIT reference (Russell 1000 ETF holdings from SEC Form NPORT-P for as_of) and resolve members
         if: inputs.skip_fetch != 'true'
-        run: python tools/fetch_ishares_reference.py --store data/raw --as-of "${{ inputs.as_of }}"
+        run: python tools/fetch_nport_reference.py --store data/raw --as-of "${{ inputs.as_of }}"
       - name: Fetch SEC + Yahoo data for reference members not yet in the pool (present artifacts skipped)
         if: inputs.skip_fetch != 'true'
         run: |
@@ -155,7 +155,7 @@ jobs:
       - name: Gate chain (coverage -> rankable -> #500 -> Completeness -> Sufficiency -> Promotion Gate v2)
         run: |
           X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
-          R="reports/gate_evidence/russell1000_iwb_${{ inputs.as_of }}.json"
+          R="reports/gate_evidence/russell1000_nport_${{ inputs.as_of }}.json"
           EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
           REF=""; [ -f "$R" ] && REF="--sufficiency-reference $R"
           python tools/run_top500_gate_chain.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA $REF \
