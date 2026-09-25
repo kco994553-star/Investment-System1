@@ -26,7 +26,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from investment_system.ingestion.raw_store import RawDatasetStore  # noqa: E402
-from investment_system.ingestion.replay import load_submissions  # noqa: E402
+from investment_system.ingestion.replay import load_companyfacts, load_price_bars, load_submissions  # noqa: E402
+from investment_system.providers.sec_cover_shares import class_symbols, parse_cover, select_filing  # noqa: E402
+from investment_system.universe.sources import pit_shares  # noqa: E402
 from investment_system.universe.resolve import current_ticker_map  # noqa: E402
 
 GE = ROOT / "reports" / "gate_evidence"
@@ -112,6 +114,86 @@ def company_level_listings(store: RawDatasetStore, listings: dict) -> tuple[dict
 FOREIGN_FORMS = {"20-F", "20-F/A", "40-F", "40-F/A"}
 
 
+DOMESTIC_FORMS = {"10-K", "10-Q", "10-K/A", "10-Q/A"}
+ELIGIBILITY_RULE = ("US_DOMESTIC_FILER: issuer files 10-K/10-Q with the SEC. Foreign private issuers (20-F/40-F, no 10-K/10-Q) "
+                    "are excluded from the US Market-Cap Top 500 (user decision 2026-09-25; their US lines are mostly ADRs "
+                    "whose ratio is not in SEC data). Basis: SEC submissions 'recent' forms as fetched (not PIT-dated).")
+
+
+def eligibility_filter(store: RawDatasetStore, listings: dict) -> tuple[dict, dict]:
+    kept, excluded, unknown = {}, [], []
+    for cid, m in listings.items():
+        sub = load_submissions(store, str(m.get("cik") or "")) if m.get("cik") else None
+        if not sub:
+            unknown.append(m.get("yahoo"))
+            kept[cid] = m
+            continue
+        forms = set(((sub.get("filings") or {}).get("recent") or {}).get("form") or [])
+        if forms & FOREIGN_FORMS and not forms & DOMESTIC_FORMS:
+            excluded.append(m.get("yahoo"))
+            continue
+        kept[cid] = m
+    return kept, {"rule": ELIGIBILITY_RULE, "n_in": len(listings), "n_kept": len(kept),
+                  "excluded_foreign_private_issuers": sorted(excluded), "eligibility_unknown_no_submissions": sorted(unknown)}
+
+
+def _as_of_price(store: RawDatasetStore, symbol: str, as_of, chart_range: str):
+    amc = _load("audit_mcap_store")
+    bars = [b for b in load_price_bars(store, symbol, chart_range) if b["observed_at"] <= as_of]
+    return amc.mcap_price(bars[-1], amc.load_splits(store, symbol, chart_range), as_of) if bars else None
+
+
+def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_range: str = "5y") -> tuple[dict, dict]:
+    """company_id -> {'mcap', 'status', 'classes'} from the cover-page XBRL instance (tools/fetch_cover_xbrl.py).
+    Listed classes: class shares x that class's as-of price. Unlisted/unpriced classes are not guessed
+    (no conversion ratio in the data): the sum is then a LOWER BOUND."""
+    out, unresolved = {}, {}
+    for cid, m in listings.items():
+        c = str(m.get("cik") or "")
+        if not c.isdigit():
+            continue
+        c = c.zfill(10)
+        f = select_filing(load_submissions(store, c) or {}, as_of)
+        aid = f"xbrl_instance:{c}:{f['accn']}" if f else None
+        if not aid or not store.has(aid):
+            continue
+        try:
+            cover = parse_cover(store.get_bytes(aid))
+        except Exception as e:  # noqa: BLE001
+            unresolved[cid] = f"PARSE_ERROR_{type(e).__name__}"
+            continue
+        classes, syms = cover["classes"], class_symbols(cover)
+        if not classes:
+            unresolved[cid] = "NO_COVER_SHARES"
+            continue
+        if len(classes) == 1 and classes[0]["member"] is None:
+            cf = load_companyfacts(store, c)
+            if cf is not None and pit_shares(cf, as_of)["status"] == "OK":
+                continue  # companyfacts already resolves a single class
+            px = _as_of_price(store, str(m.get("yahoo") or ""), as_of, chart_range)
+            if px:
+                out[cid] = {"mcap": classes[0]["shares"] * px, "status": "COVER_SINGLE_CLASS", "source": aid,
+                            "classes": [{**classes[0], "symbol": m.get("yahoo"), "price": px}]}
+            else:
+                unresolved[cid] = "NO_PRICE"
+            continue
+        total, parts, lower = 0.0, [], False
+        for cl in classes:
+            sym = syms.get(cl["member"])
+            px = _as_of_price(store, sym.replace(".", "-"), as_of, chart_range) if sym else None
+            if px:
+                total += cl["shares"] * px
+            else:
+                lower = True
+            parts.append({**cl, "symbol": sym, "price": px})
+        if total > 0:
+            out[cid] = {"mcap": total, "status": "COVER_CLASS_SUM_LOWER_BOUND" if lower else "COVER_CLASS_SUM",
+                        "source": aid, "classes": parts}
+        else:
+            unresolved[cid] = "NO_PRICED_CLASS"
+    return out, unresolved
+
+
 def mcap_quality_flags(store: RawDatasetStore, detail: dict) -> list[str]:
     """Reasons a row's PIT market cap is not yet trustworthy for Official promotion
     (contract: duplicate listings/share classes/ADR must be resolved first)."""
@@ -135,8 +217,10 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     row_audit = amc.audit(store, row_listings, d, chart_range)
     # Official Top-500 is company-level: rank one line per issuer.
     listings, dedupe = company_level_listings(store, row_listings)
-    audit = amc.audit(store, listings, d, chart_range)
-    top = amc.ranked_top500(store, listings, d, chart_range)
+    listings, eligibility = eligibility_filter(store, listings)
+    overrides, cover_unresolved = cover_mcap_overrides(store, listings, d, chart_range)
+    audit = amc.audit(store, listings, d, chart_range, overrides)
+    top = amc.ranked_top500(store, listings, d, chart_range, overrides)
     cutoff = top[499]["mcap"] if len(top) >= 500 else None
     ranked_cids = {r["company_id"] for r in top}
     ranked_ciks = {str(listings[c].get("cik") or "").zfill(10) for c in ranked_cids}
@@ -155,8 +239,11 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     top_rows = []
     for r in top:
         det = amc.row_detail(store, listings[r["company_id"]], d, chart_range)
-        top_rows.append({**r, "cik": listings[r["company_id"]].get("cik"), "detail": det,
-                         "quality_flags": mcap_quality_flags(store, det)})
+        ov = overrides.get(r["company_id"])
+        top_rows.append({**r, "cik": listings[r["company_id"]].get("cik"), "detail": det, "cover_override": ov,
+                         "quality_flags": mcap_quality_flags(store, det) if not ov else
+                         [f for f in mcap_quality_flags(store, det) if f != "SPLIT_EVENTS_MISSING"],
+                         "notes": ["RANK_IS_LOWER_BOUND"] if ov and ov["status"].endswith("LOWER_BOUND") else []})
     flag_counts: dict[str, int] = {}
     for r in top_rows:
         for f in r["quality_flags"]:
@@ -164,17 +251,24 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     by_norm = {amc._norm_ticker(m.get("yahoo")): m for m in row_listings.values()}
     not_rankable_detail = {t: amc.row_detail(store, by_norm[amc._norm_ticker(t)], d, chart_range)
                            for ref in refs for t in ref["present_not_rankable"] if amc._norm_ticker(t) in by_norm}
+    # A lower-bound issuer ranked outside the top 500 might belong inside it: membership is undetermined.
+    lb_outside = sorted(listings[c].get("yahoo") for c, o in overrides.items()
+                        if o["status"].endswith("LOWER_BOUND") and c not in ranked_cids)
     official_blockers = ([] if gate_v2["passed"] else ["PROMOTION_GATE_V2_FAILED"]) + \
-        [f"TOP500_ROWS_{k}" for k in sorted(flag_counts)]
+        [f"TOP500_ROWS_{k}" for k in sorted(flag_counts)] + \
+        (["LOWER_BOUND_ISSUERS_OUTSIDE_TOP500"] if lb_outside else [])
     official = not official_blockers
     return {
         "kind": "TOP500_GATE_CHAIN_RUN", "as_of": audit["as_of"],
         "store": {"dir": str(store.root), "n_artifacts": n_blobs,
                   "status": "EMPTY_NO_RAW_DATA" if n_blobs == 0 else "PRESENT"},
         "listings": len(listings), "plan_names_unresolved": unresolved, "cik_candidate_verification": cand,
-        "ranking_basis": "COMPANY_LEVEL_ONE_LINE_PER_CIK",
+        "ranking_basis": "COMPANY_LEVEL_ONE_LINE_PER_CIK; US_DOMESTIC_FILERS; COVER_XBRL_CLASS_SUM_FOR_MULTI_CLASS",
         "row_level_audit": {k: row_audit[k] for k in ("listings", "rankable", "top_cutoff_mcap_if_500_rankable")},
-        "company_dedupe": dedupe,
+        "company_dedupe": dedupe, "eligibility": eligibility,
+        "cover_overrides": {listings[c].get("yahoo"): {k: v for k, v in o.items()} for c, o in overrides.items()},
+        "cover_unresolved": {listings[c].get("yahoo"): v for c, v in cover_unresolved.items()},
+        "lower_bound_issuers_outside_top500": lb_outside,
         "audit": audit, "rankable": audit["rankable"], "cutoff_500_mcap": cutoff,
         "top500": top_rows, "top500_quality_flag_counts": flag_counts,
         "reference_not_rankable_detail": not_rankable_detail,

@@ -54,11 +54,17 @@ def mcap_price(bar:dict, splits:list|None, as_of:datetime)->float:
     close=bar.get('close')
     return (close if close is not None else bar['price'])*split_factor_after(splits,as_of)
 
-def audit(store:RawDatasetStore,listings:dict,as_of:datetime,chart_range='5y')->dict:
+def audit(store:RawDatasetStore,listings:dict,as_of:datetime,chart_range='5y',mcap_override:dict|None=None)->dict:
+    """mcap_override: company_id -> {'mcap': float} computed elsewhere (e.g. cover-page class sum);
+    such issuers are counted as rankable with that market cap."""
     counts={'listings':len(listings),'companyfacts':0,'price':0,'rankable':0,'missing_companyfacts':0,'missing_price':0,
             'missing_shares':0,'ambiguous_shares':0,'non_positive':0}
     ranked=[]
     for cid,m in listings.items():
+        ov=(mcap_override or {}).get(cid)
+        if ov and ov.get('mcap'):
+            counts['companyfacts']+=1; counts['price']+=1; counts['rankable']+=1
+            ranked.append((ov['mcap'],cid,m.get('yahoo'))); continue
         cf=load_companyfacts(store,str(m.get('cik',''))) if m.get('cik') else None
         if cf is None:
             counts['missing_companyfacts']+=1; continue
@@ -391,10 +397,15 @@ def _norm_ticker(t) -> str:
     return str(t or "").strip().upper().replace(".", "-")
 
 
-def ranked_top500(store: RawDatasetStore, listings: dict, as_of: datetime, chart_range: str = "5y") -> list[dict]:
+def ranked_top500(store: RawDatasetStore, listings: dict, as_of: datetime, chart_range: str = "5y",
+                  mcap_override: dict | None = None) -> list[dict]:
     """Rank rows (mcap desc, max 500) using the same inputs/rules as audit(); #500 = last row."""
     heap: list = []
     for cid, m in listings.items():
+        ov = (mcap_override or {}).get(cid)
+        if ov and ov.get("mcap"):
+            _top500_push(heap, ov["mcap"], cid, m.get("yahoo"))
+            continue
         cf = load_companyfacts(store, str(m.get("cik", ""))) if m.get("cik") else None
         if cf is None:
             continue

@@ -262,7 +262,7 @@ def test_audit_applies_split_factor(tmp_path):
     assert top[0]["mcap"] == 58_000_000 * 80.0 * 15
 
 
-def test_foreign_issuer_row_blocks_official_even_if_gates_were_to_pass(tmp_path):
+def test_foreign_private_issuer_is_excluded_by_eligibility_rule(tmp_path):
     chain = _mod("chain_fpi", "run_top500_gate_chain.py")
     store = RawDatasetStore(tmp_path)
     store.put("submissions:0000000007", json.dumps({"filings": {"recent": {"form": ["20-F", "6-K"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
@@ -271,8 +271,9 @@ def test_foreign_issuer_row_blocks_official_even_if_gates_were_to_pass(tmp_path)
     assert chain.mcap_quality_flags(store, {"cik": "0000000008", "split_events": "MISSING"}) == ["SPLIT_EVENTS_MISSING"]
     _put_name(store, 7, "ADRX", 1000, 5.0)
     rep = chain.run_chain(store, {"x": {"cik": "0000000007", "yahoo": "ADRX"}}, "2024-12-31", [], [], None, None)
-    assert "TOP500_ROWS_FOREIGN_ISSUER_ADR_RATIO_UNRESOLVED" in rep["official_blockers"]
-    assert rep["top500"][0]["detail"]["mcap"] == 5000.0 and rep["official_top500_declared"] is False
+    # user decision 2026-09-25: foreign private issuers (20-F/40-F, no 10-K/10-Q) are not in the US Top 500
+    assert rep["eligibility"]["excluded_foreign_private_issuers"] == ["ADRX"] and rep["top500"] == []
+    assert rep["official_top500_declared"] is False
 
 
 def test_runner_with_split_events_writes_events_artifact(tmp_path, monkeypatch):
@@ -283,3 +284,126 @@ def test_runner_with_split_events_writes_events_artifact(tmp_path, monkeypatch):
     mod.run(Path(tmp_path), [], ["ORLY"], "5y", 0.0, skip_tickers=True, with_split_events=True)
     assert set(RawDatasetStore(tmp_path).list_ids()) == {"yahoo_chart:ORLY:5y", "yahoo_events:ORLY:5y"}
     assert any("events=split" in u for u in urls)
+
+
+def _instance(classes, symbols, titles=()):
+    """classes: [(member|None, shares)], symbols: [(member|None, sym)], titles: [(member|None, text)]."""
+    ctx, facts, i = [], [], 0
+    def c(member, instant):
+        nonlocal i
+        i += 1
+        seg = (f'<xbrli:segment><xbrldi:explicitMember dimension="us-gaap:StatementClassOfStockAxis">us-gaap:{member}'
+               f'</xbrldi:explicitMember></xbrli:segment>') if member else ""
+        per = f"<xbrli:instant>{instant}</xbrli:instant>" if instant else "<xbrli:startDate>2024-07-01</xbrli:startDate><xbrli:endDate>2024-09-30</xbrli:endDate>"
+        ctx.append(f'<xbrli:context id="c{i}"><xbrli:entity><xbrli:identifier scheme="x">1</xbrli:identifier>{seg}</xbrli:entity><xbrli:period>{per}</xbrli:period></xbrli:context>')
+        return f"c{i}"
+    for m, sh in classes:
+        facts.append(f'<dei:EntityCommonStockSharesOutstanding contextRef="{c(m, "2024-10-25")}" unitRef="shares">{sh}</dei:EntityCommonStockSharesOutstanding>')
+    for m, sym in symbols:
+        facts.append(f'<dei:TradingSymbol contextRef="{c(m, None)}">{sym}</dei:TradingSymbol>')
+    for m, t in titles:
+        facts.append(f'<dei:Security12bTitle contextRef="{c(m, None)}">{t}</dei:Security12bTitle>')
+    return ('<xbrli:xbrl xmlns:xbrli="http://www.xbrl.org/2003/instance" xmlns:xbrldi="http://xbrl.org/2006/xbrldi" '
+            'xmlns:dei="http://xbrl.sec.gov/dei/2024" xmlns:us-gaap="http://fasb.org/us-gaap/2024">'
+            + "".join(ctx) + "".join(facts) + "</xbrli:xbrl>").encode()
+
+
+def test_cover_parser_maps_classes_to_symbols():
+    from investment_system.providers.sec_cover_shares import class_symbols, parse_cover
+    brk = parse_cover(_instance([("CommonClassAMember", 591), ("CommonClassBMember", 1_300_000)],
+                                [("CommonClassAMember", "BRK.A"), ("CommonClassBMember", "BRK.B")]))
+    assert class_symbols(brk) == {"CommonClassAMember": "BRK.A", "CommonClassBMember": "BRK.B"}
+    meta = parse_cover(_instance([("CommonClassAMember", 2_180), ("CommonClassBMember", 344)], [(None, "META")],
+                                 [(None, "Class A Common Stock, $0.000006 par value")]))
+    assert class_symbols(meta) == {"CommonClassAMember": "META"}  # class B unlisted -> unmapped
+    amb = parse_cover(_instance([("CommonClassAMember", 1), ("CommonClassBMember", 2)], [(None, "X")], [(None, "Common Stock")]))
+    assert class_symbols(amb) == {}  # no evidence which class trades -> fail-closed
+    single = parse_cover(_instance([(None, 4_300)], [(None, "XOM")]))
+    assert single["classes"][0]["shares"] == 4_300 and class_symbols(single) == {None: "XOM"}
+
+
+def test_select_filing_latest_periodic_on_or_before_as_of():
+    from investment_system.providers.sec_cover_shares import instance_name, select_filing
+    sub = {"filings": {"recent": {"form": ["8-K", "10-Q", "10-Q", "10-K"], "filingDate": ["2024-12-20", "2024-10-30", "2025-04-30", "2024-02-01"],
+                                  "accessionNumber": ["a", "b", "c", "d"], "primaryDocument": ["x.htm", "q3.htm", "q1.htm", "k.htm"]}}}
+    f = select_filing(sub, amc_dt())
+    assert f["accn"] == "b" and instance_name(f["primary_document"]) == "q3_htm.xml"
+
+
+def amc_dt():
+    return datetime(2024, 12, 31, tzinfo=UTC)
+
+
+def _sub_with_filing(store, cik10, accn="0000000000-24-000001"):
+    store.put(f"submissions:{cik10}", json.dumps({"tickers": [], "filings": {"recent": {"form": ["10-Q"], "filingDate": ["2024-10-30"],
+              "accessionNumber": [accn], "primaryDocument": ["q.htm"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    return f"xbrl_instance:{cik10}:{accn}"
+
+
+def test_chain_class_sum_full_and_lower_bound(tmp_path):
+    chain = _mod("chain_cover", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    # BRK-like: both classes listed -> exact sum
+    _put_name(store, 1067983, "BRK-B", 1, 450.0)
+    _put_name(store, 1067984, "BRK-A", 1, 680_000.0)  # chart for BRK-A (companyfacts id unused)
+    aid = _sub_with_filing(store, "0001067983")
+    store.put(aid, _instance([("CommonClassAMember", 600), ("CommonClassBMember", 1_300_000)],
+                             [("CommonClassAMember", "BRK.A"), ("CommonClassBMember", "BRK.B")]), "u", "SEC", "application/xml", "t", 200)
+    # META-like: class B unlisted -> lower bound
+    _put_name(store, 1326801, "META", 1, 585.0)
+    aid2 = _sub_with_filing(store, "0001326801")
+    store.put(aid2, _instance([("CommonClassAMember", 2_180), ("CommonClassBMember", 344)], [(None, "META")],
+                              [(None, "Class A Common Stock")]), "u", "SEC", "application/xml", "t", 200)
+    listings = {"brk": {"cik": "0001067983", "yahoo": "BRK-B"}, "meta": {"cik": "0001326801", "yahoo": "META"}}
+    rep = chain.run_chain(store, listings, "2024-12-31", [], [], None, None)
+    ov = rep["cover_overrides"]
+    assert ov["BRK-B"]["status"] == "COVER_CLASS_SUM" and ov["BRK-B"]["mcap"] == 600 * 680_000.0 + 1_300_000 * 450.0
+    assert ov["META"]["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and ov["META"]["mcap"] == 2_180 * 585.0
+    row = next(r for r in rep["top500"] if r["yahoo"] == "META")
+    assert row["notes"] == ["RANK_IS_LOWER_BOUND"] and rep["lower_bound_issuers_outside_top500"] == []
+
+
+def test_lower_bound_issuer_outside_top500_blocks_official(tmp_path):
+    chain = _mod("chain_lb", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    listings = {}
+    for i in range(1, 501):
+        _put_name(store, i, f"T{i}", 1000, 10.0 + i)
+        listings[f"c{i}"] = {"cik": str(i).zfill(10), "yahoo": f"T{i}"}
+    _put_name(store, 777777, "LOWB", 1, 1.0)
+    aid = _sub_with_filing(store, "0000777777")
+    store.put(aid, _instance([("CommonClassAMember", 5), ("CommonClassBMember", 10**9)], [(None, "LOWB")], [(None, "Class A Common Stock")]),
+              "u", "SEC", "application/xml", "t", 200)
+    listings["lowb"] = {"cik": "0000777777", "yahoo": "LOWB"}
+    rep = chain.run_chain(store, listings, "2024-12-31", [], [], None, None)
+    assert rep["lower_bound_issuers_outside_top500"] == ["LOWB"]
+    assert "LOWER_BOUND_ISSUERS_OUTSIDE_TOP500" in rep["official_blockers"]
+
+
+def test_fetch_cover_xbrl_selects_issuers_and_fetches_instance_and_class_prices(tmp_path, monkeypatch):
+    fcx = _mod("fcx", "fetch_cover_xbrl.py")
+    store = RawDatasetStore(tmp_path)
+    store.put("companyfacts:0001067983", b'{"facts": {}}', "u", "SEC", "application/json", "t", 200)  # shares missing
+    _sub_with_filing(store, "0001067983", "0000950170-24-000001")
+    _put_name(store, 5, "SOLO", 10, 1.0)  # single line, shares OK -> not needed
+    rows = {"a": {"cik": "0001067983", "yahoo": "BRK-B"}, "s": {"cik": "5", "yahoo": "SOLO"}}
+    need = fcx.needs_cover(store, rows, amc_dt())
+    assert need == ["0001067983"]
+    inst = _instance([("CommonClassAMember", 600), ("CommonClassBMember", 1_300_000)],
+                     [("CommonClassAMember", "BRK.A"), ("CommonClassBMember", "BRK.B")])
+    urls = []
+
+    def fake(req, timeout=0):
+        urls.append(req.full_url)
+        return _R(inst if req.full_url.endswith("_htm.xml") else b"{}")
+
+    frd = fcx._load("fetch_real_data")
+    monkeypatch.setattr(fcx, "_load", lambda name: frd)
+    monkeypatch.setattr(frd, "urlopen", fake)
+    monkeypatch.setattr(frd.time, "sleep", lambda s: None)
+    rep = fcx.run(Path(tmp_path), amc_dt(), need)
+    assert "https://www.sec.gov/Archives/edgar/data/1067983/000095017024000001/q_htm.xml" in urls
+    ids = set(store.list_ids())
+    assert "xbrl_instance:0001067983:0000950170-24-000001" in ids
+    assert {"yahoo_chart:BRK-A:5y", "yahoo_chart:BRK-B:5y", "yahoo_events:BRK-A:5y"} <= ids
+    assert rep["n_class_symbols"] == 2 and rep["n_failed"] == 0

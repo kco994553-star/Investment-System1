@@ -72,6 +72,9 @@ jobs:
           CIKS=$(python -c "import json;print(','.join(c['cik'] for c in json.load(open('reports/gate_evidence/delisted_cik_candidates_2024-12-31.json'))['candidates']))")
           python tools/fetch_real_data.py --store data/raw --skip-tickers --ciks "$CIKS" > /tmp/run_cand.json
           python -c "import json,collections;d=json.load(open('/tmp/run_cand.json'));print(d['n_requested'],d['n_ok'],d['n_failed'],collections.Counter(r['status'] for r in d['log']))"
+      - name: Fetch cover-page XBRL share classes (multi-class / unresolved-shares issuers) + class prices
+        if: inputs.skip_fetch != 'true'
+        run: python tools/fetch_cover_xbrl.py --store data/raw --as-of "${{ inputs.as_of }}"
       - name: Save persistent raw store
         if: always()
         uses: actions/cache/save@v4
@@ -96,7 +99,7 @@ jobs:
         run: |
           git config user.name "c21-real-data-bot"
           git config user.email "c21-real-data-bot@users.noreply.github.com"
-          git add data/raw/manifests data/raw/STORE_INDEX.json data/raw/ingest_run_*.json reports/gate_evidence || true
+          git add data/raw/manifests data/raw/STORE_INDEX.json data/raw/ingest_run_*.json data/raw/cover_xbrl_run_*.json reports/gate_evidence || true
           git diff --cached --quiet && { echo "nothing to commit"; exit 0; }
           git commit -m "C-21 real-data run ${{ github.run_id }}: manifests, STORE_INDEX, gate chain evidence"
           for i in 1 2 3; do git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && break; sleep $((i*5)); done
