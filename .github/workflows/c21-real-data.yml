@@ -103,4 +103,4 @@ jobs:
           git add data/raw/manifests data/raw/STORE_INDEX.json data/raw/ingest_run_*.json reports/gate_evidence || true
           git diff --cached --quiet && { echo "nothing to commit"; exit 0; }
           git commit -m "C-21 real-data run ${{ github.run_id }}: manifests, STORE_INDEX, gate chain evidence"
-          git push
+          for i in 1 2 3; do git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && break; sleep $((i*5)); done
