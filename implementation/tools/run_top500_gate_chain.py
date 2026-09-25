@@ -26,8 +26,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from investment_system.ingestion.raw_store import RawDatasetStore  # noqa: E402
-from investment_system.ingestion.replay import load_companyfacts, load_price_bars, load_submissions  # noqa: E402
-from investment_system.providers.sec_cover_shares import class_symbols, parse_cover, select_filing  # noqa: E402
+from investment_system.ingestion.replay import load_companyfacts, load_price_bars, load_submissions, load_submissions_merged  # noqa: E402
+from investment_system.providers.sec_cover_shares import class_symbols, parse_cover, pit_filer_status, select_filing  # noqa: E402
 from investment_system.universe.sources import pit_shares  # noqa: E402
 from investment_system.universe.resolve import current_ticker_map  # noqa: E402
 
@@ -122,26 +122,34 @@ FOREIGN_FORMS = {"20-F", "20-F/A", "40-F", "40-F/A"}
 
 
 DOMESTIC_FORMS = {"10-K", "10-Q", "10-K/A", "10-Q/A"}
-ELIGIBILITY_RULE = ("US_DOMESTIC_FILER: issuer files 10-K/10-Q with the SEC. Foreign private issuers (20-F/40-F, no 10-K/10-Q) "
-                    "are excluded from the US Market-Cap Top 500 (user decision 2026-09-25; their US lines are mostly ADRs "
-                    "whose ratio is not in SEC data). Basis: SEC submissions 'recent' forms as fetched (not PIT-dated).")
+ELIGIBILITY_RULE = ("US_DOMESTIC_FILER_AT_AS_OF: the latest periodic report the issuer filed on or before as_of is a "
+                    "10-K/10-Q. Foreign private issuers at as_of (20-F/40-F) are excluded from the US Market-Cap Top 500 "
+                    "(user decision 2026-09-25; their US lines are mostly ADRs whose ratio is not in SEC data). Issuers with "
+                    "no SEC filing by as_of did not exist as registrants then and are excluded. Basis: SEC submissions "
+                    "'recent' + older filing pages, filingDate <= as_of (PIT; today's forms are not applied backward).")
 
 
-def eligibility_filter(store: RawDatasetStore, listings: dict) -> tuple[dict, dict]:
-    kept, excluded, unknown = {}, [], []
+def _filer_status(store: RawDatasetStore, cik: str, as_of) -> str:
+    sub, complete = load_submissions_merged(store, cik) if cik else (None, False)
+    return pit_filer_status(sub, as_of, complete) if sub else "UNKNOWN"
+
+
+def eligibility_filter(store: RawDatasetStore, listings: dict, as_of) -> tuple[dict, dict]:
+    kept, excluded, not_registered, unknown = {}, [], [], []
     for cid, m in listings.items():
-        sub = load_submissions(store, str(m.get("cik") or "")) if m.get("cik") else None
-        if not sub:
-            unknown.append(m.get("yahoo"))
-            kept[cid] = m
-            continue
-        forms = set(((sub.get("filings") or {}).get("recent") or {}).get("form") or [])
-        if forms & FOREIGN_FORMS and not forms & DOMESTIC_FORMS:
+        st = _filer_status(store, str(m.get("cik") or ""), as_of)
+        if st == "FOREIGN":
             excluded.append(m.get("yahoo"))
-            continue
-        kept[cid] = m
+        elif st == "NOT_REGISTERED_AT_AS_OF":
+            not_registered.append(m.get("yahoo"))
+        else:
+            if st == "UNKNOWN":
+                unknown.append(m.get("yahoo"))
+            kept[cid] = {**m, "pit_filer_status": st}
     return kept, {"rule": ELIGIBILITY_RULE, "n_in": len(listings), "n_kept": len(kept),
-                  "excluded_foreign_private_issuers": sorted(excluded), "eligibility_unknown_no_submissions": sorted(unknown)}
+                  "excluded_foreign_private_issuers": sorted(excluded),
+                  "excluded_not_registered_at_as_of": sorted(not_registered),
+                  "eligibility_unknown_kept": sorted(unknown)}
 
 
 def _as_of_price(store: RawDatasetStore, symbol: str, as_of, chart_range: str):
@@ -160,7 +168,7 @@ def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_ra
         if not c.isdigit():
             continue
         c = c.zfill(10)
-        f = select_filing(load_submissions(store, c) or {}, as_of)
+        f = select_filing(load_submissions_merged(store, c)[0] or {}, as_of)
         aid = f"xbrl_instance:{c}:{f['accn']}" if f else None
         if not aid or not store.has(aid):
             continue
@@ -205,10 +213,11 @@ def mcap_quality_flags(store: RawDatasetStore, detail: dict) -> list[str]:
     """Reasons a row's PIT market cap is not yet trustworthy for Official promotion
     (contract: duplicate listings/share classes/ADR must be resolved first)."""
     flags = []
-    sub = load_submissions(store, str(detail.get("cik") or "")) or {}
-    forms = set(((sub.get("filings") or {}).get("recent") or {}).get("form") or [])
-    if forms & FOREIGN_FORMS and not forms & DOMESTIC_FORMS:  # same test as eligibility_filter
-        flags.append("FOREIGN_ISSUER_ADR_RATIO_UNRESOLVED")  # SEC shares are ordinary shares; the US line may be an ADR
+    st = detail.get("pit_filer_status")  # same PIT test as eligibility_filter
+    if st == "FOREIGN":
+        flags.append("FOREIGN_ISSUER_ADR_RATIO_UNRESOLVED")
+    elif st == "UNKNOWN":
+        flags.append("ELIGIBILITY_PIT_UNKNOWN")  # SEC shares are ordinary shares; the US line may be an ADR
     if detail.get("split_events") == "MISSING":
         flags.append("SPLIT_EVENTS_MISSING")
     return flags
@@ -224,7 +233,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     row_audit = amc.audit(store, row_listings, d, chart_range)
     # Official Top-500 is company-level: rank one line per issuer.
     listings, dedupe = company_level_listings(store, row_listings)
-    listings, eligibility = eligibility_filter(store, listings)
+    listings, eligibility = eligibility_filter(store, listings, d)
     overrides, cover_unresolved = cover_mcap_overrides(store, listings, d, chart_range)
     audit = amc.audit(store, listings, d, chart_range, overrides)
     top = amc.ranked_top500(store, listings, d, chart_range, overrides)
@@ -245,7 +254,8 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     n_blobs = sum(1 for aid in store.list_ids() if store.has(aid))
     top_rows = []
     for r in top:
-        det = amc.row_detail(store, listings[r["company_id"]], d, chart_range)
+        det = {**amc.row_detail(store, listings[r["company_id"]], d, chart_range),
+               "pit_filer_status": listings[r["company_id"]].get("pit_filer_status")}
         ov = overrides.get(r["company_id"])
         top_rows.append({**r, "cik": listings[r["company_id"]].get("cik"), "detail": det, "cover_override": ov,
                          "quality_flags": mcap_quality_flags(store, det) if not ov else
@@ -261,6 +271,18 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     # A lower-bound issuer ranked outside the top 500 might belong inside it: membership is undetermined.
     lb_outside = sorted(listings[c].get("yahoo") for c, o in overrides.items()
                         if o["status"].endswith("LOWER_BOUND") and c not in ranked_cids)
+    # Diagnostic only: why each eligible issuer is not rankable (base gate: ELIGIBLE_LISTINGS_NOT_FULLY_RANKABLE).
+    unrankable = {}
+    for cid, m in listings.items():
+        if cid in overrides:
+            continue
+        det = amc.row_detail(store, m, d, chart_range)
+        if det["mcap"] and det["mcap"] > 0:
+            continue
+        reason = (f"SHARES_{det['shares_status']}" if det["shares"] is None else
+                  "NO_AS_OF_PRICE" if det["mcap_price"] is None else "NON_POSITIVE_SHARES_OR_PRICE")
+        unrankable[m.get("yahoo")] = {"reason": reason, "cik": m.get("cik"), "shares": det["shares"],
+                                      "price_observed_at": det["price_observed_at"], "pit_filer_status": m.get("pit_filer_status")}
     official_blockers = ([] if gate_v2["passed"] else ["PROMOTION_GATE_V2_FAILED"]) + \
         [f"TOP500_ROWS_{k}" for k in sorted(flag_counts)] + \
         (["LOWER_BOUND_ISSUERS_OUTSIDE_TOP500"] if lb_outside else [])
@@ -275,7 +297,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "company_dedupe": dedupe, "eligibility": eligibility,
         "cover_overrides": {listings[c].get("yahoo"): {k: v for k, v in o.items()} for c, o in overrides.items()},
         "cover_unresolved": {listings[c].get("yahoo"): v for c, v in cover_unresolved.items()},
-        "lower_bound_issuers_outside_top500": lb_outside,
+        "lower_bound_issuers_outside_top500": lb_outside, "unrankable_issuers": unrankable,
         "audit": audit, "rankable": audit["rankable"], "cutoff_500_mcap": cutoff,
         "top500": top_rows, "top500_quality_flag_counts": flag_counts,
         "reference_not_rankable_detail": not_rankable_detail,

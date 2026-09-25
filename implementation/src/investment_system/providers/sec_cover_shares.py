@@ -39,6 +39,36 @@ def select_filing(submissions: dict, as_of: datetime) -> dict | None:
     return best
 
 
+DOMESTIC_PERIODIC = {"10-K", "10-Q", "10-K/A", "10-Q/A"}
+FOREIGN_PERIODIC = {"20-F", "20-F/A", "40-F", "40-F/A"}
+
+
+def pit_filer_status(submissions: dict, as_of: datetime, pages_complete: bool = True) -> str:
+    """Filer type AT as_of, from the latest periodic report filed on or before as_of (not today's forms).
+    DOMESTIC (10-K/10-Q) | FOREIGN (20-F/40-F) | NOT_REGISTERED_AT_AS_OF (no filing at all by as_of)
+    | UNKNOWN (older filing pages missing, or only non-periodic filings by as_of)."""
+    rec = (submissions.get("filings") or {}).get("recent") or {}
+    cut = as_of.date().isoformat()
+    forms, dates = rec.get("form") or [], rec.get("filingDate") or []
+    rows = [(str(d), f) for f, d in zip(forms, dates) if d and str(d) <= cut]
+    if not rows:
+        return "NOT_REGISTERED_AT_AS_OF" if pages_complete else "UNKNOWN"
+    periodic = sorted(r for r in rows if r[1] in DOMESTIC_PERIODIC | FOREIGN_PERIODIC)
+    if not periodic:
+        return "UNKNOWN"
+    return "DOMESTIC" if periodic[-1][1] in DOMESTIC_PERIODIC else "FOREIGN"
+
+
+def pages_needed(submissions: dict, as_of: datetime) -> list[str]:
+    """Older submissions pages to fetch when 'recent' holds no filing on or before as_of."""
+    filings = submissions.get("filings") or {}
+    rec = filings.get("recent") or {}
+    cut = as_of.date().isoformat()
+    if any(d and str(d) <= cut for d in rec.get("filingDate") or []):
+        return []
+    return [str(f["name"]) for f in filings.get("files") or [] if f.get("name") and str(f.get("filingFrom") or "") <= cut]
+
+
 def instance_name(primary_document: str) -> str:
     """Inline-XBRL filings publish the extracted instance as <primary>_htm.xml."""
     return re.sub(r"\.htm$", "_htm.xml", primary_document)

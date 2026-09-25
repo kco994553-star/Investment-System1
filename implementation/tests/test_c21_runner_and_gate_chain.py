@@ -188,7 +188,8 @@ def test_company_level_ranking_one_line_per_cik(tmp_path):
     chart = {"chart": {"result": [{"timestamp": [int(datetime(2024, 12, 1, tzinfo=UTC).timestamp())],
                                    "indicators": {"quote": [{"close": [25.0]}]}}], "error": None}}
     store.put("yahoo_chart:BIG-PA:5y", json.dumps(chart).encode(), "u", "YAHOO", "application/json", "t", 200)
-    store.put("submissions:0000009999", json.dumps({"tickers": ["BIG", "BIG-PA"]}).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put("submissions:0000009999", json.dumps({"tickers": ["BIG", "BIG-PA"], "filings": {"recent": {
+        "form": ["10-Q"], "filingDate": ["2024-11-01"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
     listings["big"] = {"cik": "0000009999", "yahoo": "BIG"}
     listings["big_pa"] = {"cik": "0000009999", "yahoo": "BIG-PA"}
     ref = {"name": "SP", "source": "s", "source_vintage": "v", "as_of": AS_OF, "membership_basis": "DATED_INTERVALS",
@@ -265,8 +266,9 @@ def test_audit_applies_split_factor(tmp_path):
 def test_foreign_private_issuer_is_excluded_by_eligibility_rule(tmp_path):
     chain = _mod("chain_fpi", "run_top500_gate_chain.py")
     store = RawDatasetStore(tmp_path)
-    store.put("submissions:0000000007", json.dumps({"filings": {"recent": {"form": ["20-F", "6-K"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
-    det = {"cik": "0000000007", "split_events": 0}
+    store.put("submissions:0000000007", json.dumps({"filings": {"recent": {"form": ["20-F", "6-K"],
+              "filingDate": ["2024-04-01", "2024-11-01"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    det = {"cik": "0000000007", "split_events": 0, "pit_filer_status": "FOREIGN"}
     assert chain.mcap_quality_flags(store, det) == ["FOREIGN_ISSUER_ADR_RATIO_UNRESOLVED"]
     assert chain.mcap_quality_flags(store, {"cik": "0000000008", "split_events": "MISSING"}) == ["SPLIT_EVENTS_MISSING"]
     _put_name(store, 7, "ADRX", 1000, 5.0)
@@ -444,8 +446,42 @@ def test_class_symbols_single_dimensioned_class_and_plain_common_stock():
 def test_foreign_flag_matches_eligibility_rule_for_domestic_filers_with_20f_history(tmp_path):
     chain = _mod("chain_fflag", "run_top500_gate_chain.py")
     store = RawDatasetStore(tmp_path)
-    store.put("submissions:0000000009", json.dumps({"filings": {"recent": {"form": ["10-K", "20-F"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
-    assert chain.mcap_quality_flags(store, {"cik": "0000000009", "split_events": 0}) == []
+    # CRH/ENB/NXPI pattern: 20-F history, 10-K by as_of -> domestic at as_of, no foreign flag
+    store.put("submissions:0000000009", json.dumps({"filings": {"recent": {"form": ["10-K", "20-F"],
+              "filingDate": ["2024-02-28", "2023-03-01"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    assert chain._filer_status(store, "0000000009", amc_dt()) == "DOMESTIC"
+    assert chain.mcap_quality_flags(store, {"cik": "0000000009", "split_events": 0, "pit_filer_status": "DOMESTIC"}) == []
+
+
+def test_pit_filer_status_uses_filings_on_or_before_as_of_not_todays_forms():
+    from investment_system.providers.sec_cover_shares import pit_filer_status
+    d = amc_dt()
+    rec = lambda forms, dates: {"filings": {"recent": {"form": forms, "filingDate": dates}}}  # noqa: E731
+    # BAM pattern: 40-F filer at as_of, became a 10-K filer in 2025 -> FOREIGN at 2024-12-31
+    assert pit_filer_status(rec(["10-K", "10-Q", "40-F"], ["2026-02-20", "2025-05-01", "2024-03-15"]), d) == "FOREIGN"
+    # SNDK/HONA pattern: first filing after as_of -> not a registrant at as_of
+    assert pit_filer_status(rec(["10-K", "10-12B"], ["2025-08-01", "2025-02-01"]), d) == "NOT_REGISTERED_AT_AS_OF"
+    # large bank pattern: recent starts after as_of and older pages are not in the store -> UNKNOWN (never guessed)
+    assert pit_filer_status(rec(["424B2"], ["2025-06-01"]), d, pages_complete=False) == "UNKNOWN"
+    # IPO with only a registration statement by as_of -> UNKNOWN
+    assert pit_filer_status(rec(["S-1", "424B4"], ["2024-10-01", "2024-11-20"]), d) == "UNKNOWN"
+
+
+def test_merged_submissions_pages_resolve_filings_before_as_of(tmp_path):
+    from investment_system.ingestion.replay import load_submissions_merged
+    from investment_system.providers.sec_cover_shares import pages_needed, pit_filer_status, select_filing
+    store = RawDatasetStore(tmp_path)
+    sub = {"filings": {"recent": {"form": ["424B2"], "filingDate": ["2025-06-01"], "accessionNumber": ["x"], "primaryDocument": ["p.htm"]},
+                       "files": [{"name": "CIK0000019617-submissions-001.json", "filingFrom": "2023-01-01", "filingTo": "2025-05-31"}]}}
+    store.put("submissions:0000019617", json.dumps(sub).encode(), "u", "SEC", "application/json", "t", 200)
+    assert pages_needed(sub, amc_dt()) == ["CIK0000019617-submissions-001.json"]
+    merged, complete = load_submissions_merged(store, "19617")
+    assert complete is False and pit_filer_status(merged, amc_dt(), complete) == "UNKNOWN"
+    page = {"form": ["10-Q", "424B2"], "filingDate": ["2024-11-04", "2024-12-20"], "accessionNumber": ["a", "b"], "primaryDocument": ["q.htm", "s.htm"]}
+    store.put("submissions_page:CIK0000019617-submissions-001.json", json.dumps(page).encode(), "u", "SEC", "application/json", "t", 200)
+    merged, complete = load_submissions_merged(store, "19617")
+    assert complete and pit_filer_status(merged, amc_dt(), complete) == "DOMESTIC"
+    assert select_filing(merged, amc_dt())["accn"] == "a"
 
 
 def test_pit_cik_replacement_only_after_verification(tmp_path):
@@ -468,3 +504,33 @@ def test_pit_cik_replacement_also_applies_to_plan_added_names(tmp_path):
                                                             "expect_name_tokens": ["PARAMOUNT GLOBAL"], "replaces_current_cik": True}]})
     rows, unresolved = chain.extend_listings(store, {}, {"priority_fetch_plan": [{"ticker": "PSKY", "cik": "0002041610"}]}, v)
     assert rows["plan:psky"]["cik"] == "0000813828" and unresolved == []
+
+
+def test_chain_lists_unrankable_issuers_with_reason(tmp_path):
+    chain = _mod("chain_unrank", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    _put_name(store, 1, "OKK", 10, 5.0)
+    store.put("companyfacts:0000000002", b'{"facts": {}}', "u", "SEC", "application/json", "t", 200)  # no shares
+    _put_name(store, 3, "NOPX", 10, 5.0)
+    store.put("yahoo_chart:NOPX:5y", json.dumps({"chart": {"result": [{"timestamp": [int(datetime(2025, 3, 1, tzinfo=UTC).timestamp())],
+              "indicators": {"quote": [{"close": [5.0]}]}}], "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
+    rep = chain.run_chain(store, {"a": {"cik": "1", "yahoo": "OKK"}, "b": {"cik": "2", "yahoo": "NOSH"},
+                                  "c": {"cik": "3", "yahoo": "NOPX"}}, "2024-12-31", [], [], None, None)
+    assert {k: v["reason"] for k, v in rep["unrankable_issuers"].items()} == {"NOSH": "SHARES_MISSING", "NOPX": "NO_AS_OF_PRICE"}
+
+
+def test_fetch_submission_pages_requests_only_needed_pages(tmp_path, monkeypatch):
+    fcx = _mod("fcx_pages", "fetch_cover_xbrl.py")
+    store = RawDatasetStore(tmp_path)
+    store.put("submissions:0000019617", json.dumps({"filings": {"recent": {"form": ["424B2"], "filingDate": ["2025-06-01"]},
+              "files": [{"name": "CIK0000019617-submissions-001.json", "filingFrom": "2023-01-01"},
+                        {"name": "CIK0000019617-submissions-002.json", "filingFrom": "2026-01-01"}]}}).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put("submissions:0000000005", json.dumps({"filings": {"recent": {"form": ["10-Q"], "filingDate": ["2024-11-01"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    urls = []
+    frd = fcx._load("fetch_real_data")
+    monkeypatch.setattr(fcx, "_load", lambda name: frd)
+    monkeypatch.setattr(frd, "urlopen", lambda req, timeout=0: (urls.append(req.full_url), _R(b"{}"))[1])
+    monkeypatch.setattr(frd.time, "sleep", lambda s: None)
+    n = fcx.fetch_submission_pages(store, ["0000019617", "0000000005"], amc_dt(), [])
+    assert n == 1 and urls == ["https://data.sec.gov/submissions/CIK0000019617-submissions-001.json"]
+    assert store.has("submissions_page:CIK0000019617-submissions-001.json")

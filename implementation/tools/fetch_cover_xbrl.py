@@ -23,11 +23,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from investment_system.ingestion.raw_store import RawDatasetStore  # noqa: E402
-from investment_system.ingestion.replay import load_companyfacts, load_submissions  # noqa: E402
-from investment_system.providers.sec_cover_shares import class_symbols, instance_name, parse_cover, select_filing  # noqa: E402
+from investment_system.ingestion.replay import load_companyfacts, load_submissions, load_submissions_merged, submission_page_id  # noqa: E402
+from investment_system.providers.sec_cover_shares import class_symbols, instance_name, pages_needed, parse_cover, select_filing  # noqa: E402
 from investment_system.universe.sources import pit_shares  # noqa: E402
 
 ARCHIVE_URL = "https://www.sec.gov/Archives/edgar/data/{cik}/{accn}/{doc}"
+SUBMISSIONS_PAGE_URL = "https://data.sec.gov/submissions/{name}"
 
 
 def _load(name: str):
@@ -56,14 +57,28 @@ def needs_cover(store: RawDatasetStore, row_listings: dict, as_of: datetime) -> 
     return out
 
 
-def run(store_dir: Path, as_of: datetime, ciks: list[str], chart_range: str = "5y", sleep: float = 0.15) -> dict:
+def fetch_submission_pages(store: RawDatasetStore, ciks: list[str], as_of: datetime, log: list[dict], sleep: float = 0.15) -> int:
+    """Older submissions pages for issuers whose 'recent' list starts after as_of (large filers)."""
+    frd = _load("fetch_real_data")
+    n = 0
+    for c in ciks:
+        for name in pages_needed(load_submissions(store, c) or {}, as_of):
+            frd._fetch_one(store, submission_page_id(name), SUBMISSIONS_PAGE_URL.format(name=name), "SEC_SUBMISSIONS_PAGE", frd.UA, log, False)
+            frd._throttle(log, sleep)
+            n += 1
+    return n
+
+
+def run(store_dir: Path, as_of: datetime, ciks: list[str], chart_range: str = "5y", sleep: float = 0.15,
+        page_ciks: list[str] | None = None) -> dict:
     frd = _load("fetch_real_data")
     store = RawDatasetStore(store_dir)
     frd._BLOCKED_HOSTS.clear()
     log: list[dict] = []
     picked = {}
+    n_pages = fetch_submission_pages(store, sorted(set((page_ciks or []) + list(ciks))), as_of, log, sleep)
     for c in ciks:
-        sub = load_submissions(store, c)
+        sub, _ = load_submissions_merged(store, c)
         f = select_filing(sub or {}, as_of)
         if f is None:
             log.append({"artifact_id": f"xbrl_instance:{c}", "status": "NO_PERIODIC_FILING_BEFORE_AS_OF"})
@@ -87,7 +102,7 @@ def run(store_dir: Path, as_of: datetime, ciks: list[str], chart_range: str = "5
             frd._fetch_one(store, aid, url.format(symbol=sym, range=chart_range), kind, frd.YAHOO_UA, log, False)
             frd._throttle(log, sleep)
     ok = sum(1 for r in log if r["status"] in ("OK", "SKIPPED_ALREADY_PRESENT"))
-    report = {"kind": "COVER_XBRL_INGEST_RUN", "as_of": as_of.isoformat(), "n_issuers": len(ciks),
+    report = {"kind": "COVER_XBRL_INGEST_RUN", "as_of": as_of.isoformat(), "n_issuers": len(ciks), "n_submission_pages": n_pages,
               "n_filings": len(picked), "n_class_symbols": len(symbols), "n_requested": len(log), "n_ok": ok,
               "n_failed": len(log) - ok, "filings": picked, "log": log,
               "egress_blocked_hosts": sorted(frd._BLOCKED_HOSTS), "real_data_verified": False}
@@ -112,7 +127,8 @@ def main() -> None:
     rd = lambda p: json.loads(p.read_text(encoding="utf-8")) if p and p.exists() else None  # noqa: E731
     cand = chain.verify_cik_candidates(store, rd(a.cik_candidates))
     rows, _ = chain.extend_listings(store, rd(a.listings), rd(a.plan), cand)
-    rep = run(Path(a.store), d, needs_cover(store, rows, d), a.chart_range, a.sleep)
+    all_ciks = sorted({str(int(str(m["cik"]))).zfill(10) for m in rows.values() if str(m.get("cik") or "").isdigit()})
+    rep = run(Path(a.store), d, needs_cover(store, rows, d), a.chart_range, a.sleep, page_ciks=all_ciks)
     print(json.dumps({k: v for k, v in rep.items() if k not in ("log", "filings")}, indent=2))
 
 
