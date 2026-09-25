@@ -582,3 +582,9 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - Company-level ranking (one line per CIK); PIT market-cap price = close x post-as_of split factor (new yahoo_events artifacts); pit_shares latest-date-within-filing fix; SEC-name-verified delisted CIK candidates; Official blocked by top-500 quality flags.
 - Real result 2024-12-31: 604 issuers, 554 rankable, #500 cutoff $12.43B, S&P missing 0. Gates FAIL; Official not declared.
 - 194 passed (shim) / 194 passed (real pytest).
+
+## 2026-09-25 · round 8 · Claude Code (+ Actions runs #7-#18)
+
+- Secret-only SEC UA; never cache an empty store; artifact seed; robust evidence commit.
+- PIT eligibility (filings <= as_of, older submissions pages), foreign private issuers excluded, cover-page XBRL class sums (lower bound when a class is unpriced), PIT CIK corrections (XOM, PSKY), zero-share and truncated-chart handling, reference normalisation, unrankable diagnostics.
+- Run #18: 530 eligible, 516 rankable, #500 cutoff $8.223B. Gates FAIL; Official not declared. 212 tests (shim + pytest).
