@@ -970,3 +970,61 @@ def test_run25_tiingo_empty_reply_is_retried_once(tmp_path, monkeypatch):
     assert calls["eqr"] == 2 and rep["results"]["EQR"] == "WRITTEN_TIINGO_FALLBACK"
     rep2 = ftp.run(Path(tmp_path), amc_dt(), ["EQR"], "k")
     assert calls["eqr"] == 2  # present and non-empty now -> no further request
+
+
+def _with_axis(xml: bytes, axis: str, member: str) -> bytes:
+    """Put every duration (symbol/title) context on one non-class axis."""
+    seg = (f'<xbrli:segment><xbrldi:explicitMember dimension="dei:{axis}">dei:{member}</xbrldi:explicitMember></xbrli:segment>')
+    return xml.replace(b'</xbrli:identifier></xbrli:entity><xbrli:period><xbrli:startDate>',
+                       f'</xbrli:identifier>{seg}</xbrli:entity><xbrli:period><xbrli:startDate>'.encode())
+
+
+def test_run26_symbol_tagged_per_exchange_is_the_undimensioned_security():
+    from investment_system.providers.sec_cover_shares import class_symbols, parse_cover
+    x = _with_axis(_instance([(None, 225_000_000)], [(None, "X"), (None, "X")], [(None, "Common Stock")]),
+                   "EntityListingsExchangeAxis", "NYSEMember")
+    assert class_symbols(parse_cover(x)) == {None: "X"}  # US Steel: X on NYSE and Chicago SE
+    other = _with_axis(_instance([(None, 225_000_000)], [(None, "SUB")]), "LegalEntityAxis", "SubsidiaryMember")
+    assert class_symbols(parse_cover(other)) == {}  # a subsidiary's security is still not the issuer's class
+
+
+def test_run26_tiingo_alternate_series_by_unique_sec_name(tmp_path, monkeypatch):
+    ftp = _mod("ftp_alt", "fetch_tiingo_prices.py")
+    store = RawDatasetStore(tmp_path)
+    for c in ftp.CONTROLS:
+        _yahoo_close(store, c, 100.0)
+    frd = ftp._load("fetch_real_data")
+    monkeypatch.setattr(ftp, "_load", lambda name: frd)
+    seen = []
+
+    def fake(req, timeout=0):
+        u = req.full_url
+        seen.append(u)
+        if "/utilities/search" in u and "Premier" in u:
+            return _R(json.dumps([{"name": "Premier Inc", "ticker": "PINC", "permaTicker": "US000000000123", "assetType": "Stock"},
+                                  {"name": "Premier Financial Corp", "ticker": "PFC", "permaTicker": "US000000000999", "assetType": "Stock"}]).encode())
+        if "/utilities/search" in u and "Wolfspeed" in u:  # two same-name series both trading at as_of -> ambiguous
+            return _R(json.dumps([{"name": "Wolfspeed Inc", "ticker": "WOLF", "permaTicker": "US1", "assetType": "Stock"},
+                                  {"name": "Wolfspeed Inc", "ticker": "WOLF-OLD", "permaTicker": "US2", "assetType": "Stock"}]).encode())
+        if "/daily/us000000000123/" in u:
+            return _R(_tiingo_json([("2024-12-30", 25.1)]))
+        if "/daily/pfc/" in u or "/daily/us000000000999/" in u:
+            raise AssertionError("non-matching name must not be fetched")
+        if "/daily/pinc/" in u or "/daily/wolf/" in u:
+            return _R(_tiingo_json([("2025-10-01", 30.0)]))  # reused ticker: history starts after as_of
+        if "/daily/us1/" in u or "/daily/wolf-old/" in u:
+            return _R(_tiingo_json([("2024-12-30", 6.6)]))
+        if "/daily/us2/" in u:
+            return _R(_tiingo_json([("2024-12-30", 7.0)]))
+        return _R(_tiingo_json([("2024-12-30", 100.0)]))
+
+    monkeypatch.setattr(frd, "urlopen", fake)
+    monkeypatch.setattr(frd.time, "sleep", lambda s: None)
+    rep = ftp.run(Path(tmp_path), amc_dt(), ["PINC", "WOLF"], "k",
+                  names={"PINC": ["Premier, Inc."], "WOLF": ["Wolfspeed, Inc.", "CREE INC"]})
+    assert rep["results"]["PINC"] == "WRITTEN_TIINGO_FALLBACK" and rep["alternates"]["PINC"]["status"] == "UNIQUE"
+    assert rep["results"]["WOLF"] == "NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF" and rep["alternates"]["WOLF"]["status"] == "AMBIGUOUS"
+    bars = [b for b in load_bars(store, "PINC") if b["observed_at"] <= amc_dt()]
+    assert bars[-1]["close"] == 25.1 and "us000000000123" in store.get_manifest("yahoo_chart:PINC:5y")["notes"]
+    assert not store.has("yahoo_chart:WOLF:5y")
+    assert ftp.norm_name("Premier, Inc.") == ftp.norm_name("PREMIER INC") and ftp.norm_name("Equity Residential") == "EQUITY RESIDENTIAL"

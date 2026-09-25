@@ -12,6 +12,8 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 
 CLASS_AXIS = "StatementClassOfStockAxis"
+# the listing venue of the same security (e.g. US Steel's X on NYSE and Chicago SE): not a separate class
+VENUE_AXES = {"EntityListingsExchangeAxis"}
 PERIODIC_FORMS = ("10-K", "10-Q", "10-K/A", "10-Q/A")
 
 
@@ -97,9 +99,10 @@ def parse_cover(xml_bytes: bytes) -> dict:
         for e in c.iter():
             n = _local(e.tag)
             if n in ("explicitMember", "typedMember"):
-                if _local(str(e.get("dimension") or "")) == CLASS_AXIS:
+                dim = _local(str(e.get("dimension") or ""))
+                if dim == CLASS_AXIS:
                     members.append(_local((e.text or "").strip()))
-                else:
+                elif dim not in VENUE_AXES:
                     other_dims = True
             elif n in ("instant", "endDate"):
                 date = (e.text or "").strip()
