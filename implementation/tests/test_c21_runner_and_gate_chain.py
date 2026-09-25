@@ -430,3 +430,31 @@ def test_runner_invalid_url_is_a_logged_artifact_failure_not_a_crash(tmp_path, m
     rep = mod.run(Path(tmp_path), [], ["ALL PR H", "ALL"], "5y", 0.0, skip_tickers=True)
     st = {r["artifact_id"]: r["status"] for r in rep["log"]}
     assert st["yahoo_chart:ALL PR H:5y"] == "ERROR_InvalidURL" and st["yahoo_chart:ALL:5y"] == "OK"
+
+
+def test_class_symbols_single_dimensioned_class_and_plain_common_stock():
+    from investment_system.providers.sec_cover_shares import class_symbols, parse_cover
+    hrl = parse_cover(_instance([("CommonStockMember", 548_000_000)], [(None, "HRL")]))
+    assert class_symbols(hrl) == {"CommonStockMember": "HRL"}
+    ford = parse_cover(_instance([("CommonStockMember", 3_900_000_000), ("CommonClassBMember", 70_000_000)], [(None, "F")],
+                                 [(None, "Common Stock, par value $.01 per share")]))
+    assert class_symbols(ford) == {"CommonStockMember": "F"}  # Class B unlisted -> lower bound later
+
+
+def test_foreign_flag_matches_eligibility_rule_for_domestic_filers_with_20f_history(tmp_path):
+    chain = _mod("chain_fflag", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    store.put("submissions:0000000009", json.dumps({"filings": {"recent": {"form": ["10-K", "20-F"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    assert chain.mcap_quality_flags(store, {"cik": "0000000009", "split_events": 0}) == []
+
+
+def test_pit_cik_replacement_only_after_verification(tmp_path):
+    chain = _mod("chain_pitcik", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    store.put("submissions:0000034088", json.dumps({"name": "EXXON MOBIL CORP"}).encode(), "u", "SEC", "application/json", "t", 200)
+    cands = {"candidates": [{"ticker": "XOM", "cik": "0000034088", "expect_name_tokens": ["EXXON MOBIL"], "replaces_current_cik": True},
+                            {"ticker": "PSKY", "cik": "0000813828", "expect_name_tokens": ["PARAMOUNT GLOBAL"], "replaces_current_cik": True}]}
+    v = chain.verify_cik_candidates(store, cands)
+    rows, _ = chain.extend_listings(store, {"xom": {"yahoo": "XOM", "cik": "0002115436"}, "psky": {"yahoo": "PSKY", "cik": "0002041610"}}, None, v)
+    assert rows["xom"]["cik"] == "0000034088" and rows["xom"]["cik_replaced_from"] == "0002115436"
+    assert rows["psky"]["cik"] == "0002041610"  # candidate not verified (no submissions in store) -> unchanged

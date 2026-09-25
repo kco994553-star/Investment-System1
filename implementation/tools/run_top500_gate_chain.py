@@ -50,7 +50,7 @@ def verify_cik_candidates(store: RawDatasetStore, candidates: dict | None) -> di
         sub = load_submissions(store, cik) or {}
         names = [str(sub.get("name") or "")] + [str(f.get("name") or "") for f in sub.get("formerNames") or []]
         ok = bool(sub) and any(tok.upper() in n.upper() for tok in c.get("expect_name_tokens", []) for n in names)
-        out[t] = {"cik": cik, "verified": ok, "sec_name": sub.get("name"),
+        out[t] = {"cik": cik, "verified": ok, "sec_name": sub.get("name"), "replace": bool(c.get("replaces_current_cik")),
                   "status": "VERIFIED_SEC_SUBMISSIONS_NAME" if ok else ("NAME_MISMATCH" if sub else "SUBMISSIONS_NOT_IN_STORE")}
     return out
 
@@ -61,6 +61,12 @@ def extend_listings(store: RawDatasetStore, listings: dict, plan: dict | None,
     else from the stored sec_tickers artifact; unresolved names are returned, not invented."""
     amc = _load("audit_mcap_store")
     out = dict(listings)
+    # PIT identity: a listed ticker whose current CIK is a successor entity created after as_of
+    # (e.g. a 2025 holding-company reorganisation) uses its verified as-of CIK instead.
+    for cid, m in listings.items():
+        v = (verified_ciks or {}).get(amc._norm_ticker(m.get("yahoo"))) or {}
+        if v.get("verified") and v.get("replace") and str(m.get("cik") or "").zfill(10) != v["cik"]:
+            out[cid] = {**m, "cik": v["cik"], "cik_replaced_from": m.get("cik")}
     have = {amc._norm_ticker(m.get("yahoo")) for m in listings.values()}
     tmap = current_ticker_map(json.loads(store.get_bytes("sec_tickers"))) if store.has("sec_tickers") else {}
     unresolved = []
@@ -200,7 +206,7 @@ def mcap_quality_flags(store: RawDatasetStore, detail: dict) -> list[str]:
     flags = []
     sub = load_submissions(store, str(detail.get("cik") or "")) or {}
     forms = set(((sub.get("filings") or {}).get("recent") or {}).get("form") or [])
-    if forms & FOREIGN_FORMS:
+    if forms & FOREIGN_FORMS and not forms & DOMESTIC_FORMS:  # same test as eligibility_filter
         flags.append("FOREIGN_ISSUER_ADR_RATIO_UNRESOLVED")  # SEC shares are ordinary shares; the US line may be an ADR
     if detail.get("split_events") == "MISSING":
         flags.append("SPLIT_EVENTS_MISSING")

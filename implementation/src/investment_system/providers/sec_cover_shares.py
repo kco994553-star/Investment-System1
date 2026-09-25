@@ -89,20 +89,24 @@ def parse_cover(xml_bytes: bytes) -> dict:
 
 
 def class_symbols(cover: dict) -> dict:
-    """member -> trading symbol. Dimensioned symbols map directly. A single undimensioned symbol
-    with several classes is assigned only when the undimensioned Security12bTitle names exactly one
-    'Class X' that matches exactly one CommonClassXMember; otherwise left unmapped (fail-closed)."""
+    """member -> trading symbol. Dimensioned symbols map directly. One class + one symbol maps directly.
+    A single undimensioned symbol with several classes is assigned only when the undimensioned
+    Security12bTitle names exactly one 'Class X' matching exactly one CommonClassXMember, or names
+    plain "Common Stock" (no class letter) with exactly one CommonStockMember; otherwise unmapped."""
     members = [r["member"] for r in cover["classes"]]
     # only classes with reported shares outstanding (preferred series may also tag a TradingSymbol)
     out = {m: syms[0] for m, syms in cover["symbols"].items() if m is not None and syms and m in members}
     undim = sorted(set(cover["symbols"].get(None) or []))
-    if len(members) == 1 and members[0] is None and undim:
-        out[None] = undim[0]
+    if len(members) == 1 and undim and not out:
+        out[members[0]] = undim[0]  # one class, one symbol: unambiguous whether or not the class is dimensioned
     elif len(undim) == 1 and len(members) > 1 and not out:
+        titles = cover["titles"].get(None) or []
         letters = {m.group(1) for t in cover["titles"].get(None) or [] for m in re.finditer(r"Class\s+([A-Z])\b", t)}
         if len(letters) == 1:
             want = f"CommonClass{letters.pop()}Member"
             hits = [m for m in members if m == want]
             if len(hits) == 1:
                 out[hits[0]] = undim[0]
+        elif not letters and any("Common Stock" in t for t in titles) and members.count("CommonStockMember") == 1:
+            out["CommonStockMember"] = undim[0]  # registered "Common Stock" vs e.g. unlisted Class B (Ford)
     return out
