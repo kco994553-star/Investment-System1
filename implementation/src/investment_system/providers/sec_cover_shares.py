@@ -138,6 +138,14 @@ def class_symbols(cover: dict) -> dict:
     # only classes with reported shares outstanding (preferred series may also tag a TradingSymbol)
     out = {m: syms[0] for m, syms in cover["symbols"].items() if m is not None and syms and m in members}
     undim = sorted(set(cover["symbols"].get(None) or []))
+    if members == [None] and not undim and not out:
+        # one undimensioned common count, symbols tagged per security (common + preferred series):
+        # take the single common-stock member's symbol (Synovus, Webster, Air Lease pattern)
+        common = [m for m in cover["symbols"] if m and ("Preferred" not in m and "Series" not in m and "Depositary" not in m
+                                                       and "Note" not in m and "Warrant" not in m and "Unit" not in m)
+                  and ("Common" in m or "Ordinary" in m or "Share" in m)]
+        if len(common) == 1:
+            out[None] = cover["symbols"][common[0]][0]
     if len(members) == 1 and undim and not out:
         out[members[0]] = undim[0]  # one class, one symbol: unambiguous whether or not the class is dimensioned
     elif len(undim) == 1 and len(members) > 1 and not out:

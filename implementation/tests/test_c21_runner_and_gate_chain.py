@@ -910,3 +910,63 @@ def test_nport_pit_registrant_tie_break_and_as_of_symbol(tmp_path):
     store.put(aid, _instance([(None, 165_000_000)], [(None, "JWN")]), "u", "SEC", "application/xml", "t", 200)
     assert fnr.as_of_symbol(store, "0000072333", amc_dt()) == "JWN"
     assert fnr.as_of_symbol(store, "0000000070", amc_dt()) is None
+
+
+def test_run25_fixes_backslash_tags_and_per_series_common_symbol():
+    fnr = _mod("fnr_r25", "fetch_nport_reference.py")
+    assert fnr.norm_name("U.S. BANCORP", True) == fnr.norm_name("US BANCORP \\DE\\", True)
+    from investment_system.providers.sec_cover_shares import class_symbols, parse_cover
+    snv = parse_cover(_instance([(None, 141_000_000)], [("CommonStockMember", "SNV"), ("SeriesDPreferredStockMember", "SNV-PD"),
+                                                         ("SeriesEPreferredStockMember", "SNV-PE")]))
+    assert class_symbols(snv) == {None: "SNV"}
+    amb = parse_cover(_instance([(None, 10)], [("CommonClassAMember", "X"), ("CommonClassBMember", "Y")]))
+    assert class_symbols(amb) == {}  # two common-looking members -> not guessed
+
+
+def test_run25_ticker_change_uses_primary_line_for_the_only_listed_class(tmp_path):
+    chain = _mod("chain_r25tc", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    _put_name(store, 1512673, "XYZ", 1, 70.0)  # current ticker's chart carries the SQ-era history
+    aid = _sub_with_filing(store, "0001512673")
+    store.put(aid, _instance([("CommonClassAMember", 550), ("CommonClassBMember", 50)], [("CommonClassAMember", "SQ")]),
+              "u", "SEC", "application/xml", "t", 200)
+    ov, _ = chain.cover_mcap_overrides(store, {"x": {"cik": "0001512673", "yahoo": "XYZ"}}, amc_dt())
+    a = ov["x"]["classes"][0]
+    assert a["price"] == 70.0 and a["price_basis"] == "PRIMARY_LINE_SAME_CIK_TICKER_CHANGE"
+    assert ov["x"]["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and ov["x"]["mcap"] == 550 * 70.0
+
+
+def test_run25_never_periodic_sec_filer_excluded_but_ipo_kept(tmp_path):
+    chain = _mod("chain_r25ozk", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    store.put("submissions:0001569650", json.dumps({"filings": {"recent": {"form": ["8-K", "DEF 14A"],
+              "filingDate": ["2024-10-17", "2024-03-01"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put("submissions:0000000777", json.dumps({"filings": {"recent": {"form": ["10-Q", "424B4", "S-1"],
+              "filingDate": ["2025-02-10", "2024-11-20", "2024-10-01"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    _put_name(store, 1569650, "OZK", 1, 45.0)
+    _put_name(store, 777, "IPO", 1, 30.0)
+    kept, rep = chain.eligibility_filter(store, {"o": {"cik": "0001569650", "yahoo": "OZK"}, "i": {"cik": "0000000777", "yahoo": "IPO"}}, amc_dt())
+    assert rep["excluded_no_sec_periodic_reports"] == ["OZK"] and list(kept) == ["i"]
+
+
+def test_run25_tiingo_empty_reply_is_retried_once(tmp_path, monkeypatch):
+    ftp = _mod("ftp_retry", "fetch_tiingo_prices.py")
+    store = RawDatasetStore(tmp_path)
+    for c in ftp.CONTROLS:
+        _yahoo_close(store, c, 100.0)
+    frd = ftp._load("fetch_real_data")
+    monkeypatch.setattr(ftp, "_load", lambda name: frd)
+    calls = {"eqr": 0}
+
+    def fake(req, timeout=0):
+        if "/eqr/" in req.full_url:
+            calls["eqr"] += 1
+            return _R(b"[]" if calls["eqr"] == 1 else _tiingo_json([("2024-12-30", 72.0)]))
+        return _R(_tiingo_json([("2024-12-30", 100.0)]))
+
+    monkeypatch.setattr(frd, "urlopen", fake)
+    monkeypatch.setattr(frd.time, "sleep", lambda s: None)
+    rep = ftp.run(Path(tmp_path), amc_dt(), ["EQR"], "k")
+    assert calls["eqr"] == 2 and rep["results"]["EQR"] == "WRITTEN_TIINGO_FALLBACK"
+    rep2 = ftp.run(Path(tmp_path), amc_dt(), ["EQR"], "k")
+    assert calls["eqr"] == 2  # present and non-empty now -> no further request

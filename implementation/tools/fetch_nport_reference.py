@@ -128,8 +128,8 @@ def norm_name(n: str, join_dotted: bool = False) -> str:
     names ('BERKLEY W R CORP'); fund reports spell out forms ('PUBLIC LIMITED COMPANY'). join_dotted collapses
     dotted acronyms ('U.S.A.' -> 'USA') for a second key."""
     s = str(n or "").upper().replace("&", " AND ")
-    s = re.sub(r"\s*/\s*[A-Z]{1,4}\s*/?\s*$", " ", s)   # trailing state tag
-    s = re.sub(r"/[A-Z ]{1,4}/", " ", s)                      # embedded state/country tags
+    s = re.sub(r"\s*[/\\]\s*[A-Z]{1,4}\s*[/\\]?\s*$", " ", s)   # trailing state tag ('/CA', '\\DE\\')
+    s = re.sub(r"[/\\][A-Z ]{1,4}[/\\]", " ", s)                      # embedded state/country tags
     s = re.sub(r"['\u2019`]", "", s)                          # LOWE'S -> LOWES
     if join_dotted:
         s = re.sub(r"\b([A-Z])\.(?=[A-Z]\.)", r"\1", s).replace(".", "")
@@ -286,6 +286,14 @@ def main() -> None:
                     else:
                         still.append({**u, "pit_registrant_candidates": ok})
                 unresolved = still
+                # a unique HISTORICAL name match can be a dead namesake (e.g. an old 'U.S. BANCORP' entity):
+                # accept it only if that CIK was a domestic SEC registrant filing 10-K/10-Q around as_of
+                for c in [c for c, v in members.items() if v["method"] == "SEC_CIK_LOOKUP"]:
+                    get(f"submissions:{c}", SUBMISSIONS_URL.format(cik=c), "SEC_SUBMISSIONS")
+                    if not pit_registrant(store, c, d):
+                        v = members.pop(c)
+                        unresolved.append({"name": v["names"][0], "cusip": v["cusips"][0], "name_matches": 1,
+                                           "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT", "candidates": [c]})
                 # (2) members not in the pool without a current ticker: ticker AT as_of from the cover page
                 as_of_ticker = {}
                 for c in sorted(c for c in members if c not in pool_ciks and not tick.get(c)):

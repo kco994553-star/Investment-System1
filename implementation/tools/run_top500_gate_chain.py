@@ -135,13 +135,27 @@ def _filer_status(store: RawDatasetStore, cik: str, as_of) -> str:
     return pit_filer_status(sub, as_of, complete) if sub else "UNKNOWN"
 
 
+def _never_files_periodic(store: RawDatasetStore, cik: str) -> bool:
+    """Submissions exist (all pages stored) and contain no 10-K/10-Q/20-F/40-F at ANY date (an IPO that files its
+    first 10-Q after as_of is therefore NOT caught here)."""
+    sub, complete = load_submissions_merged(store, cik) if cik else (None, False)
+    if not sub or not complete:
+        return False
+    forms = set(((sub.get("filings") or {}).get("recent") or {}).get("form") or [])
+    return bool(forms) and not forms & (DOMESTIC_FORMS | FOREIGN_FORMS)
+
+
 def eligibility_filter(store: RawDatasetStore, listings: dict, as_of) -> tuple[dict, dict]:
-    kept, excluded, not_registered, unknown, not_trading = {}, [], [], [], []
+    kept, excluded, not_registered, unknown, not_trading, no_sec_periodic = {}, [], [], [], [], []
     for cid, m in listings.items():
         st = _filer_status(store, str(m.get("cik") or ""), as_of)
         if st == "UNKNOWN" and not any(b["observed_at"] <= as_of for b in load_price_bars(store, str(m.get("yahoo") or ""), "5y")):
             # no periodic report AND no traded price by as_of (e.g. a Form-10 spin-off listed in 2025): not listed then
             not_trading.append(m.get("yahoo"))
+            continue
+        if st == "UNKNOWN" and _never_files_periodic(store, str(m.get("cik") or "")):
+            # e.g. a bank that files its 10-K/10-Q with a bank regulator, not the SEC: not an SEC periodic filer (rule)
+            no_sec_periodic.append(m.get("yahoo"))
             continue
         if st == "FOREIGN":
             excluded.append(m.get("yahoo"))
@@ -155,6 +169,7 @@ def eligibility_filter(store: RawDatasetStore, listings: dict, as_of) -> tuple[d
                   "excluded_foreign_private_issuers": sorted(excluded),
                   "excluded_not_registered_at_as_of": sorted(not_registered),
                   "excluded_not_trading_at_as_of": sorted(not_trading),
+                  "excluded_no_sec_periodic_reports": sorted(no_sec_periodic),
                   "eligibility_unknown_kept": sorted(unknown)}
 
 
@@ -200,9 +215,15 @@ def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_ra
                 unresolved[cid] = "NO_PRICE"
             continue
         total, parts, lower = 0.0, [], False
+        listed = [cl for cl in classes if syms.get(cl["member"])]
         for cl in classes:
             sym = syms.get(cl["member"])
             px = _as_of_price(store, sym.replace(".", "-"), as_of, chart_range) if sym else None
+            if sym and not px and len(listed) == 1:
+                # ticker changed after as_of (SQ -> XYZ): the issuer's only listed class trades as its primary line
+                px = _as_of_price(store, str(m.get("yahoo") or ""), as_of, chart_range)
+                if px:
+                    cl = {**cl, "price_symbol": m.get("yahoo"), "price_basis": "PRIMARY_LINE_SAME_CIK_TICKER_CHANGE"}
             if px:
                 total += cl["shares"] * px
             else:

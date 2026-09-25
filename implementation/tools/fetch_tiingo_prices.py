@@ -89,9 +89,13 @@ def run(store_dir: Path, as_of: datetime, symbols: list[str], token: str | None,
 
     def fetch(sym: str) -> list[tuple[datetime, float]]:
         aid = f"tiingo_eod:{sym.upper()}"
-        frd._fetch_one(store, aid, TIINGO_URL.format(sym=tiingo_symbol(sym), start=start), "TIINGO_EOD_JSON", frd.YAHOO_UA, log, False,
-                       headers=headers)
+        url = TIINGO_URL.format(sym=tiingo_symbol(sym), start=start)
+        frd._fetch_one(store, aid, url, "TIINGO_EOD_JSON", frd.YAHOO_UA, log, False, headers=headers)
         frd._throttle(log, sleep)
+        if store.has(aid) and not parse_eod(store.get_bytes(aid)) and not store.list_history(aid):
+            # an empty '[]' reply (seen for EQR) is retried exactly once; the empty bytes stay in history/
+            frd._fetch_one(store, aid, url, "TIINGO_EOD_JSON", frd.YAHOO_UA, log, True, headers=headers)
+            frd._throttle(log, sleep)
         return parse_eod(store.get_bytes(aid)) if store.has(aid) else []
 
     calib = []
