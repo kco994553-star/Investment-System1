@@ -12,8 +12,8 @@ How real data was obtained (read first)
   approval, .github/workflows/c21-real-data.yml (workflow_dispatch only) runs the EXISTING tools unchanged:
   offline tests -> fetch_real_data.py --plan (priority plan) -> fetch_real_data.py --with-split-events (resume plan) ->
   fetch delisted-CIK candidates -> run_top500_gate_chain.py -> upload artifact -> commit manifests/STORE_INDEX/gate evidence back.
-- SEC User-Agent: dispatch input sec_user_agent (the user chose this and accepted that it is visible in public run metadata);
-  a repository secret SEC_USER_AGENT takes precedence if set. SEC ~6.7 req/s max (0.15 s throttle), retry/backoff, resume.
+- SEC User-Agent: repository secret SEC_USER_AGENT only (the public dispatch input used in runs #2-#6 was removed at the user's request);
+  SEC ~6.7 req/s max (0.15 s throttle), retry/backoff, resume.
 - Runs: #1 fail-fast (no UA, 0 requests) · #2 first ingest (2,053 artifacts) · #3 candidates (evidence push rejected, fixed) ·
   #4 chain · #5 split events · #6 chain after pit_shares fix (current evidence).
 
