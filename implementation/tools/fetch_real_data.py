@@ -41,6 +41,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import http.client
 import json
 import os
 import sys
@@ -122,6 +123,10 @@ def _fetch_one(store: RawDatasetStore, artifact_id: str, url: str, source_kind: 
             _BLOCKED_HOSTS.add(host)
             log.append({"artifact_id": artifact_id, "status": "EGRESS_BLOCKED", "url": url, "error": str(getattr(e, "reason", e))})
             return False
+        log.append({"artifact_id": artifact_id, "status": f"ERROR_{type(e).__name__}", "url": url})
+        return False
+    except (http.client.HTTPException, ValueError) as e:
+        # e.g. InvalidURL for a symbol with spaces, IncompleteRead: one artifact fails, the run continues
         log.append({"artifact_id": artifact_id, "status": f"ERROR_{type(e).__name__}", "url": url})
         return False
     store.put(artifact_id, body, url, source_kind, ctype, FETCHER, http_status=status)

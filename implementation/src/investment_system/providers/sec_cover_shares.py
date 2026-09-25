@@ -93,7 +93,8 @@ def class_symbols(cover: dict) -> dict:
     with several classes is assigned only when the undimensioned Security12bTitle names exactly one
     'Class X' that matches exactly one CommonClassXMember; otherwise left unmapped (fail-closed)."""
     members = [r["member"] for r in cover["classes"]]
-    out = {m: syms[0] for m, syms in cover["symbols"].items() if m is not None and syms}
+    # only classes with reported shares outstanding (preferred series may also tag a TradingSymbol)
+    out = {m: syms[0] for m, syms in cover["symbols"].items() if m is not None and syms and m in members}
     undim = sorted(set(cover["symbols"].get(None) or []))
     if len(members) == 1 and members[0] is None and undim:
         out[None] = undim[0]

@@ -407,3 +407,26 @@ def test_fetch_cover_xbrl_selects_issuers_and_fetches_instance_and_class_prices(
     assert "xbrl_instance:0001067983:0000950170-24-000001" in ids
     assert {"yahoo_chart:BRK-A:5y", "yahoo_chart:BRK-B:5y", "yahoo_events:BRK-A:5y"} <= ids
     assert rep["n_class_symbols"] == 2 and rep["n_failed"] == 0
+
+
+def test_class_symbols_ignore_preferred_series_without_shares():
+    from investment_system.providers.sec_cover_shares import class_symbols, parse_cover
+    cov = parse_cover(_instance([("CommonStockMember", 265)],
+                                [("CommonStockMember", "ALL"), ("SeriesHPreferredStockMember", "ALL PR H")]))
+    assert class_symbols(cov) == {"CommonStockMember": "ALL"}
+
+
+def test_runner_invalid_url_is_a_logged_artifact_failure_not_a_crash(tmp_path, monkeypatch):
+    import http.client
+    mod = _mod("frd_badurl", "fetch_real_data.py")
+
+    def fake(req, timeout=0):
+        if " " in req.full_url:
+            raise http.client.InvalidURL("URL can't contain control characters")
+        return _R(b"{}")
+
+    monkeypatch.setattr(mod, "urlopen", fake)
+    monkeypatch.setattr(mod.time, "sleep", lambda s: None)
+    rep = mod.run(Path(tmp_path), [], ["ALL PR H", "ALL"], "5y", 0.0, skip_tickers=True)
+    st = {r["artifact_id"]: r["status"] for r in rep["log"]}
+    assert st["yahoo_chart:ALL PR H:5y"] == "ERROR_InvalidURL" and st["yahoo_chart:ALL:5y"] == "OK"
