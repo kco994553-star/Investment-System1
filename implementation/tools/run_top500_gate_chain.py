@@ -224,6 +224,22 @@ def mcap_quality_flags(store: RawDatasetStore, detail: dict) -> list[str]:
     return flags
 
 
+def normalize_reference(ref: dict) -> dict:
+    """Reference files store as_of as a date and the retrieval date inside 'source' text
+    (e.g. sp500_reconstructed_2024-12-31.json: "... (fetched 2026-09-25)"). Normalise to the gate's
+    shape; only values stated in the file are used (no vintage is invented)."""
+    import re
+    out = dict(ref)
+    a = str(out.get("as_of") or "")
+    if a and "T" not in a:
+        out["as_of"] = a + "T00:00:00+00:00"
+    if not out.get("source_vintage"):
+        m = re.search(r"fetched (\d{4}-\d{2}-\d{2})", str(out.get("source") or ""))
+        out["source_vintage"] = m.group(1) if m else None
+    out.setdefault("name", out.get("kind"))
+    return out
+
+
 def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs: list[dict],
               sufficiency_refs: list[dict], exchange_reference: dict | None, eligibility_evidence: dict | None,
               plan: dict | None = None, chart_range: str = "5y", cik_candidates: dict | None = None) -> dict:
@@ -244,6 +260,8 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     # every line of a ranked issuer counts as ranked for reference identity (GOOG == GOOGL issuer)
     ranked = {m.get("yahoo") for m in row_listings.values() if str(m.get("cik") or "").zfill(10) in ranked_ciks and m.get("yahoo")}
     refs = []
+    detector_refs = [normalize_reference(r) for r in detector_refs]
+    sufficiency_refs = [normalize_reference(r) for r in sufficiency_refs]
     for ref in detector_refs:
         refs.append({**amc.evaluate_reference_coverage(store, row_listings, ranked, ref, chart_range),
                      "reference_role": "MISSING_LARGE_CAP_DETECTOR"})

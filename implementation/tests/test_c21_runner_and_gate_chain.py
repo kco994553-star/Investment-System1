@@ -568,3 +568,11 @@ def test_zero_companyfacts_shares_needs_cover_and_cover_resolves_it(tmp_path):
     o = rep["cover_overrides"]["CRWD"]
     assert o["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and o["mcap"] == 240_000_000 * 350.0
     assert "CRWD" not in rep["unrankable_issuers"]
+
+
+def test_reference_normalisation_uses_only_values_stated_in_the_file():
+    chain = _mod("chain_norm", "run_top500_gate_chain.py")
+    r = chain.normalize_reference({"kind": "SP500_PIT_RECONSTRUCTION", "as_of": "2024-12-31",
+                                   "source": "Wikipedia list + dated changes table (fetched 2026-09-25)", "members": ["A"]})
+    assert r["as_of"] == AS_OF and r["source_vintage"] == "2026-09-25" and r["name"] == "SP500_PIT_RECONSTRUCTION"
+    assert chain.normalize_reference({"as_of": AS_OF, "source": "no date here"})["source_vintage"] is None
