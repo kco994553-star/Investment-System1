@@ -1,0 +1,15 @@
+{
+  "kind": "DELISTED_SP500_CIK_CANDIDATES",
+  "as_of": "2024-12-31",
+  "note": "S&P 500 members on 2024-12-31 removed in 2025-26 (see sp500_changes_since_2025-01-01_raw.json) and absent from the current SEC company_tickers.json. CIKs are CANDIDATES only (analyst recall, 2026-09-25 Claude Code r6); run_top500_gate_chain.py accepts a candidate only if the fetched SEC submissions name/formerNames contains an expected token. Unverified candidates stay UNRESOLVED.",
+  "candidates": [
+    {"ticker": "ANSS", "cik": "0001013462", "expect_name_tokens": ["ANSYS"], "removed": "2025-07-18"},
+    {"ticker": "DAY",  "cik": "0001725057", "expect_name_tokens": ["DAYFORCE", "CERIDIAN"], "removed": "2026-02-09"},
+    {"ticker": "HES",  "cik": "0000004447", "expect_name_tokens": ["HESS"], "removed": "2025-07-23"},
+    {"ticker": "HOLX", "cik": "0000859737", "expect_name_tokens": ["HOLOGIC"], "removed": "2026-04-09"},
+    {"ticker": "IPG",  "cik": "0000051644", "expect_name_tokens": ["INTERPUBLIC"], "removed": "2025-11-28"},
+    {"ticker": "JNPR", "cik": "0001043604", "expect_name_tokens": ["JUNIPER"], "removed": "2025-07-09"},
+    {"ticker": "K",    "cik": "0000055067", "expect_name_tokens": ["KELLANOVA", "KELLOGG"], "removed": "2025"},
+    {"ticker": "WBA",  "cik": "0001618921", "expect_name_tokens": ["WALGREENS"], "removed": "2025-08-28"}
+  ]
+}

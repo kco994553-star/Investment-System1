@@ -173,3 +173,48 @@ def test_gate_chain_with_full_detector_coverage_still_not_official(tmp_path):
     assert rep["reference_coverage"][0]["n_missing_from_pool"] == 0
     assert "ONLY_DETECTOR_REFERENCES_PASSED" in rep["top500_sufficiency_gate"]["reasons"]
     assert rep["official_top500_declared"] is False
+
+
+def test_company_level_ranking_one_line_per_cik(tmp_path):
+    """Preferred / extra lines of one issuer must not occupy separate Top-500 slots."""
+    chain = _mod("chain_dedupe", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    listings = {}
+    for i in range(1, 501):
+        _put_name(store, i, f"T{i}", i * 10, 1.0)
+        listings[f"c{i}"] = {"cik": str(i).zfill(10), "yahoo": f"T{i}"}
+    # issuer 9999: common BIG + preferred BIG-PA priced 25 on the same total shares
+    _put_name(store, 9999, "BIG", 1_000_000, 100.0)
+    chart = {"chart": {"result": [{"timestamp": [int(datetime(2024, 12, 1, tzinfo=UTC).timestamp())],
+                                   "indicators": {"quote": [{"close": [25.0]}]}}], "error": None}}
+    store.put("yahoo_chart:BIG-PA:5y", json.dumps(chart).encode(), "u", "YAHOO", "application/json", "t", 200)
+    store.put("submissions:0000009999", json.dumps({"tickers": ["BIG", "BIG-PA"]}).encode(), "u", "SEC", "application/json", "t", 200)
+    listings["big"] = {"cik": "0000009999", "yahoo": "BIG"}
+    listings["big_pa"] = {"cik": "0000009999", "yahoo": "BIG-PA"}
+    ref = {"name": "SP", "source": "s", "source_vintage": "v", "as_of": AS_OF, "membership_basis": "DATED_INTERVALS",
+           "members": ["BIG", "BIG-PA"]}
+    rep = chain.run_chain(store, listings, "2024-12-31", [ref], [], None, None)
+    assert rep["row_level_audit"]["rankable"] == 502 and rep["rankable"] == 501
+    assert rep["company_dedupe"]["methods"]["SEC_SUBMISSIONS_PRIMARY"] == 1
+    assert rep["company_dedupe"]["multi_line_issuers"] == [{"cik": "0000009999", "kept": "BIG", "dropped": ["BIG-PA"]}]
+    syms = [r["yahoo"] for r in rep["top500"]]
+    assert "BIG" in syms and "BIG-PA" not in syms and len(syms) == 500
+    assert rep["cutoff_500_mcap"] == 20.0  # T1 (10) dropped; row-level would have dropped T1 and T2
+    cov = rep["reference_coverage"][0]
+    assert cov["n_missing_from_pool"] == 0 and cov["n_present_rankable_outside_top500"] == 0  # BIG-PA = same ranked issuer
+
+
+def test_cik_candidates_accepted_only_after_sec_name_verification(tmp_path):
+    chain = _mod("chain_cand", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    store.put("submissions:0001013462", json.dumps({"name": "ANSYS INC"}).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put("submissions:0000000777", json.dumps({"name": "SOMETHING ELSE", "formerNames": [{"name": "OTHER"}]}).encode(), "u", "SEC", "application/json", "t", 200)
+    cands = {"candidates": [{"ticker": "ANSS", "cik": "1013462", "expect_name_tokens": ["ANSYS"]},
+                            {"ticker": "BAD", "cik": "777", "expect_name_tokens": ["HOLOGIC"]},
+                            {"ticker": "GONE", "cik": "888", "expect_name_tokens": ["X"]}]}
+    v = chain.verify_cik_candidates(store, cands)
+    assert v["ANSS"]["verified"] and v["ANSS"]["cik"] == "0001013462"
+    assert v["BAD"]["status"] == "NAME_MISMATCH" and v["GONE"]["status"] == "SUBMISSIONS_NOT_IN_STORE"
+    plan = {"priority_fetch_plan": [{"ticker": "ANSS", "cik": None}, {"ticker": "BAD", "cik": None}]}
+    out, unresolved = chain.extend_listings(store, {}, plan, v)
+    assert out["plan:anss"]["cik"] == "0001013462" and unresolved == ["BAD"]
