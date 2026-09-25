@@ -115,9 +115,33 @@ jobs:
           CIKS=$(python -c "import json;print(','.join(c['cik'] for c in json.load(open('reports/gate_evidence/delisted_cik_candidates_2024-12-31.json'))['candidates']))")
           python tools/fetch_real_data.py --store data/raw --skip-tickers --ciks "$CIKS" > /tmp/run_cand.json
           python -c "import json,collections;d=json.load(open('/tmp/run_cand.json'));print(d['n_requested'],d['n_ok'],d['n_failed'],collections.Counter(r['status'] for r in d['log']))"
+      - name: Fetch independent PIT reference (iShares Russell 1000 IWB holdings for as_of) and resolve members
+        if: inputs.skip_fetch != 'true'
+        run: python tools/fetch_ishares_reference.py --store data/raw --as-of "${{ inputs.as_of }}"
+      - name: Fetch SEC + Yahoo data for reference members not yet in the pool (present artifacts skipped)
+        if: inputs.skip_fetch != 'true'
+        run: |
+          X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
+          if [ -f "$X" ]; then
+            CIKS=$(python -c "import json;print(','.join(sorted({v['cik'] for v in json.load(open('$X')).values()})))")
+            SYMS=$(python -c "import json;print(','.join(sorted({v['yahoo'] for v in json.load(open('$X')).values()})))")
+            if [ -n "$CIKS" ]; then
+              python tools/fetch_real_data.py --store data/raw --skip-tickers --with-split-events --ciks "$CIKS" --symbols "$SYMS" > /tmp/run_r1000.json
+              python -c "import json,collections;d=json.load(open('/tmp/run_r1000.json'));print(d['n_requested'],d['n_ok'],d['n_failed'],collections.Counter(r['status'] for r in d['log']))"
+            fi
+          fi
       - name: Fetch cover-page XBRL share classes (multi-class / unresolved-shares issuers) + class prices
         if: inputs.skip_fetch != 'true'
-        run: python tools/fetch_cover_xbrl.py --store data/raw --as-of "${{ inputs.as_of }}"
+        run: |
+          X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
+          EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
+          python tools/fetch_cover_xbrl.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA
+      - name: Stooq fallback prices for eligible issuers/classes with no as-of Yahoo bar (calibrated, fail-closed)
+        if: inputs.skip_fetch != 'true'
+        run: |
+          X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
+          EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
+          python tools/fetch_stooq_prices.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA | head -c 6000
       - name: Recount store
         id: store2
         if: always()
@@ -130,7 +154,11 @@ jobs:
           key: c21-raw-store-v2-${{ github.run_id }}
       - name: Gate chain (coverage -> rankable -> #500 -> Completeness -> Sufficiency -> Promotion Gate v2)
         run: |
-          python tools/run_top500_gate_chain.py --store data/raw --as-of "${{ inputs.as_of }}" \
+          X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
+          R="reports/gate_evidence/russell1000_iwb_${{ inputs.as_of }}.json"
+          EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
+          REF=""; [ -f "$R" ] && REF="--sufficiency-reference $R"
+          python tools/run_top500_gate_chain.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA $REF \
             --out "reports/gate_evidence/gate_chain_${{ inputs.as_of }}_real_gha.json"
       - name: Upload raw store + evidence artifact
         if: always() && steps.store2.outputs.blobs != '' && steps.store2.outputs.blobs != '0'

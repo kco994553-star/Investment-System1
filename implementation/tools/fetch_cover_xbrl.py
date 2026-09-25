@@ -122,13 +122,17 @@ def main() -> None:
     ap.add_argument("--cik-candidates", type=Path, default=ROOT / "reports" / "gate_evidence" / "delisted_cik_candidates_2024-12-31.json")
     ap.add_argument("--chart-range", default="5y")
     ap.add_argument("--sleep", type=float, default=0.15)
+    ap.add_argument("--extra-listings", type=Path, action="append", default=[])
     a = ap.parse_args()
     chain = _load("run_top500_gate_chain")
     store = RawDatasetStore(a.store)
     d = datetime.fromisoformat(a.as_of + "T00:00:00+00:00")
     rd = lambda p: json.loads(p.read_text(encoding="utf-8")) if p and p.exists() else None  # noqa: E731
     cand = chain.verify_cik_candidates(store, rd(a.cik_candidates))
-    rows, _ = chain.extend_listings(store, rd(a.listings), rd(a.plan), cand)
+    base = rd(a.listings) or {}
+    for x in a.extra_listings:
+        base.update(rd(x) or {})
+    rows, _ = chain.extend_listings(store, base, rd(a.plan), cand)
     all_ciks = sorted({str(int(str(m["cik"]))).zfill(10) for m in rows.values() if str(m.get("cik") or "").isdigit()})
     rep = run(Path(a.store), d, needs_cover(store, rows, d), a.chart_range, a.sleep, page_ciks=all_ciks)
     print(json.dumps({k: v for k, v in rep.items() if k not in ("log", "filings")}, indent=2))

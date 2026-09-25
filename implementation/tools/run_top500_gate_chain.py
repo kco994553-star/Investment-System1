@@ -126,7 +126,8 @@ ELIGIBILITY_RULE = ("US_DOMESTIC_FILER_AT_AS_OF: the latest periodic report the 
                     "10-K/10-Q. Foreign private issuers at as_of (20-F/40-F) are excluded from the US Market-Cap Top 500 "
                     "(user decision 2026-09-25; their US lines are mostly ADRs whose ratio is not in SEC data). Issuers with "
                     "no SEC filing by as_of did not exist as registrants then and are excluded. Basis: SEC submissions "
-                    "'recent' + older filing pages, filingDate <= as_of (PIT; today's forms are not applied backward).")
+                    "'recent' + older filing pages, filingDate <= as_of (PIT; today's forms are not applied backward). "
+                    "An issuer with neither a periodic report nor a traded price by as_of was not listed then (excluded).")
 
 
 def _filer_status(store: RawDatasetStore, cik: str, as_of) -> str:
@@ -135,9 +136,13 @@ def _filer_status(store: RawDatasetStore, cik: str, as_of) -> str:
 
 
 def eligibility_filter(store: RawDatasetStore, listings: dict, as_of) -> tuple[dict, dict]:
-    kept, excluded, not_registered, unknown = {}, [], [], []
+    kept, excluded, not_registered, unknown, not_trading = {}, [], [], [], []
     for cid, m in listings.items():
         st = _filer_status(store, str(m.get("cik") or ""), as_of)
+        if st == "UNKNOWN" and not any(b["observed_at"] <= as_of for b in load_price_bars(store, str(m.get("yahoo") or ""), "5y")):
+            # no periodic report AND no traded price by as_of (e.g. a Form-10 spin-off listed in 2025): not listed then
+            not_trading.append(m.get("yahoo"))
+            continue
         if st == "FOREIGN":
             excluded.append(m.get("yahoo"))
         elif st == "NOT_REGISTERED_AT_AS_OF":
@@ -149,6 +154,7 @@ def eligibility_filter(store: RawDatasetStore, listings: dict, as_of) -> tuple[d
     return kept, {"rule": ELIGIBILITY_RULE, "n_in": len(listings), "n_kept": len(kept),
                   "excluded_foreign_private_issuers": sorted(excluded),
                   "excluded_not_registered_at_as_of": sorted(not_registered),
+                  "excluded_not_trading_at_as_of": sorted(not_trading),
                   "eligibility_unknown_kept": sorted(unknown)}
 
 
@@ -240,6 +246,44 @@ def normalize_reference(ref: dict) -> dict:
     return out
 
 
+def _nodot(t) -> str:
+    import re
+    return re.sub(r"[^A-Z0-9]", "", str(t or "").upper())
+
+
+def map_superset_members(ref: dict, row_listings: dict, pre_elig: dict, eligible: dict, amc) -> tuple[list[str], list[str]]:
+    """Map reference tickers to pool symbols (iShares 'BRKB' == pool 'BRK-B'), and split out members whose
+    issuer the documented eligibility rule excluded (foreign private / not registered at as_of): those are
+    consistent with the rule, not missing. Members with no pool line keep their ticker (-> missing_from_pool)."""
+    by_nodot = {_nodot(m.get("yahoo")): m for m in row_listings.values() if m.get("yahoo")}
+    elig_ciks = {str(m.get("cik") or "").zfill(10) for m in eligible.values()}
+    pre_ciks = {str(m.get("cik") or "").zfill(10) for m in pre_elig.values()}
+    mapped, excluded = [], []
+    for t in ref.get("members") or []:
+        m = by_nodot.get(_nodot(t))
+        if m is None:
+            mapped.append(t)
+            continue
+        c = str(m.get("cik") or "").zfill(10)
+        if c in pre_ciks and c not in elig_ciks:
+            excluded.append(t)
+            continue
+        mapped.append(m.get("yahoo"))
+    return mapped, excluded
+
+
+def eligibility_evidence_from_superset(sufficiency: dict, refs: list[dict], audit: dict) -> dict | None:
+    """Base-gate eligibility attestation derived ONLY from a passed SUPERSET_REFERENCE: the pool contains, rankable,
+    every member of an independent dated superset of the US top 500 (rule-excluded members listed)."""
+    for r, full in zip(sufficiency.get("references") or [], refs):
+        if r.get("reference_role") == "SUPERSET_REFERENCE" and r.get("passed"):
+            return {"source": r["source"], "source_vintage": r["source_vintage"], "as_of": audit["as_of"],
+                    "eligibility_complete": True, "basis": "SUPERSET_REFERENCE_FULLY_COVERED",
+                    "reference_name": r["name"], "n_reference_members": r["n_members"],
+                    "excluded_by_eligibility_rule": r.get("excluded_by_eligibility_rule")}
+    return None
+
+
 def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs: list[dict],
               sufficiency_refs: list[dict], exchange_reference: dict | None, eligibility_evidence: dict | None,
               plan: dict | None = None, chart_range: str = "5y", cik_candidates: dict | None = None) -> dict:
@@ -250,6 +294,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     row_audit = amc.audit(store, row_listings, d, chart_range)
     # Official Top-500 is company-level: rank one line per issuer.
     listings, dedupe = company_level_listings(store, row_listings)
+    listings_pre_elig = listings
     listings, eligibility = eligibility_filter(store, listings, d)
     overrides, cover_unresolved = cover_mcap_overrides(store, listings, d, chart_range)
     audit = amc.audit(store, listings, d, chart_range, overrides)
@@ -266,9 +311,15 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         refs.append({**amc.evaluate_reference_coverage(store, row_listings, ranked, ref, chart_range),
                      "reference_role": "MISSING_LARGE_CAP_DETECTOR"})
     for ref in sufficiency_refs:
-        refs.append(amc.evaluate_reference_coverage(store, row_listings, ranked, ref, chart_range))
+        mapped, excluded_rule = map_superset_members(ref, row_listings, listings_pre_elig, listings, amc)
+        cov = amc.evaluate_reference_coverage(store, row_listings, ranked, {**ref, "members": mapped}, chart_range)
+        refs.append({**cov, "members": ref.get("members"), "excluded_by_eligibility_rule": excluded_rule})
     completeness = amc.build_universe_completeness_gate(audit, exchange_reference) if exchange_reference else None
     sufficiency = amc.build_top500_sufficiency_gate(audit, refs)
+    derived_eligibility = None
+    if eligibility_evidence is None:
+        derived_eligibility = eligibility_evidence_from_superset(sufficiency, refs, audit)
+        eligibility_evidence = derived_eligibility
     gate_v2 = amc.build_promotion_gate_v2(audit, eligibility_evidence, completeness, sufficiency)
     n_blobs = sum(1 for aid in store.list_ids() if store.has(aid))
     top_rows = []
@@ -327,7 +378,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
                                 "n_present_rankable_outside_top500": len(r["present_rankable_outside_top500"]),
                                 "missing_from_pool": r["missing_from_pool"]} for r in refs],
         "universe_completeness_gate": completeness, "top500_sufficiency_gate": sufficiency,
-        "promotion_gate_v2": gate_v2,
+        "promotion_gate_v2": gate_v2, "eligibility_evidence_derived_from_superset": derived_eligibility,
         "official_top500_declared": official, "official_blockers": official_blockers,
         "real_data_verified": False,
         "walk_forward": "NOT_RUN_OFFICIAL_BLOCKED" if not official else "PENDING",
@@ -344,6 +395,8 @@ def main() -> None:
     ap.add_argument("--as-of", default="2024-12-31")
     ap.add_argument("--detector-reference", type=Path, action="append",
                     help="PIT large-cap reference used only to detect missing names (default: reconstructed S&P 500)")
+    ap.add_argument("--extra-listings", type=Path, action="append", default=[],
+                    help="additional listings JSON (e.g. russell1000_extra_listings_<as_of>.json)")
     ap.add_argument("--sufficiency-reference", type=Path, action="append", default=[],
                     help="independent dated PIT large-cap ranking reference that may count toward Sufficiency")
     ap.add_argument("--exchange-reference", type=Path, default=GE / "exchange_reference_wfe_2024-12-31.json")
@@ -354,7 +407,11 @@ def main() -> None:
     a = ap.parse_args()
     rd = lambda p: json.loads(p.read_text(encoding="utf-8"))  # noqa: E731
     det = a.detector_reference or [GE / "sp500_reconstructed_2024-12-31.json"]
-    rep = run_chain(RawDatasetStore(a.store), rd(a.listings), a.as_of, [rd(p) for p in det],
+    base = rd(a.listings)
+    for x in a.extra_listings:
+        if x.exists():
+            base.update(rd(x))
+    rep = run_chain(RawDatasetStore(a.store), base, a.as_of, [rd(p) for p in det],
                     [rd(p) for p in a.sufficiency_reference], rd(a.exchange_reference) if a.exchange_reference else None,
                     rd(a.eligibility_evidence) if a.eligibility_evidence else None,
                     rd(a.plan) if a.plan and a.plan.exists() else None, a.chart_range,

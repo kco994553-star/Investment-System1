@@ -358,8 +358,12 @@ def build_top500_sufficiency_gate(audit_result: dict, large_cap_references: list
             r_reasons.append("MISSING_LARGE_CAP_NAMES")
         if unranked:
             r_reasons.append("REFERENCE_MEMBERS_PRESENT_BUT_NOT_RANKABLE")
-        if outside:
+        superset = ref.get("reference_role") == "SUPERSET_REFERENCE"
+        if outside and not superset:
             r_reasons.append("REFERENCE_MEMBERS_RANKED_OUTSIDE_TOP500")
+        if superset and len(members) < 900:
+            # a superset of the top 500 (e.g. Russell 1000 holdings) may rank below 500 but must be large
+            r_reasons.append("SUPERSET_REFERENCE_TOO_SMALL")
         ref_ok = not r_reasons
         detector_only = ref.get("reference_role") == "MISSING_LARGE_CAP_DETECTOR"
         if ref_ok and not detector_only:
@@ -369,6 +373,7 @@ def build_top500_sufficiency_gate(audit_result: dict, large_cap_references: list
             "n_members": len(members), "missing_from_pool": missing, "present_not_rankable": unranked,
             "present_rankable_outside_top500": outside, "reasons": r_reasons, "passed": ref_ok,
             "reference_role": ref.get("reference_role"),
+            "excluded_by_eligibility_rule": sorted(set(ref.get("excluded_by_eligibility_rule") or [])),
         })
     if rankable < 500:
         reasons.append("FEWER_THAN_500_RANKABLE")

@@ -132,7 +132,9 @@ def _stooq_to_chart(body: bytes, symbol: str) -> bytes | None:
         if not ds or not cs:
             continue
         try:
-            dt = datetime.strptime(ds.strip(), "%Y%m%d" if "-" not in ds else "%Y-%m-%d").replace(tzinfo=timezone.utc)
+            # Stamp the daily bar after the US close (21:00 UTC): a date-only 00:00 stamp would make
+            # day D's close look available at the start of D (look-ahead under an as_of filter).
+            dt = datetime.strptime(ds.strip(), "%Y%m%d" if "-" not in ds else "%Y-%m-%d").replace(hour=21, tzinfo=timezone.utc)
             px = float(cs)
         except (ValueError, TypeError):
             continue

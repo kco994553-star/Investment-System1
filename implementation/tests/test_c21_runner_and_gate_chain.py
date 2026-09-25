@@ -514,9 +514,24 @@ def test_chain_lists_unrankable_issuers_with_reason(tmp_path):
     _put_name(store, 3, "NOPX", 10, 5.0)
     store.put("yahoo_chart:NOPX:5y", json.dumps({"chart": {"result": [{"timestamp": [int(datetime(2025, 3, 1, tzinfo=UTC).timestamp())],
               "indicators": {"quote": [{"close": [5.0]}]}}], "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
+    for c in ("0000000001", "0000000002", "0000000003"):  # domestic 10-Q filers at as_of
+        store.put(f"submissions:{c}", json.dumps({"filings": {"recent": {"form": ["10-Q"], "filingDate": ["2024-11-01"]}}}).encode(),
+                  "u", "SEC", "application/json", "t", 200)
     rep = chain.run_chain(store, {"a": {"cik": "1", "yahoo": "OKK"}, "b": {"cik": "2", "yahoo": "NOSH"},
                                   "c": {"cik": "3", "yahoo": "NOPX"}}, "2024-12-31", [], [], None, None)
     assert {k: v["reason"] for k, v in rep["unrankable_issuers"].items()} == {"NOSH": "SHARES_MISSING", "NOPX": "NO_AS_OF_PRICE"}
+
+
+def test_unknown_filer_without_as_of_price_is_not_listed_at_as_of(tmp_path):
+    """SNDK pattern (run #17): Form 10 before as_of, first trade and first 10-Q in 2025."""
+    chain = _mod("chain_nottrading", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    store.put("submissions:0002023554", json.dumps({"filings": {"recent": {"form": ["10-Q", "10-12B"],
+              "filingDate": ["2025-05-01", "2024-12-10"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put("yahoo_chart:SNDK:5y", json.dumps({"chart": {"result": [{"timestamp": [int(datetime(2025, 2, 24, 14, 30, tzinfo=UTC).timestamp())],
+              "indicators": {"quote": [{"close": [50.0]}]}}], "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
+    kept, rep = chain.eligibility_filter(store, {"s": {"cik": "0002023554", "yahoo": "SNDK"}}, amc_dt())
+    assert kept == {} and rep["excluded_not_trading_at_as_of"] == ["SNDK"]
 
 
 def test_fetch_submission_pages_requests_only_needed_pages(tmp_path, monkeypatch):
@@ -576,3 +591,148 @@ def test_reference_normalisation_uses_only_values_stated_in_the_file():
                                    "source": "Wikipedia list + dated changes table (fetched 2026-09-25)", "members": ["A"]})
     assert r["as_of"] == AS_OF and r["source_vintage"] == "2026-09-25" and r["name"] == "SP500_PIT_RECONSTRUCTION"
     assert chain.normalize_reference({"as_of": AS_OF, "source": "no date here"})["source_vintage"] is None
+
+
+def _stooq_csv(rows):
+    return ("Date,Open,High,Low,Close,Volume\n" + "".join(f"{d},1,1,1,{c},100\n" for d, c in rows)).encode()
+
+
+def test_stooq_bars_are_stamped_after_the_close_no_lookahead():
+    ibr = _mod("ibr_ts", "import_bulk_real_data.py")
+    chart = json.loads(ibr._stooq_to_chart(_stooq_csv([("2024-12-30", 10.0), ("2024-12-31", 11.0)]), "X"))
+    ts = chart["chart"]["result"][0]["timestamp"]
+    assert datetime.fromtimestamp(ts[1], tz=UTC) == datetime(2024, 12, 31, 21, 0, tzinfo=UTC)
+    fsp = _mod("fsp_ts", "fetch_stooq_prices.py")
+    assert fsp.csv_close_on_or_before(_stooq_csv([("2024-12-30", 10.0), ("2024-12-31", 11.0)]), amc_dt()) == ("2024-12-30", 10.0)
+
+
+def _yahoo_close(store, sym, close, day=30):
+    chart = {"chart": {"result": [{"timestamp": [int(datetime(2024, 12, day, 14, 30, tzinfo=UTC).timestamp())],
+                                   "indicators": {"quote": [{"close": [close]}]}}], "error": None}}
+    store.put(f"yahoo_chart:{sym}:5y", json.dumps(chart).encode(), "u", "YAHOO_CHART", "application/json", "t", 200)
+
+
+def _stooq_run(tmp_path, monkeypatch, control_close, targets, stooq_bodies):
+    fsp = _mod("fsp_run_" + str(abs(hash((control_close, tuple(targets))))), "fetch_stooq_prices.py")
+    store = RawDatasetStore(tmp_path)
+    for c in fsp.CONTROLS:
+        _yahoo_close(store, c, 100.0)
+    frd = fsp._load("fetch_real_data")
+    ibr = fsp._load("import_bulk_real_data")
+    monkeypatch.setattr(fsp, "_load", lambda name: frd if name == "fetch_real_data" else ibr)
+
+    def fake(req, timeout=0):
+        sym = req.full_url.split("s=")[1].split(".us")[0].upper()
+        if sym in stooq_bodies:
+            return _R(stooq_bodies[sym])
+        return _R(_stooq_csv([("2024-12-30", control_close)]))
+
+    monkeypatch.setattr(frd, "urlopen", fake)
+    monkeypatch.setattr(frd.time, "sleep", lambda s: None)
+    return fsp, store, fsp.run(Path(tmp_path), amc_dt(), targets)
+
+
+def test_stooq_fallback_written_only_after_calibration_and_only_without_yahoo_as_of_bar(tmp_path, monkeypatch):
+    bodies = {"ANSS": _stooq_csv([("2024-12-30", 337.0), ("2025-07-10", 360.0)]), "AVB": _stooq_csv([("2024-12-30", 220.0)]),
+              "NEWCO": _stooq_csv([("2025-03-01", 9.0)]), "JUNK": b"<html>captcha</html>"}
+    fsp, store, rep = _stooq_run(tmp_path, monkeypatch, 100.2, ["ANSS", "AVB", "NEWCO", "JUNK"], bodies)
+    assert rep["calibrated"] is True
+    assert rep["results"]["ANSS"] == "WRITTEN_STOOQ_FALLBACK" and rep["results"]["AVB"] == "WRITTEN_STOOQ_FALLBACK"
+    assert rep["results"]["NEWCO"] == "NO_STOOQ_BAR_ON_OR_BEFORE_AS_OF" and rep["results"]["JUNK"] == "NO_STOOQ_DATA"
+    m = store.get_manifest("yahoo_chart:ANSS:5y")
+    assert m["source_kind"] == "STOOQ_DAILY" and "stooq.com" in m["source_url"]
+    assert [b["close"] for b in load_bars(store, "ANSS") if b["observed_at"] <= amc_dt()] == [337.0]
+
+
+def load_bars(store, sym):
+    from investment_system.ingestion.replay import load_price_bars
+    return load_price_bars(store, sym, "5y")
+
+
+def test_stooq_calibration_mismatch_writes_nothing(tmp_path, monkeypatch):
+    bodies = {"ANSS": _stooq_csv([("2024-12-30", 337.0)])}
+    fsp, store, rep = _stooq_run(tmp_path, monkeypatch, 97.0, ["ANSS"], bodies)  # 3 % off -> dividend-adjusted-like
+    assert rep["calibrated"] is False and rep["results"]["ANSS"] == "NOT_WRITTEN_CALIBRATION_FAILED"
+    assert not store.has("yahoo_chart:ANSS:5y") and store.has("stooq_csv:ANSS")
+
+
+def test_stooq_never_overwrites_a_yahoo_as_of_bar(tmp_path, monkeypatch):
+    fsp = _mod("fsp_keep", "fetch_stooq_prices.py")
+    store = RawDatasetStore(tmp_path)
+    _yahoo_close(store, "KEEP", 50.0)
+    frd = fsp._load("fetch_real_data"); ibr = fsp._load("import_bulk_real_data")
+    for c in fsp.CONTROLS:
+        _yahoo_close(store, c, 100.0)
+    monkeypatch.setattr(fsp, "_load", lambda name: frd if name == "fetch_real_data" else ibr)
+    monkeypatch.setattr(frd, "urlopen", lambda req, timeout=0: _R(_stooq_csv([("2024-12-30", 100.0 if "keep" not in req.full_url else 51.0)])))
+    monkeypatch.setattr(frd.time, "sleep", lambda s: None)
+    rep = fsp.run(Path(tmp_path), amc_dt(), ["KEEP"])
+    assert rep["results"]["KEEP"] == "YAHOO_AS_OF_BAR_PRESENT" and store.get_manifest("yahoo_chart:KEEP:5y")["source_kind"] == "YAHOO_CHART"
+
+
+IWB_SAMPLE = ('iShares Russell 1000 ETF\nFund Holdings as of,"Dec 31, 2024"\nInception Date,"May 15, 2000"\n'
+              'Shares Outstanding,"1,000"\n \nTicker,Name,Sector,Asset Class,Market Value,Weight (%),Notional Value,Quantity,Price,'
+              'Location,Exchange,Currency,FX Rate,Market Currency,Accrual Date\n'
+              '"AAPL","APPLE INC","Information Technology","Equity","1","6.5","1","1","250","United States","NASDAQ","USD","1","USD","-"\n'
+              '"BRKB","BERKSHIRE HATHAWAY INC CLASS B","Financials","Equity","1","1.6","1","1","453","United States","New York Stock Exchange Inc.","USD","1","USD","-"\n'
+              '"ANSS","ANSYS INC","Information Technology","Equity","1","0.1","1","1","337","United States","NASDAQ","USD","1","USD","-"\n'
+              '"ZZZ","AMBIGUOUS CORP","Industrials","Equity","1","0.1","1","1","10","United States","NYSE","USD","1","USD","-"\n'
+              '"USD","USD CASH","Cash and/or Derivatives","Cash","1","0.1","1","1","1","United States","-","USD","1","USD","-"\n').encode()
+
+
+def test_ishares_holdings_parse_and_member_resolution(tmp_path):
+    fir = _mod("fir", "fetch_ishares_reference.py")
+    as_of, rows = fir.parse_holdings(IWB_SAMPLE)
+    assert as_of == "2024-12-31" and [r["ticker"] for r in rows] == ["AAPL", "BRKB", "ANSS", "ZZZ"]  # cash row dropped
+    store = RawDatasetStore(tmp_path)
+    store.put("sec_tickers", json.dumps({"0": {"cik_str": 320193, "ticker": "AAPL", "title": "Apple"}}).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put("sec_cik_lookup", b"ANSYS INC:0001013462:\nAMBIGUOUS CORP:0000000011:\nAMBIGUOUS CORPORATION:0000000012:\n", "u", "SEC", "text/plain", "t", 200)
+    ref, extra, res = fir.build(store, "2024-12-31", rows, {"BRK-B"}, "2026-09-25")
+    assert res["IN_POOL"] == 1 and res["SEC_TICKERS_CURRENT"] == 1 and res["SEC_CIK_LOOKUP_UNIQUE_NAME"] == 1
+    assert extra["r1000:anss"]["cik"] == "0001013462" and extra["r1000:aapl"]["cik"] == "0000320193"
+    assert [u["ticker"] for u in res["UNRESOLVED"]] == ["ZZZ"]  # two CIKs for the same normalised name -> not guessed
+    assert ref["reference_role"] == "SUPERSET_REFERENCE" and ref["as_of"] == AS_OF and ref["source_vintage"] == "2026-09-25"
+
+
+def test_superset_reference_allows_ranks_below_500_but_not_missing_or_unrankable():
+    amc = _mod("amc_superset", "audit_mcap_store.py")
+    audit = {"as_of": AS_OF, "rankable": 600, "top_cutoff_mcap_if_500_rankable": 1e9}
+    base = {"name": "R1000", "source": "iShares IWB", "source_vintage": "2026-09-25", "as_of": AS_OF,
+            "membership_basis": "DATED_FUND_HOLDINGS", "reference_role": "SUPERSET_REFERENCE",
+            "members": [f"T{i}" for i in range(1000)], "missing_from_pool": [], "present_not_rankable": [],
+            "present_rankable_outside_top500": [f"T{i}" for i in range(500, 1000)]}
+    assert amc.build_top500_sufficiency_gate(audit, [base])["passed"] is True
+    bad = amc.build_top500_sufficiency_gate(audit, [{**base, "missing_from_pool": ["T7"]}])
+    assert bad["passed"] is False and "MISSING_LARGE_CAP_NAMES" in bad["references"][0]["reasons"]
+    small = amc.build_top500_sufficiency_gate(audit, [{**base, "members": ["T1"]}])
+    assert "SUPERSET_REFERENCE_TOO_SMALL" in small["references"][0]["reasons"]
+
+
+def test_chain_superset_maps_class_tickers_counts_rule_exclusions_and_derives_eligibility(tmp_path):
+    chain = _mod("chain_superset", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    listings = {}
+    for i in range(1, 511):
+        _put_name(store, i, f"T{i}", i * 10, 1.0)
+        store.put(f"submissions:{str(i).zfill(10)}", json.dumps({"filings": {"recent": {"form": ["10-Q"], "filingDate": ["2024-11-01"]}}}).encode(),
+                  "u", "SEC", "application/json", "t", 200)
+        listings[f"c{i}"] = {"cik": str(i).zfill(10), "yahoo": f"T{i}"}
+    listings["c3"]["yahoo"] = "T3-B"  # pool uses a class separator
+    _put_name(store, 3, "T3-B", 30, 1.0)
+    store.put("submissions:0000000999", json.dumps({"filings": {"recent": {"form": ["20-F"], "filingDate": ["2024-04-01"]}}}).encode(),
+              "u", "SEC", "application/json", "t", 200)
+    _put_name(store, 999, "FPI", 10**9, 1.0)
+    listings["fpi"] = {"cik": "0000000999", "yahoo": "FPI"}
+    members = ["T3B" if i == 3 else f"T{i}" for i in range(1, 511)] + ["FPI"] + [f"T{i}" for i in range(4, 400)]
+    ref = {"name": "R1000", "source": "iShares IWB", "source_vintage": "2026-09-25", "as_of": AS_OF,
+           "membership_basis": "DATED_FUND_HOLDINGS", "reference_role": "SUPERSET_REFERENCE", "members": members}
+    rep = chain.run_chain(store, listings, "2024-12-31", [], [ref], None, None)
+    r = rep["top500_sufficiency_gate"]["references"][0]
+    assert r["missing_from_pool"] == [] and r["present_not_rankable"] == [] and r["excluded_by_eligibility_rule"] == ["FPI"]
+    assert r["passed"] is True and rep["top500_sufficiency_gate"]["passed"] is True
+    ev = rep["eligibility_evidence_derived_from_superset"]
+    assert ev["eligibility_complete"] is True and ev["basis"] == "SUPERSET_REFERENCE_FULLY_COVERED"
+    assert rep["promotion_gate_v2"]["passed"] is True  # synthetic: every eligible issuer rankable
+    missing = chain.run_chain(store, listings, "2024-12-31", [], [{**ref, "members": members + ["NOTINPOOL"]}], None, None)
+    assert missing["top500_sufficiency_gate"]["passed"] is False and missing["eligibility_evidence_derived_from_superset"] is None
+    assert missing["promotion_gate_v2"]["passed"] is False and missing["official_top500_declared"] is False
