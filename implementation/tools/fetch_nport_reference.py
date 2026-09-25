@@ -121,12 +121,16 @@ SUFFIXES = {"INC", "CORP", "CORPORATION", "CO", "COMPANY", "LTD", "PLC", "LLC", 
             "NEW", "DEL", "REIT", "PUBLIC", "LIMITED", "NATIONAL", "ASSOCIATION", "AND"}
 
 
-def norm_name(n: str) -> str:
-    """Order-insensitive token key. SEC titles carry state tags ('/MA/', '/DE/') and reorder names
-    ('BERKLEY W R CORP'); fund reports spell out forms ('PUBLIC LIMITED COMPANY')."""
+def norm_name(n: str, join_dotted: bool = False) -> str:
+    """Order-insensitive token key. SEC titles carry state tags ('/MA/', '/DE/', 'INC/CA', 'INC /NY') and reorder
+    names ('BERKLEY W R CORP'); fund reports spell out forms ('PUBLIC LIMITED COMPANY'). join_dotted collapses
+    dotted acronyms ('U.S.A.' -> 'USA') for a second key."""
     s = str(n or "").upper().replace("&", " AND ")
-    s = re.sub(r"/[A-Z ]{1,4}/", " ", s)       # state/country tags
-    s = re.sub(r"['\u2019`]", "", s)           # LOWE'S -> LOWES
+    s = re.sub(r"\s*/\s*[A-Z]{1,4}\s*/?\s*$", " ", s)   # trailing state tag
+    s = re.sub(r"/[A-Z ]{1,4}/", " ", s)                      # embedded state/country tags
+    s = re.sub(r"['\u2019`]", "", s)                          # LOWE'S -> LOWES
+    if join_dotted:
+        s = re.sub(r"\b([A-Z])\.(?=[A-Z]\.)", r"\1", s).replace(".", "")
     words = re.sub(r"[^A-Z0-9 ]", " ", s).split()
     return " ".join(sorted(w for w in words if w not in SUFFIXES))
 
@@ -137,25 +141,34 @@ def name_index(store: RawDatasetStore) -> tuple[dict[str, set[str]], dict[str, s
     if store.has("sec_tickers"):
         for row in json.loads(store.get_bytes("sec_tickers")).values():
             c = str(row.get("cik_str")).zfill(10)
-            cur.setdefault(norm_name(row.get("title")), set()).add(c)
+            for k in {norm_name(row.get("title")), norm_name(row.get("title"), True)}:
+                cur.setdefault(k, set()).add(c)
             tick.setdefault(c, str(row.get("ticker") or "").upper().replace(".", "-"))
     hist = {}
     if store.has("sec_cik_lookup"):
         for ln in store.get_bytes("sec_cik_lookup").decode("latin-1", errors="replace").splitlines():
             parts = ln.rsplit(":", 2)
             if len(parts) >= 3 and parts[1].strip().isdigit():
-                hist.setdefault(norm_name(parts[0]), set()).add(parts[1].strip().zfill(10))
+                for k in {norm_name(parts[0]), norm_name(parts[0], True)}:
+                    hist.setdefault(k, set()).add(parts[1].strip().zfill(10))
     return cur, hist, tick
 
 
-def resolve(holdings: list[dict], cur: dict, hist: dict) -> tuple[dict[str, dict], list[dict]]:
-    """CIK10 -> {names, cusips}; unresolved holdings. Share classes of one issuer collapse to one CIK."""
+def resolve(holdings: list[dict], cur: dict, hist: dict, pool_ciks: set[str] | None = None) -> tuple[dict[str, dict], list[dict]]:
+    """CIK10 -> {names, cusips}; unresolved holdings. Share classes of one issuer collapse to one CIK.
+    Ties are broken only by independent evidence: exactly one candidate is a current registrant / already in the pool."""
     members, unresolved = {}, []
     current_ciks = {c for cs in cur.values() for c in cs}
+    pool_ciks = pool_ciks or set()
     for h in holdings:
+        c, method = set(), "SEC_TICKERS_TITLE"
+        for k in (norm_name(h["name"]), norm_name(h["name"], True)):
+            c = cur.get(k) or set()
+            if len(c) > 1 and len(c & pool_ciks) == 1:
+                c, method = c & pool_ciks, "SEC_TICKERS_TITLE_UNIQUE_IN_POOL"
+            if len(c) == 1:
+                break
         k = norm_name(h["name"])
-        c = cur.get(k) or set()
-        method = "SEC_TICKERS_TITLE"
         if len(c) != 1:
             c, method = hist.get(k) or set(), "SEC_CIK_LOOKUP"
             if len(c) > 1:
@@ -163,6 +176,8 @@ def resolve(holdings: list[dict], cur: dict, hist: dict) -> tuple[dict[str, dict
                 active = {x for x in c if x in current_ciks}
                 if len(active) == 1:
                     c, method = active, "SEC_CIK_LOOKUP_UNIQUE_ACTIVE"
+                elif len(c & pool_ciks) == 1:
+                    c, method = c & pool_ciks, "SEC_CIK_LOOKUP_UNIQUE_IN_POOL"
         if len(c) != 1:
             unresolved.append({**h, "name_matches": len(c)})
             continue
@@ -228,10 +243,10 @@ def main() -> None:
                 report["status"] = "REJECTED_REPORT_DATE_OR_TOO_FEW_HOLDINGS"
             else:
                 cur, hist, tick = name_index(store)
-                members, unresolved = resolve(eq, cur, hist)
                 rd = lambda p: json.loads(p.read_text(encoding="utf-8")) if p and p.exists() else None  # noqa: E731
                 rows, _ = chain.extend_listings(store, rd(a.listings) or {}, rd(a.plan))
                 pool_ciks = {str(m.get("cik") or "").zfill(10) for m in rows.values()}
+                members, unresolved = resolve(eq, cur, hist, pool_ciks)
                 extra = {f"r1000:{c}": {"yahoo": tick[c], "cik": c, "cik_method": v["method"], "reference_name": v["names"][0]}
                          for c, v in members.items() if c not in pool_ciks and tick.get(c)}
                 no_ticker = sorted(c for c in members if c not in pool_ciks and not tick.get(c))

@@ -817,3 +817,14 @@ def test_nport_historical_name_collision_resolved_only_by_a_unique_active_cik():
     assert list(members) == ["0001799208"] and members["0001799208"]["method"] == "SEC_CIK_LOOKUP_UNIQUE_ACTIVE"
     members, unresolved = fnr.resolve([{"name": "DUN & BRADSTREET HOLDINGS, INC.", "cusip": "x"}], {}, hist)
     assert members == {} and unresolved[0]["name_matches"] == 3  # no active registrant to disambiguate -> not guessed
+
+
+def test_nport_name_normalisation_cases_from_run_23():
+    fnr = _mod("fnr_norm23", "fetch_nport_reference.py")
+    n = fnr.norm_name
+    assert n("VERISIGN, INC.") == n("VERISIGN INC/CA") and n("CORNING INCORPORATED") == n("CORNING INC /NY")
+    assert n("SKECHERS U.S.A., INC.", True) == n("SKECHERS USA INC", True)
+    assert n("W. R. BERKLEY CORPORATION") == n("BERKLEY W R CORP")  # default key still keeps single initials
+    members, unresolved = fnr.resolve([{"name": "TARGET CORPORATION", "cusip": "x"}],
+                                      {n("TARGET CORP"): {"0000027419", "0000999999"}}, {}, pool_ciks={"0000027419"})
+    assert list(members) == ["0000027419"] and members["0000027419"]["method"] == "SEC_TICKERS_TITLE_UNIQUE_IN_POOL"
