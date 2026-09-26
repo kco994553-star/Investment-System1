@@ -38,6 +38,14 @@ def _load(name: str):
     return mod
 
 
+def _chain():
+    """The gate chain module (loaded directly: its share checks and ticker normalisation are shared, not duplicated)."""
+    spec = importlib.util.spec_from_file_location("_fcx_chain", ROOT / "tools" / "run_top500_gate_chain.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def instance_id(cik10: str, accn: str) -> str:
     return f"xbrl_instance:{cik10}:{accn}"
 
@@ -49,7 +57,7 @@ def needs_cover(store: RawDatasetStore, row_listings: dict, as_of: datetime) -> 
         if m.get("cik"):
             c = str(int(str(m["cik"]))).zfill(10)
             lines[c] = lines.get(c, 0) + 1
-    chain = _load("run_top500_gate_chain")
+    chain = _chain()
     out = []
     for c, n in sorted(lines.items()):
         cf = load_companyfacts(store, c)
@@ -95,10 +103,12 @@ def run(store_dir: Path, as_of: datetime, ciks: list[str], chart_range: str = "5
         frd._throttle(log, sleep)
         picked[c] = {**f, "artifact_id": aid}
     symbols = set()
+    chain = _chain()
     for c, f in picked.items():
         if store.has(f["artifact_id"]):
             try:
-                symbols.update(class_symbols(parse_cover(store.get_bytes(f["artifact_id"]))).values())
+                # 'BFB' on the cover is the issuer's SEC ticker 'BF-B': fetch the chart under the ticker (same CIK only)
+                symbols.update(chain.same_cik_ticker(store, c, s) or s for s in class_symbols(parse_cover(store.get_bytes(f["artifact_id"]))).values())
             except Exception as e:  # noqa: BLE001 - malformed instance stays a logged gap
                 log.append({"artifact_id": f["artifact_id"], "status": f"PARSE_ERROR_{type(e).__name__}"})
     for sym in sorted(s.replace(".", "-") for s in symbols):

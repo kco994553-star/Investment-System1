@@ -129,7 +129,25 @@ def parse_cover(xml_bytes: bytes) -> dict:
     if classes:
         last = max(str(r["date"] or "") for r in classes)
         classes = [r for r in classes if str(r["date"] or "") == last]
+        # identical facts in duplicated contexts (CME) are one class, never summed twice
+        seen, uniq = set(), []
+        for r in classes:
+            k = (r["member"], r["date"], r["shares"])
+            if k not in seen:
+                seen.add(k)
+                uniq.append(r)
+        classes = uniq
+    symbols = {m: list(dict.fromkeys(v)) for m, v in symbols.items()}
     return {"classes": classes, "symbols": symbols, "titles": titles}
+
+
+_LETTER = re.compile(r"Class([A-Z])(?![a-z])")
+
+
+def _plain_common(member: str | None) -> bool:
+    """A common-stock member without a class letter: CommonStockMember, CommonStockClassUndefinedMember,
+    CommonClassUndefinedMember, CommonStockUnclassifiedMember, CommonStockParValue...Member."""
+    return bool(member) and member.startswith("Common") and "Preferred" not in member and not _LETTER.search(member)
 
 
 def class_symbols(cover: dict) -> dict:
@@ -140,6 +158,15 @@ def class_symbols(cover: dict) -> dict:
     members = [r["member"] for r in cover["classes"]]
     # only classes with reported shares outstanding (preferred series may also tag a TradingSymbol)
     out = {m: syms[0] for m, syms in cover["symbols"].items() if m is not None and syms and m in members}
+    # symbol tagged on a differently named member of the same class (ARES: ClassACommonStockParValue...Member vs
+    # CommonClassAMember): bridge by class letter only when exactly one shares member carries that letter
+    for m, syms in cover["symbols"].items():
+        if m is None or m in members or not syms or "Preferred" in m:
+            continue
+        lm = _LETTER.search(m)
+        hits = [x for x in members if x and lm and (_LETTER.search(x) or [None, None])[1] == lm.group(1) and "Preferred" not in x]
+        if lm and len(hits) == 1 and hits[0] not in out:
+            out[hits[0]] = syms[0]
     undim = sorted(set(cover["symbols"].get(None) or []))
     if members == [None] and not undim and not out:
         # one undimensioned common count, symbols tagged per security (common + preferred series):
@@ -159,6 +186,8 @@ def class_symbols(cover: dict) -> dict:
             hits = [m for m in members if m == want]
             if len(hits) == 1:
                 out[hits[0]] = undim[0]
-        elif not letters and any("Common Stock" in t for t in titles) and members.count("CommonStockMember") == 1:
-            out["CommonStockMember"] = undim[0]  # registered "Common Stock" vs e.g. unlisted Class B (Ford)
+        elif not letters and any("common stock" in t.lower() for t in titles):
+            plain = [x for x in members if _plain_common(x)]
+            if len(plain) == 1:
+                out[plain[0]] = undim[0]  # registered "Common Stock" vs e.g. unlisted Class B (Ford, AOS, COKE, TRIP, AA)
     return out

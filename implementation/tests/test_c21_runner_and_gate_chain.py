@@ -1451,3 +1451,98 @@ def test_run35_consistency_flags_gate_member_whose_price_is_not_available_at_as_
     rep = chain.gate_snapshot_consistency(store, listings, top, cands, amc_dt())
     assert rep["passed"] is False and rep["only_in_gate"] == ["b"]
     assert rep["gate_members_excluded_by_snapshot"] == [{"company_id": "b", "price_basis": "NPORT_REPORTED_VALUE"}]
+
+
+def test_run35_cover_parser_dedupes_and_new_symbol_rules():
+    from investment_system.providers.sec_cover_shares import class_symbols, parse_cover
+    # CME: every share fact duplicated; title 'Class A Common Stock'
+    cme = _instance([("CommonClassAMember", 360_359_063), ("CommonClassAMember", 360_359_063), ("ClassBCommonStockClassB1Member", 625),
+                     ("ClassBCommonStockClassB1Member", 625)], [(None, "CME")], [(None, "Class A Common Stock")])
+    cov = parse_cover(cme)
+    assert len(cov["classes"]) == 2 and class_symbols(cov) == {"CommonClassAMember": "CME"}
+    # AOS / COKE / TRIP / AA: plain-common member names
+    for plain, other in (("CommonStockClassUndefinedMember", "CommonClassAMember"), ("CommonClassUndefinedMember", "CommonClassBMember"),
+                         ("CommonStockUnclassifiedMember", "CommonClassBMember"),
+                         ("CommonStockParValueZeroPointZeroOnePerShareMember", "SeriesAConvertiblePreferredStockMember")):
+        c = parse_cover(_instance([(plain, 100), (other, 10)], [(None, "SYM")], [(None, "Common Stock, par value $1.00")]))
+        assert class_symbols(c) == {plain: "SYM"}, plain
+    # ARES: symbol on a differently named member of the same class letter; preferred ignored
+    ares = parse_cover(_instance([("CommonClassAMember", 198), ("CommonClassCMember", 111), ("NonvotingCommonStockMember", 3)],
+                                 [("ClassACommonStockParValue0.01PerShareMember", "ARES"),
+                                  ("A6.75SeriesBMandatoryConvertiblePreferredStockParValue0.01PerShareMember", "ARES.PRB")]))
+    assert class_symbols(ares) == {"CommonClassAMember": "ARES"}
+    # DKS / IBKR: 'Common Stock' with Class A + Class B members -> still unmapped (needs reviewed evidence)
+    dks = parse_cover(_instance([("CommonClassAMember", 57), ("CommonClassBMember", 23)], [(None, "DKS")], [(None, "Common Stock, $0.01 par value")]))
+    assert class_symbols(dks) == {}
+
+
+def test_run35_bf_separator_normalised_to_same_cik_ticker_and_mtd_text_count(tmp_path):
+    chain = _mod("chain_bf", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    cik = "0000014693"
+    aid = _sub_with_filing(store, cik)
+    sub = json.loads(store.get_bytes(f"submissions:{cik}"))
+    sub["tickers"] = ["BF-B", "BF-A"]
+    store.put(f"submissions:{cik}", json.dumps(sub).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put(aid, _instance([("CommonClassAMember", 169_123_305), ("NonvotingCommonStockMember", 303_537_999)],
+                             [("CommonClassAMember", "BFA"), ("NonvotingCommonStockMember", "BFB")]), "u", "SEC", "application/xml", "t", 200)
+    t = int(datetime(2024, 12, 27, 21, tzinfo=UTC).timestamp())
+    for sym, px in (("BF-A", 38.0), ("BF-B", 37.9)):
+        store.put(f"yahoo_chart:{sym}:5y", json.dumps({"chart": {"result": [{"timestamp": [t], "indicators": {"quote": [{"close": [px]}]}}],
+                  "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
+    ov, _ = chain.cover_mcap_overrides(store, {"b": {"cik": cik, "yahoo": "BF-B"}}, amc_dt())
+    assert ov["b"]["status"] == "COVER_CLASS_SUM" and ov["b"]["mcap"] == 169_123_305 * 38.0 + 303_537_999 * 37.9
+    assert {c["price_symbol"] for c in ov["b"]["classes"]} == {"BF-A", "BF-B"}
+    assert chain.same_cik_ticker(store, cik, "BFC") is None
+    assert chain.cover_text_single_count("The Registrant had 21,102,668 shares of Common Stock outstanding at September 30, 2024 ... "
+                                         "outstanding 21,102,668 shares and 21,526,172 shares") == 21_102_668
+    assert chain.cover_text_single_count("10,000 shares of common stock outstanding; 12,000 shares of common stock outstanding") is None
+
+
+def test_run35_reviewed_symbol_mapping_verified_against_filing_quote(tmp_path):
+    chain = _mod("chain_dks", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    cik = "0001089063"
+    store.put(f"submissions:{cik}", json.dumps({"filings": {"recent": {"form": ["10-Q", "10-K"], "filingDate": ["2024-11-27", "2024-03-28"],
+              "accessionNumber": ["0001089063-24-000121", "0001089063-24-000037"], "primaryDocument": ["q.htm", "k.htm"]}}}).encode(),
+              "u", "SEC", "application/json", "t", 200)
+    store.put(f"xbrl_instance:{cik}:0001089063-24-000121", _instance([("CommonClassAMember", 57_903_976), ("CommonClassBMember", 23_570_633)],
+              [(None, "DKS")], [(None, "Common Stock, $0.01 par value")]), "u", "SEC", "application/xml", "t", 200)
+    store.put(f"sec_filing_doc:{cik}:0001089063-24-000037", b"<p>We also have shares of Class B common stock outstanding, which are not "
+              b"listed or traded on any stock exchange or other market.</p>", "u", "SEC", "text/html", "t", 200)
+    t = int(datetime(2024, 12, 27, 21, tzinfo=UTC).timestamp())
+    store.put("yahoo_chart:DKS:5y", json.dumps({"chart": {"result": [{"timestamp": [t], "indicators": {"quote": [{"close": [230.0]}]}}],
+              "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
+    maps = json.loads((Path(chain.GE) / "symbol_mappings_2024-12-31.json").read_text(encoding="utf-8"))
+    listings = {"d": {"cik": cik, "yahoo": "DKS"}}
+    ov, un = chain.cover_mcap_overrides(store, listings, amc_dt(), symbol_mappings=maps)
+    assert ov["d"]["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and ov["d"]["mcap"] == 57_903_976 * 230.0
+    assert chain.equal_economics_upper_bound(ov["d"]) == (57_903_976 + 23_570_633) * 230.0
+    assert chain.cover_mcap_overrides(store, listings, amc_dt())[1] == {"d": "NO_PRICED_CLASS"}  # without review: fail-closed
+    bad = json.loads(json.dumps(maps))
+    bad["issuers"][cik]["citations"][0]["quote"] = "We also have shares of Class B common stock outstanding, which trade on the NYSE."
+    assert chain.cover_mcap_overrides(store, listings, amc_dt(), symbol_mappings=bad)[1] == {"d": "NO_PRICED_CLASS"}
+
+
+def test_run35_unit_only_ratio_quote_needs_a_pairing_quote_naming_unit_and_class(tmp_path):
+    chain = _mod("chain_ryan", "run_top500_gate_chain.py")
+    store, cik, ov, det = _class_econ_store(tmp_path)
+    doc = ("<p>Each LLC Unitholder, other than the Company, has an equivalent number of shares of our Class B common stock "
+           "which are entitled to 10 votes per share for each LLC Common Unit held. LLC Common Units may be exchanged for "
+           "shares of Class A common stock on a one-for-one basis at the election of the holder.</p>")
+    store.put(f"sec_filing_doc:{cik}:0001234567-24-000009", doc.encode(), "u", "SEC", "text/html", "t", 200)
+    aid = f"sec_filing_doc:{cik}:0001234567-24-000009"
+    pair = "Each LLC Unitholder, other than the Company, has an equivalent number of shares of our Class B common stock which are entitled to 10 votes per share for each LLC Common Unit held."
+    ratio = "LLC Common Units may be exchanged for shares of Class A common stock on a one-for-one basis at the election of the holder."
+    d = {"listed_member": "CommonClassAMember", "classes": {"CommonClassBMember": {
+        "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED", "ratio": 1, "paired_instrument": "LLC Common Unit",
+        "citations": [{"artifact_id": aid, "quote": pair, "supports": ["pairing"]},
+                      {"artifact_id": aid, "quote": ratio, "supports": ["exchange_ratio"]}]}}}
+    mcap, ev = chain.verify_class_economics(store, cik, ov, d, amc_dt())
+    assert mcap == 400 * 10.0 and ev["status"] == "ECONOMIC_EQUIVALENT_DETERMINED"
+    no_inst = json.loads(json.dumps(d))
+    del no_inst["classes"]["CommonClassBMember"]["paired_instrument"]
+    assert chain.verify_class_economics(store, cik, ov, no_inst, amc_dt())[0] is None  # unit-only quote needs the declared instrument
+    other = json.loads(json.dumps(d))
+    other["classes"]["CommonClassBMember"]["paired_instrument"] = "OpCo Unit"
+    assert chain.verify_class_economics(store, cik, ov, other, amc_dt())[0] is None

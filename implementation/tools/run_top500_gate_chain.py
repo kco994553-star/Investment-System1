@@ -294,6 +294,14 @@ def exclude_stale_unresolved(store: RawDatasetStore, listings: dict, overrides: 
     return out
 
 
+def same_cik_ticker(store: RawDatasetStore, cik10: str, symbol: str) -> str | None:
+    """The issuer's own SEC ticker equal to a cover TradingSymbol once separators are removed ('BFB' -> 'BF-B'), same
+    CIK only and unique; None otherwise."""
+    tickers = (load_submissions_merged(store, cik10)[0] or {}).get("tickers") or []
+    hits = sorted({str(t).replace(".", "-") for t in tickers if _nodot(t) == _nodot(symbol)})
+    return hits[0] if len(hits) == 1 else None
+
+
 def _as_of_bar(store: RawDatasetStore, symbol: str, as_of, chart_range: str):
     """(price as used by the gate, observed_at) of the last bar on/before as_of, or (None, None)."""
     amc = _load("audit_mcap_store")
@@ -389,6 +397,52 @@ def gate_snapshot_consistency(store: RawDatasetStore, listings: dict, top: list[
             "universe_id": snap.universe_id, "snapshot_cutoff_mcap": rep.get("cutoff_mcap")}
 
 
+NOT_LISTED = r"not (?:be )?listed|no (?:established )?public (?:trading )?market|not (?:publicly )?traded"
+
+
+def cover_text_single_count(text: str) -> int | None:
+    """Single-class cover sentence '<n> shares of [the registrant's|our] Common Stock outstanding' (MTD); the unique count
+    or None."""
+    import re
+    pat = r"([\d,]{6,})\s+shares\s+of\s+(?:the\s+registrant['’]s\s+|our\s+|its\s+)?common\s+stock[^.;]{0,80}?outstanding"
+    vals = {int(m.group(1).replace(",", "")) for m in re.finditer(pat, text, re.I) if re.fullmatch(r"\d{1,3}(,\d{3})+", m.group(1))}
+    return vals.pop() if len(vals) == 1 else None
+
+
+def verify_symbol_mapping(store: RawDatasetStore, cik10: str, cover: dict, det: dict | None, symbol: str, as_of) -> tuple[str | None, list]:
+    """Reviewed mapping of an undimensioned TradingSymbol to one class member (symbol_mappings_<as_of>.json). Accepted
+    only if a quote found verbatim in a filing of that CIK filed on or before as_of either names every OTHER class as not
+    listed/traded (DKS: 'Class B common stock ... not listed or traded on any stock exchange'), or names the listed
+    member's class together with the symbol. Returns (member, checked citations) or (None, failures)."""
+    import re
+    if not det or det.get("symbol") != symbol:
+        return None, ["NO_REVIEWED_MAPPING"]
+    frc = _load("fetch_class_rights_evidence")
+    members = [c["member"] for c in cover["classes"]]
+    listed = det.get("listed_member")
+    if listed not in members:
+        return None, ["LISTED_MEMBER_NOT_ON_COVER"]
+    others = [m for m in members if m != listed]
+    fails, ok = [], []
+    for q in det.get("citations") or []:
+        aid, quote = str(q.get("artifact_id") or ""), re.sub(r"\s+", " ", str(q.get("quote") or "")).strip()
+        parts = aid.split(":")
+        if len(parts) != 3 or parts[1] != cik10 or not store.has(aid) or not _filed_on_or_before(store, cik10, parts[2], as_of):
+            fails.append(f"CITATION_INVALID:{aid}")
+            continue
+        if len(quote) < 40 or quote not in frc.html_text(store.get_bytes(aid)):
+            fails.append(f"QUOTE_NOT_IN_FILING:{aid}")
+            continue
+        names_others_unlisted = bool(re.search(NOT_LISTED, quote, re.I)) and all(
+            any(p in quote for p in frc.class_phrases(o)) for o in others)
+        names_listed_with_symbol = re.search(rf"\b{re.escape(symbol)}\b", quote) and any(p in quote for p in frc.class_phrases(listed))
+        if names_others_unlisted or names_listed_with_symbol:
+            ok.append({"artifact_id": aid, "quote": quote})
+        else:
+            fails.append(f"QUOTE_DOES_NOT_ESTABLISH_LISTING:{aid}")
+    return (listed, ok) if ok else (None, fails)
+
+
 def cover_text_symbol_member(text: str, cover: dict) -> tuple[str | None, str | None]:
     """Listed member from the cover-page TEXT of the same filing when XBRL tags one undimensioned TradingSymbol for several
     classes and the Security12bTitle names no class letter (IAC: title 'Common stock', members CommonClassA/B). The title's
@@ -412,7 +466,8 @@ def cover_text_symbol_member(text: str, cover: dict) -> tuple[str | None, str | 
     return (hits.pop(), quote) if len(hits) == 1 else (None, None)
 
 
-def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_range: str = "5y") -> tuple[dict, dict]:
+def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_range: str = "5y",
+                         symbol_mappings: dict | None = None) -> tuple[dict, dict]:
     """company_id -> {'mcap', 'status', 'classes'} from the cover-page XBRL instance (tools/fetch_cover_xbrl.py).
     Listed classes: class shares x that class's as-of price. Unlisted/unpriced classes are not guessed
     (no conversion ratio in the data): the sum is then a LOWER BOUND."""
@@ -440,8 +495,23 @@ def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_ra
             if member:
                 syms = {member: undim[0]}
                 text_basis = {"basis": "COVER_TEXT_TITLE_COUNT_MATCH", "document": did, "quote": quote}
+        if not syms and len(undim) == 1 and len(classes) > 1:
+            member, cites = verify_symbol_mapping(store, c, cover, ((symbol_mappings or {}).get("issuers") or {}).get(c), undim[0], as_of)
+            if member:
+                syms = {member: undim[0]}
+                text_basis = {"basis": "REVIEWED_FILING_QUOTE", "citations": cites}
         if not classes:
-            unresolved[cid] = "NO_COVER_SHARES"
+            cf0 = load_companyfacts(store, c)
+            cnt = (cover_text_single_count(_load("fetch_class_rights_evidence").html_text(store.get_bytes(did)))
+                   if len(undim) == 1 and not [k for k in cover["symbols"] if k] and store.has(did) else None)
+            px = _as_of_price(store, str(m.get("yahoo") or ""), as_of, chart_range)
+            if cnt and px and cf0 is not None and not share_scale_check(cf0, as_of, float(cnt))["flagged"] \
+                    and undim[0].replace(".", "-") == str(m.get("yahoo") or ""):
+                out[cid] = {"mcap": cnt * px, "status": "COVER_TEXT_SINGLE_COUNT", "source": did,
+                            "classes": [{"member": None, "shares": float(cnt), "symbol": undim[0], "price": px,
+                                         "symbol_basis": {"basis": "COVER_TEXT_SINGLE_COUNT", "document": did}}]}
+            else:
+                unresolved[cid] = "NO_COVER_SHARES"
             continue
         if len(classes) == 1 and classes[0]["member"] is None:
             cf = load_companyfacts(store, c)
@@ -463,6 +533,12 @@ def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_ra
         for cl in classes:
             sym = syms.get(cl["member"])
             px = _as_of_price(store, sym.replace(".", "-"), as_of, chart_range) if sym else None
+            if sym and not px:
+                alt = same_cik_ticker(store, c, sym)
+                if alt and alt != sym.replace(".", "-"):
+                    px = _as_of_price(store, alt, as_of, chart_range)
+                    if px:
+                        cl = {**cl, "price_symbol": alt, "price_basis": "SAME_CIK_TICKER_SEPARATOR_NORMALISED"}
             if text_basis and sym and px and sym.replace(".", "-") != str(m.get("yahoo") or ""):
                 # a symbol mapped from cover text must agree with the same-CIK primary line when both have a close
                 prim = _as_of_price(store, str(m.get("yahoo") or ""), as_of, chart_range)
@@ -571,7 +647,7 @@ RATIO_ONE = (r"one[- ]for[- ]one|1:1|1-for-1|one-to-one|on a one for one basis|s
              r"for one share of|an equal number of")
 CLAIM_PATTERNS = {"conversion_ratio": RATIO_ONE, "exchange_ratio": RATIO_ONE,
                   # 'one share of our Class B', 'an equal number of shares of TKO Class B', 'a corresponding number of shares of our Class D'
-                  "pairing": r"(one|a|an equal number of|corresponding number of) shares? of (?:[\w’']+ ){0,2}Class [A-Z]|"
+                  "pairing": r"(one|a|an equal number of|an equivalent number of|corresponding number of) shares? of (?:[\w’']+ ){0,2}Class [A-Z]|"
                              r"equal to the number of|for each (?:\w+ )?units?",
                   "identical_rights": r"identical in all respects|share ratably with|same rights and privileges"}
 BASIS_CLAIMS = {"CONVERTIBLE_INTO_LISTED": {"conversion_ratio"},
@@ -627,13 +703,24 @@ def verify_class_economics(store: RawDatasetStore, cik10: str, override: dict, d
             if len(quote) < 40 or quote not in texts[aid]:
                 fails.append(f"QUOTE_NOT_IN_FILING:{aid}")
                 continue
-            if not any(p in quote for p in phrases):
+            names_class = any(p in quote for p in phrases)
+            inst = str(cd.get("paired_instrument") or "")
+            if not names_class and not (inst and inst in quote and q.get("supports") == ["exchange_ratio"]):
                 fails.append(f"QUOTE_DOES_NOT_NAME_CLASS:{aid}")
                 continue
+            if not names_class:
+                q = {**q, "_instrument_only": True}
             for claim in q.get("supports") or []:
                 if claim in need and re.search(CLAIM_PATTERNS[claim], quote, re.I):
                     got.add(claim)
-            used.append({"class": c.get("member"), "artifact_id": aid, "filed": filed, "supports": sorted(got & need), "quote": quote})
+            used.append({"class": c.get("member"), "artifact_id": aid, "filed": filed, "supports": sorted(got & need), "quote": quote,
+                         **({"names": "PAIRED_INSTRUMENT_ONLY"} if q.get("_instrument_only") else {})})
+        inst = str(cd.get("paired_instrument") or "")
+        if inst and any(u.get("names") == "PAIRED_INSTRUMENT_ONLY" for u in used if u["class"] == c.get("member")):
+            # a ratio quote naming only the unit counts only if a verified pairing quote names both the unit and the class
+            if not any("pairing" in u["supports"] and inst in u["quote"] and any(p in u["quote"] for p in phrases)
+                       for u in used if u["class"] == c.get("member") and u.get("names") != "PAIRED_INSTRUMENT_ONLY"):
+                got.discard("exchange_ratio")
         if need - got:
             fails.append(f"CLAIMS_UNPROVEN:{c.get('member')}:{','.join(sorted(need - got))}")
             continue
@@ -738,7 +825,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
               sufficiency_refs: list[dict], exchange_reference: dict | None, eligibility_evidence: dict | None,
               plan: dict | None = None, chart_range: str = "5y", cik_candidates: dict | None = None,
               class_economics: dict | None = None, nport_exception: dict | None = None,
-              nport_prices: dict | None = None) -> dict:
+              nport_prices: dict | None = None, symbol_mappings: dict | None = None) -> dict:
     amc = _load("audit_mcap_store")
     d = amc._dt(as_of if "T" in as_of else as_of + "T00:00:00+00:00")
     cand = verify_cik_candidates(store, cik_candidates)
@@ -748,7 +835,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     listings, dedupe = company_level_listings(store, row_listings)
     listings_pre_elig = listings
     listings, eligibility = eligibility_filter(store, listings, d)
-    overrides, cover_unresolved = cover_mcap_overrides(store, listings, d, chart_range)
+    overrides, cover_unresolved = cover_mcap_overrides(store, listings, d, chart_range, symbol_mappings)
     class_econ = apply_class_economics(store, overrides, listings, class_economics, d)
     share_scale = share_scale_overrides(store, listings, overrides, d, chart_range)
     nport_px = apply_nport_reported_prices(store, overrides, listings, nport_exception, nport_prices, d, chart_range)
@@ -909,6 +996,7 @@ def main() -> None:
     ap.add_argument("--cik-candidates", type=Path, default=GE / "delisted_cik_candidates_2024-12-31.json")
     ap.add_argument("--class-economics", type=Path, help="reviewed determinations (default class_economics_<as_of>.json if present)")
     ap.add_argument("--nport-exception", type=Path, help="default nport_price_exception_<as_of>.json if present")
+    ap.add_argument("--symbol-mappings", type=Path, help="default symbol_mappings_<as_of>.json if present")
     ap.add_argument("--nport-prices", type=Path, help="default nport_reported_prices_<as_of>.json if present")
     ap.add_argument("--out", type=Path)
     a = ap.parse_args()
@@ -925,7 +1013,8 @@ def main() -> None:
                     rd(a.cik_candidates) if a.cik_candidates and a.cik_candidates.exists() else None,
                     rd(ce) if (ce := a.class_economics or GE / f"class_economics_{a.as_of}.json").exists() else None,
                     rd(ne) if (ne := a.nport_exception or GE / f"nport_price_exception_{a.as_of}.json").exists() else None,
-                    rd(npp) if (npp := a.nport_prices or GE / f"nport_reported_prices_{a.as_of}.json").exists() else None)
+                    rd(npp) if (npp := a.nport_prices or GE / f"nport_reported_prices_{a.as_of}.json").exists() else None,
+                    rd(sm) if (sm := a.symbol_mappings or GE / f"symbol_mappings_{a.as_of}.json").exists() else None)
     s = json.dumps(rep, indent=2)
     if a.out:
         a.out.write_text(s + "\n", encoding="utf-8")

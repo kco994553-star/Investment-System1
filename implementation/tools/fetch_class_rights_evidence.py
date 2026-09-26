@@ -82,12 +82,18 @@ def class_phrases(member: str) -> list[str]:
     return [re.sub(r"(?<!^)(?=[A-Z])", " ", words)]
 
 
+UNIT_RATIO = re.compile(r"\bunits?\b.*(one[- ]for[- ]one|one-to-one|1:1|equal number|share[- ]for[- ]share)|"
+                        r"(one[- ]for[- ]one|one-to-one|1:1|share[- ]for[- ]share).*\bunits?\b", re.I)
+
+
 def passages(text: str, phrases: list[str]) -> list[dict]:
-    """Sentences containing one of the class phrases AND rights wording (verbatim, with character offset)."""
+    """Sentences containing one of the class phrases AND rights wording, plus sentences stating an exchange ratio for
+    paired units (they often name only the unit, e.g. 'LLC Common Units ... on a one-for-one basis'). Verbatim, with offset."""
     out, seen = [], set()
     for s in re.finditer(r"[^.;]*(?:[.;]|$)", text):
         sent = s.group(0).strip()
-        if len(sent) < 40 or not any(p in sent for p in phrases) or not RIGHTS_WORDS.search(sent):
+        named = any(p in sent for p in phrases) and RIGHTS_WORDS.search(sent)
+        if len(sent) < 40 or not (named or UNIT_RATIO.search(sent)):
             continue
         key = sent[:200]
         if key in seen:

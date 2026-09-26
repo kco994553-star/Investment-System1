@@ -98,6 +98,17 @@ def cover_sentences(text: str) -> list[str]:
     return [m.group(0).strip()[:600] for m in pat.finditer(text)][:20]
 
 
+def symbol_sentences(text: str, symbols: list[str]) -> list[str]:
+    """Sentences naming a trading symbol (which class is listed where), first 12."""
+    out = []
+    for sym in symbols:
+        for m in re.finditer(r"[^.;]{0,300}\b" + re.escape(sym) + r"\b[^.;]{0,300}", text):
+            out.append(m.group(0).strip()[:600])
+            if len(out) >= 12:
+                return out
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
@@ -157,7 +168,10 @@ def diagnose(store, frd, frc, cik: str, d: datetime, as_of: str, no_fetch: bool)
                            "SEC_FILING_DOCUMENT", frd.UA, log, False)
             frd._throttle(log, 0.15)
         if store.has(did):
-            docs.append({**lf, "artifact_id": did, "cover_sentences": cover_sentences(frc.html_text(store.get_bytes(did)))})
+            txt = frc.html_text(store.get_bytes(did))
+            syms = sorted({v for vs in (rep.get("parse_cover") or {}).get("symbols", {}).values() for v in vs})
+            docs.append({**lf, "artifact_id": did, "cover_sentences": cover_sentences(txt),
+                         "symbol_sentences": symbol_sentences(txt, syms)})
     rep["documents"] = docs
     rep["note"] = ("Diagnostic only. POST_AS_OF_FILING rows are investigation evidence and are never used as the as_of "
                    "share count (user decision 2026-09-26).")
