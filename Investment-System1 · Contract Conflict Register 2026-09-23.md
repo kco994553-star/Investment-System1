@@ -389,3 +389,26 @@ undimensioned value (PPLI 0 from 2020; DKS 2011, ARES 2019, COKE 2016, AOS 2015;
 fail-closed exclusion otherwise.
 PIL impact (recorded only; no PIL code changed): any future PIL consumer of share counts / market caps (Model Portfolio,
 Security Resolver identifiers) must take them from the gate-audited representation, not companyfacts pit_shares directly.
+
+## C-34 WRK 2024-06-30: no permitted market-close source → OPEN, USER DECISION (Track A, 2026-09-26 16:05 KST)
+Evidence (runs #48-#53): WestRock (CIK 0001732845, merged into Smurfit Westrock 2024-07-05) is a Russell 1000 N-PORT member at
+2024-06-30. Yahoo v8 chart HTTP 404 (symbol dropped), Tiingo NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF, Stooq answers with a
+proof-of-work bot challenge (not bypassed). Exchange/vendor web pages not used (terms of use / bot protection / no
+stored, re-verifiable provenance). Reference N-PORT (0001752724-24-189684, filed 2024-08-26) holding: 193,311 NS,
+valUSD 9,715,810.86 -> 50.26/share, fairValLevel 1 (nport_price_investigation_2024-06-30.json, INVESTIGATION_ONLY).
+nport_cross_check_2024-06-30.json measures whether N-PORT per-share values reproduce 2024-06-28 closes (IWB, Vanguard
+Total Stock Market, iShares Core S&P 500).
+Decision pending: extend NPORT_REPORTED_VALUE under generalized criteria (eligibility: all permitted sources failed +
+fairValLevel 1; identity: unique EC holding, CUSIP attested by 13D/13G <= as_of, price reproduced; filing calibration
+>= 99 % of controls within 0.5 %; independent reproduction by another sponsor within 0.5 %; separate price type,
+look_ahead recorded, per date only; applied regardless of rank; thresholds fixed before results) OR keep as blocker.
+Knowledge of the cutoff is NOT a ground for the exception (user, 2026-09-26). Until decided: 2024-06-30 not Official.
+
+## C-35 GRAL 2024-06-30: spin-off without an exact PIT share count → OPEN, USER DECISION (Track A, 2026-09-26 16:05 KST)
+Evidence (runs #48-#52): GRAIL, Inc. (CIK 0001699031) spun off from Illumina 2024-06-24 (record date 2024-06-13); no
+10-K/10-Q at as_of. Primary documents of all registration/8-K filings <= 2024-06-30 state no count. The Information
+Statement (EX-99.1 of the 8-K filed 2024-06-03 and the 10-12B/A) states only '31,052,632 shares issued and outstanding,
+pro forma' and an 'approximately' distribution amount computed from Illumina's April 26 count ('The actual number ...
+will depend on ... the Record Date'). The exact count first appears in filings after as_of (not applied; AMTM rule).
+Decision pending: keep as blocker / allow a filed pro-forma count as a separate share basis / a new eligibility rule
+for very recent spin-offs. Until decided: 2024-06-30 not Official.
