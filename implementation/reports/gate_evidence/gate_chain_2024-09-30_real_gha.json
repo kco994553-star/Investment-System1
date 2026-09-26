@@ -4095,6 +4095,23 @@
         "formula": "519358323 shares (cover text) x 50.09000015258789"
       }
     },
+    "AMTM": {
+      "mcap": 3934707083.924364,
+      "status": "REGISTRATION_DOC_SHARE_COUNT",
+      "source": "sec_filing_doc:0002011286:0001193125-24-227910",
+      "classes": [
+        {
+          "member": null,
+          "shares": 153280369.0,
+          "symbol": "AMTM",
+          "price": 25.670000076293945,
+          "symbol_basis": {
+            "basis": "REGISTRATION_DOC_SHARE_COUNT",
+            "document": "sec_filing_doc:0002011286:0001193125-24-227910"
+          }
+        }
+      ]
+    },
     "WOLF": {
       "mcap": 1230632859.8999999,
       "status": "NPORT_REPORTED_VALUE",
@@ -4630,6 +4647,33 @@
         }
       ],
       "lower_bound": 2660966328.9581757
+    },
+    "RPRX": {
+      "status": "NOT_DETERMINED",
+      "failures": [
+        "CLAIMS_UNPROVEN:CommonClassBMember:exchange_ratio"
+      ],
+      "citations_checked": [
+        {
+          "class": "CommonClassBMember",
+          "artifact_id": "sec_filing_doc:0001802768:0001802768-24-000012",
+          "filed": "2024-02-15",
+          "supports": [
+            "pairing"
+          ],
+          "quote": "Our outstanding Class B ordinary shares are, however, considered potentially dilutive shares of Class A ordinary shares because Class B ordinary shares, together with the related RP Holdings Class B Interests, are exchangeable into Class A ordinary shares on a one -for-one basis."
+        },
+        {
+          "class": "CommonClassBMember",
+          "artifact_id": "sec_filing_doc:0001802768:0001802768-24-000012",
+          "filed": "2024-02-15",
+          "supports": [
+            "pairing"
+          ],
+          "quote": "Each such exchange also results in the re-designation of the same number of our Class B ordinary shares as deferred shares."
+        }
+      ],
+      "lower_bound": 12641790784.483307
     }
   },
   "price_basis_exceptions": {
@@ -4902,6 +4946,22 @@
     }
   },
   "stale_share_facts_excluded": {},
+  "registration_doc_share_counts": {
+    "AMTM": {
+      "cik": "0002011286",
+      "candidates": [
+        {
+          "count": 153280369,
+          "document": "sec_filing_doc:0002011286:0001193125-24-227910",
+          "form": "8-K",
+          "filed": "2024-09-27"
+        }
+      ],
+      "n_registration_docs_checked": 7,
+      "status": "APPLIED",
+      "shares": 153280369
+    }
+  },
   "gate_snapshot_consistency": {
     "passed": true,
     "n_gate": 500,
@@ -4929,30 +4989,22 @@
       "COVER_ECONOMIC_EQUIVALENT": 7,
       "COVER_TEXT_SINGLE_COUNT": 1
     },
-    "universe_id": "uni_31c07ec87274",
+    "universe_id": "uni_09364caeccb2",
     "snapshot_cutoff_mcap": 15534394848.01854
   },
   "official_snapshot_candidates": null,
-  "unrankable_issuers": {
-    "AMTM": {
-      "reason": "SHARES_MISSING",
-      "cik": "0002011286",
-      "shares": null,
-      "price_observed_at": "2024-09-27T13:30:00+00:00",
-      "pit_filer_status": "UNKNOWN"
-    }
-  },
+  "unrankable_issuers": {},
   "audit": {
     "kind": "PIT_MCAP_STORE_COVERAGE_AUDIT",
     "as_of": "2024-09-30T00:00:00+00:00",
     "chart_range": "5y",
     "listings": 985,
     "companyfacts": 985,
-    "price": 984,
-    "rankable": 984,
+    "price": 985,
+    "rankable": 985,
     "missing_companyfacts": 0,
     "missing_price": 0,
-    "missing_shares": 1,
+    "missing_shares": 0,
     "ambiguous_shares": 0,
     "non_positive": 0,
     "top_cutoff_mcap_if_500_rankable": 15534394848.01854,
@@ -4960,7 +5012,7 @@
     "justified_official_top500": false,
     "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
   },
-  "rankable": 984,
+  "rankable": 985,
   "cutoff_500_mcap": 15534394848.01854,
   "top500": [
     {
@@ -20994,22 +21046,6 @@
   ],
   "top500_quality_flag_counts": {},
   "reference_not_rankable_detail": {
-    "AMTM": {
-      "yahoo": "AMTM",
-      "cik": "0002011286",
-      "shares_status": "MISSING",
-      "shares": null,
-      "shares_source": null,
-      "shares_available_at": null,
-      "price_observed_at": "2024-09-27T13:30:00+00:00",
-      "close": 25.670000076293945,
-      "adjclose": 25.670000076293945,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 25.670000076293945,
-      "mcap": null,
-      "share_concepts_present": {}
-    },
     "RPRX": {
       "yahoo": "RPRX",
       "cik": "0001802768",
@@ -21033,8 +21069,8 @@
       "role": "SUPERSET_REFERENCE",
       "n_members": 988,
       "n_missing_from_pool": 0,
-      "n_present_not_rankable": 2,
-      "n_present_rankable_outside_top500": 482,
+      "n_present_not_rankable": 1,
+      "n_present_rankable_outside_top500": 483,
       "missing_from_pool": []
     }
   ],
@@ -21043,7 +21079,7 @@
     "as_of": "2024-09-30T00:00:00+00:00",
     "passed": false,
     "companyfacts": 985,
-    "rankable": 984,
+    "rankable": 985,
     "benchmark_source": "World Federation of Exchanges (WFE), \"Market Statistics - February 2025\" (WFE Focus), Total Dec'24 column",
     "benchmark_source_vintage": "2025-01-31",
     "benchmark_low": 3400,
@@ -21059,7 +21095,7 @@
     "kind": "TOP500_SUFFICIENCY_GATE",
     "as_of": "2024-09-30T00:00:00+00:00",
     "passed": false,
-    "rankable": 984,
+    "rankable": 985,
     "cutoff_mcap": 15534394848.01854,
     "n_references_supplied": 1,
     "n_references_usable": 0,
@@ -21071,7 +21107,6 @@
         "n_members": 988,
         "missing_from_pool": [],
         "present_not_rankable": [
-          "AMTM",
           "RPRX"
         ],
         "present_rankable_outside_top500": [
@@ -21106,6 +21141,7 @@
           "AMG",
           "AMH",
           "AMKR",
+          "AMTM",
           "AN",
           "AOS",
           "APA",
@@ -21677,7 +21713,7 @@
       "passed": false,
       "candidate_pool_complete": false,
       "justified_official_top500": false,
-      "rankable": 984,
+      "rankable": 985,
       "listings": 985,
       "eligibility_source": null,
       "source_vintage": null,
@@ -21685,8 +21721,7 @@
         "MISSING_ELIGIBILITY_SOURCE",
         "MISSING_SOURCE_VINTAGE",
         "ELIGIBILITY_COMPLETENESS_NOT_ATTESTED",
-        "EVIDENCE_AS_OF_MISMATCH",
-        "ELIGIBLE_LISTINGS_NOT_FULLY_RANKABLE"
+        "EVIDENCE_AS_OF_MISMATCH"
       ],
       "note": "Fail-closed. >=500 ranked alone never proves Official Top-500 completeness."
     },
@@ -21697,7 +21732,6 @@
       "MISSING_SOURCE_VINTAGE",
       "ELIGIBILITY_COMPLETENESS_NOT_ATTESTED",
       "EVIDENCE_AS_OF_MISMATCH",
-      "ELIGIBLE_LISTINGS_NOT_FULLY_RANKABLE",
       "NEITHER_COMPLETENESS_NOR_SUFFICIENCY_GATE_PASSED"
     ],
     "note": "Fail-closed. Requires base numeric/eligibility checks AND (universe completeness OR top-500 sufficiency).",
