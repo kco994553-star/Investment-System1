@@ -374,7 +374,8 @@ def build_top500_sufficiency_gate(audit_result: dict, large_cap_references: list
         # numbers), leaves a reference member unchecked (run #53: Blue Owl, Skechers, Liberty F1, D&B, F.N.B.)
         unresolved_eq = unresolved_reference_equities(ref.get("unresolved_holdings")) if superset else []
         collisions = cik_collisions(ref.get("member_cusips")) if superset else {}
-        if superset and ref.get("member_cusips") is None:
+        missing_cusips = missing_member_cusips(members, ref.get("member_cusips")) if superset else []
+        if missing_cusips:
             r_reasons.append("REFERENCE_MEMBER_CUSIPS_MISSING")
         if unresolved_eq:
             r_reasons.append("UNRESOLVED_REFERENCE_HOLDINGS")
@@ -394,6 +395,7 @@ def build_top500_sufficiency_gate(audit_result: dict, large_cap_references: list
             "reference_role": ref.get("reference_role"),
             "excluded_by_eligibility_rule": sorted(set(ref.get("excluded_by_eligibility_rule") or [])),
             "unresolved_reference_holdings": unresolved_eq, "cik_collisions": collisions,
+            "members_missing_cusips": missing_cusips,
         })
     if rankable < 500:
         reasons.append("FEWER_THAN_500_RANKABLE")
@@ -444,6 +446,13 @@ def cik_collisions(member_cusips) -> dict:
         if len(pre) > 1:
             out[cik] = pre
     return out
+
+
+def missing_member_cusips(members, member_cusips) -> list[str]:
+    """Every resolved reference member needs a non-empty CUSIP; a partial map is not coverage evidence."""
+    if not isinstance(member_cusips, dict):
+        return sorted(set(members))
+    return sorted({m for m in members if not any(str(c or "").strip() for c in (member_cusips.get(m) or []))})
 
 
 def _norm_ticker(t) -> str:
