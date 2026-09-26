@@ -1,0 +1,101 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "data/raw",
+  "n_requested": 22,
+  "n_ok": 22,
+  "n_failed": 0,
+  "log": [
+    {
+      "artifact_id": "companyfacts:0001013462",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001013462",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001725057",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001725057",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000004447",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000004447",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000859737",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000859737",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000051644",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000051644",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001043604",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001043604",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000055067",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000055067",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001618921",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001618921",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000034088",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000034088",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0000813828",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000813828",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "companyfacts:0001364742",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001364742",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "plan_resolution": null,
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}

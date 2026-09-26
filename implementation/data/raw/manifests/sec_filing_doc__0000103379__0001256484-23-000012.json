@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000103379:0001256484-23-000012",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/103379/000125648423000012/VFcorp-s13g-2022-12-a2.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T09:58:44.597317+00:00",
+  "sha256": "9c282caafea1fd8cbfefc6486336d1b356009b25d9704da24d70df794ba6d07f",
+  "bytes": 5330,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001139313:0001086364-10-009904",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1139313/000108636410009904/wolseley102910.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T09:58:02.828461+00:00",
+  "sha256": "43ba899dd077d36c8714dff09fbc31275f27c0bd6d5658446f556d4d519ae644",
+  "bytes": 11728,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

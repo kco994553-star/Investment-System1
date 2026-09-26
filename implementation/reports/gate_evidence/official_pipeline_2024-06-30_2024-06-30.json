@@ -1,0 +1,21 @@
+{
+ "kind": "OFFICIAL_PIPELINE_RUN",
+ "dates": [
+  "2024-06-30"
+ ],
+ "final_horizon": "2024-09-30",
+ "per_date": [
+  {
+   "as_of": "2024-06-30",
+   "status": "NOT_OFFICIAL",
+   "official_blockers": [
+    "PROMOTION_GATE_V2_FAILED"
+   ],
+   "consistency_passed": true
+  }
+ ],
+ "real_data_verified": false,
+ "single_as_of": [],
+ "walk_forward_status": "BLOCKED_FEWER_THAN_3_DATES",
+ "status": "BLOCKED_NO_OFFICIAL_DATE"
+}

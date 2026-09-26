@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001163302:0001104659-24-020126",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1163302/000110465924020126/tv0134-unitedstatessteelcorp.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T09:57:59.594723+00:00",
+  "sha256": "54f7fc38f7f4a4098dc8ac7724ce38d51803380b84760b9855024000bc8967f2",
+  "bytes": 11582,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

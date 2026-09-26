@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000869614:0000080255-22-000969",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/869614/000008025522000969/fwonk13gajan22.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T09:58:10.149647+00:00",
+  "sha256": "fa180873a4217d71e88c3ad09aeb1b6ceeefd300031541ee544429038927b874",
+  "bytes": 5263,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

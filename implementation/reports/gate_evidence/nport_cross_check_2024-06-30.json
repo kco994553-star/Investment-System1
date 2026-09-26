@@ -3,7 +3,7 @@
  "as_of": "2024-06-30",
  "status": "INVESTIGATION_ONLY_NOT_APPLIED",
  "n_control_closes": 440,
- "n_cusip_to_cik": 996,
+ "n_cusip_to_cik": 1001,
  "filings": [
   {
    "label": "SEC Form NPORT-P 0001752724-24-189684 (iShares Russell 1000 ETF), report date 2024-06-30",
@@ -14,22 +14,14 @@
    "n_holdings": 1009,
    "calibration_vs_as_of_close": {
     "n": 429,
-    "within_0_1pct": 427,
-    "within_0_5pct": 427,
-    "median_rel_diff": 2.1613016257158053e-08,
-    "max_rel_diff": 0.9780010924355005,
+    "within_0_1pct": 428,
+    "within_0_5pct": 428,
+    "median_rel_diff": 2.1498822690745832e-08,
+    "max_rel_diff": 0.021764329779573436,
     "fair_val_levels": {
      "1": 429
     },
     "outside_0_5pct": [
-     {
-      "cik": "0001059556",
-      "name": "DUN & BRADSTREET HOLDINGS, INC.",
-      "nport": 9.26,
-      "close": 420.92999267578125,
-      "rel_diff": 0.9780010924355005,
-      "fair_val_level": "1"
-     },
      {
       "cik": "0000014693",
       "name": "BROWN-FORMAN CORPORATION",
@@ -64,22 +56,14 @@
    "n_holdings": 3689,
    "calibration_vs_as_of_close": {
     "n": 427,
-    "within_0_1pct": 425,
-    "within_0_5pct": 425,
-    "median_rel_diff": 2.1613016257158053e-08,
-    "max_rel_diff": 0.9780010924355005,
+    "within_0_1pct": 426,
+    "within_0_5pct": 426,
+    "median_rel_diff": 2.1498822565606216e-08,
+    "max_rel_diff": 0.021764329779573436,
     "fair_val_levels": {
      "1": 427
     },
     "outside_0_5pct": [
-     {
-      "cik": "0001059556",
-      "name": "Dun & Bradstreet Holdings Inc",
-      "nport": 9.26,
-      "close": 420.92999267578125,
-      "rel_diff": 0.9780010924355005,
-      "fair_val_level": "1"
-     },
      {
       "cik": "0000014693",
       "name": "Brown-Forman Corp",
@@ -113,13 +97,13 @@
    "registrant_name": "iSHARES TRUST",
    "n_holdings": 506,
    "calibration_vs_as_of_close": {
-    "n": 367,
-    "within_0_1pct": 367,
-    "within_0_5pct": 367,
-    "median_rel_diff": 2.1172546214244415e-08,
+    "n": 368,
+    "within_0_1pct": 368,
+    "within_0_5pct": 368,
+    "median_rel_diff": 2.1104135866171357e-08,
     "max_rel_diff": 5.295126062026167e-08,
     "fair_val_levels": {
-     "1": 367
+     "1": 368
     },
     "outside_0_5pct": []
    },
@@ -141,53 +125,43 @@
  "log": [
   {
    "artifact_id": "submissions:0000036405",
-   "status": "OK",
-   "bytes": 180672
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "edgar_index_headers:0001752724-24-194966",
-   "status": "OK",
-   "bytes": 5063
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "edgar_index_headers:0001752724-24-194962",
-   "status": "OK",
-   "bytes": 4753
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "edgar_index_headers:0001752724-24-194955",
-   "status": "OK",
-   "bytes": 5059
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "edgar_index_headers:0001752724-24-194948",
-   "status": "OK",
-   "bytes": 4431
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "edgar_index_headers:0001752724-24-194935",
-   "status": "OK",
-   "bytes": 5407
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "edgar_index_headers:0001752724-24-194937",
-   "status": "OK",
-   "bytes": 4751
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "edgar_index_headers:0001752724-24-194928",
-   "status": "OK",
-   "bytes": 4733
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "edgar_index_headers:0001752724-24-194911",
-   "status": "OK",
-   "bytes": 5413
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "nport_xml:0001752724-24-194911",
-   "status": "OK",
-   "bytes": 3320019
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "submissions:0001100663",
@@ -239,8 +213,7 @@
   },
   {
    "artifact_id": "nport_xml:0001752724-24-194289",
-   "status": "OK",
-   "bytes": 512150
+   "status": "SKIPPED_ALREADY_PRESENT"
   }
  ],
  "note": "Measures whether N-PORT per-share values reproduce the as-of market close. Filed after as_of (look-ahead); never applied to ranking without a user decision. Cutoff/rank is not an input."

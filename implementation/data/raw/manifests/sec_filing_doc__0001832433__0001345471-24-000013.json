@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001832433:0001345471-24-000013",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1832433/000134547124000013/ferg13g02-14-2024.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T09:58:03.485196+00:00",
+  "sha256": "b827123c8f07620fe479abe5c9259d511169f2e3aecc45423429822b254763ee",
+  "bytes": 289466,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
