@@ -104,32 +104,57 @@ def main() -> None:
             snaps[d] = s
     out = {"kind": "OFFICIAL_PIPELINE_RUN", "dates": dates, "final_horizon": a.final_horizon, "per_date": status,
            "real_data_verified": False}
-    if len(snaps) != len(dates) or len(dates) < 3:
-        out["status"] = "BLOCKED_NOT_ALL_DATES_OFFICIAL" if len(dates) >= 3 else "BLOCKED_FEWER_THAN_3_DATES"
+    # Official snapshot record per Official date (membership + provenance of every row)
+    for d, s in snaps.items():
+        ev = json.loads((GE / f"gate_chain_{d}_real_gha.json").read_text(encoding="utf-8"))
+        rows = [{"rank": r["rank"], "company_id": r["company_id"], "ticker": r["yahoo"], "cik": r.get("cik"), "mcap": r["mcap"],
+                 "rank_is_lower_bound": "RANK_IS_LOWER_BOUND" in (r.get("notes") or []),
+                 "shares_basis": c.get("shares_basis"), "price_basis": c.get("price_basis"),
+                 "shares_available_at": c.get("shares_available_at"), "price_observed_at": c.get("price_observed_at")}
+                for r, c in zip(ev["top500"], [next(x for x in ev["official_snapshot_candidates"] if x["company_id"] == r["company_id"])
+                                              for r in ev["top500"]])]
+        (GE / f"official_snapshot_{d}.json").write_text(json.dumps({
+            "kind": "OFFICIAL_US_MCAP_TOP500_PIT", "as_of": d, "universe_id": s.universe_id, "policy_status": s.policy_status.value,
+            "universe_kind": s.universe_kind.value, "membership_basis": s.membership_basis, "n_members": len(rows),
+            "cutoff_mcap": ev["cutoff_500_mcap"], "gate_evidence": f"gate_chain_{d}_real_gha.json",
+            "note": ("Membership is exact; rows flagged rank_is_lower_bound are ranked on a lower bound (an unlisted class is "
+                     "not valued), their true market cap is >= the value shown and >= the cutoff."),
+            "members": rows}, indent=1, default=str) + "\n", encoding="utf-8")
+    # real single_as_of for every Official date (horizon = next requested date, or final_horizon for the last)
+    horizon_of = dict(zip(dates, dates[1:] + [a.final_horizon]))
+    singles, timings, errors = [], [], 0
+    for d in [x for x in dates if x in snaps]:
+        res, m = _measure(lambda d=d: run_vertical_slice_from_store(store, _dt(d), _dt(horizon_of[d]), snaps[d]))
+        errors += len(res.get("name_errors") or {})
+        timings.append({"as_of": d, **m})
+        singles.append({k: res[k] for k in ("as_of", "horizon_as_of", "universe_id", "universe_kind", "official_universe",
+                                            "universe_policy", "membership_basis", "survivorship_risk", "n_selected",
+                                            "equal_weight_realized", "rule_id", "rule_status")}
+                       | {"n_universe": len(res["universe"]), "n_investable": len(res["investable"]),
+                          "n_missing": len(res["missing_ok"]), "n_name_errors": len(res.get("name_errors") or {}),
+                          "name_error_sample": dict(list((res.get("name_errors") or {}).items())[:10]),
+                          "n_linked": sum(1 for v in res["outcomes"].values() if v.get("status") == "LINKED")})
+    out["single_as_of"] = singles
+    if timings:
+        out["benchmark_500"] = {"kind": "REAL_500_COMPANY_BENCHMARK", "per_date_single_as_of": timings,
+                                "median_wall_s": statistics.median(t["wall_s"] for t in timings),
+                                "max_peak_heap_mb": max(t["peak_heap_mb"] for t in timings),
+                                "name_errors_total": errors, "network": network_stats(Path(a.store)),
+                                "note": "Real raw store (network-ingested by the c21 workflow); compare with "
+                                        "tools/bench_universe_500.py (SYNTHETIC)."}
+    # walk-forward only when >= 3 dates are ALL independently Official
+    if len(dates) < 3:
+        out["walk_forward_status"] = "BLOCKED_FEWER_THAN_3_DATES"
+    elif len(snaps) != len(dates):
+        out["walk_forward_status"] = "BLOCKED_NOT_ALL_DATES_OFFICIAL"
     else:
-        horizons = dates[1:] + [a.final_horizon]
-        singles, timings, errors = [], [], 0
-        for d, h in zip(dates, horizons):
-            res, m = _measure(lambda d=d, h=h: run_vertical_slice_from_store(store, _dt(d), _dt(h), snaps[d]))
-            errors += len(res.get("name_errors") or {})
-            timings.append(m)
-            singles.append({k: res[k] for k in ("as_of", "horizon_as_of", "universe_id", "universe_kind", "official_universe",
-                                                "universe_policy", "membership_basis", "survivorship_risk", "n_selected",
-                                                "equal_weight_realized", "rule_id", "rule_status")}
-                           | {"n_universe": len(res["universe"]), "n_investable": len(res["investable"]),
-                              "n_missing": len(res["missing_ok"]), "n_name_errors": len(res.get("name_errors") or {}),
-                              "n_linked": sum(1 for v in res["outcomes"].values() if v.get("status") == "LINKED")})
         wf, wm = _measure(lambda: run_walk_forward_from_store(store, [_dt(d) for d in dates], lambda t: snaps[t.date().isoformat()]))
-        out.update({"status": "RUN", "single_as_of": singles, "walk_forward": wf, "walk_forward_timing": wm,
-                    "benchmark_500": {"kind": "REAL_500_COMPANY_BENCHMARK", "per_date_single_as_of": timings,
-                                      "median_wall_s": statistics.median(t["wall_s"] for t in timings),
-                                      "max_peak_heap_mb": max(t["peak_heap_mb"] for t in timings),
-                                      "name_errors_total": errors, "network": network_stats(Path(a.store)),
-                                      "note": "Real raw store (network-ingested by the c21 workflow); compare with "
-                                              "tools/bench_universe_500.py (SYNTHETIC)."}})
+        out.update({"walk_forward_status": "RUN", "walk_forward": wf, "walk_forward_timing": wm})
+    out["status"] = "RUN" if singles else "BLOCKED_NO_OFFICIAL_DATE"
     path = GE / f"official_pipeline_{dates[0]}_{dates[-1]}.json"
     path.write_text(json.dumps(out, indent=1, default=str) + "\n", encoding="utf-8")
-    print(json.dumps({"status": out["status"], "per_date": status}, indent=1, default=str))
+    print(json.dumps({"status": out["status"], "walk_forward_status": out.get("walk_forward_status"), "per_date": status,
+                      "single_as_of": out.get("single_as_of")}, indent=1, default=str)[:6000])
 
 
 if __name__ == "__main__":

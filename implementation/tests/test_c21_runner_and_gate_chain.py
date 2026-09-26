@@ -1568,7 +1568,7 @@ def test_run37_official_pipeline_rebuilds_snapshot_only_from_passing_gate_eviden
     (tmp_path / "gate_chain_2024-06-30_real_gha.json").write_text(json.dumps(swapped))
     assert op.load_official("2024-06-30")[1]["status"] == "REBUILT_SNAPSHOT_DIFFERS_FROM_GATE"
     assert op.load_official("2024-03-31")[1]["status"] == "NO_GATE_EVIDENCE"
-    monkeypatch.setattr(sys, "argv", ["x", "--store", str(tmp_path), "--dates", "2024-09-30,2024-12-31", "--final-horizon", "2025-03-31"])
+    monkeypatch.setattr(sys, "argv", ["x", "--store", str(tmp_path), "--dates", "2024-06-30,2024-09-30", "--final-horizon", "2025-03-31"])
     op.main()
-    out = json.loads((tmp_path / "official_pipeline_2024-09-30_2024-12-31.json").read_text())
-    assert out["status"] == "BLOCKED_FEWER_THAN_3_DATES"
+    out = json.loads((tmp_path / "official_pipeline_2024-06-30_2024-09-30.json").read_text())
+    assert out["walk_forward_status"] == "BLOCKED_FEWER_THAN_3_DATES" and out["status"] == "BLOCKED_NO_OFFICIAL_DATE"
