@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_search:WOLF:WOLFSPEED",
+  "source_url": "https://api.tiingo.com/tiingo/utilities/search?query=WOLFSPEED&limit=25",
+  "source_kind": "TIINGO_SEARCH_JSON",
+  "fetched_at": "2026-09-26T00:32:22.045446+00:00",
+  "sha256": "ce934a8c08542cf2f3822751cb0fc85c5db4a7caabf42fd24aa802e39d5cd932",
+  "bytes": 169,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

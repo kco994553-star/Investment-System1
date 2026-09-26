@@ -1,8 +1,8 @@
 {
   "kind": "RAW_DATASET_STORE_INDEX",
   "store_dir": "data/raw",
-  "n_artifacts": 5373,
-  "n_blobs_on_disk": 5373,
+  "n_artifacts": 5379,
+  "n_blobs_on_disk": 5379,
   "artifacts": [
     {
       "artifact_id": "companyfacts:0000001800",
@@ -23135,6 +23135,33 @@
       "http_status": 200
     },
     {
+      "artifact_id": "tiingo_eod:US000000000543",
+      "source_kind": "TIINGO_EOD_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/daily/us000000000543/prices?startDate=2020-01-02&format=json",
+      "sha256": "3b5bf475c264655a9689444cf8bc3726126cba3bcafac3b72c3c66ae9ca6782d",
+      "bytes": 425043,
+      "fetched_at": "2026-09-26T00:32:18.403279+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "tiingo_eod:US000000123662",
+      "source_kind": "TIINGO_EOD_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/daily/us000000123662/prices?startDate=2020-01-02&format=json",
+      "sha256": "8a28aab63176a62efc52242ddef9c239b6899aa4ccf8a1a0974847a601aacd75",
+      "bytes": 55065,
+      "fetched_at": "2026-09-26T00:32:23.958054+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "tiingo_eod:VMRK",
+      "source_kind": "TIINGO_EOD_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/daily/vmrk/prices?startDate=2020-01-02&format=json",
+      "sha256": "3b5bf475c264655a9689444cf8bc3726126cba3bcafac3b72c3c66ae9ca6782d",
+      "bytes": 425043,
+      "fetched_at": "2026-09-26T00:32:16.348217+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "tiingo_eod:WBA",
       "source_kind": "TIINGO_EOD_JSON",
       "source_url": "https://api.tiingo.com/tiingo/daily/wba/prices?startDate=2020-01-02&format=json",
@@ -23180,6 +23207,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "tiingo_search:EQR:VIVMARK_RESIDENTIAL",
+      "source_kind": "TIINGO_SEARCH_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/utilities/search?query=VIVMARK%20RESIDENTIAL&limit=25",
+      "sha256": "c74d8578d80822bd5119488318d3b3bee2dacc77c8de7638dd10c91303f36a89",
+      "bytes": 169,
+      "fetched_at": "2026-09-26T00:32:14.427772+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "tiingo_search:PINC",
       "source_kind": "TIINGO_SEARCH_JSON",
       "source_url": "https://api.tiingo.com/tiingo/utilities/search?query=Premier%2C%20Inc.&limit=25",
@@ -23189,12 +23225,30 @@
       "http_status": 200
     },
     {
+      "artifact_id": "tiingo_search:PINC:PREMIER",
+      "source_kind": "TIINGO_SEARCH_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/utilities/search?query=PREMIER&limit=25",
+      "sha256": "0ddb050e5752da6d21fc1798e670b4ea5ea4b0a0cb36cf39178524a4ae8c4549",
+      "bytes": 4372,
+      "fetched_at": "2026-09-26T00:32:20.265460+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "tiingo_search:WOLF",
       "source_kind": "TIINGO_SEARCH_JSON",
       "source_url": "https://api.tiingo.com/tiingo/utilities/search?query=WOLFSPEED%2C%20INC.&limit=25",
       "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "bytes": 2,
       "fetched_at": "2026-09-26T00:00:09.427777+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "tiingo_search:WOLF:WOLFSPEED",
+      "source_kind": "TIINGO_SEARCH_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/utilities/search?query=WOLFSPEED&limit=25",
+      "sha256": "ce934a8c08542cf2f3822751cb0fc85c5db4a7caabf42fd24aa802e39d5cd932",
+      "bytes": 169,
+      "fetched_at": "2026-09-26T00:32:22.045446+00:00",
       "http_status": 200
     },
     {
@@ -28491,11 +28545,11 @@
     },
     {
       "artifact_id": "yahoo_chart:EQR:5y",
-      "source_kind": "YAHOO_CHART",
-      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EQR?interval=1d&range=5y",
-      "sha256": "938cb1223973f1a8fd92e115fc74691705dad10279653b1a19456f9501e31915",
-      "bytes": 1271,
-      "fetched_at": "2026-09-25T11:11:23.647570+00:00",
+      "source_kind": "TIINGO_DAILY_RAW",
+      "source_url": "https://api.tiingo.com/tiingo/daily/us000000000543/prices?startDate=2020-01-02&format=json",
+      "sha256": "71aa4f1311bdfa8e14eeddb71c40a8044c8480f68e630c56c399488d03cd2121",
+      "bytes": 21415,
+      "fetched_at": "2026-09-26T00:32:19.915520+00:00",
       "http_status": 200
     },
     {

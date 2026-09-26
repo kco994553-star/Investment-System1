@@ -1,12 +1,12 @@
 {
   "artifact_id": "yahoo_chart:EQR:5y",
-  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/EQR?interval=1d&range=5y",
-  "source_kind": "YAHOO_CHART",
-  "fetched_at": "2026-09-25T11:11:23.647570+00:00",
-  "sha256": "938cb1223973f1a8fd92e115fc74691705dad10279653b1a19456f9501e31915",
-  "bytes": 1271,
-  "content_type": "application/json;charset=utf-8",
-  "fetcher": "tools/fetch_real_data.py v1",
+  "source_url": "https://api.tiingo.com/tiingo/daily/us000000000543/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-26T00:32:19.915520+00:00",
+  "sha256": "71aa4f1311bdfa8e14eeddb71c40a8044c8480f68e630c56c399488d03cd2121",
+  "bytes": 21415,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
   "http_status": 200,
-  "notes": ""
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar; Tiingo series 'us000000000543' matched by SEC issuer name"
 }

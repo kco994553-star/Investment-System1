@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_search:PINC:PREMIER",
+  "source_url": "https://api.tiingo.com/tiingo/utilities/search?query=PREMIER&limit=25",
+  "source_kind": "TIINGO_SEARCH_JSON",
+  "fetched_at": "2026-09-26T00:32:20.265460+00:00",
+  "sha256": "0ddb050e5752da6d21fc1798e670b4ea5ea4b0a0cb36cf39178524a4ae8c4549",
+  "bytes": 4372,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
