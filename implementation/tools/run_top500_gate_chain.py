@@ -179,6 +179,87 @@ def _as_of_price(store: RawDatasetStore, symbol: str, as_of, chart_range: str):
     return amc.mcap_price(bars[-1], amc.load_splits(store, symbol, chart_range), as_of) if bars else None
 
 
+SCALE_RATIO_BAND = (0.5, 2.0)
+
+
+def share_scale_check(cf: dict, as_of, shares: float) -> dict:
+    """Cross-check a companyfacts share count against the same issuer's latest basic weighted-average share count
+    (period ending and filed on or before as_of). A ratio outside SCALE_RATIO_BAND flags a possible XBRL scale error
+    (HXL 2024-10: 81,002,128,000,000 tagged for 81,002,128). No reference -> not flagged (nothing to compare)."""
+    from investment_system.universe.sources import _pit_rows
+    cut = as_of.date().isoformat()
+    rows = [r for r in _pit_rows(cf or {}, "us-gaap", "WeightedAverageNumberOfSharesOutstandingBasic", "shares", as_of)
+            if str(r.get("end") or "9999") <= cut and float(r["val"]) > 0]
+    if not rows or not shares:
+        return {"flagged": False, "reference": None}
+    ref = max(rows, key=lambda r: (str(r.get("end")), str(r["_filed"])))
+    ratio = shares / float(ref["val"])
+    return {"flagged": not (SCALE_RATIO_BAND[0] <= ratio <= SCALE_RATIO_BAND[1]), "ratio": ratio,
+            "reference": {"concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic", "val": ref["val"],
+                          "end": ref.get("end"), "filed": str(ref["_filed"])[:10], "accn": ref.get("accn")}}
+
+
+def cover_text_share_count(text: str, shares: float) -> tuple[int | None, int | None, str | None]:
+    """(k, count, quote): the unique k in (0, 3, 6, 9) such that shares / 10^k is an exact integer printed (with thousands
+    separators) in the filing's cover text near 'outstanding'. k = 0 confirms the XBRL value as printed."""
+    import re
+    found = []
+    for k in (0, 3, 6, 9):
+        if shares % (10 ** k):
+            continue
+        cnt = int(shares // (10 ** k))
+        if cnt < 1000:
+            continue
+        for m in re.finditer(re.escape(f"{cnt:,}"), text[:60000]):
+            ctx = text[max(0, m.start() - 250):m.end() + 250]
+            whole = not re.match(r",?\d", text[m.end():m.end() + 2]) and not re.search(r"[\d,]$", text[max(0, m.start() - 1):m.start()])
+            if whole and re.search(r"outstanding", ctx, re.I):
+                found.append((k, cnt, ctx))
+                break
+    ks = {f[0] for f in found}
+    return (found[0][0], found[0][1], found[0][2]) if len(ks) == 1 else (None, None, None)
+
+
+def share_scale_overrides(store: RawDatasetStore, listings: dict, overrides: dict, as_of, chart_range: str = "5y") -> dict:
+    """For companyfacts-ranked issuers whose share count fails share_scale_check: use the count printed in the cover text
+    of the latest 10-K/10-Q filed <= as_of (sec_filing_doc artifact) when exactly one power-of-ten reading matches;
+    otherwise EXCLUDE the issuer (not rankable, fail-closed). Never approximates."""
+    frc = _load("fetch_class_rights_evidence")
+    ev = {}
+    for cid, m in listings.items():
+        if cid in overrides:
+            continue
+        c = str(m.get("cik") or "")
+        if not c.isdigit():
+            continue
+        c = c.zfill(10)
+        cf = load_companyfacts(store, c)
+        sh = pit_shares(cf, as_of) if cf is not None else None
+        if not sh or sh["status"] != "OK" or not sh["shares"]:
+            continue
+        chk = share_scale_check(cf, as_of, sh["shares"])
+        if not chk["flagged"]:
+            continue
+        rec = {"cik": c, "xbrl_shares": sh["shares"], "check": chk}
+        f = select_filing(load_submissions_merged(store, c)[0] or {}, as_of)
+        did = f"sec_filing_doc:{c}:{f['accn']}" if f else None
+        k = cnt = quote = None
+        if did and store.has(did):
+            k, cnt, quote = cover_text_share_count(frc.html_text(store.get_bytes(did)), sh["shares"])
+        px = _as_of_price(store, str(m.get("yahoo") or ""), as_of, chart_range)
+        if cnt and px:
+            status = "SHARE_COUNT_CONFIRMED_BY_COVER_TEXT" if k == 0 else "SHARE_SCALE_CORRECTED_FROM_COVER_TEXT"
+            rec.update({"status": status, "document": did, "scale_power": k, "shares": cnt, "quote": quote,
+                        "formula": f"{cnt} shares (cover text) x {px}"})
+            overrides[cid] = {"mcap": cnt * px, "status": status, "source": did, "classes": [], "share_scale": rec}
+        else:
+            rec.update({"status": "SHARE_SCALE_UNVERIFIED", "document": did, "document_in_store": bool(did and store.has(did))})
+            overrides[cid] = {"mcap": None, "exclude": True, "status": "SHARE_SCALE_UNVERIFIED", "source": did, "classes": [],
+                              "share_scale": rec}
+        ev[m.get("yahoo")] = rec
+    return ev
+
+
 def cover_text_symbol_member(text: str, cover: dict) -> tuple[str | None, str | None]:
     """Listed member from the cover-page TEXT of the same filing when XBRL tags one undimensioned TradingSymbol for several
     classes and the Security12bTitle names no class letter (IAC: title 'Common stock', members CommonClassA/B). The title's
@@ -534,6 +615,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     listings, eligibility = eligibility_filter(store, listings, d)
     overrides, cover_unresolved = cover_mcap_overrides(store, listings, d, chart_range)
     class_econ = apply_class_economics(store, overrides, listings, class_economics, d)
+    share_scale = share_scale_overrides(store, listings, overrides, d, chart_range)
     nport_px = apply_nport_reported_prices(store, overrides, listings, nport_exception, nport_prices, d, chart_range)
     price_exceptions = {"price_type": "NPORT_REPORTED_VALUE", "issuers": nport_px,
                         "note": ("Valued at the SEC N-PORT reported value per share on 2024-12-31 (filed after as_of), not a market "
@@ -563,7 +645,8 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     # upper bound) are rankable for reference coverage; undetermined lower bounds stay not rankable.
     settled_syms = set(lb_settled)
     determined_ciks = {str(listings[c].get("cik") or "").zfill(10) for c in overrides
-                       if c in ranked_cids or listings[c].get("yahoo") in settled_syms or not overrides[c]["status"].endswith("LOWER_BOUND")}
+                       if not overrides[c].get("exclude") and (c in ranked_cids or listings[c].get("yahoo") in settled_syms
+                                                               or not overrides[c]["status"].endswith("LOWER_BOUND"))}
     cik_of = {amc._norm_ticker(m.get("yahoo")): str(m.get("cik") or "").zfill(10) for m in row_listings.values()}
 
     undetermined_ciks = {str(listings[c].get("cik") or "").zfill(10) for c in overrides} - determined_ciks
@@ -618,6 +701,10 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     # Diagnostic only: why each eligible issuer is not rankable (base gate: ELIGIBLE_LISTINGS_NOT_FULLY_RANKABLE).
     unrankable = {}
     for cid, m in listings.items():
+        if cid in overrides and overrides[cid].get("exclude"):
+            unrankable[m.get("yahoo")] = {"reason": overrides[cid]["status"], "cik": m.get("cik"),
+                                          "share_scale": overrides[cid].get("share_scale")}
+            continue
         if cid in overrides:
             continue
         det = amc.row_detail(store, m, d, chart_range)
@@ -643,6 +730,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "cover_unresolved": {listings[c].get("yahoo"): v for c, v in cover_unresolved.items()},
         "lower_bound_issuers_outside_top500": lb_outside, "lower_bound_settled_outside_by_upper_bound": lb_settled,
         "class_economics_verification": class_econ, "price_basis_exceptions": price_exceptions,
+        "share_scale_checks": share_scale,
         "unrankable_issuers": unrankable,
         "audit": audit, "rankable": audit["rankable"], "cutoff_500_mcap": cutoff,
         "top500": top_rows, "top500_quality_flag_counts": flag_counts,

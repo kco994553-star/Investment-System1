@@ -68,6 +68,8 @@ def audit(store:RawDatasetStore,listings:dict,as_of:datetime,chart_range='5y',mc
     ranked=[]
     for cid,m in listings.items():
         ov=(mcap_override or {}).get(cid)
+        if ov and ov.get('exclude'):
+            counts['ambiguous_shares']+=1; continue  # share count failed a consistency check (fail-closed)
         if ov and ov.get('mcap'):
             counts['companyfacts']+=1; counts['price']+=1; counts['rankable']+=1
             ranked.append((ov['mcap'],cid,m.get('yahoo'))); continue
@@ -414,6 +416,8 @@ def ranked_top500(store: RawDatasetStore, listings: dict, as_of: datetime, chart
     heap: list = []
     for cid, m in listings.items():
         ov = (mcap_override or {}).get(cid)
+        if ov and ov.get("exclude"):
+            continue
         if ov and ov.get("mcap"):
             _top500_push(heap, ov["mcap"], cid, m.get("yahoo"))
             continue

@@ -1278,3 +1278,45 @@ def test_run31_cover_text_maps_undimensioned_symbol_to_the_member_with_the_state
     store.put("yahoo_chart:IAC:5y", json.dumps(chart2).encode(), "u", "YAHOO", "application/json", "t", 200)
     ov2, unres2 = chain.cover_mcap_overrides(store, {"i": {"cik": cik, "yahoo": "PPLI"}}, amc_dt())
     assert unres2 == {"i": "NO_PRICED_CLASS"}
+
+
+def _scale_store(tmp_path, dei_val, doc_text=None):
+    store = RawDatasetStore(tmp_path)
+    cik = "0000717605"
+    cf = {"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [
+              {"filed": "2024-10-21", "end": "2024-10-18", "val": dei_val}]}}},
+          "us-gaap": {"WeightedAverageNumberOfSharesOutstandingBasic": {"units": {"shares": [
+              {"filed": "2024-10-21", "end": "2024-09-29", "val": 81_300_000, "accn": "0000717605-24-000060"}]}}}}}
+    store.put(f"companyfacts:{cik}", json.dumps(cf).encode(), "u", "SEC", "application/json", "t", 200)
+    _sub_with_filing(store, cik, accn="0000717605-24-000060")
+    chart = {"chart": {"result": [{"timestamp": [int(datetime(2024, 12, 27, 21, tzinfo=UTC).timestamp())],
+                                   "indicators": {"quote": [{"close": [62.59]}]}}], "error": None}}
+    store.put("yahoo_chart:HXL:5y", json.dumps(chart).encode(), "u", "YAHOO", "application/json", "t", 200)
+    if doc_text:
+        store.put(f"sec_filing_doc:{cik}:0000717605-24-000060", f"<html><p>{doc_text}</p></html>".encode(), "u", "SEC", "text/html", "t", 200)
+    return store, cik
+
+
+def test_run32_share_scale_error_corrected_only_from_cover_text(tmp_path):
+    """HXL: XBRL dei 81,002,128,000,000 (scale error x10^6) vs weighted-average 81.3M -> corrected to the count printed on
+    the 10-Q cover (81,002,128); without that document the issuer is excluded (not ranked with the inflated count)."""
+    chain = _mod("chain_scale", "run_top500_gate_chain.py")
+    amc = _mod("amc_scale", "audit_mcap_store.py")
+    listings = {"h": {"cik": "0000717605", "yahoo": "HXL"}}
+    store, cik = _scale_store(tmp_path / "a", 81_002_128_000_000,
+                              "The number of shares of common stock outstanding as of October 18, 2024 was 81,002,128.")
+    ov = {}
+    ev = chain.share_scale_overrides(store, listings, ov, amc_dt())
+    assert ev["HXL"]["status"] == "SHARE_SCALE_CORRECTED_FROM_COVER_TEXT" and ev["HXL"]["scale_power"] == 6
+    assert ov["h"]["mcap"] == 81_002_128 * 62.59
+    no_doc, _ = _scale_store(tmp_path / "b", 81_002_128_000_000)
+    ov2 = {}
+    assert chain.share_scale_overrides(no_doc, listings, ov2, amc_dt())["HXL"]["status"] == "SHARE_SCALE_UNVERIFIED"
+    assert amc.audit(no_doc, listings, amc_dt(), mcap_override=ov2)["rankable"] == 0
+    assert amc.ranked_top500(no_doc, listings, amc_dt(), mcap_override=ov2) == []
+    ok, _ = _scale_store(tmp_path / "c", 81_002_128)  # consistent -> untouched
+    assert chain.share_scale_overrides(ok, listings, {}, amc_dt()) == {}
+    # ambiguous: text prints both readings -> not corrected
+    amb, _ = _scale_store(tmp_path / "d", 81_002_128_000_000,
+                          "81,002,128 shares outstanding; authorized 81,002,128,000 shares outstanding")
+    assert chain.share_scale_overrides(amb, listings, {}, amc_dt())["HXL"]["status"] == "SHARE_SCALE_UNVERIFIED"

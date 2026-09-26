@@ -154,6 +154,12 @@ jobs:
       - name: Share-count diagnostic for PPLI (investigation only; post-as_of facts reported, never applied)
         if: inputs.skip_fetch != 'true'
         run: python tools/share_count_diagnostic.py --store data/raw --as-of "${{ inputs.as_of }}" --cik 0001800227
+      - name: Filing documents for issuers whose share count fails the scale cross-check (read by the gate chain)
+        if: inputs.skip_fetch != 'true'
+        run: |
+          X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
+          EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
+          python tools/fetch_share_scale_docs.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA
       - name: Recount store
         id: store2
         if: always()
