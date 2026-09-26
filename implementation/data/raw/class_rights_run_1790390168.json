@@ -1,0 +1,20 @@
+{
+ "log": [
+  {
+   "artifact_id": "sec_filing_doc:0001089063:0001089063-24-000037",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001089063:0001089063-24-000121",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001849253:0001628280-24-044413",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  }
+ ]
+}

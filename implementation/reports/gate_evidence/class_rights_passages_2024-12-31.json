@@ -10527,6 +10527,274 @@
      "unit": "usd"
     }
    ]
+  },
+  "DKS": {
+   "cik": "0001089063",
+   "cover_source": "xbrl_instance:0001089063:0001089063-24-000121",
+   "entity_name": "DICK'S SPORTING GOODS, INC.",
+   "classes": [
+    {
+     "member": "CommonClassAMember",
+     "shares": 57903976.0,
+     "date": "2024-11-22",
+     "symbol": "DKS",
+     "price": 231.74000549316406,
+     "symbol_basis": {
+      "basis": "REVIEWED_FILING_QUOTE",
+      "citations": [
+       {
+        "artifact_id": "sec_filing_doc:0001089063:0001089063-24-000037",
+        "quote": "We also have shares of Class B common stock outstanding, which are not listed or traded on any stock exchange or other market"
+       }
+      ]
+     }
+    },
+    {
+     "member": "CommonClassBMember",
+     "shares": 23570633.0,
+     "date": "2024-11-22",
+     "symbol": null,
+     "price": null
+    }
+   ],
+   "unlisted_members": [
+    "CommonClassBMember"
+   ],
+   "phrases": [
+    "Class B Common Stock",
+    "Class B Shares",
+    "Class B common stock",
+    "Class B shares"
+   ],
+   "documents": [
+    {
+     "form": "10-K",
+     "filed": "2024-03-28",
+     "accn": "0001089063-24-000037",
+     "primary_document": "dks-20240203.htm",
+     "artifact_id": "sec_filing_doc:0001089063:0001089063-24-000037",
+     "passages": [
+      {
+       "offset": 100038,
+       "text": "Stack, his relatives, and various trusts established for the benefit of their families, control a majority of the combined voting power of our common stock and Class B common stock and would control the outcome of a vote on any corporate transaction or other matter submitted to our stockholders for approval."
+      },
+      {
+       "offset": 128500,
+       "text": "We also have shares of Class B common stock outstanding, which are not listed or traded on any stock exchange or other market."
+      },
+      {
+       "offset": 128627,
+       "text": "Shares of our Class B common stock can be converted on a one-for-one basis to shares of our common stock at any time at the holder\u2019s option and are automatically converted upon the occurrence of certain events."
+      },
+      {
+       "offset": 203543,
+       "text": "AND SUBSIDIARIES CONSOLIDATED STATEMENTS OF CHANGES IN STOCKHOLDERS' EQUITY (in thousands, except per share data) Class B Common Stock Common Stock Additional Paid-In Capital Retained Earnings Accumulated Other Comprehensive Loss Treasury Stock Total Shares Amount Shares Amount BALANCE, January 30, 2021 61,195 $ 612 23,736 $ 237 $ 1,442,298 $ 3,064,702 $ ( 49 ) $ ( 2,168,266 ) $ 2,339,534 Exchange of Class B common stock for common stock 115 1 ( 115 ) ( 1 ) \u2014 \u2014 \u2014 \u2014 \u2014 Exercise of stock options 657 6 \u2014 \u2014 26,342 \u2014 \u2014 \u2014 26,348 Restricted stock vested 1,151 12 \u2014 \u2014 ( 12 ) \u2014 \u2014 \u2014 \u2014 Minimum tax withholding requirements ( 341 ) ( 3 ) \u2014 \u2014 ( 32,594 ) \u2014 \u2014 \u2014 ( 32,597 ) Net income \u2014 \u2014 \u2014 \u2014 \u2014 1,519,871 \u2014 \u2014 1,"
+      },
+      {
+       "offset": 204513,
+       "text": "10 per common share \u2014 \u2014 \u2014 \u2014 \u2014 ( 627,971 ) \u2014 \u2014 ( 627,971 ) BALANCE, January 29, 2022 51,989 $ 520 23,621 $ 236 $ 1,488,834 $ 3,956,602 $ ( 82 ) $ ( 3,344,524 ) $ 2,101,586 Adjustment for cumulative effect from change in accounting principle (ASU 2020-06) \u2014 \u2014 \u2014 \u2014 ( 118,961 ) 34,232 \u2014 \u2014 ( 84,729 ) Exchange of convertible senior notes due 2025 and partial unwind of convertible bond hedge and warrants 9,782 98 \u2014 \u2014 16,643 \u2014 \u2014 \u2014 16,741 Exchange of Class B common stock for common stock 50 \u2014 ( 50 ) \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 Exercise of stock options 837 8 \u2014 \u2014 23,673 \u2014 \u2014 \u2014 23,681 Restricted stock vested 1,285 13 \u2014 \u2014 ( 13 ) \u2014 \u2014 \u2014 \u2014 Minimum tax withholding requirements ( 425 ) ( 4 ) \u2014 \u2014 ( 43,932 ) \u2014 \u2014 \u2014 ( 43,936 ) Ne"
+      },
+      {
+       "offset": 262060,
+       "text": "Holders of common stock generally have rights identical to holders of Class B common stock, except that holders of common stock are entitled to one vote per share and holders of Class B common stock are entitled to ten votes per share."
+      },
+      {
+       "offset": 262502,
+       "text": "Each share of Class B common stock can be converted at any time into one share of common stock at the holder\u2019s option."
+      },
+      {
+       "offset": 262722,
+       "text": "10 per share of common stock and Class B common stock during fiscal 2023, 2022 and 2021, respectively, which resulted in cash payments for dividends of $ 351."
+      }
+     ]
+    },
+    {
+     "form": "10-Q",
+     "filed": "2024-11-27",
+     "accn": "0001089063-24-000121",
+     "primary_document": "dks-20241102.htm",
+     "artifact_id": "sec_filing_doc:0001089063:0001089063-24-000121",
+     "passages": []
+    }
+   ],
+   "cover_instance_unit_facts": [
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": 297073000.0,
+     "date": "2024-11-02",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": 268646000.0,
+     "date": "2023-10-28",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": 1121760000.0,
+     "date": "2024-11-02",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": 922807000.0,
+     "date": "2023-10-28",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetSharesForTheConvertibleSeniorNoteRetirement",
+     "value": 1723000.0,
+     "date": "2023-04-29",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "EquityImpactOfConvertibleSeniorNotesRetirement",
+     "value": 17000.0,
+     "date": "2023-04-29",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "EquityImpactOfConvertibleSeniorNotesRetirement",
+     "value": 58455000.0,
+     "date": "2023-04-29",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "EquityImpactOfConvertibleSeniorNotesRetirement",
+     "value": 58472000.0,
+     "date": "2023-04-29",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "RepaymentsOfConvertibleDebt",
+     "value": 0.0,
+     "date": "2024-11-02",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "RepaymentsOfConvertibleDebt",
+     "value": 137000.0,
+     "date": "2023-10-28",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "EffectOfExchangeRateOnCashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
+     "value": -190000.0,
+     "date": "2024-11-02",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "EffectOfExchangeRateOnCashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
+     "value": -210000.0,
+     "date": "2023-10-28",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect",
+     "value": -342565000.0,
+     "date": "2024-11-02",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect",
+     "value": -518172000.0,
+     "date": "2023-10-28",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "InterestExpenseAssociatedWithConvertibleSeniorNotesNetOfTax",
+     "value": 0.0,
+     "date": "2024-11-02",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "InterestExpenseAssociatedWithConvertibleSeniorNotesNetOfTax",
+     "value": 0.0,
+     "date": "2023-10-28",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "InterestExpenseAssociatedWithConvertibleSeniorNotesNetOfTax",
+     "value": 0.0,
+     "date": "2024-11-02",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "InterestExpenseAssociatedWithConvertibleSeniorNotesNetOfTax",
+     "value": 337000.0,
+     "date": "2023-10-28",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncrementalCommonSharesAttributableToConvertibleDebt",
+     "value": 338000.0,
+     "date": "2023-10-28",
+     "dims": [],
+     "unit": "shares"
+    },
+    {
+     "concept": "IncrementalCommonSharesAttributableToConvertibleDebt",
+     "value": 0.0,
+     "date": "2024-11-02",
+     "dims": [],
+     "unit": "shares"
+    },
+    {
+     "concept": "IncrementalCommonSharesAttributableToConvertibleDebt",
+     "value": 0.0,
+     "date": "2023-10-28",
+     "dims": [],
+     "unit": "shares"
+    },
+    {
+     "concept": "IncrementalCommonSharesAttributableToConvertibleDebt",
+     "value": 0.0,
+     "date": "2024-11-02",
+     "dims": [],
+     "unit": "shares"
+    },
+    {
+     "concept": "RightOfUseAssetObtainedInExchangeForOperatingLeaseLiability",
+     "value": 633487000.0,
+     "date": "2024-11-02",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "RightOfUseAssetObtainedInExchangeForOperatingLeaseLiability",
+     "value": 532812000.0,
+     "date": "2023-10-28",
+     "dims": [],
+     "unit": "usd"
+    }
+   ]
   }
  }
 }

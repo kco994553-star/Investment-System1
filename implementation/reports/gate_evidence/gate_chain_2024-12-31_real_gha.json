@@ -1192,6 +1192,36 @@
         }
       ]
     },
+    "IBKR": {
+      "mcap": 19483892959.777725,
+      "status": "COVER_CLASS_SUM_LOWER_BOUND",
+      "source": "xbrl_instance:0001381197:0001381197-24-000143",
+      "classes": [
+        {
+          "member": "CommonClassAMember",
+          "shares": 108878979.0,
+          "date": "2024-11-02",
+          "symbol": "IBKR",
+          "price": 178.9499969482422,
+          "symbol_basis": {
+            "basis": "REVIEWED_FILING_QUOTE",
+            "citations": [
+              {
+                "artifact_id": "sec_filing_doc:0001381197:0001381197-24-000083",
+                "quote": "Unless otherwise indicated, the terms \u201ccommon stock\u201d and \u201cIBKR shares\u201d refer to the Class A common stock of IBG, Inc"
+              }
+            ]
+          }
+        },
+        {
+          "member": "CommonClassBMember",
+          "shares": 100.0,
+          "date": "2024-11-02",
+          "symbol": null,
+          "price": null
+        }
+      ]
+    },
     "NET": {
       "mcap": 33331970552.52426,
       "status": "COVER_CLASS_SUM_LOWER_BOUND",
@@ -1916,8 +1946,8 @@
       ]
     },
     "RYAN": {
-      "mcap": 7975935460.597382,
-      "status": "COVER_CLASS_SUM_LOWER_BOUND",
+      "mcap": 16684561026.311127,
+      "status": "COVER_ECONOMIC_EQUIVALENT",
       "source": "xbrl_instance:0001849253:0001628280-24-044413",
       "classes": [
         {
@@ -1934,7 +1964,57 @@
           "symbol": null,
           "price": null
         }
-      ]
+      ],
+      "lower_bound": 7975935460.597382,
+      "class_economics": {
+        "status": "ECONOMIC_EQUIVALENT_DETERMINED",
+        "listed_price": 63.720001220703125,
+        "economic_equivalent_listed_shares": 261841819.0,
+        "formula": "(CommonClassAMember 125171615 x 1 + CommonClassBMember 136670204 x 1) x 63.720001220703125",
+        "double_count_check": "Class B count (136,670,204 on the 10-Q cover) = LLC Common Units held by unitholders other than the Company ('Each LLC Unitholder, other than the Company, has an equivalent number of shares of our Class B common stock'); the Company's own units match its Class A shares one-to-one (New LLC Operating Agreement), so A + B counts each economic unit once.",
+        "citations": [
+          {
+            "class": "CommonClassBMember",
+            "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+            "filed": "2024-02-28",
+            "supports": [
+              "pairing"
+            ],
+            "quote": "Future transfers by the holders of LLC Common Units (who own an equal number of 10 votes per share Class B common stock related thereto) will generally result in those shares converting into shares of Class A common stock and the cancellation of the related Class B common stock, subject to limited exceptions, such as certain transfers effected for estate planning or charitable purposes."
+          },
+          {
+            "class": "CommonClassBMember",
+            "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+            "filed": "2024-02-28",
+            "supports": [
+              "exchange_ratio",
+              "pairing"
+            ],
+            "quote": "The non-controlling interest holders may, subject to certain exceptions, exchange some or all of their LLC Common Units for newly-issued shares of Class A common stock on a one-for-one basis, or for cash, at the Company\u2019s election (determined by a majority of the Company\u2019s directors who are disinterested) and only to the extent that the Company has received cash proceeds pursuant to a secondary offering.",
+            "names": "PAIRED_INSTRUMENT_ONLY"
+          },
+          {
+            "class": "CommonClassBMember",
+            "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+            "filed": "2024-02-28",
+            "supports": [
+              "exchange_ratio",
+              "pairing"
+            ],
+            "quote": "Each LLC Unitholder, other than the Company, has an equivalent number of shares of our Class B common stock which are entitled to 10 votes per share."
+          },
+          {
+            "class": "CommonClassBMember",
+            "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+            "filed": "2024-02-28",
+            "supports": [
+              "exchange_ratio",
+              "pairing"
+            ],
+            "quote": "Holders of Class B common stock do not have any right to receive dividends or distributions upon the liquidation or winding up of the Company."
+          }
+        ]
+      }
     },
     "DKNG": {
       "mcap": 18090988372.83912,
@@ -3718,31 +3798,6 @@
         "formula": "716619686 shares (cover text) x 289.6000061035156"
       }
     },
-    "IBKR": {
-      "mcap": null,
-      "exclude": true,
-      "status": "SHARE_SCALE_UNVERIFIED",
-      "source": "sec_filing_doc:0001381197:0001381197-24-000143",
-      "classes": [],
-      "share_scale": {
-        "cik": "0001381197",
-        "xbrl_shares": 42231651.0,
-        "check": {
-          "flagged": true,
-          "ratio": 0.3915682345599893,
-          "reference": {
-            "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
-            "val": 107852597,
-            "end": "2024-09-30",
-            "filed": "2024-11-07",
-            "accn": "0001381197-24-000143"
-          }
-        },
-        "status": "SHARE_SCALE_UNVERIFIED",
-        "document": "sec_filing_doc:0001381197:0001381197-24-000143",
-        "document_in_store": true
-      }
-    },
     "EPD": {
       "mcap": 67628340592.92846,
       "status": "SHARE_COUNT_CONFIRMED_BY_COVER_TEXT",
@@ -4119,12 +4174,9 @@
       }
     }
   },
-  "cover_unresolved": {
-    "IBKR": "NO_PRICED_CLASS"
-  },
+  "cover_unresolved": {},
   "lower_bound_issuers_outside_top500": [
-    "DKS",
-    "RYAN"
+    "DKS"
   ],
   "lower_bound_settled_outside_by_upper_bound": {
     "CWEN": {
@@ -4313,6 +4365,56 @@
     }
   },
   "class_economics_verification": {
+    "RYAN": {
+      "status": "ECONOMIC_EQUIVALENT_DETERMINED",
+      "listed_price": 63.720001220703125,
+      "economic_equivalent_listed_shares": 261841819.0,
+      "formula": "(CommonClassAMember 125171615 x 1 + CommonClassBMember 136670204 x 1) x 63.720001220703125",
+      "double_count_check": "Class B count (136,670,204 on the 10-Q cover) = LLC Common Units held by unitholders other than the Company ('Each LLC Unitholder, other than the Company, has an equivalent number of shares of our Class B common stock'); the Company's own units match its Class A shares one-to-one (New LLC Operating Agreement), so A + B counts each economic unit once.",
+      "citations": [
+        {
+          "class": "CommonClassBMember",
+          "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+          "filed": "2024-02-28",
+          "supports": [
+            "pairing"
+          ],
+          "quote": "Future transfers by the holders of LLC Common Units (who own an equal number of 10 votes per share Class B common stock related thereto) will generally result in those shares converting into shares of Class A common stock and the cancellation of the related Class B common stock, subject to limited exceptions, such as certain transfers effected for estate planning or charitable purposes."
+        },
+        {
+          "class": "CommonClassBMember",
+          "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+          "filed": "2024-02-28",
+          "supports": [
+            "exchange_ratio",
+            "pairing"
+          ],
+          "quote": "The non-controlling interest holders may, subject to certain exceptions, exchange some or all of their LLC Common Units for newly-issued shares of Class A common stock on a one-for-one basis, or for cash, at the Company\u2019s election (determined by a majority of the Company\u2019s directors who are disinterested) and only to the extent that the Company has received cash proceeds pursuant to a secondary offering.",
+          "names": "PAIRED_INSTRUMENT_ONLY"
+        },
+        {
+          "class": "CommonClassBMember",
+          "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+          "filed": "2024-02-28",
+          "supports": [
+            "exchange_ratio",
+            "pairing"
+          ],
+          "quote": "Each LLC Unitholder, other than the Company, has an equivalent number of shares of our Class B common stock which are entitled to 10 votes per share."
+        },
+        {
+          "class": "CommonClassBMember",
+          "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+          "filed": "2024-02-28",
+          "supports": [
+            "exchange_ratio",
+            "pairing"
+          ],
+          "quote": "Holders of Class B common stock do not have any right to receive dividends or distributions upon the liquidation or winding up of the Company."
+        }
+      ],
+      "lower_bound": 7975935460.597382
+    },
     "TPG": {
       "status": "ECONOMIC_EQUIVALENT_DETERMINED",
       "listed_price": 63.40999984741211,
@@ -4537,24 +4639,6 @@
       "shares": 716619686,
       "quote": "or complying with any new or revised financial accounting standards provided pursuant to Section 13(a) of the Exchange Act. \u2610 Indicate by check mark whether the registrant is a shell company (as defined in Rule 12b-2 of the Exchange Act). Yes \u2610 No \u2612 716,619,686 (Number of shares of common stock outstanding as of September 30, 2024 ) Table of Contents McDONALD\u2019S CORPORATION ___________________________ INDEX _______ Page Reference Part I. Financial Information Item 1 \u2013 Financial Statements Condensed Consolid",
       "formula": "716619686 shares (cover text) x 289.6000061035156"
-    },
-    "IBKR": {
-      "cik": "0001381197",
-      "xbrl_shares": 42231651.0,
-      "check": {
-        "flagged": true,
-        "ratio": 0.3915682345599893,
-        "reference": {
-          "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
-          "val": 107852597,
-          "end": "2024-09-30",
-          "filed": "2024-11-07",
-          "accn": "0001381197-24-000143"
-        }
-      },
-      "status": "SHARE_SCALE_UNVERIFIED",
-      "document": "sec_filing_doc:0001381197:0001381197-24-000143",
-      "document_in_store": true
     },
     "EPD": {
       "cik": "0001061219",
@@ -4809,61 +4893,37 @@
       }
     ],
     "shares_basis_counts": {
-      "COMPANYFACTS_PIT": 441,
-      "COVER_CLASS_SUM_LOWER_BOUND": 43,
+      "COMPANYFACTS_PIT": 440,
+      "COVER_CLASS_SUM_LOWER_BOUND": 44,
       "COVER_CLASS_SUM": 8,
       "SHARE_COUNT_CONFIRMED_BY_COVER_TEXT": 3,
       "COVER_TEXT_SINGLE_COUNT": 1,
       "COVER_ECONOMIC_EQUIVALENT": 4
     },
-    "universe_id": "uni_53843ba0aa55",
-    "snapshot_cutoff_mcap": 15189432272.263092
+    "universe_id": "uni_cb83b23cecd0",
+    "snapshot_cutoff_mcap": 15279529527.955627
   },
-  "unrankable_issuers": {
-    "IBKR": {
-      "reason": "SHARE_SCALE_UNVERIFIED",
-      "cik": "0001381197",
-      "share_scale": {
-        "cik": "0001381197",
-        "xbrl_shares": 42231651.0,
-        "check": {
-          "flagged": true,
-          "ratio": 0.3915682345599893,
-          "reference": {
-            "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
-            "val": 107852597,
-            "end": "2024-09-30",
-            "filed": "2024-11-07",
-            "accn": "0001381197-24-000143"
-          }
-        },
-        "status": "SHARE_SCALE_UNVERIFIED",
-        "document": "sec_filing_doc:0001381197:0001381197-24-000143",
-        "document_in_store": true
-      },
-      "stale": null
-    }
-  },
+  "unrankable_issuers": {},
   "audit": {
     "kind": "PIT_MCAP_STORE_COVERAGE_AUDIT",
     "as_of": "2024-12-31T00:00:00+00:00",
     "chart_range": "5y",
     "listings": 982,
-    "companyfacts": 981,
-    "price": 981,
-    "rankable": 981,
+    "companyfacts": 982,
+    "price": 982,
+    "rankable": 982,
     "missing_companyfacts": 0,
     "missing_price": 0,
     "missing_shares": 0,
-    "ambiguous_shares": 1,
+    "ambiguous_shares": 0,
     "non_positive": 0,
-    "top_cutoff_mcap_if_500_rankable": 15189432272.263092,
+    "top_cutoff_mcap_if_500_rankable": 15279529527.955627,
     "candidate_pool_complete": false,
     "justified_official_top500": false,
     "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
   },
-  "rankable": 981,
-  "cutoff_500_mcap": 15189432272.263092,
+  "rankable": 982,
+  "cutoff_500_mcap": 15279529527.955627,
   "top500": [
     {
       "rank": 1,
@@ -18078,6 +18138,64 @@
     },
     {
       "rank": 420,
+      "company_id": "ibkr",
+      "yahoo": "IBKR",
+      "mcap": 19483892959.777725,
+      "cik": "0001381197",
+      "detail": {
+        "yahoo": "IBKR",
+        "cik": "0001381197",
+        "shares_status": "OK",
+        "shares": 42231651.0,
+        "shares_source": "dei:EntityCommonStockSharesOutstanding",
+        "shares_available_at": "2011-05-06 00:00:00+00:00",
+        "price_observed_at": "2024-12-30T14:30:00+00:00",
+        "close": 44.73749923706055,
+        "adjclose": 44.36964797973633,
+        "split_events": 1,
+        "split_factor_after_as_of": 4.0,
+        "mcap_price": 178.9499969482422,
+        "mcap": 7557353817.569229,
+        "share_concepts_present": null,
+        "pit_filer_status": "DOMESTIC"
+      },
+      "cover_override": {
+        "mcap": 19483892959.777725,
+        "status": "COVER_CLASS_SUM_LOWER_BOUND",
+        "source": "xbrl_instance:0001381197:0001381197-24-000143",
+        "classes": [
+          {
+            "member": "CommonClassAMember",
+            "shares": 108878979.0,
+            "date": "2024-11-02",
+            "symbol": "IBKR",
+            "price": 178.9499969482422,
+            "symbol_basis": {
+              "basis": "REVIEWED_FILING_QUOTE",
+              "citations": [
+                {
+                  "artifact_id": "sec_filing_doc:0001381197:0001381197-24-000083",
+                  "quote": "Unless otherwise indicated, the terms \u201ccommon stock\u201d and \u201cIBKR shares\u201d refer to the Class A common stock of IBG, Inc"
+                }
+              ]
+            }
+          },
+          {
+            "member": "CommonClassBMember",
+            "shares": 100.0,
+            "date": "2024-11-02",
+            "symbol": null,
+            "price": null
+          }
+        ]
+      },
+      "quality_flags": [],
+      "notes": [
+        "RANK_IS_LOWER_BOUND"
+      ]
+    },
+    {
+      "rank": 421,
       "company_id": "plan:cfg",
       "yahoo": "CFG",
       "mcap": 19196915822.690083,
@@ -18104,7 +18222,7 @@
       "notes": []
     },
     {
-      "rank": 421,
+      "rank": 422,
       "company_id": "plan:lh",
       "yahoo": "LH",
       "mcap": 19140845390.343536,
@@ -18131,7 +18249,7 @@
       "notes": []
     },
     {
-      "rank": 422,
+      "rank": 423,
       "company_id": "plan:ldos",
       "yahoo": "LDOS",
       "mcap": 19103617971.20668,
@@ -18158,7 +18276,7 @@
       "notes": []
     },
     {
-      "rank": 423,
+      "rank": 424,
       "company_id": "plan:fslr",
       "yahoo": "FSLR",
       "mcap": 19063771121.354248,
@@ -18185,7 +18303,7 @@
       "notes": []
     },
     {
-      "rank": 424,
+      "rank": 425,
       "company_id": "plan:erie",
       "yahoo": "ERIE",
       "mcap": 19001259019.37256,
@@ -18253,7 +18371,7 @@
       ]
     },
     {
-      "rank": 425,
+      "rank": 426,
       "company_id": "plan:ctra",
       "yahoo": "CTRA",
       "mcap": 18798364270.4,
@@ -18280,7 +18398,7 @@
       "notes": []
     },
     {
-      "rank": 426,
+      "rank": 427,
       "company_id": "r1000:0001402436",
       "yahoo": "SSNC",
       "mcap": 18739857918.51004,
@@ -18307,7 +18425,7 @@
       "notes": []
     },
     {
-      "rank": 427,
+      "rank": 428,
       "company_id": "plan:nrg",
       "yahoo": "NRG",
       "mcap": 18666491581.041756,
@@ -18334,7 +18452,7 @@
       "notes": []
     },
     {
-      "rank": 428,
+      "rank": 429,
       "company_id": "plan:ip",
       "yahoo": "IP",
       "mcap": 18638455074.002975,
@@ -18361,7 +18479,7 @@
       "notes": []
     },
     {
-      "rank": 429,
+      "rank": 430,
       "company_id": "r1000:0001261333",
       "yahoo": "DOCU",
       "mcap": 18525521413.1743,
@@ -18388,7 +18506,7 @@
       "notes": []
     },
     {
-      "rank": 430,
+      "rank": 431,
       "company_id": "plan:podd",
       "yahoo": "PODD",
       "mcap": 18473326916.488647,
@@ -18415,7 +18533,7 @@
       "notes": []
     },
     {
-      "rank": 431,
+      "rank": 432,
       "company_id": "plan:l",
       "yahoo": "L",
       "mcap": 18378178786.899628,
@@ -18442,7 +18560,7 @@
       "notes": []
     },
     {
-      "rank": 432,
+      "rank": 433,
       "company_id": "plan:bby",
       "yahoo": "BBY",
       "mcap": 18354352191.3238,
@@ -18469,7 +18587,7 @@
       "notes": []
     },
     {
-      "rank": 433,
+      "rank": 434,
       "company_id": "plan:fds",
       "yahoo": "FDS",
       "mcap": 18336455426.36139,
@@ -18496,7 +18614,7 @@
       "notes": []
     },
     {
-      "rank": 434,
+      "rank": 435,
       "company_id": "stx",
       "yahoo": "STX",
       "mcap": 18303648155.555267,
@@ -18523,7 +18641,7 @@
       "notes": []
     },
     {
-      "rank": 435,
+      "rank": 436,
       "company_id": "plan:coo",
       "yahoo": "COO",
       "mcap": 18247839556.087784,
@@ -18550,7 +18668,7 @@
       "notes": []
     },
     {
-      "rank": 436,
+      "rank": 437,
       "company_id": "plan:ess",
       "yahoo": "ESS",
       "mcap": 18174843973.484802,
@@ -18577,7 +18695,7 @@
       "notes": []
     },
     {
-      "rank": 437,
+      "rank": 438,
       "company_id": "r1000:0001883685",
       "yahoo": "DKNG",
       "mcap": 18090988372.83912,
@@ -18675,7 +18793,7 @@
       ]
     },
     {
-      "rank": 438,
+      "rank": 439,
       "company_id": "r1000:0001579298",
       "yahoo": "BURL",
       "mcap": 18079389164.2854,
@@ -18702,7 +18820,7 @@
       "notes": []
     },
     {
-      "rank": 439,
+      "rank": 440,
       "company_id": "r1000:0001552033",
       "yahoo": "TRU",
       "mcap": 18076975000.0,
@@ -18729,7 +18847,7 @@
       "notes": []
     },
     {
-      "rank": 440,
+      "rank": 441,
       "company_id": "r1000:0001527166",
       "yahoo": "CG",
       "mcap": 18070057469.453487,
@@ -18756,7 +18874,7 @@
       "notes": []
     },
     {
-      "rank": 441,
+      "rank": 442,
       "company_id": "plan:maa",
       "yahoo": "MAA",
       "mcap": 17887358949.92125,
@@ -18783,7 +18901,7 @@
       "notes": []
     },
     {
-      "rank": 442,
+      "rank": 443,
       "company_id": "plan:sna",
       "yahoo": "SNA",
       "mcap": 17850415935.248352,
@@ -18810,7 +18928,7 @@
       "notes": []
     },
     {
-      "rank": 443,
+      "rank": 444,
       "company_id": "plan:bf-b",
       "yahoo": "BF-B",
       "mcap": 17801725260.8653,
@@ -18861,7 +18979,7 @@
       "notes": []
     },
     {
-      "rank": 444,
+      "rank": 445,
       "company_id": "plan:pfg",
       "yahoo": "PFG",
       "mcap": 17664499167.307533,
@@ -18888,7 +19006,7 @@
       "notes": []
     },
     {
-      "rank": 445,
+      "rank": 446,
       "company_id": "r1000:0001441816",
       "yahoo": "MDB",
       "mcap": 17419417383.079468,
@@ -18915,7 +19033,7 @@
       "notes": []
     },
     {
-      "rank": 446,
+      "rank": 447,
       "company_id": "r1000:0001650164",
       "yahoo": "TOST",
       "mcap": 17370480503.082275,
@@ -18964,7 +19082,7 @@
       ]
     },
     {
-      "rank": 447,
+      "rank": 448,
       "company_id": "plan:stld",
       "yahoo": "STLD",
       "mcap": 17325480895.614853,
@@ -18991,7 +19109,7 @@
       "notes": []
     },
     {
-      "rank": 448,
+      "rank": 449,
       "company_id": "plan:el",
       "yahoo": "EL",
       "mcap": 17318617187.342102,
@@ -19065,7 +19183,7 @@
       ]
     },
     {
-      "rank": 449,
+      "rank": 450,
       "company_id": "plan:trmb",
       "yahoo": "TRMB",
       "mcap": 17303748232.807777,
@@ -19092,7 +19210,7 @@
       "notes": []
     },
     {
-      "rank": 450,
+      "rank": 451,
       "company_id": "r1000:0001506293",
       "yahoo": "PINS",
       "mcap": 17293059487.845413,
@@ -19141,7 +19259,7 @@
       ]
     },
     {
-      "rank": 451,
+      "rank": 452,
       "company_id": "plan:jbht",
       "yahoo": "JBHT",
       "mcap": 17174366249.44516,
@@ -19168,7 +19286,7 @@
       "notes": []
     },
     {
-      "rank": 452,
+      "rank": 453,
       "company_id": "plan:ni",
       "yahoo": "NI",
       "mcap": 17130787564.224072,
@@ -19195,7 +19313,7 @@
       "notes": []
     },
     {
-      "rank": 453,
+      "rank": 454,
       "company_id": "plan:hrl",
       "yahoo": "HRL",
       "mcap": 17129203585.263618,
@@ -19269,7 +19387,7 @@
       ]
     },
     {
-      "rank": 454,
+      "rank": 455,
       "company_id": "plan:are",
       "yahoo": "ARE",
       "mcap": 17091749463.53209,
@@ -19296,7 +19414,7 @@
       "notes": []
     },
     {
-      "rank": 455,
+      "rank": 456,
       "company_id": "r1000:0001820953",
       "yahoo": "AFRM",
       "mcap": 17030232271.299889,
@@ -19345,7 +19463,7 @@
       ]
     },
     {
-      "rank": 456,
+      "rank": 457,
       "company_id": "plan:key",
       "yahoo": "KEY",
       "mcap": 16960852495.49112,
@@ -19372,7 +19490,7 @@
       "notes": []
     },
     {
-      "rank": 457,
+      "rank": 458,
       "company_id": "r1000:0001818874",
       "yahoo": "SOFI",
       "mcap": 16960845780.435204,
@@ -19399,7 +19517,7 @@
       "notes": []
     },
     {
-      "rank": 458,
+      "rank": 459,
       "company_id": "plan:gen",
       "yahoo": "GEN",
       "mcap": 16871691561.460209,
@@ -19426,7 +19544,7 @@
       "notes": []
     },
     {
-      "rank": 459,
+      "rank": 460,
       "company_id": "plan:dgx",
       "yahoo": "DGX",
       "mcap": 16850544011.819,
@@ -19453,7 +19571,7 @@
       "notes": []
     },
     {
-      "rank": 460,
+      "rank": 461,
       "company_id": "r1000:0001617640",
       "yahoo": "ZG",
       "mcap": 16782149244.687286,
@@ -19546,7 +19664,7 @@
       ]
     },
     {
-      "rank": 461,
+      "rank": 462,
       "company_id": "plan:omc",
       "yahoo": "OMC",
       "mcap": 16742889095.902313,
@@ -19573,7 +19691,7 @@
       "notes": []
     },
     {
-      "rank": 462,
+      "rank": 463,
       "company_id": "r1000:0000790051",
       "yahoo": "CSL",
       "mcap": 16710878604.875214,
@@ -19600,7 +19718,104 @@
       "notes": []
     },
     {
-      "rank": 463,
+      "rank": 464,
+      "company_id": "r1000:0001849253",
+      "yahoo": "RYAN",
+      "mcap": 16684561026.311127,
+      "cik": "0001849253",
+      "detail": {
+        "yahoo": "RYAN",
+        "cik": "0001849253",
+        "shares_status": "OK",
+        "shares": 109903867.0,
+        "shares_source": "dei:EntityCommonStockSharesOutstanding",
+        "shares_available_at": "2021-09-02 00:00:00+00:00",
+        "price_observed_at": "2024-12-30T14:30:00+00:00",
+        "close": 63.720001220703125,
+        "adjclose": 62.57481384277344,
+        "split_events": 0,
+        "split_factor_after_as_of": 1.0,
+        "mcap_price": 63.720001220703125,
+        "mcap": 7003074539.399994,
+        "share_concepts_present": null,
+        "pit_filer_status": "DOMESTIC"
+      },
+      "cover_override": {
+        "mcap": 16684561026.311127,
+        "status": "COVER_ECONOMIC_EQUIVALENT",
+        "source": "xbrl_instance:0001849253:0001628280-24-044413",
+        "classes": [
+          {
+            "member": "CommonClassAMember",
+            "shares": 125171615.0,
+            "date": "2024-10-28",
+            "symbol": "RYAN",
+            "price": 63.720001220703125
+          },
+          {
+            "member": "CommonClassBMember",
+            "shares": 136670204.0,
+            "date": "2024-10-28",
+            "symbol": null,
+            "price": null
+          }
+        ],
+        "lower_bound": 7975935460.597382,
+        "class_economics": {
+          "status": "ECONOMIC_EQUIVALENT_DETERMINED",
+          "listed_price": 63.720001220703125,
+          "economic_equivalent_listed_shares": 261841819.0,
+          "formula": "(CommonClassAMember 125171615 x 1 + CommonClassBMember 136670204 x 1) x 63.720001220703125",
+          "double_count_check": "Class B count (136,670,204 on the 10-Q cover) = LLC Common Units held by unitholders other than the Company ('Each LLC Unitholder, other than the Company, has an equivalent number of shares of our Class B common stock'); the Company's own units match its Class A shares one-to-one (New LLC Operating Agreement), so A + B counts each economic unit once.",
+          "citations": [
+            {
+              "class": "CommonClassBMember",
+              "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+              "filed": "2024-02-28",
+              "supports": [
+                "pairing"
+              ],
+              "quote": "Future transfers by the holders of LLC Common Units (who own an equal number of 10 votes per share Class B common stock related thereto) will generally result in those shares converting into shares of Class A common stock and the cancellation of the related Class B common stock, subject to limited exceptions, such as certain transfers effected for estate planning or charitable purposes."
+            },
+            {
+              "class": "CommonClassBMember",
+              "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+              "filed": "2024-02-28",
+              "supports": [
+                "exchange_ratio",
+                "pairing"
+              ],
+              "quote": "The non-controlling interest holders may, subject to certain exceptions, exchange some or all of their LLC Common Units for newly-issued shares of Class A common stock on a one-for-one basis, or for cash, at the Company\u2019s election (determined by a majority of the Company\u2019s directors who are disinterested) and only to the extent that the Company has received cash proceeds pursuant to a secondary offering.",
+              "names": "PAIRED_INSTRUMENT_ONLY"
+            },
+            {
+              "class": "CommonClassBMember",
+              "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+              "filed": "2024-02-28",
+              "supports": [
+                "exchange_ratio",
+                "pairing"
+              ],
+              "quote": "Each LLC Unitholder, other than the Company, has an equivalent number of shares of our Class B common stock which are entitled to 10 votes per share."
+            },
+            {
+              "class": "CommonClassBMember",
+              "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+              "filed": "2024-02-28",
+              "supports": [
+                "exchange_ratio",
+                "pairing"
+              ],
+              "quote": "Holders of Class B common stock do not have any right to receive dividends or distributions upon the liquidation or winding up of the Company."
+            }
+          ]
+        }
+      },
+      "quality_flags": [],
+      "notes": []
+    },
+    {
+      "rank": 465,
       "company_id": "r1000:0001046102",
       "yahoo": "RBA",
       "mcap": 16667417613.209366,
@@ -19627,7 +19842,7 @@
       "notes": []
     },
     {
-      "rank": 464,
+      "rank": 466,
       "company_id": "r1000:0001447669",
       "yahoo": "TWLO",
       "mcap": 16660537589.420906,
@@ -19654,7 +19869,7 @@
       "notes": []
     },
     {
-      "rank": 465,
+      "rank": 467,
       "company_id": "plan:dg",
       "yahoo": "DG",
       "mcap": 16646174499.227905,
@@ -19681,7 +19896,7 @@
       "notes": []
     },
     {
-      "rank": 466,
+      "rank": 468,
       "company_id": "plan:pnr",
       "yahoo": "PNR",
       "mcap": 16585903186.21907,
@@ -19708,7 +19923,7 @@
       "notes": []
     },
     {
-      "rank": 467,
+      "rank": 469,
       "company_id": "r1000:0001056696",
       "yahoo": "MANH",
       "mcap": 16559952042.717407,
@@ -19735,7 +19950,7 @@
       "notes": []
     },
     {
-      "rank": 468,
+      "rank": 470,
       "company_id": "plan:moh",
       "yahoo": "MOH",
       "mcap": 16552536279.296875,
@@ -19762,7 +19977,7 @@
       "notes": []
     },
     {
-      "rank": 469,
+      "rank": 471,
       "company_id": "plan:j",
       "yahoo": "J",
       "mcap": 16549573478.306828,
@@ -19789,7 +20004,7 @@
       "notes": []
     },
     {
-      "rank": 470,
+      "rank": 472,
       "company_id": "plan:bldr",
       "yahoo": "BLDR",
       "mcap": 16499733020.661621,
@@ -19816,7 +20031,7 @@
       "notes": []
     },
     {
-      "rank": 471,
+      "rank": 473,
       "company_id": "r1000:0001618732",
       "yahoo": "NTNX",
       "mcap": 16496342024.454788,
@@ -19869,7 +20084,7 @@
       "notes": []
     },
     {
-      "rank": 472,
+      "rank": 474,
       "company_id": "plan:ball",
       "yahoo": "BALL",
       "mcap": 16410444151.278069,
@@ -19896,7 +20111,7 @@
       "notes": []
     },
     {
-      "rank": 473,
+      "rank": 475,
       "company_id": "r1000:0000859737",
       "yahoo": "HOLX",
       "mcap": 16401041752.589998,
@@ -19923,7 +20138,7 @@
       "notes": []
     },
     {
-      "rank": 474,
+      "rank": 476,
       "company_id": "r1000:0001443646",
       "yahoo": "BAH",
       "mcap": 16400909497.826294,
@@ -19950,7 +20165,7 @@
       "notes": []
     },
     {
-      "rank": 475,
+      "rank": 477,
       "company_id": "plan:tsn",
       "yahoo": "TSN",
       "mcap": 16333781152.76767,
@@ -20036,7 +20251,7 @@
       ]
     },
     {
-      "rank": 476,
+      "rank": 478,
       "company_id": "etr",
       "yahoo": "ETR",
       "mcap": 16241407060.5,
@@ -20063,7 +20278,7 @@
       "notes": []
     },
     {
-      "rank": 477,
+      "rank": 479,
       "company_id": "plan:jbl",
       "yahoo": "JBL",
       "mcap": 16222336949.573822,
@@ -20090,7 +20305,7 @@
       "notes": []
     },
     {
-      "rank": 478,
+      "rank": 480,
       "company_id": "r1000:0000096223",
       "yahoo": "JEF",
       "mcap": 16207675540.768776,
@@ -20117,7 +20332,7 @@
       "notes": []
     },
     {
-      "rank": 479,
+      "rank": 481,
       "company_id": "plan:nwsa",
       "yahoo": "NWSA",
       "mcap": 16168099764.29181,
@@ -20164,7 +20379,7 @@
       "notes": []
     },
     {
-      "rank": 480,
+      "rank": 482,
       "company_id": "r1000:0001773383",
       "yahoo": "DT",
       "mcap": 16147985080.649529,
@@ -20191,7 +20406,7 @@
       "notes": []
     },
     {
-      "rank": 481,
+      "rank": 483,
       "company_id": "plan:gpc",
       "yahoo": "GPC",
       "mcap": 16103205881.909431,
@@ -20218,7 +20433,7 @@
       "notes": []
     },
     {
-      "rank": 482,
+      "rank": 484,
       "company_id": "plan:dltr",
       "yahoo": "DLTR",
       "mcap": 16078438241.389572,
@@ -20245,7 +20460,7 @@
       "notes": []
     },
     {
-      "rank": 483,
+      "rank": 485,
       "company_id": "r1000:0001082554",
       "yahoo": "UTHR",
       "mcap": 15966666429.132446,
@@ -20272,7 +20487,7 @@
       "notes": []
     },
     {
-      "rank": 484,
+      "rank": 486,
       "company_id": "r1000:0000110621",
       "yahoo": "RPM",
       "mcap": 15848357428.746567,
@@ -20299,7 +20514,7 @@
       "notes": []
     },
     {
-      "rank": 485,
+      "rank": 487,
       "company_id": "plan:iex",
       "yahoo": "IEX",
       "mcap": 15813298548.293518,
@@ -20326,7 +20541,7 @@
       "notes": []
     },
     {
-      "rank": 486,
+      "rank": 488,
       "company_id": "r1000:0001665918",
       "yahoo": "USFD",
       "mcap": 15758302666.286232,
@@ -20353,7 +20568,7 @@
       "notes": []
     },
     {
-      "rank": 487,
+      "rank": 489,
       "company_id": "r1000:0001897982",
       "yahoo": "AZPN",
       "mcap": 15746017545.05,
@@ -20380,7 +20595,7 @@
       "notes": []
     },
     {
-      "rank": 488,
+      "rank": 490,
       "company_id": "plan:kim",
       "yahoo": "KIM",
       "mcap": 15658910776.04002,
@@ -20407,7 +20622,7 @@
       "notes": []
     },
     {
-      "rank": 489,
+      "rank": 491,
       "company_id": "plan:mas",
       "yahoo": "MAS",
       "mcap": 15646108996.105293,
@@ -20434,7 +20649,7 @@
       "notes": []
     },
     {
-      "rank": 490,
+      "rank": 492,
       "company_id": "r1000:0000912593",
       "yahoo": "SUI",
       "mcap": 15630790280.135635,
@@ -20461,7 +20676,7 @@
       "notes": []
     },
     {
-      "rank": 491,
+      "rank": 493,
       "company_id": "plan:expd",
       "yahoo": "EXPD",
       "mcap": 15509326933.972458,
@@ -20488,7 +20703,7 @@
       "notes": []
     },
     {
-      "rank": 492,
+      "rank": 494,
       "company_id": "r1000:0001758730",
       "yahoo": "TW",
       "mcap": 15472376489.756592,
@@ -20551,7 +20766,7 @@
       ]
     },
     {
-      "rank": 493,
+      "rank": 495,
       "company_id": "plan:eg",
       "yahoo": "EG",
       "mcap": 15458537138.015442,
@@ -20578,7 +20793,7 @@
       "notes": []
     },
     {
-      "rank": 494,
+      "rank": 496,
       "company_id": "r1000:0001166003",
       "yahoo": "XPO",
       "mcap": 15433726168.823547,
@@ -20605,7 +20820,7 @@
       "notes": []
     },
     {
-      "rank": 495,
+      "rank": 497,
       "company_id": "plan:algn",
       "yahoo": "ALGN",
       "mcap": 15421829271.493835,
@@ -20632,7 +20847,7 @@
       "notes": []
     },
     {
-      "rank": 496,
+      "rank": 498,
       "company_id": "r1000:0001331875",
       "yahoo": "FNF",
       "mcap": 15345686900.79537,
@@ -20659,7 +20874,7 @@
       "notes": []
     },
     {
-      "rank": 497,
+      "rank": 499,
       "company_id": "plan:tpr",
       "yahoo": "TPR",
       "mcap": 15338412993.883133,
@@ -20686,7 +20901,7 @@
       "notes": []
     },
     {
-      "rank": 498,
+      "rank": 500,
       "company_id": "fix",
       "yahoo": "FIX",
       "mcap": 15279529527.955627,
@@ -20711,178 +20926,6 @@
       "cover_override": null,
       "quality_flags": [],
       "notes": []
-    },
-    {
-      "rank": 499,
-      "company_id": "plan:lnt",
-      "yahoo": "LNT",
-      "mcap": 15224031124.507172,
-      "cik": "0000352541",
-      "detail": {
-        "yahoo": "LNT",
-        "cik": "0000352541",
-        "shares_status": "OK",
-        "shares": 256599202.0,
-        "shares_source": "dei:EntityCommonStockSharesOutstanding",
-        "shares_available_at": "2024-11-01 00:00:00+00:00",
-        "price_observed_at": "2024-12-30T14:30:00+00:00",
-        "close": 59.33000183105469,
-        "adjclose": 56.13821792602539,
-        "split_events": 0,
-        "split_factor_after_as_of": 1.0,
-        "mcap_price": 59.33000183105469,
-        "mcap": 15224031124.507172,
-        "share_concepts_present": null,
-        "pit_filer_status": "DOMESTIC"
-      },
-      "cover_override": null,
-      "quality_flags": [],
-      "notes": []
-    },
-    {
-      "rank": 500,
-      "company_id": "r1000:0001468174",
-      "yahoo": "H",
-      "mcap": 15189432272.263092,
-      "cik": "0001468174",
-      "detail": {
-        "yahoo": "H",
-        "cik": "0001468174",
-        "shares_status": "MISSING",
-        "shares": null,
-        "shares_source": null,
-        "shares_available_at": null,
-        "price_observed_at": "2024-12-30T14:30:00+00:00",
-        "close": 158.16000366210938,
-        "adjclose": 157.08692932128906,
-        "split_events": 0,
-        "split_factor_after_as_of": 1.0,
-        "mcap_price": 158.16000366210938,
-        "mcap": null,
-        "share_concepts_present": {
-          "us-gaap:CommonStockSharesIssued": {
-            "end": "2020-12-31",
-            "val": 0,
-            "filed": "2021-02-18",
-            "form": "10-K"
-          },
-          "us-gaap:PreferredStockSharesOutstanding": {
-            "end": "2024-09-30",
-            "val": 0,
-            "filed": "2024-10-31",
-            "form": "10-Q"
-          },
-          "us-gaap:StockIssuedDuringPeriodSharesEmployeeStockPurchasePlans": {
-            "end": "2019-12-31",
-            "val": 79700,
-            "filed": "2020-02-20",
-            "form": "10-K"
-          },
-          "us-gaap:StockIssuedDuringPeriodSharesNewIssues": {
-            "end": "2021-12-31",
-            "val": 8050000,
-            "filed": "2023-02-16",
-            "form": "10-K"
-          },
-          "us-gaap:StockIssuedDuringPeriodSharesTreasuryStockReissued": {
-            "end": "2010-06-30",
-            "val": 30805,
-            "filed": "2011-08-02",
-            "form": "10-Q"
-          },
-          "us-gaap:TreasuryStockShares": {
-            "end": "2015-12-31",
-            "val": 0,
-            "filed": "2016-02-18",
-            "form": "10-K"
-          },
-          "us-gaap:TreasuryStockSharesRetired": {
-            "end": "2015-12-31",
-            "val": 195423,
-            "filed": "2017-02-16",
-            "form": "10-K"
-          },
-          "us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment": {
-            "end": "2017-09-30",
-            "val": 1315462,
-            "filed": "2017-11-02",
-            "form": "10-Q"
-          },
-          "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
-            "end": "2024-09-30",
-            "val": 103638561,
-            "filed": "2024-10-31",
-            "form": "10-Q"
-          },
-          "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
-            "end": "2024-09-30",
-            "val": 101006064,
-            "filed": "2024-10-31",
-            "form": "10-Q"
-          }
-        },
-        "pit_filer_status": "DOMESTIC"
-      },
-      "cover_override": {
-        "mcap": 15189432272.263092,
-        "status": "COVER_ECONOMIC_EQUIVALENT",
-        "source": "xbrl_instance:0001468174:0001468174-24-000107",
-        "classes": [
-          {
-            "member": "CommonClassAMember",
-            "shares": 42289812.0,
-            "date": "2024-10-25",
-            "symbol": "H",
-            "price": 158.16000366210938
-          },
-          {
-            "member": "CommonClassBMember",
-            "shares": 53748579.0,
-            "date": "2024-10-25",
-            "symbol": null,
-            "price": null
-          }
-        ],
-        "lower_bound": 6688556820.789917,
-        "class_economics": {
-          "status": "ECONOMIC_EQUIVALENT_DETERMINED",
-          "listed_price": 158.16000366210938,
-          "economic_equivalent_listed_shares": 96038391.0,
-          "formula": "(CommonClassAMember 42289812 x 1 + CommonClassBMember 53748579 x 1) x 158.16000366210938",
-          "double_count_check": "No operating-partnership units: Class A and Class B are both issued shares of the registrant; the cover counts are separate classes (Class B converted shares are retired), so A + B is not double counted.",
-          "citations": [
-            {
-              "class": "CommonClassBMember",
-              "artifact_id": "sec_filing_doc:0001468174:0001468174-24-000107",
-              "filed": "2024-10-31",
-              "supports": [
-                "conversion_ratio"
-              ],
-              "quote": "Class B Share Conversion \u2014During the nine months ended September 30, 2024, 1,379,064 shares of Class B common stock were converted on a share-for-share basis into shares of Class A common stock, $ 0."
-            },
-            {
-              "class": "CommonClassBMember",
-              "artifact_id": "sec_filing_doc:0001468174:0001468174-24-000014",
-              "filed": "2024-02-23",
-              "supports": [
-                "conversion_ratio"
-              ],
-              "quote": "Class B Share Conversion \u2014During the years ended December 31, 2023, December 31, 2022, and December 31, 2021, 160,626 shares, 735,522 shares, and 2,385,647 shares, respectively, of Class B common stock were converted on a share-for-share basis into shares of Class A common stock, $ 0."
-            },
-            {
-              "class": "CommonClassBMember",
-              "artifact_id": "sec_filing_doc:0001468174:0001468174-24-000107",
-              "filed": "2024-10-31",
-              "supports": [
-                "conversion_ratio"
-              ],
-              "quote": "Dividend \u2014 The following tables summarize dividends declared to Class A and Class B stockholders of record: Three Months Ended September 30, Nine Months Ended September 30, 2024 2023 2024 2023 Class A common stock $ 6 $ 7 $ 20 $ 14 Class B common stock 9 9 26 18 Total cash dividends declared $ 15 $ 16 $ 46 $ 32 Date declared Dividend per share amount for Class A and Class B Date of record Date paid February 14, 2024 $ 0."
-            }
-          ]
-        }
-      },
-      "quality_flags": [],
-      "notes": []
     }
   ],
   "top500_quality_flag_counts": {},
@@ -20902,38 +20945,6 @@
       "mcap_price": 231.74000549316406,
       "mcap": 21730023476.80838,
       "share_concepts_present": null
-    },
-    "IBKR": {
-      "yahoo": "IBKR",
-      "cik": "0001381197",
-      "shares_status": "OK",
-      "shares": 42231651.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2011-05-06 00:00:00+00:00",
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 44.73749923706055,
-      "adjclose": 44.36964797973633,
-      "split_events": 1,
-      "split_factor_after_as_of": 4.0,
-      "mcap_price": 178.9499969482422,
-      "mcap": 7557353817.569229,
-      "share_concepts_present": null
-    },
-    "RYAN": {
-      "yahoo": "RYAN",
-      "cik": "0001849253",
-      "shares_status": "OK",
-      "shares": 109903867.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2021-09-02 00:00:00+00:00",
-      "price_observed_at": "2024-12-30T14:30:00+00:00",
-      "close": 63.720001220703125,
-      "adjclose": 62.57481384277344,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": 63.720001220703125,
-      "mcap": 7003074539.399994,
-      "share_concepts_present": null
     }
   },
   "reference_coverage": [
@@ -20943,7 +20954,7 @@
       "n_members": 503,
       "n_missing_from_pool": 0,
       "n_present_not_rankable": 0,
-      "n_present_rankable_outside_top500": 78,
+      "n_present_rankable_outside_top500": 79,
       "missing_from_pool": []
     },
     {
@@ -20951,8 +20962,8 @@
       "role": "SUPERSET_REFERENCE",
       "n_members": 985,
       "n_missing_from_pool": 0,
-      "n_present_not_rankable": 3,
-      "n_present_rankable_outside_top500": 478,
+      "n_present_not_rankable": 1,
+      "n_present_rankable_outside_top500": 480,
       "missing_from_pool": []
     }
   ],
@@ -20960,13 +20971,13 @@
     "kind": "UNIVERSE_COMPLETENESS_GATE",
     "as_of": "2024-12-31T00:00:00+00:00",
     "passed": false,
-    "companyfacts": 981,
-    "rankable": 981,
+    "companyfacts": 982,
+    "rankable": 982,
     "benchmark_source": "World Federation of Exchanges (WFE), \"Market Statistics - February 2025\" (WFE Focus), Total Dec'24 column",
     "benchmark_source_vintage": "2025-01-31",
     "benchmark_low": 3400,
     "benchmark_high": 3700,
-    "coverage_ratio": 0.28852941176470587,
+    "coverage_ratio": 0.2888235294117647,
     "reasons": [
       "COMPANYFACTS_COVERAGE_BELOW_BENCHMARK_LOW_ESTIMATE"
     ],
@@ -20976,8 +20987,8 @@
     "kind": "TOP500_SUFFICIENCY_GATE",
     "as_of": "2024-12-31T00:00:00+00:00",
     "passed": false,
-    "rankable": 981,
-    "cutoff_mcap": 15189432272.263092,
+    "rankable": 982,
+    "cutoff_mcap": 15279529527.955627,
     "n_references_supplied": 2,
     "n_references_usable": 0,
     "references": [
@@ -21036,6 +21047,7 @@
           "JNPR",
           "KMX",
           "LKQ",
+          "LNT",
           "LW",
           "MGM",
           "MHK",
@@ -21082,9 +21094,7 @@
         "n_members": 985,
         "missing_from_pool": [],
         "present_not_rankable": [
-          "DKS",
-          "IBKR",
-          "RYAN"
+          "DKS"
         ],
         "present_rankable_outside_top500": [
           "AA",
@@ -21292,6 +21302,7 @@
           "GTM",
           "GWRE",
           "GXO",
+          "H",
           "HAS",
           "HAYW",
           "HCP",
@@ -21348,6 +21359,7 @@
           "LITE",
           "LKQ",
           "LNC",
+          "LNT",
           "LNWO",
           "LOAR",
           "LOPE",
@@ -21675,7 +21687,7 @@
       "passed": false,
       "candidate_pool_complete": false,
       "justified_official_top500": false,
-      "rankable": 981,
+      "rankable": 982,
       "listings": 982,
       "eligibility_source": null,
       "source_vintage": null,
@@ -21683,8 +21695,7 @@
         "MISSING_ELIGIBILITY_SOURCE",
         "MISSING_SOURCE_VINTAGE",
         "ELIGIBILITY_COMPLETENESS_NOT_ATTESTED",
-        "EVIDENCE_AS_OF_MISMATCH",
-        "ELIGIBLE_LISTINGS_NOT_FULLY_RANKABLE"
+        "EVIDENCE_AS_OF_MISMATCH"
       ],
       "note": "Fail-closed. >=500 ranked alone never proves Official Top-500 completeness."
     },
@@ -21695,7 +21706,6 @@
       "MISSING_SOURCE_VINTAGE",
       "ELIGIBILITY_COMPLETENESS_NOT_ATTESTED",
       "EVIDENCE_AS_OF_MISMATCH",
-      "ELIGIBLE_LISTINGS_NOT_FULLY_RANKABLE",
       "NEITHER_COMPLETENESS_NOR_SUFFICIENCY_GATE_PASSED"
     ],
     "note": "Fail-closed. Requires base numeric/eligibility checks AND (universe completeness OR top-500 sufficiency).",
