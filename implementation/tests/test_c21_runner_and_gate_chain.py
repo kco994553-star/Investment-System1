@@ -1585,22 +1585,34 @@ def test_run37_official_pipeline_rebuilds_snapshot_only_from_passing_gate_eviden
               "shares_available_at": "2024-11-01T00:00:00+00:00", "price_observed_at": "2024-12-30T21:00:00+00:00",
               "shares_basis": "COMPANYFACTS_PIT", "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR", "gate_mcap": (1000.0 - i) * 10}
              for i in range(5)]
-    ev = {"official_top500_declared": True, "gate_snapshot_consistency": {"passed": True}, "official_snapshot_candidates": cands,
+    ev = {"official_top500_declared": True, "gate_snapshot_consistency": {"passed": True, "universe_id": "uni_gate"}, "official_snapshot_candidates": cands,
           "top500": [{"company_id": f"c{i}"} for i in range(5)]}
     (tmp_path / "gate_chain_2024-12-31_real_gha.json").write_text(json.dumps(ev))
     snap, st = op.load_official("2024-12-31")
     assert st["status"] == "OFFICIAL" and list(snap.ids()) == [f"c{i}" for i in range(5)] and snap.policy_status.value == "OFFICIAL"
+    assert snap.universe_id == st["universe_id"] == "uni_gate"
     bad = {**ev, "official_top500_declared": False, "official_blockers": ["PROMOTION_GATE_V2_FAILED"]}
     (tmp_path / "gate_chain_2024-09-30_real_gha.json").write_text(json.dumps(bad))
     assert op.load_official("2024-09-30")[1]["status"] == "NOT_OFFICIAL"
     swapped = {**ev, "top500": [{"company_id": f"c{i}"} for i in (1, 0, 2, 3, 4)]}
     (tmp_path / "gate_chain_2024-06-30_real_gha.json").write_text(json.dumps(swapped))
     assert op.load_official("2024-06-30")[1]["status"] == "REBUILT_SNAPSHOT_DIFFERS_FROM_GATE"
-    assert op.load_official("2024-03-31")[1]["status"] == "NO_GATE_EVIDENCE"
+    missing_id = {**ev, "gate_snapshot_consistency": {"passed": True}}
+    (tmp_path / "gate_chain_2025-01-01_real_gha.json").write_text(json.dumps(missing_id))
+    assert op.load_official("2025-01-01")[1]["status"] == "GATE_UNIVERSE_ID_MISSING"
+    assert op.load_official("2024-01-31")[1]["status"] == "NO_GATE_EVIDENCE"
     monkeypatch.setattr(sys, "argv", ["x", "--store", str(tmp_path), "--dates", "2024-06-30,2024-09-30", "--final-horizon", "2025-03-31"])
     op.main()
     out = json.loads((tmp_path / "official_pipeline_2024-06-30_2024-09-30.json").read_text())
     assert out["walk_forward_status"] == "BLOCKED_FEWER_THAN_3_DATES" and out["status"] == "BLOCKED_NO_OFFICIAL_DATE"
+
+
+def test_run58_workflow_can_reuse_a_passing_gate_without_reminting_its_identity():
+    workflow = (Path(__file__).resolve().parents[2] / ".github" / "workflows" / "c21-real-data.yml").read_text(encoding="utf-8")
+    assert "reuse_gate_evidence:" in workflow
+    assert "if: inputs.reuse_gate_evidence != 'true'" in workflow
+    assert "reuse_gate_evidence requires skip_fetch=true" in workflow
+    assert "reuse_gate_evidence requires walk_forward_dates" in workflow
 
 
 def test_run40_dated_evidence_keeps_only_citations_filed_on_or_before_the_target_date():
