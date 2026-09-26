@@ -8,7 +8,7 @@ gate/snapshot consistency PASS). Real single_as_of / benchmark running (run #39)
 and 2024-06-30 need their own independent gate PASS. Track B (PIL) frozen at P0.
 
 Track A — Main Track (priority)
-REAL-DATA -> complete PIT pool -> Official snapshot [2024-12-31 DONE] -> real single_as_of [running] -> >=3-date walk-forward
+REAL-DATA -> complete PIT pool -> Official snapshot [2024-12-31 DONE] -> real single_as_of [2024-12-31 DONE] -> >=3-date walk-forward
 (each date gated independently) -> real 500-company benchmark -> regression/evidence -> backend baseline freeze.
 
 2024-12-31 evidence: reports/gate_evidence/gate_chain_2024-12-31_real_gha.json (run #38, id 36212684383, commit b143d72)
@@ -27,11 +27,21 @@ REAL-DATA -> complete PIT pool -> Official snapshot [2024-12-31 DONE] -> real si
   counts (MA, CME, IBKR, DKS, ARES, COKE, AOS, PPLI …), duplicated cover facts (CME), class-symbol naming (BF-B, AOS, COKE,
   TRIP, AA, ARES), MTD cover text. Conflict Register C-32 (snapshot default path adjclose), C-33 (companyfacts share counts).
 
-Next: run #39 results (official_snapshot_2024-12-31.json, single_as_of 2024-12-31 -> 2025-03-31, benchmark_500);
-run #40 = independent gate for 2024-09-30; then 2024-06-30; walk-forward only when all three are Official.
+2024-12-31 real single_as_of + benchmark (run #41, reports/gate_evidence/official_pipeline_2024-12-31_2024-12-31.json):
+- official_snapshot_2024-12-31.json (500 members, OFFICIAL, per-row shares/price basis and availability).
+- run_vertical_slice_from_store 2024-12-31 -> 2025-03-31: 494/500 investable, 468 selected (PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT),
+  468 outcomes linked, EW realized -1.56 %, 0 name errors.
+- real 500 benchmark: 26.25 s, peak RSS 9.5 GB, 0 errors (+ ingestion network statistics). Run #39 was cancelled by a runner
+  shutdown while tracemalloc traced the same run (replaced by peak RSS).
+
+Walk-forward dates: 2024-09-30 (runs #40, #42, #43), then 2024-06-30 only after 2024-09-30 PASSES; each date independently
+(Promotion Gate v2 + consistency). PINC/WOLF NPORT_REPORTED_VALUE exception per as_of (user option 1, 2026-09-26): that date's
+N-PORT holding, CUSIP attested <= as_of, price reproduced, look_ahead recorded; never reused across dates or other issuers.
+2024-09-30 carry-over evidence: derive_dated_evidence (citations filed <= 2024-09-30 only); BLK PIT CIK 0001364742; AMTM
+(spin-off 2024-09-27) share count only from registration/8-K documents filed <= as_of, else blocker.
 
 Track B — Personal Investment Layer v1: Architecture FROZEN; P0 Common Contracts implemented and FROZEN
 (src/investment_system/personal/, tests/test_pil_p0_contracts.py 13 tests). No P1 / broker / integration. C-24, C-25,
 C-28, C-29, C-30 undecided; C-33 recorded as PIL upstream note.
 
-Tests: 272/272 (mini_pytest shim and pytest): Track A 259, Track B 13.
+Tests: 274/274 (mini_pytest shim and pytest): Track A 261, Track B 13.
