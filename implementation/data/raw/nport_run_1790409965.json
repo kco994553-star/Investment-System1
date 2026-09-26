@@ -1,0 +1,5604 @@
+{
+  "kind": "NPORT_REFERENCE_RUN",
+  "as_of": "2024-12-31",
+  "series_name": "iShares Russell 1000 ETF",
+  "n_candidate_filings": 87,
+  "filing": {
+    "accn": "0001752724-25-034052",
+    "filed": "2025-02-24",
+    "doc": "xslFormNPORT-P_X01/primary_doc.xml"
+  },
+  "nport_report_date": "2024-12-31",
+  "nport_series": "iShares Russell 1000 ETF",
+  "n_holdings": 1011,
+  "n_equity_common": 1007,
+  "cusip_attestations": {
+    "NORDSTROM, INC.|655664100": {
+      "candidates": [
+        "0000072333",
+        "0001099772",
+        "0001168461"
+      ],
+      "cik": "0000072333",
+      "attested": [
+        {
+          "cik": "0000072333",
+          "discovered_via_submissions_cik": "0000072333",
+          "artifact_id": "sec_filing_doc:0000072333:0000950170-24-140241",
+          "header_artifact_id": "edgar_index_headers:0000950170-24-140241",
+          "filed": "2024-12-26",
+          "snippet": "(Name of Issuer) Common Stock, without par value (Title of Class of Securities) 655664100 (CUSIP Number) Jose Antonio Diego El Pu"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0000072333",
+          "subject_ciks": [
+            "0000072333"
+          ],
+          "artifact_id": "sec_filing_doc:0000072333:0000950170-24-140241",
+          "header_artifact_id": "edgar_index_headers:0000950170-24-140241",
+          "filed": "2024-12-26",
+          "form": "SCHEDULE 13D/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "UNITED STATES STEEL CORPORATION|912909108": {
+      "candidates": [
+        "0000317155",
+        "0001146318",
+        "0001163302"
+      ],
+      "cik": "0001163302",
+      "attested": [
+        {
+          "cik": "0001163302",
+          "discovered_via_submissions_cik": "0001163302",
+          "artifact_id": "sec_filing_doc:0001163302:0000902664-24-006594",
+          "header_artifact_id": "edgar_index_headers:0000902664-24-006594",
+          "filed": "2024-11-14",
+          "snippet": " Issuer) Common stock, par value $1.00 per share (Title of Class of Securities) 912909108 (CUSIP Number) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001163302",
+          "subject_ciks": [
+            "0001163302"
+          ],
+          "artifact_id": "sec_filing_doc:0001163302:0000902664-24-006594",
+          "header_artifact_id": "edgar_index_headers:0000902664-24-006594",
+          "filed": "2024-11-14",
+          "form": "SC 13G",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "PREMIER, INC.|74051N102": {
+      "candidates": [
+        "0001030916",
+        "0001085411",
+        "0001577916",
+        "0001753697"
+      ],
+      "cik": "0001577916",
+      "attested": [
+        {
+          "cik": "0001577916",
+          "discovered_via_submissions_cik": "0001577916",
+          "artifact_id": "sec_filing_doc:0001577916:0000354204-24-004728",
+          "header_artifact_id": "edgar_index_headers:0000354204-24-004728",
+          "filed": "2024-10-31",
+          "snippet": " _ ) * Premier Inc (Name of Issuer) Common Stock (Title of Class of Securities) 74051N102 (CUSIP Number) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001030916",
+          "subject_ciks": [
+            "0001030916"
+          ],
+          "artifact_id": "sec_filing_doc:0001030916:0001193125-14-403108",
+          "header_artifact_id": "edgar_index_headers:0001193125-14-403108",
+          "filed": "2014-11-07",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001030916",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001030916:0001019687-12-002716",
+          "header_artifact_id": "edgar_index_headers:0001019687-12-002716",
+          "filed": "2012-08-10",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001030916",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001030916:0001019687-12-000735",
+          "header_artifact_id": "edgar_index_headers:0001019687-12-000735",
+          "filed": "2012-03-01",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001030916",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001030916:0001086715-10-000051",
+          "header_artifact_id": "edgar_index_headers:0001086715-10-000051",
+          "filed": "2010-06-18",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001030916",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001030916:0001086715-10-000049",
+          "header_artifact_id": "edgar_index_headers:0001086715-10-000049",
+          "filed": "2010-06-18",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001577916",
+          "subject_ciks": [
+            "0001577916"
+          ],
+          "artifact_id": "sec_filing_doc:0001577916:0000354204-24-004728",
+          "header_artifact_id": "edgar_index_headers:0000354204-24-004728",
+          "filed": "2024-10-31",
+          "form": "SC 13G",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "ASPEN TECHNOLOGY, INC.|29109X106": {
+      "candidates": [
+        "0000356942",
+        "0000929940",
+        "0001897982"
+      ],
+      "cik": "0001897982",
+      "attested": [
+        {
+          "cik": "0000929940",
+          "discovered_via_submissions_cik": "0000929940",
+          "artifact_id": "sec_filing_doc:0000929940:0001567619-23-002740",
+          "header_artifact_id": "edgar_index_headers:0001567619-23-002740",
+          "filed": "2023-02-14",
+          "snippet": "PEN TECHNOLOGY INC (Name of Issuer) Common Stock (Title of Class of Securities) 29109X106 (CUSIP Number) December 31, 2022 (Date "
+        },
+        {
+          "cik": "0001897982",
+          "discovered_via_submissions_cik": "0001897982",
+          "artifact_id": "sec_filing_doc:0001897982:0002012383-24-003548",
+          "header_artifact_id": "edgar_index_headers:0002012383-24-003548",
+          "filed": "2024-11-08",
+          "snippet": "SC 13G/A 1 us29109x1063_110824.txt us29109x1063_110824.txt SEC"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0000929940",
+          "subject_ciks": [
+            "0000929940"
+          ],
+          "artifact_id": "sec_filing_doc:0000929940:0001567619-23-002740",
+          "header_artifact_id": "edgar_index_headers:0001567619-23-002740",
+          "filed": "2023-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001897982",
+          "subject_ciks": [
+            "0001897982"
+          ],
+          "artifact_id": "sec_filing_doc:0001897982:0002012383-24-003548",
+          "header_artifact_id": "edgar_index_headers:0002012383-24-003548",
+          "filed": "2024-11-08",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE_PIT_REGISTRANT_AMONG_ATTESTED",
+      "attested_ciks": [
+        "0000929940",
+        "0001897982"
+      ]
+    },
+    "Informatica Inc|45674M101": {
+      "candidates": [
+        "0001080099",
+        "0001868778"
+      ],
+      "cik": "0001868778",
+      "attested": [
+        {
+          "cik": "0001868778",
+          "discovered_via_submissions_cik": "0001868778",
+          "artifact_id": "sec_filing_doc:0001868778:0001493152-24-044793",
+          "header_artifact_id": "edgar_index_headers:0001493152-24-044793",
+          "filed": "2024-11-12",
+          "snippet": "atica Inc. (Name of Issuer) Class A Common Stock (Title of Class of Securities) 45674M101 (CUSIP Number) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001080099",
+          "subject_ciks": [
+            "0001080099"
+          ],
+          "artifact_id": "sec_filing_doc:0001080099:0001013594-15-000453",
+          "header_artifact_id": "edgar_index_headers:0001013594-15-000453",
+          "filed": "2015-08-14",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001080099",
+          "subject_ciks": [
+            "0001080099"
+          ],
+          "artifact_id": "sec_filing_doc:0001080099:0001193125-15-173467",
+          "header_artifact_id": "edgar_index_headers:0001193125-15-173467",
+          "filed": "2015-05-06",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001080099",
+          "subject_ciks": [
+            "0001080099"
+          ],
+          "artifact_id": "sec_filing_doc:0001080099:0001013594-15-000173",
+          "header_artifact_id": "edgar_index_headers:0001013594-15-000173",
+          "filed": "2015-02-24",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001080099",
+          "subject_ciks": [
+            "0001080099"
+          ],
+          "artifact_id": "sec_filing_doc:0001080099:0000891092-15-001252",
+          "header_artifact_id": "edgar_index_headers:0000891092-15-001252",
+          "filed": "2015-02-17",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001080099",
+          "subject_ciks": [
+            "0001080099"
+          ],
+          "artifact_id": "sec_filing_doc:0001080099:0001193125-15-043213",
+          "header_artifact_id": "edgar_index_headers:0001193125-15-043213",
+          "filed": "2015-02-11",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001080099",
+          "subject_ciks": [
+            "0001080099"
+          ],
+          "artifact_id": "sec_filing_doc:0001080099:0000932471-15-004059",
+          "header_artifact_id": "edgar_index_headers:0000932471-15-004059",
+          "filed": "2015-02-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001080099",
+          "subject_ciks": [
+            "0001080099"
+          ],
+          "artifact_id": "sec_filing_doc:0001080099:0000812295-15-000007",
+          "header_artifact_id": "edgar_index_headers:0000812295-15-000007",
+          "filed": "2015-02-02",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001080099",
+          "subject_ciks": [
+            "0001080099"
+          ],
+          "artifact_id": "sec_filing_doc:0001080099:0001086364-15-000932",
+          "header_artifact_id": "edgar_index_headers:0001086364-15-000932",
+          "filed": "2015-01-26",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001080099",
+          "subject_ciks": [
+            "0001080099"
+          ],
+          "artifact_id": "sec_filing_doc:0001080099:0001013594-15-000029",
+          "header_artifact_id": "edgar_index_headers:0001013594-15-000029",
+          "filed": "2015-01-26",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001080099",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001080099:0000812295-14-000052",
+          "header_artifact_id": "edgar_index_headers:0000812295-14-000052",
+          "filed": "2014-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001868778",
+          "subject_ciks": [
+            "0001868778"
+          ],
+          "artifact_id": "sec_filing_doc:0001868778:0001493152-24-044793",
+          "header_artifact_id": "edgar_index_headers:0001493152-24-044793",
+          "filed": "2024-11-12",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "BLUE OWL CAPITAL INC.|09581B103": {
+      "candidates": [
+        "0001655888",
+        "0001823945",
+        "0001858703",
+        "0002012649",
+        "0002019033"
+      ],
+      "cik": "0001823945",
+      "attested": [
+        {
+          "cik": "0001823945",
+          "discovered_via_submissions_cik": "0001823945",
+          "artifact_id": "sec_filing_doc:0001823945:0001418660-24-000018",
+          "header_artifact_id": "edgar_index_headers:0001418660-24-000018",
+          "filed": "2024-11-14",
+          "snippet": "APITAL INC (Name of Issuer) Class A Common Stock (Title of Class of Securities) 09581B103 (CUSIP Number) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001655888",
+          "subject_ciks": [
+            "0001655888"
+          ],
+          "artifact_id": "sec_filing_doc:0001655888:0001140361-24-003625",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-003625",
+          "filed": "2024-01-24",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001655888",
+          "subject_ciks": [
+            "0001655888"
+          ],
+          "artifact_id": "sec_filing_doc:0001655888:0001085146-24-000194",
+          "header_artifact_id": "edgar_index_headers:0001085146-24-000194",
+          "filed": "2024-01-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001655888",
+          "subject_ciks": [
+            "0001655888"
+          ],
+          "artifact_id": "sec_filing_doc:0001655888:0001193125-23-036564",
+          "header_artifact_id": "edgar_index_headers:0001193125-23-036564",
+          "filed": "2023-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001655888",
+          "subject_ciks": [
+            "0001655888"
+          ],
+          "artifact_id": "sec_filing_doc:0001655888:0001140361-23-004126",
+          "header_artifact_id": "edgar_index_headers:0001140361-23-004126",
+          "filed": "2023-02-02",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001655888",
+          "subject_ciks": [
+            "0001655888"
+          ],
+          "artifact_id": "sec_filing_doc:0001655888:0001085146-23-000079",
+          "header_artifact_id": "edgar_index_headers:0001085146-23-000079",
+          "filed": "2023-01-11",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001655888",
+          "subject_ciks": [
+            "0001655888"
+          ],
+          "artifact_id": "sec_filing_doc:0001655888:0001140361-22-002777",
+          "header_artifact_id": "edgar_index_headers:0001140361-22-002777",
+          "filed": "2022-01-27",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001655888",
+          "subject_ciks": [
+            "0001655888"
+          ],
+          "artifact_id": "sec_filing_doc:0001655888:0001085146-22-000302",
+          "header_artifact_id": "edgar_index_headers:0001085146-22-000302",
+          "filed": "2022-01-25",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001655888",
+          "subject_ciks": [
+            "0001655888"
+          ],
+          "artifact_id": "sec_filing_doc:0001655888:0001085146-21-000426",
+          "header_artifact_id": "edgar_index_headers:0001085146-21-000426",
+          "filed": "2021-02-03",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001655888",
+          "subject_ciks": [
+            "0001655888"
+          ],
+          "artifact_id": "sec_filing_doc:0001655888:0001140361-21-002903",
+          "header_artifact_id": "edgar_index_headers:0001140361-21-002903",
+          "filed": "2021-02-01",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001655888",
+          "subject_ciks": [
+            "0001655888"
+          ],
+          "artifact_id": "sec_filing_doc:0001655888:0001140361-20-003414",
+          "header_artifact_id": "edgar_index_headers:0001140361-20-003414",
+          "filed": "2020-02-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001823945",
+          "subject_ciks": [
+            "0001823945"
+          ],
+          "artifact_id": "sec_filing_doc:0001823945:0001418660-24-000018",
+          "header_artifact_id": "edgar_index_headers:0001418660-24-000018",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001858703",
+          "subject_ciks": [
+            "0001556263"
+          ],
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046980",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-046980",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001858703",
+          "subject_ciks": [
+            "0001746473"
+          ],
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046979",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-046979",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001858703",
+          "subject_ciks": [
+            "0001748907"
+          ],
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046978",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-046978",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001858703",
+          "subject_ciks": [
+            "0001789972"
+          ],
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046977",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-046977",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001858703",
+          "subject_ciks": [
+            "0001980845"
+          ],
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046976",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-046976",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001858703",
+          "subject_ciks": [
+            "0001827506"
+          ],
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046975",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-046975",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001858703",
+          "subject_ciks": [
+            "0001808158"
+          ],
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046974",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-046974",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001858703",
+          "subject_ciks": [
+            "0001374690"
+          ],
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046973",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-046973",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001858703",
+          "subject_ciks": [
+            "0001400118"
+          ],
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046972",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-046972",
+          "filed": "2024-11-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001858703",
+          "subject_ciks": [
+            "0001737924"
+          ],
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046971",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-046971",
+          "filed": "2024-11-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "DAYFORCE, INC.|15677J108": {
+      "candidates": [
+        "0001496678",
+        "0001725057"
+      ],
+      "cik": "0001725057",
+      "attested": [
+        {
+          "cik": "0001725057",
+          "discovered_via_submissions_cik": "0001725057",
+          "artifact_id": "sec_filing_doc:0001725057:0001172661-24-005243",
+          "header_artifact_id": "edgar_index_headers:0001172661-24-005243",
+          "filed": "2024-11-14",
+          "snippet": ". (Name of Issuer) Common stock, $0.01 par value (Title of Class of Securities) 15677J108 (CUSIP Number) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001725057",
+          "subject_ciks": [
+            "0001725057"
+          ],
+          "artifact_id": "sec_filing_doc:0001725057:0001172661-24-005243",
+          "header_artifact_id": "edgar_index_headers:0001172661-24-005243",
+          "filed": "2024-11-14",
+          "form": "SC 13G",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "LIBERTY MEDIA CORP - FORMULA ONE GROUP|531229755": {
+      "candidates": [
+        "0000869614",
+        "0001082114",
+        "0001355096",
+        "0001507934",
+        "0001560385"
+      ],
+      "cik": "0001560385",
+      "attested": [
+        {
+          "cik": "0001560385",
+          "discovered_via_submissions_cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0001172661-24-005204",
+          "header_artifact_id": "edgar_index_headers:0001172661-24-005204",
+          "filed": "2024-11-14",
+          "snippet": "ssuer) Series C Liberty Formula One Common Stock (Title of Class of Securities) 531229755 (CUSIP Number) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045049",
+          "header_artifact_id": "edgar_index_headers:0001493152-24-045049",
+          "filed": "2024-11-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045046",
+          "header_artifact_id": "edgar_index_headers:0001493152-24-045046",
+          "filed": "2024-11-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045044",
+          "header_artifact_id": "edgar_index_headers:0001493152-24-045044",
+          "filed": "2024-11-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001193125-24-226917",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-226917",
+          "filed": "2024-09-26",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001193125-24-226916",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-226916",
+          "filed": "2024-09-26",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-031242",
+          "header_artifact_id": "edgar_index_headers:0001493152-24-031242",
+          "filed": "2024-08-12",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-017368",
+          "header_artifact_id": "edgar_index_headers:0001493152-24-017368",
+          "filed": "2024-05-01",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-014985",
+          "header_artifact_id": "edgar_index_headers:0001493152-24-014985",
+          "filed": "2024-04-17",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001193125-24-089047",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-089047",
+          "filed": "2024-04-08",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001193125-24-089033",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-089033",
+          "filed": "2024-04-08",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0000017283-07-000401",
+          "header_artifact_id": "edgar_index_headers:0000017283-07-000401",
+          "filed": "2007-02-12",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-06-011932",
+          "header_artifact_id": "edgar_index_headers:0001104659-06-011932",
+          "filed": "2006-02-24",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0000017283-06-000235",
+          "header_artifact_id": "edgar_index_headers:0000017283-06-000235",
+          "filed": "2006-02-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0000807985-06-000020",
+          "header_artifact_id": "edgar_index_headers:0000807985-06-000020",
+          "filed": "2006-02-10",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-060561",
+          "header_artifact_id": "edgar_index_headers:0001104659-05-060561",
+          "filed": "2005-12-13",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0001047469-05-021261",
+          "header_artifact_id": "edgar_index_headers:0001047469-05-021261",
+          "filed": "2005-08-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-012145",
+          "header_artifact_id": "edgar_index_headers:0001104659-05-012145",
+          "filed": "2005-03-21",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-012144",
+          "header_artifact_id": "edgar_index_headers:0001104659-05-012144",
+          "filed": "2005-03-21",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0000017283-05-000195",
+          "header_artifact_id": "edgar_index_headers:0000017283-05-000195",
+          "filed": "2005-02-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-005722",
+          "header_artifact_id": "edgar_index_headers:0001104659-05-005722",
+          "filed": "2005-02-11",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001999371-24-014391",
+          "header_artifact_id": "edgar_index_headers:0001999371-24-014391",
+          "filed": "2024-11-08",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-24-102844",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-102844",
+          "filed": "2024-09-25",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001546190-24-000007",
+          "header_artifact_id": "edgar_index_headers:0001546190-24-000007",
+          "filed": "2024-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-24-020112",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-020112",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001193125-24-033455",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-033455",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001999371-24-001858",
+          "header_artifact_id": "edgar_index_headers:0001999371-24-001858",
+          "filed": "2024-02-12",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-23-113407",
+          "header_artifact_id": "edgar_index_headers:0001104659-23-113407",
+          "filed": "2023-11-01",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001306550-23-009572",
+          "header_artifact_id": "edgar_index_headers:0001306550-23-009572",
+          "filed": "2023-07-07",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001158172"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-23-063677",
+          "header_artifact_id": "edgar_index_headers:0001104659-23-063677",
+          "filed": "2023-05-23",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-23-039282",
+          "header_artifact_id": "edgar_index_headers:0001104659-23-039282",
+          "filed": "2023-03-30",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0000902664-17-001137",
+          "header_artifact_id": "edgar_index_headers:0000902664-17-001137",
+          "filed": "2017-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0000315066-17-000038",
+          "header_artifact_id": "edgar_index_headers:0000315066-17-000038",
+          "filed": "2017-01-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0001104659-16-161921",
+          "header_artifact_id": "edgar_index_headers:0001104659-16-161921",
+          "filed": "2016-12-13",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0001104659-16-161920",
+          "header_artifact_id": "edgar_index_headers:0001104659-16-161920",
+          "filed": "2016-12-13",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0001013594-16-001341",
+          "header_artifact_id": "edgar_index_headers:0001013594-16-001341",
+          "filed": "2016-12-09",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0001571049-16-020510",
+          "header_artifact_id": "edgar_index_headers:0001571049-16-020510",
+          "filed": "2016-12-09",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0000902664-16-008905",
+          "header_artifact_id": "edgar_index_headers:0000902664-16-008905",
+          "filed": "2016-11-23",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0000902664-16-008859",
+          "header_artifact_id": "edgar_index_headers:0000902664-16-008859",
+          "filed": "2016-11-17",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0001571049-16-019539",
+          "header_artifact_id": "edgar_index_headers:0001571049-16-019539",
+          "filed": "2016-11-07",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0001104659-16-131997",
+          "header_artifact_id": "edgar_index_headers:0001104659-16-131997",
+          "filed": "2016-07-11",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001897612-24-002030",
+          "header_artifact_id": "edgar_index_headers:0001897612-24-002030",
+          "filed": "2024-12-09",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0000902664-24-006665",
+          "header_artifact_id": "edgar_index_headers:0000902664-24-006665",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001335258"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001104659-24-119014",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-119014",
+          "filed": "2024-11-14",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001172661-24-005204",
+          "header_artifact_id": "edgar_index_headers:0001172661-24-005204",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "CONFLUENT, INC.|20717M103": {
+      "candidates": [
+        "0001171179",
+        "0001653183",
+        "0001699838"
+      ],
+      "cik": "0001699838",
+      "attested": [
+        {
+          "cik": "0001699838",
+          "discovered_via_submissions_cik": "0001699838",
+          "artifact_id": "sec_filing_doc:0001699838:0000080255-24-001474",
+          "header_artifact_id": "edgar_index_headers:0000080255-24-001474",
+          "filed": "2024-11-14",
+          "snippet": "FLUENT INC-CLASS A (Name of Issuer) COMMON STOCK (Title of Class of Securities) 20717M103 (CUSIP NUMBER) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001699838",
+          "subject_ciks": [
+            "0001699838"
+          ],
+          "artifact_id": "sec_filing_doc:0001699838:0000080255-24-001474",
+          "header_artifact_id": "edgar_index_headers:0000080255-24-001474",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "THE TORO COMPANY|891092108": {
+      "candidates": [
+        "0000737758",
+        "0001886787",
+        "0001941131"
+      ],
+      "cik": "0000737758",
+      "attested": [
+        {
+          "cik": "0000737758",
+          "discovered_via_submissions_cik": "0000737758",
+          "artifact_id": "sec_filing_doc:0000737758:0000080255-24-001380",
+          "header_artifact_id": "edgar_index_headers:0000080255-24-001380",
+          "filed": "2024-11-14",
+          "snippet": "ent No. 1) TORO CO (Name of Issuer) COMMON STOCK (Title of Class of Securities) 891092108 (CUSIP NUMBER) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0000737758",
+          "subject_ciks": [
+            "0000737758"
+          ],
+          "artifact_id": "sec_filing_doc:0000737758:0000080255-24-001380",
+          "header_artifact_id": "edgar_index_headers:0000080255-24-001380",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001941131",
+          "subject_ciks": [
+            "0001941131"
+          ],
+          "artifact_id": "sec_filing_doc:0001941131:0000950157-24-000837",
+          "header_artifact_id": "edgar_index_headers:0000950157-24-000837",
+          "filed": "2024-06-04",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001941131",
+          "subject_ciks": [
+            "0001941131"
+          ],
+          "artifact_id": "sec_filing_doc:0001941131:0000950157-23-001020",
+          "header_artifact_id": "edgar_index_headers:0000950157-23-001020",
+          "filed": "2023-10-02",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001941131",
+          "subject_ciks": [
+            "0001941131"
+          ],
+          "artifact_id": "sec_filing_doc:0001941131:0000950157-23-000399",
+          "header_artifact_id": "edgar_index_headers:0000950157-23-000399",
+          "filed": "2023-04-27",
+          "form": "SC 13D",
+          "cusip_found": false
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "SPIRIT AEROSYSTEMS HOLDINGS, INC.|848574109": {
+      "candidates": [
+        "0001349682",
+        "0001364885",
+        "0001476515"
+      ],
+      "cik": "0001364885",
+      "attested": [
+        {
+          "cik": "0001364885",
+          "discovered_via_submissions_cik": "0001364885",
+          "artifact_id": "sec_filing_doc:0001364885:0001013594-24-000982",
+          "header_artifact_id": "edgar_index_headers:0001013594-24-000982",
+          "filed": "2024-11-14",
+          "snippet": " Class A Common Stock, $0.01 par value per share (Title of Class of Securities) 848574109 (CUSIP Number) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001349682",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001349682:0000891092-14-001225",
+          "header_artifact_id": "edgar_index_headers:0000891092-14-001225",
+          "filed": "2014-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001349682",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001349682:0000891092-13-001331",
+          "header_artifact_id": "edgar_index_headers:0000891092-13-001331",
+          "filed": "2013-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001349682",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001349682:0000891092-12-006798",
+          "header_artifact_id": "edgar_index_headers:0000891092-12-006798",
+          "filed": "2012-11-15",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001349682",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001349682:0000891092-12-000845",
+          "header_artifact_id": "edgar_index_headers:0000891092-12-000845",
+          "filed": "2012-02-10",
+          "form": "SC 13G",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001349682",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001349682:0001085146-11-000717",
+          "header_artifact_id": "edgar_index_headers:0001085146-11-000717",
+          "filed": "2011-06-10",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001349682",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001349682:0001085146-11-000282",
+          "header_artifact_id": "edgar_index_headers:0001085146-11-000282",
+          "filed": "2011-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001349682",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001349682:0001085146-10-000184",
+          "header_artifact_id": "edgar_index_headers:0001085146-10-000184",
+          "filed": "2010-02-12",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001349682",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001349682:0001207017-10-000077",
+          "header_artifact_id": "edgar_index_headers:0001207017-10-000077",
+          "filed": "2010-02-05",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001349682",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001349682:0001085146-09-003554",
+          "header_artifact_id": "edgar_index_headers:0001085146-09-003554",
+          "filed": "2009-12-10",
+          "form": "SC 13G",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001349682",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001349682:0001207017-09-000087",
+          "header_artifact_id": "edgar_index_headers:0001207017-09-000087",
+          "filed": "2009-02-10",
+          "form": "SC 13G",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001364885",
+          "subject_ciks": [
+            "0001364885"
+          ],
+          "artifact_id": "sec_filing_doc:0001364885:0001013594-24-000982",
+          "header_artifact_id": "edgar_index_headers:0001013594-24-000982",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "LIBERTY MEDIA CORP - FORMULA ONE GROUP|531229771": {
+      "candidates": [
+        "0000869614",
+        "0001082114",
+        "0001355096",
+        "0001507934",
+        "0001560385"
+      ],
+      "cik": "0001560385",
+      "attested": [
+        {
+          "cik": "0000869614",
+          "discovered_via_submissions_cik": "0000869614",
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045044",
+          "header_artifact_id": "edgar_index_headers:0001493152-24-045044",
+          "filed": "2024-11-13",
+          "snippet": "iberty Formula One Common Stock, par value $0.01 (Title of Class of Securities) 531229771 (CUSIP Number) September 30, 2024 (Date"
+        },
+        {
+          "cik": "0001560385",
+          "discovered_via_submissions_cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0000932471-24-001022",
+          "header_artifact_id": "edgar_index_headers:0000932471-24-001022",
+          "filed": "2024-11-12",
+          "snippet": "-Liberty Formula One (Title of Class of Securities) Common Stock (CUSIP Number) 531229771 (Date of Event Which Requires Filing of"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045049",
+          "header_artifact_id": "edgar_index_headers:0001493152-24-045049",
+          "filed": "2024-11-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045046",
+          "header_artifact_id": "edgar_index_headers:0001493152-24-045046",
+          "filed": "2024-11-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000869614",
+          "subject_ciks": [
+            "0000869614"
+          ],
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045044",
+          "header_artifact_id": "edgar_index_headers:0001493152-24-045044",
+          "filed": "2024-11-13",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0000017283-07-000401",
+          "header_artifact_id": "edgar_index_headers:0000017283-07-000401",
+          "filed": "2007-02-12",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-06-011932",
+          "header_artifact_id": "edgar_index_headers:0001104659-06-011932",
+          "filed": "2006-02-24",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0000017283-06-000235",
+          "header_artifact_id": "edgar_index_headers:0000017283-06-000235",
+          "filed": "2006-02-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0000807985-06-000020",
+          "header_artifact_id": "edgar_index_headers:0000807985-06-000020",
+          "filed": "2006-02-10",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-060561",
+          "header_artifact_id": "edgar_index_headers:0001104659-05-060561",
+          "filed": "2005-12-13",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0001047469-05-021261",
+          "header_artifact_id": "edgar_index_headers:0001047469-05-021261",
+          "filed": "2005-08-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-012145",
+          "header_artifact_id": "edgar_index_headers:0001104659-05-012145",
+          "filed": "2005-03-21",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-012144",
+          "header_artifact_id": "edgar_index_headers:0001104659-05-012144",
+          "filed": "2005-03-21",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0000017283-05-000195",
+          "header_artifact_id": "edgar_index_headers:0000017283-05-000195",
+          "filed": "2005-02-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001082114",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-005722",
+          "header_artifact_id": "edgar_index_headers:0001104659-05-005722",
+          "filed": "2005-02-11",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001999371-24-014391",
+          "header_artifact_id": "edgar_index_headers:0001999371-24-014391",
+          "filed": "2024-11-08",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-24-102844",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-102844",
+          "filed": "2024-09-25",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001546190-24-000007",
+          "header_artifact_id": "edgar_index_headers:0001546190-24-000007",
+          "filed": "2024-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-24-020112",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-020112",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001193125-24-033455",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-033455",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001999371-24-001858",
+          "header_artifact_id": "edgar_index_headers:0001999371-24-001858",
+          "filed": "2024-02-12",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-23-113407",
+          "header_artifact_id": "edgar_index_headers:0001104659-23-113407",
+          "filed": "2023-11-01",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001306550-23-009572",
+          "header_artifact_id": "edgar_index_headers:0001306550-23-009572",
+          "filed": "2023-07-07",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001158172"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-23-063677",
+          "header_artifact_id": "edgar_index_headers:0001104659-23-063677",
+          "filed": "2023-05-23",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001355096",
+          "subject_ciks": [
+            "0001355096"
+          ],
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-23-039282",
+          "header_artifact_id": "edgar_index_headers:0001104659-23-039282",
+          "filed": "2023-03-30",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0000902664-17-001137",
+          "header_artifact_id": "edgar_index_headers:0000902664-17-001137",
+          "filed": "2017-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0000315066-17-000038",
+          "header_artifact_id": "edgar_index_headers:0000315066-17-000038",
+          "filed": "2017-01-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0001104659-16-161921",
+          "header_artifact_id": "edgar_index_headers:0001104659-16-161921",
+          "filed": "2016-12-13",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0001104659-16-161920",
+          "header_artifact_id": "edgar_index_headers:0001104659-16-161920",
+          "filed": "2016-12-13",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0001013594-16-001341",
+          "header_artifact_id": "edgar_index_headers:0001013594-16-001341",
+          "filed": "2016-12-09",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0001571049-16-020510",
+          "header_artifact_id": "edgar_index_headers:0001571049-16-020510",
+          "filed": "2016-12-09",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0000902664-16-008905",
+          "header_artifact_id": "edgar_index_headers:0000902664-16-008905",
+          "filed": "2016-11-23",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0000902664-16-008859",
+          "header_artifact_id": "edgar_index_headers:0000902664-16-008859",
+          "filed": "2016-11-17",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0001571049-16-019539",
+          "header_artifact_id": "edgar_index_headers:0001571049-16-019539",
+          "filed": "2016-11-07",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001507934",
+          "subject_ciks": [
+            "0001507934"
+          ],
+          "artifact_id": "sec_filing_doc:0001507934:0001104659-16-131997",
+          "header_artifact_id": "edgar_index_headers:0001104659-16-131997",
+          "filed": "2016-07-11",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001897612-24-002030",
+          "header_artifact_id": "edgar_index_headers:0001897612-24-002030",
+          "filed": "2024-12-09",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0000902664-24-006665",
+          "header_artifact_id": "edgar_index_headers:0000902664-24-006665",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001335258"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001104659-24-119014",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-119014",
+          "filed": "2024-11-14",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001172661-24-005204",
+          "header_artifact_id": "edgar_index_headers:0001172661-24-005204",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001274173-24-000147",
+          "header_artifact_id": "edgar_index_headers:0001274173-24-000147",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001897612-24-002010",
+          "header_artifact_id": "edgar_index_headers:0001897612-24-002010",
+          "filed": "2024-11-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001140361-24-046476",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-046476",
+          "filed": "2024-11-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001140361-24-046443",
+          "header_artifact_id": "edgar_index_headers:0001140361-24-046443",
+          "filed": "2024-11-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0000932471-24-001022",
+          "header_artifact_id": "edgar_index_headers:0000932471-24-001022",
+          "filed": "2024-11-12",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE_PIT_REGISTRANT_AMONG_ATTESTED",
+      "attested_ciks": [
+        "0000869614",
+        "0001560385"
+      ]
+    },
+    "SEALED AIR CORPORATION|81211K100": {
+      "candidates": [
+        "0000088204",
+        "0001012100"
+      ],
+      "cik": "0001012100",
+      "attested": [
+        {
+          "cik": "0001012100",
+          "discovered_via_submissions_cik": "0001012100",
+          "artifact_id": "sec_filing_doc:0001012100:0001897612-24-001906",
+          "header_artifact_id": "edgar_index_headers:0001897612-24-001906",
+          "filed": "2024-11-14",
+          "snippet": "1) SEALED AIR CORP (Name of Issuer) COMMON STOCK (Title of Class of Securities) 81211K100 (CUSIP NUMBER) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0000088204",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000088204:0001086364-14-001488",
+          "header_artifact_id": "edgar_index_headers:0001086364-14-001488",
+          "filed": "2014-01-30",
+          "form": "SC 13G",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0000088204",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000088204:0001036325-08-000006",
+          "header_artifact_id": "edgar_index_headers:0001036325-08-000006",
+          "filed": "2008-02-12",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0000088204",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000088204:0001036325-07-000008",
+          "header_artifact_id": "edgar_index_headers:0001036325-07-000008",
+          "filed": "2007-01-11",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0000088204",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000088204:0001036325-06-000004",
+          "header_artifact_id": "edgar_index_headers:0001036325-06-000004",
+          "filed": "2006-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0000088204",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000088204:0001036325-05-000053",
+          "header_artifact_id": "edgar_index_headers:0001036325-05-000053",
+          "filed": "2005-03-11",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0000088204",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000088204:0001036325-05-000034",
+          "header_artifact_id": "edgar_index_headers:0001036325-05-000034",
+          "filed": "2005-03-10",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0000088204",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000088204:0001036325-05-000006",
+          "header_artifact_id": "edgar_index_headers:0001036325-05-000006",
+          "filed": "2005-02-17",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0000088204",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000088204:0000017283-04-000526",
+          "header_artifact_id": "edgar_index_headers:0000017283-04-000526",
+          "filed": "2004-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0000088204",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000088204:0001036325-04-000024",
+          "header_artifact_id": "edgar_index_headers:0001036325-04-000024",
+          "filed": "2004-02-11",
+          "form": "SC 13G",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0000088204",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000088204:0001036325-03-000006",
+          "header_artifact_id": "edgar_index_headers:0001036325-03-000006",
+          "filed": "2003-02-19",
+          "form": "SC 13G",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001012100",
+          "subject_ciks": [
+            "0001012100"
+          ],
+          "artifact_id": "sec_filing_doc:0001012100:0001897612-24-001906",
+          "header_artifact_id": "edgar_index_headers:0001897612-24-001906",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "Intra-Cellular Therapies Inc|46116X101": {
+      "candidates": [
+        "0001176407",
+        "0001567514"
+      ],
+      "cik": "0001567514",
+      "attested": [
+        {
+          "cik": "0001567514",
+          "discovered_via_submissions_cik": "0001567514",
+          "artifact_id": "sec_filing_doc:0001567514:0000315066-24-002769",
+          "header_artifact_id": "edgar_index_headers:0000315066-24-002769",
+          "filed": "2024-11-12",
+          "snippet": "t SCHEDULE 13G Amendment No.12 INTRA-CELLULAR THERAPIES INC COMMON STOCK Cusip #46116X101 Check the appropriate box to designate "
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001567514",
+          "subject_ciks": [
+            "0001567514"
+          ],
+          "artifact_id": "sec_filing_doc:0001567514:0000315066-24-002769",
+          "header_artifact_id": "edgar_index_headers:0000315066-24-002769",
+          "filed": "2024-11-12",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "BERRY GLOBAL GROUP, INC.|08579W103": {
+      "candidates": [
+        "0000919465",
+        "0001378992"
+      ],
+      "cik": "0001378992",
+      "attested": [
+        {
+          "cik": "0001378992",
+          "discovered_via_submissions_cik": "0001378992",
+          "artifact_id": "sec_filing_doc:0001378992:0001172661-24-005239",
+          "header_artifact_id": "edgar_index_headers:0001172661-24-005239",
+          "filed": "2024-11-14",
+          "snippet": " Issuer) Common Stock, $0.01 par value per share (Title of Class of Securities) 08579W103 (CUSIP Number) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001378992",
+          "subject_ciks": [
+            "0001378992"
+          ],
+          "artifact_id": "sec_filing_doc:0001378992:0001172661-24-005239",
+          "header_artifact_id": "edgar_index_headers:0001172661-24-005239",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "THE INTERPUBLIC GROUP OF COMPANIES, INC.|460690100": {
+      "candidates": [
+        "0000051644",
+        "0000944048"
+      ],
+      "cik": "0000051644",
+      "attested": [
+        {
+          "cik": "0000051644",
+          "discovered_via_submissions_cik": "0000051644",
+          "artifact_id": "sec_filing_doc:0000051644:0002012383-24-003998",
+          "header_artifact_id": "edgar_index_headers:0002012383-24-003998",
+          "filed": "2024-11-08",
+          "snippet": "SC 13G/A 1 us4606901001_110824.txt us4606901001_110824.txt SEC"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0000051644",
+          "subject_ciks": [
+            "0000051644"
+          ],
+          "artifact_id": "sec_filing_doc:0000051644:0002012383-24-003998",
+          "header_artifact_id": "edgar_index_headers:0002012383-24-003998",
+          "filed": "2024-11-08",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0000944048",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000944048:0000315066-09-001818",
+          "header_artifact_id": "edgar_index_headers:0000315066-09-001818",
+          "filed": "2009-02-17",
+          "form": "SC 13G",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0000944048",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000944048:0000315066-09-001313",
+          "header_artifact_id": "edgar_index_headers:0000315066-09-001313",
+          "filed": "2009-02-10",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "WALGREENS BOOTS ALLIANCE, INC.|931427108": {
+      "candidates": [
+        "0001618921",
+        "0001669077"
+      ],
+      "cik": "0001618921",
+      "attested": [
+        {
+          "cik": "0001618921",
+          "discovered_via_submissions_cik": "0001618921",
+          "artifact_id": "sec_filing_doc:0001618921:0000093751-24-000897",
+          "header_artifact_id": "edgar_index_headers:0000093751-24-000897",
+          "filed": "2024-10-18",
+          "snippet": "BOOTS ALLIANCE INC (Name of Issuer) COMMON STOCK (Title of Class of Securities) 931427108 (CUSIP Number) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001618921",
+          "subject_ciks": [
+            "0001865782"
+          ],
+          "artifact_id": "sec_filing_doc:0001618921:0001193125-24-258592",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-258592",
+          "filed": "2024-11-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001618921",
+          "subject_ciks": [
+            "0001618921"
+          ],
+          "artifact_id": "sec_filing_doc:0001618921:0000093751-24-000897",
+          "header_artifact_id": "edgar_index_headers:0000093751-24-000897",
+          "filed": "2024-10-18",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001669077",
+          "subject_ciks": [
+            "0001140859"
+          ],
+          "artifact_id": "sec_filing_doc:0001669077:0001193125-24-194117",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-194117",
+          "filed": "2024-08-05",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "DUN & BRADSTREET HOLDINGS, INC.|26484T106": {
+      "candidates": [
+        "0000030419",
+        "0001059556",
+        "0001115222",
+        "0001799208"
+      ],
+      "cik": "0001799208",
+      "attested": [
+        {
+          "cik": "0001115222",
+          "discovered_via_submissions_cik": "0001115222",
+          "artifact_id": "sec_filing_doc:0001115222:0001422848-24-000125",
+          "header_artifact_id": "edgar_index_headers:0001422848-24-000125",
+          "filed": "2024-02-09",
+          "snippet": "eet Holdings, Inc. (Name of Issuer) Common Stock (Title of Class of Securities) 26484T106 (CUSIP Number) December 29, 2023 (Date "
+        },
+        {
+          "cik": "0001799208",
+          "discovered_via_submissions_cik": "0001799208",
+          "artifact_id": "sec_filing_doc:0001799208:0000932471-24-000943",
+          "header_artifact_id": "edgar_index_headers:0000932471-24-000943",
+          "filed": "2024-11-12",
+          "snippet": "dstreet Holdings Inc (Title of Class of Securities) Common Stock (CUSIP Number) 26484T106 (Date of Event Which Requires Filing of"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0000030419",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000030419:0001193125-13-227337",
+          "header_artifact_id": "edgar_index_headers:0001193125-13-227337",
+          "filed": "2013-05-20",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000030419",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000030419:0000919574-13-001199",
+          "header_artifact_id": "edgar_index_headers:0000919574-13-001199",
+          "filed": "2013-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000030419",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000030419:0001193125-13-055395",
+          "header_artifact_id": "edgar_index_headers:0001193125-13-055395",
+          "filed": "2013-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000030419",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000030419:0001521536-13-000135",
+          "header_artifact_id": "edgar_index_headers:0001521536-13-000135",
+          "filed": "2013-02-13",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000030419",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000030419:0001104659-13-009590",
+          "header_artifact_id": "edgar_index_headers:0001104659-13-009590",
+          "filed": "2013-02-12",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000030419",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000030419:0001193125-12-508894",
+          "header_artifact_id": "edgar_index_headers:0001193125-12-508894",
+          "filed": "2012-12-20",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000030419",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000030419:0000919574-12-006693",
+          "header_artifact_id": "edgar_index_headers:0000919574-12-006693",
+          "filed": "2012-12-11",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000030419",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000030419:0000919574-12-003904",
+          "header_artifact_id": "edgar_index_headers:0000919574-12-003904",
+          "filed": "2012-06-01",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000030419",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000030419:0000038777-12-000175",
+          "header_artifact_id": "edgar_index_headers:0000038777-12-000175",
+          "filed": "2012-05-07",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000030419",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000030419:0000038777-12-000160",
+          "header_artifact_id": "edgar_index_headers:0000038777-12-000160",
+          "filed": "2012-03-14",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001059556",
+          "subject_ciks": [
+            "0001059556"
+          ],
+          "artifact_id": "sec_filing_doc:0001059556:0000902664-24-001652",
+          "header_artifact_id": "edgar_index_headers:0000902664-24-001652",
+          "filed": "2024-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001059556",
+          "subject_ciks": [
+            "0001059556"
+          ],
+          "artifact_id": "sec_filing_doc:0001059556:0001104659-24-021495",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-021495",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001059556",
+          "subject_ciks": [
+            "0001059556"
+          ],
+          "artifact_id": "sec_filing_doc:0001059556:0001086364-24-004649",
+          "header_artifact_id": "edgar_index_headers:0001086364-24-004649",
+          "filed": "2024-01-26",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001059556",
+          "subject_ciks": [
+            "0001059556"
+          ],
+          "artifact_id": "sec_filing_doc:0001059556:0000902664-23-005905",
+          "header_artifact_id": "edgar_index_headers:0000902664-23-005905",
+          "filed": "2023-12-18",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001059556",
+          "subject_ciks": [
+            "0001059556"
+          ],
+          "artifact_id": "sec_filing_doc:0001059556:0000902664-23-001680",
+          "header_artifact_id": "edgar_index_headers:0000902664-23-001680",
+          "filed": "2023-02-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001059556",
+          "subject_ciks": [
+            "0001059556"
+          ],
+          "artifact_id": "sec_filing_doc:0001059556:0001104659-23-016504",
+          "header_artifact_id": "edgar_index_headers:0001104659-23-016504",
+          "filed": "2023-02-09",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001059556",
+          "subject_ciks": [
+            "0001059556"
+          ],
+          "artifact_id": "sec_filing_doc:0001059556:0001306550-23-005191",
+          "header_artifact_id": "edgar_index_headers:0001306550-23-005191",
+          "filed": "2023-01-31",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001059556",
+          "subject_ciks": [
+            "0001059556"
+          ],
+          "artifact_id": "sec_filing_doc:0001059556:0001104659-22-018124",
+          "header_artifact_id": "edgar_index_headers:0001104659-22-018124",
+          "filed": "2022-02-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001059556",
+          "subject_ciks": [
+            "0001059556"
+          ],
+          "artifact_id": "sec_filing_doc:0001059556:0000834237-22-004624",
+          "header_artifact_id": "edgar_index_headers:0000834237-22-004624",
+          "filed": "2022-02-01",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001059556",
+          "subject_ciks": [
+            "0001059556"
+          ],
+          "artifact_id": "sec_filing_doc:0001059556:0001104659-21-018660",
+          "header_artifact_id": "edgar_index_headers:0001104659-21-018660",
+          "filed": "2021-02-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001115222",
+          "subject_ciks": [
+            "0001115222"
+          ],
+          "artifact_id": "sec_filing_doc:0001115222:0001422848-24-000125",
+          "header_artifact_id": "edgar_index_headers:0001422848-24-000125",
+          "filed": "2024-02-09",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0001799208",
+          "subject_ciks": [
+            "0001799208"
+          ],
+          "artifact_id": "sec_filing_doc:0001799208:0000932471-24-000943",
+          "header_artifact_id": "edgar_index_headers:0000932471-24-000943",
+          "filed": "2024-11-12",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE_PIT_REGISTRANT_AMONG_ATTESTED",
+      "attested_ciks": [
+        "0001115222",
+        "0001799208"
+      ]
+    },
+    "F.N.B. CORPORATION|302520101": {
+      "candidates": [
+        "0000037808",
+        "0000103379",
+        "0000764811",
+        "0000810383",
+        "0001010961",
+        "0001318986",
+        "0001359405",
+        "0001360427",
+        "0001367160",
+        "0001395126",
+        "0001729660"
+      ],
+      "cik": "0000037808",
+      "attested": [
+        {
+          "cik": "0000037808",
+          "discovered_via_submissions_cik": "0000037808",
+          "artifact_id": "sec_filing_doc:0000037808:0001082327-24-000075",
+          "header_artifact_id": "edgar_index_headers:0001082327-24-000075",
+          "filed": "2024-11-12",
+          "snippet": "F.N.B. CORPORATION (Name of Issuer) Common Stock (Title of Class of Securities) 302520101 (CUSIP Number) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0000037808",
+          "subject_ciks": [
+            "0000037808"
+          ],
+          "artifact_id": "sec_filing_doc:0000037808:0001082327-24-000075",
+          "header_artifact_id": "edgar_index_headers:0001082327-24-000075",
+          "filed": "2024-11-12",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        },
+        {
+          "submissions_cik": "0000103379",
+          "subject_ciks": [
+            "0000103379"
+          ],
+          "artifact_id": "sec_filing_doc:0000103379:0001193125-24-258958",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-258958",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000103379",
+          "subject_ciks": [
+            "0000103379"
+          ],
+          "artifact_id": "sec_filing_doc:0000103379:0001193125-24-176709",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-176709",
+          "filed": "2024-07-09",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000103379",
+          "subject_ciks": [
+            "0000103379"
+          ],
+          "artifact_id": "sec_filing_doc:0000103379:0001086364-24-007602",
+          "header_artifact_id": "edgar_index_headers:0001086364-24-007602",
+          "filed": "2024-05-08",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000103379",
+          "subject_ciks": [
+            "0000103379"
+          ],
+          "artifact_id": "sec_filing_doc:0000103379:0001256484-24-000007",
+          "header_artifact_id": "edgar_index_headers:0001256484-24-000007",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000103379",
+          "subject_ciks": [
+            "0000103379"
+          ],
+          "artifact_id": "sec_filing_doc:0000103379:0001104659-24-022237",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-022237",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000103379",
+          "subject_ciks": [
+            "0000103379"
+          ],
+          "artifact_id": "sec_filing_doc:0000103379:0001193125-24-033327",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-033327",
+          "filed": "2024-02-13",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000103379",
+          "subject_ciks": [
+            "0000103379"
+          ],
+          "artifact_id": "sec_filing_doc:0000103379:0001193125-24-029369",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-029369",
+          "filed": "2024-02-09",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000103379",
+          "subject_ciks": [
+            "0000103379"
+          ],
+          "artifact_id": "sec_filing_doc:0000103379:0001086364-24-005193",
+          "header_artifact_id": "edgar_index_headers:0001086364-24-005193",
+          "filed": "2024-01-29",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000103379",
+          "subject_ciks": [
+            "0000103379"
+          ],
+          "artifact_id": "sec_filing_doc:0000103379:0000093751-24-000244",
+          "header_artifact_id": "edgar_index_headers:0000093751-24-000244",
+          "filed": "2024-01-25",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000103379",
+          "subject_ciks": [
+            "0000103379"
+          ],
+          "artifact_id": "sec_filing_doc:0000103379:0000093751-23-000542",
+          "header_artifact_id": "edgar_index_headers:0000093751-23-000542",
+          "filed": "2023-03-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000764811",
+          "subject_ciks": [
+            "0000764811"
+          ],
+          "artifact_id": "sec_filing_doc:0000764811:0001144204-16-130227",
+          "header_artifact_id": "edgar_index_headers:0001144204-16-130227",
+          "filed": "2016-10-28",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000764811",
+          "subject_ciks": [
+            "0000764811"
+          ],
+          "artifact_id": "sec_filing_doc:0000764811:0001193125-16-751581",
+          "header_artifact_id": "edgar_index_headers:0001193125-16-751581",
+          "filed": "2016-10-28",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000764811",
+          "subject_ciks": [
+            "0000764811"
+          ],
+          "artifact_id": "sec_filing_doc:0000764811:0001144204-15-067569",
+          "header_artifact_id": "edgar_index_headers:0001144204-15-067569",
+          "filed": "2015-11-23",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000764811",
+          "subject_ciks": [
+            "0000764811"
+          ],
+          "artifact_id": "sec_filing_doc:0000764811:0001144204-15-067564",
+          "header_artifact_id": "edgar_index_headers:0001144204-15-067564",
+          "filed": "2015-11-23",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000764811",
+          "subject_ciks": [
+            "0000764811"
+          ],
+          "artifact_id": "sec_filing_doc:0000764811:0001144204-14-076461",
+          "header_artifact_id": "edgar_index_headers:0001144204-14-076461",
+          "filed": "2014-12-30",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000764811",
+          "subject_ciks": [
+            "0000764811"
+          ],
+          "artifact_id": "sec_filing_doc:0000764811:0001144204-14-076455",
+          "header_artifact_id": "edgar_index_headers:0001144204-14-076455",
+          "filed": "2014-12-30",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000764811",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000764811:0001193125-13-281112",
+          "header_artifact_id": "edgar_index_headers:0001193125-13-281112",
+          "filed": "2013-07-02",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000764811",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000764811:0000893750-11-000082",
+          "header_artifact_id": "edgar_index_headers:0000893750-11-000082",
+          "filed": "2011-10-31",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0000764811",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0000764811:0000893750-11-000080",
+          "header_artifact_id": "edgar_index_headers:0000893750-11-000080",
+          "filed": "2011-10-31",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001010961",
+          "subject_ciks": [],
+          "artifact_id": "sec_filing_doc:0001010961:0001193125-08-021796",
+          "header_artifact_id": "edgar_index_headers:0001193125-08-021796",
+          "filed": "2008-02-06",
+          "form": "SC 13D",
+          "cusip_found": false
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "V.F. CORPORATION|918204108": {
+      "candidates": [
+        "0000103379",
+        "0001318986",
+        "0001359405",
+        "0001360427",
+        "0001367160",
+        "0001395126",
+        "0001498546",
+        "0001729660"
+      ],
+      "cik": "0000103379",
+      "attested": [
+        {
+          "cik": "0000103379",
+          "discovered_via_submissions_cik": "0000103379",
+          "artifact_id": "sec_filing_doc:0000103379:0001193125-24-258958",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-258958",
+          "filed": "2024-11-14",
+          "snippet": ") V.F. Corporation (Name of Issuer) Common Stock (Title of Class of Securities) 918204108 (CUSIP Number) September 30, 2024 (Date"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0000103379",
+          "subject_ciks": [
+            "0000103379"
+          ],
+          "artifact_id": "sec_filing_doc:0000103379:0001193125-24-258958",
+          "header_artifact_id": "edgar_index_headers:0001193125-24-258958",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    }
+  },
+  "status": "OK",
+  "n_members_cik": 991,
+  "n_unresolved": 1,
+  "n_as_of_ticker_from_cover": 41,
+  "n_extra": 481,
+  "n_not_in_pool_without_current_ticker": 0,
+  "log": [
+    {
+      "artifact_id": "submissions:0001100663",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_cik_lookup",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions_page:CIK0001100663-submissions-001.json",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043926",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043923",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043927",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043925",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043924",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043922",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043921",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043853",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043851",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043850",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043852",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043849",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043848",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043847",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043803",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043801",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043802",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043800",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043799",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043798",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-043797",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041407",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041401",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041398",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041395",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041390",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041393",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041391",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041389",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041388",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041386",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041384",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041382",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041381",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041377",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041378",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041373",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041371",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041375",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041369",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-041370",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037904",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037905",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037890",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037892",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037887",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037885",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037886",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037879",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037877",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037874",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037869",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037870",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037866",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037865",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037860",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037851",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037853",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037846",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037849",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037840",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037829",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037843",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037833",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037823",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037818",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037814",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-037819",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-034063",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-25-034052",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "nport_xml:0001752724-25-034052",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000072333",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000072333:0000950170-24-140241",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000950170-24-140241",
+      "status": "OK",
+      "bytes": 5487
+    },
+    {
+      "artifact_id": "submissions:0001099772",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001168461",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000317155",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001146318",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001163302",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001163302:0000902664-24-006594",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000902664-24-006594",
+      "status": "OK",
+      "bytes": 3836
+    },
+    {
+      "artifact_id": "submissions:0001030916",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001030916:0001193125-14-403108",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-14-403108",
+      "status": "OK",
+      "bytes": 3636
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001030916:0001019687-12-002716",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001019687-12-002716",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1030916/000101968712002716/0001019687-12-002716-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001030916:0001019687-12-000735",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001019687-12-000735",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1030916/000101968712000735/0001019687-12-000735-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001030916:0001086715-10-000051",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001086715-10-000051",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1030916/000108671510000051/0001086715-10-000051-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001030916:0001086715-10-000049",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001086715-10-000049",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1030916/000108671510000049/0001086715-10-000049-index-headers.html"
+    },
+    {
+      "artifact_id": "submissions:0001085411",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001577916",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001577916:0000354204-24-004728",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000354204-24-004728",
+      "status": "OK",
+      "bytes": 3664
+    },
+    {
+      "artifact_id": "submissions:0001753697",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000356942",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000929940",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000929940:0001567619-23-002740",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001567619-23-002740",
+      "status": "OK",
+      "bytes": 3862
+    },
+    {
+      "artifact_id": "submissions:0001897982",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001897982:0002012383-24-003548",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0002012383-24-003548",
+      "status": "OK",
+      "bytes": 3768
+    },
+    {
+      "artifact_id": "submissions:0001080099",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001080099:0001013594-15-000453",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001013594-15-000453",
+      "status": "OK",
+      "bytes": 3730
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001080099:0001193125-15-173467",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-15-173467",
+      "status": "OK",
+      "bytes": 3928
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001080099:0001013594-15-000173",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001013594-15-000173",
+      "status": "OK",
+      "bytes": 3541
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001080099:0000891092-15-001252",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000891092-15-001252",
+      "status": "OK",
+      "bytes": 3862
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001080099:0001193125-15-043213",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-15-043213",
+      "status": "OK",
+      "bytes": 3928
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001080099:0000932471-15-004059",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000932471-15-004059",
+      "status": "OK",
+      "bytes": 3148
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001080099:0000812295-15-000007",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000812295-15-000007",
+      "status": "OK",
+      "bytes": 3834
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001080099:0001086364-15-000932",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001086364-15-000932",
+      "status": "OK",
+      "bytes": 3600
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001080099:0001013594-15-000029",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001013594-15-000029",
+      "status": "OK",
+      "bytes": 3514
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001080099:0000812295-14-000052",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000812295-14-000052",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1080099/000081229514000052/0000812295-14-000052-index-headers.html"
+    },
+    {
+      "artifact_id": "submissions:0001868778",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001868778:0001493152-24-044793",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001493152-24-044793",
+      "status": "OK",
+      "bytes": 3447
+    },
+    {
+      "artifact_id": "submissions:0001655888",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001655888:0001140361-24-003625",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-003625",
+      "status": "OK",
+      "bytes": 3691
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001655888:0001085146-24-000194",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001085146-24-000194",
+      "status": "OK",
+      "bytes": 3536
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001655888:0001193125-23-036564",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-23-036564",
+      "status": "OK",
+      "bytes": 3699
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001655888:0001140361-23-004126",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-23-004126",
+      "status": "OK",
+      "bytes": 3458
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001655888:0001085146-23-000079",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001085146-23-000079",
+      "status": "OK",
+      "bytes": 3317
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001655888:0001140361-22-002777",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-22-002777",
+      "status": "OK",
+      "bytes": 3455
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001655888:0001085146-22-000302",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001085146-22-000302",
+      "status": "OK",
+      "bytes": 3317
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001655888:0001085146-21-000426",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001085146-21-000426",
+      "status": "OK",
+      "bytes": 3317
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001655888:0001140361-21-002903",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-21-002903",
+      "status": "OK",
+      "bytes": 3455
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001655888:0001140361-20-003414",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-20-003414",
+      "status": "OK",
+      "bytes": 3428
+    },
+    {
+      "artifact_id": "submissions:0001823945",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001823945:0001418660-24-000018",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001418660-24-000018",
+      "status": "OK",
+      "bytes": 3893
+    },
+    {
+      "artifact_id": "submissions:0001858703",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046980",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-046980",
+      "status": "OK",
+      "bytes": 3496
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046979",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-046979",
+      "status": "OK",
+      "bytes": 3365
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046978",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-046978",
+      "status": "OK",
+      "bytes": 3557
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046977",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-046977",
+      "status": "OK",
+      "bytes": 3951
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046976",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-046976",
+      "status": "OK",
+      "bytes": 3354
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046975",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-046975",
+      "status": "OK",
+      "bytes": 3597
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046974",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-046974",
+      "status": "OK",
+      "bytes": 3467
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046973",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-046973",
+      "status": "OK",
+      "bytes": 3721
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046972",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-046972",
+      "status": "OK",
+      "bytes": 3501
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046971",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-046971",
+      "status": "OK",
+      "bytes": 3662
+    },
+    {
+      "artifact_id": "submissions:0002012649",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0002019033",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001496678",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001725057",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001725057:0001172661-24-005243",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001172661-24-005243",
+      "status": "OK",
+      "bytes": 3936
+    },
+    {
+      "artifact_id": "submissions:0000869614",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045049",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001493152-24-045049",
+      "status": "OK",
+      "bytes": 3204
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045046",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001493152-24-045046",
+      "status": "OK",
+      "bytes": 3204
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045044",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001493152-24-045044",
+      "status": "OK",
+      "bytes": 3204
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001193125-24-226917",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-226917",
+      "status": "OK",
+      "bytes": 4210
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001193125-24-226916",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-226916",
+      "status": "OK",
+      "bytes": 4349
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001493152-24-031242",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001493152-24-031242",
+      "status": "OK",
+      "bytes": 3187
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001493152-24-017368",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001493152-24-017368",
+      "status": "OK",
+      "bytes": 3185
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001493152-24-014985",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001493152-24-014985",
+      "status": "OK",
+      "bytes": 3185
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001193125-24-089047",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-089047",
+      "status": "OK",
+      "bytes": 4347
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001193125-24-089033",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-089033",
+      "status": "OK",
+      "bytes": 4208
+    },
+    {
+      "artifact_id": "submissions:0001082114",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0000017283-07-000401",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000017283-07-000401",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000001728307000401/0000017283-07-000401-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0001104659-06-011932",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-06-011932",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000110465906011932/0001104659-06-011932-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0000017283-06-000235",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000017283-06-000235",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000001728306000235/0000017283-06-000235-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0000807985-06-000020",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000807985-06-000020",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000080798506000020/0000807985-06-000020-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0001104659-05-060561",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-05-060561",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000110465905060561/0001104659-05-060561-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0001047469-05-021261",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001047469-05-021261",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000104746905021261/0001047469-05-021261-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0001104659-05-012145",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-05-012145",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000110465905012145/0001104659-05-012145-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0001104659-05-012144",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-05-012144",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000110465905012144/0001104659-05-012144-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0000017283-05-000195",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000017283-05-000195",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000001728305000195/0000017283-05-000195-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0001104659-05-005722",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-05-005722",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000110465905005722/0001104659-05-005722-index-headers.html"
+    },
+    {
+      "artifact_id": "submissions:0001355096",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001999371-24-014391",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001999371-24-014391",
+      "status": "OK",
+      "bytes": 4048
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001104659-24-102844",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-24-102844",
+      "status": "OK",
+      "bytes": 3691
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001546190-24-000007",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001546190-24-000007",
+      "status": "OK",
+      "bytes": 4489
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001104659-24-020112",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-24-020112",
+      "status": "OK",
+      "bytes": 3966
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001193125-24-033455",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-033455",
+      "status": "OK",
+      "bytes": 4043
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001999371-24-001858",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001999371-24-001858",
+      "status": "OK",
+      "bytes": 4031
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001104659-23-113407",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-23-113407",
+      "status": "OK",
+      "bytes": 3307
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001306550-23-009572",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001306550-23-009572",
+      "status": "OK",
+      "bytes": 4163
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001104659-23-063677",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-23-063677",
+      "status": "OK",
+      "bytes": 4095
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001104659-23-039282",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-23-039282",
+      "status": "OK",
+      "bytes": 3305
+    },
+    {
+      "artifact_id": "submissions:0001507934",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0000902664-17-001137",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000902664-17-001137",
+      "status": "OK",
+      "bytes": 3748
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0000315066-17-000038",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000315066-17-000038",
+      "status": "OK",
+      "bytes": 3885
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0001104659-16-161921",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-16-161921",
+      "status": "OK",
+      "bytes": 3498
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0001104659-16-161920",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-16-161920",
+      "status": "OK",
+      "bytes": 3315
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0001013594-16-001341",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001013594-16-001341",
+      "status": "OK",
+      "bytes": 4100
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0001571049-16-020510",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001571049-16-020510",
+      "status": "OK",
+      "bytes": 4535
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0000902664-16-008905",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000902664-16-008905",
+      "status": "OK",
+      "bytes": 3758
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0000902664-16-008859",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000902664-16-008859",
+      "status": "OK",
+      "bytes": 3741
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0001571049-16-019539",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001571049-16-019539",
+      "status": "OK",
+      "bytes": 4535
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0001104659-16-131997",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-16-131997",
+      "status": "OK",
+      "bytes": 3315
+    },
+    {
+      "artifact_id": "submissions:0001560385",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0001897612-24-002030",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001897612-24-002030",
+      "status": "OK",
+      "bytes": 3484
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0000902664-24-006665",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000902664-24-006665",
+      "status": "OK",
+      "bytes": 3492
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0001104659-24-119014",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-24-119014",
+      "status": "OK",
+      "bytes": 4093
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0001172661-24-005204",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001172661-24-005204",
+      "status": "OK",
+      "bytes": 3621
+    },
+    {
+      "artifact_id": "submissions:0001171179",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001653183",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001699838",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001699838:0000080255-24-001474",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000080255-24-001474",
+      "status": "OK",
+      "bytes": 3408
+    },
+    {
+      "artifact_id": "submissions:0000737758",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000737758:0000080255-24-001380",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000080255-24-001380",
+      "status": "OK",
+      "bytes": 3616
+    },
+    {
+      "artifact_id": "submissions:0001886787",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001941131",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001941131:0000950157-24-000837",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000950157-24-000837",
+      "status": "OK",
+      "bytes": 3947
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001941131:0000950157-23-001020",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000950157-23-001020",
+      "status": "OK",
+      "bytes": 3794
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001941131:0000950157-23-000399",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000950157-23-000399",
+      "status": "OK",
+      "bytes": 3941
+    },
+    {
+      "artifact_id": "submissions:0001349682",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001349682:0000891092-14-001225",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000891092-14-001225",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1349682/000089109214001225/0000891092-14-001225-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001349682:0000891092-13-001331",
+      "status": "OK",
+      "bytes": 21112
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000891092-13-001331",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1349682/000089109213001331/0000891092-13-001331-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001349682:0000891092-12-006798",
+      "status": "OK",
+      "bytes": 21073
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000891092-12-006798",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1349682/000089109212006798/0000891092-12-006798-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001349682:0000891092-12-000845",
+      "status": "OK",
+      "bytes": 20923
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000891092-12-000845",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1349682/000089109212000845/0000891092-12-000845-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001349682:0001085146-11-000717",
+      "status": "OK",
+      "bytes": 30724
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001085146-11-000717",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1349682/000108514611000717/0001085146-11-000717-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001349682:0001085146-11-000282",
+      "status": "OK",
+      "bytes": 30776
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001085146-11-000282",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1349682/000108514611000282/0001085146-11-000282-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001349682:0001085146-10-000184",
+      "status": "OK",
+      "bytes": 18760
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001085146-10-000184",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1349682/000108514610000184/0001085146-10-000184-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001349682:0001207017-10-000077",
+      "status": "OK",
+      "bytes": 4538
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001207017-10-000077",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1349682/000120701710000077/0001207017-10-000077-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001349682:0001085146-09-003554",
+      "status": "OK",
+      "bytes": 19340
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001085146-09-003554",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1349682/000108514609003554/0001085146-09-003554-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001349682:0001207017-09-000087",
+      "status": "OK",
+      "bytes": 4531
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001207017-09-000087",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1349682/000120701709000087/0001207017-09-000087-index-headers.html"
+    },
+    {
+      "artifact_id": "submissions:0001364885",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001364885:0001013594-24-000982",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001013594-24-000982",
+      "status": "OK",
+      "bytes": 3617
+    },
+    {
+      "artifact_id": "submissions:0001476515",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000869614",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045049",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001493152-24-045049",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045046",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001493152-24-045046",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045044",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001493152-24-045044",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001082114",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0000017283-07-000401",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000017283-07-000401",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000001728307000401/0000017283-07-000401-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0001104659-06-011932",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-06-011932",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000110465906011932/0001104659-06-011932-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0000017283-06-000235",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000017283-06-000235",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000001728306000235/0000017283-06-000235-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0000807985-06-000020",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000807985-06-000020",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000080798506000020/0000807985-06-000020-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0001104659-05-060561",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-05-060561",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000110465905060561/0001104659-05-060561-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0001047469-05-021261",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001047469-05-021261",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000104746905021261/0001047469-05-021261-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0001104659-05-012145",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-05-012145",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000110465905012145/0001104659-05-012145-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0001104659-05-012144",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-05-012144",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000110465905012144/0001104659-05-012144-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0000017283-05-000195",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000017283-05-000195",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000001728305000195/0000017283-05-000195-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001082114:0001104659-05-005722",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-05-005722",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1082114/000110465905005722/0001104659-05-005722-index-headers.html"
+    },
+    {
+      "artifact_id": "submissions:0001355096",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001999371-24-014391",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001999371-24-014391",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001104659-24-102844",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-24-102844",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001546190-24-000007",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001546190-24-000007",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001104659-24-020112",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-24-020112",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001193125-24-033455",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-033455",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001999371-24-001858",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001999371-24-001858",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001104659-23-113407",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-23-113407",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001306550-23-009572",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001306550-23-009572",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001104659-23-063677",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-23-063677",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001355096:0001104659-23-039282",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-23-039282",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001507934",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0000902664-17-001137",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000902664-17-001137",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0000315066-17-000038",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000315066-17-000038",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0001104659-16-161921",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-16-161921",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0001104659-16-161920",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-16-161920",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0001013594-16-001341",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001013594-16-001341",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0001571049-16-020510",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001571049-16-020510",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0000902664-16-008905",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000902664-16-008905",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0000902664-16-008859",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000902664-16-008859",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0001571049-16-019539",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001571049-16-019539",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001507934:0001104659-16-131997",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-16-131997",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001560385",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0001897612-24-002030",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001897612-24-002030",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0000902664-24-006665",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000902664-24-006665",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0001104659-24-119014",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-24-119014",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0001172661-24-005204",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001172661-24-005204",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0001274173-24-000147",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001274173-24-000147",
+      "status": "OK",
+      "bytes": 3977
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0001897612-24-002010",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001897612-24-002010",
+      "status": "OK",
+      "bytes": 3484
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0001140361-24-046476",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-046476",
+      "status": "OK",
+      "bytes": 3657
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0001140361-24-046443",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001140361-24-046443",
+      "status": "OK",
+      "bytes": 3657
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0000932471-24-001022",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000932471-24-001022",
+      "status": "OK",
+      "bytes": 3520
+    },
+    {
+      "artifact_id": "submissions:0000088204",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000088204:0001086364-14-001488",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001086364-14-001488",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/88204/000108636414001488/0001086364-14-001488-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000088204:0001036325-08-000006",
+      "status": "OK",
+      "bytes": 8505
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001036325-08-000006",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/88204/000103632508000006/0001036325-08-000006-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000088204:0001036325-07-000008",
+      "status": "OK",
+      "bytes": 3599
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001036325-07-000008",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/88204/000103632507000008/0001036325-07-000008-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000088204:0001036325-06-000004",
+      "status": "OK",
+      "bytes": 3600
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001036325-06-000004",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/88204/000103632506000004/0001036325-06-000004-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000088204:0001036325-05-000053",
+      "status": "OK",
+      "bytes": 3580
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001036325-05-000053",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/88204/000103632505000053/0001036325-05-000053-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000088204:0001036325-05-000034",
+      "status": "OK",
+      "bytes": 3580
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001036325-05-000034",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/88204/000103632505000034/0001036325-05-000034-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000088204:0001036325-05-000006",
+      "status": "OK",
+      "bytes": 3580
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001036325-05-000006",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/88204/000103632505000006/0001036325-05-000006-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000088204:0000017283-04-000526",
+      "status": "OK",
+      "bytes": 7183
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000017283-04-000526",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/88204/000001728304000526/0000017283-04-000526-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000088204:0001036325-04-000024",
+      "status": "OK",
+      "bytes": 3636
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001036325-04-000024",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/88204/000103632504000024/0001036325-04-000024-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000088204:0001036325-03-000006",
+      "status": "OK",
+      "bytes": 3593
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001036325-03-000006",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/88204/000103632503000006/0001036325-03-000006-index-headers.html"
+    },
+    {
+      "artifact_id": "submissions:0001012100",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001012100:0001897612-24-001906",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001897612-24-001906",
+      "status": "OK",
+      "bytes": 3785
+    },
+    {
+      "artifact_id": "submissions:0001176407",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001567514",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001567514:0000315066-24-002769",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000315066-24-002769",
+      "status": "OK",
+      "bytes": 3737
+    },
+    {
+      "artifact_id": "submissions:0000919465",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001378992",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001378992:0001172661-24-005239",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001172661-24-005239",
+      "status": "OK",
+      "bytes": 4265
+    },
+    {
+      "artifact_id": "submissions:0000051644",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000051644:0002012383-24-003998",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0002012383-24-003998",
+      "status": "OK",
+      "bytes": 4044
+    },
+    {
+      "artifact_id": "submissions:0000944048",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000944048:0000315066-09-001818",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000315066-09-001818",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/944048/000031506609001818/0000315066-09-001818-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000944048:0000315066-09-001313",
+      "status": "OK",
+      "bytes": 11958
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000315066-09-001313",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/944048/000031506609001313/0000315066-09-001313-index-headers.html"
+    },
+    {
+      "artifact_id": "submissions:0001618921",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001618921:0001193125-24-258592",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-258592",
+      "status": "OK",
+      "bytes": 3532
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001618921:0000093751-24-000897",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000093751-24-000897",
+      "status": "OK",
+      "bytes": 4086
+    },
+    {
+      "artifact_id": "submissions:0001669077",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001669077:0001193125-24-194117",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-194117",
+      "status": "OK",
+      "bytes": 4157
+    },
+    {
+      "artifact_id": "submissions:0000030419",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000030419:0001193125-13-227337",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-13-227337",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/30419/000119312513227337/0001193125-13-227337-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000030419:0000919574-13-001199",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000919574-13-001199",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/30419/000091957413001199/0000919574-13-001199-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000030419:0001193125-13-055395",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-13-055395",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/30419/000119312513055395/0001193125-13-055395-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000030419:0001521536-13-000135",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001521536-13-000135",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/30419/000152153613000135/0001521536-13-000135-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000030419:0001104659-13-009590",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-13-009590",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/30419/000110465913009590/0001104659-13-009590-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000030419:0001193125-12-508894",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-12-508894",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/30419/000119312512508894/0001193125-12-508894-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000030419:0000919574-12-006693",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000919574-12-006693",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/30419/000091957412006693/0000919574-12-006693-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000030419:0000919574-12-003904",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000919574-12-003904",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/30419/000091957412003904/0000919574-12-003904-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000030419:0000038777-12-000175",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000038777-12-000175",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/30419/000003877712000175/0000038777-12-000175-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000030419:0000038777-12-000160",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000038777-12-000160",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/30419/000003877712000160/0000038777-12-000160-index-headers.html"
+    },
+    {
+      "artifact_id": "submissions:0001059556",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001059556:0000902664-24-001652",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000902664-24-001652",
+      "status": "OK",
+      "bytes": 3870
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001059556:0001104659-24-021495",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-24-021495",
+      "status": "OK",
+      "bytes": 3944
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001059556:0001086364-24-004649",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001086364-24-004649",
+      "status": "OK",
+      "bytes": 4351
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001059556:0000902664-23-005905",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000902664-23-005905",
+      "status": "OK",
+      "bytes": 4146
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001059556:0000902664-23-001680",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000902664-23-001680",
+      "status": "OK",
+      "bytes": 3707
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001059556:0001104659-23-016504",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-23-016504",
+      "status": "OK",
+      "bytes": 3796
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001059556:0001306550-23-005191",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001306550-23-005191",
+      "status": "OK",
+      "bytes": 4199
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001059556:0001104659-22-018124",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-22-018124",
+      "status": "OK",
+      "bytes": 3796
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001059556:0000834237-22-004624",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000834237-22-004624",
+      "status": "OK",
+      "bytes": 4199
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001059556:0001104659-21-018660",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-21-018660",
+      "status": "OK",
+      "bytes": 3796
+    },
+    {
+      "artifact_id": "submissions:0001115222",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001115222:0001422848-24-000125",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001422848-24-000125",
+      "status": "OK",
+      "bytes": 3985
+    },
+    {
+      "artifact_id": "submissions:0001799208",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001799208:0000932471-24-000943",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000932471-24-000943",
+      "status": "OK",
+      "bytes": 3531
+    },
+    {
+      "artifact_id": "submissions:0000037808",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000037808:0001082327-24-000075",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001082327-24-000075",
+      "status": "OK",
+      "bytes": 4240
+    },
+    {
+      "artifact_id": "submissions:0000103379",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000103379:0001193125-24-258958",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-258958",
+      "status": "OK",
+      "bytes": 4573
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000103379:0001193125-24-176709",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-176709",
+      "status": "OK",
+      "bytes": 3861
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000103379:0001086364-24-007602",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001086364-24-007602",
+      "status": "OK",
+      "bytes": 4159
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000103379:0001256484-24-000007",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001256484-24-000007",
+      "status": "OK",
+      "bytes": 3940
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000103379:0001104659-24-022237",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-24-022237",
+      "status": "OK",
+      "bytes": 3740
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000103379:0001193125-24-033327",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-033327",
+      "status": "OK",
+      "bytes": 3840
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000103379:0001193125-24-029369",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-029369",
+      "status": "OK",
+      "bytes": 4791
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000103379:0001086364-24-005193",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001086364-24-005193",
+      "status": "OK",
+      "bytes": 4159
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000103379:0000093751-24-000244",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000093751-24-000244",
+      "status": "OK",
+      "bytes": 4403
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000103379:0000093751-23-000542",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000093751-23-000542",
+      "status": "OK",
+      "bytes": 4173
+    },
+    {
+      "artifact_id": "submissions:0000764811",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000764811:0001144204-16-130227",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001144204-16-130227",
+      "status": "OK",
+      "bytes": 4032
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000764811:0001193125-16-751581",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-16-751581",
+      "status": "OK",
+      "bytes": 4600
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000764811:0001144204-15-067569",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001144204-15-067569",
+      "status": "OK",
+      "bytes": 4826
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000764811:0001144204-15-067564",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001144204-15-067564",
+      "status": "OK",
+      "bytes": 4260
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000764811:0001144204-14-076461",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001144204-14-076461",
+      "status": "OK",
+      "bytes": 4032
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000764811:0001144204-14-076455",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001144204-14-076455",
+      "status": "OK",
+      "bytes": 4836
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000764811:0001193125-13-281112",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-13-281112",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/764811/000119312513281112/0001193125-13-281112-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000764811:0000893750-11-000082",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000893750-11-000082",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/764811/000089375011000082/0000893750-11-000082-index-headers.html"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000764811:0000893750-11-000080",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0000893750-11-000080",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/764811/000089375011000080/0000893750-11-000080-index-headers.html"
+    },
+    {
+      "artifact_id": "submissions:0000810383",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001010961",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001010961:0001193125-08-021796",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-08-021796",
+      "status": "HTTP_404",
+      "url": "https://www.sec.gov/Archives/edgar/data/1010961/000119312508021796/0001193125-08-021796-index-headers.html"
+    },
+    {
+      "artifact_id": "submissions:0001318986",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001359405",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001360427",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000103379",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000103379:0001193125-24-258958",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001193125-24-258958",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001318986",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001359405",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001360427",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001367160",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001395126",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001498546",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001729660",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000896262",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000038777",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000020520",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001611983",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000036104",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001393612",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000874766",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000801337",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001050446",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000087347",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001618563",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000004447",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000813828",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000034088",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001043604",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000018349",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001720671",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000898173",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001144215",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001474432",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001509589",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000858470",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001049502",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001366561",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001124140",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000915912",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000055067",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001013462",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001274173",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001487712",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000937556",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001492422",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001800227",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001633931",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000058492",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001839439",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001206264",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001065837",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000859737",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001782754",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000028412",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000906107",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000712515",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000004447",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000004447:0001628280-24-045716",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000018349",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000018349:0000018349-24-000140",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000020520",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000020520:0001562762-24-000252",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000028412",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000028412:0000028412-24-000349",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000034088",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000034088:0000034088-24-000068",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000051644",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000051644:0000051644-24-000049",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000055067",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000055067:0001628280-24-044436",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000058492",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000058492:0000058492-24-000648",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000072333",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000072333:0000072333-24-000124",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000801337",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000801337:0000801337-24-000028",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000813828",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000813828:0000813828-24-000079",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000859737",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000859737:0000859737-24-000024",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000896262",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000896262:0000896262-24-000051",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0000937556",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0000937556:0000937556-24-000109",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001012100",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001012100:0001628280-24-046171",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001013462",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001013462:0001013462-24-000028",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001043604",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001043604:0001043604-24-000154",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001065837",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001065837:0000950170-24-120080",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001124140",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001124140:0001124140-24-000083",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001163302",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001163302:0001163302-24-000068",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001274173",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001274173:0001437749-24-032700",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001364885",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001364885:0001628280-24-045353",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001366561",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001366561:0001366561-24-000222",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001378992",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001378992:0001140361-24-047881",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001487712",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001487712:0001628280-24-046236",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001492422",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001492422:0000950170-24-121062",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001509589",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001509589:0001509589-24-000082",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001567514",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001567514:0001628280-24-044196",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001577916",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001577916:0001577916-24-000012",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001611983",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001611983:0001558370-24-014821",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001618563",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001618563:0001628280-24-044549",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001618921",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001618921:0001618921-24-000084",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001633931",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001633931:0001558370-24-014779",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001699838",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001699838:0000950170-24-119042",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001720671",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001720671:0001720671-24-000023",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001725057",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001725057:0000950170-24-118595",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001782754",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001782754:0001628280-24-048629",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001799208",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001799208:0001799208-24-000046",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001839439",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001839439:0001839439-24-000080",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001868778",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001868778:0001868778-24-000039",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "submissions:0001897982",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "xbrl_instance:0001897982:0001897982-24-000075",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    }
+  ]
+}

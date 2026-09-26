@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001349682:0001085146-09-003554",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1349682/000108514609003554/spiritaerosys13g113009.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T08:05:30.396746+00:00",
+  "sha256": "b78a9c8538f193e55a30c49f2b19a8e45cc28dae25d11bc6832784f14792fc6c",
+  "bytes": 19340,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

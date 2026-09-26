@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000088204:0000017283-04-000526",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/88204/000001728304000526/edgsee.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T08:05:47.317463+00:00",
+  "sha256": "1903a81a352a025695bc66ecd7230512e7fd8120c6d063a2e8d3c8549080b3d6",
+  "bytes": 7183,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

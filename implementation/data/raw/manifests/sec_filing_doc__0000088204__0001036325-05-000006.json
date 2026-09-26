@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000088204:0001036325-05-000006",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/88204/000103632505000006/a13gsealedair123104.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T08:05:46.870373+00:00",
+  "sha256": "160f39aec4a5dbc13275e714ed8e1d0195159f0ba52dc3d0ef165c6aaba60e2f",
+  "bytes": 3580,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -3,7 +3,7 @@
   "as_of": "2024-12-31T00:00:00+00:00",
   "store": {
     "dir": "data/raw",
-    "n_artifacts": 6504,
+    "n_artifacts": 6642,
     "status": "PRESENT"
   },
   "listings": 987,
@@ -5098,7 +5098,7 @@
       "COVER_TEXT_SINGLE_COUNT": 1,
       "COVER_ECONOMIC_EQUIVALENT": 5
     },
-    "universe_id": "uni_f43e429987bb",
+    "universe_id": "uni_e1fdf639c60a",
     "snapshot_cutoff_mcap": 15345686900.79537
   },
   "official_snapshot_candidates": null,
@@ -21442,7 +21442,8 @@
         "reference_role": "MISSING_LARGE_CAP_DETECTOR",
         "excluded_by_eligibility_rule": [],
         "unresolved_reference_holdings": [],
-        "cik_collisions": {}
+        "cik_collisions": {},
+        "members_missing_cusips": []
       },
       {
         "name": "RUSSELL1000_IWB_NPORT",
@@ -21963,7 +21964,8 @@
           "0002082866"
         ],
         "unresolved_reference_holdings": [],
-        "cik_collisions": {}
+        "cik_collisions": {},
+        "members_missing_cusips": []
       }
     ],
     "reasons": [

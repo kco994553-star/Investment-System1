@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001349682:0001207017-09-000087",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1349682/000120701709000087/r13gspirit.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T08:05:30.934565+00:00",
+  "sha256": "a0dd9a1205e899b7b5da27265be226754c550cd2eef6658c919559eeedb03797",
+  "bytes": 4531,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
