@@ -1877,3 +1877,15 @@ def test_nport_price_investigation_is_never_read_by_the_gate_chain():
     h = {"name": "WestRock Co", "asset_cat": "EC", "units": "NS", "cur_cd": "USD", "balance": "100", "val_usd": "5000"}
     got, how = npr.holding_for([h], ["WestRock Co"])
     assert how == "UNIQUE" and npr.reported_price(got) == (50.0, "OK")
+
+
+def test_share_count_diagnostic_exhibit_names_selects_ex99_documents_only():
+    """GRAL (2024-06-30): the Form 10 Information Statement / distribution press release are EX-99.x exhibits, not
+    the primary document; only EX-99 htm/txt documents of the same filing are read (diagnostic only)."""
+    scd = _mod("scd_ex99", "share_count_diagnostic.py")
+    idx = json.dumps({"directory": {"item": [
+        {"name": "d556103d1012ba.htm", "size": "10294"}, {"name": "d556103dex991.htm", "size": "2500000"},
+        {"name": "ex99-1.htm", "size": "40000"}, {"name": "d556103dex31.htm", "size": "900"},
+        {"name": "Financial_Report.xlsx", "size": "1"}, {"name": "dex992.htm", "size": "99999999"}]}}).encode()
+    assert scd.exhibit_names(idx) == ["d556103dex991.htm", "ex99-1.htm"]
+    assert scd.exhibit_names(b"not json") == []

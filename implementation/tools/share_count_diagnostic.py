@@ -106,6 +106,51 @@ def distribution_sentences(text: str) -> list[str]:
     return [m.group(0).strip()[:600] for m in pat.finditer(text)][:20]
 
 
+EXHIBIT_NAME = re.compile(r"(?:^|[^a-z])d?ex-?99", re.I)
+INDEX_URL = "https://www.sec.gov/Archives/edgar/data/{cik}/{nodash}/index.json"
+MAX_EXHIBIT_BYTES = 6_000_000
+
+
+def exhibit_names(index_json: bytes) -> list[str]:
+    """EX-99.x document names (htm/txt) listed in an EDGAR filing folder index.json."""
+    try:
+        items = (json.loads(index_json).get("directory") or {}).get("item") or []
+    except ValueError:
+        return []
+    out = []
+    for it in items:
+        n = str(it.get("name") or "")
+        try:
+            size = int(it.get("size") or 0)
+        except ValueError:
+            size = 0
+        if n.lower().endswith((".htm", ".html", ".txt")) and EXHIBIT_NAME.search(n) and size <= MAX_EXHIBIT_BYTES:
+            out.append(n)
+    return out[:4]
+
+
+def exhibit_docs(store, frd, frc, cik: str, accn: str, no_fetch: bool, log: list) -> list[dict]:
+    nodash = accn.replace("-", "")
+    iid = f"sec_filing_index:{cik}:{accn}"
+    if not no_fetch:
+        frd._fetch_one(store, iid, INDEX_URL.format(cik=int(cik), nodash=nodash), "SEC_FILING_INDEX", frd.UA, log, False)
+        frd._throttle(log, 0.15)
+    if not store.has(iid):
+        return []
+    out = []
+    for name in exhibit_names(store.get_bytes(iid)):
+        eid = f"sec_filing_exhibit:{cik}:{accn}:{name}"
+        if not no_fetch:
+            frd._fetch_one(store, eid, frc.ARCHIVE_URL.format(cik=int(cik), accn=nodash, doc=name), "SEC_FILING_DOCUMENT",
+                           frd.UA, log, False)
+            frd._throttle(log, 0.15)
+        if store.has(eid):
+            txt = frc.html_text(store.get_bytes(eid))
+            out.append({"artifact_id": eid, "exhibit": name, "text_len": len(txt), "cover_sentences": cover_sentences(txt),
+                        "distribution_sentences": distribution_sentences(txt), "symbol_sentences": []})
+    return out
+
+
 def symbol_sentences(text: str, symbols: list[str]) -> list[str]:
     """Sentences naming a trading symbol (which class is listed where), first 12."""
     out = []
@@ -198,6 +243,10 @@ def diagnose(store, frd, frc, cik: str, d: datetime, as_of: str, no_fetch: bool)
                 txt = frc.html_text(store.get_bytes(did))
                 docs.append({**lf, "artifact_id": did, "cover_sentences": cover_sentences(txt), "symbol_sentences": [],
                              "distribution_sentences": distribution_sentences(txt), "text_len": len(txt)})
+            # the Information Statement of a Form 10 / the distribution press release is an EXHIBIT (EX-99.x), not
+            # the primary document: list the filing folder and read its EX-99 documents (same filing, same date)
+            for ex in exhibit_docs(store, frd, frc, cik, lf["accn"], no_fetch, log):
+                docs.append({**lf, **ex})
     rep["documents"] = docs
     rep["note"] = ("Diagnostic only. POST_AS_OF_FILING rows are investigation evidence and are never used as the as_of "
                    "share count (user decision 2026-09-26).")
