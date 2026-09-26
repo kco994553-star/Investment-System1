@@ -714,9 +714,14 @@ def test_superset_reference_allows_ranks_below_500_but_not_missing_or_unrankable
     coll = amc.build_top500_sufficiency_gate(audit, [{**base, "member_cusips": {
         **base["member_cusips"], "T1": ["615369105", "26484T106"]}}])
     assert "REFERENCE_CIK_COLLISION_DISTINCT_ISSUERS" in coll["references"][0]["reasons"]
-    assert amc.build_top500_sufficiency_gate(audit, [{**base, "member_cusips": {"T1": ["115637100", "115637209"]}}])["passed"]
+    same_issuer_classes = {**base["member_cusips"], "T1": ["115637100", "115637209"]}
+    assert amc.build_top500_sufficiency_gate(audit, [{**base, "member_cusips": same_issuer_classes}])["passed"]
     nocus = amc.build_top500_sufficiency_gate(audit, [{**base, "member_cusips": None}])
     assert "REFERENCE_MEMBER_CUSIPS_MISSING" in nocus["references"][0]["reasons"]
+    partial_cusips = {**base["member_cusips"]}
+    partial_cusips.pop("T7")
+    partial = amc.build_top500_sufficiency_gate(audit, [{**base, "member_cusips": partial_cusips}])
+    assert partial["passed"] is False and partial["references"][0]["members_missing_cusips"] == ["T7"]
     bad = amc.build_top500_sufficiency_gate(audit, [{**base, "missing_from_pool": ["T7"]}])
     assert bad["passed"] is False and "MISSING_LARGE_CAP_NAMES" in bad["references"][0]["reasons"]
     small = amc.build_top500_sufficiency_gate(audit, [{**base, "members": ["T1"]}])
@@ -1974,11 +1979,20 @@ def test_nport_reference_cusip_attestation_decides_ambiguous_names(tmp_path):
     sub("0000000002", "0000000002-24-000001", "2024-02-14")
     store.put("sec_filing_doc:0000000001:0000000001-24-000001", b"<p>CUSIP No. 09581B 10 3 Blue Owl Capital Inc.</p>", "u", "SEC", "text/html", "t", 200)
     store.put("sec_filing_doc:0000000002:0000000002-24-000001", b"<p>CUSIP No. 09581K 10 0 Blue Owl Capital Corp</p>", "u", "SEC", "text/html", "t", 200)
+    store.put("edgar_index_headers:0000000001-24-000001", b"<SEC-HEADER>\nSUBJECT COMPANY:\n COMPANY DATA:\n  CENTRAL INDEX KEY: 0000000001\nFILED BY:\n</SEC-HEADER>", "u", "SEC", "text/html", "t", 200)
+    store.put("edgar_index_headers:0000000002-24-000001", b"&lt;SEC-HEADER&gt;\nSUBJECT COMPANY:\n COMPANY DATA:\n  CENTRAL INDEX KEY: 2\nREPORTING-OWNER:\n&lt;/SEC-HEADER&gt;", "u", "SEC", "text/html", "t", 200)
     get = lambda aid, url, kind: None  # noqa: E731  (offline: artifacts already stored)
     att = fnr.attest_by_cusip(store, get, ["0000000001", "0000000002"], "09581B103", amc_dt(), npr, frc)
     assert att["status"] == "UNIQUE" and att["cik"] == "0000000001"
     none = fnr.attest_by_cusip(store, get, ["0000000002"], "09581B103", amc_dt(), npr, frc)
     assert none["cik"] is None and none["status"] == "ATTESTED_0"
+    # A reporting person's submissions can list a 13G whose subject is another candidate. Identity comes from the
+    # index-header SUBJECT COMPANY CIK, never from the submissions CIK (run #54 D&B false double-attestation).
+    sub("0000000011", "0000000011-24-000001", "2024-02-14")
+    store.put("sec_filing_doc:0000000011:0000000011-24-000001", b"<p>Dun & Bradstreet Holdings CUSIP 26484T106</p>", "u", "SEC", "text/html", "t", 200)
+    store.put("edgar_index_headers:0000000011-24-000001", b"<SEC-HEADER>\nSUBJECT COMPANY:\n COMPANY DATA:\n  CENTRAL INDEX KEY: 0000000012\nFILED BY:\n COMPANY DATA:\n  CENTRAL INDEX KEY: 0000000011\n</SEC-HEADER>", "u", "SEC", "text/html", "t", 200)
+    routed = fnr.attest_by_cusip(store, get, ["0000000011", "0000000012"], "26484T106", amc_dt(), npr, frc)
+    assert routed["cik"] == "0000000012" and routed["status"] == "UNIQUE"
     cur = {fnr.norm_name("LIBERTY MEDIA CORP"): {"0001560385"}}
     assert fnr.name_candidates("LIBERTY MEDIA CORP - FORMULA ONE GROUP", cur, {}) == {"0001560385"}
 
@@ -1999,8 +2013,12 @@ def test_nport_reference_attestation_tie_broken_only_by_pit_registrant(tmp_path)
     sub("0000000001", ["10-Q", "SC 13G"], ["2024-11-05", "2024-02-14"])      # live registrant at as_of
     sub("0000000002", ["SC 13G"], ["2024-02-10"])                            # predecessor, no periodic filing
     for c in ("0000000001", "0000000002"):
-        store.put(f"sec_filing_doc:{c}:{c}-24-{(1 if c.endswith('1') else 0):06d}", b"<p>CUSIP 26484T106</p>",
+        accn = f"{c}-24-{(1 if c.endswith('1') else 0):06d}"
+        store.put(f"sec_filing_doc:{c}:{accn}", b"<p>CUSIP 26484T106</p>",
                   "u", "SEC", "text/html", "t", 200)
+        store.put(f"edgar_index_headers:{accn}",
+                  f"SUBJECT COMPANY:\n\tCENTRAL INDEX KEY:\t\t{int(c)}\n".encode(),
+                  "u", "SEC", "text/plain", "t", 200)
     get = lambda aid, url, kind: None  # noqa: E731
     att = fnr.attest_by_cusip(store, get, ["0000000001", "0000000002"], "26484T106", amc_dt(), npr, frc)
     assert fnr.pit_registrant(store, "0000000001", amc_dt()) and not fnr.pit_registrant(store, "0000000002", amc_dt())
