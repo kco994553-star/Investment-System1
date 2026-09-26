@@ -169,6 +169,17 @@ jobs:
           G="reports/gate_evidence/gate_chain_${{ inputs.as_of }}_real_gha.json"
           NP=""; [ -f "$G" ] && NP=$(python -c "import json,sys;print(' '.join('--investigate-cik '+str(v['cik']) for v in (json.load(open(sys.argv[1])).get('unrankable_issuers') or {}).values() if v.get('reason')=='NO_AS_OF_PRICE' and v.get('cik')))" "$G")
           python tools/nport_reported_prices.py --store data/raw --as-of "${{ inputs.as_of }}" $NP
+      - name: N-PORT cross-check (INVESTIGATION ONLY) for issuers with no market close -- calibration vs as-of closes + independent sponsor
+        if: inputs.skip_fetch != 'true'
+        run: |
+          I="reports/gate_evidence/nport_price_investigation_${{ inputs.as_of }}.json"
+          G="reports/gate_evidence/gate_chain_${{ inputs.as_of }}_real_gha.json"
+          if [ -f "$I" ] && [ -f "$G" ]; then
+            C=$(python -c "import json,sys;print(' '.join('--cusip '+v['holding_raw']['cusip'] for v in json.load(open(sys.argv[1]))['issuers'].values() if v.get('holding_raw') and v['holding_raw'].get('cusip')))" "$I")
+            python tools/nport_cross_check.py --store data/raw --as-of "${{ inputs.as_of }}" $C \
+              --extra "0000036405|VANGUARD INDEX FUNDS|Vanguard Total Stock Market Index Fund" \
+              --extra "0001100663|ISHARES TRUST|iShares Core S&P 500 ETF" || echo "::warning::cross-check failed (investigation only)"
+          fi
       - name: Share-count diagnostics for PPLI and every cover-route-unresolved issuer (investigation only; post-as_of facts never applied)
         if: inputs.skip_fetch != 'true'
         run: |

@@ -1889,3 +1889,28 @@ def test_share_count_diagnostic_exhibit_names_selects_ex99_documents_only():
         {"name": "Financial_Report.xlsx", "size": "1"}, {"name": "dex992.htm", "size": "99999999"}]}}).encode()
     assert scd.exhibit_names(idx) == ["d556103dex991.htm", "ex99-1.htm"]
     assert scd.exhibit_names(b"not json") == []
+
+
+def test_nport_cross_check_calibration_and_targets_are_investigation_only():
+    """WRK (2024-06-30): the cross-check measures whether N-PORT per-share values reproduce as-of market closes
+    (calibration over closes of issuers the gate priced) and reports target CUSIPs; never read by the gate chain."""
+    ncc = _mod("ncc", "nport_cross_check.py")
+    root = Path(__file__).resolve().parents[1]
+    assert "nport_cross_check" not in (root / "tools" / "run_top500_gate_chain.py").read_text(encoding="utf-8")
+    ref_h = [{"name": "AAA INC", "cusip": "000000AA1", "asset_cat": "EC"}, {"name": "BBB INC", "cusip": "000000BB1", "asset_cat": "EC"}]
+    cmap = ncc.cusip_to_cik(ref_h, {"0000000001": ["AAA INC"], "0000000002": ["BBB INC"]})
+    assert cmap == {"000000AA1": "0000000001", "000000BB1": "0000000002"}
+    closes = ncc.market_closes({"top500": [
+        {"cik": "0000000001", "detail": {"mcap_price": 10.0}, "cover_override": None},
+        {"cik": "0000000002", "detail": {"mcap_price": 20.0}, "cover_override": {"classes": []}}]})
+    assert closes == {"0000000001": 10.0}  # multi-class cover rows are not controls
+    hold = [{"name": "AAA", "cusip": "000000AA1", "asset_cat": "EC", "units": "NS", "cur_cd": "USD", "balance": "3",
+             "val_usd": "30.003", "fair_val_level": "1"},
+            {"name": "WRK", "cusip": "96145D105", "asset_cat": "EC", "units": "NS", "cur_cd": "USD", "balance": "2",
+             "val_usd": "100.52", "fair_val_level": "1"}]
+    cal = ncc.calibrate(hold, cmap, closes)
+    assert cal["n"] == 1 and cal["within_0_1pct"] == 1
+    t = ncc.targets(hold, ["96145D105", "000000ZZ9"])
+    assert t["96145D105"]["status"] == "UNIQUE" and abs(t["96145D105"]["value_per_share"] - 50.26) < 1e-9
+    assert t["000000ZZ9"]["status"] == "HOLDINGS_0"
+    assert ncc.per_share({"units": "PA", "balance": "1", "val_usd": "1"}) is None
