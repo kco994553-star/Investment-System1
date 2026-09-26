@@ -17,6 +17,10 @@ on:
         description: "true = only re-run the gate chain on the cached store"
         default: "false"
         required: true
+      reuse_gate_evidence:
+        description: "true = skip gate recomputation and run Official pipeline from committed passing gate evidence"
+        default: "false"
+        required: true
       seed_run_id:
         description: "run whose c21-raw-store-<id> artifact seeds the store when no cache exists"
         default: "36117017112"
@@ -54,6 +58,11 @@ jobs:
         run: |
           if [ -z "$INVESTMENT_SYSTEM_SEC_UA" ]; then
             echo "::error::Set repository secret SEC_USER_AGENT, e.g. 'Name contact@example.com'"; exit 1; fi
+      - name: Validate committed-gate reuse mode
+        if: inputs.reuse_gate_evidence == 'true'
+        run: |
+          [ "${{ inputs.skip_fetch }}" = "true" ] || { echo "::error::reuse_gate_evidence requires skip_fetch=true"; exit 1; }
+          [ -n "${{ inputs.walk_forward_dates }}" ] || { echo "::error::reuse_gate_evidence requires walk_forward_dates"; exit 1; }
       - name: Restore persistent raw store
         id: restore
         uses: actions/cache/restore@v4
@@ -205,6 +214,7 @@ jobs:
           path: implementation/data/raw
           key: c21-raw-store-v2-${{ github.run_id }}
       - name: Gate chain (coverage -> rankable -> #500 -> Completeness -> Sufficiency -> Promotion Gate v2)
+        if: inputs.reuse_gate_evidence != 'true'
         run: |
           X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
           R="reports/gate_evidence/russell1000_nport_${{ inputs.as_of }}.json"
