@@ -1,0 +1,12 @@
+{
+ "log": [
+  {
+   "artifact_id": "sec_filing_doc:0001823945:0001823945-24-000016",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001823945:0001823945-24-000064",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  }
+ ]
+}
