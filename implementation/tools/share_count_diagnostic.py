@@ -30,6 +30,7 @@ from investment_system.providers.sec_cover_shares import class_symbols, parse_co
 from investment_system.universe.sources import pit_shares  # noqa: E402
 
 GE = ROOT / "reports" / "gate_evidence"
+REGISTRATION_FORMS = ("10-12B", "10-12B/A", "10-12G", "10-12G/A", "8-K", "8-K/A", "424B3", "424B4", "S-1", "S-1/A")
 COVER_FACTS = ("EntityCommonStockSharesOutstanding", "TradingSymbol", "Security12bTitle", "SecurityExchangeName",
                "EntityRegistrantName", "DocumentType", "DocumentPeriodEndDate")
 SHARE_CONCEPTS = ("EntityCommonStockSharesOutstanding", "CommonStockSharesOutstanding", "CommonStockSharesIssued",
@@ -172,6 +173,23 @@ def diagnose(store, frd, frc, cik: str, d: datetime, as_of: str, no_fetch: bool)
             syms = sorted({v for vs in (rep.get("parse_cover") or {}).get("symbols", {}).values() for v in vs})
             docs.append({**lf, "artifact_id": did, "cover_sentences": cover_sentences(txt),
                          "symbol_sentences": symbol_sentences(txt, syms)})
+    if not frc.latest_forms(sub, d):
+        # newly registered (spin-off / IPO) without a periodic report yet: registration and distribution documents filed
+        # on or before as_of (Form 10-12B, 8-K, 424B) are the only PIT sources of a share count (never a later 10-Q)
+        rec = (sub.get("filings") or {}).get("recent") or {}
+        regs = [{"form": f, "filed": str(dt), "accn": str(ac), "primary_document": str(pd or "")}
+                for f, dt, ac, pd in zip(rec.get("form") or [], rec.get("filingDate") or [], rec.get("accessionNumber") or [],
+                                         rec.get("primaryDocument") or [])
+                if f in REGISTRATION_FORMS and str(dt) <= as_of and pd]
+        for lf in sorted(regs, key=lambda r: r["filed"], reverse=True)[:6]:
+            did = frc.doc_id(cik, lf["accn"])
+            if not no_fetch:
+                frd._fetch_one(store, did, frc.ARCHIVE_URL.format(cik=int(cik), accn=lf["accn"].replace("-", ""), doc=lf["primary_document"]),
+                               "SEC_FILING_DOCUMENT", frd.UA, log, False)
+                frd._throttle(log, 0.15)
+            if store.has(did):
+                txt = frc.html_text(store.get_bytes(did))
+                docs.append({**lf, "artifact_id": did, "cover_sentences": cover_sentences(txt), "symbol_sentences": []})
     rep["documents"] = docs
     rep["note"] = ("Diagnostic only. POST_AS_OF_FILING rows are investigation evidence and are never used as the as_of "
                    "share count (user decision 2026-09-26).")

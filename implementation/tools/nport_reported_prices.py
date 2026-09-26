@@ -169,10 +169,15 @@ def main() -> None:
         if not rec["failures"]:
             rec["status"] = "IDENTITY_AND_PRICE_VERIFIED"
         out[sym] = rec
+    filed = ref.get("source_vintage")
     doc = {"kind": "NPORT_REPORTED_PRICES", "as_of": a.as_of, "price_type": PRICE_TYPE, "source_accession": accn,
-           "source_artifact": nid, "valuation_date": ref.get("as_of", "")[:10], "source_filed": ref.get("source_vintage"),
-           "basis_note": ("Fund-reported fair value per share on the N-PORT report date (2024-12-31), filed after as_of; "
-                          "all other issuers use their last market close on/before as_of (2024-12-30 session). "
+           "source_artifact": nid, "valuation_date": ref.get("as_of", "")[:10], "source_filed": filed,
+           "filing_date": filed, "available_at": filed,
+           "look_ahead": bool(filed and filed > a.as_of),
+           "look_ahead_note": ("The N-PORT is filed after as_of (available_at > as_of): a user-approved, per-date exception for "
+                               "PINC/WOLF only; the value describes the as_of valuation date, it was not public at as_of."),
+           "basis_note": ("Fund-reported fair value per share on the N-PORT report date (= as_of), filed after as_of; "
+                          "all other issuers use their last market close on/before as_of. "
                           "Applies only to the issuers in nport_price_exception_<as_of>.json."),
            "issuers": out, "log": log}
     (GE / f"nport_reported_prices_{a.as_of}.json").write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")

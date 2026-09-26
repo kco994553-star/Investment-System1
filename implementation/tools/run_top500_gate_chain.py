@@ -772,6 +772,8 @@ def apply_nport_reported_prices(store: RawDatasetStore, overrides: dict, listing
             fails.append("MARKET_CLOSE_AVAILABLE")  # a real close always wins; the exception is for missing closes only
         if ev.get("status") != "IDENTITY_AND_PRICE_VERIFIED":
             fails.append("EVIDENCE_NOT_VERIFIED")
+        if str((evidence or {}).get("as_of") or "") != as_of.date().isoformat() or str((exception or {}).get("as_of") or "") != as_of.date().isoformat():
+            fails.append("EVIDENCE_OR_EXCEPTION_FOR_ANOTHER_AS_OF")  # never reuse another date's value or determination
         nid = str((evidence or {}).get("source_artifact") or "")
         px = h = None
         if not fails:
@@ -809,8 +811,12 @@ def apply_nport_reported_prices(store: RawDatasetStore, overrides: dict, listing
                 fails.append("NO_PIT_SHARES")
             elif share_fact_stale(store, cik, shr, as_of):
                 fails.append("STALE_SHARE_FACT")
+        filed = (evidence or {}).get("filing_date") or (evidence or {}).get("source_filed")
         rec = {"cik": cik, "price_type": npr.PRICE_TYPE, "valuation_date": (evidence or {}).get("valuation_date"),
-               "market_close_basis_of_other_issuers": "last close on/before as_of (2024-12-30 session)",
+               "filing_date": filed, "available_at": filed, "as_of": as_of.date().isoformat(),
+               "look_ahead": bool(filed and str(filed) > as_of.date().isoformat()),
+               "look_ahead_basis": "USER_APPROVED_PER_DATE_EXCEPTION_PINC_WOLF_ONLY",
+               "market_close_basis_of_other_issuers": "last close on/before as_of",
                "status": "APPLIED" if not fails else "NOT_APPLIED", "failures": fails}
         if not fails:
             rec.update({"price": px, "shares": sh, "mcap": sh * px, "source_artifact": nid, "cusip": h["cusip"],
@@ -842,9 +848,10 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     nport_px = apply_nport_reported_prices(store, overrides, listings, nport_exception, nport_prices, d, chart_range)
     stale_excluded = exclude_stale_unresolved(store, listings, overrides, d)
     price_exceptions = {"price_type": "NPORT_REPORTED_VALUE", "issuers": nport_px,
-                        "note": ("Valued at the SEC N-PORT reported value per share on 2024-12-31 (filed after as_of), not a market "
-                                 "close; all other issuers use their last close on/before as_of (2024-12-30 session). "
-                                 "Exception limited to the user-approved issuers (PINC, WOLF).")} if nport_px else None
+                        "note": ("Valued at the SEC N-PORT reported value per share on the as_of report date (filed after as_of: "
+                                 "look_ahead recorded per row), not a market close; all other issuers use their last close "
+                                 "on/before as_of. Exception limited to the user-approved issuers (PINC, WOLF), verified "
+                                 "independently for each as_of.")} if nport_px else None
     audit = amc.audit(store, listings, d, chart_range, overrides)
     top = amc.ranked_top500(store, listings, d, chart_range, overrides)
     cutoff = top[499]["mcap"] if len(top) >= 500 else None

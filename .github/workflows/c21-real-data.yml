@@ -165,7 +165,9 @@ jobs:
         run: |
           R="reports/gate_evidence/russell1000_nport_${{ inputs.as_of }}.json"
           MISS=""; [ -f "$R" ] && MISS=$(python -c "import json,sys;print(' '.join('--cik '+c for c in json.load(open(sys.argv[1])).get('members_not_in_pool_without_current_ticker') or []))" "$R")
-          python tools/share_count_diagnostic.py --store data/raw --as-of "${{ inputs.as_of }}" --cik 0001800227 --cover-unresolved $MISS
+          G="reports/gate_evidence/gate_chain_${{ inputs.as_of }}_real_gha.json"
+          SH=""; [ -f "$G" ] && SH=$(python -c "import json,sys;print(' '.join('--cik '+str(v['cik']) for v in (json.load(open(sys.argv[1])).get('unrankable_issuers') or {}).values() if str(v.get('reason','')).startswith('SHARES_') and v.get('cik')))" "$G")
+          python tools/share_count_diagnostic.py --store data/raw --as-of "${{ inputs.as_of }}" --cik 0001800227 --cover-unresolved $MISS $SH
       - name: Filing documents for issuers whose share count fails the scale cross-check (read by the gate chain)
         if: inputs.skip_fetch != 'true'
         run: |

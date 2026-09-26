@@ -1,0 +1,11 @@
+{
+ "kind": "NPORT_REPORTED_VALUE_EXCEPTION",
+ "as_of": "2024-09-30",
+ "decision": "User decision 2026-09-26 (option 1): the PINC/WOLF N-PORT reported-value exception applies to each walk-forward as_of, verified independently from THAT date's N-PORT holding and PIT CUSIP evidence. No value or determination from another date is reused. Not extended to any other issuer.",
+ "reason": "No market close on/before as_of in Yahoo or Tiingo for the pre-2025 PINC/WOLF series (ticker reused / delisted after as_of).",
+ "not_a_general_permission": "Narrow exception: the N-PORT observation of this as_of is a separate price provenance for this date only; it is not a general permission to apply later filings to earlier dates.",
+ "issuers": {
+  "PINC": "0001577916",
+  "WOLF": "0000895419"
+ }
+}

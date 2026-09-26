@@ -1184,10 +1184,11 @@ def _nport_setup(tmp_path, g_filed="2024-11-08"):
     npr = _mod("npr_t", "nport_reported_prices.py")
     h = next(x for x in npr.raw_holdings(store.get_bytes(f"nport_xml:{accn}")) if x["cusip"] == "74051N102")
     px, _ = npr.reported_price(h)
-    ev = {"source_artifact": f"nport_xml:{accn}", "valuation_date": "2024-12-31", "issuers": {"PINC": {
+    ev = {"as_of": "2024-12-31", "source_artifact": f"nport_xml:{accn}", "valuation_date": "2024-12-31", "filing_date": "2025-02-24",
+          "issuers": {"PINC": {
         "status": "IDENTITY_AND_PRICE_VERIFIED", "holding_raw": h, "price": px,
         "cusip_attestation": [{"artifact_id": f"sec_filing_doc:{cik}:0000102909-24-000111", "form": "SC 13G/A", "filed": g_filed}]}}}
-    exc = {"issuers": {"PINC": cik, "WOLF": "0000895419"}}
+    exc = {"as_of": "2024-12-31", "issuers": {"PINC": cik, "WOLF": "0000895419"}}
     return store, cik, ev, exc, px
 
 
@@ -1226,7 +1227,7 @@ def test_run30_nport_exception_rejects_tampered_price_late_attestation_and_cik_m
     bad = json.loads(json.dumps(ev))
     bad["issuers"]["PINC"]["price"] = px * 1.01
     assert chain.apply_nport_reported_prices(store, {}, listings, exc, bad, amc_dt())["PINC"]["failures"][0].startswith("PRICE_NOT_REPRODUCED")
-    assert chain.apply_nport_reported_prices(store, {}, listings, {"issuers": {"PINC": "0000000001"}}, ev, amc_dt())["PINC"]["failures"] == ["CIK_MISMATCH"]
+    assert chain.apply_nport_reported_prices(store, {}, listings, {"as_of": "2024-12-31", "issuers": {"PINC": "0000000001"}}, ev, amc_dt())["PINC"]["failures"] == ["CIK_MISMATCH"]
     late, cik2, ev2, exc2, _ = _nport_setup(tmp_path / "b", g_filed="2025-02-10")
     assert chain.apply_nport_reported_prices(late, {}, listings, exc2, ev2, amc_dt())["PINC"]["failures"] == ["CUSIP_NOT_ATTESTED"]
 
@@ -1595,3 +1596,16 @@ def test_run40_dated_evidence_keeps_only_citations_filed_on_or_before_the_target
         d = json.loads((ge / name).read_text(encoding="utf-8"))
         cites = [c for v in d["issuers"].values() for cd in (v.get("classes") or {"_": v}).values() for c in cd.get("citations") or []]
         assert cites and all(c["filed"] <= "2024-09-30" for c in cites), name
+
+
+def test_run42_nport_exception_is_per_as_of_and_records_look_ahead(tmp_path):
+    chain = _mod("chain_npr3", "run_top500_gate_chain.py")
+    store, cik, ev, exc, px = _nport_setup(tmp_path)
+    listings = {"p": {"cik": cik, "yahoo": "PINC"}}
+    out = chain.apply_nport_reported_prices(store, {}, listings, exc, ev, amc_dt())["PINC"]
+    assert out["status"] == "APPLIED" and out["valuation_date"] == "2024-12-31" and out["filing_date"] == "2025-02-24"
+    assert out["available_at"] == "2025-02-24" and out["look_ahead"] is True and out["price_type"] == "NPORT_REPORTED_VALUE"
+    other = {**ev, "as_of": "2024-09-30"}  # another date's evidence (or value) is never reused
+    assert "EVIDENCE_OR_EXCEPTION_FOR_ANOTHER_AS_OF" in chain.apply_nport_reported_prices(store, {}, listings, exc, other, amc_dt())["PINC"]["failures"]
+    other_exc = {**exc, "as_of": "2024-09-30"}
+    assert "EVIDENCE_OR_EXCEPTION_FOR_ANOTHER_AS_OF" in chain.apply_nport_reported_prices(store, {}, listings, other_exc, ev, amc_dt())["PINC"]["failures"]
