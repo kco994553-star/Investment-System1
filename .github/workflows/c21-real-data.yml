@@ -165,7 +165,10 @@ jobs:
         run: python tools/fetch_class_rights_evidence.py --store data/raw --as-of "${{ inputs.as_of }}"
       - name: N-PORT reported value per share for the user-approved exception issuers only (PINC, WOLF); CUSIP attestation
         if: inputs.skip_fetch != 'true'
-        run: python tools/nport_reported_prices.py --store data/raw --as-of "${{ inputs.as_of }}"
+        run: |
+          G="reports/gate_evidence/gate_chain_${{ inputs.as_of }}_real_gha.json"
+          NP=""; [ -f "$G" ] && NP=$(python -c "import json,sys;print(' '.join('--investigate-cik '+str(v['cik']) for v in (json.load(open(sys.argv[1])).get('unrankable_issuers') or {}).values() if v.get('reason')=='NO_AS_OF_PRICE' and v.get('cik')))" "$G")
+          python tools/nport_reported_prices.py --store data/raw --as-of "${{ inputs.as_of }}" $NP
       - name: Share-count diagnostics for PPLI and every cover-route-unresolved issuer (investigation only; post-as_of facts never applied)
         if: inputs.skip_fetch != 'true'
         run: |

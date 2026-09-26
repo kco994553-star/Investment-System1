@@ -117,11 +117,43 @@ def ownership_filings(submissions: dict, as_of: datetime) -> list[dict]:
     return sorted(rows, key=lambda r: r["filed"], reverse=True)[:MAX_OWNERSHIP_DOCS]
 
 
+def investigate(store: RawDatasetStore, as_of: str, ciks: list[str]) -> dict:
+    """Issuers with NO market close from any permitted source (e.g. WRK 2024-06-30): what does the reference N-PORT
+    report for them? Written to nport_price_investigation_<as_of>.json with status INVESTIGATION_ONLY_NOT_APPLIED.
+    The gate chain never reads this file; only the user-approved exception file + nport_reported_prices apply."""
+    ref_p = GE / f"russell1000_nport_{as_of}.json"
+    if not ref_p.exists():
+        return {}
+    ref = json.loads(ref_p.read_text(encoding="utf-8"))
+    accn = ref["source"].split("NPORT-P ")[1].split(" ")[0]
+    nid = f"nport_xml:{accn}"
+    holdings = raw_holdings(store.get_bytes(nid)) if store.has(nid) else []
+    out = {}
+    for cik in ciks:
+        names = ref["member_names"].get(cik) or []
+        h, how = holding_for(holdings, names)
+        px, why = reported_price(h) if h else (None, how)
+        out[cik] = {"reference_names": names, "holding_match": how, "holding_raw": h, "reported_value_per_share": px,
+                    "price_check": why, "status": "INVESTIGATION_ONLY_NOT_APPLIED"}
+    doc = {"kind": "NPORT_PRICE_INVESTIGATION", "as_of": as_of, "source_accession": accn, "source_artifact": nid,
+           "valuation_date": ref.get("as_of", "")[:10], "filing_date": ref.get("source_vintage"),
+           "look_ahead": bool(ref.get("source_vintage") and ref["source_vintage"] > as_of), "issuers": out,
+           "note": ("Investigation only. Not a market close, filed after as_of, and outside the user-approved "
+                    "NPORT_REPORTED_VALUE exception (PINC/WOLF only): never applied to ranking without a user decision.")}
+    (GE / f"nport_price_investigation_{as_of}.json").write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
+    print(json.dumps({c: (v["holding_match"], v["reported_value_per_share"]) for c, v in out.items()}))
+    return doc
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
     ap.add_argument("--as-of", default="2024-12-31")
+    ap.add_argument("--investigate-cik", action="append", default=[],
+                    help="INVESTIGATION ONLY: report the N-PORT holding value of this CIK (never applied; separate file)")
     a = ap.parse_args()
+    if a.investigate_cik:
+        investigate(RawDatasetStore(a.store), a.as_of, [str(int(c)).zfill(10) for c in a.investigate_cik])
     spec = importlib.util.spec_from_file_location("_npr_frd", ROOT / "tools" / "fetch_real_data.py")
     frd = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(frd)

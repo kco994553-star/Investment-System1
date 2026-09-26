@@ -1864,3 +1864,16 @@ def test_run49_rkt_tpg_tost_2024_06_30_citations_are_substrings_of_the_fetched_p
                 assert c["quote"] in lookup[key], (det["symbol"], member, c["quote"][:80])
                 checked += 1
     assert checked >= 5
+
+
+def test_nport_price_investigation_is_never_read_by_the_gate_chain():
+    """WRK (2024-06-30) has no market close from Yahoo/Tiingo (Stooq is bot-challenge protected and is not bypassed).
+    nport_reported_prices --investigate-cik writes nport_price_investigation_<as_of>.json for a user decision; the
+    gate chain must never read that file (the NPORT_REPORTED_VALUE exception stays PINC/WOLF only)."""
+    root = Path(__file__).resolve().parents[1]
+    chain_src = (root / "tools" / "run_top500_gate_chain.py").read_text(encoding="utf-8")
+    assert "nport_price_investigation" not in chain_src
+    npr = _mod("npr_inv", "nport_reported_prices.py")
+    h = {"name": "WestRock Co", "asset_cat": "EC", "units": "NS", "cur_cd": "USD", "balance": "100", "val_usd": "5000"}
+    got, how = npr.holding_for([h], ["WestRock Co"])
+    assert how == "UNIQUE" and npr.reported_price(got) == (50.0, "OK")
