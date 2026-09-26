@@ -1,0 +1,158 @@
+{
+ "kind": "NPORT_REPORTED_PRICES",
+ "as_of": "2024-12-31",
+ "price_type": "NPORT_REPORTED_VALUE",
+ "source_accession": "0001752724-25-034052",
+ "source_artifact": "nport_xml:0001752724-25-034052",
+ "valuation_date": "2024-12-31",
+ "source_filed": "2025-02-24",
+ "basis_note": "Fund-reported fair value per share on the N-PORT report date (2024-12-31), filed after as_of; all other issuers use their last market close on/before as_of (2024-12-30 session). Applies only to the issuers in nport_price_exception_<as_of>.json.",
+ "issuers": {
+  "PINC": {
+   "cik": "0001577916",
+   "reference_names": [
+    "PREMIER, INC."
+   ],
+   "holding_match": "UNIQUE",
+   "status": "IDENTITY_AND_PRICE_VERIFIED",
+   "failures": [],
+   "holding_raw": {
+    "name": "PREMIER, INC.",
+    "lei": "N/A",
+    "title": "PREMIER INC",
+    "cusip": "74051N102",
+    "isin": "US74051N1028",
+    "ticker": null,
+    "balance": "76048.00000000",
+    "units": "NS",
+    "cur_cd": "USD",
+    "val_usd": "1612217.60000000",
+    "asset_cat": "EC",
+    "issuer_cat": "CORP",
+    "country": "US",
+    "fair_val_level": "1"
+   },
+   "price": 21.200000000000003,
+   "price_check": "OK",
+   "formula": "valUSD 1612217.60000000 / balance 76048.00000000 (NS)",
+   "cusip_attestation": [
+    {
+     "form": "SC 13G",
+     "filed": "2024-10-31",
+     "accn": "0000354204-24-004728",
+     "primary_document": "SEC13G_Filing.htm",
+     "artifact_id": "sec_filing_doc:0001577916:0000354204-24-004728",
+     "cusip_found": true,
+     "snippet": " _ ) * Premier Inc (Name of Issuer) Common Stock (Title of Class of Securities) 74051N102 (CUSIP Number) September 30, 2024 (Date"
+    },
+    {
+     "form": "SC 13G/A",
+     "filed": "2024-02-13",
+     "accn": "0001104659-24-021744",
+     "primary_document": "tv01730-premierincclassa.htm",
+     "artifact_id": "sec_filing_doc:0001577916:0001104659-24-021744",
+     "cusip_found": true,
+     "snippet": " Premier, Inc. Class A Title of Class of Securities: Common Stock CUSIP Number: 74051N102 Date of Event Which Requires Filing of "
+    },
+    {
+     "form": "SC 13G/A",
+     "filed": "2024-01-23",
+     "accn": "0001086364-24-001358",
+     "primary_document": "us74051n1028_012324.txt",
+     "artifact_id": "sec_filing_doc:0001577916:0001086364-24-001358",
+     "cusip_found": true,
+     "snippet": "SC 13G/A 1 us74051n1028_012324.txt us74051n1028_012324.txt SEC"
+    }
+   ]
+  },
+  "WOLF": {
+   "cik": "0000895419",
+   "reference_names": [
+    "Wolfspeed, Inc."
+   ],
+   "holding_match": "UNIQUE",
+   "status": "IDENTITY_AND_PRICE_VERIFIED",
+   "failures": [],
+   "holding_raw": {
+    "name": "Wolfspeed, Inc.",
+    "lei": "549300OGU88P3AW3TO93",
+    "title": "WOLFSPEED INC",
+    "cusip": "977852102",
+    "isin": "US9778521024",
+    "ticker": null,
+    "balance": "90678.00000000",
+    "units": "NS",
+    "cur_cd": "USD",
+    "val_usd": "603915.48000000",
+    "asset_cat": "EC",
+    "issuer_cat": "CORP",
+    "country": "US",
+    "fair_val_level": "1"
+   },
+   "price": 6.66,
+   "price_check": "OK",
+   "formula": "valUSD 603915.48000000 / balance 90678.00000000 (NS)",
+   "cusip_attestation": [
+    {
+     "form": "SC 13G/A",
+     "filed": "2024-12-06",
+     "accn": "0001562230-24-000085",
+     "primary_document": "SEC13G_Filing.htm",
+     "artifact_id": "sec_filing_doc:0000895419:0001562230-24-000085",
+     "cusip_found": true,
+     "snippet": " * Wolfspeed, Inc. (Name of Issuer) Common Stock (Title of Class of Securities) 977852102 (CUSIP Number) November 29, 2024 (Date "
+    },
+    {
+     "form": "SC 13G/A",
+     "filed": "2024-12-05",
+     "accn": "0001422848-24-000401",
+     "primary_document": "SEC13G_Filing.htm",
+     "artifact_id": "sec_filing_doc:0000895419:0001422848-24-000401",
+     "cusip_found": true,
+     "snippet": " * Wolfspeed, Inc. (Name of Issuer) Common Stock (Title of Class of Securities) 977852102 (CUSIP Number) November 29, 2024 (Date "
+    },
+    {
+     "form": "SC 13G",
+     "filed": "2024-11-14",
+     "accn": "0000080255-24-001370",
+     "primary_document": "wolf13gsep24.txt",
+     "artifact_id": "sec_filing_doc:0000895419:0000080255-24-001370",
+     "cusip_found": true,
+     "snippet": "o. ) WOLFSPEED INC (Name of Issuer) COMMON STOCK (Title of Class of Securities) 977852102 (CUSIP NUMBER) September 30, 2024 (Date"
+    }
+   ]
+  }
+ },
+ "log": [
+  {
+   "artifact_id": "sec_filing_doc:0001577916:0000354204-24-004728",
+   "status": "OK",
+   "bytes": 17607
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001577916:0001104659-24-021744",
+   "status": "OK",
+   "bytes": 11577
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001577916:0001086364-24-001358",
+   "status": "OK",
+   "bytes": 11724
+  },
+  {
+   "artifact_id": "sec_filing_doc:0000895419:0001562230-24-000085",
+   "status": "OK",
+   "bytes": 16534
+  },
+  {
+   "artifact_id": "sec_filing_doc:0000895419:0001422848-24-000401",
+   "status": "OK",
+   "bytes": 16574
+  },
+  {
+   "artifact_id": "sec_filing_doc:0000895419:0000080255-24-001370",
+   "status": "OK",
+   "bytes": 4781
+  }
+ ]
+}

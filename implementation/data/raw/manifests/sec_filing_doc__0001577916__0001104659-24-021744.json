@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001577916:0001104659-24-021744",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1577916/000110465924021744/tv01730-premierincclassa.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T01:11:04.448503+00:00",
+  "sha256": "d25c74e12120e8838d0bf3c3c6e38d2969a05c095a5205a398a76122c764e9e3",
+  "bytes": 11577,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

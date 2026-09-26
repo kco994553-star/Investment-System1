@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001800227:0001800227-24-000046",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1800227/000180022724000046/iaci-20240930.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T01:11:07.275843+00:00",
+  "sha256": "8f8191560ed25b7959469662dab7c709b80f73b992beeb36af9bff2ce57d0f02",
+  "bytes": 2796724,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000895419:0000080255-24-001370",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/895419/000008025524001370/wolf13gsep24.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T01:11:05.695822+00:00",
+  "sha256": "7bba16e33721c0ad45669c9832f55000d0b357c9ca1279089c710b074897b567",
+  "bytes": 4781,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
