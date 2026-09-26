@@ -626,3 +626,19 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - Run #61 independently failed closed for 2024-06-30: GRAL/WRK not rankable and ARDAGH GROUP SA/Liberty SiriusXM
   non-escrow holdings unresolved. No Official or downstream result promoted. Liberty tracking-stock handling raised as
   C-37; no new economic-rights, eligibility, or look-ahead policy was introduced. Walk-forward remains blocked.
+
+## 2026-09-26 · round 17 · Codex
+
+- Preserved complete N-PORT source-row identity and valuation evidence when historical-name matches fail the PIT
+  registrant check; Sufficiency reports now retain those fields for non-escrow unresolved holdings. No Gate rule changed.
+- Primary-source audit found Ardagh L0223L101 was positive at 2024-06-30 but had been delisted/deregistered since 2021.
+  Raised C-38 for the required reference/Universe eligibility decision; no exclusion was inferred.
+- Targeted N-PORT/gate regression 103/103 and full suite 295/295 passed. Track B remained untouched.
+
+## 2026-09-27 · round 18 · Codex
+
+- Documentation-only Track reconciliation: registered frozen Track C `EVL_SPEC_v0.1`; corrected stale Track B status
+  to P0 IMPLEMENTED+FROZEN / P1+ NOT STARTED; updated Current/Master/Project/Evidence/Handoff records.
+- Re-ran 295/295 full baseline and 13/13 Track B tests. Track B implementation diff from `48a6243` and cross-track
+  runtime imports remain zero. No Track B or Track C implementation changed.
+- Track A state unchanged: two corrected Official dates, 2024-06-30 blocked, walk-forward and backend Freeze not run.
