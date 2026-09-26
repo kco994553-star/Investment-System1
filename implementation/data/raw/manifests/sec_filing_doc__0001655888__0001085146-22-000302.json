@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001655888:0001085146-22-000302",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1655888/000108514622000302/orcca5_12522.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:50:44.426135+00:00",
+  "sha256": "3fccd13309b785eaebb45ebe29101d2275f83ec4eb127329f1db1ee56caec5b7",
+  "bytes": 26725,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

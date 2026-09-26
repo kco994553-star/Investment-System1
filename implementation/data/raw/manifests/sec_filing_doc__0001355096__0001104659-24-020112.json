@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001355096:0001104659-24-020112",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1355096/000110465924020112/tv0120-qurateretailincclassa.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:50:53.798931+00:00",
+  "sha256": "fe06ae155804f01b84b1474167091e41c0a9f694e1b452f06bd5f9a104ac87f7",
+  "bytes": 11588,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

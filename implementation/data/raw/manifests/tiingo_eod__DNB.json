@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:DNB",
+  "source_url": "https://api.tiingo.com/tiingo/daily/dnb/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-26T07:52:07.474676+00:00",
+  "sha256": "f430d17b23b83b1971cbfdacad04aa93c37e6e64ef95d31b1371e238400f0fa2",
+  "bytes": 320644,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

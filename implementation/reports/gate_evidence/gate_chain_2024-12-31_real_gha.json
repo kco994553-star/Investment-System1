@@ -3,10 +3,10 @@
   "as_of": "2024-12-31T00:00:00+00:00",
   "store": {
     "dir": "data/raw",
-    "n_artifacts": 6407,
+    "n_artifacts": 6504,
     "status": "PRESENT"
   },
-  "listings": 985,
+  "listings": 987,
   "plan_names_unresolved": [],
   "cik_candidate_verification": {
     "ANSS": {
@@ -82,16 +82,16 @@
   },
   "ranking_basis": "COMPANY_LEVEL_ONE_LINE_PER_CIK; US_DOMESTIC_FILERS; COVER_XBRL_CLASS_SUM_FOR_MULTI_CLASS",
   "row_level_audit": {
-    "listings": 1350,
-    "rankable": 1173,
+    "listings": 1352,
+    "rankable": 1174,
     "top_cutoff_mcap_if_500_rankable": 25368919934.894287
   },
   "company_dedupe": {
-    "n_rows": 1350,
-    "n_companies": 1073,
+    "n_rows": 1352,
+    "n_companies": 1075,
     "n_dropped_rows": 277,
     "methods": {
-      "SINGLE_LINE": 982,
+      "SINGLE_LINE": 984,
       "SEC_SUBMISSIONS_PRIMARY": 89,
       "SHORTEST_SYMBOL_FALLBACK": 2
     },
@@ -923,8 +923,8 @@
   },
   "eligibility": {
     "rule": "US_DOMESTIC_FILER_AT_AS_OF: the latest periodic report the issuer filed on or before as_of is a 10-K/10-Q. Foreign private issuers at as_of (20-F/40-F) are excluded from the US Market-Cap Top 500 (user decision 2026-09-25; their US lines are mostly ADRs whose ratio is not in SEC data). Issuers with no SEC filing by as_of did not exist as registrants then and are excluded. Basis: SEC submissions 'recent' + older filing pages, filingDate <= as_of (PIT; today's forms are not applied backward). An issuer with neither a periodic report nor a traded price by as_of was not listed then (excluded).",
-    "n_in": 1073,
-    "n_kept": 985,
+    "n_in": 1075,
+    "n_kept": 987,
     "excluded_foreign_private_issuers": [
       "AEM",
       "AMX",
@@ -3448,6 +3448,55 @@
         }
       ]
     },
+    "FWONA": {
+      "mcap": 29035742772.47336,
+      "status": "COVER_CLASS_SUM_LOWER_BOUND",
+      "source": "xbrl_instance:0001560385:0001558370-24-015213",
+      "classes": [
+        {
+          "member": "LibertyFormulaOneGroupCommonClassMember",
+          "shares": 23985441.0,
+          "date": "2024-10-31",
+          "symbol": "FWONA",
+          "price": 85.12000274658203
+        },
+        {
+          "member": "LibertyFormulaOneGroupCommonClassBMember",
+          "shares": 2434102.0,
+          "date": "2024-10-31",
+          "symbol": null,
+          "price": null
+        },
+        {
+          "member": "LibertyFormulaOneGroupCommonClassCMember",
+          "shares": 222286598.0,
+          "date": "2024-10-31",
+          "symbol": "FWONK",
+          "price": 94.0
+        },
+        {
+          "member": "LibertyLiveGroupCommonClassMember",
+          "shares": 25563295.0,
+          "date": "2024-10-31",
+          "symbol": "LLYVA",
+          "price": 67.27999877929688
+        },
+        {
+          "member": "LibertyLiveGroupCommonClassBMember",
+          "shares": 2541341.0,
+          "date": "2024-10-31",
+          "symbol": null,
+          "price": null
+        },
+        {
+          "member": "LibertyLiveGroupCommonClassCMember",
+          "shares": 63633585.0,
+          "date": "2024-10-31",
+          "symbol": "LLYVK",
+          "price": 68.81999969482422
+        }
+      ]
+    },
     "CFLT": {
       "mcap": 7285758068.88,
       "status": "COVER_CLASS_SUM_LOWER_BOUND",
@@ -5042,15 +5091,15 @@
       }
     ],
     "shares_basis_counts": {
-      "COMPANYFACTS_PIT": 439,
-      "COVER_CLASS_SUM_LOWER_BOUND": 44,
+      "COMPANYFACTS_PIT": 438,
+      "COVER_CLASS_SUM_LOWER_BOUND": 45,
       "COVER_CLASS_SUM": 8,
       "SHARE_COUNT_CONFIRMED_BY_COVER_TEXT": 3,
       "COVER_TEXT_SINGLE_COUNT": 1,
       "COVER_ECONOMIC_EQUIVALENT": 5
     },
-    "universe_id": "uni_6ae57dd3241f",
-    "snapshot_cutoff_mcap": 15338412993.883133
+    "universe_id": "uni_f43e429987bb",
+    "snapshot_cutoff_mcap": 15345686900.79537
   },
   "official_snapshot_candidates": null,
   "unrankable_issuers": {},
@@ -5058,22 +5107,22 @@
     "kind": "PIT_MCAP_STORE_COVERAGE_AUDIT",
     "as_of": "2024-12-31T00:00:00+00:00",
     "chart_range": "5y",
-    "listings": 985,
-    "companyfacts": 985,
-    "price": 985,
-    "rankable": 985,
+    "listings": 987,
+    "companyfacts": 987,
+    "price": 987,
+    "rankable": 987,
     "missing_companyfacts": 0,
     "missing_price": 0,
     "missing_shares": 0,
     "ambiguous_shares": 0,
     "non_positive": 0,
-    "top_cutoff_mcap_if_500_rankable": 15338412993.883133,
+    "top_cutoff_mcap_if_500_rankable": 15345686900.79537,
     "candidate_pool_complete": false,
     "justified_official_top500": false,
     "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
   },
-  "rankable": 985,
-  "cutoff_500_mcap": 15338412993.883133,
+  "rankable": 987,
+  "cutoff_500_mcap": 15345686900.79537,
   "top500": [
     {
       "rank": 1,
@@ -15018,6 +15067,126 @@
     },
     {
       "rank": 321,
+      "company_id": "r1000:0001560385",
+      "yahoo": "FWONA",
+      "mcap": 29035742772.47336,
+      "cik": "0001560385",
+      "detail": {
+        "yahoo": "FWONA",
+        "cik": "0001560385",
+        "shares_status": "MISSING",
+        "shares": null,
+        "shares_source": null,
+        "shares_available_at": null,
+        "price_observed_at": "2024-12-30T14:30:00+00:00",
+        "close": 85.12000274658203,
+        "adjclose": 85.12000274658203,
+        "split_events": 1,
+        "split_factor_after_as_of": 1.0,
+        "mcap_price": 85.12000274658203,
+        "mcap": null,
+        "share_concepts_present": {
+          "us-gaap:ConversionOfStockSharesIssued1": {
+            "end": "2011-11-28",
+            "val": 0.8813,
+            "filed": "2014-02-28",
+            "form": "10-K"
+          },
+          "us-gaap:PreferredStockSharesIssued": {
+            "end": "2024-09-30",
+            "val": 0,
+            "filed": "2024-11-12",
+            "form": "10-Q"
+          },
+          "us-gaap:PreferredStockSharesOutstanding": {
+            "end": "2015-03-31",
+            "val": 0,
+            "filed": "2015-05-08",
+            "form": "10-Q"
+          },
+          "us-gaap:TreasuryStockSharesRetired": {
+            "end": "2013-10-31",
+            "val": 6300000,
+            "filed": "2015-02-26",
+            "form": "10-K"
+          },
+          "us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment": {
+            "end": "2015-12-31",
+            "val": 2000000,
+            "filed": "2016-02-26",
+            "form": "10-K"
+          },
+          "us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding": {
+            "end": "2016-03-31",
+            "val": 337000000,
+            "filed": "2016-05-09",
+            "form": "10-Q"
+          },
+          "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic": {
+            "end": "2016-03-31",
+            "val": 335000000,
+            "filed": "2016-05-09",
+            "form": "10-Q"
+          }
+        },
+        "pit_filer_status": "DOMESTIC"
+      },
+      "cover_override": {
+        "mcap": 29035742772.47336,
+        "status": "COVER_CLASS_SUM_LOWER_BOUND",
+        "source": "xbrl_instance:0001560385:0001558370-24-015213",
+        "classes": [
+          {
+            "member": "LibertyFormulaOneGroupCommonClassMember",
+            "shares": 23985441.0,
+            "date": "2024-10-31",
+            "symbol": "FWONA",
+            "price": 85.12000274658203
+          },
+          {
+            "member": "LibertyFormulaOneGroupCommonClassBMember",
+            "shares": 2434102.0,
+            "date": "2024-10-31",
+            "symbol": null,
+            "price": null
+          },
+          {
+            "member": "LibertyFormulaOneGroupCommonClassCMember",
+            "shares": 222286598.0,
+            "date": "2024-10-31",
+            "symbol": "FWONK",
+            "price": 94.0
+          },
+          {
+            "member": "LibertyLiveGroupCommonClassMember",
+            "shares": 25563295.0,
+            "date": "2024-10-31",
+            "symbol": "LLYVA",
+            "price": 67.27999877929688
+          },
+          {
+            "member": "LibertyLiveGroupCommonClassBMember",
+            "shares": 2541341.0,
+            "date": "2024-10-31",
+            "symbol": null,
+            "price": null
+          },
+          {
+            "member": "LibertyLiveGroupCommonClassCMember",
+            "shares": 63633585.0,
+            "date": "2024-10-31",
+            "symbol": "LLYVK",
+            "price": 68.81999969482422
+          }
+        ]
+      },
+      "quality_flags": [],
+      "notes": [
+        "RANK_IS_LOWER_BOUND"
+      ]
+    },
+    {
+      "rank": 322,
       "company_id": "plan:ccl",
       "yahoo": "CCL",
       "mcap": 28911828010.74212,
@@ -15044,7 +15213,7 @@
       "notes": []
     },
     {
-      "rank": 322,
+      "rank": 323,
       "company_id": "r1000:0000046619",
       "yahoo": "HEI",
       "mcap": 28857322654.715744,
@@ -15091,7 +15260,7 @@
       "notes": []
     },
     {
-      "rank": 323,
+      "rank": 324,
       "company_id": "stt",
       "yahoo": "STT",
       "mcap": 28810832649.470245,
@@ -15118,7 +15287,7 @@
       "notes": []
     },
     {
-      "rank": 324,
+      "rank": 325,
       "company_id": "plan:fitb",
       "yahoo": "FITB",
       "mcap": 28645611107.174316,
@@ -15145,7 +15314,7 @@
       "notes": []
     },
     {
-      "rank": 325,
+      "rank": 326,
       "company_id": "cah",
       "yahoo": "CAH",
       "mcap": 28537878070.625534,
@@ -15172,7 +15341,7 @@
       "notes": []
     },
     {
-      "rank": 326,
+      "rank": 327,
       "company_id": "plan:xyl",
       "yahoo": "XYL",
       "mcap": 28249609768.27664,
@@ -15199,7 +15368,7 @@
       "notes": []
     },
     {
-      "rank": 327,
+      "rank": 328,
       "company_id": "plan:gpn",
       "yahoo": "GPN",
       "mcap": 28205663029.04396,
@@ -15226,7 +15395,7 @@
       "notes": []
     },
     {
-      "rank": 328,
+      "rank": 329,
       "company_id": "hpe",
       "yahoo": "HPE",
       "mcap": 28148145857.03992,
@@ -15253,7 +15422,7 @@
       "notes": []
     },
     {
-      "rank": 329,
+      "rank": 330,
       "company_id": "r1000:0001713683",
       "yahoo": "ZS",
       "mcap": 28099215779.202026,
@@ -15280,7 +15449,7 @@
       "notes": []
     },
     {
-      "rank": 330,
+      "rank": 331,
       "company_id": "plan:gddy",
       "yahoo": "GDDY",
       "mcap": 28001063304.309464,
@@ -15307,7 +15476,7 @@
       "notes": []
     },
     {
-      "rank": 331,
+      "rank": 332,
       "company_id": "keys",
       "yahoo": "KEYS",
       "mcap": 27910254056.7912,
@@ -15334,7 +15503,7 @@
       "notes": []
     },
     {
-      "rank": 332,
+      "rank": 333,
       "company_id": "plan:sw",
       "yahoo": "SW",
       "mcap": 27890770169.853333,
@@ -15361,7 +15530,7 @@
       "notes": []
     },
     {
-      "rank": 333,
+      "rank": 334,
       "company_id": "r1000:0000055067",
       "yahoo": "K",
       "mcap": 27858483793.079998,
@@ -15388,7 +15557,7 @@
       "notes": []
     },
     {
-      "rank": 334,
+      "rank": 335,
       "company_id": "plan:eqt",
       "yahoo": "EQT",
       "mcap": 27799507651.046753,
@@ -15415,7 +15584,7 @@
       "notes": []
     },
     {
-      "rank": 335,
+      "rank": 336,
       "company_id": "plan:ppg",
       "yahoo": "PPG",
       "mcap": 27628879150.390625,
@@ -15442,7 +15611,7 @@
       "notes": []
     },
     {
-      "rank": 336,
+      "rank": 337,
       "company_id": "plan:dow",
       "yahoo": "DOW",
       "mcap": 27611615292.170372,
@@ -15469,7 +15638,7 @@
       "notes": []
     },
     {
-      "rank": 337,
+      "rank": 338,
       "company_id": "r1000:0000798941",
       "yahoo": "FCNCA",
       "mcap": 27434937240.700684,
@@ -15549,7 +15718,7 @@
       ]
     },
     {
-      "rank": 338,
+      "rank": 339,
       "company_id": "nue",
       "yahoo": "NUE",
       "mcap": 27205424591.07843,
@@ -15576,7 +15745,7 @@
       "notes": []
     },
     {
-      "rank": 339,
+      "rank": 340,
       "company_id": "cvna",
       "yahoo": "CVNA",
       "mcap": 27057844267.732315,
@@ -15625,7 +15794,7 @@
       ]
     },
     {
-      "rank": 340,
+      "rank": 341,
       "company_id": "plan:on",
       "yahoo": "ON",
       "mcap": 27021105025.650803,
@@ -15652,7 +15821,7 @@
       "notes": []
     },
     {
-      "rank": 341,
+      "rank": 342,
       "company_id": "plan:eqr",
       "yahoo": "EQR",
       "mcap": 27000201512.16,
@@ -15679,7 +15848,7 @@
       "notes": []
     },
     {
-      "rank": 342,
+      "rank": 343,
       "company_id": "plan:br",
       "yahoo": "BR",
       "mcap": 26358551582.0,
@@ -15706,7 +15875,7 @@
       "notes": []
     },
     {
-      "rank": 343,
+      "rank": 344,
       "company_id": "plan:ftv",
       "yahoo": "FTV",
       "mcap": 26035073978.89323,
@@ -15733,7 +15902,7 @@
       "notes": []
     },
     {
-      "rank": 344,
+      "rank": 345,
       "company_id": "wbd",
       "yahoo": "WBD",
       "mcap": 25782765730.954933,
@@ -15760,7 +15929,7 @@
       "notes": []
     },
     {
-      "rank": 345,
+      "rank": 346,
       "company_id": "plan:mtd",
       "yahoo": "MTD",
       "mcap": 25743567673.92334,
@@ -15803,7 +15972,7 @@
       "notes": []
     },
     {
-      "rank": 346,
+      "rank": 347,
       "company_id": "plan:chd",
       "yahoo": "CHD",
       "mcap": 25631642784.605827,
@@ -15830,7 +15999,7 @@
       "notes": []
     },
     {
-      "rank": 347,
+      "rank": 348,
       "company_id": "plan:dov",
       "yahoo": "DOV",
       "mcap": 25561608109.94397,
@@ -15857,7 +16026,7 @@
       "notes": []
     },
     {
-      "rank": 348,
+      "rank": 349,
       "company_id": "plan:tpl",
       "yahoo": "TPL",
       "mcap": 25443109543.885437,
@@ -15884,7 +16053,7 @@
       "notes": []
     },
     {
-      "rank": 349,
+      "rank": 350,
       "company_id": "plan:syf",
       "yahoo": "SYF",
       "mcap": 25326853302.334763,
@@ -15911,7 +16080,7 @@
       "notes": []
     },
     {
-      "rank": 350,
+      "rank": 351,
       "company_id": "plan:trow",
       "yahoo": "TROW",
       "mcap": 25295077389.79538,
@@ -15938,7 +16107,7 @@
       "notes": []
     },
     {
-      "rank": 351,
+      "rank": 352,
       "company_id": "plan:vlto",
       "yahoo": "VLTO",
       "mcap": 25227866656.056404,
@@ -15965,7 +16134,7 @@
       "notes": []
     },
     {
-      "rank": 352,
+      "rank": 353,
       "company_id": "plan:nvr",
       "yahoo": "NVR",
       "mcap": 25051659439.277344,
@@ -15992,7 +16161,7 @@
       "notes": []
     },
     {
-      "rank": 353,
+      "rank": 354,
       "company_id": "plan:dte",
       "yahoo": "DTE",
       "mcap": 24965976274.32083,
@@ -16019,7 +16188,7 @@
       "notes": []
     },
     {
-      "rank": 354,
+      "rank": 355,
       "company_id": "plan:hsy",
       "yahoo": "HSY",
       "mcap": 24919514342.937714,
@@ -16068,7 +16237,7 @@
       ]
     },
     {
-      "rank": 355,
+      "rank": 356,
       "company_id": "plan:tyl",
       "yahoo": "TYL",
       "mcap": 24782091718.001404,
@@ -16095,7 +16264,7 @@
       "notes": []
     },
     {
-      "rank": 356,
+      "rank": 357,
       "company_id": "plan:vtr",
       "yahoo": "VTR",
       "mcap": 24536432553.877354,
@@ -16122,7 +16291,7 @@
       "notes": []
     },
     {
-      "rank": 357,
+      "rank": 358,
       "company_id": "r1000:0001397911",
       "yahoo": "LPLA",
       "mcap": 24484125564.071625,
@@ -16149,7 +16318,7 @@
       "notes": []
     },
     {
-      "rank": 358,
+      "rank": 359,
       "company_id": "r1000:0001973266",
       "yahoo": "TKO",
       "mcap": 24482805461.21875,
@@ -16240,7 +16409,7 @@
       "notes": []
     },
     {
-      "rank": 359,
+      "rank": 360,
       "company_id": "plan:awk",
       "yahoo": "AWK",
       "mcap": 24213616353.021736,
@@ -16267,7 +16436,7 @@
       "notes": []
     },
     {
-      "rank": 360,
+      "rank": 361,
       "company_id": "plan:adm",
       "yahoo": "ADM",
       "mcap": 23960173200.36316,
@@ -16294,7 +16463,7 @@
       "notes": []
     },
     {
-      "rank": 361,
+      "rank": 362,
       "company_id": "plan:aee",
       "yahoo": "AEE",
       "mcap": 23922067211.67901,
@@ -16321,7 +16490,7 @@
       "notes": []
     },
     {
-      "rank": 362,
+      "rank": 363,
       "company_id": "plan:ppl",
       "yahoo": "PPL",
       "mcap": 23902848011.528854,
@@ -16348,7 +16517,7 @@
       "notes": []
     },
     {
-      "rank": 363,
+      "rank": 364,
       "company_id": "plan:wst",
       "yahoo": "WST",
       "mcap": 23813917328.617126,
@@ -16375,7 +16544,7 @@
       "notes": []
     },
     {
-      "rank": 364,
+      "rank": 365,
       "company_id": "plan:lyb",
       "yahoo": "LYB",
       "mcap": 23765704113.527916,
@@ -16402,7 +16571,7 @@
       "notes": []
     },
     {
-      "rank": 365,
+      "rank": 366,
       "company_id": "plan:hban",
       "yahoo": "HBAN",
       "mcap": 23724409920.519287,
@@ -16429,7 +16598,7 @@
       "notes": []
     },
     {
-      "rank": 366,
+      "rank": 367,
       "company_id": "plan:hal",
       "yahoo": "HAL",
       "mcap": 23684412711.30741,
@@ -16456,7 +16625,7 @@
       "notes": []
     },
     {
-      "rank": 367,
+      "rank": 368,
       "company_id": "plan:ntap",
       "yahoo": "NTAP",
       "mcap": 23683164897.450623,
@@ -16483,7 +16652,7 @@
       "notes": []
     },
     {
-      "rank": 368,
+      "rank": 369,
       "company_id": "plan:cpay",
       "yahoo": "CPAY",
       "mcap": 23532336704.31848,
@@ -16510,7 +16679,7 @@
       "notes": []
     },
     {
-      "rank": 369,
+      "rank": 370,
       "company_id": "r1000:0001880661",
       "yahoo": "TPG",
       "mcap": 23142611756.680325,
@@ -16634,7 +16803,7 @@
       "notes": []
     },
     {
-      "rank": 370,
+      "rank": 371,
       "company_id": "plan:cdw",
       "yahoo": "CDW",
       "mcap": 23101325961.079285,
@@ -16661,7 +16830,7 @@
       "notes": []
     },
     {
-      "rank": 371,
+      "rank": 372,
       "company_id": "r1000:0000895126",
       "yahoo": "EXE",
       "mcap": 23066512687.365326,
@@ -16688,7 +16857,7 @@
       "notes": []
     },
     {
-      "rank": 372,
+      "rank": 373,
       "company_id": "plan:expe",
       "yahoo": "EXPE",
       "mcap": 22997201517.39502,
@@ -16715,7 +16884,7 @@
       "notes": []
     },
     {
-      "rank": 373,
+      "rank": 374,
       "company_id": "r1000:0000719955",
       "yahoo": "WSM",
       "mcap": 22959369692.721817,
@@ -16742,7 +16911,7 @@
       "notes": []
     },
     {
-      "rank": 374,
+      "rank": 375,
       "company_id": "plan:fe",
       "yahoo": "FE",
       "mcap": 22845205686.804016,
@@ -16769,7 +16938,7 @@
       "notes": []
     },
     {
-      "rank": 375,
+      "rank": 376,
       "company_id": "hubb",
       "yahoo": "HUBB",
       "mcap": 22498157566.341614,
@@ -16796,7 +16965,7 @@
       "notes": []
     },
     {
-      "rank": 376,
+      "rank": 377,
       "company_id": "plan:rol",
       "yahoo": "ROL",
       "mcap": 22476595718.66092,
@@ -16823,7 +16992,7 @@
       "notes": []
     },
     {
-      "rank": 377,
+      "rank": 378,
       "company_id": "plan:cinf",
       "yahoo": "CINF",
       "mcap": 22374943604.872833,
@@ -16850,7 +17019,7 @@
       "notes": []
     },
     {
-      "rank": 378,
+      "rank": 379,
       "company_id": "plan:phm",
       "yahoo": "PHM",
       "mcap": 22325246348.83223,
@@ -16877,7 +17046,7 @@
       "notes": []
     },
     {
-      "rank": 379,
+      "rank": 380,
       "company_id": "plan:wrb",
       "yahoo": "WRB",
       "mcap": 22300165076.8396,
@@ -16904,7 +17073,7 @@
       "notes": []
     },
     {
-      "rank": 380,
+      "rank": 381,
       "company_id": "r1000:0001096343",
       "yahoo": "MKL",
       "mcap": 22190168080.566406,
@@ -16931,7 +17100,7 @@
       "notes": []
     },
     {
-      "rank": 381,
+      "rank": 382,
       "company_id": "plan:ptc",
       "yahoo": "PTC",
       "mcap": 22062907272.72583,
@@ -16958,7 +17127,7 @@
       "notes": []
     },
     {
-      "rank": 382,
+      "rank": 383,
       "company_id": "plan:wat",
       "yahoo": "WAT",
       "mcap": 22024998128.521362,
@@ -16985,7 +17154,7 @@
       "notes": []
     },
     {
-      "rank": 383,
+      "rank": 384,
       "company_id": "r1000:0001805284",
       "yahoo": "RKT",
       "mcap": 22001702806.893707,
@@ -17081,7 +17250,7 @@
       "notes": []
     },
     {
-      "rank": 384,
+      "rank": 385,
       "company_id": "plan:dri",
       "yahoo": "DRI",
       "mcap": 21945564404.536194,
@@ -17108,7 +17277,7 @@
       "notes": []
     },
     {
-      "rank": 385,
+      "rank": 386,
       "company_id": "plan:biib",
       "yahoo": "BIIB",
       "mcap": 21885588030.360107,
@@ -17135,7 +17304,7 @@
       "notes": []
     },
     {
-      "rank": 386,
+      "rank": 387,
       "company_id": "plan:lii",
       "yahoo": "LII",
       "mcap": 21872337339.316406,
@@ -17162,7 +17331,7 @@
       "notes": []
     },
     {
-      "rank": 387,
+      "rank": 388,
       "company_id": "plan:sbac",
       "yahoo": "SBAC",
       "mcap": 21861499072.63916,
@@ -17189,7 +17358,7 @@
       "notes": []
     },
     {
-      "rank": 388,
+      "rank": 389,
       "company_id": "r1000:0001585521",
       "yahoo": "ZM",
       "mcap": 21683541077.362587,
@@ -17281,7 +17450,7 @@
       ]
     },
     {
-      "rank": 389,
+      "rank": 390,
       "company_id": "plan:tdy",
       "yahoo": "TDY",
       "mcap": 21680798310.81839,
@@ -17308,7 +17477,7 @@
       "notes": []
     },
     {
-      "rank": 390,
+      "rank": 391,
       "company_id": "plan:foxa",
       "yahoo": "FOXA",
       "mcap": 21656791867.30734,
@@ -17355,7 +17524,7 @@
       "notes": []
     },
     {
-      "rank": 391,
+      "rank": 392,
       "company_id": "alab",
       "yahoo": "ALAB",
       "mcap": 21637692275.834854,
@@ -17382,7 +17551,7 @@
       "notes": []
     },
     {
-      "rank": 392,
+      "rank": 393,
       "company_id": "plan:ato",
       "yahoo": "ATO",
       "mcap": 21589655981.509827,
@@ -17409,7 +17578,7 @@
       "notes": []
     },
     {
-      "rank": 393,
+      "rank": 394,
       "company_id": "plan:rf",
       "yahoo": "RF",
       "mcap": 21503716541.218395,
@@ -17436,7 +17605,7 @@
       "notes": []
     },
     {
-      "rank": 394,
+      "rank": 395,
       "company_id": "plan:iff",
       "yahoo": "IFF",
       "mcap": 21467088108.755836,
@@ -17463,7 +17632,7 @@
       "notes": []
     },
     {
-      "rank": 395,
+      "rank": 396,
       "company_id": "r1000:0001110803",
       "yahoo": "ILMN",
       "mcap": 21184203161.621094,
@@ -17490,7 +17659,7 @@
       "notes": []
     },
     {
-      "rank": 396,
+      "rank": 397,
       "company_id": "r1000:0000105634",
       "yahoo": "EME",
       "mcap": 21034441477.75,
@@ -17517,7 +17686,7 @@
       "notes": []
     },
     {
-      "rank": 397,
+      "rank": 398,
       "company_id": "dvn",
       "yahoo": "DVN",
       "mcap": 21001092548.942566,
@@ -17544,7 +17713,7 @@
       "notes": []
     },
     {
-      "rank": 398,
+      "rank": 399,
       "company_id": "plan:es",
       "yahoo": "ES",
       "mcap": 20994839305.557392,
@@ -17571,7 +17740,7 @@
       "notes": []
     },
     {
-      "rank": 399,
+      "rank": 400,
       "company_id": "plan:zbh",
       "yahoo": "ZBH",
       "mcap": 20982369548.562378,
@@ -17598,7 +17767,7 @@
       "notes": []
     },
     {
-      "rank": 400,
+      "rank": 401,
       "company_id": "ntra",
       "yahoo": "NTRA",
       "mcap": 20931900779.695557,
@@ -17625,7 +17794,7 @@
       "notes": []
     },
     {
-      "rank": 401,
+      "rank": 402,
       "company_id": "plan:cnp",
       "yahoo": "CNP",
       "mcap": 20744479145.357155,
@@ -17652,7 +17821,7 @@
       "notes": []
     },
     {
-      "rank": 402,
+      "rank": 403,
       "company_id": "ter",
       "yahoo": "TER",
       "mcap": 20634546738.38626,
@@ -17679,7 +17848,7 @@
       "notes": []
     },
     {
-      "rank": 403,
+      "rank": 404,
       "company_id": "wdc",
       "yahoo": "WDC",
       "mcap": 20611137606.51617,
@@ -17706,7 +17875,7 @@
       "notes": []
     },
     {
-      "rank": 404,
+      "rank": 405,
       "company_id": "plan:cboe",
       "yahoo": "CBOE",
       "mcap": 20511090574.348206,
@@ -17733,7 +17902,7 @@
       "notes": []
     },
     {
-      "rank": 405,
+      "rank": 406,
       "company_id": "r1000:0001474432",
       "yahoo": "P",
       "mcap": 20383285861.220566,
@@ -17760,7 +17929,7 @@
       "notes": []
     },
     {
-      "rank": 406,
+      "rank": 407,
       "company_id": "plan:ntrs",
       "yahoo": "NTRS",
       "mcap": 20364966519.979637,
@@ -17787,7 +17956,7 @@
       "notes": []
     },
     {
-      "rank": 407,
+      "rank": 408,
       "company_id": "r1000:0001511737",
       "yahoo": "UI",
       "mcap": 20289658402.933502,
@@ -17814,7 +17983,7 @@
       "notes": []
     },
     {
-      "rank": 408,
+      "rank": 409,
       "company_id": "plan:wy",
       "yahoo": "WY",
       "mcap": 20264371536.52954,
@@ -17841,7 +18010,7 @@
       "notes": []
     },
     {
-      "rank": 409,
+      "rank": 410,
       "company_id": "plan:mkc",
       "yahoo": "MKC",
       "mcap": 20248669887.195946,
@@ -17919,7 +18088,7 @@
       "notes": []
     },
     {
-      "rank": 410,
+      "rank": 411,
       "company_id": "plan:ste",
       "yahoo": "STE",
       "mcap": 20242898801.898514,
@@ -17946,7 +18115,7 @@
       "notes": []
     },
     {
-      "rank": 411,
+      "rank": 412,
       "company_id": "plan:pkg",
       "yahoo": "PKG",
       "mcap": 20202520355.258453,
@@ -17973,7 +18142,7 @@
       "notes": []
     },
     {
-      "rank": 412,
+      "rank": 413,
       "company_id": "plan:ulta",
       "yahoo": "ULTA",
       "mcap": 20190602762.16449,
@@ -18000,7 +18169,7 @@
       "notes": []
     },
     {
-      "rank": 413,
+      "rank": 414,
       "company_id": "plan:luv",
       "yahoo": "LUV",
       "mcap": 20127181893.253735,
@@ -18027,7 +18196,7 @@
       "notes": []
     },
     {
-      "rank": 414,
+      "rank": 415,
       "company_id": "plan:clx",
       "yahoo": "CLX",
       "mcap": 19980780124.909637,
@@ -18054,7 +18223,7 @@
       "notes": []
     },
     {
-      "rank": 415,
+      "rank": 416,
       "company_id": "plan:cms",
       "yahoo": "CMS",
       "mcap": 19908034734.31286,
@@ -18081,7 +18250,7 @@
       "notes": []
     },
     {
-      "rank": 416,
+      "rank": 417,
       "company_id": "plan:zbra",
       "yahoo": "ZBRA",
       "mcap": 19798994062.619507,
@@ -18108,7 +18277,7 @@
       "notes": []
     },
     {
-      "rank": 417,
+      "rank": 418,
       "company_id": "plan:vrsn",
       "yahoo": "VRSN",
       "mcap": 19710110586.54785,
@@ -18135,7 +18304,7 @@
       "notes": []
     },
     {
-      "rank": 418,
+      "rank": 419,
       "company_id": "r1000:0000105016",
       "yahoo": "WSO",
       "mcap": 19507103751.786407,
@@ -18263,7 +18432,7 @@
       "notes": []
     },
     {
-      "rank": 419,
+      "rank": 420,
       "company_id": "plan:invh",
       "yahoo": "INVH",
       "mcap": 19499232318.00191,
@@ -18290,7 +18459,7 @@
       "notes": []
     },
     {
-      "rank": 420,
+      "rank": 421,
       "company_id": "ibkr",
       "yahoo": "IBKR",
       "mcap": 19483892959.777725,
@@ -18348,7 +18517,7 @@
       ]
     },
     {
-      "rank": 421,
+      "rank": 422,
       "company_id": "plan:cfg",
       "yahoo": "CFG",
       "mcap": 19196915822.690083,
@@ -18375,7 +18544,7 @@
       "notes": []
     },
     {
-      "rank": 422,
+      "rank": 423,
       "company_id": "plan:lh",
       "yahoo": "LH",
       "mcap": 19140845390.343536,
@@ -18402,7 +18571,7 @@
       "notes": []
     },
     {
-      "rank": 423,
+      "rank": 424,
       "company_id": "plan:ldos",
       "yahoo": "LDOS",
       "mcap": 19103617971.20668,
@@ -18429,7 +18598,7 @@
       "notes": []
     },
     {
-      "rank": 424,
+      "rank": 425,
       "company_id": "plan:fslr",
       "yahoo": "FSLR",
       "mcap": 19063771121.354248,
@@ -18456,7 +18625,7 @@
       "notes": []
     },
     {
-      "rank": 425,
+      "rank": 426,
       "company_id": "plan:erie",
       "yahoo": "ERIE",
       "mcap": 19001259019.37256,
@@ -18524,7 +18693,7 @@
       ]
     },
     {
-      "rank": 426,
+      "rank": 427,
       "company_id": "r1000:0001089063",
       "yahoo": "DKS",
       "mcap": 18880926337.213394,
@@ -18609,7 +18778,7 @@
       "notes": []
     },
     {
-      "rank": 427,
+      "rank": 428,
       "company_id": "plan:ctra",
       "yahoo": "CTRA",
       "mcap": 18798364270.4,
@@ -18636,7 +18805,7 @@
       "notes": []
     },
     {
-      "rank": 428,
+      "rank": 429,
       "company_id": "r1000:0001402436",
       "yahoo": "SSNC",
       "mcap": 18739857918.51004,
@@ -18663,7 +18832,7 @@
       "notes": []
     },
     {
-      "rank": 429,
+      "rank": 430,
       "company_id": "plan:nrg",
       "yahoo": "NRG",
       "mcap": 18666491581.041756,
@@ -18690,7 +18859,7 @@
       "notes": []
     },
     {
-      "rank": 430,
+      "rank": 431,
       "company_id": "plan:ip",
       "yahoo": "IP",
       "mcap": 18638455074.002975,
@@ -18717,7 +18886,7 @@
       "notes": []
     },
     {
-      "rank": 431,
+      "rank": 432,
       "company_id": "r1000:0001261333",
       "yahoo": "DOCU",
       "mcap": 18525521413.1743,
@@ -18744,7 +18913,7 @@
       "notes": []
     },
     {
-      "rank": 432,
+      "rank": 433,
       "company_id": "plan:podd",
       "yahoo": "PODD",
       "mcap": 18473326916.488647,
@@ -18771,7 +18940,7 @@
       "notes": []
     },
     {
-      "rank": 433,
+      "rank": 434,
       "company_id": "plan:l",
       "yahoo": "L",
       "mcap": 18378178786.899628,
@@ -18798,7 +18967,7 @@
       "notes": []
     },
     {
-      "rank": 434,
+      "rank": 435,
       "company_id": "plan:bby",
       "yahoo": "BBY",
       "mcap": 18354352191.3238,
@@ -18825,7 +18994,7 @@
       "notes": []
     },
     {
-      "rank": 435,
+      "rank": 436,
       "company_id": "plan:fds",
       "yahoo": "FDS",
       "mcap": 18336455426.36139,
@@ -18852,7 +19021,7 @@
       "notes": []
     },
     {
-      "rank": 436,
+      "rank": 437,
       "company_id": "stx",
       "yahoo": "STX",
       "mcap": 18303648155.555267,
@@ -18879,7 +19048,7 @@
       "notes": []
     },
     {
-      "rank": 437,
+      "rank": 438,
       "company_id": "plan:coo",
       "yahoo": "COO",
       "mcap": 18247839556.087784,
@@ -18906,7 +19075,7 @@
       "notes": []
     },
     {
-      "rank": 438,
+      "rank": 439,
       "company_id": "plan:ess",
       "yahoo": "ESS",
       "mcap": 18174843973.484802,
@@ -18933,7 +19102,7 @@
       "notes": []
     },
     {
-      "rank": 439,
+      "rank": 440,
       "company_id": "r1000:0001883685",
       "yahoo": "DKNG",
       "mcap": 18090988372.83912,
@@ -19031,7 +19200,7 @@
       ]
     },
     {
-      "rank": 440,
+      "rank": 441,
       "company_id": "r1000:0001579298",
       "yahoo": "BURL",
       "mcap": 18079389164.2854,
@@ -19058,7 +19227,7 @@
       "notes": []
     },
     {
-      "rank": 441,
+      "rank": 442,
       "company_id": "r1000:0001552033",
       "yahoo": "TRU",
       "mcap": 18076975000.0,
@@ -19085,7 +19254,7 @@
       "notes": []
     },
     {
-      "rank": 442,
+      "rank": 443,
       "company_id": "r1000:0001527166",
       "yahoo": "CG",
       "mcap": 18070057469.453487,
@@ -19112,7 +19281,7 @@
       "notes": []
     },
     {
-      "rank": 443,
+      "rank": 444,
       "company_id": "plan:maa",
       "yahoo": "MAA",
       "mcap": 17887358949.92125,
@@ -19139,7 +19308,7 @@
       "notes": []
     },
     {
-      "rank": 444,
+      "rank": 445,
       "company_id": "plan:sna",
       "yahoo": "SNA",
       "mcap": 17850415935.248352,
@@ -19166,7 +19335,7 @@
       "notes": []
     },
     {
-      "rank": 445,
+      "rank": 446,
       "company_id": "plan:bf-b",
       "yahoo": "BF-B",
       "mcap": 17801725260.8653,
@@ -19217,7 +19386,7 @@
       "notes": []
     },
     {
-      "rank": 446,
+      "rank": 447,
       "company_id": "plan:pfg",
       "yahoo": "PFG",
       "mcap": 17664499167.307533,
@@ -19244,7 +19413,7 @@
       "notes": []
     },
     {
-      "rank": 447,
+      "rank": 448,
       "company_id": "r1000:0001441816",
       "yahoo": "MDB",
       "mcap": 17419417383.079468,
@@ -19271,7 +19440,7 @@
       "notes": []
     },
     {
-      "rank": 448,
+      "rank": 449,
       "company_id": "r1000:0001650164",
       "yahoo": "TOST",
       "mcap": 17370480503.082275,
@@ -19320,7 +19489,7 @@
       ]
     },
     {
-      "rank": 449,
+      "rank": 450,
       "company_id": "plan:stld",
       "yahoo": "STLD",
       "mcap": 17325480895.614853,
@@ -19347,7 +19516,7 @@
       "notes": []
     },
     {
-      "rank": 450,
+      "rank": 451,
       "company_id": "plan:el",
       "yahoo": "EL",
       "mcap": 17318617187.342102,
@@ -19421,7 +19590,7 @@
       ]
     },
     {
-      "rank": 451,
+      "rank": 452,
       "company_id": "plan:trmb",
       "yahoo": "TRMB",
       "mcap": 17303748232.807777,
@@ -19448,7 +19617,7 @@
       "notes": []
     },
     {
-      "rank": 452,
+      "rank": 453,
       "company_id": "r1000:0001506293",
       "yahoo": "PINS",
       "mcap": 17293059487.845413,
@@ -19497,7 +19666,7 @@
       ]
     },
     {
-      "rank": 453,
+      "rank": 454,
       "company_id": "plan:jbht",
       "yahoo": "JBHT",
       "mcap": 17174366249.44516,
@@ -19524,7 +19693,7 @@
       "notes": []
     },
     {
-      "rank": 454,
+      "rank": 455,
       "company_id": "plan:ni",
       "yahoo": "NI",
       "mcap": 17130787564.224072,
@@ -19551,7 +19720,7 @@
       "notes": []
     },
     {
-      "rank": 455,
+      "rank": 456,
       "company_id": "plan:hrl",
       "yahoo": "HRL",
       "mcap": 17129203585.263618,
@@ -19625,7 +19794,7 @@
       ]
     },
     {
-      "rank": 456,
+      "rank": 457,
       "company_id": "plan:are",
       "yahoo": "ARE",
       "mcap": 17091749463.53209,
@@ -19652,7 +19821,7 @@
       "notes": []
     },
     {
-      "rank": 457,
+      "rank": 458,
       "company_id": "r1000:0001820953",
       "yahoo": "AFRM",
       "mcap": 17030232271.299889,
@@ -19701,7 +19870,7 @@
       ]
     },
     {
-      "rank": 458,
+      "rank": 459,
       "company_id": "plan:key",
       "yahoo": "KEY",
       "mcap": 16960852495.49112,
@@ -19728,7 +19897,7 @@
       "notes": []
     },
     {
-      "rank": 459,
+      "rank": 460,
       "company_id": "r1000:0001818874",
       "yahoo": "SOFI",
       "mcap": 16960845780.435204,
@@ -19755,7 +19924,7 @@
       "notes": []
     },
     {
-      "rank": 460,
+      "rank": 461,
       "company_id": "plan:gen",
       "yahoo": "GEN",
       "mcap": 16871691561.460209,
@@ -19782,7 +19951,7 @@
       "notes": []
     },
     {
-      "rank": 461,
+      "rank": 462,
       "company_id": "plan:dgx",
       "yahoo": "DGX",
       "mcap": 16850544011.819,
@@ -19809,7 +19978,7 @@
       "notes": []
     },
     {
-      "rank": 462,
+      "rank": 463,
       "company_id": "r1000:0001617640",
       "yahoo": "ZG",
       "mcap": 16782149244.687286,
@@ -19902,7 +20071,7 @@
       ]
     },
     {
-      "rank": 463,
+      "rank": 464,
       "company_id": "plan:omc",
       "yahoo": "OMC",
       "mcap": 16742889095.902313,
@@ -19929,7 +20098,7 @@
       "notes": []
     },
     {
-      "rank": 464,
+      "rank": 465,
       "company_id": "r1000:0000790051",
       "yahoo": "CSL",
       "mcap": 16710878604.875214,
@@ -19956,7 +20125,7 @@
       "notes": []
     },
     {
-      "rank": 465,
+      "rank": 466,
       "company_id": "r1000:0001849253",
       "yahoo": "RYAN",
       "mcap": 16684561026.311127,
@@ -20054,7 +20223,7 @@
       "notes": []
     },
     {
-      "rank": 466,
+      "rank": 467,
       "company_id": "r1000:0001046102",
       "yahoo": "RBA",
       "mcap": 16667417613.209366,
@@ -20081,7 +20250,7 @@
       "notes": []
     },
     {
-      "rank": 467,
+      "rank": 468,
       "company_id": "r1000:0001447669",
       "yahoo": "TWLO",
       "mcap": 16660537589.420906,
@@ -20108,7 +20277,7 @@
       "notes": []
     },
     {
-      "rank": 468,
+      "rank": 469,
       "company_id": "plan:dg",
       "yahoo": "DG",
       "mcap": 16646174499.227905,
@@ -20135,7 +20304,7 @@
       "notes": []
     },
     {
-      "rank": 469,
+      "rank": 470,
       "company_id": "plan:pnr",
       "yahoo": "PNR",
       "mcap": 16585903186.21907,
@@ -20162,7 +20331,7 @@
       "notes": []
     },
     {
-      "rank": 470,
+      "rank": 471,
       "company_id": "r1000:0001056696",
       "yahoo": "MANH",
       "mcap": 16559952042.717407,
@@ -20189,7 +20358,7 @@
       "notes": []
     },
     {
-      "rank": 471,
+      "rank": 472,
       "company_id": "plan:moh",
       "yahoo": "MOH",
       "mcap": 16552536279.296875,
@@ -20216,7 +20385,7 @@
       "notes": []
     },
     {
-      "rank": 472,
+      "rank": 473,
       "company_id": "plan:j",
       "yahoo": "J",
       "mcap": 16549573478.306828,
@@ -20243,7 +20412,7 @@
       "notes": []
     },
     {
-      "rank": 473,
+      "rank": 474,
       "company_id": "plan:bldr",
       "yahoo": "BLDR",
       "mcap": 16499733020.661621,
@@ -20270,7 +20439,7 @@
       "notes": []
     },
     {
-      "rank": 474,
+      "rank": 475,
       "company_id": "r1000:0001618732",
       "yahoo": "NTNX",
       "mcap": 16496342024.454788,
@@ -20323,7 +20492,7 @@
       "notes": []
     },
     {
-      "rank": 475,
+      "rank": 476,
       "company_id": "plan:ball",
       "yahoo": "BALL",
       "mcap": 16410444151.278069,
@@ -20350,7 +20519,7 @@
       "notes": []
     },
     {
-      "rank": 476,
+      "rank": 477,
       "company_id": "r1000:0000859737",
       "yahoo": "HOLX",
       "mcap": 16401041752.589998,
@@ -20377,7 +20546,7 @@
       "notes": []
     },
     {
-      "rank": 477,
+      "rank": 478,
       "company_id": "r1000:0001443646",
       "yahoo": "BAH",
       "mcap": 16400909497.826294,
@@ -20404,7 +20573,7 @@
       "notes": []
     },
     {
-      "rank": 478,
+      "rank": 479,
       "company_id": "plan:tsn",
       "yahoo": "TSN",
       "mcap": 16333781152.76767,
@@ -20490,7 +20659,7 @@
       ]
     },
     {
-      "rank": 479,
+      "rank": 480,
       "company_id": "etr",
       "yahoo": "ETR",
       "mcap": 16241407060.5,
@@ -20517,7 +20686,7 @@
       "notes": []
     },
     {
-      "rank": 480,
+      "rank": 481,
       "company_id": "plan:jbl",
       "yahoo": "JBL",
       "mcap": 16222336949.573822,
@@ -20544,7 +20713,7 @@
       "notes": []
     },
     {
-      "rank": 481,
+      "rank": 482,
       "company_id": "r1000:0000096223",
       "yahoo": "JEF",
       "mcap": 16207675540.768776,
@@ -20571,7 +20740,7 @@
       "notes": []
     },
     {
-      "rank": 482,
+      "rank": 483,
       "company_id": "plan:nwsa",
       "yahoo": "NWSA",
       "mcap": 16168099764.29181,
@@ -20618,7 +20787,7 @@
       "notes": []
     },
     {
-      "rank": 483,
+      "rank": 484,
       "company_id": "r1000:0001773383",
       "yahoo": "DT",
       "mcap": 16147985080.649529,
@@ -20645,7 +20814,7 @@
       "notes": []
     },
     {
-      "rank": 484,
+      "rank": 485,
       "company_id": "plan:gpc",
       "yahoo": "GPC",
       "mcap": 16103205881.909431,
@@ -20672,7 +20841,7 @@
       "notes": []
     },
     {
-      "rank": 485,
+      "rank": 486,
       "company_id": "plan:dltr",
       "yahoo": "DLTR",
       "mcap": 16078438241.389572,
@@ -20699,7 +20868,7 @@
       "notes": []
     },
     {
-      "rank": 486,
+      "rank": 487,
       "company_id": "r1000:0001082554",
       "yahoo": "UTHR",
       "mcap": 15966666429.132446,
@@ -20726,7 +20895,7 @@
       "notes": []
     },
     {
-      "rank": 487,
+      "rank": 488,
       "company_id": "r1000:0000110621",
       "yahoo": "RPM",
       "mcap": 15848357428.746567,
@@ -20753,7 +20922,7 @@
       "notes": []
     },
     {
-      "rank": 488,
+      "rank": 489,
       "company_id": "plan:iex",
       "yahoo": "IEX",
       "mcap": 15813298548.293518,
@@ -20780,7 +20949,7 @@
       "notes": []
     },
     {
-      "rank": 489,
+      "rank": 490,
       "company_id": "r1000:0001665918",
       "yahoo": "USFD",
       "mcap": 15758302666.286232,
@@ -20807,7 +20976,7 @@
       "notes": []
     },
     {
-      "rank": 490,
+      "rank": 491,
       "company_id": "r1000:0001897982",
       "yahoo": "AZPN",
       "mcap": 15746017545.05,
@@ -20834,7 +21003,7 @@
       "notes": []
     },
     {
-      "rank": 491,
+      "rank": 492,
       "company_id": "plan:kim",
       "yahoo": "KIM",
       "mcap": 15658910776.04002,
@@ -20861,7 +21030,7 @@
       "notes": []
     },
     {
-      "rank": 492,
+      "rank": 493,
       "company_id": "plan:mas",
       "yahoo": "MAS",
       "mcap": 15646108996.105293,
@@ -20888,7 +21057,7 @@
       "notes": []
     },
     {
-      "rank": 493,
+      "rank": 494,
       "company_id": "r1000:0000912593",
       "yahoo": "SUI",
       "mcap": 15630790280.135635,
@@ -20915,7 +21084,7 @@
       "notes": []
     },
     {
-      "rank": 494,
+      "rank": 495,
       "company_id": "plan:expd",
       "yahoo": "EXPD",
       "mcap": 15509326933.972458,
@@ -20942,7 +21111,7 @@
       "notes": []
     },
     {
-      "rank": 495,
+      "rank": 496,
       "company_id": "r1000:0001758730",
       "yahoo": "TW",
       "mcap": 15472376489.756592,
@@ -21005,7 +21174,7 @@
       ]
     },
     {
-      "rank": 496,
+      "rank": 497,
       "company_id": "plan:eg",
       "yahoo": "EG",
       "mcap": 15458537138.015442,
@@ -21032,7 +21201,7 @@
       "notes": []
     },
     {
-      "rank": 497,
+      "rank": 498,
       "company_id": "r1000:0001166003",
       "yahoo": "XPO",
       "mcap": 15433726168.823547,
@@ -21059,7 +21228,7 @@
       "notes": []
     },
     {
-      "rank": 498,
+      "rank": 499,
       "company_id": "plan:algn",
       "yahoo": "ALGN",
       "mcap": 15421829271.493835,
@@ -21086,7 +21255,7 @@
       "notes": []
     },
     {
-      "rank": 499,
+      "rank": 500,
       "company_id": "r1000:0001331875",
       "yahoo": "FNF",
       "mcap": 15345686900.79537,
@@ -21105,33 +21274,6 @@
         "split_factor_after_as_of": 1.037,
         "mcap_price": 56.080000629425044,
         "mcap": 15345686900.79537,
-        "share_concepts_present": null,
-        "pit_filer_status": "DOMESTIC"
-      },
-      "cover_override": null,
-      "quality_flags": [],
-      "notes": []
-    },
-    {
-      "rank": 500,
-      "company_id": "plan:tpr",
-      "yahoo": "TPR",
-      "mcap": 15338412993.883133,
-      "cik": "0001116132",
-      "detail": {
-        "yahoo": "TPR",
-        "cik": "0001116132",
-        "shares_status": "OK",
-        "shares": 233035750.0,
-        "shares_source": "dei:EntityCommonStockSharesOutstanding",
-        "shares_available_at": "2024-11-07 00:00:00+00:00",
-        "price_observed_at": "2024-12-30T14:30:00+00:00",
-        "close": 65.81999969482422,
-        "adjclose": 64.17400360107422,
-        "split_events": 0,
-        "split_factor_after_as_of": 1.0,
-        "mcap_price": 65.81999969482422,
-        "mcap": 15338412993.883133,
         "share_concepts_present": null,
         "pit_filer_status": "DOMESTIC"
       },
@@ -21166,16 +21308,16 @@
       "n_members": 503,
       "n_missing_from_pool": 0,
       "n_present_not_rankable": 0,
-      "n_present_rankable_outside_top500": 79,
+      "n_present_rankable_outside_top500": 80,
       "missing_from_pool": []
     },
     {
       "name": "RUSSELL1000_IWB_NPORT",
       "role": "SUPERSET_REFERENCE",
-      "n_members": 989,
+      "n_members": 991,
       "n_missing_from_pool": 0,
       "n_present_not_rankable": 1,
-      "n_present_rankable_outside_top500": 483,
+      "n_present_rankable_outside_top500": 485,
       "missing_from_pool": []
     }
   ],
@@ -21183,13 +21325,13 @@
     "kind": "UNIVERSE_COMPLETENESS_GATE",
     "as_of": "2024-12-31T00:00:00+00:00",
     "passed": false,
-    "companyfacts": 985,
-    "rankable": 985,
+    "companyfacts": 987,
+    "rankable": 987,
     "benchmark_source": "World Federation of Exchanges (WFE), \"Market Statistics - February 2025\" (WFE Focus), Total Dec'24 column",
     "benchmark_source_vintage": "2025-01-31",
     "benchmark_low": 3400,
     "benchmark_high": 3700,
-    "coverage_ratio": 0.2897058823529412,
+    "coverage_ratio": 0.2902941176470588,
     "reasons": [
       "COMPANYFACTS_COVERAGE_BELOW_BENCHMARK_LOW_ESTIMATE"
     ],
@@ -21199,8 +21341,8 @@
     "kind": "TOP500_SUFFICIENCY_GATE",
     "as_of": "2024-12-31T00:00:00+00:00",
     "passed": false,
-    "rankable": 985,
-    "cutoff_mcap": 15338412993.883133,
+    "rankable": 987,
+    "cutoff_mcap": 15345686900.79537,
     "n_references_supplied": 2,
     "n_references_usable": 0,
     "references": [
@@ -21284,6 +21426,7 @@
           "TAP",
           "TECH",
           "TFX",
+          "TPR",
           "TSCO",
           "TXT",
           "UDR",
@@ -21305,7 +21448,7 @@
         "name": "RUSSELL1000_IWB_NPORT",
         "source": "SEC Form NPORT-P 0001752724-25-034052 (iShares Russell 1000 ETF), report date 2024-12-31",
         "source_vintage": "2025-02-24",
-        "n_members": 989,
+        "n_members": 991,
         "missing_from_pool": [],
         "present_not_rankable": [
           "OWL"
@@ -21448,6 +21591,7 @@
           "DINO",
           "DJT",
           "DLB",
+          "DNB",
           "DOC",
           "DOCS",
           "DPZ",
@@ -21741,6 +21885,7 @@
           "TKR",
           "TNL",
           "TOL",
+          "TPR",
           "TREX",
           "TRIP",
           "TSCO",
@@ -21796,8 +21941,7 @@
           "ZION"
         ],
         "reasons": [
-          "REFERENCE_MEMBERS_PRESENT_BUT_NOT_RANKABLE",
-          "UNRESOLVED_REFERENCE_HOLDINGS"
+          "REFERENCE_MEMBERS_PRESENT_BUT_NOT_RANKABLE"
         ],
         "passed": false,
         "reference_role": "SUPERSET_REFERENCE",
@@ -21818,46 +21962,7 @@
           "0002078416",
           "0002082866"
         ],
-        "unresolved_reference_holdings": [
-          {
-            "name": "LIBERTY MEDIA CORP - FORMULA ONE GROUP",
-            "cusip": "531229755",
-            "reason": null,
-            "candidates": [
-              "0000869614",
-              "0001082114",
-              "0001355096",
-              "0001507934",
-              "0001560385"
-            ],
-            "name_matches": 0
-          },
-          {
-            "name": "LIBERTY MEDIA CORP - FORMULA ONE GROUP",
-            "cusip": "531229771",
-            "reason": null,
-            "candidates": [
-              "0000869614",
-              "0001082114",
-              "0001355096",
-              "0001507934",
-              "0001560385"
-            ],
-            "name_matches": 0
-          },
-          {
-            "name": "DUN & BRADSTREET HOLDINGS, INC.",
-            "cusip": "26484T106",
-            "reason": "CIK_COLLISION_DISTINCT_CUSIP_ISSUERS",
-            "candidates": [
-              "0000030419",
-              "0001059556",
-              "0001115222",
-              "0001799208"
-            ],
-            "name_matches": 3
-          }
-        ],
+        "unresolved_reference_holdings": [],
         "cik_collisions": {}
       }
     ],
@@ -21956,8 +22061,8 @@
       "passed": false,
       "candidate_pool_complete": false,
       "justified_official_top500": false,
-      "rankable": 985,
-      "listings": 985,
+      "rankable": 987,
+      "listings": 987,
       "eligibility_source": null,
       "source_vintage": null,
       "reasons": [

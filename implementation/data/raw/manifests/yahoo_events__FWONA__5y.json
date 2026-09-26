@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:FWONA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FWONA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T07:51:17.755004+00:00",
+  "sha256": "cd545eb6b8367d1c17392be10829f8a153ec8c8d66e605d078513621da871709",
+  "bytes": 7805,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

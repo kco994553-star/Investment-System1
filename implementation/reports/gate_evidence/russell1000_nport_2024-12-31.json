@@ -777,6 +777,7 @@
     "0001556593",
     "0001557860",
     "0001559720",
+    "0001560385",
     "0001561550",
     "0001562088",
     "0001562401",
@@ -931,6 +932,7 @@
     "0001794515",
     "0001794669",
     "0001796209",
+    "0001799208",
     "0001800227",
     "0001801368",
     "0001802768",
@@ -3940,6 +3942,9 @@
     "0001577916": [
       "PREMIER, INC."
     ],
+    "0001897982": [
+      "ASPEN TECHNOLOGY, INC."
+    ],
     "0001868778": [
       "Informatica Inc"
     ],
@@ -3949,29 +3954,15 @@
     "0001725057": [
       "DAYFORCE, INC."
     ],
+    "0001560385": [
+      "LIBERTY MEDIA CORP - FORMULA ONE GROUP",
+      "LIBERTY MEDIA CORP - FORMULA ONE GROUP"
+    ],
     "0001699838": [
       "CONFLUENT, INC."
     ],
     "0000737758": [
       "THE TORO COMPANY"
-    ],
-    "0001567514": [
-      "Intra-Cellular Therapies Inc"
-    ],
-    "0001378992": [
-      "BERRY GLOBAL GROUP, INC."
-    ],
-    "0001618921": [
-      "WALGREENS BOOTS ALLIANCE, INC."
-    ],
-    "0000037808": [
-      "F.N.B. CORPORATION"
-    ],
-    "0000103379": [
-      "V.F. CORPORATION"
-    ],
-    "0001897982": [
-      "ASPEN TECHNOLOGY, INC."
     ],
     "0001364885": [
       "SPIRIT AEROSYSTEMS HOLDINGS, INC."
@@ -3979,8 +3970,26 @@
     "0001012100": [
       "SEALED AIR CORPORATION"
     ],
+    "0001567514": [
+      "Intra-Cellular Therapies Inc"
+    ],
+    "0001378992": [
+      "BERRY GLOBAL GROUP, INC."
+    ],
     "0000051644": [
       "THE INTERPUBLIC GROUP OF COMPANIES, INC."
+    ],
+    "0001618921": [
+      "WALGREENS BOOTS ALLIANCE, INC."
+    ],
+    "0001799208": [
+      "DUN & BRADSTREET HOLDINGS, INC."
+    ],
+    "0000037808": [
+      "F.N.B. CORPORATION"
+    ],
+    "0000103379": [
+      "V.F. CORPORATION"
     ]
   },
   "member_cusips": {
@@ -6923,6 +6932,9 @@
     "0001577916": [
       "74051N102"
     ],
+    "0001897982": [
+      "29109X106"
+    ],
     "0001868778": [
       "45674M101"
     ],
@@ -6932,29 +6944,15 @@
     "0001725057": [
       "15677J108"
     ],
+    "0001560385": [
+      "531229755",
+      "531229771"
+    ],
     "0001699838": [
       "20717M103"
     ],
     "0000737758": [
       "891092108"
-    ],
-    "0001567514": [
-      "46116X101"
-    ],
-    "0001378992": [
-      "08579W103"
-    ],
-    "0001618921": [
-      "931427108"
-    ],
-    "0000037808": [
-      "302520101"
-    ],
-    "0000103379": [
-      "918204108"
-    ],
-    "0001897982": [
-      "29109X106"
     ],
     "0001364885": [
       "848574109"
@@ -6962,8 +6960,26 @@
     "0001012100": [
       "81211K100"
     ],
+    "0001567514": [
+      "46116X101"
+    ],
+    "0001378992": [
+      "08579W103"
+    ],
     "0000051644": [
       "460690100"
+    ],
+    "0001618921": [
+      "931427108"
+    ],
+    "0001799208": [
+      "26484T106"
+    ],
+    "0000037808": [
+      "302520101"
+    ],
+    "0000103379": [
+      "918204108"
     ]
   },
   "member_methods": {
@@ -7942,20 +7958,22 @@
     "0000072333": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "0001163302": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "0001577916": "CUSIP_ATTESTED_OWNERSHIP_FILING",
+    "0001897982": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "0001868778": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "0001823945": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "0001725057": "CUSIP_ATTESTED_OWNERSHIP_FILING",
+    "0001560385": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "0001699838": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "0000737758": "CUSIP_ATTESTED_OWNERSHIP_FILING",
+    "0001364885": "CUSIP_ATTESTED_OWNERSHIP_FILING",
+    "0001012100": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "0001567514": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "0001378992": "CUSIP_ATTESTED_OWNERSHIP_FILING",
+    "0000051644": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "0001618921": "CUSIP_ATTESTED_OWNERSHIP_FILING",
+    "0001799208": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "0000037808": "CUSIP_ATTESTED_OWNERSHIP_FILING",
-    "0000103379": "CUSIP_ATTESTED_OWNERSHIP_FILING",
-    "0001897982": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT",
-    "0001364885": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT",
-    "0001012100": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT",
-    "0000051644": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT"
+    "0000103379": "CUSIP_ATTESTED_OWNERSHIP_FILING"
   },
   "cusip_attestations": {
     "NORDSTROM, INC.|655664100": {
@@ -8049,6 +8067,20 @@
           "cusip_found": false
         },
         {
+          "cik": "0001030916",
+          "artifact_id": "sec_filing_doc:0001030916:0001086715-10-000051",
+          "filed": "2010-06-18",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001030916",
+          "artifact_id": "sec_filing_doc:0001030916:0001086715-10-000049",
+          "filed": "2010-06-18",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
           "cik": "0001577916",
           "artifact_id": "sec_filing_doc:0001577916:0000354204-24-004728",
           "filed": "2024-10-31",
@@ -8064,7 +8096,7 @@
         "0000929940",
         "0001897982"
       ],
-      "cik": null,
+      "cik": "0001897982",
       "attested": [
         {
           "cik": "0000929940",
@@ -8095,7 +8127,11 @@
           "cusip_found": true
         }
       ],
-      "status": "ATTESTED_2"
+      "status": "UNIQUE_PIT_REGISTRANT_AMONG_ATTESTED",
+      "attested_ciks": [
+        "0000929940",
+        "0001897982"
+      ]
     },
     "Informatica Inc|45674M101": {
       "candidates": [
@@ -8131,6 +8167,55 @@
           "artifact_id": "sec_filing_doc:0001080099:0001013594-15-000173",
           "filed": "2015-02-24",
           "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001080099",
+          "artifact_id": "sec_filing_doc:0001080099:0000891092-15-001252",
+          "filed": "2015-02-17",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001080099",
+          "artifact_id": "sec_filing_doc:0001080099:0001193125-15-043213",
+          "filed": "2015-02-11",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001080099",
+          "artifact_id": "sec_filing_doc:0001080099:0000932471-15-004059",
+          "filed": "2015-02-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001080099",
+          "artifact_id": "sec_filing_doc:0001080099:0000812295-15-000007",
+          "filed": "2015-02-02",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001080099",
+          "artifact_id": "sec_filing_doc:0001080099:0001086364-15-000932",
+          "filed": "2015-01-26",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001080099",
+          "artifact_id": "sec_filing_doc:0001080099:0001013594-15-000029",
+          "filed": "2015-01-26",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001080099",
+          "artifact_id": "sec_filing_doc:0001080099:0000812295-14-000052",
+          "filed": "2014-02-14",
+          "form": "SC 13G/A",
           "cusip_found": false
         },
         {
@@ -8183,6 +8268,55 @@
           "cusip_found": false
         },
         {
+          "cik": "0001655888",
+          "artifact_id": "sec_filing_doc:0001655888:0001140361-23-004126",
+          "filed": "2023-02-02",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001655888",
+          "artifact_id": "sec_filing_doc:0001655888:0001085146-23-000079",
+          "filed": "2023-01-11",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001655888",
+          "artifact_id": "sec_filing_doc:0001655888:0001140361-22-002777",
+          "filed": "2022-01-27",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001655888",
+          "artifact_id": "sec_filing_doc:0001655888:0001085146-22-000302",
+          "filed": "2022-01-25",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001655888",
+          "artifact_id": "sec_filing_doc:0001655888:0001085146-21-000426",
+          "filed": "2021-02-03",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001655888",
+          "artifact_id": "sec_filing_doc:0001655888:0001140361-21-002903",
+          "filed": "2021-02-01",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001655888",
+          "artifact_id": "sec_filing_doc:0001655888:0001140361-20-003414",
+          "filed": "2020-02-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
           "cik": "0001823945",
           "artifact_id": "sec_filing_doc:0001823945:0001418660-24-000018",
           "filed": "2024-11-14",
@@ -8208,6 +8342,55 @@
           "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046978",
           "filed": "2024-11-14",
           "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001858703",
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046977",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001858703",
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046976",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001858703",
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046975",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001858703",
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046974",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001858703",
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046973",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001858703",
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046972",
+          "filed": "2024-11-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001858703",
+          "artifact_id": "sec_filing_doc:0001858703:0001140361-24-046971",
+          "filed": "2024-11-14",
+          "form": "SC 13G",
           "cusip_found": false
         }
       ],
@@ -8246,8 +8429,15 @@
         "0001507934",
         "0001560385"
       ],
-      "cik": null,
-      "attested": [],
+      "cik": "0001560385",
+      "attested": [
+        {
+          "cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0001172661-24-005204",
+          "filed": "2024-11-14",
+          "snippet": "ssuer) Series C Liberty Formula One Common Stock (Title of Class of Securities) 531229755 (CUSIP Number) September 30, 2024 (Date"
+        }
+      ],
       "checked": [
         {
           "cik": "0000869614",
@@ -8267,6 +8457,55 @@
           "cik": "0000869614",
           "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045044",
           "filed": "2024-11-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000869614",
+          "artifact_id": "sec_filing_doc:0000869614:0001193125-24-226917",
+          "filed": "2024-09-26",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000869614",
+          "artifact_id": "sec_filing_doc:0000869614:0001193125-24-226916",
+          "filed": "2024-09-26",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000869614",
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-031242",
+          "filed": "2024-08-12",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000869614",
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-017368",
+          "filed": "2024-05-01",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000869614",
+          "artifact_id": "sec_filing_doc:0000869614:0001493152-24-014985",
+          "filed": "2024-04-17",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000869614",
+          "artifact_id": "sec_filing_doc:0000869614:0001193125-24-089047",
+          "filed": "2024-04-08",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000869614",
+          "artifact_id": "sec_filing_doc:0000869614:0001193125-24-089033",
+          "filed": "2024-04-08",
           "form": "SC 13G/A",
           "cusip_found": false
         },
@@ -8292,6 +8531,55 @@
           "cusip_found": false
         },
         {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0000807985-06-000020",
+          "filed": "2006-02-10",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-060561",
+          "filed": "2005-12-13",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0001047469-05-021261",
+          "filed": "2005-08-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-012145",
+          "filed": "2005-03-21",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-012144",
+          "filed": "2005-03-21",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0000017283-05-000195",
+          "filed": "2005-02-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-005722",
+          "filed": "2005-02-11",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
           "cik": "0001355096",
           "artifact_id": "sec_filing_doc:0001355096:0001999371-24-014391",
           "filed": "2024-11-08",
@@ -8310,6 +8598,55 @@
           "artifact_id": "sec_filing_doc:0001355096:0001546190-24-000007",
           "filed": "2024-02-14",
           "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-24-020112",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001193125-24-033455",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001999371-24-001858",
+          "filed": "2024-02-12",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-23-113407",
+          "filed": "2023-11-01",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001306550-23-009572",
+          "filed": "2023-07-07",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-23-063677",
+          "filed": "2023-05-23",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-23-039282",
+          "filed": "2023-03-30",
+          "form": "SC 13D/A",
           "cusip_found": false
         },
         {
@@ -8334,6 +8671,55 @@
           "cusip_found": false
         },
         {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0001104659-16-161920",
+          "filed": "2016-12-13",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0001013594-16-001341",
+          "filed": "2016-12-09",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0001571049-16-020510",
+          "filed": "2016-12-09",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0000902664-16-008905",
+          "filed": "2016-11-23",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0000902664-16-008859",
+          "filed": "2016-11-17",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0001571049-16-019539",
+          "filed": "2016-11-07",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0001104659-16-131997",
+          "filed": "2016-07-11",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
           "cik": "0001560385",
           "artifact_id": "sec_filing_doc:0001560385:0001897612-24-002030",
           "filed": "2024-12-09",
@@ -8353,9 +8739,16 @@
           "filed": "2024-11-14",
           "form": "SC 13D/A",
           "cusip_found": false
+        },
+        {
+          "cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0001172661-24-005204",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": true
         }
       ],
-      "status": "ATTESTED_0"
+      "status": "UNIQUE"
     },
     "CONFLUENT, INC.|20717M103": {
       "candidates": [
@@ -8436,7 +8829,7 @@
         "0001364885",
         "0001476515"
       ],
-      "cik": null,
+      "cik": "0001364885",
       "attested": [
         {
           "cik": "0001349682",
@@ -8467,7 +8860,11 @@
           "cusip_found": true
         }
       ],
-      "status": "ATTESTED_2"
+      "status": "UNIQUE_PIT_REGISTRANT_AMONG_ATTESTED",
+      "attested_ciks": [
+        "0001349682",
+        "0001364885"
+      ]
     },
     "LIBERTY MEDIA CORP - FORMULA ONE GROUP|531229771": {
       "candidates": [
@@ -8477,13 +8874,19 @@
         "0001507934",
         "0001560385"
       ],
-      "cik": "0000869614",
+      "cik": "0001560385",
       "attested": [
         {
           "cik": "0000869614",
           "artifact_id": "sec_filing_doc:0000869614:0001493152-24-045044",
           "filed": "2024-11-13",
           "snippet": "iberty Formula One Common Stock, par value $0.01 (Title of Class of Securities) 531229771 (CUSIP Number) September 30, 2024 (Date"
+        },
+        {
+          "cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0000932471-24-001022",
+          "filed": "2024-11-12",
+          "snippet": "-Liberty Formula One (Title of Class of Securities) Common Stock (CUSIP Number) 531229771 (Date of Event Which Requires Filing of"
         }
       ],
       "checked": [
@@ -8530,6 +8933,55 @@
           "cusip_found": false
         },
         {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0000807985-06-000020",
+          "filed": "2006-02-10",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-060561",
+          "filed": "2005-12-13",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0001047469-05-021261",
+          "filed": "2005-08-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-012145",
+          "filed": "2005-03-21",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-012144",
+          "filed": "2005-03-21",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0000017283-05-000195",
+          "filed": "2005-02-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001082114",
+          "artifact_id": "sec_filing_doc:0001082114:0001104659-05-005722",
+          "filed": "2005-02-11",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
           "cik": "0001355096",
           "artifact_id": "sec_filing_doc:0001355096:0001999371-24-014391",
           "filed": "2024-11-08",
@@ -8548,6 +9000,55 @@
           "artifact_id": "sec_filing_doc:0001355096:0001546190-24-000007",
           "filed": "2024-02-14",
           "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-24-020112",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001193125-24-033455",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001999371-24-001858",
+          "filed": "2024-02-12",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-23-113407",
+          "filed": "2023-11-01",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001306550-23-009572",
+          "filed": "2023-07-07",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-23-063677",
+          "filed": "2023-05-23",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001355096",
+          "artifact_id": "sec_filing_doc:0001355096:0001104659-23-039282",
+          "filed": "2023-03-30",
+          "form": "SC 13D/A",
           "cusip_found": false
         },
         {
@@ -8572,6 +9073,55 @@
           "cusip_found": false
         },
         {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0001104659-16-161920",
+          "filed": "2016-12-13",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0001013594-16-001341",
+          "filed": "2016-12-09",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0001571049-16-020510",
+          "filed": "2016-12-09",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0000902664-16-008905",
+          "filed": "2016-11-23",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0000902664-16-008859",
+          "filed": "2016-11-17",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0001571049-16-019539",
+          "filed": "2016-11-07",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001507934",
+          "artifact_id": "sec_filing_doc:0001507934:0001104659-16-131997",
+          "filed": "2016-07-11",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
           "cik": "0001560385",
           "artifact_id": "sec_filing_doc:0001560385:0001897612-24-002030",
           "filed": "2024-12-09",
@@ -8591,16 +9141,62 @@
           "filed": "2024-11-14",
           "form": "SC 13D/A",
           "cusip_found": false
+        },
+        {
+          "cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0001172661-24-005204",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0001274173-24-000147",
+          "filed": "2024-11-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0001897612-24-002010",
+          "filed": "2024-11-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0001140361-24-046476",
+          "filed": "2024-11-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0001140361-24-046443",
+          "filed": "2024-11-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0000932471-24-001022",
+          "filed": "2024-11-12",
+          "form": "SC 13G/A",
+          "cusip_found": true
         }
       ],
-      "status": "UNIQUE"
+      "status": "UNIQUE_PIT_REGISTRANT_AMONG_ATTESTED",
+      "attested_ciks": [
+        "0000869614",
+        "0001560385"
+      ]
     },
     "SEALED AIR CORPORATION|81211K100": {
       "candidates": [
         "0000088204",
         "0001012100"
       ],
-      "cik": null,
+      "cik": "0001012100",
       "attested": [
         {
           "cik": "0000088204",
@@ -8631,7 +9227,11 @@
           "cusip_found": true
         }
       ],
-      "status": "ATTESTED_2"
+      "status": "UNIQUE_PIT_REGISTRANT_AMONG_ATTESTED",
+      "attested_ciks": [
+        "0000088204",
+        "0001012100"
+      ]
     },
     "Intra-Cellular Therapies Inc|46116X101": {
       "candidates": [
@@ -8688,7 +9288,7 @@
         "0000051644",
         "0000944048"
       ],
-      "cik": null,
+      "cik": "0000051644",
       "attested": [
         {
           "cik": "0000051644",
@@ -8719,7 +9319,11 @@
           "cusip_found": true
         }
       ],
-      "status": "ATTESTED_2"
+      "status": "UNIQUE_PIT_REGISTRANT_AMONG_ATTESTED",
+      "attested_ciks": [
+        "0000051644",
+        "0000944048"
+      ]
     },
     "WALGREENS BOOTS ALLIANCE, INC.|931427108": {
       "candidates": [
@@ -8767,7 +9371,7 @@
         "0001115222",
         "0001799208"
       ],
-      "cik": null,
+      "cik": "0001799208",
       "attested": [
         {
           "cik": "0001115222",
@@ -8805,6 +9409,55 @@
           "cusip_found": false
         },
         {
+          "cik": "0000030419",
+          "artifact_id": "sec_filing_doc:0000030419:0001521536-13-000135",
+          "filed": "2013-02-13",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000030419",
+          "artifact_id": "sec_filing_doc:0000030419:0001104659-13-009590",
+          "filed": "2013-02-12",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000030419",
+          "artifact_id": "sec_filing_doc:0000030419:0001193125-12-508894",
+          "filed": "2012-12-20",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000030419",
+          "artifact_id": "sec_filing_doc:0000030419:0000919574-12-006693",
+          "filed": "2012-12-11",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000030419",
+          "artifact_id": "sec_filing_doc:0000030419:0000919574-12-003904",
+          "filed": "2012-06-01",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000030419",
+          "artifact_id": "sec_filing_doc:0000030419:0000038777-12-000175",
+          "filed": "2012-05-07",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000030419",
+          "artifact_id": "sec_filing_doc:0000030419:0000038777-12-000160",
+          "filed": "2012-03-14",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
           "cik": "0001059556",
           "artifact_id": "sec_filing_doc:0001059556:0000902664-24-001652",
           "filed": "2024-02-14",
@@ -8826,6 +9479,55 @@
           "cusip_found": false
         },
         {
+          "cik": "0001059556",
+          "artifact_id": "sec_filing_doc:0001059556:0000902664-23-005905",
+          "filed": "2023-12-18",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001059556",
+          "artifact_id": "sec_filing_doc:0001059556:0000902664-23-001680",
+          "filed": "2023-02-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001059556",
+          "artifact_id": "sec_filing_doc:0001059556:0001104659-23-016504",
+          "filed": "2023-02-09",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001059556",
+          "artifact_id": "sec_filing_doc:0001059556:0001306550-23-005191",
+          "filed": "2023-01-31",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001059556",
+          "artifact_id": "sec_filing_doc:0001059556:0001104659-22-018124",
+          "filed": "2022-02-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001059556",
+          "artifact_id": "sec_filing_doc:0001059556:0000834237-22-004624",
+          "filed": "2022-02-01",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0001059556",
+          "artifact_id": "sec_filing_doc:0001059556:0001104659-21-018660",
+          "filed": "2021-02-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
           "cik": "0001115222",
           "artifact_id": "sec_filing_doc:0001115222:0001422848-24-000125",
           "filed": "2024-02-09",
@@ -8840,7 +9542,11 @@
           "cusip_found": true
         }
       ],
-      "status": "ATTESTED_2"
+      "status": "UNIQUE_PIT_REGISTRANT_AMONG_ATTESTED",
+      "attested_ciks": [
+        "0001115222",
+        "0001799208"
+      ]
     },
     "F.N.B. CORPORATION|302520101": {
       "candidates": [
@@ -8895,6 +9601,55 @@
           "cusip_found": false
         },
         {
+          "cik": "0000103379",
+          "artifact_id": "sec_filing_doc:0000103379:0001256484-24-000007",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000103379",
+          "artifact_id": "sec_filing_doc:0000103379:0001104659-24-022237",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000103379",
+          "artifact_id": "sec_filing_doc:0000103379:0001193125-24-033327",
+          "filed": "2024-02-13",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000103379",
+          "artifact_id": "sec_filing_doc:0000103379:0001193125-24-029369",
+          "filed": "2024-02-09",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000103379",
+          "artifact_id": "sec_filing_doc:0000103379:0001086364-24-005193",
+          "filed": "2024-01-29",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000103379",
+          "artifact_id": "sec_filing_doc:0000103379:0000093751-24-000244",
+          "filed": "2024-01-25",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000103379",
+          "artifact_id": "sec_filing_doc:0000103379:0000093751-23-000542",
+          "filed": "2023-03-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
           "cik": "0000764811",
           "artifact_id": "sec_filing_doc:0000764811:0001144204-16-130227",
           "filed": "2016-10-28",
@@ -8913,6 +9668,48 @@
           "artifact_id": "sec_filing_doc:0000764811:0001144204-15-067569",
           "filed": "2015-11-23",
           "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000764811",
+          "artifact_id": "sec_filing_doc:0000764811:0001144204-15-067564",
+          "filed": "2015-11-23",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000764811",
+          "artifact_id": "sec_filing_doc:0000764811:0001144204-14-076461",
+          "filed": "2014-12-30",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000764811",
+          "artifact_id": "sec_filing_doc:0000764811:0001144204-14-076455",
+          "filed": "2014-12-30",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000764811",
+          "artifact_id": "sec_filing_doc:0000764811:0001193125-13-281112",
+          "filed": "2013-07-02",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000764811",
+          "artifact_id": "sec_filing_doc:0000764811:0000893750-11-000082",
+          "filed": "2011-10-31",
+          "form": "SC 13D",
+          "cusip_found": false
+        },
+        {
+          "cik": "0000764811",
+          "artifact_id": "sec_filing_doc:0000764811:0000893750-11-000080",
+          "filed": "2011-10-31",
+          "form": "SC 13D",
           "cusip_found": false
         },
         {
@@ -8959,27 +9756,6 @@
   },
   "unresolved_holdings": [
     {
-      "name": "LIBERTY MEDIA CORP - FORMULA ONE GROUP",
-      "cusip": "531229755",
-      "isin": "US5312297550",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 14400846.56,
-      "name_matches": 0,
-      "candidates": [
-        "0000869614",
-        "0001082114",
-        "0001355096",
-        "0001507934",
-        "0001560385"
-      ],
-      "cusip_attestation": "ATTESTED_0",
-      "pit_registrant_candidates": [
-        "0001355096",
-        "0001560385"
-      ]
-    },
-    {
       "name": "ESC GCI LIBERTY INC SR",
       "cusip": "361ESC049",
       "isin": "US361ESC0496",
@@ -8989,49 +9765,6 @@
       "name_matches": 0,
       "candidates": [],
       "pit_registrant_candidates": []
-    },
-    {
-      "name": "LIBERTY MEDIA CORP - FORMULA ONE GROUP",
-      "cusip": "531229771",
-      "isin": "US5312297717",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 1310855.92,
-      "name_matches": 0,
-      "candidates": [
-        "0000869614",
-        "0001082114",
-        "0001355096",
-        "0001507934",
-        "0001560385"
-      ],
-      "cusip_attestation": "UNIQUE",
-      "pit_registrant_candidates": [
-        "0001355096",
-        "0001560385"
-      ]
-    },
-    {
-      "name": "DUN & BRADSTREET HOLDINGS, INC.",
-      "cusip": "26484T106",
-      "isin": "US26484T1060",
-      "asset_cat": "EC",
-      "country": "US",
-      "value": 2788273.88,
-      "name_matches": 3,
-      "candidates": [
-        "0000030419",
-        "0001059556",
-        "0001115222",
-        "0001799208"
-      ],
-      "reason": "CIK_COLLISION_DISTINCT_CUSIP_ISSUERS",
-      "collided_with": "0001059556",
-      "cusip_attestation": "ATTESTED_2",
-      "pit_registrant_candidates": [
-        "0001059556",
-        "0001799208"
-      ]
     }
   ],
   "members_not_in_pool_without_current_ticker": [],

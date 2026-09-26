@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001030916:0001086715-10-000049",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1030916/000108671510000049/schedule13djasmine.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:50:40.565420+00:00",
+  "sha256": "c2c99dbf00586a4ed126d0cc698fb87da9701d615854b3f202e571ce305387d2",
+  "bytes": 48686,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

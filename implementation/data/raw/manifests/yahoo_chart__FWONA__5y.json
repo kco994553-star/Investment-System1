@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FWONA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FWONA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T07:51:17.530544+00:00",
+  "sha256": "9f944c618456c0782d55c2be74423b995b8a5d2c997eba0bcc2599b2717fdfa2",
+  "bytes": 133724,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001560385:0001897612-24-002010",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1560385/000189761224002010/llyvk13gsep24.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:50:59.922683+00:00",
+  "sha256": "34a9fa8dd2aa0a9cdf1463e87a90885c49df691a70cfff108bc835ae8b895bdd",
+  "bytes": 4940,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

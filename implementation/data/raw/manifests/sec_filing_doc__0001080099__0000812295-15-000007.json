@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001080099:0000812295-15-000007",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1080099/000081229515000007/infa1302015.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:50:41.899263+00:00",
+  "sha256": "5b26e569f9d9ef07dbeb9956830f3daee47ae6a00cbe96811d04dd29c606a739",
+  "bytes": 6505,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

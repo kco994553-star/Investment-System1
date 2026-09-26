@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001560385:0000932471-24-001022",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1560385/000093247124001022/UnitedStates_13G__LibertyMed.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:51:01.233981+00:00",
+  "sha256": "e97aa1311b424692df7d75bfe80e27f3f41b0c308e18ea6a182f8427da799e1e",
+  "bytes": 5022,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000103379:0001256484-24-000007",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/103379/000125648424000007/VFcorp-s13g-2023-12-a3.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:51:06.719262+00:00",
+  "sha256": "fe19ba3368487b0f1e17ca3df7e4a8807472f780fcb0738cb987cc076b3d6fc3",
+  "bytes": 5326,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

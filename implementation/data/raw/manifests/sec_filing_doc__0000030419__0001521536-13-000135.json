@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000030419:0001521536-13-000135",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/30419/000152153613000135/q1100970_mittleman13g-dexone.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:51:01.717983+00:00",
+  "sha256": "668c4628c4e235ea31eb19d848ff2f95074a92152cd936f3c6fa6fea60708d42",
+  "bytes": 127050,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

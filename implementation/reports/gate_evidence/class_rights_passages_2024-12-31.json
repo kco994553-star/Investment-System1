@@ -10795,6 +10795,1566 @@
      "unit": "usd"
     }
    ]
+  },
+  "OWL": {
+   "cik": "0001823945",
+   "cover_source": "xbrl_instance:0001823945:0001823945-24-000064",
+   "entity_name": "BLUE OWL CAPITAL INC.",
+   "classes": [
+    {
+     "member": "CommonClassAMember",
+     "shares": 568430654.0,
+     "date": "2024-10-25",
+     "symbol": "OWL",
+     "price": 23.389999389648438
+    },
+    {
+     "member": "CommonClassBMember",
+     "shares": 0.0,
+     "date": "2024-10-25",
+     "symbol": null,
+     "price": null
+    },
+    {
+     "member": "CommonClassCMember",
+     "shares": 612974223.0,
+     "date": "2024-10-25",
+     "symbol": null,
+     "price": null
+    },
+    {
+     "member": "CommonClassDMember",
+     "shares": 312115409.0,
+     "date": "2024-10-25",
+     "symbol": null,
+     "price": null
+    }
+   ],
+   "unlisted_members": [
+    "CommonClassBMember",
+    "CommonClassCMember",
+    "CommonClassDMember"
+   ],
+   "phrases": [
+    "Class B Common Stock",
+    "Class B Ordinary Shares",
+    "Class B Shares",
+    "Class B common stock",
+    "Class B ordinary shares",
+    "Class B shares",
+    "Class C Common Stock",
+    "Class C Ordinary Shares",
+    "Class C Shares",
+    "Class C common stock",
+    "Class C ordinary shares",
+    "Class C shares",
+    "Class D Common Stock",
+    "Class D Ordinary Shares",
+    "Class D Shares",
+    "Class D common stock",
+    "Class D ordinary shares",
+    "Class D shares"
+   ],
+   "documents": [
+    {
+     "form": "10-K",
+     "filed": "2024-02-23",
+     "accn": "0001823945-24-000016",
+     "primary_document": "owl-20231231.htm",
+     "artifact_id": "sec_filing_doc:0001823945:0001823945-24-000016",
+     "passages": [
+      {
+       "offset": 59995,
+       "text": "Class B Shares and Class D Shares collectively represent 80% of the total voting power of all shares."
+      },
+      {
+       "offset": 329605,
+       "text": "Certain equity holders have exchanged, and may in the future exchange, their Common Units, together with the cancellation of an equal number of Class C Shares or Class D Shares, for Class A Shares or Class B Shares, respectively, or cash pursuant to the Blue Owl Operating Partnership Agreements and the Exchange Agreement, subject to certain conditions and transfer restrictions as set forth therein and in the Investor Rights Agreement."
+      },
+      {
+       "offset": 474320,
+       "text": "Consolidated and Combined Statements of Changes in Stockholders\u2019 Equity (Dollars in Thousands, Except Per Share Data) Year Ended December 31, 2023 2022 2021 Members\u2019 Deficit Prior to the Business Combination Beginning balance $ \u2014 $ \u2014 $ ( 507,687 ) Distributions \u2014 \u2014 ( 103,143 ) Comprehensive income (loss) prior to the Business Combination Date \u2014 \u2014 74,259 Transfer of predecessor members\u2019 deficit to additional paid-in capital and noncontrolling interests \u2014 \u2014 536,571 Ending Balance $ \u2014 $ \u2014 $ \u2014 Class A Shares Par Value Beginning balance $ 45 $ 40 $ \u2014 Impact of the Business Combination \u2014 \u2014 32 Share issuance in connection with Strategic Revenue-Share Purchase \u2014 \u2014 3 Settlement of Earnout Securities "
+      },
+      {
+       "offset": 479880,
+       "text": "13 Number of Class A Shares Beginning balance 445,131,351 404,919,411 \u2014 Impact of the Business Combination \u2014 \u2014 320,005,258 Share issuance in connection with Strategic Revenue-Share Purchase \u2014 \u2014 29,701,013 Class A Share repurchases \u2014 ( 7,637,877 ) \u2014 Shares delivered on vested RSUs 1,310,137 329,768 \u2014 Settlement of Earnout Securities \u2014 \u2014 14,990,864 Class C Shares and Common Units exchanged for Class A Shares 17,983,898 45,363,695 40,222,143 Exercise of warrants \u2014 2,156,354 133 Ending Balance 464,425,386 445,131,351 404,919,411 Number of Class C Shares Beginning balance 629,402,505 674,766,200 \u2014 Impact of the Business Combination \u2014 \u2014 628,380,707 Settlement of Earnout Securities \u2014 \u2014 60,533,306 C"
+      },
+      {
+       "offset": 489952,
+       "text": "As of December 31, 2023, the Class A Shares and Class C Shares (collectively, the \u201cLow-Vote Shares\u201d) represent a combined 20 % of the total voting power of all shares."
+      },
+      {
+       "offset": 490403,
+       "text": "As of December 31, 2023, the Class B Shares and Class D Shares (collectively, the \u201cHigh-Vote Shares\u201d) represent a combined 80 % of the total voting power of all shares."
+      },
+      {
+       "offset": 490893,
+       "text": "Common Units (as defined below) held by certain senior members of management (\u201cPrincipals\u201d) are exchangeable on a one -for-one basis for Class B Shares."
+      },
+      {
+       "offset": 491590,
+       "text": "The Class C Shares are Low-Vote Shares as described above."
+      },
+      {
+       "offset": 492168,
+       "text": "The Class D Shares are High-Vote Shares as described above."
+      },
+      {
+       "offset": 495833,
+       "text": "Subject to certain restrictions, Common Units are exchangeable on a one -for-one basis for either Class A Shares (if held by a non-Principal) or Class B Shares (if held by a Principal)."
+      },
+      {
+       "offset": 496545,
+       "text": "Upon an exchange of Common Units for an equal number of Class A Shares or Class B Shares, a corresponding number of Class C Shares or Class D Shares, respectively, will be cancelled."
+      },
+      {
+       "offset": 499020,
+       "text": "As a result, (i) 7,495,432 Seller Earnout Units underlying an equal number of Series E-1 Class E Shares were converted into an equal number of GP Units, (ii) 42,504,530 Seller Earnout Units were converted into an equal number of Common Units, and (iii) 42,504,530 non-economic, voting shares of the Registrant were issued to the holders of the converted Common Units ( 30,266,653 Class C Shares and 12,237,877 Class D Shares)."
+      },
+      {
+       "offset": 499535,
+       "text": "As a result, (i) 7,495,432 Seller Earnout Units underlying an equal number of Series E-2 Class E Shares were converted into an equal number of GP Units, (ii) 42,504,530 Seller Earnout Units were converted into an equal number of Common Units, and (iii) 42,504,530 non-economic, voting shares of the Registrant were issued to the holders of the converted Common Units ( 30,266,653 Class C Shares and 12,237,877 Class D Shares)."
+      },
+      {
+       "offset": 503879,
+       "text": "Common Unit Exchanges From time to time, the Company exchanges Common Units and Class C Shares for an equal number of Class A Shares."
+      },
+      {
+       "offset": 612115,
+       "text": "Basic Diluted Class A Shares (1) Included Included Class B Shares None outstanding None outstanding Class C Shares and Class D Shares Non-economic voting shares of the Registrant Non-economic voting shares of the Registrant Vested RSUs (1) Contingently issuable shares Contingently issuable shares Unvested RSUs Excluded Treasury stock method Warrants (2) Excluded Treasury stock method Compensation-classified Wellfleet Earnout Shares (3) Excluded Excluded Contingent consideration-classified Wellfleet Earnout Shares (3) Excluded Excluded Potentially Dilutive Instruments of the Blue Owl Operating Group: Vested Common Units and Incentive Units (4) Excluded If-converted method Unvested Incentive U"
+      }
+     ]
+    },
+    {
+     "form": "10-Q",
+     "filed": "2024-11-06",
+     "accn": "0001823945-24-000064",
+     "primary_document": "owl-20240930.htm",
+     "artifact_id": "sec_filing_doc:0001823945:0001823945-24-000064",
+     "passages": [
+      {
+       "offset": 53514,
+       "text": "Class B Shares and Class D Shares collectively represent 80% of the total voting power of all shares."
+      },
+      {
+       "offset": 61464,
+       "text": "6 million in Common Units and corresponding Class C Shares and approximately $203."
+      },
+      {
+       "offset": 163821,
+       "text": "Consolidated Statements of Changes in Stockholders\u2019 Equity (Unaudited) (Dollars in Thousands, Except Per Share Data) Three Months Ended September 30, Nine Months Ended September 30, 2024 2023 2024 2023 Class A Shares Par Value Beginning balance $ 54 $ 45 $ 46 $ 45 Shares delivered on vested RSUs \u2014 \u2014 1 \u2014 Class A Shares issued in connection with Prima Acquisition \u2014 \u2014 1 \u2014 Class A Shares issued in connection with Kuvare Acquisition 2 \u2014 2 \u2014 Class C Shares and Common Units exchanged for Class A Shares 1 1 7 1 Ending Balance $ 57 $ 46 $ 57 $ 46 Class C Shares Par Value Beginning balance $ 59 $ 63 $ 63 $ 63 Settlement of Oak Street Earnout Securities \u2014 \u2014 1 1 Common Units and Class C Shares issued in"
+      },
+      {
+       "offset": 167615,
+       "text": "41 Number of Class A Shares Beginning balance 537,618,016 454,557,594 464,425,386 445,131,351 Shares delivered on vested RSUs 1,192,011 485,639 2,511,026 992,489 Class A Shares issued in connection with Prima Acquisition \u2014 \u2014 6,352,047 \u2014 Class A Shares issued in connection with Kuvare Acquisition 23,519,636 \u2014 23,519,636 \u2014 Class C Shares and Common Units exchanged for Class A Shares 4,085,924 543,557 68,201,817 9,462,950 Class D Shares and Common Units exchanged for Class A Shares 1,838,539 \u2014 3,244,214 \u2014 Ending Balance 568,254,126 455,586,790 568,254,126 455,586,790 Number of Class C Shares Beginning balance 586,663,972 633,520,277 632,486,822 629,402,505 Common Units and Class C Shares issued"
+      },
+      {
+       "offset": 176824,
+       "text": "As of September 30, 2024, the Class A Shares and Class C Shares (collectively, the \u201cLow-Vote Shares\u201d) represent a combined 20 % of the total voting power of all shares."
+      },
+      {
+       "offset": 177177,
+       "text": "As of September 30, 2024, the Class B Shares and Class D Shares (collectively, the \u201cHigh-Vote Shares\u201d) represent a combined 80 % of the total voting power of all shares."
+      },
+      {
+       "offset": 177891,
+       "text": "The Class C Shares are Low-Vote Shares as described above."
+      },
+      {
+       "offset": 178469,
+       "text": "The Class D Shares are High-Vote Shares as described above."
+      },
+      {
+       "offset": 180698,
+       "text": "Subject to certain restrictions, Common Units are exchangeable on a one -for-one basis for either Class A Shares (if held by a non-Principal) or Class B Shares (if held by a Principal)."
+      },
+      {
+       "offset": 181296,
+       "text": "Upon an exchange of Common Units for an equal number of Class A Shares or Class B Shares, a corresponding number of Class C Shares or Class D Shares, respectively, will be cancelled."
+      },
+      {
+       "offset": 184050,
+       "text": "The following table presents RSUs withheld to satisfy tax withholding obligations during each of the indicated periods: Three Months Ended September 30, Nine Months Ended September 30, 2024 2023 2024 2023 Number of RSUs withheld to satisfy tax withholding obligations 950,196 542,167 1,951,014 901,113 Acquisitions-Related Earnouts In connection with the Oak Street Acquisition, the Company agreed to make additional payments of cash (\u201cOak Street Cash Earnout\u201d) and Common Units and corresponding Class C Shares (collectively, the \u201cOak Street Earnout Units\u201d and collectively with the Oak Street Cash Earnout, the \u201cOak Street Earnouts\u201d) in two tranches upon the occurrence of certain \u201cOak Street Trigg"
+      },
+      {
+       "offset": 186430,
+       "text": "Common Unit Exchanges From time to time, the Company exchanges Common Units and Class C Shares for an equal number of Class A Shares."
+      },
+      {
+       "offset": 194189,
+       "text": "ACQUISITIONS AND INTANGIBLE ASSETS, NET Prima Acquisition The following table presents the consideration and net identifiable assets acquired and goodwill, subject to post-closing adjustments, related to the Prima Acquisition: (dollars in thousands) Consideration Equity consideration (1) $ 137,022 Cash consideration (2) 27,696 Earnout consideration (3) 18,600 Total Consideration $ 183,318 Net Identifiable Assets Acquired and Goodwill Assets acquired: Cash and cash equivalents $ 158 Due from related parties 2,005 Operating lease assets 456 Deferred tax assets 4,243 Intangible assets - Investment management agreements 108,000 Other assets, net 302 Total assets acquired 115,164 Liabilities assu"
+      },
+      {
+       "offset": 195232,
+       "text": "The value of the Common Units was based on the price of the Company\u2019s Class A Shares, as Common Units are exchangeable on a one-to-one basis for Class A Shares."
+      },
+      {
+       "offset": 197510,
+       "text": "The Prima Earnouts will be settled in Class A Shares and Common Units with corresponding Class C Shares."
+      },
+      {
+       "offset": 201524,
+       "text": "(2) Represents Common Units issued to sellers at fair value, which was based on the price of the Company\u2019s Class A Shares, as Common Units are exchangeable on a one-to-one basis for Class A Shares."
+      },
+      {
+       "offset": 204028,
+       "text": "The Atalaya Earnouts will be paid to sellers in the form of Common Units with corresponding Class C Shares."
+      },
+      {
+       "offset": 238365,
+       "text": "The A&R 2021 Equity Incentive Plan, among other things, (i) increased the number of Class A Shares authorized for issuance under the previously amended Equity Incentive 2021 Plan from 101,230,522 shares to 171,930,614 shares and (ii) added an \u201cevergreen\u201d provision that provides for an automatic increase to the total number of Class A Shares subject to the A&R 2021 Equity Incentive Plan on the first day of each fiscal year beginning in calendar year 2025, and ending in and including 2034, by a number of Class A Shares equal to the positive difference, if any, of (a) 5 % of the aggregate number of Class A Shares and Class B Shares, in each case, outstanding on the last day of the immediately p"
+      },
+      {
+       "offset": 245053,
+       "text": "Basic Diluted Class A Shares (1) Included Included Class B Shares None outstanding None outstanding Class C Shares and Class D Shares Non-economic voting shares of the Registrant Non-economic voting shares of the Registrant Vested RSUs (1) Contingently issuable shares Contingently issuable shares Unvested RSUs Excluded Treasury stock method Warrants (2) Excluded Treasury stock method Wellfleet Earnout Shares (3) Excluded Excluded Potentially Dilutive Instruments of the Blue Owl Operating Group: Vested Common Units and Incentive Units (4) Excluded If-converted method Unvested Incentive Units (4) Excluded The Company first applies the treasury stock method to determine the number of units that"
+      },
+      {
+       "offset": 258455,
+       "text": "6 million in Common Units and corresponding Class C Shares and approximately $ 203."
+      }
+     ]
+    }
+   ],
+   "cover_instance_unit_facts": [
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 5878962000.0,
+     "date": "2024-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 5277931000.0,
+     "date": "2023-12-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": 112120000.0,
+     "date": "2024-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": 74163000.0,
+     "date": "2023-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": 395155000.0,
+     "date": "2024-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": 162078000.0,
+     "date": "2023-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToNoncontrollingInterest",
+     "value": 69519000.0,
+     "date": "2024-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToNoncontrollingInterest",
+     "value": 48402000.0,
+     "date": "2023-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToNoncontrollingInterest",
+     "value": 260550000.0,
+     "date": "2024-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToNoncontrollingInterest",
+     "value": 103299000.0,
+     "date": "2023-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 54000.0,
+     "date": "2024-06-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 45000.0,
+     "date": "2023-06-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 46000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 45000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueConversionOfUnits",
+     "value": 1000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueConversionOfUnits",
+     "value": 1000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueConversionOfUnits",
+     "value": 7000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueConversionOfUnits",
+     "value": 1000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 57000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 46000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 57000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 46000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 59000.0,
+     "date": "2024-06-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 63000.0,
+     "date": "2023-06-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 63000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 63000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueSettlementOfEarnoutUnits",
+     "value": 1000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueSettlementOfEarnoutUnits",
+     "value": 1000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueConversionOfUnits",
+     "value": -1000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueConversionOfUnits",
+     "value": -7000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueConversionOfUnits",
+     "value": -1000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueVestingOfCommonUnits",
+     "value": 1000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueVestingOfCommonUnits",
+     "value": 1000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueConversionOfConvertibleSecurities",
+     "value": 1000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueConversionOfConvertibleSecurities",
+     "value": 1000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 61000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 64000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 61000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 64000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 32000.0,
+     "date": "2024-06-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 32000.0,
+     "date": "2023-06-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 32000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 32000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueConversionOfUnits",
+     "value": -1000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodValueConversionOfUnits",
+     "value": -1000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 31000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 32000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 31000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 32000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2729472000.0,
+     "date": "2024-06-30",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2359830000.0,
+     "date": "2023-06-30",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2410982000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2293903000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestIncreaseDecreaseFromReallocation",
+     "value": 67064000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestIncreaseDecreaseFromReallocation",
+     "value": -8476000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestIncreaseDecreaseFromReallocation",
+     "value": -168801000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestIncreaseDecreaseFromReallocation",
+     "value": -82727000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3057762000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2378799000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3057762000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2378799000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -982742000.0,
+     "date": "2024-06-30",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -788525000.0,
+     "date": "2023-06-30",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -882884000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -689345000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 29805000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 15109000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 88841000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 36285000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -1054156000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -837126000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -1054156000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -837126000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2003755000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 1541815000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2003755000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 1541815000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3471271000.0,
+     "date": "2024-06-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3800075000.0,
+     "date": "2023-06-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3749692000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3944188000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestIncreaseFromSubsidiaryEquityIssuance",
+     "value": 8323000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestIncreaseFromSubsidiaryEquityIssuance",
+     "value": 15700000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestIncreaseFromSubsidiaryEquityIssuance",
+     "value": 23297000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestIncreaseFromSubsidiaryEquityIssuance",
+     "value": 35477000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestDecreaseFromDistributionsToNoncontrollingInterestHolders",
+     "value": 179073000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestDecreaseFromDistributionsToNoncontrollingInterestHolders",
+     "value": 139176000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestDecreaseFromDistributionsToNoncontrollingInterestHolders",
+     "value": 558251000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestDecreaseFromDistributionsToNoncontrollingInterestHolders",
+     "value": 406334000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestIncreaseDecreaseFromReallocation",
+     "value": -67064000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestIncreaseDecreaseFromReallocation",
+     "value": 8477000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestIncreaseDecreaseFromReallocation",
+     "value": 168801000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestIncreaseDecreaseFromReallocation",
+     "value": 82727000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 69519000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 48402000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 260550000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 103299000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3875207000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3776409000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3875207000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3776409000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 5878962000.0,
+     "date": "2024-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 5318224000.0,
+     "date": "2023-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 5878962000.0,
+     "date": "2024-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 5318224000.0,
+     "date": "2023-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfCommonUnitsExchanged",
+     "value": 4085924.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfCommonUnitsExchanged",
+     "value": 543557.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfCommonUnitsExchanged",
+     "value": 68201817.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfCommonUnitsExchanged",
+     "value": 9462950.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities",
+     "value": 1838539.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities",
+     "value": 3244214.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfCommonUnitsExchanged",
+     "value": -4085924.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfCommonUnitsExchanged",
+     "value": -543557.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfCommonUnitsExchanged",
+     "value": -68201817.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfCommonUnitsExchanged",
+     "value": -9462950.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesVestedCommonUnits",
+     "value": 8650162.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesVestedCommonUnits",
+     "value": 1046973.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesVestedCommonUnits",
+     "value": 12333157.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesVestedCommonUnits",
+     "value": 1046973.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities",
+     "value": 1730000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities",
+     "value": 1370000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities",
+     "value": 1730000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities",
+     "value": 1370000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesSettlementOfOakStreetEarnoutUnits",
+     "value": 13037165.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesSettlementOfOakStreetEarnoutUnits",
+     "value": 13037165.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfCommonUnitsExchanged",
+     "value": -1838539.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfCommonUnitsExchanged",
+     "value": -3244214.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities",
+     "value": -1730000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities",
+     "value": -1370000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities",
+     "value": -1730000.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "StockIssuedDuringPeriodSharesConversionOfConvertibleSecurities",
+     "value": -1370000.0,
+     "date": "2023-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect",
+     "value": 11742000.0,
+     "date": "2024-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect",
+     "value": 8616000.0,
+     "date": "2023-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "CommonStockNumberOfSharesIssuedForEachCommonUnitHeld",
+     "value": 1.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassCMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "CommonStockNumberOfSharesIssuedForEachCommonUnitHeld",
+     "value": 1.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "CommonUnitOutstanding",
+     "value": 568254126.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=GeneralPartnerUnitsMember",
+      "LegalEntityAxis=BlueOwlOperatingGroupMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "CommonUnitOutstanding",
+     "value": 925089632.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonUnitsMember",
+      "LegalEntityAxis=BlueOwlOperatingGroupMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "CommonUnitOutstanding",
+     "value": 26235408.0,
+     "date": "2024-09-30",
+     "dims": [
+      "StatementClassOfStockAxis=IncentiveUnitsMember",
+      "LegalEntityAxis=BlueOwlOperatingGroupMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "CommonUnitsLimitedPartnersRightToExchangeConversionRatio",
+     "value": 1.0,
+     "date": "2024-09-30",
+     "dims": [],
+     "unit": "number"
+    },
+    {
+     "concept": "CommonUnitsLimitedPartnersRightToExchangeConversionRatio",
+     "value": 1.0,
+     "date": "2024-06-13",
+     "dims": [
+      "PlanNameAxis=A2021OmnibusEquityIncentivePlanMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "RightOfUseAssetObtainedInExchangeForOperatingLeaseLiability",
+     "value": 9938000.0,
+     "date": "2024-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "RightOfUseAssetObtainedInExchangeForOperatingLeaseLiability",
+     "value": 1361000.0,
+     "date": "2023-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "RightOfUseAssetObtainedInExchangeForOperatingLeaseLiability",
+     "value": 33430000.0,
+     "date": "2024-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "RightOfUseAssetObtainedInExchangeForOperatingLeaseLiability",
+     "value": 79150000.0,
+     "date": "2023-09-30",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "CommonUnitsLimitedPartnersRightToExchangeConversionRatio",
+     "value": 1.0,
+     "date": "2024-09-30",
+     "dims": [],
+     "unit": "number"
+    },
+    {
+     "concept": "CommonUnitsLimitedPartnersRightToExchangeConversionRatio",
+     "value": 1.0,
+     "date": "2024-06-13",
+     "dims": [
+      "PlanNameAxis=A2021OmnibusEquityIncentivePlanMember"
+     ],
+     "unit": "number"
+    }
+   ]
   }
  }
 }

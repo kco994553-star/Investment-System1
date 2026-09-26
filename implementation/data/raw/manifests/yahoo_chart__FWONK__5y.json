@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:FWONK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/FWONK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T07:51:54.948898+00:00",
+  "sha256": "dcdb8a13dbe9c8b22ed70bb4f763640badd3ea5e2abbacef98c6854a9391cbde",
+  "bytes": 133828,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -3254,6 +3254,13 @@
     "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
     "reference_name": "PREMIER, INC."
   },
+  "r1000:0001897982": {
+    "yahoo": "AZPN",
+    "cik": "0001897982",
+    "cik_method": "CUSIP_ATTESTED_OWNERSHIP_FILING",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "ASPEN TECHNOLOGY, INC."
+  },
   "r1000:0001868778": {
     "yahoo": "INFA",
     "cik": "0001868778",
@@ -3275,6 +3282,13 @@
     "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
     "reference_name": "DAYFORCE, INC."
   },
+  "r1000:0001560385": {
+    "yahoo": "FWONA",
+    "cik": "0001560385",
+    "cik_method": "CUSIP_ATTESTED_OWNERSHIP_FILING",
+    "symbol_basis": "SEC_TICKERS_CURRENT",
+    "reference_name": "LIBERTY MEDIA CORP - FORMULA ONE GROUP"
+  },
   "r1000:0001699838": {
     "yahoo": "CFLT",
     "cik": "0001699838",
@@ -3288,6 +3302,20 @@
     "cik_method": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "symbol_basis": "SEC_TICKERS_CURRENT",
     "reference_name": "THE TORO COMPANY"
+  },
+  "r1000:0001364885": {
+    "yahoo": "SPR",
+    "cik": "0001364885",
+    "cik_method": "CUSIP_ATTESTED_OWNERSHIP_FILING",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "SPIRIT AEROSYSTEMS HOLDINGS, INC."
+  },
+  "r1000:0001012100": {
+    "yahoo": "SEE",
+    "cik": "0001012100",
+    "cik_method": "CUSIP_ATTESTED_OWNERSHIP_FILING",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "SEALED AIR CORPORATION"
   },
   "r1000:0001567514": {
     "yahoo": "ITCI",
@@ -3303,12 +3331,26 @@
     "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
     "reference_name": "BERRY GLOBAL GROUP, INC."
   },
+  "r1000:0000051644": {
+    "yahoo": "IPG",
+    "cik": "0000051644",
+    "cik_method": "CUSIP_ATTESTED_OWNERSHIP_FILING",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "THE INTERPUBLIC GROUP OF COMPANIES, INC."
+  },
   "r1000:0001618921": {
     "yahoo": "WBA",
     "cik": "0001618921",
     "cik_method": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
     "reference_name": "WALGREENS BOOTS ALLIANCE, INC."
+  },
+  "r1000:0001799208": {
+    "yahoo": "DNB",
+    "cik": "0001799208",
+    "cik_method": "CUSIP_ATTESTED_OWNERSHIP_FILING",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "DUN & BRADSTREET HOLDINGS, INC."
   },
   "r1000:0000037808": {
     "yahoo": "FNB",
@@ -3323,33 +3365,5 @@
     "cik_method": "CUSIP_ATTESTED_OWNERSHIP_FILING",
     "symbol_basis": "SEC_TICKERS_CURRENT",
     "reference_name": "V.F. CORPORATION"
-  },
-  "r1000:0001897982": {
-    "yahoo": "AZPN",
-    "cik": "0001897982",
-    "cik_method": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT",
-    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
-    "reference_name": "ASPEN TECHNOLOGY, INC."
-  },
-  "r1000:0001364885": {
-    "yahoo": "SPR",
-    "cik": "0001364885",
-    "cik_method": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT",
-    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
-    "reference_name": "SPIRIT AEROSYSTEMS HOLDINGS, INC."
-  },
-  "r1000:0001012100": {
-    "yahoo": "SEE",
-    "cik": "0001012100",
-    "cik_method": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT",
-    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
-    "reference_name": "SEALED AIR CORPORATION"
-  },
-  "r1000:0000051644": {
-    "yahoo": "IPG",
-    "cik": "0000051644",
-    "cik_method": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT",
-    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
-    "reference_name": "THE INTERPUBLIC GROUP OF COMPANIES, INC."
   }
 }

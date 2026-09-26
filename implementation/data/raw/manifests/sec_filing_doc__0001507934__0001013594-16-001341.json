@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001507934:0001013594-16-001341",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1507934/000101359416001341/starz13g-120916.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:50:56.544640+00:00",
+  "sha256": "915cf62b669e0fb490652ab67242229349c2593d7a17e874e0636df15b6c9986",
+  "bytes": 91623,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

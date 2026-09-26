@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LLYVK:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/LLYVK?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T07:51:55.939465+00:00",
+  "sha256": "d2d3b00c0993d71e5d35228e780c3325bf3e83d7b8abb250cac17f0141eede46",
+  "bytes": 84469,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
