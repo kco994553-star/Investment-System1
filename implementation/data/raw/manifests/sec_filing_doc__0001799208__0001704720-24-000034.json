@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001799208:0001704720-24-000034",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1799208/000170472024000034/cnne-dnbschedule13damar2024.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T09:44:12.869465+00:00",
+  "sha256": "718f26ac34e4e747a15d46a8e3a4e394b86263b05730764d99eb45bfe5cab36e",
+  "bytes": 123035,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:LSXMB",
+  "source_url": "https://api.tiingo.com/tiingo/daily/lsxmb/prices?startDate=2019-10-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-26T09:45:32.347944+00:00",
+  "sha256": "d71202ff9ccaf7742da1710804c1b36d122dbc2ccd7d93ca109afa0eed83e9f3",
+  "bytes": 305468,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

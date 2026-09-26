@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001472595:0001104659-22-018413",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1472595/000110465922018413/tv01743-r1rcminc.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T09:43:11.654156+00:00",
+  "sha256": "40be7fffe33ad351b37c3a6cdce1d9c246c68c619f7ecfffa220766c12f7c8e5",
+  "bytes": 11538,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

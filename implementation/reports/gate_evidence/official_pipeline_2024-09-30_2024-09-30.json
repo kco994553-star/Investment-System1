@@ -8,9 +8,9 @@
   {
    "as_of": "2024-09-30",
    "status": "OFFICIAL",
-   "universe_id": "uni_f7f81f096191",
+   "universe_id": "uni_e334f94a73c3",
    "n_members": 500,
-   "cutoff_mcap": 15547825109.36499,
+   "cutoff_mcap": 15573548285.0,
    "gate_evidence": "gate_chain_2024-09-30_real_gha.json"
   }
  ],
@@ -19,14 +19,14 @@
   {
    "as_of": "2024-09-30T00:00:00+00:00",
    "horizon_as_of": "2024-12-31T00:00:00+00:00",
-   "universe_id": "uni_f7f81f096191",
+   "universe_id": "uni_e334f94a73c3",
    "universe_kind": "US_MCAP_TOP500_OFFICIAL",
    "official_universe": true,
    "universe_policy": "OFFICIAL",
    "membership_basis": "DERIVED_AT_AS_OF",
    "survivorship_risk": false,
    "n_selected": 469,
-   "equal_weight_realized": -9.362651565546118e-05,
+   "equal_weight_realized": 0.0004569665513276751,
    "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
    "rule_status": "PROVISIONAL_RESEARCH",
    "n_universe": 500,
@@ -42,21 +42,21 @@
   "per_date_single_as_of": [
    {
     "as_of": "2024-09-30",
-    "wall_s": 25.064,
-    "peak_rss_mb": 9549.1
+    "wall_s": 28.362,
+    "peak_rss_mb": 9534.8
    }
   ],
-  "median_wall_s": 25.064,
-  "max_peak_rss_mb": 9549.1,
+  "median_wall_s": 28.362,
+  "max_peak_rss_mb": 9534.8,
   "name_errors_total": 0,
   "network": {
-   "n_ingestion_run_reports": 202,
+   "n_ingestion_run_reports": 311,
    "request_status_counts": {
-    "SKIPPED_ALREADY_PRESENT": 149182,
-    "HTTP_404": 1786,
-    "NO_PERIODIC_FILING_BEFORE_AS_OF": 1448,
+    "SKIPPED_ALREADY_PRESENT": 223529,
+    "OK": 6180,
+    "HTTP_404": 2890,
+    "NO_PERIODIC_FILING_BEFORE_AS_OF": 2098,
     "HTTP_429": 3,
-    "OK": 5304,
     "ERROR_IncompleteRead": 1,
     "ERROR_URLError": 4,
     "EGRESS_BLOCKED": 793,

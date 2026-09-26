@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001823945:0001823945-24-000054",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1823945/000182394524000054/owl-20240630.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T09:46:59.072497+00:00",
+  "sha256": "f034a805776e6368d15b16eea37e8991287f72a3b89ad85ea2f0a96c4018caae",
+  "bytes": 2521784,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

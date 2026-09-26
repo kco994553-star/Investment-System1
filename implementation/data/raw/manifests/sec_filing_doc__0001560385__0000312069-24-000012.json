@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001560385:0000312069-24-000012",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1560385/000031206924000012/LLYVASC13G0224.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T09:43:44.196385+00:00",
+  "sha256": "e1907f00721186aee12c829a7bc4848da4fafa4ad0878288b53979e08131afd6",
+  "bytes": 13889,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

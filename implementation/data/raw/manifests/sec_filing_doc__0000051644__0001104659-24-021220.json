@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000051644:0001104659-24-021220",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/51644/000110465924021220/tv01214-interpublicgroupofco.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T09:44:07.762131+00:00",
+  "sha256": "3a001fe02c1c68da71e47a068b9d8f57d659f7a207023130892577945d573a58",
+  "bytes": 11601,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

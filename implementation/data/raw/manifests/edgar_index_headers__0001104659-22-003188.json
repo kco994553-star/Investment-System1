@@ -1,0 +1,12 @@
+{
+  "artifact_id": "edgar_index_headers:0001104659-22-003188",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1472595/000110465922003188/0001104659-22-003188-index-headers.html",
+  "source_kind": "SEC_INDEX_HEADERS",
+  "fetched_at": "2026-09-26T09:43:13.672977+00:00",
+  "sha256": "a060ad202bb423684470ffcb9f2a1b944137a2864219dedfe9d7ee730829792c",
+  "bytes": 4148,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

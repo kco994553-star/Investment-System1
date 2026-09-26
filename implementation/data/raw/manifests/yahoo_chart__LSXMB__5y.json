@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:LSXMB:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/lsxmb/prices?startDate=2019-10-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-26T09:45:33.860713+00:00",
+  "sha256": "4e2ca77b3a7960f88437c6d65f6d4b8836655590e121911150a2be9742e8090b",
+  "bytes": 24019,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

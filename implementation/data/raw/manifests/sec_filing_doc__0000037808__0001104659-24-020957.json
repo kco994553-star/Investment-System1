@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000037808:0001104659-24-020957",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/37808/000110465924020957/tv0957-fnbcorppa.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T09:44:13.509680+00:00",
+  "sha256": "543cf40a6b0217ae88533a29d82dcc73e715bb11627a61288deaea4432437ff1",
+  "bytes": 11554,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
