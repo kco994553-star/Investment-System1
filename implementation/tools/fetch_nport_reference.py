@@ -245,6 +245,9 @@ def split_collisions(members: dict, unresolved: list, holdings: list, cur: dict,
     return out, unresolved
 
 
+ATTEST_MAX_DOCS = 10
+
+
 def name_candidates(name: str, cur: dict, hist: dict) -> set[str]:
     """Every CIK whose current or historical SEC name matches the holding name (both keys); a tracking-group suffix
     ('LIBERTY MEDIA CORP - FORMULA ONE GROUP') is also tried without the suffix. Candidates only -- identity is decided
@@ -264,7 +267,8 @@ def attest_by_cusip(store: RawDatasetStore, get, candidates: list[str], cusip: s
     for c in candidates[:8]:
         get(f"submissions:{c}", SUBMISSIONS_URL.format(cik=c), "SEC_SUBMISSIONS")
         sub = load_submissions_merged(store, c)[0] or {}
-        for f in npr.ownership_filings(sub, as_of):
+        # a tracking-stock issuer files one 13G per group/class: read up to 10 of its latest ownership filings
+        for f in npr.ownership_filings(sub, as_of, ATTEST_MAX_DOCS):
             aid = f"sec_filing_doc:{c}:{f['accn']}"
             get(aid, npr.ARCHIVE_URL.format(cik=int(c), nodash=f["accn"].replace("-", ""), doc=f["primary_document"]),
                 "SEC_FILING_DOCUMENT")
@@ -274,6 +278,13 @@ def attest_by_cusip(store: RawDatasetStore, get, candidates: list[str], cusip: s
                 hits.append({"cik": c, "artifact_id": aid, "filed": f["filed"], "snippet": snip})
                 break
     ciks = sorted({h["cik"] for h in hits})
+    if len(ciks) > 1:
+        # several entities print the CUSIP (e.g. a predecessor of the same name): only a registrant filing
+        # 10-K/10-Q around as_of can be the listed issuer at as_of; exactly one such -> identity
+        pit = [c for c in ciks if pit_registrant(store, c, as_of)]
+        if len(pit) == 1:
+            return {"cik": pit[0], "attested": hits, "checked": checked, "status": "UNIQUE_PIT_REGISTRANT_AMONG_ATTESTED",
+                    "attested_ciks": ciks}
     return {"cik": ciks[0] if len(ciks) == 1 else None, "attested": hits, "checked": checked,
             "status": "UNIQUE" if len(ciks) == 1 else f"ATTESTED_{len(ciks)}"}
 

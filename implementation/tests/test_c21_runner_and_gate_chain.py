@@ -1981,3 +1981,28 @@ def test_nport_reference_cusip_attestation_decides_ambiguous_names(tmp_path):
     assert none["cik"] is None and none["status"] == "ATTESTED_0"
     cur = {fnr.norm_name("LIBERTY MEDIA CORP"): {"0001560385"}}
     assert fnr.name_candidates("LIBERTY MEDIA CORP - FORMULA ONE GROUP", cur, {}) == {"0001560385"}
+
+
+def test_nport_reference_attestation_tie_broken_only_by_pit_registrant(tmp_path):
+    """Run #54: 'DUN & BRADSTREET HOLDINGS, INC.' CUSIP 26484T106 was printed by the ownership filings of two
+    entities (ATTESTED_2). Only the one filing 10-K/10-Q around as_of can be the listed issuer at as_of."""
+    fnr = _mod("fnr_att2", "fetch_nport_reference.py")
+    npr = _mod("npr_att2", "nport_reported_prices.py")
+    frc = _mod("frc_att2", "fetch_class_rights_evidence.py")
+    store = RawDatasetStore(tmp_path)
+    def sub(c, forms, dates):
+        n = len(forms)
+        store.put(f"submissions:{c}", json.dumps({"name": f"E{c}", "filings": {"recent": {"form": forms, "filingDate": dates,
+                  "accessionNumber": [f"{c}-24-{i:06d}" for i in range(n)], "primaryDocument": ["d.htm"] * n,
+                  "reportDate": ["2024-09-30" if fm == "10-Q" else "" for fm in forms]}}}).encode(),
+                  "u", "SEC", "application/json", "t", 200)
+    sub("0000000001", ["10-Q", "SC 13G"], ["2024-11-05", "2024-02-14"])      # live registrant at as_of
+    sub("0000000002", ["SC 13G"], ["2024-02-10"])                            # predecessor, no periodic filing
+    for c in ("0000000001", "0000000002"):
+        store.put(f"sec_filing_doc:{c}:{c}-24-{(1 if c.endswith('1') else 0):06d}", b"<p>CUSIP 26484T106</p>",
+                  "u", "SEC", "text/html", "t", 200)
+    get = lambda aid, url, kind: None  # noqa: E731
+    att = fnr.attest_by_cusip(store, get, ["0000000001", "0000000002"], "26484T106", amc_dt(), npr, frc)
+    assert fnr.pit_registrant(store, "0000000001", amc_dt()) and not fnr.pit_registrant(store, "0000000002", amc_dt())
+    assert att["cik"] == "0000000001" and att["status"] == "UNIQUE_PIT_REGISTRANT_AMONG_ATTESTED"
+    assert att["attested_ciks"] == ["0000000001", "0000000002"]

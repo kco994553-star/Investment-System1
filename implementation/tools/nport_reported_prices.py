@@ -104,7 +104,7 @@ def cusip_attested(text: str, cusip: str) -> str | None:
     return text[max(0, m.start() - 80):m.end() + 40] if m else None
 
 
-def ownership_filings(submissions: dict, as_of: datetime) -> list[dict]:
+def ownership_filings(submissions: dict, as_of: datetime, limit: int | None = None) -> list[dict]:
     rec = (submissions.get("filings") or {}).get("recent") or {}
     rows = []
     for i, f in enumerate(rec.get("form") or []):
@@ -114,7 +114,7 @@ def ownership_filings(submissions: dict, as_of: datetime) -> list[dict]:
             continue
         if f in OWNERSHIP_FORMS and filed <= as_of.date().isoformat() and doc:
             rows.append({"form": f, "filed": filed, "accn": accn, "primary_document": doc})
-    return sorted(rows, key=lambda r: r["filed"], reverse=True)[:MAX_OWNERSHIP_DOCS]
+    return sorted(rows, key=lambda r: r["filed"], reverse=True)[:limit or MAX_OWNERSHIP_DOCS]
 
 
 def investigate(store: RawDatasetStore, as_of: str, ciks: list[str]) -> dict:
