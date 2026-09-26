@@ -1,0 +1,79 @@
+{
+  "kind": "NPORT_UNRESOLVED_SOURCE_AUDIT",
+  "as_of": "2024-06-30",
+  "generated_at": "2026-09-26T20:54:21+09:00",
+  "status": "OPEN_BLOCKING_POLICY_DECISION",
+  "sources": [
+    {
+      "role": "DATED_REFERENCE_HOLDINGS",
+      "form": "NPORT-P",
+      "accession": "0001752724-24-189684",
+      "filed": "2024-08-26",
+      "url": "https://www.sec.gov/Archives/edgar/data/1100663/000175272424189684/primary_doc.xml",
+      "sha256": "fba55b378e5ede102ba5543fd3420f5a7da4c1aa5ded16c1a1facabcaa061e81",
+      "bytes": 911916
+    },
+    {
+      "role": "ARDAGH_DELISTING",
+      "form": "25",
+      "accession": "0001104659-21-123497",
+      "filed": "2021-10-06",
+      "url": "https://www.sec.gov/Archives/edgar/data/1689662/000110465921123497/tm2124506d11_25.htm",
+      "sha256": "bf27690b14ad8ca3ba5b0482036ac7e4dc542e75914bf8cce4f0a76affbcafdc",
+      "bytes": 16258,
+      "finding": "Ardagh Group S.A. voluntarily removed its Class A common shares from NYSE listing and registration."
+    },
+    {
+      "role": "ARDAGH_DEREGISTRATION",
+      "form": "15-12B",
+      "accession": "0001104659-21-127219",
+      "filed": "2021-10-18",
+      "url": "https://www.sec.gov/Archives/edgar/data/1689662/000110465921127219/tm2125235d26_1512b.htm",
+      "sha256": "c9dc18e290622aeb570a28b1d5db367b6ac385f20da91871c0df71f82d341ef0",
+      "bytes": 11347,
+      "finding": "Registration/reporting ended for the Class A common shares; the filing states 115 holders of record."
+    }
+  ],
+  "holdings": [
+    {
+      "name": "ARDAGH GROUP SA",
+      "title": "ARDAGH GROUP SA",
+      "cusip": "L0223L101",
+      "isin": "LU1565283667",
+      "asset_cat": "EC",
+      "issuer_cat": "CORP",
+      "country": "LU",
+      "balance": "12001.00000000",
+      "units": "NS",
+      "currency": "USD",
+      "value": 76686.39,
+      "fair_value_level": "2",
+      "payoff_profile": "Long",
+      "historical_name_candidate_cik": "0001689662",
+      "finding": "Positive non-escrow common-equity holding, but the issuer was no longer listed or a periodic SEC registrant at as_of."
+    },
+    {
+      "name": "LIBERTY SIRIUS XM",
+      "title": "LIBERTY MEDIA CORP LIBERTY SIRIUSXM",
+      "cusip": "531229813",
+      "isin": "US5312298137",
+      "asset_cat": "EC",
+      "issuer_cat": "CORP",
+      "country": "US",
+      "balance": "55497.00000000",
+      "units": "NS",
+      "currency": "USD",
+      "value": 1229258.55,
+      "fair_value_level": "1",
+      "payoff_profile": "Long",
+      "finding": "Positive non-escrow tracking-stock holding; policy conflict remains C-37."
+    }
+  ],
+  "decision": {
+    "ardagh_conflict": "C-38",
+    "liberty_conflict": "C-37",
+    "gate_policy_changed": false,
+    "official_status_changed": false,
+    "note": "Evidence only. No positive reference holding was excluded and no new Universe eligibility rule was adopted."
+  }
+}
