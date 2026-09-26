@@ -1817,3 +1817,50 @@ def test_share_count_diagnostic_distribution_sentences_catches_share_count_witho
     hits = scd.distribution_sentences(text)
     assert hits and "100,000,000" in hits[0] and "shares" in hits[0]
     assert scd.distribution_sentences("Nothing relevant here at all, no numbers of any kind.") == []
+
+
+def test_run49_committed_2024_06_30_class_economics_all_verify_against_stored_evidence():
+    """Every issuer in the committed 2024-06-30 class_economics file must verify (quotes found verbatim in the
+    referenced filing document, filed on or before 2024-06-30) using the actual fetched evidence, when present.
+    RKT/TPG/TOST were restored here (run #49): every claim each needs is proven from its FY2023 10-K alone (filed
+    Feb 2024), not the Aug-2024 10-Q used for 2024-09-30/2024-12-31 -- no future filing evidence applied."""
+    chain = _mod("chain_ce0630", "run_top500_gate_chain.py")
+    ge = Path(chain.GE)
+    ce_path = ge / "class_economics_2024-06-30.json"
+    store_dir = ge.parents[1] / "data" / "raw"
+    if not ce_path.exists() or not store_dir.exists():
+        return
+    ce = json.loads(ce_path.read_text(encoding="utf-8"))
+    store = RawDatasetStore(store_dir)
+    for cik, det in ce["issuers"].items():
+        for member, cd in det["classes"].items():
+            for c in cd["citations"]:
+                assert c["filed"] <= "2024-06-30", (det["symbol"], member, c["filed"])
+                if store.has(c["artifact_id"]):
+                    frc = _mod("frc_verify_0630", "fetch_class_rights_evidence.py")
+                    text = frc.html_text(store.get_bytes(c["artifact_id"]))
+                    assert c["quote"] in text, (det["symbol"], member, c["quote"][:80])
+
+
+def test_run49_rkt_tpg_tost_2024_06_30_citations_are_substrings_of_the_fetched_passages():
+    """Cross-check against the committed class_rights_passages_2024-06-30.json (the fetched, offset-addressed
+    extraction) independently of whether the raw store blobs happen to be present in this environment."""
+    ge = Path(__file__).resolve().parents[1] / "reports" / "gate_evidence"
+    ce = json.loads((ge / "class_economics_2024-06-30.json").read_text(encoding="utf-8"))
+    passages = json.loads((ge / "class_rights_passages_2024-06-30.json").read_text(encoding="utf-8"))
+    lookup = {}
+    for issuer in passages["issuers"].values():
+        for doc in issuer["documents"]:
+            for p in doc["passages"]:
+                lookup[(doc["artifact_id"], p["offset"])] = p["text"]
+    checked = 0
+    for det in ce["issuers"].values():
+        if det["symbol"] not in ("RKT", "TPG", "TOST"):
+            continue
+        for member, cd in det["classes"].items():
+            for c in cd["citations"]:
+                key = (c["artifact_id"], c["offset"])
+                assert key in lookup, (det["symbol"], member, key)
+                assert c["quote"] in lookup[key], (det["symbol"], member, c["quote"][:80])
+                checked += 1
+    assert checked >= 5

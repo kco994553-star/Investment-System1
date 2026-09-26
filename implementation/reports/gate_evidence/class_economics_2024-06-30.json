@@ -228,12 +228,123 @@
     }
    },
    "double_count_check": "Class B ordinary shares are non-economic (do not share in earnings/losses, not participating securities per the 10-K) and are held one-for-one with RP Holdings Class B Interests (the non-controlling economic interest); on exchange the Class B share is re-designated as a deferred share (cancelled from the outstanding count). Class A ordinary shares represent Royalty Pharma plc's own retained economic interest, so A + B(units) counts each economic interest exactly once."
+  },
+  "0001805284": {
+   "symbol": "RKT",
+   "entity_name": "Rocket Companies, Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassDMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000009",
+       "form": "10-K",
+       "filed": "2024-02-27",
+       "accession": "0001805284-24-000009",
+       "offset": 515393,
+       "quote": "The non-controlling interest holders have the right to exchange Holdings Units, together with a corresponding number of shares of our Class D common stock or Class C common stock (together referred to as “Paired Interests”), for, at our option, (i) shares of our Class B common stock or Class A common stock or (ii) cash from a substantially concurrent public offering or private sale (based on the price of our Class A common stock).",
+       "supports": [
+        "pairing"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000009",
+       "form": "10-K",
+       "filed": "2024-02-27",
+       "accession": "0001805284-24-000009",
+       "offset": 234077,
+       "quote": "No adjustments to the present exchange ratio of one-to-one for Holdings Units and corresponding shares of Class D common stock or Class C common stock will be made as a result of (i) any cash distribution by Holdings or (ii) any cash that we retain and do not distribute to our stockholders.",
+       "supports": [
+        "exchange_ratio"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class D count = Holdings Units held by the non-controlling interest; Rocket's own units are represented by Class A. (2024-06-30: both claims proven from the FY2023 10-K filed 2024-02-27, before as_of; no Aug-2024 10-Q needed.)"
+  },
+  "0001880661": {
+   "symbol": "TPG",
+   "entity_name": "TPG Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "NonvotingCommonStockMember": {
+     "basis": "ECONOMICALLY_IDENTICAL_TO_LISTED",
+     "ratio": 1,
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000013",
+       "form": "10-K",
+       "filed": "2024-02-23",
+       "accession": "0001880661-24-000013",
+       "offset": 945984,
+       "quote": "The nonvoting Class A common stock have the same rights and privileges as, rank equally and share ratably with, and are identical in all respects as to all matters to, the Class A common stock, except that the nonvoting Class A common stock have no voting rights other than such rights as may be required by law.",
+       "supports": [
+        "identical_rights"
+       ]
+      }
+     ]
+    },
+    "CommonClassBMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "paired_instrument": "Common Unit",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000013",
+       "form": "10-K",
+       "filed": "2024-02-23",
+       "accession": "0001880661-24-000013",
+       "offset": 290301,
+       "quote": "They hold substantially all of their economic interest in the TPG Operating Group primarily through TPG Partner Vehicles (rather than through ownership of shares of our Class A common stock), and for each Common Unit owned, they own one share of our Class B common stock.",
+       "supports": [
+        "pairing"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000013",
+       "form": "10-K",
+       "filed": "2024-02-23",
+       "accession": "0001880661-24-000013",
+       "offset": 364721,
+       "quote": "Upon an exchange of Common Units for Class A common stock, pursuant to the A&R Exchange Agreement, an equal number of Class B common stock will be cancelled for no additional consideration.",
+       "supports": [
+        "exchange_ratio"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class B is non-economic; one Class B share per Common Unit held outside TPG Inc.; TPG Inc.'s own Common Units are represented by Class A + nonvoting Class A. (2024-06-30: every claim proven from the FY2023 10-K filed 2024-02-23, before as_of.)"
+  },
+  "0001650164": {
+   "symbol": "TOST",
+   "entity_name": "Toast, Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "ECONOMICALLY_IDENTICAL_TO_LISTED",
+     "ratio": 1,
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001650164:0001650164-24-000084",
+       "form": "10-K",
+       "filed": "2024-02-27",
+       "accession": "0001650164-24-000084",
+       "offset": 410685,
+       "quote": "Class A common stock and Class B common stock share proportionately, on a per share basis, in our net (losses) income and participate equally in the dividends on common stock, if declared.",
+       "supports": [
+        "identical_rights"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class A and Class B are both issued shares of the registrant with equal per-share economics; no units. (2024-06-30: proven from the FY2023 10-K filed 2024-02-27, before as_of.)"
   }
  },
  "derived_from": "2024-09-30",
- "dropped": {
-  "RKT": "CommonClassDMember: claims ['pairing'] have no citation filed on or before 2024-06-30",
-  "TPG": "NonvotingCommonStockMember: claims ['identical_rights'] have no citation filed on or before 2024-06-30",
-  "TOST": "CommonClassBMember: claims ['identical_rights'] have no citation filed on or before 2024-06-30"
- }
+ "dropped": {}
 }
