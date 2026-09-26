@@ -210,7 +210,7 @@ def cover_text_share_count(text: str, shares: float) -> tuple[int | None, int | 
         cnt = int(shares // (10 ** k))
         if cnt < 1000:
             continue
-        for m in re.finditer(re.escape(f"{cnt:,}"), text[:60000]):
+        for m in re.finditer(re.escape(f"{cnt:,}"), text):
             ctx = text[max(0, m.start() - 250):m.end() + 250]
             whole = not re.match(r",?\d", text[m.end():m.end() + 2]) and not re.search(r"[\d,]$", text[max(0, m.start() - 1):m.start()])
             if whole and re.search(r"outstanding", ctx, re.I):
@@ -263,7 +263,8 @@ def share_scale_overrides(store: RawDatasetStore, listings: dict, overrides: dic
 def cover_text_symbol_member(text: str, cover: dict) -> tuple[str | None, str | None]:
     """Listed member from the cover-page TEXT of the same filing when XBRL tags one undimensioned TradingSymbol for several
     classes and the Security12bTitle names no class letter (IAC: title 'Common stock', members CommonClassA/B). The title's
-    head ('Common stock') must be followed directly by the exact share count of exactly ONE member, not preceded by
+    head ('Common stock') must be followed directly by the exact share count of exactly ONE member (whole document text:
+    the iXBRL hidden header can precede the cover page by tens of KB), not preceded by
     'Class X' ("Common Stock 80,479,073 Class B common stock 5,789,499"). Returns (member, verbatim quote) or (None, None)."""
     import re
     titles = cover["titles"].get(None) or []
@@ -275,7 +276,7 @@ def cover_text_symbol_member(text: str, cover: dict) -> tuple[str | None, str | 
     counts = {f"{int(c['shares']):,}": c["member"] for c in cover["classes"] if c.get("member") and c.get("shares")}
     hits = set()
     quote = None
-    for m in re.finditer(r"(?<!Class [A-Z] )" + re.escape(head) + r"\s+([\d,]{5,})", text[:40000], re.I):
+    for m in re.finditer(r"(?<!Class [A-Z] )" + re.escape(head) + r"\s+([\d,]{5,})", text, re.I):
         if m.group(1) in counts:
             hits.add(counts[m.group(1)])
             quote = text[max(0, m.start() - 120):m.end() + 60]

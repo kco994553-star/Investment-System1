@@ -1320,3 +1320,13 @@ def test_run32_share_scale_error_corrected_only_from_cover_text(tmp_path):
     amb, _ = _scale_store(tmp_path / "d", 81_002_128_000_000,
                           "81,002,128 shares outstanding; authorized 81,002,128,000 shares outstanding")
     assert chain.share_scale_overrides(amb, listings, {}, amc_dt())["HXL"]["status"] == "SHARE_SCALE_UNVERIFIED"
+
+
+def test_run32_cover_text_found_after_a_long_ixbrl_hidden_header():
+    chain = _mod("chain_hdr", "run_top500_gate_chain.py")
+    cover = {"titles": {None: ["Common stock, par value $0.0001"]},
+             "classes": [{"member": "CommonClassAMember", "shares": 80_479_073.0}, {"member": "CommonClassBMember", "shares": 5_789_499.0}]}
+    text = ("c-1 0001800227 2024-01-01 2024-09-30 " * 3000) + "Common Stock 80,479,073 Class B common stock 5,789,499"
+    assert len(text) > 60000 and chain.cover_text_symbol_member(text, cover)[0] == "CommonClassAMember"
+    k, cnt, _ = chain.cover_text_share_count(("x " * 40000) + "81,002,128 shares outstanding", 81_002_128_000_000)
+    assert (k, cnt) == (6, 81_002_128)
