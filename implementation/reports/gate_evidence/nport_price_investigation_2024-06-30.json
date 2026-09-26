@@ -1,0 +1,37 @@
+{
+ "kind": "NPORT_PRICE_INVESTIGATION",
+ "as_of": "2024-06-30",
+ "source_accession": "0001752724-24-189684",
+ "source_artifact": "nport_xml:0001752724-24-189684",
+ "valuation_date": "2024-06-30",
+ "filing_date": "2024-08-26",
+ "look_ahead": true,
+ "issuers": {
+  "0001732845": {
+   "reference_names": [
+    "WESTROCK COMPANY"
+   ],
+   "holding_match": "UNIQUE",
+   "holding_raw": {
+    "name": "WESTROCK COMPANY",
+    "lei": "5493004Z9TCQW68YVL89",
+    "title": "WESTROCK COMPANY",
+    "cusip": "96145D105",
+    "isin": "US96145D1054",
+    "ticker": null,
+    "balance": "193311.00000000",
+    "units": "NS",
+    "cur_cd": "USD",
+    "val_usd": "9715810.86000000",
+    "asset_cat": "EC",
+    "issuer_cat": "CORP",
+    "country": "US",
+    "fair_val_level": "1"
+   },
+   "reported_value_per_share": 50.26,
+   "price_check": "OK",
+   "status": "INVESTIGATION_ONLY_NOT_APPLIED"
+  }
+ },
+ "note": "Investigation only. Not a market close, filed after as_of, and outside the user-approved NPORT_REPORTED_VALUE exception (PINC/WOLF only): never applied to ranking without a user decision."
+}
