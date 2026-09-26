@@ -1,0 +1,419 @@
+{
+ "kind": "SHARE_SCALE_DOC_RUN",
+ "as_of": "2024-09-30",
+ "n_eligible": 985,
+ "n_flagged": 22,
+ "flagged": [
+  {
+   "cik": "0001141391",
+   "symbol": "MA",
+   "shares": 122530193.0,
+   "flagged": true,
+   "ratio": 0.13161137808807732,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 931000000,
+    "end": "2024-06-30",
+    "filed": "2024-07-31",
+    "accn": "0001141391-24-000161"
+   },
+   "document": "sec_filing_doc:0001141391:0001141391-24-000161"
+  },
+  {
+   "cik": "0000063908",
+   "symbol": "MCD",
+   "shares": 717343247.0,
+   "flagged": true,
+   "ratio": 995895.1089823685,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 720.3,
+    "end": "2024-06-30",
+    "filed": "2024-08-08",
+    "accn": "0000063908-24-000123"
+   },
+   "document": "sec_filing_doc:0000063908:0000063908-24-000123"
+  },
+  {
+   "cik": "0001381197",
+   "symbol": "IBKR",
+   "shares": 42231651.0,
+   "flagged": true,
+   "ratio": 0.39323693368192214,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 107394925,
+    "end": "2024-06-30",
+    "filed": "2024-08-05",
+    "accn": "0001381197-24-000124"
+   },
+   "document": "sec_filing_doc:0001381197:0001381197-24-000124"
+  },
+  {
+   "cik": "0001156375",
+   "symbol": "CME",
+   "shares": 66643583.0,
+   "flagged": true,
+   "ratio": 0.18548482023078594,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 359294000,
+    "end": "2024-06-30",
+    "filed": "2024-08-05",
+    "accn": "0001156375-24-000149"
+   },
+   "document": "sec_filing_doc:0001156375:0001156375-24-000149"
+  },
+  {
+   "cik": "0001061219",
+   "symbol": "EPD",
+   "shares": 2170301640.0,
+   "flagged": true,
+   "ratio": 2.5336232080317536,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 856600000,
+    "end": "2012-03-31",
+    "filed": "2012-05-10",
+    "accn": "0001061219-12-000015"
+   },
+   "document": "sec_filing_doc:0001061219:0001061219-24-000016"
+  },
+  {
+   "cik": "0001567683",
+   "symbol": "CWEN",
+   "shares": 202143697.0,
+   "flagged": true,
+   "ratio": 3.2086301111111113,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 63000000,
+    "end": "2016-12-31",
+    "filed": "2018-03-01",
+    "accn": "0001567683-18-000008"
+   },
+   "document": "sec_filing_doc:0001567683:0001567683-24-000022"
+  },
+  {
+   "cik": "0000046619",
+   "symbol": "HEI",
+   "shares": 26905966.0,
+   "flagged": true,
+   "ratio": 0.1944227214590755,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 138389000,
+    "end": "2024-07-31",
+    "filed": "2024-08-28",
+    "accn": "0000046619-24-000059"
+   },
+   "document": "sec_filing_doc:0000046619:0000046619-24-000059"
+  },
+  {
+   "cik": "0001820953",
+   "symbol": "AFRM",
+   "shares": 59239370.0,
+   "flagged": true,
+   "ratio": 0.1911828531787629,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 309857129,
+    "end": "2024-06-30",
+    "filed": "2024-08-28",
+    "accn": "0001820953-24-000035"
+   },
+   "document": "sec_filing_doc:0001820953:0001820953-24-000035"
+  },
+  {
+   "cik": "0001302215",
+   "symbol": "HLI",
+   "shares": 587866.0,
+   "flagged": true,
+   "ratio": 0.00903975100204185,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 65031216,
+    "end": "2024-06-30",
+    "filed": "2024-08-06",
+    "accn": "0001302215-24-000090"
+   },
+   "document": "sec_filing_doc:0001302215:0001302215-24-000090"
+  },
+  {
+   "cik": "0001562088",
+   "symbol": "DUOL",
+   "shares": 16645000.0,
+   "flagged": true,
+   "ratio": 0.40979368752769707,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 40618000,
+    "end": "2023-03-31",
+    "filed": "2023-05-10",
+    "accn": "0001562088-23-000103"
+   },
+   "document": "sec_filing_doc:0001562088:0001562088-24-000207"
+  },
+  {
+   "cik": "0001811414",
+   "symbol": "QS",
+   "shares": 95449946.0,
+   "flagged": true,
+   "ratio": 0.19140213119224847,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 498688000,
+    "end": "2024-06-30",
+    "filed": "2024-07-26",
+    "accn": "0000950170-24-086884"
+   },
+   "document": "sec_filing_doc:0001811414:0000950170-24-086884"
+  },
+  {
+   "cik": "0000717605",
+   "symbol": "HXL",
+   "shares": 81748036000000.0,
+   "flagged": true,
+   "ratio": 982548.5096153846,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 83200000,
+    "end": "2024-06-30",
+    "filed": "2024-07-18",
+    "accn": "0000950170-24-084437"
+   },
+   "document": "sec_filing_doc:0000717605:0000950170-24-084437"
+  },
+  {
+   "cik": "0000906553",
+   "symbol": "BYD",
+   "shares": 91762642.0,
+   "flagged": true,
+   "ratio": 953.4969762463892,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 96238,
+    "end": "2024-06-30",
+    "filed": "2024-08-01",
+    "accn": "0001437749-24-024291"
+   },
+   "document": "sec_filing_doc:0000906553:0001437749-24-024291"
+  },
+  {
+   "cik": "0001526520",
+   "symbol": "TRIP",
+   "shares": 1000.0,
+   "flagged": true,
+   "ratio": 7.202742804459938e-06,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 138836000,
+    "end": "2024-06-30",
+    "filed": "2024-08-06",
+    "accn": "0000950170-24-091768"
+   },
+   "document": "sec_filing_doc:0001526520:0000950170-24-091768"
+  },
+  {
+   "cik": "0001109354",
+   "symbol": "BRKR",
+   "shares": 151394441.0,
+   "flagged": true,
+   "ratio": 1034821.879699248,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 146.3,
+    "end": "2024-06-30",
+    "filed": "2024-08-09",
+    "accn": "0000950170-24-094832"
+   },
+   "document": "sec_filing_doc:0001109354:0000950170-24-094832"
+  },
+  {
+   "cik": "0001618732",
+   "symbol": "NTNX",
+   "shares": 265214643.0,
+   "flagged": true,
+   "ratio": 1083.6454689204595,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 244743,
+    "end": "2024-07-31",
+    "filed": "2024-09-19",
+    "accn": "0000950170-24-108159"
+   },
+   "document": "sec_filing_doc:0001618732:0000950170-24-108159"
+  },
+  {
+   "cik": "0000730272",
+   "symbol": "RGEN",
+   "shares": 56006498.0,
+   "flagged": true,
+   "ratio": 1003.0176224076794,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 55838,
+    "end": "2024-06-30",
+    "filed": "2024-07-30",
+    "accn": "0000950170-24-087981"
+   },
+   "document": "sec_filing_doc:0000730272:0000950170-24-087981"
+  },
+  {
+   "cik": "0002000178",
+   "symbol": "LOAR",
+   "shares": 89703571.0,
+   "flagged": true,
+   "ratio": 1024.7854662188406,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 87534,
+    "end": "2024-06-30",
+    "filed": "2024-08-13",
+    "accn": "0000950170-24-096339"
+   },
+   "document": "sec_filing_doc:0002000178:0000950170-24-096339"
+  },
+  {
+   "cik": "0001384905",
+   "symbol": "RNG",
+   "shares": 37075000.0,
+   "flagged": true,
+   "ratio": 0.3988961094852815,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 92944000,
+    "end": "2024-06-30",
+    "filed": "2024-08-07",
+    "accn": "0001384905-24-000046"
+   },
+   "document": "sec_filing_doc:0001384905:0001384905-24-000046"
+  },
+  {
+   "cik": "0001754301",
+   "symbol": "FOXA",
+   "shares": 1.0,
+   "flagged": true,
+   "ratio": 2.0746887966804978e-09,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 482000000,
+    "end": "2024-03-31",
+    "filed": "2024-05-08",
+    "accn": "0001628280-24-021664"
+   },
+   "document": "sec_filing_doc:0001754301:0001628280-24-036123"
+  },
+  {
+   "cik": "0002005951",
+   "symbol": "SW",
+   "shares": 519358323.0,
+   "flagged": true,
+   "ratio": 212939.0418204182,
+   "reference": {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "val": 2439,
+    "end": "2024-06-30",
+    "filed": "2024-08-09",
+    "accn": "0001410578-24-001252"
+   },
+   "document": "sec_filing_doc:0002005951:0001410578-24-001252"
+  },
+  {
+   "cik": "0001089063",
+   "symbol": "DKS",
+   "reason": "COVER_UNRESOLVED:NO_PRICED_CLASS",
+   "document": "sec_filing_doc:0001089063:0001089063-24-000111"
+  }
+ ],
+ "log": [
+  {
+   "artifact_id": "sec_filing_doc:0001141391:0001141391-24-000161",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0000063908:0000063908-24-000123",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001381197:0001381197-24-000124",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001156375:0001156375-24-000149",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001061219:0001061219-24-000016",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001567683:0001567683-24-000022",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0000046619:0000046619-24-000059",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001820953:0001820953-24-000035",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001302215:0001302215-24-000090",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001562088:0001562088-24-000207",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001811414:0000950170-24-086884",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0000717605:0000950170-24-084437",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0000906553:0001437749-24-024291",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001526520:0000950170-24-091768",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001109354:0000950170-24-094832",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001618732:0000950170-24-108159",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0000730272:0000950170-24-087981",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0002000178:0000950170-24-096339",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001384905:0001384905-24-000046",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001754301:0001628280-24-036123",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0002005951:0001410578-24-001252",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001089063:0001089063-24-000111",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  }
+ ]
+}

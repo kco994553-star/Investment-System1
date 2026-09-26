@@ -2188,8 +2188,10 @@
    ],
    "phrases": [
     "Class D Common Stock",
+    "Class D Ordinary Shares",
     "Class D Shares",
     "Class D common stock",
+    "Class D ordinary shares",
     "Class D shares"
    ],
    "documents": [
@@ -3544,8 +3546,10 @@
    ],
    "phrases": [
     "Class B Common Stock",
+    "Class B Ordinary Shares",
     "Class B Shares",
     "Class B common stock",
+    "Class B ordinary shares",
     "Class B shares"
    ],
    "documents": [
@@ -3555,7 +3559,64 @@
      "accn": "0001802768-24-000012",
      "primary_document": "rprx-20231231.htm",
      "artifact_id": "sec_filing_doc:0001802768:0001802768-24-000012",
-     "passages": []
+     "passages": [
+      {
+       "offset": 158840,
+       "text": "Subject to the terms of our indebtedness or other contractual obligations, the approval and payment of any interim dividends are at the sole discretion of our board of directors, which may change our dividend policy at any time, and the payment of any final dividends will be subject to majority approval by holders of our Class A ordinary shares and Class B ordinary shares and in each case will be paid out of profits available for that purpose under English law."
+      },
+      {
+       "offset": 242789,
+       "text": "Our Class B ordinary shares are not listed on any stock exchange nor traded on any public market."
+      },
+      {
+       "offset": 370684,
+       "text": "80 ROYALTY PHARMA PLC CONSOLIDATED STATEMENTS OF SHAREHOLDERS\u2019 EQUITY ( In thousands, except per share amounts ) Class A Ordinary Shares Class B Ordinary Shares Class R Redeemable Shares Deferred Shares Additional Paid-in Capital Retained Earnings Accumulated Other Comprehensive Income Non-Controlling Interests Treasury Interests Total Shareholders\u2019 Equity Shares Amount Shares Amount Shares Amount Shares Amount Balance at December 31, 2020 388,135 $ 39 218,976 $ \u2014 50 $ 63 316,407 $ \u2014 $ 2,865,964 $ 1,920,635 $ 34,395 $ 5,077,036 $ ( 2,317 ) $ 9,895,815 Contributions \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 48,539 \u2014 48,539 Distributions \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 ( 614,973 ) \u2014 ( 614,973 ) Dividends ($ 0."
+      },
+      {
+       "offset": 414600,
+       "text": "Our Class B ordinary shares, Class R redeemable shares and deferred shares do not share in the earnings or losses attributable to us and are therefore not participating securities."
+      },
+      {
+       "offset": 414781,
+       "text": "Our outstanding Class B ordinary shares are, however, considered potentially dilutive shares of Class A ordinary shares because Class B ordinary shares, together with the related RP Holdings Class B Interests, are exchangeable into Class A ordinary shares on a one -for-one basis."
+      },
+      {
+       "offset": 415583,
+       "text": "We use the \u201cif-converted\u201d method to determine the potentially dilutive effect of our outstanding Class B ordinary shares, and the treasury stock method to determine the potentially dilutive effect of the unvested RSUs."
+      },
+      {
+       "offset": 459744,
+       "text": "Shareholders\u2019 Equity Capital Structure We have two classes of voting shares: Class A ordinary shares and Class B ordinary shares, each of which has one vote per ordinary share."
+      },
+      {
+       "offset": 459921,
+       "text": "The Class A ordinary shares and Class B ordinary shares vote together as a single class on all matters submitted to a vote of shareholders, except as otherwise required by applicable law."
+      },
+      {
+       "offset": 460109,
+       "text": "Our Class B ordinary shares are not publicly traded and holders of Class B ordinary shares only have limited rights to receive a distribution equal to their nominal value upon a liquidation, dissolution or winding up."
+      },
+      {
+       "offset": 461027,
+       "text": "Each such exchange also results in the re-designation of the same number of our Class B ordinary shares as deferred shares."
+      },
+      {
+       "offset": 462023,
+       "text": "103 ROYALTY PHARMA PLC NOTES TO THE CONSOLIDATED FINANCIAL STATEMENTS Non-Controlling Interests The changes in the balances of our non-controlling interests for 2023, 2022 and 2021 are as follows (in thousands): Legacy Investors Partnerships RPSFT Continuing Investors Partnerships EPA Holdings Total December 31, 2020 $ 1,939,509 $ 12,436 $ 3,125,091 $ \u2014 $ 5,077,036 Contributions 35,148 \u2014 13,391 \u2014 48,539 Distributions ( 425,050 ) ( 56,490 ) ( 133,433 ) \u2014 ( 614,973 ) Other exchanges \u2014 \u2014 ( 642,974 ) \u2014 ( 642,974 ) Net income 266,570 57,582 297,321 \u2014 621,473 Other comprehensive income/(loss): Unrealized gains on available for sale debt securities 2,038 \u2014 3,227 \u2014 5,265 Reclassification of unrealiz"
+      },
+      {
+       "offset": 467829,
+       "text": "The holders of Class B ordinary shares do not have any rights to receive dividends;"
+      },
+      {
+       "offset": 469320,
+       "text": "The following table sets forth the reconciliation of the numerator and denominator used to calculate basic and diluted earnings per Class A ordinary share for 2023 (in thousands, except per share amounts): Year Ended December 31, 2023 Numerator Consolidated net income $ 1,700,088 Less: Net income attributable to continuing non-controlling interests 392,726 Less: Net income attributable to legacy non-controlling interests 172,528 Net income attributable to Royalty Pharma plc - basic 1,134,834 Add: Reallocation of net income attributable to non-controlling interest from the assumed conversion of Class B ordinary shares 392,726 Net income attributable to Royalty Pharma plc - diluted $ 1,527,560"
+      },
+      {
+       "offset": 470412,
+       "text": "53 Class B ordinary shares in issue were evaluated under the if-converted method for potential dilutive effects and were determined to be anti-dilutive for 2022 and 2021, and therefore were excluded from the computation of diluted earnings per shares of Class A ordinary share."
+      }
+     ]
     },
     {
      "form": "10-Q",
@@ -3563,7 +3624,56 @@
      "accn": "0001802768-24-000045",
      "primary_document": "rprx-20240630.htm",
      "artifact_id": "sec_filing_doc:0001802768:0001802768-24-000045",
-     "passages": []
+     "passages": [
+      {
+       "offset": 46402,
+       "text": "2 ROYALTY PHARMA PLC CONDENSED CONSOLIDATED STATEMENTS OF SHAREHOLDERS\u2019 EQUITY (In thousands, except per share amounts) (Unaudited) Class A Ordinary Shares Class B Ordinary Shares Class R Redeemable Shares Deferred Shares Additional Paid-in Capital Retained Earnings Non-Controlling Interests Treasury Interests Total Shareholders\u2019 Equity Shares Amount Shares Amount Shares Amount Shares Amount Balance at March 31, 2024 450,981 $ 45 146,456 $ \u2014 50 $ 63 388,927 $ \u2014 $ 4,074,849 $ 2,427,448 $ 3,363,965 $ ( 2,654 ) $ 9,863,716 Contributions \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 2,141 \u2014 2,141 Distributions \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 ( 129,728 ) \u2014 ( 129,728 ) Dividends ($ 0."
+      },
+      {
+       "offset": 47052,
+       "text": "21 per Class A ordinary share) \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 ( 94,943 ) \u2014 \u2014 ( 94,943 ) Other exchanges 1,128 \u2014 ( 1,128 ) \u2014 \u2014 \u2014 1,128 \u2014 53,192 \u2014 ( 53,185 ) ( 7 ) \u2014 Share-based compensation and related issuances of Class A ordinary shares 73 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 681 \u2014 \u2014 \u2014 681 Repurchases of Class A ordinary shares ( 3,117 ) \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 ( 28,168 ) ( 56,258 ) \u2014 \u2014 ( 84,426 ) Net income \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 102,004 92,373 \u2014 194,377 Balance at June 30, 2024 449,065 $ 45 145,328 $ \u2014 50 $ 63 390,055 $ \u2014 $ 4,100,554 $ 2,378,251 $ 3,275,566 $ ( 2,661 ) $ 9,751,818 Class A Ordinary Shares Class B Ordinary Shares Class R Redeemable Shares Deferred Shares Additional Paid-in Capital Retained Earnings Non-Controlling Interests"
+      },
+      {
+       "offset": 48738,
+       "text": "3 ROYALTY PHARMA PLC CONDENSED CONSOLIDATED STATEMENTS OF SHAREHOLDERS\u2019 EQUITY (In thousands, except per share amounts) (Unaudited) Class A Ordinary Shares Class B Ordinary Shares Class R Redeemable Shares Deferred Shares Additional Paid-in Capital Retained Earnings Non-Controlling Interests Treasury Interests Total Shareholders\u2019 Equity Shares Amount Shares Amount Shares Amount Shares Amount Balance at December 31, 2023 446,692 $ 45 150,743 $ \u2014 50 $ 63 384,640 $ \u2014 $ 4,011,435 $ 2,517,583 $ 3,557,792 $ ( 2,629 ) $ 10,084,289 Contributions \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 4,553 \u2014 4,553 Distributions \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 ( 254,139 ) \u2014 ( 254,139 ) Dividends ($ 0."
+      },
+      {
+       "offset": 49392,
+       "text": "42 per Class A ordinary share) \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 ( 188,748 ) \u2014 \u2014 ( 188,748 ) Other exchanges 5,415 \u2014 ( 5,415 ) \u2014 \u2014 \u2014 5,415 \u2014 115,994 \u2014 ( 115,962 ) ( 32 ) \u2014 Share-based compensation and related issuances of Class A ordinary shares 75 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 1,293 \u2014 \u2014 \u2014 1,293 Repurchases of Class A ordinary shares ( 3,117 ) \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 ( 28,168 ) ( 56,258 ) \u2014 \u2014 ( 84,426 ) Net income \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 106,782 83,322 \u2014 190,104 Purchase of non-controlling interest in RPCT \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 ( 1,108 ) \u2014 \u2014 ( 1,108 ) Balance at June 30, 2024 449,065 $ 45 145,328 $ \u2014 50 $ 63 390,055 $ \u2014 $ 4,100,554 $ 2,378,251 $ 3,275,566 $ ( 2,661 ) $ 9,751,818 Class A Ordinary Shares Class B Ordinary Shares Class R Redeemab"
+      },
+      {
+       "offset": 105640,
+       "text": "Shareholders\u2019 Equity Capital Structure We have two classes of voting shares: Class A ordinary shares and Class B ordinary shares, each of which has one vote per ordinary share."
+      },
+      {
+       "offset": 105817,
+       "text": "The Class A ordinary shares and Class B ordinary shares vote together as a single class on all matters submitted to a vote of shareholders, except as otherwise required by applicable law."
+      },
+      {
+       "offset": 106005,
+       "text": "Our Class B ordinary shares are not publicly traded and holders of Class B ordinary shares only have limited rights to receive a distribution equal to their nominal value upon a liquidation, dissolution or winding up."
+      },
+      {
+       "offset": 106919,
+       "text": "Each such exchange also results in the re-designation of the same number of our Class B ordinary shares as deferred shares."
+      },
+      {
+       "offset": 108566,
+       "text": "Non-Controlling Interests The changes in the balances of our non-controlling interests are as follows (in thousands): Legacy Investors Partnerships Continuing Investors Partnerships EPA Holdings Total March 31, 2024 $ 1,238,019 $ 2,125,946 $ \u2014 $ 3,363,965 Contributions 1,279 862 \u2014 2,141 Distributions ( 99,046 ) ( 30,682 ) \u2014 ( 129,728 ) Other exchanges \u2014 ( 53,185 ) \u2014 ( 53,185 ) Net income 59,467 32,906 \u2014 92,373 June 30, 2024 $ 1,199,719 $ 2,075,847 $ \u2014 $ 3,275,566 19 ROYALTY PHARMA PLC NOTES TO THE CONDENSED CONSOLIDATED FINANCIAL STATEMENTS (UNAUDITED) RPSFT Legacy Investors Partnerships Continuing Investors Partnerships EPA Holdings Total March 31, 2023 $ ( 140 ) $ 1,480,585 $ 2,387,806 $ \u2014"
+      },
+      {
+       "offset": 114995,
+       "text": "The holders of Class B ordinary shares do not have any rights to receive dividends;"
+      },
+      {
+       "offset": 116345,
+       "text": "The following table sets forth reconciliations of the numerators and denominators used to calculate basic and diluted earnings per Class A ordinary share (in thousands, except per share amounts): For the Three Months Ended June 30, For the Six Months Ended June 30, 2024 2023 2024 2023 Numerator Consolidated net income $ 194,377 $ 351,336 $ 190,104 $ 860,425 Less: Net income attributable to continuing non-controlling interests 32,906 78,049 34,445 201,306 Less: Net income attributable to legacy non-controlling interests 59,467 45,662 48,877 90,739 Net income attributable to Royalty Pharma plc - basic 102,004 227,625 106,782 568,380 Add: Reallocation of net income attributable to non-controlli"
+      },
+      {
+       "offset": 280276,
+       "text": "Subject to the terms of our indebtedness or other contractual obligations, the approval and payment of any interim dividends are at the sole discretion of our board of directors, which may change our dividend policy at any time, and the payment of any final dividends will be subject to majority approval by holders of our Class A ordinary shares and Class B ordinary shares and in each case will be paid out of profits available for that purpose under English law."
+      }
+     ]
     }
    ],
    "cover_instance_unit_facts": [
@@ -5518,8 +5628,10 @@
    ],
    "phrases": [
     "Class B Common Stock",
+    "Class B Ordinary Shares",
     "Class B Shares",
     "Class B common stock",
+    "Class B ordinary shares",
     "Class B shares",
     "Common Stock"
    ],
@@ -8073,8 +8185,10 @@
    ],
    "phrases": [
     "Class B Common Stock",
+    "Class B Ordinary Shares",
     "Class B Shares",
     "Class B common stock",
+    "Class B ordinary shares",
     "Class B shares"
    ],
    "documents": [
@@ -8282,8 +8396,10 @@
    ],
    "phrases": [
     "Class B Common Stock",
+    "Class B Ordinary Shares",
     "Class B Shares",
     "Class B common stock",
+    "Class B ordinary shares",
     "Class B shares",
     "Nonvoting Class A",
     "Nonvoting Common Stock",
@@ -10177,16 +10293,22 @@
    ],
    "phrases": [
     "Class B Common Stock",
+    "Class B Ordinary Shares",
     "Class B Shares",
     "Class B common stock",
+    "Class B ordinary shares",
     "Class B shares",
     "Class C Common Stock",
+    "Class C Ordinary Shares",
     "Class C Shares",
     "Class C common stock",
+    "Class C ordinary shares",
     "Class C shares",
     "Class D Common Stock",
+    "Class D Ordinary Shares",
     "Class D Shares",
     "Class D common stock",
+    "Class D ordinary shares",
     "Class D shares"
    ],
    "documents": [

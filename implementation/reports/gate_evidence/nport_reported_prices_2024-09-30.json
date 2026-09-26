@@ -138,23 +138,19 @@
   },
   {
    "artifact_id": "sec_filing_doc:0001577916:0001306550-23-010085",
-   "status": "OK",
-   "bytes": 11722
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "sec_filing_doc:0000895419:0001374170-24-000031",
-   "status": "OK",
-   "bytes": 9165
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "sec_filing_doc:0000895419:0001104659-24-022319",
-   "status": "OK",
-   "bytes": 11537
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "sec_filing_doc:0000895419:0001422848-24-000186",
-   "status": "OK",
-   "bytes": 16795
+   "status": "SKIPPED_ALREADY_PRESENT"
   }
  ]
 }

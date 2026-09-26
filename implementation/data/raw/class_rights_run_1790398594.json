@@ -1,0 +1,52 @@
+{
+ "log": [
+  {
+   "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000009",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000137",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001802768:0001802768-24-000012",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001802768:0001802768-24-000045",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001849253:0000950170-24-089593",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001650164:0001650164-24-000084",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001650164:0001650164-24-000283",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000013",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000044",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001758730:0001758730-24-000025",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001758730:0001758730-24-000156",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  }
+ ]
+}
