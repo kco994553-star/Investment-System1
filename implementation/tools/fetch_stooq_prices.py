@@ -146,15 +146,24 @@ def run(store_dir: Path, as_of: datetime, symbols: list[str], chart_range: str =
     return report
 
 
+def resolve_cik_candidates(ge: Path, as_of: str) -> Path:
+    """Point-in-time CIK corrections are per as_of (e.g. BLK holding-company reorganisation 2024-10-01): use the
+    dated file when it exists, else the 2024-12-31 file (never guessed)."""
+    return next(p for p in (ge / f"delisted_cik_candidates_{as_of}.json", ge / "delisted_cik_candidates_2024-12-31.json")
+                if p.exists() or p.name.endswith("2024-12-31.json"))
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
     ap.add_argument("--as-of", default="2024-12-31")
     ap.add_argument("--listings", type=Path, default=ROOT / "reports" / "us_ingested_facts_listings.json")
     ap.add_argument("--plan", type=Path, default=ROOT / "reports" / "gate_evidence" / "missing_large_cap_priority_plan_2024-12-31.json")
-    ap.add_argument("--cik-candidates", type=Path, default=ROOT / "reports" / "gate_evidence" / "delisted_cik_candidates_2024-12-31.json")
+    ap.add_argument("--cik-candidates", type=Path, help="default delisted_cik_candidates_<as_of>.json, else the 2024-12-31 file")
     ap.add_argument("--extra-listings", type=Path, action="append", default=[])
     a = ap.parse_args()
+    if a.cik_candidates is None:
+        a.cik_candidates = resolve_cik_candidates(ROOT / "reports" / "gate_evidence", a.as_of)
     chain = _load("run_top500_gate_chain")
     store = RawDatasetStore(a.store)
     d = datetime.fromisoformat(a.as_of + "T00:00:00+00:00")

@@ -1781,3 +1781,26 @@ def test_run44_committed_2024_09_30_class_economics_all_verify_against_stored_ev
                     frc = _mod("frc_verify", "fetch_class_rights_evidence.py")
                     text = frc.html_text(store.get_bytes(c["artifact_id"]))
                     assert c["quote"] in text, (det["symbol"], member, c["quote"][:80])
+
+
+def test_fetch_stooq_prices_resolves_dated_cik_candidates_file(tmp_path):
+    """fetch_stooq_prices.py's --cik-candidates default (run #48, 2024-06-30: WRK NO_AS_OF_PRICE after Yahoo+Tiingo)
+    must use the per-as_of delisted_cik_candidates file when it exists, same rule as fetch_tiingo_prices.py (a PIT
+    CIK correction such as BLK's 2024-10-01 reorganisation is per as_of, never the 2024-12-31 file by default)."""
+    fsp = _mod("fsp_resolve", "fetch_stooq_prices.py")
+    ge = tmp_path / "gate_evidence"
+    ge.mkdir()
+    (ge / "delisted_cik_candidates_2024-12-31.json").write_text("{}", encoding="utf-8")
+    assert fsp.resolve_cik_candidates(ge, "2024-06-30").name == "delisted_cik_candidates_2024-12-31.json"
+    (ge / "delisted_cik_candidates_2024-06-30.json").write_text("{}", encoding="utf-8")
+    assert fsp.resolve_cik_candidates(ge, "2024-06-30").name == "delisted_cik_candidates_2024-06-30.json"
+
+
+def test_fetch_stooq_prices_written_only_after_calibration_and_only_if_yahoo_still_missing(tmp_path):
+    """Regression: a Stooq close is written to the yahoo_chart replay id only when (a) the control-symbol
+    calibration passes and (b) the target symbol still has no Yahoo bar on/before as_of; a symbol whose Yahoo bar
+    already exists must never be overwritten by a Stooq fallback."""
+    fsp = _mod("fsp_write_rule", "fetch_stooq_prices.py")
+    import inspect
+    src = inspect.getsource(fsp.run)
+    assert "YAHOO_AS_OF_BAR_PRESENT" in src and "NOT_WRITTEN_CALIBRATION_FAILED" in src

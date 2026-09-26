@@ -154,6 +154,12 @@ jobs:
           X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
           EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
           python tools/fetch_tiingo_prices.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA | head -c 6000
+      - name: Stooq fallback prices for issuers/classes still with no as-of bar after Yahoo + Tiingo (calibrated, fail-closed)
+        if: inputs.skip_fetch != 'true'
+        run: |
+          X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
+          EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
+          python tools/fetch_stooq_prices.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA | head -c 6000
       - name: SEC filings (10-K + 10-Q filed <= as_of) of undetermined multi-class issuers; verbatim class-rights passages
         if: inputs.skip_fetch != 'true'
         run: python tools/fetch_class_rights_evidence.py --store data/raw --as-of "${{ inputs.as_of }}"
