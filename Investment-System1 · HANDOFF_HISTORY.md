@@ -1464,3 +1464,58 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
   AMTM 8-K 2024-09-27 count; RPRX 'one -for-one' extraction whitespace fix); official pipeline run #47.
 - 2024-06-30: runs #48-#51; RKT/TPG/TOST restored from FY2023 10-Ks; GRAL (spin-off 2024-06-24) and WRK (no
   permitted price source) open.
+
+------------------------------------------------------------------------
+
+2026-09-26 (round 13, 16:35-17:53 KST) · Codex + Claude Code changes (+ Actions runs #54-#57) → Next AI
+- Reproduced a83fb64 baseline: 291/291. Verified collision split, historical-name lookup, ownership-filing CUSIP
+  attestation, and fail-closed unresolved/collision/missing-CUSIP Sufficiency behavior.
+- Found and fixed a remaining identity defect: a Schedule 13D/G can appear through a submissions CIK that is not the
+  filing's issuer. Identity now comes from the EDGAR index-header SUBJECT COMPANY CIK; submissions CIK is discovery only.
+  Partial member-CUSIP maps also fail closed. Merged the concurrent 10-document search and PIT-registrant tie-break.
+- Final merged baseline with OWL class-economics evidence: 293/293 PASS.
+- Run #56: corrected reference identity/coverage passed, but OWL stayed not-rankable because its evidence arrived after
+  the run started; Official remained suspended.
+- Run #57: Russell 991 members; missing/not-rankable/non-escrow-unresolved/collisions/missing-CUSIPs all zero. Sufficiency,
+  Promotion Gate v2, and consistency 500/500 PASS; blockers zero; cutoff $15.422B. This round recorded 2024-12-31 as
+  Official RESTORED; round 14 supersedes that statement because the persisted Official artifact was not rebuilt.
+- 2024-09-30 remains SUSPENDED pending independent corrected re-run. 2024-06-30 remains open with C-34 WRK and C-35 GRAL.
+- Track B Personal Investment Layer stayed P0 FROZEN and untouched.
+
+------------------------------------------------------------------------
+
+2026-09-26 (round 14, 18:00 KST) · Codex / fail-closed Official artifact correction
+- Rechecked the persisted Official artifact after run #57. The gate report passes and its internal audited candidates are
+  consistent 500/500, but workflow input `walk_forward_dates` was blank, so `official_pipeline.py` did not run.
+- `official_snapshot_2024-12-31.json` is therefore still the superseded pre-C-36 snapshot (`uni_0ad936238f45`, cutoff
+  $15.338B, TPR rank 500). Corrected run #57 instead has OWL rank 336 at $27.633B, ALGN rank 500 at $15.422B, and no FNF.
+- Corrected state: 2024-12-31 gate PASS / Official restoration PENDING artifact rebuild; 2024-09-30 SUSPENDED; 2024-06-30
+  open. Pre-C-36 single_as_of and benchmark remain superseded. No Track B or policy changes.
+
+------------------------------------------------------------------------
+
+2026-09-26 (round 15, 18:38 KST) · Codex (+ Actions runs #58-#59) → Next AI
+- Run #58 regenerated the corrected 2024-12-31 membership but exposed independently minted Gate/Official universe IDs;
+  Official stayed SUSPENDED. Minimal Track A fix preserves the audited Gate universe ID after exact membership/order
+  comparison and fails closed if the Gate ID is absent. Workflow gained a validated committed-Gate reuse mode.
+- 294/294 full regression and 102/102 targeted Official identity regressions PASS; no Track B code changed.
+- Run #59 (id 36233121639, evidence commit 1832747): Gate ID = Official ID = `uni_cf6aa3403869`; 500/500 membership,
+  order/rank, market cap and cutoff identical; #500 ALGN; FNF absent; all share/price provenance preserved.
+- Corrected single_as_of and real 500-company benchmark reran successfully (468 selected/linked; EW -0.01649309224255184;
+  benchmark 29.956 s, peak RSS 9,478.8 MB, 0 name errors). 2024-12-31 Official RESTORED. Run #41 and #58 results remain
+  superseded. 2024-09-30 remains SUSPENDED pending its independent corrected C-36 run; 2024-06-30 remains open.
+- Track B Personal Investment Layer remained P0 FROZEN and untouched. WRK remains look-only; GRAL remains a blocker.
+
+------------------------------------------------------------------------
+
+2026-09-26 (round 16, 18:41-19:07 KST) · Codex (+ Actions runs #60-#61) → Next AI
+- Run #60 independently rebuilt the corrected 2024-09-30 reference, Gate, Official snapshot, single_as_of, and benchmark.
+  Gate/Official ID `uni_e334f94a73c3`; 500/500 membership/order/mcap/provenance PASS; cutoff $15.574B; #500 ENPH.
+  2024-09-30 Official RESTORED; runs #46/#47 remain superseded.
+- Run #61 independently revalidated 2024-06-30 and failed closed: GRAL shares missing, WRK price missing, plus non-escrow
+  unresolved ARDAGH GROUP SA and Liberty SiriusXM holdings. Internal candidate consistency 500/500 passed, but the
+  independent reference, Sufficiency, and Promotion Gate v2 failed; no Official/single_as_of/benchmark was promoted.
+- Liberty SiriusXM CUSIP 531229813 now materially blocks the Gate and conflicts with the company-level model's inability
+  to infer tracking-stock economic rights. Raised C-37 for user decision; no policy or remapping was invented.
+- Because only two dates are corrected Official and 2024-06-30 is blocked, >=3-date walk-forward was not run.
+- Track B Personal Investment Layer stayed P0 FROZEN and untouched.
