@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001037646:0001037646-24-000027",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1037646/000103764624000027/mtd-20240630.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T04:37:46.167250+00:00",
+  "sha256": "a8ce999669ac017ef03cc1a9fc06a0172a439e1fafd92ae8e355dbe4835152f6",
+  "bytes": 1427566,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

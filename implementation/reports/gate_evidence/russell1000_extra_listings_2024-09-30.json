@@ -1147,6 +1147,13 @@
     "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
     "reference_name": "JUNIPER NETWORKS, INC."
   },
+  "r1000:0000018349": {
+    "yahoo": "SNV",
+    "cik": "0000018349",
+    "cik_method": "SEC_CIK_LOOKUP",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "SYNOVUS FINANCIAL CORP."
+  },
   "r1000:0001834622": {
     "yahoo": "HAYW",
     "cik": "0001834622",

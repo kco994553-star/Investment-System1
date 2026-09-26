@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001031308:0001031308-24-000009",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1031308/000103130824000009/bsy-20240630.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T04:36:29.259364+00:00",
+  "sha256": "2cb515ed489fd6994796f4de27b8916310a0f0dfddf71bd0718c48cc7a14dc06",
+  "bytes": 1935326,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

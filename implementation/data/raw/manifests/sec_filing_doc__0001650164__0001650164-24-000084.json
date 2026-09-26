@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001650164:0001650164-24-000084",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1650164/000165016424000084/tost-20231231.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T04:36:32.246139+00:00",
+  "sha256": "06c3fc5cfb9db76d617f818950b466bf1e5158ef7b31f06395ea512823d24858",
+  "bytes": 2119678,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

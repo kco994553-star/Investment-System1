@@ -4056,8 +4056,6 @@
       ]
     }
   ],
-  "members_not_in_pool_without_current_ticker": [
-    "0000018349"
-  ],
+  "members_not_in_pool_without_current_ticker": [],
   "note": "Russell 1000 fund holdings as reported to the SEC for the as_of date (filed after as_of: a dated historical record, used for validation, not as information available at as_of)."
 }
