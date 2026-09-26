@@ -120,7 +120,8 @@ jobs:
       - name: Fetch delisted S&P CIK candidates (verified later against SEC submissions names)
         if: inputs.skip_fetch != 'true'
         run: |
-          CIKS=$(python -c "import json;print(','.join(c['cik'] for c in json.load(open('reports/gate_evidence/delisted_cik_candidates_2024-12-31.json'))['candidates']))")
+          C="reports/gate_evidence/delisted_cik_candidates_${{ inputs.as_of }}.json"; [ -f "$C" ] || C="reports/gate_evidence/delisted_cik_candidates_2024-12-31.json"
+          CIKS=$(python -c "import json,sys;print(','.join(c['cik'] for c in json.load(open(sys.argv[1]))['candidates']))" "$C")
           python tools/fetch_real_data.py --store data/raw --skip-tickers --ciks "$CIKS" > /tmp/run_cand.json
           python -c "import json,collections;d=json.load(open('/tmp/run_cand.json'));print(d['n_requested'],d['n_ok'],d['n_failed'],collections.Counter(r['status'] for r in d['log']))"
       - name: Fetch independent PIT reference (Russell 1000 ETF holdings from SEC Form NPORT-P for as_of) and resolve members
@@ -161,7 +162,10 @@ jobs:
         run: python tools/nport_reported_prices.py --store data/raw --as-of "${{ inputs.as_of }}"
       - name: Share-count diagnostics for PPLI and every cover-route-unresolved issuer (investigation only; post-as_of facts never applied)
         if: inputs.skip_fetch != 'true'
-        run: python tools/share_count_diagnostic.py --store data/raw --as-of "${{ inputs.as_of }}" --cik 0001800227 --cover-unresolved
+        run: |
+          R="reports/gate_evidence/russell1000_nport_${{ inputs.as_of }}.json"
+          MISS=""; [ -f "$R" ] && MISS=$(python -c "import json,sys;print(' '.join('--cik '+c for c in json.load(open(sys.argv[1])).get('members_not_in_pool_without_current_ticker') or []))" "$R")
+          python tools/share_count_diagnostic.py --store data/raw --as-of "${{ inputs.as_of }}" --cik 0001800227 --cover-unresolved $MISS
       - name: Filing documents for issuers whose share count fails the scale cross-check (read by the gate chain)
         if: inputs.skip_fetch != 'true'
         run: |

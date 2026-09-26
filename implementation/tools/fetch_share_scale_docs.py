@@ -58,9 +58,13 @@ def main() -> None:
     ap.add_argument("--as-of", default="2024-12-31")
     ap.add_argument("--listings", type=Path, default=ROOT / "reports" / "us_ingested_facts_listings.json")
     ap.add_argument("--plan", type=Path, default=ROOT / "reports" / "gate_evidence" / "missing_large_cap_priority_plan_2024-12-31.json")
-    ap.add_argument("--cik-candidates", type=Path, default=ROOT / "reports" / "gate_evidence" / "delisted_cik_candidates_2024-12-31.json")
+    ap.add_argument("--cik-candidates", type=Path, help="default delisted_cik_candidates_<as_of>.json, else the 2024-12-31 file")
     ap.add_argument("--extra-listings", type=Path, action="append", default=[])
     a = ap.parse_args()
+    if a.cik_candidates is None:  # point-in-time CIK corrections are per as_of (e.g. BLK holding-company reorganisation 2024-10-01)
+        _ge = ROOT / "reports" / "gate_evidence"
+        a.cik_candidates = next(p for p in (_ge / f"delisted_cik_candidates_{a.as_of}.json", _ge / "delisted_cik_candidates_2024-12-31.json")
+                                if p.exists() or p.name.endswith("2024-12-31.json"))
     frd, chain = _load("fetch_real_data"), _load("run_top500_gate_chain")
     store = RawDatasetStore(a.store)
     d = datetime.fromisoformat(a.as_of + "T00:00:00+00:00")
@@ -72,6 +76,14 @@ def main() -> None:
     listings, _ = chain.company_level_listings(store, rows)
     listings, _ = chain.eligibility_filter(store, listings, d)
     flagged = flagged_issuers(store, listings, d, chain)
+    # issuers the cover route leaves unresolved also need their cover-page text (MTD: no dei fact; DKS/IBKR mappings)
+    _, unresolved = chain.cover_mcap_overrides(store, listings, d)
+    seen = {r["cik"] for r in flagged}
+    for cid in unresolved:
+        c = str(listings[cid].get("cik") or "")
+        if c.isdigit() and c.zfill(10) not in seen:
+            flagged.append({"cik": c.zfill(10), "symbol": listings[cid].get("yahoo"), "reason": f"COVER_UNRESOLVED:{unresolved[cid]}"})
+            seen.add(c.zfill(10))
     log: list[dict] = []
     for r in flagged:
         f = select_filing(load_submissions_merged(store, r["cik"])[0] or {}, d)
@@ -87,7 +99,7 @@ def main() -> None:
     (store.root / f"share_scale_run_{int(datetime.now(timezone.utc).timestamp())}.json").write_text(json.dumps(rep, indent=1, default=str))
     frd.write_store_index(store)
     print(json.dumps({"n_eligible": len(listings), "n_flagged": len(flagged),
-                      "flagged": [(r["symbol"], round(r["ratio"], 4)) for r in flagged]}, indent=1)[:4000])
+                      "flagged": [(r["symbol"], round(r["ratio"], 4) if "ratio" in r else r.get("reason")) for r in flagged]}, indent=1)[:4000])
 
 
 if __name__ == "__main__":

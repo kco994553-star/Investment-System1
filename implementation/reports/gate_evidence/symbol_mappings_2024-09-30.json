@@ -1,0 +1,37 @@
+{
+ "kind": "REVIEWED_SYMBOL_MAPPINGS",
+ "as_of": "2024-09-30",
+ "method": "Undimensioned cover TradingSymbol with several class members and a title without class letter. The chain re-verifies each quote verbatim in the stored filing (same CIK, filed on or before as_of): it must name every other class as not listed/traded, or name the listed class together with the symbol. Unverified -> fail-closed.",
+ "issuers": {
+  "0001089063": {
+   "symbol": "DKS",
+   "entity_name": "DICK'S SPORTING GOODS, INC.",
+   "listed_member": "CommonClassAMember",
+   "reason": "Cover XBRL (10-Q filed 2024-11-27) tags DKS undimensioned with title 'Common Stock, $0.01 par value'; shares are tagged CommonClassAMember 57,903,976 and CommonClassBMember 23,570,633. The 10-K states Class B is not listed, so the listed common stock is the other member.",
+   "citations": [
+    {
+     "artifact_id": "sec_filing_doc:0001089063:0001089063-24-000037",
+     "form": "10-K",
+     "filed": "2024-03-28",
+     "quote": "We also have shares of Class B common stock outstanding, which are not listed or traded on any stock exchange or other market"
+    }
+   ]
+  },
+  "0001381197": {
+   "symbol": "IBKR",
+   "entity_name": "Interactive Brokers Group, Inc.",
+   "listed_member": "CommonClassAMember",
+   "reason": "Cover XBRL (10-Q filed 2024-11-07) tags IBKR undimensioned with title 'Common Stock, par value $.01 per share'; shares are CommonClassAMember 108,878,979 and CommonClassBMember 100. The 10-K defines 'IBKR shares' as the Class A common stock.",
+   "citations": [
+    {
+     "artifact_id": "sec_filing_doc:0001381197:0001381197-24-000083",
+     "form": "10-K",
+     "filed": "2024-02-27",
+     "quote": "Unless otherwise indicated, the terms “common stock” and “IBKR shares” refer to the Class A common stock of IBG, Inc"
+    }
+   ]
+  }
+ },
+ "derived_from": "2024-12-31",
+ "dropped": {}
+}

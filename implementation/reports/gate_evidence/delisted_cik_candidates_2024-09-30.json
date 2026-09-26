@@ -1,0 +1,102 @@
+{
+ "kind": "DELISTED_SP500_CIK_CANDIDATES",
+ "as_of": "2024-09-30",
+ "note": "S&P 500 members on 2024-12-31 removed in 2025-26 (see sp500_changes_since_2025-01-01_raw.json) and absent from the current SEC company_tickers.json. CIKs are CANDIDATES only (analyst recall, 2026-09-25 Claude Code r6); run_top500_gate_chain.py accepts a candidate only if the fetched SEC submissions name/formerNames contains an expected token. Unverified candidates stay UNRESOLVED. 2026-09-25 r8: entries with replaces_current_cik=true correct listed tickers whose current CIK is a post-as_of successor entity; applied only after the same SEC-name verification. 2026-09-26: per-as_of copy for 2024-09-30 with BLK added (see entry note).",
+ "candidates": [
+  {
+   "ticker": "ANSS",
+   "cik": "0001013462",
+   "expect_name_tokens": [
+    "ANSYS"
+   ],
+   "removed": "2025-07-18"
+  },
+  {
+   "ticker": "DAY",
+   "cik": "0001725057",
+   "expect_name_tokens": [
+    "DAYFORCE",
+    "CERIDIAN"
+   ],
+   "removed": "2026-02-09"
+  },
+  {
+   "ticker": "HES",
+   "cik": "0000004447",
+   "expect_name_tokens": [
+    "HESS"
+   ],
+   "removed": "2025-07-23"
+  },
+  {
+   "ticker": "HOLX",
+   "cik": "0000859737",
+   "expect_name_tokens": [
+    "HOLOGIC"
+   ],
+   "removed": "2026-04-09"
+  },
+  {
+   "ticker": "IPG",
+   "cik": "0000051644",
+   "expect_name_tokens": [
+    "INTERPUBLIC"
+   ],
+   "removed": "2025-11-28"
+  },
+  {
+   "ticker": "JNPR",
+   "cik": "0001043604",
+   "expect_name_tokens": [
+    "JUNIPER"
+   ],
+   "removed": "2025-07-09"
+  },
+  {
+   "ticker": "K",
+   "cik": "0000055067",
+   "expect_name_tokens": [
+    "KELLANOVA",
+    "KELLOGG"
+   ],
+   "removed": "2025"
+  },
+  {
+   "ticker": "WBA",
+   "cik": "0001618921",
+   "expect_name_tokens": [
+    "WALGREENS"
+   ],
+   "removed": "2025-08-28"
+  },
+  {
+   "ticker": "XOM",
+   "cik": "0000034088",
+   "expect_name_tokens": [
+    "EXXON MOBIL"
+   ],
+   "replaces_current_cik": true,
+   "reason": "listings/current SEC tickers map XOM to CIK 0002115436, which has no 10-K/10-Q before 2024-12-31"
+  },
+  {
+   "ticker": "PSKY",
+   "cik": "0000813828",
+   "expect_name_tokens": [
+    "PARAMOUNT GLOBAL",
+    "CBS",
+    "VIACOM"
+   ],
+   "replaces_current_cik": true,
+   "reason": "PSKY (Paramount Skydance, CIK 0002041610, formed 2025) was Paramount Global (PARA) on 2024-12-31"
+  },
+  {
+   "ticker": "BLK",
+   "cik": "0001364742",
+   "expect_name_tokens": [
+    "BLACKROCK"
+   ],
+   "replaces_current_cik": true,
+   "note": "BlackRock holding-company reorganisation 2024-10-01 (GIP acquisition): the current BLK CIK 0002012383 files from the Q3-2024 10-Q; on 2024-09-30 the registrant filing 10-K/10-Q was CIK 0001364742 (now 'BlackRock Finance'). Candidate only: accepted after the SEC-name check and the PIT periodic-filing eligibility test."
+  }
+ ]
+}

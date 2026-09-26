@@ -1572,3 +1572,26 @@ def test_run37_official_pipeline_rebuilds_snapshot_only_from_passing_gate_eviden
     op.main()
     out = json.loads((tmp_path / "official_pipeline_2024-06-30_2024-09-30.json").read_text())
     assert out["walk_forward_status"] == "BLOCKED_FEWER_THAN_3_DATES" and out["status"] == "BLOCKED_NO_OFFICIAL_DATE"
+
+
+def test_run40_dated_evidence_keeps_only_citations_filed_on_or_before_the_target_date():
+    dde = _mod("dde", "derive_dated_evidence.py")
+    ce = {"as_of": "2024-12-31", "issuers": {
+        "1": {"symbol": "OLD", "classes": {"CommonClassBMember": {"basis": "CONVERTIBLE_INTO_LISTED", "citations": [
+            {"filed": "2024-02-23", "supports": ["conversion_ratio"], "quote": "q1"},
+            {"filed": "2024-10-31", "supports": ["equal_dividend_context"], "quote": "q2"}]}}},
+        "2": {"symbol": "NEW", "classes": {"CommonClassDMember": {"basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED", "citations": [
+            {"filed": "2024-02-27", "supports": ["exchange_ratio"], "quote": "q3"},
+            {"filed": "2024-11-12", "supports": ["pairing"], "quote": "q4"}]}}}}}
+    doc, dropped = dde.derive_class_economics(ce, "2024-09-30")
+    assert list(doc["issuers"]) == ["1"] and [c["filed"] for c in doc["issuers"]["1"]["classes"]["CommonClassBMember"]["citations"]] == ["2024-02-23"]
+    assert "NEW" in dropped and doc["derived_from"] == "2024-12-31" and doc["as_of"] == "2024-09-30"
+    sm = {"as_of": "2024-12-31", "issuers": {"9": {"symbol": "LATE", "citations": [{"filed": "2024-11-01", "quote": "x"}]}}}
+    doc2, dropped2 = dde.derive_symbol_mappings(sm, "2024-09-30")
+    assert doc2["issuers"] == {} and dropped2 == {"LATE": "NO_CITATION_FILED_ON_OR_BEFORE_AS_OF"}
+    # the committed 2024-09-30 files contain no citation filed after 2024-09-30
+    ge = Path(dde.GE)
+    for name in ("class_economics_2024-09-30.json", "symbol_mappings_2024-09-30.json"):
+        d = json.loads((ge / name).read_text(encoding="utf-8"))
+        cites = [c for v in d["issuers"].values() for cd in (v.get("classes") or {"_": v}).values() for c in cd.get("citations") or []]
+        assert cites and all(c["filed"] <= "2024-09-30" for c in cites), name

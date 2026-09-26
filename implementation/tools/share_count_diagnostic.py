@@ -128,7 +128,7 @@ def main() -> None:
         base = rd(ROOT / "reports" / "us_ingested_facts_listings.json") or {}
         base.update(rd(GE / f"russell1000_extra_listings_{a.as_of}.json") or {})
         rows, _ = chain.extend_listings(store, base, rd(GE / f"missing_large_cap_priority_plan_{a.as_of}.json"),
-                                        chain.verify_cik_candidates(store, rd(GE / f"delisted_cik_candidates_{a.as_of}.json")))
+                                        chain.verify_cik_candidates(store, rd(GE / f"delisted_cik_candidates_{a.as_of}.json") or rd(GE / "delisted_cik_candidates_2024-12-31.json")))
         listings, _ = chain.company_level_listings(store, rows)
         listings, _ = chain.eligibility_filter(store, listings, d)
         _, unresolved = chain.cover_mcap_overrides(store, listings, d)

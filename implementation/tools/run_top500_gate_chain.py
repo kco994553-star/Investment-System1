@@ -999,13 +999,17 @@ def main() -> None:
     ap.add_argument("--exchange-reference", type=Path, default=GE / "exchange_reference_wfe_2024-12-31.json")
     ap.add_argument("--eligibility-evidence", type=Path)
     ap.add_argument("--chart-range", default="5y")
-    ap.add_argument("--cik-candidates", type=Path, default=GE / "delisted_cik_candidates_2024-12-31.json")
+    ap.add_argument("--cik-candidates", type=Path, help="default delisted_cik_candidates_<as_of>.json, else the 2024-12-31 file")
     ap.add_argument("--class-economics", type=Path, help="reviewed determinations (default class_economics_<as_of>.json if present)")
     ap.add_argument("--nport-exception", type=Path, help="default nport_price_exception_<as_of>.json if present")
     ap.add_argument("--symbol-mappings", type=Path, help="default symbol_mappings_<as_of>.json if present")
     ap.add_argument("--nport-prices", type=Path, help="default nport_reported_prices_<as_of>.json if present")
     ap.add_argument("--out", type=Path)
     a = ap.parse_args()
+    if a.cik_candidates is None:  # point-in-time CIK corrections are per as_of (e.g. BLK holding-company reorganisation 2024-10-01)
+        _ge = ROOT / "reports" / "gate_evidence"
+        a.cik_candidates = next(p for p in (_ge / f"delisted_cik_candidates_{a.as_of}.json", _ge / "delisted_cik_candidates_2024-12-31.json")
+                                if p.exists() or p.name.endswith("2024-12-31.json"))
     rd = lambda p: json.loads(p.read_text(encoding="utf-8"))  # noqa: E731
     # the S&P detector reference is dated; only a reference for this as_of is used (none -> no detector)
     det = a.detector_reference or [p for p in [GE / f"sp500_reconstructed_{a.as_of}.json"] if p.exists()]
