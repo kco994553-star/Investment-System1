@@ -1804,3 +1804,16 @@ def test_fetch_stooq_prices_written_only_after_calibration_and_only_if_yahoo_sti
     import inspect
     src = inspect.getsource(fsp.run)
     assert "YAHOO_AS_OF_BAR_PRESENT" in src and "NOT_WRITTEN_CALIBRATION_FAILED" in src
+
+
+def test_share_count_diagnostic_distribution_sentences_catches_share_count_without_the_word_outstanding(tmp_path):
+    """Run #49: GRAL (GRAIL, Inc.) spin-off 8-Ks scored 0 cover_sentences matches (its distribution-notice wording
+    states a share count without the word 'outstanding' nearby, unlike AMTM's). distribution_sentences must find a
+    number-of-shares statement by proximity to 'shares' alone, so the diagnostic surfaces real candidate quotes
+    instead of a silent empty list."""
+    scd = _mod("scd_dist", "share_count_diagnostic.py")
+    text = ("Pursuant to the Separation and Distribution Agreement, Illumina distributed 100,000,000 shares of "
+            "GRAIL common stock, par value $0.01 per share, to holders of Illumina common stock.")
+    hits = scd.distribution_sentences(text)
+    assert hits and "100,000,000" in hits[0] and "shares" in hits[0]
+    assert scd.distribution_sentences("Nothing relevant here at all, no numbers of any kind.") == []

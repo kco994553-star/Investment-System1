@@ -99,6 +99,13 @@ def cover_sentences(text: str) -> list[str]:
     return [m.group(0).strip()[:600] for m in pat.finditer(text)][:20]
 
 
+def distribution_sentences(text: str) -> list[str]:
+    """Sentences stating a number of shares distributed/issued in a spin-off completion notice (wording that names
+    a count without the word 'outstanding' nearby, e.g. GRAIL/AMTM Item 3.03/5.01 8-Ks), first 20 matches."""
+    pat = re.compile(r"[^.]{0,250}\b\d[\d,]{5,}\b[^.]{0,50}\bshares\b[^.]{0,200}", re.I)
+    return [m.group(0).strip()[:600] for m in pat.finditer(text)][:20]
+
+
 def symbol_sentences(text: str, symbols: list[str]) -> list[str]:
     """Sentences naming a trading symbol (which class is listed where), first 12."""
     out = []
@@ -189,7 +196,8 @@ def diagnose(store, frd, frc, cik: str, d: datetime, as_of: str, no_fetch: bool)
                 frd._throttle(log, 0.15)
             if store.has(did):
                 txt = frc.html_text(store.get_bytes(did))
-                docs.append({**lf, "artifact_id": did, "cover_sentences": cover_sentences(txt), "symbol_sentences": []})
+                docs.append({**lf, "artifact_id": did, "cover_sentences": cover_sentences(txt), "symbol_sentences": [],
+                             "distribution_sentences": distribution_sentences(txt), "text_len": len(txt)})
     rep["documents"] = docs
     rep["note"] = ("Diagnostic only. POST_AS_OF_FILING rows are investigation evidence and are never used as the as_of "
                    "share count (user decision 2026-09-26).")
