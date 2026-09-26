@@ -21,6 +21,7 @@ import json
 import statistics
 import sys
 import time
+from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 
@@ -58,6 +59,12 @@ def load_official(as_of: str) -> tuple[object | None, dict]:
     gate_ids = [r["company_id"] for r in ev["top500"]]
     if list(snap.ids()) != gate_ids:
         return None, {"as_of": as_of, "status": "REBUILT_SNAPSHOT_DIFFERS_FROM_GATE"}
+    gate_universe_id = cons.get("universe_id")
+    if not gate_universe_id:
+        return None, {"as_of": as_of, "status": "GATE_UNIVERSE_ID_MISSING"}
+    # UniverseEngine uses a fresh UUID for each construction.  This is the same audited universe, not a new universe:
+    # after exact member/order verification, preserve the Gate evidence identity instead of minting a different one.
+    snap = replace(snap, universe_id=gate_universe_id)
     return snap, {"as_of": as_of, "status": "OFFICIAL", "universe_id": snap.universe_id, "n_members": len(snap.members),
                   "cutoff_mcap": rep.get("cutoff_mcap"), "gate_evidence": p.name}
 
