@@ -433,7 +433,9 @@ def unresolved_reference_equities(unresolved) -> list[dict]:
     for u in unresolved or []:
         if is_escrow_cusip(u.get("cusip")):
             continue
-        out.append({k: u.get(k) for k in ("name", "cusip", "reason", "candidates", "name_matches")})
+        out.append({k: u.get(k) for k in (
+            "name", "title", "cusip", "isin", "asset_cat", "issuer_cat", "country", "value", "balance", "units",
+            "currency", "fair_value_level", "payoff_profile", "reason", "candidates", "name_matches")})
     return out
 
 

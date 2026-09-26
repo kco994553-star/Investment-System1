@@ -103,7 +103,11 @@ def subject_company_ciks(index_headers: bytes) -> set[str]:
 
 
 def parse_nport(xml_bytes: bytes) -> dict:
-    """{'report_date', 'series_name', 'holdings': [{name, cusip, isin, asset_cat, country, value}]}."""
+    """Parse identity and valuation evidence for every reported holding.
+
+    Valuation fields stay attached even when identity resolution later fails, allowing gate evidence to distinguish a
+    real position from a zero-value residue without changing the fail-closed membership policy.
+    """
     root = ET.fromstring(xml_bytes)
     out = {"report_date": None, "series_name": None, "holdings": []}
     for e in root.iter():
@@ -113,25 +117,55 @@ def parse_nport(xml_bytes: bytes) -> dict:
         elif n == "seriesName" and out["series_name"] is None:
             out["series_name"] = (e.text or "").strip()
         elif n == "invstOrSec":
-            h = {"name": None, "cusip": None, "isin": None, "asset_cat": None, "country": None, "value": None}
+            h = {"name": None, "title": None, "cusip": None, "isin": None, "asset_cat": None, "issuer_cat": None,
+                 "country": None, "value": None, "balance": None, "units": None, "currency": None,
+                 "fair_value_level": None, "payoff_profile": None}
             for c in e.iter():
                 cn = _local(c.tag)
                 if cn == "name" and h["name"] is None:
                     h["name"] = (c.text or "").strip()
+                elif cn == "title" and h["title"] is None:
+                    h["title"] = (c.text or "").strip()
                 elif cn == "cusip":
                     h["cusip"] = (c.text or "").strip()
                 elif cn == "isin":
                     h["isin"] = c.get("value") or (c.text or "").strip()
                 elif cn == "assetCat":
                     h["asset_cat"] = (c.text or "").strip()
+                elif cn == "issuerCat":
+                    h["issuer_cat"] = (c.text or "").strip()
                 elif cn == "invCountry":
                     h["country"] = (c.text or "").strip()
+                elif cn == "balance":
+                    h["balance"] = (c.text or "").strip()
+                elif cn == "units":
+                    h["units"] = (c.text or "").strip()
+                elif cn == "curCd":
+                    h["currency"] = (c.text or "").strip()
+                elif cn == "fairValLevel":
+                    h["fair_value_level"] = (c.text or "").strip()
+                elif cn == "payoffProfile":
+                    h["payoff_profile"] = (c.text or "").strip()
                 elif cn == "valUSD":
                     try:
                         h["value"] = float(c.text)
                     except (TypeError, ValueError):
                         pass
             out["holdings"].append(h)
+    return out
+
+
+def demoted_member_rows(member: dict, holdings: list[dict], cik: str) -> list[dict]:
+    """Restore exact source rows when a historical-name member fails the PIT-registrant check."""
+    by_identity = {}
+    for h in holdings:
+        by_identity.setdefault((h.get("name"), h.get("cusip")), []).append(h)
+    out = []
+    for name, cusip in zip(member.get("names") or [], member.get("cusips") or []):
+        matches = by_identity.get((name, cusip)) or []
+        source = matches.pop(0) if matches else {"name": name, "cusip": cusip}
+        out.append({**source, "name_matches": 1, "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
+                    "candidates": [cik]})
     return out
 
 
@@ -441,8 +475,7 @@ def main() -> None:
                     get(f"submissions:{c}", SUBMISSIONS_URL.format(cik=c), "SEC_SUBMISSIONS")
                     if not pit_registrant(store, c, d):
                         v = members.pop(c)
-                        unresolved.append({"name": v["names"][0], "cusip": v["cusips"][0], "name_matches": 1,
-                                           "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT", "candidates": [c]})
+                        unresolved.extend(demoted_member_rows(v, eq, c))
                 # (2) members not in the pool without a current ticker: ticker AT as_of from the cover page
                 as_of_ticker = {}
                 for c in sorted(c for c in members if c not in pool_ciks and not tick.get(c)):
