@@ -210,3 +210,21 @@ computable), Universe Completeness (FAIL), Top-500 Sufficiency (FAIL, 282 missin
 Promotion Gate v2 (FAIL). 173/173 tests. REAL-DATA VERIFIED still NO. The full ingest ->
 evaluate_reference_coverage -> gate pipeline this round's instruction requested is ready to
 run exactly as specified the moment a network-enabled runner is available.
+
+## Current overlay — 2026-09-27 08:24 KST / Codex round 18
+
+This overlay supersedes stale implementation/status statements above without deleting their history.
+
+- Track A REAL-DATA: 2024-12-31 and 2024-09-30 corrected Official RESTORED; 2024-06-30 NOT OFFICIAL.
+  Remaining blockers are C-34 WRK, C-35 GRAL, C-37 Liberty SiriusXM, and C-38 Ardagh. Only two corrected Official
+  dates exist, so >=3-date walk-forward has not run and backend Freeze is not declared.
+- Track A round-17 evidence patch: local commit `bdf0939` preserves complete unresolved N-PORT source-row evidence
+  without changing Gate policy. Full regression re-run 2026-09-27: 295/295 PASS.
+- Track B Personal Investment Layer: Architecture FROZEN; P0 Common Contracts IMPLEMENTED+FROZEN at `48a6243`;
+  P1+ NOT STARTED. Dedicated tests 13/13 PASS; package/import boundary remains isolated.
+- Track C Experiment & Validation Layer: `EVL_SPEC_v0.1` registered; DESIGN FROZEN / IMPLEMENTATION NOT STARTED.
+  Track A owns data/Universe/provenance, Track C owns experiment/validation/Official integrated-profile promotion,
+  and Track B consumes Official profiles. Track C C0–C10 implementation remains closed until Track A REAL-DATA
+  baseline Freeze.
+- All Official tracks are Pre-Tax. Tax engine, tax-lot optimization, tax-loss harvesting, and after-tax Official
+  scoring remain OUT_OF_SCOPE.

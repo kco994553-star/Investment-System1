@@ -308,9 +308,10 @@ c21-raw-store-v2-* and run artifacts; manifests + STORE_INDEX in git. Remaining 
 (PINC, WOLF, PPLI), tracked in CURRENT_HANDOFF, not store recovery.
 
 ## Personal Investment Layer v1 intake · 2026-09-26 · Claude Code
-Source: `Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md` (additive, Architecture FROZEN, Implementation NOT
-STARTED). Checked against code at commit 71976ed. Nothing below is resolved by guess; the Personal Layer (PIL) is not
-implemented and no PIL code was added.
+Source: `Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md` (additive, Architecture FROZEN). The original
+intake at commit 71976ed found Implementation NOT STARTED. Current overlay (2026-09-27): P0 Common Contracts were added
+in isolated commit `48a6243`, are now IMPLEMENTED+FROZEN, and pass 13/13 tests; P1+ remains NOT STARTED. Nothing below
+is resolved by guess, and open upstream/contract items remain open unless their section explicitly says otherwise.
 
 ## C-24 Two "StrategyProfile" objects → OPEN-NONBLOCKING (resolve at PIL P1)
 Evidence: `src/investment_system/contracts/strategy.py` StrategyProfile = PROVISIONAL parameter pack (6 configurable keys,
@@ -460,3 +461,19 @@ that different tracking groups have the same economic rights or decide whether e
 Because the unresolved holding now makes the independent Sufficiency reference fail, this affects possible Official
 membership and requires the user's requested policy decision. No CIK remap, class aggregation, or new eligibility rule
 was introduced. Until resolved, 2024-06-30 stays NOT OFFICIAL and walk-forward stays blocked.
+
+## C-38 Ardagh positive delisted/private residual in N-PORT superset -> OPEN-BLOCKING, USER DECISION (Track A, 2026-09-26 20:54 KST)
+The 2024-06-30 IWB N-PORT source (accession 0001752724-24-189684) reports ARDAGH GROUP SA, CUSIP L0223L101,
+ISIN LU1565283667, as common equity: 12,001 NS, valUSD $76,686.39, USD, long, fair-value level 2. It is therefore
+neither a zero-value residue nor an escrow line. SEC CIK 0001689662 is the unique historical-name identity, but the
+issuer filed Form 25 on 2021-10-06 to remove its Class A common shares from NYSE and Form 15 on 2021-10-18 to terminate
+registration/suspend reporting (115 record holders); SEC submissions show no ticker/exchange and no later periodic
+issuer filing. This explains the PIT-registrant rejection but does not authorize silently deleting a positive holding
+from the independent superset reference.
+
+Decision required: either (a) keep every positive non-escrow EC reference line fail-closed, leaving Ardagh unresolved,
+or (b) adopt an explicit, evidence-backed rule for dated reference-fund holdings that were already delisted/private at
+as_of. Option (b) is a new Universe/reference eligibility policy and may affect Official membership, so it was not
+implemented. The round-17 code change only preserves each unresolved source row's identity/valuation fields through the
+resolver and Gate report; it does not change membership or pass criteria. Until decided, 2024-06-30 remains NOT OFFICIAL
+and walk-forward remains blocked.

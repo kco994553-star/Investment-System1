@@ -73,3 +73,14 @@ Missing Artifact Register: Recovery BLOCKED. C-01/C-03/C-08/C-16 OPEN.
 Update · Module Progress Ledger 2026-09-23  
 모듈별 진행률은 `Investment-System1 · Module Progress Ledger 2026-09-23`을 본다.  
 설계 Freeze와 이 허브 재실행(VERIFIED=0)을 한 숫자로 합치지 않는다.
+
+Update · Track separation 2026-09-27
+
+- Track A: REAL-DATA Main Track. 2024-12-31/2024-09-30 corrected Official RESTORED; 2024-06-30 NOT OFFICIAL.
+  Three-date walk-forward and backend Freeze remain blocked.
+- Track B: Personal Investment Layer. Architecture FROZEN; P0 Common Contracts IMPLEMENTED+FROZEN; P1+ NOT STARTED.
+- Track C: Experiment & Validation Layer, `EVL_SPEC_v0.1`. DESIGN FROZEN / IMPLEMENTATION NOT STARTED. It validates
+  integrated Aggressive/Balanced/Defensive candidates and owns their Official promotion after Track A baseline Freeze.
+- Ownership: Track A data/Universe/provenance → Track C experiment/validation/promotion → Track B Official-profile
+  consumption. Upstream QGV/Technical/Macro definitions and core scores are not redesigned.
+- Tax: Official tracks remain Pre-Tax; tax functionality is OUT_OF_SCOPE.

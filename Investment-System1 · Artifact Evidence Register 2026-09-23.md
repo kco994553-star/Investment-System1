@@ -179,3 +179,27 @@ No new evidence produced -- C-21 reconfirmed BLOCKED, no workaround forced per i
   unresolved ARDAGH GROUP SA (L0223L101) and LIBERTY SIRIUS XM (531229813). Sufficiency/Promotion Gate v2 FAIL.
 - Pipeline correctly emitted `BLOCKED_NO_OFFICIAL_DATE`; no single_as_of, benchmark, or walk-forward result was promoted.
   WRK N-PORT remained investigation-only; GRAL's pro-forma count was not promoted. Liberty tracking-stock policy is C-37.
+
+22. Update 2026-09-26 20:54 KST · Codex / Ardagh source-row audit and evidence-preservation fix
+- Re-read SEC N-PORT accession 0001752724-24-189684. ARDAGH GROUP SA (L0223L101 / LU1565283667) is a positive EC
+  position: 12,001 NS, valUSD $76,686.39, long, fair-value level 2. LIBERTY SIRIUS XM (531229813 / US5312298137) is
+  55,497 NS, valUSD $1,229,258.55, long, fair-value level 1. Neither is a zero-value or escrow residue.
+- SEC Form 25 (filed 2021-10-06) removed Ardagh Class A shares from NYSE; Form 15 (filed 2021-10-18) terminated
+  registration/suspended reporting and stated 115 record holders. This converts the Ardagh item from an identity-search
+  gap into policy conflict C-38: positive delisted/private fund residue versus the listed-company Universe. Structured
+  evidence: implementation/reports/gate_evidence/nport_unresolved_source_audit_2024-06-30.json.
+- Minimal Track A patch retains title/ISIN/category/country/value/balance/units/currency/fair-value-level/payoff profile
+  when a historical-name member is demoted and carries those fields into Sufficiency evidence. Gate criteria remain
+  unchanged and fail-closed. Targeted N-PORT/gate tests 103/103 PASS; full regression 295/295 PASS. Track B unchanged.
+
+23. Update 2026-09-27 08:24 KST · Codex / Track A-B-C relay reconciliation
+- Fresh fetch: local HEAD `bdf0939`; remote branch `4f08571`; local ahead 17 / behind 0; worktree clean before this
+  documentation update. Existing history including `069e7c2` was not rewritten or squashed.
+- Baseline directly re-run: 295/295 PASS via mini_pytest shim. Track B dedicated suite: 13/13 PASS.
+- Track B static dependency audit: 10 personal package files; no import out to Track A and no Track A reverse runtime
+  import into `investment_system.personal`. Diff from its implementation commit `48a6243` is zero.
+- Track C repository audit: no EVL spec or implementation existed. Registered
+  `Investment-System1 · Experiment & Validation Layer Specification v0.1.md` as `EVL_SPEC_v0.1`, DESIGN FROZEN /
+  IMPLEMENTATION NOT STARTED. No Track C code or tests were created.
+- SSoT-only reconciliation: Master/Project/Current and the Track B handoff now reflect P0 IMPLEMENTED+FROZEN,
+  Track C ownership/dependency, Pre-Tax scope, and the unchanged Track A priority/blockers. No new feature was added.

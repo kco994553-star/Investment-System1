@@ -1,12 +1,13 @@
 Investment-System1 · CURRENT_HANDOFF
 
-Timestamp: 2026-09-26 19:07 KST (round 16)
+Timestamp: 2026-09-27 08:24 KST (round 18)
 AI: Codex + Claude Code changes + GitHub Actions workflow c21-real-data (runs #54-#61)
 Repo/branch: kco994553-star/Investment-System1 @ claude/investment-system-top500-validation-alrugm
 Handoff Status: OPEN — C-36 is PARTIALLY RESOLVED. 2024-12-31 and 2024-09-30 each passed an independent corrected Gate,
 Official artifact identity/provenance verification, single_as_of, and real 500-company benchmark; both dates are
 RESTORED. 2024-06-30 independently revalidated fail-closed in run #61 and remains NOT OFFICIAL: GRAL (C-35), WRK (C-34),
-ARDAGH GROUP SA identity, and Liberty SiriusXM tracking-stock identity/economics (C-37) block Sufficiency. Track B (PIL)
+ARDAGH GROUP SA delisted residual eligibility (C-38), and Liberty SiriusXM tracking-stock identity/economics (C-37)
+block Sufficiency. Track B (PIL)
 remains frozen at P0.
 All user-facing times are KST (UTC+9).
 
@@ -40,7 +41,7 @@ benchmark: 28.362 s, peak RSS 9,534.8 MB, 0 name errors. 2024-09-30 Official is 
 2024-06-30 corrected revalidation (run #61, id 36234273515, evidence commit 2e04c1b): NOT OFFICIAL. Internal candidate
 consistency still passes 500/500, cutoff $14,021,530,297.505974, but corrected Russell N-PORT reference fails its own
 checks: GRAL and WRK are present but not rankable; ARDAGH GROUP SA (CUSIP L0223L101) and LIBERTY SIRIUS XM
-(CUSIP 531229813) are non-escrow unresolved PIT registrants. Sufficiency and Promotion Gate v2 FAIL. No Official snapshot,
+(CUSIP 531229813) are non-escrow unresolved holdings. Sufficiency and Promotion Gate v2 FAIL. No Official snapshot,
 single_as_of, benchmark, or walk-forward was promoted.
 - RKT/TPG/TOST: dated carry-over dropped their Aug-2024 10-Q citations; every claim re-proven from FY2023 10-Ks (filed
   Feb 2024) -> class_economics_2024-06-30.json (commit f0713ac), verified by run #51.
@@ -53,9 +54,23 @@ single_as_of, benchmark, or walk-forward was promoted.
 - Stooq fallback wired (calibrated, fail-closed) but unusable: bot challenge.
 - Liberty SiriusXM is now an actual Gate blocker. The existing company-level model cannot silently equate or aggregate
   tracking-stock economic rights. C-37 records the required user policy decision; no mapping/economic rule was invented.
+- Ardagh is not a zero-value residue: the source N-PORT reports 12,001 shares and $76,686.39 (fair-value level 2).
+  SEC Form 25/15 show its Class A shares left NYSE and registration/reporting ended in October 2021. Treating a positive
+  delisted/private fund residue as outside a superset reference requires a new eligibility rule, so C-38 is OPEN-BLOCKING.
+  The resolver now preserves original valuation/identity fields on unresolved rows; Gate behavior remains fail-closed.
 
 Track B — Personal Investment Layer v1: Architecture FROZEN; P0 Common Contracts implemented and FROZEN
-(src/investment_system/personal/, 13 tests). No P1 / broker / integration. C-24, C-25, C-28, C-29, C-30 undecided.
+(src/investment_system/personal/, 10 package files, 13 tests). P1+ NOT STARTED; no live broker/integration. Track B code
+has no Track A imports and Track A has no reverse runtime imports into personal/. C-24, C-25, C-28, C-29, C-30, C-33
+remain explicit upstream/contract items; none was resolved by inference. All Official tracks remain Pre-Tax.
 
-Tests: 294/294 (mini_pytest shim) on runs #59-#61; targeted Official identity regressions 102/102;
-py_compile and diff check PASS.
+Track C — Experiment & Validation Layer: `EVL_SPEC_v0.1` is registered as
+`Investment-System1 · Experiment & Validation Layer Specification v0.1.md`. Status is DESIGN FROZEN /
+IMPLEMENTATION NOT STARTED. Track C owns PIT experiments, validation, and Official Aggressive/Balanced/Defensive profile
+promotion; Track B is a consumer. Core scores, Official/Custom isolation, Trial Ledger completeness, Final Holdout
+isolation, invalidation propagation, tax exclusion, and fail-closed uncertainty are locked. C0 implementation must not
+start until Track A REAL-DATA baseline Freeze; current Track A is not frozen because 2024-06-30 is NOT OFFICIAL.
+
+Tests re-run 2026-09-27 KST: full 295/295 and Track B 13/13 PASS (mini_pytest shim). Targeted N-PORT/gate regressions
+previously 103/103; prior targeted Official identity regressions 102/102. Track C has no code/tests by design.
+py_compile and diff check PASS for the round-17 code patch.

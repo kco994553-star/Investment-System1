@@ -1519,3 +1519,30 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
   to infer tracking-stock economic rights. Raised C-37 for user decision; no policy or remapping was invented.
 - Because only two dates are corrected Official and 2024-06-30 is blocked, >=3-date walk-forward was not run.
 - Track B Personal Investment Layer stayed P0 FROZEN and untouched.
+
+------------------------------------------------------------------------
+
+2026-09-26 (round 17, 20:54 KST) · Codex → Next AI
+- Independently read the 2024-06-30 IWB N-PORT XML. Ardagh is a real positive EC position (12,001 shares,
+  $76,686.39, fair-value level 2), not a zero-value residue; Liberty SiriusXM is likewise positive.
+- SEC Form 25/15 establishes that Ardagh Class A left NYSE and registration/reporting ended in October 2021. Mapping it
+  to CIK 0001689662 would still leave a delisted/private issuer outside the current listed-company model. Raised C-38;
+  no eligibility exception or reference-line exclusion was invented.
+- Fixed only evidence loss: demoted historical-name rows now retain every original N-PORT identity/valuation field, and
+  Sufficiency evidence carries those fields. Gate behavior remains fail-closed. Targeted tests 103/103; full suite
+  295/295; Track B unchanged.
+- 2024-12-31 and 2024-09-30 remain corrected Official. 2024-06-30 remains NOT OFFICIAL on C-34/C-35/C-37/C-38;
+  walk-forward remains blocked.
+
+------------------------------------------------------------------------
+
+2026-09-27 (round 18, 08:24 KST) · Codex → Next AI
+- Compared both delivered relays against the freshly fetched repository. Track A remains the priority; no new feature
+  implementation was opened.
+- Reproduced full baseline 295/295 and Track B 13/13. Track B P0 is isolated and unchanged from `48a6243`; corrected
+  stale documents to P0 IMPLEMENTED+FROZEN / P1+ NOT STARTED without modifying Track B code.
+- Registered Track C `EVL_SPEC_v0.1` as DESIGN FROZEN / IMPLEMENTATION NOT STARTED. Locked PIT/no-lookahead,
+  provenance/vintage, Trial Ledger, Final Holdout, Official/Custom isolation, core-score immutability, Promotion,
+  invalidation, Pre-Tax, and fail-closed rules. No Track C code/tests exist.
+- Track C implementation remains closed until Track A REAL-DATA baseline Freeze. Track A still has only two corrected
+  Official dates; 2024-06-30 remains blocked by C-34/C-35/C-37/C-38, so no walk-forward or backend Freeze was claimed.

@@ -1,5 +1,12 @@
 # PERSONAL_INVESTMENT_LAYER_V1_HANDOFF
 
+> Current implementation overlay · 2026-09-27 KST: Architecture FROZEN; **P0 Common Contracts IMPLEMENTED+FROZEN** at
+> commit `48a6243`; P1+ NOT STARTED. The isolated `src/investment_system/personal/` package contains 10 Python files
+> and `tests/test_pil_p0_contracts.py` contains 13 tests; 13/13 re-run PASS. There are no Track A runtime imports in
+> either direction. The original relay below is retained verbatim as design provenance, so its historical
+> “Implementation NOT STARTED” statements no longer describe P0. Track C owns Official integrated-profile promotion;
+> Track B consumes those profiles. All Official outputs remain Pre-Tax; no tax engine or P1+ implementation was added.
+
 > Imported 2026-09-26 verbatim (text only) from the user-supplied relay package
 > `PERSONAL_INVESTMENT_LAYER_V1_RELAY_PACKAGE.docx`. Additive frozen architecture: it does NOT replace the
 > Investment-System1 SSoT (CURRENT_HANDOFF > Master Status > Conflict Register > Evidence Register > Specs/Contracts >
