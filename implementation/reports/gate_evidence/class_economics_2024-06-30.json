@@ -1,0 +1,239 @@
+{
+ "kind": "CLASS_ECONOMICS_DETERMINATIONS",
+ "as_of": "2024-06-30",
+ "method": "Reviewed from class_rights_passages_2024-12-31.json (10-K/10-Q filed on or before as_of). The gate chain re-verifies every quote verbatim in the stored filing, the filing date, the CIK, and the ratio wording; unverified issuers stay lower-bound blockers.",
+ "formula": "economic-equivalent listed shares = listed class shares + sum(ratio x unlisted class shares); PIT market cap = equivalent shares x listed class as-of close (x post-as_of split factor via the chain's price basis)",
+ "issuers": {
+  "0001468174": {
+   "symbol": "H",
+   "entity_name": "Hyatt Hotels Corp",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "CONVERTIBLE_INTO_LISTED",
+     "ratio": 1,
+     "rights_summary": "Class B = shares of Hyatt Hotels Corp itself (10 votes/share), converted share-for-share into Class A; same per-share cash dividend as Class A.",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001468174:0001468174-24-000014",
+       "form": "10-K",
+       "filed": "2024-02-23",
+       "accession": "0001468174-24-000014",
+       "offset": 716549,
+       "quote": "Class B Share Conversion —During the years ended December 31, 2023, December 31, 2022, and December 31, 2021, 160,626 shares, 735,522 shares, and 2,385,647 shares, respectively, of Class B common stock were converted on a share-for-share basis into shares of Class A common stock, $ 0.",
+       "supports": [
+        "conversion_ratio"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "No operating-partnership units: Class A and Class B are both issued shares of the registrant; the cover counts are separate classes (Class B converted shares are retired), so A + B is not double counted."
+  },
+  "0001973266": {
+   "symbol": "TKO",
+   "entity_name": "TKO Group Holdings, Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "rights_summary": "Class B (1 vote, no dividends, no liquidation rights) is held with an equal number of TKO OpCo Common Units by Endeavor; units (+ equal Class B) redeemable for cash or, at the company's option, Class A one-for-one; the Class B share is cancelled on exchange.",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001973266:0001562762-24-000038",
+       "form": "10-K",
+       "filed": "2024-02-27",
+       "accession": "0001562762-24-000038",
+       "offset": 615983,
+       "quote": "TKO OpCo’s operating agreement provides that holders of membership interests in TKO OpCo (“Common Units”) may, from time to time, require TKO OpCo to redeem all or a portion of their Common Units (and an equal number of shares of TKO Class B common stock) for cash or, at the Company’s option, for shares of TKO Class A common stock on a one-for-one basis.",
+       "supports": [
+        "pairing",
+        "exchange_ratio"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001973266:0001562762-24-000038",
+       "form": "10-K",
+       "filed": "2024-02-27",
+       "accession": "0001562762-24-000038",
+       "offset": 613227,
+       "quote": "Holders of TKO Class B common stock are not entitled to receive dividends and will not be entitled to receive any distributions upon the liquidation, dissolution or winding up of the affairs of the Company.",
+       "supports": [
+        "voting_only_context"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class B carries no economic rights; the economic interest is the equal number of TKO OpCo Common Units held by non-TKO members (10-K: 89,616,891 Class B = units held by Endeavor entities; 10-Q cover Class B 89,616,891). Counting Class B count x 1 counts each exchangeable unit once; TKO's own OpCo units are represented by Class A."
+  },
+  "0001849253": {
+   "symbol": "RYAN",
+   "entity_name": "RYAN SPECIALTY HOLDINGS, INC.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "paired_instrument": "LLC Common Unit",
+     "rights_summary": "Class B (10 votes, no dividend or liquidation rights) is held in equal number by holders of Ryan Specialty LLC Common Units other than the Company; units are exchangeable for Class A one-for-one (or cash at the Company's election, from a secondary offering).",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+       "form": "10-K",
+       "filed": "2024-02-28",
+       "accession": "0000950170-24-021657",
+       "offset": 278424,
+       "quote": "Future transfers by the holders of LLC Common Units (who own an equal number of 10 votes per share Class B common stock related thereto) will generally result in those shares converting into shares of Class A common stock and the cancellation of the related Class B common stock, subject to limited exceptions, such as certain transfers effected for estate planning or charitable purposes.",
+       "supports": [
+        "pairing"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+       "form": "10-K",
+       "filed": "2024-02-28",
+       "accession": "0000950170-24-021657",
+       "offset": 464684,
+       "quote": "The non-controlling interest holders may, subject to certain exceptions, exchange some or all of their LLC Common Units for newly-issued shares of Class A common stock on a one-for-one basis, or for cash, at the Company’s election (determined by a majority of the Company’s directors who are disinterested) and only to the extent that the Company has received cash proceeds pursuant to a secondary offering.",
+       "supports": [
+        "exchange_ratio"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+       "form": "10-K",
+       "filed": "2024-02-28",
+       "accession": "0000950170-24-021657",
+       "offset": 258217,
+       "quote": "Each LLC Unitholder, other than the Company, has an equivalent number of shares of our Class B common stock which are entitled to 10 votes per share.",
+       "supports": [
+        "pairing"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+       "form": "10-K",
+       "filed": "2024-02-28",
+       "accession": "0000950170-24-021657",
+       "offset": 496796,
+       "quote": "Holders of Class B common stock do not have any right to receive dividends or distributions upon the liquidation or winding up of the Company.",
+       "supports": [
+        "voting_only_context"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class B count (136,670,204 on the 10-Q cover) = LLC Common Units held by unitholders other than the Company ('Each LLC Unitholder, other than the Company, has an equivalent number of shares of our Class B common stock'); the Company's own units match its Class A shares one-to-one (New LLC Operating Agreement), so A + B counts each economic unit once."
+  },
+  "0001089063": {
+   "symbol": "DKS",
+   "entity_name": "DICK'S SPORTING GOODS, INC.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "CONVERTIBLE_INTO_LISTED",
+     "ratio": 1,
+     "rights_summary": "Class B (10 votes, unlisted) is Dick's Sporting Goods' own stock, convertible one-for-one into the listed common stock at any time at the holder's option; dividends are paid per share of common and Class B.",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001089063:0001089063-24-000037",
+       "form": "10-K",
+       "filed": "2024-03-28",
+       "accession": "0001089063-24-000037",
+       "offset": 128627,
+       "quote": "Shares of our Class B common stock can be converted on a one-for-one basis to shares of our common stock at any time at the holder’s option and are automatically converted upon the occurrence of certain events.",
+       "supports": [
+        "conversion_ratio"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001089063:0001089063-24-000037",
+       "form": "10-K",
+       "filed": "2024-03-28",
+       "accession": "0001089063-24-000037",
+       "offset": 262502,
+       "quote": "Each share of Class B common stock can be converted at any time into one share of common stock at the holder’s option.",
+       "supports": [
+        "conversion_ratio"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "No operating-partnership units: common (XBRL CommonClassAMember, 57,903,976) and Class B (23,570,633) are both issued shares of the registrant (10-Q cover 2024-11-22); A + B is not double counted. Listed member per symbol_mappings (10-K: Class B 'not listed or traded')."
+  },
+  "0001758730": {
+   "symbol": "TW",
+   "entity_name": "Tradeweb Markets Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "CONVERTIBLE_INTO_LISTED",
+     "ratio": 1,
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001758730:0001758730-24-000025",
+       "form": "10-K",
+       "filed": "2024-02-09",
+       "accession": "0001758730-24-000025",
+       "offset": 320812,
+       "quote": "Shares of our Class B common stock may also be exchanged at any time, at the option of the holder, for newly issued shares of Class A common stock (in which case such holders’ shares of Class B common stock will be cancelled on a one-for-one basis upon any such issuance).",
+       "supports": [
+        "conversion_ratio"
+       ]
+      }
+     ]
+    }
+   },
+   "undetermined_note": "Class C and Class D (no economic interests, paired with TWM LLC Interests) are NOT determined: the result is a partial LOWER BOUND.",
+   "double_count_check": "Class A and Class B are issued shares of the registrant; Class C/D (units) are left unvalued (lower bound)."
+  },
+  "0001802768": {
+   "symbol": "RPRX",
+   "entity_name": "Royalty Pharma plc",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "paired_instrument": "RP Holdings Class B Interest",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001802768:0001802768-24-000012",
+       "form": "10-K",
+       "filed": "2024-02-15",
+       "accession": "0001802768-24-000012",
+       "offset": 414781,
+       "quote": "Our outstanding Class B ordinary shares are, however, considered potentially dilutive shares of Class A ordinary shares because Class B ordinary shares, together with the related RP Holdings Class B Interests, are exchangeable into Class A ordinary shares on a one -for-one basis.",
+       "supports": [
+        "pairing",
+        "exchange_ratio"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001802768:0001802768-24-000012",
+       "form": "10-K",
+       "filed": "2024-02-15",
+       "accession": "0001802768-24-000012",
+       "offset": 461027,
+       "quote": "Each such exchange also results in the re-designation of the same number of our Class B ordinary shares as deferred shares.",
+       "supports": [
+        "pairing"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class B ordinary shares are non-economic (do not share in earnings/losses, not participating securities per the 10-K) and are held one-for-one with RP Holdings Class B Interests (the non-controlling economic interest); on exchange the Class B share is re-designated as a deferred share (cancelled from the outstanding count). Class A ordinary shares represent Royalty Pharma plc's own retained economic interest, so A + B(units) counts each economic interest exactly once."
+  }
+ },
+ "derived_from": "2024-09-30",
+ "dropped": {
+  "RKT": "CommonClassDMember: claims ['pairing'] have no citation filed on or before 2024-06-30",
+  "TPG": "NonvotingCommonStockMember: claims ['identical_rights'] have no citation filed on or before 2024-06-30",
+  "TOST": "CommonClassBMember: claims ['identical_rights'] have no citation filed on or before 2024-06-30"
+ }
+}
