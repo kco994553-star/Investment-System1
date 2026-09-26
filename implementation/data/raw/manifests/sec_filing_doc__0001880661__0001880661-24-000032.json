@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000032",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1880661/000188066124000032/tpg-20240331.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T06:02:04.250095+00:00",
+  "sha256": "a502af17a0bd295e2fa86bde9f20289b3f47528bf49982a7b56eeec1dacdf659",
+  "bytes": 2937818,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -3,7 +3,7 @@
   "as_of": "2024-06-30T00:00:00+00:00",
   "store": {
     "dir": "data/raw",
-    "n_artifacts": 6276,
+    "n_artifacts": 6288,
     "status": "PRESENT"
   },
   "listings": 987,
@@ -4553,7 +4553,7 @@
       "COVER_ECONOMIC_EQUIVALENT": 5,
       "SHARE_SCALE_CORRECTED_FROM_COVER_TEXT": 1
     },
-    "universe_id": "uni_f1bd2fcba4fd",
+    "universe_id": "uni_4a3b591e6257",
     "snapshot_cutoff_mcap": 13780102295.35437
   },
   "official_snapshot_candidates": null,

@@ -1,0 +1,2380 @@
+{
+ "kind": "CLASS_RIGHTS_PASSAGES",
+ "as_of": "2024-06-30",
+ "note": "Verbatim passages from filings filed on or before as_of; review material, not a determination.",
+ "issuers": {
+  "RKT": {
+   "cik": "0001805284",
+   "cover_source": "xbrl_instance:0001805284:0001805284-24-000067",
+   "entity_name": "Rocket Companies, Inc.",
+   "classes": [
+    {
+     "member": "CommonClassAMember",
+     "shares": 139476240.0,
+     "date": "2024-04-30",
+     "symbol": "RKT",
+     "price": 13.699999809265137
+    },
+    {
+     "member": "CommonClassDMember",
+     "shares": 1848879483.0,
+     "date": "2024-04-30",
+     "symbol": null,
+     "price": null
+    }
+   ],
+   "unlisted_members": [
+    "CommonClassDMember"
+   ],
+   "phrases": [
+    "Class D Common Stock",
+    "Class D Ordinary Shares",
+    "Class D Shares",
+    "Class D common stock",
+    "Class D ordinary shares",
+    "Class D shares"
+   ],
+   "documents": [
+    {
+     "form": "10-K",
+     "filed": "2024-02-27",
+     "accn": "0001805284-24-000009",
+     "primary_document": "rkt-20231231.htm",
+     "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000009",
+     "passages": [
+      {
+       "offset": 231231,
+       "text": "To the extent we do not distribute or otherwise utilize such excess cash, RHI and Dan Gilbert would benefit from any value attributable to such cash balances as a result of their ownership of Class B common stock (or Class A common stock, as applicable) following an exchange of their Holdings Units and corresponding shares of Class D common stock (or Class C common stock, as applicable)."
+      },
+      {
+       "offset": 232279,
+       "text": "As a result of (i) potential non pro rata allocations of net taxable income allocable to us, RHI and Dan Gilbert, (ii) the lower tax rate applicable to corporations as compared to individuals, (iii) the favorable tax benefits that we anticipate receiving from the exchange of Holdings Units and corresponding shares of Class D common stock or Class C common stock and future purchases of Holdings Units (along with corresponding shares of Class D common stock or Class C common stock) from RHI and Dan Gilbert and (iv) the favorable tax benefits that we anticipate receiving from payments under the Tax Receivable Agreement, these tax distributions have been, and we expect that they will continue to"
+      },
+      {
+       "offset": 233642,
+       "text": "To the extent we do not take such actions and instead, for example, hold such cash balances or lend them to Holdings, RHI and Dan Gilbert would benefit from any value attributable to such cash balances as a result of their ownership of Class B common stock (or Class A common stock, as applicable) following an exchange of their Holdings Units and corresponding shares of Class D common stock (or Class C common stock, as applicable)."
+      },
+      {
+       "offset": 234077,
+       "text": "No adjustments to the present exchange ratio of one-to-one for Holdings Units and corresponding shares of Class D common stock or Class C common stock will be made as a result of (i) any cash distribution by Holdings or (ii) any cash that we retain and do not distribute to our stockholders."
+      },
+      {
+       "offset": 236356,
+       "text": "federal, state and local income tax or franchise tax that we actually realize (computed using simplifying assumptions to address the impact of state and local taxes) as a result of: (i) certain increases in our allocable share of the tax basis in Holdings\u2019 assets resulting from (a) the purchases of Holdings Units (along with the corresponding shares of our Class D common stock or Class C common stock) from RHI and Dan Gilbert (or their transferees of Holdings Units or other assignees) using the net proceeds from our initial public offering or in any future offering, (b) exchanges by RHI and Dan Gilbert (or their transferees of Holdings Units or other assignees) of Holdings Units (along with "
+      },
+      {
+       "offset": 238596,
+       "text": "7 million Tax receivable agreement liability recorded, we estimate that, as a result of the amount of the increases in the tax basis in Holdings\u2019 assets from the purchase of Holdings Units (along with the corresponding shares of our Class D common stock) in connection with the initial public offering, the over-allotment option (Greenshoe), and the March 2021 paired interest exchange, assuming no material changes in the relevant tax law and that we will have sufficient taxable income to utilize all of the tax attributes covered by the Tax Receivable Agreement when they are first available to be utilized under applicable law, future payments to RHI and Dan Gilbert under the Tax Receivable Agre"
+      },
+      {
+       "offset": 239460,
+       "text": "Future payments under the Tax Receivable Agreements in respect of subsequent purchases or exchanges of Holdings Units (along with the corresponding shares of Class D common stock or Class C common stock) would be in addition to these amounts."
+      },
+      {
+       "offset": 251645,
+       "text": "2% of our issued and outstanding Class D common stock and controls 79% of the combined voting power of our common stock."
+      },
+      {
+       "offset": 259999,
+       "text": "Issuing additional shares of our Class C common stock or Class D common stock, when issued with corresponding Holdings Units, may also dilute the economic and voting rights of our existing stockholders or reduce the market price of our Class A common stock or both."
+      },
+      {
+       "offset": 271931,
+       "text": "Holders of our Class D Common Stock may convert such stock into our Class A Common Stock on a share for share basis."
+      },
+      {
+       "offset": 272048,
+       "text": "Holders of Class D Common Stock are entitled to 10 votes per share and holders of Class A Common Stock are entitled to one vote per share on matters submitted to shareholders for approval."
+      },
+      {
+       "offset": 285845,
+       "text": "We define \u201cAdjusted Diluted (Loss) Earnings Per Share\u201d as Adjusted Net (Loss) Income divided by the diluted weighted average number of Class A common stock outstanding for the applicable period, which assumes the pro forma exchange and conversion of all outstanding Class D common stock for Class A common stock."
+      },
+      {
+       "offset": 294720,
+       "text": "53 Reconciliation of Adjusted Diluted Weighted Average Shares Outstanding to Diluted Weighted Average Shares Out standing Year Ended December 31, ($ in thousands, except per share) 2023 2022 2021 Diluted weighted average Class A common shares outstanding 1,980,523,690 1,971,620,573 1,989,433,567 Assumed pro forma conversion of Class D shares (1) \u2014 \u2014 \u2014 Adjusted diluted weighted average shares outstanding 1,980,523,690 1,971,620,573 1,989,433,567 Adjusted Net (Loss) Income $ (143,105) $ (136,962) $ 4,501,862 Adjusted Diluted (Loss) Earnings Per Share $ (0."
+      },
+      {
+       "offset": 295298,
+       "text": "26 (1) Reflects the pro forma exchange and conversion of non-dilutive Class D common stock to Class A common stock."
+      },
+      {
+       "offset": 312099,
+       "text": "Tax Receivable Agreement In connection with the reorganization completed prior to our IPO in 2020, the Company entered into a Tax Receivable Agreement with RHI and our Chairman (\u201cLLC Members\u201d) that will obligate the Company to make payments to the LLC Members generally equal to 90% of the applicable cash tax savings that the Company actually realizes or in some cases is deemed to realize as a result of the tax attributes generated by (i) certain increases in our allocable share of the tax basis in Holdings\u2019 assets resulting from (a) the purchases of Holdings Units (along with the corresponding shares of our Class D common stock or Class C common stock) from the LLC Members (or their transfer"
+      },
+      {
+       "offset": 375059,
+       "text": "Consolidated Statements of Changes in Equity ($ In Thousands) Class A Common Stock Shares Class A Common Stock Amount Class D Common Stock Shares Class D Common Stock Amount Additional Paid-in Capital Retained Earnings Accumulated Other Comprehensive Income (Loss) Total Non-controlling Interest Total Equity Balance, December 31, 2020 115,372,565 $ 1 1,869,079,483 $ 19 $ 282,743 $ 207,422 $ 317 $ 7,391,654 $ 7,882,156 Net income \u2014 \u2014 \u2014 \u2014 \u2014 308,210 \u2014 5,763,953 6,072,163 Cumulative translation adjustment \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 ( 10 ) ( 105 ) ( 115 ) Unrealized loss on investment securities \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 ( 375 ) ( 5,175 ) ( 5,550 ) Share-based compensation, net 2,529,124 \u2014 \u2014 \u2014 9,899 \u2014 \u2014 143,787 153,686 Distri"
+      },
+      {
+       "offset": 474746,
+       "text": "As indicated in Note 1, Business, Basis of Presentation and Accounting Policies, in connection with the reorganization completed prior to our IPO in 2020, the Company entered into a Tax Receivable Agreement with the LLC Members that will obligate the Company to make payments to the LLC Members generally equal to 90 % of the applicable cash tax savings that the Company actually realizes or in some cases is deemed to realize as a result of the tax attributes generated by (i) certain increases in our allocable share of the tax basis in Holdings\u2019 assets resulting from (a) the purchases of Holdings Units (along with the corresponding shares of our Class D common stock or Class C common stock) fro"
+      },
+      {
+       "offset": 476318,
+       "text": "On March 31, 2021, the Company exchanged 20,200,000 shares of Class A common stock for the equivalent number of shares of Class D common stock and Holdings Units with RHI, which resulted in an increase in the tax basis of assets of Holdings that is subject to the provisions of the Tax Receivable Agreement."
+      },
+      {
+       "offset": 515393,
+       "text": "Notes to Consolidated Financial Statements (Continued) ($ In Thousands, Except Per Share Amounts Or Unless Otherwise Noted) The non-controlling interest holders have the right to exchange Holdings Units, together with a corresponding number of shares of our Class D common stock or Class C common stock (together referred to as \u201cPaired Interests\u201d), for, at our option, (i) shares of our Class B common stock or Class A common stock or (ii) cash from a substantially concurrent public offering or private sale (based on the price of our Class A common stock)."
+      },
+      {
+       "offset": 516337,
+       "text": "On March 31, 2021, the Company exchanged 20,200,000 shares of Class A common stock for the equivalent number of shares of Class D common stock and Holdings Units with RHI."
+      },
+      {
+       "offset": 527209,
+       "text": "The if-converted method is used to calculate the dilutive effect of converting Class D common stock to Class A common stock."
+      },
+      {
+       "offset": 527504,
+       "text": "Notes to Consolidated Financial Statements (Continued) ($ In Thousands, Except Per Share Amounts Or Unless Otherwise Noted) The following table sets forth the calculation of the basic and diluted earnings per share for the period: Years Ended December 31, 2023 2022 2021 Net (loss) income $ ( 390,080 ) $ 699,933 $ 6,072,163 Net loss (income) attributable to non-controlling interest 374,566 ( 653,512 ) ( 5,763,953 ) Net (loss) income attributable to Rocket Companies ( 15,514 ) 46,421 308,210 Add: Reallocation of Net income attributable to vested, undelivered stock awards \u2014 22 150 Net (loss) income attributable to common shareholders $ ( 15,514 ) $ 46,443 $ 308,360 Numerator: Net (loss) income "
+      },
+      {
+       "offset": 542898,
+       "text": ", Daniel Gilbert and the holders of Holdings Units and shares of Class C Common Stock or Class D Common Stock from time to time party thereto (incorporated herein by reference to Exhibit 10."
+      }
+     ]
+    },
+    {
+     "form": "10-Q",
+     "filed": "2024-05-07",
+     "accn": "0001805284-24-000067",
+     "primary_document": "rkt-20240331.htm",
+     "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000067",
+     "passages": [
+      {
+       "offset": 40283,
+       "text": "Condensed Consolidated Statements of Changes in Equity ($ In Thousands) (Unaudited) Class A Common Stock Shares Class A Common Stock Amount Class D Common Stock Shares Class D Common Stock Amount Additional Paid-in Capital Retained Earnings Accumulated Other Comprehensive Income (Loss) Total Non-controlling Interest Total Equity Balance, December 31, 2022 123,491,606 $ 1 1,848,879,483 $ 19 $ 276,221 $ 300,394 $ 69 $ 7,898,845 $ 8,475,549 Net loss \u2014 \u2014 \u2014 \u2014 \u2014 ( 18,523 ) \u2014 ( 392,960 ) ( 411,483 ) Cumulative translation adjustment \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 7 7 Unrealized loss on investment securities \u2014 \u2014 \u2014 \u2014 \u2014 \u2014 ( 101 ) ( 1,488 ) ( 1,589 ) Share-based compensation, net 1,390,650 \u2014 \u2014 \u2014 3,217 \u2014 \u2014 47,596 50,813"
+      },
+      {
+       "offset": 97303,
+       "text": "Notes to Unaudited Condensed Consolidated Financial Statements (Continued) ($ in Thousands, Except Per Share Amounts or Unless Otherwise Noted) The Company previously entered into a Tax Receivable Agreement (the \u201cTax Receivable Agreement\u201d) with the LLC Members that will obligate the Company to make payments to the LLC Members generally equal to 90 % of the applicable cash tax savings that the Company actually realizes or in some cases is deemed to realize as a result of the tax attributes generated by (i) certain increases in our allocable share of the tax basis in Holdings\u2019 assets resulting from (a) the purchases of Holdings Units (along with the corresponding shares of our Class D common s"
+      },
+      {
+       "offset": 126908,
+       "text": "00 % The non-controlling interest holders have the right to exchange Holdings Units, together with a corresponding number of shares of our Class D common stock or Class C common stock (together referred to as \u201cPaired Interests\u201d), for, at our option, (i) shares of our Class B common stock or Class A common stock or (ii) cash from a substantially concurrent public offering or private sale (based on the price of our Class A common stock)."
+      },
+      {
+       "offset": 133518,
+       "text": "The if-converted method is used to calculate the dilutive effect of converting Class D common stock to Class A common stock."
+      },
+      {
+       "offset": 133669,
+       "text": "Notes to Unaudited Condensed Consolidated Financial Statements (Continued) ($ in Thousands, Except Per Share Amounts or Unless Otherwise Noted) The following table sets forth the calculation of the basic and diluted earnings per share for the period: Three Months Ended March 31, 2024 2023 Net income (loss) $ 290,714 $ ( 411,483 ) Net (income) loss attributable to non-controlling interest ( 274,499 ) 392,960 Net income (loss) attributable to Rocket Companies $ 16,215 $ ( 18,523 ) Numerator: Net income (loss) attributable to Class A common shareholders - basic $ 16,215 $ ( 18,523 ) Add: Reallocation of Net income (loss) attributable to dilutive impact of pro-forma conversion of Class D shares "
+      },
+      {
+       "offset": 144243,
+       "text": "We define \u201cAdjusted diluted earnings (loss) per share\u201d as Adjusted net income (loss) divided by the diluted weighted average number of Class A common stock outstanding for the applicable period, which assumes the pro forma exchange and conversion of all outstanding Class D common stock for Class A common stock."
+      },
+      {
+       "offset": 151997,
+       "text": "35 Reconciliation of Adjusted Diluted Weighted Average Shares Outstanding to Diluted Weighted Average Shares Outstanding Three Months Ended March 31, ($ in thousands, except shares and per share) 2024 2023 Diluted weighted average Class A Common shares outstanding 1,991,982,680 1,974,629,808 Assumed pro forma conversion of Class D shares (1) \u2014 \u2014 Adjusted diluted weighted average shares outstanding 1,991,982,680 1,974,629,808 Adjusted net income (loss) $ 83,557 $ (110,595) Adjusted diluted earnings (loss) per share $ 0."
+      },
+      {
+       "offset": 152530,
+       "text": "06) (1) Reflects the pro forma exchange and conversion of non-dilutive Class D common stock to Class A common stock."
+      }
+     ]
+    }
+   ],
+   "cover_instance_unit_facts": [
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 8609451000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 8301710000.0,
+     "date": "2023-12-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": 298370000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": -415987000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToNoncontrollingInterest",
+     "value": 274499000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToNoncontrollingInterest",
+     "value": -392960000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 291028000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -413065000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "ComprehensiveIncomeNetOfTaxAttributableToNoncontrollingInterest",
+     "value": 274792000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "ComprehensiveIncomeNetOfTaxAttributableToNoncontrollingInterest",
+     "value": -394441000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 1000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 19000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 276221000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 300394000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 69000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AccumulatedOtherComprehensiveIncomeMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 7898845000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 8475549000.0,
+     "date": "2022-12-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "DistributionsOnBehalfOfUnitHoldersStateTaxes",
+     "value": 209000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "DistributionsOnBehalfOfUnitHoldersStateTaxes",
+     "value": -326000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "DistributionsOnBehalfOfUnitHoldersStateTaxes",
+     "value": -117000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockExchangedDuringThePeriodIncreaseDecreaseNetOfTaxAndTaxReceivableAgreementLiabilityAmount",
+     "value": 15268000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockExchangedDuringThePeriodIncreaseDecreaseNetOfTaxAndTaxReceivableAgreementLiabilityAmount",
+     "value": -688000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockExchangedDuringThePeriodIncreaseDecreaseNetOfTaxAndTaxReceivableAgreementLiabilityAmount",
+     "value": 0.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AccumulatedOtherComprehensiveIncomeMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockExchangedDuringThePeriodIncreaseDecreaseNetOfTaxAndTaxReceivableAgreementLiabilityAmount",
+     "value": -19275000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockExchangedDuringThePeriodIncreaseDecreaseNetOfTaxAndTaxReceivableAgreementLiabilityAmount",
+     "value": -4695000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 1000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 19000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 294718000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 280997000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -32000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AccumulatedOtherComprehensiveIncomeMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 7533642000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 8109345000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 1000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 19000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 340532000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 284296000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 52000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AccumulatedOtherComprehensiveIncomeMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 7676810000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 8301710000.0,
+     "date": "2023-12-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "DistributionsOnBehalfOfUnitHoldersStateTaxes",
+     "value": 19000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "DistributionsOnBehalfOfUnitHoldersStateTaxes",
+     "value": 255000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "DistributionsOnBehalfOfUnitHoldersStateTaxes",
+     "value": 274000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockExchangedDuringThePeriodIncreaseDecreaseNetOfTaxAndTaxReceivableAgreementLiabilityAmount",
+     "value": 8917000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockExchangedDuringThePeriodIncreaseDecreaseNetOfTaxAndTaxReceivableAgreementLiabilityAmount",
+     "value": -1000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AccumulatedOtherComprehensiveIncomeMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockExchangedDuringThePeriodIncreaseDecreaseNetOfTaxAndTaxReceivableAgreementLiabilityAmount",
+     "value": -11795000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockExchangedDuringThePeriodIncreaseDecreaseNetOfTaxAndTaxReceivableAgreementLiabilityAmount",
+     "value": -2879000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 1000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 19000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassDMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 350811000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 300494000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 72000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AccumulatedOtherComprehensiveIncomeMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 7958054000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 8609451000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "DistributionsToOtherUnitHoldersMembersOfHoldings",
+     "value": 1944000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "DistributionsToOtherUnitHoldersMembersOfHoldings",
+     "value": 1938000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "EffectOfExchangeRateOnCashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
+     "value": 314000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "EffectOfExchangeRateOnCashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
+     "value": 7000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect",
+     "value": -243447000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect",
+     "value": 168591000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": 298370000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": -415987000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "PaymentsOfTaxDistributionsToUnitHolders",
+     "value": 0.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "PaymentsOfTaxDistributionsToUnitHolders",
+     "value": 0.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": 298370000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": -415987000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPManagingMemberOrGeneralPartnerOwnershipInterestUnits",
+     "value": 138811617.0,
+     "date": "2024-03-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember",
+      "LegalEntityAxis=RocketCompaniesIncMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPManagingMemberOrGeneralPartnerOwnershipInterest",
+     "value": 0.0698,
+     "date": "2024-03-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember",
+      "LegalEntityAxis=RocketCompaniesIncMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPManagingMemberOrGeneralPartnerOwnershipInterestUnits",
+     "value": 135814173.0,
+     "date": "2023-12-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember",
+      "LegalEntityAxis=RocketCompaniesIncMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPManagingMemberOrGeneralPartnerOwnershipInterest",
+     "value": 0.0684,
+     "date": "2023-12-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember",
+      "LegalEntityAxis=RocketCompaniesIncMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPMembersOrLimitedPartnersOwnershipInterestUnits",
+     "value": 1101822.0,
+     "date": "2024-03-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember",
+      "LegalEntityAxis=RocketCompaniesIncChairmanMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPMembersOrLimitedPartnersOwnershipInterest",
+     "value": 0.0006,
+     "date": "2024-03-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember",
+      "LegalEntityAxis=RocketCompaniesIncChairmanMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPMembersOrLimitedPartnersOwnershipInterestUnits",
+     "value": 1101822.0,
+     "date": "2023-12-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember",
+      "LegalEntityAxis=RocketCompaniesIncChairmanMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPMembersOrLimitedPartnersOwnershipInterest",
+     "value": 0.0006,
+     "date": "2023-12-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember",
+      "LegalEntityAxis=RocketCompaniesIncChairmanMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPMembersOrLimitedPartnersOwnershipInterestUnits",
+     "value": 1847777661.0,
+     "date": "2024-03-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember",
+      "LegalEntityAxis=RockHoldingsIncMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPMembersOrLimitedPartnersOwnershipInterest",
+     "value": 0.9296,
+     "date": "2024-03-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember",
+      "LegalEntityAxis=RockHoldingsIncMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPMembersOrLimitedPartnersOwnershipInterestUnits",
+     "value": 1847777661.0,
+     "date": "2023-12-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember",
+      "LegalEntityAxis=RockHoldingsIncMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPMembersOrLimitedPartnersOwnershipInterest",
+     "value": 0.931,
+     "date": "2023-12-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember",
+      "LegalEntityAxis=RockHoldingsIncMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPUnitsOutstanding",
+     "value": 1987691100.0,
+     "date": "2024-03-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPUnitsOutstandingPercentage",
+     "value": 1.0,
+     "date": "2024-03-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPUnitsOutstanding",
+     "value": 1984693656.0,
+     "date": "2023-12-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "LimitedLiabilityCompanyLLCOrLimitedPartnershipLPUnitsOutstandingPercentage",
+     "value": 1.0,
+     "date": "2023-12-31",
+     "dims": [
+      "OwnershipAxis=RKTHoldingsLLCMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToNoncontrollingInterest",
+     "value": 274499000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToNoncontrollingInterest",
+     "value": -392960000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "AmountOfDilutiveSecuritiesStockOptionsAndRestrictiveStockUnits",
+     "value": 685000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "AmountOfDilutiveSecuritiesStockOptionsAndRestrictiveStockUnits",
+     "value": -163000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncrementalCommonSharesAttributableToDilutiveEffectOfConversionOfClassDCommonStock",
+     "value": 1848879483.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "shares"
+    },
+    {
+     "concept": "IncrementalCommonSharesAttributableToDilutiveEffectOfConversionOfClassDCommonStock",
+     "value": 1848879483.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "shares"
+    },
+    {
+     "concept": "AmountOfDilutiveSecuritiesStockOptionsAndRestrictiveStockUnits",
+     "value": 672000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "AwardTypeAxis=RestrictedStockUnitsRSUMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "AmountOfDilutiveSecuritiesStockOptionsAndRestrictiveStockUnits",
+     "value": -155000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "AwardTypeAxis=RestrictedStockUnitsRSUMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "AmountOfDilutiveSecuritiesStockOptionsAndRestrictiveStockUnits",
+     "value": 7000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "AwardTypeAxis=PerformanceSharesMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "AmountOfDilutiveSecuritiesStockOptionsAndRestrictiveStockUnits",
+     "value": 0.0,
+     "date": "2023-03-31",
+     "dims": [
+      "AwardTypeAxis=PerformanceSharesMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "AmountOfDilutiveSecuritiesStockOptionsAndRestrictiveStockUnits",
+     "value": 1000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "AwardTypeAxis=EmployeeStockOptionMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "AmountOfDilutiveSecuritiesStockOptionsAndRestrictiveStockUnits",
+     "value": 0.0,
+     "date": "2023-03-31",
+     "dims": [
+      "AwardTypeAxis=EmployeeStockOptionMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "AmountOfDilutiveSecuritiesStockOptionsAndRestrictiveStockUnits",
+     "value": 5000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "AwardTypeAxis=EmployeeStockPurchasePlanMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "AmountOfDilutiveSecuritiesStockOptionsAndRestrictiveStockUnits",
+     "value": -8000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "AwardTypeAxis=EmployeeStockPurchasePlanMember"
+     ],
+     "unit": "usd"
+    }
+   ]
+  },
+  "TOST": {
+   "cik": "0001650164",
+   "cover_source": "xbrl_instance:0001650164:0001650164-24-000177",
+   "entity_name": "Toast, Inc.",
+   "classes": [
+    {
+     "member": "CommonClassAMember",
+     "shares": 453000000.0,
+     "date": "2024-05-02",
+     "symbol": "TOST",
+     "price": 25.770000457763672
+    },
+    {
+     "member": "CommonClassBMember",
+     "shares": 102000000.0,
+     "date": "2024-05-02",
+     "symbol": null,
+     "price": null
+    }
+   ],
+   "unlisted_members": [
+    "CommonClassBMember"
+   ],
+   "phrases": [
+    "Class B Common Stock",
+    "Class B Ordinary Shares",
+    "Class B Shares",
+    "Class B common stock",
+    "Class B ordinary shares",
+    "Class B shares"
+   ],
+   "documents": [
+    {
+     "form": "10-K",
+     "filed": "2024-02-27",
+     "accn": "0001650164-24-000084",
+     "primary_document": "tost-20231231.htm",
+     "artifact_id": "sec_filing_doc:0001650164:0001650164-24-000084",
+     "passages": [
+      {
+       "offset": 272216,
+       "text": "Our Class B common stock has ten votes per share, and our Class A common stock has one vote per share."
+      },
+      {
+       "offset": 272319,
+       "text": "As of December 31, 2023, we had 114 million shares of Class B common stock outstanding, representing approximately 75% of the voting power of our outstanding capital stock;"
+      },
+      {
+       "offset": 272876,
+       "text": "In addition, because of the ten-to-one voting ratio between our Class B and Class A common stock, the holders of our Class B common stock collectively could continue to control a majority of the combined voting power of our common stock and therefore control all matters submitted to our stockholders for approval until (i) the date the holders of two-thirds of our outstanding Class B common stock elect to convert the Class B common stock to Class A common stock, or (ii) September 24, 2028."
+      },
+      {
+       "offset": 273834,
+       "text": "Future transfers by holders of Class B common stock will generally result in those shares converting to Class A common stock, subject to limited exceptions as specified in our amended and restated certificate of incorporation, such as transfers to family members and certain transfers effected for estate planning purposes."
+      },
+      {
+       "offset": 274158,
+       "text": "The conversion of Class B common stock to Class A common stock will have the effect, over time, of increasing the relative voting power of those holders of Class B common stock who retain their shares in the long term."
+      },
+      {
+       "offset": 274377,
+       "text": "As a result, it is possible that one or more of the persons or entities holding our Class B common stock could gain significant voting control as other holders of Class B common stock sell or otherwise convert their shares into Class A common stock."
+      },
+      {
+       "offset": 337790,
+       "text": "As of December 31, 2023 our fully diluted share count was as follows: Year Ended December 31, 2023 (1) (shares) (in millions) Class A and B common stock issued and outstanding 543 Options to purchase Class A common stock and Class B common stock 48 Unvested restricted stock units 33 Warrants to purchase Class B common stock 7 Shares reserved for charitable donations 4 Unvested restricted stock 1 Total fully diluted share count 636 (1) Share amounts presented above do not give effect to potential repurchases of common stock under the treasury stock method 80 Table of Contents For further information see \"Note 3 ."
+      },
+      {
+       "offset": 368300,
+       "text": "CONSOLIDATED STATEMENTS OF CASH FLOWS (in millions) Year Ended December 31, 2023 2022 2021 Cash flows from operating activities: Net loss $ ( 246 ) $ ( 275 ) $ ( 487 ) Adjustments to reconcile net loss to net cash provided by (used in) operating activities: Depreciation and amortization 32 24 21 Stock-based compensation expense 277 228 140 Amortization of deferred contract acquisition costs 62 44 30 Change in fair value of derivative liability \u2014 \u2014 103 Change in fair value of warrant liability ( 3 ) ( 95 ) 97 Loss on debt extinguishment \u2014 \u2014 50 Credit loss expense 64 34 4 Non-cash interest on convertible notes \u2014 \u2014 12 Stock-based charitable contribution expense 10 10 19 Asset impairments 15 \u2014 \u2014"
+      },
+      {
+       "offset": 373085,
+       "text": "Immediately prior to the completion of our IPO, 254 million shares of convertible preferred stock were automatically converted into an equal number of shares of Class B common stock, and 1 million warrants to purchase shares of Series B and Series C convertible preferred stock were automatically exchanged or became exercisable for the same number of shares of Class B common stock."
+      },
+      {
+       "offset": 373720,
+       "text": "Each share of Class A common stock entitles the holder to one vote per share and each share of Class B common stock entitles the holder to ten votes per share on all matters submitted to a vote of stockholders."
+      },
+      {
+       "offset": 373931,
+       "text": "Holders of Class A common stock and Class B common stock are entitled to receive dividends, when and if declared by our Board of Directors, or our Board."
+      },
+      {
+       "offset": 410685,
+       "text": "Class A common stock and Class B common stock share proportionately, on a per share basis, in our net (losses) income and participate equally in the dividends on common stock, if declared."
+      },
+      {
+       "offset": 427626,
+       "text": "Common Stock Shares of Stock The following table shows the changes in Class A and Class B shares of common stock (in millions): Year Ended December 31, 2023 2022 2021 Class A and B Common Stock (in shares) Balance, beginning of period 523 507 220 Issuance of common stock under equity plans 19 14 6 Conversion of preferred stock \u2014 \u2014 254 Issuance of common stock in connection with initial public offering \u2014 \u2014 25 Issuance of common stock, other 1 2 2 Balance, end of period 543 523 507 Changes in Class B Common stock were as follows (in millions): Year Ended December 31, 2023 2022 2021 Class B Common Stock (in shares) Balance, beginning of period 170 339 \u2014 Conversion of preferred stock upon Initia"
+      },
+      {
+       "offset": 428609,
+       "text": "During the year ended December 31, 2021, immediately prior to the completion of our IPO, all shares of convertible preferred stock were automatically converted into an equal number of shares of Class B common stock."
+      },
+      {
+       "offset": 445427,
+       "text": "68 ) We excluded the following potential shares of common stock from the computation of diluted net loss per share because including them would have an antidilutive effect for the years ended December 31, 2023, 2022, and 2021 (in millions): Year Ended December 31, 2023 2022 2021 Options to purchase Class A common stock, Class B common stock, and common stock 48 54 59 Unvested restricted stock 1 3 4 Unvested restricted stock units 33 31 15 Warrants to purchase Class B common stock and common stock and preferred stock (as if converted to warrants to purchase common stock) \u2014 \u2014 8 Total 82 88 86 Potential shares issuable based on the contingent conversion features under the Convertible Notes prio"
+      }
+     ]
+    },
+    {
+     "form": "10-Q",
+     "filed": "2024-05-08",
+     "accn": "0001650164-24-000177",
+     "primary_document": "tost-20240331.htm",
+     "artifact_id": "sec_filing_doc:0001650164:0001650164-24-000177",
+     "passages": [
+      {
+       "offset": 47486,
+       "text": "16 ) We excluded the following potential shares of common stock from the computation of diluted net loss per share because including them would have an anti-dilutive effect for the three months ended March 31, 2024 and 2023: Three Months Ended March 31, 2024 2023 Options to purchase Class A common stock and Class B common stock 43 53 Unvested restricted stock \u2014 2 Unvested restricted stock units 32 38 Warrants to purchase Class B common stock 7 \u2014 82 93 11."
+      },
+      {
+       "offset": 71784,
+       "text": "As of March 31, 2024 our fully diluted share count was as follows: (shares) (in millions) Three Months Ended March 31, 2024 (1) Class A and B common stock issued and outstanding 552 Options to purchase Class A common stock and Class B common stock 43 Unvested restricted stock units 32 Warrants to purchase Class B common stock 7 Total fully diluted share count 634 (1) Share amounts presented above do not give effect to potential repurchases of common stock under the treasury stock method For further information see Note 7, \u201cStockholders\u2019 Equity\" and Note 10, \u201cNet Loss Per Share Attributable to Common Stockholders\u201d included in this Quarterly Report on Form 10-Q in \u201cNotes to Condensed Consolida"
+      }
+     ]
+    }
+   ],
+   "cover_instance_unit_facts": [
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": -82000000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "value": -81000000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseExcludingExchangeRateEffect",
+     "value": 24000000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseExcludingExchangeRateEffect",
+     "value": -49000000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "EffectOfExchangeRateOnCashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
+     "value": 0.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "EffectOfExchangeRateOnCashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
+     "value": 0.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "RightOfUseAssetObtainedInExchangeForOperatingLeaseLiabilityIncludingLeaseTerminationsAndModifications",
+     "value": 0.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "RightOfUseAssetObtainedInExchangeForOperatingLeaseLiabilityIncludingLeaseTerminationsAndModifications",
+     "value": 1000000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    }
+   ]
+  },
+  "TPG": {
+   "cik": "0001880661",
+   "cover_source": "xbrl_instance:0001880661:0001880661-24-000032",
+   "entity_name": "TPG Inc.",
+   "classes": [
+    {
+     "member": "CommonClassAMember",
+     "shares": 92555842.0,
+     "date": "2024-05-03",
+     "symbol": "TPG",
+     "price": 41.45000076293945
+    },
+    {
+     "member": "NonvotingCommonStockMember",
+     "shares": 8258901.0,
+     "date": "2024-05-03",
+     "symbol": null,
+     "price": null
+    },
+    {
+     "member": "CommonClassBMember",
+     "shares": 263952639.0,
+     "date": "2024-05-03",
+     "symbol": null,
+     "price": null
+    }
+   ],
+   "unlisted_members": [
+    "NonvotingCommonStockMember",
+    "CommonClassBMember"
+   ],
+   "phrases": [
+    "Class B Common Stock",
+    "Class B Ordinary Shares",
+    "Class B Shares",
+    "Class B common stock",
+    "Class B ordinary shares",
+    "Class B shares",
+    "Nonvoting Class A",
+    "Nonvoting Common Stock",
+    "nonvoting Class A",
+    "nonvoting common stock"
+   ],
+   "documents": [
+    {
+     "form": "10-K",
+     "filed": "2024-02-23",
+     "accn": "0001880661-24-000013",
+     "primary_document": "tpg-20231231.htm",
+     "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000013",
+     "passages": [
+      {
+       "offset": 45791,
+       "text": "As of February 20, 2024, there were 74,762,397 shares of the registrant\u2019s Class A common stock, 8,258,901 shares of the registrant\u2019s nonvoting Class A common stock and 281,657,626 shares of the registrant\u2019s Class B common stock outstanding."
+      },
+      {
+       "offset": 55718,
+       "text": "When we use the term \u201cClass A common stock\u201d in this Annual Report on Form 10-K, we are referring exclusively to such voting Class A common stock and not to \u201cnonvoting Class A common stock."
+      },
+      {
+       "offset": 57592,
+       "text": "\u2022 \u201cnonvoting Class A common stock\u201d refers to the nonvoting Class A common stock of TPG Inc."
+      },
+      {
+       "offset": 60634,
+       "text": ", a Delaware limited partnership that is considered our predecessor for accounting purposes and is a TPG Partner Vehicle and direct owner of certain Common Units and Class B common stock."
+      },
+      {
+       "offset": 290301,
+       "text": "They hold substantially all of their economic interest in the TPG Operating Group primarily through TPG Partner Vehicles (rather than through ownership of shares of our Class A common stock), and for each Common Unit owned, they own one share of our Class B common stock."
+      },
+      {
+       "offset": 290573,
+       "text": "Further, GP LLC has, prior to the Sunset (as defined herein), the right to vote our Class B common stock held by TPG Group Holdings."
+      },
+      {
+       "offset": 343056,
+       "text": "Our stockholders do not have the same protections afforded to stockholders of companies that are subject to such requirements and you will have limited voting power compared to holders of our Class B common stock."
+      },
+      {
+       "offset": 343270,
+       "text": "Holders of our Class B common stock control a majority of the voting power of our outstanding common stock by virtue of their ownership of Class B common stock."
+      },
+      {
+       "offset": 343551,
+       "text": "9% of all of the outstanding shares of our common stock, the Class B stockholders hold a majority of our outstanding voting power by virtue of their ownership of Class B common stock, and GP LLC, as the owner of the general partner of TPG Group Holdings, controls the outcome of matters submitted to a stockholder vote prior to the Sunset, including the appointment of all company directors."
+      },
+      {
+       "offset": 345162,
+       "text": "After the Sunset becomes effective, the Class B common stock will have one vote per share instead of ten votes per share, meaning that GP LLC, as the general partner of TPG Group Holdings, will no longer control the appointment of directors or be able to direct the vote on all matters that are submitted to our stockholders for a vote."
+      },
+      {
+       "offset": 345499,
+       "text": "The control over the voting of Class B common stock will instead be passed through to the individual partners of the TPG Partner Vehicles, including TPG Partner Holdings."
+      },
+      {
+       "offset": 348882,
+       "text": "Our board of directors and, until the Sunset, our Executive Committee, in their sole discretion, will make any determination from time to time with respect to the use of any such excess cash so accumulated, which may include, among other uses, paying dividends, which may include special dividends, on its Class A common stock and nonvoting Class A common stock."
+      },
+      {
+       "offset": 349371,
+       "text": "To the extent that we do not distribute such excess cash as dividends on our Class A common stock and nonvoting Class A common stock or otherwise undertake ameliorative actions between Common Units and shares of Class A common stock and nonvoting Class A common stock and instead, for example, hold such cash balances, the direct owners of Common Units may benefit from any value attributable to such cash balances as a result of their ownership of Class A common stock and nonvoting Class A common stock following a redemption or exchange of their Common Units, notwithstanding that such pre-IPO owners of the TPG Operating Group may previously have participated as holders of Common Units in distri"
+      },
+      {
+       "offset": 350149,
+       "text": "Our current intention is to pay holders of our Class A common stock and nonvoting Class A common stock a quarterly dividend representing at least 85% of TPG Inc."
+      },
+      {
+       "offset": 354650,
+       "text": "The need to comply with the 40% test in section 3(a)(1)(C) may cause us to (i) restrict our business and that of our subsidiaries with respect to the assets in which we can invest and/or the types of securities we may issue, (ii) sell investment securities, including on unfavorable terms, (iii) acquire assets or businesses that could change the nature of our business or (iv) potentially take other actions that may be viewed as adverse by the holders of our Class A common stock or nonvoting Class A common stock in order to ensure conformity with exceptions provided by, and rules and regulations promulgated under, the Investment Company Act."
+      },
+      {
+       "offset": 356572,
+       "text": "After the Sunset becomes effective, the Class B common stock will have one vote per share instead of ten votes per share, meaning that GP LLC, as the general partner of TPG Partner Holdings, will no longer control the appointment of directors or be able to direct the vote on all matters that are submitted to our stockholders for a vote."
+      },
+      {
+       "offset": 358367,
+       "text": "Holders of our Class A common stock and Class B common stock will generally vote together as a single class on almost all matters submitted to a vote of our stockholders."
+      },
+      {
+       "offset": 358538,
+       "text": "Shares of our Class A common stock and Class B common stock entitle the respective holders to identical non-economic rights, except that each share of our Class A common stock entitles its holder to one vote on all matters to be voted on by stockholders generally, while each share of our Class B common stock entitles its holder to ten votes until the Sunset becomes effective;"
+      },
+      {
+       "offset": 359102,
+       "text": "1% of the aggregate voting power (the \u201cFree Float Threshold\u201d) and the voting power of the Class B common stock will be reduced proportionately until the Free Float Threshold is met."
+      },
+      {
+       "offset": 359283,
+       "text": "After the Sunset becomes effective, each share of our Class B common stock will entitle its holder to one vote and GP LLC will no longer vote all shares attributable to TPG Partner Holdings."
+      },
+      {
+       "offset": 359882,
+       "text": "The difference in voting rights could adversely affect the value of our Class A common stock to the extent that investors view, or any potential future purchaser of our company views, the superior voting rights and implicit control of the Class B common stock to have value."
+      },
+      {
+       "offset": 362061,
+       "text": "If, as a consequence of these various limitations and restrictions, we are unable to generate sufficient distributions from our business, we may not be able to make, or may be required to reduce or eliminate, any payment of dividends on our Class A common stock and nonvoting Class A common stock."
+      },
+      {
+       "offset": 362870,
+       "text": "As of December 31, 2023, we have outstanding 72,337,600 shares of Class A common stock and 8,258,901 shares of nonvoting Class A common stock and 281,657,626 shares of Class A common stock that are authorized but unissued that are issuable upon exchange of 281,657,626 Common Units."
+      },
+      {
+       "offset": 363479,
+       "text": "Pursuant to the A&R Investor Rights Agreement (as defined herein), our partners, the TPG Partner Vehicles and Pre-IPO Investors are restricted from transferring or exchanging their Class A common stock, Class B common stock or Common Units, as applicable, prior to the second anniversary of the IPO."
+      },
+      {
+       "offset": 363913,
+       "text": "33% of their Class A common stock, or any shares of Class B common stock or any Common Units owned as of the closing of the IPO, as applicable;"
+      },
+      {
+       "offset": 364190,
+       "text": "66% of their original holdings of Class A common stock, or any shares of Class B common stock or any Common Units owned as of the closing of the IPO, as applicable;"
+      },
+      {
+       "offset": 364354,
+       "text": "and after the fourth anniversary of the IPO, the TPG Partner Vehicles and the TPG partners may transfer or exchange up to 100% of their original holdings Class A common stock, or any shares of Class B common stock or any Common Units, as applicable (in each case, with respect to Common Units, subject to the terms of the A&R Exchange Agreement (as defined herein))."
+      },
+      {
+       "offset": 364721,
+       "text": "Upon an exchange of Common Units for Class A common stock, pursuant to the A&R Exchange Agreement, an equal number of Class B common stock will be cancelled for no additional consideration."
+      },
+      {
+       "offset": 365656,
+       "text": "Pursuant to the A&R Investor Rights Agreement, the API Feeder Partnerships and API partners are restricted from transferring or exchanging any Class A common stock, Class B common stock or Common Units prior to the first anniversary of the closing of the Transaction (the \u201cClosing\u201d)."
+      },
+      {
+       "offset": 366077,
+       "text": "33% of their Class A common stock, Class B common stock or any Common Units directly or indirectly owned as of the Closing, as applicable;"
+      },
+      {
+       "offset": 366352,
+       "text": "66% of their Class A common stock, Class B common stock or any Common Units directly or indirectly owned as of the Closing, as applicable;"
+      },
+      {
+       "offset": 366490,
+       "text": "and after the third anniversary of the Closing, the API Feeder Partnerships and API partners may transfer or exchange up to 100% of their Class A common stock, Class B common stock or any Common Units, as applicable (in each case, with respect to Common Units, subject to the terms of the A&R Exchange Agreement)."
+      },
+      {
+       "offset": 366958,
+       "text": "Furthermore, between the one-year and eighteen-month anniversary of the IPO, the Pre-IPO Investors may sell up to 50% of their Class A common stock, Class B common stock or Common Units;"
+      },
+      {
+       "offset": 367145,
+       "text": "between the eighteen-month and second-year anniversary of the IPO, the Pre-IPO Investors may sell up to 75% of their Class A common stock, Class B common stock or Common Units;"
+      },
+      {
+       "offset": 367322,
+       "text": "and after the second-year anniversary, the Pre-IPO Investors may sell 100% of their Class A common stock, Class B common stock or Common Units, in each case, subject to the terms of the A&R Exchange Agreement."
+      },
+      {
+       "offset": 371495,
+       "text": "and \u2022 reflect three classes of common stock, with Class B common stock having 10 votes per share and voting Class A common stock generally having one vote per share and nonvoting Class A common stock without voting rights until the shares are transferred, until the Sunset becomes effective, as discussed above."
+      },
+      {
+       "offset": 495566,
+       "text": "\u201d We may be required to fund withholding tax upon certain exchanges of Common Units into shares of our Class A common stock (or, in certain cases, shares of our nonvoting Class A common stock) by non-U."
+      },
+      {
+       "offset": 496178,
+       "text": "holder of Common Units is entitled to have such holder\u2019s Common Units 88 Table of Contents exchanged for cash from a substantially concurrent public offering or private sale (based on the closing price per share of the Class A common stock on the day before the pricing of such public offering or private sale (taking into account customary brokerage commissions or underwriting discounts actually incurred)) or (at our option) shares of our Class A common stock (or, in certain cases, shares of our nonvoting Class A common stock)."
+      },
+      {
+       "offset": 496711,
+       "text": "To the extent withholding is required and we elect to deliver shares of our Class A common stock (or, in certain cases, shares of our nonvoting Class A common stock) rather than cash, we may not have sufficient cash to satisfy such withholding obligation, and we may be required to incur additional indebtedness or sell shares of our Class A common stock in the open market to raise additional cash in order to satisfy our withholding tax obligations."
+      },
+      {
+       "offset": 505097,
+       "text": "Dividend Policy Our current intention is to pay holders of our Class A common stock and nonvoting Class A common stock a quarterly dividend representing at least 85% of TPG Inc."
+      },
+      {
+       "offset": 508579,
+       "text": "Holders of our Class B common stock will not be entitled to cash dividends distributed by TPG Inc."
+      },
+      {
+       "offset": 509591,
+       "text": "\u2019s election, subject to certain limitations set forth in the Transaction Agreement, in cash, Common Units (and an equal number of shares of Class B common stock) (the \u201cEarnout Equity Payment\u201d)."
+      },
+      {
+       "offset": 509999,
+       "text": "The Common Units and shares of Class B common stock issued in connection with the Acquisition were not and will not be registered under the Securities Act, and were issued in reliance on the exemption from registration provided by Section 4(a)(2) of the Securities Act."
+      },
+      {
+       "offset": 510269,
+       "text": "The Common Units and shares of Class B common stock are subject to the terms of our A&R Investor Rights Agreement, which sets forth certain transfer restrictions and customary registration rights with respect to the shares of Class A common stock, shares of Class B common stock and Common Units (including any Common Units received as part of the Earnout Equity Payment)."
+      },
+      {
+       "offset": 510642,
+       "text": "In particular, applicable Angelo Gordon Parties may not transfer or exchange (i) any shares of Class A common stock, shares of Class B common stock or Common Units prior to the first anniversary of Closing;"
+      },
+      {
+       "offset": 510849,
+       "text": "(ii) from the first anniversary until the second anniversary of Closing, more than one third (1/3) of the number of shares of Class A common stock, shares of Class B common stock or Common Units owned, directly or indirectly, by the applicable Angelo Gordon Parties as of Closing;"
+      },
+      {
+       "offset": 511130,
+       "text": "and (iii) between the second and third anniversary of Closing, more than two thirds (2/3) of the number of shares of Class A common stock, shares of Class B common stock or Common Units owned, directly or indirectly, by the applicable Angelo Gordon Parties as of Closing."
+      },
+      {
+       "offset": 521284,
+       "text": "2 million vested Common Units (and an equal number of Class B common stock) and 43."
+      },
+      {
+       "offset": 609264,
+       "text": "All Common Units issued were accompanied by an equal number of Class B Shares."
+      },
+      {
+       "offset": 700040,
+       "text": "34 Tax Receivable Agreement The future exchanges by owners of Common Units for cash from a substantially concurrent public offering, reorganization or private sale (based on the price per share of the Class A common stock on the day before the pricing of such public offering or private sale) or, at our election, for shares of our Class A common stock on a one-for-one basis (or, in certain cases, for shares of nonvoting Class A common stock) are expected to produce or otherwise deliver to us favorable tax attributes that can reduce our taxable income."
+      },
+      {
+       "offset": 945095,
+       "text": "Equity The Company has three classes of common stock outstanding, Class A common stock, nonvoting Class A common stock and Class B common stock."
+      },
+      {
+       "offset": 945412,
+       "text": "001 per share, 100,000,000 shares of nonvoting Class A common stock, 750,000,000 shares of Class B common stock with a par value of $ 0."
+      },
+      {
+       "offset": 945643,
+       "text": "Each share of the Company\u2019s Class A common stock entitles its holder to one vote, and each share of our Class B common stock entitles its holder to ten votes."
+      },
+      {
+       "offset": 945802,
+       "text": "Holders of Class A common stock and Class B common stock generally vote together as a single class on all matters presented to the Company\u2019s stockholders for their vote or approval."
+      },
+      {
+       "offset": 945984,
+       "text": "The nonvoting Class A common stock have the same rights and privileges as, rank equally and share ratably with, and are identical in all respects as to all matters to, the Class A common stock, except that the nonvoting Class A common stock have no voting rights other than such rights as may be required by law."
+      },
+      {
+       "offset": 946411,
+       "text": "Holders of the Class B common stock are not entitled to dividends in respect of their shares of Class B common stock."
+      },
+      {
+       "offset": 946607,
+       "text": "2 million Common Units where all Common Units issued are accompanied by an equal number of Class B common stock."
+      },
+      {
+       "offset": 946719,
+       "text": "As of December 31, 2023, 72,337,600 shares of Class A common stock and 8,258,901 shares of nonvoting Class A common stock were outstanding, 281,657,626 shares of Class B common stock were outstanding, and there were no shares of preferred stock outstanding."
+      },
+      {
+       "offset": 948287,
+       "text": "This exchange resulted in the issuance of 1,000,000 shares of Class A common stock and the cancellation of 1,000,000 shares of Class B common stock for no additional consideration."
+      }
+     ]
+    },
+    {
+     "form": "10-Q",
+     "filed": "2024-05-08",
+     "accn": "0001880661-24-000032",
+     "primary_document": "tpg-20240331.htm",
+     "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000032",
+     "passages": [
+      {
+       "offset": 33677,
+       "text": "Yes o No x As of May 3, 2024, there were 92,555,842 shares of the registrant\u2019s Class A common stock, 8,258,901 shares of the registrant\u2019s nonvoting Class A common stock and 263,952,639 shares of the registrant\u2019s Class B common stock outstanding."
+      },
+      {
+       "offset": 39965,
+       "text": "When we use the term \u201cClass A common stock\u201d in this Quarterly Report on Form 10-Q, we are referring exclusively to such voting Class A common stock and not to \u201cnonvoting Class A common stock."
+      },
+      {
+       "offset": 41646,
+       "text": "\u2022 \u201cnonvoting Class A common stock\u201d refers to the nonvoting Class A common stock of TPG Inc."
+      },
+      {
+       "offset": 44956,
+       "text": ", a Delaware limited partnership that is considered our predecessor for accounting purposes and is a TPG Partner Vehicle and direct owner of certain Common Units and Class B common stock."
+      },
+      {
+       "offset": 119550,
+       "text": "2 million vested Common Units (and an equal number of Class B common stock) and 43."
+      },
+      {
+       "offset": 156986,
+       "text": "During the three months ended March 31, 2024, certain holders of Common Units exchanged 17,704,987 Common Units for an equal number of shares of Class A Common Stock as described in Note 15 to the Condensed Consolidated Financial Statements."
+      },
+      {
+       "offset": 161015,
+       "text": "Tax Receivable Agreement On February 27, 2024, c ertain holders of Common Units exchanged 17,704,987 Common Units for an equal number of shares of Class A Common Stock as described in Note 15 to the Condensed Consolidated Financial Statements."
+      },
+      {
+       "offset": 194615,
+       "text": "Equity The Company has three classes of common stock outstanding, Class A common stock, nonvoting Class A common stock and Class B common stock."
+      },
+      {
+       "offset": 194932,
+       "text": "001 per share, 100,000,000 shares of nonvoting Class A common stock, 750,000,000 shares of Class B common stock with a par value of $ 0."
+      },
+      {
+       "offset": 195163,
+       "text": "Each share of the Company\u2019s Class A common stock entitles its holder to one vote, and each share of our Class B common stock entitles its holder to ten votes."
+      },
+      {
+       "offset": 195322,
+       "text": "Holders of Class A common stock and Class B common stock generally vote together as a single class on all matters presented to the Company\u2019s stockholders for their vote or approval."
+      },
+      {
+       "offset": 195504,
+       "text": "The nonvoting Class A common stock have the same rights and privileges as, rank equally and share ratably with, and are identical in all respects as to all matters to, the Class A common stock, except that the nonvoting Class A common stock have no voting rights other than such rights as may be required by law."
+      },
+      {
+       "offset": 195931,
+       "text": "Holders of the Class B common stock are not entitled to dividends in respect of their shares of Class B common stock."
+      },
+      {
+       "offset": 196049,
+       "text": "As of March 31, 2024, 92,467,877 shares of Class A common stock and 8,258,901 shares of nonvoting Class A common stock were outstanding, 263,952,639 shares of Class B common stock were outstanding, and there were no shares of preferred stock outstanding."
+      },
+      {
+       "offset": 197252,
+       "text": "Notes to Condensed Consolidated Financial Statements (unaudited) Exchange of Common Units On February 27, 2024, pursuant to the Amended and Restated Exchange Agreement, certain holders of Common Units exchanged 17,704,987 Common Units for an equal number of shares of Class A Common Stock."
+      },
+      {
+       "offset": 197542,
+       "text": "The exchange resulted in the issuance of 17,704,987 shares of Class A common stock and the cancellation of 17,704,987 shares of Class B common stock for no additional consideration."
+      },
+      {
+       "offset": 198528,
+       "text": "This exchange resulted in the issuance of 1,000,000 shares of Class A common stock and the cancellation of 1,000,000 shares of Class B common stock for no additional consideration."
+      },
+      {
+       "offset": 344087,
+       "text": "41 Tax Receivable Agreement The future exchanges by owners of Common Units for cash from a substantially concurrent public offering, reorganization or private sale (based on the price per share of the Class A common stock on the day before the pricing of such public offering or private sale) or, at our election, for shares of our Class A common stock on a one-for-one basis (or, in certain cases, for shares of nonvoting Class A common stock) are expected to produce or otherwise deliver to us favorable tax attributes that can reduce our taxable income."
+      },
+      {
+       "offset": 345580,
+       "text": "This exchange resulted in the issuance of 17,704,987 shares of Class A common stock and the cancellation of 17,704,987 shares of Class B common stock for no additional consideration."
+      }
+     ]
+    }
+   ],
+   "cover_instance_unit_facts": [
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3296318000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3361134000.0,
+     "date": "2023-12-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToRedeemableNoncontrollingInterest",
+     "value": 0.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToRedeemableNoncontrollingInterest",
+     "value": 1529000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestInNetIncomeLossOperatingPartnershipsNonredeemable",
+     "value": -55037000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestInNetIncomeLossOperatingPartnershipsNonredeemable",
+     "value": -25492000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestInNetIncomeLossOtherNoncontrollingInterestsNonredeemable",
+     "value": 30512000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncontrollingInterestInNetIncomeLossOtherNoncontrollingInterestsNonredeemable",
+     "value": 34582000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 80000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 282000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassBMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 613476000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -34681000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 579157000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2781977000.0,
+     "date": "2023-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3361134000.0,
+     "date": "2023-12-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossIncludingPortionAttributableToNonredeemableNoncontrollingInterest",
+     "value": 15519000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossIncludingPortionAttributableToNonredeemableNoncontrollingInterest",
+     "value": 15519000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossIncludingPortionAttributableToNonredeemableNoncontrollingInterest",
+     "value": -24525000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossIncludingPortionAttributableToNonredeemableNoncontrollingInterest",
+     "value": -9006000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestDecreaseFromDistributionsToNoncontrollingInterestHolders",
+     "value": 40358000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestDecreaseFromDistributionsToNoncontrollingInterestHolders",
+     "value": 40358000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestDecreaseFromDistributionsToNoncontrollingInterestHolders",
+     "value": 191279000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestDecreaseFromDistributionsToNoncontrollingInterestHolders",
+     "value": 231637000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockShares",
+     "value": 17704987.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockShares",
+     "value": -17704987.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassBMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockValue",
+     "value": 18000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockValue",
+     "value": -18000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassBMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockValue",
+     "value": 16555000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockValue",
+     "value": 16555000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockValue",
+     "value": 16555000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "EquityReallocationBetweenControllingAndNonControllingInterests",
+     "value": 130421000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "EquityReallocationBetweenControllingAndNonControllingInterests",
+     "value": 130421000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "EquityReallocationBetweenControllingAndNonControllingInterests",
+     "value": -130421000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "EquityReallocationBetweenControllingAndNonControllingInterests",
+     "value": 0.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 101000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 264000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassBMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 779513000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -59520000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 720358000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2575960000.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3296318000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 79000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 230000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassBMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 506639000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2724000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 509672000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2576199000.0,
+     "date": "2022-12-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3085871000.0,
+     "date": "2022-12-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossIncludingPortionAttributableToNonredeemableNoncontrollingInterest",
+     "value": 25055000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossIncludingPortionAttributableToNonredeemableNoncontrollingInterest",
+     "value": 25055000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossIncludingPortionAttributableToNonredeemableNoncontrollingInterest",
+     "value": 9090000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossIncludingPortionAttributableToNonredeemableNoncontrollingInterest",
+     "value": 34145000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestDecreaseFromDistributionsToNoncontrollingInterestHolders",
+     "value": 41760000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestDecreaseFromDistributionsToNoncontrollingInterestHolders",
+     "value": 41760000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestDecreaseFromDistributionsToNoncontrollingInterestHolders",
+     "value": 229179000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestDecreaseFromDistributionsToNoncontrollingInterestHolders",
+     "value": 270939000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockShares",
+     "value": 1000000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockShares",
+     "value": -1000000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassBMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockValue",
+     "value": 1000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockValue",
+     "value": -1000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassBMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockValue",
+     "value": 1085000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockValue",
+     "value": 1085000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "ExchangeOfCommonUnitsToCommonStockValue",
+     "value": 1085000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "EquityReallocationBetweenControllingAndNonControllingInterests",
+     "value": 7481000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "EquityReallocationBetweenControllingAndNonControllingInterests",
+     "value": 7481000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "EquityReallocationBetweenControllingAndNonControllingInterests",
+     "value": -7481000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "EquityReallocationBetweenControllingAndNonControllingInterests",
+     "value": 0.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 80000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 229000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassBMember",
+      "StatementEquityComponentsAxis=CommonStockMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 522888000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=AdditionalPaidInCapitalMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": -13981000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=RetainedEarningsMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 509216000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=ParentMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 2492228000.0,
+     "date": "2023-03-31",
+     "dims": [
+      "StatementEquityComponentsAxis=NoncontrollingInterestMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "value": 3001444000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect",
+     "value": 425669000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect",
+     "value": -175427000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "MinorityInterestOwnershipPercentageByParent",
+     "value": 0.28,
+     "date": "2024-03-31",
+     "dims": [
+      "OwnershipAxis=TPGOperatingGroupMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "BusinessCombinationAcquisitionOfLessThan100PercentNoncontrollingInterestFairValue",
+     "value": 4172000.0,
+     "date": "2023-11-01",
+     "dims": [
+      "BusinessAcquisitionAxis=AngeloGordonCoLPAgFundsLPAndAGPartnersLPMember"
+     ],
+     "unit": "usd"
+    },
+    {
+     "concept": "EquityMethodInvestmentOwnershipPercentage",
+     "value": 0.06,
+     "date": "2024-03-31",
+     "dims": [
+      "ScheduleOfEquityMethodInvestmentEquityMethodInvesteeNameAxis=NerdyIncMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "EquityMethodInvestmentOwnershipPercentage",
+     "value": 0.061,
+     "date": "2023-12-31",
+     "dims": [
+      "ScheduleOfEquityMethodInvestmentEquityMethodInvesteeNameAxis=NerdyIncMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "OwnershipInterestExchangesNumberOfUnitsExchanged",
+     "value": 17704987.0,
+     "date": "2024-03-31",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "OwnershipInterestExchangesNumberOfUnitsExchanged",
+     "value": 17704987.0,
+     "date": "2024-02-27",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToRedeemableNoncontrollingInterest",
+     "value": 0.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToRedeemableNoncontrollingInterest",
+     "value": 1529000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToNonredeemableNonControllingInterestAdjustmentToNetIncomeAvailableToCommonStockholdersBasic",
+     "value": -55037000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToNonredeemableNonControllingInterestAdjustmentToNetIncomeAvailableToCommonStockholdersBasic",
+     "value": -25492000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToNoncontrollingInterest",
+     "value": 30512000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NetIncomeLossAttributableToNoncontrollingInterest",
+     "value": 34582000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "ShareBasedCompensationArrangementByShareBasedPaymentAwardConversionRatio",
+     "value": 1.0,
+     "date": "2022-12-31",
+     "dims": [
+      "AwardTypeAxis=RestrictedStockUnitsRSUMember"
+     ],
+     "unit": "number"
+    },
+    {
+     "concept": "OwnershipInterestExchangesNumberOfUnitsExchanged",
+     "value": 17704987.0,
+     "date": "2024-02-27",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "OwnershipInterestExchangesNumberOfSharesIssued",
+     "value": 17704987.0,
+     "date": "2024-02-27",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "OwnershipInterestExchangesSharesCancelled",
+     "value": 17704987.0,
+     "date": "2024-02-27",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "NoncashFinancingActivitiesEquityDistributionsToOtherNoncontrollingInterest",
+     "value": 38197000.0,
+     "date": "2024-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "NoncashFinancingActivitiesEquityDistributionsToOtherNoncontrollingInterest",
+     "value": 66710000.0,
+     "date": "2023-03-31",
+     "dims": [],
+     "unit": "usd"
+    },
+    {
+     "concept": "OwnershipInterestExchangesNumberOfUnitsExchanged",
+     "value": 1000000.0,
+     "date": "2023-03-30",
+     "dims": [],
+     "unit": "shares"
+    },
+    {
+     "concept": "OwnershipInterestExchangesNumberOfSharesIssued",
+     "value": 1000000.0,
+     "date": "2023-03-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "OwnershipInterestExchangesNumberOfSharesIssued",
+     "value": 1000000.0,
+     "date": "2023-03-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassAMember"
+     ],
+     "unit": "shares"
+    },
+    {
+     "concept": "OwnershipInterestExchangesSharesCancelled",
+     "value": 1000000.0,
+     "date": "2023-03-30",
+     "dims": [
+      "StatementClassOfStockAxis=CommonClassBMember"
+     ],
+     "unit": "shares"
+    }
+   ]
+  }
+ }
+}
