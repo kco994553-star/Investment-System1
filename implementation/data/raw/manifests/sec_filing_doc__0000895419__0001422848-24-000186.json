@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000895419:0001422848-24-000186",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/895419/000142284824000186/SEC13G_Filing.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T04:47:51.179575+00:00",
+  "sha256": "5dfc217898995b01e4d0bdb695f8bfe2a4ed99f65311d94cbaa5aec45cceec09",
+  "bytes": 16795,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

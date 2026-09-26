@@ -1,0 +1,630 @@
+{
+ "kind": "SHARE_COUNT_DIAGNOSTIC",
+ "as_of": "2024-09-30",
+ "cik": "0002011286",
+ "entity_name": "Amentum Holdings, Inc.",
+ "tickers_current": [
+  "AMTM"
+ ],
+ "exchanges_current": [
+  "NYSE"
+ ],
+ "sic": "7389",
+ "sic_description": "Services-Business Services, NEC",
+ "entity_type": "operating",
+ "cover_filing": null,
+ "cover_instance": null,
+ "filings_on_or_before_as_of": [
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-27"
+  },
+  {
+   "form": "4",
+   "filed": "2024-09-25"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-18"
+  },
+  {
+   "form": "SEC STAFF ACTION",
+   "filed": "2024-09-18"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-18"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-18"
+  },
+  {
+   "form": "3",
+   "filed": "2024-09-18"
+  }
+ ],
+ "pit_shares": {
+  "status": "MISSING",
+  "shares": null,
+  "source": null,
+  "available_at": null
+ },
+ "companyfacts_shares": {
+  "filed_on_or_before_as_of": [],
+  "POST_AS_OF_FILING": [
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 243000000,
+    "end": "2024-12-27",
+    "filed": "2026-02-10",
+    "form": "10-Q",
+    "accn": "0001628280-26-006676",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 243302426,
+    "end": "2025-01-31",
+    "filed": "2025-02-05",
+    "form": "10-Q",
+    "accn": "0002011286-25-000060",
+    "fy": 2025,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 243322468,
+    "end": "2025-03-28",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0002011286-25-000141",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 243322468,
+    "end": "2025-03-28",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0002011286-25-000141",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 243000000,
+    "end": "2025-03-28",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0002011286-25-000141",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 243000000,
+    "end": "2025-03-28",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0002011286-25-000141",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 243000000,
+    "end": "2025-03-28",
+    "filed": "2026-05-12",
+    "form": "10-Q",
+    "accn": "0001628280-26-034156",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 243000000,
+    "end": "2025-03-28",
+    "filed": "2026-05-12",
+    "form": "10-Q",
+    "accn": "0001628280-26-034156",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 243322468,
+    "end": "2025-05-02",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0002011286-25-000141",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 243322468,
+    "end": "2025-06-27",
+    "filed": "2025-08-06",
+    "form": "10-Q",
+    "accn": "0002011286-25-000163",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 243322468,
+    "end": "2025-06-27",
+    "filed": "2025-08-06",
+    "form": "10-Q",
+    "accn": "0002011286-25-000163",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 243000000,
+    "end": "2025-06-27",
+    "filed": "2025-08-06",
+    "form": "10-Q",
+    "accn": "0002011286-25-000163",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 243000000,
+    "end": "2025-06-27",
+    "filed": "2025-08-06",
+    "form": "10-Q",
+    "accn": "0002011286-25-000163",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 243000000,
+    "end": "2025-06-27",
+    "filed": "2026-08-11",
+    "form": "10-Q",
+    "accn": "0001628280-26-055727",
+    "fy": 2026,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 243000000,
+    "end": "2025-06-27",
+    "filed": "2026-08-11",
+    "form": "10-Q",
+    "accn": "0001628280-26-055727",
+    "fy": 2026,
+    "fp": "Q3"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 243328645,
+    "end": "2025-08-01",
+    "filed": "2025-08-06",
+    "form": "10-Q",
+    "accn": "0002011286-25-000163",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 243464776,
+    "end": "2025-10-03",
+    "filed": "2025-11-25",
+    "form": "10-K",
+    "accn": "0001628280-25-053993",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 243464776,
+    "end": "2025-10-03",
+    "filed": "2025-11-25",
+    "form": "10-K",
+    "accn": "0001628280-25-053993",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 243000000,
+    "end": "2025-10-03",
+    "filed": "2025-11-25",
+    "form": "10-K",
+    "accn": "0001628280-25-053993",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 243464776,
+    "end": "2025-10-03",
+    "filed": "2026-02-10",
+    "form": "10-Q",
+    "accn": "0001628280-26-006676",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 243464776,
+    "end": "2025-10-03",
+    "filed": "2026-02-10",
+    "form": "10-Q",
+    "accn": "0001628280-26-006676",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 243464776,
+    "end": "2025-10-03",
+    "filed": "2026-05-12",
+    "form": "10-Q",
+    "accn": "0001628280-26-034156",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 243464776,
+    "end": "2025-10-03",
+    "filed": "2026-05-12",
+    "form": "10-Q",
+    "accn": "0001628280-26-034156",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 243464776,
+    "end": "2025-10-03",
+    "filed": "2026-08-11",
+    "form": "10-Q",
+    "accn": "0001628280-26-055727",
+    "fy": 2026,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 243464776,
+    "end": "2025-10-03",
+    "filed": "2026-08-11",
+    "form": "10-Q",
+    "accn": "0001628280-26-055727",
+    "fy": 2026,
+    "fp": "Q3"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 243597992,
+    "end": "2025-11-14",
+    "filed": "2025-11-25",
+    "form": "10-K",
+    "accn": "0001628280-25-053993",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 243770575,
+    "end": "2026-01-02",
+    "filed": "2026-02-10",
+    "form": "10-Q",
+    "accn": "0001628280-26-006676",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 243770575,
+    "end": "2026-01-02",
+    "filed": "2026-02-10",
+    "form": "10-Q",
+    "accn": "0001628280-26-006676",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 244000000,
+    "end": "2026-01-02",
+    "filed": "2026-02-10",
+    "form": "10-Q",
+    "accn": "0001628280-26-006676",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 243935176,
+    "end": "2026-02-06",
+    "filed": "2026-02-10",
+    "form": "10-Q",
+    "accn": "0001628280-26-006676",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 244090344,
+    "end": "2026-04-03",
+    "filed": "2026-05-12",
+    "form": "10-Q",
+    "accn": "0001628280-26-034156",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 244090344,
+    "end": "2026-04-03",
+    "filed": "2026-05-12",
+    "form": "10-Q",
+    "accn": "0001628280-26-034156",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 244000000,
+    "end": "2026-04-03",
+    "filed": "2026-05-12",
+    "form": "10-Q",
+    "accn": "0001628280-26-034156",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 244000000,
+    "end": "2026-04-03",
+    "filed": "2026-05-12",
+    "form": "10-Q",
+    "accn": "0001628280-26-034156",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 244316319,
+    "end": "2026-05-08",
+    "filed": "2026-05-12",
+    "form": "10-Q",
+    "accn": "0001628280-26-034156",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 244319846,
+    "end": "2026-07-03",
+    "filed": "2026-08-11",
+    "form": "10-Q",
+    "accn": "0001628280-26-055727",
+    "fy": 2026,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 244319846,
+    "end": "2026-07-03",
+    "filed": "2026-08-11",
+    "form": "10-Q",
+    "accn": "0001628280-26-055727",
+    "fy": 2026,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 244000000,
+    "end": "2026-07-03",
+    "filed": "2026-08-11",
+    "form": "10-Q",
+    "accn": "0001628280-26-055727",
+    "fy": 2026,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 244000000,
+    "end": "2026-07-03",
+    "filed": "2026-08-11",
+    "form": "10-Q",
+    "accn": "0001628280-26-055727",
+    "fy": 2026,
+    "fp": "Q3"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 244506413,
+    "end": "2026-08-07",
+    "filed": "2026-08-11",
+    "form": "10-Q",
+    "accn": "0001628280-26-055727",
+    "fy": 2026,
+    "fp": "Q3"
+   }
+  ],
+  "POST_AS_OF_FILINGS_ABOUT_PERIODS_ENDING_ON_OR_BEFORE_AS_OF": []
+ },
+ "documents": [
+  {
+   "form": "8-K",
+   "filed": "2024-09-27",
+   "accn": "0001193125-24-227910",
+   "primary_document": "d905502d8k.htm",
+   "artifact_id": "sec_filing_doc:0002011286:0001193125-24-227910",
+   "cover_sentences": [
+    "The Split Amendment increased the number of authorized shares of SpinCo Common Stock to 1,000,000,000, and effected a stock split of the outstanding shares of SpinCo Common Stock, resulting in 153,280,369 issued and outstanding shares of SpinCo Common Stock"
+   ],
+   "symbol_sentences": []
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-09-18",
+   "accn": "0001193125-24-221432",
+   "primary_document": "d890714d8k.htm",
+   "artifact_id": "sec_filing_doc:0002011286:0001193125-24-221432",
+   "cover_sentences": [],
+   "symbol_sentences": []
+  },
+  {
+   "form": "10-12B/A",
+   "filed": "2024-09-13",
+   "accn": "0001193125-24-218486",
+   "primary_document": "d774986d1012ba.htm",
+   "artifact_id": "sec_filing_doc:0002011286:0001193125-24-218486",
+   "cover_sentences": [],
+   "symbol_sentences": []
+  },
+  {
+   "form": "10-12B/A",
+   "filed": "2024-09-09",
+   "accn": "0001193125-24-215560",
+   "primary_document": "d774986d1012ba.htm",
+   "artifact_id": "sec_filing_doc:0002011286:0001193125-24-215560",
+   "cover_sentences": [],
+   "symbol_sentences": []
+  },
+  {
+   "form": "10-12B/A",
+   "filed": "2024-08-26",
+   "accn": "0001193125-24-207090",
+   "primary_document": "d774986d1012ba.htm",
+   "artifact_id": "sec_filing_doc:0002011286:0001193125-24-207090",
+   "cover_sentences": [],
+   "symbol_sentences": []
+  },
+  {
+   "form": "10-12B/A",
+   "filed": "2024-08-05",
+   "accn": "0001193125-24-194072",
+   "primary_document": "d774986d1012ba.htm",
+   "artifact_id": "sec_filing_doc:0002011286:0001193125-24-194072",
+   "cover_sentences": [],
+   "symbol_sentences": []
+  }
+ ],
+ "note": "Diagnostic only. POST_AS_OF_FILING rows are investigation evidence and are never used as the as_of share count (user decision 2026-09-26)."
+}

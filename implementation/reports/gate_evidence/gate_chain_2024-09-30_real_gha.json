@@ -3,7 +3,7 @@
   "as_of": "2024-09-30T00:00:00+00:00",
   "store": {
     "dir": "data/raw",
-    "n_artifacts": 5839,
+    "n_artifacts": 5851,
     "status": "PRESENT"
   },
   "listings": 985,
@@ -3929,6 +3929,94 @@
         "quote": "l accounting standards provided pursuant to Section 13(a) of the Exchange Act. \u2610 \u200b Indicate by check mark whether the registrant is a shell company (as defined in Rule 12b-2 of the Exchange Act). Yes \u2612 No \u2610 \u200b As of August 6, 2024, the registrant had 519,358,323 ordinary shares, nominal value $0.001 per share, issued and outstanding. \u200b \u200b * Smurfit Westrock plc operated as a shell company during the period covered by this report. However, as discussed in the explanatory note hereto, Smurfit Westrock plc\u2019s fu",
         "formula": "519358323 shares (cover text) x 50.09000015258789"
       }
+    },
+    "WOLF": {
+      "mcap": 1230632859.8999999,
+      "status": "NPORT_REPORTED_VALUE",
+      "source": "nport_xml:0001752724-24-268869",
+      "price_type": "NPORT_REPORTED_VALUE",
+      "valuation_date": "2024-09-30",
+      "classes": [],
+      "nport_reported_value": {
+        "cik": "0000895419",
+        "price_type": "NPORT_REPORTED_VALUE",
+        "valuation_date": "2024-09-30",
+        "filing_date": "2024-11-26",
+        "available_at": "2024-11-26",
+        "as_of": "2024-09-30",
+        "look_ahead": true,
+        "look_ahead_basis": "USER_APPROVED_PER_DATE_EXCEPTION_PINC_WOLF_ONLY",
+        "market_close_basis_of_other_issuers": "last close on/before as_of",
+        "status": "APPLIED",
+        "failures": [],
+        "price": 9.7,
+        "shares": 126869367.0,
+        "mcap": 1230632859.8999999,
+        "source_artifact": "nport_xml:0001752724-24-268869",
+        "cusip": "977852102",
+        "cusip_attested_by": [
+          {
+            "artifact_id": "sec_filing_doc:0000895419:0001374170-24-000031",
+            "form": "SC 13G",
+            "filed": "2024-02-14"
+          },
+          {
+            "artifact_id": "sec_filing_doc:0000895419:0001104659-24-022319",
+            "form": "SC 13G/A",
+            "filed": "2024-02-13"
+          },
+          {
+            "artifact_id": "sec_filing_doc:0000895419:0001422848-24-000186",
+            "form": "SC 13G/A",
+            "filed": "2024-02-09"
+          }
+        ],
+        "formula": "126869367 shares x (valUSD 850593.00000000 / balance 87690.00000000 NS) = 1230632859.90"
+      }
+    },
+    "PINC": {
+      "mcap": 2003758540.0,
+      "status": "NPORT_REPORTED_VALUE",
+      "source": "nport_xml:0001752724-24-268869",
+      "price_type": "NPORT_REPORTED_VALUE",
+      "valuation_date": "2024-09-30",
+      "classes": [],
+      "nport_reported_value": {
+        "cik": "0001577916",
+        "price_type": "NPORT_REPORTED_VALUE",
+        "valuation_date": "2024-09-30",
+        "filing_date": "2024-11-26",
+        "available_at": "2024-11-26",
+        "as_of": "2024-09-30",
+        "look_ahead": true,
+        "look_ahead_basis": "USER_APPROVED_PER_DATE_EXCEPTION_PINC_WOLF_ONLY",
+        "market_close_basis_of_other_issuers": "last close on/before as_of",
+        "status": "APPLIED",
+        "failures": [],
+        "price": 20.0,
+        "shares": 100187927.0,
+        "mcap": 2003758540.0,
+        "source_artifact": "nport_xml:0001752724-24-268869",
+        "cusip": "74051N102",
+        "cusip_attested_by": [
+          {
+            "artifact_id": "sec_filing_doc:0001577916:0001104659-24-021744",
+            "form": "SC 13G/A",
+            "filed": "2024-02-13"
+          },
+          {
+            "artifact_id": "sec_filing_doc:0001577916:0001086364-24-001358",
+            "form": "SC 13G/A",
+            "filed": "2024-01-23"
+          },
+          {
+            "artifact_id": "sec_filing_doc:0001577916:0001306550-23-010085",
+            "form": "SC 13G",
+            "filed": "2023-10-06"
+          }
+        ],
+        "formula": "100187927 shares x (valUSD 1469500.00000000 / balance 73475.00000000 NS) = 2003758540.00"
+      }
     }
   },
   "cover_unresolved": {},
@@ -4266,7 +4354,84 @@
       "lower_bound": 10127934500.0
     }
   },
-  "price_basis_exceptions": null,
+  "price_basis_exceptions": {
+    "price_type": "NPORT_REPORTED_VALUE",
+    "issuers": {
+      "WOLF": {
+        "cik": "0000895419",
+        "price_type": "NPORT_REPORTED_VALUE",
+        "valuation_date": "2024-09-30",
+        "filing_date": "2024-11-26",
+        "available_at": "2024-11-26",
+        "as_of": "2024-09-30",
+        "look_ahead": true,
+        "look_ahead_basis": "USER_APPROVED_PER_DATE_EXCEPTION_PINC_WOLF_ONLY",
+        "market_close_basis_of_other_issuers": "last close on/before as_of",
+        "status": "APPLIED",
+        "failures": [],
+        "price": 9.7,
+        "shares": 126869367.0,
+        "mcap": 1230632859.8999999,
+        "source_artifact": "nport_xml:0001752724-24-268869",
+        "cusip": "977852102",
+        "cusip_attested_by": [
+          {
+            "artifact_id": "sec_filing_doc:0000895419:0001374170-24-000031",
+            "form": "SC 13G",
+            "filed": "2024-02-14"
+          },
+          {
+            "artifact_id": "sec_filing_doc:0000895419:0001104659-24-022319",
+            "form": "SC 13G/A",
+            "filed": "2024-02-13"
+          },
+          {
+            "artifact_id": "sec_filing_doc:0000895419:0001422848-24-000186",
+            "form": "SC 13G/A",
+            "filed": "2024-02-09"
+          }
+        ],
+        "formula": "126869367 shares x (valUSD 850593.00000000 / balance 87690.00000000 NS) = 1230632859.90"
+      },
+      "PINC": {
+        "cik": "0001577916",
+        "price_type": "NPORT_REPORTED_VALUE",
+        "valuation_date": "2024-09-30",
+        "filing_date": "2024-11-26",
+        "available_at": "2024-11-26",
+        "as_of": "2024-09-30",
+        "look_ahead": true,
+        "look_ahead_basis": "USER_APPROVED_PER_DATE_EXCEPTION_PINC_WOLF_ONLY",
+        "market_close_basis_of_other_issuers": "last close on/before as_of",
+        "status": "APPLIED",
+        "failures": [],
+        "price": 20.0,
+        "shares": 100187927.0,
+        "mcap": 2003758540.0,
+        "source_artifact": "nport_xml:0001752724-24-268869",
+        "cusip": "74051N102",
+        "cusip_attested_by": [
+          {
+            "artifact_id": "sec_filing_doc:0001577916:0001104659-24-021744",
+            "form": "SC 13G/A",
+            "filed": "2024-02-13"
+          },
+          {
+            "artifact_id": "sec_filing_doc:0001577916:0001086364-24-001358",
+            "form": "SC 13G/A",
+            "filed": "2024-01-23"
+          },
+          {
+            "artifact_id": "sec_filing_doc:0001577916:0001306550-23-010085",
+            "form": "SC 13G",
+            "filed": "2023-10-06"
+          }
+        ],
+        "formula": "100187927 shares x (valUSD 1469500.00000000 / balance 73475.00000000 NS) = 2003758540.00"
+      }
+    },
+    "note": "Valued at the SEC N-PORT reported value per share on the as_of report date (filed after as_of: look_ahead recorded per row), not a market close; all other issuers use their last close on/before as_of. Exception limited to the user-approved issuers (PINC, WOLF), verified independently for each as_of."
+  },
   "share_scale_checks": {
     "MCD": {
       "cik": "0000063908",
@@ -4468,7 +4633,16 @@
     "order_identical": true,
     "mcap_mismatch": [],
     "gate_members_excluded_by_snapshot": [],
-    "snapshot_excluded": [],
+    "snapshot_excluded": [
+      {
+        "company_id": "r1000:0000895419",
+        "reason": "NOT_AVAILABLE_AT_AS_OF"
+      },
+      {
+        "company_id": "r1000:0001577916",
+        "reason": "NOT_AVAILABLE_AT_AS_OF"
+      }
+    ],
     "shares_basis_counts": {
       "COMPANYFACTS_PIT": 447,
       "COVER_CLASS_SUM_LOWER_BOUND": 38,
@@ -4477,31 +4651,17 @@
       "COVER_TEXT_SINGLE_COUNT": 1,
       "COVER_ECONOMIC_EQUIVALENT": 3
     },
-    "universe_id": "uni_b2bf5a23fc52",
+    "universe_id": "uni_e52c0878cc60",
     "snapshot_cutoff_mcap": 15390472412.658005
   },
   "official_snapshot_candidates": null,
   "unrankable_issuers": {
-    "WOLF": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0000895419",
-      "shares": 126869367.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
-    },
     "AMTM": {
       "reason": "SHARES_MISSING",
       "cik": "0002011286",
       "shares": null,
       "price_observed_at": "2024-09-27T13:30:00+00:00",
       "pit_filer_status": "UNKNOWN"
-    },
-    "PINC": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0001577916",
-      "shares": 100187927.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
     }
   },
   "audit": {
@@ -4510,10 +4670,10 @@
     "chart_range": "5y",
     "listings": 985,
     "companyfacts": 985,
-    "price": 982,
-    "rankable": 982,
+    "price": 984,
+    "rankable": 984,
     "missing_companyfacts": 0,
-    "missing_price": 2,
+    "missing_price": 0,
     "missing_shares": 1,
     "ambiguous_shares": 0,
     "non_positive": 0,
@@ -4522,7 +4682,7 @@
     "justified_official_top500": false,
     "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
   },
-  "rankable": 982,
+  "rankable": 984,
   "cutoff_500_mcap": 15390472412.658005,
   "top500": [
     {
@@ -20211,38 +20371,6 @@
   ],
   "top500_quality_flag_counts": {},
   "reference_not_rankable_detail": {
-    "WOLF": {
-      "yahoo": "WOLF",
-      "cik": "0000895419",
-      "shares_status": "OK",
-      "shares": 126869367.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-08-22 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
-    "PINC": {
-      "yahoo": "PINC",
-      "cik": "0001577916",
-      "shares_status": "OK",
-      "shares": 100187927.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-08-21 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": 0,
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
-    },
     "RKT": {
       "yahoo": "RKT",
       "cik": "0001805284",
@@ -20412,8 +20540,8 @@
       "role": "SUPERSET_REFERENCE",
       "n_members": 988,
       "n_missing_from_pool": 1,
-      "n_present_not_rankable": 9,
-      "n_present_rankable_outside_top500": 475,
+      "n_present_not_rankable": 7,
+      "n_present_rankable_outside_top500": 477,
       "missing_from_pool": [
         "CIK0002012383"
       ]
@@ -20424,7 +20552,7 @@
     "as_of": "2024-09-30T00:00:00+00:00",
     "passed": false,
     "companyfacts": 985,
-    "rankable": 982,
+    "rankable": 984,
     "benchmark_source": "World Federation of Exchanges (WFE), \"Market Statistics - February 2025\" (WFE Focus), Total Dec'24 column",
     "benchmark_source_vintage": "2025-01-31",
     "benchmark_low": 3400,
@@ -20440,7 +20568,7 @@
     "kind": "TOP500_SUFFICIENCY_GATE",
     "as_of": "2024-09-30T00:00:00+00:00",
     "passed": false,
-    "rankable": 982,
+    "rankable": 984,
     "cutoff_mcap": 15390472412.658005,
     "n_references_supplied": 1,
     "n_references_usable": 0,
@@ -20455,14 +20583,12 @@
         ],
         "present_not_rankable": [
           "AMTM",
-          "PINC",
           "RKT",
           "RPRX",
           "RYAN",
           "TOST",
           "TPG",
-          "TW",
-          "WOLF"
+          "TW"
         ],
         "present_rankable_outside_top500": [
           "AA",
@@ -20800,6 +20926,7 @@
           "PENN",
           "PFGC",
           "PII",
+          "PINC",
           "PK",
           "PLNT",
           "PLTK",
@@ -20926,6 +21053,7 @@
           "WHR",
           "WING",
           "WMS",
+          "WOLF",
           "WPC",
           "WSC",
           "WTFC",
@@ -20969,7 +21097,85 @@
     "reasons": [
       "NO_REFERENCE_PASSED_ITS_OWN_CHECKS"
     ],
-    "note": "Does not require universe completeness. Passes only when >=1 independently sourced, dated (PIT) large-cap reference has every member present, rankable, and inside the computed top 500 -- i.e. positive evidence no plausible missed company changes the top 500."
+    "note": "Does not require universe completeness. Passes only when >=1 independently sourced, dated (PIT) large-cap reference has every member present, rankable, and inside the computed top 500 -- i.e. positive evidence no plausible missed company changes the top 500.",
+    "price_basis_exceptions": {
+      "price_type": "NPORT_REPORTED_VALUE",
+      "issuers": {
+        "WOLF": {
+          "cik": "0000895419",
+          "price_type": "NPORT_REPORTED_VALUE",
+          "valuation_date": "2024-09-30",
+          "filing_date": "2024-11-26",
+          "available_at": "2024-11-26",
+          "as_of": "2024-09-30",
+          "look_ahead": true,
+          "look_ahead_basis": "USER_APPROVED_PER_DATE_EXCEPTION_PINC_WOLF_ONLY",
+          "market_close_basis_of_other_issuers": "last close on/before as_of",
+          "status": "APPLIED",
+          "failures": [],
+          "price": 9.7,
+          "shares": 126869367.0,
+          "mcap": 1230632859.8999999,
+          "source_artifact": "nport_xml:0001752724-24-268869",
+          "cusip": "977852102",
+          "cusip_attested_by": [
+            {
+              "artifact_id": "sec_filing_doc:0000895419:0001374170-24-000031",
+              "form": "SC 13G",
+              "filed": "2024-02-14"
+            },
+            {
+              "artifact_id": "sec_filing_doc:0000895419:0001104659-24-022319",
+              "form": "SC 13G/A",
+              "filed": "2024-02-13"
+            },
+            {
+              "artifact_id": "sec_filing_doc:0000895419:0001422848-24-000186",
+              "form": "SC 13G/A",
+              "filed": "2024-02-09"
+            }
+          ],
+          "formula": "126869367 shares x (valUSD 850593.00000000 / balance 87690.00000000 NS) = 1230632859.90"
+        },
+        "PINC": {
+          "cik": "0001577916",
+          "price_type": "NPORT_REPORTED_VALUE",
+          "valuation_date": "2024-09-30",
+          "filing_date": "2024-11-26",
+          "available_at": "2024-11-26",
+          "as_of": "2024-09-30",
+          "look_ahead": true,
+          "look_ahead_basis": "USER_APPROVED_PER_DATE_EXCEPTION_PINC_WOLF_ONLY",
+          "market_close_basis_of_other_issuers": "last close on/before as_of",
+          "status": "APPLIED",
+          "failures": [],
+          "price": 20.0,
+          "shares": 100187927.0,
+          "mcap": 2003758540.0,
+          "source_artifact": "nport_xml:0001752724-24-268869",
+          "cusip": "74051N102",
+          "cusip_attested_by": [
+            {
+              "artifact_id": "sec_filing_doc:0001577916:0001104659-24-021744",
+              "form": "SC 13G/A",
+              "filed": "2024-02-13"
+            },
+            {
+              "artifact_id": "sec_filing_doc:0001577916:0001086364-24-001358",
+              "form": "SC 13G/A",
+              "filed": "2024-01-23"
+            },
+            {
+              "artifact_id": "sec_filing_doc:0001577916:0001306550-23-010085",
+              "form": "SC 13G",
+              "filed": "2023-10-06"
+            }
+          ],
+          "formula": "100187927 shares x (valUSD 1469500.00000000 / balance 73475.00000000 NS) = 2003758540.00"
+        }
+      },
+      "note": "Valued at the SEC N-PORT reported value per share on the as_of report date (filed after as_of: look_ahead recorded per row), not a market close; all other issuers use their last close on/before as_of. Exception limited to the user-approved issuers (PINC, WOLF), verified independently for each as_of."
+    }
   },
   "promotion_gate_v2": {
     "kind": "OFFICIAL_MCAP500_PROMOTION_GATE_V2",
@@ -20983,7 +21189,7 @@
       "passed": false,
       "candidate_pool_complete": false,
       "justified_official_top500": false,
-      "rankable": 982,
+      "rankable": 984,
       "listings": 985,
       "eligibility_source": null,
       "source_vintage": null,
@@ -21006,7 +21212,85 @@
       "ELIGIBLE_LISTINGS_NOT_FULLY_RANKABLE",
       "NEITHER_COMPLETENESS_NOR_SUFFICIENCY_GATE_PASSED"
     ],
-    "note": "Fail-closed. Requires base numeric/eligibility checks AND (universe completeness OR top-500 sufficiency)."
+    "note": "Fail-closed. Requires base numeric/eligibility checks AND (universe completeness OR top-500 sufficiency).",
+    "price_basis_exceptions": {
+      "price_type": "NPORT_REPORTED_VALUE",
+      "issuers": {
+        "WOLF": {
+          "cik": "0000895419",
+          "price_type": "NPORT_REPORTED_VALUE",
+          "valuation_date": "2024-09-30",
+          "filing_date": "2024-11-26",
+          "available_at": "2024-11-26",
+          "as_of": "2024-09-30",
+          "look_ahead": true,
+          "look_ahead_basis": "USER_APPROVED_PER_DATE_EXCEPTION_PINC_WOLF_ONLY",
+          "market_close_basis_of_other_issuers": "last close on/before as_of",
+          "status": "APPLIED",
+          "failures": [],
+          "price": 9.7,
+          "shares": 126869367.0,
+          "mcap": 1230632859.8999999,
+          "source_artifact": "nport_xml:0001752724-24-268869",
+          "cusip": "977852102",
+          "cusip_attested_by": [
+            {
+              "artifact_id": "sec_filing_doc:0000895419:0001374170-24-000031",
+              "form": "SC 13G",
+              "filed": "2024-02-14"
+            },
+            {
+              "artifact_id": "sec_filing_doc:0000895419:0001104659-24-022319",
+              "form": "SC 13G/A",
+              "filed": "2024-02-13"
+            },
+            {
+              "artifact_id": "sec_filing_doc:0000895419:0001422848-24-000186",
+              "form": "SC 13G/A",
+              "filed": "2024-02-09"
+            }
+          ],
+          "formula": "126869367 shares x (valUSD 850593.00000000 / balance 87690.00000000 NS) = 1230632859.90"
+        },
+        "PINC": {
+          "cik": "0001577916",
+          "price_type": "NPORT_REPORTED_VALUE",
+          "valuation_date": "2024-09-30",
+          "filing_date": "2024-11-26",
+          "available_at": "2024-11-26",
+          "as_of": "2024-09-30",
+          "look_ahead": true,
+          "look_ahead_basis": "USER_APPROVED_PER_DATE_EXCEPTION_PINC_WOLF_ONLY",
+          "market_close_basis_of_other_issuers": "last close on/before as_of",
+          "status": "APPLIED",
+          "failures": [],
+          "price": 20.0,
+          "shares": 100187927.0,
+          "mcap": 2003758540.0,
+          "source_artifact": "nport_xml:0001752724-24-268869",
+          "cusip": "74051N102",
+          "cusip_attested_by": [
+            {
+              "artifact_id": "sec_filing_doc:0001577916:0001104659-24-021744",
+              "form": "SC 13G/A",
+              "filed": "2024-02-13"
+            },
+            {
+              "artifact_id": "sec_filing_doc:0001577916:0001086364-24-001358",
+              "form": "SC 13G/A",
+              "filed": "2024-01-23"
+            },
+            {
+              "artifact_id": "sec_filing_doc:0001577916:0001306550-23-010085",
+              "form": "SC 13G",
+              "filed": "2023-10-06"
+            }
+          ],
+          "formula": "100187927 shares x (valUSD 1469500.00000000 / balance 73475.00000000 NS) = 2003758540.00"
+        }
+      },
+      "note": "Valued at the SEC N-PORT reported value per share on the as_of report date (filed after as_of: look_ahead recorded per row), not a market close; all other issuers use their last close on/before as_of. Exception limited to the user-approved issuers (PINC, WOLF), verified independently for each as_of."
+    }
   },
   "eligibility_evidence_derived_from_superset": null,
   "official_top500_declared": false,

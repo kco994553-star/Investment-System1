@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000895419:0001104659-24-022319",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/895419/000110465924022319/tv02295-wolfspeedinc.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T04:47:50.883753+00:00",
+  "sha256": "b925b63f12c08930cfdaad5d554b84acd22a28c1d702f94165c0bbc218abcd0a",
+  "bytes": 11537,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,8 +1,8 @@
 {
   "kind": "RAW_DATASET_STORE_INDEX",
   "store_dir": "data/raw",
-  "n_artifacts": 5839,
-  "n_blobs_on_disk": 5839,
+  "n_artifacts": 5851,
+  "n_blobs_on_disk": 5851,
   "artifacts": [
     {
       "artifact_id": "companyfacts:0000001800",
@@ -11129,6 +11129,33 @@
       "http_status": 200
     },
     {
+      "artifact_id": "sec_filing_doc:0000895419:0001104659-24-022319",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895419/000110465924022319/tv02295-wolfspeedinc.htm",
+      "sha256": "b925b63f12c08930cfdaad5d554b84acd22a28c1d702f94165c0bbc218abcd0a",
+      "bytes": 11537,
+      "fetched_at": "2026-09-26T04:47:50.883753+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000895419:0001374170-24-000031",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895419/000137417024000031/efc24-0214_formsc13g.txt",
+      "sha256": "7c06678e2ee13beea84404d31db58ba07ba51596eb7b9c754f9657adb98aaf7d",
+      "bytes": 9165,
+      "fetched_at": "2026-09-26T04:47:50.673439+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_filing_doc:0000895419:0001422848-24-000186",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895419/000142284824000186/SEC13G_Filing.htm",
+      "sha256": "5dfc217898995b01e4d0bdb695f8bfe2a4ed99f65311d94cbaa5aec45cceec09",
+      "bytes": 16795,
+      "fetched_at": "2026-09-26T04:47:51.179575+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "sec_filing_doc:0000895419:0001422848-24-000401",
       "source_kind": "SEC_FILING_DOCUMENT",
       "source_url": "https://www.sec.gov/Archives/edgar/data/895419/000142284824000401/SEC13G_Filing.htm",
@@ -11525,6 +11552,15 @@
       "http_status": 200
     },
     {
+      "artifact_id": "sec_filing_doc:0001577916:0001306550-23-010085",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1577916/000130655023010085/us74051n1028_100523.txt",
+      "sha256": "07c1391cee72b5dd2dc472302c30532e5cceae4a08618ae08711ba09b347700d",
+      "bytes": 11722,
+      "fetched_at": "2026-09-26T04:47:50.424457+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "sec_filing_doc:0001618732:0000950170-24-108159",
       "source_kind": "SEC_FILING_DOCUMENT",
       "source_url": "https://www.sec.gov/Archives/edgar/data/1618732/000095017024108159/ntnx-20240731.htm",
@@ -11849,12 +11885,84 @@
       "http_status": 200
     },
     {
+      "artifact_id": "sec_filing_doc:0002011286:0001193125-24-194072",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/2011286/000119312524194072/d774986d1012ba.htm",
+      "sha256": "d52fbc8252c1e440c93bfdd9679e384a852c37a93efd52f541970d19d5220e03",
+      "bytes": 32912,
+      "fetched_at": "2026-09-26T04:48:10.396700+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_filing_doc:0002011286:0001193125-24-207090",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/2011286/000119312524207090/d774986d1012ba.htm",
+      "sha256": "f2aee32a75d1da81b435aa6cd7bb3e95ef42fa957e50746bd405046d039830ee",
+      "bytes": 33460,
+      "fetched_at": "2026-09-26T04:48:10.077524+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_filing_doc:0002011286:0001193125-24-215560",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/2011286/000119312524215560/d774986d1012ba.htm",
+      "sha256": "d3ba55e863aae81f912501f7299c0399a9885767a94e7f807d4b7204dc23f4df",
+      "bytes": 34207,
+      "fetched_at": "2026-09-26T04:48:09.846455+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_filing_doc:0002011286:0001193125-24-218486",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/2011286/000119312524218486/d774986d1012ba.htm",
+      "sha256": "526548d6478798e8ae893eb2e262c0f00b8c0c9aaf2b739c5b1190640470aaaf",
+      "bytes": 35319,
+      "fetched_at": "2026-09-26T04:48:09.595803+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_filing_doc:0002011286:0001193125-24-221432",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/2011286/000119312524221432/d890714d8k.htm",
+      "sha256": "24fb7748bf1b36fe4ebf033bc280927658bdbd3c09c89d8449bf10a354cc80cc",
+      "bytes": 35734,
+      "fetched_at": "2026-09-26T04:48:09.330028+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_filing_doc:0002011286:0001193125-24-227910",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/2011286/000119312524227910/d905502d8k.htm",
+      "sha256": "206f9ac1145453c85140839c1571582f4748394e96b2766b641610cb4a778b97",
+      "bytes": 28898,
+      "fetched_at": "2026-09-26T04:48:09.068453+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "sec_filing_doc:0002011286:0002011286-24-000072",
       "source_kind": "SEC_FILING_DOCUMENT",
       "source_url": "https://www.sec.gov/Archives/edgar/data/2011286/000201128624000072/amtm-20240927.htm",
       "sha256": "1a5cb54ece4796abf8b62eabcf911041bb9ce8981844d3a48eb1ee0e3b0ada84",
       "bytes": 2241520,
       "fetched_at": "2026-09-26T01:33:13.880370+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_filing_doc:0002012383:0001193125-24-058781",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/2012383/000119312524058781/d767409d424b3.htm",
+      "sha256": "7e5c6d696d7352ee8dcafcf555f650d71e8a813741b412ca6162eea4a997bc7e",
+      "bytes": 577391,
+      "fetched_at": "2026-09-26T04:48:11.950045+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_filing_doc:0002012383:0001193125-24-180034",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/2012383/000119312524180034/d851876d424b3.htm",
+      "sha256": "78874b6af7c11e451f7761326beaa10bc61520cf82d2f392222a8b8151d91875",
+      "bytes": 609067,
+      "fetched_at": "2026-09-26T04:48:10.746212+00:00",
       "http_status": 200
     },
     {

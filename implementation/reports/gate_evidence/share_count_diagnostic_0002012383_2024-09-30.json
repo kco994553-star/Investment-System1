@@ -1,0 +1,540 @@
+{
+ "kind": "SHARE_COUNT_DIAGNOSTIC",
+ "as_of": "2024-09-30",
+ "cik": "0002012383",
+ "entity_name": "BlackRock, Inc.",
+ "tickers_current": [
+  "BLK"
+ ],
+ "exchanges_current": [
+  "NYSE"
+ ],
+ "sic": "6211",
+ "sic_description": "Security Brokers, Dealers & Flotation Companies",
+ "entity_type": "operating",
+ "cover_filing": null,
+ "cover_instance": null,
+ "filings_on_or_before_as_of": [
+  {
+   "form": "424B5",
+   "filed": "2024-07-19"
+  },
+  {
+   "form": "FWP",
+   "filed": "2024-07-17"
+  },
+  {
+   "form": "424B3",
+   "filed": "2024-07-17"
+  },
+  {
+   "form": "S-3ASR",
+   "filed": "2024-04-09"
+  },
+  {
+   "form": "424B5",
+   "filed": "2024-03-07"
+  },
+  {
+   "form": "FWP",
+   "filed": "2024-03-05"
+  },
+  {
+   "form": "424B3",
+   "filed": "2024-03-05"
+  },
+  {
+   "form": "POSASR",
+   "filed": "2024-02-20"
+  }
+ ],
+ "pit_shares": {
+  "status": "MISSING",
+  "shares": null,
+  "source": null,
+  "available_at": null
+ },
+ "companyfacts_shares": {
+  "filed_on_or_before_as_of": [],
+  "POST_AS_OF_FILING": [
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 150042269,
+    "end": "2024-12-31",
+    "filed": "2025-02-25",
+    "form": "10-K",
+    "accn": "0000950170-25-026584",
+    "fy": 2024,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 155318170,
+    "end": "2024-12-31",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-065838",
+    "fy": 2025,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 154947813,
+    "end": "2024-12-31",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-065838",
+    "fy": 2025,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 155318170,
+    "end": "2024-12-31",
+    "filed": "2025-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-25-103780",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 154947813,
+    "end": "2024-12-31",
+    "filed": "2025-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-25-103780",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 155318170,
+    "end": "2024-12-31",
+    "filed": "2025-11-05",
+    "form": "10-Q",
+    "accn": "0001193125-25-267043",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 154947813,
+    "end": "2024-12-31",
+    "filed": "2025-11-05",
+    "form": "10-Q",
+    "accn": "0001193125-25-267043",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 155318170,
+    "end": "2024-12-31",
+    "filed": "2026-02-25",
+    "form": "10-K",
+    "accn": "0001193125-26-071966",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 154947813,
+    "end": "2024-12-31",
+    "filed": "2026-02-25",
+    "form": "10-K",
+    "accn": "0001193125-26-071966",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 150042269,
+    "end": "2024-12-31",
+    "filed": "2026-02-25",
+    "form": "10-K",
+    "accn": "0001193125-26-071966",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 155253443,
+    "end": "2025-01-31",
+    "filed": "2025-02-25",
+    "form": "10-K",
+    "accn": "0000950170-25-026584",
+    "fy": 2024,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 156032049,
+    "end": "2025-03-31",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-065838",
+    "fy": 2025,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 155022449,
+    "end": "2025-03-31",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-065838",
+    "fy": 2025,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 155038772,
+    "end": "2025-03-31",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-065838",
+    "fy": 2025,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 155038772,
+    "end": "2025-03-31",
+    "filed": "2026-05-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-208766",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 154926181,
+    "end": "2025-04-30",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-065838",
+    "fy": 2025,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 156032049,
+    "end": "2025-06-30",
+    "filed": "2025-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-25-103780",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 154751073,
+    "end": "2025-06-30",
+    "filed": "2025-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-25-103780",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 154953413,
+    "end": "2025-06-30",
+    "filed": "2025-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-25-103780",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 154868992,
+    "end": "2025-06-30",
+    "filed": "2025-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-25-103780",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 154953413,
+    "end": "2025-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-337177",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 154868992,
+    "end": "2025-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-337177",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 156276289,
+    "end": "2025-09-30",
+    "filed": "2025-11-05",
+    "form": "10-Q",
+    "accn": "0001193125-25-267043",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 155124267,
+    "end": "2025-09-30",
+    "filed": "2025-11-05",
+    "form": "10-Q",
+    "accn": "0001193125-25-267043",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 154942905,
+    "end": "2025-09-30",
+    "filed": "2025-11-05",
+    "form": "10-Q",
+    "accn": "0001193125-25-267043",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 154922231,
+    "end": "2025-09-30",
+    "filed": "2025-11-05",
+    "form": "10-Q",
+    "accn": "0001193125-25-267043",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 156276289,
+    "end": "2025-12-31",
+    "filed": "2026-02-25",
+    "form": "10-K",
+    "accn": "0001193125-26-071966",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 155069171,
+    "end": "2025-12-31",
+    "filed": "2026-02-25",
+    "form": "10-K",
+    "accn": "0001193125-26-071966",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 154984319,
+    "end": "2025-12-31",
+    "filed": "2026-02-25",
+    "form": "10-K",
+    "accn": "0001193125-26-071966",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 156276289,
+    "end": "2025-12-31",
+    "filed": "2026-05-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-208766",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 155069171,
+    "end": "2025-12-31",
+    "filed": "2026-05-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-208766",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 156276289,
+    "end": "2025-12-31",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-337177",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 155069171,
+    "end": "2025-12-31",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-337177",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 156276289,
+    "end": "2026-03-31",
+    "filed": "2026-05-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-208766",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 155364965,
+    "end": "2026-03-31",
+    "filed": "2026-05-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-208766",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 155308809,
+    "end": "2026-03-31",
+    "filed": "2026-05-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-208766",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 156276289,
+    "end": "2026-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-337177",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 154996807,
+    "end": "2026-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-337177",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 155230412,
+    "end": "2026-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-337177",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 155152875,
+    "end": "2026-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-337177",
+    "fy": 2026,
+    "fp": "Q2"
+   }
+  ],
+  "POST_AS_OF_FILINGS_ABOUT_PERIODS_ENDING_ON_OR_BEFORE_AS_OF": []
+ },
+ "documents": [
+  {
+   "form": "424B3",
+   "filed": "2024-07-17",
+   "accn": "0001193125-24-180034",
+   "primary_document": "d851876d424b3.htm",
+   "artifact_id": "sec_filing_doc:0002012383:0001193125-24-180034",
+   "cover_sentences": [
+    "01 par value per share, of BlackRock issued and outstanding immediately prior to the closing of the BlackRock Merger (other than shares of common stock held in treasury by BlackRock not held on behalf of a third party, which shares will be cancelled) will be",
+    "01 par value: 500,000,000 shares authorized; 172,075,373 issued and 148,759,510 outstanding on an actual basis and on an as adjusted basis 2 2 Additional paid-in capital 19,617 19,617 Retained earnings 33,121 33,121 Accumulated other comprehensive loss (933 ) (933 ) Treasury stock, common,",
+    "01 par value per share, of BlackRock issued and outstanding immediately prior to the closing of the BlackRock Merger (other than shares of common stock held in treasury by BlackRock not held on behalf of a third party, which shares will be cancelled) will be",
+    "As of March 31, 2024, BlackRock had 172,075,373 shares of common stock issued and 148,759,510 shares of common stock outstanding, and no shares of preferred stock issued and outstanding",
+    "01 par value per share, of BlackRock issued and outstanding immediately prior to the closing of the BlackRock Merger (other than shares of common stock held in treasury by BlackRock not held on behalf of a third party, which shares will be cancelled) will be",
+    "The authority of the board of directors with respect to each class or series shall include, but not be limited to, determination of the following: \u2022 the designation of the class or series, which may be by distinguishing number, letter or title; \u2022 the number of shares of the class or series, which number the board of directors may thereafter (except where otherwise provided) increase or decrease (but not below the number of shares thereof then outstanding) in the manner permitted by law; \u2022 the rate of any dividends (or method of determining the dividends) payable to the holders of the shares of",
+    "the board of directors, the president, a majority of the board of directors, any committee of the board of directors that has the power to call such meetings, or the chairman of the board of directors, the president or the corporate secretary upon a written request of one or more record holders of shares of BlackRock\u2019s stock representing ownership of not less than 15 percent of the voting power of all outstanding shares of BlackRock\u2019s stock, which request complies with the procedures for calling a special 29 Table of Contents meeting of stockholders as set forth in BlackRock\u2019s amended and rest"
+   ],
+   "symbol_sentences": []
+  },
+  {
+   "form": "424B3",
+   "filed": "2024-03-05",
+   "accn": "0001193125-24-058781",
+   "primary_document": "d767409d424b3.htm",
+   "artifact_id": "sec_filing_doc:0002012383:0001193125-24-058781",
+   "cover_sentences": [
+    "01 par value per share, of BlackRock issued and outstanding immediately prior to the closing of the BlackRock Merger (other than shares of common stock held in treasury by BlackRock not held on behalf of a third party, which shares will be cancelled) will be",
+    "01 par value: 500,000,000 shares authorized; 172,075,373 issued and 148,500,074 outstanding on an actual basis and on an as adjusted basis 2 2 Additional paid-in capital 19,833 19,833 Retained earnings 32,343 32,343 Accumulated other comprehensive loss (840 ) (840 ) Treasury stock, common,",
+    "01 par value per share, of BlackRock issued and outstanding immediately prior to the closing of the BlackRock Merger (other than shares of common stock held in treasury by BlackRock not held on behalf of a third party, which shares will be cancelled) will be",
+    "As of January 31, 2024, we had 172,075,373 shares of common stock issued and 148,942,491 shares of common stock outstanding, and no shares of preferred stock issued and outstanding",
+    "01 par value per share, of BlackRock issued and outstanding immediately prior to the closing of the BlackRock Merger (other than shares of common stock held in treasury by BlackRock not held on behalf of a third party, which shares will be cancelled) will be",
+    "The authority of the board of directors with respect to each class or series shall include, but not be limited to, determination of the following: \u2022 the designation of the class or series, which may be by distinguishing number, letter or title; \u2022 the number of shares of the class or series, which number the board of directors may thereafter (except where otherwise provided) increase or decrease (but not below the number of shares thereof then outstanding) in the manner permitted by law; \u2022 the rate of any dividends (or method of determining the dividends) payable to the holders of the shares of",
+    "the board of directors, the president, a majority of the board of directors, any committee of the board of directors that has the power to call such meetings, or the chairman of the board of directors, the president or the corporate secretary upon a written request of one or more record holders of shares of BlackRock\u2019s stock representing ownership of not less than 15 percent of the voting power of all outstanding shares of BlackRock\u2019s stock, which request complies with the procedures for calling a special meeting of stockholders as set forth in BlackRock\u2019s amended and restated bylaws, as they "
+   ],
+   "symbol_sentences": []
+  }
+ ],
+ "note": "Diagnostic only. POST_AS_OF_FILING rows are investigation evidence and are never used as the as_of share count (user decision 2026-09-26)."
+}
