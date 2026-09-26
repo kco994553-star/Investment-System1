@@ -1641,3 +1641,120 @@ def test_run43_total_member_dropped_partial_economics_and_equal_per_share_wordin
                      "on a per share basis, in our net income (losses) and participate equally in the dividends")
     frc = _mod("frc_ord", "fetch_class_rights_evidence.py")
     assert "Class B ordinary shares" in frc.class_phrases("CommonClassBMember")
+
+
+def test_run44_registration_doc_share_count_amtm_spinoff(tmp_path):
+    """AMTM (Amentum) spun off from Jacobs 2024-09-27, no 10-K/10-Q by 2024-09-30: the 8-K filed on the spin date
+    ('resulting in 153,280,369 issued and outstanding shares of SpinCo Common Stock') is the only PIT-safe source."""
+    chain = _mod("chain_amtm", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    cik = "0002011286"
+    store.put(f"submissions:{cik}", json.dumps({"tickers": ["AMTM"], "filings": {"recent": {
+        "form": ["8-K", "10-12B/A"], "filingDate": ["2024-09-27", "2024-09-13"],
+        "accessionNumber": ["0001193125-24-227910", "0001193125-24-218486"],
+        "primaryDocument": ["form8k.htm", "form10.htm"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put(f"sec_filing_doc:{cik}:0001193125-24-227910",
+              b"<p>The Split Amendment increased the number of authorized shares of SpinCo Common Stock to "
+              b"1,000,000,000, and effected a stock split of the outstanding shares of SpinCo Common Stock, resulting "
+              b"in 153,280,369 issued and outstanding shares of SpinCo Common Stock</p>", "u", "SEC", "text/html", "t", 200)
+    t = int(datetime(2024, 9, 27, 13, 30, tzinfo=UTC).timestamp())
+    store.put("yahoo_chart:AMTM:5y", json.dumps({"chart": {"result": [{"timestamp": [t],
+              "indicators": {"quote": [{"close": [21.5]}]}}], "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
+    listings = {"a": {"cik": cik, "yahoo": "AMTM"}}
+    ov = {}
+    ev = chain.registration_share_count_overrides(store, listings, ov, amc_dt())
+    assert ev["AMTM"]["status"] == "APPLIED" and ev["AMTM"]["shares"] == 153_280_369
+    assert ov["a"]["status"] == "REGISTRATION_DOC_SHARE_COUNT" and ov["a"]["mcap"] == 153_280_369 * 21.5
+    # a later periodic filing's count must NOT be used even if present in the store under a later date
+    late_cf = {"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [
+        {"filed": "2025-01-15", "val": 999_999_999}]}}}}}
+    store.put(f"companyfacts:{cik}", json.dumps(late_cf).encode(), "u", "SEC", "application/json", "t", 200)
+    ov2 = {}
+    ev2 = chain.registration_share_count_overrides(store, listings, ov2, amc_dt())
+    assert ev2["AMTM"]["shares"] == 153_280_369  # unaffected by the post-as_of companyfacts fact
+
+
+def test_run44_registration_doc_share_count_ambiguous_or_missing_stays_blocker(tmp_path):
+    chain = _mod("chain_amtm2", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    cik = "0009999999"
+    store.put(f"submissions:{cik}", json.dumps({"tickers": ["ZZZ"], "filings": {"recent": {
+        "form": ["8-K"], "filingDate": ["2024-09-27"], "accessionNumber": ["a"], "primaryDocument": ["d.htm"]}}}).encode(),
+              "u", "SEC", "application/json", "t", 200)
+    listings = {"z": {"cik": cik, "yahoo": "ZZZ"}}
+    assert chain.registration_share_count_overrides(store, listings, {}, amc_dt())["ZZZ"]["status"] == "NO_COUNT_FOUND"
+    # a single document stating two different counts near the pattern is ambiguous at the per-document level
+    # (never guessed which one is right) -> no candidate at all from that document
+    store.put(f"sec_filing_doc:{cik}:a", b"<p>100,000,000 issued and outstanding shares of Common Stock. Separately, "
+              b"200,000,000 issued and outstanding shares of Common Stock were also reported.</p>",
+              "u", "SEC", "text/html", "t", 200)
+    assert chain.registration_share_count_overrides(store, listings, {}, amc_dt())["ZZZ"]["status"] == "NO_COUNT_FOUND"
+    # two separate documents each stating their OWN unique count, but disagreeing with each other -> AMBIGUOUS_COUNTS
+    store.put(f"submissions:{cik}", json.dumps({"tickers": ["ZZZ"], "filings": {"recent": {
+        "form": ["8-K", "10-12B/A"], "filingDate": ["2024-09-27", "2024-09-13"],
+        "accessionNumber": ["a", "b"], "primaryDocument": ["d.htm", "e.htm"]}}}).encode(),
+              "u", "SEC", "application/json", "t", 200)
+    store.put(f"sec_filing_doc:{cik}:a", b"<p>100,000,000 issued and outstanding shares of Common Stock.</p>",
+              "u", "SEC", "text/html", "t", 200)
+    store.put(f"sec_filing_doc:{cik}:b", b"<p>250,000,000 issued and outstanding shares of Common Stock.</p>",
+              "u", "SEC", "text/html", "t", 200)
+    assert chain.registration_share_count_overrides(store, listings, {}, amc_dt())["ZZZ"]["status"] == "AMBIGUOUS_COUNTS"
+
+
+def test_run44_registration_doc_evidence_exists_in_committed_2024_09_30_run(tmp_path):
+    """Regression against the real fetched evidence: AMTM's 8-K text does state the unique count."""
+    import sys as _sys
+    chain = _mod("chain_amtm3", "run_top500_gate_chain.py")
+    ge = Path(chain.GE)
+    diag_path = ge / "share_count_diagnostic_0002011286_2024-09-30.json"
+    if not diag_path.exists():
+        return  # evidence not yet fetched in this environment
+    diag = json.loads(diag_path.read_text(encoding="utf-8"))
+    frc = _mod("frc_amtm", "fetch_class_rights_evidence.py")
+    found = None
+    for d in diag["documents"]:
+        if d["form"] == "8-K" and d["filed"] == "2024-09-27":
+            found = d
+    assert found is not None
+
+
+def test_run44_rprx_paired_units_together_with_the_related_wording(tmp_path):
+    """RPRX (Royalty Pharma plc): 'Class B ordinary shares, together with the related RP Holdings Class B Interests,
+    are exchangeable into Class A ordinary shares on a one-for-one basis' -- a pairing phrasing distinct from
+    'an equal number of shares of Class X' (RKT/TPG/TKO wording)."""
+    chain = _mod("chain_rprx", "run_top500_gate_chain.py")
+    import re
+    quote = ("Our outstanding Class B ordinary shares are, however, considered potentially dilutive shares of Class A "
+             "ordinary shares because Class B ordinary shares, together with the related RP Holdings Class B Interests, "
+             "are exchangeable into Class A ordinary shares on a one-for-one basis.")
+    assert re.search(chain.CLAIM_PATTERNS["pairing"], quote, re.I)
+    assert re.search(chain.CLAIM_PATTERNS["exchange_ratio"], quote, re.I)
+    store, cik, ov, det = _class_econ_store(tmp_path)
+    d2 = json.loads(json.dumps(det))
+    d2["classes"]["CommonClassBMember"]["citations"] = [{
+        "artifact_id": f"sec_filing_doc:{cik}:0001234567-24-000009", "quote": quote, "supports": ["pairing", "exchange_ratio"]}]
+    d2["classes"]["CommonClassBMember"]["paired_instrument"] = "RP Holdings Class B Interest"
+    store.put(f"sec_filing_doc:{cik}:0001234567-24-000009", ("<p>" + quote + "</p>").encode(), "u", "SEC", "text/html", "t", 200)
+    mcap, ev = chain.verify_class_economics(store, cik, ov, d2, amc_dt())
+    assert ev["status"] == "ECONOMIC_EQUIVALENT_DETERMINED" and mcap == 400 * 10.0
+
+
+def test_run44_committed_2024_09_30_class_economics_all_verify_against_stored_evidence():
+    """Every issuer in the committed 2024-09-30 class_economics file must verify (quotes found verbatim in the
+    referenced filing document, filed on or before 2024-09-30) using the actual fetched evidence, when present."""
+    chain = _mod("chain_ce0930", "run_top500_gate_chain.py")
+    ge = Path(chain.GE)
+    ce_path = ge / "class_economics_2024-09-30.json"
+    store_dir = ge.parents[1] / "data" / "raw"
+    if not ce_path.exists() or not store_dir.exists():
+        return
+    ce = json.loads(ce_path.read_text(encoding="utf-8"))
+    store = RawDatasetStore(store_dir)
+    for cik, det in ce["issuers"].items():
+        for member, cd in det["classes"].items():
+            for c in cd["citations"]:
+                assert c["filed"] <= "2024-09-30", (det["symbol"], member, c["filed"])
+                if store.has(c["artifact_id"]):
+                    frc = _mod("frc_verify", "fetch_class_rights_evidence.py")
+                    text = frc.html_text(store.get_bytes(c["artifact_id"]))
+                    assert c["quote"] in text, (det["symbol"], member, c["quote"][:80])

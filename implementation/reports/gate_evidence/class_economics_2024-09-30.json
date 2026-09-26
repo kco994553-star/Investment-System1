@@ -305,6 +305,44 @@
     }
    },
    "double_count_check": "Class A and Class B are both issued shares of the registrant with equal per-share economics; no units."
+  },
+  "0001802768": {
+   "symbol": "RPRX",
+   "entity_name": "Royalty Pharma plc",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "paired_instrument": "RP Holdings Class B Interest",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001802768:0001802768-24-000012",
+       "form": "10-K",
+       "filed": "2024-02-15",
+       "accession": "0001802768-24-000012",
+       "offset": 414781,
+       "quote": "Our outstanding Class B ordinary shares are, however, considered potentially dilutive shares of Class A ordinary shares because Class B ordinary shares, together with the related RP Holdings Class B Interests, are exchangeable into Class A ordinary shares on a one -for-one basis.",
+       "supports": [
+        "pairing",
+        "exchange_ratio"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001802768:0001802768-24-000012",
+       "form": "10-K",
+       "filed": "2024-02-15",
+       "accession": "0001802768-24-000012",
+       "offset": 461027,
+       "quote": "Each such exchange also results in the re-designation of the same number of our Class B ordinary shares as deferred shares.",
+       "supports": [
+        "pairing"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class B ordinary shares are non-economic (do not share in earnings/losses, not participating securities per the 10-K) and are held one-for-one with RP Holdings Class B Interests (the non-controlling economic interest); on exchange the Class B share is re-designated as a deferred share (cancelled from the outstanding count). Class A ordinary shares represent Royalty Pharma plc's own retained economic interest, so A + B(units) counts each economic interest exactly once."
   }
  },
  "derived_from": "2024-12-31",

@@ -443,6 +443,75 @@ def verify_symbol_mapping(store: RawDatasetStore, cik10: str, cover: dict, det: 
     return (listed, ok) if ok else (None, fails)
 
 
+def registration_doc_share_count(text: str) -> int | None:
+    """Unique share count stated as ISSUED AND OUTSTANDING in a registration/distribution document (Form 10-12B,
+    8-K, 424B): the wording of a spin-off completion notice ('resulting in 153,280,369 issued and outstanding
+    shares of SpinCo Common Stock') differs from a periodic-report cover page (cover_text_single_count).
+    Only a single distinct count across all matches is accepted; ambiguous or absent -> None (fail-closed)."""
+    import re as _re
+    pat = _re.compile(r"([\d,]{6,})\s+issued and outstanding shares of[^.;]{0,60}?[Cc]ommon\s+[Ss]tock", _re.I)
+    vals = {int(m.group(1).replace(",", "")) for m in pat.finditer(text) if _re.fullmatch(r"\d{1,3}(,\d{3})+", m.group(1))}
+    return vals.pop() if len(vals) == 1 else None
+
+
+def registration_share_count_overrides(store: RawDatasetStore, listings: dict, overrides: dict, as_of,
+                                       chart_range: str = "5y") -> dict:
+    """Issuers with NO 10-K/10-Q filed by as_of at all (a very recent spin-off/IPO, e.g. AMTM spun off 2024-09-27):
+    companyfacts/cover XBRL have nothing to read. The ONLY PIT-safe source is a registration/distribution document
+    (10-12B, 8-K, 424B) filed on or before as_of stating an exact, unique share count -- never a later periodic
+    filing's current count applied backward. Docs must already be in the store (fetch_share_scale_docs /
+    share_count_diagnostic fetch them for SHARES_* unrankable issuers)."""
+    from investment_system.providers.sec_cover_shares import select_filing
+    frc = _load("fetch_class_rights_evidence")
+    REGISTRATION_FORMS = _load("share_count_diagnostic").REGISTRATION_FORMS
+    ev = {}
+    for cid, m in listings.items():
+        if cid in overrides:
+            continue
+        c = str(m.get("cik") or "")
+        if not c.isdigit():
+            continue
+        c = c.zfill(10)
+        sub = load_submissions_merged(store, c)[0] or {}
+        if select_filing(sub, as_of) is not None:
+            continue  # has a periodic filing at as_of; handled by the normal companyfacts/cover routes
+        cf = load_companyfacts(store, c)
+        sh = pit_shares(cf, as_of) if cf is not None else None
+        if sh and sh["status"] == "OK" and (sh["shares"] or 0) > 0:
+            continue
+        rec = (sub.get("filings") or {}).get("recent") or {}
+        cut = as_of.date().isoformat()
+        regs = sorted(({"form": f, "filed": str(dt), "accn": str(ac)} for f, dt, ac in
+                       zip(rec.get("form") or [], rec.get("filingDate") or [], rec.get("accessionNumber") or [])
+                       if f in REGISTRATION_FORMS and str(dt) <= cut), key=lambda r: r["filed"], reverse=True)
+        cands = []
+        for r in regs:
+            did = f"sec_filing_doc:{c}:{r['accn']}"
+            if store.has(did):
+                cnt = registration_doc_share_count(frc.html_text(store.get_bytes(did)))
+                if cnt:
+                    cands.append({"count": cnt, "document": did, "form": r["form"], "filed": r["filed"]})
+        vals = {x["count"] for x in cands}
+        px = _as_of_price(store, str(m.get("yahoo") or ""), as_of, chart_range)
+        rec_out = {"cik": c, "candidates": cands, "n_registration_docs_checked": len(regs)}
+        if len(vals) == 1 and px:
+            cnt = vals.pop()
+            src = next(x["document"] for x in cands if x["count"] == cnt)
+            overrides[cid] = {"mcap": cnt * px, "status": "REGISTRATION_DOC_SHARE_COUNT", "source": src,
+                              "classes": [{"member": None, "shares": float(cnt), "symbol": m.get("yahoo"), "price": px,
+                                          "symbol_basis": {"basis": "REGISTRATION_DOC_SHARE_COUNT", "document": src}}]}
+            rec_out["status"] = "APPLIED"
+            rec_out["shares"] = cnt
+        elif not cands:
+            rec_out["status"] = "NO_COUNT_FOUND"
+        elif len(vals) > 1:
+            rec_out["status"] = "AMBIGUOUS_COUNTS"
+        else:
+            rec_out["status"] = "NO_PRICE"
+        ev[m.get("yahoo")] = rec_out
+    return ev
+
+
 def cover_text_symbol_member(text: str, cover: dict) -> tuple[str | None, str | None]:
     """Listed member from the cover-page TEXT of the same filing when XBRL tags one undimensioned TradingSymbol for several
     classes and the Security12bTitle names no class letter (IAC: title 'Common stock', members CommonClassA/B). The title's
@@ -665,7 +734,9 @@ CLAIM_PATTERNS = {"conversion_ratio": RATIO_ONE, "exchange_ratio": RATIO_ONE,
                   # 'one share of our Class B', 'an equal number of shares of TKO Class B', 'a corresponding number of shares of our Class D'
                   "pairing": r"(one|a|an equal number of|an equivalent number of|corresponding number of) shares? of (?:[\w’']+ ){0,2}Class [A-Z]|"
                              r"an (?:equal|equivalent) number of(?: [\w’'-]+){0,5} Class [A-Z]|"
-                             r"equal to the number of|for each (?:\w+ )?units?",
+                             r"equal to the number of|for each (?:\w+ )?units?|"
+                             r"together with (?:the related|an equal number of|a corresponding number of|its related)"
+                             r"[^.;]{0,80}?(?:units?|interests?)",
                   "identical_rights": r"identical in all respects|share ratably with|same rights and privileges|"
                                       r"share proportionately, on a per share basis"}
 BASIS_CLAIMS = {"CONVERTIBLE_INTO_LISTED": {"conversion_ratio"},
@@ -872,6 +943,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     overrides, cover_unresolved = cover_mcap_overrides(store, listings, d, chart_range, symbol_mappings)
     class_econ = apply_class_economics(store, overrides, listings, class_economics, d)
     share_scale = share_scale_overrides(store, listings, overrides, d, chart_range)
+    registration_docs = registration_share_count_overrides(store, listings, overrides, d, chart_range)
     nport_px = apply_nport_reported_prices(store, overrides, listings, nport_exception, nport_prices, d, chart_range)
     stale_excluded = exclude_stale_unresolved(store, listings, overrides, d)
     price_exceptions = {"price_type": "NPORT_REPORTED_VALUE", "issuers": nport_px,
@@ -992,6 +1064,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "lower_bound_issuers_outside_top500": lb_outside, "lower_bound_settled_outside_by_upper_bound": lb_settled,
         "class_economics_verification": class_econ, "price_basis_exceptions": price_exceptions,
         "share_scale_checks": share_scale, "stale_share_facts_excluded": stale_excluded,
+        "registration_doc_share_counts": registration_docs,
         "gate_snapshot_consistency": consistency,
         # the audited candidate representation, kept only when Official is declared, so later steps rebuild the SAME
         # snapshot with universe.sources.official_mcap500_snapshot (no re-derivation from companyfacts/adjclose)
