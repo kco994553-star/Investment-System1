@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001327811:0001327811-24-000242",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1327811/000132781124000242/wday-20241031_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T01:46:34.298730+00:00",
+  "sha256": "7350b7cfd2982c1d706ce92e04025e2b9617061d68164c12736c37b891c8529e",
+  "bytes": 1735335,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

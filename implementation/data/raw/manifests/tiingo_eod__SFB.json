@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:SFB",
+  "source_url": "https://api.tiingo.com/tiingo/daily/sfb/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-26T01:47:22.090328+00:00",
+  "sha256": "d066ca542bbfbf396c4d9286ea7f8eec5c9fbd0c3bf561fc84730ec1139d5c1f",
+  "bytes": 417959,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

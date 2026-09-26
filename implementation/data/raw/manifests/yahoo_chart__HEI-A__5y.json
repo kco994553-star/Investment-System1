@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HEI-A:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HEI-A?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T01:46:57.210572+00:00",
+  "sha256": "7d518c659fe69fd91d3aa97650ac86c494f5091020dc9a6c785a823125c74932",
+  "bytes": 136511,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

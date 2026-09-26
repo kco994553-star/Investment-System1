@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:BIO-B:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/BIO-B?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T01:46:55.367507+00:00",
+  "sha256": "cfbde3b3d4339a7ac61b7b49d8ad55096ef428236b5a671650983a0ddfcab1e8",
+  "bytes": 124405,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

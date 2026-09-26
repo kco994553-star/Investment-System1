@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:UHAL-B:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/UHAL-B?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T01:47:00.791046+00:00",
+  "sha256": "be493320f1d78656453bb798e37698dd983c19578bc7ba103d9049884f0d0d58",
+  "bytes": 6284,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

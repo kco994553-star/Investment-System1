@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SF-PD:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SF-PD?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T01:46:59.158913+00:00",
+  "sha256": "8bc0e179017b2dd0f898193d241c6b6e304ead779c5085332cf6dafb7fa4c8e2",
+  "bytes": 135366,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

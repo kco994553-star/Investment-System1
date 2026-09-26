@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SF-PC:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SF-PC?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T01:46:58.909999+00:00",
+  "sha256": "407299b45b35e92760ed91e9f0838440d15a1fb0919411716b51bac783f3a844",
+  "bytes": 7844,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

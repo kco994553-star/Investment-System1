@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001849253:0001628280-24-044413",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1849253/000162828024044413/ryan-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T01:46:47.760478+00:00",
+  "sha256": "14800ad5da49a5c4aa5560abf34e943c9d1c46db1b97440878e6fde3e57063a7",
+  "bytes": 4423228,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

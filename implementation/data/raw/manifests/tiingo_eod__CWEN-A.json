@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:CWEN-A",
+  "source_url": "https://api.tiingo.com/tiingo/daily/cwen-a/prices?startDate=2020-01-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-26T01:47:20.410384+00:00",
+  "sha256": "9b34b355c8c4ada6826e610619cb6bce9e7d082cf334b8a12e5be10d05174aae",
+  "bytes": 396930,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

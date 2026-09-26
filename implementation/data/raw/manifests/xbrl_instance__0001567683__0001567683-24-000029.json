@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001567683:0001567683-24-000029",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1567683/000156768324000029/cwen-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T01:46:43.667186+00:00",
+  "sha256": "f3dff08556dc79770502622e886c6d0c5bb15f385784e665de9fd71218a520bc",
+  "bytes": 2264015,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0002025410:0000950170-24-126486",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/2025410/000095017024126486/saro-20240930_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T01:46:49.162403+00:00",
+  "sha256": "59cbcb24575f36a0f00de3db61acf5e1a47149fffc9a6322f478b0cf09cbc7ca",
+  "bytes": 3344787,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
