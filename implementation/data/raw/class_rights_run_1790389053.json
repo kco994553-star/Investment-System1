@@ -1,0 +1,22 @@
+{
+ "log": [
+  {
+   "artifact_id": "sec_filing_doc:0001802768:0001802768-24-000012",
+   "status": "OK",
+   "bytes": 2543266
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001802768:0001802768-24-000058",
+   "status": "OK",
+   "bytes": 2285601
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001849253:0001628280-24-044413",
+   "status": "SKIPPED_ALREADY_PRESENT"
+  }
+ ]
+}

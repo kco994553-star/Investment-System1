@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:WSO-B:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WSO-B?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T02:17:18.274508+00:00",
+  "sha256": "d3e146bb180d9090a19be8bb067d38b45c618a670070483062bf862fbfa4c65f",
+  "bytes": 6990,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
