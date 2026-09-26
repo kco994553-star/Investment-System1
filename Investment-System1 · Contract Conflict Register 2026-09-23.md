@@ -412,3 +412,20 @@ pro forma' and an 'approximately' distribution amount computed from Illumina's A
 will depend on ... the Record Date'). The exact count first appears in filings after as_of (not applied; AMTM rule).
 Decision pending: keep as blocker / allow a filed pro-forma count as a separate share basis / a new eligibility rule
 for very recent spin-offs. Until decided: 2024-06-30 not Official.
+
+## C-36 Russell 1000 reference mapping gaps -> Official 2024-12-31 / 2024-09-30 SUSPENDED (Track A, 2026-09-26 16:35 KST)
+Evidence (run #53 N-PORT cross-check, calibration outliers): on every as_of the reference resolved 'DUN & BRADSTREET
+HOLDINGS, INC.' (CUSIP 26484T) to Moody's CIK 0001059556 and 'F.N.B. CORPORATION' to V.F.'s CIK 0000103379; 6-8 equity
+holdings per date stayed unresolved (BLUE OWL CAPITAL INC. 5 name candidates; SKECHERS U.S.A.; LIBERTY MEDIA CORP -
+FORMULA ONE GROUP x2; U.S. BANCORP dead-namesake match; escrow ESC GCI LIBERTY) and the Sufficiency gate never checked
+unresolved holdings. D&B, F.N.B., Blue Owl, Skechers and Liberty Media are NOT in the candidate pool on any date, so the
+'missing_from_pool: []' behind the 2024-12-31 and 2024-09-30 Promotion Gate v2 PASS was not established.
+Decision (fail-closed, no user policy change): the Official declarations for 2024-12-31 and 2024-09-30 are SUSPENDED until
+re-run; single_as_of / benchmark results derived from them are superseded. Fixes: (1) a CIK may not absorb holdings of
+different CUSIP issuer numbers (strongest match keeps it, a tie keeps none, the loser retries without it); (2) historical
+names looked up with both keys; (3) ambiguous/unmatched holdings identified only by the candidate's own 13G/13D filed <=
+as_of printing the CUSIP (+ PIT registrant); (4) Sufficiency fails on UNRESOLVED_REFERENCE_HOLDINGS,
+REFERENCE_CIK_COLLISION_DISTINCT_ISSUERS or missing member CUSIPs (escrow CUSIPs excepted).
+Open design note: Liberty Media tracking stocks (FWONA/K, LSXMA/K, BATRA/K) share one CIK/issuer number; the current
+company model (CIK = company, classes summed only with proven economics) applies -- whether tracking groups should be
+separate companies is a separate user decision if it blocks.

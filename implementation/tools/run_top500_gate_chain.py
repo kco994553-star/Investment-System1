@@ -1001,7 +1001,8 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     for ref in sufficiency_refs:
         mapped, excluded_rule = map_superset_members(ref, row_listings, listings_pre_elig, listings, amc)
         cov = _determined(amc.evaluate_reference_coverage(store, row_listings, ranked, {**ref, "members": mapped}, chart_range))
-        refs.append({**cov, "members": ref.get("members"), "excluded_by_eligibility_rule": excluded_rule})
+        refs.append({**cov, "members": ref.get("members"), "excluded_by_eligibility_rule": excluded_rule,
+                     "unresolved_holdings": ref.get("unresolved_holdings"), "member_cusips": ref.get("member_cusips")})
     completeness = amc.build_universe_completeness_gate(audit, exchange_reference) if exchange_reference else None
     sufficiency = amc.build_top500_sufficiency_gate(audit, refs)
     if price_exceptions:

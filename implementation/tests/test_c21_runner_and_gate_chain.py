@@ -701,8 +701,22 @@ def test_superset_reference_allows_ranks_below_500_but_not_missing_or_unrankable
     base = {"name": "R1000", "source": "iShares IWB", "source_vintage": "2026-09-25", "as_of": AS_OF,
             "membership_basis": "DATED_FUND_HOLDINGS", "reference_role": "SUPERSET_REFERENCE",
             "members": [f"T{i}" for i in range(1000)], "missing_from_pool": [], "present_not_rankable": [],
-            "present_rankable_outside_top500": [f"T{i}" for i in range(500, 1000)]}
+            "present_rankable_outside_top500": [f"T{i}" for i in range(500, 1000)],
+            "member_cusips": {f"T{i}": [f"{i:06d}105"] for i in range(1000)}, "unresolved_holdings": []}
     assert amc.build_top500_sufficiency_gate(audit, [base])["passed"] is True
+    # run #53: unresolved equity holdings, one CIK absorbing two issuers, or no member CUSIPs -> fail-closed
+    unres = amc.build_top500_sufficiency_gate(audit, [{**base, "unresolved_holdings": [
+        {"name": "BLUE OWL CAPITAL INC.", "cusip": "09581B103", "name_matches": 5}]}])
+    assert unres["passed"] is False and "UNRESOLVED_REFERENCE_HOLDINGS" in unres["references"][0]["reasons"]
+    esc = amc.build_top500_sufficiency_gate(audit, [{**base, "unresolved_holdings": [
+        {"name": "ESC GCI LIBERTY INC SR", "cusip": "361ESC049"}]}])
+    assert esc["passed"] is True  # escrow position, not a listed equity line
+    coll = amc.build_top500_sufficiency_gate(audit, [{**base, "member_cusips": {
+        **base["member_cusips"], "T1": ["615369105", "26484T106"]}}])
+    assert "REFERENCE_CIK_COLLISION_DISTINCT_ISSUERS" in coll["references"][0]["reasons"]
+    assert amc.build_top500_sufficiency_gate(audit, [{**base, "member_cusips": {"T1": ["115637100", "115637209"]}}])["passed"]
+    nocus = amc.build_top500_sufficiency_gate(audit, [{**base, "member_cusips": None}])
+    assert "REFERENCE_MEMBER_CUSIPS_MISSING" in nocus["references"][0]["reasons"]
     bad = amc.build_top500_sufficiency_gate(audit, [{**base, "missing_from_pool": ["T7"]}])
     assert bad["passed"] is False and "MISSING_LARGE_CAP_NAMES" in bad["references"][0]["reasons"]
     small = amc.build_top500_sufficiency_gate(audit, [{**base, "members": ["T1"]}])
@@ -726,7 +740,8 @@ def test_chain_superset_maps_class_tickers_counts_rule_exclusions_and_derives_el
     listings["fpi"] = {"cik": "0000000999", "yahoo": "FPI"}
     members = ["T3B" if i == 3 else f"T{i}" for i in range(1, 511)] + ["FPI"] + [f"T{i}" for i in range(4, 400)]
     ref = {"name": "R1000", "source": "iShares IWB", "source_vintage": "2026-09-25", "as_of": AS_OF,
-           "membership_basis": "DATED_FUND_HOLDINGS", "reference_role": "SUPERSET_REFERENCE", "members": members}
+           "membership_basis": "DATED_FUND_HOLDINGS", "reference_role": "SUPERSET_REFERENCE", "members": members,
+           "member_cusips": {m: [f"{i:06d}105"] for i, m in enumerate(members)}, "unresolved_holdings": []}
     rep = chain.run_chain(store, listings, "2024-12-31", [], [ref], None, None)
     r = rep["top500_sufficiency_gate"]["references"][0]
     assert r["missing_from_pool"] == [] and r["present_not_rankable"] == [] and r["excluded_by_eligibility_rule"] == ["FPI"]
@@ -784,7 +799,8 @@ def test_chain_superset_with_cik_members(tmp_path):
                   "u", "SEC", "application/json", "t", 200)
         listings[f"c{i}"] = {"cik": str(i).zfill(10), "yahoo": f"T{i}"}
     ref = {"name": "R1000", "source": "SEC NPORT-P x", "source_vintage": "2025-02-27", "as_of": AS_OF, "membership_basis": "DATED_FUND_HOLDINGS",
-           "reference_role": "SUPERSET_REFERENCE", "member_id_type": "CIK10", "members": [str(i).zfill(10) for i in range(1, 911)]}
+           "reference_role": "SUPERSET_REFERENCE", "member_id_type": "CIK10", "members": [str(i).zfill(10) for i in range(1, 911)],
+           "member_cusips": {str(i).zfill(10): [f"{i:06d}105"] for i in range(1, 911)}, "unresolved_holdings": []}
     ok = chain.run_chain(store, listings, "2024-12-31", [], [ref], None, None)
     assert ok["top500_sufficiency_gate"]["passed"] is True
     bad = chain.run_chain(store, listings, "2024-12-31", [], [{**ref, "members": ref["members"] + ["0009999999"]}], None, None)
@@ -1914,3 +1930,54 @@ def test_nport_cross_check_calibration_and_targets_are_investigation_only():
     assert t["96145D105"]["status"] == "UNIQUE" and abs(t["96145D105"]["value_per_share"] - 50.26) < 1e-9
     assert t["000000ZZ9"]["status"] == "HOLDINGS_0"
     assert ncc.per_share({"units": "PA", "balance": "1", "val_usd": "1"}) is None
+
+
+def test_nport_reference_splits_cik_collisions_of_distinct_issuers():
+    """Run #53: 'DUN & BRADSTREET HOLDINGS, INC.' (CUSIP 26484T) was resolved to Moody's CIK (615369) and 'F.N.B.
+    CORPORATION' to V.F.'s. A CIK keeps only the issuer group matched by the strongest method; the other group retries
+    without that CIK (exactly one remaining candidate) or becomes unresolved. Share classes (same 6-char issuer number)
+    stay together."""
+    fnr = _mod("fnr_coll", "fetch_nport_reference.py")
+    cur = {fnr.norm_name("MOODYS CORP /DE/"): {"0001059556"}}
+    hist = {fnr.norm_name("DUN & BRADSTREET HOLDINGS, INC."): {"0001059556", "0001799208"}}
+    holdings = [{"name": "MOODY'S CORPORATION", "cusip": "615369105"},
+                {"name": "DUN & BRADSTREET HOLDINGS, INC.", "cusip": "26484T106"}]
+    members = {"0001059556": {"names": ["MOODY'S CORPORATION", "DUN & BRADSTREET HOLDINGS, INC."],
+                              "cusips": ["615369105", "26484T106"], "method": "SEC_TICKERS_TITLE",
+                              "methods": ["SEC_TICKERS_TITLE", "SEC_CIK_LOOKUP_UNIQUE_ACTIVE"]}}
+    out, unres = fnr.split_collisions(members, [], holdings, cur, hist)
+    assert out["0001059556"]["cusips"] == ["615369105"]
+    assert out["0001799208"]["cusips"] == ["26484T106"] and out["0001799208"]["collision_retry_from"] == ["0001059556"]
+    assert unres == []
+    # equal-strength claims: nobody keeps the CIK
+    members2 = {"X": {"names": ["A", "B"], "cusips": ["111111101", "222222202"], "method": "SEC_TICKERS_TITLE",
+                      "methods": ["SEC_TICKERS_TITLE", "SEC_TICKERS_TITLE"]}}
+    out2, unres2 = fnr.split_collisions(members2, [], [{"name": "A", "cusip": "111111101"}, {"name": "B", "cusip": "222222202"}], {}, {})
+    assert "X" not in out2 and {u["reason"] for u in unres2} == {"CIK_COLLISION_DISTINCT_CUSIP_ISSUERS"}
+    # share classes of one issuer are not a collision
+    members3 = {"BF": {"names": ["BROWN-FORMAN A", "BROWN-FORMAN B"], "cusips": ["115637100", "115637209"],
+                       "method": "SEC_TICKERS_TITLE", "methods": ["SEC_TICKERS_TITLE", "SEC_TICKERS_TITLE"]}}
+    assert fnr.split_collisions(members3, [], [], {}, {})[0]["BF"]["cusips"] == ["115637100", "115637209"]
+
+
+def test_nport_reference_cusip_attestation_decides_ambiguous_names(tmp_path):
+    """Ambiguous or unmatched reference holdings (BLUE OWL CAPITAL INC. -> 5 Blue Owl entities; tracking-group names)
+    are identified only by the candidate's own 13G/13D (subject company, filed <= as_of) printing the CUSIP."""
+    fnr = _mod("fnr_att", "fetch_nport_reference.py")
+    npr = _mod("npr_att", "nport_reported_prices.py")
+    frc = _mod("frc_att", "fetch_class_rights_evidence.py")
+    store = RawDatasetStore(tmp_path)
+    def sub(c, accn, filed):
+        store.put(f"submissions:{c}", json.dumps({"filings": {"recent": {"form": ["SC 13G"], "filingDate": [filed],
+                  "accessionNumber": [accn], "primaryDocument": ["d.htm"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    sub("0000000001", "0000000001-24-000001", "2024-02-14")
+    sub("0000000002", "0000000002-24-000001", "2024-02-14")
+    store.put("sec_filing_doc:0000000001:0000000001-24-000001", b"<p>CUSIP No. 09581B 10 3 Blue Owl Capital Inc.</p>", "u", "SEC", "text/html", "t", 200)
+    store.put("sec_filing_doc:0000000002:0000000002-24-000001", b"<p>CUSIP No. 09581K 10 0 Blue Owl Capital Corp</p>", "u", "SEC", "text/html", "t", 200)
+    get = lambda aid, url, kind: None  # noqa: E731  (offline: artifacts already stored)
+    att = fnr.attest_by_cusip(store, get, ["0000000001", "0000000002"], "09581B103", amc_dt(), npr, frc)
+    assert att["status"] == "UNIQUE" and att["cik"] == "0000000001"
+    none = fnr.attest_by_cusip(store, get, ["0000000002"], "09581B103", amc_dt(), npr, frc)
+    assert none["cik"] is None and none["status"] == "ATTESTED_0"
+    cur = {fnr.norm_name("LIBERTY MEDIA CORP"): {"0001560385"}}
+    assert fnr.name_candidates("LIBERTY MEDIA CORP - FORMULA ONE GROUP", cur, {}) == {"0001560385"}

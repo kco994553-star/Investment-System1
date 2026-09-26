@@ -1,11 +1,13 @@
 Investment-System1 · CURRENT_HANDOFF
 
-Timestamp: 2026-09-26 15:40 KST (round 12)
+Timestamp: 2026-09-26 16:35 KST (round 12)
 AI: Claude Code (container) + GitHub Actions workflow c21-real-data (runs #41-#51)
 Repo/branch: kco994553-star/Investment-System1 @ claude/investment-system-top500-validation-alrugm
-Handoff Status: OPEN — Official US Market-Cap Top 500 PIT DECLARED for 2024-12-31 and 2024-09-30 (each: Promotion Gate v2
-PASS + gate/snapshot consistency PASS). 2024-06-30 gate FAIL (GRAL share count, WRK price) -> >=3-date walk-forward blocked.
-Track B (PIL) frozen at P0. All user-facing times are KST (UTC+9).
+Handoff Status: OPEN — Official declarations for 2024-12-31 and 2024-09-30 are SUSPENDED (C-36: the Russell 1000
+reference silently merged D&B into Moody's and F.N.B. into V.F. and left Blue Owl / Skechers / Liberty Media unresolved;
+none of them is in the pool; the Sufficiency gate did not check unresolved holdings). All three dates re-run with the
+fixed reference + fail-closed checks. 2024-06-30 additionally open: GRAL (C-35), WRK (C-34). Track B (PIL) frozen at P0.
+All user-facing times are KST (UTC+9).
 
 Track A — Main Track (priority)
 REAL-DATA -> complete PIT pool -> Official snapshot [12-31 DONE, 09-30 DONE, 06-30 OPEN] -> real single_as_of [12-31, 09-30

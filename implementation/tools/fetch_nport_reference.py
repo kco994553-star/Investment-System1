@@ -172,7 +172,8 @@ def resolve(holdings: list[dict], cur: dict, hist: dict, pool_ciks: set[str] | N
                 break
         k = norm_name(h["name"])
         if len(c) != 1:
-            c, method = hist.get(k) or set(), "SEC_CIK_LOOKUP"
+            # both keys: 'SKECHERS U.S.A., INC.' only matches its historical title with dotted acronyms joined
+            c, method = (hist.get(k) or set()) | (hist.get(norm_name(h["name"], True)) or set()), "SEC_CIK_LOOKUP"
             if len(c) > 1:
                 # several historical entities share the name: accept only if exactly one is a current SEC registrant
                 active = {x for x in c if x in current_ciks}
@@ -184,10 +185,97 @@ def resolve(holdings: list[dict], cur: dict, hist: dict, pool_ciks: set[str] | N
             unresolved.append({**h, "name_matches": len(c), "candidates": sorted(c)[:8]})
             continue
         cik = next(iter(c))
-        m = members.setdefault(cik, {"names": [], "cusips": [], "method": method})
+        m = members.setdefault(cik, {"names": [], "cusips": [], "method": method, "methods": []})
         m["names"].append(h["name"])
         m["cusips"].append(h["cusip"])
-    return members, unresolved
+        m["methods"].append(method)
+    return split_collisions(members, unresolved, holdings, cur, hist)
+
+
+METHOD_RANK = ("SEC_TICKERS_TITLE", "SEC_TICKERS_TITLE_UNIQUE_IN_POOL", "SEC_CIK_LOOKUP", "SEC_CIK_LOOKUP_UNIQUE_ACTIVE",
+               "SEC_CIK_LOOKUP_UNIQUE_IN_POOL")
+
+
+def issuer_prefix(cusip) -> str:
+    """CUSIP issuer number (first 6 characters): share classes of one issuer share it (BF-A/BF-B 115637)."""
+    return str(cusip or "").strip().upper()[:6]
+
+
+def split_collisions(members: dict, unresolved: list, holdings: list, cur: dict, hist: dict) -> tuple[dict, list]:
+    """One CIK must not absorb holdings of DIFFERENT issuers (distinct CUSIP issuer numbers). Run #53 (N-PORT
+    cross-check) found 'DUN & BRADSTREET HOLDINGS, INC.' resolved to Moody's CIK and 'F.N.B. CORPORATION' to V.F.'s
+    on every as_of -- D&B and F.N.B. were silently missing from the reference and the pool. The issuer group matched
+    by the strongest method keeps the CIK (a tie keeps none); every other group retries its name without that CIK and
+    is resolved only if exactly one candidate remains, else it is unresolved (fail-closed)."""
+    by_name = {h["name"]: h for h in holdings}
+    out = {}
+    for cik, m in members.items():
+        groups = {}
+        for n, cu, me in zip(m["names"], m["cusips"], m.get("methods") or [m["method"]] * len(m["names"])):
+            groups.setdefault(issuer_prefix(cu) or f"NOCUSIP:{n}", []).append((n, cu, me))
+        if len(groups) == 1:
+            out[cik] = {k: v for k, v in m.items() if k != "methods"}
+            continue
+        rank = {g: min(METHOD_RANK.index(me) if me in METHOD_RANK else len(METHOD_RANK) for _, _, me in rows)
+                for g, rows in groups.items()}
+        best = min(rank.values())
+        winners = [g for g, r in rank.items() if r == best]
+        keep = winners[0] if len(winners) == 1 else None
+        for g, rows in groups.items():
+            if g == keep:
+                out[cik] = {"names": [r[0] for r in rows], "cusips": [r[1] for r in rows], "method": rows[0][2],
+                            "collision_winner_over": sorted(x for x in groups if x != g)}
+                continue
+            for n, cu, _ in rows:
+                c = set()
+                for k in (norm_name(n), norm_name(n, True)):
+                    c |= (cur.get(k) or set()) | (hist.get(k) or set())
+                c.discard(cik)
+                if len(c) == 1:
+                    alt = next(iter(c))
+                    mm = out.setdefault(alt, members.get(alt) and {k: v for k, v in members[alt].items() if k != "methods"}
+                                        or {"names": [], "cusips": [], "method": "COLLISION_RETRY_SEC_CIK_LOOKUP"})
+                    mm["names"].append(n)
+                    mm["cusips"].append(cu)
+                    mm.setdefault("collision_retry_from", []).append(cik)
+                else:
+                    unresolved.append({**by_name.get(n, {"name": n, "cusip": cu}), "name_matches": len(c),
+                                       "candidates": sorted(c)[:8], "reason": "CIK_COLLISION_DISTINCT_CUSIP_ISSUERS",
+                                       "collided_with": cik})
+    return out, unresolved
+
+
+def name_candidates(name: str, cur: dict, hist: dict) -> set[str]:
+    """Every CIK whose current or historical SEC name matches the holding name (both keys); a tracking-group suffix
+    ('LIBERTY MEDIA CORP - FORMULA ONE GROUP') is also tried without the suffix. Candidates only -- identity is decided
+    by CUSIP attestation."""
+    names = [name] + ([name.split(" - ", 1)[0]] if " - " in name else [])
+    out = set()
+    for n in names:
+        for k in (norm_name(n), norm_name(n, True)):
+            out |= (cur.get(k) or set()) | (hist.get(k) or set())
+    return out
+
+
+def attest_by_cusip(store: RawDatasetStore, get, candidates: list[str], cusip: str, as_of: datetime, npr, frc) -> dict:
+    """The candidate CIK whose OWN ownership filings (Schedule 13G/13D on it as subject company, filed <= as_of) print
+    the holding's CUSIP. Exactly one attested candidate -> identity; none or several -> unresolved (fail-closed)."""
+    hits, checked = [], []
+    for c in candidates[:8]:
+        get(f"submissions:{c}", SUBMISSIONS_URL.format(cik=c), "SEC_SUBMISSIONS")
+        sub = load_submissions_merged(store, c)[0] or {}
+        for f in npr.ownership_filings(sub, as_of):
+            aid = f"sec_filing_doc:{c}:{f['accn']}"
+            get(aid, npr.ARCHIVE_URL.format(cik=int(c), nodash=f["accn"].replace("-", ""), doc=f["primary_document"]),
+                "SEC_FILING_DOCUMENT")
+            snip = npr.cusip_attested(frc.html_text(store.get_bytes(aid)), cusip) if store.has(aid) else None
+            checked.append({"cik": c, "artifact_id": aid, "filed": f["filed"], "form": f["form"], "cusip_found": bool(snip)})
+            if snip:
+                hits.append({"cik": c, "artifact_id": aid, "filed": f["filed"], "snippet": snip})
+                break
+    ciks = sorted({h["cik"] for h in hits})
+    return {"cik": ciks[0] if len(ciks) == 1 else None, "attested": hits, "checked": checked,
+            "status": "UNIQUE" if len(ciks) == 1 else f"ATTESTED_{len(ciks)}"}
 
 
 def pit_registrant(store: RawDatasetStore, cik: str, as_of: datetime, lookback_days: int = 400) -> bool:
@@ -271,6 +359,26 @@ def main() -> None:
                 rows, _ = chain.extend_listings(store, rd(a.listings) or {}, rd(a.plan))
                 pool_ciks = {str(m.get("cik") or "").zfill(10) for m in rows.values()}
                 members, unresolved = resolve(eq, cur, hist, pool_ciks)
+                # (0) unresolved equity holdings (ambiguous name, name not found, dead namesake, collision loser):
+                # identity by CUSIP attestation in the candidate issuer's own 13G/13D filed <= as_of
+                npr, frc = _load("nport_reported_prices"), _load("fetch_class_rights_evidence")
+                still0, attestations = [], {}
+                for u in unresolved:
+                    cu = str(u.get("cusip") or "")
+                    if not cu or "ESC" in cu.upper()[3:9]:
+                        still0.append(u)
+                        continue
+                    cands = sorted(set(u.get("candidates") or []) | name_candidates(u["name"], cur, hist))
+                    att = attest_by_cusip(store, get, cands, cu, d, npr, frc)
+                    attestations[u["name"] + "|" + cu] = {"candidates": cands, **att}
+                    if att["cik"] and pit_registrant(store, att["cik"], d):
+                        m = members.setdefault(att["cik"], {"names": [], "cusips": [], "method": "CUSIP_ATTESTED_OWNERSHIP_FILING"})
+                        m["names"].append(u["name"])
+                        m["cusips"].append(cu)
+                    else:
+                        still0.append({**u, "cusip_attestation": att["status"], "candidates": cands[:8]})
+                unresolved = still0
+                report["cusip_attestations"] = attestations
                 # (1) name collisions: accept the unique candidate that was a domestic SEC registrant at as_of
                 cover_mod = _load("fetch_cover_xbrl")
                 still = []
@@ -288,7 +396,7 @@ def main() -> None:
                 unresolved = still
                 # a unique HISTORICAL name match can be a dead namesake (e.g. an old 'U.S. BANCORP' entity):
                 # accept it only if that CIK was a domestic SEC registrant filing 10-K/10-Q around as_of
-                for c in [c for c, v in members.items() if v["method"] == "SEC_CIK_LOOKUP"]:
+                for c in [c for c, v in members.items() if v["method"].startswith(("SEC_CIK_LOOKUP", "COLLISION_RETRY"))]:
                     get(f"submissions:{c}", SUBMISSIONS_URL.format(cik=c), "SEC_SUBMISSIONS")
                     if not pit_registrant(store, c, d):
                         v = members.pop(c)
@@ -318,6 +426,9 @@ def main() -> None:
                        "source_vintage": chosen["filed"], "as_of": a.as_of + "T00:00:00+00:00",
                        "membership_basis": "DATED_FUND_HOLDINGS", "reference_role": "SUPERSET_REFERENCE", "survivorship_risk": False,
                        "member_id_type": "CIK10", "members": sorted(members), "member_names": {c: v["names"] for c, v in members.items()},
+                       "member_cusips": {c: v["cusips"] for c, v in members.items()},
+                       "member_methods": {c: v["method"] for c, v in members.items()},
+                       "cusip_attestations": report.get("cusip_attestations") or {},
                        "unresolved_holdings": unresolved, "members_not_in_pool_without_current_ticker": no_ticker,
                        "note": ("Russell 1000 fund holdings as reported to the SEC for the as_of date (filed after as_of: a dated "
                                 "historical record, used for validation, not as information available at as_of).")}

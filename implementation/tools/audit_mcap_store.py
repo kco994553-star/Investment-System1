@@ -369,6 +369,17 @@ def build_top500_sufficiency_gate(audit_result: dict, large_cap_references: list
         superset = ref.get("reference_role") == "SUPERSET_REFERENCE"
         if outside and not superset:
             r_reasons.append("REFERENCE_MEMBERS_RANKED_OUTSIDE_TOP500")
+        # a superset reference only proves coverage for the holdings it could identify: an equity holding that was
+        # not resolved to exactly one issuer, or one CIK absorbing holdings of different issuers (distinct CUSIP issuer
+        # numbers), leaves a reference member unchecked (run #53: Blue Owl, Skechers, Liberty F1, D&B, F.N.B.)
+        unresolved_eq = unresolved_reference_equities(ref.get("unresolved_holdings")) if superset else []
+        collisions = cik_collisions(ref.get("member_cusips")) if superset else {}
+        if superset and ref.get("member_cusips") is None:
+            r_reasons.append("REFERENCE_MEMBER_CUSIPS_MISSING")
+        if unresolved_eq:
+            r_reasons.append("UNRESOLVED_REFERENCE_HOLDINGS")
+        if collisions:
+            r_reasons.append("REFERENCE_CIK_COLLISION_DISTINCT_ISSUERS")
         if superset and len(members) < 900:
             # a superset of the top 500 (e.g. Russell 1000 holdings) may rank below 500 but must be large
             r_reasons.append("SUPERSET_REFERENCE_TOO_SMALL")
@@ -382,6 +393,7 @@ def build_top500_sufficiency_gate(audit_result: dict, large_cap_references: list
             "present_rankable_outside_top500": outside, "reasons": r_reasons, "passed": ref_ok,
             "reference_role": ref.get("reference_role"),
             "excluded_by_eligibility_rule": sorted(set(ref.get("excluded_by_eligibility_rule") or [])),
+            "unresolved_reference_holdings": unresolved_eq, "cik_collisions": collisions,
         })
     if rankable < 500:
         reasons.append("FEWER_THAN_500_RANKABLE")
@@ -404,6 +416,34 @@ def build_top500_sufficiency_gate(audit_result: dict, large_cap_references: list
                  "dated (PIT) large-cap reference has every member present, rankable, and inside the "
                  "computed top 500 -- i.e. positive evidence no plausible missed company changes the top 500."),
     }
+
+
+def is_escrow_cusip(cusip) -> bool:
+    """Escrow / contingent-value positions carry 'ESC' in the CUSIP issue positions (e.g. 361ESC049 'ESC GCI LIBERTY INC
+    SR'): not a listed equity line, so not a reference member to rank."""
+    c = str(cusip or "").upper()
+    return len(c) >= 6 and "ESC" in c[3:9]
+
+
+def unresolved_reference_equities(unresolved) -> list[dict]:
+    """Unresolved superset-reference holdings that could be listed common equity (everything except escrow CUSIPs)."""
+    out = []
+    for u in unresolved or []:
+        if is_escrow_cusip(u.get("cusip")):
+            continue
+        out.append({k: u.get(k) for k in ("name", "cusip", "reason", "candidates", "name_matches")})
+    return out
+
+
+def cik_collisions(member_cusips) -> dict:
+    """CIK -> distinct CUSIP issuer numbers, where one CIK holds more than one issuer (share classes share the 6-char
+    issuer number)."""
+    out = {}
+    for cik, cusips in (member_cusips or {}).items():
+        pre = sorted({str(c or "").upper()[:6] for c in cusips if c})
+        if len(pre) > 1:
+            out[cik] = pre
+    return out
 
 
 def _norm_ticker(t) -> str:
