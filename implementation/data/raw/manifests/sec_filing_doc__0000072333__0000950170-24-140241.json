@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000072333:0000950170-24-140241",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/72333/000095017024140241/xslSCHEDULE_13D_X01/primary_doc.xml",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:26:32.838326+00:00",
+  "sha256": "288ac4727fe72eb6c64f2e7b7e27775fc2007944d9f9170933ea6186ec0c4934",
+  "bytes": 44179,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

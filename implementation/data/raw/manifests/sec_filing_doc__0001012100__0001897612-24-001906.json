@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001012100:0001897612-24-001906",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1012100/000189761224001906/see13gasep24.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:26:56.774822+00:00",
+  "sha256": "a25b3f6b596c8ba6c5cd224ce51155d7cb64e003b9af9c6c4db27eb45e16b3e7",
+  "bytes": 4937,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

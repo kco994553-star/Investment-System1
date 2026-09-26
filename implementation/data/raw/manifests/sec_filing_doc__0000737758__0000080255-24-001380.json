@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000737758:0000080255-24-001380",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/737758/000008025524001380/ttc13gasep24.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:26:54.623306+00:00",
+  "sha256": "999f5b365f97bacb81e8cb9813ad520934db87a4211179d94b0328c4286b3aa7",
+  "bytes": 4792,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

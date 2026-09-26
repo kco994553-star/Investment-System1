@@ -6,7 +6,11 @@
  "source_artifact": "nport_xml:0001752724-25-034052",
  "valuation_date": "2024-12-31",
  "source_filed": "2025-02-24",
- "basis_note": "Fund-reported fair value per share on the N-PORT report date (2024-12-31), filed after as_of; all other issuers use their last market close on/before as_of (2024-12-30 session). Applies only to the issuers in nport_price_exception_<as_of>.json.",
+ "filing_date": "2025-02-24",
+ "available_at": "2025-02-24",
+ "look_ahead": true,
+ "look_ahead_note": "The N-PORT is filed after as_of (available_at > as_of): a user-approved, per-date exception for PINC/WOLF only; the value describes the as_of valuation date, it was not public at as_of.",
+ "basis_note": "Fund-reported fair value per share on the N-PORT report date (= as_of), filed after as_of; all other issuers use their last market close on/before as_of. Applies only to the issuers in nport_price_exception_<as_of>.json.",
  "issuers": {
   "PINC": {
    "cik": "0001577916",

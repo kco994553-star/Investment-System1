@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000088204:0001086364-14-001488",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/88204/000108636414001488/sealed.air.corp..txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:26:56.528098+00:00",
+  "sha256": "8785e879b00c53bed8451200e32db4ade1f41f7b9fc23411f7e98cbb24e8a3f4",
+  "bytes": 11557,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

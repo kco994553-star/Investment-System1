@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001725057:0001172661-24-005243",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1725057/000117266124005243/edgepoint_day093024.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:26:47.539100+00:00",
+  "sha256": "37b76cca33c5b0effc20fb02944a7b64116dcf924c798df8d544f594d8fd92ea",
+  "bytes": 54532,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

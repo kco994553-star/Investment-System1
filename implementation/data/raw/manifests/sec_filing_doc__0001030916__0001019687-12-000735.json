@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001030916:0001019687-12-000735",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1030916/000101968712000735/wepower_13d-123111.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:26:42.430574+00:00",
+  "sha256": "87e70c8ec8b2f9391c8b5b643c2eaa27b73399622e8088b1545c1db8719310f9",
+  "bytes": 33234,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

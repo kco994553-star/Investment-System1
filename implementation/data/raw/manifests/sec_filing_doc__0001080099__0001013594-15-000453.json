@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001080099:0001013594-15-000453",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1080099/000101359415000453/informatica13da-081415.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:26:43.448091+00:00",
+  "sha256": "0f802491682df861bcd2e746443ddbff4b2cfd002e62eb2588efa56ac234ad4c",
+  "bytes": 80931,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

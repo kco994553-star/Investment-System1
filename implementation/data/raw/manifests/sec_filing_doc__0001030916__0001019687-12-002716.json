@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001030916:0001019687-12-002716",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1030916/000101968712002716/greencentral_sc13d-123111.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:26:33.814977+00:00",
+  "sha256": "64f89f67592af045cfb0db406c9fdb56d1c1c48e309f30dad4e5d3053f2f1136",
+  "bytes": 31059,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001699838:0000080255-24-001474",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1699838/000008025524001474/cflt13gasep24.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:26:54.355307+00:00",
+  "sha256": "97bf6808c7a9e569942cf2d68c3002d114dc4d1aabcdc0effed5830272a6b772",
+  "bytes": 5013,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

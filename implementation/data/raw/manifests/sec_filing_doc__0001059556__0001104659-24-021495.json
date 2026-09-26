@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001059556:0001104659-24-021495",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1059556/000110465924021495/tv01484-moodyscorp.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:27:01.031082+00:00",
+  "sha256": "68ab1d5e9147606ecb05d17431cbcd5b87f52928ed82a12541ef4492d0fa96c3",
+  "bytes": 11557,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

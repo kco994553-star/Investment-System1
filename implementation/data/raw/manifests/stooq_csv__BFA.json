@@ -1,0 +1,12 @@
+{
+  "artifact_id": "stooq_csv:BFA",
+  "source_url": "https://stooq.com/q/d/l/?s=bfa.us&i=d",
+  "source_kind": "STOOQ_DAILY_CSV",
+  "fetched_at": "2026-09-26T07:28:35.797642+00:00",
+  "sha256": "45849528815165f11f2b9f9899badc8162e266cdf2cc0f46558ea7f4e1be3fd5",
+  "bytes": 796,
+  "content_type": "text/html; charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

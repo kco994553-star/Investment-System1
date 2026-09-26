@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001355096:0001999371-24-014391",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1355096/000199937124014391/ciml-sc13ga_110824.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T07:26:51.158529+00:00",
+  "sha256": "cf74614975a337849d0e4de4c767a31cbd135a0d90690de61031cb19747e39a4",
+  "bytes": 70511,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
