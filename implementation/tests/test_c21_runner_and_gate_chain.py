@@ -1139,7 +1139,7 @@ def test_run29_reviewed_class_economics_file_verifies_against_its_cited_filings(
         listed = next(c for c in classes if c["price"])
         assert abs(mcap - sum(c["shares"] for c in classes) * listed["price"]) < 1e-3
         got[det["symbol"]] = mcap
-    assert sorted(got) == ["H", "RKT", "TKO", "TPG"]
+    assert sorted(got) == ["H", "RKT", "RYAN", "TKO", "TPG"]
     assert all(min(c["filed"] for cd in d["classes"].values() for c in cd["citations"]) <= "2024-12-31" for d in dets["issuers"].values())
 
 

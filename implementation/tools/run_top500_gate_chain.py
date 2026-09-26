@@ -648,6 +648,7 @@ RATIO_ONE = (r"one[- ]for[- ]one|1:1|1-for-1|one-to-one|on a one for one basis|s
 CLAIM_PATTERNS = {"conversion_ratio": RATIO_ONE, "exchange_ratio": RATIO_ONE,
                   # 'one share of our Class B', 'an equal number of shares of TKO Class B', 'a corresponding number of shares of our Class D'
                   "pairing": r"(one|a|an equal number of|an equivalent number of|corresponding number of) shares? of (?:[\w’']+ ){0,2}Class [A-Z]|"
+                             r"an (?:equal|equivalent) number of(?: [\w’'-]+){0,5} Class [A-Z]|"
                              r"equal to the number of|for each (?:\w+ )?units?",
                   "identical_rights": r"identical in all respects|share ratably with|same rights and privileges"}
 BASIS_CLAIMS = {"CONVERTIBLE_INTO_LISTED": {"conversion_ratio"},

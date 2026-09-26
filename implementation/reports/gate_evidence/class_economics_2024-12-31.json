@@ -182,6 +182,66 @@
     }
    },
    "double_count_check": "Class B is non-economic; each Class B share corresponds to one Common Unit held outside TPG Inc. (10-K: 281,657,626 Class B = 281,657,626 Common Units exchangeable into Class A at 2023-12-31); TPG Inc.'s own Common Units are represented by Class A + nonvoting Class A, so A + nonvoting A + B(units) counts each economic interest once."
+  },
+  "0001849253": {
+   "symbol": "RYAN",
+   "entity_name": "RYAN SPECIALTY HOLDINGS, INC.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "paired_instrument": "LLC Common Unit",
+     "rights_summary": "Class B (10 votes, no dividend or liquidation rights) is held in equal number by holders of Ryan Specialty LLC Common Units other than the Company; units are exchangeable for Class A one-for-one (or cash at the Company's election, from a secondary offering).",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+       "form": "10-K",
+       "filed": "2024-02-28",
+       "accession": "0000950170-24-021657",
+       "offset": 278424,
+       "quote": "Future transfers by the holders of LLC Common Units (who own an equal number of 10 votes per share Class B common stock related thereto) will generally result in those shares converting into shares of Class A common stock and the cancellation of the related Class B common stock, subject to limited exceptions, such as certain transfers effected for estate planning or charitable purposes.",
+       "supports": [
+        "pairing"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+       "form": "10-K",
+       "filed": "2024-02-28",
+       "accession": "0000950170-24-021657",
+       "offset": 464684,
+       "quote": "The non-controlling interest holders may, subject to certain exceptions, exchange some or all of their LLC Common Units for newly-issued shares of Class A common stock on a one-for-one basis, or for cash, at the Company’s election (determined by a majority of the Company’s directors who are disinterested) and only to the extent that the Company has received cash proceeds pursuant to a secondary offering.",
+       "supports": [
+        "exchange_ratio"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+       "form": "10-K",
+       "filed": "2024-02-28",
+       "accession": "0000950170-24-021657",
+       "offset": 258217,
+       "quote": "Each LLC Unitholder, other than the Company, has an equivalent number of shares of our Class B common stock which are entitled to 10 votes per share.",
+       "supports": [
+        "pairing"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+       "form": "10-K",
+       "filed": "2024-02-28",
+       "accession": "0000950170-24-021657",
+       "offset": 496796,
+       "quote": "Holders of Class B common stock do not have any right to receive dividends or distributions upon the liquidation or winding up of the Company.",
+       "supports": [
+        "voting_only_context"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class B count (136,670,204 on the 10-Q cover) = LLC Common Units held by unitholders other than the Company ('Each LLC Unitholder, other than the Company, has an equivalent number of shares of our Class B common stock'); the Company's own units match its Class A shares one-to-one (New LLC Operating Agreement), so A + B counts each economic unit once."
   }
  }
 }
