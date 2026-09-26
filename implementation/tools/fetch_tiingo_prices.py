@@ -74,7 +74,10 @@ def parse_eod(body: bytes) -> list[tuple[datetime, float]]:
 
 def norm_name(n: str) -> str:
     """Company-name key: upper case, punctuation dropped, corporate suffixes removed."""
-    words = re.sub(r"[^A-Z0-9 ]", " ", str(n or "").upper().replace("&", " AND ")).split()
+    t = str(n or "").upper().replace("&", " AND ")
+    # a listed class designation is not part of the company name ('Premier Inc - Class A')
+    t = re.sub(r"\b(CLASS|CL|SERIES)\s+[A-Z]\b|\b(COMMON|ORDINARY)\s+(STOCK|SHARES)\b", " ", t)
+    words = re.sub(r"[^A-Z0-9 ]", " ", t).split()
     return " ".join(w for w in words if w not in NAME_SUFFIXES)
 
 
@@ -170,7 +173,14 @@ def run(store_dir: Path, as_of: datetime, symbols: list[str], token: str | None,
             if bars and (as_of - bars[-1][0]).days <= MAX_BAR_GAP_DAYS:
                 ok[tid] = bars
         closes = {round(b[-1][1], 4) for b in ok.values()}
-        ev = {"search_ids": sids, "candidates": cands, "with_as_of_bar": sorted(ok)}
+        hits = []
+        for sid in sids:  # public listing metadata of every hit, so a NONE/AMBIGUOUS result can be reviewed
+            try:
+                hits += [{k: h.get(k) for k in ("name", "ticker", "permaTicker", "assetType", "isActive", "countryCode")}
+                         for h in json.loads(store.get_bytes(sid)) if isinstance(h, dict)] if store.has(sid) else []
+            except ValueError:
+                pass
+        ev = {"search_ids": sids, "candidates": cands, "with_as_of_bar": sorted(ok), "hits": hits[:25]}
         if len(closes) == 1:  # ticker and permaTicker of one series agree; several distinct series are ambiguous
             tid = sorted(ok)[0]
             return tid, ok[tid], {**ev, "status": "UNIQUE"}

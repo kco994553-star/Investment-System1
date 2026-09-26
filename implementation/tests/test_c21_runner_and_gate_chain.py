@@ -1039,4 +1039,73 @@ def test_run26_tiingo_alternate_series_by_unique_sec_name(tmp_path, monkeypatch)
     bars = [b for b in load_bars(store, "PINC") if b["observed_at"] <= amc_dt()]
     assert bars[-1]["close"] == 25.1 and "us000000000123" in store.get_manifest("yahoo_chart:PINC:5y")["notes"]
     assert not store.has("yahoo_chart:WOLF:5y")
-    assert ftp.norm_name("Premier, Inc.") == ftp.norm_name("PREMIER INC") and ftp.norm_name("Equity Residential") == "EQUITY RESIDENTIAL"
+    assert ftp.norm_name("Premier, Inc.") == ftp.norm_name("PREMIER INC") == ftp.norm_name("Premier Inc - Class A")
+    assert ftp.norm_name("Class Acceptance Corp") == "CLASS ACCEPTANCE"  # only a class DESIGNATION is dropped
+    assert rep["alternates"]["PINC"]["hits"][0]["name"] == "Premier Inc" and ftp.norm_name("Equity Residential") == "EQUITY RESIDENTIAL"
+
+
+def _class_econ_store(tmp_path, filed="2024-10-31"):
+    store = RawDatasetStore(tmp_path)
+    cik = "0001234567"
+    store.put(f"submissions:{cik}", json.dumps({"name": "UPC CORP", "filings": {"recent": {
+        "form": ["10-Q"], "filingDate": [filed], "accessionNumber": ["0001234567-24-000009"], "primaryDocument": ["q3.htm"]}}}).encode(),
+        "u", "SEC", "application/json", "t", 200)
+    doc = ("<html><body><p>Each share of Class&nbsp;B common stock is paired with one OpCo Unit. Holders may exchange "
+           "OpCo Units, together with an equal number of shares of Class B common stock, for shares of Class A common stock "
+           "on a one-for-one basis.</p><p>Shares of Class B common stock have no economic rights.</p></body></html>")
+    store.put(f"sec_filing_doc:{cik}:0001234567-24-000009", doc.encode(), "u", "SEC", "text/html", "t", 200)
+    ov = {"mcap": 100 * 10.0, "status": "COVER_CLASS_SUM_LOWER_BOUND", "source": "x",
+          "classes": [{"member": "CommonClassAMember", "shares": 100, "price": 10.0, "symbol": "UPC"},
+                      {"member": "CommonClassBMember", "shares": 300, "price": None, "symbol": None}]}
+    quote = ("Holders may exchange OpCo Units, together with an equal number of shares of Class B common stock, "
+             "for shares of Class A common stock on a one-for-one basis.")
+    det = {"listed_member": "CommonClassAMember", "double_count_check": "Class A count excludes units held by the issuer",
+           "classes": {"CommonClassBMember": {"basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED", "ratio": 1, "citations": [
+               {"artifact_id": f"sec_filing_doc:{cik}:0001234567-24-000009", "quote": quote, "supports": ["pairing", "exchange_ratio"]}]}}}
+    return store, cik, ov, det
+
+
+def test_run28_class_economics_verified_quote_gives_economic_equivalent_mcap(tmp_path):
+    chain = _mod("chain_ce_ok", "run_top500_gate_chain.py")
+    store, cik, ov, det = _class_econ_store(tmp_path)
+    mcap, ev = chain.verify_class_economics(store, cik, ov, det, amc_dt())
+    assert mcap == (100 + 300) * 10.0 and ev["status"] == "ECONOMIC_EQUIVALENT_DETERMINED"
+    assert ev["formula"] == "(CommonClassAMember 100 x 1 + CommonClassBMember 300 x 1) x 10.0"
+    assert ev["citations"][0]["filed"] == "2024-10-31"
+    overrides = {"u": dict(ov)}
+    chain.apply_class_economics(store, overrides, {"u": {"cik": cik, "yahoo": "UPC"}}, {"issuers": {cik: det}}, amc_dt())
+    assert overrides["u"]["status"] == "COVER_ECONOMIC_EQUIVALENT" and overrides["u"]["lower_bound"] == 1000.0
+
+
+def test_run28_class_economics_fail_closed(tmp_path):
+    chain = _mod("chain_ce_fail", "run_top500_gate_chain.py")
+    store, cik, ov, det = _class_econ_store(tmp_path)
+    bad = json.loads(json.dumps(det))
+    bad["classes"]["CommonClassBMember"]["citations"][0]["quote"] = "Holders may exchange Class B common stock for cash at a ratio set by the board of directors."
+    assert chain.verify_class_economics(store, cik, ov, bad, amc_dt())[0] is None  # quote not in the filing
+    only_pair = json.loads(json.dumps(det))
+    only_pair["classes"]["CommonClassBMember"]["citations"][0]["supports"] = ["pairing"]
+    mcap, ev = chain.verify_class_economics(store, cik, ov, only_pair, amc_dt())
+    assert mcap is None and ev["failures"] == ["CLAIMS_UNPROVEN:CommonClassBMember:exchange_ratio"]
+    ratio2 = json.loads(json.dumps(det))
+    ratio2["classes"]["CommonClassBMember"]["ratio"] = 2
+    assert chain.verify_class_economics(store, cik, ov, ratio2, amc_dt())[0] is None  # no guessed ratios
+    assert chain.verify_class_economics(store, "0009999999", ov, det, amc_dt())[0] is None  # other CIK's filing
+    late_store, _, _, _ = _class_econ_store(tmp_path / "late", filed="2025-02-20")
+    mcap, ev = chain.verify_class_economics(late_store, cik, ov, det, amc_dt())
+    assert mcap is None and ev["failures"][0].startswith("CITATION_NOT_FILED_ON_OR_BEFORE_AS_OF")
+    missing = json.loads(json.dumps(det))
+    missing["classes"] = {}
+    assert chain.verify_class_economics(store, cik, ov, missing, amc_dt())[1]["failures"] == ["NO_DETERMINATION:CommonClassBMember"]
+
+
+def test_run28_class_rights_passages_and_latest_forms():
+    frc = _mod("frc", "fetch_class_rights_evidence.py")
+    text = frc.html_text(b"<p>Each share of Class&nbsp;B common stock is convertible at any time into one share of Class A common stock.</p>"
+                         b"<p>The weather in Chicago was pleasant and Class B common stock was mentioned without rights words here</p>")
+    ps = frc.passages(text, frc.class_phrases("CommonClassBMember"))
+    assert [p["text"] for p in ps] == ["Each share of Class B common stock is convertible at any time into one share of Class A common stock."]
+    sub = {"filings": {"recent": {"form": ["10-Q", "10-K", "10-Q", "10-K"], "filingDate": ["2025-02-01", "2024-02-20", "2024-11-01", "2023-02-20"],
+                                  "accessionNumber": ["a", "b", "c", "d"], "primaryDocument": ["a.htm", "b.htm", "c.htm", "d.htm"]}}}
+    assert [f["accn"] for f in frc.latest_forms(sub, amc_dt())] == ["b", "c"]
+    assert "Nonvoting Class A" in frc.class_phrases("NonvotingCommonStockMember")

@@ -317,9 +317,101 @@ def equal_economics_upper_bound(override: dict) -> float | None:
     return override["mcap"] + sum(c["shares"] * max(priced) for c in override["classes"] if not c.get("price"))
 
 
+# Claims a verbatim filing quote must support before an unlisted class counts in listed-class equivalents.
+RATIO_ONE = r"one[- ]for[- ]one|1:1|1-for-1|one-to-one|on a one for one basis|into one share of|for one share of|an equal number of"
+CLAIM_PATTERNS = {"conversion_ratio": RATIO_ONE, "exchange_ratio": RATIO_ONE,
+                  "pairing": r"(one|a|an equal number of|corresponding number of) shares? of Class [A-Z]|"
+                             r"equal to the number of|for each (common |LLC |Holdings |OpCo |Common )?units?"}
+BASIS_CLAIMS = {"CONVERTIBLE_INTO_LISTED": {"conversion_ratio"},
+                "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED": {"pairing", "exchange_ratio"}}
+
+
+def _filed_on_or_before(store: RawDatasetStore, cik10: str, accn: str, as_of) -> str | None:
+    rec = ((load_submissions_merged(store, cik10)[0] or {}).get("filings") or {}).get("recent") or {}
+    for a, f in zip(rec.get("accessionNumber") or [], rec.get("filingDate") or []):
+        if a == accn and str(f) <= as_of.date().isoformat():
+            return str(f)
+    return None
+
+
+def verify_class_economics(store: RawDatasetStore, cik10: str, override: dict, det: dict, as_of) -> tuple[float | None, dict]:
+    """Economic-equivalent listed shares of a lower-bound issuer from a reviewed determination whose every claim is
+    backed by a VERBATIM quote found in an SEC filing of that CIK filed on or before as_of (sec_filing_doc artifact).
+    Returns (market cap, evidence); (None, evidence with failures) when anything is unproven (fail-closed)."""
+    import re
+    frc = _load("fetch_class_rights_evidence")
+    fails, used, texts = [], [], {}
+    classes = override.get("classes") or []
+    listed = [c for c in classes if c.get("price")]
+    if len(listed) != 1 or listed[0].get("member") != det.get("listed_member"):
+        return None, {"status": "NOT_DETERMINED", "failures": ["LISTED_CLASS_MISMATCH"]}
+    px, eq_shares, terms = listed[0]["price"], listed[0]["shares"], [f"{listed[0]['member']} {listed[0]['shares']:.0f} x 1"]
+    for c in classes:
+        if c.get("price"):
+            continue
+        cd = (det.get("classes") or {}).get(c.get("member"))
+        if not cd:
+            fails.append(f"NO_DETERMINATION:{c.get('member')}")
+            continue
+        need = set(BASIS_CLAIMS.get(cd.get("basis"), {"UNKNOWN_BASIS"}))
+        if "UNKNOWN_BASIS" in need or cd.get("ratio") != 1:
+            fails.append(f"UNSUPPORTED_BASIS_OR_RATIO:{c.get('member')}")
+            continue
+        phrases = frc.class_phrases(c.get("member"))
+        got = set()
+        for q in cd.get("citations") or []:
+            aid, quote = str(q.get("artifact_id") or ""), re.sub(r"\s+", " ", str(q.get("quote") or "")).strip()
+            parts = aid.split(":")
+            if len(parts) != 3 or parts[0] != "sec_filing_doc" or parts[1] != cik10 or not store.has(aid):
+                fails.append(f"CITATION_ARTIFACT_INVALID:{aid}")
+                continue
+            filed = _filed_on_or_before(store, cik10, parts[2], as_of)
+            if not filed:
+                fails.append(f"CITATION_NOT_FILED_ON_OR_BEFORE_AS_OF:{aid}")
+                continue
+            if aid not in texts:
+                texts[aid] = frc.html_text(store.get_bytes(aid))
+            if len(quote) < 40 or quote not in texts[aid]:
+                fails.append(f"QUOTE_NOT_IN_FILING:{aid}")
+                continue
+            if not any(p in quote for p in phrases):
+                fails.append(f"QUOTE_DOES_NOT_NAME_CLASS:{aid}")
+                continue
+            for claim in q.get("supports") or []:
+                if claim in need and re.search(CLAIM_PATTERNS[claim], quote, re.I):
+                    got.add(claim)
+            used.append({"class": c.get("member"), "artifact_id": aid, "filed": filed, "supports": sorted(got & need), "quote": quote})
+        if need - got:
+            fails.append(f"CLAIMS_UNPROVEN:{c.get('member')}:{','.join(sorted(need - got))}")
+            continue
+        eq_shares += cd["ratio"] * c["shares"]
+        terms.append(f"{c.get('member')} {c['shares']:.0f} x {cd['ratio']}")
+    if fails:
+        return None, {"status": "NOT_DETERMINED", "failures": fails, "citations_checked": used}
+    return eq_shares * px, {"status": "ECONOMIC_EQUIVALENT_DETERMINED", "listed_price": px, "economic_equivalent_listed_shares": eq_shares,
+                            "formula": f"({' + '.join(terms)}) x {px}", "double_count_check": det.get("double_count_check"),
+                            "citations": used}
+
+
+def apply_class_economics(store: RawDatasetStore, overrides: dict, listings: dict, determinations: dict | None, as_of) -> dict:
+    """Replace verified lower-bound overrides by their economic-equivalent market cap (status COVER_ECONOMIC_EQUIVALENT)."""
+    ev = {}
+    for cid, o in list(overrides.items()):
+        c = str(listings[cid].get("cik") or "").zfill(10)
+        det = ((determinations or {}).get("issuers") or {}).get(c)
+        if not det or not o["status"].endswith("LOWER_BOUND"):
+            continue
+        mcap, e = verify_class_economics(store, c, o, det, as_of)
+        ev[listings[cid].get("yahoo")] = {**e, "lower_bound": o["mcap"]}
+        if mcap:
+            overrides[cid] = {**o, "mcap": mcap, "status": "COVER_ECONOMIC_EQUIVALENT", "lower_bound": o["mcap"], "class_economics": e}
+    return ev
+
+
 def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs: list[dict],
               sufficiency_refs: list[dict], exchange_reference: dict | None, eligibility_evidence: dict | None,
-              plan: dict | None = None, chart_range: str = "5y", cik_candidates: dict | None = None) -> dict:
+              plan: dict | None = None, chart_range: str = "5y", cik_candidates: dict | None = None,
+              class_economics: dict | None = None) -> dict:
     amc = _load("audit_mcap_store")
     d = amc._dt(as_of if "T" in as_of else as_of + "T00:00:00+00:00")
     cand = verify_cik_candidates(store, cik_candidates)
@@ -330,6 +422,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     listings_pre_elig = listings
     listings, eligibility = eligibility_filter(store, listings, d)
     overrides, cover_unresolved = cover_mcap_overrides(store, listings, d, chart_range)
+    class_econ = apply_class_economics(store, overrides, listings, class_economics, d)
     audit = amc.audit(store, listings, d, chart_range, overrides)
     top = amc.ranked_top500(store, listings, d, chart_range, overrides)
     cutoff = top[499]["mcap"] if len(top) >= 500 else None
@@ -429,6 +522,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "cover_overrides": {listings[c].get("yahoo"): {k: v for k, v in o.items()} for c, o in overrides.items()},
         "cover_unresolved": {listings[c].get("yahoo"): v for c, v in cover_unresolved.items()},
         "lower_bound_issuers_outside_top500": lb_outside, "lower_bound_settled_outside_by_upper_bound": lb_settled,
+        "class_economics_verification": class_econ,
         "unrankable_issuers": unrankable,
         "audit": audit, "rankable": audit["rankable"], "cutoff_500_mcap": cutoff,
         "top500": top_rows, "top500_quality_flag_counts": flag_counts,
@@ -465,6 +559,7 @@ def main() -> None:
     ap.add_argument("--eligibility-evidence", type=Path)
     ap.add_argument("--chart-range", default="5y")
     ap.add_argument("--cik-candidates", type=Path, default=GE / "delisted_cik_candidates_2024-12-31.json")
+    ap.add_argument("--class-economics", type=Path, help="reviewed determinations (default class_economics_<as_of>.json if present)")
     ap.add_argument("--out", type=Path)
     a = ap.parse_args()
     rd = lambda p: json.loads(p.read_text(encoding="utf-8"))  # noqa: E731
@@ -477,7 +572,8 @@ def main() -> None:
                     [rd(p) for p in a.sufficiency_reference], rd(a.exchange_reference) if a.exchange_reference else None,
                     rd(a.eligibility_evidence) if a.eligibility_evidence else None,
                     rd(a.plan) if a.plan and a.plan.exists() else None, a.chart_range,
-                    rd(a.cik_candidates) if a.cik_candidates and a.cik_candidates.exists() else None)
+                    rd(a.cik_candidates) if a.cik_candidates and a.cik_candidates.exists() else None,
+                    rd(ce) if (ce := a.class_economics or GE / f"class_economics_{a.as_of}.json").exists() else None)
     s = json.dumps(rep, indent=2)
     if a.out:
         a.out.write_text(s + "\n", encoding="utf-8")
