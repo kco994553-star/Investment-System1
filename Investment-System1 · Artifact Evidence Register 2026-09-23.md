@@ -134,3 +134,48 @@ No new evidence produced -- C-21 reconfirmed BLOCKED, no workaround forced per i
   `Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md` (additive, Architecture FROZEN, Implementation NOT
   STARTED). Intake conflicts C-24..C-31.
 - Tests: 242/242 (mini_pytest shim) and 242/242 (pytest), SYNTHETIC + replayed evidence; one correctness fix (C-27).
+
+18. Update 2026-09-26 17:53 KST · Codex / C-36 independent revalidation
+- Baseline at a83fb64 reproduced: 291/291. Corrected merged tree with OWL evidence: 293/293; py_compile and diff check PASS.
+- Run #56 (id 36228653355, evidence commit 361ff46): subject-CIK/CUSIP fixes worked; Russell reference 991/991, only
+  explicit escrow unresolved, but OWL was still present-not-rankable because the run started before its class-economics
+  evidence commit. Official remained suspended, correctly fail-closed.
+- Run #57 (id 36229163158, head eb98031, evidence commit 195c5da): corrected Russell reference 991 members; missing 0;
+  present-not-rankable 0; non-escrow unresolved 0; collisions 0; missing member CUSIPs 0. Sufficiency PASS; Promotion Gate
+  v2 PASS; gate/snapshot consistency 500/500 PASS; cutoff $15,421,829,271.49; Official blockers 0.
+- Run #57 gate result is eligible for Official restoration, but the persisted `official_snapshot_2024-12-31.json` was not
+  regenerated: it still records universe `uni_0ad936238f45`, cutoff $15.338B, and TPR at rank 500. The corrected gate has
+  OWL rank 336 at $27.633B (Class A + cited 1:1 Class C; Class D unvalued), ALGN rank 500 at $15.422B, and no FNF.
+- Fail-closed correction: 2024-12-31 Official remains SUSPENDED until a single-date `official_pipeline` rebuild consumes
+  run #57 evidence. 2024-09-30 remains SUSPENDED pending the same independent revalidation; 2024-06-30 remains open.
+  `real_data_verified` is still emitted as false, so REAL-DATA backend Freeze is not claimed.
+
+19. Update 2026-09-26 18:38 KST · Codex / corrected 2024-12-31 Official rebuild
+- Run #58 (id 36231916104, evidence commit f425e4d) regenerated correct 500-member content but exposed a provenance-identity
+  defect: independent reconstruction minted Gate universe `uni_78060185a0d6` and Official universe `uni_5eb9effc9165`.
+  Official remained SUSPENDED; no result was promoted.
+- Minimal fix: after exact Gate/Official membership and order verification, `official_pipeline.py` preserves the Gate
+  universe ID and fails closed if the ID is absent. Workflow committed-Gate reuse is permitted only with `skip_fetch=true`
+  and explicit dates. Targeted regressions 102/102; full suite 294/294 (mini_pytest shim); py_compile/diff check PASS.
+- Run #59 (id 36233121639, head 94fb5f8, evidence commit 1832747) used the committed corrected Gate evidence. Official
+  snapshot ID = Gate ID = `uni_cf6aa3403869`; membership 500/500, order/rank, market cap and cutoff are identical;
+  cutoff $15,421,829,271.493835; #500 ALGN; FNF absent; all 500 audited share/price provenance records preserved.
+- Corrected single_as_of: 468 selected/linked, 494 investable, 6 missing, 0 name errors, EW -0.01649309224255184.
+  Corrected 500-company benchmark: 29.956 s, peak RSS 9,478.8 MB, 0 name errors. Walk-forward correctly remained blocked
+  because only one date was supplied. 2024-12-31 Official is RESTORED. 2024-09-30 remains SUSPENDED; 2024-06-30 open.
+
+20. Update 2026-09-26 18:55 KST · Codex / corrected 2024-09-30 independent rebuild
+- Run #60 (id 36233560867, head 1832747, evidence commit ab72939) fetched and resolved the 2024-09-30 reference anew:
+  994 members; missing 0; present-not-rankable 0; non-escrow unresolved 0; duplicate membership 0; member CUSIPs complete.
+- Sufficiency and Promotion Gate v2 PASS; Official blockers 0. Gate ID = Official ID = `uni_e334f94a73c3`; membership
+  500/500, order/rank, market caps, cutoff $15,573,548,285.00, and all audited share/price provenance fields match.
+  #500 ENPH. 2024-09-30 Official is RESTORED; pre-C-36 runs #46/#47 remain superseded.
+- Corrected single_as_of: 469 selected/linked, 495 investable, 5 missing, 0 name errors, EW 0.0004569665513276751.
+  Corrected benchmark: 28.362 s, peak RSS 9,534.8 MB, 0 name errors. Walk-forward not run (single date only).
+
+21. Update 2026-09-26 19:07 KST · Codex / corrected 2024-06-30 independent revalidation
+- Run #61 (id 36234273515, head ab72939, evidence commit 2e04c1b): internal candidate consistency PASS 500/500 and
+  cutoff $14,021,530,297.505974, but the corrected Russell reference fails: GRAL/WRK present-not-rankable plus non-escrow
+  unresolved ARDAGH GROUP SA (L0223L101) and LIBERTY SIRIUS XM (531229813). Sufficiency/Promotion Gate v2 FAIL.
+- Pipeline correctly emitted `BLOCKED_NO_OFFICIAL_DATE`; no single_as_of, benchmark, or walk-forward result was promoted.
+  WRK N-PORT remained investigation-only; GRAL's pro-forma count was not promoted. Liberty tracking-stock policy is C-37.
