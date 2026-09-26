@@ -1000,10 +1000,20 @@ def test_run26_tiingo_alternate_series_by_unique_sec_name(tmp_path, monkeypatch)
     def fake(req, timeout=0):
         u = req.full_url
         seen.append(u)
-        if "/utilities/search" in u and "Premier" in u:
+        if "/utilities/search" in u:
+            assert "%2C" not in u and "INC" not in u  # plain normalised words only
+        if "/utilities/search" in u and "query=VIVMARK" in u:
+            return _R(b"[]")  # renamed after as_of: current name not in Tiingo yet
+        if "/utilities/search" in u and "query=EQUITY%20RESIDENTIAL" in u:
+            return _R(json.dumps([{"name": "Equity Residential", "ticker": "EQR", "permaTicker": "US000000000555", "assetType": "Stock"}]).encode())
+        if "/daily/us000000000555/" in u:
+            return _R(_tiingo_json([("2024-12-30", 71.9)]))
+        if "/daily/eqr/" in u:
+            return _R(b"[]")
+        if "/utilities/search" in u and "query=PREMIER" in u:
             return _R(json.dumps([{"name": "Premier Inc", "ticker": "PINC", "permaTicker": "US000000000123", "assetType": "Stock"},
                                   {"name": "Premier Financial Corp", "ticker": "PFC", "permaTicker": "US000000000999", "assetType": "Stock"}]).encode())
-        if "/utilities/search" in u and "Wolfspeed" in u:  # two same-name series both trading at as_of -> ambiguous
+        if "/utilities/search" in u and "query=WOLFSPEED" in u:  # two same-name series both trading at as_of -> ambiguous
             return _R(json.dumps([{"name": "Wolfspeed Inc", "ticker": "WOLF", "permaTicker": "US1", "assetType": "Stock"},
                                   {"name": "Wolfspeed Inc", "ticker": "WOLF-OLD", "permaTicker": "US2", "assetType": "Stock"}]).encode())
         if "/daily/us000000000123/" in u:
@@ -1020,8 +1030,10 @@ def test_run26_tiingo_alternate_series_by_unique_sec_name(tmp_path, monkeypatch)
 
     monkeypatch.setattr(frd, "urlopen", fake)
     monkeypatch.setattr(frd.time, "sleep", lambda s: None)
-    rep = ftp.run(Path(tmp_path), amc_dt(), ["PINC", "WOLF"], "k",
-                  names={"PINC": ["Premier, Inc."], "WOLF": ["Wolfspeed, Inc.", "CREE INC"]})
+    rep = ftp.run(Path(tmp_path), amc_dt(), ["PINC", "WOLF", "EQR"], "k",
+                  names={"PINC": ["Premier, Inc."], "WOLF": ["Wolfspeed, Inc.", "CREE INC"],
+                         "EQR": ["VIVMARK RESIDENTIAL", "EQUITY RESIDENTIAL"]})
+    assert rep["results"]["EQR"] == "WRITTEN_TIINGO_FALLBACK" and len(rep["alternates"]["EQR"]["search_ids"]) == 2
     assert rep["results"]["PINC"] == "WRITTEN_TIINGO_FALLBACK" and rep["alternates"]["PINC"]["status"] == "UNIQUE"
     assert rep["results"]["WOLF"] == "NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF" and rep["alternates"]["WOLF"]["status"] == "AMBIGUOUS"
     bars = [b for b in load_bars(store, "PINC") if b["observed_at"] <= amc_dt()]

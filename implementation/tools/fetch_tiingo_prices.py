@@ -151,18 +151,26 @@ def run(store_dir: Path, as_of: datetime, symbols: list[str], token: str | None,
         keys = {norm_name(n) for n in (names or {}).get(sym, []) if norm_name(n)}
         if not keys:
             return None, [], {"status": "NO_SEC_NAME"}
-        sid = f"tiingo_search:{sym.upper()}"
-        q = (names or {})[sym][0]  # current SEC name first
-        frd._fetch_one(store, sid, TIINGO_SEARCH_URL.format(q=quote(q)), "TIINGO_SEARCH_JSON", frd.YAHOO_UA, log, False, headers=headers)
-        frd._throttle(log, sleep)
-        cands = search_candidates(store.get_bytes(sid), keys, tiingo_symbol(sym)) if store.has(sid) else []
+        # Tiingo search matches plain words ('Premier, Inc.' returned []): query the normalised current SEC
+        # name, then (renamed after as_of, e.g. EQR -> Vivmark) the most recent former name; the query is part
+        # of the artifact id so an earlier empty reply for another query stays evidence and is not reused
+        queries = list(dict.fromkeys(norm_name(n) for n in (names or {})[sym][:2] if norm_name(n)))
+        cands, sids = [], []
+        for q in queries:
+            sid = f"tiingo_search:{sym.upper()}:{q.replace(' ', '_')}"
+            sids.append(sid)
+            frd._fetch_one(store, sid, TIINGO_SEARCH_URL.format(q=quote(q)), "TIINGO_SEARCH_JSON", frd.YAHOO_UA, log, False, headers=headers)
+            frd._throttle(log, sleep)
+            cands = search_candidates(store.get_bytes(sid), keys, tiingo_symbol(sym)) if store.has(sid) else []
+            if cands:
+                break
         ok = {}
         for tid in cands:
             bars = [b for b in fetch(sym, tid) if b[0] <= as_of]
             if bars and (as_of - bars[-1][0]).days <= MAX_BAR_GAP_DAYS:
                 ok[tid] = bars
         closes = {round(b[-1][1], 4) for b in ok.values()}
-        ev = {"search_id": sid, "candidates": cands, "with_as_of_bar": sorted(ok)}
+        ev = {"search_ids": sids, "candidates": cands, "with_as_of_bar": sorted(ok)}
         if len(closes) == 1:  # ticker and permaTicker of one series agree; several distinct series are ambiguous
             tid = sorted(ok)[0]
             return tid, ok[tid], {**ev, "status": "UNIQUE"}
@@ -215,7 +223,9 @@ def sec_names(store: RawDatasetStore, rows: dict, syms: set[str]) -> dict[str, l
         if sym not in syms or not c.isdigit():
             continue
         sub = load_submissions_merged(store, c.zfill(10))[0] or {}
-        ns = [sub.get("name")] + [f.get("name") for f in sub.get("formerNames") or [] if isinstance(f, dict)]
+        former = sorted((f for f in sub.get("formerNames") or [] if isinstance(f, dict) and f.get("name")),
+                        key=lambda f: str(f.get("to") or ""), reverse=True)  # most recent former name first
+        ns = [sub.get("name")] + [f["name"] for f in former]
         out[sym] = [n for n in ns if n]
     return out
 
