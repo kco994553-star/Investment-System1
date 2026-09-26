@@ -130,7 +130,11 @@ def main() -> None:
     frc_spec.loader.exec_module(frc)
     store = RawDatasetStore(a.store)
     d = datetime.fromisoformat(a.as_of + "T00:00:00+00:00")
-    exc = json.loads((GE / f"nport_price_exception_{a.as_of}.json").read_text(encoding="utf-8"))
+    exc_path = GE / f"nport_price_exception_{a.as_of}.json"
+    if not exc_path.exists():  # the exception is per as_of and user-approved; none for this date -> nothing to do
+        print(json.dumps({"status": "NO_EXCEPTION_FOR_AS_OF", "as_of": a.as_of}))
+        return
+    exc = json.loads(exc_path.read_text(encoding="utf-8"))
     ref = json.loads((GE / f"russell1000_nport_{a.as_of}.json").read_text(encoding="utf-8"))
     accn = ref["source"].split("NPORT-P ")[1].split(" ")[0]
     nid = f"nport_xml:{accn}"

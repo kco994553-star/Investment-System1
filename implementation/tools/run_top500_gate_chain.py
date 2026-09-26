@@ -1002,7 +1002,8 @@ def main() -> None:
     ap.add_argument("--out", type=Path)
     a = ap.parse_args()
     rd = lambda p: json.loads(p.read_text(encoding="utf-8"))  # noqa: E731
-    det = a.detector_reference or [GE / "sp500_reconstructed_2024-12-31.json"]
+    # the S&P detector reference is dated; only a reference for this as_of is used (none -> no detector)
+    det = a.detector_reference or [p for p in [GE / f"sp500_reconstructed_{a.as_of}.json"] if p.exists()]
     base = rd(a.listings)
     for x in a.extra_listings:
         if x.exists():

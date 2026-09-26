@@ -143,7 +143,11 @@ def main() -> None:
     spec.loader.exec_module(frd)
     store = RawDatasetStore(a.store)
     d = datetime.fromisoformat(a.as_of + "T00:00:00+00:00")
-    chain = json.loads((a.chain or GE / f"gate_chain_{a.as_of}_real_gha.json").read_text(encoding="utf-8"))
+    chain_path = a.chain or GE / f"gate_chain_{a.as_of}_real_gha.json"
+    if not chain_path.exists():  # first run for this as_of: no lower-bound issuers known yet
+        print(json.dumps({"status": "NO_CHAIN_EVIDENCE_FOR_AS_OF", "as_of": a.as_of}))
+        return
+    chain = json.loads(chain_path.read_text(encoding="utf-8"))
     log: list[dict] = []
     issuers = {}
     for sym in chain.get("lower_bound_issuers_outside_top500") or []:
