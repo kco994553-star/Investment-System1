@@ -706,8 +706,12 @@ def test_superset_reference_allows_ranks_below_500_but_not_missing_or_unrankable
     assert amc.build_top500_sufficiency_gate(audit, [base])["passed"] is True
     # run #53: unresolved equity holdings, one CIK absorbing two issuers, or no member CUSIPs -> fail-closed
     unres = amc.build_top500_sufficiency_gate(audit, [{**base, "unresolved_holdings": [
-        {"name": "BLUE OWL CAPITAL INC.", "cusip": "09581B103", "name_matches": 5}]}])
+        {"name": "BLUE OWL CAPITAL INC.", "cusip": "09581B103", "name_matches": 5, "value": 12.5,
+         "balance": "5", "units": "NS", "fair_value_level": "2"}]}])
     assert unres["passed"] is False and "UNRESOLVED_REFERENCE_HOLDINGS" in unres["references"][0]["reasons"]
+    unresolved = unres["references"][0]["unresolved_reference_holdings"][0]
+    assert {k: unresolved[k] for k in ("value", "balance", "units", "fair_value_level")} == {
+        "value": 12.5, "balance": "5", "units": "NS", "fair_value_level": "2"}
     esc = amc.build_top500_sufficiency_gate(audit, [{**base, "unresolved_holdings": [
         {"name": "ESC GCI LIBERTY INC SR", "cusip": "361ESC049"}]}])
     assert esc["passed"] is True  # escrow position, not a listed equity line
@@ -762,7 +766,7 @@ def test_chain_superset_maps_class_tickers_counts_rule_exclusions_and_derives_el
 NPORT_XML = b"""<?xml version="1.0"?><edgarSubmission xmlns="http://www.sec.gov/edgar/nport"><formData>
 <genInfo><seriesName>iShares Russell 1000 ETF</seriesName><repPdDate>2024-12-31</repPdDate></genInfo>
 <invstOrSecs>
-<invstOrSec><name>APPLE INC</name><cusip>037833100</cusip><identifiers><isin value="US0378331005"/></identifiers><valUSD>100</valUSD><assetCat>EC</assetCat><invCountry>US</invCountry></invstOrSec>
+<invstOrSec><name>APPLE INC</name><title>APPLE COMMON STOCK</title><cusip>037833100</cusip><identifiers><isin value="US0378331005"/></identifiers><balance>2</balance><units>NS</units><curCd>USD</curCd><valUSD>100</valUSD><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry><payoffProfile>Long</payoffProfile><fairValLevel>1</fairValLevel></invstOrSec>
 <invstOrSec><name>ALPHABET INC</name><cusip>02079K305</cusip><valUSD>50</valUSD><assetCat>EC</assetCat><invCountry>US</invCountry></invstOrSec>
 <invstOrSec><name>ALPHABET INC</name><cusip>02079K107</cusip><valUSD>45</valUSD><assetCat>EC</assetCat><invCountry>US</invCountry></invstOrSec>
 <invstOrSec><name>ANSYS INC</name><cusip>03662Q105</cusip><valUSD>5</valUSD><assetCat>EC</assetCat><invCountry>US</invCountry></invstOrSec>
@@ -777,6 +781,10 @@ def test_nport_parse_series_filings_and_name_resolution(tmp_path):
     assert doc["report_date"] == "2024-12-31" and doc["series_name"] == "iShares Russell 1000 ETF"
     eq = [h for h in doc["holdings"] if h["asset_cat"] == "EC"]
     assert len(eq) == 5 and eq[0]["isin"] == "US0378331005"
+    assert {k: eq[0][k] for k in ("title", "balance", "units", "currency", "issuer_cat", "payoff_profile",
+                                  "fair_value_level")} == {
+        "title": "APPLE COMMON STOCK", "balance": "2", "units": "NS", "currency": "USD",
+        "issuer_cat": "CORP", "payoff_profile": "Long", "fair_value_level": "1"}
     hdr = b"<html><pre>&lt;SERIES-NAME&gt;iShares Russell 1000 ETF\n&lt;SERIES-NAME&gt;iShares Russell 1000 Growth ETF\n</pre></html>"
     assert fnr.series_names(hdr) == ["iShares Russell 1000 ETF", "iShares Russell 1000 Growth ETF"]
     sub = {"filings": {"recent": {"form": ["NPORT-P", "NPORT-P", "497K"], "reportDate": ["2024-12-31", "2024-11-30", ""],
@@ -792,6 +800,22 @@ def test_nport_parse_series_filings_and_name_resolution(tmp_path):
     assert set(members) == {"0000320193", "0001652044", "0001013462"}  # two Alphabet classes -> one issuer
     assert members["0001652044"]["cusips"] == ["02079K305", "02079K107"] and members["0001013462"]["method"] == "SEC_CIK_LOOKUP"
     assert [u["name"] for u in unresolved] == ["TWIN NAME CORP"] and tick["0000320193"] == "AAPL"
+
+
+def test_nport_historical_member_demotion_preserves_every_source_row():
+    fnr = _mod("fnr_demote", "fetch_nport_reference.py")
+    holdings = [
+        {"name": "OLD ISSUER", "cusip": "000001101", "isin": "US0000011018", "asset_cat": "EC",
+         "country": "US", "value": 12.5, "balance": "5", "units": "NS", "fair_value_level": "2"},
+        {"name": "OLD ISSUER", "cusip": "000001200", "isin": "US0000012008", "asset_cat": "EC",
+         "country": "US", "value": 7.5, "balance": "3", "units": "NS", "fair_value_level": "2"},
+    ]
+    member = {"names": ["OLD ISSUER", "OLD ISSUER"], "cusips": ["000001101", "000001200"]}
+    rows = fnr.demoted_member_rows(member, holdings, "0000000042")
+    assert [r["cusip"] for r in rows] == ["000001101", "000001200"]
+    assert [r["value"] for r in rows] == [12.5, 7.5]
+    assert all(r["reason"] == "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT" for r in rows)
+    assert all(r["candidates"] == ["0000000042"] for r in rows)
 
 
 def test_chain_superset_with_cik_members(tmp_path):
