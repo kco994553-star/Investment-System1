@@ -2148,6 +2148,13 @@
     "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
     "reference_name": "KELLANOVA"
   },
+  "r1000:0001013462": {
+    "yahoo": "ANSS",
+    "cik": "0001013462",
+    "cik_method": "SEC_CIK_LOOKUP",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "ANSYS, INC."
+  },
   "r1000:0002074176": {
     "yahoo": "VNOM",
     "cik": "0002074176",
@@ -3232,6 +3239,13 @@
     "cik_method": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT",
     "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
     "reference_name": "NORDSTROM, INC."
+  },
+  "r1000:0001163302": {
+    "yahoo": "X",
+    "cik": "0001163302",
+    "cik_method": "SEC_CIK_LOOKUP_UNIQUE_PIT_REGISTRANT",
+    "symbol_basis": "COVER_TRADING_SYMBOL_AT_AS_OF",
+    "reference_name": "UNITED STATES STEEL CORPORATION"
   },
   "r1000:0001577916": {
     "yahoo": "PINC",

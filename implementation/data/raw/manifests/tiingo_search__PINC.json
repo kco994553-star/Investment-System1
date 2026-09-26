@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_search:PINC",
+  "source_url": "https://api.tiingo.com/tiingo/utilities/search?query=Premier%2C%20Inc.&limit=25",
+  "source_kind": "TIINGO_SEARCH_JSON",
+  "fetched_at": "2026-09-26T00:00:07.512953+00:00",
+  "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "bytes": 2,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

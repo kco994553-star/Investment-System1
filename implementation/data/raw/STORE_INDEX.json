@@ -1,8 +1,8 @@
 {
   "kind": "RAW_DATASET_STORE_INDEX",
   "store_dir": "data/raw",
-  "n_artifacts": 5368,
-  "n_blobs_on_disk": 5368,
+  "n_artifacts": 5373,
+  "n_blobs_on_disk": 5373,
   "artifacts": [
     {
       "artifact_id": "companyfacts:0000001800",
@@ -5771,6 +5771,15 @@
       "sha256": "cccc8afe3602880e8f2909266e778aa195b42e745da669a801925c593720d2fc",
       "bytes": 4981846,
       "fetched_at": "2026-09-25T08:29:51.112680+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "companyfacts:0001163302",
+      "source_kind": "SEC_COMPANYFACTS",
+      "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001163302.json",
+      "sha256": "fed4c2e5bcdf08ec09531fc3f5324f2717a5d80cf6dbfecf2332524f427ae042",
+      "bytes": 4103284,
+      "fetched_at": "2026-09-25T23:58:32.402463+00:00",
       "http_status": 200
     },
     {
@@ -23153,12 +23162,39 @@
       "http_status": 200
     },
     {
+      "artifact_id": "tiingo_eod:X",
+      "source_kind": "TIINGO_EOD_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/daily/x/prices?startDate=2020-01-02&format=json",
+      "sha256": "8e4e84a330d6787500cf234401626a2b815a01a66b1a00ed467bb1fa5cc589b1",
+      "bytes": 345541,
+      "fetched_at": "2026-09-26T00:00:13.432423+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "tiingo_eod:XOM",
       "source_kind": "TIINGO_EOD_JSON",
       "source_url": "https://api.tiingo.com/tiingo/daily/xom/prices?startDate=2020-01-02&format=json",
       "sha256": "1affa048b6825d98a1e108f2ccd3e3be6de1512f69b25dfd4b6e4914408fa1c3",
       "bytes": 436471,
       "fetched_at": "2026-09-25T23:29:11.210443+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "tiingo_search:PINC",
+      "source_kind": "TIINGO_SEARCH_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/utilities/search?query=Premier%2C%20Inc.&limit=25",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "bytes": 2,
+      "fetched_at": "2026-09-26T00:00:07.512953+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "tiingo_search:WOLF",
+      "source_kind": "TIINGO_SEARCH_JSON",
+      "source_url": "https://api.tiingo.com/tiingo/utilities/search?query=WOLFSPEED%2C%20INC.&limit=25",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "bytes": 2,
+      "fetched_at": "2026-09-26T00:00:09.427777+00:00",
       "http_status": 200
     },
     {
@@ -36335,6 +36371,15 @@
       "sha256": "68240a49f1ab53f9f004e344cebd2d8c4da335f37e2d6944414587f3830db512",
       "bytes": 133843,
       "fetched_at": "2026-09-25T08:26:01.467890+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "yahoo_chart:X:5y",
+      "source_kind": "TIINGO_DAILY_RAW",
+      "source_url": "https://api.tiingo.com/tiingo/daily/x/prices?startDate=2020-01-02&format=json",
+      "sha256": "c44f5c6b184747200281962615d1673b69a5686bb22c6bcccb99dec9aee3bcf8",
+      "bytes": 23156,
+      "fetched_at": "2026-09-26T00:00:14.945558+00:00",
       "http_status": 200
     },
     {

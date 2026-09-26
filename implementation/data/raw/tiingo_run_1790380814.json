@@ -1,0 +1,187 @@
+{
+  "kind": "TIINGO_FALLBACK_RUN",
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "n_targets": 7,
+  "targets": [
+    "BK",
+    "EQR",
+    "PINC",
+    "SQ",
+    "WOLF",
+    "WSOB",
+    "X"
+  ],
+  "status": "OK",
+  "calibration": [
+    {
+      "symbol": "AAPL",
+      "tiingo_date": "2024-12-30",
+      "tiingo_close": 252.2,
+      "yahoo_date": "2024-12-30",
+      "yahoo_close": 252.1999969482422,
+      "rel_diff": 1.2100546542661593e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "MSFT",
+      "tiingo_date": "2024-12-30",
+      "tiingo_close": 424.83,
+      "yahoo_date": "2024-12-30",
+      "yahoo_close": 424.8299865722656,
+      "rel_diff": 3.1607313004021484e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "JPM",
+      "tiingo_date": "2024-12-30",
+      "tiingo_close": 239.32,
+      "yahoo_date": "2024-12-30",
+      "yahoo_close": 239.32000732421875,
+      "rel_diff": 3.0604289372675495e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "XOM",
+      "tiingo_date": "2024-12-30",
+      "tiingo_close": 105.76,
+      "yahoo_date": "2024-12-30",
+      "yahoo_close": 105.76000213623047,
+      "rel_diff": 2.0198850420619257e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "PG",
+      "tiingo_date": "2024-12-30",
+      "tiingo_close": 167.09,
+      "yahoo_date": "2024-12-30",
+      "yahoo_close": 167.08999633789062,
+      "rel_diff": 2.1916987603525113e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "KO",
+      "tiingo_date": "2024-12-30",
+      "tiingo_close": 62.03,
+      "yahoo_date": "2024-12-30",
+      "yahoo_close": 62.029998779296875,
+      "rel_diff": 1.9679238274373305e-08,
+      "status": "OK"
+    }
+  ],
+  "calibrated": true,
+  "tolerance": 0.005,
+  "results": {
+    "BK": "NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF",
+    "EQR": "NO_TIINGO_DATA",
+    "PINC": "NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF",
+    "SQ": "NO_TIINGO_DATA",
+    "WOLF": "NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF",
+    "WSOB": "NO_TIINGO_DATA",
+    "X": "WRITTEN_TIINGO_FALLBACK"
+  },
+  "written": [
+    "X"
+  ],
+  "alternates": {
+    "BK": {
+      "status": "NO_SEC_NAME"
+    },
+    "EQR": {
+      "search_id": "tiingo_search:EQR",
+      "candidates": [],
+      "with_as_of_bar": [],
+      "status": "NONE"
+    },
+    "PINC": {
+      "search_id": "tiingo_search:PINC",
+      "candidates": [],
+      "with_as_of_bar": [],
+      "status": "NONE"
+    },
+    "SQ": {
+      "status": "NO_SEC_NAME"
+    },
+    "WOLF": {
+      "search_id": "tiingo_search:WOLF",
+      "candidates": [],
+      "with_as_of_bar": [],
+      "status": "NONE"
+    },
+    "WSOB": {
+      "status": "NO_SEC_NAME"
+    }
+  },
+  "log": [
+    {
+      "artifact_id": "tiingo_eod:AAPL",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:MSFT",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:JPM",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:XOM",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:PG",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:KO",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:BK",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:EQR",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_search:EQR",
+      "status": "HTTP_429",
+      "url": "https://api.tiingo.com/tiingo/utilities/search?query=VIVMARK%20RESIDENTIAL&limit=25"
+    },
+    {
+      "artifact_id": "tiingo_eod:PINC",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_search:PINC",
+      "status": "OK",
+      "bytes": 2
+    },
+    {
+      "artifact_id": "tiingo_eod:SQ",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:WOLF",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_search:WOLF",
+      "status": "OK",
+      "bytes": 2
+    },
+    {
+      "artifact_id": "tiingo_eod:WSOB",
+      "status": "HTTP_404",
+      "url": "https://api.tiingo.com/tiingo/daily/wsob/prices?startDate=2020-01-02&format=json"
+    },
+    {
+      "artifact_id": "tiingo_eod:X",
+      "status": "OK",
+      "bytes": 345541
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "real_data_verified": false
+}

@@ -3,10 +3,10 @@
   "as_of": "2024-12-31T00:00:00+00:00",
   "store": {
     "dir": "data/raw",
-    "n_artifacts": 5368,
+    "n_artifacts": 5373,
     "status": "PRESENT"
   },
-  "listings": 981,
+  "listings": 982,
   "plan_names_unresolved": [],
   "cik_candidate_verification": {
     "ANSS": {
@@ -82,16 +82,16 @@
   },
   "ranking_basis": "COMPANY_LEVEL_ONE_LINE_PER_CIK; US_DOMESTIC_FILERS; COVER_XBRL_CLASS_SUM_FOR_MULTI_CLASS",
   "row_level_audit": {
-    "listings": 1346,
-    "rankable": 1169,
+    "listings": 1347,
+    "rankable": 1170,
     "top_cutoff_mcap_if_500_rankable": 25326853302.334763
   },
   "company_dedupe": {
-    "n_rows": 1346,
-    "n_companies": 1069,
+    "n_rows": 1347,
+    "n_companies": 1070,
     "n_dropped_rows": 277,
     "methods": {
-      "SINGLE_LINE": 978,
+      "SINGLE_LINE": 979,
       "SEC_SUBMISSIONS_PRIMARY": 89,
       "SHORTEST_SYMBOL_FALLBACK": 2
     },
@@ -923,8 +923,8 @@
   },
   "eligibility": {
     "rule": "US_DOMESTIC_FILER_AT_AS_OF: the latest periodic report the issuer filed on or before as_of is a 10-K/10-Q. Foreign private issuers at as_of (20-F/40-F) are excluded from the US Market-Cap Top 500 (user decision 2026-09-25; their US lines are mostly ADRs whose ratio is not in SEC data). Issuers with no SEC filing by as_of did not exist as registrants then and are excluded. Basis: SEC submissions 'recent' + older filing pages, filingDate <= as_of (PIT; today's forms are not applied backward). An issuer with neither a periodic report nor a traded price by as_of was not listed then (excluded).",
-    "n_in": 1069,
-    "n_kept": 981,
+    "n_in": 1070,
+    "n_kept": 982,
     "excluded_foreign_private_issuers": [
       "AEM",
       "AMX",
@@ -2815,10 +2815,10 @@
     "kind": "PIT_MCAP_STORE_COVERAGE_AUDIT",
     "as_of": "2024-12-31T00:00:00+00:00",
     "chart_range": "5y",
-    "listings": 981,
-    "companyfacts": 981,
-    "price": 978,
-    "rankable": 977,
+    "listings": 982,
+    "companyfacts": 982,
+    "price": 979,
+    "rankable": 978,
     "missing_companyfacts": 0,
     "missing_price": 3,
     "missing_shares": 0,
@@ -2829,7 +2829,7 @@
     "justified_official_top500": false,
     "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
   },
-  "rankable": 977,
+  "rankable": 978,
   "cutoff_500_mcap": 14798769232.895142,
   "top500": [
     {
@@ -12297,7 +12297,7 @@
     },
     {
       "rank": 316,
-      "company_id": "plan:anss",
+      "company_id": "r1000:0001013462",
       "yahoo": "ANSS",
       "mcap": 29551088455.68,
       "cik": "0001013462",
@@ -18309,25 +18309,23 @@
       "name": "RUSSELL1000_IWB_NPORT",
       "role": "SUPERSET_REFERENCE",
       "n_members": 985,
-      "n_missing_from_pool": 1,
+      "n_missing_from_pool": 0,
       "n_present_not_rankable": 7,
-      "n_present_rankable_outside_top500": 473,
-      "missing_from_pool": [
-        "CIK0001163302"
-      ]
+      "n_present_rankable_outside_top500": 474,
+      "missing_from_pool": []
     }
   ],
   "universe_completeness_gate": {
     "kind": "UNIVERSE_COMPLETENESS_GATE",
     "as_of": "2024-12-31T00:00:00+00:00",
     "passed": false,
-    "companyfacts": 981,
-    "rankable": 977,
+    "companyfacts": 982,
+    "rankable": 978,
     "benchmark_source": "World Federation of Exchanges (WFE), \"Market Statistics - February 2025\" (WFE Focus), Total Dec'24 column",
     "benchmark_source_vintage": "2025-01-31",
     "benchmark_low": 3400,
     "benchmark_high": 3700,
-    "coverage_ratio": 0.28852941176470587,
+    "coverage_ratio": 0.2888235294117647,
     "reasons": [
       "COMPANYFACTS_COVERAGE_BELOW_BENCHMARK_LOW_ESTIMATE"
     ],
@@ -18337,7 +18335,7 @@
     "kind": "TOP500_SUFFICIENCY_GATE",
     "as_of": "2024-12-31T00:00:00+00:00",
     "passed": false,
-    "rankable": 977,
+    "rankable": 978,
     "cutoff_mcap": 14798769232.895142,
     "n_references_supplied": 2,
     "n_references_usable": 0,
@@ -18441,9 +18439,7 @@
         "source": "SEC Form NPORT-P 0001752724-25-034052 (iShares Russell 1000 ETF), report date 2024-12-31",
         "source_vintage": "2025-02-24",
         "n_members": 985,
-        "missing_from_pool": [
-          "CIK0001163302"
-        ],
+        "missing_from_pool": [],
         "present_not_rankable": [
           "EQR",
           "H",
@@ -18924,12 +18920,12 @@
           "WU",
           "WWD",
           "WYNN",
+          "X",
           "XRAY",
           "YETI",
           "ZION"
         ],
         "reasons": [
-          "MISSING_LARGE_CAP_NAMES",
           "REFERENCE_MEMBERS_PRESENT_BUT_NOT_RANKABLE"
         ],
         "passed": false,
@@ -18970,8 +18966,8 @@
       "passed": false,
       "candidate_pool_complete": false,
       "justified_official_top500": false,
-      "rankable": 977,
-      "listings": 981,
+      "rankable": 978,
+      "listings": 982,
       "eligibility_source": null,
       "source_vintage": null,
       "reasons": [
