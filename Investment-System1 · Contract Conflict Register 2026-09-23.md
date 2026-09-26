@@ -370,3 +370,22 @@ UNRESOLVED and nothing is marked PRODUCTION by this intake.
 ## C-31 code.md not present in the hub → OPEN-NONBLOCKING
 Evidence: no code.md in the repository or the r4/r6/r7 handoff ZIPs. The coding-priority rule (correctness/safety > user
 requirements > existing behaviour > simplicity > maintainability > performance > extensibility) is taken from the relay text.
+
+## C-32 official_mcap500_snapshot_from_store default path ≠ Promotion Gate basis → OPEN-NONBLOCKING (Track A, 2026-09-26)
+Evidence: universe/sources.official_mcap500_snapshot_from_store builds candidates from companyfacts shares (pit_shares) and
+the chart parser's `price`, which is adjclose (dividend/split-adjusted as of the fetch date, i.e. adjusted for events after
+as_of). The Promotion Gate ranks on raw close × post-as_of split factor and uses cover-page class sums, economic-equivalent
+shares, text-verified counts and the approved NPORT_REPORTED_VALUE exception. Regression:
+tests/test_c21_runner_and_gate_chain.py::test_run35_gate_snapshot_consistency_preserves_cover_shares_and_close_basis.
+Decision: default path unchanged (existing callers); an optional `gate_candidates` argument feeds the gate-audited
+representation; the chain's gate_snapshot_consistency must pass (same members/order/mcap) before any Official
+declaration (blocker GATE_SNAPSHOT_INCONSISTENT). Whether the default path should switch to the close basis is a separate
+decision (it also affects validation.historical / vertical_slice consumers).
+
+## C-33 companyfacts share counts unreliable for multi-class and mis-scaled filers → EVIDENCE (Track A, 2026-09-26; PIL upstream note)
+Evidence (runs #31-#35): companyfacts drops dimensioned dei facts, so for multi-class issuers pit_shares returned an older
+undimensioned value (PPLI 0 from 2020; DKS 2011, ARES 2019, COKE 2016, AOS 2015; MA/CME/IBKR one class); HXL's filing tags
+81,002,128,000,000 (×10^6). Now handled in the gate by share_fact_stale → cover XBRL, share_scale_check → cover text,
+fail-closed exclusion otherwise.
+PIL impact (recorded only; no PIL code changed): any future PIL consumer of share counts / market caps (Model Portfolio,
+Security Resolver identifiers) must take them from the gate-audited representation, not companyfacts pit_shares directly.
