@@ -179,6 +179,28 @@ def _as_of_price(store: RawDatasetStore, symbol: str, as_of, chart_range: str):
     return amc.mcap_price(bars[-1], amc.load_splits(store, symbol, chart_range), as_of) if bars else None
 
 
+def cover_text_symbol_member(text: str, cover: dict) -> tuple[str | None, str | None]:
+    """Listed member from the cover-page TEXT of the same filing when XBRL tags one undimensioned TradingSymbol for several
+    classes and the Security12bTitle names no class letter (IAC: title 'Common stock', members CommonClassA/B). The title's
+    head ('Common stock') must be followed directly by the exact share count of exactly ONE member, not preceded by
+    'Class X' ("Common Stock 80,479,073 Class B common stock 5,789,499"). Returns (member, verbatim quote) or (None, None)."""
+    import re
+    titles = cover["titles"].get(None) or []
+    if len(titles) != 1 or re.search(r"Class\s+[A-Z]\b", titles[0]):
+        return None, None
+    head = titles[0].split(",")[0].strip()
+    if not head:
+        return None, None
+    counts = {f"{int(c['shares']):,}": c["member"] for c in cover["classes"] if c.get("member") and c.get("shares")}
+    hits = set()
+    quote = None
+    for m in re.finditer(r"(?<!Class [A-Z] )" + re.escape(head) + r"\s+([\d,]{5,})", text[:40000], re.I):
+        if m.group(1) in counts:
+            hits.add(counts[m.group(1)])
+            quote = text[max(0, m.start() - 120):m.end() + 60]
+    return (hits.pop(), quote) if len(hits) == 1 else (None, None)
+
+
 def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_range: str = "5y") -> tuple[dict, dict]:
     """company_id -> {'mcap', 'status', 'classes'} from the cover-page XBRL instance (tools/fetch_cover_xbrl.py).
     Listed classes: class shares x that class's as-of price. Unlisted/unpriced classes are not guessed
@@ -199,6 +221,14 @@ def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_ra
             unresolved[cid] = f"PARSE_ERROR_{type(e).__name__}"
             continue
         classes, syms = cover["classes"], class_symbols(cover)
+        text_basis = None
+        undim = sorted(set(cover["symbols"].get(None) or []))
+        did = f"sec_filing_doc:{c}:{f['accn']}"
+        if not syms and len(undim) == 1 and len(classes) > 1 and store.has(did):
+            member, quote = cover_text_symbol_member(_load("fetch_class_rights_evidence").html_text(store.get_bytes(did)), cover)
+            if member:
+                syms = {member: undim[0]}
+                text_basis = {"basis": "COVER_TEXT_TITLE_COUNT_MATCH", "document": did, "quote": quote}
         if not classes:
             unresolved[cid] = "NO_COVER_SHARES"
             continue
@@ -219,7 +249,12 @@ def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_ra
         for cl in classes:
             sym = syms.get(cl["member"])
             px = _as_of_price(store, sym.replace(".", "-"), as_of, chart_range) if sym else None
-            if sym and not px and len(listed) == 1:
+            if text_basis and sym and px and sym.replace(".", "-") != str(m.get("yahoo") or ""):
+                # a symbol mapped from cover text must agree with the same-CIK primary line when both have a close
+                prim = _as_of_price(store, str(m.get("yahoo") or ""), as_of, chart_range)
+                if prim and abs(px - prim) / prim > 0.005:
+                    px, cl = None, {**cl, "price_conflict": {"symbol_close": px, "primary_line_close": prim}}
+            if sym and not px and len(listed) == 1 and "price_conflict" not in cl:
                 # ticker changed after as_of (SQ -> XYZ): the issuer's only listed class trades as its primary line
                 px = _as_of_price(store, str(m.get("yahoo") or ""), as_of, chart_range)
                 if px:
@@ -228,7 +263,7 @@ def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_ra
                 total += cl["shares"] * px
             else:
                 lower = True
-            parts.append({**cl, "symbol": sym, "price": px})
+            parts.append({**cl, "symbol": sym, "price": px, **({"symbol_basis": text_basis} if text_basis and sym else {})})
         if total > 0:
             out[cid] = {"mcap": total, "status": "COVER_CLASS_SUM_LOWER_BOUND" if lower else "COVER_CLASS_SUM",
                         "source": aid, "classes": parts}

@@ -1241,3 +1241,40 @@ def test_run30_share_count_diagnostic_separates_post_as_of_filings():
     facts = scd.cover_facts(_instance([(None, 0)], [(None, "PPLI")]))
     assert {f["concept"] for f in facts} == {"EntityCommonStockSharesOutstanding", "TradingSymbol"}
     assert next(f for f in facts if f["concept"] == "EntityCommonStockSharesOutstanding")["unit"] == "shares"
+
+
+def test_run31_cover_text_maps_undimensioned_symbol_to_the_member_with_the_stated_count(tmp_path):
+    """IAC (CIK 1800227, now PPLI): XBRL tags 'IAC' undimensioned, title 'Common stock, par value $0.0001', members Class A/B.
+    The same 10-Q's cover text 'Common Stock 80,479,073 Class B common stock 5,789,499' identifies the listed member."""
+    chain = _mod("chain_iac", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    cik = "0001800227"
+    aid = _sub_with_filing(store, cik, accn="0001800227-24-000046")
+    store.put(aid, _instance([("CommonClassAMember", 80_479_073), ("CommonClassBMember", 5_789_499)], [(None, "IAC")],
+                             [(None, "Common stock, par value $0.0001")]), "u", "SEC", "application/xml", "t", 200)
+    cover = chain.parse_cover(store.get_bytes(aid))
+    text = ("As of November 8, 2024, the following shares of the registrant's common stock were outstanding: "
+            "Common Stock 80,479,073 Class B common stock 5,789,499 TABLE OF CONTENTS")
+    assert chain.cover_text_symbol_member(text, cover)[0] == "CommonClassAMember"
+    assert chain.cover_text_symbol_member("Common Stock 1,000 Class B common stock 5,789,499", cover) == (None, None)
+    # without the stored filing text nothing is mapped (fail-closed)
+    ov, unres = chain.cover_mcap_overrides(store, {"i": {"cik": cik, "yahoo": "PPLI"}}, amc_dt())
+    assert unres == {"i": "NO_PRICED_CLASS"}
+    store.put(f"sec_filing_doc:{cik}:0001800227-24-000046", f"<html><p>{text}</p></html>".encode(), "u", "SEC", "text/html", "t", 200)
+    cf = {"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [{"filed": "2020-06-03", "val": 0}]}}}}}
+    store.put(f"companyfacts:{cik}", json.dumps(cf).encode(), "u", "SEC", "application/json", "t", 200)
+    chart = {"chart": {"result": [{"timestamp": [int(datetime(2024, 12, 30, 21, tzinfo=UTC).timestamp()) - 86400 * 2],
+                                   "indicators": {"quote": [{"close": [43.0]}]}}], "error": None}}
+    store.put("yahoo_chart:PPLI:5y", json.dumps(chart).encode(), "u", "YAHOO", "application/json", "t", 200)
+    ov, unres = chain.cover_mcap_overrides(store, {"i": {"cik": cik, "yahoo": "PPLI"}}, amc_dt())
+    o = ov["i"]
+    assert o["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and o["mcap"] == 80_479_073 * 43.0  # Class B unpriced: lower bound
+    a = next(c for c in o["classes"] if c["member"] == "CommonClassAMember")
+    assert a["symbol"] == "IAC" and a["price_basis"] == "PRIMARY_LINE_SAME_CIK_TICKER_CHANGE"
+    assert a["symbol_basis"]["basis"] == "COVER_TEXT_TITLE_COUNT_MATCH" and "80,479,073" in a["symbol_basis"]["quote"]
+    assert chain.equal_economics_upper_bound(o) == (80_479_073 + 5_789_499) * 43.0
+    # a reused old ticker whose close disagrees with the same-CIK primary line is not used
+    chart2 = {"chart": {"result": [{"timestamp": chart["chart"]["result"][0]["timestamp"], "indicators": {"quote": [{"close": [9.0]}]}}], "error": None}}
+    store.put("yahoo_chart:IAC:5y", json.dumps(chart2).encode(), "u", "YAHOO", "application/json", "t", 200)
+    ov2, unres2 = chain.cover_mcap_overrides(store, {"i": {"cik": cik, "yahoo": "PPLI"}}, amc_dt())
+    assert unres2 == {"i": "NO_PRICED_CLASS"}

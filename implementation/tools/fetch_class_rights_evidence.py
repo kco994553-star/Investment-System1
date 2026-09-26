@@ -161,10 +161,13 @@ def main() -> None:
         issuers[sym] = {"cik": cik, "cover_source": src, "entity_name": sub.get("name"),
                         "classes": ov.get("classes"), "unlisted_members": [c.get("member") for c in unlisted],
                         "phrases": phrases, "documents": docs, "cover_instance_unit_facts": facts}
+    path = GE / f"class_rights_passages_{a.as_of}.json"
+    # merge: issuers reviewed in earlier runs stay (their determinations cite these passages); this run adds/refreshes
+    prev = json.loads(path.read_text(encoding="utf-8")).get("issuers") or {} if path.exists() else {}
     out = {"kind": "CLASS_RIGHTS_PASSAGES", "as_of": a.as_of,
            "note": "Verbatim passages from filings filed on or before as_of; review material, not a determination.",
-           "issuers": issuers}
-    (GE / f"class_rights_passages_{a.as_of}.json").write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
+           "issuers": {**prev, **issuers}}
+    path.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
     (store.root / f"class_rights_run_{int(datetime.now(timezone.utc).timestamp())}.json").write_text(json.dumps({"log": log}, indent=1))
     frd.write_store_index(store)
     print(json.dumps({s: {"docs": [(x["form"], x["filed"], len(x["passages"])) for x in v["documents"]],
