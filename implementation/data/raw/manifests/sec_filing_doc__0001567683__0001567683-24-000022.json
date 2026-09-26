@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001567683:0001567683-24-000022",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1567683/000156768324000022/cwen-20240630.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T03:08:29.859812+00:00",
+  "sha256": "af5744d43720e1b9df835102a38d0a7cc11a24e6e6457640a70af9fb87cf3eae",
+  "bytes": 2198284,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

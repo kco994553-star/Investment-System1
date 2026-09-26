@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000071691:0000071691-24-000132",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/71691/000007169124000132/nyt-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:07.864152+00:00",
+  "sha256": "6dec0b2c58354426d29c35989ff0ffcd93c2b2a361684ffd07b42200cbc78156",
+  "bytes": 1810760,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

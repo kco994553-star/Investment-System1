@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001535527:0001535527-24-000020",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1535527/000153552724000020/crwd-20240731_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:43.500954+00:00",
+  "sha256": "a34a4a371b884cd26ca80ae583f1a676114c6c44d0da1786a29eed4dddba7e7e",
+  "bytes": 1060601,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

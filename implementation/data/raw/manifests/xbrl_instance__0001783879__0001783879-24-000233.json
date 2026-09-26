@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001783879:0001783879-24-000233",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1783879/000178387924000233/hood-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:52.869750+00:00",
+  "sha256": "b0075215eea18bdcbd974dffc94451d287f9426333f4ea5ef63af9906042e735",
+  "bytes": 1765143,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

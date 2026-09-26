@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000004457:0000950170-24-092847",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/4457/000095017024092847/uhal-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:02.791822+00:00",
+  "sha256": "52e22708cefa779c46070b1bfbe4d40ccb0ab895b68571c52896278309c45782",
+  "bytes": 4691689,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

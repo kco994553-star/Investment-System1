@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000028412:0000028412-24-000306",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/28412/000002841224000306/cma-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:04:57.949567+00:00",
+  "sha256": "47ebcb3aa982a35d8418299f379a42ae7ee01c71970b531630ce9317edb00138",
+  "bytes": 5505178,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

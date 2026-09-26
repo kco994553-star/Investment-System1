@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000317540:0000317540-24-000046",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/317540/000031754024000046/coke-20240628_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:14.303288+00:00",
+  "sha256": "2177a51b592cad0e006f04b8b2023aa005533d298cf1d8bf90e15a63b6576c3e",
+  "bytes": 2035618,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:RCM:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/rcm/prices?startDate=2019-10-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-26T03:07:24.146397+00:00",
+  "sha256": "8a264a62fc2876a6edaa4b338f86117b9cd6cc93bce13520eab8211d853ec341",
+  "bytes": 24588,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

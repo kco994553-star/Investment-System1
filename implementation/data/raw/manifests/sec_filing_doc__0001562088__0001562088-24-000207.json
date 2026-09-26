@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001562088:0001562088-24-000207",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1562088/000156208824000207/duol-20240630.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T03:08:30.890676+00:00",
+  "sha256": "83eaf73777c0cbee4d41fbbf13103f22d712316885231053f34de0b777f4b1c9",
+  "bytes": 1353971,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

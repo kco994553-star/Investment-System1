@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001570585:0001570585-24-000237",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1570585/000157058524000237/lbtya-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:45.733611+00:00",
+  "sha256": "cb4c0e069b4e4e71443bfe1ce8c3ff18d0c9c677738b32c7849d51c4159ef6ed",
+  "bytes": 3089100,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

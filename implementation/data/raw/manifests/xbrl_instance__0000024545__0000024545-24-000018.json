@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000024545:0000024545-24-000018",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/24545/000002454524000018/tap-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:04.919204+00:00",
+  "sha256": "126cd3a37f841e3a8e608d9f08d826088ad1a63bc1338e65b546ffa8594924fd",
+  "bytes": 1263352,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

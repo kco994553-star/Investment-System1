@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:SRCL",
+  "source_url": "https://api.tiingo.com/tiingo/daily/srcl/prices?startDate=2019-10-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-26T03:07:24.514021+00:00",
+  "sha256": "d7bacac306e1fce255ccc58c01df615ee4986a20d28162bd2a9db2456c74d213",
+  "bytes": 280977,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

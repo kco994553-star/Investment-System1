@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001526520:0000950170-24-091768",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1526520/000095017024091768/trip-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:43.088119+00:00",
+  "sha256": "61b027e8df4f80f819d5f6857cb9a47159766b0eb0878317d84f2f058b170a14",
+  "bytes": 2479189,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

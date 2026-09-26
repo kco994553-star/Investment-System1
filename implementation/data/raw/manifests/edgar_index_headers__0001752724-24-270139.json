@@ -1,0 +1,12 @@
+{
+  "artifact_id": "edgar_index_headers:0001752724-24-270139",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1100663/000175272424270139/0001752724-24-270139-index-headers.html",
+  "source_kind": "SEC_INDEX_HEADERS",
+  "fetched_at": "2026-09-26T03:04:28.302630+00:00",
+  "sha256": "80719d0984d6ea2b28e4aa70506ed27c24f426df007bc0a436d83d561d76d177",
+  "bytes": 3389,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

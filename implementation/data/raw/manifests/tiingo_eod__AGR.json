@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:AGR",
+  "source_url": "https://api.tiingo.com/tiingo/daily/agr/prices?startDate=2019-10-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-26T03:07:17.103810+00:00",
+  "sha256": "fc3f6f0bfea9fdce0c6842b4f06db23c97cd4c753d9daffb348fb7b8fd2251fa",
+  "bytes": 362308,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

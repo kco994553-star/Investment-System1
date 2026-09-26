@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000012208:0000012208-24-000052",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/12208/000001220824000052/bio-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:03.163355+00:00",
+  "sha256": "37b9aed2fb0ee35027171801dc5ab4db57966b30d02531ffdcef2be41c7123f8",
+  "bytes": 1725579,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001618732:0000950170-24-108159",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1618732/000095017024108159/ntnx-20240731.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T03:08:32.680040+00:00",
+  "sha256": "eb5b4bdded8bf9cbdae88a0e71ab9c8b0b6b0fa795e9658ae486bce4097d2e01",
+  "bytes": 4656695,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

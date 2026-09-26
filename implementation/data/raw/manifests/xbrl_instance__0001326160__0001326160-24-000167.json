@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001326160:0001326160-24-000167",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1326160/000132616024000167/duk-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:36.568500+00:00",
+  "sha256": "3c8413b3d38e9a62b8c92091721730b087d244a7f4d29a00e35dc85ddde77873",
+  "bytes": 10236859,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

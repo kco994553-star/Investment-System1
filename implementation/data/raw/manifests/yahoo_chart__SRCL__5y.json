@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SRCL:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/srcl/prices?startDate=2019-10-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-26T03:07:26.025817+00:00",
+  "sha256": "2d726dfd2058bae1c07ddf0902d94f90c921839f5d5c819fd81b3e0e802ba8e1",
+  "bytes": 21807,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

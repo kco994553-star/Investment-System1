@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000717605:0000950170-24-084437",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/717605/000095017024084437/hxl-20240630.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T03:08:31.496290+00:00",
+  "sha256": "7b6004a091e2fd13a3d4cdd07d50c5590bc4351bbfdfee7271c583545ad02d2b",
+  "bytes": 2307645,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

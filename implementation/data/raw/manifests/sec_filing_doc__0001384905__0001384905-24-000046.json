@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001384905:0001384905-24-000046",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1384905/000138490524000046/rng-20240630.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T03:08:33.629748+00:00",
+  "sha256": "de8baf14d10812b084f1d1057449fd0d4172b0f253941ea516ed2d47bdc9dd65",
+  "bytes": 1706047,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

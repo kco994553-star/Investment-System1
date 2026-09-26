@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:MRO:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/mro/prices?startDate=2019-10-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-26T03:07:22.418498+00:00",
+  "sha256": "6f7eea93a274a633f13e58682f5228a0f49efaa5292cfe64a191196949df9dba",
+  "bytes": 21823,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001506307:0001506307-24-000074",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1506307/000150630724000074/kmi-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:42.446809+00:00",
+  "sha256": "a46031e67a4c21b5075c772fe7cba104d656f87cdd22de3cfaec380e2a0a3a6b",
+  "bytes": 2061637,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

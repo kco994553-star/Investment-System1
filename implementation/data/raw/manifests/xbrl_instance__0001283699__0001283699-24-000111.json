@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001283699:0001283699-24-000111",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1283699/000128369924000111/tmus-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:34.921113+00:00",
+  "sha256": "5ea8fbed7ed5d04b1bb0e9bca96aea3fa24eb0e23b6f834ea278c3631eeb136c",
+  "bytes": 1584662,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

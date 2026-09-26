@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001526520:0000950170-24-091768",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1526520/000095017024091768/trip-20240630.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T03:08:32.139887+00:00",
+  "sha256": "9beb0fc9f39589a2b7e01e48707721c29e25a315ba826ce6df23c258e2800aa1",
+  "bytes": 3110319,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

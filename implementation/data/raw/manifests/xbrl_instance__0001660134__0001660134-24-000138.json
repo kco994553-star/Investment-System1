@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001660134:0001660134-24-000138",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1660134/000166013424000138/okta-20240731_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:49.259391+00:00",
+  "sha256": "4e1a8cad3840fb7f1067703d7aefd358b1750df7a929ea8c359714f5c22c69a0",
+  "bytes": 699844,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

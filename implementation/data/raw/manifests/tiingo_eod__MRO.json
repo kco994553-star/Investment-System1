@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:MRO",
+  "source_url": "https://api.tiingo.com/tiingo/daily/mro/prices?startDate=2019-10-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-26T03:07:20.906031+00:00",
+  "sha256": "8270d593a786e7e1b83206254447bfef8ff96b452e998e749f60ae5a3b078478",
+  "bytes": 327172,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

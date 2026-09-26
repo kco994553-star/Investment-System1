@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AGR:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/agr/prices?startDate=2019-10-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-26T03:07:18.617399+00:00",
+  "sha256": "62283ed53e195378e321f19538ec51b4f27d84c087460e0f1435b835d03182ff",
+  "bytes": 25079,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

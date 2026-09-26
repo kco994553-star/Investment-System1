@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001109354:0000950170-24-094832",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1109354/000095017024094832/brkr-20240630.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T03:08:32.402399+00:00",
+  "sha256": "fdcaadc8f834a86c269bb621c9ebbb8d10459ee8ea0157f99cc0b9756f5be907",
+  "bytes": 3648425,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

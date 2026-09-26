@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001561550:0001561550-24-000112",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1561550/000156155024000112/ddog-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:44.256093+00:00",
+  "sha256": "819a412db5ee283140680bf56e0c5f2c1b0de4f26573eed25d8361e9464b3665",
+  "bytes": 1154330,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001973266:0001973266-24-000021",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1973266/000197326624000021/tko-20240630x10q_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:56.725272+00:00",
+  "sha256": "725148256de6946203c3bc82d9eed3294c6b7b8c834af7b9c3190d75f7e928bf",
+  "bytes": 3728161,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000036104:0000036104-24-000052",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/36104/000003610424000052/usb-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:06:05.374852+00:00",
+  "sha256": "c708d0cb158734a075fa6ad200d5a7251f3834ca59e276bf56e8e58dc7f7f5f7",
+  "bytes": 6182350,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

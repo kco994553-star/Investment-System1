@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000896262:0000896262-24-000042",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/896262/000089626224000042/amed-20240630_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T03:05:02.173392+00:00",
+  "sha256": "73f63317e97209dabcebbf0959463ddbb435aadcb97a8380f5e353b6e1dbed6d",
+  "bytes": 846217,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
