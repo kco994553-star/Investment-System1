@@ -576,7 +576,9 @@
    "primary_document": "gral-20240624.htm",
    "artifact_id": "sec_filing_doc:0001699031:0001628280-24-030355",
    "cover_sentences": [],
-   "symbol_sentences": []
+   "symbol_sentences": [],
+   "distribution_sentences": [],
+   "text_len": 5196
   },
   {
    "form": "8-K",
@@ -585,7 +587,9 @@
    "primary_document": "d797014d8k.htm",
    "artifact_id": "sec_filing_doc:0001699031:0001193125-24-167037",
    "cover_sentences": [],
-   "symbol_sentences": []
+   "symbol_sentences": [],
+   "distribution_sentences": [],
+   "text_len": 16136
   },
   {
    "form": "8-K",
@@ -594,7 +598,9 @@
    "primary_document": "d816080d8k.htm",
    "artifact_id": "sec_filing_doc:0001699031:0001193125-24-159261",
    "cover_sentences": [],
-   "symbol_sentences": []
+   "symbol_sentences": [],
+   "distribution_sentences": [],
+   "text_len": 4510
   },
   {
    "form": "8-K/A",
@@ -603,7 +609,9 @@
    "primary_document": "d833704d8ka.htm",
    "artifact_id": "sec_filing_doc:0001699031:0001193125-24-155278",
    "cover_sentences": [],
-   "symbol_sentences": []
+   "symbol_sentences": [],
+   "distribution_sentences": [],
+   "text_len": 3814
   },
   {
    "form": "8-K",
@@ -612,7 +620,9 @@
    "primary_document": "d824491d8k.htm",
    "artifact_id": "sec_filing_doc:0001699031:0001193125-24-153238",
    "cover_sentences": [],
-   "symbol_sentences": []
+   "symbol_sentences": [],
+   "distribution_sentences": [],
+   "text_len": 4641
   },
   {
    "form": "10-12B/A",
@@ -621,7 +631,9 @@
    "primary_document": "d556103d1012ba.htm",
    "artifact_id": "sec_filing_doc:0001699031:0001193125-24-152397",
    "cover_sentences": [],
-   "symbol_sentences": []
+   "symbol_sentences": [],
+   "distribution_sentences": [],
+   "text_len": 10294
   }
  ],
  "note": "Diagnostic only. POST_AS_OF_FILING rows are investigation evidence and are never used as the as_of share count (user decision 2026-09-26)."
