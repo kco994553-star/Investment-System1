@@ -1739,6 +1739,29 @@ def test_run44_rprx_paired_units_together_with_the_related_wording(tmp_path):
     assert ev["status"] == "ECONOMIC_EQUIVALENT_DETERMINED" and mcap == 400 * 10.0
 
 
+def test_run45_rprx_one_for_one_with_extraction_space_proves_exchange_ratio(tmp_path):
+    """Run #45: the stored RPRX 10-K text reads 'one -for-one' (an inline tag split the word). The ratio claim must
+    still be proven from that verbatim quote; unrelated wording still does not prove a ratio."""
+    chain = _mod("chain_rprx45", "run_top500_gate_chain.py")
+    import re
+    quote = ("Our outstanding Class B ordinary shares are, however, considered potentially dilutive shares of Class A "
+             "ordinary shares because Class B ordinary shares, together with the related RP Holdings Class B Interests, "
+             "are exchangeable into Class A ordinary shares on a one -for-one basis.")
+    assert re.search(chain.CLAIM_PATTERNS["exchange_ratio"], quote, re.I)
+    assert re.search(chain.CLAIM_PATTERNS["pairing"], quote, re.I)
+    assert not re.search(chain.CLAIM_PATTERNS["exchange_ratio"], "exchangeable into Class A ordinary shares at a ratio "
+                         "determined by the board", re.I)
+    assert not re.search(chain.CLAIM_PATTERNS["exchange_ratio"], "one for two basis", re.I)
+    store, cik, ov, det = _class_econ_store(tmp_path)
+    d2 = json.loads(json.dumps(det))
+    d2["classes"]["CommonClassBMember"]["citations"] = [{
+        "artifact_id": f"sec_filing_doc:{cik}:0001234567-24-000009", "quote": quote, "supports": ["pairing", "exchange_ratio"]}]
+    d2["classes"]["CommonClassBMember"]["paired_instrument"] = "RP Holdings Class B Interest"
+    store.put(f"sec_filing_doc:{cik}:0001234567-24-000009", ("<p>" + quote + "</p>").encode(), "u", "SEC", "text/html", "t", 200)
+    mcap, ev = chain.verify_class_economics(store, cik, ov, d2, amc_dt())
+    assert ev["status"] == "ECONOMIC_EQUIVALENT_DETERMINED" and mcap == 400 * 10.0
+
+
 def test_run44_committed_2024_09_30_class_economics_all_verify_against_stored_evidence():
     """Every issuer in the committed 2024-09-30 class_economics file must verify (quotes found verbatim in the
     referenced filing document, filed on or before 2024-09-30) using the actual fetched evidence, when present."""

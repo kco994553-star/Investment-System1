@@ -728,7 +728,9 @@ def equal_economics_upper_bound(override: dict) -> float | None:
 
 
 # Claims a verbatim filing quote must support before an unlisted class counts in listed-class equivalents.
-RATIO_ONE = (r"one[- ]for[- ]one|1:1|1-for-1|one-to-one|on a one for one basis|share[- ]for[- ]share|into one share of|"
+# 'one -for-one': HTML-to-text extraction leaves a space where an inline tag split the hyphenated word (RPRX 10-K);
+# only whitespace next to the hyphen is tolerated, the wording itself is unchanged
+RATIO_ONE = (r"one ?[- ] ?for ?[- ] ?one|1:1|1 ?- ?for ?- ?1|one-to-one|on a one for one basis|share[- ]for[- ]share|into one share of|"
              r"for one share of|an equal number of")
 CLAIM_PATTERNS = {"conversion_ratio": RATIO_ONE, "exchange_ratio": RATIO_ONE,
                   # 'one share of our Class B', 'an equal number of shares of TKO Class B', 'a corresponding number of shares of our Class D'
