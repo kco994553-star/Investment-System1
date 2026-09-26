@@ -1,6 +1,7 @@
 """C-21 runner hardening + offline gate chain. HTTP stubbed; proves wiring only, not data."""
 import importlib.util
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -1546,3 +1547,28 @@ def test_run35_unit_only_ratio_quote_needs_a_pairing_quote_naming_unit_and_class
     other = json.loads(json.dumps(d))
     other["classes"]["CommonClassBMember"]["paired_instrument"] = "OpCo Unit"
     assert chain.verify_class_economics(store, cik, ov, other, amc_dt())[0] is None
+
+
+def test_run37_official_pipeline_rebuilds_snapshot_only_from_passing_gate_evidence(tmp_path, monkeypatch):
+    op = _mod("op", "official_pipeline.py")
+    monkeypatch.setattr(op, "GE", tmp_path)
+    cands = [{"company_id": f"c{i}", "ticker": f"T{i}", "cik": str(i).zfill(10), "shares": 1000.0 - i, "price": 10.0,
+              "shares_available_at": "2024-11-01T00:00:00+00:00", "price_observed_at": "2024-12-30T21:00:00+00:00",
+              "shares_basis": "COMPANYFACTS_PIT", "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR", "gate_mcap": (1000.0 - i) * 10}
+             for i in range(5)]
+    ev = {"official_top500_declared": True, "gate_snapshot_consistency": {"passed": True}, "official_snapshot_candidates": cands,
+          "top500": [{"company_id": f"c{i}"} for i in range(5)]}
+    (tmp_path / "gate_chain_2024-12-31_real_gha.json").write_text(json.dumps(ev))
+    snap, st = op.load_official("2024-12-31")
+    assert st["status"] == "OFFICIAL" and list(snap.ids()) == [f"c{i}" for i in range(5)] and snap.policy_status.value == "OFFICIAL"
+    bad = {**ev, "official_top500_declared": False, "official_blockers": ["PROMOTION_GATE_V2_FAILED"]}
+    (tmp_path / "gate_chain_2024-09-30_real_gha.json").write_text(json.dumps(bad))
+    assert op.load_official("2024-09-30")[1]["status"] == "NOT_OFFICIAL"
+    swapped = {**ev, "top500": [{"company_id": f"c{i}"} for i in (1, 0, 2, 3, 4)]}
+    (tmp_path / "gate_chain_2024-06-30_real_gha.json").write_text(json.dumps(swapped))
+    assert op.load_official("2024-06-30")[1]["status"] == "REBUILT_SNAPSHOT_DIFFERS_FROM_GATE"
+    assert op.load_official("2024-03-31")[1]["status"] == "NO_GATE_EVIDENCE"
+    monkeypatch.setattr(sys, "argv", ["x", "--store", str(tmp_path), "--dates", "2024-09-30,2024-12-31", "--final-horizon", "2025-03-31"])
+    op.main()
+    out = json.loads((tmp_path / "official_pipeline_2024-09-30_2024-12-31.json").read_text())
+    assert out["status"] == "BLOCKED_FEWER_THAN_3_DATES"

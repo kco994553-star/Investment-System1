@@ -21,6 +21,14 @@ on:
         description: "run whose c21-raw-store-<id> artifact seeds the store when no cache exists"
         default: "36117017112"
         required: true
+      walk_forward_dates:
+        description: "optional: comma-separated as_of dates (each with its own passing gate run) for the Official pipeline"
+        default: ""
+        required: false
+      final_horizon:
+        description: "outcome date for the last walk-forward as_of"
+        default: "2025-03-31"
+        required: false
 permissions:
   contents: write
   actions: read
@@ -178,6 +186,9 @@ jobs:
           REF=""; [ -f "$R" ] && REF="--sufficiency-reference $R"
           python tools/run_top500_gate_chain.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA $REF \
             --out "reports/gate_evidence/gate_chain_${{ inputs.as_of }}_real_gha.json"
+      - name: Official pipeline (only if every date's gate evidence declares Official and passes consistency)
+        if: inputs.walk_forward_dates != ''
+        run: python tools/official_pipeline.py --store data/raw --dates "${{ inputs.walk_forward_dates }}" --final-horizon "${{ inputs.final_horizon }}"
       - name: Upload raw store + evidence artifact
         if: always() && steps.store2.outputs.blobs != '' && steps.store2.outputs.blobs != '0'
         uses: actions/upload-artifact@v4

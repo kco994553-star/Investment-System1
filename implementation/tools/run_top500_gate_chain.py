@@ -959,6 +959,11 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "class_economics_verification": class_econ, "price_basis_exceptions": price_exceptions,
         "share_scale_checks": share_scale, "stale_share_facts_excluded": stale_excluded,
         "gate_snapshot_consistency": consistency,
+        # the audited candidate representation, kept only when Official is declared, so later steps rebuild the SAME
+        # snapshot with universe.sources.official_mcap500_snapshot (no re-derivation from companyfacts/adjclose)
+        "official_snapshot_candidates": [
+            {k: (v.isoformat() if hasattr(v, "isoformat") else v) for k, v in cnd.items()}
+            for cnd in candidates if cnd["company_id"] in {r["company_id"] for r in top}] if not official_blockers else None,
         "unrankable_issuers": unrankable,
         "audit": audit, "rankable": audit["rankable"], "cutoff_500_mcap": cutoff,
         "top500": top_rows, "top500_quality_flag_counts": flag_counts,
