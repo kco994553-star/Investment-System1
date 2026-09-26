@@ -1,0 +1,70 @@
+{
+ "kind": "OFFICIAL_PIPELINE_RUN",
+ "dates": [
+  "2024-09-30"
+ ],
+ "final_horizon": "2024-12-31",
+ "per_date": [
+  {
+   "as_of": "2024-09-30",
+   "status": "OFFICIAL",
+   "universe_id": "uni_f7f81f096191",
+   "n_members": 500,
+   "cutoff_mcap": 15547825109.36499,
+   "gate_evidence": "gate_chain_2024-09-30_real_gha.json"
+  }
+ ],
+ "real_data_verified": false,
+ "single_as_of": [
+  {
+   "as_of": "2024-09-30T00:00:00+00:00",
+   "horizon_as_of": "2024-12-31T00:00:00+00:00",
+   "universe_id": "uni_f7f81f096191",
+   "universe_kind": "US_MCAP_TOP500_OFFICIAL",
+   "official_universe": true,
+   "universe_policy": "OFFICIAL",
+   "membership_basis": "DERIVED_AT_AS_OF",
+   "survivorship_risk": false,
+   "n_selected": 469,
+   "equal_weight_realized": -9.362651565546118e-05,
+   "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+   "rule_status": "PROVISIONAL_RESEARCH",
+   "n_universe": 500,
+   "n_investable": 495,
+   "n_missing": 5,
+   "n_name_errors": 0,
+   "name_error_sample": {},
+   "n_linked": 469
+  }
+ ],
+ "benchmark_500": {
+  "kind": "REAL_500_COMPANY_BENCHMARK",
+  "per_date_single_as_of": [
+   {
+    "as_of": "2024-09-30",
+    "wall_s": 25.064,
+    "peak_rss_mb": 9549.1
+   }
+  ],
+  "median_wall_s": 25.064,
+  "max_peak_rss_mb": 9549.1,
+  "name_errors_total": 0,
+  "network": {
+   "n_ingestion_run_reports": 202,
+   "request_status_counts": {
+    "SKIPPED_ALREADY_PRESENT": 149182,
+    "HTTP_404": 1786,
+    "NO_PERIODIC_FILING_BEFORE_AS_OF": 1448,
+    "HTTP_429": 3,
+    "OK": 5304,
+    "ERROR_IncompleteRead": 1,
+    "ERROR_URLError": 4,
+    "EGRESS_BLOCKED": 793,
+    "HTTP_401": 4
+   }
+  },
+  "note": "Real raw store (network-ingested by the c21 workflow); compare with tools/bench_universe_500.py (SYNTHETIC)."
+ },
+ "walk_forward_status": "BLOCKED_FEWER_THAN_3_DATES",
+ "status": "RUN"
+}
