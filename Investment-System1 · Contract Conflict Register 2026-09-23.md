@@ -413,15 +413,18 @@ will depend on ... the Record Date'). The exact count first appears in filings a
 Decision pending: keep as blocker / allow a filed pro-forma count as a separate share basis / a new eligibility rule
 for very recent spin-offs. Until decided: 2024-06-30 not Official.
 
-## C-36 Russell 1000 reference mapping gaps -> Official 2024-12-31 / 2024-09-30 SUSPENDED (Track A, 2026-09-26 16:35 KST)
+## C-36 Russell 1000 reference mapping gaps -> PARTIALLY RESOLVED (Track A, 2026-09-26 19:07 KST)
 Evidence (run #53 N-PORT cross-check, calibration outliers): on every as_of the reference resolved 'DUN & BRADSTREET
 HOLDINGS, INC.' (CUSIP 26484T) to Moody's CIK 0001059556 and 'F.N.B. CORPORATION' to V.F.'s CIK 0000103379; 6-8 equity
 holdings per date stayed unresolved (BLUE OWL CAPITAL INC. 5 name candidates; SKECHERS U.S.A.; LIBERTY MEDIA CORP -
 FORMULA ONE GROUP x2; U.S. BANCORP dead-namesake match; escrow ESC GCI LIBERTY) and the Sufficiency gate never checked
 unresolved holdings. D&B, F.N.B., Blue Owl, Skechers and Liberty Media are NOT in the candidate pool on any date, so the
 'missing_from_pool: []' behind the 2024-12-31 and 2024-09-30 Promotion Gate v2 PASS was not established.
-Decision (fail-closed, no user policy change): the Official declarations for 2024-12-31 and 2024-09-30 are SUSPENDED until
-re-run; single_as_of / benchmark results derived from them are superseded. Fixes: (1) a CIK may not absorb holdings of
+Decision (fail-closed, no user policy change): corrected run #57 makes the 2024-12-31 gate eligible for restoration.
+Run #59 rebuilt the Official snapshot from that exact Gate evidence and passed the identity/membership/order/mcap/cutoff/
+provenance checks, so 2024-12-31 Official is RESTORED. Run #60 independently passed the same corrected chain and rebuilt
+2024-09-30 Official, so that date is also RESTORED. Pre-C-36 single_as_of / benchmark results remain superseded. Fixes:
+(1) a CIK may not absorb holdings of
 different CUSIP issuer numbers (strongest match keeps it, a tie keeps none, the loser retries without it); (2) historical
 names looked up with both keys; (3) ambiguous/unmatched holdings identified only by the candidate's own 13G/13D filed <=
 as_of printing the CUSIP (+ PIT registrant); (4) Sufficiency fails on UNRESOLVED_REFERENCE_HOLDINGS,
@@ -429,3 +432,31 @@ REFERENCE_CIK_COLLISION_DISTINCT_ISSUERS or missing member CUSIPs (escrow CUSIPs
 Open design note: Liberty Media tracking stocks (FWONA/K, LSXMA/K, BATRA/K) share one CIK/issuer number; the current
 company model (CIK = company, classes summed only with proven economics) applies -- whether tracking groups should be
 separate companies is a separate user decision if it blocks.
+
+Run #57 evidence (id 36229163158; commit 195c5da): corrected Russell reference 991 members; missing 0;
+present-not-rankable 0; non-escrow unresolved 0; collisions 0; missing member CUSIPs 0. Sufficiency PASS; Promotion Gate
+v2 PASS; consistency 500/500 PASS; Official blockers 0; cutoff $15.422B. D&B is the live PIT registrant 0001799208 over
+legacy D&B CIK 0001115222. Formula One CUSIPs resolve to current Liberty CIK 0001560385 over legacy CIK 0000869614 where
+applicable. OWL Class C uses only cited 1:1 paired-unit economics; Class D stays unvalued. Run #59 (id 36233121639,
+evidence commit 1832747) preserved Gate universe `uni_cf6aa3403869` in the Official snapshot: 500/500 identical members,
+order and market caps; cutoff $15.422B; ALGN rank 500; FNF absent; audited share/price provenance preserved.
+
+Run #60 evidence (id 36233560867; commit ab72939): corrected 2024-09-30 Russell reference 994 members; missing 0;
+present-not-rankable 0; non-escrow unresolved 0; duplicate CIK membership 0; complete member CUSIPs. Sufficiency and
+Promotion Gate v2 PASS; Gate/Official ID `uni_e334f94a73c3`; 500/500 membership/order/mcap/provenance PASS; cutoff
+$15.574B; ENPH rank 500. 2024-09-30 Official RESTORED.
+
+Run #61 evidence (id 36234273515; commit 2e04c1b): corrected 2024-06-30 reference has 987 resolved members and complete
+member CUSIPs, but fails on GRAL/WRK present-not-rankable and two non-escrow unresolved holdings: ARDAGH GROUP SA
+(L0223L101) and LIBERTY SIRIUS XM (531229813). 2024-06-30 remains NOT OFFICIAL. C-36 remains open for the Ardagh identity
+gap and the Liberty tracking-stock conflict recorded separately in C-37; the previously known GRAL/WRK blockers are C-35/C-34.
+
+## C-37 Liberty SiriusXM tracking-stock identity/economics at 2024-06-30 -> OPEN-BLOCKING, USER DECISION (Track A, 2026-09-26 19:07 KST)
+Run #61's dated Russell N-PORT reference contains `LIBERTY SIRIUS XM`, CUSIP 531229813. The historical-name candidate
+CIK 0002003397 is not a PIT registrant at 2024-06-30. SEC holding evidence identifies the CUSIP as Liberty Media's
+Liberty SiriusXM Series A tracking stock, while the then-current issuer also had Formula One and Braves tracking groups.
+The current Universe model is company/CIK-level and only combines classes with proven common economics; it cannot assume
+that different tracking groups have the same economic rights or decide whether each group is a separate Universe company.
+Because the unresolved holding now makes the independent Sufficiency reference fail, this affects possible Official
+membership and requires the user's requested policy decision. No CIK remap, class aggregation, or new eligibility rule
+was introduced. Until resolved, 2024-06-30 stays NOT OFFICIAL and walk-forward stays blocked.
