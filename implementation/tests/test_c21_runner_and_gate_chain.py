@@ -1374,3 +1374,23 @@ def test_run33_single_class_stale_uses_fresh_cover_count_unless_it_fails_the_sca
     store.put(aid, _instance([(None, 101_000_000_000_000)], [(None, "SGL")]), "u", "SEC", "application/xml", "t", 200)
     ov2, un2 = chain.cover_mcap_overrides(store, {"s": {"cik": cik, "yahoo": "SGL"}}, amc_dt())
     assert ov2 == {} and un2 == {"s": "COVER_SHARES_FAIL_SCALE_CHECK"}
+
+
+def test_run34_stale_fact_with_unresolved_cover_is_excluded_not_ranked(tmp_path):
+    chain = _mod("chain_stalex", "run_top500_gate_chain.py")
+    amc = _mod("amc_stalex", "audit_mcap_store.py")
+    store = RawDatasetStore(tmp_path)
+    cik = "0001156375"
+    _put_name(store, 1156375, "CME", 66_643_583, 230.0)  # companyfacts fact filed 2024-11-01 ...
+    store.put(f"submissions:{cik}", json.dumps({"filings": {"recent": {"form": ["10-Q"], "filingDate": ["2024-11-08"],
+              "accessionNumber": ["0001156375-24-000200"], "primaryDocument": ["q.htm"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    listings = {"c": {"cik": cik, "yahoo": "CME"}}
+    ov = {}
+    ex = chain.exclude_stale_unresolved(store, listings, ov, amc_dt())  # ... but the latest 10-Q was filed 2024-11-08
+    assert ex["CME"]["status"] == "STALE_SHARE_FACT_UNRESOLVED" and ov["c"]["exclude"] is True
+    assert amc.audit(store, listings, amc_dt(), mcap_override=ov)["rankable"] == 0
+    fresh = RawDatasetStore(tmp_path / "f")
+    _put_name(fresh, 1156375, "CME", 360_000_000, 230.0)
+    fresh.put(f"submissions:{cik}", json.dumps({"filings": {"recent": {"form": ["10-Q"], "filingDate": ["2024-11-01"],
+              "accessionNumber": ["a"], "primaryDocument": ["q.htm"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    assert chain.exclude_stale_unresolved(fresh, listings, {}, amc_dt()) == {}

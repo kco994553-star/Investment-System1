@@ -95,30 +95,50 @@ def companyfacts_shares(cf: dict, as_of: datetime) -> dict:
 def cover_sentences(text: str) -> list[str]:
     """Sentences stating a number of shares outstanding (cover page wording), first 12 matches."""
     pat = re.compile(r"[^.]{0,300}\b(shares?|units?)\b[^.]{0,200}\boutstanding\b[^.]{0,200}", re.I)
-    return [m.group(0).strip()[:600] for m in pat.finditer(text[:60000])][:12]
+    return [m.group(0).strip()[:600] for m in pat.finditer(text)][:20]
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
     ap.add_argument("--as-of", default="2024-12-31")
-    ap.add_argument("--cik", required=True)
+    ap.add_argument("--cik", action="append", default=[], help="CIK to diagnose (repeatable)")
+    ap.add_argument("--cover-unresolved", action="store_true",
+                    help="also diagnose every eligible issuer the gate chain's cover route leaves unresolved")
     ap.add_argument("--no-fetch", action="store_true")
     a = ap.parse_args()
     frd, frc = _load("fetch_real_data"), _load("fetch_class_rights_evidence")
     store = RawDatasetStore(a.store)
     d = datetime.fromisoformat(a.as_of + "T00:00:00+00:00")
-    cik = str(int(a.cik)).zfill(10)
+    ciks = [str(int(c)).zfill(10) for c in a.cik]
+    if a.cover_unresolved:
+        chain = _load("run_top500_gate_chain")
+        rd = lambda p: json.loads(p.read_text(encoding="utf-8")) if p and p.exists() else None  # noqa: E731
+        base = rd(ROOT / "reports" / "us_ingested_facts_listings.json") or {}
+        base.update(rd(GE / f"russell1000_extra_listings_{a.as_of}.json") or {})
+        rows, _ = chain.extend_listings(store, base, rd(GE / f"missing_large_cap_priority_plan_{a.as_of}.json"),
+                                        chain.verify_cik_candidates(store, rd(GE / f"delisted_cik_candidates_{a.as_of}.json")))
+        listings, _ = chain.company_level_listings(store, rows)
+        listings, _ = chain.eligibility_filter(store, listings, d)
+        _, unresolved = chain.cover_mcap_overrides(store, listings, d)
+        ciks += [str(listings[cid]["cik"]).zfill(10) for cid in unresolved if str(listings[cid].get("cik") or "").isdigit()]
+    for cik in sorted(set(ciks)):
+        diagnose(store, frd, frc, cik, d, a.as_of, a.no_fetch)
+    if not a.no_fetch:
+        frd.write_store_index(store)
+
+
+def diagnose(store, frd, frc, cik: str, d: datetime, as_of: str, no_fetch: bool) -> None:
     sub = load_submissions_merged(store, cik, d)[0] or {}
     f = select_filing(sub, d)
     aid = f"xbrl_instance:{cik}:{f['accn']}" if f else None
-    rep = {"kind": "SHARE_COUNT_DIAGNOSTIC", "as_of": a.as_of, "cik": cik, "entity_name": sub.get("name"),
+    rep = {"kind": "SHARE_COUNT_DIAGNOSTIC", "as_of": as_of, "cik": cik, "entity_name": sub.get("name"),
            "tickers_current": sub.get("tickers"), "exchanges_current": sub.get("exchanges"), "sic": sub.get("sic"),
            "sic_description": sub.get("sicDescription"), "entity_type": sub.get("entityType"),
            "cover_filing": f, "cover_instance": aid}
     rec = (sub.get("filings") or {}).get("recent") or {}
     rep["filings_on_or_before_as_of"] = [{"form": fm, "filed": dt} for fm, dt in zip(rec.get("form") or [], rec.get("filingDate") or [])
-                                         if str(dt) <= a.as_of][:25]
+                                         if str(dt) <= as_of][:25]
     if aid and store.has(aid):
         raw = store.get_bytes(aid)
         rep["cover_facts"] = cover_facts(raw)
@@ -132,7 +152,7 @@ def main() -> None:
     docs = []
     for lf in frc.latest_forms(sub, d):
         did = frc.doc_id(cik, lf["accn"])
-        if not a.no_fetch:
+        if not no_fetch:
             frd._fetch_one(store, did, frc.ARCHIVE_URL.format(cik=int(cik), accn=lf["accn"].replace("-", ""), doc=lf["primary_document"]),
                            "SEC_FILING_DOCUMENT", frd.UA, log, False)
             frd._throttle(log, 0.15)
@@ -141,10 +161,8 @@ def main() -> None:
     rep["documents"] = docs
     rep["note"] = ("Diagnostic only. POST_AS_OF_FILING rows are investigation evidence and are never used as the as_of "
                    "share count (user decision 2026-09-26).")
-    (GE / f"share_count_diagnostic_{cik}_{a.as_of}.json").write_text(json.dumps(rep, indent=1, default=str) + "\n", encoding="utf-8")
-    if not a.no_fetch:
-        frd.write_store_index(store)
-    print(json.dumps({k: rep.get(k) for k in ("entity_name", "cover_filing", "pit_shares", "class_symbols")}, indent=1, default=str)[:3000])
+    (GE / f"share_count_diagnostic_{cik}_{as_of}.json").write_text(json.dumps(rep, indent=1, default=str) + "\n", encoding="utf-8")
+    print(json.dumps({k: rep.get(k) for k in ("entity_name", "cover_filing", "pit_shares", "class_symbols")}, indent=1, default=str)[:1500])
 
 
 if __name__ == "__main__":

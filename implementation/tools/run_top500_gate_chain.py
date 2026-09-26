@@ -273,6 +273,27 @@ def share_scale_overrides(store: RawDatasetStore, listings: dict, overrides: dic
     return ev
 
 
+def exclude_stale_unresolved(store: RawDatasetStore, listings: dict, overrides: dict, as_of) -> dict:
+    """An issuer still priced from companyfacts although that share fact is stale (not filed with the latest 10-K/10-Q
+    <= as_of: per-class counts were dropped) and the cover route could not resolve it: its count may be one class only,
+    so it is EXCLUDED (not rankable) instead of ranked on a possibly wrong number."""
+    out = {}
+    for cid, m in listings.items():
+        if cid in overrides:
+            continue
+        c = str(m.get("cik") or "")
+        if not c.isdigit():
+            continue
+        c = c.zfill(10)
+        cf = load_companyfacts(store, c)
+        sh = pit_shares(cf, as_of) if cf is not None else None
+        if sh and sh["status"] == "OK" and share_fact_stale(store, c, sh, as_of):
+            rec = {"cik": c, "shares": sh["shares"], "fact_filed": str(sh["available_at"])[:10], "status": "STALE_SHARE_FACT_UNRESOLVED"}
+            overrides[cid] = {"mcap": None, "exclude": True, "status": rec["status"], "source": None, "classes": [], "stale": rec}
+            out[m.get("yahoo")] = rec
+    return out
+
+
 def cover_text_symbol_member(text: str, cover: dict) -> tuple[str | None, str | None]:
     """Listed member from the cover-page TEXT of the same filing when XBRL tags one undimensioned TradingSymbol for several
     classes and the Security12bTitle names no class letter (IAC: title 'Common stock', members CommonClassA/B). The title's
@@ -603,6 +624,8 @@ def apply_nport_reported_prices(store: RawDatasetStore, overrides: dict, listing
             sh = shr["shares"] if shr and shr["status"] == "OK" else None
             if not sh or sh <= 0:
                 fails.append("NO_PIT_SHARES")
+            elif share_fact_stale(store, cik, shr, as_of):
+                fails.append("STALE_SHARE_FACT")
         rec = {"cik": cik, "price_type": npr.PRICE_TYPE, "valuation_date": (evidence or {}).get("valuation_date"),
                "market_close_basis_of_other_issuers": "last close on/before as_of (2024-12-30 session)",
                "status": "APPLIED" if not fails else "NOT_APPLIED", "failures": fails}
@@ -634,6 +657,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     class_econ = apply_class_economics(store, overrides, listings, class_economics, d)
     share_scale = share_scale_overrides(store, listings, overrides, d, chart_range)
     nport_px = apply_nport_reported_prices(store, overrides, listings, nport_exception, nport_prices, d, chart_range)
+    stale_excluded = exclude_stale_unresolved(store, listings, overrides, d)
     price_exceptions = {"price_type": "NPORT_REPORTED_VALUE", "issuers": nport_px,
                         "note": ("Valued at the SEC N-PORT reported value per share on 2024-12-31 (filed after as_of), not a market "
                                  "close; all other issuers use their last close on/before as_of (2024-12-30 session). "
@@ -720,7 +744,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     for cid, m in listings.items():
         if cid in overrides and overrides[cid].get("exclude"):
             unrankable[m.get("yahoo")] = {"reason": overrides[cid]["status"], "cik": m.get("cik"),
-                                          "share_scale": overrides[cid].get("share_scale")}
+                                          "share_scale": overrides[cid].get("share_scale"), "stale": overrides[cid].get("stale")}
             continue
         if cid in overrides:
             continue
@@ -747,7 +771,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "cover_unresolved": {listings[c].get("yahoo"): v for c, v in cover_unresolved.items()},
         "lower_bound_issuers_outside_top500": lb_outside, "lower_bound_settled_outside_by_upper_bound": lb_settled,
         "class_economics_verification": class_econ, "price_basis_exceptions": price_exceptions,
-        "share_scale_checks": share_scale,
+        "share_scale_checks": share_scale, "stale_share_facts_excluded": stale_excluded,
         "unrankable_issuers": unrankable,
         "audit": audit, "rankable": audit["rankable"], "cutoff_500_mcap": cutoff,
         "top500": top_rows, "top500_quality_flag_counts": flag_counts,

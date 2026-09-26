@@ -151,9 +151,9 @@ jobs:
       - name: N-PORT reported value per share for the user-approved exception issuers only (PINC, WOLF); CUSIP attestation
         if: inputs.skip_fetch != 'true'
         run: python tools/nport_reported_prices.py --store data/raw --as-of "${{ inputs.as_of }}"
-      - name: Share-count diagnostic for PPLI (investigation only; post-as_of facts reported, never applied)
+      - name: Share-count diagnostics for PPLI and every cover-route-unresolved issuer (investigation only; post-as_of facts never applied)
         if: inputs.skip_fetch != 'true'
-        run: python tools/share_count_diagnostic.py --store data/raw --as-of "${{ inputs.as_of }}" --cik 0001800227
+        run: python tools/share_count_diagnostic.py --store data/raw --as-of "${{ inputs.as_of }}" --cik 0001800227 --cover-unresolved
       - name: Filing documents for issuers whose share count fails the scale cross-check (read by the gate chain)
         if: inputs.skip_fetch != 'true'
         run: |
