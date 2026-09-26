@@ -17,8 +17,8 @@ REAL-DATA -> complete PIT pool -> Official snapshot [2024-12-31 DONE] -> real si
 - gate_snapshot_consistency PASS: official_mcap500_snapshot_from_store(gate_candidates) = gate top 500 (members, order, mcap).
 - rankable 982, #500 cutoff $15.338B (TPR); #1 AAPL $3.81T; total $53.97T.
 - share basis of the 500: companyfacts 439, cover class sum lower bound 44 (membership exact, rank lower bound), cover class
-  sum 8, economic equivalent 5 (H, RKT, TKO, TPG, DKS, RYAN*), cover-text confirmed 3, cover-text single count 1 (MTD).
-  (*RYAN is economic-equivalent too; counts per the run's consistency report.)
+  sum 8, economic equivalent 5 (RKT, TKO, TPG, DKS, RYAN; H $15.19B is economic-equivalent too but below the cutoff),
+  cover-text confirmed 3, cover-text single count 1 (MTD).
 - price basis: close x post-as_of split factor for all 500; approved NPORT_REPORTED_VALUE exception (PINC, WOLF only, 2024-12-31
   only) is outside the top 500 and cannot enter the snapshot (valued after the as_of cut).
 - Reviewed filing evidence (chain re-verifies every quote verbatim, same CIK, filed <= as_of): class_economics_2024-12-31.json
