@@ -1,8 +1,8 @@
 {
   "kind": "RAW_DATASET_STORE_INDEX",
   "store_dir": "data/raw",
-  "n_artifacts": 6296,
-  "n_blobs_on_disk": 6296,
+  "n_artifacts": 6307,
+  "n_blobs_on_disk": 6307,
   "artifacts": [
     {
       "artifact_id": "companyfacts:0000001800",
@@ -10715,6 +10715,78 @@
       "http_status": 200
     },
     {
+      "artifact_id": "edgar_index_headers:0001752724-24-194911",
+      "source_kind": "SEC_INDEX_HEADERS",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36405/000175272424194911/0001752724-24-194911-index-headers.html",
+      "sha256": "595ade80e251b95221889c0892cd24e3ae77a4a02a6505857be8b3861de05dca",
+      "bytes": 5413,
+      "fetched_at": "2026-09-26T07:03:18.269655+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-24-194928",
+      "source_kind": "SEC_INDEX_HEADERS",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36405/000175272424194928/0001752724-24-194928-index-headers.html",
+      "sha256": "f41f6528142cfb9e9c0ca1637967266dc646cac25e21e82f6be13a98286729bd",
+      "bytes": 4733,
+      "fetched_at": "2026-09-26T07:03:17.929807+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-24-194935",
+      "source_kind": "SEC_INDEX_HEADERS",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36405/000175272424194935/0001752724-24-194935-index-headers.html",
+      "sha256": "aae3d6eb08aed13f5193ac0f5a095c63fce14788c4649558909dee6fdd7a6b30",
+      "bytes": 5407,
+      "fetched_at": "2026-09-26T07:03:17.344385+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-24-194937",
+      "source_kind": "SEC_INDEX_HEADERS",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36405/000175272424194937/0001752724-24-194937-index-headers.html",
+      "sha256": "de65b6a0beb88f24144648e2bbff169f1cb046e854235505b60a66ea4774d149",
+      "bytes": 4751,
+      "fetched_at": "2026-09-26T07:03:17.629367+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-24-194948",
+      "source_kind": "SEC_INDEX_HEADERS",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36405/000175272424194948/0001752724-24-194948-index-headers.html",
+      "sha256": "e883de02443368d6ec5ef99253eb371ceea32e4285c2b6115a2d6d4b565f4c25",
+      "bytes": 4431,
+      "fetched_at": "2026-09-26T07:03:17.046946+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-24-194955",
+      "source_kind": "SEC_INDEX_HEADERS",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36405/000175272424194955/0001752724-24-194955-index-headers.html",
+      "sha256": "e729f8e87576d1968789ff85695d6b734611b29d70a0043b33530cf2ff6a07da",
+      "bytes": 5059,
+      "fetched_at": "2026-09-26T07:03:16.733109+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-24-194962",
+      "source_kind": "SEC_INDEX_HEADERS",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36405/000175272424194962/0001752724-24-194962-index-headers.html",
+      "sha256": "2e28c01c9c6c6e1f6f7be5a49b83c9a80e83900366dd24517203e5a92e2a6bff",
+      "bytes": 4753,
+      "fetched_at": "2026-09-26T07:03:16.361965+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001752724-24-194966",
+      "source_kind": "SEC_INDEX_HEADERS",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36405/000175272424194966/0001752724-24-194966-index-headers.html",
+      "sha256": "c22de71be813e7f00d5b795a13792463968e0629a47e3f3cd39fd7b777604532",
+      "bytes": 5063,
+      "fetched_at": "2026-09-26T07:03:16.069511+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "edgar_index_headers:0001752724-24-268869",
       "source_kind": "SEC_INDEX_HEADERS",
       "source_url": "https://www.sec.gov/Archives/edgar/data/1100663/000175272424268869/0001752724-24-268869-index-headers.html",
@@ -11963,6 +12035,24 @@
       "sha256": "fba55b378e5ede102ba5543fd3420f5a7da4c1aa5ded16c1a1facabcaa061e81",
       "bytes": 911916,
       "fetched_at": "2026-09-26T05:40:52.864369+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "nport_xml:0001752724-24-194289",
+      "source_kind": "SEC_NPORT_XML",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1100663/000175272424194289/primary_doc.xml",
+      "sha256": "90f811e92de7400b7f97badf4db3a635d6053c5b9de304a34e271b09508249d2",
+      "bytes": 512150,
+      "fetched_at": "2026-09-26T07:03:18.848160+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "nport_xml:0001752724-24-194911",
+      "source_kind": "SEC_NPORT_XML",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36405/000175272424194911/primary_doc.xml",
+      "sha256": "7d72667e02dc97bbb819728c12f50afc97adcf3d284af791cdf35f8e96f6014d",
+      "bytes": 3320019,
+      "fetched_at": "2026-09-26T07:03:18.629309+00:00",
       "http_status": 200
     },
     {
@@ -14294,6 +14384,15 @@
       "sha256": "d5ce8ae305b8eb52356b2a1d06bb3b517a787eda374388dc8ab1857389cfd02b",
       "bytes": 138881,
       "fetched_at": "2026-09-25T12:25:27.842275+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "submissions:0000036405",
+      "source_kind": "SEC_SUBMISSIONS",
+      "source_url": "https://data.sec.gov/submissions/CIK0000036405.json",
+      "sha256": "d4dd740e24f358ac02892098c91c6ed22320ecf548f22e8c981d87c31e528fce",
+      "bytes": 180672,
+      "fetched_at": "2026-09-26T07:03:15.780881+00:00",
       "http_status": 200
     },
     {
