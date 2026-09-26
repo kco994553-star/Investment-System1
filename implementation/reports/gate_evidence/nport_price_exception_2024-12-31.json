@@ -1,0 +1,7 @@
+{
+ "kind": "NPORT_REPORTED_VALUE_EXCEPTION",
+ "as_of": "2024-12-31",
+ "decision": "User decision 2026-09-26 (option 2): PINC and WOLF only. Not to be extended to any other issuer.",
+ "reason": "No market close on/before as_of in Yahoo or Tiingo (delisted / ticker reused after as_of).",
+ "issuers": {"PINC": "0001577916", "WOLF": "0000895419"}
+}

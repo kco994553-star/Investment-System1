@@ -412,10 +412,82 @@ def apply_class_economics(store: RawDatasetStore, overrides: dict, listings: dic
     return ev
 
 
+def apply_nport_reported_prices(store: RawDatasetStore, overrides: dict, listings: dict, exception: dict | None,
+                                evidence: dict | None, as_of, chart_range: str = "5y") -> dict:
+    """User decision 2026-09-26: issuers listed in the exception file (PINC, WOLF) that have NO market close on/before
+    as_of may be valued with the N-PORT reported value per share (valUSD / balance, report date = as_of). Price type
+    NPORT_REPORTED_VALUE, never mixed with closes. Everything is re-verified from stored raw artifacts (fail-closed)."""
+    npr = _load("nport_reported_prices")
+    frc = _load("fetch_class_rights_evidence")
+    allowed = (exception or {}).get("issuers") or {}
+    out = {}
+    for cid, m in listings.items():
+        sym, cik = m.get("yahoo"), str(m.get("cik") or "").zfill(10)
+        if sym not in allowed:
+            continue  # never extended beyond the listed issuers
+        fails = []
+        ev = ((evidence or {}).get("issuers") or {}).get(sym) or {}
+        if allowed[sym] != cik:
+            fails.append("CIK_MISMATCH")
+        if cid in overrides:
+            fails.append("ALREADY_DETERMINED")
+        if _as_of_price(store, str(sym), as_of, chart_range):
+            fails.append("MARKET_CLOSE_AVAILABLE")  # a real close always wins; the exception is for missing closes only
+        if ev.get("status") != "IDENTITY_AND_PRICE_VERIFIED":
+            fails.append("EVIDENCE_NOT_VERIFIED")
+        nid = str((evidence or {}).get("source_artifact") or "")
+        px = h = None
+        if not fails:
+            if not store.has(nid):
+                fails.append("NPORT_XML_NOT_IN_STORE")
+            else:
+                raw = store.get_bytes(nid)
+                if (_load("fetch_nport_reference").parse_nport(raw).get("report_date") or "") != as_of.date().isoformat():
+                    fails.append("NPORT_REPORT_DATE_NOT_AS_OF")
+                want = ev.get("holding_raw") or {}
+                hits = [x for x in npr.raw_holdings(raw) if x["cusip"] == want.get("cusip") and x["name"] == want.get("name")]
+                if len(hits) != 1:
+                    fails.append(f"HOLDING_NOT_UNIQUE_{len(hits)}")
+                else:
+                    h = hits[0]
+                    px, why = npr.reported_price(h)
+                    if px is None or abs(px - float(ev.get("price") or 0)) > 1e-9 * px:
+                        fails.append(f"PRICE_NOT_REPRODUCED_{why}")
+        attested = []
+        if not fails:
+            for x in ev.get("cusip_attestation") or []:
+                aid = str(x.get("artifact_id") or "")
+                parts = aid.split(":")
+                if (len(parts) == 3 and parts[1] == cik and store.has(aid) and _filed_on_or_before(store, cik, parts[2], as_of)
+                        and npr.cusip_attested(frc.html_text(store.get_bytes(aid)), h["cusip"])):
+                    attested.append({"artifact_id": aid, "form": x.get("form"), "filed": x.get("filed")})
+            if not attested:
+                fails.append("CUSIP_NOT_ATTESTED")
+        sh = None
+        if not fails:
+            cf = load_companyfacts(store, cik)
+            shr = pit_shares(cf, as_of) if cf is not None else None
+            sh = shr["shares"] if shr and shr["status"] == "OK" else None
+            if not sh or sh <= 0:
+                fails.append("NO_PIT_SHARES")
+        rec = {"cik": cik, "price_type": npr.PRICE_TYPE, "valuation_date": (evidence or {}).get("valuation_date"),
+               "market_close_basis_of_other_issuers": "last close on/before as_of (2024-12-30 session)",
+               "status": "APPLIED" if not fails else "NOT_APPLIED", "failures": fails}
+        if not fails:
+            rec.update({"price": px, "shares": sh, "mcap": sh * px, "source_artifact": nid, "cusip": h["cusip"],
+                        "cusip_attested_by": attested,
+                        "formula": f"{sh:.0f} shares x (valUSD {h['val_usd']} / balance {h['balance']} {h['units']}) = {sh * px:.2f}"})
+            overrides[cid] = {"mcap": sh * px, "status": npr.PRICE_TYPE, "source": nid, "price_type": npr.PRICE_TYPE,
+                              "valuation_date": rec["valuation_date"], "classes": [], "nport_reported_value": rec}
+        out[sym] = rec
+    return out
+
+
 def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs: list[dict],
               sufficiency_refs: list[dict], exchange_reference: dict | None, eligibility_evidence: dict | None,
               plan: dict | None = None, chart_range: str = "5y", cik_candidates: dict | None = None,
-              class_economics: dict | None = None) -> dict:
+              class_economics: dict | None = None, nport_exception: dict | None = None,
+              nport_prices: dict | None = None) -> dict:
     amc = _load("audit_mcap_store")
     d = amc._dt(as_of if "T" in as_of else as_of + "T00:00:00+00:00")
     cand = verify_cik_candidates(store, cik_candidates)
@@ -427,6 +499,11 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     listings, eligibility = eligibility_filter(store, listings, d)
     overrides, cover_unresolved = cover_mcap_overrides(store, listings, d, chart_range)
     class_econ = apply_class_economics(store, overrides, listings, class_economics, d)
+    nport_px = apply_nport_reported_prices(store, overrides, listings, nport_exception, nport_prices, d, chart_range)
+    price_exceptions = {"price_type": "NPORT_REPORTED_VALUE", "issuers": nport_px,
+                        "note": ("Valued at the SEC N-PORT reported value per share on 2024-12-31 (filed after as_of), not a market "
+                                 "close; all other issuers use their last close on/before as_of (2024-12-30 session). "
+                                 "Exception limited to the user-approved issuers (PINC, WOLF).")} if nport_px else None
     audit = amc.audit(store, listings, d, chart_range, overrides)
     top = amc.ranked_top500(store, listings, d, chart_range, overrides)
     cutoff = top[499]["mcap"] if len(top) >= 500 else None
@@ -477,11 +554,15 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         refs.append({**cov, "members": ref.get("members"), "excluded_by_eligibility_rule": excluded_rule})
     completeness = amc.build_universe_completeness_gate(audit, exchange_reference) if exchange_reference else None
     sufficiency = amc.build_top500_sufficiency_gate(audit, refs)
+    if price_exceptions:
+        sufficiency = {**sufficiency, "price_basis_exceptions": price_exceptions}
     derived_eligibility = None
     if eligibility_evidence is None:
         derived_eligibility = eligibility_evidence_from_superset(sufficiency, refs, audit)
         eligibility_evidence = derived_eligibility
     gate_v2 = amc.build_promotion_gate_v2(audit, eligibility_evidence, completeness, sufficiency)
+    if price_exceptions:
+        gate_v2 = {**gate_v2, "price_basis_exceptions": price_exceptions}
     n_blobs = sum(1 for aid in store.list_ids() if store.has(aid))
     top_rows = []
     for r in top:
@@ -526,7 +607,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "cover_overrides": {listings[c].get("yahoo"): {k: v for k, v in o.items()} for c, o in overrides.items()},
         "cover_unresolved": {listings[c].get("yahoo"): v for c, v in cover_unresolved.items()},
         "lower_bound_issuers_outside_top500": lb_outside, "lower_bound_settled_outside_by_upper_bound": lb_settled,
-        "class_economics_verification": class_econ,
+        "class_economics_verification": class_econ, "price_basis_exceptions": price_exceptions,
         "unrankable_issuers": unrankable,
         "audit": audit, "rankable": audit["rankable"], "cutoff_500_mcap": cutoff,
         "top500": top_rows, "top500_quality_flag_counts": flag_counts,
@@ -564,6 +645,8 @@ def main() -> None:
     ap.add_argument("--chart-range", default="5y")
     ap.add_argument("--cik-candidates", type=Path, default=GE / "delisted_cik_candidates_2024-12-31.json")
     ap.add_argument("--class-economics", type=Path, help="reviewed determinations (default class_economics_<as_of>.json if present)")
+    ap.add_argument("--nport-exception", type=Path, help="default nport_price_exception_<as_of>.json if present")
+    ap.add_argument("--nport-prices", type=Path, help="default nport_reported_prices_<as_of>.json if present")
     ap.add_argument("--out", type=Path)
     a = ap.parse_args()
     rd = lambda p: json.loads(p.read_text(encoding="utf-8"))  # noqa: E731
@@ -577,7 +660,9 @@ def main() -> None:
                     rd(a.eligibility_evidence) if a.eligibility_evidence else None,
                     rd(a.plan) if a.plan and a.plan.exists() else None, a.chart_range,
                     rd(a.cik_candidates) if a.cik_candidates and a.cik_candidates.exists() else None,
-                    rd(ce) if (ce := a.class_economics or GE / f"class_economics_{a.as_of}.json").exists() else None)
+                    rd(ce) if (ce := a.class_economics or GE / f"class_economics_{a.as_of}.json").exists() else None,
+                    rd(ne) if (ne := a.nport_exception or GE / f"nport_price_exception_{a.as_of}.json").exists() else None,
+                    rd(npp) if (npp := a.nport_prices or GE / f"nport_reported_prices_{a.as_of}.json").exists() else None)
     s = json.dumps(rep, indent=2)
     if a.out:
         a.out.write_text(s + "\n", encoding="utf-8")

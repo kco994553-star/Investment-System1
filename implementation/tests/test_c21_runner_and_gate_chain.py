@@ -1155,3 +1155,89 @@ def test_run29_identical_rights_basis_and_context_citations_do_not_prove_ratios(
     import re
     assert re.search(chain.CLAIM_PATTERNS["identical_rights"], "have the same rights and privileges as, rank equally and share ratably with")
     assert re.search(chain.RATIO_ONE, "were converted on a share-for-share basis into shares of Class A common stock")
+
+
+def _nport_xml(holdings, report_date="2024-12-31"):
+    rows = "".join(
+        f"<invstOrSec><name>{n}</name><lei>L</lei><title>{n} COMMON</title><cusip>{c}</cusip>"
+        f"<identifiers><isin value=\"US{c}0\"/></identifiers><balance>{b}</balance><units>{u}</units><curCd>USD</curCd>"
+        f"<valUSD>{v}</valUSD><assetCat>EC</assetCat><invCountry>US</invCountry></invstOrSec>"
+        for n, c, b, u, v in holdings)
+    return (f'<edgarSubmission xmlns="http://www.sec.gov/edgar/nport"><formData><genInfo><repPdDate>{report_date}</repPdDate>'
+            f"</genInfo><invstOrSecs>{rows}</invstOrSecs></formData></edgarSubmission>").encode()
+
+
+def _nport_setup(tmp_path, g_filed="2024-11-08"):
+    store = RawDatasetStore(tmp_path)
+    accn = "0001752724-25-034052"
+    store.put(f"nport_xml:{accn}", _nport_xml([("PREMIER INC-CLASS A", "74051N102", "402151", "NS", "8525601.2"),
+                                               ("OTHER CORP", "000000000", "10", "NS", "100")]),
+              "u", "SEC", "application/xml", "t", 200)
+    cik = "0001577916"
+    cf = {"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [{"filed": "2024-11-01", "val": 96108595}]}}}}}
+    store.put(f"companyfacts:{cik}", json.dumps(cf).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put(f"submissions:{cik}", json.dumps({"filings": {"recent": {"form": ["SC 13G/A"], "filingDate": [g_filed],
+              "accessionNumber": ["0000102909-24-000111"], "primaryDocument": ["g.txt"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put(f"sec_filing_doc:{cik}:0000102909-24-000111", b"SCHEDULE 13G Premier, Inc. (Name of Issuer) Class A Common Stock "
+              b"(Title of Class of Securities) 74051N 10 2 (CUSIP Number)", "u", "SEC", "text/plain", "t", 200)
+    npr = _mod("npr_t", "nport_reported_prices.py")
+    h = next(x for x in npr.raw_holdings(store.get_bytes(f"nport_xml:{accn}")) if x["cusip"] == "74051N102")
+    px, _ = npr.reported_price(h)
+    ev = {"source_artifact": f"nport_xml:{accn}", "valuation_date": "2024-12-31", "issuers": {"PINC": {
+        "status": "IDENTITY_AND_PRICE_VERIFIED", "holding_raw": h, "price": px,
+        "cusip_attestation": [{"artifact_id": f"sec_filing_doc:{cik}:0000102909-24-000111", "form": "SC 13G/A", "filed": g_filed}]}}}
+    exc = {"issuers": {"PINC": cik, "WOLF": "0000895419"}}
+    return store, cik, ev, exc, px
+
+
+def test_run30_nport_reported_value_raw_fields_price_and_cusip():
+    npr = _mod("npr_u", "nport_reported_prices.py")
+    h = npr.raw_holdings(_nport_xml([("PREMIER INC-CLASS A", "74051N102", "402151", "NS", "8525601.2")]))[0]
+    assert (h["balance"], h["units"], h["cur_cd"], h["val_usd"], h["isin"]) == ("402151", "NS", "USD", "8525601.2", "US74051N1020")
+    px, why = npr.reported_price(h)
+    assert why == "OK" and px == 8525601.2 / 402151
+    assert npr.reported_price({**h, "units": "PA"})[0] is None  # principal amount is not a per-share value
+    assert npr.cusip_attested("... 74051N 10 2 (CUSIP Number)", "74051N102")
+    assert npr.cusip_attested("... 74051N 10 3 (CUSIP Number)", "74051N102") is None
+    assert npr.holding_for([h, dict(h)], ["PREMIER INC-CLASS A"])[1] == "EC_HOLDINGS_FOR_CIK_2"  # ambiguous -> fail
+
+
+def test_run30_nport_exception_applied_only_to_listed_issuers_and_fail_closed(tmp_path):
+    chain = _mod("chain_npr", "run_top500_gate_chain.py")
+    store, cik, ev, exc, px = _nport_setup(tmp_path)
+    listings = {"p": {"cik": cik, "yahoo": "PINC"}, "o": {"cik": "0000000321", "yahoo": "OTHER"}}
+    ov = {}
+    out = chain.apply_nport_reported_prices(store, ov, listings, exc, ev, amc_dt())
+    assert out["PINC"]["status"] == "APPLIED" and ov["p"]["status"] == "NPORT_REPORTED_VALUE"
+    assert abs(ov["p"]["mcap"] - 96108595 * px) < 1e-3 and ov["p"]["valuation_date"] == "2024-12-31"
+    assert "OTHER" not in out and "o" not in ov  # never extended beyond the exception list
+    # a real close on/before as_of always wins
+    _put_name(store, 1577916, "PINC", 96108595, 21.0)
+    ov2 = {}
+    assert chain.apply_nport_reported_prices(store, ov2, listings, exc, ev, amc_dt())["PINC"]["failures"] == ["MARKET_CLOSE_AVAILABLE"]
+    assert ov2 == {}
+
+
+def test_run30_nport_exception_rejects_tampered_price_late_attestation_and_cik_mismatch(tmp_path):
+    chain = _mod("chain_npr2", "run_top500_gate_chain.py")
+    store, cik, ev, exc, px = _nport_setup(tmp_path / "a")
+    listings = {"p": {"cik": cik, "yahoo": "PINC"}}
+    bad = json.loads(json.dumps(ev))
+    bad["issuers"]["PINC"]["price"] = px * 1.01
+    assert chain.apply_nport_reported_prices(store, {}, listings, exc, bad, amc_dt())["PINC"]["failures"][0].startswith("PRICE_NOT_REPRODUCED")
+    assert chain.apply_nport_reported_prices(store, {}, listings, {"issuers": {"PINC": "0000000001"}}, ev, amc_dt())["PINC"]["failures"] == ["CIK_MISMATCH"]
+    late, cik2, ev2, exc2, _ = _nport_setup(tmp_path / "b", g_filed="2025-02-10")
+    assert chain.apply_nport_reported_prices(late, {}, listings, exc2, ev2, amc_dt())["PINC"]["failures"] == ["CUSIP_NOT_ATTESTED"]
+
+
+def test_run30_share_count_diagnostic_separates_post_as_of_filings():
+    scd = _mod("scd", "share_count_diagnostic.py")
+    cf = {"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [
+        {"val": 0, "end": "2024-10-31", "filed": "2024-11-12", "form": "10-Q"},
+        {"val": 5_000_000, "end": "2024-12-31", "filed": "2025-03-01", "form": "10-K"}]}}}}}
+    rows = scd.companyfacts_shares(cf, amc_dt())
+    assert [r["val"] for r in rows["filed_on_or_before_as_of"]] == [0]
+    assert [r["val"] for r in rows["POST_AS_OF_FILINGS_ABOUT_PERIODS_ENDING_ON_OR_BEFORE_AS_OF"]] == [5_000_000]
+    facts = scd.cover_facts(_instance([(None, 0)], [(None, "PPLI")]))
+    assert {f["concept"] for f in facts} == {"EntityCommonStockSharesOutstanding", "TradingSymbol"}
+    assert next(f for f in facts if f["concept"] == "EntityCommonStockSharesOutstanding")["unit"] == "shares"

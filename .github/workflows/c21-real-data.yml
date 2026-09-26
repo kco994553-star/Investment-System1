@@ -148,6 +148,12 @@ jobs:
       - name: SEC filings (10-K + 10-Q filed <= as_of) of undetermined multi-class issuers; verbatim class-rights passages
         if: inputs.skip_fetch != 'true'
         run: python tools/fetch_class_rights_evidence.py --store data/raw --as-of "${{ inputs.as_of }}"
+      - name: N-PORT reported value per share for the user-approved exception issuers only (PINC, WOLF); CUSIP attestation
+        if: inputs.skip_fetch != 'true'
+        run: python tools/nport_reported_prices.py --store data/raw --as-of "${{ inputs.as_of }}"
+      - name: Share-count diagnostic for PPLI (investigation only; post-as_of facts reported, never applied)
+        if: inputs.skip_fetch != 'true'
+        run: python tools/share_count_diagnostic.py --store data/raw --as-of "${{ inputs.as_of }}" --cik 0001800227
       - name: Recount store
         id: store2
         if: always()
