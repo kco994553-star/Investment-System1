@@ -3,7 +3,7 @@
   "as_of": "2024-12-31T00:00:00+00:00",
   "store": {
     "dir": "data/raw",
-    "n_artifacts": 5379,
+    "n_artifacts": 5387,
     "status": "PRESENT"
   },
   "listings": 982,
@@ -2781,6 +2781,7 @@
       "upper_bound": 11766292311.66211
     }
   },
+  "class_economics_verification": {},
   "unrankable_issuers": {
     "WOLF": {
       "reason": "NO_AS_OF_PRICE",

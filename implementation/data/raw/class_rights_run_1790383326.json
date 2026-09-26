@@ -1,0 +1,44 @@
+{
+ "log": [
+  {
+   "artifact_id": "sec_filing_doc:0001468174:0001468174-24-000014",
+   "status": "OK",
+   "bytes": 4447640
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001468174:0001468174-24-000107",
+   "status": "OK",
+   "bytes": 2933834
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000009",
+   "status": "OK",
+   "bytes": 3082705
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000176",
+   "status": "OK",
+   "bytes": 2384177
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001973266:0001562762-24-000038",
+   "status": "OK",
+   "bytes": 8029625
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001973266:0000950170-24-122364",
+   "status": "OK",
+   "bytes": 3254485
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000013",
+   "status": "OK",
+   "bytes": 5216989
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000054",
+   "status": "OK",
+   "bytes": 3574427
+  }
+ ]
+}

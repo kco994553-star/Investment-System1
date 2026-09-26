@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001973266:0001562762-24-000038",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1973266/000156276224000038/tko-20231231x10k.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T00:42:05.684828+00:00",
+  "sha256": "f2e3e38d83db4ef21d0cdd830e8eee316cad34c4c429d3f8d62776cd12f7bd16",
+  "bytes": 8029625,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

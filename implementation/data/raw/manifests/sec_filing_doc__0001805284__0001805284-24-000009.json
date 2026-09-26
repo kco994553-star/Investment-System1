@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000009",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1805284/000180528424000009/rkt-20231231.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T00:42:05.015243+00:00",
+  "sha256": "894007bedde233364788be430551fbc6ea77582e2306932864da368501a21f3e",
+  "bytes": 3082705,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
