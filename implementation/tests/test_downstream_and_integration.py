@@ -67,3 +67,19 @@ def test_compatibility_does_not_claim_originals():
     assert all(item["present_in_hub"] is False for item in inv)
     cmp_ = CompatibilityHarness().compare_if_present("qgv-analysis-python", {"pass": 10})
     assert cmp_["status"] == "ORIGINAL_MISSING"
+
+
+def test_integration_zero_actual_weight_is_a_gap_not_missing():
+    """actual_weight 0.0 (position not held) must not be read as 'missing' (falsy); None stays missing (no intent)."""
+    from dataclasses import replace
+
+    pf = PortfolioEngine().official_v11(AS_OF)
+    first, second = pf.holdings[0], pf.holdings[1]
+    holdings = (replace(first, actual_weight=0.0), replace(second, actual_weight=None)) + tuple(pf.holdings[2:])
+    pf0 = replace(pf, holdings=holdings)
+    mac = MacroEngine().evaluate(AS_OF, {"growth": 0.03, "inflation": 0.02})
+    result = IntegrationEngine().run(AS_OF, pf0, {}, mac)
+    assert result.gate != GateDecision.BLOCK
+    by_id = {o["company_id"]: o for o in result.order_intents}
+    assert by_id[first.company_id]["side"] == "BUY" and by_id[first.company_id]["intent_weight"] > 0
+    assert second.company_id not in by_id

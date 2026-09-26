@@ -58,7 +58,9 @@ class IntegrationEngine:
             targets[h.company_id] = raw
             if h.qgv_snapshot_id:
                 qgv_refs.append(h.qgv_snapshot_id)
-            gap = (h.actual_weight or h.target_weight) - h.target_weight
+            # missing actual (None) -> no gap; an actual weight of 0.0 (not held) is a real gap, not missing
+            actual = h.actual_weight if h.actual_weight is not None else h.target_weight
+            gap = actual - h.target_weight
             if abs(gap) * 100 >= self.policy.deadband_pp and gate != GateDecision.BLOCK:
                 stage = self.policy.staged_entry[0]
                 orders.append(

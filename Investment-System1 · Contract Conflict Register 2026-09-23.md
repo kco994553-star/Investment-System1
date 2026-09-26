@@ -301,3 +301,72 @@ Yahoo chart API) -> all still 403. No recoverable store on disk. Status unchange
 Resolution Condition unchanged: a genuinely network-enabled runner/session. The
 missing_large_cap_priority_plan_2024-12-31.json queue (257 CIK-ready + 25 pending) is ready
 and untouched, waiting on that runner.
+
+## C-21 update · 2026-09-26 · Claude Code — RESOLVED (real data ingested via GitHub Actions)
+Real SEC/Yahoo/Tiingo data ingested by workflow c21-real-data (runs #19-#30); raw store persisted in Actions cache
+c21-raw-store-v2-* and run artifacts; manifests + STORE_INDEX in git. Remaining REAL-DATA gaps are data-source issues
+(PINC, WOLF, PPLI), tracked in CURRENT_HANDOFF, not store recovery.
+
+## Personal Investment Layer v1 intake · 2026-09-26 · Claude Code
+Source: `Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md` (additive, Architecture FROZEN, Implementation NOT
+STARTED). Checked against code at commit 71976ed. Nothing below is resolved by guess; the Personal Layer (PIL) is not
+implemented and no PIL code was added.
+
+## C-24 Two "StrategyProfile" objects → OPEN-NONBLOCKING (resolve at PIL P1)
+Evidence: `src/investment_system/contracts/strategy.py` StrategyProfile = PROVISIONAL parameter pack (6 configurable keys,
+styles DEFENSIVE/BALANCED/AGGRESSIVE/CUSTOM, parameter_set_hash); `FROZEN_KEYS` forbids customizing q_weights/g_weights.
+PIL §4-§8 StrategyProfile = WeightTree + AdvancedParameters + policies + VersionMetadata, custom weights as immutable
+versioned overrides over the Official Registry (Official never mutated).
+Conflict: same name, different contract; existing code forbids any Q/G weight customization while PIL allows editing
+eligible WEIGHT nodes through overrides.
+Decision: existing object unchanged. PIL P1 must name its object distinctly or declare the existing one its
+AdvancedParameters; whether Q/G nodes are editable is a policy decision (their maturity is C-30), not inferred.
+
+## C-25 security_id vs company_id → OPEN (CONTRACT CHANGE for C-06 when PIL P0 opens)
+Evidence: C-06/D-27 company_id canonical on the US track, security_id deferred. PIL §12 requires internal security_id
+(ticker/exchange/share class/CIK/ISIN/FIGI, effective_from/to). Real-data chain is company-level (one line per CIK) with
+share classes resolved from cover XBRL.
+Decision: PIL P0 defines security_id with a company_id link; C-06 is reopened then. No mapping created now.
+
+## C-26 Model and Actual weights share one object → OPEN-NONBLOCKING
+Evidence: `contracts/models.py` Holding has target_weight + actual_weight + weight_gap; `qgv/portfolio.py` fills
+actual_weight from target_weight when no market value exists (lines 61/92/125).
+Conflict: PIL principle 3 (separate ModelPortfolioSnapshot / ActualPortfolioSnapshot). Holding.actual_weight is a
+model-side value, not broker data.
+Decision: existing objects unchanged; PIL must build ActualPortfolioSnapshot only from broker/user position data and must not
+read Holding.actual_weight as actual.
+
+## C-27 Integration gap and order intents vs PIL Portfolio Gap → OPEN-ISOLATED (+ one defect fixed)
+Evidence: `integration/engine.py` computes gap = actual - target and emits BUY/SELL order_intents (v1.2 PROVISIONAL,
+staged entry). PIL §14: gap = model - actual, descriptive, never BUY/SELL or quantity.
+Decision: both exist in separate layers; PIL Portfolio Gap must not reuse IntegrationResult.order_intents or its sign.
+Defect fixed (PATCH, correctness): `(h.actual_weight or h.target_weight)` read an actual weight of 0.0 (not held) as missing,
+so no gap/intent was produced; now only None is missing. Regression:
+tests/test_downstream_and_integration.py::test_integration_zero_actual_weight_is_a_gap_not_missing.
+
+## C-28 Technical output has no available_at → OPEN-BLOCKING for PIL P4 only (upstream item A)
+Evidence: `contracts/models.py` TechnicalSnapshot fields: as_of, no available_at/observed_at; `technical/engine.py`
+evaluate(company_id, as_of, returns: list[float]) takes untimestamped returns. DataStamp (with available_at) exists but is not
+attached to TechnicalSnapshot.
+Finding: available_at propagation to the Technical final output is NOT implemented (verified in code, not assumed).
+Decision: PIL must not create times. Fix belongs to the Technical system (upstream PATCH: add available_at from input data
+stamps); not done in this round (Main Track priority).
+
+## C-29 QGV↔Technical score scale → OPEN-NONBLOCKING (upstream item B)
+Evidence: `qgv/scoring.py` attractiveness_10 = ((Q+G)/2)/10 is labelled "NEW IMPLEMENTATION heuristic. PROVISIONAL. Not an
+official freeze constant" and is stored on QGVSnapshot.attractiveness_10. TechnicalSnapshot has no numeric score (regime /
+execution_zone enums), so no cross-scale arithmetic exists or is needed today.
+Decision: no authoritative scale contract exists. PIL must keep original scores + scale metadata and must not use
+attractiveness_10 as a QGV↔Technical mapping.
+
+## C-30 Official Weight Dataset → OPEN (upstream item C; maturity not assigned by guess)
+Evidence: Q_WEIGHTS (7 factors) and G_WEIGHTS (6 factors) in `qgv/factors.py`, source QGV Analysis v1.7.6 §18.3, RECORDED
+(Master Status VERIFIED = 0), Q7 label C-03 DECISION REQUIRED. V production aggregate null (V_INITIAL_PRIOR PROVISIONAL).
+Integration OM/TM/MM/RM multipliers v1.2 PROVISIONAL. Technical: no weight dataset (structural placeholder engine).
+Macro: v0.1.1 state rules, no weight dataset in code.
+Decision: PIL NodeDefinition maturity per node needs the authoritative SSoT; until then Technical/Macro weights are
+UNRESOLVED and nothing is marked PRODUCTION by this intake.
+
+## C-31 code.md not present in the hub → OPEN-NONBLOCKING
+Evidence: no code.md in the repository or the r4/r6/r7 handoff ZIPs. The coding-priority rule (correctness/safety > user
+requirements > existing behaviour > simplicity > maintainability > performance > extensibility) is taken from the relay text.

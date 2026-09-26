@@ -123,3 +123,14 @@ BLOCKED after a genuine re-attempt this round (see Conflict Register).
 16. Update 2026-09-25 round 3 · Claude
 No new evidence produced -- C-21 reconfirmed BLOCKED, no workaround forced per instruction.
 173/173 tests unchanged. REAL-DATA VERIFIED still NO.
+
+17. Update 2026-09-26 · Claude Code
+- REAL-DATA chain evidence: reports/gate_evidence/gate_chain_2024-12-31_real_gha.json from Actions run #30 (id 36206384858,
+  commit 316ada7): 979 rankable, #500 cutoff $15.189B, Promotion Gate v2 FAIL (Russell superset: PINC, WOLF not rankable;
+  PPLI non-positive shares). Official US Market-Cap Top 500 PIT NOT declared. REAL-DATA VERIFIED: NO (gate not passed).
+- class_rights_passages_2024-12-31.json (verbatim 10-K/10-Q passages, filed <= as_of) and class_economics_2024-12-31.json
+  (reviewed determinations; verified by the chain: H, RKT, TKO, TPG ECONOMIC_EQUIVALENT_DETERMINED).
+- Personal Investment Layer v1 relay package imported as
+  `Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md` (additive, Architecture FROZEN, Implementation NOT
+  STARTED). Intake conflicts C-24..C-31.
+- Tests: 242/242 (mini_pytest shim) and 242/242 (pytest), SYNTHETIC + replayed evidence; one correctness fix (C-27).

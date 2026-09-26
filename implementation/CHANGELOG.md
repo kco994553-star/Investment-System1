@@ -596,3 +596,13 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - tools/fetch_nport_reference.py: Russell 1000 ETF holdings from SEC NPORT-P for as_of; CIK resolution by unique normalised name.
 - SUPERSET_REFERENCE sufficiency role; eligibility evidence derived only from a passed superset; UNKNOWN + no price -> not listed.
 - Run #24: 952 eligible, 935 rankable, cutoff $14.408B; Sufficiency/Promotion Gate v2 FAIL; 226 tests.
+
+## 2026-09-26 · round 10 · Claude Code (+ Actions runs #25-#30)
+
+- Tiingo raw-close fallback (calibrated, fail-closed) incl. name-matched alternate series; exchange-axis TradingSymbol;
+  ticker-change primary line; never-periodic SEC filers excluded; N-PORT PIT-registrant checks.
+- tools/fetch_class_rights_evidence.py + chain verify_class_economics: filing-cited economic-equivalent shares
+  (quotes verified verbatim, filed <= as_of, ratio 1 only); H/RKT/TKO/TPG determined.
+- integration/engine.py: actual_weight 0.0 no longer treated as missing (C-27 PATCH).
+- Run #30: 979 rankable, cutoff $15.189B; Promotion Gate v2 FAIL (PINC, WOLF, PPLI). 242 tests.
+- Personal Investment Layer v1 handoff imported (docs only; no PIL code).

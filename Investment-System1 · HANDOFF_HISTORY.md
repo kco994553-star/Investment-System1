@@ -1432,3 +1432,16 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
 - User decisions: Stooq for missing prices; Sufficiency path.
 - Stooq returns a JavaScript proof-of-work bot check to every scripted request (not bypassed; calibrated fallback writes nothing). iShares web CSV returns HTML. Replaced by SEC Form NPORT-P holdings of the iShares Russell 1000 ETF (0001752724-25-034052, report date 2024-12-31): 1,007 equity holdings, 971 resolved to CIKs.
 - Pool expanded with 435 Russell members: 952 eligible, 935 rankable, #500 cutoff $14.41B. Sufficiency (superset) FAIL: 20 members not in pool (delisted, no current ticker), 40 not rankable (14 no as-of price, 26 lower-bound multi-class). Official NOT declared. 226 tests.
+
+------------------------------------------------------------------------
+
+2026-09-26 (round 10) · Claude Code (+ Actions runs #25-#30) → Next AI
+- User decisions applied: Tiingo for missing prices (calibrated ≤0.5 % vs Yahoo, token in header only); rule (b) upper bound;
+  then "no arbitrary rule" for H/RKT/TKO/TPG: economic-equivalent shares only from verbatim quotes in 10-K/10-Q filed <= as_of.
+- Fixes: N-PORT name normalisation / PIT-registrant check; per-series and per-exchange cover TradingSymbol (US Steel);
+  ticker-change primary line (XYZ); never-periodic SEC filers excluded (OZK, FDIC filer); Tiingo empty-reply retry and
+  name-matched alternate series (EQR -> VMRK).
+- Run #30: 979 rankable, cutoff $15.189B; multi-class blockers 0; remaining PINC, WOLF, PPLI (data). Promotion Gate v2 FAIL,
+  Official NOT declared.
+- Personal Investment Layer v1 relay imported (Architecture FROZEN, Implementation NOT STARTED); intake conflicts C-24..C-31;
+  Integration zero-actual-weight defect fixed (C-27). 242 tests.
