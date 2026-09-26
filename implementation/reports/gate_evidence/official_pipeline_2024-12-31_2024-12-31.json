@@ -8,7 +8,7 @@
   {
    "as_of": "2024-12-31",
    "status": "OFFICIAL",
-   "universe_id": "uni_5eb9effc9165",
+   "universe_id": "uni_cf6aa3403869",
    "n_members": 500,
    "cutoff_mcap": 15421829271.493835,
    "gate_evidence": "gate_chain_2024-12-31_real_gha.json"
@@ -19,7 +19,7 @@
   {
    "as_of": "2024-12-31T00:00:00+00:00",
    "horizon_as_of": "2025-03-31T00:00:00+00:00",
-   "universe_id": "uni_5eb9effc9165",
+   "universe_id": "uni_cf6aa3403869",
    "universe_kind": "US_MCAP_TOP500_OFFICIAL",
    "official_universe": true,
    "universe_policy": "OFFICIAL",
@@ -42,11 +42,11 @@
   "per_date_single_as_of": [
    {
     "as_of": "2024-12-31",
-    "wall_s": 29.26,
+    "wall_s": 29.956,
     "peak_rss_mb": 9478.8
    }
   ],
-  "median_wall_s": 29.26,
+  "median_wall_s": 29.956,
   "max_peak_rss_mb": 9478.8,
   "name_errors_total": 0,
   "network": {
