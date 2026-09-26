@@ -8,9 +8,9 @@
   {
    "as_of": "2024-12-31",
    "status": "OFFICIAL",
-   "universe_id": "uni_0ad936238f45",
+   "universe_id": "uni_5eb9effc9165",
    "n_members": 500,
-   "cutoff_mcap": 15338412993.883133,
+   "cutoff_mcap": 15421829271.493835,
    "gate_evidence": "gate_chain_2024-12-31_real_gha.json"
   }
  ],
@@ -19,14 +19,14 @@
   {
    "as_of": "2024-12-31T00:00:00+00:00",
    "horizon_as_of": "2025-03-31T00:00:00+00:00",
-   "universe_id": "uni_0ad936238f45",
+   "universe_id": "uni_5eb9effc9165",
    "universe_kind": "US_MCAP_TOP500_OFFICIAL",
    "official_universe": true,
    "universe_policy": "OFFICIAL",
    "membership_basis": "DERIVED_AT_AS_OF",
    "survivorship_risk": false,
    "n_selected": 468,
-   "equal_weight_realized": -0.015589140866623942,
+   "equal_weight_realized": -0.01649309224255184,
    "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
    "rule_status": "PROVISIONAL_RESEARCH",
    "n_universe": 500,
@@ -42,21 +42,21 @@
   "per_date_single_as_of": [
    {
     "as_of": "2024-12-31",
-    "wall_s": 26.25,
-    "peak_rss_mb": 9504.0
+    "wall_s": 29.26,
+    "peak_rss_mb": 9478.8
    }
   ],
-  "median_wall_s": 26.25,
-  "max_peak_rss_mb": 9504.0,
+  "median_wall_s": 29.26,
+  "max_peak_rss_mb": 9478.8,
   "name_errors_total": 0,
   "network": {
-   "n_ingestion_run_reports": 175,
+   "n_ingestion_run_reports": 301,
    "request_status_counts": {
-    "SKIPPED_ALREADY_PRESENT": 129128,
-    "HTTP_404": 1540,
-    "NO_PERIODIC_FILING_BEFORE_AS_OF": 1268,
+    "SKIPPED_ALREADY_PRESENT": 216511,
+    "HTTP_404": 2738,
+    "NO_PERIODIC_FILING_BEFORE_AS_OF": 2038,
+    "OK": 6071,
     "HTTP_429": 3,
-    "OK": 5286,
     "ERROR_IncompleteRead": 1,
     "ERROR_URLError": 4,
     "EGRESS_BLOCKED": 793,
