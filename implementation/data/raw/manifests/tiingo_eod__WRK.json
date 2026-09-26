@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:WRK",
+  "source_url": "https://api.tiingo.com/tiingo/daily/wrk/prices?startDate=2019-07-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-26T05:43:37.108610+00:00",
+  "sha256": "a284d2f9dfab00254b11516a23aec076564a73f11f77ad05eaa7e7b2230aabd3",
+  "bytes": 224,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

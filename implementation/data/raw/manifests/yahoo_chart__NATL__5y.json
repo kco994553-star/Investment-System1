@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NATL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NATL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T05:42:02.229448+00:00",
+  "sha256": "ffca616a6a12a7438996de949f71c692e987f053f78d416e6c35bfc15ed0ea95",
+  "bytes": 80287,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

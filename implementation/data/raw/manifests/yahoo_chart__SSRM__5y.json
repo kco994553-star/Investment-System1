@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:SSRM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SSRM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T05:42:09.108301+00:00",
+  "sha256": "8fd524ddf7dc7f38de4d8f928aa1223a67768e0439b6c67d1cfe33a1ec83416f",
+  "bytes": 137889,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

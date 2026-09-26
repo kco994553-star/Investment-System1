@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:WOOF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WOOF?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T05:42:13.405083+00:00",
+  "sha256": "1f79de181ebf592e3298aff07dda6baaea61bb2c009ea42f1ffd20b5e51353e5",
+  "bytes": 137002,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

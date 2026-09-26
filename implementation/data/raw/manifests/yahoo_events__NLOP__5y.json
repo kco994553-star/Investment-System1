@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NLOP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NLOP?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:42:03.087425+00:00",
+  "sha256": "ae93911f4994f1e756c2403f7f5c8f5d3dce0e0be920e73408199fe061536471",
+  "bytes": 5030,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

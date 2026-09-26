@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:MCW",
+  "source_url": "https://api.tiingo.com/tiingo/daily/mcw/prices?startDate=2019-07-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-26T05:43:33.237629+00:00",
+  "sha256": "ec3a4999920da901662932fd49b77231316e6693c96ec3d1f73dda09d73fa514",
+  "bytes": 263951,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

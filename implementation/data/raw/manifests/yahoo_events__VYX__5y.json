@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:VYX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VYX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:42:12.812877+00:00",
+  "sha256": "8659079e7b44c8919701155a89914023efc35533936f6b219b08563e21041aa4",
+  "bytes": 8059,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

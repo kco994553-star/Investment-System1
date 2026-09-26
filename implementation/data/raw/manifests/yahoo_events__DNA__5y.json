@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:DNA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DNA?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:41:51.886577+00:00",
+  "sha256": "c478c224feee34793fed0a3408b4222045425958bfb66c33ef7b6c7444fb7f86",
+  "bytes": 7524,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

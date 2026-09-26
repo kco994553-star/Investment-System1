@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:TNDM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TNDM?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T05:42:10.698782+00:00",
+  "sha256": "b07803c2fb9c54c666598fa16fb3953ac36f9a919f9500de3f09cbc2e72ae33b",
+  "bytes": 135633,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

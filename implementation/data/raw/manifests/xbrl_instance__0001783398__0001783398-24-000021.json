@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001783398:0001783398-24-000021",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1783398/000178339824000021/uwmc-20240331_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T05:43:12.070099+00:00",
+  "sha256": "13e0e00f6ae557193ea867fa62395a2a31e8d7ae0ebf25b8fe073890017a844c",
+  "bytes": 1086230,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

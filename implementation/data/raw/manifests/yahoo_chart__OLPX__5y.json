@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:OLPX:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/olpx/prices?startDate=2019-07-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-26T05:43:36.835225+00:00",
+  "sha256": "6f68ff689187b3a5e7578e7320cf054de7c53c1b623a6b6bf7e2a50f0da0603d",
+  "bytes": 19457,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:SSRM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/SSRM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:42:09.376606+00:00",
+  "sha256": "ac780761a957f9a34f57abef946410658e768b036918895082a364c170119769",
+  "bytes": 7939,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

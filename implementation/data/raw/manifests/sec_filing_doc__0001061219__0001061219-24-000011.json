@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001061219:0001061219-24-000011",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1061219/000106121924000011/form10q.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T05:44:37.134696+00:00",
+  "sha256": "5ada1a57b0e47781daa9ee79b826b1e60e6bda4840533fb9ab5ed5adedfb0e72",
+  "bytes": 3006677,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

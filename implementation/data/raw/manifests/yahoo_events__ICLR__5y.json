@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:ICLR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ICLR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:41:56.968527+00:00",
+  "sha256": "feaa1c841e3483c4a1ac7f42c84ac7c73c74fc324dbf8c954fb23ff99b8d2e7c",
+  "bytes": 7668,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

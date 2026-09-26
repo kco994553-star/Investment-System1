@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:DNA:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/DNA?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T05:41:51.625988+00:00",
+  "sha256": "484a2034d86480dd29176eb2578abd1396331ccb1fbcadfca4f2990a42cf2ae4",
+  "bytes": 127004,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

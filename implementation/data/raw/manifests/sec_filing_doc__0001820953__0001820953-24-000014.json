@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001820953:0001820953-24-000014",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1820953/000182095324000014/afrm-20240331.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T05:44:38.039596+00:00",
+  "sha256": "1e9abc00d7577546bdd526b9a46e608f2bce26dea162217a7469252c086bc9a7",
+  "bytes": 2869143,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

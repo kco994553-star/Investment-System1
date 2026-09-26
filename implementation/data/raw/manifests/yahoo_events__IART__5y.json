@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:IART:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/IART?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:41:56.345213+00:00",
+  "sha256": "77cc22e2000f2058df0c0cea378e95f4bd6c8ab408e0b09d5564e7ff1ea683d3",
+  "bytes": 7977,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

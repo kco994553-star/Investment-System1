@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001559720:0001559720-24-000017",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1559720/000155972024000017/abnb-20240331_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T05:43:05.129132+00:00",
+  "sha256": "477c4282f54d73b635e2bfa3cea91455264c64297bc73b9f1f297f9cfd759c62",
+  "bytes": 1007686,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

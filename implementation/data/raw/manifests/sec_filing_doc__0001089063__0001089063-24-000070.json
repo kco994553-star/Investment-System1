@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001089063:0001089063-24-000070",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1089063/000108906324000070/dks-20240504.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T05:43:55.072582+00:00",
+  "sha256": "09cd5bebf92464f1ac8a83859e3ca8a7fe3bdea4d4f08bd9611232120db75eac",
+  "bytes": 700847,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

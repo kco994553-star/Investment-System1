@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:TNDM:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/TNDM?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:42:10.978182+00:00",
+  "sha256": "143b984f0b381af252d6d51b8fbb83a6c9be5c26f1c84f9a9a40b881a10fae5b",
+  "bytes": 7892,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

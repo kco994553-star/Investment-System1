@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001166691:0001166691-24-000031",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1166691/000116669124000031/cmcsa-20240331_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T05:42:58.054608+00:00",
+  "sha256": "b1c710305b6a5f5818ceb1dd45cb744439a7065701a9060ebcd816c671ba60f6",
+  "bytes": 696098,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

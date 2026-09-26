@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:WOOF:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/WOOF?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:42:13.668340+00:00",
+  "sha256": "c7b16c554744b24cfa4c9041ef91f9bdfd5838d6b45a41291fa53991df74bb81",
+  "bytes": 7798,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

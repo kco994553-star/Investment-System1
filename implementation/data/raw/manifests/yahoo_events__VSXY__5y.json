@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:VSXY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/VSXY?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:42:12.185165+00:00",
+  "sha256": "c3a92d36a0d0716edee987c12a251f09bbbf5eab62d96ff270340d16046c661d",
+  "bytes": 7692,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

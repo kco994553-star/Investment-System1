@@ -1,0 +1,12 @@
+{
+  "artifact_id": "tiingo_eod:KLG",
+  "source_url": "https://api.tiingo.com/tiingo/daily/klg/prices?startDate=2019-07-02&format=json",
+  "source_kind": "TIINGO_EOD_JSON",
+  "fetched_at": "2026-09-26T05:43:31.202011+00:00",
+  "sha256": "79e491503316ac1d455bc974a91b32f8a64ab840a5201b977f4ed38220b061ce",
+  "bytes": 851,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

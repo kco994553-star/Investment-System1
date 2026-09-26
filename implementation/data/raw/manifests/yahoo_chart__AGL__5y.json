@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:AGL:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/AGL?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T05:41:44.988306+00:00",
+  "sha256": "0daaa36b6db4f06f8a0124f9bd3d2a2e82823a3d21fca21b122b75bfd55e64a1",
+  "bytes": 75640,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

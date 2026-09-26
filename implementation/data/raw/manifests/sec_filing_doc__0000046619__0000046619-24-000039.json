@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000046619:0000046619-24-000039",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/46619/000004661924000039/hei-20240430.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T05:44:37.790864+00:00",
+  "sha256": "9e9cd7f5555eac28c4260ab7e9457682351bc1f31d81545f465da9b07239f483",
+  "bytes": 1262488,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

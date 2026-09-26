@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001856525:0001856525-24-000072",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1856525/000185652524000072/cnm-20240428_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T05:43:15.346989+00:00",
+  "sha256": "6dfe02c8b6b87c314ff406654eac80655f8dc9d3e7bc49a2033ab1beeb21b944",
+  "bytes": 802793,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

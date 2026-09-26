@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NLOP:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NLOP?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T05:42:02.824646+00:00",
+  "sha256": "17db937046177f97724260e819d05b0c7d1a397c38564dd103e60d4f1d269fc6",
+  "bytes": 79075,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,53 @@
+{
+  "kind": "REAL_DATA_INGEST_RUN",
+  "store_dir": "data/raw",
+  "n_requested": 8,
+  "n_ok": 8,
+  "n_failed": 0,
+  "log": [
+    {
+      "artifact_id": "yahoo_chart:AMTM:5y",
+      "status": "OK",
+      "bytes": 55356
+    },
+    {
+      "artifact_id": "yahoo_chart:CARD:5y",
+      "status": "OK",
+      "bytes": 60259
+    },
+    {
+      "artifact_id": "yahoo_chart:CARU:5y",
+      "status": "OK",
+      "bytes": 60420
+    },
+    {
+      "artifact_id": "yahoo_chart:HPE-PC:5y",
+      "status": "OK",
+      "bytes": 54059
+    },
+    {
+      "artifact_id": "yahoo_chart:JETU:5y",
+      "status": "OK",
+      "bytes": 60152
+    },
+    {
+      "artifact_id": "yahoo_chart:LINE:5y",
+      "status": "OK",
+      "bytes": 58632
+    },
+    {
+      "artifact_id": "yahoo_chart:MS-PQ:5y",
+      "status": "OK",
+      "bytes": 59341
+    },
+    {
+      "artifact_id": "yahoo_chart:SEG:5y",
+      "status": "OK",
+      "bytes": 58362
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "plan_resolution": null,
+  "real_data_verified": false,
+  "note": "raw bytes only; ingestion time != PIT availability (see ingestion/manifest.py)"
+}

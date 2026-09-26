@@ -1,0 +1,450 @@
+{
+  "kind": "TIINGO_FALLBACK_RUN",
+  "as_of": "2024-06-30T00:00:00+00:00",
+  "n_targets": 9,
+  "targets": [
+    "BK",
+    "KLG",
+    "MCW",
+    "OLPX",
+    "PINC",
+    "SQ",
+    "WOLF",
+    "WRK",
+    "WSOB"
+  ],
+  "status": "OK",
+  "calibration": [
+    {
+      "symbol": "AAPL",
+      "tiingo_date": "2024-06-28",
+      "tiingo_close": 210.62,
+      "yahoo_date": "2024-06-28",
+      "yahoo_close": 210.6199951171875,
+      "rel_diff": 2.318304347994458e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "MSFT",
+      "tiingo_date": "2024-06-28",
+      "tiingo_close": 446.95,
+      "yahoo_date": "2024-06-28",
+      "yahoo_close": 446.95001220703125,
+      "rel_diff": 2.731184903897995e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "JPM",
+      "tiingo_date": "2024-06-28",
+      "tiingo_close": 202.26,
+      "yahoo_date": "2024-06-28",
+      "yahoo_close": 202.25999450683594,
+      "rel_diff": 2.7158925158674402e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "XOM",
+      "tiingo_date": "2024-06-28",
+      "tiingo_close": 115.12,
+      "yahoo_date": "2024-06-28",
+      "yahoo_close": 115.12000274658203,
+      "rel_diff": 2.3858425653000374e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "PG",
+      "tiingo_date": "2024-06-28",
+      "tiingo_close": 164.92,
+      "yahoo_date": "2024-06-28",
+      "yahoo_close": 164.9199981689453,
+      "rel_diff": 1.1102684303444518e-08,
+      "status": "OK"
+    },
+    {
+      "symbol": "KO",
+      "tiingo_date": "2024-06-28",
+      "tiingo_close": 63.65,
+      "yahoo_date": "2024-06-28",
+      "yahoo_close": 63.650001525878906,
+      "rel_diff": 2.397295948297333e-08,
+      "status": "OK"
+    }
+  ],
+  "calibrated": true,
+  "tolerance": 0.005,
+  "results": {
+    "BK": "NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF",
+    "KLG": "WRITTEN_TIINGO_FALLBACK",
+    "MCW": "WRITTEN_TIINGO_FALLBACK",
+    "OLPX": "WRITTEN_TIINGO_FALLBACK",
+    "PINC": "NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF",
+    "SQ": "NO_TIINGO_DATA",
+    "WOLF": "NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF",
+    "WRK": "NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF",
+    "WSOB": "NO_TIINGO_DATA"
+  },
+  "written": [
+    "KLG",
+    "MCW",
+    "OLPX"
+  ],
+  "alternates": {
+    "BK": {
+      "status": "NO_SEC_NAME"
+    },
+    "PINC": {
+      "search_ids": [
+        "tiingo_search:PINC:PREMIER"
+      ],
+      "candidates": [],
+      "with_as_of_bar": [],
+      "hits": [
+        {
+          "name": "Premier Foods",
+          "ticker": "PFODF",
+          "permaTicker": "US000000047329",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Premier Foods",
+          "ticker": "PRRFY",
+          "permaTicker": "US000000048314",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "FEDFUND PREMIER",
+          "ticker": "BUPXX",
+          "permaTicker": "US000000069059",
+          "assetType": "Mutual Fund",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Premier Holding Corp",
+          "ticker": "PRHL",
+          "permaTicker": "US000000040489",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Premier Biomedical Inc",
+          "ticker": "BIEI",
+          "permaTicker": "US000000037229",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Premier Investments Ltd",
+          "ticker": "PMAUF",
+          "permaTicker": "US000000093181",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Premier Exhibitions Inc",
+          "ticker": "PRXI",
+          "permaTicker": "US000000002376",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Premier Exhibitions Inc",
+          "ticker": "PRXIQ",
+          "permaTicker": "US000000048375",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "TempCash - Premier Shares",
+          "ticker": "TCPXX",
+          "permaTicker": "US000000081579",
+          "assetType": "Mutual Fund",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Premier Products Group Inc",
+          "ticker": "PMPG",
+          "permaTicker": "US000000058941",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "ROYCE PREMIER FUND A CLASS",
+          "ticker": "RAAFX",
+          "permaTicker": "US000000094716",
+          "assetType": "Mutual Fund",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Putnam Premier Income Trust",
+          "ticker": "PPT",
+          "permaTicker": "US000000007343",
+          "assetType": "ETF",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Putnam Premier Income Trust",
+          "ticker": "XPPTX",
+          "permaTicker": "US000000043246",
+          "assetType": "Mutual Fund",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "DF DENT PREMIER GROWTH FUND ",
+          "ticker": "DFDPX",
+          "permaTicker": "US000000032530",
+          "assetType": "Mutual Fund",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Premier African Minerals Ltd",
+          "ticker": "PRMMF",
+          "permaTicker": "US000000096635",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Premier American Uranium Inc",
+          "ticker": "PUR",
+          "permaTicker": "CA000000141523",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "CA"
+        },
+        {
+          "name": "Nuveen Premier Municipal Income",
+          "ticker": "XNPFX",
+          "permaTicker": "US000000102767",
+          "assetType": "Mutual Fund",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Western Asset Premier Bond Fund",
+          "ticker": "XWEAX",
+          "permaTicker": "US000000043290",
+          "assetType": "Mutual Fund",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Western Asset Premier Bond Fund",
+          "ticker": "WEA",
+          "permaTicker": "US000000010718",
+          "assetType": "ETF",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Premier Air Charter Holdings Inc",
+          "ticker": "PREM",
+          "permaTicker": "US000000086517",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "ROYCE PREMIER FUND SERVICE CLASS",
+          "ticker": "RPFFX",
+          "permaTicker": "US000000024799",
+          "assetType": "Mutual Fund",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Premier Air Charter Holdings Inc.",
+          "ticker": "ATAO",
+          "permaTicker": "US000000133175",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "TREASURY PORTFOLIO PREMIER SHARES",
+          "ticker": "NTPXX",
+          "permaTicker": "US000000069922",
+          "assetType": "Mutual Fund",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "NUVEEN LIFECYCLE 2070 FUND PREMIER",
+          "ticker": "TLCPX",
+          "permaTicker": "US000000125519",
+          "assetType": "Mutual Fund",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Premier Information Management Inc",
+          "ticker": "PIFR",
+          "permaTicker": "US000000063612",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        }
+      ],
+      "status": "NONE"
+    },
+    "SQ": {
+      "status": "NO_SEC_NAME"
+    },
+    "WOLF": {
+      "search_ids": [
+        "tiingo_search:WOLF:WOLFSPEED"
+      ],
+      "candidates": [
+        "us000000123662"
+      ],
+      "with_as_of_bar": [],
+      "hits": [
+        {
+          "name": "Wolfspeed Inc (New)",
+          "ticker": "WOLF",
+          "permaTicker": "US000000123662",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        }
+      ],
+      "status": "NONE"
+    },
+    "WRK": {
+      "search_ids": [
+        "tiingo_search:WRK:WESTROCK",
+        "tiingo_search:WRK:WHISKEY_HOLDCO"
+      ],
+      "candidates": [],
+      "with_as_of_bar": [],
+      "hits": [
+        {
+          "name": "Smurfit WestRock plc",
+          "ticker": "SW",
+          "permaTicker": "US000000116154",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        },
+        {
+          "name": "Westrock Coffee Company",
+          "ticker": "WEST",
+          "permaTicker": "US000000106402",
+          "assetType": "Stock",
+          "isActive": true,
+          "countryCode": "US"
+        }
+      ],
+      "status": "NONE"
+    },
+    "WSOB": {
+      "status": "NO_SEC_NAME"
+    }
+  },
+  "log": [
+    {
+      "artifact_id": "tiingo_eod:AAPL",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:MSFT",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:JPM",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:XOM",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:PG",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:KO",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:BK",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:KLG",
+      "status": "OK",
+      "bytes": 851
+    },
+    {
+      "artifact_id": "tiingo_eod:MCW",
+      "status": "OK",
+      "bytes": 263951
+    },
+    {
+      "artifact_id": "tiingo_eod:OLPX",
+      "status": "OK",
+      "bytes": 256637
+    },
+    {
+      "artifact_id": "tiingo_eod:PINC",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_search:PINC:PREMIER",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:SQ",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:WOLF",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_search:WOLF:WOLFSPEED",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:US000000123662",
+      "status": "SKIPPED_ALREADY_PRESENT"
+    },
+    {
+      "artifact_id": "tiingo_eod:WRK",
+      "status": "OK",
+      "bytes": 224
+    },
+    {
+      "artifact_id": "tiingo_search:WRK:WESTROCK",
+      "status": "OK",
+      "bytes": 340
+    },
+    {
+      "artifact_id": "tiingo_search:WRK:WHISKEY_HOLDCO",
+      "status": "OK",
+      "bytes": 2
+    },
+    {
+      "artifact_id": "tiingo_eod:WSOB",
+      "status": "HTTP_404",
+      "url": "https://api.tiingo.com/tiingo/daily/wsob/prices?startDate=2019-07-02&format=json"
+    }
+  ],
+  "egress_blocked_hosts": [],
+  "real_data_verified": false
+}

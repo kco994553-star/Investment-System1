@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MRVI:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MRVI?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:42:01.933709+00:00",
+  "sha256": "2a710aa1d09a98e8ad4a54a76281ced100294447c534599bd4dffee7f0f49688",
+  "bytes": 7842,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

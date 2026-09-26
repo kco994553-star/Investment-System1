@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:CABO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CABO?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T05:41:49.364731+00:00",
+  "sha256": "fe903b54beb616cf82acac9ca5928cbe9a946641d19c56f682c7c907cebd4273",
+  "bytes": 131186,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

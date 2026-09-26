@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:PTON:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PTON?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T05:42:06.041893+00:00",
+  "sha256": "31f15c5360961b935cb99a6fc3ff848620afc6248d207973f1cf331384a2ff98",
+  "bytes": 135438,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

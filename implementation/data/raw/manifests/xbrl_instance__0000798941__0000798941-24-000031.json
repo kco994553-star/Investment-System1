@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000798941:0000798941-24-000031",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/798941/000079894124000031/fcnca-20240331_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T05:42:50.415993+00:00",
+  "sha256": "1ee5615917e4bb0c4bb5ea8c7068cf26678da42d0ae30e8113f160001872f45c",
+  "bytes": 7692291,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

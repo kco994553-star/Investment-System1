@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001736297:0001736297-24-000006",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1736297/000173629724000006/alab-20240331_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T05:43:10.875575+00:00",
+  "sha256": "83369902c19e62fa2fdaa96c5165d263ad9195408287c1f61f1972400e2838a8",
+  "bytes": 786032,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

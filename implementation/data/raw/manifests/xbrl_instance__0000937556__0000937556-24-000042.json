@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000937556:0000937556-24-000042",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/937556/000093755624000042/masi-20240330_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T05:41:12.438646+00:00",
+  "sha256": "34fe1cf2556e105eaad96160fccd6ea769aadb34139c4f83f3bfe2b646c553aa",
+  "bytes": 1790910,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

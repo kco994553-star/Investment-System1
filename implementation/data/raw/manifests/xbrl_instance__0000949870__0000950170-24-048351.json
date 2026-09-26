@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0000949870:0000950170-24-048351",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/949870/000095017024048351/sam-20240330_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T05:42:53.245252+00:00",
+  "sha256": "bf4550fd33c407a60802043d58b56aa51c2e9e9e76d42c1e05877f3de18216f6",
+  "bytes": 863410,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:MRCY:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/MRCY?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:42:01.057621+00:00",
+  "sha256": "071dfdcb8801525b1980fea8aecdc5e1ebf7d328ca75aaec6fc8aa26369f3b8f",
+  "bytes": 7685,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:ICLR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/ICLR?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T05:41:56.706006+00:00",
+  "sha256": "0588fd127bf5f993f5f0c66616c9d564c606ef361478fbdf2c236b7e3724d183",
+  "bytes": 134778,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

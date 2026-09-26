@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CABO:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CABO?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:41:49.638677+00:00",
+  "sha256": "b8f50abc185ec065ce35584ebe30743cc2ca8b2717f7feca11341cd859216b46",
+  "bytes": 7543,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

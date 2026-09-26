@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:CHPT:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/CHPT?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:41:50.486184+00:00",
+  "sha256": "2739403b48255035e89572772710289c048f02148c6a5f7ddc80138048bfe7df",
+  "bytes": 7471,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

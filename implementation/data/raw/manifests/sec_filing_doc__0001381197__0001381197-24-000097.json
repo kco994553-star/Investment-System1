@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001381197:0001381197-24-000097",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1381197/000138119724000097/ibkr-20240331x10q.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T05:43:57.044099+00:00",
+  "sha256": "1b4e08b8a1230f0b3e5816847fb057daadffa8e54270cbad1e2b82fa8c9a3cd1",
+  "bytes": 6419184,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

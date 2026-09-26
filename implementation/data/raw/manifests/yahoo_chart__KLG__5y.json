@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:KLG:5y",
+  "source_url": "https://api.tiingo.com/tiingo/daily/klg/prices?startDate=2019-07-02&format=json",
+  "source_kind": "TIINGO_DAILY_RAW",
+  "fetched_at": "2026-09-26T05:43:32.702838+00:00",
+  "sha256": "743e61c1ebc7338c7a578fd4109978393f75a0c4f387c030f0d93b809f37534d",
+  "bytes": 239,
+  "content_type": "application/json",
+  "fetcher": "tools/fetch_tiingo_prices.py v1",
+  "http_status": 200,
+  "notes": "Tiingo raw daily close (not split-adjusted); fallback because Yahoo had no as-of bar"
+}

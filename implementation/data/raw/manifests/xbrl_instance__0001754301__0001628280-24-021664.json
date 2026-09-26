@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001754301:0001628280-24-021664",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1754301/000162828024021664/fox-20240331_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T05:43:11.181722+00:00",
+  "sha256": "0bed0d2524dbfce4e79a0613a689203756fceae3c7c35d79e290fa8c8bbbbf03",
+  "bytes": 865704,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

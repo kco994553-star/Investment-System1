@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:PHIN:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PHIN?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:42:05.115237+00:00",
+  "sha256": "cd11aad0a501f89f031da602128758098e750ac40c54b295889c45920dc238a3",
+  "bytes": 5480,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

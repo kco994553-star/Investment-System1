@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001428439:0001428439-24-000019",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1428439/000142843924000019/roku-20240331_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T05:43:03.024410+00:00",
+  "sha256": "010f1274eb94455403d8ab7b4f76c4ccec49d3beee3a8d566fdde0ed722ea525",
+  "bytes": 1066126,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

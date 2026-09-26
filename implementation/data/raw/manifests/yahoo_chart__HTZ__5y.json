@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:HTZ:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/HTZ?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T05:41:55.508073+00:00",
+  "sha256": "2ee93eb7dfe831ac6de451707ac7176459f84de36d52330be28ef6f64c2e9c4c",
+  "bytes": 135283,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

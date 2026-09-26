@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:IART:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/IART?interval=1d&range=5y",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-09-26T05:41:56.085635+00:00",
+  "sha256": "bb48605c62f87aa4f4c33168b990d012b16824ce073728b839f5d229479b3392",
+  "bytes": 135784,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:NVCR:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NVCR?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:42:03.998320+00:00",
+  "sha256": "18f3b58957aeee462b73b307525e8e613c84c657e96dd05379bd7ecc3c8bac2f",
+  "bytes": 7808,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

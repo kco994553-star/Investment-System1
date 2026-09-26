@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_events:OLPX:5y",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/OLPX?interval=1mo&range=5y&events=split",
+  "source_kind": "YAHOO_SPLIT_EVENTS",
+  "fetched_at": "2026-09-26T05:42:04.520484+00:00",
+  "sha256": "bc21f4f34a4055a3d91b3e1d2f9bd048b48c2340a932ec5718564595345a6f42",
+  "bytes": 1276,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

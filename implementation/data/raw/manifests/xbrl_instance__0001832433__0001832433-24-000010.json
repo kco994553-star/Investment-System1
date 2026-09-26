@@ -1,0 +1,12 @@
+{
+  "artifact_id": "xbrl_instance:0001832433:0001832433-24-000010",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1832433/000183243324000010/ferg-20240430_htm.xml",
+  "source_kind": "SEC_XBRL_INSTANCE",
+  "fetched_at": "2026-09-26T05:41:18.831209+00:00",
+  "sha256": "4c90810d07cb12b296c9c9cf8c399a7aba187cb5aba6a3dcb856a173e9c2092a",
+  "bytes": 806510,
+  "content_type": "text/xml",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
