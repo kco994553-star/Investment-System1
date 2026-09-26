@@ -126,33 +126,27 @@
  "log": [
   {
    "artifact_id": "sec_filing_doc:0001577916:0000354204-24-004728",
-   "status": "OK",
-   "bytes": 17607
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "sec_filing_doc:0001577916:0001104659-24-021744",
-   "status": "OK",
-   "bytes": 11577
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "sec_filing_doc:0001577916:0001086364-24-001358",
-   "status": "OK",
-   "bytes": 11724
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "sec_filing_doc:0000895419:0001562230-24-000085",
-   "status": "OK",
-   "bytes": 16534
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "sec_filing_doc:0000895419:0001422848-24-000401",
-   "status": "OK",
-   "bytes": 16574
+   "status": "SKIPPED_ALREADY_PRESENT"
   },
   {
    "artifact_id": "sec_filing_doc:0000895419:0000080255-24-001370",
-   "status": "OK",
-   "bytes": 4781
+   "status": "SKIPPED_ALREADY_PRESENT"
   }
  ]
 }

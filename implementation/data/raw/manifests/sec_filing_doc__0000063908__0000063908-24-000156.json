@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000063908:0000063908-24-000156",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/63908/000006390824000156/mcd-20240930.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T01:33:09.683956+00:00",
+  "sha256": "b65f5bc77e40e614f85cba980065d126c91ed7702570b6ff0c475a07cb6fd0d6",
+  "bytes": 1562951,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

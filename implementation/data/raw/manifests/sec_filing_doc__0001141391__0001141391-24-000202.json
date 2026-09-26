@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001141391:0001141391-24-000202",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1141391/000114139124000202/ma-20240930.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T01:33:09.444299+00:00",
+  "sha256": "2f3591516d050d0d30d77b7af72e1f9f82ff867203e392d3b47f2ab6e3849a9b",
+  "bytes": 1892144,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

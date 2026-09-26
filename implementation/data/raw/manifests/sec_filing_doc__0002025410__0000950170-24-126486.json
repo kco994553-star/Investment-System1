@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0002025410:0000950170-24-126486",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/2025410/000095017024126486/saro-20240930.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T01:33:14.163164+00:00",
+  "sha256": "7df0fbead5ae9347e19380b2a3ca82130e14119489bbe52b874dc08f5b3f3dc2",
+  "bytes": 3371820,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

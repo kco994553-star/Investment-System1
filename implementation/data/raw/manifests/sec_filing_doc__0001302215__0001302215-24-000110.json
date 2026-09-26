@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001302215:0001302215-24-000110",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1302215/000130221524000110/hli-20240930.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T01:33:11.724439+00:00",
+  "sha256": "3552d0d62be56718c18697f4e3cd2930eb64f589d20e9dae9fdd548ae884f423",
+  "bytes": 1327851,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
