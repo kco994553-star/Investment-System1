@@ -250,7 +250,8 @@ def official_mcap500_snapshot(candidates: list[dict], as_of: datetime, source: s
     return official, report
 
 
-def official_mcap500_snapshot_from_store(store, listings: dict[str, dict], as_of, chart_range: str = "5y"):
+def official_mcap500_snapshot_from_store(store, listings: dict[str, dict], as_of, chart_range: str = "5y",
+                                         gate_candidates: list[dict] | None = None):
     """official_mcap500_snapshot fed from a previously-ingested RawDatasetStore.
 
     listings: company_id -> {"yahoo": ticker, "cik": ...} — same shape ingestion
@@ -262,6 +263,11 @@ def official_mcap500_snapshot_from_store(store, listings: dict[str, dict], as_of
     reports missing/unavailable via shares_status / price_observed_at=None),
     never fabricated.
     """
+    if gate_candidates is not None:
+        # Gate-audited candidates (tools/run_top500_gate_chain.gate_audited_candidates): cover-page / economic-equivalent
+        # shares and the approved price basis (raw close x post-as_of split factor) as used by the Promotion Gate.
+        # The default path below (companyfacts shares x chart 'price' = adjclose) is kept unchanged for existing callers.
+        return official_mcap500_snapshot(gate_candidates, as_of, source="GATE_AUDITED_CANDIDATES")
     from ..ingestion.replay import build_payloads_and_bars  # local import: avoid a hard dep for callers who don't ingest
 
     payloads, bars = build_payloads_and_bars(store, listings, chart_range=chart_range)

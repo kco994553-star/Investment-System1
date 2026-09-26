@@ -1394,3 +1394,60 @@ def test_run34_stale_fact_with_unresolved_cover_is_excluded_not_ranked(tmp_path)
     fresh.put(f"submissions:{cik}", json.dumps({"filings": {"recent": {"form": ["10-Q"], "filingDate": ["2024-11-01"],
               "accessionNumber": ["a"], "primaryDocument": ["q.htm"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
     assert chain.exclude_stale_unresolved(fresh, listings, {}, amc_dt()) == {}
+
+
+def _consistency_store(tmp_path):
+    store = RawDatasetStore(tmp_path)
+    t = int(datetime(2024, 12, 27, 21, tzinfo=UTC).timestamp())
+    def chart(sym, close, adj):
+        store.put(f"yahoo_chart:{sym}:5y", json.dumps({"chart": {"result": [{"timestamp": [t], "indicators": {
+            "quote": [{"close": [close]}], "adjclose": [{"adjclose": [adj]}]}}], "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
+    for cik, sym, sh, close, adj in (("0000000101", "AAA", 1000, 50.0, 48.0), ("0000000102", "BBB", 900, 40.0, 39.0)):
+        store.put(f"companyfacts:{cik}", json.dumps({"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [
+            {"filed": "2024-11-01", "val": sh}]}}}}}).encode(), "u", "SEC", "application/json", "t", 200)
+        store.put(f"submissions:{cik}", json.dumps({"filings": {"recent": {"form": ["10-Q"], "filingDate": ["2024-11-01"],
+                  "accessionNumber": [f"{cik}-24-1"], "primaryDocument": ["q.htm"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+        chart(sym, close, adj)
+    # BRK-like two listed classes -> cover class sum (not reproducible from companyfacts)
+    cik = "0001067983"
+    aid = _sub_with_filing(store, cik)
+    store.put(aid, _instance([("CommonClassAMember", 10), ("CommonClassBMember", 2000)], [("CommonClassAMember", "BRK.A"), ("CommonClassBMember", "BRK.B")]),
+              "u", "SEC", "application/xml", "t", 200)
+    chart("BRK-A", 700.0, 700.0)
+    chart("BRK-B", 0.5, 0.5)
+    listings = {"a": {"cik": "0000000101", "yahoo": "AAA"}, "b": {"cik": "0000000102", "yahoo": "BBB"}, "k": {"cik": cik, "yahoo": "BRK-B"}}
+    return store, listings
+
+
+def test_run35_gate_snapshot_consistency_preserves_cover_shares_and_close_basis(tmp_path):
+    chain = _mod("chain_cons", "run_top500_gate_chain.py")
+    amc = _mod("amc_cons", "audit_mcap_store.py")
+    from investment_system.universe.sources import official_mcap500_snapshot_from_store
+    store, listings = _consistency_store(tmp_path)
+    ov, _ = chain.cover_mcap_overrides(store, listings, amc_dt())
+    assert ov["k"]["status"] == "COVER_CLASS_SUM" and ov["k"]["mcap"] == 10 * 700.0 + 2000 * 0.5
+    top = amc.ranked_top500(store, listings, amc_dt(), mcap_override=ov)
+    cands = chain.gate_audited_candidates(store, listings, ov, amc_dt())
+    rep = chain.gate_snapshot_consistency(store, listings, top, cands, amc_dt())
+    assert rep["passed"] and rep["n_snapshot"] == 3 and rep["shares_basis_counts"]["COVER_CLASS_SUM"] == 1
+    k = next(c for c in cands if c["company_id"] == "k")
+    assert abs(k["shares"] * k["price"] - 8000.0) < 1e-9 and k["price_basis"] == "CLOSE_X_POST_AS_OF_SPLIT_FACTOR"
+    # the unchanged default path (companyfacts shares x adjclose) does not reproduce the gate: evidence for C-32
+    snap_default, _ = official_mcap500_snapshot_from_store(store, {c: listings[c] for c in ("a", "b")}, amc_dt())
+    snap_gate, _ = official_mcap500_snapshot_from_store(store, listings, amc_dt(), gate_candidates=cands)
+    assert list(snap_gate.ids()) == [r["company_id"] for r in top]
+    assert "k" not in snap_default.ids()  # cover-page class sum lost on the default path
+
+
+def test_run35_consistency_flags_gate_member_whose_price_is_not_available_at_as_of(tmp_path):
+    chain = _mod("chain_cons2", "run_top500_gate_chain.py")
+    amc = _mod("amc_cons2", "audit_mcap_store.py")
+    store, listings = _consistency_store(tmp_path)
+    ov, _ = chain.cover_mcap_overrides(store, listings, amc_dt())
+    ov["b"] = {"mcap": 900 * 21.2, "status": "NPORT_REPORTED_VALUE", "valuation_date": "2024-12-31", "classes": [],
+               "nport_reported_value": {"price": 21.2}}
+    top = amc.ranked_top500(store, listings, amc_dt(), mcap_override=ov)
+    cands = chain.gate_audited_candidates(store, listings, ov, amc_dt())
+    rep = chain.gate_snapshot_consistency(store, listings, top, cands, amc_dt())
+    assert rep["passed"] is False and rep["only_in_gate"] == ["b"]
+    assert rep["gate_members_excluded_by_snapshot"] == [{"company_id": "b", "price_basis": "NPORT_REPORTED_VALUE"}]

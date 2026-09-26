@@ -294,6 +294,101 @@ def exclude_stale_unresolved(store: RawDatasetStore, listings: dict, overrides: 
     return out
 
 
+def _as_of_bar(store: RawDatasetStore, symbol: str, as_of, chart_range: str):
+    """(price as used by the gate, observed_at) of the last bar on/before as_of, or (None, None)."""
+    amc = _load("audit_mcap_store")
+    bars = [b for b in load_price_bars(store, symbol, chart_range) if b["observed_at"] <= as_of]
+    if not bars:
+        return None, None
+    return amc.mcap_price(bars[-1], amc.load_splits(store, symbol, chart_range), as_of), bars[-1]["observed_at"]
+
+
+def _filed_dt(store: RawDatasetStore, cik10: str, accn: str | None):
+    from datetime import datetime as _dt
+    rec = ((load_submissions_merged(store, cik10)[0] or {}).get("filings") or {}).get("recent") or {}
+    for a, f in zip(rec.get("accessionNumber") or [], rec.get("filingDate") or []):
+        if a == accn:
+            return _dt.fromisoformat(str(f) + "T00:00:00+00:00")
+    return None
+
+
+def gate_audited_candidates(store: RawDatasetStore, listings: dict, overrides: dict, as_of, chart_range: str = "5y") -> list[dict]:
+    """The candidate representation the Promotion Gate actually ranked, in official_mcap500_snapshot's input shape
+    (company_id, ticker, cik, shares, shares_available_at, price, price_observed_at) plus provenance
+    (shares_basis, price_basis, gate_mcap). Overrides are expressed as equivalent shares of the reference price
+    (gate_mcap / price); excluded issuers are left out. Nothing is recomputed differently from the gate."""
+    from datetime import datetime as _dt
+    out = []
+    for cid, m in listings.items():
+        c = str(m.get("cik") or "").zfill(10)
+        ov = overrides.get(cid)
+        base = {"company_id": cid, "ticker": m.get("yahoo"), "cik": m.get("cik")}
+        if ov and ov.get("exclude"):
+            continue
+        if ov and ov.get("mcap"):
+            if ov["status"] == "NPORT_REPORTED_VALUE":
+                px = ov["nport_reported_value"]["price"]
+                vd = _dt.fromisoformat(str(ov["valuation_date"]) + "T21:00:00+00:00")  # fund valuation at the 2024-12-31 close
+                cf = load_companyfacts(store, c)
+                shr = pit_shares(cf, as_of) if cf is not None else None
+                out.append({**base, "shares": ov["mcap"] / px, "price": px, "price_observed_at": vd,
+                            "shares_available_at": shr["available_at"] if shr else None,
+                            "shares_basis": "COMPANYFACTS_PIT", "price_basis": "NPORT_REPORTED_VALUE", "gate_mcap": ov["mcap"]})
+                continue
+            priced = [x for x in ov.get("classes") or [] if x.get("price")]
+            if priced:
+                ref = priced[0]
+                sym = str(ref.get("price_symbol") or ref.get("symbol") or m.get("yahoo") or "").replace(".", "-")
+                px, obs = _as_of_bar(store, sym, as_of, chart_range)
+                px = ref["price"]
+            else:  # text-corrected / confirmed single count priced on the primary line
+                px, obs = _as_of_bar(store, str(m.get("yahoo") or ""), as_of, chart_range)
+            src = str(ov.get("source") or "")
+            accn = src.split(":")[2] if src.count(":") == 2 else None
+            sh_at = _filed_dt(store, c, accn)
+            for fd in [x.get("filed") for x in ((ov.get("class_economics") or {}).get("citations") or [])]:
+                t = _dt.fromisoformat(str(fd) + "T00:00:00+00:00")
+                sh_at = t if sh_at is None or t > sh_at else sh_at
+            out.append({**base, "shares": ov["mcap"] / px if px else None, "price": px, "price_observed_at": obs,
+                        "shares_available_at": sh_at, "shares_basis": ov["status"], "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
+                        "gate_mcap": ov["mcap"]})
+            continue
+        cf = load_companyfacts(store, c) if str(m.get("cik") or "").isdigit() else None
+        shr = pit_shares(cf, as_of) if cf is not None else None
+        if not shr or shr["shares"] is None:
+            continue
+        px, obs = _as_of_bar(store, str(m.get("yahoo") or ""), as_of, chart_range)
+        if not px or shr["shares"] <= 0:
+            continue
+        out.append({**base, "shares": shr["shares"], "price": px, "price_observed_at": obs, "shares_available_at": shr["available_at"],
+                    "shares_basis": "COMPANYFACTS_PIT", "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR", "gate_mcap": shr["shares"] * px})
+    return out
+
+
+def gate_snapshot_consistency(store: RawDatasetStore, listings: dict, top: list[dict], candidates: list[dict], as_of) -> dict:
+    """official_mcap500_snapshot_from_store(gate_candidates=...) must reproduce the gate's top 500: same members, same
+    order, same market caps (relative 1e-9). Any difference blocks the Official declaration."""
+    from investment_system.universe.sources import official_mcap500_snapshot_from_store
+    snap, rep = official_mcap500_snapshot_from_store(store, listings, as_of, gate_candidates=candidates)
+    gate_ids = [r["company_id"] for r in top]
+    snap_ids = list(snap.ids())
+    cand = {c["company_id"]: c for c in candidates}
+    gate_mcap = {r["company_id"]: r["mcap"] for r in top}
+    diffs = [cid for cid in snap_ids if cid in gate_mcap and abs(cand[cid]["shares"] * cand[cid]["price"] - gate_mcap[cid]) > 1e-9 * gate_mcap[cid]]
+    lost = [c for c in candidates if c["gate_mcap"] and c["company_id"] in gate_mcap and c["company_id"] not in snap_ids]
+    only_gate, only_snap = sorted(set(gate_ids) - set(snap_ids)), sorted(set(snap_ids) - set(gate_ids))
+    order_same = gate_ids == snap_ids
+    by_basis: dict[str, int] = {}
+    for cid in snap_ids:
+        by_basis[cand[cid]["shares_basis"]] = by_basis.get(cand[cid]["shares_basis"], 0) + 1
+    return {"passed": bool(snap_ids) and not only_gate and not only_snap and order_same and not diffs,
+            "n_gate": len(gate_ids), "n_snapshot": len(snap_ids), "only_in_gate": only_gate, "only_in_snapshot": only_snap,
+            "order_identical": order_same, "mcap_mismatch": diffs,
+            "gate_members_excluded_by_snapshot": [{"company_id": c["company_id"], "price_basis": c["price_basis"]} for c in lost],
+            "snapshot_excluded": rep.get("excluded", [])[:50], "shares_basis_counts": by_basis,
+            "universe_id": snap.universe_id, "snapshot_cutoff_mcap": rep.get("cutoff_mcap")}
+
+
 def cover_text_symbol_member(text: str, cover: dict) -> tuple[str | None, str | None]:
     """Listed member from the cover-page TEXT of the same filing when XBRL tags one undimensioned TradingSymbol for several
     classes and the Security12bTitle names no class letter (IAC: title 'Common stock', members CommonClassA/B). The title's
@@ -755,7 +850,10 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
                   "NO_AS_OF_PRICE" if det["mcap_price"] is None else "NON_POSITIVE_SHARES_OR_PRICE")
         unrankable[m.get("yahoo")] = {"reason": reason, "cik": m.get("cik"), "shares": det["shares"],
                                       "price_observed_at": det["price_observed_at"], "pit_filer_status": m.get("pit_filer_status")}
+    candidates = gate_audited_candidates(store, listings, overrides, d, chart_range)
+    consistency = gate_snapshot_consistency(store, listings, top, candidates, d)
     official_blockers = ([] if gate_v2["passed"] else ["PROMOTION_GATE_V2_FAILED"]) + \
+        ([] if consistency["passed"] else ["GATE_SNAPSHOT_INCONSISTENT"]) + \
         [f"TOP500_ROWS_{k}" for k in sorted(flag_counts)] + \
         (["LOWER_BOUND_ISSUERS_OUTSIDE_TOP500"] if lb_outside else [])
     official = not official_blockers
@@ -772,6 +870,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "lower_bound_issuers_outside_top500": lb_outside, "lower_bound_settled_outside_by_upper_bound": lb_settled,
         "class_economics_verification": class_econ, "price_basis_exceptions": price_exceptions,
         "share_scale_checks": share_scale, "stale_share_facts_excluded": stale_excluded,
+        "gate_snapshot_consistency": consistency,
         "unrankable_issuers": unrankable,
         "audit": audit, "rankable": audit["rankable"], "cutoff_500_mcap": cutoff,
         "top500": top_rows, "top500_quality_flag_counts": flag_counts,
