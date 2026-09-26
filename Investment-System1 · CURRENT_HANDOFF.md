@@ -1,47 +1,37 @@
 Investment-System1 · CURRENT_HANDOFF
 
-Timestamp: 2026-09-26 (round 10)
-AI: Claude Code (container) + GitHub Actions workflow c21-real-data (runs #25-#30)
+Timestamp: 2026-09-26 (round 11)
+AI: Claude Code (container) + GitHub Actions workflow c21-real-data (runs #31-#40)
 Repo/branch: kco994553-star/Investment-System1 @ claude/investment-system-top500-validation-alrugm
-Handoff Status: OPEN — Main Track (REAL-DATA) blocked by 3 data-source gaps (PINC, WOLF, PPLI); Promotion Gate v2 FAILS.
-Official US Market-Cap Top 500 PIT NOT declared. REAL-DATA VERIFIED: NO. C-21 RESOLVED (store persisted in Actions).
-Additive context: Personal Investment Layer v1 = Architecture FROZEN (100%), Implementation NOT STARTED, below Main Track.
+Handoff Status: OPEN — Official US Market-Cap Top 500 PIT DECLARED for as_of 2024-12-31 (Promotion Gate v2 PASS +
+gate/snapshot consistency PASS). Real single_as_of / benchmark running (run #39); walk-forward dates 2024-09-30 (run #40)
+and 2024-06-30 need their own independent gate PASS. Track B (PIL) frozen at P0.
 
-Main Track (unchanged priority)
-REAL-DATA -> complete PIT candidate pool -> official_mcap500_snapshot_from_store -> real single_as_of -> >=3-date
-walk-forward -> actual 500-company network benchmark -> Promotion/validation.
-Current step: complete PIT candidate pool / Promotion Gate v2 (not passed).
+Track A — Main Track (priority)
+REAL-DATA -> complete PIT pool -> Official snapshot [2024-12-31 DONE] -> real single_as_of [running] -> >=3-date walk-forward
+(each date gated independently) -> real 500-company benchmark -> regression/evidence -> backend baseline freeze.
 
-Latest evidence: reports/gate_evidence/gate_chain_2024-12-31_real_gha.json (run #30, id 36206384858, commit 316ada7)
-Reference: reports/gate_evidence/russell1000_nport_2024-12-31.json (SEC NPORT-P 0001752724-25-034052, report date
-2024-12-31, filed 2025-02-24; 985 member CIKs, 6 holdings unresolved and not counted as members)
-Raw store: Actions cache c21-raw-store-v2-* + run artifacts (90 days); git: manifests + STORE_INDEX
+2024-12-31 evidence: reports/gate_evidence/gate_chain_2024-12-31_real_gha.json (run #38, id 36212684383, commit b143d72)
+- Promotion Gate v2 PASS; base PASS; Sufficiency PASS (Russell 1000 N-PORT superset 985 members: 0 missing, 0 not rankable,
+  15 rule-excluded); Completeness FAIL (not required).
+- gate_snapshot_consistency PASS: official_mcap500_snapshot_from_store(gate_candidates) = gate top 500 (members, order, mcap).
+- rankable 982, #500 cutoff $15.338B (TPR); #1 AAPL $3.81T; total $53.97T.
+- share basis of the 500: companyfacts 439, cover class sum lower bound 44 (membership exact, rank lower bound), cover class
+  sum 8, economic equivalent 5 (H, RKT, TKO, TPG, DKS, RYAN*), cover-text confirmed 3, cover-text single count 1 (MTD).
+  (*RYAN is economic-equivalent too; counts per the run's consistency report.)
+- price basis: close x post-as_of split factor for all 500; approved NPORT_REPORTED_VALUE exception (PINC, WOLF only, 2024-12-31
+  only) is outside the top 500 and cannot enter the snapshot (valued after the as_of cut).
+- Reviewed filing evidence (chain re-verifies every quote verbatim, same CIK, filed <= as_of): class_economics_2024-12-31.json
+  (H, RKT, TKO, TPG, RYAN, DKS), symbol_mappings_2024-12-31.json (DKS, IBKR), nport_price_exception / nport_reported_prices.
+- Validation findings fixed (previously mis-ranked): HXL x10^6 scale error (#1 at $5 quadrillion), stale/one-class companyfacts
+  counts (MA, CME, IBKR, DKS, ARES, COKE, AOS, PPLI …), duplicated cover facts (CME), class-symbol naming (BF-B, AOS, COKE,
+  TRIP, AA, ARES), MTD cover text. Conflict Register C-32 (snapshot default path adjclose), C-33 (companyfacts share counts).
 
-Numbers (as_of 2024-12-31, run #30)
-- rankable 979 · #500 cutoff $15.189B (H at #500)
-- Russell superset: missing from pool 0; present but not rankable 2 (PINC, WOLF); rule-excluded 15
-- S&P detector: 0 not rankable
-- unrankable 3: PINC, WOLF (no price on/before as_of in Yahoo or Tiingo; Tiingo search returns only other "Premier"
-  companies / "Wolfspeed Inc (New)"), PPLI (cover XBRL shares 0, no priced class)
-- multi-class: H, RKT, TKO, TPG resolved from filings <= as_of (class_economics_2024-12-31.json, chain-verified quotes):
-  H $15.19B, RKT $22.00B, TKO $24.48B, TPG $23.14B
-- Completeness FAIL · Sufficiency FAIL (REFERENCE_MEMBERS_PRESENT_BUT_NOT_RANKABLE) · Promotion Gate v2 FAIL
+Next: run #39 results (official_snapshot_2024-12-31.json, single_as_of 2024-12-31 -> 2025-03-31, benchmark_500);
+run #40 = independent gate for 2024-09-30; then 2024-06-30; walk-forward only when all three are Official.
 
-Decisions needed (user, policy)
-1. PINC/WOLF price: licensed delisted-price source, or the iShares N-PORT 2024-12-31 per-share value (filed after as_of,
-   one trading day different from the 12-30 close basis) recorded as a separate price basis.
-2. PPLI: allow checking later SEC filings for the correct share count (post-as_of information).
+Track B — Personal Investment Layer v1: Architecture FROZEN; P0 Common Contracts implemented and FROZEN
+(src/investment_system/personal/, tests/test_pil_p0_contracts.py 13 tests). No P1 / broker / integration. C-24, C-25,
+C-28, C-29, C-30 undecided; C-33 recorded as PIL upstream note.
 
-Next action after decisions: implement, one workflow run; only if Promotion Gate v2 passes:
-official_mcap500_snapshot_from_store -> real single_as_of -> >=3 as_of walk-forward -> 500-company benchmark.
-
-Personal Investment Layer v1 (additive; see `Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md`)
-- Architecture FROZEN; Implementation NOT STARTED (P0..P6 plan READY; not started because it must not displace the Main Track).
-- Intake conflicts registered: C-24 StrategyProfile name/contract, C-25 security_id vs company_id, C-26 Model/Actual in one
-  Holding, C-27 Integration gap/order intents vs Portfolio Gap, C-28 Technical output lacks available_at (verified not
-  implemented), C-29 no authoritative QGV↔Technical scale contract, C-30 Official weight maturity unresolved, C-31 code.md
-  absent.
-- Open upstream (not solved in PIL): Technical available_at propagation (C-28), score-scale contract (C-29), Official weight
-  dataset (C-30).
-
-Tests: 242/242 (tools/mini_pytest.py) and 242/242 (pytest).
+Tests: 272/272 (mini_pytest shim and pytest): Track A 259, Track B 13.

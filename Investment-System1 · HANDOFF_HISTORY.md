@@ -1445,3 +1445,13 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
   Official NOT declared.
 - Personal Investment Layer v1 relay imported (Architecture FROZEN, Implementation NOT STARTED); intake conflicts C-24..C-31;
   Integration zero-actual-weight defect fixed (C-27). 242 tests.
+
+------------------------------------------------------------------------
+
+2026-09-26 (round 11) · Claude Code (+ Actions runs #31-#40) → Next AI
+- User decisions: PINC/WOLF via NPORT_REPORTED_VALUE (identity + reproduced price; 2024-12-31 only); PPLI no future info
+  (resolved from its own 10-Q cover text); multi-class only with filing evidence; parallel Track B (PIL P0, frozen).
+- Share-count validation (scale check, stale companyfacts -> cover XBRL, dedupe, class-symbol rules, reviewed mappings)
+  removed wrongly ranked issuers; gate/snapshot consistency added (blocks Official on mismatch).
+- Run #38: Promotion Gate v2 PASS, consistency PASS -> Official US Market-Cap Top 500 PIT declared for 2024-12-31.
+- 272 tests (259 Track A + 13 Track B).
