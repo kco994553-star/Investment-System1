@@ -1109,3 +1109,49 @@ def test_run28_class_rights_passages_and_latest_forms():
                                   "accessionNumber": ["a", "b", "c", "d"], "primaryDocument": ["a.htm", "b.htm", "c.htm", "d.htm"]}}}
     assert [f["accn"] for f in frc.latest_forms(sub, amc_dt())] == ["b", "c"]
     assert "Nonvoting Class A" in frc.class_phrases("NonvotingCommonStockMember")
+
+
+def test_run29_reviewed_class_economics_file_verifies_against_its_cited_filings(tmp_path):
+    """The committed determinations (H, RKT, TKO, TPG) pass the chain's verifier when the cited filings contain the
+    quotes; the resulting market caps equal (listed + ratio x unlisted shares) x listed price."""
+    chain = _mod("chain_ce_real", "run_top500_gate_chain.py")
+    ge = Path(chain.GE)
+    dets = json.loads((ge / "class_economics_2024-12-31.json").read_text(encoding="utf-8"))
+    passages = json.loads((ge / "class_rights_passages_2024-12-31.json").read_text(encoding="utf-8"))["issuers"]
+    store = RawDatasetStore(tmp_path)
+    got = {}
+    for cik, det in dets["issuers"].items():
+        p = passages[det["symbol"]]
+        docs = {}
+        for cd in det["classes"].values():
+            for q in cd["citations"]:
+                docs.setdefault(q["artifact_id"], (q["accession"], q["filed"], []))[2].append(q["quote"])
+        rec = {"form": [], "filingDate": [], "accessionNumber": [], "primaryDocument": []}
+        for aid, (accn, filed, quotes) in docs.items():
+            store.put(aid, ("<html><p>" + "</p><p>".join(quotes) + "</p></html>").encode(), "u", "SEC", "text/html", "t", 200)
+            for k, v in (("form", "10-Q"), ("filingDate", filed), ("accessionNumber", accn), ("primaryDocument", "d.htm")):
+                rec[k].append(v)
+        store.put(f"submissions:{cik}", json.dumps({"filings": {"recent": rec}}).encode(), "u", "SEC", "application/json", "t", 200)
+        classes = [{**c, "price": c.get("price") or None} for c in p["classes"]]
+        ov = {"mcap": sum(c["shares"] * c["price"] for c in classes if c["price"]), "status": "COVER_CLASS_SUM_LOWER_BOUND", "classes": classes}
+        mcap, ev = chain.verify_class_economics(store, cik, ov, det, amc_dt())
+        assert ev["status"] == "ECONOMIC_EQUIVALENT_DETERMINED", (det["symbol"], ev)
+        listed = next(c for c in classes if c["price"])
+        assert abs(mcap - sum(c["shares"] for c in classes) * listed["price"]) < 1e-3
+        got[det["symbol"]] = mcap
+    assert sorted(got) == ["H", "RKT", "TKO", "TPG"]
+    assert all(min(c["filed"] for cd in d["classes"].values() for c in cd["citations"]) <= "2024-12-31" for d in dets["issuers"].values())
+
+
+def test_run29_identical_rights_basis_and_context_citations_do_not_prove_ratios(tmp_path):
+    chain = _mod("chain_ce_ctx", "run_top500_gate_chain.py")
+    store, cik, ov, det = _class_econ_store(tmp_path)
+    ctx_only = json.loads(json.dumps(det))
+    ctx_only["classes"]["CommonClassBMember"]["citations"] = [{
+        "artifact_id": f"sec_filing_doc:{cik}:0001234567-24-000009",
+        "quote": "Each share of Class B common stock is paired with one OpCo Unit.", "supports": ["voting_only_context"]}]
+    mcap, ev = chain.verify_class_economics(store, cik, ov, ctx_only, amc_dt())
+    assert mcap is None and "CLAIMS_UNPROVEN" in ev["failures"][0]
+    import re
+    assert re.search(chain.CLAIM_PATTERNS["identical_rights"], "have the same rights and privileges as, rank equally and share ratably with")
+    assert re.search(chain.RATIO_ONE, "were converted on a share-for-share basis into shares of Class A common stock")

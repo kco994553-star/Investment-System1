@@ -318,12 +318,16 @@ def equal_economics_upper_bound(override: dict) -> float | None:
 
 
 # Claims a verbatim filing quote must support before an unlisted class counts in listed-class equivalents.
-RATIO_ONE = r"one[- ]for[- ]one|1:1|1-for-1|one-to-one|on a one for one basis|into one share of|for one share of|an equal number of"
+RATIO_ONE = (r"one[- ]for[- ]one|1:1|1-for-1|one-to-one|on a one for one basis|share[- ]for[- ]share|into one share of|"
+             r"for one share of|an equal number of")
 CLAIM_PATTERNS = {"conversion_ratio": RATIO_ONE, "exchange_ratio": RATIO_ONE,
-                  "pairing": r"(one|a|an equal number of|corresponding number of) shares? of Class [A-Z]|"
-                             r"equal to the number of|for each (common |LLC |Holdings |OpCo |Common )?units?"}
+                  # 'one share of our Class B', 'an equal number of shares of TKO Class B', 'a corresponding number of shares of our Class D'
+                  "pairing": r"(one|a|an equal number of|corresponding number of) shares? of (?:[\w’']+ ){0,2}Class [A-Z]|"
+                             r"equal to the number of|for each (?:\w+ )?units?",
+                  "identical_rights": r"identical in all respects|share ratably with|same rights and privileges"}
 BASIS_CLAIMS = {"CONVERTIBLE_INTO_LISTED": {"conversion_ratio"},
-                "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED": {"pairing", "exchange_ratio"}}
+                "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED": {"pairing", "exchange_ratio"},
+                "ECONOMICALLY_IDENTICAL_TO_LISTED": {"identical_rights"}}
 
 
 def _filed_on_or_before(store: RawDatasetStore, cik10: str, accn: str, as_of) -> str | None:

@@ -1,0 +1,187 @@
+{
+ "kind": "CLASS_ECONOMICS_DETERMINATIONS",
+ "as_of": "2024-12-31",
+ "method": "Reviewed from class_rights_passages_2024-12-31.json (10-K/10-Q filed on or before as_of). The gate chain re-verifies every quote verbatim in the stored filing, the filing date, the CIK, and the ratio wording; unverified issuers stay lower-bound blockers.",
+ "formula": "economic-equivalent listed shares = listed class shares + sum(ratio x unlisted class shares); PIT market cap = equivalent shares x listed class as-of close (x post-as_of split factor via the chain's price basis)",
+ "issuers": {
+  "0001468174": {
+   "symbol": "H",
+   "entity_name": "Hyatt Hotels Corp",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "CONVERTIBLE_INTO_LISTED",
+     "ratio": 1,
+     "rights_summary": "Class B = shares of Hyatt Hotels Corp itself (10 votes/share), converted share-for-share into Class A; same per-share cash dividend as Class A.",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001468174:0001468174-24-000107",
+       "form": "10-Q",
+       "filed": "2024-10-31",
+       "accession": "0001468174-24-000107",
+       "offset": 180925,
+       "quote": "Class B Share Conversion —During the nine months ended September 30, 2024, 1,379,064 shares of Class B common stock were converted on a share-for-share basis into shares of Class A common stock, $ 0.",
+       "supports": [
+        "conversion_ratio"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001468174:0001468174-24-000014",
+       "form": "10-K",
+       "filed": "2024-02-23",
+       "accession": "0001468174-24-000014",
+       "offset": 716549,
+       "quote": "Class B Share Conversion —During the years ended December 31, 2023, December 31, 2022, and December 31, 2021, 160,626 shares, 735,522 shares, and 2,385,647 shares, respectively, of Class B common stock were converted on a share-for-share basis into shares of Class A common stock, $ 0.",
+       "supports": [
+        "conversion_ratio"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001468174:0001468174-24-000107",
+       "form": "10-Q",
+       "filed": "2024-10-31",
+       "accession": "0001468174-24-000107",
+       "offset": 174182,
+       "quote": "Dividend — The following tables summarize dividends declared to Class A and Class B stockholders of record: Three Months Ended September 30, Nine Months Ended September 30, 2024 2023 2024 2023 Class A common stock $ 6 $ 7 $ 20 $ 14 Class B common stock 9 9 26 18 Total cash dividends declared $ 15 $ 16 $ 46 $ 32 Date declared Dividend per share amount for Class A and Class B Date of record Date paid February 14, 2024 $ 0.",
+       "supports": [
+        "equal_dividend_context"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "No operating-partnership units: Class A and Class B are both issued shares of the registrant; the cover counts are separate classes (Class B converted shares are retired), so A + B is not double counted."
+  },
+  "0001805284": {
+   "symbol": "RKT",
+   "entity_name": "Rocket Companies, Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassDMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "rights_summary": "Class D (10 votes/share) is paired with Rocket Holdings LLC Holdings Units held by RHI/Dan Gilbert (non-controlling interest); a Holdings Unit + Class D share is exchangeable one-to-one, at the company's option, for Class A (or Class B) shares or cash based on the Class A price.",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000176",
+       "form": "10-Q",
+       "filed": "2024-11-12",
+       "accession": "0001805284-24-000176",
+       "offset": 161185,
+       "quote": "For the nine months ended September 30, 2024, 1,848,879,483 Holdings Units were outstanding, together with a corresponding number of shares of our Class D common stock, which were exchangeable, at our option, for shares of our Class A common stock.",
+       "supports": [
+        "pairing"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000009",
+       "form": "10-K",
+       "filed": "2024-02-27",
+       "accession": "0001805284-24-000009",
+       "offset": 234077,
+       "quote": "No adjustments to the present exchange ratio of one-to-one for Holdings Units and corresponding shares of Class D common stock or Class C common stock will be made as a result of (i) any cash distribution by Holdings or (ii) any cash that we retain and do not distribute to our stockholders.",
+       "supports": [
+        "exchange_ratio"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Economic interest of the NCI = 1,848,879,483 Holdings Units (10-Q), equal to the cover Class D count 1,848,879,483; Holdings Units held by Rocket Companies itself are represented by the Class A shares and are not added. Class D shares carry the vote only, so Class D is counted once as its paired unit."
+  },
+  "0001973266": {
+   "symbol": "TKO",
+   "entity_name": "TKO Group Holdings, Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "rights_summary": "Class B (1 vote, no dividends, no liquidation rights) is held with an equal number of TKO OpCo Common Units by Endeavor; units (+ equal Class B) redeemable for cash or, at the company's option, Class A one-for-one; the Class B share is cancelled on exchange.",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001973266:0001562762-24-000038",
+       "form": "10-K",
+       "filed": "2024-02-27",
+       "accession": "0001562762-24-000038",
+       "offset": 615983,
+       "quote": "TKO OpCo’s operating agreement provides that holders of membership interests in TKO OpCo (“Common Units”) may, from time to time, require TKO OpCo to redeem all or a portion of their Common Units (and an equal number of shares of TKO Class B common stock) for cash or, at the Company’s option, for shares of TKO Class A common stock on a one-for-one basis.",
+       "supports": [
+        "pairing",
+        "exchange_ratio"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001973266:0001562762-24-000038",
+       "form": "10-K",
+       "filed": "2024-02-27",
+       "accession": "0001562762-24-000038",
+       "offset": 613227,
+       "quote": "Holders of TKO Class B common stock are not entitled to receive dividends and will not be entitled to receive any distributions upon the liquidation, dissolution or winding up of the affairs of the Company.",
+       "supports": [
+        "voting_only_context"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class B carries no economic rights; the economic interest is the equal number of TKO OpCo Common Units held by non-TKO members (10-K: 89,616,891 Class B = units held by Endeavor entities; 10-Q cover Class B 89,616,891). Counting Class B count x 1 counts each exchangeable unit once; TKO's own OpCo units are represented by Class A."
+  },
+  "0001880661": {
+   "symbol": "TPG",
+   "entity_name": "TPG Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "NonvotingCommonStockMember": {
+     "basis": "ECONOMICALLY_IDENTICAL_TO_LISTED",
+     "ratio": 1,
+     "rights_summary": "Nonvoting Class A: identical in all respects to Class A except voting; converts automatically into Class A on transfer.",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000054",
+       "form": "10-Q",
+       "filed": "2024-11-04",
+       "accession": "0001880661-24-000054",
+       "offset": 219750,
+       "quote": "The nonvoting Class A common stock have the same rights and privileges as, rank equally and share ratably with, and are identical in all respects as to all matters to, the Class A common stock, except that the nonvoting Class A common stock have no voting rights other than such rights as may be required by law.",
+       "supports": [
+        "identical_rights"
+       ]
+      }
+     ]
+    },
+    "CommonClassBMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "rights_summary": "Class B (10 votes until the Sunset, non-economic) is held one-for-one with TPG Operating Group Common Units; Common Units exchange for an equal number of Class A shares with cancellation of an equal number of Class B.",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000013",
+       "form": "10-K",
+       "filed": "2024-02-23",
+       "accession": "0001880661-24-000013",
+       "offset": 290301,
+       "quote": "They hold substantially all of their economic interest in the TPG Operating Group primarily through TPG Partner Vehicles (rather than through ownership of shares of our Class A common stock), and for each Common Unit owned, they own one share of our Class B common stock.",
+       "supports": [
+        "pairing"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000054",
+       "form": "10-Q",
+       "filed": "2024-11-04",
+       "accession": "0001880661-24-000054",
+       "offset": 222191,
+       "quote": "During the nine months ended September 30, 2024 and 2023, certain holders of Common Units exchanged Common Units for an equal number of shares of Class A common stock resulting in the issuance of shares of Class A common stock and the cancellation of an equal number of shares of Class B common stock for no additional consideration as follows: Exchange Date Class A Common Stock Issued 2024 Exchanges (a) February 27, 2024 17,704,987 May 21, 2024 1,998,593 August 19, 2024 1,042,119 2023 Exchange March 30, 2023 1,000,000 __________ (a) The issuance of the shares of Class A common stock to such holders of Common Units was registered pursuant to the Company’s registration statement on Form S-3 fil",
+       "supports": [
+        "exchange_ratio",
+        "pairing"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class B is non-economic; each Class B share corresponds to one Common Unit held outside TPG Inc. (10-K: 281,657,626 Class B = 281,657,626 Common Units exchangeable into Class A at 2023-12-31); TPG Inc.'s own Common Units are represented by Class A + nonvoting Class A, so A + nonvoting A + B(units) counts each economic interest once."
+  }
+ }
+}
