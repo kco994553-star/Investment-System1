@@ -19,6 +19,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import html
 import importlib.util
 import json
 import re
@@ -83,6 +84,22 @@ def series_names(index_headers: bytes) -> list[str]:
     """Series names in an EDGAR index-headers page (SGML header shown as text, tags possibly HTML-escaped)."""
     text = index_headers.decode("utf-8", errors="replace").replace("&lt;", "<").replace("&gt;", ">")
     return [m.strip() for m in re.findall(r"<SERIES-NAME>([^\n<]+)", text) if m.strip()]
+
+
+def subject_company_ciks(index_headers: bytes) -> set[str]:
+    """Subject-company CIKs from an EDGAR index-headers page.
+
+    Schedule 13D/G accessions can appear in both the subject company's and a reporting person's submissions. The
+    submissions CIK therefore cannot establish issuer identity; the SEC header's SUBJECT COMPANY block must do it.
+    """
+    text = html.unescape(index_headers.decode("utf-8", errors="replace")).replace("\r", "")
+    blocks = re.findall(
+        r"(?:^|\n)SUBJECT COMPANY:\s*(.*?)(?=\n(?:SUBJECT COMPANY|FILED BY|REPORTING-OWNER|FILER|ISSUER):|"
+        r"\n</SEC-HEADER>|\n<DOCUMENT>|\Z)",
+        text,
+        flags=re.S,
+    )
+    return {m.zfill(10) for b in blocks for m in re.findall(r"CENTRAL INDEX KEY:\s*(\d+)", b)}
 
 
 def parse_nport(xml_bytes: bytes) -> dict:
@@ -261,21 +278,34 @@ def name_candidates(name: str, cur: dict, hist: dict) -> set[str]:
 
 
 def attest_by_cusip(store: RawDatasetStore, get, candidates: list[str], cusip: str, as_of: datetime, npr, frc) -> dict:
-    """The candidate CIK whose OWN ownership filings (Schedule 13G/13D on it as subject company, filed <= as_of) print
-    the holding's CUSIP. Exactly one attested candidate -> identity; none or several -> unresolved (fail-closed)."""
+    """The candidate that is the SEC-header SUBJECT COMPANY of a timely 13D/G printing the holding CUSIP.
+
+    A filing can also appear in a reporting person's submissions, so that submissions CIK is only a discovery route.
+    Exactly one attested subject candidate resolves; otherwise fail closed.
+    """
     hits, checked = [], []
-    for c in candidates[:8]:
+    candidate_set = set(candidates[:8])
+    for c in sorted(candidate_set):
         get(f"submissions:{c}", SUBMISSIONS_URL.format(cik=c), "SEC_SUBMISSIONS")
         sub = load_submissions_merged(store, c)[0] or {}
         # a tracking-stock issuer files one 13G per group/class: read up to 10 of its latest ownership filings
         for f in npr.ownership_filings(sub, as_of, ATTEST_MAX_DOCS):
             aid = f"sec_filing_doc:{c}:{f['accn']}"
+            hid = f"edgar_index_headers:{f['accn']}"
             get(aid, npr.ARCHIVE_URL.format(cik=int(c), nodash=f["accn"].replace("-", ""), doc=f["primary_document"]),
                 "SEC_FILING_DOCUMENT")
+            get(hid, INDEX_HEADERS_URL.format(cik=int(c), nodash=f["accn"].replace("-", ""), accn=f["accn"]),
+                "SEC_INDEX_HEADERS")
             snip = npr.cusip_attested(frc.html_text(store.get_bytes(aid)), cusip) if store.has(aid) else None
-            checked.append({"cik": c, "artifact_id": aid, "filed": f["filed"], "form": f["form"], "cusip_found": bool(snip)})
-            if snip:
-                hits.append({"cik": c, "artifact_id": aid, "filed": f["filed"], "snippet": snip})
+            subjects = subject_company_ciks(store.get_bytes(hid)) if store.has(hid) else set()
+            checked.append({"submissions_cik": c, "subject_ciks": sorted(subjects), "artifact_id": aid,
+                            "header_artifact_id": hid, "filed": f["filed"], "form": f["form"],
+                            "cusip_found": bool(snip)})
+            matched_subjects = subjects & candidate_set
+            if snip and matched_subjects:
+                for subject in sorted(matched_subjects):
+                    hits.append({"cik": subject, "discovered_via_submissions_cik": c, "artifact_id": aid,
+                                 "header_artifact_id": hid, "filed": f["filed"], "snippet": snip})
                 break
     ciks = sorted({h["cik"] for h in hits})
     if len(ciks) > 1:
