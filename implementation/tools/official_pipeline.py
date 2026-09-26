@@ -6,7 +6,7 @@ gate run; nothing here re-ranks. The Official snapshot is rebuilt with universe.
 gate-audited candidates stored in that evidence and must reproduce the gate's top 500 exactly (members and order).
 
 Existing engines are used unchanged: validation.vertical_slice.run_vertical_slice_from_store (single_as_of) and
-run_walk_forward_from_store. The benchmark measures wall-clock / peak heap / error counts of those real paths on the
+run_walk_forward_from_store. The benchmark measures wall-clock / peak RSS / error counts of those real paths on the
 Official 500 real companies from the raw store (the same measurements as tools/bench_universe_500.py, which is SYNTHETIC),
 plus the network fetch statistics recorded by the ingestion runs.
 
@@ -21,7 +21,6 @@ import json
 import statistics
 import sys
 import time
-import tracemalloc
 from datetime import datetime
 from pathlib import Path
 
@@ -64,13 +63,14 @@ def load_official(as_of: str) -> tuple[object | None, dict]:
 
 
 def _measure(fn):
-    tracemalloc.start()
+    """Wall clock + process peak RSS (OS counter, no per-allocation tracing: tracemalloc on the 500-company run
+    exhausted the hosted runner in run #39)."""
+    import resource
     t = time.perf_counter()
     out = fn()
     dt = time.perf_counter() - t
-    peak = tracemalloc.get_traced_memory()[1]
-    tracemalloc.stop()
-    return out, {"wall_s": round(dt, 3), "peak_heap_mb": round(peak / 2**20, 2)}
+    peak_kb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss  # KiB on Linux
+    return out, {"wall_s": round(dt, 3), "peak_rss_mb": round(peak_kb / 1024, 1)}
 
 
 def network_stats(store_dir: Path) -> dict:
@@ -138,7 +138,7 @@ def main() -> None:
     if timings:
         out["benchmark_500"] = {"kind": "REAL_500_COMPANY_BENCHMARK", "per_date_single_as_of": timings,
                                 "median_wall_s": statistics.median(t["wall_s"] for t in timings),
-                                "max_peak_heap_mb": max(t["peak_heap_mb"] for t in timings),
+                                "max_peak_rss_mb": max(t["peak_rss_mb"] for t in timings),
                                 "name_errors_total": errors, "network": network_stats(Path(a.store)),
                                 "note": "Real raw store (network-ingested by the c21 workflow); compare with "
                                         "tools/bench_universe_500.py (SYNTHETIC)."}
