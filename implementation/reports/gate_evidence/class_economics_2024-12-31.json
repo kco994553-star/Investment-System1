@@ -279,6 +279,47 @@
     }
    },
    "double_count_check": "No operating-partnership units: common (XBRL CommonClassAMember, 57,903,976) and Class B (23,570,633) are both issued shares of the registrant (10-Q cover 2024-11-22); A + B is not double counted. Listed member per symbol_mappings (10-K: Class B 'not listed or traded')."
+  },
+  "0001823945": {
+   "symbol": "OWL",
+   "entity_name": "Blue Owl Capital Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassCMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "paired_instrument": "Common Unit",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001823945:0001823945-24-000016",
+       "form": "10-K",
+       "filed": "2024-02-23",
+       "accession": "0001823945-24-000016",
+       "offset": 496545,
+       "quote": "Upon an exchange of Common Units for an equal number of Class A Shares or Class B Shares, a corresponding number of Class C Shares or Class D Shares, respectively, will be cancelled.",
+       "supports": [
+        "pairing"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001823945:0001823945-24-000016",
+       "form": "10-K",
+       "filed": "2024-02-23",
+       "accession": "0001823945-24-000016",
+       "offset": 503879,
+       "quote": "From time to time, the Company exchanges Common Units and Class C Shares for an equal number of Class A Shares.",
+       "supports": [
+        "pairing",
+        "exchange_ratio"
+       ]
+      }
+     ]
+    }
+   },
+   "undetermined": {
+    "CommonClassDMember": "Class D Shares pair with Common Units held by Principals, which exchange into Class B Shares (not the listed Class A); no filing quote proving Class B economics equal to Class A was found -> Class D unvalued (partial lower bound)."
+   },
+   "double_count_check": "Class C Shares are non-economic voting shares, one per Common Unit held outside Blue Owl Capital Inc.; on exchange the Class C share is cancelled. Blue Owl's own Operating Group units are represented by Class A. Class A + Class C (as units) counts each economic interest once; Class D (Principal units) is left out, so the result is a lower bound."
   }
  }
 }

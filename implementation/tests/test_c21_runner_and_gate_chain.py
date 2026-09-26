@@ -1157,11 +1157,18 @@ def test_run29_reviewed_class_economics_file_verifies_against_its_cited_filings(
         classes = [{**c, "price": c.get("price") or None} for c in p["classes"]]
         ov = {"mcap": sum(c["shares"] * c["price"] for c in classes if c["price"]), "status": "COVER_CLASS_SUM_LOWER_BOUND", "classes": classes}
         mcap, ev = chain.verify_class_economics(store, cik, ov, det, amc_dt())
-        assert ev["status"] == "ECONOMIC_EQUIVALENT_DETERMINED", (det["symbol"], ev)
         listed = next(c for c in classes if c["price"])
-        assert abs(mcap - sum(c["shares"] for c in classes) * listed["price"]) < 1e-3
+        if det.get("undetermined"):
+            # partial proof (OWL: Class D unvalued): a higher LOWER BOUND = (listed + proven classes) x listed price
+            assert ev["status"] == "ECONOMIC_EQUIVALENT_PARTIAL_LOWER_BOUND", (det["symbol"], ev)
+            proven = {m for m in det["classes"]} | {listed["member"]}
+            assert abs(mcap - sum(c["shares"] for c in classes if c["member"] in proven) * listed["price"]) < 1e-3
+            assert set(det["undetermined"]) <= set(ev["undetermined_classes"])
+        else:
+            assert ev["status"] == "ECONOMIC_EQUIVALENT_DETERMINED", (det["symbol"], ev)
+            assert abs(mcap - sum(c["shares"] for c in classes) * listed["price"]) < 1e-3
         got[det["symbol"]] = mcap
-    assert sorted(got) == ["DKS", "H", "RKT", "RYAN", "TKO", "TPG"]
+    assert sorted(got) == ["DKS", "H", "OWL", "RKT", "RYAN", "TKO", "TPG"]
     assert all(min(c["filed"] for cd in d["classes"].values() for c in cd["citations"]) <= "2024-12-31" for d in dets["issuers"].values())
 
 
@@ -2024,3 +2031,25 @@ def test_nport_reference_attestation_tie_broken_only_by_pit_registrant(tmp_path)
     assert fnr.pit_registrant(store, "0000000001", amc_dt()) and not fnr.pit_registrant(store, "0000000002", amc_dt())
     assert att["cik"] == "0000000001" and att["status"] == "UNIQUE_PIT_REGISTRANT_AMONG_ATTESTED"
     assert att["attested_ciks"] == ["0000000001", "0000000002"]
+
+
+def test_c36_owl_class_c_paired_units_proven_class_d_left_unvalued():
+    """Run #55: Blue Owl (OWL) entered the pool via the fixed reference (C-36) as a cover-class lower bound (Class A
+    only). Its FY2023 10-K (filed 2024-02-23, before every as_of) proves Class C (non-economic, one per Common Unit held
+    outside the company) pairs 1:1 with Common Units exchanged for Class A; Class D pairs with Principal units that
+    exchange into UNLISTED Class B, so it stays unvalued (partial lower bound). Quotes must be verbatim in the fetched
+    passages, filed <= each as_of, and satisfy the claim patterns."""
+    import re
+    chain = _mod("chain_owl", "run_top500_gate_chain.py")
+    ge = Path(chain.GE)
+    pas = json.loads((ge / "class_rights_passages_2024-12-31.json").read_text(encoding="utf-8"))["issuers"]["OWL"]
+    texts = {(d["artifact_id"], p["offset"]): p["text"] for d in pas["documents"] for p in d["passages"]}
+    for a in ("2024-06-30", "2024-09-30", "2024-12-31"):
+        det = json.loads((ge / f"class_economics_{a}.json").read_text(encoding="utf-8"))["issuers"]["0001823945"]
+        assert set(det["classes"]) == {"CommonClassCMember"}
+        got = set()
+        for c in det["classes"]["CommonClassCMember"]["citations"]:
+            assert c["filed"] <= a and c["quote"] in texts[(c["artifact_id"], c["offset"])]
+            assert "Class C Shares" in c["quote"]
+            got |= {s for s in c["supports"] if re.search(chain.CLAIM_PATTERNS[s], c["quote"], re.I)}
+        assert got >= chain.BASIS_CLAIMS["PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED"]
