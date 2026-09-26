@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000091142:0000091142-24-000171",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/91142/000009114224000171/aos-20240930.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T01:59:02.279902+00:00",
+  "sha256": "05c9759884f7af4baba7fd079912675edc0e0bb43643888a50522e1d420815fe",
+  "bytes": 1044989,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

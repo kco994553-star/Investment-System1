@@ -1,0 +1,1254 @@
+{
+ "kind": "SHARE_COUNT_DIAGNOSTIC",
+ "as_of": "2024-12-31",
+ "cik": "0001526520",
+ "entity_name": "TripAdvisor, Inc.",
+ "tickers_current": [
+  "TRIP"
+ ],
+ "exchanges_current": [
+  "Nasdaq"
+ ],
+ "sic": "7370",
+ "sic_description": "Services-Computer Programming, Data Processing, Etc.",
+ "entity_type": "operating",
+ "cover_filing": {
+  "form": "10-Q",
+  "filed": "2024-11-06",
+  "accn": "0000950170-24-122267",
+  "primary_document": "trip-20240930.htm"
+ },
+ "cover_instance": "xbrl_instance:0001526520:0000950170-24-122267",
+ "filings_on_or_before_as_of": [
+  {
+   "form": "4",
+   "filed": "2024-12-23"
+  },
+  {
+   "form": "SCHEDULE 13D/A",
+   "filed": "2024-12-20"
+  },
+  {
+   "form": "DEFA14A",
+   "filed": "2024-12-19"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-12-19"
+  },
+  {
+   "form": "4",
+   "filed": "2024-11-19"
+  },
+  {
+   "form": "4",
+   "filed": "2024-11-19"
+  },
+  {
+   "form": "4",
+   "filed": "2024-11-19"
+  },
+  {
+   "form": "10-Q",
+   "filed": "2024-11-06"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-11-06"
+  },
+  {
+   "form": "4",
+   "filed": "2024-11-04"
+  },
+  {
+   "form": "4",
+   "filed": "2024-10-22"
+  },
+  {
+   "form": "4",
+   "filed": "2024-10-03"
+  },
+  {
+   "form": "4",
+   "filed": "2024-08-20"
+  },
+  {
+   "form": "4",
+   "filed": "2024-08-19"
+  },
+  {
+   "form": "4",
+   "filed": "2024-08-19"
+  },
+  {
+   "form": "4",
+   "filed": "2024-08-19"
+  },
+  {
+   "form": "10-Q",
+   "filed": "2024-08-06"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-08-06"
+  },
+  {
+   "form": "4",
+   "filed": "2024-08-01"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-07-08"
+  },
+  {
+   "form": "4",
+   "filed": "2024-07-03"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-07-02"
+  },
+  {
+   "form": "4/A",
+   "filed": "2024-06-20"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-06-17"
+  },
+  {
+   "form": "4",
+   "filed": "2024-06-13"
+  }
+ ],
+ "cover_facts": [
+  {
+   "concept": "DocumentType",
+   "raw": "10-Q",
+   "unit": null,
+   "decimals": null,
+   "nil": null,
+   "date": "2024-09-30",
+   "dims": [],
+   "context": "C_2307f6aa-b2f9-4c8f-9775-0e667ea50235"
+  },
+  {
+   "concept": "DocumentPeriodEndDate",
+   "raw": "2024-09-30",
+   "unit": null,
+   "decimals": null,
+   "nil": null,
+   "date": "2024-09-30",
+   "dims": [],
+   "context": "C_2307f6aa-b2f9-4c8f-9775-0e667ea50235"
+  },
+  {
+   "concept": "EntityRegistrantName",
+   "raw": "TRIPADVISOR, INC.",
+   "unit": null,
+   "decimals": null,
+   "nil": null,
+   "date": "2024-09-30",
+   "dims": [],
+   "context": "C_2307f6aa-b2f9-4c8f-9775-0e667ea50235"
+  },
+  {
+   "concept": "Security12bTitle",
+   "raw": "Common stock",
+   "unit": null,
+   "decimals": null,
+   "nil": null,
+   "date": "2024-09-30",
+   "dims": [],
+   "context": "C_2307f6aa-b2f9-4c8f-9775-0e667ea50235"
+  },
+  {
+   "concept": "TradingSymbol",
+   "raw": "TRIP",
+   "unit": null,
+   "decimals": null,
+   "nil": null,
+   "date": "2024-09-30",
+   "dims": [],
+   "context": "C_2307f6aa-b2f9-4c8f-9775-0e667ea50235"
+  },
+  {
+   "concept": "SecurityExchangeName",
+   "raw": "NASDAQ",
+   "unit": null,
+   "decimals": null,
+   "nil": null,
+   "date": "2024-09-30",
+   "dims": [],
+   "context": "C_2307f6aa-b2f9-4c8f-9775-0e667ea50235"
+  },
+  {
+   "concept": "EntityCommonStockSharesOutstanding",
+   "raw": "126535867",
+   "unit": "U_shares",
+   "decimals": "0",
+   "nil": null,
+   "date": "2024-10-31",
+   "dims": [
+    "StatementClassOfStockAxis=CommonStockUnclassifiedMember"
+   ],
+   "context": "C_262e63a6-dcb2-452c-957e-7e3e90a3b0ca"
+  },
+  {
+   "concept": "EntityCommonStockSharesOutstanding",
+   "raw": "12799999",
+   "unit": "U_shares",
+   "decimals": "INF",
+   "nil": null,
+   "date": "2024-10-31",
+   "dims": [
+    "StatementClassOfStockAxis=CommonClassBMember"
+   ],
+   "context": "C_164ed562-4b2f-4db5-9b93-5e6277e3f462"
+  }
+ ],
+ "parse_cover": {
+  "classes": [
+   {
+    "member": "CommonStockUnclassifiedMember",
+    "shares": 126535867.0,
+    "date": "2024-10-31"
+   },
+   {
+    "member": "CommonClassBMember",
+    "shares": 12799999.0,
+    "date": "2024-10-31"
+   }
+  ],
+  "symbols": {
+   "null": [
+    "TRIP"
+   ]
+  },
+  "titles": {
+   "null": [
+    "Common stock"
+   ]
+  }
+ },
+ "class_symbols": {},
+ "pit_shares": {
+  "status": "OK",
+  "shares": 1000.0,
+  "source": "dei:EntityCommonStockSharesOutstanding",
+  "available_at": "2011-12-06 00:00:00+00:00"
+ },
+ "companyfacts_shares": {
+  "filed_on_or_before_as_of": [
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 128046924,
+    "end": "2022-12-31",
+    "filed": "2023-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-23-059380",
+    "fy": 2023,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 146891538,
+    "end": "2022-12-31",
+    "filed": "2024-02-16",
+    "form": "10-K",
+    "accn": "0000950170-24-016553",
+    "fy": 2023,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 128046924,
+    "end": "2022-12-31",
+    "filed": "2024-02-16",
+    "form": "10-K",
+    "accn": "0000950170-24-016553",
+    "fy": 2023,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 139923000,
+    "end": "2022-12-31",
+    "filed": "2024-02-16",
+    "form": "10-K",
+    "accn": "0000950170-24-016553",
+    "fy": 2023,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 148090833,
+    "end": "2023-03-31",
+    "filed": "2023-05-03",
+    "form": "10-Q",
+    "accn": "0000950170-23-017169",
+    "fy": 2023,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 129246219,
+    "end": "2023-03-31",
+    "filed": "2023-05-03",
+    "form": "10-Q",
+    "accn": "0000950170-23-017169",
+    "fy": 2023,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 141451000,
+    "end": "2023-03-31",
+    "filed": "2023-05-03",
+    "form": "10-Q",
+    "accn": "0000950170-23-017169",
+    "fy": 2023,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 141451000,
+    "end": "2023-03-31",
+    "filed": "2024-05-08",
+    "form": "10-Q",
+    "accn": "0000950170-24-055051",
+    "fy": 2024,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 148642645,
+    "end": "2023-06-30",
+    "filed": "2023-08-02",
+    "form": "10-Q",
+    "accn": "0000950170-23-037142",
+    "fy": 2023,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 125073302,
+    "end": "2023-06-30",
+    "filed": "2023-08-02",
+    "form": "10-Q",
+    "accn": "0000950170-23-037142",
+    "fy": 2023,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 140666000,
+    "end": "2023-06-30",
+    "filed": "2023-08-02",
+    "form": "10-Q",
+    "accn": "0000950170-23-037142",
+    "fy": 2023,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 139881000,
+    "end": "2023-06-30",
+    "filed": "2023-08-02",
+    "form": "10-Q",
+    "accn": "0000950170-23-037142",
+    "fy": 2023,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 140666000,
+    "end": "2023-06-30",
+    "filed": "2024-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-091768",
+    "fy": 2024,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 139881000,
+    "end": "2023-06-30",
+    "filed": "2024-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-091768",
+    "fy": 2024,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 149181201,
+    "end": "2023-09-30",
+    "filed": "2023-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-23-059380",
+    "fy": 2023,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 125611858,
+    "end": "2023-09-30",
+    "filed": "2023-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-23-059380",
+    "fy": 2023,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 139841000,
+    "end": "2023-09-30",
+    "filed": "2023-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-23-059380",
+    "fy": 2023,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 138190000,
+    "end": "2023-09-30",
+    "filed": "2023-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-23-059380",
+    "fy": 2023,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 139841000,
+    "end": "2023-09-30",
+    "filed": "2024-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-122267",
+    "fy": 2024,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 138190000,
+    "end": "2023-09-30",
+    "filed": "2024-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-122267",
+    "fy": 2024,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 149775361,
+    "end": "2023-12-31",
+    "filed": "2024-02-16",
+    "form": "10-K",
+    "accn": "0000950170-24-016553",
+    "fy": 2023,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 124881494,
+    "end": "2023-12-31",
+    "filed": "2024-02-16",
+    "form": "10-K",
+    "accn": "0000950170-24-016553",
+    "fy": 2023,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 139412000,
+    "end": "2023-12-31",
+    "filed": "2024-02-16",
+    "form": "10-K",
+    "accn": "0000950170-24-016553",
+    "fy": 2023,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 149775361,
+    "end": "2023-12-31",
+    "filed": "2024-05-08",
+    "form": "10-Q",
+    "accn": "0000950170-24-055051",
+    "fy": 2024,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 124881494,
+    "end": "2023-12-31",
+    "filed": "2024-05-08",
+    "form": "10-Q",
+    "accn": "0000950170-24-055051",
+    "fy": 2024,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 149775361,
+    "end": "2023-12-31",
+    "filed": "2024-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-091768",
+    "fy": 2024,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 124881494,
+    "end": "2023-12-31",
+    "filed": "2024-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-091768",
+    "fy": 2024,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 149775361,
+    "end": "2023-12-31",
+    "filed": "2024-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-122267",
+    "fy": 2024,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 124881494,
+    "end": "2023-12-31",
+    "filed": "2024-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-122267",
+    "fy": 2024,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 151237501,
+    "end": "2024-03-31",
+    "filed": "2024-05-08",
+    "form": "10-Q",
+    "accn": "0000950170-24-055051",
+    "fy": 2024,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 126343634,
+    "end": "2024-03-31",
+    "filed": "2024-05-08",
+    "form": "10-Q",
+    "accn": "0000950170-24-055051",
+    "fy": 2024,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 138438000,
+    "end": "2024-03-31",
+    "filed": "2024-05-08",
+    "form": "10-Q",
+    "accn": "0000950170-24-055051",
+    "fy": 2024,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 152027428,
+    "end": "2024-06-30",
+    "filed": "2024-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-091768",
+    "fy": 2024,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 125767176,
+    "end": "2024-06-30",
+    "filed": "2024-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-091768",
+    "fy": 2024,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 138836000,
+    "end": "2024-06-30",
+    "filed": "2024-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-091768",
+    "fy": 2024,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 139234000,
+    "end": "2024-06-30",
+    "filed": "2024-08-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-091768",
+    "fy": 2024,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 152675707,
+    "end": "2024-06-30",
+    "filed": "2024-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-122267",
+    "fy": 2024,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 126415455,
+    "end": "2024-09-30",
+    "filed": "2024-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-122267",
+    "fy": 2024,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 138862000,
+    "end": "2024-09-30",
+    "filed": "2024-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-122267",
+    "fy": 2024,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 138915000,
+    "end": "2024-09-30",
+    "filed": "2024-11-06",
+    "form": "10-Q",
+    "accn": "0000950170-24-122267",
+    "fy": 2024,
+    "fp": "Q3"
+   }
+  ],
+  "POST_AS_OF_FILING": [
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 127394786,
+    "end": "2024-12-31",
+    "filed": "2025-08-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-104993",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 153655038,
+    "end": "2024-12-31",
+    "filed": "2025-11-06",
+    "form": "10-Q",
+    "accn": "0001193125-25-268047",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 127394786,
+    "end": "2024-12-31",
+    "filed": "2025-11-06",
+    "form": "10-Q",
+    "accn": "0001193125-25-268047",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 153655038,
+    "end": "2024-12-31",
+    "filed": "2026-02-13",
+    "form": "10-K",
+    "accn": "0001193125-26-051281",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 127394786,
+    "end": "2024-12-31",
+    "filed": "2026-02-13",
+    "form": "10-K",
+    "accn": "0001193125-26-051281",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 139079000,
+    "end": "2024-12-31",
+    "filed": "2026-02-13",
+    "form": "10-K",
+    "accn": "0001193125-26-051281",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 155266930,
+    "end": "2025-03-31",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-064982",
+    "fy": 2025,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 129006678,
+    "end": "2025-03-31",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-064982",
+    "fy": 2025,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 140970000,
+    "end": "2025-03-31",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-064982",
+    "fy": 2025,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 140970000,
+    "end": "2025-03-31",
+    "filed": "2026-05-07",
+    "form": "10-Q",
+    "accn": "0001193125-26-210297",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 118092104,
+    "end": "2025-05-01",
+    "filed": "2025-05-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-064982",
+    "fy": 2025,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 118858327,
+    "end": "2025-06-30",
+    "filed": "2025-08-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-104993",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 116050247,
+    "end": "2025-06-30",
+    "filed": "2025-08-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-104993",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 132959000,
+    "end": "2025-06-30",
+    "filed": "2025-08-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-104993",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 124948000,
+    "end": "2025-06-30",
+    "filed": "2025-08-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-104993",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 132959000,
+    "end": "2025-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-336693",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 124948000,
+    "end": "2025-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-336693",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 116133591,
+    "end": "2025-08-01",
+    "filed": "2025-08-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-104993",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 119611050,
+    "end": "2025-09-30",
+    "filed": "2025-11-06",
+    "form": "10-Q",
+    "accn": "0001193125-25-268047",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 116802970,
+    "end": "2025-09-30",
+    "filed": "2025-11-06",
+    "form": "10-Q",
+    "accn": "0001193125-25-268047",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 127453000,
+    "end": "2025-09-30",
+    "filed": "2025-11-06",
+    "form": "10-Q",
+    "accn": "0001193125-25-268047",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 116439000,
+    "end": "2025-09-30",
+    "filed": "2025-11-06",
+    "form": "10-Q",
+    "accn": "0001193125-25-268047",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 116908339,
+    "end": "2025-10-31",
+    "filed": "2025-11-06",
+    "form": "10-Q",
+    "accn": "0001193125-25-268047",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 120577305,
+    "end": "2025-12-31",
+    "filed": "2026-02-13",
+    "form": "10-K",
+    "accn": "0001193125-26-051281",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 114472043,
+    "end": "2025-12-31",
+    "filed": "2026-02-13",
+    "form": "10-K",
+    "accn": "0001193125-26-051281",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 124517000,
+    "end": "2025-12-31",
+    "filed": "2026-02-13",
+    "form": "10-K",
+    "accn": "0001193125-26-051281",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 120577305,
+    "end": "2025-12-31",
+    "filed": "2026-05-07",
+    "form": "10-Q",
+    "accn": "0001193125-26-210297",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 114472043,
+    "end": "2025-12-31",
+    "filed": "2026-05-07",
+    "form": "10-Q",
+    "accn": "0001193125-26-210297",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 120577305,
+    "end": "2025-12-31",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-336693",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 114472043,
+    "end": "2025-12-31",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-336693",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 114755221,
+    "end": "2026-02-06",
+    "filed": "2026-02-13",
+    "form": "10-K",
+    "accn": "0001193125-26-051281",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 122399761,
+    "end": "2026-03-31",
+    "filed": "2026-05-07",
+    "form": "10-Q",
+    "accn": "0001193125-26-210297",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 116294499,
+    "end": "2026-03-31",
+    "filed": "2026-05-07",
+    "form": "10-Q",
+    "accn": "0001193125-26-210297",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 115425000,
+    "end": "2026-03-31",
+    "filed": "2026-05-07",
+    "form": "10-Q",
+    "accn": "0001193125-26-210297",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 116361169,
+    "end": "2026-05-01",
+    "filed": "2026-05-07",
+    "form": "10-Q",
+    "accn": "0001193125-26-210297",
+    "fy": 2026,
+    "fp": "Q1"
+   },
+   {
+    "concept": "dei:EntityCommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 117199342,
+    "end": "2026-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-336693",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 123213743,
+    "end": "2026-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-336693",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 117108481,
+    "end": "2026-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-336693",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 116061000,
+    "end": "2026-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-336693",
+    "fy": 2026,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 116697000,
+    "end": "2026-06-30",
+    "filed": "2026-08-06",
+    "form": "10-Q",
+    "accn": "0001193125-26-336693",
+    "fy": 2026,
+    "fp": "Q2"
+   }
+  ],
+  "POST_AS_OF_FILINGS_ABOUT_PERIODS_ENDING_ON_OR_BEFORE_AS_OF": [
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 127394786,
+    "end": "2024-12-31",
+    "filed": "2025-08-07",
+    "form": "10-Q",
+    "accn": "0000950170-25-104993",
+    "fy": 2025,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 153655038,
+    "end": "2024-12-31",
+    "filed": "2025-11-06",
+    "form": "10-Q",
+    "accn": "0001193125-25-268047",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 127394786,
+    "end": "2024-12-31",
+    "filed": "2025-11-06",
+    "form": "10-Q",
+    "accn": "0001193125-25-268047",
+    "fy": 2025,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesIssued",
+    "unit": "shares",
+    "val": 153655038,
+    "end": "2024-12-31",
+    "filed": "2026-02-13",
+    "form": "10-K",
+    "accn": "0001193125-26-051281",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:CommonStockSharesOutstanding",
+    "unit": "shares",
+    "val": 127394786,
+    "end": "2024-12-31",
+    "filed": "2026-02-13",
+    "form": "10-K",
+    "accn": "0001193125-26-051281",
+    "fy": 2025,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 139079000,
+    "end": "2024-12-31",
+    "filed": "2026-02-13",
+    "form": "10-K",
+    "accn": "0001193125-26-051281",
+    "fy": 2025,
+    "fp": "FY"
+   }
+  ]
+ },
+ "documents": [
+  {
+   "form": "10-K",
+   "filed": "2024-02-16",
+   "accn": "0000950170-24-016553",
+   "primary_document": "trip-20231231.htm",
+   "artifact_id": "sec_filing_doc:0001526520:0000950170-24-016553",
+   "cover_sentences": [
+    "8 million shares of our Class B common stock, which constitute approximately 13% of the outstanding shares of common stock and 100% of the outstanding shares of Class B common stock",
+    "Assuming the conversion of all of LTRIP\u2019s shares of Class B common stock into common stock, LTRIP would beneficially own approximately 21% of the outstanding common stock",
+    "Holders of Record As of February 9, 2024, there were 125,099,694 outstanding shares of our common stock held by 1,732 stockholders of record, and 12,799,999 outstanding shares of our Class B common stock held by one stockholder of record: LTRIP",
+    "During the three months ended December 31, 2023, we repurchased 1,324,524 shares of our outstanding common stock at an average share price of $18",
+    "During the three months ended June 30, 2023, we repurchased 4,724,729 shares of our outstanding common stock at an average price of $15",
+    "During the three months ended December 31, 2023, we repurchased 1,324,524 shares of our outstanding common stock at an average price of $18",
+    "08 ) Numerator used to compute net income (loss) per share attributable to common stockholders (Note 15): Basic $ 10 $ 20 $ ( 148 ) Diluted $ 11 $ 21 $ ( 148 ) Weighted average common shares outstanding (Note 15): Basic 139 140 137 Diluted 145 146 137 (1) Includes stock-based compensation expense as follows (Note 13): Cost of revenue $ 1 $ 1 $ 1 Selling and marketing $ 16 $ 12 $ 16 Technology and co",
+    "001 par value \u2014 \u2014 Authorized shares: 100,000,000 Shares issued and outstanding: 0 and 0 , respectively Common stock, $ 0",
+    "001 par value \u2014 \u2014 Authorized shares: 1,600,000,000 Shares issued: 149,775,361 and 146,891,538 , respectively Shares outstanding: 124,881,494 and 128,046,924 , respectively Class B common stock, $ 0",
+    "001 par value \u2014 \u2014 Authorized shares: 400,000,000 Shares issued and outstanding: 12,799,999 and 12,799,999 , respectively Additional paid-in capital 1,493 1,404 Retained earnings 271 261 Accumulated other comprehensive income (loss) ( 71 ) ( 82 ) Treasury stock-common stock, at",
+    "8 million shares of our Class B common stock, which constitute approximately 13 % of the outstanding shares of common stock and 100 % of the outstanding shares of Class B common stock",
+    "Assuming the conversion of all of LTRIP\u2019s shares of Class B common stock into common stock, LTRIP would beneficially own approximately 21 % of the outstanding common stock",
+    "Earnings Per Share (\u201cEPS\u201d) Basic Earnings Per Share Attributable to Common Stockholders We compute basic earnings per share, or Basic EPS, by dividing net income (loss) by the weighted average number of common shares outstanding during the period",
+    "We compute the weighted average number of common shares outstanding during the reporting period using the total of common stock and Class B common stock outstanding as of the last day of the previous year end reporting period plus the weighted average of any additional shares issued and outstanding less the weighted average of any common shares repurchased during the reporting period",
+    "81 Diluted Earnings Per Share Attributable to Common Stockholders Diluted earnings per share, or Diluted EPS, includes the potential dilution of common equivalent shares outstanding that could occur from stock-based awards and other stock-based commitments using the treasury stock method",
+    "We compute Diluted EPS by dividing net income (loss) by the sum of the weighted average number of common and common equivalent shares outstanding during the period",
+    "We compute the weighted average number of common and common equivalent shares outstanding during the period using the sum of (i) the number of shares of common stock and Class B common stock used in the Basic EPS calculation as indicated above; (ii) if dilutive, the incremental weighted a",
+    "In periods of net income, shares of our common stock subject to the potential conversion of the 2026 Senior Notes outstanding during the period is also included in our weighted average number of shares outstanding used to calculate Diluted EPS using the if-converted method under GAAP, as share settlement is presumed",
+    "On June 21, 2018, our stockholders approved the 2018 Stock and Annual Incentive Plan (the \u201c2018 Plan\u201d) and we filed a Registration Statement registering 6,000,000 shares plus the number of shares available for issuance (and not subject to outstanding awards) under the 2011 Plan",
+    "As of December 31, 2023 , the total number of shares reserved for future stock-based awards under the 2023 Plan was approximately 19 million shares, calculated as follows: 12 million shares plus the number of shares available for issuance (and not subject to outstanding awards) under the 2018 Plan"
+   ]
+  },
+  {
+   "form": "10-Q",
+   "filed": "2024-11-06",
+   "accn": "0000950170-24-122267",
+   "primary_document": "trip-20240930.htm",
+   "artifact_id": "sec_filing_doc:0001526520:0000950170-24-122267",
+   "cover_sentences": [
+    "16 ) Numerator used to compute net income (loss) per share attributable to common stockholders (Note 12): Basic $ 39 $ 27 $ 4 $ ( 22 ) Diluted $ 39 $ 27 $ 5 $ ( 22 ) Weighted average common shares outstanding (Note 12): Basic 139 138 139 140 Diluted 144 143 145 140 (1) Includes stock-based compensation expense as follows (Note 10): Cost of revenue $ \u2014 $ \u2014 $ 1 $ 1 Selling and marketing $ 6 $ 4 $ 17 $ 12 Te",
+    "001 par value \u2014 \u2014 Authorized shares: 100,000,000 Shares issued and outstanding: 0 and 0 , respectively Common stock, $ 0",
+    "001 par value \u2014 \u2014 Authorized shares: 1,600,000,000 Shares issued: 152,675,707 and 149,775,361 , respectively Shares outstanding: 126,415,455 and 124,881,494 , respectively Class B common stock, $ 0",
+    "001 par value \u2014 \u2014 Authorized shares: 400,000,000 Shares issued and outstanding: 12,799,999 and 12,799,999 , respectively Additional paid-in capital 1,577 1,493 Retained earnings 275 271 Accumulated other comprehensive income (loss) ( 61 ) ( 71 ) Treasury stock-common stock, at",
+    "8 million shares of our Class B common stock, which constitute approximately 13 % of the outstanding shares of common stock and 100 % of the outstanding shares of Class B common stock",
+    "Assuming the conversion of all of LTRIP\u2019s shares of Class B common stock into common stock, LTRIP would beneficially own approximately 21 % of the outstanding common stock",
+    "Stock-Based Award Activity and Valuation 2024 Stock Option Activity A summary of our stock option activity, consisting of service-based non-qualified stock options, is presented below: Weighted Weighted Average Average Exercise Remaining Aggregate Options Price Per Contractual Intrinsic Outstanding Share Life Value (in thousands) (in years) (in millions) Options outstanding at December 31, 2023 3,927 $ 35",
+    "2024 Restricted Stock Units (\"RSUs\") Activity A summary of our RSUs activity, consisting of service-based vesting terms, is presented below: Weighted Average Grant- Aggregate RSUs Date Fair Intrinsic Outstanding Value Per Share Value (in thousands) (in millions) Unvested RSUs outstanding as of December 31, 2023 11,520 $ 23",
+    "21 A summary of our performance-based RSUs (\"PSUs\") and market-based RSUs (\u201cMSUs\u201d) activity is presented below: PSUs (1) MSUs (2) Weighted Weighted Average Average Grant- Aggregate Grant- Aggregate Date Fair Intrinsic Date Fair Intrinsic Outstanding Value Per Share Value Outstanding Value Per Share Value (in thousands) (in millions) (in thousands) (in millions) Unvested and outstanding as of December 31, 2023 519 $ 18",
+    "During the three months ended September 30, 2024 and 2023, the Company did no t repurchase any shares of outstanding common stock under this share repurchase program",
+    "During the nine months ended September 30, 2024, we repurchased 1,366,385 shares of our outstanding common stock at an average price of $ 18",
+    "During the nine months ended September 30, 2023, we repurchased 4,724,729 shares of our outstanding common stock at an average price of $ 15",
+    "22 NOTE 12: EARNINGS PER SHARE We compute basic earnings per share (\"Basic EPS\") by dividing net income (loss) by the weighted average number of common shares outstanding during the period",
+    "We compute diluted earnings per share (\"Diluted EPS\") by dividing net income (loss) by the sum of the weighted average number of common shares outstanding including the dilutive effect of stock-based awards as determined under the treasury stock method and of the 2026 Senior Notes using the if-converted method, as share settlement is presumed, under GA",
+    "Below is a reconciliation of the weighted average number of shares of common stock outstanding used in calculating Diluted EPS for the periods presented: Three months ended September 30, Nine months ended September 30, 2024 2023 2024 2023 (shares in thousands and $ in millions, except per shar",
+    "Potential common shares, consisting of outstanding stock options, RSUs, and those issuable under the 2026 Senior Notes, totaling approximately 13",
+    "During the three months ended September 30, 2024, the Company did not repurchase any shares of outstanding common stock under this share repurchase program",
+    "Share Repurchases During the three months ended September 30, 2024, the Company did not repurchase any shares of its outstanding common stock"
+   ]
+  }
+ ],
+ "note": "Diagnostic only. POST_AS_OF_FILING rows are investigation evidence and are never used as the as_of share count (user decision 2026-09-26)."
+}

@@ -1,0 +1,14 @@
+{
+ "log": [
+  {
+   "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+   "status": "OK",
+   "bytes": 4882635
+  },
+  {
+   "artifact_id": "sec_filing_doc:0001849253:0001628280-24-044413",
+   "status": "OK",
+   "bytes": 5630679
+  }
+ ]
+}

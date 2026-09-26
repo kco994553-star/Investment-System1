@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0000317540:0000317540-24-000009",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/317540/000031754024000009/coke-20231231.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T01:59:03.287531+00:00",
+  "sha256": "611bbd353984a6cffcbdf194734bf0ea73baad973ea26c42b70d50bd29770b31",
+  "bytes": 2762531,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

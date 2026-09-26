@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001849253:0000950170-24-021657",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1849253/000095017024021657/ryan-20231231.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T01:58:44.925088+00:00",
+  "sha256": "88b266ac0867b4faa98f7f3e709bd29ff78418587803b06865703e4e438f5b9b",
+  "bytes": 4882635,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001156375:0001156375-24-000010",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1156375/000115637524000010/cme-20231231.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-26T01:59:10.961743+00:00",
+  "sha256": "03fcb6bd98ede78ec8297a7a01cb7ddd5bfcbace3c7af45da0c2b50c61024992",
+  "bytes": 2258207,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

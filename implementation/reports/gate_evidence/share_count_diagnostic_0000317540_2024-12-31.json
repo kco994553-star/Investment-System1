@@ -1,0 +1,740 @@
+{
+ "kind": "SHARE_COUNT_DIAGNOSTIC",
+ "as_of": "2024-12-31",
+ "cik": "0000317540",
+ "entity_name": "Coca-Cola Consolidated, Inc.",
+ "tickers_current": [
+  "COKE"
+ ],
+ "exchanges_current": [
+  "Nasdaq"
+ ],
+ "sic": "2086",
+ "sic_description": "Bottled & Canned Soft Drinks & Carbonated Waters",
+ "entity_type": "operating",
+ "cover_filing": {
+  "form": "10-Q",
+  "filed": "2024-10-30",
+  "accn": "0000317540-24-000061",
+  "primary_document": "coke-20240927.htm"
+ },
+ "cover_instance": "xbrl_instance:0000317540:0000317540-24-000061",
+ "filings_on_or_before_as_of": [
+  {
+   "form": "10-Q",
+   "filed": "2024-10-30"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-10-30"
+  },
+  {
+   "form": "S-8 POS",
+   "filed": "2024-08-26"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-08-20"
+  },
+  {
+   "form": "10-Q",
+   "filed": "2024-07-31"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-07-31"
+  },
+  {
+   "form": "4",
+   "filed": "2024-07-05"
+  },
+  {
+   "form": "SC 13D/A",
+   "filed": "2024-07-05"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-07-05"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-06-24"
+  },
+  {
+   "form": "SC TO-I/A",
+   "filed": "2024-06-21"
+  },
+  {
+   "form": "SC TO-I/A",
+   "filed": "2024-06-20"
+  },
+  {
+   "form": "SC TO-I/A",
+   "filed": "2024-06-10"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-06-10"
+  },
+  {
+   "form": "SC TO-I/A",
+   "filed": "2024-05-29"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-05-29"
+  },
+  {
+   "form": "8-K",
+   "filed": "2024-05-24"
+  },
+  {
+   "form": "424B2",
+   "filed": "2024-05-23"
+  },
+  {
+   "form": "SC TO-I/A",
+   "filed": "2024-05-21"
+  },
+  {
+   "form": "FWP",
+   "filed": "2024-05-21"
+  },
+  {
+   "form": "SC TO-I/A",
+   "filed": "2024-05-21"
+  },
+  {
+   "form": "424B3",
+   "filed": "2024-05-21"
+  },
+  {
+   "form": "SC TO-I",
+   "filed": "2024-05-20"
+  },
+  {
+   "form": "3",
+   "filed": "2024-05-17"
+  },
+  {
+   "form": "4",
+   "filed": "2024-05-17"
+  }
+ ],
+ "cover_facts": [
+  {
+   "concept": "DocumentType",
+   "raw": "10-Q",
+   "unit": null,
+   "decimals": null,
+   "nil": null,
+   "date": "2024-09-27",
+   "dims": [],
+   "context": "c-1"
+  },
+  {
+   "concept": "DocumentPeriodEndDate",
+   "raw": "2024-09-27",
+   "unit": null,
+   "decimals": null,
+   "nil": null,
+   "date": "2024-09-27",
+   "dims": [],
+   "context": "c-1"
+  },
+  {
+   "concept": "EntityRegistrantName",
+   "raw": "COCA-COLA CONSOLIDATED, INC.",
+   "unit": null,
+   "decimals": null,
+   "nil": null,
+   "date": "2024-09-27",
+   "dims": [],
+   "context": "c-1"
+  },
+  {
+   "concept": "Security12bTitle",
+   "raw": "Common Stock, par value $1.00 per share",
+   "unit": null,
+   "decimals": null,
+   "nil": null,
+   "date": "2024-09-27",
+   "dims": [],
+   "context": "c-1"
+  },
+  {
+   "concept": "TradingSymbol",
+   "raw": "COKE",
+   "unit": null,
+   "decimals": null,
+   "nil": null,
+   "date": "2024-09-27",
+   "dims": [],
+   "context": "c-1"
+  },
+  {
+   "concept": "SecurityExchangeName",
+   "raw": "NASDAQ",
+   "unit": null,
+   "decimals": null,
+   "nil": null,
+   "date": "2024-09-27",
+   "dims": [],
+   "context": "c-1"
+  },
+  {
+   "concept": "EntityCommonStockSharesOutstanding",
+   "raw": "7755983",
+   "unit": "shares",
+   "decimals": "INF",
+   "nil": null,
+   "date": "2024-10-18",
+   "dims": [
+    "StatementClassOfStockAxis=CommonClassUndefinedMember"
+   ],
+   "context": "c-2"
+  },
+  {
+   "concept": "EntityCommonStockSharesOutstanding",
+   "raw": "1004696",
+   "unit": "shares",
+   "decimals": "INF",
+   "nil": null,
+   "date": "2024-10-18",
+   "dims": [
+    "StatementClassOfStockAxis=CommonClassBMember"
+   ],
+   "context": "c-3"
+  }
+ ],
+ "parse_cover": {
+  "classes": [
+   {
+    "member": "CommonClassUndefinedMember",
+    "shares": 7755983.0,
+    "date": "2024-10-18"
+   },
+   {
+    "member": "CommonClassBMember",
+    "shares": 1004696.0,
+    "date": "2024-10-18"
+   }
+  ],
+  "symbols": {
+   "null": [
+    "COKE"
+   ]
+  },
+  "titles": {
+   "null": [
+    "Common Stock, par value $1.00 per share"
+   ]
+  }
+ },
+ "class_symbols": {},
+ "pit_shares": {
+  "status": "OK",
+  "shares": 7141447.0,
+  "source": "dei:EntityCommonStockSharesOutstanding",
+  "available_at": "2016-03-18 00:00:00+00:00"
+ },
+ "companyfacts_shares": {
+  "filed_on_or_before_as_of": [
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2016-07-03",
+    "filed": "2017-08-08",
+    "form": "10-Q",
+    "accn": "0001564590-17-016586",
+    "fy": 2017,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2016-07-03",
+    "filed": "2017-08-08",
+    "form": "10-Q",
+    "accn": "0001564590-17-016586",
+    "fy": 2017,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2016-10-02",
+    "filed": "2016-11-10",
+    "form": "10-Q",
+    "accn": "0001564590-16-028950",
+    "fy": 2016,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2016-10-02",
+    "filed": "2016-11-10",
+    "form": "10-Q",
+    "accn": "0001564590-16-028950",
+    "fy": 2016,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2016-10-02",
+    "filed": "2017-11-07",
+    "form": "10-Q",
+    "accn": "0001564590-17-022325",
+    "fy": 2017,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2016-10-02",
+    "filed": "2017-11-07",
+    "form": "10-Q",
+    "accn": "0001564590-17-022325",
+    "fy": 2017,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-01-01",
+    "filed": "2017-03-14",
+    "form": "10-K",
+    "accn": "0001564590-17-004316",
+    "fy": 2016,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-01-01",
+    "filed": "2018-02-28",
+    "form": "10-K",
+    "accn": "0001564590-18-003845",
+    "fy": 2017,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-01-01",
+    "filed": "2019-02-27",
+    "form": "10-K",
+    "accn": "0001564590-19-005000",
+    "fy": 2018,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-04-02",
+    "filed": "2017-05-11",
+    "form": "10-Q",
+    "accn": "0001564590-17-010528",
+    "fy": 2017,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-04-02",
+    "filed": "2018-05-09",
+    "form": "10-Q",
+    "accn": "0001564590-18-012526",
+    "fy": 2018,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-07-02",
+    "filed": "2017-08-08",
+    "form": "10-Q",
+    "accn": "0001564590-17-016586",
+    "fy": 2017,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-07-02",
+    "filed": "2017-08-08",
+    "form": "10-Q",
+    "accn": "0001564590-17-016586",
+    "fy": 2017,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-07-02",
+    "filed": "2018-08-08",
+    "form": "10-Q",
+    "accn": "0001564590-18-020566",
+    "fy": 2018,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-07-02",
+    "filed": "2018-08-08",
+    "form": "10-Q",
+    "accn": "0001564590-18-020566",
+    "fy": 2018,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-10-01",
+    "filed": "2017-11-07",
+    "form": "10-Q",
+    "accn": "0001564590-17-022325",
+    "fy": 2017,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-10-01",
+    "filed": "2017-11-07",
+    "form": "10-Q",
+    "accn": "0001564590-17-022325",
+    "fy": 2017,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-10-01",
+    "filed": "2018-11-08",
+    "form": "10-Q",
+    "accn": "0001564590-18-028632",
+    "fy": 2018,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-10-01",
+    "filed": "2018-11-08",
+    "form": "10-Q",
+    "accn": "0001564590-18-028632",
+    "fy": 2018,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-12-31",
+    "filed": "2018-02-28",
+    "form": "10-K",
+    "accn": "0001564590-18-003845",
+    "fy": 2017,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-12-31",
+    "filed": "2019-02-27",
+    "form": "10-K",
+    "accn": "0001564590-19-005000",
+    "fy": 2018,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2017-12-31",
+    "filed": "2020-02-25",
+    "form": "10-K",
+    "accn": "0001564590-20-006432",
+    "fy": 2019,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2018-04-01",
+    "filed": "2018-05-09",
+    "form": "10-Q",
+    "accn": "0001564590-18-012526",
+    "fy": 2018,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2018-04-01",
+    "filed": "2019-05-08",
+    "form": "10-Q",
+    "accn": "0001564590-19-017342",
+    "fy": 2019,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2018-07-01",
+    "filed": "2018-08-08",
+    "form": "10-Q",
+    "accn": "0001564590-18-020566",
+    "fy": 2018,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2018-07-01",
+    "filed": "2018-08-08",
+    "form": "10-Q",
+    "accn": "0001564590-18-020566",
+    "fy": 2018,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2018-07-01",
+    "filed": "2019-08-06",
+    "form": "10-Q",
+    "accn": "0001564590-19-029394",
+    "fy": 2019,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2018-07-01",
+    "filed": "2019-08-06",
+    "form": "10-Q",
+    "accn": "0001564590-19-029394",
+    "fy": 2019,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2018-09-30",
+    "filed": "2018-11-08",
+    "form": "10-Q",
+    "accn": "0001564590-18-028632",
+    "fy": 2018,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2018-09-30",
+    "filed": "2018-11-08",
+    "form": "10-Q",
+    "accn": "0001564590-18-028632",
+    "fy": 2018,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2018-09-30",
+    "filed": "2019-11-05",
+    "form": "10-Q",
+    "accn": "0001564590-19-040437",
+    "fy": 2019,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2018-09-30",
+    "filed": "2019-11-05",
+    "form": "10-Q",
+    "accn": "0001564590-19-040437",
+    "fy": 2019,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2018-12-30",
+    "filed": "2019-02-27",
+    "form": "10-K",
+    "accn": "0001564590-19-005000",
+    "fy": 2018,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2018-12-30",
+    "filed": "2020-02-25",
+    "form": "10-K",
+    "accn": "0001564590-20-006432",
+    "fy": 2019,
+    "fp": "FY"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2019-03-31",
+    "filed": "2019-05-08",
+    "form": "10-Q",
+    "accn": "0001564590-19-017342",
+    "fy": 2019,
+    "fp": "Q1"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2019-06-30",
+    "filed": "2019-08-06",
+    "form": "10-Q",
+    "accn": "0001564590-19-029394",
+    "fy": 2019,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2019-06-30",
+    "filed": "2019-08-06",
+    "form": "10-Q",
+    "accn": "0001564590-19-029394",
+    "fy": 2019,
+    "fp": "Q2"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2019-09-29",
+    "filed": "2019-11-05",
+    "form": "10-Q",
+    "accn": "0001564590-19-040437",
+    "fy": 2019,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2019-09-29",
+    "filed": "2019-11-05",
+    "form": "10-Q",
+    "accn": "0001564590-19-040437",
+    "fy": 2019,
+    "fp": "Q3"
+   },
+   {
+    "concept": "us-gaap:WeightedAverageNumberOfSharesOutstandingBasic",
+    "unit": "shares",
+    "val": 7141000,
+    "end": "2019-12-29",
+    "filed": "2020-02-25",
+    "form": "10-K",
+    "accn": "0001564590-20-006432",
+    "fy": 2019,
+    "fp": "FY"
+   }
+  ],
+  "POST_AS_OF_FILING": [],
+  "POST_AS_OF_FILINGS_ABOUT_PERIODS_ENDING_ON_OR_BEFORE_AS_OF": []
+ },
+ "documents": [
+  {
+   "form": "10-K",
+   "filed": "2024-02-21",
+   "accn": "0000317540-24-000009",
+   "primary_document": "coke-20231231.htm",
+   "artifact_id": "sec_filing_doc:0000317540:0000317540-24-000009",
+   "cover_sentences": [
+    "Indicate the number of shares outstanding of each of the registrant\u2019s classes of common stock, as of the latest practicable date",
+    "Frank Harrison, III, Chairman of the Board of Directors and Chief Executive Officer of the Company, controlled 1,004,394 shares of the Company\u2019s Class B Common Stock, which represented approximately 71% of the total voting power of the Company\u2019s outstanding Common Stock and Class B Common Stock on a consolidated basis",
+    "As of December 31, 2023, The Coca\u2011Cola Company owned shares of the Company\u2019s Common Stock representing approximately 9% of the total voting power of the Company\u2019s outstanding Common Stock and Class B Common Stock on a consolidated basis",
+    "Frank Harrison, III, Chairman of the Board of Directors and Chief Executive Officer of the Company, controlled 1,004,394 shares of the Company\u2019s Class B Common Stock, which represented approximately 71% of the total voting power of the Company\u2019s outstanding Common Stock and Class B Common Stock on a consolidated basis",
+    "Harrison would control 1,296,780 shares of the Company\u2019s Class B Common Stock, which would represent approximately 76% of the total voting power of the Company\u2019s outstanding Common Stock and Class B Common Stock on a consolidated basis",
+    "When a quantitative analysis is considered necessary for the annual impairment analysis of goodwill, the Company develops an estimated fair value for the reporting unit considering three different approaches: (i) market value, using the Company\u2019s stock price plus outstanding debt; (ii) discounted cash flow analysis; and (iii) multiple of earnings before interest, taxes, depreciation and amortization based upon relevant industry data",
+    "23 Weighted average number of Common Stock shares outstanding 8,369 8,117 7,141 Class B Common Stock $ 43",
+    "23 Weighted average number of Class B Common Stock shares outstanding 1,005 1,257 2,232 Diluted net income per share: Common Stock $ 43",
+    "17 Weighted average number of Common Stock shares outstanding \u2013 assuming dilution 9,392 9,405 9,400 Class B Common Stock $ 43",
+    "16 Weighted average number of Class B Common Stock shares outstanding \u2013 assuming dilution 1,023 1,288 2,259 See accompanying notes to consolidated financial statements",
+    "When a quantitative analysis is considered necessary for the annual impairment analysis of goodwill, the Company develops an estimated fair value for the reporting unit considering three different approaches: \u2022 market value, using the Company\u2019s stock price plus outstanding debt; \u2022 discounted cash flow analysis; and \u2022 multiple of earnings before interest, taxes, depreciation and amortization based upon relevant industry data",
+    "Basic net income per share excludes potential common shares that were dilutive and is computed by dividing net income available for common stockholders by the weighted average number of Common and Class B Common shares outstanding",
+    "Diluted net income per share for Common Stock and Class B Common Stock gives effect to all securities representing potential common shares that were dilutive and outstanding during the period",
+    "Frank Harrison, III, Chairman of the Board of Directors and Chief Executive Officer of the Company, controlled 1,004,394 shares of the Company\u2019s Class B Common Stock, which represented approximately 71 % of the total voting power of the Company\u2019s outstanding Common Stock and Class B Common Stock on a consolidated basis",
+    "As of December 31, 2023, The Coca\u2011Cola Company owned shares of the Company\u2019s Common Stock representing approximately 9 % of the total voting power of the Company\u2019s outstanding Common Stock and Class B Common Stock on a consolidated basis",
+    "me per Class B Common Stock share: Dividends on Class B Common Stock $ 5,024 $ 1,312 $ 2,233 Class B Common Stock undistributed earnings \u2013 diluted 39,376 57,626 43,307 Numerator for diluted net income per Class B Common Stock share $ 44,400 $ 58,938 $ 45,540 55 Fiscal Year (in thousands, except per share data) 2023 2022 2021 Denominator for basic net income per Common Stock and Class B Common Stock share: Common Stock weighted average shares outstanding \u2013 basic 8,369 8,117 7,141 Class B Common Stock weighted average shares outstanding \u2013 basic 1,005 1,257 2,232 Denominator for diluted net incom",
+    "Stock weighted average shares outstanding \u2013 diluted (assumes conversion of Class B Common Stock to Common Stock) 9,392 9,405 9,400 Class B Common Stock weighted average shares outstanding \u2013 diluted 1,023 1,288 2,259 Basic net income per share: Common Stock $ 43",
+    "(2) For purposes of the diluted net income per share computation for Class B Common Stock, weighted average shares of Class B Common Stock are assumed to be outstanding for the entire period and not converted"
+   ]
+  },
+  {
+   "form": "10-Q",
+   "filed": "2024-10-30",
+   "accn": "0000317540-24-000061",
+   "primary_document": "coke-20240927.htm",
+   "artifact_id": "sec_filing_doc:0000317540:0000317540-24-000061",
+   "cover_sentences": [
+    "00 per share, outstanding",
+    "47 Weighted average number of Common Stock shares outstanding 7,756 8,369 8,141 8,369 Class B Common Stock $ 13",
+    "47 Weighted average number of Class B Common Stock shares outstanding 1,005 1,005 1,005 1,005 Diluted net income per share: Common Stock $ 13",
+    "38 Weighted average number of Common Stock shares outstanding \u2013 assuming dilution 8,772 9,395 9,158 9,398 Class B Common Stock $ 13",
+    "29 Weighted average number of Class B Common Stock shares outstanding \u2013 assuming dilution 1,016 1,026 1,017 1,029 Cash dividends per share: Common Stock $ 0",
+    "00 per share (\u201cClass B Common Stock\u201d), which represented approximately 72 % of the total voting power of the Company\u2019s outstanding Common Stock, par value $ 1",
+    "As of September 27, 2024, The Coca\u2011Cola Company owned shares of the Company\u2019s Common Stock representing approximately 7 % of the total voting power of the Company\u2019s outstanding Common Stock and Class B Common Stock on a consolidated basis",
+    "2 % of the shares of the Company\u2019s Common Stock that were issued and outstanding as of June 18, 2024",
+    "5 % of the Company\u2019s total outstanding shares of Common Stock and Class B Common Stock immediately following the closing of the Share Repurchase (calculated assuming all issued and outstanding shares of Class B Common Stock were converted into Common Stock and taking into account the shares of Common Stock purchased in the Tender Offer)",
+    "624 $ 92,093 $ 454,177 $ 332,539 Numerator for diluted net income per Class B Common Stock share: Dividends on Class B Common Stock $ 502 $ 503 $ 17,582 $ 4,522 Class B Common Stock undistributed earnings \u2013 diluted 12,885 9,545 32,254 31,792 Numerator for diluted net income per Class B Common Stock share $ 13,387 $ 10,048 $ 49,836 $ 36,314 Denominator for basic net income per Common Stock and Class B Common Stock share: Common Stock weighted average shares outstanding \u2013 basic 7,756 8,369 8,141 8,369 Class B Common Stock weighted average shares outstanding \u2013 basic 1,005 1,005 1,005 1,005 Denomi",
+    "hare: Common Stock weighted average shares outstanding \u2013 diluted (assumes conversion of Class B Common Stock to Common Stock) 8,772 9,395 9,158 9,398 Class B Common Stock weighted average shares outstanding \u2013 diluted 1,016 1,026 1,017 1,029 Basic net income per share: Common Stock $ 13",
+    "(2) For purposes of the diluted net income per share computation for Class B Common Stock, weighted average shares of Class B Common Stock are assumed to be outstanding for the entire period and not converted",
+    "2% of the shares of the Company\u2019s Common Stock that were issued and outstanding as of June 18, 2024",
+    "00 per share (\u201cClass B Common Stock\u201d), immediately following the closing of the Share Repurchase (calculated assuming all issued and outstanding shares of Class B Common Stock were converted into Common Stock and taking into account the shares of Common Stock purchased in the Tender Offer)"
+   ]
+  }
+ ],
+ "note": "Diagnostic only. POST_AS_OF_FILING rows are investigation evidence and are never used as the as_of share count (user decision 2026-09-26)."
+}
