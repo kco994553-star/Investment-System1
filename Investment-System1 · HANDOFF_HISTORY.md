@@ -1455,3 +1455,12 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
   removed wrongly ranked issuers; gate/snapshot consistency added (blocks Official on mismatch).
 - Run #38: Promotion Gate v2 PASS, consistency PASS -> Official US Market-Cap Top 500 PIT declared for 2024-12-31.
 - 272 tests (259 Track A + 13 Track B).
+
+2026-09-26 (round 12, 13:00-15:40 KST) · Claude Code (+ Actions runs #41-#51) → Next AI
+- User decisions: PINC/WOLF NPORT_REPORTED_VALUE per as_of (option 1, each date verified independently, look_ahead
+  recorded); AMTM share count only from as-of-or-earlier registration/8-K documents; 2024-06-30 only after 2024-09-30
+  PASS; all user-facing times in KST.
+- 2024-12-31: single_as_of + real benchmark (run #41). 2024-09-30: Official (run #46: PGV2 PASS, consistency 500/500;
+  AMTM 8-K 2024-09-27 count; RPRX 'one -for-one' extraction whitespace fix); official pipeline run #47.
+- 2024-06-30: runs #48-#51; RKT/TPG/TOST restored from FY2023 10-Ks; GRAL (spin-off 2024-06-24) and WRK (no
+  permitted price source) open.
