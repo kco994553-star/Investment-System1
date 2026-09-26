@@ -49,12 +49,15 @@ def needs_cover(store: RawDatasetStore, row_listings: dict, as_of: datetime) -> 
         if m.get("cik"):
             c = str(int(str(m["cik"]))).zfill(10)
             lines[c] = lines.get(c, 0) + 1
+    chain = _load("run_top500_gate_chain")
     out = []
     for c, n in sorted(lines.items()):
         cf = load_companyfacts(store, c)
         sh = pit_shares(cf, as_of) if cf is not None else None
-        # a zero/negative companyfacts count (e.g. a converted class reported alone) is unresolved too
-        if n > 1 or sh is None or sh["status"] != "OK" or not (sh["shares"] or 0) > 0:
+        # a zero/negative companyfacts count (e.g. a converted class reported alone) is unresolved too;
+        # so is a count not filed with the latest periodic report (per-class facts dropped) or one failing the scale check
+        if (n > 1 or sh is None or sh["status"] != "OK" or not (sh["shares"] or 0) > 0
+                or chain.share_fact_stale(store, c, sh, as_of) or chain.share_scale_check(cf, as_of, sh["shares"])["flagged"]):
             out.append(c)
     return out
 

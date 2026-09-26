@@ -1330,3 +1330,47 @@ def test_run32_cover_text_found_after_a_long_ixbrl_hidden_header():
     assert len(text) > 60000 and chain.cover_text_symbol_member(text, cover)[0] == "CommonClassAMember"
     k, cnt, _ = chain.cover_text_share_count(("x " * 40000) + "81,002,128 shares outstanding", 81_002_128_000_000)
     assert (k, cnt) == (6, 81_002_128)
+
+
+def test_run33_stale_share_fact_routes_to_cover_and_needs_cover(tmp_path):
+    """MA-like: companyfacts' only undimensioned dei count was filed years before the latest 10-Q (the 10-Q tagged per
+    class, dimensions dropped) -> stale -> cover instance fetched and used; a current single-class fact is not stale."""
+    chain = _mod("chain_stale", "run_top500_gate_chain.py")
+    fcx = _mod("fcx_stale", "fetch_cover_xbrl.py")
+    store = RawDatasetStore(tmp_path)
+    cik = "0001141391"
+    cf = {"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [{"filed": "2012-02-16", "val": 122_530_193}]}}}}}
+    store.put(f"companyfacts:{cik}", json.dumps(cf).encode(), "u", "SEC", "application/json", "t", 200)
+    aid = _sub_with_filing(store, cik)
+    sh = chain.pit_shares(cf, amc_dt())
+    assert chain.share_fact_stale(store, cik, sh, amc_dt()) is True
+    assert fcx.needs_cover(store, {"m": {"cik": cik, "yahoo": "MA"}}, amc_dt()) == [cik]
+    store.put(aid, _instance([("CommonClassAMember", 917_000_000), ("CommonClassBMember", 7_000_000)],
+                             [("CommonClassAMember", "MA")]), "u", "SEC", "application/xml", "t", 200)
+    chart = {"chart": {"result": [{"timestamp": [int(datetime(2024, 12, 27, 21, tzinfo=UTC).timestamp())],
+                                   "indicators": {"quote": [{"close": [526.0]}]}}], "error": None}}
+    store.put("yahoo_chart:MA:5y", json.dumps(chart).encode(), "u", "YAHOO", "application/json", "t", 200)
+    ov, _ = chain.cover_mcap_overrides(store, {"m": {"cik": cik, "yahoo": "MA"}}, amc_dt())
+    assert ov["m"]["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and ov["m"]["mcap"] == 917_000_000 * 526.0
+    fresh = {"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [{"filed": "2024-10-30", "val": 5}]}}}}}
+    assert chain.share_fact_stale(store, cik, chain.pit_shares(fresh, amc_dt()), amc_dt()) is False
+
+
+def test_run33_single_class_stale_uses_fresh_cover_count_unless_it_fails_the_scale_check(tmp_path):
+    chain = _mod("chain_stale1", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    cik = "0000000555"
+    cf = {"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [{"filed": "2020-06-03", "val": 0}]}}},
+          "us-gaap": {"WeightedAverageNumberOfSharesOutstandingBasic": {"units": {"shares": [
+              {"filed": "2024-10-30", "end": "2024-09-30", "val": 100_000_000}]}}}}}
+    store.put(f"companyfacts:{cik}", json.dumps(cf).encode(), "u", "SEC", "application/json", "t", 200)
+    aid = _sub_with_filing(store, cik)
+    chart = {"chart": {"result": [{"timestamp": [int(datetime(2024, 12, 27, 21, tzinfo=UTC).timestamp())],
+                                   "indicators": {"quote": [{"close": [10.0]}]}}], "error": None}}
+    store.put("yahoo_chart:SGL:5y", json.dumps(chart).encode(), "u", "YAHOO", "application/json", "t", 200)
+    store.put(aid, _instance([(None, 101_000_000)], [(None, "SGL")]), "u", "SEC", "application/xml", "t", 200)
+    ov, _ = chain.cover_mcap_overrides(store, {"s": {"cik": cik, "yahoo": "SGL"}}, amc_dt())
+    assert ov["s"]["status"] == "COVER_SINGLE_CLASS" and ov["s"]["mcap"] == 101_000_000 * 10.0
+    store.put(aid, _instance([(None, 101_000_000_000_000)], [(None, "SGL")]), "u", "SEC", "application/xml", "t", 200)
+    ov2, un2 = chain.cover_mcap_overrides(store, {"s": {"cik": cik, "yahoo": "SGL"}}, amc_dt())
+    assert ov2 == {} and un2 == {"s": "COVER_SHARES_FAIL_SCALE_CHECK"}

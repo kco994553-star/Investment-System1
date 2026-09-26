@@ -182,6 +182,19 @@ def _as_of_price(store: RawDatasetStore, symbol: str, as_of, chart_range: str):
 SCALE_RATIO_BAND = (0.5, 2.0)
 
 
+def share_fact_stale(store: RawDatasetStore, cik10: str, sh: dict | None, as_of) -> bool:
+    """True when the companyfacts share fact pit_shares chose was NOT filed with the issuer's latest 10-K/10-Q filed on or
+    before as_of. Every periodic report tags the cover share count; if the latest one has no undimensioned fact the
+    filing reported it per class (dimensions are dropped by companyfacts) and the older value is stale (PPLI 2020 zero,
+    MA/CME/IBKR one class only)."""
+    if not sh or sh.get("available_at") is None:
+        return False
+    f = select_filing(load_submissions_merged(store, cik10)[0] or {}, as_of)
+    if not f:
+        return False
+    return str(sh["available_at"])[:10] < f["filed"]
+
+
 def share_scale_check(cf: dict, as_of, shares: float) -> dict:
     """Cross-check a companyfacts share count against the same issuer's latest basic weighted-average share count
     (period ending and filed on or before as_of). A ratio outside SCALE_RATIO_BAND flags a possible XBRL scale error
@@ -317,8 +330,11 @@ def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_ra
         if len(classes) == 1 and classes[0]["member"] is None:
             cf = load_companyfacts(store, c)
             sh = pit_shares(cf, as_of) if cf is not None else None
-            if sh and sh["status"] == "OK" and (sh["shares"] or 0) > 0:
+            if sh and sh["status"] == "OK" and (sh["shares"] or 0) > 0 and not share_fact_stale(store, c, sh, as_of):
                 continue  # companyfacts already resolves a single class
+            if cf is not None and share_scale_check(cf, as_of, classes[0]["shares"])["flagged"]:
+                unresolved[cid] = "COVER_SHARES_FAIL_SCALE_CHECK"  # same scale error in the instance (HXL): text route
+                continue
             px = _as_of_price(store, str(m.get("yahoo") or ""), as_of, chart_range)
             if px:
                 out[cid] = {"mcap": classes[0]["shares"] * px, "status": "COVER_SINGLE_CLASS", "source": aid,
