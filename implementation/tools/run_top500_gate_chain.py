@@ -528,6 +528,17 @@ def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_ra
             else:
                 unresolved[cid] = "NO_PRICE"
             continue
+        # a plain-common member equal to the exact sum of all other classes is the TOTAL, not another class (RYAN Q2-2024:
+        # CommonStockMember 261,448,198 = Class A 120,351,717 + Class B 141,096,481); never summed twice
+        from investment_system.providers.sec_cover_shares import _plain_common
+        dropped_total = None
+        for cl in classes:
+            others = [x for x in classes if x is not cl]
+            if len(others) >= 2 and _plain_common(cl["member"]) and not syms.get(cl["member"]) \
+                    and abs(cl["shares"] - sum(x["shares"] for x in others)) < 0.5:
+                dropped_total = cl
+        if dropped_total is not None:
+            classes = [x for x in classes if x is not dropped_total]
         total, parts, lower = 0.0, [], False
         listed = [cl for cl in classes if syms.get(cl["member"])]
         for cl in classes:
@@ -556,7 +567,9 @@ def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_ra
             parts.append({**cl, "symbol": sym, "price": px, **({"symbol_basis": text_basis} if text_basis and sym else {})})
         if total > 0:
             out[cid] = {"mcap": total, "status": "COVER_CLASS_SUM_LOWER_BOUND" if lower else "COVER_CLASS_SUM",
-                        "source": aid, "classes": parts}
+                        "source": aid, "classes": parts,
+                        **({"total_member_dropped": {"member": dropped_total["member"], "shares": dropped_total["shares"]}}
+                           if dropped_total is not None else {})}
         else:
             unresolved[cid] = "NO_PRICED_CLASS"
     return out, unresolved
@@ -605,6 +618,9 @@ def map_superset_members(ref: dict, row_listings: dict, pre_elig: dict, eligible
     # CIK-identified members (e.g. SEC N-PORT holdings) map to the issuer's primary eligible line
     by_cik = {str(m.get("cik") or "").zfill(10): m for m in list(row_listings.values()) + list(pre_elig.values()) if m.get("cik")}
     by_cik.update({str(m.get("cik") or "").zfill(10): m for m in pre_elig.values() if m.get("cik")})
+    # a reference member resolved to a successor CIK that the pool replaced by its verified as-of CIK (BLK 2024-09-30)
+    by_cik.update({str(m["cik_replaced_from"]).zfill(10): m for m in list(row_listings.values()) + list(pre_elig.values())
+                   if m.get("cik_replaced_from")})
     cik_ids = ref.get("member_id_type") == "CIK10"
     elig_ciks = {str(m.get("cik") or "").zfill(10) for m in eligible.values()}
     pre_ciks = {str(m.get("cik") or "").zfill(10) for m in pre_elig.values()}
@@ -650,7 +666,8 @@ CLAIM_PATTERNS = {"conversion_ratio": RATIO_ONE, "exchange_ratio": RATIO_ONE,
                   "pairing": r"(one|a|an equal number of|an equivalent number of|corresponding number of) shares? of (?:[\w’']+ ){0,2}Class [A-Z]|"
                              r"an (?:equal|equivalent) number of(?: [\w’'-]+){0,5} Class [A-Z]|"
                              r"equal to the number of|for each (?:\w+ )?units?",
-                  "identical_rights": r"identical in all respects|share ratably with|same rights and privileges"}
+                  "identical_rights": r"identical in all respects|share ratably with|same rights and privileges|"
+                                      r"share proportionately, on a per share basis"}
 BASIS_CLAIMS = {"CONVERTIBLE_INTO_LISTED": {"conversion_ratio"},
                 "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED": {"pairing", "exchange_ratio"},
                 "ECONOMICALLY_IDENTICAL_TO_LISTED": {"identical_rights"}}
@@ -670,7 +687,7 @@ def verify_class_economics(store: RawDatasetStore, cik10: str, override: dict, d
     Returns (market cap, evidence); (None, evidence with failures) when anything is unproven (fail-closed)."""
     import re
     frc = _load("fetch_class_rights_evidence")
-    fails, used, texts = [], [], {}
+    fails, used, texts, undetermined = [], [], {}, []
     classes = override.get("classes") or []
     listed = [c for c in classes if c.get("price")]
     if len(listed) != 1 or listed[0].get("member") != det.get("listed_member"):
@@ -681,7 +698,7 @@ def verify_class_economics(store: RawDatasetStore, cik10: str, override: dict, d
             continue
         cd = (det.get("classes") or {}).get(c.get("member"))
         if not cd:
-            fails.append(f"NO_DETERMINATION:{c.get('member')}")
+            undetermined.append(c.get("member"))  # stays unvalued: the result is then only a (higher) lower bound
             continue
         need = set(BASIS_CLAIMS.get(cd.get("basis"), {"UNKNOWN_BASIS"}))
         if "UNKNOWN_BASIS" in need or cd.get("ratio") != 1:
@@ -729,7 +746,11 @@ def verify_class_economics(store: RawDatasetStore, cik10: str, override: dict, d
         terms.append(f"{c.get('member')} {c['shares']:.0f} x {cd['ratio']}")
     if fails:
         return None, {"status": "NOT_DETERMINED", "failures": fails, "citations_checked": used}
-    return eq_shares * px, {"status": "ECONOMIC_EQUIVALENT_DETERMINED", "listed_price": px, "economic_equivalent_listed_shares": eq_shares,
+    if len(undetermined) == len([c for c in classes if not c.get("price")]):
+        return None, {"status": "NOT_DETERMINED", "failures": [f"NO_DETERMINATION:{m}" for m in undetermined], "citations_checked": used}
+    status = "ECONOMIC_EQUIVALENT_PARTIAL_LOWER_BOUND" if undetermined else "ECONOMIC_EQUIVALENT_DETERMINED"
+    return eq_shares * px, {"status": status, "undetermined_classes": undetermined, "listed_price": px,
+                            "economic_equivalent_listed_shares": eq_shares,
                             "formula": f"({' + '.join(terms)}) x {px}", "double_count_check": det.get("double_count_check"),
                             "citations": used}
 
@@ -744,8 +765,14 @@ def apply_class_economics(store: RawDatasetStore, overrides: dict, listings: dic
             continue
         mcap, e = verify_class_economics(store, c, o, det, as_of)
         ev[listings[cid].get("yahoo")] = {**e, "lower_bound": o["mcap"]}
-        if mcap:
+        if mcap and e["status"] == "ECONOMIC_EQUIVALENT_DETERMINED":
             overrides[cid] = {**o, "mcap": mcap, "status": "COVER_ECONOMIC_EQUIVALENT", "lower_bound": o["mcap"], "class_economics": e}
+        elif mcap:  # some unlisted classes proven, others not: a higher LOWER BOUND, never an exact value
+            px = e["listed_price"]
+            classes = [{**c, "price": px, "price_basis": "FILING_CITED_LISTED_EQUIVALENT"}
+                       if not c.get("price") and c["member"] not in e["undetermined_classes"] else c for c in o["classes"]]
+            overrides[cid] = {**o, "mcap": mcap, "status": "COVER_CLASS_SUM_LOWER_BOUND", "lower_bound": o["mcap"], "class_economics": e,
+                              "classes": classes}
     return ev
 
 

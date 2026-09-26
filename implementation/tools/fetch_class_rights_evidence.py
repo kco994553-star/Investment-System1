@@ -75,7 +75,7 @@ def class_phrases(member: str) -> list[str]:
     m = re.fullmatch(r"CommonClass([A-Z])Member", member or "")
     if m:
         return [f"Class {m.group(1)} common stock", f"Class {m.group(1)} Common Stock", f"Class {m.group(1)} Shares",
-                f"Class {m.group(1)} shares"]
+                f"Class {m.group(1)} shares", f"Class {m.group(1)} ordinary shares", f"Class {m.group(1)} Ordinary Shares"]
     if member == "NonvotingCommonStockMember":
         return ["Nonvoting Class A", "nonvoting Class A", "Nonvoting Common Stock", "nonvoting common stock"]
     words = re.sub(r"Member$", "", member or "")

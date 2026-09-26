@@ -1609,3 +1609,35 @@ def test_run42_nport_exception_is_per_as_of_and_records_look_ahead(tmp_path):
     assert "EVIDENCE_OR_EXCEPTION_FOR_ANOTHER_AS_OF" in chain.apply_nport_reported_prices(store, {}, listings, exc, other, amc_dt())["PINC"]["failures"]
     other_exc = {**exc, "as_of": "2024-09-30"}
     assert "EVIDENCE_OR_EXCEPTION_FOR_ANOTHER_AS_OF" in chain.apply_nport_reported_prices(store, {}, listings, other_exc, ev, amc_dt())["PINC"]["failures"]
+
+
+def test_run43_total_member_dropped_partial_economics_and_equal_per_share_wording(tmp_path):
+    chain = _mod("chain_r43", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    cik = "0001849253"
+    aid = _sub_with_filing(store, cik)
+    # RYAN Q2-2024 cover: a CommonStockMember TOTAL equal to Class A + Class B
+    store.put(aid, _instance([("CommonStockMember", 261_448_198), ("CommonClassAMember", 120_351_717), ("CommonClassBMember", 141_096_481)],
+                             [("CommonClassAMember", "RYAN")]), "u", "SEC", "application/xml", "t", 200)
+    t = int(datetime(2024, 9, 27, 21, tzinfo=UTC).timestamp())
+    store.put("yahoo_chart:RYAN:5y", json.dumps({"chart": {"result": [{"timestamp": [t], "indicators": {"quote": [{"close": [66.0]}]}}],
+              "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
+    ov, _ = chain.cover_mcap_overrides(store, {"r": {"cik": cik, "yahoo": "RYAN"}}, amc_dt())
+    o = ov["r"]
+    assert o["total_member_dropped"]["member"] == "CommonStockMember" and {c["member"] for c in o["classes"]} == {"CommonClassAMember", "CommonClassBMember"}
+    assert o["mcap"] == 120_351_717 * 66.0 and chain.equal_economics_upper_bound(o) == 261_448_198 * 66.0  # counted once
+    # partial: one unlisted class proven, another not -> higher LOWER BOUND, never exact
+    s2, cik2, ov2, det2 = _class_econ_store(tmp_path / "p")
+    ov2 = {**ov2, "classes": ov2["classes"] + [{"member": "CommonClassCMember", "shares": 50, "price": None, "symbol": None}]}
+    mcap, ev = chain.verify_class_economics(s2, cik2, ov2, det2, amc_dt())
+    assert ev["status"] == "ECONOMIC_EQUIVALENT_PARTIAL_LOWER_BOUND" and ev["undetermined_classes"] == ["CommonClassCMember"]
+    overrides = {"u": dict(ov2)}
+    chain.apply_class_economics(s2, overrides, {"u": {"cik": cik2, "yahoo": "UPC"}}, {"issuers": {cik2: det2}}, amc_dt())
+    u = overrides["u"]
+    assert u["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and u["mcap"] == (100 + 300) * 10.0
+    assert chain.equal_economics_upper_bound(u) == (100 + 300 + 50) * 10.0  # proven class not double counted in the bound
+    import re
+    assert re.search(chain.CLAIM_PATTERNS["identical_rights"], "Class A common stock and Class B common stock share proportionately, "
+                     "on a per share basis, in our net income (losses) and participate equally in the dividends")
+    frc = _mod("frc_ord", "fetch_class_rights_evidence.py")
+    assert "Class B ordinary shares" in frc.class_phrases("CommonClassBMember")

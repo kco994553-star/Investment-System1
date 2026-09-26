@@ -164,6 +164,147 @@
     }
    },
    "double_count_check": "No operating-partnership units: common (XBRL CommonClassAMember, 57,903,976) and Class B (23,570,633) are both issued shares of the registrant (10-Q cover 2024-11-22); A + B is not double counted. Listed member per symbol_mappings (10-K: Class B 'not listed or traded')."
+  },
+  "0001805284": {
+   "symbol": "RKT",
+   "entity_name": "Rocket Companies, Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassDMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000137",
+       "form": "10-Q",
+       "filed": "2024-08-06",
+       "accession": "0001805284-24-000137",
+       "offset": 153898,
+       "quote": "For the three and six months ended June 30, 2024, 1,848,879,483 Holdings Units were outstanding, together with a corresponding number of shares of our Class D common stock, which were exchangeable, at our option, for shares of our Class A common stock.",
+       "supports": [
+        "pairing"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001805284:0001805284-24-000009",
+       "form": "10-K",
+       "filed": "2024-02-27",
+       "accession": "0001805284-24-000009",
+       "offset": 234077,
+       "quote": "No adjustments to the present exchange ratio of one-to-one for Holdings Units and corresponding shares of Class D common stock or Class C common stock will be made as a result of (i) any cash distribution by Holdings or (ii) any cash that we retain and do not distribute to our stockholders.",
+       "supports": [
+        "exchange_ratio"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class D count = Holdings Units held by the non-controlling interest (10-Q filed 2024-08-06); Rocket's own units are represented by Class A."
+  },
+  "0001880661": {
+   "symbol": "TPG",
+   "entity_name": "TPG Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "NonvotingCommonStockMember": {
+     "basis": "ECONOMICALLY_IDENTICAL_TO_LISTED",
+     "ratio": 1,
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000044",
+       "form": "10-Q",
+       "filed": "2024-08-06",
+       "accession": "0001880661-24-000044",
+       "offset": 214941,
+       "quote": "The nonvoting Class A common stock have the same rights and privileges as, rank equally and share ratably with, and are identical in all respects as to all matters to, the Class A common stock, except that the nonvoting Class A common stock have no voting rights other than such rights as may be required by law.",
+       "supports": [
+        "identical_rights"
+       ]
+      }
+     ]
+    },
+    "CommonClassBMember": {
+     "basis": "PAIRED_UNITS_EXCHANGEABLE_INTO_LISTED",
+     "ratio": 1,
+     "paired_instrument": "Common Unit",
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000013",
+       "form": "10-K",
+       "filed": "2024-02-23",
+       "accession": "0001880661-24-000013",
+       "offset": 290301,
+       "quote": "They hold substantially all of their economic interest in the TPG Operating Group primarily through TPG Partner Vehicles (rather than through ownership of shares of our Class A common stock), and for each Common Unit owned, they own one share of our Class B common stock.",
+       "supports": [
+        "pairing"
+       ]
+      },
+      {
+       "artifact_id": "sec_filing_doc:0001880661:0001880661-24-000044",
+       "form": "10-Q",
+       "filed": "2024-08-06",
+       "accession": "0001880661-24-000044",
+       "offset": 175646,
+       "quote": "Tax Receivable Agreement Pursuant to the Exchange Agreement, certain employees and partners of TPG Partner Holdings are authorized to exchange Common Units for an equal number of shares of Class A Common Stock.",
+       "supports": [
+        "exchange_ratio"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class B is non-economic; one Class B share per Common Unit held outside TPG Inc.; TPG Inc.'s own Common Units are represented by Class A + nonvoting Class A."
+  },
+  "0001758730": {
+   "symbol": "TW",
+   "entity_name": "Tradeweb Markets Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "CONVERTIBLE_INTO_LISTED",
+     "ratio": 1,
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001758730:0001758730-24-000025",
+       "form": "10-K",
+       "filed": "2024-02-09",
+       "accession": "0001758730-24-000025",
+       "offset": 320812,
+       "quote": "Shares of our Class B common stock may also be exchanged at any time, at the option of the holder, for newly issued shares of Class A common stock (in which case such holders’ shares of Class B common stock will be cancelled on a one-for-one basis upon any such issuance).",
+       "supports": [
+        "conversion_ratio"
+       ]
+      }
+     ]
+    }
+   },
+   "undetermined_note": "Class C and Class D (no economic interests, paired with TWM LLC Interests) are NOT determined: the result is a partial LOWER BOUND.",
+   "double_count_check": "Class A and Class B are issued shares of the registrant; Class C/D (units) are left unvalued (lower bound)."
+  },
+  "0001650164": {
+   "symbol": "TOST",
+   "entity_name": "Toast, Inc.",
+   "listed_member": "CommonClassAMember",
+   "classes": {
+    "CommonClassBMember": {
+     "basis": "ECONOMICALLY_IDENTICAL_TO_LISTED",
+     "ratio": 1,
+     "citations": [
+      {
+       "artifact_id": "sec_filing_doc:0001650164:0001650164-24-000283",
+       "form": "10-Q",
+       "filed": "2024-08-07",
+       "accession": "0001650164-24-000283",
+       "offset": 52527,
+       "quote": "Class A common stock and Class B common stock share proportionately, on a per share basis, in our net income (losses) and participate equally in the dividends on common stock, if declared.",
+       "supports": [
+        "identical_rights"
+       ]
+      }
+     ]
+    }
+   },
+   "double_count_check": "Class A and Class B are both issued shares of the registrant with equal per-share economics; no units."
   }
  },
  "derived_from": "2024-12-31",
