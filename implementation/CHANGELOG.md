@@ -606,3 +606,23 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - integration/engine.py: actual_weight 0.0 no longer treated as missing (C-27 PATCH).
 - Run #30: 979 rankable, cutoff $15.189B; Promotion Gate v2 FAIL (PINC, WOLF, PPLI). 242 tests.
 - Personal Investment Layer v1 handoff imported (docs only; no PIL code).
+
+## 2026-09-26 · round 15 · Codex (+ Actions runs #58-#59)
+
+- Run #58 exposed a Gate/Official universe-ID mismatch caused by independent UUID creation during an otherwise identical
+  500-member rebuild. Official remained suspended.
+- `official_pipeline.py` now preserves the corrected Gate universe ID only after exact membership/order verification and
+  fails closed when the Gate ID is missing. The workflow can reuse committed Gate evidence only with `skip_fetch=true`
+  and explicit dates. Added regressions; full suite 294/294 and targeted set 102/102 passed via mini_pytest shim.
+- Run #59 rebuilt 2024-12-31 Official as `uni_cf6aa3403869`: Gate/Official membership, order, ranks, market caps, cutoff,
+  and audited share/price provenance match exactly; #500 ALGN; FNF absent. Corrected single_as_of and real 500-company
+  benchmark reran successfully. 2024-12-31 Official restored; 2024-09-30 remains suspended; no walk-forward run.
+
+## 2026-09-26 · round 16 · Codex (+ Actions runs #60-#61)
+
+- Run #60 independently passed corrected C-36 reference resolution for 2024-09-30 and rebuilt an identity-preserving
+  Official snapshot (`uni_e334f94a73c3`, 500/500, cutoff $15.574B, #500 ENPH), single_as_of, and real benchmark.
+  2024-09-30 Official restored; pre-C-36 runs remain superseded.
+- Run #61 independently failed closed for 2024-06-30: GRAL/WRK not rankable and ARDAGH GROUP SA/Liberty SiriusXM
+  non-escrow holdings unresolved. No Official or downstream result promoted. Liberty tracking-stock handling raised as
+  C-37; no new economic-rights, eligibility, or look-ahead policy was introduced. Walk-forward remains blocked.
