@@ -57,4 +57,7 @@ Incremental updates use stable source IDs/content hashes for deduplication. Corr
 
 ## Implementation state
 Implemented now: global_universe contract with Region, AnalysisUniverse, IssuerIdentity, SecurityIdentity, ListingIdentity, UniverseContext, FXSnapshot PIT gate, EligibilityRecord; regression tests added.
+Canonical runtime: `implementation/src/investment_system/contracts/global_universe.py`; regressions:
+`implementation/tests/test_global_universe_contracts.py` (6/6 PASS, full suite 308/308 PASS at 2026-09-27 16:02 KST).
+This common contract does not import or replace Track B's frozen `personal/security.py` contract.
 Not implemented/verified: KRX collector, global security-master provider, Reddit collector, YouTube metadata collector, licensed TV/news feeds, relationship/event stores, Korea/Global real-data coverage, official Top N.
