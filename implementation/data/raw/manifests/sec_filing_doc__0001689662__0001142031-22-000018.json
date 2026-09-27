@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001689662:0001142031-22-000018",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1689662/000114203122000018/ARD-123121.txt",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-27T00:37:06.767575+00:00",
+  "sha256": "16ddb486fd415476b0de10ac0131ae035efefe9a6d978ceef39c7ad0aa1672f7",
+  "bytes": 9340,
+  "content_type": "text/plain",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

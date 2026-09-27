@@ -8865,6 +8865,7 @@
     },
     "LIBERTY MEDIA CORP - FORMULA ONE GROUP|531229755": {
       "candidates": [
+        "0002078416",
         "0000869614",
         "0001082114",
         "0001355096",
@@ -10843,6 +10844,87 @@
         }
       ],
       "status": "UNIQUE"
+    },
+    "ARDAGH GROUP SA|L0223L101": {
+      "candidates": [
+        "0001689662"
+      ],
+      "cik": "0001689662",
+      "attested": [
+        {
+          "cik": "0001689662",
+          "discovered_via_submissions_cik": "0001689662",
+          "artifact_id": "sec_filing_doc:0001689662:0001142031-22-000018",
+          "header_artifact_id": "edgar_index_headers:0001142031-22-000018",
+          "filed": "2022-02-11",
+          "snippet": " Ardagh Group S.A. (Name of Issuer) Common Stock (Title of Class of Securities) L0223L101 (CUSIP Number) December 31, 2021 (Date "
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001689662",
+          "subject_ciks": [
+            "0001845097"
+          ],
+          "artifact_id": "sec_filing_doc:0001689662:0000947871-23-000171",
+          "header_artifact_id": "edgar_index_headers:0000947871-23-000171",
+          "filed": "2023-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001689662",
+          "subject_ciks": [
+            "0001845097"
+          ],
+          "artifact_id": "sec_filing_doc:0001689662:0000947871-22-000325",
+          "header_artifact_id": "edgar_index_headers:0000947871-22-000325",
+          "filed": "2022-03-04",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001689662",
+          "subject_ciks": [
+            "0001845097"
+          ],
+          "artifact_id": "sec_filing_doc:0001689662:0000947871-22-000229",
+          "header_artifact_id": "edgar_index_headers:0000947871-22-000229",
+          "filed": "2022-02-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001689662",
+          "subject_ciks": [
+            "0001689662"
+          ],
+          "artifact_id": "sec_filing_doc:0001689662:0001142031-22-000018",
+          "header_artifact_id": "edgar_index_headers:0001142031-22-000018",
+          "filed": "2022-02-11",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "LIBERTY SIRIUS XM|531229813": {
+      "candidates": [
+        "0002003397"
+      ],
+      "cik": null,
+      "attested": [],
+      "checked": [],
+      "status": "ATTESTED_0"
+    },
+    "LIBERTY SIRIUS XM|531229789": {
+      "candidates": [
+        "0002003397"
+      ],
+      "cik": null,
+      "attested": [],
+      "checked": [],
+      "status": "ATTESTED_0"
     }
   },
   "unresolved_holdings": [
@@ -10882,7 +10964,9 @@
       "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
       "candidates": [
         "0001689662"
-      ]
+      ],
+      "cusip_attestation": "UNIQUE",
+      "pit_registrant_candidates": []
     },
     {
       "name": "LIBERTY SIRIUS XM",
@@ -10902,7 +10986,9 @@
       "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
       "candidates": [
         "0002003397"
-      ]
+      ],
+      "cusip_attestation": "ATTESTED_0",
+      "pit_registrant_candidates": []
     },
     {
       "name": "LIBERTY SIRIUS XM",
@@ -10922,7 +11008,9 @@
       "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
       "candidates": [
         "0002003397"
-      ]
+      ],
+      "cusip_attestation": "ATTESTED_0",
+      "pit_registrant_candidates": []
     }
   ],
   "members_not_in_pool_without_current_ticker": [],
