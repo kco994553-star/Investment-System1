@@ -84,3 +84,12 @@ Update · Track separation 2026-09-27
 - Ownership: Track A data/Universe/provenance → Track C experiment/validation/promotion → Track B Official-profile
   consumption. Upstream QGV/Technical/Macro definitions and core scores are not redesigned.
 - Tax: Official tracks remain Pre-Tax; tax functionality is OUT_OF_SCOPE.
+
+Update · RIG / News Architecture v0.1 · 2026-09-27
+
+- SSoT: `Investment-System1 · RIG News Architecture v0.1.md`, contract `RIG_NEWS_ARCH_v0.1`.
+- Status: DESIGN FROZEN / IMPLEMENTATION NOT STARTED; P0–P5 NOT_STARTED.
+- Boundary: additive News/Relationship domain and News↔Network views. Existing DataEvent/PIT/identity/provenance and
+  Summary→Evidence→Detail contracts are reused; QGV/Technical/Macro scores are not mutated.
+- Track preservation: Track A REAL-DATA priority unchanged; Track B P0 stays frozen; Track C EVL stays frozen and
+  unimplemented. RIG is not a new scoring track and no runtime/UI/store was added by this registration.
