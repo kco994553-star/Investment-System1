@@ -177,18 +177,6 @@ No new evidence produced -- C-21 reconfirmed BLOCKED, no workaround forced per i
 - Run #61 (id 36234273515, head ab72939, evidence commit 2e04c1b): internal candidate consistency PASS 500/500 and
   cutoff $14,021,530,297.505974, but the corrected Russell reference fails: GRAL/WRK present-not-rankable plus non-escrow
   unresolved ARDAGH GROUP SA (L0223L101) and LIBERTY SIRIUS XM (531229813). Sufficiency/Promotion Gate v2 FAIL.
-
-
-25. Update 2026-09-27 16:02 KST · Codex / C-39 shared identity recovery
-- Restored the Global/Korea SSoT's already-declared common identity/context implementation at
-  `implementation/src/investment_system/contracts/global_universe.py`; no new mapping policy, provider, or Official
-  result was introduced. The hierarchy is issuer -> security -> dated listing, and ticker is listing-only.
-- `UniverseContext` keeps Analysis Universe, Network Region, and News Region independent. `FXSnapshot` and
-  `EligibilityRecord` require explicit raw/evidence provenance and reject `available_at > as_of`; Korea/Global
-  AnalysisUniverse instances reject premature Official status.
-- Evidence: `implementation/tests/test_global_universe_contracts.py` 6/6 PASS; full mini_pytest suite 308/308 PASS;
-  py_compile and diff check PASS. Static boundary: the common module imports no Track B `personal` code, and no frozen
-  Track B file changed. C-39 is RESOLVED; RIG remains DESIGN FROZEN / IMPLEMENTATION NOT STARTED.
 - Pipeline correctly emitted `BLOCKED_NO_OFFICIAL_DATE`; no single_as_of, benchmark, or walk-forward result was promoted.
   WRK N-PORT remained investigation-only; GRAL's pro-forma count was not promoted. Liberty tracking-stock policy is C-37.
 
@@ -231,3 +219,14 @@ No new evidence produced -- C-21 reconfirmed BLOCKED, no workaround forced per i
   mismatch. Full baseline 297/297 PASS (mini_pytest shim).
 - Registered `Investment-System1 · RIG News Architecture v0.1.md` as DESIGN FROZEN / IMPLEMENTATION NOT STARTED.
   No RIG code, tests, UI, store, notification runtime, score, or Official result was created.
+
+25. Update 2026-09-27 16:02 KST · Codex / C-39 shared identity recovery
+- Restored the Global/Korea SSoT's already-declared common identity/context implementation at
+  `implementation/src/investment_system/contracts/global_universe.py`; no new mapping policy, provider, or Official
+  result was introduced. The hierarchy is issuer -> security -> dated listing, and ticker is listing-only.
+- `UniverseContext` keeps Analysis Universe, Network Region, and News Region independent. `FXSnapshot` and
+  `EligibilityRecord` require explicit raw/evidence provenance and reject `available_at > as_of`; Korea/Global
+  AnalysisUniverse instances reject premature Official status.
+- Evidence: `implementation/tests/test_global_universe_contracts.py` 6/6 PASS; full mini_pytest suite 308/308 PASS;
+  py_compile and diff check PASS. Static boundary: the common module imports no Track B `personal` code, and no frozen
+  Track B file changed. C-39 is RESOLVED; RIG remains DESIGN FROZEN / IMPLEMENTATION NOT STARTED.
