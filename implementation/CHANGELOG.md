@@ -678,3 +678,10 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - Added `investment_system.rig.network`: shared News/Network view model, news status linking, relationship visual
   contract, focus/expansion, view-state preservation, three-language labels, and a static News | Network page with
   zoom/pan/drag. P1 11/11, full 334/334 (mini_pytest shim), browser smoke 18/18. P1 FROZEN. No existing module changed.
+
+## 2026-09-27 · Track D RIG P2 Relationship Intelligence · Claude Code
+
+- Added `investment_system.rig.intel`: PIT relationship status (NEW/DISCOVERED/STRENGTHENED/STABLE/WEAKENED/ENDED),
+  materiality observations, a separate Deal state machine with preserved rejections, relationship timeline, and
+  P2 badges/width/priority through P1's extension points (P1 gained a default-preserving `priority` argument).
+  P2 9/9, full 343/343 (mini_pytest shim). P2 FROZEN.

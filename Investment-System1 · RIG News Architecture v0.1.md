@@ -2,7 +2,7 @@
 
 Contract ID: `RIG_NEWS_ARCH_v0.1`
 
-Status: **DESIGN FROZEN / P0–P1 IMPLEMENTED + FROZEN; P2–P5 NOT_STARTED**
+Status: **DESIGN FROZEN / P0–P2 IMPLEMENTED + FROZEN; P3–P5 NOT_STARTED**
 
 Registered: 2026-09-27 11:07 KST
 
@@ -248,8 +248,9 @@ Summary→Evidence→Detail 패턴, QGV/Technical/Macro snapshots을 우선 재�
 - Repository consistency audit: completed against local/remote-identical tree at registration
 - C-39: RESOLVED and re-verified 2026-09-27 17:13 KST (`contracts/global_universe.py`, 6/6 focused regressions)
 - P0 Foundation: **FROZEN** (2026-09-27 17:44 KST; code baseline `e3b1b62`)
-- P1 Basic Network: **FROZEN** (2026-09-27 17:55 KST; baseline = the commit adding the P1 record)
-- P2–P5: NOT_STARTED
+- P1 Basic Network: **FROZEN** (2026-09-27 17:55 KST; baseline `af5080b`)
+- P2 Relationship Intelligence: **FROZEN** (2026-09-27 17:59 KST; baseline = the commit adding the P2 record)
+- P3–P5: NOT_STARTED
 
 ## P0 Foundation implementation record (2026-09-27 17:13 KST, Track D)
 
@@ -314,3 +315,28 @@ Package `implementation/src/investment_system/rig/network/` (`views.py`, `labels
   non-company nodes (◆ ▣ ⬡) are deferred to P4 with the Impact Graph; the page is a standalone RIG render, not yet
   registered in the shared App Shell `NAV_PAGES` (INTEGRATION_REQUIRED at canonical merge); later phases extend the
   page only through `PageExtras`.
+
+## P2 Relationship Intelligence record (2026-09-27 17:59 KST, Track D) — FROZEN
+
+Package `implementation/src/investment_system/rig/intel/` (`intel.py`, `present.py`), tests `test_rig_p2_intel.py` (9).
+
+- Relationship status, derived point-in-time from P0 states: ENDED (latest `valid_to` <= as-of date); NEW (first
+  detected within 30 days and a known `valid_from` no earlier than 30 days before detection = real new relationship);
+  DISCOVERED (recently detected, start past or unknown); STRENGTHENED / WEAKENED (latest materiality change or deal
+  EXPANDED/RENEWED vs REDUCED, or CANCELLED/EXPIRED of a deal that had been live, within 30 days); otherwise STABLE.
+- `MaterialityObservation` (LOW/MEDIUM/HIGH/CRITICAL) requires an accepted relationship and PIT evidence; it drives
+  edge width and the card's importance badge. It is a relevance label, not an investment score.
+- Deal state is separate from relationship state: RUMORED → EXPECTED → NEGOTIATING → ANNOUNCED → CONFIRMED → ACTIVE
+  (forward only, skips allowed), then EXPANDED/RENEWED/REDUCED from a live deal; CANCELLED from any non-terminal
+  state; EXPIRED only from a live deal; terminal states accept nothing. Invalid, out-of-order, identity-unknown or
+  look-ahead observations are kept in `rejected` with reasons. A deal never creates, confirms or removes an edge.
+- Timeline: ordered STATE / MATERIALITY / DEAL entries visible at the as-of time.
+- Presentation: at most 2 edge badges (status, then deal phrase ✓확정 / 예상 / 발표 / 계약 종료); card badges for deal
+  phrase, strengthened/weakened and importance; expansion priority Critical → High materiality → Recent change → P1
+  order (Portfolio/관심 slot is added in P3, Common Connection in P4).
+- P1 extension (D2): `build_network` / `neighborhood` / `build_view_model` gained an optional `priority` argument
+  whose default is the frozen P1 order; P1 behavior and its 11 tests are unchanged.
+- D2: the "Critical Event" priority slot is represented by CRITICAL relationship materiality; the 30-day recent window
+  is a single module constant (`RECENT_WINDOW`).
+- Evidence: P2 9/9 (6/6 mutation checks caught), P0–P2 35/35, full 343/343 (mini_pytest shim), browser smoke 18/18 on
+  a page with P2 badges/widths.

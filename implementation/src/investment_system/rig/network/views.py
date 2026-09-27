@@ -207,10 +207,11 @@ def _net_edge(e: Edge) -> NetEdge:
         e.state.available_at, e.state.last_confirmed_at)
 
 
-def neighborhood(edges: list[NetEdge], node_id: str, limit: int, steps: int) -> tuple[list[NetEdge], int]:
+def neighborhood(edges: list[NetEdge], node_id: str, limit: int, steps: int,
+                 priority=None) -> tuple[list[NetEdge], int]:
     if not FOCUS_MIN <= limit <= FOCUS_MAX:
         raise ValueError(f"focus limit must be within [{FOCUS_MIN}, {FOCUS_MAX}]")
-    adj = sorted((e for e in edges if node_id in (e.source_node_id, e.target_node_id)), key=edge_priority)
+    adj = sorted((e for e in edges if node_id in (e.source_node_id, e.target_node_id)), key=priority or edge_priority)
     shown = adj[: limit * (1 + steps)]
     return shown, len(adj) - len(shown)
 
@@ -226,12 +227,15 @@ def _layout(node_ids: list[str], center: str | None) -> dict[str, tuple[float, f
     return pos
 
 
-def build_network(graph: RIGGraph, identity: IdentityLookup, state: ViewState, limit: int = FOCUS_MAX) -> NetworkView:
-    all_edges = sorted((_net_edge(e) for e in graph.edges if state.filters.accepts(e)), key=edge_priority)
+def build_network(graph: RIGGraph, identity: IdentityLookup, state: ViewState, limit: int = FOCUS_MAX,
+                  priority=None) -> NetworkView:
+    """``priority`` is an extension point for later phases; the default is the frozen P1 order."""
+    priority = priority or edge_priority
+    all_edges = sorted((_net_edge(e) for e in graph.edges if state.filters.accepts(e)), key=priority)
     ids = sorted({n for e in all_edges for n in (e.source_node_id, e.target_node_id)})
-    order = {n: [e.relationship_id for e in neighborhood(all_edges, n, FOCUS_MAX, 10 ** 6)[0]] for n in ids}
+    order = {n: [e.relationship_id for e in neighborhood(all_edges, n, FOCUS_MAX, 10 ** 6, priority)[0]] for n in ids}
     if state.focus_node_id is not None:
-        shown, hidden = neighborhood(all_edges, state.focus_node_id, limit, state.expansion_steps)
+        shown, hidden = neighborhood(all_edges, state.focus_node_id, limit, state.expansion_steps, priority)
     else:
         cap = OVERVIEW_MAX_EDGES * (1 + state.expansion_steps)
         shown, hidden = all_edges[:cap], max(0, len(all_edges) - cap)
@@ -283,8 +287,8 @@ def build_cards(ledger: RelationshipLedger, news: NewsIndex, graph: RIGGraph, st
 
 
 def build_view_model(ledger: RelationshipLedger, news: NewsIndex, graph_as_of: datetime,
-                     state: ViewState | None = None) -> RIGViewModel:
+                     state: ViewState | None = None, priority=None) -> RIGViewModel:
     state = state or ViewState()
     graph = ledger.graph_as_of(graph_as_of)
     return RIGViewModel(graph_as_of, state, build_cards(ledger, news, graph, state),
-                        build_network(graph, ledger.identity, state))
+                        build_network(graph, ledger.identity, state, priority=priority))
