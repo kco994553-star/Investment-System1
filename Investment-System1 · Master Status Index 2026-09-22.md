@@ -228,3 +228,13 @@ This overlay supersedes stale implementation/status statements above without del
   baseline Freeze.
 - All Official tracks are Pre-Tax. Tax engine, tax-lot optimization, tax-loss harvesting, and after-tax Official
   scoring remain OUT_OF_SCOPE.
+
+## RIG / News overlay — 2026-09-27 11:07 KST / Codex round 19
+
+- `RIG_NEWS_ARCH_v0.1` is registered at `Investment-System1 · RIG News Architecture v0.1.md` as DESIGN FROZEN /
+  IMPLEMENTATION NOT STARTED. P0–P5 remain NOT_STARTED.
+- It reuses DataEvent NEWS evidence-only behavior, PIT `available_at`, upstream identity/provenance, the existing shared
+  NewsItem→Claim→Event contract, and Summary→Evidence→Detail. It does not create a new score or Track A/B/C runtime.
+- Architecture audit found no architecture-level conflict. C-39 records a non-blocking-for-design implementation
+  evidence mismatch in the existing shared identity contract; RIG P0 remains blocked until that mismatch is resolved.
+- Full repository baseline re-run: 297/297 PASS via mini_pytest shim. No RIG implementation tests exist by design.
