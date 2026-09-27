@@ -2040,6 +2040,39 @@ def test_nport_reference_cusip_attestation_decides_ambiguous_names(tmp_path):
     assert fnr.name_candidates("LIBERTY MEDIA CORP - FORMULA ONE GROUP", cur, {}) == {"0001560385"}
 
 
+def test_nport_reference_same_issuer_prefix_only_adds_exact_cusip_attestation_candidate(tmp_path):
+    """A tracking-group name can miss the registrant.  A unique already-resolved issuer-prefix adds a candidate, but
+    never resolves identity by itself: the exact unresolved CUSIP must still pass ownership-filing attestation."""
+    fnr = _mod("fnr_att_prefix", "fetch_nport_reference.py")
+    npr = _mod("npr_att_prefix", "nport_reported_prices.py")
+    frc = _mod("frc_att_prefix", "fetch_class_rights_evidence.py")
+    unresolved = {"name": "LIBERTY MEDIA CORP - LIBERTY SIRIUSXM", "cusip": "531229813",
+                  "candidates": ["0002003397"]}
+    members = {"0001560385": {"names": ["LIBERTY MEDIA CORP - FORMULA ONE GROUP"],
+                               "cusips": ["531229755", "531229771"], "method": "CUSIP_ATTESTED_OWNERSHIP_FILING"}}
+    cands = fnr.cusip_attestation_candidates(unresolved, members, {}, {})
+    assert cands == ["0001560385", "0002003397"]  # sibling issuer first, so the bounded scan cannot drop it
+    ambiguous = {**members, "0009999999": {"names": ["OTHER"], "cusips": ["531229999"], "method": "TEST"}}
+    assert fnr.cusip_attestation_candidates(unresolved, ambiguous, {}, {}) == ["0002003397"]
+
+    store = RawDatasetStore(tmp_path)
+    cik, accn = "0001560385", "0001560385-24-000001"
+    store.put(f"submissions:{cik}", json.dumps({"filings": {"recent": {"form": ["SC 13G"],
+              "filingDate": ["2024-02-12"], "accessionNumber": [accn], "primaryDocument": ["d.htm"]}}}).encode(),
+              "u", "SEC", "application/json", "t", 200)
+    store.put(f"sec_filing_doc:{cik}:{accn}", b"<p>Liberty SiriusXM Class A CUSIP 531229813</p>",
+              "u", "SEC", "text/html", "t", 200)
+    store.put(f"edgar_index_headers:{accn}",
+              b"SUBJECT COMPANY:\n\tCENTRAL INDEX KEY:\t\t0001560385\n", "u", "SEC", "text/plain", "t", 200)
+    get = lambda aid, url, kind: None  # noqa: E731
+    att = fnr.attest_by_cusip(store, get, cands, unresolved["cusip"], amc_dt(), npr, frc)
+    assert att["status"] == "UNIQUE" and att["cik"] == cik
+    store.put(f"sec_filing_doc:{cik}:{accn}", b"<p>Liberty Formula One CUSIP 531229755</p>",
+              "u", "SEC", "text/html", "t", 200)
+    none = fnr.attest_by_cusip(store, get, cands, unresolved["cusip"], amc_dt(), npr, frc)
+    assert none["status"] == "ATTESTED_0" and none["cik"] is None
+
+
 def test_nport_reference_attestation_tie_broken_only_by_pit_registrant(tmp_path):
     """Run #54: 'DUN & BRADSTREET HOLDINGS, INC.' CUSIP 26484T106 was printed by the ownership filings of two
     entities (ATTESTED_2). Only the one filing 10-K/10-Q around as_of can be the listed issuer at as_of."""
