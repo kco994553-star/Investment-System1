@@ -4924,7 +4924,7 @@
       "COVER_ECONOMIC_EQUIVALENT": 8,
       "SHARE_SCALE_CORRECTED_FROM_COVER_TEXT": 1
     },
-    "universe_id": "uni_9932d96bc8b3",
+    "universe_id": "uni_20f2fdc15f4c",
     "snapshot_cutoff_mcap": 14021530297.505974
   },
   "official_snapshot_candidates": null,
@@ -21965,7 +21965,18 @@
         "unresolved_reference_holdings": [
           {
             "name": "ARDAGH GROUP SA",
+            "title": "ARDAGH GROUP SA",
             "cusip": "L0223L101",
+            "isin": "LU1565283667",
+            "asset_cat": "EC",
+            "issuer_cat": "CORP",
+            "country": "LU",
+            "value": 76686.39,
+            "balance": "12001.00000000",
+            "units": "NS",
+            "currency": "USD",
+            "fair_value_level": "2",
+            "payoff_profile": "Long",
             "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
             "candidates": [
               "0001689662"
@@ -21974,7 +21985,38 @@
           },
           {
             "name": "LIBERTY SIRIUS XM",
+            "title": "LIBERTY MEDIA CORP LIBERTY SIRIUSXM",
             "cusip": "531229813",
+            "isin": "US5312298137",
+            "asset_cat": "EC",
+            "issuer_cat": "CORP",
+            "country": "US",
+            "value": 1229258.55,
+            "balance": "55497.00000000",
+            "units": "NS",
+            "currency": "USD",
+            "fair_value_level": "1",
+            "payoff_profile": "Long",
+            "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
+            "candidates": [
+              "0002003397"
+            ],
+            "name_matches": 1
+          },
+          {
+            "name": "LIBERTY SIRIUS XM",
+            "title": "LIBERTY MEDIA CORP LIBERTY SIRIUSXM",
+            "cusip": "531229789",
+            "isin": "US5312297899",
+            "asset_cat": "EC",
+            "issuer_cat": "CORP",
+            "country": "US",
+            "value": 2522960.32,
+            "balance": "113852.00000000",
+            "units": "NS",
+            "currency": "USD",
+            "fair_value_level": "1",
+            "payoff_profile": "Long",
             "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
             "candidates": [
               "0002003397"

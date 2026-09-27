@@ -2,7 +2,7 @@
  "kind": "NPORT_CROSS_CHECK",
  "as_of": "2024-06-30",
  "status": "INVESTIGATION_ONLY_NOT_APPLIED",
- "n_control_closes": 440,
+ "n_control_closes": 438,
  "n_cusip_to_cik": 1001,
  "filings": [
   {
@@ -13,13 +13,13 @@
    "artifact": "nport_xml:0001752724-24-189684",
    "n_holdings": 1009,
    "calibration_vs_as_of_close": {
-    "n": 429,
-    "within_0_1pct": 428,
-    "within_0_5pct": 428,
+    "n": 427,
+    "within_0_1pct": 426,
+    "within_0_5pct": 426,
     "median_rel_diff": 2.1498822690745832e-08,
     "max_rel_diff": 0.021764329779573436,
     "fair_val_levels": {
-     "1": 429
+     "1": 427
     },
     "outside_0_5pct": [
      {
@@ -55,13 +55,13 @@
    "registrant_name": "VANGUARD INDEX FUNDS",
    "n_holdings": 3689,
    "calibration_vs_as_of_close": {
-    "n": 427,
-    "within_0_1pct": 426,
-    "within_0_5pct": 426,
+    "n": 425,
+    "within_0_1pct": 424,
+    "within_0_5pct": 424,
     "median_rel_diff": 2.1498822565606216e-08,
     "max_rel_diff": 0.021764329779573436,
     "fair_val_levels": {
-     "1": 427
+     "1": 425
     },
     "outside_0_5pct": [
      {
@@ -97,13 +97,13 @@
    "registrant_name": "iSHARES TRUST",
    "n_holdings": 506,
    "calibration_vs_as_of_close": {
-    "n": 368,
-    "within_0_1pct": 368,
-    "within_0_5pct": 368,
-    "median_rel_diff": 2.1104135866171357e-08,
+    "n": 367,
+    "within_0_1pct": 367,
+    "within_0_5pct": 367,
+    "median_rel_diff": 2.10357255180983e-08,
     "max_rel_diff": 5.295126062026167e-08,
     "fair_val_levels": {
-     "1": 368
+     "1": 367
     },
     "outside_0_5pct": []
    },
