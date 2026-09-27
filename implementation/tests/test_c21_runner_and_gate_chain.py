@@ -1943,13 +1943,12 @@ def test_run49_rkt_tpg_tost_2024_06_30_citations_are_substrings_of_the_fetched_p
     assert checked >= 5
 
 
-def test_nport_price_investigation_is_never_read_by_the_gate_chain():
-    """WRK (2024-06-30) has no market close from Yahoo/Tiingo (Stooq is bot-challenge protected and is not bypassed).
-    nport_reported_prices --investigate-cik writes nport_price_investigation_<as_of>.json for a user decision; the
-    gate chain must never read that file (the NPORT_REPORTED_VALUE exception stays PINC/WOLF only)."""
+def test_nport_investigation_is_read_only_by_the_approved_general_policy_path():
+    """D3-P approval converted WRK from an investigation into a result-independent CA-PRICE-01 candidate.
+    The legacy PINC/WOLF exception remains separate and the policy file is required fail-closed."""
     root = Path(__file__).resolve().parents[1]
     chain_src = (root / "tools" / "run_top500_gate_chain.py").read_text(encoding="utf-8")
-    assert "nport_price_investigation" not in chain_src
+    assert "nport_price_investigation" in chain_src and "CA-PRICE-01" in chain_src
     npr = _mod("npr_inv", "nport_reported_prices.py")
     h = {"name": "WestRock Co", "asset_cat": "EC", "units": "NS", "cur_cd": "USD", "balance": "100", "val_usd": "5000"}
     got, how = npr.holding_for([h], ["WestRock Co"])
@@ -1968,12 +1967,14 @@ def test_share_count_diagnostic_exhibit_names_selects_ex99_documents_only():
     assert scd.exhibit_names(b"not json") == []
 
 
-def test_nport_cross_check_calibration_and_targets_are_investigation_only():
+def test_nport_cross_check_calibration_and_targets_feed_only_ca_price_policy():
     """WRK (2024-06-30): the cross-check measures whether N-PORT per-share values reproduce as-of market closes
-    (calibration over closes of issuers the gate priced) and reports target CUSIPs; never read by the gate chain."""
+    (calibration over closes of issuers the gate priced) and reports target CUSIPs; the gate reads it only together
+    with the approved CA-PRICE-01 policy evidence."""
     ncc = _mod("ncc", "nport_cross_check.py")
     root = Path(__file__).resolve().parents[1]
-    assert "nport_cross_check" not in (root / "tools" / "run_top500_gate_chain.py").read_text(encoding="utf-8")
+    source = (root / "tools" / "run_top500_gate_chain.py").read_text(encoding="utf-8")
+    assert "nport_cross_check" in source and "apply_corporate_action_prices" in source
     ref_h = [{"name": "AAA INC", "cusip": "000000AA1", "asset_cat": "EC"}, {"name": "BBB INC", "cusip": "000000BB1", "asset_cat": "EC"}]
     cmap = ncc.cusip_to_cik(ref_h, {"0000000001": ["AAA INC"], "0000000002": ["BBB INC"]})
     assert cmap == {"000000AA1": "0000000001", "000000BB1": "0000000002"}
@@ -1991,6 +1992,124 @@ def test_nport_cross_check_calibration_and_targets_are_investigation_only():
     assert t["96145D105"]["status"] == "UNIQUE" and abs(t["96145D105"]["value_per_share"] - 50.26) < 1e-9
     assert t["000000ZZ9"]["status"] == "HOLDINGS_0"
     assert ncc.per_share({"units": "PA", "balance": "1", "val_usd": "1"}) is None
+
+
+def _ca_policy(as_of="2024-06-30"):
+    return {"policy_version": "D3-P-CA-v1.0", "as_of": as_of, "result_independent": True,
+            "rank_and_cutoff_not_inputs": True, "reconstruction_only": True,
+            "rules": {"CA-PRICE-01": {"max_relative_price_difference": 0.005,
+                                        "min_control_within_tolerance_ratio": 0.99,
+                                        "min_independent_sponsors": 2, "required_fair_value_level": "1"},
+                      "CA-SHARES-01": {"forbidden_count_basis": ["pro forma", "approximately", "weighted average"]},
+                      "CA-SECURITY-01": {"cross_tracking_group_equivalence": False},
+                      "CA-ELIGIBILITY-01": {"positive_residual_value_treatment": "PRESERVE_IN_AUDIT_EVIDENCE"}}}
+
+
+def _put_ca_chart(store, symbol, price=20.0):
+    chart = {"chart": {"result": [{"timestamp": [int(datetime(2024, 6, 28, tzinfo=UTC).timestamp())],
+                                     "indicators": {"quote": [{"close": [price]}]}}], "error": None}}
+    store.put(f"yahoo_chart:{symbol}:5y", json.dumps(chart).encode(), "u", "YAHOO", "application/json", "t", 200)
+
+
+def test_d3p_ca_price_uses_exact_security_level1_and_two_independent_calibrated_sponsors(tmp_path):
+    chain = _mod("chain_ca_price", "run_top500_gate_chain.py")
+    npr = _mod("npr_ca_price", "nport_reported_prices.py")
+    store = RawDatasetStore(tmp_path)
+    cik, symbol, cusip, accn = "0001732845", "WRK", "96145D105", "0001752724-24-189684"
+    xml = (f'<edgarSubmission><formData><genInfo><repPdDate>2024-06-30</repPdDate></genInfo><invstOrSecs>'
+           f'<invstOrSec><name>WESTROCK COMPANY</name><cusip>{cusip}</cusip><balance>10</balance><units>NS</units>'
+           f'<curCd>USD</curCd><valUSD>502.6</valUSD><assetCat>EC</assetCat><fairValLevel>1</fairValLevel>'
+           f'</invstOrSec></invstOrSecs></formData></edgarSubmission>').encode()
+    store.put(f"nport_xml:{accn}", xml, "u", "SEC", "application/xml", "t", 200)
+    companyfacts = {"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [
+        {"filed": "2024-05-01", "end": "2024-03-31", "val": 250_000_000}]}}}}}
+    store.put(f"companyfacts:{cik}", json.dumps(companyfacts).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put(f"submissions:{cik}", json.dumps({"filings": {"recent": {"form": ["10-Q"],
+              "filingDate": ["2024-05-01"], "accessionNumber": ["x"], "primaryDocument": ["x.htm"]}}}).encode(),
+              "u", "SEC", "application/json", "t", 200)
+    doc_id = "sec_filing_doc:0002005951:0001104659-24-099502"
+    phrase = "The Combination closed on July 5, 2024 subsequent to the fiscal quarter ended June 30, 2024"
+    store.put(doc_id, phrase.encode(), "u", "SEC", "text/html", "t", 200)
+    policy = _ca_policy()
+    policy["price_reconstruction"] = {cik: {"symbol": symbol, "cusip": cusip, "effective_date": "2024-07-05",
+                                              "document": {"artifact_id": doc_id, "required_phrases": [phrase]}}}
+    h = npr.raw_holdings(xml)[0]
+    inv = {"source_accession": accn, "source_artifact": f"nport_xml:{accn}", "valuation_date": "2024-06-30",
+           "filing_date": "2024-08-26", "issuers": {cik: {"holding_match": "UNIQUE", "holding_raw": h}}}
+    filings = []
+    for i, accession in enumerate((accn, "independent-a", "independent-b")):
+        filings.append({"status": "FOUND", "accession": accession,
+                        "calibration_vs_as_of_close": {"n": 100, "within_0_5pct": 100},
+                        "targets": {cusip: {"status": "UNIQUE", "value_per_share": 50.26,
+                                             "fair_val_level": "1"}}})
+    ov = {}
+    out = chain.apply_corporate_action_prices(store, ov, {"wrk": {"cik": cik, "yahoo": symbol}}, policy, inv,
+                                               {"filings": filings}, datetime(2024, 6, 30, tzinfo=UTC))
+    assert out[symbol]["status"] == "APPLIED" and out[symbol]["independent_sponsors"] == 2
+    assert ov["wrk"]["policy"] == "CA-PRICE-01"
+    assert abs(ov["wrk"]["mcap"] - 250_000_000 * 50.26) < 1e-5 * ov["wrk"]["mcap"]
+    bad = json.loads(json.dumps(policy))
+    bad["price_reconstruction"][cik]["cusip"] = "WRONG"
+    assert chain.apply_corporate_action_prices(store, {}, {"wrk": {"cik": cik, "yahoo": symbol}}, bad, inv,
+                                                {"filings": filings}, datetime(2024, 6, 30, tzinfo=UTC))[symbol]["status"] == "NOT_APPLIED"
+
+
+def test_d3p_ca_shares_accepts_only_exact_event_count_in_first_subsequent_periodic(tmp_path):
+    chain = _mod("chain_ca_shares", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    cik, aid = "0001699031", "sec_filing_doc:0001699031:0001699031-25-000041"
+    store.put(f"submissions:{cik}", json.dumps({"filings": {"recent": {"form": ["10-K", "10-Q"],
+              "filingDate": ["2025-03-05", "2025-05-08"], "accessionNumber": ["0001699031-25-000041", "later"],
+              "primaryDocument": ["gral.htm", "later.htm"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    store.put(aid, b"Common stock shares contribution from member, net 31,049,148", "u", "SEC", "text/html", "t", 200)
+    _put_ca_chart(store, "GRAL", 15.0)
+    policy = _ca_policy()
+    policy["share_reconstruction"] = {cik: {"symbol": "GRAL", "event_date": "2024-06-24", "shares": 31_049_148,
+        "first_subsequent_periodic_document": {"artifact_id": aid, "accession": "0001699031-25-000041", "form": "10-K",
+          "filed": "2025-03-05", "required_phrases_near_count": ["31,049,148", "contribution from member, net"]}}}
+    ov = {}
+    out = chain.apply_corporate_action_share_counts(store, ov, {"gral": {"cik": cik, "yahoo": "GRAL"}}, policy,
+                                                     datetime(2024, 6, 30, tzinfo=UTC))
+    assert out["GRAL"]["status"] == "APPLIED" and out["GRAL"]["look_ahead"] is True
+    assert ov["gral"]["shares"] == 31_049_148 and ov["gral"]["measurement_date"] == "2024-06-24"
+    store.put(aid, b"pro forma contribution from member, net 31,049,148", "u", "SEC", "text/html", "t", 200)
+    assert chain.apply_corporate_action_share_counts(store, {}, {"gral": {"cik": cik, "yahoo": "GRAL"}}, policy,
+                                                      datetime(2024, 6, 30, tzinfo=UTC))["GRAL"]["status"] == "NOT_APPLIED"
+
+
+def test_d3p_delisting_exclusion_preserves_positive_residual_holding_and_fails_closed(tmp_path):
+    chain = _mod("chain_ca_delist", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    cik, cusip = "0001689662", "L0223L101"
+    store.put(f"submissions:{cik}", json.dumps({"tickers": [], "filings": {"recent": {"form": ["25", "15-12B"],
+              "filingDate": ["2021-10-06", "2021-10-18"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    docs = []
+    for accn, text in (("a", "Class A common shares New York Stock Exchange"), ("b", "Class A common shares 115")):
+        aid = f"sec_filing_doc:{cik}:{accn}"
+        store.put(aid, text.encode(), "u", "SEC", "text/html", "t", 200)
+        docs.append({"artifact_id": aid, "required_phrases": text.split(" ", 1)})
+    policy = _ca_policy()
+    policy["reference_exclusions"] = {cusip: {"cik": cik, "delisted_effective_date": "2021-10-08",
+        "deregistered_date": "2021-10-18", "no_relisting_through": "2024-06-30", "documents": docs}}
+    holding = {"name": "ARDAGH GROUP SA", "cusip": cusip, "asset_cat": "EC", "candidates": [cik], "value": 76686.39}
+    refs, report = chain.apply_reference_delisting_policy(store, [{"unresolved_holdings": [holding]}], policy,
+                                                           datetime(2024, 6, 30, tzinfo=UTC))
+    assert refs[0]["unresolved_holdings"] == []
+    assert refs[0]["policy_excluded_holdings"][0]["value"] == 76686.39
+    assert report[cusip]["positive_residual_value_preserved"] == 76686.39
+    store.put(docs[0]["artifact_id"], b"tampered", "u", "SEC", "text/html", "t", 200)
+    refs2, report2 = chain.apply_reference_delisting_policy(store, [{"unresolved_holdings": [holding]}], policy,
+                                                             datetime(2024, 6, 30, tzinfo=UTC))
+    assert refs2[0]["unresolved_holdings"] == [holding] and report2[cusip]["status"] == "NOT_EXCLUDED"
+
+
+def test_d3p_security_policy_forbids_cross_tracking_group_equivalence():
+    root = Path(__file__).resolve().parents[1]
+    policy = json.loads((root / "reports" / "gate_evidence" / "corporate_action_policy_2024-06-30.json").read_text())
+    rule = policy["rules"]["CA-SECURITY-01"]
+    assert rule["membership_basis"] == "ISSUER_OR_COMPANY_LEVEL"
+    assert rule["valuation_basis"] == "EACH_LISTED_SECURITY_PRICE_X_ITS_OWN_SHARES"
+    assert rule["cross_tracking_group_equivalence"] is False and rule["unpriced_security_treatment"] == "EXPLICIT_BOUND"
 
 
 def test_nport_reference_splits_cik_collisions_of_distinct_issuers():
