@@ -685,3 +685,10 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
   materiality observations, a separate Deal state machine with preserved rejections, relationship timeline, and
   P2 badges/width/priority through P1's extension points (P1 gained a default-preserving `priority` argument).
   P2 9/9, full 343/343 (mini_pytest shim). P2 FROZEN.
+
+## 2026-09-27 · Track D RIG P3 Personal UX · Claude Code
+
+- Added `investment_system.rig.myview`: read-only holdings port, USER-only ★ 관심기업 and My Groups action logs,
+  내 기업 | 전체 scope with chips, feed-priority tiers, My-first expansion priority, related news, Attention input
+  export (no delivery runtime), default-OFF read-only Investment Overlay, and page composition via P1/P2 extension
+  points. Browser smoke gained scope-parity checks. P3 11/11, full 354/354 (mini_pytest shim). P3 FROZEN.

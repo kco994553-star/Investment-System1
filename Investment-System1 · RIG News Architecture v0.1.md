@@ -2,7 +2,7 @@
 
 Contract ID: `RIG_NEWS_ARCH_v0.1`
 
-Status: **DESIGN FROZEN / P0–P2 IMPLEMENTED + FROZEN; P3–P5 NOT_STARTED**
+Status: **DESIGN FROZEN / P0–P3 IMPLEMENTED + FROZEN; P4–P5 NOT_STARTED**
 
 Registered: 2026-09-27 11:07 KST
 
@@ -249,8 +249,9 @@ Summary→Evidence→Detail 패턴, QGV/Technical/Macro snapshots을 우선 재�
 - C-39: RESOLVED and re-verified 2026-09-27 17:13 KST (`contracts/global_universe.py`, 6/6 focused regressions)
 - P0 Foundation: **FROZEN** (2026-09-27 17:44 KST; code baseline `e3b1b62`)
 - P1 Basic Network: **FROZEN** (2026-09-27 17:55 KST; baseline `af5080b`)
-- P2 Relationship Intelligence: **FROZEN** (2026-09-27 17:59 KST; baseline = the commit adding the P2 record)
-- P3–P5: NOT_STARTED
+- P2 Relationship Intelligence: **FROZEN** (2026-09-27 17:59 KST; baseline `d831870`)
+- P3 Personal UX: **FROZEN** (2026-09-27 18:06 KST; baseline = the commit adding the P3 record)
+- P4–P5: NOT_STARTED
 
 ## P0 Foundation implementation record (2026-09-27 17:13 KST, Track D)
 
@@ -340,3 +341,30 @@ Package `implementation/src/investment_system/rig/intel/` (`intel.py`, `present.
   is a single module constant (`RECENT_WINDOW`).
 - Evidence: P2 9/9 (6/6 mutation checks caught), P0–P2 35/35, full 343/343 (mini_pytest shim), browser smoke 18/18 on
   a page with P2 badges/widths.
+
+## P3 Personal UX record (2026-09-27 18:06 KST, Track D) — FROZEN
+
+Package `implementation/src/investment_system/rig/myview/` (`prefs.py`, `scope.py`, `present.py`), tests
+`test_rig_p3_myview.py` (11). P0–P2 files are unchanged.
+
+- Portfolio: read only through `HoldingsPort.held_issuer_ids(as_of)` (C-39 issuer ids; unknown issuers fail closed).
+  RIG does not import or modify Track B; the Track B → issuer-id adapter is outside RIG (INTEGRATION_REQUIRED).
+- ★ 관심기업: one list, append-only USER action log (SYSTEM actions are refused: no automatic interest adds),
+  reconstructed point-in-time. My Groups: CREATE / RENAME / ADD_MEMBER / REMOVE_MEMBER / DELETE by USER only,
+  many-to-many, fields `group_id`, `name`, `members` only (no weights, scores or system classification).
+- 내 기업 = holdings ∪ 관심기업. Scope MY / ALL with chips ◎ 보유, ★ 관심, 그룹 (selected group), 연관 (1-hop);
+  ALL is never restricted. `switch_my_view` keeps scope, chips, group, overlay and the P1 state.
+- Feed priority (tiers only, never a score): 보유 중요 → 관심 중요 → 내 기업 High-Materiality 1-Hop →
+  Research Priority 신규기업 (P4 hook) → other 내 기업 → 전체 시장; within a tier the P1 recency order.
+- Network expansion priority: Critical → Portfolio/관심 → High materiality → Recent change → P1 order.
+- Related News (DIRECT / RELATED via 1-hop); ◎ / ★ node symbols.
+- Attention: `AttentionInput` exports RIG-owned inputs only (event importance, user relevance, materiality,
+  `available_at` for recency, confidence). No delivery channel, notification, or runtime is created (D2; the Attention
+  layer owner remains open — INTEGRATION_REQUIRED).
+- Investment Overlay: OFF by default; when ON it shows pre-formatted string rows from a read-only `OverlayPort`;
+  non-string values are refused, so RIG cannot compute or re-score.
+- Page: client-side scope/chip/group switching mirrors `scope.select` over embedded id sets and uses a separate
+  `out-scope` class, so P1 viewport/focus state is untouched.
+- Evidence: P3 11/11 (6/6 mutation checks caught after strengthening two tests), full 354/354 (mini_pytest shim),
+  browser smoke 24/24 including Python↔browser scope parity; P1/P2 pages still 18/18.
+- Known limitation: node layout is computed for the full graph, so MY scope keeps the full-graph positions.

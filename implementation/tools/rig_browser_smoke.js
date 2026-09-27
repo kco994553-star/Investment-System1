@@ -1,5 +1,6 @@
 // RIG News|Network page browser smoke (optional; needs Node + Playwright + Chromium).
-// Usage: NODE_PATH=$(npm root -g) node tools/rig_browser_smoke.js <page.html>
+// Usage: NODE_PATH=$(npm root -g) node tools/rig_browser_smoke.js <page.html> [expected_scope.json]
+// The optional JSON (P3 pages) lists Python `select()` results the client-side scope must reproduce.
 // Exercises the client-side interactions of rig.network.render; prints JSON and exits non-zero on failure.
 const { chromium } = require('playwright');
 const path = require('path');
@@ -16,6 +17,25 @@ const path = require('path');
   check('news_default', (await st()).view === 'NEWS' && await page.isVisible('#pane-NEWS') && !(await page.isVisible('#pane-NETWORK')));
   await page.click('[data-view=NETWORK]');
   check('toggle_network', await page.isVisible('#net') && !(await page.isVisible('#pane-NEWS')));
+  if (process.argv[3]) {  // P3 scope parity with rig.myview.scope.select
+    const exp = JSON.parse(require('fs').readFileSync(process.argv[3], 'utf8'));
+    const sc = () => page.evaluate(() => window.rigScope());
+    const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    let r = await sc();
+    check('scope_default_my', r.scope === 'MY' && same(r.nodes, exp.my_all.nodes) && same(r.rels, exp.my_all.rels) && same(r.evs, exp.my_all.evs));
+    const hiddenCards = await page.locator('article[data-event].out-scope').count();
+    check('scope_hides_out_of_scope_cards', hiddenCards === exp.n_cards - exp.my_all.evs.length);
+    await page.click('[data-chip=RELATED]');
+    r = await sc();
+    check('chip_related_off', same(r.nodes, exp.my_no_related.nodes) && same(r.rels, exp.my_no_related.rels) && same(r.evs, exp.my_no_related.evs));
+    const vpBefore = (await st()).viewport;
+    await page.click('[data-view=NEWS]'); await page.click('[data-view=NETWORK]');
+    r = await sc();
+    check('scope_survives_view_switch', r.scope === 'MY' && !r.chips.includes('RELATED') && same((await st()).viewport, vpBefore));
+    await page.click('[data-scope=ALL]');
+    r = await sc();
+    check('scope_all_unrestricted', r.nodes === null && (await page.locator('.out-scope').count()) === 0);
+  }
   const box = await page.locator('#net').boundingBox();
   await page.mouse.move(box.x + 20, box.y + 20);
   await page.mouse.wheel(0, -400);
