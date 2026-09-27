@@ -2,7 +2,7 @@
 
 Contract ID: `RIG_NEWS_ARCH_v0.1`
 
-Status: **DESIGN FROZEN / P0–P4 IMPLEMENTED + FROZEN; P5 NOT_STARTED (D3-P pending)**
+Status: **DESIGN FROZEN / P0–P4 IMPLEMENTED + FROZEN; P5 BLOCKED on Track C C0 (user D3-P decision)**
 
 Registered: 2026-09-27 11:07 KST
 
@@ -251,8 +251,8 @@ Summary→Evidence→Detail 패턴, QGV/Technical/Macro snapshots을 우선 재�
 - P1 Basic Network: **FROZEN** (2026-09-27 17:55 KST; baseline `af5080b`)
 - P2 Relationship Intelligence: **FROZEN** (2026-09-27 17:59 KST; baseline `d831870`)
 - P3 Personal UX: **FROZEN** (2026-09-27 18:06 KST; baseline `564884f`)
-- P4 Discovery: **FROZEN** (2026-09-27 18:09 KST; baseline = the commit adding the P4 record)
-- P5 Validation: NOT_STARTED — requires a D3-P decision (Track C execution path for RIG features)
+- P4 Discovery: **FROZEN** (2026-09-27 18:09 KST; baseline `6c72490`)
+- P5 Validation: **BLOCKED** on Track C C0 — user D3-P decision 2026-09-27 18:12 KST (Hold P5)
 
 ## P0 Foundation implementation record (2026-09-27 17:13 KST, Track D)
 
@@ -396,3 +396,11 @@ Package `implementation/src/investment_system/rig/discovery/` (`discovery.py`, `
   constants; they are descriptive-label thresholds, not investment policy.
 - Evidence: P4 9/9 (7/7 mutation checks caught after adding bottleneck and cycle tests), RIG P0–P4 55/55, full
   363/363 (mini_pytest shim), browser smoke on P1/P2/P4 pages 19/19 each and P3 parity page 24/24.
+
+## P5 decision record (2026-09-27 18:12 KST, Track D) — D3-P
+
+P5 (Validation = Track C integration) cannot pass its gate: `EVL_SPEC_v0.1` is DESIGN FROZEN / IMPLEMENTATION NOT
+STARTED and keeps Track C implementation closed until the Track A REAL-DATA baseline Freeze. The user chose **Hold
+P5**: P5 stays NOT_STARTED / BLOCKED on Track C C0. No RIG feature lifecycle, Track C port, policy or ownership change
+was implemented. RIG P0–P4 remain FROZEN; every RIG output remains INFORMATION_ONLY (no GRAPH_VALIDATED_FEATURE).
+Reopen when Track C C0 Contracts exist.

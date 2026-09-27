@@ -699,3 +699,4 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
   Connections, on-demand Impact Graph with evidence-backed concept exposures (⬡/◆/▣ references), High/Medium/Low
   Research Priority labels, Common-Connection expansion slot and the composed P1–P4 page. P4 9/9, full 363/363
   (mini_pytest shim). P4 FROZEN. P5 awaits a D3-P decision.
+- 2026-09-27 18:12 KST: user D3-P decision — Hold P5; P5 BLOCKED on Track C C0. No code change.
