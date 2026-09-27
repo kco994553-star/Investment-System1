@@ -1563,3 +1563,18 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
 - C-39 records that the Global/Korea SSoT claims shared issuer/security/listing runtime types that are absent from the
   tracked public source tree. This does not invalidate design freeze, but blocks RIG P0 until the canonical common
   identity implementation is confirmed/recovered or explicitly changed. Track B's frozen security code is not reused.
+
+------------------------------------------------------------------------
+
+2026-09-27 (round 20, 16:02 KST) · Codex → Next AI
+- User redirected the critical path to C-39. The previously approved GRAL first-subsequent-10-Q evidence correction
+  remains preserved as the preceding local commit and had not yet been uploaded or rerun when priorities changed.
+- Restored the exact shared Global/Korea boundary already declared by SSoT in
+  `contracts/global_universe.py`: `Region`, `AnalysisUniverse`, `IssuerIdentity`, `SecurityIdentity`, `ListingIdentity`,
+  `UniverseContext`, `FXSnapshot`, and `EligibilityRecord`. No provider, mapping, ranking, RIG, or Official behavior was
+  invented. Ticker is listing-only; listing periods are half-open; Analysis/Network/News scopes are independent.
+- PIT validation is fail-closed: aware timestamps are required, FX/eligibility evidence must be available by as_of,
+  currency values use Decimal, excluded listings require reasons, and Korea/Global Official promotion remains blocked
+  pending the validation already required by the frozen contract.
+- Focused C-39 regressions 6/6 and full suite 308/308 PASS; py_compile and diff check PASS. Track B's frozen personal
+  security module was neither imported nor modified. C-39 is RESOLVED; RIG remains DESIGN FROZEN / NOT STARTED.
