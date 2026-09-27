@@ -172,7 +172,7 @@ jobs:
       - name: SEC filings (10-K + 10-Q filed <= as_of) of undetermined multi-class issuers; verbatim class-rights passages
         if: inputs.skip_fetch != 'true'
         run: python tools/fetch_class_rights_evidence.py --store data/raw --as-of "${{ inputs.as_of }}"
-      - name: N-PORT reported value per share for the user-approved exception issuers only (PINC, WOLF); CUSIP attestation
+      - name: N-PORT reported values (legacy exceptions plus D3-P corporate-action candidates)
         if: inputs.skip_fetch != 'true'
         run: |
           G="reports/gate_evidence/gate_chain_${{ inputs.as_of }}_real_gha.json"
@@ -203,6 +203,9 @@ jobs:
           X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
           EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
           python tools/fetch_share_scale_docs.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA
+      - name: Reviewed SEC evidence for D3-P corporate-action and delisting policies
+        if: inputs.skip_fetch != 'true'
+        run: python tools/fetch_corporate_action_evidence.py --store data/raw --as-of "${{ inputs.as_of }}"
       - name: Recount store
         id: store2
         if: always()
