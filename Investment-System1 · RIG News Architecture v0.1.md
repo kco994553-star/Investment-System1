@@ -2,7 +2,7 @@
 
 Contract ID: `RIG_NEWS_ARCH_v0.1`
 
-Status: **DESIGN FROZEN / P0 FOUNDATION IMPLEMENTED + FROZEN; P1–P5 NOT_STARTED**
+Status: **DESIGN FROZEN / P0–P1 IMPLEMENTED + FROZEN; P2–P5 NOT_STARTED**
 
 Registered: 2026-09-27 11:07 KST
 
@@ -244,11 +244,12 @@ Summary→Evidence→Detail 패턴, QGV/Technical/Macro snapshots을 우선 재�
 
 ## Current state
 
-- Architecture Design: 100% (unchanged; no architecture change by P0)
+- Architecture Design: 100% (unchanged; phases add implementation only)
 - Repository consistency audit: completed against local/remote-identical tree at registration
 - C-39: RESOLVED and re-verified 2026-09-27 17:13 KST (`contracts/global_universe.py`, 6/6 focused regressions)
-- P0 Foundation: IMPLEMENTED → TESTING PASS → **FROZEN** (2026-09-27 17:44 KST; code baseline `e3b1b62`)
-- P1–P5: NOT_STARTED
+- P0 Foundation: **FROZEN** (2026-09-27 17:44 KST; code baseline `e3b1b62`)
+- P1 Basic Network: **FROZEN** (2026-09-27 17:55 KST; baseline = the commit adding the P1 record)
+- P2–P5: NOT_STARTED
 
 ## P0 Foundation implementation record (2026-09-27 17:13 KST, Track D)
 
@@ -288,3 +289,28 @@ Branch: `feature/track-d-rig-news`, based on canonical `5acb047` (C-39 resolutio
 - Open integration items (not blockers for P0): issuer_id → pipeline `company_id` mapping, a production
   `IdentityLookup` supplied by the identity owner, and shared status documents (Handoff / Master Status / Project
   Index) at canonical merge time.
+
+## P1 Basic Network record (2026-09-27 17:55 KST, Track D) — FROZEN
+
+Package `implementation/src/investment_system/rig/network/` (`views.py`, `labels.py`, `render.py`), tests
+`test_rig_p1_network.py` (11), shared fixture `tests/rig_fixtures.py`, optional browser smoke
+`tools/rig_browser_smoke.js`. P0 files are unchanged.
+
+- Same Information, Two Views: `build_view_model` projects one P0 `RIGGraph` into News cards and Network
+  nodes/edges with identical event / relationship / node ids. `NewsIndex` holds only news-view metadata keyed by P0
+  event ids (no second Event store).
+- News cards: NEW (no link) / UPDATE / FOLLOW_UP / DUPLICATE via append-only, PIT-checked `EventLink`; DUPLICATE is
+  hidden from the default feed; source count = distinct lineage sources; untraceable events are not shown.
+- Network: relationship types Supply Chain / Customer / Competitor / Value Chain; solid = FACT, dashed =
+  SUPPORTED_INFERENCE, arrow = directed upstream→downstream (Competitor undirected); at most 2 edge badges.
+- `ViewState` (view, filters, focus, expansion steps, viewport); `switch_view` changes only the view. Filters apply
+  to both views. Focus shows 5–8 core relationships (default 8) with `+N` expansion by steps; overview capped at 60
+  edges per step (no unlimited expansion). P1 edge priority: FACT, most recently confirmed, id.
+- Page: whole content area swaps between News and Network; wheel/pinch zoom, empty-space pan, node drag, node/edge
+  quick view, double-click focus, `+N`, `⌂` fit, search; EN / English (한국어) / 한국어 change labels only.
+- Evidence: targeted P1 11/11, P0 15/15, full 334/334 (mini_pytest shim); browser smoke 18/18 checks in Chromium
+  (found and fixed a pointer-capture bug that suppressed node click/double-click).
+- D2 decisions: NEW/UPDATE/FOLLOW-UP news status is P1 (News View core), relationship NEW/DISCOVERED stays P2;
+  non-company nodes (◆ ▣ ⬡) are deferred to P4 with the Impact Graph; the page is a standalone RIG render, not yet
+  registered in the shared App Shell `NAV_PAGES` (INTEGRATION_REQUIRED at canonical merge); later phases extend the
+  page only through `PageExtras`.

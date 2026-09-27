@@ -672,3 +672,9 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - Targeted RIG 15/15 and full suite 323/323 (308 baseline + 15) pass via mini_pytest shim. Status: P0 FREEZE_READY.
 - 2026-09-27 17:44 KST: P0 FROZEN at code baseline `e3b1b62`. Re-verified 323/323 on a throwaway merge with
   canonical `ed343ba` (Track A-only upstream delta, no conflicts). P1 NOT_STARTED.
+
+## 2026-09-27 · Track D RIG P1 Basic Network · Claude Code
+
+- Added `investment_system.rig.network`: shared News/Network view model, news status linking, relationship visual
+  contract, focus/expansion, view-state preservation, three-language labels, and a static News | Network page with
+  zoom/pan/drag. P1 11/11, full 334/334 (mini_pytest shim), browser smoke 18/18. P1 FROZEN. No existing module changed.
