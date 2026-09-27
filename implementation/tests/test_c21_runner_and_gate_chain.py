@@ -802,7 +802,7 @@ def test_nport_parse_series_filings_and_name_resolution(tmp_path):
     assert [u["name"] for u in unresolved] == ["TWIN NAME CORP"] and tick["0000320193"] == "AAPL"
 
 
-def test_nport_historical_member_demotion_preserves_every_source_row():
+def test_nport_historical_member_demotion_precedes_sibling_cusip_attestation(tmp_path):
     fnr = _mod("fnr_demote", "fetch_nport_reference.py")
     holdings = [
         {"name": "OLD ISSUER", "cusip": "000001101", "isin": "US0000011018", "asset_cat": "EC",
@@ -816,6 +816,19 @@ def test_nport_historical_member_demotion_preserves_every_source_row():
     assert [r["value"] for r in rows] == [12.5, 7.5]
     assert all(r["reason"] == "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT" for r in rows)
     assert all(r["candidates"] == ["0000000042"] for r in rows)
+
+    store = RawDatasetStore(tmp_path)
+    store.put("submissions:0002003397", json.dumps({"filings": {"recent": {"form": ["SC 13G"],
+              "filingDate": ["2024-02-12"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
+    liberty = {"name": "LIBERTY SIRIUS XM", "cusip": "531229813", "asset_cat": "EC"}
+    members = {
+        "0002003397": {"names": [liberty["name"]], "cusips": [liberty["cusip"]], "method": "SEC_CIK_LOOKUP"},
+        "0001560385": {"names": ["LIBERTY MEDIA CORP - FORMULA ONE GROUP"], "cusips": ["531229755"],
+                       "method": "CUSIP_ATTESTED_OWNERSHIP_FILING"},
+    }
+    demoted = fnr.demote_non_pit_historical_members(store, lambda aid, url, kind: None, members, [liberty], amc_dt())
+    assert list(members) == ["0001560385"] and demoted[0]["candidates"] == ["0002003397"]
+    assert fnr.cusip_attestation_candidates(demoted[0], members, {}, {}) == ["0001560385", "0002003397"]
 
 
 def test_chain_superset_with_cik_members(tmp_path):
