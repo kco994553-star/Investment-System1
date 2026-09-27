@@ -1,0 +1,113 @@
+{
+ "kind": "OFFICIAL_PIPELINE_RUN",
+ "dates": [
+  "2024-06-30",
+  "2024-09-30",
+  "2024-12-31"
+ ],
+ "final_horizon": "2025-03-31",
+ "per_date": [
+  {
+   "as_of": "2024-06-30",
+   "status": "NOT_OFFICIAL",
+   "official_blockers": [
+    "PROMOTION_GATE_V2_FAILED"
+   ],
+   "consistency_passed": true
+  },
+  {
+   "as_of": "2024-09-30",
+   "status": "OFFICIAL",
+   "universe_id": "uni_e334f94a73c3",
+   "n_members": 500,
+   "cutoff_mcap": 15573548285.0,
+   "gate_evidence": "gate_chain_2024-09-30_real_gha.json"
+  },
+  {
+   "as_of": "2024-12-31",
+   "status": "OFFICIAL",
+   "universe_id": "uni_cf6aa3403869",
+   "n_members": 500,
+   "cutoff_mcap": 15421829271.493835,
+   "gate_evidence": "gate_chain_2024-12-31_real_gha.json"
+  }
+ ],
+ "real_data_verified": false,
+ "single_as_of": [
+  {
+   "as_of": "2024-09-30T00:00:00+00:00",
+   "horizon_as_of": "2024-12-31T00:00:00+00:00",
+   "universe_id": "uni_e334f94a73c3",
+   "universe_kind": "US_MCAP_TOP500_OFFICIAL",
+   "official_universe": true,
+   "universe_policy": "OFFICIAL",
+   "membership_basis": "DERIVED_AT_AS_OF",
+   "survivorship_risk": false,
+   "n_selected": 469,
+   "equal_weight_realized": 0.0004569665513276751,
+   "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+   "rule_status": "PROVISIONAL_RESEARCH",
+   "n_universe": 500,
+   "n_investable": 495,
+   "n_missing": 5,
+   "n_name_errors": 0,
+   "name_error_sample": {},
+   "n_linked": 469
+  },
+  {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "horizon_as_of": "2025-03-31T00:00:00+00:00",
+   "universe_id": "uni_cf6aa3403869",
+   "universe_kind": "US_MCAP_TOP500_OFFICIAL",
+   "official_universe": true,
+   "universe_policy": "OFFICIAL",
+   "membership_basis": "DERIVED_AT_AS_OF",
+   "survivorship_risk": false,
+   "n_selected": 468,
+   "equal_weight_realized": -0.01649309224255184,
+   "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+   "rule_status": "PROVISIONAL_RESEARCH",
+   "n_universe": 500,
+   "n_investable": 494,
+   "n_missing": 6,
+   "n_name_errors": 0,
+   "name_error_sample": {},
+   "n_linked": 468
+  }
+ ],
+ "benchmark_500": {
+  "kind": "REAL_500_COMPANY_BENCHMARK",
+  "per_date_single_as_of": [
+   {
+    "as_of": "2024-09-30",
+    "wall_s": 28.358,
+    "peak_rss_mb": 9535.0
+   },
+   {
+    "as_of": "2024-12-31",
+    "wall_s": 28.686,
+    "peak_rss_mb": 9535.0
+   }
+  ],
+  "median_wall_s": 28.522,
+  "max_peak_rss_mb": 9535.0,
+  "name_errors_total": 0,
+  "network": {
+   "n_ingestion_run_reports": 381,
+   "request_status_counts": {
+    "SKIPPED_ALREADY_PRESENT": 273770,
+    "OK": 6228,
+    "HTTP_404": 3975,
+    "NO_PERIODIC_FILING_BEFORE_AS_OF": 2508,
+    "HTTP_429": 3,
+    "ERROR_IncompleteRead": 1,
+    "ERROR_URLError": 4,
+    "EGRESS_BLOCKED": 793,
+    "HTTP_401": 4
+   }
+  },
+  "note": "Real raw store (network-ingested by the c21 workflow); compare with tools/bench_universe_500.py (SYNTHETIC)."
+ },
+ "walk_forward_status": "BLOCKED_NOT_ALL_DATES_OFFICIAL",
+ "status": "RUN"
+}

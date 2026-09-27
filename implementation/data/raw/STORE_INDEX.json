@@ -1,8 +1,8 @@
 {
   "kind": "RAW_DATASET_STORE_INDEX",
   "store_dir": "data/raw",
-  "n_artifacts": 6806,
-  "n_blobs_on_disk": 6806,
+  "n_artifacts": 6807,
+  "n_blobs_on_disk": 6807,
   "artifacts": [
     {
       "artifact_id": "companyfacts:0000001800",
@@ -16526,6 +16526,15 @@
       "sha256": "efa841c202bf4993475af18e5014301cb21d24c077abb97221ccea65de967e45",
       "bytes": 26460,
       "fetched_at": "2026-09-26T06:02:22.032942+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001699031:0001628280-24-047606",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1699031/000162828024047606/gral-20240930.htm",
+      "sha256": "aa4b1fa6890e3a0587ddf312b6bb38b5b1051f00e48f673d224cec9a9e3debcd",
+      "bytes": 2018319,
+      "fetched_at": "2026-09-27T07:39:24.541058+00:00",
       "http_status": 200
     },
     {

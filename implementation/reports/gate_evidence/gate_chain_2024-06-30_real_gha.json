@@ -3,7 +3,7 @@
   "as_of": "2024-06-30T00:00:00+00:00",
   "store": {
     "dir": "data/raw",
-    "n_artifacts": 6806,
+    "n_artifacts": 6807,
     "status": "PRESENT"
   },
   "listings": 992,
@@ -4801,14 +4801,15 @@
         "policy": "CA-SHARES-01",
         "status": "NOT_APPLIED",
         "failures": [
-          "CITED_DOCUMENT_NOT_FIRST_SUBSEQUENT_PERIODIC"
+          "CITED_DOCUMENT_NOT_FIRST_SUBSEQUENT_PERIODIC",
+          "EXACT_ACTUAL_EVENT_COUNT_NOT_VERIFIED"
         ],
         "event_date": "2024-06-24",
-        "evidence_available_at": "2025-03-05",
+        "evidence_available_at": "2024-11-13",
         "look_ahead": true,
         "reconstruction_only": true,
         "shares": 31049148,
-        "source_artifact": "sec_filing_doc:0001699031:0001699031-25-000041"
+        "source_artifact": "sec_filing_doc:0001699031:0001628280-24-047606"
       }
     },
     "price_reconstruction": {
@@ -5016,7 +5017,7 @@
       "COVER_ECONOMIC_EQUIVALENT": 8,
       "SHARE_SCALE_CORRECTED_FROM_COVER_TEXT": 1
     },
-    "universe_id": "uni_eed6a7a43ecc",
+    "universe_id": "uni_27f72ff88531",
     "snapshot_cutoff_mcap": 14021530297.505974
   },
   "official_snapshot_candidates": null,
