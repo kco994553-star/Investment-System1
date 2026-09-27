@@ -93,3 +93,10 @@ Update · RIG / News Architecture v0.1 · 2026-09-27
   Summary→Evidence→Detail contracts are reused; QGV/Technical/Macro scores are not mutated.
 - Track preservation: Track A REAL-DATA priority unchanged; Track B P0 stays frozen; Track C EVL stays frozen and
   unimplemented. RIG is not a new scoring track and no runtime/UI/store was added by this registration.
+
+Update · C-39 shared identity contract · 2026-09-27 16:02 KST
+
+- C-39 RESOLVED: the documented common `Issuer → Security → Listing` runtime contract is restored in
+  `contracts/global_universe.py`, with separate Analysis/Network/News contexts and fail-closed FX/eligibility PIT gates.
+- Six focused regressions and the full 308/308 suite pass. Track B's frozen private security contract was neither
+  imported nor changed. This removes the identity-contract blocker for RIG P0; RIG itself remains unimplemented.
