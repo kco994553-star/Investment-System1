@@ -58,12 +58,12 @@
       "shares": 31049148,
       "count_basis": "ACTUAL_SPIN_OFF_OPENING_ISSUANCE",
       "first_subsequent_periodic_document": {
-        "artifact_id": "sec_filing_doc:0001699031:0001628280-24-047606",
-        "url": "https://www.sec.gov/Archives/edgar/data/1699031/000162828024047606/gral-20240930.htm",
-        "accession": "0001628280-24-047606",
+        "artifact_id": "sec_filing_doc:0001699031:0001628280-24-036965",
+        "url": "https://www.sec.gov/Archives/edgar/data/1699031/000162828024036965/gral-20240630.htm",
+        "accession": "0001628280-24-036965",
         "form": "10-Q",
-        "filed": "2024-11-13",
-        "period_end": "2024-09-30",
+        "filed": "2024-08-13",
+        "period_end": "2024-06-30",
         "required_phrases_near_count": [
           "31,049,148",
           "resulted in the issuance"
