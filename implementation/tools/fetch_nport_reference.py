@@ -311,6 +311,29 @@ def name_candidates(name: str, cur: dict, hist: dict) -> set[str]:
     return out
 
 
+def cusip_attestation_candidates(unresolved: dict, members: dict, cur: dict, hist: dict) -> list[str]:
+    """Candidates to inspect for exact-CUSIP ownership-filing evidence.
+
+    A reference can name a tracking group rather than the registrant, so name matching alone can miss the issuer even
+    when another class of that issuer was already resolved.  A unique resolved CIK sharing the six-character CUSIP
+    issuer number is inspected first.  The prefix is candidate discovery only: :func:`attest_by_cusip` still requires
+    the unresolved holding's exact CUSIP in a timely 13D/G whose SEC header names that candidate as SUBJECT COMPANY.
+    Multiple resolved CIKs for a prefix are ambiguous and add no candidate (fail closed).
+    """
+    cusip = str(unresolved.get("cusip") or "")
+    prefix = issuer_prefix(cusip)
+    by_prefix = {}
+    if prefix:
+        for cik, member in members.items():
+            for resolved_cusip in member.get("cusips") or []:
+                resolved_prefix = issuer_prefix(resolved_cusip)
+                if resolved_prefix:
+                    by_prefix.setdefault(resolved_prefix, set()).add(cik)
+    sibling = next(iter(by_prefix.get(prefix, set()))) if len(by_prefix.get(prefix, set())) == 1 else None
+    candidates = set(unresolved.get("candidates") or []) | name_candidates(unresolved["name"], cur, hist)
+    return ([sibling] if sibling else []) + sorted(candidates - ({sibling} if sibling else set()))
+
+
 def attest_by_cusip(store: RawDatasetStore, get, candidates: list[str], cusip: str, as_of: datetime, npr, frc) -> dict:
     """The candidate that is the SEC-header SUBJECT COMPANY of a timely 13D/G printing the holding CUSIP.
 
@@ -443,7 +466,7 @@ def main() -> None:
                     if not cu or "ESC" in cu.upper()[3:9]:
                         still0.append(u)
                         continue
-                    cands = sorted(set(u.get("candidates") or []) | name_candidates(u["name"], cur, hist))
+                    cands = cusip_attestation_candidates(u, members, cur, hist)
                     att = attest_by_cusip(store, get, cands, cu, d, npr, frc)
                     attestations[u["name"] + "|" + cu] = {"candidates": cands, **att}
                     if att["cik"] and pit_registrant(store, att["cik"], d):
