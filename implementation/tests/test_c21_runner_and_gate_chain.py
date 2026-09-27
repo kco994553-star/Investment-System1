@@ -1622,7 +1622,7 @@ def test_run37_official_pipeline_rebuilds_snapshot_only_from_passing_gate_eviden
               "shares_available_at": "2024-11-01T00:00:00+00:00", "price_observed_at": "2024-12-30T21:00:00+00:00",
               "shares_basis": "COMPANYFACTS_PIT", "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR", "gate_mcap": (1000.0 - i) * 10}
              for i in range(5)]
-    ev = {"official_top500_declared": True, "gate_snapshot_consistency": {"passed": True, "universe_id": "uni_gate"}, "official_snapshot_candidates": cands,
+    ev = {"official_top500_declared": True, "share_price_unit_audit": {"passed": True}, "gate_snapshot_consistency": {"passed": True, "universe_id": "uni_gate"}, "official_snapshot_candidates": cands,
           "top500": [{"company_id": f"c{i}"} for i in range(5)]}
     (tmp_path / "gate_chain_2024-12-31_real_gha.json").write_text(json.dumps(ev))
     snap, st = op.load_official("2024-12-31")
@@ -1638,6 +1638,9 @@ def test_run37_official_pipeline_rebuilds_snapshot_only_from_passing_gate_eviden
     (tmp_path / "gate_chain_2025-01-01_real_gha.json").write_text(json.dumps(missing_id))
     assert op.load_official("2025-01-01")[1]["status"] == "GATE_UNIVERSE_ID_MISSING"
     assert op.load_official("2024-01-31")[1]["status"] == "NO_GATE_EVIDENCE"
+    unaudited = {k: v for k, v in ev.items() if k != "share_price_unit_audit"}
+    (tmp_path / "gate_chain_2024-03-31_real_gha.json").write_text(json.dumps(unaudited))
+    assert op.load_official("2024-03-31")[1]["status"] == "SHARE_PRICE_UNIT_AUDIT_REQUIRED"
     monkeypatch.setattr(sys, "argv", ["x", "--store", str(tmp_path), "--dates", "2024-06-30,2024-09-30", "--final-horizon", "2025-03-31"])
     op.main()
     out = json.loads((tmp_path / "official_pipeline_2024-06-30_2024-09-30.json").read_text())
@@ -1650,6 +1653,41 @@ def test_run58_workflow_can_reuse_a_passing_gate_without_reminting_its_identity(
     assert "if: inputs.reuse_gate_evidence != 'true'" in workflow
     assert "reuse_gate_evidence requires skip_fetch=true" in workflow
     assert "reuse_gate_evidence requires walk_forward_dates" in workflow
+
+
+def test_walk_forward_gate_rejects_selection_or_return_drift():
+    import copy
+    op = _mod("op_wf_consistency", "official_pipeline.py")
+    singles = {d: {"horizon_as_of": h, "universe": ["old"], "selected": ["old"],
+                   "equal_weight_realized": 0.1, "name_errors": {}, "outcomes": {"old": {"status": "LINKED"}}}
+               for d, h in [("a", "b"), ("b", "c"), ("c", "d")]}
+    wf = {"steps": [{"as_of": d, **{k: v for k, v in singles[d].items() if k != "outcomes"},
+                      "n_linked": 1} for d in ["a", "b"]]}
+    assert op.walk_forward_consistency(singles, wf)["passed"]
+    bad = copy.deepcopy(wf)
+    bad["steps"][0]["selected"] = ["new"]  # same count, wrong issuer
+    bad["steps"][0]["equal_weight_realized"] = 0.2
+    report = op.walk_forward_consistency(singles, bad)
+    assert not report["passed"]
+    assert {x["field"] for x in report["mismatches"]} == {"selected", "equal_weight_realized"}
+    assert not op.walk_forward_consistency(singles, {"steps": wf["steps"][:1]})["passed"]
+
+
+def test_share_unit_audit_blocks_unclassified_events_without_applying_a_ratio(tmp_path):
+    chain = _mod("chain_units", "run_top500_gate_chain.py")
+    store = RawDatasetStore(tmp_path)
+    effective = datetime(2024, 6, 10, tzinfo=UTC)
+    events = {"chart": {"result": [{"events": {"splits": {"one": {
+        "date": int(effective.timestamp()), "numerator": 10, "denominator": 1}}}}]}}
+    store.put("yahoo_events:AAA:5y", json.dumps(events).encode(), "u", "YAHOO_SPLIT_EVENTS", "application/json", "t", 200)
+    candidate = {"company_id": "a", "ticker": "AAA", "cik": "1", "shares": 100,
+                 "shares_basis": "COMPANYFACTS_PIT", "shares_available_at": "2024-05-29T00:00:00+00:00"}
+    report = chain.share_price_unit_audit(store, [candidate], datetime(2024, 6, 30, tzinfo=UTC))
+    assert not report["passed"] and report["unresolved"][0]["events"][0]["factor"] == 10
+    assert candidate["shares"] == 100  # never infer actual outstanding shares from a chart adjustment
+    assert chain.share_price_unit_audit(store, [candidate], datetime(2024, 6, 1, tzinfo=UTC))["passed"]
+    current = {**candidate, "shares_available_at": "2024-06-11T00:00:00+00:00"}
+    assert chain.share_price_unit_audit(store, [current], datetime(2024, 6, 30, tzinfo=UTC))["passed"]
 
 
 def test_run40_dated_evidence_keeps_only_citations_filed_on_or_before_the_target_date():

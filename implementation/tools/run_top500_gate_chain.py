@@ -389,6 +389,33 @@ def gate_audited_candidates(store: RawDatasetStore, listings: dict, overrides: d
     return out
 
 
+def share_price_unit_audit(store: RawDatasetStore, candidates: list[dict], as_of, chart_range: str = "5y") -> dict:
+    """Detect corporate actions between the share filing and valuation date.
+
+    Yahoo's split series also contains spin-off adjustments: a factor is evidence
+    to investigate, never authority to multiply an issuer's outstanding shares.
+    """
+    amc = _load("audit_mcap_store")
+    unresolved = []
+    for candidate in candidates:
+        available = candidate.get("shares_available_at")
+        if not available:
+            continue
+        available = amc._dt(str(available))
+        symbol = candidate.get("ticker")
+        events = [{"effective_at": when.isoformat(), "factor": factor}
+                  for when, factor in amc.load_splits(store, symbol, chart_range) or []
+                  if available < when <= as_of and factor != 1.0]
+        if events:
+            unresolved.append({"company_id": candidate["company_id"], "ticker": symbol,
+                               "cik": candidate.get("cik"), "shares": candidate["shares"],
+                               "shares_basis": candidate.get("shares_basis"),
+                               "shares_available_at": available.isoformat(), "events": events,
+                               "source_artifact": f"yahoo_events:{symbol}:{chart_range}"})
+    return {"passed": not unresolved, "n_candidates": len(candidates), "unresolved": unresolved,
+            "note": "No share multiplier applied. Exact security/event/share-unit reconciliation is required."}
+
+
 def gate_snapshot_consistency(store: RawDatasetStore, listings: dict, top: list[dict], candidates: list[dict], as_of) -> dict:
     """official_mcap500_snapshot_from_store(gate_candidates=...) must reproduce the gate's top 500: same members, same
     order, same market caps (relative 1e-9). Any difference blocks the Official declaration."""
@@ -1291,11 +1318,13 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         unrankable[m.get("yahoo")] = {"reason": reason, "cik": m.get("cik"), "shares": det["shares"],
                                       "price_observed_at": det["price_observed_at"], "pit_filer_status": m.get("pit_filer_status")}
     candidates = gate_audited_candidates(store, listings, overrides, d, chart_range)
+    unit_audit = share_price_unit_audit(store, candidates, d, chart_range)
     consistency = gate_snapshot_consistency(store, listings, top, candidates, d)
     official_blockers = ([] if gate_v2["passed"] else ["PROMOTION_GATE_V2_FAILED"]) + \
         ([] if consistency["passed"] else ["GATE_SNAPSHOT_INCONSISTENT"]) + \
         [f"TOP500_ROWS_{k}" for k in sorted(flag_counts)] + \
-        (["LOWER_BOUND_ISSUERS_OUTSIDE_TOP500"] if lb_outside else [])
+        (["LOWER_BOUND_ISSUERS_OUTSIDE_TOP500"] if lb_outside else []) + \
+        ([] if unit_audit["passed"] else ["UNRECONCILED_SHARE_PRICE_UNITS"])
     official = not official_blockers
     return {
         "kind": "TOP500_GATE_CHAIN_RUN", "as_of": audit["as_of"],
@@ -1318,6 +1347,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "share_scale_checks": share_scale, "stale_share_facts_excluded": stale_excluded,
         "registration_doc_share_counts": registration_docs,
         "gate_snapshot_consistency": consistency,
+        "share_price_unit_audit": unit_audit,
         # the audited candidate representation, kept only when Official is declared, so later steps rebuild the SAME
         # snapshot with universe.sources.official_mcap500_snapshot (no re-derivation from companyfacts/adjclose)
         "official_snapshot_candidates": [

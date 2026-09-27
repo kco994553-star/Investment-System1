@@ -15,6 +15,7 @@ parse_us_company already have for absent data. Nothing here fabricates a value.
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 
 from ..providers.yahoo_chart import parse_bars
 from .raw_store import RawDatasetStore
@@ -76,7 +77,8 @@ def build_payloads_and_bars(
     store: RawDatasetStore,
     listings: dict[str, dict],
     chart_range: str = "5d",
-) -> tuple[dict[str, dict], dict[str, list[dict]]]:
+    lazy_companyfacts: bool = False,
+) -> tuple[Mapping[str, dict], dict[str, list[dict]]]:
     """listings: company_id -> {"cik": ..., "yahoo": ...}.
 
     Returns (payloads, bars_by_id) in exactly the shape
@@ -86,7 +88,7 @@ def build_payloads_and_bars(
     bars: dict[str, list[dict]] = {}
     for cid, meta in listings.items():
         cik = meta.get("cik")
-        if cik:
+        if cik and not lazy_companyfacts:
             cf = load_companyfacts(store, cik)
             if cf is not None:
                 payloads[cid] = cf
@@ -95,4 +97,21 @@ def build_payloads_and_bars(
             b = load_price_bars(store, sym, chart_range)
             if b:
                 bars[cid] = b
-    return payloads, bars
+    return (_StoreCompanyFacts(store, listings) if lazy_companyfacts else payloads), bars
+
+
+class _StoreCompanyFacts(Mapping):
+    """Read one issuer on demand; a 500-name replay must not retain every SEC JSON tree."""
+    def __init__(self, store, listings):
+        self.store = store
+        self.ciks = {cid: meta["cik"] for cid, meta in listings.items()
+                     if meta.get("cik") and store.has(f"companyfacts:{_cik10(meta['cik'])}")}
+
+    def __getitem__(self, company_id):
+        return load_companyfacts(self.store, self.ciks[company_id])
+
+    def __iter__(self):
+        return iter(self.ciks)
+
+    def __len__(self):
+        return len(self.ciks)
