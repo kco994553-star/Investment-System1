@@ -1,0 +1,10 @@
+{
+  "kind": "TRACK_A_CA_UNIT_RAW_INTEGRITY",
+  "artifacts": 6830,
+  "bytes": 6138186075,
+  "passed": true,
+  "failures": [],
+  "wall_s": 10.04,
+  "original_run": 36305927245,
+  "supplement": "22 primary event documents and reviewed PARA historical source restoration; prior bodies preserved in history"
+}

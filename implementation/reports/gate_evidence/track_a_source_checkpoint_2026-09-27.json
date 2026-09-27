@@ -1,0 +1,16 @@
+{
+  "scope": "TRACK_A_ONLY",
+  "canonical_head_rechecked": "ebf8263e925b657f38463988ba85eb3ce2d7bb51",
+  "checked_at": "2026-09-27T11:48:57.555855+00:00",
+  "source_sha256": {
+    "tools/ca_unit_policy.py": "d30d382288541caf4af02d734b465d507678eaf91f6929944a83d0ef32ef54ac",
+    "tools/prepare_ca_unit_evidence.py": "04f9d0baee3583a96b59768538b294c75228db0f6bb8a76a6fbb919e0c65f502",
+    "tools/run_top500_gate_chain.py": "1154d22b3bb49d81e3b752843f406b88d4e9798e34008bee622e08e56e739d4a",
+    "tools/official_pipeline.py": "7fd78e17e942f1a024909e428ccb2e0b04ad6abcb4863afa5297438c1cb705d0",
+    "src/investment_system/universe/sources.py": "38adc79c3d7cbc9741b6fc5daa3c3fdf67416236f51f11cc0fb2c5a2a9291365",
+    "src/investment_system/validation/vertical_slice.py": "4ab06fce30064ccf0a54f2c8e6dd39b4b97fdb996511958fac24d25d031a98dc",
+    "src/investment_system/ingestion/replay.py": "cc48fd32461f170acd6b0bf339752a35076ddbcf5c0ad535afc15c656d606b3c",
+    "tests/test_ca_unit_policy.py": "39b48b5e07e068db4b7055c1bf8819fa9e05d1947d7ef19b38a379a13a2971a3",
+    "../.github/workflows/c21-real-data.yml": "b2b472b94f2c5d868639a2b9542e8023f1fb644e65d4ef87ce2883acf159e630"
+  }
+}

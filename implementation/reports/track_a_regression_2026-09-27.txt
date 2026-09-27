@@ -22,12 +22,12 @@
   "verification": [
     {
       "source": "SEC_COMPANYFACTS_BULK",
-      "path": "/tmp/tmpj4ft_8ya/companyfacts.zip",
+      "path": "/tmp/tmp4a9e1guk/companyfacts.zip",
       "exists": true,
       "passed": true,
       "reasons": [],
       "bytes": 13205,
-      "sha256": "c40cd6f479b660eda18306af36dbc8e03a7aeddd8a495fb8c5c8f0fab89325fd",
+      "sha256": "92f02f22f21cb42316b9871409f4195f8531d8051e98d75224e4201afd62dda5",
       "first_signature": "504b0304",
       "n_members": 3,
       "n_matching_members": 3,
@@ -44,14 +44,14 @@
   "verification": [
     {
       "source": "SEC_COMPANYFACTS_BULK",
-      "path": "/tmp/tmpn15n00qb/companyfacts.zip",
+      "path": "/tmp/tmpjdu9seky/companyfacts.zip",
       "exists": true,
       "passed": false,
       "reasons": [
         "ZIP_UNREADABLE_NO_CENTRAL_DIRECTORY_OR_TRUNCATED"
       ],
       "bytes": 17594,
-      "sha256": "dfb105ada2bc306ed21ad08c4c931b4da35d0626cea1541b750c76cab5f35680",
+      "sha256": "5a23e340f3db150e8074efb4be96d5a7af4ab08abdc14b6ad82277bc72796a06",
       "first_signature": "504b0304",
       "error": "BadZipFile: File is not a zip file"
     }
@@ -65,12 +65,12 @@
   "verification": [
     {
       "source": "SEC_COMPANYFACTS_BULK",
-      "path": "/tmp/tmp7pui3tsy/companyfacts.zip",
+      "path": "/tmp/tmpesfnij8a/companyfacts.zip",
       "exists": true,
       "passed": true,
       "reasons": [],
       "bytes": 13205,
-      "sha256": "c40cd6f479b660eda18306af36dbc8e03a7aeddd8a495fb8c5c8f0fab89325fd",
+      "sha256": "92f02f22f21cb42316b9871409f4195f8531d8051e98d75224e4201afd62dda5",
       "first_signature": "504b0304",
       "n_members": 3,
       "n_matching_members": 3,
@@ -155,4 +155,4 @@ members: 3
   "justified_official_top500": false,
   "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
 }
-388 passed, 0 failed in 83.14s (runner: mini_pytest shim, not pytest)
+396 passed, 0 failed in 94.96s (runner: mini_pytest shim, not pytest)

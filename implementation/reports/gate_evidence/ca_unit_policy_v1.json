@@ -1,0 +1,633 @@
+{
+  "policy_version": "CA-UNIT-v1.0",
+  "approved": true,
+  "approved_at": "2026-09-27 KST",
+  "approval_basis": "Explicit user D3-P approval; same event types subsequently D3-C",
+  "rank_and_cutoff_not_inputs": true,
+  "new_future_information_permission": false,
+  "events": [
+    {
+      "event_id": "0000040545:2024-04-02",
+      "cik": "0000040545",
+      "symbols": [
+        "GE"
+      ],
+      "security_scope": [
+        "GE"
+      ],
+      "provider_event_date": "2024-04-02",
+      "unit_effective_at": "2024-04-02T13:30:00+00:00",
+      "kind": "SPINOFF_PARENT_UNCHANGED",
+      "share_factor": 1,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:GE:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/40545/000119312524084038/d792336d8k.htm",
+          "sha256": "1e657537b78da07f8003f56de04e981ff92b60971d02bfeee6040f9d3e9e2d33",
+          "published_at": "2024-04-02",
+          "quotes": [
+            "pany\u201d). The Spin-Off of GE Vernova was achieved through the Company\u2019s pro rata distribution of all of the outstanding shares of GE Vernova common stock to holders of record of the Company\u2019s common stock. Each holder of record of the Company\u2019s common stock received one share of GE Vernova common stock for every four shares of the Company\u2019s common stock held on March 19, 2024, the record date for the distribution. In lieu of fractional shares of GE Vernova, shareholders of the Company will receive cash. On April 2, 2024, GE Vernova\u2019s common stock began trading on the New York Stock Exchange under the ticker symbol \u201cGEV.\u201d Item 1.01 Entry into a Material Definitive Agreement. In connection with the Spin-Off, the Company entered into several agreements with GE Vernova prior to the Distribution Date that, among other things, provide a "
+          ],
+          "bundled_path": "ca_unit_sources/GE.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0000066740:2024-04-01",
+      "cik": "0000066740",
+      "symbols": [
+        "MMM"
+      ],
+      "security_scope": [
+        "MMM"
+      ],
+      "provider_event_date": "2024-04-01",
+      "unit_effective_at": "2024-04-01T13:30:00+00:00",
+      "kind": "SPINOFF_PARENT_UNCHANGED",
+      "share_factor": 1,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:MMM:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/66740/000006674024000044/mmm-20240401.htm",
+          "sha256": "690293fd2b3c5315880cb5f79a42ee267d4d1e48541c0f661470b895e6d2014d",
+          "published_at": "2024-04-04",
+          "quotes": [
+            "separation of its health care business (the \u201cSeparation\u201d) through the pro rata distribution of 80.1% of the issued and outstanding shares of common stock, par value $0.01 per share, of Solventum Corporation (\u201cSolventum\u201d) to 3M stockholders (the \u201cDistribution\u201d), in accordance with the Separation and Distribution Agreement, dated March 31, 2024, by and between 3M and Solventum, which is included as Exhibit 2.1 to this Current Report on Form 8-K. The Distribution was effective at 3:30 a.m., Eastern Time, on April 1, 2024. As a result of the Distribution, Solventum became an independent public company and its common stock is listed under the symbol \u201cSOLV\u201d on the New York Stock Exchange. 3M stockholders of record as of the close of business on March 18, 2024 received one share of Solventum common stock for every four shares of 3M comm"
+          ],
+          "bundled_path": "ca_unit_sources/MMM.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0000067716:2024-11-01",
+      "cik": "0000067716",
+      "symbols": [
+        "MDU"
+      ],
+      "security_scope": [
+        "MDU"
+      ],
+      "provider_event_date": "2024-11-01",
+      "unit_effective_at": "2024-11-01T13:30:00+00:00",
+      "kind": "SPINOFF_PARENT_UNCHANGED",
+      "share_factor": 1,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:MDU:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/67716/000114036124044885/ef20037702_8k.htm",
+          "sha256": "98a394004033509f08cc190be51ba35c36b59cca9acc386c0c162254f8f72bce",
+          "published_at": "2024-11-01",
+          "quotes": [
+            "p, Inc. (\u201cEverus\u201d and such separation, the \u201cSeparation\u201d), through the pro rata distribution of all of the outstanding common stock, par value $0.01, of Everus to the Company\u2019s stockholders (the \u201cDistribution\u201d). The Distribution became effective at 11:59 p.m., Eastern time, on October 31, 2024 (the \u201cEffective Time\u201d). As a result of the Distribution, Everus is now an independent public company trading under the symbol \u201cECG\u201d on the New York Stock Exchange. The Company\u2019s common stock remains unchanged and continues to trade under the symbol \u201cMDU\u201d on the New York Stock Exchange. The Company\u2019s stockholders of record as of the close of business on October 21, 2024, received one share of Everus common stock for every four shares of Company common stock held as of such time, subject to the payment of cash in lieu of fractional shares of E"
+          ],
+          "bundled_path": "ca_unit_sources/MDU.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0001045810:2024-06-10",
+      "cik": "0001045810",
+      "symbols": [
+        "NVDA"
+      ],
+      "security_scope": [
+        "NVDA"
+      ],
+      "provider_event_date": "2024-06-10",
+      "unit_effective_at": "2024-06-10T13:30:00+00:00",
+      "kind": "SPLIT",
+      "share_factor": 10,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:NVDA:2024",
+          "url": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-first-quarter-fiscal-2025",
+          "sha256": "de513cf9e2db874690e45fa023adbb21520b714e57757433f5660158cce9b6a5",
+          "bytes": 305190,
+          "published_at": "2024-05-22",
+          "quotes": [
+            " revenue of $22.6 billion, up 23% from Q4 and up 427% from a year ago Ten-for-one forward stock split effective June 7, 2024 Quarterly cash dividend raised 150% to $0.01 per share on a post-split basis NVIDIA (NASDAQ: NVDA) today reported revenue for the first quarter ended April 28, 2024, of $26.0 billion, up 18% from the previous quarter and up 262% from a year ago. For the quarter, GAAP earnings per diluted share was $5.98, up 21% from the previous quarter and up 629% from a year ago. Non-GAAP earnings per diluted share was $6.12, up 19% from the previous quarter and up 461% from a year ago. \u201cThe next industrial revolution has begun \u2014 companies and countries are partnering with NVIDIA to shift the trillion-dollar traditional data centers to accelerated computing and build a new type of data center \u2014 AI factories \u2014 to"
+          ],
+          "bundled_path": "ca_unit_sources/NVDA.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0000820313:2024-06-12",
+      "cik": "0000820313",
+      "symbols": [
+        "APH"
+      ],
+      "security_scope": [
+        "APH"
+      ],
+      "provider_event_date": "2024-06-12",
+      "unit_effective_at": "2024-06-12T13:30:00+00:00",
+      "kind": "SPLIT",
+      "share_factor": 2,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:APH:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/820313/000110465924070695/tm2416925d1_8k.htm",
+          "sha256": "58b5c5d853f5f69d7d00409b1bde0f3a04e8a6a3d1d29b691c31abed225a5bc9",
+          "bytes": 25204,
+          "published_at": "2024-06-12",
+          "quotes": [
+            "ne 18, 2024. On May 20, 2024, the Company announced the approval of a two-for-one stock split of the Company\u2019s Class A Common Stock in the form of a stock dividend to be distributed on June 11, 2024, to holders of record of the Company\u2019s Class A Common stock at the close of business on May 31, 2024. The two-for-one stock split referenced above has now been effected. In light of the stock split, the dividend to be paid on July 10, 2024 to shareholders of record as of June 18, 2024 will now be $0.11 per share. This Current Report on Form 8-K may include forward-looking statements within the meaning of the Private Securities Litigation Reform Act of 1995 and the provisions of Section 27A of the Securities Act of 1933, as amended, and Section 21E of the Securities Exchange Act of 1934, as amended (the \u201cExchange Act\u201d), and o"
+          ],
+          "bundled_path": "ca_unit_sources/APH.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0001110803:2024-06-25",
+      "cik": "0001110803",
+      "symbols": [
+        "ILMN"
+      ],
+      "security_scope": [
+        "ILMN"
+      ],
+      "provider_event_date": "2024-06-25",
+      "unit_effective_at": "2024-06-25T13:30:00+00:00",
+      "kind": "SPINOFF_PARENT_UNCHANGED",
+      "share_factor": 1,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:ILMN:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/1110803/000119312524167025/d851030d8k.htm",
+          "sha256": "b3ee6c1f7568b7047fd5ff5f348a148d396693d2ff2018ec418c0b77dfe9ae42",
+          "bytes": 36194,
+          "published_at": "2024-06-24",
+          "quotes": [
+            " a 14.5% ownership interest in GRAIL as of the Distribution Date. The Spin-Off was made without the payment of any consideration or the exchange of any shares by Illumina\u2019s stockholders. The information set forth under Item 1.01 above is incorporated into this Item 2.01 by reference. Item 8.01 Other Events. On June 24, 2024, the Company issued a press release announcing the completion of the Spin-Off of GRAIL. A copy of the press release is attached as Exhibit 99.1 to this Current Report on Form 8-K and is incorporated herein by reference. Item 9.01 Financial Statements and Exhibits. (d) Exhibits. Exhibit Number Description of Exhibit 2.1 Separation and Distribution Agreement, dated June 21, 2024, between GRAIL, LLC and Illumina, Inc.* 10.1 Tax Matters Agreement, dated June 21, 2024, between GRAIL, LLC and Illumina, Inc. 10.2 Employe"
+          ],
+          "bundled_path": "ca_unit_sources/ILMN.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0001058090:2024-06-26",
+      "cik": "0001058090",
+      "symbols": [
+        "CMG"
+      ],
+      "security_scope": [
+        "CMG"
+      ],
+      "provider_event_date": "2024-06-26",
+      "unit_effective_at": "2024-06-26T13:30:00+00:00",
+      "kind": "SPLIT",
+      "share_factor": 50,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:CMG:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/1058090/000105809024000024/cmg-20240606.htm",
+          "sha256": "be94f16891b78e83d45f4701b7c0de8818c7164363301eff35e8de120ff2e55e",
+          "bytes": 75153,
+          "published_at": "2024-06-07",
+          "quotes": [
+            ", from 230 million shares to 11.5 billion shares in connection with a 50-for-one stock split of Chipotle\u2019s common stock, and (2) clarify that the Board of Directors, in certain circumstances and consistent with Delaware General Corporation Law, can amend the Charter without shareholder approval (collectively, the \u201cCharter Amendments\u201d). The Charter Amendments became effective upon Chipotle\u2019s filing of a Certificate of Amendment with the Secretary of State of the State of Delaware on June 6, 2024 . As previously announced, each Chipotle stockholder of record at the close of business on June 18, 2024 (the \u201cStock Split Record Date\u201d) will receive, after the close of business on June 25, 2024, 49 additional shares for every one share held as of the Stock Split Record Date. Trading is expected to begin on a split-adjusted bas"
+          ],
+          "bundled_path": "ca_unit_sources/CMG.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0001001838:2024-08-09",
+      "cik": "0001001838",
+      "symbols": [
+        "SCCO"
+      ],
+      "security_scope": [
+        "SCCO"
+      ],
+      "provider_event_date": "2024-08-09",
+      "unit_effective_at": "2024-08-26T13:30:00+00:00",
+      "kind": "STOCK_DIVIDEND",
+      "share_factor": 1.0056,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:SCCO_A:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/1001838/000155837024009916/scco-20240719x8k.htm",
+          "sha256": "d32dd2d9548fe93414b46bc59f5e9bc3e49e422c921d90398e7e6f28988913db",
+          "bytes": 43802,
+          "published_at": "2024-07-19",
+          "quotes": [
+            "ized a quarterly cash dividend of .60 per share of common stock and a stock dividend of 0.0056 shares of common stock per share of common stock payable on August 26, 2024, to shareholders of record at the close of business on August 9, 2024. In lieu of fractional shares, cash will be distributed to each shareholder who would otherwise have been entitled to receive a fractional share, based on a share price of $106.54, which is the average of the high and low share price on July 18, 2024. A copy of this press release is attached hereto as Exhibit 99.1. The information in this report and the exhibit attached hereto are being furnished and shall not be deemed as \u201cfiled\u201d for purposes of Section 18 of the Securities Act of 1934. Accordingly, this information will not be incorporated by reference into any registration statement or other d"
+          ],
+          "bundled_path": "ca_unit_sources/SCCO_A.html"
+        }
+      ],
+      "quantity_basis": "Published-ratio unit normalization of last PIT share observation; not a claim of a newly measured issued share total. Fractional cash-in-lieu is disclosed by the primary document."
+    },
+    {
+      "event_id": "0000723254:2024-09-12",
+      "cik": "0000723254",
+      "symbols": [
+        "CTAS"
+      ],
+      "security_scope": [
+        "CTAS"
+      ],
+      "provider_event_date": "2024-09-12",
+      "unit_effective_at": "2024-09-12T13:30:00+00:00",
+      "kind": "SPLIT",
+      "share_factor": 4,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:CTAS:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/723254/000072325424000040/ctas-20240911.htm",
+          "sha256": "cdb1012385ca1b250c27644127877be5ccf57e36fd4216b388febc60f6b8c8ea",
+          "bytes": 28930,
+          "published_at": "2024-09-12",
+          "quotes": [
+            " Year. On May 2, 2024, Cintas Corporation (the \u201cCompany\u201d) announced a four-for-one forward stock split (the \u201cForward Stock Split\u201d) of the Company\u2019s common stock, no par value (the \u201cCommon Stock\u201d). Effective as of 5:00 p.m. (Eastern time) on September 11, 2024, the Company\u2019s Restated Articles of Incorporation, dated as of March 1, 1989 (as amended, the \u201cRestated Articles\u201d), were amended to effect the Forward Stock Split of the shares of Common Stock issued and outstanding as of 5:00 p.m. (Eastern time) on September 11, 2024. Pursuant to the applicable provisions of the Washington Business Corporation Act, no shareholder approval was required for the amendments to the Restated Articles, and the amendments to the Restated Articles were approved by the Board of Directors of the Company. As a result of the Forward Stock Split"
+          ],
+          "bundled_path": "ca_unit_sources/CTAS.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0001050446:2024-08-08",
+      "cik": "0001050446",
+      "symbols": [
+        "MSTR"
+      ],
+      "security_scope": [
+        "MSTR",
+        "CommonClassBMember"
+      ],
+      "provider_event_date": "2024-08-08",
+      "unit_effective_at": "2024-08-08T13:30:00+00:00",
+      "kind": "SPLIT",
+      "share_factor": 10,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:MSTR:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/1050446/000119312524177515/d858108d8k.htm",
+          "sha256": "b32b50e2b69aaf61b4cf5457bc5f8314ea4c6d1ab881c552c9df92b08abc52ec",
+          "bytes": 26318,
+          "published_at": "2024-07-11",
+          "quotes": [
+            " (the \u201cCompany\u201d) announced that its board of directors has declared a 10-for-1 stock split of the Company\u2019s class A common stock and class B common stock. The stock split will be effected by means of a stock dividend to the holders of record of the Company\u2019s class A common stock and class B common stock as of the close of business on August 1, 2024, the record date for the dividend. The dividend is expected to be distributed after the close of trading on August 7, 2024. Trading is expected to commence on a split-adjusted basis at market open on August 8, 2024. The Company issued a press release announcing the stock split. A copy of the press release is filed as Exhibit 99.1 to this Current Report on Form 8-K and is incorporated herein by reference. Item 9.01. Financial Statements and Exhibits. (d) Exhibits Exhibit No"
+          ],
+          "bundled_path": "ca_unit_sources/MSTR.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0000831641:2024-09-09",
+      "cik": "0000831641",
+      "symbols": [
+        "TTEK"
+      ],
+      "security_scope": [
+        "TTEK"
+      ],
+      "provider_event_date": "2024-09-09",
+      "unit_effective_at": "2024-09-09T13:30:00+00:00",
+      "kind": "SPLIT",
+      "share_factor": 5,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:TTEK:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/831641/000110465924097783/tm2423411d1_8k.htm",
+          "sha256": "cf1a088f83c04e69ef4090615e03cbfee34772ebb3f09b44cbd9303ff6c1c41b",
+          "bytes": 27033,
+          "published_at": "2024-09-06",
+          "quotes": [
+            " Year. On July 31, 2024, Tetra Tech, Inc. (the \u201cCompany\u201d) announced a five-for-one forward stock split (the \u201cStock Split\u201d) of the Company\u2019s common stock, to be effected through the filing of an amendment (the \u201cAmendment\u201d) to the Company\u2019s Restated Certificate of Incorporation with the Secretary of State of the State of Delaware. The Company filed the Amendment to effect the Stock Split and proportionately increase the number of shares of the Company\u2019s authorized common stock from 150,000,000 to 750,000,000. The Amendment, which became effective at 5:00 p.m. Eastern Time on September 6, 2024, is filed as Exhibit 3.1 to this Current Report on Form 8-K. Item 9.01 Financial Statements and Exhibits. (d) Exhibits 3.1 Amendment to the Restated Certificate of Incorporation of Tetra Tech, Inc., dated September 6, 2024 104 Cover P"
+          ],
+          "bundled_path": "ca_unit_sources/TTEK.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0000908937:2024-09-10",
+      "cik": "0000908937",
+      "symbols": [
+        "SIRI"
+      ],
+      "security_scope": [
+        "SIRI"
+      ],
+      "provider_event_date": "2024-09-10",
+      "unit_effective_at": "2024-09-10T13:30:00+00:00",
+      "kind": "SUCCESSOR_ACTUAL_SHARES",
+      "share_factor": null,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:SIRI:2024",
+          "url": "https://investor.siriusxm.com/news-events/press-releases/detail/2104/liberty-media-and-sirius-xm-announce-completion-of",
+          "sha256": "833af7355bec07a6eaa9513b2c96412a372956262d943eea0b4b246ac158cbca",
+          "bytes": 25211,
+          "published_at": "2024-09-09",
+          "quotes": [
+            "ts, as applicable. Effective as of the Merger, Sirius XM Holdings has 339,133,937 shares of common stock outstanding, of which former holders of Liberty SiriusXM common stock own approximately 81% of Sirius XM Holdings, while former Old Sirius minority stockholders own the remaining 19%. Forward-Looking Statements This communication includes certain forward-looking statements within the meaning of the Private Securities Litigation Reform Act of 1995, including certain statements relating to the expected trading of New Sirius common stock on the Nasdaq Stock Market. All statements other than statements of historical fact are \u201cforward-looking statements\u201d for purposes of federal and state securities laws. These forward-looking statements generally can be identified by phrases such as \u201cpossible,\u201d \u201cpotential,\u201d \u201cintends\u201d or \u201c"
+          ],
+          "bundled_path": "ca_unit_sources/SIRI.html"
+        }
+      ],
+      "actual_shares": 339133937,
+      "actual_measurement_date": "2024-09-09",
+      "issuer_transition": "Old Sirius public minority exchanged 0.1; Liberty SiriusXM holders exchanged 0.8375; successor published actual total replaces predecessor count, never old total times 0.1."
+    },
+    {
+      "event_id": "0001981792:2024-08-01",
+      "cik": "0001981792",
+      "symbols": [
+        "HHH"
+      ],
+      "security_scope": [
+        "HHH"
+      ],
+      "provider_event_date": "2024-08-01",
+      "unit_effective_at": "2024-08-01T13:30:00+00:00",
+      "kind": "SPINOFF_PARENT_UNCHANGED",
+      "share_factor": 1,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:HHH:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/1981792/000110465924084903/tm2420480d1_8k.htm",
+          "sha256": "b6fb1a4448afcb49f29fc964a9c9383e6aab56bf209ebed5f4716b74e61ad7c3",
+          "bytes": 82609,
+          "published_at": "2024-08-01",
+          "quotes": [
+            " York City and Las Vegas, from HHH was achieved through the Company\u2019s pro rata distribution of 100% of the outstanding shares of Seaport Entertainment common stock to holders of record of HHH common stock as of the close of business on July 29, 2024 (the \u201cRecord Date\u201d). Each holder of record of HHH common stock received one share of Seaport Entertainment common stock for every nine shares of HHH common stock held at the close of business on the Record Date (the \u201cDistribution\u201d). Following the Separation, the Company\u2019s common stock will continue trading on the New York Stock Exchange (\u201cNYSE\u201d) under the ticker symbol \u201cHHH.\u201d Simultaneously, on August 1, 2024, Seaport Entertainment became an independent, publicly traded company, and its common stock began trading \u201cregular-way\u201d on the NYSE American LLC under the ticker symbol \u201cSEG.\u201d In"
+          ],
+          "bundled_path": "ca_unit_sources/HHH.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0000910521:2024-09-17",
+      "cik": "0000910521",
+      "symbols": [
+        "DECK"
+      ],
+      "security_scope": [
+        "DECK"
+      ],
+      "provider_event_date": "2024-09-17",
+      "unit_effective_at": "2024-09-17T13:30:00+00:00",
+      "kind": "SPLIT",
+      "share_factor": 6,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:DECK:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/910521/000091052124000048/deck09132024exhibit991.htm",
+          "sha256": "3f8ddfe392edc341b1c7ff724d151911778c85fa9a52a107ce34b77d1cf34d64",
+          "bytes": 10148,
+          "published_at": "2024-09-13",
+          "quotes": [
+            "ocument Exhibit 99.1 DECKERS BRANDS ANNOUNCES STOCKHOLDER APPROVAL OF SIX-FOR-ONE FORWARD STOCK SPLIT AND PROPORTIONATE INCREASE IN AUTHORIZED COMMON STOCK GOLETA, Calif., September 13, 2024 \u2013 Deckers Brands (NYSE: DECK), a global leader in designing, marketing, and distributing innovative footwear, apparel, and accessories, today announced that during its annual meeting held on September 9, 2024, its stockholders approved a six-for-one forward stock split, along with a proportionate increase in the number of authorized shares of its common stock. \u201cWe are excited to announce stockholder approval of the six-for-one forward stock split, which we believe will make ownership of our stock more affordable and attractive to a broader group of investors, including employees,\u201d said Stefano Caroti, President and Chief Executive O"
+          ],
+          "bundled_path": "ca_unit_sources/DECK.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0001327567:2024-12-16",
+      "cik": "0001327567",
+      "symbols": [
+        "PANW"
+      ],
+      "security_scope": [
+        "PANW"
+      ],
+      "provider_event_date": "2024-12-16",
+      "unit_effective_at": "2024-12-16T14:30:00+00:00",
+      "kind": "SPLIT",
+      "share_factor": 2,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:PANW:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/1327567/000119312524277082/d817166d8k.htm",
+          "sha256": "1d03caa4b20be75dac953a2a02b04ad7da5fb7e203ca1b82d864a877324f21cc",
+          "bytes": 46406,
+          "published_at": "2024-12-12",
+          "quotes": [
+            "024, the Company announced that its Board of Directors had approved a two-for-one stock split (the \u201c Stock Split \u201d) of its outstanding shares of common stock to be effected through an amendment to the Company\u2019s Restated Certificate of Incorporation (the \u201c Amendment \u201d). The Company filed the Amendment with the Secretary of State of the State of Delaware to effect the Stock Split and proportionately increase the number of shares of the Company\u2019s authorized common stock from 1.0 billion to 2.0 billion. The Amendment, which became effective at 4:01 p.m. Eastern Standard Time on December 12, 2024, is filed as Exhibit 3.1 hereto. As a result of the Stock Split, each stockholder of record as of the close of trading on December 12, 2024 (the \u201c Record Date \u201d) will receive, after the close of trading on December 13, 2024, one add"
+          ],
+          "bundled_path": "ca_unit_sources/PANW.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0001596532:2024-12-04",
+      "cik": "0001596532",
+      "symbols": [
+        "ANET"
+      ],
+      "security_scope": [
+        "ANET"
+      ],
+      "provider_event_date": "2024-12-04",
+      "unit_effective_at": "2024-12-04T14:30:00+00:00",
+      "kind": "SPLIT",
+      "share_factor": 4,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:ANET:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/1596532/000159653224000402/anet-20241203.htm",
+          "sha256": "6699b275ba64bcc6dc0c2b9aa6ca06f9d6c34b2d7c3d8468011ddfdad396a497",
+          "bytes": 27747,
+          "published_at": "2024-12-03",
+          "quotes": [
+            "n November 7, 2024, Arista Networks, Inc. (the \u201cCompany\u201d) announced a four-for-one forward stock split (the \u201cStock Split\u201d) of the Company\u2019s common stock. On December 3, 2024, the Company filed an amendment (the \u201cAmendment\u201d) to the Company\u2019s Amended and Restated Certificate of Incorporation with the Secretary of State of the State of Delaware to effect the Stock Split and proportionately increase the number of shares of the Company\u2019s authorized common stock from 1,000,000,000 to 4,000,000,000. The Amendment, which became effective at 4:30 p.m. Eastern Time on December 3, 2024, is filed as Exhibit 3.1 to this Current Report on Form 8-K. Item 9.01 Financial Statements and Exhibits. (d) Exhibits Exhibit Number Description 3.1 Amendment to the Amended and Restated Certificate of Incorporation of Arista Networks, Inc., dated D"
+          ],
+          "bundled_path": "ca_unit_sources/ANET.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0001001838:2024-11-06",
+      "cik": "0001001838",
+      "symbols": [
+        "SCCO"
+      ],
+      "security_scope": [
+        "SCCO"
+      ],
+      "provider_event_date": "2024-11-06",
+      "unit_effective_at": "2024-11-21T14:30:00+00:00",
+      "kind": "STOCK_DIVIDEND",
+      "share_factor": 1.0062,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:SCCO_B:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/1001838/000155837024013432/scco-20241021x8k.htm",
+          "sha256": "1db460060e341a8d9f28f5664005e10809eced63704c9dc6fac837439e899415",
+          "bytes": 44629,
+          "published_at": "2024-10-22",
+          "quotes": [
+            "ed a quarterly cash dividend of $0.70 per share of common stock and a stock dividend of 0.0062 shares of common stock per share of common stock payable on November 21, 2024, to shareholders of record at the close of business on November 6, 2024. In lieu of fractional shares, cash will be distributed to each shareholder who would otherwise have been entitled to receive a fractional share, based on a share price of $112.43, which is the average of the high and low share price on October 17, 2024. A copy of this press release is attached hereto as Exhibit 99.1. The information in this report and the exhibit attached hereto are being furnished and shall not be deemed as \u201cfiled\u201d for purposes of Section 18 of the Securities Act of 1934. Accordingly, this information will not be incorporated by reference into any registration statement or "
+          ],
+          "bundled_path": "ca_unit_sources/SCCO_B.html"
+        }
+      ],
+      "quantity_basis": "Published-ratio unit normalization of last PIT share observation; not a claim of a newly measured issued share total. Fractional cash-in-lieu is disclosed by the primary document."
+    },
+    {
+      "event_id": "0000065984:2024-12-13",
+      "cik": "0000065984",
+      "symbols": [
+        "ETR"
+      ],
+      "security_scope": [
+        "ETR"
+      ],
+      "provider_event_date": "2024-12-13",
+      "unit_effective_at": "2024-12-13T14:30:00+00:00",
+      "kind": "SPLIT",
+      "share_factor": 2,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:ETR:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/65984/000006598424000123/etr-20241212.htm",
+          "sha256": "6503eb0fcec77f351a5cecfc273d92628d9c0f13e3b6a08bfa2b0bc4b88db140",
+          "bytes": 29262,
+          "published_at": "2024-12-12",
+          "quotes": [
+            "n October 31, 2024, Entergy Corporation (the \u201c Company \u201d) announced a two-for-one forward stock split (the \u201c Stock Split \u201d) of the Company\u2019s issued common stock, to be effected through the filing of an amendment to the Company\u2019s Restated Certificate of Incorporation (the \u201c Amendment \u201d) with the Secretary of State of the State of Delaware. On December 11, 2024, the Company filed the Amendment to effect the Stock Split and proportionately increase the number of shares of the Company\u2019s authorized common stock from 499,000,000 shares to 998,000,000 shares. The Amendment, which became effective at 5:00 p.m. Eastern Time on December 12, 2024, is filed as Exhibit 3.1 to this Current Report on Form 8-K. Trading is expected to commence on a split-adjusted basis at market open on December 13, 2024. Item 9.01. Financial Statements"
+          ],
+          "bundled_path": "ca_unit_sources/ETR.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0001570585:2024-11-13",
+      "cik": "0001570585",
+      "symbols": [
+        "LBTYA",
+        "LBTYB",
+        "LBTYK"
+      ],
+      "security_scope": [
+        "LBTYA",
+        "LBTYB",
+        "LBTYK"
+      ],
+      "provider_event_date": "2024-11-13",
+      "unit_effective_at": "2024-11-13T14:30:00+00:00",
+      "kind": "SPINOFF_PARENT_UNCHANGED",
+      "share_factor": 1,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:LBTYA:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/1570585/000157058524000317/lbtya-20241108.htm",
+          "sha256": "86db8162dacfe3178cf90862637210c1f221939452fb9933566e5f88af1db3a5",
+          "bytes": 42551,
+          "published_at": "2024-11-08",
+          "quotes": [
+            "operations. The Spin-off was accomplished by the distribution to: (i) holders of Liberty Global Class A and Class C common shares of one Sunrise Class A common share ( namenaktien ), par value CHF 0.10 per share (\u201cSunrise Class A Common Shares\u201d), in the form of one Sunrise Class A American depositary share (\u201cSunrise Class A ADSs\u201d), for every five Liberty Global Class A or Class C common shares owned by such holders, and (ii) holders of Liberty Global Class B common shares of two Sunrise Class B shares with privileged voting rights ( stimmrechtsaktien ), par value CHF 0.01 per share (\u201cSunrise Class B Shares\u201d), in the form of two Sunrise Class B American depositary shares (\u201cSunrise Class B ADSs\u201d and together with the Sunrise Class A ADSs, the \u201cSunrise ADSs\u201d), for each Liberty Global Class B common share owned by such holders. As a result of th"
+          ],
+          "bundled_path": "ca_unit_sources/LBTYA.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0000022356:2024-12-03",
+      "cik": "0000022356",
+      "symbols": [
+        "CBSH"
+      ],
+      "security_scope": [
+        "CBSH"
+      ],
+      "provider_event_date": "2024-12-03",
+      "unit_effective_at": "2024-12-18T14:30:00+00:00",
+      "kind": "STOCK_DIVIDEND",
+      "share_factor": 1.05,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:CBSH:2024",
+          "sha256": "7b7a99bf7d81ed9ec9b19be69b4f4654170baa69c2163be6d4cba20d030b348c",
+          "url": "https://investor.commercebank.com/news-info/financial-news-releases/press-release/2024/Commerce-Bancshares-Inc.-Declares-Stock-Dividend-and-Quarterly-Cash-Dividend-on-Common-Stock/default.aspx",
+          "published_at": "2024-10-25",
+          "quotes": [
+            "ness on December 3, 2024. L47: The Board of Directors also approved a 5% common stock dividend payable on December 18, 2024 to shareholders of record at the close of business on December 3, 2024. Statements reflecting the issuance of shares as a result of the stock dividend should be mailed on or about December 18, 2024. No fractional shares will be issued, and shareholders will receive cash for such fractional interests based on the market value of the stock on the record date. L48: The quarterly cash dividend will not be payable on any shares to be issued pursuant to the 5% stock dividend. L49: With $31.5 billion in assets ^{1} , Commerce Bancshares, Inc. (NASDAQ: CBSH) is a regional bank holding company offering a full line of banking services through its subsidiaries, including payment solutions, investment management and securities bro"
+          ],
+          "bundled_path": "ca_unit_sources/CBSH.html"
+        }
+      ],
+      "quantity_basis": "Published-ratio unit normalization of last PIT share observation; not a claim of a newly measured issued share total. Fractional cash-in-lieu is disclosed by the primary document."
+    },
+    {
+      "event_id": "0001375365:2024-10-01",
+      "cik": "0001375365",
+      "symbols": [
+        "SMCI"
+      ],
+      "security_scope": [
+        "SMCI"
+      ],
+      "provider_event_date": "2024-10-01",
+      "unit_effective_at": "2024-10-01T13:30:00+00:00",
+      "kind": "SPLIT",
+      "share_factor": 10,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:SMCI:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/1375365/000137536524000035/smci-20240927.htm",
+          "sha256": "f7cf504ce0aefa4b26e7f71b94df2fa8f648f6a95803af3c7e4517cbbefa56bd",
+          "bytes": 41083,
+          "published_at": "2024-09-30",
+          "quotes": [
+            "nt\u201d) with the Secretary of State of the State of Delaware to effect a ten-for-one forward split (the \u201cStock Split\u201d) of the Company\u2019s common stock, par value $0.001 per share (the \u201cCommon Stock\u201d), without any change to its par value. The Amendment also effected a proportionate increase in the number of shares of authorized Common Stock from 100,000,000 to 1,000,000,000. Pursuant to Section 242(d) of the General Corporation Law of the State of Delaware, stockholder approval was not required in connection with the foregoing. The Stock Split became effective at 5:00 p.m. Eastern Time on September 30, 2024 (the \u201cEffective Time\u201d). Trading in the Common Stock on the Nasdaq Global Select Market is expected to commence on a Stock Split-adjusted basis at the market open on October 1, 2024, under the existing trading symbol \u201cSMCI."
+          ],
+          "bundled_path": "ca_unit_sources/SMCI.html"
+        }
+      ]
+    },
+    {
+      "event_id": "0000916365:2024-12-20",
+      "cik": "0000916365",
+      "symbols": [
+        "TSCO"
+      ],
+      "security_scope": [
+        "TSCO"
+      ],
+      "provider_event_date": "2024-12-20",
+      "unit_effective_at": "2024-12-20T14:30:00+00:00",
+      "kind": "SPLIT",
+      "share_factor": 5,
+      "security_basis": "Primary issuer document identifies the listed common security and applicable classes; reviewed independently of market cap and rank.",
+      "documents": [
+        {
+          "artifact_id": "ca_unit_document:TSCO:2024",
+          "url": "https://www.sec.gov/Archives/edgar/data/916365/000091636524000117/tsco-20241219.htm",
+          "sha256": "ccc6f5cbe9fbd8aeb9483a39573a42dc5b50f8be7cd0f6c2ad74c41d1ff301b7",
+          "bytes": 34521,
+          "published_at": "2024-12-20",
+          "quotes": [
+            "d of Directors of Tractor Supply Company (the \u201cCompany\u201d) authorized a 5-for-1 forward split (the \u201cStock Split\u201d) of its common stock, par value $0.008 per share (the \u201cCommon Stock\u201d), to be effected through the filing of a Certificate of Amendment to the Company\u2019s Restated Certificate of Incorporation (the \u201cCertificate of Amendment\u201d). The Company filed the Certificate of Amendment with the Secretary of State of the State of Delaware on December 19, 2024, and it became effective at 5:00 p.m. on that date (the \u201cEffective Time\u201d). The Certificate of Amendment effected the Stock Split and also proportionately increased the number of shares of authorized Common Stock from 400,000,000 to 2,000,000,000. Trading in the Common Stock is expected to commence on a split-adjusted basis on December 20, 2024. The Certificate of Amend"
+          ],
+          "bundled_path": "ca_unit_sources/TSCO.html"
+        }
+      ]
+    }
+  ]
+}
