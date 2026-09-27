@@ -30,6 +30,22 @@ Pipeline: implementation/reports/synthetic_pipeline_2026-09-23.json
 4. Do not confuse
 
 19 SYNTHETIC VERIFIED ≠ Python 299 / JS 27 / 103/103 / 366/366 / 159/159 / 28/28.  
+
+24. Update 2026-09-27 11:07 KST · Codex / RIG-News repository consistency audit
+- Input read in full: `RIG_NEWS_WORK_HANDOFF_PROMPT_v0.1.md` and `RIG_NEWS_ARCHITECTURE_v0.1.md` from the supplied ZIP.
+- Fresh fetch baseline: local `3fe8312`, remote `7b0c93e`, ahead 27 / behind 0, identical trees, clean worktree before
+  registration. No squash/rebase/reset/history rewrite was performed.
+- Actual contract/code evidence: `contracts/universe.py` defines DataEvent/EventKind; `universe/events.py` defers
+  unavailable events and routes NEWS to evidence only; tests prove NEWS does not mutate QGV and future events defer.
+  Frontend IA defines Summary→Evidence→Detail. Global/Korea contract defines shared NewsItem→Claim→Event IDs and
+  evidence-bearing RelationshipEdge semantics.
+- Actual Yahoo evidence: `yahoo_events__AAPL__5y.json` has source kind `YAHOO_SPLIT_EVENTS`, its URL requests
+  `events=split`, and `audit_mcap_store.py` reads only `chart.result[].events.splits`; it is not News/RIG evidence.
+- Cross-architecture result: no duplicate runtime/store was created; DataEvent and future real-world events remain
+  separate; Track A/B/C ownership and freezes remain intact. C-39 records the shared identity implementation-evidence
+  mismatch. Full baseline 297/297 PASS (mini_pytest shim).
+- Registered `Investment-System1 · RIG News Architecture v0.1.md` as DESIGN FROZEN / IMPLEMENTATION NOT STARTED.
+  No RIG code, tests, UI, store, notification runtime, score, or Official result was created.
 Those remain RECORDED-only / ORIGINAL MISSING.
 
 5. Update 2026-09-23 09:07
