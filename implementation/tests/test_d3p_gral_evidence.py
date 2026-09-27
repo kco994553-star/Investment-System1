@@ -27,15 +27,15 @@ def test_gral_policy_cites_actual_first_subsequent_10q_and_exact_issuance(tmp_pa
     row = policy["share_reconstruction"][cik]
     doc = row["first_subsequent_periodic_document"]
     assert (doc["accession"], doc["form"], doc["filed"], doc["period_end"]) == (
-        "0001628280-24-047606", "10-Q", "2024-11-13", "2024-09-30"
+        "0001628280-24-036965", "10-Q", "2024-08-13", "2024-06-30"
     )
 
     store = RawDatasetStore(tmp_path)
     store.put(f"submissions:{cik}", json.dumps({"filings": {"recent": {
-        "form": ["10-Q", "10-K"],
-        "filingDate": ["2024-11-13", "2025-03-05"],
-        "accessionNumber": ["0001628280-24-047606", "0001699031-25-000041"],
-        "primaryDocument": ["gral-20240930.htm", "gral-20241231.htm"],
+        "form": ["10-Q", "10-Q", "10-K"],
+        "filingDate": ["2024-08-13", "2024-11-13", "2025-03-05"],
+        "accessionNumber": ["0001628280-24-036965", "0001628280-24-047606", "0001699031-25-000041"],
+        "primaryDocument": ["gral-20240630.htm", "gral-20240930.htm", "gral-20241231.htm"],
     }}}).encode(), "u", "SEC", "application/json", "t", 200)
     store.put(doc["artifact_id"], (
         b"On June 24, 2024, the Distribution resulted in the issuance of "
