@@ -235,3 +235,8 @@ No new evidence produced -- C-21 reconfirmed BLOCKED, no workaround forced per i
 ## Track A audit overlay — 2026-09-27 19:56 KST
 
 This Track A overlay supersedes prior Track A status claims only. Source run #70/ed343ba recovered and hashes verified (6,808 artifacts). C-40 dated-identity replay fixed; three 500-name RESEARCH replays and two adjacent-date steps match exactly, 0 name errors. C-41 share/price-unit audit detects 20 events (4/8/8); all three final Official gates are blocked, historical snapshots SUSPENDED, Freeze NOT DECLARED. Corporate-action policy candidate CA-UNIT-v1.0 remains D3-P PROPOSED. Full regression 388/388 PASS (mini_pytest shim). Evidence: `implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json`; detail: `Investment-System1 · TRACK_A_REAL_DATA_STATUS.md`. GitHub write returned 403; this update is local pending upload. Other tracks were not modified.
+
+
+## Track A final Freeze record — 2026-09-27T20:50:49.316653+09:00
+
+Track A REAL-DATA Baseline **FROZEN** in local commit/package; canonical GitHub upload is still blocked (prior integration HTTP403). Validated source `682bbae1687d237f72c3f2266913b8bf61f1ff0b`. C-40/C-41 resolved; CA-UNIT-v1.0 approved; original20+3 D3-C cases audited. Corrected Gate and exact Official consistency pass for 2024-06-30/09-30/12-31; 3-date Walk-Forward equals singles; network-inclusive500 benchmark completed; raw6830 integrity and regression396/396 pass. No new D3-P. Baseline freeze does not promote PROVISIONAL_RESEARCH calibration or modify other tracks. Final machine record: `implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json`. Work stopped as instructed. Earlier Track A blocked entries are historical and superseded by this record.
