@@ -187,6 +187,48 @@ def demote_non_pit_historical_members(store: RawDatasetStore, get, members: dict
     return unresolved
 
 
+def demote_cross_cik_prefix_successors(store: RawDatasetStore, get, members: dict, holdings: list[dict],
+                                       as_of: datetime) -> list[dict]:
+    """Demote same-issuer-prefix rows assigned to a non-PIT successor when exactly one CIK was the PIT registrant.
+
+    Current SEC titles can point a historical tracking-stock name at a post-as_of successor.  A shared CUSIP issuer
+    number is only a collision detector here; demoted rows must still pass their own exact-CUSIP attestation.
+    Ambiguous/no-PIT collisions remain untouched and therefore fail closed.
+    """
+    by_prefix = {}
+    for cik, member in members.items():
+        for cusip in member.get("cusips") or []:
+            prefix = issuer_prefix(cusip)
+            if prefix:
+                by_prefix.setdefault(prefix, set()).add(cik)
+    unresolved = []
+    for prefix, ciks in sorted(by_prefix.items()):
+        if len(ciks) < 2:
+            continue
+        for cik in sorted(ciks):
+            get(f"submissions:{cik}", SUBMISSIONS_URL.format(cik=cik), "SEC_SUBMISSIONS")
+        pit = [cik for cik in sorted(ciks) if pit_registrant(store, cik, as_of)]
+        if len(pit) != 1:
+            continue
+        for cik in sorted(ciks - set(pit)):
+            member = members.get(cik)
+            if not member:
+                continue
+            rows = list(zip(member.get("names") or [], member.get("cusips") or []))
+            demoted = [(name, cusip) for name, cusip in rows if issuer_prefix(cusip) == prefix]
+            kept = [(name, cusip) for name, cusip in rows if issuer_prefix(cusip) != prefix]
+            if not demoted:
+                continue
+            if kept:
+                member["names"], member["cusips"] = map(list, zip(*kept))
+            else:
+                members.pop(cik)
+            source_rows = demoted_member_rows({"names": [r[0] for r in demoted],
+                                               "cusips": [r[1] for r in demoted]}, holdings, cik)
+            unresolved.extend({**row, "reason": "CUSIP_PREFIX_SUCCESSOR_NOT_PIT_REGISTRANT"} for row in source_rows)
+    return unresolved
+
+
 SUFFIXES = {"INC", "CORP", "CORPORATION", "CO", "COMPANY", "LTD", "PLC", "LLC", "LP", "HOLDINGS", "HOLDING",
             "GROUP", "THE", "SA", "NV", "N", "V", "AG", "CLASS", "A", "B", "C", "INCORPORATED", "INCORPORATION", "COM",
             "NEW", "DEL", "REIT", "PUBLIC", "LIMITED", "NATIONAL", "ASSOCIATION", "AND"}
@@ -403,8 +445,8 @@ def pit_registrant(store: RawDatasetStore, cik: str, as_of: datetime, lookback_d
     return bool(f) and (as_of.date() - datetime.fromisoformat(f["filed"]).date()).days <= lookback_days
 
 
-def attest_unresolved_holdings(store: RawDatasetStore, get, members: dict, unresolved: list[dict], cur: dict,
-                               hist: dict, as_of: datetime, npr, frc) -> tuple[list[dict], dict]:
+def attest_unresolved_holdings(store: RawDatasetStore, get, members: dict, unresolved: list[dict], holdings: list[dict],
+                               cur: dict, hist: dict, as_of: datetime, npr, frc) -> tuple[list[dict], dict]:
     """Resolve exact-CUSIP evidence in at most two passes.
 
     Tracking-group rows can precede the sibling class that identifies their registrant.  The first pass may therefore
@@ -430,6 +472,10 @@ def attest_unresolved_holdings(store: RawDatasetStore, get, members: dict, unres
                 progressed = True
             else:
                 still.append({**u, "cusip_attestation": attestation["status"], "candidates": candidates[:8]})
+        demoted = demote_cross_cik_prefix_successors(store, get, members, holdings, as_of)
+        if demoted:
+            still.extend(demoted)
+            progressed = True
         pending = still
         if not progressed or not pending:
             break
@@ -514,7 +560,7 @@ def main() -> None:
                 # (0) unresolved equity holdings (ambiguous name, name not found, dead namesake, collision loser):
                 # identity by CUSIP attestation in the candidate issuer's own 13G/13D filed <= as_of
                 npr, frc = _load("nport_reported_prices"), _load("fetch_class_rights_evidence")
-                unresolved, attestations = attest_unresolved_holdings(store, get, members, unresolved, cur, hist,
+                unresolved, attestations = attest_unresolved_holdings(store, get, members, unresolved, eq, cur, hist,
                                                                       d, npr, frc)
                 report["cusip_attestations"] = attestations
                 # (1) name collisions: accept the unique candidate that was a domestic SEC registrant at as_of
