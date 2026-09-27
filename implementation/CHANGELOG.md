@@ -650,3 +650,12 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - Preserved Track A REAL-DATA priority, Track B P0 freeze, and Track C design freeze. Added C-39 for the pre-existing
   shared identity implementation-evidence mismatch; it blocks RIG P0, not the architecture registration.
 - Baseline before registration: 297/297 PASS via mini_pytest shim; local/remote trees identical, history preserved.
+
+## 2026-09-27 · round 20 · Codex
+
+- Resolved C-39 by restoring the common Global/Korea identity and context contract already declared by the SSoT:
+  issuer -> security -> dated listing, listing-only ticker, independent Analysis/Network/News contexts, and
+  provenance-bearing PIT FX/eligibility records.
+- Added six fail-closed regressions. Focused 6/6 and full 308/308 pass via mini_pytest shim; py_compile/diff check pass.
+- Track B's frozen `personal/security.py` was not imported or modified. RIG remains DESIGN FROZEN / IMPLEMENTATION NOT
+  STARTED; C-39 alone no longer blocks its future P0.
