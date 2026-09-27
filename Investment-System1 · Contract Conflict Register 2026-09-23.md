@@ -14,22 +14,6 @@ Compatibility: QGV immutable / no module-level orders unchanged.
 Test: existing macro engine uses confirmed version.
 Resolution Condition met: authority exists without inventing a new official macro.
 
-## C-39 Global/Korea shared identity implementation claim -> OPEN-NONBLOCKING for RIG design; BLOCKING for RIG P0 (2026-09-27 11:07 KST)
-
-Evidence: `Investment-System1 · Global-Korea Universe and Information Source Contract 2026-09-24.md` says
-`IssuerIdentity`, `SecurityIdentity`, `ListingIdentity`, `UniverseContext`, `FXSnapshot`, and `EligibilityRecord` are
-implemented with regression tests. A tracked-tree and symbol search finds none of those runtime types or corresponding
-tests. The current common runtime contracts expose company-level `Identifier`, `UniverseMember`, `UniverseSnapshot`,
-and `DataEvent`; the only `security_id` implementation is under Track B's frozen, isolated
-`src/investment_system/personal/security.py`.
-
-Impact: `RIG_NEWS_ARCH_v0.1` can freeze against the documented issuer→security→listing contract without claiming an
-implementation, but RIG P0 cannot safely choose a canonical shared identity type or import Track B's private contract.
-
-Decision: no identity policy, mapping, or code is invented in this registration. Before RIG P0, confirm/recover the
-shared identity implementation or open an explicit common-contract change. Until then, identity-dependent RIG runtime
-work must fail closed. Track A/B/C code and ownership are unchanged.
-
 ## C-02 Project Index 69 vs Master 159 → RESOLVED
 Blocking Level: none
 Evidence: stale index vs Master Status. Authority = Master Status.
@@ -493,3 +477,19 @@ as_of. Option (b) is a new Universe/reference eligibility policy and may affect 
 implemented. The round-17 code change only preserves each unresolved source row's identity/valuation fields through the
 resolver and Gate report; it does not change membership or pass criteria. Until decided, 2024-06-30 remains NOT OFFICIAL
 and walk-forward remains blocked.
+
+## C-39 Global/Korea shared identity implementation claim -> OPEN-NONBLOCKING for RIG design; BLOCKING for RIG P0 (2026-09-27 11:07 KST)
+
+Evidence: `Investment-System1 · Global-Korea Universe and Information Source Contract 2026-09-24.md` says
+`IssuerIdentity`, `SecurityIdentity`, `ListingIdentity`, `UniverseContext`, `FXSnapshot`, and `EligibilityRecord` are
+implemented with regression tests. A tracked-tree and symbol search finds none of those runtime types or corresponding
+tests. The current common runtime contracts expose company-level `Identifier`, `UniverseMember`, `UniverseSnapshot`,
+and `DataEvent`; the only `security_id` implementation is under Track B's frozen, isolated
+`src/investment_system/personal/security.py`.
+
+Impact: `RIG_NEWS_ARCH_v0.1` can freeze against the documented issuer→security→listing contract without claiming an
+implementation, but RIG P0 cannot safely choose a canonical shared identity type or import Track B's private contract.
+
+Decision: no identity policy, mapping, or code is invented in this registration. Before RIG P0, confirm/recover the
+shared identity implementation or open an explicit common-contract change. Until then, identity-dependent RIG runtime
+work must fail closed. Track A/B/C code and ownership are unchanged.
