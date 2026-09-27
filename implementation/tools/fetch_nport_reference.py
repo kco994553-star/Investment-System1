@@ -169,6 +169,24 @@ def demoted_member_rows(member: dict, holdings: list[dict], cik: str) -> list[di
     return out
 
 
+def demote_non_pit_historical_members(store: RawDatasetStore, get, members: dict, holdings: list[dict],
+                                       as_of: datetime) -> list[dict]:
+    """Demote dead historical-name matches before exact-CUSIP attestation.
+
+    A successor can be the unique historical name match even though it was not the listed registrant at ``as_of``.
+    Returning the original holding rows here lets the normal fail-closed attestation path inspect a separately resolved
+    sibling class of the actual issuer.  No prefix match resolves identity by itself.
+    """
+    unresolved = []
+    historical = [c for c, v in members.items() if v["method"].startswith(("SEC_CIK_LOOKUP", "COLLISION_RETRY"))]
+    for cik in historical:
+        get(f"submissions:{cik}", SUBMISSIONS_URL.format(cik=cik), "SEC_SUBMISSIONS")
+        if not pit_registrant(store, cik, as_of):
+            member = members.pop(cik)
+            unresolved.extend(demoted_member_rows(member, holdings, cik))
+    return unresolved
+
+
 SUFFIXES = {"INC", "CORP", "CORPORATION", "CO", "COMPANY", "LTD", "PLC", "LLC", "LP", "HOLDINGS", "HOLDING",
             "GROUP", "THE", "SA", "NV", "N", "V", "AG", "CLASS", "A", "B", "C", "INCORPORATED", "INCORPORATION", "COM",
             "NEW", "DEL", "REIT", "PUBLIC", "LIMITED", "NATIONAL", "ASSOCIATION", "AND"}
@@ -457,6 +475,9 @@ def main() -> None:
                 rows, _ = chain.extend_listings(store, rd(a.listings) or {}, rd(a.plan))
                 pool_ciks = {str(m.get("cik") or "").zfill(10) for m in rows.values()}
                 members, unresolved = resolve(eq, cur, hist, pool_ciks)
+                # A unique historical name can point at a successor that was not the listed issuer at as_of. Demote
+                # it before attestation so an already-resolved sibling CUSIP can discover the actual issuer candidate.
+                unresolved.extend(demote_non_pit_historical_members(store, get, members, eq, d))
                 # (0) unresolved equity holdings (ambiguous name, name not found, dead namesake, collision loser):
                 # identity by CUSIP attestation in the candidate issuer's own 13G/13D filed <= as_of
                 npr, frc = _load("nport_reported_prices"), _load("fetch_class_rights_evidence")
@@ -492,13 +513,6 @@ def main() -> None:
                     else:
                         still.append({**u, "pit_registrant_candidates": ok})
                 unresolved = still
-                # a unique HISTORICAL name match can be a dead namesake (e.g. an old 'U.S. BANCORP' entity):
-                # accept it only if that CIK was a domestic SEC registrant filing 10-K/10-Q around as_of
-                for c in [c for c, v in members.items() if v["method"].startswith(("SEC_CIK_LOOKUP", "COLLISION_RETRY"))]:
-                    get(f"submissions:{c}", SUBMISSIONS_URL.format(cik=c), "SEC_SUBMISSIONS")
-                    if not pit_registrant(store, c, d):
-                        v = members.pop(c)
-                        unresolved.extend(demoted_member_rows(v, eq, c))
                 # (2) members not in the pool without a current ticker: ticker AT as_of from the cover page
                 as_of_ticker = {}
                 for c in sorted(c for c in members if c not in pool_ciks and not tick.get(c)):
