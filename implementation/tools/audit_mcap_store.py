@@ -394,6 +394,8 @@ def build_top500_sufficiency_gate(audit_result: dict, large_cap_references: list
             "present_rankable_outside_top500": outside, "reasons": r_reasons, "passed": ref_ok,
             "reference_role": ref.get("reference_role"),
             "excluded_by_eligibility_rule": sorted(set(ref.get("excluded_by_eligibility_rule") or [])),
+            "policy_excluded_holdings": list(ref.get("policy_excluded_holdings") or []),
+            "reference_policy": ref.get("reference_policy"),
             "unresolved_reference_holdings": unresolved_eq, "cik_collisions": collisions,
             "members_missing_cusips": missing_cusips,
         })
