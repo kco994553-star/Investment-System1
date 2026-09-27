@@ -1546,3 +1546,20 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
   invalidation, Pre-Tax, and fail-closed rules. No Track C code/tests exist.
 - Track C implementation remains closed until Track A REAL-DATA baseline Freeze. Track A still has only two corrected
   Official dates; 2024-06-30 remains blocked by C-34/C-35/C-37/C-38, so no walk-forward or backend Freeze was claimed.
+
+------------------------------------------------------------------------
+
+2026-09-27 (round 19, 11:07 KST) · Codex → Next AI
+- Read the supplied RIG/News work prompt and architecture candidate in full, then fetched and compared the current
+  repository before making any change. Local `3fe8312` was ahead 27 / behind 0 of remote `7b0c93e`; trees were identical
+  and the worktree was clean. Existing history was preserved.
+- Audited CURRENT_HANDOFF, Project/Architecture indexes, Conflict/Evidence records, Frontend IA, Track B handoff,
+  Track C EVL spec, Global/Korea identity/news contract, actual DataEvent/PIT/identity code, tests, and Yahoo split-event
+  manifests/parser semantics. Full baseline reproduced at 297/297 PASS.
+- Registered `RIG_NEWS_ARCH_v0.1` as DESIGN FROZEN / IMPLEMENTATION NOT STARTED. No RIG runtime, UI, store,
+  notification, score, Track B change, Track C implementation, or Track A gate/policy change was made.
+- Reuse is locked: DataEvent remains separate from future NewsEvent/EconomicEvent; NEWS stays evidence-only; PIT uses
+  available_at; Feed/Network reuse shared IDs; Summary→Evidence→Detail remains the disclosure pattern.
+- C-39 records that the Global/Korea SSoT claims shared issuer/security/listing runtime types that are absent from the
+  tracked public source tree. This does not invalidate design freeze, but blocks RIG P0 until the canonical common
+  identity implementation is confirmed/recovered or explicitly changed. Track B's frozen security code is not reused.
