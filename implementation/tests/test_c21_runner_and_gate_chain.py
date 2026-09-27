@@ -2086,6 +2086,36 @@ def test_nport_reference_same_issuer_prefix_only_adds_exact_cusip_attestation_ca
     assert none["status"] == "ATTESTED_0" and none["cik"] is None
 
 
+def test_nport_reference_retries_rows_that_precede_their_resolved_sibling(tmp_path):
+    """The Sirius rows precede Formula One in the N-PORT. Formula One identifies CIK 1560385 on pass one; Sirius may
+    use that sibling only on pass two and must still attest its own exact CUSIP."""
+    fnr = _mod("fnr_att_retry", "fetch_nport_reference.py")
+    npr = _mod("npr_att_retry", "nport_reported_prices.py")
+    frc = _mod("frc_att_retry", "fetch_class_rights_evidence.py")
+    store = RawDatasetStore(tmp_path)
+    cik = "0001560385"
+    accns = [f"{cik}-24-{i:06d}" for i in range(3)]
+    store.put(f"submissions:{cik}", json.dumps({"name": "LIBERTY MEDIA CORP", "filings": {"recent": {
+              "form": ["10-Q", "SC 13G", "SC 13G"], "filingDate": ["2024-05-08", "2024-02-14", "2024-02-13"],
+              "reportDate": ["2024-03-31", "", ""], "accessionNumber": accns,
+              "primaryDocument": ["q.htm", "f.htm", "s.htm"]}}}).encode(),
+              "u", "SEC", "application/json", "t", 200)
+    for accn, cusip in zip(accns[1:], ["531229755", "531229813"]):
+        store.put(f"sec_filing_doc:{cik}:{accn}", f"<p>CUSIP {cusip}</p>".encode(),
+                  "u", "SEC", "text/html", "t", 200)
+        store.put(f"edgar_index_headers:{accn}",
+                  b"SUBJECT COMPANY:\n\tCENTRAL INDEX KEY:\t\t0001560385\n", "u", "SEC", "text/plain", "t", 200)
+    sirius = {"name": "LIBERTY SIRIUS XM", "cusip": "531229813", "candidates": ["0002003397"]}
+    formula = {"name": "LIBERTY MEDIA CORP - FORMULA ONE GROUP", "cusip": "531229755", "candidates": []}
+    cur = {fnr.norm_name("LIBERTY MEDIA CORP"): {cik}}
+    members = {}
+    unresolved, attestations = fnr.attest_unresolved_holdings(
+        store, lambda aid, url, kind: None, members, [sirius, formula], cur, {}, amc_dt(), npr, frc)
+    assert unresolved == [] and members[cik]["cusips"] == ["531229755", "531229813"]
+    assert attestations["LIBERTY SIRIUS XM|531229813"]["status"] == "UNIQUE"
+    assert attestations["LIBERTY SIRIUS XM|531229813"]["candidates"] == [cik, "0002003397"]
+
+
 def test_nport_reference_attestation_tie_broken_only_by_pit_registrant(tmp_path):
     """Run #54: 'DUN & BRADSTREET HOLDINGS, INC.' CUSIP 26484T106 was printed by the ownership filings of two
     entities (ATTESTED_2). Only the one filing 10-K/10-Q around as_of can be the listed issuer at as_of."""
