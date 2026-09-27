@@ -1011,10 +1011,13 @@ def apply_corporate_action_share_counts(store: RawDatasetStore, overrides: dict,
         failures.extend(doc_failures)
         count = int(row.get("shares") or 0)
         count_text = f"{count:,}"
-        contexts = [text[max(0, i - 240):i + len(count_text) + 240] for i in range(len(text)) if text.startswith(count_text, i)]
+        count_hits = [i for i in range(len(text)) if text.startswith(count_text, i)]
+        contexts = [text[max(0, i - 240):i + len(count_text) + 240] for i in count_hits]
+        basis_windows = [text[max(0, i - 80):i + len(count_text) + 80].casefold() for i in count_hits]
         required = [str(x).casefold() for x in doc.get("required_phrases_near_count") or []]
-        good_contexts = [c for c in contexts if all(x in c.casefold() for x in required)
-                         and not any(x in c.casefold() for x in forbidden)]
+        good_contexts = [c for c, basis in zip(contexts, basis_windows)
+                         if all(x in c.casefold() for x in required)
+                         and not any(x in basis for x in forbidden)]
         if count <= 0 or not good_contexts:
             failures.append("EXACT_ACTUAL_EVENT_COUNT_NOT_VERIFIED")
         event_date = str(row.get("event_date") or "")
