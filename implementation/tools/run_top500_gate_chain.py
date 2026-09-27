@@ -1031,11 +1031,12 @@ def apply_corporate_action_share_counts(store: RawDatasetStore, overrides: dict,
                "event_date": event_date, "evidence_available_at": doc.get("filed"), "look_ahead": True,
                "reconstruction_only": True, "shares": count or None, "source_artifact": doc.get("artifact_id")}
         if not failures:
+            observed_at = observed.isoformat() if hasattr(observed, "isoformat") else observed
             overrides[cid] = {"mcap": count * px, "status": "CA_SHARE_RECONSTRUCTION", "source": doc["artifact_id"],
                               "shares": count, "measurement_date": event_date, "evidence_available_at": doc["filed"],
                               "look_ahead": True, "policy": "CA-SHARES-01",
                               "classes": [{"member": None, "shares": float(count), "symbol": member.get("yahoo"),
-                                           "price": px, "price_observed_at": observed,
+                                           "price": px, "price_observed_at": observed_at,
                                            "symbol_basis": {"basis": "EXACT_ACTUAL_SPIN_OFF_SHARES", "document": doc["artifact_id"]}}]}
             rec["mcap"] = count * px
         out[member.get("yahoo")] = rec
