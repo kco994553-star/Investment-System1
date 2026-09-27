@@ -336,12 +336,20 @@ def gate_audited_candidates(store: RawDatasetStore, listings: dict, overrides: d
         if ov and ov.get("mcap"):
             if ov["status"] == "NPORT_REPORTED_VALUE":
                 px = ov["nport_reported_value"]["price"]
-                vd = _dt.fromisoformat(str(ov["valuation_date"]) + "T21:00:00+00:00")  # fund valuation at the 2024-12-31 close
+                # The N-PORT valuation is keyed to the report *date*.  Filing availability is retained separately as
+                # look-ahead evidence; use the date boundary here so date-granularity PIT snapshot checks reproduce
+                # the gate rather than treating the same report date as a future observation.
+                approved_reconstruction = (ov.get("policy") == "CA-PRICE-01" or
+                                           bool(ov["nport_reported_value"].get("look_ahead_basis")))
+                vd = _dt.fromisoformat(str(ov["valuation_date"]) +
+                                       ("T00:00:00+00:00" if approved_reconstruction else "T21:00:00+00:00"))
                 cf = load_companyfacts(store, c)
                 shr = pit_shares(cf, as_of) if cf is not None else None
                 out.append({**base, "shares": ov["mcap"] / px, "price": px, "price_observed_at": vd,
                             "shares_available_at": shr["available_at"] if shr else None,
-                            "shares_basis": "COMPANYFACTS_PIT", "price_basis": "NPORT_REPORTED_VALUE", "gate_mcap": ov["mcap"]})
+                            "shares_basis": "COMPANYFACTS_PIT", "price_basis": "NPORT_REPORTED_VALUE", "gate_mcap": ov["mcap"],
+                            "security_components": [{"symbol": m.get("yahoo"), "cusip": ov["nport_reported_value"].get("cusip"),
+                                                     "shares": ov["mcap"] / px, "price": px, "price_basis": "NPORT_REPORTED_VALUE"}]})
                 continue
             priced = [x for x in ov.get("classes") or [] if x.get("price")]
             if priced:
@@ -353,13 +361,19 @@ def gate_audited_candidates(store: RawDatasetStore, listings: dict, overrides: d
                 px, obs = _as_of_bar(store, str(m.get("yahoo") or ""), as_of, chart_range)
             src = str(ov.get("source") or "")
             accn = src.split(":")[2] if src.count(":") == 2 else None
-            sh_at = _filed_dt(store, c, accn)
+            sh_at = (_dt.fromisoformat(str(ov["measurement_date"]) + "T00:00:00+00:00")
+                     if ov.get("status") == "CA_SHARE_RECONSTRUCTION" else _filed_dt(store, c, accn))
             for fd in [x.get("filed") for x in ((ov.get("class_economics") or {}).get("citations") or [])]:
                 t = _dt.fromisoformat(str(fd) + "T00:00:00+00:00")
                 sh_at = t if sh_at is None or t > sh_at else sh_at
             out.append({**base, "shares": ov["mcap"] / px if px else None, "price": px, "price_observed_at": obs,
                         "shares_available_at": sh_at, "shares_basis": ov["status"], "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
-                        "gate_mcap": ov["mcap"]})
+                        "gate_mcap": ov["mcap"], "evidence_available_at": ov.get("evidence_available_at"),
+                        "look_ahead": bool(ov.get("look_ahead")),
+                        "security_components": [{"member": x.get("member"), "symbol": x.get("symbol"),
+                                                 "shares": x.get("shares"), "price": x.get("price"),
+                                                 "price_basis": x.get("price_basis") or (x.get("symbol_basis") or {}).get("basis")}
+                                                for x in ov.get("classes") or []]})
             continue
         cf = load_companyfacts(store, c) if str(m.get("cik") or "").isdigit() else None
         shr = pit_shares(cf, as_of) if cf is not None else None
@@ -369,7 +383,9 @@ def gate_audited_candidates(store: RawDatasetStore, listings: dict, overrides: d
         if not px or shr["shares"] <= 0:
             continue
         out.append({**base, "shares": shr["shares"], "price": px, "price_observed_at": obs, "shares_available_at": shr["available_at"],
-                    "shares_basis": "COMPANYFACTS_PIT", "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR", "gate_mcap": shr["shares"] * px})
+                    "shares_basis": "COMPANYFACTS_PIT", "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR", "gate_mcap": shr["shares"] * px,
+                    "security_components": [{"symbol": m.get("yahoo"), "shares": shr["shares"], "price": px,
+                                             "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR"}]})
     return out
 
 
@@ -928,11 +944,229 @@ def apply_nport_reported_prices(store: RawDatasetStore, overrides: dict, listing
     return out
 
 
+def _policy_failures(policy: dict | None, as_of) -> list[str]:
+    p = policy or {}
+    failures = []
+    if p.get("policy_version") != "D3-P-CA-v1.0":
+        failures.append("POLICY_VERSION_NOT_APPROVED")
+    if str(p.get("as_of") or "") != as_of.date().isoformat():
+        failures.append("POLICY_FOR_ANOTHER_AS_OF")
+    if not p.get("result_independent") or not p.get("rank_and_cutoff_not_inputs"):
+        failures.append("POLICY_NOT_RESULT_INDEPENDENT")
+    if not p.get("reconstruction_only"):
+        failures.append("NOT_RECONSTRUCTION_ONLY")
+    return failures
+
+
+def _document_failures(store: RawDatasetStore, document: dict | None) -> tuple[list[str], str]:
+    """Re-verify reviewed SEC citations from stored raw bytes; policy JSON alone is never sufficient."""
+    frc = _load("fetch_class_rights_evidence")
+    doc = document or {}
+    aid = str(doc.get("artifact_id") or "")
+    if not aid.startswith("sec_filing_doc:") or not store.has(aid):
+        return [f"DOCUMENT_NOT_IN_STORE:{aid}"], ""
+    text = " ".join(frc.html_text(store.get_bytes(aid)).split())
+    failures = [f"PHRASE_NOT_IN_DOCUMENT:{phrase}" for phrase in doc.get("required_phrases") or []
+                if " ".join(str(phrase).split()).casefold() not in text.casefold()]
+    return failures, text
+
+
+def _first_subsequent_periodic(store: RawDatasetStore, cik: str, as_of) -> dict | None:
+    sub = load_submissions_merged(store, cik)[0] or {}
+    rec = (sub.get("filings") or {}).get("recent") or {}
+    rows = []
+    for form, filed, accn in zip(rec.get("form") or [], rec.get("filingDate") or [], rec.get("accessionNumber") or []):
+        if form in DOMESTIC_FORMS and str(filed) > as_of.date().isoformat():
+            rows.append({"form": form, "filed": str(filed), "accession": str(accn)})
+    return min(rows, key=lambda r: (r["filed"], r["accession"])) if rows else None
+
+
+def apply_corporate_action_share_counts(store: RawDatasetStore, overrides: dict, listings: dict,
+                                        policy: dict | None, as_of, chart_range: str = "5y") -> dict:
+    """CA-SHARES-01: exact event shares from the first subsequent periodic filing.
+
+    This is explicitly a look-ahead reconstruction aid.  Pro-forma, approximate, weighted-average and later-current
+    cover counts are not accepted.  Every policy and raw-document condition is checked again here.
+    """
+    out = {}
+    base_failures = _policy_failures(policy, as_of)
+    forbidden = [str(x).casefold() for x in (((policy or {}).get("rules") or {}).get("CA-SHARES-01") or {}).get("forbidden_count_basis") or []]
+    for cik, row in ((policy or {}).get("share_reconstruction") or {}).items():
+        hits = [(cid, m) for cid, m in listings.items() if str(m.get("cik") or "").zfill(10) == cik]
+        if len(hits) != 1:
+            out[cik] = {"status": "NOT_APPLIED", "failures": base_failures + [f"LISTING_MATCHES_{len(hits)}"]}
+            continue
+        cid, member = hits[0]
+        failures = list(base_failures)
+        if cid in overrides:
+            failures.append("ALREADY_DETERMINED")
+        if select_filing(load_submissions_merged(store, cik)[0] or {}, as_of) is not None:
+            failures.append("AS_OF_PERIODIC_REPORT_EXISTS")
+        doc = row.get("first_subsequent_periodic_document") or {}
+        first = _first_subsequent_periodic(store, cik, as_of)
+        if first is None or any(str(first.get(k) or "") != str(doc.get({"accession": "accession", "form": "form", "filed": "filed"}[k]) or "")
+                                for k in ("accession", "form", "filed")):
+            failures.append("CITED_DOCUMENT_NOT_FIRST_SUBSEQUENT_PERIODIC")
+        doc_failures, text = _document_failures(store, {**doc, "required_phrases": doc.get("required_phrases_near_count") or []})
+        failures.extend(doc_failures)
+        count = int(row.get("shares") or 0)
+        count_text = f"{count:,}"
+        contexts = [text[max(0, i - 240):i + len(count_text) + 240] for i in range(len(text)) if text.startswith(count_text, i)]
+        required = [str(x).casefold() for x in doc.get("required_phrases_near_count") or []]
+        good_contexts = [c for c in contexts if all(x in c.casefold() for x in required)
+                         and not any(x in c.casefold() for x in forbidden)]
+        if count <= 0 or not good_contexts:
+            failures.append("EXACT_ACTUAL_EVENT_COUNT_NOT_VERIFIED")
+        event_date = str(row.get("event_date") or "")
+        if not event_date or event_date > as_of.date().isoformat() or str(doc.get("filed") or "") <= as_of.date().isoformat():
+            failures.append("EVENT_OR_LOOKAHEAD_DATE_INVALID")
+        px, observed = _as_of_bar(store, str(member.get("yahoo") or ""), as_of, chart_range)
+        if not px:
+            failures.append("NO_AS_OF_PRICE")
+        rec = {"cik": cik, "symbol": member.get("yahoo"), "policy": "CA-SHARES-01",
+               "status": "APPLIED" if not failures else "NOT_APPLIED", "failures": failures,
+               "event_date": event_date, "evidence_available_at": doc.get("filed"), "look_ahead": True,
+               "reconstruction_only": True, "shares": count or None, "source_artifact": doc.get("artifact_id")}
+        if not failures:
+            overrides[cid] = {"mcap": count * px, "status": "CA_SHARE_RECONSTRUCTION", "source": doc["artifact_id"],
+                              "shares": count, "measurement_date": event_date, "evidence_available_at": doc["filed"],
+                              "look_ahead": True, "policy": "CA-SHARES-01",
+                              "classes": [{"member": None, "shares": float(count), "symbol": member.get("yahoo"),
+                                           "price": px, "price_observed_at": observed,
+                                           "symbol_basis": {"basis": "EXACT_ACTUAL_SPIN_OFF_SHARES", "document": doc["artifact_id"]}}]}
+            rec["mcap"] = count * px
+        out[member.get("yahoo")] = rec
+    return out
+
+
+def apply_corporate_action_prices(store: RawDatasetStore, overrides: dict, listings: dict, policy: dict | None,
+                                  investigation: dict | None, cross_check: dict | None, as_of,
+                                  chart_range: str = "5y") -> dict:
+    """CA-PRICE-01: calibrated Level-1 N-PORT reconstruction when every ordinary close source failed."""
+    npr = _load("nport_reported_prices")
+    rules = (((policy or {}).get("rules") or {}).get("CA-PRICE-01") or {})
+    tol = float(rules.get("max_relative_price_difference") or 0)
+    min_ratio = float(rules.get("min_control_within_tolerance_ratio") or 0)
+    min_independent = int(rules.get("min_independent_sponsors") or 0)
+    level = str(rules.get("required_fair_value_level") or "")
+    out = {}
+    for cik, row in ((policy or {}).get("price_reconstruction") or {}).items():
+        hits = [(cid, m) for cid, m in listings.items() if str(m.get("cik") or "").zfill(10) == cik]
+        failures = _policy_failures(policy, as_of)
+        if len(hits) != 1:
+            out[cik] = {"status": "NOT_APPLIED", "failures": failures + [f"LISTING_MATCHES_{len(hits)}"]}
+            continue
+        cid, member = hits[0]
+        symbol, cusip = str(row.get("symbol") or ""), str(row.get("cusip") or "")
+        if symbol != member.get("yahoo"):
+            failures.append("SYMBOL_MISMATCH")
+        if cid in overrides:
+            failures.append("ALREADY_DETERMINED")
+        if _as_of_price(store, symbol, as_of, chart_range):
+            failures.append("MARKET_CLOSE_AVAILABLE")
+        if str(row.get("effective_date") or "") <= as_of.date().isoformat():
+            failures.append("CORPORATE_ACTION_NOT_AFTER_AS_OF")
+        failures.extend(_document_failures(store, row.get("document"))[0])
+        inv = ((investigation or {}).get("issuers") or {}).get(cik) or {}
+        h = inv.get("holding_raw") or {}
+        px, why = npr.reported_price(h) if h else (None, "NO_HOLDING")
+        if inv.get("holding_match") != "UNIQUE" or h.get("cusip") != cusip or why != "OK":
+            failures.append("EXACT_NPORT_SECURITY_NOT_VERIFIED")
+        if h.get("fair_val_level") != level:
+            failures.append("FAIR_VALUE_LEVEL_NOT_PERMITTED")
+        source_artifact = str((investigation or {}).get("source_artifact") or "")
+        if not store.has(source_artifact):
+            failures.append("NPORT_XML_NOT_IN_STORE")
+        elif (_load("fetch_nport_reference").parse_nport(store.get_bytes(source_artifact)).get("report_date") or "") != as_of.date().isoformat():
+            failures.append("NPORT_REPORT_DATE_NOT_AS_OF")
+        target_prices, independent = [], 0
+        primary = str((investigation or {}).get("source_accession") or "")
+        for filing in (cross_check or {}).get("filings") or []:
+            target = (filing.get("targets") or {}).get(cusip) or {}
+            cal = filing.get("calibration_vs_as_of_close") or {}
+            n = int(cal.get("n") or 0)
+            ratio = int(cal.get("within_0_5pct") or 0) / n if n else 0
+            if filing.get("status") != "FOUND" or target.get("status") != "UNIQUE" or target.get("fair_val_level") != level:
+                continue
+            if ratio < min_ratio:
+                continue
+            target_prices.append(float(target["value_per_share"]))
+            if str(filing.get("accession") or "") != primary:
+                independent += 1
+        if px is None or len(target_prices) < min_independent + 1 or independent < min_independent:
+            failures.append("INSUFFICIENT_CALIBRATED_INDEPENDENT_SPONSORS")
+        elif any(abs(x - px) / px > tol for x in target_prices):
+            failures.append("SPONSOR_PRICE_DISAGREEMENT")
+        cf = load_companyfacts(store, cik)
+        shr = pit_shares(cf, as_of) if cf is not None else None
+        shares = shr["shares"] if shr and shr.get("status") == "OK" else None
+        if not shares or shares <= 0 or share_fact_stale(store, cik, shr, as_of):
+            failures.append("NO_CURRENT_PIT_SHARES")
+        filed = (investigation or {}).get("filing_date")
+        rec = {"cik": cik, "symbol": symbol, "cusip": cusip, "policy": "CA-PRICE-01",
+               "status": "APPLIED" if not failures else "NOT_APPLIED", "failures": failures,
+               "price": px, "price_type": npr.PRICE_TYPE, "valuation_date": (investigation or {}).get("valuation_date"),
+               "evidence_available_at": filed, "look_ahead": True, "reconstruction_only": True,
+               "calibrated_sponsors": len(target_prices), "independent_sponsors": independent}
+        if not failures:
+            rec.update({"shares": shares, "mcap": shares * px, "source_artifact": source_artifact})
+            overrides[cid] = {"mcap": shares * px, "status": npr.PRICE_TYPE, "source": source_artifact,
+                              "price_type": npr.PRICE_TYPE, "valuation_date": rec["valuation_date"],
+                              "policy": "CA-PRICE-01", "classes": [], "nport_reported_value": rec}
+        out[symbol] = rec
+    return out
+
+
+def apply_reference_delisting_policy(store: RawDatasetStore, references: list[dict], policy: dict | None, as_of) -> tuple[list[dict], dict]:
+    """CA-ELIGIBILITY-01 removes only proven pre-as-of delisted/deregistered securities from sufficiency.
+
+    The positive residual N-PORT row is retained verbatim in ``policy_excluded_holdings`` for auditability.
+    """
+    report = {}
+    transformed = []
+    for ref in references:
+        kept, excluded = [], []
+        for holding in ref.get("unresolved_holdings") or []:
+            cusip = str(holding.get("cusip") or "")
+            row = ((policy or {}).get("reference_exclusions") or {}).get(cusip)
+            if not row:
+                kept.append(holding)
+                continue
+            failures = _policy_failures(policy, as_of)
+            cik = str(row.get("cik") or "").zfill(10)
+            if holding.get("asset_cat") != "EC" or cik not in [str(x).zfill(10) for x in holding.get("candidates") or []]:
+                failures.append("EXACT_SECURITY_OR_ISSUER_MISMATCH")
+            if str(row.get("delisted_effective_date") or "") >= as_of.date().isoformat() or str(row.get("deregistered_date") or "") >= as_of.date().isoformat():
+                failures.append("DELISTING_OR_DEREGISTRATION_NOT_BEFORE_AS_OF")
+            if str(row.get("no_relisting_through") or "") < as_of.date().isoformat():
+                failures.append("NO_RELISTING_ATTESTATION_DOES_NOT_COVER_AS_OF")
+            for doc in row.get("documents") or []:
+                failures.extend(_document_failures(store, doc)[0])
+            sub = load_submissions_merged(store, cik)[0] or {}
+            # A final periodic filing after a take-private is not a relisting.  A currently registered exchange line,
+            # together with the reviewed no-relisting-through date, is the fail-closed contradiction we can test here.
+            if (sub.get("tickers") or []) or (sub.get("exchanges") or []):
+                failures.append("REGISTERED_EXCHANGE_LINE_PRESENT_IN_SEC_SUBMISSIONS")
+            if failures:
+                kept.append(holding)
+            else:
+                excluded.append({**holding, "policy": "CA-ELIGIBILITY-01", "cik": cik,
+                                 "reason": "DELISTED_AND_DEREGISTERED_BEFORE_AS_OF_NO_RELISTING"})
+            report[cusip] = {"status": "EXCLUDED_FROM_SUFFICIENCY" if not failures else "NOT_EXCLUDED",
+                             "failures": failures, "positive_residual_value_preserved": holding.get("value")}
+        transformed.append({**ref, "unresolved_holdings": kept,
+                            "policy_excluded_holdings": excluded,
+                            "reference_policy": "CA-ELIGIBILITY-01" if excluded else None})
+    return transformed, report
+
+
 def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs: list[dict],
               sufficiency_refs: list[dict], exchange_reference: dict | None, eligibility_evidence: dict | None,
               plan: dict | None = None, chart_range: str = "5y", cik_candidates: dict | None = None,
               class_economics: dict | None = None, nport_exception: dict | None = None,
-              nport_prices: dict | None = None, symbol_mappings: dict | None = None) -> dict:
+              nport_prices: dict | None = None, symbol_mappings: dict | None = None,
+              corporate_action_policy: dict | None = None, nport_investigation: dict | None = None,
+              nport_cross_check: dict | None = None) -> dict:
     amc = _load("audit_mcap_store")
     d = amc._dt(as_of if "T" in as_of else as_of + "T00:00:00+00:00")
     cand = verify_cik_candidates(store, cik_candidates)
@@ -946,13 +1180,17 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     class_econ = apply_class_economics(store, overrides, listings, class_economics, d)
     share_scale = share_scale_overrides(store, listings, overrides, d, chart_range)
     registration_docs = registration_share_count_overrides(store, listings, overrides, d, chart_range)
+    ca_shares = apply_corporate_action_share_counts(store, overrides, listings, corporate_action_policy, d, chart_range)
     nport_px = apply_nport_reported_prices(store, overrides, listings, nport_exception, nport_prices, d, chart_range)
+    ca_prices = apply_corporate_action_prices(store, overrides, listings, corporate_action_policy,
+                                              nport_investigation, nport_cross_check, d, chart_range)
     stale_excluded = exclude_stale_unresolved(store, listings, overrides, d)
-    price_exceptions = {"price_type": "NPORT_REPORTED_VALUE", "issuers": nport_px,
+    all_nport_prices = {**nport_px, **ca_prices}
+    price_exceptions = {"price_type": "NPORT_REPORTED_VALUE", "issuers": all_nport_prices,
                         "note": ("Valued at the SEC N-PORT reported value per share on the as_of report date (filed after as_of: "
                                  "look_ahead recorded per row), not a market close; all other issuers use their last close "
-                                 "on/before as_of. Exception limited to the user-approved issuers (PINC, WOLF), verified "
-                                 "independently for each as_of.")} if nport_px else None
+                                 "on/before as_of. Legacy per-date exceptions and D3-P CA-PRICE-01 reconstructions are "
+                                 "verified independently for each as_of.")} if all_nport_prices else None
     audit = amc.audit(store, listings, d, chart_range, overrides)
     top = amc.ranked_top500(store, listings, d, chart_range, overrides)
     cutoff = top[499]["mcap"] if len(top) >= 500 else None
@@ -994,7 +1232,8 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
                 "determined_by_cover_override": moved, "membership_undetermined_lower_bound": undetermined}
     refs = []
     detector_refs = [normalize_reference(r) for r in detector_refs]
-    sufficiency_refs = [normalize_reference(r) for r in sufficiency_refs]
+    sufficiency_refs, reference_delisting = apply_reference_delisting_policy(
+        store, [normalize_reference(r) for r in sufficiency_refs], corporate_action_policy, d)
     for ref in detector_refs:
         refs.append({**_determined(amc.evaluate_reference_coverage(store, row_listings, ranked, ref, chart_range)),
                      "reference_role": "MISSING_LARGE_CAP_DETECTOR"})
@@ -1059,13 +1298,19 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "store": {"dir": str(store.root), "n_artifacts": n_blobs,
                   "status": "EMPTY_NO_RAW_DATA" if n_blobs == 0 else "PRESENT"},
         "listings": len(listings), "plan_names_unresolved": unresolved, "cik_candidate_verification": cand,
-        "ranking_basis": "COMPANY_LEVEL_ONE_LINE_PER_CIK; US_DOMESTIC_FILERS; COVER_XBRL_CLASS_SUM_FOR_MULTI_CLASS",
+        "ranking_basis": ("COMPANY_LEVEL_ONE_LINE_PER_CIK; US_DOMESTIC_FILERS; "
+                          "EACH_LISTED_SECURITY_OWN_PRICE_X_OWN_SHARES; UNPRICED_SECURITIES_EXPLICIT_BOUNDS"),
         "row_level_audit": {k: row_audit[k] for k in ("listings", "rankable", "top_cutoff_mcap_if_500_rankable")},
         "company_dedupe": dedupe, "eligibility": eligibility,
         "cover_overrides": {listings[c].get("yahoo"): {k: v for k, v in o.items()} for c, o in overrides.items()},
         "cover_unresolved": {listings[c].get("yahoo"): v for c, v in cover_unresolved.items()},
         "lower_bound_issuers_outside_top500": lb_outside, "lower_bound_settled_outside_by_upper_bound": lb_settled,
         "class_economics_verification": class_econ, "price_basis_exceptions": price_exceptions,
+        "corporate_action_policy": {"version": (corporate_action_policy or {}).get("policy_version"),
+                                     "as_of": (corporate_action_policy or {}).get("as_of"),
+                                     "security_policy": ((corporate_action_policy or {}).get("rules") or {}).get("CA-SECURITY-01"),
+                                     "share_reconstruction": ca_shares, "price_reconstruction": ca_prices,
+                                     "reference_delisting": reference_delisting},
         "share_scale_checks": share_scale, "stale_share_facts_excluded": stale_excluded,
         "registration_doc_share_counts": registration_docs,
         "gate_snapshot_consistency": consistency,
@@ -1114,6 +1359,12 @@ def main() -> None:
     ap.add_argument("--nport-exception", type=Path, help="default nport_price_exception_<as_of>.json if present")
     ap.add_argument("--symbol-mappings", type=Path, help="default symbol_mappings_<as_of>.json if present")
     ap.add_argument("--nport-prices", type=Path, help="default nport_reported_prices_<as_of>.json if present")
+    ap.add_argument("--corporate-action-policy", type=Path,
+                    help="default corporate_action_policy_<as_of>.json if present")
+    ap.add_argument("--nport-investigation", type=Path,
+                    help="default nport_price_investigation_<as_of>.json if present")
+    ap.add_argument("--nport-cross-check", type=Path,
+                    help="default nport_cross_check_<as_of>.json if present")
     ap.add_argument("--out", type=Path)
     a = ap.parse_args()
     if a.cik_candidates is None:  # point-in-time CIK corrections are per as_of (e.g. BLK holding-company reorganisation 2024-10-01)
@@ -1135,7 +1386,10 @@ def main() -> None:
                     rd(ce) if (ce := a.class_economics or GE / f"class_economics_{a.as_of}.json").exists() else None,
                     rd(ne) if (ne := a.nport_exception or GE / f"nport_price_exception_{a.as_of}.json").exists() else None,
                     rd(npp) if (npp := a.nport_prices or GE / f"nport_reported_prices_{a.as_of}.json").exists() else None,
-                    rd(sm) if (sm := a.symbol_mappings or GE / f"symbol_mappings_{a.as_of}.json").exists() else None)
+                    rd(sm) if (sm := a.symbol_mappings or GE / f"symbol_mappings_{a.as_of}.json").exists() else None,
+                    rd(cap) if (cap := a.corporate_action_policy or GE / f"corporate_action_policy_{a.as_of}.json").exists() else None,
+                    rd(npi) if (npi := a.nport_investigation or GE / f"nport_price_investigation_{a.as_of}.json").exists() else None,
+                    rd(ncc) if (ncc := a.nport_cross_check or GE / f"nport_cross_check_{a.as_of}.json").exists() else None)
     s = json.dumps(rep, indent=2)
     if a.out:
         a.out.write_text(s + "\n", encoding="utf-8")
