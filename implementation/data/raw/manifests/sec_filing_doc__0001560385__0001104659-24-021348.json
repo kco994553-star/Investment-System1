@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001560385:0001104659-24-021348",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1560385/000110465924021348/tv01341-libertymediacorpseri.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-27T01:14:20.294028+00:00",
+  "sha256": "ad7cae0c51a0c4a7dbc6df1ba48a9aca71b5607daf90b584db7400607fa89044",
+  "bytes": 11617,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}

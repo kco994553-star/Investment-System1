@@ -3,7 +3,7 @@
   "as_of": "2024-06-30T00:00:00+00:00",
   "store": {
     "dir": "data/raw",
-    "n_artifacts": 6798,
+    "n_artifacts": 6802,
     "status": "PRESENT"
   },
   "listings": 992,
@@ -89,16 +89,16 @@
   },
   "ranking_basis": "COMPANY_LEVEL_ONE_LINE_PER_CIK; US_DOMESTIC_FILERS; COVER_XBRL_CLASS_SUM_FOR_MULTI_CLASS",
   "row_level_audit": {
-    "listings": 1356,
+    "listings": 1355,
     "rankable": 1171,
     "top_cutoff_mcap_if_500_rankable": 24181759478.95935
   },
   "company_dedupe": {
-    "n_rows": 1356,
-    "n_companies": 1079,
+    "n_rows": 1355,
+    "n_companies": 1078,
     "n_dropped_rows": 277,
     "methods": {
-      "SINGLE_LINE": 988,
+      "SINGLE_LINE": 987,
       "SEC_SUBMISSIONS_PRIMARY": 89,
       "SHORTEST_SYMBOL_FALLBACK": 2
     },
@@ -930,7 +930,7 @@
   },
   "eligibility": {
     "rule": "US_DOMESTIC_FILER_AT_AS_OF: the latest periodic report the issuer filed on or before as_of is a 10-K/10-Q. Foreign private issuers at as_of (20-F/40-F) are excluded from the US Market-Cap Top 500 (user decision 2026-09-25; their US lines are mostly ADRs whose ratio is not in SEC data). Issuers with no SEC filing by as_of did not exist as registrants then and are excluded. Basis: SEC submissions 'recent' + older filing pages, filingDate <= as_of (PIT; today's forms are not applied backward). An issuer with neither a periodic report nor a traded price by as_of was not listed then (excluded).",
-    "n_in": 1079,
+    "n_in": 1078,
     "n_kept": 992,
     "excluded_foreign_private_issuers": [
       "AEM",
@@ -1018,7 +1018,6 @@
     ],
     "excluded_not_registered_at_as_of": [
       "HONA",
-      "LLYVA",
       "PNFP"
     ],
     "excluded_not_trading_at_as_of": [
@@ -4924,7 +4923,7 @@
       "COVER_ECONOMIC_EQUIVALENT": 8,
       "SHARE_SCALE_CORRECTED_FROM_COVER_TEXT": 1
     },
-    "universe_id": "uni_7e18b78f635f",
+    "universe_id": "uni_ada8b3728b9d",
     "snapshot_cutoff_mcap": 14021530297.505974
   },
   "official_snapshot_candidates": null,
@@ -21409,7 +21408,7 @@
     {
       "name": "RUSSELL1000_IWB_NPORT",
       "role": "SUPERSET_REFERENCE",
-      "n_members": 987,
+      "n_members": 986,
       "n_missing_from_pool": 0,
       "n_present_not_rankable": 2,
       "n_present_rankable_outside_top500": 486,
@@ -21446,7 +21445,7 @@
         "name": "RUSSELL1000_IWB_NPORT",
         "source": "SEC Form NPORT-P 0001752724-24-189684 (iShares Russell 1000 ETF), report date 2024-06-30",
         "source_vintage": "2024-08-26",
-        "n_members": 987,
+        "n_members": 986,
         "missing_from_pool": [],
         "present_not_rankable": [
           "GRAL",
@@ -21959,7 +21958,6 @@
           "0001791863",
           "0001845097",
           "0001977102",
-          "0002078416",
           "0002082866"
         ],
         "unresolved_reference_holdings": [
@@ -21980,46 +21978,6 @@
             "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
             "candidates": [
               "0001689662"
-            ],
-            "name_matches": 1
-          },
-          {
-            "name": "LIBERTY SIRIUS XM",
-            "title": "LIBERTY MEDIA CORP LIBERTY SIRIUSXM",
-            "cusip": "531229813",
-            "isin": "US5312298137",
-            "asset_cat": "EC",
-            "issuer_cat": "CORP",
-            "country": "US",
-            "value": 1229258.55,
-            "balance": "55497.00000000",
-            "units": "NS",
-            "currency": "USD",
-            "fair_value_level": "1",
-            "payoff_profile": "Long",
-            "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
-            "candidates": [
-              "0002003397"
-            ],
-            "name_matches": 1
-          },
-          {
-            "name": "LIBERTY SIRIUS XM",
-            "title": "LIBERTY MEDIA CORP LIBERTY SIRIUSXM",
-            "cusip": "531229789",
-            "isin": "US5312297899",
-            "asset_cat": "EC",
-            "issuer_cat": "CORP",
-            "country": "US",
-            "value": 2522960.32,
-            "balance": "113852.00000000",
-            "units": "NS",
-            "currency": "USD",
-            "fair_value_level": "1",
-            "payoff_profile": "Long",
-            "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
-            "candidates": [
-              "0002003397"
             ],
             "name_matches": 1
           }

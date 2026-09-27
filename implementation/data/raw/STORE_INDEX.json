@@ -1,8 +1,8 @@
 {
   "kind": "RAW_DATASET_STORE_INDEX",
   "store_dir": "data/raw",
-  "n_artifacts": 6798,
-  "n_blobs_on_disk": 6798,
+  "n_artifacts": 6802,
+  "n_blobs_on_disk": 6802,
   "artifacts": [
     {
       "artifact_id": "companyfacts:0000001800",
@@ -10805,6 +10805,24 @@
       "http_status": 200
     },
     {
+      "artifact_id": "edgar_index_headers:0001104659-24-021348",
+      "source_kind": "SEC_INDEX_HEADERS",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1560385/000110465924021348/0001104659-24-021348-index-headers.html",
+      "sha256": "8bd04eb8eef4d326dc895d0c5c06b5b5d0f48c0977f28f4cb9976adf27fcac9f",
+      "bytes": 3588,
+      "fetched_at": "2026-09-27T01:14:20.765351+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "edgar_index_headers:0001104659-24-021350",
+      "source_kind": "SEC_INDEX_HEADERS",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1560385/000110465924021350/0001104659-24-021350-index-headers.html",
+      "sha256": "f27cd182e32ec17d3213a8e788554c51a301985845765fd550c8552ac8ad5f1e",
+      "bytes": 3604,
+      "fetched_at": "2026-09-27T01:14:21.403777+00:00",
+      "http_status": 200
+    },
+    {
       "artifact_id": "edgar_index_headers:0001104659-24-021403",
       "source_kind": "SEC_INDEX_HEADERS",
       "source_url": "https://www.sec.gov/Archives/edgar/data/101778/000110465924021403/0001104659-24-021403-index-headers.html",
@@ -15968,6 +15986,24 @@
       "sha256": "e97aa1311b424692df7d75bfe80e27f3f41b0c308e18ea6a182f8427da799e1e",
       "bytes": 5022,
       "fetched_at": "2026-09-26T07:51:01.233981+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0001104659-24-021348",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1560385/000110465924021348/tv01341-libertymediacorpseri.htm",
+      "sha256": "ad7cae0c51a0c4a7dbc6df1ba48a9aca71b5607daf90b584db7400607fa89044",
+      "bytes": 11617,
+      "fetched_at": "2026-09-27T01:14:20.294028+00:00",
+      "http_status": 200
+    },
+    {
+      "artifact_id": "sec_filing_doc:0001560385:0001104659-24-021350",
+      "source_kind": "SEC_FILING_DOCUMENT",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1560385/000110465924021350/tv01343-libertymediacorpseri.htm",
+      "sha256": "8615de24ec89c4237254082d5360fafb365084cb60da9701543cdf1a56febefb",
+      "bytes": 11654,
+      "fetched_at": "2026-09-27T01:14:21.087188+00:00",
       "http_status": 200
     },
     {

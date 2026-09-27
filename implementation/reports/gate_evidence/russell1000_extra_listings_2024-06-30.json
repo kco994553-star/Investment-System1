@@ -1140,13 +1140,6 @@
     "symbol_basis": "SEC_TICKERS_CURRENT",
     "reference_name": "CABLE ONE, INC."
   },
-  "r1000:0002078416": {
-    "yahoo": "LLYVA",
-    "cik": "0002078416",
-    "cik_method": "SEC_TICKERS_TITLE",
-    "symbol_basis": "SEC_TICKERS_CURRENT",
-    "reference_name": "LIBERTY LIVE"
-  },
   "r1000:0001428439": {
     "yahoo": "ROKU",
     "cik": "0001428439",

@@ -995,7 +995,6 @@
     "0001996810",
     "0001996862",
     "0002012383",
-    "0002078416",
     "0002082866"
   ],
   "member_names": {
@@ -1976,10 +1975,6 @@
     ],
     "0001632127": [
       "CABLE ONE, INC."
-    ],
-    "0002078416": [
-      "LIBERTY LIVE",
-      "LIBERTY LIVE"
     ],
     "0001428439": [
       "ROKU, INC."
@@ -3942,7 +3937,11 @@
     ],
     "0001560385": [
       "LIBERTY MEDIA CORP - FORMULA ONE GROUP",
-      "LIBERTY MEDIA CORP - FORMULA ONE GROUP"
+      "LIBERTY MEDIA CORP - FORMULA ONE GROUP",
+      "LIBERTY SIRIUS XM",
+      "LIBERTY SIRIUS XM",
+      "LIBERTY LIVE",
+      "LIBERTY LIVE"
     ],
     "0001699838": [
       "CONFLUENT, INC."
@@ -4953,10 +4952,6 @@
     ],
     "0001632127": [
       "12685J105"
-    ],
-    "0002078416": [
-      "531229722",
-      "531229748"
     ],
     "0001428439": [
       "77543R102"
@@ -6919,7 +6914,11 @@
     ],
     "0001560385": [
       "531229755",
-      "531229771"
+      "531229771",
+      "531229813",
+      "531229789",
+      "531229722",
+      "531229748"
     ],
     "0001699838": [
       "20717M103"
@@ -7277,7 +7276,6 @@
     "0000051143": "SEC_TICKERS_TITLE",
     "0000860748": "SEC_TICKERS_TITLE",
     "0001632127": "SEC_TICKERS_TITLE",
-    "0002078416": "SEC_TICKERS_TITLE",
     "0001428439": "SEC_TICKERS_TITLE",
     "0000027419": "SEC_TICKERS_TITLE_UNIQUE_IN_POOL",
     "0001128928": "SEC_TICKERS_TITLE",
@@ -10910,21 +10908,292 @@
     },
     "LIBERTY SIRIUS XM|531229813": {
       "candidates": [
+        "0001560385",
         "0002003397"
       ],
-      "cik": null,
-      "attested": [],
-      "checked": [],
-      "status": "ATTESTED_0"
+      "cik": "0001560385",
+      "attested": [
+        {
+          "cik": "0001560385",
+          "discovered_via_submissions_cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0001104659-24-021350",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-021350",
+          "filed": "2024-02-13",
+          "snippet": "ies A Liberty SiriusXM Title of Class of Securities: Common Stock CUSIP Number: 531229813 Date of Event Which Requires Filing of "
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0000908937"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001104659-24-072009",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-072009",
+          "filed": "2024-06-17",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0000019617-24-000341",
+          "header_artifact_id": "edgar_index_headers:0000019617-24-000341",
+          "filed": "2024-05-08",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001104659-24-045752",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-045752",
+          "filed": "2024-04-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0000902664-24-002064",
+          "header_artifact_id": "edgar_index_headers:0000902664-24-002064",
+          "filed": "2024-02-27",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0000312069-24-000012",
+          "header_artifact_id": "edgar_index_headers:0000312069-24-000012",
+          "filed": "2024-02-14",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001172661-24-001481",
+          "header_artifact_id": "edgar_index_headers:0001172661-24-001481",
+          "filed": "2024-02-14",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001104659-24-021348",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-021348",
+          "filed": "2024-02-13",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001104659-24-021350",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-021350",
+          "filed": "2024-02-13",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
     },
     "LIBERTY SIRIUS XM|531229789": {
       "candidates": [
+        "0001560385",
         "0002003397"
       ],
-      "cik": null,
-      "attested": [],
-      "checked": [],
-      "status": "ATTESTED_0"
+      "cik": "0001560385",
+      "attested": [
+        {
+          "cik": "0001560385",
+          "discovered_via_submissions_cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0000019617-24-000341",
+          "header_artifact_id": "edgar_index_headers:0000019617-24-000341",
+          "filed": "2024-05-08",
+          "snippet": "f Issuer) Series C Liberty SiriusXM Common Stock (Title of Class of Securities) 531229789 (CUSIP Number) April 30, 2024 (Date of "
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0000908937"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001104659-24-072009",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-072009",
+          "filed": "2024-06-17",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0000019617-24-000341",
+          "header_artifact_id": "edgar_index_headers:0000019617-24-000341",
+          "filed": "2024-05-08",
+          "form": "SC 13G/A",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "LIBERTY LIVE|531229722": {
+      "candidates": [
+        "0001560385",
+        "0002078416"
+      ],
+      "cik": "0001560385",
+      "attested": [
+        {
+          "cik": "0001560385",
+          "discovered_via_submissions_cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0000312069-24-000012",
+          "header_artifact_id": "edgar_index_headers:0000312069-24-000012",
+          "filed": "2024-02-14",
+          "snippet": "me of Issuer) Series A Liberty Live Common Stock (Title of Class of Securities) 531229722 (CUSIP Number) 31-Dec-23 (Date of Event"
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0000908937"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001104659-24-072009",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-072009",
+          "filed": "2024-06-17",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0000019617-24-000341",
+          "header_artifact_id": "edgar_index_headers:0000019617-24-000341",
+          "filed": "2024-05-08",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001104659-24-045752",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-045752",
+          "filed": "2024-04-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0000902664-24-002064",
+          "header_artifact_id": "edgar_index_headers:0000902664-24-002064",
+          "filed": "2024-02-27",
+          "form": "SC 13G",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0000312069-24-000012",
+          "header_artifact_id": "edgar_index_headers:0000312069-24-000012",
+          "filed": "2024-02-14",
+          "form": "SC 13G",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
+    },
+    "LIBERTY LIVE|531229748": {
+      "candidates": [
+        "0001560385",
+        "0002078416"
+      ],
+      "cik": "0001560385",
+      "attested": [
+        {
+          "cik": "0001560385",
+          "discovered_via_submissions_cik": "0001560385",
+          "artifact_id": "sec_filing_doc:0001560385:0000902664-24-002064",
+          "header_artifact_id": "edgar_index_headers:0000902664-24-002064",
+          "filed": "2024-02-27",
+          "snippet": "rty Live Common Stock, par value $0.01 per share (Title of Class of Securities) 531229748 (CUSIP Number) February 26, 2024 (Date "
+        }
+      ],
+      "checked": [
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0000908937"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001104659-24-072009",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-072009",
+          "filed": "2024-06-17",
+          "form": "SC 13D/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0000019617-24-000341",
+          "header_artifact_id": "edgar_index_headers:0000019617-24-000341",
+          "filed": "2024-05-08",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0001104659-24-045752",
+          "header_artifact_id": "edgar_index_headers:0001104659-24-045752",
+          "filed": "2024-04-10",
+          "form": "SC 13G/A",
+          "cusip_found": false
+        },
+        {
+          "submissions_cik": "0001560385",
+          "subject_ciks": [
+            "0001560385"
+          ],
+          "artifact_id": "sec_filing_doc:0001560385:0000902664-24-002064",
+          "header_artifact_id": "edgar_index_headers:0000902664-24-002064",
+          "filed": "2024-02-27",
+          "form": "SC 13G",
+          "cusip_found": true
+        }
+      ],
+      "status": "UNIQUE"
     }
   },
   "unresolved_holdings": [
@@ -10966,50 +11235,6 @@
         "0001689662"
       ],
       "cusip_attestation": "UNIQUE",
-      "pit_registrant_candidates": []
-    },
-    {
-      "name": "LIBERTY SIRIUS XM",
-      "title": "LIBERTY MEDIA CORP LIBERTY SIRIUSXM",
-      "cusip": "531229813",
-      "isin": "US5312298137",
-      "asset_cat": "EC",
-      "issuer_cat": "CORP",
-      "country": "US",
-      "value": 1229258.55,
-      "balance": "55497.00000000",
-      "units": "NS",
-      "currency": "USD",
-      "fair_value_level": "1",
-      "payoff_profile": "Long",
-      "name_matches": 1,
-      "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
-      "candidates": [
-        "0002003397"
-      ],
-      "cusip_attestation": "ATTESTED_0",
-      "pit_registrant_candidates": []
-    },
-    {
-      "name": "LIBERTY SIRIUS XM",
-      "title": "LIBERTY MEDIA CORP LIBERTY SIRIUSXM",
-      "cusip": "531229789",
-      "isin": "US5312297899",
-      "asset_cat": "EC",
-      "issuer_cat": "CORP",
-      "country": "US",
-      "value": 2522960.32,
-      "balance": "113852.00000000",
-      "units": "NS",
-      "currency": "USD",
-      "fair_value_level": "1",
-      "payoff_profile": "Long",
-      "name_matches": 1,
-      "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
-      "candidates": [
-        "0002003397"
-      ],
-      "cusip_attestation": "ATTESTED_0",
       "pit_registrant_candidates": []
     }
   ],
