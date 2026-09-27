@@ -642,3 +642,11 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - Re-ran 295/295 full baseline and 13/13 Track B tests. Track B implementation diff from `48a6243` and cross-track
   runtime imports remain zero. No Track B or Track C implementation changed.
 - Track A state unchanged: two corrected Official dates, 2024-06-30 blocked, walk-forward and backend Freeze not run.
+
+## 2026-09-27 · round 19 · Codex
+
+- Documentation-only registration of `RIG_NEWS_ARCH_v0.1` as DESIGN FROZEN / IMPLEMENTATION NOT STARTED after a
+  repository/code/test consistency audit. No RIG runtime, UI, store, notification service, or score was implemented.
+- Preserved Track A REAL-DATA priority, Track B P0 freeze, and Track C design freeze. Added C-39 for the pre-existing
+  shared identity implementation-evidence mismatch; it blocks RIG P0, not the architecture registration.
+- Baseline before registration: 297/297 PASS via mini_pytest shim; local/remote trees identical, history preserved.
