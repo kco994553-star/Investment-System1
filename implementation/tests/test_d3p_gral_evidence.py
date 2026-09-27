@@ -54,3 +54,4 @@ def test_gral_policy_cites_actual_first_subsequent_10q_and_exact_issuance(tmp_pa
     )
     assert result["GRAL"]["status"] == "APPLIED"
     assert overrides["gral"]["shares"] == 31_049_148
+    json.dumps(overrides)
