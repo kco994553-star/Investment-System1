@@ -38,8 +38,9 @@ def test_gral_policy_cites_actual_first_subsequent_10q_and_exact_issuance(tmp_pa
         "primaryDocument": ["gral-20240630.htm", "gral-20240930.htm", "gral-20241231.htm"],
     }}}).encode(), "u", "SEC", "application/json", "t", 200)
     store.put(doc["artifact_id"], (
-        b"On June 24, 2024, the Distribution resulted in the issuance of "
-        b"31,049,148 shares of common stock."
+        b"The Spin-Off was completed through a distribution of approximately 85.5% of our "
+        b"outstanding common stock to the holders of record (the Distribution), which resulted "
+        b"in the issuance of 31,049,148 shares of common stock."
     ), doc["url"], "SEC", "text/html", "t", 200)
     store.put("yahoo_chart:GRAL:5y", json.dumps({"chart": {"result": [{
         "timestamp": [1719619200],
