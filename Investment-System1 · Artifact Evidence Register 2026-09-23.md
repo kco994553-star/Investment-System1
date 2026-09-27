@@ -230,3 +230,8 @@ No new evidence produced -- C-21 reconfirmed BLOCKED, no workaround forced per i
 - Evidence: `implementation/tests/test_global_universe_contracts.py` 6/6 PASS; full mini_pytest suite 308/308 PASS;
   py_compile and diff check PASS. Static boundary: the common module imports no Track B `personal` code, and no frozen
   Track B file changed. C-39 is RESOLVED; RIG remains DESIGN FROZEN / IMPLEMENTATION NOT STARTED.
+
+
+## Track A audit overlay — 2026-09-27 19:56 KST
+
+This Track A overlay supersedes prior Track A status claims only. Source run #70/ed343ba recovered and hashes verified (6,808 artifacts). C-40 dated-identity replay fixed; three 500-name RESEARCH replays and two adjacent-date steps match exactly, 0 name errors. C-41 share/price-unit audit detects 20 events (4/8/8); all three final Official gates are blocked, historical snapshots SUSPENDED, Freeze NOT DECLARED. Corporate-action policy candidate CA-UNIT-v1.0 remains D3-P PROPOSED. Full regression 388/388 PASS (mini_pytest shim). Evidence: `implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json`; detail: `Investment-System1 · TRACK_A_REAL_DATA_STATUS.md`. GitHub write returned 403; this update is local pending upload. Other tracks were not modified.

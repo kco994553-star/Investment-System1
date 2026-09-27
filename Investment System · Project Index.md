@@ -76,8 +76,9 @@ Update · Module Progress Ledger 2026-09-23
 
 Update · Track separation 2026-09-27
 
-- Track A: REAL-DATA Main Track. 2024-12-31/2024-09-30 corrected Official RESTORED; 2024-06-30 NOT OFFICIAL.
-  Three-date walk-forward and backend Freeze remain blocked.
+- Track A: REAL-DATA Main Track. All three historical Official dates are SUSPENDED after the share/price-unit audit (C-41).
+  C-40 dated-identity replay is fixed; 500-name RESEARCH diagnostics pass. D3-P CA-UNIT-v1.0 and final Official reruns remain pending.
+  Latest Track A detail: `Investment-System1 · TRACK_A_REAL_DATA_STATUS.md`. Local update; remote upload blocked by 403.
 - Track B: Personal Investment Layer. Architecture FROZEN; P0 Common Contracts IMPLEMENTED+FROZEN; P1+ NOT STARTED.
 - Track C: Experiment & Validation Layer, `EVL_SPEC_v0.1`. DESIGN FROZEN / IMPLEMENTATION NOT STARTED. It validates
   integrated Aggressive/Balanced/Defensive candidates and owns their Official promotion after Track A baseline Freeze.

@@ -1,0 +1,83 @@
+{
+  "kind": "TRACK_A_FREEZE_READINESS_AUDIT",
+  "audited_at_kst": "2026-09-27 19:56 KST",
+  "base_commit": "ebf8263e925b657f38463988ba85eb3ce2d7bb51",
+  "source_run": 36305927245,
+  "status": "BLOCKED_D3P_C41",
+  "frozen": false,
+  "real_data_verified": false,
+  "scope": "TRACK_A_ONLY",
+  "per_date": [
+    {
+      "as_of": "2024-06-30",
+      "base_promotion_gate_v2_passed": true,
+      "internal_consistency_passed": true,
+      "official_top500_declared": false,
+      "unit_events": 4,
+      "blockers": [
+        "UNRECONCILED_SHARE_PRICE_UNITS"
+      ]
+    },
+    {
+      "as_of": "2024-09-30",
+      "base_promotion_gate_v2_passed": true,
+      "internal_consistency_passed": true,
+      "official_top500_declared": false,
+      "unit_events": 8,
+      "blockers": [
+        "UNRECONCILED_SHARE_PRICE_UNITS"
+      ]
+    },
+    {
+      "as_of": "2024-12-31",
+      "base_promotion_gate_v2_passed": true,
+      "internal_consistency_passed": true,
+      "official_top500_declared": false,
+      "unit_events": 8,
+      "blockers": [
+        "UNRECONCILED_SHARE_PRICE_UNITS"
+      ]
+    }
+  ],
+  "diagnostic_walk_forward_consistency": {
+    "passed": true,
+    "n_steps": 2,
+    "mismatches": []
+  },
+  "original_raw_integrity_passed": true,
+  "network_inclusive_benchmark": "NOT_VERIFIED; prior timings are replay-only; SEC/Yahoo connectivity probe succeeded this session",
+  "github_write_status": "NOT_UPLOADED: git has no credentials; connector create_branch returned 403 Resource not accessible by integration",
+  "retained_historical_official_snapshots": [
+    {
+      "path": "official_snapshot_2024-06-30.json",
+      "sha256": "721892aa19be7c0bc961374cbac4d92dac98e6b84702c4e0648c24cd87e88310",
+      "validity": "SUSPENDED_C41_NOT_CURRENT_OFFICIAL"
+    },
+    {
+      "path": "official_snapshot_2024-09-30.json",
+      "sha256": "c3b5deb6be0aedd641a4ac3f73faa9d493ced5440abd1538a1eabffcae3b962b",
+      "validity": "SUSPENDED_C41_NOT_CURRENT_OFFICIAL"
+    },
+    {
+      "path": "official_snapshot_2024-12-31.json",
+      "sha256": "1d0f14a38fb063d0ab73cf685c9d7a585f16ff81207c6529b9d5f04621976f49",
+      "validity": "SUSPENDED_C41_NOT_CURRENT_OFFICIAL"
+    }
+  ],
+  "evidence_sha256": {
+    "gate_chain_2024-06-30_real_gha.json": "61fbe0eb13ed33a75240eff874fc29de271be210e3a10e61617f1ac5b7235829",
+    "gate_chain_2024-09-30_real_gha.json": "de9add29c1fa92b1498e8eeb20152ad0a4f36288e0ec33fb760151ea1058287c",
+    "gate_chain_2024-12-31_real_gha.json": "fbfa5d5b8dcb6c029dbdf7964c700df99bfda4e3487317cbe00616e39e586bd7",
+    "official_pipeline_2024-06-30_2024-12-31.json": "7a82ae995128b9e4488ed1f4ca150048bbdf90c735009201f9280416d08fda9b",
+    "raw_integrity_audit_2026-09-27.json": "39ef07dd935d7cc0214540947224b0392991a3d3e1c254755f4255d439852dc8",
+    "blk_dated_identity_regression_2026-09-27.json": "24881e3acc606a78434f809f1c4ad9ea57873f08037130b4b99813f08eef64b7",
+    "track_a_diagnostic_replay_2026-09-27.json": "8ec45688a0a0e905418cffec81d028d571f5464b9471090a654fac07b43f7a34"
+  },
+  "regression": {
+    "runner": "mini_pytest shim",
+    "passed": 388,
+    "failed": 0,
+    "log": "implementation/reports/track_a_regression_2026-09-27.txt",
+    "log_sha256": "061fb58e405424b99aea00dc79be219e16a8eb344c5fde6aac3de8a71c8bff33"
+  }
+}
