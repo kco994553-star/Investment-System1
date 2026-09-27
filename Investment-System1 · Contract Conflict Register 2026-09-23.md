@@ -478,7 +478,7 @@ implemented. The round-17 code change only preserves each unresolved source row'
 resolver and Gate report; it does not change membership or pass criteria. Until decided, 2024-06-30 remains NOT OFFICIAL
 and walk-forward remains blocked.
 
-## C-39 Global/Korea shared identity implementation claim -> OPEN-NONBLOCKING for RIG design; BLOCKING for RIG P0 (2026-09-27 11:07 KST)
+## C-39 Global/Korea shared identity implementation claim -> RESOLVED (2026-09-27 16:02 KST)
 
 Evidence: `Investment-System1 · Global-Korea Universe and Information Source Contract 2026-09-24.md` says
 `IssuerIdentity`, `SecurityIdentity`, `ListingIdentity`, `UniverseContext`, `FXSnapshot`, and `EligibilityRecord` are
@@ -490,6 +490,12 @@ and `DataEvent`; the only `security_id` implementation is under Track B's frozen
 Impact: `RIG_NEWS_ARCH_v0.1` can freeze against the documented issuer→security→listing contract without claiming an
 implementation, but RIG P0 cannot safely choose a canonical shared identity type or import Track B's private contract.
 
-Decision: no identity policy, mapping, or code is invented in this registration. Before RIG P0, confirm/recover the
-shared identity implementation or open an explicit common-contract change. Until then, identity-dependent RIG runtime
-work must fail closed. Track A/B/C code and ownership are unchanged.
+Resolution: restored the already-documented shared contract in
+`implementation/src/investment_system/contracts/global_universe.py` without importing or modifying Track B's frozen
+private security contract. The public types are `Region`, `AnalysisUniverse`, `IssuerIdentity`, `SecurityIdentity`,
+`ListingIdentity`, `UniverseContext`, `FXSnapshot`, and `EligibilityRecord`. Ticker exists only on the dated listing;
+analysis/network/news scopes remain independent; Korea/Global cannot be marked Official before validation; FX and
+eligibility records reject missing provenance and `available_at > as_of`. Six focused regressions cover the hierarchy,
+half-open listing history, context separation, Decimal FX, provenance, and fail-closed PIT behavior. Full suite 308/308
+PASS. C-39 no longer blocks RIG P0, but RIG remains DESIGN FROZEN / IMPLEMENTATION NOT STARTED and no RIG runtime was
+created. Track A/B/C code and ownership are unchanged.
