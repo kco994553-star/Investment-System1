@@ -403,6 +403,39 @@ def pit_registrant(store: RawDatasetStore, cik: str, as_of: datetime, lookback_d
     return bool(f) and (as_of.date() - datetime.fromisoformat(f["filed"]).date()).days <= lookback_days
 
 
+def attest_unresolved_holdings(store: RawDatasetStore, get, members: dict, unresolved: list[dict], cur: dict,
+                               hist: dict, as_of: datetime, npr, frc) -> tuple[list[dict], dict]:
+    """Resolve exact-CUSIP evidence in at most two passes.
+
+    Tracking-group rows can precede the sibling class that identifies their registrant.  The first pass may therefore
+    add a member whose CUSIP issuer number supplies a candidate for an earlier row; one bounded retry lets that row run
+    through the same exact-CUSIP, timely-filing and PIT-registrant checks.  No progress means no retry.
+    """
+    pending, attestations = list(unresolved), {}
+    for _ in range(2):
+        still, progressed = [], False
+        for u in pending:
+            cusip = str(u.get("cusip") or "")
+            if not cusip or "ESC" in cusip.upper()[3:9]:
+                still.append(u)
+                continue
+            candidates = cusip_attestation_candidates(u, members, cur, hist)
+            attestation = attest_by_cusip(store, get, candidates, cusip, as_of, npr, frc)
+            attestations[u["name"] + "|" + cusip] = {"candidates": candidates, **attestation}
+            if attestation["cik"] and pit_registrant(store, attestation["cik"], as_of):
+                member = members.setdefault(attestation["cik"],
+                                            {"names": [], "cusips": [], "method": "CUSIP_ATTESTED_OWNERSHIP_FILING"})
+                member["names"].append(u["name"])
+                member["cusips"].append(cusip)
+                progressed = True
+            else:
+                still.append({**u, "cusip_attestation": attestation["status"], "candidates": candidates[:8]})
+        pending = still
+        if not progressed or not pending:
+            break
+    return pending, attestations
+
+
 def as_of_symbol(store: RawDatasetStore, cik: str, as_of: datetime) -> str | None:
     """Ticker the issuer registered AT as_of: dei:TradingSymbol on the latest 10-K/10-Q cover filed <= as_of."""
     f = select_filing(load_submissions_merged(store, cik, as_of)[0] or {}, as_of)
@@ -481,22 +514,8 @@ def main() -> None:
                 # (0) unresolved equity holdings (ambiguous name, name not found, dead namesake, collision loser):
                 # identity by CUSIP attestation in the candidate issuer's own 13G/13D filed <= as_of
                 npr, frc = _load("nport_reported_prices"), _load("fetch_class_rights_evidence")
-                still0, attestations = [], {}
-                for u in unresolved:
-                    cu = str(u.get("cusip") or "")
-                    if not cu or "ESC" in cu.upper()[3:9]:
-                        still0.append(u)
-                        continue
-                    cands = cusip_attestation_candidates(u, members, cur, hist)
-                    att = attest_by_cusip(store, get, cands, cu, d, npr, frc)
-                    attestations[u["name"] + "|" + cu] = {"candidates": cands, **att}
-                    if att["cik"] and pit_registrant(store, att["cik"], d):
-                        m = members.setdefault(att["cik"], {"names": [], "cusips": [], "method": "CUSIP_ATTESTED_OWNERSHIP_FILING"})
-                        m["names"].append(u["name"])
-                        m["cusips"].append(cu)
-                    else:
-                        still0.append({**u, "cusip_attestation": att["status"], "candidates": cands[:8]})
-                unresolved = still0
+                unresolved, attestations = attest_unresolved_holdings(store, get, members, unresolved, cur, hist,
+                                                                      d, npr, frc)
                 report["cusip_attestations"] = attestations
                 # (1) name collisions: accept the unique candidate that was a domestic SEC registrant at as_of
                 cover_mod = _load("fetch_cover_xbrl")
