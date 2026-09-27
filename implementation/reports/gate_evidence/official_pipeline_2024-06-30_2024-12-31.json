@@ -80,25 +80,25 @@
   "per_date_single_as_of": [
    {
     "as_of": "2024-09-30",
-    "wall_s": 28.358,
-    "peak_rss_mb": 9535.0
+    "wall_s": 29.019,
+    "peak_rss_mb": 9534.9
    },
    {
     "as_of": "2024-12-31",
-    "wall_s": 28.686,
-    "peak_rss_mb": 9535.0
+    "wall_s": 29.74,
+    "peak_rss_mb": 9534.9
    }
   ],
-  "median_wall_s": 28.522,
-  "max_peak_rss_mb": 9535.0,
+  "median_wall_s": 29.3795,
+  "max_peak_rss_mb": 9534.9,
   "name_errors_total": 0,
   "network": {
-   "n_ingestion_run_reports": 381,
+   "n_ingestion_run_reports": 391,
    "request_status_counts": {
-    "SKIPPED_ALREADY_PRESENT": 273770,
+    "SKIPPED_ALREADY_PRESENT": 280986,
     "OK": 6228,
-    "HTTP_404": 3975,
-    "NO_PERIODIC_FILING_BEFORE_AS_OF": 2508,
+    "HTTP_404": 4130,
+    "NO_PERIODIC_FILING_BEFORE_AS_OF": 2566,
     "HTTP_429": 3,
     "ERROR_IncompleteRead": 1,
     "ERROR_URLError": 4,
