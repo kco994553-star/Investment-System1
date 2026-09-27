@@ -670,3 +670,5 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - No existing module changed. RIG imports only `contracts.global_universe` and `contracts.universe`; no Track A/B/C/E
   code, QGV/Technical/Macro score, or `DataEvent` semantics changed.
 - Targeted RIG 15/15 and full suite 323/323 (308 baseline + 15) pass via mini_pytest shim. Status: P0 FREEZE_READY.
+- 2026-09-27 17:44 KST: P0 FROZEN at code baseline `e3b1b62`. Re-verified 323/323 on a throwaway merge with
+  canonical `ed343ba` (Track A-only upstream delta, no conflicts). P1 NOT_STARTED.

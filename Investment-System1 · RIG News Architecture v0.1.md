@@ -2,7 +2,7 @@
 
 Contract ID: `RIG_NEWS_ARCH_v0.1`
 
-Status: **DESIGN FROZEN / P0 FOUNDATION IMPLEMENTED — FREEZE_READY (awaiting user freeze approval); P1–P5 NOT_STARTED**
+Status: **DESIGN FROZEN / P0 FOUNDATION IMPLEMENTED + FROZEN; P1–P5 NOT_STARTED**
 
 Registered: 2026-09-27 11:07 KST
 
@@ -247,7 +247,7 @@ Summary→Evidence→Detail 패턴, QGV/Technical/Macro snapshots을 우선 재�
 - Architecture Design: 100% (unchanged; no architecture change by P0)
 - Repository consistency audit: completed against local/remote-identical tree at registration
 - C-39: RESOLVED and re-verified 2026-09-27 17:13 KST (`contracts/global_universe.py`, 6/6 focused regressions)
-- P0 Foundation: IMPLEMENTED → TESTING PASS → **FREEZE_READY** (freeze pending explicit user approval)
+- P0 Foundation: IMPLEMENTED → TESTING PASS → **FROZEN** (2026-09-27 17:44 KST; code baseline `e3b1b62`)
 - P1–P5: NOT_STARTED
 
 ## P0 Foundation implementation record (2026-09-27 17:13 KST, Track D)
@@ -275,3 +275,16 @@ Branch: `feature/track-d-rig-news`, based on canonical `5acb047` (C-39 resolutio
   are unchanged; NEWS remains evidence-only.
 - Not implemented (P1+): UI, Zoom/Pan/Drag, clustering, Relationship/Deal state UX, Personal overlay, My Groups,
   Research Priority, Hub/Bridge/Bottleneck, Impact Graph, notification, Track C/E integration, any score, persistence.
+
+## P0 Freeze record (2026-09-27 17:44 KST, Track D)
+
+- Frozen code baseline: `e3b1b62` on `feature/track-d-rig-news` (`rig/` 5 files, 15 tests). Any later change to
+  `investment_system.rig` P0 semantics (identity use, time fields, gate categories/outcomes, Fact/Inference rules,
+  DataEvent adapter) requires a new decision record; P1 may only add on top of it.
+- Evidence: RIG targeted 15/15 and full 323/323 (mini_pytest shim) on the Track D branch; the same 323/323 also passed
+  on a throwaway merge with the latest canonical `ed343ba` (no conflicts, not committed). Canonical changes since the
+  Track D base are Track A only (C-21 run evidence, GRAL/CA share reconstruction) and do not touch RIG, contracts or
+  `DataEvent`.
+- Open integration items (not blockers for P0): issuer_id → pipeline `company_id` mapping, a production
+  `IdentityLookup` supplied by the identity owner, and shared status documents (Handoff / Master Status / Project
+  Index) at canonical merge time.
