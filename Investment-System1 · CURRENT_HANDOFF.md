@@ -1,6 +1,6 @@
 Investment-System1 · CURRENT_HANDOFF
 
-Timestamp: 2026-09-27 08:24 KST (round 18)
+Timestamp: 2026-09-27 11:07 KST (round 19)
 AI: Codex + Claude Code changes + GitHub Actions workflow c21-real-data (runs #54-#61)
 Repo/branch: kco994553-star/Investment-System1 @ claude/investment-system-top500-validation-alrugm
 Handoff Status: OPEN — C-36 is PARTIALLY RESOLVED. 2024-12-31 and 2024-09-30 each passed an independent corrected Gate,
@@ -74,3 +74,16 @@ start until Track A REAL-DATA baseline Freeze; current Track A is not frozen bec
 Tests re-run 2026-09-27 KST: full 295/295 and Track B 13/13 PASS (mini_pytest shim). Targeted N-PORT/gate regressions
 previously 103/103; prior targeted Official identity regressions 102/102. Track C has no code/tests by design.
 py_compile and diff check PASS for the round-17 code patch.
+
+RIG / News — `RIG_NEWS_ARCH_v0.1` is registered as
+`Investment-System1 · RIG News Architecture v0.1.md`. Status is DESIGN FROZEN / IMPLEMENTATION NOT STARTED; P0–P5
+are NOT_STARTED. Repository audit confirmed that existing DataEvent NEWS handling is evidence-only, future-available
+events are deferred, Frontend IA uses Summary→Evidence→Detail, and the Global/Korea contract already defines shared
+NewsItem→Claim→Event and Feed/Network identity. No RIG code, store, UI, notification runtime, score, or test was added.
+`yahoo_events__*` is split-event market-data provenance, not news. C-39 records that the Global/Korea contract's claim
+of implemented issuer/security/listing runtime types does not match the current public source tree; this blocks RIG P0,
+not this architecture freeze. Track A/B/C code and freeze states remain unchanged.
+
+Repository baseline re-run 2026-09-27 11:05 KST: full 297/297 PASS (mini_pytest shim). Fresh fetch showed local HEAD
+`3fe8312`, remote `7b0c93e`, local ahead 27 / behind 0, identical trees and a clean worktree before this documentation
+registration. History was not rewritten.
