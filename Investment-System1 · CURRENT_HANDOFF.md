@@ -1,14 +1,13 @@
 Investment-System1 · CURRENT_HANDOFF
 
-Timestamp: 2026-09-27 11:07 KST (round 19)
-AI: Codex + Claude Code changes + GitHub Actions workflow c21-real-data (runs #54-#61)
+Timestamp: 2026-09-27 16:02 KST (round 20)
+AI: Codex + Claude Code changes + GitHub Actions workflow c21-real-data (runs #54-#66)
 Repo/branch: kco994553-star/Investment-System1 @ claude/investment-system-top500-validation-alrugm
-Handoff Status: OPEN — C-36 is PARTIALLY RESOLVED. 2024-12-31 and 2024-09-30 each passed an independent corrected Gate,
+Handoff Status: OPEN — C-39 is RESOLVED. C-36 is PARTIALLY RESOLVED. 2024-12-31 and 2024-09-30 each passed an independent corrected Gate,
 Official artifact identity/provenance verification, single_as_of, and real 500-company benchmark; both dates are
-RESTORED. 2024-06-30 independently revalidated fail-closed in run #61 and remains NOT OFFICIAL: GRAL (C-35), WRK (C-34),
-ARDAGH GROUP SA delisted residual eligibility (C-38), and Liberty SiriusXM tracking-stock identity/economics (C-37)
-block Sufficiency. Track B (PIL)
-remains frozen at P0.
+RESTORED. D3-P policies removed the WRK, Ardagh, and Liberty blockers in run #66, but 2024-06-30 remains NOT OFFICIAL
+because the cited GRAL 10-K was not its first subsequent periodic report. The local correction now cites the actual
+first subsequent 10-Q and passes tests, but has not yet been uploaded or re-run. Track B (PIL) remains frozen at P0.
 All user-facing times are KST (UTC+9).
 
 Track A — Main Track (priority)
@@ -38,26 +37,20 @@ caps, cutoff $15,573,548,285.00, and every audited share/price provenance field 
 to 2024-12-31: 469 selected/linked, 495 investable, 5 missing, 0 name errors, EW 0.0004569665513276751. Corrected real
 benchmark: 28.362 s, peak RSS 9,534.8 MB, 0 name errors. 2024-09-30 Official is RESTORED; runs #46/#47 remain superseded.
 
-2024-06-30 corrected revalidation (run #61, id 36234273515, evidence commit 2e04c1b): NOT OFFICIAL. Internal candidate
-consistency still passes 500/500, cutoff $14,021,530,297.505974, but corrected Russell N-PORT reference fails its own
-checks: GRAL and WRK are present but not rankable; ARDAGH GROUP SA (CUSIP L0223L101) and LIBERTY SIRIUS XM
-(CUSIP 531229813) are non-escrow unresolved holdings. Sufficiency and Promotion Gate v2 FAIL. No Official snapshot,
-single_as_of, benchmark, or walk-forward was promoted.
-- RKT/TPG/TOST: dated carry-over dropped their Aug-2024 10-Q citations; every claim re-proven from FY2023 10-Ks (filed
-  Feb 2024) -> class_economics_2024-06-30.json (commit f0713ac), verified by run #51.
-- GRAL (GRAIL, spun off from Illumina 2024-06-24, no periodic filing): registration/8-K documents give no unique count
-  with the existing pattern; distribution_sentences diagnostic (run #50) shows the actual wording. Stays blocker unless a
-  verbatim unique count filed <= 2024-06-30 exists.
-- WRK (WestRock, merged into Smurfit Westrock 2024-07-05): NO permitted market-close source (Yahoo 404, Tiingo no bar,
-  Stooq bot-challenge — not bypassed). nport_price_investigation_2024-06-30.json = investigation only, never applied.
-  NEEDS USER DECISION (extend N-PORT exception to WRK for this date / keep blocker / another source).
-- Stooq fallback wired (calibrated, fail-closed) but unusable: bot challenge.
-- Liberty SiriusXM is now an actual Gate blocker. The existing company-level model cannot silently equate or aggregate
-  tracking-stock economic rights. C-37 records the required user policy decision; no mapping/economic rule was invented.
-- Ardagh is not a zero-value residue: the source N-PORT reports 12,001 shares and $76,686.39 (fair-value level 2).
-  SEC Form 25/15 show its Class A shares left NYSE and registration/reporting ended in October 2021. Treating a positive
-  delisted/private fund residue as outside a superset reference requires a new eligibility rule, so C-38 is OPEN-BLOCKING.
-  The resolver now preserves original valuation/identity fields on unresolved rows; Gate behavior remains fail-closed.
+2024-06-30 D3-P application (run #66, id 36300544234, evidence commit f2a66f8 at 2026-09-27 15:47:10 KST): NOT
+OFFICIAL. Internal snapshot consistency passes 500/500; 991 issuers are rankable and cutoff remains
+$14,021,530,297.505974. General, result-independent policies were applied without cutoff input:
+- CA-PRICE-01 reconstructs WRK at $50.26 from three calibrated Level-1 N-PORT sponsors (two independent), with PIT
+  shares 258,148,056 and market cap $12,974,521,294.56. WRK is rankable outside the Top 500.
+- CA-ELIGIBILITY-01 excludes Ardagh from sufficiency only after exact-security Form 25/Form 15 evidence, while preserving
+  the positive $76,686.39 residual source row in audit evidence. CA-SECURITY-01 forbids cross-tracking-group equivalence;
+  Liberty no longer remains unresolved under the exact-CUSIP issuer evidence path.
+- CA-SHARES-01 failed closed for GRAL because policy evidence cited its 2025-03-05 10-K, while SEC submissions identify
+  a 2024-11-13 10-Q as the first subsequent periodic report. GRAL alone remains present-not-rankable, so the Russell
+  reference fails its own check and Promotion Gate v2 fails. No downstream result was promoted.
+- Local commit `10f4acc` corrects the citation to accession `0001628280-24-047606`, whose 10-Q states that the June 24
+  spin-off resulted in issuance of exactly 31,049,148 shares. It passed the targeted and full regressions but still
+  requires remote upload and a fresh real-data workflow before any Official claim.
 
 Track B — Personal Investment Layer v1: Architecture FROZEN; P0 Common Contracts implemented and FROZEN
 (src/investment_system/personal/, 10 package files, 13 tests). P1+ NOT STARTED; no live broker/integration. Track B code
@@ -71,19 +64,20 @@ promotion; Track B is a consumer. Core scores, Official/Custom isolation, Trial 
 isolation, invalidation propagation, tax exclusion, and fail-closed uncertainty are locked. C0 implementation must not
 start until Track A REAL-DATA baseline Freeze; current Track A is not frozen because 2024-06-30 is NOT OFFICIAL.
 
-Tests re-run 2026-09-27 KST: full 295/295 and Track B 13/13 PASS (mini_pytest shim). Targeted N-PORT/gate regressions
-previously 103/103; prior targeted Official identity regressions 102/102. Track C has no code/tests by design.
-py_compile and diff check PASS for the round-17 code patch.
+Tests re-run 2026-09-27 16:02 KST: full 308/308 PASS (mini_pytest shim); C-39 focused 6/6 PASS. Track B's 13-test
+frozen baseline remains unchanged. Targeted N-PORT/gate regressions 109/109 and prior targeted Official identity
+regressions 102/102 passed. Track C has no code/tests by design. py_compile and diff check PASS.
 
 RIG / News — `RIG_NEWS_ARCH_v0.1` is registered as
 `Investment-System1 · RIG News Architecture v0.1.md`. Status is DESIGN FROZEN / IMPLEMENTATION NOT STARTED; P0–P5
 are NOT_STARTED. Repository audit confirmed that existing DataEvent NEWS handling is evidence-only, future-available
 events are deferred, Frontend IA uses Summary→Evidence→Detail, and the Global/Korea contract already defines shared
 NewsItem→Claim→Event and Feed/Network identity. No RIG code, store, UI, notification runtime, score, or test was added.
-`yahoo_events__*` is split-event market-data provenance, not news. C-39 records that the Global/Korea contract's claim
-of implemented issuer/security/listing runtime types does not match the current public source tree; this blocks RIG P0,
-not this architecture freeze. Track A/B/C code and freeze states remain unchanged.
+`yahoo_events__*` is split-event market-data provenance, not news. C-39 is now RESOLVED: the common Global/Korea
+`IssuerIdentity -> SecurityIdentity -> ListingIdentity`, independent Analysis/Network/News contexts, and fail-closed
+FX/eligibility PIT contracts are implemented in `contracts/global_universe.py` with six regressions. Track B's frozen
+private identity implementation was not imported or changed. RIG remains DESIGN FROZEN / IMPLEMENTATION NOT STARTED.
 
-Repository baseline re-run 2026-09-27 11:05 KST: full 297/297 PASS (mini_pytest shim). Fresh fetch showed local HEAD
-`3fe8312`, remote `7b0c93e`, local ahead 27 / behind 0, identical trees and a clean worktree before this documentation
-registration. History was not rewritten.
+Repository baseline: remote `f2a66f8` contains run #66 evidence. The local branch was safely rebased onto that head;
+the duplicate local D3-P patch was dropped because its tree was already upstream. The GRAL 10-Q correction is the one
+preserved local commit above remote; the C-39 implementation/documentation is the current uncommitted worktree change.
