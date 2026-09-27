@@ -36,6 +36,7 @@ const path = require('path');
     r = await sc();
     check('scope_all_unrestricted', r.nodes === null && (await page.locator('.out-scope').count()) === 0);
   }
+  if (!process.argv[3] && await page.$('[data-scope=ALL]')) await page.click('[data-scope=ALL]');  // generic checks run on ALL
   const box = await page.locator('#net').boundingBox();
   await page.mouse.move(box.x + 20, box.y + 20);
   await page.mouse.wheel(0, -400);

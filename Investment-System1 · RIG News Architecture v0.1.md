@@ -2,7 +2,7 @@
 
 Contract ID: `RIG_NEWS_ARCH_v0.1`
 
-Status: **DESIGN FROZEN / P0–P3 IMPLEMENTED + FROZEN; P4–P5 NOT_STARTED**
+Status: **DESIGN FROZEN / P0–P4 IMPLEMENTED + FROZEN; P5 NOT_STARTED (D3-P pending)**
 
 Registered: 2026-09-27 11:07 KST
 
@@ -250,8 +250,9 @@ Summary→Evidence→Detail 패턴, QGV/Technical/Macro snapshots을 우선 재�
 - P0 Foundation: **FROZEN** (2026-09-27 17:44 KST; code baseline `e3b1b62`)
 - P1 Basic Network: **FROZEN** (2026-09-27 17:55 KST; baseline `af5080b`)
 - P2 Relationship Intelligence: **FROZEN** (2026-09-27 17:59 KST; baseline `d831870`)
-- P3 Personal UX: **FROZEN** (2026-09-27 18:06 KST; baseline = the commit adding the P3 record)
-- P4–P5: NOT_STARTED
+- P3 Personal UX: **FROZEN** (2026-09-27 18:06 KST; baseline `564884f`)
+- P4 Discovery: **FROZEN** (2026-09-27 18:09 KST; baseline = the commit adding the P4 record)
+- P5 Validation: NOT_STARTED — requires a D3-P decision (Track C execution path for RIG features)
 
 ## P0 Foundation implementation record (2026-09-27 17:13 KST, Track D)
 
@@ -368,3 +369,30 @@ Package `implementation/src/investment_system/rig/myview/` (`prefs.py`, `scope.p
 - Evidence: P3 11/11 (6/6 mutation checks caught after strengthening two tests), full 354/354 (mini_pytest shim),
   browser smoke 24/24 including Python↔browser scope parity; P1/P2 pages still 18/18.
 - Known limitation: node layout is computed for the full graph, so MY scope keeps the full-graph positions.
+
+## P4 Discovery record (2026-09-27 18:09 KST, Track D) — FROZEN
+
+Package `implementation/src/investment_system/rig/discovery/` (`discovery.py`, `impact.py`, `present.py`), tests
+`test_rig_p4_discovery.py` (9). P0–P3 files are unchanged.
+
+- Fact Graph only (SUPPORTED_INFERENCE edges excluded). Graph Position labels: HUB (degree ≥ 5), BRIDGE
+  (articulation point; iterative Tarjan, cross-checked against brute force on 60 random graphs), BOTTLENECK (sole
+  upstream supplier of ≥ 2 downstream companies over Supply Chain / Customer / Value Chain flow).
+- Emerging: ≥ 2 relationships with P2 status NEW / DISCOVERED at the as-of time. Common Connections: shared FACT
+  neighbours of two companies; for 내 기업, non-My companies linked to ≥ 2 My companies.
+- Impact Graph: derived on demand from an Event's companies or a concept seed, up to 3 hops over FACT edges with
+  DOWNSTREAM / UPSTREAM / PEER hop labels (plus EXPOSURE from a concept); shortest path per company, no cycles;
+  never persisted and never written into relationship state. Rendered as dotted arrows labelled "잠재 영향 경로
+  (사실 아님)".
+- Concept nodes ⬡ Macro Driver / ◆ Technology / ▣ Value Chain Stage are id references only (Macro owns driver
+  definitions). Concept → issuer `Exposure` requires known concept and issuer and evidence available by the exposure
+  time; it is point-in-time and is not a Fact edge.
+- Research Priority (non-My companies only; High/Medium/Low, labelled "not a buy/sell view"): HIGH = HIGH/CRITICAL
+  materiality FACT link to a My company or sole supplier of one; MEDIUM = any FACT link to My, emerging, common
+  connection or bottleneck; else LOW. HIGH companies fill the P3 feed tier "Research Priority 신규기업".
+- Expansion priority completed: Critical → Portfolio/관심 → High materiality → Recent change → Common Connection →
+  P1 order. `build_rig_page` composes P1–P4 through public functions and `PageExtras`.
+- D2 thresholds (`HUB_MIN_DEGREE`, `BOTTLENECK_MIN_DEPENDENTS`, `EMERGING_MIN_NEW`, `MAX_HOPS`) are module
+  constants; they are descriptive-label thresholds, not investment policy.
+- Evidence: P4 9/9 (7/7 mutation checks caught after adding bottleneck and cycle tests), RIG P0–P4 55/55, full
+  363/363 (mini_pytest shim), browser smoke on P1/P2/P4 pages 19/19 each and P3 parity page 24/24.

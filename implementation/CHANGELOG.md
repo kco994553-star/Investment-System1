@@ -692,3 +692,10 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
   내 기업 | 전체 scope with chips, feed-priority tiers, My-first expansion priority, related news, Attention input
   export (no delivery runtime), default-OFF read-only Investment Overlay, and page composition via P1/P2 extension
   points. Browser smoke gained scope-parity checks. P3 11/11, full 354/354 (mini_pytest shim). P3 FROZEN.
+
+## 2026-09-27 · Track D RIG P4 Discovery · Claude Code
+
+- Added `investment_system.rig.discovery`: Fact-Graph positions (Hub/Bridge/Bottleneck), Emerging, Common
+  Connections, on-demand Impact Graph with evidence-backed concept exposures (⬡/◆/▣ references), High/Medium/Low
+  Research Priority labels, Common-Connection expansion slot and the composed P1–P4 page. P4 9/9, full 363/363
+  (mini_pytest shim). P4 FROZEN. P5 awaits a D3-P decision.
