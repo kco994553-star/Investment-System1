@@ -3,7 +3,7 @@
   "as_of": "2024-06-30T00:00:00+00:00",
   "store": {
     "dir": "data/raw",
-    "n_artifacts": 6802,
+    "n_artifacts": 6806,
     "status": "PRESENT"
   },
   "listings": 992,
@@ -87,7 +87,7 @@
       "status": "VERIFIED_SEC_SUBMISSIONS_NAME"
     }
   },
-  "ranking_basis": "COMPANY_LEVEL_ONE_LINE_PER_CIK; US_DOMESTIC_FILERS; COVER_XBRL_CLASS_SUM_FOR_MULTI_CLASS",
+  "ranking_basis": "COMPANY_LEVEL_ONE_LINE_PER_CIK; US_DOMESTIC_FILERS; EACH_LISTED_SECURITY_OWN_PRICE_X_OWN_SHARES; UNPRICED_SECURITIES_EXPLICIT_BOUNDS",
   "row_level_audit": {
     "listings": 1355,
     "rankable": 1171,
@@ -4169,6 +4169,34 @@
         ],
         "formula": "104820281 shares x (valUSD 1685098.19000000 / balance 90257.00000000 NS) = 1956994646.27"
       }
+    },
+    "WRK": {
+      "mcap": 12974521294.56,
+      "status": "NPORT_REPORTED_VALUE",
+      "source": "nport_xml:0001752724-24-189684",
+      "price_type": "NPORT_REPORTED_VALUE",
+      "valuation_date": "2024-06-30",
+      "policy": "CA-PRICE-01",
+      "classes": [],
+      "nport_reported_value": {
+        "cik": "0001732845",
+        "symbol": "WRK",
+        "cusip": "96145D105",
+        "policy": "CA-PRICE-01",
+        "status": "APPLIED",
+        "failures": [],
+        "price": 50.26,
+        "price_type": "NPORT_REPORTED_VALUE",
+        "valuation_date": "2024-06-30",
+        "evidence_available_at": "2024-08-26",
+        "look_ahead": true,
+        "reconstruction_only": true,
+        "calibrated_sponsors": 3,
+        "independent_sponsors": 2,
+        "shares": 258148056.0,
+        "mcap": 12974521294.56,
+        "source_artifact": "nport_xml:0001752724-24-189684"
+      }
     }
   },
   "cover_unresolved": {},
@@ -4734,9 +4762,83 @@
           }
         ],
         "formula": "104820281 shares x (valUSD 1685098.19000000 / balance 90257.00000000 NS) = 1956994646.27"
+      },
+      "WRK": {
+        "cik": "0001732845",
+        "symbol": "WRK",
+        "cusip": "96145D105",
+        "policy": "CA-PRICE-01",
+        "status": "APPLIED",
+        "failures": [],
+        "price": 50.26,
+        "price_type": "NPORT_REPORTED_VALUE",
+        "valuation_date": "2024-06-30",
+        "evidence_available_at": "2024-08-26",
+        "look_ahead": true,
+        "reconstruction_only": true,
+        "calibrated_sponsors": 3,
+        "independent_sponsors": 2,
+        "shares": 258148056.0,
+        "mcap": 12974521294.56,
+        "source_artifact": "nport_xml:0001752724-24-189684"
       }
     },
-    "note": "Valued at the SEC N-PORT reported value per share on the as_of report date (filed after as_of: look_ahead recorded per row), not a market close; all other issuers use their last close on/before as_of. Exception limited to the user-approved issuers (PINC, WOLF), verified independently for each as_of."
+    "note": "Valued at the SEC N-PORT reported value per share on the as_of report date (filed after as_of: look_ahead recorded per row), not a market close; all other issuers use their last close on/before as_of. Legacy per-date exceptions and D3-P CA-PRICE-01 reconstructions are verified independently for each as_of."
+  },
+  "corporate_action_policy": {
+    "version": "D3-P-CA-v1.0",
+    "as_of": "2024-06-30",
+    "security_policy": {
+      "membership_basis": "ISSUER_OR_COMPANY_LEVEL",
+      "valuation_basis": "EACH_LISTED_SECURITY_PRICE_X_ITS_OWN_SHARES",
+      "cross_tracking_group_equivalence": false,
+      "unpriced_security_treatment": "EXPLICIT_BOUND"
+    },
+    "share_reconstruction": {
+      "GRAL": {
+        "cik": "0001699031",
+        "symbol": "GRAL",
+        "policy": "CA-SHARES-01",
+        "status": "NOT_APPLIED",
+        "failures": [
+          "CITED_DOCUMENT_NOT_FIRST_SUBSEQUENT_PERIODIC"
+        ],
+        "event_date": "2024-06-24",
+        "evidence_available_at": "2025-03-05",
+        "look_ahead": true,
+        "reconstruction_only": true,
+        "shares": 31049148,
+        "source_artifact": "sec_filing_doc:0001699031:0001699031-25-000041"
+      }
+    },
+    "price_reconstruction": {
+      "WRK": {
+        "cik": "0001732845",
+        "symbol": "WRK",
+        "cusip": "96145D105",
+        "policy": "CA-PRICE-01",
+        "status": "APPLIED",
+        "failures": [],
+        "price": 50.26,
+        "price_type": "NPORT_REPORTED_VALUE",
+        "valuation_date": "2024-06-30",
+        "evidence_available_at": "2024-08-26",
+        "look_ahead": true,
+        "reconstruction_only": true,
+        "calibrated_sponsors": 3,
+        "independent_sponsors": 2,
+        "shares": 258148056.0,
+        "mcap": 12974521294.56,
+        "source_artifact": "nport_xml:0001752724-24-189684"
+      }
+    },
+    "reference_delisting": {
+      "L0223L101": {
+        "status": "EXCLUDED_FROM_SUFFICIENCY",
+        "failures": [],
+        "positive_residual_value_preserved": 76686.39
+      }
+    }
   },
   "share_scale_checks": {
     "MCD": {
@@ -4905,16 +5007,7 @@
     "order_identical": true,
     "mcap_mismatch": [],
     "gate_members_excluded_by_snapshot": [],
-    "snapshot_excluded": [
-      {
-        "company_id": "r1000:0000895419",
-        "reason": "NOT_AVAILABLE_AT_AS_OF"
-      },
-      {
-        "company_id": "r1000:0001577916",
-        "reason": "NOT_AVAILABLE_AT_AS_OF"
-      }
-    ],
+    "snapshot_excluded": [],
     "shares_basis_counts": {
       "COMPANYFACTS_PIT": 438,
       "COVER_CLASS_SUM_LOWER_BOUND": 44,
@@ -4923,7 +5016,7 @@
       "COVER_ECONOMIC_EQUIVALENT": 8,
       "SHARE_SCALE_CORRECTED_FROM_COVER_TEXT": 1
     },
-    "universe_id": "uni_ada8b3728b9d",
+    "universe_id": "uni_eed6a7a43ecc",
     "snapshot_cutoff_mcap": 14021530297.505974
   },
   "official_snapshot_candidates": null,
@@ -4934,13 +5027,6 @@
       "shares": null,
       "price_observed_at": "2024-06-28T13:30:00+00:00",
       "pit_filer_status": "UNKNOWN"
-    },
-    "WRK": {
-      "reason": "NO_AS_OF_PRICE",
-      "cik": "0001732845",
-      "shares": 258148056.0,
-      "price_observed_at": null,
-      "pit_filer_status": "DOMESTIC"
     }
   },
   "audit": {
@@ -4949,10 +5035,10 @@
     "chart_range": "5y",
     "listings": 992,
     "companyfacts": 992,
-    "price": 990,
-    "rankable": 990,
+    "price": 991,
+    "rankable": 991,
     "missing_companyfacts": 0,
-    "missing_price": 1,
+    "missing_price": 0,
     "missing_shares": 1,
     "ambiguous_shares": 0,
     "non_positive": 0,
@@ -4961,7 +5047,7 @@
     "justified_official_top500": false,
     "note": "Diagnostic only. Explicit listings input is not proof of historical US-listing completeness."
   },
-  "rankable": 990,
+  "rankable": 991,
   "cutoff_500_mcap": 14021530297.505974,
   "top500": [
     {
@@ -21386,22 +21472,6 @@
       "mcap_price": 15.369999885559082,
       "mcap": null,
       "share_concepts_present": {}
-    },
-    "WRK": {
-      "yahoo": "WRK",
-      "cik": "0001732845",
-      "shares_status": "OK",
-      "shares": 258148056.0,
-      "shares_source": "dei:EntityCommonStockSharesOutstanding",
-      "shares_available_at": "2024-05-03 00:00:00+00:00",
-      "price_observed_at": null,
-      "close": null,
-      "adjclose": null,
-      "split_events": "MISSING",
-      "split_factor_after_as_of": 1.0,
-      "mcap_price": null,
-      "mcap": null,
-      "share_concepts_present": null
     }
   },
   "reference_coverage": [
@@ -21410,8 +21480,8 @@
       "role": "SUPERSET_REFERENCE",
       "n_members": 986,
       "n_missing_from_pool": 0,
-      "n_present_not_rankable": 2,
-      "n_present_rankable_outside_top500": 486,
+      "n_present_not_rankable": 1,
+      "n_present_rankable_outside_top500": 487,
       "missing_from_pool": []
     }
   ],
@@ -21420,7 +21490,7 @@
     "as_of": "2024-06-30T00:00:00+00:00",
     "passed": false,
     "companyfacts": 992,
-    "rankable": 990,
+    "rankable": 991,
     "benchmark_source": "World Federation of Exchanges (WFE), \"Market Statistics - February 2025\" (WFE Focus), Total Dec'24 column",
     "benchmark_source_vintage": "2025-01-31",
     "benchmark_low": 3400,
@@ -21436,7 +21506,7 @@
     "kind": "TOP500_SUFFICIENCY_GATE",
     "as_of": "2024-06-30T00:00:00+00:00",
     "passed": false,
-    "rankable": 990,
+    "rankable": 991,
     "cutoff_mcap": 14021530297.505974,
     "n_references_supplied": 1,
     "n_references_usable": 0,
@@ -21448,8 +21518,7 @@
         "n_members": 986,
         "missing_from_pool": [],
         "present_not_rankable": [
-          "GRAL",
-          "WRK"
+          "GRAL"
         ],
         "present_rankable_outside_top500": [
           "AA",
@@ -21925,6 +21994,7 @@
           "WOLF",
           "WOOF",
           "WPC",
+          "WRK",
           "WSC",
           "WTFC",
           "WTM",
@@ -21940,8 +22010,7 @@
           "ZION"
         ],
         "reasons": [
-          "REFERENCE_MEMBERS_PRESENT_BUT_NOT_RANKABLE",
-          "UNRESOLVED_REFERENCE_HOLDINGS"
+          "REFERENCE_MEMBERS_PRESENT_BUT_NOT_RANKABLE"
         ],
         "passed": false,
         "reference_role": "SUPERSET_REFERENCE",
@@ -21960,7 +22029,7 @@
           "0001977102",
           "0002082866"
         ],
-        "unresolved_reference_holdings": [
+        "policy_excluded_holdings": [
           {
             "name": "ARDAGH GROUP SA",
             "title": "ARDAGH GROUP SA",
@@ -21975,13 +22044,19 @@
             "currency": "USD",
             "fair_value_level": "2",
             "payoff_profile": "Long",
-            "reason": "HISTORICAL_NAME_MATCH_NOT_A_PIT_REGISTRANT",
+            "name_matches": 1,
+            "reason": "DELISTED_AND_DEREGISTERED_BEFORE_AS_OF_NO_RELISTING",
             "candidates": [
               "0001689662"
             ],
-            "name_matches": 1
+            "cusip_attestation": "UNIQUE",
+            "pit_registrant_candidates": [],
+            "policy": "CA-ELIGIBILITY-01",
+            "cik": "0001689662"
           }
         ],
+        "reference_policy": "CA-ELIGIBILITY-01",
+        "unresolved_reference_holdings": [],
         "cik_collisions": {},
         "members_missing_cusips": []
       }
@@ -22064,9 +22139,28 @@
             }
           ],
           "formula": "104820281 shares x (valUSD 1685098.19000000 / balance 90257.00000000 NS) = 1956994646.27"
+        },
+        "WRK": {
+          "cik": "0001732845",
+          "symbol": "WRK",
+          "cusip": "96145D105",
+          "policy": "CA-PRICE-01",
+          "status": "APPLIED",
+          "failures": [],
+          "price": 50.26,
+          "price_type": "NPORT_REPORTED_VALUE",
+          "valuation_date": "2024-06-30",
+          "evidence_available_at": "2024-08-26",
+          "look_ahead": true,
+          "reconstruction_only": true,
+          "calibrated_sponsors": 3,
+          "independent_sponsors": 2,
+          "shares": 258148056.0,
+          "mcap": 12974521294.56,
+          "source_artifact": "nport_xml:0001752724-24-189684"
         }
       },
-      "note": "Valued at the SEC N-PORT reported value per share on the as_of report date (filed after as_of: look_ahead recorded per row), not a market close; all other issuers use their last close on/before as_of. Exception limited to the user-approved issuers (PINC, WOLF), verified independently for each as_of."
+      "note": "Valued at the SEC N-PORT reported value per share on the as_of report date (filed after as_of: look_ahead recorded per row), not a market close; all other issuers use their last close on/before as_of. Legacy per-date exceptions and D3-P CA-PRICE-01 reconstructions are verified independently for each as_of."
     }
   },
   "promotion_gate_v2": {
@@ -22081,7 +22175,7 @@
       "passed": false,
       "candidate_pool_complete": false,
       "justified_official_top500": false,
-      "rankable": 990,
+      "rankable": 991,
       "listings": 992,
       "eligibility_source": null,
       "source_vintage": null,
@@ -22179,9 +22273,28 @@
             }
           ],
           "formula": "104820281 shares x (valUSD 1685098.19000000 / balance 90257.00000000 NS) = 1956994646.27"
+        },
+        "WRK": {
+          "cik": "0001732845",
+          "symbol": "WRK",
+          "cusip": "96145D105",
+          "policy": "CA-PRICE-01",
+          "status": "APPLIED",
+          "failures": [],
+          "price": 50.26,
+          "price_type": "NPORT_REPORTED_VALUE",
+          "valuation_date": "2024-06-30",
+          "evidence_available_at": "2024-08-26",
+          "look_ahead": true,
+          "reconstruction_only": true,
+          "calibrated_sponsors": 3,
+          "independent_sponsors": 2,
+          "shares": 258148056.0,
+          "mcap": 12974521294.56,
+          "source_artifact": "nport_xml:0001752724-24-189684"
         }
       },
-      "note": "Valued at the SEC N-PORT reported value per share on the as_of report date (filed after as_of: look_ahead recorded per row), not a market close; all other issuers use their last close on/before as_of. Exception limited to the user-approved issuers (PINC, WOLF), verified independently for each as_of."
+      "note": "Valued at the SEC N-PORT reported value per share on the as_of report date (filed after as_of: look_ahead recorded per row), not a market close; all other issuers use their last close on/before as_of. Legacy per-date exceptions and D3-P CA-PRICE-01 reconstructions are verified independently for each as_of."
     }
   },
   "eligibility_evidence_derived_from_superset": null,

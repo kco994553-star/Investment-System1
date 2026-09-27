@@ -1,0 +1,12 @@
+{
+  "artifact_id": "sec_filing_doc:0001689662:0001104659-21-127219",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1689662/000110465921127219/tm2125235d26_1512b.htm",
+  "source_kind": "SEC_FILING_DOCUMENT",
+  "fetched_at": "2026-09-27T06:39:47.031927+00:00",
+  "sha256": "53039f570f4ee0a048376453c32b62b090d699e4be9ce09f32cc12ddaaab3a2a",
+  "bytes": 11361,
+  "content_type": "text/html",
+  "fetcher": "tools/fetch_real_data.py v1",
+  "http_status": 200,
+  "notes": ""
+}
