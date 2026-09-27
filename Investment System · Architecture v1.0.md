@@ -29,3 +29,13 @@ QGV System과 QGV Analysis를 구분한다. QGV v1.7은 현재 소프트웨어 �
 8\. Engineering Policy  
 정확성·안전성 \> 사용자 요구사항 \> 기존 동작 보존 \> 단순함 \> 유지보수성 \> 성능 \> 확장성.  
 최소 변경을 우선하고 실제 실행·테스트·회귀 확인 후 완료로 판단한다. API Key와 비밀정보는 문서나 코드에 직접 저장하지 않는다.  
+
+9\. Additive Architecture Registry · 2026-09-27 KST
+
+- Track B: `Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md` — Architecture FROZEN; P0
+  IMPLEMENTED+FROZEN; P1+ NOT STARTED.
+- Track C: `Investment-System1 · Experiment & Validation Layer Specification v0.1.md` — DESIGN FROZEN /
+  IMPLEMENTATION NOT STARTED.
+- RIG / News: `Investment-System1 · RIG News Architecture v0.1.md` (`RIG_NEWS_ARCH_v0.1`) — DESIGN FROZEN /
+  IMPLEMENTATION NOT STARTED. It is an additive News/Relationship product-domain architecture, not a fourth scoring
+  engine and not a replacement for Track A/B/C.
