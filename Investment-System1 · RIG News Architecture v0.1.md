@@ -2,7 +2,7 @@
 
 Contract ID: `RIG_NEWS_ARCH_v0.1`
 
-Status: **DESIGN FROZEN / IMPLEMENTATION NOT STARTED**
+Status: **DESIGN FROZEN / P0 FOUNDATION IMPLEMENTED — FREEZE_READY (awaiting user freeze approval); P1–P5 NOT_STARTED**
 
 Registered: 2026-09-27 11:07 KST
 
@@ -244,8 +244,34 @@ Summary→Evidence→Detail 패턴, QGV/Technical/Macro snapshots을 우선 재�
 
 ## Current state
 
-- Architecture Design: 100%
+- Architecture Design: 100% (unchanged; no architecture change by P0)
 - Repository consistency audit: completed against local/remote-identical tree at registration
-- Implementation: 0%
-- Status: **DESIGN FROZEN / IMPLEMENTATION NOT STARTED**
-- P0–P5: NOT_STARTED
+- C-39: RESOLVED and re-verified 2026-09-27 17:13 KST (`contracts/global_universe.py`, 6/6 focused regressions)
+- P0 Foundation: IMPLEMENTED → TESTING PASS → **FREEZE_READY** (freeze pending explicit user approval)
+- P1–P5: NOT_STARTED
+
+## P0 Foundation implementation record (2026-09-27 17:13 KST, Track D)
+
+Branch: `feature/track-d-rig-news`, based on canonical `5acb047` (C-39 resolution). Package
+`implementation/src/investment_system/rig/` (5 files); tests `implementation/tests/test_rig_p0_foundation.py` (15).
+
+- Identity: RIG is a consumer of the common C-39 hierarchy only. `IdentityRef(issuer_id, security_id?, listing_id?)`
+  enforces Issuer → Security → Listing; graph `Node` id is `issuer:<issuer_id>`; no ticker/CIK field exists. Identity
+  records are read through an `IdentityLookup` protocol supplied by the upstream owner; RIG holds no identity universe.
+- Lineage: `SourceRef → Evidence → Claim → NewsEvent/EconomicEvent → RelationshipCandidate → GateDecision →
+  RelationshipState → Edge`, append-only `LineageIndex`, and `RelationshipLedger.trace(edge)`.
+- Update Gate: IDENTITY / EVIDENCE / TEMPORAL / DIRECTION / DUPLICATE / CONTRADICTION. Identity failure → UNRESOLVED;
+  any other failure → PENDING. Candidates and decisions are never deleted.
+- Time: `valid_from`/`valid_to` = real-world validity (date, `valid_to` exclusive); `available_at` = public knowledge
+  time; `first_detected_at` / `last_confirmed_at` = knowledge time of first/latest accepted assertion; `decided_at` =
+  system time, never used for PIT. Historical graph uses `available_at <= graph_as_of`; lineage look-ahead,
+  candidate-before-lineage, evidence-before-source, out-of-order backfill, naive datetimes and future `valid_on` fail
+  closed. Unknown `valid_from` is treated as valid only from the `available_at` date.
+- Fact/Inference: `FACT`, `SUPPORTED_INFERENCE`, `UNVERIFIED_SIGNAL`. The gate never changes a candidate's status;
+  `UNVERIFIED_SIGNAL` is never an edge; FACT requires at least one PRIMARY_DISCLOSURE or NEWS source; a later
+  inference cannot downgrade a FACT with the same interval.
+- DataEvent separation: `NewsEvent`/`EconomicEvent` are independent classes; `rig.adapter.to_data_event` builds
+  `DataEvent(kind=NEWS)` only with an explicitly supplied pipeline `company_id`. `DataEvent` and the incremental engine
+  are unchanged; NEWS remains evidence-only.
+- Not implemented (P1+): UI, Zoom/Pan/Drag, clustering, Relationship/Deal state UX, Personal overlay, My Groups,
+  Research Priority, Hub/Bridge/Bottleneck, Impact Graph, notification, Track C/E integration, any score, persistence.

@@ -659,3 +659,14 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - Added six fail-closed regressions. Focused 6/6 and full 308/308 pass via mini_pytest shim; py_compile/diff check pass.
 - Track B's frozen `personal/security.py` was not imported or modified. RIG remains DESIGN FROZEN / IMPLEMENTATION NOT
   STARTED; C-39 alone no longer blocks its future P0.
+
+## 2026-09-27 · Track D RIG P0 Foundation · Claude Code
+
+- Implemented `RIG_NEWS_ARCH_v0.1` P0 Foundation in the new `investment_system.rig` package (model, gate, ledger,
+  adapter) as a consumer of the C-39 common identity contract: issuer-keyed nodes, full Source→Evidence→Claim→
+  Event→Candidate→Update Gate→Edge lineage, six-category Update Gate with PENDING/UNRESOLVED preservation, append-only
+  bitemporal relationship states, fail-closed `available_at <= graph_as_of` reconstruction, FACT /
+  SUPPORTED_INFERENCE / UNVERIFIED_SIGNAL separation, and a `DataEvent(kind=NEWS)` adapter.
+- No existing module changed. RIG imports only `contracts.global_universe` and `contracts.universe`; no Track A/B/C/E
+  code, QGV/Technical/Macro score, or `DataEvent` semantics changed.
+- Targeted RIG 15/15 and full suite 323/323 (308 baseline + 15) pass via mini_pytest shim. Status: P0 FREEZE_READY.
