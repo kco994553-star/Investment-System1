@@ -659,3 +659,44 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - Added six fail-closed regressions. Focused 6/6 and full 308/308 pass via mini_pytest shim; py_compile/diff check pass.
 - Track B's frozen `personal/security.py` was not imported or modified. RIG remains DESIGN FROZEN / IMPLEMENTATION NOT
   STARTED; C-39 alone no longer blocks its future P0.
+
+## 2026-09-27 · Track D RIG P0 Foundation · Claude Code
+
+- Implemented `RIG_NEWS_ARCH_v0.1` P0 Foundation in the new `investment_system.rig` package (model, gate, ledger,
+  adapter) as a consumer of the C-39 common identity contract: issuer-keyed nodes, full Source→Evidence→Claim→
+  Event→Candidate→Update Gate→Edge lineage, six-category Update Gate with PENDING/UNRESOLVED preservation, append-only
+  bitemporal relationship states, fail-closed `available_at <= graph_as_of` reconstruction, FACT /
+  SUPPORTED_INFERENCE / UNVERIFIED_SIGNAL separation, and a `DataEvent(kind=NEWS)` adapter.
+- No existing module changed. RIG imports only `contracts.global_universe` and `contracts.universe`; no Track A/B/C/E
+  code, QGV/Technical/Macro score, or `DataEvent` semantics changed.
+- Targeted RIG 15/15 and full suite 323/323 (308 baseline + 15) pass via mini_pytest shim. Status: P0 FREEZE_READY.
+- 2026-09-27 17:44 KST: P0 FROZEN at code baseline `e3b1b62`. Re-verified 323/323 on a throwaway merge with
+  canonical `ed343ba` (Track A-only upstream delta, no conflicts). P1 NOT_STARTED.
+
+## 2026-09-27 · Track D RIG P1 Basic Network · Claude Code
+
+- Added `investment_system.rig.network`: shared News/Network view model, news status linking, relationship visual
+  contract, focus/expansion, view-state preservation, three-language labels, and a static News | Network page with
+  zoom/pan/drag. P1 11/11, full 334/334 (mini_pytest shim), browser smoke 18/18. P1 FROZEN. No existing module changed.
+
+## 2026-09-27 · Track D RIG P2 Relationship Intelligence · Claude Code
+
+- Added `investment_system.rig.intel`: PIT relationship status (NEW/DISCOVERED/STRENGTHENED/STABLE/WEAKENED/ENDED),
+  materiality observations, a separate Deal state machine with preserved rejections, relationship timeline, and
+  P2 badges/width/priority through P1's extension points (P1 gained a default-preserving `priority` argument).
+  P2 9/9, full 343/343 (mini_pytest shim). P2 FROZEN.
+
+## 2026-09-27 · Track D RIG P3 Personal UX · Claude Code
+
+- Added `investment_system.rig.myview`: read-only holdings port, USER-only ★ 관심기업 and My Groups action logs,
+  내 기업 | 전체 scope with chips, feed-priority tiers, My-first expansion priority, related news, Attention input
+  export (no delivery runtime), default-OFF read-only Investment Overlay, and page composition via P1/P2 extension
+  points. Browser smoke gained scope-parity checks. P3 11/11, full 354/354 (mini_pytest shim). P3 FROZEN.
+
+## 2026-09-27 · Track D RIG P4 Discovery · Claude Code
+
+- Added `investment_system.rig.discovery`: Fact-Graph positions (Hub/Bridge/Bottleneck), Emerging, Common
+  Connections, on-demand Impact Graph with evidence-backed concept exposures (⬡/◆/▣ references), High/Medium/Low
+  Research Priority labels, Common-Connection expansion slot and the composed P1–P4 page. P4 9/9, full 363/363
+  (mini_pytest shim). P4 FROZEN. P5 awaits a D3-P decision.
+- 2026-09-27 18:12 KST: user D3-P decision — Hold P5; P5 BLOCKED on Track C C0. No code change.

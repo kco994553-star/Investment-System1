@@ -1,0 +1,93 @@
+// RIG News|Network page browser smoke (optional; needs Node + Playwright + Chromium).
+// Usage: NODE_PATH=$(npm root -g) node tools/rig_browser_smoke.js <page.html> [expected_scope.json]
+// The optional JSON (P3 pages) lists Python `select()` results the client-side scope must reproduce.
+// Exercises the client-side interactions of rig.network.render; prints JSON and exits non-zero on failure.
+const { chromium } = require('playwright');
+const path = require('path');
+(async () => {
+  const file = 'file://' + path.resolve(process.argv[2]);
+  const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || undefined });
+  const page = await browser.newPage({ viewport: { width: 1000, height: 1200 } });
+  const errors = [];
+  page.on('pageerror', e => errors.push(String(e)));
+  await page.goto(file);
+  const st = () => page.evaluate(() => window.rigState());
+  const out = {};
+  const check = (name, cond) => { out[name] = !!cond; };
+  check('news_default', (await st()).view === 'NEWS' && await page.isVisible('#pane-NEWS') && !(await page.isVisible('#pane-NETWORK')));
+  await page.click('[data-view=NETWORK]');
+  check('toggle_network', await page.isVisible('#net') && !(await page.isVisible('#pane-NEWS')));
+  if (process.argv[3]) {  // P3 scope parity with rig.myview.scope.select
+    const exp = JSON.parse(require('fs').readFileSync(process.argv[3], 'utf8'));
+    const sc = () => page.evaluate(() => window.rigScope());
+    const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    let r = await sc();
+    check('scope_default_my', r.scope === 'MY' && same(r.nodes, exp.my_all.nodes) && same(r.rels, exp.my_all.rels) && same(r.evs, exp.my_all.evs));
+    const hiddenCards = await page.locator('article[data-event].out-scope').count();
+    check('scope_hides_out_of_scope_cards', hiddenCards === exp.n_cards - exp.my_all.evs.length);
+    await page.click('[data-chip=RELATED]');
+    r = await sc();
+    check('chip_related_off', same(r.nodes, exp.my_no_related.nodes) && same(r.rels, exp.my_no_related.rels) && same(r.evs, exp.my_no_related.evs));
+    const vpBefore = (await st()).viewport;
+    await page.click('[data-view=NEWS]'); await page.click('[data-view=NETWORK]');
+    r = await sc();
+    check('scope_survives_view_switch', r.scope === 'MY' && !r.chips.includes('RELATED') && same((await st()).viewport, vpBefore));
+    await page.click('[data-scope=ALL]');
+    r = await sc();
+    check('scope_all_unrestricted', r.nodes === null && (await page.locator('.out-scope').count()) === 0);
+  }
+  if (!process.argv[3] && await page.$('[data-scope=ALL]')) await page.click('[data-scope=ALL]');  // generic checks run on ALL
+  const box = await page.locator('#net').boundingBox();
+  await page.mouse.move(box.x + 20, box.y + 20);
+  await page.mouse.wheel(0, -400);
+  const z = (await st()).viewport.zoom;
+  check('wheel_zoom', z > 1);
+  const before = (await st()).viewport;
+  await page.mouse.move(box.x + 30, box.y + 30); await page.mouse.down();
+  await page.mouse.move(box.x + 130, box.y + 80, { steps: 5 }); await page.mouse.up();
+  const after = (await st()).viewport;
+  check('pan_empty_space', after.pan_x !== before.pan_x && after.zoom === before.zoom);
+  const node = page.locator('[data-node]').first();
+  const id = await node.getAttribute('data-node');
+  const t0 = await node.getAttribute('transform');
+  const nb = await node.boundingBox();
+  await page.mouse.move(nb.x + nb.width / 2, nb.y + 8); await page.mouse.down();
+  await page.mouse.move(nb.x + nb.width / 2 + 60, nb.y + 60, { steps: 5 }); await page.mouse.up();
+  check('node_drag', (await node.getAttribute('transform')) !== t0 && (await st()).viewport.pan_x === after.pan_x);
+  await page.click('#fit');
+  const hub = page.locator('[data-node="issuer:issuer_tsmc"]');
+  const hb = await hub.boundingBox();
+  await page.mouse.click(hb.x + hb.width / 2, hb.y + 8);
+  check('node_quick_view', (await page.textContent('#qv')).includes('TSMC'));
+  await page.mouse.dblclick(hb.x + hb.width / 2, hb.y + 8);
+  const shownEdges = await page.locator('line[data-edge]:not(.hidden)').count();
+  check('focus_limits_to_8', (await st()).focus === 'issuer:issuer_tsmc' && shownEdges === 8);
+  check('plus_n_visible', await page.isVisible('#more') && (await page.textContent('#more')).includes('+3'));
+  await page.click('#more');
+  check('expansion_step', (await page.locator('line[data-edge]:not(.hidden)').count()) === 11 && !(await page.isVisible('#more')));
+  const edge = page.locator('line[data-edge]:not(.hidden)').first();
+  await edge.dispatchEvent('click');
+  check('edge_quick_view', (await page.textContent('#qv')).length > 5);
+  await page.click('#fit');
+  const s2 = await st();
+  check('fit_resets', s2.viewport.zoom === 1 && s2.focus === null);
+  await page.fill('#q', 'nvidia'); await page.press('#q', 'Enter');
+  check('search_focus', (await st()).focus === 'issuer:issuer_nvidia');
+  await page.mouse.move(box.x + 20, box.y + 20); await page.mouse.wheel(0, -200);
+  const vpNet = (await st()).viewport;
+  await page.click('[data-view=NEWS]'); await page.click('[data-view=NETWORK]');
+  const s3 = await st();
+  check('switch_preserves_state', JSON.stringify(s3.viewport) === JSON.stringify(vpNet) && s3.focus === 'issuer:issuer_nvidia');
+  await page.selectOption('#lang', 'EN');
+  check('lang_en', (await page.textContent('[data-view=NETWORK]')).trim() === 'Network');
+  await page.selectOption('#lang', 'EN_KO');
+  check('lang_en_ko', (await page.textContent('[data-view=NETWORK]')).trim() === 'Network (관계망)');
+  check('lang_keeps_state', JSON.stringify((await st()).viewport) === JSON.stringify(vpNet));
+  await page.setViewportSize({ width: 390, height: 800 });
+  check('mobile_no_hscroll', await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+  check('no_page_errors', errors.length === 0);
+  await browser.close();
+  const ok = Object.values(out).every(Boolean);
+  console.log(JSON.stringify({ ok, checks: out, errors }, null, 1));
+  process.exit(ok ? 0 : 1);
+})();

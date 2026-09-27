@@ -2,7 +2,7 @@
 
 Contract ID: `RIG_NEWS_ARCH_v0.1`
 
-Status: **DESIGN FROZEN / IMPLEMENTATION NOT STARTED**
+Status: **DESIGN FROZEN / P0–P4 IMPLEMENTED + FROZEN; P5 BLOCKED on Track C C0 (user D3-P decision)**
 
 Registered: 2026-09-27 11:07 KST
 
@@ -244,8 +244,163 @@ Summary→Evidence→Detail 패턴, QGV/Technical/Macro snapshots을 우선 재�
 
 ## Current state
 
-- Architecture Design: 100%
+- Architecture Design: 100% (unchanged; phases add implementation only)
 - Repository consistency audit: completed against local/remote-identical tree at registration
-- Implementation: 0%
-- Status: **DESIGN FROZEN / IMPLEMENTATION NOT STARTED**
-- P0–P5: NOT_STARTED
+- C-39: RESOLVED and re-verified 2026-09-27 17:13 KST (`contracts/global_universe.py`, 6/6 focused regressions)
+- P0 Foundation: **FROZEN** (2026-09-27 17:44 KST; code baseline `e3b1b62`)
+- P1 Basic Network: **FROZEN** (2026-09-27 17:55 KST; baseline `af5080b`)
+- P2 Relationship Intelligence: **FROZEN** (2026-09-27 17:59 KST; baseline `d831870`)
+- P3 Personal UX: **FROZEN** (2026-09-27 18:06 KST; baseline `564884f`)
+- P4 Discovery: **FROZEN** (2026-09-27 18:09 KST; baseline `6c72490`)
+- P5 Validation: **BLOCKED** on Track C C0 — user D3-P decision 2026-09-27 18:12 KST (Hold P5)
+
+## P0 Foundation implementation record (2026-09-27 17:13 KST, Track D)
+
+Branch: `feature/track-d-rig-news`, based on canonical `5acb047` (C-39 resolution). Package
+`implementation/src/investment_system/rig/` (5 files); tests `implementation/tests/test_rig_p0_foundation.py` (15).
+
+- Identity: RIG is a consumer of the common C-39 hierarchy only. `IdentityRef(issuer_id, security_id?, listing_id?)`
+  enforces Issuer → Security → Listing; graph `Node` id is `issuer:<issuer_id>`; no ticker/CIK field exists. Identity
+  records are read through an `IdentityLookup` protocol supplied by the upstream owner; RIG holds no identity universe.
+- Lineage: `SourceRef → Evidence → Claim → NewsEvent/EconomicEvent → RelationshipCandidate → GateDecision →
+  RelationshipState → Edge`, append-only `LineageIndex`, and `RelationshipLedger.trace(edge)`.
+- Update Gate: IDENTITY / EVIDENCE / TEMPORAL / DIRECTION / DUPLICATE / CONTRADICTION. Identity failure → UNRESOLVED;
+  any other failure → PENDING. Candidates and decisions are never deleted.
+- Time: `valid_from`/`valid_to` = real-world validity (date, `valid_to` exclusive); `available_at` = public knowledge
+  time; `first_detected_at` / `last_confirmed_at` = knowledge time of first/latest accepted assertion; `decided_at` =
+  system time, never used for PIT. Historical graph uses `available_at <= graph_as_of`; lineage look-ahead,
+  candidate-before-lineage, evidence-before-source, out-of-order backfill, naive datetimes and future `valid_on` fail
+  closed. Unknown `valid_from` is treated as valid only from the `available_at` date.
+- Fact/Inference: `FACT`, `SUPPORTED_INFERENCE`, `UNVERIFIED_SIGNAL`. The gate never changes a candidate's status;
+  `UNVERIFIED_SIGNAL` is never an edge; FACT requires at least one PRIMARY_DISCLOSURE or NEWS source; a later
+  inference cannot downgrade a FACT with the same interval.
+- DataEvent separation: `NewsEvent`/`EconomicEvent` are independent classes; `rig.adapter.to_data_event` builds
+  `DataEvent(kind=NEWS)` only with an explicitly supplied pipeline `company_id`. `DataEvent` and the incremental engine
+  are unchanged; NEWS remains evidence-only.
+- Not implemented (P1+): UI, Zoom/Pan/Drag, clustering, Relationship/Deal state UX, Personal overlay, My Groups,
+  Research Priority, Hub/Bridge/Bottleneck, Impact Graph, notification, Track C/E integration, any score, persistence.
+
+## P0 Freeze record (2026-09-27 17:44 KST, Track D)
+
+- Frozen code baseline: `e3b1b62` on `feature/track-d-rig-news` (`rig/` 5 files, 15 tests). Any later change to
+  `investment_system.rig` P0 semantics (identity use, time fields, gate categories/outcomes, Fact/Inference rules,
+  DataEvent adapter) requires a new decision record; P1 may only add on top of it.
+- Evidence: RIG targeted 15/15 and full 323/323 (mini_pytest shim) on the Track D branch; the same 323/323 also passed
+  on a throwaway merge with the latest canonical `ed343ba` (no conflicts, not committed). Canonical changes since the
+  Track D base are Track A only (C-21 run evidence, GRAL/CA share reconstruction) and do not touch RIG, contracts or
+  `DataEvent`.
+- Open integration items (not blockers for P0): issuer_id → pipeline `company_id` mapping, a production
+  `IdentityLookup` supplied by the identity owner, and shared status documents (Handoff / Master Status / Project
+  Index) at canonical merge time.
+
+## P1 Basic Network record (2026-09-27 17:55 KST, Track D) — FROZEN
+
+Package `implementation/src/investment_system/rig/network/` (`views.py`, `labels.py`, `render.py`), tests
+`test_rig_p1_network.py` (11), shared fixture `tests/rig_fixtures.py`, optional browser smoke
+`tools/rig_browser_smoke.js`. P0 files are unchanged.
+
+- Same Information, Two Views: `build_view_model` projects one P0 `RIGGraph` into News cards and Network
+  nodes/edges with identical event / relationship / node ids. `NewsIndex` holds only news-view metadata keyed by P0
+  event ids (no second Event store).
+- News cards: NEW (no link) / UPDATE / FOLLOW_UP / DUPLICATE via append-only, PIT-checked `EventLink`; DUPLICATE is
+  hidden from the default feed; source count = distinct lineage sources; untraceable events are not shown.
+- Network: relationship types Supply Chain / Customer / Competitor / Value Chain; solid = FACT, dashed =
+  SUPPORTED_INFERENCE, arrow = directed upstream→downstream (Competitor undirected); at most 2 edge badges.
+- `ViewState` (view, filters, focus, expansion steps, viewport); `switch_view` changes only the view. Filters apply
+  to both views. Focus shows 5–8 core relationships (default 8) with `+N` expansion by steps; overview capped at 60
+  edges per step (no unlimited expansion). P1 edge priority: FACT, most recently confirmed, id.
+- Page: whole content area swaps between News and Network; wheel/pinch zoom, empty-space pan, node drag, node/edge
+  quick view, double-click focus, `+N`, `⌂` fit, search; EN / English (한국어) / 한국어 change labels only.
+- Evidence: targeted P1 11/11, P0 15/15, full 334/334 (mini_pytest shim); browser smoke 18/18 checks in Chromium
+  (found and fixed a pointer-capture bug that suppressed node click/double-click).
+- D2 decisions: NEW/UPDATE/FOLLOW-UP news status is P1 (News View core), relationship NEW/DISCOVERED stays P2;
+  non-company nodes (◆ ▣ ⬡) are deferred to P4 with the Impact Graph; the page is a standalone RIG render, not yet
+  registered in the shared App Shell `NAV_PAGES` (INTEGRATION_REQUIRED at canonical merge); later phases extend the
+  page only through `PageExtras`.
+
+## P2 Relationship Intelligence record (2026-09-27 17:59 KST, Track D) — FROZEN
+
+Package `implementation/src/investment_system/rig/intel/` (`intel.py`, `present.py`), tests `test_rig_p2_intel.py` (9).
+
+- Relationship status, derived point-in-time from P0 states: ENDED (latest `valid_to` <= as-of date); NEW (first
+  detected within 30 days and a known `valid_from` no earlier than 30 days before detection = real new relationship);
+  DISCOVERED (recently detected, start past or unknown); STRENGTHENED / WEAKENED (latest materiality change or deal
+  EXPANDED/RENEWED vs REDUCED, or CANCELLED/EXPIRED of a deal that had been live, within 30 days); otherwise STABLE.
+- `MaterialityObservation` (LOW/MEDIUM/HIGH/CRITICAL) requires an accepted relationship and PIT evidence; it drives
+  edge width and the card's importance badge. It is a relevance label, not an investment score.
+- Deal state is separate from relationship state: RUMORED → EXPECTED → NEGOTIATING → ANNOUNCED → CONFIRMED → ACTIVE
+  (forward only, skips allowed), then EXPANDED/RENEWED/REDUCED from a live deal; CANCELLED from any non-terminal
+  state; EXPIRED only from a live deal; terminal states accept nothing. Invalid, out-of-order, identity-unknown or
+  look-ahead observations are kept in `rejected` with reasons. A deal never creates, confirms or removes an edge.
+- Timeline: ordered STATE / MATERIALITY / DEAL entries visible at the as-of time.
+- Presentation: at most 2 edge badges (status, then deal phrase ✓확정 / 예상 / 발표 / 계약 종료); card badges for deal
+  phrase, strengthened/weakened and importance; expansion priority Critical → High materiality → Recent change → P1
+  order (Portfolio/관심 slot is added in P3, Common Connection in P4).
+- P1 extension (D2): `build_network` / `neighborhood` / `build_view_model` gained an optional `priority` argument
+  whose default is the frozen P1 order; P1 behavior and its 11 tests are unchanged.
+- D2: the "Critical Event" priority slot is represented by CRITICAL relationship materiality; the 30-day recent window
+  is a single module constant (`RECENT_WINDOW`).
+- Evidence: P2 9/9 (6/6 mutation checks caught), P0–P2 35/35, full 343/343 (mini_pytest shim), browser smoke 18/18 on
+  a page with P2 badges/widths.
+
+## P3 Personal UX record (2026-09-27 18:06 KST, Track D) — FROZEN
+
+Package `implementation/src/investment_system/rig/myview/` (`prefs.py`, `scope.py`, `present.py`), tests
+`test_rig_p3_myview.py` (11). P0–P2 files are unchanged.
+
+- Portfolio: read only through `HoldingsPort.held_issuer_ids(as_of)` (C-39 issuer ids; unknown issuers fail closed).
+  RIG does not import or modify Track B; the Track B → issuer-id adapter is outside RIG (INTEGRATION_REQUIRED).
+- ★ 관심기업: one list, append-only USER action log (SYSTEM actions are refused: no automatic interest adds),
+  reconstructed point-in-time. My Groups: CREATE / RENAME / ADD_MEMBER / REMOVE_MEMBER / DELETE by USER only,
+  many-to-many, fields `group_id`, `name`, `members` only (no weights, scores or system classification).
+- 내 기업 = holdings ∪ 관심기업. Scope MY / ALL with chips ◎ 보유, ★ 관심, 그룹 (selected group), 연관 (1-hop);
+  ALL is never restricted. `switch_my_view` keeps scope, chips, group, overlay and the P1 state.
+- Feed priority (tiers only, never a score): 보유 중요 → 관심 중요 → 내 기업 High-Materiality 1-Hop →
+  Research Priority 신규기업 (P4 hook) → other 내 기업 → 전체 시장; within a tier the P1 recency order.
+- Network expansion priority: Critical → Portfolio/관심 → High materiality → Recent change → P1 order.
+- Related News (DIRECT / RELATED via 1-hop); ◎ / ★ node symbols.
+- Attention: `AttentionInput` exports RIG-owned inputs only (event importance, user relevance, materiality,
+  `available_at` for recency, confidence). No delivery channel, notification, or runtime is created (D2; the Attention
+  layer owner remains open — INTEGRATION_REQUIRED).
+- Investment Overlay: OFF by default; when ON it shows pre-formatted string rows from a read-only `OverlayPort`;
+  non-string values are refused, so RIG cannot compute or re-score.
+- Page: client-side scope/chip/group switching mirrors `scope.select` over embedded id sets and uses a separate
+  `out-scope` class, so P1 viewport/focus state is untouched.
+- Evidence: P3 11/11 (6/6 mutation checks caught after strengthening two tests), full 354/354 (mini_pytest shim),
+  browser smoke 24/24 including Python↔browser scope parity; P1/P2 pages still 18/18.
+- Known limitation: node layout is computed for the full graph, so MY scope keeps the full-graph positions.
+
+## P4 Discovery record (2026-09-27 18:09 KST, Track D) — FROZEN
+
+Package `implementation/src/investment_system/rig/discovery/` (`discovery.py`, `impact.py`, `present.py`), tests
+`test_rig_p4_discovery.py` (9). P0–P3 files are unchanged.
+
+- Fact Graph only (SUPPORTED_INFERENCE edges excluded). Graph Position labels: HUB (degree ≥ 5), BRIDGE
+  (articulation point; iterative Tarjan, cross-checked against brute force on 60 random graphs), BOTTLENECK (sole
+  upstream supplier of ≥ 2 downstream companies over Supply Chain / Customer / Value Chain flow).
+- Emerging: ≥ 2 relationships with P2 status NEW / DISCOVERED at the as-of time. Common Connections: shared FACT
+  neighbours of two companies; for 내 기업, non-My companies linked to ≥ 2 My companies.
+- Impact Graph: derived on demand from an Event's companies or a concept seed, up to 3 hops over FACT edges with
+  DOWNSTREAM / UPSTREAM / PEER hop labels (plus EXPOSURE from a concept); shortest path per company, no cycles;
+  never persisted and never written into relationship state. Rendered as dotted arrows labelled "잠재 영향 경로
+  (사실 아님)".
+- Concept nodes ⬡ Macro Driver / ◆ Technology / ▣ Value Chain Stage are id references only (Macro owns driver
+  definitions). Concept → issuer `Exposure` requires known concept and issuer and evidence available by the exposure
+  time; it is point-in-time and is not a Fact edge.
+- Research Priority (non-My companies only; High/Medium/Low, labelled "not a buy/sell view"): HIGH = HIGH/CRITICAL
+  materiality FACT link to a My company or sole supplier of one; MEDIUM = any FACT link to My, emerging, common
+  connection or bottleneck; else LOW. HIGH companies fill the P3 feed tier "Research Priority 신규기업".
+- Expansion priority completed: Critical → Portfolio/관심 → High materiality → Recent change → Common Connection →
+  P1 order. `build_rig_page` composes P1–P4 through public functions and `PageExtras`.
+- D2 thresholds (`HUB_MIN_DEGREE`, `BOTTLENECK_MIN_DEPENDENTS`, `EMERGING_MIN_NEW`, `MAX_HOPS`) are module
+  constants; they are descriptive-label thresholds, not investment policy.
+- Evidence: P4 9/9 (7/7 mutation checks caught after adding bottleneck and cycle tests), RIG P0–P4 55/55, full
+  363/363 (mini_pytest shim), browser smoke on P1/P2/P4 pages 19/19 each and P3 parity page 24/24.
+
+## P5 decision record (2026-09-27 18:12 KST, Track D) — D3-P
+
+P5 (Validation = Track C integration) cannot pass its gate: `EVL_SPEC_v0.1` is DESIGN FROZEN / IMPLEMENTATION NOT
+STARTED and keeps Track C implementation closed until the Track A REAL-DATA baseline Freeze. The user chose **Hold
+P5**: P5 stays NOT_STARTED / BLOCKED on Track C C0. No RIG feature lifecycle, Track C port, policy or ownership change
+was implemented. RIG P0–P4 remain FROZEN; every RIG output remains INFORMATION_ONLY (no GRAPH_VALIDATED_FEATURE).
+Reopen when Track C C0 Contracts exist.
