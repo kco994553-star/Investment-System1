@@ -1,41 +1,464 @@
-'use strict';
-let D, prefs={version:1,interests:[],groups:[]}, storageOK=true,corruptStorage=false;
-const KEY='investment.web.v1.personal';
-const $=s=>document.querySelector(s), esc=v=>String(v??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmt=v=>v==null?'미제공':typeof v==='number'?v.toLocaleString('ko-KR',{maximumFractionDigits:2}):esc(v);
-const pct=v=>v==null?'미제공':fmt(v*100)+'%';
-function notice(s){$('#notice').textContent=s;}
-function save(){if(corruptStorage){notice("기존 설정 손상: 원본을 보존했습니다. 현재 변경은 내보내기로 보관하세요.");return;}try{localStorage.setItem(KEY,JSON.stringify(prefs));storageOK=true;notice('저장되었습니다.');}catch(e){storageOK=false;notice('이 브라우저에 저장할 수 없습니다. 내보내기로 보관하세요.');}}
-function validatePrefs(p){if(p.version!==1||!Array.isArray(p.interests)||!Array.isArray(p.groups)||p.interests.some(i=>typeof i!=='string')||p.groups.some(g=>typeof g.id!=='string'||typeof g.name!=='string'||!g.name.trim()||!Array.isArray(g.members)||g.members.some(i=>typeof i!=='string')))throw Error('관심기업 파일 형식 오류');return p;}
-function load(){try{const s=localStorage.getItem(KEY);if(s)prefs=validatePrefs(JSON.parse(s));}catch(e){storageOK=false;corruptStorage=true;notice('저장된 설정을 읽을 수 없습니다. 원본을 덮어쓰지 않고 임시로 시작합니다.');}}
-function company(id){return D.companies.find(c=>c.company_id===id);}
-function byIssuer(id){return D.companies.find(c=>c.issuer_id===id);}
-function star(id){return `<button class="star" data-star="${esc(id)}" aria-label="${esc(company(id)?.ticker||id)} 관심기업" aria-pressed="${prefs.interests.includes(id)}">${prefs.interests.includes(id)?'★':'☆'}</button>`;}
-function state(s){let stale=s.state==='LIVE'&&Date.parse(s.expires_at)<=Date.now();return `<div class="state"><span class="badge ${esc(s.state)}">${esc(s.state)}${stale?' · STALE':''}</span> <span class="meta">${esc(s.as_of||'시점 미제공')}</span></div><div class="meta">${esc(s.source||s.reason||'출처 미제공')}</div>`;}
-function evidence(v){return `<details><summary>Evidence(근거) · 원본 보기</summary><pre>${esc(JSON.stringify(v,null,2))}</pre></details>`;}
-function block(name,title,body){const s=D[name];return `<section class="card"><h2>${title}</h2>${state(s)}${s.data===null?'<p class="empty">'+esc(s.reason)+'</p>':body}${s.data!==null?evidence(s):''}</section>`;}
-function heading(k,t,s=''){return `<div class="eyebrow">${k}</div><h1>${t}</h1>${s?'<p class="muted">'+s+'</p>':''}`;}
-function row(c){return `<li class="item"><a href="#company/${encodeURIComponent(c.company_id)}"><span class="ticker">${esc(c.ticker)}</span><div class="muted">${esc(c.name)}${c.market_cap_rank?' · 시총 #'+c.market_cap_rank:''}${c.demo?' · DEMO':''}</div></a>${star(c.company_id)}</li>`;}
-function summaryFor(name,id){const s=D[name];const v=s.data?.[id];return `<section class="card"><h2>${name==='qgv'?'QGV':name==='technical'?'Technical(기술적 분석)':'Macro(거시환경)'}</h2>${state(s)}${v?`<dl>${(name==='qgv'?['Q_score','G_score','V_score','total_score','confidence','coverage_state']:['regime','execution_zone','invalidation']).map(k=>`<dt>${esc(k)}</dt><dd>${fmt(v[k])}</dd>`).join('')}</dl>${evidence(v)}`:'<p class="empty">이 기업의 Snapshot 미제공</p>'}</section>`;}
-function home(){const held=D.portfolio.data?.holdings||[];return heading('YOUR DAILY BRIEF','오늘의 투자 화면','중요한 변화부터 확인하고, 근거까지 따라가세요.')+
- `<section class="card hero"><div class="row"><h2>Portfolio(포트폴리오)</h2><a href="#portfolio">자세히 →</a></div><div class="metric">${D.portfolio.data?held.length+' holdings':'연결 대기'}</div><p class="muted">${D.portfolio.data?esc(D.portfolio.data.role||'제공된 Snapshot'):'실제 보유·평가금액·수익률을 연결하면 여기서 확인합니다.'}</p>${state(D.portfolio)}</section>`+
- `<div class="grid home-grid">${block('changes','오늘 / 최근 주요 변화',`<p>${esc(D.changes.data?.summary||'')}</p>`)}${block('macro','Macro(거시환경)',`<p>${esc(D.macro.data?.state||'')} · ${esc(D.macro.data?.regime||'')}</p>`)}</div>`+
- `<section class="card"><h2>Attention(확인 필요)</h2><p class="small">${D.universe.state==='FROZEN_SNAPSHOT'?'기업 목록은 '+esc(D.universe.as_of)+' 과거 스냅샷입니다. 최신 시세·분석이 아닙니다.':'출처와 데이터 시점을 확인하세요.'}</p><div class="chips"><a href="#companies">관심기업 ${prefs.interests.length} →</a><a href="#leaderboard">Leaderboard →</a></div></section>`+
- `<details><summary>분석 · 뉴스 · 관계 변화 더보기</summary><div class="grid">${block('qgv','QGV 변화','<p>변화량은 upstream changes가 제공할 때만 표시합니다.</p>')}${block('technical','Technical 변화','<p>최근 신호는 기업 상세에서 확인하세요.</p>')}${block('news','관심기업 뉴스','<a href="#news">뉴스 열기 →</a>')}${block('relationships','Relationship changes(관계 변화)','<a href="#news">관계망 열기 →</a>')}</div></details>`;}
-function companies(){return heading('COMPANIES','기업 탐색')+`<input type="search" id="search" aria-label="기업 검색" placeholder="티커 또는 기업명 검색"><div class="chips"><label><input type="checkbox" id="only-interest"> 관심기업만</label><select id="group-filter" aria-label="그룹 필터"><option value="">모든 그룹</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}">${esc(g.name)}</option>`).join('')}</select></div><p class="meta">${esc(D.universe.as_of)} · FROZEN_SNAPSHOT / DEMO 기업은 별도 표기</p><ul class="list" id="company-list"></ul><button id="more-companies">더보기</button><details><summary>관심기업 · Groups(그룹) 관리</summary>${groupsUI()}</details>`;}
-function groupsUI(){return `<p class="muted">이 기기의 브라우저에 저장됩니다. 즐겨찾기와 관심기업은 같은 목록입니다.</p><form id="new-group"><label for="group-name">새 그룹 이름</label><div class="row"><input id="group-name" required maxlength="60" placeholder="예: 반도체"><button>그룹 만들기</button></div></form><div id="groups">${prefs.groups.map(g=>`<div class="group"><b>${esc(g.name)}</b> <span class="muted">${g.members.length}개</span><div class="row"><input aria-label="그룹 이름 ${esc(g.name)}" data-rename-input="${esc(g.id)}" value="${esc(g.name)}" maxlength="60"><button data-rename="${esc(g.id)}">이름 변경</button><button data-delete="${esc(g.id)}">그룹 삭제</button></div>${prefs.interests.map(id=>`<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(id)}" ${g.members.includes(id)?'checked':''}> ${esc(company(id)?.ticker||id)}</label>`).join('')}</div>`).join('')}</div><div class="toolbar"><button id="export">내보내기</button><label>설정 병합 가져오기 <input type="file" id="import" accept="application/json"></label></div>`;}
-function detail(id){const c=company(id);if(!c)return heading('COMPANIES','기업을 찾을 수 없습니다.')+'<a href="#companies">기업 목록 →</a>';const h=D.portfolio.data?.holdings?.find(r=>r.company_id===id);return `<a class="small" href="#companies">← 기업 목록</a><div class="row">${heading('COMPANY DETAIL',esc(c.ticker),esc(c.name))}${star(id)}</div><div class="grid">${summaryFor('qgv',id)}${summaryFor('technical',id)}</div>`+block('macro','Macro exposure / context(거시 노출)',`<p>${esc(D.macro.data?.regime||'')}</p><p>기업 노출: ${esc(D.macro.data?.exposures?.[id]||'미제공')}</p>`)+`<section class="card"><h2>Portfolio status(보유 상태)</h2>${state(D.portfolio)}<p>${h?'Snapshot에 포함 · 비중 '+pct(h.actual_weight??h.target_weight):D.portfolio.data?'제공된 Snapshot에 없음':'실제 보유 상태 미제공'}</p>${h?evidence(h):''}</section><section class="card"><h2>News / Relationships</h2>${state(D.news)}<a href="#news/${encodeURIComponent(id)}">이 기업의 뉴스·관계망 확인 →</a></section>${evidence(c)}`;}
-function portfolio(){const p=D.portfolio.data;return heading('PORTFOLIO','내 포트폴리오')+block('portfolio','보유 현황',`<p>${esc(p?.role||'')}</p><dl><dt>수익률</dt><dd>${pct(p?.return)}</dd><dt>평가금액</dt><dd>${fmt(p?.market_value)} ${esc(p?.currency||'')}</dd><dt>Exposure(노출)</dt><dd>${esc(p?.exposure?JSON.stringify(p.exposure):'미제공')}</dd></dl><ul class="list">${(p?.holdings||[]).map(h=>`<li class="item"><a href="#company/${encodeURIComponent(h.company_id)}"><b>${esc(h.ticker)}</b><div class="muted">${h.actual_weight==null?'모델 비중':'실제 비중'} ${pct(h.actual_weight??h.target_weight)} · 수익률 ${pct(h.return)}</div></a>${star(h.company_id)}</li>`).join('')}</ul>`)+`<div class="grid">${block('qgv','QGV context','<a href="#companies">기업별 분석 →</a>')}${block('technical','Technical context','<a href="#companies">기업별 신호 →</a>')}${block('macro','Macro context',`<p>${esc(D.macro.data?.regime||'')}</p>`)}</div><a href="#news">중요 뉴스·관계 변화 →</a>`;}
-function leaderboard(){const l=D.leaderboard.data;return heading('LEADERBOARD','기업 순위','QGV 순위와 시가총액 순위는 각각 upstream 값을 표시합니다.')+block('leaderboard','제공된 Leaderboard',`<ul class="list">${(l?.rows||[]).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[['시총 순위',r.market_cap_rank],['QGV',r.total_score],['Daily move(전일 등락)',r.daily_move],['Consensus(컨센서스)',r.consensus],['Scenario(시나리오)',r.scenario],['Reevaluation(재평가 기준)',r.reevaluation_trigger]].map(([k,v])=>`<dt>${k}</dt><dd>${fmt(v)}</dd>`).join('')}</dl>${evidence(r)}</li>`).join('')}</ul>`);}
-function news(id){const c=company(id);const n=D.news;return heading('NEWS / NETWORK','뉴스와 연결',c?esc(c.ticker)+' 기업 문맥':'Portfolio · 관심기업 · 기타 중요뉴스')+`<div class="row"><select id="news-scope" aria-label="뉴스 범위"><option value="all">전체 중요뉴스</option><option value="interest">관심기업</option><option value="portfolio">Portfolio</option></select>${c?star(id):''}</div>${state(n)}<ul id="news-list" class="list"></ul><section class="card"><h2>Fact Graph / Impact Graph</h2><p class="muted">Fact는 확인된 관계, Impact는 upstream이 제공한 잠재 영향 경로입니다.</p>${state(D.relationships)}${D.relationships.data?'<iframe title="News Network" src="network.html" id="network-frame"></iframe>':'<p class="empty">Track D 운영 관계망 미연결</p>'}</section>`;}
-function research(){return heading('RESEARCH','질문에서 근거로','Prompt 선택 → Context / Variables → Preview → Copy')+'<p class="badge">FROZEN_SNAPSHOT · PLV1_CONTENT_V1.0</p><iframe title="Prompt Library" src="research.html" id="research-frame"></iframe>';}
-let listLimit=30;
-function paintCompanies(){const q=$('#search').value.toLowerCase(),g=prefs.groups.find(g=>g.id===$('#group-filter').value);const rows=D.companies.filter(c=>(!$('#only-interest').checked||prefs.interests.includes(c.company_id))&&(!g||g.members.includes(c.company_id))&&[c.ticker,c.name].join(' ').toLowerCase().includes(q));$('#company-list').innerHTML=rows.slice(0,listLimit).map(row).join('')||'<li class="empty">일치하는 기업이 없습니다.</li>';$('#more-companies').hidden=rows.length<=listLimit;}
-function paintNews(id){const c=company(id),scope=$('#news-scope').value,held=D.portfolio.data?.holdings?.map(h=>h.company_id)||[];const interests=prefs.interests.map(i=>company(i)?.issuer_id).filter(Boolean),portfolio=held.map(i=>company(i)?.issuer_id).filter(Boolean);let rows=D.news.data||[];rows=rows.filter(r=>(!c||(r.issuer_ids||[]).includes(c.issuer_id))&&(scope==='all'||(r.issuer_ids||[]).some(i=>(scope==='interest'?interests:portfolio).includes(i))));rows=[...rows].sort((a,b)=>priority(a)-priority(b));function priority(r){return (r.issuer_ids||[]).some(i=>portfolio.includes(i))?0:(r.issuer_ids||[]).some(i=>interests.includes(i))?1:2;}$('#news-list').innerHTML=rows.map(r=>`<li class="card"><h3>${esc(r.headline)}</h3><p class="meta">${esc(r.available_at)} · ${esc(r.status||'상태 미제공')}</p>${(r.issuer_ids||[]).map(byIssuer).filter(Boolean).map(c=>`<div class="row"><a href="#company/${encodeURIComponent(c.company_id)}">${esc(c.ticker)}</a>${star(c.company_id)}</div>`).join('')}${evidence(r)}</li>`).join('')||'<li class="empty">이 범위에 제공된 뉴스가 없습니다.</li>';}
-function render(){notice('');let [route,id]=location.hash.slice(1).split('/');route=route||'home';try{id=decodeURIComponent(id||'');}catch(e){id='';}const routes={home,companies,portfolio,leaderboard,news:()=>news(id),research,company:()=>detail(id)};if(!routes[route])route='home';$('#content').innerHTML=routes[route]();document.querySelectorAll('nav a').forEach(a=>a.setAttribute('aria-current',a.hash==='#'+(route==='company'?'companies':route)?'page':'false'));if(Object.values(D).some(s=>s?.state==='DEMO'))$('#content').insertAdjacentHTML('afterbegin','<div class="banner">DEMO 포함 · 합성 데이터는 투자 판단용이 아닙니다.</div>');if(!storageOK)notice('개인 설정 저장을 사용할 수 없습니다. 내보내기를 이용하세요.');if(route==='companies'){listLimit=30;paintCompanies();$('#search').oninput=$('#only-interest').onchange=$('#group-filter').onchange=()=>{listLimit=30;paintCompanies();};$('#more-companies').onclick=()=>{listLimit+=30;paintCompanies();};wireGroups();}if(route==='news'){$('#news-scope').onchange=()=>paintNews(id);paintNews(id);}window.scrollTo(0,0);}
-function wireGroups(){$('#new-group').onsubmit=e=>{e.preventDefault();const name=$('#group-name').value.trim();if(!name)return;prefs.groups.push({id:crypto.randomUUID(),name,members:[]});save();render();};$('#export').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(prefs,null,2)],{type:'application/json'}));a.download='investment-personal.json';a.click();URL.revokeObjectURL(a.href);};$('#import').onchange=async e=>{try{const f=e.target.files[0];if(!f||f.size>1000000)throw Error('1MB 이하 JSON을 선택하세요.');const p=validatePrefs(JSON.parse(await f.text()));prefs.interests=[...new Set([...prefs.interests,...p.interests])];for(const g of p.groups){const old=prefs.groups.find(x=>x.id===g.id);if(old)old.members=[...new Set([...old.members,...g.members])];else prefs.groups.push(g);}save();render();}catch(err){notice('가져오기 실패: '+err.message);}};}
-document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.star){const id=b.dataset.star;if(!company(id))return;prefs.interests=prefs.interests.includes(id)?prefs.interests.filter(i=>i!==id):[...prefs.interests,id];save();document.querySelectorAll('[data-star]').forEach(x=>{x.textContent=prefs.interests.includes(x.dataset.star)?'★':'☆';x.setAttribute('aria-pressed',prefs.interests.includes(x.dataset.star));});}if(b.dataset.rename){const g=prefs.groups.find(g=>g.id===b.dataset.rename),input=[...document.querySelectorAll('[data-rename-input]')].find(x=>x.dataset.renameInput===g.id);if(input.value.trim()){g.name=input.value.trim();save();render();}}if(b.dataset.delete){prefs.groups=prefs.groups.filter(g=>g.id!==b.dataset.delete);save();render();}});
-document.addEventListener('change',e=>{if(e.target.dataset.group){const g=prefs.groups.find(g=>g.id===e.target.dataset.group),id=e.target.dataset.member;g.members=e.target.checked?[...new Set([...g.members,id])]:g.members.filter(i=>i!==id);save();}});
-window.addEventListener('message',e=>{const frame=$('#network-frame');if(e.origin!==location.origin||e.source!==frame?.contentWindow||!['interest','ready'].includes(e.data?.type))return;const id=byIssuer(e.data.id)?.company_id;if(e.data.type==='interest'){if(!company(id))return;prefs.interests=prefs.interests.includes(id)?prefs.interests.filter(i=>i!==id):[...prefs.interests,id];save();}frame.contentWindow.postMessage({type:'interests',ids:prefs.interests.map(i=>company(i)?.issuer_id).filter(Boolean)},location.origin);});
-window.addEventListener('hashchange',()=>D&&render());
-fetch('data.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json();}).then(data=>{D=data;load();render();}).catch(e=>{$('#content').innerHTML=heading('DATA UNAVAILABLE','데이터를 열 수 없습니다.')+'<p>연결 상태를 확인한 뒤 다시 시도하세요.</p><button onclick="location.reload()">다시 시도</button>';});
+"use strict";
+let D,
+  prefs = { version: 1, interests: [], groups: [] },
+  storageOK = true,
+  corruptStorage = false;
+const KEY = "investment.web.v1.personal";
+const $ = (s) => document.querySelector(s),
+  esc = (v) =>
+    String(v ?? "—").replace(
+      /[&<>"']/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[c],
+    );
+const fmt = (v) =>
+  v == null
+    ? "미제공"
+    : typeof v === "number"
+      ? v.toLocaleString("ko-KR", { maximumFractionDigits: 2 })
+      : esc(v);
+const pct = (v) => (v == null ? "미제공" : fmt(v * 100) + "%");
+function notice(s) {
+  $("#notice").textContent = s;
+}
+function save() {
+  if (corruptStorage) {
+    notice(
+      "기존 설정 손상: 원본을 보존했습니다. 현재 변경은 내보내기로 보관하세요.",
+    );
+    return;
+  }
+  try {
+    localStorage.setItem(KEY, JSON.stringify(prefs));
+    storageOK = true;
+    notice("저장되었습니다.");
+  } catch (e) {
+    storageOK = false;
+    notice("이 브라우저에 저장할 수 없습니다. 내보내기로 보관하세요.");
+  }
+}
+function validatePrefs(p) {
+  if (
+    p.version !== 1 ||
+    !Array.isArray(p.interests) ||
+    !Array.isArray(p.groups) ||
+    p.interests.some((i) => typeof i !== "string") ||
+    p.groups.some(
+      (g) =>
+        typeof g.id !== "string" ||
+        typeof g.name !== "string" ||
+        !g.name.trim() ||
+        !Array.isArray(g.members) ||
+        g.members.some((i) => typeof i !== "string"),
+    )
+  )
+    throw Error("관심기업 파일 형식 오류");
+  return p;
+}
+function load() {
+  try {
+    const s = localStorage.getItem(KEY);
+    if (s) prefs = validatePrefs(JSON.parse(s));
+  } catch (e) {
+    storageOK = false;
+    corruptStorage = true;
+    notice(
+      "저장된 설정을 읽을 수 없습니다. 원본을 덮어쓰지 않고 임시로 시작합니다.",
+    );
+  }
+}
+function company(id) {
+  return D.companies.find((c) => c.company_id === id);
+}
+function byIssuer(id) {
+  return D.companies.find((c) => c.issuer_id === id);
+}
+function star(id) {
+  return `<button class="star" data-star="${esc(id)}" aria-label="${esc(company(id)?.ticker || id)} 관심기업" aria-pressed="${prefs.interests.includes(id)}">${prefs.interests.includes(id) ? "★" : "☆"}</button>`;
+}
+function state(s) {
+  let stale = s.state === "LIVE" && Date.parse(s.expires_at) <= Date.now();
+  return `<div class="state"><span class="badge ${esc(s.state)}">${esc(s.state)}${stale ? " · STALE" : ""}</span> <span class="meta">${esc(s.as_of || "시점 미제공")}</span></div><div class="meta">${esc(s.source || s.reason || "출처 미제공")}</div>`;
+}
+function evidence(v) {
+  return `<details><summary>Evidence(근거) · 원본 보기</summary><pre>${esc(JSON.stringify(v, null, 2))}</pre></details>`;
+}
+function block(name, title, body) {
+  const s = D[name];
+  return `<section class="card"><h2>${title}</h2>${state(s)}${s.data === null ? '<p class="empty">' + esc(s.reason) + "</p>" : body}${s.data !== null ? evidence(s) : ""}</section>`;
+}
+function heading(k, t, s = "") {
+  return `<div class="eyebrow">${k}</div><h1>${t}</h1>${s ? '<p class="muted">' + s + "</p>" : ""}`;
+}
+function row(c) {
+  return `<li class="item"><a href="#company/${encodeURIComponent(c.company_id)}"><span class="ticker">${esc(c.ticker)}</span><div class="muted">${esc(c.name)}${c.market_cap_rank ? " · 시총 #" + c.market_cap_rank : ""}${c.demo ? " · DEMO" : ""}</div></a>${star(c.company_id)}</li>`;
+}
+function summaryFor(name, id) {
+  const s = D[name];
+  const v = s.data?.[id];
+  return `<section class="card"><h2>${name === "qgv" ? "QGV" : name === "technical" ? "Technical(기술적 분석)" : "Macro(거시환경)"}</h2>${state(s)}${v ? `<dl>${(name === "qgv" ? ["Q_score", "G_score", "V_score", "total_score", "confidence", "coverage_state"] : ["regime", "execution_zone", "invalidation"]).map((k) => `<dt>${esc(k)}</dt><dd>${fmt(v[k])}</dd>`).join("")}</dl>${evidence(v)}` : '<p class="empty">이 기업의 Snapshot 미제공</p>'}</section>`;
+}
+function home() {
+  const held = D.portfolio.data?.holdings || [];
+  return (
+    heading(
+      "YOUR DAILY BRIEF",
+      "오늘의 투자 화면",
+      "중요한 변화부터 확인하고, 근거까지 따라가세요.",
+    ) +
+    `<section class="card hero"><div class="row"><h2>Portfolio(포트폴리오)</h2><a href="#portfolio">자세히 →</a></div><div class="metric">${D.portfolio.data ? held.length + " holdings" : "연결 대기"}</div><p class="muted">${D.portfolio.data ? esc(D.portfolio.data.role || "제공된 Snapshot") : "실제 보유·평가금액·수익률을 연결하면 여기서 확인합니다."}</p>${state(D.portfolio)}</section>` +
+    `<div class="grid home-grid">${block("changes", "오늘 / 최근 주요 변화", `<p>${esc(D.changes.data?.summary || "")}</p>`)}${block("macro", "Macro(거시환경)", `<p>${esc(D.macro.data?.state || "")} · ${esc(D.macro.data?.regime || "")}</p>`)}</div>` +
+    `<section class="card"><h2>Attention(확인 필요)</h2><p class="small">${D.universe.state === "FROZEN_SNAPSHOT" ? "기업 목록은 " + esc(D.universe.as_of) + " 과거 스냅샷입니다. 최신 시세·분석이 아닙니다." : "출처와 데이터 시점을 확인하세요."}</p><div class="chips"><a href="#companies">관심기업 ${prefs.interests.length} →</a><a href="#leaderboard">Leaderboard →</a></div></section>` +
+    `<details><summary>분석 · 뉴스 · 관계 변화 더보기</summary><div class="grid">${block("qgv", "QGV 변화", "<p>변화량은 upstream changes가 제공할 때만 표시합니다.</p>")}${block("technical", "Technical 변화", "<p>최근 신호는 기업 상세에서 확인하세요.</p>")}${block("news", "관심기업 뉴스", '<a href="#news">뉴스 열기 →</a>')}${block("relationships", "Relationship changes(관계 변화)", '<a href="#news">관계망 열기 →</a>')}</div></details>`
+  );
+}
+function companies() {
+  return (
+    heading("COMPANIES", "기업 탐색") +
+    `<input type="search" id="search" aria-label="기업 검색" placeholder="티커 또는 기업명 검색"><div class="chips"><label><input type="checkbox" id="only-interest"> 관심기업만</label><select id="group-filter" aria-label="그룹 필터"><option value="">모든 그룹</option>${prefs.groups.map((g) => `<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("")}</select></div><p class="meta">${esc(D.universe.as_of)} · FROZEN_SNAPSHOT / DEMO 기업은 별도 표기</p><ul class="list" id="company-list"></ul><button id="more-companies">더보기</button><details><summary>관심기업 · Groups(그룹) 관리</summary>${groupsUI()}</details>`
+  );
+}
+function groupsUI() {
+  return `<p class="muted">이 기기의 브라우저에 저장됩니다. 즐겨찾기와 관심기업은 같은 목록입니다.</p><form id="new-group"><label for="group-name">새 그룹 이름</label><div class="row"><input id="group-name" required maxlength="60" placeholder="예: 반도체"><button>그룹 만들기</button></div></form><div id="groups">${prefs.groups.map((g) => `<div class="group"><b>${esc(g.name)}</b> <span class="muted">${g.members.length}개</span><div class="row"><input aria-label="그룹 이름 ${esc(g.name)}" data-rename-input="${esc(g.id)}" value="${esc(g.name)}" maxlength="60"><button data-rename="${esc(g.id)}">이름 변경</button><button data-delete="${esc(g.id)}">그룹 삭제</button></div>${prefs.interests.map((id) => `<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(id)}" ${g.members.includes(id) ? "checked" : ""}> ${esc(company(id)?.ticker || id)}</label>`).join("")}</div>`).join("")}</div><div class="toolbar"><button id="export">내보내기</button><label>설정 병합 가져오기 <input type="file" id="import" accept="application/json"></label></div>`;
+}
+function detail(id) {
+  const c = company(id);
+  if (!c)
+    return (
+      heading("COMPANIES", "기업을 찾을 수 없습니다.") +
+      '<a href="#companies">기업 목록 →</a>'
+    );
+  const h = D.portfolio.data?.holdings?.find((r) => r.company_id === id);
+  return (
+    `<a class="small" href="#companies">← 기업 목록</a><div class="row">${heading("COMPANY DETAIL", esc(c.ticker), esc(c.name))}${star(id)}</div><div class="grid">${summaryFor("qgv", id)}${summaryFor("technical", id)}</div>` +
+    block(
+      "macro",
+      "Macro exposure / context(거시 노출)",
+      `<p>${esc(D.macro.data?.regime || "")}</p><p>기업 노출: ${esc(D.macro.data?.exposures?.[id] || "미제공")}</p>`,
+    ) +
+    `<section class="card"><h2>Portfolio status(보유 상태)</h2>${state(D.portfolio)}<p>${h ? "Snapshot에 포함 · 비중 " + pct(h.actual_weight ?? h.target_weight) : D.portfolio.data ? "제공된 Snapshot에 없음" : "실제 보유 상태 미제공"}</p>${h ? evidence(h) : ""}</section><section class="card"><h2>News / Relationships</h2>${state(D.news)}<a href="#news/${encodeURIComponent(id)}">이 기업의 뉴스·관계망 확인 →</a></section>${evidence(c)}`
+  );
+}
+function portfolio() {
+  const p = D.portfolio.data;
+  return (
+    heading("PORTFOLIO", "내 포트폴리오") +
+    block(
+      "portfolio",
+      "보유 현황",
+      `<p>${esc(p?.role || "")}</p><dl><dt>수익률</dt><dd>${pct(p?.return)}</dd><dt>평가금액</dt><dd>${fmt(p?.market_value)} ${esc(p?.currency || "")}</dd><dt>Exposure(노출)</dt><dd>${esc(p?.exposure ? JSON.stringify(p.exposure) : "미제공")}</dd></dl><ul class="list">${(p?.holdings || []).map((h) => `<li class="item"><a href="#company/${encodeURIComponent(h.company_id)}"><b>${esc(h.ticker)}</b><div class="muted">${h.actual_weight == null ? "모델 비중" : "실제 비중"} ${pct(h.actual_weight ?? h.target_weight)} · 수익률 ${pct(h.return)}</div></a>${star(h.company_id)}</li>`).join("")}</ul>`,
+    ) +
+    `<div class="grid">${block("qgv", "QGV context", '<a href="#companies">기업별 분석 →</a>')}${block("technical", "Technical context", '<a href="#companies">기업별 신호 →</a>')}${block("macro", "Macro context", `<p>${esc(D.macro.data?.regime || "")}</p>`)}</div><a href="#news">중요 뉴스·관계 변화 →</a>`
+  );
+}
+function leaderboard() {
+  const l = D.leaderboard.data;
+  return (
+    heading(
+      "LEADERBOARD",
+      "기업 순위",
+      "QGV 순위와 시가총액 순위는 각각 upstream 값을 표시합니다.",
+    ) +
+    block(
+      "leaderboard",
+      "제공된 Leaderboard",
+      `<ul class="list">${(l?.rows || [])
+        .map(
+          (r) =>
+            `<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[
+              ["시총 순위", r.market_cap_rank],
+              ["QGV", r.total_score],
+              ["Daily move(전일 등락)", r.daily_move],
+              ["Consensus(컨센서스)", r.consensus],
+              ["Scenario(시나리오)", r.scenario],
+              ["Reevaluation(재평가 기준)", r.reevaluation_trigger],
+            ]
+              .map(([k, v]) => `<dt>${k}</dt><dd>${fmt(v)}</dd>`)
+              .join("")}</dl>${evidence(r)}</li>`,
+        )
+        .join("")}</ul>`,
+    )
+  );
+}
+function news(id) {
+  const c = company(id);
+  return (
+    heading(
+      "NEWS / NETWORK",
+      "뉴스와 연결",
+      c ? esc(c.ticker) + " 기업 문맥" : "Portfolio · 관심기업 · 기타 중요뉴스",
+    ) +
+    `<div class="chips toolbar" role="group" aria-label="콘텐츠 전환"><button id="show-news" aria-pressed="true">뉴스</button><button id="show-network" aria-pressed="false">관계망</button>${c ? star(id) : ""}</div>
+  <section id="news-pane"><select id="news-scope" aria-label="뉴스 범위"><option value="all">전체 중요뉴스</option><option value="interest">관심기업</option><option value="portfolio">Portfolio</option></select>${state(D.news)}<ul id="news-list" class="list"></ul></section>
+  <section id="network-pane" hidden><p class="muted">Fact = 확인된 관계 · Impact = 잠재 영향 경로</p>${state(D.relationships)}${D.relationships.data ? '<iframe title="News Network" data-src="network.html" id="network-frame"></iframe>' : '<p class="empty">Track D 운영 관계망 미연결</p>'}</section>`
+  );
+}
+function research() {
+  return (
+    heading(
+      "RESEARCH",
+      "질문에서 근거로",
+      "Prompt 선택 → Context / Variables → Preview → Copy",
+    ) +
+    '<p class="badge">FROZEN_SNAPSHOT · PLV1_CONTENT_V1.0</p><iframe title="Prompt Library" src="research.html" id="research-frame"></iframe>'
+  );
+}
+let listLimit = 30;
+function paintCompanies() {
+  const q = $("#search").value.toLowerCase(),
+    g = prefs.groups.find((g) => g.id === $("#group-filter").value);
+  const rows = D.companies.filter(
+    (c) =>
+      (!$("#only-interest").checked ||
+        prefs.interests.includes(c.company_id)) &&
+      (!g || g.members.includes(c.company_id)) &&
+      [c.ticker, c.name].join(" ").toLowerCase().includes(q),
+  );
+  $("#company-list").innerHTML =
+    rows.slice(0, listLimit).map(row).join("") ||
+    '<li class="empty">일치하는 기업이 없습니다.</li>';
+  $("#more-companies").hidden = rows.length <= listLimit;
+}
+function paintNews(id) {
+  const c = company(id),
+    scope = $("#news-scope").value,
+    held = D.portfolio.data?.holdings?.map((h) => h.company_id) || [];
+  const interests = prefs.interests
+      .map((i) => company(i)?.issuer_id)
+      .filter(Boolean),
+    portfolio = held.map((i) => company(i)?.issuer_id).filter(Boolean);
+  let rows = D.news.data || [];
+  rows = rows.filter(
+    (r) =>
+      (!c || (r.issuer_ids || []).includes(c.issuer_id)) &&
+      (scope === "all" ||
+        (r.issuer_ids || []).some((i) =>
+          (scope === "interest" ? interests : portfolio).includes(i),
+        )),
+  );
+  rows = [...rows].sort((a, b) => priority(a) - priority(b));
+  function priority(r) {
+    return (r.issuer_ids || []).some((i) => portfolio.includes(i))
+      ? 0
+      : (r.issuer_ids || []).some((i) => interests.includes(i))
+        ? 1
+        : 2;
+  }
+  $("#news-list").innerHTML =
+    rows
+      .map(
+        (r) =>
+          `<li class="card"><h3>${esc(r.headline)}</h3><p class="meta">${esc(r.available_at)} · ${esc(r.status || "상태 미제공")}</p>${(
+            r.issuer_ids || []
+          )
+            .map(byIssuer)
+            .filter(Boolean)
+            .map(
+              (c) =>
+                `<div class="row"><a href="#company/${encodeURIComponent(c.company_id)}">${esc(c.ticker)}</a>${star(c.company_id)}</div>`,
+            )
+            .join("")}${evidence(r)}</li>`,
+      )
+      .join("") || '<li class="empty">이 범위에 제공된 뉴스가 없습니다.</li>';
+}
+function render() {
+  notice("");
+  let [route, id] = location.hash.slice(1).split("/");
+  route = route || "home";
+  try {
+    id = decodeURIComponent(id || "");
+  } catch (e) {
+    id = "";
+  }
+  const routes = {
+    home,
+    companies,
+    portfolio,
+    leaderboard,
+    news: () => news(id),
+    research,
+    company: () => detail(id),
+  };
+  if (!routes[route]) route = "home";
+  $("#content").innerHTML = routes[route]();
+  document
+    .querySelectorAll("nav a")
+    .forEach((a) =>
+      a.setAttribute(
+        "aria-current",
+        a.hash === "#" + (route === "company" ? "companies" : route)
+          ? "page"
+          : "false",
+      ),
+    );
+  if (Object.values(D).some((s) => s?.state === "DEMO"))
+    $("#content").insertAdjacentHTML(
+      "afterbegin",
+      '<div class="banner">DEMO 포함 · 합성 데이터는 투자 판단용이 아닙니다.</div>',
+    );
+  if (!storageOK)
+    notice("개인 설정 저장을 사용할 수 없습니다. 내보내기를 이용하세요.");
+  if (route === "companies") {
+    listLimit = 30;
+    paintCompanies();
+    $("#search").oninput =
+      $("#only-interest").onchange =
+      $("#group-filter").onchange =
+        () => {
+          listLimit = 30;
+          paintCompanies();
+        };
+    $("#more-companies").onclick = () => {
+      listLimit += 30;
+      paintCompanies();
+    };
+    wireGroups();
+  }
+  if (route === "news") {
+    for (const name of ["news", "network"])
+      $("#show-" + name).onclick = () => {
+        $("#news-pane").hidden = name !== "news";
+        $("#network-pane").hidden = name !== "network";
+        $("#show-news").setAttribute("aria-pressed", name === "news");
+        $("#show-network").setAttribute("aria-pressed", name === "network");
+        const f = $("#network-frame");
+        if (name === "network" && f && !f.getAttribute("src"))
+          f.src = f.dataset.src;
+      };
+    $("#news-scope").onchange = () => paintNews(id);
+    paintNews(id);
+  }
+  window.scrollTo(0, 0);
+}
+function wireGroups() {
+  $("#new-group").onsubmit = (e) => {
+    e.preventDefault();
+    const name = $("#group-name").value.trim();
+    if (!name) return;
+    prefs.groups.push({ id: crypto.randomUUID(), name, members: [] });
+    save();
+    render();
+  };
+  $("#export").onclick = () => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(
+      new Blob([JSON.stringify(prefs, null, 2)], { type: "application/json" }),
+    );
+    a.download = "investment-personal.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+  $("#import").onchange = async (e) => {
+    try {
+      const f = e.target.files[0];
+      if (!f || f.size > 1000000) throw Error("1MB 이하 JSON을 선택하세요.");
+      const p = validatePrefs(JSON.parse(await f.text()));
+      prefs.interests = [...new Set([...prefs.interests, ...p.interests])];
+      for (const g of p.groups) {
+        const old = prefs.groups.find((x) => x.id === g.id);
+        if (old) old.members = [...new Set([...old.members, ...g.members])];
+        else prefs.groups.push(g);
+      }
+      save();
+      render();
+    } catch (err) {
+      notice("가져오기 실패: " + err.message);
+    }
+  };
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  if (b.dataset.star) {
+    const id = b.dataset.star;
+    if (!company(id)) return;
+    prefs.interests = prefs.interests.includes(id)
+      ? prefs.interests.filter((i) => i !== id)
+      : [...prefs.interests, id];
+    if (!prefs.interests.includes(id))
+      prefs.groups.forEach(
+        (g) => (g.members = g.members.filter((i) => i !== id)),
+      );
+    save();
+    document.querySelectorAll("[data-star]").forEach((x) => {
+      x.textContent = prefs.interests.includes(x.dataset.star) ? "★" : "☆";
+      x.setAttribute("aria-pressed", prefs.interests.includes(x.dataset.star));
+    });
+  }
+  if (b.dataset.rename) {
+    const g = prefs.groups.find((g) => g.id === b.dataset.rename),
+      input = [...document.querySelectorAll("[data-rename-input]")].find(
+        (x) => x.dataset.renameInput === g.id,
+      );
+    if (input.value.trim()) {
+      g.name = input.value.trim();
+      save();
+      render();
+    }
+  }
+  if (b.dataset.delete) {
+    prefs.groups = prefs.groups.filter((g) => g.id !== b.dataset.delete);
+    save();
+    render();
+  }
+});
+document.addEventListener("change", (e) => {
+  if (e.target.dataset.group) {
+    const g = prefs.groups.find((g) => g.id === e.target.dataset.group),
+      id = e.target.dataset.member;
+    g.members = e.target.checked
+      ? [...new Set([...g.members, id])]
+      : g.members.filter((i) => i !== id);
+    save();
+  }
+});
+window.addEventListener("message", (e) => {
+  const frame = $("#network-frame");
+  if (
+    e.origin !== location.origin ||
+    e.source !== frame?.contentWindow ||
+    !["interest", "ready"].includes(e.data?.type)
+  )
+    return;
+  const id = byIssuer(e.data.id)?.company_id;
+  if (e.data.type === "interest") {
+    if (!company(id)) return;
+    prefs.interests = prefs.interests.includes(id)
+      ? prefs.interests.filter((i) => i !== id)
+      : [...prefs.interests, id];
+    if (!prefs.interests.includes(id))
+      prefs.groups.forEach(
+        (g) => (g.members = g.members.filter((i) => i !== id)),
+      );
+    save();
+  }
+  frame.contentWindow.postMessage(
+    {
+      type: "interests",
+      ids: prefs.interests.map((i) => company(i)?.issuer_id).filter(Boolean),
+    },
+    location.origin,
+  );
+});
+window.addEventListener("hashchange", () => D && render());
+fetch("data.json", { cache: "no-store" })
+  .then((r) => {
+    if (!r.ok) throw Error("HTTP " + r.status);
+    return r.json();
+  })
+  .then((data) => {
+    D = data;
+    load();
+    render();
+  })
+  .catch((e) => {
+    $("#content").innerHTML =
+      heading("DATA UNAVAILABLE", "데이터를 열 수 없습니다.") +
+      '<p>연결 상태를 확인한 뒤 다시 시도하세요.</p><button onclick="location.reload()">다시 시도</button>';
+  });

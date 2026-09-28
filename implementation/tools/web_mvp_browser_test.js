@@ -1,25 +1,241 @@
 // Integration tests for mobile UI. Public synthetic fixtures only; no personal account data.
-const {chromium}=require('playwright');
-const fs=require('fs');const assert=require('node:assert/strict');
-(async()=>{
-const out='implementation/reports/web_mvp';fs.mkdirSync(out,{recursive:true});
-const browser=await chromium.launch({headless:true});const ctx=await browser.newContext({viewport:{width:390,height:844},permissions:['clipboard-read','clipboard-write']});
-const page=await ctx.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));const checks=[];
-async function check(name,fn){await fn();checks.push(name);}
-async function route(hash){await page.goto('http://127.0.0.1:8765/web-mvp-demo/#'+hash);await page.locator('nav a[aria-current=page]').waitFor();}
-try{
-await check('default fail-closed missing data',async()=>{await page.goto('http://127.0.0.1:8765/web-mvp/');await page.getByRole('heading',{name:'오늘의 투자 화면'}).waitFor();assert.equal(await page.locator('.banner').count(),0);assert.ok((await page.locator('main').innerText()).includes('NOT_AVAILABLE'));});
-await check('six routes 360/390/1280 without overflow',async()=>{for(const width of [360,390,1280]){await page.setViewportSize({width,height:844});for(const hash of ['home','companies','portfolio','leaderboard','news','research']){await route(hash);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,hash+' '+width);}}});
-await page.setViewportSize({width:390,height:844});
-await check('portfolio to company and original QGV',async()=>{await route('portfolio');await page.locator('a[href="#company/nvda"]').click();await page.getByRole('heading',{name:'NVDA',exact:true}).waitFor();assert.ok((await page.locator('main').innerText()).includes('90.79'));assert.ok((await page.locator('main').innerText()).includes('NOT_AVAILABLE'));});
-await check('interest persistence and group membership',async()=>{await page.locator('[data-star="nvda"]').click();await page.reload();await page.locator('[data-star="nvda"][aria-pressed=true]').waitFor();await route('companies');await page.locator('summary').click();await page.locator('#group-name').fill('반도체');await page.getByRole('button',{name:'그룹 만들기'}).click();await page.locator('summary').click();await page.locator('[data-member="nvda"]').check();await page.reload();await page.locator('summary').click();assert.equal(await page.locator('[data-member="nvda"]').isChecked(),true);await page.locator('#search').fill('nvda');assert.equal(await page.locator('#company-list li').count(),1);});
-await check('news-network switch, node focus, expansion, zoom, filters',async()=>{await route('news');const f=page.frameLocator('#network-frame');await f.locator('[data-view=NETWORK]').click();await f.locator('#zoom-in').click();assert.ok(await f.locator('#vp').getAttribute('transform')!=='translate(0 0) scale(1)');await f.locator('#fit').click();await f.locator('[data-node="issuer:issuer_tsmc"]').dispatchEvent('click');await f.locator('#focus-picked').click();assert.equal(await f.locator('line[data-edge]:not(.hidden)').count(),8);await f.locator('#more').click();assert.equal(await f.locator('line[data-edge]:not(.hidden)').count(),11);await f.locator('#edge-filter').selectOption('FACT');await f.locator('line[data-edge]').first().dispatchEvent('click');assert.ok((await f.locator('#qv').innerText()).length>5);await f.locator('#discovery').click();assert.ok((await f.locator('#discovery').innerText()).includes('잠재 영향'));});
-await check('research canonical select fill preview copy',async()=>{await route('research');const f=page.frameLocator('#research-frame');await f.locator('#f-starter').check();await f.locator('#list li').first().click();const fields=await f.locator('[data-v]').all();for(const field of fields){const name=await field.getAttribute('data-v');const tag=await field.evaluate(e=>e.tagName);await (tag==='SELECT'?field.selectOption('STANDALONE'):field.fill(name==='as_of'?'2024-12-31':name==='prior_cutoff'?'2024-09-30':name==='candidate_count'?'5':'테스트 문맥'));}await f.locator('#copy:not([disabled])').waitFor();const preview=await f.locator('#pv').innerText();await f.locator('#copy').click();await f.locator('#copied').getByText('Copied').waitFor();assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),preview);await f.locator('#f-starter').uncheck();await f.locator('#f-bundle').selectOption({index:1});assert.ok(await f.locator('#list li').count()>0);});
-await check('network pan and drag preserve view state',async()=>{await route('news');const f=page.frameLocator('#network-frame');await f.locator('[data-view=NETWORK]').click();const svg=f.locator('#net');const box=await svg.boundingBox();const before=await f.locator('#vp').getAttribute('transform');await page.mouse.move(box.x+10,box.y+10);await page.mouse.down();await page.mouse.move(box.x+50,box.y+30,{steps:4});await page.mouse.up();assert.notEqual(await f.locator('#vp').getAttribute('transform'),before);await f.locator('#fit').click();const node=f.locator('[data-node]').first();const nb=await node.boundingBox();const old=await node.getAttribute('transform');await page.mouse.move(nb.x+nb.width/2,nb.y+8);await page.mouse.down();await page.mouse.move(nb.x+nb.width/2+20,nb.y+30,{steps:4});await page.mouse.up();assert.notEqual(await node.getAttribute('transform'),old);const vp=await f.locator('#vp').getAttribute('transform');await f.locator('[data-view=NEWS]').click();await f.locator('[data-view=NETWORK]').click();assert.equal(await f.locator('#vp').getAttribute('transform'),vp);});
-await check('group rename delete and preferences backup',async()=>{await route('companies');await page.locator('summary').click();await page.locator('[data-rename-input]').fill('AI');await page.locator('[data-rename]').click();await page.locator('summary').click();assert.ok((await page.locator('#groups').innerText()).includes('AI'));const downloadPromise=page.waitForEvent('download');await page.locator('#export').click();const download=await downloadPromise;assert.equal(download.suggestedFilename(),'investment-personal.json');await page.locator('[data-delete]').click();await page.reload();await page.locator('summary').click();assert.equal(await page.locator('[data-delete]').count(),0);assert.equal(await page.locator('[data-star="nvda"]').getAttribute('aria-pressed'),'true');});
-await check('back navigation and deep link',async()=>{await route('companies');await page.locator('#search').fill('nvda');await page.locator('#company-list a').click();await page.goBack();await page.locator('#search').waitFor();await route('company/nvda');await page.getByRole('heading',{name:'NVDA',exact:true}).waitFor();});
-await check('no page errors',async()=>assert.deepEqual(errors,[]));
-for(const name of ['home','portfolio','company/nvda','news','research']){await route(name);await page.screenshot({path:out+'/'+name.replace('/','-')+'-mobile.png',fullPage:true});}
-fs.writeFileSync(out+'/browser.json',JSON.stringify({passed:true,checks,errors},null,2));
-}catch(e){await page.screenshot({path:out+'/failure.png',fullPage:true});fs.writeFileSync(out+'/browser.json',JSON.stringify({passed:false,checks,errors,error:String(e),stack:e.stack},null,2));throw e;}finally{await browser.close();}
+const { chromium } = require("playwright");
+const fs = require("fs");
+const assert = require("node:assert/strict");
+(async () => {
+  const out = "implementation/reports/web_mvp";
+  fs.mkdirSync(out, { recursive: true });
+  const browser = await chromium.launch({ headless: true });
+  const ctx = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    permissions: ["clipboard-read", "clipboard-write"],
+  });
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  const checks = [];
+  async function check(name, fn) {
+    await fn();
+    checks.push(name);
+  }
+  async function route(hash) {
+    await page.goto("http://127.0.0.1:8765/web-mvp-demo/#" + hash);
+    await page.locator("nav a[aria-current=page]").waitFor();
+  }
+  try {
+    await check("default fail-closed missing data", async () => {
+      await page.goto("http://127.0.0.1:8765/web-mvp/");
+      await page.getByRole("heading", { name: "오늘의 투자 화면" }).waitFor();
+      assert.equal(await page.locator(".banner").count(), 0);
+      assert.ok(
+        (await page.locator("main").innerText()).includes("NOT_AVAILABLE"),
+      );
+    });
+    await check("six routes 360/390/1280 without overflow", async () => {
+      for (const width of [360, 390, 1280]) {
+        await page.setViewportSize({ width, height: 844 });
+        for (const hash of [
+          "home",
+          "companies",
+          "portfolio",
+          "leaderboard",
+          "news",
+          "research",
+        ]) {
+          await route(hash);
+          assert.equal(
+            await page.evaluate(
+              () => document.documentElement.scrollWidth <= innerWidth,
+            ),
+            true,
+            hash + " " + width,
+          );
+        }
+      }
+    });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await check("portfolio to company and original QGV", async () => {
+      await route("portfolio");
+      await page.locator('a[href="#company/nvda"]').click();
+      await page.getByRole("heading", { name: "NVDA", exact: true }).waitFor();
+      assert.ok((await page.locator("main").innerText()).includes("90.79"));
+      assert.ok(
+        (await page.locator("main").innerText()).includes("NOT_AVAILABLE"),
+      );
+    });
+    await check("interest persistence and group membership", async () => {
+      await page.locator('[data-star="nvda"]').click();
+      await page.reload();
+      await page.locator('[data-star="nvda"][aria-pressed=true]').waitFor();
+      await route("companies");
+      await page.locator("summary").click();
+      await page.locator("#group-name").fill("반도체");
+      await page.getByRole("button", { name: "그룹 만들기" }).click();
+      await page.locator("summary").click();
+      await page.locator('[data-member="nvda"]').check();
+      await page.reload();
+      await page.locator("summary").click();
+      assert.equal(
+        await page.locator('[data-member="nvda"]').isChecked(),
+        true,
+      );
+      await page.locator("#search").fill("nvda");
+      assert.equal(await page.locator("#company-list li").count(), 1);
+    });
+    await check(
+      "news-network switch, node focus, expansion, zoom, filters",
+      async () => {
+        await route("news");
+        const f = page.frameLocator("#network-frame");
+        await page.locator("#show-network").click();
+        await f.locator("#zoom-in").click();
+        assert.ok(
+          (await f.locator("#vp").getAttribute("transform")) !==
+            "translate(0 0) scale(1)",
+        );
+        await f.locator("#fit").click();
+        await f
+          .locator('[data-node="issuer:issuer_tsmc"]')
+          .dispatchEvent("click");
+        await f.locator("#focus-picked").click();
+        assert.equal(
+          await f.locator("line[data-edge]:not(.hidden)").count(),
+          8,
+        );
+        await f.locator("#more").click();
+        assert.equal(
+          await f.locator("line[data-edge]:not(.hidden)").count(),
+          11,
+        );
+        await f.locator("#edge-filter").selectOption("FACT");
+        await f.locator("line[data-edge]").first().dispatchEvent("click");
+        assert.ok((await f.locator("#qv").innerText()).length > 5);
+        await f.locator("#discovery").click();
+        assert.ok(
+          (await f.locator("#discovery").innerText()).includes("잠재 영향"),
+        );
+      },
+    );
+    await check("research canonical select fill preview copy", async () => {
+      await route("research");
+      const f = page.frameLocator("#research-frame");
+      await f.locator("#f-starter").check();
+      await f.locator("#list li").first().click();
+      const fields = await f.locator("[data-v]").all();
+      for (const field of fields) {
+        const name = await field.getAttribute("data-v");
+        const tag = await field.evaluate((e) => e.tagName);
+        await (tag === "SELECT"
+          ? field.selectOption("STANDALONE")
+          : field.fill(
+              name === "as_of"
+                ? "2024-12-31"
+                : name === "prior_cutoff"
+                  ? "2024-09-30"
+                  : name === "candidate_count"
+                    ? "5"
+                    : "테스트 문맥",
+            ));
+      }
+      await f.locator("#copy:not([disabled])").waitFor();
+      const preview = await f.locator("#pv").innerText();
+      await f.locator("#copy").click();
+      await f.locator("#copied").getByText("Copied").waitFor();
+      assert.equal(
+        await page.evaluate(() => navigator.clipboard.readText()),
+        preview,
+      );
+      await f.locator("#f-starter").uncheck();
+      await f.locator("#f-bundle").selectOption({ index: 1 });
+      assert.ok((await f.locator("#list li").count()) > 0);
+    });
+    await check("network pan and drag preserve view state", async () => {
+      await route("news");
+      const f = page.frameLocator("#network-frame");
+      await page.locator("#show-network").click();
+      const svg = f.locator("#net");
+      await svg.scrollIntoViewIfNeeded();
+      const box = await svg.boundingBox();
+      const before = await f.locator("#vp").getAttribute("transform");
+      await page.mouse.move(box.x + 10, box.y + 10);
+      await page.mouse.down();
+      await page.mouse.move(box.x + 50, box.y + 30, { steps: 4 });
+      await page.mouse.up();
+      assert.notEqual(await f.locator("#vp").getAttribute("transform"), before);
+      await f.locator("#fit").click();
+      const node = f.locator("[data-node]").first();
+      await node.scrollIntoViewIfNeeded();
+      const nb = await node.boundingBox();
+      const old = await node.getAttribute("transform");
+      await page.mouse.move(nb.x + nb.width / 2, nb.y + 8);
+      await page.mouse.down();
+      await page.mouse.move(nb.x + nb.width / 2 + 20, nb.y + 30, { steps: 4 });
+      await page.mouse.up();
+      assert.notEqual(await node.getAttribute("transform"), old);
+      const vp = await f.locator("#vp").getAttribute("transform");
+      await page.locator("#show-news").click();
+      await page.locator("#show-network").click();
+      assert.equal(await f.locator("#vp").getAttribute("transform"), vp);
+    });
+    await check("group rename delete and preferences backup", async () => {
+      await route("companies");
+      await page.locator("summary").click();
+      await page.locator("[data-rename-input]").fill("AI");
+      await page.locator("[data-rename]").click();
+      await page.locator("summary").click();
+      assert.ok((await page.locator("#groups").innerText()).includes("AI"));
+      const downloadPromise = page.waitForEvent("download");
+      await page.locator("#export").click();
+      const download = await downloadPromise;
+      assert.equal(download.suggestedFilename(), "investment-personal.json");
+      await page.locator("[data-delete]").click();
+      await page.reload();
+      await page.locator("summary").click();
+      assert.equal(await page.locator("[data-delete]").count(), 0);
+      assert.equal(
+        await page.locator('[data-star="nvda"]').getAttribute("aria-pressed"),
+        "true",
+      );
+    });
+    await check("back navigation and deep link", async () => {
+      await route("companies");
+      await page.locator("#search").fill("nvda");
+      await page.locator("#company-list a").click();
+      await page.goBack();
+      await page.locator("#search").waitFor();
+      await route("company/nvda");
+      await page.getByRole("heading", { name: "NVDA", exact: true }).waitFor();
+    });
+    await check("no page errors", async () => assert.deepEqual(errors, []));
+    for (const name of [
+      "home",
+      "portfolio",
+      "company/nvda",
+      "news",
+      "research",
+    ]) {
+      await route(name);
+      await page.screenshot({
+        path: out + "/" + name.replace("/", "-") + "-mobile.png",
+        fullPage: true,
+      });
+    }
+    fs.writeFileSync(
+      out + "/browser.json",
+      JSON.stringify({ passed: true, checks, errors }, null, 2),
+    );
+  } catch (e) {
+    await page.screenshot({ path: out + "/failure.png", fullPage: true });
+    fs.writeFileSync(
+      out + "/browser.json",
+      JSON.stringify(
+        { passed: false, checks, errors, error: String(e), stack: e.stack },
+        null,
+        2,
+      ),
+    );
+    throw e;
+  } finally {
+    await browser.close();
+  }
 })();
