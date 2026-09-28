@@ -1,0 +1,19 @@
+{
+  "round": "R0",
+  "note": "sha256 of backend/*.py as imported in R0. Update only in a round that deliberately changes core behaviour, and record why in CURRENT_HANDOFF.",
+  "files": {
+    "backend/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/decision/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/decision/actions.py": "94a1d770b615230cc6cf890c1606edce125ba2c684a82aa3051934610a144e3a",
+    "backend/decision/engine.py": "ede22fbf3575b5c4958cee7775a07eee463f27045baef794824a900a243dabc7",
+    "backend/decision/evaluator.py": "19e2c759631db60dbe9284d11b2e96ed076ea72fdeed024c2d21de34c23b7544",
+    "backend/decision/models.py": "417803b3664c224d24fa530617015954d62f76610e16a38a3b086d48b7ff18e0",
+    "backend/decision/opportunity.py": "018de17118c611423b2ddd1727ecfc6258c3f36d43b48c4a3265f740517de872",
+    "backend/decision/permission.py": "0f1c6505d6e6f5c89593f755b5d5048211f6de7d3efaba1b12d293903b497f62",
+    "backend/decision/reason_codes.py": "90c9fb53e77557192abc9bdcc97a631daa6d114d6259d0ca82707d454a9022e2",
+    "backend/decision/selector.py": "e937c132ffb26151163ffdb07f36d9e1ca754f31a5d77ccf6d534dfaf967a3a2",
+    "backend/decision/trace.py": "d45753079564302315cfb65dce369c1b2fc57c8aeaf90854e1f6420a1af4fafb",
+    "backend/state/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/state/models.py": "e18b47809c6b2fe5eb012da6cd837b7349a4f986304b6cb44b303c208e27b5ff"
+  }
+}

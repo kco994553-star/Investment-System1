@@ -1,0 +1,22 @@
+{
+  "base": "GF-002",
+  "variants": [
+    {
+      "id": "CF-002-A",
+      "title": "Enemy jungle back to UNKNOWN -> identical to GF-001",
+      "patch": {"jungle": {"enemy": "UNKNOWN"}},
+      "expect": {"same_as_golden": "GF-001"}
+    },
+    {
+      "id": "CF-002-B",
+      "title": "Opponent NEUTRAL -> no PUNISH, WAIT at P2 (THREAT stays VALID but not preferred)",
+      "patch": {"opponent": {"action": "NEUTRAL"}},
+      "expect": {
+        "permission": "P2",
+        "opportunities": [],
+        "recommended": "WAIT",
+        "actions": {"THREAT": {"validity": "VALID"}, "CHASE": {"validity": "CONDITIONAL", "reasons": []}}
+      }
+    }
+  ]
+}

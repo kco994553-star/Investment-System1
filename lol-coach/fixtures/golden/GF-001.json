@@ -1,0 +1,29 @@
+{
+  "id": "GF-001",
+  "title": "Punish window, enemy jungle UNKNOWN -> SHORT_TRADE at P3",
+  "status": "R1_BASELINE (pins as-received v0.1 behaviour; design confirmation pending R2)",
+  "input": {
+    "power": {"matchup": "FAVORABLE", "access": "LIMITED"},
+    "wave": {"state": "EVEN"},
+    "jungle": {"enemy": "UNKNOWN"},
+    "opponent": {"action": "CS_APPROACH"},
+    "risk": {"return_path": "UNCERTAIN"}
+  },
+  "expect": {
+    "permission": "P3",
+    "opportunities": ["PUNISH"],
+    "recommended": "SHORT_TRADE",
+    "actions": {
+      "THREAT": {"validity": "VALID", "reasons": []},
+      "SINGLE_HIT": {"validity": "VALID", "reasons": []},
+      "SHORT_TRADE": {"validity": "VALID", "reasons": []},
+      "EXTENDED_TRADE": {"validity": "CONDITIONAL", "reasons": ["ENEMY_JUNGLE_UNKNOWN"], "unlock_conditions": ["ENEMY_JUNGLE_CONFIRMED_FAR"]},
+      "ALL_IN": {"validity": "CONDITIONAL", "reasons": ["ENEMY_JUNGLE_UNKNOWN"], "unlock_conditions": ["ENEMY_JUNGLE_CONFIRMED_FAR"]},
+      "CHASE": {"validity": "INVALID", "reasons": ["ENEMY_JUNGLE_UNKNOWN"], "unlock_conditions": ["ENEMY_JUNGLE_CONFIRMED_FAR"]},
+      "WAIT": {"validity": "VALID"},
+      "PROBE": {"validity": "VALID"},
+      "DISENGAGE": {"validity": "VALID"}
+    },
+    "trace": [["OPPORTUNITY", "PUNISH"], ["PERMISSION", "P3"]]
+  }
+}

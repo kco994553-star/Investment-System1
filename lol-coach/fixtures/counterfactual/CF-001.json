@@ -1,0 +1,67 @@
+{
+  "base": "GF-001",
+  "variants": [
+    {
+      "id": "CF-001-A",
+      "title": "Enemy jungle confirmed FAR -> permission rises to P4, uncertainty penalties lifted",
+      "patch": {"jungle": {"enemy": "CONFIRMED_FAR"}},
+      "expect": {
+        "permission": "P4",
+        "opportunities": ["PUNISH"],
+        "recommended": "SHORT_TRADE",
+        "actions": {
+          "EXTENDED_TRADE": {"validity": "VALID", "reasons": [], "unlock_conditions": []},
+          "CHASE": {"validity": "VALID", "reasons": [], "unlock_conditions": []},
+          "ALL_IN": {"validity": "CONDITIONAL", "reasons": [], "unlock_conditions": []}
+        }
+      }
+    },
+    {
+      "id": "CF-001-B",
+      "title": "Enemy jungle confirmed NEAR -> identical to GF-002",
+      "patch": {"jungle": {"enemy": "CONFIRMED_NEAR"}},
+      "expect": {"same_as_golden": "GF-002"}
+    },
+    {
+      "id": "CF-001-C",
+      "title": "Matchup EVEN -> no PUNISH, WAIT at P2",
+      "patch": {"power": {"matchup": "EVEN"}},
+      "expect": {
+        "permission": "P2",
+        "opportunities": [],
+        "recommended": "WAIT",
+        "actions": {"SHORT_TRADE": {"validity": "CONDITIONAL"}, "CHASE": {"validity": "INVALID"}}
+      }
+    },
+    {
+      "id": "CF-001-D",
+      "title": "Matchup UNFAVORABLE -> no PUNISH, WAIT at P2",
+      "patch": {"power": {"matchup": "UNFAVORABLE"}},
+      "expect": {"permission": "P2", "opportunities": [], "recommended": "WAIT"}
+    },
+    {
+      "id": "CF-001-E",
+      "title": "Opponent RETREAT (no CS approach) -> no PUNISH, WAIT at P2",
+      "patch": {"opponent": {"action": "RETREAT"}},
+      "expect": {"permission": "P2", "opportunities": [], "recommended": "WAIT"}
+    },
+    {
+      "id": "CF-001-F",
+      "title": "Wave UNFAVORABLE -> decision unchanged (CURRENT behaviour, OI-4)",
+      "patch": {"wave": {"state": "UNFAVORABLE"}},
+      "unchanged_from_base": true
+    },
+    {
+      "id": "CF-001-G",
+      "title": "Return path UNSAFE -> decision unchanged, SHORT_TRADE still recommended (CURRENT behaviour, OI-4)",
+      "patch": {"risk": {"return_path": "UNSAFE"}},
+      "unchanged_from_base": true
+    },
+    {
+      "id": "CF-001-H",
+      "title": "Access CLOSED -> decision unchanged (CURRENT behaviour, OI-4)",
+      "patch": {"power": {"access": "CLOSED"}},
+      "unchanged_from_base": true
+    }
+  ]
+}

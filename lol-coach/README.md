@@ -12,13 +12,16 @@ Current scope:
 - Decision trace
 - Thin orchestration engine
 
+Validation (R1):
+- Fixture runner (golden GF-001/GF-002 + counterfactuals)
+- Metamorphic relations over the full GameState space
+
 Not included yet:
 - Replay
 - Windows Bridge
 - AI/API analysis
 - React UI
 - SQLite persistence
-- Fixture runner
 
 ## Relay
 
@@ -36,4 +39,5 @@ Rules: `LoL-Coach · Multi-AI Relay Protocol v1.0.md`
 ```
 pip install -e '.[test]'
 python -m pytest -q
+python -m validation --verbose   # fixtures + metamorphic report
 ```

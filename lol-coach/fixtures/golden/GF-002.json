@@ -1,0 +1,29 @@
+{
+  "id": "GF-002",
+  "title": "Punish window, enemy jungle CONFIRMED_NEAR -> downgrade to THREAT at P2",
+  "status": "R1_BASELINE (pins as-received v0.1 behaviour; design confirmation pending R2)",
+  "input": {
+    "power": {"matchup": "FAVORABLE", "access": "LIMITED"},
+    "wave": {"state": "EVEN"},
+    "jungle": {"enemy": "CONFIRMED_NEAR"},
+    "opponent": {"action": "CS_APPROACH"},
+    "risk": {"return_path": "UNCERTAIN"}
+  },
+  "expect": {
+    "permission": "P2",
+    "opportunities": ["PUNISH"],
+    "recommended": "THREAT",
+    "actions": {
+      "THREAT": {"validity": "VALID", "reasons": []},
+      "SINGLE_HIT": {"validity": "VALID", "reasons": []},
+      "SHORT_TRADE": {"validity": "CONDITIONAL", "reasons": [], "unlock_conditions": []},
+      "EXTENDED_TRADE": {"validity": "CONDITIONAL", "reasons": [], "unlock_conditions": []},
+      "ALL_IN": {"validity": "CONDITIONAL", "reasons": [], "unlock_conditions": []},
+      "CHASE": {"validity": "CONDITIONAL", "reasons": [], "unlock_conditions": []},
+      "WAIT": {"validity": "VALID"},
+      "PROBE": {"validity": "VALID"},
+      "DISENGAGE": {"validity": "VALID"}
+    },
+    "trace": [["OPPORTUNITY", "PUNISH"], ["PERMISSION", "P2"]]
+  }
+}

@@ -18,16 +18,23 @@ GameState (backend/state/models.py)
 → Decision (backend/decision/models.py)
 Orchestration: analyze() in backend/decision/engine.py
 
+Validation Layer (R1, read-only over core)
+validation/fixture_runner.py  Golden (fixtures/golden) + Counterfactual (fixtures/counterfactual)
+validation/metamorphic.py     MR-01..08, exhaustive over all 1,296 GameStates
+
 Planned Layers (NOT STARTED, v0.1 README "Not included yet")
-Fixture runner · Replay · Windows Bridge · AI/API analysis · React UI · SQLite persistence
+Replay · Windows Bridge · AI/API analysis · React UI · SQLite persistence
 
 Layout
 lol-coach/backend/   core decision code
-lol-coach/tests/     pytest suite
+lol-coach/tests/     pytest suite (incl. core sha256 guard tests/core_manifest_r0.json)
+lol-coach/validation/  fixture runner + metamorphic relations
+lol-coach/fixtures/  golden/GF-*.json, counterfactual/CF-*.json
 lol-coach/pyproject.toml  Python >= 3.11, pydantic >= 2
 
 How to run
 cd lol-coach && pip install -e '.[test]' && python -m pytest -q
+cd lol-coach && python -m validation --verbose
 
 Boundary
 LoL Coach는 Investment-System1 저장소 안에 있지만 독립 프로젝트다. 투자 시스템 코드와 서로 import하지 않으며,
