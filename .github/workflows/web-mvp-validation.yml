@@ -27,7 +27,7 @@ jobs:
       - run: |
           mkdir -p implementation/reports/web_mvp
           PYTHONPATH=implementation/src python -m investment_system.product.web_mvp --out /tmp/web-mvp
-          PYTHONPATH=implementation/src python -m investment_system.product.web_mvp --out /tmp/web-mvp-demo --demo
+          python implementation/tools/build_web_mvp_demo.py --out /tmp/web-mvp-demo
           python -m http.server 8765 --bind 127.0.0.1 --directory /tmp > /tmp/web-server.log 2>&1 &
           node implementation/tools/web_mvp_browser_test.js
       - uses: actions/upload-artifact@v4

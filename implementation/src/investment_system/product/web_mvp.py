@@ -119,30 +119,6 @@ def build(out, bundle=None, demo=False, rig_page=None):
         (out/'network.html').write_text(compose(page, (ASSETS/'network-style.css').read_text(), (ASSETS/'network-bridge.js').read_text()), encoding='utf-8')
     elif not demo:
         (out/'network.html').unlink(missing_ok=True)
-    if demo:
-        # Explicit test-only fixture use. RIG does all projection/inference; Web consumes its rendered output.
-        import sys
-        sys.path.insert(0, str(ROOT))
-        from tests.rig_fixtures import standard, T0, IDS
-        from datetime import timedelta
-        from ..rig.network.views import NewsIndex
-        from ..rig.intel.intel import IntelIndex
-        from ..rig.myview.prefs import UserOrganization
-        from ..rig.discovery.present import build_rig_page
-        from ..rig.discovery.impact import event_impact
-        from ..rig.discovery.discovery import fact_graph
-        class EmptyHoldings:
-            def held_issuer_ids(self, as_of): return frozenset()
-        s = standard()
-        at = T0 + timedelta(days=60)
-        impact = event_impact(fact_graph(s.ledger.graph_as_of(at)), s.ledger.graph_as_of(at), frozenset({'issuer_asml'}), 'evt_r10')
-        vm, page = build_rig_page(s.ledger, NewsIndex(s.lin), IntelIndex(s.ledger), EmptyHoldings(), UserOrganization(IDS), at, impacts=(impact,))
-        b['news'] = envelope([{'event_id':c.event_id,'headline':c.headline,'issuer_ids':list(c.issuer_ids),'available_at':c.available_at.isoformat()} for c in vm.cards], 'DEMO', at.isoformat(), 'tests.rig_fixtures.standard')
-        b['relationships'] = envelope({'frame': 'network.html'}, 'DEMO', at.isoformat(), 'Track D fixture / P0–P4')
-        for n in vm.network.nodes:
-            b['companies'].append({'company_id': n.issuer_id, 'issuer_id': n.issuer_id, 'ticker': n.label, 'name': n.label, 'demo': True})
-        page = compose(page, (ASSETS/'network-style.css').read_text(), (ASSETS/'network-bridge.js').read_text())
-        (out/'network.html').write_text(page, encoding='utf-8')
     (out/'data.json').write_text(json.dumps(validate_bundle(b), ensure_ascii=False), encoding='utf-8')
     return out
 
