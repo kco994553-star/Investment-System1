@@ -519,3 +519,16 @@ Conservative D2 containment is implemented: the Gate blocks on UNRECONCILED_SHAR
 ## Track A final Freeze record — 2026-09-27T20:50:49.316653+09:00
 
 Track A REAL-DATA Baseline **FROZEN** in local commit/package; canonical GitHub upload is still blocked (prior integration HTTP403). Validated source `682bbae1687d237f72c3f2266913b8bf61f1ff0b`. C-40/C-41 resolved; CA-UNIT-v1.0 approved; original20+3 D3-C cases audited. Corrected Gate and exact Official consistency pass for 2024-06-30/09-30/12-31; 3-date Walk-Forward equals singles; network-inclusive500 benchmark completed; raw6830 integrity and regression396/396 pass. No new D3-P. Baseline freeze does not promote PROVISIONAL_RESEARCH calibration or modify other tracks. Final machine record: `implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json`. Work stopped as instructed. Earlier Track A blocked entries are historical and superseded by this record.
+
+
+## TC-D3P-001 — C2 chronological split boundary policy — OPEN / D3-P PROPOSED
+
+Recorded: 2026-09-28T20:42:40+09:00. Track C only. EVL_SPEC_v0.1 §3 fixes 5Y/1Y/1Y,
+annual re-optimization and horizon/rebalance-derived Purge/Embargo, but does not
+choose overlap-only vs an additional chronological gap, or nominal-window/sample
+trimming semantics. That selection changes eligible samples and experiment results.
+Proposed EVL-SPLIT-01 v1.0 is fully specified with boundary examples in
+implementation/reports/track_c_c2_split_policy_proposal.md. No policy applied.
+C0/C1 remain SOFTWARE FROZEN after 24/24 targeted and 420/420 full/integration.
+C2 and later phases pause in order pending this new D3-P. No upstream exception,
+Track A reinterpretation, threshold calibration or Official promotion is approved.

@@ -1670,3 +1670,29 @@ preserved local commit above remote; the C-39 implementation/documentation is th
 ## Track A final Freeze record — 2026-09-27T20:50:49.316653+09:00
 
 Track A REAL-DATA Baseline **FROZEN** in local commit/package; canonical GitHub upload is still blocked (prior integration HTTP403). Validated source `682bbae1687d237f72c3f2266913b8bf61f1ff0b`. C-40/C-41 resolved; CA-UNIT-v1.0 approved; original20+3 D3-C cases audited. Corrected Gate and exact Official consistency pass for 2024-06-30/09-30/12-31; 3-date Walk-Forward equals singles; network-inclusive500 benchmark completed; raw6830 integrity and regression396/396 pass. No new D3-P. Baseline freeze does not promote PROVISIONAL_RESEARCH calibration or modify other tracks. Final machine record: `implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json`. Work stopped as instructed. Earlier Track A blocked entries are historical and superseded by this record.
+
+
+## Track C C1 handoff — 2026-09-28T20:42:40+09:00
+
+AI: Codex. Scope: Track C EVL only. This entry supersedes earlier Track C
+IMPLEMENTATION NOT STARTED / C0-only status; other-track records are unchanged.
+Started from canonical b8e39a2 and feature/track-c-evl 27bd69d, PR #4 draft.
+C0 baseline reproduced: 400/400 pytest PASS. C0 + C1 are now SOFTWARE FROZEN.
+C1 implementation 5db4acf: immutable preregistration, experiment-bound append-only
+Trial Ledger, corrupt/partial-write containment, serialized writers, budget-aware
+supporting evidence, append-only invalidation. Targeted 24/24; full 420/420;
+normal-merge integration 420/420 PASS. Actions 36417028774 SUCCESS. Runtime/data
+changes outside Track C = 0. No new D3-P for C1. EVL_SPEC_v0.1 unchanged.
+Evidence: implementation/reports/track_c_c1_acceptance.md and associated logs/JSON.
+
+Open decision TC-D3P-001: EVL-SPLIT-01 v1.0, C2 chronological Purge/Embargo policy.
+The spec requires derivation from horizon/rebalance but leaves boundary semantics
+unspecified. Proposal retains 5Y/1Y/1Y nominal windows, removes crossing labels and
+adds one registered rebalance interval before evaluation; label end/publication
+must precede that cutoff. General policy only; no numeric default or PIT relaxation.
+Details: implementation/reports/track_c_c2_split_policy_proposal.md.
+Status: PROPOSED / NOT APPROVED / NOT ACTIVE. C2 not frozen; C3–C10 not started.
+Next: obtain this D3-P decision, then implement C2 acceptance in existing order.
+Do not repeat C1 or alter upstream scores/data/contracts. Do not auto-merge PR #4.
+Progress: 2/11 software phases frozen (18.2% phase-count proxy, not effort estimate);
+no Official profile, real-data EVL validation or Forward Validation is claimed.
