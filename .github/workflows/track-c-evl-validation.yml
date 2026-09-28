@@ -18,7 +18,7 @@ jobs:
           python-version: "3.11"
       - name: Install pytest
         run: python -m pip install pytest
-      - name: Targeted C0 regression
-        run: PYTHONPATH=src python -m pytest -q tests/test_evl_c0.py
+      - name: Targeted EVL regression
+        run: PYTHONPATH=src python -m pytest -q tests/test_evl_c*.py
       - name: Full regression
         run: PYTHONPATH=src python -m pytest -q
