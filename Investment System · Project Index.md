@@ -106,3 +106,8 @@ Update · C-39 shared identity contract · 2026-09-27 16:02 KST
 ## Track A final Freeze record — 2026-09-27T20:50:49.316653+09:00
 
 Track A REAL-DATA Baseline **FROZEN** in local commit/package; canonical GitHub upload is still blocked (prior integration HTTP403). Validated source `682bbae1687d237f72c3f2266913b8bf61f1ff0b`. C-40/C-41 resolved; CA-UNIT-v1.0 approved; original20+3 D3-C cases audited. Corrected Gate and exact Official consistency pass for 2024-06-30/09-30/12-31; 3-date Walk-Forward equals singles; network-inclusive500 benchmark completed; raw6830 integrity and regression396/396 pass. No new D3-P. Baseline freeze does not promote PROVISIONAL_RESEARCH calibration or modify other tracks. Final machine record: `implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json`. Work stopped as instructed. Earlier Track A blocked entries are historical and superseded by this record.
+
+
+## Integration verification · 2026-09-28 20:23 KST
+
+Track A — REAL-DATA BASELINE **FROZEN_VERIFIED**. PR #3 was normal-merged into canonical as `bd6bf42bdd9c6274b595471c65e3482f37317f9c`, preserving original Frozen HEAD `a79642f7aa174cc37b981298d0ff1cec6b04e974`. Integration audit re-confirmed the 17-file Freeze evidence manifest, raw 6,830-artifact integrity, CA-UNIT-v1.0 (original 20 + 3 D3-C), exact three-date Gate/Official consistency, 3-date/two-step Walk-Forward, the approved retrospective PIT/provenance boundary, retained Network500 evidence, and 396/396 full regression. This status does not promote `PROVISIONAL_RESEARCH`, claim strict zero-lookahead, or alter Tracks B/C/D/E.
