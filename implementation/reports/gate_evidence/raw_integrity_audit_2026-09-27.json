@@ -1,0 +1,10 @@
+{
+  "kind": "TRACK_A_RAW_ARTIFACT_INTEGRITY_AUDIT",
+  "audited_at_kst": "2026-09-27T19:46:30.455917+09:00",
+  "upstream_run_id": 36305927245,
+  "archive_sha256": "712e43bcc1fcd137e5e99ccdda2440850eda56015e02037293d8eac8db399f94",
+  "n_artifacts": 6808,
+  "bytes": 6136954924,
+  "errors": [],
+  "passed": true
+}

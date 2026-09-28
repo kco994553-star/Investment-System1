@@ -216,6 +216,8 @@ jobs:
         with:
           path: implementation/data/raw
           key: c21-raw-store-v2-${{ github.run_id }}
+      - name: Restore reviewed CA-UNIT primary evidence and historical security identity
+        run: python tools/prepare_ca_unit_evidence.py --store data/raw
       - name: Gate chain (coverage -> rankable -> #500 -> Completeness -> Sufficiency -> Promotion Gate v2)
         if: inputs.reuse_gate_evidence != 'true'
         run: |

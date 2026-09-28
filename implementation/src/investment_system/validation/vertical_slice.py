@@ -82,7 +82,7 @@ def run_vertical_slice(
     tickers = {m.company_id: m.ticker for m in universe.members}
     listings = dict(US_LISTINGS)
     for m in universe.members:
-        if m.company_id not in listings and m.cik:
+        if m.cik:
             listings[m.company_id] = {"yahoo": m.ticker, "cik": m.cik, "exchange": None}
     path = Path(store_path) if store_path else Path(NamedTemporaryFile(suffix=".json", delete=False).name)
     store = ScopedTrackStore(FileTrackRecordStore(path))
@@ -188,7 +188,7 @@ def run_vertical_slice_from_store(
     Absent companyfacts/price artifacts stay MISSING, same as live.
     """
     listings = {m.company_id: {"cik": m.cik, "yahoo": m.ticker} for m in universe.members}
-    payloads, bars = build_payloads_and_bars(store, listings, chart_range=chart_range)
+    payloads, bars = build_payloads_and_bars(store, listings, chart_range=chart_range, lazy_companyfacts=True)
     return run_vertical_slice(as_of, horizon_as_of, payloads, bars, store_path=store_path, universe=universe)
 
 
@@ -205,9 +205,14 @@ def run_walk_forward_from_store(
     dates = sorted(as_ofs)
     if len(dates) < 2:
         raise ValueError("walk-forward needs at least two as_of dates")
-    all_ids = {}
-    for d in dates:
-        for m in universe_at(d).members:
-            all_ids[m.company_id] = {"cik": m.cik, "yahoo": m.ticker}
-    payloads, bars = build_payloads_and_bars(store, all_ids, chart_range=chart_range)
-    return run_walk_forward(dates, payloads, bars, universe_at, store_path=store_path)
+    steps = []
+    for t0, t1 in zip(dates, dates[1:]):
+        # A later snapshot may reuse company_id with a successor CIK or ticker.
+        # Resolve raw inputs separately for each prediction date, exactly as the
+        # single-date path does; a union of listings overwrites historical identity.
+        snap = universe_at(t0)
+        listings = {m.company_id: {"cik": m.cik, "yahoo": m.ticker} for m in snap.members}
+        payloads, bars = build_payloads_and_bars(store, listings, chart_range=chart_range, lazy_companyfacts=True)
+        result = run_walk_forward([t0, t1], payloads, bars, lambda _: snap, store_path=store_path)
+        steps.extend(result["steps"])
+    return {**result, "steps": steps}

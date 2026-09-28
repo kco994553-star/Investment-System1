@@ -331,6 +331,9 @@ def gate_audited_candidates(store: RawDatasetStore, listings: dict, overrides: d
         c = str(m.get("cik") or "").zfill(10)
         ov = overrides.get(cid)
         base = {"company_id": cid, "ticker": m.get("yahoo"), "cik": m.get("cik")}
+        if ov and ov.get("unit_candidate"):
+            out.append(ov["unit_candidate"])
+            continue
         if ov and ov.get("exclude"):
             continue
         if ov and ov.get("mcap"):
@@ -372,6 +375,7 @@ def gate_audited_candidates(store: RawDatasetStore, listings: dict, overrides: d
                         "look_ahead": bool(ov.get("look_ahead")),
                         "security_components": [{"member": x.get("member"), "symbol": x.get("symbol"),
                                                  "shares": x.get("shares"), "price": x.get("price"),
+                                                 "measurement_date": x.get("date") or ov.get("measurement_date"),
                                                  "price_basis": x.get("price_basis") or (x.get("symbol_basis") or {}).get("basis")}
                                                 for x in ov.get("classes") or []]})
             continue
@@ -384,9 +388,39 @@ def gate_audited_candidates(store: RawDatasetStore, listings: dict, overrides: d
             continue
         out.append({**base, "shares": shr["shares"], "price": px, "price_observed_at": obs, "shares_available_at": shr["available_at"],
                     "shares_basis": "COMPANYFACTS_PIT", "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR", "gate_mcap": shr["shares"] * px,
+                    "shares_source": shr["source"], "shares_accessions": shr.get("accessions"),
+                    "shares_measurement_date": shr.get("measurement_date"),
                     "security_components": [{"symbol": m.get("yahoo"), "shares": shr["shares"], "price": px,
+                                             "measurement_date": shr.get("measurement_date"),
                                              "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR"}]})
     return out
+
+
+def share_price_unit_audit(store: RawDatasetStore, candidates: list[dict], as_of, chart_range: str = "5y") -> dict:
+    """Detect corporate actions between the share filing and valuation date.
+
+    Yahoo's split series also contains spin-off adjustments: a factor is evidence
+    to investigate, never authority to multiply an issuer's outstanding shares.
+    """
+    amc = _load("audit_mcap_store")
+    unresolved = []
+    for candidate in candidates:
+        available = candidate.get("shares_available_at")
+        if not available:
+            continue
+        available = amc._dt(str(available))
+        symbol = candidate.get("ticker")
+        events = [{"effective_at": when.isoformat(), "factor": factor}
+                  for when, factor in amc.load_splits(store, symbol, chart_range) or []
+                  if available < when <= as_of and factor != 1.0]
+        if events:
+            unresolved.append({"company_id": candidate["company_id"], "ticker": symbol,
+                               "cik": candidate.get("cik"), "shares": candidate["shares"],
+                               "shares_basis": candidate.get("shares_basis"),
+                               "shares_available_at": available.isoformat(), "events": events,
+                               "source_artifact": f"yahoo_events:{symbol}:{chart_range}"})
+    return {"passed": not unresolved, "n_candidates": len(candidates), "unresolved": unresolved,
+            "note": "No share multiplier applied. Exact security/event/share-unit reconciliation is required."}
 
 
 def gate_snapshot_consistency(store: RawDatasetStore, listings: dict, top: list[dict], candidates: list[dict], as_of) -> dict:
@@ -1170,7 +1204,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
               class_economics: dict | None = None, nport_exception: dict | None = None,
               nport_prices: dict | None = None, symbol_mappings: dict | None = None,
               corporate_action_policy: dict | None = None, nport_investigation: dict | None = None,
-              nport_cross_check: dict | None = None) -> dict:
+              nport_cross_check: dict | None = None, share_unit_policy: dict | None = None) -> dict:
     amc = _load("audit_mcap_store")
     d = amc._dt(as_of if "T" in as_of else as_of + "T00:00:00+00:00")
     cand = verify_cik_candidates(store, cik_candidates)
@@ -1189,6 +1223,9 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     ca_prices = apply_corporate_action_prices(store, overrides, listings, corporate_action_policy,
                                               nport_investigation, nport_cross_check, d, chart_range)
     stale_excluded = exclude_stale_unresolved(store, listings, overrides, d)
+    unit_audit = _load("ca_unit_policy").reconcile(
+        store, gate_audited_candidates(store, listings, overrides, d, chart_range),
+        overrides, share_unit_policy, d, chart_range)
     all_nport_prices = {**nport_px, **ca_prices}
     price_exceptions = {"price_type": "NPORT_REPORTED_VALUE", "issuers": all_nport_prices,
                         "note": ("Valued at the SEC N-PORT reported value per share on the as_of report date (filed after as_of: "
@@ -1295,7 +1332,8 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
     official_blockers = ([] if gate_v2["passed"] else ["PROMOTION_GATE_V2_FAILED"]) + \
         ([] if consistency["passed"] else ["GATE_SNAPSHOT_INCONSISTENT"]) + \
         [f"TOP500_ROWS_{k}" for k in sorted(flag_counts)] + \
-        (["LOWER_BOUND_ISSUERS_OUTSIDE_TOP500"] if lb_outside else [])
+        (["LOWER_BOUND_ISSUERS_OUTSIDE_TOP500"] if lb_outside else []) + \
+        ([] if unit_audit["passed"] else ["UNRECONCILED_SHARE_PRICE_UNITS"])
     official = not official_blockers
     return {
         "kind": "TOP500_GATE_CHAIN_RUN", "as_of": audit["as_of"],
@@ -1318,6 +1356,7 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
         "share_scale_checks": share_scale, "stale_share_facts_excluded": stale_excluded,
         "registration_doc_share_counts": registration_docs,
         "gate_snapshot_consistency": consistency,
+        "share_price_unit_audit": unit_audit,
         # the audited candidate representation, kept only when Official is declared, so later steps rebuild the SAME
         # snapshot with universe.sources.official_mcap500_snapshot (no re-derivation from companyfacts/adjclose)
         "official_snapshot_candidates": [
@@ -1370,6 +1409,7 @@ def main() -> None:
     ap.add_argument("--nport-cross-check", type=Path,
                     help="default nport_cross_check_<as_of>.json if present")
     ap.add_argument("--out", type=Path)
+    ap.add_argument("--share-unit-policy", type=Path, default=GE / "ca_unit_policy_v1.json")
     a = ap.parse_args()
     if a.cik_candidates is None:  # point-in-time CIK corrections are per as_of (e.g. BLK holding-company reorganisation 2024-10-01)
         _ge = ROOT / "reports" / "gate_evidence"
@@ -1393,8 +1433,9 @@ def main() -> None:
                     rd(sm) if (sm := a.symbol_mappings or GE / f"symbol_mappings_{a.as_of}.json").exists() else None,
                     rd(cap) if (cap := a.corporate_action_policy or GE / f"corporate_action_policy_{a.as_of}.json").exists() else None,
                     rd(npi) if (npi := a.nport_investigation or GE / f"nport_price_investigation_{a.as_of}.json").exists() else None,
-                    rd(ncc) if (ncc := a.nport_cross_check or GE / f"nport_cross_check_{a.as_of}.json").exists() else None)
-    s = json.dumps(rep, indent=2)
+                    rd(ncc) if (ncc := a.nport_cross_check or GE / f"nport_cross_check_{a.as_of}.json").exists() else None,
+                    rd(a.share_unit_policy) if a.share_unit_policy.exists() else None)
+    s = json.dumps(rep, indent=2, default=lambda v: v.isoformat() if hasattr(v, "isoformat") else str(v))
     if a.out:
         a.out.write_text(s + "\n", encoding="utf-8")
     print(json.dumps({k: rep[k] for k in ("as_of", "store", "listings", "rankable", "cutoff_500_mcap",

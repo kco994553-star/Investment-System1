@@ -74,3 +74,51 @@ def test_stubbed_ingest_then_vertical_slice_then_walk_forward(tmp_path, monkeypa
 
     wf = run_walk_forward_from_store(store, [t0, t1], lambda d: UniverseEngine().snapshot(d, roster=roster, source_vintage="2026-09-23"), chart_range="5y", store_path=Path(tmp_path) / "w.json")
     assert wf["fit_to_outcomes"] is False and len(wf["steps"]) == 1
+
+
+def test_walk_forward_preserves_dated_cik_and_ticker_when_company_id_is_reused(tmp_path):
+    """A successor with no historical fundamentals must not erase its predecessor."""
+    store = RawDatasetStore(tmp_path / "raw")
+    dates = [datetime(2026, month, 1, tzinfo=UTC) for month in (3, 6, 9)]
+    store.put("companyfacts:0001000001", json.dumps(_facts({2024: 100, 2025: 120})).encode(),
+              "u", "SEC", "application/json", "t", 200)
+    store.put("companyfacts:0001000002", b'{"facts":{}}', "u", "SEC", "application/json", "t", 200)
+    for symbol, prices in [("OLD", [10.0, 12.0, 15.0]), ("NEW", [50.0, 40.0, 30.0])]:
+        chart = _chart(symbol, prices)
+        chart["chart"]["result"][0]["timestamp"] = [int(d.timestamp()) for d in dates]
+        store.put(f"yahoo_chart:{symbol}:5y", json.dumps(chart).encode(), "u", "YAHOO",
+                  "application/json", "t", 200)
+    def universe_at(d):
+        old = d < dates[-1]
+        return UniverseEngine().snapshot(d, roster=(UniverseMember(
+            "successor", "OLD" if old else "NEW", entered_on="2015-01-01",
+            cik="1000001" if old else "1000002"),), source_vintage="2026-09-23")
+    wf = run_walk_forward_from_store(store, dates, universe_at)
+    assert len(wf["steps"]) == 2
+    for step, t0, t1 in zip(wf["steps"], dates, dates[1:]):
+        single = run_vertical_slice_from_store(store, t0, t1, universe_at(t0))
+        assert step["selected"] == single["selected"] == ["successor"]
+        assert step["n_linked"] == 1
+        assert step["equal_weight_realized"] == single["equal_weight_realized"]
+        assert not step["name_errors"]
+
+
+def test_lazy_companyfacts_replay_matches_eager_without_preloading_json(tmp_path, monkeypatch):
+    from investment_system.ingestion.replay import build_payloads_and_bars
+    store = RawDatasetStore(tmp_path)
+    for cik in (1, 2):
+        store.put(f"companyfacts:{cik:010d}", json.dumps(_facts({2024: 100, 2025: 120})).encode(),
+                  "u", "SEC", "application/json", "t", 200)
+    listings = {"a": {"cik": "1"}, "b": {"cik": "2"}, "missing": {"cik": "3"}}
+    eager, _ = build_payloads_and_bars(store, listings)
+    reads = []
+    original = store.get_bytes
+    def get_bytes(aid):
+        reads.append(aid)
+        return original(aid)
+    monkeypatch.setattr(store, "get_bytes", get_bytes)
+    lazy, _ = build_payloads_and_bars(store, listings, lazy_companyfacts=True)
+    assert not reads
+    assert lazy.get("a") == eager["a"] and reads == ["companyfacts:0000000001"]
+    assert lazy.get("missing") is None and len(reads) == 1
+    assert dict(lazy) == eager

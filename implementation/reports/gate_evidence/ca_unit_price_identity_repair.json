@@ -1,0 +1,58 @@
+{
+  "kind": "HISTORICAL_PRICE_IDENTITY_REPAIR",
+  "classification": "D2/D3-C_CA-UNIT-v1.0",
+  "cik": "0000813828",
+  "symbol": "PARA",
+  "security": "Class B common stock",
+  "valid_through": "2025-08-06",
+  "reason": "Original PARA chart and events identify Banzai International. Historical PSKY endpoint retains Paramount Class B observations before merger. No successor shares, exchange ratio or post-merger prices used.",
+  "mapping_document": {
+    "path": "ca_unit_sources/PARA_identity.html",
+    "url": "https://www.paramount.com/press/paramount-and-skydance-announce-anticipated-closing-date-deadlines-to-elect-merger-consideration-and-change-of-ticker-symbol-effective-at-the-closing",
+    "sha256": "49cbc9290df022e0c122b9fb080950166a0022588fc5655db80699977a4033f2",
+    "published_at": "2025-07-25",
+    "usage": "RETRIEVAL_IDENTITY_ONLY_NOT_AS_OF_ECONOMIC_INPUT"
+  },
+  "source": {
+    "path": "ca_unit_sources/PARA_price_source.json",
+    "url": "https://query1.finance.yahoo.com/v8/finance/chart/PSKY?range=5y&interval=1d&events=div%2Csplits",
+    "sha256": "d3627be917c0a5f4f51de223e1fe7e41b99622d88c4937f27225c4a56aeb1e21"
+  },
+  "normalized": {
+    "path": "ca_unit_sources/PARA_historical_chart.json",
+    "sha256": "783acf76637c00809699c7afb4bb6649f61fa0686dc69fba890482fb79471dbd"
+  },
+  "rejected_artifacts": [
+    {
+      "artifact_id": "yahoo_chart:PARA:5y",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PARA?interval=1d&range=5y",
+      "source_kind": "YAHOO_CHART",
+      "fetched_at": "2026-09-25T11:27:43.175182+00:00",
+      "sha256": "f208cafd0d68d364aa2af272b4e0fcfb7be53fd6b99e35eb745fc78ac174fb3e",
+      "bytes": 89547,
+      "content_type": "application/json;charset=utf-8",
+      "fetcher": "tools/fetch_real_data.py v1",
+      "http_status": 200,
+      "notes": "",
+      "meta_longName": "Banzai International, Inc."
+    },
+    {
+      "artifact_id": "yahoo_events:PARA:5y",
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/PARA?interval=1mo&range=5y&events=split",
+      "source_kind": "YAHOO_SPLIT_EVENTS",
+      "fetched_at": "2026-09-25T11:27:43.388406+00:00",
+      "sha256": "6cba0fc84ef46c99ce7957fca8e90c123a85839875cf6a5338f437aeb8140697",
+      "bytes": 5880,
+      "content_type": "application/json;charset=utf-8",
+      "fetcher": "tools/fetch_real_data.py v1",
+      "http_status": 200,
+      "notes": "",
+      "meta_longName": "Banzai International, Inc."
+    }
+  ],
+  "date_checks": {
+    "2024-06-28": 10.390000343322754,
+    "2024-09-30": 10.619999885559082,
+    "2024-12-31": 10.460000038146973
+  }
+}

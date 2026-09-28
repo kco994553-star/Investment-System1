@@ -700,3 +700,7 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
   Research Priority labels, Common-Connection expansion slot and the composed P1–P4 page. P4 9/9, full 363/363
   (mini_pytest shim). P4 FROZEN. P5 awaits a D3-P decision.
 - 2026-09-27 18:12 KST: user D3-P decision — Hold P5; P5 BLOCKED on Track C C0. No code change.
+
+## Track A correctness audit — 2026-09-27 19:56 KST
+
+Dated per-slice CIK/ticker input resolution; exact single/walk-forward consistency guard; lazy companyfacts loading after an observed exit-137 full-batch replay; share/price-unit fail-closed audit. 388 regression tests pass. Raw hashes verified; diagnostic 500-name/3-date replay passes, but all Official dates are suspended by new C-41, with CA-UNIT-v1.0 proposed for D3-P. No other Track implementation changed.

@@ -10,25 +10,25 @@
   {
    "as_of": "2024-06-30",
    "status": "OFFICIAL",
-   "universe_id": "uni_ae2f1be562fa",
+   "universe_id": "uni_cb35a6200b61",
    "n_members": 500,
-   "cutoff_mcap": 14021530297.505974,
+   "cutoff_mcap": 14028683302.332382,
    "gate_evidence": "gate_chain_2024-06-30_real_gha.json"
   },
   {
    "as_of": "2024-09-30",
    "status": "OFFICIAL",
-   "universe_id": "uni_e334f94a73c3",
+   "universe_id": "uni_12c3852b8333",
    "n_members": 500,
-   "cutoff_mcap": 15573548285.0,
+   "cutoff_mcap": 15579784616.02602,
    "gate_evidence": "gate_chain_2024-09-30_real_gha.json"
   },
   {
    "as_of": "2024-12-31",
    "status": "OFFICIAL",
-   "universe_id": "uni_cf6aa3403869",
+   "universe_id": "uni_0d1a30b1ee47",
    "n_members": 500,
-   "cutoff_mcap": 15421829271.493835,
+   "cutoff_mcap": 15458537138.015442,
    "gate_evidence": "gate_chain_2024-12-31_real_gha.json"
   }
  ],
@@ -37,14 +37,14 @@
   {
    "as_of": "2024-06-30T00:00:00+00:00",
    "horizon_as_of": "2024-09-30T00:00:00+00:00",
-   "universe_id": "uni_ae2f1be562fa",
+   "universe_id": "uni_cb35a6200b61",
    "universe_kind": "US_MCAP_TOP500_OFFICIAL",
    "official_universe": true,
    "universe_policy": "OFFICIAL",
    "membership_basis": "DERIVED_AT_AS_OF",
    "survivorship_risk": false,
    "n_selected": 471,
-   "equal_weight_realized": 0.08854077939931444,
+   "equal_weight_realized": 0.08825775295430757,
    "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
    "rule_status": "PROVISIONAL_RESEARCH",
    "n_universe": 500,
@@ -57,14 +57,14 @@
   {
    "as_of": "2024-09-30T00:00:00+00:00",
    "horizon_as_of": "2024-12-31T00:00:00+00:00",
-   "universe_id": "uni_e334f94a73c3",
+   "universe_id": "uni_12c3852b8333",
    "universe_kind": "US_MCAP_TOP500_OFFICIAL",
    "official_universe": true,
    "universe_policy": "OFFICIAL",
    "membership_basis": "DERIVED_AT_AS_OF",
    "survivorship_risk": false,
    "n_selected": 469,
-   "equal_weight_realized": 0.0004569665513276751,
+   "equal_weight_realized": 0.003558271995144946,
    "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
    "rule_status": "PROVISIONAL_RESEARCH",
    "n_universe": 500,
@@ -77,14 +77,14 @@
   {
    "as_of": "2024-12-31T00:00:00+00:00",
    "horizon_as_of": "2025-03-31T00:00:00+00:00",
-   "universe_id": "uni_cf6aa3403869",
+   "universe_id": "uni_0d1a30b1ee47",
    "universe_kind": "US_MCAP_TOP500_OFFICIAL",
    "official_universe": true,
    "universe_policy": "OFFICIAL",
    "membership_basis": "DERIVED_AT_AS_OF",
    "survivorship_risk": false,
    "n_selected": 468,
-   "equal_weight_realized": -0.01649309224255184,
+   "equal_weight_realized": -0.01529828853939469,
    "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
    "rule_status": "PROVISIONAL_RESEARCH",
    "n_universe": 500,
@@ -100,22 +100,22 @@
   "per_date_single_as_of": [
    {
     "as_of": "2024-06-30",
-    "wall_s": 29.006,
-    "peak_rss_mb": 9486.4
+    "wall_s": 59.525,
+    "peak_rss_mb": 363.3
    },
    {
     "as_of": "2024-09-30",
-    "wall_s": 28.27,
-    "peak_rss_mb": 9539.7
+    "wall_s": 59.039,
+    "peak_rss_mb": 364.5
    },
    {
     "as_of": "2024-12-31",
-    "wall_s": 28.395,
-    "peak_rss_mb": 9539.7
+    "wall_s": 62.135,
+    "peak_rss_mb": 365.7
    }
   ],
-  "median_wall_s": 28.395,
-  "max_peak_rss_mb": 9539.7,
+  "median_wall_s": 59.525,
+  "max_peak_rss_mb": 365.7,
   "name_errors_total": 0,
   "network": {
    "n_ingestion_run_reports": 391,
@@ -123,12 +123,12 @@
     "SKIPPED_ALREADY_PRESENT": 280986,
     "OK": 6228,
     "HTTP_404": 4130,
-    "NO_PERIODIC_FILING_BEFORE_AS_OF": 2566,
-    "HTTP_429": 3,
-    "ERROR_IncompleteRead": 1,
-    "ERROR_URLError": 4,
     "EGRESS_BLOCKED": 793,
-    "HTTP_401": 4
+    "NO_PERIODIC_FILING_BEFORE_AS_OF": 2566,
+    "ERROR_IncompleteRead": 1,
+    "HTTP_401": 4,
+    "ERROR_URLError": 4,
+    "HTTP_429": 3
    }
   },
   "note": "Real raw store (network-ingested by the c21 workflow); compare with tools/bench_universe_500.py (SYNTHETIC)."
@@ -145,6 +145,7 @@
     "universe": [
      "msft",
      "aapl",
+     "nvda",
      "googl",
      "amzn",
      "meta",
@@ -165,7 +166,6 @@
      "hd",
      "mrk",
      "bac",
-     "nvda",
      "abbv",
      "nflx",
      "cvx",
@@ -249,6 +249,7 @@
      "sbux",
      "mdlz",
      "plan:fisv",
+     "plan:cmg",
      "wm",
      "gild",
      "so",
@@ -257,6 +258,7 @@
      "cdns",
      "meli",
      "scco",
+     "aph",
      "mo",
      "cl",
      "gd",
@@ -376,7 +378,6 @@
      "d",
      "rcl",
      "plan:len",
-     "aph",
      "plan:idxx",
      "lng",
      "ddog",
@@ -641,8 +642,7 @@
      "plan:amcr",
      "plan:podd",
      "r1000:0001082554",
-     "r1000:0001046102",
-     "r1000:0001618732"
+     "r1000:0001046102"
     ],
     "membership_basis": "DERIVED_AT_AS_OF",
     "survivorship_risk": false,
@@ -660,6 +660,7 @@
      "keys",
      "plan:cprt",
      "plan:payx",
+     "blk",
      "pltr",
      "csco",
      "googl",
@@ -687,6 +688,7 @@
      "r1000:0000859737",
      "plan:ntap",
      "plan:pypl",
+     "plan:cmg",
      "aapl",
      "crm",
      "ma",
@@ -943,7 +945,6 @@
      "gm",
      "ci",
      "rok",
-     "r1000:0001618732",
      "stx",
      "eog",
      "regn",
@@ -1118,8 +1119,8 @@
      "plan:dd",
      "mrna"
     ],
-    "equal_weight_realized": 0.08828736532527073,
-    "n_linked": 470,
+    "equal_weight_realized": 0.08825775295430757,
+    "n_linked": 471,
     "name_errors": {}
    },
    {
@@ -1235,7 +1236,6 @@
      "ci",
      "shw",
      "ba",
-     "r1000:0000908937",
      "scco",
      "ice",
      "duk",
@@ -1250,6 +1250,7 @@
      "wm",
      "gd",
      "pltr",
+     "ctas",
      "ph",
      "ceg",
      "cp",
@@ -1435,6 +1436,7 @@
      "r1000:0000046619",
      "plan:tsco",
      "r1000:0001176948",
+     "mstr",
      "plan:csgp",
      "rok",
      "fang",
@@ -1493,6 +1495,7 @@
      "plan:wy",
      "dvn",
      "plan:trow",
+     "plan:deck",
      "plan:ppl",
      "plan:rol",
      "plan:es",
@@ -1535,7 +1538,6 @@
      "r1000:0000790051",
      "wbd",
      "plan:ball",
-     "ctas",
      "plan:tdy",
      "plan:tpl",
      "r1000:0001096343",
@@ -1624,8 +1626,7 @@
      "r1000:0000794170",
      "plan:key",
      "r1000:0000070318",
-     "plan:lnt",
-     "plan:enph"
+     "plan:lnt"
     ],
     "membership_basis": "DERIVED_AT_AS_OF",
     "survivorship_risk": false,
@@ -1644,6 +1645,7 @@
      "plan:payx",
      "keys",
      "plan:cprt",
+     "blk",
      "pltr",
      "googl",
      "amat",
@@ -1749,7 +1751,6 @@
      "plan:mas",
      "abbv",
      "plan:stld",
-     "r1000:0000908937",
      "plan:omc",
      "plan:hsy",
      "r1000:0000790051",
@@ -1764,6 +1765,7 @@
      "r1000:0001402436",
      "plan:ptc",
      "hlt",
+     "plan:deck",
      "plan:expe",
      "plan:xel",
      "plan:el",
@@ -1777,7 +1779,6 @@
      "plan:biib",
      "app",
      "r1000:0001834584",
-     "plan:enph",
      "r1000:0000861884",
      "plan:dov",
      "ebay",
@@ -2040,6 +2041,7 @@
      "wdc",
      "r1000:0001397911",
      "dlr",
+     "mstr",
      "plan:wday",
      "emr",
      "plan:dte",
@@ -2099,8 +2101,8 @@
      "plan:dd",
      "mrna"
     ],
-    "equal_weight_realized": 0.0002605740522356537,
-    "n_linked": 468,
+    "equal_weight_realized": 0.003558271995144946,
+    "n_linked": 469,
     "name_errors": {}
    }
   ],
@@ -2111,8 +2113,13 @@
   "calibrated": false
  },
  "walk_forward_timing": {
-  "wall_s": 34.354,
-  "peak_rss_mb": 10048.9
+  "wall_s": 123.129,
+  "peak_rss_mb": 511.4
+ },
+ "walk_forward_single_consistency": {
+  "passed": true,
+  "n_steps": 2,
+  "mismatches": []
  },
  "status": "RUN"
 }

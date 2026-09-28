@@ -181,7 +181,8 @@ def pit_shares(payload: dict, as_of: datetime) -> dict:
         vals = {float(r["val"]) for r in top}
         if len(vals) > 1:
             return {"status": "MULTI_CLASS_AMBIGUOUS", "shares": None, "source": f"{taxonomy}:{concept}", "available_at": latest}
-        return {"status": "OK", "shares": vals.pop(), "source": f"{taxonomy}:{concept}", "available_at": latest}
+        return {"status": "OK", "shares": vals.pop(), "source": f"{taxonomy}:{concept}", "available_at": latest,
+                "measurement_date": last_end, "accessions": sorted({r.get("accn") for r in top if r.get("accn")})}
     return {"status": "MISSING", "shares": None, "source": None, "available_at": None}
 
 

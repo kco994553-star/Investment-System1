@@ -499,3 +499,23 @@ eligibility records reject missing provenance and `available_at > as_of`. Six fo
 half-open listing history, context separation, Decimal FX, provenance, and fail-closed PIT behavior. Full suite 308/308
 PASS. C-39 no longer blocks RIG P0, but RIG remains DESIGN FROZEN / IMPLEMENTATION NOT STARTED and no RIG runtime was
 created. Track A/B/C code and ownership are unchanged.
+
+
+## Track A current resolution overlay — 2026-09-27 19:56 KST
+
+C-34/35/36/37/38: prior case treatments were verified in run #70 under the approved D3-P policies; GRAL cites the actual first subsequent 2024-08-13 10-Q, accession 0001628280-24-036965. These earlier cases are not reopened. This does not restore Official status after the independent C-41 audit below.
+
+## C-40 Future snapshot CIK overwrites historical walk-forward input — RESOLVED LOCALLY
+
+Run #70's 471/469 single selections versus 470/468 walk-forward selections were caused by the union of all dates' listing metadata overwriting BLK's predecessor CIK with its successor. Replay now resolves inputs per prediction date and enforces exact single/walk-forward consistency. Synthetic mutation tests plus actual BLK and three-date/500-name RESEARCH diagnostics pass. No Official re-promotion is claimed. Evidence: blk_dated_identity_regression_2026-09-27.json and track_a_diagnostic_replay_2026-09-27.json.
+
+## C-41 Share/price unit mismatch across corporate actions — OPEN-BLOCKING / D3-P PROPOSED
+
+The price path undoes post-as_of splits but the last disclosed share count can precede a split, stock dividend, spin-off, or merger already effective at as_of. All-candidate raw audit finds 20 events across the three dates. Same-input Gate/Official agreement did not catch the economic-unit mismatch. NVDA illustrates the arithmetic error; ILMN and SIRI show why multiplying every Yahoo split factor would be invalid. Pure split, distribution adjustment, and merger/cancellation issuance need different evidence-backed treatment.
+
+Conservative D2 containment is implemented: the Gate blocks on UNRECONCILED_SHARE_PRICE_UNITS, and Official pipeline refuses absent/failed unit audits. All three old Official snapshots and run #70 Official outputs are SUSPENDED, with their history retained. General proposal CA-UNIT-v1.0 is in implementation/reports/gate_evidence/track_a_share_unit_policy_proposal_2026-09-27.md. No new policy has been applied. Approval is required only for this new D3-P; existing D1/D2/D3-C authority remains intact.
+
+
+## Track A final Freeze record — 2026-09-27T20:50:49.316653+09:00
+
+Track A REAL-DATA Baseline **FROZEN** in local commit/package; canonical GitHub upload is still blocked (prior integration HTTP403). Validated source `682bbae1687d237f72c3f2266913b8bf61f1ff0b`. C-40/C-41 resolved; CA-UNIT-v1.0 approved; original20+3 D3-C cases audited. Corrected Gate and exact Official consistency pass for 2024-06-30/09-30/12-31; 3-date Walk-Forward equals singles; network-inclusive500 benchmark completed; raw6830 integrity and regression396/396 pass. No new D3-P. Baseline freeze does not promote PROVISIONAL_RESEARCH calibration or modify other tracks. Final machine record: `implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json`. Work stopped as instructed. Earlier Track A blocked entries are historical and superseded by this record.

@@ -76,8 +76,9 @@ Update · Module Progress Ledger 2026-09-23
 
 Update · Track separation 2026-09-27
 
-- Track A: REAL-DATA Main Track. 2024-12-31/2024-09-30 corrected Official RESTORED; 2024-06-30 NOT OFFICIAL.
-  Three-date walk-forward and backend Freeze remain blocked.
+- Track A: REAL-DATA Main Track. All three historical Official dates are SUSPENDED after the share/price-unit audit (C-41).
+  C-40 dated-identity replay is fixed; 500-name RESEARCH diagnostics pass. D3-P CA-UNIT-v1.0 and final Official reruns remain pending.
+  Latest Track A detail: `Investment-System1 · TRACK_A_REAL_DATA_STATUS.md`. Local update; remote upload blocked by 403.
 - Track B: Personal Investment Layer. Architecture FROZEN; P0 Common Contracts IMPLEMENTED+FROZEN; P1+ NOT STARTED.
 - Track C: Experiment & Validation Layer, `EVL_SPEC_v0.1`. DESIGN FROZEN / IMPLEMENTATION NOT STARTED. It validates
   integrated Aggressive/Balanced/Defensive candidates and owns their Official promotion after Track A baseline Freeze.
@@ -100,3 +101,8 @@ Update · C-39 shared identity contract · 2026-09-27 16:02 KST
   `contracts/global_universe.py`, with separate Analysis/Network/News contexts and fail-closed FX/eligibility PIT gates.
 - Six focused regressions and the full 308/308 suite pass. Track B's frozen private security contract was neither
   imported nor changed. This removes the identity-contract blocker for RIG P0; RIG itself remains unimplemented.
+
+
+## Track A final Freeze record — 2026-09-27T20:50:49.316653+09:00
+
+Track A REAL-DATA Baseline **FROZEN** in local commit/package; canonical GitHub upload is still blocked (prior integration HTTP403). Validated source `682bbae1687d237f72c3f2266913b8bf61f1ff0b`. C-40/C-41 resolved; CA-UNIT-v1.0 approved; original20+3 D3-C cases audited. Corrected Gate and exact Official consistency pass for 2024-06-30/09-30/12-31; 3-date Walk-Forward equals singles; network-inclusive500 benchmark completed; raw6830 integrity and regression396/396 pass. No new D3-P. Baseline freeze does not promote PROVISIONAL_RESEARCH calibration or modify other tracks. Final machine record: `implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json`. Work stopped as instructed. Earlier Track A blocked entries are historical and superseded by this record.

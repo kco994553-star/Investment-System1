@@ -1,12 +1,12 @@
 {
  "kind": "OFFICIAL_US_MCAP_TOP500_PIT",
  "as_of": "2024-06-30",
- "universe_id": "uni_ae2f1be562fa",
+ "universe_id": "uni_cb35a6200b61",
  "policy_status": "OFFICIAL",
  "universe_kind": "US_MCAP_TOP500_OFFICIAL",
  "membership_basis": "DERIVED_AT_AS_OF",
  "n_members": 500,
- "cutoff_mcap": 14021530297.505974,
+ "cutoff_mcap": 14028683302.332382,
  "gate_evidence": "gate_chain_2024-06-30_real_gha.json",
  "note": "Membership is exact; rows flagged rank_is_lower_bound are ranked on a lower bound (an unlisted class is not valued), their true market cap is >= the value shown and >= the cutoff.",
  "members": [
@@ -36,6 +36,18 @@
   },
   {
    "rank": 3,
+   "company_id": "nvda",
+   "ticker": "NVDA",
+   "cik": "0001045810",
+   "mcap": 3039084022521.9727,
+   "rank_is_lower_bound": false,
+   "shares_basis": "CA_UNIT_NORMALIZED:COMPANYFACTS_PIT",
+   "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
+   "shares_available_at": "2024-05-29T00:00:00+00:00",
+   "price_observed_at": "2024-06-28T13:30:00+00:00"
+  },
+  {
+   "rank": 4,
    "company_id": "googl",
    "ticker": "GOOGL",
    "cik": "0001652044",
@@ -47,7 +59,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 4,
+   "rank": 5,
    "company_id": "amzn",
    "ticker": "AMZN",
    "cik": "0001018724",
@@ -59,7 +71,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 5,
+   "rank": 6,
    "company_id": "meta",
    "ticker": "META",
    "cik": "0001326801",
@@ -71,7 +83,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 6,
+   "rank": 7,
    "company_id": "brk_b",
    "ticker": "BRK-B",
    "cik": "0001067983",
@@ -83,7 +95,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 7,
+   "rank": 8,
    "company_id": "lly",
    "ticker": "LLY",
    "cik": "0000059478",
@@ -95,7 +107,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 8,
+   "rank": 9,
    "company_id": "avgo",
    "ticker": "AVGO",
    "cik": "0001730168",
@@ -107,7 +119,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 9,
+   "rank": 10,
    "company_id": "tsla",
    "ticker": "TSLA",
    "cik": "0001318605",
@@ -119,7 +131,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 10,
+   "rank": 11,
    "company_id": "jpm",
    "ticker": "JPM",
    "cik": "0000019617",
@@ -131,7 +143,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 11,
+   "rank": 12,
    "company_id": "wmt",
    "ticker": "WMT",
    "cik": "0000104169",
@@ -143,7 +155,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 12,
+   "rank": 13,
    "company_id": "unh",
    "ticker": "UNH",
    "cik": "0000731766",
@@ -155,7 +167,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 13,
+   "rank": 14,
    "company_id": "r1000:0000034088",
    "ticker": "XOM",
    "cik": "0000034088",
@@ -167,7 +179,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 14,
+   "rank": 15,
    "company_id": "v",
    "ticker": "V",
    "cik": "0001403161",
@@ -179,7 +191,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 15,
+   "rank": 16,
    "company_id": "ma",
    "ticker": "MA",
    "cik": "0001141391",
@@ -191,7 +203,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 16,
+   "rank": 17,
    "company_id": "pg",
    "ticker": "PG",
    "cik": "0000080424",
@@ -203,7 +215,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 17,
+   "rank": 18,
    "company_id": "orcl",
    "ticker": "ORCL",
    "cik": "0001341439",
@@ -215,7 +227,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 18,
+   "rank": 19,
    "company_id": "cost",
    "ticker": "COST",
    "cik": "0000909832",
@@ -227,7 +239,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 19,
+   "rank": 20,
    "company_id": "jnj",
    "ticker": "JNJ",
    "cik": "0000200406",
@@ -239,7 +251,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 20,
+   "rank": 21,
    "company_id": "hd",
    "ticker": "HD",
    "cik": "0000354950",
@@ -251,7 +263,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 21,
+   "rank": 22,
    "company_id": "mrk",
    "ticker": "MRK",
    "cik": "0000310158",
@@ -263,7 +275,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 22,
+   "rank": 23,
    "company_id": "bac",
    "ticker": "BAC",
    "cik": "0000070858",
@@ -272,18 +284,6 @@
    "shares_basis": "COMPANYFACTS_PIT",
    "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
    "shares_available_at": "2024-04-30T00:00:00+00:00",
-   "price_observed_at": "2024-06-28T13:30:00+00:00"
-  },
-  {
-   "rank": 23,
-   "company_id": "nvda",
-   "ticker": "NVDA",
-   "cik": "0001045810",
-   "mcap": 303908402252.19727,
-   "rank_is_lower_bound": false,
-   "shares_basis": "COMPANYFACTS_PIT",
-   "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
-   "shares_available_at": "2024-05-29T00:00:00+00:00",
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
@@ -557,7 +557,7 @@
    "cik": "0000040545",
    "mcap": 174009624619.9098,
    "rank_is_lower_bound": false,
-   "shares_basis": "COMPANYFACTS_PIT",
+   "shares_basis": "CA_UNIT_NORMALIZED:COMPANYFACTS_PIT",
    "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
    "shares_available_at": "2024-04-23T00:00:00+00:00",
    "price_observed_at": "2024-06-28T13:30:00+00:00"
@@ -1284,6 +1284,18 @@
   },
   {
    "rank": 107,
+   "company_id": "plan:cmg",
+   "ticker": "CMG",
+   "cik": "0001058090",
+   "mcap": 86040379595.5658,
+   "rank_is_lower_bound": false,
+   "shares_basis": "CA_UNIT_NORMALIZED:COMPANYFACTS_PIT",
+   "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
+   "shares_available_at": "2024-06-07T00:00:00+00:00",
+   "price_observed_at": "2024-06-28T13:30:00+00:00"
+  },
+  {
+   "rank": 108,
    "company_id": "wm",
    "ticker": "WM",
    "cik": "0000823768",
@@ -1295,7 +1307,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 108,
+   "rank": 109,
    "company_id": "gild",
    "ticker": "GILD",
    "cik": "0000882095",
@@ -1307,7 +1319,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 109,
+   "rank": 110,
    "company_id": "so",
    "ticker": "SO",
    "cik": "0000092122",
@@ -1319,7 +1331,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 110,
+   "rank": 111,
    "company_id": "bmy",
    "ticker": "BMY",
    "cik": "0000014272",
@@ -1331,7 +1343,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 111,
+   "rank": 112,
    "company_id": "hca",
    "ticker": "HCA",
    "cik": "0000860730",
@@ -1343,7 +1355,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 112,
+   "rank": 113,
    "company_id": "cdns",
    "ticker": "CDNS",
    "cik": "0000813672",
@@ -1355,7 +1367,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 113,
+   "rank": 114,
    "company_id": "meli",
    "ticker": "MELI",
    "cik": "0001099590",
@@ -1367,7 +1379,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 114,
+   "rank": 115,
    "company_id": "scco",
    "ticker": "SCCO",
    "cik": "0001001838",
@@ -1379,7 +1391,19 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 115,
+   "rank": 116,
+   "company_id": "aph",
+   "ticker": "APH",
+   "cik": "0000820313",
+   "mcap": 80925379117.99602,
+   "rank_is_lower_bound": false,
+   "shares_basis": "CA_UNIT_NORMALIZED:COMPANYFACTS_PIT",
+   "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
+   "shares_available_at": "2024-06-12T00:00:00+00:00",
+   "price_observed_at": "2024-06-28T13:30:00+00:00"
+  },
+  {
+   "rank": 117,
    "company_id": "mo",
    "ticker": "MO",
    "cik": "0000764180",
@@ -1391,7 +1415,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 116,
+   "rank": 118,
    "company_id": "cl",
    "ticker": "CL",
    "cik": "0000021665",
@@ -1403,7 +1427,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 117,
+   "rank": 119,
    "company_id": "gd",
    "ticker": "GD",
    "cik": "0000040533",
@@ -1415,7 +1439,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 118,
+   "rank": 120,
    "company_id": "plan:zts",
    "ticker": "ZTS",
    "cik": "0001555280",
@@ -1427,7 +1451,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 119,
+   "rank": 121,
    "company_id": "ice",
    "ticker": "ICE",
    "cik": "0001571949",
@@ -1439,7 +1463,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 120,
+   "rank": 122,
    "company_id": "duk",
    "ticker": "DUK",
    "cik": "0001326160",
@@ -1451,7 +1475,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 121,
+   "rank": 123,
    "company_id": "mco",
    "ticker": "MCO",
    "cik": "0001059556",
@@ -1463,7 +1487,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 122,
+   "rank": 124,
    "company_id": "mck",
    "ticker": "MCK",
    "cik": "0000927653",
@@ -1475,7 +1499,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 123,
+   "rank": 125,
    "company_id": "enb",
    "ticker": "ENB",
    "cik": "0000895728",
@@ -1487,7 +1511,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 124,
+   "rank": 126,
    "company_id": "shw",
    "ticker": "SHW",
    "cik": "0000089800",
@@ -1499,7 +1523,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 125,
+   "rank": 127,
    "company_id": "tt",
    "ticker": "TT",
    "cik": "0001466258",
@@ -1511,7 +1535,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 126,
+   "rank": 128,
    "company_id": "cvs",
    "ticker": "CVS",
    "cik": "0000064803",
@@ -1523,7 +1547,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 127,
+   "rank": 129,
    "company_id": "fdx",
    "ticker": "FDX",
    "cik": "0001048911",
@@ -1535,7 +1559,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 128,
+   "rank": 130,
    "company_id": "cp",
    "ticker": "CP",
    "cik": "0000016875",
@@ -1547,7 +1571,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 129,
+   "rank": 131,
    "company_id": "eog",
    "ticker": "EOG",
    "cik": "0000821189",
@@ -1559,7 +1583,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 130,
+   "rank": 132,
    "company_id": "eqix",
    "ticker": "EQIX",
    "cik": "0001101239",
@@ -1571,7 +1595,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 131,
+   "rank": 133,
    "company_id": "tdg",
    "ticker": "TDG",
    "cik": "0001260221",
@@ -1583,7 +1607,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 132,
+   "rank": 134,
    "company_id": "ctas",
    "ticker": "CTAS",
    "cik": "0000723254",
@@ -1595,7 +1619,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 133,
+   "rank": 135,
    "company_id": "cme",
    "ticker": "CME",
    "cik": "0001156375",
@@ -1607,7 +1631,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 134,
+   "rank": 136,
    "company_id": "itw",
    "ticker": "ITW",
    "cik": "0000049826",
@@ -1619,7 +1643,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 135,
+   "rank": 137,
    "company_id": "fcx",
    "ticker": "FCX",
    "cik": "0000831259",
@@ -1631,7 +1655,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 136,
+   "rank": 138,
    "company_id": "mar",
    "ticker": "MAR",
    "cik": "0001048286",
@@ -1643,7 +1667,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 137,
+   "rank": 139,
    "company_id": "nxpi",
    "ticker": "NXPI",
    "cik": "0001413447",
@@ -1655,7 +1679,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 138,
+   "rank": 140,
    "company_id": "tgt",
    "ticker": "TGT",
    "cik": "0000027419",
@@ -1667,7 +1691,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 139,
+   "rank": 141,
    "company_id": "ecl",
    "ticker": "ECL",
    "cik": "0000031462",
@@ -1679,7 +1703,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 140,
+   "rank": 142,
    "company_id": "bdx",
    "ticker": "BDX",
    "cik": "0000010795",
@@ -1691,7 +1715,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 141,
+   "rank": 143,
    "company_id": "slb",
    "ticker": "SLB",
    "cik": "0000087347",
@@ -1703,7 +1727,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 142,
+   "rank": 144,
    "company_id": "apo",
    "ticker": "APO",
    "cik": "0001858681",
@@ -1715,7 +1739,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 143,
+   "rank": 145,
    "company_id": "abnb",
    "ticker": "ABNB",
    "cik": "0001559720",
@@ -1727,7 +1751,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 144,
+   "rank": 146,
    "company_id": "csx",
    "ticker": "CSX",
    "cik": "0000277948",
@@ -1739,7 +1763,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 145,
+   "rank": 147,
    "company_id": "ph",
    "ticker": "PH",
    "cik": "0000076334",
@@ -1751,7 +1775,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 146,
+   "rank": 148,
    "company_id": "noc",
    "ticker": "NOC",
    "cik": "0001133421",
@@ -1763,7 +1787,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 147,
+   "rank": 149,
    "company_id": "msi",
    "ticker": "MSI",
    "cik": "0000068505",
@@ -1775,7 +1799,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 148,
+   "rank": 150,
    "company_id": "aon",
    "ticker": "AON",
    "cik": "0000315293",
@@ -1787,7 +1811,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 149,
+   "rank": 151,
    "company_id": "ceg",
    "ticker": "CEG",
    "cik": "0001868275",
@@ -1799,7 +1823,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 150,
+   "rank": 152,
    "company_id": "emr",
    "ticker": "EMR",
    "cik": "0000032604",
@@ -1811,7 +1835,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 151,
+   "rank": 153,
    "company_id": "epd",
    "ticker": "EPD",
    "cik": "0001061219",
@@ -1823,7 +1847,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 152,
+   "rank": 154,
    "company_id": "well",
    "ticker": "WELL",
    "cik": "0000766704",
@@ -1835,7 +1859,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 153,
+   "rank": 155,
    "company_id": "orly",
    "ticker": "ORLY",
    "cik": "0000898173",
@@ -1847,7 +1871,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 154,
+   "rank": 156,
    "company_id": "usb",
    "ticker": "USB",
    "cik": "0000036104",
@@ -1859,7 +1883,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 155,
+   "rank": 157,
    "company_id": "pnc",
    "ticker": "PNC",
    "cik": "0000713676",
@@ -1871,7 +1895,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 156,
+   "rank": 158,
    "company_id": "rsg",
    "ticker": "RSG",
    "cik": "0001060391",
@@ -1883,7 +1907,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 157,
+   "rank": 159,
    "company_id": "mpc",
    "ticker": "MPC",
    "cik": "0001510295",
@@ -1895,7 +1919,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 158,
+   "rank": 160,
    "company_id": "plan:pypl",
    "ticker": "PYPL",
    "cik": "0001633917",
@@ -1907,7 +1931,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 159,
+   "rank": 161,
    "company_id": "mrvl",
    "ticker": "MRVL",
    "cik": "0001835632",
@@ -1919,7 +1943,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 160,
+   "rank": 162,
    "company_id": "plan:rop",
    "ticker": "ROP",
    "cik": "0000882835",
@@ -1931,7 +1955,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 161,
+   "rank": 163,
    "company_id": "psx",
    "ticker": "PSX",
    "cik": "0001534701",
@@ -1943,7 +1967,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 162,
+   "rank": 164,
    "company_id": "apd",
    "ticker": "APD",
    "cik": "0000002969",
@@ -1955,7 +1979,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 163,
+   "rank": 165,
    "company_id": "plan:carr",
    "ticker": "CARR",
    "cik": "0001783180",
@@ -1967,7 +1991,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 164,
+   "rank": 166,
    "company_id": "ajg",
    "ticker": "AJG",
    "cik": "0000354190",
@@ -1979,19 +2003,19 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 165,
+   "rank": 167,
    "company_id": "mmm",
    "ticker": "MMM",
    "cik": "0000066740",
    "mcap": 56547988203.80963,
    "rank_is_lower_bound": false,
-   "shares_basis": "COMPANYFACTS_PIT",
+   "shares_basis": "CA_UNIT_NORMALIZED:COMPANYFACTS_PIT",
    "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
    "shares_available_at": "2024-04-30T00:00:00+00:00",
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 166,
+   "rank": 168,
    "company_id": "pltr",
    "ticker": "PLTR",
    "cik": "0001321655",
@@ -2003,7 +2027,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 167,
+   "rank": 169,
    "company_id": "oxy",
    "ticker": "OXY",
    "cik": "0000797468",
@@ -2015,7 +2039,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 168,
+   "rank": 170,
    "company_id": "ew",
    "ticker": "EW",
    "cik": "0001099800",
@@ -2027,7 +2051,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 169,
+   "rank": 171,
    "company_id": "et",
    "ticker": "ET",
    "cik": "0001276187",
@@ -2039,7 +2063,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 170,
+   "rank": 172,
    "company_id": "hlt",
    "ticker": "HLT",
    "cik": "0001585689",
@@ -2051,7 +2075,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 171,
+   "rank": 173,
    "company_id": "pcar",
    "ticker": "PCAR",
    "cik": "0000075362",
@@ -2063,7 +2087,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 172,
+   "rank": 174,
    "company_id": "plan:adsk",
    "ticker": "ADSK",
    "cik": "0000769397",
@@ -2075,7 +2099,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 173,
+   "rank": 175,
    "company_id": "gm",
    "ticker": "GM",
    "cik": "0001467858",
@@ -2087,7 +2111,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 174,
+   "rank": 176,
    "company_id": "cof",
    "ticker": "COF",
    "cik": "0000927628",
@@ -2099,7 +2123,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 175,
+   "rank": 177,
    "company_id": "plan:cprt",
    "ticker": "CPRT",
    "cik": "0000900075",
@@ -2111,7 +2135,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 176,
+   "rank": 178,
    "company_id": "mnst",
    "ticker": "MNST",
    "cik": "0000865752",
@@ -2123,7 +2147,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 177,
+   "rank": 179,
    "company_id": "tfc",
    "ticker": "TFC",
    "cik": "0000092230",
@@ -2135,7 +2159,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 178,
+   "rank": 180,
    "company_id": "wmb",
    "ticker": "WMB",
    "cik": "0000107263",
@@ -2147,7 +2171,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 179,
+   "rank": 181,
    "company_id": "crh",
    "ticker": "CRH",
    "cik": "0000849395",
@@ -2159,7 +2183,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 180,
+   "rank": 182,
    "company_id": "vlo",
    "ticker": "VLO",
    "cik": "0001035002",
@@ -2171,7 +2195,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 181,
+   "rank": 183,
    "company_id": "afl",
    "ticker": "AFL",
    "cik": "0000004977",
@@ -2183,7 +2207,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 182,
+   "rank": 184,
    "company_id": "plan:azo",
    "ticker": "AZO",
    "cik": "0000866787",
@@ -2195,7 +2219,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 183,
+   "rank": 185,
    "company_id": "psa",
    "ticker": "PSA",
    "cik": "0001393311",
@@ -2207,7 +2231,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 184,
+   "rank": 186,
    "company_id": "met",
    "ticker": "MET",
    "cik": "0001099219",
@@ -2219,7 +2243,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 185,
+   "rank": 187,
    "company_id": "spg",
    "ticker": "SPG",
    "cik": "0001063761",
@@ -2231,7 +2255,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 186,
+   "rank": 188,
    "company_id": "plan:aig",
    "ticker": "AIG",
    "cik": "0000005272",
@@ -2243,7 +2267,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 187,
+   "rank": 189,
    "company_id": "f",
    "ticker": "F",
    "cik": "0000037996",
@@ -2255,7 +2279,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 188,
+   "rank": 190,
    "company_id": "plan:mchp",
    "ticker": "MCHP",
    "cik": "0000827054",
@@ -2267,7 +2291,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 189,
+   "rank": 191,
    "company_id": "nsc",
    "ticker": "NSC",
    "cik": "0000702165",
@@ -2279,7 +2303,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 190,
+   "rank": 192,
    "company_id": "rost",
    "ticker": "ROST",
    "cik": "0000745732",
@@ -2291,7 +2315,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 191,
+   "rank": 193,
    "company_id": "nem",
    "ticker": "NEM",
    "cik": "0001164727",
@@ -2303,7 +2327,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 192,
+   "rank": 194,
    "company_id": "sre",
    "ticker": "SRE",
    "cik": "0001032208",
@@ -2315,7 +2339,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 193,
+   "rank": 195,
    "company_id": "plan:smci",
    "ticker": "SMCI",
    "cik": "0001375365",
@@ -2327,7 +2351,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 194,
+   "rank": 196,
    "company_id": "oke",
    "ticker": "OKE",
    "cik": "0001039684",
@@ -2339,7 +2363,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 195,
+   "rank": 197,
    "company_id": "dlr",
    "ticker": "DLR",
    "cik": "0001297996",
@@ -2351,7 +2375,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 196,
+   "rank": 198,
    "company_id": "plan:wday",
    "ticker": "WDAY",
    "cik": "0001327811",
@@ -2363,7 +2387,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 197,
+   "rank": 199,
    "company_id": "plan:stz",
    "ticker": "STZ",
    "cik": "0000016918",
@@ -2375,7 +2399,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 198,
+   "rank": 200,
    "company_id": "gev",
    "ticker": "GEV",
    "cik": "0001996810",
@@ -2387,7 +2411,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 199,
+   "rank": 201,
    "company_id": "trv",
    "ticker": "TRV",
    "cik": "0000086312",
@@ -2399,7 +2423,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 200,
+   "rank": 202,
    "company_id": "plan:kmb",
    "ticker": "KMB",
    "cik": "0000055785",
@@ -2411,7 +2435,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 201,
+   "rank": 203,
    "company_id": "plan:dhi",
    "ticker": "DHI",
    "cik": "0000882184",
@@ -2423,7 +2447,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 202,
+   "rank": 204,
    "company_id": "aep",
    "ticker": "AEP",
    "cik": "0000004904",
@@ -2435,7 +2459,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 203,
+   "rank": 205,
    "company_id": "tel",
    "ticker": "TEL",
    "cik": "0001385157",
@@ -2447,7 +2471,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 204,
+   "rank": 206,
    "company_id": "ftnt",
    "ticker": "FTNT",
    "cik": "0001262039",
@@ -2459,7 +2483,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 205,
+   "rank": 207,
    "company_id": "o",
    "ticker": "O",
    "cik": "0000726728",
@@ -2471,7 +2495,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 206,
+   "rank": 208,
    "company_id": "plan:pcg",
    "ticker": "PCG",
    "cik": "0001004980",
@@ -2483,7 +2507,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 207,
+   "rank": 209,
    "company_id": "mrna",
    "ticker": "MRNA",
    "cik": "0001682852",
@@ -2495,7 +2519,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 208,
+   "rank": 210,
    "company_id": "r1000:0000004447",
    "ticker": "HES",
    "cik": "0000004447",
@@ -2507,7 +2531,7 @@
    "price_observed_at": "2024-06-28T21:00:00+00:00"
   },
   {
-   "rank": 209,
+   "rank": 211,
    "company_id": "plan:kdp",
    "ticker": "KDP",
    "cik": "0001418135",
@@ -2519,7 +2543,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 210,
+   "rank": 212,
    "company_id": "snow",
    "ticker": "SNOW",
    "cik": "0001640147",
@@ -2531,7 +2555,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 211,
+   "rank": 213,
    "company_id": "plan:dxcm",
    "ticker": "DXCM",
    "cik": "0001093557",
@@ -2543,7 +2567,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 212,
+   "rank": 214,
    "company_id": "plan:hum",
    "ticker": "HUM",
    "cik": "0000049071",
@@ -2555,7 +2579,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 213,
+   "rank": 215,
    "company_id": "cor",
    "ticker": "COR",
    "cik": "0001140859",
@@ -2567,7 +2591,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 214,
+   "rank": 216,
    "company_id": "bny",
    "ticker": "BNY",
    "cik": "0001390777",
@@ -2579,7 +2603,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 215,
+   "rank": 217,
    "company_id": "jci",
    "ticker": "JCI",
    "cik": "0000833444",
@@ -2591,7 +2615,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 216,
+   "rank": 218,
    "company_id": "coin",
    "ticker": "COIN",
    "cik": "0001679788",
@@ -2603,7 +2627,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 217,
+   "rank": 219,
    "company_id": "gww",
    "ticker": "GWW",
    "cik": "0000277135",
@@ -2615,7 +2639,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 218,
+   "rank": 220,
    "company_id": "kmi",
    "ticker": "KMI",
    "cik": "0001506307",
@@ -2627,7 +2651,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 219,
+   "rank": 221,
    "company_id": "r1000:0001671933",
    "ticker": "TTD",
    "cik": "0001671933",
@@ -2639,7 +2663,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 220,
+   "rank": 222,
    "company_id": "mplx",
    "ticker": "MPLX",
    "cik": "0001552000",
@@ -2651,7 +2675,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 221,
+   "rank": 223,
    "company_id": "uri",
    "ticker": "URI",
    "cik": "0001067701",
@@ -2663,7 +2687,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 222,
+   "rank": 224,
    "company_id": "plan:chtr",
    "ticker": "CHTR",
    "cik": "0001091667",
@@ -2675,7 +2699,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 223,
+   "rank": 225,
    "company_id": "plan:payx",
    "ticker": "PAYX",
    "cik": "0000723531",
@@ -2687,7 +2711,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 224,
+   "rank": 226,
    "company_id": "plan:lhx",
    "ticker": "LHX",
    "cik": "0000202058",
@@ -2699,7 +2723,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 225,
+   "rank": 227,
    "company_id": "plan:cci",
    "ticker": "CCI",
    "cik": "0001051470",
@@ -2711,7 +2735,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 226,
+   "rank": 228,
    "company_id": "plan:amp",
    "ticker": "AMP",
    "cik": "0000820027",
@@ -2723,7 +2747,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 227,
+   "rank": 229,
    "company_id": "all",
    "ticker": "ALL",
    "cik": "0000899051",
@@ -2735,7 +2759,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 228,
+   "rank": 230,
    "company_id": "plan:pru",
    "ticker": "PRU",
    "cik": "0001137774",
@@ -2747,7 +2771,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 229,
+   "rank": 231,
    "company_id": "plan:fis",
    "ticker": "FIS",
    "cik": "0001136893",
@@ -2759,7 +2783,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 230,
+   "rank": 232,
    "company_id": "dash",
    "ticker": "DASH",
    "cik": "0001792789",
@@ -2771,7 +2795,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 231,
+   "rank": 233,
    "company_id": "d",
    "ticker": "D",
    "cik": "0000715957",
@@ -2783,7 +2807,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 232,
+   "rank": 234,
    "company_id": "rcl",
    "ticker": "RCL",
    "cik": "0000884887",
@@ -2795,7 +2819,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 233,
+   "rank": 235,
    "company_id": "plan:len",
    "ticker": "LEN",
    "cik": "0000920760",
@@ -2807,19 +2831,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 234,
-   "company_id": "aph",
-   "ticker": "APH",
-   "cik": "0000820313",
-   "mcap": 40462689558.99801,
-   "rank_is_lower_bound": false,
-   "shares_basis": "COMPANYFACTS_PIT",
-   "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
-   "shares_available_at": "2024-04-26T00:00:00+00:00",
-   "price_observed_at": "2024-06-28T13:30:00+00:00"
-  },
-  {
-   "rank": 235,
+   "rank": 236,
    "company_id": "plan:idxx",
    "ticker": "IDXX",
    "cik": "0000874716",
@@ -2831,7 +2843,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 236,
+   "rank": 237,
    "company_id": "lng",
    "ticker": "LNG",
    "cik": "0000003570",
@@ -2843,7 +2855,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 237,
+   "rank": 238,
    "company_id": "ddog",
    "ticker": "DDOG",
    "cik": "0001561550",
@@ -2855,7 +2867,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 238,
+   "rank": 239,
    "company_id": "mpwr",
    "ticker": "MPWR",
    "cik": "0001280452",
@@ -2867,7 +2879,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 239,
+   "rank": 240,
    "company_id": "plan:khc",
    "ticker": "KHC",
    "cik": "0001637459",
@@ -2879,7 +2891,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 240,
+   "rank": 241,
    "company_id": "r1000:0001832433",
    "ticker": "FERG",
    "cik": "0001832433",
@@ -2891,7 +2903,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 241,
+   "rank": 242,
    "company_id": "plan:otis",
    "ticker": "OTIS",
    "cik": "0001781335",
@@ -2903,7 +2915,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 242,
+   "rank": 243,
    "company_id": "ame",
    "ticker": "AME",
    "cik": "0001037868",
@@ -2915,7 +2927,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 243,
+   "rank": 244,
    "company_id": "plan:iqv",
    "ticker": "IQV",
    "cik": "0001478242",
@@ -2927,7 +2939,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 244,
+   "rank": 245,
    "company_id": "plan:vrsk",
    "ticker": "VRSK",
    "cik": "0001442145",
@@ -2939,7 +2951,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 245,
+   "rank": 246,
    "company_id": "plan:odfl",
    "ticker": "ODFL",
    "cik": "0000878927",
@@ -2951,7 +2963,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 246,
+   "rank": 247,
    "company_id": "plan:msci",
    "ticker": "MSCI",
    "cik": "0001408198",
@@ -2963,7 +2975,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 247,
+   "rank": 248,
    "company_id": "nue",
    "ticker": "NUE",
    "cik": "0000073309",
@@ -2975,7 +2987,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 248,
+   "rank": 249,
    "company_id": "plan:acgl",
    "ticker": "ACGL",
    "cik": "0000947484",
@@ -2987,7 +2999,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 249,
+   "rank": 250,
    "company_id": "cmi",
    "ticker": "CMI",
    "cik": "0000026172",
@@ -2999,7 +3011,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 250,
+   "rank": 251,
    "company_id": "plan:a",
    "ticker": "A",
    "cik": "0001090872",
@@ -3011,7 +3023,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 251,
+   "rank": 252,
    "company_id": "ctva",
    "ticker": "CTVA",
    "cik": "0001755672",
@@ -3023,7 +3035,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 252,
+   "rank": 253,
    "company_id": "plan:dow",
    "ticker": "DOW",
    "cik": "0001751788",
@@ -3035,7 +3047,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 253,
+   "rank": 254,
    "company_id": "plan:yum",
    "ticker": "YUM",
    "cik": "0001041061",
@@ -3047,7 +3059,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 254,
+   "rank": 255,
    "company_id": "pwr",
    "ticker": "PWR",
    "cik": "0001050915",
@@ -3059,7 +3071,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 255,
+   "rank": 256,
    "company_id": "plan:ea",
    "ticker": "EA",
    "cik": "0000712515",
@@ -3071,7 +3083,7 @@
    "price_observed_at": "2024-06-28T21:00:00+00:00"
   },
   {
-   "rank": 256,
+   "rank": 257,
    "company_id": "plan:fico",
    "ticker": "FICO",
    "cik": "0000814547",
@@ -3083,7 +3095,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 257,
+   "rank": 258,
    "company_id": "plan:peg",
    "ticker": "PEG",
    "cik": "0000788784",
@@ -3095,7 +3107,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 258,
+   "rank": 259,
    "company_id": "plan:ir",
    "ticker": "IR",
    "cik": "0001699150",
@@ -3107,7 +3119,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 259,
+   "rank": 260,
    "company_id": "plan:kr",
    "ticker": "KR",
    "cik": "0000056873",
@@ -3119,7 +3131,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 260,
+   "rank": 261,
    "company_id": "fast",
    "ticker": "FAST",
    "cik": "0000815556",
@@ -3131,7 +3143,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 261,
+   "rank": 262,
    "company_id": "r1000:0001512673",
    "ticker": "XYZ",
    "cik": "0001512673",
@@ -3143,7 +3155,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 262,
+   "rank": 263,
    "company_id": "plan:lulu",
    "ticker": "LULU",
    "cik": "0001397187",
@@ -3155,7 +3167,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 263,
+   "rank": 264,
    "company_id": "fang",
    "ticker": "FANG",
    "cik": "0001539838",
@@ -3167,7 +3179,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 264,
+   "rank": 265,
    "company_id": "plan:gehc",
    "ticker": "GEHC",
    "cik": "0001932393",
@@ -3179,7 +3191,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 265,
+   "rank": 266,
    "company_id": "plan:syy",
    "ticker": "SYY",
    "cik": "0000096021",
@@ -3191,7 +3203,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 266,
+   "rank": 267,
    "company_id": "plan:cnc",
    "ticker": "CNC",
    "cik": "0001071739",
@@ -3203,7 +3215,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 267,
+   "rank": 268,
    "company_id": "plan:gis",
    "ticker": "GIS",
    "cik": "0000040704",
@@ -3215,7 +3227,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 268,
+   "rank": 269,
    "company_id": "bkr",
    "ticker": "BKR",
    "cik": "0001701605",
@@ -3227,7 +3239,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 269,
+   "rank": 270,
    "company_id": "plan:it",
    "ticker": "IT",
    "cik": "0000749251",
@@ -3239,7 +3251,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 270,
+   "rank": 271,
    "company_id": "plan:kvue",
    "ticker": "KVUE",
    "cik": "0001944048",
@@ -3251,7 +3263,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 271,
+   "rank": 272,
    "company_id": "ndaq",
    "ticker": "NDAQ",
    "cik": "0001120193",
@@ -3263,7 +3275,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 272,
+   "rank": 273,
    "company_id": "plan:exc",
    "ticker": "EXC",
    "cik": "0001109357",
@@ -3275,7 +3287,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 273,
+   "rank": 274,
    "company_id": "plan:hpq",
    "ticker": "HPQ",
    "cik": "0000047217",
@@ -3287,7 +3299,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 274,
+   "rank": 275,
    "company_id": "plan:ctsh",
    "ticker": "CTSH",
    "cik": "0001058290",
@@ -3299,7 +3311,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 275,
+   "rank": 276,
    "company_id": "r1000:0001834584",
    "ticker": "CPNG",
    "cik": "0001834584",
@@ -3311,7 +3323,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 276,
+   "rank": 277,
    "company_id": "plan:biib",
    "ticker": "BIIB",
    "cik": "0000875045",
@@ -3323,7 +3335,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 277,
+   "rank": 278,
    "company_id": "plan:dd",
    "ticker": "DD",
    "cik": "0001666700",
@@ -3335,7 +3347,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 278,
+   "rank": 279,
    "company_id": "plan:mlm",
    "ticker": "MLM",
    "cik": "0000916076",
@@ -3347,7 +3359,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 279,
+   "rank": 280,
    "company_id": "glw",
    "ticker": "GLW",
    "cik": "0000024741",
@@ -3359,7 +3371,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 280,
+   "rank": 281,
    "company_id": "plan:lvs",
    "ticker": "LVS",
    "cik": "0001300514",
@@ -3371,7 +3383,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 281,
+   "rank": 282,
    "company_id": "plan:exr",
    "ticker": "EXR",
    "cik": "0001289490",
@@ -3383,7 +3395,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 282,
+   "rank": 283,
    "company_id": "plan:vmc",
    "ticker": "VMC",
    "cik": "0001396009",
@@ -3395,7 +3407,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 283,
+   "rank": 284,
    "company_id": "plan:xyl",
    "ticker": "XYL",
    "cik": "0001524472",
@@ -3407,7 +3419,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 284,
+   "rank": 285,
    "company_id": "plan:dfs",
    "ticker": "DFS",
    "cik": "0001393612",
@@ -3419,7 +3431,7 @@
    "price_observed_at": "2024-06-28T21:00:00+00:00"
   },
   {
-   "rank": 285,
+   "rank": 286,
    "company_id": "vrt",
    "ticker": "VRT",
    "cik": "0001674101",
@@ -3431,7 +3443,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 286,
+   "rank": 287,
    "company_id": "hwm",
    "ticker": "HWM",
    "cik": "0000004281",
@@ -3443,7 +3455,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 287,
+   "rank": 288,
    "company_id": "rok",
    "ticker": "ROK",
    "cik": "0001024478",
@@ -3455,7 +3467,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 288,
+   "rank": 289,
    "company_id": "grmn",
    "ticker": "GRMN",
    "cik": "0001121788",
@@ -3467,7 +3479,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 289,
+   "rank": 290,
    "company_id": "plan:lyb",
    "ticker": "LYB",
    "cik": "0001489393",
@@ -3479,7 +3491,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 290,
+   "rank": 291,
    "company_id": "plan:ed",
    "ticker": "ED",
    "cik": "0001047862",
@@ -3491,7 +3503,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 291,
+   "rank": 292,
    "company_id": "r1000:0001178670",
    "ticker": "ALNY",
    "cik": "0001178670",
@@ -3503,7 +3515,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 292,
+   "rank": 293,
    "company_id": "dal",
    "ticker": "DAL",
    "cik": "0000027904",
@@ -3515,7 +3527,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 293,
+   "rank": 294,
    "company_id": "plan:csgp",
    "ticker": "CSGP",
    "cik": "0001057352",
@@ -3527,7 +3539,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 294,
+   "rank": 295,
    "company_id": "plan:cdw",
    "ticker": "CDW",
    "cik": "0001402057",
@@ -3539,7 +3551,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 295,
+   "rank": 296,
    "company_id": "r1000:0001404655",
    "ticker": "HUBS",
    "cik": "0001404655",
@@ -3551,7 +3563,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 296,
+   "rank": 297,
    "company_id": "plan:efx",
    "ticker": "EFX",
    "cik": "0000033185",
@@ -3563,7 +3575,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 297,
+   "rank": 298,
    "company_id": "dvn",
    "ticker": "DVN",
    "cik": "0001090012",
@@ -3575,7 +3587,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 298,
+   "rank": 299,
    "company_id": "plan:hal",
    "ticker": "HAL",
    "cik": "0000045012",
@@ -3587,7 +3599,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 299,
+   "rank": 300,
    "company_id": "plan:adm",
    "ticker": "ADM",
    "cik": "0000007084",
@@ -3599,7 +3611,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 300,
+   "rank": 301,
    "company_id": "plan:vici",
    "ticker": "VICI",
    "cik": "0001705696",
@@ -3611,7 +3623,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 301,
+   "rank": 302,
    "company_id": "plan:vst",
    "ticker": "VST",
    "cik": "0001692819",
@@ -3623,7 +3635,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 302,
+   "rank": 303,
    "company_id": "plan:mtd",
    "ticker": "MTD",
    "cik": "0001037646",
@@ -3635,7 +3647,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 303,
+   "rank": 304,
    "company_id": "plan:hig",
    "ticker": "HIG",
    "cik": "0000874766",
@@ -3647,7 +3659,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 304,
+   "rank": 305,
    "company_id": "plan:xel",
    "ticker": "XEL",
    "cik": "0000072903",
@@ -3659,7 +3671,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 305,
+   "rank": 306,
    "company_id": "r1000:0001393052",
    "ticker": "VEEV",
    "cik": "0001393052",
@@ -3671,7 +3683,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 306,
+   "rank": 307,
    "company_id": "plan:ppg",
    "ticker": "PPG",
    "cik": "0000079879",
@@ -3683,7 +3695,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 307,
+   "rank": 308,
    "company_id": "plan:on",
    "ticker": "ON",
    "cik": "0001097864",
@@ -3695,7 +3707,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 308,
+   "rank": 309,
    "company_id": "plan:avb",
    "ticker": "AVB",
    "cik": "0000915912",
@@ -3707,7 +3719,7 @@
    "price_observed_at": "2024-06-28T21:00:00+00:00"
   },
   {
-   "rank": 309,
+   "rank": 310,
    "company_id": "plan:tsco",
    "ticker": "TSCO",
    "cik": "0000916365",
@@ -3719,7 +3731,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 310,
+   "rank": 311,
    "company_id": "plan:dg",
    "ticker": "DG",
    "cik": "0000029534",
@@ -3731,7 +3743,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 311,
+   "rank": 312,
    "company_id": "r1000:0001713683",
    "ticker": "ZS",
    "cik": "0001713683",
@@ -3743,7 +3755,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 312,
+   "rank": 313,
    "company_id": "trgp",
    "ticker": "TRGP",
    "cik": "0001389170",
@@ -3755,7 +3767,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 313,
+   "rank": 314,
    "company_id": "team",
    "ticker": "TEAM",
    "cik": "0001650372",
@@ -3767,7 +3779,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 314,
+   "rank": 315,
    "company_id": "plan:rmd",
    "ticker": "RMD",
    "cik": "0000943819",
@@ -3779,7 +3791,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 315,
+   "rank": 316,
    "company_id": "r1000:0001013462",
    "ticker": "ANSS",
    "cik": "0001013462",
@@ -3791,7 +3803,7 @@
    "price_observed_at": "2024-06-28T21:00:00+00:00"
   },
   {
-   "rank": 316,
+   "rank": 317,
    "company_id": "plan:wab",
    "ticker": "WAB",
    "cik": "0000943452",
@@ -3803,7 +3815,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 317,
+   "rank": 318,
    "company_id": "plan:eix",
    "ticker": "EIX",
    "cik": "0000827052",
@@ -3815,7 +3827,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 318,
+   "rank": 319,
    "company_id": "hpe",
    "ticker": "HPE",
    "cik": "0001645590",
@@ -3827,7 +3839,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 319,
+   "rank": 320,
    "company_id": "app",
    "ticker": "APP",
    "cik": "0001751008",
@@ -3839,7 +3851,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 320,
+   "rank": 321,
    "company_id": "plan:cbre",
    "ticker": "CBRE",
    "cik": "0001138118",
@@ -3851,7 +3863,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 321,
+   "rank": 322,
    "company_id": "r1000:0001805284",
    "ticker": "RKT",
    "cik": "0001805284",
@@ -3863,7 +3875,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 322,
+   "rank": 323,
    "company_id": "r1000:0001560385",
    "ticker": "FWONA",
    "cik": "0001560385",
@@ -3875,7 +3887,7 @@
    "price_observed_at": "2024-06-28T21:00:00+00:00"
   },
   {
-   "rank": 323,
+   "rank": 324,
    "company_id": "plan:hsy",
    "ticker": "HSY",
    "cik": "0000047111",
@@ -3887,7 +3899,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 324,
+   "rank": 325,
    "company_id": "r1000:0000046619",
    "ticker": "HEI",
    "cik": "0000046619",
@@ -3899,7 +3911,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 325,
+   "rank": 326,
    "company_id": "ebay",
    "ticker": "EBAY",
    "cik": "0001065088",
@@ -3911,7 +3923,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 326,
+   "rank": 327,
    "company_id": "plan:wtw",
    "ticker": "WTW",
    "cik": "0001140536",
@@ -3923,7 +3935,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 327,
+   "rank": 328,
    "company_id": "plan:ttwo",
    "ticker": "TTWO",
    "cik": "0000946581",
@@ -3935,7 +3947,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 328,
+   "rank": 329,
    "company_id": "plan:ntap",
    "ticker": "NTAP",
    "cik": "0001002047",
@@ -3947,7 +3959,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 329,
+   "rank": 330,
    "company_id": "r1000:0001506293",
    "ticker": "PINS",
    "cik": "0001506293",
@@ -3959,7 +3971,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 330,
+   "rank": 331,
    "company_id": "plan:eqr",
    "ticker": "EQR",
    "cik": "0000906107",
@@ -3971,7 +3983,7 @@
    "price_observed_at": "2024-06-28T21:00:00+00:00"
   },
   {
-   "rank": 331,
+   "rank": 332,
    "company_id": "plan:irm",
    "ticker": "IRM",
    "cik": "0001020569",
@@ -3983,7 +3995,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 332,
+   "rank": 333,
    "company_id": "plan:ftv",
    "ticker": "FTV",
    "cik": "0001659166",
@@ -3995,7 +4007,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 333,
+   "rank": 334,
    "company_id": "plan:trow",
    "ticker": "TROW",
    "cik": "0001113169",
@@ -4007,7 +4019,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 334,
+   "rank": 335,
    "company_id": "plan:rjf",
    "ticker": "RJF",
    "cik": "0000720005",
@@ -4019,7 +4031,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 335,
+   "rank": 336,
    "company_id": "plan:bro",
    "ticker": "BRO",
    "cik": "0000079282",
@@ -4031,7 +4043,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 336,
+   "rank": 337,
    "company_id": "r1000:0001176948",
    "ticker": "ARES",
    "cik": "0001176948",
@@ -4043,7 +4055,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 337,
+   "rank": 338,
    "company_id": "plan:chd",
    "ticker": "CHD",
    "cik": "0000313927",
@@ -4055,7 +4067,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 338,
+   "rank": 339,
    "company_id": "plan:mtb",
    "ticker": "MTB",
    "cik": "0000036270",
@@ -4067,7 +4079,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 339,
+   "rank": 340,
    "company_id": "plan:awk",
    "ticker": "AWK",
    "cik": "0001410636",
@@ -4079,7 +4091,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 340,
+   "rank": 341,
    "company_id": "plan:fitb",
    "ticker": "FITB",
    "cik": "0000035527",
@@ -4091,7 +4103,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 341,
+   "rank": 342,
    "company_id": "net",
    "ticker": "NET",
    "cik": "0001477333",
@@ -4103,7 +4115,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 342,
+   "rank": 343,
    "company_id": "plan:dov",
    "ticker": "DOV",
    "cik": "0000029905",
@@ -4115,7 +4127,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 343,
+   "rank": 344,
    "company_id": "plan:el",
    "ticker": "EL",
    "cik": "0001001250",
@@ -4127,7 +4139,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 344,
+   "rank": 345,
    "company_id": "plan:wec",
    "ticker": "WEC",
    "cik": "0000783325",
@@ -4139,7 +4151,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 345,
+   "rank": 346,
    "company_id": "wdc",
    "ticker": "WDC",
    "cik": "0000106040",
@@ -4151,7 +4163,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 346,
+   "rank": 347,
    "company_id": "plan:gpn",
    "ticker": "GPN",
    "cik": "0001123360",
@@ -4163,7 +4175,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 347,
+   "rank": 348,
    "company_id": "plan:deck",
    "ticker": "DECK",
    "cik": "0000910521",
@@ -4175,7 +4187,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 348,
+   "rank": 349,
    "company_id": "plan:iff",
    "ticker": "IFF",
    "cik": "0000051253",
@@ -4187,7 +4199,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 349,
+   "rank": 350,
    "company_id": "plan:fslr",
    "ticker": "FSLR",
    "cik": "0001274494",
@@ -4199,7 +4211,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 350,
+   "rank": 351,
    "company_id": "plan:wst",
    "ticker": "WST",
    "cik": "0000105770",
@@ -4211,7 +4223,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 351,
+   "rank": 352,
    "company_id": "cah",
    "ticker": "CAH",
    "cik": "0000721371",
@@ -4223,7 +4235,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 352,
+   "rank": 353,
    "company_id": "keys",
    "ticker": "KEYS",
    "cik": "0001601046",
@@ -4235,7 +4247,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 353,
+   "rank": 354,
    "company_id": "r1000:0001315098",
    "ticker": "RBLX",
    "cik": "0001315098",
@@ -4247,7 +4259,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 354,
+   "rank": 355,
    "company_id": "plan:nvr",
    "ticker": "NVR",
    "cik": "0000906163",
@@ -4259,7 +4271,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 355,
+   "rank": 356,
    "company_id": "plan:rol",
    "ticker": "ROL",
    "cik": "0000084839",
@@ -4271,7 +4283,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 356,
+   "rank": 357,
    "company_id": "plan:vlto",
    "ticker": "VLTO",
    "cik": "0001967680",
@@ -4283,7 +4295,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 357,
+   "rank": 358,
    "company_id": "plan:br",
    "ticker": "BR",
    "cik": "0001383312",
@@ -4295,7 +4307,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 358,
+   "rank": 359,
    "company_id": "plan:phm",
    "ticker": "PHM",
    "cik": "0000822416",
@@ -4307,7 +4319,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 359,
+   "rank": 360,
    "company_id": "ter",
    "ticker": "TER",
    "cik": "0000097210",
@@ -4319,7 +4331,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 360,
+   "rank": 361,
    "company_id": "plan:dte",
    "ticker": "DTE",
    "cik": "0000936340",
@@ -4331,7 +4343,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 361,
+   "rank": 362,
    "company_id": "plan:dltr",
    "ticker": "DLTR",
    "cik": "0000935703",
@@ -4343,7 +4355,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 362,
+   "rank": 363,
    "company_id": "etr",
    "ticker": "ETR",
    "cik": "0000065984",
@@ -4355,7 +4367,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 363,
+   "rank": 364,
    "company_id": "r1000:0000798941",
    "ticker": "FCNCA",
    "cik": "0000798941",
@@ -4367,7 +4379,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 364,
+   "rank": 365,
    "company_id": "r1000:0001758730",
    "ticker": "TW",
    "cik": "0001758730",
@@ -4379,7 +4391,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 365,
+   "rank": 366,
    "company_id": "plan:zbh",
    "ticker": "ZBH",
    "cik": "0001136869",
@@ -4391,7 +4403,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 366,
+   "rank": 367,
    "company_id": "stt",
    "ticker": "STT",
    "cik": "0000093751",
@@ -4403,7 +4415,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 367,
+   "rank": 368,
    "company_id": "plan:axon",
    "ticker": "AXON",
    "cik": "0001069183",
@@ -4415,7 +4427,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 368,
+   "rank": 369,
    "company_id": "plan:fe",
    "ticker": "FE",
    "cik": "0001031296",
@@ -4427,7 +4439,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 369,
+   "rank": 370,
    "company_id": "plan:invh",
    "ticker": "INVH",
    "cik": "0001687229",
@@ -4439,7 +4451,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 370,
+   "rank": 371,
    "company_id": "plan:ptc",
    "ticker": "PTC",
    "cik": "0000857005",
@@ -4451,7 +4463,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 371,
+   "rank": 372,
    "company_id": "mstr",
    "ticker": "MSTR",
    "cik": "0001050446",
@@ -4463,7 +4475,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 372,
+   "rank": 373,
    "company_id": "plan:ste",
    "ticker": "STE",
    "cik": "0001757898",
@@ -4475,7 +4487,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 373,
+   "rank": 374,
    "company_id": "plan:lyv",
    "ticker": "LYV",
    "cik": "0001335258",
@@ -4487,7 +4499,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 374,
+   "rank": 375,
    "company_id": "stx",
    "ticker": "STX",
    "cik": "0001137789",
@@ -4499,7 +4511,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 375,
+   "rank": 376,
    "company_id": "plan:tyl",
    "ticker": "TYL",
    "cik": "0000860731",
@@ -4511,7 +4523,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 376,
+   "rank": 377,
    "company_id": "plan:sbac",
    "ticker": "SBAC",
    "cik": "0001034054",
@@ -4523,7 +4535,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 377,
+   "rank": 378,
    "company_id": "plan:ccl",
    "ticker": "CCL",
    "cik": "0000815097",
@@ -4535,7 +4547,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 378,
+   "rank": 379,
    "company_id": "r1000:0001474432",
    "ticker": "P",
    "cik": "0001474432",
@@ -4547,7 +4559,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 379,
+   "rank": 380,
    "company_id": "r1000:0001397911",
    "ticker": "LPLA",
    "cik": "0001397911",
@@ -4559,7 +4571,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 380,
+   "rank": 381,
    "company_id": "plan:vtr",
    "ticker": "VTR",
    "cik": "0000740260",
@@ -4571,7 +4583,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 381,
+   "rank": 382,
    "company_id": "plan:wy",
    "ticker": "WY",
    "cik": "0000106535",
@@ -4583,7 +4595,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 382,
+   "rank": 383,
    "company_id": "r1000:0001096343",
    "ticker": "MKL",
    "cik": "0001096343",
@@ -4595,7 +4607,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 383,
+   "rank": 384,
    "company_id": "plan:are",
    "ticker": "ARE",
    "cik": "0001035443",
@@ -4607,7 +4619,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 384,
+   "rank": 385,
    "company_id": "r1000:0001101302",
    "ticker": "ENTG",
    "cik": "0001101302",
@@ -4619,7 +4631,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 385,
+   "rank": 386,
    "company_id": "plan:bf-b",
    "ticker": "BF-B",
    "cik": "0000014693",
@@ -4631,7 +4643,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 386,
+   "rank": 387,
    "company_id": "plan:ppl",
    "ticker": "PPL",
    "cik": "0000922224",
@@ -4643,7 +4655,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 387,
+   "rank": 388,
    "company_id": "plan:stld",
    "ticker": "STLD",
    "cik": "0001022671",
@@ -4655,7 +4667,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 388,
+   "rank": 389,
    "company_id": "plan:wrb",
    "ticker": "WRB",
    "cik": "0000011544",
@@ -4667,7 +4679,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 389,
+   "rank": 390,
    "company_id": "plan:es",
    "ticker": "ES",
    "cik": "0000072741",
@@ -4679,7 +4691,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 390,
+   "rank": 391,
    "company_id": "r1000:0001443646",
    "ticker": "BAH",
    "cik": "0001443646",
@@ -4691,7 +4703,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 391,
+   "rank": 392,
    "company_id": "plan:ctra",
    "ticker": "CTRA",
    "cik": "0000858470",
@@ -4703,7 +4715,7 @@
    "price_observed_at": "2024-06-28T21:00:00+00:00"
   },
   {
-   "rank": 392,
+   "rank": 393,
    "company_id": "plan:cnp",
    "ticker": "CNP",
    "cik": "0001130310",
@@ -4715,7 +4727,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 393,
+   "rank": 394,
    "company_id": "r1000:0001823945",
    "ticker": "OWL",
    "cik": "0001823945",
@@ -4727,7 +4739,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 394,
+   "rank": 395,
    "company_id": "plan:ldos",
    "ticker": "LDOS",
    "cik": "0001336920",
@@ -4739,7 +4751,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 395,
+   "rank": 396,
    "company_id": "r1000:0000055067",
    "ticker": "K",
    "cik": "0000055067",
@@ -4751,7 +4763,7 @@
    "price_observed_at": "2024-06-28T21:00:00+00:00"
   },
   {
-   "rank": 396,
+   "rank": 397,
    "company_id": "plan:gddy",
    "ticker": "GDDY",
    "cik": "0001609711",
@@ -4763,7 +4775,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 397,
+   "rank": 398,
    "company_id": "hubb",
    "ticker": "HUBB",
    "cik": "0000048898",
@@ -4775,7 +4787,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 398,
+   "rank": 399,
    "company_id": "r1000:0000790051",
    "ticker": "CSL",
    "cik": "0000790051",
@@ -4787,7 +4799,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 399,
+   "rank": 400,
    "company_id": "plan:gpc",
    "ticker": "GPC",
    "cik": "0000040987",
@@ -4799,7 +4811,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 400,
+   "rank": 401,
    "company_id": "plan:aptv",
    "ticker": "APTV",
    "cik": "0001521332",
@@ -4811,7 +4823,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 401,
+   "rank": 402,
    "company_id": "plan:hban",
    "ticker": "HBAN",
    "cik": "0000049196",
@@ -4823,7 +4835,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 402,
+   "rank": 403,
    "company_id": "plan:lii",
    "ticker": "LII",
    "cik": "0001069202",
@@ -4835,7 +4847,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 403,
+   "rank": 404,
    "company_id": "plan:mkc",
    "ticker": "MKC",
    "cik": "0000063754",
@@ -4847,7 +4859,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 404,
+   "rank": 405,
    "company_id": "plan:aee",
    "ticker": "AEE",
    "cik": "0001002910",
@@ -4859,7 +4871,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 405,
+   "rank": 406,
    "company_id": "plan:syf",
    "ticker": "SYF",
    "cik": "0001601712",
@@ -4871,7 +4883,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 406,
+   "rank": 407,
    "company_id": "plan:cpay",
    "ticker": "CPAY",
    "cik": "0001175454",
@@ -4883,7 +4895,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 407,
+   "rank": 408,
    "company_id": "plan:ball",
    "ticker": "BALL",
    "cik": "0000009389",
@@ -4895,7 +4907,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 408,
+   "rank": 409,
    "company_id": "r1000:0001262823",
    "ticker": "WLK",
    "cik": "0001262823",
@@ -4907,7 +4919,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 409,
+   "rank": 410,
    "company_id": "r1000:0000105016",
    "ticker": "WSO",
    "cik": "0000105016",
@@ -4919,7 +4931,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 410,
+   "rank": 411,
    "company_id": "plan:cinf",
    "ticker": "CINF",
    "cik": "0000020286",
@@ -4931,7 +4943,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 411,
+   "rank": 412,
    "company_id": "plan:ulta",
    "ticker": "ULTA",
    "cik": "0001403568",
@@ -4943,7 +4955,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 412,
+   "rank": 413,
    "company_id": "plan:tdy",
    "ticker": "TDY",
    "cik": "0001094285",
@@ -4955,7 +4967,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 413,
+   "rank": 414,
    "company_id": "r1000:0001973266",
    "ticker": "TKO",
    "cik": "0001973266",
@@ -4967,7 +4979,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 414,
+   "rank": 415,
    "company_id": "plan:pfg",
    "ticker": "PFG",
    "cik": "0001126328",
@@ -4979,7 +4991,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 415,
+   "rank": 416,
    "company_id": "plan:rf",
    "ticker": "RF",
    "cik": "0001281761",
@@ -4991,7 +5003,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 416,
+   "rank": 417,
    "company_id": "r1000:0001441816",
    "ticker": "MDB",
    "cik": "0001441816",
@@ -5003,7 +5015,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 417,
+   "rank": 418,
    "company_id": "wbd",
    "ticker": "WBD",
    "cik": "0001437107",
@@ -5015,7 +5027,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 418,
+   "rank": 419,
    "company_id": "plan:bby",
    "ticker": "BBY",
    "cik": "0000764478",
@@ -5027,7 +5039,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 419,
+   "rank": 420,
    "company_id": "r1000:0001883685",
    "ticker": "DKNG",
    "cik": "0001883685",
@@ -5039,7 +5051,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 420,
+   "rank": 421,
    "company_id": "plan:algn",
    "ticker": "ALGN",
    "cik": "0001097149",
@@ -5051,7 +5063,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 421,
+   "rank": 422,
    "company_id": "r1000:0000719955",
    "ticker": "WSM",
    "cik": "0000719955",
@@ -5063,7 +5075,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 422,
+   "rank": 423,
    "company_id": "plan:dri",
    "ticker": "DRI",
    "cik": "0000940944",
@@ -5075,7 +5087,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 423,
+   "rank": 424,
    "company_id": "plan:dpz",
    "ticker": "DPZ",
    "cik": "0001286681",
@@ -5087,7 +5099,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 424,
+   "rank": 425,
    "company_id": "plan:cboe",
    "ticker": "CBOE",
    "cik": "0001374310",
@@ -5099,7 +5111,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 425,
+   "rank": 426,
    "company_id": "plan:cms",
    "ticker": "CMS",
    "cik": "0000811156",
@@ -5111,7 +5123,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 426,
+   "rank": 427,
    "company_id": "plan:vrsn",
    "ticker": "VRSN",
    "cik": "0001014473",
@@ -5123,7 +5135,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 427,
+   "rank": 428,
    "company_id": "plan:expd",
    "ticker": "EXPD",
    "cik": "0000746515",
@@ -5135,7 +5147,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 428,
+   "rank": 429,
    "company_id": "plan:avy",
    "ticker": "AVY",
    "cik": "0000008818",
@@ -5147,7 +5159,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 429,
+   "rank": 430,
    "company_id": "plan:ato",
    "ticker": "ATO",
    "cik": "0000731802",
@@ -5159,7 +5171,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 430,
+   "rank": 431,
    "company_id": "plan:omc",
    "ticker": "OMC",
    "cik": "0000029989",
@@ -5171,7 +5183,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 431,
+   "rank": 432,
    "company_id": "r1000:0001089063",
    "ticker": "DKS",
    "cik": "0001089063",
@@ -5183,7 +5195,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 432,
+   "rank": 433,
    "company_id": "plan:j",
    "ticker": "J",
    "cik": "0000052988",
@@ -5195,7 +5207,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 433,
+   "rank": 434,
    "company_id": "plan:ess",
    "ticker": "ESS",
    "cik": "0000920522",
@@ -5207,7 +5219,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 434,
+   "rank": 435,
    "company_id": "plan:moh",
    "ticker": "MOH",
    "cik": "0001179929",
@@ -5219,7 +5231,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 435,
+   "rank": 436,
    "company_id": "plan:coo",
    "ticker": "COO",
    "cik": "0000711404",
@@ -5231,7 +5243,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 436,
+   "rank": 437,
    "company_id": "r1000:0000859737",
    "ticker": "HOLX",
    "cik": "0000859737",
@@ -5243,7 +5255,7 @@
    "price_observed_at": "2024-06-28T21:00:00+00:00"
   },
   {
-   "rank": 437,
+   "rank": 438,
    "company_id": "plan:wat",
    "ticker": "WAT",
    "cik": "0001000697",
@@ -5255,7 +5267,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 438,
+   "rank": 439,
    "company_id": "plan:ntrs",
    "ticker": "NTRS",
    "cik": "0000073124",
@@ -5267,7 +5279,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 439,
+   "rank": 440,
    "company_id": "r1000:0000105634",
    "ticker": "EME",
    "cik": "0000105634",
@@ -5279,7 +5291,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 440,
+   "rank": 441,
    "company_id": "plan:lh",
    "ticker": "LH",
    "cik": "0000920148",
@@ -5291,7 +5303,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 441,
+   "rank": 442,
    "company_id": "hood",
    "ticker": "HOOD",
    "cik": "0001783879",
@@ -5303,7 +5315,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 442,
+   "rank": 443,
    "company_id": "plan:luv",
    "ticker": "LUV",
    "cik": "0000092380",
@@ -5315,7 +5327,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 443,
+   "rank": 444,
    "company_id": "plan:swks",
    "ticker": "SWKS",
    "cik": "0000004127",
@@ -5327,7 +5339,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 444,
+   "rank": 445,
    "company_id": "plan:bax",
    "ticker": "BAX",
    "cik": "0000010456",
@@ -5339,7 +5351,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 445,
+   "rank": 446,
    "company_id": "plan:clx",
    "ticker": "CLX",
    "cik": "0000021076",
@@ -5351,7 +5363,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 446,
+   "rank": 447,
    "company_id": "plan:bldr",
    "ticker": "BLDR",
    "cik": "0001316835",
@@ -5363,7 +5375,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 447,
+   "rank": 448,
    "company_id": "plan:tpl",
    "ticker": "TPL",
    "cik": "0001811074",
@@ -5375,7 +5387,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 448,
+   "rank": 449,
    "company_id": "plan:erie",
    "ticker": "ERIE",
    "cik": "0000922621",
@@ -5387,7 +5399,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 449,
+   "rank": 450,
    "company_id": "plan:hrl",
    "ticker": "HRL",
    "cik": "0000048465",
@@ -5399,7 +5411,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 450,
+   "rank": 451,
    "company_id": "plan:maa",
    "ticker": "MAA",
    "cik": "0000912595",
@@ -5411,19 +5423,19 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 451,
+   "rank": 452,
    "company_id": "r1000:0001110803",
    "ticker": "ILMN",
    "cik": "0001110803",
    "mcap": 16627733562.469482,
    "rank_is_lower_bound": false,
-   "shares_basis": "COMPANYFACTS_PIT",
+   "shares_basis": "CA_UNIT_NORMALIZED:COMPANYFACTS_PIT",
    "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
-   "shares_available_at": "2024-05-03T00:00:00+00:00",
+   "shares_available_at": "2024-06-24T00:00:00+00:00",
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 452,
+   "rank": 453,
    "company_id": "plan:eg",
    "ticker": "EG",
    "cik": "0001095073",
@@ -5435,7 +5447,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 453,
+   "rank": 454,
    "company_id": "plan:l",
    "ticker": "L",
    "cik": "0000060086",
@@ -5447,7 +5459,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 454,
+   "rank": 455,
    "company_id": "plan:jbht",
    "ticker": "JBHT",
    "cik": "0000728535",
@@ -5459,7 +5471,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 455,
+   "rank": 456,
    "company_id": "r1000:0000861884",
    "ticker": "RS",
    "cik": "0000861884",
@@ -5471,7 +5483,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 456,
+   "rank": 457,
    "company_id": "plan:cfg",
    "ticker": "CFG",
    "cik": "0000759944",
@@ -5483,7 +5495,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 457,
+   "rank": 458,
    "company_id": "plan:pkg",
    "ticker": "PKG",
    "cik": "0000075677",
@@ -5495,7 +5507,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 458,
+   "rank": 459,
    "company_id": "plan:txt",
    "ticker": "TXT",
    "cik": "0000217346",
@@ -5507,7 +5519,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 459,
+   "rank": 460,
    "company_id": "plan:tsn",
    "ticker": "TSN",
    "cik": "0000100493",
@@ -5519,7 +5531,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 460,
+   "rank": 461,
    "company_id": "plan:eqt",
    "ticker": "EQT",
    "cik": "0000033213",
@@ -5531,7 +5543,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 461,
+   "rank": 462,
    "company_id": "plan:nrg",
    "ticker": "NRG",
    "cik": "0001013871",
@@ -5543,7 +5555,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 462,
+   "rank": 463,
    "company_id": "r1000:0000101778",
    "ticker": "MRO",
    "cik": "0000101778",
@@ -5555,7 +5567,7 @@
    "price_observed_at": "2024-06-28T21:00:00+00:00"
   },
   {
-   "rank": 463,
+   "rank": 464,
    "company_id": "plan:expe",
    "ticker": "EXPE",
    "cik": "0001324424",
@@ -5567,7 +5579,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 464,
+   "rank": 465,
    "company_id": "plan:ual",
    "ticker": "UAL",
    "cik": "0000100517",
@@ -5579,7 +5591,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 465,
+   "rank": 466,
    "company_id": "plan:zbra",
    "ticker": "ZBRA",
    "cik": "0000877212",
@@ -5591,7 +5603,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 466,
+   "rank": 467,
    "company_id": "plan:nwsa",
    "ticker": "NWSA",
    "cik": "0001564708",
@@ -5603,7 +5615,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 467,
+   "rank": 468,
    "company_id": "r1000:0001802768",
    "ticker": "RPRX",
    "cik": "0001802768",
@@ -5615,7 +5627,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 468,
+   "rank": 469,
    "company_id": "plan:gen",
    "ticker": "GEN",
    "cik": "0000849399",
@@ -5627,7 +5639,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 469,
+   "rank": 470,
    "company_id": "r1000:0001048477",
    "ticker": "BMRN",
    "cik": "0001048477",
@@ -5639,7 +5651,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 470,
+   "rank": 471,
    "company_id": "r1000:0001585521",
    "ticker": "ZM",
    "cik": "0001585521",
@@ -5651,7 +5663,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 471,
+   "rank": 472,
    "company_id": "plan:fds",
    "ticker": "FDS",
    "cik": "0001013237",
@@ -5663,7 +5675,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 472,
+   "rank": 473,
    "company_id": "r1000:0001402436",
    "ticker": "SSNC",
    "cik": "0001402436",
@@ -5675,7 +5687,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 473,
+   "rank": 474,
    "company_id": "plan:foxa",
    "ticker": "FOXA",
    "cik": "0001754301",
@@ -5687,7 +5699,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 474,
+   "rank": 475,
    "company_id": "r1000:0001468174",
    "ticker": "H",
    "cik": "0001468174",
@@ -5699,7 +5711,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 475,
+   "rank": 476,
    "company_id": "r1000:0001579298",
    "ticker": "BURL",
    "cik": "0001579298",
@@ -5711,7 +5723,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 476,
+   "rank": 477,
    "company_id": "plan:iex",
    "ticker": "IEX",
    "cik": "0000832101",
@@ -5723,7 +5735,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 477,
+   "rank": 478,
    "company_id": "plan:dgx",
    "ticker": "DGX",
    "cik": "0001022079",
@@ -5735,7 +5747,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 478,
+   "rank": 479,
    "company_id": "r1000:0001056696",
    "ticker": "MANH",
    "cik": "0001056696",
@@ -5747,7 +5759,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 479,
+   "rank": 480,
    "company_id": "r1000:0001880661",
    "ticker": "TPG",
    "cik": "0001880661",
@@ -5759,7 +5771,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 480,
+   "rank": 481,
    "company_id": "plan:bg",
    "ticker": "BG",
    "cik": "0001996862",
@@ -5771,7 +5783,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 481,
+   "rank": 482,
    "company_id": "r1000:0001849253",
    "ticker": "RYAN",
    "cik": "0001849253",
@@ -5783,7 +5795,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 482,
+   "rank": 483,
    "company_id": "r1000:0001660134",
    "ticker": "OKTA",
    "cik": "0001660134",
@@ -5795,7 +5807,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 483,
+   "rank": 484,
    "company_id": "r1000:0001370946",
    "ticker": "OC",
    "cik": "0001370946",
@@ -5807,7 +5819,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 484,
+   "rank": 485,
    "company_id": "cvna",
    "ticker": "CVNA",
    "cik": "0001690820",
@@ -5819,7 +5831,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 485,
+   "rank": 486,
    "company_id": "r1000:0000912593",
    "ticker": "SUI",
    "cik": "0000912593",
@@ -5831,7 +5843,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 486,
+   "rank": 487,
    "company_id": "plan:ip",
    "ticker": "IP",
    "cik": "0000051434",
@@ -5843,7 +5855,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 487,
+   "rank": 488,
    "company_id": "r1000:0000873303",
    "ticker": "SRPT",
    "cik": "0000873303",
@@ -5855,7 +5867,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 488,
+   "rank": 489,
    "company_id": "plan:ce",
    "ticker": "CE",
    "cik": "0001306830",
@@ -5867,7 +5879,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 489,
+   "rank": 490,
    "company_id": "plan:mas",
    "ticker": "MAS",
    "cik": "0000062996",
@@ -5879,7 +5891,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 490,
+   "rank": 491,
    "company_id": "r1000:0001527166",
    "ticker": "CG",
    "cik": "0001527166",
@@ -5891,7 +5903,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 491,
+   "rank": 492,
    "company_id": "r1000:0001552033",
    "ticker": "TRU",
    "cik": "0001552033",
@@ -5903,7 +5915,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 492,
+   "rank": 493,
    "company_id": "r1000:0001722482",
    "ticker": "AVTR",
    "cik": "0001722482",
@@ -5915,7 +5927,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 493,
+   "rank": 494,
    "company_id": "r1000:0001650164",
    "ticker": "TOST",
    "cik": "0001650164",
@@ -5927,7 +5939,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 494,
+   "rank": 495,
    "company_id": "r1000:0001031308",
    "ticker": "BSY",
    "cik": "0001031308",
@@ -5939,7 +5951,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 495,
+   "rank": 496,
    "company_id": "r1000:0000726958",
    "ticker": "CASY",
    "cik": "0000726958",
@@ -5951,7 +5963,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 496,
+   "rank": 497,
    "company_id": "plan:amcr",
    "ticker": "AMCR",
    "cik": "0001748790",
@@ -5963,7 +5975,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 497,
+   "rank": 498,
    "company_id": "plan:podd",
    "ticker": "PODD",
    "cik": "0001145197",
@@ -5975,7 +5987,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 498,
+   "rank": 499,
    "company_id": "r1000:0001082554",
    "ticker": "UTHR",
    "cik": "0001082554",
@@ -5987,7 +5999,7 @@
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   },
   {
-   "rank": 499,
+   "rank": 500,
    "company_id": "r1000:0001046102",
    "ticker": "RBA",
    "cik": "0001046102",
@@ -5996,18 +6008,6 @@
    "shares_basis": "COMPANYFACTS_PIT",
    "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
    "shares_available_at": "2024-05-09T00:00:00+00:00",
-   "price_observed_at": "2024-06-28T13:30:00+00:00"
-  },
-  {
-   "rank": 500,
-   "company_id": "r1000:0001618732",
-   "ticker": "NTNX",
-   "cik": "0001618732",
-   "mcap": 14021530297.505974,
-   "rank_is_lower_bound": false,
-   "shares_basis": "COMPANYFACTS_PIT",
-   "price_basis": "CLOSE_X_POST_AS_OF_SPLIT_FACTOR",
-   "shares_available_at": "2024-06-10T00:00:00+00:00",
    "price_observed_at": "2024-06-28T13:30:00+00:00"
   }
  ]

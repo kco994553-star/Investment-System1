@@ -45,6 +45,10 @@ def load_official(as_of: str) -> tuple[object | None, dict]:
     if not p.exists():
         return None, {"as_of": as_of, "status": "NO_GATE_EVIDENCE"}
     ev = json.loads(p.read_text(encoding="utf-8"))
+    unit_audit = ev.get("share_price_unit_audit") or {}
+    if not unit_audit.get("passed"):
+        return None, {"as_of": as_of, "status": "SHARE_PRICE_UNIT_AUDIT_REQUIRED",
+                      "unresolved": unit_audit.get("unresolved")}
     cons = ev.get("gate_snapshot_consistency") or {}
     if not ev.get("official_top500_declared") or not cons.get("passed") or not ev.get("official_snapshot_candidates"):
         return None, {"as_of": as_of, "status": "NOT_OFFICIAL", "official_blockers": ev.get("official_blockers"),
@@ -95,6 +99,25 @@ def network_stats(store_dir: Path) -> dict:
     return {"n_ingestion_run_reports": n_runs, "request_status_counts": counts}
 
 
+def walk_forward_consistency(single_results: dict, walk_forward: dict) -> dict:
+    """The same prediction date/horizon must replay identically in either entry point."""
+    mismatches = []
+    for step in walk_forward["steps"]:
+        single = single_results.get(step["as_of"])
+        if single is None:
+            mismatches.append({"as_of": step["as_of"], "field": "single_as_of_missing"})
+            continue
+        for field in ("horizon_as_of", "universe", "selected", "equal_weight_realized", "name_errors"):
+            if step[field] != single[field]:
+                mismatches.append({"as_of": step["as_of"], "field": field})
+        linked = sum(v.get("status") == "LINKED" for v in single["outcomes"].values())
+        if step["n_linked"] != linked:
+            mismatches.append({"as_of": step["as_of"], "field": "n_linked"})
+    if len(walk_forward["steps"]) != len(single_results) - 1:
+        mismatches.append({"field": "step_count"})
+    return {"passed": not mismatches, "n_steps": len(walk_forward["steps"]), "mismatches": mismatches}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
@@ -130,8 +153,10 @@ def main() -> None:
     # real single_as_of for every Official date (horizon = next requested date, or final_horizon for the last)
     horizon_of = dict(zip(dates, dates[1:] + [a.final_horizon]))
     singles, timings, errors = [], [], 0
+    single_results = {}
     for d in [x for x in dates if x in snaps]:
         res, m = _measure(lambda d=d: run_vertical_slice_from_store(store, _dt(d), _dt(horizon_of[d]), snaps[d]))
+        single_results[res["as_of"]] = res
         errors += len(res.get("name_errors") or {})
         timings.append({"as_of": d, **m})
         singles.append({k: res[k] for k in ("as_of", "horizon_as_of", "universe_id", "universe_kind", "official_universe",
@@ -156,8 +181,12 @@ def main() -> None:
         out["walk_forward_status"] = "BLOCKED_NOT_ALL_DATES_OFFICIAL"
     else:
         wf, wm = _measure(lambda: run_walk_forward_from_store(store, [_dt(d) for d in dates], lambda t: snaps[t.date().isoformat()]))
-        out.update({"walk_forward_status": "RUN", "walk_forward": wf, "walk_forward_timing": wm})
+        consistency = walk_forward_consistency(single_results, wf)
+        out.update({"walk_forward_status": "RUN" if consistency["passed"] else "BLOCKED_SINGLE_AS_OF_MISMATCH",
+                    "walk_forward": wf, "walk_forward_timing": wm, "walk_forward_single_consistency": consistency})
     out["status"] = "RUN" if singles else "BLOCKED_NO_OFFICIAL_DATE"
+    if out.get("walk_forward_status") == "BLOCKED_SINGLE_AS_OF_MISMATCH":
+        out["status"] = "BLOCKED_SINGLE_AS_OF_MISMATCH"
     path = GE / f"official_pipeline_{dates[0]}_{dates[-1]}.json"
     path.write_text(json.dumps(out, indent=1, default=str) + "\n", encoding="utf-8")
     print(json.dumps({"status": out["status"], "walk_forward_status": out.get("walk_forward_status"), "per_date": status,
