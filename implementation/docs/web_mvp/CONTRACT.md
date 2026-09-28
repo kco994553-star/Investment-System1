@@ -63,3 +63,12 @@ All choices reversible. No D3-P. No Track C merge. No new Official investment lo
 6. Full common language layer when available; not required to render current bilingual MVP.
 
 Freeze means implementation acceptance only, never LIVE-data readiness or investment-model promotion.
+
+## Validation decisions / corrections
+W-D09 (D2): Keep RIG fixture projection in tools/build_web_mvp_demo.py, outside all runtime packages.
+The initial full regression correctly rejected a product→RIG import. Existing owner-boundary tests are
+unchanged; product now accepts only finished RIG page/data. Targeted boundary suite: 23 PASS.
+W-D10 (D2): GitHub connector commits publish the feature branch because shell git has no write credential.
+Original local checkpoints are retained on feature/web-mvp-v1-local-checkpoint; no force/history rewrite.
+W-D11 (D2): Use existing public-repository GitHub Actions validation for browser tests; cloud Browser cannot
+reach localhost and local Chromium download failed. No hosting or personal data upload is performed.
