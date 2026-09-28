@@ -41,3 +41,24 @@ main {
     max-height: calc(100vh - 70px);
   }
 }
+summary {
+  min-height: 44px;
+  padding: 10px 0;
+  cursor: pointer;
+  font-size: 13px;
+}
+aside {
+  max-height: none;
+}
+#list {
+  max-height: 230px;
+}
+#list li {
+  font-size: 14px;
+}
+header .sub {
+  overflow-wrap: anywhere;
+}
+details .row {
+  margin: 4px 0;
+}

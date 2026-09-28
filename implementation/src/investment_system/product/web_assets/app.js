@@ -84,7 +84,7 @@ function star(id) {
 }
 function state(s) {
   let stale = s.state === "LIVE" && Date.parse(s.expires_at) <= Date.now();
-  return `<div class="state"><span class="badge ${esc(s.state)}">${esc(s.state)}${stale ? " · STALE" : ""}</span> <span class="meta">${esc(s.as_of || "시점 미제공")}</span></div><div class="meta">${esc(s.source || s.reason || "출처 미제공")}</div>`;
+  return `<div class="state"><span class="badge ${esc(s.state)}">${esc(s.state)}${stale ? " · STALE" : ""}</span> <span class="meta">${esc(s.as_of || "시점 미제공")}</span></div><div class="meta">${esc(s.source || (s.data === null ? "" : "출처 미제공"))}</div>`;
 }
 function evidence(v) {
   return `<details><summary>Evidence(근거) · 원본 보기</summary><pre>${esc(JSON.stringify(v, null, 2))}</pre></details>`;

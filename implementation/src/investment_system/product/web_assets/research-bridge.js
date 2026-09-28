@@ -29,3 +29,16 @@ document.querySelectorAll("#list li").forEach((li) => {
     }
   };
 });
+// Keep the original controls and listeners; disclose optional metadata and filters on demand.
+const sub = document.querySelector("header .sub");
+const info = document.createElement("details");
+info.innerHTML = "<summary>콘텐츠 버전 · 사용법</summary>";
+sub.before(info);
+info.append(sub);
+const aside = document.querySelector("aside");
+const filters = document.createElement("details");
+filters.innerHTML = "<summary>Filters(필터) · Starter · Bundle</summary>";
+const rows = [...aside.querySelectorAll(".row")];
+rows[0].before(filters);
+rows.forEach((row) => filters.append(row));
+filters.append(document.getElementById("f-starter").closest("label"));

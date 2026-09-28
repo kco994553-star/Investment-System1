@@ -119,6 +119,9 @@ const assert = require("node:assert/strict");
     await check("research canonical select fill preview copy", async () => {
       await route("research");
       const f = page.frameLocator("#research-frame");
+      await f
+        .getByText("Filters(필터) · Starter · Bundle", { exact: true })
+        .click();
       await f.locator("#f-starter").check();
       await f.locator("#list li").first().click();
       const fields = await f.locator("[data-v]").all();
