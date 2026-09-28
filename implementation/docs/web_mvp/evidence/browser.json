@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checks": [
+    "default fail-closed missing data",
+    "six routes 360/390/1280 without overflow",
+    "portfolio to company and original QGV",
+    "interest persistence and group membership",
+    "news-network switch, node focus, expansion, zoom, filters",
+    "research canonical select fill preview copy",
+    "network pan and drag preserve view state",
+    "group rename delete and preferences backup",
+    "back navigation and deep link",
+    "no page errors"
+  ],
+  "errors": []
+}

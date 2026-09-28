@@ -12,7 +12,8 @@ python -m http.server 8765 --bind 127.0.0.1 --directory /tmp/web-mvp
 ```
 
 Open `http://127.0.0.1:8765/`. HTTP is required (data.json fetch); file:// is unsupported.
-For explicitly synthetic UI validation, add `--demo` and use a separate output directory.
+For synthetic QGV/model-only preview, add `--demo` and use a separate output directory.
+For the full synthetic RIG interaction fixture, run `python tools/build_web_mvp_demo.py --out /tmp/web-mvp-demo`.
 Both modes reuse the exact frozen Prompt Library catalog and upstream validation/UI.
 Default contains the hash-verified 2024-12-31 Universe only. It is not today's market.
 Other dates/operating snapshots are supplied through the producer bundle; Web does not choose or reconstruct them.
