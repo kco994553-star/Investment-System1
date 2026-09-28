@@ -532,3 +532,21 @@ implementation/reports/track_c_c2_split_policy_proposal.md. No policy applied.
 C0/C1 remain SOFTWARE FROZEN after 24/24 targeted and 420/420 full/integration.
 C2 and later phases pause in order pending this new D3-P. No upstream exception,
 Track A reinterpretation, threshold calibration or Official promotion is approved.
+
+
+## TC-D3P-001 resolution / C4 upstream dependency — 2026-09-28T21:03:11+09:00
+
+TC-D3P-001 RESOLVED / IMPLEMENTED: user approved the revised EVL-SPLIT-01 v1.1
+(primary purge + separately registered rebalance-gap stress) at 20:48:39 KST.
+Earlier mandatory-gap v1.0 is superseded, not approved. C2/C3 SOFTWARE FROZEN;
+latest targeted 56/56, full/integration 452/452 PASS. Same-policy cases are D3-C.
+
+C4 readiness exposes the existing C-28 missing Technical available_at/input
+provenance contract. Its original PIL-P4-only scope does not supply the stricter
+EVL PIT evidence. C5 also lacks executable binding for the six profile settings;
+profile ID/hash changes affect metadata only in the inspected Integration API.
+Do not promote C-30 provisional maturity by inference. Audit evidence is
+implementation/reports/track_c_c4_upstream_readiness.json. Upstream runtime
+contracts remain unchanged; C4–C10 pause under EVL_SPEC_v0.1 §13.
+This is an existing upstream implementation/contract dependency, not a new D3-P
+proposal and not a request to relax PIT, permit no-op search or change core scores.

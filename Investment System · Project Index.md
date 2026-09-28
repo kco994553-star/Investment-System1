@@ -137,3 +137,34 @@ Next: obtain this D3-P decision, then implement C2 acceptance in existing order.
 Do not repeat C1 or alter upstream scores/data/contracts. Do not auto-merge PR #4.
 Progress: 2/11 software phases frozen (18.2% phase-count proxy, not effort estimate);
 no Official profile, real-data EVL validation or Forward Validation is claimed.
+
+
+## Track C C2–C3 handoff — 2026-09-28T21:03:11+09:00
+
+Scope: Track C only. This supersedes the earlier C2 approval-pending status.
+User approved the revised EVL-SPLIT-01 v1.1 at 2026-09-28 20:48:39 KST. Mandatory
+purge is primary; one registered rebalance interval extra gap is a separately
+preregistered stress view. The original v1.0 mandatory extra-gap proposal was not
+approved and remains historical. TC-D3P-001 is RESOLVED / IMPLEMENTED.
+
+C0–C3 are SOFTWARE FROZEN. C2 targeted 42/42, full and normal-merge integration
+438/438; C3 targeted 56/56, full and normal-merge integration 452/452, all real
+pytest PASS. Evidence: implementation/reports/track_c_c2_acceptance.md and
+track_c_c3_acceptance.md, logs and hash/commit records. No upstream runtime/data
+or core-score change; canonical remains b8e39a2. PR #4 remains draft/unmerged.
+
+C4 is BLOCKED_UPSTREAM_CONTRACT; C4–C10 not started. TechnicalSnapshot lacks
+input-derived available_at/source-vintage binding (existing C-28); its engine
+accepts untimestamped returns. C5 readiness additionally finds six strategy
+configurable keys without direct calculation consumers and profile ID/hash used
+as metadata only. No Official maturity is inferred from provisional profiles
+(existing C-30). Actual audit: track_c_c4_upstream_readiness.json.
+
+EVL_SPEC_v0.1 §13 requires reporting these existing contract gaps, not redefining
+upstream modules. Next: upstream Technical PIT lineage + timestamped integrated
+evaluator, then C4; behaviorally verified parameter binding is required before C5.
+No new D3-P. Do not bypass this with invented timestamps, dummy parameter effects
+or a synthetic-as-real result. Do not repeat C2/C3 or auto-merge PR #4.
+Progress: 4/11 software phases (36.4% phase-count proxy, not effort percentage).
+Real-data EVL validation, Official profile promotion and Forward Validation remain
+unverified; software Freeze does not imply any of them.

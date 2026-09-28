@@ -94,3 +94,7 @@ The recommendation is the explicit H+R gap, chosen without inspecting returns.
 
 Implementation: **not started pending this D3-P**. No C2 runtime, threshold,
 experiment output or Official artifact is introduced by this proposal.
+
+
+Superseded 2026-09-28T21:03:11+09:00: user approved revised EVL-SPLIT-01 v1.1, recorded in
+track_c_c2_split_policy_approved.md. The mandatory-extra-gap v1.0 above was NOT approved.
