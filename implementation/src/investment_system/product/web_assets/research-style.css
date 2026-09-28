@@ -1,0 +1,1 @@
+body{font-family:system-ui,sans-serif}input,select,textarea,button{min-height:44px;font-size:16px}li{min-height:44px}header{padding:14px}h1{font-size:19px}aside{max-height:42vh}main{padding:16px}#list{max-height:24vh;overflow:auto}.row>div{min-width:0}*{overflow-wrap:anywhere}#detail:focus{outline:none}@media(min-width:801px){aside{max-height:calc(100vh - 70px)}}
