@@ -704,3 +704,8 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 ## Track A correctness audit — 2026-09-27 19:56 KST
 
 Dated per-slice CIK/ticker input resolution; exact single/walk-forward consistency guard; lazy companyfacts loading after an observed exit-137 full-batch replay; share/price-unit fail-closed audit. 388 regression tests pass. Raw hashes verified; diagnostic 500-name/3-date replay passes, but all Official dates are suspended by new C-41, with CA-UNIT-v1.0 proposed for D3-P. No other Track implementation changed.
+
+
+## Integration verification · 2026-09-28 20:23 KST
+
+Track A — REAL-DATA BASELINE **FROZEN_VERIFIED**. PR #3 was normal-merged into canonical as `bd6bf42bdd9c6274b595471c65e3482f37317f9c`, preserving original Frozen HEAD `a79642f7aa174cc37b981298d0ff1cec6b04e974`. Integration audit re-confirmed the 17-file Freeze evidence manifest, raw 6,830-artifact integrity, CA-UNIT-v1.0 (original 20 + 3 D3-C), exact three-date Gate/Official consistency, 3-date/two-step Walk-Forward, the approved retrospective PIT/provenance boundary, retained Network500 evidence, and 396/396 full regression. This status does not promote `PROVISIONAL_RESEARCH`, claim strict zero-lookahead, or alter Tracks B/C/D/E.
