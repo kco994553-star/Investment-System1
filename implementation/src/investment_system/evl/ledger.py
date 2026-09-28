@@ -30,9 +30,9 @@ class TrialLedger:
 
     def append(self, record: TrialRecord) -> str:
         rows = self.records()
-        if any(row["trial_id"] == record.trial_id for row in rows):
+        if any(row.get("trial", {}).get("trial_id") == record.trial_id for row in rows):
             raise ValueError("trial_id already logged")
-        expected = 0 if not rows else rows[-1]["sequence"] + 1
+        expected = 0 if not rows else rows[-1]["trial"]["sequence"] + 1
         if record.sequence != expected:
             raise ValueError(f"sequence must be {expected}")
         payload = asdict(record)
