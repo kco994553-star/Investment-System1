@@ -198,3 +198,31 @@ rules. C5–C10 are NOT FROZEN and no C5 search has run. User decision pending.
 Evidence: implementation/reports/track_c_c4_acceptance.md,
 track_c_c4_evidence.json, track_c_c5_binding_policy_proposal.md.
 PR #4 remains draft/open; automatic merge is prohibited.
+
+
+## Track C C5 software freeze / C6 execution decision — 2026-09-29T19:27:45.256043+09:00
+
+TC-D3P-002 APPROVED by user “어 진행해” at 2026-09-29 19:19:50 KST;
+previous proposal-pending entries are historical. C0–C5 now SOFTWARE FROZEN.
+C5 implements approved cash_buffer/technical_lookback search with immutable
+registration, Train-only input, mandated stage ordering, explicit fixed stages,
+coarse/refine over all survivors, increasing resource screening, precision and
+complexity rejection, complete budget/terminal accounting and crash recovery.
+No peak/champion selected. Actual bound-engine behavior and reproducibility tested.
+Targeted 103/103, full 499/499, canonical normal-merge integration 499/499 PASS.
+No upstream source change since C4. Prior C4's four-file additive repair remains.
+
+C6 preflight inspected Integration order intents, QGV Simulation compounding and
+C3 externally supplied cost fractions. No fill-price/execution-delay contract exists.
+New TC-D3P-003 proposes first eligible post-decision opportunity baseline, one
+registered opportunity delay stress, explicit execution evidence and fixed-path
+1x/2x/3x trading-cost sensitivity; missing evidence fails closed. No fees, fills or
+financial behavior were invented. C6–C10 NOT FROZEN, no C6 result is claimed.
+Proposal: implementation/reports/track_c_c6_execution_policy_proposal.md.
+Approval of TC-D3P-002 does not imply approval of this distinct execution policy.
+
+Evidence: implementation/reports/track_c_c5_acceptance.md and
+track_c_c5_evidence.json plus final targeted/full/integration logs.
+EVL_SPEC_v0.1 unchanged, TAX_MODE=EXCLUDED, no Official/real 7Y/Holdout/Forward claim.
+Progress: 6/11 software phases (54.5% phase-count proxy, not effort or product completion).
+PR #4 remains draft/open; no auto merge. Next: TC-D3P-003 decision, then C6 in order.
