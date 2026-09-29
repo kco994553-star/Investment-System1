@@ -105,3 +105,33 @@ or a synthetic-as-real result. Do not repeat C2/C3 or auto-merge PR #4.
 Progress: 4/11 software phases (36.4% phase-count proxy, not effort percentage).
 Real-data EVL validation, Official profile promotion and Forward Validation remain
 unverified; software Freeze does not imply any of them.
+
+
+## Track C C4 software freeze / C5 scope decision — 2026-09-29
+
+Supersedes the 2026-09-28 C4 BLOCKED_UPSTREAM_CONTRACT status for software implementation.
+C0–C4 are SOFTWARE FROZEN. C4 tested implementation `0cb9a7c`; targeted 88/88,
+full 484/484, normal merge integration against canonical `b8e39a2` 484/484.
+Actual input-derived Technical/Macro availability, source/vintage and digest are
+now available through additive stamped evaluators. Legacy decisions and unknown
+qualification remain unchanged. C4 enforces registered paired annual rolling /
+expanding execution, Train/Validation/OOS isolation, frozen calibration/prediction,
+complete terminal accounting, interrupted-attempt recovery and hash-bound reports.
+
+Authorized upstream repair touches four files: contracts/lineage.py (new),
+contracts/models.py, technical/engine.py, macro/engine.py. The earlier zero-upstream-
+changes statement is historical; QGV, Track A artifacts and B/D/E code remain unchanged.
+No qualified seven-year real-data result, skill, Official profile, Holdout consumption
+or Forward validation is claimed. TAX_MODE=EXCLUDED; EVL_SPEC_v0.1 is not redesigned.
+
+C5 preflight: cash_buffer and technical_lookback have verified performance effects;
+deadband affects order intents only. Three advertised controls have undefined
+financial semantics (risk_multiplier, signal_threshold, macro_warning_sensitivity).
+TC-D3P-002 proposes explicit first-search coverage of the two functional controls,
+with unchanged/fixed stages explicitly recorded and undefined controls rejected.
+This is a proposed capability-scope decision, not permission to invent financial
+rules. C5–C10 are NOT FROZEN and no C5 search has run. User decision pending.
+
+Evidence: implementation/reports/track_c_c4_acceptance.md,
+track_c_c4_evidence.json, track_c_c5_binding_policy_proposal.md.
+PR #4 remains draft/open; automatic merge is prohibited.
