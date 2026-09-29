@@ -45,3 +45,10 @@ SSoT/architecture conflict; supplied code.md §23.7 covers product/contract deci
 The user's autonomous D1/D2/D3-C authorization covers implementation repairs, not
 inventing financial behavior for previously undefined controls. This proposal is
 ready for one scope decision. C0–C4 software freezes remain valid while it is pending.
+
+## Approval — 2026-09-29 19:19:50 KST
+
+User replied “어 진행해” to the explicit TC-D3P-002 scope approval question.
+Recommended scope above is APPROVED. The original proposal remains historical.
+Only cash_buffer and technical_lookback are eligible for first C5 search. No new
+meaning is assigned to the three undefined controls; deadband remains order-only.
