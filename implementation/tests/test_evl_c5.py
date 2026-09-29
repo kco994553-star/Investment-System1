@@ -108,3 +108,26 @@ def test_unqualified_inputs_fail_closed(tmp_path,change):
     with pytest.raises(ValueError):
         run_search(ledger,c,data,evaluator_id='wrong' if change=='wrong_evaluator' else 'fixture',evaluate=lambda *x:None,recorded_at=dt(2020))
     assert not ledger.trials.records()
+
+
+def test_search_drives_real_bound_engines_and_preserves_inputs(tmp_path):
+    from tests.test_evl_c4 import pipeline
+    from statistics import mean
+    args=setup(tmp_path)
+    before=dataset_digest(args[2])
+    engine=pipeline([])
+    def evaluate(parameters,train,seed):
+        predictions=engine.predict({'parameters':parameters},{},tuple(r.predictor_input() for r in train))
+        periods=engine.evaluate(predictions,train)
+        return {'score':mean(p.gross_return for p in periods)}
+    result=run(args,evaluate)
+    scores={tuple(sorted(r['parameters'].items())):r['metrics']['score'] for r in result['survivors']}
+    assert len(set(scores.values()))>1
+    assert dataset_digest(args[2])==before
+    assert all(r['trial']['parameters'].keys()=={'cash_buffer','technical_lookback'} for r in args[0].trials.records())
+
+
+def test_registered_search_is_reproducible(tmp_path):
+    a=run(setup(tmp_path/'a'))
+    b=run(setup(tmp_path/'b'))
+    assert a==b
