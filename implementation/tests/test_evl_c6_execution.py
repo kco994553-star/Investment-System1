@@ -252,3 +252,20 @@ def test_unsupported_delay_and_cost_multipliers_are_rejected():
     with pytest.raises(ValueError): evaluate(multiplier=4)
     with pytest.raises(ValueError): evaluate(multiplier=True)
     with pytest.raises(ValueError): evaluate(delay=True)
+
+
+@pytest.mark.parametrize('kind',['foreign_quote','holdout_quote','holdout_mark'])
+def test_unused_holdout_or_foreign_execution_evidence_cannot_enter_registration(tmp_path,kind):
+    value=data()
+    if kind=='foreign_quote':
+        value=replace(value,prices={**value.prices,('foreign','s1'):point(10.,D,'foreign')})
+    if kind=='holdout_quote':
+        slot=Opportunity('holdout-slot','a',dt(2017),True,'calendar')
+        value=replace(value,opportunities=(*value.opportunities,slot),
+            prices={**value.prices,('buy','holdout-slot'):point(10.,dt(2017),'holdout')})
+    if kind=='holdout_mark':
+        value=replace(value,closing_marks=({'a':point(12.,E,'mark'),'unused':point(1.,dt(2017),'holdout')},))
+    args=setup(tmp_path,value)
+    with pytest.raises(ValueError):
+        register_execution(*args)
+    assert not args[0].trials.records()

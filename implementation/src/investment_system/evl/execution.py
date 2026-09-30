@@ -129,6 +129,7 @@ def validate_input(split, data, partition):
     if any(ts != sorted(set(ts)) for ts in times.values()):
         raise ValueError('opportunities must be unique chronological per security')
     orders = set()
+    order_rows = {}
     for i,row in enumerate(data.rows):
         if (row.period.start != row.sample.decision_time or row.period.end != row.sample.label_end
                 or row.period.currency != data.currency):
@@ -143,6 +144,23 @@ def validate_input(split, data, partition):
                     or order.decision_time != row.sample.decision_time):
                 raise ValueError('invalid frozen order path')
             orders.add(order.order_id)
+            order_rows[order.order_id] = (order,row)
+    slots_by_id = {o.opportunity_id:o for o in data.opportunities}
+    for mapping in (data.prices,data.costs):
+        for key,point in mapping.items():
+            if not isinstance(key,tuple) or len(key) != 2 or key[0] not in order_rows or key[1] not in slots_by_id:
+                raise ValueError('foreign execution evidence identity')
+            order,row = order_rows[key[0]]
+            slot = slots_by_id[key[1]]
+            if (slot.security_id != order.security_id or not order.decision_time < slot.time < row.period.end
+                    or slot.time >= split.holdout_start or not isinstance(point,StampedValue)
+                    or point.measured_at != slot.time):
+                raise ValueError('execution evidence outside registered outcome interval')
+    # Mark evidence may not smuggle foreign outcome intervals into the dataset.
+    for time,mapping in [(data.rows[0].period.start,data.opening_marks),
+                         *((r.period.end,m) for r,m in zip(data.rows,data.closing_marks))]:
+        if any(not isinstance(point,StampedValue) or point.measured_at != time for point in mapping.values()):
+            raise ValueError('mark evidence outside registered outcome interval')
 
 
 def execute_path(data, delay, evaluation_time):
