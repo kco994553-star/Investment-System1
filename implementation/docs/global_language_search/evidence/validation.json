@@ -1,0 +1,25 @@
+{
+  "baseline": "Global Language & Search implementation baseline",
+  "tested_code_sha": "82ae07c5f0758038abda98cd8db9e0a0f2de1ee3",
+  "canonical_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "web_parent_sha": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+  "workflow_run": 36709513419,
+  "workflow_job": 109867663362,
+  "result": "PASS",
+  "full_pytest": 409,
+  "node_search_locale": 26,
+  "existing_web_e2e": 10,
+  "new_browser_checks": 8,
+  "page_errors": [],
+  "viewports": [
+    360,
+    390,
+    1280
+  ],
+  "query_mean_ms": 0.50170223,
+  "artifact_id": 11093536478,
+  "artifact_sha256": "2a4045992e7fc97c3f1d651d18213cf963de86a81c5b10c1932683dba2560894",
+  "track_source_changes": [],
+  "numerical_changes": false,
+  "auto_merge": false
+}

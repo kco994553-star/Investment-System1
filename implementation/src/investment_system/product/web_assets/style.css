@@ -376,3 +376,10 @@ iframe {
 .hero .meta {
   color: #c1d5cb;
 }
+
+.global-search {max-width:1100px;margin:auto;padding:10px 18px 0;}
+.global-search input {margin-bottom:0;}
+#global-results {max-height:50vh;overflow:auto;background:var(--card);padding:0 12px;border:1px solid var(--line);border-radius:12px;}
+.global-search .item {overflow-wrap:anywhere;}
+header {flex-wrap:wrap;}
+header>a:last-child {font-size:12px;min-height:44px;display:flex;align-items:center;}

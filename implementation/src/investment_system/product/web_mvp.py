@@ -73,7 +73,10 @@ def repository_bundle(root=ROOT):
     u = json.loads(raw)
     if u['universe_id'] != manifest['per_date'][-1]['universe_id']:
         raise ValueError('frozen Universe identity mismatch')
-    b = {'schema_version': 1, 'companies': [dict(company_id=r['company_id'], ticker=r['ticker'], name=r['ticker'],
+    # Existing ID-keyed reference names are display/search metadata only, not PIT assertions.
+    reference_path = folder / 'russell1000_extra_listings_2024-12-31.json'
+    references = json.loads(reference_path.read_text()) if reference_path.exists() else {}
+    b = {'schema_version': 1, 'companies': [dict(company_id=r['company_id'], ticker=r['ticker'], name=references.get(r['company_id'], {}).get('reference_name') or r['ticker'],
          market_cap_rank=r['rank'], rank_is_lower_bound=r['rank_is_lower_bound']) for r in u['members']],
          'universe': envelope(u, 'FROZEN_SNAPSHOT', u['as_of'], 'Track A / '+name)}
     for s in SECTIONS:
@@ -96,11 +99,12 @@ def demo_bundle(b):
 
 def compose(html, css='', js=''):
     # Presentation-only additions. Never edit Frozen source renderer or content.
-    return html.replace('</head>', '<style>'+css+'</style></head>').replace('</body>', '<script>'+js+'</script></body>')
+    return html.replace('</head>', '<style>'+css+'</style></head>').replace('</body>', '<script src="locale.js"></script><script>'+js+'</script></body>')
 
 
 def build(out, bundle=None, demo=False, rig_page=None):
     from ..prompt_library.ui import render_html
+    from .entity_catalog import entity_catalog
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     b = validate_bundle(bundle) if bundle else repository_bundle()
@@ -112,6 +116,7 @@ def build(out, bundle=None, demo=False, rig_page=None):
         if f.suffix in ('.html', '.css', '.js') and not f.name.startswith(('research-', 'network-')):
             shutil.copyfile(f, out / f.name)
     (out / 'data.json').write_text(json.dumps(b, ensure_ascii=False), encoding='utf-8')
+    (out / 'entities.json').write_text(json.dumps(entity_catalog(b), ensure_ascii=False), encoding='utf-8')
     research = compose(render_html(), (ASSETS/'research-style.css').read_text(), (ASSETS/'research-bridge.js').read_text())
     (out / 'research.html').write_text(research, encoding='utf-8')
     if rig_page and not demo:
