@@ -1,6 +1,6 @@
 # Global Language & Search implementation baseline
 
-Presentation/navigation contract v1 — 2026-09-30. Candidate until current CI passes.
+Presentation/navigation contract v1 — 2026-09-30. Implementation verified on code SHA 82ae07c5f0758038abda98cd8db9e0a0f2de1ee3; see STATUS.md.
 
 ## Fresh repository audit
 GitHub API refs and original files read in this session; historical reports are not the baseline.
@@ -18,6 +18,8 @@ Track A recovery ref: a79642f7aa174cc37b981298d0ff1cec6b04e974, already integrat
 Track B personal P0 packages remain untouched.
 Track C remote ref: aca11a699ede7e6a20e72e22cc49ba56038aa760 (latest commit records TC-D3P-003 v1 approval).
 The current Track C branch is more advanced than older Web documentation; none of its phases are imported or modified.
+Final ref recheck observed 8ab49b0e1b937d92ed194c2ace82f5d721f6dd05 (TC-D3P-004 approval/C6 Freeze-policy gap docs).
+C0–C5 acceptance records are present; C5 states SOFTWARE FROZEN. This is an audit observation, not a C6 Freeze claim.
 Track D ref: da86dfc26dcaa5c32c60762683dcca702a0c57b8, latest commit documents P5 hold.
 Track E ref: d226481e1b49e0910642478ae80545598e2e5a98; canonical Frozen catalog/UI reused.
 No Investor-QGV runtime registry/profile/methodology found in this baseline. Default INVESTOR results remain empty.
@@ -46,6 +48,8 @@ Python entity_catalog creates a separate entities.json from the read-only bundle
 COMPANY:<existing company_id>, INDUSTRY:<id>, INVESTOR:<id>, MACRO:<id>; extensible THEME/PORTFOLIO/NEWS/PROMPT.
 COMPANY identity comes only from companies. The adapter reuses OFFICIAL_PORTFOLIO_V11 identity metadata by company_id,
 never ticker identity guessing, and merges separate ID-keyed presentation aliases.
+Default builder also reuses 60 existing ID-keyed reference_name labels from the frozen-date Russell reference report;
+these search/display annotations do not alter the original Universe payload or make new PIT claims.
 Companies may supply official_name, localized_names, aliases (locale -> text list), historical_names,
 historical_tickers, industry/industry_id and metadata_source.
 Companies without name metadata remain visible and searchable by their existing ticker; no invented identity/name.
