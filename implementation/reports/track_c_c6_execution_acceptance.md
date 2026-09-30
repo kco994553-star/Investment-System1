@@ -25,3 +25,29 @@ Targeted/full tests and CI must be recorded from the implementation commit befor
 
 Cross-track: this commit adds only Track C source, test and report; authorized upstream repair unchanged;
 Track A frozen evidence and Track B/D/E/Web untouched. Holdout UNCONSUMED; Investor-QGV FUTURE_TRACK_C_INPUT.
+
+
+## Verified execution-subsection acceptance — 2026-09-30 20:00 KST
+
+Implementation HEAD: fb1cc7415703142ecd01461fbe1c89e7e2d51c7e.
+GitHub Actions run 36705694417 / job 109855289599: SUCCESS.
+Actual pytest: C6 execution 34 cases + unchanged C0–C5 103 = targeted 137/137 PASS;
+full repository 533/533 PASS. Original logs retained as track_c_c6_execution_ci_log.txt.
+
+Approved execution checks: evaluator -> C3 wiring, actual baseline and one-opportunity delay,
+isolated 1x/2x/3x costs, source/vintage and missing-data rejection, PIT feature/outcome separation,
+retained Train/Validation/OOS partition checks, Holdout and foreign unused outcome rejection,
+immutable original input evidence and report digest verification, ledger budget/crash accounting,
+current invalidation support revocation, chronological cash/position carry and no source-input mutation.
+No Track A/B/D/E/Web runtime/evidence change; existing authorized C4 repair unchanged.
+No synthetic evidence is represented as real.
+
+The repository updates use GitHub Git Data API fast-forward commits; this environment has no
+shell/Python tool, so actual tests run in CI after implementation commits rather than local pre-push tests.
+No local git fetch/pytest or fresh normal-merge replay is claimed.
+
+C6 phase Freeze judgment: NOT FROZEN. TC-D3P-003 execution approval/acceptance is complete,
+but EVL_SPEC §§5–6 still requires statistical/perturbation/control/drift acceptance.
+TC-D3P-004 records the unresolved statistical experiment-family/resampling policy.
+No robustness PASS, NO_EVIDENCE_OF_SKILL determination, profile selection or promotion is claimed.
+C7–C10 remain NOT STARTED; Holdout remains UNCONSUMED.

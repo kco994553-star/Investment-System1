@@ -360,3 +360,29 @@ track_c_c5_evidence.json plus final targeted/full/integration logs.
 EVL_SPEC_v0.1 unchanged, TAX_MODE=EXCLUDED, no Official/real 7Y/Holdout/Forward claim.
 Progress: 6/11 software phases (54.5% phase-count proxy, not effort or product completion).
 PR #4 remains draft/open; no auto merge. Next: TC-D3P-003 decision, then C6 in order.
+
+
+## Track C C6 execution verification / statistical policy boundary — 2026-09-30 20:00 KST
+
+Track C scope only; historical entries are retained. TC-D3P-003 v1 items 1–8 APPROVED
+by the user at actual clock 2026-09-30 19:38:07 KST. Earlier proposal-pending state is superseded.
+Approved research execution evaluator implemented at fb1cc7415703142ecd01461fbe1c89e7e2d51c7e; source/tests limited
+to evl/execution.py and test_evl_c6_execution.py. Baseline first eligible post-decision slot,
+one-slot delay, isolated 1x/2x/3x costs, cash/position/P&L reconciliation, strict execution
+provenance, immutable input/report lineage and fail-closed missing evidence are verified.
+CI 36705694417 / job 109855289599: real pytest targeted 137/137 (34 new + unchanged C0–C5 103),
+full 533/533 PASS. No local Git fetch/pytest or fresh temporary normal-merge replay claimed;
+GitHub refs/compare refreshed and fast-forward Git Data commits used.
+
+C0–C5 SOFTWARE FROZEN preserved. C6 IMPLEMENTING / NOT FROZEN:
+execution subsection complete, full statistics/perturbation/controls/drift acceptance pending.
+New TC-D3P-004 statistical family/resampling policy is PROPOSED / NOT APPROVED / NOT ACTIVE;
+no DSR effective-trial assumptions, PBO ranking or bootstrap defaults applied.
+C7–C10 NOT STARTED. Holdout UNCONSUMED; no Official/Forward result.
+Investor-QGV NOT_IMPLEMENTED / FUTURE_TRACK_C_INPUT; no substitute investor weights.
+Track A frozen evidence and B/D/E/Web source unchanged. Prior authorized four-file
+additive C4 repair is preserved. EVL_SPEC unchanged; TAX_MODE=EXCLUDED.
+Evidence: implementation/reports/track_c_c6_execution_acceptance.md,
+track_c_c6_execution_evidence.json, track_c_c6_statistics_policy_proposal.md.
+PR #4 must remain Draft/Open/unmerged; NOT_TRACK_C_FREEZE_CANDIDATE.
+Next: TC-D3P-004 decision, then complete C6 before starting C7.
