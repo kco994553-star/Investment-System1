@@ -80,3 +80,9 @@ window.addEventListener("message",e=>{
   if(e.source===parent && e.origin===location.origin && e.data?.type==="display_locale" && AppLanguage.LOCALES.includes(e.data.locale))
     applyDisplayLocale(e.data.locale);
 });
+
+document.getElementById("lang").addEventListener("change",e=>{
+  const locale=e.target.value==="EN"?"en-US":"ko-KR";
+  applyDisplayLocale(locale);
+  parent.postMessage({type:"display_locale_request",locale},location.origin);
+});

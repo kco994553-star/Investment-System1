@@ -73,7 +73,10 @@ def repository_bundle(root=ROOT):
     u = json.loads(raw)
     if u['universe_id'] != manifest['per_date'][-1]['universe_id']:
         raise ValueError('frozen Universe identity mismatch')
-    b = {'schema_version': 1, 'companies': [dict(company_id=r['company_id'], ticker=r['ticker'], name=r['ticker'],
+    # Existing ID-keyed reference names are display/search metadata only, not PIT assertions.
+    reference_path = folder / 'russell1000_extra_listings_2024-12-31.json'
+    references = json.loads(reference_path.read_text()) if reference_path.exists() else {}
+    b = {'schema_version': 1, 'companies': [dict(company_id=r['company_id'], ticker=r['ticker'], name=references.get(r['company_id'], {}).get('reference_name') or r['ticker'],
          market_cap_rank=r['rank'], rank_is_lower_bound=r['rank_is_lower_bound']) for r in u['members']],
          'universe': envelope(u, 'FROZEN_SNAPSHOT', u['as_of'], 'Track A / '+name)}
     for s in SECTIONS:

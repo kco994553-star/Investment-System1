@@ -329,9 +329,13 @@ window.addEventListener("message", (e) => {
   if (
     e.origin !== location.origin ||
     e.source !== frame?.contentWindow ||
-    !["interest", "ready"].includes(e.data?.type)
+    !["interest", "ready", "display_locale_request"].includes(e.data?.type)
   )
     return;
+  if(e.data.type==="display_locale_request") {
+    if(AppLanguage.LOCALES.includes(e.data.locale)) updateSettings({display_locale:e.data.locale});
+    return;
+  }
   const id = byIssuer(e.data.id)?.company_id;
   if (e.data.type === "interest") {
     if (!company(id)) return;

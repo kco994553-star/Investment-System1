@@ -40,6 +40,7 @@
   }
   function settings(value={}) {
     if(value===null || typeof value!=="object" || Array.isArray(value)) throw Error("Invalid AppSettings");
+    if(value.version!==undefined && value.version!==1) throw Error("Unsupported AppSettings version");
     const display_locale=value.display_locale ?? "ko-KR", source_language=value.source_language ?? "all";
     if(!LOCALES.includes(display_locale) || !["all","ko","en"].includes(source_language))
       throw Error("Invalid language preference");

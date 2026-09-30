@@ -9,9 +9,10 @@ const fs=require("node:fs");
   page.on("pageerror",e=>errors.push(e.message));
   const out="implementation/reports/web_mvp";
   fs.mkdirSync(out,{recursive:true});
-  async function check(name,fn) {await fn();checks.push(name);}
+  async function check(name,fn) {await fn();checks.push(name);console.log("PASS browser "+name);}
   async function go(route) {
     await page.goto("http://127.0.0.1:8765/web-mvp-demo/#"+route);
+    await page.reload();
     await page.waitForFunction(()=>typeof window.investmentSearch==="function");
   }
   async function locale(value) {
@@ -135,6 +136,7 @@ const fs=require("node:fs");
     });
     assert.deepEqual(errors,[]);
     await page.screenshot({path:out+"/global-language-search.png",fullPage:true});
+    console.log(JSON.stringify({passed:true,checks,errors}));
     fs.writeFileSync(out+"/global-language-search-browser.json",JSON.stringify({passed:true,checks,errors},null,2));
   } catch(e) {
     await page.screenshot({path:out+"/global-language-search-failure.png",fullPage:true});
