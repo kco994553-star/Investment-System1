@@ -634,3 +634,31 @@ Evidence: implementation/reports/track_c_c6_execution_acceptance.md,
 track_c_c6_execution_evidence.json, track_c_c6_statistics_policy_proposal.md.
 PR #4 must remain Draft/Open/unmerged; NOT_TRACK_C_FREEZE_CANDIDATE.
 Next: TC-D3P-004 decision, then complete C6 before starting C7.
+
+
+## Track C TC-D3P-004 approval / C6 Freeze-policy boundary — 2026-09-30 20:23 KST
+
+Scope: Track C only. TC-D3P-004 option A items 1–8 explicitly APPROVED by the user
+at actual clock 2026-09-30 20:16:28 KST. Earlier NOT APPROVED entries are historical.
+Approved methods remain complete-family PSR/DSR(two views)/CSCV-PBO/joint circular-block
+bootstrap/full-family Reality Check and registered perturbation/controls/drift;
+no evidence interpolation or post-selection family shrink.
+
+The user's additional PASS/FAIL/NOT_RUN and mandatory-diagnostic Freeze rule exposed
+an unresolved acceptance authority: A6/A8 leave significance/skill decisions to C8,
+and neither A nor EVL_SPEC defines the full software Freeze role/status/evidence-scope
+matrix. TC-D3P-005 records concrete common all-MANDATORY protocol semantics plus
+Option S (complete software-fixture acceptance only) or R (actual complete research
+evidence required). PROPOSED / NOT APPROVED / NOT ACTIVE. No advisory waiver or
+software/real-evidence scope is silently applied.
+
+C0–C5 SOFTWARE FROZEN preserved. C6 execution subsection VERIFIED; C6 overall
+IMPLEMENTING / NOT FROZEN. Statistics/perturbation/controls/drift NOT IMPLEMENTED,
+no diagnostic PASS or statistical result claimed. No runtime/test source edit this round.
+Latest prior HEAD 34d9c3d actual CI 36706043418: targeted 137/137, full 533/533.
+C7–C10 NOT STARTED. Holdout UNCONSUMED; Investor-QGV FUTURE_TRACK_C_INPUT.
+Track A frozen artifacts and B/D/E/Web unchanged; authorized upstream repair preserved.
+PR #4 remains Draft/Open/unmerged; NOT_TRACK_C_FREEZE_CANDIDATE.
+Evidence: track_c_c6_statistics_policy_approved.md,
+track_c_c6_freeze_policy_proposal.md, track_c_c6_freeze_policy_audit.json.
+Next: TC-D3P-005 role/status/evidence-scope decision, then approved C6 implementation.
