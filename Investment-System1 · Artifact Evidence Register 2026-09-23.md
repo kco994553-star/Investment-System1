@@ -414,3 +414,35 @@ PR #4 remains Draft/Open/unmerged; NOT_TRACK_C_FREEZE_CANDIDATE.
 Evidence: track_c_c6_statistics_policy_approved.md,
 track_c_c6_freeze_policy_proposal.md, track_c_c6_freeze_policy_audit.json.
 Next: TC-D3P-005 role/status/evidence-scope decision, then approved C6 implementation.
+
+
+## Track C independent statistical kernel verification / approval-record conflict — 2026-09-30T21:13:50.000+09:00
+
+Track C-only overlay; historical/other-track records preserved. C0–C5 remain SOFTWARE FROZEN.
+C6 IMPLEMENTING / NOT FROZEN: approved execution unchanged; TC-D3P-004 A kernels now implemented
+and tested at `a8e187cea6b117602dff986a3ff6a76b8c244a19`. Actual pytest Actions 36712457163 / job109877255098:
+targeted180/180 (C0–C5 103 + execution34 + kernel43), full576/576 PASS, completed21:05:00 KST.
+These are SYNTHETIC SOFTWARE TEST results; not a registered complete C6 family diagnostic PASS,
+REAL_PIT_VALIDATED, skill, profile selection or promotion. Required family diagnostics explicitly
+NOT_RUN in the new kernel evidence; no NOT_RUN counted as PASS. Runner/perturbation/controls/drift pending.
+
+TC-D3P-001..004 approval evidence verified. TC-C6-APPROVAL-RECORD-001: latest task says TC-D3P-005 S
+approved, while actual proposal/register/tree remains PROPOSED / NOT APPROVED / NOT ACTIVE and
+no approval record or PR discussion exists. User section2 explicitly requires matching repository
+evidence and repository precedence on conflict. S not silently activated; no approval time invented.
+Concrete additive reconciliation is prepared; no new policy or Track A D3-C case selected.
+
+C7–C10 NOT STARTED; independent interface preflight only. Holdout UNCONSUMED. Investor-QGV remains
+NOT_IMPLEMENTED / FUTURE_TRACK_C_INPUT; no saved Research Spec v1.0 or accepted 13F pipeline identified.
+Full canonical source diff contains only EVL plus the four pre-existing authorized additive lineage
+repairs; those repairs and all frozen C0–C5 source/tests are unchanged this round. Track A frozen
+artifacts and QGV/B/D/E/Web source unchanged. PR5/PR6 separate, untouched. No fresh normal-merge
+replay claimed; retained C5 103/499/499 evidence preserved with verified remote commit mapping.
+
+Evidence: `implementation/reports/track_c_c6_independent_validation_2026-09-30.md`,
+`track_c_c6_statistical_kernels_evidence.json`, `track_c_c6_statistical_kernels_ci_log.txt`,
+`track_c_c6_approval_record_reconciliation.md`. PR #4 Draft/Open/unmerged.
+Freeze eligibility: NOT_TRACK_C_FREEZE_CANDIDATE; canonical integration NOT READY.
+Engineering Progress: **6/11 Frozen = 54.5%**, partial C6 separately reported.
+Next: reconcile TC-D3P-005 S approval RECORD under the user's explicit repository consistency
+condition; then finish registered mandatory C6 acceptance and verification before C7.
