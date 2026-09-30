@@ -87,7 +87,7 @@ const fs=require("node:fs");
       await go("news");
       assert.equal(await page.locator("#news-list>li").count(),1);
       assert.ok((await page.locator("#news-list").innerText()).includes("English summary"));
-      assert.ok((await page.locator("#news-list pre").innerText()).includes("Original English summary"));
+      assert.ok((await page.locator("#news-list pre").textContent()).includes("Original English summary"));
       await locale("ko-KR");assert.equal(await page.locator("#source-language").inputValue(),"en");
       await go("news");assert.equal(await page.locator("#news-list>li").count(),1);
       assert.ok((await page.locator("#news-list").innerText()).includes("한국어 요약"));
