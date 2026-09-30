@@ -27,8 +27,18 @@ def main():
     vm,page=build_rig_page(s.ledger,NewsIndex(s.lin),IntelIndex(s.ledger),EmptyHoldings(),UserOrganization(IDS),at,impacts=(impact,))
     b['news']=envelope([{'event_id':c.event_id,'headline':c.headline,'issuer_ids':list(c.issuer_ids),'available_at':c.available_at.isoformat()} for c in vm.cards],'DEMO',at.isoformat(),'tests.rig_fixtures.standard')
     b['relationships']=envelope({'frame':'network.html'},'DEMO',at.isoformat(),'Track D fixture / P0–P4')
+    # Explicit TEST identity mapping; never infer issuer identity from label/ticker.
+    mapping = {'issuer_apple':'aapl', 'issuer_nvidia':'nvda', 'issuer_amd':'amd',
+        'issuer_asml':'asml', 'issuer_intel':'intc', 'issuer_microsoft':'msft',
+        'issuer_google':'googl', 'issuer_amazon':'amzn', 'issuer_broadcom':'avgo',
+        'issuer_qualcomm':'qcom', 'issuer_meta':'meta', 'issuer_tsmc':'tsm'}
+    companies = {c['company_id']: c for c in b['companies']}
     for n in vm.network.nodes:
-        b['companies'].append({'company_id':n.issuer_id,'issuer_id':n.issuer_id,'ticker':n.label,'name':n.label,'demo':True})
+        existing = companies.get(mapping.get(n.issuer_id))
+        if existing is not None:
+            existing['issuer_id'] = n.issuer_id
+        else:
+            b['companies'].append({'company_id':n.issuer_id,'issuer_id':n.issuer_id,'ticker':n.label,'name':n.label,'demo':True})
     with tempfile.TemporaryDirectory() as d:
         f=Path(d)/'rig.html';f.write_text(page,encoding='utf-8');build(a.out,b,rig_page=f)
     print(a.out)

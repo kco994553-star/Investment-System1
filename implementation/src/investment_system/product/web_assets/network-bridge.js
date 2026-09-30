@@ -61,3 +61,22 @@ window.addEventListener("message", (e) => {
 parent.postMessage({ type: "ready" }, location.origin);
 
 show("NETWORK");
+
+/* Adapt existing Track D Language/relabel API. Do not change M or graph state. */
+function applyDisplayLocale(locale) {
+  const mode=locale==="en-US"?"EN":"KO";
+  lang=mode;document.documentElement.lang=locale;
+  document.getElementById("lang").value=mode;relabel();
+  const tx=key=>AppLanguage.text(key,locale);
+  document.getElementById("focus-picked").textContent=tx("선택 기업 집중");
+  document.getElementById("edge-filter").setAttribute("aria-label",tx("관계 필터"));
+  const options=document.getElementById("edge-filter").options;
+  ["모든 관계","Fact만","추론만"].forEach((k,i)=>options[i].textContent=tx(k));
+  document.getElementById("zoom-in").setAttribute("aria-label",tx("확대"));
+  document.getElementById("zoom-out").setAttribute("aria-label",tx("축소"));
+}
+try {applyDisplayLocale(AppLanguage.read(localStorage).value.display_locale);} catch(e) {applyDisplayLocale("ko-KR");}
+window.addEventListener("message",e=>{
+  if(e.source===parent && e.origin===location.origin && e.data?.type==="display_locale" && AppLanguage.LOCALES.includes(e.data.locale))
+    applyDisplayLocale(e.data.locale);
+});
