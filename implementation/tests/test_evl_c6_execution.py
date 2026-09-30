@@ -11,7 +11,7 @@ from investment_system.evl.pit import PITObservation
 from investment_system.evl.metrics import ReturnPeriod
 from investment_system.evl.splits import register_split
 from investment_system.evl.execution import (Opportunity, Order, ExecutionRow, ExecutionInput,
-    input_hash, register_execution, run_execution, evaluate_execution)
+    input_hash, register_execution, run_execution, evaluate_execution, execution_report)
 
 
 D=dt(2014,6)
@@ -219,3 +219,36 @@ def test_multi_period_positions_and_cash_carried_until_next_fill():
     assert report['path'][1]['positions']=={'a':2.}
     assert report['path'][1]['cash_1x']==pytest.approx(79.9)
     assert report['path'][1]['gross_pnl']==pytest.approx(2.)
+
+
+def test_persisted_input_lineage_and_report_tamper_rejected(tmp_path):
+    args=setup(tmp_path)
+    result=run(args)
+    trial_id=result['results'][0]['trial_id']
+    report=execution_report(args[0],trial_id)
+    assert report['path'][0]['fills'][0]['opportunity_id']=='s1'
+    registered=json.loads((tmp_path/'execution.json').read_text())['body']
+    assert registered['input_evidence']['prices'][0][2]['stamp']['source_reference']
+    assert registered['input_evidence']['rows'][0]['sample']['observations'][0]['source_id']=='features'
+    path=tmp_path/result['results'][0]['report_file']
+    changed=json.loads(path.read_text());changed['path'][0]['fills'][0]['price']=999.
+    path.write_text(json.dumps(changed))
+    with pytest.raises(ValueError,match='hash'):
+        execution_report(args[0],trial_id)
+
+
+def test_execution_at_evaluation_never_passes_outcomes_to_decision_features():
+    value=data()
+    report=evaluate(value)
+    assert value.prices['buy','s1'].stamp.available_at > value.rows[0].sample.decision_time
+    assert report['path'][0]['fills'][0]['price']==10.
+    assert all(obs.available_at <= value.rows[0].sample.decision_time
+               for obs in value.rows[0].sample.observations)
+    # No fitting/predicting callback exists in this post-decision evaluator.
+
+
+def test_unsupported_delay_and_cost_multipliers_are_rejected():
+    with pytest.raises(ValueError): evaluate(delay=2)
+    with pytest.raises(ValueError): evaluate(multiplier=4)
+    with pytest.raises(ValueError): evaluate(multiplier=True)
+    with pytest.raises(ValueError): evaluate(delay=True)

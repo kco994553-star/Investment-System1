@@ -12,6 +12,7 @@ import json
 import math
 
 from ..contracts.lineage import StampedValue, require_aware
+from ..contracts.models import _to_json
 from .contracts import TrialRecord, TrialStatus
 from .metrics import ReturnPeriod, evaluate_metrics
 from .splits import split_samples
@@ -78,9 +79,9 @@ class ExecutionInput:
     synthetic: bool
 
 
-def input_hash(data):
+def input_payload(data):
     # Tuple mapping keys cannot be JSON keys; preserve identities explicitly.
-    return digest({'rows': [asdict(r) for r in data.rows],
+    return _to_json({'rows': [asdict(r) for r in data.rows],
         'opportunities': [asdict(o) for o in data.opportunities],
         'prices': [[*k, asdict(v)] for k,v in sorted(data.prices.items())],
         'costs': [[*k, asdict(v)] for k,v in sorted(data.costs.items())],
@@ -91,6 +92,10 @@ def input_hash(data):
         'cost_model_ref': data.cost_model_ref,
         'costs_exclude_price_embedded_components': data.costs_exclude_price_embedded_components,
         'synthetic': data.synthetic})
+
+
+def input_hash(data):
+    return digest(input_payload(data))
 
 
 def validate_input(split, data, partition):
@@ -142,7 +147,7 @@ def validate_input(split, data, partition):
 
 def execute_path(data, delay, evaluation_time):
     """Return actual full-fill research path with cash/position reconciliation."""
-    if delay not in (0,1):
+    if type(delay) is not int or delay not in (0,1):
         raise ValueError('only approved delay 0/1')
     cash, positions = data.initial_cash, dict(data.initial_positions)
     marks = data.opening_marks
@@ -203,7 +208,7 @@ def evaluate_execution(data, *, split, partition, delay, multiplier, evaluation_
                        periods_per_year, tail_fraction):
     """TC-D3P-003 actual evaluator -> unchanged C3 four-view metrics."""
     validate_input(split,data,partition)
-    if multiplier not in (1,2,3):
+    if type(multiplier) is not int or multiplier not in (1,2,3):
         raise ValueError('only approved cost 1x/2x/3x')
     path = execute_path(data,delay,evaluation_time)
     periods, wealth = [],1.
@@ -246,6 +251,7 @@ def register_execution(ledger, split, data, plan):
         raise ValueError('execution ledger requires net_total_return')
     body = {'plan':plan,'policy':POLICY,'experiment_hash':digest(spec),
             'split_hash':digest(split.payload()),'input_hash':input_hash(data),
+            'input_evidence':input_payload(data),
             'scenarios':[[d,m] for d in (0,1) for m in (1,2,3)]}
     with (ledger.directory/'experiment.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX)
@@ -263,6 +269,7 @@ def run_execution(ledger, split, data, *, evaluator_id, recorded_at):
     body, plan = stored['body'],stored['body']['plan']
     if (stored['sha256'] != digest(body) or body['experiment_hash'] != digest(spec)
             or body['split_hash'] != digest(split.payload()) or body['input_hash'] != input_hash(data)
+            or digest(body['input_evidence']) != body['input_hash']
             or evaluator_id != plan['evaluator_id']
             or recorded_at < max(datetime.fromisoformat(plan['registered_at']),
                                  datetime.fromisoformat(plan['evaluation_time']))):
@@ -303,3 +310,22 @@ def run_execution(ledger, split, data, *, evaluator_id, recorded_at):
         return {'status':'COMPLETED' if all(r['status']=='SUCCESS' for r in results) else 'NOT_ACCEPTED',
                 'results':results,'official':False,'robustness_pass':False,
                 'remaining':'C6 statistics/perturbation/controls acceptance required'}
+
+
+def execution_report(ledger, trial_id):
+    """Resolve complete hash-bound evidence with current invalidation state."""
+    trial = ledger.supporting_trial(trial_id)
+    name = 'execution-report-'+sha256(trial_id.encode()).hexdigest()+'.json'
+    report = json.loads((ledger.directory/name).read_text())
+    registered = json.loads((ledger.directory/'execution.json').read_text())
+    body = registered['body']
+    if (registered['sha256'] != digest(body)
+            or body['experiment_hash'] != digest(ledger.registration())
+            or digest(body['input_evidence']) != body['input_hash']
+            or report['input_hash'] != body['input_hash']
+            or report['code_hash'] != ledger.registration()['code_hash']
+            or report['policy'] != POLICY or report['status'] != 'SUCCESS'
+            or report['parameters'] != trial['parameters']
+            or trial['reason'] != 'report_sha256='+digest(report)):
+        raise ValueError('execution evidence hash/lineage mismatch')
+    return deepcopy(report)
