@@ -44,6 +44,9 @@ def boundary_audit():
     # No new source outside EVL except the preserved prior C4 lineage repair.
     unexpected_new=[p for p in current if p not in start and
         not (p.startswith('implementation/src/investment_system/evl/')
+             or p in {'implementation/tests/evl_c7_fixture.py',
+                       'implementation/tests/test_evl_c7_selection.py',
+                       'implementation/tests/test_evl_c7_protocol.py'}
              or p.startswith('implementation/tests/evl_c6')
              or p.startswith('implementation/tests/test_evl_c6')
              or p.startswith('implementation/reports/track_c_')

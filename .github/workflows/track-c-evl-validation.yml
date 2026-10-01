@@ -22,6 +22,8 @@ jobs:
           python-version: "3.11"
       - name: Install pytest
         run: python -m pip install pytest
+      - name: Targeted C7 tests
+        run: PYTHONPATH=src python -m pytest -q tests/test_evl_c7*.py
       - name: Targeted C6 regression
         run: PYTHONPATH=src python -m pytest -q tests/test_evl_c6*.py
       - name: Previous phase C0-C5 regression
@@ -30,8 +32,15 @@ jobs:
         run: PYTHONPATH=src python -m pytest -q
       - name: PIT lineage Holdout cross-track audit and complete C6 evidence
         run: PYTHONPATH=src:. python tools/track_c_c6_acceptance.py
+      - name: C7 complete acceptance and C0-C6 preservation audit
+        run: PYTHONPATH=src:. python tools/track_c_c7_acceptance.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: track-c-c6-evidence-${{ github.sha }}
           path: implementation/reports/track_c_c6_generated/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: track-c-c7-evidence-${{ github.sha }}
+          path: implementation/reports/track_c_c7_generated/
