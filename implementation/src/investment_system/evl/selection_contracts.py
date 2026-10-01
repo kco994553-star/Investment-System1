@@ -36,7 +36,8 @@ def validate_plan(plan):
             or p['partition']!='oos' or p['graph_policy']!='G1' or p['drift_policy']!='D2'
             or p['numeric_representation']!='CANONICAL_DECIMAL_FRACTION'
             or type(p['seed']) is not int or not p['source_checkpoint']
-            or p['authority_refs']!=AUTHORITY_REFS):
+            or p['authority_refs']!=AUTHORITY_REFS
+            or p['attempt_unit']!='ONE_COMPLETE_LANDSCAPE_ALL_PROFILE_SELECTION_AND_DESCRIPTIVE_ASSESSMENT'):
         raise ValueError('unapproved C7 contract/scope')
     if p['scope']==SCOPES[0]:
         if p['configuration_scope']!=FIXTURE_SCOPE:

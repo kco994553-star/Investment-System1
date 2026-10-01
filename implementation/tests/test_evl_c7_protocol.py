@@ -2,6 +2,8 @@
 from copy import deepcopy
 from datetime import timedelta
 import json
+import shutil
+from investment_system.evl.experiments import ExperimentLedger
 from concurrent.futures import ThreadPoolExecutor
 import pytest
 from tests.evl_c7_fixture import prepare, T
@@ -12,9 +14,23 @@ from investment_system.evl.landscape import checkpoint
 from investment_system.evl.walkforward import digest, _write_json
 from investment_system.evl.contracts import TrialRecord, TrialStatus
 
+@pytest.fixture(scope='session')
+def complete_template(tmp_path_factory):
+    root=tmp_path_factory.mktemp('c7-template')
+    return root,prepare(root)
+
 @pytest.fixture
-def prepared(tmp_path):
-    return prepare(tmp_path)
+def prepared(tmp_path,complete_template):
+    root,(ledger,cohorts,plan)=complete_template
+    shutil.copytree(root,tmp_path,dirs_exist_ok=True)
+    def clone(original):
+        return ExperimentLedger(tmp_path/original.directory.relative_to(root))
+    copied={}
+    for key,(diagnostic,split,source,bundles,drift) in cohorts.items():
+        copied_bundles={i:{**deepcopy({k:v for k,v in b.items() if k!='c4_ledger'}),
+            'c4_ledger':clone(b['c4_ledger'])} for i,b in bundles.items()}
+        copied[key]=(clone(diagnostic),split,clone(source),copied_bundles,deepcopy(drift))
+    return clone(ledger),copied,deepcopy(plan)
 
 def execute(args):
     ledger,cohorts,plan=args
@@ -89,7 +105,7 @@ def test_missing_or_invalid_registration_is_blocked(prepared,mutation):
 def test_no_result_selected_plateau_tolerance(prepared):
     assert execute(prepared)['status']=='PASS'
     plan=prepared[2];plan['profiles']['Aggressive']['plateau_tolerances']['net_mdd']=100
-    with pytest.raises(FileExistsError): register_selection(*prepared)
+    with pytest.raises(ValueError): register_selection(*prepared)
 
 def test_dedicated_registration_cannot_overwrite(prepared):
     register_selection(*prepared)
@@ -186,3 +202,18 @@ def test_serialized_concurrent_attempts_charge_exactly_one(prepared):
 def test_upstream_files_preserved_across_success(prepared):
     before=checkpoint(prepared[1]);assert execute(prepared)['status']=='PASS'
     assert checkpoint(prepared[1])==before
+
+@pytest.mark.parametrize('field,value',[('software_freeze_eligible',False),
+    ('real_pit_validated',True),('official',True),('holdout_state','CONSUMED')])
+def test_acceptance_scope_flags_cannot_be_reinterpreted(prepared,field,value):
+    assert execute(prepared)['status']=='PASS'
+    path=prepared[0].directory/'selection-acceptance.json'
+    data=json.loads(path.read_text());data[field]=value;overwrite(path,data)
+    with pytest.raises(ValueError): resolve_selection(prepared[0],prepared[1])
+
+def test_first_access_timestamp_tamper_is_detected(prepared):
+    assert execute(prepared)['status']=='PASS'
+    path=prepared[0].directory/'first-selection-access.json'
+    data=json.loads(path.read_text());data['access_at']=(T+timedelta(days=1)).isoformat()
+    overwrite(path,data)
+    with pytest.raises(ValueError): resolve_selection(prepared[0],prepared[1])

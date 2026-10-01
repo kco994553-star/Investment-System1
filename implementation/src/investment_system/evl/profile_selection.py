@@ -133,9 +133,9 @@ def run_selection(ledger, cohorts, *, recorded_at):
         trial_id='selection-complete-landscape'
         _write_json(ledger.directory/'pending.json',{'trial_id':trial_id,'parameters':{}})
         # Durable checkpoint before any controlled target-value access.
-        _write_json(ledger.directory/'first-selection-access.json',
-            {'registration_hash':stored['sha256'],'trial_id':trial_id,
-             'access_at':recorded_at.isoformat(),'checkpoint_hash':digest(body['checkpoint'])})
+        event={'registration_hash':stored['sha256'],'trial_id':trial_id,
+             'access_at':recorded_at.isoformat(),'checkpoint_hash':digest(body['checkpoint'])}
+        _write_json(ledger.directory/'first-selection-access.json',event)
         status,reason,output='PASS',None,None
         stages=[]
         try:
@@ -146,7 +146,8 @@ def run_selection(ledger, cohorts, *, recorded_at):
         except Exception as exc:
             status,reason='FAIL',type(exc).__name__+': '+str(exc)
         report={'status':status,'reason':reason,'output':output,
-            'completed_stages':stages,'failed_after':stages[-1]['stage'] if stages else 'PRE_LANDSCAPE',
+            'completed_stages':stages,'first_access_hash':digest(event),'policy':POLICY,
+            'failed_after':(stages[-1]['stage'] if stages else 'PRE_LANDSCAPE') if status!='PASS' else None,
             'registration_hash':stored['sha256'],'checkpoint_hash':digest(body['checkpoint']),
             'code_hash':spec['code_hash'],'source_checkpoint':plan['source_checkpoint'],
             'scope':plan['scope'],'configuration_scope':plan['configuration_scope'],
@@ -177,6 +178,13 @@ def resolve_selection(ledger, cohorts):
             or event['registration_hash']!=stored['sha256']
             or event['checkpoint_hash']!=digest(body['checkpoint'])
             or event['trial_id']!=trial['trial_id']
+            or event['access_at']!=trial['recorded_at']
+            or report['first_access_hash']!=digest(event)
+            or report['scope']!=body['plan']['scope']
+            or report['configuration_scope']!=body['plan']['configuration_scope']
+            or report['policy']!=POLICY or report['official'] is not False
+            or report['holdout_state']!='UNCONSUMED' or report['tax_mode']!='EXCLUDED'
+            or report['research_decision']!='NOT_ASSESSED_PENDING_C8'
             or datetime.fromisoformat(event['access_at'])<datetime.fromisoformat(body['plan']['registered_at'])
             or result['report_hash']!=digest(report)
             or trial['reason']!='report_sha256='+digest(report)
@@ -184,6 +192,11 @@ def resolve_selection(ledger, cohorts):
             or report['checkpoint_hash']!=digest(body['checkpoint'])
             or report['code_hash']!=ledger.registration()['code_hash']):
         raise ValueError('selection terminal/access/ledger lineage mismatch')
+    expected_result={'status':'PASS','scope':body['plan']['scope'],'report_hash':digest(report),
+        'trial_id':trial['trial_id'],'registration_hash':stored['sha256'],
+        'software_freeze_eligible':body['plan']['scope']=='SYNTHETIC_SOFTWARE_VALIDATION',
+        'real_pit_validated':False,'holdout_state':'UNCONSUMED','official':False}
+    if result!=expected_result: raise ValueError('acceptance scope/lifecycle tamper')
     landscape=resolve_landscape(cohorts,body['plan'],body['checkpoint'])
     expected=compute_selection(landscape,body['plan'])
     if report['output']!=expected or report['completed_stages']!=expected['stages']:

@@ -109,5 +109,7 @@ def metric_value(report, metric):
         value=value[part]
     if value is None:
         raise MissingStatisticalEvidence('legitimately undefined metric: '+metric['metric_id'])
+    if isinstance(value,bool) or not isinstance(value,(int,float)):
+        raise ValueError('canonical C3 report metric must be numeric')
     number(value)  # Invalid/nonfinite required inputs FAIL.
     return value
