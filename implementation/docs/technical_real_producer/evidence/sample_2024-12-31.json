@@ -1,0 +1,102 @@
+{
+  "as_of_comparison_aapl": [
+    {
+      "as_of": "2024-06-30T23:59:59+00:00",
+      "future_excluded": 565,
+      "last_observed_at": "2024-06-28T13:30:00+00:00",
+      "semantic_hash": "aa212f186f8afb947c07e67f14eaa6bb2d117404b93c8224d829f838fc5c3954",
+      "technical_outputs": "NOT_AVAILABLE"
+    },
+    {
+      "as_of": "2024-12-31T23:59:59+00:00",
+      "future_excluded": 437,
+      "last_observed_at": "2024-12-31T14:30:00+00:00",
+      "semantic_hash": "76ad2b62e719c6f1a9870816ecc6cfee1bab09ec52f67da7fac0528608af291e",
+      "technical_outputs": "NOT_AVAILABLE"
+    }
+  ],
+  "chart_range": "5y",
+  "coverage": "COMPLETE",
+  "decision_time": "2024-12-31T23:59:59+00:00",
+  "failures": [],
+  "input_fail": 0,
+  "input_pass": 3,
+  "kind": "TECHNICAL_REAL_INPUT_SAMPLE",
+  "lookback_bars": 60,
+  "lookback_id": "caller-window-60-not-a-model-parameter",
+  "n_companies": 3,
+  "not_top500": true,
+  "offline_replay": "PASS (second produce_batch on the local store, no second fetch; semantic hashes unchanged)",
+  "ohlc_values_committed": false,
+  "partial": false,
+  "records": [
+    {
+      "as_of": "2024-12-31T23:59:59+00:00",
+      "available_at": "2024-12-31T14:30:00+00:00",
+      "company_id": "aapl",
+      "first_observed_at": "2024-10-07T13:30:00+00:00",
+      "future_excluded": 437,
+      "incomplete_eligible": 0,
+      "last_observed_at": "2024-12-31T14:30:00+00:00",
+      "model_applied": false,
+      "path": "REAL_INPUT",
+      "reason_code": "TECHNICAL_NO_REAL_MODEL",
+      "research_state": "POLICY_BLOCKED",
+      "semantic_hash": "76ad2b62e719c6f1a9870816ecc6cfee1bab09ec52f67da7fac0528608af291e",
+      "series_sha256": "013f74e7833b0443aae7ec95f0739e5acccbe8fb5add8c1f7cafb23fa08b82b2",
+      "source_hashes": [
+        "50f1f6d7f29d9b3ddb5608a56a13109923a8f9b36a8fd2ca9014ee923997ca70"
+      ],
+      "synthetic": false,
+      "technical_outputs": "NOT_AVAILABLE",
+      "ticker": "AAPL",
+      "validation": "PASS"
+    },
+    {
+      "as_of": "2024-12-31T23:59:59+00:00",
+      "available_at": "2024-12-31T14:30:00+00:00",
+      "company_id": "nvda",
+      "first_observed_at": "2024-10-07T13:30:00+00:00",
+      "future_excluded": 437,
+      "incomplete_eligible": 0,
+      "last_observed_at": "2024-12-31T14:30:00+00:00",
+      "model_applied": false,
+      "path": "REAL_INPUT",
+      "reason_code": "TECHNICAL_NO_REAL_MODEL",
+      "research_state": "POLICY_BLOCKED",
+      "semantic_hash": "6f1346b1b2aa8ddb0c4a8575f98794d0821143d26b58f2304ef7ed35dc941233",
+      "series_sha256": "bf1c7f519a809584feda22716df5c260ed49957a1a0c2562d604e8b62085a79a",
+      "source_hashes": [
+        "e77ae1b15b8f53fae451da62bc828f3ca4c88097b4c1c14db1e07b062c994dda"
+      ],
+      "synthetic": false,
+      "technical_outputs": "NOT_AVAILABLE",
+      "ticker": "NVDA",
+      "validation": "PASS"
+    },
+    {
+      "as_of": "2024-12-31T23:59:59+00:00",
+      "available_at": "2024-12-31T14:30:00+00:00",
+      "company_id": "msft",
+      "first_observed_at": "2024-10-07T13:30:00+00:00",
+      "future_excluded": 437,
+      "incomplete_eligible": 0,
+      "last_observed_at": "2024-12-31T14:30:00+00:00",
+      "model_applied": false,
+      "path": "REAL_INPUT",
+      "reason_code": "TECHNICAL_NO_REAL_MODEL",
+      "research_state": "POLICY_BLOCKED",
+      "semantic_hash": "3683290b8bc79ce89f50a0641d9f2f1cef058e90d9cd22956080574d176ff863",
+      "series_sha256": "6d602508d3d78cd37caed493b4dd906d238e68d13dc6388d8fca0d6e5a682e3b",
+      "source_hashes": [
+        "cef33357ea67b6490dd573c74ded8e3969264012c9329ef44fabae2a14b18e21"
+      ],
+      "synthetic": false,
+      "technical_outputs": "NOT_AVAILABLE",
+      "ticker": "MSFT",
+      "validation": "PASS"
+    }
+  ],
+  "universe_claim": false,
+  "yahoo_payloads_committed": false
+}
