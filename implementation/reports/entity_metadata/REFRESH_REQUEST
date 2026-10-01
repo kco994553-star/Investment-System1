@@ -1,0 +1,2 @@
+Editing this file on the metadata branch re-runs .github/workflows/entity-metadata-ingest.yml.
+request: initial Top-500 search metadata ingestion (SEC submissions, SEC company_tickers, Wikidata P5531, KIS overseas masters)
