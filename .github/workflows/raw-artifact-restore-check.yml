@@ -1,0 +1,56 @@
+# Read-only restore check of the Track A raw store archive (P03 evidence).
+# Downloads the existing Actions artifact, verifies its sha256, extracts it and checks every blob
+# against the committed data/raw/manifests. Uploads nothing, commits nothing, deletes nothing.
+# Downloading an artifact does NOT extend its retention.
+name: raw-artifact-restore-check
+on:
+  push:
+    branches: [feature/producer-infrastructure-v1]
+    paths: ['.github/workflows/raw-artifact-restore-check.yml', 'implementation/tools/raw_artifact_restore_check.py']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: raw-artifact-restore-check
+  cancel-in-progress: false
+jobs:
+  restore-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      ARTIFACT_ID: '10927496280'
+      EXPECTED_SHA: '712e43bcc1fcd137e5e99ccdda2440850eda56015e02037293d8eac8db399f94'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Artifact metadata (expiry as reported by GitHub)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/$ARTIFACT_ID" \
+            | python -c "import json,sys;d=json.load(sys.stdin);print(json.dumps({k:d.get(k) for k in ('id','name','size_in_bytes','expired','created_at','expires_at','digest')},indent=1))"
+          df -h "$RUNNER_TEMP" | tail -1
+      - name: Download archive (timed)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          start=$(date +%s)
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/$ARTIFACT_ID/zip" -o "$RUNNER_TEMP/a.zip"
+          echo "download_seconds=$(( $(date +%s) - start ))"; ls -l "$RUNNER_TEMP/a.zip"
+      - name: Extract (timed)
+        run: |
+          start=$(date +%s)
+          mkdir -p "$RUNNER_TEMP/restored" && unzip -q "$RUNNER_TEMP/a.zip" -d "$RUNNER_TEMP/restored"
+          echo "extract_seconds=$(( $(date +%s) - start ))"; du -sb "$RUNNER_TEMP/restored"; ls "$RUNNER_TEMP/restored"
+      - name: Verify against committed manifests
+        working-directory: implementation
+        run: |
+          python tools/raw_artifact_restore_check.py --archive "$RUNNER_TEMP/a.zip" --expected-sha "$EXPECTED_SHA" \
+            --restored "$RUNNER_TEMP/restored" --out "$RUNNER_TEMP/restore_check.json"
