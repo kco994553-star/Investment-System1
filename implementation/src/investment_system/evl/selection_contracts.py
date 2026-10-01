@@ -22,12 +22,22 @@ UNITS={'total_return':'DECIMAL_RETURN','cagr':'DECIMAL_RETURN_PER_YEAR',
        'sharpe':'DIMENSIONLESS','sortino':'DIMENSIONLESS','calmar':'DIMENSIONLESS',
        'longest_drawdown_periods':'PERIODS'}
 
+TOP_METRICS={'downside_capture':'DIMENSIONLESS','tail_mean_return':'DECIMAL_RETURN',
+    'turnover_sum':'TURNOVER','mean_period_turnover':'TURNOVER_PER_PERIOD',
+    'net_minus_benchmark_total_return':'DECIMAL_RETURN'}
+
 def metric_registration(metric_id, view, name, direction):
-    if view not in VIEWS or name not in VIEW_METRICS:
+    if view is None and name in TOP_METRICS:
+        path=[name];units=TOP_METRICS[name];formula=METRIC_VERSION+':'+name
+    elif view in ('benchmark','risk_free') and name in VIEW_METRICS:
+        path=[view,name];units=UNITS[name];formula=METRIC_VERSION+':'+view+':'+name
+    elif view in VIEWS and name in VIEW_METRICS:
+        path=['views',view,name];units=UNITS[name];formula=METRIC_VERSION+':'+view+':'+name
+    else:
         raise ValueError('unsupported canonical metric')
-    return {'metric_id':metric_id,'path':['views',view,name],
-        'formula_id':METRIC_VERSION+':'+view+':'+name,'version':METRIC_VERSION,
-        'units':UNITS[name],'direction':direction,'provenance':'C6_BASELINE_C3_METRICS'}
+    return {'metric_id':metric_id,'path':path,
+        'formula_id':formula,'version':METRIC_VERSION,
+        'units':units,'direction':direction,'provenance':'C6_BASELINE_C3_METRICS'}
 
 def validate_plan(plan):
     p=deepcopy(plan)
@@ -72,9 +82,14 @@ def validate_plan(plan):
             raise ValueError('unique registered profile metrics required')
         for m in metrics:
             path=m['path']
-            if len(path)!=3 or path[0]!='views':
+            if len(path)==3 and path[0]=='views':
+                expected=metric_registration(m['metric_id'],path[1],path[2],m['direction'])
+            elif len(path)==2 and path[0] in ('benchmark','risk_free'):
+                expected=metric_registration(m['metric_id'],path[0],path[1],m['direction'])
+            elif len(path)==1:
+                expected=metric_registration(m['metric_id'],None,path[0],m['direction'])
+            else:
                 raise ValueError('unsupported metric path')
-            expected=metric_registration(m['metric_id'],path[1],path[2],m['direction'])
             if m!=expected or m['direction'] not in ('min','max'):
                 raise ValueError('canonical formula/version/units/direction required')
         if set(profile['plateau_tolerances'])!=set(ids):

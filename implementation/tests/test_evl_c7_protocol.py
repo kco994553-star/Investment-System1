@@ -255,3 +255,30 @@ def test_before_registration_run_has_no_value_access_or_trial(prepared):
     with pytest.raises(FileNotFoundError): run_selection(prepared[0],prepared[1],recorded_at=T)
     assert not prepared[0].trials.records()
     assert not (prepared[0].directory/'first-selection-access.json').exists()
+
+@pytest.mark.parametrize('state',['NOT_RUN','FAIL'])
+def test_required_metric_failure_preserves_stage_and_trial_status(prepared,monkeypatch,state):
+    from investment_system.evl.statistical_kernels import MissingStatisticalEvidence
+    def invalid_metric(*args):
+        if state=='NOT_RUN': raise MissingStatisticalEvidence('legitimately undefined support')
+        raise ValueError('observed nonfinite required metric')
+    monkeypatch.setattr('investment_system.evl.profile_selection.metric_value',invalid_metric)
+    result=execute(prepared)
+    assert result['status']==state
+    report=json.loads((prepared[0].directory/'selection-report.json').read_text())
+    assert report['completed_stages'][0]['stage']=='LANDSCAPE'
+    assert report['failed_after']=='LANDSCAPE'
+    assert prepared[0].trials.records()[0]['trial']['status']==('REJECTED' if state=='NOT_RUN' else 'FAILED')
+
+def test_missing_required_cohort_is_not_run_no_surviving_subset(prepared):
+    from tests.evl_c6_fixture import experiment
+    ledger,cohorts,plan=prepared
+    incomplete=dict(cohorts);incomplete.pop(plan['dimensions'][0])
+    replacement=experiment(ledger.directory.parent/'missing-cohort',next(iter(incomplete.values()))[1],
+        'c7-missing-cohort',digest(checkpoint(incomplete)),{},('selection_complete',),1)
+    register_selection(replacement,incomplete,plan)
+    result=run_selection(replacement,incomplete,recorded_at=T)
+    assert result['status']=='NOT_RUN'
+    assert not result['software_freeze_eligible']
+    assert len(replacement.trials.records())==1
+    assert 'missing required cohort' in json.loads((replacement.directory/'selection-report.json').read_text())['reason']

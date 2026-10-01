@@ -125,3 +125,17 @@ def test_nonfinite_invalid_required_metric_is_fail(bad):
     with pytest.raises(ValueError):
         metric_value({'views':{'NET_OF_TRADING_COST_PRE_TAX':{'cagr':bad}}},
             metric_registration('cagr','NET_OF_TRADING_COST_PRE_TAX','cagr','max'))
+
+@pytest.mark.parametrize('metric,units',[('downside_capture','DIMENSIONLESS'),
+    ('tail_mean_return','DECIMAL_RETURN'),('turnover_sum','TURNOVER'),
+    ('mean_period_turnover','TURNOVER_PER_PERIOD'),
+    ('net_minus_benchmark_total_return','DECIMAL_RETURN')])
+def test_existing_c3_top_level_metrics_are_registered_without_new_derivation(metric,units):
+    m=metric_registration(metric,None,metric,'min')
+    assert m['path']==[metric] and m['units']==units
+    assert metric_value({metric:.1},m)==.1
+
+@pytest.mark.parametrize('view',['benchmark','risk_free'])
+def test_existing_c3_control_metric_paths(view):
+    m=metric_registration('control_cagr',view,'cagr','max')
+    assert metric_value({view:{'cagr':.02}},m)==.02
