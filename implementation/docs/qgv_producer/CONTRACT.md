@@ -60,6 +60,8 @@ QGV-specific persistence record. It is **not** a Producer Snapshot. It wraps the
 | Captured snapshot ≠ engine ranking values / PIT price | FAIL `CAPTURE_MISMATCH` |
 | Missing price chart only | PASS with `PRICE_INPUT_ABSENT` (the engine's canonical MISSING behaviour; nothing filled) |
 
+`PASS` means the engine output was persisted validly. Score completeness is the engine's own `coverage_state` and Q/G/V nullness, preserved verbatim; a PASS record can be PARTIAL/BLOCKED with null scores.
+
 No interpolation, forward-fill, current-value substitution, peer substitution or synthetic fundamentals. Replay is offline: `tools/qgv_producer.py` refuses sockets, so an absent companyfacts blob stays MISSING and is never fetched live.
 
 ## 4. Batch manifest — QGV_PRODUCER_BATCH_MANIFEST v1 (`batch.py`)
