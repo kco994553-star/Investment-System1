@@ -40,6 +40,7 @@ GE = ROOT / "reports" / "gate_evidence"
 FROZEN_PIPELINE = GE / "official_pipeline_2024-06-30_2024-12-31.json"
 FREEZE_MANIFEST = GE / "track_a_freeze_readiness_2026-09-27.json"
 NETWORK_ATTEMPTS: list[str] = []
+EWR_ABS_TOL = 1e-15
 
 
 def block_network() -> None:
@@ -106,7 +107,13 @@ def compare_frozen(summary: dict, res: dict, ref: dict) -> dict:
     checks = {k: {"frozen": s[k], "producer": summary[k], "equal": s[k] == summary[k]}
               for k in ("universe_id", "n_selected", "n_investable", "n_missing", "n_name_errors", "n_linked",
                         "equal_weight_realized")}
-    checks["equal_weight_realized"]["abs_diff"] = abs(s["equal_weight_realized"] - summary["equal_weight_realized"])
+    # Post-as_of outcome aggregate (not part of any QGV snapshot): a float sum, so equality is accepted within
+    # EWR_ABS_TOL and the exact difference is always recorded. All counts/identities above stay exact.
+    ewr = checks["equal_weight_realized"]
+    ewr["abs_diff"] = abs(s["equal_weight_realized"] - summary["equal_weight_realized"])
+    ewr["exact_equal"] = ewr["equal"]
+    ewr["tolerance_abs"] = EWR_ABS_TOL
+    ewr["equal"] = ewr["abs_diff"] <= EWR_ABS_TOL
     if ref["walk_forward_selected"] is not None:
         checks["selected_list"] = {"equal": ref["walk_forward_selected"] == res["selected"],
                                    "frozen_sha256": canonical_sha256(ref["walk_forward_selected"]),
