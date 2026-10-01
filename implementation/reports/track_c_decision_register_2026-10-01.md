@@ -117,3 +117,14 @@ validation; provisional policy/coverage/restatement limitations preserved. No im
 or modified other-track sources. Investor-QGV FUTURE_TRACK_C_INPUT.
 Next remains additive G1/D2 policy approval, then C7 implementation/test/Actions/Freeze;
 C8 implementation remains closed until its separate package approval and C7 Freeze.
+
+
+## Additive C7 G1/D2 approval — 2026-10-01T20:25:32.000+09:00
+
+TC-D3P-006B-C7-G1-D2: **APPROVED / ACTIVE (C7 only)** by explicit user instruction. Actual processing clock: 2026-10-01 11:25:32 UTC; KST: 2026-10-01T20:25:32.000+09:00. This supplements 006B; original A proposal and B approval remain intact.
+
+G1 fixes the graph universe to the complete constraint-eligible Landscape, before Pareto intersection. Dominated bridge members remain connectivity evidence only. All stable components (at least two vertices), exact members, Pareto/non-Pareto memberships, edges, registered adjacency, and metric ranges/diameters are retained without largest-component ranking.
+
+D2 compares absolute normalized coordinate delta magnitudes from unchanged registered C6 scales. Every coordinate/cohort/time dimension remains independent; exact vector dominance alone removes a candidate. Tradeoffs advance. No scalar aggregation, weighting, threshold, signed-direction preference, or replacement scale is authorized. Invalid/missing scale or provenance fails closed.
+
+Scoped evidence: `implementation/reports/track_c_c7_g1_d2_approval_2026-10-01.json`. C7 graph/drift blockers are resolved by this additive approval. Research limits/tolerances are still unspecified; synthetic fixture-only configuration must carry SYNTHETIC_SOFTWARE_VALIDATION_ONLY. Packages A/B/C remain PROPOSED / NOT APPROVED / NOT ACTIVE. Holdout stays UNCONSUMED. C7 is not yet SOFTWARE FROZEN.
