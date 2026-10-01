@@ -21,7 +21,7 @@
   "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
   "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
  },
- "head": "feature/macro-real-producer-v1@38e3dff30b700f2b7f3d2ac9ea890a1008abf61e",
+ "code_sha_tested": "38e3dff30b700f2b7f3d2ac9ea890a1008abf61e",
  "pr": {
   "base": "feature/producer-infrastructure-v1@6fe9eee5668388fa4a200904520a0b5a46c90b6f",
   "draft": true,

@@ -58,9 +58,9 @@ Official promotion stays blocked until Track C (and any other required validatio
 | Check | Result |
 |---|---|
 | PR | [#12](https://github.com/kco994553-star/Investment-System1/pull/12) `draft=true`, `state=open`, `merged=false`, `mergeable_state=clean` |
-| Head | `feature/macro-real-producer-v1` @ `38e3dff30b700f2b7f3d2ac9ea890a1008abf61e` |
+| Head | `feature/macro-real-producer-v1`. Code under test `38e3dff`. This lock is docs-only on top of that commit |
 | Base | `feature/producer-infrastructure-v1` @ `6fe9eee5668388fa4a200904520a0b5a46c90b6f` |
-| Merge-base | `6fe9eee` (this branch is 1 commit ahead, 0 behind) |
+| Merge-base | `6fe9eee` (code commit is 1 ahead of the base; the following commit is documentation only) |
 | Diff | 6 files, all additions. No edits under `qgv/`, `technical/`, `portfolio`, `leaderboard`, `rig/`, `prompt_library/`, `validation/`, `universe/`, `evl/`, `providers/`, `producers/`, `contracts/`, or `macro/engine.py` |
 | Not incorporated | Track C moved to `88f66c5`. `feature/technical-real-producer-v1` exists at `a2e0790`. Neither is merged here |
 | CI | Combined status `pending`, `total_count=0`, `check_runs=0`. Not a pass. `c21-real-data` is `workflow_dispatch` only. `raw-artifact-restore-check` pushes only on `feature/producer-infrastructure-v1` and its own paths. `web-mvp-validation` does not match this diff |
