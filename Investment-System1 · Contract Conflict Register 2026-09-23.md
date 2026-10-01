@@ -718,3 +718,50 @@ Existing execution and statistical kernels are reused. C7–C10 NOT STARTED unti
 Holdout UNCONSUMED; Investor-QGV FUTURE_TRACK_C_INPUT. Track A/B/D/E/Web source untouched.
 PR #4 Draft/Open/unmerged; canonical automatic merge forbidden. Continue autonomously
 inside approved scope after remote approval record verification.
+
+
+## Track C C6 SOFTWARE FROZEN / C7 D3-P boundary — 2026-10-01 09:57:08 UTC
+
+Timestamp: 2026-10-01 09:57:08 UTC. AI: Codex. Module/Area: Track C EVL only.
+Started From: fresh GitHub canonical/merge-base b8e39a2196a6d7794a04a0cd5393c68329e126ca,
+Track C88da6f30560c4a2aee281a4cc45760eb3e0f4e80 (35ahead/0behind), PR#4 Draft/Open.
+Previous chat logs were not used. Canonical/feature documents, full tree, code/tests,
+workflow, latest Actions and PR discussion were read directly.
+TC-D3P-005 S actually APPROVED/ACTIVE in repository; earlier approval-record conflict resolved.
+
+Completed: registered full-family C6 runner, all mandatory controls/perturbation/drift,
+ledger budget/terminal reports, C4 frozen-prediction/source lineage and current invalidation
+resolution. Every registered grid identity is preserved, including unattempted/failed
+coverage; incomplete family blocks acceptance. Existing C0–C5/execution/kernels unchanged.
+Files Changed: EVL robustness.py, additive C6 fixture/tests/audit tool, Track C workflow/
+reports and Track C-only SSoT overlays. Prior four-file C4 repair preserved; no new upstream
+or Track A/B/D/E/Web source/artifact edit. EVL_SPEC_v0.1 unchanged; TAX_MODE=EXCLUDED.
+
+Tests: source166dcba64b20aaead70981e84c0a4d87390744fb; Actions36845447156/job110314362158 SUCCESS.
+Actual C6 targeted130/130 -> C0–C5 previous103/103 -> full629/629 ->
+PIT/lineage/Holdout/cross-track audit -> complete acceptance evidence PASS.
+Rolling/Expanding x Primary/Gap-stress: each17/17 MANDATORY diagnostic groups actually PASS.
+Archive artifact11153252067 and its digest/full logs/hashes retained in
+implementation/reports/track_c_c6_acceptance_2026-10-01.json/.md and CI log.
+Two prior audit-script failures retained; path/Unicode parsing fixed without weakening checks.
+GitHub tools have no local shell; actual fresh git fetch/pytest performed in Actions.
+No fresh normal-merge replay claimed; preserved prior C5 integration499.
+
+Decisions: TC-D3P-001..005 approved; C6 **SOFTWARE FROZEN** under TC-D3P-005 S,
+limited to SYNTHETIC_SOFTWARE_VALIDATION. C0–C6 Frozen7/11=63.6% phase-count proxy.
+TC-D3P-006 A **PROPOSED / NOT APPROVED / NOT ACTIVE**: exact C7 Pareto/cohort aggregation,
+plateau/complexity/drift/medoid/distinctness policy; reviewed gap is result-impacting.
+See implementation/reports/track_c_c7_selection_policy_proposal.md and current Track C
+D3-P/D3-C register. No new C7 policy applied or selected candidate produced.
+
+Provisional/Open Issues: REAL_PIT_RESEARCH_VALIDATION NOT_RUN (no complete real family).
+C7 PREFLIGHT COMPLETE / BLOCKED_D3P_006, selection implementation/acceptance not started;
+C8/C9/C10 NOT STARTED / DEPENDENCY BLOCKED. No Track C implementation baseline yet.
+No significance, investment skill, alpha, Official profile, promotion or real Forward claim.
+Holdout **UNCONSUMED**. Investor-QGV **NOT_IMPLEMENTED / FUTURE_TRACK_C_INPUT**.
+PR#4 Draft/Open/unmerged; canonical automatic merge forbidden; separate Integration Audit needed.
+
+Next Action: user decision on TC-D3P-006 A items1–9, then C7 targeted/prior/full/audits/
+evidence/push/Actions/Freeze -> C8 -> C9 -> C10 -> Track C implementation baseline.
+Do Not Repeat: C0–C6 implementation, past approval reconciliation, upstream redesign,
+Track A/B/D/E/Web edits, Holdout peek, fabricated investor evidence, force push/history rewrite.
