@@ -2,7 +2,7 @@
 from copy import deepcopy
 from hashlib import sha256
 import json
-from .robustness import (source_inventory, resolve_robustness)
+from .robustness import (source_inventory, resolve_robustness, acceptance as robustness_acceptance)
 from .statistical_kernels import MissingStatisticalEvidence
 from .walkforward import digest
 from .execution import input_payload
@@ -54,7 +54,21 @@ def resolve_landscape(cohorts, plan, committed):
         if not saved_path.exists():
             raise MissingStatisticalEvidence('C6 mandatory evidence missing')
         saved=json.loads(saved_path.read_text())
+        expected_summary={**robustness_acceptance(saved.get('results',{}),c6plan['scope']),
+            'results':saved.get('results',{}),'registration_hash':digest(registered),
+            'source_hash':registered['source_hash']}
+        if saved!=expected_summary:
+            raise ValueError('C6 acceptance summary integrity mismatch')
         if saved.get('status')!='PASS':
+            for entry in saved.get('results',{}).values():
+                if entry.get('report_file'):
+                    report=json.loads((ledger.directory/entry['report_file']).read_text())
+                    matches=[r['trial'] for r in c6rows if r['trial']['trial_id']==entry['trial_id']]
+                    if (len(matches)!=1 or entry['report_hash']!=digest(report)
+                            or not matches[0]['reason'].endswith('report_sha256='+digest(report))
+                            or report['status']!=entry['status']
+                            or report['registration_hash']!=digest(registered)):
+                        raise ValueError('C6 non-PASS terminal integrity mismatch')
             statuses=[e.get('status') for e in saved.get('results',{}).values()]
             if 'FAIL' in statuses: raise ValueError('C6 mandatory FAIL')
             raise MissingStatisticalEvidence('C6 mandatory NOT_RUN/incomplete')

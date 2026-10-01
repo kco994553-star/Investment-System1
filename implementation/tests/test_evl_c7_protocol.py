@@ -217,3 +217,41 @@ def test_first_access_timestamp_tamper_is_detected(prepared):
     data=json.loads(path.read_text());data['access_at']=(T+timedelta(days=1)).isoformat()
     overwrite(path,data)
     with pytest.raises(ValueError): resolve_selection(prepared[0],prepared[1])
+
+def test_descriptive_distinctness_covers_cartesian_ties_and_nonzero_pairs(prepared):
+    from investment_system.evl.profile_selection import compute_selection
+    assert execute(prepared)['status']=='PASS'
+    original=resolve_selection(prepared[0],prepared[1])
+    landscape=deepcopy(original['output']['stages'][0]['output'])
+    plan=deepcopy(prepared[2])
+    # Explicit pure-kernel synthetic fixture; never replaces qualified persisted inputs.
+    landscape['roster']={'P':{'x':0},'B':{'x':1},'Q':{'x':2}}
+    landscape['domain']={'x':[0,1,2]};landscape['baseline']={'x':1}
+    landscape['drift_vectors']={'P':[1,0],'B':[1,1],'Q':[0,1]}
+    landscape['drift_dimensions']=['synthetic-coordinate-a','synthetic-coordinate-b']
+    for profile in plan['profiles'].values():
+        profile['constraints']=[]
+        profile['plateau_tolerances']={'net_cagr':'.2','net_mdd':'.3'}
+    for cohort in landscape['cohorts'].values():
+        cohort['metrics']={i:{'views':{'NET_OF_TRADING_COST_PRE_TAX':{'cagr':v[0],'mdd':v[1]}}}
+            for i,v in {'P':(.3,.3),'B':(.1,.4),'Q':(.1,.1)}.items()}
+    result=compute_selection(landscape,plan)
+    assert all(v['representative_tie_set']==['P','Q'] for v in result['profiles'].values())
+    pairs=result['distinctness']['pairs']
+    assert len(pairs)==3*4*len(plan['dimensions'])*2
+    assert any(p['delta_right_minus_left']!='0' for p in pairs)
+    assert result['distinctness']['statistical_economic_decision']=='NOT_ASSESSED_PENDING_C8'
+    assert all('B' not in v['representative_tie_set'] for v in result['profiles'].values())
+    # Persisted qualified source acceptance did not change.
+    assert resolve_selection(prepared[0],prepared[1])==original
+
+def test_prior_access_receipt_blocks_backdated_registration(prepared):
+    ledger=prepared[0]
+    _write_json(ledger.directory/'first-selection-access.json',{'access_at':(T-timedelta(days=1)).isoformat()})
+    with pytest.raises(ValueError): register_selection(*prepared)
+    assert not (ledger.directory/'selection.json').exists()
+
+def test_before_registration_run_has_no_value_access_or_trial(prepared):
+    with pytest.raises(FileNotFoundError): run_selection(prepared[0],prepared[1],recorded_at=T)
+    assert not prepared[0].trials.records()
+    assert not (prepared[0].directory/'first-selection-access.json').exists()

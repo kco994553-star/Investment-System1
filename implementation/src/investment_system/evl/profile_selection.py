@@ -93,7 +93,12 @@ def compute_selection(landscape, plan, stages=None):
             'candidates':[{'candidate_id':i,'parameters':parameters[i],
                 'scope':plan['scope'],'tax_mode':'EXCLUDED','official':False,
                 'research_decision':'NOT_ASSESSED_PENDING_C8',
-                'selection_lineage_hash':digest(stages[-1])} for i in reps]}
+                'selection_lineage_hash':digest(stages[-1]),
+                'landscape_lineage_hash':digest(landscape),
+                'evaluator_id':landscape['cohorts'][dimensions[0]]['inventory']['evaluator_id'],
+                'registered_metrics':metrics,'objective_dimensions':labels,
+                'oos_values':values[i], 'source_checkpoint':plan['source_checkpoint'],
+                'dataset_vintages':{d:landscape['cohorts'][d]['inventory']['spec']['dataset_vintage'] for d in dimensions}} for i in reps]}
         values_by_profile[name]=(metrics,values)
     stage('PROFILE_CANDIDATE',profiles)
     # Every exact representative pair and registered union metric/cohort; descriptive only.
