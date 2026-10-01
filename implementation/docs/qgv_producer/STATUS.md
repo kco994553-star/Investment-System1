@@ -1,4 +1,12 @@
-# QGV Real Producer v1 — Status / Handoff (FREEZE / INTEGRATION-READY)
+# QGV Real Producer v1 — Status / Handoff
+
+**State: IMPLEMENTATION BASELINE / INTEGRATION WAIT**
+- Draft PR [#10](https://github.com/kco994553-star/Investment-System1/pull/10): base canonical `b8e39a2`, independent of PR #9. Do not merge automatically.
+- Integration dependencies:
+  - P01 approval (research Web state);
+  - Producer Infrastructure PR #9 merge order (canonical ← #5 ← #6 ← #9);
+  - Track C C7–C10 for any Official status.
+- Compat was re-checked against PR #9 HEAD `6fe9eee` (no `src` change after the CI pin `5fa7ce0`): PASS.
 
 Recorded 2026-10-01 (UTC). This file is enough to take over from GitHub; no chat history is needed.
 Read with `AUDIT.md` (pre-implementation audit), `CONTRACT.md` (formats, rules, integration requirements) and `evidence/validation.json`.
