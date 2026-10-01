@@ -1,0 +1,57 @@
+{
+  "contract": "RIG_NEWS_INGEST",
+  "schema_version": 1,
+  "recorded_at": "2026-10-01",
+  "branch": "feature/rig-news-real-ingestion-v1",
+  "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "runner": "mini_pytest shim, not pytest",
+  "targeted": {
+    "path": "implementation/tests/test_rig_news_ingest.py",
+    "passed": 14,
+    "failed": 0
+  },
+  "full_regression": {
+    "command": "python implementation/tools/mini_pytest.py",
+    "passed": 410,
+    "failed": 0,
+    "note": "396 existing canonical tests plus 14 new ingestion tests"
+  },
+  "judgments": {
+    "RIG_INGESTION_CONTRACT_READY": "YES",
+    "ENTITY_RESOLUTION_READY": "YES",
+    "DEDUP_READY": "YES",
+    "REAL_NEWS_PROVIDER_READY": "NO",
+    "RIG_REAL_PRODUCER_READY": "NO",
+    "CONSENSUS_PRODUCER_READY": "NO"
+  },
+  "policy_blocked": [
+    "SEMANTIC_SIMILARITY_THRESHOLD",
+    "NEWS_SENTIMENT",
+    "NEWS_IMPACT_SCORE"
+  ],
+  "read_only_dependencies": {
+    "entity_metadata_pr": 7,
+    "entity_metadata_sha": "a013f1c1758642f90a65fe11df69fc234c143a48",
+    "producer_infrastructure_pr": 9,
+    "producer_infrastructure_sha": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+    "copied": false,
+    "merged": false
+  },
+  "cases": [
+    "published_at <= available_at <= fetched_at",
+    "future news rejection",
+    "provenance and raw hash separated from body",
+    "exact duplicate versus source-asserted repeat",
+    "same source item different payload conflict",
+    "similar titles not grouped",
+    "entity resolution, unknown, ambiguous",
+    "PR #7 registry read-only (META, Facebook Inc, FB, 페이스북)",
+    "source_language preserved, display_locale ignored",
+    "deterministic normalization",
+    "malformed item rejection",
+    "RIG SourceRef/Evidence plus explicit-only NewsEvent",
+    "PRODUCER_SNAPSHOT validate_snapshot and verify_inputs at the audited producer SHA",
+    "LIVE without expires_at refused",
+    "frozen rig module hashes unchanged"
+  ]
+}
