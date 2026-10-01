@@ -1,0 +1,123 @@
+# QGV Real Producer v1. Offline tests, then a real-data replay on a GitHub runner.
+# The raw blobs exist only as the Track A Frozen artifact (c21 run 36305927245; the cloud container cannot download it).
+# The replay is offline: the producer refuses sockets, and every used blob is hashed against the committed STORE_INDEX.json.
+# Producer Infrastructure v1 is a READ-ONLY dependency, checked out at a pinned commit into ./infra (never merged here).
+# Only small evidence (exports, manifests, run reports) is committed back. Track A evidence and data/raw are untouched.
+name: qgv-producer-real
+on:
+  push:
+    branches: [ccr-db5d5960-qen9yi]
+    paths:
+      - implementation/src/investment_system/qgv_producer/**
+      - implementation/tools/qgv_producer.py
+      - implementation/tools/qgv_producer_infra_compat.py
+      - implementation/tests/test_qgv_producer*.py
+      - .github/workflows/qgv-producer-real.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: qgv-producer-real-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  RAW_STORE_RUN_ID: "36305927245"
+  RAW_STORE_ARTIFACT: c21-raw-store-36305927245
+  RAW_STORE_DIGEST: "sha256:712e43bcc1fcd137e5e99ccdda2440850eda56015e02037293d8eac8db399f94"
+  INFRA_COMMIT: 5fa7ce0647b6af91d767c54ecaaa3e31d1ab63e4
+  SAMPLE_IDS: aapl,nvda,msft,brk_b,jpm
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: implementation
+    steps:
+      - uses: actions/checkout@v4
+      - name: Producer Infrastructure v1 (read-only, pinned)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.INFRA_COMMIT }}
+          path: infra
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pytest
+      - name: Full regression (mini_pytest shim)
+        run: python tools/mini_pytest.py | tail -1
+      - name: Full regression (pytest) with Producer Infrastructure compatibility enabled
+        env:
+          QGV_PRODUCER_INFRA_SRC: ${{ github.workspace }}/infra/implementation/src
+        run: python -m pytest -q -p no:cacheprovider | tail -3
+
+  real-producer:
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: implementation
+    steps:
+      - uses: actions/checkout@v4
+      - name: Producer Infrastructure v1 (read-only, pinned)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.INFRA_COMMIT }}
+          path: infra
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download the Track A Frozen raw store artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.RAW_STORE_ARTIFACT }}
+          run-id: ${{ env.RAW_STORE_RUN_ID }}
+          github-token: ${{ github.token }}
+          path: /tmp/seed
+      - name: Locate store
+        run: |
+          STORE=$(dirname "$(find /tmp/seed -type d -path '*data/raw/blobs' | head -1)")
+          test -d "$STORE/blobs" || { echo "::error::no raw store in artifact"; exit 1; }
+          echo "STORE=$STORE" >> "$GITHUB_ENV"
+          echo "blobs: $(ls "$STORE/blobs" | wc -l)"
+          echo "RAW_SOURCE={\"kind\":\"GITHUB_ACTIONS_ARTIFACT\",\"run_id\":${RAW_STORE_RUN_ID},\"artifact\":\"${RAW_STORE_ARTIFACT}\",\"artifact_digest\":\"${RAW_STORE_DIGEST}\",\"blob_verification\":\"per-input sha256 vs committed data/raw/STORE_INDEX.json and store manifest\"}" >> "$GITHUB_ENV"
+      - name: Stage 1 — deterministic SAMPLE end-to-end (2024-12-31; full cross-section, 5 persisted)
+        run: |
+          python tools/qgv_producer.py fingerprint --store "$STORE" --as-of 2024-12-31 --horizon 2025-03-31 --out /tmp/fp_2024-12-31.json
+          python tools/qgv_producer.py produce --store "$STORE" --as-of 2024-12-31 --horizon 2025-03-31 \
+            --out reports/qgv_producer/sample --sample "$SAMPLE_IDS" --plain-fingerprint /tmp/fp_2024-12-31.json \
+            --raw-source "$RAW_SOURCE" --code-commit "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID"
+      - name: Stage 2 — FULL Universe batches for every Frozen as_of
+        run: |
+          for pair in 2024-06-30:2024-09-30 2024-09-30:2024-12-31 2024-12-31:2025-03-31; do
+            d=${pair%%:*}; h=${pair##*:}
+            [ -f /tmp/fp_$d.json ] || python tools/qgv_producer.py fingerprint --store "$STORE" --as-of $d --horizon $h --out /tmp/fp_$d.json
+            python tools/qgv_producer.py produce --store "$STORE" --as-of $d --horizon $h --out reports/qgv_producer/full \
+              --plain-fingerprint /tmp/fp_$d.json --raw-source "$RAW_SOURCE" --code-commit "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID"
+          done
+          mkdir -p reports/qgv_producer/fingerprints && cp /tmp/fp_*.json reports/qgv_producer/fingerprints/
+      - name: Stage 3 — determinism (independent re-run of 2024-12-31 must give identical semantic hashes)
+        run: |
+          python tools/qgv_producer.py produce --store "$STORE" --as-of 2024-12-31 --horizon 2025-03-31 --out /tmp/repeat \
+            --raw-source "$RAW_SOURCE" --code-commit "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID-repeat"
+          python tools/qgv_producer.py compare --a reports/qgv_producer/full --b /tmp/repeat --as-of 2024-12-31 \
+            --report reports/qgv_producer/determinism_2024-12-31.json
+      - name: Stage 4 — Producer Infrastructure v1 compatibility (Infrastructure's own validators)
+        run: |
+          python tools/qgv_producer_infra_compat.py --infra-src "$GITHUB_WORKSPACE/infra/implementation/src" \
+            --exports reports/qgv_producer/full --dates 2024-06-30,2024-09-30,2024-12-31 \
+            --report reports/qgv_producer/infra_compat_full.json
+          python tools/qgv_producer_infra_compat.py --infra-src "$GITHUB_WORKSPACE/infra/implementation/src" \
+            --exports reports/qgv_producer/sample --dates 2024-12-31 --report reports/qgv_producer/infra_compat_sample.json
+      - name: Cross-track guard (Track A evidence / raw store index unchanged by this run)
+        run: git diff --exit-code -- reports/gate_evidence data/raw
+      - name: Commit evidence back (no blobs)
+        if: always()
+        run: |
+          git config user.name "qgv-producer-bot"
+          git config user.email "qgv-producer-bot@users.noreply.github.com"
+          git add reports/qgv_producer
+          git diff --cached --quiet && { echo "nothing to commit"; exit 0; }
+          git commit -m "evidence(qgv-producer): real-data run ${GITHUB_RUN_ID} on ${GITHUB_SHA::7} [skip ci]"
+          for i in 1 2 3; do git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break; sleep $((i*5)); done

@@ -1,0 +1,10 @@
+{
+ "kind": "QGV_PRODUCER_DETERMINISM",
+ "as_of": "2024-12-31",
+ "manifest_semantic_equal": true,
+ "record_hashes_equal": true,
+ "operational_ids_differ": true,
+ "n_records": 500,
+ "manifest_semantic_sha256": "082640970976f321578c64261ac5d03da2416cab659c02068a2c1d8a364bf3ba",
+ "status": "PASS"
+}
