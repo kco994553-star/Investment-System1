@@ -35,7 +35,7 @@ AAPL at `2024-06-30` hashes differently (`aa212f18…` vs `76ad2b62…`) and its
 
 Covered: PIT pass, future input fail, missing provenance fail, missing lookback fail, null volume not filled, synthetic→LIVE fail, semantic hash stability, different as_of, company identity, demo output exact match, exporter does not call the engine, partial batch, offline store replay, no urllib in `technical/`, engine fingerprint, QGV/Macro/Portfolio/integration source hashes.
 
-Workflow: `.github/workflows/technical-real-producer.yml` (offline full mini_pytest). Actions result is whatever that workflow reports after push; do not treat a local 412 as a GitHub Actions run until the check exists.
+Workflow: `.github/workflows/technical-real-producer.yml`. GitHub Actions `offline` PASS on `8941c2c`: push [36855304696](https://github.com/kco994553-star/Investment-System1/actions/runs/36855304696) (33s) and pull_request [36855325300](https://github.com/kco994553-star/Investment-System1/actions/runs/36855325300) (35s).
 
 ## Producer Infrastructure
 
