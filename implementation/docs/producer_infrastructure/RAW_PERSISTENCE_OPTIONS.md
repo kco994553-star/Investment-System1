@@ -25,6 +25,9 @@ Per-artifact manifest fields are produced by `producers.raw_persistence.artifact
 
 At dataset level: `storage_locations` (kind, ref, archive sha, expiry, completeness, verification), the retention audit, and `dataset_id`.
 
+> Detailed 10-criterion comparison, license partition, restore-check result (PASS 6808/6808) and the recommended
+> architecture: `P03_RAW_STORAGE_COMPARISON.md`.
+
 ## Options (the user/owner chooses; none selected)
 | Option | Fit for 6.1 GB / 451 MB zip | Expiry | Cost / account | Concerns |
 |---|---|---|---|---|

@@ -53,6 +53,8 @@ Recorded: 2026-10-01 (UTC). Use this file to take over from GitHub alone; no cha
 - **P01**: Web state for research/provisional outputs (QGV PROVISIONAL_RESEARCH). Until decided, the QGV section stays NOT_AVAILABLE.
 - **P02 (D3-P)**: Universe between Official dates (carry-forward / quarterly / daily reconstruction / interpolation / staleness limit).
 - **P03**: Durable raw storage location, the public-redistribution question, and an optional refresh stopgap. **Time-bound: 2026-12-26.**
+  The detailed comparison is in `P03_RAW_STORAGE_COMPARISON.md`. The read-only restore check (run 36850391139) PASSED 6808/6808.
+  Recommended: private GitHub repo Release (primary), a user-held copy, and optionally R2/B2. Never place third-party (Yahoo/Tiingo/Stooq) payloads in public locations.
 - Macro Web shape mapping and exposure producer (owner decision). The adapter raises `IncompatibleShapeError` today.
 - Technical real model (owner); Track B P1+ holdings; news/consensus provider; hosting provider.
 - Track C C7–C10 / Official profiles / Investor-QGV (FUTURE_TRACK_C_INPUT). No Track C result is assumed and Holdout is never read.
