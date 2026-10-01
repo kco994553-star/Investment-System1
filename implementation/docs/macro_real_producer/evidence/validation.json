@@ -1,13 +1,49 @@
 {
  "base": "feature/producer-infrastructure-v1@6fe9eee5668388fa4a200904520a0b5a46c90b6f",
  "canonical_fetched_not_merged": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+ "ci": {
+  "check_runs": 0,
+  "interpretation": "CI_NOT_TRIGGERED_NOT_A_PASS",
+  "state": "pending",
+  "total_count": 0,
+  "workflows": {
+   "c21-real-data": "workflow_dispatch only",
+   "raw-artifact-restore-check": "push on feature/producer-infrastructure-v1 and own paths only",
+   "web-mvp-validation": "does not match this diff"
+  }
+ },
  "contract": "MACRO_REAL_PRODUCER_V1",
+ "disposition": "MACRO REAL PRODUCER IMPLEMENTATION BASELINE / INTEGRATION WAIT",
  "fingerprint": {
   "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
   "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
   "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
   "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
   "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+ },
+ "head": "feature/macro-real-producer-v1@38e3dff30b700f2b7f3d2ac9ea890a1008abf61e",
+ "pr": {
+  "base": "feature/producer-infrastructure-v1@6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+  "draft": true,
+  "mergeable_state": "clean",
+  "merged": false,
+  "number": 12,
+  "state": "open"
+ },
+ "reconfirm": {
+  "ahead_behind_vs_base": "1 0",
+  "cross_track_code_diff": false,
+  "diff_files": 6,
+  "fetched": "2026-10-01",
+  "fingerprint_unchanged": true,
+  "full_suite": "442 passed, 0 failed in 23.51s",
+  "merge_base": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+  "not_merged": [
+   "origin/feature/track-c-evl@88f66c57c810b5dda135b79552b38484d89d61a7",
+   "origin/feature/technical-real-producer-v1@a2e0790dd7fb267ebaa7d052acae59220ecf631e"
+  ],
+  "runner": "mini_pytest shim, not pytest",
+  "targeted": "11 passed, 0 failed in 0.22s"
  },
  "runner": "mini_pytest shim, not pytest",
  "sample": {
@@ -44,6 +80,28 @@
   "full_suite": "442 passed, 0 failed in 22.10s",
   "test_macro_real_producer.py": "11 passed, 0 failed"
  },
+ "unresolved_scope": [
+  {
+   "item": "v0.1.4 scenario/transmission/stress",
+   "label": "DESIGNED_NOT_IMPLEMENTED"
+  },
+  {
+   "item": "company/industry exposure coefficients",
+   "label": "POLICY_BLOCKED"
+  },
+  {
+   "item": "Web indicators mapping environment.indicators -> data.indicators",
+   "label": "POLICY_BLOCKED"
+  },
+  {
+   "item": "CURRENT_REVISED_NOT_ALFRED as a decision input",
+   "label": "POLICY_BLOCKED"
+  }
+ ],
+ "verdict_grounds": {
+  "OFFICIAL_MACRO_PRODUCER_READY": "NO. Track C has not validated this producer. Series map provisional. Exposure and Web indicator mapping unresolved. No forward validation. CI check_runs=0 is not a pass.",
+  "REAL_MACRO_RESEARCH_PRODUCER_READY": "ALFRED_AS_OF vintages with provenance and available_at<=decision_time reach the unchanged v0.1.1 engine and a deterministic research MacroSnapshot. Later revisions do not rewrite the earlier decision. Synthetic and CURRENT_REVISED_NOT_ALFRED are rejected. Not Web-LIVE. real_data_verified=false."
+ },
  "verdicts": {
   "MACRO_EXPORTER_READY": "YES_FAIL_CLOSED_NOT_AVAILABLE_NO_NUMERIC_WEB",
   "MACRO_EXPOSURE_READY": "NO",
@@ -51,6 +109,6 @@
   "MACRO_SNAPSHOT_READY": "YES_RESEARCH_SNAPSHOT_ONLY",
   "OFFICIAL_MACRO_PRODUCER_READY": "NO",
   "PRODUCER_INFRA_COMPATIBLE": "YES",
-  "REAL_MACRO_RESEARCH_PRODUCER_READY": "YES_NOT_OFFICIAL"
+  "REAL_MACRO_RESEARCH_PRODUCER_READY": "YES"
  }
 }

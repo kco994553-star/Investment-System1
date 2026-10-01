@@ -59,6 +59,27 @@ Publication is `POLICY_BLOCKED`. The producer snapshot is `not_available(...)` w
 
 The default registry is unchanged (`MACRO_SHAPE_INCOMPATIBLE`). An operator may pass this snapshot to `tools/export_web_bundle.py --snapshot`. The assembler then validates it with the existing contract. No competing snapshot schema is defined.
 
+## Unresolved scope — preserved, not implemented
+
+This baseline does not close the following. Do not add them on `feature/macro-real-producer-v1`.
+
+| Item | Disposition |
+|---|---|
+| v0.1.4 scenario engine, transmission engine, stress engine | DESIGNED_NOT_IMPLEMENTED. `candidate_not_applied` stays `v0.1.4-CANDIDATE`. No scenario, path, shock, or probability object is created |
+| Company / industry exposure coefficients | POLICY_BLOCKED. `company_industry_exposure` raises and returns no number. Web `data.exposures` is not filled |
+| Web `indicators` mapping | POLICY_BLOCKED. `environment.indicators` is not renamed or copied to Web `data.indicators`. `adapters.macro_section` still raises `IncompatibleShapeError` |
+| `CURRENT_REVISED_NOT_ALFRED` | Use is rejected (`RevisedHistoryError`). The public CSV revised history must not be applied to a decision, including as a fallback |
+
+No new indicator, regime rule, weight, threshold, exposure coefficient, or Web field mapping is in scope for this baseline.
+
+## Locked verdicts
+
+| Verdict | Value | Why it is fixed |
+|---|---|---|
+| REAL_MACRO_RESEARCH_PRODUCER_READY | **YES** | Supplied `ALFRED_AS_OF` vintages pass provenance and `available_at <= decision_time`, later revisions do not rewrite the earlier decision, synthetic and revised-current inputs are rejected, and the unchanged v0.1.1 engine emits a deterministic research `MacroSnapshot`. This is not Web-LIVE and not REAL-DATA VERIFIED |
+| OFFICIAL_MACRO_PRODUCER_READY | **NO** | Track C has not validated this producer. The series map is provisional. Exposure and Web indicator mapping stay unresolved. No forward validation. GitHub CI did not run on this head |
+
 ## Out of scope
 
-Live FRED authentication, REAL-DATA VERIFIED promotion, Official readiness, Track C `evaluate_stamped`, exposure math, and any edit to QGV, Technical, Portfolio, Leaderboard, Universe, RIG, or Prompt Library.
+Live FRED authentication, REAL-DATA VERIFIED promotion, Official readiness, Track C `evaluate_stamped`, exposure math, Web indicator reshape, and any edit to QGV, Technical, Portfolio, Leaderboard, Universe, RIG, or Prompt Library.
+

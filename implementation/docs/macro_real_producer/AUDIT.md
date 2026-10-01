@@ -22,3 +22,15 @@ Labels: `IMPLEMENTED` (code on the base does this), `DESIGNED_NOT_IMPLEMENTED` (
 | QGV / Technical / Portfolio / Leaderboard calculations | Untouched files. Fingerprint below | IMPLEMENTED and unchanged |
 
 No new indicator, regime rule, weight, threshold, exposure coefficient, or scoring formula is introduced. The research path calls `collect_indicators_alfred` and `MacroEngine.evaluate` as they already exist.
+
+## Unresolved scope frozen with this baseline
+
+These stay unresolved. This implementation does not define them.
+
+| Unresolved item | Why it stays open |
+|---|---|
+| v0.1.4 scenario / transmission / stress | Candidate record only. Engine keeps `candidate_not_applied` and does not build those objects |
+| Company / industry exposure | Design describes exposure ≠ sensitivity and forbids freezing an unvalidated impact formula. No coefficient was approved |
+| Web `indicators` mapping | PR #9 refuses to rename `environment.indicators` to `data.indicators`. That refusal is unchanged |
+| `CURRENT_REVISED_NOT_ALFRED` | CSV tooling exists and is labeled revised history, not ALFRED. This producer rejects that vintage kind and does not call the CSV fallback |
+

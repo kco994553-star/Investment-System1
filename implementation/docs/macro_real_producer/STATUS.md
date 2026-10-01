@@ -52,3 +52,50 @@ No live FRED request was made. `real_data_verified` remains false.
 | OFFICIAL_MACRO_PRODUCER_READY | **NO**. Track C has not validated this producer. Series map is provisional. Exposure is unapproved. Forward validation has not run |
 
 Official promotion stays blocked until Track C (and any other required validation) is actually run against this boundary.
+
+## Remote reconfirm (2026-10-01, after fetch)
+
+| Check | Result |
+|---|---|
+| PR | [#12](https://github.com/kco994553-star/Investment-System1/pull/12) `draft=true`, `state=open`, `merged=false`, `mergeable_state=clean` |
+| Head | `feature/macro-real-producer-v1` @ `38e3dff30b700f2b7f3d2ac9ea890a1008abf61e` |
+| Base | `feature/producer-infrastructure-v1` @ `6fe9eee5668388fa4a200904520a0b5a46c90b6f` |
+| Merge-base | `6fe9eee` (this branch is 1 commit ahead, 0 behind) |
+| Diff | 6 files, all additions. No edits under `qgv/`, `technical/`, `portfolio`, `leaderboard`, `rig/`, `prompt_library/`, `validation/`, `universe/`, `evl/`, `providers/`, `producers/`, `contracts/`, or `macro/engine.py` |
+| Not incorporated | Track C moved to `88f66c5`. `feature/technical-real-producer-v1` exists at `a2e0790`. Neither is merged here |
+| CI | Combined status `pending`, `total_count=0`, `check_runs=0`. Not a pass. `c21-real-data` is `workflow_dispatch` only. `raw-artifact-restore-check` pushes only on `feature/producer-infrastructure-v1` and its own paths. `web-mvp-validation` does not match this diff |
+
+Re-run on this tree, same shim: targeted 11 passed / 0 failed; full suite 442 passed / 0 failed in 23.51s. Fingerprints above are unchanged.
+
+## Unresolved scope (do not implement on this baseline)
+
+| Item | Label |
+|---|---|
+| v0.1.4 scenario / transmission / stress | DESIGNED_NOT_IMPLEMENTED |
+| Company / industry exposure coefficients | POLICY_BLOCKED |
+| Web `indicators` mapping (`environment.indicators` → `data.indicators`) | POLICY_BLOCKED |
+| `CURRENT_REVISED_NOT_ALFRED` as a decision input | POLICY_BLOCKED (`RevisedHistoryError`) |
+
+## Locked verdict grounds
+
+REAL_MACRO_RESEARCH_PRODUCER_READY = **YES**
+
+- Input is an `ALFRED_AS_OF` vintage with `artifact_id`, `source`, and a canonical `sha256`.
+- A vintage with `available_at` after `decision_time` is not used. Replaying the earlier decision after a later revision still selects the earlier vintage.
+- Synthetic input and `CURRENT_REVISED_NOT_ALFRED` raise before the engine runs.
+- Missing growth or inflation does not fall through to the engine's 0.0 default.
+- Output is a deterministic v0.1.1 `MacroSnapshot` (`mutated_qgv=false`, `real_data_verified=false`). The Web section is `NOT_AVAILABLE`.
+
+OFFICIAL_MACRO_PRODUCER_READY = **NO**
+
+- Track C `evaluate_stamped` is not on this branch and has not validated this producer.
+- Series mapping remains provisional. Exposure coefficients do not exist. Web indicators are not mapped.
+- No live FRED fetch, no forward validation, no REAL-DATA VERIFIED flag.
+- GitHub reported no check runs for `38e3dff`. Absence of CI is not a green result.
+
+## Disposition
+
+MACRO REAL PRODUCER IMPLEMENTATION BASELINE / INTEGRATION WAIT
+
+Defined scope is closed. Do not merge PR #12. Integration waits for the owner. This branch does not take Track C, Technical REAL Producer, Web, or Entity Metadata work.
+
