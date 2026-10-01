@@ -27,3 +27,24 @@ No C7 policy, numerical research limit, C8 significance/economic gate, Official 
 Holdout consumption or canonical integration approval is supplied by decisions001–005.
 Next decision is TC-D3P-006 A only. The reviewable proposal states exact mathematical
 selection rules and requires explicit pre-result numeric configuration, without defaults.
+
+
+## TC-D3P-006B explicit approval — 2026-10-01T19:13:51.000+09:00
+
+Scope: Track C only. Actual KST approval-processing clock above; source HEAD9cf4d7d68dd6bc9eda5db78571acf6e74811144d.
+User did NOT approve A1–9 unchanged. B is **APPROVED / ACTIVE**; original A remains
+unapproved historical proposal blob e4aa773a3b2d00dc530453875d3a14a796779a01, unchanged.
+Authority: implementation/reports/track_c_c7_selection_policy_approved.md.
+B: complete immutable Landscape and pre-OOS-selection configuration; invalid/nonfinite
+integrity inputs FAIL versus legitimate undefined support NOT_RUN; independent metric x
+cohort/fold exact Pareto; all eligible plateaus (min2 definition), full range/edge evidence,
+no largest-size priority; existing C5 complexity; vector drift Pareto with trade-off ties;
+restricted medoid with TIED_EQUIVALENT_REPRESENTATIVES and hash only for serialization;
+raw OOS pair differences with statistical/economic distinctness left to C8.
+Explicit synthetic-only algorithm fixture values allowed; no actual research threshold default.
+
+C0–C6 SOFTWARE FROZEN preserved. C7 IMPLEMENTING / NOT FROZEN until complete actual
+acceptance/regression/audits/evidence/Actions. C8–C10 NOT STARTED.
+Holdout UNCONSUMED; Investor-QGV FUTURE_TRACK_C_INPUT; TAX_MODE=EXCLUDED.
+No Track A/B/D/E/Web edits, C6 rewrite, automatic merge, force push or history rewrite.
+PR#4 Draft/Open. Next: implement/verify B exactly; C7 Freeze then C8 policy audit.
