@@ -7,6 +7,7 @@ Do not merge automatically. Do not add a new ranking feature on this branch.
 | Item | Value |
 |---|---|
 | Branch | `feature/leaderboard-real-producer-v1` |
+| Implementation commit | `11e18d8be60c20480b6ab3d2241d752e96b0cd47` (evidence `operational.code_commit` points here; the evidence commit itself is the following one) |
 | Base | canonical `claude/investment-system-top500-validation-alrugm@b8e39a2196a6d7794a04a0cd5393c68329e126ca` |
 | Why this base | The leaderboard engine and Official snapshots live on canonical. PR #9 and PR #10 are read-only pins, not merge parents |
 | QGV input pin | PR #10 `ccr-db5d5960-qen9yi@5eec129` |
