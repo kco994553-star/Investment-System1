@@ -2,15 +2,15 @@
  "manifest_kind": "QGV_PRODUCER_BATCH_MANIFEST",
  "manifest_version": 1,
  "operational": {
-  "code_commit": "47484b5c6bf30028fc43c55c7fad38668f674ae3",
+  "code_commit": "4b772c2c24dcff8cd7ef56e82412dcc719f77267",
   "files": {
    "qgv_company_snapshots_2024-12-31.jsonl": {
     "bytes": 53890,
-    "sha256": "5e8a384ae0d595246c3b47952f16beabf5096240680080bd642bdaced41d939c"
+    "sha256": "538bc9284183fb5ebd854b5cb650ea4ba7e14f72de9aba7aceeaad884a96c92e"
    }
   },
-  "generated_at": "2026-10-01T10:54:06.739869+00:00",
-  "run_id": "36851716398"
+  "generated_at": "2026-10-01T10:59:06.185289+00:00",
+  "run_id": "36852186517"
  },
  "semantic": {
   "as_of": "2024-12-31T00:00:00+00:00",

@@ -1,62 +1,62 @@
 {
  "kind": "QGV_PRODUCER_RUN_REPORT",
- "as_of": "2024-12-31",
- "horizon_for_reference_check": "2025-03-31",
- "scope": "SAMPLE",
- "out_dir": "reports/qgv_producer/sample",
- "manifest_semantic_sha256": "1f6c6073ccc38c238d688d0fa81342c35c67a4329119036a33663827755ee007",
+ "as_of": "2024-06-30",
+ "horizon_for_reference_check": "2024-09-30",
+ "scope": "FULL_UNIVERSE",
+ "out_dir": "reports/qgv_producer/full",
+ "manifest_semantic_sha256": "96b62849c0db00d79fee6ef99624d24ad1d5e0417fcd22626e4ce0e848143562",
  "counts": {
-  "PASS": 5,
+  "PASS": 500,
   "FAIL": 0,
   "NOT_RUN": 0
  },
- "expected_count": 5,
+ "expected_count": 500,
  "complete": true,
  "status_reasons": {},
  "engine": {
-  "as_of": "2024-12-31T00:00:00+00:00",
-  "horizon_as_of": "2025-03-31T00:00:00+00:00",
-  "universe_id": "uni_0d1a30b1ee47",
+  "as_of": "2024-06-30T00:00:00+00:00",
+  "horizon_as_of": "2024-09-30T00:00:00+00:00",
+  "universe_id": "uni_cb35a6200b61",
   "n_universe": 500,
-  "n_selected": 468,
-  "n_investable": 494,
-  "n_missing": 6,
+  "n_selected": 471,
+  "n_investable": 497,
+  "n_missing": 3,
   "n_name_errors": 0,
-  "n_linked": 468,
-  "equal_weight_realized": -0.015298288539394689,
-  "ranked_sha256": "3e75c3c5f9b38a1483f02ff0c0b297e8174c018ebd2c79bfa8a8f650873e85f9",
-  "selected_sha256": "f4bd15053823e9b60fb6afb7e50b5e9f19aa92c1e9ef02fa24aa36ce1e0eb222"
+  "n_linked": 471,
+  "equal_weight_realized": 0.08825775295430749,
+  "ranked_sha256": "12a1b21531418c9cbda080be8b2a2ffa664cd0616b93bca0c7280f298663da83",
+  "selected_sha256": "0db95c75932f5f6a770aa73cb18bd22bbdec3f92ea275ee57b2c2f66646e5047"
  },
  "invariance": {
   "plain_vs_captured": {
    "ranked_sha256": {
-    "plain": "3e75c3c5f9b38a1483f02ff0c0b297e8174c018ebd2c79bfa8a8f650873e85f9",
-    "captured": "3e75c3c5f9b38a1483f02ff0c0b297e8174c018ebd2c79bfa8a8f650873e85f9",
+    "plain": "12a1b21531418c9cbda080be8b2a2ffa664cd0616b93bca0c7280f298663da83",
+    "captured": "12a1b21531418c9cbda080be8b2a2ffa664cd0616b93bca0c7280f298663da83",
     "equal": true
    },
    "selected_sha256": {
-    "plain": "f4bd15053823e9b60fb6afb7e50b5e9f19aa92c1e9ef02fa24aa36ce1e0eb222",
-    "captured": "f4bd15053823e9b60fb6afb7e50b5e9f19aa92c1e9ef02fa24aa36ce1e0eb222",
+    "plain": "0db95c75932f5f6a770aa73cb18bd22bbdec3f92ea275ee57b2c2f66646e5047",
+    "captured": "0db95c75932f5f6a770aa73cb18bd22bbdec3f92ea275ee57b2c2f66646e5047",
     "equal": true
    },
    "n_selected": {
-    "plain": 468,
-    "captured": 468,
+    "plain": 471,
+    "captured": 471,
     "equal": true
    },
    "n_investable": {
-    "plain": 494,
-    "captured": 494,
+    "plain": 497,
+    "captured": 497,
     "equal": true
    },
    "n_missing": {
-    "plain": 6,
-    "captured": 6,
+    "plain": 3,
+    "captured": 3,
     "equal": true
    },
    "equal_weight_realized": {
-    "plain": -0.015298288539394689,
-    "captured": -0.015298288539394689,
+    "plain": 0.08825775295430749,
+    "captured": 0.08825775295430749,
     "equal": true
    }
   },
@@ -66,23 +66,23 @@
    "note": "post-as_of outcome aggregates are used only to prove the replay equals the Frozen run; they are not part of any QGV snapshot",
    "checks": {
     "universe_id": {
-     "frozen": "uni_0d1a30b1ee47",
-     "producer": "uni_0d1a30b1ee47",
+     "frozen": "uni_cb35a6200b61",
+     "producer": "uni_cb35a6200b61",
      "equal": true
     },
     "n_selected": {
-     "frozen": 468,
-     "producer": 468,
+     "frozen": 471,
+     "producer": 471,
      "equal": true
     },
     "n_investable": {
-     "frozen": 494,
-     "producer": 494,
+     "frozen": 497,
+     "producer": 497,
      "equal": true
     },
     "n_missing": {
-     "frozen": 6,
-     "producer": 6,
+     "frozen": 3,
+     "producer": 3,
      "equal": true
     },
     "n_name_errors": {
@@ -91,17 +91,22 @@
      "equal": true
     },
     "n_linked": {
-     "frozen": 468,
-     "producer": 468,
+     "frozen": 471,
+     "producer": 471,
      "equal": true
     },
     "equal_weight_realized": {
-     "frozen": -0.01529828853939469,
-     "producer": -0.015298288539394689,
+     "frozen": 0.08825775295430757,
+     "producer": 0.08825775295430749,
      "equal": true,
-     "abs_diff": 1.734723475976807e-18,
+     "abs_diff": 8.326672684688674e-17,
      "exact_equal": false,
      "tolerance_abs": 1e-15
+    },
+    "selected_list": {
+     "equal": true,
+     "frozen_sha256": "0db95c75932f5f6a770aa73cb18bd22bbdec3f92ea275ee57b2c2f66646e5047",
+     "producer_sha256": "0db95c75932f5f6a770aa73cb18bd22bbdec3f92ea275ee57b2c2f66646e5047"
     }
    }
   },
@@ -123,12 +128,12 @@
    "Track C C7-C10 complete and an Official QGV promotion decided by its owner"
   ]
  },
- "wall_s": 78.035,
- "peak_rss_mb": 379.4,
+ "wall_s": 79.736,
+ "peak_rss_mb": 379.8,
  "network_attempts": 0,
  "code_commit": "4b772c2c24dcff8cd7ef56e82412dcc719f77267",
  "run_id": "36852186517",
- "generated_at": "2026-10-01T10:59:06.185289+00:00",
+ "generated_at": "2026-10-01T11:01:38.724878+00:00",
  "raw_source": {
   "kind": "GITHUB_ACTIONS_ARTIFACT",
   "run_id": 36305927245,

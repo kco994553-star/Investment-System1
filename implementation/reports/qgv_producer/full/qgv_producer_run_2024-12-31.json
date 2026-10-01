@@ -2,15 +2,15 @@
  "kind": "QGV_PRODUCER_RUN_REPORT",
  "as_of": "2024-12-31",
  "horizon_for_reference_check": "2025-03-31",
- "scope": "SAMPLE",
- "out_dir": "reports/qgv_producer/sample",
- "manifest_semantic_sha256": "1f6c6073ccc38c238d688d0fa81342c35c67a4329119036a33663827755ee007",
+ "scope": "FULL_UNIVERSE",
+ "out_dir": "reports/qgv_producer/full",
+ "manifest_semantic_sha256": "082640970976f321578c64261ac5d03da2416cab659c02068a2c1d8a364bf3ba",
  "counts": {
-  "PASS": 5,
+  "PASS": 500,
   "FAIL": 0,
   "NOT_RUN": 0
  },
- "expected_count": 5,
+ "expected_count": 500,
  "complete": true,
  "status_reasons": {},
  "engine": {
@@ -123,12 +123,12 @@
    "Track C C7-C10 complete and an Official QGV promotion decided by its owner"
   ]
  },
- "wall_s": 78.035,
- "peak_rss_mb": 379.4,
+ "wall_s": 76.188,
+ "peak_rss_mb": 379.3,
  "network_attempts": 0,
  "code_commit": "4b772c2c24dcff8cd7ef56e82412dcc719f77267",
  "run_id": "36852186517",
- "generated_at": "2026-10-01T10:59:06.185289+00:00",
+ "generated_at": "2026-10-01T11:05:34.301475+00:00",
  "raw_source": {
   "kind": "GITHUB_ACTIONS_ARTIFACT",
   "run_id": 36305927245,
