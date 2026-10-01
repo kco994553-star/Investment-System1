@@ -1,0 +1,172 @@
+{
+ "kind": "PRODUCER_READINESS_AUDIT",
+ "recorded_utc": "2026-10-01",
+ "scope": "preflight audit only; no source/policy/model change",
+ "github_refs": {
+  "canonical": "claude/investment-system-top500-validation-alrugm@b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "pr5_web_mvp": "feature/web-mvp-v1@a4e49c83f5783c19617fb609b8f95b179cb13e84 OPEN/DRAFT",
+  "pr6_language_search": "feature/global-language-search-v1@eda65bf5d9203aee05f4d28992d1ccfcd815ebd4 OPEN/DRAFT (stacked on PR5)",
+  "pr4_track_c": "feature/track-c-evl@9cf4d7d68dd6bc9eda5db78571acf6e74811144d OPEN/DRAFT, not merged",
+  "web_integration_evidence": "integration/web-mvp-language-search@e09d24e"
+ },
+ "regression_this_session": {
+  "canonical_mini_pytest": "396 passed, 0 failed",
+  "pr6_head_mini_pytest": "409 passed, 0 failed",
+  "track_c_head_real_pytest": "629 passed (mini_pytest shim cannot import pytest.mark; 9 import-level shim failures are runner limitation, not test failures)"
+ },
+ "web_contract_probe": {
+  "default_bundle_states": {
+   "universe": "FROZEN_SNAPSHOT",
+   "qgv": "NOT_AVAILABLE",
+   "technical": "NOT_AVAILABLE",
+   "macro": "NOT_AVAILABLE",
+   "portfolio": "NOT_AVAILABLE",
+   "leaderboard": "NOT_AVAILABLE",
+   "news": "NOT_AVAILABLE",
+   "relationships": "NOT_AVAILABLE",
+   "changes": "NOT_AVAILABLE"
+  },
+  "default_universe_as_of": "2024-12-31",
+  "companies": 500,
+  "companies_with_issuer_id": 0,
+  "technical_adapter_synthetic_flag": true,
+  "technical_adapter_output_as_LIVE": "REJECTED: ValueError: synthetic data must be DEMO",
+  "technical_engine_placeholder_fields": {
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "scenario_kind": "structural-placeholder",
+   "version": "v0.6-STRUCTURAL-FREEZE",
+   "kind": "NEW IMPLEMENTATION"
+  },
+  "macro_adapter_synthetic_flag": true,
+  "macro_web_fields_present": {
+   "state": true,
+   "regime": true,
+   "indicators": false,
+   "exposures": false
+  },
+  "macro_adapter_output_as_LIVE": "REJECTED: ValueError: synthetic data must be DEMO",
+  "LIVE_without_expires_at": "REJECTED: KeyError: 'expires_at'",
+  "LIVE_already_expired": "ACCEPTED",
+  "leaderboard_web_fields_missing_in_LeaderboardRow": [
+   "market_cap_rank",
+   "daily_move",
+   "consensus",
+   "scenario",
+   "reevaluation_trigger"
+  ],
+  "qgv_web_fields_missing_in_QGVSnapshot": [],
+  "portfolio_web_fields": [
+   "holdings[].company_id",
+   "holdings[].ticker",
+   "holdings[].actual_weight",
+   "holdings[].return",
+   "return",
+   "market_value",
+   "currency",
+   "exposure"
+  ],
+  "portfolio_snapshot_fields": [
+   "portfolio_snapshot_id",
+   "portfolio_version",
+   "snapshot_at",
+   "base_currency",
+   "holdings",
+   "cash_weight",
+   "weight_sum",
+   "policy_version",
+   "implementation_kind",
+   "synthetic",
+   "role"
+  ],
+  "modules_named_export_or_daily": []
+ },
+ "raw_store_durability": {
+  "artifact": "c21-raw-store-36305927245",
+  "size_bytes": 451439890,
+  "expires_at": "2026-12-26T08:21:15Z",
+  "repo_blobs_committed": 0,
+  "note": "raw blobs exist only in Actions artifact/cache; committed manifests/STORE_INDEX only"
+ },
+ "investor_qgv": "NO code/profile in any audited branch; FUTURE_TRACK_C_INPUT; no profile fabricated",
+ "track_c": {
+  "C0_C5": "SOFTWARE FROZEN",
+  "C6": "SOFTWARE FROZEN (PR4)",
+  "C7": "TC-D3P-006 PROPOSED / NOT APPROVED",
+  "C8_C10": "NOT STARTED",
+  "holdout": "UNCONSUMED",
+  "real_pit_research_validation": "NOT_RUN",
+  "validated_outputs_available": false
+ },
+ "readiness": {
+  "real_data_ingestion": {
+   "UI": "n/a",
+   "REAL_PRODUCER": "YES_HISTORICAL",
+   "DAILY": "NO",
+   "PRIVATE_DEPLOY": "n/a"
+  },
+  "universe_track_a": {
+   "UI": "YES",
+   "REAL_PRODUCER": "YES_HISTORICAL_QUARTERLY",
+   "DAILY": "NO",
+   "PRIVATE_DEPLOY": "NO"
+  },
+  "qgv": {
+   "UI": "YES",
+   "REAL_PRODUCER": "PARTIAL",
+   "DAILY": "NO",
+   "PRIVATE_DEPLOY": "NO"
+  },
+  "technical": {
+   "UI": "YES",
+   "REAL_PRODUCER": "NO",
+   "DAILY": "NO",
+   "PRIVATE_DEPLOY": "NO"
+  },
+  "macro": {
+   "UI": "PARTIAL",
+   "REAL_PRODUCER": "PARTIAL",
+   "DAILY": "NO",
+   "PRIVATE_DEPLOY": "NO"
+  },
+  "track_c": {
+   "UI": "n/a",
+   "REAL_PRODUCER": "NO",
+   "DAILY": "NO",
+   "PRIVATE_DEPLOY": "n/a"
+  },
+  "portfolio": {
+   "UI": "PARTIAL",
+   "REAL_PRODUCER": "NO",
+   "DAILY": "NO",
+   "PRIVATE_DEPLOY": "NO"
+  },
+  "leaderboard": {
+   "UI": "PARTIAL",
+   "REAL_PRODUCER": "NO",
+   "DAILY": "NO",
+   "PRIVATE_DEPLOY": "NO"
+  },
+  "news_rig": {
+   "UI": "PARTIAL",
+   "REAL_PRODUCER": "NO",
+   "DAILY": "NO",
+   "PRIVATE_DEPLOY": "NO"
+  },
+  "web_mvp": {
+   "UI": "YES (PR5+PR6 unmerged)",
+   "REAL_PRODUCER": "n/a",
+   "DAILY": "NO",
+   "PRIVATE_DEPLOY": "NO"
+  }
+ },
+ "actions_not_taken": [
+  "no paid API signup",
+  "no secret created/committed",
+  "no deployment",
+  "no canonical merge",
+  "no PR merge",
+  "no Track C result assumed",
+  "no Investor-QGV profile",
+  "no new investment calculation"
+ ]
+}
