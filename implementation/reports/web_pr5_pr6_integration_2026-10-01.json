@@ -1,0 +1,185 @@
+{
+  "started_kst": "2026-10-01T18:46:09.153466+09:00",
+  "pins": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "pr5": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+    "pr6": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+    "trackCAtStart": "88da6f30560c4a2aee281a4cc45760eb3e0f4e80"
+  },
+  "stages": {
+    "pr5": {
+      "status": "PASS",
+      "merge_sha": "0238545974dc2ea0468fba9a536bccf687a77de2",
+      "tree": "dd640e8b8900b4051369f2fae3a03277c3dcb2e0",
+      "parents": [
+        "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "a4e49c83f5783c19617fb609b8f95b179cb13e84"
+      ],
+      "merge_conflicts": [],
+      "merge_output": "Merge made by the 'ort' strategy.\n .github/workflows/web-mvp-validation.yml           |  37 ++\n implementation/docs/web_mvp/CONTRACT.md            |  74 ++++\n implementation/docs/web_mvp/README.md              |  84 ++++\n implementation/docs/web_mvp/STATUS.md              |  58 +++\n implementation/docs/web_mvp/evidence/browser.json  |  16 +\n .../investment_system/product/web_assets/app.js    | 464 +++++++++++++++++++++\n .../product/web_assets/index.html                  |  34 ++\n .../product/web_assets/network-bridge.js           |  63 +++\n .../product/web_assets/network-style.css           |  42 ++\n .../product/web_assets/research-bridge.js          |  44 ++\n .../product/web_assets/research-style.css          |  64 +++\n .../investment_system/product/web_assets/style.css | 378 +++++++++++++++++\n .../src/investment_system/product/web_mvp.py       | 136 ++++++\n implementation/tests/test_web_mvp.py               |  77 ++++\n implementation/tools/build_web_mvp_demo.py         |  36 ++\n implementation/tools/web_mvp_browser_test.js       | 244 +++++++++++\n 16 files changed, 1851 insertions(+)\n create mode 100644 .github/workflows/web-mvp-validation.yml\n create mode 100644 implementation/docs/web_mvp/CONTRACT.md\n create mode 100644 implementation/docs/web_mvp/README.md\n create mode 100644 implementation/docs/web_mvp/STATUS.md\n create mode 100644 implementation/docs/web_mvp/evidence/browser.json\n create mode 100644 implementation/src/investment_system/product/web_assets/app.js\n create mode 100644 implementation/src/investment_system/product/web_assets/index.html\n create mode 100644 implementation/src/investment_system/product/web_assets/network-bridge.js\n create mode 100644 implementation/src/investment_system/product/web_assets/network-style.css\n create mode 100644 implementation/src/investment_system/product/web_assets/research-bridge.js\n create mode 100644 implementation/src/investment_system/product/web_assets/research-style.css\n create mode 100644 implementation/src/investment_system/product/web_assets/style.css\n create mode 100644 implementation/src/investment_system/product/web_mvp.py\n create mode 100644 implementation/tests/test_web_mvp.py\n create mode 100644 implementation/tools/build_web_mvp_demo.py\n create mode 100644 implementation/tools/web_mvp_browser_test.js",
+      "changed_files": [
+        ".github/workflows/web-mvp-validation.yml",
+        "implementation/docs/web_mvp/CONTRACT.md",
+        "implementation/docs/web_mvp/README.md",
+        "implementation/docs/web_mvp/STATUS.md",
+        "implementation/docs/web_mvp/evidence/browser.json",
+        "implementation/src/investment_system/product/web_assets/app.js",
+        "implementation/src/investment_system/product/web_assets/index.html",
+        "implementation/src/investment_system/product/web_assets/network-bridge.js",
+        "implementation/src/investment_system/product/web_assets/network-style.css",
+        "implementation/src/investment_system/product/web_assets/research-bridge.js",
+        "implementation/src/investment_system/product/web_assets/research-style.css",
+        "implementation/src/investment_system/product/web_assets/style.css",
+        "implementation/src/investment_system/product/web_mvp.py",
+        "implementation/tests/test_web_mvp.py",
+        "implementation/tools/build_web_mvp_demo.py",
+        "implementation/tools/web_mvp_browser_test.js"
+      ],
+      "modified_canonical_files": [],
+      "frozen_manifest_hashes_verified": 17,
+      "original_canonical_blob_count": 7698,
+      "targeted": {
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "full_regression": {
+        "tests": 404,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "web_e2e": {
+        "checks": 10,
+        "passed": true,
+        "errors": []
+      },
+      "responsive_widths": [
+        360,
+        390,
+        1280
+      ]
+    },
+    "combined": {
+      "status": "PASS",
+      "merge_sha": "c24689311ad289f15b76b7f73e11ee1341cdfd31",
+      "tree": "7e03505f79202ff3f3a94d0054b6f74b48d84a49",
+      "parents": [
+        "0238545974dc2ea0468fba9a536bccf687a77de2",
+        "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4"
+      ],
+      "merge_conflicts": [],
+      "merge_output": "Merge made by the 'ort' strategy.\n .github/workflows/web-mvp-validation.yml           |   6 +-\n .../docs/global_language_search/CONTRACT.md        |  89 +++++\n .../docs/global_language_search/STATUS.md          |  90 +++++\n .../evidence/validation.json                       |  25 ++\n .../investment_system/product/entity_catalog.py    |  85 +++++\n .../investment_system/product/web_assets/app.js    | 412 +++++++++------------\n .../product/web_assets/entity-search.js            |  87 +++++\n .../product/web_assets/index.html                  |  24 +-\n .../investment_system/product/web_assets/locale.js |  56 +++\n .../product/web_assets/network-bridge.js           |  25 ++\n .../product/web_assets/research-bridge.js          |  37 ++\n .../investment_system/product/web_assets/style.css |   7 +\n .../src/investment_system/product/web_mvp.py       |   9 +-\n .../tests/test_global_language_search.py           |  82 ++++\n implementation/tools/build_web_mvp_demo.py         |  12 +-\n .../tools/global_language_search_browser_test.js   | 146 ++++++++\n .../tools/global_language_search_test.js           |  82 ++++\n 17 files changed, 1015 insertions(+), 259 deletions(-)\n create mode 100644 implementation/docs/global_language_search/CONTRACT.md\n create mode 100644 implementation/docs/global_language_search/STATUS.md\n create mode 100644 implementation/docs/global_language_search/evidence/validation.json\n create mode 100644 implementation/src/investment_system/product/entity_catalog.py\n create mode 100644 implementation/src/investment_system/product/web_assets/entity-search.js\n create mode 100644 implementation/src/investment_system/product/web_assets/locale.js\n create mode 100644 implementation/tests/test_global_language_search.py\n create mode 100644 implementation/tools/global_language_search_browser_test.js\n create mode 100644 implementation/tools/global_language_search_test.js",
+      "changed_files": [
+        ".github/workflows/web-mvp-validation.yml",
+        "implementation/docs/global_language_search/CONTRACT.md",
+        "implementation/docs/global_language_search/STATUS.md",
+        "implementation/docs/global_language_search/evidence/validation.json",
+        "implementation/docs/web_mvp/CONTRACT.md",
+        "implementation/docs/web_mvp/README.md",
+        "implementation/docs/web_mvp/STATUS.md",
+        "implementation/docs/web_mvp/evidence/browser.json",
+        "implementation/src/investment_system/product/entity_catalog.py",
+        "implementation/src/investment_system/product/web_assets/app.js",
+        "implementation/src/investment_system/product/web_assets/entity-search.js",
+        "implementation/src/investment_system/product/web_assets/index.html",
+        "implementation/src/investment_system/product/web_assets/locale.js",
+        "implementation/src/investment_system/product/web_assets/network-bridge.js",
+        "implementation/src/investment_system/product/web_assets/network-style.css",
+        "implementation/src/investment_system/product/web_assets/research-bridge.js",
+        "implementation/src/investment_system/product/web_assets/research-style.css",
+        "implementation/src/investment_system/product/web_assets/style.css",
+        "implementation/src/investment_system/product/web_mvp.py",
+        "implementation/tests/test_global_language_search.py",
+        "implementation/tests/test_web_mvp.py",
+        "implementation/tools/build_web_mvp_demo.py",
+        "implementation/tools/global_language_search_browser_test.js",
+        "implementation/tools/global_language_search_test.js",
+        "implementation/tools/web_mvp_browser_test.js"
+      ],
+      "modified_canonical_files": [],
+      "frozen_manifest_hashes_verified": 17,
+      "original_canonical_blob_count": 7698,
+      "targeted": {
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "full_regression": {
+        "tests": 409,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "search_locale": {
+        "passed": true,
+        "checks": 26,
+        "entities": 509,
+        "average_query_ms": 0.96817491
+      },
+      "web_e2e": {
+        "checks": 10,
+        "passed": true,
+        "errors": []
+      },
+      "responsive_widths": [
+        360,
+        390,
+        1280
+      ],
+      "global_e2e": {
+        "checks": 8,
+        "passed": true,
+        "errors": []
+      },
+      "numerical_invariance": "PASS: all four engine outputs equal except fresh snapshot UUIDs; all nine default/demo producer envelopes exactly equal",
+      "leaderboard_locale_invariance": "PASS: existing browser test preserves nontrivial supplied rank/order under locale changes"
+    }
+  },
+  "scope": "WEB_INTEGRATION_ONLY; public synthetic fixtures; no real producer/deployment readiness",
+  "remote_refs_before": "b8e39a2196a6d7794a04a0cd5393c68329e126ca\trefs/heads/claude/investment-system-top500-validation-alrugm\neda65bf5d9203aee05f4d28992d1ccfcd815ebd4\trefs/heads/feature/global-language-search-v1\n038f03cf45ad515d2e07522674dd496ed9cae0da\trefs/heads/feature/track-c-evl\na4e49c83f5783c19617fb609b8f95b179cb13e84\trefs/heads/feature/web-mvp-v1",
+  "readiness": {
+    "pr5": "INTEGRATION_READY",
+    "pr6": "INTEGRATION_READY_AFTER_PR5",
+    "combined": "PR5_PLUS_PR6_INTEGRATION_READY"
+  },
+  "ended_kst": "2026-10-01T18:47:08.438865+09:00",
+  "session_started_kst": "2026-10-01 18:12:58 KST",
+  "recorded_kst": "2026-10-01T18:48:36+09:00",
+  "workflow_run": 36844773375,
+  "workflow_job": 110312164374,
+  "harness_commit": "9fd8099fed59961f990cb64e99d4953a931ea508",
+  "artifact": {
+    "id": 11152153928,
+    "name": "web-sequential-integration-evidence",
+    "bytes": 1439436,
+    "sha256": "edec430319ae12901098612de8f01e4cf732441fa0225d0bf3aee2fcffe00797",
+    "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36844773375/artifacts/11152153928"
+  },
+  "track_c_latest_head_at_recording": "fcc033545889a47c402164ca93464c021e474c33",
+  "track_c_compatibility": {
+    "from": "038f03cf45ad515d2e07522674dd496ed9cae0da",
+    "to": "fcc033545889a47c402164ca93464c021e474c33",
+    "ahead": 1,
+    "behind": 0,
+    "changed_files": [
+      "implementation/src/investment_system/evl/robustness.py",
+      "implementation/tests/evl_c6_fixture.py",
+      "implementation/tools/track_c_c6_acceptance.py"
+    ],
+    "web_path_overlap": []
+  },
+  "pr5_post_state": "OPEN/DRAFT",
+  "pr6_post_state": "OPEN/DRAFT",
+  "canonical_post_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "real_producer_ready": false,
+  "daily_operation_ready": false,
+  "private_deployment_ready": false,
+  "alias_coverage_scope": "Separate metadata follow-up; not an integration gate failure; no aliases generated",
+  "canonical_merged": false,
+  "product_source_repairs": [],
+  "frozen_source_changes": [],
+  "evidence_branch": "integration/web-mvp-language-search"
+}
