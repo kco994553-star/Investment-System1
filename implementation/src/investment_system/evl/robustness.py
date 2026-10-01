@@ -138,6 +138,11 @@ def register_robustness(ledger, split, source, bundles, drift, plan):
     if spec['parameter_space']['values'] or spec['metric_set']['metric_ids'] != ['diagnostic_complete']:
         raise ValueError('dedicated C6 diagnostic ledger required')
     snapshot = _snapshot(source, bundles, drift)
+    domain = snapshot['source']['spec']['parameter_space']['values']
+    if (set(plan['perturbation_domains']) != set(domain) or any(
+            not values or not set(values) <= set(domain[k])
+            for k,values in plan['perturbation_domains'].items())):
+        raise ValueError('perturbation must remain in registered C5 parameter domains')
     if spec['data_hash'] != digest(snapshot):
         raise ValueError('registered family input hash mismatch')
     if set(bundles)-set(snapshot['source']['roster']):

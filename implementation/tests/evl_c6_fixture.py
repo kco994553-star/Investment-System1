@@ -7,6 +7,8 @@ Execution uses explicit quantities/quotes/costs, never a shifted return series.
 from dataclasses import replace
 from datetime import timedelta
 import random
+from hashlib import sha256
+from pathlib import Path
 from statistics import mean, variance
 
 from tests.test_evl_c2 import dt, contract, c0_split, sample
@@ -27,7 +29,9 @@ from investment_system.evl.robustness import (source_inventory, c4_report, packa
     register_robustness, run_robustness, resolve_robustness, SCENARIOS)
 
 T=dt(2020)
-CODE='C6_GENERIC_SYNTHETIC_EVALUATOR_v1'
+_SOURCE=Path(__file__).resolve().parents[1]/'src'/'investment_system'
+CODE=sha256(b''.join(p.relative_to(_SOURCE).as_posix().encode()+b'\\0'+p.read_bytes()
+    for p in sorted(_SOURCE.rglob('*.py')))).hexdigest()
 EVALUATOR='integrated-fixture-v1'
 DOMAIN={'cash_buffer':[0.,.2],'technical_lookback':[1]}
 MOVES=(1.,-2.,3.,-1.,2.,-3.,4.,.5)
@@ -119,8 +123,8 @@ def setup_family(path, *, mode='ROLLING', variant='PRIMARY', budget=17):
                 'registered_at':T.isoformat(),'method':'EXPLICIT_GENERIC_SOFTWARE_SCENARIO'}
             q,variation,fee=quantity,1.,.1
             if kind=='PARAMETER':
-                definition['parameters']={'cash_buffer':.1,'technical_lookback':1}
-                q=1.8
+                definition['parameters']={'cash_buffer':.2 if parameters['cash_buffer']==0. else 0.,'technical_lookback':1}
+                q=2.*(1-definition['parameters']['cash_buffer'])
             elif kind=='REGIME':
                 definition['regime']='EXPLICIT_SYNTHETIC_VOLATILITY_1_5'
                 variation=1.5
@@ -163,7 +167,7 @@ def setup_family(path, *, mode='ROLLING', variant='PRIMARY', budget=17):
         'reference_sharpe':0.,'sharpe_variance':variance(scores),'block_count':4,
         'block_length':2,'replicates':32,'quantiles':[0.,.5,1.],
         'quantile_convention':'EMPIRICAL_INVERSE_CDF',
-        'perturbation_domains':{'cash_buffer':[0.,.1,.2],'technical_lookback':[1]},
+        'perturbation_domains':DOMAIN,
         'holdout_start':c.holdout_start.isoformat(),
         'drift_convention':'REGISTERED_COORDINATE_DELTA_OVER_SCALE',
         'drift_scales':{'cash_buffer':.2,'technical_lookback':1}}
