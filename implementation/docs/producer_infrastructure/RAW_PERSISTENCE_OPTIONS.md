@@ -32,7 +32,7 @@ At dataset level: `storage_locations` (kind, ref, archive sha, expiry, completen
 | Option | Fit for 6.1 GB / 451 MB zip | Expiry | Cost / account | Concerns |
 |---|---|---|---|---|
 | REPOSITORY (plain git) | No. Hard per-file limit 100 MB; multi-GB history is permanent and makes clones slow | none | free | Public redistribution of third-party (e.g., Yahoo) payloads; irreversible history growth |
-| Git LFS | No. The free quota is far below 6 GB (check current GitHub limits) | none | paid data packs likely | Same redistribution concern |
+| Git LFS | Storage fits: GitHub Free includes 10 GiB storage + 10 GiB bandwidth per month (corrected 2026-10-01; see P03 comparison) | none | $0 within quota; overage billed | Public if the repo is public; LFS objects are hard to delete |
 | GitHub Actions artifact (current) | Yes | Max 90 days on public repos; would need a periodic re-upload workflow | free on public repos | Still only expiring copies; a missed refresh loses data; refresh needs an approved workflow change |
 | GitHub Release asset | Yes. Per-file limit 2 GiB; the 451 MB zip fits | none | free | **Public** on this repo, which redistributes third-party data (check licensing/ToS, especially Yahoo); a release is an outward-facing action |
 | Object storage (S3/R2/B2/GCS) | Yes | Configurable | Account and credentials (secret); possibly paid | Needs a provider choice, a secret and cost approval |
