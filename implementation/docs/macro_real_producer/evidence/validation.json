@@ -1,0 +1,56 @@
+{
+ "base": "feature/producer-infrastructure-v1@6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+ "canonical_fetched_not_merged": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+ "contract": "MACRO_REAL_PRODUCER_V1",
+ "fingerprint": {
+  "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+  "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+  "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+  "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+  "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+ },
+ "runner": "mini_pytest shim, not pytest",
+ "sample": {
+  "decision_2024_12_31": {
+   "cpi_available_at": "2024-12-20T00:00:00+00:00",
+   "inflation": 0.020000000000000018,
+   "macro_snapshot_id": "mac_560ba7bdee89",
+   "macro_version": "v0.1.1",
+   "producer_data": null,
+   "producer_data_state": "NOT_AVAILABLE",
+   "publication": "POLICY_BLOCKED",
+   "reason_code": "POLICY_BLOCKED",
+   "regime": "EXPANSION",
+   "state": "NORMAL"
+  },
+  "decision_2025_03_15_sees_revision": {
+   "cpi_available_at": "2025-03-01T00:00:00+00:00",
+   "inflation": 0.10000000000000009,
+   "macro_snapshot_id": "mac_35acb549cbc8",
+   "regime": "INFLATION_SHOCK",
+   "state": "EMERGENCY"
+  },
+  "live_fred_fetch": false,
+  "producer_id": "macro.real.v1",
+  "publication_reasons": [
+   "SERIES_MAPPING_PROVISIONAL",
+   "EXPOSURE_NOT_APPROVED",
+   "WEB_INDICATORS_NOT_RESHAPED",
+   "NO_APPROVED_LIVE_EXPIRY"
+  ],
+  "real_data_verified": false
+ },
+ "tests": {
+  "full_suite": "442 passed, 0 failed in 22.10s",
+  "test_macro_real_producer.py": "11 passed, 0 failed"
+ },
+ "verdicts": {
+  "MACRO_EXPORTER_READY": "YES_FAIL_CLOSED_NOT_AVAILABLE_NO_NUMERIC_WEB",
+  "MACRO_EXPOSURE_READY": "NO",
+  "MACRO_REAL_INPUT_READY": "YES_FOR_SUPPLIED_ALFRED_VINTAGES_NOT_LIVE_VERIFIED",
+  "MACRO_SNAPSHOT_READY": "YES_RESEARCH_SNAPSHOT_ONLY",
+  "OFFICIAL_MACRO_PRODUCER_READY": "NO",
+  "PRODUCER_INFRA_COMPATIBLE": "YES",
+  "REAL_MACRO_RESEARCH_PRODUCER_READY": "YES_NOT_OFFICIAL"
+ }
+}
