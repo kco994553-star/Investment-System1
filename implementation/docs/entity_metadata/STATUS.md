@@ -1,6 +1,6 @@
 # Entity Metadata Coverage — status
 
-Recorded 2026-10-01 UTC. Status: IMPLEMENTED / REGRESSION PASS / READY FOR REVIEW (draft PR #7, not merged).
+Recorded 2026-10-01 UTC. Status: IMPLEMENTED / REGRESSION PASS / WAIT — draft PR #7, not merged. Handoff: HANDOFF.md; evidence: evidence/validation.json.
 Branch `ccr-41677301-10nj3u`, stacked on PR #6 `feature/global-language-search-v1` @ eda65bf (PR #6 on PR #5).
 Tested code HEAD: 773b264. This record changes docs only.
 
