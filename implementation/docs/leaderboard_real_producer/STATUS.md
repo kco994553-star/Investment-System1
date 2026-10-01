@@ -2,7 +2,7 @@
 
 **State: IMPLEMENTATION BASELINE / INTEGRATION WAIT**
 
-Do not merge automatically. Do not add a new ranking feature on this branch.
+Draft PR [#14](https://github.com/kco994553-star/Investment-System1/pull/14). Base is canonical `b8e39a2`. Do not merge automatically. Do not add a new ranking feature on this branch.
 
 | Item | Value |
 |---|---|
