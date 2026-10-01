@@ -1,0 +1,67 @@
+# Leaderboard REAL producer. Offline. Consumes pinned QGV evidence; does not refetch raw market data.
+# Producer Infrastructure v1 is a read-only dependency checked out at a pinned commit (never merged here).
+name: leaderboard-real-producer
+on:
+  push:
+    branches: [feature/leaderboard-real-producer-v1]
+    paths:
+      - implementation/src/investment_system/leaderboard_producer/**
+      - implementation/tools/leaderboard_producer.py
+      - implementation/tools/leaderboard_producer_infra_compat.py
+      - implementation/tests/test_leaderboard_real_producer.py
+      - implementation/tests/test_leaderboard_producer_infra_compat.py
+      - .github/workflows/leaderboard-real-producer.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: leaderboard-real-producer-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  QGV_COMMIT: 5eec129ef81641f0bc11f5adbb43d0b2122ee24b
+  INFRA_COMMIT: 6fe9eee5668388fa4a200904520a0b5a46c90b6f
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: QGV Real Producer evidence (read-only, pinned)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.QGV_COMMIT }}
+          path: qgv_dep
+      - name: Producer Infrastructure v1 (read-only, pinned)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.INFRA_COMMIT }}
+          path: infra
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pytest
+      - name: Cross-track sources unchanged vs canonical
+        run: |
+          git fetch origin claude/investment-system-top500-validation-alrugm
+          git diff --exit-code origin/claude/investment-system-top500-validation-alrugm -- \
+            implementation/src/investment_system/qgv \
+            implementation/src/investment_system/technical \
+            implementation/src/investment_system/macro \
+            implementation/src/investment_system/personal \
+            implementation/src/investment_system/validation \
+            implementation/src/investment_system/contracts \
+            implementation/src/investment_system/universe \
+            implementation/src/investment_system/ingestion \
+            implementation/reports/gate_evidence \
+            implementation/data
+      - name: Full regression (mini_pytest shim)
+        working-directory: implementation
+        env:
+          LEADERBOARD_QGV_EXPORTS: ${{ github.workspace }}/qgv_dep/implementation/reports/qgv_producer/full
+        run: python tools/mini_pytest.py | tail -5
+      - name: Full regression (pytest) with Producer Infrastructure compatibility
+        working-directory: implementation
+        env:
+          LEADERBOARD_QGV_EXPORTS: ${{ github.workspace }}/qgv_dep/implementation/reports/qgv_producer/full
+          LEADERBOARD_PRODUCER_INFRA_SRC: ${{ github.workspace }}/infra/implementation/src
+        run: python -m pytest -q -p no:cacheprovider | tail -5
