@@ -5,6 +5,7 @@ Takeover file. Do not depend on the chat that wrote it.
 | Item | Value |
 |---|---|
 | Branch | `feature/technical-real-producer-v1` |
+| Code commit | `9ebf1799649a0142d7a59c41ba0db924bcb87845` |
 | Base / canonical HEAD at start | `b8e39a2196a6d7794a04a0cd5393c68329e126ca` (`claude/investment-system-top500-validation-alrugm`) |
 | Not merged | canonical, PR #4 Track C, PR #5 Web, PR #6 search, PR #7 entity metadata, PR #9 producer infra |
 | Engine | `technical/engine.py` byte-identical (`f7268f52…`). Fingerprint `28e910f3…` |
