@@ -44,11 +44,17 @@ def plateau(parameters, domains, values, tolerances, pareto):
     for p in parameters.values():
         if set(p) != set(domains) or any(p[k] not in domains[k] for k in domains):
             raise ValueError('parameter outside full registered domains')
-    edges, graph = [], {k:set() for k in ids}
+    edges, graph, evidence = [], {k:set() for k in ids}, []
     for a,b in combinations(ids,2):
         if adjacency(parameters[a],parameters[b],domains) and all(
                 abs(x-y) <= t for x,y,t in zip(rows[a],rows[b],tol)):
             edges.append([a,b]); graph[a].add(b); graph[b].add(a)
+            coordinate=next(k for k in domains if parameters[a][k]!=parameters[b][k])
+            evidence.append({'members':[a,b],'coordinate':coordinate,
+                'registered_positions':[domains[coordinate].index(parameters[a][coordinate]),
+                                        domains[coordinate].index(parameters[b][coordinate])],
+                'metric_absolute_differences':[str(abs(x-y)) for x,y in zip(rows[a],rows[b])],
+                'registered_tolerances':[str(t) for t in tol]})
     components, remaining = [], set(ids)
     while remaining:
         stack=[min(remaining)]; members=set()
@@ -59,11 +65,12 @@ def plateau(parameters, domains, values, tolerances, pareto):
         remaining -= members
         ranges=[(min(rows[k][i] for k in members),max(rows[k][i] for k in members))
                 for i in range(len(tol))]
-        components.append({'members':sorted(members),
+        components.append({'members':sorted(members),'member_count':len(members),
             'pareto_members':sorted(members & set(pareto)),
             'non_pareto_members':sorted(members-set(pareto)),
             'edges':[e for e in edges if e[0] in members and e[1] in members],
             'registered_adjacency':'ONE_IMMEDIATE_REGISTERED_GRID_COORDINATE',
+            'adjacency_evidence':[e for e in evidence if e['members'][0] in members and e['members'][1] in members],
             'metric_ranges':[[str(a),str(b)] for a,b in ranges],
             'metric_diameters':[str(b-a) for a,b in ranges],
             'stable':len(members)>=2})
