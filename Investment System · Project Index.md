@@ -312,3 +312,27 @@ Freeze eligibility: NOT_TRACK_C_FREEZE_CANDIDATE; canonical integration NOT READ
 Engineering Progress: **6/11 Frozen = 54.5%**, partial C6 separately reported.
 Next: reconcile TC-D3P-005 S approval RECORD under the user's explicit repository consistency
 condition; then finish registered mandatory C6 acceptance and verification before C7.
+
+
+## TC-D3P-005 S explicit approval / record synchronization — 2026-10-01T18:02:42+09:00
+
+TC-D3P-005 common all-MANDATORY classification, distinct PASS/FAIL/NOT_RUN and S —
+Synthetic Software Freeze Evidence are **APPROVED / ACTIVE** by explicit user message.
+Approval processing time is the actual current KST clock above; no older timestamp invented.
+Authoritative record: `implementation/reports/track_c_c6_freeze_policy_approved.md`,
+bound to original proposal blob `bbd3321e9966957e862199622ca53f5a4b3ec556`.
+Historical proposal/evidence/status records are retained and superseded, not rewritten.
+TC-C6-APPROVAL-RECORD-001 **RESOLVED**. No new policy design or D3-P required for this sync.
+
+All 17 enumerated C6 diagnostic groups MANDATORY, no advisory exemption; any FAIL/NOT_RUN
+blocks C6 acceptance/Freeze. Complete deterministic explicit SYNTHETIC fixture family
+all-PASS may support software-only Freeze, separately labeled SYNTHETIC_SOFTWARE_VALIDATION.
+REAL_PIT_RESEARCH_VALIDATION remains separate; no alpha/skill/significance/Holdout/Forward/
+promotion readiness follows from synthetic PASS. C8 significance responsibility unchanged.
+
+C0–C5 SOFTWARE FROZEN preserved; C6 IMPLEMENTING / NOT FROZEN pending full registered runner,
+ledger/provenance wiring, perturbation/controls/drift and actual mandatory acceptance.
+Existing execution and statistical kernels are reused. C7–C10 NOT STARTED until C6 Freeze.
+Holdout UNCONSUMED; Investor-QGV FUTURE_TRACK_C_INPUT. Track A/B/D/E/Web source untouched.
+PR #4 Draft/Open/unmerged; canonical automatic merge forbidden. Continue autonomously
+inside approved scope after remote approval record verification.
