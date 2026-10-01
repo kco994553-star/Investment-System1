@@ -1,7 +1,8 @@
 # RIG news real ingestion — status
 
 Recorded 2026-10-01. Branch `feature/rig-news-real-ingestion-v1`.
-Base: canonical `claude/investment-system-top500-validation-alrugm` @ `b8e39a2`.
+Code under test: `f8539087837bd67efa3aa87d618313a333746446`.
+Base: canonical `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca`.
 Not merged. No other agent branch was modified.
 
 Shared `CURRENT_HANDOFF.md` was not edited, so this record cannot collide with
@@ -40,9 +41,11 @@ parallel Track C, QGV, Technical, Macro, or Producer Infrastructure work.
 
 `implementation/docs/rig_news_ingest/evidence/validation.json`
 
-Full canonical regression after this change: 410 passed, 0 failed, mini_pytest shim
-(396 existing + 14 new). Frozen `rig/` modules outside `ingest/` match the
-canonical SHA-256 list in `tests/test_rig_news_ingest.py`.
+Full canonical regression on `f853908`, reconfirmed 2026-10-01: 410 passed, 0 failed
+in 18.34s, mini_pytest shim (396 existing + 14 new). Targeted
+`tests/test_rig_news_ingest.py`: 14 passed, 0 failed in 0.29s. Frozen `rig/`
+modules outside `ingest/` match the canonical SHA-256 list in that test.
+Sibling track trees match canonical (see evidence fingerprints).
 
 ## Blockers
 
@@ -51,3 +54,33 @@ canonical SHA-256 list in `tests/test_rig_news_ingest.py`.
 3. `issuer_id` for Web company filters needs the upstream company↔issuer map. It is not guessed from tickers.
 4. Producer Infrastructure and Entity Metadata are still draft PRs. Compatibility was checked against pinned SHAs, not by merging them.
 5. `LIVE` news has no approved `expires_at` policy, so this package will not invent a TTL.
+
+## Remote reconfirm (2026-10-01, after fetch)
+
+| Check | Result |
+|---|---|
+| PR | [#13](https://github.com/kco994553-star/Investment-System1/pull/13) `draft=true`, `state=open`, `merged=false`, `mergeable_state=clean` at `f853908` |
+| Code under test | `f8539087837bd67efa3aa87d618313a333746446`. This lock is docs-only on top of that commit |
+| Base / merge-base | `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. Code commit is 1 ahead, 0 behind |
+| Code diff | Additions only: `rig/ingest/` (10 modules) and `tests/test_rig_news_ingest.py`. No edits under `qgv/`, `technical/`, `macro/`, `personal/`, `prompt_library/`, `validation/`, `contracts/`, `product/`, `providers/`, `universe/`, `ingestion/`, `integration/`, `markets/`, `pit/`, or frozen `rig/` outside `ingest/` |
+| Audited pins still current | PR #7 `a013f1c1758642f90a65fe11df69fc234c143a48`. PR #9 `6fe9eee5668388fa4a200904520a0b5a46c90b6f`. Neither is an ancestor |
+| Not incorporated | Track C `885c673d59bf95ca1a4c0aea96f0f6a77a0c2725`. Web #5 `a4e49c83f5783c19617fb609b8f95b179cb13e84`. Language #6 `eda65bf5d9203aee05f4d28992d1ccfcd815ebd4`. QGV #10 `5eec129ef81641f0bc11f5adbb43d0b2122ee24b`. Technical #11 `a2e0790dd7fb267ebaa7d052acae59220ecf631e`. Macro #12 `61d3352d5d68c7830e924f17613598ca79fcec6f` |
+| Already in the canonical base, not moved | Track D `feature/track-d-rig-news` @ `da86dfc26dcaa5c32c60762683dcca702a0c57b8`. Track E `feature/track-e-prompt-library-v1` @ `d226481e1b49e0910642478ae80545598e2e5a98` |
+| CI | Combined status `pending`, `total_count=0`, `check_runs=0` for `f853908`. Not a pass. `c21-real-data` is `workflow_dispatch` only |
+
+## Unresolved scope (do not implement on this baseline)
+
+| Item | Label |
+|---|---|
+| Any new news provider, including the surveyed keyless candidates | NOT_ACTIVATED. Keyed or paid APIs stay PROVIDER_BLOCKED |
+| Semantic-similarity threshold | POLICY_BLOCKED |
+| Sentiment or impact model | POLICY_BLOCKED |
+| Consensus source | NOT_AVAILABLE |
+| LIVE expiry / TTL | POLICY_BLOCKED. Caller-supplied `expires_at` is required for LIVE and is not a policy |
+
+## Disposition
+
+RIG / NEWS INGESTION IMPLEMENTATION BASELINE / INTEGRATION WAIT
+
+Defined scope is closed at `f853908`. Do not merge PR #13. Integration waits for the owner. This branch does not take Track C, QGV, Technical, Macro, Web, Entity Metadata, or Producer Infrastructure work.
+

@@ -4,6 +4,13 @@ Provider-neutral news ingestion boundary. It does not fetch, translate, score,
 or choose a vendor. Code: `implementation/src/investment_system/rig/ingest/`.
 Frozen RIG P0–P4 modules are not modified.
 
+Code under test for this baseline: `f8539087837bd67efa3aa87d618313a333746446`
+on `feature/rig-news-real-ingestion-v1`. Base
+`b8e39a2196a6d7794a04a0cd5393c68329e126ca`. The rules below are the locked
+scope. This version does not add a news provider, a semantic-similarity
+threshold, a sentiment or impact model, a consensus source, or a LIVE expiry
+policy. Disposition: INTEGRATION WAIT. PR #13 stays draft and unmerged.
+
 `NormalizedNewsItem` is the normalized representation of one supplied article.
 It is **not** `rig.model.NewsEvent`. That frozen type remains a real-world
 economic event (`CONTRACT`, `CUSTOMER_WIN`, …). This package does not create a
