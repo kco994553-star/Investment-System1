@@ -3,7 +3,7 @@ on:
   push:
     branches: [feature/web-mvp-v1, feature/global-language-search-v1]
   pull_request:
-    paths: ['implementation/src/investment_system/product/**', 'implementation/tests/test_web_mvp.py', 'implementation/tests/test_global_language_search.py', 'implementation/tools/global_language_search*.js', 'implementation/tools/build_web_mvp_demo.py', 'implementation/tools/web_mvp_browser_test.js', '.github/workflows/web-mvp-validation.yml']
+    paths: ['implementation/src/investment_system/product/**', 'implementation/tests/test_web_mvp.py', 'implementation/tests/test_global_language_search.py', 'implementation/tests/test_entity_metadata_coverage.py', 'implementation/reports/entity_metadata/**', 'implementation/tools/entity_metadata_search_test.js', 'implementation/tools/global_language_search*.js', 'implementation/tools/build_web_mvp_demo.py', 'implementation/tools/web_mvp_browser_test.js', '.github/workflows/web-mvp-validation.yml']
 permissions:
   contents: read
 jobs:
@@ -30,6 +30,7 @@ jobs:
           python implementation/tools/build_web_mvp_demo.py --out /tmp/web-mvp-demo
           python -m http.server 8765 --bind 127.0.0.1 --directory /tmp > /tmp/web-server.log 2>&1 &
           node implementation/tools/global_language_search_test.js /tmp/web-mvp-demo
+          node implementation/tools/entity_metadata_search_test.js /tmp/web-mvp implementation/reports/web_mvp/entity_metadata_search.json
           node implementation/tools/web_mvp_browser_test.js
           node implementation/tools/global_language_search_browser_test.js
       - uses: actions/upload-artifact@v4

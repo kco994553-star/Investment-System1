@@ -21,6 +21,7 @@ METADATA_DIR = ROOT / 'reports/entity_metadata'
 SOURCES_DIR = METADATA_DIR / 'sources'
 REGISTRY_NAME = 'top500_entity_metadata_2024-12-31.json'
 ROLE = 'SEARCH_PRESENTATION_ONLY'
+MAX_LABEL = 80  # longer community labels are sentences/vandalism, not names (search bound is 128)
 BUILDER = 'product/entity_metadata.py build_registry v1'
 # Wikidata ticker qualifiers are used only on these primary US listing venues.
 US_EXCHANGES = {'Q13677': 'NYSE', 'Q82059': 'Nasdaq'}
@@ -33,6 +34,10 @@ SOURCE_FILES = {
 HANGUL = re.compile('[가-힣]')
 LATIN = re.compile('[A-Za-z]')
 PAREN = re.compile(r'\s*\([^()]*\)\s*$')
+# EDGAR conformed-name state/qualifier suffixes, e.g. 'TJX COMPANIES INC /DE/'.
+EDGAR_SUFFIX = re.compile(r'(\s*/[A-Z]{2,3}/?)+\s*$')
+# Non-common listings (preferred, depositary, notes, units, warrants, ETNs) never name the company.
+NON_COMMON = re.compile(r'(%|\bPFD\b|\bPREF|\bDEP(OSITARY)?\b|\bNOTES?\b|\bUNITS?\b|\bWARRANTS?\b|\bETN\b|우선|예탁|채권|워런트)', re.I)
 
 
 def normalize(text):
@@ -116,12 +121,18 @@ def build_registry(universe, sources, universe_sha256, prior_universes=(), reser
             rejections.append({'company_id': cid, 'field': field, 'value': value, 'source': source, 'reason': reason})
         s = sec.get(cik)
         listed = []
+        def edgar(field, value, **extra):
+            value = clean(value)
+            short = EDGAR_SUFFIX.sub('', value)
+            if short and short != value:
+                extra.update(raw=value, normalization='STRIP_EDGAR_STATE_SUFFIX')
+            add(field, short or value, None, 'sec_submissions', **extra)
         if s:
-            add('official_name', s.get('name'), None, 'sec_submissions')
+            edgar('official_name', s.get('name'))
             listed += list(s.get('tickers') or [])
             for f in s.get('formerNames') or []:
-                add('historical_name', f.get('name'), None, 'sec_submissions',
-                    valid_from=(f.get('from') or '')[:10] or None, valid_to=(f.get('to') or '')[:10] or None)
+                edgar('historical_name', f.get('name'),
+                      valid_from=(f.get('from') or '')[:10] or None, valid_to=(f.get('to') or '')[:10] or None)
         for r in sec_tickers.get(cik, []):
             listed.append(r['ticker'])
             add('alias', r.get('title'), 'en-US', 'sec_company_tickers')
@@ -158,6 +169,8 @@ def build_registry(universe, sources, universe_sha256, prior_universes=(), reser
                 src = 'kis_master:' + r.get('exchange', '')
                 if str(r.get('security_type')) != '2':
                     reject('ko-KR', r.get('ko_name'), src, 'NOT_STOCK_LISTING')
+                elif NON_COMMON.search(r.get('ko_name') or '') or NON_COMMON.search(r.get('en_name') or ''):
+                    reject('ko-KR', r.get('ko_name'), src, 'NON_COMMON_LISTING')
                 elif not HANGUL.search(r.get('ko_name') or ''):
                     reject('ko-KR', r.get('ko_name'), src, 'NO_HANGUL')
                 elif not s or not names_agree(r.get('en_name'), s.get('name')):
@@ -192,6 +205,8 @@ def build_registry(universe, sources, universe_sha256, prior_universes=(), reser
             why = None
             if len(key.replace(' ', '')) < (1 if tick else 2):
                 why = 'TOO_SHORT'
+            elif len(v['value']) > MAX_LABEL or re.search(r'@|https?:|www\.', v['value']):
+                why = 'IMPLAUSIBLE_LABEL'
             elif key in reserved or (not tick and ticker_key(v['value']) in reserved):
                 why = 'RESERVED_NAVIGATION_LABEL'
             elif primary_ticker.get(key if tick else ticker_key(v['value']), cid) != cid:

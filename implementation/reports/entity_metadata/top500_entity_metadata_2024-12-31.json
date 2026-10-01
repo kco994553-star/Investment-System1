@@ -505,6 +505,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "APPLIED MATERIALS INC /DE"
+     },
+     {
       "source": "wikidata:Q621610",
       "value": "APPLIED MATERIALS, INC. (Santa Clara, CA)"
      }
@@ -525,8 +529,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "APPLIED MATERIALS INC /DE",
     "source": "sec_submissions",
-    "value": "APPLIED MATERIALS INC /DE"
+    "value": "APPLIED MATERIALS INC"
    },
    "ticker": "AMAT"
   },
@@ -630,6 +636,12 @@
   },
   "amt": {
    "aliases": {
+    "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "AMERICAN TOWER CORP /MA/"
+     }
+    ],
     "ko-KR": [
      {
       "source": "kis_master:NYS",
@@ -656,8 +668,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "AMERICAN TOWER CORP /MA/",
     "source": "sec_submissions",
-    "value": "AMERICAN TOWER CORP /MA/"
+    "value": "AMERICAN TOWER CORP"
    },
    "ticker": "AMT"
   },
@@ -794,14 +808,7 @@
     }
    },
    "company_id": "apd",
-   "historical_names": [
-    {
-     "source": "sec_submissions",
-     "valid_from": "1994-03-15",
-     "valid_to": "2022-04-07",
-     "value": "AIR PRODUCTS & CHEMICALS INC /DE/"
-    }
-   ],
+   "historical_names": [],
    "historical_tickers": [],
    "official_name": {
     "source": "sec_submissions",
@@ -811,6 +818,12 @@
   },
   "aph": {
    "aliases": {
+    "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "AMPHENOL CORP /DE/"
+     }
+    ],
     "ko-KR": [
      {
       "source": "kis_master:NYS",
@@ -830,8 +843,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "AMPHENOL CORP /DE/",
     "source": "sec_submissions",
-    "value": "AMPHENOL CORP /DE/"
+    "value": "AMPHENOL CORP"
    },
    "ticker": "APH"
   },
@@ -841,13 +856,6 @@
      {
       "source": "wikidata:Q619121",
       "value": "Apollo Global Management, LLC"
-     }
-    ],
-    "ko-KR": [
-     {
-      "source": "kis_master:NYS",
-      "symbol": "APOS",
-      "value": "아폴로 글로벌 매니지먼트 후순위채권(2053 7.625%)"
      }
     ],
     "und": [
@@ -1040,6 +1048,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "BANK OF AMERICA CORP /DE/"
+     },
+     {
       "source": "wikidata:Q487907",
       "value": "BANK OF AMERICA CORPORATION"
      },
@@ -1151,10 +1163,12 @@
    "company_id": "bac",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "BANKAMERICA CORP/DE/",
      "source": "sec_submissions",
      "valid_from": "1998-10-30",
      "valid_to": "1999-04-23",
-     "value": "BANKAMERICA CORP/DE/"
+     "value": "BANKAMERICA CORP"
     },
     {
      "source": "sec_submissions",
@@ -1165,8 +1179,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "BANK OF AMERICA CORP /DE/",
     "source": "sec_submissions",
-    "value": "BANK OF AMERICA CORP /DE/"
+    "value": "BANK OF AMERICA CORP"
    },
    "ticker": "BAC"
   },
@@ -1321,10 +1337,12 @@
    "company_id": "blk",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "BlackRock Funding, Inc. /DE",
      "source": "sec_submissions",
      "valid_from": "2024-02-20",
      "valid_to": "2024-10-01",
-     "value": "BlackRock Funding, Inc. /DE"
+     "value": "BlackRock Funding, Inc."
     }
    ],
    "historical_tickers": [],
@@ -1963,13 +1981,6 @@
       "value": "Comcast Holdings"
      }
     ],
-    "ko-KR": [
-     {
-      "source": "kis_master:NYS",
-      "symbol": "CCZ",
-      "value": "컴캐스트 홀딩스 우선주"
-     }
-    ],
     "und": [
      {
       "source": "sec_submissions",
@@ -2264,6 +2275,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "COSTCO WHOLESALE CORP /NEW"
+     },
+     {
       "source": "wikidata:Q715583",
       "value": "Costco Wholesale"
      }
@@ -2312,14 +2327,20 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "COSTCO WHOLESALE CORP /NEW",
     "source": "sec_submissions",
-    "value": "COSTCO WHOLESALE CORP /NEW"
+    "value": "COSTCO WHOLESALE CORP"
    },
    "ticker": "COST"
   },
   "cp": {
    "aliases": {
     "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "CANADIAN PACIFIC KANSAS CITY LTD/CN"
+     },
      {
       "source": "wikidata:Q117706368",
       "value": "CPKC"
@@ -2351,22 +2372,28 @@
    "company_id": "cp",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "CANADIAN PACIFIC RAILWAY LTD/CN",
      "source": "sec_submissions",
      "valid_from": "2002-08-07",
      "valid_to": "2023-04-05",
-     "value": "CANADIAN PACIFIC RAILWAY LTD/CN"
+     "value": "CANADIAN PACIFIC RAILWAY LTD"
     },
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "CANADIAN PACIFIC RAILWAY CO/CN",
      "source": "sec_submissions",
      "valid_from": "2000-11-08",
      "valid_to": "2002-07-24",
-     "value": "CANADIAN PACIFIC RAILWAY CO/CN"
+     "value": "CANADIAN PACIFIC RAILWAY CO"
     }
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "CANADIAN PACIFIC KANSAS CITY LTD/CN",
     "source": "sec_submissions",
-    "value": "CANADIAN PACIFIC KANSAS CITY LTD/CN"
+    "value": "CANADIAN PACIFIC KANSAS CITY LTD"
    },
    "ticker": "CP"
   },
@@ -2764,16 +2791,12 @@
    "company_id": "d",
    "historical_names": [
     {
-     "source": "sec_submissions",
-     "valid_from": "2017-05-15",
-     "valid_to": "2019-10-03",
-     "value": "DOMINION ENERGY INC /VA/"
-    },
-    {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "DOMINION RESOURCES INC /VA/",
      "source": "sec_submissions",
      "valid_from": "1995-02-21",
      "valid_to": "2017-05-15",
-     "value": "DOMINION RESOURCES INC /VA/"
+     "value": "DOMINION RESOURCES INC"
     }
    ],
    "historical_tickers": [],
@@ -2823,14 +2846,7 @@
     }
    },
    "company_id": "dal",
-   "historical_names": [
-    {
-     "source": "sec_submissions",
-     "valid_from": "1994-02-14",
-     "valid_to": "2019-08-08",
-     "value": "DELTA AIR LINES INC /DE/"
-    }
-   ],
+   "historical_names": [],
    "historical_tickers": [],
    "official_name": {
     "source": "sec_submissions",
@@ -2966,6 +2982,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "DANAHER CORP /DE/"
+     },
+     {
       "source": "wikidata:Q1159256",
       "value": "Danaher"
      }
@@ -2993,8 +3013,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "DANAHER CORP /DE/",
     "source": "sec_submissions",
-    "value": "DANAHER CORP /DE/"
+    "value": "DANAHER CORP"
    },
    "ticker": "DHR"
   },
@@ -3115,16 +3137,6 @@
       "source": "kis_master:NYS",
       "symbol": "DUK",
       "value": "듀크 에너지"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "DUKB",
-      "value": "듀크 에너지 후순위채권(2078-09-15 5.625%)"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "DUKU",
-      "value": "듀크 에너지 7.375% 선순위채권"
      }
     ],
     "und": [
@@ -3173,6 +3185,12 @@
   },
   "dvn": {
    "aliases": {
+    "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "DEVON ENERGY CORP/DE"
+     }
+    ],
     "ko-KR": [
      {
       "source": "kis_master:NYS",
@@ -3192,12 +3210,6 @@
    "historical_names": [
     {
      "source": "sec_submissions",
-     "valid_from": "1999-11-12",
-     "valid_to": "2000-05-31",
-     "value": "DEVON ENERGY CORP"
-    },
-    {
-     "source": "sec_submissions",
      "valid_from": "1999-08-19",
      "valid_to": "1999-08-16",
      "value": "DEVON DELAWARE CORP"
@@ -3205,8 +3217,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "DEVON ENERGY CORP/DE",
     "source": "sec_submissions",
-    "value": "DEVON ENERGY CORP/DE"
+    "value": "DEVON ENERGY CORP"
    },
    "ticker": "DVN"
   },
@@ -3650,6 +3664,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "ENTERGY CORP /DE/"
+     },
+     {
       "source": "wikidata:Q1344587",
       "value": "Entergy Corporation"
      }
@@ -3670,18 +3688,13 @@
     }
    },
    "company_id": "etr",
-   "historical_names": [
-    {
-     "source": "sec_submissions",
-     "valid_from": "1994-02-14",
-     "valid_to": "1994-02-09",
-     "value": "ENTERGY CORP/FL"
-    }
-   ],
+   "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "ENTERGY CORP /DE/",
     "source": "sec_submissions",
-    "value": "ENTERGY CORP /DE/"
+    "value": "ENTERGY CORP"
    },
    "ticker": "ETR"
   },
@@ -4135,6 +4148,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "CORNING INC /NY"
+     },
+     {
       "source": "wikidata:Q5842736",
       "value": "Corning Glass Works"
      },
@@ -4166,8 +4183,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "CORNING INC /NY",
     "source": "sec_submissions",
-    "value": "CORNING INC /NY"
+    "value": "CORNING INC"
    },
    "ticker": "GLW"
   },
@@ -4244,16 +4263,6 @@
       "source": "kis_master:NAS",
       "symbol": "GOOGL",
       "value": "알파벳 A"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "GOOGM",
-      "value": "알파벳 6.25% 의무전환우선 예탁주 A"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "GOOGN",
-      "value": "알파벳 6.25% 의무전환우선 예탁주 B"
      }
     ],
     "und": [
@@ -4475,10 +4484,12 @@
      "value": "HCA Holdings, Inc."
     },
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "HCA INC/TN",
      "source": "sec_submissions",
      "valid_from": "2001-08-07",
      "valid_to": "2010-11-24",
-     "value": "HCA INC/TN"
+     "value": "HCA INC"
     },
     {
      "source": "sec_submissions",
@@ -5080,12 +5091,6 @@
     },
     {
      "source": "sec_submissions",
-     "valid_from": "1997-08-05",
-     "valid_to": "2010-04-07",
-     "value": "TYCO INTERNATIONAL LTD /BER/"
-    },
-    {
-     "source": "sec_submissions",
      "valid_from": "1995-02-15",
      "valid_to": "1997-07-08",
      "value": "ADT LIMITED"
@@ -5238,10 +5243,12 @@
      "value": "J P MORGAN CHASE & CO"
     },
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "CHASE MANHATTAN CORP /DE/",
      "source": "sec_submissions",
      "valid_from": "1996-10-17",
      "valid_to": "2000-11-21",
-     "value": "CHASE MANHATTAN CORP /DE/"
+     "value": "CHASE MANHATTAN CORP"
     },
     {
      "source": "sec_submissions",
@@ -5301,18 +5308,6 @@
      {
       "source": "wikidata:Q1570773",
       "value": "Kohlberg Kravis Roberts & Co."
-     }
-    ],
-    "ko-KR": [
-     {
-      "source": "kis_master:NYS",
-      "symbol": "KKRS",
-      "value": "KKR 그룹 파이낸스 9 후순위채권(2061-04-01 4.625%)"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "KKRT",
-      "value": "KKR & CO 일반채권(2026-06-01 6.875%)"
      }
     ],
     "und": [
@@ -5758,12 +5753,12 @@
    "aliases": {
     "en-US": [
      {
-      "source": "wikidata:Q1141173",
-      "value": "Marriott"
+      "source": "sec_company_tickers",
+      "value": "MARRIOTT INTERNATIONAL INC /MD/"
      },
      {
       "source": "wikidata:Q1141173",
-      "value": "Marriott International Inc"
+      "value": "Marriott"
      }
     ],
     "ko-KR": [
@@ -5796,8 +5791,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "MARRIOTT INTERNATIONAL INC /MD/",
     "source": "sec_submissions",
-    "value": "MARRIOTT INTERNATIONAL INC /MD/"
+    "value": "MARRIOTT INTERNATIONAL INC"
    },
    "ticker": "MAR"
   },
@@ -5907,6 +5904,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "MOODYS CORP /DE/"
+     },
+     {
       "source": "wikidata:Q675585",
       "value": "Moody's"
      }
@@ -5926,10 +5927,12 @@
    "company_id": "mco",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "DUN & BRADSTREET CORP /DE/",
      "source": "sec_submissions",
      "valid_from": "1998-09-29",
      "valid_to": "2000-02-04",
-     "value": "DUN & BRADSTREET CORP /DE/"
+     "value": "DUN & BRADSTREET CORP"
     },
     {
      "source": "sec_submissions",
@@ -5940,8 +5943,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "MOODYS CORP /DE/",
     "source": "sec_submissions",
-    "value": "MOODYS CORP /DE/"
+    "value": "MOODYS CORP"
    },
    "ticker": "MCO"
   },
@@ -6688,26 +6693,6 @@
       "source": "kis_master:NAS",
       "symbol": "MSTR",
       "value": "스트래티지"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "STRC",
-      "value": "스트래티지 스트래치 우선주(9.000%)"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "STRD",
-      "value": "스트래티지 스트라이드 우선주(10.000%)"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "STRF",
-      "value": "스트래티지 스트라이프 우선주(10.000%)"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "STRK",
-      "value": "스트래티지 스트라이크 우선주(8.000%)"
      }
     ],
     "und": [
@@ -6784,10 +6769,6 @@
      {
       "source": "wikidata:Q1472929",
       "value": "National Association of Securities Dealers Automated Quotations"
-     },
-     {
-      "source": "wikidata:Q1472929",
-      "value": "Owned By Pengiran Mohamad Alip Bin Pengiran Haji Samsuddin@Mohamad Alip Bin Abdullah since 2001 issued by U.S. Department of States Political License No. 00-298983 under U.S. Department of Defense Area 51 (Pentagon)"
      },
      {
       "source": "wikidata:Q1472929",
@@ -6898,6 +6879,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "NEWMONT Corp /DE/"
+     },
+     {
       "source": "wikidata:Q1785405",
       "value": "Newmont Corporation"
      }
@@ -6923,16 +6908,20 @@
    "company_id": "nem",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "NEWMONT GOLDCORP CORP /DE/",
      "source": "sec_submissions",
      "valid_from": "2019-04-22",
      "valid_to": "2020-01-03",
-     "value": "NEWMONT GOLDCORP CORP /DE/"
+     "value": "NEWMONT GOLDCORP CORP"
     },
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "NEWMONT MINING CORP /DE/",
      "source": "sec_submissions",
      "valid_from": "2002-03-12",
      "valid_to": "2019-04-16",
-     "value": "NEWMONT MINING CORP /DE/"
+     "value": "NEWMONT MINING CORP"
     },
     {
      "source": "sec_submissions",
@@ -6943,8 +6932,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "NEWMONT Corp /DE/",
     "source": "sec_submissions",
-    "value": "NEWMONT Corp /DE/"
+    "value": "NEWMONT Corp"
    },
    "ticker": "NEM"
   },
@@ -7058,6 +7049,12 @@
   },
   "noc": {
    "aliases": {
+    "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "NORTHROP GRUMMAN CORP /DE/"
+     }
+    ],
     "ko-KR": [
      {
       "source": "wikidata:Q329953",
@@ -7096,8 +7093,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "NORTHROP GRUMMAN CORP /DE/",
     "source": "sec_submissions",
-    "value": "NORTHROP GRUMMAN CORP /DE/"
+    "value": "NORTHROP GRUMMAN CORP"
    },
    "ticker": "NOC"
   },
@@ -7258,14 +7257,7 @@
     }
    },
    "company_id": "nvda",
-   "historical_names": [
-    {
-     "source": "sec_submissions",
-     "valid_from": "1998-05-07",
-     "valid_to": "2002-06-04",
-     "value": "NVIDIA CORP/CA"
-    }
-   ],
+   "historical_names": [],
    "historical_tickers": [],
    "official_name": {
     "source": "sec_submissions",
@@ -7350,12 +7342,12 @@
    "aliases": {
     "en-US": [
      {
-      "source": "wikidata:Q11074156",
-      "value": "Oklahoma Natural Gas Company"
+      "source": "sec_company_tickers",
+      "value": "ONEOK INC /NEW/"
      },
      {
       "source": "wikidata:Q11074156",
-      "value": "Oneok, Inc"
+      "value": "Oklahoma Natural Gas Company"
      }
     ],
     "ko-KR": [
@@ -7384,8 +7376,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "ONEOK INC /NEW/",
     "source": "sec_submissions",
-    "value": "ONEOK INC /NEW/"
+    "value": "ONEOK INC"
    },
    "ticker": "OKE"
   },
@@ -7480,6 +7474,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "OCCIDENTAL PETROLEUM CORP /DE/"
+     },
+     {
       "source": "wikidata:Q2013357",
       "value": "Occidental Petroleum Corporation"
      }
@@ -7513,8 +7511,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "OCCIDENTAL PETROLEUM CORP /DE/",
     "source": "sec_submissions",
-    "value": "OCCIDENTAL PETROLEUM CORP /DE/"
+    "value": "OCCIDENTAL PETROLEUM CORP"
    },
    "ticker": "OXY"
   },
@@ -7739,6 +7739,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "PROGRESSIVE CORP/OH/"
+     },
+     {
       "source": "wikidata:Q7248721",
       "value": "Progressive"
      }
@@ -7762,8 +7766,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "PROGRESSIVE CORP/OH/",
     "source": "sec_submissions",
-    "value": "PROGRESSIVE CORP/OH/"
+    "value": "PROGRESSIVE CORP"
    },
    "ticker": "PGR"
   },
@@ -7850,16 +7856,6 @@
       "source": "kis_master:NAS",
       "symbol": "ACGL",
       "value": "아치 캐피털 그룹"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "ACGLN",
-      "value": "아치 캐피털 그룹 우선주 G"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "ACGLO",
-      "value": "아치 캐피털 그룹 우선주 F(5.450%)"
      }
     ],
     "und": [
@@ -8042,10 +8038,12 @@
      "value": "AMERICAN EXPRESS FINANCIAL ADVISORS"
     },
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "IDS FINANCIAL CORP/MN/",
      "source": "sec_submissions",
      "valid_from": "1994-02-14",
      "valid_to": "1995-02-06",
-     "value": "IDS FINANCIAL CORP/MN/"
+     "value": "IDS FINANCIAL CORP"
     }
    ],
    "historical_tickers": [],
@@ -8740,6 +8738,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "CITIZENS FINANCIAL GROUP INC/RI"
+     },
+     {
       "source": "wikidata:Q5122694",
       "value": "Citizens Bank"
      },
@@ -8778,24 +8780,23 @@
     }
    },
    "company_id": "plan:cfg",
-   "historical_names": [
-    {
-     "source": "sec_submissions",
-     "valid_from": "1999-07-01",
-     "valid_to": "2000-02-08",
-     "value": "CITIZENS FINANCIAL GROUP INC/DE"
-    }
-   ],
+   "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "CITIZENS FINANCIAL GROUP INC/RI",
     "source": "sec_submissions",
-    "value": "CITIZENS FINANCIAL GROUP INC/RI"
+    "value": "CITIZENS FINANCIAL GROUP INC"
    },
    "ticker": "CFG"
   },
   "plan:chd": {
    "aliases": {
     "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "CHURCH & DWIGHT CO INC /DE/"
+     },
      {
       "source": "wikidata:Q5116536",
       "value": "Church & Dwight (United States), Church & Dwight Co., Inc., C&D, CHD"
@@ -8820,8 +8821,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "CHURCH & DWIGHT CO INC /DE/",
     "source": "sec_submissions",
-    "value": "CHURCH & DWIGHT CO INC /DE/"
+    "value": "CHURCH & DWIGHT CO INC"
    },
    "ticker": "CHD"
   },
@@ -8829,8 +8832,8 @@
    "aliases": {
     "en-US": [
      {
-      "source": "wikidata:Q2961234",
-      "value": "Charter Communications, Inc."
+      "source": "sec_company_tickers",
+      "value": "CHARTER COMMUNICATIONS, INC. /MO/"
      },
      {
       "source": "wikidata:Q2961234",
@@ -8841,11 +8844,6 @@
      {
       "source": "wikidata:Q2961234",
       "value": "차터커뮤니케이션"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "CHTRP",
-      "value": "차터 커뮤니케이션스 누적 상환우선주 A"
      }
     ],
     "und": [
@@ -8870,8 +8868,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "CHARTER COMMUNICATIONS, INC. /MO/",
     "source": "sec_submissions",
-    "value": "CHARTER COMMUNICATIONS, INC. /MO/"
+    "value": "CHARTER COMMUNICATIONS, INC."
    },
    "ticker": "CHTR"
   },
@@ -8911,6 +8911,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "CLOROX CO /DE/"
+     },
+     {
       "source": "wikidata:Q910368",
       "value": "Clorox Company"
      },
@@ -8941,8 +8945,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "CLOROX CO /DE/",
     "source": "sec_submissions",
-    "value": "CLOROX CO /DE/"
+    "value": "CLOROX CO"
    },
    "ticker": "CLX"
   },
@@ -8989,26 +8995,6 @@
       "source": "kis_master:NYS",
       "symbol": "CMS",
       "value": "CMS 에너지"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "CMSA",
-      "value": "CMS 에너지 후순위채권(2078-03-15 5.625%)"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "CMS/C",
-      "value": "CMS 에너지 우선주 C(4.200% 누적)"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "CMSC",
-      "value": "CMS 에너지 후순위채권(2078-10-15 5.875%)"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "CMSD",
-      "value": "CMS 에너지 후순위채권(2079-03-01 5.875%)"
      }
     ],
     "und": [
@@ -9557,6 +9543,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "HORTON D R INC /DE/"
+     },
+     {
       "source": "wikidata:Q5203782",
       "value": "D.R. Horton, Inc."
      },
@@ -9577,8 +9567,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "HORTON D R INC /DE/",
     "source": "sec_submissions",
-    "value": "HORTON D R INC /DE/"
+    "value": "HORTON D R INC"
    },
    "ticker": "DHI"
   },
@@ -9714,23 +9706,8 @@
     "ko-KR": [
      {
       "source": "kis_master:NYS",
-      "symbol": "DTB",
-      "value": "DTE 에너지 후순위채권(2080-10-15 4.375%)"
-     },
-     {
-      "source": "kis_master:NYS",
       "symbol": "DTE",
       "value": "DTE 에너지"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "DTK",
-      "value": "DTE 에너지 후순위채권 H(2085-10-01 6.250%)"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "DTW",
-      "value": "DTE 에너지 후순위채권(2077-12-01 5.250%)"
      }
     ],
     "und": [
@@ -10075,10 +10052,12 @@
    "company_id": "plan:eqt",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "EQUITABLE RESOURCES INC /PA/",
      "source": "sec_submissions",
      "valid_from": "1994-05-18",
      "valid_to": "2009-02-04",
-     "value": "EQUITABLE RESOURCES INC /PA/"
+     "value": "EQUITABLE RESOURCES INC"
     }
    ],
    "historical_tickers": [],
@@ -10907,6 +10886,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "HUNTINGTON BANCSHARES INC /MD/"
+     },
+     {
       "source": "wikidata:Q798819",
       "value": "Huntington Bank"
      },
@@ -10920,26 +10903,6 @@
       "source": "kis_master:NAS",
       "symbol": "HBAN",
       "value": "헌팅턴 뱅크셰어스"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "HBANL",
-      "value": "헌팅턴 뱅크셰어스 우선주 J(6.875%)"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "HBANM",
-      "value": "헌팅턴 뱅크셰어스 우선주 I(5.700%)"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "HBANP",
-      "value": "헌팅턴 뱅크셰어스 우선주 H"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "HBANZ",
-      "value": "헌팅턴 뱅크셰어즈 5.5 비누적 예탁"
      }
     ],
     "und": [
@@ -10972,8 +10935,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "HUNTINGTON BANCSHARES INC /MD/",
     "source": "sec_submissions",
-    "value": "HUNTINGTON BANCSHARES INC /MD/"
+    "value": "HUNTINGTON BANCSHARES INC"
    },
    "ticker": "HBAN"
   },
@@ -11022,16 +10987,12 @@
      "value": "HARTFORD FINANCIAL SERVICES GROUP, INC."
     },
     {
-     "source": "sec_submissions",
-     "valid_from": "1997-11-14",
-     "valid_to": "2019-05-23",
-     "value": "HARTFORD FINANCIAL SERVICES GROUP INC/DE"
-    },
-    {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "ITT HARTFORD GROUP INC /DE",
      "source": "sec_submissions",
      "valid_from": "1996-10-29",
      "valid_to": "1998-02-13",
-     "value": "ITT HARTFORD GROUP INC /DE"
+     "value": "ITT HARTFORD GROUP INC"
     }
    ],
    "historical_tickers": [],
@@ -11064,6 +11025,10 @@
   "plan:hrl": {
    "aliases": {
     "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "HORMEL FOODS CORP /DE/"
+     },
      {
       "source": "wikidata:Q1454852",
       "value": "George A. Hormel & Company"
@@ -11111,8 +11076,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "HORMEL FOODS CORP /DE/",
     "source": "sec_submissions",
-    "value": "HORMEL FOODS CORP /DE/"
+    "value": "HORMEL FOODS CORP"
    },
    "ticker": "HRL"
   },
@@ -11236,6 +11203,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "IDEXX LABORATORIES INC /DE"
+     },
+     {
       "source": "wikidata:Q1758392",
       "value": "Idexx Laboratories"
      }
@@ -11259,13 +11230,21 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "IDEXX LABORATORIES INC /DE",
     "source": "sec_submissions",
-    "value": "IDEXX LABORATORIES INC /DE"
+    "value": "IDEXX LABORATORIES INC"
    },
    "ticker": "IDXX"
   },
   "plan:iex": {
    "aliases": {
+    "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "IDEX CORP /DE/"
+     }
+    ],
     "ko-KR": [
      {
       "source": "kis_master:NYS",
@@ -11285,8 +11264,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "IDEX CORP /DE/",
     "source": "sec_submissions",
-    "value": "IDEX CORP /DE/"
+    "value": "IDEX CORP"
    },
    "ticker": "IEX"
   },
@@ -11341,6 +11322,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "INTERNATIONAL PAPER CO /NEW/"
+     },
+     {
       "source": "wikidata:Q202972",
       "value": "International Paper Company"
      }
@@ -11374,8 +11359,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "INTERNATIONAL PAPER CO /NEW/",
     "source": "sec_submissions",
-    "value": "INTERNATIONAL PAPER CO /NEW/"
+    "value": "INTERNATIONAL PAPER CO"
    },
    "ticker": "IP"
   },
@@ -11507,12 +11494,6 @@
    "historical_names": [
     {
      "source": "sec_submissions",
-     "valid_from": "2000-02-14",
-     "valid_to": "2005-06-09",
-     "value": "IRON MOUNTAIN INC/PA"
-    },
-    {
-     "source": "sec_submissions",
      "valid_from": "1996-11-13",
      "valid_to": "1999-02-16",
      "value": "PIERCE LEAHY CORP"
@@ -11567,10 +11548,6 @@
      {
       "source": "wikidata:Q3157622",
       "value": "Jacobs"
-     },
-     {
-      "source": "wikidata:Q3157622",
-      "value": "Jacobs Engineering Group Inc."
      }
     ],
     "ko-KR": [
@@ -11591,10 +11568,12 @@
    "company_id": "plan:j",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "JACOBS ENGINEERING GROUP INC /DE/",
      "source": "sec_submissions",
      "valid_from": "1994-05-12",
      "valid_to": "2022-08-19",
-     "value": "JACOBS ENGINEERING GROUP INC /DE/"
+     "value": "JACOBS ENGINEERING GROUP INC"
     }
    ],
    "historical_tickers": [],
@@ -11719,8 +11698,8 @@
    "aliases": {
     "en-US": [
      {
-      "source": "wikidata:Q1740314",
-      "value": "KeyCorp"
+      "source": "sec_company_tickers",
+      "value": "KEYCORP /NEW/"
      }
     ],
     "ko-KR": [
@@ -11767,8 +11746,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "KEYCORP /NEW/",
     "source": "sec_submissions",
-    "value": "KEYCORP /NEW/"
+    "value": "KEYCORP"
    },
    "ticker": "KEY"
   },
@@ -12042,8 +12023,8 @@
    "aliases": {
     "en-US": [
      {
-      "source": "wikidata:Q16981175",
-      "value": "Lennar Corp."
+      "source": "sec_company_tickers",
+      "value": "LENNAR CORP /NEW/"
      }
     ],
     "ko-KR": [
@@ -12075,16 +12056,20 @@
    "company_id": "plan:len",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "PACIFIC GREYSTONE CORP /DE/",
      "source": "sec_submissions",
      "valid_from": "1996-06-27",
      "valid_to": "1997-09-26",
-     "value": "PACIFIC GREYSTONE CORP /DE/"
+     "value": "PACIFIC GREYSTONE CORP"
     }
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "LENNAR CORP /NEW/",
     "source": "sec_submissions",
-    "value": "LENNAR CORP /NEW/"
+    "value": "LENNAR CORP"
    },
    "ticker": "LEN"
   },
@@ -12137,6 +12122,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "L3HARRIS TECHNOLOGIES, INC. /DE/"
+     },
+     {
       "source": "wikidata:Q30291091",
       "value": "Harris (United States)"
      },
@@ -12171,16 +12160,20 @@
    "company_id": "plan:lhx",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "HARRIS CORP /DE/",
      "source": "sec_submissions",
      "valid_from": "1994-09-09",
      "valid_to": "2019-06-25",
-     "value": "HARRIS CORP /DE/"
+     "value": "HARRIS CORP"
     }
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "L3HARRIS TECHNOLOGIES, INC. /DE/",
     "source": "sec_submissions",
-    "value": "L3HARRIS TECHNOLOGIES, INC. /DE/"
+    "value": "L3HARRIS TECHNOLOGIES, INC."
    },
    "ticker": "LHX"
   },
@@ -12441,6 +12434,12 @@
   },
   "plan:mas": {
    "aliases": {
+    "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "MASCO CORP /DE/"
+     }
+    ],
     "ko-KR": [
      {
       "source": "kis_master:NYS",
@@ -12460,20 +12459,15 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "MASCO CORP /DE/",
     "source": "sec_submissions",
-    "value": "MASCO CORP /DE/"
+    "value": "MASCO CORP"
    },
    "ticker": "MAS"
   },
   "plan:mchp": {
    "aliases": {
-    "ko-KR": [
-     {
-      "source": "kis_master:NAS",
-      "symbol": "MCHPP",
-      "value": "마이크로칩 테크놀로지 우선주 A(7.500% 의무전환)"
-     }
-    ],
     "und": [
      {
       "source": "sec_submissions",
@@ -12762,12 +12756,6 @@
    "historical_names": [
     {
      "source": "sec_submissions",
-     "valid_from": "2000-11-03",
-     "valid_to": "2019-06-26",
-     "value": "NISOURCE INC/DE"
-    },
-    {
-     "source": "sec_submissions",
      "valid_from": "2000-06-02",
      "valid_to": "2000-11-02",
      "value": "NEW NISOURCE INC"
@@ -12841,13 +12829,6 @@
      {
       "source": "wikidata:Q970695",
       "value": "Northern Trust Corporation"
-     }
-    ],
-    "ko-KR": [
-     {
-      "source": "kis_master:NAS",
-      "symbol": "NTRSO",
-      "value": "노던 트러스트 우선주 E(4.700%)"
      }
     ],
     "und": [
@@ -12985,14 +12966,7 @@
     }
    },
    "company_id": "plan:odfl",
-   "historical_names": [
-    {
-     "source": "sec_submissions",
-     "valid_from": "1996-02-09",
-     "valid_to": "2019-08-21",
-     "value": "OLD DOMINION FREIGHT LINE INC/VA"
-    }
-   ],
+   "historical_names": [],
    "historical_tickers": [],
    "official_name": {
     "source": "sec_submissions",
@@ -13297,12 +13271,12 @@
    "aliases": {
     "en-US": [
      {
-      "source": "wikidata:Q7259716",
-      "value": "Pulte Homes"
+      "source": "sec_company_tickers",
+      "value": "PULTEGROUP INC/MI/"
      },
      {
       "source": "wikidata:Q7259716",
-      "value": "PulteGroup, Inc"
+      "value": "Pulte Homes"
      }
     ],
     "ko-KR": [
@@ -13323,10 +13297,12 @@
    "company_id": "plan:phm",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "PULTE HOMES INC/MI/",
      "source": "sec_submissions",
      "valid_from": "2001-12-20",
      "valid_to": "2010-03-23",
-     "value": "PULTE HOMES INC/MI/"
+     "value": "PULTE HOMES INC"
     },
     {
      "source": "sec_submissions",
@@ -13337,8 +13313,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "PULTEGROUP INC/MI/",
     "source": "sec_submissions",
-    "value": "PULTEGROUP INC/MI/"
+    "value": "PULTEGROUP INC"
    },
    "ticker": "PHM"
   },
@@ -13478,13 +13456,6 @@
       "value": "Pennsylvania Power and Light"
      }
     ],
-    "ko-KR": [
-     {
-      "source": "kis_master:NYS",
-      "symbol": "PPLC",
-      "value": "PPL 코프 코퍼레이트 유닛"
-     }
-    ],
     "und": [
      {
       "source": "sec_submissions",
@@ -13521,21 +13492,6 @@
      {
       "source": "wikidata:Q2114414",
       "value": "프루덴셜 파이낸셜"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "PFH",
-      "value": "푸르덴셜 파이낸셜 후순위채권(4.125%)"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "PRH",
-      "value": "푸르덴셜 파이낸셜 후순위채권(5.950%)"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "PRS",
-      "value": "푸르덴셜 파이낸셜 후순위채권(5.625%)"
      }
     ],
     "und": [
@@ -13808,12 +13764,6 @@
      "valid_from": "2008-06-04",
      "valid_to": "2015-04-24",
      "value": "ROPER INDUSTRIES INC"
-    },
-    {
-     "source": "sec_submissions",
-     "valid_from": "1994-03-09",
-     "valid_to": "2008-05-14",
-     "value": "ROPER INDUSTRIES INC /DE/"
     }
    ],
    "historical_tickers": [],
@@ -13862,11 +13812,6 @@
       "source": "kis_master:NAS",
       "symbol": "SMCI",
       "value": "슈퍼 마이크로 컴퓨터"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "SMCIP",
-      "value": "슈퍼마이크로 7% 의무전환우선 예탁주"
      }
     ],
     "und": [
@@ -14210,10 +14155,12 @@
    "company_id": "plan:trmb",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "TRIMBLE NAVIGATION LTD /CA/",
      "source": "sec_submissions",
      "valid_from": "1996-06-26",
      "valid_to": "2016-09-06",
-     "value": "TRIMBLE NAVIGATION LTD /CA/"
+     "value": "TRIMBLE NAVIGATION LTD"
     }
    ],
    "historical_tickers": [],
@@ -14265,6 +14212,12 @@
   },
   "plan:tsco": {
    "aliases": {
+    "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "TRACTOR SUPPLY CO /DE/"
+     }
+    ],
     "ko-KR": [
      {
       "source": "kis_master:NAS",
@@ -14284,8 +14237,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "TRACTOR SUPPLY CO /DE/",
     "source": "sec_submissions",
-    "value": "TRACTOR SUPPLY CO /DE/"
+    "value": "TRACTOR SUPPLY CO"
    },
    "ticker": "TSCO"
   },
@@ -14379,10 +14334,12 @@
    "company_id": "plan:tyl",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "TYLER CORP /NEW/",
      "source": "sec_submissions",
      "valid_from": "1996-08-14",
      "valid_to": "1999-03-31",
-     "value": "TYLER CORP /NEW/"
+     "value": "TYLER CORP"
     }
    ],
    "historical_tickers": [],
@@ -14440,10 +14397,12 @@
      "value": "United Continental Holdings, Inc."
     },
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "UAL CORP /DE/",
      "source": "sec_submissions",
      "valid_from": "1994-08-08",
      "valid_to": "2010-09-30",
-     "value": "UAL CORP /DE/"
+     "value": "UAL CORP"
     }
    ],
    "historical_tickers": [],
@@ -14587,8 +14546,8 @@
    "aliases": {
     "en-US": [
      {
-      "source": "wikidata:Q734338",
-      "value": "VeriSign,Inc."
+      "source": "sec_company_tickers",
+      "value": "VERISIGN INC/CA"
      }
     ]
    },
@@ -14607,8 +14566,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "VERISIGN INC/CA",
     "source": "sec_submissions",
-    "value": "VERISIGN INC/CA"
+    "value": "VERISIGN INC"
    },
    "ticker": "VRSN"
   },
@@ -14718,10 +14679,12 @@
      "value": "WABTEC CORP"
     },
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "WESTINGHOUSE AIR BRAKE CO /DE/",
      "source": "sec_submissions",
      "valid_from": "1996-08-07",
      "valid_to": "1999-11-19",
-     "value": "WESTINGHOUSE AIR BRAKE CO /DE/"
+     "value": "WESTINGHOUSE AIR BRAKE CO"
     }
    ],
    "historical_tickers": [],
@@ -14733,6 +14696,12 @@
   },
   "plan:wat": {
    "aliases": {
+    "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "WATERS CORP /DE/"
+     }
+    ],
     "ko-KR": [
      {
       "source": "kis_master:NYS",
@@ -14752,8 +14721,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "WATERS CORP /DE/",
     "source": "sec_submissions",
-    "value": "WATERS CORP /DE/"
+    "value": "WATERS CORP"
    },
    "ticker": "WAT"
   },
@@ -15007,11 +14978,6 @@
       "source": "kis_master:NAS",
       "symbol": "XEL",
       "value": "엑셀 에너지"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "XELLL",
-      "value": "엑셀 에너지 후순위채권(2085-10-15 6.250%)"
      }
     ],
     "und": [
@@ -15031,10 +14997,12 @@
    "company_id": "plan:xel",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "NORTHERN STATES POWER CO /MN/",
      "source": "sec_submissions",
      "valid_from": "1994-01-25",
      "valid_to": "2000-02-14",
-     "value": "NORTHERN STATES POWER CO /MN/"
+     "value": "NORTHERN STATES POWER CO"
     }
    ],
    "historical_tickers": [],
@@ -15222,14 +15190,7 @@
     }
    },
    "company_id": "plan:zbra",
-   "historical_names": [
-    {
-     "source": "sec_submissions",
-     "valid_from": "1995-09-08",
-     "valid_to": "2009-05-05",
-     "value": "ZEBRA TECHNOLOGIES CORP/DE"
-    }
-   ],
+   "historical_names": [],
    "historical_tickers": [],
    "official_name": {
     "source": "sec_submissions",
@@ -15576,6 +15537,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "QUALCOMM INC/DE"
+     },
+     {
       "source": "wikidata:Q544847",
       "value": "QCOM (NASDAQ)"
      },
@@ -15614,8 +15579,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "QUALCOMM INC/DE",
     "source": "sec_submissions",
-    "value": "QUALCOMM INC/DE"
+    "value": "QUALCOMM INC"
    },
    "ticker": "QCOM"
   },
@@ -15857,10 +15824,12 @@
    "company_id": "r1000:0000105634",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "JWP INC/DE/",
      "source": "sec_submissions",
      "valid_from": "1994-01-07",
      "valid_to": "1994-11-21",
-     "value": "JWP INC/DE/"
+     "value": "JWP INC"
     }
    ],
    "historical_tickers": [],
@@ -15872,6 +15841,12 @@
   },
   "r1000:0000110621": {
    "aliases": {
+    "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "RPM INTERNATIONAL INC/DE/"
+     }
+    ],
     "ko-KR": [
      {
       "source": "kis_master:NYS",
@@ -15885,16 +15860,20 @@
    "company_id": "r1000:0000110621",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "RPM INC/OH/",
      "source": "sec_submissions",
      "valid_from": "1994-01-07",
      "valid_to": "2002-10-15",
-     "value": "RPM INC/OH/"
+     "value": "RPM INC"
     }
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "RPM INTERNATIONAL INC/DE/",
     "source": "sec_submissions",
-    "value": "RPM INTERNATIONAL INC/DE/"
+    "value": "RPM INTERNATIONAL INC"
    },
    "ticker": "RPM"
   },
@@ -15953,26 +15932,17 @@
   },
   "r1000:0000798941": {
    "aliases": {
+    "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "FIRST CITIZENS BANCSHARES INC /DE/"
+     }
+    ],
     "ko-KR": [
      {
       "source": "kis_master:NAS",
       "symbol": "FCNCA",
       "value": "퍼스트 시티즌스 뱅크셰어스"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "FCNCN",
-      "value": "퍼스트 시티즌스 뱅크셰어스 예탁주(비누적)"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "FCNCO",
-      "value": "퍼스트 시티즌스 뱅크셰어스 우선주 C(5.625%)"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "FCNCP",
-      "value": "퍼스트 시티즌스 뱅크셰어스 우선주 A(5.375%)"
      }
     ],
     "und": [
@@ -16000,8 +15970,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "FIRST CITIZENS BANCSHARES INC /DE/",
     "source": "sec_submissions",
-    "value": "FIRST CITIZENS BANCSHARES INC /DE/"
+    "value": "FIRST CITIZENS BANCSHARES INC"
    },
    "ticker": "FCNCA"
   },
@@ -16883,13 +16855,6 @@
       "value": "The Carlyle Group"
      }
     ],
-    "ko-KR": [
-     {
-      "source": "kis_master:NAS",
-      "symbol": "CGABL",
-      "value": "칼라일 파이낸스 일반채권(2061-05-15 4.625%)"
-     }
-    ],
     "und": [
      {
       "source": "sec_submissions",
@@ -17517,13 +17482,6 @@
       "value": "Texas Pacific Group Capital"
      }
     ],
-    "ko-KR": [
-     {
-      "source": "kis_master:NAS",
-      "symbol": "TPGXL",
-      "value": "TPG 오퍼레이팅 그룹 2 후순위채권(2064-03-15 6.950%)"
-     }
-    ],
     "und": [
      {
       "source": "sec_submissions",
@@ -17632,6 +17590,12 @@
   },
   "r1000:0002011641": {
    "aliases": {
+    "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "Ferguson Enterprises Inc. /DE/"
+     }
+    ],
     "ko-KR": [
      {
       "source": "kis_master:NYS",
@@ -17646,8 +17610,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "Ferguson Enterprises Inc. /DE/",
     "source": "sec_submissions",
-    "value": "Ferguson Enterprises Inc. /DE/"
+    "value": "Ferguson Enterprises Inc."
    },
    "ticker": "FERG"
   },
@@ -17839,10 +17805,12 @@
      "value": "RAYTHEON TECHNOLOGIES CORP"
     },
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "UNITED TECHNOLOGIES CORP /DE/",
      "source": "sec_submissions",
      "valid_from": "1994-01-24",
      "valid_to": "2020-04-06",
-     "value": "UNITED TECHNOLOGIES CORP /DE/"
+     "value": "UNITED TECHNOLOGIES CORP"
     }
    ],
    "historical_tickers": [],
@@ -18024,8 +17992,8 @@
    "aliases": {
     "en-US": [
      {
-      "source": "wikidata:Q1425316",
-      "value": "SLB Limited"
+      "source": "sec_company_tickers",
+      "value": "SLB LIMITED/NV"
      },
      {
       "source": "wikidata:Q1425316",
@@ -18034,10 +18002,6 @@
      {
       "source": "wikidata:Q1425316",
       "value": "Schlumberger"
-     },
-     {
-      "source": "wikidata:Q1425316",
-      "value": "Schlumberger Limited"
      }
     ],
     "ko-KR": [
@@ -18062,28 +18026,28 @@
    "company_id": "slb",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "SCHLUMBERGER LIMITED/NV",
      "source": "sec_submissions",
      "valid_from": "2015-10-19",
      "valid_to": "2025-09-12",
-     "value": "SCHLUMBERGER LIMITED/NV"
+     "value": "SCHLUMBERGER LIMITED"
     },
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "SCHLUMBERGER LTD /NV/",
      "source": "sec_submissions",
      "valid_from": "2002-10-02",
      "valid_to": "2016-10-03",
-     "value": "SCHLUMBERGER LTD /NV/"
-    },
-    {
-     "source": "sec_submissions",
-     "valid_from": "1996-11-13",
-     "valid_to": "2002-08-09",
-     "value": "SCHLUMBERGER LTD /NY/"
+     "value": "SCHLUMBERGER LTD"
     }
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "SLB LIMITED/NV",
     "source": "sec_submissions",
-    "value": "SLB LIMITED/NV"
+    "value": "SLB LIMITED"
    },
    "ticker": "SLB"
   },
@@ -18163,26 +18127,6 @@
       "source": "kis_master:NYS",
       "symbol": "SO",
       "value": "서던"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "SOJC",
-      "value": "서던 후순위채권(2077-12-01 5.250%)"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "SOJD",
-      "value": "서던 후순위채권(2080-01-30 4.950%)"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "SOJE",
-      "value": "서던 후순위채권(2060-10-15 4.200%)"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "SOJF",
-      "value": "서던 후순위채권(2085-03-15 6.500%)"
      }
     ],
     "und": [
@@ -18259,12 +18203,6 @@
    },
    "company_id": "spg",
    "historical_names": [
-    {
-     "source": "sec_submissions",
-     "valid_from": "1998-09-28",
-     "valid_to": "2025-11-03",
-     "value": "SIMON PROPERTY GROUP INC /DE/"
-    },
     {
      "source": "sec_submissions",
      "valid_from": "1998-09-17",
@@ -18351,11 +18289,6 @@
       "source": "kis_master:NYS",
       "symbol": "SRE",
       "value": "셈프라"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "SREA",
-      "value": "셈프라 에너지 후순위채권(20749-01-07 5.750%)"
      }
     ],
     "und": [
@@ -18560,11 +18493,6 @@
      {
       "source": "wikidata:Q35476",
       "value": "에이티앤티"
-     },
-     {
-      "source": "kis_master:NYS",
-      "symbol": "TBB",
-      "value": "AT&T 일반채권(2066-11-01 5.350%)"
      }
     ],
     "und": [
@@ -18827,10 +18755,12 @@
      "value": "BB&T CORP"
     },
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "SOUTHERN NATIONAL CORP /NC/",
      "source": "sec_submissions",
      "valid_from": "1994-05-19",
      "valid_to": "1997-05-14",
-     "value": "SOUTHERN NATIONAL CORP /NC/"
+     "value": "SOUTHERN NATIONAL CORP"
     }
    ],
    "historical_tickers": [],
@@ -18900,7 +18830,14 @@
    "ticker": "TGT"
   },
   "tjx": {
-   "aliases": {},
+   "aliases": {
+    "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "TJX COMPANIES INC /DE/"
+     }
+    ]
+   },
    "cik": "0000109198",
    "common_names": {
     "en-US": {
@@ -18912,8 +18849,10 @@
    "historical_names": [],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "TJX COMPANIES INC /DE/",
     "source": "sec_submissions",
-    "value": "TJX COMPANIES INC /DE/"
+    "value": "TJX COMPANIES INC"
    },
    "ticker": "TJX"
   },
@@ -18974,23 +18913,6 @@
      {
       "source": "wikidata:Q3511885",
       "value": "VoiceStream Wireless"
-     }
-    ],
-    "ko-KR": [
-     {
-      "source": "kis_master:NAS",
-      "symbol": "TMUSI",
-      "value": "T 모바일 USA 일반채권(2070-06-01 5.500%)"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "TMUSL",
-      "value": "T 모바일 USA 일반채권(2069-09-01 6.250%)"
-     },
-     {
-      "source": "kis_master:NAS",
-      "symbol": "TMUSZ",
-      "value": "T 모바일 USA 일반채권(2070-03-01 5.500%)"
      }
     ],
     "und": [
@@ -19107,16 +19029,20 @@
      "value": "ST PAUL TRAVELERS COMPANIES INC"
     },
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "ST PAUL COMPANIES INC /MN/",
      "source": "sec_submissions",
      "valid_from": "1994-01-10",
      "valid_to": "2004-03-31",
-     "value": "ST PAUL COMPANIES INC /MN/"
+     "value": "ST PAUL COMPANIES INC"
     },
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "ST PAUL FIRE & MARINE INSURANCE CO/MD",
      "source": "sec_submissions",
      "valid_from": "1999-02-19",
      "valid_to": "1999-02-19",
-     "value": "ST PAUL FIRE & MARINE INSURANCE CO/MD"
+     "value": "ST PAUL FIRE & MARINE INSURANCE CO"
     }
    ],
    "historical_tickers": [],
@@ -19438,14 +19364,7 @@
     }
    },
    "company_id": "uri",
-   "historical_names": [
-    {
-     "source": "sec_submissions",
-     "valid_from": "1998-11-16",
-     "valid_to": "2019-07-01",
-     "value": "UNITED RENTALS INC /DE"
-    }
-   ],
+   "historical_names": [],
    "historical_tickers": [],
    "official_name": {
     "source": "sec_submissions",
@@ -19565,6 +19484,10 @@
    "aliases": {
     "en-US": [
      {
+      "source": "sec_company_tickers",
+      "value": "VALERO ENERGY CORP/TX"
+     },
+     {
       "source": "wikidata:Q1283291",
       "value": "Valero Energy Corporation"
      }
@@ -19592,8 +19515,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "VALERO ENERGY CORP/TX",
     "source": "sec_submissions",
-    "value": "VALERO ENERGY CORP/TX"
+    "value": "VALERO ENERGY CORP"
    },
    "ticker": "VLO"
   },
@@ -19861,10 +19786,12 @@
    "company_id": "well",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "HEALTH CARE REIT INC /DE/",
      "source": "sec_submissions",
      "valid_from": "1994-04-29",
      "valid_to": "2015-09-25",
-     "value": "HEALTH CARE REIT INC /DE/"
+     "value": "HEALTH CARE REIT INC"
     }
    ],
    "historical_tickers": [],
@@ -19877,6 +19804,10 @@
   "wfc": {
    "aliases": {
     "en-US": [
+     {
+      "source": "sec_company_tickers",
+      "value": "WELLS FARGO & COMPANY/MN"
+     },
      {
       "source": "wikidata:Q744149",
       "value": "International company"
@@ -19937,10 +19868,12 @@
    "company_id": "wfc",
    "historical_names": [
     {
+     "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+     "raw": "WELLS FARGO & CO/MN",
      "source": "sec_submissions",
      "valid_from": "1998-11-30",
      "valid_to": "2012-04-10",
-     "value": "WELLS FARGO & CO/MN"
+     "value": "WELLS FARGO & CO"
     },
     {
      "source": "sec_submissions",
@@ -19951,8 +19884,10 @@
    ],
    "historical_tickers": [],
    "official_name": {
+    "normalization": "STRIP_EDGAR_STATE_SUFFIX",
+    "raw": "WELLS FARGO & COMPANY/MN",
     "source": "sec_submissions",
-    "value": "WELLS FARGO & COMPANY/MN"
+    "value": "WELLS FARGO & COMPANY"
    },
    "ticker": "WFC"
   },
@@ -20109,6 +20044,13 @@
    "value": "AMD"
   },
   {
+   "company_id": "apo",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "아폴로 글로벌 매니지먼트 후순위채권(2053 7.625%)"
+  },
+  {
    "company_id": "avgo",
    "field": "ko-KR",
    "reason": "NO_HANGUL",
@@ -20128,6 +20070,13 @@
    "reason": "NO_HANGUL",
    "source": "wikidata:Q459965",
    "value": "CAT"
+  },
+  {
+   "company_id": "cmcsa",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "컴캐스트 홀딩스 우선주"
   },
   {
    "company_id": "crh",
@@ -20168,6 +20117,20 @@
    ]
   },
   {
+   "company_id": "duk",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "듀크 에너지 7.375% 선순위채권"
+  },
+  {
+   "company_id": "duk",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "듀크 에너지 후순위채권(2078-09-15 5.625%)"
+  },
+  {
    "company_id": "fdx",
    "field": "ko-KR",
    "reason": "NO_HANGUL",
@@ -20180,6 +20143,20 @@
    "reason": "LISTING_NAME_MISMATCH",
    "source": "kis_master:NYS",
    "value": "GE에어로스페이스"
+  },
+  {
+   "company_id": "googl",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "알파벳 6.25% 의무전환우선 예탁주 A"
+  },
+  {
+   "company_id": "googl",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "알파벳 6.25% 의무전환우선 예탁주 B"
   },
   {
    "company_id": "hd",
@@ -20219,9 +20196,23 @@
   {
    "company_id": "kkr",
    "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "KKR & CO 일반채권(2026-06-01 6.875%)"
+  },
+  {
+   "company_id": "kkr",
+   "field": "ko-KR",
    "reason": "NO_HANGUL",
    "source": "kis_master:NYS",
    "value": "KKR & CO"
+  },
+  {
+   "company_id": "kkr",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "KKR 그룹 파이낸스 9 후순위채권(2061-04-01 4.625%)"
   },
   {
    "company_id": "klac",
@@ -20247,7 +20238,7 @@
   {
    "company_id": "meta",
    "field": "ko-KR",
-   "reason": "LISTING_NAME_MISMATCH",
+   "reason": "NON_COMMON_LISTING",
    "source": "kis_master:NYS",
    "value": "메트라이프 우선주 A(변동금리)"
   },
@@ -20289,9 +20280,44 @@
   {
    "company_id": "msi",
    "field": "ko-KR",
-   "reason": "LISTING_NAME_MISMATCH",
+   "reason": "NON_COMMON_LISTING",
    "source": "kis_master:NYS",
    "value": "모간스탠리 우선주 I"
+  },
+  {
+   "company_id": "mstr",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "스트래티지 스트라이드 우선주(10.000%)"
+  },
+  {
+   "company_id": "mstr",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "스트래티지 스트라이크 우선주(8.000%)"
+  },
+  {
+   "company_id": "mstr",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "스트래티지 스트라이프 우선주(10.000%)"
+  },
+  {
+   "company_id": "mstr",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "스트래티지 스트래치 우선주(9.000%)"
+  },
+  {
+   "company_id": "ndaq",
+   "field": "alias",
+   "reason": "IMPLAUSIBLE_LABEL",
+   "source": "wikidata:Q1472929",
+   "value": "Owned By Pengiran Mohamad Alip Bin Pengiran Haji Samsuddin@Mohamad Alip Bin Abdullah since 2001 issued by U.S. Department of States Political License No. 00-298983 under U.S. Department of Defense Area 51 (Pentagon)"
   },
   {
    "company_id": "net",
@@ -20336,6 +20362,20 @@
    "value": "파카"
   },
   {
+   "company_id": "plan:acgl",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "아치 캐피털 그룹 우선주 F(5.450%)"
+  },
+  {
+   "company_id": "plan:acgl",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "아치 캐피털 그룹 우선주 G"
+  },
+  {
    "company_id": "plan:aig",
    "field": "ko-KR",
    "reason": "NO_HANGUL",
@@ -20357,11 +20397,67 @@
    "value": "CDW"
   },
   {
+   "company_id": "plan:chtr",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "차터 커뮤니케이션스 누적 상환우선주 A"
+  },
+  {
+   "company_id": "plan:cms",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "CMS 에너지 우선주 C(4.200% 누적)"
+  },
+  {
+   "company_id": "plan:cms",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "CMS 에너지 후순위채권(2078-03-15 5.625%)"
+  },
+  {
+   "company_id": "plan:cms",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "CMS 에너지 후순위채권(2078-10-15 5.875%)"
+  },
+  {
+   "company_id": "plan:cms",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "CMS 에너지 후순위채권(2079-03-01 5.875%)"
+  },
+  {
    "company_id": "plan:dhi",
    "field": "ko-KR",
    "reason": "LISTING_NAME_MISMATCH",
    "source": "kis_master:NYS",
    "value": "닥터 호턴"
+  },
+  {
+   "company_id": "plan:dte",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "DTE 에너지 후순위채권 H(2085-10-01 6.250%)"
+  },
+  {
+   "company_id": "plan:dte",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "DTE 에너지 후순위채권(2077-12-01 5.250%)"
+  },
+  {
+   "company_id": "plan:dte",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "DTE 에너지 후순위채권(2080-10-15 4.375%)"
   },
   {
    "company_id": "plan:ea",
@@ -20420,6 +20516,34 @@
    "value": "Symantec"
   },
   {
+   "company_id": "plan:hban",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "헌팅턴 뱅크셰어스 우선주 H"
+  },
+  {
+   "company_id": "plan:hban",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "헌팅턴 뱅크셰어스 우선주 I(5.700%)"
+  },
+  {
+   "company_id": "plan:hban",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "헌팅턴 뱅크셰어스 우선주 J(6.875%)"
+  },
+  {
+   "company_id": "plan:hban",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "헌팅턴 뱅크셰어즈 5.5 비누적 예탁"
+  },
+  {
    "company_id": "plan:hpq",
    "field": "ko-KR",
    "reason": "NO_HANGUL",
@@ -20458,6 +20582,13 @@
    "value": "로우스"
   },
   {
+   "company_id": "plan:mchp",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "마이크로칩 테크놀로지 우선주 A(7.500% 의무전환)"
+  },
+  {
    "company_id": "plan:msci",
    "field": "ko-KR",
    "reason": "NO_HANGUL",
@@ -20472,6 +20603,13 @@
    "value": "MSCI"
   },
   {
+   "company_id": "plan:ntrs",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "노던 트러스트 우선주 E(4.700%)"
+  },
+  {
    "company_id": "plan:nvr",
    "field": "ko-KR",
    "reason": "NO_HANGUL",
@@ -20481,9 +20619,37 @@
   {
    "company_id": "plan:ppl",
    "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "PPL 코프 코퍼레이트 유닛"
+  },
+  {
+   "company_id": "plan:ppl",
+   "field": "ko-KR",
    "reason": "NO_HANGUL",
    "source": "kis_master:NYS",
    "value": "PPL"
+  },
+  {
+   "company_id": "plan:pru",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "푸르덴셜 파이낸셜 후순위채권(4.125%)"
+  },
+  {
+   "company_id": "plan:pru",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "푸르덴셜 파이낸셜 후순위채권(5.625%)"
+  },
+  {
+   "company_id": "plan:pru",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "푸르덴셜 파이낸셜 후순위채권(5.950%)"
   },
   {
    "company_id": "plan:ptc",
@@ -20500,11 +20666,60 @@
    "value": "PTC"
   },
   {
+   "company_id": "plan:smci",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "슈퍼마이크로 7% 의무전환우선 예탁주"
+  },
+  {
    "company_id": "plan:syy",
    "field": "listing_name",
    "reason": "AMBIGUOUS_ACROSS_ENTITIES",
    "source": "kis_master:NYS",
    "value": "시스코"
+  },
+  {
+   "company_id": "plan:xel",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "엑셀 에너지 후순위채권(2085-10-15 6.250%)"
+  },
+  {
+   "company_id": "r1000:0000798941",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "퍼스트 시티즌스 뱅크셰어스 예탁주(비누적)"
+  },
+  {
+   "company_id": "r1000:0000798941",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "퍼스트 시티즌스 뱅크셰어스 우선주 A(5.375%)"
+  },
+  {
+   "company_id": "r1000:0000798941",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "퍼스트 시티즌스 뱅크셰어스 우선주 C(5.625%)"
+  },
+  {
+   "company_id": "r1000:0001527166",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "칼라일 파이낸스 일반채권(2061-05-15 4.625%)"
+  },
+  {
+   "company_id": "r1000:0001880661",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "TPG 오퍼레이팅 그룹 2 후순위채권(2064-03-15 6.950%)"
   },
   {
    "company_id": "r1000:0001880661",
@@ -20537,9 +20752,44 @@
   {
    "company_id": "so",
    "field": "ko-KR",
-   "reason": "NO_HANGUL",
+   "reason": "NON_COMMON_LISTING",
    "source": "kis_master:NYS",
    "value": "SOUTHERN CO. 2025 SERIES A CORPORATE UNITS"
+  },
+  {
+   "company_id": "so",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "서던 후순위채권(2060-10-15 4.200%)"
+  },
+  {
+   "company_id": "so",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "서던 후순위채권(2077-12-01 5.250%)"
+  },
+  {
+   "company_id": "so",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "서던 후순위채권(2080-01-30 4.950%)"
+  },
+  {
+   "company_id": "so",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "서던 후순위채권(2085-03-15 6.500%)"
+  },
+  {
+   "company_id": "sre",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "셈프라 에너지 후순위채권(20749-01-07 5.750%)"
   },
   {
    "company_id": "stx",
@@ -20547,6 +20797,13 @@
    "reason": "NO_HANGUL",
    "source": "wikidata:Q705392",
    "value": "Seagate"
+  },
+  {
+   "company_id": "t",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NYS",
+   "value": "AT&T 일반채권(2066-11-01 5.350%)"
   },
   {
    "company_id": "t",
@@ -20575,6 +20832,27 @@
    "reason": "NO_HANGUL",
    "source": "kis_master:NYS",
    "value": "TJX"
+  },
+  {
+   "company_id": "tmus",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "T 모바일 USA 일반채권(2069-09-01 6.250%)"
+  },
+  {
+   "company_id": "tmus",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "T 모바일 USA 일반채권(2070-03-01 5.500%)"
+  },
+  {
+   "company_id": "tmus",
+   "field": "ko-KR",
+   "reason": "NON_COMMON_LISTING",
+   "source": "kis_master:NAS",
+   "value": "T 모바일 USA 일반채권(2070-06-01 5.500%)"
   },
   {
    "company_id": "ups",

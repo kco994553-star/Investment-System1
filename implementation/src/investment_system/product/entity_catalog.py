@@ -44,8 +44,8 @@ def _merge_unique(base, extra):
 def entity_catalog(bundle, metadata=None):
     """Add navigation metadata only; preserve the entire producer bundle unchanged.
 
-    ``metadata`` is the CIK-bound search metadata registry (default: the committed one).
-    It only adds labels to existing company_ids; producer and curated values keep precedence.
+    ``metadata`` is the CIK-bound search metadata registry (default: the committed one; False disables).
+    It only fills absent fields/locales of existing company_ids; producer and curated values win as supplied.
     """
     # Reuse the existing identity registry, not its ticker resolution or any engine.
     from ..qgv.identifiers import OFFICIAL_PORTFOLIO_V11
@@ -66,12 +66,14 @@ def entity_catalog(bundle, metadata=None):
             if not isinstance(values, list) or any(not isinstance(a, str) for a in values):
                 raise ValueError('aliases must be lists of text')
             aliases.setdefault(locale, []).extend(values)
-        for locale, values in meta.get('aliases', {}).items():
-            _merge_unique(aliases.setdefault(locale, []), values)
-        if official and meta.get('official_name'):
+        # Fill-only: a curated/producer locale list stays exactly as supplied.
+        extra = deepcopy(meta.get('aliases', {}))
+        if official and meta.get('official_name') and normalize(meta['official_name']) != normalize(official):
             # Registered SEC name kept searchable when a different display label is in use.
-            _merge_unique(aliases.setdefault('en-US', []), [meta['official_name']]
-                          if normalize(meta['official_name']) != normalize(official) else [])
+            _merge_unique(extra.setdefault('en-US', []), [meta['official_name']])
+        for locale, values in extra.items():
+            if not aliases.get(locale):
+                aliases[locale] = _merge_unique([], values)
         localized = deepcopy(c.get('localized_names', {}))
         for locale, values in aliases.items():
             # 'und' holds language-neutral listing tickers; never a display name.
@@ -81,8 +83,8 @@ def entity_catalog(bundle, metadata=None):
             'entity_type': 'COMPANY', 'canonical_id': c['company_id'],
             'canonical_label': official or c['ticker'], 'ticker': c['ticker'],
             'localized_names': localized, 'aliases': aliases,
-            'historical_names': _merge_unique(deepcopy(c.get('historical_names', [])), meta.get('historical_names', [])),
-            'historical_tickers': _merge_unique(deepcopy(c.get('historical_tickers', [])), meta.get('historical_tickers', [])),
+            'historical_names': deepcopy(c['historical_names'] if 'historical_names' in c else meta.get('historical_names', [])),
+            'historical_tickers': deepcopy(c['historical_tickers'] if 'historical_tickers' in c else meta.get('historical_tickers', [])),
             'industry': c.get('industry') or (record.industry or record.sector if record else None),
             'ambiguity_flags': list(c.get('ambiguity_flags', record.ambiguity_flags if record else [])),
             'source': c.get('metadata_source') or ('qgv/identifiers.py (presentation only)' if record else 'producer companies'),
