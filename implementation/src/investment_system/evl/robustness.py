@@ -8,6 +8,7 @@ from copy import deepcopy
 from dataclasses import asdict, replace
 from datetime import datetime
 from hashlib import sha256
+from itertools import product
 import fcntl
 import json
 import math
@@ -46,7 +47,10 @@ def source_inventory(source):
         raise ValueError('C5 search authority/hash mismatch')
     rows = source.trials.records()
     evaluator = body['plan']['evaluator_id']
-    roster = {}
+    domain = spec['parameter_space']['values']
+    keys = tuple(sorted(domain))
+    roster = {candidate_identity(dict(zip(keys,values)),evaluator):dict(zip(keys,values))
+              for values in product(*(domain[k] for k in keys))}
     for row in rows:
         trial = row['trial']
         if trial['status'] != 'INVALIDATED':
@@ -189,6 +193,7 @@ def _source_ready(source, body):
 def _qualified(ledger, split, source, bundles, body):
     plan = body['plan']
     inventory = _source_ready(source, body)
+    _verify_split(source,split,inventory['spec'])
     if (inventory['spec']['code_hash'] != ledger.registration()['code_hash']
             or inventory['spec']['dataset_vintage'] != ledger.registration()['dataset_vintage']):
         raise ValueError('C5/C6 code/vintage identity mismatch')
@@ -202,6 +207,7 @@ def _qualified(ledger, split, source, bundles, body):
         b = bundles[identity]
         if b.get('baseline') is None:
             raise MissingStatisticalEvidence('baseline execution input missing')
+        _verify_split(b['c4_ledger'],split,b['c4_ledger'].registration())
         report = c4_report(b['c4_ledger'], b['c4_trial_id'])
         if (report['parameters'] != inventory['roster'][identity]
                 or report['variant'] != plan['variant']

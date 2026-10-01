@@ -247,3 +247,34 @@ def test_diagnostic_not_run_for_zero_variance_and_failed_scenario_integrity(tmp_
     result=run_family(args)
     assert result['results']['PARAMETER']['status']=='FAIL'
     assert result['status']=='NOT_ACCEPTED'
+
+
+def test_unattempted_registered_candidates_cannot_shrink_the_family(tmp_path):
+    args=setup_family(tmp_path)
+    source=args[2]
+    spec=source.registration()
+    spec['parameter_space']['values']['cash_buffer']=[0.,.1,.2]
+    source.registration_path.write_text(json.dumps({'spec':spec,'sha256':digest(spec)}))
+    source_split_path=source.directory/'split.json'
+    source_split=json.loads(source_split_path.read_text())
+    source_split['split']['experiment_sha256']=digest(spec)
+    source_split['sha256']=digest(source_split['split'])
+    source_split_path.write_text(json.dumps(source_split))
+    plan_path=source.directory/'search.json'
+    registered_search=json.loads(plan_path.read_text())
+    registered_search['body']['experiment_hash']=digest(spec)
+    registered_search['sha256']=digest(registered_search['body'])
+    plan_path.write_text(json.dumps(registered_search))
+    assert len(source_inventory(source)['roster'])==3
+    # Main registration snapshots all three identities; only two have evidence.
+    diag_spec=args[0].registration()
+    diag_spec['data_hash']=package_hash(*args[2:5])
+    args[0].registration_path.write_text(json.dumps({'spec':diag_spec,'sha256':digest(diag_spec)}))
+    split_path=args[0].directory/'split.json'
+    registered_split=json.loads(split_path.read_text())
+    registered_split['split']['experiment_sha256']=digest(diag_spec)
+    registered_split['sha256']=digest(registered_split['split'])
+    split_path.write_text(json.dumps(registered_split))
+    result=run_family(args)
+    assert result['status']=='NOT_ACCEPTED'
+    assert all(r['status']=='NOT_RUN' for r in result['results'].values())

@@ -16,7 +16,7 @@ def git(*args):
 
 def blobs(ref):
     return {line.split('\t',1)[1]:line.split('\t',1)[0].split()[2]
-            for line in git('ls-tree','-r','--full-tree',ref).splitlines()}
+            for line in git('ls-tree','-r','--full-tree','-z',ref).split('\0') if line}
 
 def boundary_audit():
     baseline,current,start=blobs(CANONICAL),blobs('HEAD'),blobs(START)
