@@ -538,3 +538,53 @@ acceptance/regression/audits/evidence/Actions. C8–C10 NOT STARTED.
 Holdout UNCONSUMED; Investor-QGV FUTURE_TRACK_C_INPUT; TAX_MODE=EXCLUDED.
 No Track A/B/D/E/Web edits, C6 rewrite, automatic merge, force push or history rewrite.
 PR#4 Draft/Open. Next: implement/verify B exactly; C7 Freeze then C8 policy audit.
+
+## Track C execution approval / C7 policy boundary — 2026-10-01 10:45:14 UTC
+
+Scope: Track C only. Latest explicit user execution approval authorizes C7 implementation/
+validation/SOFTWARE Freeze under TC-D3P-006B and inactive C8/C9/C10 package/contract
+preparation. This is not approval of new result-impact policies, actual Holdout read,
+C8-C10 implementation/activation, actual promotion or canonical integration.
+
+Fresh GitHub checkpoint: canonical/merge-base b8e39a2196a6d7794a04a0cd5393c68329e126ca,
+Track C15fed506d4e67d89861221281e4879002e431b4a,40ahead/0behind; PR#4 Draft/Open.
+006B APPROVED/ACTIVE remains preserved. C7 **BLOCKED_D3P / NOT FROZEN**:
+B4 does not uniquely fix eligible-versus-Pareto graph vertices; B6/C6 signed deltas
+do not uniquely fix Low Drift signed/magnitude comparison. Independent explicit
+toy counterexamples show different candidate survival; user's sections4/5 require
+a new D3-P at this boundary. No interpretation is silently activated.
+Original A and approved B text/history are unchanged.
+
+Prepared: track_c_c7_policy_boundary_2026-10-01.md with exact G1/D2 approval target;
+track_c_c7_policy_boundary_evidence_2026-10-01.json (10 integer-arithmetic witness
+checks, NOT C7 runtime/pytest/acceptance); track_c_c7_implementation_contract_preparation.md;
+Package A track_c_c8_policy_package_A.md; Package B track_c_c9_policy_package_B.md;
+Package C track_c_c10_policy_package_C.md; track_c_c8_c10_contract_drafts.json.
+All packages/drafts PROPOSED / NOT APPROVED / NOT ACTIVE; runtime_loadable=false.
+No real threshold values, lifecycle approvals, research/promotion Manifest, future
+observation or fake Investor-QGV profile. Synthetic config tag:
+SYNTHETIC_SOFTWARE_VALIDATION_ONLY; actual evidence scopes stay separate.
+
+C0-C6 SOFTWARE FROZEN preserved:7/11=63.6% phase-count proxy.
+C7 targeted/mandatory acceptance NOT_RUN_POLICY_BOUNDARY; no8/11 or Freeze claim.
+C8-C10 policy/contract preparation complete, implementation NOT STARTED.
+REAL_PIT_RESEARCH_VALIDATION NOT_RUN_MISSING_COMPLETE_REAL_FAMILY.
+Holdout UNCONSUMED; TAX_MODE=EXCLUDED; Investor-QGV FUTURE_TRACK_C_INPUT.
+No source/test/workflow edits; Track A/B/D/E/Web/Producer/Entity/QGV source untouched.
+Prior four-file C4 repair retained. PR#4 Draft/Open/unmerged; no force/history rewrite.
+
+Parallel checkpoint: Producer Infrastructure branch4c2f2d006c62c016fa8a26dcafbf8598b92cfa73
+now has infrastructure/exporter with unavailable real sections, not real EVL readiness.
+Entity Metadata brancha013f1c1758642f90a65fe11df69fc234c143a48 remains search/display-only,
+not PIT feature evidence. No other branch is modified/imported/merged.
+
+Validation: proposal completeness/10 synthetic policy-witness calculations executed
+in functions.exec; no C7 software test or real research claim. Existing C6 workflow
+will perform actual C6/previous/full/audits on the documentation commit; success is
+recorded only after the actual run. Latest retained C6 evidence remains authoritative.
+
+Next Action: explicit additive approval/revision of C7-G1 and C7-D2, then implement
+C7.1-.12 in order and all required tests/audits/evidence/Actions before SOFTWARE Freeze.
+After C7 Freeze8/11=72.7%, report Package A/B/C and wait; do not start C8.
+Do Not Repeat: C0-C6 rewrite, approval synchronization already resolved, old proposal
+rewrite, Holdout peek, guessed real numeric defaults, other-track changes or merge.
