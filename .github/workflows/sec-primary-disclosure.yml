@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Fetch audited read-only pins used by the ingestion tests
+        run: |
+          git fetch --depth=1 origin ccr-41677301-10nj3u
+          git fetch --depth=1 origin feature/producer-infrastructure-v1
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
