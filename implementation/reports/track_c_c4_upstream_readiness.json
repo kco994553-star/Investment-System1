@@ -1,0 +1,54 @@
+{
+  "scope": "C4 upstream readiness only; not C4 implementation acceptance",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "technical_snapshot_fields": [
+    "technical_snapshot_id",
+    "company_id",
+    "as_of",
+    "technical_version",
+    "implementation_kind",
+    "regime",
+    "execution_zone",
+    "scenarios",
+    "invalidation",
+    "drawdown_recheck",
+    "qgv_snapshot_id_ref",
+    "mutated_qgv",
+    "synthetic"
+  ],
+  "technical_engine_signature": "(self, company_id: 'str', as_of: 'datetime', returns: 'list[float]', qgv: 'QGVSnapshot | None' = None, synthetic: 'bool' = True) -> 'TechnicalSnapshot'",
+  "integration_engine_signature": "(self, as_of: 'datetime', portfolio: 'PortfolioSnapshot', technical_by_company: 'dict[str, TechnicalSnapshot]', macro: 'MacroSnapshot', profile_id: 'str | None' = None, parameter_set_hash: 'str | None' = None) -> 'IntegrationResult'",
+  "direct_parameter_consumers_outside_strategy_contract": {
+    "cash_buffer": [],
+    "risk_multiplier": [],
+    "technical_lookback": [],
+    "signal_threshold": [],
+    "macro_warning_sensitivity": [],
+    "execution_deadband_pp": []
+  },
+  "changing_profile_metadata_changes_targets": false,
+  "risk_multiplier_half_target_max_abs_delta": 0.0,
+  "profile_maturity": {
+    "AGGRESSIVE": "PROVISIONAL",
+    "BALANCED": "PROVISIONAL",
+    "DEFENSIVE": "PROVISIONAL"
+  },
+  "status": "BLOCKED_UPSTREAM_CONTRACT",
+  "required_actions": [
+    "Provide Technical output lineage with input-derived available_at/source/vintage; do not infer it from as_of.",
+    "Provide timestamped 5Y/1Y/1Y PIT-qualified integrated evaluation data/adapter; Track A reconstruction freeze is not this acceptance.",
+    "Bind approved profile controls to actual calculation with behavioral tests before C5 parameter search; metadata-only variations are not trials of distinct strategies."
+  ],
+  "new_policy_requested": false,
+  "existing_conflicts": [
+    "C-28: Technical available_at missing",
+    "C-30: unresolved/provisional Official weight maturity"
+  ],
+  "source_references": [
+    "contracts/models.py:TechnicalSnapshot",
+    "technical/engine.py:TechnicalEngine.evaluate",
+    "contracts/strategy.py:CONFIGURABLE_KEYS",
+    "integration/engine.py:IntegrationEngine.run"
+  ],
+  "mutations_to_upstream": 0
+}

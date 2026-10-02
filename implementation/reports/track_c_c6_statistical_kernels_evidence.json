@@ -1,0 +1,174 @@
+{
+  "recorded_at_kst": "2026-09-30T21:13:50.000+09:00",
+  "scope": "APPROVED_TC_D3P_004_NUMERICAL_KERNEL_UNIT_VALIDATION_ONLY",
+  "phase": "C6",
+  "phase_status": "IMPLEMENTING_NOT_FROZEN",
+  "source_baseline": "8ab49b0e1b937d92ed194c2ace82f5d721f6dd05",
+  "tested_head": "a8e187cea6b117602dff986a3ff6a76b8c244a19",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "approval_authority": {
+    "TC_D3P_004": "A_APPROVED_2026-09-30T20:16:28+09:00",
+    "TC_D3P_005": "REPOSITORY_PROPOSED_NOT_APPROVED_NOT_ACTIVE"
+  },
+  "source_blobs": {
+    "implementation/src/investment_system/evl/statistical_kernels.py": "28e1c1842625bacabc6ffc9c9b172261e7d6585a",
+    "implementation/tests/test_evl_c6_statistical_kernels.py": "f46324d3d85888b28a4bf21cae2e02cdef6666b3",
+    "implementation/reports/track_c_c6_statistics_policy_approved.md": "0ffbc9c19716341b1ec5f9f7b639b003059ac651",
+    "implementation/reports/track_c_c6_freeze_policy_proposal.md": "bbd3321e9966957e862199622ca53f5a4b3ec556"
+  },
+  "ci": {
+    "run_id": 36712457163,
+    "job_id": 109877255098,
+    "conclusion": "success",
+    "python": "3.11.16",
+    "pytest": "9.1.1",
+    "targeted_passed": 180,
+    "previous_c0_c5_cases": 103,
+    "c6_execution_cases": 34,
+    "new_kernel_cases": 43,
+    "full_passed": 576,
+    "completed_kst": "2026-09-30T21:05:00+09:00",
+    "targeted_command": "PYTHONPATH=src python -m pytest -q tests/test_evl_c*.py",
+    "full_command": "PYTHONPATH=src python -m pytest -q",
+    "logs_file": "track_c_c6_statistical_kernels_ci_log.txt"
+  },
+  "evidence_class": "SYNTHETIC_SOFTWARE_TEST_VERIFIED",
+  "complete_registered_c6_acceptance_family": false,
+  "diagnostic_runner_ledger_wired": false,
+  "mandatory_requirement_source": "latest task explicitly requires every listed diagnostic MANDATORY; TC-D3P-005 S repository activation remains blocked",
+  "family_diagnostics": {
+    "PSR": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "DSR_DISTINCT_FULL_CANDIDATES": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "DSR_ALL_CHARGED_ATTEMPTS": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "CSCV_PBO": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "JOINT_CIRCULAR_BLOCK_BOOTSTRAP": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "REALITY_CHECK_EQUAL_WEIGHT_SIMPLE": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "REALITY_CHECK_MARKET_CAP": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "PARAMETER_PERTURBATION": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "REGIME_PERTURBATION": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "UNIVERSE_PERTURBATION": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "RANDOM_RANKING_CONTROL": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "RANDOMIZED_WEIGHT_CONTROL": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "EQUAL_WEIGHT_SIMPLE_CONTROL": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "MARKET_CAP_CONTROL": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "PARAMETER_DRIFT": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "no registered ledger-wired complete C6 diagnostic family; not inferred from unit tests",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "FAMILY_BASELINE_EXECUTION_AND_DELAY": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "execution subsection verified separately; no integrated registered acceptance family",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    },
+    "FAMILY_ISOLATED_COST_1X_2X_3X": {
+      "role": "MANDATORY_REQUIRED_BY_TASK",
+      "status": "NOT_RUN",
+      "reason": "execution subsection verified separately; no integrated registered acceptance family",
+      "missing_evidence": "complete immutable family/method/scenario/ledger bindings",
+      "impact": "cannot support C6 Freeze, real-PIT validation or promotion"
+    }
+  },
+  "execution_subsection": "APPROVED_TC_D3P_003_IMPLEMENTED_SOFTWARE_VERIFIED_UNCHANGED",
+  "pit_no_lookahead": "new C2/C3 adapter negative tests PASS; outcome scoring separate from decision features",
+  "lineage": "period provenance hashes computed; actual ledger family/count/report resolution remains pending",
+  "holdout_state": "UNCONSUMED",
+  "holdout_consumed": false,
+  "real_pit_research_validated": false,
+  "investment_skill_claim": false,
+  "official": false,
+  "tax_mode": "EXCLUDED",
+  "freeze_candidate": false,
+  "other_track_changes_this_round": [],
+  "frozen_contract_edits_this_round": [],
+  "approval_record_conflict": "TC-C6-APPROVAL-RECORD-001",
+  "fresh_normal_merge_regression": "NOT_RUN: no local shell/Git; retained C5 integration 499/499 preserved"
+}

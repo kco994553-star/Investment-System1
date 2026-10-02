@@ -1,0 +1,1765 @@
+{
+  "schema": "TRACK_C_C8_PACKAGE_A_APPROVAL_DOSSIER_v1",
+  "status": {
+    "status": "APPROVAL_DOSSIER_ONLY_NOT_APPROVED_NOT_ACTIVE",
+    "package_A_status": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+    "source_head": "31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0",
+    "proposal_blob": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+    "shadow_original_status": "NOT_FOUND_IN_CURRENT_TRACK_C_REPORTS_REGISTERS_AND_REPO_KEYWORD_SEARCH_LOCATION_REQUEST_PENDING",
+    "new_numeric_research_values": false,
+    "code_or_runtime_changed": false,
+    "C7": "SOFTWARE_FROZEN_PRESERVED",
+    "holdout": "UNCONSUMED_NO_CONTENT_ACCESS",
+    "packages_B_C_changed": false
+  },
+  "recorded_at_utc": "2026-10-02 07:50:35 UTC",
+  "recorded_at_kst": "2026-10-02T16:50:35.000+09:00",
+  "approval_timestamp": null,
+  "repository": "kco994553-star/Investment-System1",
+  "canonical_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "audited_track_c_head": "31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0",
+  "source_tested_head": "c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a",
+  "C7_preserved": {
+    "frozen_phases": "C0-C7",
+    "count": 8,
+    "total": 11,
+    "percent": "72.7% SOFTWARE_PHASE_COUNT_ONLY",
+    "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+    "real_pit": "NOT_RUN_MISSING_COMPLETE_REAL_FAMILY",
+    "holdout": "UNCONSUMED",
+    "investor_qgv": "FUTURE_TRACK_C_INPUT",
+    "existing_tests": {
+      "targeted_C7": 97,
+      "regression_C0_C6": 233,
+      "full": 726
+    },
+    "existing_actions_run": 36859204749,
+    "new_C8_tests_executed": false
+  },
+  "sources": [
+    {
+      "path": "Investment-System1 · CURRENT_HANDOFF.md",
+      "blob_sha": "1deae1be8f4babc330b71cde4bf3da27a687a837",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/Investment-System1%20%C2%B7%20CURRENT_HANDOFF.md"
+    },
+    {
+      "path": "Investment-System1 · Master Status Index 2026-09-22.md",
+      "blob_sha": "1b9f7ebcc528ddc204f79b84af5233b7ba01060e",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/Investment-System1%20%C2%B7%20Master%20Status%20Index%202026-09-22.md"
+    },
+    {
+      "path": "Investment-System1 · Experiment & Validation Layer Specification v0.1.md",
+      "blob_sha": "7e920b6ef9bbe2664f0994b86ba10111daca2919",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/Investment-System1%20%C2%B7%20Experiment%20%26%20Validation%20Layer%20Specification%20v0.1.md"
+    },
+    {
+      "path": "Investment-System1 · Artifact Evidence Register 2026-09-23.md",
+      "blob_sha": "69961396135ea2a0ea513457378ba0cc6c7d9a89",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/Investment-System1%20%C2%B7%20Artifact%20Evidence%20Register%202026-09-23.md"
+    },
+    {
+      "path": "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+      "blob_sha": "5a5bbdefa57292bdf908daff64ec9ed36e691acf",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/Investment-System1%20%C2%B7%20Contract%20Conflict%20Register%202026-09-23.md"
+    },
+    {
+      "path": "implementation/reports/track_c_decision_register_2026-10-01.md",
+      "blob_sha": "27cceca751bc7a6b9d1e5be26b1f5a2b5ab749f8",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_decision_register_2026-10-01.md"
+    },
+    {
+      "path": "implementation/reports/track_c_c2_split_policy_approved.md",
+      "blob_sha": "a211e694bed8d08f18ede45fdf10b000f85eaee1",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c2_split_policy_approved.md"
+    },
+    {
+      "path": "implementation/reports/track_c_c3_metric_conventions.md",
+      "blob_sha": "36a10a2beb0b194a85aff6e67734afe97c2ea5d8",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c3_metric_conventions.md"
+    },
+    {
+      "path": "implementation/reports/track_c_c6_statistics_policy_approved.md",
+      "blob_sha": "0ffbc9c19716341b1ec5f9f7b639b003059ac651",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c6_statistics_policy_approved.md"
+    },
+    {
+      "path": "implementation/reports/track_c_c6_freeze_policy_approved.md",
+      "blob_sha": "6203206179e5c9b57954ce7ecef7ce57f4cb93c1",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c6_freeze_policy_approved.md"
+    },
+    {
+      "path": "implementation/reports/track_c_c7_selection_policy_approved.md",
+      "blob_sha": "91d3e7d1843d439b8b94f09642ae913b586c6948",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c7_selection_policy_approved.md"
+    },
+    {
+      "path": "implementation/reports/track_c_c7_policy_boundary_2026-10-01.md",
+      "blob_sha": "5b01427fcc84dfdbedb5ec287eb97e9e2b43613a",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c7_policy_boundary_2026-10-01.md"
+    },
+    {
+      "path": "implementation/reports/track_c_c7_acceptance_2026-10-01.md",
+      "blob_sha": "1a62c1726f85d042ecfbdec8c9d619c3fd012465",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c7_acceptance_2026-10-01.md"
+    },
+    {
+      "path": "implementation/reports/track_c_c7_acceptance_2026-10-01.json",
+      "blob_sha": "e8861c63c045bafcdc113e4feab9429dde2000a4",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c7_acceptance_2026-10-01.json"
+    },
+    {
+      "path": "implementation/reports/track_c_c8_policy_package_A.md",
+      "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md"
+    },
+    {
+      "path": "implementation/reports/track_c_c9_policy_package_B.md",
+      "blob_sha": "b029a073fe07eabb96b6771001558ff142646d0f",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c9_policy_package_B.md"
+    },
+    {
+      "path": "implementation/reports/track_c_c10_policy_package_C.md",
+      "blob_sha": "6d1c307a4d2d36670b27876598ce37f49563b459",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c10_policy_package_C.md"
+    },
+    {
+      "path": "implementation/reports/track_c_c8_c10_contract_drafts.json",
+      "blob_sha": "ef304ff1928f0d2e38ee8c758482c0bb6cea58e8",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_c10_contract_drafts.json"
+    },
+    {
+      "path": "implementation/reports/track_c_c8_c10_final_policy_review.md",
+      "blob_sha": "6402cc5e1dc1c90832412b27e97967a3d39aeb64",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_c10_final_policy_review.md"
+    },
+    {
+      "path": "implementation/src/investment_system/evl/walkforward.py",
+      "blob_sha": "6aa2f0d4be2a59f3839e1a9f6271871d27fdbcb2",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/walkforward.py"
+    },
+    {
+      "path": "implementation/src/investment_system/evl/profile_selection.py",
+      "blob_sha": "cc0811ddc2d784081f45d0cd9de6f4e9e44946c9",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/profile_selection.py"
+    },
+    {
+      "path": "implementation/src/investment_system/evl/robustness.py",
+      "blob_sha": "405515af03f58175829efa196799a81279082fed",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/robustness.py"
+    },
+    {
+      "path": "implementation/src/investment_system/evl/statistical_kernels.py",
+      "blob_sha": "28e1c1842625bacabc6ffc9c9b172261e7d6585a",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/statistical_kernels.py"
+    },
+    {
+      "path": "implementation/tests/test_evl_c7_protocol.py",
+      "blob_sha": "dd861f055eae7412cac71c12442768637a1e8058",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/tests/test_evl_c7_protocol.py"
+    },
+    {
+      "path": "implementation/src/investment_system/evl/metrics.py",
+      "blob_sha": "e6e0e7eb288bd40a1b466e2ba69e6fcb701c8b27",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/metrics.py"
+    },
+    {
+      "path": "implementation/src/investment_system/evl/contracts.py",
+      "blob_sha": "561317afd651052eedef37d4f6e72ccce3cee73e",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/contracts.py"
+    },
+    {
+      "path": "implementation/tests/test_evl_c6_execution.py",
+      "blob_sha": "0811eaaf95fd72c91a0bbac79b33b7a88691ba95",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/tests/test_evl_c6_execution.py"
+    },
+    {
+      "path": "implementation/tests/test_evl_c6_robustness.py",
+      "blob_sha": "ba8058fd436c4b62d983e8db48dec2ddd902c248",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/tests/test_evl_c6_robustness.py"
+    },
+    {
+      "path": "implementation/tests/test_evl_c6_statistical_kernels.py",
+      "blob_sha": "f46324d3d85888b28a4bf21cae2e02cdef6666b3",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/tests/test_evl_c6_statistical_kernels.py"
+    },
+    {
+      "path": "implementation/tests/test_evl_c7_selection.py",
+      "blob_sha": "1b3ed793da82260c15d53efb9197838af8d29f4b",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/tests/test_evl_c7_selection.py"
+    },
+    {
+      "path": ".github/workflows/track-c-evl-validation.yml",
+      "blob_sha": "002378bf00c947f7bc92e891e65fa23ddc95f3ff",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/.github/workflows/track-c-evl-validation.yml"
+    }
+  ],
+  "shadow_audit": {
+    "original_record_found": false,
+    "location_request": "PENDING_USER_REPLY",
+    "searched": "Current Track C recursive tree, handoff/status/decision/conflict registers,35 Track C markdown reports, repository default-branch keyword search/commit and issue search/PR4 comments. These are stated search bounds, not proof no Shadow record exists on any branch.",
+    "issue_mapping": "UNVERIFIED",
+    "findings": [
+      "RA-01",
+      "RA-02",
+      "RA-03",
+      "RA-04",
+      "RA-05",
+      "RA-06",
+      "RA-07",
+      "RA-08",
+      "RA-09",
+      "RA-10",
+      "RA-11",
+      "RA-12"
+    ]
+  },
+  "clauses": [
+    {
+      "id": "A1",
+      "title": "Dataset boundary",
+      "classification": "APPROVE_WITH_MODIFICATION",
+      "proposal_source": {
+        "path": "implementation/reports/track_c_c8_policy_package_A.md",
+        "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+        "start_line": 38,
+        "end_line": 50,
+        "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L38"
+      },
+      "review_fields": [
+        {
+          "number": 1,
+          "name": "proposal 원문",
+          "text": "### A1 Dataset boundary\nPreregister an OUTER calibration interval after the frozen Development/C7 research\ninterval and before sealed Final Holdout. Within it register chronological CAL_FIT\nand CAL_VERIFY subpartitions; these are dataset roles, not lifecycle states.\nDerive purge/publication exclusion from the approved horizon/rebalance contract.\nInner C4 Validation remains pipeline-threshold calibration and is not silently reused\nas C8 gate-validation evidence. No Development/C7 OOS, CAL_VERIFY or Holdout observation\nenters C8 threshold fitting. Candidate/model/parameters/metric definitions are frozen\nbefore CAL_FIT access; calibrated thresholds frozen before CAL_VERIFY access.\nAll required Rolling/Expanding x Primary/Gap-stress evidence is separately retained.\nActual intervals require real data registration; missing complete support is NOT_RUN.\nPreviously accessed CAL_VERIFY cannot be declared unseen by resetting timestamps."
+        },
+        {
+          "number": 2,
+          "name": "결정하는 정확한 정책",
+          "text": "Development/C7 연구 종료 뒤, sealed Holdout 전의 outer Calibration을 CAL_FIT→CAL_VERIFY로 나누며, 후보·model·parameters·metric을 CAL_FIT 전에, gate threshold를 CAL_VERIFY 전에 고정한다. C4 내부 Validation을 독립 C8 verification으로 다시 부르지 않는다."
+        },
+        {
+          "number": 3,
+          "name": "필요한 이유",
+          "text": "C4 Validation은 pipeline.calibrate에 이미 사용됐고 C7 OOS는 profile selection에 사용됐다. 평가에 사용한 데이터를 다시 독립 검증으로 취급하면 선택 과정의 낙관성을 숨기게 된다."
+        },
+        {
+          "number": 4,
+          "name": "현재 EVL_SPEC / 기존 D3-P에서 이미 정의된 부분",
+          "text": "EVL §3의 Development→Calibration→Final Holdout, threshold-only Calibration, §2의 PIT/no-lookahead; TC-D3P-001의 label_end/publication cutoff, Primary/Gap-stress, Rolling/Expanding; C4 _run_fold의 Train fit→Validation calibrate→frozen OOS predict. 이들은 outer CAL_FIT/CAL_VERIFY의 실제 기간이나 새 dataset-role adapter를 정의하지 않는다."
+        },
+        {
+          "number": 5,
+          "name": "새로 승인해야 하는 부분",
+          "text": "Outer 분할과 미접근 CAL_VERIFY, 모든 cohort/fold의 boundary manifest, C4/C5/C7에서 사용한 observation/label interval 및 접근 이력의 중복 검사. 수정안 M1: 날짜뿐 아니라 sample IDs, label interval, publication time, source/vintage/content lineage로 전체 사용 집합과 대조하고 경계별 maturity/purge를 검증한다. 필요한 데이터가 없으면 NOT_RUN; 역할 이름·timestamp reset으로 미사용 데이터를 만들지 않는다. C4의 frozen predictive thresholds/predictions와 C8에서 보정하는 promotion gate thresholds를 별도 namespace로 고정한다. 여기서 outcome/label 사용 중복을 검사하며 이미 알려진 과거 feature/source의 합법적 재사용까지 일괄 금지하지 않는다."
+        },
+        {
+          "number": 6,
+          "name": "결과에 미치는 영향",
+          "text": "사용 가능한 표본과 실제 평가 기간이 줄며 부족한 profile은 NOT_RUN이 된다. 이미 본 C7 OOS를 독립 confirmation으로 인정하는 경로가 닫힌다."
+        },
+        {
+          "number": 7,
+          "name": "overfitting 위험",
+          "text": "기간을 결과를 본 뒤 고르거나 잘 나온 regime만 CAL_VERIFY로 정하면 남는다. 모든 interval·coverage·필수 regime/cohort 역할을 결과 접근 전에 고정해야 한다."
+        },
+        {
+          "number": 8,
+          "name": "lookahead 위험",
+          "text": "긴 label이나 늦은 publication이 CAL_FIT에서 CAL_VERIFY로, CAL_VERIFY에서 Holdout으로 넘을 수 있다. 달력상 비중복만으로 안전하다고 볼 수 없다. CPI는 ex-post attribution이고 predictor에는 들어갈 수 없다."
+        },
+        {
+          "number": 9,
+          "name": "false-positive / false-negative trade-off",
+          "text": "독립 데이터와 엄격한 purge는 낙관적 PASS를 줄인다. 표본 감소·regime 차이는 false-negative와 NOT_RUN을 늘릴 수 있다. NOT_RUN은 통계적 false-negative와 별도 상태다."
+        },
+        {
+          "number": 10,
+          "name": "가능한 대안",
+          "text": "Inner Validation 재사용, C7 OOS 재사용, 별도 시간 블록/사전 등록된 split-sample 설계. 재사용은 fresh confirmation이라고 주장할 수 없으며 다른 selection-aware 통계 계약이 필요하다. 원문의 별도 outer interval을 권고하되 실제 기간 값은 정하지 않는다."
+        },
+        {
+          "number": 11,
+          "name": "synthetic software validation에서 검증할 방법",
+          "text": "Mock provider가 읽은 sample/partition ID를 기록한다. 경계 equality, overlapping label, 늦은 publication, Primary/Stress 차이, 이미 읽힌 VERIFY, timestamp backdating, cohort 누락을 차단한다. C4 model/prediction hash가 CAL_FIT/VERIFY 동안 보존되는지 확인한다. fixture numeric/time 값은 SYNTHETIC_SOFTWARE_VALIDATION_ONLY."
+        },
+        {
+          "number": 12,
+          "name": "real-PIT 단계에서 추가로 필요한 evidence",
+          "text": "실제 source/availability/vintage 원문과 hashes, 전체 사용·접근 manifest, 등록된 calendar/horizon/rebalance, 미접근 verification provenance, 모든 required cohort/fold의 실제 support. 현재 C7 software PASS는 이를 제공하지 않는다. Candidate→cohort/fold→frozen model/predictive-threshold instance mapping도 필요하다."
+        },
+        {
+          "number": 13,
+          "name": "numeric threshold/default 포함 여부",
+          "text": "새 실제 날짜·기간·최소 표본·default 없음. 기존 5Y/1Y/1Y 및 annual cadence는 승인된 C4 연구 계약이며 outer C8 기간의 default가 아니다."
+        },
+        {
+          "number": 14,
+          "name": "다른 A항목과의 dependency",
+          "text": "A2 접근/등록, A3/A4 FIT-only 계산·threshold freeze, A6~A9 evidence partition, A10 역할 고정 시점, A11 real qualification."
+        },
+        {
+          "number": 15,
+          "name": "Shadow audit 문제와의 관계",
+          "text": "Shadow 원문/issue ID 미확인. 현재 repository에서 독립 확인한 RA-01(C4 Validation/C7 OOS reuse), RA-02(pre-access proof)와 연결한다. Shadow에서 발견됐다고 귀속하지 않는다."
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "title": "Preregistration and evidence resolution",
+      "classification": "APPROVE_WITH_MODIFICATION",
+      "proposal_source": {
+        "path": "implementation/reports/track_c_c8_policy_package_A.md",
+        "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+        "start_line": 51,
+        "end_line": 60,
+        "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L51"
+      },
+      "review_fields": [
+        {
+          "number": 1,
+          "name": "proposal 원문",
+          "text": "### A2 Preregistration and evidence resolution\nDedicated C8 ledger binds C7 full tie sets, C6 complete family and ALL charged attempts,\ncalibration partitions/coverage, metric paths/formulas/units, methods/seed, threshold\nranges/coarse grids/refinement and sensitivity grids, edge stability tolerances,\nrounding precision/direction, gate roles/directions, family membership, budget and\napproval authority before any relevant outcome access.\nResolve source ledgers/reports/checkpoints and current invalidation at every decision.\nA declared timestamp alone does not prove pre-access registration: retain monotone\nregistration/access events and immutable source commitments. No defaults or zero filling."
+        },
+        {
+          "number": 2,
+          "name": "결정하는 정확한 정책",
+          "text": "C8 dedicated ledger에 전체 tie set·C6 family·ALL charged attempts·threshold grid·sensitivity·rounding·hypothesis family·budget·authority를 pre-access 등록하고 매 decision마다 current lineage를 다시 resolve한다."
+        },
+        {
+          "number": 3,
+          "name": "필요한 이유",
+          "text": "좋아 보이는 candidate/metric/cohort만 남기거나 실패한 평가를 trial history에서 숨기면 multiplicity와 qualification을 재구성할 수 없다."
+        },
+        {
+          "number": 4,
+          "name": "현재 EVL_SPEC / 기존 D3-P에서 이미 정의된 부분",
+          "text": "EVL §4~5 preregistration/append-only ledger, §11 invalidation; TC-D3P-004 A1/A3/A8의 전체 family/attempts/method provenance; 006B의 complete Landscape와 dedicated C7 ledger; C7 resolve_selection의 현재 ancestor/stage 재검증."
+        },
+        {
+          "number": 5,
+          "name": "새로 승인해야 하는 부분",
+          "text": "C8 attempt 단위·budget charge·hypothesis family·접근 event 단위와 authority binding. 수정안 M2: calibration grid 평가, human threshold choice, VERIFY assessment, role/tied-alternative assessment의 단위를 선언하고 모든 실패·미실행을 남긴다. 동일 target을 새 directory/experiment/clock로 재명명해 unseen으로 만들 수 없도록 source/campaign-bound 접근 provenance와 독립 checkpoint 계약을 명시한다. 기존 Ledger timestamp나 local hash chain만으로 이를 증명했다고 주장하지 않는다."
+        },
+        {
+          "number": 6,
+          "name": "결과에 미치는 영향",
+          "text": "어떤 평가가 budget을 소모하며 어느 hypotheses가 multiplicity에 들어가는지를 결정한다. 조건이 누락되면 시작/qualification을 막는다."
+        },
+        {
+          "number": 7,
+          "name": "overfitting 위험",
+          "text": "미등록 metric/seed/grid를 나중에 추가하거나 human 선택을 trial로 숨기는 위험. CAL_VERIFY를 보고 family를 줄이는 것은 허용하지 않는다."
+        },
+        {
+          "number": 8,
+          "name": "lookahead 위험",
+          "text": "등록 시각보다 앞선 결과 read, hash만 갱신한 재등록, 외부에서 이미 본 결과, outcome publication 이후 만든 checkpoint를 preregistration으로 오인하는 위험."
+        },
+        {
+          "number": 9,
+          "name": "false-positive / false-negative trade-off",
+          "text": "엄격한 complete accounting은 false-positive를 줄이나 큰 hypothesis family와 budget/support 차단은 power를 낮추고 NOT_RUN을 늘릴 수 있다. 코드 오류로 유효 evidence를 거부하는 경우는 algorithmic false rejection으로 별도 검증한다."
+        },
+        {
+          "number": 10,
+          "name": "가능한 대안",
+          "text": "Per-stage ledger 또는 하나의 transaction ledger, 외부 append-only registry/checkpoint 또는 신뢰된 access service. 어느 저장 기술도 그 자체로 승인 authority/미접근 증명을 만들지 않는다."
+        },
+        {
+          "number": 11,
+          "name": "synthetic software validation에서 검증할 방법",
+          "text": "Access spy로 등록 전 read=차단, immutable registration, namespace rename, duplicate/concurrent attempt, crash charge, budget exhaustion, source/approval invalidation, altered family/seed/config/threshold hash를 검사한다. 실제 external proof를 로컬 fixture PASS로 대체하지 않는다."
+        },
+        {
+          "number": 12,
+          "name": "real-PIT 단계에서 추가로 필요한 evidence",
+          "text": "Dataset/campaign access record와 신뢰된 timestamp/checkpoint 원문, C1~C7 전체 ledger/roster/status hashes, 실제 approval event/identity, complete hypotheses 및 numeric/config authority."
+        },
+        {
+          "number": 13,
+          "name": "numeric threshold/default 포함 여부",
+          "text": "실제 budget·grid·seed·B/L·alpha·precision 값 없음. 이 값들의 필수 등록 의무만 있다. fixture 값은 연구 default가 아니다."
+        },
+        {
+          "number": 14,
+          "name": "다른 A항목과의 dependency",
+          "text": "A1 source 역할, A3 grid, A4 choice/freeze, A6 full testing family, A10 role identity, A11 authority/current resolver, A12 ledger acceptance."
+        },
+        {
+          "number": 15,
+          "name": "Shadow audit 문제와의 관계",
+          "text": "Shadow issue mapping 미확인. RA-02(접근 proof/등록 단위), RA-10(bare acceptance authority), RA-11(manifest resolver)와 독립적으로 대조한다."
+        }
+      ]
+    },
+    {
+      "id": "A3",
+      "title": "Calibration algorithm",
+      "classification": "APPROVE_WITH_MODIFICATION",
+      "proposal_source": {
+        "path": "implementation/reports/track_c_c8_policy_package_A.md",
+        "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+        "start_line": 61,
+        "end_line": 72,
+        "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L61"
+      },
+      "review_fields": [
+        {
+          "number": 1,
+          "name": "proposal 원문",
+          "text": "### A3 Calibration algorithm\nEnumerate the complete preregistered coarse threshold-combination grid and every\nregistered sensitivity neighborhood; no peak-only adaptive refinement.\nFor each point record each required candidate/cohort's complete gate vector on CAL_FIT\nand preregistered calibration perturbation blocks. Gate classifications remain visible.\nA stable edge differs by one adjacent registered threshold coordinate and satisfies\nALL preregistered per-gate acceptance-frequency/sensitivity tolerances on the registered\nCAL_FIT blocks. Connected components require at least2 points; retain all components,\nedge structure and full ranges; no diameter gate or largest-component preference.\nNo stable component -> NOT_RUN_NO_STABLE_THRESHOLD_PLATEAU.\nNo numerical tolerances/block dimensions are supplied here."
+        },
+        {
+          "number": 2,
+          "name": "결정하는 정확한 정책",
+          "text": "CAL_FIT에서 complete preregistered threshold grid와 sensitivity neighborhoods를 모두 평가하고, 등록된 adjacency·per-gate sensitivity 조건으로 stable threshold components를 만든다. isolated point/largest-component ranking은 허용하지 않는다."
+        },
+        {
+          "number": 3,
+          "name": "필요한 이유",
+          "text": "결과의 peak 주변만 refinement하면 불안정한 cutoff와 실패한 대안을 숨긴다. threshold 변화에 대한 민감도와 전체 feasible 선택집합이 필요하다."
+        },
+        {
+          "number": 4,
+          "name": "현재 EVL_SPEC / 기존 D3-P에서 이미 정의된 부분",
+          "text": "EVL §10의 range→coarse grid→sensitivity→stable plateau→rounded value→Freeze. 006B/G1의 min-component/전체 component/graph semantics는 C7 candidate selection에만 승인됐다. C8 threshold graph에 자동으로 동일 승인이 전파되지 않는다."
+        },
+        {
+          "number": 5,
+          "name": "새로 승인해야 하는 부분",
+          "text": "Threshold graph의 vertex universe, per-block gate vector, acceptance-frequency의 분자·분모·coverage, sensitivity statistic, edge predicates, component eligibility. 수정안 M3: 완전한 등록 grid에서 protocol-qualified 계산을 하고 financial PASS만 먼저 filter하여 graph universe를 재선택하지 않는다. 안정성 evidence와 threshold 선택 가능성/적합성 조건을 분리해 등록한다. 계산 불능은 missing/invalid state로 보존하고 surviving subset으로 대체하지 않는다. 이 수정도 아직 미승인 제안이다."
+        },
+        {
+          "number": 6,
+          "name": "결과에 미치는 영향",
+          "text": "Graph/eligible threshold 집합을 바꾸므로 final cutoff와 후보 PASS 결과가 달라질 수 있다. 모든 FAIL point가 비슷하게 실패해도 frequency가 일정할 수 있어 stable component만으로 적합성이 입증되지는 않는다."
+        },
+        {
+          "number": 7,
+          "name": "overfitting 위험",
+          "text": "Grid 범위·neighborhood·tolerance·blocks를 결과 후 변경하거나 support가 나쁜 점을 빼고 graph를 다시 연결하는 위험. 전부 pre-access 등록이 필요하다."
+        },
+        {
+          "number": 8,
+          "name": "lookahead 위험",
+          "text": "VERIFY/Holdout 또는 이후 publication을 sensitivity blocks에 넣는 위험. 이 계산은 CAL_FIT에만 접근한다."
+        },
+        {
+          "number": 9,
+          "name": "false-positive / false-negative trade-off",
+          "text": "Complete grid/stability는 임의 cutoff PASS를 줄일 수 있으나 엄격한 모든-block support와 stable-set 요구는 power 감소/NOT_RUN을 늘릴 수 있다. 안정성 자체는 false-positive율 보장을 제공하지 않는다."
+        },
+        {
+          "number": 10,
+          "name": "가능한 대안",
+          "text": "Deterministic ex-ante threshold vector, preregistered sensitivity table만 사용, 다른 graph/robust-region 정의. Full-grid graph→명시적 suitability→all stable sets라는 수정안을 권고하되 승인 없이 구현하지 않는다."
+        },
+        {
+          "number": 11,
+          "name": "synthetic software validation에서 검증할 방법",
+          "text": "Complete grid enumeration, missing/FAIL points, isolated point, 여러 component, dominated/failed bridge diagnostic, chain diameter, all-fail stable region, per-block denominators와 등록 전후 mutation을 독립 toy oracle로 검증한다. fixture 값은 software-only."
+        },
+        {
+          "number": 12,
+          "name": "real-PIT 단계에서 추가로 필요한 evidence",
+          "text": "실제 CAL_FIT block membership/maturity, 전체 point별 gate 결과·failures, 등록 grid/tolerance/sensitivity formula/units/support, 적합성의 pre-result authority와 현실적 표본 coverage."
+        },
+        {
+          "number": 13,
+          "name": "numeric threshold/default 포함 여부",
+          "text": "원문에 최소 component size 2라는 구조 상수가 있다. C8에서는 새 승인 대상이며 research significance cutoff가 아니다. 실제 tolerance·block dimensions·acceptance-frequency limit/default는 없다."
+        },
+        {
+          "number": 14,
+          "name": "다른 A항목과의 dependency",
+          "text": "A1/A2 FIT boundary·등록, A4 stable support/rounding, A6 statistical gate 계산, A9 economic thresholds, A12 graph oracles."
+        },
+        {
+          "number": 15,
+          "name": "Shadow audit 문제와의 관계",
+          "text": "Shadow 원문 미확인. RA-03(정의되지 않은 frequency/sensitivity/vertex universe, all-fail stability)와 연결한다. C7 G1을 바꾸거나 재승인하는 항목은 아니다."
+        }
+      ]
+    },
+    {
+      "id": "A4",
+      "title": "Rounded threshold selection and confirmation",
+      "classification": "APPROVE_WITH_MODIFICATION",
+      "proposal_source": {
+        "path": "implementation/reports/track_c_c8_policy_package_A.md",
+        "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+        "start_line": 73,
+        "end_line": 84,
+        "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L73"
+      },
+      "review_fields": [
+        {
+          "number": 1,
+          "name": "proposal 원문",
+          "text": "### A4 Rounded threshold selection and confirmation\nDo not rank threshold points by returns, number of passing candidates or profile merit.\nAn explicit approver names a threshold vector from the recorded stable set, using only\nthe registered calibration criteria; the selection event exposes all alternatives.\nRound to registered precision toward strictness: minimum gates upward; maximum gates\ndownward. Re-evaluate the rounded vector on CAL_FIT; it must remain in the registered\ndomain and have registered stable support, otherwise NOT_RUN with no automatic fallback.\nFreeze exact threshold/selection hash before one CAL_VERIFY assessment. CAL_VERIFY\nfailure/NOT_RUN never causes automatic threshold adjustment. New research requires\nRESEARCH_REOPENED plus a separately preregistered genuinely unused assessment interval,\nnew trial budget/family evidence; the prior outcomes remain logged. Holdout stays sealed."
+        },
+        {
+          "number": 2,
+          "name": "결정하는 정확한 정책",
+          "text": "Return/pass-count/profile-merit ranking 없이 explicit approver가 stable set의 threshold vector를 지정하고, minimum gate는 위로/maximum gate는 아래로 rounding한다. rounded threshold를 FIT에서 확인·freeze한 후 VERIFY를 한 번 평가한다."
+        },
+        {
+          "number": 3,
+          "name": "필요한 이유",
+          "text": "Rounding으로 실제 gate가 바뀌며 VERIFY를 보고 다시 cutoff를 바꾸면 verification이 tuning 데이터가 된다."
+        },
+        {
+          "number": 4,
+          "name": "현재 EVL_SPEC / 기존 D3-P에서 이미 정의된 부분",
+          "text": "EVL §3 threshold-only Calibration, §10 rounded value→Freeze·hard gate non-compensation; §11 no automatic reoptimization/promotion; C7 006B/Package 원문의 no next-best 경계."
+        },
+        {
+          "number": 5,
+          "name": "새로 승인해야 하는 부분",
+          "text": "Human choice event와 선택 기준, comparator/precision/strictness, rounded point의 등록 domain/stable support 판정, one VERIFY assessment와 failure/research reopening. 수정안 M4: approver 재량의 허용 근거를 CAL_FIT 접근 전에 등록하고 outcomes-driven 후보 identity 선택은 금지한다. Round한 off-grid point를 사후 추가하지 않도록 rounding closure/registered support relation을 사전에 정의한다. Universal 비보정 gates와 C4 model/predictive thresholds는 이 rounding의 대상이 아니다."
+        },
+        {
+          "number": 6,
+          "name": "결과에 미치는 영향",
+          "text": "Rounded limit이 실제 PASS/FAIL을 바꾼다. Strictness 때문에 이전에 통과한 후보가 실패할 수 있다. 반복 VERIFY나 human fallback이 차단된다."
+        },
+        {
+          "number": 7,
+          "name": "overfitting 위험",
+          "text": "Human approver라도 좋은 후보만 통과하는 cutoff를 고르면 selection bias가 있다. Disclosure와 별도 VERIFY가 이를 완화하나 자동으로 제거하지 않는다."
+        },
+        {
+          "number": 8,
+          "name": "lookahead 위험",
+          "text": "VERIFY 결과·상세 diagnostic을 보고 rounded vector/selection rationale을 변경하거나 미성숙 결과를 FIT confirmation에 넣는 위험."
+        },
+        {
+          "number": 9,
+          "name": "false-positive / false-negative trade-off",
+          "text": "Strict rounding·one-shot confirmation은 false-positive/재튜닝을 줄이지만 경계의 실제 유효 후보와 off-grid support 부족을 차단할 수 있다. 약한 cutoff를 고르는 human bias가 남으면 FP 보장은 성립하지 않는다."
+        },
+        {
+          "number": 10,
+          "name": "가능한 대안",
+          "text": "Preregistered deterministic 선택 rule, 완전히 ex-ante fixed vector, 공개된 stable set에서 제한된 explicit choice. Deterministic ranking도 결과 영향 policy이며 별도 승인이 필요하다."
+        },
+        {
+          "number": 11,
+          "name": "synthetic software validation에서 검증할 방법",
+          "text": "Minimum/maximum·strict/non-strict comparator 경계, 정밀도/단위, off-grid·domain 밖 rounding, stable-support circularity, VERIFY 실패 후 retry/tune, authority/config mutation과 no automatic fallback을 검사한다."
+        },
+        {
+          "number": 12,
+          "name": "real-PIT 단계에서 추가로 필요한 evidence",
+          "text": "실제 FIT 선택집합, choice approval/rationale, exact rounded vector/code/config hash, 모든 alternatives·assessment accounting, threshold freeze 전후 접근 checkpoint, 독립 VERIFY outcomes."
+        },
+        {
+          "number": 13,
+          "name": "numeric threshold/default 포함 여부",
+          "text": "실제 rounding precision, ticks, threshold 값 없음. Up/down rule만 있다. 구조적 strictness를 임의 numeric cutoff로 바꾸지 않는다."
+        },
+        {
+          "number": 14,
+          "name": "다른 A항목과의 dependency",
+          "text": "A2 registration/choice unit, A3 support definition, A6/A9 comparator/gates, A10 role identity timing, A11 threshold/approval binding."
+        },
+        {
+          "number": 15,
+          "name": "Shadow audit 문제와의 관계",
+          "text": "Shadow 기록 미확인. RA-03(rounding support), RA-02(human 선택과 access accounting), RA-08(role identity timing) 대응 수정이다."
+        }
+      ]
+    },
+    {
+      "id": "A5",
+      "title": "Universal gates",
+      "classification": "ALREADY_DEFINED",
+      "proposal_source": {
+        "path": "implementation/reports/track_c_c8_policy_package_A.md",
+        "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+        "start_line": 85,
+        "end_line": 93,
+        "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L85"
+      },
+      "review_fields": [
+        {
+          "number": 1,
+          "name": "proposal 원문",
+          "text": "### A5 Universal gates\nMandatory and noncalibratable: PIT Universe, availability<=decision_time, provenance/\nvintage, complete ledger/budget/registration, immutable candidate/core scores,\nno-lookahead, Official/Custom isolation, real-scope qualification, current invalidation,\nHoldout isolation, tax exclusion and exact lineage integrity.\nIntegrity/nonfinite/forbidden-input violation=FAIL. Legitimate missing prerequisite/\nundefined support=NOT_RUN. Both block promotion. Keep observed financial hard-gate\nfailure separate from computational-contract failure."
+        },
+        {
+          "number": 2,
+          "name": "결정하는 정확한 정책",
+          "text": "Universal gates를 비보정 hard constraints로 유지하고, integrity violation의 FAIL과 legitimate missing/undefined support의 NOT_RUN을 구분해 둘 다 promotion을 막는다."
+        },
+        {
+          "number": 3,
+          "name": "필요한 이유",
+          "text": "Return이 높다는 이유로 PIT/ledger/lineage 위반을 상쇄하면 EVL의 qualification 의미가 사라진다."
+        },
+        {
+          "number": 4,
+          "name": "현재 EVL_SPEC / 기존 D3-P에서 이미 정의된 부분",
+          "text": "EVL §2 Locked Rules·§8 Pre-Tax·§10 Universal noncalibration/hard-gate non-compensation·§11 invalidation; TC-D3P-005의 protocol FAIL/NOT_RUN 구분; 006B의 nonfinite/integrity=FAIL, legitimate missing=NOT_RUN."
+        },
+        {
+          "number": 5,
+          "name": "새로 승인해야 하는 부분",
+          "text": "새 financial policy보다 기존 규칙의 C8 enforcement다. A5 원문은 재확인 가능하다. 구현에서는 누락 evidence를 statistical gate의 실패로 혼합하지 않고, real qualification을 단순 scope/boolean으로 만족시켰다고 간주하지 않아야 한다(A11의 명시적 authority 보강 대상)."
+        },
+        {
+          "number": 6,
+          "name": "결과에 미치는 영향",
+          "text": "위반·불확실한 candidate를 제외하고 어떤 financial return도 이를 보상하지 못한다."
+        },
+        {
+          "number": 7,
+          "name": "overfitting 위험",
+          "text": "Universal 결과를 보고 예외를 만들거나 policy를 'soft penalty'로 변환하는 위험. Threshold calibration 대상에서 완전히 제외한다."
+        },
+        {
+          "number": 8,
+          "name": "lookahead 위험",
+          "text": "Future/estimated availability, revised vintage를 과거 decision에 join, Holdout/Custom namespace 혼합이 핵심 위험이다."
+        },
+        {
+          "number": 9,
+          "name": "false-positive / false-negative trade-off",
+          "text": "FP/FN보다 integrity acceptance/rejection 문제다. 엄격한 gate는 잘못된 Official PASS를 줄이고, 실제 evidence가 불완전한 경우 NOT_RUN을 늘린다. Legitimate missing을 proven violation으로 과잉 분류하지 않는다."
+        },
+        {
+          "number": 10,
+          "name": "가능한 대안",
+          "text": "Soft penalties/aggregate score/return offset은 기존 locked contract와 충돌하므로 대안으로 권고하지 않는다. Strict fail-closed enforcement를 재확인한다."
+        },
+        {
+          "number": 11,
+          "name": "synthetic software validation에서 검증할 방법",
+          "text": "Universal 하나가 FAIL/NOT_RUN이면 높은 financial metric으로도 PASS하지 않는 case, nonfinite/미래/잘못된 namespace/invalidated approval, tax 포함, fabricated 'real' scope, missing stamp를 검사한다. 기존 C0~C7 negatives를 보존한다."
+        },
+        {
+          "number": 12,
+          "name": "real-PIT 단계에서 추가로 필요한 evidence",
+          "text": "실제 PIT Universe/availability/provenance/vintage 및 현재 source invalidation, complete ledgers/hashes/authority, Official/Custom 격리 증거. C6 boolean이 true라는 사실만으로 충족되지 않는다."
+        },
+        {
+          "number": 13,
+          "name": "numeric threshold/default 포함 여부",
+          "text": "새 alpha/financial threshold/default 없음. available_at<=decision_time 등은 기존 계약의 시간 비교 rule이다."
+        },
+        {
+          "number": 14,
+          "name": "다른 A항목과의 dependency",
+          "text": "A1/A2에서 evidence를 공급받고 A6~A10보다 선행하며 A11 resolver에서 재검증한다. A12의 mandatory negatives 대상이다."
+        },
+        {
+          "number": 15,
+          "name": "Shadow audit 문제와의 관계",
+          "text": "Shadow 원문 미확인. RA-10(acceptance boolean authority), RA-11(legacy Manifest bypass) 문제가 기존 Universal intent를 약화시키는 경로인지 독립 확인했다."
+        }
+      ]
+    },
+    {
+      "id": "A6",
+      "title": "Statistical gates and multiple testing",
+      "classification": "NOT_READY",
+      "proposal_source": {
+        "path": "implementation/reports/track_c_c8_policy_package_A.md",
+        "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+        "start_line": 94,
+        "end_line": 118,
+        "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L94"
+      },
+      "review_fields": [
+        {
+          "number": 1,
+          "name": "proposal 원문",
+          "text": "### A6 Statistical gates and multiple testing\nUse the approved C6 method versions, full aligned family, period arithmetic net-minus-RF\nSharpe, both DSR views and both Reality Checks. Require all registered statistical\ngates in ALL required cohorts/folds, without favorable-cohort averaging.\nPSR probability>=registered min; DSR distinct/attempt probabilities each>=their registered\nmin; PBO<=registered max; both family Reality Check tail fractions<=registered limits;\nbootstrap evidence includes registered lower quantiles/effect floors with exact path.\nLimits are NOT supplied. Bare C6 PASS is not statistical PASS.\nNo max over DSR views, empirically invented effective trial count or selected-family rerun.\n\nFor newly tested skill/distinctness contrasts in A7/A8, propose jointly resampled paired\nblock contrasts using ALL preregistered pairs/metrics/cohorts in one declared family.\nFor each contrast: observed D=metric(left)-metric(right); use identical preregistered\ncircular block indices across all frozen candidates/benchmarks, recompute each approved\nmetric on each paired draw D_b, and report the two-sided centered tail fraction\ncount(abs(D_b-D)>=abs(D))/B with the raw replicates, B/seed/indices/method version.\nUndefined resampled statistics make the contrast NOT_RUN; do not discard those draws.\nApply Holm step-down to the preregistered family of valid p-values at a separately\nregistered alpha; if required family support is incomplete, family decision NOT_RUN.\nThis is a NEW proposed C8 method requiring approval and independent verification;\nexisting kernels do not already implement or validate it. No percentile interval is\nmisrepresented as simultaneous coverage and no numerical alpha/B/L is defaulted.\nAll hypotheses, including rejected/failed/unused alternatives, remain accounted for;\na new metric or adaptive contrast requires a new registered family."
+        },
+        {
+          "number": 2,
+          "name": "결정하는 정확한 정책",
+          "text": "Approved C6 diagnostics의 실제 output에 statistical hard gates를 적용하고, 새 skill/distinctness paired block contrasts의 tail fraction을 Holm family에 넣어 결정한다. C6 protocol PASS와 statistical PASS를 분리한다."
+        },
+        {
+          "number": 3,
+          "name": "필요한 이유",
+          "text": "Complete family의 numerical output만으로 선택 후보의 significance나 multiple-testing 보호가 성립하지 않는다. 어떤 null/alternative와 evidence에서 실제 claim을 할지 정해야 한다."
+        },
+        {
+          "number": 4,
+          "name": "현재 EVL_SPEC / 기존 D3-P에서 이미 정의된 부분",
+          "text": "TC-D3P-004 A2~A6의 period arithmetic net-minus-RF PSR, 두 DSR count views, full-family tied CSCV/PBO, 공동 circular-block bootstrap, equal/simple 및 mcap에 대한 centered full-family Reality Check; 005의 all17 MANDATORY와 protocol-only PASS. 원문 새 nonlinear paired contrast·Holm·C8 gate cutoffs는 승인되지 않았다."
+        },
+        {
+          "number": 5,
+          "name": "새로 승인해야 하는 부분",
+          "text": "검정 대상/null/direction, 각각 C6 Development OOS 또는 CAL_VERIFY 중 어느 evidence에서 판단하는지, role/candidate/metric/cohort/testing-family identity, finite-resampling decision convention, method assumptions와 오류 통제. 보류안 H6: count(abs(D_b-D)>=abs(D))/B를 일반 C3 metric에 대한 유효 p-value로 아직 승인하지 않는다. C6 기존 raw estimates/승인 kernels는 유지하고 새 C8 method version·validity 검토·독립 validation을 먼저 제출한다. Missing hypotheses를 제거한 작은 family로 Holm을 적용하지 않는다."
+        },
+        {
+          "number": 6,
+          "name": "결과에 미치는 영향",
+          "text": "Statistical qualification, skill/distinctness, true/false discovery가 직접 바뀐다. 잘못된 marginal p-value에 Holm을 적용해도 family-wise error 보장은 생기지 않는다."
+        },
+        {
+          "number": 7,
+          "name": "overfitting 위험",
+          "text": "Selected-family rerun, 한 DSR만 선택, reference Sharpe/L/B/quantile/alpha를 결과 후 변경, optional replicate extension, nonlinear statistic 중 잘 된 것만 선택하는 위험. Complete preregistration은 필요하지만 그 자체로 p-value validity 증명은 아니다."
+        },
+        {
+          "number": 8,
+          "name": "lookahead 위험",
+          "text": "C7 OOS를 fresh confirmation으로 사용, resampled outcomes를 predictor/실제 chronological evidence로 내보내는 위험. Bootstrapped statistic-only draw와 real PIT chronology를 분리해야 한다."
+        },
+        {
+          "number": 9,
+          "name": "false-positive / false-negative trade-off",
+          "text": "모든 gates/cohorts·두 DSR view 통과는 보수성을 높이나 correlated attempts를 'effective independent N'으로 간주할 수 없다. 더 큰 testing family는 power를 낮춘다. Raw count/B는 zero tail fraction과 finite Monte Carlo uncertainty를 남긴다. Holm은 유효 marginal p-value 아래 arbitrary dependence를 허용하지만 부정확한 bootstrap/CDF를 고치지 않는다."
+        },
+        {
+          "number": 10,
+          "name": "가능한 대안",
+          "text": "Approved diagnostics를 descriptive prerequisites로 유지하고 독립 CAL_VERIFY에서 명확히 정의된 superiority/identity 검정만 추가; statistic을 승인된 linear mean contrasts로 제한; 다른 검증된 paired/null-resampling method; Holm 또는 Bonferroni. 어느 대안도 지금 active로 선택하지 않는다. Smoothing/Monte Carlo bounds도 새 명시적 method review 대상이며 '(r+1)/(B+1)'만으로 일반 bootstrap validity가 보장되지는 않는다."
+        },
+        {
+          "number": 11,
+          "name": "synthetic software validation에서 검증할 방법",
+          "text": "PSR moments/reference units, DSR both counts/provenance, all CSCV combinations/tied mass, shared block indices, both RC centered-max oracle를 기존 tests와 대조한다. 새 method는 손계산 oracle·joint-dependence/metamorphic checks·preregistered synthetic null/alternative ensemble에서 FP/power/MC uncertainty를 조사해야 한다. Synthetic 반복의 B/L/alpha는 fixture-only이고 아직 real default가 아니다. 현재 dossier는 이 새 method를 실행·검증하지 않는다."
+        },
+        {
+          "number": 12,
+          "name": "real-PIT 단계에서 추가로 필요한 evidence",
+          "text": "Complete aligned real family/ALL attempts, 실제 n/support/moments/Sharpe variance와 RF provenance, registered reference/CSCV blocks/L/B/quantiles/seed, two benchmark histories, exact hypotheses/validity assumptions/MC evidence, fresh CAL_VERIFY claim-source mapping, 승인된 thresholds와 method authority. C6 PASS만으로 대체 불가."
+        },
+        {
+          "number": 13,
+          "name": "numeric threshold/default 포함 여부",
+          "text": "PSR/DSR min, PBO max, RC limits, alpha, B/L/support 값/default는 없다. 수식의 B·normal approximation 및 code의 support prerequisites는 real cutoff를 승인하지 않는다. 기재된 probability/ratio를 다른 단위의 threshold와 비교하지 않는다."
+        },
+        {
+          "number": 14,
+          "name": "다른 A항목과의 dependency",
+          "text": "A1/A2/A3/A4 evidence·threshold freeze; A7 skill와 A8 distinctness는 H6 해결 전 hard decision 불가; A9의 risk-adjusted metric identity와 A10 role/testing family도 먼저 명확해야 한다."
+        },
+        {
+          "number": 15,
+          "name": "Shadow audit 문제와의 관계",
+          "text": "Shadow 원문/정확한 ID 미확인. RA-04(PSR/DSR/PBO interpretation), RA-05(non-linear contrast/p-value/MC validity), RA-06(family RC≠selected candidate skill), RA-10(protocol boolean≠authority)와 연결한다."
+        }
+      ]
+    },
+    {
+      "id": "A7",
+      "title": "Skill assessment",
+      "classification": "APPROVE_WITH_MODIFICATION",
+      "proposal_source": {
+        "path": "implementation/reports/track_c_c8_policy_package_A.md",
+        "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+        "start_line": 119,
+        "end_line": 127,
+        "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L119"
+      },
+      "review_fields": [
+        {
+          "number": 1,
+          "name": "proposal 원문",
+          "text": "### A7 Skill assessment\nRequire qualified C6 robustness and ALL registered superiority contrasts against random\nranking, randomized weights, equal/simple and market-cap controls, with declared metric\ndirections and minimum economic effect. A6 multiplicity protection applies.\nA valid, adequately supported failure to establish registered superiority records\nNO_EVIDENCE_OF_SKILL and blocks promotion. Missing/undefined evidence is NOT_RUN, not\nproof of indistinguishability or skill. Economic superiority alone never offsets a\nfailed statistical/universal gate. No actual investor weights or substitute controls."
+        },
+        {
+          "number": 2,
+          "name": "결정하는 정확한 정책",
+          "text": "C6 robustness가 qualified인 후보를 registered random ranking/random weights/equal-simple/mcap controls와 비교하며 통계 및 경제 superiority를 모두 요구한다. 충분한 evidence에서 superiority가 입증되지 않으면 NO_EVIDENCE_OF_SKILL로 promotion을 막는다."
+        },
+        {
+          "number": 3,
+          "name": "필요한 이유",
+          "text": "Return이 양수이거나 full-family RC가 유의하다는 사실은 지정된 후보가 단순/랜덤 controls보다 우월하다는 증거가 아니다."
+        },
+        {
+          "number": 4,
+          "name": "현재 EVL_SPEC / 기존 D3-P에서 이미 정의된 부분",
+          "text": "EVL §6 negative controls 및 indistinguishable→NO_EVIDENCE_OF_SKILL, §10 hard-gate non-compensation; TC-D3P-004 A7의 pre-result control/scenario identities와 A8의 C8 skill 책임. C6는 control을 계산할 뿐 skill을 판정하지 않는다."
+        },
+        {
+          "number": 5,
+          "name": "새로 승인해야 하는 부분",
+          "text": "Candidate/role-specific superiority metric·direction·control/seed family, 경제 effect의 basis, adequate-support rule 및 A6 multiplicity. 수정안 M7: RC family rejection을 candidate skill로 직접 승격하지 않고 지정된 후보의 paired evidence를 요구한다. Equality rejection + 잘못된 direction을 superiority로 읽지 않는다. Failure to establish skill은 'skill이 없다는 증명' 또는 equivalence proof가 아니다."
+        },
+        {
+          "number": 6,
+          "name": "결과에 미치는 영향",
+          "text": "ALL registered superiority 조건이 promotion gate가 된다. Control 자체가 불완전하면 NOT_RUN이고, validly supported skill 미입증은 NO_EVIDENCE_OF_SKILL을 남긴다."
+        },
+        {
+          "number": 7,
+          "name": "overfitting 위험",
+          "text": "쉬운 benchmark/랜덤 seed만 골라 비교하거나 controls를 과소 risk/cost로 만들면 skill이 과장된다. 모든 draw·cost/exposure assumptions·declared hypotheses를 노출한다."
+        },
+        {
+          "number": 8,
+          "name": "lookahead 위험",
+          "text": "Controls를 candidate 이후 outcome에 맞춰 만들거나 future universe/weights/RF를 쓰면 비교가 오염된다. Control definitions은 outcomes 전에 고정하고 양쪽 PIT lineage를 resolve한다."
+        },
+        {
+          "number": 9,
+          "name": "false-positive / false-negative trade-off",
+          "text": "많은 필수 controls와 positive economic effect는 false skill claim을 줄이나 작은 sample/높은 benchmark variance에서는 skill 있는 후보도 입증하지 못할 수 있다. Low power를 proven no-skill로 해석하지 않는다."
+        },
+        {
+          "number": 10,
+          "name": "가능한 대안",
+          "text": "모든 controls의 superiority, 사전 지정 primary control + 나머지 sensitivity, 별도 equivalence/non-inferiority contract. 원문의 ALL-controls rule은 새 결과 영향 정책이며 사용자가 선택해야 한다. Equality test의 two-sided rejection만 사용하지 않는다."
+        },
+        {
+          "number": 11,
+          "name": "synthetic software validation에서 검증할 방법",
+          "text": "Family RC에서 다른 candidate가 winner인 경우 지정 candidate를 PASS시키지 않는 oracle, 방향 역전, identical controls, 경제 효과만/통계 효과만 통과, missing seed/support, 무작위 family pruning, no replacement를 검사한다. Reject 경로도 mandatory acceptance에서 blocking을 증명한다."
+        },
+        {
+          "number": 12,
+          "name": "real-PIT 단계에서 추가로 필요한 evidence",
+          "text": "실제 control producer/config/seed roster, 공통 calendar/quotes/cost/fees/currency/coverage·risk/exposure assumptions, frozen prediction identities, qualified paired outcomes, 등록된 metric/direction/economic effect 및 H6의 유효 inference evidence."
+        },
+        {
+          "number": 13,
+          "name": "numeric threshold/default 포함 여부",
+          "text": "실제 effect-size floor, control seed 수, support, alpha/default 없음. Controls 종류와 ALL 조건은 logic/identity 규칙이다."
+        },
+        {
+          "number": 14,
+          "name": "다른 A항목과의 dependency",
+          "text": "A5/C6 protocol prerequisite; A6 유효 검정·multiple testing; A9 경제 basis; A10 selected role identity; A11 real gate authority. H6를 해결하기 전 M7만 승인해도 real skill decision은 열리지 않는다."
+        },
+        {
+          "number": 15,
+          "name": "Shadow audit 문제와의 관계",
+          "text": "Shadow 원문 미확인. RA-06(두 family RC와 개별 role superiority), RA-04/05(검정 해석), RA-10(protocol output misuse)에 대응한다."
+        }
+      ]
+    },
+    {
+      "id": "A8",
+      "title": "Profile distinctness",
+      "classification": "NOT_READY",
+      "proposal_source": {
+        "path": "implementation/reports/track_c_c8_policy_package_A.md",
+        "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+        "start_line": 128,
+        "end_line": 138,
+        "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L128"
+      },
+      "review_fields": [
+        {
+          "number": 1,
+          "name": "proposal 원문",
+          "text": "### A8 Profile distinctness\nUse C7 raw pair differences unchanged. For EACH profile pair and EACH required cohort,\nrequire at least one preregistered metric contrast that BOTH rejects equality under A6\nmultiplicity protection AND exceeds its registered economic separation in absolute\nmagnitude (or a preregistered approved directional contrast).\nRegister the entire disjunction/family before access; report every contrast, including\nzeros and ties. Well-supported failure=PROFILE_NOT_DISTINCT, blocking the declared\nthree-profile promotion batch. Incomplete family/support=NOT_RUN.\nNo automatic next-best candidate, substitute profile or post-result metric selection.\nAdditional metrics/derivations need their own versioned formula and policy approval."
+        },
+        {
+          "number": 2,
+          "name": "결정하는 정확한 정책",
+          "text": "각 profile pair·required cohort에서 사전 등록 metric 중 하나 이상이 statistical equality rejection과 economic separation을 동시에 충족해야 distinct라 판단한다. 실패는 PROFILE_NOT_DISTINCT로 선언된 three-profile batch를 막고 다음 후보 자동 탐색은 금지한다."
+        },
+        {
+          "number": 3,
+          "name": "필요한 이유",
+          "text": "Profile 이름/parameters/medoid hash가 다르거나 C7 raw delta가 nonzero여도 실제 OOS behavior와 경제적 의미가 분리된 것은 아니다."
+        },
+        {
+          "number": 4,
+          "name": "현재 EVL_SPEC / 기존 D3-P에서 이미 정의된 부분",
+          "text": "EVL §9 same Landscape·PROFILE_NOT_DISTINCT intent; 006B B8의 C7 descriptive-only, C8 statistical/economic 판단 및 no next-best; C7가 모든 representative pair×metric×cohort raw difference를 보존하는 현재 구현."
+        },
+        {
+          "number": 5,
+          "name": "새로 승인해야 하는 부분",
+          "text": "Profile/role/tie pairing unit, family의 모든 disjunction, directional/absolute economic identity, confirmation partition, hard blocking unit과 H6 method. 보류안 H8: C7 Development OOS difference는 ancestry/description으로 유지하고 fresh CAL_VERIFY의 지정된 frozen-role contrasts를 hard decision 근거로 명확히 한다. 모든 tied alternatives의 accounting과 최종 역할 pairs를 구분한다. 세 profile 묶음 blocking은 C8 assessment policy로 별도 명시하고 미승인 Package B의 C9 consumption unit을 가져오지 않는다."
+        },
+        {
+          "number": 6,
+          "name": "결과에 미치는 영향",
+          "text": "Profile promotion 허용/거절과 batch outcome을 바꾼다. '각 cohort에서 어떤 metric 하나'는 cohort마다 다른 metric이 증명될 수도 있어 stable profile identity 의미가 미정이다."
+        },
+        {
+          "number": 7,
+          "name": "overfitting 위험",
+          "text": "잘 나온 metric/cohort/pair만 고르는 OR testing과 role/tie cherry-picking이 핵심이다. 전체 disjunction family 보호와 identity freeze가 필요하다."
+        },
+        {
+          "number": 8,
+          "name": "lookahead 위험",
+          "text": "C7 selection OOS를 새 confirmatory distinctness라고 부르거나 CAL_VERIFY 결과로 profile/metric/roles를 바꾸는 위험. Same candidate/path를 단지 다른 profile name으로 labeling해도 새 evidence가 생기지 않는다."
+        },
+        {
+          "number": 9,
+          "name": "false-positive / false-negative trade-off",
+          "text": "Statistical+economic AND/all-cohort 조건은 false distinctness를 줄이나 small samples·heterogeneous regimes에 false-negative/NOT_RUN을 늘린다. Many metrics의 OR는 uncorrected FP를 키우고, Holm이 이를 통제하려면 p-values 자체가 유효해야 한다."
+        },
+        {
+          "number": 10,
+          "name": "가능한 대안",
+          "text": "Every-metric distinctness, 사전 지정 identity metric(s)의 일관된 direction, pooled/heterogeneity-aware rule, economic-only description. Statistical meaning·새 aggregate/coverage policy가 각각 달라 별도 승인 대상이다. 본 dossier는 한 방안을 active로 고르지 않는다."
+        },
+        {
+          "number": 11,
+          "name": "synthetic software validation에서 검증할 방법",
+          "text": "Same identity/zero delta가 C7 PASS여도 real distinctness가 되지 않는 case, 모든 tie Cartesian pairs, direction tradeoff, cohort별 다른 winner, one valid metric+one missing metric, complete-family correction, no next-best/role replacement를 검증한다. H6 결정 전 valid statistical PASS를 fixture가 증명했다고 선언하지 않는다."
+        },
+        {
+          "number": 12,
+          "name": "real-PIT 단계에서 추가로 필요한 evidence",
+          "text": "사전 지정 profile/role/pair identity, actual independent VERIFY outcomes, complete registered hypotheses/metric units/economic separation, cohort coverage/support, H6 method/assumptions/MC validation, batch scope authority와 full C7 lineage."
+        },
+        {
+          "number": 13,
+          "name": "numeric threshold/default 포함 여부",
+          "text": "경제 separation이나 alpha/default 없음. '각 pair/cohort에서 적어도 한 metric'은 원문의 cardinality/disjunction policy이지 numeric research cutoff가 아니다."
+        },
+        {
+          "number": 14,
+          "name": "다른 A항목과의 dependency",
+          "text": "A1 fresh data; A2 full hypotheses; A6 inference; A7 skill와 별도 claim; A9 units/economic effect; A10 roles; A11 hard-state authority. H6/H10 해결 전 원문 전체 승인 권고 불가."
+        },
+        {
+          "number": 15,
+          "name": "Shadow audit 문제와의 관계",
+          "text": "Shadow 원문 미확인. RA-07(distinctness family·새 data·batch 의미), RA-08(tie/roles), RA-05(p-value validity)에 연결한다."
+        }
+      ]
+    },
+    {
+      "id": "A9",
+      "title": "Economic gates",
+      "classification": "REQUIRES_NUMERIC_CONFIG_LATER",
+      "proposal_source": {
+        "path": "implementation/reports/track_c_c8_policy_package_A.md",
+        "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+        "start_line": 139,
+        "end_line": 150,
+        "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L139"
+      },
+      "review_fields": [
+        {
+          "number": 1,
+          "name": "proposal 원문",
+          "text": "### A9 Economic gates\nALL required cohorts and all hard gates must pass the EVL order:\nNET_OF_TRADING_COST_PRE_TAX nominal CAGR>0 -> REAL_PRE_TAX CAGR>0 ->\nRISK_FREE_EXCESS_PRE_TAX relative-wealth CAGR>0 -> registered required risk-premium\npath/limit -> registered benchmark opportunity-cost path/limit -> registered\nrisk-adjusted metric paths/limits. Preserve gross/net/real/RF views and raw values.\nTail loss, MDD, turnover, recovery censoring and minimum growth use exact C3 paths and\nexplicit profile-specific registered directions/limits. None of these additional\nvalues is supplied. Do not substitute arithmetic excess Sharpe for relative RF CAGR,\nor an unrecovered duration for a completed recovery.\nPassing one high-return gate cannot compensate for another hard-gate failure."
+        },
+        {
+          "number": 2,
+          "name": "결정하는 정확한 정책",
+          "text": "모든 required cohort의 economic hard gates를 nominal→real→RF excess→required premium→benchmark opportunity cost→risk-adjusted 순서로 검사한다. 첫 세 gate는 명시된 net/real/RF-relative CAGR path이고 다른 hard failure는 높은 return으로 상쇄하지 않는다."
+        },
+        {
+          "number": 3,
+          "name": "필요한 이유",
+          "text": "양의 nominal return이 inflation/RF/opportunity cost를 이겼다는 뜻은 아니며, 서로 다른 excess 정의를 섞으면 경제적 판단이 달라진다."
+        },
+        {
+          "number": 4,
+          "name": "현재 EVL_SPEC / 기존 D3-P에서 이미 정의된 부분",
+          "text": "EVL §7의 네 distinct Pre-Tax views와 economic 순서, §8 tax exclusion, §9 profile risk/growth 의도. Frozen C3는 net=r-cost, real=(1+net)/(1+inflation)-1, RF relative=(1+net)/(1+rf)-1, Sharpe의 arithmetic net-rf, tail/turnover/회복 censoring을 계산한다."
+        },
+        {
+          "number": 5,
+          "name": "새로 승인해야 하는 부분",
+          "text": "원문의 첫 세 CAGR identity를 C8 gate mapping으로 승인할지, premium/opportunity/risk-adjusted의 정확한 기존 path·formula·units·direction·economic authority. 이 구조는 method/scope 승인 가능하나 actual configuration 없이는 real 판단을 열지 않는다. 새로운 premium/benchmark derivation을 임의 추가하지 않고 필요하면 별도 formula/D3-P를 제출한다."
+        },
+        {
+          "number": 6,
+          "name": "결과에 미치는 영향",
+          "text": "Inflation/RF/cost/benchmark/risk burden에 따라 같은 후보의 PASS/FAIL이 달라진다. Stage 순서대로 차단하더라도 audit에는 모든 raw values와 미실행 이유를 남긴다."
+        },
+        {
+          "number": 7,
+          "name": "overfitting 위험",
+          "text": "후보 return에 맞춰 필요한 premium을 낮추거나 유리한 benchmark/metric basis를 골라 gate를 만들면 selection bias가 발생한다. 규범적 economic requirement와 데이터로 calibration할 값의 admissible 범위를 pre-access authority로 구분해야 한다."
+        },
+        {
+          "number": 8,
+          "name": "lookahead 위험",
+          "text": "미래 RF/현재 revised CPI를 과거 predictor에 쓰거나 opportunity-cost benchmark가 future composition으로 구성되는 위험. RF는 period start에 known, CPI/outcome은 evaluation 때 realized/published되어야 한다."
+        },
+        {
+          "number": 9,
+          "name": "false-positive / false-negative trade-off",
+          "text": "실질·RF·premium·opportunity 조건은 명목 성과의 false economic-positive를 줄이나 높은 요구 premium/시장 regime 차이는 유효 후보를 reject할 수 있다. 낮은 값을 결과 후 선택하면 FP가 다시 증가한다."
+        },
+        {
+          "number": 10,
+          "name": "가능한 대안",
+          "text": "RF-relative CAGR premium, arithmetic period excess premium, net-minus-benchmark total-return 또는 별도 annualized comparison. 단위와 의미가 다르며 자동 대체하지 않는다. 현재 C3 path를 우선 명시하되 unspecified formula를 이 dossier에서 임의 결정하지 않는다."
+        },
+        {
+          "number": 11,
+          "name": "synthetic software validation에서 검증할 방법",
+          "text": "Gross/net/real/RF wealth 손계산, arithmetic excess와 relative wealth가 다른 case, positive nominal but negative real/RF, cost stress, cumulative-vs-annualized mismatch, tail sign, right-censored drawdown, missing down-period support, 각 hard failure non-compensation을 검사한다."
+        },
+        {
+          "number": 12,
+          "name": "real-PIT 단계에서 추가로 필요한 evidence",
+          "text": "실제 execution costs/fills, 동일 period/currency의 RF/CPI/outcomes/benchmark histories 및 원문 availability/vintage, registered annualization/tail fraction, 적절한 actual calendar, premium/opportunity formula authority·값·profile constraints. C3의 generic outcome stamp만으로 별도 benchmark source qualification이 자동 증명됐다고 간주하지 않는다."
+        },
+        {
+          "number": 13,
+          "name": "numeric threshold/default 포함 여부",
+          "text": "원문 첫 세 CAGR>0에 zero boundary가 명시돼 있다. 이는 EVL의 'positive' intent를 특정 C3 CAGR path에 매핑한 제안이며 실제 gate mapping은 아직 승인되지 않았다. 추가 premium/risk/turnover/MDD/tail/distinctness 값·default는 없다. 기간/RF annual yield conversion도 임의 default 없음."
+        },
+        {
+          "number": 14,
+          "name": "다른 A항목과의 dependency",
+          "text": "A1 outcome/source boundary; A2/A4 limits freeze; A6 risk-adjusted/statistical interpretations; A7 경제 superiority; A8 separation units; A11 manifest thresholds identity."
+        },
+        {
+          "number": 15,
+          "name": "Shadow audit 문제와의 관계",
+          "text": "Shadow 원문 미확인. RA-09(economic gate identity, RF basis, recovery censoring/benchmark provenance), RA-01(data boundary)에 연결한다."
+        }
+      ]
+    },
+    {
+      "id": "A10",
+      "title": "Tie-set, roles and authorization",
+      "classification": "NOT_READY",
+      "proposal_source": {
+        "path": "implementation/reports/track_c_c8_policy_package_A.md",
+        "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+        "start_line": 151,
+        "end_line": 161,
+        "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L151"
+      },
+      "review_fields": [
+        {
+          "number": 1,
+          "name": "proposal 원문",
+          "text": "### A10 Tie-set, roles and authorization\nPreserve all C7 representative ties in every C8 report. An explicit role-designation\napproval identifies one Champion and one Challenger from the qualified registered\nset for each profile, with rationale/provenance; hash cannot indicate merit.\nNo second eligible candidate -> no complete Champion/Challenger role assignment;\nreport NOT_RUN_ROLE_ASSIGNMENT. Same identity cannot occupy both roles for a profile.\nRole identity and verification hypotheses are preregistered before CAL_VERIFY access;\nC8 evaluates every declared role/tied alternative and multiplicity accounting includes\nall assessments. No automatic next-best replacement on failure.\nA failed role assignment requires separate registered research, not silent substitution."
+        },
+        {
+          "number": 2,
+          "name": "결정하는 정확한 정책",
+          "text": "C7 모든 exact representative ties를 보존하고 profile별 서로 다른 Champion/Challenger를 explicit approval로 지정한다. 원문은 CAL_VERIFY 전에 roles/hypotheses를 등록하고 second candidate가 없으면 NOT_RUN_ROLE_ASSIGNMENT를 요구한다."
+        },
+        {
+          "number": 3,
+          "name": "필요한 이유",
+          "text": "Canonical hash order는 investment merit가 아니며, 실패 후 role을 바꾸거나 새로운 candidate를 넣으면 selection/multiplicity를 재시작한 것이 된다."
+        },
+        {
+          "number": 4,
+          "name": "현재 EVL_SPEC / 기존 D3-P에서 이미 정의된 부분",
+          "text": "EVL §11 profile별 Champion/Challenger·no automatic promotion/reoptimization; 006B restricted medoid/all exact ties/hash-only serialization/no next-best; C7는 최종 representative_tie_set을 반환한다. EVL는 qualified registered set의 범위나 role 지정 정확한 시점을 별도로 정의하지 않았다."
+        },
+        {
+          "number": 5,
+          "name": "새로 승인해야 하는 부분",
+          "text": "Qualified set이 C7 최종 representatives인지 전체 Pareto/landscape인지, Challenger의 별도 campaign/version 허용 여부, 동일 profile의 두 roles 및 cross-profile same identity, designation의 access 순서. 보류안 H10: 우선 C7 최종 qualified representative 집합 밖의 자동 승격을 금지하고, designation을 CAL_FIT 전으로 옮겨 A1의 candidate freeze와 맞춘다. Single representative면 no role assignment를 유지한다. 별도 historical/new-campaign Challenger는 별도 universe/qualification policy가 필요하며 여기서 자동 허용하지 않는다."
+        },
+        {
+          "number": 6,
+          "name": "결과에 미치는 영향",
+          "text": "Role/promotion identity와 검정 family가 직접 바뀐다. C7 fixture에는 profile별 동일 singleton representative가 허용되므로 원문 요구의 두 distinct roles를 제공하지 못할 수 있다. 이는 C7 software Freeze 실패가 아니다."
+        },
+        {
+          "number": 7,
+          "name": "overfitting 위험",
+          "text": "CAL_FIT/CAL_VERIFY 성과를 본 뒤 role을 바꾸거나 ties 중 winning pair만 보고하면 새 selection이 된다. Human approval도 selection bias를 없애지 않는다."
+        },
+        {
+          "number": 8,
+          "name": "lookahead 위험",
+          "text": "원문의 'before CAL_VERIFY'만 따르면 CAL_FIT을 보고 후보 identity를 바꿀 여지가 있어 A1의 frozen-candidate-before-FIT과 충돌한다. Timing과 immutable model/threshold instance를 명시해야 한다."
+        },
+        {
+          "number": 9,
+          "name": "false-positive / false-negative trade-off",
+          "text": "명확한 최종 representative pool과 prereg roles는 lucky-role FP를 줄인다. Singleton을 block하면 실제 유효 Champion도 complete lifecycle로 못 넘어가며 coverage/NOT_RUN이 증가한다. 이를 회피하려고 다음-best를 임의 승격하면 FP가 증가한다."
+        },
+        {
+          "number": 10,
+          "name": "가능한 대안",
+          "text": "최종 representative 집합에서 두 distinct identities 필수; Champion-only research qualification과 별도 Challenger lifecycle; 기존 qualified historical Challenger; 추가 preregistered independent research. 각 대안은 canonical roles와 qualification unit에 새 영향을 주므로 사용자 선택이 필요하다."
+        },
+        {
+          "number": 11,
+          "name": "synthetic software validation에서 검증할 방법",
+          "text": "Singleton/복수 component/exact tie, hash-order permutation, same ID의 양-role 지정 금지, profile pair same-ID, final representative 밖 입력, FIT/VERIFY 이후 role substitution, approval/ancestor invalidation, no next-best를 검사한다."
+        },
+        {
+          "number": 12,
+          "name": "real-PIT 단계에서 추가로 필요한 evidence",
+          "text": "Actual qualified C7 representative sets/각 model·predictive thresholds·execution lineage, explicit role designation authority/rationale/time, complete assessed/unused alternatives와 hypotheses, independent data/history가 필요한 Challenger면 별도 evidence campaign."
+        },
+        {
+          "number": 13,
+          "name": "numeric threshold/default 포함 여부",
+          "text": "원문의 one Champion/one Challenger와 same-ID 금지는 cardinality/identity policy다. Ranking weight/financial threshold/default는 없고 새 pool을 임의 생성하지 않는다."
+        },
+        {
+          "number": 14,
+          "name": "다른 A항목과의 dependency",
+          "text": "A1 candidate freeze timing과 직접 연결; A2 trial/hypothesis family; A6/A7/A8 selected identity; A11 lifecycle/manifest. C9 Package B의 six-role consumption semantics는 여기서 승인하거나 변경하지 않는다."
+        },
+        {
+          "number": 15,
+          "name": "Shadow audit 문제와의 관계",
+          "text": "Shadow 원문 미확인. RA-08(qualified pool 모호성·singleton·timing 충돌), RA-07(profile-role contrasts)와 연결한다."
+        }
+      ]
+    },
+    {
+      "id": "A11",
+      "title": "Lifecycle and Manifest scope",
+      "classification": "APPROVE_WITH_MODIFICATION",
+      "proposal_source": {
+        "path": "implementation/reports/track_c_c8_policy_package_A.md",
+        "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+        "start_line": 162,
+        "end_line": 180,
+        "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L162"
+      },
+      "review_fields": [
+        {
+          "number": 1,
+          "name": "proposal 원문",
+          "text": "### A11 Lifecycle and Manifest scope\nReal VALIDATED/FROZEN requires all gates/role assignments with REAL_PIT_RESEARCH_VALIDATION\nevidence and an explicit approval event bound to policy/assessment/threshold hashes.\nC8 cannot confer OFFICIAL: C9 Holdout result and a subsequent explicit promotion approval\nare required. HOLDOUT_READY and PROMOTED are NOT new lifecycle states.\nProposed immutable C8 artifact envelope:\nschema/version, artifact_kind, evidence_scope, synthetic bool, source/checkpoint/code/\nconfig hashes, validation_result, lineage, approval_event_ref, tax_mode, payload_hash.\nSYNTHETIC_SOFTWARE_VALIDATION artifacts carry artifact_kind=SOFTWARE_ACCEPTANCE and\na separate fixture_manifest_payload plus simulated transitions. They have\nofficial=false, research_state=null, promotion_authority=null, real_holdout_eligible=false.\nThey never create or register a real FreezeManifest/candidate state.\nREAL_PIT_RESEARCH_VALIDATION artifacts may carry artifact_kind=RESEARCH_FREEZE_MANIFEST\nand existing canonical FreezeManifest payload only after current evidence/approval\nresolution. A forged scope field alone cannot qualify synthetic inputs. Missing scope\nfails closed. Freeze scope is an evidence discriminator, not a lifecycle state.\nConsumers require the real discriminator, real upstream inputs, all gates and current\napproval before accepting a research Manifest; no producer/Web source changes."
+        },
+        {
+          "number": 2,
+          "name": "결정하는 정확한 정책",
+          "text": "Synthetic SOFTWARE_ACCEPTANCE와 real RESEARCH_FREEZE_MANIFEST를 별도 envelope/namespace로 유지하고, real gates·role assignments·approval를 resolve한 경우만 canonical VALIDATED/FROZEN을 부여한다. OFFICIAL에는 C9 및 이후 explicit promotion approval가 필요하다."
+        },
+        {
+          "number": 3,
+          "name": "필요한 이유",
+          "text": "C0 FreezeManifest는 scope discriminator가 없고 shallow validation만 한다. Scope field/boolean을 신뢰하면 software fixture를 real authority로 오인할 수 있다."
+        },
+        {
+          "number": 4,
+          "name": "현재 EVL_SPEC / 기존 D3-P에서 이미 정의된 부분",
+          "text": "EVL §10 canonical state machine·§11 manifest/explicit promotion/invalidation; 005 synthetic software vs real PIT separation; 006B synthetic distinctness/software PASS≠real validation. Frozen C0 class는 spec/tax/lineage nonempty만 검사한다."
+        },
+        {
+          "number": 5,
+          "name": "새로 승인해야 하는 부분",
+          "text": "Additive scope envelope와 consumer admission/approval/state transition rule. 수정안 M11: bare robustness.acceptance() 결과 또는 real_pit_research_validated boolean은 authorization token이 아니다. C8 resolver가 현재 C6 resolve_robustness/C7 resolve_selection, 실제 source qualification·independent CAL_VERIFY·모든 C8 gates·roles·threshold/code/data hashes·승인 event를 다시 확인한 자체 real-qualified evidence만 research Manifest로 내보낸다. Unknown/mixed scope와 legacy C0 객체만으로 실제 상태를 부여하는 경로는 fail closed. C0~C7 frozen source를 바꾸지 않고 별도 C8 namespace/consumer contract로 보강한다."
+        },
+        {
+          "number": 6,
+          "name": "결과에 미치는 영향",
+          "text": "VALIDATED/FROZEN/real-Holdout eligibility의 authority가 바뀌므로 wrapper 직렬화만의 문제가 아니다. Synthetic output은 official=false, research_state=null, promotion_authority=null, real_holdout_eligible=false로 유지한다."
+        },
+        {
+          "number": 7,
+          "name": "overfitting 위험",
+          "text": "유리한 fixture/과거 PASS/다른 experiment evidence를 real로 relabel하면 real 성과를 선택적으로 주장하게 된다. 전체 lineage와 current approval resolution이 필요하다."
+        },
+        {
+          "number": 8,
+          "name": "lookahead 위험",
+          "text": "Approval/freeze event가 outcome 접근 후 만들어졌거나 revised source를 과거 manifest에 합치는 위험. Gate fit/verify/freeze/approval chronology를 각각 확인해야 한다."
+        },
+        {
+          "number": 9,
+          "name": "false-positive / false-negative trade-off",
+          "text": "근거 없는 real PASS를 차단하지만 legacy consumer나 완전하지 않은 실제 provenance를 가진 유효 후보도 NOT_RUN이 될 수 있다. Unknown scope를 permissive default로 해결하지 않는다."
+        },
+        {
+          "number": 10,
+          "name": "가능한 대안",
+          "text": "Frozen C0 class 변경(이번 범위와 충돌), additive envelope+mandatory resolver, completely isolated software store. Additive envelope와 별도 authority resolver를 권고하며 현재 다른 Track consumer를 수정하지 않는다."
+        },
+        {
+          "number": 11,
+          "name": "synthetic software validation에서 검증할 방법",
+          "text": "Fake full mandatory dict+REAL scope가 bare acceptance에서 true를 만들 수 있는 static witness를 admission rejection case로 계획한다. Validity flag forged, synthetic-as-real bytes, legacy Manifest injection, invalidated approval/source, cross-namespace/code/threshold mismatch를 막는다. Synthetic tests는 real authority를 실행하지 않는다."
+        },
+        {
+          "number": 12,
+          "name": "real-PIT 단계에서 추가로 필요한 evidence",
+          "text": "실제 registered/qualified input bytes와 provenance/current invalidation, 전체 C6/C7 current resolution, all real C8 gates/roles/thresholds, exact state transition/approval identity/time/hash, 별도 verifier가 요구하는 external access evidence. Boolean 값만으로 대체 불가."
+        },
+        {
+          "number": 13,
+          "name": "numeric threshold/default 포함 여부",
+          "text": "새 numeric default 없음. 두 scope와 artifact_kind는 evidence discriminator이며 새 lifecycle state가 아니다. HOLDOUT_READY/PROMOTED도 state로 추가하지 않는다."
+        },
+        {
+          "number": 14,
+          "name": "다른 A항목과의 dependency",
+          "text": "A1~A10 complete real qualification을 모두 소비한다. A5 intent와 RA-10 weakness의 enforce point다. A12 software payload와 격리; C9/Forward actual 권한은 이 Package A approval에 포함되지 않는다."
+        },
+        {
+          "number": 15,
+          "name": "Shadow audit 문제와의 관계",
+          "text": "Shadow 원문 미확인. 사용자가 지목한 weakness는 RA-10으로 실제 source에서 확인했고 RA-11(C0 shallow Manifest)과 함께 M11 보강 대상으로 연결했다. 정식 Shadow issue ID/원문 내용과의 일치 여부는 미확인이다."
+        }
+      ]
+    },
+    {
+      "id": "A12",
+      "title": "Software Freeze",
+      "classification": "SAFE_TO_APPROVE_AS_WRITTEN",
+      "proposal_source": {
+        "path": "implementation/reports/track_c_c8_policy_package_A.md",
+        "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942",
+        "start_line": 181,
+        "end_line": 188,
+        "url": "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L181"
+      },
+      "review_fields": [
+        {
+          "number": 1,
+          "name": "proposal 원문",
+          "text": "### A12 Software Freeze\nComplete deterministic synthetic positive algorithm fixtures and blocking negative\ncases may support C8 SOFTWARE FROZEN ONLY after targeted, C0-C7, full, PIT/lineage/\nHoldout/ledger/invalidation/cross-track audits and actual Actions/evidence binding.\nThe new contrasts/calibration/rounding procedures need independent expected outcomes,\nboundary/metamorphic tests and documented limitations before acceptance.\nNo synthetic artifact supports real VALIDATED/FROZEN/OFFICIAL/Holdout eligibility.\nActual research qualification remains a separate NOT_RUN/PASS/FAIL result."
+        },
+        {
+          "number": 2,
+          "name": "결정하는 정확한 정책",
+          "text": "독립 positive/negative synthetic tests, 이전-phase/full regression, PIT/lineage/Holdout/ledger/invalidation/cross-track audits 및 실제 Actions/evidence를 모두 통과해야 C8 SOFTWARE FROZEN을 선언한다. Real research/PASS는 분리한다."
+        },
+        {
+          "number": 3,
+          "name": "필요한 이유",
+          "text": "Software 구현 정확성과 전략/투자 검증을 혼동하면 없는 실제 evidence와 approval를 만들어낼 수 있다."
+        },
+        {
+          "number": 4,
+          "name": "현재 EVL_SPEC / 기존 D3-P에서 이미 정의된 부분",
+          "text": "TC-D3P-005 S의 synthetic-only software Freeze와 mandatory checks, 006B software vs real separation, 보존된 C7 freeze97/233/726 및 independent current-resolver evidence. C8의 실제 gates/new methods는 여전히 별도 승인 대상이다."
+        },
+        {
+          "number": 5,
+          "name": "새로 승인해야 하는 부분",
+          "text": "C8에 동일 software Freeze scope를 적용하고 새 calibration/rounding/statistical method에 independent oracle·metamorphic tests·limitations를 요구하는 protocol policy. 원문 그대로 승인 가능하나 이 dossier는 승인 기록을 만들지 않는다. A12 승인만으로 A6 미정 방법을 선택하거나 C8 구현을 시작할 수 없다."
+        },
+        {
+          "number": 6,
+          "name": "결과에 미치는 영향",
+          "text": "Software phase 완료 기준만 결정하며 real VALIDATED/FROZEN/OFFICIAL/Holdout-ready를 생성하지 않는다. Expected rejection tests의 PASS를 financial gate PASS로 바꾸지 않는다."
+        },
+        {
+          "number": 7,
+          "name": "overfitting 위험",
+          "text": "Test fixtures를 통과시키려고 logic/expectation을 약화하거나 잘 나온 fixture만 남기는 위험. 독립 oracle/전체 rejection cases와 기존 regressions 보존이 필요하다."
+        },
+        {
+          "number": 8,
+          "name": "lookahead 위험",
+          "text": "Simulated clock/outcomes를 real access chronology/actual Forward로 기록하는 위험. Fixture store/provider는 synthetic namespace다."
+        },
+        {
+          "number": 9,
+          "name": "false-positive / false-negative trade-off",
+          "text": "Software 관점의 잘못된 acceptance/rejection를 줄인다. 금융 null의 FP/FN 수치는 test-suite PASS로 보장되지 않고 A6 method validation과 real evidence가 추가 필요하다."
+        },
+        {
+          "number": 10,
+          "name": "가능한 대안",
+          "text": "Software Freeze에 real-PIT campaign 완료까지 요구, scoped software Freeze와 별도 real qualification 유지. 승인된 005/006B와 일치하는 두 번째 방안을 권고한다."
+        },
+        {
+          "number": 11,
+          "name": "synthetic software validation에서 검증할 방법",
+          "text": "모든 A1~A11의 independently expected deterministic outputs·blocking negatives, scopes/ledger/access/authority/roles/rounding/complete-family checks, C0~C7와 full regression, 보호된 Git blobs, actual Actions+artifacts를 검증한다. 새 methods의 statistical validity는 arithmetic reproducibility와 별도 validation 항목이다."
+        },
+        {
+          "number": 12,
+          "name": "real-PIT 단계에서 추가로 필요한 evidence",
+          "text": "Software Freeze 자체에는 real data가 필요하지 않는다. Real qualification에는 A1~A11의 actual config/source/access/approval/statistical/economic evidence가 별도로 전부 필요하다."
+        },
+        {
+          "number": 13,
+          "name": "numeric threshold/default 포함 여부",
+          "text": "실제 alpha/PSR/PBO/B/L/premium/distinctness default 없음. 테스트에서 필요한 numeric은 fixture-only scope로 분리하며 real default로 승격하지 않는다."
+        },
+        {
+          "number": 14,
+          "name": "다른 A항목과의 dependency",
+          "text": "A1~A11 승인된 의미만 대상으로 테스트한다. 미정 A6/A8/A10을 임의 해결할 수 없고 C7 baseline을 보존해야 한다. C8 이후 Package B/C approval는 별도다."
+        },
+        {
+          "number": 15,
+          "name": "Shadow audit 문제와의 관계",
+          "text": "Shadow 원문 미확인. RA-12(software correctness≠real inference/authority)를 RA-01~11 negative/oracle coverage로 연결한다. 모든 Shadow finding 해결을 확인했다는 주장은 하지 않는다."
+        }
+      ]
+    }
+  ],
+  "independent_findings": [
+    {
+      "id": "RA-01",
+      "title": "C4/C7와 outer Calibration의 독립성",
+      "a": [
+        "A1",
+        "A3",
+        "A4",
+        "A6",
+        "A8",
+        "A10"
+      ],
+      "sources": [
+        {
+          "path": "implementation/src/investment_system/evl/walkforward.py",
+          "line": 150
+        },
+        {
+          "path": "implementation/src/investment_system/evl/profile_selection.py",
+          "line": 1
+        },
+        {
+          "path": "implementation/reports/track_c_c2_split_policy_approved.md",
+          "line": 1
+        }
+      ],
+      "finding": "C4는 Train fit→Validation calibrate→OOS predict 순서이며 Validation은 이미 predictive threshold에 사용됐다. C7는 Development OOS evidence로 selection한다. 별도 CAL_FIT/CAL_VERIFY 역할 이름만 붙여서는 독립 데이터가 되지 않는다. Frozen C4 predictive thresholds와 C8 promotion-gate thresholds를 구분하고 target outcomes/label intervals·접근 이력을 대조해야 한다. 과거에 알려진 feature의 합법적 재사용까지 금지할 근거는 아니다. 실제 outer 기간/coverage는 아직 없다.",
+      "source_links": [
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/walkforward.py#L150",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/profile_selection.py#L1",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c2_split_policy_approved.md#L1"
+      ],
+      "origin": "INDEPENDENT_CURRENT_REPOSITORY_AUDIT_NOT_SHADOW_ATTRIBUTION"
+    },
+    {
+      "id": "RA-02",
+      "title": "Preregistration과 access authority",
+      "a": [
+        "A1",
+        "A2",
+        "A4",
+        "A10",
+        "A11"
+      ],
+      "sources": [
+        {
+          "path": "implementation/reports/track_c_c8_policy_package_A.md",
+          "line": 51
+        },
+        {
+          "path": "implementation/src/investment_system/evl/robustness.py",
+          "line": 492
+        }
+      ],
+      "finding": "Timestamp와 local append-only hash chain은 계산 재현에 필요하지만 사람이 이미 결과를 봤는지 증명하지 않는다. Dataset/campaign 단위의 access record·독립 checkpoint·approval identity가 필요하다. Grid 계산, human 선택, VERIFY, role/tied-alternative 평가의 charge 단위 및 family accounting을 명시하지 않으면 rename/reset으로 trial/verification을 다시 만들 수 있다.",
+      "source_links": [
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L51",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/robustness.py#L492"
+      ],
+      "origin": "INDEPENDENT_CURRENT_REPOSITORY_AUDIT_NOT_SHADOW_ATTRIBUTION"
+    },
+    {
+      "id": "RA-03",
+      "title": "C8 plateau·sensitivity·rounding 정의의 빈칸",
+      "a": [
+        "A3",
+        "A4"
+      ],
+      "sources": [
+        {
+          "path": "implementation/reports/track_c_c8_policy_package_A.md",
+          "line": 61
+        }
+      ],
+      "finding": "Acceptance-frequency의 분자·분모와 sensitivity statistic, graph vertex universe, stable support/rounding closure가 정의되지 않았다. 모두 FAIL인 지역도 같은 실패율을 유지해 'stable'할 수 있으므로 stability와 threshold suitability는 별도다. C7 G1은 C7 승인이지 C8 graph의 승인까지 아니다. Off-grid rounded point를 결과 후 graph에 추가할 수 없게 사전 support relation을 정의해야 한다.",
+      "source_links": [
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L61"
+      ],
+      "origin": "INDEPENDENT_CURRENT_REPOSITORY_AUDIT_NOT_SHADOW_ATTRIBUTION"
+    },
+    {
+      "id": "RA-04",
+      "title": "PSR·DSR 두 view·PBO의 의미",
+      "a": [
+        "A6"
+      ],
+      "sources": [
+        {
+          "path": "implementation/src/investment_system/evl/statistical_kernels.py",
+          "line": 102
+        },
+        {
+          "path": "implementation/src/investment_system/evl/statistical_kernels.py",
+          "line": 145
+        },
+        {
+          "path": "implementation/src/investment_system/evl/statistical_kernels.py",
+          "line": 175
+        },
+        {
+          "path": "implementation/reports/track_c_c6_statistics_policy_approved.md",
+          "line": 1
+        }
+      ],
+      "finding": "PSR는 period arithmetic net-minus-RF Sharpe와 non-excess kurtosis/finite-n moment correction의 normal approximation이며 C3 annualized Sharpe와 reference 단위를 혼용하면 안 된다. 코드의 계산 가능한 최소 n은 현실의 충분한 evidence 기준이 아니다. DSR의 distinct full candidates와 ALL charged attempts는 두 sensitivity view이고 독립 검정 두 개가 아니다. PBO는 frozen outcomes의 모든 CSCV partitions/tied maxima mass/average OOS ranks 기반 overfitting diagnostic이며 p-value나 C2 walk-forward refit이 아니다. 두 DSR 모두 hard PASS를 요구하는 것은 새 A6 decision policy다.",
+      "source_links": [
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/statistical_kernels.py#L102",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/statistical_kernels.py#L145",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/statistical_kernels.py#L175",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c6_statistics_policy_approved.md#L1"
+      ],
+      "origin": "INDEPENDENT_CURRENT_REPOSITORY_AUDIT_NOT_SHADOW_ATTRIBUTION"
+    },
+    {
+      "id": "RA-05",
+      "title": "새 paired bootstrap tail과 multiplicity의 validity",
+      "a": [
+        "A6",
+        "A7",
+        "A8",
+        "A12"
+      ],
+      "sources": [
+        {
+          "path": "implementation/src/investment_system/evl/statistical_kernels.py",
+          "line": 241
+        },
+        {
+          "path": "implementation/reports/track_c_c8_policy_package_A.md",
+          "line": 104
+        }
+      ],
+      "finding": "기존 joint bootstrap은 full aligned family·benchmarks의 shared circular indices로 period arithmetic-RF excess mean replicates/quantiles를 계산한다. A6의 일반 C3 metric(left)-metric(right) 재계산 및 centered two-sided count/B는 새 방법이다. Nonlinear CAGR·Sharpe 및 nonsmooth MDD/recovery에도 유효한 marginal p-value인지 근거가 없다. Raw tail=0와 finite Monte Carlo 불확실성도 decision 정책의 대상이다. Holm은 유효 marginal p-values 아래 임의 dependence를 허용하지만 invalid p-values를 고치지 않는다. (r+1)/(B+1)을 넣는 것만으로 일반 bootstrap validity가 생기지 않는다. 기존 C6 방법을 rewrite하지 말고 별도 C8 method version/null/assumptions/MC decision을 검토해야 한다.",
+      "source_links": [
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/statistical_kernels.py#L241",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L104"
+      ],
+      "origin": "INDEPENDENT_CURRENT_REPOSITORY_AUDIT_NOT_SHADOW_ATTRIBUTION"
+    },
+    {
+      "id": "RA-06",
+      "title": "두 Reality Check와 candidate-specific skill",
+      "a": [
+        "A6",
+        "A7"
+      ],
+      "sources": [
+        {
+          "path": "implementation/src/investment_system/evl/statistical_kernels.py",
+          "line": 266
+        },
+        {
+          "path": "implementation/reports/track_c_c6_statistics_policy_approved.md",
+          "line": 1
+        }
+      ],
+      "finding": "Equal/simple 및 market-cap 두 family Reality Checks는 각각 full-family max mean differential과 centered shared block draws를 쓴다. Global null 기각은 family 안 어딘가의 superiority이지 지정 Champion의 superiority가 아니다. 두 benchmark에 서로 다른 candidate가 기여할 수도 있다. Random ranking/randomized weights/equal/mcap controls는 same PIT universe·cost·seed·constraints·claim direction과 함께 candidate-specific evidence가 필요하다. Missing control은 no-skill의 증거가 아니다.",
+      "source_links": [
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/statistical_kernels.py#L266",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c6_statistics_policy_approved.md#L1"
+      ],
+      "origin": "INDEPENDENT_CURRENT_REPOSITORY_AUDIT_NOT_SHADOW_ATTRIBUTION"
+    },
+    {
+      "id": "RA-07",
+      "title": "Profile distinctness의 source·family·blocking unit",
+      "a": [
+        "A6",
+        "A8",
+        "A10"
+      ],
+      "sources": [
+        {
+          "path": "implementation/reports/track_c_c7_selection_policy_approved.md",
+          "line": 1
+        },
+        {
+          "path": "implementation/src/investment_system/evl/profile_selection.py",
+          "line": 1
+        },
+        {
+          "path": "implementation/reports/track_c_c8_policy_package_A.md",
+          "line": 128
+        }
+      ],
+      "finding": "C7 raw differences는 descriptive selection ancestry이며 fresh C8 confirmation으로 재명명할 수 없다. Profile pair×role/tie pair×metric×cohort의 full family와 OR/AND 주장을 정의해야 한다. Cohort마다 다른 metric이 하나씩 통과할 때 같은 profile identity를 확인했는지는 원문에서 미정이다. Three-profile promotion batch blocking은 새 C8 승인 대상이고 Package B consumption unit의 자동 승인이 아니다.",
+      "source_links": [
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c7_selection_policy_approved.md#L1",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/profile_selection.py#L1",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L128"
+      ],
+      "origin": "INDEPENDENT_CURRENT_REPOSITORY_AUDIT_NOT_SHADOW_ATTRIBUTION"
+    },
+    {
+      "id": "RA-08",
+      "title": "C7 ties·qualified pool·role timing",
+      "a": [
+        "A1",
+        "A2",
+        "A8",
+        "A10"
+      ],
+      "sources": [
+        {
+          "path": "implementation/reports/track_c_c8_policy_package_A.md",
+          "line": 151
+        },
+        {
+          "path": "implementation/src/investment_system/evl/profile_selection.py",
+          "line": 1
+        },
+        {
+          "path": "implementation/tests/test_evl_c7_protocol.py",
+          "line": 1
+        }
+      ],
+      "finding": "Qualified registered set이 최종 restricted-medoid representatives인지 이전 Pareto/전체 Landscape인지 모호하다. C7에서는 singleton 또는 profile 간 동일 representative identity도 software-valid이며 두 distinct roles를 항상 제공하지 않는다. A10의 role 지정 'before CAL_VERIFY'는 CAL_FIT 후 결과 기반 identity 선택을 남길 수 있어 A1의 before-FIT candidate freeze와 조정이 필요하다. Pool 밖 next-best/새 Challenger를 자동 투입하면 006B의 selection semantics를 바꾼다.",
+      "source_links": [
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L151",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/profile_selection.py#L1",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/tests/test_evl_c7_protocol.py#L1"
+      ],
+      "origin": "INDEPENDENT_CURRENT_REPOSITORY_AUDIT_NOT_SHADOW_ATTRIBUTION"
+    },
+    {
+      "id": "RA-09",
+      "title": "Economic gate metric identity와 provenance",
+      "a": [
+        "A6",
+        "A7",
+        "A8",
+        "A9"
+      ],
+      "sources": [
+        {
+          "path": "implementation/src/investment_system/evl/metrics.py",
+          "line": 88
+        },
+        {
+          "path": "implementation/src/investment_system/evl/metrics.py",
+          "line": 126
+        },
+        {
+          "path": "implementation/reports/track_c_c3_metric_conventions.md",
+          "line": 1
+        }
+      ],
+      "finding": "Net nominal→real→relative-RF wealth CAGR과 arithmetic excess Sharpe는 다른 공식이다. Existing net_minus_benchmark_total_return은 누적 wealth 차이이며 annual CAGR premium/opportunity-cost로 대체할 수 없다. Premium/opportunity-cost exact path/units/formula와 profile-specific directions/limits가 아직 필요하다. CPI는 ex-post attribution, RF는 period start에 known이어야 한다. Unrecovered duration은 right-censored이고 completed recovery가 아니다. ReturnPeriod는 RF/outcome/CPI stamps를 가지지만 benchmark 별도 stamp field는 없으므로 benchmark의 독립 source/vintage를 외부 lineage로 입증해야 하며 generic outcome stamp 하나로 자동 보장됐다고 주장하지 않는다.",
+      "source_links": [
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/metrics.py#L88",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/metrics.py#L126",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c3_metric_conventions.md#L1"
+      ],
+      "origin": "INDEPENDENT_CURRENT_REPOSITORY_AUDIT_NOT_SHADOW_ATTRIBUTION"
+    },
+    {
+      "id": "RA-10",
+      "title": "robustness.acceptance의 authority weakness",
+      "a": [
+        "A2",
+        "A5",
+        "A6",
+        "A11"
+      ],
+      "sources": [
+        {
+          "path": "implementation/src/investment_system/evl/robustness.py",
+          "line": 350
+        },
+        {
+          "path": "implementation/src/investment_system/evl/robustness.py",
+          "line": 193
+        },
+        {
+          "path": "implementation/src/investment_system/evl/robustness.py",
+          "line": 492
+        }
+      ],
+      "finding": "acceptance(results,scope)는 MANDATORY keys, PASS/role 및 truthy report_hash/trial_id만 검사한다. 실제 hashes/ledger/source/PIT/approval를 resolve하지 않으므로 그 helper에 fabricated entries와 REAL scope를 직접 넣는 논리적 경로에서 true를 반환할 수 있다. 이는 정적 코드 추론이며 이 dossier에서 해당 실행을 하지 않았다. 기존 resolve_robustness는 snapshot, _qualified, current ledger/supporting trial/report hashes와 real input synthetic=false 등을 실제로 재검증한다. 그 경로의 보호를 인정하되 반환된 boolean도 C8 statistical/economic gates·skill·promotion authority를 뜻하지 않는다. Frozen C6 helper 변경 대신 additive C8 admission resolver에서 실제 current upstream과 C8 evidence/authority를 검증하는 수정안을 제안한다.",
+      "source_links": [
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/robustness.py#L350",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/robustness.py#L193",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/robustness.py#L492"
+      ],
+      "origin": "INDEPENDENT_CURRENT_REPOSITORY_AUDIT_NOT_SHADOW_ATTRIBUTION"
+    },
+    {
+      "id": "RA-11",
+      "title": "Legacy FreezeManifest와 synthetic/real 분리",
+      "a": [
+        "A5",
+        "A11",
+        "A12"
+      ],
+      "sources": [
+        {
+          "path": "implementation/src/investment_system/evl/contracts.py",
+          "line": 119
+        },
+        {
+          "path": "implementation/reports/track_c_c8_policy_package_A.md",
+          "line": 162
+        }
+      ],
+      "finding": "C0 FreezeManifest.__post_init__은 EVL spec ID·tax·nonempty lineage만 검증하고 promotion_state는 string이며 evidence_scope 검증이 없다. 이는 C0 구조 계약이지 real research 승인 엔진이 아니다. 별도 C8 artifact envelope/namespace와 current admission resolver 없이는 forged scope/legacy manifest가 real로 오인될 수 있다. Software acceptance는 fixture payload 및 simulated transitions만, actual research_state/promotion_authority=null, real_holdout_eligible=false로 유지해야 한다. C8 real VALIDATED/FROZEN도 C9/OFFICIAL을 승인하지 않는다.",
+      "source_links": [
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/src/investment_system/evl/contracts.py#L119",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L162"
+      ],
+      "origin": "INDEPENDENT_CURRENT_REPOSITORY_AUDIT_NOT_SHADOW_ATTRIBUTION"
+    },
+    {
+      "id": "RA-12",
+      "title": "Software proof와 real research/statistical validity의 분리",
+      "a": [
+        "A6",
+        "A11",
+        "A12"
+      ],
+      "sources": [
+        {
+          "path": "implementation/reports/track_c_c7_acceptance_2026-10-01.md",
+          "line": 1
+        },
+        {
+          "path": "implementation/reports/track_c_c8_policy_package_A.md",
+          "line": 181
+        }
+      ],
+      "finding": "C7의 97/233/726 PASS 및 실제 Actions는 scoped software/lineage protocol proof다. 새로운 C8 method의 arithmetic/oracle tests, null/power simulation, 실제 시장에서의 statistical validity 및 investment performance는 서로 다른 evidence다. Fixture-only B/L/alpha/threshold를 실험 default로 승격하거나 synthetic Manifest에서 actual candidate state를 생성할 수 없다. 이번 감사는 테스트를 새로 실행하지 않고 기존 tests/evidence를 읽었으며 C8 acceptance는 존재하지 않는다.",
+      "source_links": [
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c7_acceptance_2026-10-01.md#L1",
+        "https://github.com/kco994553-star/Investment-System1/blob/31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0/implementation/reports/track_c_c8_policy_package_A.md#L181"
+      ],
+      "origin": "INDEPENDENT_CURRENT_REPOSITORY_AUDIT_NOT_SHADOW_ATTRIBUTION"
+    }
+  ],
+  "proposed_amendments": [
+    {
+      "id": "M1",
+      "items": [
+        "A1"
+      ],
+      "text": "C8 outer CAL_FIT/CAL_VERIFY는 frozen Development/C7 target outcome/label 사용 집합과 접근 이력에 대해 독립성을 검증한다. Dataset-role names와 calendar 비중복만으로 미접근을 주장하지 않는다. Sample IDs·label intervals·publication/maturity·source/vintage/content hashes·campaign/access checkpoints를 대조하고 승인된 horizon/rebalance exclusion을 각 경계에 적용한다. 알려진 과거 feature/source의 합법적 재사용과 target outcome 재사용은 구분한다. C4의 frozen model/predictive thresholds/predictions와 C8 promotion-gate thresholds를 별도 namespace로 고정한다. Candidate×cohort/fold별 frozen instance mapping을 CAL_FIT 전 등록한다. 완전한 independent support가 없으면 NOT_RUN이며 실제 interval/default를 이 승인으로 만들지 않는다."
+    },
+    {
+      "id": "M2",
+      "items": [
+        "A2"
+      ],
+      "text": "전용 C8 ledger는 dataset/campaign에 묶인 pre-access registration과 immutable source commitments, current invalidation, explicit approval identity를 resolve한다. Calibration grid 계산·human threshold choice·VERIFY assessment·role/tied-alternative assessment의 charge 및 hypothesis 단위를 결과 접근 전에 등록하며 실패/미실행/미사용 대안도 보존한다. 동일 결과를 새 이름/clock/directory로 unseen으로 재선언하지 않는다. Local timestamp/hash chain만으로 external prior access가 없었다고 증명하지 않는다. 실제 budget 값과 trusted checkpoint/access service의 구현 계약은 별도로 등록·승인한다."
+    },
+    {
+      "id": "M3",
+      "items": [
+        "A3"
+      ],
+      "text": "C8 threshold graph의 universe는 complete preregistered grid이다. Financial PASS point만 먼저 남긴 surviving subset graph로 대체하지 않는다. 각 point의 protocol qualification·missing/invalid state 및 모든 per-gate classifications를 보존한다. Adjacency, acceptance-frequency 분자/분모·coverage, sensitivity statistic/units, stable-edge predicate 및 component eligibility/suitability를 pre-access method configuration으로 명시한다. Stability evidence와 선택할 수 있는 threshold의 적합성은 분리한다. 모든 eligible stable components/edges/ranges를 보존하고 isolated point/largest-component preference/결과 후 universe 변경을 금지한다. 원문의 최소2 point는 C8 구조 정책으로 별도 승인 대상이며 C7 G1의 자동 전파가 아니다. 실제 tolerances/limits/default는 여기서 승인하지 않는다."
+    },
+    {
+      "id": "M4",
+      "items": [
+        "A4"
+      ],
+      "text": "Explicit approver의 threshold choice 기준·허용 재량·event unit은 CAL_FIT 접근 전에 등록하고 모든 대안/rationale를 보존한다. Return·passing-candidate count·profile merit ranking 및 후보 identity를 바꾸는 selection은 금지한다. 각 comparator/units/precision/strictness와 rounding closure 또는 registered stable-support relation을 사전 정의한다. Minimum upward/maximum downward rounding 후 FIT에서 검증하고 미등록 off-grid 점을 사후 추가하지 않는다. Universal gates와 C4 frozen predictive thresholds는 rounding 대상이 아니다. Exact choice/threshold hashes를 freeze한 뒤 하나의 CAL_VERIFY assessment만 실행하고, FAIL/NOT_RUN은 자동 threshold/role 조정이나 next-best를 유발하지 않는다. 새 연구는 기존 결과를 지우지 않는 별도 authority·정말 미사용 interval·budget/family를 필요로 한다."
+    },
+    {
+      "id": "M7",
+      "items": [
+        "A7"
+      ],
+      "text": "C6 protocol qualification 및 두 full-family Reality Check 결과만으로 지정 candidate의 skill을 선언하지 않는다. Random ranking/randomized weights/equal/simple/market-cap에 대해 preregistered candidate-specific directional superiority claims, PIT/control construction/seed/cost/constraints 및 minimum economic effect identity를 등록한다. 모든 필수 claims는 H6에서 승인될 유효 inference/multiplicity와 A9 economic evidence를 함께 충족해야 한다. 충분한 supported evaluation에서 superiority를 입증하지 못하면 NO_EVIDENCE_OF_SKILL로 promotion을 차단하되 equivalence/absence-of-skill의 증명으로 해석하지 않는다. Missing/undefined evidence는 NOT_RUN이다. H6와 실제 설정이 미정이면 hard skill decision은 활성화되지 않는다."
+    },
+    {
+      "id": "M11",
+      "items": [
+        "A11"
+      ],
+      "text": "C8 real admission은 bare acceptance() dict, real_pit_research_validated boolean, evidence_scope 문자열 또는 legacy C0 FreezeManifest만으로 허가되지 않는다. Additive C8 namespace/envelope의 mandatory resolver가 current C6/C7 registered full evidence, 실제 source qualification/PIT/availability/vintage, 독립 CAL_VERIFY, all Universal/statistical/economic/skill/distinctness gates, roles, code/data/config/threshold/policy/assessment hashes와 explicit current approval event를 검증해야 한다. Unknown/mixed/forged scope·invalidated source/approval·missing real support는 fail closed 한다. Frozen C0~C7 source/API는 보존한다. SOFTWARE_ACCEPTANCE는 별도 fixture payload/simulated transitions만 가지며 official=false, research_state=null, promotion_authority=null, real_holdout_eligible=false다. Actual candidate VALIDATED/FROZEN은 real-qualified evidence와 explicit approval로만 부여한다. OFFICIAL/C9 consumption/Forward authority는 이 승인에 포함되지 않는다."
+    }
+  ],
+  "deferred_approval_items": [
+    {
+      "id": "H6",
+      "items": [
+        "A6"
+      ],
+      "required": "검정별 target/null/alternative/direction, C6 Development diagnostics와 fresh CAL_VERIFY claims의 source mapping, complete hypothesis/claim families와 gate 결합 의미, nonlinear/nonsmooth paired bootstrap의 validity 또는 제한된 대체 method, shared data-column resampling/assumptions, finite Monte Carlo decision 및 alpha/B/L/support calibration·등록 절차를 versioned method package로 먼저 검토한다. 유효 p-values가 확인되기 전 원문의 count(abs(D_b-D)>=abs(D))/B→Holm hard decision을 승인하지 않는다. 기존 C6 descriptive raw tail convention/kernel는 보존한다."
+    },
+    {
+      "id": "H8",
+      "items": [
+        "A8"
+      ],
+      "required": "Fresh VERIFY의 profile/role/pair unit, 모든 tie alternatives와 final role hypotheses의 full family, '각 cohort마다 다른 metric 하나' 허용 여부 또는 일관된 identity requirement, economic separation/direction과 three-profile C8 blocking scope를 확정한다. H6 validity와 H10 identity 해결이 선행이다. C7 raw descriptive delta 자체를 fresh confirmation으로 사용하지 않는다. Package B consumption semantics는 별도다."
+    },
+    {
+      "id": "H10",
+      "items": [
+        "A10"
+      ],
+      "required": "Qualified registered set의 범위(최종 C7 representatives/역사 Challenger/새 campaign 등), 최소 role cardinality, singleton 처리, designation을 CAL_FIT 전으로 맞출지 여부와 exact immutable candidate/cohort/fold instance를 명시적으로 선택한다. 권고 검토안은 최종 qualified representative set의 서로 다른 두 identities를 FIT 전에 지정하고 부족하면 NOT_RUN_ROLE_ASSIGNMENT를 유지하는 것이지만 아직 승인된 정책이 아니다. Champion-only/historical Challenger/다른 pool은 별도 lifecycle/qualification 정책이 필요하다. Next-best 자동 승격은 어떤 대안에서도 허용하지 않는다."
+    }
+  ],
+  "missing_research_configuration": [
+    {
+      "group": "Dataset/support/budget",
+      "items": "A1/A2/A6/A10",
+      "needed": "실제 outer interval·CAL_FIT/VERIFY 경계·coverage/maturity·minimum support·C8 attempt/budget 단위와 한도",
+      "status": "실제 등록 필요; C4 5Y/1Y/1Y 계약을 C8 default로 전파하지 않음"
+    },
+    {
+      "group": "Calibration grid/plateau/rounding",
+      "items": "A2/A3/A4",
+      "needed": "각 threshold admissible range/coarse grid/refinement/sensitivity blocks·frequency/tolerance·suitability/support·precision/comparators",
+      "status": "method identity 및 실제 값 필요; 최소2 point는 원문의 구조 승인 대상"
+    },
+    {
+      "group": "PSR/DSR",
+      "items": "A6",
+      "needed": "period reference Sharpe·PSR min·두 DSR view 각각 min·complete family/ALL charged attempts count provenance·variance·support",
+      "status": "미승인 실제 min/default를 만들지 않음; sensitivity views를 독립 검정으로 오인하지 않음"
+    },
+    {
+      "group": "PBO",
+      "items": "A6",
+      "needed": "CSCV block count/support·PBO max·full roster/partition/tie accounting",
+      "status": "threshold 미정; PBO는 p-value가 아님"
+    },
+    {
+      "group": "Bootstrap/RC/inference",
+      "items": "A6/A7/A8",
+      "needed": "B·block length·seed·quantile/convention/effect floor·두 RC limits·alpha·testing family·new method/null/MC decision",
+      "status": "H6 method validity 먼저 필요; fixture 값은 연구 default 아님"
+    },
+    {
+      "group": "Negative controls/skill",
+      "items": "A7",
+      "needed": "controls construction/seed/draw/constraint/cost identities·direction·minimum economic superiority·real support",
+      "status": "control generation과 economic effect를 임의 설정하지 않음"
+    },
+    {
+      "group": "Economic gates",
+      "items": "A9",
+      "needed": "기존 path mapping 또는 별도 승인 formula·premium/opportunity cost basis/units·risk-adjusted/tail/MDD/turnover/recovery/growth directions/limits",
+      "status": "첫 세 CAGR>0는 원문의 zero boundary 제안; 추가 숫자/default 없음"
+    },
+    {
+      "group": "Distinctness",
+      "items": "A8/A9/A10",
+      "needed": "role/pair/cohort/metric identity·direction/absolute convention·economic separation·family alpha/support",
+      "status": "H6/H8/H10 전 hard decision 보류; 원문의 최소 한 metric은 구조적 OR 정책"
+    },
+    {
+      "group": "Manifest/Freeze",
+      "items": "A11/A12",
+      "needed": "current authority/resolution/scopes와 protocol acceptance",
+      "status": "새 금융 numeric 없음; artifact discriminator≠lifecycle state"
+    }
+  ],
+  "approval_options": {
+    "unchanged": "A5 existing rule reaffirmation and A12 scoped software protocol can be reviewed as written. Whole A1-A12 as-written approval is not recommended.",
+    "modified": "M1/M2/M3/M4/M7/M11 and A9 method/scope mapping may be separately reviewed; none is approved/active in this dossier. A7/A11 and whole C8 admission cannot activate with H6/H8/H10 unresolved or real configuration absent.",
+    "deferred": "H6/A6,H8/A8,H10/A10; unspecified real numeric/formula configuration and original Shadow audit reconciliation remain outstanding."
+  },
+  "scope_constraints": {
+    "code_changed": false,
+    "tests_changed": false,
+    "workflows_changed": false,
+    "existing_proposal_changed": false,
+    "approval_records_changed": false,
+    "package_A_activated": false,
+    "C8_runtime_implemented": false,
+    "holdout_content_or_results_read": false,
+    "packages_B_C_changed": false,
+    "canonical_merge": false,
+    "PR4_merge": false,
+    "PR4_draft_open": true
+  }
+}

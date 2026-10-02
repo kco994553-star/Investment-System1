@@ -1,0 +1,241 @@
+{
+  "status": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+  "schema_version": 1,
+  "recorded_at_utc": "2026-10-01 10:45:14 UTC",
+  "source_head": "15fed506d4e67d89861221281e4879002e431b4a",
+  "runtime_loadable": false,
+  "actual_research_configuration": false,
+  "policy_authority": null,
+  "tax_mode": "EXCLUDED",
+  "real_holdout_state": "UNCONSUMED",
+  "real_holdout_execution_authority": null,
+  "investor_qgv": "FUTURE_TRACK_C_INPUT",
+  "scope_discriminators": [
+    "SYNTHETIC_SOFTWARE_VALIDATION",
+    "REAL_PIT_RESEARCH_VALIDATION"
+  ],
+  "fixture_numeric_configuration_scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY",
+  "scope_rule": "Synthetic bytes/clock/upstream qualification cannot be promoted by changing an envelope field.",
+  "C8": {
+    "approval_items": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "A8",
+      "A9",
+      "A10",
+      "A11",
+      "A12"
+    ],
+    "calibration": {
+      "outer_interval": null,
+      "cal_fit_interval": null,
+      "cal_verify_interval": null,
+      "calendar_id": null,
+      "label_horizon": null,
+      "rebalance_schedule": null,
+      "registered_metric_paths": [],
+      "required_cohort_folds": [],
+      "threshold_grids": null,
+      "sensitivity_grid": null,
+      "plateau_tolerances": null,
+      "rounding_precision": null,
+      "rounding_directions": null,
+      "selection_approval": null
+    },
+    "gates": {
+      "universal": "LOCKED_NON_CALIBRATABLE",
+      "statistical": {
+        "min_psr": null,
+        "min_dsr_distinct": null,
+        "min_dsr_attempts": null,
+        "max_pbo": null,
+        "reality_equal_limit": null,
+        "reality_mcap_limit": null,
+        "bootstrap_quantiles": null,
+        "bootstrap_effect_floors": null
+      },
+      "economic": {
+        "nominal_view": "NET_OF_TRADING_COST_PRE_TAX",
+        "real_view": "REAL_PRE_TAX",
+        "rf_view": "RISK_FREE_EXCESS_PRE_TAX",
+        "required_premium_formula": null,
+        "required_premium_limit": null,
+        "benchmark_opportunity_formula": null,
+        "benchmark_opportunity_limit": null,
+        "risk_adjusted_paths": null,
+        "profile_constraints": null
+      }
+    },
+    "new_contrast_method": {
+      "status": "PROPOSED_UNVERIFIED",
+      "paired_same_block_indices": true,
+      "centered_two_sided": true,
+      "multiplicity": "HOLM_STEP_DOWN",
+      "family_hypotheses": null,
+      "alpha": null,
+      "block_length": null,
+      "replicates": null,
+      "seed": null,
+      "minimum_support": null
+    },
+    "roles": {
+      "designation_approval": null,
+      "champions": null,
+      "challengers": null,
+      "all_tie_set_refs": null
+    },
+    "artifact_envelope_required": [
+      "artifact_kind",
+      "evidence_scope",
+      "synthetic",
+      "source_checkpoint",
+      "code_hash",
+      "config_hash",
+      "validation_result",
+      "lineage",
+      "approval_event_ref",
+      "tax_mode",
+      "payload_hash"
+    ],
+    "synthetic_artifact": {
+      "artifact_kind": "SOFTWARE_ACCEPTANCE",
+      "evidence_scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+      "synthetic": true,
+      "official": false,
+      "research_state": null,
+      "promotion_authority": null,
+      "real_holdout_eligible": false,
+      "fixture_manifest_payload": null
+    },
+    "real_artifact": {
+      "artifact_kind": "RESEARCH_FREEZE_MANIFEST",
+      "evidence_scope": "REAL_PIT_RESEARCH_VALIDATION",
+      "synthetic": false,
+      "canonical_freeze_manifest_payload": null,
+      "real_input_resolution_required": true,
+      "all_real_gates_required": true,
+      "current_approval_resolution_required": true
+    }
+  },
+  "C9": {
+    "approval_items": [
+      "B1",
+      "B2",
+      "B3",
+      "B4",
+      "B5",
+      "B6",
+      "B7",
+      "B8",
+      "B9",
+      "B10"
+    ],
+    "unit": "PROPOSED_ONE_GLOBAL_DATASET_CAMPAIGN_BATCH",
+    "campaign_id": null,
+    "sealed_dataset_id": null,
+    "sealed_commitment": null,
+    "real_content_location": null,
+    "batch_role_manifest": null,
+    "consumer_id": null,
+    "code_hash": null,
+    "config_hash": null,
+    "execution_authorization": null,
+    "real_gate_support": null,
+    "real_gate_method_dimensions": null,
+    "ordering": "PROPOSED_DURABLE_CONSUMED_BEFORE_FIRST_OPEN",
+    "retry": "PROPOSED_NO_SECOND_CONTENT_OPEN",
+    "recovery": "PROPOSED_VERIFY_FINALIZE_EXISTING_BYTES_ONLY",
+    "transaction_event_fields": [
+      "transaction_id",
+      "dataset_commitment",
+      "batch_hash",
+      "consumer_id",
+      "code_commit",
+      "code_hash",
+      "config_hash",
+      "authorization_ref",
+      "timestamp",
+      "external_checkpoint"
+    ],
+    "synthetic_store_plan": {
+      "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+      "real_provider_available": false,
+      "injected_clock": true,
+      "open_count_assertion": 1,
+      "failpoints": "EVERY_WRITE_CHECKPOINT_OPEN_PREDICT_RESULT_BOUNDARY"
+    }
+  },
+  "C10": {
+    "approval_items": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
+      "C6",
+      "C7",
+      "C8",
+      "C9",
+      "C10",
+      "C11",
+      "C12"
+    ],
+    "activation_approval": null,
+    "official_manifest_ref": null,
+    "real_holdout_result_ref": null,
+    "start_rule": "PROPOSED_FIRST_REGISTERED_ELIGIBLE_SLOT_STRICTLY_AFTER_PROMOTION",
+    "future_effective_start": null,
+    "calendar_id": null,
+    "decision_schedule": null,
+    "evaluation_horizons": null,
+    "monitoring_cadence": null,
+    "review_points": null,
+    "minimum_count": null,
+    "minimum_span": null,
+    "allowed_missing_coverage": null,
+    "source_freshness_limits": null,
+    "statistical_review": {
+      "method": "PROPOSED_PLANNED_FIXED_HORIZON_BONFERRONI_FAMILY",
+      "alpha": null,
+      "planned_review_count": null,
+      "hypothesis_family": null
+    },
+    "drift": {
+      "parameter_reference": null,
+      "input_reference_window": null,
+      "input_scale": null,
+      "performance_metric_paths": null,
+      "warning_limits": null,
+      "suspension_limits": null
+    },
+    "actual_event_required": [
+      "profile_version",
+      "decision_time",
+      "generated_at",
+      "prediction_id",
+      "horizon_id",
+      "input_hashes",
+      "code_hash",
+      "config_hash",
+      "scope",
+      "temporal_origin",
+      "external_checkpoint"
+    ],
+    "synthetic_event": {
+      "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+      "configuration_scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY",
+      "temporal_origin": "SIMULATED",
+      "official": false,
+      "real_research_state": null
+    },
+    "actual_forward_authority": null,
+    "validation_approval": null
+  },
+  "unresolved_numeric_rule": "Null means BLOCKED/NOT_RUN prerequisite, never zero/default.",
+  "activation_rule": "Each package needs its own explicit D3-P approval. Package preparation and C7 execution approval activate none."
+}

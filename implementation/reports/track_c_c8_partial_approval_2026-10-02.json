@@ -1,0 +1,111 @@
+{
+  "record_id": "TC-C8-PACKAGE-A-PARTIAL-2026-10-02",
+  "source": "EXPLICIT_USER_PARTIAL_APPROVAL_CURRENT_SESSION",
+  "approval_recorded_at_kst": "2026-10-02T17:47:51.000+09:00",
+  "clock_utc": "2026-10-02 08:47:51 UTC",
+  "baseline_head": "86e345e54678de05ebcdf2e1db53c9dbe72ca52a",
+  "canonical_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "original_proposal": {
+    "path": "implementation/reports/track_c_c8_policy_package_A.md",
+    "blob_sha": "9a66ad15612d88c4c3b47fe468407d50e1fb0942"
+  },
+  "dossier": {
+    "path": "implementation/reports/track_c_c8_package_A_approval_dossier_2026-10-02.md",
+    "blob_sha": "038b4ce77618ec7ae3a0cf779809a2cff45b0a5f"
+  },
+  "package_status": "PARTIALLY_APPROVED_APPROVED_FOUNDATION_ONLY",
+  "clauses": {
+    "A1": {
+      "status": "APPROVED_WITH_MODIFICATION",
+      "text": "C8 calibration은 C4 model-fitting/calibration 및 C7 selection과 명시적으로 분리된 C8 calibration boundary를 사용한다.\nC4 또는 C7에서 이미 selection에 사용한 OOS evidence를 새로운 independent confirmation evidence처럼 재사용하지 않는다.\nCAL_FIT과 CAL_VERIFY의 identity, scope, available_at, dataset lineage를 사전 등록한다.\nHoldout은 calibration source로 사용할 수 없다.\n실제 CAL_FIT/CAL_VERIFY dataset allocation은 별도 real research configuration이 없으면 실행하지 않는다."
+    },
+    "A2": {
+      "status": "APPROVED_WITH_MODIFICATION",
+      "text": "C8 전용 immutable registration/ledger를 사용한다.\nthreshold/gate/calibration attempt는 결과 접근 전에 등록한다.\n모든 family member와 attempt를 accounting한다.\nFAIL/NOT_RUN/pending/crash/invalidation을 보존한다.\n사후 재등록, trial 삭제, successful subset만의 accounting을 금지한다.\n접근 증거와 registration 순서를 검증 가능하게 보존한다."
+    },
+    "A3": {
+      "status": "APPROVED_WITH_MODIFICATION",
+      "text": "Threshold calibration search가 실제로 사용되는 경우 range/grid/sensitivity/plateau 정의는 pre-result configuration이어야 한다.\ngraph universe와 adjacency/tolerance는 사전 등록한다.\nplateau stability는 statistical/economic validity와 동일한 의미가 아니다.\nlargest peak 또는 best observed result를 자동 선택하지 않는다.\n실제 numeric range/grid/tolerance는 이번 승인에 포함하지 않는다."
+    },
+    "A4": {
+      "status": "APPROVED_WITH_MODIFICATION",
+      "text": "CAL_FIT에서 생성된 적격 threshold candidate 중 어떤 candidate를 선택하는지 명시적 selection/approval event로 보존한다.\nrounding rule과 rounding support는 사전 등록한다.\nCAL_VERIFY는 one-shot confirmation boundary로 취급한다.\nCAL_VERIFY 실패 후 threshold 재적합, next-best 자동 선택, tolerance 변경, metric 변경, rounding 변경을 하지 않는다.\n실패 후 새로운 연구를 하려면 새 registration/trial로 시작한다."
+    },
+    "A5": {
+      "status": "EXISTING_POLICY_RECONFIRMED",
+      "text": "Universal hard gates는 calibration 대상이 아니다.\nPIT, provenance, lineage, complete ledger, scope, tax mode, invalidation, Holdout isolation 등의 integrity failure를 높은 성과나 statistical/economic gate PASS로 상쇄하지 않는다."
+    },
+    "A6": {
+      "status": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+      "text": "새 bootstrap-derived p-value, multiple-testing combination, statistical family decision rule은 아직 구현하지 않는다.\n기존 C6 PSR, DSR sensitivity views, PBO, joint circular-block bootstrap, Reality Check 계산 evidence는 보존할 수 있으나, C8 statistical PASS/FAIL을 새로 결정하는 규칙으로 확장하지 않는다.\nA6는 별도 statistical-validation package로 재검토한다."
+    },
+    "A7": {
+      "status": "APPROVED_WITH_MODIFICATION_FRAMEWORK_ONLY",
+      "text": "Negative-control / skill assessment framework를 승인한다.\n그러나 NO_EVIDENCE_OF_SKILL 또는 skill evidence를 판정하려면 사전 등록된 control과 비교하여 지정 후보가 승인된 방향으로 superiority evidence를 가져야 한다.\n단순히 control이 실패했다는 사실, candidate return이 양수라는 사실, C6 diagnostic PASS만으로 skill을 선언하지 않는다.\n실제 effect threshold 및 statistical decision rule은 A6/real configuration 승인 전에는 활성화하지 않는다."
+    },
+    "A8": {
+      "status": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+      "text": "Profile distinctness hard decision은 보류한다.\nC7의 raw pairwise distinctness evidence만 보존한다.\ndistinctness metric family, pair family, cohort aggregation, multiple-comparison handling, OR/AND semantics, statistical/economic separation criteria가 승인되기 전에는 PROFILE_NOT_DISTINCT, DISTINCT hard decision을 만들지 않는다.\n자동 next-best profile 탐색도 금지한다."
+    },
+    "A9": {
+      "status": "STRUCTURE_APPROVED_NUMERIC_CONFIG_REQUIRED",
+      "text": "Economic gate의 순서는 기존 계약대로 유지한다.\nnominal → real → risk-free excess → premium → opportunity cost → risk-adjusted\n각 단계의 exact metric identity/formula/provenance를 versioned configuration으로 등록해야 한다.\n실제 premium minimum, opportunity-cost threshold, risk-adjusted limit 등의 숫자는 이번 승인에 포함하지 않는다.\n숫자가 없으면 해당 real economic decision은 NOT_RUN이다.\n한 단계의 높은 성과로 다른 hard failure를 상쇄하지 않는다."
+    },
+    "A10": {
+      "status": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+      "text": "Champion / Challenger 지정은 보류한다.\nC7 representative/tie set에서 qualified candidate pool, singleton behavior, role count, role assignment authority, assignment timing, tie handling이 확정되기 전에는 역할을 자동 지정하지 않는다.\nhash, rank, 최고 return 등을 암묵적 role selector로 사용하지 않는다."
+    },
+    "A11": {
+      "status": "APPROVED_WITH_MODIFICATION",
+      "text": "Synthetic/software evidence와 real research evidence를 실제 current evidence resolution으로 분리한다.\n단순 boolean, scope 문자열, producer PASS, synthetic=false만으로 real validation authority를 부여하지 않는다.\n특히 robustness.acceptance().real_pit_research_validated를 단독 promotion/validation authority로 사용하지 않는다.\nC8 진입 시 실제 evidence identity/hash, dataset lineage, current invalidation, approval authority, methodology/version, scope를 재검증한다.\nSynthetic C8 fixture가 real Manifest 또는 Official 상태를 만들 수 없다."
+    },
+    "A12": {
+      "status": "APPROVED_SOFTWARE_PROTOCOL_ONLY",
+      "text": "C8 synthetic SOFTWARE validation protocol을 승인한다.\n단 이 단계에서 검증 가능한 것은 승인된 C8 protocol/software path뿐이다.\nSynthetic fixture PASS는 REAL_PIT_VALIDATED, VALIDATED, HOLDOUT_TESTED, OFFICIAL, FORWARD_VALIDATED를 의미하지 않는다."
+    }
+  },
+  "authorized": [
+    "contracts_schema",
+    "immutable_preregistration",
+    "dedicated_ledger_budget_invalidation",
+    "calibration_boundary_enforcement",
+    "threshold_registration_machinery",
+    "universal_integrity_gates",
+    "negative_control_evidence_framework",
+    "economic_identity_config_framework",
+    "scope_separation",
+    "synthetic_fixtures",
+    "partial_acceptance_runner"
+  ],
+  "prohibited": [
+    "A6_STATISTICAL_HARD_DECISIONS",
+    "A8_DISTINCTNESS_HARD_DECISIONS",
+    "A10_ROLE_SELECTION",
+    "UNAPPROVED_NUMERIC_THRESHOLDS",
+    "REAL_CALIBRATION",
+    "REAL_PIT_VALIDATION",
+    "HOLDOUT_ACCESS",
+    "OFFICIAL_PROMOTION",
+    "C8_SOFTWARE_FREEZE",
+    "CANONICAL_MERGE"
+  ],
+  "real_research_configuration": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+  "C0_C7": "SOFTWARE_FROZEN_PRESERVED",
+  "C8": "PARTIAL_FOUNDATION_IMPLEMENTATION_AUTHORIZED_NOT_FROZEN",
+  "frozen_phase_count": "8/11 = 72.7% SOFTWARE_PHASE_COUNT_ONLY",
+  "holdout": "UNCONSUMED",
+  "investor_qgv": "FUTURE_TRACK_C_INPUT",
+  "packages_B_C": "UNCHANGED_PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+  "PR4": "DRAFT_OPEN_UNMERGED",
+  "canonical_merge_authorized": false,
+  "interpretation": "These explicit clause scopes govern; this is neither whole original Package A approval nor automatic acceptance of every dossier amendment. No new real numeric limits/defaults or result-impact policy is inferred.",
+  "next_stop_report": [
+    "implementation_status",
+    "tests",
+    "unresolved_A6",
+    "unresolved_A8",
+    "unresolved_A10",
+    "A9_real_configuration",
+    "new_D3P_needed"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "phase": "C2",
+  "status": "SOFTWARE_FROZEN",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "tested_commit": "14f690683a0d03a38e40b45f5d49d1530fa87fc8",
+  "tested_tree": "8dcee8e3ca9fb9052e3cc509a6f50a89a374b5c0",
+  "normal_merge_commit": "6343efa703fa12b39f1f50073ee73acb8a824a5e",
+  "targeted": 42,
+  "full": 438,
+  "integration": 438
+}

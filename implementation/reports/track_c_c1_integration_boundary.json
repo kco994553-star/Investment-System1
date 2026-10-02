@@ -1,0 +1,39 @@
+{
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "validated_remote_commit": "5db4acfa0baedbf0d2e0bf4f80b2cc04d8b5bb45",
+  "validated_tree": "48f468b8931e63e41aec6b4453787e562133d3e8",
+  "local_normal_merge_commit": "788b26dc0410d5a4c55e7c4d7ad089b5191e4efe",
+  "integration_merge_parents": [
+    "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "a74d5df0f61883990200382cebd6985dba99b3db"
+  ],
+  "changed_files": [
+    ".github/workflows/track-c-evl-validation.yml",
+    "implementation/reports/track_c_c0_acceptance.md",
+    "implementation/reports/track_c_c1_full_regression.txt",
+    "implementation/reports/track_c_c1_targeted_regression.txt",
+    "implementation/reports/track_c_c2_split_policy_proposal.md",
+    "implementation/src/investment_system/evl/__init__.py",
+    "implementation/src/investment_system/evl/contracts.py",
+    "implementation/src/investment_system/evl/experiments.py",
+    "implementation/src/investment_system/evl/ledger.py",
+    "implementation/src/investment_system/evl/pit.py",
+    "implementation/tests/test_evl_c0.py",
+    "implementation/tests/test_evl_c1.py"
+  ],
+  "non_track_c_mutations": [],
+  "track_a_b_d_e_mutations": 0,
+  "github_actions_run": 36417028774,
+  "github_actions_conclusion": "success",
+  "final_documentation_audit": {
+    "shared_documents": [
+      "Investment-System1 \u00b7 CURRENT_HANDOFF.md",
+      "Investment-System1 \u00b7 HANDOFF_HISTORY.md",
+      "Investment System \u00b7 Project Index.md",
+      "Investment-System1 \u00b7 Artifact Evidence Register 2026-09-23.md",
+      "Investment-System1 \u00b7 Contract Conflict Register 2026-09-23.md"
+    ],
+    "historical_bytes_preserved": true,
+    "runtime_changes_after_validation": false
+  }
+}

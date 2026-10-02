@@ -1,0 +1,208 @@
+{
+  "recorded_kst": "2026-09-30T20:23:43+09:00",
+  "repository": "kco994553-star/Investment-System1",
+  "canonical_branch": "claude/investment-system-top500-validation-alrugm",
+  "canonical_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "audited_track_c_head": "34d9c3d127eb02f73cb19a0447aadd39828b8e75",
+  "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "ahead": 31,
+  "behind": 0,
+  "tc_d3p_004": {
+    "status": "APPROVED",
+    "approved_at_kst": "2026-09-30T20:16:28+09:00",
+    "option": "A items 1-8 unchanged",
+    "proposal_blob": "3e86579cd45c98cf44811d6aeab00b9dc8a42ecf",
+    "implementation": "NOT_IMPLEMENTED"
+  },
+  "tc_d3p_005": {
+    "status": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+    "decision": "diagnostic role/status and software-versus-actual-research Freeze evidence scope",
+    "classification_not_applied": true
+  },
+  "c0_c5": "SOFTWARE_FROZEN",
+  "c6": "IMPLEMENTING_NOT_FROZEN",
+  "c6_execution": "VERIFIED",
+  "c7_c10": "NOT_STARTED",
+  "diagnostics": [
+    {
+      "id": "PSR",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "DSR_DISTINCT_CANDIDATE_COUNT",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "DSR_ALL_CHARGED_ATTEMPTS",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "CSCV_PBO",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "JOINT_CIRCULAR_BLOCK_BOOTSTRAP",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "REALITY_CHECK_SIMPLE_BASELINE",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "REALITY_CHECK_MARKET_CAP",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "PARAMETER_PERTURBATION",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "REGIME_PERTURBATION",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "UNIVERSE_PERTURBATION",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "RANDOM_RANKING",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "RANDOMIZED_WEIGHTS",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "SIMPLE_BASELINE",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "MARKET_CAP_BASELINE",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    },
+    {
+      "id": "PARAMETER_DRIFT",
+      "status": "NOT_RUN",
+      "reason": "NOT_IMPLEMENTED; pending authoritative Freeze status/evidence-scope contract",
+      "executed": false,
+      "role": "PROPOSED_MANDATORY_NOT_ACTIVE",
+      "missing_evidence": [
+        "implemented diagnostic and its registered complete input/evidence package"
+      ],
+      "impact": "cannot support C6 acceptance or promotion"
+    }
+  ],
+  "diagnostic_pass_count": 0,
+  "c6_freeze_eligible": false,
+  "holdout_consumed": false,
+  "investor_qgv": "NOT_IMPLEMENTED / FUTURE_TRACK_C_INPUT",
+  "runtime_changes": [],
+  "test_source_changes": [],
+  "other_track_artifact_changes": [],
+  "prior_verified_tests": {
+    "head": "34d9c3d127eb02f73cb19a0447aadd39828b8e75",
+    "workflow": 36706043418,
+    "targeted": 137,
+    "full": 533
+  },
+  "local_git_fetch": "NOT_RUN: no shell tool; live GitHub refs/compare/files inspected",
+  "canonical_integration_ready": false
+}

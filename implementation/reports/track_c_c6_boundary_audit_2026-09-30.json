@@ -1,0 +1,70 @@
+{
+  "at_kst": "2026-09-30T21:13:50.000+09:00",
+  "source_head": "a8e187cea6b117602dff986a3ff6a76b8c244a19",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "canonical_blob_count": 7698,
+  "current_blob_count": 7768,
+  "canonical_blob_changed": [
+    "Investment System · Project Index.md",
+    "Investment-System1 · Artifact Evidence Register 2026-09-23.md",
+    "Investment-System1 · CURRENT_HANDOFF.md",
+    "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+    "Investment-System1 · HANDOFF_HISTORY.md",
+    "Investment-System1 · Master Status Index 2026-09-22.md",
+    "implementation/src/investment_system/contracts/models.py",
+    "implementation/src/investment_system/macro/engine.py",
+    "implementation/src/investment_system/technical/engine.py"
+  ],
+  "canonical_blobs_preserved_count": 7689,
+  "frozen_evl_source_test_blobs_compared": 18,
+  "baseline_evl_source_tests_unchanged": true,
+  "source_changes_canonical": [
+    "implementation/src/investment_system/contracts/lineage.py",
+    "implementation/src/investment_system/contracts/models.py",
+    "implementation/src/investment_system/evl/__init__.py",
+    "implementation/src/investment_system/evl/bindings.py",
+    "implementation/src/investment_system/evl/contracts.py",
+    "implementation/src/investment_system/evl/execution.py",
+    "implementation/src/investment_system/evl/experiments.py",
+    "implementation/src/investment_system/evl/ledger.py",
+    "implementation/src/investment_system/evl/metrics.py",
+    "implementation/src/investment_system/evl/pit.py",
+    "implementation/src/investment_system/evl/search.py",
+    "implementation/src/investment_system/evl/splits.py",
+    "implementation/src/investment_system/evl/statistical_kernels.py",
+    "implementation/src/investment_system/evl/walkforward.py",
+    "implementation/src/investment_system/macro/engine.py",
+    "implementation/src/investment_system/technical/engine.py"
+  ],
+  "upstream": [
+    {
+      "path": "implementation/src/investment_system/contracts/lineage.py",
+      "status": "added",
+      "sha": "288cabadcd0fe975fb9e2605f1f39b767ccc462b",
+      "additions": 66,
+      "deletions": 0
+    },
+    {
+      "path": "implementation/src/investment_system/contracts/models.py",
+      "status": "modified",
+      "sha": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+      "additions": 12,
+      "deletions": 0
+    },
+    {
+      "path": "implementation/src/investment_system/macro/engine.py",
+      "status": "modified",
+      "sha": "08d79c20147d2a13413e98269042e6cf7d3973a8",
+      "additions": 10,
+      "deletions": 0
+    },
+    {
+      "path": "implementation/src/investment_system/technical/engine.py",
+      "status": "modified",
+      "sha": "5365653fda6374aeace986c63cce9939921ebb64",
+      "additions": 16,
+      "deletions": 0
+    }
+  ],
+  "no_new_upstream_changes": true
+}
