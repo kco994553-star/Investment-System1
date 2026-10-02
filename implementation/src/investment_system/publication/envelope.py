@@ -1,0 +1,56 @@
+"""PUBLICATION_ENVELOPE v1.
+
+The envelope is additive and outside section `data`. Production attachment
+always uses the empty grant set, so publication_mode stays NOT_AVAILABLE and
+DISPLAY_RESEARCH is not active. Section state and data are not rewritten.
+"""
+
+from __future__ import annotations
+
+from copy import deepcopy
+
+from ..product.web_mvp import SECTIONS, validate_bundle
+from .authorization import ACTIVE_AUTHORIZATIONS, summarize_grants
+from .errors import PromotionForbidden
+from .extractors import extract
+from .predicate import decide
+
+CONTRACT = "PUBLICATION_ENVELOPE"
+SCHEMA_VERSION = 1
+
+
+def attach_publication_envelope(bundle: dict, records: tuple | list = ()) -> dict:
+    if not isinstance(bundle, dict) or bundle.get("schema_version") != 1:
+        raise PromotionForbidden("envelope attaches only to schema-1 bundles")
+    before = deepcopy(bundle)
+    decisions = []
+    for record in records:
+        decision = decide(extract(record), ACTIVE_AUTHORIZATIONS)
+        if decision["publication_mode"] != "NOT_AVAILABLE" or decision["schema1_data_state"] != "NOT_AVAILABLE":
+            raise PromotionForbidden("production envelope cannot activate display or change schema-1")
+        decisions.append(decision)
+    decisions.sort(key=lambda item: item["subject_sha256"])
+    grants = summarize_grants(ACTIVE_AUTHORIZATIONS)
+    if any(value != "NONE" for value in grants.values()):
+        raise PromotionForbidden("active grants are none")
+    out = deepcopy(bundle)
+    out["publication_envelope"] = {
+        "contract": CONTRACT,
+        "schema_version": SCHEMA_VERSION,
+        "grants": grants,
+        "decisions": decisions,
+        "schema1_research_state_added": False,
+        "display_research_active": False,
+        "research_display_grant": "NONE",
+        "frozen_grant": "NONE",
+        "live_grant": "NONE",
+    }
+    for name in ("universe", *SECTIONS):
+        if name not in before:
+            continue
+        if out[name]["state"] != before[name]["state"] or out[name].get("data") != before[name].get("data"):
+            raise PromotionForbidden(f"section {name} state or data changed")
+    if out.get("companies") != before.get("companies") or out.get("schema_version") != 1:
+        raise PromotionForbidden("bundle identity changed")
+    validate_bundle(out)
+    return out
