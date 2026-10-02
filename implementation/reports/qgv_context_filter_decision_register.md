@@ -50,3 +50,18 @@ No actual taxonomy provider/value/crosswalk, cutoff, industry requirement/rubric
 | AP6 Publication | NOT APPROVED | No publication grant; existing P01 authority retained |
 
 P0 documentation entries are now recorded on this docs branch. P1 remains a single-writer interface dependency: no P2/P3/P4/P5 parallel implementation before its interface Freeze and separate implementation authorization. AP1/AP2 approval does not authorize implementation.
+
+## QCF-AP3 — explicit user approval recorded 2026-10-02T20:48:42+09:00
+
+Status: **USER_APPROVED**. Depends on QCF-AP1 and QCF-AP2. Actual KST approval-processing clock: **2026-10-02T20:48:42+09:00**. Scope authority: [AP3 scoped evidence](qgv_context_filter_ap3_approval_2026-10-02.json).
+
+> AP1/AP2 적용을 전제로 AP3를 CF16-A와 CF17-B로 승인한다. 각 CF의 v0.3 승인 문장 범위에 한정하며, CF16의 명시 우선순위 1–6과 조건별 상태·사유 보존, CF17의 완전한 version-pinned configuration 요구 및 미완성 configuration 차단 계약만 승인한다.
+> 실제 taxonomy 값·cutoff·requirement/rubric 내용·threshold·percentile 방식/값·TTL·confidence/similarity cutoff·계산식 선택·calibration 값/실행·구현·테스트·publication grant·Holdout 소비·merge는 승인하지 않는다.
+
+This appended decision supersedes only the earlier AP3 NOT APPROVED / READY_FOR_USER_APPROVAL status. All prior sections and AP1/AP2 evidence remain byte-preserved historical records; AP4/AP5/AP6 remain NOT APPROVED.
+
+Approved: CF16-A priority 1–6, order-independent aggregation and original condition states/reasons; CF17-B complete, scoped, approved version-pinned configuration and POLICY_BLOCKED for incomplete configuration, distinct from normal company missing data (UNKNOWN).
+
+Reassessment: **QGV Filter Contract DESIGN_FREEZE_READY=YES; combined AP1–AP3 Contract DESIGN_FREEZE_READY=YES**, limited to common admission, Company/Suitability and deterministic Filter contracts. This is not full four-function policy completion, actual configuration activation, implementation, publication or merge authority. Absent required configuration remains POLICY_BLOCKED; absent label rubric remains NOT_ASSESSED under its approved admission contract.
+
+Authorized follow-on work is documentation-only P1 single-writer interface concretization and independent contract audit, plus preparation of AP4/AP5/AP6 choices. No result-affecting value/formula/rubric is filled and no AP4/AP5/AP6 option is implicitly approved.
