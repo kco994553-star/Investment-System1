@@ -1,0 +1,51 @@
+{
+ "record_kind": "TRACK_C_C8_A6_METHOD_CONDITIONAL_APPROVAL",
+ "approval_recorded_at_kst": "2026-10-02T20:43:44+09:00",
+ "approval_recorded_at_utc": "2026-10-02T11:43:44Z",
+ "authority": "EXPLICIT_LATEST_USER_MESSAGE",
+ "source_head": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+ "package": "track_c_c8_a6_method_decision_package_2026-10-02.md",
+ "Q": {
+  "Q1": {
+   "approved_method": "C8_GSUP_STUDENTIZED_CBB_v1",
+   "A_existing_unstudentized": "COMPARISON_EVIDENCE_ONLY",
+   "C_batch_means_t": "INACTIVE_NO_FALLBACK"
+  },
+  "Q2": "PRE_ACCESS_SYNTHETIC_SIZE_FEASIBILITY_NO_CAL_VERIFY_READ",
+  "Q3": "STRICTER_OF_DEVELOPMENT_ONLY_ESTIMATE_AND_PREREGISTERED_CONSERVATIVE_ENVELOPE",
+  "Q4": "NOT_RUN_INFEASIBLE_NO_FALLBACK_NO_RETEST",
+  "Q5": "FIXED_L_OR_PREAPPROVED_DETERMINISTIC_RULE_BEFORE_ACCESS",
+  "Q6": "PLUS_ONE_P_VALUE_WITH_PRE_ACCESS_ALPHA_REACHABILITY"
+ },
+ "not_approved_numeric": [
+  "size_tolerance",
+  "dependence_envelope_values",
+  "dependence_envelope_margin",
+  "alpha",
+  "B",
+  "L_or_rule",
+  "seed",
+  "effect_floor",
+  "minimum_support"
+ ],
+ "effect_floor_combination": "DEFERRED_A6_S7",
+ "status": {
+  "A6": "METHOD_APPROVED_CONDITIONAL_NUMERIC_CONFIG_PENDING",
+  "A8": "NOT_APPROVED",
+  "A10": "NOT_APPROVED",
+  "C8": "NOT_FROZEN",
+  "phase_count": "8/11 = 72.7%",
+  "holdout": "UNCONSUMED",
+  "packages_B_C": "UNCHANGED"
+ },
+ "autonomous_scope": [
+  "versioned_B_contract",
+  "independent_oracle",
+  "synthetic_negative_fixtures",
+  "feasibility_gate_infrastructure"
+ ],
+ "stop_conditions": [
+  "actual_numeric_configuration_needed",
+  "CAL_VERIFY_access_needed"
+ ]
+}

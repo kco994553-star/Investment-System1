@@ -169,3 +169,14 @@ A6-S5 test form NOT APPROVED (G-SUP statistical PASS/FAIL NOT_RUN); A6-S6 numeri
 (no zero default); A6-S8 software boundary contract only. A6 = PARTIALLY_APPROVED / METHOD_PENDING; A8/A10 NOT APPROVED;
 C8 NOT FROZEN; 8/11 = 72.7% unchanged; Holdout UNCONSUMED; Package B/C unchanged. No implementation started.
 Next: separate A6 statistical-method (test form) decision package; numeric configuration kept separate.
+
+
+## Track C C8 A6 method Q1–Q6 conditional approval — 2026-10-02T20:43:44+09:00
+
+Authority `implementation/reports/track_c_c8_a6_method_approval_2026-10-02.{md,json}`. Q1 G-SUP hard decision =
+C8_GSUP_STUDENTIZED_CBB_v1 (existing unstudentized kernel = comparison evidence only; batch-means t inactive, no fallback);
+Q2 pre-access synthetic size feasibility without CAL_VERIFY read; Q3 stricter of Development-only estimate and preregistered
+conservative envelope; Q4 NOT_RUN_INFEASIBLE, no fallback/retest; Q5 fixed L or pre-approved deterministic rule before access;
+Q6 (r+1)/(B+1) with pre-access α reachability. No numeric value approved (tolerance, envelope/margin, α, B, L, seed, effect floor,
+minimum support). A6 = METHOD_APPROVED_CONDITIONAL / NUMERIC_CONFIG_PENDING; A8/A10 NOT APPROVED; C8 NOT FROZEN; 8/11 = 72.7%;
+Holdout UNCONSUMED. Next (autonomous): B contract, independent oracle, synthetic negative fixtures, feasibility-gate infrastructure.
