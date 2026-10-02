@@ -9,7 +9,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime
 
-from .contract import canonicalize_url, sha256_hex
+from .contract import LANGUAGE_NOT_PROVIDED, canonicalize_url, sha256_hex
 from .errors import IngestError
 
 _LANGUAGE = re.compile(r"^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$")
@@ -100,8 +100,13 @@ def parse_record(record: object, *, now: datetime) -> NewsRawItem:
     if not isinstance(body, str):
         raise IngestError("MALFORMED", "body must be a string")
     language = record.get("source_language")
-    if not isinstance(language, str) or _LANGUAGE.fullmatch(language) is None:
-        raise IngestError("MALFORMED", "source_language must be a BCP 47-like language tag, preserved exactly")
+    if language == LANGUAGE_NOT_PROVIDED:
+        pass
+    elif not isinstance(language, str) or _LANGUAGE.fullmatch(language) is None:
+        raise IngestError(
+            "MALFORMED",
+            "source_language must be a BCP 47-like language tag, or LANGUAGE_NOT_PROVIDED when the provider omitted it",
+        )
     published = _aware(record, "published_at")
     available = _aware(record, "available_at")
     fetched = _aware(record, "fetched_at")
