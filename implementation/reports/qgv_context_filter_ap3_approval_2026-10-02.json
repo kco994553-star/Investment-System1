@@ -1,0 +1,234 @@
+{
+  "record_kind": "QGV_CONTEXT_FILTER_AP3_SCOPED_APPROVAL",
+  "decision_id": "QCF-AP3",
+  "status": "USER_APPROVED",
+  "approval_recorded_at_kst": "2026-10-02T20:48:42+09:00",
+  "clock_source": "Actual processing clock: TZ=Asia/Seoul date -Iseconds",
+  "depends_on": [
+    "QCF-AP1",
+    "QCF-AP2"
+  ],
+  "exact_user_approval": "AP1/AP2 적용을 전제로 AP3를 CF16-A와 CF17-B로 승인한다. 각 CF의 v0.3 승인 문장 범위에 한정하며, CF16의 명시 우선순위 1–6과 조건별 상태·사유 보존, CF17의 완전한 version-pinned configuration 요구 및 미완성 configuration 차단 계약만 승인한다.\n실제 taxonomy 값·cutoff·requirement/rubric 내용·threshold·percentile 방식/값·TTL·confidence/similarity cutoff·계산식 선택·calibration 값/실행·구현·테스트·publication grant·Holdout 소비·merge는 승인하지 않는다.",
+  "approved_options": [
+    "CF16-A",
+    "CF17-B"
+  ],
+  "scope": "v0.3 exact approval clauses; aggregation priority 1–6, condition state/reason preservation, complete version-pinned configuration requirement and incomplete-configuration blocking only",
+  "prior_evidence": "qgv_context_filter_ap1_ap2_approval_2026-10-02.json@c3300fd809791ba4e8357c7cdc4a0d78b4a9df07",
+  "prior_register_blob": "707b6b64c7b66d9ab2f12a93da1ac9317bfa1465",
+  "history_rule": "Append decision; preserve all prior bytes and AP1/AP2 evidence. Earlier pending statements remain historical and are superseded only for AP3 approval status.",
+  "not_approved": [
+    "AP4",
+    "AP5",
+    "AP6",
+    "taxonomy values/provider",
+    "cutoffs",
+    "requirements/rubric contents",
+    "thresholds",
+    "percentile method/value",
+    "TTL",
+    "confidence/similarity cutoff",
+    "formula selection",
+    "calibration values/execution",
+    "implementation/source changes",
+    "tests",
+    "publication grant",
+    "Holdout consumption",
+    "merge"
+  ],
+  "readiness": {
+    "qgv_filter_contract": "DESIGN_FREEZE_READY_WITHIN_AP1_AP2_AP3_SCOPE",
+    "combined_AP1_AP2_AP3_contract": "DESIGN_FREEZE_READY",
+    "all_four_functions_contract": "NOT_FROZEN_AP4_AP5_AP6_PENDING",
+    "actual_configuration_activation": "POLICY_BLOCKED_WHERE_REQUIRED_CONFIGURATION_ABSENT"
+  },
+  "baseline_branches": [
+    {
+      "name": "ccr-22e3ff16-p7n5k5",
+      "sha": "ebe54827862f92dc5ba25ee632009a316a71e508"
+    },
+    {
+      "name": "ccr-41677301-10nj3u",
+      "sha": "a013f1c1758642f90a65fe11df69fc234c143a48"
+    },
+    {
+      "name": "ccr-db5d5960-qen9yi",
+      "sha": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b"
+    },
+    {
+      "name": "ccr-e0fc1e48-9tcto3",
+      "sha": "f4156150022bbc0ce18948c6bc949ff01a194a7d"
+    },
+    {
+      "name": "claude/investment-system-top500-validation-alrugm",
+      "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+    },
+    {
+      "name": "claude/lol-coach-relay-format-y8uk0x",
+      "sha": "57032bf8b0fab9230cd3e29d51ca49ab3f20df96"
+    },
+    {
+      "name": "claude/track-d-rig-news-p0-ot2gy6",
+      "sha": "da86dfc26dcaa5c32c60762683dcca702a0c57b8"
+    },
+    {
+      "name": "docs/qgv-context-policy-approvals",
+      "sha": "c3300fd809791ba4e8357c7cdc4a0d78b4a9df07"
+    },
+    {
+      "name": "feature/global-language-search-v1",
+      "sha": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4"
+    },
+    {
+      "name": "feature/leaderboard-real-producer-v1",
+      "sha": "0d48d863afec0d50481d585a3d1ae0e56d4b380c"
+    },
+    {
+      "name": "feature/macro-real-producer-v1",
+      "sha": "61d3352d5d68c7830e924f17613598ca79fcec6f"
+    },
+    {
+      "name": "feature/p01-research-publication-v1",
+      "sha": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
+    },
+    {
+      "name": "feature/producer-infrastructure-v1",
+      "sha": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36"
+    },
+    {
+      "name": "feature/rig-news-real-ingestion-v1",
+      "sha": "8bb990bd5a6b2009906329b933a67e2303bbb8c7"
+    },
+    {
+      "name": "feature/sec-primary-disclosure-v1",
+      "sha": "ef65caa5437a04610fa43f93209afb9193ba24aa"
+    },
+    {
+      "name": "feature/technical-real-model-v1",
+      "sha": "ce587040e7beb31b66a423eab6ca89767f2a2cf8"
+    },
+    {
+      "name": "feature/technical-real-producer-v1",
+      "sha": "a2e0790dd7fb267ebaa7d052acae59220ecf631e"
+    },
+    {
+      "name": "feature/track-c-evl",
+      "sha": "ff78c4f6c4a1a8fd15db21807de6be3905c89548"
+    },
+    {
+      "name": "feature/track-d-rig-news",
+      "sha": "da86dfc26dcaa5c32c60762683dcca702a0c57b8"
+    },
+    {
+      "name": "feature/track-e-prompt-library-v1",
+      "sha": "d226481e1b49e0910642478ae80545598e2e5a98"
+    },
+    {
+      "name": "feature/us-equity-session-v1",
+      "sha": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4"
+    },
+    {
+      "name": "feature/web-mvp-v1",
+      "sha": "a4e49c83f5783c19617fb609b8f95b179cb13e84"
+    },
+    {
+      "name": "integration/web-mvp-language-search",
+      "sha": "e09d24e028475e924f2e20cee5ad6bd79f891391"
+    },
+    {
+      "name": "integration/web-mvp-language-search-audit",
+      "sha": "9fd8099fed59961f990cb64e99d4953a931ea508"
+    },
+    {
+      "name": "recovery/track-a-real-data-frozen",
+      "sha": "a79642f7aa174cc37b981298d0ff1cec6b04e974"
+    }
+  ],
+  "open_prs": [
+    {
+      "number": 18,
+      "sha": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 17,
+      "sha": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 16,
+      "sha": "ef65caa5437a04610fa43f93209afb9193ba24aa",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 15,
+      "sha": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 14,
+      "sha": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 13,
+      "sha": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 12,
+      "sha": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 11,
+      "sha": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 10,
+      "sha": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 9,
+      "sha": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 7,
+      "sha": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 6,
+      "sha": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 5,
+      "sha": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "number": 4,
+      "sha": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+      "state": "open",
+      "draft": true
+    }
+  ],
+  "delta_audit": "All 15 component heads and existing PR heads unchanged. Track C side-branch ebe5482 adds conditional A6 method approval; Frozen feature source ff78c4f unchanged. That authority does not transfer to CF17 configs or this work's implementation scope."
+}
