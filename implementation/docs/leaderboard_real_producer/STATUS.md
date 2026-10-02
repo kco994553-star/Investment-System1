@@ -10,7 +10,8 @@ Draft PR [#14](https://github.com/kco994553-star/Investment-System1/pull/14). Ba
 | Implementation commit | `11e18d8be60c20480b6ab3d2241d752e96b0cd47` (`operational.code_commit` in the Frozen manifests; unchanged by the publication probe) |
 | Evidence commit | `a045768bae9488db35087dc4e4faadef327bdeea` |
 | Handoff before the publication probe | `1f6b2d2f020843b13222b66a3f9bce82cded5bef` |
-| Publication-probe commit | recorded in the following docs commit; replay fingerprints are not part of that commit |
+| Publication-probe commit | `c38ea87e9d796f1f7b8e1c19c69aca6e12f06792` |
+| Branch HEAD | the commit that records this line. Its parent must be the probe commit above. Replay fingerprints are not in either commit |
 | Base | canonical `claude/investment-system-top500-validation-alrugm@b8e39a2196a6d7794a04a0cd5393c68329e126ca` |
 | Why this base | The leaderboard engine and Official snapshots live on canonical. PR #9 and PR #10 are read-only pins, not merge parents |
 | QGV input pin | PR #10 `ccr-db5d5960-qen9yi@5eec129` |

@@ -10,7 +10,7 @@ The predicate is `leaderboard_producer/research_publication.py`. It is a probe. 
 |---|---|---|---|
 | QGV | [#10](https://github.com/kco994553-star/Investment-System1/pull/10) | `5eec129ef81641f0bc11f5adbb43d0b2122ee24b` | `PROVISIONAL_RESEARCH`, producer PASS, READY 0, published `NOT_AVAILABLE` |
 | Macro | [#12](https://github.com/kco994553-star/Investment-System1/pull/12) | `61d3352d5d68c7830e924f17613598ca79fcec6f` | lifecycle `PROVISIONAL`, numbers withheld, published `NOT_AVAILABLE` |
-| Leaderboard | [#14](https://github.com/kco994553-star/Investment-System1/pull/14) | `1f6b2d2f020843b13222b66a3f9bce82cded5bef` | existing engine, within-tie `POLICY_BLOCKED`, published `NOT_AVAILABLE`. This is the producer handoff, not the later probe commit |
+| Leaderboard | [#14](https://github.com/kco994553-star/Investment-System1/pull/14) | `1f6b2d2f020843b13222b66a3f9bce82cded5bef` | existing engine, within-tie `POLICY_BLOCKED`, published `NOT_AVAILABLE`. This is the producer handoff, not the probe commit `c38ea87e9d796f1f7b8e1c19c69aca6e12f06792` |
 | Technical | [#15](https://github.com/kco994553-star/Investment-System1/pull/15) | `ce587040e7beb31b66a423eab6ca89767f2a2cf8` | M1/M2 research record. No `methodology.status`. `m1`/`m2` `APPROVED` is not Track C. `publish_web_research` raises. `REAL_TECHNICAL_RESEARCH_PRODUCER_READY` stays NO |
 
 Track C tip observed the same day, not read and not treated as a result: `feature/track-c-evl@31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0`. The audit-time pin `885c673` in `AUDIT.md` is historical.
