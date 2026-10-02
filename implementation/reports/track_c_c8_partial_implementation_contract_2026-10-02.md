@@ -61,7 +61,12 @@ C0–C7 remain SOFTWARE FROZEN, 8/11=72.7% software phase-count only.
 ## Trust and storage boundaries
 
 Current evidence resolution is mandatory, not a boolean/scope/producer PASS/synthetic=false
-shortcut. C8 real admission is unconditionally closed. Local POSIX hash chains and the shared
+shortcut. Every entry checks the current immutable source bytes and mutable input objects,
+actual code hash and current approval. A single content-addressed memoized descriptor may
+reuse the result of a previously complete C7 validation only under that entire identical
+proof key. It contains no ledger handles or mutable shared payload; callers receive copies.
+Any invalidation/changed input/code/authority breaks the proof. Full validation also rechecks
+its snapshot before caching, and post-target-access entry resolution is mandatory. C8 real admission is unconditionally closed. Local POSIX hash chains and the shared
 registry detect ordinary tamper/deletion/ordering/races under trusted API storage; they do not
 prove absence of prior external human access or protect against an attacker replacing every
 ledger and external checkpoint together. Real source/access service authority remains separate.

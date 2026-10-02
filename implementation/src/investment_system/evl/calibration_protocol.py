@@ -9,24 +9,45 @@ from hashlib import sha256
 import json
 
 from .calibration_contracts import (SCOPE, FIXTURE_SCOPE, IntegrityFailure, MissingPrerequisite,
-                                   validate_plan, instant, finite_number, identity, METRIC_VERSION)
+                                   validate_plan, instant, finite_number, identity, METRIC_VERSION,
+                                   authority, code_hash, APPROVAL_BLOB)
 from .landscape import checkpoint
 from .profile_selection import resolve_selection, registration as selection_registration
 from .robustness import c4_report
 from .walkforward import digest
 
 
+def _software_upstream_declaration(selection_ledger):
+    declared = selection_registration(selection_ledger)["body"]["plan"]
+    if declared["scope"] != SCOPE or declared["configuration_scope"] != FIXTURE_SCOPE:
+        raise MissingPrerequisite("real upstream validation is not authorized for C8 foundation")
+    return declared
+
+
 def upstream_snapshot(selection_ledger, cohorts):
+    _software_upstream_declaration(selection_ledger)
     files = {p.name: sha256(p.read_bytes()).hexdigest()
              for p in sorted(selection_ledger.directory.iterdir())
              if p.suffix in (".json", ".jsonl")}
     return {"c7_files": files, "c4_c5_c6": checkpoint(cohorts)}
 
 
+_RESOLVED_UPSTREAM = None
+
+
 def describe_upstream(selection_ledger, cohorts):
     """Actual current C4/C5/C6/C7 resolution, never a boolean authority adapter."""
+    global _RESOLVED_UPSTREAM
+    authority()
+    registration = _software_upstream_declaration(selection_ledger)
+    committed = upstream_snapshot(selection_ledger, cohorts)
+    # Only fully resolved metadata is memoized, never producer PASS or flags.
+    # The key includes every current input/file plus actual code and authority.
+    key = digest({"snapshot": committed, "code_hash": code_hash(), "approval_blob": APPROVAL_BLOB})
+    cached = _RESOLVED_UPSTREAM
+    if cached is not None and cached[0] == key:
+        return deepcopy(cached[1])
     report = resolve_selection(selection_ledger, cohorts)
-    registration = selection_registration(selection_ledger)["body"]["plan"]
     landscape = report["output"]["stages"][0]["output"]
     model_instances, sample_ids, windows, horizons, c6_refs = {}, set(), [], {}, {}
     for cohort, args in sorted(cohorts.items()):
@@ -49,7 +70,7 @@ def describe_upstream(selection_ledger, cohorts):
     holdouts = {args[1].holdout_start.isoformat() for args in cohorts.values()}
     if len(holdouts) != 1:
         raise IntegrityFailure("shared frozen Holdout boundary metadata differs")
-    return {"holdout_boundary": next(iter(holdouts)),
+    result = {"holdout_boundary": next(iter(holdouts)),
             "snapshot_hash": digest(upstream_snapshot(selection_ledger, cohorts)),
             "c7_report_hash": digest(report),
             "family_members": sorted(landscape["roster"]),
@@ -61,6 +82,10 @@ def describe_upstream(selection_ledger, cohorts):
             "horizon_contracts": horizons, "c6_evidence_refs": c6_refs,
             "descriptive_distinctness": deepcopy(report["output"]["distinctness"]),
             "scope": report["scope"], "configuration_scope": report["configuration_scope"]}
+    if upstream_snapshot(selection_ledger, cohorts) != committed:
+        raise IntegrityFailure("upstream changed during full validation; cannot cache it")
+    _RESOLVED_UPSTREAM = (key, deepcopy(result))  # Atomic tuple, at most one qualified entry.
+    return deepcopy(result)
 
 
 def resolve_entry(ledger, selection_ledger, cohorts):
@@ -90,7 +115,7 @@ def register_calibration(ledger, selection_ledger, cohorts, plan):
     if current["snapshot_hash"] != p["upstream_snapshot_hash"]:
         raise IntegrityFailure("registration must bind current upstream bytes")
     for k in ("family_members", "representative_ties", "cohort_metadata", "model_instances",
-              "used_outcomes", "horizon_contracts"):
+              "used_outcomes", "horizon_contracts", "holdout_boundary"):
         if current[k] != p[k]:
             raise IntegrityFailure("registration cannot substitute surviving subset or changed model")
     if current["scope"] != p["scope"]:

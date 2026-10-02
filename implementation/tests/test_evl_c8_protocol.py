@@ -232,3 +232,40 @@ def test_upstream_change_during_read_cannot_leave_saved_pass(c8_rig):
     c8_rig["provider"].before_read = change_source
     assert fit(c8_rig)["status"] == "FAIL"
     assert c8_rig["provider"].reads == ["CAL_FIT"]
+
+
+def test_real_upstream_declaration_blocks_before_any_ancestor_validation(monkeypatch):
+    from investment_system.evl import calibration_protocol as protocol
+    calls = []
+    monkeypatch.setattr(protocol, "selection_registration",
+                        lambda ledger: {"body": {"plan": {
+                            "scope": "REAL_PIT_RESEARCH_VALIDATION",
+                            "configuration_scope": "REAL_CONFIGURATION"}}})
+    monkeypatch.setattr(protocol, "resolve_selection", lambda *args: calls.append("real-validation"))
+    with pytest.raises(MissingPrerequisite):
+        protocol.describe_upstream(object(), {})
+    with pytest.raises(MissingPrerequisite):
+        protocol.upstream_snapshot(object(), {})
+    assert calls == []
+
+
+def test_cached_qualified_source_cannot_mask_changed_source_bytes(c8_rig):
+    from investment_system.evl.calibration_protocol import describe_upstream
+    first = describe_upstream(*c8_rig["source"])
+    assert describe_upstream(*c8_rig["source"]) == first
+    path = c8_rig["source"][0].directory / "selection-acceptance.json"
+    body = json.loads(path.read_text())
+    body["official"] = True
+    path.write_text(json.dumps(body))
+    with pytest.raises(ValueError):
+        describe_upstream(*c8_rig["source"])
+
+
+def test_current_hash_proof_includes_mutable_input_objects(c8_rig):
+    register(c8_rig)
+    cohort = next(iter(c8_rig["source"][1].values()))
+    drift = cohort[4]
+    identity = next(iter(drift))
+    drift[identity][0]["parameters"]["cash_buffer"] += .001
+    assert fit(c8_rig)["status"] == "FAIL"
+    assert c8_rig["provider"].reads == []
