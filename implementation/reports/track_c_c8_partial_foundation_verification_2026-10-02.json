@@ -1,0 +1,89 @@
+{
+ "record_kind": "TRACK_C_C8_PARTIAL_FOUNDATION_ACTIONS_VERIFICATION",
+ "phase": "C8",
+ "phase_state": "PARTIAL_FOUNDATION_VERIFIED_NOT_SOFTWARE_FROZEN",
+ "recorded_at_kst": "2026-10-02T19:38:13+09:00",
+ "recorded_at_utc": "2026-10-02T10:38:13Z",
+ "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+ "configuration_scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY",
+ "validated_head": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+ "approval_recorded_at_kst": "2026-10-02T17:47:51.000+09:00",
+ "approval_blob": "20e364090c1fed426760b854c1d25752e83416b5",
+ "tests": {
+  "C8_targeted": 116,
+  "C7_targeted": 97,
+  "C6_targeted": 130,
+  "C0_C5": 103,
+  "full": 842,
+  "failed": 0
+ },
+ "acceptance": {
+  "C6": "PASS",
+  "C7": "PASS",
+  "C8_partial": "APPROVED_FOUNDATION_PROTOCOL_PASS"
+ },
+ "actions": {
+  "run_id": 36994387375,
+  "job_id": 110797644155,
+  "conclusion": "success",
+  "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994387375",
+  "artifacts": {
+   "c8_partial": {
+    "id": 11220614480,
+    "digest": "sha256:2c06432663f24aa6dd5add2ebb98ae2dabf5dc0e24209a2e424f068a95b6570a"
+   },
+   "c7": {
+    "id": 11220269923,
+    "digest": "sha256:194f457393b717c86adc18703757328a2ac309e405fa3dc7ab288d2cfc3401fc"
+   },
+   "c6": {
+    "id": 11220704386,
+    "digest": "sha256:8ccf95f709646726712189778aa1f6d48074566c1bcfd88cc5902d04cf0f145a"
+   }
+  },
+  "raw_log": "track_c_c8_partial_foundation_ci_log_2026-10-02.txt",
+  "raw_log_sha256": "9ea17fbc3250c911527959ae8df1a7a5539d9e425b3c5246542c5297d29e60c6",
+  "superseded_failed_runs": [
+   {
+    "head": "87b92bd509b6c6adf00901fa6fbaf03ef5a9fcd6",
+    "run_id": 36991881782
+   },
+   {
+    "head": "8579a78c926b3ac221cb52230867c07737ce3432",
+    "run_id": 36992436625
+   }
+  ]
+ },
+ "C8_SOFTWARE_FROZEN": false,
+ "official": false,
+ "promotion_authority": null,
+ "real_holdout_eligible": false,
+ "real_calibration": "NOT_RUN_NOT_AUTHORIZED",
+ "real_pit_research_validation": "NOT_RUN_MISSING_REAL_CONFIGURATION_AND_POLICIES",
+ "holdout_state": "UNCONSUMED_NO_REAL_READER",
+ "Investor_QGV": "FUTURE_TRACK_C_INPUT",
+ "frozen_phases": [
+  "C0",
+  "C1",
+  "C2",
+  "C3",
+  "C4",
+  "C5",
+  "C6",
+  "C7"
+ ],
+ "phase_count": "8/11 = 72.7%",
+ "unapproved_policy": {
+  "A6": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+  "A8": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+  "A10": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+  "A9_NUMERIC_AND_REAL_RESEARCH_CONFIGURATION": "PROPOSED_NOT_APPROVED_NOT_ACTIVE"
+ },
+ "packages_B_C": "UNCHANGED_PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+ "new_result_impact_D3P": "NONE_INFERRED",
+ "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+ "ahead": 54,
+ "behind": 0,
+ "pr4": "DRAFT_OPEN_UNMERGED",
+ "next": "STOP_FOR_USER_DECISION_ON_A6_A8_A10_A9_CONFIGURATION"
+}
