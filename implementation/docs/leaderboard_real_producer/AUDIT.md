@@ -71,3 +71,20 @@ A leaderboard record `PASS` means valid persistence, identity, lineage and appli
 | Separate eligibility / tie-break / consensus / reassessment | POLICY_BLOCKED or NOT_AVAILABLE (see above) |
 | Web publication of research output | POLICY_BLOCKED (P01 + Track C) |
 | Post-2024-12-31 universe | POLICY_BLOCKED (P02) |
+
+## 5. Later observation (2026-10-02)
+
+The tables in §0 are the pins at audit time. They are not rewritten. Tips re-checked before the research-publication probe, still read-only:
+
+| Ref | Commit now | Still |
+|---|---|---|
+| This branch before the probe | `1f6b2d2f020843b13222b66a3f9bce82cded5bef` | Draft PR #14. Replay evidence unchanged |
+| QGV PR #10 | `5eec129ef81641f0bc11f5adbb43d0b2122ee24b` | Unchanged since the audit |
+| Macro PR #12 | `61d3352d5d68c7830e924f17613598ca79fcec6f` | Unchanged since the audit |
+| Technical PR #15 `feature/technical-real-model-v1` | `ce587040e7beb31b66a423eab6ca89767f2a2cf8` | Not an input. M1/M2 research record. Web publication blocked. Not PR #11 |
+| Technical PR #11 | `a2e0790dd7fb267ebaa7d052acae59220ecf631e` | Unchanged. Model was `NOT_AVAILABLE` there |
+| Track C PR #4 | `31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0` | Still not read. The audit pin `885c673` is the older observation, not a validation result |
+| Infrastructure PR #9 | `6fe9eee5668388fa4a200904520a0b5a46c90b6f` | Unchanged |
+| Canonical | `b8e39a2196a6d7794a04a0cd5393c68329e126ca` | Unchanged |
+
+No new eligibility, tie-break, ranking formula, consensus source, scenario, or reassessment threshold was added. The common publication probe is recorded in `RESEARCH_PUBLICATION.md`.

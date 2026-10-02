@@ -75,7 +75,9 @@ Research candidate (`FROZEN_SNAPSHOT` + `methodology.status=PROVISIONAL_RESEARCH
 Published section: `not_available`, reason code `LEADERBOARD_RESEARCH_ONLY_NO_EXPORT`.
 PR #9's placeholder `LEADERBOARD_NO_UPSTREAM_QGV` is recorded as stale and is not rewritten.
 
-Not Official. Not LIVE. Track C is not consulted. Portfolio holdings do not affect rank.
+Not Official. Not LIVE. Track C is not consulted and cannot be attested by this producer. Portfolio holdings do not affect rank.
+
+`data_state`, producer validation, methodology lifecycle, Track C, and data completeness are different axes. Producer PASS does not select a Web state. The same predicate, with no QGV-only branch, also covers PR #10, PR #12, and PR #15. See `RESEARCH_PUBLICATION.md`. `RESEARCH` is not a schema-1 state. A hypothetical label still cannot become `LIVE` or `OFFICIAL` and does not clear `within_tie_order_approval=POLICY_BLOCKED`.
 
 ## 7. Pins
 

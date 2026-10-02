@@ -10,6 +10,7 @@ on:
       - implementation/tools/leaderboard_producer_infra_compat.py
       - implementation/tests/test_leaderboard_real_producer.py
       - implementation/tests/test_leaderboard_producer_infra_compat.py
+      - implementation/tests/test_research_publication_contract.py
       - .github/workflows/leaderboard-real-producer.yml
   workflow_dispatch:
 permissions:
