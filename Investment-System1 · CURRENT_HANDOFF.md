@@ -476,3 +476,12 @@ conservative envelope; Q4 NOT_RUN_INFEASIBLE, no fallback/retest; Q5 fixed L or 
 Q6 (r+1)/(B+1) with pre-access α reachability. No numeric value approved (tolerance, envelope/margin, α, B, L, seed, effect floor,
 minimum support). A6 = METHOD_APPROVED_CONDITIONAL / NUMERIC_CONFIG_PENDING; A8/A10 NOT APPROVED; C8 NOT FROZEN; 8/11 = 72.7%;
 Holdout UNCONSUMED. Next (autonomous): B contract, independent oracle, synthetic negative fixtures, feasibility-gate infrastructure.
+
+
+## Track C C8 G-SUP software contract — 2026-10-02T21:08:47+09:00
+
+Under A6 S1–S8 + Q1–Q6: `evl/superiority.py` (C8_GSUP_STUDENTIZED_CBB_v1), independent oracle and 68 tests added (commit a156a35,
+ccr-22e3ff16-p7n5k5); no existing source/test blob changed. Local: C8 184, C7 97, C6 130, C0–C5 103, full 910 PASS; C6/C7/C8-partial
+acceptance PASS (no Actions run: workflow triggers on feature/track-c-evl only). G-SUP decision remains NOT_RUN_EFFECT_FLOOR_DEFERRED;
+real scope NOT_RUN. Evidence: implementation/reports/track_c_c8_gsup_implementation_2026-10-02.md. STOP for numeric configuration and
+confirmation of five implementation-defined method details before any real CAL_VERIFY access. C8 NOT FROZEN; 8/11 = 72.7%; Holdout UNCONSUMED.
