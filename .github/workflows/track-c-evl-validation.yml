@@ -22,6 +22,8 @@ jobs:
           python-version: "3.11"
       - name: Install pytest
         run: python -m pip install pytest
+      - name: Targeted C8 approved foundation tests
+        run: PYTHONPATH=src python -m pytest -q tests/test_evl_c8*.py
       - name: Targeted C7 tests
         run: PYTHONPATH=src python -m pytest -q tests/test_evl_c7*.py
       - name: Targeted C6 regression
@@ -34,6 +36,8 @@ jobs:
         run: PYTHONPATH=src:. python tools/track_c_c6_acceptance.py
       - name: C7 complete acceptance and C0-C6 preservation audit
         run: PYTHONPATH=src:. python tools/track_c_c7_acceptance.py
+      - name: C8 partial foundation acceptance and C0-C7 preservation
+        run: PYTHONPATH=src:. python tools/track_c_c8_partial_acceptance.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -44,3 +48,8 @@ jobs:
         with:
           name: track-c-c7-evidence-${{ github.sha }}
           path: implementation/reports/track_c_c7_generated/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: track-c-c8-partial-evidence-${{ github.sha }}
+          path: implementation/reports/track_c_c8_partial_generated/

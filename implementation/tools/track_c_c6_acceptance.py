@@ -47,6 +47,7 @@ def boundary_audit():
              or p in {'implementation/tests/evl_c7_fixture.py',
                        'implementation/tests/test_evl_c7_selection.py',
                        'implementation/tests/test_evl_c7_protocol.py'}
+             or p in ['implementation/tests/evl_c8_fixture.py','implementation/tests/test_evl_c8_contracts.py','implementation/tests/test_evl_c8_ledger.py','implementation/tests/test_evl_c8_protocol.py','implementation/tests/test_evl_c8_evidence.py']
              or p.startswith('implementation/tests/evl_c6')
              or p.startswith('implementation/tests/test_evl_c6')
              or p.startswith('implementation/reports/track_c_')

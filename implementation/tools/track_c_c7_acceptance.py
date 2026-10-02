@@ -7,7 +7,7 @@ from tests.evl_c7_fixture import full_acceptance
 from investment_system.evl.walkforward import digest
 from investment_system.evl.profile_selection import STAGES
 START='88f66c57c810b5dda135b79552b38484d89d61a7'
-NEW_FILES=["implementation/src/investment_system/evl/selection.py","implementation/src/investment_system/evl/selection_contracts.py","implementation/src/investment_system/evl/landscape.py","implementation/src/investment_system/evl/profile_selection.py","implementation/tests/evl_c7_fixture.py","implementation/tests/test_evl_c7_selection.py","implementation/tests/test_evl_c7_protocol.py"]
+NEW_FILES=["implementation/src/investment_system/evl/selection.py","implementation/src/investment_system/evl/selection_contracts.py","implementation/src/investment_system/evl/landscape.py","implementation/src/investment_system/evl/profile_selection.py","implementation/tests/evl_c7_fixture.py","implementation/tests/test_evl_c7_selection.py","implementation/tests/test_evl_c7_protocol.py","implementation/src/investment_system/evl/calibration_contracts.py","implementation/src/investment_system/evl/calibration_ledger.py","implementation/src/investment_system/evl/calibration_protocol.py","implementation/src/investment_system/evl/calibration_evidence.py","implementation/tests/evl_c8_fixture.py","implementation/tests/test_evl_c8_contracts.py","implementation/tests/test_evl_c8_ledger.py","implementation/tests/test_evl_c8_protocol.py","implementation/tests/test_evl_c8_evidence.py"]
 def preservation():
     prior,current=blobs(START),blobs('HEAD')
     frozen=[p for p in prior if p.startswith('implementation/src/')
@@ -27,7 +27,7 @@ def preservation():
     unexpected=[p for p in prior if prior[p]!=current.get(p) and p not in allowed_existing]
     if unexpected: raise ValueError('historical/proposal/protected evidence changed: '+repr(unexpected))
     unexpected_new=[p for p in current if p not in prior and p not in NEW_FILES
-        and p!='implementation/tools/track_c_c7_acceptance.py'
+        and p not in ('implementation/tools/track_c_c7_acceptance.py', 'implementation/tools/track_c_c8_partial_acceptance.py')
         and not p.startswith('implementation/reports/track_c_')]
     if unexpected_new: raise ValueError('new unauthorized files: '+repr(unexpected_new))
     return {'status':'PASS','frozen_source_tests_preserved':len(frozen),
@@ -50,7 +50,8 @@ if __name__=='__main__':
         'preservation':audit,'PIT_no_lookahead':'PASS_CURRENT_C4_C5_C6_C7_RESOLUTION',
         'lineage_provenance':'PASS_CURRENT_ANCESTOR_AND_ALL_STAGE_HASH_RESOLUTION',
         'holdout_state':'UNCONSUMED_NO_READER','real_pit_research_validation':'NOT_RUN_MISSING_COMPLETE_REAL_FAMILY',
-        'Investor_QGV':'FUTURE_TRACK_C_INPUT','packages_A_B_C':'PROPOSED_NOT_APPROVED_NOT_ACTIVE',
+        'Investor_QGV':'FUTURE_TRACK_C_INPUT','package_A':'PARTIALLY_APPROVED_FOUNDATION_ONLY',
+        'packages_B_C':'PROPOSED_NOT_APPROVED_NOT_ACTIVE',
         'official':False,'tax_mode':'EXCLUDED',
         'negative_paths':'VERIFIED_BY_TARGETED_C7_AND_PREVIOUS_PHASE_TESTS'}
     (out/'evidence.json').write_text(json.dumps(evidence,indent=2)+'\n')
