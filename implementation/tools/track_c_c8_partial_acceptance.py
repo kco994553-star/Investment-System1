@@ -11,6 +11,8 @@ from investment_system.evl.walkforward import digest
 BASE = "86e345e54678de05ebcdf2e1db53c9dbe72ca52a"
 NEW_SOURCE_TESTS = ["implementation/src/investment_system/evl/calibration_contracts.py","implementation/src/investment_system/evl/calibration_ledger.py","implementation/src/investment_system/evl/calibration_protocol.py","implementation/src/investment_system/evl/calibration_evidence.py","implementation/tests/evl_c8_fixture.py","implementation/tests/test_evl_c8_contracts.py","implementation/tests/test_evl_c8_ledger.py","implementation/tests/test_evl_c8_protocol.py","implementation/tests/test_evl_c8_evidence.py"]
 RUNNER = "implementation/tools/track_c_c8_partial_acceptance.py"
+# A6 Q1-Q6 conditionally approved G-SUP contract/oracle/feasibility files (2026-10-02T20:43:44+09:00).
+GSUP_FILES = ["implementation/src/investment_system/evl/superiority.py", "implementation/tests/evl_c8_gsup_oracle.py", "implementation/tests/test_evl_c8_gsup.py"]
 OVERLAYS = (
     "implementation/reports/track_c_decision_register_2026-10-01.md",
     "Investment-System1 · CURRENT_HANDOFF.md",
@@ -39,7 +41,7 @@ def preservation():
         if not Path("..", p).read_bytes().startswith(before):
             raise ValueError("history-preserving append required: " + p)
     added = [p for p in current if p not in baseline]
-    unauthorized = [p for p in added if p not in NEW_SOURCE_TESTS and p != RUNNER
+    unauthorized = [p for p in added if p not in NEW_SOURCE_TESTS and p not in GSUP_FILES and p != RUNNER
                     and not p.startswith("implementation/reports/track_c_")]
     if unauthorized:
         raise ValueError("new unauthorized files: " + repr(unauthorized))
