@@ -55,4 +55,18 @@ Actions below completed with conclusion `success` on code SHA `1d9bc11a23a967f35
 | technical-real-model | pull_request #18 | [36997605404](https://github.com/kco994553-star/Investment-System1/actions/runs/36997605404) | 110807810836 offline | success |
 | technical-real-producer | pull_request #18 | [36997605344](https://github.com/kco994553-star/Investment-System1/actions/runs/36997605344) | 110807810381 offline | success |
 
-`c21-real-data` is `workflow_dispatch` only and did not run. A later docs commit is not covered by the rows above until its own run completes on that later SHA.
+`c21-real-data` is `workflow_dispatch` only and did not run.
+
+## Actions on docs SHA `4fed17b`
+
+These four runs completed `success` on `4fed17bb538743ccd786ef7f0741c43e04288b28` after that commit. The sessions tree at that SHA is still `5d26bcb5931345dd8eac4649cb3424dfb6809166`. They are recorded here, not inside `4fed17b` itself.
+
+| Workflow | Event | Run | Job | Conclusion |
+|---|---|---|---|---|
+| us-equity-session | push | [36997783024](https://github.com/kco994553-star/Investment-System1/actions/runs/36997783024) | 110808357166 offline | success |
+| us-equity-session | pull_request #18 | [36997788664](https://github.com/kco994553-star/Investment-System1/actions/runs/36997788664) | 110808375863 offline | success |
+| technical-real-model | pull_request #18 | [36997788668](https://github.com/kco994553-star/Investment-System1/actions/runs/36997788668) | 110808375763 offline | success |
+| technical-real-producer | pull_request #18 | [36997788666](https://github.com/kco994553-star/Investment-System1/actions/runs/36997788666) | 110808376016 offline | success |
+
+This file's commit is a later docs commit. It does not list its own Actions run, because that run cannot exist until after the commit. Code SHA stays `1d9bc11a23a967f350cf6782468efff6aeb17a66`.
+
