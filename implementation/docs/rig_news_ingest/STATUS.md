@@ -84,3 +84,8 @@ RIG / NEWS INGESTION IMPLEMENTATION BASELINE / INTEGRATION WAIT
 
 Defined scope is closed at `f853908`. Do not merge PR #13. Integration waits for the owner. This branch does not take Track C, QGV, Technical, Macro, Web, Entity Metadata, or Producer Infrastructure work.
 
+## Stacked follow-on
+
+SEC 8-K primary disclosure is a later branch. It does not rewrite this baseline and it does not activate general news. `REAL_NEWS_PROVIDER_READY` on this record stays NO.
+
+
