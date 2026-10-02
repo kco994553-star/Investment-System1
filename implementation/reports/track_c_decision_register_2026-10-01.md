@@ -157,3 +157,15 @@ Policy review: implementation/reports/track_c_c8_c10_final_policy_review.md.
 Explicit user approval is partial, with authority `implementation/reports/track_c_c8_partial_approval_2026-10-02.{md,json}`. A1/A2/A3/A4/A7/A11 APPROVED WITH MODIFICATION (framework scope); A5 EXISTING POLICY RECONFIRMED; A9 STRUCTURE APPROVED / NUMERIC CONFIG REQUIRED; A12 synthetic software protocol APPROVED. A6/A8/A10 and all actual numeric research configuration remain PROPOSED / NOT APPROVED / NOT ACTIVE. This supersedes the earlier blanket Package A pending status only within these exact clauses; original proposal/dossier/historical approvals remain intact.
 
 C0–C7 SOFTWARE FROZEN preserved, **8/11 = 72.7% software phase count only**. C8 approved foundation IMPLEMENTING / NOT FROZEN; no C8 statistical/distinctness/role decisions, real calibration/PIT validation, real Manifest/Official or Holdout access. Holdout UNCONSUMED; Investor-QGV FUTURE_TRACK_C_INPUT. Package B/C unchanged and NOT APPROVED / NOT ACTIVE. Canonical b8e39a2 unchanged; PR#4 Draft/Open/unmerged. No other-track source/branch edits/merge. Next: approved foundation implementation + targeted/C0–C7/full/audit/actual Actions, then stop for A6/A8/A10 and real configuration review.
+
+
+## Track C C8 A6 partial approval — 2026-10-02T20:04:01+09:00
+
+Explicit user approval, authority `implementation/reports/track_c_c8_a6_partial_approval_2026-10-02.{md,json}` (source HEAD ff78c4f).
+A6-S1 superiority requirement APPROVED (PSR/DSR/PBO/family RC/positive return/Sharpe/C6 PASS are not superiority evidence);
+A6-S2 controls limited to EQUAL_SIMPLE and MARKET_CAP, RANDOM_RANKING/RANDOMIZED_WEIGHTS = UNSUPPORTED_SINGLE_DRAW;
+A6-S3 conjunction/intersection-union semantics APPROVED; A6-S4 fresh one-shot CAL_VERIFY boundary, no retry, APPROVED;
+A6-S5 test form NOT APPROVED (G-SUP statistical PASS/FAIL NOT_RUN); A6-S6 numerics NOT APPROVED; A6-S7 effect floor deferred
+(no zero default); A6-S8 software boundary contract only. A6 = PARTIALLY_APPROVED / METHOD_PENDING; A8/A10 NOT APPROVED;
+C8 NOT FROZEN; 8/11 = 72.7% unchanged; Holdout UNCONSUMED; Package B/C unchanged. No implementation started.
+Next: separate A6 statistical-method (test form) decision package; numeric configuration kept separate.

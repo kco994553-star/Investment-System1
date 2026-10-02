@@ -453,3 +453,15 @@ Real calibration/PIT validation NOT_RUN; Holdout UNCONSUMED; official=false; Pac
 Canonical b8e39a2 unchanged; PR#4 Draft/Open/unmerged.
 STOP: A6 statistical validity, A8 distinctness, A10 Champion/Challenger and A9 numeric/real research
 configuration require explicit user approval before any further C8 implementation, C8 Freeze or C9/C10.
+
+
+## Track C C8 A6 partial approval — 2026-10-02T20:04:01+09:00
+
+Explicit user approval, authority `implementation/reports/track_c_c8_a6_partial_approval_2026-10-02.{md,json}` (source HEAD ff78c4f).
+A6-S1 superiority requirement APPROVED (PSR/DSR/PBO/family RC/positive return/Sharpe/C6 PASS are not superiority evidence);
+A6-S2 controls limited to EQUAL_SIMPLE and MARKET_CAP, RANDOM_RANKING/RANDOMIZED_WEIGHTS = UNSUPPORTED_SINGLE_DRAW;
+A6-S3 conjunction/intersection-union semantics APPROVED; A6-S4 fresh one-shot CAL_VERIFY boundary, no retry, APPROVED;
+A6-S5 test form NOT APPROVED (G-SUP statistical PASS/FAIL NOT_RUN); A6-S6 numerics NOT APPROVED; A6-S7 effect floor deferred
+(no zero default); A6-S8 software boundary contract only. A6 = PARTIALLY_APPROVED / METHOD_PENDING; A8/A10 NOT APPROVED;
+C8 NOT FROZEN; 8/11 = 72.7% unchanged; Holdout UNCONSUMED; Package B/C unchanged. No implementation started.
+Next: separate A6 statistical-method (test form) decision package; numeric configuration kept separate.

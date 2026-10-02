@@ -1,0 +1,64 @@
+{
+ "record_kind": "TRACK_C_C8_A6_PARTIAL_APPROVAL",
+ "approval_recorded_at_kst": "2026-10-02T20:04:01+09:00",
+ "approval_recorded_at_utc": "2026-10-02T11:04:01Z",
+ "authority": "EXPLICIT_LATEST_USER_MESSAGE",
+ "source_head": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+ "whole_A6_method_approved": false,
+ "clauses": {
+  "A6-S1": "APPROVED_SUPERIORITY_REQUIREMENT",
+  "A6-S2": "APPROVED_CONTROLS_EQUAL_SIMPLE_MARKET_CAP_ONLY",
+  "A6-S3": "APPROVED_CONJUNCTION_INTERSECTION_UNION",
+  "A6-S4": "APPROVED_FRESH_CAL_VERIFY_ONE_SHOT_NO_RETRY",
+  "A6-S5": "NOT_APPROVED_TEST_FORM",
+  "A6-S6": "NOT_APPROVED_NUMERIC_CONFIG",
+  "A6-S7": "DEFERRED_EFFECT_FLOOR_PRINCIPLE_ONLY",
+  "A6-S8": "SOFTWARE_BOUNDARY_CONTRACT_ONLY_NO_STATISTICAL_DECISION_KERNEL"
+ },
+ "supported_controls": [
+  "EQUAL_SIMPLE",
+  "MARKET_CAP"
+ ],
+ "unsupported_controls": {
+  "RANDOM_RANKING": "UNSUPPORTED_SINGLE_DRAW",
+  "RANDOMIZED_WEIGHTS": "UNSUPPORTED_SINGLE_DRAW"
+ },
+ "not_superiority_evidence": [
+  "PSR",
+  "DSR",
+  "PBO",
+  "FAMILY_REALITY_CHECK",
+  "ABSOLUTE_POSITIVE_RETURN",
+  "POSITIVE_SHARPE",
+  "C6_DIAGNOSTIC_PASS"
+ ],
+ "frozen_before_CAL_VERIFY": [
+  "designated_role",
+  "statistic_family",
+  "required_controls",
+  "bootstrap_method_version",
+  "block_convention",
+  "seed_convention",
+  "effect_floor_convention"
+ ],
+ "g_sup_statistical_decision": "NOT_RUN_UNTIL_A6_S5_APPROVED",
+ "numeric_values": {
+  "alpha": null,
+  "bootstrap_B": null,
+  "block_length": null,
+  "seed": null,
+  "effect_floor": null,
+  "minimum_sample_support": null
+ },
+ "effect_floor_zero_default": false,
+ "status": {
+  "A6": "PARTIALLY_APPROVED_METHOD_PENDING",
+  "A8": "NOT_APPROVED",
+  "A10": "NOT_APPROVED",
+  "C8": "NOT_FROZEN",
+  "phase_count": "8/11 = 72.7%",
+  "holdout": "UNCONSUMED",
+  "packages_B_C": "UNCHANGED"
+ },
+ "implementation_started": false
+}
