@@ -495,3 +495,10 @@ Forward authorization are not granted. PR#4 Draft/Open/unmerged; canonicalb8e39a
 unchanged, no other-track source/branch merge or force/history rewrite.
 Evidence: implementation/reports/track_c_c7_acceptance_2026-10-01.md (+json/rawlog).
 Policy review: implementation/reports/track_c_c8_c10_final_policy_review.md.
+
+
+## Track C C8 partial Package A approval — 2026-10-02T17:47:51.000+09:00
+
+Explicit user approval is partial, with authority `implementation/reports/track_c_c8_partial_approval_2026-10-02.{md,json}`. A1/A2/A3/A4/A7/A11 APPROVED WITH MODIFICATION (framework scope); A5 EXISTING POLICY RECONFIRMED; A9 STRUCTURE APPROVED / NUMERIC CONFIG REQUIRED; A12 synthetic software protocol APPROVED. A6/A8/A10 and all actual numeric research configuration remain PROPOSED / NOT APPROVED / NOT ACTIVE. This supersedes the earlier blanket Package A pending status only within these exact clauses; original proposal/dossier/historical approvals remain intact.
+
+C0–C7 SOFTWARE FROZEN preserved, **8/11 = 72.7% software phase count only**. C8 approved foundation IMPLEMENTING / NOT FROZEN; no C8 statistical/distinctness/role decisions, real calibration/PIT validation, real Manifest/Official or Holdout access. Holdout UNCONSUMED; Investor-QGV FUTURE_TRACK_C_INPUT. Package B/C unchanged and NOT APPROVED / NOT ACTIVE. Canonical b8e39a2 unchanged; PR#4 Draft/Open/unmerged. No other-track source/branch edits/merge. Next: approved foundation implementation + targeted/C0–C7/full/audit/actual Actions, then stop for A6/A8/A10 and real configuration review.
