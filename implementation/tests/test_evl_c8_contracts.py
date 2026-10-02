@@ -113,3 +113,19 @@ def test_core_scores_and_predictive_thresholds_not_redefined(c8_rig):
     register(c8_rig)
     assert c8_rig["ledger"].registration()["body"]["plan"]["model_instances"] == models
     assert p["threshold_registration"]["version"].startswith("SYNTHETIC")
+
+
+@pytest.mark.parametrize("view,name,expected_path", [
+    ("NET_OF_TRADING_COST_PRE_TAX", "cagr", ["views", "NET_OF_TRADING_COST_PRE_TAX", "cagr"]),
+    ("benchmark", "cagr", ["benchmark", "cagr"]),
+    ("risk_free", "cagr", ["risk_free", "cagr"]),
+    (None, "net_minus_benchmark_total_return", ["net_minus_benchmark_total_return"])])
+def test_all_c3_namespaces_keep_formula_units_and_c8_evidence_role(view, name, expected_path):
+    from investment_system.evl.calibration_contracts import metric_identity, canonical_metric
+    metric = metric_identity("explicit", view, name, "max")
+    assert metric["path"] == expected_path
+    assert metric["provenance"] == "C8_CALIBRATION_C3_METRICS"
+    assert canonical_metric(metric) == metric
+    metric["provenance"] = "C6_BASELINE_C3_METRICS"
+    with pytest.raises(IntegrityFailure):
+        canonical_metric(metric)

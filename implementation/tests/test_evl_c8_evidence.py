@@ -2,6 +2,7 @@
 from copy import deepcopy
 from datetime import timedelta
 import math
+from fractions import Fraction
 import pytest
 from investment_system.evl.calibration_contracts import IntegrityFailure, MissingPrerequisite
 from investment_system.evl.calibration_evidence import (software_artifact, resolve_software_artifact,
@@ -37,7 +38,7 @@ def test_control_full_family_and_hand_calculated_difference_without_skill(c8_rig
     # Independent wealth/annualization oracle, not calling C3/C8 calculation.
     candidate_cagr = ((1 + .004 - .0001) * (1 - .001 - .0001)) ** (73 / 2) - 1
     control_cagr = ((1 + .001 - .0001) * (1 - .002 - .0001)) ** (73 / 2) - 1
-    assert math.isclose(float(pair["descriptive_candidate_minus_control"]),
+    assert math.isclose(float(Fraction(pair["descriptive_candidate_minus_control"])),
                         candidate_cagr - control_cagr, rel_tol=1e-12, abs_tol=1e-12)
     assert result["skill_decision"] is result["statistical_decision"] is None
     assert result["economic_superiority_decision"] is None

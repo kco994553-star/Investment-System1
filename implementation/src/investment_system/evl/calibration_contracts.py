@@ -89,9 +89,9 @@ def canonical_metric(metric):
     if len(p) == 3 and p[0] == "views":
         expected = metric_identity(metric["metric_id"], p[1], p[2], metric["direction"])
     elif len(p) == 2 and p[0] in ("benchmark", "risk_free"):
-        expected = metric_registration(metric["metric_id"], p[0], p[1], metric["direction"])
+        expected = metric_identity(metric["metric_id"], p[0], p[1], metric["direction"])
     elif len(p) == 1:
-        expected = metric_registration(metric["metric_id"], None, p[0], metric["direction"])
+        expected = metric_identity(metric["metric_id"], None, p[0], metric["direction"])
     else:
         raise IntegrityFailure("unapproved metric path/formula")
     if metric != expected or metric["version"] != METRIC_VERSION or metric["direction"] not in ("min", "max"):
