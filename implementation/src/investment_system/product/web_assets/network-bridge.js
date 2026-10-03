@@ -7,7 +7,11 @@ document.querySelector("header").append(toolbar);
 document.getElementById("zoom-in").onclick = () => zoomAt(1.25, 500, 500);
 document.getElementById("zoom-out").onclick = () => zoomAt(0.8, 500, 500);
 let picked = null,
-  interests = [];
+  interests = [],
+  displayLocale = "ko-KR";
+// The interest toggle label follows the global display locale (locale.js); the issuer id is never translated.
+const interestLabel = (issuer) =>
+  (interests.includes(issuer) ? "★ " : "☆ ") + AppLanguage.text("관심기업", displayLocale);
 document.getElementById("net").addEventListener("click", (e) => {
   const n = e.target.closest("[data-node]");
   if (!n) return;
@@ -16,7 +20,7 @@ document.getElementById("net").addEventListener("click", (e) => {
     q = document.getElementById("qv"),
     b = document.createElement("button");
   b.dataset.issuer = rec.issuer;
-  b.textContent = interests.includes(rec.issuer) ? "★ 관심기업" : "☆ 관심기업";
+  b.textContent = interestLabel(rec.issuer);
   b.onclick = () =>
     parent.postMessage({ type: "interest", id: rec.issuer }, location.origin);
   q.append(b);
@@ -51,12 +55,7 @@ window.addEventListener("message", (e) => {
   interests = e.data.ids;
   document
     .querySelectorAll("[data-issuer]")
-    .forEach(
-      (b) =>
-        (b.textContent = interests.includes(b.dataset.issuer)
-          ? "★ 관심기업"
-          : "☆ 관심기업"),
-    );
+    .forEach((b) => (b.textContent = interestLabel(b.dataset.issuer)));
 });
 parent.postMessage({ type: "ready" }, location.origin);
 
@@ -65,7 +64,7 @@ show("NETWORK");
 /* Adapt existing Track D Language/relabel API. Do not change M or graph state. */
 function applyDisplayLocale(locale) {
   const mode=locale==="en-US"?"EN":"KO";
-  lang=mode;document.documentElement.lang=locale;
+  lang=mode;displayLocale=locale;document.documentElement.lang=locale;
   document.getElementById("lang").value=mode;relabel();
   const tx=key=>AppLanguage.text(key,locale);
   document.getElementById("focus-picked").textContent=tx("선택 기업 집중");
@@ -74,6 +73,7 @@ function applyDisplayLocale(locale) {
   ["모든 관계","Fact만","추론만"].forEach((k,i)=>options[i].textContent=tx(k));
   document.getElementById("zoom-in").setAttribute("aria-label",tx("확대"));
   document.getElementById("zoom-out").setAttribute("aria-label",tx("축소"));
+  document.querySelectorAll("[data-issuer]").forEach(b=>b.textContent=interestLabel(b.dataset.issuer));
 }
 try {applyDisplayLocale(AppLanguage.read(localStorage).value.display_locale);} catch(e) {applyDisplayLocale("ko-KR");}
 window.addEventListener("message",e=>{
