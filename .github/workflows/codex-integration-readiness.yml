@@ -30,7 +30,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m pip install pytest==9.1.1
+      - run: python -m pip install pytest==9.1.1 numpy==2.3.5
       - name: Exact source checkpoint
         run: git rev-parse HEAD
       - name: Preserve exact owner Track C and canonical Track A evidence
@@ -72,7 +72,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m pip install pytest==9.1.1
+      - run: python -m pip install pytest==9.1.1 numpy==2.3.5
       - name: Exact existing Macro adoption proposal; offline only
         working-directory: implementation
         run: PYTHONPATH=src python -m pytest -q tests/test_macro_real_producer.py --junitxml=/tmp/macro-adoption-junit.xml
