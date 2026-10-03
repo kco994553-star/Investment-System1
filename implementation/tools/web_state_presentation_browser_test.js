@@ -71,8 +71,8 @@ async function main() {
   async function check(name, fn) { await fn(); checks.push(name); console.log("PASS " + name); }
 
   // One context per locale; the persisted display-locale setting is written before any page script runs.
-  async function openPage(locale, { prefix = "/", data = null, clock = manifest.browser_clock, width = 390 } = {}) {
-    const context = await browser.newContext({ viewport: { width, height: 844 } });
+  async function openPage(locale, { prefix = "/", data = null, clock = manifest.browser_clock, width = 390, timezoneId = null } = {}) {
+    const context = await browser.newContext({ viewport: { width, height: 844 }, ...(timezoneId ? { timezoneId } : {}) });
     await context.addInitScript(([key, value]) => { try { localStorage.setItem(key, value); } catch (e) { /* storage blocked */ } },
       [SETTINGS_KEY, JSON.stringify({ version: 1, display_locale: locale, source_language: "all" })]);
     const page = await context.newPage();
@@ -172,6 +172,71 @@ async function main() {
         }
       });
 
+      // One page per time zone; each case swaps the served data.json and the fixed clock, then reloads.
+      async function zonePage(timezoneId) {
+        const p = await openPage(locale, { clock: null, timezoneId });
+        p.serve = async (body, clock) => {
+          await p.unroute("**/data.json");
+          await p.route("**/data.json", (r) => r.fulfill({ status: 200, contentType: "application/json", body }));
+          await p.clock.setFixedTime(new Date(clock));
+          await p.go("home");
+          assert.equal(await p.evaluate(() => Intl.DateTimeFormat().resolvedOptions().timeZone), timezoneId);
+          assert.equal(await p.evaluate(() => Date.now()), Date.parse(clock));
+        };
+        return p;
+      }
+      const changesCard = (p) => p.locator("section.card", { hasText: "TEST_CHANGES_VIEW_STALE" });
+
+      await check(`${locale}: U1 an expires_at outside the strict ISO form ('(' / U+0000 separators) is never FRESH after its Python-parsed expiry, in every time zone`, async () => {
+        const later = {};
+        for (const timezoneId of manifest.timezones) {
+          const p = await zonePage(timezoneId);
+          for (const [file, info] of Object.entries(manifest.misparsed_expiry)) {
+            const body = variant(file), served = JSON.parse(body);
+            assert.equal(served.changes.expires_at, info.form);
+            assert.equal(served.changes.producer.freshness, "FRESH");
+            assert.equal(served.producer_manifest.sections.changes.freshness, "FRESH");
+            // Every clock is after the expiry contract.parse_ts reads (python_expires_at): never FRESH there.
+            for (const clock of [...info.after_expiry_clocks, manifest.browser_clock]) {
+              assert.ok(Date.parse(clock) > Date.parse(info.python_expires_at));
+              await p.serve(body, clock);
+              const changes = changesCard(p);
+              assert.equal(await changes.count(), 1);
+              assert.equal((await changes.locator(".badge.LIVE").innerText()).trim(), "LIVE");
+              const where = `${JSON.stringify(info.form)} ${timezoneId} ${clock}`;
+              assert.deepEqual(await texts(changes.locator(".badge.freshness")), [L.STALE], where);
+              assert.equal(await changes.locator(".badge.freshness.FRESH").count(), 0, where);
+              assert.deepEqual(await texts(p.locator(".badge.freshness.FRESH")), [L.FRESH], `${where}: only macro is FRESH`);
+            }
+            // How this browser's Date.parse alone reads the form in this zone, relative to the Python instant.
+            const delta = (await p.evaluate((v) => Date.parse(v), info.form)) - Date.parse(info.python_expires_at);
+            later[file] = Math.max(later[file] ?? -Infinity, delta);
+          }
+          await p.context().close();
+        }
+        // Precondition: in at least one zone Date.parse alone reads each form as a later instant than Python
+        // (the bypass these variants pin); the strict-form gate is what keeps them STALE.
+        for (const [file, delta] of Object.entries(later)) assert.ok(delta > 0, `${file}: Date.parse is never later than Python`);
+        observed.misparsed_expiry_date_parse_minus_python_ms = later;
+      });
+
+      await check(`${locale}: U1 strict-form expires_at (Z, +-hh:mm, with and without fractional seconds) is FRESH before expiry and STALE after it, in every time zone`, async () => {
+        for (const timezoneId of manifest.timezones) {
+          const p = await zonePage(timezoneId);
+          for (const [file, info] of Object.entries(manifest.strict_expiry)) {
+            const body = variant(file), served = JSON.parse(body);
+            assert.equal(served.changes.expires_at, info.form);
+            assert.equal(served.changes.producer.freshness, "FRESH");
+            assert.equal(await p.evaluate((v) => Date.parse(v), info.form), Date.parse(info.python_expires_at), `${info.form} ${timezoneId}`);
+            for (const [clock, expected] of [[info.fresh_clock, L.FRESH], [info.stale_clock, L.STALE]]) {
+              await p.serve(body, clock);
+              assert.deepEqual(await texts(changesCard(p).locator(".badge.freshness")), [expected], `${info.form} ${timezoneId} ${clock}`);
+            }
+          }
+          await p.context().close();
+        }
+      });
+
       await check(`${locale}: U1 NOT_USABLE carried by the bundle is shown as withheld`, async () => {
         await page.go("leaderboard");
         assert.deepEqual(await texts(page.locator(".badge.NOT_AVAILABLE")), ["NOT_AVAILABLE"]);
@@ -255,6 +320,27 @@ async function main() {
           methodology: "NONE / " + manifest.edge["relationships.methodology.version"], freshness: "NOT_APPLICABLE" }));
         assert.deepEqual(await metaOf(p, "news"), metaLine(L, { reason_code: manifest.edge["news.reason_code"],
           methodology: "NONE / NONE", freshness: "NOT_APPLICABLE" }));
+        await p.context().close();
+      });
+
+      await check(`${locale}: U2 a count is displayed only under a code/token-shaped key; free-text keys are omitted`, async () => {
+        const p = await openPage(locale, { data: variant("variant-free-text-count-keys.json") });
+        for (const hash of routes) {
+          await p.go(hash);
+          assert.ok(!(await html(p)).includes(manifest.count_key_probe), `${hash} displayed a free-text count key`);
+        }
+        // Free-text, multi-line, 65-character, underscore-led, dashed and markup keys are omitted, never truncated;
+        // 64-character and lower-case keys (inside the shape) are still displayed as persisted.
+        const edgeCode = "EDGE_COUNT_KEY_" + "9".repeat(49), edgeCount = "edge_" + "9".repeat(53) + "_count";
+        assert.equal(edgeCode.length, 64);
+        assert.equal(edgeCount.length, 64);
+        await p.go("company/" + company);
+        assert.deepEqual(await metaOf(p, "qgv"), metaLine(L, { reason_code: "RESEARCH_DISPLAY_GRANT_NONE", as_of: manifest.as_of,
+          methodology: "TEST_QGV / TEST_VECTOR_V1", freshness: "NOT_APPLICABLE",
+          counts: `COMPLETE=3, NONE=1, PARTIAL=1, ${edgeCode}=6, lower_case_key=8, ${edgeCount}=10` }));
+        await p.go("leaderboard");
+        assert.deepEqual(await metaOf(p, "leaderboard"), metaLine(L, { reason_code: "EXPIRED_NOT_USABLE", as_of: "2025-12-30T00:00:00+00:00",
+          methodology: "TEST_VECTOR / TEST_VECTOR_V1", freshness: "NOT_USABLE", counts: "expected_count=1, ranked_count=1" }));
         await p.context().close();
       });
 

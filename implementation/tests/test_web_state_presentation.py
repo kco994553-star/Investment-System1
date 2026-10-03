@@ -7,7 +7,7 @@ the locale entries and the presentation-only boundary without a browser.
 import importlib.util
 import json
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from investment_system.producers import freshness
@@ -180,3 +180,124 @@ def test_displayed_identifiers_are_restricted_to_code_and_token_shapes():
         assert _CODE.fullmatch(value) if key.endswith('reason_code') else _token(value)
     for name in ('qgv', 'portfolio', 'relationships', 'news'):  # the manifest copy carries the same value
         assert variant['producer_manifest']['sections'][name]['reason_code'] == variant[name]['producer']['reason_code']
+
+
+def _strict_expiry():
+    # app.js EXPIRES_AT as a Python pattern: JS \d is ASCII-only (re.ASCII), and fullmatch is JS ^...$ without the
+    # m flag (JS $ does not match before a trailing newline).
+    m = re.search(r'\nconst EXPIRES_AT=/\^(.*)\$/;\n', APP)
+    assert m
+    return re.compile(m.group(1), re.ASCII)
+
+
+def _offset(hours: int, minutes: int = 0):
+    return timezone(timedelta(hours=hours, minutes=minutes if hours >= 0 else -minutes))
+
+
+def test_only_strict_iso_expires_at_reaches_date_parse():
+    assert ('const EXPIRES_AT=/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$/;'
+            in APP)
+    body = _function_body('freshnessOf')
+    assert 'typeof s.expires_at==="string" && EXPIRES_AT.test(s.expires_at)?Date.parse(s.expires_at):NaN' in body
+    assert body.count('Date.parse(') == 1
+    strict = _strict_expiry()
+    # What producers persist: datetime.isoformat() of an aware datetime (the assembler copies it verbatim), with
+    # and without fractional seconds, for -23:59..+23:59 offsets, and the Z spelling. All keep FRESH reachable.
+    offsets = [timezone.utc, _offset(9), _offset(5, 30), _offset(-12), _offset(14), _offset(23, 59), _offset(-23, 59)]
+    for tz in offsets:
+        for micro in (0, 1, 123456, 500000, 999999):
+            dt = datetime(2026, 1, 3, 0, 0, 0, micro, tzinfo=timezone.utc).astimezone(tz)
+            forms = [dt.isoformat()] + [dt.isoformat(timespec=t) for t in ('minutes', 'seconds', 'milliseconds', 'microseconds')]
+            if tz is timezone.utc:
+                forms += [f.replace('+00:00', 'Z') for f in forms]
+            for form in forms:
+                assert strict.fullmatch(form), form
+                assert parse_ts(form, 'expires_at').utcoffset() == dt.utcoffset()
+    bundle = fixture.fixture_bundle()
+    for name in SECTION_NAMES:  # every expires_at the served fixture persists keeps its FRESH/STALE view
+        if bundle[name].get('expires_at') is not None:
+            assert strict.fullmatch(bundle[name]['expires_at']), name
+    # Forms the contract accepts but outside the strict form: never handed to Date.parse, so never FRESH.
+    for form in (*fixture.UNPARSABLE_EXPIRY.values(), *fixture.MISPARSED_EXPIRY.values(),
+                 '2026-01-03 00:00:00+00:00', '2026-01-03t00:00:00+00:00', '2026-01-03T00:00:00+0000',
+                 '2026-01-03T00+00:00', '2026-01-03T00:00:00+05:30:15', '2026-01-03T00:00:00.1234567890+00:00'):
+        parse_ts(form, 'expires_at')
+        assert not strict.fullmatch(form), form
+    # Forms the contract rejects (reachable only through a hand-placed data.json): not handed to Date.parse either.
+    for form in ('2026-01-03T00:00:00+00:00\n', '\uff12\uff10\uff12\uff16-01-03T00:00:00+00:00', '2026-01-03T00:00:00',
+                 '2026-01-03', 'Sat, 03 Jan 2026 00:00:00 GMT', '+275760-09-13T00:00:00.000Z'):
+        assert not strict.fullmatch(form), form
+
+
+def test_misparsed_expiry_variants_are_contract_valid_persisted_fresh_and_outside_the_strict_form():
+    bundle = fixture.fixture_bundle()
+    variants, m = fixture.variants(bundle), fixture.manifest(bundle)
+    strict = _strict_expiry()
+    assert set(fixture.MISPARSED_EXPIRY.values()) == {'2026-01-03(00:00+23:59', '2026-01-03\x0000:00+23:59',
+                                                      '2026-01-03(00:00:00+00:00'}
+    assert m['timezones'] == ['UTC', 'Etc/GMT+12', 'Pacific/Kiritimati', 'Asia/Seoul']
+    expected = {'2026-01-03(00:00+23:59': datetime(2026, 1, 2, 0, 1, tzinfo=timezone.utc),
+                '2026-01-03\x0000:00+23:59': datetime(2026, 1, 2, 0, 1, tzinfo=timezone.utc),
+                '2026-01-03(00:00:00+00:00': datetime(2026, 1, 3, tzinfo=timezone.utc)}
+    for name, form in fixture.MISPARSED_EXPIRY.items():
+        v = variants[name]
+        validate_bundle(v)
+        changes = v['changes']
+        assert changes['expires_at'] == changes['producer']['expires_at'] == form
+        expires = parse_ts(form, 'expires_at')  # the producer contract (and so the assembler) accepts the form
+        assert expires == expected[form] and fixture.NOW < expires
+        assert changes['producer']['freshness'] == v['producer_manifest']['sections']['changes']['freshness'] == freshness.FRESH
+        # Outside the strict form: freshnessOf never hands it to Date.parse, so STALE at every clock in every zone.
+        assert not strict.fullmatch(form)
+        info = m['misparsed_expiry'][name]
+        assert info['form'] == form and parse_ts(info['python_expires_at'], 'clock') == expires
+        clocks = [parse_ts(c, 'clock') for c in info['after_expiry_clocks']]
+        # Every browser clock the browser test uses is after the Python-parsed expiry (Python: not FRESH).
+        assert len(clocks) == 3 and all(c > expires for c in clocks)
+        assert parse_ts(fixture.BROWSER_CLOCK, 'clock') > expires
+        assert {k: x for k, x in v.items() if k not in ('changes', 'producer_manifest')} == \
+            {k: x for k, x in bundle.items() if k not in ('changes', 'producer_manifest')}
+
+
+def test_strict_expiry_variants_stay_fresh_before_expiry():
+    bundle = fixture.fixture_bundle()
+    variants, m = fixture.variants(bundle), fixture.manifest(bundle)
+    strict = _strict_expiry()
+    assert len(fixture.STRICT_EXPIRY) == 6
+    forms = set(fixture.STRICT_EXPIRY.values())
+    assert any(f.endswith('Z') for f in forms) and any(f[-6] in '+-' for f in forms)
+    assert any('.' in f for f in forms) and any('.' not in f for f in forms)
+    for name, form in fixture.STRICT_EXPIRY.items():
+        v = variants[name]
+        validate_bundle(v)
+        assert v['changes']['expires_at'] == form and strict.fullmatch(form)
+        expires = parse_ts(form, 'expires_at')
+        assert expires.replace(microsecond=0) == datetime(2026, 1, 3, tzinfo=timezone.utc)
+        assert v['changes']['producer']['freshness'] == freshness.FRESH
+        info = m['strict_expiry'][name]
+        assert parse_ts(info['fresh_clock'], 'clock') < expires < parse_ts(info['stale_clock'], 'clock')
+
+
+def test_displayed_count_keys_are_restricted_to_the_code_token_key_shape():
+    assert 'const COUNT_KEY=/^[A-Za-z][A-Za-z0-9_]{0,63}$/;' in APP
+    body = _function_body('coverageCounts')
+    assert body.count('COUNT_KEY.test(k) && Number.isInteger(n)') == 2
+    key = re.compile(r'[A-Za-z][A-Za-z0-9_]{0,63}')
+    bundle = fixture.fixture_bundle()
+    for name in SECTION_NAMES:  # every count key the served fixture persists keeps its display
+        v = bundle[name]['producer']['validation']
+        for k in [*v.get('coverage_counts', {}), *(k for k in v if k.endswith('_count'))]:
+            assert key.fullmatch(k), (name, k)
+    variant = fixture.variants(bundle)['variant-free-text-count-keys.json']
+    validate_bundle(variant)
+    for entries, displayed in ((fixture.FREE_TEXT_COUNT_KEYS, False), (fixture.COUNT_KEY_EDGE, True)):
+        for path, counts in entries.items():
+            persisted = _persisted(variant, path)
+            for k, n in counts.items():
+                assert persisted[k] == n and isinstance(n, int)
+                assert bool(key.fullmatch(k)) is displayed, k
+                assert (fixture.COUNT_KEY_PROBE in k) is not displayed, k
+                if path.endswith('.validation'):  # validation.*_count keys
+                    assert k.endswith('_count'), k
+    assert any(len(k) == 64 for c in fixture.COUNT_KEY_EDGE.values() for k in c)
+    assert any(len(k) == 65 for c in fixture.FREE_TEXT_COUNT_KEYS.values() for k in c)

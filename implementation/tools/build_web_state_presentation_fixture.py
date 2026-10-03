@@ -22,11 +22,20 @@ Variants (written to the evidence folder, never served directly; the browser tes
   variant-sparse-metadata.json producer metadata removed, except one reason_code (nothing is fabricated)
   variant-render-error.json    schema-1-valid bundle whose news payload is an object, not a list; the
                                news route throws while rendering
-  variant-expiry-*.json        assembled like the served bundle, except that changes.expires_at is the same
+  variant-expiry-{basic-format,week-date,comma-fraction}.json
+                               assembled like the served bundle, except that changes.expires_at is the same
                                instant in an ISO form Python's fromisoformat accepts and JS Date.parse rejects;
                                the assembler persists FRESH, the Web must never show FRESH for it
   variant-free-text-metadata.json  assembled like the served bundle, with contract-valid but not code/token
                                shaped reason_code and methodology id/version values the Web must not display
+  variant-expiry-*-separator*.json  assembled like the served bundle, except that changes.expires_at uses a '(' or
+                               U+0000 date/time separator: contract.parse_ts accepts it, Date.parse reads a later
+                               instant; the assembler persists FRESH, the Web must never show FRESH for it
+  variant-expiry-strict-*.json changes.expires_at at the same instant as the served bundle in the strict forms
+                               producers persist (isoformat(), with/without fractional seconds, Z or +-hh:mm):
+                               FRESH before expiry, STALE after it
+  variant-free-text-count-keys.json  assembled like the served bundle, with count keys (validation.coverage_counts
+                               and validation.*_count) outside the code/token key shape the Web must not display
 
 Usage:
   python tools/build_web_state_presentation_fixture.py --out /tmp/web-state --evidence /tmp/web-state-evidence
@@ -35,7 +44,7 @@ from __future__ import annotations
 
 import argparse
 from copy import deepcopy
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 import sys
@@ -45,7 +54,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from investment_system.product.web_mvp import build, validate_bundle  # noqa: E402
 from investment_system.producers.assembler import assemble_bundle  # noqa: E402
-from investment_system.producers.contract import make_snapshot, not_available, validate_snapshot  # noqa: E402
+from investment_system.producers.contract import make_snapshot, not_available, parse_ts, validate_snapshot  # noqa: E402
 from investment_system.producers.registry import (  # noqa: E402
     DEFAULT_REASON, FrozenUniverseProducer, ProduceRequest, default_registry,
 )
@@ -70,6 +79,39 @@ FREE_TEXT = {"qgv.reason_code": "See memo FREE_TEXT_PROBE_REASON: withheld pendi
              "qgv.methodology.version": "LONG_PROBE_VERSION_" + "9" * 46,
              "portfolio.reason_code": "LONG_PROBE_CODE_" + "X" * 49,
              "relationships.reason_code": "lower_probe_code"}
+# changes.expires_at in forms contract.parse_ts accepts and Date.parse reads as a LATER instant (V8 treats '(' as
+# the start of a comment and stops at U+0000, leaving the date part as midnight): never FRESH after the Python-parsed
+# expiry, in any browser time zone. AFTER_EXPIRY are browser clocks after that expiry, inside the window in which
+# Date.parse alone would still read the form as not yet expired.
+MISPARSED_EXPIRY = {"variant-expiry-paren-separator.json": "2026-01-03(00:00+23:59",
+                    "variant-expiry-nul-separator.json": "2026-01-03\u000000:00+23:59",
+                    "variant-expiry-paren-separator-utc.json": "2026-01-03(00:00:00+00:00"}
+AFTER_EXPIRY = (timedelta(minutes=1), timedelta(hours=6), timedelta(hours=12))
+TIMEZONES = ("UTC", "Etc/GMT+12", "Pacific/Kiritimati", "Asia/Seoul")
+# changes.expires_at at the served instant (2026-01-03T00:00:00Z, plus a fraction) in the strict forms producers
+# persist: datetime.isoformat() of an aware datetime (copied verbatim by the assembler) and the Z spelling.
+STRICT_EXPIRY = {"variant-expiry-strict-z.json": "2026-01-03T00:00:00Z",
+                 "variant-expiry-strict-minutes-z.json": "2026-01-03T00:00Z",
+                 "variant-expiry-strict-fraction-z.json": "2026-01-03T00:00:00.5Z",
+                 "variant-expiry-strict-microseconds.json":
+                     datetime(2026, 1, 3, 0, 0, 0, 123456, tzinfo=timezone.utc).isoformat(),
+                 "variant-expiry-strict-plus-0900.json":
+                     datetime(2026, 1, 3, tzinfo=timezone.utc).astimezone(timezone(timedelta(hours=9))).isoformat(),
+                 "variant-expiry-strict-minus-1200-fraction.json":
+                     datetime(2026, 1, 3, 0, 0, 0, 250000, tzinfo=timezone.utc).astimezone(
+                         timezone(timedelta(hours=-12))).isoformat()}
+# Persisted count keys outside the displayed key shape ^[A-Za-z][A-Za-z0-9_]{0,63}$ (free text, multi-line,
+# 65 characters, leading underscore, dash, markup): the entry is never displayed. Every one contains
+# COUNT_KEY_PROBE. COUNT_KEY_EDGE keys are inside the shape (64 characters, lower case): displayed.
+COUNT_KEY_PROBE = "COUNT_KEY_PROBE"
+FREE_TEXT_COUNT_KEYS = {
+    "qgv.validation.coverage_counts": {"See memo COUNT_KEY_PROBE_SPACE": 7, "COUNT_KEY_PROBE_NEWLINE\nsecond line": 1,
+                                       "COUNT_KEY_PROBE_LONG_" + "9" * 44: 2, "_COUNT_KEY_PROBE_UNDERSCORE": 3,
+                                       "COUNT_KEY_PROBE-DASH": 4, "<b>COUNT_KEY_PROBE_HTML</b>": 5},
+    "qgv.validation": {"free text COUNT_KEY_PROBE_VALIDATION_count": 9, "COUNT_KEY_PROBE_VLONG_" + "9" * 37 + "_count": 11},
+    "leaderboard.validation": {"Ranked rows (see memo) COUNT_KEY_PROBE_LB_count": 1}}
+COUNT_KEY_EDGE = {"qgv.validation.coverage_counts": {"EDGE_COUNT_KEY_" + "9" * 49: 6, "lower_case_key": 8},
+                  "qgv.validation": {"edge_" + "9" * 53 + "_count": 10}}
 FREE_TEXT_PROBES = ("FREE_TEXT_PROBE_REASON", "FREE TEXT PROBE METHOD", "LONG_PROBE_VERSION_", "LONG_PROBE_CODE_",
                     "lower_probe_code")
 EDGE = {"news.reason_code": "EDGE_CODE_" + "9" * 54, "relationships.methodology.version": "EDGE_TOKEN_" + "9" * 53}
@@ -139,6 +181,38 @@ def _free_text(snaps):
             target[path[0]] = value
 
 
+def _count_keys(snaps):
+    for entries in (FREE_TEXT_COUNT_KEYS, COUNT_KEY_EDGE):
+        for key, extra in entries.items():
+            name, *path = key.split(".")
+            target = snaps[name]
+            for k in path[:-1]:
+                target = target[k]
+            target[path[-1]] = {**target[path[-1]], **extra}
+
+
+def _utc(dt: datetime) -> str:
+    return dt.astimezone(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+
+
+def misparsed_expiry() -> dict:
+    out = {}
+    for name, form in MISPARSED_EXPIRY.items():
+        expires = parse_ts(form, "expires_at")
+        out[name] = {"form": form, "python_expires_at": _utc(expires),
+                     "after_expiry_clocks": [_utc(expires + d) for d in AFTER_EXPIRY]}
+    return out
+
+
+def strict_expiry() -> dict:
+    out = {}
+    for name, form in STRICT_EXPIRY.items():
+        expires = parse_ts(form, "expires_at")
+        out[name] = {"form": form, "python_expires_at": _utc(expires),
+                     "fresh_clock": _utc(expires - timedelta(seconds=1)), "stale_clock": _utc(expires + timedelta(seconds=1))}
+    return out
+
+
 def variants(bundle: dict) -> dict:
     not_usable = deepcopy(bundle)
     not_usable["news"] = {"state": "LIVE", "as_of": AS_OF, "source": "TEST VECTOR / news", "expires_at": "2099-01-01T00:00:00+00:00",
@@ -159,6 +233,9 @@ def variants(bundle: dict) -> dict:
     out = {"variant-not-usable.json": not_usable, "variant-sparse-metadata.json": sparse,
            "variant-render-error.json": render_error, "variant-free-text-metadata.json": _assembled(_free_text)}
     out.update({name: _assembled(_expiry(form)) for name, form in UNPARSABLE_EXPIRY.items()})
+    out.update({name: _assembled(_expiry(form)) for name, form in MISPARSED_EXPIRY.items()})
+    out.update({name: _assembled(_expiry(form)) for name, form in STRICT_EXPIRY.items()})
+    out["variant-free-text-count-keys.json"] = _assembled(_count_keys)
     for v in out.values():
         validate_bundle(v)  # every variant is accepted by the existing, unchanged schema-1 validator
     return out
@@ -174,6 +251,8 @@ def manifest(bundle: dict) -> dict:
                               "leaderboard": "NOT_AVAILABLE+NOT_USABLE", "qgv": "NOT_AVAILABLE+metadata"},
             "withheld_probes": list(WITHHELD_PROBES), "variants": sorted(variants(bundle)),
             "unparsable_expiry": UNPARSABLE_EXPIRY, "free_text_probes": list(FREE_TEXT_PROBES), "edge": EDGE,
+            "misparsed_expiry": misparsed_expiry(), "strict_expiry": strict_expiry(), "timezones": list(TIMEZONES),
+            "count_key_probe": COUNT_KEY_PROBE, "free_text_count_keys": FREE_TEXT_COUNT_KEYS, "count_key_edge": COUNT_KEY_EDGE,
             "research_display": "NONE", "frozen_grant": "NONE", "live_grant": "NONE"}
 
 

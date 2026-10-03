@@ -28,6 +28,12 @@ const WITHHELD_REASON="게시 승인이 없는 연구·잠정 결과라 표시�
 // <section>.producer.freshness (assembler.py L28) or producer_manifest.sections.<section>.freshness (L70), and
 // keeps the existing view-time rule of app.js 9156aea (a LIVE section whose expires_at has passed is STALE).
 const FRESHNESS=Object.freeze(["FRESH","STALE","NOT_USABLE","NOT_APPLICABLE"]);
+// The only expires_at strings handed to Date.parse: date, 'T', hh:mm[:ss[.fraction]], then Z or +hh:mm/-hh:mm.
+// This covers datetime.isoformat() of an aware datetime (what producers persist; the assembler copies it verbatim;
+// only a sub-minute UTC offset, written +hh:mm:ss, falls outside and fails closed) and its Z spelling. In this form
+// Date.parse and contract.parse_ts read the same instant (Date.parse drops digits below the millisecond, so never a
+// later one). It is a shape check only: no TTL, threshold or clock rule is added.
+const EXPIRES_AT=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,9})?)?(Z|[+-]\d{2}:\d{2})$/;
 const FRESHNESS_LABEL=Object.freeze({FRESH:"만료 전",STALE:"만료 후, 최신 아님",NOT_USABLE:"사용 기한 경과, 표시 보류"});
 const NOT_USABLE_REASON="사용 기한(usable_until)이 지난 데이터라 표시하지 않습니다.";
 const META_LABEL=Object.freeze({reason_code:"사유 코드",as_of:"생산자 데이터 시점",methodology:"방법론",freshness:"신선도",counts:"커버리지 집계"});
@@ -39,11 +45,14 @@ const REASON_CODE=/^[A-Z][A-Z0-9_]{0,63}$/;
 const metaCode=v=>typeof v==="string" && REASON_CODE.test(v)?v:null;
 const metaToken=v=>typeof v==="string" && v.length>0 && v.length<=64 && !/\s/.test(v)?v:null;
 const metaObject=v=>v && typeof v==="object" && !Array.isArray(v)?v:{};
+// A count is displayed under its key only when the key is code/token shaped; any other key (free text, long,
+// multi-line) omits that entry, never truncated or rewritten.
+const COUNT_KEY=/^[A-Za-z][A-Za-z0-9_]{0,63}$/;
 function coverageCounts(p) {
   // Integer counts exactly as persisted (validation.*_count, coverage_counts maps); nothing is summed or derived.
   const v=metaObject(p.validation),out=[];
-  for(const map of [p.coverage_counts,v.coverage_counts]) for(const [k,n] of Object.entries(metaObject(map))) if(Number.isInteger(n)) out.push(k+"="+n);
-  for(const [k,n] of Object.entries(v)) if(k.endsWith("_count") && Number.isInteger(n)) out.push(k+"="+n);
+  for(const map of [p.coverage_counts,v.coverage_counts]) for(const [k,n] of Object.entries(metaObject(map))) if(COUNT_KEY.test(k) && Number.isInteger(n)) out.push(k+"="+n);
+  for(const [k,n] of Object.entries(v)) if(k.endsWith("_count") && COUNT_KEY.test(k) && Number.isInteger(n)) out.push(k+"="+n);
   return out.join(", ") || null;
 }
 function persistedMeta(bundle,name) {
@@ -108,7 +117,9 @@ function freshnessOf(name,s) {
   // absent, not a string or rejected by Date.parse (ISO forms Python's fromisoformat accepts, e.g. basic format,
   // week dates or comma fractions) cannot be compared with the clock: fail closed as STALE, whatever freshness was
   // persisted (producers/freshness.py: a LIVE snapshot is never silently current).
-  const expires=typeof s.expires_at==="string"?Date.parse(s.expires_at):NaN;
+  // Date.parse only sees the strict form (EXPIRES_AT); any other string Python accepts (e.g. a '(' or U+0000
+  // date/time separator, which Date.parse reads as midnight of that date, a later instant) is STALE too.
+  const expires=typeof s.expires_at==="string" && EXPIRES_AT.test(s.expires_at)?Date.parse(s.expires_at):NaN;
   if(!Number.isFinite(expires) || expires<=Date.now() || persisted==="STALE") return "STALE";
   return "FRESH";
 }
