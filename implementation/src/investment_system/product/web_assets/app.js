@@ -14,9 +14,12 @@ const label=e=>AppLanguage.fallback(e?.localized_names,appSettings.display_local
 // the methodology at <section>.producer.methodology (assembler.py L31, L47). research_state.status is
 // the same lifecycle on persisted records (P01 publication/extractors.py copies it verbatim and
 // predicate.py checks it against the same RESEARCH_STATUSES). tests/test_web_research_guard.py pins this.
+// The validation half of the same rule (contract.py L194-199, VALIDATION_STATUSES L25) is mirrored by
+// validationMarker below.
 const SECTION_NAMES=Object.freeze(["universe","qgv","technical","macro","portfolio","leaderboard","news","relationships","changes"]);
 const PUBLISHED_STATES=Object.freeze(["LIVE","FROZEN_SNAPSHOT"]);
 const RESEARCH_STATUSES=Object.freeze(["IDEA","PROVISIONAL","PROVISIONAL_INITIAL_PRIOR","PROVISIONAL_RESEARCH","RESEARCH"]);
+const VALIDATION_STATUSES=Object.freeze(["PASS","FAIL","NOT_RUN"]);
 const WITHHELD_REASON="게시 승인이 없는 연구·잠정 결과라 표시하지 않습니다.";
 // Production-shaped state presentation. Presentation only: the values below are read from what the bundle
 // already persists and are never merged back into D, data.json or the Evidence view.
@@ -46,6 +49,17 @@ function persistedMeta(bundle,name) {
   return {freshness:pick[0],freshness_path:pick[1],reason_code:metaText(p.reason_code) || metaText(m.reason_code),as_of:metaText(p.as_of),
     methodology:[method.id,method.version].map(metaText).filter(Boolean).join(" / ") || null,counts:coverageCounts(p)};
 }
+const VALIDATION_WITHHELD_REASON="생산자 검증(validation)이 PASS가 아니라 표시하지 않습니다.";
+function validationMarker(s) {
+  // contract.py L194-199: a LIVE/FROZEN_SNAPSHOT snapshot is rejected unless validation is an object whose status
+  // is exactly "PASS"; a missing validation object or status is rejected as well (L33, L195). The assembler
+  // persists that object at <section>.producer.validation (assembler.py L32, L47). A section without a producer
+  // block (legacy Track A universe, default and DEMO builds) carries no producer validation and is left as is.
+  if(!("producer" in s) || s.producer?.validation?.status==="PASS") return null;
+  const status=s.producer?.validation?.status;
+  // Only contract status values are echoed; anything else is shown as "not provided".
+  return {path:"producer.validation.status",status:VALIDATION_STATUSES.includes(status)?status:null,reason:VALIDATION_WITHHELD_REASON};
+}
 function researchMarker(s) {
   const status=s.producer?.methodology?.status;
   if(RESEARCH_STATUSES.includes(status)) return {path:"producer.methodology.status",status};
@@ -59,16 +73,18 @@ function researchMarker(s) {
   return null;
 }
 function guardSections(bundle) {
-  // A LIVE/FROZEN_SNAPSHOT section with a research marker is withheld in the existing NOT_AVAILABLE
-  // presentation; its values never reach the view. Every other section is passed through as is.
+  // A LIVE/FROZEN_SNAPSHOT section that the producer contract would reject (producer validation not PASS, or a
+  // research marker) is withheld in the existing NOT_AVAILABLE presentation; its values never reach the view.
+  // Every other section is passed through as is.
   const view={...bundle};
   META={};
   for(const name of SECTION_NAMES) {
     const s=bundle[name];
     if(!s || typeof s!=="object") continue;
     META[name]=persistedMeta(bundle,name);
-    const marker=PUBLISHED_STATES.includes(s.state) && researchMarker(s);
-    if(marker) view[name]={state:"NOT_AVAILABLE",as_of:null,source:null,reason:WITHHELD_REASON,data:null,withheld:{section:name,claimed_state:s.state,...marker}};
+    // Same order as contract.py L197-202: validation status first, then methodology/research status.
+    const marker=PUBLISHED_STATES.includes(s.state) && (validationMarker(s) || researchMarker(s));
+    if(marker) view[name]={state:"NOT_AVAILABLE",as_of:null,source:null,reason:marker.reason || WITHHELD_REASON,data:null,withheld:{section:name,claimed_state:s.state,...marker}};
     // A section that still carries values although its persisted freshness is NOT_USABLE is withheld the same
     // way (the assembler itself never emits this; it publishes NOT_AVAILABLE + EXPIRED_NOT_USABLE instead).
     else if(s.state!=="NOT_AVAILABLE" && META[name].freshness==="NOT_USABLE")
@@ -77,7 +93,7 @@ function guardSections(bundle) {
   return view;
 }
 function withheldNote(s) {
-  return s.withheld?`<p class="empty" data-withheld="${esc(s.withheld.section)}">${esc(t(s.withheld.reason || WITHHELD_REASON))}</p><div class="meta" data-source-original>${esc(s.withheld.path)}: ${esc(s.withheld.status)}</div>`:"";
+  return s.withheld?`<p class="empty" data-withheld="${esc(s.withheld.section)}">${esc(t(s.withheld.reason || WITHHELD_REASON))}</p><div class="meta" data-source-original>${esc(s.withheld.path)}: ${esc(s.withheld.status ?? t("미제공"))}</div>`:"";
 }
 function freshnessOf(name,s) {
   const persisted=META[name]?.freshness;

@@ -16,6 +16,11 @@ const REASON = {
   "en-US": "Withheld: research or provisional output without publication approval.",
 };
 const NOT_CONNECTED = { "ko-KR": "운영 Snapshot이 연결되지 않았습니다.", "en-US": "Operating snapshots are not connected." };
+const VALIDATION_REASON = {
+  "ko-KR": "생산자 검증(validation)이 PASS가 아니라 표시하지 않습니다.",
+  "en-US": "Withheld: producer validation is not PASS.",
+};
+const NOT_PROVIDED = { "ko-KR": "미제공", "en-US": "Not provided" };
 
 async function main() {
   const args = process.argv.slice(2);
@@ -170,8 +175,10 @@ async function main() {
       }
       await check("research-marked FROZEN universe is withheld in the companies legend and search rows", async () => {
         const variant = JSON.parse(original);
+        // Producer validation PASS as the assembler persists it, so only the research half of the rule applies.
         variant.universe.producer = { producer_id: "test.web_research_guard", producer_version: "TEST_VECTOR_V1",
-          methodology: { id: "TEST_VECTOR", version: "TEST_VECTOR_V1", status: "RESEARCH" } };
+          methodology: { id: "TEST_VECTOR", version: "TEST_VECTOR_V1", status: "RESEARCH" },
+          validation: { status: "PASS", checks: ["TEST_VECTOR_SHAPE_ONLY"] } };
         const vpage = await openPage("/");
         await vpage.route("**/data.json", (route) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(variant) }));
         await vpage.setLocale("ko-KR");
@@ -183,6 +190,51 @@ async function main() {
         await vpage.go("home");
         assert.ok(!(await vpage.locator("main").textContent()).includes(bundle.universe.as_of), "no withheld universe as_of");
         await vpage.context().close();
+      });
+      await check("LIVE/FROZEN sections whose producer validation is not PASS are withheld (contract.py L194-199)", async () => {
+        for (const [file, expect] of Object.entries(manifest.validation_withheld)) {
+          const variant = fs.readFileSync(path.join(evidence, file), "utf8");
+          assert.equal(JSON.parse(variant)[expect.section].state, expect.state, file);
+          const vpage = await openPage("/");
+          await vpage.route("**/data.json", (route) => route.fulfill({ status: 200, contentType: "application/json", body: variant }));
+          for (const locale of ["ko-KR", "en-US"]) {
+            await vpage.setLocale(locale);
+            const marker = "producer.validation.status: " + (expect.status ?? NOT_PROVIDED[locale]);
+            for (const hash of routes) {
+              await vpage.go(hash);
+              const html = await vpage.evaluate(() => document.documentElement.outerHTML);
+              if (expect.section === "macro") {
+                for (const probe of manifest.validation_probes) assert.ok(!html.includes(probe), `${file} ${locale} ${hash} leaked ${probe}`);
+                assert.equal(await vpage.locator(".badge.LIVE").count(), 0, `${file} ${hash}: no LIVE badge`);
+              }
+              for (const note of await vpage.locator(`[data-withheld="${expect.section}"]`).all()) {
+                assert.equal((await note.textContent()).trim(), VALIDATION_REASON[locale]);
+                assert.equal((await note.locator("xpath=following-sibling::div[1]").textContent()).trim(), marker);
+                const unit = note.locator("xpath=ancestor::*[contains(concat(' ',normalize-space(@class),' '),' card ') or @id='news-pane' or @id='network-pane'][1]");
+                assert.equal(await unit.locator(".badge.NOT_AVAILABLE").count(), 1, `${file} ${hash}: withheld unit shows NOT_AVAILABLE`);
+                assert.equal(await unit.locator(LIVE_OR_FROZEN).count(), 0);
+              }
+            }
+            if (expect.section === "macro") {
+              for (const hash of ["home", "portfolio", "company/" + manifest.company]) {
+                await vpage.go(hash);
+                assert.equal(await vpage.locator('[data-withheld="macro"]').count(), 1, `${file} ${hash}: macro withheld`);
+              }
+              await vpage.go("home");
+              const seen = await vpage.locator("[data-withheld]").evaluateAll((l) => [...new Set(l.map((e) => e.dataset.withheld))].sort());
+              assert.deepEqual(seen, ["changes", "macro", "news", "qgv", "technical"], `${file}: research sections stay withheld`);
+            } else {
+              await vpage.go("companies");
+              const legend = await vpage.locator("main p.meta").first().innerText();
+              assert.ok(legend.startsWith("NOT_AVAILABLE") && legend.includes(VALIDATION_REASON[locale]) && !legend.includes("FROZEN"), legend);
+              const row = await searchRows(vpage, "NVDA");
+              assert.ok(!row.includes("FROZEN_SNAPSHOT") && row.includes("NOT_AVAILABLE"), row);
+              await vpage.go("home");
+              assert.ok(!(await vpage.locator("main").textContent()).includes(bundle.universe.as_of), "no withheld universe as_of");
+            }
+          }
+          await vpage.context().close();
+        }
       });
       await page.context().close();
     }
