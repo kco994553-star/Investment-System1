@@ -8,6 +8,13 @@ Sections:
   withheld  LIVE / FROZEN_SNAPSHOT carrying a research marker (producers/contract.py RESEARCH_STATUSES)
   rendered  valid LIVE (non-research methodology), legacy FROZEN_SNAPSHOT universe, DEMO, NOT_AVAILABLE
 
+Validation variants (written to the evidence folder, never served directly; the browser test substitutes
+them for data.json). Each is accepted by the schema-1 validator, and producers/contract.py L194-199
+rejects it because a LIVE / FROZEN_SNAPSHOT snapshot needs producer validation PASS:
+  variant-validation-fail-live.json       macro LIVE, producer.validation.status FAIL
+  variant-validation-missing-live.json    macro LIVE, producer block without validation
+  variant-validation-not-run-frozen.json  universe FROZEN_SNAPSHOT, producer.validation.status NOT_RUN
+
 Usage:
   python tools/build_web_research_guard_fixture.py --out /tmp/web-guard --evidence /tmp/web-guard-evidence
 """
@@ -22,7 +29,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from investment_system.product.web_mvp import build, repository_bundle  # noqa: E402
+from investment_system.product.web_mvp import build, repository_bundle, validate_bundle  # noqa: E402
 
 AS_OF = "2026-10-02T20:00:00+00:00"
 # Far-future expiry keeps the valid LIVE section FRESH regardless of the test clock.
@@ -33,6 +40,14 @@ WITHHELD_PROBES = ("11.11", "22.22", "66.66", "77.77", "RESEARCH_PROBE_QGV", "RE
                    "RESEARCH_PROBE_ZONE", "RESEARCH_PROBE_CHANGES", "RESEARCH_PROBE_NEWS")
 # Values of the valid sections: must render exactly as before.
 RENDERED_PROBES = {"macro": ("TEST_REGIME_VALID", "33.33"), "portfolio": ("44.44%", "TEST DEMO / NOT ACTUAL")}
+# Values of the valid LIVE macro section: must never reach the DOM once its producer validation is not PASS.
+VALIDATION_PROBES = ("TEST_REGIME_VALID", "33.33", "TEST_EXPOSURE_VALID")
+# Variant file -> the section the guard withholds and the validation status the note shows (None: not provided).
+VALIDATION_WITHHELD = {
+    "variant-validation-fail-live.json": {"section": "macro", "state": "LIVE", "status": "FAIL"},
+    "variant-validation-missing-live.json": {"section": "macro", "state": "LIVE", "status": None},
+    "variant-validation-not-run-frozen.json": {"section": "universe", "state": "FROZEN_SNAPSHOT", "status": "NOT_RUN"},
+}
 
 
 def _producer(state: str, status: str) -> dict:
@@ -81,6 +96,22 @@ def fixture_bundle() -> dict:
     return b
 
 
+def validation_variants() -> dict:
+    """Schema-1-valid bundles whose LIVE / FROZEN_SNAPSHOT producer validation is not PASS (contract.py L194-199)."""
+    fail = fixture_bundle()
+    fail["macro"]["producer"]["validation"] = {"status": "FAIL", "checks": ["TEST_VECTOR_SHAPE_ONLY"]}
+    missing = fixture_bundle()
+    del missing["macro"]["producer"]["validation"]
+    not_run = fixture_bundle()
+    not_run["universe"]["producer"] = {**_producer("FROZEN_SNAPSHOT", "VALIDATED"), "validation": {"status": "NOT_RUN", "checks": []}}
+    out = {"variant-validation-fail-live.json": fail, "variant-validation-missing-live.json": missing,
+           "variant-validation-not-run-frozen.json": not_run}
+    assert set(out) == set(VALIDATION_WITHHELD)
+    for v in out.values():
+        validate_bundle(v)  # the existing, unchanged schema-1 validator accepts every variant
+    return out
+
+
 def manifest() -> dict:
     return {"kind": "WEB_RESEARCH_GUARD_FIXTURE_V1", "scope": "TEST VECTORS ONLY; NOT_REAL_DATA; NO GRANT",
             "company": COMPANY,
@@ -92,6 +123,7 @@ def manifest() -> dict:
             "rendered": {"universe": "FROZEN_SNAPSHOT", "macro": "LIVE", "portfolio": "DEMO",
                          "relationships": "NOT_AVAILABLE"},
             "withheld_probes": list(WITHHELD_PROBES), "rendered_probes": RENDERED_PROBES,
+            "validation_withheld": VALIDATION_WITHHELD, "validation_probes": list(VALIDATION_PROBES),
             "research_display": "NONE", "frozen_grant": "NONE", "live_grant": "NONE"}
 
 
@@ -106,6 +138,8 @@ def build_fixture(out, evidence) -> dict:
         raise AssertionError("the Web build must not rewrite the bundle; the guard is render-time only")
     m = manifest()
     evidence.mkdir(parents=True, exist_ok=True)
+    for name, v in validation_variants().items():
+        (evidence / name).write_text(json.dumps(v, ensure_ascii=False), encoding="utf-8")
     (evidence / "fixture-manifest.json").write_text(json.dumps(m, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     return m
 
