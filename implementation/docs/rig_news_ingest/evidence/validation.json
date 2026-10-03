@@ -1,0 +1,135 @@
+{
+  "contract": "RIG_NEWS_INGEST",
+  "schema_version": 1,
+  "recorded_at": "2026-10-01",
+  "disposition": "RIG / NEWS INGESTION IMPLEMENTATION BASELINE / INTEGRATION WAIT",
+  "branch": "feature/rig-news-real-ingestion-v1",
+  "code_sha_tested": "f8539087837bd67efa3aa87d618313a333746446",
+  "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "ahead_behind_vs_base": "1 0",
+  "runner": "mini_pytest shim, not pytest",
+  "pr": {
+    "number": 13,
+    "draft": true,
+    "state": "open",
+    "merged": false,
+    "mergeable_state": "clean",
+    "html_url": "https://github.com/kco994553-star/Investment-System1/pull/13",
+    "observed_at_code_sha": "f8539087837bd67efa3aa87d618313a333746446"
+  },
+  "ci": {
+    "sha": "f8539087837bd67efa3aa87d618313a333746446",
+    "state": "pending",
+    "total_count": 0,
+    "check_runs": 0,
+    "interpretation": "CI_NOT_TRIGGERED_NOT_A_PASS",
+    "workflows_on_this_branch": {
+      "c21-real-data": "workflow_dispatch only"
+    }
+  },
+  "targeted": {
+    "path": "implementation/tests/test_rig_news_ingest.py",
+    "passed": 14,
+    "failed": 0,
+    "elapsed_seconds": 0.29
+  },
+  "full_regression": {
+    "command": "python implementation/tools/mini_pytest.py",
+    "passed": 410,
+    "failed": 0,
+    "elapsed_seconds": 18.34,
+    "note": "396 existing canonical tests plus 14 new ingestion tests. Reconfirmed on code_sha_tested."
+  },
+  "judgments": {
+    "RIG_INGESTION_CONTRACT_READY": "YES",
+    "ENTITY_RESOLUTION_READY": "YES",
+    "DEDUP_READY": "YES",
+    "REAL_NEWS_PROVIDER_READY": "NO",
+    "RIG_REAL_PRODUCER_READY": "NO",
+    "CONSENSUS_PRODUCER_READY": "NO"
+  },
+  "policy_blocked": [
+    "SEMANTIC_SIMILARITY_THRESHOLD",
+    "NEWS_SENTIMENT",
+    "NEWS_IMPACT_SCORE",
+    "LIVE_EXPIRY_POLICY"
+  ],
+  "not_activated": [
+    "SEC_EDGAR_AS_NEWS",
+    "ISSUER_IR_RSS",
+    "GDELT_DOC",
+    "UNKEYED_AGGREGATORS"
+  ],
+  "provider_blocked": [
+    "KEYED_OR_PAID_NEWS_APIS"
+  ],
+  "not_available": [
+    "CONSENSUS_SOURCE"
+  ],
+  "read_only_dependencies": {
+    "entity_metadata_pr": 7,
+    "entity_metadata_sha": "a013f1c1758642f90a65fe11df69fc234c143a48",
+    "entity_metadata_still_at_audited_sha": true,
+    "producer_infrastructure_pr": 9,
+    "producer_infrastructure_sha": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+    "producer_infrastructure_still_at_audited_sha": true,
+    "copied": false,
+    "merged": false
+  },
+  "cross_track": {
+    "code_paths_changed_vs_base": [
+      "implementation/src/investment_system/rig/ingest/",
+      "implementation/tests/test_rig_news_ingest.py"
+    ],
+    "frozen_rig_outside_ingest_unchanged": true,
+    "frozen_rig_tree_sha256_excluding_ingest": "4236213f101d5c10c6c2722ff3873b61f4a87ff93364ee8b59b1d47cc0bdd041",
+    "fingerprints_match_canonical": {
+      "qgv": "f2c54afe185dae7bde131b261e947ab8f15da959d0958c6249325f4db60a5898",
+      "technical": "6f97f867874a81ed96d96068c1b16b6a5f519b1db16be2c6c7e2f5d257feab51",
+      "macro": "3ae3e73091a6ecfc97f4d030e3ea0048edd3376cc677cca4f29458b0b98aaed2",
+      "personal": "b2ee84891e959c855195af34d21d2df2e05befb0d8fc7926b4cf74408116af84",
+      "prompt_library": "c6a20ef04422d0550e88a6735457d13db55a0d25219274311fa812a794b25089",
+      "validation": "900e3d9324cad2626dca51c62883d912b8515138fdd9307e863355d55cb6e54c",
+      "contracts": "707a23a04bda91ae70dfd25c5f0b1e1d161fb84ded0892f2e3613d3fea7594da",
+      "product": "38acce832e64de8f0989237fb9e7e9dcb305f1d6d5c5d727f38826f0ee1428bd",
+      "providers": "5739a38a03f548c3ac19146c87975a61fb3fae99a70225cb66425485cec51429",
+      "universe": "c6dd07303a1f7e19b901992522084323b41f1501fdcb2171d65339e838976a4d",
+      "ingestion": "57fe95a4ccdff89e1eb6b1912947dc792d3b2e9c959a65ab8f51ee9adc009a1d",
+      "integration": "5699bd78fd22704f8bfb31feed7b3e65ed07083b5c95eeca09c62ec1f2d4010b",
+      "markets": "0b23282c4e614d3273bfec0de512885057589f9a85cc758dc593dc4743303481",
+      "pit": "682da17f8fd72893db00837bfe07f01a1adde694e05788981dbcc8175ae45d1a"
+    },
+    "ancestor_not_moved": [
+      "origin/feature/track-d-rig-news@da86dfc26dcaa5c32c60762683dcca702a0c57b8",
+      "origin/feature/track-e-prompt-library-v1@d226481e1b49e0910642478ae80545598e2e5a98"
+    ],
+    "not_incorporated": [
+      "origin/feature/track-c-evl@885c673d59bf95ca1a4c0aea96f0f6a77a0c2725",
+      "origin/feature/web-mvp-v1@a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "origin/feature/global-language-search-v1@eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "origin/ccr-41677301-10nj3u@a013f1c1758642f90a65fe11df69fc234c143a48",
+      "origin/feature/producer-infrastructure-v1@6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+      "origin/ccr-db5d5960-qen9yi@5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+      "origin/feature/technical-real-producer-v1@a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "origin/feature/macro-real-producer-v1@61d3352d5d68c7830e924f17613598ca79fcec6f"
+    ]
+  },
+  "cases": [
+    "published_at <= available_at <= fetched_at",
+    "future news rejection",
+    "provenance and raw hash separated from body",
+    "exact duplicate versus source-asserted repeat",
+    "same source item different payload conflict",
+    "similar titles not grouped",
+    "entity resolution, unknown, ambiguous",
+    "PR #7 registry read-only (META, Facebook Inc, FB, 페이스북)",
+    "source_language preserved, display_locale ignored",
+    "deterministic normalization",
+    "malformed item rejection",
+    "RIG SourceRef/Evidence plus explicit-only NewsEvent",
+    "PRODUCER_SNAPSHOT validate_snapshot and verify_inputs at the audited producer SHA",
+    "LIVE without expires_at refused",
+    "frozen rig module hashes unchanged"
+  ]
+}
