@@ -140,6 +140,38 @@ async function main() {
         await before.context().close();
       });
 
+      await check(`${locale}: U1 an expires_at this browser cannot parse is never FRESH (fail closed as STALE)`, async () => {
+        const card = (p, text) => p.locator("section.card", { hasText: text });
+        const BEFORE = "2026-01-02T12:00:00Z";  // before changes.expires_at (2026-01-03T00:00:00Z)
+        // (b) a valid future expires_at stays FRESH and (c) a valid past one is STALE (served bundle, both clocks).
+        for (const [clock, changes] of [[manifest.browser_clock, L.STALE], [BEFORE, L.FRESH]]) {
+          const p = await openPage(locale, { clock });
+          await p.go("home");
+          assert.deepEqual(await texts(card(p, "TEST_CHANGES_VIEW_STALE").locator(".badge.freshness")), [changes], `changes at ${clock}`);
+          assert.deepEqual(await texts(card(p, "TEST_REGIME_FRESH").locator(".badge.freshness")), [L.FRESH], `macro at ${clock}`);
+          await p.context().close();
+        }
+        // (a) the same instant in ISO forms the producer contract accepts and Date.parse rejects, persisted FRESH:
+        // STALE with the existing STALE badge at either clock, never FRESH; the values stay visible, labelled STALE.
+        for (const [file, form] of Object.entries(manifest.unparsable_expiry)) {
+          const served = JSON.parse(variant(file));
+          assert.equal(served.changes.expires_at, form);
+          assert.equal(served.changes.producer.freshness, "FRESH");
+          assert.equal(served.producer_manifest.sections.changes.freshness, "FRESH");
+          for (const clock of [manifest.browser_clock, BEFORE]) {
+            const p = await openPage(locale, { data: variant(file), clock });
+            await p.go("home");
+            assert.equal(await p.evaluate((v) => Number.isNaN(Date.parse(v)), form), true, `precondition: Date.parse rejects ${form}`);
+            const changes = card(p, "TEST_CHANGES_VIEW_STALE");
+            assert.equal(await changes.count(), 1);
+            assert.equal((await changes.locator(".badge.LIVE").innerText()).trim(), "LIVE");
+            assert.deepEqual(await texts(changes.locator(".badge.freshness")), [L.STALE], `${form} at ${clock}`);
+            assert.deepEqual(await texts(p.locator(".badge.freshness.FRESH")), [L.FRESH], `${form} at ${clock}: only macro is FRESH`);
+            await p.context().close();
+          }
+        }
+      });
+
       await check(`${locale}: U1 NOT_USABLE carried by the bundle is shown as withheld`, async () => {
         await page.go("leaderboard");
         assert.deepEqual(await texts(page.locator(".badge.NOT_AVAILABLE")), ["NOT_AVAILABLE"]);
@@ -203,6 +235,27 @@ async function main() {
         await sparse.go("home");
         assert.deepEqual(await metaOf(sparse, "portfolio"), metaLine(L, { reason_code: "ONLY_REASON_CODE_PERSISTED" }));
         await sparse.context().close();
+      });
+
+      await check(`${locale}: U2 only code-shaped reason_code and token-shaped methodology id/version are displayed`, async () => {
+        const p = await openPage(locale, { data: variant("variant-free-text-metadata.json") });
+        for (const hash of routes) {
+          await p.go(hash);
+          const h = await html(p);
+          for (const probe of manifest.free_text_probes) assert.ok(!h.includes(probe), `${hash} displayed ${probe}`);
+        }
+        // Free-text, multi-line, 65-character and lower-case values are omitted; nothing is truncated or rewritten.
+        await p.go("company/" + company);
+        assert.deepEqual(await metaOf(p, "qgv"), metaLine(L, { as_of: manifest.as_of, freshness: "NOT_APPLICABLE",
+          counts: "COMPLETE=3, NONE=1, PARTIAL=1" }));
+        await p.go("home");
+        assert.deepEqual(await metaOf(p, "portfolio"), metaLine(L, { methodology: "NONE / NONE", freshness: "NOT_APPLICABLE" }));
+        // 64-character code and token (the shape limits) are still displayed as persisted.
+        assert.deepEqual(await metaOf(p, "relationships"), metaLine(L, {
+          methodology: "NONE / " + manifest.edge["relationships.methodology.version"], freshness: "NOT_APPLICABLE" }));
+        assert.deepEqual(await metaOf(p, "news"), metaLine(L, { reason_code: manifest.edge["news.reason_code"],
+          methodology: "NONE / NONE", freshness: "NOT_APPLICABLE" }));
+        await p.context().close();
       });
 
       await check(`${locale}: U3 loading text and remaining UI strings follow the display locale`, async () => {

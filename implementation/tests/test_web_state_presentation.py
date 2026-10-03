@@ -7,10 +7,11 @@ the locale entries and the presentation-only boundary without a browser.
 import importlib.util
 import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 
 from investment_system.producers import freshness
-from investment_system.producers.contract import SECTION_NAMES
+from investment_system.producers.contract import SECTION_NAMES, parse_ts
 from investment_system.product.web_mvp import STATES, validate_bundle
 
 IMPL = Path(__file__).resolve().parents[1]
@@ -109,3 +110,73 @@ def test_fixture_is_assembler_shaped_and_build_is_presentation_only(tmp_path):
         assert set(SECTION_NAMES) <= set(variant)
         assert {variant[s]['state'] for s in SECTION_NAMES} <= STATES
     assert m['research_display'] == m['frozen_grant'] == m['live_grant'] == 'NONE'
+
+
+def _function_body(name: str) -> str:
+    m = re.search(r'\nfunction ' + name + r'\([^)]*\) \{\n(.*?)\n\}\n', APP, re.S)
+    assert m, name
+    return m.group(1)
+
+
+def test_persisted_fresh_alone_never_yields_fresh():
+    body = _function_body('freshnessOf')
+    # FRESH requires a string expires_at that Date.parse turns into a finite instant ahead of the clock;
+    # an unparsable or absent expires_at fails closed as STALE whatever freshness was persisted.
+    assert 'Number.isFinite(' in body and 'persisted==="FRESH"' not in body
+
+
+def test_unparsable_expiry_variants_are_contract_valid_and_persisted_fresh():
+    variants = fixture.variants(fixture.fixture_bundle())
+    clock = parse_ts(fixture.BROWSER_CLOCK, 'clock')
+    assert len(fixture.UNPARSABLE_EXPIRY) == 3
+    for name, form in fixture.UNPARSABLE_EXPIRY.items():
+        v = variants[name]
+        validate_bundle(v)
+        changes = v['changes']
+        assert changes['expires_at'] == changes['producer']['expires_at'] == form
+        expires = parse_ts(form, 'expires_at')  # the producer contract (and so the assembler) accepts the form
+        assert expires.replace(microsecond=0) == datetime(2026, 1, 3, tzinfo=timezone.utc)
+        assert fixture.NOW < expires < clock
+        assert changes['producer']['freshness'] == v['producer_manifest']['sections']['changes']['freshness'] == freshness.FRESH
+        # Only changes.expires_at differs from the served bundle.
+        base = fixture.fixture_bundle()
+        assert {k: x for k, x in v.items() if k not in ('changes', 'producer_manifest')} == \
+            {k: x for k, x in base.items() if k not in ('changes', 'producer_manifest')}
+
+
+_CODE = re.compile(r'[A-Z][A-Z0-9_]{0,63}')
+
+
+def _token(v) -> bool:
+    return isinstance(v, str) and 0 < len(v) <= 64 and not re.search(r'\s', v)
+
+
+def _persisted(bundle: dict, key: str):
+    name, *path = key.split('.')
+    v = bundle[name]['producer']
+    for k in path:
+        v = v[k]
+    return v
+
+
+def test_displayed_identifiers_are_restricted_to_code_and_token_shapes():
+    assert 'const REASON_CODE=/^[A-Z][A-Z0-9_]{0,63}$/;' in APP
+    meta = _function_body('persistedMeta')
+    assert 'metaCode(p.reason_code) || metaCode(m.reason_code)' in meta and '.map(metaToken)' in meta
+    bundle = fixture.fixture_bundle()
+    # Every identifier the producer path persists in the served fixture keeps its display.
+    for name in SECTION_NAMES:
+        p = bundle[name]['producer']
+        assert p['reason_code'] is None or _CODE.fullmatch(p['reason_code']), name
+        assert _token(p['methodology']['id']) and _token(p['methodology']['version']), name
+    variant = fixture.variants(bundle)['variant-free-text-metadata.json']
+    validate_bundle(variant)
+    for key, value in fixture.FREE_TEXT.items():
+        assert _persisted(variant, key) == value
+        shaped = _CODE.fullmatch(value) if key.endswith('reason_code') else _token(value)
+        assert not shaped and sum(probe in value for probe in fixture.FREE_TEXT_PROBES) == 1, key
+    for key, value in fixture.EDGE.items():
+        assert _persisted(variant, key) == value and len(value) == 64
+        assert _CODE.fullmatch(value) if key.endswith('reason_code') else _token(value)
+    for name in ('qgv', 'portfolio', 'relationships', 'news'):  # the manifest copy carries the same value
+        assert variant['producer_manifest']['sections'][name]['reason_code'] == variant[name]['producer']['reason_code']

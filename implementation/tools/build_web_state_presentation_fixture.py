@@ -22,6 +22,11 @@ Variants (written to the evidence folder, never served directly; the browser tes
   variant-sparse-metadata.json producer metadata removed, except one reason_code (nothing is fabricated)
   variant-render-error.json    schema-1-valid bundle whose news payload is an object, not a list; the
                                news route throws while rendering
+  variant-expiry-*.json        assembled like the served bundle, except that changes.expires_at is the same
+                               instant in an ISO form Python's fromisoformat accepts and JS Date.parse rejects;
+                               the assembler persists FRESH, the Web must never show FRESH for it
+  variant-free-text-metadata.json  assembled like the served bundle, with contract-valid but not code/token
+                               shaped reason_code and methodology id/version values the Web must not display
 
 Usage:
   python tools/build_web_state_presentation_fixture.py --out /tmp/web-state --evidence /tmp/web-state-evidence
@@ -54,6 +59,20 @@ METHOD = {"id": "TEST_VECTOR", "version": "TEST_VECTOR_V1", "status": "VALIDATED
 INPUTS = [{"artifact_id": "test:web-state-presentation", "sha256": "0" * 64}]
 # Present only in withheld inputs; must never reach the DOM.
 WITHHELD_PROBES = ("4321.98765", "NOT_USABLE_PROBE_NEWS", "NOT_USABLE_PROBE_CHANGES")
+# changes.expires_at (2026-01-03T00:00:00+00:00) in ISO forms that contract.parse_ts accepts and JS Date.parse rejects.
+UNPARSABLE_EXPIRY = {"variant-expiry-basic-format.json": "20260103T000000Z",
+                     "variant-expiry-week-date.json": "2026-W01-6T00:00:00+00:00",
+                     "variant-expiry-comma-fraction.json": "2026-01-03T00:00:00,5+00:00"}
+# Contract-valid persisted identifiers outside the displayed shapes (reason_code ^[A-Z][A-Z0-9_]{0,63}$,
+# methodology id/version <= 64 characters without whitespace): never displayed. EDGE_* are inside them: displayed.
+FREE_TEXT = {"qgv.reason_code": "See memo FREE_TEXT_PROBE_REASON: withheld pending owner review\nsecond line",
+             "qgv.methodology.id": "FREE TEXT PROBE METHOD",
+             "qgv.methodology.version": "LONG_PROBE_VERSION_" + "9" * 46,
+             "portfolio.reason_code": "LONG_PROBE_CODE_" + "X" * 49,
+             "relationships.reason_code": "lower_probe_code"}
+FREE_TEXT_PROBES = ("FREE_TEXT_PROBE_REASON", "FREE TEXT PROBE METHOD", "LONG_PROBE_VERSION_", "LONG_PROBE_CODE_",
+                    "lower_probe_code")
+EDGE = {"news.reason_code": "EDGE_CODE_" + "9" * 54, "relationships.methodology.version": "EDGE_TOKEN_" + "9" * 53}
 
 
 def _live(section, data, scope_kind, as_of, expires_at, usable_until=None, validation=None):
@@ -98,6 +117,28 @@ def fixture_bundle() -> dict:
     return assemble_bundle(FrozenUniverseProducer().companies(), snapshots(), NOW)
 
 
+def _assembled(edit) -> dict:
+    snaps = snapshots()
+    edit(snaps)
+    return assemble_bundle(FrozenUniverseProducer().companies(), snaps, NOW)
+
+
+def _expiry(form):
+    def edit(snaps):
+        snaps["changes"] = _live("changes", {"summary": "TEST_CHANGES_VIEW_STALE"}, "DOCUMENT", AS_OF, form)
+    return edit
+
+
+def _free_text(snaps):
+    for key, value in {**FREE_TEXT, **EDGE}.items():
+        name, *path = key.split(".")
+        target = snaps[name]
+        if path[0] == "methodology":
+            target["methodology"] = {**target["methodology"], path[1]: value}
+        else:
+            target[path[0]] = value
+
+
 def variants(bundle: dict) -> dict:
     not_usable = deepcopy(bundle)
     not_usable["news"] = {"state": "LIVE", "as_of": AS_OF, "source": "TEST VECTOR / news", "expires_at": "2099-01-01T00:00:00+00:00",
@@ -116,7 +157,8 @@ def variants(bundle: dict) -> dict:
     render_error["news"] = {"state": "FROZEN_SNAPSHOT", "as_of": AS_OF, "source": "TEST VECTOR / malformed news shape",
                             "data": {"unexpected": "object instead of a list"}}
     out = {"variant-not-usable.json": not_usable, "variant-sparse-metadata.json": sparse,
-           "variant-render-error.json": render_error}
+           "variant-render-error.json": render_error, "variant-free-text-metadata.json": _assembled(_free_text)}
+    out.update({name: _assembled(_expiry(form)) for name, form in UNPARSABLE_EXPIRY.items()})
     for v in out.values():
         validate_bundle(v)  # every variant is accepted by the existing, unchanged schema-1 validator
     return out
@@ -131,6 +173,7 @@ def manifest(bundle: dict) -> dict:
             "expected_view": {"macro": "LIVE+FRESH", "technical": "LIVE+STALE", "changes": "LIVE+STALE (view-time)",
                               "leaderboard": "NOT_AVAILABLE+NOT_USABLE", "qgv": "NOT_AVAILABLE+metadata"},
             "withheld_probes": list(WITHHELD_PROBES), "variants": sorted(variants(bundle)),
+            "unparsable_expiry": UNPARSABLE_EXPIRY, "free_text_probes": list(FREE_TEXT_PROBES), "edge": EDGE,
             "research_display": "NONE", "frozen_grant": "NONE", "live_grant": "NONE"}
 
 

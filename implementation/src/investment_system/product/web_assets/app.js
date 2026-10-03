@@ -33,6 +33,11 @@ const NOT_USABLE_REASON="사용 기한(usable_until)이 지난 데이터라 표�
 const META_LABEL=Object.freeze({reason_code:"사유 코드",as_of:"생산자 데이터 시점",methodology:"방법론",freshness:"신선도",counts:"커버리지 집계"});
 let META={};
 const metaText=v=>typeof v==="string" && v.trim()?v:null;
+// Identifiers are displayed only in their identifier shape; anything else (free text, long or multi-line values)
+// is omitted, never truncated or rewritten: a reason_code must be a code, a methodology id/version a short token.
+const REASON_CODE=/^[A-Z][A-Z0-9_]{0,63}$/;
+const metaCode=v=>typeof v==="string" && REASON_CODE.test(v)?v:null;
+const metaToken=v=>typeof v==="string" && v.length>0 && v.length<=64 && !/\s/.test(v)?v:null;
 const metaObject=v=>v && typeof v==="object" && !Array.isArray(v)?v:{};
 function coverageCounts(p) {
   // Integer counts exactly as persisted (validation.*_count, coverage_counts maps); nothing is summed or derived.
@@ -46,8 +51,8 @@ function persistedMeta(bundle,name) {
   const fresh=[[p.freshness,"producer.freshness"],[m.freshness,"producer_manifest.sections."+name+".freshness"]].filter(([f])=>FRESHNESS.includes(f));
   // Two persisted copies that disagree: show the more restrictive one (fail closed), never a newer computation.
   const pick=fresh.find(([f])=>f==="NOT_USABLE") || fresh.find(([f])=>f==="STALE") || fresh[0] || [null,null];
-  return {freshness:pick[0],freshness_path:pick[1],reason_code:metaText(p.reason_code) || metaText(m.reason_code),as_of:metaText(p.as_of),
-    methodology:[method.id,method.version].map(metaText).filter(Boolean).join(" / ") || null,counts:coverageCounts(p)};
+  return {freshness:pick[0],freshness_path:pick[1],reason_code:metaCode(p.reason_code) || metaCode(m.reason_code),as_of:metaText(p.as_of),
+    methodology:[method.id,method.version].map(metaToken).filter(Boolean).join(" / ") || null,counts:coverageCounts(p)};
 }
 const VALIDATION_WITHHELD_REASON="생산자 검증(validation)이 PASS가 아니라 표시하지 않습니다.";
 function validationMarker(s) {
@@ -99,9 +104,13 @@ function freshnessOf(name,s) {
   const persisted=META[name]?.freshness;
   if(persisted==="NOT_USABLE") return "NOT_USABLE";
   if(s.state!=="LIVE") return null;
-  const expires=Date.parse(s.expires_at),now=Date.now();
-  if(expires<=now || persisted==="STALE") return "STALE";
-  return persisted==="FRESH" || expires>now?"FRESH":null;
+  // FRESH needs an expires_at that this browser parses and that is still ahead of its clock. An expires_at that is
+  // absent, not a string or rejected by Date.parse (ISO forms Python's fromisoformat accepts, e.g. basic format,
+  // week dates or comma fractions) cannot be compared with the clock: fail closed as STALE, whatever freshness was
+  // persisted (producers/freshness.py: a LIVE snapshot is never silently current).
+  const expires=typeof s.expires_at==="string"?Date.parse(s.expires_at):NaN;
+  if(!Number.isFinite(expires) || expires<=Date.now() || persisted==="STALE") return "STALE";
+  return "FRESH";
 }
 function freshnessBadge(f) {
   return f?` <span class="badge freshness ${f}" data-freshness="${f}">${f} · ${esc(t(FRESHNESS_LABEL[f]))}</span>`:"";
