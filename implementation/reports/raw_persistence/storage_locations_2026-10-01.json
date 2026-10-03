@@ -1,0 +1,20 @@
+{
+ "dataset_id": "track_a_real_data_raw_store_frozen_2026-09-27",
+ "observed_via": "GitHub REST (actions artifacts listing) 2026-10-01; values copied verbatim",
+ "locations": [
+  {"kind": "GITHUB_ACTIONS_ARTIFACT", "ref": "artifact 10927496280 c21-raw-store-36305927245 (run 36305927245)",
+   "archive_sha256": "712e43bcc1fcd137e5e99ccdda2440850eda56015e02037293d8eac8db399f94", "archive_bytes": 451439890,
+   "expires_at": "2026-12-26T08:21:15Z", "complete_blobs": true, "verified": true,
+   "verification": "archive digest equals raw_integrity_audit_2026-09-27.json archive_sha256 (6808 artifacts, sha/size PASS)"},
+  {"kind": "GITHUB_ACTIONS_ARTIFACT", "ref": "artifact 10855214590 c21-raw-store-36117017112 (run 36117017112, workflow seed default)",
+   "archive_sha256": "24dd30cecbafa66f07397280f14858f3603739c89bef84719aa24762172fc291", "archive_bytes": 190351794,
+   "expires_at": "2026-12-24T09:11:10Z", "complete_blobs": false, "verified": false,
+   "verification": "earlier partial store; not bound to the frozen 6808-artifact set"},
+  {"kind": "GITHUB_ACTIONS_CACHE", "ref": "c21-raw-store-v2-* (actions/cache)", "expires_at": null,
+   "complete_blobs": false, "verified": false,
+   "verification": "not listed in this audit; GitHub cache entries are evicted when unused or over quota, so it is not treated as durable"},
+  {"kind": "REPOSITORY", "ref": "implementation/data/raw/manifests + STORE_INDEX.json (manifests only, 0 blobs)",
+   "expires_at": null, "complete_blobs": false, "verified": true,
+   "verification": "per-artifact sha256/size/source/fetched_at committed; blobs absent"}
+ ]
+}

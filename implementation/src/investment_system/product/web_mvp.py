@@ -35,7 +35,9 @@ def validate_bundle(bundle):
             return v.get('synthetic') is True or v.get('synthetic_qgv') is True or v.get('kind') == 'SYNTHETIC' or any(synthetic(x) for x in v.values())
         return isinstance(v, list) and any(synthetic(x) for x in v)
     for name in ('universe', *SECTIONS):
-        s = b[name]
+        s = b.get(name)
+        if not isinstance(s, dict) or 'state' not in s:
+            raise ValueError(f'missing or malformed section: {name}')
         if s['state'] not in STATES:
             raise ValueError('unknown data state')
         if s['state'] == 'NOT_AVAILABLE':
@@ -48,6 +50,8 @@ def validate_bundle(bundle):
             raise ValueError('synthetic data must be DEMO')
         if s['state'] == 'LIVE':
             for field in ('as_of', 'expires_at'):
+                if not isinstance(s.get(field), str):
+                    raise ValueError(f'LIVE requires {field}')
                 dt = datetime.fromisoformat(s[field].replace('Z', '+00:00'))
                 if dt.tzinfo is None:
                     raise ValueError('LIVE timestamps require timezone')

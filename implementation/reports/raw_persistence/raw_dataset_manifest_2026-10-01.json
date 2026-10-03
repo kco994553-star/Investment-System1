@@ -1,0 +1,197 @@
+{
+ "acquired_at_range": [
+  "2026-09-25T08:20:49.704034+00:00",
+  "2026-09-27T07:58:39.802971+00:00"
+ ],
+ "artifact_record_source": "implementation/data/raw/manifests/*.json via producers.raw_persistence.artifact_records",
+ "available_at_basis": "PARSED_FROM_CONTENT_AT_REPLAY (manifest fetched_at is ingestion time, not PIT availability)",
+ "by_source_kind": {
+  "ISHARES_FUND_HOLDINGS": {
+   "bytes": 1453659,
+   "n": 1
+  },
+  "SEC_CIK_LOOKUP": {
+   "bytes": 40186578,
+   "n": 1
+  },
+  "SEC_COMPANYFACTS": {
+   "bytes": 3656021815,
+   "n": 1117
+  },
+  "SEC_FILING_DOCUMENT": {
+   "bytes": 367521455,
+   "n": 394
+  },
+  "SEC_FILING_INDEX": {
+   "bytes": 13252,
+   "n": 6
+  },
+  "SEC_INDEX_HEADERS": {
+   "bytes": 1526427,
+   "n": 412
+  },
+  "SEC_NPORT": {
+   "bytes": 19266881,
+   "n": 1
+  },
+  "SEC_NPORT_XML": {
+   "bytes": 6628098,
+   "n": 5
+  },
+  "SEC_SUBMISSIONS": {
+   "bytes": 184760537,
+   "n": 1172
+  },
+  "SEC_SUBMISSIONS_PAGE": {
+   "bytes": 86520229,
+   "n": 256
+  },
+  "SEC_TICKERS": {
+   "bytes": 797091,
+   "n": 1
+  },
+  "SEC_XBRL_INSTANCE": {
+   "bytes": 1569506009,
+   "n": 575
+  },
+  "STOOQ_DAILY_CSV": {
+   "bytes": 22288,
+   "n": 28
+  },
+  "TIINGO_DAILY_RAW": {
+   "bytes": 1392662,
+   "n": 58
+  },
+  "TIINGO_EOD_JSON": {
+   "bytes": 22653053,
+   "n": 74
+  },
+  "TIINGO_SEARCH_JSON": {
+   "bytes": 5056,
+   "n": 7
+  },
+  "YAHOO_CHART": {
+   "bytes": 168804768,
+   "n": 1346
+  },
+  "YAHOO_SPLIT_EVENTS": {
+   "bytes": 9875066,
+   "n": 1354
+  }
+ },
+ "contract": "RAW_DATASET_PERSISTENCE",
+ "dataset_id": "track_a_real_data_raw_store_frozen_2026-09-27",
+ "integrity_binding": {
+  "archive_sha256": "712e43bcc1fcd137e5e99ccdda2440850eda56015e02037293d8eac8db399f94",
+  "bytes": 6136954924,
+  "consistent_with_committed_manifests": true,
+  "kind": "TRACK_A_RAW_ARTIFACT_INTEGRITY_AUDIT",
+  "n_artifacts": 6808,
+  "passed": true,
+  "upstream_run_id": 36305927245
+ },
+ "local_blob_verification": {
+  "expected": 6808,
+  "mismatched": [],
+  "present": 0,
+  "status": "BLOBS_NOT_PRESENT",
+  "verified": 0
+ },
+ "manifest_set_sha256": "1793423426f3272d909683c4f3595a70793350eae7047343a8d50a270899e828",
+ "n_artifacts": 6808,
+ "record_fields": [
+  "acquired_at",
+  "artifact_id",
+  "available_at",
+  "available_at_basis",
+  "content_type",
+  "provenance",
+  "sha256",
+  "size",
+  "source_kind",
+  "source_url"
+ ],
+ "retention": {
+  "evaluated_at": "2026-10-01T00:00:00+00:00",
+  "locations": [
+   {
+    "complete_blobs": true,
+    "expires_at": "2026-12-26T08:21:15Z",
+    "kind": "GITHUB_ACTIONS_ARTIFACT",
+    "ref": "artifact 10927496280 c21-raw-store-36305927245 (run 36305927245)",
+    "seconds_remaining": 7460475,
+    "status": "ACTIVE_UNTIL_EXPIRY",
+    "verified": true
+   },
+   {
+    "complete_blobs": false,
+    "expires_at": "2026-12-24T09:11:10Z",
+    "kind": "GITHUB_ACTIONS_ARTIFACT",
+    "ref": "artifact 10855214590 c21-raw-store-36117017112 (run 36117017112, workflow seed default)",
+    "seconds_remaining": 7290670,
+    "status": "ACTIVE_UNTIL_EXPIRY",
+    "verified": false
+   },
+   {
+    "complete_blobs": false,
+    "expires_at": null,
+    "kind": "GITHUB_ACTIONS_CACHE",
+    "ref": "c21-raw-store-v2-* (actions/cache)",
+    "seconds_remaining": null,
+    "status": "NO_EXPIRY",
+    "verified": false
+   },
+   {
+    "complete_blobs": false,
+    "expires_at": null,
+    "kind": "REPOSITORY",
+    "ref": "implementation/data/raw/manifests + STORE_INDEX.json (manifests only, 0 blobs)",
+    "seconds_remaining": null,
+    "status": "NO_EXPIRY",
+    "verified": true
+   }
+  ],
+  "loss_deadline_if_no_action": "2026-12-26T08:21:15Z",
+  "overall": "AT_RISK_ONLY_EXPIRING_COPIES"
+ },
+ "storage_locations": [
+  {
+   "archive_bytes": 451439890,
+   "archive_sha256": "712e43bcc1fcd137e5e99ccdda2440850eda56015e02037293d8eac8db399f94",
+   "complete_blobs": true,
+   "expires_at": "2026-12-26T08:21:15Z",
+   "kind": "GITHUB_ACTIONS_ARTIFACT",
+   "ref": "artifact 10927496280 c21-raw-store-36305927245 (run 36305927245)",
+   "verification": "archive digest equals raw_integrity_audit_2026-09-27.json archive_sha256 (6808 artifacts, sha/size PASS)",
+   "verified": true
+  },
+  {
+   "archive_bytes": 190351794,
+   "archive_sha256": "24dd30cecbafa66f07397280f14858f3603739c89bef84719aa24762172fc291",
+   "complete_blobs": false,
+   "expires_at": "2026-12-24T09:11:10Z",
+   "kind": "GITHUB_ACTIONS_ARTIFACT",
+   "ref": "artifact 10855214590 c21-raw-store-36117017112 (run 36117017112, workflow seed default)",
+   "verification": "earlier partial store; not bound to the frozen 6808-artifact set",
+   "verified": false
+  },
+  {
+   "complete_blobs": false,
+   "expires_at": null,
+   "kind": "GITHUB_ACTIONS_CACHE",
+   "ref": "c21-raw-store-v2-* (actions/cache)",
+   "verification": "not listed in this audit; GitHub cache entries are evicted when unused or over quota, so it is not treated as durable",
+   "verified": false
+  },
+  {
+   "complete_blobs": false,
+   "expires_at": null,
+   "kind": "REPOSITORY",
+   "ref": "implementation/data/raw/manifests + STORE_INDEX.json (manifests only, 0 blobs)",
+   "verification": "per-artifact sha256/size/source/fetched_at committed; blobs absent",
+   "verified": true
+  }
+ ],
+ "total_bytes": 6136954924,
+ "version": 1
+}
