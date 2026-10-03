@@ -77,3 +77,7 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 
 - PR #31 (`codex/track-c-gsup-v2-2026-10-03` @ `675d0d2`, base #30) recorded read-only. Not DONE/HANDOFF_READY; CDR-009 exclusion active.
 - Codex raises USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION for M-B v2. Recorded as pending and as not yet independently verified by the integration owner.
+
+## GCH-006 · 2026-10-03 · GIE-007 recorded (Web guard / UI / next local trial)
+
+- #34 G3 render guard: review PASS. #36 production-state presentation: review BLOCKING (fail-open freshness label), in repair. Next local trial (1175/1175) superseded pending the repaired heads. Validator hardening stays a separate follow-up requiring a user decision if pursued (#17 protected digest).
