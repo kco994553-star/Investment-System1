@@ -1,0 +1,686 @@
+{
+  "record": "TECHNICAL_REAL_PRODUCER_C28_ADOPTION_INVARIANCE_2026-10-03 (PR #11)",
+  "purpose": "Independent before/after invariance comparison for the C-28 upstream adoption of Track C 2137883 (user CDR-004 2026-10-03). Recorded on throwaway trees BEFORE any pin was edited. Not an approval record.",
+  "authority": "User CDR-004 2026-10-03 (quoted in docs/technical_real_producer/C28_UPSTREAM_ADOPTION_2026-10-03.md)",
+  "prepared_by": "Primary Integration Writer, Claude Code session session_019znshzTYgyBnuuBmSxdPFN",
+  "trees": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "track_c_commit_under_adoption": "21378835883c5a9740143899c70d75d6405aa55a",
+    "track_c_owner_tip_at_record_time": {
+      "ref": "origin/ccr-22e3ff16-p7n5k5",
+      "sha": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "blob_check": "git ls-tree: contracts/lineage.py 288cabad…, contracts/models.py ef4f80ec…, technical/engine.py 5365653f…, macro/engine.py 08d79c20… identical between the tip and 2137883",
+      "sha256_at_tip": {
+        "technical/engine.py": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+        "macro/engine.py": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+        "contracts/models.py": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+        "contracts/lineage.py": "ddfac6ef9bac1eb3a54a60bfbd78218d8f0aa57b91185ffadaaa5458aeb9c454"
+      },
+      "sha256_at_canonical": {
+        "technical/engine.py": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+        "macro/engine.py": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+        "contracts/models.py": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+        "contracts/lineage.py": "ABSENT"
+      }
+    },
+    "pr_tip_BEFORE": {
+      "branch": "feature/technical-real-producer-v1",
+      "sha": "a2e0790dd7fb267ebaa7d052acae59220ecf631e"
+    },
+    "AFTER_throwaway_merge": {
+      "sha": "01bb359adca7f4bafd7edeb532612fd3902a9122",
+      "parents": [
+        "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+        "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565"
+      ],
+      "conflicts": 0,
+      "pushed": false
+    },
+    "proposal_branch": "integration/a1-adoption/pr11-technical-producer (from a2e0790)"
+  },
+  "commands": [
+    "git worktree add --detach <BEFORE> <PR#11 tip>",
+    "git worktree add --detach <AFTER> <PR#11 tip> && git -C <AFTER> merge --no-ff --no-edit b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565   # 0 conflicts (throwaway identity, never pushed)",
+    "cd <tree>/implementation && PYTHONPATH=src python3 gate11.py <dump.json>   # run in BEFORE and in AFTER",
+    "python3 fielddiff_strict.py <before.json> <after.json>   # recursive field-level diff, every path",
+    "cd <BEFORE>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf   # pre-change baseline",
+    "cd <AFTER>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf tests/test_technical_real_producer.py   # before any pin edit",
+    "cd <proposal>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf   # after the pin edit",
+    "cp <proposal>/implementation/tests/<edited test> <AFTER>/implementation/tests/ && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf tests/test_technical_real_producer.py   # repinned test in the adopted tree",
+    "negative: append '# third content' to technical/engine.py in <AFTER>, rerun the pin test (must FAIL); rename evaluate_stamped in <AFTER> (partial adoption), rerun (must FAIL); git checkout -- to restore"
+  ],
+  "artifacts_compared": [
+    "engine_fingerprint_norm_dicts: the test's inline norm() (verbatim copy; drops only technical_snapshot_id) over dataclasses.asdict of the six legacy TechnicalEngine().evaluate() outputs used by ENGINE_FINGERPRINT (as_of 2026-09-14Z, synthetic=True); embedded below before and after",
+    "engine_fingerprint_sha256: sha256(json.dumps(norm dicts, sort_keys=True)) — the ENGINE_FINGERPRINT computation itself",
+    "macro_legacy_norm_dict: same norm() over MacroEngine().evaluate(as_of, {growth:0.02, inflation:0.03}, True); macro_snapshot_id (uuid) dropped and listed",
+    "produce_demo (engine_snapshot_id masked: uuid-based, volatile per run; prefix 'ta_' recorded)",
+    "produce_company fixture records: default, volume hole at bar 7, decision +3d, generated_at +3h; semantic_hash recomputation of the default record",
+    "produce_batch partial batch (AAPL pass + MSFT MISSING_LOOKBACK)",
+    "export_producer_snapshot(2024-12-31T23:59:59Z, generated 2026-10-01T11:00Z) and equality with the committed golden producer_not_available_golden.json",
+    "committed evidence: file sha256 of company_records_2024-12-31.json / sample_2024-12-31.json / producer_not_available_golden.json; semantic_hash recomputation of each full TECHNICAL_COMPANY_RECORD",
+    "source_sha256_actual for the six SOURCE_SHA256 files; dataclass field lists of TechnicalSnapshot and MacroSnapshot; hasattr(TechnicalEngine,'evaluate_stamped') state detector"
+  ],
+  "per_artifact_sha256_before": {
+    "committed_evidence": "995d1579b9fbf152357642fd6d90bf24039bc46776fc8cce39eed2ce5c29448c",
+    "engine_fingerprint_inputs": "1b98b066353ad294ef9263f00c640bc9a6de7321cb1a09444fca2d0eeefeab0d",
+    "engine_fingerprint_norm_dicts": "4f5e33eb911868aa55c7b3f5b6d0c10265e409dc6f172ec3e679abd9f6242d5c",
+    "engine_fingerprint_pinned": "655c7af036fe4ece53d7c384d2e572fb46f33fb820e072a48422fc310102d22f",
+    "engine_fingerprint_sha256": "655c7af036fe4ece53d7c384d2e572fb46f33fb820e072a48422fc310102d22f",
+    "export_producer_snapshot": "8fd50794e3a769b447ac2f714d3039024062f0c9fa52e2459e4c5d6882f3f39c",
+    "exporter_equals_committed_golden": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "macro_legacy_norm_dict": "e1bb61084cb7905ef46b075712edddaeab7d917441cdf5ff711fd9c63e37486a",
+    "macro_snapshot_fields": "0e7522c88c20402892620040d5f1065d6a63058d66242c3795c73906a460710f",
+    "macro_volatile_keys_dropped": "c81a0e1a28b3db67eeb4a5c398dd2eef29e28ada59829b968b3e16ae473cc7ef",
+    "produce_batch_partial": "0d2e3b9be7cf2f404ee37c25a1a6a527b22fc96c4b28330010fa25aaf4fbcd8c",
+    "produce_company_default": "d180aa1e6b8ecadfc9f19c6058358c8d28dea4eb9fe7e32b913b51a90ec4c625",
+    "produce_company_generated_later": "9e1e4a4796ef5191c52ce9120142b34bfafe5e90905b8b95c6877658144402bb",
+    "produce_company_later_decision": "1e05da694d7e8b30d5af3921205f02a115a5d3888fca9629c2037e69458d2a12",
+    "produce_company_volume_hole": "5199b9c808b0a75249f3fc1fedf7a9498d9836e5645127ddeb1daa4fe6941e7b",
+    "produce_demo": "b9dbb63906a6424ddef2bdad42da30f55cb98e671eb61f75a2fc81f680f518cc",
+    "semantic_hash_recomputed_default": "1e388a4482bd558b5f0e8d6e821c883dca57a6029634a7c74c6055c873eed564",
+    "source_sha256_actual": "cdba23d2194ac11fa4dd63a53a0fc20fa1c6004cae319f0a67fdeb6211bbda0d",
+    "source_sha256_pinned": "cdba23d2194ac11fa4dd63a53a0fc20fa1c6004cae319f0a67fdeb6211bbda0d",
+    "technical_snapshot_fields": "ef5039578d3b778ff36e167aac44403d318fc098c85dd6d34920b9819a75b3be",
+    "tree_has_evaluate_stamped": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+  },
+  "per_artifact_sha256_after": {
+    "committed_evidence": "995d1579b9fbf152357642fd6d90bf24039bc46776fc8cce39eed2ce5c29448c",
+    "engine_fingerprint_inputs": "1b98b066353ad294ef9263f00c640bc9a6de7321cb1a09444fca2d0eeefeab0d",
+    "engine_fingerprint_norm_dicts": "8d682140df3c2bfbba289927628754d40dde0acaa7cfc62f76a1ceba48806820",
+    "engine_fingerprint_pinned": "655c7af036fe4ece53d7c384d2e572fb46f33fb820e072a48422fc310102d22f",
+    "engine_fingerprint_sha256": "af3e04122a7f6599b736f36194f9d5d23d3f2ebbcc1d4e511d02180830776f96",
+    "export_producer_snapshot": "8fd50794e3a769b447ac2f714d3039024062f0c9fa52e2459e4c5d6882f3f39c",
+    "exporter_equals_committed_golden": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "macro_legacy_norm_dict": "aa95d9d0b9444ec596a8832dde0b95d4e197cc5d7a516f8076db0f79b33b5c4c",
+    "macro_snapshot_fields": "810b350b0d99b9449209afda5f79be7f953d3527d334c6fa2ade449a2e31e6be",
+    "macro_volatile_keys_dropped": "c81a0e1a28b3db67eeb4a5c398dd2eef29e28ada59829b968b3e16ae473cc7ef",
+    "produce_batch_partial": "0d2e3b9be7cf2f404ee37c25a1a6a527b22fc96c4b28330010fa25aaf4fbcd8c",
+    "produce_company_default": "d180aa1e6b8ecadfc9f19c6058358c8d28dea4eb9fe7e32b913b51a90ec4c625",
+    "produce_company_generated_later": "9e1e4a4796ef5191c52ce9120142b34bfafe5e90905b8b95c6877658144402bb",
+    "produce_company_later_decision": "1e05da694d7e8b30d5af3921205f02a115a5d3888fca9629c2037e69458d2a12",
+    "produce_company_volume_hole": "5199b9c808b0a75249f3fc1fedf7a9498d9836e5645127ddeb1daa4fe6941e7b",
+    "produce_demo": "b9dbb63906a6424ddef2bdad42da30f55cb98e671eb61f75a2fc81f680f518cc",
+    "semantic_hash_recomputed_default": "1e388a4482bd558b5f0e8d6e821c883dca57a6029634a7c74c6055c873eed564",
+    "source_sha256_actual": "3a022345f4faebf7476ab8cec4981036d7633f299fa7471d28dce4fced7ad4b6",
+    "source_sha256_pinned": "cdba23d2194ac11fa4dd63a53a0fc20fa1c6004cae319f0a67fdeb6211bbda0d",
+    "technical_snapshot_fields": "8aae5b0ab72eb18197f5f08f747fbd8715ee533ca269b751ccf0caab572faa1e",
+    "tree_has_evaluate_stamped": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b"
+  },
+  "field_level_diff": {
+    "classifier": "scripts fielddiff_strict.py (recursive, every path; additions allowed only for the four adoption keys with legacy values; meta diffs allowed only when they equal the Track C 2137883 state)",
+    "summary": "total_diffs=34 adoption_key_additions=28 meta_expected=6 unexpected=0",
+    "adoption_key_additions": [
+      "engine_fingerprint_norm_dicts/0/available_at = null",
+      "engine_fingerprint_norm_dicts/0/data_stamp_refs = []",
+      "engine_fingerprint_norm_dicts/0/input_hash = null",
+      "engine_fingerprint_norm_dicts/0/source_vintages = []",
+      "engine_fingerprint_norm_dicts/1/available_at = null",
+      "engine_fingerprint_norm_dicts/1/data_stamp_refs = []",
+      "engine_fingerprint_norm_dicts/1/input_hash = null",
+      "engine_fingerprint_norm_dicts/1/source_vintages = []",
+      "engine_fingerprint_norm_dicts/2/available_at = null",
+      "engine_fingerprint_norm_dicts/2/data_stamp_refs = []",
+      "engine_fingerprint_norm_dicts/2/input_hash = null",
+      "engine_fingerprint_norm_dicts/2/source_vintages = []",
+      "engine_fingerprint_norm_dicts/3/available_at = null",
+      "engine_fingerprint_norm_dicts/3/data_stamp_refs = []",
+      "engine_fingerprint_norm_dicts/3/input_hash = null",
+      "engine_fingerprint_norm_dicts/3/source_vintages = []",
+      "engine_fingerprint_norm_dicts/4/available_at = null",
+      "engine_fingerprint_norm_dicts/4/data_stamp_refs = []",
+      "engine_fingerprint_norm_dicts/4/input_hash = null",
+      "engine_fingerprint_norm_dicts/4/source_vintages = []",
+      "engine_fingerprint_norm_dicts/5/available_at = null",
+      "engine_fingerprint_norm_dicts/5/data_stamp_refs = []",
+      "engine_fingerprint_norm_dicts/5/input_hash = null",
+      "engine_fingerprint_norm_dicts/5/source_vintages = []",
+      "macro_legacy_norm_dict/available_at = null",
+      "macro_legacy_norm_dict/data_stamp_refs = []",
+      "macro_legacy_norm_dict/input_hash = null",
+      "macro_legacy_norm_dict/source_vintages = []"
+    ],
+    "meta_differences_expected": [
+      "engine_fingerprint_sha256 | fingerprint over the norm dicts: before == pinned, after == sha256(after norm dicts)",
+      "macro_snapshot_fields | dataclass fields: exactly the four lineage fields appended",
+      "source_sha256_actual/src/investment_system/macro/engine.py | digest of macro/engine.py: canonical b8e39a2 -> Track C 2137883 bytes",
+      "source_sha256_actual/src/investment_system/technical/engine.py | digest of technical/engine.py: canonical b8e39a2 -> Track C 2137883 bytes",
+      "technical_snapshot_fields | dataclass fields: exactly the four lineage fields appended",
+      "tree_has_evaluate_stamped | state detector: legacy -> adopted"
+    ],
+    "unexpected_differences": []
+  },
+  "verdict": "PASS",
+  "pins": {
+    "ENGINE_FINGERPRINT": {
+      "pre_adoption": "28e910f3005c74888aa33e9b6f45b8d94fc70d4f023e1bc49a6af4100ea9ede6",
+      "c28_adopted": "0b26c7d1a199b270568e65cb4dc9c41cca4160e8a0ed7494244266a54e8d1a4a"
+    },
+    "SOURCE_SHA256[technical/engine.py]": {
+      "pre_adoption": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+      "c28_adopted": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c"
+    },
+    "SOURCE_SHA256[macro/engine.py]": {
+      "pre_adoption": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+      "c28_adopted": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10"
+    },
+    "other SOURCE_SHA256 pins (qgv/scoring, qgv/leaderboard, qgv/portfolio, integration/engine)": "unchanged",
+    "selection": "state-exact from the adopted feature itself: hasattr(TechnicalEngine,'evaluate_stamped') and hasattr(MacroEngine,'evaluate_stamped') and the four field names on TechnicalSnapshot and MacroSnapshot; all four signals must agree, otherwise the sentinel 'C28_ADOPTION_STATE_INCONSISTENT' is selected and the byte checks fail. norm() unchanged; no key stripped (A2 not approved).",
+    "reason": "C-28 upstream adoption of Track C 2137883 per user CDR-004 2026-10-03"
+  },
+  "tests": {
+    "BEFORE_full_suite_pr11_tip_a2e0790": "412 passed, 0 failed (pytest 9.1.1, Python 3.11.15)",
+    "AFTER_tree_own_tests_before_pin_edit": "1 failed, 15 passed — only test_engine_fingerprint_and_cross_track_sources_unchanged (SOURCE_SHA256 technical/engine.py f7268f52 vs 86607bf7)",
+    "proposal_branch_full_suite_after_pin_edit": "412 passed, 0 failed (equals the pre-change result)",
+    "adopted_tree_with_repinned_test": "16 passed (C28_ADOPTED=True selects 0b26c7d1 / 86607bf7 / a0a7c983)",
+    "pre_adoption_tree_selection": "C28_ADOPTED=False selects 28e910f3 / f7268f52 / c593a2ef",
+    "negative_third_content": "FAIL as required (engine.py + comment line: ab8d3eba… != 86607bf7…)",
+    "negative_partial_adoption": "FAIL as required (MacroEngine.evaluate_stamped renamed → selector returns C28_ADOPTION_STATE_INCONSISTENT)",
+    "github_actions": "NOT_RUN"
+  },
+  "notes": [
+    "Order of operations: BEFORE/AFTER dumps and the field-level diff were recorded before any pin edit.",
+    "The ENGINE_FINGERPRINT test covers TechnicalEngine().evaluate only (no MacroEngine call in the test); MacroEngine().evaluate was compared additionally because SOURCE_SHA256 pins macro/engine.py. Its legacy output is identical except for the same four added keys.",
+    "sample_2024-12-31.json 'records' entries are summary projections (no contract/lookback/input_lineage body), so a semantic_hash recomputation over them is not applicable; the recheck result for that file is identical before and after and is not an adoption effect. The full records in company_records_2024-12-31.json recompute to their committed semantic_hash 3/3 before and after.",
+    "No committed evidence/semantic hash of this PR changes under the adopted tree; no post-adoption evidence record was needed for them.",
+    "No source change under implementation/src. Dependency-not-merged sentinels and the #10/#14 CI-mode models.py compare are not touched (separate items per CDR-004).",
+    "This file is evidence of invariance, not an approval; the owner adoption record is C28_UPSTREAM_ADOPTION_2026-10-03.md."
+  ],
+  "engine_fingerprint_norm_dicts_before": [
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "company_id": "c",
+      "drawdown_recheck": false,
+      "execution_zone": "WAIT",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+      "mutated_qgv": false,
+      "qgv_snapshot_id_ref": null,
+      "regime": "RANGE",
+      "scenarios": [
+        {
+          "kind": "structural-placeholder",
+          "name": "S1",
+          "return_shock": -0.1
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S2",
+          "return_shock": 0.0
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S3",
+          "return_shock": 0.1
+        }
+      ],
+      "synthetic": true,
+      "technical_version": "v0.6-STRUCTURAL-FREEZE"
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "company_id": "c",
+      "drawdown_recheck": false,
+      "execution_zone": "WAIT",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+      "mutated_qgv": false,
+      "qgv_snapshot_id_ref": null,
+      "regime": "RANGE",
+      "scenarios": [
+        {
+          "kind": "structural-placeholder",
+          "name": "S1",
+          "return_shock": -0.1
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S2",
+          "return_shock": 0.0
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S3",
+          "return_shock": 0.1
+        }
+      ],
+      "synthetic": true,
+      "technical_version": "v0.6-STRUCTURAL-FREEZE"
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "company_id": "c",
+      "drawdown_recheck": false,
+      "execution_zone": "WAIT",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+      "mutated_qgv": false,
+      "qgv_snapshot_id_ref": null,
+      "regime": "UNKNOWN",
+      "scenarios": [
+        {
+          "kind": "structural-placeholder",
+          "name": "S1",
+          "return_shock": -0.1
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S2",
+          "return_shock": 0.0
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S3",
+          "return_shock": 0.1
+        }
+      ],
+      "synthetic": true,
+      "technical_version": "v0.6-STRUCTURAL-FREEZE"
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "company_id": "c",
+      "drawdown_recheck": false,
+      "execution_zone": "ADD",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+      "mutated_qgv": false,
+      "qgv_snapshot_id_ref": null,
+      "regime": "TREND_UP",
+      "scenarios": [
+        {
+          "kind": "structural-placeholder",
+          "name": "S1",
+          "return_shock": -0.1
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S2",
+          "return_shock": 0.0
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S3",
+          "return_shock": 0.1
+        }
+      ],
+      "synthetic": true,
+      "technical_version": "v0.6-STRUCTURAL-FREEZE"
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "company_id": "c",
+      "drawdown_recheck": false,
+      "execution_zone": "WAIT",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+      "mutated_qgv": false,
+      "qgv_snapshot_id_ref": null,
+      "regime": "TREND_DOWN",
+      "scenarios": [
+        {
+          "kind": "structural-placeholder",
+          "name": "S1",
+          "return_shock": -0.1
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S2",
+          "return_shock": 0.0
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S3",
+          "return_shock": 0.1
+        }
+      ],
+      "synthetic": true,
+      "technical_version": "v0.6-STRUCTURAL-FREEZE"
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "company_id": "c",
+      "drawdown_recheck": false,
+      "execution_zone": "ENTRY",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+      "mutated_qgv": false,
+      "qgv_snapshot_id_ref": null,
+      "regime": "TREND_UP",
+      "scenarios": [
+        {
+          "kind": "structural-placeholder",
+          "name": "S1",
+          "return_shock": -0.1
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S2",
+          "return_shock": 0.0
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S3",
+          "return_shock": 0.1
+        }
+      ],
+      "synthetic": true,
+      "technical_version": "v0.6-STRUCTURAL-FREEZE"
+    }
+  ],
+  "engine_fingerprint_norm_dicts_after": [
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "available_at": null,
+      "company_id": "c",
+      "data_stamp_refs": [],
+      "drawdown_recheck": false,
+      "execution_zone": "WAIT",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "input_hash": null,
+      "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+      "mutated_qgv": false,
+      "qgv_snapshot_id_ref": null,
+      "regime": "RANGE",
+      "scenarios": [
+        {
+          "kind": "structural-placeholder",
+          "name": "S1",
+          "return_shock": -0.1
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S2",
+          "return_shock": 0.0
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S3",
+          "return_shock": 0.1
+        }
+      ],
+      "source_vintages": [],
+      "synthetic": true,
+      "technical_version": "v0.6-STRUCTURAL-FREEZE"
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "available_at": null,
+      "company_id": "c",
+      "data_stamp_refs": [],
+      "drawdown_recheck": false,
+      "execution_zone": "WAIT",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "input_hash": null,
+      "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+      "mutated_qgv": false,
+      "qgv_snapshot_id_ref": null,
+      "regime": "RANGE",
+      "scenarios": [
+        {
+          "kind": "structural-placeholder",
+          "name": "S1",
+          "return_shock": -0.1
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S2",
+          "return_shock": 0.0
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S3",
+          "return_shock": 0.1
+        }
+      ],
+      "source_vintages": [],
+      "synthetic": true,
+      "technical_version": "v0.6-STRUCTURAL-FREEZE"
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "available_at": null,
+      "company_id": "c",
+      "data_stamp_refs": [],
+      "drawdown_recheck": false,
+      "execution_zone": "WAIT",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "input_hash": null,
+      "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+      "mutated_qgv": false,
+      "qgv_snapshot_id_ref": null,
+      "regime": "UNKNOWN",
+      "scenarios": [
+        {
+          "kind": "structural-placeholder",
+          "name": "S1",
+          "return_shock": -0.1
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S2",
+          "return_shock": 0.0
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S3",
+          "return_shock": 0.1
+        }
+      ],
+      "source_vintages": [],
+      "synthetic": true,
+      "technical_version": "v0.6-STRUCTURAL-FREEZE"
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "available_at": null,
+      "company_id": "c",
+      "data_stamp_refs": [],
+      "drawdown_recheck": false,
+      "execution_zone": "ADD",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "input_hash": null,
+      "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+      "mutated_qgv": false,
+      "qgv_snapshot_id_ref": null,
+      "regime": "TREND_UP",
+      "scenarios": [
+        {
+          "kind": "structural-placeholder",
+          "name": "S1",
+          "return_shock": -0.1
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S2",
+          "return_shock": 0.0
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S3",
+          "return_shock": 0.1
+        }
+      ],
+      "source_vintages": [],
+      "synthetic": true,
+      "technical_version": "v0.6-STRUCTURAL-FREEZE"
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "available_at": null,
+      "company_id": "c",
+      "data_stamp_refs": [],
+      "drawdown_recheck": false,
+      "execution_zone": "WAIT",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "input_hash": null,
+      "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+      "mutated_qgv": false,
+      "qgv_snapshot_id_ref": null,
+      "regime": "TREND_DOWN",
+      "scenarios": [
+        {
+          "kind": "structural-placeholder",
+          "name": "S1",
+          "return_shock": -0.1
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S2",
+          "return_shock": 0.0
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S3",
+          "return_shock": 0.1
+        }
+      ],
+      "source_vintages": [],
+      "synthetic": true,
+      "technical_version": "v0.6-STRUCTURAL-FREEZE"
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "available_at": null,
+      "company_id": "c",
+      "data_stamp_refs": [],
+      "drawdown_recheck": false,
+      "execution_zone": "ENTRY",
+      "implementation_kind": "NEW IMPLEMENTATION",
+      "input_hash": null,
+      "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+      "mutated_qgv": false,
+      "qgv_snapshot_id_ref": null,
+      "regime": "TREND_UP",
+      "scenarios": [
+        {
+          "kind": "structural-placeholder",
+          "name": "S1",
+          "return_shock": -0.1
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S2",
+          "return_shock": 0.0
+        },
+        {
+          "kind": "structural-placeholder",
+          "name": "S3",
+          "return_shock": 0.1
+        }
+      ],
+      "source_vintages": [],
+      "synthetic": true,
+      "technical_version": "v0.6-STRUCTURAL-FREEZE"
+    }
+  ],
+  "macro_legacy_norm_dict_before": {
+    "as_of": "2026-09-14T00:00:00+00:00",
+    "environment": {
+      "candidate_not_applied": "v0.1.4-CANDIDATE",
+      "indicators": {
+        "growth": 0.02,
+        "inflation": 0.03
+      }
+    },
+    "implementation_kind": "NEW IMPLEMENTATION",
+    "macro_version": "v0.1.1",
+    "mutated_qgv": false,
+    "regime": "NEUTRAL",
+    "state": "NORMAL",
+    "synthetic": true
+  },
+  "macro_legacy_norm_dict_after": {
+    "as_of": "2026-09-14T00:00:00+00:00",
+    "available_at": null,
+    "data_stamp_refs": [],
+    "environment": {
+      "candidate_not_applied": "v0.1.4-CANDIDATE",
+      "indicators": {
+        "growth": 0.02,
+        "inflation": 0.03
+      }
+    },
+    "implementation_kind": "NEW IMPLEMENTATION",
+    "input_hash": null,
+    "macro_version": "v0.1.1",
+    "mutated_qgv": false,
+    "regime": "NEUTRAL",
+    "source_vintages": [],
+    "state": "NORMAL",
+    "synthetic": true
+  },
+  "engine_fingerprint_sha256_before": "28e910f3005c74888aa33e9b6f45b8d94fc70d4f023e1bc49a6af4100ea9ede6",
+  "engine_fingerprint_sha256_after": "0b26c7d1a199b270568e65cb4dc9c41cca4160e8a0ed7494244266a54e8d1a4a",
+  "committed_evidence_recheck_before": {
+    "company_records_2024-12-31.json": {
+      "file_sha256": "65040052031a0c2bfcb90fb4d4c54aa570f112d8f2ee600d16944c253f1b559a",
+      "mismatches": [],
+      "records_checked": 3,
+      "records_match": 3
+    },
+    "producer_not_available_golden.json": {
+      "file_sha256": "90128d54a68fa352ab67f98d8af18fb72a6f31682995e2897e3db79248d63ccb",
+      "mismatches": [],
+      "records_checked": 0,
+      "records_match": 0
+    },
+    "sample_2024-12-31.json": {
+      "file_sha256": "29ec1a07259fdd8996a51b9a27e630b25d6f0e2c0dab42c447c45c3651888b8d",
+      "mismatches": [
+        {
+          "committed": "3683290b8bc79ce89f50a0641d9f2f1cef058e90d9cd22956080574d176ff863",
+          "company_id": "msft",
+          "recomputed": "e62782f25c369a6edc4c45674b6edace417717717ae9e619c3936c2e557c66bb"
+        },
+        {
+          "committed": "6f1346b1b2aa8ddb0c4a8575f98794d0821143d26b58f2304ef7ed35dc941233",
+          "company_id": "nvda",
+          "recomputed": "a188a6ccf86aa67fdcf7d61d9af84e4a4b210e0a4ad139f2c66d646aaad8006a"
+        },
+        {
+          "committed": "76ad2b62e719c6f1a9870816ecc6cfee1bab09ec52f67da7fac0528608af291e",
+          "company_id": "aapl",
+          "recomputed": "a6c10dd3871bdd4cc92296aac4444720da77795933b9d712cba19a9992f5f24d"
+        }
+      ],
+      "records_checked": 3,
+      "records_match": 0
+    }
+  },
+  "committed_evidence_recheck_after": {
+    "company_records_2024-12-31.json": {
+      "file_sha256": "65040052031a0c2bfcb90fb4d4c54aa570f112d8f2ee600d16944c253f1b559a",
+      "mismatches": [],
+      "records_checked": 3,
+      "records_match": 3
+    },
+    "producer_not_available_golden.json": {
+      "file_sha256": "90128d54a68fa352ab67f98d8af18fb72a6f31682995e2897e3db79248d63ccb",
+      "mismatches": [],
+      "records_checked": 0,
+      "records_match": 0
+    },
+    "sample_2024-12-31.json": {
+      "file_sha256": "29ec1a07259fdd8996a51b9a27e630b25d6f0e2c0dab42c447c45c3651888b8d",
+      "mismatches": [
+        {
+          "committed": "3683290b8bc79ce89f50a0641d9f2f1cef058e90d9cd22956080574d176ff863",
+          "company_id": "msft",
+          "recomputed": "e62782f25c369a6edc4c45674b6edace417717717ae9e619c3936c2e557c66bb"
+        },
+        {
+          "committed": "6f1346b1b2aa8ddb0c4a8575f98794d0821143d26b58f2304ef7ed35dc941233",
+          "company_id": "nvda",
+          "recomputed": "a188a6ccf86aa67fdcf7d61d9af84e4a4b210e0a4ad139f2c66d646aaad8006a"
+        },
+        {
+          "committed": "76ad2b62e719c6f1a9870816ecc6cfee1bab09ec52f67da7fac0528608af291e",
+          "company_id": "aapl",
+          "recomputed": "a6c10dd3871bdd4cc92296aac4444720da77795933b9d712cba19a9992f5f24d"
+        }
+      ],
+      "records_checked": 3,
+      "records_match": 0
+    }
+  }
+}
