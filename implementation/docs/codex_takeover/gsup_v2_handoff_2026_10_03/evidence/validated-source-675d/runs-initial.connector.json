@@ -1,0 +1,84 @@
+{
+  "workflow_runs": [
+    {
+      "id": 37106686317,
+      "name": "qgv-invalidation-binding",
+      "status": "in_progress",
+      "conclusion": null,
+      "run_number": 6,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686317/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686317/logs",
+      "workflow_id": 373058481
+    },
+    {
+      "id": 37106686280,
+      "name": "technical-real-producer",
+      "status": "in_progress",
+      "conclusion": null,
+      "run_number": 15,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686280/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686280/logs",
+      "workflow_id": 372087969
+    },
+    {
+      "id": 37106686295,
+      "name": "web-mvp-validation",
+      "status": "in_progress",
+      "conclusion": null,
+      "run_number": 22,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686295/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686295/logs",
+      "workflow_id": 369058605
+    },
+    {
+      "id": 37106686285,
+      "name": "sec-primary-disclosure",
+      "status": "in_progress",
+      "conclusion": null,
+      "run_number": 7,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686285/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686285/logs",
+      "workflow_id": 372894520
+    },
+    {
+      "id": 37106686281,
+      "name": "technical-real-model",
+      "status": "in_progress",
+      "conclusion": null,
+      "run_number": 12,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686281/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686281/logs",
+      "workflow_id": 372119674
+    },
+    {
+      "id": 37106686279,
+      "name": "codex-integration-readiness",
+      "status": "in_progress",
+      "conclusion": null,
+      "run_number": 3,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686279/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686279/logs",
+      "workflow_id": 373723426
+    },
+    {
+      "id": 37106686269,
+      "name": "p01-research-publication",
+      "status": "in_progress",
+      "conclusion": null,
+      "run_number": 8,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686269/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686269/logs",
+      "workflow_id": 372992558
+    },
+    {
+      "id": 37106686274,
+      "name": "us-equity-session",
+      "status": "in_progress",
+      "conclusion": null,
+      "run_number": 10,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686274/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37106686274/logs",
+      "workflow_id": 372899684
+    }
+  ]
+}

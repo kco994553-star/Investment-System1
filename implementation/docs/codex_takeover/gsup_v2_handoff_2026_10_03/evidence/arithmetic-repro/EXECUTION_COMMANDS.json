@@ -1,0 +1,42 @@
+{
+  "commands": [
+    {
+      "label": "cpython311_numpy235",
+      "process": 1,
+      "executable": "/workspace/gsup-v2-oracle-venv311/bin/python",
+      "cmd": "/workspace/gsup-v2-oracle-venv311/bin/python /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/replay_arithmetic_candidates.py --repository /workspace/gsup-v2-integration --out /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython311_numpy235_process1.json > /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython311_numpy235_process1.stdout.log 2> /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython311_numpy235_process1.stderr.log"
+    },
+    {
+      "label": "cpython311_numpy235",
+      "process": 2,
+      "executable": "/workspace/gsup-v2-oracle-venv311/bin/python",
+      "cmd": "/workspace/gsup-v2-oracle-venv311/bin/python /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/replay_arithmetic_candidates.py --repository /workspace/gsup-v2-integration --out /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython311_numpy235_process2.json > /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython311_numpy235_process2.stdout.log 2> /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython311_numpy235_process2.stderr.log"
+    },
+    {
+      "label": "cpython312_numpy235",
+      "process": 1,
+      "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "cmd": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/replay_arithmetic_candidates.py --repository /workspace/gsup-v2-integration --out /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython312_numpy235_process1.json > /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython312_numpy235_process1.stdout.log 2> /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython312_numpy235_process1.stderr.log"
+    },
+    {
+      "label": "cpython312_numpy235",
+      "process": 2,
+      "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "cmd": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/replay_arithmetic_candidates.py --repository /workspace/gsup-v2-integration --out /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython312_numpy235_process2.json > /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython312_numpy235_process2.stdout.log 2> /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython312_numpy235_process2.stderr.log"
+    },
+    {
+      "label": "cpython313_numpy224",
+      "process": 1,
+      "executable": "/usr/bin/python3.13",
+      "cmd": "/usr/bin/python3.13 /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/replay_arithmetic_candidates.py --repository /workspace/gsup-v2-integration --out /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython313_numpy224_process1.json > /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython313_numpy224_process1.stdout.log 2> /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython313_numpy224_process1.stderr.log"
+    },
+    {
+      "label": "cpython313_numpy224",
+      "process": 2,
+      "executable": "/usr/bin/python3.13",
+      "cmd": "/usr/bin/python3.13 /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/replay_arithmetic_candidates.py --repository /workspace/gsup-v2-integration --out /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython313_numpy224_process2.json > /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython313_numpy224_process2.stdout.log 2> /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython313_numpy224_process2.stderr.log"
+    }
+  ],
+  "exit_code": 0,
+  "scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY"
+}

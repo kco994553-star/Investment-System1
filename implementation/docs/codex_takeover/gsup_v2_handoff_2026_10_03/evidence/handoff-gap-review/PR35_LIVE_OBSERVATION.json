@@ -1,0 +1,51 @@
+{
+  "observed_at": "2026-10-03T10:24:06.507Z",
+  "source": "github_get_pr_info read-only connector",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/35",
+      "number": 35,
+      "state": "open",
+      "merged": false,
+      "mergeable": true,
+      "draft": true,
+      "body": "The shared-source protection helper returned a vacuous PASS when both inputs were the same tree: each protected non-models file was compared with itself. This proposal compares those ten paths to immutable canonical Git blobs and rejects missing objects/paths and Git replacement refs. The two approved models states/mixed directions, production sources, formulas and result fingerprints remain unchanged.\n\nSource checkpoint: `fc6720bdc8143e97bf25e37e4091b1f2aa54b69f` on `codex/integration-hardening-2026-10-03`; base/merge-base is preserved PR31 `675d0d298fbaab5b8473ed048a561ef84e2f3e78`. Four history-preserving commits/merges, fourteen additive scoped evidence files and two owned helper/test modifications; production source changes 0. This is a Draft stacked proposal, not canonical integration.\n\nValidation completed:\n\n- Targeted 9→27 PASS; 18 new negative/control test cases. Ten previously undetected tampered paths now all fail. Independent probes 21/21 expected outcomes.\n- Actual local exact-fc full suite: 1,295 PASS, zero failures/errors/skips. Existing 1,277 cases reconfirmed.\n- Seven final GitHub workflows SUCCESS, each actually runs 1,295 tests. Native [37109899437](https://github.com/kco994553-star/Investment-System1/actions/runs/37109899437) checks out exactfc and also passes six producer-Web withheld-contract E2E groups. Its separate Macro job checks out exact `4a07099e36ec3cecda24b82ecedad53800f0aa81`, 11 PASS.\n- Six inherited workflows check out distinct synthetic PR merge `d7c9908c827cac1a53e5b1654e0a7502ee10b34d`, with tree `e236e62a6ff8b0a151710c5e7a77068d08ab0256` identical to exactfc. Commit equality is not claimed. Legacy Web workflow NOT_TRIGGERED by this scope.\n- All 215 production source files and scoped Frozen/v1/approval records preserved. Numerical fingerprint bytes match SHA256 `f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866`.\n- Native/Macro artifact ZIP hashes match GitHub: `d7f5e980a8a92a82076f09532de9133fa3b800384958c4daebbb14b1dcd34cd9` / `525d4860fa54e09d091ccb45083bcc25b7613ddb1f75b3b9c464eafb3be34cdb`.\n\nCompleted bounded F1 work is HANDOFF_READY for independent Primary Integration Writer review. Parent capability maturity stays SYNTHETIC_VERIFIED, Δ0; canonical remains b8e39a2. Real CAL_VERIFY access, Holdout consumption, numeric-policy choices, publication grants, Official promotions and canonical merges all +0. Active M-v2 remains pending its separate arithmetic decision. External active Web owner branches remain read-only; G3 is not claimed resolved by this helper fix.\n\nFinal independent Actions/preservation receipt SHA256 `3ca6497e4843a16e3118d64915555571b80f3290d740cbcbc8de8fbb7cdbabc5`. Published audit evidence and checkpoint: https://github.com/kco994553-star/Investment-System1/blob/eb82ec6f3c425fdf70ed52941f7d3bcf0731eb29/implementation/docs/codex_takeover/CHECKPOINT_2026-10-03_F1_AND_WEB_OWNER_REVIEW.md\n",
+      "title": "Integration: repair vacuous same-tree shared-source protection",
+      "base": "codex/track-c-gsup-v2-2026-10-03",
+      "base_sha": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "head": "codex/integration-hardening-2026-10-03",
+      "head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "head_repo_id": 1379547477,
+      "head_repo_full_name": "kco994553-star/Investment-System1",
+      "merge_commit_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+      "user": {
+        "login": "kco994553-star",
+        "name": "kco994553-star",
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/331178773?v=4",
+        "id": 331178773
+      },
+      "requested_reviewers": null,
+      "requested_team_reviewers": null,
+      "diff": null,
+      "comments": null,
+      "created_at": "2026-10-03T08:29:56Z",
+      "updated_at": "2026-10-03T09:09:15Z",
+      "closed_at": null,
+      "merged_at": null,
+      "commits": 4,
+      "changed_files": 16,
+      "additions": 991,
+      "deletions": 0,
+      "display_url": "https://github.com/kco994553-star/Investment-System1/pull/35",
+      "display_title": "Integration: repair vacuous same-tree shared-source protection"
+    },
+    "isError": false
+  }
+}
