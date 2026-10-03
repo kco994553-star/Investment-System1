@@ -1,0 +1,53 @@
+{
+  "decision_id": "TC-D3P-006B-C7-G1-D2",
+  "status": "APPROVED",
+  "activation": "ACTIVE_C7_ONLY",
+  "authority": "USER_EXPLICIT_APPROVAL",
+  "approval_recorded_at_kst": "2026-10-01T20:25:32.000+09:00",
+  "approval_recorded_at_utc": "2026-10-01 11:25:32 UTC",
+  "timestamp_semantics": "Actual processing clock; not an inferred message receipt time",
+  "supplements": "TC-D3P-006B",
+  "preserves_original_A_and_B": true,
+  "G1": {
+    "vertex_universe": "COMPLETE_CONSTRAINT_ELIGIBLE_LANDSCAPE",
+    "order": [
+      "ELIGIBLE_LANDSCAPE",
+      "GRAPH_COMPONENTS",
+      "INTERSECT_PARETO"
+    ],
+    "dominated_bridges": "CONNECTIVITY_EVIDENCE_ONLY_NEVER_PROMOTED",
+    "preserve": [
+      "members",
+      "pareto_members",
+      "non_pareto_members",
+      "edges",
+      "registered_adjacency",
+      "metric_ranges",
+      "metric_diameters"
+    ],
+    "minimum_members": 2,
+    "component_ranking": "NONE_ALL_STABLE_COMPONENTS"
+  },
+  "D2": {
+    "comparison": "ABSOLUTE_NORMALIZED_MAGNITUDE",
+    "definition": "abs(raw_delta / C6_registered_scale)",
+    "scaled_C6_delta": "abs(already_scaled_delta); never divide twice",
+    "dimensions": "INDEPENDENT_COORDINATE_COHORT_TIME",
+    "dominance": "ALL_NO_WORSE_AND_AT_LEAST_ONE_STRICTLY_BETTER",
+    "tradeoffs": "PRESERVE",
+    "invalid_scale_or_provenance": "FAIL_CLOSED",
+    "new_scalar_weights_thresholds": "FORBIDDEN"
+  },
+  "not_authorized": [
+    "research_numeric_limits",
+    "plateau_tolerances",
+    "new_metrics",
+    "complexity_definition",
+    "statistical_or_economic_distinctness",
+    "promotion",
+    "Holdout_consumption",
+    "Forward_validation"
+  ],
+  "packages_A_B_C": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+  "holdout": "UNCONSUMED"
+}

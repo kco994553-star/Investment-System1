@@ -1,0 +1,780 @@
+{
+  "record_kind": "SOFTWARE_FREEZE_EVIDENCE",
+  "phase": "C7",
+  "phase_state": "SOFTWARE_FROZEN",
+  "recorded_at_kst": "2026-10-01T20:58:26.000+09:00",
+  "recorded_at_utc": "2026-10-01 11:58:26 UTC",
+  "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+  "configuration_scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY",
+  "code_validated_head": "c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a",
+  "code_hash": "f479ce9ee343a50700043f9e1c1a4a45b71a653db420236c0c7d74824be931c2",
+  "software_acceptance_report_hash": "516ca461e7c1ea74d0c57c5012f75fc7346fe0481051086d948eb7774a72da45",
+  "policy": "TC-D3P-006B+G1+D2",
+  "additive_approval_recorded_at_kst": "2026-10-01T20:25:32.000+09:00",
+  "mandatory": {
+    "CENTER": "PASS",
+    "COMPLEXITY": "PASS",
+    "DISTINCTNESS": "PASS",
+    "DRIFT": "PASS",
+    "ELIGIBILITY": "PASS",
+    "LANDSCAPE": "PASS",
+    "PARETO": "PASS",
+    "PLATEAU": "PASS",
+    "PROFILE_CANDIDATE": "PASS"
+  },
+  "tests": {
+    "C7_targeted": {
+      "status": "PASS",
+      "count": 97
+    },
+    "C0_C6_regression": {
+      "status": "PASS",
+      "count": 233,
+      "C0_C5": 103,
+      "C6": 130
+    },
+    "full_regression": {
+      "status": "PASS",
+      "count": 726
+    },
+    "previous_tests_deleted_or_relaxed": false
+  },
+  "actions": {
+    "run_id": 36858285603,
+    "job_id": 110355934280,
+    "conclusion": "success",
+    "head_sha": "c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a",
+    "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36858285603",
+    "artifacts": [
+      {
+        "id": 11160980432,
+        "name": "track-c-c6-evidence-c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a",
+        "digest": "sha256:d21bb1acd35449bded7a80d3c68fca00bad05f01c32b0be1980944791eff97ff"
+      },
+      {
+        "id": 11160655634,
+        "name": "track-c-c7-evidence-c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a",
+        "digest": "sha256:788d4986f6b11f47a28f1f82add83fe7b70eb770a189c790c302612a6430bbab"
+      }
+    ]
+  },
+  "current_resolved_acceptance": {
+    "Investor_QGV": "FUTURE_TRACK_C_INPUT",
+    "PIT_no_lookahead": "PASS_CURRENT_C4_C5_C6_C7_RESOLUTION",
+    "configuration_scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY",
+    "holdout_state": "UNCONSUMED_NO_READER",
+    "integrated": {
+      "Investor_QGV": "FUTURE_TRACK_C_INPUT",
+      "acceptance": {
+        "holdout_state": "UNCONSUMED",
+        "official": false,
+        "real_pit_validated": false,
+        "registration_hash": "addccbdf37f7565a837c9741422efbc96cf9bf2e393d1f13c92cb6af00995daa",
+        "report_hash": "516ca461e7c1ea74d0c57c5012f75fc7346fe0481051086d948eb7774a72da45",
+        "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+        "software_freeze_eligible": true,
+        "status": "PASS",
+        "trial_id": "selection-complete-landscape"
+      },
+      "code_hash": "f479ce9ee343a50700043f9e1c1a4a45b71a653db420236c0c7d74824be931c2",
+      "configuration_scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY",
+      "holdout_state": "UNCONSUMED",
+      "official": false,
+      "profiles": {
+        "Aggressive": {
+          "candidates": [
+            {
+              "candidate_id": "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996",
+              "dataset_vintages": {
+                "EXPANDING-PRIMARY": "v1",
+                "EXPANDING-REBALANCE_GAP_STRESS": "v1",
+                "ROLLING-PRIMARY": "v1",
+                "ROLLING-REBALANCE_GAP_STRESS": "v1"
+              },
+              "evaluator_id": "integrated-fixture-v1",
+              "landscape_lineage_hash": "2d5a57f3812f14d9dbd534e980a353fef606cc810b29b257e53ec8f7b95b4640",
+              "objective_dimensions": [
+                [
+                  "EXPANDING-PRIMARY",
+                  "net_cagr"
+                ],
+                [
+                  "EXPANDING-PRIMARY",
+                  "net_mdd"
+                ],
+                [
+                  "EXPANDING-REBALANCE_GAP_STRESS",
+                  "net_cagr"
+                ],
+                [
+                  "EXPANDING-REBALANCE_GAP_STRESS",
+                  "net_mdd"
+                ],
+                [
+                  "ROLLING-PRIMARY",
+                  "net_cagr"
+                ],
+                [
+                  "ROLLING-PRIMARY",
+                  "net_mdd"
+                ],
+                [
+                  "ROLLING-REBALANCE_GAP_STRESS",
+                  "net_cagr"
+                ],
+                [
+                  "ROLLING-REBALANCE_GAP_STRESS",
+                  "net_mdd"
+                ]
+              ],
+              "official": false,
+              "oos_values": [
+                3.820461235846139,
+                0.03527112848070346,
+                3.820461235846139,
+                0.03527112848070346,
+                3.820461235846139,
+                0.03527112848070346,
+                3.820461235846139,
+                0.03527112848070346
+              ],
+              "parameters": {
+                "cash_buffer": 0,
+                "technical_lookback": 1
+              },
+              "registered_metrics": [
+                {
+                  "direction": "max",
+                  "formula_id": "EVL_METRICS_v1:NET_OF_TRADING_COST_PRE_TAX:cagr",
+                  "metric_id": "net_cagr",
+                  "path": [
+                    "views",
+                    "NET_OF_TRADING_COST_PRE_TAX",
+                    "cagr"
+                  ],
+                  "provenance": "C6_BASELINE_C3_METRICS",
+                  "units": "DECIMAL_RETURN_PER_YEAR",
+                  "version": "EVL_METRICS_v1"
+                },
+                {
+                  "direction": "min",
+                  "formula_id": "EVL_METRICS_v1:NET_OF_TRADING_COST_PRE_TAX:mdd",
+                  "metric_id": "net_mdd",
+                  "path": [
+                    "views",
+                    "NET_OF_TRADING_COST_PRE_TAX",
+                    "mdd"
+                  ],
+                  "provenance": "C6_BASELINE_C3_METRICS",
+                  "units": "DECIMAL_DRAWDOWN",
+                  "version": "EVL_METRICS_v1"
+                }
+              ],
+              "research_decision": "NOT_ASSESSED_PENDING_C8",
+              "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+              "selection_lineage_hash": "5ca9dc35811509edb0996ad31292bd0d3f1725d9340c845f4e6551faab4e6b4d",
+              "source_checkpoint": "FROZEN_C4_C5_C6_SYNTHETIC_HASH_CHECKPOINT",
+              "tax_mode": "EXCLUDED"
+            }
+          ],
+          "components": [
+            {
+              "component_members": [
+                "25657c2ed264fcca5909c618e9d949df8a3f153e059061344da91c73838e76cb",
+                "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"
+              ],
+              "costs": {
+                "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996": "1"
+              },
+              "domain_ranges": {
+                "cash_buffer": "1/5",
+                "technical_lookback": "0"
+              },
+              "representatives": [
+                "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"
+              ],
+              "restricted_candidates": [
+                "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"
+              ],
+              "tie_semantics": "TIED_EQUIVALENT_REPRESENTATIVES"
+            }
+          ],
+          "profile": "Aggressive",
+          "representative_tie_set": [
+            "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"
+          ]
+        },
+        "Balanced": {
+          "candidates": [
+            {
+              "candidate_id": "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996",
+              "dataset_vintages": {
+                "EXPANDING-PRIMARY": "v1",
+                "EXPANDING-REBALANCE_GAP_STRESS": "v1",
+                "ROLLING-PRIMARY": "v1",
+                "ROLLING-REBALANCE_GAP_STRESS": "v1"
+              },
+              "evaluator_id": "integrated-fixture-v1",
+              "landscape_lineage_hash": "2d5a57f3812f14d9dbd534e980a353fef606cc810b29b257e53ec8f7b95b4640",
+              "objective_dimensions": [
+                [
+                  "EXPANDING-PRIMARY",
+                  "net_cagr"
+                ],
+                [
+                  "EXPANDING-PRIMARY",
+                  "net_mdd"
+                ],
+                [
+                  "EXPANDING-REBALANCE_GAP_STRESS",
+                  "net_cagr"
+                ],
+                [
+                  "EXPANDING-REBALANCE_GAP_STRESS",
+                  "net_mdd"
+                ],
+                [
+                  "ROLLING-PRIMARY",
+                  "net_cagr"
+                ],
+                [
+                  "ROLLING-PRIMARY",
+                  "net_mdd"
+                ],
+                [
+                  "ROLLING-REBALANCE_GAP_STRESS",
+                  "net_cagr"
+                ],
+                [
+                  "ROLLING-REBALANCE_GAP_STRESS",
+                  "net_mdd"
+                ]
+              ],
+              "official": false,
+              "oos_values": [
+                3.820461235846139,
+                0.03527112848070346,
+                3.820461235846139,
+                0.03527112848070346,
+                3.820461235846139,
+                0.03527112848070346,
+                3.820461235846139,
+                0.03527112848070346
+              ],
+              "parameters": {
+                "cash_buffer": 0,
+                "technical_lookback": 1
+              },
+              "registered_metrics": [
+                {
+                  "direction": "max",
+                  "formula_id": "EVL_METRICS_v1:NET_OF_TRADING_COST_PRE_TAX:cagr",
+                  "metric_id": "net_cagr",
+                  "path": [
+                    "views",
+                    "NET_OF_TRADING_COST_PRE_TAX",
+                    "cagr"
+                  ],
+                  "provenance": "C6_BASELINE_C3_METRICS",
+                  "units": "DECIMAL_RETURN_PER_YEAR",
+                  "version": "EVL_METRICS_v1"
+                },
+                {
+                  "direction": "min",
+                  "formula_id": "EVL_METRICS_v1:NET_OF_TRADING_COST_PRE_TAX:mdd",
+                  "metric_id": "net_mdd",
+                  "path": [
+                    "views",
+                    "NET_OF_TRADING_COST_PRE_TAX",
+                    "mdd"
+                  ],
+                  "provenance": "C6_BASELINE_C3_METRICS",
+                  "units": "DECIMAL_DRAWDOWN",
+                  "version": "EVL_METRICS_v1"
+                }
+              ],
+              "research_decision": "NOT_ASSESSED_PENDING_C8",
+              "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+              "selection_lineage_hash": "1439400d730c684edc8bdda2819d528d83bed2f07756df7c8411b0e41aa03a88",
+              "source_checkpoint": "FROZEN_C4_C5_C6_SYNTHETIC_HASH_CHECKPOINT",
+              "tax_mode": "EXCLUDED"
+            }
+          ],
+          "components": [
+            {
+              "component_members": [
+                "25657c2ed264fcca5909c618e9d949df8a3f153e059061344da91c73838e76cb",
+                "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"
+              ],
+              "costs": {
+                "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996": "1"
+              },
+              "domain_ranges": {
+                "cash_buffer": "1/5",
+                "technical_lookback": "0"
+              },
+              "representatives": [
+                "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"
+              ],
+              "restricted_candidates": [
+                "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"
+              ],
+              "tie_semantics": "TIED_EQUIVALENT_REPRESENTATIVES"
+            }
+          ],
+          "profile": "Balanced",
+          "representative_tie_set": [
+            "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"
+          ]
+        },
+        "Defensive": {
+          "candidates": [
+            {
+              "candidate_id": "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996",
+              "dataset_vintages": {
+                "EXPANDING-PRIMARY": "v1",
+                "EXPANDING-REBALANCE_GAP_STRESS": "v1",
+                "ROLLING-PRIMARY": "v1",
+                "ROLLING-REBALANCE_GAP_STRESS": "v1"
+              },
+              "evaluator_id": "integrated-fixture-v1",
+              "landscape_lineage_hash": "2d5a57f3812f14d9dbd534e980a353fef606cc810b29b257e53ec8f7b95b4640",
+              "objective_dimensions": [
+                [
+                  "EXPANDING-PRIMARY",
+                  "net_cagr"
+                ],
+                [
+                  "EXPANDING-PRIMARY",
+                  "net_mdd"
+                ],
+                [
+                  "EXPANDING-REBALANCE_GAP_STRESS",
+                  "net_cagr"
+                ],
+                [
+                  "EXPANDING-REBALANCE_GAP_STRESS",
+                  "net_mdd"
+                ],
+                [
+                  "ROLLING-PRIMARY",
+                  "net_cagr"
+                ],
+                [
+                  "ROLLING-PRIMARY",
+                  "net_mdd"
+                ],
+                [
+                  "ROLLING-REBALANCE_GAP_STRESS",
+                  "net_cagr"
+                ],
+                [
+                  "ROLLING-REBALANCE_GAP_STRESS",
+                  "net_mdd"
+                ]
+              ],
+              "official": false,
+              "oos_values": [
+                3.820461235846139,
+                0.03527112848070346,
+                3.820461235846139,
+                0.03527112848070346,
+                3.820461235846139,
+                0.03527112848070346,
+                3.820461235846139,
+                0.03527112848070346
+              ],
+              "parameters": {
+                "cash_buffer": 0,
+                "technical_lookback": 1
+              },
+              "registered_metrics": [
+                {
+                  "direction": "max",
+                  "formula_id": "EVL_METRICS_v1:NET_OF_TRADING_COST_PRE_TAX:cagr",
+                  "metric_id": "net_cagr",
+                  "path": [
+                    "views",
+                    "NET_OF_TRADING_COST_PRE_TAX",
+                    "cagr"
+                  ],
+                  "provenance": "C6_BASELINE_C3_METRICS",
+                  "units": "DECIMAL_RETURN_PER_YEAR",
+                  "version": "EVL_METRICS_v1"
+                },
+                {
+                  "direction": "min",
+                  "formula_id": "EVL_METRICS_v1:NET_OF_TRADING_COST_PRE_TAX:mdd",
+                  "metric_id": "net_mdd",
+                  "path": [
+                    "views",
+                    "NET_OF_TRADING_COST_PRE_TAX",
+                    "mdd"
+                  ],
+                  "provenance": "C6_BASELINE_C3_METRICS",
+                  "units": "DECIMAL_DRAWDOWN",
+                  "version": "EVL_METRICS_v1"
+                }
+              ],
+              "research_decision": "NOT_ASSESSED_PENDING_C8",
+              "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+              "selection_lineage_hash": "eb3664a40191bd4d91d816fed223e9ed8f44cf6d76af5fd5b801ff20620ba873",
+              "source_checkpoint": "FROZEN_C4_C5_C6_SYNTHETIC_HASH_CHECKPOINT",
+              "tax_mode": "EXCLUDED"
+            }
+          ],
+          "components": [
+            {
+              "component_members": [
+                "25657c2ed264fcca5909c618e9d949df8a3f153e059061344da91c73838e76cb",
+                "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"
+              ],
+              "costs": {
+                "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996": "1"
+              },
+              "domain_ranges": {
+                "cash_buffer": "1/5",
+                "technical_lookback": "0"
+              },
+              "representatives": [
+                "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"
+              ],
+              "restricted_candidates": [
+                "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"
+              ],
+              "tie_semantics": "TIED_EQUIVALENT_REPRESENTATIVES"
+            }
+          ],
+          "profile": "Defensive",
+          "representative_tie_set": [
+            "ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"
+          ]
+        }
+      },
+      "real_pit_research_validation": "NOT_RUN_MISSING_COMPLETE_REAL_FAMILY",
+      "report_hash": "516ca461e7c1ea74d0c57c5012f75fc7346fe0481051086d948eb7774a72da45",
+      "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+      "source_checkpoint_hash": "833b98926b3070198e664148a9222773c399afaadfde3e83cd0133717a91f23f",
+      "stage_hashes": [
+        "afe6001bb4a10f561a7aa913baf57972c1c13a88ad6ab7a6c8aebcf6167a2f99",
+        "eedad45d81244247218313a7301d225b0343ed91bb7bb605037d54658c3eff0c",
+        "6149481d659e905b1f9fdb37c9a4aaa6251328e9295f08a819cf865b67a45089",
+        "103f0ae756c7d0027a633b82abdd5fb71af5d981034ecdf8dc7949118e56aa98",
+        "c516d644eaa0d3668938053a8c06823b40da24d72463db5e5882446f8c46d335",
+        "069c89829dcdbf33514f7332330f72c6895ded3908af592352f41c327de69b78",
+        "5ca9dc35811509edb0996ad31292bd0d3f1725d9340c845f4e6551faab4e6b4d",
+        "332fec18fa45f0da177c969ff94edc65757b5e9704e5a0e173e7ba17f4b62602",
+        "1fc1ef957cf6f332c143b67149ac6c461d6c2084dff94d4f95d38ebb04bbf988",
+        "ebd445c21e76de01fb1c6f75427ff435f4a28e79117e2a329eb004b14db37ffa",
+        "fbd13e9a5bc92b14c730721d193a263a5b93213ab5ad6f9c11084bb756707abe",
+        "096d7c730900ed69298f20db0912b7a78cbd5d829b033755ae3bee62871aa9d6",
+        "1439400d730c684edc8bdda2819d528d83bed2f07756df7c8411b0e41aa03a88",
+        "faf974bbedc261e22efeb9ff90ffc95bf22f40c40d5c528595f06f3305fa5120",
+        "9557f889cbd2c90a8dff37d3b05bc55babfb2c0e83bf1c52e1b8888cfbc5b24a",
+        "4cd72c4523f2bf43cff196a73fce3427654261f811a9b3f7f1603fc06eb12798",
+        "de31ff0da997d564b53dbe9e3083426f2b04a3ae065e49c0cd6f40c566216715",
+        "a884eb3ed8e4e9fa5401dc37e79cbecbc56974b595780b19f609b1ee7f54b034",
+        "eb3664a40191bd4d91d816fed223e9ed8f44cf6d76af5fd5b801ff20620ba873",
+        "1a99a1b33303b5b1e78804cf3e14708cfc96a1247857834b62d2483e17441ff7",
+        "aec2e0953deacc3505092532d462e94fd382b77527f954cae816f7f56fa75dff"
+      ]
+    },
+    "lineage_provenance": "PASS_CURRENT_ANCESTOR_AND_ALL_STAGE_HASH_RESOLUTION",
+    "mandatory": {
+      "CENTER": "PASS",
+      "COMPLEXITY": "PASS",
+      "DISTINCTNESS": "PASS",
+      "DRIFT": "PASS",
+      "ELIGIBILITY": "PASS",
+      "LANDSCAPE": "PASS",
+      "PARETO": "PASS",
+      "PLATEAU": "PASS",
+      "PROFILE_CANDIDATE": "PASS"
+    },
+    "negative_paths": "VERIFIED_BY_TARGETED_C7_AND_PREVIOUS_PHASE_TESTS",
+    "official": false,
+    "packages_A_B_C": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+    "preservation": {
+      "boundary": {
+        "EVL_SPEC_v0.1": "UNCHANGED",
+        "Track_A_B_D_E_Web": "PRESERVED_BY_GIT_BLOB_IDENTITY",
+        "ahead": 48,
+        "behind": 0,
+        "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "canonical_blob_count": 7698,
+        "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "newly_changed_existing_phase_source_tests": [],
+        "preserved_start_blob_count": 7774,
+        "prior_authorized_four_file_repair": "PRESERVED",
+        "status": "PASS",
+        "tested_head": "c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a",
+        "unexpected_new_scope_files": [],
+        "unexpected_protected_changes": []
+      },
+      "existing_source_tests_changed": [],
+      "frozen_source_tests_preserved": 225,
+      "historical_A_B_and_inactive_packages": "PRESERVED_BY_BLOB_IDENTITY",
+      "status": "PASS",
+      "unexpected_changes": []
+    },
+    "real_pit_research_validation": "NOT_RUN_MISSING_COMPLETE_REAL_FAMILY",
+    "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+    "status": "PASS",
+    "tax_mode": "EXCLUDED",
+    "tested_head": "c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a"
+  },
+  "real_pit_research_validation": "NOT_RUN_MISSING_COMPLETE_REAL_FAMILY",
+  "holdout_state": "UNCONSUMED",
+  "holdout_content_or_result_accessed": false,
+  "official": false,
+  "real_research_state": null,
+  "promotion_authority": null,
+  "real_holdout_eligible": false,
+  "Investor_QGV": "FUTURE_TRACK_C_INPUT",
+  "frozen_phases": [
+    "C0",
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7"
+  ],
+  "phase_count": {
+    "numerator": 8,
+    "denominator": 11,
+    "percentage": 72.7,
+    "meaning": "SOFTWARE_PHASE_COUNT_ONLY_NOT_RESEARCH_PROGRESS_OR_INVESTMENT_PERFORMANCE"
+  },
+  "remaining_phases": {
+    "C8": "NOT_IMPLEMENTED_NOT_FROZEN_POLICY_PROPOSED",
+    "C9": "NOT_IMPLEMENTED_NOT_FROZEN_POLICY_PROPOSED",
+    "C10": "NOT_IMPLEMENTED_NOT_FROZEN_POLICY_PROPOSED"
+  },
+  "packages_A_B_C": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+  "new_C7_D3P_required": false,
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "ahead": 48,
+  "behind": 0,
+  "pr4": {
+    "draft": true,
+    "state": "open",
+    "merged": false
+  },
+  "cross_track": {
+    "branch_checkpoint": [
+      {
+        "name": "ccr-41677301-10nj3u",
+        "sha": "a013f1c1758642f90a65fe11df69fc234c143a48"
+      },
+      {
+        "name": "ccr-db5d5960-qen9yi",
+        "sha": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b"
+      },
+      {
+        "name": "ccr-e0fc1e48-9tcto3",
+        "sha": "f4156150022bbc0ce18948c6bc949ff01a194a7d"
+      },
+      {
+        "name": "claude/investment-system-top500-validation-alrugm",
+        "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+      },
+      {
+        "name": "claude/lol-coach-relay-format-y8uk0x",
+        "sha": "57032bf8b0fab9230cd3e29d51ca49ab3f20df96"
+      },
+      {
+        "name": "claude/track-d-rig-news-p0-ot2gy6",
+        "sha": "da86dfc26dcaa5c32c60762683dcca702a0c57b8"
+      },
+      {
+        "name": "feature/global-language-search-v1",
+        "sha": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4"
+      },
+      {
+        "name": "feature/leaderboard-real-producer-v1",
+        "sha": "1f6b2d2f020843b13222b66a3f9bce82cded5bef"
+      },
+      {
+        "name": "feature/macro-real-producer-v1",
+        "sha": "61d3352d5d68c7830e924f17613598ca79fcec6f"
+      },
+      {
+        "name": "feature/producer-infrastructure-v1",
+        "sha": "6fe9eee5668388fa4a200904520a0b5a46c90b6f"
+      },
+      {
+        "name": "feature/rig-news-real-ingestion-v1",
+        "sha": "8bb990bd5a6b2009906329b933a67e2303bbb8c7"
+      },
+      {
+        "name": "feature/technical-real-producer-v1",
+        "sha": "a2e0790dd7fb267ebaa7d052acae59220ecf631e"
+      },
+      {
+        "name": "feature/track-c-evl",
+        "sha": "c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a"
+      },
+      {
+        "name": "feature/track-d-rig-news",
+        "sha": "da86dfc26dcaa5c32c60762683dcca702a0c57b8"
+      },
+      {
+        "name": "feature/track-e-prompt-library-v1",
+        "sha": "d226481e1b49e0910642478ae80545598e2e5a98"
+      },
+      {
+        "name": "feature/web-mvp-v1",
+        "sha": "a4e49c83f5783c19617fb609b8f95b179cb13e84"
+      },
+      {
+        "name": "integration/web-mvp-language-search",
+        "sha": "e09d24e028475e924f2e20cee5ad6bd79f891391"
+      },
+      {
+        "name": "integration/web-mvp-language-search-audit",
+        "sha": "9fd8099fed59961f990cb64e99d4953a931ea508"
+      },
+      {
+        "name": "recovery/track-a-real-data-frozen",
+        "sha": "a79642f7aa174cc37b981298d0ff1cec6b04e974"
+      }
+    ],
+    "changes_since_execution_start": [
+      {
+        "branch": "feature/leaderboard-real-producer-v1",
+        "sha": "1f6b2d2f020843b13222b66a3f9bce82cded5bef",
+        "at_execution_start": null
+      },
+      {
+        "branch": "feature/macro-real-producer-v1",
+        "sha": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+        "at_execution_start": null
+      },
+      {
+        "branch": "feature/rig-news-real-ingestion-v1",
+        "sha": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+        "at_execution_start": null
+      },
+      {
+        "branch": "feature/technical-real-producer-v1",
+        "sha": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+        "at_execution_start": null
+      },
+      {
+        "branch": "feature/track-c-evl",
+        "sha": "c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a",
+        "at_execution_start": "88f66c57c810b5dda135b79552b38484d89d61a7"
+      }
+    ],
+    "read_only_compatibility_audit": [
+      {
+        "name": "feature/technical-real-producer-v1",
+        "sha": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+        "message": "docs(technical): record Actions PASS for the producer branch",
+        "files": [
+          {
+            "path": "implementation/docs/technical_real_producer/STATUS.md",
+            "status": "modified"
+          }
+        ],
+        "truncated": false
+      },
+      {
+        "name": "feature/macro-real-producer-v1",
+        "sha": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+        "message": "docs(macro): record tested code SHA separately from the lock commit",
+        "files": [
+          {
+            "path": "implementation/docs/macro_real_producer/STATUS.md",
+            "status": "modified"
+          },
+          {
+            "path": "implementation/docs/macro_real_producer/evidence/validation.json",
+            "status": "modified"
+          }
+        ],
+        "truncated": false
+      },
+      {
+        "name": "feature/producer-infrastructure-v1",
+        "sha": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+        "message": "docs(producers): correct Git LFS free quota in raw persistence options\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01UNYysALcG5d5GrjRqufk7Z",
+        "files": [
+          {
+            "path": "implementation/docs/producer_infrastructure/RAW_PERSISTENCE_OPTIONS.md",
+            "status": "modified"
+          }
+        ],
+        "truncated": false
+      },
+      {
+        "name": "ccr-db5d5960-qen9yi",
+        "sha": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+        "message": "docs(qgv-producer): record Draft PR #10 and integration-wait state\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_019JPvFwFrXtfAkVpiY8RMnd",
+        "files": [
+          {
+            "path": "implementation/docs/qgv_producer/STATUS.md",
+            "status": "modified"
+          }
+        ],
+        "truncated": false
+      },
+      {
+        "name": "ccr-41677301-10nj3u",
+        "sha": "a013f1c1758642f90a65fe11df69fc234c143a48",
+        "message": "docs(search): record Entity Metadata v1 implementation baseline and scoped handoff [skip ci]\n\nScoped handoff, machine-readable evidence and reproducible numerical\nfingerprint script. Shared CURRENT_HANDOFF intentionally untouched.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01Ti1tpPF3KtnzGtVgSYXaZh",
+        "files": [
+          {
+            "path": "implementation/docs/entity_metadata/HANDOFF.md",
+            "status": "added"
+          },
+          {
+            "path": "implementation/docs/entity_metadata/STATUS.md",
+            "status": "modified"
+          },
+          {
+            "path": "implementation/docs/entity_metadata/evidence/numeric_fingerprint.py",
+            "status": "added"
+          },
+          {
+            "path": "implementation/docs/entity_metadata/evidence/validation.json",
+            "status": "added"
+          }
+        ],
+        "truncated": false
+      },
+      {
+        "name": "feature/web-mvp-v1",
+        "sha": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+        "message": "docs(web): record MVP freeze candidate and operating integration boundaries",
+        "files": [
+          {
+            "path": "implementation/docs/web_mvp/README.md",
+            "status": "modified"
+          },
+          {
+            "path": "implementation/docs/web_mvp/STATUS.md",
+            "status": "added"
+          },
+          {
+            "path": "implementation/docs/web_mvp/evidence/browser.json",
+            "status": "added"
+          }
+        ],
+        "truncated": false
+      }
+    ],
+    "combined_producer_integration_tested": false,
+    "boundary": "NO_OTHER_BRANCH_MERGE_OR_SOURCE_WRITE"
+  },
+  "scope_notes": [
+    "All checks are actual GitHub Actions; no local pytest claim",
+    "225 pre-existing source/test blobs preserved plus historical A/B/inactive packages; prior four C4 repairs preserved",
+    "New C7 source changes newly regenerated fixture code/report hashes; historical C6 Freeze evidence retained byte-for-byte",
+    "No C8 real FreezeManifest or lifecycle transition created",
+    "Current external readers remain trusted as under frozen C4/C6 producer contracts"
+  ]
+}

@@ -1,0 +1,19 @@
+== targeted:tests/test_evl_c8*.py
+197 passed in 324.37s (0:05:24)
+== targeted:tests/test_evl_c7*.py
+97 passed in 61.99s (0:01:01)
+== targeted:tests/test_evl_c6*.py
+130 passed in 29.24s
+== targeted:tests/test_evl_c[0-5]*.py
+103 passed in 4.70s
+== targeted:FULL
+923 passed in 445.08s (0:07:25)
+== c6
+exit=0
+"unexpected_new_scope_files":[]
+== c7
+exit=0
+"unexpected_new_scope_files":[]
+== c8_partial
+exit=0
+"unexpected_new_scope_files":[]

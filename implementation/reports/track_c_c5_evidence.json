@@ -1,0 +1,27 @@
+{
+  "phase": "C5",
+  "status": "SOFTWARE_FROZEN",
+  "at_kst": "2026-09-29T19:27:45.256043+09:00",
+  "policy": "TC-D3P-002 APPROVED 2026-09-29T19:19:50+09:00",
+  "implementation_commit": "b679b83c8df73c8ab7636637f9560264767193aa",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "integration_commit": "49dcc4674254fa9d4be83a3bd1952a0950f20495",
+  "regressions": {
+    "targeted": 103,
+    "full": 499,
+    "integration": 499
+  },
+  "source_changes_since_C4": [
+    "implementation/src/investment_system/evl/search.py"
+  ],
+  "upstream_source_changes_since_C4": [],
+  "official": false,
+  "holdout_consumed": false,
+  "tax_mode": "EXCLUDED",
+  "next_phase": "C6 PREFLIGHT_ONLY; TC-D3P-003 PROPOSED",
+  "evidence_sha256": {
+    "track_c_c5_targeted.txt": "d1a686ba8652bfe93513267831d779f7719f89a11bedd1bdc87d1517295b57bd",
+    "track_c_c5_full.txt": "f61ba406ea78d793923b463454acf383e56c93c9a6415ddd3ee43287c6000845",
+    "track_c_c5_integration.txt": "f31171046bf09a03a1aa3939cee6fdbbef86325c9a0489f6e04a03e9521a9268"
+  }
+}

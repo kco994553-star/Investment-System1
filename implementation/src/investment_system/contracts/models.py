@@ -141,6 +141,12 @@ class TechnicalSnapshot:
     mutated_qgv: bool = False
     synthetic: bool = False
 
+    # None/empty on legacy unqualified outputs; never inferred from as_of.
+    available_at: Optional[datetime] = None
+    data_stamp_refs: tuple[str, ...] = ()
+    source_vintages: tuple[tuple[str, str], ...] = ()
+    input_hash: Optional[str] = None
+
     def to_dict(self) -> dict[str, Any]:
         return _to_json(asdict(self))
 
@@ -156,6 +162,12 @@ class MacroSnapshot:
     environment: dict[str, Any]
     mutated_qgv: bool = False
     synthetic: bool = False
+
+    # None/empty on legacy unqualified outputs; never inferred from as_of.
+    available_at: Optional[datetime] = None
+    data_stamp_refs: tuple[str, ...] = ()
+    source_vintages: tuple[tuple[str, str], ...] = ()
+    input_hash: Optional[str] = None
 
     def to_dict(self) -> dict[str, Any]:
         return _to_json(asdict(self))

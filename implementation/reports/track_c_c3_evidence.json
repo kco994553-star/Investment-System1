@@ -1,0 +1,30 @@
+{
+  "phase": "C3",
+  "status": "SOFTWARE_FROZEN",
+  "recorded_kst": "2026-09-28T21:03:11+09:00",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "local_tested_commit": "08816db1b1086f9abb83d8e59cc0577db6ec5707",
+  "local_tested_tree": "1518185c44355194068f134238f20b6f4a7b039d",
+  "remote_equivalent_commit": "1c4aefd63a654224ba8f66400fe04ce01ca62c97",
+  "normal_merge_commit": "19991cb44f3a9ea6bd892cc2ba6358e2d7a217aa",
+  "normal_merge_parents": [
+    "6343efa703fa12b39f1f50073ee73acb8a824a5e",
+    "08816db1b1086f9abb83d8e59cc0577db6ec5707"
+  ],
+  "counts": {
+    "targeted": 56,
+    "full": 452,
+    "integration": 452
+  },
+  "track_a_b_d_e_code_data_mutations": 0,
+  "upstream_source_hash": "0edc4207ca5b452e67448d634d5b69735423b0e6b0ec9f188a9d5e19cc54f6ab",
+  "protected_source_file_count": 121,
+  "shared_document_append_only_check": "PASS",
+  "shared_documents": [
+    "Investment-System1 \u00b7 CURRENT_HANDOFF.md",
+    "Investment-System1 \u00b7 HANDOFF_HISTORY.md",
+    "Investment System \u00b7 Project Index.md",
+    "Investment-System1 \u00b7 Artifact Evidence Register 2026-09-23.md",
+    "Investment-System1 \u00b7 Contract Conflict Register 2026-09-23.md"
+  ]
+}
