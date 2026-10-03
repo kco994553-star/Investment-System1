@@ -3,13 +3,14 @@
 Every numeric value here is SYNTHETIC_SOFTWARE_VALIDATION_ONLY fixture data, never a
 research default. No real CAL_VERIFY or Holdout reader exists.
 """
-from copy import deepcopy
+from copy import copy, deepcopy
 import math
 import pytest
 
 from investment_system.evl import superiority as G
 from investment_system.evl.calibration_contracts import IntegrityFailure, MissingPrerequisite
 from investment_system.evl.statistical_kernels import MissingStatisticalEvidence
+from investment_system.evl.walkforward import digest
 from tests.evl_c8_gsup_oracle import (oracle_indices, oracle_studentized, oracle_unstudentized,
                                       synthetic_delta)
 
@@ -20,6 +21,7 @@ def spec(**over):
          "registered_at": "2030-01-01T00:00:00+00:00", "campaign_id": "fixture-campaign",
          "profile": "Balanced", "role": "CHAMPION", "role_id": "cand-fixture-1",
          "role_designation_ref": "SYNTHETIC_FIXTURE_ROLE", "verify_dataset_id": "fixture-verify-1",
+         "verify_content_hash": "fixture-content-unbound", "development_dataset_id": "fixture-dev",
          "verify_periods": 48, "controls": ["EQUAL_SIMPLE", "MARKET_CAP"],
          "cohorts": list(G.REQUIRED_COHORTS), "evidence_kind": G.EVIDENCE_KIND,
          "comparison_evidence": [G.COMPARISON_ONLY], "alpha": 0.1, "replicates": 99,
@@ -240,10 +242,28 @@ def test_feasible_record_is_deterministic():
 
 # ---- registry: preregistration, one-shot, no retry ---------------------------------------------
 
-def run(tmp_path, provider, s=None, est=None):
-    reg = G.GsupRegistry(tmp_path)
-    key = reg.register(s or spec())
-    reg.record_feasibility(key, est or dev_estimate())
+DEV = synthetic_delta(3, 60, 0.0)
+
+
+def bound(provider, **over):
+    """Registration committed to the exact content the fixture provider will return."""
+    twin = copy(provider)
+    twin.calls = []
+    return spec(verify_content_hash=digest(twin("fixture-verify-1")["cohorts"]), **over)
+
+
+def registry(tmp_path, name="campaign-root"):
+    return G.GsupRegistry(tmp_path / name, tmp_path / "shared-access")
+
+
+def feasible(reg, key):
+    return reg.record_feasibility(key, DEV, dataset_role="DEVELOPMENT", dataset_id="fixture-dev")
+
+
+def run(tmp_path, provider, s=None):
+    reg = registry(tmp_path)
+    key = reg.register(s or bound(provider))
+    feasible(reg, key)
     return reg, key, reg.assess(key, provider, accessed_at="2030-02-01T00:00:00+00:00")
 
 
@@ -271,8 +291,8 @@ def test_no_superiority_under_null(tmp_path):
 
 def test_infeasible_never_reads_cal_verify_and_cannot_retest(tmp_path):
     f = {**spec()["feasibility"], "size_tolerance": 0.0, "conservative_envelope": [{"kind": "AR1_GAUSSIAN", "phi": 0.9}]}
-    s = spec(verify_periods=24, block_rule={"kind": "FIXED", "block_length": 2}, feasibility=f)
     p = Provider(mu=0.9, n=24)
+    s = bound(p, verify_periods=24, block_rule={"kind": "FIXED", "block_length": 2}, feasibility=f)
     reg, key, result = run(tmp_path, p, s)
     assert result["decision"] == result["statistical_status"] == "NOT_RUN_INFEASIBLE"
     assert p.calls == []
@@ -280,8 +300,10 @@ def test_infeasible_never_reads_cal_verify_and_cannot_retest(tmp_path):
         reg.assess(key, p, accessed_at="2030-03-01T00:00:00+00:00")
     for change in ({"alpha": 0.2}, {"seed": 8}, {"replicates": 199},
                    {"block_rule": {"kind": "FIXED", "block_length": 6}}):
-        with pytest.raises(IntegrityFailure, match="already recorded"):
-            reg.register(spec(verify_periods=24, feasibility=f, **change))
+        with pytest.raises(IntegrityFailure, match="no retest|already recorded"):
+            reg.register(bound(p, verify_periods=24, feasibility=f, **change))
+        with pytest.raises(IntegrityFailure, match="no retest"):
+            reg.register(bound(p, campaign_id="campaign-2", verify_periods=24, feasibility=f, **change))
     assert p.calls == []
 
 
@@ -294,9 +316,9 @@ def test_cal_verify_is_one_shot(tmp_path):
 
 
 def test_provider_crash_is_recorded_without_retry(tmp_path):
-    reg = G.GsupRegistry(tmp_path)
+    reg = registry(tmp_path)
     key = reg.register(spec())
-    reg.record_feasibility(key, dev_estimate())
+    feasible(reg, key)
 
     def crash(_):
         raise RuntimeError("synthetic crash")
@@ -311,30 +333,30 @@ def test_provider_crash_is_recorded_without_retry(tmp_path):
 @pytest.mark.parametrize("provider", [Provider(mu=0.9, role_id="next-best"), Provider(mu=0.9, n=40),
                                       Provider(mu=0.9, synthetic=False)])
 def test_provider_must_return_registered_target_only(tmp_path, provider):
-    reg = G.GsupRegistry(tmp_path)
+    reg = registry(tmp_path)
     key = reg.register(spec())
-    reg.record_feasibility(key, dev_estimate())
+    feasible(reg, key)
     with pytest.raises((IntegrityFailure, MissingPrerequisite)):
         reg.assess(key, provider, accessed_at="2030-02-01T00:00:00+00:00")
 
 
 def test_access_must_follow_registration_and_feasibility(tmp_path):
-    reg = G.GsupRegistry(tmp_path)
+    reg = registry(tmp_path)
     key = reg.register(spec())
     p = Provider(mu=0.9)
     with pytest.raises(MissingPrerequisite):
         reg.assess(key, p, accessed_at="2030-02-01T00:00:00+00:00")
-    reg.record_feasibility(key, dev_estimate())
+    feasible(reg, key)
     with pytest.raises(IntegrityFailure):
         reg.assess(key, p, accessed_at="2029-12-31T00:00:00+00:00")
     assert p.calls == []
 
 
 def test_tampered_registration_or_feasibility_fails(tmp_path):
-    reg = G.GsupRegistry(tmp_path)
+    reg = registry(tmp_path)
     key = reg.register(spec())
-    record = reg.record_feasibility(key, dev_estimate())
-    path = tmp_path / f"feasibility-{key}.json"
+    record = feasible(reg, key)
+    path = tmp_path / "shared-access" / f"feasibility-{reg.access_key(spec())}.json"
     path.chmod(0o644)
     import json
     body = json.loads(path.read_text())
@@ -347,4 +369,78 @@ def test_tampered_registration_or_feasibility_fails(tmp_path):
 def test_feasibility_cannot_follow_access(tmp_path):
     reg, key, _ = run(tmp_path, Provider(mu=0.9))
     with pytest.raises(IntegrityFailure):
-        reg.record_feasibility(key, dev_estimate())
+        feasible(reg, key)
+
+
+# ---- regressions for independently reported fail-open paths (GIE-004 a/b) -------------------
+
+FORGED = [{"phi": -5.0}, {"dataset_role": "CAL_VERIFY"}, {"dataset_id": "fixture-verify-1"},
+          {"dataset_id": "other-dev"}, {"estimator": "ANY"}, {"n": 2}, {"phi": 0.95}]
+
+
+@pytest.mark.parametrize("change", FORGED)
+def test_forged_or_non_development_estimate_is_rejected(change):
+    est = dict(dev_estimate(), **change)
+    if change != {"phi": 0.95}:
+        est["estimate_hash"] = digest({k: v for k, v in est.items() if k != "estimate_hash"})
+    with pytest.raises(IntegrityFailure):
+        G.assess_feasibility(spec(), est)
+    with pytest.raises(IntegrityFailure):
+        G.combined_envelope(G.validate_registration(spec()), est)
+
+
+def test_estimate_hash_detects_field_tampering():
+    est = dict(dev_estimate(), phi=-0.9)
+    with pytest.raises(IntegrityFailure, match="tampered"):
+        G.assess_feasibility(spec(), est)
+
+
+def test_registry_accepts_only_development_series(tmp_path):
+    reg = registry(tmp_path)
+    key = reg.register(spec())
+    for role in ("CAL_VERIFY", "HOLDOUT"):
+        with pytest.raises(IntegrityFailure):
+            reg.record_feasibility(key, DEV, dataset_role=role, dataset_id="fixture-dev")
+    with pytest.raises(IntegrityFailure):
+        G.validate_registration(spec(development_dataset_id="fixture-verify-1"))
+
+
+def test_new_campaign_same_cal_verify_content_cannot_retest(tmp_path):
+    p = Provider(mu=0.05)
+    reg, key, first = run(tmp_path, p)
+    for over in ({"campaign_id": "campaign-2", "alpha": 0.2, "seed": 8},
+                 {"role_id": "next-best-candidate"}, {"verify_dataset_id": "relabelled-verify"}):
+        with pytest.raises(IntegrityFailure, match="no retest"):
+            reg.register(bound(p, **over))
+    other_root = registry(tmp_path, "another-root")
+    with pytest.raises(IntegrityFailure, match="no retest"):
+        other_root.register(bound(p, campaign_id="campaign-3", alpha=0.2))
+    assert p.calls == ["fixture-verify-1"]
+
+
+def test_feasibility_shopping_across_campaigns_is_refused(tmp_path):
+    reg = registry(tmp_path)
+    key = reg.register(spec(verify_periods=5, minimum_support=1))
+    assert feasible(reg, key)["status"] == "NOT_RUN_INFEASIBLE"
+    with pytest.raises(IntegrityFailure, match="no retest"):
+        reg.register(spec(campaign_id="campaign-2", verify_periods=5, minimum_support=1,
+                          block_rule={"kind": "FIXED", "block_length": 2}))
+
+
+def test_distinct_roles_on_same_content_remain_separately_assessable(tmp_path):
+    p = Provider(mu=0.9)
+    reg, _, champion = run(tmp_path, p)
+    key = reg.register(bound(p, role="CHALLENGER", role_id="cand-fixture-1"))
+    feasible(reg, key)
+    challenger = reg.assess(key, p, accessed_at="2030-02-02T00:00:00+00:00")
+    assert champion["statistical_status"] == challenger["statistical_status"] == "STAT_PASS"
+
+
+def test_cal_verify_content_must_match_commitment(tmp_path):
+    reg = registry(tmp_path)
+    key = reg.register(spec())
+    feasible(reg, key)
+    with pytest.raises(IntegrityFailure, match="commitment"):
+        reg.assess(key, Provider(mu=0.9), accessed_at="2030-02-01T00:00:00+00:00")
+    with pytest.raises(IntegrityFailure):
+        reg.assess(key, Provider(mu=0.9), accessed_at="2030-03-01T00:00:00+00:00")

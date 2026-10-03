@@ -155,7 +155,7 @@ def validate_registration(spec):
     s = deepcopy(spec)
     fields = {"schema", "policy", "scope", "configuration_scope", "temporal_origin", "registered_at",
               "campaign_id", "profile", "role", "role_id", "role_designation_ref", "verify_dataset_id",
-              "verify_periods", "controls", "cohorts", "evidence_kind", "comparison_evidence", "alpha",
+              "verify_content_hash", "development_dataset_id", "verify_periods", "controls", "cohorts", "evidence_kind", "comparison_evidence", "alpha",
               "replicates", "block_rule", "seed", "minimum_support", "feasibility", "effect_floor"}
     if set(s) != fields:
         raise IntegrityFailure("missing/unknown G-SUP registration fields")
@@ -169,8 +169,11 @@ def validate_registration(spec):
     if s["scope"] != SCOPE or s["configuration_scope"] != FIXTURE_SCOPE or s["temporal_origin"] != "SIMULATED":
         raise MissingPrerequisite("real numeric configuration / CAL_VERIFY access not approved")
     instant(s["registered_at"])
-    for f in ("campaign_id", "role_id", "verify_dataset_id", "role_designation_ref"):
+    for f in ("campaign_id", "role_id", "verify_dataset_id", "role_designation_ref",
+              "verify_content_hash", "development_dataset_id"):
         identity(s[f])
+    if s["development_dataset_id"] == s["verify_dataset_id"]:
+        raise IntegrityFailure("Development dependence evidence cannot be the CAL_VERIFY target")
     if s["profile"] not in PROFILES or s["role"] not in ROLES:
         raise IntegrityFailure("unknown profile/role")
     if s["role_designation_ref"] != "SYNTHETIC_FIXTURE_ROLE":
@@ -237,15 +240,38 @@ def development_dependence_estimate(series, *, dataset_role, dataset_id, estimat
     if not denominator > 0:
         raise MissingStatisticalEvidence("zero Development variance")
     phi = math.fsum((x[t] - m) * (x[t - 1] - m) for t in range(1, len(x))) / denominator
-    return {"estimator": estimator, "dataset_role": "DEVELOPMENT", "dataset_id": identity(dataset_id),
-            "n": len(x), "phi": phi, "series_hash": digest(x)}
+    estimate = {"estimator": estimator, "dataset_role": "DEVELOPMENT", "dataset_id": identity(dataset_id),
+                "n": len(x), "phi": phi, "series_hash": digest(x)}
+    estimate["estimate_hash"] = digest(estimate)
+    return estimate
+
+
+def validate_estimate(estimate, registration):
+    """Q3: only an intact Development-only estimate bound to the registration is usable."""
+    if not isinstance(estimate, dict) or set(estimate) != {"estimator", "dataset_role", "dataset_id", "n",
+                                                           "phi", "series_hash", "estimate_hash"}:
+        raise IntegrityFailure("dependence estimate fields")
+    if estimate["dataset_role"] != "DEVELOPMENT":
+        raise IntegrityFailure("dependence is estimated from Development evidence only")
+    if estimate["estimator"] != registration["feasibility"]["dependence_estimator"]:
+        raise IntegrityFailure("estimate does not use the registered estimator")
+    if (estimate["dataset_id"] != registration["development_dataset_id"]
+            or estimate["dataset_id"] == registration["verify_dataset_id"]):
+        raise IntegrityFailure("estimate is not bound to the registered Development dataset")
+    if type(estimate["n"]) is not int or estimate["n"] < 3:
+        raise IntegrityFailure("estimate support")
+    if not -1 < finite_number(estimate["phi"]) < 1:
+        raise IntegrityFailure("lag-1 autocorrelation outside (-1, 1)")
+    identity(estimate["series_hash"])
+    if digest({k: v for k, v in estimate.items() if k != "estimate_hash"}) != estimate["estimate_hash"]:
+        raise IntegrityFailure("dependence estimate tampered")
+    return estimate
 
 
 def combined_envelope(registration, estimate):
     """Stricter of the Development estimate (+margin) and the conservative envelope: all must pass."""
     f = registration["feasibility"]
-    if estimate["estimator"] != f["dependence_estimator"]:
-        raise IntegrityFailure("estimate does not use the registered estimator")
+    validate_estimate(estimate, registration)
     phi = min(max(estimate["phi"], 0.) + f["margin"], 0.99)
     points = [dict(p) for p in f["conservative_envelope"]] + [{"kind": "AR1_GAUSSIAN", "phi": phi}]
     unique = {canonical_json(p): p for p in points}
@@ -268,6 +294,7 @@ def assess_feasibility(registration, estimate):
     Never reads CAL_VERIFY outcomes; uses only registered n (calendar), L, B, seed, alpha.
     """
     s = validate_registration(registration)
+    validate_estimate(estimate, s)
     f, n, alpha, B = s["feasibility"], s["verify_periods"], s["alpha"], s["replicates"]
     L = _block_length(s["block_rule"], n)
     reasons = []
@@ -305,19 +332,29 @@ def assess_feasibility(registration, estimate):
 
 
 class GsupRegistry:
-    """Exclusive, durable, config-independent target slots: one registration, one
-    feasibility record, one access intent and one result per CAL_VERIFY target."""
+    """Exclusive durable slots. Per-campaign registration under `root`; the one-shot
+    CAL_VERIFY access intent, feasibility verdict and result live in the explicit
+    shared `access_registry`, keyed by the preregistered CAL_VERIFY content commitment
+    and profile/role only, so campaign, role_id, dataset label or registry root
+    changes cannot reopen, retest or substitute (Q4/A6-S4)."""
 
-    def __init__(self, root):
+    def __init__(self, root, access_registry):
         self.root = Path(root)
-        self.root.mkdir(parents=True, exist_ok=True)
+        self.shared = Path(access_registry)
+        for d in (self.root, self.shared):
+            d.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
     def target_key(spec):
         return digest({k: spec[k] for k in ("campaign_id", "profile", "role", "role_id", "verify_dataset_id")})
 
-    def _create(self, kind, key, payload):
-        path = self.root / f"{kind}-{key}.json"
+    @staticmethod
+    def access_key(spec):
+        return digest({k: spec[k] for k in ("verify_content_hash", "profile", "role")})
+
+    @staticmethod
+    def _create(directory, kind, key, payload):
+        path = directory / f"{kind}-{key}.json"
         try:
             fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o444)
         except FileExistsError:
@@ -328,8 +365,9 @@ class GsupRegistry:
             os.fsync(handle.fileno())
         return payload
 
-    def _load(self, kind, key):
-        path = self.root / f"{kind}-{key}.json"
+    @staticmethod
+    def _load(directory, kind, key):
+        path = directory / f"{kind}-{key}.json"
         if not path.exists():
             return None
         raw = path.read_text()
@@ -337,46 +375,68 @@ class GsupRegistry:
             raise IntegrityFailure("incomplete " + kind + " record")
         return json.loads(raw)
 
+    def _spent(self, akey):
+        return any(self._load(self.shared, kind, akey) is not None
+                   for kind in ("feasibility", "access", "result"))
+
     def register(self, spec):
         s = validate_registration(spec)
+        if self._spent(self.access_key(s)):
+            raise IntegrityFailure("CAL_VERIFY target already assessed/verdicted; no retest under a new registration")
         key = self.target_key(s)
-        self._create("registration", key, {"registration": s, "registration_hash": digest(s)})
+        self._create(self.root, "registration", key, {"registration": s, "registration_hash": digest(s),
+                                                      "access_key": self.access_key(s)})
         return key
 
-    def record_feasibility(self, key, estimate):
-        stored = self._load("registration", key)
+    def _registration(self, key):
+        stored = self._load(self.root, "registration", key)
         if stored is None:
-            raise IntegrityFailure("feasibility before registration")
-        if self._load("access", key) is not None:
+            raise MissingPrerequisite("registration required")
+        s = validate_registration(stored["registration"])
+        if digest(s) != stored["registration_hash"] or stored["access_key"] != self.access_key(s):
+            raise IntegrityFailure("registration changed after preregistration")
+        return s
+
+    def record_feasibility(self, key, development_series, *, dataset_role, dataset_id):
+        """Q2/Q3: the estimate is computed here from Development evidence; no external estimate."""
+        s = self._registration(key)
+        akey = self.access_key(s)
+        if self._load(self.shared, "access", akey) is not None or self._load(self.shared, "result", akey) is not None:
             raise IntegrityFailure("feasibility after CAL_VERIFY access intent")
-        record = assess_feasibility(stored["registration"], estimate)
-        return self._create("feasibility", key, record)
+        estimate = development_dependence_estimate(development_series, dataset_role=dataset_role,
+                                                   dataset_id=dataset_id,
+                                                   estimator=s["feasibility"]["dependence_estimator"])
+        record = assess_feasibility(s, estimate)
+        record["registration_target"] = key
+        record["record_hash"] = digest({k: v for k, v in record.items() if k != "record_hash"})
+        return self._create(self.shared, "feasibility", akey, record)
 
     def assess(self, key, provider, *, accessed_at):
-        stored = self._load("registration", key)
-        feasibility = self._load("feasibility", key)
-        if stored is None or feasibility is None:
-            raise MissingPrerequisite("registration and pre-access feasibility required")
-        s = validate_registration(stored["registration"])
-        if digest(s) != stored["registration_hash"] or feasibility["registration_hash"] != digest(s):
-            raise IntegrityFailure("registration changed after preregistration")
+        s = self._registration(key)
+        akey = self.access_key(s)
+        feasibility = self._load(self.shared, "feasibility", akey)
+        if feasibility is None:
+            raise MissingPrerequisite("pre-access feasibility required")
         body = {k: v for k, v in feasibility.items() if k != "record_hash"}
-        if digest(body) != feasibility["record_hash"]:
-            raise IntegrityFailure("feasibility record tampered")
+        if digest(body) != feasibility["record_hash"] or feasibility["registration_hash"] != digest(s) \
+                or feasibility["registration_target"] != key:
+            raise IntegrityFailure("feasibility record tampered or bound to another registration")
         if instant(accessed_at) <= instant(s["registered_at"]):
             raise IntegrityFailure("CAL_VERIFY access must follow preregistration")
-        if self._load("result", key) is not None or self._load("access", key) is not None:
+        if self._load(self.shared, "result", akey) is not None or self._load(self.shared, "access", akey) is not None:
             raise IntegrityFailure("CAL_VERIFY is one-shot; no retry for this target")
         if feasibility["status"] != "FEASIBLE":
-            return self._create("result", key, _result(s, "NOT_RUN_INFEASIBLE", "NOT_RUN_INFEASIBLE",
-                                                       {}, feasibility["reasons"]))
-        self._create("access", key, {"registration_hash": digest(s), "accessed_at": accessed_at,
-                                     "cal_verify_target": s["verify_dataset_id"]})
+            return self._create(self.shared, "result", akey, _result(s, "NOT_RUN_INFEASIBLE", "NOT_RUN_INFEASIBLE",
+                                                                     {}, feasibility["reasons"]))
+        self._create(self.shared, "access", akey, {"registration_hash": digest(s), "accessed_at": accessed_at,
+                                                   "cal_verify_target": s["verify_dataset_id"],
+                                                   "verify_content_hash": s["verify_content_hash"]})
         try:
             data = provider(s["verify_dataset_id"])
             cells = _evaluate(s, data)
         except BaseException as exc:
-            self._create("result", key, _result(s, "NOT_RUN", "CRASH_NO_RETRY", {}, [type(exc).__name__]))
+            self._create(self.shared, "result", akey, _result(s, "NOT_RUN", "CRASH_NO_RETRY", {},
+                                                              [type(exc).__name__]))
             raise
         statuses = [c["status"] for c in cells.values()]
         if any(x == "NOT_RUN" for x in statuses):
@@ -385,7 +445,7 @@ class GsupRegistry:
             stat = "STAT_PASS"
         else:
             stat = "STAT_FAIL"
-        return self._create("result", key, _result(s, stat, "NOT_RUN_EFFECT_FLOOR_DEFERRED", cells, []))
+        return self._create(self.shared, "result", akey, _result(s, stat, "NOT_RUN_EFFECT_FLOOR_DEFERRED", cells, []))
 
 
 def _evaluate(s, data):
@@ -396,6 +456,8 @@ def _evaluate(s, data):
         raise MissingPrerequisite("real CAL_VERIFY access is not approved")
     if set(data["cohorts"]) != set(s["cohorts"]):
         raise IntegrityFailure("provider cohorts differ from registration")
+    if digest(data["cohorts"]) != s["verify_content_hash"]:
+        raise IntegrityFailure("CAL_VERIFY content differs from the preregistered commitment")
     L = _block_length(s["block_rule"], s["verify_periods"])
     cells = {}
     for cohort in sorted(s["cohorts"]):
