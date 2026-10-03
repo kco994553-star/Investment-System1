@@ -1,0 +1,117 @@
+{
+  "record": "TECHNICAL_REAL_MODEL_C28_ADOPTION_INVARIANCE_2026-10-03 (PR #15)",
+  "purpose": "Independent before/after invariance comparison for the C-28 upstream adoption of Track C 2137883 (user CDR-004 2026-10-03). Recorded on throwaway trees BEFORE any pin was edited. Not an approval record.",
+  "authority": "User CDR-004 2026-10-03 (quoted in docs/technical_real_producer/C28_UPSTREAM_ADOPTION_2026-10-03.md)",
+  "prepared_by": "Primary Integration Writer, Claude Code session session_019znshzTYgyBnuuBmSxdPFN",
+  "trees": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "track_c_commit_under_adoption": "21378835883c5a9740143899c70d75d6405aa55a",
+    "track_c_owner_tip_at_record_time": {
+      "ref": "origin/ccr-22e3ff16-p7n5k5",
+      "sha": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "blob_check": "git ls-tree: contracts/lineage.py 288cabad…, contracts/models.py ef4f80ec…, technical/engine.py 5365653f…, macro/engine.py 08d79c20… identical between the tip and 2137883",
+      "sha256_at_tip": {
+        "technical/engine.py": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+        "macro/engine.py": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+        "contracts/models.py": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+        "contracts/lineage.py": "ddfac6ef9bac1eb3a54a60bfbd78218d8f0aa57b91185ffadaaa5458aeb9c454"
+      },
+      "sha256_at_canonical": {
+        "technical/engine.py": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+        "macro/engine.py": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+        "contracts/models.py": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+        "contracts/lineage.py": "ABSENT"
+      }
+    },
+    "pr_tip_BEFORE": {
+      "branch": "feature/technical-real-model-v1",
+      "sha": "ce587040e7beb31b66a423eab6ca89767f2a2cf8"
+    },
+    "AFTER_throwaway_merge": {
+      "sha": "4d07d5fb9fccbeb7957ad84d2068c60da4662ba6",
+      "parents": [
+        "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+        "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565"
+      ],
+      "conflicts": 0,
+      "pushed": false
+    },
+    "proposal_branch": "integration/a1-adoption/pr15-technical-model (from ce58704)"
+  },
+  "commands": [
+    "git worktree add --detach <BEFORE> <PR#15 tip>",
+    "git worktree add --detach <AFTER> <PR#15 tip> && git -C <AFTER> merge --no-ff --no-edit b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565   # 0 conflicts (throwaway identity, never pushed)",
+    "cd <tree>/implementation && PYTHONPATH=src python3 gate15.py <dump.json>   # run in BEFORE and in AFTER",
+    "python3 fielddiff_strict.py <before.json> <after.json>   # recursive field-level diff, every path",
+    "cd <BEFORE>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf   # pre-change baseline",
+    "cd <AFTER>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf tests/test_technical_real_model_v1.py tests/test_technical_real_producer.py   # before any pin edit",
+    "cd <proposal>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf   # after the pin edit",
+    "cp <proposal>/implementation/tests/<edited test> <AFTER>/implementation/tests/ && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf tests/test_technical_real_model_v1.py tests/test_technical_real_producer.py   # repinned test in the adopted tree",
+    "negative: append '# third content' to technical/engine.py in <AFTER>, rerun the pin test (must FAIL); rename evaluate_stamped in <AFTER> (partial adoption), rerun (must FAIL); git checkout -- to restore"
+  ],
+  "artifacts_compared": [
+    "real_model_v1 research records via the test's _record()/_series()/_rise()/_flat() helpers: rise_with_spy, flat, rise, decline (0.999^i), flat_no_volume, session_gap_at_100, split_unknown, rise_generated_later, rise_50, rise_last_bumped, yahoo_parsed (session_bars_from_yahoo on the test payload) — full dicts including features, regime, zone, scenarios, semantic_hash, record_id",
+    "publish_web_research(record, data_state='LIVE') outcome (PublicationError P01, both trees)",
+    "produce_demo(as_of 2024-12-31T23:59Z) (engine_snapshot_id masked: uuid-based)",
+    "export_producer_snapshot(AS_OF, GENERATED)",
+    "sha256 of technical/engine.py exactly as the test computes it (read_text().encode()) and of the bytes; sha256 of technical/real_model_v1.py; hasattr(TechnicalEngine,'evaluate_stamped') state detector"
+  ],
+  "per_artifact_sha256_before": {
+    "engine_sha256_bytes": "7324771d50888796ecef1f9369c29d9a8c5eddcab07a54423b8ee11b1e76ac84",
+    "engine_sha256_text_encode": "7324771d50888796ecef1f9369c29d9a8c5eddcab07a54423b8ee11b1e76ac84",
+    "export_producer_snapshot": "6b4675b08f0421d7547d69fdc58e5a20f2467a198b62f7b5149851dd7dcc06e2",
+    "produce_demo": "f6d58e5117ceff47493a1f428308d02c93d2b3dad8daa7619b10c181944c275c",
+    "publish_web_research_live": "af8021e30d95b7e8bb4b41a4d9c15207294b0c176d2a61fb279b8b5ebd9373d5",
+    "real_model_v1_sha256": "0225e98236de32cad120279548d6ef237f9e918e30269b88a985d291b57cfaa4",
+    "records": "a32fba5e36b5140988fa44f379c6fe31b82931cb99e6f3d1b2da487ddf8b5402",
+    "tree_has_evaluate_stamped": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "yahoo_bars": "e052d87edd374da96e97c0b08e4428481036667c0c80619b1c373939ada65c61"
+  },
+  "per_artifact_sha256_after": {
+    "engine_sha256_bytes": "0861ac6b0c10878b52632d3170aa05cf316ef47905b259b613f24b62d0a9b672",
+    "engine_sha256_text_encode": "0861ac6b0c10878b52632d3170aa05cf316ef47905b259b613f24b62d0a9b672",
+    "export_producer_snapshot": "6b4675b08f0421d7547d69fdc58e5a20f2467a198b62f7b5149851dd7dcc06e2",
+    "produce_demo": "f6d58e5117ceff47493a1f428308d02c93d2b3dad8daa7619b10c181944c275c",
+    "publish_web_research_live": "af8021e30d95b7e8bb4b41a4d9c15207294b0c176d2a61fb279b8b5ebd9373d5",
+    "real_model_v1_sha256": "0225e98236de32cad120279548d6ef237f9e918e30269b88a985d291b57cfaa4",
+    "records": "a32fba5e36b5140988fa44f379c6fe31b82931cb99e6f3d1b2da487ddf8b5402",
+    "tree_has_evaluate_stamped": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "yahoo_bars": "e052d87edd374da96e97c0b08e4428481036667c0c80619b1c373939ada65c61"
+  },
+  "field_level_diff": {
+    "classifier": "scripts fielddiff_strict.py (recursive, every path; additions allowed only for the four adoption keys with legacy values; meta diffs allowed only when they equal the Track C 2137883 state)",
+    "summary": "total_diffs=3 adoption_key_additions=0 meta_expected=3 unexpected=0",
+    "adoption_key_additions": [],
+    "meta_differences_expected": [
+      "engine_sha256_bytes | digest of technical/engine.py: canonical b8e39a2 -> Track C 2137883 bytes",
+      "engine_sha256_text_encode | digest of technical/engine.py: canonical b8e39a2 -> Track C 2137883 bytes",
+      "tree_has_evaluate_stamped | state detector: legacy -> adopted"
+    ],
+    "unexpected_differences": []
+  },
+  "verdict": "PASS",
+  "pins": {
+    "technical/engine.py sha256 (test L291)": {
+      "pre_adoption": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+      "c28_adopted": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c"
+    },
+    "selection": "_expected_engine_sha256(): state-exact from hasattr(TechnicalEngine,'evaluate_stamped') and the four field names on TechnicalSnapshot; disagreement selects 'C28_ADOPTION_STATE_INCONSISTENT' and fails.",
+    "reason": "C-28 upstream adoption of Track C 2137883 per user CDR-004 2026-10-03"
+  },
+  "tests": {
+    "BEFORE_full_suite_pr15_tip_ce58704": "431 passed, 0 failed (pytest 9.1.1, Python 3.11.15)",
+    "AFTER_tree_own_tests_before_pin_edit": "2 failed, 33 passed — test_placeholder_engine_is_unchanged_and_not_used_by_the_real_model (this PR's L291 pin) and test_engine_fingerprint_and_cross_track_sources_unchanged (PR #11's test, carried on this stacked branch; repinned by the PR #11 proposal, not here)",
+    "proposal_branch_full_suite_after_pin_edit": "431 passed, 0 failed (equals the pre-change result)",
+    "adopted_tree_with_repinned_test": "19 passed (test_technical_real_model_v1.py); with PR #11's repinned test also copied in: 35 passed",
+    "negative_third_content": "FAIL as required",
+    "negative_partial_adoption": "FAIL as required (selector returns C28_ADOPTION_STATE_INCONSISTENT)",
+    "github_actions": "NOT_RUN"
+  },
+  "notes": [
+    "Zero value-level differences: real_model_v1 never calls TechnicalEngine; the only differences are the engine.py digest (canonical → 2137883 bytes) and the state detector.",
+    "Order of operations: dumps and diff recorded before the pin edit.",
+    "docs/technical_real_model has no committed hash evidence files; the STATUS 'Placeholder regression' row (f7268f52…) is left as written and an additive note is appended.",
+    "Owner adoption record (referenced, not duplicated): docs/technical_real_producer/C28_UPSTREAM_ADOPTION_2026-10-03.md (PR #11 proposal).",
+    "No source change under implementation/src; sentinels and #10/#14 CI-mode compare untouched."
+  ]
+}
