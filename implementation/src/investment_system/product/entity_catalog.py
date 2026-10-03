@@ -1,6 +1,8 @@
 """Read-only entity navigation adapter; no scores or issuer/listing inference."""
 from copy import deepcopy
 
+from .entity_metadata import catalog_fields, load_registry, normalize
+
 # Presentation aliases keyed by existing company_id, never by a guessed ticker.
 COMPANY_ALIASES = {
     'nvda': {'en-US': ['NVIDIA'], 'ko-KR': ['엔비디아']},
@@ -29,37 +31,68 @@ NAV_ENTITIES = (
 )
 
 
-def entity_catalog(bundle):
-    """Add navigation metadata only; preserve the entire producer bundle unchanged."""
+def _merge_unique(base, extra):
+    # Dedupe on the search normalization so one label is indexed once per entity.
+    keys = {normalize(v) for v in base}
+    for v in extra:
+        if normalize(v) not in keys:
+            base.append(v)
+            keys.add(normalize(v))
+    return base
+
+
+def entity_catalog(bundle, metadata=None):
+    """Add navigation metadata only; preserve the entire producer bundle unchanged.
+
+    ``metadata`` is the CIK-bound search metadata registry (default: the committed one; False disables).
+    It only fills absent fields/locales of existing company_ids; producer and curated values win as supplied.
+    """
     # Reuse the existing identity registry, not its ticker resolution or any engine.
     from ..qgv.identifiers import OFFICIAL_PORTFOLIO_V11
     registered = {r.company_id: r for r in OFFICIAL_PORTFOLIO_V11}
+    metadata = load_registry() if metadata is None else metadata
+    universe = (bundle.get('universe') or {}).get('data')
     entities = []
     for c in bundle['companies']:
         record = registered.get(c['company_id'])
+        meta = catalog_fields(metadata, c['company_id'], universe) or {}
         official = c.get('official_name') or c.get('name')
         if record and (not official or official == c['ticker'] or official == c['company_id']):
             official = record.legal_name
+        if meta.get('official_name') and (not official or official == c['ticker'] or official == c['company_id']):
+            official = meta['official_name']
         aliases = deepcopy(COMPANY_ALIASES.get(c['company_id'], {}))
         for locale, values in c.get('aliases', {}).items():
             if not isinstance(values, list) or any(not isinstance(a, str) for a in values):
                 raise ValueError('aliases must be lists of text')
             aliases.setdefault(locale, []).extend(values)
+        # Fill-only: a curated/producer locale list stays exactly as supplied.
+        extra = deepcopy(meta.get('aliases', {}))
+        if official and meta.get('official_name') and normalize(meta['official_name']) != normalize(official):
+            # Registered SEC name kept searchable when a different display label is in use.
+            _merge_unique(extra.setdefault('en-US', []), [meta['official_name']])
+        for locale, values in extra.items():
+            if not aliases.get(locale):
+                aliases[locale] = _merge_unique([], values)
         localized = deepcopy(c.get('localized_names', {}))
         for locale, values in aliases.items():
-            if values and locale not in localized:
+            # 'und' holds language-neutral listing tickers; never a display name.
+            if values and locale not in localized and locale != 'und':
                 localized[locale] = values[0]
-        entities.append({
+        entity = {
             'entity_type': 'COMPANY', 'canonical_id': c['company_id'],
             'canonical_label': official or c['ticker'], 'ticker': c['ticker'],
             'localized_names': localized, 'aliases': aliases,
-            'historical_names': deepcopy(c.get('historical_names', [])),
-            'historical_tickers': deepcopy(c.get('historical_tickers', [])),
+            'historical_names': deepcopy(c['historical_names'] if 'historical_names' in c else meta.get('historical_names', [])),
+            'historical_tickers': deepcopy(c['historical_tickers'] if 'historical_tickers' in c else meta.get('historical_tickers', [])),
             'industry': c.get('industry') or (record.industry or record.sector if record else None),
             'ambiguity_flags': list(c.get('ambiguity_flags', record.ambiguity_flags if record else [])),
             'source': c.get('metadata_source') or ('qgv/identifiers.py (presentation only)' if record else 'producer companies'),
             'data_state': 'DEMO' if c.get('demo') else bundle['universe']['state'],
-        })
+        }
+        if meta:
+            entity['metadata_provenance'] = meta['metadata_provenance']
+        entities.append(entity)
     entities.extend(deepcopy(NAV_ENTITIES))
     # Extension records are explicit producer registrations. No investor is seeded.
     for e in bundle.get('search_entities', []):

@@ -1,0 +1,58 @@
+# Entity search metadata ingestion. The Claude cloud container's egress policy denies
+# sec.gov / wikidata.org, so the network step runs here (same pattern as c21-real-data).
+# fetch -> committed source extracts (URL/sha256/fetched_at/revision provenance)
+# build -> deterministic CIK-bound registry + coverage report. Raw responses -> artifact.
+# Search/presentation metadata only; no investment engine is executed or changed.
+name: entity-metadata-ingest
+on:
+  workflow_dispatch:
+  push:
+    branches: [ccr-41677301-10nj3u]
+    paths: ['implementation/tools/ingest_entity_metadata.py', 'implementation/reports/entity_metadata/REFRESH_REQUEST',
+            '.github/workflows/entity-metadata-ingest.yml']
+permissions:
+  contents: write
+concurrency:
+  group: entity-metadata-ingest
+  cancel-in-progress: false
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: implementation
+    env:
+      INVESTMENT_SYSTEM_SEC_UA: ${{ secrets.SEC_USER_AGENT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require SEC contact User-Agent (SEC fair-access policy)
+        run: |
+          if [ -z "$INVESTMENT_SYSTEM_SEC_UA" ]; then
+            echo "::error::Set repository secret SEC_USER_AGENT"; exit 1; fi
+      - name: Fetch sources
+        run: python tools/ingest_entity_metadata.py fetch --raw-dir /tmp/entity-metadata-raw | tee /tmp/fetch-status.json
+      - name: Build registry and coverage (offline, deterministic)
+        run: |
+          python tools/ingest_entity_metadata.py build
+          cp reports/entity_metadata/top500_entity_metadata_2024-12-31.json /tmp/first.json
+          python tools/ingest_entity_metadata.py build > /dev/null
+          cmp /tmp/first.json reports/entity_metadata/top500_entity_metadata_2024-12-31.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: entity-metadata-raw-${{ github.run_id }}
+          path: |
+            /tmp/entity-metadata-raw
+            /tmp/fetch-status.json
+      - name: Commit source extracts, registry and coverage
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/entity_metadata
+          git diff --cached --quiet && { echo "no change"; exit 0; }
+          git commit -m "data(entity-metadata): ingest SEC/Wikidata/KIS search metadata (run ${{ github.run_id }})"
+          git push origin HEAD:${{ github.ref_name }}
