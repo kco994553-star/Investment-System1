@@ -99,3 +99,21 @@ MACRO REAL PRODUCER IMPLEMENTATION BASELINE / INTEGRATION WAIT
 
 Defined scope is closed. Do not merge PR #12. Integration waits for the owner. This branch does not take Track C, Technical REAL Producer, Web, or Entity Metadata work.
 
+
+## Lineage schema owner adoption — additive note (2026-10-03)
+
+Owner adoption record: `LINEAGE_SCHEMA_OWNER_ADOPTION_2026-10-03.md` — a **current** (not retroactive) Macro owner adoption of Track C `2137883`'s additive lineage/schema change (four optional fields `available_at` / `data_stamp_refs` / `source_vintages` / `input_hash` on `MacroSnapshot`, plus `MacroEngine.evaluate_stamped` requiring exactly growth + inflation), per user CDR-004 2026-10-03. No prior approval covered `MacroSnapshot` lineage fields and no register item exists for Macro. Independent before/after invariance comparison, recorded before any pin edit: `evidence/c28_adoption_invariance_2026-10-03.json` (PASS; every pre-existing field value, `macro_snapshot_id`, producer snapshot, bundle hash and evidence sample identical; the only differences are the four added keys with legacy values). `tests/test_macro_real_producer.py` now carries both the pre-adoption pins (`c593a2ef…`, `f7268f52…`) and the adopted pins (`a0a7c983…`, `86607bf7…`), selected state-exactly from the adopted feature itself; nothing is loosened. The "Engine" row and the "Track C `evaluate_stamped` is not on this branch" statement above stay the correct description of this branch until the Track C tip is integrated and are not rewritten. No formula, value, regime or Macro state changed; no source under `implementation/src` changed. Prepared by the Primary Integration Writer; becomes the owner's adoption when merged into `feature/macro-real-producer-v1`. `CANONICAL_STATE`: NOT_MERGED.
+
+### Post-adoption engine fingerprint (additive record; the 2026-10-01 table above is the pre-adoption record and is not overwritten)
+
+`tools/producer_engine_fingerprint.py` hashes `asdict()` of the engine outputs, so the `macro` and `technical` sections change once the four lineage keys exist. Measured on a throwaway tree = this PR tip `61d3352` + Track C tip `b9e01a9` (0 conflicts); every pre-existing key in the normalized dicts is identical. Detail: `evidence/validation_post_adoption_2026-10-03.json`.
+
+| Section | Pre-adoption (2026-10-01) | Post-adoption (Track C 2137883 integrated) |
+|---|---|---|
+| qgv | `a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e` | unchanged |
+| technical | `82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7` | `66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655` |
+| macro | `7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f` | `7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501` |
+| leaderboard | `112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1` | unchanged |
+| portfolio_official_book | `53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68` | unchanged |
+
+Reason: C-28 upstream adoption of Track C 2137883 per user CDR-004 2026-10-03 (schema keys added with legacy values; no computed value changed). `macro_snapshot_id` (`mac_560ba7bdee89`, `mac_35acb549cbc8`), the `PRODUCER_SNAPSHOT` v1 and its canonical hash, `bundle_sha256` and the evidence `sample` do not change.

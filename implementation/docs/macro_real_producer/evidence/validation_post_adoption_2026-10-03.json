@@ -1,0 +1,219 @@
+{
+ "record": "MACRO_REAL_PRODUCER_FINGERPRINT_POST_ADOPTION_2026-10-03 (PR #12)",
+ "kind": "Additive post-adoption record next to evidence/validation.json. The pre-adoption values in evidence/validation.json and STATUS.md are NOT overwritten.",
+ "reason": "C-28 upstream adoption of Track C 2137883 per user CDR-004 2026-10-03: MacroSnapshot and TechnicalSnapshot gain four optional lineage keys (available_at=None, data_stamp_refs=(), source_vintages=(), input_hash=None). tools/producer_engine_fingerprint.py hashes dataclasses.asdict() of the engine outputs, so its macro and technical sections change while every pre-existing key is identical. No computed value changed.",
+ "authority": "User CDR-004 2026-10-03 (quoted in LINEAGE_SCHEMA_OWNER_ADOPTION_2026-10-03.md)",
+ "prepared_by": "Primary Integration Writer, Claude Code session session_019znshzTYgyBnuuBmSxdPFN; becomes the owner's record when merged into feature/macro-real-producer-v1",
+ "trees": {
+  "pre_adoption": {
+   "head": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+   "description": "PR #12 tip feature/macro-real-producer-v1 @ 61d3352 (code commit 38e3dff), as-is"
+  },
+  "post_adoption": {
+   "head": "84cd6b502d0e38cb43057552eb893d78b80bc368",
+   "description": "throwaway: 61d3352 + git merge --no-ff origin/ccr-22e3ff16-p7n5k5 @ b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565 (Track C tip carrying 2137883), 0 conflicts"
+  }
+ },
+ "command": "PYTHONPATH=src python3 tools/producer_engine_fingerprint.py <tree>/implementation/src",
+ "fingerprint_pre_adoption_committed_2026_10_01": {
+  "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+  "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+  "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+  "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+  "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+ },
+ "fingerprint_pre_adoption_reproduced": {
+  "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+  "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+  "n_qgv": 19,
+  "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+  "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+  "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+ },
+ "fingerprint_post_adoption": {
+  "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+  "macro": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501",
+  "n_qgv": 19,
+  "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+  "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+  "technical": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+ },
+ "sections_changed": {
+  "macro": {
+   "pre": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+   "post": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501",
+   "why": "4 MacroSnapshot dicts x 4 added keys with legacy values; all pre-existing keys identical"
+  },
+  "technical": {
+   "pre": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+   "post": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655",
+   "why": "19 TechnicalSnapshot dicts x 4 added keys with legacy values; all pre-existing keys identical"
+  }
+ },
+ "sections_unchanged": [
+  "qgv",
+  "leaderboard",
+  "portfolio_official_book",
+  "n_qgv"
+ ],
+ "unchanged_identities": {
+  "macro_snapshot_id": {
+   "decision_2024_12_31_default": "mac_560ba7bdee89",
+   "decision_2024_12_31_with_revised_history": "mac_560ba7bdee89",
+   "decision_2025_03_15_sees_revision": "mac_35acb549cbc8",
+   "replay_decision_2024_12_31_with_revised_history": "mac_560ba7bdee89"
+  },
+  "producer_snapshot_canonical_sha256": {
+   "decision_2024_12_31_default": "684438cdf1a199e6fc3861cffa1d2ebd2cad6a4aa17c91e5a95a0195a37b1c1d",
+   "decision_2024_12_31_with_revised_history": "684438cdf1a199e6fc3861cffa1d2ebd2cad6a4aa17c91e5a95a0195a37b1c1d",
+   "decision_2025_03_15_sees_revision": "70166238af9543be1b4531067464c0c859d5fd426a648f52c9a4749ddb41e9ae",
+   "replay_decision_2024_12_31_with_revised_history": "684438cdf1a199e6fc3861cffa1d2ebd2cad6a4aa17c91e5a95a0195a37b1c1d"
+  },
+  "bundle_sha256": "c1a8eb0bec09cea27527fd19fe1834f7cfe3f4d38c1969094557bc5c59441822",
+  "evidence_sample_matches_committed": {
+   "pre": true,
+   "post": true
+  }
+ },
+ "macro_norm_dicts_pre": [
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {}
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "NEUTRAL",
+   "state": "NORMAL",
+   "synthetic": true
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": 0.04,
+     "inflation": 0.02
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "EXPANSION",
+   "state": "NORMAL",
+   "synthetic": true
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": -0.01,
+     "inflation": 0.06
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "STAGFLATION_RISK",
+   "state": "WARNING",
+   "synthetic": true
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "inflation": 0.09
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "INFLATION_SHOCK",
+   "state": "EMERGENCY",
+   "synthetic": true
+  }
+ ],
+ "macro_norm_dicts_post": [
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {}
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "NEUTRAL",
+   "source_vintages": [],
+   "state": "NORMAL",
+   "synthetic": true
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": 0.04,
+     "inflation": 0.02
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "EXPANSION",
+   "source_vintages": [],
+   "state": "NORMAL",
+   "synthetic": true
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": -0.01,
+     "inflation": 0.06
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "STAGFLATION_RISK",
+   "source_vintages": [],
+   "state": "WARNING",
+   "synthetic": true
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "inflation": 0.09
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "INFLATION_SHOCK",
+   "source_vintages": [],
+   "state": "EMERGENCY",
+   "synthetic": true
+  }
+ ],
+ "see": "evidence/c28_adoption_invariance_2026-10-03.json for the full field-level comparison (verdict PASS)"
+}
