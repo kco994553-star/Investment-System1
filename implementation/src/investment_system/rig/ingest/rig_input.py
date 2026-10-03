@@ -4,6 +4,8 @@ Builds ``SourceRef`` and ``Evidence`` only. A ``NewsEvent`` is constructed
 only when the caller supplies both an ``EconomicEventKind`` and a claim
 statement. Kind is never inferred from the title or the body.
 ``issuer_id`` is never inferred from a ticker or a company_id.
+The default ``SourceKind`` remains ``NEWS``. Primary disclosure passes
+``PRIMARY_DISCLOSURE`` explicitly.
 """
 
 from __future__ import annotations
@@ -36,12 +38,21 @@ def issuer_ids_for(item: NormalizedNewsItem, mapping: dict[str, str] | None) -> 
     return tuple(found)
 
 
-def to_rig_input(item: NormalizedNewsItem, *, issuer_ids: tuple[str, ...] = ()) -> RigNewsInput:
+def to_rig_input(
+    item: NormalizedNewsItem,
+    *,
+    issuer_ids: tuple[str, ...] = (),
+    kind: SourceKind = SourceKind.NEWS,
+) -> RigNewsInput:
     if item.coverage == "EXACT_DUPLICATE":
         raise IngestError("CONFLICT", "exact duplicates are not a second RIG input")
+    if not isinstance(kind, SourceKind):
+        raise IngestError("MALFORMED", "source kind must be a SourceKind")
+    if kind not in {SourceKind.NEWS, SourceKind.PRIMARY_DISCLOSURE}:
+        raise IngestError("POLICY_BLOCKED", "ingestion only emits NEWS or PRIMARY_DISCLOSURE")
     source = SourceRef(
         source_id=item.source_identity,
-        kind=SourceKind.NEWS,
+        kind=kind,
         publisher=item.source,
         published_at=item.published_at,
         raw_artifact_id=f"newsraw:{item.raw_hash}",

@@ -101,3 +101,20 @@ Web MVP (unmerged) reads `event_id`, `headline`, `issuer_ids`, `available_at`,
 `status`, `source_language`. Those keys are present. `event_id` here is the
 normalized news id, not a frozen `NewsEvent` id, until explicit promotion.
 `issuer_ids` are empty unless the caller passes the company/issuer map.
+
+## Language metadata (additive, schema 1)
+
+`source_language` stays a string on schema 1. A provider tag that matches the
+existing BCP 47-like pattern is stored exactly. When the provider omits
+language metadata, the adapter records the exact token `LANGUAGE_NOT_PROVIDED`.
+That token is not a language tag, not `en`, and not `en-US`.
+
+Omitting the field, or sending an empty string, is still `MALFORMED`. The
+caller has to set the token, so a forgotten field is not silently treated as
+English. `display_locale` is still rejected on the item and still does not
+change `source_language`. Document text is not an input to language.
+
+This is the general rule for every provider that does not supply language
+metadata. It is not an SEC-only exception. Consumers must not assume every
+`source_language` value is a BCP 47 tag.
+
