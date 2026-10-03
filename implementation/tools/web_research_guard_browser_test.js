@@ -80,9 +80,11 @@ async function main() {
     list.forEach((e) => e.remove());
     return { units: out, rest: main.innerHTML };
   });
-  const searchRows = async (page, query) => {
+  // Search result rows; a company row reads the QGV section, so withheld fixtures may exclude them.
+  const searchRows = async (page, query, companies = true) => {
     await page.locator("#global-search").fill(query);
-    return page.locator("#global-results").innerHTML();
+    return page.locator("#global-results li").evaluateAll((rows, all) => rows
+      .filter((e) => all || !(e.dataset.entityId || "").startsWith("COMPANY:")).map((e) => e.outerHTML).join(""), companies);
   };
 
   try {
@@ -202,8 +204,10 @@ async function main() {
             const leaked = (manifest ? manifest.withheld_probes : []).filter((p) => html.includes(p));
             if (leaked.length) leaks[`${locale} ${hash}`] = leaked;
           }
-          // A company row reads the (withheld) QGV section, so it is compared only for legacy bundles.
-          for (const query of mode === "legacy" ? ["NVDA", "CPI", "반도체"] : ["CPI", "반도체"]) assert.equal(await searchRows(guarded, query), await searchRows(baseline, query), `${locale} search ${query}`);
+          for (const query of ["NVDA", "CPI", "반도체"]) {
+            const all = mode === "legacy";
+            assert.equal(await searchRows(guarded, query, all), await searchRows(baseline, query, all), `${locale} search ${query}`);
+          }
         }
       });
       if (mode === "fixture") {
