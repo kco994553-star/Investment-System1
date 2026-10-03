@@ -11,9 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-      - name: Offline model tests and full mini_pytest regression
+          python-version: "3.11"
+      - name: Install native regression runner
+        run: python -m pip install pytest==9.1.1
+      - name: Offline model tests and full native pytest regression
         working-directory: implementation
-        run: python tools/mini_pytest.py
+        run: PYTHONPATH=src python -m pytest -q

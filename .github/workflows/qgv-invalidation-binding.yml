@@ -12,9 +12,13 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Full mini_pytest including QGV invalidation binding
+      - name: Install native regression runner
+        run: python -m pip install pytest==9.1.1
+      - name: Full native pytest including QGV invalidation binding
         working-directory: implementation
-        run: python tools/mini_pytest.py
+        run: PYTHONPATH=src python -m pytest -q

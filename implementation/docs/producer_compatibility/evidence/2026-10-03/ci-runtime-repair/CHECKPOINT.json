@@ -1,0 +1,79 @@
+{
+  "record": "INTEGRATION_CI_RUNTIME_REPAIR_2026_10_03",
+  "branch": "codex/integration-ci-runtime-2026-10-03",
+  "base_and_merge_base": "71d5773dd235f93682722b9db762dc254379491e",
+  "authority": "current user takeover autonomous compatibility repair, CDR-004 integration context",
+  "failed_runs_observed": {
+    "37102512467": {
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37102512467",
+      "log_sha256": "ad087d7662b4a658c58a2b8a1421642bcae4427e8dfdfc121bd699336e5b969d",
+      "runner_missing_pytest_mark": true,
+      "canonical_blob_missing": true,
+      "python312_portfolio_fingerprint_mismatch": false
+    },
+    "37102512505": {
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37102512505",
+      "log_sha256": "5da061a16bb48b1be345699f57ee6111ca32512db79861faf371c9b2c6ba4592",
+      "runner_missing_pytest_mark": true,
+      "canonical_blob_missing": true,
+      "python312_portfolio_fingerprint_mismatch": false
+    },
+    "37102512509": {
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37102512509",
+      "log_sha256": "12cf3ed860fe6534d1a9b68d64046ea46c0247fdfff3763f780f3b310a66585d",
+      "runner_missing_pytest_mark": true,
+      "canonical_blob_missing": true,
+      "python312_portfolio_fingerprint_mismatch": true
+    },
+    "37102512499": {
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37102512499",
+      "log_sha256": "eaefdbaff0990b638a014548c52ad0eca4a72f3995ed6a6d0060cdad2ba9c9e9",
+      "runner_missing_pytest_mark": true,
+      "canonical_blob_missing": true,
+      "python312_portfolio_fingerprint_mismatch": true
+    },
+    "37102512440": {
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37102512440",
+      "log_sha256": "2d4bda01b3398d31ffc63e9ab8794797ad33a1530a4c779a5ab96477aa996eac",
+      "runner_missing_pytest_mark": true,
+      "canonical_blob_missing": true,
+      "python312_portfolio_fingerprint_mismatch": true
+    },
+    "37102512470": {
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37102512470",
+      "log_sha256": "e785d3dfd0e77cfbac5608d7b183f30d4d102ee77f660aef21f1a90d40bd80d7",
+      "runner_missing_pytest_mark": true,
+      "canonical_blob_missing": true,
+      "python312_portfolio_fingerprint_mismatch": true
+    }
+  },
+  "repair": "full-history checkout + existing approved Python3.11 + pytest9.1.1 native full regression, accurate labels; SEC retains pin fetch without shallow history",
+  "changed_workflows": [
+    ".github/workflows/technical-real-producer.yml",
+    ".github/workflows/technical-real-model.yml",
+    ".github/workflows/us-equity-session.yml",
+    ".github/workflows/sec-primary-disclosure.yml",
+    ".github/workflows/p01-research-publication.yml",
+    ".github/workflows/qgv-invalidation-binding.yml",
+    ".github/workflows/web-mvp-validation.yml"
+  ],
+  "source_math_tests_frozen_pins_changes": [],
+  "validation": {
+    "YAML": "7 PASS (PyYAML6.0.3 BaseLoader, validates workflow event and permissions names)",
+    "shell_syntax": "PASS bash -n for all run scripts",
+    "targeted_native": "170 passed in2.40s, CPython3.11.16 pytest9.1.1",
+    "full_local_duplicate_suite": "NOT_RUN (unchanged implementation; root exact-HEAD Actions regression already running)",
+    "browser_local": "NOT_RUN (browser steps unchanged)",
+    "Actions_on_repair": "NOT_RUN_BY_THIS_WORKER"
+  },
+  "BRANCH_STATE": "LOCAL_IMPLEMENTED_AND_TARGETED_VERIFIED_NOT_PUSHED",
+  "INTEGRATION_STATE": "CI_COMPATIBILITY_REPAIR_PROPOSAL",
+  "CANONICAL_STATE": "NOT_MERGED",
+  "maturity_before_after": "UNCHANGED; runtime repair is not canonical integration or real-data verification",
+  "USER_DECISION_REQUIRED": "NO for CI setup repair; canonical merge/publication/numeric remain gated",
+  "next_autonomous_action": "root history-preserving merge, push feature branch, actual Actions on new exact HEAD",
+  "artifact_sha256": {
+    "targeted-native311.log": "72efddea690d1ab36405f8cd3270c6449c8262e89e384a564ad500df528e6a00",
+    "yaml-validation.json": "e0beb7362cc6fb529154be1e6856bcf792140601cd6654f105936d7db456b050"
+  }
+}
