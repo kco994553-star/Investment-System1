@@ -85,3 +85,10 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 ## GCH-006a · 2026-10-03 · repair round 1 recorded
 
 - #34 `a3cbf13` re-review PASS (contract validation-PASS parity added). #36 `8b6756b`: original exploit fixed; new bounded bypass B1 found; repair round 2 running. trial2 1189/1189, superseded pending round 2. Codex `codex/integration-hardening-2026-10-03` @ `fc6720b` (F1 fix) tracked read-only.
+
+## GCH-006b · 2026-10-03T11:55Z · repair round 2 recorded; #31 and #35 HANDOFF_READY; #37 observed
+
+- #36 `fb086ea` re-review PASS: B1 closed by a strict RFC 3339 gate before `Date.parse` (GIE-007 §6). trial3 `eb575c9` (local, never pushed): 1193 passed, READY_FOR_NEXT_TRIAL_PR; supersedes trial2.
+- Codex #31 @ `29c2c20` and #35 @ `722c812` declare HANDOFF_READY. Independent read-only verification of both started; results go to GIE-008. Nothing on either branch is edited.
+- PR #37 `feature/dynamic-workflow-m0` @ `d83c03e` (Draft, base canonical) was pushed by the repository owner account at 11:01Z. It adds 3 files and modifies none; local exact-HEAD run 7 passed; no Actions run. Recorded read-only in GSI row 24. `DYNAMIC_WORKFLOW_V1_SOFTWARE_FROZEN` is kept, and the Primary Integration Writer does not act on #37.
+- Canonical `b8e39a2` unchanged. No canonical merge, grant, CAL_VERIFY or Holdout access. Maturity transitions: none.
