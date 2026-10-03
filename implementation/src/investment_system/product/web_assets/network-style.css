@@ -1,0 +1,42 @@
+body {
+  font-family: system-ui, sans-serif;
+}
+button,
+input,
+select {
+  min-height: 44px;
+  max-width: 100%;
+  font-size: 14px;
+}
+header,
+main {
+  padding: 10px;
+}
+#net {
+  height: 48vh;
+}
+#qv {
+  position: sticky;
+  bottom: 0;
+  max-height: 32vh;
+  overflow: auto;
+  border-radius: 10px;
+  z-index: 3;
+  overflow-wrap: anywhere;
+}
+.tb {
+  max-width: 100%;
+}
+.tb > * {
+  max-width: 100%;
+}
+#discovery {
+  overflow-wrap: anywhere;
+}
+h1 {
+  font-size: 18px;
+}
+
+.seg {
+  display: none;
+}
