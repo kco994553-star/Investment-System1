@@ -1,0 +1,184 @@
+{
+ "evidence_id": "GIE-001",
+ "recorded_utc": "2026-10-03",
+ "writer_session": "session_019znshzTYgyBnuuBmSxdPFN",
+ "scope": "read-only local trial integration; nothing pushed; not CI_VERIFIED",
+ "remote_fetch_utc": "2026-10-03T01:07Z",
+ "remote_refs": 28,
+ "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+ "runner": {
+  "python": "3.11.15",
+  "pytest": "9.1.1 (installed locally)",
+  "pythonpath": "src"
+ },
+ "pairwise_merge_tree": {
+  "tips": [
+   "#7 a013f1c",
+   "#19 c3dbf8a",
+   "#12 61d3352",
+   "#10 5eec129",
+   "#14 0d48d86",
+   "#18 2c088ce",
+   "#16 ef65caa",
+   "#4 ff78c4f",
+   "ccr-22e3ff16 97d1b94",
+   "docs/qgv-context-policy-approvals b42f2be",
+   "ccr-e0fc1e48 f415615",
+   "#20 d87d4cd",
+   "#21 f1b5afb"
+  ],
+  "pairs": 78,
+  "conflicts": [
+   {
+    "pair": [
+     "#20",
+     "#21"
+    ],
+    "paths": [
+     "CLAUDE.md",
+     "implementation/docs/coordination/CLAUDE_CODE_WORKER_CONTRACT.md"
+    ],
+    "kind": "add/add"
+   }
+  ]
+ },
+ "sequential_trial": {
+  "order": [
+   [
+    "#7",
+    "a013f1c1758642f90a65fe11df69fc234c143a48",
+    "ccd6bd4"
+   ],
+   [
+    "#19",
+    "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+    "bd63a66"
+   ],
+   [
+    "#12",
+    "61d3352d5d68c7830e924f17613598ca79fcec6f",
+    "891712e"
+   ],
+   [
+    "#10",
+    "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+    "0f2128f"
+   ],
+   [
+    "#14",
+    "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+    "c71f069"
+   ],
+   [
+    "#18",
+    "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+    "86bf35c"
+   ],
+   [
+    "#16",
+    "ef65caa5437a04610fa43f93209afb9193ba24aa",
+    "6e2f09b"
+   ],
+   [
+    "#4",
+    "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+    "5af0858"
+   ]
+  ],
+  "text_conflicts": 0,
+  "diff_vs_canonical": {
+   "files": 339,
+   "insertions": 116223,
+   "deletions": 0
+  },
+  "tree_A_with_track_c": "5af0858",
+  "tree_B_without_track_c": "6e2f09b771bdb36f654969ae96cd454c314a01a8"
+ },
+ "regression": {
+  "canonical_b8e39a2_mini_pytest": "396 passed, 0 failed",
+  "tree_A_mini_pytest": "616 passed, 25 failed (15 runner import errors on pytest.mark, 7 IF-1, 3 IF-2)",
+  "tree_A_pytest": "1058 passed, 10 failed in 417.15s (7 IF-1 + 3 IF-2)",
+  "tree_B_pytest": "619 passed, 3 failed (IF-2 x3)",
+  "pr12_head_61d3352_pytest": "442 passed, 0 failed",
+  "pr13_head_8bb990b_pytest": "410 passed, 0 failed",
+  "ccr_22e3ff16_head_97d1b94_pytest": "IN_PROGRESS at this commit"
+ },
+ "engine_fingerprint": {
+  "pinned": {
+   "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+   "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+   "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+   "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+   "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68"
+  },
+  "tree_B": "all equal to pinned",
+  "pr9_plus_track_c_and_tree_A": {
+   "technical": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655",
+   "macro": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501",
+   "others": "equal to pinned"
+  },
+  "field_diff": {
+   "snapshots": 23,
+   "lines_added": 92,
+   "lines_removed_or_changed": 0,
+   "added_fields": [
+    "available_at",
+    "data_stamp_refs",
+    "source_vintages",
+    "input_hash"
+   ]
+  }
+ },
+ "findings": {
+  "IF-1": {
+   "commit": "2137883",
+   "files": {
+    "contracts/lineage.py": 66,
+    "contracts/models.py": 12,
+    "technical/engine.py": 16,
+    "macro/engine.py": 10
+   },
+   "deletions": 0,
+   "failing_guards": [
+    "#11 test_technical_real_producer.py::test_engine_fingerprint_and_cross_track_sources_unchanged",
+    "#15 test_technical_real_model_v1.py::test_placeholder_engine_is_unchanged_and_not_used_by_the_real_model",
+    "#18 test_us_equity_session_v1.py::test_model_bytes_and_session_source_stay_in_contract",
+    "#12 test_macro_real_producer.py::test_existing_engine_qgv_technical_portfolio_leaderboard_bytes_unchanged",
+    "#14 test_leaderboard_real_producer.py::test_cross_track_sources_are_unchanged",
+    "#17 test_p01_research_publication.py::test_engine_fingerprints_match_the_pre_change_pin",
+    "#17 test_p01_research_publication.py::test_protected_engine_bytes_are_unchanged"
+   ],
+   "classification": "USER_DECISION_REQUIRED (merge order / protected-boundary acceptance)"
+  },
+  "IF-2": {
+   "sentinels": [
+    "#10 test_qgv_producer_infra_compat.py (PR #9 absent)",
+    "#14 test_leaderboard_producer_infra_compat.py (PR #9 absent)",
+    "#13 test_rig_news_ingest.py::test_pr7_registry_is_read_only_and_not_copied (PR #7 absent)"
+   ],
+   "classification": "LOCAL_FIXABLE by owner at integration"
+  },
+  "IF-3": {
+   "prs": [
+    20,
+    21
+   ],
+   "classification": "USER_DECISION_REQUIRED (contract SSoT)"
+  },
+  "IF-4": {
+   "no_actions": [
+    "feature/macro-real-producer-v1",
+    "feature/rig-news-real-ingestion-v1",
+    "ccr-22e3ff16-p7n5k5"
+   ],
+   "classification": "STALE_CI_REVALIDATION_REQUIRED (owner)"
+  }
+ },
+ "raw_logs_sha256": {
+  "canonical_mini_pytest": "0d55e2e436c218967243ede5150cee02b8f59332c23db08e89d3459bb87b6b38",
+  "tree_A_mini_pytest": "21eb255b8adeb6a16222ae9440b4c72721667032b75936b9725b0df84bbfa016",
+  "tree_A_pytest": "039e7d09b06bb4dc8a090e9ca1fedfbddbaf96e08b1e24402ce6d81996d5b045",
+  "ccr_22e3ff16_pytest": "6bb3fae7dd968a64e3ed5492cd5a18b180687a406b6a27df0eec4198acc25cad"
+ },
+ "raw_logs_committed": false
+}
