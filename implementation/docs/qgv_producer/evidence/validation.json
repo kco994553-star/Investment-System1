@@ -1,0 +1,41 @@
+{
+ "kind": "QGV_PRODUCER_V1_VALIDATION_SUMMARY",
+ "recorded_at": "2026-10-01",
+ "branch": "ccr-db5d5960-qen9yi",
+ "baseline_canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+ "validated_code_commit": "4b772c2",
+ "evidence_commit": "81b87b8",
+ "actions": {
+  "36851716398": {"commit": "47484b5", "offline_tests": "success", "real_producer": "failure",
+                  "cause": "Frozen equal_weight_realized compared bit-exactly; abs diff 1.7e-18 (post-as_of aggregate, not a QGV field). Fixed in 4b772c2 by an explicit 1e-15 tolerance with the exact diff recorded"},
+  "36852186517": {"commit": "4b772c2", "offline_tests": "success", "real_producer": "success"}
+ },
+ "raw_source": {"artifact": "c21-raw-store-36305927245", "run_id": 36305927245,
+                "digest": "sha256:712e43bcc1fcd137e5e99ccdda2440850eda56015e02037293d8eac8db399f94",
+                "expires_at": "2026-12-26T08:21:15Z",
+                "per_input_check": "sha256(actual bytes) == store manifest == committed data/raw/STORE_INDEX.json",
+                "inputs_per_date": 1000, "network_attempts": 0},
+ "producer_infra_pin": "feature/producer-infrastructure-v1@5fa7ce0647b6af91d767c54ecaaa3e31d1ab63e4 (read-only)",
+ "per_as_of": {
+  "2024-06-30": {"universe_id": "uni_cb35a6200b61", "scope": "FULL_UNIVERSE", "expected": 500, "PASS": 500, "FAIL": 0, "NOT_RUN": 0,
+                 "engine_coverage": {"PARTIAL": 471, "BLOCKED": 29}, "q_and_g_present": 471, "v_present": 443, "no_q_no_g": 3,
+                 "manifest_semantic_sha256": "96b62849c0db00d7…", "ranked_sha256": "12a1b21531418c9c…",
+                 "frozen": "PASS (all counts exact, selected list exact, ewr abs diff 8.3e-17)", "plain_vs_captured": "PASS"},
+  "2024-09-30": {"universe_id": "uni_12c3852b8333", "scope": "FULL_UNIVERSE", "expected": 500, "PASS": 500, "FAIL": 0, "NOT_RUN": 0,
+                 "engine_coverage": {"PARTIAL": 469, "BLOCKED": 31}, "q_and_g_present": 469, "v_present": 443, "no_q_no_g": 5,
+                 "manifest_semantic_sha256": "60ab75359203df85…", "ranked_sha256": "f6ae8402cb93c6b3…",
+                 "frozen": "PASS (all counts exact, selected list exact, ewr abs diff 3.9e-18)", "plain_vs_captured": "PASS"},
+  "2024-12-31": {"universe_id": "uni_0d1a30b1ee47", "scope": "FULL_UNIVERSE", "expected": 500, "PASS": 500, "FAIL": 0, "NOT_RUN": 0,
+                 "engine_coverage": {"PARTIAL": 468, "BLOCKED": 32}, "q_and_g_present": 468, "v_present": 439, "no_q_no_g": 6,
+                 "manifest_semantic_sha256": "082640970976f321…", "ranked_sha256": "3e75c3c5f9b38a14…",
+                 "frozen": "PASS (all counts exact; no Frozen selected list exists for this date; ewr abs diff 1.7e-18)",
+                 "plain_vs_captured": "PASS", "determinism_rerun": "PASS (500 record hashes + manifest equal; snapshot UUIDs differ)"},
+  "2024-12-31_sample": {"scope": "SAMPLE", "ids": ["aapl", "brk_b", "jpm", "msft", "nvda"], "PASS": 5,
+                        "hash_equal_to_full_run_records": true, "note": "not a Universe validation"}
+ },
+ "infra_compat": {"full": "PASS (INFO: earlier-date ids outside the 2024-12-31 Web company list)", "sample": "PASS",
+                  "research_candidate": "ResearchStatusError RESEARCH_STATUS_NOT_PUBLISHABLE",
+                  "published": "NOT_AVAILABLE / QGV_RESEARCH_ONLY_NO_EXPORT", "bundle": "assemble_bundle + web_mvp.validate_bundle PASS"},
+ "regression": {"mini_pytest": "424 passed / 0 failed (baseline 396 + 28 new)", "pytest": "424 passed (Infrastructure compat enabled)"},
+ "status_semantics": "record PASS = the engine output was persisted with valid PIT, lineage, identity and research state. Score completeness is the engine's own coverage_state and Q/G/V nullness, preserved verbatim"
+}

@@ -1,0 +1,135 @@
+{
+ "manifest_kind": "QGV_PRODUCER_BATCH_MANIFEST",
+ "manifest_version": 1,
+ "operational": {
+  "code_commit": "4b772c2c24dcff8cd7ef56e82412dcc719f77267",
+  "files": {
+   "qgv_company_snapshots_2024-12-31.jsonl": {
+    "bytes": 53890,
+    "sha256": "538bc9284183fb5ebd854b5cb650ea4ba7e14f72de9aba7aceeaad884a96c92e"
+   }
+  },
+  "generated_at": "2026-10-01T10:59:06.185289+00:00",
+  "run_id": "36852186517"
+ },
+ "semantic": {
+  "as_of": "2024-12-31T00:00:00+00:00",
+  "complete": true,
+  "counts": {
+   "FAIL": 0,
+   "NOT_RUN": 0,
+   "PASS": 5
+  },
+  "data_lineage": {
+   "inputs_sha256": "928e677a5dcedb45467f5360a36ac58bb24338801af3d17a1ef52b0977e23bd2",
+   "n_inputs": 1000,
+   "raw_source": {
+    "artifact": "c21-raw-store-36305927245",
+    "artifact_digest": "sha256:712e43bcc1fcd137e5e99ccdda2440850eda56015e02037293d8eac8db399f94",
+    "blob_verification": "per-input sha256 vs committed data/raw/STORE_INDEX.json and store manifest",
+    "kind": "GITHUB_ACTIONS_ARTIFACT",
+    "run_id": 36305927245
+   },
+   "store_index_sha256": "ece81ac9f5ad6a528088c19dcfb98898b33b41c53a7a8543864ba1f04ba642d6"
+  },
+  "engine_run": {
+   "n_cross_section": 500,
+   "n_investable": 494,
+   "n_missing": 6,
+   "n_name_errors": 0,
+   "n_selected": 468,
+   "ranked_sha256": "3e75c3c5f9b38a1483f02ff0c0b297e8174c018ebd2c79bfa8a8f650873e85f9",
+   "selected_sha256": "f4bd15053823e9b60fb6afb7e50b5e9f19aa92c1e9ef02fa24aa36ce1e0eb222"
+  },
+  "expected_count": 5,
+  "methodology": {
+   "cross_section_rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+   "cross_section_rule_status": "PROVISIONAL_RESEARCH",
+   "implementation_line": "investment_system_impl-v0.2.0",
+   "qgv_analysis_contract": "v1.7.6",
+   "qgv_standard_version": "v1.5-balanced",
+   "qgv_system_version": "v1.7",
+   "run_parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+   "run_profile_id": "profile-balanced-provisional",
+   "weights_sha256": "9e961bf717110cf811b65cfc8ec8474b68425d8801d813c6890517fb85091231"
+  },
+  "persisted_count": 5,
+  "records": [
+   {
+    "company_id": "aapl",
+    "semantic_sha256": "544b6d9dbdc91119b15cbfa915e5f597e16ccf717bca6a10668e957a4220d4b7",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "brk_b",
+    "semantic_sha256": "5aa16f3f28e2d0032b0655329c1d94edb152004da9a12366de68244d92abcf19",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "jpm",
+    "semantic_sha256": "69036e40494a5f6e0b50725f8df9d3b585c5f096adbd49ad7da61985f7ed7585",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "msft",
+    "semantic_sha256": "dc590f8c916fc38f256f071678d488a2d0fb3e25c5004dd5080b76f5f0056f8d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "nvda",
+    "semantic_sha256": "02b7c2d35c2cffd26a77bfe5f135b7dfc9f296421d07625d131244721e56b4e1",
+    "status": "PASS",
+    "status_reasons": []
+   }
+  ],
+  "records_sha256": "f593cb40e9478656fed3fcdc570476122e80b5f34959ee5a8033bfa8f704fca0",
+  "research_state": {
+   "calibrated": false,
+   "full_pit_pass": false,
+   "official_pass": false,
+   "official_selection": false,
+   "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+   "status": "PROVISIONAL_RESEARCH",
+   "track_c_validated": false
+  },
+  "sample_ids": [
+   "aapl",
+   "brk_b",
+   "jpm",
+   "msft",
+   "nvda"
+  ],
+  "scope": "SAMPLE",
+  "scope_note": "SAMPLE persistence of a full-Universe engine run; not a Universe validation",
+  "universe": {
+   "evidence": {
+    "freeze_manifest": {
+     "bytes": 8781,
+     "file": "reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json",
+     "sha256": "5789dc3d3b10dd29d466931bf9c6f459d2569d15071f80dfd50236d0b0cef006"
+    },
+    "gate_evidence": {
+     "bytes": 1240339,
+     "file": "reports/gate_evidence/gate_chain_2024-12-31_real_gha.json",
+     "sha256": "16817706dc7e70e7a667070f957c1a0230dd10d02f36cba1ac3bf96e355bef2f"
+    },
+    "official_snapshot": {
+     "bytes": 180645,
+     "file": "reports/gate_evidence/official_snapshot_2024-12-31.json",
+     "sha256": "75f795f838a608a6554e9a3fa3aa8e9e56e72fdfad4e5f8f74623aa00c7a47c9"
+    }
+   },
+   "members_sha256": "a26f0b22a0d7dda29d0433e03f29f68436c8967e04288c801e57124559e6930e",
+   "membership_basis": "DERIVED_AT_AS_OF",
+   "n_members": 500,
+   "policy_status": "OFFICIAL",
+   "universe_id": "uni_0d1a30b1ee47",
+   "universe_kind": "US_MCAP_TOP500_OFFICIAL"
+  }
+ },
+ "semantic_sha256": "1f6c6073ccc38c238d688d0fa81342c35c67a4329119036a33663827755ee007"
+}
