@@ -188,9 +188,33 @@ def test_entity_resolution_unknown_and_ambiguous():
     assert item.canonical_entity_ids == ("aapl",)
 
 
-def _read_only_registry(registry: Path, pinned: bytes) -> None:
-    # The original isolated branch has no PR #7 artifact; integrated trees must carry its exact bytes.
-    if registry.parent.exists():
+def _registry_required_by_head(repo: Path, registry: Path, pinned: bytes) -> bool:
+    # The committed tree distinguishes original branch isolation from a deleted checkout artifact.
+    relative = registry.relative_to(repo).as_posix()
+    try:
+        tracked = subprocess.check_output(
+            ["git", "ls-tree", "--full-tree", "-z", "HEAD", "--", relative], cwd=repo,
+        )
+    except (subprocess.CalledProcessError, OSError) as exc:
+        raise AssertionError("cannot establish committed entity registry context") from exc
+    if not tracked:
+        return False
+    records = tracked.rstrip(b"\0").split(b"\0")
+    assert len(records) == 1, "ambiguous committed entity registry context"
+    header, path = records[0].split(b"\t", 1)
+    mode, kind, blob = header.split()
+    assert path == relative.encode() and kind == b"blob" and mode in (b"100644", b"100755"), \
+        "committed entity registry is not the expected file"
+    expected = hashlib.sha1(b"blob " + str(len(pinned)).encode() + b"\0" + pinned).hexdigest()
+    assert blob.decode() == expected, "committed entity registry differs from pinned PR #7"
+    return True
+
+
+def _read_only_registry(registry: Path, pinned: bytes, *, required: bool) -> None:
+    # A committed integrated dependency must remain present even if its entire directory is deleted.
+    if required:
+        assert registry.parent.is_dir(), "integrated entity registry directory is missing"
+    if required or registry.parent.exists():
         assert registry.is_file(), "integrated entity directory is missing the pinned registry"
         assert registry.read_bytes() == pinned, "integrated entity registry differs from pinned PR #7"
 
@@ -200,7 +224,8 @@ def test_pr7_registry_is_read_only_and_not_copied():
         ["git", "show", f"{ENTITY_METADATA_AUDITED_SHA}:implementation/reports/entity_metadata/top500_entity_metadata_2024-12-31.json"],
         cwd=REPO,
     )
-    _read_only_registry(REPO / "implementation/reports/entity_metadata/top500_entity_metadata_2024-12-31.json", raw)
+    registry = REPO / "implementation/reports/entity_metadata/top500_entity_metadata_2024-12-31.json"
+    _read_only_registry(registry, raw, required=_registry_required_by_head(REPO, registry, raw))
     index = index_from_registry(json.loads(raw))
     assert index.universe_id == "uni_0d1a30b1ee47"
     for mention in ("META", "Facebook Inc", "FB", "페이스북"):
@@ -211,15 +236,52 @@ def test_pr7_registry_is_read_only_and_not_copied():
 
 def test_integrated_registry_rejects_mutation_and_missing_pinned_file(tmp_path):
     registry = tmp_path / "entity_metadata" / "registry.json"
-    _read_only_registry(registry, b"pinned")  # Original branch isolation remains accepted.
+    _read_only_registry(registry, b"pinned", required=False)  # Original branch isolation remains accepted.
     registry.parent.mkdir()
     with pytest.raises(AssertionError, match="missing the pinned registry"):
-        _read_only_registry(registry, b"pinned")
+        _read_only_registry(registry, b"pinned", required=True)
     registry.write_bytes(b"pinned")
-    _read_only_registry(registry, b"pinned")
+    _read_only_registry(registry, b"pinned", required=True)
     registry.write_bytes(b"changed")
     with pytest.raises(AssertionError, match="differs from pinned"):
-        _read_only_registry(registry, b"pinned")
+        _read_only_registry(registry, b"pinned", required=True)
+
+
+def test_integrated_registry_rejects_whole_directory_deletion(tmp_path, monkeypatch):
+    registry = tmp_path / "entity_metadata" / "registry.json"
+    pinned = b"pinned"
+    blob = hashlib.sha1(b"blob 6\0" + pinned).hexdigest()
+    monkeypatch.setattr(subprocess, "check_output", lambda *args, **kwargs:
+                        f"100644 blob {blob}\tentity_metadata/registry.json\0".encode())
+    required = _registry_required_by_head(tmp_path, registry, pinned)
+    assert required is True and not registry.parent.exists()
+    with pytest.raises(AssertionError, match="registry directory is missing"):
+        _read_only_registry(registry, pinned, required=required)
+
+
+def test_original_isolated_head_without_registry_preserves_absence(tmp_path, monkeypatch):
+    registry = tmp_path / "entity_metadata" / "registry.json"
+    monkeypatch.setattr(subprocess, "check_output", lambda *args, **kwargs: b"")
+    required = _registry_required_by_head(tmp_path, registry, b"pinned")
+    assert required is False and not registry.parent.exists()
+    _read_only_registry(registry, b"pinned", required=required)
+
+
+@pytest.mark.parametrize("error", [subprocess.CalledProcessError(128, ["git", "ls-tree"]),
+                                  FileNotFoundError("git unavailable")])
+def test_registry_context_git_failure_is_not_inferred_as_isolation(tmp_path, monkeypatch, error):
+    def failure(*args, **kwargs):
+        raise error
+    monkeypatch.setattr(subprocess, "check_output", failure)
+    with pytest.raises(AssertionError, match="cannot establish committed entity registry context"):
+        _registry_required_by_head(tmp_path, tmp_path / "entity_metadata/registry.json", b"pinned")
+
+
+def test_registry_context_rejects_changed_committed_blob(tmp_path, monkeypatch):
+    monkeypatch.setattr(subprocess, "check_output", lambda *args, **kwargs:
+                        b"100644 blob 0000000000000000000000000000000000000000\tentity_metadata/registry.json\0")
+    with pytest.raises(AssertionError, match="committed entity registry differs from pinned"):
+        _registry_required_by_head(tmp_path, tmp_path / "entity_metadata/registry.json", b"pinned")
 
 
 def test_source_language_is_preserved_and_display_locale_is_ignored():
