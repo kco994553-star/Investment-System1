@@ -1,0 +1,65 @@
+[
+  {
+    "path": ".github/workflows/technical-real-producer.yml",
+    "yaml": "PASS",
+    "shell_syntax": "PASS",
+    "full_checkout": "PASS",
+    "native_pytest": "9.1.1",
+    "python": "3.11",
+    "sha256": "936d340d6f18d4466692a64ef19713d486d9c2ba3f43e9749e4bf1256f7e54dc"
+  },
+  {
+    "path": ".github/workflows/technical-real-model.yml",
+    "yaml": "PASS",
+    "shell_syntax": "PASS",
+    "full_checkout": "PASS",
+    "native_pytest": "9.1.1",
+    "python": "3.11",
+    "sha256": "670333e7b1e005ccc473a7a149554a61a28713a65d151798a49463f55a42012d"
+  },
+  {
+    "path": ".github/workflows/us-equity-session.yml",
+    "yaml": "PASS",
+    "shell_syntax": "PASS",
+    "full_checkout": "PASS",
+    "native_pytest": "9.1.1",
+    "python": "3.11",
+    "sha256": "c035afcf5728115e664c990bb2c12f5367c24baa194af6bff5ad2fb27ba25763"
+  },
+  {
+    "path": ".github/workflows/sec-primary-disclosure.yml",
+    "yaml": "PASS",
+    "shell_syntax": "PASS",
+    "full_checkout": "PASS",
+    "native_pytest": "9.1.1",
+    "python": "3.11",
+    "sha256": "3f9ae119070e01846e49c0532837666adede2d12443f260109c47f09e608a92a"
+  },
+  {
+    "path": ".github/workflows/p01-research-publication.yml",
+    "yaml": "PASS",
+    "shell_syntax": "PASS",
+    "full_checkout": "PASS",
+    "native_pytest": "9.1.1",
+    "python": "3.11",
+    "sha256": "a9f02c76df3095b27c1fba43f1c28423d02bfd2dbac2fcb267564ee2c3886daa"
+  },
+  {
+    "path": ".github/workflows/qgv-invalidation-binding.yml",
+    "yaml": "PASS",
+    "shell_syntax": "PASS",
+    "full_checkout": "PASS",
+    "native_pytest": "9.1.1",
+    "python": "3.11",
+    "sha256": "ea3f122b267c7b826d77615f5902a6f5220e59b74c4d4dd8ad0c0c64584fe492"
+  },
+  {
+    "path": ".github/workflows/web-mvp-validation.yml",
+    "yaml": "PASS",
+    "shell_syntax": "PASS",
+    "full_checkout": "PASS",
+    "native_pytest": "9.1.1",
+    "python": "3.11",
+    "sha256": "67a63fd3571fe3a06384cf1df93131e6dde90a3e3649a59f029babf08f8ebf5d"
+  }
+]
