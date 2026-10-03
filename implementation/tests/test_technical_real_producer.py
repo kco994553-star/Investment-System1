@@ -11,7 +11,9 @@ from pathlib import Path
 
 import pytest
 
+from investment_system.contracts.models import MacroSnapshot, TechnicalSnapshot
 from investment_system.ingestion.raw_store import RawDatasetStore
+from investment_system.macro.engine import MacroEngine
 from investment_system.technical.codec import semantic_hash
 from investment_system.technical.engine import TechnicalEngine
 from investment_system.technical.errors import (
@@ -31,10 +33,56 @@ START = 1_700_000_000
 DECISION = datetime.fromtimestamp(START + 9 * 86400 + 3600, tz=timezone.utc)
 GENERATED = datetime(2026, 10, 1, 11, 0, tzinfo=timezone.utc)
 ROOT = Path(__file__).resolve().parents[1]
-ENGINE_FINGERPRINT = "28e910f3005c74888aa33e9b6f45b8d94fc70d4f023e1bc49a6af4100ea9ede6"
+# ---- Pin history (history-preserving; each state is exact, nothing is "either value accepted") ----
+# Pre-adoption pins, recorded 2026-10-01 with PR #11 (code commit 9ebf179): canonical
+# b8e39a2196a6d7794a04a0cd5393c68329e126ca bytes of technical/engine.py and macro/engine.py.
+ENGINE_FINGERPRINT_PRE_ADOPTION = "28e910f3005c74888aa33e9b6f45b8d94fc70d4f023e1bc49a6af4100ea9ede6"
+ENGINE_SHA256_PRE_ADOPTION = "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf"
+MACRO_ENGINE_SHA256_PRE_ADOPTION = "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b"
+# Adopted pins: C-28 upstream adoption of Track C 2137883 per user CDR-004 2026-10-03.
+# 2137883 adds four optional lineage fields to TechnicalSnapshot/MacroSnapshot plus
+# evaluate_stamped(); the legacy evaluate() bodies are byte-identical, so the only change in the
+# fingerprinted asdict() output is the four keys available_at=None, data_stamp_refs=(),
+# source_vintages=(), input_hash=None. norm() is unchanged (keys are not stripped).
+# Independent before/after comparison (PASS):
+# docs/technical_real_producer/evidence/c28_adoption_invariance_2026-10-03.json
+ENGINE_FINGERPRINT_C28_ADOPTED = "0b26c7d1a199b270568e65cb4dc9c41cca4160e8a0ed7494244266a54e8d1a4a"
+ENGINE_SHA256_C28_ADOPTED = "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c"
+MACRO_ENGINE_SHA256_C28_ADOPTED = "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10"
+LINEAGE_FIELDS = frozenset({"available_at", "data_stamp_refs", "source_vintages", "input_hash"})
+
+
+def _c28_adoption_state() -> bool | None:
+    """Detect the adopted state from the adopted feature itself, never from bytes.
+
+    True: Track C 2137883 present on both engines and both snapshots. False: pre-adoption tree.
+    None: partially adopted tree; it selects digests no file has, so the byte checks fail.
+    """
+    signals = (
+        hasattr(TechnicalEngine, "evaluate_stamped"),
+        hasattr(MacroEngine, "evaluate_stamped"),
+        LINEAGE_FIELDS <= {f.name for f in dataclasses.fields(TechnicalSnapshot)},
+        LINEAGE_FIELDS <= {f.name for f in dataclasses.fields(MacroSnapshot)},
+    )
+    if all(signals):
+        return True
+    if not any(signals):
+        return False
+    return None
+
+
+C28_ADOPTED = _c28_adoption_state()
+_INCONSISTENT = "C28_ADOPTION_STATE_INCONSISTENT"
+ENGINE_FINGERPRINT = {True: ENGINE_FINGERPRINT_C28_ADOPTED, False: ENGINE_FINGERPRINT_PRE_ADOPTION}.get(
+    C28_ADOPTED, _INCONSISTENT
+)
 SOURCE_SHA256 = {
-    "src/investment_system/technical/engine.py": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
-    "src/investment_system/macro/engine.py": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+    "src/investment_system/technical/engine.py": {
+        True: ENGINE_SHA256_C28_ADOPTED, False: ENGINE_SHA256_PRE_ADOPTION
+    }.get(C28_ADOPTED, _INCONSISTENT),
+    "src/investment_system/macro/engine.py": {
+        True: MACRO_ENGINE_SHA256_C28_ADOPTED, False: MACRO_ENGINE_SHA256_PRE_ADOPTION
+    }.get(C28_ADOPTED, _INCONSISTENT),
     "src/investment_system/qgv/scoring.py": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
     "src/investment_system/qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
     "src/investment_system/qgv/portfolio.py": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
