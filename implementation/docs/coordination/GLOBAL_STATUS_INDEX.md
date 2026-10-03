@@ -4,7 +4,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-003 (GIE-002 IF-1 audit complete; GIE-004 C8 method impact) |
+| Index revision | GSI-004 (CDR-004/005 execution in progress; Track C owner tip b9e01a97; Actions run 37097149378 dispatched) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
@@ -37,7 +37,7 @@ CI column key:
 |---|---|---|---|---|---|---|---|---|
 | 1 | Track A REAL-DATA main | canonical (`recovery/track-a-real-data-frozen` @ `a79642f`, merged) | #3 merged | **INTEGRATED** (FROZEN_VERIFIED) | merged | merged as `bd6bf42` | MERGED | root `Investment-System1 · TRACK_A_REAL_DATA_STATUS.md` |
 | 2 | Track B Personal Investment Layer | canonical (P0 only) | — | IMPLEMENTED (P0 contracts FROZEN); P1+ NOT_STARTED | — | — | P0 MERGED | root `Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md` |
-| 3 | Track C EVL (C0–C8) | `feature/track-c-evl` @ `ff78c4f`; ahead: `ccr-22e3ff16-p7n5k5` @ `97d1b94` (no PR) | #4 | SYNTHETIC_VERIFIED (C0–C7 SOFTWARE_FROZEN, 8/11 software phases; C8 PARTIAL_FOUNDATION_VERIFIED). Real PIT validation NOT_RUN | #4 HEAD ✓ (run 36994387375). `ccr-22e3ff16` Actions NOT_RUN (workflow triggers on `feature/track-c-evl` only). Local exact-HEAD pytest: 910 passed, 0 failed (GIE-001 §6) | Text-clean with every branch. **Cross-track source overlap**: IF-1 | NOT_MERGED | `feature/track-c-evl`: root `CURRENT_HANDOFF` + `implementation/reports/track_c_decision_register_2026-10-01.md` |
+| 3 | Track C EVL (C0–C8) | `feature/track-c-evl` @ `ff78c4f`; ahead: `ccr-22e3ff16-p7n5k5` @ **`b9e01a97`** (owner tip; no PR) | #4 | SYNTHETIC_VERIFIED (C0–C7 SOFTWARE_FROZEN, 8/11 software phases; C8 PARTIAL_FOUNDATION_VERIFIED + G-SUP fail-closed repairs 9a9364c/b9e01a97). Real PIT validation NOT_RUN | #4 HEAD ✓ (run 36994387375). `ccr-22e3ff16` @ `b9e01a97`: Actions run **37097149378** (workflow_dispatch by the integration writer, `contents: read`) in progress at 04:37Z; owner-reported local full suite 923 passed at 972a23f | Text-clean with every branch. IF-1 decided: CDR-004 (A1 + owner adoption); producer re-pin proposals in progress | NOT_MERGED | `feature/track-c-evl`: root `CURRENT_HANDOFF` + `implementation/reports/track_c_decision_register_2026-10-01.md` (owner tip has CDR-005 entries) |
 | 4 | Track D RIG/News P0–P4 | canonical | #1 merged | SYNTHETIC_VERIFIED · canonical MERGED | merged | merged | MERGED (P0–P4) | root `Investment-System1 · RIG News Architecture v0.1.md` |
 | 5 | Track E Prompt Library v1 | canonical | #2 merged | SYNTHETIC_VERIFIED · canonical MERGED (PLV1_CONTENT_V1.0 Frozen) | merged | merged | MERGED | root `Investment-System1 · TRACK_E_PROMPT_LIBRARY_V1_STATUS.md` |
 | 6 | QGV Real Producer | `ccr-db5d5960-qen9yi` @ `5eec129` | #10 | **REAL_DATA_VERIFIED** (500/500 persisted × 3 dates from Track A Frozen raw; not fully scored; READY coverage 0) | code ✓ `4b772c2` (run 36852186517) / head docs-only | Trial: clean merge. Sentinel IF-2 fails by design after #9 merges | NOT_MERGED | `implementation/docs/qgv_producer/STATUS.md` |
@@ -130,6 +130,7 @@ Evidence: `implementation/docs/coordination/evidence/GIE-001_trial_integration_2
   - The `models.py` fields and the two `evaluate_stamped` methods can move to a sidecar, but only by changing 2 Track C C4-frozen blobs (option B). Keeping them requires producer re-pins (option A).
   - Both options were measured result-invariant. A/B is USER_DECISION_REQUIRED (GCH-002 §4).
   - Evidence: `evidence/GIE-002_trackc_producer_compat_audit_2026-10-03.md` (+ `.json`, reference patches in `evidence/GIE-002_patches/`, not applied).
+- **CDR-005 executed by the Track C owner session on its own branch (not by the integration writer):** 9a9364c (Q3 Development-only estimate computed inside the registry; one-shot keyed by CAL_VERIFY content commitment + profile + role, independent of campaign_id/role_id/label/root), 972a23f (docs), b9e01a97 (Development gate bound to preregistered `development_content_hash` + lineage ref; GIE-004 and the owner's five-item impact analysis recorded as EVIDENCE / NOT_AN_APPROVAL; M-B vs kernel minimal counterexamples CE1–CE5 recorded; **USER_DECISION_REQUIRED: authoritative method K / M / C**). The integration writer's planned proposal branch `track-c/c8-fail-closed-repair-v1` was therefore not created. Independent read-only audit of the fix: GIE-005 (in progress).
 - **Track C C8 (GIE-004).** Independent read-only analysis of the method choices. Two fail-open bugs within approved policy are LOCAL_FIXABLE for the Track C owner:
   - (a) the Q3 Development-only estimate is not enforced;
   - (b) one-shot no-retest is bypassable via a new `campaign_id` (a synthetic retest returned STAT_PASS).

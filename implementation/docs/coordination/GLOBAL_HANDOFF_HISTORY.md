@@ -52,3 +52,9 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 ## GCH-003 · 2026-10-03 · CDR-004 (IF-1 = A1 + owner adoption) and CDR-005 (C8 repair) recorded
 
 - User wording recorded verbatim in `COORDINATION_DECISION_REGISTER.md`. GCH §4 updated. Execution starts as stacked proposal branches; no owner branch is committed to.
+
+## GCH-003a · 2026-10-03 · Track C owner executed CDR-005; integration writer stood down from the Track C proposal
+
+- Owner commits 9a9364c, 972a23f, b9e01a97 on `ccr-22e3ff16-p7n5k5`. The integration writer did not create `track-c/c8-fail-closed-repair-v1`; its first workflow run was stopped before that writer started and relaunched with the four producer writers plus a read-only Track C auditor.
+- Actions run 37097149378 (`track-c-evl-validation.yml`, workflow_dispatch, `contents: read`) dispatched on the owner tip by the integration writer.
+- New USER_DECISION_REQUIRED routed to the user: authoritative G-SUP method (K / M / C), from the owner's register entry. Not decided here.
