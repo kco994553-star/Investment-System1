@@ -1,0 +1,800 @@
+[
+  {
+    "capability": "Track A",
+    "owner_branch": "claude/investment-system-top500-validation-alrugm",
+    "exact_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "relevant_pr": [],
+    "maturity": "INTEGRATED",
+    "frozen": "FROZEN_VERIFIED",
+    "BRANCH_STATE": {
+      "head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "exact_head_actions": [],
+      "latest_actions": [
+        {
+          "id": 36305927245,
+          "head_sha": "ca2f1d0a2c5d86a716cc15ce6c4aa377ad3cf103",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36305927245"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "MERGED",
+    "scoped_source": "Investment-System1 \u00b7 TRACK_A_REAL_DATA_STATUS.md",
+    "scoped_sha256": "7dd2c7767fc4baaeca4f0da16097708a411345a58d990b61ea92c600f21893ee",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "Track A Frozen raw/artifact set",
+    "blocker": "No new baseline validation/collection authorized",
+    "next_step": "Preserve Fixed-vintage baseline; expose through approved consumers"
+  },
+  {
+    "capability": "Track B",
+    "owner_branch": "claude/investment-system-top500-validation-alrugm",
+    "exact_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "relevant_pr": [],
+    "maturity": "IMPLEMENTED",
+    "frozen": "P0_FROZEN",
+    "BRANCH_STATE": {
+      "head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "exact_head_actions": [],
+      "latest_actions": [
+        {
+          "id": 36305927245,
+          "head_sha": "ca2f1d0a2c5d86a716cc15ce6c4aa377ad3cf103",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36305927245"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "P0_MERGED",
+    "scoped_source": "Investment-System1 \u00b7 PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md",
+    "scoped_sha256": "64bb27df6dc389477b219a63c276e6ee71041773845017229f3d6043a010287c",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "Track C Official profiles, weight/scale/time contracts",
+    "blocker": "P1+ not started; unresolved upstream contracts",
+    "next_step": "Audit P1 readiness after integration; no actual account action"
+  },
+  {
+    "capability": "Track C / C8",
+    "owner_branch": "ccr-22e3ff16-p7n5k5",
+    "exact_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "relevant_pr": [],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "C0-C7_SOFTWARE_FROZEN;C8_NOT_FROZEN",
+    "BRANCH_STATE": {
+      "head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "exact_head_actions": [
+        {
+          "id": 37097149378,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37097149378"
+        }
+      ],
+      "latest_actions": [
+        {
+          "id": 37097149378,
+          "head_sha": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37097149378"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/reports/track_c_decision_register_2026-10-01.md",
+    "scoped_sha256": "e665f5a6c07abf849f3863b3535f89e811515dec6e2a3c4f93decbaae8f47597",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "C0-C7 Frozen chain; scoped approvals; Development-only identity",
+    "blocker": "K/M/C authoritative method and source identity boundary; numeric gate separate",
+    "next_step": "Synthetic regressions/oracles only; present precise method/source decisions"
+  },
+  {
+    "capability": "QGV",
+    "owner_branch": "ccr-db5d5960-qen9yi",
+    "exact_head": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+    "relevant_pr": [
+      10
+    ],
+    "maturity": "REAL_DATA_VERIFIED",
+    "frozen": "TRACK_A_INPUT_FROZEN",
+    "BRANCH_STATE": {
+      "head": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+      "exact_head_actions": [],
+      "latest_actions": [
+        {
+          "id": 36852186517,
+          "head_sha": "4b772c2c24dcff8cd7ef56e82412dcc719f77267",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36852186517"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/qgv_producer/STATUS.md",
+    "scoped_sha256": "07dadee152a69c380682984cc2be1860526d9c5d1246cfacd32eb90274a5d651",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "Track A Frozen raw; #9 contract; #10 prior evidence",
+    "blocker": "READY coverage 0; research grant NONE; integration compat",
+    "next_step": "Integrate producer persistence preserving score/rank; validate actual Infra context"
+  },
+  {
+    "capability": "Technical input",
+    "owner_branch": "feature/technical-real-producer-v1",
+    "exact_head": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+    "relevant_pr": [
+      11
+    ],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "NO_NEW_FREEZE",
+    "BRANCH_STATE": {
+      "head": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "exact_head_actions": [
+        {
+          "id": 36855446809,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36855446809"
+        },
+        {
+          "id": 36855439113,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36855439113"
+        }
+      ],
+      "latest_actions": [
+        {
+          "id": 36855446809,
+          "head_sha": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36855446809"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/technical_real_producer/STATUS.md",
+    "scoped_sha256": "b2d5a272396b8eec91dc848702531cc29eb10caa3d6456331b2ee7f494452ee0",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#11 \u2192 #15 \u2192 #18; proposal#22/C-28",
+    "blocker": "Real exchange vintage/listing evidence missing",
+    "next_step": "Verify owner adoption; replay only eligible source vintages"
+  },
+  {
+    "capability": "Technical model",
+    "owner_branch": "feature/technical-real-model-v1",
+    "exact_head": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+    "relevant_pr": [
+      15
+    ],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "M3_NOT_APPROVED",
+    "BRANCH_STATE": {
+      "head": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "exact_head_actions": [
+        {
+          "id": 36859556060,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36859556060"
+        },
+        {
+          "id": 36859556090,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36859556090"
+        },
+        {
+          "id": 36859548966,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36859548966"
+        }
+      ],
+      "latest_actions": [
+        {
+          "id": 36859556060,
+          "head_sha": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36859556060"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/technical_real_model/STATUS.md",
+    "scoped_sha256": "3fab5294715748e7f1eb5bc6b6822bca3e6b0596e0da034888201d00548f2837",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#11 and M1/M2 approvals; proposal#23",
+    "blocker": "M3 unapproved; real calendar replay missing",
+    "next_step": "Preserve formulas; execute existing M1/M2 path through real session binder"
+  },
+  {
+    "capability": "US Equity Session",
+    "owner_branch": "feature/us-equity-session-v1",
+    "exact_head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+    "relevant_pr": [
+      18
+    ],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "FIXTURE_ONLY",
+    "BRANCH_STATE": {
+      "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "exact_head_actions": [
+        {
+          "id": 36997929226,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929226"
+        },
+        {
+          "id": 36997929255,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929255"
+        },
+        {
+          "id": 36997929115,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929115"
+        },
+        {
+          "id": 36997922976,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997922976"
+        }
+      ],
+      "latest_actions": [
+        {
+          "id": 36997929226,
+          "head_sha": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929226"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/us_equity_session/STATUS.md",
+    "scoped_sha256": "d1dceac6025db1cced10231e00db3b49d8c7f57a7ee634075a8bdf7b67e3df25",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#15; proposal#24; exchange vintage input",
+    "blocker": "No exchange-issued vintage replayed",
+    "next_step": "Resolve real calendar source; preserve close availability gate"
+  },
+  {
+    "capability": "Macro",
+    "owner_branch": "feature/macro-real-producer-v1",
+    "exact_head": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+    "relevant_pr": [
+      12
+    ],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "NO_NEW_FREEZE",
+    "BRANCH_STATE": {
+      "head": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+      "exact_head_actions": [],
+      "latest_actions": []
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/macro_real_producer/STATUS.md",
+    "scoped_sha256": "ee892251039804bbb09f3f6780c900c4bf9700d3b2e7dbdaf54a58e16988b923",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#9; proposal#25; ALFRED_AS_OF data",
+    "blocker": "No live key/data; exposures/mapping unresolved",
+    "next_step": "Exact proposal offline CI; supplied PIT data only until provider configured"
+  },
+  {
+    "capability": "Leaderboard",
+    "owner_branch": "feature/leaderboard-real-producer-v1",
+    "exact_head": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+    "relevant_pr": [
+      14
+    ],
+    "maturity": "REAL_DATA_VERIFIED",
+    "frozen": "RESEARCH_ONLY",
+    "BRANCH_STATE": {
+      "head": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+      "exact_head_actions": [
+        {
+          "id": 36979467756,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36979467756"
+        }
+      ],
+      "latest_actions": [
+        {
+          "id": 36979467756,
+          "head_sha": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36979467756"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/leaderboard_real_producer/STATUS.md",
+    "scoped_sha256": "1c5b7c9b3ac725a4013a4e3658330488111db2715023ef2883c08701f12ab572",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#10 QGV export; #9 Infra; proposal#26",
+    "blocker": "READY coverage0; ties policy-blocked; grantsNONE",
+    "next_step": "Research persisted replay/compat only; no new ranking/eligibility"
+  },
+  {
+    "capability": "Track D / RIG network",
+    "owner_branch": "claude/investment-system-top500-validation-alrugm",
+    "exact_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "relevant_pr": [],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "P0-P4_FROZEN",
+    "BRANCH_STATE": {
+      "head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "exact_head_actions": [],
+      "latest_actions": [
+        {
+          "id": 36305927245,
+          "head_sha": "ca2f1d0a2c5d86a716cc15ce6c4aa377ad3cf103",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36305927245"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "MERGED",
+    "scoped_source": "Investment-System1 \u00b7 RIG News Architecture v0.1.md",
+    "scoped_sha256": "d847074d064dae17c7f848a8786beced3353cc8b5c2fb18c561e45ed165cff3c",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "Canonical C39 identity; later TrackC integration",
+    "blocker": "P5 integration; no production identity/attention/provider",
+    "next_step": "Reuse Frozen graph and wiring; no new relationship inference"
+  },
+  {
+    "capability": "RIG ingestion",
+    "owner_branch": "feature/rig-news-real-ingestion-v1",
+    "exact_head": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+    "relevant_pr": [
+      13
+    ],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "NO_NEW_FREEZE",
+    "BRANCH_STATE": {
+      "head": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+      "exact_head_actions": [],
+      "latest_actions": []
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/rig_news_ingest/STATUS.md",
+    "scoped_sha256": "bb2e181373642c0f1a301b53021a0a6378c7a080d1049c35a02f6eb1ee545c10",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#7 entity registry; #9 Infra; #13\u2192#16",
+    "blocker": "Provider/consensus not activated; integrated sentinel mismatch",
+    "next_step": "Preserve exact registry/identity; repair actual integration sentinel"
+  },
+  {
+    "capability": "SEC disclosure",
+    "owner_branch": "feature/sec-primary-disclosure-v1",
+    "exact_head": "ef65caa5437a04610fa43f93209afb9193ba24aa",
+    "relevant_pr": [
+      16
+    ],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "SUPPLIED_BYTES_ONLY",
+    "BRANCH_STATE": {
+      "head": "ef65caa5437a04610fa43f93209afb9193ba24aa",
+      "exact_head_actions": [
+        {
+          "id": 36979915604,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36979915604"
+        },
+        {
+          "id": 36979911841,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36979911841"
+        }
+      ],
+      "latest_actions": [
+        {
+          "id": 36979915604,
+          "head_sha": "ef65caa5437a04610fa43f93209afb9193ba24aa",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36979915604"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/sec_primary_disclosure/STATUS.md",
+    "scoped_sha256": "a9f95b3026998d7310532ad2d76ab57222675826920806e4f654e84a78acc499",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#13; explicit CIK mapping; P01/freshness",
+    "blocker": "Live fetch/entity mapping not ready; general news absent",
+    "next_step": "Supplied8-K bytes validation only; no activation/grant"
+  },
+  {
+    "capability": "Producer Infrastructure",
+    "owner_branch": "feature/producer-infrastructure-v1",
+    "exact_head": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+    "relevant_pr": [
+      9
+    ],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "NO_NEW_FREEZE",
+    "BRANCH_STATE": {
+      "head": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "exact_head_actions": [
+        {
+          "id": 36982361014,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36982361014"
+        }
+      ],
+      "latest_actions": [
+        {
+          "id": 36982361014,
+          "head_sha": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36982361014"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/producer_infrastructure/STATUS.md",
+    "scoped_sha256": "ecd82e4fef34ad6ee81498d1f71b89335bc52316f9d217b28677c1044575a2e1",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#5\u2192#6\u2192#9",
+    "blocker": "Durable raw copy absent; real daily producers not operational",
+    "next_step": "Validate existing bundle/retention contract; no TTL or storage service decision"
+  },
+  {
+    "capability": "P01 Publication",
+    "owner_branch": "feature/p01-research-publication-v1",
+    "exact_head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+    "relevant_pr": [
+      17
+    ],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "ALL_GRANTS_NONE",
+    "BRANCH_STATE": {
+      "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "exact_head_actions": [
+        {
+          "id": 36994066298,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994066298"
+        },
+        {
+          "id": 36994037862,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994037862"
+        }
+      ],
+      "latest_actions": [
+        {
+          "id": 36994066298,
+          "head_sha": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994066298"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/research_publication/STATUS.md",
+    "scoped_sha256": "f2a09652052dd514e8c24cd34a4b41e70b8239b220b7114eb66c0cee920d705d",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#9 policy; proposal#27; #17\u2192#19",
+    "blocker": "All authorization grantsNONE",
+    "next_step": "Eligibility/predicate/envelope preserve NOT_AVAILABLE; no display activation"
+  },
+  {
+    "capability": "Invalidation",
+    "owner_branch": "feature/qgv-invalidation-binding-v1",
+    "exact_head": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+    "relevant_pr": [
+      19
+    ],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "NOT_A_GRANT",
+    "BRANCH_STATE": {
+      "head": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "exact_head_actions": [
+        {
+          "id": 37003833031,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37003833031"
+        },
+        {
+          "id": 37003833035,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37003833035"
+        },
+        {
+          "id": 37003828940,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37003828940"
+        }
+      ],
+      "latest_actions": [
+        {
+          "id": 37003833031,
+          "head_sha": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37003833031"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/invalidation_binding/STATUS.md",
+    "scoped_sha256": "4dca551094c23590579e3213ba228330fe5f418e333a998fd6e2a010dff302df",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#17 grant-free envelope; exact supersedes chain",
+    "blocker": "No display grant; no score recalculation",
+    "next_step": "Validate veto/chain compatibility; preserve inactive display"
+  },
+  {
+    "capability": "Entity Metadata",
+    "owner_branch": "ccr-41677301-10nj3u",
+    "exact_head": "a013f1c1758642f90a65fe11df69fc234c143a48",
+    "relevant_pr": [
+      7
+    ],
+    "maturity": "REAL_DATA_VERIFIED",
+    "frozen": "DISPLAY_ONLY",
+    "BRANCH_STATE": {
+      "head": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "exact_head_actions": [],
+      "latest_actions": [
+        {
+          "id": 36848115601,
+          "head_sha": "773b264d955f949f4da9f5c4304621490af46f19",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36848115601"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/entity_metadata/STATUS.md",
+    "scoped_sha256": "866b3809cdc92cf47070d93770e3379f7f74bd2df939aeafcf4d964e153b2d25",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#5\u2192#6\u2192#7 Frozen500 identity",
+    "blocker": "24ko/44en names missing; integration not merged",
+    "next_step": "Exact upstream registry bind without guessed labels"
+  },
+  {
+    "capability": "Web MVP",
+    "owner_branch": "feature/web-mvp-v1",
+    "exact_head": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+    "relevant_pr": [
+      5
+    ],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "FREEZE_READY_PRESENTATION",
+    "BRANCH_STATE": {
+      "head": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "exact_head_actions": [
+        {
+          "id": 36418935056,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36418935056"
+        },
+        {
+          "id": 36418929879,
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36418929879"
+        }
+      ],
+      "latest_actions": [
+        {
+          "id": 36418935056,
+          "head_sha": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36418935056"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/web_mvp/STATUS.md",
+    "scoped_sha256": "c997adcc7014c889b99d4948182e02a5f9c6ba5dd93354c0c7e3106f0eba06f4",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#5\u2192#6\u2192#9; producer/P01 contracts",
+    "blocker": "Real producer integration/private hosting and grants",
+    "next_step": "Existing static UI withheld producer fixture E2E; no deployment"
+  },
+  {
+    "capability": "Language / Search",
+    "owner_branch": "feature/global-language-search-v1",
+    "exact_head": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+    "relevant_pr": [
+      6
+    ],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "NO_NEW_FREEZE",
+    "BRANCH_STATE": {
+      "head": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "exact_head_actions": [],
+      "latest_actions": [
+        {
+          "id": 36709518222,
+          "head_sha": "82ae07c5f0758038abda98cd8db9e0a0f2de1ee3",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36709518222"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "scoped_source": "implementation/docs/global_language_search/STATUS.md",
+    "scoped_sha256": "418ac5883ee9df319822b31cdf35c5e1cd80f6c1c4ee8cb6328c8be1d15332c5",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "#5\u2192#6; #7 display metadata",
+    "blocker": "Not merged; full metadata coverage incomplete",
+    "next_step": "Reuse existing locales/search unchanged numeric/identifier order"
+  },
+  {
+    "capability": "Track E",
+    "owner_branch": "claude/investment-system-top500-validation-alrugm",
+    "exact_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "relevant_pr": [],
+    "maturity": "SYNTHETIC_VERIFIED",
+    "frozen": "PLV1_CONTENT_V1.0_FROZEN",
+    "BRANCH_STATE": {
+      "head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "exact_head_actions": [],
+      "latest_actions": [
+        {
+          "id": 36305927245,
+          "head_sha": "ca2f1d0a2c5d86a716cc15ce6c4aa377ad3cf103",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36305927245"
+        }
+      ]
+    },
+    "INTEGRATION_STATE": "CURRENT_COMBINED_TRIAL_PENDING; prior audit retained",
+    "CANONICAL_STATE": "MERGED",
+    "scoped_source": "Investment-System1 \u00b7 TRACK_E_PROMPT_LIBRARY_V1_STATUS.md",
+    "scoped_sha256": "3a9f4daf7d68cf80a2884e04c6e458938456594200439c65a38de5673a76ef0d",
+    "scoped_found": true,
+    "latest_validation": "scoped STATUS/CONTRACT evidence observed; independent new logs recorded separately",
+    "dependency": "PLV1_CONTENT_V1.0 Frozen catalog",
+    "blocker": "Common AppShell/SSoT/system-context wiring remains",
+    "next_step": "Reuse Frozen catalog UI; no prompt body changes"
+  },
+  {
+    "capability": "C9",
+    "owner_branch": "ccr-22e3ff16-p7n5k5",
+    "exact_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "relevant_pr": [],
+    "maturity": "DESIGN",
+    "frozen": "NOT_FROZEN",
+    "latest_validation": "NOT_RUN",
+    "actions_status": "NOT_RUN",
+    "dependency": "C8 and explicit approvals",
+    "blocker": "USER_DECISION_REQUIRED",
+    "next_step": "approved scope only; no CAL_VERIFY/Holdout/grant",
+    "BRANCH_STATE": "DESIGN_ON_TRACK_C",
+    "INTEGRATION_STATE": "NOT_RUN",
+    "CANONICAL_STATE": "NOT_IMPLEMENTED"
+  },
+  {
+    "capability": "C10",
+    "owner_branch": "ccr-22e3ff16-p7n5k5",
+    "exact_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "relevant_pr": [],
+    "maturity": "DESIGN",
+    "frozen": "NOT_FROZEN",
+    "latest_validation": "NOT_RUN",
+    "actions_status": "NOT_RUN",
+    "dependency": "C8 and explicit approvals",
+    "blocker": "USER_DECISION_REQUIRED",
+    "next_step": "approved scope only; no CAL_VERIFY/Holdout/grant",
+    "BRANCH_STATE": "DESIGN_ON_TRACK_C",
+    "INTEGRATION_STATE": "NOT_RUN",
+    "CANONICAL_STATE": "NOT_IMPLEMENTED"
+  },
+  {
+    "capability": "Dynamic Workflow",
+    "owner_branch": null,
+    "exact_head": null,
+    "relevant_pr": [],
+    "maturity": "NOT_FOUND_IN_REPOSITORY",
+    "frozen": "DYNAMIC_WORKFLOW_V1_SOFTWARE_FROZEN per user; artifact absent",
+    "latest_validation": "NOT_RUN",
+    "actions_status": "NOT_RUN",
+    "dependency": "upstream real producers / contracts",
+    "blocker": "DEPENDENCY_BLOCKED",
+    "next_step": "approved scope only; no CAL_VERIFY/Holdout/grant",
+    "BRANCH_STATE": "NO_IMPLEMENTED_CAPABILITY",
+    "INTEGRATION_STATE": "NOT_RUN",
+    "CANONICAL_STATE": "NOT_IMPLEMENTED"
+  },
+  {
+    "capability": "Portfolio actual-operation",
+    "owner_branch": null,
+    "exact_head": null,
+    "relevant_pr": [],
+    "maturity": "DESIGN",
+    "frozen": "NOT_FROZEN",
+    "latest_validation": "NOT_RUN",
+    "actions_status": "NOT_RUN",
+    "dependency": "upstream real producers / contracts",
+    "blocker": "DEPENDENCY_BLOCKED",
+    "next_step": "approved scope only; no CAL_VERIFY/Holdout/grant",
+    "BRANCH_STATE": "NO_IMPLEMENTED_CAPABILITY",
+    "INTEGRATION_STATE": "NOT_RUN",
+    "CANONICAL_STATE": "NOT_IMPLEMENTED"
+  },
+  {
+    "capability": "Daily pipeline",
+    "owner_branch": null,
+    "exact_head": null,
+    "relevant_pr": [],
+    "maturity": "DESIGN",
+    "frozen": "NOT_FROZEN",
+    "latest_validation": "NOT_RUN",
+    "actions_status": "NOT_RUN",
+    "dependency": "upstream real producers / contracts",
+    "blocker": "DEPENDENCY_BLOCKED",
+    "next_step": "approved scope only; no CAL_VERIFY/Holdout/grant",
+    "BRANCH_STATE": "NO_IMPLEMENTED_CAPABILITY",
+    "INTEGRATION_STATE": "NOT_RUN",
+    "CANONICAL_STATE": "NOT_IMPLEMENTED"
+  }
+]

@@ -1,0 +1,84 @@
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 18%]
+........................................................................ [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 37%]
+........................................................................ [ 43%]
+........................................................................ [ 50%]
+........................................................................ [ 56%]
+........................................................................ [ 62%]
+........................F............................................... [ 68%]
+....F................................................................... [ 75%]
+................................................F....................... [ 81%]
+..........F............................................................. [ 87%]
+........................................................................ [ 93%]
+........................................................................ [100%]
+=================================== FAILURES ===================================
+__ test_leaderboard_export_is_compatible_with_pinned_producer_infrastructure ___
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-0/test_leaderboard_export_is_com0')
+
+    def test_leaderboard_export_is_compatible_with_pinned_producer_infrastructure(tmp_path):
+        src = os.environ.get("LEADERBOARD_PRODUCER_INFRA_SRC")
+        if not src:
+>           assert infra_boundary.load_infra() is None
+E           AssertionError: assert namespace(contract=<module 'investment_system.producers.contract' from '/workspace/combined-trial/implementation/src/i...ucers.serialization' from '/workspace/combined-trial/implementation/src/investment_system/producers/serialization.py'>) is None
+E            +  where namespace(contract=<module 'investment_system.producers.contract' from '/workspace/combined-trial/implementation/src/i...ucers.serialization' from '/workspace/combined-trial/implementation/src/investment_system/producers/serialization.py'>) = <function load_infra at 0x7f189637b6a0>()
+E            +    where <function load_infra at 0x7f189637b6a0> = infra_boundary.load_infra
+
+tests/test_leaderboard_producer_infra_compat.py:19: AssertionError
+______________ test_engine_fingerprints_match_the_pre_change_pin _______________
+
+    def test_engine_fingerprints_match_the_pre_change_pin():
+        script = ROOT / "tools" / "producer_engine_fingerprint.py"
+        completed = subprocess.run(
+            [sys.executable, str(script), str(ROOT / "src")],
+            check=True,
+            capture_output=True,
+            text=True,
+            cwd=str(ROOT),
+        )
+        observed = json.loads(completed.stdout)
+        adopted = _c28_adoption_state()
+        expected = FINGERPRINTS_C28_ADOPTED if adopted else FINGERPRINTS_PRE_ADOPTION
+        # State-exact: the detected schema state selects exactly one pin; any other content fails.
+>       assert observed == expected, {"c28_adopted": adopted, "observed": observed}
+E       AssertionError: {'c28_adopted': True, 'observed': {'leaderboard': '112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1', ...501', 'n_qgv': 19, 'portfolio_official_book': '7b0baaa07660bc0609fc1ec33b165cdffde31f2a01257515ba2d5531067e7694', ...}}
+E       assert {'leaderboard...67e7694', ...} == {'leaderboard...e5a4a68', ...}
+E         
+E         Omitting 5 identical items, use -vv to show
+E         Differing items:
+E         {'portfolio_official_book': '7b0baaa07660bc0609fc1ec33b165cdffde31f2a01257515ba2d5531067e7694'} != {'portfolio_official_book': '53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68'}
+E         Use -v to get more diff
+
+tests/test_p01_research_publication.py:424: AssertionError
+______ test_qgv_export_is_compatible_with_pinned_producer_infrastructure _______
+
+tmp_path = PosixPath('/tmp/pytest-of-agent/pytest-0/test_qgv_export_is_compatible_0')
+
+    def test_qgv_export_is_compatible_with_pinned_producer_infrastructure(tmp_path):
+        src = os.environ.get("QGV_PRODUCER_INFRA_SRC")
+        if not src:
+>           assert infra_boundary.load_infra() is None  # not merged here; see docs/qgv_producer/STATUS.md
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: assert namespace(contract=<module 'investment_system.producers.contract' from '/workspace/combined-trial/implementation/src/i...ucers.serialization' from '/workspace/combined-trial/implementation/src/investment_system/producers/serialization.py'>) is None
+E            +  where namespace(contract=<module 'investment_system.producers.contract' from '/workspace/combined-trial/implementation/src/i...ucers.serialization' from '/workspace/combined-trial/implementation/src/investment_system/producers/serialization.py'>) = <function load_infra at 0x7f1896ae6700>()
+E            +    where <function load_infra at 0x7f1896ae6700> = infra_boundary.load_infra
+
+tests/test_qgv_producer_infra_compat.py:24: AssertionError
+________________ test_pr7_registry_is_read_only_and_not_copied _________________
+
+    def test_pr7_registry_is_read_only_and_not_copied():
+>       assert not (REPO / "implementation" / "reports" / "entity_metadata").exists()
+E       AssertionError: assert not True
+E        +  where True = exists()
+E        +    where exists = (((PosixPath('/workspace/combined-trial') / 'implementation') / 'reports') / 'entity_metadata').exists
+
+tests/test_rig_news_ingest.py:192: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_leaderboard_producer_infra_compat.py::test_leaderboard_export_is_compatible_with_pinned_producer_infrastructure
+FAILED tests/test_p01_research_publication.py::test_engine_fingerprints_match_the_pre_change_pin
+FAILED tests/test_qgv_producer_infra_compat.py::test_qgv_export_is_compatible_with_pinned_producer_infrastructure
+FAILED tests/test_rig_news_ingest.py::test_pr7_registry_is_read_only_and_not_copied
+4 failed, 1148 passed in 295.75s (0:04:55)

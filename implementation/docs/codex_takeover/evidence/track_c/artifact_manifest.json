@@ -1,0 +1,63 @@
+{
+  "created_at": "2026-10-03T05:58:21.543657+00:00",
+  "owner_branch": "ccr-22e3ff16-p7n5k5",
+  "owner_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+  "files": {
+    "AUDIT_REPORT.md": {
+      "sha256": "ad632ff2364d238729f909401d0de3e31b4f2118ef779bd7d2ce9a3f0a199382",
+      "size": 9411
+    },
+    "PROPOSED_SOURCE_IDENTITY_CONTRACT.md": {
+      "sha256": "32728237836c275da6cf82702b0c46e588ae1698f33d815b2de1904be8f3dd92",
+      "size": 5624
+    },
+    "actions_snapshot.json": {
+      "sha256": "033713114853847bfd74b9fb4b5d9ea033215d3a5e9fa395e83d63be272dfc54",
+      "size": 564
+    },
+    "c8_targeted.log": {
+      "sha256": "51f5550d86043279227c92b72199d4ee1f66d30623405f70c98442058ffe76c7",
+      "size": 97
+    },
+    "c8_targeted_pytest.log": {
+      "sha256": "3ddf083a7f70c692e483c554f0af43522043b42de6b794c989d506b462403ba1",
+      "size": 272
+    },
+    "gsup_targeted_pytest.log": {
+      "sha256": "e860b58fed0941e8864092cd6aae48a2794df36313fe5b9992bdcee61407aca1",
+      "size": 180
+    },
+    "gsup_targeted_pytest311.log": {
+      "sha256": "55df1d72fc23374b760bcdfe1cd65728076cfd316ac48395a9f2a869058534b5",
+      "size": 180
+    },
+    "independent_c8_audit.err": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "independent_c8_audit.json": {
+      "sha256": "d5d666169045145d94a9626351e0e77ec913201b329325fc4e63650e8209329e",
+      "size": 3901
+    },
+    "independent_c8_audit.py": {
+      "sha256": "29d2e518403ac197c5945168e8012a4aea83d8cb2729c31e73c06bb2911326da",
+      "size": 8314
+    },
+    "independent_c8_audit311.err": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "independent_c8_audit311.json": {
+      "sha256": "d5d666169045145d94a9626351e0e77ec913201b329325fc4e63650e8209329e",
+      "size": 3901
+    },
+    "owner_commits.txt": {
+      "sha256": "105650b0b7284d1b680b1e051a076ae72914eb570f8900b68c600f623f1aa09d",
+      "size": 1362
+    },
+    "preservation.json": {
+      "sha256": "1ed06e8a4ba9f76bbf4145617d8141d363bef5aa8d1995503e6b44d8d2b5f4df",
+      "size": 2674
+    }
+  }
+}

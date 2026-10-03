@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "branch": "codex/takeover-integration-2026-10-03",
+      "before": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "after": "a0360c7e7410b80c0491db814b5221560d9d6507"
+    }
+  ],
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+}
