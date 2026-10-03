@@ -69,3 +69,21 @@ Recorded: 2026-10-01 (UTC). Use this file to take over from GitHub alone; no cha
    - the Web cannot represent its shape.
 
 Required secrets/APIs for this infrastructure: **none**. Existing data runners still use `SEC_USER_AGENT` (required) and `TIINGO_API_KEY` (optional).
+
+## Additive note 2026-10-03: C-28 adoption evidence record (user CDR-004)
+
+This section is appended. Nothing above it is rewritten. The Primary Integration Writer prepared it under user CDR-004 (2026-10-03). It becomes the owner's record when the owner or the user merges it into `feature/producer-infrastructure-v1`.
+
+| Item | Value |
+|---|---|
+| Record | [`evidence/c28_adoption_post_adoption_2026-10-03.json`](evidence/c28_adoption_post_adoption_2026-10-03.json) |
+| Authority | User CDR-004 (2026-10-03): IF-1 = A1 + Technical/Macro owner adoption of the Track C additive lineage/schema change. Existing numerical/semantic invariance is re-verified on the new schema before any fingerprint is re-recorded. This is not an approval to change any Technical/Macro formula, value, regime, zone, Macro state, QGV or ranking. It is not canonical-merge approval |
+| Pin check | No test on this branch (`f8af596`) pins the engine fingerprints. The constants appear only in `evidence/validation.json`. Evidence-only adoption, so no test repin |
+| Gate | BEFORE `f8af596` vs AFTER `f8af596` + Track C owner tip `b9e01a97` (`--no-ff`, 0 conflicts, throwaway `c325cc0f`, never pushed). Generator: `tools/producer_engine_fingerprint.py`, unchanged. Field-level diff of the tool's own `norm()` output: 92 ADDED entries, all of them the four keys `available_at=null`, `data_stamp_refs=[]`, `source_vintages=[]`, `input_hash=null` on 19 technical and 4 macro snapshots. Nothing is removed or changed. Removing the four keys re-hashes to the pre-adoption values exactly. **PASS** |
+| Values | Pre-adoption, kept verbatim in `evidence/validation.json`: technical `82165414…`, macro `7bbfad69…`. Post-adoption: technical `66cb2383…`, macro `7e427949…`. Unchanged: qgv `a1714480…`, leaderboard `112b245b…`, portfolio_official_book `53d930a7…`, n_qgv 19 |
+| Other committed hashes reproduced unchanged (both trees) | Default export bundle `cdf58ad4…`. Raw persistence `manifest_set_sha256` `17934234…`, and the regenerated manifest is byte-identical to the committed file |
+| Tests | Owner tip `f8af596`: pytest 431 passed, mini_pytest shim 431 passed / 0 failed. This proposal: same counts. Merged throwaway tree: pytest 961 passed, 0 failed |
+| Not changed | `evidence/validation.json` and every file under `src/`, `tests/`, `tools/`. Track C is not merged into this branch |
+| Stacking | PR #12 (from `6fe9eee`), #17 and #19 (from `f8af596`) stack on this branch. They would receive this record by a normal merge of this branch if the owner merges it |
+| GitHub Actions | NOT_RUN for this proposal (docs-only; no matching workflow path filter) |
+| BRANCH_STATE / INTEGRATION_STATE / CANONICAL_STATE | proposal branch `integration/a1-adoption/pr9-producer-infra` from `f8af596` / NOT_MERGED into the owner branch / NOT_MERGED |
