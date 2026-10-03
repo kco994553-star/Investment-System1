@@ -72,3 +72,8 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 ## GCH-005 · 2026-10-03T07:55Z · GIE-006 recorded
 
 - #30 FRESH_WITH_FINDINGS (no blocking; local 1165/1165). #22–#27 integration-owner verification PASS (66/66). New proposals #32 (#9) and #33 (#7) pushed and verified. Web G3 defect found (Web validator lacks the research guard). Codex `codex/track-c-gsup-v2-2026-10-03` @ `675d0d2` IN_PROGRESS (CDR-009 exclusion active).
+
+## GCH-005a · 2026-10-03T08:05Z · PR #31 tracked; Codex-raised arithmetic-reduction decision recorded
+
+- PR #31 (`codex/track-c-gsup-v2-2026-10-03` @ `675d0d2`, base #30) recorded read-only. Not DONE/HANDOFF_READY; CDR-009 exclusion active.
+- Codex raises USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION for M-B v2. Recorded as pending and as not yet independently verified by the integration owner.

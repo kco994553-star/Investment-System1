@@ -65,6 +65,8 @@ Decided and in execution:
 - **CDR-005** executed by the Track C owner (`9a9364c`, `972a23f`, `b9e01a9`); Actions 37097149378 SUCCESS on `b9e01a9`.
 - **CDR-006** G-SUP method = M (additive v2, v1 preserved). **CDR-007** source descriptor (source/vintage/sample identity, synthetic scope). **CDR-008** implementer is Codex; the Primary Integration Writer verifies (13-point list) and does not implement. No Codex Track C branch exists yet.
 
+- **Raised by Codex in PR #31 (not yet independently verified by the integration owner): USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION.** Authoritative M-B v2 is not active because the floating-point reduction used inside the replicate statistic changes integer exceedance counts with identical frozen indices, formulas and inputs. Codex's synthetic example: `[.01,.01,-.01,-.02,.02,.01,.01,.01]`, n=8, L=3, B=19, seed 46 → `math.fsum` p=.10 vs literal NumPy cumulative-block reduction p=.20; a second example gives Python left-to-right `sum` p=.40 vs `fsum` p=.35. The Q1 approval evidence did not record its NumPy version. Source: `implementation/reports/gsup_v2_oracle/ARITHMETIC_REDUCTION_REVIEW_2026-10-03.md` on `codex/track-c-gsup-v2-2026-10-03` @ `675d0d2`. No option selected.
+
 Not approved (CDR-006/007 list): α, B, L / block rule, seed, effect floor, minimum support, size tolerance, dependence envelope / margin, real source taxonomy/default, real CAL_VERIFY access, C8 foundation ↔ G-SUP registry unification, Holdout, C8 SOFTWARE FROZEN, publication grant, Official, LIVE, canonical merge.
 
 ## 5. Next autonomous actions (Primary Integration Writer)
