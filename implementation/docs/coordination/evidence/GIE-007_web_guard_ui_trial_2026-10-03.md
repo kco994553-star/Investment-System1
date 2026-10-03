@@ -40,3 +40,11 @@ Verdict READY_FOR_NEXT_TRIAL_PR, **superseded** because it includes #36's defect
 ## 4. Validator hardening: separate follow-up, not done
 
 Making `product/web_mvp.validate_bundle` enforce the contract's research and validation rule changes bytes covered by #17's protected digest (`test_protected_engine_bytes_are_unchanged`) and `tests/test_web_mvp.py` L75. Per the user instruction of 2026-10-03 this is not re-pinned autonomously. If it is pursued, it goes to the user as USER_DECISION_REQUIRED.
+
+## 5. Addendum · repair round 1 (`wf_ab303e4a-a45`, 4 agents, 0 errors; raw: `GIE-007a_repair1_2026-10-03.json`)
+
+| Item | Result |
+|---|---|
+| #34 → `a3cbf13` | Adds the contract's validation-PASS half (`producers/contract.py` L194-199; LIVE/FROZEN needs `<section>.producer.validation.status == "PASS"`; missing validation is rejected, as the contract's REQUIRED fields do). Sections without a `producer` key (legacy/demo) are unchanged: render is byte-identical against `f8af596` and `2b53b27` on the default and demo builds. pytest 446. Actions 37114503889 ✓, 37114503882 ✓. **Re-review PASS** |
+| #36 → `8b6756b` | Merged #34 forward (normal merge `4ccdd3a`). An unparsable `expires_at` now fails closed to STALE. Displayed `reason_code` and methodology fields are restricted to code/token shapes. pytest 455. Actions 37115011166 / 37115011158 / 37115011179 ✓. **Re-review BLOCKING (B1)**: Python `fromisoformat` accepts `(` and U+0000 as separators that V8 misparses to a *later* instant, so expired data can read FRESH for up to about 36 h. Repair round 2 (`wf_d3aa55d6-117`) is in progress: pass only strict RFC 3339 strings to `Date.parse`, otherwise STALE |
+| trial2 (local, never pushed) | `86ad362` + #32 + #33 + #34 `a3cbf13` + #36 `8b6756b` → `805b3c6`. **1189 passed**, 0 failed (1165 + 15 + 9). All browser steps pass. Fingerprints equal post-adoption. No Track C path touched; `web_mvp.py` blob `10ad8c76` unchanged; tests only added; merge-tree vs Codex #31 clean. Verdict READY_FOR_NEXT_TRIAL_PR. **Superseded** pending #36 repair round 2 |

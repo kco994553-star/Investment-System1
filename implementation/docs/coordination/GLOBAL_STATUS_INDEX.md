@@ -4,7 +4,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-008 (GIE-007: Web guard #34 PASS; UI #36 BLOCKING in repair; next local trial superseded pending repair) |
+| Index revision | GSI-009 (#34 a3cbf13 PASS; #36 8b6756b B1 in repair round 2; Codex integration-hardening branch tracked) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
@@ -104,8 +104,9 @@ Stale merged heads, no action: `feature/track-d-rig-news` and `claude/track-d-ri
 
 | #32 | `integration/a1-adoption/pr9-producer-infra` @ `e9aee0c` | #9 @ `f8af596` | Primary Integration Writer (CDR-004) | additive post-adoption evidence record (no test/src) | NOT_RUN (no matching workflow) | verified PASS (GIE-006 §3) |
 | #33 | `integration/a1-adoption/pr7-entity-metadata` @ `9626ab0` | #7 @ `a013f1c` | same | additive post-adoption evidence record | NOT_RUN | verified PASS (GIE-006 §3) |
-| #34 | `integration/web/research-render-guard-v1` @ `2b53b27` | #9 @ `f8af596` | Primary Integration Writer | G3 render-time research guard (presentation only) | 2/2 ✓ | review PASS; repair round adds contract validation-PASS parity (GIE-007) |
-| #36 | `integration/web/production-state-presentation-v1` @ `e91dc77` | #34 branch | Primary Integration Writer | production-shaped state presentation | 3/3 ✓ | review **BLOCKING** (FRESH label on expired data with JS-unparseable `expires_at`); in repair |
+| #34 | `integration/web/research-render-guard-v1` @ `a3cbf13` | #9 @ `f8af596` | Primary Integration Writer | G3 render-time guard: contract research half + validation-PASS half (presentation only) | 2/2 ✓ on `a3cbf13` | **re-review PASS** (GIE-007 §5) |
+| #36 | `integration/web/production-state-presentation-v1` @ `8b6756b` | #34 branch | Primary Integration Writer | production-shaped state presentation | 3/3 ✓ on `8b6756b` | re-review **BLOCKING B1** (JS-misparsed expiry separators); repair round 2 in progress |
+| — | `codex/integration-hardening-2026-10-03` @ `fc6720b` (no PR seen) | contains #31 `675d0d2` | Codex | GIE-006 F1 fix: integrated shared sources protected against the exact canonical baseline (`tools/producer_source_compat.py`, `tests/test_producer_source_compat.py`) | not checked | tracked read-only; 0 file overlap with #34/#36 |
 | #31 | `codex/track-c-gsup-v2-2026-10-03` @ `675d0d2` | #30 `codex/combined-integration-2026-10-03` @ `86ad362` | Codex (CDR-008) | synthetic G-SUP source identity (source/vintage/sample descriptor, durable claims), identity-only wrapper over unchanged v1, M-B reduction diagnostic; authoritative M-B v2 **NOT_IMPLEMENTED_PENDING_ARITHMETIC_REDUCTION** | PR body reports 8/8 workflows SUCCESS on `675d0d2` and 1,277 local PASS — **not yet independently verified** | **IN_PROGRESS / tracked read-only** (scoped CHECKPOINT not DONE/HANDOFF_READY; CDR-009 exclusion active). Raises USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION (see GCH §4). 13-point verification starts at HANDOFF_READY |
 
 ## 4. Dependency DAG

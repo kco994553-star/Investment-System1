@@ -81,3 +81,7 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 ## GCH-006 · 2026-10-03 · GIE-007 recorded (Web guard / UI / next local trial)
 
 - #34 G3 render guard: review PASS. #36 production-state presentation: review BLOCKING (fail-open freshness label), in repair. Next local trial (1175/1175) superseded pending the repaired heads. Validator hardening stays a separate follow-up requiring a user decision if pursued (#17 protected digest).
+
+## GCH-006a · 2026-10-03 · repair round 1 recorded
+
+- #34 `a3cbf13` re-review PASS (contract validation-PASS parity added). #36 `8b6756b`: original exploit fixed; new bounded bypass B1 found; repair round 2 running. trial2 1189/1189, superseded pending round 2. Codex `codex/integration-hardening-2026-10-03` @ `fc6720b` (F1 fix) tracked read-only.
