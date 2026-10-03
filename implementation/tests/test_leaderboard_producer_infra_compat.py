@@ -7,6 +7,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from importlib.util import find_spec
 
 from investment_system.leaderboard_producer import infra_boundary
 
@@ -16,8 +17,13 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_leaderboard_export_is_compatible_with_pinned_producer_infrastructure(tmp_path):
     src = os.environ.get("LEADERBOARD_PRODUCER_INFRA_SRC")
     if not src:
-        assert infra_boundary.load_infra() is None
-        return
+        infra = infra_boundary.load_infra()
+        if infra is None:  # original isolated branch; full comparison runs in integrated trees
+            assert infra is None
+            assert find_spec("investment_system.producers") is None, "integrated dependency could not be loaded"
+            return
+        assert not infra_boundary.missing_api(infra), "integrated dependency API is incomplete"
+        src = str(ROOT / "src")
     exports = os.environ.get("LEADERBOARD_EXPORTS", str(ROOT / "reports" / "leaderboard_producer" / "full"))
     report = tmp_path / "compat.json"
     proc = subprocess.run(
