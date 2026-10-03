@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import hashlib
 import json
 from datetime import datetime, timedelta, timezone
@@ -10,6 +11,8 @@ from statistics import stdev
 
 import pytest
 
+from investment_system.contracts.models import TechnicalSnapshot
+from investment_system.technical.engine import TechnicalEngine
 from investment_system.technical.errors import FutureInputError, PublicationError, TechnicalProducerError
 from investment_system.technical.exporter import export_producer_snapshot
 from investment_system.technical.producer import produce_demo
@@ -24,6 +27,31 @@ AS_OF = datetime(2024, 12, 31, 23, 59, tzinfo=timezone.utc)
 GENERATED = datetime(2026, 10, 1, 12, 0, tzinfo=timezone.utc)
 SHA = "a" * 64
 SPY_SHA = "b" * 64
+# ---- technical/engine.py pin history (history-preserving; each state is exact) ----
+# Pre-adoption pin, recorded 2026-10-01 with PR #15 (code commit 4c69ced): canonical b8e39a2 bytes.
+ENGINE_SHA256_PRE_ADOPTION = "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf"
+# Adopted pin: C-28 upstream adoption of Track C 2137883 per user CDR-004 2026-10-03 (additive
+# lineage fields + evaluate_stamped; legacy evaluate() byte-identical). This model never calls the
+# engine, so its records are identical either way:
+# docs/technical_real_model/evidence/c28_adoption_invariance_2026-10-03.json (PASS).
+# Owner adoption record: docs/technical_real_producer/C28_UPSTREAM_ADOPTION_2026-10-03.md
+ENGINE_SHA256_C28_ADOPTED = "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c"
+
+
+def _expected_engine_sha256() -> str:
+    """Select the exact pin from the adopted feature itself, never from bytes.
+
+    A partially adopted tree gets a digest no file has, so the byte check fails.
+    """
+    stamped = hasattr(TechnicalEngine, "evaluate_stamped")
+    fields = {"available_at", "data_stamp_refs", "source_vintages", "input_hash"} <= {
+        f.name for f in dataclasses.fields(TechnicalSnapshot)
+    }
+    if stamped and fields:
+        return ENGINE_SHA256_C28_ADOPTED
+    if not stamped and not fields:
+        return ENGINE_SHA256_PRE_ADOPTION
+    return "C28_ADOPTION_STATE_INCONSISTENT"
 
 
 def _series(closes, volumes=True, session_gap_at=None, day_step=1):
@@ -288,7 +316,7 @@ def test_placeholder_engine_is_unchanged_and_not_used_by_the_real_model():
     assert "TechnicalEngine" not in source
     assert "IntegrationEngine" not in source
     assert "timedelta(days=5)" not in source
-    assert hashlib.sha256(engine.encode()).hexdigest() == "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf"
+    assert hashlib.sha256(engine.encode()).hexdigest() == _expected_engine_sha256()
     demo = produce_demo(
         company_id="aapl",
         ticker="AAPL",
