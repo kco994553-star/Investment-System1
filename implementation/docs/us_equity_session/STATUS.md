@@ -70,3 +70,7 @@ These four runs completed `success` on `4fed17bb538743ccd786ef7f0741c43e04288b28
 
 This file's commit is a later docs commit. It does not list its own Actions run, because that run cannot exist until after the commit. Code SHA stays `1d9bc11a23a967f350cf6782468efff6aeb17a66`.
 
+
+## C-28 upstream adoption — additive note (2026-10-03)
+
+Lines 3-5 above ("`technical/real_model_v1.py`, `technical/engine.py`, `technical/pit_market.py`, and `providers/yahoo_chart.py` are not modified") stay true for this PR's own delta: this proposal changes no source file, and the adopted `technical/engine.py` bytes (`86607bf7…`, Track C `2137883`) arrive via integration of the Track C tip, not via this PR. The Technical owner adoption record is `docs/technical_real_producer/C28_UPSTREAM_ADOPTION_2026-10-03.md` (referenced, not duplicated). The session binder and research outputs are identical before and after the adoption: `evidence/c28_adoption_invariance_2026-10-03.json` (PASS, zero field differences; recorded before the pin edit). `tests/test_us_equity_session_v1.py` keeps `ENGINE_SHA_PRE_ADOPTION = f7268f52…` and adds `ENGINE_SHA_C28_ADOPTED = 86607bf7…`, selected state-exactly from the adopted feature itself; `MODEL_SHA`, `PIT_SHA` and `YAHOO_SHA` are unchanged. Prepared by the Primary Integration Writer; becomes the owner's adoption when merged into `feature/us-equity-session-v1`. `CANONICAL_STATE`: NOT_MERGED.

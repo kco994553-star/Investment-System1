@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import hashlib
 import json
 from datetime import date, datetime, time, timedelta, timezone
@@ -11,12 +12,14 @@ from zoneinfo import ZoneInfo
 import pytest
 
 from investment_system.contracts.global_universe import ListingIdentity
+from investment_system.contracts.models import TechnicalSnapshot
 from investment_system.ingestion.raw_store import RawDatasetStore
 from investment_system.sessions.binder import DuplicateSessionBar
 from investment_system.sessions.calendar import load_calendar_vintage, runtime_tzdata_version
 from investment_system.sessions.errors import ProvenanceMismatch, SessionContractError
 from investment_system.sessions.listing import ListingEvidence
 from investment_system.sessions.research import bind_research_inputs
+from investment_system.technical.engine import TechnicalEngine
 
 ROOT = Path(__file__).resolve().parents[1]
 NY = ZoneInfo("America/New_York")
@@ -24,7 +27,33 @@ NOTICE = b"fixture-notice"
 NOTICE_SHA = hashlib.sha256(NOTICE).hexdigest()
 GENERATED = datetime(2026, 10, 2, 12, 0, tzinfo=timezone.utc)
 MODEL_SHA = "419b792c121b35ddf8ceacb15a6440f8243ad3acf65fc350bde860c6c069c4b6"
-ENGINE_SHA = "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf"
+# ---- technical/engine.py pin history (history-preserving; each state is exact) ----
+# Pre-adoption pin, recorded 2026-10-02 with PR #18 (code commit 1d9bc11): canonical b8e39a2 bytes.
+ENGINE_SHA_PRE_ADOPTION = "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf"
+# Adopted pin: C-28 upstream adoption of Track C 2137883 per user CDR-004 2026-10-03 (additive
+# lineage fields + evaluate_stamped; legacy evaluate() byte-identical). The session binder never
+# calls the engine: docs/us_equity_session/evidence/c28_adoption_invariance_2026-10-03.json (PASS).
+# Owner adoption record: docs/technical_real_producer/C28_UPSTREAM_ADOPTION_2026-10-03.md
+ENGINE_SHA_C28_ADOPTED = "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c"
+
+
+def _expected_engine_sha() -> str:
+    """Select the exact pin from the adopted feature itself, never from bytes.
+
+    A partially adopted tree gets a digest no file has, so the byte check fails.
+    """
+    stamped = hasattr(TechnicalEngine, "evaluate_stamped")
+    fields = {"available_at", "data_stamp_refs", "source_vintages", "input_hash"} <= {
+        f.name for f in dataclasses.fields(TechnicalSnapshot)
+    }
+    if stamped and fields:
+        return ENGINE_SHA_C28_ADOPTED
+    if not stamped and not fields:
+        return ENGINE_SHA_PRE_ADOPTION
+    return "C28_ADOPTION_STATE_INCONSISTENT"
+
+
+ENGINE_SHA = _expected_engine_sha()
 PIT_SHA = "9c2a56deec51d6b4cd97d9d9ef5afc9236a3bb32018918b6b7e575fb0119f32e"
 YAHOO_SHA = "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534"
 
