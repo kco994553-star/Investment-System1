@@ -1,0 +1,396 @@
+{
+ "record_id": "PRODUCER_INFRASTRUCTURE_C28_ADOPTION_POST_ADOPTION_2026-10-03",
+ "scope": "PR #9 Producer Infrastructure (feature/producer-infrastructure-v1): post-adoption record for the engine_numerical_fingerprint committed in docs/producer_infrastructure/evidence/validation.json, under the Track C additive lineage/schema change (C-28 adoption, CDR-004)",
+ "recorded_at_utc": "2026-10-03T07:33:02Z",
+ "record_kind": "history-preserving additive evidence. evidence/validation.json is not edited and keeps the pre-adoption values; STATUS.md gets an appended note only; no test, source or tool change",
+ "authority": {
+  "user_decision": "CDR-004 (USER_DECIDED, 2026-10-03)",
+  "register_location": "origin/integration/global-handoff-v1 @ 6dedaaf36a417e9301ba22ea9595bff5f37acb38 : implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md, section \"CDR-004 · IF-1 resolved: Option A1 + Technical/Macro owner adoption\"",
+  "cdr_004_quoted": "IF-1은 A1 + Technical/Macro owner adoption으로 승인한다. … Producer owners는 새 schema를 대상으로 기존 numerical/semantic invariance를 다시 검증한 뒤 필요한 byte constants/fingerprints를 history-preserving 방식으로 repin한다. 단순히 테스트를 통과시키기 위해 pin을 변경하지 말고, 이전/이후 기존 필드 값과 계산 결과가 동일하다는 independent comparison을 먼저 PASS해야 한다. Track C Frozen chain은 rewrite하지 않는다. #10/#14 및 dependency-not-merged sentinel은 실제 integration context에 맞게 별도 compatibility repair 대상으로 처리한다. … canonical merge는 아직 수행하지 않는다.",
+  "cdr_004_full_user_wording_from_register": [
+   "IF-1은 A1 + Technical/Macro owner adoption으로 승인한다.",
+   "Track C 2137883의 additive lineage/schema 변경을 integration target으로 유지한다. Technical은 canonical C-28의 upstream ownership과 정합시키고, Macro는 동일 변경에 대한 별도 additive owner adoption record를 작성한다.",
+   "이 승인은 기존 Technical/Macro 계산식, 값, regime, zone, Macro state, QGV, ranking을 변경하는 승인이 아니다.",
+   "Producer owners는 새 schema를 대상으로 기존 numerical/semantic invariance를 다시 검증한 뒤 필요한 byte constants/fingerprints를 history-preserving 방식으로 repin한다.",
+   "단순히 테스트를 통과시키기 위해 pin을 변경하지 말고, 이전/이후 기존 필드 값과 계산 결과가 동일하다는 independent comparison을 먼저 PASS해야 한다.",
+   "Track C Frozen chain은 rewrite하지 않는다.",
+   "#10/#14 및 dependency-not-merged sentinel은 실제 integration context에 맞게 별도 compatibility repair 대상으로 처리한다.",
+   "Macro의 이 adoption을 과거 승인으로 소급하지 말고 현재 owner adoption으로 기록한다.",
+   "canonical merge는 아직 수행하지 않는다."
+  ],
+  "prepared_by": "Primary Integration Writer (Claude Code session session_019znshzTYgyBnuuBmSxdPFN) under CDR-004; becomes the owner's record when merged into feature/producer-infrastructure-v1 by the owner or the user",
+  "what_this_record_is": "evidence-only post-adoption record of a committed numerical fingerprint; no pin is moved because no test pins these values (E1)",
+  "not_an_approval_of": [
+   "any Technical/Macro formula, value, regime, zone or Macro state change",
+   "QGV or ranking change",
+   "any threshold or numeric configuration",
+   "any publication grant",
+   "CAL_VERIFY or Holdout access",
+   "canonical merge"
+  ]
+ },
+ "E1_pin_check": {
+  "question": "does any test on the owner branch pin these values?",
+  "owner_sha": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+  "command": "git grep -n <c> origin/feature/producer-infrastructure-v1 -- implementation/tests  (c in 82165414, 7bbfad69, d1b9cd91, 112b245b, 53d930a7, a1714480, producer_engine_fingerprint, numeric_fingerprint, engine_numerical_fingerprint)",
+  "result": "no match for any of them under implementation/tests",
+  "whole_tree_matches_of_technical_macro_constants": [
+   "implementation/docs/producer_infrastructure/evidence/validation.json:60,64,68,72 (the record itself)"
+  ],
+  "consequence": "evidence-only adoption; no test repin is needed or made"
+ },
+ "trees": {
+  "before": {
+   "description": "owner tip feature/producer-infrastructure-v1 as-is",
+   "sha": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+   "tree": "e192d7dfa37600ccc63186ace91c9975e98a2525",
+   "merge_base_with_canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "after": {
+   "description": "owner tip + Track C owner tip merged with git merge --no-ff (throwaway local commit in a detached worktree; never pushed, no ref created)",
+   "base_sha": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+   "merged_ref": "origin/ccr-22e3ff16-p7n5k5",
+   "merged_sha": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+   "track_c_actions_run_on_merged_sha": "37097149378 SUCCESS (as recorded in GLOBAL_CURRENT_HANDOFF GCH-002; not re-run here)",
+   "throwaway_merge_commit": "c325cc0fc31966a645b295e610189e9514b1e296",
+   "throwaway_merge_tree": "f6f5f560f6fb223c8d1363c2b8a861e41ce15310",
+   "conflicts": 0
+  },
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+ },
+ "adopted_files_identity": {
+  "contracts/lineage.py": {
+   "blob_before": null,
+   "blob_track_c_owner_tip": "288cabadcd0fe975fb9e2605f1f39b767ccc462b",
+   "blob_after_tree": "288cabadcd0fe975fb9e2605f1f39b767ccc462b",
+   "after_equals_track_c": true
+  },
+  "contracts/models.py": {
+   "blob_before": "2367d2ee2dfffa60482ba2f4cb671ece09340b1e",
+   "blob_track_c_owner_tip": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+   "blob_after_tree": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+   "after_equals_track_c": true
+  },
+  "technical/engine.py": {
+   "blob_before": "0f6c274d25957c564b6578ca2805dc50b8dc3f92",
+   "blob_track_c_owner_tip": "5365653fda6374aeace986c63cce9939921ebb64",
+   "blob_after_tree": "5365653fda6374aeace986c63cce9939921ebb64",
+   "after_equals_track_c": true
+  },
+  "macro/engine.py": {
+   "blob_before": "f7b9979d52e031991888b697c62098d4a3dac301",
+   "blob_track_c_owner_tip": "08d79c20147d2a13413e98269042e6cf7d3973a8",
+   "blob_after_tree": "08d79c20147d2a13413e98269042e6cf7d3973a8",
+   "after_equals_track_c": true
+  }
+ },
+ "generator": {
+  "path": "implementation/tools/producer_engine_fingerprint.py",
+  "sha256_before": "f4b8bca1e1b08249e56660963ce499401dcb379b2602080b2bd65fee277c6931",
+  "sha256_after": "f4b8bca1e1b08249e56660963ce499401dcb379b2602080b2bd65fee277c6931",
+  "invocation": "cd <tree>/implementation && python3 tools/producer_engine_fingerprint.py src",
+  "python": "Python 3.11.15"
+ },
+ "commands": [
+  "git -C /home/user/Investment-System1 fetch origin",
+  "git worktree add --detach <wf>/pr9-before f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+  "git worktree add --detach <wf>/pr9-after f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36 && (cd <wf>/pr9-after && git merge --no-ff --no-edit b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565)  # 0 conflicts",
+  "cd <tree>/implementation && python3 tools/producer_engine_fingerprint.py src > fp.json   # both trees, twice each (repeatability)",
+  "cd <tree>/implementation && python3 <harness>/pr9_dump_norm.py src norm.json   # both trees; harness source below",
+  "python3 <harness>/field_diff.py pr9-before.norm.json pr9-after.norm.json --skip-top _hashes",
+  "cd <tree>/implementation && python3 tools/export_web_bundle.py --now 2026-10-01T00:00:00+00:00 --out <scratch>/bundle.json   # both trees, twice each",
+  "cd <tree>/implementation && python3 tools/raw_persistence_audit.py --now 2026-10-01T00:00:00+00:00 --locations reports/raw_persistence/storage_locations_2026-10-01.json --out <scratch>/raw_manifest.json   # both trees; cmp with the committed manifest",
+  "cd <tree>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf   # owner tip, after tree, proposal branch",
+  "cd <tree>/implementation && python3 tools/mini_pytest.py   # owner tip and proposal branch"
+ ],
+ "engine_numerical_fingerprint": {
+  "pre_adoption_committed_in_validation_json": {
+   "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+   "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+   "n_qgv": 19,
+   "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+   "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+   "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+  },
+  "before_reproduced": {
+   "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+   "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+   "n_qgv": 19,
+   "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+   "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+   "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+  },
+  "before_equals_committed": true,
+  "after_post_adoption": {
+   "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+   "macro": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501",
+   "n_qgv": 19,
+   "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+   "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+   "technical": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+  },
+  "repeatable": {
+   "before": true,
+   "after": true
+  },
+  "changed_keys": [
+   "macro",
+   "technical"
+  ],
+  "unchanged_keys": [
+   "leaderboard",
+   "n_qgv",
+   "portfolio_official_book",
+   "qgv"
+  ],
+  "cross_check": "the after values equal the post-adoption values independently recorded for the same tool on PR #17 tree (proposal #27, evidence/c28_adoption_invariance_2026-10-03.json: macro 7e427949..., technical 66cb2383...)"
+ },
+ "field_level_diff": {
+  "method": "the harness executes the tool's own source verbatim except its final print, and dumps norm() of every hashed section in full (the tool's DROP set applied by the tool itself); then a recursive walk compares every leaf by value and type (ADDED / REMOVED / CHANGED / CHANGED_TYPE / LEN)",
+  "harness_hashes_equal_tool_output": {
+   "before": true,
+   "after": true
+  },
+  "sections_and_sizes": {
+   "qgv": 19,
+   "technical": 19,
+   "macro": 4,
+   "leaderboard": "dict",
+   "portfolio_official_book": "dict"
+  },
+  "total_entries": 92,
+  "by_kind": {
+   "ADDED": 92
+  },
+  "by_section": {
+   "macro": 16,
+   "technical": 76
+  },
+  "by_section_key_after_value": [
+   {
+    "after_value": null,
+    "count": 4,
+    "key": "available_at",
+    "kind": "ADDED",
+    "section": "macro"
+   },
+   {
+    "after_value": [],
+    "count": 4,
+    "key": "data_stamp_refs",
+    "kind": "ADDED",
+    "section": "macro"
+   },
+   {
+    "after_value": null,
+    "count": 4,
+    "key": "input_hash",
+    "kind": "ADDED",
+    "section": "macro"
+   },
+   {
+    "after_value": [],
+    "count": 4,
+    "key": "source_vintages",
+    "kind": "ADDED",
+    "section": "macro"
+   },
+   {
+    "after_value": null,
+    "count": 19,
+    "key": "available_at",
+    "kind": "ADDED",
+    "section": "technical"
+   },
+   {
+    "after_value": [],
+    "count": 19,
+    "key": "data_stamp_refs",
+    "kind": "ADDED",
+    "section": "technical"
+   },
+   {
+    "after_value": null,
+    "count": 19,
+    "key": "input_hash",
+    "kind": "ADDED",
+    "section": "technical"
+   },
+   {
+    "after_value": [],
+    "count": 19,
+    "key": "source_vintages",
+    "kind": "ADDED",
+    "section": "technical"
+   }
+  ],
+  "entry_path_shape": "every entry is [section, snapshot_index, key] (top level of a snapshot dict)",
+  "kinds_absent": [
+   "REMOVED",
+   "CHANGED",
+   "CHANGED_TYPE",
+   "LEN"
+  ],
+  "strip_check": {
+   "technical_after_minus_four_keys_equals_before": true,
+   "macro_after_minus_four_keys_equals_before": true,
+   "technical_rehash_after_minus_four_keys": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+   "macro_rehash_after_minus_four_keys": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+   "rehash_equals_pre_adoption": true
+  },
+  "identical_sections": {
+   "qgv": true,
+   "leaderboard": true,
+   "portfolio_official_book": true
+  },
+  "normalized_dump_sha256": {
+   "before": "e5b3838243ec110ede5e7ed96f3052e84640de1289601e645357d878e3ef1a35",
+   "after": "d20eddf322c910df48ac12c7b060e4473b48bf909d64f5fb62350cbae03f1171"
+  },
+  "harness_sources": {
+   "pr9_dump_norm.py": "\"\"\"Executes PR #9's own tools/producer_engine_fingerprint.py source verbatim, except that the\nfinal print(...) statement is replaced by a dump of norm() of every hashed section.\nUsage (from <tree>/implementation): python3 <harness>/pr9_dump_norm.py src <out.json>\"\"\"\nimport ast, json, sys\ntool = 'tools/producer_engine_fingerprint.py'\nsrc = open(tool, encoding='utf-8').read()\nmod = ast.parse(src)\nlast = mod.body[-1]\nassert isinstance(last, ast.Expr) and isinstance(last.value, ast.Call) and getattr(last.value.func, 'id', None) == 'print', 'unexpected tool tail'\nmod.body = mod.body[:-1]\nout_path = sys.argv[2]\nsys.argv = [tool, sys.argv[1]]\nns = {'__name__': '__fp__'}\nexec(compile(mod, tool, 'exec'), ns)\nnorm, h = ns['norm'], ns['h']\nsections = {'qgv': ns['q'], 'technical': ns['t'], 'macro': ns['m'], 'leaderboard': ns['lb'], 'portfolio_official_book': ns['book']}\ndump = {k: json.loads(json.dumps(norm(v), sort_keys=True, default=str)) for k, v in sections.items()}\ndump['_hashes'] = {k: h(v) for k, v in sections.items()}\njson.dump(dump, open(out_path, 'w'), sort_keys=True, indent=1)\n",
+   "field_diff.py": "\"\"\"Recursive field-level diff of two JSON documents. Reports ADDED / REMOVED / CHANGED (value or type) / LEN.\nUsage: python3 field_diff.py before.json after.json [--skip-top key,key]\"\"\"\nimport json, sys, collections\na = json.load(open(sys.argv[1])); b = json.load(open(sys.argv[2]))\nskip = set(sys.argv[4].split(',')) if len(sys.argv) > 4 and sys.argv[3] == '--skip-top' else set()\ndiffs = []\ndef walk(x, y, path):\n    if type(x) is not type(y):\n        diffs.append(('CHANGED_TYPE', path, x, y)); return\n    if isinstance(x, dict):\n        for k in sorted(set(x) | set(y)):\n            if k not in y: diffs.append(('REMOVED', path + [k], x[k], None))\n            elif k not in x: diffs.append(('ADDED', path + [k], None, y[k]))\n            else: walk(x[k], y[k], path + [k])\n    elif isinstance(x, list):\n        if len(x) != len(y): diffs.append(('LEN', path, len(x), len(y)))\n        for i, (p, q) in enumerate(zip(x, y)): walk(p, q, path + [i])\n    elif x != y:\n        diffs.append(('CHANGED', path, x, y))\nfor k in sorted(set(a) | set(b)):\n    if k in skip: continue\n    if k not in b: diffs.append(('REMOVED', [k], a[k], None))\n    elif k not in a: diffs.append(('ADDED', [k], None, b[k]))\n    else: walk(a[k], b[k], [k])\ndef leafkey(p): return next((s for s in reversed(p) if isinstance(s, str)), None)\nsummary = {\n  'total_entries': len(diffs),\n  'by_kind': dict(collections.Counter(d[0] for d in diffs)),\n  'by_top_section': dict(collections.Counter(str(d[1][0]) for d in diffs)),\n}\nc = collections.Counter((d[0], str(d[1][0]), leafkey(d[1]), json.dumps(d[3], sort_keys=True)) for d in diffs)\nsummary['by_kind_section_key_after_value'] = [{'kind': k[0], 'section': k[1], 'key': k[2], 'after_value': json.loads(k[3]), 'count': n} for k, n in sorted(c.items())]\nsummary['entries'] = [{'kind': d[0], 'path': d[1], 'before': d[2], 'after': d[3]} for d in diffs]\nprint(json.dumps(summary, indent=1, sort_keys=True, ensure_ascii=False))\n"
+  },
+  "harness_sha256": {
+   "pr9_dump_norm.py": "57093713043e4dfde7952fc2107bcd2b50935556efed91f1b721f1e20f41af27",
+   "field_diff.py": "d90c249a440297ed578cb5c133246f5c710aa6b40fcb14e61c88fc16735e7581"
+  }
+ },
+ "other_committed_hashes_reproduced_unchanged": {
+  "default_export_bundle_sha256_at_now_2026-10-01T00:00:00Z": {
+   "committed": "cdf58ad451ba7eeefd2c686635b4e5a502a3074f13f8305f316f8a7e5df0aa68",
+   "before_run1": "cdf58ad451ba7eeefd2c686635b4e5a502a3074f13f8305f316f8a7e5df0aa68",
+   "before_run2": "cdf58ad451ba7eeefd2c686635b4e5a502a3074f13f8305f316f8a7e5df0aa68",
+   "after_run1": "cdf58ad451ba7eeefd2c686635b4e5a502a3074f13f8305f316f8a7e5df0aa68",
+   "after_run2": "cdf58ad451ba7eeefd2c686635b4e5a502a3074f13f8305f316f8a7e5df0aa68",
+   "bundle_bytes_before_equal_after": true,
+   "sections": {
+    "universe": "FROZEN_SNAPSHOT/NOT_APPLICABLE",
+    "qgv": "NOT_AVAILABLE/NOT_APPLICABLE",
+    "technical": "NOT_AVAILABLE/NOT_APPLICABLE",
+    "macro": "NOT_AVAILABLE/NOT_APPLICABLE",
+    "portfolio": "NOT_AVAILABLE/NOT_APPLICABLE",
+    "leaderboard": "NOT_AVAILABLE/NOT_APPLICABLE",
+    "news": "NOT_AVAILABLE/NOT_APPLICABLE",
+    "relationships": "NOT_AVAILABLE/NOT_APPLICABLE",
+    "changes": "NOT_AVAILABLE/NOT_APPLICABLE"
+   }
+  },
+  "raw_persistence_manifest": {
+   "committed_manifest_set_sha256": "1793423426f3272d909683c4f3595a70793350eae7047343a8d50a270899e828",
+   "before": "1793423426f3272d909683c4f3595a70793350eae7047343a8d50a270899e828",
+   "after": "1793423426f3272d909683c4f3595a70793350eae7047343a8d50a270899e828",
+   "n_artifacts": [
+    6808,
+    6808,
+    6808
+   ],
+   "bytes": [
+    6136954924,
+    6136954924,
+    6136954924
+   ],
+   "retention": [
+    "AT_RISK_ONLY_EXPIRING_COPIES",
+    "AT_RISK_ONLY_EXPIRING_COPIES"
+   ],
+   "loss_deadline_if_no_action": [
+    "2026-12-26T08:21:15Z",
+    "2026-12-26T08:21:15Z"
+   ],
+   "regenerated_manifest_byte_identical_to_committed_file": {
+    "before": true,
+    "after": true
+   },
+   "committed_file": "implementation/reports/raw_persistence/raw_dataset_manifest_2026-10-01.json",
+   "committed_file_sha256": "fc7b29fe391b4715420108da79307a0d2d05d224c8a00fbb806c86525c122fd7"
+  },
+  "engine_fingerprints_unchanged": {
+   "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+   "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+   "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+   "n_qgv": 19
+  }
+ },
+ "tests": {
+  "owner_tip_f8af596_pytest_full": {
+   "summary": "431 passed in 27.24s",
+   "exit": "exit=0"
+  },
+  "owner_tip_f8af596_mini_pytest_shim": {
+   "summary": "431 passed, 0 failed in 22.93s (runner: mini_pytest shim, not pytest)",
+   "exit": "exit=0"
+  },
+  "after_tree_pytest_full_context_only": {
+   "summary": "961 passed in 437.03s (0:07:17)",
+   "exit": "exit=0"
+  },
+  "after_tree_note": "merged tree full suite: 961 passed, 0 failed. Context only: no test on PR #9 pins these values",
+  "proposal_branch": {
+   "tree": "owner tip + a draft of this record, before the docs note was appended (no test reads docs/); the re-run at the exact proposal commit is reported in the Draft PR body",
+   "pytest_full": {
+    "summary": "431 passed in 34.92s",
+    "exit": "exit=0"
+   },
+   "mini_pytest_shim": {
+    "summary": "431 passed, 0 failed in 25.88s (runner: mini_pytest shim, not pytest)",
+    "exit": "exit=0"
+   },
+   "equals_owner_tip_counts": true
+  },
+  "recorded_counts_in_validation_json": "431 passed (409 PR6 baseline + 22)"
+ },
+ "verdict": {
+  "gate": "PASS",
+  "statement": "In the tool's normalized output, the only differences between BEFORE (f8af596) and AFTER (f8af596 + Track C b9e01a97) are the four added keys available_at=null, data_stamp_refs=[], source_vintages=[], input_hash=null on each of the 19 technical and 4 macro snapshots (92 ADDED entries, nothing removed or changed). Removing them reproduces the pre-adoption technical 82165414... and macro 7bbfad69... exactly. qgv, leaderboard, portfolio_official_book, n_qgv, the default export bundle sha256 and the raw persistence manifest set sha256 reproduce unchanged",
+  "post_adoption_values": {
+   "technical": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655",
+   "macro": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501"
+  },
+  "pre_adoption_values_kept_in_validation_json": {
+   "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+   "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f"
+  }
+ },
+ "not_changed": [
+  "implementation/docs/producer_infrastructure/evidence/validation.json (byte-identical)",
+  "existing STATUS.md text (note appended only)",
+  "any file under implementation/src, implementation/tests or implementation/tools",
+  "Technical/Macro formulas, values, regime, zone, Macro state, QGV, ranking",
+  "Track C Frozen chain (Track C is not merged into this branch)",
+  "any other branch"
+ ],
+ "stacking": {
+  "note": "PR #12, #17 and #19 stack on PR #9 (#12 from 6fe9eee, #17/#19 from f8af596). They carry this branch's validation.json unchanged and would receive this record by a normal merge of feature/producer-infrastructure-v1 if the owner merges this proposal into it",
+  "branches": {
+   "#12": {
+    "branch": "feature/macro-real-producer-v1",
+    "head": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+    "contains_pr9_tip_f8af596": false,
+    "validation_json_blob": "e2bae658852913a3a9892cf7300a6730f54e031c"
+   },
+   "#17": {
+    "branch": "feature/p01-research-publication-v1",
+    "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+    "contains_pr9_tip_f8af596": true,
+    "validation_json_blob": "e2bae658852913a3a9892cf7300a6730f54e031c"
+   },
+   "#19": {
+    "branch": "feature/qgv-invalidation-binding-v1",
+    "head": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+    "contains_pr9_tip_f8af596": true,
+    "validation_json_blob": "e2bae658852913a3a9892cf7300a6730f54e031c"
+   }
+  }
+ },
+ "not_run": [
+  "GitHub Actions for this proposal branch (docs-only change; no workflow on this branch has a matching push/pull_request path filter)",
+  "Web browser E2E (no product file changed)",
+  "CAL_VERIFY / Holdout (never accessed)"
+ ],
+ "states": {
+  "BRANCH_STATE": "proposal branch integration/a1-adoption/pr9-producer-infra created from PR #9 tip f8af596",
+  "INTEGRATION_STATE": "NOT_MERGED into feature/producer-infrastructure-v1; Track C not merged into this branch",
+  "CANONICAL_STATE": "NOT_MERGED"
+ }
+}
