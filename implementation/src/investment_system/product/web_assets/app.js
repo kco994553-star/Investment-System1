@@ -8,6 +8,59 @@ let appSettings=AppLanguage.settings(), settingsWritable=true, searchIndex;
 const t=key=>AppLanguage.text(key,appSettings.display_locale);
 const term=key=>AppLanguage.term(key,appSettings.display_locale);
 const label=e=>AppLanguage.fallback(e?.localized_names,appSettings.display_locale,e?.canonical_label || "");
+// Render-time research guard (G3). Presentation only: data.json is not rewritten, no data state is
+// added, nothing is recomputed. Constants mirror producers/contract.py @ f8af596 exactly (SECTION_NAMES
+// L23, PUBLISHED_STATES L26, RESEARCH_STATUSES L28-30; rejection rule L197-202). The assembler writes
+// the methodology at <section>.producer.methodology (assembler.py L31, L47). research_state.status is
+// the same lifecycle on persisted records (P01 publication/extractors.py copies it verbatim and
+// predicate.py checks it against the same RESEARCH_STATUSES). tests/test_web_research_guard.py pins this.
+// The validation half of the same rule (contract.py L194-199, VALIDATION_STATUSES L25) is mirrored by
+// validationMarker below.
+const SECTION_NAMES=Object.freeze(["universe","qgv","technical","macro","portfolio","leaderboard","news","relationships","changes"]);
+const PUBLISHED_STATES=Object.freeze(["LIVE","FROZEN_SNAPSHOT"]);
+const RESEARCH_STATUSES=Object.freeze(["IDEA","PROVISIONAL","PROVISIONAL_INITIAL_PRIOR","PROVISIONAL_RESEARCH","RESEARCH"]);
+const VALIDATION_STATUSES=Object.freeze(["PASS","FAIL","NOT_RUN"]);
+const WITHHELD_REASON="게시 승인이 없는 연구·잠정 결과라 표시하지 않습니다.";
+const VALIDATION_WITHHELD_REASON="생산자 검증(validation)이 PASS가 아니라 표시하지 않습니다.";
+function validationMarker(s) {
+  // contract.py L194-199: a LIVE/FROZEN_SNAPSHOT snapshot is rejected unless validation is an object whose status
+  // is exactly "PASS"; a missing validation object or status is rejected as well (L33, L195). The assembler
+  // persists that object at <section>.producer.validation (assembler.py L32, L47). A section without a producer
+  // block (legacy Track A universe, default and DEMO builds) carries no producer validation and is left as is.
+  if(!("producer" in s) || s.producer?.validation?.status==="PASS") return null;
+  const status=s.producer?.validation?.status;
+  // Only contract status values are echoed; anything else is shown as "not provided".
+  return {path:"producer.validation.status",status:VALIDATION_STATUSES.includes(status)?status:null,reason:VALIDATION_WITHHELD_REASON};
+}
+function researchMarker(s) {
+  const status=s.producer?.methodology?.status;
+  if(RESEARCH_STATUSES.includes(status)) return {path:"producer.methodology.status",status};
+  const pending=[s];
+  while(pending.length) {
+    const v=pending.pop();
+    if(!v || typeof v!=="object") continue;
+    if(!Array.isArray(v) && RESEARCH_STATUSES.includes(v.research_state?.status)) return {path:"research_state.status",status:v.research_state.status};
+    for(const x of Array.isArray(v)?v:Object.values(v)) pending.push(x);
+  }
+  return null;
+}
+function guardSections(bundle) {
+  // A LIVE/FROZEN_SNAPSHOT section that the producer contract would reject (producer validation not PASS, or a
+  // research marker) is withheld in the existing NOT_AVAILABLE presentation; its values never reach the view.
+  // Every other section is passed through as is.
+  const view={...bundle};
+  for(const name of SECTION_NAMES) {
+    const s=bundle[name];
+    if(!s || typeof s!=="object" || !PUBLISHED_STATES.includes(s.state)) continue;
+    // Same order as contract.py L197-202: validation status first, then methodology/research status.
+    const marker=validationMarker(s) || researchMarker(s);
+    if(marker) view[name]={state:"NOT_AVAILABLE",as_of:null,source:null,reason:marker.reason || WITHHELD_REASON,data:null,withheld:{section:name,claimed_state:s.state,...marker}};
+  }
+  return view;
+}
+function withheldNote(s) {
+  return s.withheld?`<p class="empty" data-withheld="${esc(s.withheld.section)}">${esc(t(s.withheld.reason || WITHHELD_REASON))}</p><div class="meta" data-source-original>${esc(s.withheld.path)}: ${esc(s.withheld.status ?? t("미제공"))}</div>`:"";
+}
 function updateSettings(patch) {
   appSettings=AppLanguage.settings({...appSettings,...patch});
   if(settingsWritable) {try {AppLanguage.write(localStorage,appSettings);} catch(e) {settingsWritable=false;}}
@@ -27,7 +80,7 @@ function entityRow(hit) {
   const e=hit.entity,c=e.entity_type==="COMPANY"?company(e.canonical_id):null;
   const held=c && D.portfolio.data?.holdings?.some(h=>h.company_id===c.company_id);
   const types={COMPANY:t("기업"),INDUSTRY:t("산업"),INVESTOR:t("투자자"),MACRO:t("거시지표")};
-  return `<li class="item" data-entity-id="${esc(hit.canonical_entity_id)}"><a href="${entityRoute(e)}"><b>${esc(label(e))}</b> <span class="badge">${esc(t(types[e.entity_type] || e.entity_type))}</span><div class="meta">${esc(e.ticker || "")} · ${esc(e.canonical_label)}${e.localized_names?.["ko-KR"]?" · "+esc(e.localized_names["ko-KR"]):""}${e.industry?" · "+esc(e.industry):""}</div>${c?`<div class="meta">${held?t("Snapshot 보유")+" · ":""}${D.qgv.data?.[c.company_id]?t("QGV 제공"):t("분석 미연결")} · ${esc(D.qgv.as_of || D.universe.as_of || t("시점 미제공"))} · ${esc(e.data_state || D.universe.state)}</div>`:""}</a></li>`;
+  return `<li class="item" data-entity-id="${esc(hit.canonical_entity_id)}"><a href="${entityRoute(e)}"><b>${esc(label(e))}</b> <span class="badge">${esc(t(types[e.entity_type] || e.entity_type))}</span><div class="meta">${esc(e.ticker || "")} · ${esc(e.canonical_label)}${e.localized_names?.["ko-KR"]?" · "+esc(e.localized_names["ko-KR"]):""}${e.industry?" · "+esc(e.industry):""}</div>${c?`<div class="meta">${held?t("Snapshot 보유")+" · ":""}${D.qgv.data?.[c.company_id]?t("QGV 제공"):t("분석 미연결")} · ${esc(D.qgv.as_of || D.universe.as_of || t("시점 미제공"))} · ${esc(D.universe.withheld && e.data_state===D.universe.withheld.claimed_state?D.universe.state:e.data_state || D.universe.state)}</div>`:""}</a></li>`;
 }
 function paintGlobalSearch() {
   const input=$("#global-search"),out=$("#global-results");
@@ -135,14 +188,14 @@ function star(id) {
 }
 function state(s) {
   const stale=s.state==="LIVE" && Date.parse(s.expires_at)<=Date.now();
-  return `<div class="state"><span class="badge ${esc(s.state)}">${esc(s.state)}${stale?" · STALE":""}</span> <span class="meta">${esc(s.as_of || t("시점 미제공"))}</span></div><div class="meta" data-source-original>${esc(s.source || (s.data===null?"":t("출처 미제공")))}</div>`;
+  return `<div class="state"><span class="badge ${esc(s.state)}">${esc(s.state)}${stale?" · STALE":""}</span> <span class="meta">${esc(s.as_of || t("시점 미제공"))}</span></div><div class="meta" data-source-original>${esc(s.source || (s.data===null?"":t("출처 미제공")))}</div>${withheldNote(s)}`;
 }
 function evidence(v) {
   return `<details><summary>${t("Evidence(근거) · 원본 보기")}</summary><pre data-source-original>${esc(JSON.stringify(v,null,2))}</pre></details>`;
 }
 function block(name,title,body) {
   const s=D[name];
-  return `<section class="card"><h2>${title}</h2>${state(s)}${s.data===null?'<p class="empty">'+esc(AppLanguage.fallback(s.reason_localized,appSettings.display_locale,t(s.reason || t("미제공"))))+"</p>":body}${s.data!==null?evidence(s):""}</section>`;
+  return `<section class="card"><h2>${title}</h2>${state(s)}${s.withheld?"":s.data===null?'<p class="empty">'+esc(AppLanguage.fallback(s.reason_localized,appSettings.display_locale,t(s.reason || t("미제공"))))+"</p>":body}${s.data!==null?evidence(s):""}</section>`;
 }
 function heading(k,title,subtitle="") {
   return `<div class="eyebrow">${k}</div><h1>${title}</h1>${subtitle?'<p class="muted">'+subtitle+"</p>":""}`;
@@ -164,7 +217,7 @@ function home() {
   <details><summary>${t("분석 · 뉴스 · 관계 변화 더보기")}</summary><div class="grid">${block("qgv",t("QGV 변화"),"<p>"+t("변화량은 upstream changes가 제공할 때만 표시합니다.")+"</p>")}${block("technical",t("Technical 변화"),"<p>"+t("최근 신호는 기업 상세에서 확인하세요.")+"</p>")}${block("news",t("관심기업 뉴스"),'<a href="#news">'+t("뉴스 열기 →")+"</a>")}${block("relationships",t("Relationship changes(관계 변화)"),'<a href="#news">'+t("관계망 열기 →")+"</a>")}</div></details>`;
 }
 function companies() {
-  return heading("COMPANIES",t("기업 탐색"))+`<input type="search" id="search" aria-label="${t("기업 검색")}" placeholder="${t("티커 또는 기업명 검색")}"><div class="chips"><label><input type="checkbox" id="only-interest"> ${t("관심기업만")}</label><select id="group-filter" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("")}</select></div><p class="meta">${esc(D.universe.as_of)} · FROZEN_SNAPSHOT / DEMO</p><ul class="list" id="company-list"></ul><button id="more-companies">${t("더보기")}</button><details><summary>${t("관심기업 · Groups(그룹) 관리")}</summary>${groupsUI()}</details>`;
+  return heading("COMPANIES",t("기업 탐색"))+`<input type="search" id="search" aria-label="${t("기업 검색")}" placeholder="${t("티커 또는 기업명 검색")}"><div class="chips"><label><input type="checkbox" id="only-interest"> ${t("관심기업만")}</label><select id="group-filter" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("")}</select></div><p class="meta">${D.universe.withheld?esc(D.universe.state)+" · "+esc(t(D.universe.withheld.reason || WITHHELD_REASON)):esc(D.universe.as_of)+" · FROZEN_SNAPSHOT / DEMO"}</p><ul class="list" id="company-list"></ul><button id="more-companies">${t("더보기")}</button><details><summary>${t("관심기업 · Groups(그룹) 관리")}</summary>${groupsUI()}</details>`;
 }
 function groupsUI() {
   return `<p class="muted">${t("이 기기의 브라우저에 저장됩니다. 즐겨찾기와 관심기업은 같은 목록입니다.")}</p><form id="new-group"><label for="group-name">${t("새 그룹 이름")}</label><div class="row"><input id="group-name" required maxlength="60" placeholder="${t("예: 반도체")}"><button>${t("그룹 만들기")}</button></div></form><div id="groups">${prefs.groups.map(g=>`<div class="group"><b>${esc(g.name)}</b> <span class="muted">${g.members.length} ${t("개")}</span><div class="row"><input aria-label="${t("그룹 이름")} ${esc(g.name)}" data-rename-input="${esc(g.id)}" value="${esc(g.name)}" maxlength="60"><button data-rename="${esc(g.id)}">${t("이름 변경")}</button><button data-delete="${esc(g.id)}">${t("그룹 삭제")}</button></div>${prefs.interests.map(id=>`<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(id)}" ${g.members.includes(id)?"checked":""}> ${esc(company(id)?.ticker || id)}</label>`).join("")}</div>`).join("")}</div><div class="toolbar"><button id="export">${t("내보내기")}</button><label>${t("설정 병합 가져오기")} <input type="file" id="import" accept="application/json"></label></div>`;
@@ -377,7 +430,7 @@ syncShell();
 Promise.all(["data.json","entities.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
 }))).then(([data,catalog])=>{
-  D=data;searchIndex=EntitySearch.createIndex(catalog.entities);load();render();paintGlobalSearch();
+  D=guardSections(data);searchIndex=EntitySearch.createIndex(catalog.entities);load();render();paintGlobalSearch();
 }).catch(e=>{
   $("#content").innerHTML=heading("DATA UNAVAILABLE",t("데이터를 열 수 없습니다."))+"<p>"+t("연결 상태를 확인한 뒤 다시 시도하세요.")+'</p><button id="retry">'+t("다시 시도")+"</button>";
   $("#retry").onclick=()=>location.reload();
