@@ -7,11 +7,12 @@ from __future__ import annotations
 
 import argparse
 import copy
-import hashlib
 import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+from producer_source_compat import boundary_pin, compare_shared_sources, dependency_reference
 
 ROOT = Path(__file__).resolve().parents[1]
 OWN_SRC = ROOT / "src"
@@ -22,10 +23,6 @@ SHARED = (
     "investment_system/qgv/factors.py",
     "investment_system/qgv/analysis.py",
 )
-
-
-def _sha(p: Path) -> str | None:
-    return hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None
 
 
 def main() -> None:
@@ -44,8 +41,11 @@ def main() -> None:
     def check(name: str, ok: bool, **detail) -> None:
         checks[name] = {"status": "PASS" if ok else "FAIL", **detail}
 
-    diffs = {f: {"infra": _sha(infra_src / f), "own": _sha(OWN_SRC / f)} for f in SHARED}
-    check("shared_leaderboard_sources_identical", all(d["infra"] == d["own"] and d["own"] for d in diffs.values()), files=diffs)
+    source = compare_shared_sources(OWN_SRC, infra_src, SHARED)
+    check("shared_leaderboard_sources_compatible", source["status"] == "PASS", files=source["files"],
+          authority="CDR-004 exact optional lineage adoption; all other shared sources byte-identical")
+    if source["status"] != "PASS":
+        return _write(a.report, checks, infra_src)
     sys.path.insert(0, str(infra_src))
     import investment_system  # noqa: E402
     investment_system.__path__.append(str(OWN_SRC / "investment_system"))
@@ -150,10 +150,11 @@ def main() -> None:
 
 
 def _write(report: str, checks: dict, infra_src: Path) -> None:
-    from investment_system.leaderboard_producer.infra_boundary import INFRA_PIN
+    historical_pin = boundary_pin(OWN_SRC / "investment_system/leaderboard_producer/infra_boundary.py")
     out = {
         "kind": "LEADERBOARD_PRODUCER_INFRA_COMPAT",
-        "infra_pin": INFRA_PIN,
+        "historical_infra_pin": historical_pin,
+        "dependency_source": dependency_reference(infra_src, OWN_SRC, historical_pin),
         "infra_src": str(infra_src),
         "status": "PASS" if checks and all(c["status"] == "PASS" for c in checks.values()) else "FAIL",
         "checks": checks,

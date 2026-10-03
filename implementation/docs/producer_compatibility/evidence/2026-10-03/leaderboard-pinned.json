@@ -1,0 +1,454 @@
+{
+ "kind": "LEADERBOARD_PRODUCER_INFRA_COMPAT",
+ "historical_infra_pin": {
+  "branch": "feature/producer-infrastructure-v1",
+  "commit": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+  "code_commit": "bcfdcd2487f643feddda7a0fa2cace085ffc28a3",
+  "src_unchanged_since": "5fa7ce0647b6af91d767c54ecaaa3e31d1ab63e4",
+  "pr": 9
+ },
+ "dependency_source": {
+  "mode": "PINNED_CHECKOUT",
+  "path": "/workspace/compatibility-infra-leaderboard-pinned/implementation/src",
+  "commit": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+  "git_tree": "b15ec6a250d4cb70a2950602935d1d2fba293cd7",
+  "source_dirty": false,
+  "source_manifest": {
+   "investment_system/__init__.py": "044229a215f460010863c4603a01c00de8604f9b3ec2d57ef19932c955a5a604",
+   "investment_system/contracts/__init__.py": "d274919683fe5f5781465d40bd139e0765fed95e79e168d45040294484611f4d",
+   "investment_system/contracts/context.py": "d3dcec647f6e37f1a8d2bae9119250a4ab6862bfcef8c15c1c9633dca42f6145",
+   "investment_system/contracts/enums.py": "5cd6c7694544dcba4717590ad24534ab0f8e115d8352235bf88bf37657433bcf",
+   "investment_system/contracts/global_universe.py": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+   "investment_system/contracts/models.py": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+   "investment_system/contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+   "investment_system/contracts/prediction.py": "bdac1b60b5c2a98da6b023c8a3c448c0e1e7bdc2d24ac2ca450e50a4014940c3",
+   "investment_system/contracts/product.py": "681a70618e9d47b61912a16270a40f07d9f6727ad7e777931274bb6595f5a51c",
+   "investment_system/contracts/raw.py": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+   "investment_system/contracts/strategy.py": "9c34249656ac7ba0203546584f7acd2dd96c6f2debb7ba54d54069290cbfe9ac",
+   "investment_system/contracts/universe.py": "6bf1013c2f09e6e10de6734825bc639f1a792f9ae14ee06d470bcea2eae2246a",
+   "investment_system/ingestion/__init__.py": "fb535e21794f9245ccbd6fa43e1549ae757bd8f1b0cdca8a7b76b101428aabd9",
+   "investment_system/ingestion/manifest.py": "4251396c956c2583b76e667eed0c98ac7b81c3effb69d6070929176040ddcb76",
+   "investment_system/ingestion/raw_store.py": "c4cfdbc314f8d670aee7d0a94f261177967ad3fcdfb36f224111af2f716ebb0e",
+   "investment_system/ingestion/replay.py": "cc48fd32461f170acd6b0bf339752a35076ddbcf5c0ad535afc15c656d606b3c",
+   "investment_system/integration/__init__.py": "3c2b8b4e4bb7662be6f9e93251ab22c24b1faca2e4501312d1b9248284f58300",
+   "investment_system/integration/compatibility.py": "4bc843e6bb19ab934a202e360009375540ddbbebdf93040e2e108523d5a7a7a0",
+   "investment_system/integration/engine.py": "53aff49209d284e54620697b704a6c71250665984c676dd294d52f1206f1664d",
+   "investment_system/integration/policy.py": "4210a1e7800944b80169b22befa85057b1926d7cbda46895887c025a92153126",
+   "investment_system/macro/__init__.py": "87898c5cbbc0b3f0cbabd34957a5c0868f7d5c4eec1a879a35ca8b4ea2f2f72f",
+   "investment_system/macro/engine.py": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+   "investment_system/markets/__init__.py": "bad4b839b7f33148f5bb195cb4b88208b8c205d612b898243b0821e7f52da782",
+   "investment_system/markets/kr.py": "581be2e2302541402c311bd146c1f273728afc09a23083ae1a11488a204f0d10",
+   "investment_system/markets/us.py": "7c87cefacd152c59044bb6a14b4bbc7ce2ffd44ceb27daa22095b1f76ae3950b",
+   "investment_system/personal/__init__.py": "d53a21eca58317bc7bed03e0ca79e2fd56deb8b16d960bf8c31d9d4e1c298e6c",
+   "investment_system/personal/fit.py": "d7c569cbf8496d752b0782b63986011e6e3e86a7436785bca94fadf7973565a5",
+   "investment_system/personal/money.py": "894e7cab7e3ca87dcad14ee644ef34448850698fb93dda600cd3aa75e0a37418",
+   "investment_system/personal/portfolio.py": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+   "investment_system/personal/ports.py": "a4fa05cc660db1779eb44babbbb8568f0c97723dc1b74a722f977f338be670fb",
+   "investment_system/personal/quality.py": "b6cefc19927bb3da00060920174de0f2d21dd7616299d9ebd81ad65870a349b7",
+   "investment_system/personal/security.py": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0",
+   "investment_system/personal/timecontract.py": "dee41dce8153740e75faa1810f9ffa5c150d13f3f4cf3d6f5f452348a7219d73",
+   "investment_system/personal/versioning.py": "af84bfd95e198c3e1c29381ca9d688728da8a7a128dec4994da49d5186416def",
+   "investment_system/personal/weights.py": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5",
+   "investment_system/pit/__init__.py": "4fb6f8ad10dbc3ca9460121101c691e80c7572e44b008fc1fec4ee02b8a326f2",
+   "investment_system/pit/resolver.py": "984d0ce5f01a9e6c236cb4ad96343137a149dc28369087f1a96da854c0bcf243",
+   "investment_system/producers/__init__.py": "069181d498e3cbcb796dce0fea3cf6c3a689147b80fe3814bb95376d3b803d0d",
+   "investment_system/producers/adapters.py": "2be3d220c9b84c3bc4d51be48c17cce7b4f62c3c18e73bcc2f49d903a54b6549",
+   "investment_system/producers/assembler.py": "c427daddcb4cfff002c8f4c77a6c0d66ca8c9ebb7087d40fd454761181f1c877",
+   "investment_system/producers/contract.py": "cfaa52d3957b7768af2a8eda634462002dc3770832194bced9de5fd664536f66",
+   "investment_system/producers/errors.py": "2f774a0f1d25c8a7228d523bef44c13915808c70de4b9e22be6c7585602286fc",
+   "investment_system/producers/freshness.py": "6bcfcc445007d496b6b5c8793affc3360a391be196f8fc6522a12542aae980a5",
+   "investment_system/producers/raw_persistence.py": "cd41c54726d27cca35b85f01befc47579a638a086c4e85596f8730487ced1f38",
+   "investment_system/producers/registry.py": "193a446128654022e281e76c23071d44f14b260e87c9aa42d4f8a27c52d47d54",
+   "investment_system/producers/serialization.py": "c24ff942b763c204ff8429ab7125b68921f96a43ec8ab43c3e2c14749cabbe33",
+   "investment_system/product/__init__.py": "724001026eedf6f255786fe67a35bdac2d90ce83bd7ab2997f6cc76f011dc027",
+   "investment_system/product/entity_catalog.py": "2880983bb524163e019fdad04ab1496e0f1427d1a95fddc5a795ddf2eb5ec447",
+   "investment_system/product/render_app.py": "19012df928a82f60d2fb41ff7481a8cd088a4e33f936e213653a08888e5c0f88",
+   "investment_system/product/web_mvp.py": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323",
+   "investment_system/prompt_library/__init__.py": "5f747a37bd93221f30608ae654a7cf0f235c5f6c5d7078f85bd48fb6a1db5eba",
+   "investment_system/prompt_library/catalog.py": "b3ec9a62a9e6a026eb945b11832428313b794f904a6410dd09aaefd8c9c1dd26",
+   "investment_system/prompt_library/fill.py": "b833222de863fec7800e7510f2ac21a3e43b2cacca0d872b236937c8d4598441",
+   "investment_system/prompt_library/search.py": "0abc608386842495faf9f4632ef7f2ebaa145b0b11764fd78f0eb4191d664991",
+   "investment_system/prompt_library/ui.py": "0ce3af1f59b255dabf64065b922feae6c0736aea84af06fd61117536aac3fcc2",
+   "investment_system/prompt_library/validation.py": "0428c9f7a4d96f3f12e4b01defcecfe244d79e2839c11235748d09381b8addc4",
+   "investment_system/providers/__init__.py": "a4454fa3a19374a4278e7b8b77b2cc2e13a45cc4e9cbff7756c3cf5001fe3bca",
+   "investment_system/providers/base.py": "c1228086c0d108b7ab64a7ca3baee046c48fac8c43438f7babfb5644e26ba93d",
+   "investment_system/providers/catalog.py": "5e0326fdf1904d36904ff08bac2ab20096e1727cba17d8e657228743bf13b2f5",
+   "investment_system/providers/env_price.py": "f70e61d04eab5e15be6f9eaf1cea104784d13042ba14cd1e166910340b3e3c36",
+   "investment_system/providers/fred_alfred.py": "a591e0f3ea9e0403a1df6850d9b14a9c7f3cdb649c4c084cc6fe10ed7d57d8b8",
+   "investment_system/providers/fred_csv.py": "6478bb1b399b3e750fc50f6f6562fb4bf74e991f95a30c81a43f879efa45ac7a",
+   "investment_system/providers/memory.py": "5d8f4027beef2554518202844333986628e49e858d0899ff751bc24bb21b20bc",
+   "investment_system/providers/sec_accn_reconcile.py": "0af361e1c1d66b6ab41bc7f1a8048dce747467713e925ff9f3fe50e662c90a26",
+   "investment_system/providers/sec_companyfacts.py": "fe236b817858b9698fb2e74d0fe460a46de2e83000134f68ca38f3ab60ee055a",
+   "investment_system/providers/sec_cover_shares.py": "4aeb53323e1dfe783d8c3c5fd852ba179ebacbdce15b1992db9157ca7847c741",
+   "investment_system/providers/sec_submissions.py": "600c4d86c1db4da97887fdd0e9c7f7d39f47749920c573bcd3eaeb7cf1d71d0f",
+   "investment_system/providers/sec_vintage.py": "e0aecc5c02bafa9e9543b03af8fb6a9c961df1f40217b3099829b1934f1c42fd",
+   "investment_system/providers/us_sec.py": "a3ac5f8cac127e96c35c3289c692cbdff0f82f4eb9315929e5df0ee9a61f8f72",
+   "investment_system/providers/yahoo_chart.py": "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534",
+   "investment_system/qgv/__init__.py": "9a061df332477ecbc2f586abda8c9712efba38b53b46904ac55780cba5fa8b28",
+   "investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+   "investment_system/qgv/book.py": "cbc334cf10e089792c1a119536109de2fe3cafc0e492e1e77676fd0b8bf7cf84",
+   "investment_system/qgv/compatibility.py": "6a10dbadfa67fd88e9f5db47256df08b5ef67fd73570439e8c0ec33f735a89b5",
+   "investment_system/qgv/factors.py": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+   "investment_system/qgv/financial_issuer.py": "3856593550bd76c7b179553f2030585902363dca05f5d8389fcdf719ec08ce72",
+   "investment_system/qgv/g_horizon.py": "c5241f9178aba9103e663b267fd58818face6cf3c5721b21ee53c8969f091ba2",
+   "investment_system/qgv/html_sample.py": "8a6fba4eb6fb4f45db10e2d77b501723326012de0e8434614132fced8f854aea",
+   "investment_system/qgv/identifiers.py": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+   "investment_system/qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+   "investment_system/qgv/pipeline.py": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+   "investment_system/qgv/portfolio.py": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+   "investment_system/qgv/quarterly_series.py": "1666839c6865b1187cff068bc7881f4e9658457f43b79ca7ded12fa98d89f5cb",
+   "investment_system/qgv/raw_map.py": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+   "investment_system/qgv/scoring.py": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+   "investment_system/qgv/simulation.py": "27edabf34871bfddad63345e8d3fc305009b59d7d64f9e818dfbbd57b44bd3ba",
+   "investment_system/qgv/track_record.py": "53710f90fd8dd0b3eb1db5cf8fc86979a6cd53215e8f7a542a60c14c0269e4a3",
+   "investment_system/qgv/us_live.py": "51c89905363ae1a0889c6676ec350afca09d0989c2bf3f0fc9d507baf2a8c13b",
+   "investment_system/rig/__init__.py": "edb4a0078fbca7e43382f5c615413b0ba8ac1dc485d6135f7a46ee567e84b44f",
+   "investment_system/rig/adapter.py": "68abf8504f8ece07e0b13496cdb6b931169b24a77bce89c1a721fde75e38816e",
+   "investment_system/rig/discovery/__init__.py": "34c264c8d4f9c2af12bb127de88e4836d0db1c2037f95368d0346a4736357836",
+   "investment_system/rig/discovery/discovery.py": "0face140c5fbdaf54487dca874786d7d219343de3cde5207c96aa97168628136",
+   "investment_system/rig/discovery/impact.py": "a1ab617cf4f2958d94a9ef7396f2c38b2113a05e05d0427ace41a27a89455265",
+   "investment_system/rig/discovery/present.py": "4688b79129cd640250337b1e12c51d819e089702b064daf02e608a631a000199",
+   "investment_system/rig/gate.py": "bffd0201b85b0b20edd5b06dd41a0faa49e24200eaf42bf254d16f18e3903666",
+   "investment_system/rig/intel/__init__.py": "5bcfa837406a101b52cebeaec8ca760af924ac8c94bae7a4a519479afc624f9b",
+   "investment_system/rig/intel/intel.py": "26e6742def877b7517c2a6268c625d02d8dfab8e0f2532d5f618ac4a1062b633",
+   "investment_system/rig/intel/present.py": "c2c8deec0ec6f87f57118a7c0bc771e36b015130ca178c7674742ab87cad9be2",
+   "investment_system/rig/ledger.py": "3b318bd8ff899c0c2054caecbab1c6186ef88299461441a618732a432a6c1791",
+   "investment_system/rig/model.py": "4c863a3f466257d289fad2598cb42bd32120cb1cab628455fbe1b96667b6e850",
+   "investment_system/rig/myview/__init__.py": "b9e77dc54e41fcddf76a6f2f14e32913150b105d0d20a96e1188138edc49f93d",
+   "investment_system/rig/myview/prefs.py": "d222a5f8c7621de5ee59e6f7dc53b81fce080f774b5fa7039a032550eb9d3128",
+   "investment_system/rig/myview/present.py": "4ff0cd7efe7e3d28c54a6fdca04329f96b41553615b61763f1f33d29983004f9",
+   "investment_system/rig/myview/scope.py": "fbb8d1f7bc10d3cf81bef2e4bed8865a8eb54ae051376b31174cf22214333991",
+   "investment_system/rig/network/__init__.py": "fee3aaf7787e4a1ff369a2a347ffde0eb7e6fd045714e643e5e22b6b2c317db2",
+   "investment_system/rig/network/labels.py": "4824b439bd72e0f9e62000d0a6fdf4284fa8df720482389aab50607f2c9a6b75",
+   "investment_system/rig/network/render.py": "4866ceb1042c40372ede796480fff9f378bf2f1034e81eb0c9d20678d5ea146c",
+   "investment_system/rig/network/views.py": "54678dcda5a0dd9c4bbe3ee253a7a49f899c0a971a61b39f5503f5fadceda7ff",
+   "investment_system/technical/__init__.py": "10d9e458b8553bfc0adca7f695114674dc95b39c160c7a33cbea4511369ea859",
+   "investment_system/technical/engine.py": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+   "investment_system/universe/__init__.py": "06a2be5c8155a68ad30f4d0dbf209be0bdd0988cf2bb3502a09dc80e5007b51e",
+   "investment_system/universe/engine.py": "97b97dee886763f1f329616adf610a864615d7dbd322e6b709cedef926d70ee6",
+   "investment_system/universe/events.py": "ca56c17ce60a918bbc8c27b57ddb1eed5ca4651d6d80bf4db095ab3c61179f33",
+   "investment_system/universe/recon.py": "9a8d41455a6c50e58c0901e4e5284f68cab92a9bb8c402e9b7c0dc989e2c58ff",
+   "investment_system/universe/resolve.py": "ecbe90a5e5b0f0ba16ad16cd2f8c0eca6a3e96306d2dde4767f90e97c1d4e7fd",
+   "investment_system/universe/sources.py": "38adc79c3d7cbc9741b6fc5daa3c3fdf67416236f51f11cc0fb2c5a2a9291365",
+   "investment_system/validation/__init__.py": "f1c52721ae70e9e015785f0accf030b7e1ef8ef6b9a4eeafa50389c01b394417",
+   "investment_system/validation/ablation.py": "c1e7e6d96991546576fe336280dbe10895d50bbc26ad98f33b94df6050f2c9fd",
+   "investment_system/validation/adapters.py": "99079a53534ec4a6d1ad3410ad1726c777dfeabb1d85996c5a02d7a078df1cd5",
+   "investment_system/validation/backtest.py": "0230c489163fb3890f70e968f9c9f0ae8ef3e0c2d07d7a46908e3e667f35e91f",
+   "investment_system/validation/e2e.py": "d55b3fd18a5653e08db76a5278fd071aaae93c6ecd957b7c76f94a67f6c282c2",
+   "investment_system/validation/engine.py": "93d1c50be9c9748120a2f235f06a262ca972580368c2e3dc0063e3ca0d2113fa",
+   "investment_system/validation/file_store.py": "0f4a0cafe6ae466e91fb07e8e300cf562f484fe3ae5e33cdc72366fe700ca751",
+   "investment_system/validation/historical.py": "02315a38e102bc312478dd1f00da401865db42d60423b21371b05879849a4aa8",
+   "investment_system/validation/integrated.py": "63ee78b144a56872308f0cbf9fb077fc35dc48d7f33f97c4e2283f0b4a373e95",
+   "investment_system/validation/outcome.py": "942d63c9925aae2b14f52f992086d8956359d830a332adaf510a3acb3425fd63",
+   "investment_system/validation/records.py": "98034bec6eb5a4f7b17074c366e9961ecf69f218bca63c4a20d72f93b8238995",
+   "investment_system/validation/vertical_slice.py": "4ab06fce30064ccf0a54f2c8e6dd39b4b97fdb996511958fac24d25d031a98dc",
+   "investment_system/versions.py": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11"
+  },
+  "source_manifest_sha256": "df5a5a8488576dc824e71f228e2505728db6c6e2302b57063bbf9420cd7ea13b",
+  "historical_pin_is_actual": true
+ },
+ "infra_src": "/workspace/compatibility-infra-leaderboard-pinned/implementation/src",
+ "status": "PASS",
+ "checks": {
+  "shared_leaderboard_sources_compatible": {
+   "status": "PASS",
+   "files": {
+    "investment_system/contracts/models.py": {
+     "own": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+     "infra": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+     "mode": "EXACT_CDR004_SCHEMA_ACCEPTANCE",
+     "states": [
+      {
+       "status": "PASS",
+       "state": "C28_ADOPTED",
+       "sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+       "pre_existing_AST_preserved": true,
+       "lineage_fields": {
+        "TechnicalSnapshot": [
+         "available_at",
+         "data_stamp_refs",
+         "source_vintages",
+         "input_hash"
+        ],
+        "MacroSnapshot": [
+         "available_at",
+         "data_stamp_refs",
+         "source_vintages",
+         "input_hash"
+        ]
+       },
+       "authority": "CDR-004; Track C 21378835883c5a9740143899c70d75d6405aa55a"
+      },
+      {
+       "status": "PASS",
+       "state": "PRE_ADOPTION",
+       "sha256": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+       "pre_existing_AST_preserved": true,
+       "lineage_fields": {
+        "TechnicalSnapshot": [],
+        "MacroSnapshot": []
+       },
+       "authority": "CDR-004; Track C 21378835883c5a9740143899c70d75d6405aa55a"
+      }
+     ],
+     "status": "PASS"
+    },
+    "investment_system/qgv/leaderboard.py": {
+     "own": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+     "infra": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+     "mode": "BYTE_IDENTICAL",
+     "status": "PASS"
+    },
+    "investment_system/qgv/scoring.py": {
+     "own": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+     "infra": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+     "mode": "BYTE_IDENTICAL",
+     "status": "PASS"
+    },
+    "investment_system/qgv/factors.py": {
+     "own": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+     "infra": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+     "mode": "BYTE_IDENTICAL",
+     "status": "PASS"
+    },
+    "investment_system/qgv/analysis.py": {
+     "own": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+     "infra": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+     "mode": "BYTE_IDENTICAL",
+     "status": "PASS"
+    }
+   },
+   "authority": "CDR-004 exact optional lineage adoption; all other shared sources byte-identical"
+  },
+  "infra_importable": {
+   "status": "PASS",
+   "infra_src": "/workspace/compatibility-infra-leaderboard-pinned/implementation/src"
+  },
+  "infra_api_complete": {
+   "status": "PASS",
+   "missing": []
+  },
+  "2024-06-30:export_reload_valid": {
+   "status": "PASS",
+   "n_records": 500,
+   "ranked": 500
+  },
+  "2024-06-30:leaderboard_section_rows": {
+   "status": "PASS",
+   "n": 500
+  },
+  "2024-06-30:web_fields_match_partial_contract": {
+   "status": "PASS",
+   "present_on_engine_row": [
+    "company_id",
+    "rank",
+    "ticker",
+    "total_score"
+   ],
+   "absent_on_engine_row": [
+    "consensus",
+    "daily_move",
+    "market_cap_rank",
+    "reevaluation_trigger",
+    "scenario"
+   ],
+   "adapter_missing": [
+    "market_cap_rank",
+    "daily_move",
+    "consensus",
+    "scenario",
+    "reevaluation_trigger"
+   ],
+   "web_reads": [
+    "rows[].rank",
+    "rows[].company_id",
+    "rows[].ticker",
+    "rows[].market_cap_rank",
+    "rows[].total_score",
+    "rows[].daily_move",
+    "rows[].consensus",
+    "rows[].scenario",
+    "rows[].reevaluation_trigger"
+   ]
+  },
+  "2024-06-30:canonical_serialization_agrees": {
+   "status": "PASS"
+  },
+  "2024-06-30:research_candidate_rejected": {
+   "status": "PASS",
+   "error": {
+    "type": "ResearchStatusError",
+    "code": "RESEARCH_STATUS_NOT_PUBLISHABLE",
+    "message": "methodology.status: methodology status PROVISIONAL_RESEARCH cannot be published as FROZEN_SNAPSHOT (pending approval of PROPOSAL_P01)"
+   }
+  },
+  "2024-06-30:shape_probe_valid_except_research_status": {
+   "status": "PASS",
+   "error": null
+  },
+  "2024-06-30:published_not_available": {
+   "status": "PASS",
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT",
+   "registry_placeholder": "LEADERBOARD_NO_UPSTREAM_QGV"
+  },
+  "2024-06-30:file_inputs_reverify": {
+   "status": "PASS"
+  },
+  "2024-06-30:bundle_assembles_and_web_validates": {
+   "status": "PASS",
+   "leaderboard_state": "NOT_AVAILABLE",
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT"
+  },
+  "2024-06-30:engine_not_called": {
+   "status": "PASS"
+  },
+  "2024-09-30:export_reload_valid": {
+   "status": "PASS",
+   "n_records": 500,
+   "ranked": 500
+  },
+  "2024-09-30:leaderboard_section_rows": {
+   "status": "PASS",
+   "n": 500
+  },
+  "2024-09-30:web_fields_match_partial_contract": {
+   "status": "PASS",
+   "present_on_engine_row": [
+    "company_id",
+    "rank",
+    "ticker",
+    "total_score"
+   ],
+   "absent_on_engine_row": [
+    "consensus",
+    "daily_move",
+    "market_cap_rank",
+    "reevaluation_trigger",
+    "scenario"
+   ],
+   "adapter_missing": [
+    "market_cap_rank",
+    "daily_move",
+    "consensus",
+    "scenario",
+    "reevaluation_trigger"
+   ],
+   "web_reads": [
+    "rows[].rank",
+    "rows[].company_id",
+    "rows[].ticker",
+    "rows[].market_cap_rank",
+    "rows[].total_score",
+    "rows[].daily_move",
+    "rows[].consensus",
+    "rows[].scenario",
+    "rows[].reevaluation_trigger"
+   ]
+  },
+  "2024-09-30:canonical_serialization_agrees": {
+   "status": "PASS"
+  },
+  "2024-09-30:research_candidate_rejected": {
+   "status": "PASS",
+   "error": {
+    "type": "ResearchStatusError",
+    "code": "RESEARCH_STATUS_NOT_PUBLISHABLE",
+    "message": "methodology.status: methodology status PROVISIONAL_RESEARCH cannot be published as FROZEN_SNAPSHOT (pending approval of PROPOSAL_P01)"
+   }
+  },
+  "2024-09-30:shape_probe_valid_except_research_status": {
+   "status": "PASS",
+   "error": null
+  },
+  "2024-09-30:published_not_available": {
+   "status": "PASS",
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT",
+   "registry_placeholder": "LEADERBOARD_NO_UPSTREAM_QGV"
+  },
+  "2024-09-30:file_inputs_reverify": {
+   "status": "PASS"
+  },
+  "2024-09-30:bundle_assembles_and_web_validates": {
+   "status": "PASS",
+   "leaderboard_state": "NOT_AVAILABLE",
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT"
+  },
+  "2024-09-30:engine_not_called": {
+   "status": "PASS"
+  },
+  "2024-12-31:export_reload_valid": {
+   "status": "PASS",
+   "n_records": 500,
+   "ranked": 500
+  },
+  "2024-12-31:leaderboard_section_rows": {
+   "status": "PASS",
+   "n": 500
+  },
+  "2024-12-31:web_fields_match_partial_contract": {
+   "status": "PASS",
+   "present_on_engine_row": [
+    "company_id",
+    "rank",
+    "ticker",
+    "total_score"
+   ],
+   "absent_on_engine_row": [
+    "consensus",
+    "daily_move",
+    "market_cap_rank",
+    "reevaluation_trigger",
+    "scenario"
+   ],
+   "adapter_missing": [
+    "market_cap_rank",
+    "daily_move",
+    "consensus",
+    "scenario",
+    "reevaluation_trigger"
+   ],
+   "web_reads": [
+    "rows[].rank",
+    "rows[].company_id",
+    "rows[].ticker",
+    "rows[].market_cap_rank",
+    "rows[].total_score",
+    "rows[].daily_move",
+    "rows[].consensus",
+    "rows[].scenario",
+    "rows[].reevaluation_trigger"
+   ]
+  },
+  "2024-12-31:canonical_serialization_agrees": {
+   "status": "PASS"
+  },
+  "2024-12-31:research_candidate_rejected": {
+   "status": "PASS",
+   "error": {
+    "type": "ResearchStatusError",
+    "code": "RESEARCH_STATUS_NOT_PUBLISHABLE",
+    "message": "methodology.status: methodology status PROVISIONAL_RESEARCH cannot be published as FROZEN_SNAPSHOT (pending approval of PROPOSAL_P01)"
+   }
+  },
+  "2024-12-31:shape_probe_valid_except_research_status": {
+   "status": "PASS",
+   "error": null
+  },
+  "2024-12-31:published_not_available": {
+   "status": "PASS",
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT",
+   "registry_placeholder": "LEADERBOARD_NO_UPSTREAM_QGV"
+  },
+  "2024-12-31:file_inputs_reverify": {
+   "status": "PASS"
+  },
+  "2024-12-31:bundle_assembles_and_web_validates": {
+   "status": "PASS",
+   "leaderboard_state": "NOT_AVAILABLE",
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT"
+  },
+  "2024-12-31:engine_not_called": {
+   "status": "PASS"
+  }
+ }
+}

@@ -5,7 +5,8 @@ feature/producer-infrastructure-v1 at the pinned commit (--infra-src = <checkout
 from that checkout is copied into this branch.
 
 Checks (each recorded PASS/FAIL):
-  1. the QGV engine/contract sources are byte-identical in both trees (so QGVSnapshot means the same thing);
+  1. QGV sources are byte-identical; models.py is either exact original or CDR-004's exact four-field adoption
+     with the complete pre-existing AST preserved (so QGVSnapshot means the same thing);
   2. every Infrastructure name the boundary consumes exists;
   3. per as_of, the export reloads and re-validates; `adapters.qgv_section` accepts the rebuilt snapshots; every
      Web-read field is present; canonical serialization hashes agree;
@@ -23,11 +24,12 @@ from __future__ import annotations
 
 import argparse
 import copy
-import hashlib
 import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+from producer_source_compat import boundary_pin, compare_shared_sources, dependency_reference
 
 ROOT = Path(__file__).resolve().parents[1]
 OWN_SRC = ROOT / "src"
@@ -35,10 +37,6 @@ SHARED = ("investment_system/contracts/models.py", "investment_system/contracts/
           "investment_system/qgv/analysis.py", "investment_system/qgv/scoring.py", "investment_system/qgv/factors.py",
           "investment_system/qgv/raw_map.py", "investment_system/qgv/pipeline.py",
           "investment_system/validation/vertical_slice.py", "investment_system/validation/historical.py")
-
-
-def _sha(p: Path) -> str | None:
-    return hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None
 
 
 def main() -> None:
@@ -57,9 +55,11 @@ def main() -> None:
     def check(name: str, ok: bool, **detail) -> None:
         checks[name] = {"status": "PASS" if ok else "FAIL", **detail}
 
-    diffs = {f: {"infra": _sha(infra_src / f), "own": _sha(OWN_SRC / f)} for f in SHARED}
-    check("shared_qgv_sources_identical", all(d["infra"] == d["own"] and d["own"] for d in diffs.values()),
-          files=diffs)
+    source = compare_shared_sources(OWN_SRC, infra_src, SHARED)
+    check("shared_qgv_sources_compatible", source["status"] == "PASS", files=source["files"],
+          authority="CDR-004 exact optional lineage adoption; all other shared sources byte-identical")
+    if source["status"] != "PASS":
+        return _write(a.report, checks, infra_src)
     # Infrastructure tree provides investment_system; this branch adds only the qgv_producer subpackage.
     sys.path.insert(0, str(infra_src))
     import investment_system  # noqa: E402
@@ -129,8 +129,9 @@ def main() -> None:
 
 
 def _write(report: str, checks: dict, infra_src: Path) -> None:
-    from investment_system.qgv_producer.infra_boundary import INFRA_PIN
-    out = {"kind": "QGV_PRODUCER_INFRA_COMPAT", "infra_pin": INFRA_PIN, "infra_src": str(infra_src),
+    historical_pin = boundary_pin(OWN_SRC / "investment_system/qgv_producer/infra_boundary.py")
+    out = {"kind": "QGV_PRODUCER_INFRA_COMPAT", "historical_infra_pin": historical_pin,
+           "dependency_source": dependency_reference(infra_src, OWN_SRC, historical_pin), "infra_src": str(infra_src),
            "status": "PASS" if all(c["status"] in ("PASS", "INFO") for c in checks.values()) else "FAIL", "checks": checks}
     Path(report).parent.mkdir(parents=True, exist_ok=True)
     Path(report).write_text(json.dumps(out, indent=1, default=str) + "\n")

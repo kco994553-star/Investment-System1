@@ -1,0 +1,515 @@
+[
+  {
+    "proposal": "origin/integration/a1-adoption/pr11-technical-producer",
+    "scope": "technical_real_producer",
+    "HEAD": "248e3d3e83db9a2db3d90583ae53929db936d0f3",
+    "owner_base": "feature/technical-real-producer-v1",
+    "base_SHA": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+    "merge_base": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+    "track_C_SHA": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "changed_files": [
+      "A\timplementation/docs/technical_real_producer/C28_UPSTREAM_ADOPTION_2026-10-03.md",
+      "M\timplementation/docs/technical_real_producer/STATUS.md",
+      "A\timplementation/docs/technical_real_producer/evidence/c28_adoption_invariance_2026-10-03.json",
+      "M\timplementation/tests/test_technical_real_producer.py"
+    ],
+    "maturity_before_after": "UNCHANGED (independent integration audit only)",
+    "Actions_actually_executed": "NOT_RUN",
+    "BRANCH_STATE": "REMOTE_DRAFT_PROPOSAL_READ_ONLY",
+    "INTEGRATION_STATE": "LOCAL_TRIAL_NOT_CANONICAL",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "own_source_changes": [],
+    "before_probe_exit_code": 0,
+    "before_tests": {
+      "exit_code": 0,
+      "summary": "16 passed in 0.08s",
+      "log": "pr11-technical-producer-before-pytest.log",
+      "sha256": "7f93bc43afc95267c0e35273a11ad60e5b37262b98e4c6fa02b6d95ef1f057f5"
+    },
+    "merge_exit_code": 0,
+    "after_tree": "0bc876f3e9a5ee5dab8bfe6473eb4de70409dadf",
+    "after_probe_exit_code": 0,
+    "after_tests": {
+      "exit_code": 0,
+      "summary": "16 passed in 0.06s",
+      "log": "pr11-technical-producer-after-pytest.log",
+      "sha256": "a69d2990726df276b5a4cfaeacac7f9093820d18ffed4eb92ce996c1b18f0c44"
+    },
+    "field_level_comparison": {
+      "changes": 690,
+      "lineage_additions": 688,
+      "fingerprint_changes": [
+        {
+          "kind": "changed",
+          "path": "/fingerprints/macro",
+          "before": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+          "after": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501"
+        },
+        {
+          "kind": "changed",
+          "path": "/fingerprints/technical",
+          "before": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+          "after": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+        }
+      ],
+      "unexpected": [],
+      "verdict": "PASS"
+    },
+    "probe_artifact_sha256": {
+      "before": "d112c0b12843fa88b76baa08d1b8c4ba29445827fecac7fa9f69fd0686bff0b3",
+      "after": "919859846ab00c407a02d8f0ad1040bb57d3680942b388326962958d89861331"
+    },
+    "protected_source_impact": [
+      {
+        "path": "implementation/src/investment_system/contracts/models.py",
+        "before_sha256": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+        "after_sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/engine.py",
+        "before_sha256": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+        "after_sha256": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+        "legacy_evaluate_AST_identical": true
+      },
+      {
+        "path": "implementation/src/investment_system/macro/engine.py",
+        "before_sha256": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+        "after_sha256": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+        "legacy_evaluate_AST_identical": true
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/lineage.py",
+        "before_sha256": "ABSENT",
+        "after_sha256": "ddfac6ef9bac1eb3a54a60bfbd78218d8f0aa57b91185ffadaaa5458aeb9c454"
+      }
+    ],
+    "USER_DECISION_REQUIRED": "NO for existing approved adoption audit; canonical merge remains separate approval"
+  },
+  {
+    "proposal": "origin/integration/a1-adoption/pr12-macro-producer",
+    "scope": "macro_real_producer",
+    "HEAD": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+    "owner_base": "feature/macro-real-producer-v1",
+    "base_SHA": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+    "merge_base": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+    "track_C_SHA": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "changed_files": [
+      "A\timplementation/docs/macro_real_producer/LINEAGE_SCHEMA_OWNER_ADOPTION_2026-10-03.md",
+      "M\timplementation/docs/macro_real_producer/STATUS.md",
+      "A\timplementation/docs/macro_real_producer/evidence/c28_adoption_invariance_2026-10-03.json",
+      "A\timplementation/docs/macro_real_producer/evidence/validation_post_adoption_2026-10-03.json",
+      "M\timplementation/tests/test_macro_real_producer.py"
+    ],
+    "maturity_before_after": "UNCHANGED (independent integration audit only)",
+    "Actions_actually_executed": "NOT_RUN",
+    "BRANCH_STATE": "REMOTE_DRAFT_PROPOSAL_READ_ONLY",
+    "INTEGRATION_STATE": "LOCAL_TRIAL_NOT_CANONICAL",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "own_source_changes": [],
+    "before_probe_exit_code": 0,
+    "before_tests": {
+      "exit_code": 0,
+      "summary": "11 passed in 0.18s",
+      "log": "pr12-macro-producer-before-pytest.log",
+      "sha256": "0c42ab8123fcb13fb141f85fe1c2ccfba497885db9741e077f51097581cc42ee"
+    },
+    "merge_exit_code": 0,
+    "after_tree": "610fbc575928ec499c989e5fc8a931f0f55283dd",
+    "after_probe_exit_code": 0,
+    "after_tests": {
+      "exit_code": 0,
+      "summary": "11 passed in 0.15s",
+      "log": "pr12-macro-producer-after-pytest.log",
+      "sha256": "ad02a8741201d47e6fca91bc0e613f043355714159e51d4751fb9cdc3fa74447"
+    },
+    "field_level_comparison": {
+      "changes": 690,
+      "lineage_additions": 688,
+      "fingerprint_changes": [
+        {
+          "kind": "changed",
+          "path": "/fingerprints/macro",
+          "before": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+          "after": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501"
+        },
+        {
+          "kind": "changed",
+          "path": "/fingerprints/technical",
+          "before": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+          "after": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+        }
+      ],
+      "unexpected": [],
+      "verdict": "PASS"
+    },
+    "probe_artifact_sha256": {
+      "before": "d112c0b12843fa88b76baa08d1b8c4ba29445827fecac7fa9f69fd0686bff0b3",
+      "after": "919859846ab00c407a02d8f0ad1040bb57d3680942b388326962958d89861331"
+    },
+    "protected_source_impact": [
+      {
+        "path": "implementation/src/investment_system/contracts/models.py",
+        "before_sha256": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+        "after_sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/engine.py",
+        "before_sha256": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+        "after_sha256": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+        "legacy_evaluate_AST_identical": true
+      },
+      {
+        "path": "implementation/src/investment_system/macro/engine.py",
+        "before_sha256": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+        "after_sha256": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+        "legacy_evaluate_AST_identical": true
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/lineage.py",
+        "before_sha256": "ABSENT",
+        "after_sha256": "ddfac6ef9bac1eb3a54a60bfbd78218d8f0aa57b91185ffadaaa5458aeb9c454"
+      }
+    ],
+    "USER_DECISION_REQUIRED": "NO for existing approved adoption audit; canonical merge remains separate approval"
+  },
+  {
+    "proposal": "origin/integration/a1-adoption/pr14-leaderboard",
+    "scope": "leaderboard_real_producer",
+    "HEAD": "a4805dbcdf37b890f74f6d00c00952ff95b91c8f",
+    "owner_base": "feature/leaderboard-real-producer-v1",
+    "base_SHA": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+    "merge_base": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+    "track_C_SHA": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "changed_files": [
+      "M\timplementation/docs/leaderboard_real_producer/STATUS.md",
+      "A\timplementation/docs/leaderboard_real_producer/evidence/c28_adoption_invariance_2026-10-03.json",
+      "M\timplementation/tests/test_leaderboard_real_producer.py"
+    ],
+    "maturity_before_after": "UNCHANGED (independent integration audit only)",
+    "Actions_actually_executed": "NOT_RUN",
+    "BRANCH_STATE": "REMOTE_DRAFT_PROPOSAL_READ_ONLY",
+    "INTEGRATION_STATE": "LOCAL_TRIAL_NOT_CANONICAL",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "own_source_changes": [],
+    "before_probe_exit_code": 0,
+    "before_tests": {
+      "exit_code": 0,
+      "summary": "17 passed in 0.43s",
+      "log": "pr14-leaderboard-before-pytest.log",
+      "sha256": "6da83c60180bebece7040432348b685adc5cf7c874c9e27876b09fe9a36f5ea2"
+    },
+    "merge_exit_code": 0,
+    "after_tree": "704742b035c0d70d92e1393e1ff0165758dc9426",
+    "after_probe_exit_code": 0,
+    "after_tests": {
+      "exit_code": 0,
+      "summary": "17 passed in 0.42s",
+      "log": "pr14-leaderboard-after-pytest.log",
+      "sha256": "e7295eefdf7692e1719c685c5d8a3edd1f0dc7f77f25aab9bd8153dec6d4def1"
+    },
+    "field_level_comparison": {
+      "changes": 690,
+      "lineage_additions": 688,
+      "fingerprint_changes": [
+        {
+          "kind": "changed",
+          "path": "/fingerprints/macro",
+          "before": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+          "after": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501"
+        },
+        {
+          "kind": "changed",
+          "path": "/fingerprints/technical",
+          "before": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+          "after": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+        }
+      ],
+      "unexpected": [],
+      "verdict": "PASS"
+    },
+    "probe_artifact_sha256": {
+      "before": "d112c0b12843fa88b76baa08d1b8c4ba29445827fecac7fa9f69fd0686bff0b3",
+      "after": "919859846ab00c407a02d8f0ad1040bb57d3680942b388326962958d89861331"
+    },
+    "protected_source_impact": [
+      {
+        "path": "implementation/src/investment_system/contracts/models.py",
+        "before_sha256": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+        "after_sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/engine.py",
+        "before_sha256": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+        "after_sha256": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+        "legacy_evaluate_AST_identical": true
+      },
+      {
+        "path": "implementation/src/investment_system/macro/engine.py",
+        "before_sha256": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+        "after_sha256": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+        "legacy_evaluate_AST_identical": true
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/lineage.py",
+        "before_sha256": "ABSENT",
+        "after_sha256": "ddfac6ef9bac1eb3a54a60bfbd78218d8f0aa57b91185ffadaaa5458aeb9c454"
+      }
+    ],
+    "USER_DECISION_REQUIRED": "NO for existing approved adoption audit; canonical merge remains separate approval"
+  },
+  {
+    "proposal": "origin/integration/a1-adoption/pr15-technical-model",
+    "scope": "technical_real_model",
+    "HEAD": "5c9dd5abd760116df626e9b2e88e3fe48852066a",
+    "owner_base": "feature/technical-real-model-v1",
+    "base_SHA": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+    "merge_base": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+    "track_C_SHA": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "changed_files": [
+      "M\timplementation/docs/technical_real_model/STATUS.md",
+      "A\timplementation/docs/technical_real_model/evidence/c28_adoption_invariance_2026-10-03.json",
+      "M\timplementation/tests/test_technical_real_model_v1.py"
+    ],
+    "maturity_before_after": "UNCHANGED (independent integration audit only)",
+    "Actions_actually_executed": "NOT_RUN",
+    "BRANCH_STATE": "REMOTE_DRAFT_PROPOSAL_READ_ONLY",
+    "INTEGRATION_STATE": "LOCAL_TRIAL_NOT_CANONICAL",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "own_source_changes": [],
+    "before_probe_exit_code": 0,
+    "before_tests": {
+      "exit_code": 0,
+      "summary": "19 passed in 0.09s",
+      "log": "pr15-technical-model-before-pytest.log",
+      "sha256": "d30644bb1db9337ac1adce249e90cc224662e8ee76cab56508c92b579590c4c4"
+    },
+    "merge_exit_code": 0,
+    "after_tree": "129925994f565d3a8eec1662d907b380b4fcd098",
+    "after_probe_exit_code": 0,
+    "after_tests": {
+      "exit_code": 0,
+      "summary": "19 passed in 0.09s",
+      "log": "pr15-technical-model-after-pytest.log",
+      "sha256": "d30644bb1db9337ac1adce249e90cc224662e8ee76cab56508c92b579590c4c4"
+    },
+    "field_level_comparison": {
+      "changes": 690,
+      "lineage_additions": 688,
+      "fingerprint_changes": [
+        {
+          "kind": "changed",
+          "path": "/fingerprints/macro",
+          "before": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+          "after": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501"
+        },
+        {
+          "kind": "changed",
+          "path": "/fingerprints/technical",
+          "before": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+          "after": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+        }
+      ],
+      "unexpected": [],
+      "verdict": "PASS"
+    },
+    "probe_artifact_sha256": {
+      "before": "d112c0b12843fa88b76baa08d1b8c4ba29445827fecac7fa9f69fd0686bff0b3",
+      "after": "919859846ab00c407a02d8f0ad1040bb57d3680942b388326962958d89861331"
+    },
+    "protected_source_impact": [
+      {
+        "path": "implementation/src/investment_system/contracts/models.py",
+        "before_sha256": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+        "after_sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/engine.py",
+        "before_sha256": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+        "after_sha256": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+        "legacy_evaluate_AST_identical": true
+      },
+      {
+        "path": "implementation/src/investment_system/macro/engine.py",
+        "before_sha256": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+        "after_sha256": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+        "legacy_evaluate_AST_identical": true
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/lineage.py",
+        "before_sha256": "ABSENT",
+        "after_sha256": "ddfac6ef9bac1eb3a54a60bfbd78218d8f0aa57b91185ffadaaa5458aeb9c454"
+      }
+    ],
+    "USER_DECISION_REQUIRED": "NO for existing approved adoption audit; canonical merge remains separate approval"
+  },
+  {
+    "proposal": "origin/integration/a1-adoption/pr17-p01",
+    "scope": "research_publication",
+    "HEAD": "dc7daf70a42fb3f2bbfe96a775a1654a92ff95c1",
+    "owner_base": "feature/p01-research-publication-v1",
+    "base_SHA": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+    "merge_base": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+    "track_C_SHA": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "changed_files": [
+      "M\timplementation/docs/research_publication/STATUS.md",
+      "A\timplementation/docs/research_publication/evidence/c28_adoption_invariance_2026-10-03.json",
+      "M\timplementation/tests/test_p01_research_publication.py"
+    ],
+    "maturity_before_after": "UNCHANGED (independent integration audit only)",
+    "Actions_actually_executed": "NOT_RUN",
+    "BRANCH_STATE": "REMOTE_DRAFT_PROPOSAL_READ_ONLY",
+    "INTEGRATION_STATE": "LOCAL_TRIAL_NOT_CANONICAL",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "own_source_changes": [],
+    "before_probe_exit_code": 0,
+    "before_tests": {
+      "exit_code": 0,
+      "summary": "13 passed in 0.29s",
+      "log": "pr17-p01-before-pytest.log",
+      "sha256": "581955483c307ccd4a0c065b7f00d71b3b75589d839aa32922f04b2e14b054ed"
+    },
+    "merge_exit_code": 0,
+    "after_tree": "cb84a4e3483154a43cf54844a5b744693a3eefc9",
+    "after_probe_exit_code": 0,
+    "after_tests": {
+      "exit_code": 0,
+      "summary": "13 passed in 0.28s",
+      "log": "pr17-p01-after-pytest.log",
+      "sha256": "daeeeae4bf8d68b762163d903b7ff852a3427aabd71376a6286207fc2514bc75"
+    },
+    "field_level_comparison": {
+      "changes": 690,
+      "lineage_additions": 688,
+      "fingerprint_changes": [
+        {
+          "kind": "changed",
+          "path": "/fingerprints/macro",
+          "before": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+          "after": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501"
+        },
+        {
+          "kind": "changed",
+          "path": "/fingerprints/technical",
+          "before": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+          "after": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+        }
+      ],
+      "unexpected": [],
+      "verdict": "PASS"
+    },
+    "probe_artifact_sha256": {
+      "before": "d112c0b12843fa88b76baa08d1b8c4ba29445827fecac7fa9f69fd0686bff0b3",
+      "after": "919859846ab00c407a02d8f0ad1040bb57d3680942b388326962958d89861331"
+    },
+    "protected_source_impact": [
+      {
+        "path": "implementation/src/investment_system/contracts/models.py",
+        "before_sha256": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+        "after_sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/engine.py",
+        "before_sha256": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+        "after_sha256": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+        "legacy_evaluate_AST_identical": true
+      },
+      {
+        "path": "implementation/src/investment_system/macro/engine.py",
+        "before_sha256": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+        "after_sha256": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+        "legacy_evaluate_AST_identical": true
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/lineage.py",
+        "before_sha256": "ABSENT",
+        "after_sha256": "ddfac6ef9bac1eb3a54a60bfbd78218d8f0aa57b91185ffadaaa5458aeb9c454"
+      }
+    ],
+    "USER_DECISION_REQUIRED": "NO for existing approved adoption audit; canonical merge remains separate approval"
+  },
+  {
+    "proposal": "origin/integration/a1-adoption/pr18-us-equity-session",
+    "scope": "us_equity_session",
+    "HEAD": "9c71781c62e46a4f2972d58c1439ef6ca2a85b07",
+    "owner_base": "feature/us-equity-session-v1",
+    "base_SHA": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+    "merge_base": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+    "track_C_SHA": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "changed_files": [
+      "M\timplementation/docs/us_equity_session/STATUS.md",
+      "A\timplementation/docs/us_equity_session/evidence/c28_adoption_invariance_2026-10-03.json",
+      "M\timplementation/tests/test_us_equity_session_v1.py"
+    ],
+    "maturity_before_after": "UNCHANGED (independent integration audit only)",
+    "Actions_actually_executed": "NOT_RUN",
+    "BRANCH_STATE": "REMOTE_DRAFT_PROPOSAL_READ_ONLY",
+    "INTEGRATION_STATE": "LOCAL_TRIAL_NOT_CANONICAL",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "own_source_changes": [],
+    "before_probe_exit_code": 0,
+    "before_tests": {
+      "exit_code": 0,
+      "summary": "23 passed in 0.16s",
+      "log": "pr18-us-equity-session-before-pytest.log",
+      "sha256": "0b2d60910038563d9c68f9904c6be07577cdfc7b0f66acf2a1c6887d1d8e0358"
+    },
+    "merge_exit_code": 0,
+    "after_tree": "f985c56a33663c6a91abd2c88ee9a73ddd0523fa",
+    "after_probe_exit_code": 0,
+    "after_tests": {
+      "exit_code": 0,
+      "summary": "23 passed in 0.08s",
+      "log": "pr18-us-equity-session-after-pytest.log",
+      "sha256": "614e544c270f7bd0389babf1c69d82509429bd083bb1694b7a57efbae140246d"
+    },
+    "field_level_comparison": {
+      "changes": 690,
+      "lineage_additions": 688,
+      "fingerprint_changes": [
+        {
+          "kind": "changed",
+          "path": "/fingerprints/macro",
+          "before": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+          "after": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501"
+        },
+        {
+          "kind": "changed",
+          "path": "/fingerprints/technical",
+          "before": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+          "after": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+        }
+      ],
+      "unexpected": [],
+      "verdict": "PASS"
+    },
+    "probe_artifact_sha256": {
+      "before": "d112c0b12843fa88b76baa08d1b8c4ba29445827fecac7fa9f69fd0686bff0b3",
+      "after": "919859846ab00c407a02d8f0ad1040bb57d3680942b388326962958d89861331"
+    },
+    "protected_source_impact": [
+      {
+        "path": "implementation/src/investment_system/contracts/models.py",
+        "before_sha256": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+        "after_sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/engine.py",
+        "before_sha256": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+        "after_sha256": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+        "legacy_evaluate_AST_identical": true
+      },
+      {
+        "path": "implementation/src/investment_system/macro/engine.py",
+        "before_sha256": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+        "after_sha256": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+        "legacy_evaluate_AST_identical": true
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/lineage.py",
+        "before_sha256": "ABSENT",
+        "after_sha256": "ddfac6ef9bac1eb3a54a60bfbd78218d8f0aa57b91185ffadaaa5458aeb9c454"
+      }
+    ],
+    "USER_DECISION_REQUIRED": "NO for existing approved adoption audit; canonical merge remains separate approval"
+  }
+]

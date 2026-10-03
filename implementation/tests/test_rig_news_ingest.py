@@ -188,18 +188,38 @@ def test_entity_resolution_unknown_and_ambiguous():
     assert item.canonical_entity_ids == ("aapl",)
 
 
+def _read_only_registry(registry: Path, pinned: bytes) -> None:
+    # The original isolated branch has no PR #7 artifact; integrated trees must carry its exact bytes.
+    if registry.parent.exists():
+        assert registry.is_file(), "integrated entity directory is missing the pinned registry"
+        assert registry.read_bytes() == pinned, "integrated entity registry differs from pinned PR #7"
+
+
 def test_pr7_registry_is_read_only_and_not_copied():
-    assert not (REPO / "implementation" / "reports" / "entity_metadata").exists()
     raw = subprocess.check_output(
         ["git", "show", f"{ENTITY_METADATA_AUDITED_SHA}:implementation/reports/entity_metadata/top500_entity_metadata_2024-12-31.json"],
         cwd=REPO,
     )
+    _read_only_registry(REPO / "implementation/reports/entity_metadata/top500_entity_metadata_2024-12-31.json", raw)
     index = index_from_registry(json.loads(raw))
     assert index.universe_id == "uni_0d1a30b1ee47"
     for mention in ("META", "Facebook Inc", "FB", "페이스북"):
         hit = index.resolve(mention)
         assert hit.status == "RESOLVED" and hit.company_id == "meta", mention
     assert index.resolve("Not A Real Company XYZ").status == "UNKNOWN"
+
+
+def test_integrated_registry_rejects_mutation_and_missing_pinned_file(tmp_path):
+    registry = tmp_path / "entity_metadata" / "registry.json"
+    _read_only_registry(registry, b"pinned")  # Original branch isolation remains accepted.
+    registry.parent.mkdir()
+    with pytest.raises(AssertionError, match="missing the pinned registry"):
+        _read_only_registry(registry, b"pinned")
+    registry.write_bytes(b"pinned")
+    _read_only_registry(registry, b"pinned")
+    registry.write_bytes(b"changed")
+    with pytest.raises(AssertionError, match="differs from pinned"):
+        _read_only_registry(registry, b"pinned")
 
 
 def test_source_language_is_preserved_and_display_locale_is_ignored():

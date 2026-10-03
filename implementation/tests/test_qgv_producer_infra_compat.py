@@ -9,6 +9,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from importlib.util import find_spec
 
 from investment_system.qgv_producer import infra_boundary
 from investment_system.qgv_producer.exporter import export_batch
@@ -21,8 +22,13 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_qgv_export_is_compatible_with_pinned_producer_infrastructure(tmp_path):
     src = os.environ.get("QGV_PRODUCER_INFRA_SRC")
     if not src:
-        assert infra_boundary.load_infra() is None  # not merged here; see docs/qgv_producer/STATUS.md
-        return
+        infra = infra_boundary.load_infra()
+        if infra is None:  # original isolated branch; see docs/qgv_producer/STATUS.md
+            assert infra is None
+            assert find_spec("investment_system.producers") is None, "integrated dependency could not be loaded"
+            return
+        assert not infra_boundary.missing_api(infra), "integrated dependency API is incomplete"
+        src = str(ROOT / "src")
     store, index = make_store(tmp_path)
     b = batch(store, index)
     export_batch(b.records, b.manifest, tmp_path / "exports")
