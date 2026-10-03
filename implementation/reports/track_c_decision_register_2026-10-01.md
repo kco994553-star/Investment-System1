@@ -198,3 +198,16 @@ Q4/A6-S4 (one-shot keyed by preregistered CAL_VERIFY content commitment + profil
 across campaign/role_id/label/root). Local: C8 197, C7 97, C6 130, C0–C5 103, full 923 PASS; acceptance runners PASS.
 Evidence implementation/reports/track_c_c8_gsup_fix_2026-10-03.md (also discloses kernel vs Q1 simulation convention
 differences). Five method details and all numerics remain unapproved; C8 NOT FROZEN; Holdout UNCONSUMED.
+
+
+## Track C C8 G-SUP evidence records and CDR-005 lineage gate — 2026-10-03
+
+Basis: CDR-005 (routing record, origin/integration/global-handoff-v1 @ 1206539, quoting the user decision of 2026-10-03).
+- EVIDENCE / NOT_AN_APPROVAL: GIE-004 (origin/integration/global-handoff-v1 @ cc9570b) and the owner-session five-item impact analysis
+  `implementation/reports/track_c_c8_gsup_method_impact_evidence_2026-10-03.{md,json}`. No method choice is approved by these records.
+- LOCAL_FIXABLE defects under existing Q3/Q4·A6-S4: fixed in 9a9364c; Development gate now additionally verifies the preregistered
+  Development content commitment and lineage reference instead of trusting the role label (CAL_VERIFY content labelled DEVELOPMENT is refused).
+  No new method policy; no numeric value.
+- USER_DECISION_REQUIRED: authoritative method between the approved M-B simulation variant and the implemented kernel; minimal counterexamples in
+  `implementation/reports/track_c_c8_gsup_mb_vs_kernel_counterexample_2026-10-03.{md,json}`.
+Numeric configuration unapproved; CAL_VERIFY/Holdout not accessed; C8 NOT FROZEN; 8/11 = 72.7%.

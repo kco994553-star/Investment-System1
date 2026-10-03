@@ -494,3 +494,10 @@ Q4/A6-S4 (one-shot keyed by preregistered CAL_VERIFY content commitment + profil
 across campaign/role_id/label/root). Local: C8 197, C7 97, C6 130, C0–C5 103, full 923 PASS; acceptance runners PASS.
 Evidence implementation/reports/track_c_c8_gsup_fix_2026-10-03.md (also discloses kernel vs Q1 simulation convention
 differences). Five method details and all numerics remain unapproved; C8 NOT FROZEN; Holdout UNCONSUMED.
+
+
+## Track C C8 CDR-005 items — 2026-10-03
+
+Development-only gate bound to preregistered content commitment + lineage ref (not role label); GIE-004 and five-item impact analysis
+recorded as EVIDENCE / NOT_AN_APPROVAL; M-B vs kernel minimal counterexamples raised as USER_DECISION_REQUIRED (Options K/M/C).
+See implementation/reports/track_c_c8_gsup_*_2026-10-03.*. Numerics unapproved; CAL_VERIFY/Holdout untouched; C8 NOT FROZEN.

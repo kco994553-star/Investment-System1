@@ -22,6 +22,8 @@ def spec(**over):
          "profile": "Balanced", "role": "CHAMPION", "role_id": "cand-fixture-1",
          "role_designation_ref": "SYNTHETIC_FIXTURE_ROLE", "verify_dataset_id": "fixture-verify-1",
          "verify_content_hash": "fixture-content-unbound", "development_dataset_id": "fixture-dev",
+         "development_content_hash": digest(synthetic_delta(3, 60, 0.0)),
+         "development_lineage_ref": G.DEVELOPMENT_FIXTURE_LINEAGE,
          "verify_periods": 48, "controls": ["EQUAL_SIMPLE", "MARKET_CAP"],
          "cohorts": list(G.REQUIRED_COHORTS), "evidence_kind": G.EVIDENCE_KIND,
          "comparison_evidence": [G.COMPARISON_ONLY], "alpha": 0.1, "replicates": 99,
@@ -444,3 +446,27 @@ def test_cal_verify_content_must_match_commitment(tmp_path):
         reg.assess(key, Provider(mu=0.9), accessed_at="2030-02-01T00:00:00+00:00")
     with pytest.raises(IntegrityFailure):
         reg.assess(key, Provider(mu=0.9), accessed_at="2030-03-01T00:00:00+00:00")
+
+
+# ---- CDR-005: Development gate verifies source identity/lineage, not the role label --------------
+
+def test_cal_verify_series_labelled_development_is_rejected(tmp_path):
+    p = Provider(mu=0.9)
+    reg = registry(tmp_path)
+    key = reg.register(bound(p))
+    cal_verify_series = p("fixture-verify-1")["cohorts"][G.REQUIRED_COHORTS[0]]["role"]
+    with pytest.raises(IntegrityFailure, match="preregistered Development source"):
+        reg.record_feasibility(key, cal_verify_series, dataset_role="DEVELOPMENT", dataset_id="fixture-dev")
+    with pytest.raises(IntegrityFailure, match="preregistered Development source"):
+        reg.record_feasibility(key, synthetic_delta(4, 60, 0.0), dataset_role="DEVELOPMENT", dataset_id="fixture-dev")
+    assert feasible(reg, key)["development_estimate"]["series_hash"] == spec()["development_content_hash"]
+
+
+def test_development_commitment_cannot_equal_cal_verify_commitment():
+    with pytest.raises(IntegrityFailure):
+        G.validate_registration(spec(verify_content_hash=spec()["development_content_hash"]))
+
+
+def test_real_development_lineage_is_not_run():
+    with pytest.raises(MissingPrerequisite):
+        G.validate_registration(spec(development_lineage_ref="c7-development-oos:real"))

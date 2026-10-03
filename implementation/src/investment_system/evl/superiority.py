@@ -46,6 +46,8 @@ ROLES = ("CHAMPION", "CHALLENGER")
 EVIDENCE_KIND = "CONTROL_RELATIVE_PERIOD_NET_RETURN_DIFFERENCE"
 ESTIMATORS = ("AR1_LAG1_AUTOCORRELATION_v1",)
 EFFECT_FLOOR = {"convention": "DEFERRED_A6_S7", "value": None}
+# Development evidence is accepted by preregistered content identity + lineage, never by its role label.
+DEVELOPMENT_FIXTURE_LINEAGE = "SYNTHETIC_FIXTURE_DEVELOPMENT_LINEAGE"
 
 
 class UnsupportedControl(MissingPrerequisite):
@@ -155,7 +157,8 @@ def validate_registration(spec):
     s = deepcopy(spec)
     fields = {"schema", "policy", "scope", "configuration_scope", "temporal_origin", "registered_at",
               "campaign_id", "profile", "role", "role_id", "role_designation_ref", "verify_dataset_id",
-              "verify_content_hash", "development_dataset_id", "verify_periods", "controls", "cohorts", "evidence_kind", "comparison_evidence", "alpha",
+              "verify_content_hash", "development_dataset_id", "development_content_hash",
+              "development_lineage_ref", "verify_periods", "controls", "cohorts", "evidence_kind", "comparison_evidence", "alpha",
               "replicates", "block_rule", "seed", "minimum_support", "feasibility", "effect_floor"}
     if set(s) != fields:
         raise IntegrityFailure("missing/unknown G-SUP registration fields")
@@ -170,8 +173,13 @@ def validate_registration(spec):
         raise MissingPrerequisite("real numeric configuration / CAL_VERIFY access not approved")
     instant(s["registered_at"])
     for f in ("campaign_id", "role_id", "verify_dataset_id", "role_designation_ref",
-              "verify_content_hash", "development_dataset_id"):
+              "verify_content_hash", "development_dataset_id", "development_content_hash",
+              "development_lineage_ref"):
         identity(s[f])
+    if s["development_content_hash"] == s["verify_content_hash"]:
+        raise IntegrityFailure("Development evidence content equals the CAL_VERIFY commitment")
+    if s["development_lineage_ref"] != DEVELOPMENT_FIXTURE_LINEAGE:
+        raise MissingPrerequisite("real Development source lineage resolution is not approved/implemented")
     if s["development_dataset_id"] == s["verify_dataset_id"]:
         raise IntegrityFailure("Development dependence evidence cannot be the CAL_VERIFY target")
     if s["profile"] not in PROFILES or s["role"] not in ROLES:
@@ -262,7 +270,8 @@ def validate_estimate(estimate, registration):
         raise IntegrityFailure("estimate support")
     if not -1 < finite_number(estimate["phi"]) < 1:
         raise IntegrityFailure("lag-1 autocorrelation outside (-1, 1)")
-    identity(estimate["series_hash"])
+    if estimate["series_hash"] != registration["development_content_hash"]:
+        raise IntegrityFailure("estimate series is not the preregistered Development source content")
     if digest({k: v for k, v in estimate.items() if k != "estimate_hash"}) != estimate["estimate_hash"]:
         raise IntegrityFailure("dependence estimate tampered")
     return estimate
