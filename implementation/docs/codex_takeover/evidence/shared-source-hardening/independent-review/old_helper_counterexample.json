@@ -1,0 +1,18 @@
+{
+  "source_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "probe": "same-path non-model source changed",
+  "actual_source_sha256": "e40e2f3b9af7544951df2adab2ae06e50515c22ed1b584eeba7f01894cb55a04",
+  "result": {
+    "status": "PASS",
+    "files": {
+      "investment_system/qgv/scoring.py": {
+        "own": "e40e2f3b9af7544951df2adab2ae06e50515c22ed1b584eeba7f01894cb55a04",
+        "infra": "e40e2f3b9af7544951df2adab2ae06e50515c22ed1b584eeba7f01894cb55a04",
+        "mode": "BYTE_IDENTICAL",
+        "status": "PASS"
+      }
+    }
+  },
+  "expected_after_repair": "FAIL against exact b8 canonical baseline",
+  "protected_repository_files_written": false
+}
