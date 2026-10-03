@@ -92,3 +92,11 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - Codex #31 @ `29c2c20` and #35 @ `722c812` declare HANDOFF_READY. Independent read-only verification of both started; results go to GIE-008. Nothing on either branch is edited.
 - PR #37 `feature/dynamic-workflow-m0` @ `d83c03e` (Draft, base canonical) was pushed by the repository owner account at 11:01Z. It adds 3 files and modifies none; local exact-HEAD run 7 passed; no Actions run. Recorded read-only in GSI row 24. `DYNAMIC_WORKFLOW_V1_SOFTWARE_FROZEN` is kept, and the Primary Integration Writer does not act on #37.
 - Canonical `b8e39a2` unchanged. No canonical merge, grant, CAL_VERIFY or Holdout access. Maturity transitions: none.
+
+## GCH-007 · 2026-10-03 · GIE-008 recorded (#31 13-point, #35, trial PR #38); arithmetic decision axes
+
+- Codex #31 @ `29c2c20`: independent 13-point verification VERIFIED_WITH_FINDINGS. Items 1, 2a, 3, 4, 6a, 7–13 PASS; 5 and 6b DEFERRED (no v2 exists); 2b FAIL on literal wording only (the approval JSON records a separate Codex-session message; clauses equivalent). Blocking B1 applies to the arithmetic decision package only: replicate-mean grouping and block-sum construction are result-changing axes that the package does not present as options.
+- Codex #35 @ `722c812`: PASS_WITH_FINDINGS. F1 reproduced and fixed on all 10 protected paths. Non-blocking NB1 (copy/symlink-farm fallback) and NB2 (protected list not pinned by a test).
+- Trial PR #38 `integration/next-trial-2026-10-03` @ `7e3861b` published by the Primary Integration Writer (#30 + #32 + #33 + #34 + #36; tree equals local trial3). 9/9 pull-request CI ✓. `codex-integration-readiness` dispatched manually as run 37123374305 because its path filter does not match.
+- PR #37 (Dynamic Workflow M0, repository owner account) unchanged and read-only.
+- No `codex/*` branch written. Canonical `b8e39a2` unchanged. No canonical merge, grant, CAL_VERIFY or Holdout access. Maturity transitions: none.

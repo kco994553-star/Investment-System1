@@ -1,0 +1,339 @@
+{
+ "python": "3.11.15",
+ "numpy": "2.3.5",
+ "CE4": {
+  "fsum/samples": {
+   "r": 1,
+   "deg": 1,
+   "ties": 0,
+   "p": 0.1,
+   "T": "0x1.01cab10fef960p+0"
+  },
+  "fsum/blocks": {
+   "r": 1,
+   "deg": 1,
+   "ties": 0,
+   "p": 0.1,
+   "T": "0x1.01cab10fef960p+0"
+  },
+  "left/samples": {
+   "r": 1,
+   "deg": 1,
+   "ties": 0,
+   "p": 0.1,
+   "T": "0x1.01cab10fef960p+0"
+  },
+  "left/blocks": {
+   "r": 1,
+   "deg": 1,
+   "ties": 0,
+   "p": 0.1,
+   "T": "0x1.01cab10fef960p+0"
+  },
+  "builtin_sum/samples": {
+   "r": 1,
+   "deg": 1,
+   "ties": 0,
+   "p": 0.1,
+   "T": "0x1.01cab10fef960p+0"
+  },
+  "builtin_sum/blocks": {
+   "r": 1,
+   "deg": 1,
+   "ties": 0,
+   "p": 0.1,
+   "T": "0x1.01cab10fef960p+0"
+  },
+  "numpy_literal": {
+   "r": 1,
+   "deg": 1,
+   "p": 0.1
+  },
+  "exact_decimal": {
+   "r": 1,
+   "deg": 1,
+   "ties": 0,
+   "p": "1/10"
+  },
+  "exact_binary": {
+   "r": 2,
+   "deg": 0,
+   "ties": 0,
+   "p": "3/20"
+  },
+  "v1_own": {
+   "r": 2,
+   "deg": 1,
+   "p": 0.15,
+   "T": "0x1.01cab10fef960p+0"
+  }
+ },
+ "FLIP": {
+  "fsum/samples": {
+   "r": 1,
+   "deg": 2,
+   "ties": 0,
+   "p": 0.1,
+   "T": "0x1.3988e1409212ep+0"
+  },
+  "fsum/blocks": {
+   "r": 1,
+   "deg": 2,
+   "ties": 0,
+   "p": 0.1,
+   "T": "0x1.3988e1409212ep+0"
+  },
+  "left/samples": {
+   "r": 1,
+   "deg": 2,
+   "ties": 0,
+   "p": 0.1,
+   "T": "0x1.3988e1409212ep+0"
+  },
+  "left/blocks": {
+   "r": 1,
+   "deg": 2,
+   "ties": 0,
+   "p": 0.1,
+   "T": "0x1.3988e1409212ep+0"
+  },
+  "builtin_sum/samples": {
+   "r": 1,
+   "deg": 2,
+   "ties": 0,
+   "p": 0.1,
+   "T": "0x1.3988e1409212ep+0"
+  },
+  "builtin_sum/blocks": {
+   "r": 1,
+   "deg": 2,
+   "ties": 0,
+   "p": 0.1,
+   "T": "0x1.3988e1409212ep+0"
+  },
+  "numpy_literal": {
+   "r": 3,
+   "deg": 0,
+   "p": 0.2
+  },
+  "exact_decimal": {
+   "r": 1,
+   "deg": 2,
+   "ties": 0,
+   "p": "1/10"
+  },
+  "exact_binary": {
+   "r": 1,
+   "deg": 2,
+   "ties": 0,
+   "p": "1/10"
+  },
+  "v1_own": {
+   "r": 3,
+   "deg": 2,
+   "p": 0.2,
+   "T": "0x1.3988e1409212ep+0"
+  }
+ },
+ "LEFT_SUM": {
+  "fsum/samples": {
+   "r": 6,
+   "deg": 1,
+   "ties": 0,
+   "p": 0.35,
+   "T": "0x1.8624f6c0a4dbcp+0"
+  },
+  "fsum/blocks": {
+   "r": 6,
+   "deg": 1,
+   "ties": 0,
+   "p": 0.35,
+   "T": "0x1.8624f6c0a4dbcp+0"
+  },
+  "left/samples": {
+   "r": 7,
+   "deg": 0,
+   "ties": 0,
+   "p": 0.4,
+   "T": "0x1.8624f6c0a4dbbp+0"
+  },
+  "left/blocks": {
+   "r": 6,
+   "deg": 1,
+   "ties": 0,
+   "p": 0.35,
+   "T": "0x1.8624f6c0a4dbbp+0"
+  },
+  "builtin_sum/samples": {
+   "r": 7,
+   "deg": 0,
+   "ties": 0,
+   "p": 0.4,
+   "T": "0x1.8624f6c0a4dbbp+0"
+  },
+  "builtin_sum/blocks": {
+   "r": 6,
+   "deg": 1,
+   "ties": 0,
+   "p": 0.35,
+   "T": "0x1.8624f6c0a4dbbp+0"
+  },
+  "numpy_literal": {
+   "r": 6,
+   "deg": 1,
+   "p": 0.35
+  },
+  "exact_decimal": {
+   "r": 6,
+   "deg": 1,
+   "ties": 0,
+   "p": "7/20"
+  },
+  "exact_binary": {
+   "r": 6,
+   "deg": 1,
+   "ties": 0,
+   "p": "7/20"
+  },
+  "v1_own": {
+   "r": 7,
+   "deg": 1,
+   "p": 0.4,
+   "T": "0x1.8624f6c0a4dbcp+0"
+  }
+ },
+ "TIE": {
+  "fsum/samples": {
+   "r": 8,
+   "deg": 2,
+   "ties": 3,
+   "p": 0.45,
+   "T": "0x0.0p+0"
+  },
+  "fsum/blocks": {
+   "r": 8,
+   "deg": 2,
+   "ties": 3,
+   "p": 0.45,
+   "T": "0x0.0p+0"
+  },
+  "left/samples": {
+   "r": 7,
+   "deg": 2,
+   "ties": 1,
+   "p": 0.4,
+   "T": "0x0.0p+0"
+  },
+  "left/blocks": {
+   "r": 8,
+   "deg": 2,
+   "ties": 3,
+   "p": 0.45,
+   "T": "0x0.0p+0"
+  },
+  "builtin_sum/samples": {
+   "r": 7,
+   "deg": 2,
+   "ties": 1,
+   "p": 0.4,
+   "T": "0x0.0p+0"
+  },
+  "builtin_sum/blocks": {
+   "r": 8,
+   "deg": 2,
+   "ties": 3,
+   "p": 0.45,
+   "T": "0x0.0p+0"
+  },
+  "numpy_literal": {
+   "r": 8,
+   "deg": 2,
+   "p": 0.45
+  },
+  "exact_decimal": {
+   "r": 8,
+   "deg": 2,
+   "ties": 3,
+   "p": "9/20"
+  },
+  "exact_binary": {
+   "r": 8,
+   "deg": 2,
+   "ties": 3,
+   "p": "9/20"
+  },
+  "v1_own": {
+   "r": 10,
+   "deg": 2,
+   "p": 0.55,
+   "T": "0x0.0p+0"
+  }
+ },
+ "OPERAND_SEED275": {
+  "fsum/samples": {
+   "r": 9,
+   "deg": 2,
+   "ties": 0,
+   "p": 0.5,
+   "T": "0x1.0aaaaaaaaaaacp-54"
+  },
+  "fsum/blocks": {
+   "r": 10,
+   "deg": 2,
+   "ties": 0,
+   "p": 0.55,
+   "T": "0x1.0aaaaaaaaaaacp-54"
+  },
+  "left/samples": {
+   "r": 9,
+   "deg": 2,
+   "ties": 0,
+   "p": 0.5,
+   "T": "0x1.0aaaaaaaaaaacp-53"
+  },
+  "left/blocks": {
+   "r": 9,
+   "deg": 2,
+   "ties": 0,
+   "p": 0.5,
+   "T": "0x1.0aaaaaaaaaaacp-53"
+  },
+  "builtin_sum/samples": {
+   "r": 9,
+   "deg": 2,
+   "ties": 0,
+   "p": 0.5,
+   "T": "0x1.0aaaaaaaaaaacp-53"
+  },
+  "builtin_sum/blocks": {
+   "r": 9,
+   "deg": 2,
+   "ties": 0,
+   "p": 0.5,
+   "T": "0x1.0aaaaaaaaaaacp-53"
+  },
+  "numpy_literal": {
+   "r": 9,
+   "deg": 2,
+   "p": 0.5
+  },
+  "exact_decimal": {
+   "r": 10,
+   "deg": 2,
+   "ties": 1,
+   "p": "11/20"
+  },
+  "exact_binary": {
+   "r": 9,
+   "deg": 2,
+   "ties": 0,
+   "p": "1/2"
+  },
+  "v1_own": {
+   "r": 11,
+   "deg": 2,
+   "p": 0.6,
+   "T": "0x1.0aaaaaaaaaaacp-54"
+  }
+ }
+}

@@ -1,0 +1,189 @@
+{
+ "subject": {
+  "pr": 35,
+  "head": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+  "base": "29c2c202aabc480c8251fc44b7b488417a56177f",
+  "old_audited": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "verifier": "read-only independent",
+  "date": "2026-10-03"
+ },
+ "items": [
+  {
+   "item": "1_exact_head_and_diff",
+   "status": "PASS",
+   "evidence": {
+    "fetch": "git fetch origin (2026-10-03)",
+    "origin/codex/integration-hardening-2026-10-03": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+    "origin/codex/track-c-gsup-v2-2026-10-03": "29c2c202aabc480c8251fc44b7b488417a56177f",
+    "origin/codex/combined-integration-2026-10-03": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "PR35_api_head": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+    "PR35_api_base": "29c2c202aabc480c8251fc44b7b488417a56177f",
+    "PR35_state": "open, draft, mergeable_state=clean",
+    "commits_29c2c20..722c812": [
+     "8b10c258d0ce92159c25491263c0fb08ae0e7738 (parent 675d0d2) Protect integrated shared sources against exact canonical baseline",
+     "c624bcca8ea82822fcf06cf81d71db9b99665bd2 merge(675d0d2, 8b10c25)",
+     "91599ba296c9c6d8506f86b6cdb746340b6ef730 Record exact F1 source protection regression and independent review",
+     "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f merge(c624bcc, 91599ba)",
+     "722c812f3d7e0a047b722ba2c0f8bb64b02c942c merge(fc6720b, 29c2c20) Merge PR31 scoped handoff without changing F1 source"
+    ],
+    "authors_committers": "all 5: 찬우 김 <kco994553@gmail.com>",
+    "ancestry": "29c2c20 and 86ad362 are ancestors of 722c812; 86ad362 is ancestor of 29c2c20; helper/test identical 86ad362==29c2c20",
+    "diff_name_status": "16 files, +991/-0: M implementation/tools/producer_source_compat.py (+29/-0), M implementation/tests/test_producer_source_compat.py (+93/-0), A x14 under implementation/docs/codex_takeover/evidence/shared-source-hardening/ (AFTER_F1_MUTATION_MATRIX.json, BEFORE_F1_MUTATION_MATRIX.json, CHECKPOINT.json, FINGERPRINT_AFTER.json, FINGERPRINT_BEFORE.json, SCOPED_HANDOFF.md, TARGETED_PYTHON311.log, independent-review/{DESIGN_REVIEW.md, FINAL_REVIEW.json, independent_probes.py, independent_results.json, old_helper_counterexample.json, source_inventory.json, targeted-pytest.log})",
+    "implementation_src_changes": 0,
+    "github_workflow_changes": 0,
+    "CHECKPOINT.json_artifact_hashes": "12/12 match committed files"
+   }
+  },
+  {
+   "item": "2_reproduce_F1_old_vs_new",
+   "status": "PASS",
+   "evidence": {
+    "script": "wf8b/probe_direct.py (own), run in detached throwaway worktrees tamper_old@29c2c20, tamper_86@86ad362, tamper_new@722c812; integrated mode own_src==infra_src==<wt>/implementation/src with union of the tools' actual SHARED tuples (11 paths, 10 non-models)",
+    "old_helper_blob": "43f0fbb (file sha256 87136f9e...) at both 86ad362 and 29c2c20",
+    "old_result_all_10_paths": "append-1-byte PASS, substitute-1-byte PASS, emptied PASS (mode BYTE_IDENTICAL, own==infra) -> vacuous PASS reproduced for 10/10 paths at 86ad362 and 29c2c20; delete/dir-replace FAIL",
+    "new_result_all_10_paths": "append/substitute/emptied/deleted/dir-replace all FAIL (mode EXACT_CANONICAL_SOURCE_PROTECTION) at 722c812",
+    "end_to_end": "real tool leaderboard_producer_infra_compat.py --infra-src src with scoring.py tampered: old -> overall PASS, shared check PASS, dependency mode INTEGRATED_SAME_TREE, 13 checks; new -> overall FAIL rc=1 (scoring own 55f965ec.. vs baseline 1aa4802a..). Pytest e2e (test_qgv/leaderboard_producer_infra_compat.py, default integrated): old 2 passed for tampered scoring.py, leaderboard.py, versions.py; new: scoring 2 failed, leaderboard.py 1 failed, versions.py 1 failed (the tool whose SHARED covers the path)"
+   }
+  },
+  {
+   "item": "3a_each_path_one_byte",
+   "status": "PASS",
+   "evidence": "10/10 non-models paths: one byte appended and one byte substituted in place (same length) -> union, per-tool set and per-file status FAIL"
+  },
+  {
+   "item": "3b_path_deleted",
+   "status": "PASS",
+   "evidence": "10/10 deleted -> FAIL (own=None); also emptied file and same-name directory -> FAIL; models.py deleted -> FAIL"
+  },
+  {
+   "item": "3c_canonical_object_missing",
+   "status": "PASS",
+   "evidence": "shallow clone (git fetch --depth 1 of 722c812, b8e39a2 absent): untampered integrated tree -> FAIL, 10/10 non-models baseline_available=False, error 'canonical Git object or source path unavailable', models PASS; GIT_DIR=nonexistent -> FAIL; GIT_DIR=shallow repo -> FAIL; GIT_OBJECT_DIRECTORY=empty dir -> FAIL. Fail-closed, never PASS. (In shallow clone 7 of 27 targeted tests fail, expected: tests also need canonical history.)"
+  },
+  {
+   "item": "3d_replacement_refs",
+   "status": "PASS",
+   "evidence": "throwaway repo wf8b/replrepo (main odb as alternate only; main repo replace refs = 0 before/after). scoring.py tampered (blob 503b06c4); (1) git replace canonical blob 05672d2c -> tampered: plain git show returns tampered sha256 b5c66614..., new helper FAIL (baseline 1aa4802a = true canonical); control copy of helper with --no-replace-objects removed -> PASS (flag is load-bearing). (2) git replace b8e39a2 -> forged commit dee964e4 (tree with tampered blob): new helper FAIL, control PASS. (3) GIT_REPLACE_REF_BASE=refs/custom-replace/: new helper FAIL, control PASS. Mechanism: explicit `git --no-replace-objects`."
+  },
+  {
+   "item": "3e_untampered_trees",
+   "status": "PASS",
+   "evidence": "new helper (722c812) integrated mode on untampered 86ad362, 29c2c20, 722c812 trees -> PASS (models C28_ADOPTED); on canonical b8e39a2 archive -> PASS (models PRE_ADOPTION). Protected-path sha256 identical to canonical at b8e39a2/86ad362/29c2c20/722c812/2137883/fb086ea/e9aee0c/9626ab0."
+  },
+  {
+   "item": "3f_models_two_states",
+   "status": "PASS",
+   "evidence": "same-tree: canonical models.py sha256 5313bbd4... -> PASS (PRE_ADOPTION); Track C 21378835 models.py sha256 fa386626... -> PASS (C28_ADOPTED); third contents adopted+1byte (8134b7af), pre+comment (b3ee3d7c), adopted-minus-last-byte (fff90a81) -> FAIL; deleted -> FAIL. Same results for old helper (models policy unchanged)."
+  },
+  {
+   "item": "3g_bypass_via_args_env_config",
+   "status": "PASS_WITH_FINDINGS",
+   "evidence": "No CLI flag/env var narrows SHARED or disables the canonical branch; git env redirection fails closed; replace refs ignored. BUT: (i) same_tree is path identity (resolve()); --infra-src / QGV_PRODUCER_INFRA_SRC / LEADERBOARD_PRODUCER_INFRA_SRC pointing at a byte copy of the tampered tree (or a per-file symlink farm) selects BYTE_IDENTICAL and PASSES: direct call copy PASS, symlink-farm PASS (dir symlink alias correctly FAIL); end-to-end tool with --infra-src=<full copy> -> overall PASS (dependency mode UNVERSIONED_SOURCE, historical_pin_is_actual False) and both e2e pytest tests 2 passed with env vars set to the copy. (ii) SHARED tuples are unpinned: removing versions.py from qgv tool SHARED + tampering versions.py -> targeted+e2e 26 passed (no test pins the 10-path set)."
+  },
+  {
+   "item": "4_tests_not_weakened",
+   "status": "PASS",
+   "evidence": "test_producer_source_compat.py numstat +93/-0, helper +29/-0; 0 removed lines in either; all 7 pre-existing tests unchanged; new tests use the tools' real SHARED via AST. No .github/workflows change in 29c2c20..722c812 (no continue-on-error, path narrowing or skips introduced)."
+  },
+  {
+   "item": "5a_targeted_tests",
+   "status": "PASS",
+   "evidence": {
+    "runtime": "Python 3.11.15, pytest 9.1.1, PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf (from implementation/), env without *_PRODUCER_INFRA_SRC",
+    "test_producer_source_compat.py": "722c812: 25 passed; 29c2c20: 7 passed",
+    "3-file targeted (+test_qgv/leaderboard_producer_infra_compat.py)": "722c812: 27 passed; 29c2c20: 9 passed (claim 9->27 confirmed)"
+   }
+  },
+  {
+   "item": "5b_full_suite_local_single_run",
+   "status": "FAIL",
+   "evidence": {
+    "command": "cd implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf at 722c812 (run once, 453.86s)",
+    "result": "10 failed, 1285 passed in 453.86s (0:07:33)",
+    "exit": "1",
+    "collected": 1295,
+    "failed_tests": [
+     "tests/test_evl_gsup_mb_reduction_diagnostic.py::test_fixed_numpy_arithmetic_exceedance_and_degeneracy_counterexample",
+     "tests/test_evl_gsup_mb_reduction_diagnostic.py::test_undefined_original_statistic_fails_closed_across_reductions",
+     "tests/test_evl_gsup_mb_reduction_diagnostic.py::test_nonfinite_or_implicit_dimensions_refused[delta-value0]",
+     "tests/test_evl_gsup_mb_reduction_diagnostic.py::test_nonfinite_or_implicit_dimensions_refused[delta-value1]",
+     "tests/test_evl_gsup_mb_reduction_diagnostic.py::test_nonfinite_or_implicit_dimensions_refused[delta-value2]",
+     "tests/test_evl_gsup_mb_reduction_diagnostic.py::test_nonfinite_or_implicit_dimensions_refused[block_length-True]",
+     "tests/test_evl_gsup_mb_reduction_diagnostic.py::test_nonfinite_or_implicit_dimensions_refused[replicates-0]",
+     "tests/test_evl_gsup_mb_reduction_diagnostic.py::test_nonfinite_or_implicit_dimensions_refused[seed-True]",
+     "tests/test_evl_gsup_mb_reduction_diagnostic.py::test_nonfinite_or_implicit_dimensions_refused[block_length-99]",
+     "tests/test_evl_gsup_mb_reduction_diagnostic.py::test_trace_determinism_in_fresh_processes_and_no_selected_method"
+    ],
+    "cause": "ENVIRONMENT: all 10 failures are ModuleNotFoundError: No module named 'numpy' (local python3 has no numpy; CI pins numpy==2.3.5). All 10 are in tests/test_evl_gsup_mb_reduction_diagnostic.py (via tools/gsup_mb_reduction_diagnostic.py), introduced by base PR31 commit 2d67d84 and byte-identical between 29c2c20 and 722c812; the same 10 fail identically at base 29c2c20 locally (10 failed, 10 passed). Not attributable to PR35.",
+    "claim": "1,295 PASS"
+   }
+  },
+  {
+   "item": "5c_env_failed_tests_rerun_with_numpy",
+   "status": "PASS",
+   "evidence": "numpy 2.3.5 installed only into scratch --target dir wf8b/pydeps; PYTHONPATH=src:pydeps python3 -m pytest -q -p no:cacheprovider tests/test_evl_gsup_mb_reduction_diagnostic.py at 722c812 -> 20 passed (includes the 10 env failures). Accounting: 1285 + 10 = 1295/1295, but not in a single numpy-enabled invocation (see not_run). CI combined-offline at exact 722c812 (numpy 2.3.5): 1295 passed."
+  },
+  {
+   "item": "6_actions",
+   "status": "PASS",
+   "evidence": {
+    "check_runs_PR35": "8 total, all completed/success",
+    "runs": [
+     "37117674617 codex-integration-readiness head_sha=722c812: job 111187527603 combined-offline checks out 722c812 (git checkout --force 722c812..., rev-parse HEAD 722c812), Preserved 41 exact owner files/6 approved additive, 1295 passed in 461.60s, browser E2E passed:true errors:[], artifact 11272357040 digest e60e127aabca2be5a699ff11ce30b60e0093f91ec2f8542a6ec818022fe18264; job 111187527683 macro-adoption-offline checks out 4a07099e36ec3cecda24b82ecedad53800f0aa81 by design, 11 passed",
+     "37117674599 technical-real-producer job 111187527474: synthetic 37774d99, 1295 passed",
+     "37117674608 p01-research-publication job 111187527469: synthetic 37774d99, 1295 passed",
+     "37117674614 us-equity-session job 111187527440: synthetic 37774d99, 1295 passed",
+     "37117674603 qgv-invalidation-binding job 111187527436: synthetic 37774d99, 1295 passed",
+     "37117674626 technical-real-model job 111187527396: synthetic 37774d99, 1295 passed",
+     "37117674601 sec-primary-disclosure job 111187527360: synthetic 37774d99, 1295 passed"
+    ],
+    "all_7_runs_head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+    "event": "pull_request",
+    "synthetic_merge": "37774d997d9f0d210453be7dbf58c57295d38284 = refs/pull/35/merge, parents 29c2c20 + 722c812, tree 5b5518d9e2a224bd38d89fadac9607e2277f22a7 == 722c812^{tree} (fetched into throwaway repo)",
+    "not_triggered": "web-mvp-validation (paths filter), track-c-evl-validation (push/dispatch only), qgv-producer-real / leaderboard-real-producer (push to other branches)"
+   }
+  },
+  {
+   "item": "7_fingerprint",
+   "status": "PASS",
+   "evidence": "cd implementation && python3 tools/producer_engine_fingerprint.py src at 722c812: stdout sha256 f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866 (== claim, == committed FINGERPRINT_AFTER.json byte-for-byte, == output at 29c2c20); technical 66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655; macro 7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501; qgv a17144803746..., leaderboard 112b245b4f99..., portfolio_official_book 53d930a7e3d2..., n_qgv 19"
+  },
+  {
+   "item": "8_scope",
+   "status": "PASS",
+   "evidence": "No changed path under evl/, superiority*, gsup*, tests/test_evl_c8*, tests/test_evl_gsup*, tools/track_c_c8*, reports/track_c_c8*, or any decision register; only 2 code files + 14 evidence files. Added .py lines contain only local `git` subprocess calls (no urllib/requests/socket/http); CAL_VERIFY/Holdout appear only as status text 'NOT_ACCESSED'/'UNCONSUMED' in evidence."
+  },
+  {
+   "item": "9_integration_compatibility",
+   "status": "PASS",
+   "evidence": {
+    "method": "git merge-tree --write-tree --name-only with GIT_OBJECT_DIRECTORY=wf8b/mt_odb + main odb as alternate (result trees verified absent from main odb); git 2.43.0",
+    "vs fb086eac4321140493ce554a541343cebbb81ed6 (integration/web/production-state-presentation-v1)": "CLEAN, tree c90483264942e28dcfb7ca76266fa74837bcd87f, merge-base f8af596d, changed ours 526 / theirs 13, overlap 0",
+    "vs e9aee0cb8b80e17f7ae12e01156f6670135de2fa (integration/a1-adoption/pr9-producer-infra)": "CLEAN, tree 54d8e70835f89b63eaa2774cca96764afb8d58c2, merge-base f8af596d, ours 526 / theirs 2, overlap 1 (implementation/docs/producer_infrastructure/STATUS.md, auto-merged)",
+    "vs 9626ab06cd2b93cdd250159347cdda5d08f76e03 (integration/a1-adoption/pr7-entity-metadata)": "CLEAN, tree afb2cfe24b13212fef73019acc82d7418d0ad0b3, merge-base a013f1c1, ours 531 / theirs 2, overlap 0",
+    "helper_test_and_protected_paths_in_merged_trees": "helper blob 55c9f7f5 and test blob 13cc621f carried unchanged; 0 protected-path differences vs 722c812 in all three merged trees"
+   }
+  }
+ ],
+ "findings_blocking": [],
+ "findings_nonblocking": [
+  "NB0 (local environment): local full suite 1285 passed / 10 failed, all ModuleNotFoundError numpy in base-owned test_evl_gsup_mb_reduction_diagnostic.py (unchanged by PR35, same failure at base); with numpy 2.3.5 that file passes 20/20. Recorded as FAIL(environment) for item 5b, not converted to PASS.",
+  "NB1 (residual vacuity by path, pre-existing design not regressed): canonical protection is chosen only when own_src.resolve()==infra_src.resolve(). Pointing --infra-src or QGV_PRODUCER_INFRA_SRC/LEADERBOARD_PRODUCER_INFRA_SRC at a byte copy of the (tampered) own tree, or a per-file symlink farm, falls back to BYTE_IDENTICAL and PASSES (end-to-end tool overall PASS, both e2e tests pass); the report only labels dependency mode UNVERSIONED_SOURCE/EXTERNAL_CHECKOUT and historical_pin_is_actual=false. Suggest always comparing the ten non-models paths to the canonical blob regardless of mode (strictly stronger; pinned infra 5fa7ce0/6fe9eee should equal canonical), or requiring PINNED_CHECKOUT for PASS. CI workflows set these env vars only to pinned infra checkouts, so no current CI path is affected. Codex discloses this boundary in SCOPED_HANDOFF.md ('Distinct external trees retain their original byte-pair comparison ... does not expand external routes into new canonical policy').",
+  "NB2 (test oracle derived from code under test): the new tests read the protected set from the tools' SHARED tuples via AST; nothing pins the exact 10 non-models paths. Removing a path from SHARED (one-line edit) and tampering it leaves targeted+e2e tests green (26 passed). Suggest an exact-list assertion of the 10 paths in the test.",
+  "NB3 (CI coverage note): only combined-offline (run 37117674617) checks out exact 722c812; the six inherited workflows check out synthetic merge 37774d99 (tree-identical to 722c812, so equivalent content but not the exact commit). Macro job runs 4a07099 by design.",
+  "NB4 (environment dependency, fail-closed): the helper needs canonical commit b8e39a2 in the helper's repo; shallow checkouts fail closed (FAIL, not PASS). All PR-triggered workflows use fetch-depth: 0. Push-only qgv-producer-real.yml/leaderboard-real-producer.yml use default shallow checkout (leaderboard fetches canonical branch; qgv does not) and pipe pytest through `| tail`, which masks exit codes - pre-existing, not changed by this PR, not triggered for PR35.",
+  "NB5 (theoretical, out of threat model): a forged loose tree object in a GIT_OBJECT_DIRECTORY/odb the attacker can write could redirect path lookup; requires odb write access equivalent to editing sources. Not probed further.",
+  "NB6 (scope, pre-existing): the protected set is the ten paths named by the two tools; sibling modules (e.g. qgv/__init__.py, qgv/book.py, validation/*) are not covered by this helper (all currently equal canonical at 722c812; contracts/lineage.py differs by approved Track C adoption and is guarded separately by combined-offline's exact b9e01a9 diff).",
+  "NB7 (claim wording): '9->27 targeted' refers to the 3-file set (test_producer_source_compat 7->25 plus 2 e2e infra-compat tests); confirmed exactly."
+ ],
+ "not_run": [
+  "Single-invocation full pytest at 722c812 with numpy present locally (local single run was 1285 passed / 10 failed for missing numpy; affected file re-run separately with numpy 2.3.5: 20 passed). Not repeated to respect the run-once constraint.",
+  "Bind-mount alias of the source tree (no privilege in sandbox); symlinked-directory alias and copy/symlink-farm were run instead.",
+  "Forged-object (hash-mismatched loose tree) attack on the odb (NB5) - not attempted.",
+  "Push-only workflows (qgv-producer-real, leaderboard-real-producer, track-c-evl-validation) and web-mvp-validation: not triggered for PR35; not executed by verifier.",
+  "Browser/Playwright producer-contract E2E: not run locally (CI combined-offline log shows passed:true)."
+ ],
+ "verdict": "PASS_WITH_FINDINGS",
+ "summary": "PR #35 head 722c812f3d7e0a047b722ba2c0f8bb64b02c942c (base 29c2c202aabc480c8251fc44b7b488417a56177f). F1 is genuinely repaired: on 86ad362/29c2c20 the old helper returns vacuous PASS for 10/10 tampered protected paths (direct and end-to-end, dependency mode INTEGRATED_SAME_TREE), while 722c812 FAILs all of them, fails closed on missing canonical object/path/git, and ignores replacement refs via --no-replace-objects (proven load-bearing by control). Both approved models.py states pass, third contents fail. Production source changes 0, tests +93/-0, no workflow change. Targeted 27 passed (9 at base); local single full run 10 failed, 1285 passed in 453.86s (0:07:33) - all 10 failures are missing-numpy ModuleNotFoundError in base-owned test_evl_gsup_mb_reduction_diagnostic.py (identical at base), and that file passes 20/20 with numpy 2.3.5 (1285+10=1295 accounted). CI: 8/8 check runs success, all 7 runs head_sha 722c812; only combined-offline checks out 722c812 (1295 passed), six inherited jobs ran synthetic merge 37774d99 (tree-identical), Macro job 4a07099 (11 passed). Fingerprint sha256 f690f9c0... identical to claim and base. Scope clean; merge-tree clean vs fb086ea, e9aee0c, 9626ab0. Non-blocking: same-tree detection is path-identity based, so --infra-src/env var pointing to a copy or symlink farm of a tampered tree still PASSES (pre-existing external-mode semantics), and no test pins the 10-path protected set."
+}

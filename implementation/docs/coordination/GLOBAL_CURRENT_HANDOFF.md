@@ -4,8 +4,8 @@ Routing/index SSoT only. This file is not a calculation, policy, approval or pub
 
 | Field | Value |
 |---|---|
-| Handoff ID | GCH-002 (supersedes GCH-001 as the current handoff; GCH-001 is kept in GLOBAL_HANDOFF_HISTORY) |
-| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 updates after the user decisions CDR-001..003 |
+| Handoff ID | GCH-007 (supersedes GCH-002 as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
+| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008 (fresh fetch 11:50Z and 12:35Z) |
 | Primary Integration Writer | Claude Code session `session_019znshzTYgyBnuuBmSxdPFN`, designated by the user on 2026-10-03 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md` |
 | Canonical branch / HEAD | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. This matches the last independent audit checkpoint, and canonical has not moved since 2026-09-28 |
@@ -55,7 +55,7 @@ Decided in this round (see `COORDINATION_DECISION_REGISTER.md`):
 
 Still open:
 
-1. **Canonical merges** (always gated). Integration candidate: #30 `86ad362` (FRESH at 06:58Z, 9/9 Actions green; re-audit GIE-006 pending).
+1. **Canonical merges** (always gated). Integration candidates: #30 `86ad362` (TRIAL_INTEGRATION_VERIFIED_WITH_NONBLOCKING_FINDINGS, GIE-006) and its published extension #38 `7e3861b` (#30 + #32 + #33 + #34 + #36; 9/9 CI ✓, GIE-008 §4). #31 and #35 are verified (GIE-008 §1, §3) but wait on the arithmetic decision.
 2. **Publication grants.** P01 research-display, Frozen and Live grants remain NONE.
 3. **Data and providers.** The Macro ALFRED key, a news provider, and an exchange-calendar vintage source.
 
@@ -63,15 +63,18 @@ Decided and in execution:
 
 - **CDR-004** IF-1 = A1 + owner adoption: proposals #22–#27 pushed (writer gates PASS; Codex independent audit PASS; integration-owner verification pending). Remaining evidence-only adoption items outside #22–#27: #9 `docs/producer_infrastructure/evidence/validation.json` and #7 `docs/entity_metadata/evidence/numeric_fingerprint` record pre-adoption Technical/Macro fingerprints.
 - **CDR-005** executed by the Track C owner (`9a9364c`, `972a23f`, `b9e01a9`); Actions 37097149378 SUCCESS on `b9e01a9`.
-- **CDR-006** G-SUP method = M (additive v2, v1 preserved). **CDR-007** source descriptor (source/vintage/sample identity, synthetic scope). **CDR-008** implementer is Codex; the Primary Integration Writer verifies (13-point list) and does not implement. No Codex Track C branch exists yet.
+- **CDR-006** G-SUP method = M (additive v2, v1 preserved). **CDR-007** source descriptor (source/vintage/sample identity, synthetic scope). **CDR-008** implementer is Codex; the Primary Integration Writer verifies (13-point list) and does not implement. Codex #31 `29c2c20` is HANDOFF_READY and verified (GIE-008 §1); v2 waits on the arithmetic decision. CDR-009's end condition (HANDOFF_READY) is met for this checkpoint, but CDR-008 keeps Codex as the implementer, so the Codex branches and C8 G-SUP v2 paths stay read-only for the Primary Integration Writer.
 
-- **Raised by Codex in PR #31 (not yet independently verified by the integration owner): USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION.** Authoritative M-B v2 is not active because the floating-point reduction used inside the replicate statistic changes integer exceedance counts with identical frozen indices, formulas and inputs. Codex's synthetic example: `[.01,.01,-.01,-.02,.02,.01,.01,.01]`, n=8, L=3, B=19, seed 46 → `math.fsum` p=.10 vs literal NumPy cumulative-block reduction p=.20; a second example gives Python left-to-right `sum` p=.40 vs `fsum` p=.35. The Q1 approval evidence did not record its NumPy version. Source: `implementation/reports/gsup_v2_oracle/ARITHMETIC_REDUCTION_REVIEW_2026-10-03.md` on `codex/track-c-gsup-v2-2026-10-03` @ `675d0d2`. No option selected.
+- **USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION** (raised by Codex in PR #31; independently reproduced by the Primary Integration Writer in GIE-008 §2). Authoritative M-B v2 is not active because the floating-point arithmetic inside the replicate statistic changes integer exceedance counts with identical indices, formulas and inputs. Independent verification found that Codex's package names three reducers (literal NumPy `run()` algebra, `math.fsum`, builtin `sum`) but not two further result-changing axes: replicate-mean grouping (mean over sampled values vs `(Σ block sums + partial)/n`) and block-sum construction (direct sums vs cumulative-sum differences). Seed 275 shows grouping alone changes `fsum` (.50 vs .55). The decision record must pin reducer, grouping, block construction and the degeneracy predicate together. No option selected.
 
 Not approved (CDR-006/007 list): α, B, L / block rule, seed, effect floor, minimum support, size tolerance, dependence envelope / margin, real source taxonomy/default, real CAL_VERIFY access, C8 foundation ↔ G-SUP registry unification, Holdout, C8 SOFTWARE FROZEN, publication grant, Official, LIVE, canonical merge.
 
 ## 5. Next autonomous actions (Primary Integration Writer)
 
-1. Combined-tree full regression (GIE-001 tree A, pytest): 1058 passed, 10 failed. The failures are 7 IF-1 guards and 3 IF-2 sentinels, and no other test fails. Next: keep the evidence current as heads move.
+1. Current integration evidence: #30 `86ad362` re-audited (GIE-006); trial #38 `7e3861b` = #30 + #32 + #33 + #34 + #36, 9/9 pull-request CI ✓ plus a manually dispatched `codex-integration-readiness` run (GIE-008 §4). The GIE-001 combined-tree result (1058 passed, 10 IF-1/IF-2 failures) is historical: CDR-004 adoption removed the IF-1 failures in #30. Keep the evidence current as heads move.
+1a. After the user's arithmetic decision, Codex implements v2 (CDR-008). Then re-run 13-point items 5 and 6b on the new head, and trial #38 + #31 + #35.
+1b. Owner-side follow-ups recorded, not done here: the IF-2 sentinel conversions; the Technical stack order (#22 on #11, then forward through #15 with #23 to #18 with #24); #31 N2 identity canonicalization before any real-source work; #31 N3 numpy importorskip or push-workflow numpy pins; #35 NB1/NB2.
+1c. Web validator hardening (`web_mvp.py`) needs a #17 protected-digest repin and is not done autonomously (user instruction of 2026-10-03).
 2. Keep this index current on every remote change. Re-fetch, update GSI and GCH, and append to GLOBAL_HANDOFF_HISTORY.
 3. When the user approves a canonical merge, run an exact-SHA pre-merge trial of that specific chain in merge order, then merge only what was approved.
 4. Do not modify capability branches. IF-2 sentinel conversions and IF-4 CI enablement are owner actions. Their proposals are recorded in GIE-001.
