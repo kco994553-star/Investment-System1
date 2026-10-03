@@ -1,0 +1,292 @@
+{
+ "evidence_id": "GIE-004",
+ "workflow_run": "wf_56296124-2cc",
+ "authority": "none — independent read-only analysis; Track C scoped Decision Register is the authority",
+ "analysis": {
+  "approved_scope_remaining_autonomous": [
+   "APPROVED (Package A partial, track_c_c8_partial_approval_2026-10-02.md / .json L67-79 'authorized'): A1 [md L9-13] 'C8 calibration은 C4 model-fitting/calibration 및 C7 selection과 명시적으로 분리된 C8 calibration boundary를 사용한다 ... CAL_FIT과 CAL_VERIFY의 identity, scope, available_at, dataset lineage를 사전 등록한다. Holdout은 calibration source로 사용할 수 없다. 실제 CAL_FIT/CAL_VERIFY dataset allocation은 별도 real research configuration이 없으면 실행하지 않는다.' A2 [L16-22] 'C8 전용 immutable registration/ledger를 사용한다 ... 모든 family member와 attempt를 accounting한다 ... 사후 재등록, trial 삭제, successful subset만의 accounting을 금지한다.' A3 [L26-30] pre-result range/grid/sensitivity/plateau definitions, 'largest peak 또는 best observed result를 자동 선택하지 않는다', numbers excluded. A4 [L34-38] 'CAL_VERIFY는 one-shot confirmation boundary로 취급한다. CAL_VERIFY 실패 후 threshold 재적합, next-best 자동 선택 ... 을 하지 않는다.' A5 [L42-43] 'Universal hard gates는 calibration 대상이 아니다.' A7 [L53-56] framework only: '사전 등록된 control과 비교하여 지정 후보가 승인된 방향으로 superiority evidence를 가져야 한다'. A9 [L67-72] structure only: 'nominal → real → risk-free excess → premium → opportunity cost → risk-adjusted ... 숫자가 없으면 해당 real economic decision은 NOT_RUN이다.' A11 [L82-86] real vs synthetic evidence resolution. A12 [L90-92] 'C8 synthetic SOFTWARE validation protocol을 승인한다'. STATUS: the foundation is implemented. Track C records it as Actions-verified at ff78c4f (Actions 36994387375/job 110797644155, CURRENT_HANDOFF L444-451). This audit did NOT re-run it.",
+   "APPROVED (A6 partial, track_c_c8_a6_partial_approval_2026-10-02.md L9-44, blob 4f897ec): S1 superiority requirement (PSR/DSR/PBO/RC/positive return/Sharpe/C6 PASS are not superiority evidence). S2 'EQUAL_SIMPLE, MARKET_CAP 두 개로 제한', with RANDOM_RANKING/RANDOMIZED_WEIGHTS = UNSUPPORTED_SINGLE_DRAW. S3 'conjunction / intersection-union semantics'. S4 'Designated candidate/role, statistic family, required controls, bootstrap method/version, block convention, seed convention, effect-floor convention은 CAL_VERIFY evidence 접근 전에 고정한다 ... 자동으로 재시험하지 않는다'. S6 numerics are not approved. S7 'Effect floor가 없다고 0을 기본값으로 사용하지 않는다'. S8 software boundary list. A6 METHOD Q1-Q6 (track_c_c8_a6_method_approval_2026-10-02.md L8-15, blob a6f9941): Q1 'C8_GSUP_STUDENTIZED_CBB_v1' (A = comparison evidence only; C = inactive, no fallback). Q2 'assessed before actual CAL_VERIFY access by an approved synthetic/pre-access procedure that never reads CAL_VERIFY outcomes'. Q3 'stricter of a predefined Development-only estimate and a separately preregistered conservative dependence envelope'. Q4 'NOT_RUN_INFEASIBLE. No automatic switch to A/C; no retest'. Q5 'one fixed L or a pre-approved deterministic rule'. Q6 'p-value = (r+1)/(B+1); ... verify the chosen α is reachable at that B'. Autonomous scope (method json L41-46): versioned_B_contract, independent_oracle, synthetic_negative_fixtures, feasibility_gate_infrastructure. STATUS: implemented in a156a35 (superiority.py blob c83e22d; tests 64dfa5e; oracle a5f00fa). This audit EXECUTED tests/test_evl_c8_gsup.py in a detached worktree at 97d1b94: 68 passed.",
+   "NOT DONE (CI, autonomous): no GitHub Actions run exists for a156a35/97d1b94. The CI workflow triggers only on feature/track-c-evl (gsup_implementation.md L26-27). Track C's local results (full 910, C6 130, C7 97, C8 184, acceptance runners) were NOT_RUN by this audit. CI_VERIFIED cannot be claimed for the G-SUP commit.",
+   "NOT DONE (A2 + A4 + A6-S4/Q4 enforcement; LOCAL_FIXABLE, applies already-approved no-retest policy): GsupRegistry (superiority.py L307-388) is standalone. It is not wired to the C8 dedicated ledger/budget, and it does not call the foundation one-shot dataset claim at calibration_ledger.py L151-157 ('one-shot dataset access already registered; no retry/relabel'). target_key (L316-317) includes the free-text campaign_id, and the registry root is caller-chosen. EXECUTED probe: after a STAT_PASS on verify_dataset_id 'fixture-verify-1', register(campaign_id='fixture-campaign-2', alpha=0.2, seed=8) for the same dataset and role was ACCEPTED, the provider was called a second time, and the result was STAT_PASS. The approved Q4/A6-S4 no-retest rule is therefore not enforced across campaigns. Closing this loophole needs no new policy. How the single CAL_VERIFY access is shared with A4 is a separate METHOD_POLICY (see method choices).",
+   "NOT DONE (Q3 Development-only enforcement; LOCAL_FIXABLE): record_feasibility -> assess_feasibility -> combined_envelope (L244-252, L265-304, L346-353) accept any dict whose 'estimator' key matches. The Development-only check exists only inside development_dependence_estimate (L230-231). EXECUTED probe: the forged estimate {'estimator':'AR1_LAG1_AUTOCORRELATION_v1','phi':-5.0,'dataset_role':'CAL_VERIFY'} was ACCEPTED and gave status FEASIBLE with envelope phi 0.0. The registration schema (L156-159) also has no field that binds the Development dataset id or window, so the inputs to the 'predefined' estimate are not preregistered.",
+   "NOT DONE (synthetic reconciliation, autonomous): the 'independent' oracle (tests/evl_c8_gsup_oracle.py L34-47) re-encodes the kernel's own conventions (full=n//L blocks; degenerate replicate counted as an exceedance). It does not follow the M-B variant that served as the Q1 approval evidence (reports/track_c_c8_a6_method_simulation_source_2026-10-02.py L23, L34-35: ceil(n/L)-1 blocks; degenerate replicate scored T*=-inf, i.e. not an exceedance). The approved size/power tables (decision package §1-§3) still need to be re-run on the same grid with the implemented kernel and the differences reported. This is synthetic-only and can proceed now. A preliminary reconciliation from this audit is in method choices 3 and 4.",
+   "NOT DONE (Q2 evidence completeness): the Q2 option A text (approved by reference, decision package L149) says 'simulation demonstrating size and power'. The implementation computes size only (superiority.py L281-298). A descriptive, non-gating synthetic power report is autonomous evidence work. Making power part of the feasibility gate is METHOD_POLICY (see method choice 6).",
+   "NOT DONE (A7/A12/S8 wiring, autonomous as long as only NOT_RUN states are emitted): no foundation module imports superiority.py. calibration_evidence.py L55 and L124 still emit statistical_decision None. The C8 partial acceptance runner only allowlists the three G-SUP files (tools/track_c_c8_partial_acceptance.py L15, L44) and has no G-SUP protocol stage. Wiring the G-SUP states (NOT_RUN / NOT_RUN_INFEASIBLE / NOT_RUN_EFFECT_FLOOR_DEFERRED) into the C8 evidence and acceptance path is within the approved scope.",
+   "NOT DONE (status-label consistency, documentation only, no result impact): calibration_contracts.py L24 BLOCKED=('A6','A8','A10','REAL_RESEARCH_CONFIGURATION'). As a result, calibration_evidence.py L123 emits A6 'PROPOSED_NOT_APPROVED_NOT_ACTIVE', which contradicts the recorded A6 status METHOD_APPROVED_CONDITIONAL_NUMERIC_CONFIG_PENDING (gsup_implementation.md L36-39). This needs an additive status overlay.",
+   "NOT DONE (simulation fidelity; LOCAL_FIXABLE once the AR1_GAUSSIAN family is confirmed): _null_series (L255-262) starts at x=0 and uses burn=50, which is not exact stationary AR(1). ANALYTIC Var(sqrt(n)*mean) relative to exact stationary: 0.665 (n=12) and 0.690 (n=24) at phi=0.99; 0.964 / 0.971 at phi=0.97; at least 0.996 for phi<=0.95. EXECUTED synthetic size check at n=24, L=3, B=99, alpha=0.10, R=400: 0.435 (burn50) vs 0.4675 (stationary) at phi=0.99. That size is far above any plausible alpha+tolerance, so no realistic verdict flips. Exact stationary initialization would remove the embedded constant.",
+   "CANDIDATE (registration robustness, autonomous): _evaluate (L399-411) requires every cohort series to equal the single registered verify_periods. A mismatch raises IntegrityFailure after the access intent has been written (L373-380), so the result is CRASH_NO_RETRY and the one-shot target is consumed. Synthetic fixtures should establish that the four required cohorts (ROLLING/EXPANDING x PRIMARY/REBALANCE_GAP_STRESS) share one CAL_VERIFY calendar. If they can differ, per-cohort preregistered calendars would be a registration-schema change under S4 (no statistical change)."
+  ],
+  "unapproved_method_choices": [
+   {
+    "name": "1. Development dependence estimator AR1_LAG1_AUTOCORRELATION_v1 and its mapping to the envelope (Track C item 1)",
+    "current_implementation": "superiority.py L47 ESTIMATORS=('AR1_LAG1_AUTOCORRELATION_v1',). L228-241 computes the lag-1 sample autocorrelation sum((x_t-m)(x_{t-1}-m))/sum((x_t-m)^2) on ONE caller-supplied Development series (minimum 3 observations, L234). L249 sets the envelope point phi=min(max(phi_hat,0)+margin,0.99). One estimate per registry target is shared by all 8 cohort x control cells (L346-353). Which Development delta series (which cohort/control) feeds the estimate is neither specified nor preregistered.",
+    "alternatives": [
+     "bias-corrected AR(1) (Kendall / Marriott-Pope: phi_hat + (1+3*phi_hat)/n)",
+     "upper one-sided confidence bound of phi instead of the point estimate",
+     "long-run-variance-ratio estimator on Development (Bartlett/Newey-West LRV / variance) mapped to the AR1-equivalent phi via (1+phi)/(1-phi)=ratio, which captures higher-lag and seasonal dependence",
+     "max of the estimate across all 8 cohort x control Development deltas, or a per-cell envelope",
+     "no Development estimate (fixed envelope only; package Q3 option B)"
+    ],
+    "result_impact": "It sets the Development envelope point, so it can flip FEASIBLE <-> NOT_RUN_INFEASIBLE. That decides whether CAL_VERIFY is consumed at all, and therefore whether a size-distorted STAT_PASS is possible. Direction: the current choice is ANTI-CONSERVATIVE at small Development samples and for dependence that is not AR(1)-shaped. Only the separately preregistered fixed envelope and margin offset this. Leaving the Development-series choice open lets a caller pick the least-dependent cell.",
+    "rationale": "Track C chose the simplest deterministic, Development-only scalar that maps onto the AR1_GAUSSIAN envelope (Q3 requires a 'predefined' estimator). Track C flagged it as item 1, 'identity not chosen by the user' (gsup_implementation.md L30). The 0 floor is conservative for negative phi_hat. The 0.99 cap has no practical effect because size at phi>=0.97 is grossly infeasible.",
+    "classification": "METHOD_POLICY",
+    "evidence": "EXECUTED synthetic probe, 2000 series per cell, mean phi_hat. True phi=0.0: -0.090 (n_dev=12), -0.043 (24), -0.024 (60), -0.011 (120). True phi=0.3: 0.116 / 0.210 / 0.260 / 0.282. True phi=0.6: 0.317 / 0.459 / 0.544 / 0.570. Seasonal process x_t=0.5*x_{t-4}+e (LRV/variance = 3.0, AR1-equivalent phi = 0.5): mean phi_hat at n_dev=60 is -0.049, which is floored to 0, so the dependence is invisible to the gate."
+   },
+   {
+    "name": "2. Envelope process family AR1_GAUSSIAN only (Track C item 2)",
+    "current_implementation": "superiority.py L220-225 accepts only {'kind':'AR1_GAUSSIAN','phi'} with 0<=phi<1. L255-262 _null_series generates Gaussian AR(1) innovations (x0=0, burn=50) scaled to unit variance. The boundary null is E[delta]=0.",
+    "alternatives": [
+     "add Student-t innovations (e.g. t3/t5)",
+     "add GARCH(1,1) and AR+GARCH (as in the decision-package DGP grid)",
+     "add MA(q) / overlapping-horizon and AR(2)/seasonal shapes",
+     "use a Development-based null: block-resample the demeaned Development delta",
+     "a union of several families (all must pass)"
+    ],
+    "result_impact": "Determines FEASIBLE vs NOT_RUN_INFEASIBLE. Adding families can only make feasibility stricter (more NOT_RUN_INFEASIBLE, fewer CAL_VERIFY accesses). Keeping Gaussian AR(1) alone is optimistic for dependence shapes that phi does not summarise (seasonal lags, negative lag-1 with positive higher lags; see item 1). In the package §1 table, heavy tails and GARCH alone did not inflate M-B size at small n (n=12: iid .025, t3 .028, GARCH .020). MA(2) at n=8 gave .076, but an AR1 point at MA(2)'s lag-1 rho (2/3) would be more conservative. Caveat: those table values were produced with the simulation's convention, not the implemented one (items 3 and 4).",
+    "rationale": "Simplest family whose single parameter is the Q3 scalar. Track C flagged it as item 2: 'heavy tails / GARCH / MA overlap not representable' (gsup_implementation.md L31).",
+    "classification": "METHOD_POLICY",
+    "evidence": "Code: superiority.py L220-225, L255-262. Package §1 size table (decision package L31-42). Fidelity sub-issue (EXECUTED, analytic and synthetic): the burn=50 start understates Var(sqrt(n)*mean) by up to 33% at phi=0.99. That has no realistic verdict impact; see the autonomous item."
+   },
+   {
+    "name": "3a. Degenerate bootstrap replicate counted as an exceedance (Track C item 3, part 1)",
+    "current_implementation": "superiority.py L106-111: if the replicate variance v<=0 the replicate is counted as degenerate AND as an exceedance. The oracle mirrors this (evl_c8_gsup_oracle.py L43-45). The alpha-reachability check (L274) tests only 1/(B+1)<=alpha. The Q1 approval evidence used the OPPOSITE convention: simulation_source L35 scores a degenerate replicate as T*=-inf, i.e. never an exceedance.",
+    "alternatives": [
+     "count as a non-exceedance (the convention of the Q1 approval simulation)",
+     "exclude from B: p=(r+1)/(B-deg+1), with alpha reachability re-checked on B-deg",
+     "cell NOT_RUN when the degenerate share exceeds a preregistered limit, or when n=2L",
+     "require at least 3 full blocks (n//L>=3) before the kernel may run",
+     "count degenerate replicates in alpha reachability, i.e. a pre-access floor check"
+    ],
+    "result_impact": "When n%L==0 a replicate is degenerate when every resampled block has the same start, with probability about (1/n)^(n/L-1). For n=2L (two full blocks) this puts a p-value floor of about 1/n, so STAT_PASS is unreachable for any alpha below about 1/n, even for a role that beats the control in every period. The feasibility gate checks size only, so it reports FEASIBLE (size about 0). The one-shot CAL_VERIFY is then consumed and the result is STAT_FAIL. Under the approved simulation's convention the same configuration is NOT_RUN (k-1=1<2 blocks), i.e. NOT_RUN_INFEASIBLE before access. A NOT_RUN_INFEASIBLE outcome therefore flips to STAT_FAIL, a false negative recorded as FAIL. For n//L>=3 the effect is small (floor (1/n)^(full-1)) and conservative. For n%L!=0 the event has probability 0 for continuous data.",
+    "rationale": "Track C: conservative, so an undefined replicate can never support rejection (docstring L85; gsup_implementation.md L16 'ties and degenerate replicates count as exceedances (conservative)').",
+    "classification": "METHOD_POLICY",
+    "evidence": "EXECUTED (synthetic, B=999, 20 continuous all-positive deltas 1+U(0,1)), implemented-kernel mean p / min p: n=4,L=2 .261/.238; n=6,L=3 .169/.111; n=8,L=4 .147/.118; n=10,L=5 .116/.074; n=12,L=6 .092/.065; n=16,L=8 .077/.052; n=20,L=10 .062/.037; n=24,L=12 .061/.036. With the exclude-from-B variant the mean p is .010-.030. The simulation convention gives NOT_RUN for all of these. Power at mu=0.8, alpha=.05 (R=500, B=199) for n=8,L=4 and n=12,L=6: implemented .000-.002; implemented blocks with non-exceedance .148-.280. EXECUTED end-to-end fixture (n=8, L=4, alpha=0.05, B=199, Provider mu=3.0): feasibility FEASIBLE (size 0.0), then STAT_FAIL; all 8 cell p-values 0.11-0.21, with 21/199 degenerate replicates in each cell."
+   },
+   {
+    "name": "3b. Statistic ties counted as an exceedance (Track C item 3, part 2)",
+    "current_implementation": "superiority.py L115: exceed += t >= statistic, i.e. r = #{T*_b >= T}, with p=(r+1)/(B+1).",
+    "alternatives": [
+     "mid-p (ties count 1/2)",
+     "randomized tie-breaking"
+    ],
+    "result_impact": "Conservative. For continuous data the probability of a tie is 0. It can matter only for exact floating-point ties with discrete or rounded returns at tiny n. Mid-p or randomized tie-breaking would be a different p-value definition from the one Q6 approved.",
+    "rationale": "Matches the standard Monte Carlo (r+1)/(B+1) definition approved in Q6 and the >= comparison used in the Q1 approval simulation (simulation_source L35: '>=TS').",
+    "classification": "IMPLEMENTATION_DETAIL_WITHIN_APPROVED_METHOD",
+    "evidence": "superiority.py L115. Simulation source L35. Q6 in a6_method_approval.md L15. Any alternative would contradict the approved Q6 p-value definition rather than refine it."
+   },
+   {
+    "name": "4. Studentizer: replicate variance uses n//L full blocks; original long-run variance uses all n overlapping circular blocks (Track C item 4)",
+    "current_implementation": "Original: superiority.py L96-97 lrv = sum over the n circular block sums of (s-L*m)^2/(n*L). This part is identical to the simulation (simulation_source L25-26). Replicate: L92 and L106-107 use full=n//L leading blocks (including the last block when n%L==0), divisor full*L, centered at L*ms. The kernel runs if n//L>=2 (L93). The Q1 approval simulation instead used k-1=ceil(n/L)-1 leading blocks with divisor (k-1)*L and required k-1>=2 (simulation_source L23, L28, L34).",
+    "alternatives": [
+     "use k-1=ceil(n/L)-1 blocks, exactly the variant whose size/power the user approved",
+     "keep n//L (current)",
+     "require n%L==0 and use all n/L blocks",
+     "include the partial block with a weight",
+     "use an overlapping estimator inside the replicate",
+     "a Götze-Künsch kernel-weighted original studentizer"
+    ],
+    "result_impact": "Identical whenever n%L!=0, since n//L equals ceil(n/L)-1 (verified: n=13, L=3 gave 0 decision flips across 2000 datasets). When n%L==0 the conventions differ. The implemented kernel is slightly more liberal and more powerful, and it RUNS at n=2L where the approved variant is NOT_RUN (combined with 3a this yields structural STAT_FAIL). The approved size table (package §1-§2) therefore does not exactly describe the implemented kernel for any grid cell where L divides n. Individual PASS/FAIL decisions flip on about 1-5% of datasets.",
+    "rationale": "Track C: use every full block available to the replicate's studentizer (docstring L83-84 'se*_b from the replicate's full-block sums'). Flagged as item 4.",
+    "classification": "METHOD_POLICY",
+    "evidence": "EXECUTED (synthetic, R=500 datasets per cell, B=199, same data and indices for both conventions; rates at alpha .05/.10). n=8,L=2, phi=0 null: impl .036/.088 vs approved-sim convention .028/.080. n=8,L=2, mu=.8 power: .388/.610 vs .370/.584 (21 flips at .05). n=12,L=3, mu=.8: .570/.780 vs .536/.764 (27 flips). n=24,L=4 null: .048/.080 vs .038/.082. n=12,L=4, phi=.3, mu=.8: .274/.576 vs .286/.554 (mixed direction). n=13,L=3: identical, 0 flips. The variant used in this probe reproduced G.studentized_cbb p-values and degenerate counts exactly on 8/8 cases."
+   },
+   {
+    "name": "5. Seed convention: the decision seed is reused for every feasibility replication, and the same seed and index set are used for all 8 cells (Track C item 5)",
+    "current_implementation": "superiority.py L288-289 calls studentized_cbb(..., seed=s['seed']) in every feasibility replication, so bootstrap indices are identical across replications. L284 derives the per-envelope-point null-data RNG as Random(int(digest([feasibility_seed, point])[:16],16)). L415 uses the same decision seed, and hence the same index set, for all 8 cohort x control cells.",
+    "alternatives": [
+     "independent per-replication bootstrap seeds derived from the feasibility seed (estimates the unconditional size of the procedure)",
+     "report both conditional (current) and unconditional size and gate on the worse of the two",
+     "per-cell decision seeds derived from one registered master seed",
+     "a fixed published derivation rule (e.g. SHA-256 of seed||cell||replication)"
+    ],
+    "result_impact": "The feasibility verdict depends on the decision-seed value, so FEASIBLE <-> NOT_RUN_INFEASIBLE can flip with the seed alone. Together with the campaign_id re-registration loophole this enables seed shopping. Sharing one index set across cells correlates the cells' decisions but does not change per-cell size under the IUT. The realised p-values, and so marginal decisions, change with the derivation rule. A6-S4 lists 'seed convention' as something to fix before CAL_VERIFY, but no convention has been approved.",
+    "rationale": "Track C: assess size 'under the exact registered procedure' (docstring L266-268), i.e. conditional on the exact index set that will later be applied to CAL_VERIFY. Flagged as item 5.",
+    "classification": "METHOD_POLICY",
+    "evidence": "EXECUTED (fixture scope: alpha=.10, tolerance=.05, n=24, L=3, B=99, R=200, feasibility seed 11; decision seeds 1-12). Envelope phi=.3: sizes .09-.12, 12/12 FEASIBLE. phi=.45: sizes .12-.155, 11/12 FEASIBLE. phi=.6: sizes .145-.185, 2/12 FEASIBLE. The spread is of the order of the Monte Carlo SE at R=200 (about .026)."
+   },
+   {
+    "name": "6. Feasibility criterion form: size-only point estimate; no power condition; undefined replications kept in the denominator",
+    "current_implementation": "superiority.py L293-298: within_tolerance = empirical_size <= alpha + size_tolerance, compared as a point estimate with no Monte Carlo uncertainty bound. There is no power requirement. Replications whose statistic is undefined (MissingStatisticalEvidence) are counted in the denominator as non-rejections (L290-294). Pre-checks at L274-279: alpha reachability 1/(B+1), minimum support, at least 2 full blocks.",
+    "alternatives": [
+     "add a minimum-power condition at a preregistered effect size (the package Q2 option A text mentions 'size and power')",
+     "gate on an upper confidence bound of empirical size instead of the point estimate",
+     "exclude undefined replications from the denominator, or treat them as rejections",
+     "an effective-alpha reachability check that includes the degenerate floor (item 3a)"
+    ],
+    "result_impact": "With a size-only gate, powerless configurations (n=2L; very large L at small n) pass as FEASIBLE and consume the one-shot CAL_VERIFY, producing an uninformative STAT_FAIL. A power condition would turn these into NOT_RUN_INFEASIBLE before access. A confidence-bound criterion makes marginal configurations INFEASIBLE more often (more conservative). Under the current AR1_GAUSSIAN family the undefined-count choice has practically no impact: zero long-run variance has probability 0 for Gaussian data, and block-count failures are pre-checked.",
+    "rationale": "This is the literal reading of the Q2/Q4 approval: 'If the simulated size exceeds the preregistered tolerance ... NOT_RUN_INFEASIBLE'. The approval record lists power only among numeric/evidence items ('power/feasibility evidence', a6_method_approval.md L17-18).",
+    "classification": "METHOD_POLICY",
+    "evidence": "superiority.py L274-298. Decision package L149 and L153 (approval sentence for size; the power wording appears only in the option description). End-to-end probe in item 3a (FEASIBLE, then STAT_FAIL)."
+   },
+   {
+    "name": "7. A6-S5 remnant: cell-status aggregation precedence (NOT_RUN over STAT_FAIL) and undefined cells",
+    "current_implementation": "superiority.py L381-387: if ANY cell is NOT_RUN the overall status is NOT_RUN, even when another well-defined cell is NOT_REJECTED. L98-99 and L416-418: a zero original long-run variance (e.g. role identical to a control, or a constant delta of either sign) makes the cell NOT_RUN.",
+    "alternatives": [
+     "STAT_FAIL takes precedence whenever a well-defined cell is NOT_REJECTED, because the conjunction is already falsified",
+     "report both: statistical_status=STAT_FAIL with incomplete_cells listed",
+     "classify role==control identity (delta identically 0) as IntegrityFailure/FAIL rather than NOT_RUN"
+    ],
+    "result_impact": "Flips the reported result between NOT_RUN and STAT_FAIL. The flip does not affect STAT_PASS, which still requires every cell to reject.",
+    "rationale": "Fail-closed to NOT_RUN for any undefined evidence, consistent with the C6/C7 rule 'legitimate undefined support = NOT_RUN'.",
+    "classification": "METHOD_POLICY",
+    "evidence": "EXECUTED probe: one cell with delta identically 0 (EQUAL_SIMPLE set equal to role) and MARKET_CAP cells failing gave cell statuses {NOT_REJECTED, NOT_RUN, REJECT_H0} and overall status NOT_RUN."
+   },
+   {
+    "name": "8. A6-S4/S5 remnant: statistic family and return basis binding",
+    "current_implementation": "superiority.py L46 EVIDENCE_KIND='CONTROL_RELATIVE_PERIOD_NET_RETURN_DIFFERENCE'. L412 delta=role-control per period. One-sided H0: E[delta]<=0, 'GREATER' (L119). This follows decision package §0 ('Δ_t = net(role) − net(control) ... one-sided H0: μ_Δ ≤ 0'), which Q1 approved by reference. However, the provider series are not bound to an exact C3 path (e.g. NET_OF_TRADING_COST_PRE_TAX), and no real provider exists.",
+    "alternatives": [
+     "net pre-tax arithmetic period difference (current)",
+     "real or RF-relative period difference",
+     "log-return difference",
+     "a CAGR/relative-wealth basis aligned with the A9 economic units"
+    ],
+    "result_impact": "A different delta definition changes every cell statistic, so PASS/FAIL can flip. The S7 effect-floor unit and the A9 premium/opportunity units must also be consistent with this basis.",
+    "rationale": "Q1 package definition. The arithmetic mean difference is what a bootstrap-t of the mean tests.",
+    "classification": "METHOD_POLICY",
+    "evidence": "Decision package L24. superiority.py L46, L412. The A6 partial approval S4 lists 'statistic family' as fixed pre-access. The approval record names only the method ID, so the C3 path identity still needs explicit confirmation when the real provider is built."
+   },
+   {
+    "name": "9. Q5 deterministic block rule form",
+    "current_implementation": "superiority.py L141-142: block_rule kind DETERMINISTIC_RULE raises MissingPrerequisite ('no deterministic block rule is approved yet'). Only FIXED is usable. Data-driven selection raises IntegrityFailure (L143).",
+    "alternatives": [
+     "a single fixed L (Q5 option A)",
+     "L=ceil(c*n^(1/3)) or a similar f(n) with a registered coefficient (Q5 option B)",
+     "Politis-White on Development only (package: not recommended)"
+    ],
+    "result_impact": "At small n, L effectively decides size and power (package §2: M-B at iid n=12 goes from .046 at L=1 to .020 at L=4; power falls sharply with L). With one CAL_VERIFY the fixed-L and rule-based options are operationally equivalent (package L175).",
+    "rationale": "Only the fixed form is enabled until a rule form is approved.",
+    "classification": "METHOD_POLICY",
+    "evidence": "superiority.py L133-143. Decision package L57-73 and L171-177. Q5 approval md L14 ('Actual L or rule NOT approved')."
+   },
+   {
+    "name": "10. CAL_VERIFY consumption unit shared between A4 threshold confirmation and A6 G-SUP",
+    "current_implementation": "G-SUP uses its own GsupRegistry keyed by (campaign_id, profile, role, role_id, verify_dataset_id) (superiority.py L316-317). The foundation enforces CAL_VERIFY one-shot by dataset keys in DatasetRegistry.claim (calibration_ledger.py L151-157). The two mechanisms are independent.",
+    "alternatives": [
+     "one registered CAL_VERIFY access that yields both the A4 threshold confirmation and the G-SUP evidence in a single attempt",
+     "G-SUP as its own preregistered CAL_VERIFY sub-partition",
+     "G-SUP slots keyed by verify_dataset_id + role, independent of campaign_id, and claimed through the foundation registry"
+    ],
+    "result_impact": "With today's separation, re-access under a new campaign_id with changed alpha/seed is ACCEPTED, so a retest could produce a false STAT_PASS (EXECUTED probe: second access returned STAT_PASS). Naive integration in which A4 consumes CAL_VERIFY first would make G-SUP permanently NOT_RUN. The sharing and ordering decide whether G-SUP can produce any result.",
+    "rationale": "Track C implemented G-SUP additively without touching the foundation (gsup_implementation.md L7).",
+    "classification": "METHOD_POLICY",
+    "evidence": "EXECUTED registry probe (see autonomous item on A2/A6-S4). calibration_ledger.py L156-157. Blocking the retest loophole itself only applies already-approved Q4/A6-S4 policy and is LOCAL_FIXABLE."
+   },
+   {
+    "name": "11. A6-S7 effect floor: metric, unit, aggregation and how it combines with the statistical test",
+    "current_implementation": "superiority.py L48 EFFECT_FLOOR={'convention':'DEFERRED_A6_S7','value':None}. L189-190 reject any other value, including 0. The decision is always 'NOT_RUN_EFFECT_FLOOR_DEFERRED' (L388).",
+    "alternatives": [
+     "shifted null H0: mu_delta <= floor inside the bootstrap-t",
+     "a separate economic check after STAT_PASS (point estimate or lower confidence bound >= floor)",
+     "a CAGR/relative-wealth effect expressed in A9 units",
+     "per-cell vs pooled-across-cohorts floor"
+    ],
+    "result_impact": "Decides whether any final G-SUP decision can ever be PASS. A6-S4 requires the effect-floor convention to be fixed before CAL_VERIFY. If CAL_VERIFY were consumed before S7 is approved, the slot would be spent with decision NOT_RUN_EFFECT_FLOOR_DEFERRED and could not be retested with a floor. A shifted null lowers power relative to a separate check; a separate point-estimate check is less conservative.",
+    "rationale": "Deferred by A6-S7. Zero is explicitly not a default.",
+    "classification": "METHOD_POLICY",
+    "evidence": "a6_partial_approval.md L37-39. superiority.py L48, L189-190, L388. Tests test_effect_floor_deferred_without_zero_default (test_evl_c8_gsup.py L103-108) pass."
+   },
+   {
+    "name": "12. A6-S2 randomized controls (RANDOM_RANKING / RANDOMIZED_WEIGHTS)",
+    "current_implementation": "superiority.py L36-37 and L180-182 raise UnsupportedControl 'UNSUPPORTED_SINGLE_DRAW'. The claim is EQUAL_SIMPLE + MARKET_CAP across 4 cohorts.",
+    "alternatives": [
+     "multiple preregistered draws with a randomization-distribution test",
+     "a separate randomization-test contract",
+     "keep them excluded (current)"
+    ],
+    "result_impact": "Adding them enlarges the conjunction (more cells), which lowers power and produces more STAT_FAIL/NOT_RUN. It does not affect the current claim.",
+    "rationale": "A6-S2: a single seeded realization does not reflect randomization uncertainty.",
+    "classification": "METHOD_POLICY",
+    "evidence": "a6_partial_approval.md L14-17. superiority.py L36-37 and L180-182."
+   },
+   {
+    "name": "13. A8 profile distinctness hard decision",
+    "current_implementation": "Not implemented as a decision. C7 raw pairwise differences are kept as 'DESCRIPTIVE_ONLY' (profile_selection.py L120). calibration_evidence.py L124 has distinctness_decision None. No module emits PROFILE_NOT_DISTINCT or DISTINCT.",
+    "alternatives": [
+     "original A8: for each pair and cohort, at least one preregistered metric must both reject equality under A6 multiplicity protection and exceed an economic separation",
+     "every-metric distinctness",
+     "preregistered identity metric(s) with a consistent direction",
+     "a pooled / heterogeneity-aware rule",
+     "economic-only description (no hard decision)"
+    ],
+    "result_impact": "A PROFILE_NOT_DISTINCT outcome blocks the three-profile promotion batch. An OR over many metrics inflates false positives unless corrected; AND or all-cohort rules raise false negatives and NOT_RUN at small n. The approved G-SUP kernel tests one-sided superiority, not two-sided equality, so any distinctness test needs its own approved test form and valid p-values.",
+    "rationale": "Held at A8 'PROPOSED_NOT_APPROVED_NOT_ACTIVE' (partial approval md L58-63). Dossier H8 holds the decision pending fresh-evidence and identity definitions.",
+    "classification": "METHOD_POLICY",
+    "evidence": "track_c_c8_package_A_approval_dossier_2026-10-02.md A8 §5-§10. Partial approval json clause A8."
+   },
+   {
+    "name": "14. A10 Champion/Challenger designation",
+    "current_implementation": "superiority.py L45 ROLES=('CHAMPION','CHALLENGER'). L176-177: any role_designation_ref other than 'SYNTHETIC_FIXTURE_ROLE' raises MissingPrerequisite ('A10 role designation is not approved'). calibration_evidence.py L124 has roles None.",
+    "alternatives": [
+     "two distinct identities required from the final C7 qualified representative set",
+     "Champion-only research qualification plus a separate Challenger lifecycle",
+     "a qualified historical Challenger",
+     "an additional preregistered independent study",
+     "timing: designation before CAL_FIT (dossier H10) vs before CAL_VERIFY (original text)"
+    ],
+    "result_impact": "Determines which candidate G-SUP tests, so every G-SUP result depends on it. Blocking singletons increases NOT_RUN_ROLE_ASSIGNMENT. Designating after CAL_FIT allows CAL_FIT-informed switching, which raises false positives.",
+    "rationale": "Held at A10 'PROPOSED_NOT_APPROVED_NOT_ACTIVE' (partial approval md L74-78): hash, rank or best return must not be used as an implicit selector.",
+    "classification": "METHOD_POLICY",
+    "evidence": "Dossier A10 §5-§10 (L711-783). superiority.py L45, L176-177. Test test_role_designation_requires_a10 passes."
+   },
+   {
+    "name": "15. A9 economic-gate formula identities (premium / opportunity-cost / risk-adjusted paths)",
+    "current_implementation": "Only the gate order is approved (A9 structure). Foundation ECONOMIC_ORDER is defined at calibration_contracts.py L25. Without registered identities and values, the real economic decision is NOT_RUN.",
+    "alternatives": [
+     "RF-relative CAGR premium",
+     "arithmetic period excess premium",
+     "net-minus-benchmark total return",
+     "separate annualized comparison (dossier A9 §10)"
+    ],
+    "result_impact": "Different units and meaning, so the same candidate can PASS under one identity and FAIL under another (dossier A9 §6).",
+    "rationale": "A9 requires each stage's 'exact metric identity/formula/provenance' to be registered as versioned configuration. Formula identity is a method/formula choice, separate from the limits.",
+    "classification": "METHOD_POLICY",
+    "evidence": "Partial approval md L65-72. Dossier A9 §5, §6, §10."
+   },
+   {
+    "name": "16. Embedded constants in G-SUP code (0.0 floor and 0.99 cap on the envelope phi, burn=50, Development minimum n=3, 16-hex-digit seed derivation)",
+    "current_implementation": "superiority.py L249 min(max(phi_hat,0.)+margin,0.99). L256 burn=50 with x0=0. L234 _series(series, minimum=3). L284 int(digest([seed,point])[:16],16). None of these is a registration field, so none is covered by registration_hash.",
+    "alternatives": [
+     "make each a preregistered numeric field",
+     "replace burn-in with exact stationary initialization (removes the constant)",
+     "keep them as documented method constants once approved"
+    ],
+    "result_impact": "The 0.99 cap and burn=50 matter only at phi>=0.97, where size is grossly infeasible either way (no realistic flip). minimum=3 decides when the Development estimate is NOT_RUN. The seed derivation changes Monte Carlo draws and so marginal feasibility verdicts (see item 5).",
+    "rationale": "Implementation conveniences chosen by Track C. They are not listed among the flagged items 1-5.",
+    "classification": "NUMERIC_CONFIGURATION",
+    "evidence": "superiority.py L234, L249, L256, L284. ANALYTIC and EXECUTED fidelity figures are in the autonomous-scope item."
+   }
+  ],
+  "numeric_config_items_kept_separate": [
+   "alpha: the per-cell level under the intersection-union test (A6-S6; Q6; method json not_approved_numeric). The decision package cites ID A9 N-S10.",
+   "B: number of bootstrap replicates (package ID N-S12). Its value interacts with the alpha-reachability check and the degenerate floor.",
+   "L: the fixed block length, or the coefficient of an approved deterministic rule (package ID N-S13).",
+   "Decision seed value (package ID N-S14). The seed CONVENTION (item 5) is method policy; the number is configuration.",
+   "Feasibility seed value and the number of feasibility replications.",
+   "Size tolerance (package ID N-S19).",
+   "Conservative dependence-envelope values: the phi points (package ID N-S20).",
+   "Margin added to the Development estimate (package ID N-S21).",
+   "Minimum support, i.e. minimum verify_periods (package ID N-D5).",
+   "Effect floor value. Its metric, unit and combination rule are method policy (item 11).",
+   "Actual calibration configuration (A1): outer calibration interval, CAL_FIT/CAL_VERIFY boundaries and dataset ids, verify_periods n per registered calendar, period frequency (package IDs N-D1/N-D2), and the Development dataset/window used for the dependence estimate.",
+   "A2 budget and attempt limits for the C8 campaign.",
+   "A3/A4: threshold range, grid, refinement, sensitivity, plateau tolerance, adjacency; rounding precision and rounding support.",
+   "A9 limits: premium minimum, opportunity-cost threshold, risk-adjusted, tail, MDD, turnover, recovery and growth limits.",
+   "A8 economic separation magnitudes and family alpha, if A8 is approved.",
+   "Only if the corresponding method options are approved: minimum power and the effect size used for a power-based feasibility gate; a degenerate-replicate share limit.",
+   "Embedded G-SUP constants that are configuration in substance and should become registered fields or be removed: 0.99 cap and 0.0 floor (superiority.py L249), burn=50 (L256), Development minimum n=3 (L234), 16-hex seed derivation (L284).",
+   "Package IDs N-S10/N-S12/N-S13/N-S14/N-S19/N-S20/N-S21 and N-D1/N-D2/N-D5 are referenced only in track_c_c8_a6_method_decision_package_2026-10-02.md L102 and L189-193. git grep on origin/ccr-22e3ff16-p7n5k5 finds no file that defines them, so the numeric register itself still has to be written before it can be approved."
+  ],
+  "boundary_notes": [
+   "CAL_VERIFY and Holdout were not accessed. All executions were synthetic (SYNTHETIC_SOFTWARE_VALIDATION_ONLY scope or standalone scratch scripts). Every grid value used in the probes (alpha .05/.10, B 99/199/999, n, L, phi, mu) is illustrative only, not a proposed default.",
+   "Nothing in the repository was modified. No push, ref change, PR or comment was made. The trial worktree was created at scratchpad/wf/c8-methods (detached at 97d1b94) and removed with 'git worktree remove --force' and 'git worktree prune'. /tmp/rig-news-producer-ro was not created. The main checkout is still on ccr-2e16018a-qukwmg and clean. Scratch scripts are in scratchpad/c8m (outside the repo).",
+   "Actually executed: tests/test_evl_c8_gsup.py at 97d1b94 (68 passed), plus synthetic probes (kernel-variant reproduction 8/8 exact; degenerate floor; size/power convention comparison; end-to-end n=2L fixture; forged-estimate, campaign_id-retest and NOT_RUN-precedence probes; feasibility-seed sensitivity; AR(1) burn-in fidelity; estimator bias). NOT_RUN by this audit: full suite (Track C claims 910), C0-C7 regression, C6/C7/C8 acceptance runners, GitHub Actions (none exists for a156a35/97d1b94).",
+   "The real path is inactive in code. validate_registration (superiority.py L169-170) raises MissingPrerequisite unless scope=SYNTHETIC_SOFTWARE_VALIDATION, configuration_scope=SYNTHETIC_SOFTWARE_VALIDATION_ONLY and temporal_origin=SIMULATED. _evaluate (L395-396) refuses non-synthetic provider data. Non-fixture role designations are refused (L176-177). superiority.py has no real CAL_VERIFY or Holdout reader. No alpha/B/L/seed/tolerance/envelope/support/effect-floor default exists: every missing value raises MissingPrerequisite (L146-150, tests L89-100).",
+   "Numeric values that ARE active today: the embedded constants at superiority.py L234, L249, L256 and L284 run in synthetic feasibility and are outside registration_hash. The fixture values in tests/test_evl_c8_gsup.py L25-29 (alpha 0.1, B 99, L 3, seed 7, minimum_support 24, tolerance 0.05, envelope phi 0.0, margin 0.0, replications 200, feasibility seed 11) are gated to fixture scope and must not be promoted to real configuration.",
+   "Pre-numeric-approval hazards. These should be resolved or explicitly accepted before the separate numeric-configuration approval, because either can waste the one-shot CAL_VERIFY: (1) under the implemented degenerate convention, any n=2L configuration is FEASIBLE under the size-only gate yet structurally STAT_FAIL; (2) S7 is still deferred, so any CAL_VERIFY access today would end as NOT_RUN_EFFECT_FLOOR_DEFERRED with no retest allowed. The approved simulation evidence differs from the implemented kernel whenever L divides n (method choices 3a and 4), so the numeric approval should rest on simulation evidence regenerated with the implemented kernel.",
+   "Fail-open findings within already-approved policy (LOCAL_FIXABLE, no user decision needed to fix): (a) the Development-only provenance of the Q3 estimate is not checked at record_feasibility (a forged CAL_VERIFY-role estimate was accepted); (b) the Q4/A6-S4 no-retest rule is not enforced across campaign_id or registry roots (a second access with changed alpha/seed was accepted and returned STAT_PASS); (c) the alpha-reachability check ignores the degenerate p floor.",
+   "Classification note: Track C's five 'implementation-defined details' (gsup_implementation.md L29-34) can all change FEASIBLE/INFEASIBLE or PASS/FAIL outcomes, so all five are METHOD_POLICY here, not implementation details. The only item classified IMPLEMENTATION_DETAIL_WITHIN_APPROVED_METHOD is tie counting (>=), which matches the approved Q6 definition and the Q1 simulation exactly.",
+   "Worker Contract routing: I read implementation/docs/coordination/CLAUDE_CODE_WORKER_CONTRACT.md from the main checkout (origin/ccr-2e16018a-qukwmg f1b5afb, blob 617ef6d). A second version exists on origin/integration/claude-worker-contract-v1 (d87d4cd, blob 145af47) whose §J adds the exception 'unless an approved contract explicitly permits it'. That wording is consistent with it being the superseded #20, but the PR-number-to-branch mapping was NOT verified on GitHub. Both versions contain the same §D stop items relevant here (4 real calibration numeric configuration, 7 first CAL_VERIFY access, 8 Holdout, 15 result-changing alternatives), so the classifications above do not depend on which version applies.",
+   "State: BRANCH_STATE for Track C origin/ccr-22e3ff16-p7n5k5 is 97d1b94: C8 NOT FROZEN, A6 METHOD_APPROVED_CONDITIONAL / NUMERIC_CONFIG_PENDING, A8/A10 NOT APPROVED, 8/11 = 72.7% software phase count only, Holdout UNCONSUMED. INTEGRATION_STATE: G-SUP is not wired into the C8 foundation ledger, evidence or acceptance path. CANONICAL_STATE: canonical b8e39a2 unchanged; no canonical merge, publication grant or Official/LIVE promotion was performed."
+  ]
+ }
+}

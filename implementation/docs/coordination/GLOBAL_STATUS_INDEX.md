@@ -4,7 +4,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-002 (decision update CDR-001..003; IF-1 audit GIE-002 pending) |
+| Index revision | GSI-003 (GIE-002 IF-1 audit complete; GIE-004 C8 method impact) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
@@ -125,6 +125,15 @@ Evidence: `implementation/docs/coordination/evidence/GIE-001_trial_integration_2
   - Values are invariant. On the producer fingerprint fixtures, the only change is 4 new null/empty lineage fields (`available_at`, `data_stamp_refs`, `source_vintages`, `input_hash`) on each of 23 Technical/Macro snapshots, and no existing value changes.
   - It still changes the byte hashes and the serialized-snapshot fingerprints that 7 guard tests pin, across #11, #12, #14, #15, #17 and #18.
   - Without Track C, every engine fingerprint equals its pin.
+- **IF-1 audit result (GIE-002, 2026-10-03): IMPOSSIBLE_WITHOUT_ONE_SIDE_CHANGE**, not refuted by the adversarial skeptic.
+  - `contracts/lineage.py` is compatible as-is under every option.
+  - The `models.py` fields and the two `evaluate_stamped` methods can move to a sidecar, but only by changing 2 Track C C4-frozen blobs (option B). Keeping them requires producer re-pins (option A).
+  - Both options were measured result-invariant. A/B is USER_DECISION_REQUIRED (GCH-002 §4).
+  - Evidence: `evidence/GIE-002_trackc_producer_compat_audit_2026-10-03.md` (+ `.json`, reference patches in `evidence/GIE-002_patches/`, not applied).
+- **Track C C8 (GIE-004).** Independent read-only analysis of the method choices. Two fail-open bugs within approved policy are LOCAL_FIXABLE for the Track C owner:
+  - (a) the Q3 Development-only estimate is not enforced;
+  - (b) one-shot no-retest is bypassable via a new `campaign_id` (a synthetic retest returned STAT_PASS).
+  - Evidence: `evidence/GIE-004_trackc_c8_method_impact_2026-10-03.md`.
 - **IF-2: branch-isolation sentinels.**
   - #10 and #14 assert "PR #9 not merged here" (`infra_boundary.load_infra() is None`). #13 asserts that PR #7's `reports/entity_metadata` is absent.
   - These are false by design after integration. Each owner must convert its sentinel when its dependency merges. This is LOCAL_FIXABLE for the owner, not for other workers.

@@ -1,0 +1,252 @@
+diff --git a/implementation/src/investment_system/contracts/models.py b/implementation/src/investment_system/contracts/models.py
+index ef4f80e..2367d2e 100644
+--- a/implementation/src/investment_system/contracts/models.py
++++ b/implementation/src/investment_system/contracts/models.py
+@@ -141,12 +141,6 @@ class TechnicalSnapshot:
+     mutated_qgv: bool = False
+     synthetic: bool = False
+ 
+-    # None/empty on legacy unqualified outputs; never inferred from as_of.
+-    available_at: Optional[datetime] = None
+-    data_stamp_refs: tuple[str, ...] = ()
+-    source_vintages: tuple[tuple[str, str], ...] = ()
+-    input_hash: Optional[str] = None
+-
+     def to_dict(self) -> dict[str, Any]:
+         return _to_json(asdict(self))
+ 
+@@ -163,12 +157,6 @@ class MacroSnapshot:
+     mutated_qgv: bool = False
+     synthetic: bool = False
+ 
+-    # None/empty on legacy unqualified outputs; never inferred from as_of.
+-    available_at: Optional[datetime] = None
+-    data_stamp_refs: tuple[str, ...] = ()
+-    source_vintages: tuple[tuple[str, str], ...] = ()
+-    input_hash: Optional[str] = None
+-
+     def to_dict(self) -> dict[str, Any]:
+         return _to_json(asdict(self))
+ 
+diff --git a/implementation/src/investment_system/evl/bindings.py b/implementation/src/investment_system/evl/bindings.py
+index 4a52c10..ac397fc 100644
+--- a/implementation/src/investment_system/evl/bindings.py
++++ b/implementation/src/investment_system/evl/bindings.py
+@@ -10,8 +10,7 @@ from math import isfinite
+ from ..contracts.models import PortfolioSnapshot
+ from ..integration.engine import IntegrationEngine
+ from ..integration.policy import ProvisionalPolicy
+-from ..macro.engine import MacroEngine
+-from ..technical.engine import TechnicalEngine
++from .stamped import macro_stamped, technical_stamped
+ 
+ BINDINGS = {
+     'cash_buffer': 'TARGET_WEIGHTS_AND_CASH',
+@@ -57,7 +56,7 @@ def evaluate_bound(as_of, portfolio: PortfolioSnapshot, returns_by_company: dict
+     holdings = tuple(replace(h, target_weight=0 if risky == 0 else h.target_weight/risky*(1-cash))
+                      for h in portfolio.holdings)
+     bound_portfolio = replace(portfolio, holdings=holdings, cash_weight=cash, weight_sum=1.)
+-    technical = {}
++    technical, lineage = {}, {'technical': {}}
+     for company_id, source_rows in returns_by_company.items():
+         lookback = parameters.get('technical_lookback', len(source_rows))
+         if len(source_rows) < lookback:
+@@ -66,11 +65,11 @@ def evaluate_bound(as_of, portfolio: PortfolioSnapshot, returns_by_company: dict
+         times = tuple(row.measured_at for row in source_rows)
+         if len(set(times)) != len(times) or times != tuple(sorted(times)):
+             raise ValueError('source history must be chronological')
+-        technical[company_id] = TechnicalEngine().evaluate_stamped(
++        technical[company_id], lineage['technical'][company_id] = technical_stamped(
+             company_id, as_of, tuple(source_rows[-lookback:]), synthetic=synthetic)
+-    macro = MacroEngine().evaluate_stamped(as_of, indicators, synthetic=synthetic)
++    macro, lineage['macro'] = macro_stamped(as_of, indicators, synthetic=synthetic)
+     policy = ProvisionalPolicy(deadband_pp=parameters.get('execution_deadband_pp', .50))
+     result = IntegrationEngine(policy).run(as_of, bound_portfolio, technical, macro)
+-    return {'integration': result, 'technical': technical, 'macro': macro,
++    return {'integration': result, 'technical': technical, 'macro': macro, 'lineage': lineage,
+             'cash_weight': 1-sum(result.target_weights.values()),
+             'bound_parameters': dict(parameters), 'official': False}
+diff --git a/implementation/src/investment_system/evl/stamped.py b/implementation/src/investment_system/evl/stamped.py
+new file mode 100644
+index 0000000..af312f3
+--- /dev/null
++++ b/implementation/src/investment_system/evl/stamped.py
+@@ -0,0 +1,47 @@
++"""Research-only PIT lineage sidecar for the unchanged legacy Technical/Macro engines.
++
++TRIAL PROTOTYPE (option B audit). Core TechnicalSnapshot/MacroSnapshot schemas and the
++engine sources stay canonical; input-derived lineage is carried as separate evidence next
++to the unmodified legacy output. No new scoring rule; availability is never taken from
++as_of (contracts.lineage.derived_lineage).
++"""
++from __future__ import annotations
++
++from dataclasses import dataclass
++from datetime import datetime
++
++from ..contracts.lineage import StampedValue, derived_lineage
++from ..contracts.models import MacroSnapshot, QGVSnapshot, TechnicalSnapshot
++from ..macro.engine import MacroEngine
++from ..technical.engine import TechnicalEngine
++
++
++@dataclass(frozen=True)
++class Lineage:
++    available_at: datetime
++    data_stamp_refs: tuple[str, ...]
++    source_vintages: tuple[tuple[str, str], ...]
++    input_hash: str
++
++
++def technical_stamped(company_id: str, as_of: datetime, returns: tuple[StampedValue, ...],
++                      qgv: QGVSnapshot | None = None,
++                      synthetic: bool = False) -> tuple[TechnicalSnapshot, Lineage]:
++    if not returns:
++        raise ValueError("strict Technical evaluation requires returns")
++    times = tuple(row.measured_at for row in returns)
++    if len(set(times)) != len(times) or times != tuple(sorted(times)):
++        raise ValueError("returns must be unique and chronological")
++    lineage = derived_lineage({str(i): value for i, value in enumerate(returns)},
++                              as_of, synthetic=synthetic)
++    output = TechnicalEngine().evaluate(company_id, as_of, [r.value for r in returns], qgv, synthetic)
++    return output, Lineage(**lineage)
++
++
++def macro_stamped(as_of: datetime, indicators: dict[str, StampedValue],
++                  synthetic: bool = False) -> tuple[MacroSnapshot, Lineage]:
++    if set(indicators) != {"growth", "inflation"}:
++        raise ValueError("strict Macro evaluation requires growth and inflation")
++    lineage = derived_lineage(indicators, as_of, synthetic=synthetic)
++    output = MacroEngine().evaluate(as_of, {k: v.value for k, v in indicators.items()}, synthetic)
++    return output, Lineage(**lineage)
+diff --git a/implementation/src/investment_system/macro/engine.py b/implementation/src/investment_system/macro/engine.py
+index 08d79c2..f7b9979 100644
+--- a/implementation/src/investment_system/macro/engine.py
++++ b/implementation/src/investment_system/macro/engine.py
+@@ -5,13 +5,11 @@ Does not promote v0.1.4 Candidate. Does not mutate QGV raw scores.
+ 
+ from __future__ import annotations
+ 
+-from dataclasses import replace
+ from datetime import datetime
+ from uuid import uuid4
+ 
+ from ..contracts.enums import MacroState
+ from ..contracts.models import MacroSnapshot
+-from ..contracts.lineage import StampedValue, derived_lineage
+ from ..versions import IMPLEMENTATION_KIND, MACRO_CANDIDATE, MACRO_CONFIRMED
+ 
+ 
+@@ -44,11 +42,3 @@ class MacroEngine:
+             mutated_qgv=False,
+             synthetic=synthetic,
+         )
+-
+-    def evaluate_stamped(self, as_of: datetime, indicators: dict[str, StampedValue],
+-                         synthetic: bool = False) -> MacroSnapshot:
+-        if set(indicators) != {"growth", "inflation"}:
+-            raise ValueError("strict Macro evaluation requires growth and inflation")
+-        lineage = derived_lineage(indicators, as_of, synthetic=synthetic)
+-        output = self.evaluate(as_of, {k: v.value for k, v in indicators.items()}, synthetic)
+-        return replace(output, **lineage)
+diff --git a/implementation/src/investment_system/technical/engine.py b/implementation/src/investment_system/technical/engine.py
+index 5365653..0f6c274 100644
+--- a/implementation/src/investment_system/technical/engine.py
++++ b/implementation/src/investment_system/technical/engine.py
+@@ -6,13 +6,11 @@ not claimed as recovered v0.6 package.
+ 
+ from __future__ import annotations
+ 
+-from dataclasses import replace
+ from datetime import datetime
+ from uuid import uuid4
+ 
+ from ..contracts.enums import ExecutionZone, TechnicalRegime
+ from ..contracts.models import QGVSnapshot, TechnicalSnapshot
+-from ..contracts.lineage import StampedValue, derived_lineage
+ from ..versions import IMPLEMENTATION_KIND, TECHNICAL_STRUCTURAL
+ 
+ 
+@@ -64,17 +62,3 @@ class TechnicalEngine:
+             mutated_qgv=False,
+             synthetic=synthetic,
+         )
+-
+-    def evaluate_stamped(
+-        self, company_id: str, as_of: datetime, returns: tuple[StampedValue, ...],
+-        qgv: QGVSnapshot | None = None, synthetic: bool = False,
+-    ) -> TechnicalSnapshot:
+-        if not returns:
+-            raise ValueError("strict Technical evaluation requires returns")
+-        times = tuple(row.measured_at for row in returns)
+-        if len(set(times)) != len(times) or times != tuple(sorted(times)):
+-            raise ValueError("returns must be unique and chronological")
+-        lineage = derived_lineage({str(i): value for i, value in enumerate(returns)},
+-                                  as_of, synthetic=synthetic)
+-        output = self.evaluate(company_id, as_of, [r.value for r in returns], qgv, synthetic)
+-        return replace(output, **lineage)
+diff --git a/implementation/tests/test_evl_c4_bindings.py b/implementation/tests/test_evl_c4_bindings.py
+index 4ddb6fb..da6cbd2 100644
+--- a/implementation/tests/test_evl_c4_bindings.py
++++ b/implementation/tests/test_evl_c4_bindings.py
+@@ -6,6 +6,7 @@ from investment_system.contracts.models import DataStamp, PortfolioSnapshot, Hol
+ from investment_system.technical.engine import TechnicalEngine
+ from investment_system.macro.engine import MacroEngine
+ from investment_system.evl.bindings import evaluate_bound, validate_parameters
++from investment_system.evl.stamped import macro_stamped, technical_stamped
+ 
+ D = datetime(2020,1,10,tzinfo=timezone.utc)
+ 
+@@ -38,20 +39,20 @@ def run(parameters):
+ def test_technical_stamped_preserves_original_decision_and_derives_availability():
+     rows=inputs()['a']
+     old=TechnicalEngine().evaluate('a',D,[r.value for r in rows])
+-    new=TechnicalEngine().evaluate_stamped('a',D,rows,synthetic=True)
++    new,lin=technical_stamped('a',D,rows,synthetic=True)
+     assert (old.regime,old.execution_zone,old.scenarios)==(new.regime,new.execution_zone,new.scenarios)
+-    assert new.available_at==rows[-1].stamp.available_at < D
+-    assert new.input_hash and new.data_stamp_refs==('s0','s1','s2')
+-    assert new.source_vintages==(('s0','v1'),('s1','v1'),('s2','v1'))
+-    assert old.available_at is None
++    assert lin.available_at==rows[-1].stamp.available_at < D
++    assert lin.input_hash and lin.data_stamp_refs==('s0','s1','s2')
++    assert lin.source_vintages==(('s0','v1'),('s1','v1'),('s2','v1'))
++    assert not hasattr(old,'available_at')
+ 
+ 
+ def test_macro_stamped_preserves_confirmed_rules_without_defaulting_missing_inputs():
+     old=MacroEngine().evaluate(D,{'growth':.02,'inflation':.02})
+-    new=MacroEngine().evaluate_stamped(D,indicators(),synthetic=True)
++    new,_=macro_stamped(D,indicators(),synthetic=True)
+     assert (new.state,new.regime,new.macro_version)==(old.state,old.regime,old.macro_version)
+     with pytest.raises(ValueError,match='requires'):
+-        MacroEngine().evaluate_stamped(D,{'growth':point(.02)},synthetic=True)
++        macro_stamped(D,{'growth':point(.02)},synthetic=True)
+ 
+ 
+ @pytest.mark.parametrize('change', ['future','missing_vintage','estimated','naive','synthetic'])
+@@ -64,7 +65,7 @@ def test_lineage_cannot_be_fabricated_from_as_of(change):
+     if change=='naive': p=replace(p,measured_at=p.measured_at.replace(tzinfo=None))
+     if change=='synthetic': synthetic=False
+     with pytest.raises(ValueError):
+-        TechnicalEngine().evaluate_stamped('a',D,(p,),synthetic=synthetic)
++        technical_stamped('a',D,(p,),synthetic=synthetic)
+ 
+ 
+ def test_cash_buffer_changes_exposure_and_does_not_mutate_input():
+@@ -83,7 +84,7 @@ def test_lookback_changes_actual_technical_zone_and_integrated_targets():
+     short=run({'technical_lookback':1})
+     assert full['technical']['a'].execution_zone != short['technical']['a'].execution_zone
+     assert full['integration'].target_weights != short['integration'].target_weights
+-    assert short['technical']['a'].data_stamp_refs==('s2',)
++    assert short['lineage']['technical']['a'].data_stamp_refs==('s2',)
+ 
+ 
+ def test_deadband_changes_intents_but_not_target_weight_performance():
+@@ -110,5 +111,4 @@ def test_insufficient_lookback_or_missing_technical_membership_fails_closed():
+ 
+ def test_legacy_snapshot_serialization_keeps_qualification_unknown():
+     old=TechnicalEngine().evaluate('a',D,[.01])
+-    assert old.to_dict()['available_at'] is None
+-    assert old.to_dict()['input_hash'] is None
++    assert 'available_at' not in old.to_dict() and 'input_hash' not in old.to_dict()

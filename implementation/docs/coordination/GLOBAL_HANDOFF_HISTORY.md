@@ -41,3 +41,10 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
   - CDR-003: Track C C8 method policy is separated from numeric configuration. Approved scope continues autonomously on the owner branch, and the numeric gate stays separate before CAL_VERIFY.
 - GCH-002 replaces GCH-001 as the current handoff. GSI-002 updates the contract rows and IF-3.
 - No canonical merge, grant, or capability-branch edit.
+
+## GCH-002a · 2026-10-03 · IF-1 compatibility audit and C8 method analysis
+
+- GIE-002 (workflow `wf_56296124-2cc`, 7 agents, local trials only): IMPOSSIBLE_WITHOUT_ONE_SIDE_CHANGE. Options A (producer re-pin, lineage in core) and B (Track C sidecar, C4-frozen change) were both measured result-invariant. A/B is escalated to the user per CDR-002.
+- GIE-004: C8 method-choice impact analysis, with 2 LOCAL_FIXABLE fail-opens for the Track C owner. Not authoritative.
+- GIE-003 (earlier this round): source overlap and escalation sweep.
+- No capability-branch edit, canonical merge, grant, CAL_VERIFY or Holdout access. No maturity change.

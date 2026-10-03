@@ -1,0 +1,106 @@
+diff --git a/implementation/tests/test_leaderboard_real_producer.py b/implementation/tests/test_leaderboard_real_producer.py
+index 97eb495..a3564e9 100644
+--- a/implementation/tests/test_leaderboard_real_producer.py
++++ b/implementation/tests/test_leaderboard_real_producer.py
+@@ -34,8 +34,8 @@ PINNED_SHA = {
+     "src/investment_system/qgv/scoring.py": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+     "src/investment_system/qgv/factors.py": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+     "src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+-    "src/investment_system/technical/engine.py": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+-    "src/investment_system/macro/engine.py": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
++    "src/investment_system/technical/engine.py": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
++    "src/investment_system/macro/engine.py": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+     "src/investment_system/qgv/portfolio.py": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+     "src/investment_system/personal/portfolio.py": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+     "src/investment_system/validation/vertical_slice.py": "4ab06fce30064ccf0a54f2c8e6dd39b4b97fdb996511958fac24d25d031a98dc",
+diff --git a/implementation/tests/test_macro_real_producer.py b/implementation/tests/test_macro_real_producer.py
+index 7693e1a..15e54b4 100644
+--- a/implementation/tests/test_macro_real_producer.py
++++ b/implementation/tests/test_macro_real_producer.py
+@@ -34,9 +34,9 @@ LATER = datetime(2025, 3, 15, tzinfo=timezone.utc)
+ LATER_GENERATED = datetime(2025, 3, 15, 12, tzinfo=timezone.utc)
+ 
+ _ENGINE_HASHES = {
+-    "src/investment_system/macro/engine.py": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
++    "src/investment_system/macro/engine.py": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+     "src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+-    "src/investment_system/technical/engine.py": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
++    "src/investment_system/technical/engine.py": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+     "src/investment_system/qgv/portfolio.py": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+     "src/investment_system/qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+ }
+diff --git a/implementation/tests/test_p01_research_publication.py b/implementation/tests/test_p01_research_publication.py
+index 569d88c..64df4a7 100644
+--- a/implementation/tests/test_p01_research_publication.py
++++ b/implementation/tests/test_p01_research_publication.py
+@@ -382,4 +382,4 @@ def test_protected_engine_bytes_are_unchanged():
+     for rel in paths:
+         digest.update(rel.encode())
+         digest.update((SRC / rel).read_bytes())
+-    assert digest.hexdigest() == "1d6c56e4bcf356758ecec8c0524bf2a345eb99acd568278e0366599f3dd2f259"
++    assert digest.hexdigest() == "e6de46714f4405b52d4b25a418cc4081ff6df9d8891f332f59cc47e5ccc6c909"
+diff --git a/implementation/tests/test_technical_real_model_v1.py b/implementation/tests/test_technical_real_model_v1.py
+index 70a3e84..332f144 100644
+--- a/implementation/tests/test_technical_real_model_v1.py
++++ b/implementation/tests/test_technical_real_model_v1.py
+@@ -288,7 +288,7 @@ def test_placeholder_engine_is_unchanged_and_not_used_by_the_real_model():
+     assert "TechnicalEngine" not in source
+     assert "IntegrationEngine" not in source
+     assert "timedelta(days=5)" not in source
+-    assert hashlib.sha256(engine.encode()).hexdigest() == "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf"
++    assert hashlib.sha256(engine.encode()).hexdigest() == "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c"
+     demo = produce_demo(
+         company_id="aapl",
+         ticker="AAPL",
+diff --git a/implementation/tests/test_technical_real_producer.py b/implementation/tests/test_technical_real_producer.py
+index eb82ccb..0222ecf 100644
+--- a/implementation/tests/test_technical_real_producer.py
++++ b/implementation/tests/test_technical_real_producer.py
+@@ -33,8 +33,8 @@ GENERATED = datetime(2026, 10, 1, 11, 0, tzinfo=timezone.utc)
+ ROOT = Path(__file__).resolve().parents[1]
+ ENGINE_FINGERPRINT = "28e910f3005c74888aa33e9b6f45b8d94fc70d4f023e1bc49a6af4100ea9ede6"
+ SOURCE_SHA256 = {
+-    "src/investment_system/technical/engine.py": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+-    "src/investment_system/macro/engine.py": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
++    "src/investment_system/technical/engine.py": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
++    "src/investment_system/macro/engine.py": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+     "src/investment_system/qgv/scoring.py": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+     "src/investment_system/qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+     "src/investment_system/qgv/portfolio.py": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+@@ -359,7 +359,8 @@ def test_engine_fingerprint_and_cross_track_sources_unchanged():
+         if dataclasses.is_dataclass(obj):
+             obj = dataclasses.asdict(obj)
+         if isinstance(obj, dict):
+-            return {k: norm(v) for k, v in sorted(obj.items()) if k != "technical_snapshot_id"}
++            return {k: norm(v) for k, v in sorted(obj.items()) if k != "technical_snapshot_id"
++                    and not (k in ("available_at", "data_stamp_refs", "source_vintages", "input_hash") and v in (None, (), []))}
+         if isinstance(obj, (list, tuple)):
+             return [norm(v) for v in obj]
+         if isinstance(obj, enum.Enum):
+diff --git a/implementation/tests/test_us_equity_session_v1.py b/implementation/tests/test_us_equity_session_v1.py
+index 3aae398..2442d4e 100644
+--- a/implementation/tests/test_us_equity_session_v1.py
++++ b/implementation/tests/test_us_equity_session_v1.py
+@@ -24,7 +24,7 @@ NOTICE = b"fixture-notice"
+ NOTICE_SHA = hashlib.sha256(NOTICE).hexdigest()
+ GENERATED = datetime(2026, 10, 2, 12, 0, tzinfo=timezone.utc)
+ MODEL_SHA = "419b792c121b35ddf8ceacb15a6440f8243ad3acf65fc350bde860c6c069c4b6"
+-ENGINE_SHA = "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf"
++ENGINE_SHA = "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c"
+ PIT_SHA = "9c2a56deec51d6b4cd97d9d9ef5afc9236a3bb32018918b6b7e575fb0119f32e"
+ YAHOO_SHA = "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534"
+ 
+diff --git a/implementation/tools/producer_engine_fingerprint.py b/implementation/tools/producer_engine_fingerprint.py
+index 814ef56..1192ae9 100644
+--- a/implementation/tools/producer_engine_fingerprint.py
++++ b/implementation/tools/producer_engine_fingerprint.py
+@@ -20,7 +20,8 @@ def norm(o):
+     if dataclasses.is_dataclass(o):
+         o = dataclasses.asdict(o)
+     if isinstance(o, dict):
+-        return {k: norm(v) for k, v in sorted(o.items()) if k not in DROP}
++        return {k: norm(v) for k, v in sorted(o.items()) if k not in DROP
++                and not (k in ('available_at', 'data_stamp_refs', 'source_vintages', 'input_hash') and v in (None, (), []))}
+     if isinstance(o, (list, tuple)):
+         return [norm(v) for v in o]
+     if isinstance(o, enum.Enum):
