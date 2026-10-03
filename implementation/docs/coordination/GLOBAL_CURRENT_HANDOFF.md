@@ -5,7 +5,7 @@ Routing/index SSoT only. This file is not a calculation, policy, approval or pub
 | Field | Value |
 |---|---|
 | Handoff ID | GCH-001 (first global handoff) |
-| Recorded | 2026-10-03T01:20Z |
+| Recorded | 2026-10-03T01:18:13Z (commit `b118b68`) |
 | Primary Integration Writer | Claude Code session `session_019znshzTYgyBnuuBmSxdPFN`, designated by the user on 2026-10-03 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md` |
 | Canonical branch / HEAD | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. This matches the last independent audit checkpoint, and canonical has not moved since 2026-09-28 |

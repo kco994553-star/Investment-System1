@@ -47,7 +47,7 @@ Each tip was merged onto canonical with `git merge --no-ff` (ort), in dependency
 | B: all tips except Track C (tree `6e2f09b`) | pytest | 619 passed, 3 failed (all IF-2 sentinels) |
 | #12 Macro exact HEAD `61d3352` | pytest | 442 passed, 0 failed |
 | #13 RIG exact HEAD `8bb990b` | pytest | 410 passed, 0 failed |
-| Track C tip `ccr-22e3ff16` `97d1b94` | pytest | IN_PROGRESS at this commit; the result is appended in a later commit |
+| Track C tip `ccr-22e3ff16` `97d1b94` | pytest | IN_PROGRESS at `b118b68`. Result in §6 |
 
 ## 4. Engine fingerprint (`tools/producer_engine_fingerprint.py src`; random ids and timestamps excluded by the tool)
 
@@ -118,6 +118,16 @@ PR #20 (`integration/claude-worker-contract-v1` @ `d87d4cd`, created 2026-10-03T
 |---|---|---|
 | #12 `feature/macro-real-producer-v1` | none | 442 passed |
 | #13 `feature/rig-news-real-ingestion-v1` | none | 410 passed |
-| `ccr-22e3ff16-p7n5k5` (Track C C8 G-SUP) | none (the workflow triggers on `feature/track-c-evl` only) | IN_PROGRESS at this commit |
+| `ccr-22e3ff16-p7n5k5` (Track C C8 G-SUP) | none (the workflow triggers on `feature/track-c-evl` only) | see §6 |
 
 Owner action: add or extend a workflow trigger for these branches, or push to a triggered branch. Not done here.
+
+## 6. Addendum · Track C tip local regression
+
+| Field | Value |
+|---|---|
+| Branch / HEAD | `ccr-22e3ff16-p7n5k5` @ `97d1b94f0cc9b750b486c542420d12c354fa2df1` (C8 G-SUP software contract; no PR) |
+| Runner | pytest 9.1.1, `PYTHONPATH=src`, full suite, local. It ran concurrently with the tree A run, so the wall time is inflated |
+| Result | **910 passed, 0 failed** in 436.76 s |
+| Raw log sha256 (not committed) | `18daeea4c21b8a3fda66370600faeaefc8845cb5b9343e1212139911314dda2f` |
+| Meaning | Local exact-HEAD regression only. It is **not** CI_VERIFIED, not a C8 freeze and not a statistical result. The Track C handoff recorded "full 910 PASS" locally on this branch; this run reproduces the full suite independently. G-SUP decisions remain NOT_RUN_EFFECT_FLOOR_DEFERRED; numeric configuration is USER_DECISION_REQUIRED |

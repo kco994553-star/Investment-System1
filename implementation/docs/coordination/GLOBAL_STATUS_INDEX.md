@@ -5,7 +5,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 | Field | Value |
 |---|---|
 | Index revision | GSI-001 |
-| Recorded | 2026-10-03T01:20Z (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
+| Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
 | Canonical | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca` (= `origin/HEAD`; unchanged since 2026-09-28) |
@@ -37,7 +37,7 @@ CI column key:
 |---|---|---|---|---|---|---|---|---|
 | 1 | Track A REAL-DATA main | canonical (`recovery/track-a-real-data-frozen` @ `a79642f`, merged) | #3 merged | **INTEGRATED** (FROZEN_VERIFIED) | merged | merged as `bd6bf42` | MERGED | root `Investment-System1 · TRACK_A_REAL_DATA_STATUS.md` |
 | 2 | Track B Personal Investment Layer | canonical (P0 only) | — | IMPLEMENTED (P0 contracts FROZEN); P1+ NOT_STARTED | — | — | P0 MERGED | root `Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md` |
-| 3 | Track C EVL (C0–C8) | `feature/track-c-evl` @ `ff78c4f`; ahead: `ccr-22e3ff16-p7n5k5` @ `97d1b94` (no PR) | #4 | SYNTHETIC_VERIFIED (C0–C7 SOFTWARE_FROZEN, 8/11 software phases; C8 PARTIAL_FOUNDATION_VERIFIED). Real PIT validation NOT_RUN | #4 HEAD ✓ (run 36994387375). `ccr-22e3ff16` NOT_RUN (workflow triggers on `feature/track-c-evl` only) | Text-clean with every branch. **Cross-track source overlap**: IF-1 | NOT_MERGED | `feature/track-c-evl`: root `CURRENT_HANDOFF` + `implementation/reports/track_c_decision_register_2026-10-01.md` |
+| 3 | Track C EVL (C0–C8) | `feature/track-c-evl` @ `ff78c4f`; ahead: `ccr-22e3ff16-p7n5k5` @ `97d1b94` (no PR) | #4 | SYNTHETIC_VERIFIED (C0–C7 SOFTWARE_FROZEN, 8/11 software phases; C8 PARTIAL_FOUNDATION_VERIFIED). Real PIT validation NOT_RUN | #4 HEAD ✓ (run 36994387375). `ccr-22e3ff16` Actions NOT_RUN (workflow triggers on `feature/track-c-evl` only). Local exact-HEAD pytest: 910 passed, 0 failed (GIE-001 §6) | Text-clean with every branch. **Cross-track source overlap**: IF-1 | NOT_MERGED | `feature/track-c-evl`: root `CURRENT_HANDOFF` + `implementation/reports/track_c_decision_register_2026-10-01.md` |
 | 4 | Track D RIG/News P0–P4 | canonical | #1 merged | SYNTHETIC_VERIFIED · canonical MERGED | merged | merged | MERGED (P0–P4) | root `Investment-System1 · RIG News Architecture v0.1.md` |
 | 5 | Track E Prompt Library v1 | canonical | #2 merged | SYNTHETIC_VERIFIED · canonical MERGED (PLV1_CONTENT_V1.0 Frozen) | merged | merged | MERGED | root `Investment-System1 · TRACK_E_PROMPT_LIBRARY_V1_STATUS.md` |
 | 6 | QGV Real Producer | `ccr-db5d5960-qen9yi` @ `5eec129` | #10 | **REAL_DATA_VERIFIED** (500/500 persisted × 3 dates from Track A Frozen raw; not fully scored; READY coverage 0) | code ✓ `4b772c2` (run 36852186517) / head docs-only | Trial: clean merge. Sentinel IF-2 fails by design after #9 merges | NOT_MERGED | `implementation/docs/qgv_producer/STATUS.md` |

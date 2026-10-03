@@ -26,3 +26,9 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
   - No Holdout or CAL_VERIFY access.
   - No grant.
   - No Dynamic Workflow change.
+
+## GCH-001a · addendum · Track C tip local regression
+
+- `ccr-22e3ff16-p7n5k5` @ `97d1b94`, local full pytest: 910 passed, 0 failed. Recorded in GIE-001 §6 and in GSI-001 row 3.
+- Not CI_VERIFIED. No maturity change.
+- Correction to GCH-001: its heading time `01:20Z` was written before the commit. The actual commit time of `b118b68` is 2026-10-03T01:18:13Z. The GCH-001 heading is left unchanged (append-only). GSI and GCH now show 01:18:13Z.

@@ -101,7 +101,7 @@
   "tree_B_pytest": "619 passed, 3 failed (IF-2 x3)",
   "pr12_head_61d3352_pytest": "442 passed, 0 failed",
   "pr13_head_8bb990b_pytest": "410 passed, 0 failed",
-  "ccr_22e3ff16_head_97d1b94_pytest": "IN_PROGRESS at this commit"
+  "ccr_22e3ff16_head_97d1b94_pytest": "910 passed, 0 failed in 436.76 s (local; concurrent with tree A)"
  },
  "engine_fingerprint": {
   "pinned": {
@@ -178,7 +178,7 @@
   "canonical_mini_pytest": "0d55e2e436c218967243ede5150cee02b8f59332c23db08e89d3459bb87b6b38",
   "tree_A_mini_pytest": "21eb255b8adeb6a16222ae9440b4c72721667032b75936b9725b0df84bbfa016",
   "tree_A_pytest": "039e7d09b06bb4dc8a090e9ca1fedfbddbaf96e08b1e24402ce6d81996d5b045",
-  "ccr_22e3ff16_pytest": "6bb3fae7dd968a64e3ed5492cd5a18b180687a406b6a27df0eec4198acc25cad"
+  "ccr_22e3ff16_pytest": "18daeea4c21b8a3fda66370600faeaefc8845cb5b9343e1212139911314dda2f"
  },
  "raw_logs_committed": false
 }
