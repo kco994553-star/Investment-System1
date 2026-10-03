@@ -8,6 +8,8 @@ import subprocess
 from pathlib import Path
 
 MODELS = "investment_system/contracts/models.py"
+CANONICAL_SOURCE_COMMIT = "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+CANONICAL_SOURCE_PREFIX = "implementation/src/"
 # Original bytes retained; CDR-004 adopts exactly Track C 2137883, not arbitrary schema changes.
 MODELS_PRE_ADOPTION_SHA256 = "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506"
 MODELS_C28_ADOPTED_SHA256 = "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92"
@@ -68,6 +70,7 @@ def models_state(body: bytes) -> dict:
 
 
 def compare_shared_sources(own_src: Path, infra_src: Path, shared: tuple[str, ...]) -> dict:
+    same_tree = own_src.resolve() == infra_src.resolve()
     files = {}
     for rel in shared:
         paths = [own_src / rel, infra_src / rel]
@@ -78,12 +81,38 @@ def compare_shared_sources(own_src: Path, infra_src: Path, shared: tuple[str, ..
             states = [models_state(body) for body in bodies]
             ok = all(state["status"] == "PASS" for state in states)
             detail.update({"mode": "EXACT_CDR004_SCHEMA_ACCEPTANCE", "states": states})
+        elif same_tree and rel != MODELS:
+            # Pair equality is vacuous when both paths resolve to one source
+            # tree. Compare with the fixed canonical Git object instead; never
+            # use HEAD, a moving ref, caller source bytes or an absent fallback.
+            baseline, error = _canonical_source(rel)
+            ok = baseline is not None and all(body is not None and body == baseline for body in bodies)
+            detail.update({"mode": "EXACT_CANONICAL_SOURCE_PROTECTION",
+                           "baseline_commit": CANONICAL_SOURCE_COMMIT,
+                           "baseline_path": CANONICAL_SOURCE_PREFIX + rel,
+                           "baseline_sha256": sha256(baseline) if baseline is not None else None,
+                           "baseline_available": baseline is not None})
+            if error is not None:
+                detail["baseline_error"] = error
         else:
             ok = all(body is not None for body in bodies) and bodies[0] == bodies[1]
             detail["mode"] = "BYTE_IDENTICAL"
         detail["status"] = "PASS" if ok else "FAIL"
         files[rel] = detail
     return {"status": "PASS" if all(v["status"] == "PASS" for v in files.values()) else "FAIL", "files": files}
+
+
+def _canonical_source(rel: str) -> tuple[bytes | None, str | None]:
+    """Local immutable baseline lookup from this helper's repository, fail closed."""
+    try:
+        proc = subprocess.run(["git", "--no-replace-objects", "-C", str(Path(__file__).resolve().parents[1]), "show",
+                               CANONICAL_SOURCE_COMMIT + ":" + CANONICAL_SOURCE_PREFIX + rel],
+                              capture_output=True)
+    except OSError as error:
+        return None, "canonical Git baseline unavailable: " + type(error).__name__
+    if proc.returncode != 0:
+        return None, "canonical Git object or source path unavailable"
+    return proc.stdout, None
 
 
 def boundary_pin(path: Path) -> dict:
