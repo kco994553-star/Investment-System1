@@ -1,0 +1,115 @@
+{
+  "branch": "codex/combined-integration-2026-10-03",
+  "expected_head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "objects": [
+    {
+      "type": "blob",
+      "sha": "0676831000a13f1cf611eb8ddaff6ebfea4d32ff"
+    },
+    {
+      "type": "blob",
+      "sha": "f5a513c81cfef6c419733b6583ed1dfdf4c4c0ac"
+    },
+    {
+      "type": "blob",
+      "sha": "71b8c1312715b0f1d317fec267c2805ac2039d07"
+    },
+    {
+      "type": "blob",
+      "sha": "d2f833ef1685dc53eeec0e706fa4a73a719b6c1d"
+    },
+    {
+      "type": "blob",
+      "sha": "06b07687335e50fb83311e374757f5e9380169c5"
+    },
+    {
+      "type": "blob",
+      "sha": "a519d5e3da41d8ce644f6701ea6cfffc501516f4"
+    },
+    {
+      "type": "blob",
+      "sha": "4716fd5c1995518da867fb25c30661c0281f2df9"
+    },
+    {
+      "type": "blob",
+      "sha": "3400601865b7d1e11810e204b3989886e7343801"
+    },
+    {
+      "type": "tree",
+      "sha": "80a2324ce61d19ae57d02e3ae526fedc84b6b84d"
+    },
+    {
+      "type": "tree",
+      "sha": "f4bfc47ff2b4c7a8e1decde031853fbf409c4e2f"
+    },
+    {
+      "type": "blob",
+      "sha": "51a4725c9102ab27a2084c73ab6766b06da7db95"
+    },
+    {
+      "type": "blob",
+      "sha": "b4d87fe10a65cf994f325b61c37cc63bdf15fb1f"
+    },
+    {
+      "type": "blob",
+      "sha": "655a1a13a2b653f670633712a7b48b3551689e6c"
+    },
+    {
+      "type": "blob",
+      "sha": "09d5454e12fe2f6deb2014d98a562850f971f604"
+    },
+    {
+      "type": "tree",
+      "sha": "2b22aea9b4abd183cdaea183596d1f098d169686"
+    },
+    {
+      "type": "tree",
+      "sha": "aedfe0cbc5c0c835dac526dee2419b71f9663a37"
+    },
+    {
+      "type": "tree",
+      "sha": "eb1525fda36409d94343f6ac514801ba8b8bb83e"
+    },
+    {
+      "type": "tree",
+      "sha": "d1d1181a3d6582c986745f9c22b88c9b713fe6c4"
+    },
+    {
+      "type": "tree",
+      "sha": "78af399afc79da419a3380bc2ef7f1a09b130430"
+    },
+    {
+      "type": "tree",
+      "sha": "5795e6cbf7e6389c6f18c82b80e65d8dcc31f690"
+    },
+    {
+      "type": "tree",
+      "sha": "93982063e20229be3ed7daab97019c4a6aa33ee3"
+    },
+    {
+      "type": "tree",
+      "sha": "10695e2ed4ed657ff4683a4955a4f19541ffb727"
+    },
+    {
+      "type": "tree",
+      "sha": "9aad69381dfd0b8f80460e45a6e5771d535e6960"
+    },
+    {
+      "type": "tree",
+      "sha": "b1dbf23fb67f66737f23f3d5efc864718584310b"
+    },
+    {
+      "type": "commit",
+      "sha": "0ea00d27f715140a380df94aa1618b5a46d07839"
+    },
+    {
+      "type": "commit",
+      "sha": "26b6c6ae37fb1a6bb96555527ab79b5b5584d146"
+    },
+    {
+      "type": "commit",
+      "sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588"
+    }
+  ],
+  "remote_head": "86ad3628dd5c62c6d873e42511e577f24f4fb588"
+}

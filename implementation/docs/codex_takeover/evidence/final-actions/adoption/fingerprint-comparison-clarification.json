@@ -1,0 +1,74 @@
+{
+  "scope": "Six CDR-004 proposal before/after synthetic fixture probes; real3.11 matching established validation runtime",
+  "changes_per_probe": 690,
+  "lineage_field_additions": 688,
+  "existing_derived_fingerprint_value_changes": 2,
+  "direct_fixture_snapshots": {
+    "technical": 103,
+    "macro": 46
+  },
+  "original_fingerprint_tool_snapshots": {
+    "technical": 19,
+    "macro": 4
+  },
+  "fingerprint_shape_additions": 92,
+  "changes": [
+    {
+      "path": "/fingerprints/technical",
+      "before": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+      "after": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+    },
+    {
+      "path": "/fingerprints/macro",
+      "before": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+      "after": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501"
+    }
+  ],
+  "rationale": "The unchanged original tool SHA256-hashes JSON of dataclasses.asdict output with only legacy volatile identifiers/times dropped. It intentionally keeps the four optional lineage fields. Its two existing Technical/Macro snapshot content fingerprints therefore change under the approved additive schema. Probe metadata copies these independently recomputed existing tool digests; they are neither invented hashes nor file-source SHA.",
+  "source_refs": [
+    {
+      "path": "implementation/tools/producer_engine_fingerprint.py",
+      "lines": [
+        15,
+        19,
+        21,
+        23,
+        33,
+        34,
+        39,
+        40,
+        44
+      ]
+    },
+    {
+      "path": "implementation/tests/test_p01_research_publication.py",
+      "lines": [
+        40,
+        42,
+        46,
+        48,
+        52,
+        56,
+        58,
+        62
+      ]
+    }
+  ],
+  "qualification": "Existing investment output values and decisions are unchanged within the executed fixture comparisons. Serialized shape and these two specified content digests changed as approved by CDR-004. Do not claim zero changes to all JSON metadata fields.",
+  "exact_digest_check": "Independent probe classifier permits these two digest paths; the unchanged state-exact P01 guarded test additionally enforces exact pre-adoption and approved adopted fingerprint constants in actual3.11 before/after runs.",
+  "unchanged_tool_fingerprints": [
+    "qgv",
+    "leaderboard",
+    "portfolio_official_book",
+    "n_qgv"
+  ],
+  "outside_scope": [
+    "new statistical policy",
+    "real calibration configuration",
+    "CAL_VERIFY",
+    "Holdout",
+    "publication grant",
+    "Official promotion",
+    "canonical merge"
+  ]
+}
