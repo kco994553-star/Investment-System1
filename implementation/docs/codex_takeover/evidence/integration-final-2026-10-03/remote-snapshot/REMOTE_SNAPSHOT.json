@@ -1,0 +1,260 @@
+{
+  "observed_at": "2026-10-03T08:52:11.488111+00:00",
+  "canonical_repo_default_branch": "claude/investment-system-top500-validation-alrugm",
+  "open_pr_count": 30,
+  "draft_pr_count": 30,
+  "branch_count": 44,
+  "selected_refs": {
+    "claude/investment-system-top500-validation-alrugm": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "integration/global-handoff-v1": "5fafee22ae4c1d246b6f2ef1f3d870344d7627c4",
+    "ccr-22e3ff16-p7n5k5": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "codex/combined-integration-2026-10-03": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "codex/track-c-gsup-v2-2026-10-03": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "codex/integration-hardening-2026-10-03": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+    "codex/takeover-integration-2026-10-03": "e07beb9ecd77bdeb0cc94465259caa8c2f022f1f",
+    "integration/web/research-render-guard-v1": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+    "integration/web/production-state-presentation-v1": "e91dc773af600ff66d31575ce3774490a0b0be8c"
+  },
+  "open_PRs": [
+    {
+      "number": 35,
+      "draft": true,
+      "head": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "branch": "codex/integration-hardening-2026-10-03",
+      "base": "codex/track-c-gsup-v2-2026-10-03",
+      "title": "Integration: repair vacuous same-tree shared-source protection"
+    },
+    {
+      "number": 34,
+      "draft": true,
+      "head": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+      "branch": "integration/web/research-render-guard-v1",
+      "base": "feature/producer-infrastructure-v1",
+      "title": "[proposal] Web render guard: research/provisional sections never render as LIVE/FROZEN (G3)"
+    },
+    {
+      "number": 33,
+      "draft": true,
+      "head": "9626ab06cd2b93cdd250159347cdda5d08f76e03",
+      "branch": "integration/a1-adoption/pr7-entity-metadata",
+      "base": "ccr-41677301-10nj3u",
+      "title": "[proposal] #7 C-28 adoption evidence record (CDR-004)"
+    },
+    {
+      "number": 32,
+      "draft": true,
+      "head": "e9aee0cb8b80e17f7ae12e01156f6670135de2fa",
+      "branch": "integration/a1-adoption/pr9-producer-infra",
+      "base": "feature/producer-infrastructure-v1",
+      "title": "[proposal] #9 C-28 adoption evidence record (CDR-004)"
+    },
+    {
+      "number": 31,
+      "draft": true,
+      "head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "branch": "codex/track-c-gsup-v2-2026-10-03",
+      "base": "codex/combined-integration-2026-10-03",
+      "title": "Track C: approved synthetic source identity and M-B arithmetic review"
+    },
+    {
+      "number": 30,
+      "draft": true,
+      "head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "branch": "codex/combined-integration-2026-10-03",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "title": "Integration trial: preserved C-28 adoption, producer compatibility and existing-Web E2E"
+    },
+    {
+      "number": 29,
+      "draft": true,
+      "head": "d0444583197c96f61fce811573dfd59670fd4f78",
+      "branch": "codex/web-producer-integration-readiness-2026-10-03",
+      "base": "feature/qgv-invalidation-binding-v1",
+      "title": "Existing Web: withheld producer-contract fixture and locale/mobile/failure E2E"
+    },
+    {
+      "number": 28,
+      "draft": true,
+      "head": "e07beb9ecd77bdeb0cc94465259caa8c2f022f1f",
+      "branch": "codex/takeover-integration-2026-10-03",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "title": "Fresh takeover audit: exact remote state, capability inventory and verified integration receipts"
+    },
+    {
+      "number": 27,
+      "draft": true,
+      "head": "dc7daf70a42fb3f2bbfe96a775a1654a92ff95c1",
+      "branch": "integration/a1-adoption/pr17-p01",
+      "base": "feature/p01-research-publication-v1",
+      "title": "[proposal] #17 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "number": 26,
+      "draft": true,
+      "head": "a4805dbcdf37b890f74f6d00c00952ff95b91c8f",
+      "branch": "integration/a1-adoption/pr14-leaderboard",
+      "base": "feature/leaderboard-real-producer-v1",
+      "title": "[proposal] #14 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "number": 25,
+      "draft": true,
+      "head": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "branch": "integration/a1-adoption/pr12-macro-producer",
+      "base": "feature/macro-real-producer-v1",
+      "title": "[proposal] #12 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "number": 24,
+      "draft": true,
+      "head": "9c71781c62e46a4f2972d58c1439ef6ca2a85b07",
+      "branch": "integration/a1-adoption/pr18-us-equity-session",
+      "base": "feature/us-equity-session-v1",
+      "title": "[proposal] #18 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "number": 23,
+      "draft": true,
+      "head": "5c9dd5abd760116df626e9b2e88e3fe48852066a",
+      "branch": "integration/a1-adoption/pr15-technical-model",
+      "base": "feature/technical-real-model-v1",
+      "title": "[proposal] #15 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "number": 22,
+      "draft": true,
+      "head": "248e3d3e83db9a2db3d90583ae53929db936d0f3",
+      "branch": "integration/a1-adoption/pr11-technical-producer",
+      "base": "feature/technical-real-producer-v1",
+      "title": "[proposal] #11 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "number": 21,
+      "draft": true,
+      "head": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
+      "branch": "ccr-2e16018a-qukwmg",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "title": "Claude Code Worker Contract v1.0 + CLAUDE.md routing (docs only)"
+    },
+    {
+      "number": 19,
+      "draft": true,
+      "head": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "branch": "feature/qgv-invalidation-binding-v1",
+      "base": "feature/p01-research-publication-v1",
+      "title": "Add QGV invalidation binding without activating display"
+    },
+    {
+      "number": 18,
+      "draft": true,
+      "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "branch": "feature/us-equity-session-v1",
+      "base": "feature/technical-real-model-v1",
+      "title": "US equity trading session v1: calendar vintage binder and close-availability guard"
+    },
+    {
+      "number": 17,
+      "draft": true,
+      "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "branch": "feature/p01-research-publication-v1",
+      "base": "feature/producer-infrastructure-v1",
+      "title": "P01 research publication v1: envelope and predicate, display stays off"
+    },
+    {
+      "number": 16,
+      "draft": true,
+      "head": "ef65caa5437a04610fa43f93209afb9193ba24aa",
+      "branch": "feature/sec-primary-disclosure-v1",
+      "base": "feature/rig-news-real-ingestion-v1",
+      "title": "SEC 8-K primary disclosure v1 (general news stays unavailable)"
+    },
+    {
+      "number": 15,
+      "draft": true,
+      "head": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "branch": "feature/technical-real-model-v1",
+      "base": "feature/technical-real-producer-v1",
+      "title": "Technical REAL Model v1: M1 features and M2 regime (M3 held)"
+    },
+    {
+      "number": 14,
+      "draft": true,
+      "head": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+      "branch": "feature/leaderboard-real-producer-v1",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "title": "Leaderboard REAL Producer v1: existing engine replay, research snapshot, publication blocked"
+    },
+    {
+      "number": 13,
+      "draft": true,
+      "head": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+      "branch": "feature/rig-news-real-ingestion-v1",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "title": "RIG news ingestion v1: implementation baseline / integration wait"
+    },
+    {
+      "number": 12,
+      "draft": true,
+      "head": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+      "branch": "feature/macro-real-producer-v1",
+      "base": "feature/producer-infrastructure-v1",
+      "title": "Macro REAL Producer v1: implementation baseline / integration wait"
+    },
+    {
+      "number": 11,
+      "draft": true,
+      "head": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "branch": "feature/technical-real-producer-v1",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "title": "Technical real-input producer v1 (PIT gate, model NOT_AVAILABLE)"
+    },
+    {
+      "number": 10,
+      "draft": true,
+      "head": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+      "branch": "ccr-db5d5960-qen9yi",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "title": "QGV Real Producer v1: per-company PIT persistence, batch manifest, exporter"
+    },
+    {
+      "number": 9,
+      "draft": true,
+      "head": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "branch": "feature/producer-infrastructure-v1",
+      "base": "feature/global-language-search-v1",
+      "title": "Producer Infrastructure v1: producer contract, fail-closed bundle exporter, raw persistence design (stacked on PR #6)"
+    },
+    {
+      "number": 7,
+      "draft": true,
+      "head": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "branch": "ccr-41677301-10nj3u",
+      "base": "feature/global-language-search-v1",
+      "title": "Entity Metadata Coverage: CIK-bound Top-500 search metadata (stacked on #6)"
+    },
+    {
+      "number": 6,
+      "draft": true,
+      "head": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "branch": "feature/global-language-search-v1",
+      "base": "feature/web-mvp-v1",
+      "title": "Global Language & Search implementation baseline"
+    },
+    {
+      "number": 5,
+      "draft": true,
+      "head": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "branch": "feature/web-mvp-v1",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "title": "Web MVP v1: personal mobile cockpit with read-only upstream adapters"
+    },
+    {
+      "number": 4,
+      "draft": true,
+      "head": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+      "branch": "feature/track-c-evl",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "title": "Track C: C7 software frozen; C8-C10 policy packages await approval"
+    }
+  ]
+}

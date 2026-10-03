@@ -1,0 +1,30 @@
+{
+  "upstream_head": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+  "upstream_base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+  "baseline_source_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "original_direct_methodology_bundle_admission": "STILL_ACCEPTED",
+  "source_preservation": {
+    "implementation/src/investment_system/product/web_mvp.py": {
+      "baseline675_sha256": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323",
+      "upstream2b_sha256": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323",
+      "byte_identical": true
+    },
+    "implementation/src/investment_system/product/web_assets/app.js": {
+      "baseline675_sha256": "7944757a8fb67f889dd54d8b87c2986e9b47d6592c1bd0ab681a842bf3dbead9",
+      "upstream2b_sha256": "9e34e1edc022050519161b061320ae8d0fad4121e2cbfa221a731b33467e5aee",
+      "byte_identical": false
+    },
+    "implementation/src/investment_system/product/web_assets/locale.js": {
+      "baseline675_sha256": "c19721ddbfb1b373ac5d6ce8ae0bdf06d63d8a8df694d2d2f9c9691649b41752",
+      "upstream2b_sha256": "ccf9164e2d7cb8f84758bfcfabe8b1ab5ec25e59baa6621e2b00b879fd3bc51a",
+      "byte_identical": false
+    },
+    "implementation/src/investment_system/product/web_assets/index.html": {
+      "baseline675_sha256": "6d20a3dbc155dc8bff0e7e1b4b4cb8fa8c8eb511d2503d3649b76c6aac160470",
+      "upstream2b_sha256": "6d20a3dbc155dc8bff0e7e1b4b4cb8fa8c8eb511d2503d3649b76c6aac160470",
+      "byte_identical": true
+    }
+  },
+  "source_mutations_by_reviewer": 0,
+  "real_data_provider_calls": 0
+}

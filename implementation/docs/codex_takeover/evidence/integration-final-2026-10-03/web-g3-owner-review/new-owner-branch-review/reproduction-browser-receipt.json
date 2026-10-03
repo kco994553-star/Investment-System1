@@ -1,0 +1,17 @@
+{
+  "source_head": "e91dc773af600ff66d31575ce3774490a0b0be8c",
+  "scope": "HAND_BUILT_TEST_VECTOR_ONLY",
+  "actual_browser": true,
+  "browser_reproduction": "STILL_REPRODUCED_PRESENTATION_CHILD: direct PROVISIONAL_RESEARCH qgv11.11 renders LIVE",
+  "live_badges": [
+    "LIVE"
+  ],
+  "rendered_test_value": "11.11",
+  "visible_text": "DEMO 포함 · 합성 데이터는 투자 판단용이 아닙니다.\n← 기업 목록\nCOMPANY DETAIL\nG3TEST\n\nG3 TEST VECTOR ONLY\n\n☆\nQGV\nLIVE FRESH · 만료 전 2026-10-03T00:00:00Z\nG3 SYNTHETIC TEST VECTOR falsely labelled LIVE; NEVER PRODUCTION\nQuality(품질)\n11.11\nGrowth(성장)\n22.22\nValuation(가치평가)\n33.33\nTotal score(종합 점수)\n44.44\nConfidence(신뢰도)\n미제공\nCoverage(커버리지)\n미제공\nEvidence(근거) · 원본 보기\nTechnical(기술적 분석)\nNOT_AVAILABLE 시점 미제공\n\n이 기업의 Snapshot 미제공\n\nMacro exposure / context(거시 노출)\nNOT_AVAILABLE 시점 미제공\n\nG3 isolated test vector has no producer data\n\nPortfolio status(보유 상태)\nNOT_AVAILABLE 시점 미제공\n\n실제 보유 상태 미제공\n\nNews / Relationships(뉴스·관계)\nNOT_AVAILABLE 시점 미제공\n이 기업의 뉴스·관계망 확인 →\nEvidence(근거) · 원본 보기",
+  "page_errors": [],
+  "external_page_requests": 0,
+  "original_data_json_sha256": "4f0fe999b9cd4e08c82bf40a8b807fbc255edf24e5f49ce7aaea391afe6e6230",
+  "original_app_js_sha256": "324587d29091d772f5a4bcffdcb3874faeda1a10648a266fa0f28bfaa5bd1a84",
+  "actual_network_data_access": "NONE: all page requests fulfilled from isolated local files",
+  "grants_issued": 0
+}

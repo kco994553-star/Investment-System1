@@ -1,0 +1,216 @@
+{
+  "upstream_head": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+  "scope": "EXISTING_UPSTREAM_FUNCTION_READ_ONLY_ORACLE",
+  "cases": [
+    {
+      "state": "LIVE",
+      "status": "IDEA",
+      "metadata_location": "section.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "LIVE",
+      "actual_data_visible": true,
+      "original_input_unchanged": true,
+      "verdict": "FAIL_G3_BYPASS"
+    },
+    {
+      "state": "LIVE",
+      "status": "IDEA",
+      "metadata_location": "section.producer.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "NOT_AVAILABLE",
+      "actual_data_visible": false,
+      "original_input_unchanged": true,
+      "verdict": "PASS"
+    },
+    {
+      "state": "LIVE",
+      "status": "PROVISIONAL",
+      "metadata_location": "section.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "LIVE",
+      "actual_data_visible": true,
+      "original_input_unchanged": true,
+      "verdict": "FAIL_G3_BYPASS"
+    },
+    {
+      "state": "LIVE",
+      "status": "PROVISIONAL",
+      "metadata_location": "section.producer.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "NOT_AVAILABLE",
+      "actual_data_visible": false,
+      "original_input_unchanged": true,
+      "verdict": "PASS"
+    },
+    {
+      "state": "LIVE",
+      "status": "PROVISIONAL_INITIAL_PRIOR",
+      "metadata_location": "section.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "LIVE",
+      "actual_data_visible": true,
+      "original_input_unchanged": true,
+      "verdict": "FAIL_G3_BYPASS"
+    },
+    {
+      "state": "LIVE",
+      "status": "PROVISIONAL_INITIAL_PRIOR",
+      "metadata_location": "section.producer.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "NOT_AVAILABLE",
+      "actual_data_visible": false,
+      "original_input_unchanged": true,
+      "verdict": "PASS"
+    },
+    {
+      "state": "LIVE",
+      "status": "PROVISIONAL_RESEARCH",
+      "metadata_location": "section.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "LIVE",
+      "actual_data_visible": true,
+      "original_input_unchanged": true,
+      "verdict": "FAIL_G3_BYPASS"
+    },
+    {
+      "state": "LIVE",
+      "status": "PROVISIONAL_RESEARCH",
+      "metadata_location": "section.producer.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "NOT_AVAILABLE",
+      "actual_data_visible": false,
+      "original_input_unchanged": true,
+      "verdict": "PASS"
+    },
+    {
+      "state": "LIVE",
+      "status": "RESEARCH",
+      "metadata_location": "section.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "LIVE",
+      "actual_data_visible": true,
+      "original_input_unchanged": true,
+      "verdict": "FAIL_G3_BYPASS"
+    },
+    {
+      "state": "LIVE",
+      "status": "RESEARCH",
+      "metadata_location": "section.producer.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "NOT_AVAILABLE",
+      "actual_data_visible": false,
+      "original_input_unchanged": true,
+      "verdict": "PASS"
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "status": "IDEA",
+      "metadata_location": "section.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "FROZEN_SNAPSHOT",
+      "actual_data_visible": true,
+      "original_input_unchanged": true,
+      "verdict": "FAIL_G3_BYPASS"
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "status": "IDEA",
+      "metadata_location": "section.producer.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "NOT_AVAILABLE",
+      "actual_data_visible": false,
+      "original_input_unchanged": true,
+      "verdict": "PASS"
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "status": "PROVISIONAL",
+      "metadata_location": "section.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "FROZEN_SNAPSHOT",
+      "actual_data_visible": true,
+      "original_input_unchanged": true,
+      "verdict": "FAIL_G3_BYPASS"
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "status": "PROVISIONAL",
+      "metadata_location": "section.producer.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "NOT_AVAILABLE",
+      "actual_data_visible": false,
+      "original_input_unchanged": true,
+      "verdict": "PASS"
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "status": "PROVISIONAL_INITIAL_PRIOR",
+      "metadata_location": "section.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "FROZEN_SNAPSHOT",
+      "actual_data_visible": true,
+      "original_input_unchanged": true,
+      "verdict": "FAIL_G3_BYPASS"
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "status": "PROVISIONAL_INITIAL_PRIOR",
+      "metadata_location": "section.producer.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "NOT_AVAILABLE",
+      "actual_data_visible": false,
+      "original_input_unchanged": true,
+      "verdict": "PASS"
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "status": "PROVISIONAL_RESEARCH",
+      "metadata_location": "section.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "FROZEN_SNAPSHOT",
+      "actual_data_visible": true,
+      "original_input_unchanged": true,
+      "verdict": "FAIL_G3_BYPASS"
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "status": "PROVISIONAL_RESEARCH",
+      "metadata_location": "section.producer.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "NOT_AVAILABLE",
+      "actual_data_visible": false,
+      "original_input_unchanged": true,
+      "verdict": "PASS"
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "status": "RESEARCH",
+      "metadata_location": "section.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "FROZEN_SNAPSHOT",
+      "actual_data_visible": true,
+      "original_input_unchanged": true,
+      "verdict": "FAIL_G3_BYPASS"
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "status": "RESEARCH",
+      "metadata_location": "section.producer.methodology",
+      "expected_existing_policy": "WITHHOLD",
+      "actual_view_state": "NOT_AVAILABLE",
+      "actual_data_visible": false,
+      "original_input_unchanged": true,
+      "verdict": "PASS"
+    }
+  ],
+  "passing": 10,
+  "failing": 10,
+  "unrelated_nested_diagnostic": {
+    "explicit_methodology_status": "CERTIFIED_TEST_VECTOR_ONLY",
+    "diagnostic_status": "IDEA",
+    "actual_view_state": "NOT_AVAILABLE",
+    "actual_data_visible": false,
+    "policy_parity_question": "Existing producer validates methodology.status only; recursive diagnostic scan is broader. No publication grant is implied."
+  },
+  "source_mutations_by_reviewer": 0
+}

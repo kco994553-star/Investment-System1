@@ -1,0 +1,702 @@
+{
+ "results": [
+  {
+   "summary": "Independent read-only re-audit of PR #30 (origin/codex/combined-integration-2026-10-03 @ 86ad3628dd5c62c6d873e42511e577f24f4fb588, base canonical b8e39a2196a6d7794a04a0cd5393c68329e126ca). Verdict: FRESH_WITH_FINDINGS. No blocking findings.\n\nFreshness: all 17 constituent merge parents are the current remote heads. That covers Track C b9e01a9, #5, #6, #7, #9, #10, the A1 proposals #22-#27, #13, #16, #19, #21 and #29. Every A1 proposal base is the current owner head, and the refs were unchanged after a final re-fetch. All 20 merges are clean and tree-identical to an automatic `git merge-tree` re-merge, so no merge adds hidden content. Compared with the Track C tip b9e01a9, #30 only adds files (239 additions, 0 modified or deleted). The Codex-only commits (d9a45fe, 41a6efb, 0366a3c, 0ea00d2, 86ad362) touch only workflows, tests, tools and docs. None touches implementation/src or a Track C frozen blob.\n\nTests and CI:\n- Local full suite: 1165 passed, 0 failed/errors/skipped. This matches CI's 1165.\n- All 9 PR #30 check runs (8 workflow runs) are on head_sha 86ad362, event pull_request, conclusion success.\n- Engine fingerprints match the adopted state: technical 66cb2383, macro 7e427949, qgv a1714480, leaderboard 112b245b, portfolio 53d930a7. As an independent check, dropping the 4 CDR-004 lineage fields reproduces the canonical values exactly (technical 82165414, macro 7bbfad69, other three identical). So the only change is the adopted schema.\n- Web E2E: 6/6 checks, 0 errors. Fixture hashes are byte-identical to CI.\n- Track C tools: all three raise only \"new file outside authorized Track C\" / \"new unauthorized files\", listing exactly the 239 additions. With those additions filtered out, all three preservation audits PASS (0 frozen source/test changes, overlays append-only).\n\nCompatibility-repair refutation attempts:\n- (a) The isolated absence path is kept. It passes in the real owner trees 8bb990b, 5eec129 and a4805db.\n- (b) In the combined tree the full integrated checks really run, and an incomplete or partially present dependency fails.\n- (c) The models.py exception accepts only the exact canonical bytes (5313bbd4…) or the exact Track C 2137883 bytes (fa386626…). Seven third variants all FAIL in the tool, and the pytest-level tests also FAIL for V1/V2: changed default, 5th field, changed annotation, extra field on legacy, trailing comment, changed QGVSnapshot default.\n- (d) The RIG registry check FAILs on a one-byte working-tree mutation, on deleting the directory, and on a one-byte committed-blob mutation (tested in an isolated scratch clone).\n- (e) 5 assert/check lines were deleted, all replaced with equal or stricter logic, with one exception: the RIG \"not copied\" absence assert was relaxed (finding 2). Exactly the 15 Codex-touched files are the only files not taken from a constituent head.\n\nProcess notes:\n- I pushed nothing, commented nowhere and touched no remote.\n- My first scratch-clone attempt failed to check out 86ad362, so its commands ran inside that scratch clone only. That created a local commit e16b990 in the clone's own object store. I verified it is absent from the main repo and deleted the clone.\n- The main checkout was unchanged throughout (branch ccr-2e16018a-qukwmg, f1b5afb, clean).\n- My test run created the /tmp/rig-news-producer-ro worktree. I removed it, removed all my worktrees and pruned.\n- A new descendant branch, origin/codex/track-c-gsup-v2-2026-10-03 (f29ea6e, built on 86ad362), appeared during the audit. It is not part of #30 and does not make #30 stale.\n\nStates:\n- BRANCH_STATE: 86ad362 is FRESH; CI_VERIFIED on the current HEAD; local regression reproduced.\n- INTEGRATION_STATE: TRIAL_INTEGRATION_VERIFIED_WITH_NONBLOCKING_FINDINGS (Draft PR #30, not merged).\n- CANONICAL_STATE: canonical unchanged at b8e39a2; nothing merged. Canonical merge remains USER_DECISION_REQUIRED.",
+   "criteria": [
+    {
+     "id": "C1",
+     "criterion": "Composition: every merge parent on the first-parent chain from b8e39a2 to HEAD equals the current remote head; list excluded open PR heads",
+     "status": "DONE",
+     "evidence": "`git fetch origin` then `git log --first-parent b8e39a2..86ad362` lists 20 merges plus 2 non-merge commits (d9a45fe, 86ad362). Second parents and their current remote heads (all FRESH):\n- be239a5 <- b9e01a9 = origin/ccr-22e3ff16-p7n5k5 (Track C owner tip; also contains #4 feature/track-c-evl ff78c4f)\n- cc400c0 <- a4e49c8 = feature/web-mvp-v1 #5\n- 973740c <- eda65bf = feature/global-language-search-v1 #6\n- 1c48d40 <- a013f1c = ccr-41677301-10nj3u #7\n- df5be9a <- f8af596 = feature/producer-infrastructure-v1 #9\n- cbf718d <- 5eec129 = ccr-db5d5960-qen9yi #10\n- 35a7cba <- 248e3d3 = #22 (base a2e0790 = #11 head)\n- a3b2411 <- 5c9dd5a = #23 (base ce58704 = #15)\n- af6008b <- 9c71781 = #24 (base 2c088ce = #18)\n- fe73ac4 <- 4a07099 = #25 (base 61d3352 = #12)\n- 5fc13ba <- a4805db = #26 (base 0d48d86 = #14)\n- ec70709 <- 8bb990b = feature/rig-news-real-ingestion-v1 #13\n- 760147f <- ef65caa = feature/sec-primary-disclosure-v1 #16\n- 7eaf660 <- dc7daf7 = #27 (base 21039a0 = #17)\n- 95a8d53 <- c3dbf8a = feature/qgv-invalidation-binding-v1 #19\n- 583041a <- f1b5afb = ccr-2e16018a-qukwmg #21\n- e371359 <- d044458 = codex/web-producer-integration-readiness #29\n- bfa3e26 <- 41a6efb, 71d5773 <- 0366a3c, 26b6c6a <- 0ea00d2: these three are PR #30-internal Codex commits that are not the head of any remote branch.\nAll A1 proposal bases equal their owner branches' current heads. A final re-fetch showed every ref unchanged.\nOpen PR heads not included:\n- #28 codex/takeover-integration-2026-10-03 db9a032: 129 files, all under implementation/docs/codex_takeover; no src/tests/workflows. Its absence does not matter for code or test results.\nOther remote branches not included (none has an open PR):\n- docs/qgv-context-policy-approvals b42f2be: 7 implementation/reports QGV context-filter approval docs. No context-filter code exists in #30, so its absence does not affect code.\n- integration/global-handoff-v1 ae6e94a: single-writer coordination docs, intentionally separate.\n- integration/claude-worker-contract-v1 d87d4cd: a different docs variant of the contract; #21 f1b5afb is included.\n- ccr-e0fc1e48-9tcto3: audit report only.\n- integration/web-mvp-language-search(-audit): an older web gate workflow/tool.\n- claude/lol-coach-relay-format-y8uk0x: unrelated project, not based on canonical.\n- codex/track-c-gsup-v2-2026-10-03 f29ea6e: appeared during the audit and is a descendant of 86ad362, not a constituent."
+    },
+    {
+     "id": "C2",
+     "criterion": "Non-merge commits not reachable from any constituent head; files touched; none touches implementation/src or Track C frozen blobs",
+     "status": "DONE",
+     "evidence": "`git log --no-merges 86ad362 ^<18 constituent heads incl. b8e39a2>` returns 5 commits:\n- d9a45fe: adds .github/workflows/codex-integration-readiness.yml.\n- 41a6efb: tests test_leaderboard_producer_infra_compat.py, test_qgv_producer_infra_compat.py, test_rig_news_ingest.py (modified), test_producer_source_compat.py (new); tools leaderboard_producer_infra_compat.py, qgv_producer_infra_compat.py (modified), producer_source_compat.py (new); 10 evidence/docs files under implementation/docs/producer_compatibility.\n- 0366a3c: implementation/tests/test_rig_news_ingest.py.\n- 0ea00d2: 7 workflows (p01, qgv-invalidation, sec-primary-disclosure, technical-real-model, technical-real-producer, us-equity-session, web-mvp-validation) plus 4 docs/evidence files.\n- 86ad362: codex-integration-readiness.yml.\nNone touches implementation/src, evl/*, tests/test_evl_c*, the 2137883 files (lineage.py, models.py, macro/engine.py, technical/engine.py, plus evl/bindings.py and test_evl_c4_bindings.py), or root overlays.\nSupporting checks:\n- `git diff b9e01a9 86ad362` on the evl, test_evl_c* and 4-file paths is empty.\n- `git diff --name-status b9e01a9 86ad362 | grep -v ^A` is empty, so the change is purely additive.\n- The only root-level change is the added CLAUDE.md.\n- All 20 merges are CLEAN_IDENTICAL under `git merge-tree --write-tree` (no evil merges).\n- The 15 Codex-touched files are the only files in #30 not byte-identical to a constituent head, and no constituent file is missing."
+    },
+    {
+     "id": "C3",
+     "criterion": "Compatibility-repair soundness (a)-(e)",
+     "status": "DONE",
+     "evidence": "(a) Isolated absence path is retained. I ran #30's test files overlaid on the real isolated owner trees with the env vars unset:\n- 8bb990b (RIG): test_rig_news_ingest.py 20 passed; reports/entity_metadata absent.\n- 5eec129 (QGV): 1 passed; find_spec(investment_system.producers) = None.\n- a4805db (leaderboard): 1 passed.\n- Pinned-checkout path with the env var set to the 5fa7ce0 worktree: QGV 1 passed, leaderboard 1 passed.\n- Scratch clone with the registry untracked and absent: RIG test passed.\n\n(b) The combined tree validates the integrated dependency for real:\n- The leaderboard tool in same-tree mode reports dependency mode INTEGRATED_SAME_TREE, commit 86ad362, and 13 PASS checks, including infra_api_complete, research_candidate_rejected (ResearchStatusError), canonical_serialization_agrees and bundle_assembles_and_web_validates.\n- test_default_integrated_context_rejects_incomplete_infrastructure_api and test_partially_present_dependency_cannot_be_treated_as_isolated_absence both pass.\n- Weakness (finding 1): the byte-identity half of check 1 compares each non-models SHARED file with itself in this mode.\n\n(c) The exact-bytes models.py pins are verified. PRE 5313bbd4… = sha256 of b8e39a2 models.py; C28 fa386626… = 2137883 = b9e01a9 = 86ad362. Third variants run in a scratch tree:\n- V1 input_hash default \"\" → models_state FAIL, same-tree compare FAIL.\n- V2 5th field lineage_note → FAIL.\n- V3 available_at: Optional[str] → FAIL.\n- V4 legacy plus one extra field → FAIL.\n- V5 trailing comment → FAIL.\n- V6 changed QGVSnapshot default → FAIL.\n- Controls (adopted and legacy) PASS.\n- With V2 and V1 in place, pytest gives 3 failed: test_qgv_producer_infra_compat (shared_qgv_sources_compatible FAIL), test_leaderboard_producer_infra_compat (shared_leaderboard_sources_compatible FAIL) and test_exact_adopted_schema…; the unmodified control gives 9 passed.\n\n(d) RIG registry pinning. ENTITY_METADATA_AUDITED_SHA = a013f1c (PR #7 head); blob 2ff88be3 is identical in #30.\n- One-byte working-tree mutation → AssertionError 'integrated entity registry differs from pinned PR #7'.\n- Whole directory deleted → 'integrated entity registry directory is missing'.\n- One-byte committed mutation in an isolated scratch clone → 'committed entity registry differs from pinned PR #7'.\n\n(e) Deleted lines: 41a6efb has 25, 0366a3c has 8 (tests/tools only); 0ea00d2 has 20 and 86ad362 has 4 (workflows only). Assert/check deletions are exactly 5:\n- 2x `assert load_infra() is None`: replaced by the same assertion plus a find_spec-is-None assertion (stricter), or the full comparison.\n- 2x shared_*_sources_identical: replaced by shared_*_sources_compatible (byte-identical except models.py, which must be one of exactly 2 blobs).\n- 1x `assert not entity_metadata.exists()`: replaced by 'absent, or byte-identical to a013f1c'. This is relaxed (finding 2).\n- No consumer of the renamed check names or the infra_pin key exists."
+    },
+    {
+     "id": "C4",
+     "criterion": "CI changes (0ea00d2, 86ad362, d9a45fe): no step removed, no continue-on-error / if:false / ||true, no narrowed selection, no write permission or push",
+     "status": "DONE",
+     "evidence": "One line per change:\n- d9a45fe: new codex-integration-readiness.yml. permissions contents: read. Steps: pinned checkout of the PR head; git diff --exit-code guards vs b9e01a9 (evl, tests, 4 files) and vs b8e39a2 (gate_evidence, data); full pytest; web fixture build; Playwright E2E. Plus a separate macro-adoption-offline job at 4a07099. No continue-on-error/push; upload-artifact uses `if: always()` only.\n- 86ad362: in codex-integration-readiness, pins pytest==9.1.1 and adds PYTHONPATH=src to both pytest commands. Nothing else.\n- 0ea00d2 p01-research-publication: fetch-depth 0; mini_pytest → `PYTHONPATH=src python -m pytest -q` (pytest 9.1.1).\n- 0ea00d2 qgv-invalidation-binding: same change.\n- 0ea00d2 sec-primary-disclosure: fetch-depth 0; pin fetches no longer --depth=1; Python 3.12→3.11; mini_pytest → native pytest.\n- 0ea00d2 technical-real-model: fetch-depth 0; 3.12→3.11; mini_pytest → native pytest.\n- 0ea00d2 technical-real-producer: same change.\n- 0ea00d2 us-equity-session: same change.\n- 0ea00d2 web-mvp-validation: fetch-depth 0; `pip install pytest` → pytest==9.1.1; adds PYTHONPATH=src.\nNo step removed. No continue-on-error, if: false or || true added. No write permission or push added; every changed workflow keeps contents: read.\nTest selection is broadened, not narrowed: mini_pytest collects only module-level functions and cannot import 16 pre-existing Track C modules. Native pytest runs all 1165 tests; mini_pytest's 619 equals native's count for the importable modules.\nThe write-permission workflows (c21-real-data, entity-metadata-ingest, qgv-producer-real) are byte-identical to their constituent versions and trigger only on workflow_dispatch or pushes to their owner branches."
+    },
+    {
+     "id": "C5",
+     "criterion": "Actions: PR #30 check runs and workflow runs; head_sha == current HEAD; conclusion success",
+     "status": "DONE",
+     "evidence": "get_check_runs for PR #30 returns 9 check runs, all completed/success:\n- 111145988956 combined-offline and 111145988870 macro-adoption-offline, both in run 37102973395 (codex-integration-readiness).\n- 111145988807 → run 37102973410 sec-primary-disclosure.\n- 111145989015 → run 37102973419 technical-real-producer.\n- 111145989165 validate → run 37102973427 web-mvp-validation.\n- 111145989337 → run 37102973430 us-equity-session.\n- 111145989405 → run 37102973449 technical-real-model.\n- 111145988969 → run 37102973450 qgv-invalidation-binding.\n- 111145989374 → run 37102973469 p01-research-publication.\nget_workflow_run for each of the 8 runs: head_sha 86ad3628dd5c62c6d873e42511e577f24f4fb588, event pull_request, conclusion success, pull_requests [30].\nCI log for job 111145988956:\n- `git rev-parse HEAD` = 86ad362.\n- '1165 passed in 419.10s'.\n- Fixture data_json_sha256 dc92e1e5…; browser passed: true, errors [].\nThe legacy combined-status API shows state pending with 0 statuses; this repo uses check runs only.\nThe 8 earlier runs at 71d5773 (7 failures) are stale. web-mvp-validation failed there only on shallow history ('git show b8e39a2…' and 'worktree add 6fe9eee: invalid reference'), which 0ea00d2's fetch-depth 0 fixes."
+    },
+    {
+     "id": "C6",
+     "criterion": "Local full pytest, mini_pytest if used, and engine fingerprints at #30 HEAD",
+     "status": "DONE",
+     "evidence": "Full suite, in a detached worktree at 86ad362: `PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf` gives '1165 passed in 468.88s', exit 0. junit: tests 1165, failures 0, errors 0, skipped 0.\n\nmini_pytest: no PR #30 check uses it. Three workflows in the tree still do (c21-real-data, qgv-producer-real, leaderboard-real-producer), triggered only by dispatch or owner-branch pushes. I ran `python3 tools/mini_pytest.py`: '619 passed, 17 failed', exit=1. All 17 are `<import>` failures from shim incompatibility (`module 'pytest' has no attribute 'mark'` or a cascaded ImportError of c0_split):\n- 16 are pre-existing Track C test_evl_c* modules.\n- 1 is test_rig_news_ingest.py, made incompatible by 0366a3c's @pytest.mark.parametrize.\n- The 619 equals native pytest's count for the remaining modules.\n\nFingerprints: `python3 tools/producer_engine_fingerprint.py src` gives technical 66cb23830d65…, macro 7e427949a4c1…, qgv a17144803746…, leaderboard 112b245b4f99…, portfolio_official_book 53d930a7e3d2…, n_qgv 19. All match the adopted state.\n- Canonical b8e39a2 gives technical 82165414…, macro 7bbfad69…, and identical qgv/leaderboard/portfolio.\n- Independent comparison with the 4 lineage fields dropped: #30 = canonical for all 5 hashes (technical 82165414, macro 7bbfad69, qgv 6243fcc0, leaderboard 112b245b, portfolio d4b44818)."
+    },
+    {
+     "id": "C7",
+     "criterion": "Web E2E fixture build and browser test as the workflow does",
+     "status": "DONE",
+     "evidence": "Commands as in codex-integration-readiness.yml:\n- `python implementation/tools/build_producer_contract_web_fixture.py --out <scratch>/withheld-web --evidence <scratch>/withheld-web-evidence` → exit 0. Hashes are byte-identical to the CI log: records 6adebb3b…, bundle_canonical ab68d037…, data_json dc92e1e5…, entities_json 376611b1….\n- `NODE_PATH=/opt/node22/lib/node_modules node implementation/tools/producer_contract_web_browser_test.js --dir … --evidence …` → exit 0, passed: true, 6/6 checks, errors [].\n\nWhat the test asserts:\n- producer PASS/PARTIAL/BLOCKED all stay NOT_AVAILABLE with grants NONE and official/live/track_c_validated false.\n- Provenance, as_of, freshness and methodology survive build and fetch.\n- ko/en and mobile/desktop routes leak none of the 4 withheld tokens, show no ranking rows and no horizontal overflow.\n- A loading status is visible while the fetch is pending.\n- HTTP and malformed-JSON failures show visibly, render no .metric (no missing-to-zero), and retry restores the bundle.\n- data.json and entities.json bytes are unchanged after all interactions.\nI did not grep the Web assets for score recomputation (out of scope).\nRuntime deviation: local Playwright 1.56.1 / Chromium 141.0.7390.37 / Node 22.22.0, versus CI Playwright 1.58.2 / Chromium 145.0.7632.6 / Node 24 (CI also passed)."
+    },
+    {
+     "id": "C8",
+     "criterion": "Track C acceptance tools in the combined tree: what they raise; only allow-list conditions, not frozen-blob change",
+     "status": "DONE",
+     "evidence": "I read the three tools first: git blob audits, then synthetic fixtures only; Holdout 'UNCONSUMED_NO_READER'; no CAL_VERIFY. Ran `PYTHONPATH=src:. python3 tools/track_c_c6_acceptance.py`, then c7, then c8_partial.\n- c6: exit 1, ValueError 'new file outside authorized Track C: [...]'.\n- c7: exit 1, ValueError 'new unauthorized files: [...]'.\n- c8_partial: exit 1, ValueError 'new unauthorized files: [...]'.\nEach raised list has exactly 239 entries, equal to `git diff --diff-filter=A b9e01a9 86ad362` (0 extra, 0 missing). Every check that runs before the raise passed:\n- the canonical-advanced check;\n- 'existing Frozen source/test changed';\n- 'canonical protected artifacts changed' / 'historical/protected evidence changed'.\nA read-only harness then re-ran c6.boundary_audit and c7/c8.preservation with HEAD's blob view filtered to drop those 239 additions; all three returned PASS:\n- c6: changed [] / unexpected [] / unexpected_new [].\n- c7: frozen_source_tests_preserved 225, changed [].\n- c8: frozen_existing_source_test_count 232, changed [], history_overlays APPEND_ONLY_PREFIX_VERIFIED, unauthorized [].\nSo the tools raise only on the known new-file allow-list (branch-isolation) condition. There is no frozen-blob change."
+    },
+    {
+     "id": "C9",
+     "criterion": "Verdict with BRANCH_STATE / INTEGRATION_STATE / CANONICAL_STATE",
+     "status": "DONE",
+     "evidence": "Verdict: FRESH_WITH_FINDINGS.\n- Fresh: every constituent is its current remote head.\n- Sound: clean merges, additive over Track C, CI green on HEAD, local 1165/1165, fingerprints and invariance hold, refutation attempts (c)/(d) fail as intended.\n- Nonblocking findings: the same-tree byte check is vacuous for non-models SHARED files (mitigated elsewhere); the RIG absence assert is relaxed; RIG tests no longer run under the mini_pytest shim; Python 3.12→3.11.\nBRANCH_STATE: origin/codex/combined-integration-2026-10-03 @ 86ad362. FRESH; CI_VERIFIED on 86ad362 (8 runs / 9 checks success); local reproduction PASS.\nINTEGRATION_STATE: TRIAL_INTEGRATION_VERIFIED_WITH_NONBLOCKING_FINDINGS (Draft PR #30, not merged).\nCANONICAL_STATE: claude/investment-system-top500-validation-alrugm unchanged at b8e39a2; nothing merged. Canonical merge = USER_DECISION_REQUIRED."
+    }
+   ],
+   "findings_blocking": [],
+   "findings_nonblocking": [
+    "F1 (C3b, tools/producer_source_compat.py compare_shared_sources): in combined mode (INTEGRATED_SAME_TREE) the test passes --infra-src ROOT/src, so own_src == infra_src. The BYTE_IDENTICAL comparison for the 9 non-models QGV SHARED files and the 4 non-models leaderboard SHARED files then compares each file with itself and always passes. Probe in a scratch tree: appending a comment to qgv/scoring.py still gave 2 passed for both compat tests. Mitigation: the full suite catches that probe, with test_leaderboard_real_producer::test_cross_track_sources_are_unchanged and test_technical_real_producer::test_engine_fingerprint_and_cross_track_sources_unchanged both FAILED. However, contracts/enums.py, versions.py, qgv/raw_map.py, qgv/pipeline.py and validation/historical.py have no byte pin in tests/tools; only the numerical engine fingerprint covers them. All are byte-identical to canonical b8e39a2 in #30 today. Suggested fix: in same-tree mode, compare SHARED files against the b8e39a2 blobs.",
+    "F2 (C3a/e, tests/test_rig_news_ingest.py): the original isolation assert `not (REPO/'implementation/reports/entity_metadata').exists()` became 'absent, or byte-identical to the a013f1c blob (tracked or untracked)'. A byte-identical copy committed on the isolated RIG branch would now pass where the original failed, so the 'not copied' guarantee is relaxed to 'not forked/mutated'. Mutated, partial, deleted-directory and committed-mutation cases all FAIL, as demonstrated. This is inherent to the combined context but should be reviewed before porting the repair to owner #13/#16.",
+    "F3 (C6, 0366a3c): test_rig_news_ingest.py now uses @pytest.mark.parametrize and fails to import under tools/mini_pytest.py ('module pytest has no attribute mark'). Within #30 this is consistent because 0ea00d2 moved the affected workflows to native pytest. If the RIG repair is ported back to the owner branches, the owner workflow sec-primary-disclosure (which runs mini_pytest at ef65caa) needs the same runner change. The 16 Track C test modules were already shim-incompatible before Codex.",
+    "F4 (C4, 0ea00d2): sec-primary-disclosure, technical-real-model, technical-real-producer and us-equity-session moved from Python 3.12 to 3.11. This is not test narrowing, but 3.12 runtime coverage for those workflows is dropped in the #30 tree.",
+    "F5 (C3c): compare_shared_sources validates each side of models.py independently, so a mixed pair (own PRE + infra C28, or the reverse) is accepted. Before, byte equality between the two trees was required. This is bounded to the two exact CDR-004 blobs plus a full pre-existing AST check, so it is authorized by CDR-004 and recorded for transparency.",
+    "F6 (pre-existing in #13 f853908, not Codex): test_rig_news_ingest::_producer_validate creates a shared global worktree, `git worktree add /tmp/rig-news-producer-ro 6fe9eee`, registered in the caller's repo. It reuses that directory without checking HEAD == PRODUCER_INFRA_AUDITED_SHA and leaves it behind; my local run created it and I removed it. Separately, also pre-existing and not on PR #30's checks: c21-real-data, qgv-producer-real and leaderboard-real-producer pipe mini_pytest into `| tail -N` under bash -e without pipefail, which can mask failures.",
+    "F7 (C1): open PR #28 (docs-only, implementation/docs/codex_takeover) and the docs-only branch docs/qgv-context-policy-approvals (no PR) are not in #30. Neither affects code or test results. A new descendant branch, codex/track-c-gsup-v2-2026-10-03 (f29ea6e, built on 86ad362), appeared during the audit; it is outside #30's scope."
+   ],
+   "pushed": [],
+   "not_run": [
+    "web-mvp-validation browser steps (web_mvp_browser_test.js / search tests): not run locally; CI evidence only (run 37102973427, validate success on 86ad362)",
+    "macro-adoption-offline job (pytest tests/test_macro_real_producer.py at 4a07099): not run locally; CI evidence only (job 111145988870 success)",
+    "Exact CI browser runtime (Playwright 1.58.2 / Chromium 145 / Node 24): not reproduced; local E2E used Playwright 1.56.1 / Chromium 141.0.7390.37 / Node 22.22.0",
+    "Track C synthetic full_acceptance phases (C6/C7/C8 evidence generation): not run, because the tools raise at the allow-list check before reaching them. Only the preservation/boundary audits were re-run via the filtered-blob harness.",
+    "Grep of Web assets for score/rank arithmetic: out of scope per task, NOT_RUN",
+    "CAL_VERIFY / Holdout: not accessed (by instruction)"
+   ]
+  },
+  {
+   "summary": "Read-only check of the six A1 proposals #22-#27, done by the integration owner. Every criterion V1-V7 is DONE for all six PRs. Nothing was pushed, no remote ref was changed and nothing was commented on GitHub. CAL_VERIFY and Holdout were not touched.\n\nRefs after `git fetch origin`, checked again at the end with no drift:\n- canonical b8e39a2196a6d7794a04a0cd5393c68329e126ca\n- Track C tip origin/ccr-22e3ff16-p7n5k5 b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565. Actions run 37097149378 is completed/success on this SHA. 2137883 is an ancestor of b9e01a9, and lineage.py, models.py and both engine.py blobs are identical at the two commits.\n- Proposals: #22 248e3d3e83db, #23 5c9dd5abd760, #24 9c71781c62e4, #25 4a07099e36ec, #26 a4805dbcdf37, #27 dc7daf70a42f.\n- PR #30 86ad3628dd5c and PR #29 d0444583197c were only read.\n\nMethod:\n- Detached worktrees under scratchpad/wf4/verify-a1 (all removed at the end).\n- Tree (a) is the proposal as-is. Tree (b) is the proposal plus `git merge --no-commit --no-ff b9e01a9`, which had 0 conflicts in all six.\n- Test command: `PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf tests/<PR file>`, run from `<wt>/implementation` on Python 3.11.15 with pytest 9.1.1.\n- For (c), one byte was flipped at offset 3 of the module docstring (`cmp -l` shows exactly 1 byte changed). technical/engine.py goes from sha 86607bf7 to e7369331, macro/engine.py from a0a7c983 to 252c64dd. The file was restored after each run and its sha re-checked.\n- For (d), only `contracts/models.py` was checked out from b9e01a9 and both engines stayed at canonical bytes.\n\nMerged tree hashes from `git write-tree` (they match the Codex audit's trees, but I did not rely on the audit):\n- #22 0bc876f3\n- #23 12992599\n- #24 f985c56a\n- #25 610fbc57\n- #26 704742b0\n- #27 cb84a4e3\n\nExtra independent checks:\n1. Legacy `evaluate()` invariance probe: 314 Technical and 346 Macro records, including inputs right at the thresholds. 0 mismatches. The only change is 2640 added keys, all with legacy values (None / [] / [] / None). The AST of `evaluate()` is identical between canonical and b9e01a9 for both engines.\n2. For each evidence JSON, the throwaway AFTER commit has parents (base, b9e01a9), and its tree equals an independent `git merge-tree --write-tree base b9e01a9`.\n3. Every pin hash in each evidence JSON appears in its proposal's test file.\n\nSupplementary full suites:\n- Tree (a): #22 412, #23 431, #24 454, #25 442, #26 424, #27 444, all passed.\n- Tree (b): #22 942, #25 972, #26 954 and #27 974 passed. #23 had 1 failure and #24 had 2 (see the first non-blocking finding).\n- A stack trial (#24 + #23 + #22 + Track C, octopus merge, no commit, 0 conflicts) passed all 58 tests in the three Technical test files.\n\nStates: BRANCH_STATE is the six remote Draft proposals, untouched. INTEGRATION_STATE is local throwaway trial merges only. CANONICAL_STATE is NOT_MERGED. USER_DECISION_REQUIRED is NO for this verification; canonical merge stays gated.",
+   "criteria": [
+    {
+     "id": "22-V1",
+     "criterion": "Base: owner branch at recorded base; merge-base == base",
+     "status": "DONE",
+     "evidence": "origin/feature/technical-real-producer-v1 = a2e0790dd7fb267ebaa7d052acae59220ecf631e (owner ahead of base: 0 commits); merge-base(owner, proposal 248e3d3) = a2e0790; 1 proposal commit"
+    },
+    {
+     "id": "22-V2",
+     "criterion": "Scope: only test file, additive own-scope docs, new evidence JSON; zero src changes",
+     "status": "DONE",
+     "evidence": "git diff --name-status a2e0790..248e3d3: A docs/technical_real_producer/C28_UPSTREAM_ADOPTION_2026-10-03.md; M docs/technical_real_producer/STATUS.md (+4/-0, appended at end); A docs/technical_real_producer/evidence/c28_adoption_invariance_2026-10-03.json; M tests/test_technical_real_producer.py (+51/-3, the 3 removed lines are the old pin literals). implementation/src 0, tools 0, .github 0"
+    },
+    {
+     "id": "22-V3",
+     "criterion": "Gate evidence JSON with BEFORE/AFTER SHAs, verdict PASS, pre/post pins",
+     "status": "DONE",
+     "evidence": "verdict PASS; pr_tip_BEFORE a2e0790; AFTER_throwaway_merge 01bb359a, parents a2e0790+b9e01a9, tree a6475dd8 == independent merge-tree; pins ENGINE_FINGERPRINT 28e910f3->0b26c7d1, technical/engine.py f7268f52->86607bf7, macro/engine.py c593a2ef->a0a7c983; all 6 pin hashes present in the test file"
+    },
+    {
+     "id": "22-V4a",
+     "criterion": "Proposal as-is -> PR test passes",
+     "status": "DONE",
+     "evidence": "tests/test_technical_real_producer.py: 16 passed in 5.15s (full suite 412 passed)"
+    },
+    {
+     "id": "22-V4b",
+     "criterion": "Proposal + Track C tip merged -> passes",
+     "status": "DONE",
+     "evidence": "merge --no-commit b9e01a9: 0 conflicts, tree 0bc876f3; engines 86607bf7/a0a7c983, models fa386626; 16 passed in 5.15s (full suite 942 passed)"
+    },
+    {
+     "id": "22-V4c-technical",
+     "criterion": "Adopted tree with one byte changed in technical/engine.py -> pin test FAILS",
+     "status": "DONE",
+     "evidence": "1 failed, 15 passed: test_engine_fingerprint_and_cross_track_sources_unchanged, assert 'e7369331..' == '86607bf7..'"
+    },
+    {
+     "id": "22-V4c-macro",
+     "criterion": "Adopted tree with one byte changed in macro/engine.py -> pin test FAILS",
+     "status": "DONE",
+     "evidence": "1 failed, 15 passed: test_engine_fingerprint_and_cross_track_sources_unchanged, assert '252c64dd..' == 'a0a7c983..'"
+    },
+    {
+     "id": "22-V4d",
+     "criterion": "Partial adoption (models.py only) -> FAILS",
+     "status": "DONE",
+     "evidence": "1 failed, 15 passed: test_engine_fingerprint_and_cross_track_sources_unchanged, assert 'f7268f52..' == 'C28_ADOPTION_STATE_INCONSISTENT'. Also FAILS with engines+lineage adopted and models canonical, and with everything adopted except macro/engine.py"
+    },
+    {
+     "id": "22-V5",
+     "criterion": "No A2: no key stripping or normalizer loosening",
+     "status": "DONE",
+     "evidence": "Added diff lines contain no pop(, del or filter. available_at appears only in LINEAGE_FIELDS (selector) and comments. norm() hunk unchanged (pre-existing technical_snapshot_id exclusion only); tools/ untouched"
+    },
+    {
+     "id": "22-V6",
+     "criterion": "Prior pin constant still present verbatim",
+     "status": "DONE",
+     "evidence": "28e910f3005c...ede6 (L39 ENGINE_FINGERPRINT_PRE_ADOPTION), f7268f52...3bdf (L40 ENGINE_SHA256_PRE_ADOPTION), c593a2ef...c80b (L41 MACRO_ENGINE_SHA256_PRE_ADOPTION): values verbatim, constants renamed"
+    },
+    {
+     "id": "22-V7",
+     "criterion": "Commit trailers; PR draft with base = owner branch",
+     "status": "DONE",
+     "evidence": "248e3d3 ends 'Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>' / 'Claude-Session: https://claude.ai/code/session_019znshzTYgyBnuuBmSxdPFN'. PR #22: draft=true, base=feature/technical-real-producer-v1 (a2e0790), head=248e3d3. Actions technical-real-producer#37098417854 success (pre-adoption state)"
+    },
+    {
+     "id": "23-V1",
+     "criterion": "Base: owner branch at recorded base; merge-base == base",
+     "status": "DONE",
+     "evidence": "origin/feature/technical-real-model-v1 = ce587040e7beb31b66a423eab6ca89767f2a2cf8 (ahead 0); merge-base(owner, 5c9dd5a) = ce58704; 1 commit"
+    },
+    {
+     "id": "23-V2",
+     "criterion": "Scope",
+     "status": "DONE",
+     "evidence": "M docs/technical_real_model/STATUS.md (+4/-0, appended); A docs/technical_real_model/evidence/c28_adoption_invariance_2026-10-03.json; M tests/test_technical_real_model_v1.py (+29/-1, the removed line is the inline f7268f52 assert). src/tools/.github: 0"
+    },
+    {
+     "id": "23-V3",
+     "criterion": "Gate evidence JSON",
+     "status": "DONE",
+     "evidence": "verdict PASS; BEFORE ce58704; AFTER 4d07d5fb, parents ce58704+b9e01a9, tree dcc87546 == merge-tree; pin technical/engine.py f7268f52->86607bf7; both hashes present in the test file"
+    },
+    {
+     "id": "23-V4a",
+     "criterion": "Proposal as-is passes",
+     "status": "DONE",
+     "evidence": "tests/test_technical_real_model_v1.py: 19 passed in 0.15s (full suite 431 passed)"
+    },
+    {
+     "id": "23-V4b",
+     "criterion": "Proposal + Track C passes",
+     "status": "DONE",
+     "evidence": "0 conflicts, tree 12992599; 19 passed in 0.17s. Full suite in this tree: 1 failed/960 passed, on the inherited stacked #11 test test_technical_real_producer.py (not re-pinned by #23; see non-blocking finding 1)"
+    },
+    {
+     "id": "23-V4c-technical",
+     "criterion": "One byte in technical/engine.py -> FAIL",
+     "status": "DONE",
+     "evidence": "1 failed, 18 passed: test_placeholder_engine_is_unchanged_and_not_used_by_the_real_model, 'e7369331..' != '86607bf7..'"
+    },
+    {
+     "id": "23-V4c-macro",
+     "criterion": "One byte in macro/engine.py -> FAIL where pinned",
+     "status": "DONE",
+     "evidence": "N/A by scope: macro/engine.py is not pinned in this test file before (grep c593a2ef at ce58704 = 0) or after. Mutated run: 19 passed, as expected"
+    },
+    {
+     "id": "23-V4d",
+     "criterion": "Partial adoption (models.py only) -> FAILS",
+     "status": "DONE",
+     "evidence": "1 failed, 18 passed: test_placeholder_engine_..., 'f7268f52..' == 'C28_ADOPTION_STATE_INCONSISTENT'. Engines+lineage with canonical models also FAILS. The selector checks TechnicalEngine and TechnicalSnapshot only, so a tree with only macro/engine.py canonical passes (not in scope)"
+    },
+    {
+     "id": "23-V5",
+     "criterion": "No A2",
+     "status": "DONE",
+     "evidence": "No pop(/del/filter added; available_at only in the selector field set; no normalizer code touched"
+    },
+    {
+     "id": "23-V6",
+     "criterion": "Prior pin verbatim",
+     "status": "DONE",
+     "evidence": "f7268f52...3bdf at L32 ENGINE_SHA256_PRE_ADOPTION (was an inline literal)"
+    },
+    {
+     "id": "23-V7",
+     "criterion": "Trailers; draft; base",
+     "status": "DONE",
+     "evidence": "5c9dd5a ends with the Co-Authored-By (Claude Fable 5.1) and Claude-Session session_019znshzTYgyBnuuBmSxdPFN lines. PR #23 draft=true, base=feature/technical-real-model-v1 (ce58704). Actions technical-real-model#37098445694, technical-real-producer#37098445693 success"
+    },
+    {
+     "id": "24-V1",
+     "criterion": "Base",
+     "status": "DONE",
+     "evidence": "origin/feature/us-equity-session-v1 = 2c088cea34314af0ccc33fd2e2dc1ccf21502cb4 (ahead 0); merge-base(owner, 9c71781) = 2c088ce; 1 commit"
+    },
+    {
+     "id": "24-V2",
+     "criterion": "Scope",
+     "status": "DONE",
+     "evidence": "M docs/us_equity_session/STATUS.md (+4/-0, appended); A docs/us_equity_session/evidence/c28_adoption_invariance_2026-10-03.json; M tests/test_us_equity_session_v1.py (+30/-1, the removed line is the old ENGINE_SHA literal). src/tools/.github: 0"
+    },
+    {
+     "id": "24-V3",
+     "criterion": "Gate evidence JSON",
+     "status": "DONE",
+     "evidence": "verdict PASS; BEFORE 2c088ce; AFTER 301b9072, parents 2c088ce+b9e01a9, tree 44973afe == merge-tree; pin f7268f52->86607bf7; MODEL/PIT/YAHOO unchanged"
+    },
+    {
+     "id": "24-V4a",
+     "criterion": "Proposal as-is passes",
+     "status": "DONE",
+     "evidence": "tests/test_us_equity_session_v1.py: 23 passed in 4.57s (full suite 454 passed)"
+    },
+    {
+     "id": "24-V4b",
+     "criterion": "Proposal + Track C passes",
+     "status": "DONE",
+     "evidence": "0 conflicts, tree f985c56a; 23 passed in 4.71s. Full suite in this tree: 2 failed/982, on the inherited stacked #11 and #15 pin tests (see non-blocking finding 1)"
+    },
+    {
+     "id": "24-V4c-technical",
+     "criterion": "One byte in technical/engine.py -> FAIL",
+     "status": "DONE",
+     "evidence": "1 failed, 22 passed: test_model_bytes_and_session_source_stay_in_contract, 'e7369331..' != '86607bf7..'"
+    },
+    {
+     "id": "24-V4c-macro",
+     "criterion": "One byte in macro/engine.py -> FAIL where pinned",
+     "status": "DONE",
+     "evidence": "N/A by scope: macro/engine.py not pinned before (grep c593a2ef at 2c088ce = 0) or after. Mutated run: 23 passed"
+    },
+    {
+     "id": "24-V4d",
+     "criterion": "Partial adoption -> FAILS",
+     "status": "DONE",
+     "evidence": "1 failed, 22 passed: test_model_bytes_and_session_source_stay_in_contract, 'f7268f52..' == 'C28_ADOPTION_STATE_INCONSISTENT'. Engines+lineage with canonical models also FAILS"
+    },
+    {
+     "id": "24-V5",
+     "criterion": "No A2",
+     "status": "DONE",
+     "evidence": "No pop(/del/filter added; available_at only in the selector field set"
+    },
+    {
+     "id": "24-V6",
+     "criterion": "Prior pin verbatim",
+     "status": "DONE",
+     "evidence": "f7268f52...3bdf at L32 ENGINE_SHA_PRE_ADOPTION (was ENGINE_SHA). ENGINE_SHA is still defined, now as the selected value"
+    },
+    {
+     "id": "24-V7",
+     "criterion": "Trailers; draft; base",
+     "status": "DONE",
+     "evidence": "9c71781 ends with both trailer lines. PR #24 draft=true, base=feature/us-equity-session-v1 (2c088ce). Actions us-equity-session#37098468339, technical-real-model#37098468364, technical-real-producer#37098468316 success"
+    },
+    {
+     "id": "25-V1",
+     "criterion": "Base",
+     "status": "DONE",
+     "evidence": "origin/feature/macro-real-producer-v1 = 61d3352d5d68c7830e924f17613598ca79fcec6f (ahead 0); merge-base(owner, 4a07099) = 61d3352; 1 commit"
+    },
+    {
+     "id": "25-V2",
+     "criterion": "Scope",
+     "status": "DONE",
+     "evidence": "A docs/macro_real_producer/LINEAGE_SCHEMA_OWNER_ADOPTION_2026-10-03.md; M docs/macro_real_producer/STATUS.md (+18/-0, appended); A evidence/c28_adoption_invariance_2026-10-03.json; A evidence/validation_post_adoption_2026-10-03.json; M tests/test_macro_real_producer.py (+48/-2, the old pin literals). src/tools/.github: 0"
+    },
+    {
+     "id": "25-V3",
+     "criterion": "Gate evidence JSON",
+     "status": "DONE",
+     "evidence": "verdict PASS (with verdict_basis); trees.before 61d3352; trees.after 84cd6b50, parents 61d3352+b9e01a9, tree bf917ba9 == merge-tree; pins macro c593a2ef->a0a7c983, technical f7268f52->86607bf7; analysis/portfolio/leaderboard pins unchanged; all 7 hashes in the test file"
+    },
+    {
+     "id": "25-V4a",
+     "criterion": "Proposal as-is passes",
+     "status": "DONE",
+     "evidence": "tests/test_macro_real_producer.py: 11 passed in 0.25s (full suite 442 passed)"
+    },
+    {
+     "id": "25-V4b",
+     "criterion": "Proposal + Track C passes",
+     "status": "DONE",
+     "evidence": "0 conflicts, tree 610fbc57; 11 passed in 0.26s (full suite 972 passed)"
+    },
+    {
+     "id": "25-V4c-technical",
+     "criterion": "One byte in technical/engine.py -> FAIL",
+     "status": "DONE",
+     "evidence": "1 failed, 10 passed: test_existing_engine_qgv_technical_portfolio_leaderboard_bytes_unchanged, 'e7369331..' != '86607bf7..'"
+    },
+    {
+     "id": "25-V4c-macro",
+     "criterion": "One byte in macro/engine.py -> FAIL",
+     "status": "DONE",
+     "evidence": "1 failed, 10 passed: same test, '252c64dd..' != 'a0a7c983..'"
+    },
+    {
+     "id": "25-V4d",
+     "criterion": "Partial adoption -> FAILS",
+     "status": "DONE",
+     "evidence": "1 failed, 10 passed: same test, 'c593a2ef..' == 'C28_ADOPTION_STATE_INCONSISTENT'. Engines+lineage with canonical models FAILS; all adopted except macro/engine.py FAILS (sentinel)"
+    },
+    {
+     "id": "25-V5",
+     "criterion": "No A2",
+     "status": "DONE",
+     "evidence": "No pop(/del/filter added; available_at only in LINEAGE_FIELDS and comments"
+    },
+    {
+     "id": "25-V6",
+     "criterion": "Prior pin verbatim",
+     "status": "DONE",
+     "evidence": "c593a2ef...c80b (L42 MACRO_ENGINE_SHA256_PRE_ADOPTION), f7268f52...3bdf (L43 TECHNICAL_ENGINE_SHA256_PRE_ADOPTION)"
+    },
+    {
+     "id": "25-V7",
+     "criterion": "Trailers; draft; base",
+     "status": "DONE",
+     "evidence": "4a07099 ends with both trailer lines. PR #25 draft=true, base=feature/macro-real-producer-v1 (61d3352). No Actions run exists for head 4a07099 and the repo has no macro workflow, so CI is not verified"
+    },
+    {
+     "id": "26-V1",
+     "criterion": "Base",
+     "status": "DONE",
+     "evidence": "origin/feature/leaderboard-real-producer-v1 = 0d48d863afec0d50481d585a3d1ae0e56d4b380c (ahead 0); merge-base(owner, a4805db) = 0d48d86; 1 commit"
+    },
+    {
+     "id": "26-V2",
+     "criterion": "Scope",
+     "status": "DONE",
+     "evidence": "M docs/leaderboard_real_producer/STATUS.md (+9/-0, appended); A evidence/c28_adoption_invariance_2026-10-03.json; M tests/test_leaderboard_real_producer.py (+48/-3: 2 old pin literals + 1 import line widened). src/tools/.github: 0; infra_compat sentinel files untouched"
+    },
+    {
+     "id": "26-V3",
+     "criterion": "Gate evidence JSON",
+     "status": "DONE",
+     "evidence": "verdict PASS; BEFORE 0d48d86; AFTER b9386e2f, parents 0d48d86+b9e01a9, tree 46d63d7b == merge-tree; pins technical f7268f52->86607bf7, macro c593a2ef->a0a7c983; 7 other pins unchanged; committed evidence identical before/after"
+    },
+    {
+     "id": "26-V4a",
+     "criterion": "Proposal as-is passes",
+     "status": "DONE",
+     "evidence": "tests/test_leaderboard_real_producer.py: 17 passed in 0.85s (full suite 424 passed)"
+    },
+    {
+     "id": "26-V4b",
+     "criterion": "Proposal + Track C passes",
+     "status": "DONE",
+     "evidence": "0 conflicts, tree 704742b0; 17 passed in 0.94s (full suite 954 passed)"
+    },
+    {
+     "id": "26-V4c-technical",
+     "criterion": "One byte in technical/engine.py -> FAIL",
+     "status": "DONE",
+     "evidence": "1 failed, 16 passed: test_cross_track_sources_are_unchanged (technical/engine.py 'e7369331..' != '86607bf7..')"
+    },
+    {
+     "id": "26-V4c-macro",
+     "criterion": "One byte in macro/engine.py -> FAIL",
+     "status": "DONE",
+     "evidence": "1 failed, 16 passed: test_cross_track_sources_are_unchanged (macro/engine.py '252c64dd..' != 'a0a7c983..')"
+    },
+    {
+     "id": "26-V4d",
+     "criterion": "Partial adoption -> FAILS",
+     "status": "DONE",
+     "evidence": "1 failed, 16 passed: test_cross_track_sources_are_unchanged, technical/engine.py 'f7268f52..' == 'C28_ADOPTION_STATE_INCONSISTENT'. Engines+lineage with canonical models FAILS; all adopted except macro/engine.py FAILS"
+    },
+    {
+     "id": "26-V5",
+     "criterion": "No A2",
+     "status": "DONE",
+     "evidence": "No pop(/del/filter added; available_at only in LINEAGE_FIELDS and comments"
+    },
+    {
+     "id": "26-V6",
+     "criterion": "Prior pin verbatim",
+     "status": "DONE",
+     "evidence": "f7268f52...3bdf (L38 TECHNICAL_ENGINE_SHA256_PRE_ADOPTION), c593a2ef...c80b (L39 MACRO_ENGINE_SHA256_PRE_ADOPTION)"
+    },
+    {
+     "id": "26-V7",
+     "criterion": "Trailers; draft; base",
+     "status": "DONE",
+     "evidence": "a4805db ends with both trailer lines. PR #26 draft=true, base=feature/leaderboard-real-producer-v1 (0d48d86). Actions leaderboard-real-producer#37101443041 (workflow_dispatch) success"
+    },
+    {
+     "id": "27-V1",
+     "criterion": "Base",
+     "status": "DONE",
+     "evidence": "origin/feature/p01-research-publication-v1 = 21039a0a7f9677b123abd8587fd8d89784a73a3c (ahead 0); merge-base(owner, dc7daf7) = 21039a0; 3 commits: 94bd098 evidence -> 7621930 test -> dc7daf7 docs"
+    },
+    {
+     "id": "27-V2",
+     "criterion": "Scope",
+     "status": "DONE",
+     "evidence": "M docs/research_publication/STATUS.md (+20/-0, appended); A docs/research_publication/evidence/c28_adoption_invariance_2026-10-03.json; M tests/test_p01_research_publication.py (+63/-3: FINGERPRINTS header and two old asserts). src/tools/.github: 0"
+    },
+    {
+     "id": "27-V3",
+     "criterion": "Gate evidence JSON",
+     "status": "DONE",
+     "evidence": "verdict PASS; trees.before 21039a0; trees.after ccdbd036, parents 21039a0+b9e01a9, tree 93e03c11 == merge-tree; pins FINGERPRINTS macro 7bbfad69->7e427949, technical 82165414->66cb2383, PROTECTED_DIGEST 1d6c56e4->e6de4671; evidence commit precedes the test commit"
+    },
+    {
+     "id": "27-V4a",
+     "criterion": "Proposal as-is passes",
+     "status": "DONE",
+     "evidence": "tests/test_p01_research_publication.py: 13 passed in 0.47s (full suite 444 passed)"
+    },
+    {
+     "id": "27-V4b",
+     "criterion": "Proposal + Track C passes",
+     "status": "DONE",
+     "evidence": "0 conflicts, tree cb84a4e3; 13 passed in 0.51s (full suite 974 passed)"
+    },
+    {
+     "id": "27-V4c-technical",
+     "criterion": "One byte in technical/engine.py -> FAIL",
+     "status": "DONE",
+     "evidence": "1 failed, 12 passed: test_protected_engine_bytes_are_unchanged {'c28_adopted': True, 'observed': 'ce15c1b0..'} != e6de4671. The semantic fingerprint test passes, as expected, because the docstring byte is not semantic"
+    },
+    {
+     "id": "27-V4c-macro",
+     "criterion": "One byte in macro/engine.py -> FAIL",
+     "status": "DONE",
+     "evidence": "1 failed, 12 passed: test_protected_engine_bytes_are_unchanged, observed b6d38881.. != e6de4671"
+    },
+    {
+     "id": "27-V4d",
+     "criterion": "Partial adoption -> FAILS",
+     "status": "DONE",
+     "evidence": "2 failed, 11 passed: test_engine_fingerprints_match_the_pre_change_pin and test_protected_engine_bytes_are_unchanged, 'partial C-28 adoption state is not a pinned state' (lineage fields True, evaluate_stamped False). Engines-only and all-except-macro variants also FAIL both"
+    },
+    {
+     "id": "27-V5",
+     "criterion": "No A2",
+     "status": "DONE",
+     "evidence": "No pop(/del/filter added; tools/producer_engine_fingerprint.py untouched; the only != added is a constant cross-check that the pre and post dicts differ only in {macro, technical}"
+    },
+    {
+     "id": "27-V6",
+     "criterion": "Prior pin verbatim",
+     "status": "DONE",
+     "evidence": "FINGERPRINTS dict body is identical to FINGERPRINTS_PRE_ADOPTION (diff empty); 1d6c56e4...f259 at L66 PROTECTED_DIGEST_PRE_ADOPTION"
+    },
+    {
+     "id": "27-V7",
+     "criterion": "Trailers; draft; base",
+     "status": "DONE",
+     "evidence": "All 3 commits (94bd098, 7621930, dc7daf7) end with the Co-Authored-By (Claude Fable 5.1) and Claude-Session session_019znshzTYgyBnuuBmSxdPFN lines. PR #27 draft=true, base=feature/p01-research-publication-v1 (21039a0). Actions p01-research-publication#37099960099 success"
+    }
+   ],
+   "findings_blocking": [],
+   "findings_nonblocking": [
+    "Merge order matters because the owner branches are stacked: #11 a2e0790 is an ancestor of #15 ce58704, which is an ancestor of #18 2c088ce. In the #23+TrackC tree the full suite has 1 failure: the inherited tests/test_technical_real_producer.py, which #23 does not re-pin. In the #24+TrackC tree it has 2 failures: the inherited #11 and #15 tests. A stack trial of #24+#23+#22+TrackC (octopus merge, no commit, 0 conflicts) passed all 58 tests in the 3 Technical test files. So #22 must land and be merged forward into feature/technical-real-model-v1 (with #23), then into feature/us-equity-session-v1 (with #24), before those trees are green in the adopted state.",
+    "#25 has no GitHub Actions run at head 4a07099, and the repo has no macro workflow, so its CI is not verified. For the other five, Actions ran on the pre-adoption proposal state only; no CI has run on an adopted (merged) tree.",
+    "#23 and #24 check and pin only TechnicalEngine and TechnicalSnapshot. macro/engine.py was not pinned there before the proposals either. As a result, a tree with everything adopted except macro/engine.py passes those PRs' tests. This fits their scope.",
+    "#22-#26 are single commits that contain both the evidence and the pin edit. The claim that the comparison was recorded before the pin edit therefore rests on the evidence text and cannot be checked in git history. #27 does show the right order: evidence commit 94bd098 comes before test commit 7621930.",
+    "V6: the old pin values are kept verbatim, but the constant names changed. For example, ENGINE_FINGERPRINT became ENGINE_FINGERPRINT_PRE_ADOPTION, and FINGERPRINTS became FINGERPRINTS_PRE_ADOPTION. The old names ENGINE_FINGERPRINT and ENGINE_SHA still exist, now holding the selected value.",
+    "The Co-Authored-By trailer on all proposal commits names 'Claude Fable 5.1'. Both trailer lines are present as V7 requires; only the model name differs from the current attribution string.",
+    "Housekeeping: my `git worktree prune` also cleared stale worktree metadata for the wf3/* worktrees. Their directories had already been deleted by their owner (the wf3 review dir was empty), so no files were affected. The wf4/if1-evidence, wf4/audit-pr30 and scratchpad/gh worktrees were left untouched."
+   ],
+   "pushed": [],
+   "not_run": [
+    "GitHub Actions on any adopted (proposal + Track C) tree: not dispatched (read-only task)",
+    "GitHub Actions for #25 (no run exists for 4a07099)",
+    "Full test suite in the partial-adoption (d) trees and in the one-byte mutation (c) trees: only each PR's own test file was run there",
+    "Full test suite in the #22+#23+#24+TrackC stack trial: only the 3 Technical test files were run (58 passed)",
+    "Reproducing the per-PR producer-level artifact comparisons recorded in each evidence JSON (export/replay/bundle hashes) beyond the engine-level probe and the PR test files",
+    "CAL_VERIFY / Holdout: NOT_ACCESSED by design",
+    "Any remote write (push, PR update, comment): not performed by design"
+   ]
+  },
+  {
+   "summary": "Both CDR-004 evidence-only adoption items are done as proposal branches with Draft PRs. No owner branch was committed to. Fetch confirmed all key refs: canonical b8e39a2, Track C b9e01a9, #9 f8af596, #7 a013f1c, #30 86ad362, #29 d044458; global-handoff at 6dedaaf. (1) #9 Producer Infrastructure: new branch integration/a1-adoption/pr9-producer-infra @ e9aee0cb8b80e17f7ae12e01156f6670135de2fa, Draft PR #32 into feature/producer-infrastructure-v1. Gate PASS: the tool's own norm() output differs only by the four added keys, 92 ADDED entries on 19 technical and 4 macro snapshots. Technical goes 82165414 -> 66cb2383 and macro 7bbfad69 -> 7e427949. With the keys removed, the pre-adoption values re-hash exactly. qgv, leaderboard, portfolio, export bundle cdf58ad4 and raw manifest 17934234 are unchanged. (2) #7 Entity Metadata: new branch integration/a1-adoption/pr7-entity-metadata @ 9626ab06cd2b93cdd250159347cdda5d08f76e03, Draft PR #33 into ccr-41677301-10nj3u. Gate PASS on the engine outputs: only the four keys, 44 ADDED entries. data.json, the 140 committed reports, the artifact and Universe hashes and the deterministic rebuild are unchanged. The whole-stdout hash also moves (d1b9cd91 -> 9b9a276e) because the script's reports inventory picks up 27 report files the Track C merge adds. Removing those entries and the four keys reproduces d1b9cd91 byte for byte; this is surfaced separately for the reviewer. Full suites on the proposal commits equal the owner tips: 431/431 and 419/419, pytest and shim. Canonical is not merged. Worktrees were removed and pruned; the scratch harness and outputs are kept at /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf4/if1-evidence/{harness,out}.",
+   "criteria": [
+    {
+     "id": "E1-#9",
+     "criterion": "No test on the #9 owner branch pins the fingerprint constants (else STOP)",
+     "status": "DONE",
+     "evidence": "Ran git grep -n <c> origin/feature/producer-infrastructure-v1 (f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36) -- implementation/tests for c in 82165414, 7bbfad69, d1b9cd91, 112b245b, 53d930a7, a1714480, producer_engine_fingerprint, numeric_fingerprint, engine_numerical_fingerprint. No match for any of them. Across the whole tree, the constants appear only in implementation/docs/producer_infrastructure/evidence/validation.json:60,64,68,72. No STOP was needed."
+    },
+    {
+     "id": "E2-#9",
+     "criterion": "Gate first. BEFORE = f8af596, AFTER = f8af596 + b9e01a9. Run the own generator in both, field-diff the normalized dicts; PASS only if the four keys are the sole difference; record other committed hashes",
+     "status": "DONE",
+     "evidence": "AFTER is a throwaway merge --no-ff c325cc0fc31966a645b295e610189e9514b1e296 (tree f6f5f560): 0 conflicts, not pushed. The 4 adopted files are blob-identical to Track C (lineage 288cabad, models ef4f80ec, technical 5365653f, macro 08d79c20). Command: python3 tools/producer_engine_fingerprint.py src. BEFORE equals the committed values: technical 82165414a2c8..., macro 7bbfad69ac46..., qgv a1714480..., leaderboard 112b245b..., portfolio 53d930a7..., n_qgv 19. AFTER: technical 66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655, macro 7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501; the other keys are unchanged. Both trees are repeatable across 2 runs. Field diff of the tool's own norm() dump (harness hashes equal the tool output): 92 ADDED entries, kinds ADDED only, all at [section, idx, key] with available_at=null, data_stamp_refs=[], source_vintages=[], input_hash=null (19 technical and 4 macro snapshots). AFTER with the four keys removed equals BEFORE and re-hashes to 82165414 and 7bbfad69. Other committed hashes reproduce unchanged in both trees: export bundle cdf58ad451ba... (2 runs each; bytes equal across trees), raw manifest_set_sha256 1793423426f3... (6808 artifacts, 6136954924 bytes), and the regenerated manifest is byte-identical to the committed file. Verdict PASS."
+    },
+    {
+     "id": "E3-#9",
+     "criterion": "Additive record c28_adoption_post_adoption_2026-10-03.json plus a STATUS.md note; existing evidence files not edited; no test or source change",
+     "status": "DONE",
+     "evidence": "Added implementation/docs/producer_infrastructure/evidence/c28_adoption_post_adoption_2026-10-03.json (sha256 aa673b45bc1702ef0ee27f424bee2eed67e1c7a2235844921921dc86401585ae). It contains the before/after SHAs, commands, pre/post values, field-diff summary, harness sources, verdict and the CDR-004 quote plus the full register wording. Appended 18 lines to STATUS.md. git diff --numstat f8af596 e9aee0cb: 18 0 STATUS.md; 396 0 the new JSON. git diff --quiet confirms validation.json, src/, tests/ and tools/ are unchanged."
+    },
+    {
+     "id": "E4-#9",
+     "criterion": "Owner branch full suite on the proposal equals the owner tip result",
+     "status": "DONE",
+     "evidence": "Owner tip f8af596: pytest 431 passed (exit 0); mini_pytest shim 431 passed, 0 failed. Proposal at exact commit e9aee0cb: pytest 431 passed (exit 0); shim 431 passed, 0 failed. Command: PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf from implementation. Context only: the AFTER merged tree gives 961 passed, 0 failed."
+    },
+    {
+     "id": "E5-#9",
+     "criterion": "Commit with Claude identity and the exact trailer, push -u the new branch, one Draft PR into the owner branch with the required title and body",
+     "status": "DONE",
+     "evidence": "Commit e9aee0cb8b80e17f7ae12e01156f6670135de2fa, author and committer Claude <noreply@anthropic.com>. The message ends with the Co-Authored-By and Claude-Session lines. git push -u origin integration/a1-adoption/pr9-producer-infra created a new branch; the remote SHA is verified. Draft PR #32, https://github.com/kco994553-star/Investment-System1/pull/32, base feature/producer-infrastructure-v1 @ f8af596, draft=true, mergeable_state clean. The title is exactly as required. The body has what/why, gate digests, NOT changed, owner status, tests, NOT_RUN and states (CANONICAL NOT_MERGED), and ends with the required lines. The GitHub integration auto-appended a '---/_Generated by Claude Code_' footer after them."
+    },
+    {
+     "id": "E6-#9",
+     "criterion": "PR #9 body notes that #12/#17/#19 stack on #9 and would receive the record by a normal merge of #9",
+     "status": "DONE",
+     "evidence": "PR #32 has a 'Stacking (#12 / #17 / #19)' section. It states that #12 branches from 6fe9eee, #17 and #19 contain f8af596, all three carry validation.json blob e2bae658, and they would receive the record by a normal merge of #9 if the owner merges it. git merge-tree --write-tree of e9aee0cb into each head is clean: #12 tree 0dfa96dc, #17 b3bd1bd5, #19 48bb2197."
+    },
+    {
+     "id": "E1-#7",
+     "criterion": "No test on the #7 owner branch pins the fingerprint constants (else STOP)",
+     "status": "DONE",
+     "evidence": "Ran git grep -n <c> origin/ccr-41677301-10nj3u (a013f1c1758642f90a65fe11df69fc234c143a48) -- implementation/tests with the same 9 strings. No match. d1b9cd91 appears only in implementation/docs/entity_metadata/HANDOFF.md:72,73 and evidence/validation.json:91,92. No STOP was needed."
+    },
+    {
+     "id": "E2-#7",
+     "criterion": "Gate first. BEFORE = a013f1c, AFTER = a013f1c + b9e01a9. Run the own generator in both, field-diff the normalized dicts; PASS only if the four keys are the sole difference; record other committed hashes",
+     "status": "DONE",
+     "evidence": "AFTER is a throwaway merge --no-ff d1dd81ce9cd3ca146246b5828dff575bad6f0fd1 (tree 3c2a0a39): 0 conflicts, not pushed. The adopted blobs equal Track C's. Command: python3 docs/entity_metadata/evidence/numeric_fingerprint.py <impl-dir> | sha256. BEFORE gives d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535, equal to the committed value. AFTER gives 9b9a276e4daa0c1f52e8d90ec3d8829aa8799d47c2a7cc2017ddce11937d483d. Both are repeatable. Field diff: 71 ADDED, nothing else. Engine sections: 44 entries, all four keys (10 technical, 1 macro). Technical and macro with the four keys removed equal BEFORE; qgv, portfolio, leaderboard, leaderboard_order and data_json_sha256 are identical. reports_sha256: 27 ADDED entries, exactly the 27 implementation/reports/*.json files Track C adds (git name-status all A). All 140 committed entries are unchanged (set sha 31a4effe both). After minus both gives d1b9cd91 byte for byte; minus the 27 report entries only gives ce845bb6...; minus the four keys only gives 3f466861.... Other hashes are unchanged in both trees: data.json a 8206d6c5 and b 649a144d, the 6 artifact sha256, Universe 75f795f8, and the ingest build rebuild (empty git status). Verdict PASS on the normalized engine dicts. The inventory difference is surfaced separately; see findings."
+    },
+    {
+     "id": "E3-#7",
+     "criterion": "Additive record c28_adoption_post_adoption_2026-10-03.json plus a HANDOFF.md note; existing evidence files not edited; no test or source change",
+     "status": "DONE",
+     "evidence": "Added implementation/docs/entity_metadata/evidence/c28_adoption_post_adoption_2026-10-03.json (sha256 d31924fbe2288b624a2c96f6cf293ce1f4021154a0a317fd3e7d5fe9a71e7bc3). Appended §12 (17 lines) to HANDOFF.md. git diff --numstat a013f1c 9626ab06: 17 0 HANDOFF.md; 385 0 the JSON. validation.json, numeric_fingerprint.py, src/, tests/ and tools/ are unchanged (git diff --quiet)."
+    },
+    {
+     "id": "E4-#7",
+     "criterion": "Owner branch full suite on the proposal equals the owner tip result",
+     "status": "DONE",
+     "evidence": "Owner tip a013f1c: pytest 419 passed (exit 0); shim 419 passed, 0 failed. Proposal at exact commit 9626ab06: pytest 419 passed (exit 0); shim 419 passed, 0 failed. Context only: the AFTER tree gives 949 passed, 0 failed."
+    },
+    {
+     "id": "E5-#7",
+     "criterion": "Commit with Claude identity and the exact trailer, push -u the new branch, one Draft PR into the owner branch with the required title and body",
+     "status": "DONE",
+     "evidence": "Commit 9626ab06cd2b93cdd250159347cdda5d08f76e03, author and committer Claude <noreply@anthropic.com>, with the trailer lines verified. Pushed new branch integration/a1-adoption/pr7-entity-metadata. Draft PR #33, https://github.com/kco994553-star/Investment-System1/pull/33, base ccr-41677301-10nj3u @ a013f1c, draft=true, mergeable_state clean. The title is exactly as required, and the body has all required sections and ends with the required lines. GitHub auto-appended a footer after them."
+    }
+   ],
+   "findings_blocking": [],
+   "findings_nonblocking": [
+    "#7 E2 interpretation for the reviewer: numeric_fingerprint.py's whole-stdout sha256 changes for two reasons. One is the four keys. The other is 27 ADDED reports_sha256 entries for Track C report files present in the merged tree (all git status A; no existing file modified). The normalized engine dicts differ only by the four keys, and the 140 committed report hashes are unchanged. The verdict is recorded as PASS, with this inventory difference classified and shown separately in the record and PR #33. Reconstruction with both removed equals d1b9cd91 exactly. The integration owner should confirm this reading of the 'sole differences' criterion.",
+    "The GitHub MCP create_pull_request call appended '\\n\\n---\\n_Generated by [Claude Code](...)_' after the submitted body on PRs #32 and #33. The submitted body ends exactly with the required two lines; the stored body has this extra footer. Not edited.",
+    "#9 post-adoption values (technical 66cb2383, macro 7e427949) agree with proposal #27's independent record for the same tool on the PR #17 tree.",
+    "#12 (feature/macro-real-producer-v1 @ 61d3352) branches from 6fe9eee and does not contain #9 tip f8af596. It receives the record only when #9's branch is merged into it. Trial merge-tree into #12, #17 and #19 is clean.",
+    "The 'proposal_branch' test entry inside each record comes from a run on the working tree before the docs note was appended (tests do not read docs/). The re-run at the exact commits gave identical counts and is reported in the PR bodies.",
+    "Throwaway merge commits c325cc0fc31966a645b295e610189e9514b1e296 (#9 AFTER) and d1dd81ce9cd3ca146246b5828dff575bad6f0fd1 (#7 AFTER) are local-only and now unreferenced after the worktrees were removed. They were never pushed.",
+    "Existing fail-closed tests attempt egress to data.sec.gov, fred.stlouisfed.org and query1.finance.yahoo.com, and the proxy denies it. The tests expect that and pass.",
+    "GLOBAL_CURRENT_HANDOFF/GLOBAL_STATUS_INDEX were not updated: they are single-writer metadata outside this task's scope. The new PRs #32/#33 need to be indexed by the Primary Integration Writer."
+   ],
+   "pushed": [
+    {
+     "branch": "integration/a1-adoption/pr9-producer-infra",
+     "head": "e9aee0cb8b80e17f7ae12e01156f6670135de2fa",
+     "base": "feature/producer-infrastructure-v1 @ f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+     "pr_url": "https://github.com/kco994553-star/Investment-System1/pull/32"
+    },
+    {
+     "branch": "integration/a1-adoption/pr7-entity-metadata",
+     "head": "9626ab06cd2b93cdd250159347cdda5d08f76e03",
+     "base": "ccr-41677301-10nj3u @ a013f1c1758642f90a65fe11df69fc234c143a48",
+     "pr_url": "https://github.com/kco994553-star/Investment-System1/pull/33"
+    }
+   ],
+   "not_run": [
+    "GitHub Actions on integration/a1-adoption/pr9-producer-infra and integration/a1-adoption/pr7-entity-metadata: 0 workflow runs exist (docs-only change; no matching workflow path filters)",
+    "Web MVP / Global Search browser E2E and Node search/locale tests (no product file changed)",
+    "mini_pytest shim on the throwaway AFTER (merged) trees; only pytest was run there",
+    "Track C tip b9e01a9 suite on its own (Actions 37097149378 SUCCESS is cited from GCH-002, not re-run)",
+    "CAL_VERIFY / Holdout: never accessed",
+    "Canonical merge: not performed (user decision)"
+   ]
+  },
+  {
+   "summary": "I ran a read-only Web gap audit on the combined #30 tree at 86ad3628dd5c62c6d873e42511e577f24f4fb588 (refs fetched and checked: canonical b8e39a2196a6d7794a04a0cd5393c68329e126ca; #29 d0444583197c96f61fce811573dfd59670fd4f78; #5 a4e49c83f5783c19617fb609b8f95b179cb13e84; #6 eda65bf5d9203aee05f4d28992d1ccfcd815ebd4; #7 a013f1c1758642f90a65fe11df69fc234c143a48; #9 f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36; #17 21039a0a7f9677b123abd8587fd8d89784a73a3c; Track C b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565). No branch, commit or push. My two detached worktrees are removed and pruned. The main checkout (f1b5afb, clean) was not touched. /tmp/rig-news-producer-ro was not created by this run.\n\nWhere the code comes from: all Web assets in #30 (app.js, locale.js, entity-search.js, index.html, bridges, CSS) are byte-identical to #6 eda65bf. web_mvp.py in #30 is the #9 version (adds a malformed-section check and a LIVE type check).\n\nMain findings:\n- **Browser tests:** all three suites pass locally on #30: 10/10, 8/8 and 6/6, with zero page errors. Actions runs for web-mvp-validation (37102973427) and codex-integration-readiness (37102973395) also succeeded on 86ad362.\n- **G2 (recomputation):** the Web assets do not recompute any score, rank, regime, zone or portfolio action. They only display stored values and format them.\n- **G3 (research shown as LIVE): FAILED as an unconditional guarantee.** The guard against research data appearing as LIVE exists only in the producer layer (producer contract, assembler and P01 envelope). The Web-side validate_bundle, which the documented `--input` build path uses, does not enforce it. In a scratch probe, a hand-made bundle with PROVISIONAL_RESEARCH data marked LIVE was accepted and rendered as \"LIVE\" with its value showing. Nothing in the UI ever renders \"Official\".\n- **Producer metadata is not shown:** the app never reads the producer metadata, publication_envelope or producer_manifest. So methodology/version, reason_code, freshness and the as_of of withheld sections never appear as UI, only in the fetched JSON.\n- **Coverage of the 13 items:** 2 are IMPLEMENTED (NOT_AVAILABLE, mobile), 8 are PARTIAL and 3 are MISSING (BLOCKED, PARTIAL, DISPLAY_RESEARCH).\n\nCoverage table (details in G1):\n| Item | Status |\n|---|---|\n| NOT_AVAILABLE | IMPLEMENTED |\n| BLOCKED | MISSING |\n| PARTIAL | MISSING |\n| DISPLAY_RESEARCH | MISSING (inactive by design; needs a grant) |\n| provenance/evidence | PARTIAL |\n| as_of | PARTIAL |\n| freshness | PARTIAL |\n| methodology/version | MISSING in the UI (in fetched JSON only); counted as PARTIAL in the 8 above |\n| coverage | PARTIAL |\n| error/empty/loading | PARTIAL |\n| ko/en | PARTIAL |\n| mobile | IMPLEMENTED |\n| producer-contract E2E | PARTIAL |\n\nGap list (G5), with gap types: (a) is presentation-only and needs no new state or grant, (b) is blocked by a grant or policy, (c) needs a producer or contract change.\n- Most gaps are type (a).\n- Type (c): the Web-side research guard; per-section binding of BLOCKED/PARTIAL decisions; a coverage figure declared by the producer.\n- DISPLAY_RESEARCH is type (b) plus (c): it needs a research-display grant, which is a USER_DECISION_REQUIRED.\n\nThe schema-1 bundle can carry every item without a new state: through the existing section envelope, the additive `producer` metadata from #9 and the additive `publication_envelope` from #17. The exceptions are research values (no transport exists) and per-section decision binding (decisions carry no section key).\n\nEvidence is saved under /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf4/web-gap/ (logs/, evidence/, probe/).\n\nStates: BRANCH_STATE none created; INTEGRATION_STATE #30 Web layer browser-PASS, withheld path only; CANONICAL_STATE NOT_MERGED. No USER_DECISION_REQUIRED was triggered by this read-only audit.",
+   "criteria": [
+    {
+     "id": "G1",
+     "criterion": "Coverage table for all 13 items with evidence",
+     "status": "DONE",
+     "evidence": "Lines are in #30 86ad362 under implementation/src/investment_system/product. B = browser test, P = pytest.\n\n1. NOT_AVAILABLE: IMPLEMENTED.\n- Code: app.js:136-139 state() badge; app.js:143-146 block() shows reason, falling back to reason_localized; web_mvp.py:17-18 and :43-46 (a NOT_AVAILABLE section must not carry data); style.css:137 badge style.\n- Tests: B web_mvp_browser_test.js:26-33; B producer_contract_web_browser_test.js:50-95 (including :91-93, no ranking rows); P test_web_mvp.py:10 and :26; P test_producer_infrastructure.py:172.\n- Native schema-1 state.\n- Remaining gap: producer.reason_code is never shown; an English producer reason is shown untranslated in ko.\n\n2. BLOCKED: MISSING as a distinct UI state.\n- Withheld BLOCKED sections render as generic NOT_AVAILABLE. That is correctly fail-closed per P01-F.\n- app.js has zero references to publication_envelope, producer or reason_code (grep). locale.js:30 has a BLOCKED / BLOCKED_DEPENDENCY label, but it only applies to status codes inside data.\n- Tests: producer_contract test :50-63 checks BLOCKED in the fetched JSON only, not in the rendered page.\n- Schema-1 can carry it with no new state: producer.reason_code (assembler.py:34) and publication_envelope.decisions[].data_completeness (envelope.py:187-197). But decisions have no section or producer key (facts.py:9-24, predicate.py:175-190), so per-section binding needs a contract change.\n\n3. PARTIAL: MISSING.\n- Same situation as BLOCKED. locale.js:30 has a PARTIAL label.\n- Showing PARTIAL values requires DISPLAY_RESEARCH (P01 approval :42).\n- Schema-1 can carry the fact that a PARTIAL record exists and is withheld (envelope). It cannot carry the values.\n\n4. DISPLAY_RESEARCH: MISSING, inactive by design.\n- authorization.py:17 ACTIVE_AUTHORIZATIONS=().\n- envelope.py:179-185 raises if any decision is not NOT_AVAILABLE or any grant is not NONE; predicate.py:191-194.\n- No client code exists for it.\n- It is an envelope mode, not a schema-1 state, so no new state is needed. But the extractors drop all values (docs/research_publication/CONTRACT.md:48-51), so there is no transport for research values.\n\n5. provenance/evidence: PARTIAL.\n- app.js:138 shows the source line (data-source-original); app.js:140-142 evidence() raw JSON is used at :145 (section, only when data is not null), :156 (company), :178 (holding/company), :188 (leaderboard row), :212 (news).\n- Not reachable in the UI: producer metadata of NOT_AVAILABLE sections (producer_id/version, source_inputs sha256, snapshot_sha256, reason_code). D.universe.source is never rendered.\n- Tests: B gls_browser:83-98 (raw news original in <pre>); B web_mvp_browser:57-65 (original QGV 90.79); B producer_contract:64-75 checks producer metadata in the fetched JSON only, not rendered.\n- Carried by the assembler `producer` key (assembler.py:26-34).\n\n6. as_of: PARTIAL.\n- app.js:138 shows the section as_of or 'As-of not provided'; :212 news available_at; :163 and :167 universe as_of.\n- For NOT_AVAILABLE sections, producer.as_of / requested_as_of / generated_at are not shown. Screenshot evidence/withheld-home-en-390.png: the Macro card says 'As-of not provided' although producer.as_of is 2026-10-02T20:00:00Z.\n- Raw ISO text, no locale formatting.\n- No test checks the rendered as_of; producer_contract:68 checks the fetched JSON only.\n- Already carried in schema-1.\n\n7. freshness (FRESH/STALE/NOT_USABLE): PARTIAL.\n- STALE: app.js:137 computes it in the browser (LIVE and expires_at <= Date.now()) and appends ' · STALE' inside the 'badge LIVE' class. There is no LIVE/STALE CSS (style.css:124-140 styles only DEMO and NOT_AVAILABLE), so it is not prominent, contrary to docs/web_mvp/README.md:38.\n- FRESH: no label, just plain 'LIVE'.\n- NOT_USABLE: the assembler (assembler.py:42-45) turns it into NOT_AVAILABLE with reason_code EXPIRED_NOT_USABLE; the UI shows only the generic reason.\n- producer.freshness and producer_manifest freshness are never read.\n- No browser test covers LIVE or STALE (grep finds 0 hits). P test_producer_infrastructure.py:103 and :112 cover classification only.\n- Scratch probe: an expired LIVE section renders 'LIVE · STALE' with class 'badge LIVE'; a non-expired LIVE section renders 'LIVE'.\n- Carried in schema-1 (STALE is a derived freshness, not a state; contract.py:3-5).\n\n8. methodology/version: MISSING in the UI.\n- app.js has zero references. It is visible only inside the raw Evidence JSON of sections that have data.\n- Tests: producer_contract:70 checks the fetched JSON only.\n- Carried in producer.methodology {id, version, status} (assembler.py:31).\n\n9. coverage: PARTIAL.\n- app.js:156 shows the per-company QGV coverage_state through AppLanguage.status; locale.js TERMS has the coverage_state label.\n- No section-level coverage (for example N of 500 covered, or withheld counts).\n- No test checks it.\n- PRODUCER_SNAPSHOT has scope.entity_ids (contract.py:102), but assembler _meta drops it (assembler.py:26-34).\n\n10. error/empty/loading: PARTIAL.\n- Loading: index.html:27. Error: app.js:381-384 DATA UNAVAILABLE plus retry. Empty: app.js:37, 145, 156, 203, 212. Storage: app.js:81-96, 115-126, 223-224.\n- Tests: B producer_contract:96-108 (loading) and :109-125 (HTTP 503, malformed JSON, retry); B gls_browser:37-38 and :47-48; B web_mvp_browser:26-33, 66-84; B gls_browser:129-136.\n- Defect: index.html:27 has no data-i18n. Probe: in en-US the loading text is '데이터를 불러오는 중…' while html lang is en-US.\n- Render errors after a hashchange are not caught (app.js:359).\n\n11. ko/en: PARTIAL; the core is implemented.\n- Code: locale.js (dictionary, TERMS, status, fallback); app.js:7-16, 17-24, 51-57; research-bridge.js:46-81; network-bridge.js:66-88.\n- Tests: B gls_browser:65-121; B producer_contract:76-90; node global_language_search_test.js 26/26.\n- Hard-coded strings left: app.js:161 ' holdings'; :167 'FROZEN_SNAPSHOT / DEMO'; :178 'News / Relationships'; :183 'QGV context' / 'Technical context' / 'Macro context'; :196 subtitle; :277 '가져오기 실패: ' (a locale key exists but is unused); index.html:27; network-bridge.js:19 and :57-58 '★/☆ 관심기업'.\n\n12. mobile: IMPLEMENTED.\n- Code: index.html:5-8 viewport; style.css is mobile-first with @media (min-width:750px) at :330 and 44px touch targets at :171, :184, :221.\n- Tests: B web_mvp_browser:34-55 (6 routes x 360/390/1280); B gls_browser:122-128; B producer_contract:76-90 (7 routes x 3 widths x 2 locales).\n- No physical device tested.\n\n13. producer-contract E2E: PARTIAL.\n- #29 tools/build_producer_contract_web_fixture.py and tools/producer_contract_web_browser_test.js cover assembler -> P01 envelope -> build -> browser, for the withheld NOT_AVAILABLE path only.\n- No rendered E2E of assembler LIVE/FRESH/STALE/NOT_USABLE/FROZEN/DEMO outputs.\n- Metadata is checked at fetch level only.\n- Real producers #10/#12/#14/#15 are not wired (grants NONE)."
+    },
+    {
+     "id": "G2",
+     "criterion": "Invariant check: no computation on score/rank/regime/zone/portfolio action fields in Web assets",
+     "status": "DONE",
+     "evidence": "Result: no recomputation found.\n\nGrep over web_assets/*.js for field names (score, rank, regime, zone, weight, return, action, exposure) and for arithmetic, sort, reduce, Math and toFixed. Every hit is display formatting, navigation or freshness:\n- app.js:71-76 fmt(): toLocaleString with at most 2 fraction digits. Display rounding only; the raw value stays in Evidence.\n- app.js:77 pct(): v*100 for weight and return display (:178, :182). This is a unit-scale assumption that the producer sends fractions. Not a recomputation, but see the non-blocking finding.\n- app.js:182 shows `actual_weight ?? target_weight` with a matching label. Selection, not arithmetic.\n- app.js:188 renders leaderboard rows in producer order with r.rank verbatim. No sort. B gls_browser:78 asserts the deliberately out-of-order list ['#2 NVDA','#1 ASML'] is preserved.\n- app.js:210-211 orders news by portfolio > interest > other. News display order, not an investment rank.\n- app.js:137 STALE is derived from expires_at (freshness presentation).\n- app.js:161 counts holdings.\n- entity-search.js:51-82 rank and score are search relevance only. index.html:23 shows a disclaimer.\n- network-bridge.js:7-8 and :31 handle zoom and edge visibility only.\n- research-bridge.js translates labels only.\n- web_mvp.py does validation, deepcopy and envelopes only.\n\nSupporting tests: P test_web_mvp.py:18 (demo values not rescored), :44 (no mutation), :73 (no scoring imports); node global_language_search_test.js:71 ('index and locale never mutate producer data or ranks'); B gls_browser check 3 asserts D is unchanged across locale switches.\n\nMinor note, not a score/rank issue: app.js:44-46 hard-codes a mapping of 'semiconductor' to ['Semicap','Semiconductor'] for industry navigation."
+    },
+    {
+     "id": "G3",
+     "criterion": "Research-as-Official check: research/provisional data can never render as LIVE/Official (cite guard and test)",
+     "status": "FAILED",
+     "evidence": "The audit was executed. The invariant holds only when the bundle goes through the producer exporter or assembler. It does not hold unconditionally.\n\nGuards that exist:\n- producers/contract.py:198-204: LIVE or FROZEN_SNAPSHOT requires validation PASS, and methodology.status must not be a research status (raises ResearchStatusError). contract.py:136-138 rejects RESEARCH or PROVISIONAL_RESEARCH as a data_state.\n- assembler.py:65 validates every snapshot.\n- web_mvp.py:41 accepts only the 4 states; web_mvp.py:49 requires synthetic data to be DEMO.\n- publication/envelope.py:179-185 raises if any decision is not NOT_AVAILABLE or any grant is not NONE; :198-204 keeps sections unchanged.\n- predicate.py:113-119 reject_promotion; predicate.py:191-194.\n- authorization.py:17 ACTIVE_AUTHORIZATIONS=().\n- app.js has no 'Official' label anywhere and never reads the envelope.\n\nTests, all PASS locally: P test_producer_infrastructure.py:158, :166; P test_p01_research_publication.py:218, :256, :338, :362; P test_research_publication_contract.py:53, :124, :144; B producer_contract_web_browser_test.js:50-63 and :76-95 (withheld tokens never visible, no banner, no ranking rows).\n\nGap, verified by scratch probes:\n- probe/g3_probe.py: Web-side validate_bundle (web_mvp.py:25-67, used by the `--input` path at web_mvp.py:114/:142) ACCEPTED a section marked LIVE and one marked FROZEN_SNAPSHOT with data research_state=PROVISIONAL_RESEARCH, producer.methodology.status=PROVISIONAL_RESEARCH and validation NOT_RUN. The literal state 'RESEARCH' was rejected. producer validate_snapshot rejected the same content with ResearchStatusError.\n- probe/render_probe.js: the built UI rendered badge 'LIVE' with value 11.11 visible, and showed no methodology status.\n\nSo research data can render as LIVE when an operator uses `web_mvp --input` with a bundle that did not come from tools/export_web_bundle.py (docs/web_mvp/README.md:25-27 documents hand-replacing envelopes). Official is never rendered."
+    },
+    {
+     "id": "G4",
+     "criterion": "Run existing browser tests in #30 tree and report pass counts",
+     "status": "DONE",
+     "evidence": "Tree: HEAD 86ad3628dd5c62c6d873e42511e577f24f4fb588, detached worktree. Runner: probe/run_g4.sh, run under `unshare -n` with only loopback up, so the hard-coded port 8765 could not collide with other workers. It uses the workflow commands, with outputs sent to scratch.\n\nBuild commands, all rc=0:\n- `PYTHONPATH=implementation/src python3 -m investment_system.product.web_mvp --out $SERVE/web-mvp`\n- `python3 implementation/tools/build_web_mvp_demo.py --out $SERVE/web-mvp-demo`\n- `python3 -m http.server 8765 --bind 127.0.0.1 --directory $SERVE &`\n\nResults:\n- `node implementation/tools/global_language_search_test.js $SERVE/web-mvp-demo`: rc=0, 26/26 PASS, 509 entities.\n- `node implementation/tools/entity_metadata_search_test.js $SERVE/web-mvp <out>`: rc=0, failures [].\n- `node implementation/tools/web_mvp_browser_test.js`: rc=0, 10/10 checks, errors []. browser.json sha256 8be9b592…062f.\n- `node implementation/tools/global_language_search_browser_test.js`: rc=0, 8/8 PASS, errors []. sha256 cc8cb144…de2a4.\n- `python3 implementation/tools/build_producer_contract_web_fixture.py --out $S/withheld-web --evidence $S/withheld-web-evidence`: rc=0. records_sha256 6adebb3b…, bundle ab68d037…, data.json dc92e1e5…; all three match #29's committed pins. entities.json is 376611b1…, while #29's pin is 1a84482f…. A rebuild at d044458 reproduces 1a84482f, so the difference comes from #7's entity_catalog/entity_metadata change.\n- `node implementation/tools/producer_contract_web_browser_test.js --dir … --evidence …`: rc=0, 6/6 checks, errors []. browser-validation.json sha256 d57e5c59…0c92.\n\nTargeted pytest: `PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf tests/test_web_mvp.py tests/test_global_language_search.py tests/test_producer_infrastructure.py tests/test_p01_research_publication.py tests/test_research_publication_contract.py tests/test_entity_metadata_coverage.py` gave 68 passed in 6.06s.\n\nRuntime: Python 3.11.15, Node 22.22.0, Playwright 1.56.1 (global install; the workflow pins 1.58.2), Chromium 141.0.7390.37 from /opt/pw-browsers.\n\nGitHub Actions on 86ad362 (observed, not triggered by me): web-mvp-validation 37102973427 success; codex-integration-readiness 37102973395 success."
+    },
+    {
+     "id": "G5",
+     "criterion": "Prioritized gap list with (a)/(b)/(c) classification and owner branch; no implementation",
+     "status": "DONE",
+     "evidence": "Nothing was implemented.\n\nWhere Web changes belong: app.js and locale.js in #30 are identical to #6 feature/global-language-search-v1 (blobs a4dd195 / e7ef15e). #5 has an older app.js. The changes below read #9 `producer` and #17 `publication_envelope`, so the Web owner should land them as a new Web child branch stacked on the canonical→#5→#6→#9→#17→#19 chain. Non-owners should not edit #5/#6 directly, and #29 is a Codex branch.\n\n1. (c) Web-side research guard (G3). validate_bundle should reject LIVE or FROZEN_SNAPSHOT when the section's producer methodology.status is a research status or validation is not PASS; optionally require producer_manifest on --input. Validator hardening with no new state and no grant. Owner: Producer Infrastructure #9 feature/producer-infrastructure-v1 (adoption line integration/a1-adoption/pr9-producer-infra), which last changed validate_bundle.\n2. (a) Freshness: distinct STALE style, a FRESH label, show EXPIRED_NOT_USABLE reason_code, read producer.freshness, add a browser test. Owner: Web.\n3. (a) Withheld-reason display: show producer.reason_code / methodology.blocker and the withheld snapshot's as_of / requested_as_of / generated_at on NOT_AVAILABLE cards, without values. Owner: Web.\n4. (a) Methodology/version and provenance panel: producer_id/version, methodology id/version/status, source_inputs sha256, snapshot_sha256 for every section including NOT_AVAILABLE; universe source. Owner: Web.\n5. (a) i18n defects: loading text (index.html:27) and the hard-coded strings listed in G1 item 11. Owner: Web / Language (#6 line).\n6. (a) as_of locale formatting, and a coverage count from existing data keys or coverage_state. (c) A producer-declared coverage summary (assembler _meta to include scope or a coverage block). Owner of (c): #9.\n7. (a) Bundle-level panel of withheld decisions (READY/PARTIAL/BLOCKED counts, mode NOT_AVAILABLE, grants NONE). P01-H allows a client that reads the envelope; no grant is needed. (c) Per-section BLOCKED/PARTIAL binding needs a section key on decisions. Owner of (c): P01 #17 feature/p01-research-publication-v1 / integration/a1-adoption/pr17-p01.\n8. (b)+(c) DISPLAY_RESEARCH: blocked by the research-display grant (NONE), which is USER_DECISION_REQUIRED per contract D.9. After a grant it also needs an envelope value transport (owner P01 #17) and a disclosure UI (owner Web).\n9. (a) Producer-contract E2E expansion: render assembler LIVE / STALE / NOT_USABLE / FROZEN test vectors and assert the visible badges and metadata. Owner: the Codex #29 line (codex/web-producer-integration-readiness-2026-10-03, which I must not modify) or a new additive Web test branch. E2E with real producer outputs stays (b), blocked by grants NONE and real data not run.\n10. (a), low priority: replace the pct() fraction assumption with a producer-declared unit. Owner: Web."
+    }
+   ],
+   "findings_blocking": [
+    "G3 defect: the Web-side schema-1 validator (implementation/src/investment_system/product/web_mvp.py:25-67) does not apply the research/provisional guard. A bundle given to `python -m investment_system.product.web_mvp --input` with state LIVE or FROZEN_SNAPSHOT and producer.methodology.status=PROVISIONAL_RESEARCH (or research_state in data) passes validation, and app.js shows it as 'LIVE'. A scratch probe confirmed value 11.11 rendered under a LIVE badge. The guard exists only in producers/contract.py:198-204 and assembler/export, so 'research can never render as LIVE' holds only when the bundle comes from the producer exporter. Fix type (c), contract hardening, no new state; owner #9 feature/producer-infrastructure-v1."
+   ],
+   "findings_nonblocking": [
+    "The app never reads the producer metadata (#9), producer_manifest or publication_envelope (#17): app.js has zero references. methodology/version, reason_code, freshness and the as_of of withheld sections exist only in data.json. The producer_contract browser test checks them only at fetch level (producer_contract_web_browser_test.js:64-75), not in the rendered page. #29's TAKEOVER_EVIDENCE:62-64 acknowledges this.",
+    "STALE is not prominent. app.js:137 appends ' · STALE' inside class 'badge LIVE', and style.css has no LIVE/STALE rule (only DEMO and NOT_AVAILABLE at :133-140). FRESH has no label. No browser test covers LIVE or STALE.",
+    "The loading state is not localized. index.html:27 has no data-i18n, so en-US users see '데이터를 불러오는 중…' (probe: html lang en-US). Other hard-coded strings: app.js:161, 167, 178, 183, 196, 277; network-bridge.js:19, 57-58.",
+    "#29's committed evidence fixture-manifest.json pins entities_json_sha256 1a84482f…, which is stale for the #30 tree: #30 produces 376611b1… because of #7's entity_catalog.py and entity_metadata.py. data.json is identical (dc92e1e5…). The runtime test compares against its own runtime manifest, so it still passes. This is for the integration writer's information.",
+    "app.js:77 pct() multiplies by 100, assuming the producer sends fractions. This is a scale presumption; web CONTRACT.md:27 says 'No cross-scale arithmetic'. It is not a recomputation of investment values.",
+    "app.js:44-46 hard-codes an industry mapping ('semiconductor' -> ['Semicap','Semiconductor']) in presentation. It is navigation only.",
+    "Render errors after a hashchange are not caught (app.js:359). Only the initial load path has the DATA UNAVAILABLE fallback.",
+    "The Prompt Library route is labelled 'RESEARCH' with badge 'FROZEN_SNAPSHOT · PLV1_CONTENT_V1.0' (app.js:196). Readers could confuse this with research data once DISPLAY_RESEARCH exists. It is not a data path.",
+    "Local runtime differs from CI: Playwright 1.56.1 (global) versus the pinned 1.58.2; Node 22.22.0 versus Node 24 for the codex job. All suites still passed, and the Actions runs on 86ad362 succeeded."
+   ],
+   "pushed": [],
+   "not_run": [
+    "Full pytest regression of the #30 tree: only 68 targeted Web/Producer/P01/entity tests were run",
+    "Testing on a physical mobile device (Chromium viewport emulation only)",
+    "Real-data or real producer (#10/#12/#14/#15) output to Web E2E: grants are NONE and there is no real producer wiring",
+    "DISPLAY_RESEARCH rendering: inactive, no grant",
+    "GitHub Actions triggered by this worker: existing runs were only observed (37102973427, 37102973395)",
+    "CI-pinned Playwright 1.58.2 and Node 24 for the producer_contract job (used global Playwright 1.56.1 and Node 22.22.0)",
+    "Accessibility / screen-reader audit",
+    "Any implementation or fix (read-only task by instruction)"
+   ]
+  }
+ ],
+ "verifs": [
+  {
+   "branch": "origin/integration/a1-adoption/pr9-producer-infra @ e9aee0cb8b80e17f7ae12e01156f6670135de2fa (base feature/producer-infrastructure-v1 @ f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36; merge-base = f8af596; Track C owner tip origin/ccr-22e3ff16-p7n5k5 @ b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565; canonical b8e39a2196a6d7794a04a0cd5393c68329e126ca; Draft PR #32)",
+   "blocking": [],
+   "nonblocking": [
+    "AC1 scope: DONE / PASS. `git diff --numstat f8af596 e9aee0c` shows exactly 2 files: STATUS.md with 18 additions and 0 deletions (A), and evidence/c28_adoption_post_adoption_2026-10-03.json with 396 additions (new). The diff has 0 removed lines. The base STATUS.md (5436 bytes) is a byte prefix of the proposal's STATUS.md (8267 bytes), so the note was purely appended. No file under src/, tests/, tools/ or .github changed. validation.json is byte-identical to f8af596 (blob e2bae658). File modes are 100644. The record parses as JSON, and its sha256 aa673b45bc1702ef0ee27f424bee2eed67e1c7a2235844921921dc86401585ae matches the PR body.",
+    "AC2 reproduction: DONE / PASS. I created my own worktrees: before @ f8af596 and after = f8af596 + `git merge --no-ff b9e01a97`. The merge had 0 conflicts. My merge commit is 9e93ac03 because the author and time differ, but its tree f6f5f560f6fb223c8d1363c2b8a861e41ce15310 equals the recorded throwaway_merge_tree. The four adopted blobs in AFTER (lineage 288cabad, models ef4f80ec, technical/engine 5365653f, macro/engine 08d79c20) equal Track C b9e01a97. lineage.py is absent in BEFORE. The generator sha256 is f4b8bca1… in both trees. `python3 tools/producer_engine_fingerprint.py src`, run twice per tree with byte-identical repeats, gave BEFORE technical 82165414…, macro 7bbfad69…, qgv a1714480…, leaderboard 112b245b…, portfolio 53d930a7…, n_qgv 19. Those equal the values committed in validation.json. AFTER gave technical 66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655 and macro 7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501, with the other keys unchanged. All of this matches the record. Re-running the recorded harness sources (their sha256 57093713…/d90c249a… match the record) reproduces the normalized dump sha256 exactly: before e5b38382…, after d20eddf3…. `export_web_bundle.py --now 2026-10-01T00:00:00+00:00` gave cdf58ad4… in both trees on 2 runs each. `raw_persistence_audit.py` gave manifest_set_sha256 17934234… (6808 artifacts, 6136954924 bytes), and the regenerated manifest is byte-identical (fc7b29fe…) to the committed file in both trees. Both tools ran locally only; I first checked data/raw for holdout or CAL_VERIFY markers and found none.",
+    "AC3 field differences: DONE / PASS. I wrote my own harness, separate from the recorded one: it runs the unchanged tool with runpy and does its own recursive diff. It found 92 entries, all ADDED, all at depth 3 [section, idx, key]. They are available_at=null, data_stamp_refs=[], input_hash=null and source_vintages=[], on 19 technical and 4 macro snapshots. It found no REMOVED, CHANGED, TYPE or LEN entries. With those four keys stripped, technical re-hashes to 82165414… and macro to 7bbfad69…, the same as before. qgv, leaderboard and portfolio are identical. Raw dataclass key sets with no DROP filter applied differ only by the four keys, so the DROP set hides no new field. On the source side, the merge's changes to models.py, technical/engine.py and macro/engine.py are additions only: four defaulted fields, imports and evaluate_stamped. Track C 2137883, the CDR-004 target, is an ancestor of b9e01a9, and the adopted paths are unchanged between them.",
+    "AC4 trailers / owner branch / PR: DONE / PASS. `git interpret-trailers --parse` shows `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` and `Claude-Session: https://claude.ai/code/session_019znshzTYgyBnuuBmSxdPFN`. origin/feature/producer-infrastructure-v1 is still at f8af596; GitHub's activity API shows its last push at 2026-10-02T08:08:23Z, a day before the proposal. The proposal branch has a single branch_creation event at 2026-10-03T07:38:49Z, with no force-push. The only remote ref containing e9aee0c is the proposal branch. Track C (b9e01a9 and 2137883) is not an ancestor of the proposal. PR #32 is draft=true and open, base feature/producer-infrastructure-v1 (base sha f8af596), head integration/a1-adoption/pr9-producer-infra @ e9aee0c. It has 1 commit and the same 2 files (18/0 and 396/0), and its body ends with the required attribution lines.",
+    "Tests (executed by me): pytest at proposal e9aee0c gave 431 passed (exit 0). The mini_pytest shim at e9aee0c gave 431 passed, 0 failed. pytest at owner tip f8af596 gave 431 passed (exit 0). pytest on the merged AFTER tree gave 961 passed in 440.52s (exit 0). All match the record. During the runs, tests tried to reach data.sec.gov, Yahoo and FRED; the proxy rejected those connections and the tests still passed.",
+    "Other claims checked and true: no test on f8af596 pins 82165414, 7bbfad69, d1b9cd91, 112b245b, 53d930a7, a1714480, 66cb2383, 7e427949 or the fingerprint tool names (0 git grep hits under implementation/tests), and no test or tool reads validation.json. The constants appear only at validation.json L60/64/68/72. CDR-004 exists at origin/integration/global-handoff-v1 @ 6dedaaf, COORDINATION_DECISION_REGISTER.md L73, and the quoted wording matches. The stacking claims hold: #12 61d3352 forks from 6fe9eee and does not contain f8af596; #17 21039a0 and #19 c3dbf8a contain f8af596; all three carry validation blob e2bae658; `git merge-tree --write-tree` of e9aee0c into each is clean. Actions NOT_RUN is justified: c21 runs only on workflow_dispatch, raw-artifact-restore-check is path-filtered to its own tool, web-mvp is path-filtered to product files, and the runs API shows 0 runs for e9aee0c. Track C run 37097149378 is success on b9e01a97.",
+    "Minor (non-blocking): the record's cross_check cites `evidence/c28_adoption_invariance_2026-10-03.json` on the PR #17 tree without a directory. The file is actually at implementation/docs/research_publication/evidence/ on origin/integration/a1-adoption/pr17-p01 @ dc7daf7. The values it cites (66cb2383…, 7e427949…) do match.",
+    "Minor (non-blocking): the record's `commands` list contains a local absolute path, `git -C /home/user/Investment-System1 fetch origin`. It is harmless and contains no secret.",
+    "Minor (non-blocking): the record says the proposal-branch tests ran on 'owner tip + a draft of this record', and the PR body reports the exact-commit re-run. I re-ran at the exact commit e9aee0c and got 431/431.",
+    "Minor (non-blocking): the PR body has an extra '_Generated by Claude Code_' footer after the required attribution lines. This is cosmetic.",
+    "NOT_RUN: GitHub Actions for e9aee0c (no run exists, and as a read-only verifier I triggered none); mini_pytest shim on owner tip f8af596 and on the AFTER tree; browser E2E (no product file changed). CAL_VERIFY and Holdout were not accessed.",
+    "Cleanup: worktrees before/after/prop under scratchpad/wf4/verify-pr9 were removed with `worktree remove --force` followed by `worktree prune`; only the out/ logs remain. The main checkout (ccr-2e16018a-qukwmg @ f1b5afb, clean) and scratchpad/gh were untouched. /tmp/rig-news-producer-ro was never created. Nothing was pushed, and no GitHub comment or grant was made."
+   ],
+   "verdict": "PASS. I tried to refute all four criteria and could not; each one reproduced independently. (1) Scope: two files, 414 lines added, 0 removed. STATUS.md is append-only, the evidence JSON is new, and there is no src, test, tool or validation.json change. (2) A scratch merge of f8af596 with Track C b9e01a97 gives the recorded merge tree f6f5f560. The generator reproduces every recorded value in both trees: technical 82165414 before and 66cb2383 after, macro 7bbfad69 before and 7e427949 after, and qgv, leaderboard, portfolio and n_qgv unchanged. The bundle hash cdf58ad4, the raw manifest set 17934234 and the normalized dumps e5b38382/d20eddf3 also match. (3) My own field diff finds only 92 ADDED entries, the four null/empty lineage keys on 19 technical and 4 macro snapshots. Stripping those keys re-hashes to the pre-adoption values. (4) Both trailers are present, the owner branch has not been pushed to since 2026-10-02, and PR #32 is a draft into feature/producer-infrastructure-v1 @ f8af596. The minor findings are documentation imprecisions only and do not block."
+  },
+  {
+   "branch": "origin/integration/a1-adoption/pr7-entity-metadata @ 9626ab06cd2b93cdd250159347cdda5d08f76e03 (PR #33, draft, base ccr-41677301-10nj3u @ a013f1c1758642f90a65fe11df69fc234c143a48)",
+   "blocking": [],
+   "nonblocking": [
+    "The record does not say how its 'set_sha256' (31a4effe...) was computed. I reproduced it as sha256(json.dumps(reports_sha256_dict, sort_keys=True) + '\\n') and got 31a4effed76556e5e41f8730bf6fa8745c6866f51f3cf42cba5303e79f981395. Suggest writing the method into the record.",
+    "The post-adoption whole-stdout value 9b9a276e... only holds for the tree a013f1c + b9e01a97, because the generator hashes every reports/*.json in the tree, including the 27 files Track C adds. Any other integration context, such as PR #30 combined-integration, will give a different whole-stdout hash. The record says this and also gives ce845bb6..., the value with those 27 entries removed. Reviewers should not treat 9b9a276e as a portable pin.",
+    "The throwaway merge commit d1dd81ce cannot be reproduced, because a commit SHA depends on author and time. My --no-ff merge (commit 2589fde0, never pushed) produced the same merge tree, 3c2a0a39ccbf173df1d23064be1c1b123e31baa6, with 0 conflicts. That tree is the value that matters.",
+    "CDR-004's 'Effect' section says 'Owner branches without an active owner session are noted in each PR'. The PR #33 'Owner status' section says the record becomes the owner's when merged, but it does not say whether ccr-41677301-10nj3u has an active owner session. This is a wording gap, not a correctness issue.",
+    "The generator's VOLATILE filter drops keys ending in *_snapshot_id, *_id_run, generated_at and created_at. I compared the raw, unfiltered to_dict() output and the dataclass fields in both trees. The only volatile differences are changed uuid values on *_snapshot_id keys that already existed (44 of them). No volatile key is added or removed, so the filter does not hide a schema change.",
+    "The line references 'validation.json L90-93' and 'HANDOFF.md L71-73' include the block header and command line. The fingerprint values themselves are on validation.json:91-92 and HANDOFF.md:72-73. The ranges are accurate.",
+    "GitHub Actions did not run for this proposal (NOT_RUN). The API shows 0 workflow runs for head_sha 9626ab06, and none of the three workflows on the branch has a trigger or path filter that matches a docs-only change. This matches what the record says. The cited Track C run 37097149378 is completed/success on b9e01a97 (branch ccr-22e3ff16-p7n5k5)."
+   ],
+   "verdict": "PASS. I found no way to refute any of the 4 criteria. Refs after fetch: proposal 9626ab06cd2b93cdd250159347cdda5d08f76e03, its only parent is base a013f1c1758642f90a65fe11df69fc234c143a48 (tree ccd6bd45). Track C tip b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565. Canonical b8e39a2196a6d7794a04a0cd5393c68329e126ca, which is the merge-base of the base and Track C. I re-checked with ls-remote after the work and all four refs were unchanged.\n\n(1) Scope: DONE. `git diff --name-status a013f1c 9626ab06` shows exactly 2 files. HANDOFF.md is M with 17 added and 0 deleted lines; the new section §12 is appended at the end, and `cmp` confirms the first 113 lines are byte-identical to the base. The evidence JSON is A with 385 added lines. Nothing changed under src/, tests/ or tools/, validation.json and numeric_fingerprint.py are untouched, and `git diff --check` is clean. PR #33's files list from the API shows the same 2 files.\n\n(2) Reproduction: DONE. In my own worktrees I made the AFTER tree with `git merge --no-ff b9e01a97` on a013f1c: 0 conflicts, merge tree 3c2a0a39, the same as recorded. The four adopted files (contracts/lineage.py, contracts/models.py, technical/engine.py, macro/engine.py) are blob-identical to Track C and match the recorded blobs. The generator's sha256 is f216bc43... in both trees. I ran `python3 docs/entity_metadata/evidence/numeric_fingerprint.py <tree>/implementation` twice per tree:\n- BEFORE gave d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535 both times.\n- AFTER gave 9b9a276e4daa0c1f52e8d90ec3d8829aa8799d47c2a7cc2017ddce11937d483d both times.\n- AFTER with the four keys removed: 3f466861...\n- AFTER with the 27 Track C report entries removed: ce845bb6...\n- AFTER with both removed: d1b9cd91..., and the object equals BEFORE.\n\nOther recorded hashes, all matching:\n- data.json sha256: 8206d6c5... (default) and 649a144d... (demo), the same in both trees.\n- The six artifact sha256 and the Universe 75f795f8... match in both trees.\n- `tools/ingest_entity_metadata.py build` leaves `git status` empty in both trees.\n- The record's own sha256 is d31924fb..., matching the PR body.\n- The harness embedded in the record has sha256 d90c249a..., as recorded, and re-running it reproduces every recorded summary field.\n\n(3) Only the four keys differ: DONE. My own recursive diff, written separately from the record's harness, finds 71 ADDED entries and no REMOVED, CHANGED, TYPE or LEN entries.\n- 44 are in the engine sections: available_at=null, data_stamp_refs=[], source_vintages=[] and input_hash=null on all 10 technical snapshots and the 1 macro snapshot.\n- 27 are in reports_sha256. They exactly match the 27 non-entity reports/*.json files that Track C adds; both a013f1c..merge and b8e39a2..b9e01a97 show them as A. All 140 pre-existing entries are unchanged.\n- qgv, portfolio, leaderboard, leaderboard_order and data_json_sha256 are identical.\n- The raw, unfiltered to_dict() and dataclass-field comparison also shows only these four keys, plus uuid values changing on existing snapshot ids.\n- The pin check holds: d1b9cd91, numeric_fingerprint and the other listed strings have 0 matches under tests, src or tools. The whole-tree matches are only HANDOFF.md:72,73 and validation.json:91,92.\n\nTests:\n- Proposal 9626ab06: pytest 419 passed (exit 0), mini_pytest 419 passed, 0 failed (exit 0).\n- Owner tip a013f1c: pytest 419 passed (exit 0).\n- Merged AFTER tree: pytest 949 passed in 435.71s (exit 0).\n\n(4) Process: DONE.\n- Trailers: `git interpret-trailers --parse` shows 'Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>' and 'Claude-Session: https://claude.ai/code/session_019znshzTYgyBnuuBmSxdPFN'.\n- Owner branch not pushed to: the GitHub activity API shows the last push to ccr-41677301-10nj3u was 2026-10-01T10:32:30Z (6c4648e -> a013f1c). The proposal branch has a single branch_creation event at 9626ab06 (2026-10-03T07:38:51Z) and no force-push. 9626ab06 exists only on the proposal branch.\n- PR: #33 '[proposal] #7 C-28 adoption evidence record (CDR-004)' is open and draft, with base ccr-41677301-10nj3u (base sha a013f1c) and head integration/a1-adoption/pr7-entity-metadata (head sha 9626ab06). It has one commit.\n- The CDR-004 wording quoted in the record matches the register at origin/integration/global-handoff-v1 6dedaaf, lines 84-92.\n\nCleanup: I removed my worktrees (before, after, proposal under wf4/verify-pr7) with `worktree remove --force` and ran `worktree prune`. The main checkout is still on ccr-2e16018a-qukwmg and clean. /tmp/rig-news-producer-ro was not created by this run."
+  }
+ ]
+}

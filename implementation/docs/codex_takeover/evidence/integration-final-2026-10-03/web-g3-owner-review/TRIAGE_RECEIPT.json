@@ -1,0 +1,143 @@
+{
+  "recorded_at": "2026-10-03T08:19:36.227412+00:00",
+  "initial_global_head": "6cd7eeedda28e3a15bf8e27655d35d2b4d9ee971",
+  "fresh_global_head": "5fafee22ae4c1d246b6f2ef1f3d870344d7627c4",
+  "source_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "GIE006_blobs_unchanged": {
+    "implementation/docs/coordination/evidence/GIE-006_pr30_a1_web_audit_2026-10-03.md": {
+      "initial": "cd378bb2fa2d4d60b63f4baf0000930b8c59a9b6",
+      "fresh": "cd378bb2fa2d4d60b63f4baf0000930b8c59a9b6"
+    },
+    "implementation/docs/coordination/evidence/GIE-006_batch_2026-10-03.json": {
+      "initial": "4e7d63c2063b0d10a9966118668f719111166b53",
+      "fresh": "4e7d63c2063b0d10a9966118668f719111166b53"
+    }
+  },
+  "classification": {
+    "GIE006_G3": "CURRENT_REPRODUCED",
+    "initial_global_6cd": "SUPERSEDED_BY_FRESH_5fa",
+    "P01_policy": "CURRENT_APPROVED",
+    "Web_PHASE_M1_M2_FROZEN": "BINDING_PRESERVED",
+    "GIE006_test_web_mvp_L75_bytepin_claim": "DETAIL_INACCURATE: AST import boundary; actual protected digest in P01 test",
+    "GCH_GIE006_pending_wording": "STALE_ROUTING_DESCRIPTION; does not override current exact evidence/scoped policy"
+  },
+  "fresh_remote_relevant_branches": {
+    "codex/web-producer-integration-readiness-2026-10-03": "d0444583197c96f61fce811573dfd59670fd4f78",
+    "feature/global-language-search-v1": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+    "feature/p01-research-publication-v1": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+    "feature/producer-infrastructure-v1": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+    "feature/qgv-invalidation-binding-v1": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+    "feature/web-mvp-v1": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+    "integration/a1-adoption/pr9-producer-infra": "e9aee0cb8b80e17f7ae12e01156f6670135de2fa",
+    "integration/a1-adoption/pr17-p01": "dc7daf70a42fb3f2bbfe96a775a1654a92ff95c1",
+    "integration/global-handoff-v1": "5fafee22ae4c1d246b6f2ef1f3d870344d7627c4",
+    "integration/web-mvp-language-search": "e09d24e028475e924f2e20cee5ad6bd79f891391",
+    "integration/web-mvp-language-search-audit": "9fd8099fed59961f990cb64e99d4953a931ea508"
+  },
+  "source_and_contract_identities": {
+    "implementation/docs/web_mvp/STATUS.md": {
+      "git_blob": "7ea3dd3555cdc089f24548312b5de4e413678f9c",
+      "sha256": "c997adcc7014c889b99d4948182e02a5f9c6ba5dd93354c0c7e3106f0eba06f4"
+    },
+    "implementation/docs/web_mvp/CONTRACT.md": {
+      "git_blob": "230ecfae28da4f268db08c77a4f0480e21860b4e",
+      "sha256": "f49f4e0b95bf3e6c76e6af3f73344fac60b3d8fa9ac21f7c8fd8e1d13e09d8b2"
+    },
+    "implementation/docs/producer_infrastructure/P01_APPROVAL_2026-10-02.md": {
+      "git_blob": "3f230817dd203e98d1917bea6d68871d3962577d",
+      "sha256": "0c8f69460ee63b5ee8692fc451a3279e62b6751de0992df07937c42e377189bf"
+    },
+    "implementation/docs/research_publication/CONTRACT.md": {
+      "git_blob": "c352aca5f25e854b73ff2fdd4188e47fb57693c9",
+      "sha256": "f3c1442fc25253469aad0cec1496b921a22c8b603146fe5d5087398e96f363f3"
+    },
+    "implementation/src/investment_system/product/web_mvp.py": {
+      "git_blob": "10ad8c7624a0a31e602be699144cbcb534c96e53",
+      "sha256": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323"
+    },
+    "implementation/src/investment_system/product/web_assets/app.js": {
+      "git_blob": "a4dd19505e9a618adaa2237ed4ad5839d11c7f21",
+      "sha256": "7944757a8fb67f889dd54d8b87c2986e9b47d6592c1bd0ab681a842bf3dbead9"
+    },
+    "implementation/src/investment_system/producers/contract.py": {
+      "git_blob": "fa9ed3a387d12457419280e611136bcb29d6d730",
+      "sha256": "61b5eea2b32c9283e2407531e614de9a1b255aff9124d62d0a2168df23faaa6f"
+    },
+    "implementation/tests/test_web_mvp.py": {
+      "git_blob": "69dc11d61c30ebcd9c4a785b4e71260b35b56737",
+      "sha256": "13c2099b50b80ef185c3f02556887cf3f153b3c35c803f474c370b35204b4b7c"
+    },
+    "implementation/tests/test_p01_research_publication.py": {
+      "git_blob": "2557b33ca4f56510e33eec93eac4b3bfd2ffccba",
+      "sha256": "b195771b34ef1743dfad29bb1654ddcf8d25189f1732de0692e2fb24129b9dc9"
+    }
+  },
+  "working_tree_source_diff": "",
+  "reproduction_admission": {
+    "source_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "scope": "HAND_BUILT_TEST_VECTOR_ONLY",
+    "web_schema1_admission": "ACCEPTED",
+    "frozen_builder": "ACCEPTED",
+    "producer_admission": {
+      "status": "REJECTED",
+      "error_type": "ResearchStatusError",
+      "message": "methodology.status: methodology status PROVISIONAL_RESEARCH cannot be published as LIVE (P01 keeps schema-1 unchanged; a research lifecycle is not a grant)"
+    },
+    "existing_research_statuses": [
+      "IDEA",
+      "PROVISIONAL",
+      "PROVISIONAL_INITIAL_PRIOR",
+      "PROVISIONAL_RESEARCH",
+      "RESEARCH"
+    ],
+    "source_sha256": {
+      "implementation/src/investment_system/product/web_mvp.py": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323",
+      "implementation/src/investment_system/product/web_assets/app.js": "7944757a8fb67f889dd54d8b87c2986e9b47d6592c1bd0ab681a842bf3dbead9"
+    },
+    "copied_app_js_identical": true,
+    "real_data_provider_calls": 0,
+    "CAL_VERIFY_actual_access": "NOT_RUN",
+    "Holdout_actual_access": "NOT_RUN",
+    "grants_issued": 0,
+    "source_changes": 0
+  },
+  "reproduction_browser": {
+    "source_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "scope": "HAND_BUILT_TEST_VECTOR_ONLY",
+    "actual_browser": true,
+    "browser_reproduction": "CONFIRMED: PROVISIONAL_RESEARCH qgv11.11 rendered with LIVE badge",
+    "live_badges": [
+      "LIVE"
+    ],
+    "rendered_test_value": "11.11",
+    "visible_text": "DEMO \ud3ec\ud568 \u00b7 \ud569\uc131 \ub370\uc774\ud130\ub294 \ud22c\uc790 \ud310\ub2e8\uc6a9\uc774 \uc544\ub2d9\ub2c8\ub2e4.\n\u2190 \uae30\uc5c5 \ubaa9\ub85d\nCOMPANY DETAIL\nG3TEST\n\nG3 TEST VECTOR ONLY\n\n\u2606\nQGV\nLIVE 2026-10-03T00:00:00Z\nG3 SYNTHETIC TEST VECTOR falsely labelled LIVE; NEVER PRODUCTION\nQuality(\ud488\uc9c8)\n11.11\nGrowth(\uc131\uc7a5)\n22.22\nValuation(\uac00\uce58\ud3c9\uac00)\n33.33\nTotal score(\uc885\ud569 \uc810\uc218)\n44.44\nConfidence(\uc2e0\ub8b0\ub3c4)\n\ubbf8\uc81c\uacf5\nCoverage(\ucee4\ubc84\ub9ac\uc9c0)\n\ubbf8\uc81c\uacf5\nEvidence(\uadfc\uac70) \u00b7 \uc6d0\ubcf8 \ubcf4\uae30\nTechnical(\uae30\uc220\uc801 \ubd84\uc11d)\nNOT_AVAILABLE \uc2dc\uc810 \ubbf8\uc81c\uacf5\n\n\uc774 \uae30\uc5c5\uc758 Snapshot \ubbf8\uc81c\uacf5\n\nMacro exposure / context(\uac70\uc2dc \ub178\ucd9c)\nNOT_AVAILABLE \uc2dc\uc810 \ubbf8\uc81c\uacf5\n\nG3 isolated test vector has no producer data\n\nPortfolio status(\ubcf4\uc720 \uc0c1\ud0dc)\nNOT_AVAILABLE \uc2dc\uc810 \ubbf8\uc81c\uacf5\n\n\uc2e4\uc81c \ubcf4\uc720 \uc0c1\ud0dc \ubbf8\uc81c\uacf5\n\nNews / Relationships\nNOT_AVAILABLE \uc2dc\uc810 \ubbf8\uc81c\uacf5\n\uc774 \uae30\uc5c5\uc758 \ub274\uc2a4\u00b7\uad00\uacc4\ub9dd \ud655\uc778 \u2192\nEvidence(\uadfc\uac70) \u00b7 \uc6d0\ubcf8 \ubcf4\uae30",
+    "page_errors": [],
+    "external_page_requests": 0,
+    "original_data_json_sha256": "4f0fe999b9cd4e08c82bf40a8b807fbc255edf24e5f49ce7aaea391afe6e6230",
+    "original_app_js_sha256": "7944757a8fb67f889dd54d8b87c2986e9b47d6592c1bd0ab681a842bf3dbead9",
+    "actual_network_data_access": "NONE: all page requests fulfilled from isolated local files",
+    "grants_issued": 0
+  },
+  "triage_criteria_completed": 3,
+  "triage_criteria_total": 3,
+  "proposed_classification": "READY_ADDITIVE_EXISTING_POLICY_ADMISSION_ADAPTER_ONLY",
+  "new_policy_required": false,
+  "Frozen_source_change_allowed": false,
+  "app_unbytepinned_does_not_mean_editable": true,
+  "no_implementation_started": true,
+  "grants_issued": 0,
+  "real_data_provider_calls": 0,
+  "proposed_disjoint_write_set": [
+    "implementation/tools/build_production_web_integration.py",
+    "implementation/tests/test_web_production_admission.py",
+    "implementation/docs/web_production_integration/ (new scoped docs/evidence)",
+    "OPTIONAL implementation/tools/web_production_admission_guard.js"
+  ],
+  "excluded_write_set": [
+    "all existing Web Frozen source/assets/tests/contracts/status/manifests",
+    "all producer/publication/math/engine source and protected pins",
+    "Global Handoff/register files",
+    "F1 compatibility paths"
+  ],
+  "legacy_scope_limit": "Original v1 acceptance remains unchanged; repaired invariant applies only to new production integration admission/output path."
+}

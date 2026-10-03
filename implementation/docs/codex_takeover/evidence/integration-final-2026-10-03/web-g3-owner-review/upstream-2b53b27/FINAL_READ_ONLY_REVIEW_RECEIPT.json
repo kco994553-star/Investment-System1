@@ -1,0 +1,165 @@
+{
+  "kind": "READ_ONLY_G3_UPSTREAM_REVIEW_V1",
+  "observed_at": "2026-10-03T08:43:31.868001+00:00",
+  "source_branch": "integration/web/research-render-guard-v1",
+  "exact_head": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+  "base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+  "merge_base_with_675": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+  "comparison_source_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "global_routing_head": "5fafee22ae4c1d246b6f2ef1f3d870344d7627c4",
+  "PR": {
+    "number": 34,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/34",
+    "head_sha": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+    "base_ref": "feature/producer-infrastructure-v1",
+    "draft": true,
+    "state": "open",
+    "body_sha256": "a84ac569d74fe7a70cba7be5f0e8701db583c60be759f6a774faf0e30068bbaf"
+  },
+  "changed_paths": [
+    "A\t.github/workflows/web-research-guard.yml",
+    "M\timplementation/src/investment_system/product/web_assets/app.js",
+    "M\timplementation/src/investment_system/product/web_assets/locale.js",
+    "A\timplementation/tests/test_web_research_guard.py",
+    "A\timplementation/tools/build_web_research_guard_fixture.py",
+    "A\timplementation/tools/web_research_guard_browser_test.js"
+  ],
+  "existing_source_changes": [
+    "implementation/src/investment_system/product/web_assets/app.js",
+    "implementation/src/investment_system/product/web_assets/locale.js"
+  ],
+  "all_other_original_base_files_byte_preserved": 7747,
+  "original_test_files_byte_preserved": 82,
+  "original_files_absent_from_branch_base_are_not_claimed_deleted": true,
+  "scoped_authority_inputs": [
+    {
+      "path": "implementation/docs/web_mvp/CONTRACT.md",
+      "head": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+      "blob": "230ecfae28da4f268db08c77a4f0480e21860b4e",
+      "sha256": "f49f4e0b95bf3e6c76e6af3f73344fac60b3d8fa9ac21f7c8fd8e1d13e09d8b2"
+    },
+    {
+      "path": "implementation/docs/web_mvp/STATUS.md",
+      "head": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+      "blob": "7ea3dd3555cdc089f24548312b5de4e413678f9c",
+      "sha256": "c997adcc7014c889b99d4948182e02a5f9c6ba5dd93354c0c7e3106f0eba06f4"
+    },
+    {
+      "path": "implementation/docs/global_language_search/CONTRACT.md",
+      "head": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+      "blob": "1828527c184ebff939a733ae9d861e17f219b99f",
+      "sha256": "73dd98feff74155879e897fedc868a430b41f9c42821141c396bd993e057ce4b"
+    },
+    {
+      "path": "implementation/docs/global_language_search/STATUS.md",
+      "head": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+      "blob": "b9cbd88b7ac266a33d34301783550b55776c08c8",
+      "sha256": "418ac5883ee9df319822b31cdf35c5e1cd80f6c1c4ee8cb6328c8be1d15332c5"
+    },
+    {
+      "path": "implementation/docs/producer_infrastructure/P01_APPROVAL_2026-10-02.md",
+      "head": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+      "blob": "ab1a66a5700e46b0a4fd2819856572d0d5bc1742",
+      "sha256": "e8f8f2937c71f675287a02e620e7d66f14126f860c4f887fa9ea8612ea24a2c1"
+    }
+  ],
+  "freeze_authority": {
+    "classification": "CONFLICT",
+    "resolution": "PRIMARY_SCOPED_AUTHORITY_CLARIFICATION_REQUIRED",
+    "web_phase_status": "M1/M2 FROZEN, tested code f58f1f38585420811d3fad6ad0b17a9e281e3c39",
+    "later_language_status": "IMPLEMENTED; scoped product UI changes, tested code82ae07c5f0758038abda98cd8db9e0a0f2de1ee3",
+    "new_scoped_approval_or_freeze_supersession_record_in_diff": false,
+    "P01_protected_builder_bytes": "UNCHANGED",
+    "absence_of_app_byte_pin_is_permission": false,
+    "standing_parent_rule": "Preserve original Frozen app.js/web_mvp.py/tests/manifests; do not infer editable from absence of byte pin"
+  },
+  "tests_actually_executed": {
+    "runtime_python": "3.11.16",
+    "owner_targeted_pytest": {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "owner_fixture_browser": {
+      "groups_passed": 11,
+      "passed": true,
+      "errors": [],
+      "runtime": {
+        "node": "v24.19.0",
+        "chromium": "151.0.7922.173"
+      },
+      "baseline_comparison": true
+    },
+    "independent_exact_function_oracle": {
+      "passing": 10,
+      "failing": 10,
+      "failure": "DIRECT_METHODOLOGY_G3_BYPASS"
+    },
+    "independent_actual_browser": {
+      "source_head": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+      "scope": "HAND_BUILT_TEST_VECTOR_ONLY",
+      "actual_browser": true,
+      "browser_reproduction": "STILL_REPRODUCED_UPSTREAM: direct PROVISIONAL_RESEARCH qgv11.11 renders LIVE",
+      "live_badges": [
+        "LIVE"
+      ],
+      "rendered_test_value": "11.11",
+      "visible_text": "DEMO 포함 · 합성 데이터는 투자 판단용이 아닙니다.\n← 기업 목록\nCOMPANY DETAIL\nG3TEST\n\nG3 TEST VECTOR ONLY\n\n☆\nQGV\nLIVE 2026-10-03T00:00:00Z\nG3 SYNTHETIC TEST VECTOR falsely labelled LIVE; NEVER PRODUCTION\nQuality(품질)\n11.11\nGrowth(성장)\n22.22\nValuation(가치평가)\n33.33\nTotal score(종합 점수)\n44.44\nConfidence(신뢰도)\n미제공\nCoverage(커버리지)\n미제공\nEvidence(근거) · 원본 보기\nTechnical(기술적 분석)\nNOT_AVAILABLE 시점 미제공\n\n이 기업의 Snapshot 미제공\n\nMacro exposure / context(거시 노출)\nNOT_AVAILABLE 시점 미제공\n\nG3 isolated test vector has no producer data\n\nPortfolio status(보유 상태)\nNOT_AVAILABLE 시점 미제공\n\n실제 보유 상태 미제공\n\nNews / Relationships\nNOT_AVAILABLE 시점 미제공\n이 기업의 뉴스·관계망 확인 →\nEvidence(근거) · 원본 보기",
+      "page_errors": [],
+      "external_page_requests": 0,
+      "original_data_json_sha256": "4f0fe999b9cd4e08c82bf40a8b807fbc255edf24e5f49ce7aaea391afe6e6230",
+      "original_app_js_sha256": "9e34e1edc022050519161b061320ae8d0fad4121e2cbfa221a731b33467e5aee",
+      "actual_network_data_access": "NONE: all page requests fulfilled from isolated local files",
+      "grants_issued": 0
+    },
+    "producer_nonresearch_diagnostic_positive_controls": "2 ACCEPTED; existing producer predicate differs from recursive owner guard"
+  },
+  "actions_actually_dispatched_by_reviewer": "NOT_RUN",
+  "full_pytest_by_reviewer": "NOT_RUN",
+  "Actions_observed_metadata": [
+    {
+      "run_id": 37109567361,
+      "name": "web-mvp-validation",
+      "run_head_sha": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+      "status": "completed",
+      "conclusion": "success",
+      "actual_checkout_sha": "NOT_INSPECTED"
+    },
+    {
+      "run_id": 37109567406,
+      "name": "web-research-guard",
+      "run_head_sha": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+      "status": "completed",
+      "conclusion": "success",
+      "actual_checkout_sha": "NOT_INSPECTED"
+    }
+  ],
+  "review_acceptance": {
+    "read_only_tasks_completed": 3,
+    "read_only_tasks_total": 3,
+    "upstream_G3": "NOT_ACCEPTED; STILL_REPRODUCED",
+    "new_policy_selected": false,
+    "capability_maturity_increase_certified": false
+  },
+  "BRANCH_STATE": "PR34 OPEN_DRAFT; exact2b read-only upstream",
+  "INTEGRATION_STATE": "NOT_INTEGRATED_BY_REVIEWER; original direct counterexample remains; scope authority conflict",
+  "CANONICAL_STATE": "NOT_MERGED",
+  "USER_DECISION_REQUIRED": "CONDITIONAL_ONLY_IF_FROZEN_SOURCE_CHANGE_OR_NEW_WITHHOLDING_POLICY_PROVES_NECESSARY; no observer decision request",
+  "blockers": [
+    "Primary Web owns active wf5 write set",
+    "Direct methodology counterexample remains",
+    "Original app Frozen preservation authority unresolved",
+    "Recursive diagnostic scan broader than producer predicate"
+  ],
+  "next_autonomous_action": "Primary owner consumes independent findings and supplies next exact-head handoff; reviewer remains read-only",
+  "repo_source_changes_by_reviewer": 0,
+  "new_UI_implementation_branches_or_commits": 0,
+  "upstream_resolution_or_repin": "NOT_RUN",
+  "real_data_provider_calls": 0,
+  "CAL_VERIFY_actual_access": "NOT_RUN",
+  "Holdout_actual_access": "NOT_RUN",
+  "grants_issued": 0,
+  "deployment": "NOT_RUN",
+  "preserved_prior_triage_receipt_sha256": "130fd8a72bfe240234aeba6616b8912b747bebc140311b591f08dc910ba1957c"
+}

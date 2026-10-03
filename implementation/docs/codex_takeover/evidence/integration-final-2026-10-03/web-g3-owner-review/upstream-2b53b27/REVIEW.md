@@ -1,0 +1,15 @@
+# Independent exact-head G3 review
+
+Source: `integration/web/research-render-guard-v1` at `2b53b27fe0f570557159d02552911e9e1cc7be9c`, Draft PR #34. Base and merge-base against source `675d0d298fbaab5b8473ed048a561ef84e2f3e78`: `f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36`.
+
+**G3 remains reproduced.** A hand-built synthetic test vector carrying direct `qgv.methodology.status=PROVISIONAL_RESEARCH` is accepted by the unchanged builder and rendered by the actual new app as LIVE with 11.11. The actual Chromium probe uses intercepted local assets, zero external page requests, and mobile 390×844. The corresponding producer snapshot is rejected by the existing ResearchStatusError rule.
+
+The exact shipped `researchMarker`/`guardSections` functions were executed without rewriting them. Of twenty policy-negative cases, ten nested `section.producer.methodology.status` cases are blocked, and ten direct `section.methodology.status` cases are not. These span LIVE/FROZEN_SNAPSHOT and all five existing research statuses. All supplied inputs stay unchanged.
+
+The existing producer also accepts two positive-control snapshots with nonresearch methodology and an unrelated nested historical diagnostic `research_state.status=IDEA`. The exact shipped recursive guard suppresses this shape. This is a demonstrated predicate difference, not an approval for an alternative policy. P01 structural extractors resolve known persisted record paths; they do not define a recursive scan of arbitrary diagnostic objects.
+
+Actually executed against exact upstream source: targeted owner pytest **4 PASS**; owner fixture browser harness with baseline comparison **11 groups PASS**, ko/en, mobile and valid-section DOM invariance; independent oracle **10 PASS / 10 FAIL_G3_BYPASS**; independent actual-browser direct counterexample **STILL_REPRODUCED**; producer policy parity controls **2 accepted**. Full pytest, Actions dispatch and forward-merge execution by this observer are NOT_RUN. GitHub metadata observes two existing exact-head successful runs: `web-mvp-validation` 37109567361 and `web-research-guard` 37109567406. Their actual checkout SHAs/logs were not independently inspected by this observer and no CI count is inferred here.
+
+Upstream changes exactly two old assets (`app.js`, `locale.js`) and adds four files. Existing builder/index/producer/original tests and all other original base files are unchanged. Protected P01 builder digest is preserved. The absence of a separate Web byte manifest and the later Language/Search UI change do not resolve the current Frozen-scope authority conflict; exact historical phase source, scoped child contract, PR proposal wording and the explicit preservation instruction are recorded in the receipt. A new scoped authority record is not present in this branch diff.
+
+Read-only triage/review tasks: **3/3 completed with findings**. Upstream acceptance: **NOT_ACCEPTED**. Maturity for the full G3 requirement: **no increase certified**. No competing implementation or upstream changes were made.

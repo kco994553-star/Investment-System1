@@ -1,0 +1,47 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Action completed."
+    }
+  ],
+  "structuredContent": {
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/35",
+    "number": 35,
+    "state": "open",
+    "merged": false,
+    "mergeable": true,
+    "draft": true,
+    "body": "## Result\nRepairs GIE-006 F1: integrated same-tree checks previously compared shared source bytes with themselves. Ten non-models paths now compare against immutable canonicalb8e39a2196a6d7794a04a0cd5393c68329e126ca Git blobs with replacement objects disabled. Missing Git/baseline/path fails closed. Distinct-tree equality and isolated paths remain; two exact approved pre/C28models states and both mixed directions remain unchanged.\n\nNormal merge preserves the basePR31/675 source, G-SUPv1/Frozen source/tests/results and prior evidence. Changes only the owned compatibility helper/test and new scoped evidence. No scoring/ranking/method/default/grant/real-access change. Production source215blobs and numerical fingerprint stdout are identical before/after.\n\n## Verification\nTargeted Python3.11.16:9→27PASS,18newcases. Independent21/21expected probes cover the10formerlyfalsePASSmutations, missing baseline and realGitreplace counterexample. Source commit8b10c258; finalproposalheadfc6720bdc8143e97bf25e37e4091b1f2aa54b69f. Full combined local regression:RUNNING. Final Actions:PENDING; not inferred from prior675PASS. Scopeevidence under implementation/docs/codex_takeover/evidence/shared-source-hardening.\n\nBRANCH_STATE:targetedsyntheticallyverified,publishedexactfc672. INTEGRATION_STATE:DraftproposalonPR31;notmerged. CANONICAL_STATE:NOT_MERGED,b8unchanged. MaturityΔ0.\n\nM-v2arithmeticdecisionremainsUSER_DECISION_REQUIRED; M isapproved,activeM-v2kernelabsent. Source675checkpointisunchanged. ActiveClaudeWebguardbranchisREAD_ONLYandnotincluded; independentG3reviewongoing. ActualCAL_VERIFY/Holdout/grants/Official/canonicalmerge0.\n",
+    "title": "Integration: repair vacuous same-tree shared-source protection",
+    "base": "codex/track-c-gsup-v2-2026-10-03",
+    "base_sha": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "head": "codex/integration-hardening-2026-10-03",
+    "head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+    "head_repo_id": 1379547477,
+    "head_repo_full_name": "kco994553-star/Investment-System1",
+    "merge_commit_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+    "user": {
+      "login": "kco994553-star",
+      "name": "kco994553-star",
+      "email": null,
+      "avatar_url": "https://avatars.githubusercontent.com/u/331178773?v=4",
+      "id": 331178773
+    },
+    "requested_reviewers": null,
+    "requested_team_reviewers": null,
+    "diff": null,
+    "comments": null,
+    "created_at": "2026-10-03T08:29:56Z",
+    "updated_at": "2026-10-03T08:29:56Z",
+    "closed_at": null,
+    "merged_at": null,
+    "commits": 4,
+    "changed_files": 16,
+    "additions": 991,
+    "deletions": 0,
+    "display_url": "https://github.com/kco994553-star/Investment-System1/pull/35",
+    "display_title": "Integration: repair vacuous same-tree shared-source protection"
+  },
+  "isError": false
+}

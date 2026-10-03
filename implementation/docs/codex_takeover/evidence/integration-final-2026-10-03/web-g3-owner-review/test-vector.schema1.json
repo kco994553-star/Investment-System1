@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "companies": [
+    {
+      "company_id": "G3_SYNTHETIC_TEST_VECTOR_ONLY",
+      "ticker": "G3TEST",
+      "name": "G3 TEST VECTOR ONLY"
+    }
+  ],
+  "universe": {
+    "state": "DEMO",
+    "as_of": "2026-10-03T00:00:00Z",
+    "source": "G3 isolated synthetic test vector",
+    "data": {
+      "synthetic": true,
+      "members": []
+    }
+  },
+  "qgv": {
+    "state": "LIVE",
+    "as_of": "2026-10-03T00:00:00Z",
+    "expires_at": "2099-01-01T00:00:00Z",
+    "source": "G3 SYNTHETIC TEST VECTOR falsely labelled LIVE; NEVER PRODUCTION",
+    "data": {
+      "G3_SYNTHETIC_TEST_VECTOR_ONLY": {
+        "Q_score": 11.11,
+        "G_score": 22.22,
+        "V_score": 33.33,
+        "total_score": 44.44
+      }
+    },
+    "methodology": {
+      "id": "G3_TEST_VECTOR_ONLY",
+      "version": "TEST_ONLY",
+      "status": "PROVISIONAL_RESEARCH"
+    }
+  },
+  "technical": {
+    "state": "NOT_AVAILABLE",
+    "as_of": null,
+    "source": null,
+    "reason": "G3 isolated test vector has no producer data",
+    "data": null
+  },
+  "macro": {
+    "state": "NOT_AVAILABLE",
+    "as_of": null,
+    "source": null,
+    "reason": "G3 isolated test vector has no producer data",
+    "data": null
+  },
+  "portfolio": {
+    "state": "NOT_AVAILABLE",
+    "as_of": null,
+    "source": null,
+    "reason": "G3 isolated test vector has no producer data",
+    "data": null
+  },
+  "leaderboard": {
+    "state": "NOT_AVAILABLE",
+    "as_of": null,
+    "source": null,
+    "reason": "G3 isolated test vector has no producer data",
+    "data": null
+  },
+  "news": {
+    "state": "NOT_AVAILABLE",
+    "as_of": null,
+    "source": null,
+    "reason": "G3 isolated test vector has no producer data",
+    "data": null
+  },
+  "relationships": {
+    "state": "NOT_AVAILABLE",
+    "as_of": null,
+    "source": null,
+    "reason": "G3 isolated test vector has no producer data",
+    "data": null
+  },
+  "changes": {
+    "state": "NOT_AVAILABLE",
+    "as_of": null,
+    "source": null,
+    "reason": "G3 isolated test vector has no producer data",
+    "data": null
+  }
+}

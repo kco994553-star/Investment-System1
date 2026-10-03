@@ -1,0 +1,1155 @@
+{
+  "record": "F1_FINAL_INDEPENDENT_ACTIONS_ARTIFACT_PRESERVATION_RECEIPT",
+  "created_at_utc": "2026-10-03T08:43:44.000788+00:00",
+  "agent": "/root/track_c_audit",
+  "status": "PASS",
+  "acceptance": {
+    "met": 3,
+    "total": 3,
+    "criteria": [
+      {
+        "id": 1,
+        "status": "PASS",
+        "evidence": "source-preservation.json",
+        "result": "All215production sources; EVL Frozen/v1/source identity compatibility source/tests; scoped approvals/register; historical source675 and canonical protections exact-preserved. Only owned helper/test repaired plus14additive evidence files."
+      },
+      {
+        "id": 2,
+        "status": "PASS",
+        "result": "Seven expected final Actions succeeded. Native actualcheckoutfc1295PASS+6withheld-contractE2E groups; six inherited actualsyntheticmerged7c1295PASS each; separate Macroactual4a11PASS. LegacyWebworkflow absent in final query and excluded by unchanged path filter, not claimedPASS."
+      },
+      {
+        "id": 3,
+        "status": "PASS",
+        "result": "Connector ZIP downloads for native and Macro verified byteSHA256 against GitHub digests; exact source-head/tree and reusable relative-path artifact manifest retained; prior checkpoints preserved."
+      }
+    ]
+  },
+  "proposal": {
+    "PR": 35,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/35",
+    "state": "OPEN_DRAFT",
+    "branch": "codex/integration-hardening-2026-10-03",
+    "HEAD": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+    "base_branch": "codex/track-c-gsup-v2-2026-10-03",
+    "base_HEAD": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "merge_base": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "canonical_merge": "NOT_RUN_NOT_AUTHORIZED"
+  },
+  "fixed_F1_baseline": {
+    "observed_at": "2026-10-03T08:07:10Z",
+    "source": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "parent_full_native_passed": 1277,
+    "targeted_before": 9,
+    "qualification": "08:07:10 is first root clock capture; worker source/test baseline was established before mutation. Parent prior675 actualActions37106686279/1277 historical for this F1 cycle. Initial scoped before9 run is persisted in checkpoint; standalone raw9log not located."
+  },
+  "original_GSUP_baseline": {
+    "observed_at": "2026-10-03T06:48:04Z",
+    "source": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "actual_Actions_run": 37102973395,
+    "native_passed": 1165,
+    "classification": "HISTORICAL_SEPARATE_WORKSTREAM_UNCHANGED_NOT_F1_BASELINE"
+  },
+  "actual_delta": {
+    "existing_modified_files": [
+      "implementation/tools/producer_source_compat.py",
+      "implementation/tests/test_producer_source_compat.py"
+    ],
+    "additive_scoped_evidence_files": 14,
+    "production_source_edits": 0,
+    "workflow_edits": 0,
+    "targeted_test_evidence": "9→27PASS;18newnegative/controlcases",
+    "full_native_evidence": "1277→1295PASS;18newcases, existing1277reconfirmed; count is evidence coverage only, not maturity/progress",
+    "protection_behavior": "Same-tree non-models shared sources previously compared with themselves. Ten tampered paths now fail against immutable canonical exact bytes. Two approved models states/mixedpair directions unchanged. Git replacement refs ignored; missingGit/baseline/path fail closed.",
+    "fingerprint_stdout_exact_bytes": "UNCHANGED",
+    "fingerprint_sha256": "f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866",
+    "method_numeric_or_access_changes": 0,
+    "maturity_before": "SYNTHETIC_VERIFIED_COMBINED_PROPOSAL_ONLY",
+    "maturity_after": "SYNTHETIC_VERIFIED_COMBINED_PROPOSAL_ONLY",
+    "canonical_delta": 0
+  },
+  "source_preservation_receipt_sha256": "9ec4bff8777ef153f58206ad0a5b83097939e95b5696c55b09f3ce5282b0cabe",
+  "GitHub_actual_commit_tree_relation": {
+    "exact_native_commit": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+    "inherited_synthetic_merge_commit": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+    "commits_equal": false,
+    "trees_equal": true,
+    "exact_tree": "e236e62a6ff8b0a151710c5e7a77068d08ab0256",
+    "raw_git_commit_receipts": [
+      "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f.git-commit.json",
+      "d7c9908c827cac1a53e5b1654e0a7502ee10b34d.git-commit.json"
+    ],
+    "authority": "Read-only exact GitHub Gitcommit API objects supplied by root; no localref/object mutation by reviewer"
+  },
+  "workflow_cards": [
+    {
+      "workflow": "qgv-invalidation-binding",
+      "run_id": 37109899449,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37109899449",
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610311,
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "actual_checkout_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+          "checkout_kind": "GITHUB_SYNTHETIC_PR_MERGE_DISTINCT_COMMIT_IDENTICAL_TREE",
+          "pytest_passed": 1295,
+          "pytest_summary_line": "1295 passed in 471.93s (0:07:51)",
+          "log_relative_path": "111165610311-final.log",
+          "log_sha256": "bcd90c4798013925769b0074998a967c30c1a25df1cc031314bdbb8b42d20350",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "Install native regression runner",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "Full native pytest including QGV invalidation binding",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
+            },
+            {
+              "name": "Post Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflow": "codex-integration-readiness",
+      "run_id": 37109899437,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37109899437",
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610205,
+          "name": "combined-offline",
+          "status": "completed",
+          "conclusion": "success",
+          "actual_checkout_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+          "checkout_kind": "EXACT_PR_HEAD",
+          "pytest_passed": 1295,
+          "pytest_summary_line": "1295 passed in 439.44s (0:07:19)",
+          "log_relative_path": "111165610205-final.log",
+          "log_sha256": "ac5f73c948f0f0028a30656f993960234cbf619866b59f33e2c905ee4c944736",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "Run python -m pip install pytest==9.1.1 numpy==2.3.5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "Exact source checkpoint",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
+            },
+            {
+              "name": "Preserve exact owner Track C and canonical Track A evidence",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6
+            },
+            {
+              "name": "Full existing regression with actual integrated dependencies",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 7
+            },
+            {
+              "name": "Producer to existing Web withheld-contract fixture",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 8
+            },
+            {
+              "name": "Run actions/setup-node@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9
+            },
+            {
+              "name": "Browser tooling",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10
+            },
+            {
+              "name": "Install Chromium",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11
+            },
+            {
+              "name": "Withheld publication, locales, mobile, loading and retry E2E",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 12
+            },
+            {
+              "name": "Run actions/upload-artifact@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 13
+            },
+            {
+              "name": "Post Run actions/setup-node@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 24
+            },
+            {
+              "name": "Post Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 25
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 26
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 27
+            }
+          ]
+        },
+        {
+          "job_id": 111165610337,
+          "name": "macro-adoption-offline",
+          "status": "completed",
+          "conclusion": "success",
+          "actual_checkout_sha": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+          "checkout_kind": "PINNED_MACRO_ADOPTION_PROPOSAL",
+          "pytest_passed": 11,
+          "pytest_summary_line": "11 passed in 0.30s",
+          "log_relative_path": "111165610337-macro.log",
+          "log_sha256": "913e1b16e641f35d8ad41ff336e62d240a7e972baf5f7dceeb23c996f816b6d4",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "Run python -m pip install pytest==9.1.1 numpy==2.3.5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "Exact existing Macro adoption proposal; offline only",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
+            },
+            {
+              "name": "Run actions/upload-artifact@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6
+            },
+            {
+              "name": "Post Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 12
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflow": "technical-real-model",
+      "run_id": 37109899400,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37109899400",
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610080,
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "actual_checkout_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+          "checkout_kind": "GITHUB_SYNTHETIC_PR_MERGE_DISTINCT_COMMIT_IDENTICAL_TREE",
+          "pytest_passed": 1295,
+          "pytest_summary_line": "1295 passed in 482.84s (0:08:02)",
+          "log_relative_path": "111165610080-final.log",
+          "log_sha256": "e7801b8dbad54bd40780bb4f3d66e7aed17d76bb02e96bce851648e0f992b387",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "Install native regression runner",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "Offline model tests and full native pytest regression",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
+            },
+            {
+              "name": "Post Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflow": "sec-primary-disclosure",
+      "run_id": 37109899391,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37109899391",
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610029,
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "actual_checkout_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+          "checkout_kind": "GITHUB_SYNTHETIC_PR_MERGE_DISTINCT_COMMIT_IDENTICAL_TREE",
+          "pytest_passed": 1295,
+          "pytest_summary_line": "1295 passed in 497.52s (0:08:17)",
+          "log_relative_path": "111165610029-final.log",
+          "log_sha256": "b8a63574d06a69d1c81f9317f19eb657dc04bbc36c23c8c98644dc8feff3ce76",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Fetch audited read-only pins used by the ingestion tests",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "Install native regression runner",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
+            },
+            {
+              "name": "Offline disclosure tests and full native pytest regression",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 6
+            },
+            {
+              "name": "Post Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 12
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflow": "technical-real-producer",
+      "run_id": 37109899401,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37109899401",
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610061,
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "actual_checkout_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+          "checkout_kind": "GITHUB_SYNTHETIC_PR_MERGE_DISTINCT_COMMIT_IDENTICAL_TREE",
+          "pytest_passed": 1295,
+          "pytest_summary_line": "1295 passed in 310.05s (0:05:10)",
+          "log_relative_path": "111165610061-final.log",
+          "log_sha256": "452132784aed4f63c931bad3948c233f1467557eff8ae7683f950429f4da9dce",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "Install native regression runner",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "Offline producer tests and full native pytest regression",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
+            },
+            {
+              "name": "Post Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflow": "us-equity-session",
+      "run_id": 37109899426,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37109899426",
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610208,
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "actual_checkout_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+          "checkout_kind": "GITHUB_SYNTHETIC_PR_MERGE_DISTINCT_COMMIT_IDENTICAL_TREE",
+          "pytest_passed": 1295,
+          "pytest_summary_line": "1295 passed in 282.46s (0:04:42)",
+          "log_relative_path": "111165610208-final.log",
+          "log_sha256": "d35647a19ba29305677e791315a06d5cd6bbaa3c6390de6a20d0b277803dc830",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "Install native regression runner",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "Offline session tests and full native pytest regression",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
+            },
+            {
+              "name": "Post Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflow": "p01-research-publication",
+      "run_id": 37109899414,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37109899414",
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610042,
+          "name": "offline",
+          "status": "completed",
+          "conclusion": "success",
+          "actual_checkout_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+          "checkout_kind": "GITHUB_SYNTHETIC_PR_MERGE_DISTINCT_COMMIT_IDENTICAL_TREE",
+          "pytest_passed": 1295,
+          "pytest_summary_line": "1295 passed in 290.54s (0:04:50)",
+          "log_relative_path": "111165610042-final.log",
+          "log_sha256": "0ad76b4f633f373c9fd6cd02316feab508534b214623e8b64b5a3fc70c87635f",
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "Install native regression runner",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "Full native pytest including P01 publication",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
+            },
+            {
+              "name": "Post Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 9
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 10
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 11
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "legacy_Web_workflow": {
+    "workflow": "web-mvp-validation",
+    "state": "NOT_TRIGGERED",
+    "reason": "F1only helper/test/scoped evidence delta does not match its unchanged pull_request path filter; no such run in final exactfc query. Native workflow actual6E2E is recorded separately.",
+    "dispatch_or_rerun": "NOT_RUN"
+  },
+  "artifact_integrity": {
+    "native": {
+      "run_id": 37109899437,
+      "job_id": 111165610205,
+      "job_name": "combined-offline",
+      "enclosing_run_head": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "actual_checkout": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "artifact_id": 11269037961,
+      "github_sha256": "d7f5e980a8a92a82076f09532de9133fa3b800384958c4daebbb14b1dcd34cd9",
+      "local_download_sha256": "d7f5e980a8a92a82076f09532de9133fa3b800384958c4daebbb14b1dcd34cd9",
+      "bytes": 107840,
+      "hash_match": true,
+      "retrieval_route": "GitHub connector artifact downloader then authorized file reference download",
+      "direct_Azure_route": "NOT_ATTEMPTED_PREVIOUSLY_BLOCKED",
+      "artifact_zip": "37109899437/combined-artifact.zip",
+      "junit": "37109899437/combined-extracted/combined-junit.xml",
+      "junit_sha256": "ab28332e5dca372f613b94275484583ff7754d52b7fb24cf9290dede06bed03a",
+      "junit_summary": {
+        "tests": 1295,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "browser": {
+        "kind": "PRODUCER_CONTRACT_WEB_BROWSER_VALIDATION_V1",
+        "passed": true,
+        "checks": [
+          "producer PASS, PARTIAL and BLOCKED remain NOT_AVAILABLE with grants NONE",
+          "original provenance, as_of, freshness and methodology survive Web build and fetch",
+          "ko/en and mobile/desktop routes disclose absence without leaking withheld values",
+          "loading is visible while contract fetch is pending",
+          "HTTP and malformed JSON fail visibly and retry restores the original bundle",
+          "bundle and search catalog bytes stay unchanged after all interactions"
+        ],
+        "errors": [],
+        "runtime": {
+          "node": "v24.21.0",
+          "chromium": "145.0.7632.6"
+        },
+        "fixture_data_sha256": "dc92e1e5e7dabd4531c389370d40b26aac8e7ff1b8f808b1a39f666e1f846de6",
+        "Actions": "NOT_RUN",
+        "real_data_validation": "NOT_RUN",
+        "research_display": "NONE",
+        "frozen_grant": "NONE",
+        "live_grant": "NONE"
+      },
+      "browser_sha256": "92b884bd0dc3de1e68dbdfd1256658f1cbfb0c76a7d46c9f29cce063cbb4e3c6",
+      "Actions_field_semantics": "Fixture/browser manifest Actions NOT_RUN says tool does not dispatch Actions. Enclosing GitHub run37109899437 actually executed the browser step; completed-success logs and artifact provide actual Actions evidence.",
+      "classification": "CURRENT_EXACT_FC_HEAD_NATIVE_FULL_REGRESSION_AND_6_FIXTURE_E2E_GROUPS"
+    },
+    "macro": {
+      "run_id": 37109899437,
+      "job_id": 111165610337,
+      "job_name": "macro-adoption-offline",
+      "enclosing_run_head": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "actual_checkout": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "artifact_id": 11269685643,
+      "github_sha256": "525d4860fa54e09d091ccb45083bcc25b7613ddb1f75b3b9c464eafb3be34cdb",
+      "local_download_sha256": "525d4860fa54e09d091ccb45083bcc25b7613ddb1f75b3b9c464eafb3be34cdb",
+      "hash_match": true,
+      "bytes": 697,
+      "retrieval_route": "GitHub connector artifact downloader then authorized file reference download",
+      "direct_Azure_route": "NOT_ATTEMPTED_PREVIOUSLY_BLOCKED",
+      "artifact_zip": "37109899437/macro-artifact.zip",
+      "junit": "37109899437/macro-extracted/macro-adoption-junit.xml",
+      "junit_sha256": "bf160543d81fa4d7c14585f67c949933ba40220eb129fe954b90f21bc79668e7",
+      "junit_summary": {
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "classification": "CURRENT_EXACT_SEPARATE_MACRO_CHECKOUT_NOT_FC_COMBINED_SOURCE"
+    },
+    "direct_Azure_route": "NOT_RETRIED_PREVIOUSLY_BLOCKED",
+    "connector_download": "PASS",
+    "ephemeral_download_urls": "NOT_PERSISTED_IN_PORTABLE_RECEIPT"
+  },
+  "reviewer_execution": {
+    "new_tests": "NOT_RUN",
+    "workflow_dispatch": "NOT_RUN",
+    "reruns": "NOT_RUN",
+    "Actions_observation": "ACTUAL_READ_ONLY_SEVEN_COMPLETED_RUNS_WITH_LOG_AND_ARTIFACT_EVIDENCE",
+    "source_repo_remote_mutations": [],
+    "writes": "NEW_EXTERNAL_ACTIONS_REVIEW_ARTIFACTS_ONLY"
+  },
+  "real_policy_access_boundary": {
+    "real_numeric_configuration": "NOT_SELECTED_NOT_APPROVED",
+    "actual_CAL_VERIFY_accesses": 0,
+    "Holdout_consumptions": 0,
+    "Frozen_v1_changes": 0,
+    "active_M_v2_kernel": "ABSENT",
+    "M_B_direction": "APPROVED_PRESERVED",
+    "M_B_arithmetic": "USER_DECISION_REQUIRED_UNCHANGED",
+    "source_identity_mode": "SYNTHETIC_IDENTITY_COMPATIBILITY_ONLY_V1_KERNEL_UNCHANGED",
+    "research_frozen_live_grants": "ALL_NONE",
+    "Official_promotions": 0,
+    "canonical_merges": 0,
+    "deployments": 0
+  },
+  "BRANCH_STATE": "PR35_DRAFT_EXACT_FC_SEVEN_ACTIONS_SUCCESS",
+  "INTEGRATION_STATE": "F1_HISTORY_PRESERVING_PROPOSAL_SYNTHETIC_VERIFIED_NOT_CANONICAL",
+  "CANONICAL_STATE": "UNCHANGED_B8_NOT_MERGED",
+  "USER_DECISION_REQUIRED_FOR_F1": "NONE",
+  "project_pending_decision": "M_B_ARITHMETIC_REDUCTION_SEPARATE_SCOPE",
+  "next_autonomous_action": "Root publish scoped exact handoff; independentG3review remains separate; no unneededdispatch orcanonicalmerge",
+  "artifact_manifest": [
+    {
+      "path": "111165610029-final.log",
+      "sha256": "b8a63574d06a69d1c81f9317f19eb657dc04bbc36c23c8c98644dc8feff3ce76",
+      "bytes": 24764
+    },
+    {
+      "path": "111165610042-final.log",
+      "sha256": "0ad76b4f633f373c9fd6cd02316feab508534b214623e8b64b5a3fc70c87635f",
+      "bytes": 24064
+    },
+    {
+      "path": "111165610061-final.log",
+      "sha256": "452132784aed4f63c931bad3948c233f1467557eff8ae7683f950429f4da9dce",
+      "bytes": 24062
+    },
+    {
+      "path": "111165610080-final.log",
+      "sha256": "e7801b8dbad54bd40780bb4f3d66e7aed17d76bb02e96bce851648e0f992b387",
+      "bytes": 24063
+    },
+    {
+      "path": "111165610205-final.log",
+      "sha256": "ac5f73c948f0f0028a30656f993960234cbf619866b59f33e2c905ee4c944736",
+      "bytes": 66044
+    },
+    {
+      "path": "111165610208-final.log",
+      "sha256": "d35647a19ba29305677e791315a06d5cd6bbaa3c6390de6a20d0b277803dc830",
+      "bytes": 24062
+    },
+    {
+      "path": "111165610311-final.log",
+      "sha256": "bcd90c4798013925769b0074998a967c30c1a25df1cc031314bdbb8b42d20350",
+      "bytes": 24062
+    },
+    {
+      "path": "111165610337-macro.log",
+      "sha256": "913e1b16e641f35d8ad41ff336e62d240a7e972baf5f7dceeb23c996f816b6d4",
+      "bytes": 25003
+    },
+    {
+      "path": "37109899391-jobs-final.json",
+      "sha256": "c804b52953d624a556a953a390d537b858801af0c9e5dc96b648e1ec6109776b",
+      "bytes": 1967
+    },
+    {
+      "path": "37109899391-jobs-initial.json",
+      "sha256": "ec39e6af95c74f5347f478104b262b858f9e262e02c12a9eab36d4037ed6cf4f",
+      "bytes": 1789
+    },
+    {
+      "path": "37109899400-jobs-final.json",
+      "sha256": "54102cee6e31058761641805fe085675807e8c2b0a680096f9773bced0105730",
+      "bytes": 1760
+    },
+    {
+      "path": "37109899400-jobs-initial.json",
+      "sha256": "5cf1bc491bf5aa1d92dc2a14c5b9dd0b8e3c7f3d8c5c358f0c17b1f33fc79a1b",
+      "bytes": 1582
+    },
+    {
+      "path": "37109899401-jobs-final.json",
+      "sha256": "30fd19594504747e122d69b2f115a25f474da8c3079ef6d3ad1a40be2362dbb6",
+      "bytes": 1763
+    },
+    {
+      "path": "37109899401-jobs-initial.json",
+      "sha256": "328c41d5044aaa3621a42d7095d45914b5fa6ba105ed462a91859be74e1df624",
+      "bytes": 1585
+    },
+    {
+      "path": "37109899414-jobs-final.json",
+      "sha256": "d2bf364be665c931ecbc7c222796d4bd810a7a5f2c255ba9ece24fd0c65322ba",
+      "bytes": 1751
+    },
+    {
+      "path": "37109899414-jobs-initial.json",
+      "sha256": "ee60d54aa1535858a1e07581c39f14c8827457580e7566a8a7ae3d6ae30903b6",
+      "bytes": 1573
+    },
+    {
+      "path": "37109899426-jobs-final.json",
+      "sha256": "98987c5da81a7b5cb22413828319e350affe90b7fda78b310160603cb1ef2710",
+      "bytes": 1762
+    },
+    {
+      "path": "37109899426-jobs-initial.json",
+      "sha256": "214ab9a1610658d5dd7696fee71f5943f1f321634fb68c3b8fc08ea5c85a8b69",
+      "bytes": 1584
+    },
+    {
+      "path": "37109899437/combined-artifact.zip",
+      "sha256": "d7f5e980a8a92a82076f09532de9133fa3b800384958c4daebbb14b1dcd34cd9",
+      "bytes": 107840
+    },
+    {
+      "path": "37109899437/combined-extracted/combined-junit.xml",
+      "sha256": "ab28332e5dca372f613b94275484583ff7754d52b7fb24cf9290dede06bed03a",
+      "bytes": 172595
+    },
+    {
+      "path": "37109899437/combined-extracted/withheld-web-evidence/browser-validation.json",
+      "sha256": "92b884bd0dc3de1e68dbdfd1256658f1cbfb0c76a7d46c9f29cce063cbb4e3c6",
+      "bytes": 896
+    },
+    {
+      "path": "37109899437/combined-extracted/withheld-web-evidence/fixture-manifest.json",
+      "sha256": "0a936d571e7053bb7687fb0425826bed326782efc68d05477c441e4433a59db7",
+      "bytes": 825
+    },
+    {
+      "path": "37109899437/combined-extracted/withheld-web-evidence/records.test-vector.json",
+      "sha256": "6adebb3b3df2a29910a116dbf6e67e0acd4aafcd2e448f442b9b5e8fefe2690a",
+      "bytes": 2164
+    },
+    {
+      "path": "37109899437/combined-extracted/withheld-web-evidence/withheld-home-en-390.png",
+      "sha256": "a1faf5699b29149523c7f8613841326c149b985a31ec9375742b3570e3040fb5",
+      "bytes": 81241
+    },
+    {
+      "path": "37109899437/combined-integrity-receipt.json",
+      "sha256": "ae86232a2e245a32671d9d232028a888d3afc75fc1cea0ab393217286fa86e3c",
+      "bytes": 2320
+    },
+    {
+      "path": "37109899437/macro-artifact.zip",
+      "sha256": "525d4860fa54e09d091ccb45083bcc25b7613ddb1f75b3b9c464eafb3be34cdb",
+      "bytes": 697
+    },
+    {
+      "path": "37109899437/macro-extracted/macro-adoption-junit.xml",
+      "sha256": "bf160543d81fa4d7c14585f67c949933ba40220eb129fe954b90f21bc79668e7",
+      "bytes": 1679
+    },
+    {
+      "path": "37109899437/macro-integrity-receipt.json",
+      "sha256": "8e73ccf1705bdddfdaa68a4e0b30c7f889a1f06ed365925898a90006589d594e",
+      "bytes": 1023
+    },
+    {
+      "path": "37109899437-artifacts-final.json",
+      "sha256": "8b64559670bf06ac941cad5ea96234ea4a79e97d7d9f9118c31f536b45dae661",
+      "bytes": 2039
+    },
+    {
+      "path": "37109899437-artifacts-macro-initial.json",
+      "sha256": "55a9524bc533cdecb08ebd367b2ef7a8316fc9140133500d149cddcc5e89b5a0",
+      "bytes": 1094
+    },
+    {
+      "path": "37109899437-jobs-final.json",
+      "sha256": "097ba3106d19a351afba0390e274b32a670aef1c2b5947a1f4a8906828e650c9",
+      "bytes": 5225
+    },
+    {
+      "path": "37109899437-jobs-initial.json",
+      "sha256": "b99a817250ba982c1767302a8fd26b4e4f73cf8b01ddfb1087254029bb521a5b",
+      "bytes": 4829
+    },
+    {
+      "path": "37109899449-jobs-final.json",
+      "sha256": "e1c777db6c900d3a6bc9a18e1ebe3f3f9266cd8cbbca239a30d61d11750f4539",
+      "bytes": 1760
+    },
+    {
+      "path": "37109899449-jobs-initial.json",
+      "sha256": "6f5ee68cfad01c8b812291d86a030e0d2156cc84911419bb90357f7e407bd5a5",
+      "bytes": 1582
+    },
+    {
+      "path": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d-commit.json",
+      "sha256": "55f1de2860eedf3a9a0d300ffcbcbd04686098db89d36e82d8534e168dd304a1",
+      "bytes": 173429
+    },
+    {
+      "path": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d.git-commit.json",
+      "sha256": "533cc5ed69acd444b4bc047952e54a19e775deb66f8f39b2bbf41ac388f7cfef",
+      "bytes": 2720
+    },
+    {
+      "path": "f1-scoped-evidence/AFTER_F1_MUTATION_MATRIX.json",
+      "sha256": "5f4134666af75b187b82c0f9785a5ac55d1b51fc3528b2a276d9a003fd995c01",
+      "bytes": 5178
+    },
+    {
+      "path": "f1-scoped-evidence/BEFORE_F1_MUTATION_MATRIX.json",
+      "sha256": "4481caa48c706b25381b490dc9a7657e005d32e693f1ec9523b7e9e0dbe1bb84",
+      "bytes": 1827
+    },
+    {
+      "path": "f1-scoped-evidence/CHECKPOINT.json",
+      "sha256": "6f40ee5d30e4088fdb8ac2535621a7ba57144a6943547537bc785ad8e9cbd185",
+      "bytes": 7010
+    },
+    {
+      "path": "f1-scoped-evidence/FINGERPRINT_AFTER.json",
+      "sha256": "f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866",
+      "bytes": 433
+    },
+    {
+      "path": "f1-scoped-evidence/FINGERPRINT_BEFORE.json",
+      "sha256": "f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866",
+      "bytes": 433
+    },
+    {
+      "path": "f1-scoped-evidence/SCOPED_HANDOFF.md",
+      "sha256": "9d686991ea8e17ed64ffd4cd0a42ec16da9316de5f5d4b48bf87dd4f00703aad",
+      "bytes": 3985
+    },
+    {
+      "path": "f1-scoped-evidence/TARGETED_PYTHON311.log",
+      "sha256": "8760f708bc87cfeb9f66ea29e270d1344761621c01085af05d063b3f16e4e2ab",
+      "bytes": 99
+    },
+    {
+      "path": "f1-scoped-evidence/independent-review/DESIGN_REVIEW.md",
+      "sha256": "b17b22fa14ac098e1492c40d3c54b5d68aec9fda3df5e1acddf301a5aa47e486",
+      "bytes": 4155
+    },
+    {
+      "path": "f1-scoped-evidence/independent-review/FINAL_REVIEW.json",
+      "sha256": "e8c4282a1533a89103586322779447c39441220813adcab73b606b990af2efab",
+      "bytes": 1646
+    },
+    {
+      "path": "f1-scoped-evidence/independent-review/independent_probes.py",
+      "sha256": "8724e739a2834a600fb88d4869fa6f186eef8397d0b4c0daf27268c8336fd411",
+      "bytes": 7724
+    },
+    {
+      "path": "f1-scoped-evidence/independent-review/independent_results.json",
+      "sha256": "57ee171928a522660ced454f53ac60c3487491837d593557482f84ecec9f89b3",
+      "bytes": 4243
+    },
+    {
+      "path": "f1-scoped-evidence/independent-review/old_helper_counterexample.json",
+      "sha256": "8fc256c960098319cb1805fc27c5590b23e6dacc7d6327fbe189cb2b91524eca",
+      "bytes": 666
+    },
+    {
+      "path": "f1-scoped-evidence/independent-review/source_inventory.json",
+      "sha256": "514879e23b7bdc1a0c106e5567b0455a4613099e4ef7a5496ee704a6d6714d35",
+      "bytes": 6159
+    },
+    {
+      "path": "f1-scoped-evidence/independent-review/targeted-pytest.log",
+      "sha256": "9fa2856ea668bd089c901aa737fcfee90bdbc86116726e3253271964fa6bbbba",
+      "bytes": 99
+    },
+    {
+      "path": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f-commit.json",
+      "sha256": "5d8c723f0c5f379fbcf7e4d020963200516218d7f4ff9b86d92b8bbed861bf2b",
+      "bytes": 146288
+    },
+    {
+      "path": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f.git-commit.json",
+      "sha256": "46807d1272b196378d41b087cae7e2793338d150f1b16092b2656e246a868798",
+      "bytes": 1542
+    },
+    {
+      "path": "local-root-regression/BASELINE.json",
+      "sha256": "fcc1ba19d5ef23e883c6d78958173aa29dd4424f21d42242d98dc280feeb2061",
+      "bytes": 1584
+    },
+    {
+      "path": "local-root-regression/LOCAL_REGRESSION_RECEIPT.json",
+      "sha256": "179ff33be769512654c0c283cc445706cffb614682524f9d436b751f3e87b0dc",
+      "bytes": 899
+    },
+    {
+      "path": "local-root-regression/full-regression.xml",
+      "sha256": "4e7b8ff11346e3cedb5b02f2fa8c0ee3b309dd9359dcaa00fd21e895cb46b125",
+      "bytes": 172593
+    },
+    {
+      "path": "local-root-regression/full-regression311.log",
+      "sha256": "6b7d201439a4160ed0fcc0b3112f569773a799157d1e4456ea20cdd398c9fdb3",
+      "bytes": 1473
+    },
+    {
+      "path": "pr35-final.json",
+      "sha256": "47cace0987032814cb658c7d34f5d3070f04f3d2e16771354aa9687b3e6b3fb9",
+      "bytes": 3153
+    },
+    {
+      "path": "pr35-initial.json",
+      "sha256": "47cace0987032814cb658c7d34f5d3070f04f3d2e16771354aa9687b3e6b3fb9",
+      "bytes": 3153
+    },
+    {
+      "path": "source-preservation.json",
+      "sha256": "9ec4bff8777ef153f58206ad0a5b83097939e95b5696c55b09f3ce5282b0cabe",
+      "bytes": 1699719
+    },
+    {
+      "path": "workflow-runs-0836.json",
+      "sha256": "ee2d0c04c763dadcda6a29fcf6f134322413b2ed31f657da46f7d771bc98ea4b",
+      "bytes": 3243
+    },
+    {
+      "path": "workflow-runs-0838.json",
+      "sha256": "01e629af73c692b08ea08903c8f7a88660117732aed4c52574b6a549aa283457",
+      "bytes": 3243
+    },
+    {
+      "path": "workflow-runs-final.json",
+      "sha256": "99e5b13e33b27db1b9091965743816b274266a7e4bcca95cca201eccfef4c128",
+      "bytes": 3255
+    },
+    {
+      "path": "workflow-runs-initial.json",
+      "sha256": "15c7337e823b7dc94b937af56c1af0e6f19403e425ae7cdc640822a98ffd185e",
+      "bytes": 3234
+    },
+    {
+      "path": "workflow-runs-mid-observation.json",
+      "sha256": "d41c2256d2488b1a4a43dedae6f056d1515f7133723a34af8db58133190dab0d",
+      "bytes": 3481
+    }
+  ],
+  "portable_artifact_root": ".",
+  "board": {
+    "Agent": "/root/track_c_audit",
+    "Task": "F1finalverification",
+    "Status": "COMPLETE_3_OF_3",
+    "BranchHEAD": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+    "actualDelta": "Readonlyproof215productionblobs preserved; native1295+6E2E and6inherited1295actualPASS;2ZIPdigestsverified",
+    "Blocker": "NONE_FOR_F1;M_Barithmeticpendingseparate",
+    "Next": "RootexacthandoffandindependentG3review"
+  }
+}

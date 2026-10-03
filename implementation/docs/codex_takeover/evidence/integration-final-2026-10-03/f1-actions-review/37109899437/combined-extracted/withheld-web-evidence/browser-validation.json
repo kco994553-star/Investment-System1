@@ -1,0 +1,23 @@
+{
+  "kind": "PRODUCER_CONTRACT_WEB_BROWSER_VALIDATION_V1",
+  "passed": true,
+  "checks": [
+    "producer PASS, PARTIAL and BLOCKED remain NOT_AVAILABLE with grants NONE",
+    "original provenance, as_of, freshness and methodology survive Web build and fetch",
+    "ko/en and mobile/desktop routes disclose absence without leaking withheld values",
+    "loading is visible while contract fetch is pending",
+    "HTTP and malformed JSON fail visibly and retry restores the original bundle",
+    "bundle and search catalog bytes stay unchanged after all interactions"
+  ],
+  "errors": [],
+  "runtime": {
+    "node": "v24.21.0",
+    "chromium": "145.0.7632.6"
+  },
+  "fixture_data_sha256": "dc92e1e5e7dabd4531c389370d40b26aac8e7ff1b8f808b1a39f666e1f846de6",
+  "Actions": "NOT_RUN",
+  "real_data_validation": "NOT_RUN",
+  "research_display": "NONE",
+  "frozen_grant": "NONE",
+  "live_grant": "NONE"
+}

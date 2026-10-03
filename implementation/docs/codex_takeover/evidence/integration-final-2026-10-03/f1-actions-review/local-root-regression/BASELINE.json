@@ -1,0 +1,25 @@
+{
+  "workflow_id": "SHARED_SOURCE_HARDENING_F1_2026_10_03",
+  "observed_at": "2026-10-03T08:07:10Z",
+  "baseline_source_established_before_mutation": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "baseline_registration_time_qualification": "Immutable675 reference and9-test target baseline established by worker before implementation;08:07:10 is the first root clock capture for this workstream, not a claim of exact worker launch wallclock.",
+  "canonical_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "owner_branch_initial_head": "codex/shared-source-protection-2026-10-03@675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "integration_branch_initial_head": "codex/integration-hardening-2026-10-03@675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "Global_Handoff_baseline_sha": "6cd7eeedda28e3a15bf8e27655d35d2b4d9ee971",
+  "open_pr_baseline": 28,
+  "remote_branch_baseline": 41,
+  "GitHub_count_qualifier": "Retained actual07:46 snapshot; counts are not newly re-observed at08:07. Immutable source and counts preserve their independently observed timestamps.",
+  "relevant_tests_before": 9,
+  "full_suite_source_baseline": {
+    "675_native_run": 37106686279,
+    "passing": 1277
+  },
+  "maturity_before": "SYNTHETIC_VERIFIED_COMBINED_PROPOSAL_ONLY",
+  "nonblocking_findings_in_scope": 1,
+  "actual_one_shot_CAL_VERIFY_accesses": 0,
+  "Holdout_consumptions": 0,
+  "frozen_v1_changes": 0,
+  "fixed_baseline": true,
+  "metadata_typo_correction": "Removed accidental7506 wording from uncommitted context sentence only; baseline time/SHA/count/test/maturity/finding anchors unchanged."
+}

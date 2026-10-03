@@ -1,0 +1,187 @@
+{
+  "record": "INDEPENDENT_BOUNDED_FINAL_HANDOFF_REVIEW",
+  "created_at_utc": "2026-10-03T09:06:33.828418+00:00",
+  "agent": "/root/track_c_audit",
+  "status": "PASS",
+  "acceptance": {
+    "met": 4,
+    "total": 4,
+    "criteria": [
+      {
+        "id": 1,
+        "status": "PASS",
+        "result": "All152archive files independently hashed against declared SHA/bytes; original receipts/internal manifests compared through disjoint read-only hash worker. No missing/unexpected/mismatched files."
+      },
+      {
+        "id": 2,
+        "status": "PASS",
+        "result": "Authored checkpoint arithmetic/delta/source/Actions/NOT_RUN counts match immutable receipts, correct fc exact native versus distinctd7 synthetic checkout, originalGSUP1165/base86ad versus F1baseline1277/base675. No authored tables or progress percentages."
+      },
+      {
+        "id": 3,
+        "status": "PASS",
+        "result": "Audit HEAD remains exacte07; working tracked diff empty; staged154paths all added owned documentation/evidence only, including both staged ZIPs. All main source/canonical owner refs preserved."
+      },
+      {
+        "id": 4,
+        "status": "PASS",
+        "result": "No materially overstated capability maturity, v2completion or G3resolution. G3explicitlyNOT_ACCEPTED/NOT_RESOLVED and authorityCONFLICT; activeMv2NOT_IMPLEMENTED and reduction pending; only sourceidentitysynthetic subset advanced, parentstagesunchanged."
+      }
+    ]
+  },
+  "archive_integrity": {
+    "archive_relative_path": "implementation/docs/codex_takeover/evidence/integration-final-2026-10-03",
+    "archive_receipt_sha256": "96aa0313f58b22c5ded69136c40c798ea613c0cdad620e06a3b976836b5bd125",
+    "declared_files": 152,
+    "actual_files_excluding_archive_receipt": 152,
+    "direct_checked_sha_and_byte_pairs": 152,
+    "missing": [],
+    "unexpected": [],
+    "mismatches": [],
+    "original_hash_comparison_by_independent_worker": {
+      "agent": "/root/track_c_audit/final_archive_hashes",
+      "artifacts": 152,
+      "F1_originals": 65,
+      "Web_originals": 80,
+      "remote_snapshot_originals": 4,
+      "routing_exact_Git_docs": 3,
+      "routing_source": "5fafee22ae4c1d246b6f2ef1f3d870344d7627c4",
+      "all_originals_match": true,
+      "F1_internal_manifest_entries": 64,
+      "Web_upstream_manifest_entries": 62,
+      "Web_new_owner_manifest_entries": 16,
+      "hash_or_byte_mismatches": 0,
+      "files_written": 0
+    },
+    "pinned_F1_final_receipt_sha256": "3ca6497e4843a16e3118d64915555571b80f3290d740cbcbc8de8fbb7cdbabc5",
+    "pinned_Web_upstream_final_receipt_sha256": "931777986a7a0ac64a3f11c9de3806424a7a479ffbf7b0625218cb460e674b6c",
+    "pinned_Web_new_owner_final_receipt_sha256": "1e2f8da79acc9be323e6ca0f06a58b2031b214b463faecb6186b2b8de3f34ace"
+  },
+  "authored_checkpoint": {
+    "relative_path": "implementation/docs/codex_takeover/CHECKPOINT_2026-10-03_F1_AND_WEB_OWNER_REVIEW.md",
+    "sha256": "80d9d31eec3231e56f88076b30cb43e158db712da604457b3fda74b6d408e6ab",
+    "staged_bytes_match": true,
+    "lines": 120,
+    "table_rows": [],
+    "progress_percentage_tokens": [],
+    "numeric_checks": {
+      "F1_commits": 4,
+      "F1_added_modified_deleted": [
+        14,
+        2,
+        0
+      ],
+      "F1_lines_added_deleted": [
+        991,
+        0
+      ],
+      "F1_targeted_before_after": [
+        9,
+        27
+      ],
+      "F1_new_test_cases": 18,
+      "F1_fullsuite_before_after": [
+        1277,
+        1295
+      ],
+      "F1_new_successful_workflows": 7,
+      "F1_native_actualcheckout": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "F1_native_fullsuite": [
+        1295,
+        0,
+        0,
+        0
+      ],
+      "F1_native_fixture_browser_groups": 6,
+      "F1_macro_actualcheckout": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "F1_macro_pass": 11,
+      "F1_inherited_workflows": 6,
+      "F1_inherited_actualcheckout": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+      "inherited_same_tree_different_commit": true,
+      "F1_legacy_Web": "NOT_TRIGGERED",
+      "cumulative_source_commits": 18,
+      "cumulative_source_added_modified_deleted": [
+        36,
+        11,
+        0
+      ],
+      "cumulative_source_lines_added_deleted": [
+        17710,
+        10
+      ],
+      "cumulative_new_test_cases": 130,
+      "cumulative_new_Codex_successful_Actions": 15,
+      "fresh_retained_snapshot_open_Draft_PRs": 30,
+      "fresh_retained_snapshot_remote_branches": 44,
+      "inventory_capabilities": 24,
+      "maturity_counts": {
+        "INTEGRATED": 1,
+        "IMPLEMENTED": 1,
+        "SYNTHETIC_VERIFIED": 14,
+        "REAL_DATA_VERIFIED": 3,
+        "DESIGN": 4,
+        "UNDETERMINED_ARTIFACT_NOT_LOCATED": 1
+      }
+    },
+    "Web_actual_vs_NOT_RUN": "PR34existing4pytest/11browsergroups and actualcounterexample are evidence; ownerActionsmetadataSUCCESS with checkout/logsNOT_INSPECTED retained. Exacte91samecounterexample actuallyreplayed; no new fullsuite/ownerE2E/Actions claimed. Observerimplementation/sourcechanges0.",
+    "arithmetic_example": "Immutable synthetic trace seed46 n8/L3/B19 agrees: fsum r1/degenerate2/p.10; NumPy2.3.5 cumulative r3/degenerate0/p.20; no authoritative reduction selected."
+  },
+  "existing_history_preservation": {
+    "audit_branch": "codex/takeover-integration-2026-10-03",
+    "HEAD": "e07beb9ecd77bdeb0cc94465259caa8c2f022f1f",
+    "tracked_worktree_diff": [],
+    "staged_existing_edits": 0,
+    "staged_additions": 154,
+    "source_refs_verified": {
+      "codex/combined-integration-2026-10-03": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "codex/track-c-gsup-v2-2026-10-03": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "codex/integration-hardening-2026-10-03": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "origin/claude/investment-system-top500-validation-alrugm": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "origin/ccr-22e3ff16-p7n5k5": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565"
+    },
+    "old_e07_records": "PRESERVED; no old tracked record modification",
+    "archive_newfiles": 153,
+    "authored_new_checkpoint": 1
+  },
+  "publication_prerequisite": {
+    "initial_finding": "Two archived ZIPs ignored by*.zip; ordinary git add would omit them despite152file manifest",
+    "status": "HANDLED_BY_ROOT_AND_INDEPENDENTLY_STAGED_BYTE_VERIFIED",
+    "zip_records": {
+      "combined-artifact.zip": {
+        "staged": true,
+        "git_ignore": "*.zip; explicit owned file force-add by root",
+        "sha256": "d7f5e980a8a92a82076f09532de9133fa3b800384958c4daebbb14b1dcd34cd9"
+      },
+      "macro-artifact.zip": {
+        "staged": true,
+        "git_ignore": "*.zip; explicit owned file force-add by root",
+        "sha256": "525d4860fa54e09d091ccb45083bcc25b7613ddb1f75b3b9c464eafb3be34cdb"
+      }
+    },
+    "after_commit_all152remote_or_gitblob_verification": "NOT_RUN_BY_THIS_REVIEW_ROOT_PUBLICATION_STEP"
+  },
+  "overstatement_findings": [],
+  "retained_qualifications": [
+    "Standalone raw before9 targeted output NOT_LOCATED; result is preserved scoped worker checkpoint evidence and explicitly qualified in authored checkpoint.",
+    "F1proposalHANDOFF_READY is not canonicalintegration, realvalidation orpublication.",
+    "WebG3 remainsunresolved and Frozen/sourceauthorityclassificationCONFLICT remains forPrimary.",
+    "CurrentpolicyMdirectionapproved; numericconfiguration/access/grants and additionalreductionchoice are separatelyunapproved."
+  ],
+  "reviewer_actual_execution": {
+    "new_tests": "NOT_RUN",
+    "test_reruns": "NOT_RUN",
+    "workflow_dispatch": "NOT_RUN",
+    "new_Actions_read": "NOT_RUN_THIS_TASK_EXISTING_RECEIPTS_ONLY",
+    "remote_writes": "NOT_RUN",
+    "source_or_repo_writes": "NONE",
+    "source_calibration_or_holdout_access": "NONE",
+    "sensitive_pattern_rescan": "NOT_RUN; originalarchive_receipt retained claim only",
+    "only_written_file": "/workspace/takeover-evidence/final-checkpoint/INDEPENDENT_HANDOFF_REVIEW.json"
+  },
+  "BRANCH_STATE": "SOURCEFCVERIFIED;AUDITe07NEW_OWNED_EVIDENCE_STAGED_PUBLICATION_PENDING",
+  "INTEGRATION_STATE": "DRAFTPROPOSALS_NOT_MERGED;F1READY;WebG3NOT_ACCEPTED",
+  "CANONICAL_STATE": "UNCHANGED_B8_NOT_MERGED",
+  "blockers_for_document_publication": [],
+  "project_pending_gate": "M_B_ARITHMETIC_REDUCTION_USER_DECISION_REQUIRED",
+  "next_action": "Rootone normaladditive auditcommit and exactGitHubpublication; verify allstaged152archivefiles survivecommit; no canonicalmerge/deployment/grants"
+}

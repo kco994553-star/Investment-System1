@@ -1,0 +1,96 @@
+{
+  "exact_source_head": "8b10c258d0ce92159c25491263c0fb08ae0e7738",
+  "same_tree_mutation_observations": {
+    "investment_system/contracts/enums.py": {
+      "overall_status": "FAIL",
+      "tampered_file_status": "FAIL",
+      "mode": "EXACT_CANONICAL_SOURCE_PROTECTION",
+      "own": "92810b8d485a399d2da0027cc946e8efbaee565561bd4256f8c707efbb90b30e",
+      "infra": "92810b8d485a399d2da0027cc946e8efbaee565561bd4256f8c707efbb90b30e",
+      "baseline_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "baseline_sha256": "5cd6c7694544dcba4717590ad24534ab0f8e115d8352235bf88bf37657433bcf"
+    },
+    "investment_system/qgv/analysis.py": {
+      "overall_status": "FAIL",
+      "tampered_file_status": "FAIL",
+      "mode": "EXACT_CANONICAL_SOURCE_PROTECTION",
+      "own": "d4de799ee04156f0a1b89bc68d65e1ce9d8de7e52f41ce0a0f373e50fa910346",
+      "infra": "d4de799ee04156f0a1b89bc68d65e1ce9d8de7e52f41ce0a0f373e50fa910346",
+      "baseline_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "baseline_sha256": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88"
+    },
+    "investment_system/qgv/factors.py": {
+      "overall_status": "FAIL",
+      "tampered_file_status": "FAIL",
+      "mode": "EXACT_CANONICAL_SOURCE_PROTECTION",
+      "own": "2213da7e0e7fb9c6fdc8990631663272f59cb8982f042e0985b790ffc2e7f326",
+      "infra": "2213da7e0e7fb9c6fdc8990631663272f59cb8982f042e0985b790ffc2e7f326",
+      "baseline_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "baseline_sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e"
+    },
+    "investment_system/qgv/leaderboard.py": {
+      "overall_status": "FAIL",
+      "tampered_file_status": "FAIL",
+      "mode": "EXACT_CANONICAL_SOURCE_PROTECTION",
+      "own": "aa55a48cf885357ca824b9bf7f016c05ad9749f97bb0f778564ac1df87a6f94b",
+      "infra": "aa55a48cf885357ca824b9bf7f016c05ad9749f97bb0f778564ac1df87a6f94b",
+      "baseline_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "baseline_sha256": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248"
+    },
+    "investment_system/qgv/pipeline.py": {
+      "overall_status": "FAIL",
+      "tampered_file_status": "FAIL",
+      "mode": "EXACT_CANONICAL_SOURCE_PROTECTION",
+      "own": "93b38cd876ef3d10dc8cef1a509e49bacd34126d11c71a547a2ba2d500a33c3e",
+      "infra": "93b38cd876ef3d10dc8cef1a509e49bacd34126d11c71a547a2ba2d500a33c3e",
+      "baseline_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "baseline_sha256": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4"
+    },
+    "investment_system/qgv/raw_map.py": {
+      "overall_status": "FAIL",
+      "tampered_file_status": "FAIL",
+      "mode": "EXACT_CANONICAL_SOURCE_PROTECTION",
+      "own": "f34e1617d9cc308a4cdb075eae8791ca6cc2320ab5d7aa7b490535daf4e521db",
+      "infra": "f34e1617d9cc308a4cdb075eae8791ca6cc2320ab5d7aa7b490535daf4e521db",
+      "baseline_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "baseline_sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac"
+    },
+    "investment_system/qgv/scoring.py": {
+      "overall_status": "FAIL",
+      "tampered_file_status": "FAIL",
+      "mode": "EXACT_CANONICAL_SOURCE_PROTECTION",
+      "own": "05eaf1335653b6afb3d81c469ebc69e08667c6f79c7a834a61d6fbb78e340db5",
+      "infra": "05eaf1335653b6afb3d81c469ebc69e08667c6f79c7a834a61d6fbb78e340db5",
+      "baseline_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "baseline_sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629"
+    },
+    "investment_system/validation/historical.py": {
+      "overall_status": "FAIL",
+      "tampered_file_status": "FAIL",
+      "mode": "EXACT_CANONICAL_SOURCE_PROTECTION",
+      "own": "82cd40ad43fa2ead11a03ad5966dbda407bda590ba3d50684d5cffb7d15220f2",
+      "infra": "82cd40ad43fa2ead11a03ad5966dbda407bda590ba3d50684d5cffb7d15220f2",
+      "baseline_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "baseline_sha256": "02315a38e102bc312478dd1f00da401865db42d60423b21371b05879849a4aa8"
+    },
+    "investment_system/validation/vertical_slice.py": {
+      "overall_status": "FAIL",
+      "tampered_file_status": "FAIL",
+      "mode": "EXACT_CANONICAL_SOURCE_PROTECTION",
+      "own": "dba850fbd6719434aa4c5698c419576ccb70c090983826505dde731e86ccc7c8",
+      "infra": "dba850fbd6719434aa4c5698c419576ccb70c090983826505dde731e86ccc7c8",
+      "baseline_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "baseline_sha256": "4ab06fce30064ccf0a54f2c8e6dd39b4b97fdb996511958fac24d25d031a98dc"
+    },
+    "investment_system/versions.py": {
+      "overall_status": "FAIL",
+      "tampered_file_status": "FAIL",
+      "mode": "EXACT_CANONICAL_SOURCE_PROTECTION",
+      "own": "2ad89af925e4ab1df63e1d814790150f37cee2bd6d8d470097872fdca2c7c655",
+      "infra": "2ad89af925e4ab1df63e1d814790150f37cee2bd6d8d470097872fdca2c7c655",
+      "baseline_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "baseline_sha256": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11"
+    }
+  },
+  "result": "10/10 altered protected paths rejected; same tamper inputs as before"
+}

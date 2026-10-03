@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#152d2b" />
+    <title>Investment System · 개인 투자</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <a class="skip" href="#content" data-i18n="본문으로">본문으로</a>
+    <header>
+      <a class="brand" href="#home"
+        ><span class="mark">i.</span> INVESTMENT SYSTEM</a
+      ><span class="private">PERSONAL / READ ONLY</span><a href="#settings" data-i18n="설정">설정</a>
+    </header>
+    <section class="global-search" aria-label="Global Search">
+      <label for="global-search" data-i18n="전체 검색">전체 검색</label>
+      <input type="search" id="global-search" maxlength="128" autocomplete="off" aria-controls="global-results" placeholder="기업·산업·투자자·거시지표 검색">
+      <p class="meta" data-i18n="검색 순서는 투자 추천 순위가 아닙니다.">검색 순서는 투자 추천 순위가 아닙니다.</p>
+      <ul class="list" id="global-results" aria-live="polite" hidden></ul>
+    </section>
+    <main id="content" tabindex="-1">
+      <p role="status">데이터를 불러오는 중…</p>
+    </main>
+    <nav aria-label="주요 화면">
+      <a href="#home">Home<span data-i18n="오늘">오늘</span></a
+      ><a href="#companies">Companies<span data-i18n="기업">기업</span></a
+      ><a href="#portfolio">Portfolio<span data-i18n="보유">보유</span></a
+      ><a href="#leaderboard">Leaderboard<span data-i18n="순위">순위</span></a
+      ><a href="#news">News<span data-i18n="뉴스·관계">뉴스·관계</span></a
+      ><a href="#research">Research<span data-i18n="리서치">리서치</span></a>
+    </nav>
+    <div id="notice" role="status" aria-live="polite"></div>
+    <script src="locale.js"></script>
+    <script src="entity-search.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
