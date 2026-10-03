@@ -211,3 +211,16 @@ Basis: CDR-005 (routing record, origin/integration/global-handoff-v1 @ 1206539, 
 - USER_DECISION_REQUIRED: authoritative method between the approved M-B simulation variant and the implemented kernel; minimal counterexamples in
   `implementation/reports/track_c_c8_gsup_mb_vs_kernel_counterexample_2026-10-03.{md,json}`.
 Numeric configuration unapproved; CAL_VERIFY/Holdout not accessed; C8 NOT FROZEN; 8/11 = 72.7%.
+
+
+## TC-C8-GSUP-M-V2-2026-10-03 — additive explicit user approval
+
+Recorded 2026-10-03T06:56:04.745959+00:00; authority current explicit user instruction, exact JSON `track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json` blob `a5279d516c028f0a8cb9166ee2d54366da00877b`. Choice **M APPROVED**: approved M-B convention authoritative under `C8_GSUP_STUDENTIZED_CBB_v2`; v1 preserved and no historical result rewritten. Exact statistic/replicate/variance/degenerate/tie conformity and independent oracle/counterexamples required. Actual numeric configuration, CAL_VERIFY and Holdout remain NOT APPROVED. Earlier method-choice-pending entries are SUPERSEDED only for M-vs-K/C; all prior evidence remains historical.
+
+A separate exact floating reduction ambiguity was discovered: existing math.fsum, pinned Python3.11 scalar sum, and original NumPy simulation arithmetic can change exceedances/degenerate counts. **USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION**, no tolerance/reduction selected. This does not reopen the approved M-B block/degenerate convention. Existing fail-closed undefined original statistic remains required.
+
+## TC-C8-GSUP-SOURCE-IDENTITY-SYNTHETIC-2026-10-03 — additive explicit user approval
+
+Same exact user record approves preregistered trusted source/vintage/sample descriptor binding before outcome in synthetic/software-validation scope only. Content serialization is integrity evidence, not consumption identity. Equivalent 2.0→2, campaign/root/label changes cannot consume the same target twice. Existing profile/role grouping and kernel semantics preserved; missing/unresolved/incomplete lineage FAIL_CLOSED. Real taxonomy/defaults, actual CAL_VERIFY, foundation registry integration, Holdout, C8 Freeze and Official/publication remain NOT APPROVED. Earlier source-identity proposal is now APPROVED only within this bounded scope; original proposal is not rewritten.
+
+Prior register byte prefix SHA256 `e665f5a6c07abf849f3863b3535f89e811515dec6e2a3c4f93decbaae8f47597` is retained exactly. Owner branches and shared Global metadata remain read-only.
