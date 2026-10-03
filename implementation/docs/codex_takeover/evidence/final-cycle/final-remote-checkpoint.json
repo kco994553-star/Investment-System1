@@ -1,0 +1,150 @@
+{
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "global_handoff": "f26dc7adbfedd9209e757b5e8566c665c7bbd677",
+  "open_prs": [
+    {
+      "number": 29,
+      "head": "d0444583197c96f61fce811573dfd59670fd4f78",
+      "draft": true,
+      "base": "feature/qgv-invalidation-binding-v1"
+    },
+    {
+      "number": 28,
+      "head": "cc06422ff3ba533045fc4649efd0a6c735223f97",
+      "draft": true,
+      "base": "claude/investment-system-top500-validation-alrugm"
+    },
+    {
+      "number": 27,
+      "head": "dc7daf70a42fb3f2bbfe96a775a1654a92ff95c1",
+      "draft": true,
+      "base": "feature/p01-research-publication-v1"
+    },
+    {
+      "number": 26,
+      "head": "a4805dbcdf37b890f74f6d00c00952ff95b91c8f",
+      "draft": true,
+      "base": "feature/leaderboard-real-producer-v1"
+    },
+    {
+      "number": 25,
+      "head": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "draft": true,
+      "base": "feature/macro-real-producer-v1"
+    },
+    {
+      "number": 24,
+      "head": "9c71781c62e46a4f2972d58c1439ef6ca2a85b07",
+      "draft": true,
+      "base": "feature/us-equity-session-v1"
+    },
+    {
+      "number": 23,
+      "head": "5c9dd5abd760116df626e9b2e88e3fe48852066a",
+      "draft": true,
+      "base": "feature/technical-real-model-v1"
+    },
+    {
+      "number": 22,
+      "head": "248e3d3e83db9a2db3d90583ae53929db936d0f3",
+      "draft": true,
+      "base": "feature/technical-real-producer-v1"
+    },
+    {
+      "number": 21,
+      "head": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
+      "draft": true,
+      "base": "claude/investment-system-top500-validation-alrugm"
+    },
+    {
+      "number": 19,
+      "head": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "draft": true,
+      "base": "feature/p01-research-publication-v1"
+    },
+    {
+      "number": 18,
+      "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "draft": true,
+      "base": "feature/technical-real-model-v1"
+    },
+    {
+      "number": 17,
+      "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "draft": true,
+      "base": "feature/producer-infrastructure-v1"
+    },
+    {
+      "number": 16,
+      "head": "ef65caa5437a04610fa43f93209afb9193ba24aa",
+      "draft": true,
+      "base": "feature/rig-news-real-ingestion-v1"
+    },
+    {
+      "number": 15,
+      "head": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "draft": true,
+      "base": "feature/technical-real-producer-v1"
+    },
+    {
+      "number": 14,
+      "head": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+      "draft": true,
+      "base": "claude/investment-system-top500-validation-alrugm"
+    },
+    {
+      "number": 13,
+      "head": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+      "draft": true,
+      "base": "claude/investment-system-top500-validation-alrugm"
+    },
+    {
+      "number": 12,
+      "head": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+      "draft": true,
+      "base": "feature/producer-infrastructure-v1"
+    },
+    {
+      "number": 11,
+      "head": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "draft": true,
+      "base": "claude/investment-system-top500-validation-alrugm"
+    },
+    {
+      "number": 10,
+      "head": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+      "draft": true,
+      "base": "claude/investment-system-top500-validation-alrugm"
+    },
+    {
+      "number": 9,
+      "head": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "draft": true,
+      "base": "feature/global-language-search-v1"
+    },
+    {
+      "number": 7,
+      "head": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "draft": true,
+      "base": "feature/global-language-search-v1"
+    },
+    {
+      "number": 6,
+      "head": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "draft": true,
+      "base": "feature/web-mvp-v1"
+    },
+    {
+      "number": 5,
+      "head": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "draft": true,
+      "base": "claude/investment-system-top500-validation-alrugm"
+    },
+    {
+      "number": 4,
+      "head": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+      "draft": true,
+      "base": "claude/investment-system-top500-validation-alrugm"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "tested_head": "bfa3e26a6fad894bfde7d96149f9d05555bac53c",
+  "owner_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "owner_evl": {
+    "status": "PASS",
+    "count": 43,
+    "changed": [],
+    "base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565"
+  },
+  "pre_c8_frozen_source_tests": {
+    "status": "PASS",
+    "count": 232,
+    "changed": [],
+    "base": "86e345e54678de05ebcdf2e1db53c9dbe72ca52a"
+  },
+  "canonical_qgv_math": {
+    "status": "PASS",
+    "count": 18,
+    "changed": [],
+    "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "canonical_raw_and_freeze_evidence": {
+    "status": "PASS",
+    "count": 7323,
+    "changed": [],
+    "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "exact_approved_C28": {
+    "status": "PASS",
+    "count": 4,
+    "changed": [],
+    "base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565"
+  },
+  "rig_missing_entire_directory_probe": {
+    "status": "DEFECT_REPRODUCED",
+    "actual_context": "integrated exact HEAD contains PR7 registry",
+    "simulation": "Path.exists only for integrated registry directory returns False; target read would fail",
+    "full_existing_test_returned": "PASS",
+    "artifact_read_attempts": [],
+    "classification": "LOCAL_FIXABLE",
+    "recommended_repair": "Detect integrated context from exact committed-tree registry presence, then require the working directory/file and pinned bytes. Preserve isolated-branch absence only when committed tree lacks the integrated registry."
+  },
+  "reviewed_files": {
+    "implementation/tools/producer_source_compat.py": {
+      "git_blob": "43f0fbbc4cb1927d7e37b70f415a87b6385d6b80",
+      "sha256": "87136f9e36e0b10e79919b05449301a87a7601088f2b12ea803b60fcc4e7450b"
+    },
+    "implementation/tools/qgv_producer_infra_compat.py": {
+      "git_blob": "b6efba65bfbee52acf0cf3d02c9f01d2be1ad6fa",
+      "sha256": "ffeb92c48f19d62ab5a14afe675dd2a2506d2accabc6d733cf8e828f1b69e078"
+    },
+    "implementation/tools/leaderboard_producer_infra_compat.py": {
+      "git_blob": "ac10f8123ddb10fac0b8969e56a1640e8cf2d708",
+      "sha256": "1c39f38f8697ae934fc576726a674a69da81c409c689adb00b247559157d53df"
+    },
+    "implementation/tests/test_producer_source_compat.py": {
+      "git_blob": "d08377ed499b057215f779ddb5fac2e10d7bf10a",
+      "sha256": "1ac10d7121f43b974becacf7159373f7d851466f9a54896337ffea2e329a5ca7"
+    },
+    "implementation/tests/test_qgv_producer_infra_compat.py": {
+      "git_blob": "b7e9eac3c1ad6a253fa07cf08afec16428619b12",
+      "sha256": "236a35f3edd791994ecbc8e16bda27b851e7d3aa4e07879f4bec817e08362283"
+    },
+    "implementation/tests/test_leaderboard_producer_infra_compat.py": {
+      "git_blob": "e4f78a364705cfd65d0ce8cd6f4121f9094b23ff",
+      "sha256": "da5e91b4943774d0405fc6fbab6f1948c5cba66b7c57bca574d1d561f4d719bd"
+    },
+    "implementation/tests/test_rig_news_ingest.py": {
+      "git_blob": "e5e0f77e392bbabf5eb8456ff0d29a818275bb11",
+      "sha256": "810e0a7f0134391720c6a7c9f4025ce6723d72a22bcd0d0a7374ec9c4f5cf2d5"
+    },
+    ".github/workflows/codex-integration-readiness.yml": {
+      "git_blob": "03311a4d19fce67b13aafa3ead6c1b7630e71191",
+      "sha256": "bc6986852bbc3a1cec4b8b826de3e96d34acf3b558568196022a8f0b6ba3481c"
+    }
+  },
+  "source_guard_review": {
+    "models": "PASS: only exact old or exact adopted SHA256 accepted; full original AST must remain",
+    "other_shared_sources": "PASS: unchanged byte identity including QGV scoring",
+    "historical_pins": "PASS: retained under historical_infra_pin and actual dependency reference distinguished",
+    "qgv_leaderboard_tests": "PASS: integrated missing or incomplete module API rejects; complete existing probes still execute",
+    "rig_test": "REPAIR_REQUIRED: whole directory absence bypasses integrated committed dependency",
+    "publication_semantics": "No grant/Official/scoring semantics introduced by reviewed helper/tests"
+  },
+  "workflow_review": {
+    "contents_read_only": true,
+    "python": "3.11",
+    "jobs": [
+      "combined-offline",
+      "macro-adoption-offline"
+    ],
+    "outcome_read_paths": "Existing pytest fixtures + withheld fixture builder; no live provider activation or actual CAL_VERIFY/Holdout reader",
+    "qgv_rebase_dispatch": "NOT_PRESENT",
+    "test_execution_by_this_reviewer": "Existing RIG test executed under synthetic directory-absence mock only; full3.11/Actions owned by root"
+  },
+  "review_status": "PRESERVATION_PASS_AND_LOCAL_RIG_GUARD_REPAIR_READY",
+  "repair_checkpoint": {
+    "branch": "codex/rig-registry-guard-2026-10-03",
+    "head": "0366a3c3f9b9b3281173af58d250418d3a67f4c0",
+    "parent_merge_base": "bfa3e26a6fad894bfde7d96149f9d05555bac53c",
+    "worktree": "/workspace/rig-registry-guard-review",
+    "changed_files": [
+      "implementation/tests/test_rig_news_ingest.py"
+    ],
+    "production_frozen_source_changed": false,
+    "guard": "Caller derives required registry from exact git HEAD tree membership and pinned Git blob; absent directory rejected in integrated context; isolated HEAD absence preserved; Git failures fail closed",
+    "targeted_exact_head_tests": "20 passed, Python3.11.16 pytest9.1.1",
+    "test_log": "rig_registry_guard_exact_head_pytest311.log",
+    "test_log_sha256": "033fb2c250179ef897c71b5e827c29cc42a4963d2e60fca95af2a591d57b8fd8",
+    "actions_by_this_worker": "NOT_RUN",
+    "BRANCH_STATE": "LOCAL_COMMITTED_SYNTHETIC_VERIFIED",
+    "INTEGRATION_STATE": "ROOT_MERGE_PENDING",
+    "CANONICAL_STATE": "NOT_MERGED",
+    "maturity_before_after": "UNCHANGED; NON_FROZEN integration guard repaired",
+    "USER_DECISION_REQUIRED": false
+  }
+}
