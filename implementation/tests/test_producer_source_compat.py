@@ -1,6 +1,7 @@
 """Approved CDR-004 source acceptance rejects unrelated or partial contract mutation."""
 import importlib.util
 import importlib
+import ast
 import subprocess
 from pathlib import Path
 from types import SimpleNamespace
@@ -98,3 +99,95 @@ def test_partially_present_dependency_cannot_be_treated_as_isolated_absence(tmp_
         monkeypatch.setattr(module.infra_boundary, "load_infra", lambda: None)
         with pytest.raises(AssertionError, match="integrated dependency could not be loaded"):
             getattr(module, fn)(tmp_path)
+
+
+def _shared_paths():
+    """Use both public probes' actual declared protection sets, not a test copy."""
+    shared = set()
+    for name in ("qgv_producer_infra_compat.py", "leaderboard_producer_infra_compat.py"):
+        for node in ast.parse((ROOT / "tools" / name).read_bytes()).body:
+            if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "SHARED" for t in node.targets):
+                shared.update(ast.literal_eval(node.value))
+    return tuple(sorted(shared))
+
+
+SHARED_PATHS = _shared_paths()
+NON_MODELS_SHARED_PATHS = tuple(p for p in SHARED_PATHS if p != compat.MODELS)
+
+
+def _canonical_bytes(rel):
+    return subprocess.check_output(["git", "show", compat.CANONICAL_SOURCE_COMMIT
+                                    + ":implementation/src/" + rel], cwd=ROOT)
+
+
+def _copy_shared(destination, *, adopted):
+    for rel in SHARED_PATHS:
+        path = destination / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes((ROOT / "src" / rel).read_bytes() if adopted else _canonical_bytes(rel))
+
+
+@pytest.mark.parametrize("adopted", [False, True])
+def test_same_tree_accepts_exact_canonical_and_approved_c28_source_states(tmp_path, adopted):
+    _copy_shared(tmp_path, adopted=adopted)
+    result = compat.compare_shared_sources(tmp_path, tmp_path, SHARED_PATHS)
+    assert result["status"] == "PASS"
+    assert result["files"][compat.MODELS]["states"][0]["state"] == ("C28_ADOPTED" if adopted else "PRE_ADOPTION")
+    for rel in NON_MODELS_SHARED_PATHS:
+        detail = result["files"][rel]
+        assert detail["mode"] == "EXACT_CANONICAL_SOURCE_PROTECTION"
+        assert detail["baseline_commit"] == "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+        assert detail["baseline_available"] is True
+        assert detail["own"] == detail["infra"] == detail["baseline_sha256"]
+
+
+@pytest.mark.parametrize("rel", NON_MODELS_SHARED_PATHS)
+def test_same_tree_rejects_mutation_of_each_actual_protected_path(tmp_path, rel):
+    _copy_shared(tmp_path, adopted=True)
+    path = tmp_path / rel
+    path.write_bytes(path.read_bytes() + b"\n# changed protected source, previously compared with itself\n")
+    result = compat.compare_shared_sources(tmp_path, tmp_path, SHARED_PATHS)
+    assert result["status"] == result["files"][rel]["status"] == "FAIL"
+    assert result["files"][rel]["own"] == result["files"][rel]["infra"]
+    assert result["files"][rel]["own"] != result["files"][rel]["baseline_sha256"]
+
+
+def test_same_resolved_tree_alias_cannot_bypass_canonical_protection(tmp_path):
+    own = tmp_path / "src"
+    _copy_shared(own, adopted=True)
+    alias = tmp_path / "alias"
+    alias.symlink_to(own, target_is_directory=True)
+    rel = "investment_system/qgv/scoring.py"
+    (own / rel).write_bytes((own / rel).read_bytes() + b"\n# alias tamper\n")
+    result = compat.compare_shared_sources(own, alias, SHARED_PATHS)
+    assert result["status"] == result["files"][rel]["status"] == "FAIL"
+    assert result["files"][rel]["mode"] == "EXACT_CANONICAL_SOURCE_PROTECTION"
+
+
+@pytest.mark.parametrize("missing", ["object", "path", "git"])
+def test_same_tree_missing_canonical_baseline_fails_closed(tmp_path, monkeypatch, missing):
+    _copy_shared(tmp_path, adopted=True)
+    if missing == "object":
+        monkeypatch.setattr(compat, "CANONICAL_SOURCE_COMMIT", "0" * 40)
+    elif missing == "path":
+        monkeypatch.setattr(compat, "CANONICAL_SOURCE_PREFIX", "not-a-canonical-source-path/")
+    else:
+        def unavailable(*_args, **_kwargs):
+            raise FileNotFoundError("git unavailable")
+        monkeypatch.setattr(compat.subprocess, "run", unavailable)
+    result = compat.compare_shared_sources(tmp_path, tmp_path, SHARED_PATHS)
+    assert result["status"] == "FAIL"
+    assert all(result["files"][rel]["status"] == "FAIL"
+               and result["files"][rel]["baseline_available"] is False for rel in NON_MODELS_SHARED_PATHS)
+    assert result["files"][compat.MODELS]["status"] == "PASS"  # existing models policy remains independent
+
+
+@pytest.mark.parametrize("adopted_first", [False, True])
+def test_external_exact_mixed_model_pair_remains_approved(tmp_path, adopted_first):
+    own, dep = tmp_path / "own", tmp_path / "infra"
+    _copy_shared(own, adopted=adopted_first)
+    _copy_shared(dep, adopted=not adopted_first)
+    result = compat.compare_shared_sources(own, dep, SHARED_PATHS)
+    assert result["status"] == "PASS"
+    assert {state["state"] for state in result["files"][compat.MODELS]["states"]} == {"PRE_ADOPTION", "C28_ADOPTED"}
+    assert all(result["files"][rel]["mode"] == "BYTE_IDENTICAL" for rel in NON_MODELS_SHARED_PATHS)
