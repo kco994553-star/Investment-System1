@@ -187,3 +187,116 @@ Effect on the Primary Integration Writer's write set (until Codex DONE/HANDOFF_R
 - Allowed: reading these files; temporary (uncommitted / never-pushed) merges in integration trials for verification.
 - Not allowed: committing a modification, repin or conflict resolution touching them. A conflict found in an integration trial is recorded as integration evidence, not resolved.
 - State at recording: no Codex commit on `ccr-22e3ff16-p7n5k5` (tip `b9e01a9`) and no Codex Track C branch at the 07:03Z fetch. None of the Primary Integration Writer's in-flight tasks write these paths.
+
+## CDR-010 · Track C G-SUP M-B v2 authoritative arithmetic contract
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** (method arithmetic convention for the CDR-006 v2 only) |
+| Decided at | 2026-10-03 (user message in session `session_019znshzTYgyBnuuBmSxdPFN`, after GCH-007 / `50b2a13`) |
+| Resolves | USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION raised by Codex in PR #31 and independently reproduced in GIE-008 §2 |
+| Implementer | Codex, in PR #31 (CDR-008 unchanged) |
+
+User wording (verbatim):
+
+> Track C G-SUP M-B v2 arithmetic convention에 대한 사용자 결정을 기록한다.
+>
+> 승인된 authoritative arithmetic contract:
+>
+> Arithmetic = math.fsum
+> Replicate aggregation = block grouping
+> Block sums = direct summation
+> Replicate mean = (Σ full block sums + partial) / n
+> Degeneracy predicate = 기존 승인된 run() 의미와 동일하게
+> sqrt(v/n) > 0 이 false이면 degenerate
+>
+> 즉 다음 세 축을 함께 승인한다.
+>
+> 1. reducer = math.fsum
+> 2. replicate grouping = block grouping
+> 3. block-sum construction = direct block sums
+>
+> 기존 G-SUP v1과 historical evidence/result는 보존한다.
+> v2는 additive version이며 v1 결과를 소급 변경하지 않는다.
+
+Scope of this decision, as recorded by the routing writer:
+
+- It fixes the four arithmetic fields that GIE-008 §2 said must be pinned together: reducer, replicate grouping, block-sum construction and degeneracy predicate.
+- It does not change any other CDR-006 field (statistic, replicate construction, variance convention, tie handling) or CDR-007.
+- In GIE-008 §2 terms this is the "fsum / blocks" column. On the five recorded fixtures that column gives CE4 .10, FLIP .10, LEFT_SUM .35, TIE .45, seed 275 .55. These are evidence values to be re-checked against Codex's v2, not acceptance thresholds set by this register.
+
+Not approved by this decision, per the user's same message (verbatim list):
+
+> - numeric calibration configuration
+> - α / B / L / seed
+> - effect floor
+> - minimum support
+> - size tolerance
+> - dependence envelope / margin
+> - 실제 CAL_VERIFY 접근
+> - Holdout
+> - C8 Freeze
+> - publication grant
+> - Official / LIVE
+> - canonical merge
+> - validator hardening이 요구하는 #17 protected digest repin
+
+The user also stated that this decision is not to be read as C8 FROZEN, CAL_VERIFY approval, numeric configuration approval, Holdout approval, Official or publication.
+
+## CDR-011 · CDR-009 exclusion renewed until PR #31's next HANDOFF_READY; re-verification and next-trial rules
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** (routing / write-set rule and verification scope) |
+| Decided at | 2026-10-03, same user message as CDR-010 |
+| Lifts when | PR #31 reaches a new HANDOFF_READY checkpoint after implementing CDR-010 |
+
+User wording (verbatim, excerpts):
+
+> Codex가 PR #31에서 authoritative M-B v2를 구현한다.
+>
+> Claude Main은 해당 Track C C8 active-write 경로를 수정하지 않는다.
+>
+> CDR-009 active-write exclusion을 유지한다.
+>
+> PR #31이 새 HANDOFF_READY checkpoint에 도달할 때까지:
+>
+> - G-SUP v2 source 수정 금지
+> - source identity 수정 금지
+> - 관련 C8 oracle/test 수정 금지
+>
+> read-only tracking만 수행한다.
+>
+> Codex 구현을 중복하지 않는다.
+
+> PR #31이 새로운 HANDOFF_READY에 도달하면 fresh fetch 후
+> 기존 13-point verification을 이어서 수행한다.
+>
+> 특히 이전에 DEFERRED였던:
+>
+> item 5
+> item 6b
+>
+> 를 반드시 다시 검증한다.
+
+> Codex의 PASS 주장을 그대로 복사하지 않는다.
+
+> Codex #31의 v2 구현과 독립 검증이 완료되면:
+>
+> 현재 검증된 integration trial
+> +
+> PR #31
+> +
+> PR #35
+>
+> 를 기준으로 새로운 combined trial을 만든다.
+>
+> fresh HEAD를 사용한다.
+>
+> 기존 #38 결과를 최신 trial 결과처럼 재사용하지 않는다.
+
+> canonical merge는 하지 않는다.
+
+Additional verification scope named by the user for the new checkpoint: exact HEAD, approved arithmetic contract, v1 preservation, M-B v2 implementation, independent oracle, CE4, FLIP, LEFT_SUM, TIE, seed 275, exact decimal comparison, degeneracy handling, targeted regression, full regression, Actions, source identity preservation. Next combined trial checks named by the user: merge conflicts, full regression, browser/E2E, producer contracts, engine fingerprints, protected paths, Track C preservation, source/provenance, no publication/Official/LIVE escalation.
+
+Effect: CDR-009's write exclusion, which had reached its end condition at `29c2c20`, applies again to the same paths until PR #31's next HANDOFF_READY. Read-only tracking and temporary, never-pushed trial merges stay allowed.

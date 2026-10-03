@@ -100,3 +100,11 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - Trial PR #38 `integration/next-trial-2026-10-03` @ `7e3861b` published by the Primary Integration Writer (#30 + #32 + #33 + #34 + #36; tree equals local trial3). 9/9 pull-request CI ✓. `codex-integration-readiness` dispatched manually as run 37123374305 because its path filter does not match.
 - PR #37 (Dynamic Workflow M0, repository owner account) unchanged and read-only.
 - No `codex/*` branch written. Canonical `b8e39a2` unchanged. No canonical merge, grant, CAL_VERIFY or Holdout access. Maturity transitions: none.
+
+## GCH-008 · 2026-10-03 · CDR-010 (M-B v2 arithmetic contract) and CDR-011 (exclusion renewed) recorded
+
+- User decision recorded verbatim in `COORDINATION_DECISION_REGISTER.md`. CDR-010: `math.fsum` reducer, block grouping, direct block sums, replicate mean `(Σ full block sums + partial)/n`, degenerate when `sqrt(v/n) > 0` is false. v1 and historical results preserved; v2 additive.
+- CDR-011: the CDR-009 write exclusion applies again until PR #31's next HANDOFF_READY. Read-only tracking; no duplication of the Codex implementation. Re-verification scope and next combined-trial rules recorded.
+- Not approved and not implied: numeric configuration (α, B, L, seed, effect floor, minimum support, size tolerance, dependence envelope/margin), real CAL_VERIFY access, Holdout, C8 Freeze, publication grant, Official/LIVE, canonical merge, the #17 protected-digest repin.
+- The Track C scoped Decision Register is Codex-owned and inside the exclusion; it is not written here. No PR comment was posted to #31.
+- Canonical `b8e39a2` unchanged. Maturity transitions: none.
