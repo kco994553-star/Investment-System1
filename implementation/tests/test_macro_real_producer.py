@@ -1,11 +1,13 @@
 """Macro real producer: PIT boundary, unchanged v0.1.1 engine, fail-closed Web export."""
 
+import dataclasses
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
 
 import pytest
 
+from investment_system.contracts.models import MacroSnapshot, TechnicalSnapshot
 from investment_system.macro.engine import MacroEngine
 from investment_system.macro.real_producer import (
     PUBLICATION,
@@ -25,6 +27,7 @@ from investment_system.producers.contract import validate_snapshot
 from investment_system.producers.errors import IncompatibleShapeError
 from investment_system.producers.registry import ProduceRequest, default_registry
 from investment_system.producers.serialization import canonical_sha256
+from investment_system.technical.engine import TechnicalEngine
 from investment_system.versions import MACRO_CANDIDATE, MACRO_CONFIRMED
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,10 +36,53 @@ GENERATED = datetime(2024, 12, 31, 12, tzinfo=timezone.utc)
 LATER = datetime(2025, 3, 15, tzinfo=timezone.utc)
 LATER_GENERATED = datetime(2025, 3, 15, 12, tzinfo=timezone.utc)
 
+# ---- Pin history (history-preserving; each state is exact, nothing is "either value accepted") ----
+# Pre-adoption pins, recorded 2026-10-01 with PR #12 (code commit 38e3dff): canonical
+# b8e39a2196a6d7794a04a0cd5393c68329e126ca bytes of macro/engine.py and technical/engine.py.
+MACRO_ENGINE_SHA256_PRE_ADOPTION = "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b"
+TECHNICAL_ENGINE_SHA256_PRE_ADOPTION = "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf"
+# Adopted pins: C-28 upstream adoption of Track C 2137883 per user CDR-004 2026-10-03.
+# 2137883 appends four optional lineage fields to MacroSnapshot/TechnicalSnapshot and adds
+# evaluate_stamped() to both engines; the legacy evaluate() bodies are byte-identical, so the
+# research MacroSnapshot of this producer keeps every existing field value and gains only
+# available_at=None, data_stamp_refs=(), source_vintages=(), input_hash=None.
+# Independent before/after comparison (PASS, recorded before this edit):
+# docs/macro_real_producer/evidence/c28_adoption_invariance_2026-10-03.json
+# Macro owner adoption record: docs/macro_real_producer/LINEAGE_SCHEMA_OWNER_ADOPTION_2026-10-03.md
+MACRO_ENGINE_SHA256_C28_ADOPTED = "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10"
+TECHNICAL_ENGINE_SHA256_C28_ADOPTED = "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c"
+LINEAGE_FIELDS = frozenset({"available_at", "data_stamp_refs", "source_vintages", "input_hash"})
+
+
+def _c28_adoption_state() -> bool | None:
+    """Detect the adopted state from the adopted feature itself, never from bytes.
+
+    True: Track C 2137883 present on both engines and both snapshots. False: pre-adoption tree.
+    None: partially adopted tree; it selects a digest no file has, so the byte check fails.
+    """
+    signals = (
+        hasattr(MacroEngine, "evaluate_stamped"),
+        hasattr(TechnicalEngine, "evaluate_stamped"),
+        LINEAGE_FIELDS <= {f.name for f in dataclasses.fields(MacroSnapshot)},
+        LINEAGE_FIELDS <= {f.name for f in dataclasses.fields(TechnicalSnapshot)},
+    )
+    if all(signals):
+        return True
+    if not any(signals):
+        return False
+    return None
+
+
+C28_ADOPTED = _c28_adoption_state()
+_INCONSISTENT = "C28_ADOPTION_STATE_INCONSISTENT"
 _ENGINE_HASHES = {
-    "src/investment_system/macro/engine.py": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+    "src/investment_system/macro/engine.py": {
+        True: MACRO_ENGINE_SHA256_C28_ADOPTED, False: MACRO_ENGINE_SHA256_PRE_ADOPTION
+    }.get(C28_ADOPTED, _INCONSISTENT),
     "src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
-    "src/investment_system/technical/engine.py": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+    "src/investment_system/technical/engine.py": {
+        True: TECHNICAL_ENGINE_SHA256_C28_ADOPTED, False: TECHNICAL_ENGINE_SHA256_PRE_ADOPTION
+    }.get(C28_ADOPTED, _INCONSISTENT),
     "src/investment_system/qgv/portfolio.py": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
     "src/investment_system/qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
 }

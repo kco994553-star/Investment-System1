@@ -1,0 +1,2625 @@
+{
+ "record": "MACRO_REAL_PRODUCER_C28_ADOPTION_INVARIANCE_2026-10-03 (PR #12)",
+ "purpose": "Independent before/after invariance comparison for the Macro owner adoption of Track C 2137883's additive lineage/schema change (user CDR-004 2026-10-03). Recorded on throwaway trees BEFORE any pin was edited. Not an approval record.",
+ "authority": "User CDR-004 2026-10-03 (quoted in docs/macro_real_producer/LINEAGE_SCHEMA_OWNER_ADOPTION_2026-10-03.md)",
+ "prepared_by": "Primary Integration Writer, Claude Code session session_019znshzTYgyBnuuBmSxdPFN, on proposal branch integration/a1-adoption/pr12-macro-producer",
+ "trees": {
+  "before": {
+   "head": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+   "description": "PR #12 tip feature/macro-real-producer-v1 @ 61d3352 as-is (code commit 38e3dff; PR base feature/producer-infrastructure-v1 @ 6fe9eee)"
+  },
+  "after": {
+   "head": "84cd6b502d0e38cb43057552eb893d78b80bc368",
+   "description": "throwaway: git worktree add --detach at 61d3352, then git merge --no-ff b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565 (Track C owner tip origin/ccr-22e3ff16-p7n5k5); 0 conflicts; PR #12's own files byte-identical to BEFORE"
+  },
+  "track_c_owner_tip": "origin/ccr-22e3ff16-p7n5k5 @ b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565 (after git fetch origin on 2026-10-03)",
+  "track_c_commit_under_adoption": "21378835883c5a9740143899c70d75d6405aa55a",
+  "track_c_tip_blobs_equal_2137883_by_git_ls_tree": {
+   "contracts/lineage.py": "288cabadcd0fe975fb9e2605f1f39b767ccc462b",
+   "contracts/models.py": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+   "technical/engine.py": "5365653fda6374aeace986c63cce9939921ebb64",
+   "macro/engine.py": "08d79c20147d2a13413e98269042e6cf7d3973a8"
+  },
+  "canonical": "claude/investment-system-top500-validation-alrugm @ b8e39a2196a6d7794a04a0cd5393c68329e126ca (not moved; its technical/engine.py, macro/engine.py, contracts/models.py blobs equal PR #12 tip's)"
+ },
+ "commands": [
+  "git -C /home/user/Investment-System1 fetch origin",
+  "git ls-tree <ref> implementation/src/investment_system/{contracts/lineage.py,contracts/models.py,technical/engine.py,macro/engine.py}  (Track C tip vs 2137883: EQUAL x4)",
+  "git show <ref>:<path> | sha256sum  (Track C tip: technical/engine.py 86607bf7..., macro/engine.py a0a7c983..., contracts/models.py fa386626..., contracts/lineage.py ddfac6ef...; canonical and PR #12 tip: f7268f52..., c593a2ef..., 5313bbd4...)",
+  "git worktree add --detach <before> 61d3352; git worktree add --detach <after> 61d3352 && git -C <after> merge --no-ff b9e01a9  (0 conflicts)",
+  "cd <tree>/implementation && PYTHONPATH=src python3 gate_dump.py <tree>/implementation <out.json>  (imports the PR's own tests/test_macro_real_producer.py fixtures; runs macro.real_producer.produce for the PR's fixture cases, MacroSnapshot.to_dict, PRODUCER_SNAPSHOT v1, canonical_sha256, provenance, macro_section, company_industry_exposure PolicyBlocked path and the other fail-closed paths, default_registry + assemble_bundle + bundle_sha256, direct MacroEngine.evaluate dicts, reproduction of evidence/validation.json 'sample', and tools/producer_engine_fingerprint.py both as a subprocess and via its exact norm()/h() code to dump the normalized dicts)",
+  "python3 compare.py before.json after.json  (recursive field-by-field diff; classifies added keys with legacy values vs any other difference)",
+  "cd <before>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf tests/test_macro_real_producer.py  (11 passed)",
+  "cd <after>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf tests/test_macro_real_producer.py  (unmodified test: 1 failed [bytes pin test, as expected pre-repin], 10 passed)",
+  "cd <before>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf  (pre-change full-suite baseline: 442 passed in 22.52s)"
+ ],
+ "artifacts_compared": [
+  "research MacroSnapshot.to_dict() from macro/real_producer.produce for: decision 2024-12-31 default vintages; decision 2024-12-31 with revised history present; decision 2025-03-15 (sees revision); replay of 2024-12-31",
+  "macro_snapshot_id per case",
+  "PRODUCER_SNAPSHOT v1 (producer_snapshot) per case and its canonical_sha256 (semantic hash)",
+  "provenance rows per case; publication and publication_reasons",
+  "adapters.macro_section(snapshot) IncompatibleShapeError path",
+  "company_industry_exposure('nvda') PolicyBlocked path (exception class, code, message)",
+  "fail-closed paths: future release, missing pillar, synthetic live, revised history, bad sha256",
+  "default_registry().run reason codes; assemble_bundle with this PR's macro snapshot: bundle_sha256, macro section, per-section reason codes",
+  "direct MacroEngine.evaluate dicts (neutral/shock/stag/expansion; uuid id dropped)",
+  "evidence/validation.json 'sample' reproduced and compared to the committed values",
+  "tools/producer_engine_fingerprint.py: exact stdout (5 sections) and the tool's own norm() dicts for its 4 macro and 19 technical outputs",
+  "sha256 of the five _ENGINE_HASHES files plus contracts/models.py, macro/real_producer.py, tools/producer_engine_fingerprint.py"
+ ],
+ "per_artifact_sha256_before": {
+  "src/investment_system/contracts/models.py": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+  "src/investment_system/macro/engine.py": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+  "src/investment_system/macro/real_producer.py": "9a4bc5c152cbe3914042ecb46f18bb9b3414623d42446b1a82ef31a5536cdc0c",
+  "src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+  "src/investment_system/qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+  "src/investment_system/qgv/portfolio.py": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+  "src/investment_system/technical/engine.py": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+  "tools/producer_engine_fingerprint.py": "f4b8bca1e1b08249e56660963ce499401dcb379b2602080b2bd65fee277c6931",
+  "tools/producer_engine_fingerprint.py::leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+  "tools/producer_engine_fingerprint.py::macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+  "tools/producer_engine_fingerprint.py::portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+  "tools/producer_engine_fingerprint.py::qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+  "tools/producer_engine_fingerprint.py::technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+  "produce[decision_2024_12_31_default].macro_snapshot_id": "mac_560ba7bdee89",
+  "produce[decision_2024_12_31_default].research_MacroSnapshot.to_dict().sha256(json sort_keys)": "f11d7e8cb6016d6e639d9c3919a938d72c4a2cc37ad0430a5e2af132b17aaaaf",
+  "produce[decision_2024_12_31_default].research_MacroSnapshot.canonical_sha256": "4d7c320c7cc11b00ff435509b21fad5ebed1e361943bc6d351fe3827ac94a435",
+  "produce[decision_2024_12_31_default].PRODUCER_SNAPSHOT_v1.canonical_sha256": "684438cdf1a199e6fc3861cffa1d2ebd2cad6a4aa17c91e5a95a0195a37b1c1d",
+  "produce[decision_2024_12_31_with_revised_history].macro_snapshot_id": "mac_560ba7bdee89",
+  "produce[decision_2024_12_31_with_revised_history].research_MacroSnapshot.to_dict().sha256(json sort_keys)": "f11d7e8cb6016d6e639d9c3919a938d72c4a2cc37ad0430a5e2af132b17aaaaf",
+  "produce[decision_2024_12_31_with_revised_history].research_MacroSnapshot.canonical_sha256": "4d7c320c7cc11b00ff435509b21fad5ebed1e361943bc6d351fe3827ac94a435",
+  "produce[decision_2024_12_31_with_revised_history].PRODUCER_SNAPSHOT_v1.canonical_sha256": "684438cdf1a199e6fc3861cffa1d2ebd2cad6a4aa17c91e5a95a0195a37b1c1d",
+  "produce[decision_2025_03_15_sees_revision].macro_snapshot_id": "mac_35acb549cbc8",
+  "produce[decision_2025_03_15_sees_revision].research_MacroSnapshot.to_dict().sha256(json sort_keys)": "5b19bd906a440e3e65ec364f7ce720075e1636224190dbe8197736f1a83cbfe5",
+  "produce[decision_2025_03_15_sees_revision].research_MacroSnapshot.canonical_sha256": "8cf590f32f499eb493494199e97bd40d7f5257a414b97bd8bbb9341b2363dbb0",
+  "produce[decision_2025_03_15_sees_revision].PRODUCER_SNAPSHOT_v1.canonical_sha256": "70166238af9543be1b4531067464c0c859d5fd426a648f52c9a4749ddb41e9ae",
+  "produce[replay_decision_2024_12_31_with_revised_history].macro_snapshot_id": "mac_560ba7bdee89",
+  "produce[replay_decision_2024_12_31_with_revised_history].research_MacroSnapshot.to_dict().sha256(json sort_keys)": "f11d7e8cb6016d6e639d9c3919a938d72c4a2cc37ad0430a5e2af132b17aaaaf",
+  "produce[replay_decision_2024_12_31_with_revised_history].research_MacroSnapshot.canonical_sha256": "4d7c320c7cc11b00ff435509b21fad5ebed1e361943bc6d351fe3827ac94a435",
+  "produce[replay_decision_2024_12_31_with_revised_history].PRODUCER_SNAPSHOT_v1.canonical_sha256": "684438cdf1a199e6fc3861cffa1d2ebd2cad6a4aa17c91e5a95a0195a37b1c1d",
+  "assemble_bundle.bundle_sha256": "c1a8eb0bec09cea27527fd19fe1834f7cfe3f4d38c1969094557bc5c59441822",
+  "evidence_sample_matches_committed": true
+ },
+ "per_artifact_sha256_after": {
+  "src/investment_system/contracts/models.py": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+  "src/investment_system/macro/engine.py": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+  "src/investment_system/macro/real_producer.py": "9a4bc5c152cbe3914042ecb46f18bb9b3414623d42446b1a82ef31a5536cdc0c",
+  "src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+  "src/investment_system/qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+  "src/investment_system/qgv/portfolio.py": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+  "src/investment_system/technical/engine.py": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+  "tools/producer_engine_fingerprint.py": "f4b8bca1e1b08249e56660963ce499401dcb379b2602080b2bd65fee277c6931",
+  "tools/producer_engine_fingerprint.py::leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+  "tools/producer_engine_fingerprint.py::macro": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501",
+  "tools/producer_engine_fingerprint.py::portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+  "tools/producer_engine_fingerprint.py::qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+  "tools/producer_engine_fingerprint.py::technical": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655",
+  "produce[decision_2024_12_31_default].macro_snapshot_id": "mac_560ba7bdee89",
+  "produce[decision_2024_12_31_default].research_MacroSnapshot.to_dict().sha256(json sort_keys)": "e71e06f5d4865ddde8f0e56b0c30ab6be3b118b9ab96c94deb903e83ce4e2d0e",
+  "produce[decision_2024_12_31_default].research_MacroSnapshot.canonical_sha256": "7c2c99619145e95c6080f9e08ffc89bfb1750ad15c52b9a0f4a121ff3914ff8c",
+  "produce[decision_2024_12_31_default].PRODUCER_SNAPSHOT_v1.canonical_sha256": "684438cdf1a199e6fc3861cffa1d2ebd2cad6a4aa17c91e5a95a0195a37b1c1d",
+  "produce[decision_2024_12_31_with_revised_history].macro_snapshot_id": "mac_560ba7bdee89",
+  "produce[decision_2024_12_31_with_revised_history].research_MacroSnapshot.to_dict().sha256(json sort_keys)": "e71e06f5d4865ddde8f0e56b0c30ab6be3b118b9ab96c94deb903e83ce4e2d0e",
+  "produce[decision_2024_12_31_with_revised_history].research_MacroSnapshot.canonical_sha256": "7c2c99619145e95c6080f9e08ffc89bfb1750ad15c52b9a0f4a121ff3914ff8c",
+  "produce[decision_2024_12_31_with_revised_history].PRODUCER_SNAPSHOT_v1.canonical_sha256": "684438cdf1a199e6fc3861cffa1d2ebd2cad6a4aa17c91e5a95a0195a37b1c1d",
+  "produce[decision_2025_03_15_sees_revision].macro_snapshot_id": "mac_35acb549cbc8",
+  "produce[decision_2025_03_15_sees_revision].research_MacroSnapshot.to_dict().sha256(json sort_keys)": "00bf69ca8477ad75d44414361d807425140f981979fa1d718eda62c7ee65bf0f",
+  "produce[decision_2025_03_15_sees_revision].research_MacroSnapshot.canonical_sha256": "3e5696a53ef40d73b75dc8ba862ac11ac8f37fff9dc7185681c3f9a784c6c3b0",
+  "produce[decision_2025_03_15_sees_revision].PRODUCER_SNAPSHOT_v1.canonical_sha256": "70166238af9543be1b4531067464c0c859d5fd426a648f52c9a4749ddb41e9ae",
+  "produce[replay_decision_2024_12_31_with_revised_history].macro_snapshot_id": "mac_560ba7bdee89",
+  "produce[replay_decision_2024_12_31_with_revised_history].research_MacroSnapshot.to_dict().sha256(json sort_keys)": "e71e06f5d4865ddde8f0e56b0c30ab6be3b118b9ab96c94deb903e83ce4e2d0e",
+  "produce[replay_decision_2024_12_31_with_revised_history].research_MacroSnapshot.canonical_sha256": "7c2c99619145e95c6080f9e08ffc89bfb1750ad15c52b9a0f4a121ff3914ff8c",
+  "produce[replay_decision_2024_12_31_with_revised_history].PRODUCER_SNAPSHOT_v1.canonical_sha256": "684438cdf1a199e6fc3861cffa1d2ebd2cad6a4aa17c91e5a95a0195a37b1c1d",
+  "assemble_bundle.bundle_sha256": "c1a8eb0bec09cea27527fd19fe1834f7cfe3f4d38c1969094557bc5c59441822",
+  "evidence_sample_matches_committed": true
+ },
+ "field_level_diff": {
+  "added_keys_with_legacy_values_total": 140,
+  "added_keys_by_name": {
+   "available_at": 35,
+   "data_stamp_refs": 35,
+   "input_hash": 35,
+   "source_vintages": 35
+  },
+  "added_keys_by_artifact": {
+   "engine_direct_minus_id": 16,
+   "fingerprint_macro_norm_dicts[0]": 4,
+   "fingerprint_macro_norm_dicts[1]": 4,
+   "fingerprint_macro_norm_dicts[2]": 4,
+   "fingerprint_macro_norm_dicts[3]": 4,
+   "fingerprint_technical_norm_dicts[0]": 4,
+   "fingerprint_technical_norm_dicts[1]": 4,
+   "fingerprint_technical_norm_dicts[2]": 4,
+   "fingerprint_technical_norm_dicts[3]": 4,
+   "fingerprint_technical_norm_dicts[4]": 4,
+   "fingerprint_technical_norm_dicts[5]": 4,
+   "fingerprint_technical_norm_dicts[6]": 4,
+   "fingerprint_technical_norm_dicts[7]": 4,
+   "fingerprint_technical_norm_dicts[8]": 4,
+   "fingerprint_technical_norm_dicts[9]": 4,
+   "fingerprint_technical_norm_dicts[10]": 4,
+   "fingerprint_technical_norm_dicts[11]": 4,
+   "fingerprint_technical_norm_dicts[12]": 4,
+   "fingerprint_technical_norm_dicts[13]": 4,
+   "fingerprint_technical_norm_dicts[14]": 4,
+   "fingerprint_technical_norm_dicts[15]": 4,
+   "fingerprint_technical_norm_dicts[16]": 4,
+   "fingerprint_technical_norm_dicts[17]": 4,
+   "fingerprint_technical_norm_dicts[18]": 4,
+   "produce": 32
+  },
+  "added_key_values": {
+   "available_at": null,
+   "data_stamp_refs": [],
+   "source_vintages": [],
+   "input_hash": null
+  },
+  "serialized_snapshots_affected": 35,
+  "derived_differences_hash_or_identity_only": [
+   [
+    "VALUE",
+    "/adopted_state/MacroEngine.evaluate_stamped",
+    [
+     false,
+     true
+    ]
+   ],
+   [
+    "LIST_LEN",
+    "/adopted_state/MacroSnapshot_fields",
+    [
+     9,
+     13
+    ]
+   ],
+   [
+    "LIST_LEN",
+    "/adopted_state/TechnicalSnapshot_fields",
+    [
+     13,
+     17
+    ]
+   ],
+   [
+    "VALUE",
+    "/fingerprint_macro_h",
+    [
+     "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+     "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501"
+    ]
+   ],
+   [
+    "VALUE",
+    "/fingerprint_technical_h",
+    [
+     "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+     "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+    ]
+   ],
+   [
+    "VALUE",
+    "/fingerprint_tool_stdout/macro",
+    [
+     "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+     "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501"
+    ]
+   ],
+   [
+    "VALUE",
+    "/fingerprint_tool_stdout/technical",
+    [
+     "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
+     "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+    ]
+   ],
+   [
+    "VALUE",
+    "/git_head",
+    [
+     "61d3352d5d68c7830e924f17613598ca79fcec6f",
+     "84cd6b502d0e38cb43057552eb893d78b80bc368"
+    ]
+   ],
+   [
+    "VALUE",
+    "/produce/decision_2024_12_31_default/research_snapshot_canonical_sha256",
+    [
+     "4d7c320c7cc11b00ff435509b21fad5ebed1e361943bc6d351fe3827ac94a435",
+     "7c2c99619145e95c6080f9e08ffc89bfb1750ad15c52b9a0f4a121ff3914ff8c"
+    ]
+   ],
+   [
+    "VALUE",
+    "/produce/decision_2024_12_31_default/research_snapshot_to_dict_sha256",
+    [
+     "f11d7e8cb6016d6e639d9c3919a938d72c4a2cc37ad0430a5e2af132b17aaaaf",
+     "e71e06f5d4865ddde8f0e56b0c30ab6be3b118b9ab96c94deb903e83ce4e2d0e"
+    ]
+   ],
+   [
+    "VALUE",
+    "/produce/decision_2024_12_31_with_revised_history/research_snapshot_canonical_sha256",
+    [
+     "4d7c320c7cc11b00ff435509b21fad5ebed1e361943bc6d351fe3827ac94a435",
+     "7c2c99619145e95c6080f9e08ffc89bfb1750ad15c52b9a0f4a121ff3914ff8c"
+    ]
+   ],
+   [
+    "VALUE",
+    "/produce/decision_2024_12_31_with_revised_history/research_snapshot_to_dict_sha256",
+    [
+     "f11d7e8cb6016d6e639d9c3919a938d72c4a2cc37ad0430a5e2af132b17aaaaf",
+     "e71e06f5d4865ddde8f0e56b0c30ab6be3b118b9ab96c94deb903e83ce4e2d0e"
+    ]
+   ],
+   [
+    "VALUE",
+    "/produce/decision_2025_03_15_sees_revision/research_snapshot_canonical_sha256",
+    [
+     "8cf590f32f499eb493494199e97bd40d7f5257a414b97bd8bbb9341b2363dbb0",
+     "3e5696a53ef40d73b75dc8ba862ac11ac8f37fff9dc7185681c3f9a784c6c3b0"
+    ]
+   ],
+   [
+    "VALUE",
+    "/produce/decision_2025_03_15_sees_revision/research_snapshot_to_dict_sha256",
+    [
+     "5b19bd906a440e3e65ec364f7ce720075e1636224190dbe8197736f1a83cbfe5",
+     "00bf69ca8477ad75d44414361d807425140f981979fa1d718eda62c7ee65bf0f"
+    ]
+   ],
+   [
+    "VALUE",
+    "/produce/replay_decision_2024_12_31_with_revised_history/research_snapshot_canonical_sha256",
+    [
+     "4d7c320c7cc11b00ff435509b21fad5ebed1e361943bc6d351fe3827ac94a435",
+     "7c2c99619145e95c6080f9e08ffc89bfb1750ad15c52b9a0f4a121ff3914ff8c"
+    ]
+   ],
+   [
+    "VALUE",
+    "/produce/replay_decision_2024_12_31_with_revised_history/research_snapshot_to_dict_sha256",
+    [
+     "f11d7e8cb6016d6e639d9c3919a938d72c4a2cc37ad0430a5e2af132b17aaaaf",
+     "e71e06f5d4865ddde8f0e56b0c30ab6be3b118b9ab96c94deb903e83ce4e2d0e"
+    ]
+   ],
+   [
+    "VALUE",
+    "/source_sha256/src/investment_system/contracts/models.py",
+    [
+     "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+     "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92"
+    ]
+   ],
+   [
+    "VALUE",
+    "/source_sha256/src/investment_system/macro/engine.py",
+    [
+     "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+     "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10"
+    ]
+   ],
+   [
+    "VALUE",
+    "/source_sha256/src/investment_system/technical/engine.py",
+    [
+     "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+     "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c"
+    ]
+   ],
+   [
+    "VALUE",
+    "/tree",
+    [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf3/macro/pr12-before",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf3/macro/pr12-after"
+    ]
+   ]
+  ],
+  "derived_differences_explanation": "Every entry is either a tree identifier (tree path, git head), the adopted source digests (macro/engine.py, technical/engine.py, contracts/models.py), the adopted-state detector outputs (evaluate_stamped present; snapshot field lists longer by 4), or a digest whose input includes the four added keys (research MacroSnapshot to_dict/canonical sha256 per case; fingerprint tool macro/technical sections). None is a pre-existing field value or computed result.",
+  "unexpected_differences": [],
+  "pre_existing_field_values_identical": true,
+  "computed_results_identical": true
+ },
+ "verdict": "PASS",
+ "verdict_basis": "Every pre-existing field value and every computed result (state, regime, indicators, environment incl. pit/provenance, macro_snapshot_id, PRODUCER_SNAPSHOT v1 and its canonical hash, bundle_sha256, registry/bundle reason codes, PolicyBlocked and other fail-closed paths, evidence sample) is identical before and after. The ONLY differences are the four added keys available_at=null, data_stamp_refs=[], source_vintages=[], input_hash=null wherever a MacroSnapshot/TechnicalSnapshot is serialized, plus digests derived from them.",
+ "committed_hash_recheck": {
+  "evidence/validation.json sample": {
+   "before_matches": true,
+   "after_matches": true
+  },
+  "evidence/validation.json + STATUS.md fingerprint": {
+   "committed_2026_10_01": {
+    "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+    "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+    "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+    "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+    "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+   },
+   "before_tool_output_matches": {
+    "leaderboard": true,
+    "macro": true,
+    "portfolio_official_book": true,
+    "qgv": true,
+    "technical": true
+   },
+   "after_tool_output_matches": {
+    "leaderboard": true,
+    "macro": false,
+    "portfolio_official_book": true,
+    "qgv": true,
+    "technical": false
+   },
+   "after_values": {
+    "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+    "macro": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501",
+    "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+    "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+    "technical": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+   },
+   "disposition": "macro and technical sections change post-adoption because the tool hashes asdict() of the snapshots. NOT overwritten: additive record evidence/validation_post_adoption_2026-10-03.json and the STATUS additive note carry the post-adoption values with the reason."
+  },
+  "no_other_committed_hash_covers_MacroSnapshot_serialization": "macro_snapshot_id is the canonical hash of an identity dict (as_of, indicators, state, regime, macro_version, artifacts), not of the snapshot; PRODUCER_SNAPSHOT v1 is not_available(...) without the snapshot; bundle_sha256 unchanged. grep of the PR #12 docs for the research-snapshot digests (4d7c320c, f11d7e8c, 8cf590f3, 5b19bd90) found none committed.",
+  "outside_scope_observation": "docs/producer_infrastructure/evidence/validation.json (PR #9) carries the same pre-adoption macro/technical fingerprint values; not touched here (PR #9 owner's item)."
+ },
+ "pins": {
+  "file": "implementation/tests/test_macro_real_producer.py (_ENGINE_HASHES)",
+  "pre_adoption": {
+   "src/investment_system/macro/engine.py": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+   "src/investment_system/technical/engine.py": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf"
+  },
+  "adopted": {
+   "src/investment_system/macro/engine.py": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+   "src/investment_system/technical/engine.py": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c"
+  },
+  "unchanged": {
+   "src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+   "src/investment_system/qgv/portfolio.py": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+   "src/investment_system/qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248"
+  },
+  "selection": "state-exact from the adopted feature itself: hasattr(MacroEngine,'evaluate_stamped'), hasattr(TechnicalEngine,'evaluate_stamped'), and the four field names on MacroSnapshot and TechnicalSnapshot; all -> adopted pins, none -> pre-adoption pins, mixed -> sentinel C28_ADOPTION_STATE_INCONSISTENT (fails). Nothing loosened; no key stripped from any fingerprint.",
+  "reason": "C-28 upstream adoption of Track C 2137883 per user CDR-004 2026-10-03",
+  "order_of_operations": "comparison recorded first (this file); pins edited afterwards"
+ },
+ "tests": {
+  "runner": "pytest 9.1.1, Python 3.11.15, PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf",
+  "before_tree_pr_test_file": "11 passed in 0.23s",
+  "before_tree_full_suite_pre_change_baseline": "442 passed in 22.52s",
+  "after_tree_unmodified_pr_test_file": "1 failed (test_existing_engine_qgv_technical_portfolio_leaderboard_bytes_unchanged: macro/engine.py a0a7c983... != c593a2ef...), 10 passed in 0.24s  (expected before the repin)",
+  "proposal_branch_alone_pr_test_file": "11 passed in 0.24s",
+  "proposal_branch_alone_full_suite": "442 passed in 22.05s (equals the pre-change baseline 442)",
+  "merged_tree_pr_test_file": "AFTER tree 84cd6b5 (61d3352 + b9e01a9) with the proposal's test file applied (sha256 of file starts 9b84fd0494b746f1): 11 passed in 0.21s; C28_ADOPTED=True; selected pins a0a7c983..., 86607bf7...",
+  "negative_partial_adoption": "scratch copy of AFTER src with MacroEngine.evaluate_stamped removed: bytes test FAILS (expected sentinel C28_ADOPTION_STATE_INCONSISTENT)",
+  "negative_third_content": "scratch copy of AFTER src with a comment appended to macro/engine.py: bytes test FAILS (91d19395... != a0a7c983...)",
+  "github_actions": "NOT_RUN",
+  "network": "no live FRED/SEC/Yahoo request is made by this gate; the pre-existing suite's outbound attempts were refused by the sandbox proxy and the suite still passed 442 (fail-closed behavior)"
+ },
+ "notes": [
+  "The research MacroSnapshot canonical_sha256 changes per case after adoption (4d7c320c... -> 7c2c9961..., 8cf590f3... -> 3e5696a5...) solely because of the four added keys; these digests are not committed anywhere in PR #12 and no pin covers them.",
+  "This producer calls legacy MacroEngine.evaluate(); after adoption its snapshot carries available_at=None, data_stamp_refs=(), source_vintages=(), input_hash=None. Routing through evaluate_stamped is a separate owner item not decided here.",
+  "No source under implementation/src is changed by the proposal; adopted bytes arrive only by integrating the Track C tip.",
+  "Dependency-not-merged sentinels and the #10/#14 CI-mode models.py compare are not touched (separate items per CDR-004).",
+  "Track C Frozen chain not rewritten; canonical not merged; Holdout/CAL_VERIFY not accessed."
+ ],
+ "research_snapshot_to_dict_before": {
+  "decision_2024_12_31_default": {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "environment": {
+    "as_of_used": {
+     "growth": "2024-12-01",
+     "inflation": "2024-12-01"
+    },
+    "availability": "PARTIAL",
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "fallback_reason": null,
+    "indicators": {
+     "growth": 0.040000000000000036,
+     "inflation": 0.020000000000000018
+    },
+    "missing": [
+     "DGS10",
+     "WALCL",
+     "BAMLH0A0HYM2"
+    ],
+    "pit": {
+     "decision_time": "2024-12-31T00:00:00+00:00",
+     "series": [
+      {
+       "artifact_id": "raw:CPIAUCSL:2024-12-20",
+       "available_at": "2024-12-20T00:00:00+00:00",
+       "ingested_at": null,
+       "release_at": null,
+       "series_id": "CPIAUCSL",
+       "sha256": "9117fac13d8e5a2a270b53c3cb9cb4bcee14989fcd0208b0ff1a2c64c54345de",
+       "source": "fred/series/observations realtime_end=as_of",
+       "vintage_at": null,
+       "vintage_kind": "ALFRED_AS_OF"
+      },
+      {
+       "artifact_id": "raw:INDPRO:2024-12-20",
+       "available_at": "2024-12-20T00:00:00+00:00",
+       "ingested_at": null,
+       "release_at": null,
+       "series_id": "INDPRO",
+       "sha256": "509e07945f1f2f1daa1f145a4b6ec3b9dce56fda59a50b0cb5340f3cbfa39f43",
+       "source": "fred/series/observations realtime_end=as_of",
+       "vintage_at": null,
+       "vintage_kind": "ALFRED_AS_OF"
+      }
+     ]
+    },
+    "real_data_verified": false,
+    "source": "fred/series/observations realtime_end=as_of",
+    "vintage": "ALFRED_AS_OF"
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_snapshot_id": "mac_560ba7bdee89",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "EXPANSION",
+   "state": "NORMAL",
+   "synthetic": false
+  },
+  "decision_2024_12_31_with_revised_history": {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "environment": {
+    "as_of_used": {
+     "growth": "2024-12-01",
+     "inflation": "2024-12-01"
+    },
+    "availability": "PARTIAL",
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "fallback_reason": null,
+    "indicators": {
+     "growth": 0.040000000000000036,
+     "inflation": 0.020000000000000018
+    },
+    "missing": [
+     "DGS10",
+     "WALCL",
+     "BAMLH0A0HYM2"
+    ],
+    "pit": {
+     "decision_time": "2024-12-31T00:00:00+00:00",
+     "series": [
+      {
+       "artifact_id": "raw:CPIAUCSL:2024-12-20",
+       "available_at": "2024-12-20T00:00:00+00:00",
+       "ingested_at": null,
+       "release_at": null,
+       "series_id": "CPIAUCSL",
+       "sha256": "9117fac13d8e5a2a270b53c3cb9cb4bcee14989fcd0208b0ff1a2c64c54345de",
+       "source": "fred/series/observations realtime_end=as_of",
+       "vintage_at": null,
+       "vintage_kind": "ALFRED_AS_OF"
+      },
+      {
+       "artifact_id": "raw:INDPRO:2024-12-20",
+       "available_at": "2024-12-20T00:00:00+00:00",
+       "ingested_at": null,
+       "release_at": null,
+       "series_id": "INDPRO",
+       "sha256": "509e07945f1f2f1daa1f145a4b6ec3b9dce56fda59a50b0cb5340f3cbfa39f43",
+       "source": "fred/series/observations realtime_end=as_of",
+       "vintage_at": null,
+       "vintage_kind": "ALFRED_AS_OF"
+      }
+     ]
+    },
+    "real_data_verified": false,
+    "source": "fred/series/observations realtime_end=as_of",
+    "vintage": "ALFRED_AS_OF"
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_snapshot_id": "mac_560ba7bdee89",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "EXPANSION",
+   "state": "NORMAL",
+   "synthetic": false
+  },
+  "decision_2025_03_15_sees_revision": {
+   "as_of": "2025-03-15T00:00:00+00:00",
+   "environment": {
+    "as_of_used": {
+     "growth": "2024-12-01",
+     "inflation": "2024-12-01"
+    },
+    "availability": "PARTIAL",
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "fallback_reason": null,
+    "indicators": {
+     "growth": 0.040000000000000036,
+     "inflation": 0.10000000000000009
+    },
+    "missing": [
+     "DGS10",
+     "WALCL",
+     "BAMLH0A0HYM2"
+    ],
+    "pit": {
+     "decision_time": "2025-03-15T00:00:00+00:00",
+     "series": [
+      {
+       "artifact_id": "raw:CPIAUCSL:2025-03-01",
+       "available_at": "2025-03-01T00:00:00+00:00",
+       "ingested_at": null,
+       "release_at": null,
+       "series_id": "CPIAUCSL",
+       "sha256": "7f474974b48d643d495b663df1f142a1c5462395e232947b5623b75edfa509e0",
+       "source": "fred/series/observations realtime_end=as_of",
+       "vintage_at": null,
+       "vintage_kind": "ALFRED_AS_OF"
+      },
+      {
+       "artifact_id": "raw:INDPRO:2024-12-20",
+       "available_at": "2024-12-20T00:00:00+00:00",
+       "ingested_at": null,
+       "release_at": null,
+       "series_id": "INDPRO",
+       "sha256": "509e07945f1f2f1daa1f145a4b6ec3b9dce56fda59a50b0cb5340f3cbfa39f43",
+       "source": "fred/series/observations realtime_end=as_of",
+       "vintage_at": null,
+       "vintage_kind": "ALFRED_AS_OF"
+      }
+     ]
+    },
+    "real_data_verified": false,
+    "source": "fred/series/observations realtime_end=as_of",
+    "vintage": "ALFRED_AS_OF"
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_snapshot_id": "mac_35acb549cbc8",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "INFLATION_SHOCK",
+   "state": "EMERGENCY",
+   "synthetic": false
+  }
+ },
+ "research_snapshot_to_dict_after": {
+  "decision_2024_12_31_default": {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "as_of_used": {
+     "growth": "2024-12-01",
+     "inflation": "2024-12-01"
+    },
+    "availability": "PARTIAL",
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "fallback_reason": null,
+    "indicators": {
+     "growth": 0.040000000000000036,
+     "inflation": 0.020000000000000018
+    },
+    "missing": [
+     "DGS10",
+     "WALCL",
+     "BAMLH0A0HYM2"
+    ],
+    "pit": {
+     "decision_time": "2024-12-31T00:00:00+00:00",
+     "series": [
+      {
+       "artifact_id": "raw:CPIAUCSL:2024-12-20",
+       "available_at": "2024-12-20T00:00:00+00:00",
+       "ingested_at": null,
+       "release_at": null,
+       "series_id": "CPIAUCSL",
+       "sha256": "9117fac13d8e5a2a270b53c3cb9cb4bcee14989fcd0208b0ff1a2c64c54345de",
+       "source": "fred/series/observations realtime_end=as_of",
+       "vintage_at": null,
+       "vintage_kind": "ALFRED_AS_OF"
+      },
+      {
+       "artifact_id": "raw:INDPRO:2024-12-20",
+       "available_at": "2024-12-20T00:00:00+00:00",
+       "ingested_at": null,
+       "release_at": null,
+       "series_id": "INDPRO",
+       "sha256": "509e07945f1f2f1daa1f145a4b6ec3b9dce56fda59a50b0cb5340f3cbfa39f43",
+       "source": "fred/series/observations realtime_end=as_of",
+       "vintage_at": null,
+       "vintage_kind": "ALFRED_AS_OF"
+      }
+     ]
+    },
+    "real_data_verified": false,
+    "source": "fred/series/observations realtime_end=as_of",
+    "vintage": "ALFRED_AS_OF"
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_snapshot_id": "mac_560ba7bdee89",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "EXPANSION",
+   "source_vintages": [],
+   "state": "NORMAL",
+   "synthetic": false
+  },
+  "decision_2024_12_31_with_revised_history": {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "as_of_used": {
+     "growth": "2024-12-01",
+     "inflation": "2024-12-01"
+    },
+    "availability": "PARTIAL",
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "fallback_reason": null,
+    "indicators": {
+     "growth": 0.040000000000000036,
+     "inflation": 0.020000000000000018
+    },
+    "missing": [
+     "DGS10",
+     "WALCL",
+     "BAMLH0A0HYM2"
+    ],
+    "pit": {
+     "decision_time": "2024-12-31T00:00:00+00:00",
+     "series": [
+      {
+       "artifact_id": "raw:CPIAUCSL:2024-12-20",
+       "available_at": "2024-12-20T00:00:00+00:00",
+       "ingested_at": null,
+       "release_at": null,
+       "series_id": "CPIAUCSL",
+       "sha256": "9117fac13d8e5a2a270b53c3cb9cb4bcee14989fcd0208b0ff1a2c64c54345de",
+       "source": "fred/series/observations realtime_end=as_of",
+       "vintage_at": null,
+       "vintage_kind": "ALFRED_AS_OF"
+      },
+      {
+       "artifact_id": "raw:INDPRO:2024-12-20",
+       "available_at": "2024-12-20T00:00:00+00:00",
+       "ingested_at": null,
+       "release_at": null,
+       "series_id": "INDPRO",
+       "sha256": "509e07945f1f2f1daa1f145a4b6ec3b9dce56fda59a50b0cb5340f3cbfa39f43",
+       "source": "fred/series/observations realtime_end=as_of",
+       "vintage_at": null,
+       "vintage_kind": "ALFRED_AS_OF"
+      }
+     ]
+    },
+    "real_data_verified": false,
+    "source": "fred/series/observations realtime_end=as_of",
+    "vintage": "ALFRED_AS_OF"
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_snapshot_id": "mac_560ba7bdee89",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "EXPANSION",
+   "source_vintages": [],
+   "state": "NORMAL",
+   "synthetic": false
+  },
+  "decision_2025_03_15_sees_revision": {
+   "as_of": "2025-03-15T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "as_of_used": {
+     "growth": "2024-12-01",
+     "inflation": "2024-12-01"
+    },
+    "availability": "PARTIAL",
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "fallback_reason": null,
+    "indicators": {
+     "growth": 0.040000000000000036,
+     "inflation": 0.10000000000000009
+    },
+    "missing": [
+     "DGS10",
+     "WALCL",
+     "BAMLH0A0HYM2"
+    ],
+    "pit": {
+     "decision_time": "2025-03-15T00:00:00+00:00",
+     "series": [
+      {
+       "artifact_id": "raw:CPIAUCSL:2025-03-01",
+       "available_at": "2025-03-01T00:00:00+00:00",
+       "ingested_at": null,
+       "release_at": null,
+       "series_id": "CPIAUCSL",
+       "sha256": "7f474974b48d643d495b663df1f142a1c5462395e232947b5623b75edfa509e0",
+       "source": "fred/series/observations realtime_end=as_of",
+       "vintage_at": null,
+       "vintage_kind": "ALFRED_AS_OF"
+      },
+      {
+       "artifact_id": "raw:INDPRO:2024-12-20",
+       "available_at": "2024-12-20T00:00:00+00:00",
+       "ingested_at": null,
+       "release_at": null,
+       "series_id": "INDPRO",
+       "sha256": "509e07945f1f2f1daa1f145a4b6ec3b9dce56fda59a50b0cb5340f3cbfa39f43",
+       "source": "fred/series/observations realtime_end=as_of",
+       "vintage_at": null,
+       "vintage_kind": "ALFRED_AS_OF"
+      }
+     ]
+    },
+    "real_data_verified": false,
+    "source": "fred/series/observations realtime_end=as_of",
+    "vintage": "ALFRED_AS_OF"
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_snapshot_id": "mac_35acb549cbc8",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "INFLATION_SHOCK",
+   "source_vintages": [],
+   "state": "EMERGENCY",
+   "synthetic": false
+  }
+ },
+ "producer_snapshot_before": {
+  "decision_2024_12_31_default": {
+   "as_of": null,
+   "contract": "PRODUCER_SNAPSHOT",
+   "data": null,
+   "data_sha256": null,
+   "data_state": "NOT_AVAILABLE",
+   "expires_at": null,
+   "generated_at": "2024-12-31T12:00:00+00:00",
+   "methodology": {
+    "id": "MACRO_CONFIRMED_ENGINE",
+    "status": "PROVISIONAL",
+    "version": "v0.1.1"
+   },
+   "producer_id": "macro.real.v1",
+   "producer_version": "v0.1.1",
+   "provenance": {
+    "inputs": [],
+    "source": null
+   },
+   "reason": "거시 연구 Snapshot mac_560ba7bdee89은 웹에 게시하지 않습니다. FRED 시계열 매핑은 PROVISIONAL이고, 승인된 기업/산업 exposure 계수가 없으며, environment.indicators를 Web indicators로 바꾸지 않습니다.",
+   "reason_code": "POLICY_BLOCKED",
+   "requested_as_of": "2024-12-31T00:00:00+00:00",
+   "schema_version": 1,
+   "scope": {
+    "entity_ids": null,
+    "kind": "DOCUMENT"
+   },
+   "section": "macro",
+   "synthetic": false,
+   "usable_until": null,
+   "validation": {
+    "checks": [],
+    "status": "NOT_RUN"
+   }
+  },
+  "decision_2025_03_15_sees_revision": {
+   "as_of": null,
+   "contract": "PRODUCER_SNAPSHOT",
+   "data": null,
+   "data_sha256": null,
+   "data_state": "NOT_AVAILABLE",
+   "expires_at": null,
+   "generated_at": "2025-03-15T12:00:00+00:00",
+   "methodology": {
+    "id": "MACRO_CONFIRMED_ENGINE",
+    "status": "PROVISIONAL",
+    "version": "v0.1.1"
+   },
+   "producer_id": "macro.real.v1",
+   "producer_version": "v0.1.1",
+   "provenance": {
+    "inputs": [],
+    "source": null
+   },
+   "reason": "거시 연구 Snapshot mac_35acb549cbc8은 웹에 게시하지 않습니다. FRED 시계열 매핑은 PROVISIONAL이고, 승인된 기업/산업 exposure 계수가 없으며, environment.indicators를 Web indicators로 바꾸지 않습니다.",
+   "reason_code": "POLICY_BLOCKED",
+   "requested_as_of": "2025-03-15T00:00:00+00:00",
+   "schema_version": 1,
+   "scope": {
+    "entity_ids": null,
+    "kind": "DOCUMENT"
+   },
+   "section": "macro",
+   "synthetic": false,
+   "usable_until": null,
+   "validation": {
+    "checks": [],
+    "status": "NOT_RUN"
+   }
+  }
+ },
+ "producer_snapshot_after": {
+  "decision_2024_12_31_default": {
+   "as_of": null,
+   "contract": "PRODUCER_SNAPSHOT",
+   "data": null,
+   "data_sha256": null,
+   "data_state": "NOT_AVAILABLE",
+   "expires_at": null,
+   "generated_at": "2024-12-31T12:00:00+00:00",
+   "methodology": {
+    "id": "MACRO_CONFIRMED_ENGINE",
+    "status": "PROVISIONAL",
+    "version": "v0.1.1"
+   },
+   "producer_id": "macro.real.v1",
+   "producer_version": "v0.1.1",
+   "provenance": {
+    "inputs": [],
+    "source": null
+   },
+   "reason": "거시 연구 Snapshot mac_560ba7bdee89은 웹에 게시하지 않습니다. FRED 시계열 매핑은 PROVISIONAL이고, 승인된 기업/산업 exposure 계수가 없으며, environment.indicators를 Web indicators로 바꾸지 않습니다.",
+   "reason_code": "POLICY_BLOCKED",
+   "requested_as_of": "2024-12-31T00:00:00+00:00",
+   "schema_version": 1,
+   "scope": {
+    "entity_ids": null,
+    "kind": "DOCUMENT"
+   },
+   "section": "macro",
+   "synthetic": false,
+   "usable_until": null,
+   "validation": {
+    "checks": [],
+    "status": "NOT_RUN"
+   }
+  },
+  "decision_2025_03_15_sees_revision": {
+   "as_of": null,
+   "contract": "PRODUCER_SNAPSHOT",
+   "data": null,
+   "data_sha256": null,
+   "data_state": "NOT_AVAILABLE",
+   "expires_at": null,
+   "generated_at": "2025-03-15T12:00:00+00:00",
+   "methodology": {
+    "id": "MACRO_CONFIRMED_ENGINE",
+    "status": "PROVISIONAL",
+    "version": "v0.1.1"
+   },
+   "producer_id": "macro.real.v1",
+   "producer_version": "v0.1.1",
+   "provenance": {
+    "inputs": [],
+    "source": null
+   },
+   "reason": "거시 연구 Snapshot mac_35acb549cbc8은 웹에 게시하지 않습니다. FRED 시계열 매핑은 PROVISIONAL이고, 승인된 기업/산업 exposure 계수가 없으며, environment.indicators를 Web indicators로 바꾸지 않습니다.",
+   "reason_code": "POLICY_BLOCKED",
+   "requested_as_of": "2025-03-15T00:00:00+00:00",
+   "schema_version": 1,
+   "scope": {
+    "entity_ids": null,
+    "kind": "DOCUMENT"
+   },
+   "section": "macro",
+   "synthetic": false,
+   "usable_until": null,
+   "validation": {
+    "checks": [],
+    "status": "NOT_RUN"
+   }
+  }
+ },
+ "fail_closed_paths_before": {
+  "bad_sha256": {
+   "code": "MISSING_PROVENANCE",
+   "exception": "MacroProvenanceError",
+   "message": "sha256 does not match canonical payload for raw:INDPRO:2024-12-20"
+  },
+  "company_industry_exposure('nvda')": {
+   "code": "POLICY_BLOCKED",
+   "exception": "PolicyBlocked",
+   "message": "POLICY_BLOCKED: no approved company or industry exposure coefficients; v0.1.4 candidate is not promoted and no exposure model is created"
+  },
+  "future_release": {
+   "code": "FUTURE_RELEASE",
+   "exception": "FutureReleaseError",
+   "message": "required series has no vintage with available_at <= decision_time: INDPRO"
+  },
+  "missing_pillar": {
+   "code": "MACRO_INPUT",
+   "exception": "MacroInputError",
+   "message": "growth and inflation are absent after PIT filtering; engine defaults are not applied: INDPRO"
+  },
+  "revised_history": {
+   "code": "REVISED_HISTORY",
+   "exception": "RevisedHistoryError",
+   "message": "CURRENT_REVISED_NOT_ALFRED cannot be applied to a decision; CURRENT_REVISED_NOT_ALFRED history is not a point-in-time vintage"
+  },
+  "synthetic_live": {
+   "code": "SYNTHETIC_LIVE",
+   "exception": "SyntheticLiveError",
+   "message": "synthetic macro input cannot be used as a real or LIVE producer input"
+  }
+ },
+ "fail_closed_paths_after": {
+  "bad_sha256": {
+   "code": "MISSING_PROVENANCE",
+   "exception": "MacroProvenanceError",
+   "message": "sha256 does not match canonical payload for raw:INDPRO:2024-12-20"
+  },
+  "company_industry_exposure('nvda')": {
+   "code": "POLICY_BLOCKED",
+   "exception": "PolicyBlocked",
+   "message": "POLICY_BLOCKED: no approved company or industry exposure coefficients; v0.1.4 candidate is not promoted and no exposure model is created"
+  },
+  "future_release": {
+   "code": "FUTURE_RELEASE",
+   "exception": "FutureReleaseError",
+   "message": "required series has no vintage with available_at <= decision_time: INDPRO"
+  },
+  "missing_pillar": {
+   "code": "MACRO_INPUT",
+   "exception": "MacroInputError",
+   "message": "growth and inflation are absent after PIT filtering; engine defaults are not applied: INDPRO"
+  },
+  "revised_history": {
+   "code": "REVISED_HISTORY",
+   "exception": "RevisedHistoryError",
+   "message": "CURRENT_REVISED_NOT_ALFRED cannot be applied to a decision; CURRENT_REVISED_NOT_ALFRED history is not a point-in-time vintage"
+  },
+  "synthetic_live": {
+   "code": "SYNTHETIC_LIVE",
+   "exception": "SyntheticLiveError",
+   "message": "synthetic macro input cannot be used as a real or LIVE producer input"
+  }
+ },
+ "bundle_macro_section_before": {
+  "as_of": null,
+  "data": null,
+  "producer": {
+   "as_of": null,
+   "data_sha256": null,
+   "data_state": "NOT_AVAILABLE",
+   "expires_at": null,
+   "freshness": "NOT_APPLICABLE",
+   "generated_at": "2024-12-31T12:00:00+00:00",
+   "methodology": {
+    "id": "MACRO_CONFIRMED_ENGINE",
+    "status": "PROVISIONAL",
+    "version": "v0.1.1"
+   },
+   "producer_id": "macro.real.v1",
+   "producer_version": "v0.1.1",
+   "reason_code": "POLICY_BLOCKED",
+   "requested_as_of": "2024-12-31T00:00:00+00:00",
+   "snapshot_sha256": "684438cdf1a199e6fc3861cffa1d2ebd2cad6a4aa17c91e5a95a0195a37b1c1d",
+   "source_inputs": [],
+   "synthetic": false,
+   "usable_until": null,
+   "validation": {
+    "checks": [],
+    "status": "NOT_RUN"
+   }
+  },
+  "reason": "거시 연구 Snapshot mac_560ba7bdee89은 웹에 게시하지 않습니다. FRED 시계열 매핑은 PROVISIONAL이고, 승인된 기업/산업 exposure 계수가 없으며, environment.indicators를 Web indicators로 바꾸지 않습니다.",
+  "source": null,
+  "state": "NOT_AVAILABLE"
+ },
+ "bundle_macro_section_after": {
+  "as_of": null,
+  "data": null,
+  "producer": {
+   "as_of": null,
+   "data_sha256": null,
+   "data_state": "NOT_AVAILABLE",
+   "expires_at": null,
+   "freshness": "NOT_APPLICABLE",
+   "generated_at": "2024-12-31T12:00:00+00:00",
+   "methodology": {
+    "id": "MACRO_CONFIRMED_ENGINE",
+    "status": "PROVISIONAL",
+    "version": "v0.1.1"
+   },
+   "producer_id": "macro.real.v1",
+   "producer_version": "v0.1.1",
+   "reason_code": "POLICY_BLOCKED",
+   "requested_as_of": "2024-12-31T00:00:00+00:00",
+   "snapshot_sha256": "684438cdf1a199e6fc3861cffa1d2ebd2cad6a4aa17c91e5a95a0195a37b1c1d",
+   "source_inputs": [],
+   "synthetic": false,
+   "usable_until": null,
+   "validation": {
+    "checks": [],
+    "status": "NOT_RUN"
+   }
+  },
+  "reason": "거시 연구 Snapshot mac_560ba7bdee89은 웹에 게시하지 않습니다. FRED 시계열 매핑은 PROVISIONAL이고, 승인된 기업/산업 exposure 계수가 없으며, environment.indicators를 Web indicators로 바꾸지 않습니다.",
+  "source": null,
+  "state": "NOT_AVAILABLE"
+ },
+ "bundle_section_reason_codes": {
+  "leaderboard": "LEADERBOARD_NO_UPSTREAM_QGV",
+  "macro": "POLICY_BLOCKED",
+  "portfolio": "PORTFOLIO_NO_ACTUAL_HOLDINGS",
+  "qgv": "QGV_RESEARCH_ONLY_NO_EXPORT",
+  "technical": "TECHNICAL_NO_REAL_MODEL"
+ },
+ "registry_reason_codes": {
+  "changes": "CHANGES_NO_PRODUCER",
+  "leaderboard": "LEADERBOARD_NO_UPSTREAM_QGV",
+  "macro": "MACRO_SHAPE_INCOMPATIBLE",
+  "news": "NEWS_NO_SOURCE",
+  "portfolio": "PORTFOLIO_NO_ACTUAL_HOLDINGS",
+  "qgv": "QGV_RESEARCH_ONLY_NO_EXPORT",
+  "relationships": "RELATIONSHIPS_OUT_OF_BUNDLE",
+  "technical": "TECHNICAL_NO_REAL_MODEL",
+  "universe": null
+ },
+ "engine_direct_minus_id_before": {
+  "expansion": {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": 0.04,
+     "inflation": 0.02
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "EXPANSION",
+   "state": "NORMAL",
+   "synthetic": false
+  },
+  "neutral": {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": 0.01,
+     "inflation": 0.02
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "NEUTRAL",
+   "state": "NORMAL",
+   "synthetic": false
+  },
+  "shock": {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": -0.02,
+     "inflation": 0.09
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "INFLATION_SHOCK",
+   "state": "EMERGENCY",
+   "synthetic": false
+  },
+  "stag": {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": -0.01,
+     "inflation": 0.06
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "STAGFLATION_RISK",
+   "state": "WARNING",
+   "synthetic": false
+  }
+ },
+ "engine_direct_minus_id_after": {
+  "expansion": {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": 0.04,
+     "inflation": 0.02
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "EXPANSION",
+   "source_vintages": [],
+   "state": "NORMAL",
+   "synthetic": false
+  },
+  "neutral": {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": 0.01,
+     "inflation": 0.02
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "NEUTRAL",
+   "source_vintages": [],
+   "state": "NORMAL",
+   "synthetic": false
+  },
+  "shock": {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": -0.02,
+     "inflation": 0.09
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "INFLATION_SHOCK",
+   "source_vintages": [],
+   "state": "EMERGENCY",
+   "synthetic": false
+  },
+  "stag": {
+   "as_of": "2024-12-31T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": -0.01,
+     "inflation": 0.06
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "STAGFLATION_RISK",
+   "source_vintages": [],
+   "state": "WARNING",
+   "synthetic": false
+  }
+ },
+ "fingerprint_macro_norm_dicts_before": [
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {}
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "NEUTRAL",
+   "state": "NORMAL",
+   "synthetic": true
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": 0.04,
+     "inflation": 0.02
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "EXPANSION",
+   "state": "NORMAL",
+   "synthetic": true
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": -0.01,
+     "inflation": 0.06
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "STAGFLATION_RISK",
+   "state": "WARNING",
+   "synthetic": true
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "inflation": 0.09
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "INFLATION_SHOCK",
+   "state": "EMERGENCY",
+   "synthetic": true
+  }
+ ],
+ "fingerprint_macro_norm_dicts_after": [
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {}
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "NEUTRAL",
+   "source_vintages": [],
+   "state": "NORMAL",
+   "synthetic": true
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": 0.04,
+     "inflation": 0.02
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "EXPANSION",
+   "source_vintages": [],
+   "state": "NORMAL",
+   "synthetic": true
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "growth": -0.01,
+     "inflation": 0.06
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "STAGFLATION_RISK",
+   "source_vintages": [],
+   "state": "WARNING",
+   "synthetic": true
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "data_stamp_refs": [],
+   "environment": {
+    "candidate_not_applied": "v0.1.4-CANDIDATE",
+    "indicators": {
+     "inflation": 0.09
+    }
+   },
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "macro_version": "v0.1.1",
+   "mutated_qgv": false,
+   "regime": "INFLATION_SHOCK",
+   "source_vintages": [],
+   "state": "EMERGENCY",
+   "synthetic": true
+  }
+ ],
+ "fingerprint_technical_norm_dicts_before": [
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "asml",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "lrcx",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "klac",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "tokyo_electron",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "hanmi",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "nvda",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "amd",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "avgo",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "qcom",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "intc",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "msft",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "googl",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "amzn",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "rtx",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "stry",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "etn",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "hubb",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "gev",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "company_id": "rok",
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  }
+ ],
+ "fingerprint_technical_norm_dicts_after": [
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "asml",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "lrcx",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "klac",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "tokyo_electron",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "hanmi",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "nvda",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "amd",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "avgo",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "qcom",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "intc",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "msft",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "googl",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "amzn",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "rtx",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "stry",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "etn",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "hubb",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "gev",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  },
+  {
+   "as_of": "2026-09-14T00:00:00+00:00",
+   "available_at": null,
+   "company_id": "rok",
+   "data_stamp_refs": [],
+   "drawdown_recheck": false,
+   "execution_zone": "WAIT",
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "input_hash": null,
+   "invalidation": "close below last swing low (placeholder, NEW IMPLEMENTATION)",
+   "mutated_qgv": false,
+   "qgv_snapshot_id_ref": null,
+   "regime": "RANGE",
+   "scenarios": [
+    {
+     "kind": "structural-placeholder",
+     "name": "S1",
+     "return_shock": -0.1
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S2",
+     "return_shock": 0.0
+    },
+    {
+     "kind": "structural-placeholder",
+     "name": "S3",
+     "return_shock": 0.1
+    }
+   ],
+   "source_vintages": [],
+   "synthetic": true,
+   "technical_version": "v0.6-STRUCTURAL-FREEZE"
+  }
+ ],
+ "evidence_sample_reproduced_before": {
+  "decision_2024_12_31": {
+   "cpi_available_at": "2024-12-20T00:00:00+00:00",
+   "inflation": 0.020000000000000018,
+   "macro_snapshot_id": "mac_560ba7bdee89",
+   "macro_version": "v0.1.1",
+   "producer_data": null,
+   "producer_data_state": "NOT_AVAILABLE",
+   "publication": "POLICY_BLOCKED",
+   "reason_code": "POLICY_BLOCKED",
+   "regime": "EXPANSION",
+   "state": "NORMAL"
+  },
+  "decision_2025_03_15_sees_revision": {
+   "cpi_available_at": "2025-03-01T00:00:00+00:00",
+   "inflation": 0.10000000000000009,
+   "macro_snapshot_id": "mac_35acb549cbc8",
+   "regime": "INFLATION_SHOCK",
+   "state": "EMERGENCY"
+  },
+  "producer_id": "macro.real.v1",
+  "publication_reasons": [
+   "SERIES_MAPPING_PROVISIONAL",
+   "EXPOSURE_NOT_APPROVED",
+   "WEB_INDICATORS_NOT_RESHAPED",
+   "NO_APPROVED_LIVE_EXPIRY"
+  ],
+  "real_data_verified": false
+ },
+ "evidence_sample_reproduced_after": {
+  "decision_2024_12_31": {
+   "cpi_available_at": "2024-12-20T00:00:00+00:00",
+   "inflation": 0.020000000000000018,
+   "macro_snapshot_id": "mac_560ba7bdee89",
+   "macro_version": "v0.1.1",
+   "producer_data": null,
+   "producer_data_state": "NOT_AVAILABLE",
+   "publication": "POLICY_BLOCKED",
+   "reason_code": "POLICY_BLOCKED",
+   "regime": "EXPANSION",
+   "state": "NORMAL"
+  },
+  "decision_2025_03_15_sees_revision": {
+   "cpi_available_at": "2025-03-01T00:00:00+00:00",
+   "inflation": 0.10000000000000009,
+   "macro_snapshot_id": "mac_35acb549cbc8",
+   "regime": "INFLATION_SHOCK",
+   "state": "EMERGENCY"
+  },
+  "producer_id": "macro.real.v1",
+  "publication_reasons": [
+   "SERIES_MAPPING_PROVISIONAL",
+   "EXPOSURE_NOT_APPROVED",
+   "WEB_INDICATORS_NOT_RESHAPED",
+   "NO_APPROVED_LIVE_EXPIRY"
+  ],
+  "real_data_verified": false
+ }
+}
