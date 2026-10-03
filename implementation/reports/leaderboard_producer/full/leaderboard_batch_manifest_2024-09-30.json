@@ -1,0 +1,3613 @@
+{
+ "manifest_kind": "LEADERBOARD_PRODUCER_BATCH_MANIFEST",
+ "manifest_version": 1,
+ "operational": {
+  "code_commit": "11e18d8be60c20480b6ab3d2241d752e96b0cd47",
+  "files": {
+   "leaderboard_company_snapshots_2024-09-30.jsonl": {
+    "bytes": 2085282,
+    "sha256": "80714de3daaba2ec98ddf6f82d3a7172a782eb2f6925f992a080a2b852794e41"
+   }
+  },
+  "generated_at": "2026-10-01T11:40:00+00:00",
+  "leaderboard_snapshot_id": "lb_85495b8c9ae5",
+  "run_id": "lb_62fb18284f35"
+ },
+ "semantic": {
+  "as_of": "2024-09-30T00:00:00+00:00",
+  "coverage_counts": {
+   "BLOCKED": 31,
+   "PARTIAL": 469
+  },
+  "eligibility_rule": "NO_SEPARATE_RULE_ENGINE_RANKS_EVERY_PASS_SNAPSHOT",
+  "eligible_count": 500,
+  "expected_count": 500,
+  "input_snapshot_hashes": {
+   "official_snapshot_sha256": "367b8dba1a00c0b9293a9242d29255c1a9342201684bd5bb1a0168384b21e9e4",
+   "qgv_inputs_sha256": "c3d473a36b10c99836e54bffbb60b283ef0697c3fdda93b462f94669ac303ea8",
+   "qgv_manifest_semantic_sha256": "60ab75359203df85433f6227db563d0f225df26bcf55ee5daadcbf4a7cf3ebd5",
+   "qgv_records_sha256": "91df2422d63969b97f146b9c698c50e155c05d31b6d0335eca78e97967e16d70"
+  },
+  "lineage_hash": "9bf336e364b4a6cd8ee05bd61af217df58cfb02f94804a0dc574cb811a92b23c",
+  "methodology": {
+   "implementation_kind": "NEW IMPLEMENTATION",
+   "implementation_line": "investment_system_impl-v0.2.0",
+   "input_order": "QGV_RECORD_COMPANY_ID_ASCENDING",
+   "input_order_is_tie_break_policy": false,
+   "leaderboard_engine": "investment_system.qgv.leaderboard.LeaderboardEngine.build",
+   "leaderboard_spec": "QGV Leaderboard Specification v1.0",
+   "qgv_analysis_contract": "v1.7.6",
+   "qgv_standard_version": "v1.5-balanced",
+   "qgv_system_version": "v1.7",
+   "ranking_formula_changed": false,
+   "recomputed_qgv": false,
+   "sort_key_id": "EXISTING_TOTAL_PRESENT_THEN_TOTAL_OR_SENTINEL_THEN_Q_OR_SENTINEL",
+   "weights_sha256": "9e961bf717110cf811b65cfc8ec8474b68425d8801d813c6890517fb85091231"
+  },
+  "not_implied": [
+   "ATTRACTIVE",
+   "QGV_FULLY_SCORED",
+   "STRATEGY_VALIDATED",
+   "STATISTICAL_SKILL",
+   "OFFICIAL_RECOMMENDATION",
+   "BUY_SIGNAL"
+  ],
+  "not_ranked_count": 0,
+  "null_total_score_count": 31,
+  "partial_blocked_policy": "NOT_DEFINED_FOLLOWED_EXISTING_ENGINE_INCLUDE",
+  "pass_means": "VALID_PERSISTENCE_IDENTITY_LINEAGE_AND_EXISTING_RANKING_CONTRACT_ONLY",
+  "publication": {
+   "data_state": "NOT_AVAILABLE",
+   "live": false,
+   "official": false,
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT"
+  },
+  "qgv_cross_section_eligible_count": 469,
+  "qgv_cross_section_rank_used": false,
+  "qgv_pin": {
+   "branch": "ccr-db5d5960-qen9yi",
+   "commit": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+   "pr": 10,
+   "role": "read-only persisted QGV evidence; not merged into this branch"
+  },
+  "ranked_count": 500,
+  "ranking_fingerprint": "7073bfd9890e3839ce77d5519019d598198bedd273e1c3c6fd330ad81febdb1c",
+  "records": [
+   {
+    "company_id": "aapl",
+    "eligibility": "RANKED",
+    "engine_rank": 229,
+    "semantic_sha256": "38c992bb8309041937a86132a19af0b4c14641b7ea970adcae4a195cd89d1b24",
+    "status": "PASS"
+   },
+   {
+    "company_id": "abbv",
+    "eligibility": "RANKED",
+    "engine_rank": 354,
+    "semantic_sha256": "309e8c5b9034b3d882d03255c95dc1eb04484fa988a4305626f55a44319d4a78",
+    "status": "PASS"
+   },
+   {
+    "company_id": "abnb",
+    "eligibility": "RANKED",
+    "engine_rank": 67,
+    "semantic_sha256": "cac488592580bc010b13445fb53d88a8db560f5836cc60f758afbf76471195fe",
+    "status": "PASS"
+   },
+   {
+    "company_id": "abt",
+    "eligibility": "RANKED",
+    "engine_rank": 344,
+    "semantic_sha256": "d42ec405caa78795d0ff1fd344ea15899e8adfe87277093140d5268c255bca62",
+    "status": "PASS"
+   },
+   {
+    "company_id": "acn",
+    "eligibility": "RANKED",
+    "engine_rank": 219,
+    "semantic_sha256": "1c07104565cb2e7e221f9df9b3df715c586e23b542825e3d071c09e582d8aa46",
+    "status": "PASS"
+   },
+   {
+    "company_id": "adbe",
+    "eligibility": "RANKED",
+    "engine_rank": 34,
+    "semantic_sha256": "c04bd438891e59f937a63470a5716f7505f41417f26520d6f07ab6621a35cb06",
+    "status": "PASS"
+   },
+   {
+    "company_id": "adi",
+    "eligibility": "RANKED",
+    "engine_rank": 128,
+    "semantic_sha256": "6cca509da9ac8ce471e613e1359d5340cc18319fcbae2b52b2a3f9f4327a2f5c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "adp",
+    "eligibility": "RANKED",
+    "engine_rank": 332,
+    "semantic_sha256": "6bc505dca11dd4cd6b1d981cf64974d60010302ac4e8594ddb53efade2d0a1b0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "aep",
+    "eligibility": "RANKED",
+    "engine_rank": 280,
+    "semantic_sha256": "0ea4f66b49799ce574177cb7c98f944c2b17501c58932e54f7a27034fcfc63e8",
+    "status": "PASS"
+   },
+   {
+    "company_id": "afl",
+    "eligibility": "RANKED",
+    "engine_rank": 363,
+    "semantic_sha256": "3063d172a9fe2d207e1446d746096d9805493f19f7889cf89f0d3395beca6b7b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ajg",
+    "eligibility": "RANKED",
+    "engine_rank": 174,
+    "semantic_sha256": "bb605ca3434e0d4924ceb457a6a32282944d31283e47f3cfda03c505cc11b8ca",
+    "status": "PASS"
+   },
+   {
+    "company_id": "all",
+    "eligibility": "RANKED",
+    "engine_rank": 341,
+    "semantic_sha256": "4b410474c40040cf676139fbf2a58c1d6d94cf33466ebefc013970956eb9b38d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "amat",
+    "eligibility": "RANKED",
+    "engine_rank": 114,
+    "semantic_sha256": "00903c5121dab5b6136b3a4e01d7a3e6d3d0fb7324821a5c32145120e16bc68d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "amd",
+    "eligibility": "RANKED",
+    "engine_rank": 365,
+    "semantic_sha256": "9a3e6ac6f494b1b0f5fd00e33ca7f8c1b81610e3b6f63f102b57442752dbc33c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ame",
+    "eligibility": "RANKED",
+    "engine_rank": 470,
+    "semantic_sha256": "071c7fd043b22f4c5934ecb6e2a55c1ad0dc0bdd9964577981ad16bd601131f8",
+    "status": "PASS"
+   },
+   {
+    "company_id": "amgn",
+    "eligibility": "RANKED",
+    "engine_rank": 171,
+    "semantic_sha256": "e7c22c144f96f9120cfa4dce308ff04a16239397434930be881a65d5a5268ac0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "amt",
+    "eligibility": "RANKED",
+    "engine_rank": 242,
+    "semantic_sha256": "47bece7075b778798e209808ab1d7d41daed61f9e50109e1549c832c71ed97c7",
+    "status": "PASS"
+   },
+   {
+    "company_id": "amzn",
+    "eligibility": "RANKED",
+    "engine_rank": 203,
+    "semantic_sha256": "23373154083fdb61b5e882bca1d46946603b05fc6411542cc3c24b8e9906b1dc",
+    "status": "PASS"
+   },
+   {
+    "company_id": "anet",
+    "eligibility": "RANKED",
+    "engine_rank": 2,
+    "semantic_sha256": "d8ed92dd5412fb7f927b1f8c739d46ad8564fd1412611127d84575740c23d188",
+    "status": "PASS"
+   },
+   {
+    "company_id": "aon",
+    "eligibility": "RANKED",
+    "engine_rank": 165,
+    "semantic_sha256": "7d97ea5c883e6e4ec177e853ea67f26a9524a32d31f83763ce478465d9be5ec3",
+    "status": "PASS"
+   },
+   {
+    "company_id": "apd",
+    "eligibility": "RANKED",
+    "engine_rank": 370,
+    "semantic_sha256": "668b1b5f192e612c2353c6848034a05e31d5a1c47acfefdb515f5a448fe88dee",
+    "status": "PASS"
+   },
+   {
+    "company_id": "aph",
+    "eligibility": "RANKED",
+    "engine_rank": 212,
+    "semantic_sha256": "afb671772b1c6fb39aabcee5816e4c3b3183af7337351116e998322fe15ca30a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "apo",
+    "eligibility": "RANKED",
+    "engine_rank": 208,
+    "semantic_sha256": "8f69be1d1272f3bbb6f76c4747acf1500347bc218911fe7911214638fdd2cd26",
+    "status": "PASS"
+   },
+   {
+    "company_id": "app",
+    "eligibility": "RANKED",
+    "engine_rank": 185,
+    "semantic_sha256": "b109f296363d0e8268b203d9440e60a7bb786dd0f367d2d5e9bf17c068a0fea0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "avgo",
+    "eligibility": "RANKED",
+    "engine_rank": 82,
+    "semantic_sha256": "528c5562afffaf72cebed8641c654b586b27fa12d6d612d427e1bb36d372acd9",
+    "status": "PASS"
+   },
+   {
+    "company_id": "axp",
+    "eligibility": "RANKED",
+    "engine_rank": 151,
+    "semantic_sha256": "6404e35b137898c2d8872edbf1375b49c6606a76836030bb1e2c7d01bc485837",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ba",
+    "eligibility": "RANKED",
+    "engine_rank": 250,
+    "semantic_sha256": "9ea6d4dcb1690bec4682041a5e64cea6b71f25e3ad877317eebfa462653792ce",
+    "status": "PASS"
+   },
+   {
+    "company_id": "bac",
+    "eligibility": "RANKED",
+    "engine_rank": 420,
+    "semantic_sha256": "67639c180075fc094a13e2a493f00b984f2f901046a49bf9b43ac4af4ddc4ea1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "bdx",
+    "eligibility": "RANKED",
+    "engine_rank": 279,
+    "semantic_sha256": "ac2332adfd70f230fdbe2f1b7ec2f54180efd7aa6e3243d5019ea4befbc339ec",
+    "status": "PASS"
+   },
+   {
+    "company_id": "bkng",
+    "eligibility": "RANKED",
+    "engine_rank": 6,
+    "semantic_sha256": "36b694ae7f63c5f70ca0afb122cec096ef3ec7e06c1c8131e692d90de1593c3d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "bkr",
+    "eligibility": "RANKED",
+    "engine_rank": 306,
+    "semantic_sha256": "b0058e67ff604433ed0e2b0b6bdbb0d8629010cb13590666369c1a31d303faa5",
+    "status": "PASS"
+   },
+   {
+    "company_id": "blk",
+    "eligibility": "RANKED",
+    "engine_rank": 152,
+    "semantic_sha256": "79f047aaddec8a9b8bfca9dd8524493c214215dd5560e8eebcdc6d690a4b7712",
+    "status": "PASS"
+   },
+   {
+    "company_id": "bmy",
+    "eligibility": "RANKED",
+    "engine_rank": 271,
+    "semantic_sha256": "580fde85d329b965e2bf7349a42cb3dcf1120826fe125c7fad6c9ba147c74c0a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "bny",
+    "eligibility": "RANKED",
+    "engine_rank": 207,
+    "semantic_sha256": "8b54d7046328a2de7947ee9a49a2445f0b08966bc40a25fb81e6c79af5ebb68b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "brk_b",
+    "eligibility": "RANKED",
+    "engine_rank": 129,
+    "semantic_sha256": "39b2daefc0f1556a2da5f2ffec24d7c0330d498b2fa1fd10c20a818f8842a87d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "bsx",
+    "eligibility": "RANKED",
+    "engine_rank": 54,
+    "semantic_sha256": "7a3a25c8c568020446461fa47d6e63b597265723e54f96a71e4b3052e30ea49e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "bx",
+    "eligibility": "RANKED",
+    "engine_rank": 416,
+    "semantic_sha256": "a459cf29e320afb7cfe2dde1d1758e7047713fd16f748b07b544263c36d60d31",
+    "status": "PASS"
+   },
+   {
+    "company_id": "c",
+    "eligibility": "RANKED",
+    "engine_rank": 443,
+    "semantic_sha256": "d2e340db438f9d65bfac318810e542225219784b0ce4dc319984d8c58a8849e2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cah",
+    "eligibility": "RANKED",
+    "engine_rank": 48,
+    "semantic_sha256": "f8a8153669820e46a20a5ec0ad126873030cb01bbdad6cea7d5c4c9caffd2a11",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cat",
+    "eligibility": "RANKED",
+    "engine_rank": 44,
+    "semantic_sha256": "b541876c2d85fda85ffbe3014d3356512cf28239203eaf7b6cc9d4f270c28563",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cb",
+    "eligibility": "RANKED",
+    "engine_rank": 251,
+    "semantic_sha256": "df1a9170ce5747ee6ecfe742f2e97d4d052e5475340987bf235d15791a24bd69",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cdns",
+    "eligibility": "RANKED",
+    "engine_rank": 41,
+    "semantic_sha256": "adf2d4f645831cf5450aceee3c38f7cf9c7db0b907a89d3023294d7c3139669c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ceg",
+    "eligibility": "RANKED",
+    "engine_rank": 421,
+    "semantic_sha256": "6bcfb50d307a4a4b6ae53e6a97595d44b39511a5963374b22d27dddea670630c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ci",
+    "eligibility": "RANKED",
+    "engine_rank": 291,
+    "semantic_sha256": "15387070bf2ab790c4445e7fd7695edf1e2077b041f799cd66dd37a746ff86a1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cl",
+    "eligibility": "RANKED",
+    "engine_rank": 78,
+    "semantic_sha256": "c5ee5c9406be2d221b5f0639ac574dbed63a3acce148c44df509f2923220c404",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cmcsa",
+    "eligibility": "RANKED",
+    "engine_rank": 181,
+    "semantic_sha256": "689d2952bc078b3e3bfcacc29eca3df8d02b4b55cdda41812153693b9eca1e84",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cme",
+    "eligibility": "RANKED",
+    "engine_rank": 71,
+    "semantic_sha256": "1d2a95973753d4efdeb19451929a80f5988a0f0fedf1084736d3e1650b075d6c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cmi",
+    "eligibility": "RANKED",
+    "engine_rank": 118,
+    "semantic_sha256": "cdefc3cd6ac9d3b9aa0171a26da62293351a383539afd10558226bfc8ffdef98",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cof",
+    "eligibility": "RANKED",
+    "engine_rank": 339,
+    "semantic_sha256": "672fd819791ee7363098c92a5733f3664eb55432105556d4ff27151ba0a1c813",
+    "status": "PASS"
+   },
+   {
+    "company_id": "coin",
+    "eligibility": "RANKED",
+    "engine_rank": 283,
+    "semantic_sha256": "fa5ed57ef2abd74c46aaa53454087541ce97798101274ccc4dc40ebc7783dba2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cop",
+    "eligibility": "RANKED",
+    "engine_rank": 466,
+    "semantic_sha256": "5c6becde9af64951c8a6d254f707cd961d7505fcd3b9a3bd5d16a2853ecdf7a1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cor",
+    "eligibility": "RANKED",
+    "engine_rank": 109,
+    "semantic_sha256": "114bf8e600fb190af6259b9001efd1f31c5d88c61c135cbca3baee26a2b9faf5",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cost",
+    "eligibility": "RANKED",
+    "engine_rank": 188,
+    "semantic_sha256": "350d6175cb025bffe2c7d29a58d2d6052561dcf626097b144bba90919e40d1e0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cp",
+    "eligibility": "RANKED",
+    "engine_rank": 471,
+    "semantic_sha256": "ad6d6dff75a8fd7842b0478de506c3cedc956a1558b842032c2706eabb02c284",
+    "status": "PASS"
+   },
+   {
+    "company_id": "crh",
+    "eligibility": "RANKED",
+    "engine_rank": 237,
+    "semantic_sha256": "680e1ed91642372197ace7e334b643c27d4eb0a1bb641ef1ba13cb7756be2bb9",
+    "status": "PASS"
+   },
+   {
+    "company_id": "crm",
+    "eligibility": "RANKED",
+    "engine_rank": 43,
+    "semantic_sha256": "e82c58185c1da9924fac43cef0967b91f2bd033a32f5a2982294debc1435bd86",
+    "status": "PASS"
+   },
+   {
+    "company_id": "crwd",
+    "eligibility": "RANKED",
+    "engine_rank": 472,
+    "semantic_sha256": "41abba63411545c73995679deb67d69d3b9cd2379c185b8901d5159d43fb4752",
+    "status": "PASS"
+   },
+   {
+    "company_id": "csco",
+    "eligibility": "RANKED",
+    "engine_rank": 308,
+    "semantic_sha256": "5c1397341337e97e8d5304b7d661381bd2e9b3e30247ff04f9e25604718fd853",
+    "status": "PASS"
+   },
+   {
+    "company_id": "csx",
+    "eligibility": "RANKED",
+    "engine_rank": 253,
+    "semantic_sha256": "b21b693194f422a29cec43f09e139b1efbde9f5cc0831b64bd647fbbb296a4ca",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ctas",
+    "eligibility": "RANKED",
+    "engine_rank": 74,
+    "semantic_sha256": "60773ef3775027e712ce3210a9d9f69259e5339bb25caad80038c22f47bd85ec",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ctva",
+    "eligibility": "RANKED",
+    "engine_rank": 425,
+    "semantic_sha256": "b0c42366aa6306a2e189914bd5ff3ffb05d93f5ebfe79e7c46a4c0bb679c6990",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cvna",
+    "eligibility": "RANKED",
+    "engine_rank": 459,
+    "semantic_sha256": "ada96ee9b9ee3119d2be9008ca9c907408025be176a3e3e4bc12c1fbede74898",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cvs",
+    "eligibility": "RANKED",
+    "engine_rank": 121,
+    "semantic_sha256": "4379124dfd346517ee24b7b297c3cde92bdac8ed9a69be489fbf48b04b633165",
+    "status": "PASS"
+   },
+   {
+    "company_id": "cvx",
+    "eligibility": "RANKED",
+    "engine_rank": 463,
+    "semantic_sha256": "5aaf9373892bc7e3edc56239c205387b237c8a2e5c9b9a05be4c7fb0a2923738",
+    "status": "PASS"
+   },
+   {
+    "company_id": "d",
+    "eligibility": "RANKED",
+    "engine_rank": 150,
+    "semantic_sha256": "fa7c514d6f6405fc87c04040279630d4d7111db3843003cfccd69563aaaebedd",
+    "status": "PASS"
+   },
+   {
+    "company_id": "dal",
+    "eligibility": "RANKED",
+    "engine_rank": 197,
+    "semantic_sha256": "0bddc95e10c5e40235430902853ff105fa53640fe6700ee3ca648c323a96a281",
+    "status": "PASS"
+   },
+   {
+    "company_id": "dash",
+    "eligibility": "RANKED",
+    "engine_rank": 153,
+    "semantic_sha256": "dcc71bb42b99b43d8aee217d52f2333cb49322f2f4e51cff9518131e6efdc84c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ddog",
+    "eligibility": "RANKED",
+    "engine_rank": 144,
+    "semantic_sha256": "ed1c8014ae740a99e7b7a46adc66f91a98ec1896c3fa9169135a1ecc62c8e201",
+    "status": "PASS"
+   },
+   {
+    "company_id": "de",
+    "eligibility": "RANKED",
+    "engine_rank": 46,
+    "semantic_sha256": "d948cf487f1c68c8084032288714a63db4ce0ed25c08368c0396c1bb6e509a56",
+    "status": "PASS"
+   },
+   {
+    "company_id": "dell",
+    "eligibility": "RANKED",
+    "engine_rank": 431,
+    "semantic_sha256": "1bb269859e78de060bfaae04d974e7e5031edd7eba90a78aab767ac058a7b85a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "dhr",
+    "eligibility": "RANKED",
+    "engine_rank": 331,
+    "semantic_sha256": "e8137a7bad330bb19fb21a1bdfbd0089e80e5f74513d08e7dc3d5e2d3cf88316",
+    "status": "PASS"
+   },
+   {
+    "company_id": "dis",
+    "eligibility": "RANKED",
+    "engine_rank": 390,
+    "semantic_sha256": "681577f40c6f37a0f309aa531df77bb03bc6a71370ce630963c5f11c77181655",
+    "status": "PASS"
+   },
+   {
+    "company_id": "dlr",
+    "eligibility": "RANKED",
+    "engine_rank": 187,
+    "semantic_sha256": "6924172def8e0f384bbe894ba8a58c4611e8a0e34a2a5ae677a61f4a6dfd4bec",
+    "status": "PASS"
+   },
+   {
+    "company_id": "duk",
+    "eligibility": "RANKED",
+    "engine_rank": 130,
+    "semantic_sha256": "bbb8ca3c088364ddc5debb31e5faa9189b8e887802aed3a46cbf4517ea305c3f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "dvn",
+    "eligibility": "RANKED",
+    "engine_rank": 450,
+    "semantic_sha256": "edfe8e7ef34267fea2fe39d0a85adf9f649e5100c02d99681a0afbb245956191",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ebay",
+    "eligibility": "RANKED",
+    "engine_rank": 284,
+    "semantic_sha256": "544013645fd8eef98c689e4ecaeb6b894aa08fd55e7cfe08b4f711cf3e76a920",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ecl",
+    "eligibility": "RANKED",
+    "engine_rank": 126,
+    "semantic_sha256": "e3c16521f76650bb5c047c8a0445a478423b2ba7486d8fa4f9d839385950a5ba",
+    "status": "PASS"
+   },
+   {
+    "company_id": "elv",
+    "eligibility": "RANKED",
+    "engine_rank": 199,
+    "semantic_sha256": "e81b1c87d0d237d4d4d7811fde27f20ded1bc382abf24a67c1c39544795f5a81",
+    "status": "PASS"
+   },
+   {
+    "company_id": "emr",
+    "eligibility": "RANKED",
+    "engine_rank": 235,
+    "semantic_sha256": "fb76088804f08d43320219be5175b4dcf747a5e539cfa78fd31b81b00607c26a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "enb",
+    "eligibility": "RANKED",
+    "engine_rank": 473,
+    "semantic_sha256": "724598b032f20b4fd4e4a820f6d4cce0f2a7f2224b5d4343dd25b275fc4101b2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "eog",
+    "eligibility": "RANKED",
+    "engine_rank": 368,
+    "semantic_sha256": "f1ce2014b8118a29179b5bcd4072e47f3a6aaa7edc6038f8ff5f42753c748254",
+    "status": "PASS"
+   },
+   {
+    "company_id": "epd",
+    "eligibility": "RANKED",
+    "engine_rank": 404,
+    "semantic_sha256": "c20485143c7b2a09e32ed1688b27fffb168470428c72cfb4681ee6e3ba131d73",
+    "status": "PASS"
+   },
+   {
+    "company_id": "eqix",
+    "eligibility": "RANKED",
+    "engine_rank": 60,
+    "semantic_sha256": "61a9e111711b0855c88f57682815266c27d1a9c5653c5f2f7927f12e9624b606",
+    "status": "PASS"
+   },
+   {
+    "company_id": "et",
+    "eligibility": "RANKED",
+    "engine_rank": 452,
+    "semantic_sha256": "ec6dc57089e2735cbdd4a52d4b0a206b96f3ceed2f562c8da9eae558c20df81c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "etn",
+    "eligibility": "RANKED",
+    "engine_rank": 75,
+    "semantic_sha256": "f939783f677621cb1a56142a3389f9d4cb7facf7fd17eb3b0626f0cf2ff42d56",
+    "status": "PASS"
+   },
+   {
+    "company_id": "etr",
+    "eligibility": "RANKED",
+    "engine_rank": 387,
+    "semantic_sha256": "94dab2670f5c49a6d68efc51339d25dc103dc6888a47d1185c83259e769a57e9",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ew",
+    "eligibility": "RANKED",
+    "engine_rank": 103,
+    "semantic_sha256": "307492ea79ad08d34b0335358457813873c0f74450ef17dbca8e9ff7f416c702",
+    "status": "PASS"
+   },
+   {
+    "company_id": "f",
+    "eligibility": "RANKED",
+    "engine_rank": 316,
+    "semantic_sha256": "59de96a5e154f1693535b3030ee146a3f101e01207c5426ffc7c0897fc580cad",
+    "status": "PASS"
+   },
+   {
+    "company_id": "fang",
+    "eligibility": "RANKED",
+    "engine_rank": 451,
+    "semantic_sha256": "72ac891b1f93e1b1f35b1b761e1f5ac8bcef0bc4e63c8372c75cca452c70b221",
+    "status": "PASS"
+   },
+   {
+    "company_id": "fast",
+    "eligibility": "RANKED",
+    "engine_rank": 112,
+    "semantic_sha256": "c02658ee89ac6365fca2232ee82044640e44635b73b12554de1ff228adfdb8b6",
+    "status": "PASS"
+   },
+   {
+    "company_id": "fcx",
+    "eligibility": "RANKED",
+    "engine_rank": 274,
+    "semantic_sha256": "b70c902dc331958844cb60dad68aa9d3c3422f9511c80b2d6a208de34f271cf7",
+    "status": "PASS"
+   },
+   {
+    "company_id": "fdx",
+    "eligibility": "RANKED",
+    "engine_rank": 369,
+    "semantic_sha256": "062840797cdb7d8a96ddab2a7156f54cbdb0357c57952e94cfc9be8f6b01aa9c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ftnt",
+    "eligibility": "RANKED",
+    "engine_rank": 29,
+    "semantic_sha256": "ce06e8817b5ca7354ce1d61e8cf1efff6e971341049f53e131577e2c017c6af8",
+    "status": "PASS"
+   },
+   {
+    "company_id": "gd",
+    "eligibility": "RANKED",
+    "engine_rank": 209,
+    "semantic_sha256": "73a643aa70decdf0b8c242a6be558be79c474b9f2f93df7a5f5c3b14ebeec048",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ge",
+    "eligibility": "RANKED",
+    "engine_rank": 16,
+    "semantic_sha256": "b90d19a96d96e8812f20ece223018c5dcb54a5bfec91eb7c2d70ca135e41c20d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "gev",
+    "eligibility": "RANKED",
+    "engine_rank": 474,
+    "semantic_sha256": "8c9cc7c63498e2abded30de392e8e396584b640631efd2192fd678c0781b0f16",
+    "status": "PASS"
+   },
+   {
+    "company_id": "gild",
+    "eligibility": "RANKED",
+    "engine_rank": 172,
+    "semantic_sha256": "e0d4c7f71c942847fe7f9285b771a22d9ddf221e7242f0992b902602f1ff8bd2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "glw",
+    "eligibility": "RANKED",
+    "engine_rank": 448,
+    "semantic_sha256": "c651343f1cf522031c50ca02692e1c3dd26ae6594e4f510c2637ef3d02f1bc93",
+    "status": "PASS"
+   },
+   {
+    "company_id": "gm",
+    "eligibility": "RANKED",
+    "engine_rank": 177,
+    "semantic_sha256": "edfa3f476460166773e6b60bdc4b9d35d1d9ce37cfadaf885f39ad4d2542e3a0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "googl",
+    "eligibility": "RANKED",
+    "engine_rank": 38,
+    "semantic_sha256": "dd30b48cb156195ec8f33a6223006632f70c80b3750f88c5b72519d995f48100",
+    "status": "PASS"
+   },
+   {
+    "company_id": "grmn",
+    "eligibility": "RANKED",
+    "engine_rank": 91,
+    "semantic_sha256": "65b0e70c9e5547cb5c79522e5f6e28d49bb324ec84f4ec70dc4ce174b68ffc96",
+    "status": "PASS"
+   },
+   {
+    "company_id": "gs",
+    "eligibility": "RANKED",
+    "engine_rank": 475,
+    "semantic_sha256": "290f46b00f7a7b1cf605c211b1c88c464d27dcaa551a510ca5ba0021cc4b4f73",
+    "status": "PASS"
+   },
+   {
+    "company_id": "gww",
+    "eligibility": "RANKED",
+    "engine_rank": 93,
+    "semantic_sha256": "f36038704accef7fc2f358630611847b3dd7c3d52dfcc74a37d580723ff9b048",
+    "status": "PASS"
+   },
+   {
+    "company_id": "hca",
+    "eligibility": "RANKED",
+    "engine_rank": 300,
+    "semantic_sha256": "e5312d96b8699ee62bbd226d17149f3cf953ebecabb787470a7a2574933755c3",
+    "status": "PASS"
+   },
+   {
+    "company_id": "hd",
+    "eligibility": "RANKED",
+    "engine_rank": 412,
+    "semantic_sha256": "c5b95a8b6d8a9278234787c1db2116d043a717690621e630bf189ab71f450dfb",
+    "status": "PASS"
+   },
+   {
+    "company_id": "hlt",
+    "eligibility": "RANKED",
+    "engine_rank": 33,
+    "semantic_sha256": "50410c74a7bf30e5d74cf18600ad610aef86a8e3611207489efe409f65adf397",
+    "status": "PASS"
+   },
+   {
+    "company_id": "hon",
+    "eligibility": "RANKED",
+    "engine_rank": 249,
+    "semantic_sha256": "e9a1ecf5ee2fd2d77fdbafd0079856ff828a1f2fd5637cf4ccec8b7dcc4de61d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "hood",
+    "eligibility": "RANKED",
+    "engine_rank": 476,
+    "semantic_sha256": "03ba0c6d9680e78d20c3ec887b208dd8b7c4ed27ab1c79b4fb63828e4e89046a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "hpe",
+    "eligibility": "RANKED",
+    "engine_rank": 301,
+    "semantic_sha256": "cf703ddbfe7a6ed530880e2c56dcb945db2b390d73c3f2d63a37c3af76b697b7",
+    "status": "PASS"
+   },
+   {
+    "company_id": "hubb",
+    "eligibility": "RANKED",
+    "engine_rank": 232,
+    "semantic_sha256": "99798fb49f40a98c7c9f274f81f72e393a8138e5323d666ed00c21b5d251edf5",
+    "status": "PASS"
+   },
+   {
+    "company_id": "hwm",
+    "eligibility": "RANKED",
+    "engine_rank": 47,
+    "semantic_sha256": "a98088ed2777770b49ea032d696814320b3ce6b2ebdf96ddf5998cd4b458fd2d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ibm",
+    "eligibility": "RANKED",
+    "engine_rank": 234,
+    "semantic_sha256": "6223d83f9292911ec36f250c772e8d82b7ada9bace5d92790f66fea20700e10a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ice",
+    "eligibility": "RANKED",
+    "engine_rank": 124,
+    "semantic_sha256": "94bce7e87b7000113c66fca365157f31185efa6ffce0f43de11cc769cfccf49a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "intc",
+    "eligibility": "RANKED",
+    "engine_rank": 458,
+    "semantic_sha256": "430ae2584f1c26ecd685bb59955589d1962b2e984e19637f634182d87be66fff",
+    "status": "PASS"
+   },
+   {
+    "company_id": "intu",
+    "eligibility": "RANKED",
+    "engine_rank": 35,
+    "semantic_sha256": "8d41ccfa008bf2da7ab6b16987a776e848768af6e0004b3b121479011bc58003",
+    "status": "PASS"
+   },
+   {
+    "company_id": "isrg",
+    "eligibility": "RANKED",
+    "engine_rank": 192,
+    "semantic_sha256": "672d3311fe86384d308746e2cffd60a457a81005948a942cb63cb29bc9dcc116",
+    "status": "PASS"
+   },
+   {
+    "company_id": "itw",
+    "eligibility": "RANKED",
+    "engine_rank": 222,
+    "semantic_sha256": "6f0ad75fd1ed3ff9546397ba8cf50b0773775b4fc4f8979e23c0b4003b4a9fa3",
+    "status": "PASS"
+   },
+   {
+    "company_id": "jci",
+    "eligibility": "RANKED",
+    "engine_rank": 262,
+    "semantic_sha256": "e687689096225995441fecab662f880789d86c21e4a5ba68e2ac0f6da5d0e319",
+    "status": "PASS"
+   },
+   {
+    "company_id": "jnj",
+    "eligibility": "RANKED",
+    "engine_rank": 56,
+    "semantic_sha256": "01ec3117b60c72cb3ffe10f6fcb219b33fdbe06f9f95567d16ec6ecfac302ff6",
+    "status": "PASS"
+   },
+   {
+    "company_id": "jpm",
+    "eligibility": "RANKED",
+    "engine_rank": 168,
+    "semantic_sha256": "4f058ce1128989f514f170aae0723bb9f74407a41dde2d742c6b403c7c18d01c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "keys",
+    "eligibility": "RANKED",
+    "engine_rank": 178,
+    "semantic_sha256": "091bc6e91e6a07d316e4c4e1d88fb12b0f610857b61ac2599eac1e27eca0263a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "kkr",
+    "eligibility": "RANKED",
+    "engine_rank": 319,
+    "semantic_sha256": "18d3df9c9b02c88e61714a0850fc02dbc979b80036e22e94d3127a14f4ba74f9",
+    "status": "PASS"
+   },
+   {
+    "company_id": "klac",
+    "eligibility": "RANKED",
+    "engine_rank": 362,
+    "semantic_sha256": "b6a3c319e35d1629d3cd5eead06c491c6a9a0c048449197f781d4e77cda7cbe1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "kmi",
+    "eligibility": "RANKED",
+    "engine_rank": 389,
+    "semantic_sha256": "88bebad4ee24fa4b8d3293d2ceeeb36166b64a58864efb12c435bd1aed570192",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ko",
+    "eligibility": "RANKED",
+    "engine_rank": 132,
+    "semantic_sha256": "293efbc07befd721a01a185c1a2042a0ff71b889415f4a92c79df61cb301544a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "lin",
+    "eligibility": "RANKED",
+    "engine_rank": 161,
+    "semantic_sha256": "23a6c05969b4824409234601412563753c37001f4d867eb0695b113616a2cda1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "lly",
+    "eligibility": "RANKED",
+    "engine_rank": 357,
+    "semantic_sha256": "7a524f145d698f422f0a006eac24369248bd23e00fed15c67c4a34f406e17f35",
+    "status": "PASS"
+   },
+   {
+    "company_id": "lmt",
+    "eligibility": "RANKED",
+    "engine_rank": 167,
+    "semantic_sha256": "059469f0a9121fd13f7509aa63aabbdd52cbf182eeafdd071410ec3d026f8ed9",
+    "status": "PASS"
+   },
+   {
+    "company_id": "lng",
+    "eligibility": "RANKED",
+    "engine_rank": 361,
+    "semantic_sha256": "fdf95b169264fc9f3b85e7c5e0d6835d2ce8ee3e6a064ce7fcf9fe2a6156d4a4",
+    "status": "PASS"
+   },
+   {
+    "company_id": "low",
+    "eligibility": "RANKED",
+    "engine_rank": 321,
+    "semantic_sha256": "6384acdc95aaa854588978e86b7d1b10c4a7027afe5f9504a3b50afd6506d1cb",
+    "status": "PASS"
+   },
+   {
+    "company_id": "lrcx",
+    "eligibility": "RANKED",
+    "engine_rank": 427,
+    "semantic_sha256": "7b11985db9e03cef4af34969c01b4fbc8b4c78bfc67f2b571fd20a5d8b783715",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ma",
+    "eligibility": "RANKED",
+    "engine_rank": 50,
+    "semantic_sha256": "1593f15ff7d9168798e4e19dc70cec78d78871a5704102a5b5c4a06d922fac6d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mar",
+    "eligibility": "RANKED",
+    "engine_rank": 10,
+    "semantic_sha256": "578d1b641e659cbb532658d5407f38d3f38a5871b72850c5b3ab89d7d0d12022",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mcd",
+    "eligibility": "RANKED",
+    "engine_rank": 65,
+    "semantic_sha256": "a8108536380555690504cac379c39bc508f5889ded24ebaf532e6f4eb74f2c4c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mck",
+    "eligibility": "RANKED",
+    "engine_rank": 136,
+    "semantic_sha256": "51d83454998e17fa4e0e7db1f69740d2d3b9ebe8a9c9a2c9571d9f2cbeeef0e8",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mco",
+    "eligibility": "RANKED",
+    "engine_rank": 101,
+    "semantic_sha256": "2b604060181fb1e0122ad6d37aea6deedca6799dc14839a51642343609dd9089",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mdlz",
+    "eligibility": "RANKED",
+    "engine_rank": 63,
+    "semantic_sha256": "ae32da55162ce4b672cb3c8e63c871564b1384c0bef4ecbd756468cdb8ba467e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mdt",
+    "eligibility": "RANKED",
+    "engine_rank": 225,
+    "semantic_sha256": "afd926b504576d1cc93462e8308bbdf60fd43e11f09159692f4224c1a3dd1215",
+    "status": "PASS"
+   },
+   {
+    "company_id": "meli",
+    "eligibility": "RANKED",
+    "engine_rank": 8,
+    "semantic_sha256": "c322807dc85ec0f2eb177bd816e4ccfa86988cba58a5a10a81ae85ba2df028a5",
+    "status": "PASS"
+   },
+   {
+    "company_id": "met",
+    "eligibility": "RANKED",
+    "engine_rank": 446,
+    "semantic_sha256": "91c19f3479a8030f0f994f9c85a44d0716031126c49fadb8f145a2ebce63198f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "meta",
+    "eligibility": "RANKED",
+    "engine_rank": 13,
+    "semantic_sha256": "1aa74326af37a2b102c1f225054da6f8488268b6123d89febf1e9f4e365c55f3",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mmm",
+    "eligibility": "RANKED",
+    "engine_rank": 411,
+    "semantic_sha256": "51f4ab14921d77449a4c137ad5e3740a9eafe451d158fcc7ee4a7eed43448d9c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mnst",
+    "eligibility": "RANKED",
+    "engine_rank": 102,
+    "semantic_sha256": "debfa25fe031d2db72ff9f728b5fe7afb495dfbc8e7f218ea48a7b2b47fc95b6",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mo",
+    "eligibility": "RANKED",
+    "engine_rank": 183,
+    "semantic_sha256": "d4c445def1108693eb9ec2c6efb654c424a2882b8b5697151ee1cd2a42644026",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mpc",
+    "eligibility": "RANKED",
+    "engine_rank": 419,
+    "semantic_sha256": "3ab3fa495246afdbdfa28ba9d09d9fc662320c2b425dba77f4494f389752c8cf",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mplx",
+    "eligibility": "RANKED",
+    "engine_rank": 325,
+    "semantic_sha256": "8442b7ea34702b296fccf56a0f54da484ac31a0982329c4acf982ae72b1b01c2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mpwr",
+    "eligibility": "RANKED",
+    "engine_rank": 228,
+    "semantic_sha256": "da98880bec7338c1d1a4d9337a8b3f81974f04d040d8ff47b6050f403a775b3e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mrk",
+    "eligibility": "RANKED",
+    "engine_rank": 397,
+    "semantic_sha256": "f6a0521fa685d6cb306c6623e66c581cea5332dd99de0a38f21761d1a4a95687",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mrna",
+    "eligibility": "RANKED",
+    "engine_rank": 469,
+    "semantic_sha256": "d4ffddb756d3cd1ed3118b0f6c32721cbb1c5dffb3281f82f95a34679fce95e2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mrsh",
+    "eligibility": "RANKED",
+    "engine_rank": 477,
+    "semantic_sha256": "d2c76c3a77e196f45618a2725dfb0054f81dad05a7896e5cce940257a1d226de",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mrvl",
+    "eligibility": "RANKED",
+    "engine_rank": 277,
+    "semantic_sha256": "6395994703174df2a1274f89e6b2332a4762be2e1f2cd2b414e1343da896b65c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ms",
+    "eligibility": "RANKED",
+    "engine_rank": 428,
+    "semantic_sha256": "f6084d48c77d29e6df797243734a0826e97417d7bef09a66bfa5f51dd58e3ccc",
+    "status": "PASS"
+   },
+   {
+    "company_id": "msft",
+    "eligibility": "RANKED",
+    "engine_rank": 26,
+    "semantic_sha256": "6682417ed7f0faadb023a0c86be3dca45b47e3402adfff4ea13e1eed2e9d909e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "msi",
+    "eligibility": "RANKED",
+    "engine_rank": 217,
+    "semantic_sha256": "e59f2229730a101b307ceeb9fb8abde9096bd689e5f7ef4d2dce7962440d4285",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mstr",
+    "eligibility": "RANKED",
+    "engine_rank": 424,
+    "semantic_sha256": "162cdcae10ce29248d8017991df8cc2a60e45cf78dc614efb2f074b0c71e43e2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "mu",
+    "eligibility": "RANKED",
+    "engine_rank": 467,
+    "semantic_sha256": "24ac7b9b68c5468f97226c4392de7e0523b7b6e408f159b841e194de3ac914dc",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ndaq",
+    "eligibility": "RANKED",
+    "engine_rank": 268,
+    "semantic_sha256": "44578c5ad296deafdc6cad16f3f25ac948bff6e693cda5ffacab187614a526e0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "nee",
+    "eligibility": "RANKED",
+    "engine_rank": 355,
+    "semantic_sha256": "4c69ceb9d151f2fc940099e7d5038ecae474da0ece387da191faa2750836e9f4",
+    "status": "PASS"
+   },
+   {
+    "company_id": "nem",
+    "eligibility": "RANKED",
+    "engine_rank": 396,
+    "semantic_sha256": "c5845834f6545314d093a6239a13d6673f87315cbb5e2ceb75729ceb18ea2384",
+    "status": "PASS"
+   },
+   {
+    "company_id": "net",
+    "eligibility": "RANKED",
+    "engine_rank": 116,
+    "semantic_sha256": "f7bf927d532bb5f66cafe5b6ab1fd31f8568545799604096a7f4e3e009231bb4",
+    "status": "PASS"
+   },
+   {
+    "company_id": "nflx",
+    "eligibility": "RANKED",
+    "engine_rank": 87,
+    "semantic_sha256": "ae2d0237b99d948283413f470cf3795ea3547cf86d5f1463a3546e740684cb3b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "nke",
+    "eligibility": "RANKED",
+    "engine_rank": 236,
+    "semantic_sha256": "8b13c737f32db774f754f13e5729d41362783a696587a728f8338c59da583ce0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "noc",
+    "eligibility": "RANKED",
+    "engine_rank": 307,
+    "semantic_sha256": "566fb6a7f6c560357f3ba103768d6db57239afd3f61a5257fe5e22caba0b62b8",
+    "status": "PASS"
+   },
+   {
+    "company_id": "now",
+    "eligibility": "RANKED",
+    "engine_rank": 20,
+    "semantic_sha256": "9a0afc7868725188e21ec5c284e86ed3d9bd0405ceb1f639ac13f745c7b3c8bf",
+    "status": "PASS"
+   },
+   {
+    "company_id": "nsc",
+    "eligibility": "RANKED",
+    "engine_rank": 378,
+    "semantic_sha256": "8bfbec3a92cc585415ef898a668120e5d01be67487fecb7b8133757e0b6395eb",
+    "status": "PASS"
+   },
+   {
+    "company_id": "nue",
+    "eligibility": "RANKED",
+    "engine_rank": 434,
+    "semantic_sha256": "5df5a364eced5e606c9abae98ef907f4909afb0d03ff15bea52ea3ed3624c1d6",
+    "status": "PASS"
+   },
+   {
+    "company_id": "nvda",
+    "eligibility": "RANKED",
+    "engine_rank": 1,
+    "semantic_sha256": "507bf77ae16e7761c8a3c67840546c2a26aa5ce7c3ca31297e71d7318a8808bb",
+    "status": "PASS"
+   },
+   {
+    "company_id": "nxpi",
+    "eligibility": "RANKED",
+    "engine_rank": 221,
+    "semantic_sha256": "8379295fa25759af05d0ddacb6e83a5b397757db426f7dd3329603f100b9eb3b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "o",
+    "eligibility": "RANKED",
+    "engine_rank": 330,
+    "semantic_sha256": "683d749eb887fe68fcd2311f01a3f3568b42143c4a00826083c06bbbaa6fbd5a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "oke",
+    "eligibility": "RANKED",
+    "engine_rank": 327,
+    "semantic_sha256": "a8dd1258948a1236c81c2818d0c7187ed073fd09d721826e7fe0a6012a09790d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "orcl",
+    "eligibility": "RANKED",
+    "engine_rank": 40,
+    "semantic_sha256": "ac30433a8e7fd58e4933edb1f73443d855258b5e4005b5faf67df3b66ec6ed25",
+    "status": "PASS"
+   },
+   {
+    "company_id": "orly",
+    "eligibility": "RANKED",
+    "engine_rank": 94,
+    "semantic_sha256": "d8d4cc3b726861fcf4c65e7a52431ac7e25ddd8b3e53e53558bd3c0ce3829d68",
+    "status": "PASS"
+   },
+   {
+    "company_id": "oxy",
+    "eligibility": "RANKED",
+    "engine_rank": 455,
+    "semantic_sha256": "3c0c0a28a369514313c52e5d7018fd6f093b6d91858f2b39393e4144cda34704",
+    "status": "PASS"
+   },
+   {
+    "company_id": "panw",
+    "eligibility": "RANKED",
+    "engine_rank": 159,
+    "semantic_sha256": "5bbb2fb2dafd543ba8bd19dc2f432409c59b23ae83300e63633791458ebadbb9",
+    "status": "PASS"
+   },
+   {
+    "company_id": "pcar",
+    "eligibility": "RANKED",
+    "engine_rank": 76,
+    "semantic_sha256": "a59176e733be0ccdf5a46e76520af8214aa82d6f8259cc5f63aad70c7d93871a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "pep",
+    "eligibility": "RANKED",
+    "engine_rank": 335,
+    "semantic_sha256": "59895fb038973fe2ad3940f63d387ad9a23dbf44b45839a7221abe53758a955b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "pfe",
+    "eligibility": "RANKED",
+    "engine_rank": 462,
+    "semantic_sha256": "9c5dd7aae184491bcfea371b87465a5142a7de92ea996591a584aa00c31111e3",
+    "status": "PASS"
+   },
+   {
+    "company_id": "pg",
+    "eligibility": "RANKED",
+    "engine_rank": 196,
+    "semantic_sha256": "c395cc8e4d8bd3bb1d90e40745a34f7211285f6f48823b687b4ebc196a9c3283",
+    "status": "PASS"
+   },
+   {
+    "company_id": "pgr",
+    "eligibility": "RANKED",
+    "engine_rank": 37,
+    "semantic_sha256": "32b3010a1e253cfd0a3c0baa259b667aa449bb790c9456efdd833ad977a95e79",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ph",
+    "eligibility": "RANKED",
+    "engine_rank": 115,
+    "semantic_sha256": "b726600d4d042614994dd93f8d32c466302164503742521832590da3f17c8fd5",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:a",
+    "eligibility": "RANKED",
+    "engine_rank": 215,
+    "semantic_sha256": "7fa1e2776d54c2b7319f49cba3930403c8fb3724c093bd855413d62d7a32974d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:acgl",
+    "eligibility": "RANKED",
+    "engine_rank": 478,
+    "semantic_sha256": "dc05103bf164fa1cbb20efde3b54d81c7f719c9f333b334d895e7c2b54344226",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:adm",
+    "eligibility": "RANKED",
+    "engine_rank": 423,
+    "semantic_sha256": "acfd27b658650caafd5b5150fc1fd6f639eb54dcf3923fc6703d76ce934a97d1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:adsk",
+    "eligibility": "RANKED",
+    "engine_rank": 73,
+    "semantic_sha256": "2ecaf8b3bddb0d8e087c18640048ea31e439a9057eae1075cc315d61e8b5af79",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:aee",
+    "eligibility": "RANKED",
+    "engine_rank": 393,
+    "semantic_sha256": "0791ba3f945b3a87d7bbfb4390825b4fdde0491b5ccba3150c17e31645f24579",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:aig",
+    "eligibility": "RANKED",
+    "engine_rank": 479,
+    "semantic_sha256": "75e3ff562ecf95478509c94155ff74a63ff9af02d7855fb536e6269be9674290",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:algn",
+    "eligibility": "RANKED",
+    "engine_rank": 138,
+    "semantic_sha256": "e070b3597c1fccf7ed2f510f4c4c617a49dd5a2b79d113ce6428487336dbe5b1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:amcr",
+    "eligibility": "RANKED",
+    "engine_rank": 407,
+    "semantic_sha256": "9edac1e808d77339c27cba28d04681fe6773893e171c37c19d8ace418b5cd284",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:amp",
+    "eligibility": "RANKED",
+    "engine_rank": 358,
+    "semantic_sha256": "469dd371f311c21b479669f873a922e39a52698ebb0af11671031f3d81875563",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:aptv",
+    "eligibility": "RANKED",
+    "engine_rank": 85,
+    "semantic_sha256": "330653ac7bb711db84fe116d2eee4c50c488c8f92f44db4b9bc92f4349e28bd7",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:are",
+    "eligibility": "RANKED",
+    "engine_rank": 480,
+    "semantic_sha256": "4495ca102e2f0690991d0e13fcdce0df658313e8f0ac2fe7eab2c4834dc38a68",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ato",
+    "eligibility": "RANKED",
+    "engine_rank": 333,
+    "semantic_sha256": "df025e9ac686a3df7ed7b98ab1107378306e5f91943012bb2ba31353f44835a1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:avb",
+    "eligibility": "RANKED",
+    "engine_rank": 376,
+    "semantic_sha256": "697c16d0cd52342518e43081bb7cae2ff94e6534c4a5aa027c29207bed042e57",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:avy",
+    "eligibility": "RANKED",
+    "engine_rank": 436,
+    "semantic_sha256": "6defe5946e074ac00cadf77538fe7e7a41d38e3a167e90096b3d7b8b8742a933",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:awk",
+    "eligibility": "RANKED",
+    "engine_rank": 254,
+    "semantic_sha256": "148aa40d53db038b8180add5dea05c14daaa055d2af7c81bc017b0234e3f7c6d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:axon",
+    "eligibility": "RANKED",
+    "engine_rank": 45,
+    "semantic_sha256": "5dd671c15970c0c3f8973e26d871f066608cb61fe515905fec4f32bdb6856b97",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:azo",
+    "eligibility": "RANKED",
+    "engine_rank": 133,
+    "semantic_sha256": "ee1d26cd37d85aa0410edbc6ba229d2e4245370a61db46041fbb9323bd582bbe",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ball",
+    "eligibility": "RANKED",
+    "engine_rank": 481,
+    "semantic_sha256": "ef8cd3589025658c44c599a9cb6ab59d3bfc1f52a614568d9275dd80951ee121",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:bax",
+    "eligibility": "RANKED",
+    "engine_rank": 426,
+    "semantic_sha256": "323bed474b1e7ead1c4ca0d335d705e7ddc4db6d3bfa002e8ba3f8a407b8afbe",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:bby",
+    "eligibility": "RANKED",
+    "engine_rank": 380,
+    "semantic_sha256": "c384e551b5e8705e9610a13b4885229e191af0e5dd988820c96d492ce8b6e866",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:bf-b",
+    "eligibility": "RANKED",
+    "engine_rank": 195,
+    "semantic_sha256": "89b40517ab27815521274e77b551946b81d52153c04c0732a2b31c46dea9ba5f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:biib",
+    "eligibility": "RANKED",
+    "engine_rank": 337,
+    "semantic_sha256": "d19ef1115b11d750a2c554970da5712896bdb5bd007224daaa5e455f09c7cd6d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:bldr",
+    "eligibility": "RANKED",
+    "engine_rank": 447,
+    "semantic_sha256": "83af6ebe3505d6dc2d07eb958cbe4f3a30716cddf5b15f36dca408a0d57ce0a1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:br",
+    "eligibility": "RANKED",
+    "engine_rank": 155,
+    "semantic_sha256": "75bef1f6edfcef4ade94f0cbad2748354ca2a807fe8c10cb72f79881282c1177",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:bro",
+    "eligibility": "RANKED",
+    "engine_rank": 89,
+    "semantic_sha256": "a9d9dc6bf5d3c3233a2c26da43f18ba04ef4a88137182ff57b7715b422eda69b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:carr",
+    "eligibility": "RANKED",
+    "engine_rank": 360,
+    "semantic_sha256": "3eb539221b7f0a68dda6cd473f1fff8db88579763c8ee93acc65354b6da62947",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:cboe",
+    "eligibility": "RANKED",
+    "engine_rank": 9,
+    "semantic_sha256": "cc8625b38d524d7c206cfb99f2cbc2424336f3ac12f76fbb0512f4eb71591560",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:cbre",
+    "eligibility": "RANKED",
+    "engine_rank": 336,
+    "semantic_sha256": "56282769a563d00482f12446ee5cbb0a313d37f72f9c956ec7e3984848c87d5b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:cci",
+    "eligibility": "RANKED",
+    "engine_rank": 394,
+    "semantic_sha256": "2f65c62a3491de4d1b885f60902f47f0801374fca47a4ea1e14764955283f729",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ccl",
+    "eligibility": "RANKED",
+    "engine_rank": 179,
+    "semantic_sha256": "17223dc41f3736b2b664b4ce83e91207bc51cf6d98caff18ff2cbf13c9d9e002",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:cdw",
+    "eligibility": "RANKED",
+    "engine_rank": 367,
+    "semantic_sha256": "7914d1d424e7be4f701f3f3f44a6e57df7776536a1cda10d6213cac956742b9a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:cfg",
+    "eligibility": "RANKED",
+    "engine_rank": 375,
+    "semantic_sha256": "440ea99368006cc682829d76ea7ca6c7c43a0f76d941086e0f8bf08100cb5123",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:chd",
+    "eligibility": "RANKED",
+    "engine_rank": 83,
+    "semantic_sha256": "832e0ddbf94f39865702ae9a43ac3d2650caea4ed80da0f4a73153319800ffa6",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:chtr",
+    "eligibility": "RANKED",
+    "engine_rank": 273,
+    "semantic_sha256": "feb03c752ec99a0a42d2626995d1b2532ce3a71d3fa9f0e0fea16c4ce2bec4af",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:cinf",
+    "eligibility": "RANKED",
+    "engine_rank": 127,
+    "semantic_sha256": "89ab28c8ea0e4c0324c69c71501195c7effa200ecccc6fbf420398af54deb703",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:clx",
+    "eligibility": "RANKED",
+    "engine_rank": 317,
+    "semantic_sha256": "e31c7be7c6e8710ab1c19a75fbbf7b70724d3d8863285aa1c8f6ab4dd4ab0c84",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:cmg",
+    "eligibility": "RANKED",
+    "engine_rank": 25,
+    "semantic_sha256": "bf0a4fc76255fb9fcd4131cf0d6ac3f02519493922c17f48f66b70ce55a79681",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:cms",
+    "eligibility": "RANKED",
+    "engine_rank": 399,
+    "semantic_sha256": "556b57812bf6264f3fc20c3328e912146f6f0919d0dca2e134108bfe245923b3",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:cnc",
+    "eligibility": "RANKED",
+    "engine_rank": 135,
+    "semantic_sha256": "1bca4f1fc4010ab7c178ccb81cb567a49b7520b4d3acdc50e13a119d3c91132d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:cnp",
+    "eligibility": "RANKED",
+    "engine_rank": 329,
+    "semantic_sha256": "8264c86142f6881d232008c981b2c81548698ae2d418c473cef44a0d7f2c85b2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:coo",
+    "eligibility": "RANKED",
+    "engine_rank": 292,
+    "semantic_sha256": "c401868c7dee190129c810c8944091906686a365e193619234eb27d7e63eb427",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:cpay",
+    "eligibility": "RANKED",
+    "engine_rank": 123,
+    "semantic_sha256": "310e8e9f94337c026d5da4eb9dfd7904a3cbcc28820a3f8a7082b24e71ae77b1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:cprt",
+    "eligibility": "RANKED",
+    "engine_rank": 12,
+    "semantic_sha256": "982c46071d7f4191c4aafe5f4936de457bfd2fbd9502714ef2d3c003991b6bf4",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:csgp",
+    "eligibility": "RANKED",
+    "engine_rank": 55,
+    "semantic_sha256": "0cad7bc975a29fbedd76a3d18d372f87e5cd3882fec0521258ce22284c732e6a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ctra",
+    "eligibility": "RANKED",
+    "engine_rank": 461,
+    "semantic_sha256": "4a92668abd517be3be16b4863ba04c1dd3ea9431789c0782218b299cd35e90fc",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ctsh",
+    "eligibility": "RANKED",
+    "engine_rank": 230,
+    "semantic_sha256": "b0ba21721908cdd96927dd7a067c11afdc8fe40eef7edaa4ddf010b2f6a15694",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:dd",
+    "eligibility": "RANKED",
+    "engine_rank": 457,
+    "semantic_sha256": "87e71a41b876fda9a35356e0470814ab2cae28cddc0c8cbf2830385b3a894e66",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:deck",
+    "eligibility": "RANKED",
+    "engine_rank": 27,
+    "semantic_sha256": "83be0554c072a8a9ca6a3ee0117edd92995f1a3fe4fd354d539d3ce87252e038",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:dfs",
+    "eligibility": "RANKED",
+    "engine_rank": 482,
+    "semantic_sha256": "ff5922a17bd6d653fe935da0790d9101c72f0da12423bafd1ffe4508f2fbaf13",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:dg",
+    "eligibility": "RANKED",
+    "engine_rank": 408,
+    "semantic_sha256": "2ac7640c0db20f05160b874cd34803a6990815c78497d625614fabafe19b1670",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:dgx",
+    "eligibility": "RANKED",
+    "engine_rank": 346,
+    "semantic_sha256": "5370285304866408139de708cbd67d9218d2c86566e50956c55f0846843ca806",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:dhi",
+    "eligibility": "RANKED",
+    "engine_rank": 338,
+    "semantic_sha256": "86ea727e2763f0ce0fdb616ebf73e8d1a75f04738e404d12b300185278f52318",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:dltr",
+    "eligibility": "RANKED",
+    "engine_rank": 286,
+    "semantic_sha256": "eee2f60a3b3e887f6bc2575002940f92f69423b45b8e29b876852b3a3e40faa1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:doc",
+    "eligibility": "RANKED",
+    "engine_rank": 440,
+    "semantic_sha256": "8f912e3a19ddd24f4d45f580bb01c00e61fba6146c323c82e5cf8cb1285c3f8d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:dov",
+    "eligibility": "RANKED",
+    "engine_rank": 240,
+    "semantic_sha256": "0821f5564834600b9933efe2d57d02c671bcc691a1699bf09be0cfbf48b593d2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:dow",
+    "eligibility": "RANKED",
+    "engine_rank": 465,
+    "semantic_sha256": "091af039db8b98bceb78320a5d2a32ca516fe427d41ad191d3a2a8036b89c992",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:dri",
+    "eligibility": "RANKED",
+    "engine_rank": 266,
+    "semantic_sha256": "e4b3f4890a5fd4ff3bb56d63eb9b6f31c5e83742c18793ed1dff9a62d1f456a6",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:dte",
+    "eligibility": "RANKED",
+    "engine_rank": 182,
+    "semantic_sha256": "7afcfa26f9c39192c3fbf5513e0295a617478d2640fd42f23e571269f4e788b6",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:dxcm",
+    "eligibility": "RANKED",
+    "engine_rank": 5,
+    "semantic_sha256": "61244d326a4f1644c42a84af1e987d8719194612ad375cdbced8287cbec42062",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ea",
+    "eligibility": "RANKED",
+    "engine_rank": 296,
+    "semantic_sha256": "991664f016e9898c80dc266a7d816d977b93a463eb359e0fb134ffdadc771e30",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ed",
+    "eligibility": "RANKED",
+    "engine_rank": 359,
+    "semantic_sha256": "27ef8dc4685f4e54ac3bb3f5e63424547e474c2d78a4efa7a1283ed693a41ea3",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:efx",
+    "eligibility": "RANKED",
+    "engine_rank": 410,
+    "semantic_sha256": "5f23e84a9d373e5c475f4a4fda275a8fee30b4263918759b96776ee9cacd0d06",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:eg",
+    "eligibility": "RANKED",
+    "engine_rank": 483,
+    "semantic_sha256": "2464d096314107503c2104e53e47034aadc9e95e35fa3843c0b311470e3d3b3d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:eix",
+    "eligibility": "RANKED",
+    "engine_rank": 345,
+    "semantic_sha256": "82c0eaa2f8055113478a78fb2417d090bd7cfa35f09010a84be151a8b848923f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:el",
+    "eligibility": "RANKED",
+    "engine_rank": 326,
+    "semantic_sha256": "ed85441e2d6ba4085430bb7ab8393232d388c1950cd34b294983a58424fdadb0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:eqr",
+    "eligibility": "RANKED",
+    "engine_rank": 315,
+    "semantic_sha256": "4416ac6a22338a614c5758ff74c968b7e6cb92bd89a8776e44b8610a237b83a3",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:eqt",
+    "eligibility": "RANKED",
+    "engine_rank": 302,
+    "semantic_sha256": "046979fcd5c7198c814643eb9ecc92b60b39e68d7bc217beb8a7f55da84b37ee",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:erie",
+    "eligibility": "RANKED",
+    "engine_rank": 275,
+    "semantic_sha256": "c3a492e615c05ef0b05c3265a9ae6299dbc885bfe763a6f0a2541e980d84a38e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:es",
+    "eligibility": "RANKED",
+    "engine_rank": 430,
+    "semantic_sha256": "a1245c8684b589d1719706a676136d196cb1af43dc75d337955c0aca1590b593",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ess",
+    "eligibility": "RANKED",
+    "engine_rank": 311,
+    "semantic_sha256": "60683e463a8e7d2ee827d27512fdcec9b64181ba37e19a1276a14672fe9a8f7b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:exc",
+    "eligibility": "RANKED",
+    "engine_rank": 304,
+    "semantic_sha256": "0aa03a2d78882129853c40964be1bfa1778740160e34ebd04416e9fd98f6c3dd",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:expd",
+    "eligibility": "RANKED",
+    "engine_rank": 468,
+    "semantic_sha256": "08285bb8ae2100a88e7a674381819ef27a6e6e122c3a9d1d71a1ba8fc67cf2b7",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:expe",
+    "eligibility": "RANKED",
+    "engine_rank": 69,
+    "semantic_sha256": "ff36f3fb06aca6b1312fa08c0fc407e3dee339b464ef9f078bf1d0eff1143900",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:exr",
+    "eligibility": "RANKED",
+    "engine_rank": 247,
+    "semantic_sha256": "a9417baaa64afb7841ac31e6e274c4455b90a90515cb7deec133a7a9e071c278",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:fds",
+    "eligibility": "RANKED",
+    "engine_rank": 62,
+    "semantic_sha256": "714d864c686e5503f106e34713d0e6f0c08be5f1ae4f2996cb2f355a8a528b84",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:fe",
+    "eligibility": "RANKED",
+    "engine_rank": 285,
+    "semantic_sha256": "07a9d419a0216eb6a45590c02eaa53a6d3c4cd064498cbeabe1a6dbe2021710b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:fico",
+    "eligibility": "RANKED",
+    "engine_rank": 79,
+    "semantic_sha256": "51d04bd852045265571a077120aed950cd210b3e50bde1771cfdf6b7e8d18a22",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:fis",
+    "eligibility": "RANKED",
+    "engine_rank": 313,
+    "semantic_sha256": "361eb3064205f1272bfb285562b6fb6715c7eb783f1e4c8110dda5bf1e9e6f54",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:fisv",
+    "eligibility": "RANKED",
+    "engine_rank": 51,
+    "semantic_sha256": "bd92867250fe55d7516cdfd733e7e36cf38480a3323719e1a5e5083e1a67ba87",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:fitb",
+    "eligibility": "RANKED",
+    "engine_rank": 484,
+    "semantic_sha256": "ef9fa68a6fcb1d1d70915b893a70eba21fb5beef478f177904bc40228fd8fa60",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:foxa",
+    "eligibility": "RANKED",
+    "engine_rank": 324,
+    "semantic_sha256": "eb72c7faac372932e26d1cffaa2d0d6c26f3df8bbb0dd3d768712345b0914565",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:fslr",
+    "eligibility": "RANKED",
+    "engine_rank": 148,
+    "semantic_sha256": "86c9dcfe3f927bb71861cdd2191ec13a64f9b4b253468f6d854ea7e875993dc5",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ftv",
+    "eligibility": "RANKED",
+    "engine_rank": 145,
+    "semantic_sha256": "3c893a35b8b9a7bbf1682a5b5335ebfbc7b147e45d26d86381f991eaa2030f90",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:gddy",
+    "eligibility": "RANKED",
+    "engine_rank": 290,
+    "semantic_sha256": "de708c8d3903d9a458dd8e6702740e81943f0de22eb10f5a613ca848a3571ba8",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:gehc",
+    "eligibility": "RANKED",
+    "engine_rank": 401,
+    "semantic_sha256": "b4a19eba8bf62fe6ff2e13ec8ebb5e627f017ebeb66eb7ebe6c8f770d3c571cb",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:gen",
+    "eligibility": "RANKED",
+    "engine_rank": 194,
+    "semantic_sha256": "d369d750939680be2203f175b7018e30d10c23d2ffd8576d25e95e089b103855",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:gis",
+    "eligibility": "RANKED",
+    "engine_rank": 204,
+    "semantic_sha256": "9fbf449a2c0eca27705eb36441b5a268cc84d58cbbfab7860a591fe4c2b55d1f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:gpc",
+    "eligibility": "RANKED",
+    "engine_rank": 218,
+    "semantic_sha256": "374f8e79449b69d7605e60761f347fbb468ccf9a0dffe3a762141580df070a7c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:gpn",
+    "eligibility": "RANKED",
+    "engine_rank": 98,
+    "semantic_sha256": "3626db146474acca453ce22390b5327e0fb0c5b38606ef6207dbe883e6bee9e1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:hal",
+    "eligibility": "RANKED",
+    "engine_rank": 257,
+    "semantic_sha256": "a713f99df1d6931f2c3870407441e42be00cfa4e832bfbdc082029311b308b95",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:hban",
+    "eligibility": "RANKED",
+    "engine_rank": 320,
+    "semantic_sha256": "70cbd860c6c25912150e975879349d4c5d5ee35b040e25ce5b8f6623c60d546a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:hig",
+    "eligibility": "RANKED",
+    "engine_rank": 96,
+    "semantic_sha256": "a3cf87413569b24acf5ecd52d94bbec4e1b4273f1e8792a373c52af0720593ec",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:hpq",
+    "eligibility": "RANKED",
+    "engine_rank": 439,
+    "semantic_sha256": "6465342ddabd2843de1aca53f97adcd356a322410e1050a04af40269f72d0b79",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:hrl",
+    "eligibility": "RANKED",
+    "engine_rank": 485,
+    "semantic_sha256": "47af49d3b9b6f22fb1edbeda85e0ce446d7b9e3da181abf002c0a355589d4280",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:hsy",
+    "eligibility": "RANKED",
+    "engine_rank": 244,
+    "semantic_sha256": "e09ccc32c0b3df2dd644a5e72aa57c58f53c51b5cc4fbe0f922568f5e8c0fb4c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:hum",
+    "eligibility": "RANKED",
+    "engine_rank": 186,
+    "semantic_sha256": "c4f048b522caa8d9dd9a3abf97131074f8ea27edfdba3af2c3dfbab60f908b23",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:idxx",
+    "eligibility": "RANKED",
+    "engine_rank": 42,
+    "semantic_sha256": "7a8081ea7d4da2ce366de0716221829454b508ca1cf21df4bf3e6de9bf450e30",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:iex",
+    "eligibility": "RANKED",
+    "engine_rank": 193,
+    "semantic_sha256": "63945ecb9d85e777fb6f5e6b87f3728f12d49b15a6a29a45edce714abefa4342",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:iff",
+    "eligibility": "RANKED",
+    "engine_rank": 334,
+    "semantic_sha256": "ce0d52235f43b22d13b704f9574fc0acbe62c45e9431940faad767d7b03ec473",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:invh",
+    "eligibility": "RANKED",
+    "engine_rank": 113,
+    "semantic_sha256": "c2b07ee8275837a034fb317e4c91a4aedc4b843e675cad4dd41c58a4e81e0a02",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ip",
+    "eligibility": "RANKED",
+    "engine_rank": 417,
+    "semantic_sha256": "fb3da0ec06e92dea57719d47587a40ae4184185ac1c76f095c4bfeec7c672d97",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:iqv",
+    "eligibility": "RANKED",
+    "engine_rank": 289,
+    "semantic_sha256": "5399bd44f1bc47c79f75d67c74dcb9f26e3b5cdf9bc15220ef48744526f4f0a9",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ir",
+    "eligibility": "RANKED",
+    "engine_rank": 163,
+    "semantic_sha256": "ba5b831863da9d4f726b8c647f5fbe4191afd4203c45916136916d80aae89c1c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:irm",
+    "eligibility": "RANKED",
+    "engine_rank": 350,
+    "semantic_sha256": "bb81817f29d1326dafd3e577f5e1150fafcaa2fcbdded44cf2d344a19902e10d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:it",
+    "eligibility": "RANKED",
+    "engine_rank": 256,
+    "semantic_sha256": "6e8e26661794b16a19239d9910cdc62c2e538442700f608451300a6666467346",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:j",
+    "eligibility": "RANKED",
+    "engine_rank": 36,
+    "semantic_sha256": "6f130b739707c3f13cf31ea52568c3aca3f64ecec47bbeebbf0f57a69025279c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:jbht",
+    "eligibility": "RANKED",
+    "engine_rank": 295,
+    "semantic_sha256": "3869d60f959c4df3f986c8c7f18c8577f5f5e1c4dc88c528da5600daef44c89d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:kdp",
+    "eligibility": "RANKED",
+    "engine_rank": 170,
+    "semantic_sha256": "67c835102a02a0f4ad56f4bb5de4824d1175a280f46d7f2769278deca403dd11",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:key",
+    "eligibility": "RANKED",
+    "engine_rank": 437,
+    "semantic_sha256": "5247579bae5b3d176857282f9e6fb6f176c8f16d55e18ae10717c9be8bb6caae",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:khc",
+    "eligibility": "RANKED",
+    "engine_rank": 486,
+    "semantic_sha256": "b1d5adc3bb9f8ebdcd2edf4761b59f8fbdcf9be99b8a462598f61aa80dc54797",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:kmb",
+    "eligibility": "RANKED",
+    "engine_rank": 391,
+    "semantic_sha256": "b5b5b42b0d8cc18773793adfe029ca2ac2833df777da71ff3d8034eeca712128",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:kr",
+    "eligibility": "RANKED",
+    "engine_rank": 372,
+    "semantic_sha256": "412d957e17cc013f5c5b1f73969b7b74ad32b4b08cfde1d5d4ab65903b2f9dda",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:kvue",
+    "eligibility": "RANKED",
+    "engine_rank": 287,
+    "semantic_sha256": "80e438f48e76a37792994ab3e1544762f66644397caf27310e7c026fe4fa00e8",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:l",
+    "eligibility": "RANKED",
+    "engine_rank": 142,
+    "semantic_sha256": "ef40490d7e48d8133b27a2b752a09a0071aac2d1c3efcadd2be9a41da5c8b086",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ldos",
+    "eligibility": "RANKED",
+    "engine_rank": 272,
+    "semantic_sha256": "4a6ba447d09ab67b21757629b0828d0fc70bc862ae28b99454d51ca951350c54",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:len",
+    "eligibility": "RANKED",
+    "engine_rank": 246,
+    "semantic_sha256": "933effae68caed043401a4b08d07842448b3aa5c8a80eefe7ef5c38f68f41ad6",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:lh",
+    "eligibility": "RANKED",
+    "engine_rank": 342,
+    "semantic_sha256": "9b74cdb077a453cc763a7c221d38f8b9781e73a69b7c38140aa661eb37960f5d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:lhx",
+    "eligibility": "RANKED",
+    "engine_rank": 122,
+    "semantic_sha256": "61c7ba2c27d26cac40f51139a80ca36979f15c4f68700afb1219cfba27ec89d0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:lii",
+    "eligibility": "RANKED",
+    "engine_rank": 125,
+    "semantic_sha256": "57444c980e49520f9712e2bfc9f4caa593b421132af004f54839dafff1aa19cf",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:lnt",
+    "eligibility": "RANKED",
+    "engine_rank": 395,
+    "semantic_sha256": "64fcf1f5d0048e31e82546d3d39de1fe3f86f4eb3f10a51a25713b623c987aea",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:lulu",
+    "eligibility": "RANKED",
+    "engine_rank": 24,
+    "semantic_sha256": "5bb7c0078f577f9f94f46d6990ceaa11b2b1e7b2bc3fbf90fcf4c06559617497",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:luv",
+    "eligibility": "RANKED",
+    "engine_rank": 220,
+    "semantic_sha256": "437452a112a62372fba64d5852c2b7af68c99a17d19d1cba8d1345c933d59018",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:lvs",
+    "eligibility": "RANKED",
+    "engine_rank": 166,
+    "semantic_sha256": "6fd97575359ffa55aba64b0e35d70173ad49ff856df2a0db086e2fdb0027ccf2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:lyb",
+    "eligibility": "RANKED",
+    "engine_rank": 435,
+    "semantic_sha256": "355ce5371863199c5803808b0415dce2fd09e0e593774661a027708faa3ed42c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:lyv",
+    "eligibility": "RANKED",
+    "engine_rank": 3,
+    "semantic_sha256": "98390e8435a092191911a80e863c8d7f628199b4a820864a5957bdb2c051faf9",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:maa",
+    "eligibility": "RANKED",
+    "engine_rank": 388,
+    "semantic_sha256": "8e67432aee99f6264b61d8152ee5afb8f82cfef60f9c1fadbb082fb0e1fa6931",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:mas",
+    "eligibility": "RANKED",
+    "engine_rank": 269,
+    "semantic_sha256": "31d46a831c072d3a3379b8c990c7dd3fc12faab0e8c617d0b4214ba8b5eca709",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:mchp",
+    "eligibility": "RANKED",
+    "engine_rank": 343,
+    "semantic_sha256": "9ee66be312d0996b95f9367d9247f41f1d0f8d7d4e234f55aa72da770947b534",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:mkc",
+    "eligibility": "RANKED",
+    "engine_rank": 214,
+    "semantic_sha256": "52ec584bf45658b898e6e6d546a290e62949f2346ec475260bc6fabd3482ea84",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:mlm",
+    "eligibility": "RANKED",
+    "engine_rank": 77,
+    "semantic_sha256": "34ef681b9be12ce423f196324b3810a1676c94f36103a95ab2911a9a5d499d46",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:moh",
+    "eligibility": "RANKED",
+    "engine_rank": 110,
+    "semantic_sha256": "7fa8631f7d9a0dae090b90febc507f544e75241eb89d665665a65218d5086aa8",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:msci",
+    "eligibility": "RANKED",
+    "engine_rank": 49,
+    "semantic_sha256": "4d1e9cb8cbe4e23f4314d9a5971ec354463c1b9e47ab7e20a7e1eeffb155397f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:mtb",
+    "eligibility": "RANKED",
+    "engine_rank": 258,
+    "semantic_sha256": "1b94c6679068b3869a0cc54ba51b2620b67676ddd63eed7d69c53e380ea13b07",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:mtd",
+    "eligibility": "RANKED",
+    "engine_rank": 371,
+    "semantic_sha256": "c4550fdf68a8be68005792cb1e905e3823eba49635a78a5d8245c3056981e25f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:nrg",
+    "eligibility": "RANKED",
+    "engine_rank": 442,
+    "semantic_sha256": "de3394fb46ad28d2b36d0046f42a98bcef8623d61f436fc1e7dadac5153060cd",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ntap",
+    "eligibility": "RANKED",
+    "engine_rank": 267,
+    "semantic_sha256": "60bd7bac6c1e884bf92e24b6b7a3c0afe79010efe0aa326807692e79b7bf7a7e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ntrs",
+    "eligibility": "RANKED",
+    "engine_rank": 373,
+    "semantic_sha256": "fcfbee9f1c611ffa02bafbcffb41aaf026cdf5330a9bc9409439c2251c7af7fb",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:nvr",
+    "eligibility": "RANKED",
+    "engine_rank": 347,
+    "semantic_sha256": "e3ee7926af2f3ec39ad529972350895061ec0bfcce12f9ff27e3a043254f932a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:odfl",
+    "eligibility": "RANKED",
+    "engine_rank": 487,
+    "semantic_sha256": "5194ebcd8461c63d75ad6c168af048b1259b8e1e49b4196e7d5e2eb41663026c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:omc",
+    "eligibility": "RANKED",
+    "engine_rank": 191,
+    "semantic_sha256": "96f85a70d4044badd620f91cd5c1174ff156ce59da3d217b1d74e103802ed747",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:on",
+    "eligibility": "RANKED",
+    "engine_rank": 210,
+    "semantic_sha256": "89de82d6c92efb633a48f695d53a5a51d2c694c13c1f4853f59ac2e098949f74",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:otis",
+    "eligibility": "RANKED",
+    "engine_rank": 309,
+    "semantic_sha256": "1f032e0c9f3a15cbc99ad4efeb5441400e3782c268d446f86a48b0d4caeb437c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:payx",
+    "eligibility": "RANKED",
+    "engine_rank": 84,
+    "semantic_sha256": "07b05f3a91a13c7d660c247ccc47ddc2ca35a9163d899acc2093324a79190974",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:pcg",
+    "eligibility": "RANKED",
+    "engine_rank": 231,
+    "semantic_sha256": "af05d8964bf604bb0d82d2581d95907e3df0fb3d58275eee05ea25ea7cca4297",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:peg",
+    "eligibility": "RANKED",
+    "engine_rank": 81,
+    "semantic_sha256": "0428e625f94fe250b02b4b4650c1637b310ce30232704711716b16612e509e7c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:pfg",
+    "eligibility": "RANKED",
+    "engine_rank": 464,
+    "semantic_sha256": "47caf743437ab9515f081d07bddcd6772a6af09d4dec4956f5462032464b2c8d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:phm",
+    "eligibility": "RANKED",
+    "engine_rank": 248,
+    "semantic_sha256": "f8d853386c2b7df732bf436d5e9d425f5541ecf7cb98671970e85c47f6fb8874",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:pkg",
+    "eligibility": "RANKED",
+    "engine_rank": 381,
+    "semantic_sha256": "cbce3816887c8e9e865bc07404e13749e2856f2b91aeacb6fb5a4868979eef55",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:pnr",
+    "eligibility": "RANKED",
+    "engine_rank": 190,
+    "semantic_sha256": "8f274d8d8b62a8e714321c17cfa971d5f4c33d0cb3f66c4250f5780df1d3f489",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:podd",
+    "eligibility": "RANKED",
+    "engine_rank": 31,
+    "semantic_sha256": "634675b0b160a96047b51c5e3440e0df48de6b6c986eeccdad979516a6dee41b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ppg",
+    "eligibility": "RANKED",
+    "engine_rank": 157,
+    "semantic_sha256": "4654c71d1127b51b18f5eca299169a85cf78c036aa577a6edcca5815716a6263",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ppl",
+    "eligibility": "RANKED",
+    "engine_rank": 314,
+    "semantic_sha256": "f30bbc6e4e09d7aabd1bfc2f50c8e49cc899c92c7d4d48ff36adbd4f94fbe4b5",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:pru",
+    "eligibility": "RANKED",
+    "engine_rank": 449,
+    "semantic_sha256": "4cf5c9258c08f6839c572cfd605dee6177cd29a2079ea56392021091d8d7b161",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ptc",
+    "eligibility": "RANKED",
+    "engine_rank": 233,
+    "semantic_sha256": "2b89fb576623fc53be90a992199f7ac9467117da053b14a9849b5bfbc648a260",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:pypl",
+    "eligibility": "RANKED",
+    "engine_rank": 57,
+    "semantic_sha256": "c0a159c02531afa72cdf1db3606de0f11881e410d8961650837145abea2de4a2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:rf",
+    "eligibility": "RANKED",
+    "engine_rank": 488,
+    "semantic_sha256": "2704001e88caf93006982a04ba0fc383fcf163edc81e375ab25c651584d3896a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:rjf",
+    "eligibility": "RANKED",
+    "engine_rank": 213,
+    "semantic_sha256": "f94c5b1170ef5a29de122db60258247b6bd87cfeeefc5247e9e435ecfafa5e0e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:rmd",
+    "eligibility": "RANKED",
+    "engine_rank": 58,
+    "semantic_sha256": "08a419b57db3e0ebc7e831daa9780e29592d54575fa3e95bbdd8e12aedf3928f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:rol",
+    "eligibility": "RANKED",
+    "engine_rank": 32,
+    "semantic_sha256": "1b16ccf00c57ad80bb4abba2bf9c80458a27faf9192b72a2021c026f733bf27f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:rop",
+    "eligibility": "RANKED",
+    "engine_rank": 328,
+    "semantic_sha256": "08e616d03cc610b00cb627c18388794fcece48eb806fd5f85cab1c611d1e1b81",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:sbac",
+    "eligibility": "RANKED",
+    "engine_rank": 184,
+    "semantic_sha256": "5e7cb887afe661d38e7b10d03b8c322b7b7eda9d173d5fa99f7af76851174457",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:smci",
+    "eligibility": "RANKED",
+    "engine_rank": 7,
+    "semantic_sha256": "88e685beae2499ec5afc97ff4af1516f276fe9f1d1816f97debf12441f53a0d4",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ste",
+    "eligibility": "RANKED",
+    "engine_rank": 70,
+    "semantic_sha256": "b7455dc74529ed7137b4d5be30b8e0269fa0ad49ce1dbfacc861654d257f6560",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:stld",
+    "eligibility": "RANKED",
+    "engine_rank": 415,
+    "semantic_sha256": "b36fd44c2ac803cb9273230c37b481f9e6ea98b300865f514958d8fdb07d3fa7",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:stz",
+    "eligibility": "RANKED",
+    "engine_rank": 259,
+    "semantic_sha256": "df75f093e311926722ad85c87cf9f66770933ce5ab0a5bf58091313d1d096ee9",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:sw",
+    "eligibility": "RANKED",
+    "engine_rank": 489,
+    "semantic_sha256": "7ef4ee1c460aad7c5433378011785cbdadbd9e45acac257e90ac8eca68cd4d4c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:swk",
+    "eligibility": "RANKED",
+    "engine_rank": 406,
+    "semantic_sha256": "5f811c52620020d6daff94526261acf56a121fc83cb99912a7949eb17052cb60",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:swks",
+    "eligibility": "RANKED",
+    "engine_rank": 356,
+    "semantic_sha256": "8d0fad23e72b0689d05098351be0e675f1b781fe9214fa3f16d3aff3c4d7e334",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:syf",
+    "eligibility": "RANKED",
+    "engine_rank": 490,
+    "semantic_sha256": "08682d2afb4c0d98c5b86ca47ccc2505b13f7baa309118735e3946b1c482d40d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:syy",
+    "eligibility": "RANKED",
+    "engine_rank": 312,
+    "semantic_sha256": "c5818983095e252286ae351f0be3a9151d637b7b91c260b77f4b65d98a77fa8a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:tdy",
+    "eligibility": "RANKED",
+    "engine_rank": 200,
+    "semantic_sha256": "25282f492e7aa39f07fc5471b5743303c14ac6e0de6d56ba3dec7cd9b18f0a2d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:tpl",
+    "eligibility": "RANKED",
+    "engine_rank": 298,
+    "semantic_sha256": "d30d2706d81d78ed5bc81aa7b3f61bb4f397e053acd27239b3993557bbc0cff0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:trow",
+    "eligibility": "RANKED",
+    "engine_rank": 198,
+    "semantic_sha256": "3b8743a4ee9cbe1b848c4db076940cf40c4544bfb05b998a00f85a3e4d927306",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:tsco",
+    "eligibility": "RANKED",
+    "engine_rank": 226,
+    "semantic_sha256": "f8cc64863e4844252f201cd08f9c9a098894e0c954969cf51b467a405f49d7dd",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:tsn",
+    "eligibility": "RANKED",
+    "engine_rank": 413,
+    "semantic_sha256": "24488c7c014afe6b3f58b3ad54d551d60991ed015f304588acae9103e71f23cf",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ttwo",
+    "eligibility": "RANKED",
+    "engine_rank": 340,
+    "semantic_sha256": "c1c23ac138b9b283fa4f3aaf21b65daa98db617d44563c7ba4ad5ef9a999414c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:txt",
+    "eligibility": "RANKED",
+    "engine_rank": 491,
+    "semantic_sha256": "cde0e860799a65c2ad98e687df9c5696b5c611b3e6836dc68e2378435904afcc",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:tyl",
+    "eligibility": "RANKED",
+    "engine_rank": 202,
+    "semantic_sha256": "44d0d200b18fa4d9dbbedc3de00c0eb3c5e6b6403565a559ea453d4f508694eb",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ual",
+    "eligibility": "RANKED",
+    "engine_rank": 173,
+    "semantic_sha256": "7cda00833ece044c982218570711c65ac22a867b07be4cea9727b38f2e0f540b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:ulta",
+    "eligibility": "RANKED",
+    "engine_rank": 158,
+    "semantic_sha256": "850923d024b223475af16b06d16e5a45a442c3d0d29ec27af67ba46dff8b27c3",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:vici",
+    "eligibility": "RANKED",
+    "engine_rank": 19,
+    "semantic_sha256": "072961a6435e7631c2393b4ca4be02bcbed3af62e1fe3101a07380f834e98a33",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:vlto",
+    "eligibility": "RANKED",
+    "engine_rank": 211,
+    "semantic_sha256": "bcbb3d101a178ba13d10ef2856ae01449fa555949c9f4600b26e02f0cace0d35",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:vmc",
+    "eligibility": "RANKED",
+    "engine_rank": 141,
+    "semantic_sha256": "83a715fbadb8f877b7204847e2576a914e2b8675ad0ad662adc2a55f5b380545",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:vrsk",
+    "eligibility": "RANKED",
+    "engine_rank": 238,
+    "semantic_sha256": "ee5076fc19345b94ad419d96c44ad53f39d31dff72403238e85e86205c4afa74",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:vrsn",
+    "eligibility": "RANKED",
+    "engine_rank": 105,
+    "semantic_sha256": "faa39b21c478350adbbe6da8bc211a77b6e317992c25fde9aed59257b4e7e28a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:vst",
+    "eligibility": "RANKED",
+    "engine_rank": 252,
+    "semantic_sha256": "4086bbe9e751125233e92af0208aa8b07e0ec9bc909cd56c3a956ec58353072b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:vtr",
+    "eligibility": "RANKED",
+    "engine_rank": 305,
+    "semantic_sha256": "549283cec4f41e2188b9a86d2b83cc4ff4a6d099c4c25aa71d52e9e53740f953",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:wab",
+    "eligibility": "RANKED",
+    "engine_rank": 61,
+    "semantic_sha256": "1143681665a609aea853730a90838d826a368a9c278a25e1ff3fd430a619dea0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:wat",
+    "eligibility": "RANKED",
+    "engine_rank": 386,
+    "semantic_sha256": "06f9b4caab9ac7fe2977dee7098b7b0719cf2cf4fc98673a22935a3271085d9c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:wday",
+    "eligibility": "RANKED",
+    "engine_rank": 323,
+    "semantic_sha256": "f2a65742923e8f12f2f4da080cef0724012a09912c9a8f3d0d13d6d61c249ca9",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:wec",
+    "eligibility": "RANKED",
+    "engine_rank": 364,
+    "semantic_sha256": "3bd42ecfe6a7c15ebd16b295edb050a8366020946ccf21bcdb7cf9e217681e25",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:wrb",
+    "eligibility": "RANKED",
+    "engine_rank": 243,
+    "semantic_sha256": "3ccc0ffc76b8f1c3599d99ef54c3dedb021db0b68d4b8b2d8fced250b6389eaf",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:wst",
+    "eligibility": "RANKED",
+    "engine_rank": 131,
+    "semantic_sha256": "eac15298766b7695576ab97cbada9ae090b3676c1315ed28a8870122008cb352",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:wtw",
+    "eligibility": "RANKED",
+    "engine_rank": 180,
+    "semantic_sha256": "167bb2bb9d49fc312f9ca712c3e33d47894e09fd55a9a6c7f027beefdda28f06",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:wy",
+    "eligibility": "RANKED",
+    "engine_rank": 445,
+    "semantic_sha256": "9776fbdb05ba66a262aa6aebcb2a1904db3e22733b013b2da6356b92cc38a8ab",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:xel",
+    "eligibility": "RANKED",
+    "engine_rank": 223,
+    "semantic_sha256": "872288e85d90de1adea2d21b13f8d7102515012307888fe58e63082fb81ea38d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:xyl",
+    "eligibility": "RANKED",
+    "engine_rank": 92,
+    "semantic_sha256": "78460f30fbf7bb3d2349ce488eb2c4517f2e66e3b8fc3a1e5b1873457cefcfe5",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:yum",
+    "eligibility": "RANKED",
+    "engine_rank": 99,
+    "semantic_sha256": "03c2552b8e8f72139f131b70959fdfe993600dcc4ca0b4151845acc8d6959415",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:zbh",
+    "eligibility": "RANKED",
+    "engine_rank": 107,
+    "semantic_sha256": "4aca9f150e10d4b1da4fa174aa33d4ceda481a920bd23ac34d23910fc0e2fb8b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:zbra",
+    "eligibility": "RANKED",
+    "engine_rank": 454,
+    "semantic_sha256": "16d65ce103e169ac8920eaec4f810ca6ca9ed9f0405e0da7b01cbca1e81aab7c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "plan:zts",
+    "eligibility": "RANKED",
+    "engine_rank": 239,
+    "semantic_sha256": "b1aad289424e888dcc0d4d76a0a09e92d042c4266b8461008218ea76018bda3f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "pld",
+    "eligibility": "RANKED",
+    "engine_rank": 241,
+    "semantic_sha256": "d89d8278e42568ff96fbf95f27d2c3cb398e6974d7062b09f361ce8d5e297e24",
+    "status": "PASS"
+   },
+   {
+    "company_id": "pltr",
+    "eligibility": "RANKED",
+    "engine_rank": 100,
+    "semantic_sha256": "63bb6fa5d134053abc91f9ffa0e062640ac2c08bdfd610f463dbf98ff57b1b05",
+    "status": "PASS"
+   },
+   {
+    "company_id": "pm",
+    "eligibility": "RANKED",
+    "engine_rank": 162,
+    "semantic_sha256": "e187e76c06dbea9bbc0dbb231a3456a9f27df566b48bb9d81d30119e69dbcda8",
+    "status": "PASS"
+   },
+   {
+    "company_id": "pnc",
+    "eligibility": "RANKED",
+    "engine_rank": 492,
+    "semantic_sha256": "d4caf2f6c9631b503e40cda44b2fe1cc85fae4dc18d66cadd61f7819b3972d5e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "psa",
+    "eligibility": "RANKED",
+    "engine_rank": 379,
+    "semantic_sha256": "cba917b96db11acf8031ae0554ec032243bdc2179e29741b9e855a28b5c6bd9c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "psx",
+    "eligibility": "RANKED",
+    "engine_rank": 460,
+    "semantic_sha256": "aef61b1e727d054b9bfce4d9ba0aee20a85daccf0fb9f33e76f7c90132de30d0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "pwr",
+    "eligibility": "RANKED",
+    "engine_rank": 21,
+    "semantic_sha256": "fb67465aa164187c3079aa9ccca7e8e7f7771365ba783c3df4a7a795f72a35af",
+    "status": "PASS"
+   },
+   {
+    "company_id": "qcom",
+    "eligibility": "RANKED",
+    "engine_rank": 453,
+    "semantic_sha256": "398698c38f67beb736e62a0bb2a8c588533c499a10f355a4f596d9e8b55c23b8",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000004447",
+    "eligibility": "RANKED",
+    "engine_rank": 456,
+    "semantic_sha256": "8b9da31ddbac4ba6e87e7de689de19f7079e922dbe95da5f7a0e30c7e3371375",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000034088",
+    "eligibility": "RANKED",
+    "engine_rank": 444,
+    "semantic_sha256": "2e32781e55594a78d7397dcef8c5df2fcf361a5bbf6e64be17eb258898a043c1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000046619",
+    "eligibility": "RANKED",
+    "engine_rank": 11,
+    "semantic_sha256": "c7fc21e4e83bb6fb5447d51609740e0ee6fbf646c5e685b9f00c80020fa13210",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000055067",
+    "eligibility": "RANKED",
+    "engine_rank": 264,
+    "semantic_sha256": "d6baf886c77ddcdef80676f5d852955ce69bf3fc993dd9b4a95b716570c13462",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000070318",
+    "eligibility": "RANKED",
+    "engine_rank": 111,
+    "semantic_sha256": "6ce74a044c6364191de287f49c32215738932527c014f5e9b74482b3d336df13",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000105016",
+    "eligibility": "RANKED",
+    "engine_rank": 276,
+    "semantic_sha256": "dd41e9b92a159e12f7ad73302b978bd619dca8cef41d9bb8a98c8e68e102ed1e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000105634",
+    "eligibility": "RANKED",
+    "engine_rank": 143,
+    "semantic_sha256": "63e0bac8aed4497c8c1af3b82565b81597e7689d022bf36aa0fb1dc71ecf7094",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000110621",
+    "eligibility": "RANKED",
+    "engine_rank": 366,
+    "semantic_sha256": "8d2daafcf5523c00fdc10a57513db9ec2445d80d9312028fd84ced44b1d6928c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000719955",
+    "eligibility": "RANKED",
+    "engine_rank": 310,
+    "semantic_sha256": "68832a34aaa86e30ae288dd1f1cc1149f1a59fae94297860de3d6d64507a00be",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000790051",
+    "eligibility": "RANKED",
+    "engine_rank": 385,
+    "semantic_sha256": "6317c78d79018a62dba32dd497ac9f036be59b5af6ba2dc847cf94225fb00b86",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000794170",
+    "eligibility": "RANKED",
+    "engine_rank": 433,
+    "semantic_sha256": "a800a4735564ecc80ebf30d16664daa80cccc04b3301262204d3f0309ad60259",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000798941",
+    "eligibility": "RANKED",
+    "engine_rank": 493,
+    "semantic_sha256": "baa1aef886186eba2e81c6e2ecc4cb6fa7491018700deb06220dfabf05d38892",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000859737",
+    "eligibility": "RANKED",
+    "engine_rank": 398,
+    "semantic_sha256": "dccc8f8e741e6536be2fddcd7d27ab5a5dfb6c2d5a2645abdf6106e4bead2273",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000861884",
+    "eligibility": "RANKED",
+    "engine_rank": 405,
+    "semantic_sha256": "8838f922c2c40d99f03e29fbb311190ba298a2bd740650c496df3bffd619a2dc",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0000912593",
+    "eligibility": "RANKED",
+    "engine_rank": 384,
+    "semantic_sha256": "9fffe92a680140a4961c2567464f042039b6cea0794a872e00b97a76aa7b0447",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001013462",
+    "eligibility": "RANKED",
+    "engine_rank": 255,
+    "semantic_sha256": "350b0195ee5968aeb5c11df409bf9d21ada195b7e885106dafa6f8a4a785a96c",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001056696",
+    "eligibility": "RANKED",
+    "engine_rank": 15,
+    "semantic_sha256": "ec2ba16228e2b5e28afdaad303433e399e4c820b885ca9cf9d66437546bd1e6a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001082554",
+    "eligibility": "RANKED",
+    "engine_rank": 23,
+    "semantic_sha256": "6703610c0d6e430e57f653a54bbf19066c853604405926661a1e177e5e13cb2a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001089063",
+    "eligibility": "RANKED",
+    "engine_rank": 139,
+    "semantic_sha256": "706cb01213aea7cbe931242cf16c6fe8e10483ce1a27398c22092c196b070407",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001096343",
+    "eligibility": "RANKED",
+    "engine_rank": 53,
+    "semantic_sha256": "064f94931bf487e7d3712d0f4d611c2c3b267db052de291f13b0e56e9f69d846",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001101302",
+    "eligibility": "RANKED",
+    "engine_rank": 288,
+    "semantic_sha256": "c139c2033cc9cc54e81ec38800cdfad1537e46f2a454009518161180f19302c5",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001110803",
+    "eligibility": "RANKED",
+    "engine_rank": 382,
+    "semantic_sha256": "831d3bbea35a060ba00299680f72c98e4257d88bec29996f50f9ee4e7d8316aa",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001176948",
+    "eligibility": "RANKED",
+    "engine_rank": 392,
+    "semantic_sha256": "6079771274e6050a5da15faf81ce8ed1bc01a5134f506f5d56427a9d48920339",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001178670",
+    "eligibility": "RANKED",
+    "engine_rank": 147,
+    "semantic_sha256": "64620c4524b79812880ddab7739005cfaa357332686d3fb6dbfd46e3dc253807",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001262823",
+    "eligibility": "RANKED",
+    "engine_rank": 438,
+    "semantic_sha256": "621897df7ec1706b6413da5e2370f59d1fdb618a2fa84bd6e0e3e7e0734b9306",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001315098",
+    "eligibility": "RANKED",
+    "engine_rank": 66,
+    "semantic_sha256": "4fa8a965d91f23d349922f4395fa07b944ae23f74bdd5d95fea1c7997f0a9fa2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001331875",
+    "eligibility": "RANKED",
+    "engine_rank": 349,
+    "semantic_sha256": "1518ac851343689f204f2882de7aed71712ac80caa9997fe7a76f17c4bcf17f5",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001393052",
+    "eligibility": "RANKED",
+    "engine_rank": 137,
+    "semantic_sha256": "4e023ab544c1bf347e1071d3d5633a6cdb7bb3ab499589720324b1b634b61481",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001397911",
+    "eligibility": "RANKED",
+    "engine_rank": 175,
+    "semantic_sha256": "83f4b14969afd28ad061edbed007c4f7dd63bf1bdcae1e845d4ad3d38fbde27a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001402436",
+    "eligibility": "RANKED",
+    "engine_rank": 216,
+    "semantic_sha256": "c1d5505b8b871dea356b5a35b1a1f0423315c47e9dd85925505374b6749ee9a2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001404655",
+    "eligibility": "RANKED",
+    "engine_rank": 30,
+    "semantic_sha256": "33d01fb99d5edca41a63ee201931bde3a878bb760460939515195ae9b0b17ee4",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001441816",
+    "eligibility": "RANKED",
+    "engine_rank": 104,
+    "semantic_sha256": "1331e5df1110cdcdea586fd4c2d4c5f7257c7f06e854ebd10e49893ed8c2ad1a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001443646",
+    "eligibility": "RANKED",
+    "engine_rank": 90,
+    "semantic_sha256": "0b4e4c374023ad6baef6f28eb0d88b4c0c9e9b68366cfaf1b8cc280d12746390",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001468174",
+    "eligibility": "RANKED",
+    "engine_rank": 297,
+    "semantic_sha256": "f4f3ffa82c3f65d97641b7ec119d163d216410334e7f0cf21eb8af19211c40ca",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001474432",
+    "eligibility": "RANKED",
+    "engine_rank": 227,
+    "semantic_sha256": "0391f71d57886b6fc1200a5baac296a4db7211df59372e754ac517c655660430",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001506293",
+    "eligibility": "RANKED",
+    "engine_rank": 409,
+    "semantic_sha256": "51e8d913cf05218563cea4508427744befe572614597b91e2f1bea89906d77dd",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001512673",
+    "eligibility": "RANKED",
+    "engine_rank": 176,
+    "semantic_sha256": "a98b4f42670f769868e2d4e342514faddac4f1a8003db0fb373954cd7a04c1fe",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001552033",
+    "eligibility": "RANKED",
+    "engine_rank": 348,
+    "semantic_sha256": "dc4f564ed7c231c11d8dbe2848ca3fa428634d89448f57365f408cb8750143fa",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001560385",
+    "eligibility": "RANKED",
+    "engine_rank": 293,
+    "semantic_sha256": "7945914920b0c92b84465720def655b1e6452aeecf396d6ea6bda3e0f647bd15",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001579298",
+    "eligibility": "RANKED",
+    "engine_rank": 154,
+    "semantic_sha256": "cca11deceab144121d2879e557a43e4cf3f08a7a1199393bf4acafa378f5c892",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001585521",
+    "eligibility": "RANKED",
+    "engine_rank": 160,
+    "semantic_sha256": "efcd5204b3f8479f1a70c2fa635fe7e640a652740800a80d02ae671ca739ae4b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001618732",
+    "eligibility": "RANKED",
+    "engine_rank": 120,
+    "semantic_sha256": "e7815992beb4c7f696551f376b3eb6d11fe65e40fe017489e9c7cf8ba5d87d8e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001650164",
+    "eligibility": "RANKED",
+    "engine_rank": 97,
+    "semantic_sha256": "ccd07e44d674b6107f16241d6b769340d8a43d819aa822c4d25de5d30170ca5e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001671933",
+    "eligibility": "RANKED",
+    "engine_rank": 22,
+    "semantic_sha256": "1ec9e614bbf179ad2e7c2d6fa4138161df130294929a9a0c4426bd688a9e6af6",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001713683",
+    "eligibility": "RANKED",
+    "engine_rank": 80,
+    "semantic_sha256": "082e05edac2f2c5ab755f003209e95114da15bff8ba1818f096024ff6a305def",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001722482",
+    "eligibility": "RANKED",
+    "engine_rank": 400,
+    "semantic_sha256": "c0d552956843764477d3544a0e6efd66045af10c33ed1fd7b29418f2028b0d90",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001758730",
+    "eligibility": "RANKED",
+    "engine_rank": 72,
+    "semantic_sha256": "726f03e19d47fde271400f2285f564227e583a12e8b0897493acac78090a8d32",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001773383",
+    "eligibility": "RANKED",
+    "engine_rank": 4,
+    "semantic_sha256": "1bac494063bc8911a709790d6da64944c269613dad3d438f9f8a44efe790a5e4",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001802768",
+    "eligibility": "RANKED",
+    "engine_rank": 260,
+    "semantic_sha256": "460ca45551843dde56530ee3c8c4489a94db7a602a580755fcf3978c049195a1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001805284",
+    "eligibility": "RANKED",
+    "engine_rank": 494,
+    "semantic_sha256": "22baf9bc43011b769be497548c0654985cfca23f132e91c2c9e702014caa0058",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001823945",
+    "eligibility": "RANKED",
+    "engine_rank": 146,
+    "semantic_sha256": "54a5246cc44ef9db2b0ff5e976081e5e854ec5f8bc176e5d152276cda76e2384",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001834584",
+    "eligibility": "RANKED",
+    "engine_rank": 119,
+    "semantic_sha256": "dd35b65c0a7f078719c41bdd190af871217f02ca3c0eca26fc87cdb6ecac7783",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001849253",
+    "eligibility": "RANKED",
+    "engine_rank": 261,
+    "semantic_sha256": "f2df319473ae2b5a1d565f5b3daf0d6061c045ff2099512cb7345feb257245f2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001868159",
+    "eligibility": "RANKED",
+    "engine_rank": 495,
+    "semantic_sha256": "36cc2fac40322fbe0620b17c22872eae9e2ff54b9d8f29f7ee2c6854f33a338f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001880661",
+    "eligibility": "RANKED",
+    "engine_rank": 352,
+    "semantic_sha256": "0d7d82a6281424aeb46538d89eeb017c7f396dce3cc042c410d2ff8d3e84e98a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001883685",
+    "eligibility": "RANKED",
+    "engine_rank": 496,
+    "semantic_sha256": "729442bb90aeff79fbb6625f8af0c3dd56e4034fc502f511085c46879e2b5f81",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0001973266",
+    "eligibility": "RANKED",
+    "engine_rank": 245,
+    "semantic_sha256": "11cc10d4c2af271d3c4bc08bd5b39a7d3aa791e23645b85cc2c1804642c206a4",
+    "status": "PASS"
+   },
+   {
+    "company_id": "r1000:0002011641",
+    "eligibility": "RANKED",
+    "engine_rank": 383,
+    "semantic_sha256": "f775ea065e58da61ab797a0a02c02704603db69f7ac01fab05019601bf07c811",
+    "status": "PASS"
+   },
+   {
+    "company_id": "rcl",
+    "eligibility": "RANKED",
+    "engine_rank": 140,
+    "semantic_sha256": "7aea55407f0937fc9694cba0609409ca46b239cf5d4550596f4f790fcd210993",
+    "status": "PASS"
+   },
+   {
+    "company_id": "regn",
+    "eligibility": "RANKED",
+    "engine_rank": 281,
+    "semantic_sha256": "3621b49c9a5b77051b7263c71f2d7ed8cb83affbcbcf6ace2f483b4056957bd5",
+    "status": "PASS"
+   },
+   {
+    "company_id": "rok",
+    "eligibility": "RANKED",
+    "engine_rank": 95,
+    "semantic_sha256": "9363c64aafc5a8deed4b7c006c3c8a97d7ae4fbc07d1a2a1d6ff88cbb075b23d",
+    "status": "PASS"
+   },
+   {
+    "company_id": "rost",
+    "eligibility": "RANKED",
+    "engine_rank": 134,
+    "semantic_sha256": "1ca8d0eb729020c1dc05b9176b37fd57dbae316f49ec4da5d5636c581c216681",
+    "status": "PASS"
+   },
+   {
+    "company_id": "rsg",
+    "eligibility": "RANKED",
+    "engine_rank": 117,
+    "semantic_sha256": "b5cb25f162c4cb185a91b6464eec853a4ac6e0eac23ff58b4b11138a2a872a87",
+    "status": "PASS"
+   },
+   {
+    "company_id": "rtx",
+    "eligibility": "RANKED",
+    "engine_rank": 353,
+    "semantic_sha256": "3dc806584f14bb3fcfcc12d66bb821e888427f13b49a65f247597cfa96d7b6d0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "sbux",
+    "eligibility": "RANKED",
+    "engine_rank": 59,
+    "semantic_sha256": "a60336a1793d763651384b91912a252033f9224ddd232292270d8a0629f86439",
+    "status": "PASS"
+   },
+   {
+    "company_id": "scco",
+    "eligibility": "RANKED",
+    "engine_rank": 263,
+    "semantic_sha256": "2028e9499127e740f720b5f3f620b57a60618780723022b885fc22bf9cf7c7b0",
+    "status": "PASS"
+   },
+   {
+    "company_id": "schw",
+    "eligibility": "RANKED",
+    "engine_rank": 374,
+    "semantic_sha256": "805de90ee2c03d1bd9b45fcbc28941b972d9838fa29782ee5a32c3b55ff16a7f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "shw",
+    "eligibility": "RANKED",
+    "engine_rank": 149,
+    "semantic_sha256": "2bf7d3a9b62e45a1b8f1eaf5abe6fa9ecc7b540db0fd5667674f4022d82ee2dc",
+    "status": "PASS"
+   },
+   {
+    "company_id": "slb",
+    "eligibility": "RANKED",
+    "engine_rank": 28,
+    "semantic_sha256": "ac2fff58835ace1c6b6a402f7db4123e0cee7904e66a309efee890531e2474bf",
+    "status": "PASS"
+   },
+   {
+    "company_id": "snow",
+    "eligibility": "RANKED",
+    "engine_rank": 106,
+    "semantic_sha256": "a32e6e6fffc775c2151a063f2ee77dfb429569085f8542a37c802c5e1d47377b",
+    "status": "PASS"
+   },
+   {
+    "company_id": "snps",
+    "eligibility": "RANKED",
+    "engine_rank": 14,
+    "semantic_sha256": "644492af2f69c924c65cd9144639622eb75223cab322ccd0ee51775b6d46e292",
+    "status": "PASS"
+   },
+   {
+    "company_id": "so",
+    "eligibility": "RANKED",
+    "engine_rank": 403,
+    "semantic_sha256": "281d897ee7e7ba9f719e65ec2c341e20ab23a6cb35d868e38d288e53ed433c51",
+    "status": "PASS"
+   },
+   {
+    "company_id": "spg",
+    "eligibility": "RANKED",
+    "engine_rank": 299,
+    "semantic_sha256": "35e79d96d54be82288bd88483e16d616cdff0569d67e8da9077387ef7cc307c2",
+    "status": "PASS"
+   },
+   {
+    "company_id": "spgi",
+    "eligibility": "RANKED",
+    "engine_rank": 201,
+    "semantic_sha256": "4e3354a854b8888346c13dc339298414ea421339aaff0b0b104a7d56a1129ebd",
+    "status": "PASS"
+   },
+   {
+    "company_id": "sre",
+    "eligibility": "RANKED",
+    "engine_rank": 497,
+    "semantic_sha256": "7a23ee366cbf382e41e00e813a210a9b73281ff7ec8700a4fa365c4300f2d4c1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "stt",
+    "eligibility": "RANKED",
+    "engine_rank": 432,
+    "semantic_sha256": "4bbdd05dc5540dd735e894bf9e747bcae568a3e586f135f50c254f53389fcf8f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "stx",
+    "eligibility": "RANKED",
+    "engine_rank": 422,
+    "semantic_sha256": "d7a59fdf3e0eab2214a319e6e8454e32d6f9ef22fc7642245b2510c36b8ab228",
+    "status": "PASS"
+   },
+   {
+    "company_id": "syk",
+    "eligibility": "RANKED",
+    "engine_rank": 68,
+    "semantic_sha256": "6d14f5db752dd3c01f98e544fec4a441379f8763691bdffc76fb4fd3f5b96870",
+    "status": "PASS"
+   },
+   {
+    "company_id": "t",
+    "eligibility": "RANKED",
+    "engine_rank": 303,
+    "semantic_sha256": "6275bd222a562a8596ae291831c06dc74aaae48ac420cf0c6af167c261b72987",
+    "status": "PASS"
+   },
+   {
+    "company_id": "tdg",
+    "eligibility": "RANKED",
+    "engine_rank": 17,
+    "semantic_sha256": "17bda0b3e3c17681359e9e260950219f21c6033a296465480a5e3182f9048740",
+    "status": "PASS"
+   },
+   {
+    "company_id": "team",
+    "eligibility": "RANKED",
+    "engine_rank": 64,
+    "semantic_sha256": "7e982b3bcb81d9685192c2a69402f55f83a3cc373f92481ea152b42b6f9a45f1",
+    "status": "PASS"
+   },
+   {
+    "company_id": "tel",
+    "eligibility": "RANKED",
+    "engine_rank": 282,
+    "semantic_sha256": "031dce629b2010ed7fe89a74d3d9cd010f6dda8b973b5738e956e8e9aec4f1b6",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ter",
+    "eligibility": "RANKED",
+    "engine_rank": 351,
+    "semantic_sha256": "adb2fd81357b0e9f6b50fca961ae290b2a7682b1ff5abc691e0bd757a5ba2c76",
+    "status": "PASS"
+   },
+   {
+    "company_id": "tfc",
+    "eligibility": "RANKED",
+    "engine_rank": 498,
+    "semantic_sha256": "ec57293c2376b8950436ef44e78172e34d1e63e0a04f98e0d9bbefcbb5614980",
+    "status": "PASS"
+   },
+   {
+    "company_id": "tgt",
+    "eligibility": "RANKED",
+    "engine_rank": 265,
+    "semantic_sha256": "1b0d98387d8b6dc7ccee6198fa206411fb9f6fd9a394980d4d33c5b458051196",
+    "status": "PASS"
+   },
+   {
+    "company_id": "tjx",
+    "eligibility": "RANKED",
+    "engine_rank": 52,
+    "semantic_sha256": "8523f9556802f576e779fc65e6ebd3b37ce7d8602fd282fdbbce7d2385ace823",
+    "status": "PASS"
+   },
+   {
+    "company_id": "tmo",
+    "eligibility": "RANKED",
+    "engine_rank": 318,
+    "semantic_sha256": "9fca2ffc4ae7e1036b66dc5fa7ef04cb86b398622074bce8273c8ab712c514e7",
+    "status": "PASS"
+   },
+   {
+    "company_id": "tmus",
+    "eligibility": "RANKED",
+    "engine_rank": 206,
+    "semantic_sha256": "370c3db7cebe678259072c541c09aa8ec9504f2f972e0aab45cf7ff9be429a60",
+    "status": "PASS"
+   },
+   {
+    "company_id": "trgp",
+    "eligibility": "RANKED",
+    "engine_rank": 441,
+    "semantic_sha256": "68d067a907d2f318c8a25ecc1656f2abd62adab6315bc484cb0d2b58e92c05e4",
+    "status": "PASS"
+   },
+   {
+    "company_id": "trv",
+    "eligibility": "RANKED",
+    "engine_rank": 278,
+    "semantic_sha256": "06e5a0a995b8539c5c6a8f7a24785f3d03b6901d9c638abec5c7387a6a42b4aa",
+    "status": "PASS"
+   },
+   {
+    "company_id": "tsla",
+    "eligibility": "RANKED",
+    "engine_rank": 39,
+    "semantic_sha256": "f769e6ecb886bfbe898f980aa244d5d432d4b8c906a21ad646091c6ce2447e9a",
+    "status": "PASS"
+   },
+   {
+    "company_id": "tt",
+    "eligibility": "RANKED",
+    "engine_rank": 88,
+    "semantic_sha256": "d6afb8a609b1a84da661c3ebae81d310e316517b909f894e5f42f7289cc94816",
+    "status": "PASS"
+   },
+   {
+    "company_id": "txn",
+    "eligibility": "RANKED",
+    "engine_rank": 418,
+    "semantic_sha256": "5fc970842e8e8e3d766988a73d7959eb8f797ce664d4bacb0f436f6559210a75",
+    "status": "PASS"
+   },
+   {
+    "company_id": "uber",
+    "eligibility": "RANKED",
+    "engine_rank": 205,
+    "semantic_sha256": "1197b33c2a82dd74e76a6c9c6d2cdb307802c31c9bb156d1682048d7c2c1b374",
+    "status": "PASS"
+   },
+   {
+    "company_id": "unh",
+    "eligibility": "RANKED",
+    "engine_rank": 86,
+    "semantic_sha256": "bf63aebdef49eeac2b18e3955e5c29f222edea763c50967418b1505913a03833",
+    "status": "PASS"
+   },
+   {
+    "company_id": "unp",
+    "eligibility": "RANKED",
+    "engine_rank": 270,
+    "semantic_sha256": "b54e4923614f483ab0d1b42af2af69d4d2b931a999ac2c64af99cc46ac17c089",
+    "status": "PASS"
+   },
+   {
+    "company_id": "ups",
+    "eligibility": "RANKED",
+    "engine_rank": 414,
+    "semantic_sha256": "b8400cf864cc7f4b5cfebd9ba814607ff23526841fb1e8ee821f7cb66e49ed67",
+    "status": "PASS"
+   },
+   {
+    "company_id": "uri",
+    "eligibility": "RANKED",
+    "engine_rank": 18,
+    "semantic_sha256": "95d4161100282f23fa92f0e7f9c7ab03ff5ad0ac9566c0508ea005e6b256696f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "usb",
+    "eligibility": "RANKED",
+    "engine_rank": 377,
+    "semantic_sha256": "b7272625e6f5828c80adb0cdfb5eda4157939f98fd3bfe0cd18d15643017ad29",
+    "status": "PASS"
+   },
+   {
+    "company_id": "v",
+    "eligibility": "RANKED",
+    "engine_rank": 322,
+    "semantic_sha256": "8a171ce65dc9fd2de83037abd1dec9966e925eafd13a4d621b2332211846845e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "vlo",
+    "eligibility": "RANKED",
+    "engine_rank": 499,
+    "semantic_sha256": "9b420ceaf38308b0d2e20c9f497a5c54c14a0b9329f47908e9f9354670516662",
+    "status": "PASS"
+   },
+   {
+    "company_id": "vrt",
+    "eligibility": "RANKED",
+    "engine_rank": 169,
+    "semantic_sha256": "dd962d16d6ccf66397c24cf6303887b5c02a2c05c0ffae1227cb762ea6ca5266",
+    "status": "PASS"
+   },
+   {
+    "company_id": "vrtx",
+    "eligibility": "RANKED",
+    "engine_rank": 108,
+    "semantic_sha256": "a308119c2e0028e051ca69c134724103b8a921f0912616c7fa4241dc2d7a713f",
+    "status": "PASS"
+   },
+   {
+    "company_id": "vz",
+    "eligibility": "RANKED",
+    "engine_rank": 429,
+    "semantic_sha256": "ea61f3d1e6fe1e1393f946a961b7fe8d1e976dae7fb7191cefd4c193b35d73e3",
+    "status": "PASS"
+   },
+   {
+    "company_id": "wbd",
+    "eligibility": "RANKED",
+    "engine_rank": 189,
+    "semantic_sha256": "a43bb5b6a1b182c1588f9657ee22b00ed55af5cb23d1e7cda42981065c4f61a3",
+    "status": "PASS"
+   },
+   {
+    "company_id": "wdc",
+    "eligibility": "RANKED",
+    "engine_rank": 402,
+    "semantic_sha256": "70e7a538908d72bafbaaed6180bb256a6fdf5313fed59750bbc74a6539cbf142",
+    "status": "PASS"
+   },
+   {
+    "company_id": "well",
+    "eligibility": "RANKED",
+    "engine_rank": 294,
+    "semantic_sha256": "b7276a422866f94fe837b5e275b95b3cbb793534813268beb49cbabfe24dafc3",
+    "status": "PASS"
+   },
+   {
+    "company_id": "wfc",
+    "eligibility": "RANKED",
+    "engine_rank": 500,
+    "semantic_sha256": "d659696d009d32b93ef854c80d8b27c0c4569c1c2572b14871e2fb4e63468919",
+    "status": "PASS"
+   },
+   {
+    "company_id": "wm",
+    "eligibility": "RANKED",
+    "engine_rank": 224,
+    "semantic_sha256": "dac01a743463c5169a1de3aeb1bd39713a0213a8173878a26d9f9668b1c9e215",
+    "status": "PASS"
+   },
+   {
+    "company_id": "wmb",
+    "eligibility": "RANKED",
+    "engine_rank": 164,
+    "semantic_sha256": "79a4eed0f4011cc05add02b44c75758731710d4e7e415656968313e8df3e516e",
+    "status": "PASS"
+   },
+   {
+    "company_id": "wmt",
+    "eligibility": "RANKED",
+    "engine_rank": 156,
+    "semantic_sha256": "5f146edc9a3735f7702c0e1684d0deb095b8b1c2ce69dc05c4db43be12dbc627",
+    "status": "PASS"
+   }
+  ],
+  "records_sha256": "87a7e5b84d11011f73c4e2aa0037e890bc4a4e4548479315ccbcac4c835a4d31",
+  "research_state": {
+   "calibrated": false,
+   "full_pit_pass": false,
+   "official_pass": false,
+   "official_selection": false,
+   "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+   "status": "PROVISIONAL_RESEARCH",
+   "track_c_validated": false
+  },
+  "tie_group_count": 1,
+  "tied_company_count": 31,
+  "universe": {
+   "members_sha256": "9f5928e73753e46b0327986e3993ac89bfef7fa2cf02b7b0b79d76a08ee32d97",
+   "membership_basis": "DERIVED_AT_AS_OF",
+   "n_members": 500,
+   "policy_status": "OFFICIAL",
+   "universe_id": "uni_12c3852b8333",
+   "universe_kind": "US_MCAP_TOP500_OFFICIAL"
+  },
+  "upstream_fail_count": 0,
+  "upstream_not_run_count": 0,
+  "web_field_status": {
+   "rows[].company_id": "AVAILABLE",
+   "rows[].consensus": "NOT_AVAILABLE",
+   "rows[].daily_move": "DATA_BLOCKED",
+   "rows[].market_cap_rank": "DERIVABLE_WITHOUT_SEMANTIC_CHANGE",
+   "rows[].rank": "AVAILABLE",
+   "rows[].reevaluation_trigger": "NOT_AVAILABLE",
+   "rows[].scenario": "DATA_BLOCKED",
+   "rows[].ticker": "AVAILABLE",
+   "rows[].total_score": "AVAILABLE"
+  },
+  "within_tie_order_approval": "POLICY_BLOCKED"
+ },
+ "semantic_sha256": "707efa49a7784427d3e7c401a21f9e4da5ebd9a941e2fe8adc56e36dfa51b49f"
+}
