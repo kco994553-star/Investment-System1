@@ -1,0 +1,106 @@
+{
+  "review_source": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "owner": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+  "Global_routing": "994eb114ef14838d09d6233cfd2367d4d19738e2",
+  "source_manifest": {
+    "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json": {
+      "git_blob": "a5279d516c028f0a8cb9166ee2d54366da00877b",
+      "sha256": "0fc8ed2b55b3aba4cf566f0e7c9e7146324ae4aec5e22c307fd9a9a8ae9991d8"
+    },
+    "implementation/reports/track_c_decision_register_2026-10-01.md": {
+      "git_blob": "cf41f04a8eeae3808dd9a8ea94a159d73c7306ae",
+      "sha256": "6ef0c0debeb627bc0a378930cd87102fc590cf74a2a7a3db388ed308982be5f4"
+    },
+    "implementation/src/investment_system/evl/gsup_source_identity.py": {
+      "git_blob": "fa93bf88f8d77b293421a8d0b5095757b22f72d8",
+      "sha256": "d34fc10d396f37fce65a5580263d2d35207e7d2f4f347fe300c1f1b81c33c548"
+    },
+    "implementation/src/investment_system/evl/superiority_source_identity.py": {
+      "git_blob": "71bf737578866b762a0ee82506f8f5db9418f8ba",
+      "sha256": "3ad8ca25f724cd3d07271ec8a38b95ca8779fe57f14ccf252e1030aa7acca0fa"
+    },
+    "implementation/src/investment_system/evl/superiority.py": {
+      "git_blob": "8a1254d7b77514f6015dfff4af0e4a53f57f22af",
+      "sha256": "c61268921e5a9147e90810747e9ab6cd2896dd2fab89cb314d390dc0ff760498"
+    },
+    "implementation/tests/test_evl_gsup_source_identity.py": {
+      "git_blob": "06c33af5634f7635cae6bf5f0ac292d0e9e7192d",
+      "sha256": "a92cdf85c9d972749b5d4f173f92adec4483e30005548b500d852464b1b2b1fb"
+    },
+    "implementation/tests/test_evl_gsup_v2_identity_adversarial.py": {
+      "git_blob": "6d7cb0642a8f152debbcdd6c7db3df8f7d3b514c",
+      "sha256": "c794a93d117e78fd854f101a6925a4d62624e8e469978c87b0fc5c7fed2f0576"
+    },
+    "implementation/tests/test_evl_gsup_identity_kernel_invariance.py": {
+      "git_blob": "7f991f40ba097a996a2d4758645b9e46353ef088",
+      "sha256": "e0ddbdc2ae689b81359705ea5d249ad5882f3552f5fe32c23494288314b38d1f"
+    },
+    "implementation/tests/test_evl_gsup_mb_reduction_diagnostic.py": {
+      "git_blob": "201ac43edeec26dc0dfb7b39e60fe76e2f941902",
+      "sha256": "d66935e3ae304b7b399efa7cf0fef63057298ac4a80a70aea0cb650c9f5435f5"
+    },
+    "implementation/reports/track_c_c8_gsup_mb_vs_kernel_counterexample_2026-10-03.json": {
+      "git_blob": "2cba1cc5d3f5b177e984291074193ee6eab3ba6c",
+      "sha256": "e78ac3e735bd8c4683d536dc23cbba4ed422ac650008efb7eda54f7cb13d3b5b"
+    },
+    "implementation/reports/gsup_v2_oracle/ARITHMETIC_REDUCTION_REVIEW_2026-10-03.md": {
+      "git_blob": "4c2af0c772f6552e12f71a9d0ce68e004963487c",
+      "sha256": "93988d5098feecb4b815934dc76edc835be73cc9ef7fe70d0fddd5cc3be49973"
+    },
+    "implementation/reports/gsup_v2_oracle/ARITHMETIC_REDUCTION_TRACES_2026-10-03.json": {
+      "git_blob": "635dacf25f883ded07f283ff222f2b4b61699ca9",
+      "sha256": "796ad12b4356701d6d7ac3e70e81bfe1ec66110fb0084d70ed6fd3e175fbe617"
+    }
+  },
+  "integration_existing_source_test_blobs_unchanged": 331,
+  "owner_existing_evl_source_blobs_unchanged": 22,
+  "approval_blob_exact": "a5279d516c028f0a8cb9166ee2d54366da00877b",
+  "approved_scope": "SYNTHETIC_SOURCE_IDENTITY_ONLY; M choice approved, reduction/kernel activation deferred",
+  "wrapper_numeric_methods": "Exact thin legacy delegation, no new kernel or default",
+  "authoritative_M_v2_module_present": false,
+  "existing_source_test_workflow_reportJSON_candidate_differences": [],
+  "report_JSON_inventory": {
+    "entries": 199,
+    "before_equals_candidate": true,
+    "sha256": "6c1cd7bfb81c7070c6a824639cf2a0cae40a53d4666213320f237da0a4950502",
+    "new_report_JSON_entries": []
+  },
+  "candidate_root": "/workspace/gsup-v2-integration",
+  "candidate_local_git_HEAD": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "native_CI_artifact_reparsed_not_rerun": {
+    "junit_sha256": "84662fb1ae4c33d95c34e7d55287a33557d959abbcdf63bb1ef1d4de795b06b0",
+    "exact_source": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "counts": {
+      "tests": 1277,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "groups": {
+      "tests.test_evl_gsup_identity_kernel_invariance": 11,
+      "tests.test_evl_gsup_mb_reduction_diagnostic": 20,
+      "tests.test_evl_gsup_source_identity": 33,
+      "tests.test_evl_gsup_v2_identity_adversarial": 48
+    }
+  },
+  "bounded_actual_legacy_counterexample_execution": {
+    "fixture": "CE4",
+    "actual": {
+      "p": 0.15,
+      "r": 2,
+      "degenerate": 1
+    },
+    "historical_MB_record": {
+      "p": 0.1,
+      "r": 1,
+      "degenerate": 1
+    },
+    "meaning": "Reproduces preserved v1 p.15; historical M p.10 is evidence, not active new v2 or selected arithmetic"
+  },
+  "tests_actually_executed": "One fixed synthetic legacy kernel function; bounded source/AST/blob/prefix/CI-artifact/inventory checks, no full suite",
+  "Actions_actually_executed": "NOT_RUN_BY_THIS_REVIEWER",
+  "real_CAL_VERIFY": "NOT_ACCESSED",
+  "Holdout": "UNCONSUMED",
+  "canonical_merge": "NOT_RUN"
+}
