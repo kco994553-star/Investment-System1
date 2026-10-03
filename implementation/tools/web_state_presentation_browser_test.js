@@ -1,0 +1,294 @@
+// Production-shaped state presentation E2E on the existing static Web. Test vectors only; no grant.
+//   node web_state_presentation_browser_test.js --dir <build_web_state_presentation_fixture --out>
+//        --evidence <its --evidence> --demo-dir <build_web_mvp_demo --out>
+// U1 freshness badges, U2 persisted withheld/unavailable metadata, U3 ko/en strings, U4 render-error
+// fallback; every check runs in ko-KR and en-US at a 390px viewport (plus a 360/1280 overflow pass).
+"use strict";
+const { chromium } = require("playwright");
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const http = require("node:http");
+
+const TEXT = {
+  "ko-KR": {
+    FRESH: "FRESH · 만료 전", STALE: "STALE · 만료 후, 최신 아님", NOT_USABLE: "NOT_USABLE · 사용 기한 경과, 표시 보류",
+    notUsableReason: "사용 기한(usable_until)이 지난 데이터라 표시하지 않습니다.",
+    meta: { reason_code: "사유 코드", as_of: "생산자 데이터 시점", methodology: "방법론", freshness: "신선도", counts: "커버리지 집계" },
+    notConnected: "운영 Snapshot이 연결되지 않았습니다.", noSnapshot: "이 기업의 Snapshot 미제공",
+    loading: "데이터를 불러오는 중…", unavailable: "데이터를 열 수 없습니다.", retry: "다시 시도", home: "오늘의 투자 화면",
+    holdings: "종목 보유", newsRel: "News / Relationships(뉴스·관계)",
+    contexts: ["QGV context(QGV 맥락)", "Technical context(기술적 분석 맥락)", "Macro context(거시 맥락)"],
+    researchSub: "프롬프트 → 맥락·변수 → 미리보기 → 복사", promptLibrary: "Prompt Library(프롬프트 라이브러리)",
+    newsNetwork: "News Network(뉴스 관계망)", importFailed: "가져오기 실패:", interest: "관심기업",
+  },
+  "en-US": {
+    FRESH: "FRESH · Before expiry", STALE: "STALE · Past expiry, not current", NOT_USABLE: "NOT_USABLE · Past usable-until, withheld",
+    notUsableReason: "Withheld: past the producer-declared usable_until.",
+    meta: { reason_code: "Reason code", as_of: "Producer as-of", methodology: "Methodology", freshness: "Freshness", counts: "Coverage counts" },
+    notConnected: "Operating snapshots are not connected.", noSnapshot: "No snapshot provided for this company",
+    loading: "Loading data…", unavailable: "Cannot open data.", retry: "Retry", home: "Today's investment view",
+    holdings: "holdings", newsRel: "News / Relationships",
+    contexts: ["QGV context", "Technical context", "Macro context"],
+    researchSub: "Prompt → Context / Variables → Preview → Copy", promptLibrary: "Prompt Library",
+    newsNetwork: "News Network", importFailed: "Import failed:", interest: "Interests",
+  },
+};
+const SETTINGS_KEY = "investment.web.v1.settings";
+
+async function main() {
+  const args = process.argv.slice(2);
+  const option = (name) => {
+    const i = args.indexOf(name);
+    assert.ok(i >= 0 && args[i + 1], `required ${name}`);
+    return path.resolve(args[i + 1]);
+  };
+  const root = option("--dir"), evidence = option("--evidence"), demoRoot = option("--demo-dir");
+  assert.ok(evidence !== root && !evidence.startsWith(root + path.sep), "evidence stays outside the served folder");
+  const manifest = JSON.parse(fs.readFileSync(path.join(evidence, "fixture-manifest.json"), "utf8"));
+  const original = fs.readFileSync(path.join(root, "data.json"));
+  const bundle = JSON.parse(original);
+  const variant = (name) => fs.readFileSync(path.join(evidence, name), "utf8");
+  const company = manifest.company;
+
+  // /x -> fixture folder; /demo/x -> existing demo build (DEMO portfolio + Track D network page).
+  const server = http.createServer((request, response) => {
+    let pathname = decodeURIComponent(new URL(request.url, "http://127.0.0.1").pathname);
+    let base = root;
+    if (pathname.startsWith("/demo/")) { base = demoRoot; pathname = pathname.slice("/demo".length); }
+    const target = path.resolve(base, "." + (pathname.endsWith("/") ? pathname + "index.html" : pathname));
+    if (!target.startsWith(base + path.sep) || !fs.existsSync(target)) { response.writeHead(404); response.end("Not found"); return; }
+    const mime = { ".html": "text/html", ".json": "application/json", ".js": "text/javascript", ".css": "text/css" };
+    response.writeHead(200, { "Content-Type": mime[path.extname(target)] || "application/octet-stream", "Cache-Control": "no-store" });
+    response.end(fs.readFileSync(target));
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const url = `http://127.0.0.1:${server.address().port}`;
+  const launch = { headless: true };
+  if (process.env.WEB_TEST_CHROMIUM_PATH) launch.executablePath = process.env.WEB_TEST_CHROMIUM_PATH;
+  const checks = [], errors = [], observed = {};
+  let browser;
+  async function check(name, fn) { await fn(); checks.push(name); console.log("PASS " + name); }
+
+  // One context per locale; the persisted display-locale setting is written before any page script runs.
+  async function openPage(locale, { prefix = "/", data = null, clock = manifest.browser_clock, width = 390 } = {}) {
+    const context = await browser.newContext({ viewport: { width, height: 844 } });
+    await context.addInitScript(([key, value]) => { try { localStorage.setItem(key, value); } catch (e) { /* storage blocked */ } },
+      [SETTINGS_KEY, JSON.stringify({ version: 1, display_locale: locale, source_language: "all" })]);
+    const page = await context.newPage();
+    page.on("pageerror", (e) => errors.push(`${locale} ${prefix} ${e.message}`));
+    if (clock) await page.clock.setFixedTime(new Date(clock));
+    if (data) await page.route("**/data.json", (r) => r.fulfill({ status: 200, contentType: "application/json", body: data }));
+    page.go = async (hash) => {
+      await page.goto(url + prefix + "#" + hash);
+      await page.reload();
+      await page.waitForFunction(() => typeof window.investmentSearch === "function" && !!document.querySelector("main h1"));
+      assert.equal(await page.locator("html").getAttribute("lang"), locale);
+    };
+    return page;
+  }
+  const html = (page) => page.evaluate(() => document.documentElement.outerHTML);
+  const texts = (locator) => locator.evaluateAll((l) => l.map((e) => e.textContent.trim()));
+  const metaOf = (page, name) => page.locator(`[data-producer-meta="${name}"] > [data-meta]`)
+    .evaluateAll((l) => Object.fromEntries(l.map((e) => [e.dataset.meta, e.textContent])));
+  const metaLine = (L, entries) => Object.fromEntries(Object.entries(entries).map(([k, v]) => [k, `${L.meta[k]}: ${v}`]));
+  const unitOf = (locator) => locator.locator("xpath=ancestor::*[contains(concat(' ',normalize-space(@class),' '),' card ') or @id='news-pane' or @id='network-pane'][1]");
+  const routes = ["home", "companies", "portfolio", "leaderboard", "news", "research", "settings",
+    "company/" + encodeURIComponent(company), "entity/" + encodeURIComponent("MACRO:CPIAUCSL")];
+
+  try {
+    browser = await chromium.launch(launch);
+    for (const locale of ["ko-KR", "en-US"]) {
+      const L = TEXT[locale];
+      const page = await openPage(locale);
+
+      await check(`${locale}: U1 LIVE, FRESH and STALE are separate labelled badges; STALE has its own style rule`, async () => {
+        await page.go("home");
+        for (const badge of await page.locator(".badge.LIVE").all()) {
+          assert.equal((await badge.textContent()).trim(), "LIVE", "LIVE badge carries no freshness suffix");
+          const next = badge.locator("xpath=following-sibling::span[1]");
+          assert.equal(await next.evaluate((e) => e.classList.contains("freshness")), true, "LIVE is followed by its freshness badge");
+        }
+        assert.deepEqual(await texts(page.locator(".badge.freshness.FRESH")), [L.FRESH], "macro FRESH (persisted)");
+        // changes: persisted FRESH but expired at the view clock; technical: persisted STALE (inside More details).
+        assert.deepEqual(await texts(page.locator(".badge.freshness.STALE")), [L.STALE, L.STALE]);
+        assert.equal(await page.locator(".badge.LIVE .badge, .badge.LIVE:has-text('STALE')").count(), 0);
+        const style = await page.evaluate(() => {
+          const bg = (sel) => getComputedStyle(document.querySelector(sel)).backgroundColor;
+          const rules = [...document.styleSheets].flatMap((s) => [...s.cssRules].map((r) => r.selectorText || ""));
+          return { live: bg(".badge.LIVE"), fresh: bg(".badge.freshness.FRESH"), stale: bg(".badge.freshness.STALE"),
+            notAvailable: bg(".badge.NOT_AVAILABLE"), staleRule: rules.includes(".badge.freshness.STALE"), liveRule: rules.includes(".badge.LIVE") };
+        });
+        assert.ok(style.staleRule && style.liveRule, "own style rules");
+        assert.equal(new Set([style.live, style.fresh, style.stale, style.notAvailable]).size, 4, JSON.stringify(style));
+        observed.badge_colors = style;
+        await page.go("company/" + company);
+        const technical = unitOf(page.locator(".badge.freshness.STALE")).first();
+        assert.equal((await technical.locator(".badge.LIVE").innerText()).trim(), "LIVE");
+        assert.ok((await technical.innerText()).includes("TEST_REGIME_STALE"), "STALE values stay visible, labelled STALE");
+        assert.deepEqual(await texts(page.locator(".badge.freshness.FRESH")), [L.FRESH], "company detail macro");
+      });
+
+      await check(`${locale}: U1 the existing view-time rule decides FRESH vs STALE before/after expires_at; nothing else is derived`, async () => {
+        const before = await openPage(locale, { clock: "2026-01-02T12:00:00Z" });
+        await before.go("home");
+        const changes = unitOf(before.locator(".badge.freshness").first());
+        // Before changes.expires_at both changes and macro are FRESH; technical stays STALE (persisted).
+        assert.deepEqual(await texts(before.locator(".badge.freshness.FRESH")), [L.FRESH, L.FRESH]);
+        assert.deepEqual(await texts(before.locator(".badge.freshness.STALE")), [L.STALE]);
+        assert.ok((await changes.innerText()).includes("TEST_CHANGES_VIEW_STALE"));
+        await before.context().close();
+      });
+
+      await check(`${locale}: U1 NOT_USABLE carried by the bundle is shown as withheld`, async () => {
+        await page.go("leaderboard");
+        assert.deepEqual(await texts(page.locator(".badge.NOT_AVAILABLE")), ["NOT_AVAILABLE"]);
+        assert.deepEqual(await texts(page.locator(".badge.freshness.NOT_USABLE")), [L.NOT_USABLE]);
+        assert.equal(await page.locator(".badge.LIVE").count(), 0);
+        assert.equal(await page.locator('main a[href^="#company/"]').count(), 0, "no withheld ranking rows");
+        const variantPage = await openPage(locale, { data: variant("variant-not-usable.json") });
+        await variantPage.go("home");
+        const notes = variantPage.locator("[data-withheld]");
+        assert.deepEqual((await notes.evaluateAll((l) => l.map((e) => e.dataset.withheld))).sort(), ["changes", "news"]);
+        for (const note of await notes.all()) {
+          assert.equal((await note.textContent()).trim(), L.notUsableReason);
+          const unit = unitOf(note);
+          assert.equal(await unit.locator(".badge.NOT_AVAILABLE").count(), 1);
+          assert.deepEqual(await texts(unit.locator(".badge.freshness")), [L.NOT_USABLE]);
+          assert.equal(await unit.locator(".badge.LIVE, [data-producer-meta]").count(), 0);
+        }
+        const main = await variantPage.locator("main").textContent();
+        assert.ok(main.includes("producer.freshness: NOT_USABLE") && main.includes("producer_manifest.sections.changes.freshness: NOT_USABLE"));
+        for (const hash of routes) {
+          await variantPage.go(hash);
+          const h = await html(variantPage);
+          for (const probe of manifest.withheld_probes) assert.ok(!h.includes(probe), `${hash} leaked ${probe}`);
+        }
+        await variantPage.go("news");
+        assert.equal(await variantPage.locator("#news-list h3").count(), 0, "no withheld news rows");
+        await variantPage.context().close();
+      });
+
+      await check(`${locale}: U2 withheld/unavailable sections show persisted reason_code, as_of, methodology, freshness, counts`, async () => {
+        await page.go("company/" + company);
+        assert.deepEqual(await metaOf(page, "qgv"), metaLine(L, { reason_code: "RESEARCH_DISPLAY_GRANT_NONE", as_of: manifest.as_of,
+          methodology: "TEST_QGV / TEST_VECTOR_V1", freshness: "NOT_APPLICABLE", counts: "COMPLETE=3, NONE=1, PARTIAL=1" }));
+        const main = await page.locator("main").innerText();
+        assert.ok(main.includes(L.noSnapshot), "empty-state wording unchanged");
+        await page.go("leaderboard");
+        assert.deepEqual(await metaOf(page, "leaderboard"), metaLine(L, { reason_code: "EXPIRED_NOT_USABLE", as_of: "2025-12-30T00:00:00+00:00",
+          methodology: "TEST_VECTOR / TEST_VECTOR_V1", freshness: "NOT_USABLE", counts: "expected_count=1, ranked_count=1" }));
+        await page.go("home");
+        const names = await page.locator("[data-producer-meta]").evaluateAll((l) => l.map((e) => e.dataset.producerMeta).sort());
+        assert.deepEqual(names, ["news", "portfolio", "qgv", "relationships"], "only NOT_AVAILABLE sections; LIVE/FROZEN carry none");
+        // Absent fields add nothing: the default registry persists no as_of and no counts for portfolio.
+        assert.deepEqual(await metaOf(page, "portfolio"), metaLine(L, { reason_code: "PORTFOLIO_NO_ACTUAL_HOLDINGS",
+          methodology: "NONE / NONE", freshness: "NOT_APPLICABLE" }));
+        assert.ok((await page.locator("main").textContent()).includes(L.notConnected), "NOT_AVAILABLE reason wording unchanged");
+        // Display only: every section that is not withheld is exactly the served section (nothing merged in).
+        const served = await page.evaluate(() => fetch("data.json").then((r) => r.json()));
+        assert.deepEqual(served, bundle);
+        const view = await page.evaluate(() => Object.fromEntries(SECTION_NAMES.map((n) => [n, D[n]])));
+        for (const [name, section] of Object.entries(view)) assert.deepEqual(section, bundle[name], name);
+      });
+
+      await check(`${locale}: U2 sparse bundle shows only what is persisted (no fabricated metadata)`, async () => {
+        const sparse = await openPage(locale, { data: variant("variant-sparse-metadata.json") });
+        for (const hash of ["home", "leaderboard", "company/" + company]) {
+          await sparse.go(hash);
+          const names = await sparse.locator("[data-producer-meta]").evaluateAll((l) => l.map((e) => e.dataset.producerMeta));
+          assert.deepEqual(names, hash === "leaderboard" ? [] : ["portfolio"], hash);
+          assert.equal(await sparse.locator(".badge.freshness.NOT_USABLE").count(), 0, `${hash}: no persisted NOT_USABLE`);
+        }
+        await sparse.go("home");
+        assert.deepEqual(await metaOf(sparse, "portfolio"), metaLine(L, { reason_code: "ONLY_REASON_CODE_PERSISTED" }));
+        await sparse.context().close();
+      });
+
+      await check(`${locale}: U3 loading text and remaining UI strings follow the display locale`, async () => {
+        const loading = await openPage(locale);
+        let release;
+        const blocked = new Promise((resolve) => { release = resolve; });
+        await loading.route("**/data.json", async (r) => { await blocked; await r.continue(); });
+        await loading.goto(url + "/", { waitUntil: "domcontentloaded" });
+        await loading.waitForFunction((t) => document.querySelector("main [role=status]")?.textContent === t, L.loading);
+        release();
+        await loading.locator("nav a[aria-current=page]").waitFor();
+        await loading.context().close();
+        await page.go("portfolio");
+        const h2 = await texts(page.locator("main h2"));
+        for (const heading of L.contexts) assert.ok(h2.includes(heading), heading);
+        await page.go("company/" + company);
+        assert.ok((await texts(page.locator("main h2"))).includes(L.newsRel));
+        await page.go("research");
+        assert.equal((await page.locator("main p.muted").innerText()).trim(), L.researchSub);
+        assert.equal(await page.locator("#research-frame").getAttribute("title"), L.promptLibrary);
+        await page.go("companies");
+        await page.locator("#import").setInputFiles({ name: "broken.json", mimeType: "application/json", buffer: Buffer.from("{broken") });
+        await page.waitForFunction((t) => document.querySelector("#notice").textContent.startsWith(t + " "), L.importFailed);
+      });
+
+      await check(`${locale}: U3 demo holdings count, network frame title and interest toggle label are localized`, async () => {
+        const demo = await openPage(locale, { prefix: "/demo/" });
+        await demo.go("home");
+        assert.match((await demo.locator("main .metric").innerText()).trim(), new RegExp(`^\\d+ ${L.holdings}$`));
+        await demo.go("news");
+        await demo.locator("#show-network").click();
+        assert.equal(await demo.locator("#network-frame").getAttribute("title"), L.newsNetwork);
+        const frame = demo.frameLocator("#network-frame");
+        await frame.locator('[data-node="issuer:issuer_tsmc"]').dispatchEvent("click");
+        const toggle = frame.locator("#qv button[data-issuer]").last();
+        assert.equal((await toggle.innerText()).trim(), "☆ " + L.interest);
+        await toggle.click();
+        await frame.locator("#qv button[data-issuer]", { hasText: "★ " + L.interest }).last().waitFor();
+        const other = locale === "ko-KR" ? "en-US" : "ko-KR";
+        await demo.locator("#network-frame").evaluate((e, l) => e.contentWindow.postMessage({ type: "display_locale", locale: l }, location.origin), other);
+        await frame.locator("#qv button[data-issuer]", { hasText: "★ " + TEXT[other].interest }).last().waitFor();
+        await demo.context().close();
+      });
+
+      await check(`${locale}: U4 a render error after hashchange shows the DATA UNAVAILABLE fallback, then recovers`, async () => {
+        const broken = await openPage(locale, { data: variant("variant-render-error.json") });
+        await broken.go("home");
+        assert.equal((await broken.locator("main h1").innerText()).trim(), L.home);
+        const before = errors.length;
+        await broken.evaluate(() => { location.hash = "#news"; });
+        await broken.waitForFunction((t) => document.querySelector("main h1")?.textContent === t, L.unavailable);
+        assert.equal((await broken.locator("main .eyebrow").innerText()).trim(), "DATA UNAVAILABLE");
+        assert.equal((await broken.locator("#retry").innerText()).trim(), L.retry);
+        await broken.evaluate(() => { location.hash = "#home"; });
+        await broken.waitForFunction((t) => document.querySelector("main h1")?.textContent === t, L.home);
+        assert.equal(errors.length, before, "no uncaught exception");
+        await broken.context().close();
+      });
+
+      await check(`${locale}: 390px routes have no horizontal overflow and data.json is unchanged`, async () => {
+        for (const width of [360, 390, 1280]) {
+          const sized = await openPage(locale, { width });
+          for (const hash of routes) {
+            await sized.go(hash);
+            assert.equal(await sized.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${width} ${hash}`);
+          }
+          await sized.context().close();
+        }
+        assert.ok(fs.readFileSync(path.join(root, "data.json")).equals(original));
+      });
+      for (const hash of ["home", "leaderboard", "company/" + company]) {
+        await page.go(hash);
+        await page.screenshot({ path: path.join(evidence, `state-${hash.replace(/\W+/g, "-")}-${locale}-390.png`), fullPage: true });
+      }
+      await page.context().close();
+    }
+    await check("no page errors", async () => assert.deepEqual(errors, []));
+    const result = { kind: "WEB_STATE_PRESENTATION_BROWSER_VALIDATION_V1", passed: true, checks, errors, observed,
+      viewport: "390x844 (+360/1280 overflow)", browser_clock: manifest.browser_clock,
+      runtime: { node: process.version, chromium: browser.version() },
+      research_display: "NONE", frozen_grant: "NONE", live_grant: "NONE", real_data_validation: "NOT_RUN" };
+    fs.writeFileSync(path.join(evidence, "browser-validation.json"), JSON.stringify(result, null, 2) + "\n");
+    process.stdout.write(JSON.stringify({ passed: true, checks: checks.length }) + "\n");
+  } finally {
+    if (browser) await browser.close();
+    await new Promise((resolve) => server.close(resolve));
+  }
+}
+main().catch((error) => { process.stderr.write(error.stack + "\n"); process.exitCode = 1; });
