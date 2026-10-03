@@ -1,0 +1,330 @@
+{
+  "record": "CURRENT_SOURCE_ACTIONS_COMPACT_HANDOFF",
+  "observed_at": "2026-10-03T11:07:18.507001+00:00",
+  "source_HEADs": {
+    "PR31": "29c2c202aabc480c8251fc44b7b488417a56177f",
+    "PR35": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c"
+  },
+  "canonical": {
+    "HEAD": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "branch": "claude/investment-system-top500-validation-alrugm",
+    "state": "UNCHANGED_NOT_MERGED"
+  },
+  "owner_HEAD": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+  "source_and_synthetic_identity": [
+    {
+      "PR": 31,
+      "commit_identity_equal": false,
+      "source_commit": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "synthetic_commit": "d01cdce0b1a28b2b988cdb99e775c1e0fa945054",
+      "tree": "258a83fcf15d94eaed5981dc691cb2d3dad26a66",
+      "tree_equal": true
+    },
+    {
+      "PR": 35,
+      "commit_identity_equal": false,
+      "source_commit": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+      "synthetic_commit": "37774d997d9f0d210453be7dbf58c57295d38284",
+      "tree": "5b5518d9e2a224bd38d89fadac9607e2277f22a7",
+      "tree_equal": true
+    }
+  ],
+  "runs": [
+    {
+      "PR": 31,
+      "id": 37117616660,
+      "name": "technical-real-producer",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117616660"
+    },
+    {
+      "PR": 31,
+      "id": 37117616662,
+      "name": "technical-real-model",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117616662"
+    },
+    {
+      "PR": 31,
+      "id": 37117616684,
+      "name": "codex-integration-readiness",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117616684"
+    },
+    {
+      "PR": 31,
+      "id": 37117616687,
+      "name": "sec-primary-disclosure",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117616687"
+    },
+    {
+      "PR": 31,
+      "id": 37117616707,
+      "name": "web-mvp-validation",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117616707"
+    },
+    {
+      "PR": 31,
+      "id": 37117616719,
+      "name": "us-equity-session",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117616719"
+    },
+    {
+      "PR": 31,
+      "id": 37117616722,
+      "name": "p01-research-publication",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117616722"
+    },
+    {
+      "PR": 31,
+      "id": 37117616736,
+      "name": "qgv-invalidation-binding",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117616736"
+    },
+    {
+      "PR": 35,
+      "id": 37117674599,
+      "name": "technical-real-producer",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117674599"
+    },
+    {
+      "PR": 35,
+      "id": 37117674601,
+      "name": "sec-primary-disclosure",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117674601"
+    },
+    {
+      "PR": 35,
+      "id": 37117674603,
+      "name": "qgv-invalidation-binding",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117674603"
+    },
+    {
+      "PR": 35,
+      "id": 37117674608,
+      "name": "p01-research-publication",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117674608"
+    },
+    {
+      "PR": 35,
+      "id": 37117674614,
+      "name": "us-equity-session",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117674614"
+    },
+    {
+      "PR": 35,
+      "id": 37117674617,
+      "name": "codex-integration-readiness",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117674617"
+    },
+    {
+      "PR": 35,
+      "id": 37117674626,
+      "name": "technical-real-model",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+      "event": "pull_request",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37117674626"
+    }
+  ],
+  "validation": {
+    "PR31": {
+      "tests": 1277,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "baseline_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "ordered_testcase_list_identical": true,
+      "testcases_added": 0,
+      "testcases_removed": 0,
+      "browser_groups_PASS": 6,
+      "pinned_macro_tests_PASS": 11
+    },
+    "PR35": {
+      "tests": 1295,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "baseline_head": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "ordered_testcase_list_identical": true,
+      "testcases_added": 0,
+      "testcases_removed": 0,
+      "browser_groups_PASS": 6,
+      "pinned_macro_tests_PASS": 11
+    }
+  },
+  "artifacts": [
+    {
+      "PR": 31,
+      "kind": "native",
+      "artifact_id": 11271719097,
+      "artifact_name": "codex-integration-readiness-29c2c202aabc480c8251fc44b7b488417a56177f",
+      "GitHub_digest": "sha256:6c5c06020a4603235d7d0b037d1a8c23f18b191574750708ed65c2b92f77afc0",
+      "tests": 1277,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "local_digest_match": true,
+      "ZIP_SHA256": "6c5c06020a4603235d7d0b037d1a8c23f18b191574750708ed65c2b92f77afc0",
+      "ZIP_bytes": 107574,
+      "JUnit_SHA256": "71dd0f1ba81bf8917e77a5c8ce34b55097655c2aed08fe335c960748c9dca9c0",
+      "JUnit_archive_member": "combined-junit.xml"
+    },
+    {
+      "PR": 31,
+      "kind": "macro",
+      "artifact_id": 11271603512,
+      "artifact_name": "macro-adoption-4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "GitHub_digest": "sha256:88bfb9b5c5f0bffe86b4ff53ffdfd5006159fb3519a6569a86d888d9875605b2",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "local_digest_match": true,
+      "ZIP_SHA256": "88bfb9b5c5f0bffe86b4ff53ffdfd5006159fb3519a6569a86d888d9875605b2",
+      "ZIP_bytes": 700,
+      "JUnit_SHA256": "bec245c57e3ad59c710c7e773a77509c907b9234791e0ff20da0969e8e173445",
+      "JUnit_archive_member": "macro-adoption-junit.xml"
+    },
+    {
+      "PR": 35,
+      "kind": "macro",
+      "artifact_id": 11272536066,
+      "artifact_name": "macro-adoption-4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "GitHub_digest": "sha256:33c2cbe1e13fcbbf5695106461d3c03f62dcb9b0ecfbd83fd2c75d099d4a4868",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "local_digest_match": true,
+      "ZIP_SHA256": "33c2cbe1e13fcbbf5695106461d3c03f62dcb9b0ecfbd83fd2c75d099d4a4868",
+      "ZIP_bytes": 697,
+      "JUnit_SHA256": "a926d31d94dbb92bde4810b0ac977b113475d446bb869a475fb3bed5ed7d8de7",
+      "JUnit_archive_member": "macro-adoption-junit.xml"
+    },
+    {
+      "PR": 35,
+      "kind": "native",
+      "artifact_id": 11272357040,
+      "artifact_name": "codex-integration-readiness-722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+      "GitHub_digest": "sha256:e60e127aabca2be5a699ff11ce30b60e0093f91ec2f8542a6ec818022fe18264",
+      "tests": 1295,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "local_digest_match": true,
+      "ZIP_SHA256": "e60e127aabca2be5a699ff11ce30b60e0093f91ec2f8542a6ec818022fe18264",
+      "ZIP_bytes": 107829,
+      "JUnit_SHA256": "d59fc3cc4ee23509e5a0a5605cc805843ab5f0aad79b94899b6e04638ddfc430",
+      "JUnit_archive_member": "combined-junit.xml"
+    }
+  ],
+  "preservation": {
+    "F1_source_unchanged": true,
+    "PR31_source_tests": 337,
+    "added_owned_docs_evidence": 138,
+    "changed_existing_source_test_workflow_report_JSON_files": 0,
+    "old_historical_source_evidence_unchanged": true,
+    "protected_total": 550,
+    "register_append_bytes": 1992,
+    "register_append_lines": 11,
+    "register_prefix_bytes": 19295,
+    "report_JSON_blobs": 199,
+    "workflow_blobs": 14
+  },
+  "normal_DAG": {
+    "PR31_parent": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "PR35_parents": [
+      "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "29c2c202aabc480c8251fc44b7b488417a56177f"
+    ],
+    "force_push_rebase_reset_history_rewrite": "NONE",
+    "merge_base": "675d0d298fbaab5b8473ed048a561ef84e2f3e78"
+  },
+  "safety": {
+    "Actions_dispatches_by_reviewer": 0,
+    "Actions_reruns_by_reviewer": 0,
+    "CAL_VERIFY_accesses": 0,
+    "Frozen_changes": 0,
+    "Holdout_consumptions": 0,
+    "canonical_merges": 0,
+    "deployments": 0,
+    "direct_Azure_download_attempts": 0,
+    "grants": 0,
+    "new_statistical_convention_selected": 0,
+    "real_numeric_configuration_selected": 0,
+    "remote_writes_by_reviewer": 0,
+    "source_or_repository_mutations_by_reviewer": 0
+  },
+  "not_run": {
+    "production_v2_oracle": "NOT_RUN;kernel NOT_IMPLEMENTED_PENDING_ARITHMETIC_REDUCTION",
+    "reviewer_fullsuite_rerun": "NOT_RUN",
+    "Actions_dispatch": "NOT_RUN",
+    "legacy_Web_PR35": "NOT_TRIGGERED"
+  },
+  "maturity_stage_delta": 0,
+  "selected_reduction": "NONE",
+  "full_local_review_receipt_SHA256": "026548f4b7088150d55feb1e6f25e4822957eda5d7232b65478e64664fdac2e0",
+  "full_review_record_location": "LOCAL ONLY; raw Actions logs and artifacts are available at the actual GitHub run URLs above. Full audit mirror was not published.",
+  "publication_limits": {
+    "bulk_source_snapshot_upload": "AUTO_REVIEW_REJECTED_NOT_RETRIED",
+    "new_remote_files": "only this small CI receipt and authored handoff; no source snapshots or ZIP uploads",
+    "gh_API_write": "BLOCKED_HTTP401_NOT_RETRIED",
+    "effective_approval_policy": "auto_review",
+    "sandbox_mode": "workspace-write"
+  }
+}
