@@ -1,0 +1,1425 @@
+{
+  "record": "INDEPENDENT_SOURCE_IDENTITY_V1_KERNEL_INVARIANCE",
+  "authority": "TC_C8_GSUP_M_V2_AND_SOURCE_DESCRIPTOR_APPROVAL_2026_10_03, synthetic descriptor scope only; no arithmetic choice",
+  "worker_branch": "codex/gsup-identity-kernel-invariance-2026-10-03",
+  "parent_merge_base": "f6e1a98f7a839aad49c7c630d713becc20ba3f5f",
+  "acceptance": {
+    "criteria_total": 4,
+    "criteria_complete": 4,
+    "task_acceptance_percent": 100,
+    "capability_maturity_change": "NONE; task-criteria completion only, not project percentage",
+    "unchanged_legacy_kernel_no_globals_monkeypatch": "PASS",
+    "before_after_numerical_semantic_field_equality": "PASS_THREE_FRESH_SYNTHETIC_FIXTURES",
+    "missing_binding_real_provider_mismatch_retry_charging": "PASS",
+    "own_negative_test_and_scoped_evidence": "READY_FOR_OWN_COMMIT"
+  },
+  "runtime": {
+    "python": "3.11.16",
+    "pytest": "9.1.1",
+    "numpy": "2.3.5"
+  },
+  "actually_executed": {
+    "new_targeted_tests": "11 passed in 0.26s",
+    "test_file": "implementation/tests/test_evl_gsup_identity_kernel_invariance.py",
+    "full_regression": "NOT_RUN_BY_WORKER",
+    "Actions": "NOT_RUN_BY_WORKER"
+  },
+  "provisional_history": {
+    "result": "4 passed,7 failed solely immutable journal0444 appendPermissionError",
+    "status": "HISTORICAL_FIXED_BY_SOURCE_OWNER0b8b3ad",
+    "log_sha256": "15fabd17ab118d2d060bbe47937c3b1ae5387abd874fb05835d601dc2d2c7723"
+  },
+  "accepted_log_sha256": "0530f4844c3984a822d131fddd576b4d06d6b0ca025f7354a5d1b985e7bed427",
+  "evaluated_dependencies": {
+    "implementation/src/investment_system/evl/gsup_source_identity.py": {
+      "owner_commit": "0b8b3ad3d3538d9ad224858acbd452d7b193423a",
+      "sha256": "d34fc10d396f37fce65a5580263d2d35207e7d2f4f347fe300c1f1b81c33c548",
+      "git_blob": "fa93bf88f8d77b293421a8d0b5095757b22f72d8",
+      "evaluation_only_untracked": true
+    },
+    "implementation/src/investment_system/evl/superiority_source_identity.py": {
+      "owner_commit": "d9a8cffd5339312264ba40c497163ed9544fb27c",
+      "sha256": "3ad8ca25f724cd3d07271ec8a38b95ca8779fe57f14ccf252e1030aa7acca0fa",
+      "git_blob": "71bf737578866b762a0ee82506f8f5db9418f8ba",
+      "evaluation_only_untracked": true
+    }
+  },
+  "before_after_result_pairs": [
+    {
+      "fixture": "test_identity_wiring_preserves0",
+      "before": {
+        "cells": {
+          "EXPANDING-PRIMARY|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "83965d57a1e21640e24374b2369402d464943397742250ffbaac40ab844eed9d",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.28208632425473396,
+            "mean": 3.578173226360334,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 23.337856704600707,
+            "status": "REJECT_H0"
+          },
+          "EXPANDING-PRIMARY|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "fb808086abfb933b1e77c3c9ba2a160faed325b6a72b60c7f338baf574c8b07f",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.5514490720892713,
+            "mean": 3.5096605537244407,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 16.372048873395464,
+            "status": "REJECT_H0"
+          },
+          "EXPANDING-REBALANCE_GAP_STRESS|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "dc4d36640205f028497ad5ccde3182f363d4621c79db2eab78154d8e1e4ee524",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.1446293103009741,
+            "mean": 4.122995572332113,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 13.349686289549311,
+            "status": "REJECT_H0"
+          },
+          "EXPANDING-REBALANCE_GAP_STRESS|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "10257a0ca8d7dfa57ab28a558cd538df4870c5d85487bed8d07260e393318580",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.4525490501348098,
+            "mean": 4.3020362716727805,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 22.152965028616187,
+            "status": "REJECT_H0"
+          },
+          "ROLLING-PRIMARY|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "02d22f19286ba86c7ffe94e52ce28dfc0488d1a404836cd36451ecf2c7e1d4bc",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.3377678308999468,
+            "mean": 3.7983140069503065,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 11.37604009087267,
+            "status": "REJECT_H0"
+          },
+          "ROLLING-PRIMARY|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "30b8fc0bb46fcb476cb3e44148b042936d93089618363665f920f2aab9949eae",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.6966764137318332,
+            "mean": 3.976629146646955,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 16.50403593540135,
+            "status": "REJECT_H0"
+          },
+          "ROLLING-REBALANCE_GAP_STRESS|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "80a3962ea98813e1803d4d59b4ea179000dbb8d6013eae4efdba3259418215e2",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.281283582411535,
+            "mean": 4.00384298790176,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 12.25307326933808,
+            "status": "REJECT_H0"
+          },
+          "ROLLING-REBALANCE_GAP_STRESS|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "4af9a6823870f44212f3fe52a3818212ca387cb14f5b1ed32e18307ed6318f0b",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.8280498945783549,
+            "mean": 3.41197677336119,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 12.98878224600144,
+            "status": "REJECT_H0"
+          }
+        },
+        "claim": "ALL_APPROVED_CONTROLS_ALL_REQUIRED_COHORTS",
+        "decision": "NOT_RUN_EFFECT_FLOOR_DEFERRED",
+        "effect_floor": {
+          "convention": "DEFERRED_A6_S7",
+          "value": null
+        },
+        "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+        "official": false,
+        "promotion_authority": null,
+        "real_holdout_eligible": false,
+        "reasons": [],
+        "registration_hash": "5ca4654b96e9264c6f71a7639d90959111a968bfa8b872da9deb6da6a039ae52",
+        "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+        "statistical_status": "STAT_PASS",
+        "unsupported_controls": {
+          "RANDOMIZED_WEIGHTS": "UNSUPPORTED_SINGLE_DRAW",
+          "RANDOM_RANKING": "UNSUPPORTED_SINGLE_DRAW"
+        }
+      },
+      "after": {
+        "cells": {
+          "EXPANDING-PRIMARY|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "83965d57a1e21640e24374b2369402d464943397742250ffbaac40ab844eed9d",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.28208632425473396,
+            "mean": 3.578173226360334,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 23.337856704600707,
+            "status": "REJECT_H0"
+          },
+          "EXPANDING-PRIMARY|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "fb808086abfb933b1e77c3c9ba2a160faed325b6a72b60c7f338baf574c8b07f",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.5514490720892713,
+            "mean": 3.5096605537244407,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 16.372048873395464,
+            "status": "REJECT_H0"
+          },
+          "EXPANDING-REBALANCE_GAP_STRESS|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "dc4d36640205f028497ad5ccde3182f363d4621c79db2eab78154d8e1e4ee524",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.1446293103009741,
+            "mean": 4.122995572332113,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 13.349686289549311,
+            "status": "REJECT_H0"
+          },
+          "EXPANDING-REBALANCE_GAP_STRESS|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "10257a0ca8d7dfa57ab28a558cd538df4870c5d85487bed8d07260e393318580",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.4525490501348098,
+            "mean": 4.3020362716727805,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 22.152965028616187,
+            "status": "REJECT_H0"
+          },
+          "ROLLING-PRIMARY|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "02d22f19286ba86c7ffe94e52ce28dfc0488d1a404836cd36451ecf2c7e1d4bc",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.3377678308999468,
+            "mean": 3.7983140069503065,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 11.37604009087267,
+            "status": "REJECT_H0"
+          },
+          "ROLLING-PRIMARY|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "30b8fc0bb46fcb476cb3e44148b042936d93089618363665f920f2aab9949eae",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.6966764137318332,
+            "mean": 3.976629146646955,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 16.50403593540135,
+            "status": "REJECT_H0"
+          },
+          "ROLLING-REBALANCE_GAP_STRESS|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "80a3962ea98813e1803d4d59b4ea179000dbb8d6013eae4efdba3259418215e2",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.281283582411535,
+            "mean": 4.00384298790176,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 12.25307326933808,
+            "status": "REJECT_H0"
+          },
+          "ROLLING-REBALANCE_GAP_STRESS|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "4af9a6823870f44212f3fe52a3818212ca387cb14f5b1ed32e18307ed6318f0b",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.8280498945783549,
+            "mean": 3.41197677336119,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 12.98878224600144,
+            "status": "REJECT_H0"
+          }
+        },
+        "claim": "ALL_APPROVED_CONTROLS_ALL_REQUIRED_COHORTS",
+        "decision": "NOT_RUN_EFFECT_FLOOR_DEFERRED",
+        "effect_floor": {
+          "convention": "DEFERRED_A6_S7",
+          "value": null
+        },
+        "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+        "official": false,
+        "promotion_authority": null,
+        "real_holdout_eligible": false,
+        "reasons": [],
+        "registration_hash": "5ca4654b96e9264c6f71a7639d90959111a968bfa8b872da9deb6da6a039ae52",
+        "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+        "source_binding": {
+          "authority_ref": "gsup-source-authority:52f30c1bb597360a3b4ccb1fda174f899f27dd11f4a0c5a6a88e16bef24f0d44",
+          "descriptor_hash": "86954649d2d74bbcbaf2a78c6408c2583612b2c33fa2efd11b45d80dd6cb702b",
+          "registration_ref": "8f30dcdda6fa089a333b4d4293b2bdbffa3371912cdb05763e00e26b13bd7395"
+        },
+        "source_protocol": "C8_GSUP_SOURCE_IDENTITY_v1",
+        "statistical_status": "STAT_PASS",
+        "unsupported_controls": {
+          "RANDOMIZED_WEIGHTS": "UNSUPPORTED_SINGLE_DRAW",
+          "RANDOM_RANKING": "UNSUPPORTED_SINGLE_DRAW"
+        },
+        "validation_mode": "SYNTHETIC_IDENTITY_COMPATIBILITY_ONLY"
+      },
+      "changed_existing_fields": [],
+      "added_fields": [
+        "source_binding",
+        "source_protocol",
+        "validation_mode"
+      ],
+      "before_file_sha256": "46d5ccf327dc63b5d4f9d3158d545a8bab0b535ea6ed7e3ef021396caf196ee5",
+      "after_file_sha256": "4d03aaffa515c27fe69464d8a3cb059a95fca7f024d336bf878eb9f3252f789f"
+    },
+    {
+      "fixture": "test_identity_wiring_preserves1",
+      "before": {
+        "cells": {
+          "EXPANDING-PRIMARY|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "39dea35c93cad385247de4505effb479604eb22618011c9fe98f44d1afa31e67",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.282086324254734,
+            "mean": -2.421826773639666,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -15.795838443534368,
+            "status": "NOT_REJECTED"
+          },
+          "EXPANDING-PRIMARY|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "bdf3532af77d82330b0a9594204f9f8f936554e640387800eca5b1547f31f8a2",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.5514490720892712,
+            "mean": -2.490339446275559,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -11.61706623807279,
+            "status": "NOT_REJECTED"
+          },
+          "EXPANDING-REBALANCE_GAP_STRESS|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "3217900e1461d1e18e4ce5455e458e3eb3b4d876c0ab0a25bbf95d187287a015",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.1446293103009737,
+            "mean": -1.877004427667887,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -6.077479306941865,
+            "status": "NOT_REJECTED"
+          },
+          "EXPANDING-REBALANCE_GAP_STRESS|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "a48690802a0b5e99633a9be6df90f909ebc8ac155ca243ca0a809c4e58476c5e",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.4525490501348097,
+            "mean": -1.6979637283272198,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -8.743517887371432,
+            "status": "NOT_REJECTED"
+          },
+          "ROLLING-PRIMARY|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "024f4c914afd5cbcf99666ba8fbab929a5f66d52b65c8b5998274f480b528909",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.3377678308999468,
+            "mean": -2.2016859930496935,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -6.594101508883966,
+            "status": "NOT_REJECTED"
+          },
+          "ROLLING-PRIMARY|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "f045a49d528ba523b4cdd62ad40111a0df795a3d1d1366feeda3285bfbc69689",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.696676413731833,
+            "mean": -2.023370853353045,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -8.397510565585325,
+            "status": "NOT_REJECTED"
+          },
+          "ROLLING-REBALANCE_GAP_STRESS|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "fc13473826120603788361cf5083ab237b2c26a63154a7348c45eeff138e1939",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.281283582411535,
+            "mean": -1.9961570120982397,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -6.108895428779199,
+            "status": "NOT_REJECTED"
+          },
+          "ROLLING-REBALANCE_GAP_STRESS|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "7f7d3d1310e7ab3a0c9721ce4f6e131fb890b56bfc9d8a16951f38d4f5823b40",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.8280498945783549,
+            "mean": -2.5880232266388097,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -9.852139205886393,
+            "status": "NOT_REJECTED"
+          }
+        },
+        "claim": "ALL_APPROVED_CONTROLS_ALL_REQUIRED_COHORTS",
+        "decision": "NOT_RUN_EFFECT_FLOOR_DEFERRED",
+        "effect_floor": {
+          "convention": "DEFERRED_A6_S7",
+          "value": null
+        },
+        "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+        "official": false,
+        "promotion_authority": null,
+        "real_holdout_eligible": false,
+        "reasons": [],
+        "registration_hash": "0ef2b64fd996a9b0c45ccc2ee799bef07b60ab755a51a5309116fa13134609d5",
+        "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+        "statistical_status": "STAT_FAIL",
+        "unsupported_controls": {
+          "RANDOMIZED_WEIGHTS": "UNSUPPORTED_SINGLE_DRAW",
+          "RANDOM_RANKING": "UNSUPPORTED_SINGLE_DRAW"
+        }
+      },
+      "after": {
+        "cells": {
+          "EXPANDING-PRIMARY|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "39dea35c93cad385247de4505effb479604eb22618011c9fe98f44d1afa31e67",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.282086324254734,
+            "mean": -2.421826773639666,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -15.795838443534368,
+            "status": "NOT_REJECTED"
+          },
+          "EXPANDING-PRIMARY|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "bdf3532af77d82330b0a9594204f9f8f936554e640387800eca5b1547f31f8a2",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.5514490720892712,
+            "mean": -2.490339446275559,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -11.61706623807279,
+            "status": "NOT_REJECTED"
+          },
+          "EXPANDING-REBALANCE_GAP_STRESS|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "3217900e1461d1e18e4ce5455e458e3eb3b4d876c0ab0a25bbf95d187287a015",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.1446293103009737,
+            "mean": -1.877004427667887,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -6.077479306941865,
+            "status": "NOT_REJECTED"
+          },
+          "EXPANDING-REBALANCE_GAP_STRESS|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "a48690802a0b5e99633a9be6df90f909ebc8ac155ca243ca0a809c4e58476c5e",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.4525490501348097,
+            "mean": -1.6979637283272198,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -8.743517887371432,
+            "status": "NOT_REJECTED"
+          },
+          "ROLLING-PRIMARY|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "024f4c914afd5cbcf99666ba8fbab929a5f66d52b65c8b5998274f480b528909",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.3377678308999468,
+            "mean": -2.2016859930496935,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -6.594101508883966,
+            "status": "NOT_REJECTED"
+          },
+          "ROLLING-PRIMARY|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "f045a49d528ba523b4cdd62ad40111a0df795a3d1d1366feeda3285bfbc69689",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.696676413731833,
+            "mean": -2.023370853353045,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -8.397510565585325,
+            "status": "NOT_REJECTED"
+          },
+          "ROLLING-REBALANCE_GAP_STRESS|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "fc13473826120603788361cf5083ab237b2c26a63154a7348c45eeff138e1939",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.281283582411535,
+            "mean": -1.9961570120982397,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -6.108895428779199,
+            "status": "NOT_REJECTED"
+          },
+          "ROLLING-REBALANCE_GAP_STRESS|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "7f7d3d1310e7ab3a0c9721ce4f6e131fb890b56bfc9d8a16951f38d4f5823b40",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.8280498945783549,
+            "mean": -2.5880232266388097,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -9.852139205886393,
+            "status": "NOT_REJECTED"
+          }
+        },
+        "claim": "ALL_APPROVED_CONTROLS_ALL_REQUIRED_COHORTS",
+        "decision": "NOT_RUN_EFFECT_FLOOR_DEFERRED",
+        "effect_floor": {
+          "convention": "DEFERRED_A6_S7",
+          "value": null
+        },
+        "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+        "official": false,
+        "promotion_authority": null,
+        "real_holdout_eligible": false,
+        "reasons": [],
+        "registration_hash": "0ef2b64fd996a9b0c45ccc2ee799bef07b60ab755a51a5309116fa13134609d5",
+        "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+        "source_binding": {
+          "authority_ref": "gsup-source-authority:d04e3b5ea974695655a0c31a01433f451bdbeab84b93100b1b3a9433ec02b905",
+          "descriptor_hash": "86954649d2d74bbcbaf2a78c6408c2583612b2c33fa2efd11b45d80dd6cb702b",
+          "registration_ref": "90124aa1b8d5eb057b115a7a68907f366bf2ba64d59affe084df6061413954fd"
+        },
+        "source_protocol": "C8_GSUP_SOURCE_IDENTITY_v1",
+        "statistical_status": "STAT_FAIL",
+        "unsupported_controls": {
+          "RANDOMIZED_WEIGHTS": "UNSUPPORTED_SINGLE_DRAW",
+          "RANDOM_RANKING": "UNSUPPORTED_SINGLE_DRAW"
+        },
+        "validation_mode": "SYNTHETIC_IDENTITY_COMPATIBILITY_ONLY"
+      },
+      "changed_existing_fields": [],
+      "added_fields": [
+        "source_binding",
+        "source_protocol",
+        "validation_mode"
+      ],
+      "before_file_sha256": "3872d50f284bccd73f967b6075f122e2bd6a768ff012a59578255decd6382405",
+      "after_file_sha256": "5579d6c1712affc68f000dd05f45112c0e31fec003d3b55c40595d5772f085f0"
+    },
+    {
+      "fixture": "test_identity_wiring_preserves2",
+      "before": {
+        "cells": {
+          "EXPANDING-PRIMARY|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "83965d57a1e21640e24374b2369402d464943397742250ffbaac40ab844eed9d",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.28208632425473396,
+            "mean": 3.578173226360334,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 23.337856704600707,
+            "status": "REJECT_H0"
+          },
+          "EXPANDING-PRIMARY|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "9105b21e3d6d3413829d53589369c96068db370e8eb6b39175cdcfa6b79c448b",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.5514490720892712,
+            "mean": -0.9903394462755589,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -4.619787460205726,
+            "status": "NOT_REJECTED"
+          },
+          "EXPANDING-REBALANCE_GAP_STRESS|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "dc4d36640205f028497ad5ccde3182f363d4621c79db2eab78154d8e1e4ee524",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.1446293103009741,
+            "mean": 4.122995572332113,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 13.349686289549311,
+            "status": "REJECT_H0"
+          },
+          "EXPANDING-REBALANCE_GAP_STRESS|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.8421052631578947,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.85,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "46f2e92000c937774a99532551e22a64c2eaf3c1383eb8654c3060bcc6040087",
+            "exceedances": 12,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.4525490501348097,
+            "mean": -0.19796372832721967,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.65,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -1.0193971583745263,
+            "status": "NOT_REJECTED"
+          },
+          "ROLLING-PRIMARY|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "02d22f19286ba86c7ffe94e52ce28dfc0488d1a404836cd36451ecf2c7e1d4bc",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.3377678308999468,
+            "mean": 3.7983140069503065,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 11.37604009087267,
+            "status": "REJECT_H0"
+          },
+          "ROLLING-PRIMARY|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "7b4ffc6bc1043cce2a72205a775b36273e60715d544dc02fb9045e173991dc25",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.6966764137318333,
+            "mean": -0.5233708533530451,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -2.172123940338655,
+            "status": "NOT_REJECTED"
+          },
+          "ROLLING-REBALANCE_GAP_STRESS|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "80a3962ea98813e1803d4d59b4ea179000dbb8d6013eae4efdba3259418215e2",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.281283582411535,
+            "mean": 4.00384298790176,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 12.25307326933808,
+            "status": "REJECT_H0"
+          },
+          "ROLLING-REBALANCE_GAP_STRESS|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "a2a5f58f11073828c9c6fbb6c3f9024d67aab38be65bf06f931b830effbe55f4",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.8280498945783547,
+            "mean": -1.08802322663881,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -4.141908842914437,
+            "status": "NOT_REJECTED"
+          }
+        },
+        "claim": "ALL_APPROVED_CONTROLS_ALL_REQUIRED_COHORTS",
+        "decision": "NOT_RUN_EFFECT_FLOOR_DEFERRED",
+        "effect_floor": {
+          "convention": "DEFERRED_A6_S7",
+          "value": null
+        },
+        "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+        "official": false,
+        "promotion_authority": null,
+        "real_holdout_eligible": false,
+        "reasons": [],
+        "registration_hash": "ada5e20999b06b26d1d1e7ccc1b16b3555ab48494552658fcd2213f416d00eef",
+        "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+        "statistical_status": "STAT_FAIL",
+        "unsupported_controls": {
+          "RANDOMIZED_WEIGHTS": "UNSUPPORTED_SINGLE_DRAW",
+          "RANDOM_RANKING": "UNSUPPORTED_SINGLE_DRAW"
+        }
+      },
+      "after": {
+        "cells": {
+          "EXPANDING-PRIMARY|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "83965d57a1e21640e24374b2369402d464943397742250ffbaac40ab844eed9d",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.28208632425473396,
+            "mean": 3.578173226360334,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 23.337856704600707,
+            "status": "REJECT_H0"
+          },
+          "EXPANDING-PRIMARY|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "9105b21e3d6d3413829d53589369c96068db370e8eb6b39175cdcfa6b79c448b",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.5514490720892712,
+            "mean": -0.9903394462755589,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -4.619787460205726,
+            "status": "NOT_REJECTED"
+          },
+          "EXPANDING-REBALANCE_GAP_STRESS|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "dc4d36640205f028497ad5ccde3182f363d4621c79db2eab78154d8e1e4ee524",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.1446293103009741,
+            "mean": 4.122995572332113,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 13.349686289549311,
+            "status": "REJECT_H0"
+          },
+          "EXPANDING-REBALANCE_GAP_STRESS|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.8421052631578947,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.85,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "46f2e92000c937774a99532551e22a64c2eaf3c1383eb8654c3060bcc6040087",
+            "exceedances": 12,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.4525490501348097,
+            "mean": -0.19796372832721967,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.65,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -1.0193971583745263,
+            "status": "NOT_REJECTED"
+          },
+          "ROLLING-PRIMARY|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "02d22f19286ba86c7ffe94e52ce28dfc0488d1a404836cd36451ecf2c7e1d4bc",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.3377678308999468,
+            "mean": 3.7983140069503065,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 11.37604009087267,
+            "status": "REJECT_H0"
+          },
+          "ROLLING-PRIMARY|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "7b4ffc6bc1043cce2a72205a775b36273e60715d544dc02fb9045e173991dc25",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.6966764137318333,
+            "mean": -0.5233708533530451,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -2.172123940338655,
+            "status": "NOT_REJECTED"
+          },
+          "ROLLING-REBALANCE_GAP_STRESS|EQUAL_SIMPLE": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 0.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 0.05,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "80a3962ea98813e1803d4d59b4ea179000dbb8d6013eae4efdba3259418215e2",
+            "exceedances": 0,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 1.281283582411535,
+            "mean": 4.00384298790176,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 0.05,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": 12.25307326933808,
+            "status": "REJECT_H0"
+          },
+          "ROLLING-REBALANCE_GAP_STRESS|MARKET_CAP": {
+            "block_length": 2,
+            "comparison": {
+              "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+              "kernel_tail_fraction": 1.0,
+              "method": "C8_GSUP_U_v1",
+              "p_value_plus_one": 1.0,
+              "role": "COMPARISON_EVIDENCE_ONLY_NOT_DECISION"
+            },
+            "degenerate_replicates": 0,
+            "draws_hash": "a2a5f58f11073828c9c6fbb6c3f9024d67aab38be65bf06f931b830effbe55f4",
+            "exceedances": 19,
+            "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+            "long_run_variance": 0.8280498945783547,
+            "mean": -1.08802322663881,
+            "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+            "n": 12,
+            "one_sided": "GREATER",
+            "p_value": 1.0,
+            "replicates": 19,
+            "seed": 7,
+            "statistic": -4.141908842914437,
+            "status": "NOT_REJECTED"
+          }
+        },
+        "claim": "ALL_APPROVED_CONTROLS_ALL_REQUIRED_COHORTS",
+        "decision": "NOT_RUN_EFFECT_FLOOR_DEFERRED",
+        "effect_floor": {
+          "convention": "DEFERRED_A6_S7",
+          "value": null
+        },
+        "method": "C8_GSUP_STUDENTIZED_CBB_v1",
+        "official": false,
+        "promotion_authority": null,
+        "real_holdout_eligible": false,
+        "reasons": [],
+        "registration_hash": "ada5e20999b06b26d1d1e7ccc1b16b3555ab48494552658fcd2213f416d00eef",
+        "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+        "source_binding": {
+          "authority_ref": "gsup-source-authority:a266e8453582e792b2f4871432fdb28d68ab2a3c2b00a94b5f9e66107f6800fb",
+          "descriptor_hash": "86954649d2d74bbcbaf2a78c6408c2583612b2c33fa2efd11b45d80dd6cb702b",
+          "registration_ref": "2cd4cd36046a7567cb591bc2c85747bcd351759ab09106cfee250280164a2d93"
+        },
+        "source_protocol": "C8_GSUP_SOURCE_IDENTITY_v1",
+        "statistical_status": "STAT_FAIL",
+        "unsupported_controls": {
+          "RANDOMIZED_WEIGHTS": "UNSUPPORTED_SINGLE_DRAW",
+          "RANDOM_RANKING": "UNSUPPORTED_SINGLE_DRAW"
+        },
+        "validation_mode": "SYNTHETIC_IDENTITY_COMPATIBILITY_ONLY"
+      },
+      "changed_existing_fields": [],
+      "added_fields": [
+        "source_binding",
+        "source_protocol",
+        "validation_mode"
+      ],
+      "before_file_sha256": "7a63e75f6e6cbc30095c4ef4f832bca65aca8385ec08c9d3a147b3620f4596f6",
+      "after_file_sha256": "532fbe8c7f077a7bdbfa32354f6d912428dbfd3a51743d26c9d87e4ad3e32075"
+    }
+  ],
+  "negative_outcomes": {
+    "missing_incomplete_wrong_authority_unresolved_binding": {
+      "cases": 4,
+      "provider_calls": 0,
+      "source_claims": 0
+    },
+    "wrong_development_role": {
+      "provider_calls": 0,
+      "source_claims": 1,
+      "feasibility_retry": "REJECTED"
+    },
+    "real_provider_declared_non_synthetic": {
+      "provider_calls": 0,
+      "source_claims": 1,
+      "access_intents": 0
+    },
+    "wrong_response_vintage": {
+      "provider_calls_before_retry": 1,
+      "source_claims": 1,
+      "access_intents": 1,
+      "result": "NOT_RUN_CRASH_NO_RETRY",
+      "additional_calls_on_retry": 0
+    },
+    "new_campaign_seed_and_root_same_source": {
+      "source_claims": 1,
+      "provider_calls": 0,
+      "second_claim": "REJECTED"
+    }
+  },
+  "M_B_v2_arithmetic": "USER_DECISION_REQUIRED_UNCHANGED_NOT_IMPLEMENTED",
+  "numeric_configuration_and_real_access": "NOT_APPROVED",
+  "CAL_VERIFY": "NO_REAL_ACCESS_SYNTHETIC_FIXTURES_ONLY",
+  "Holdout": "UNCONSUMED",
+  "grants": "NONE",
+  "BRANCH_STATE": "NEW_TESTS_SYNTHETIC_VERIFIED_WITH_EVALUATION_ONLY_IMMUTABLE_DEPENDENCIES",
+  "INTEGRATION_STATE": "ROOT_DEPENDENCY_MERGE_AND_FULL_REGRESSION_REQUIRED",
+  "CANONICAL_STATE": "NOT_MERGED",
+  "next_action": "Commit only new test/evidence; root merges after exact dependency commits and runs full regression"
+}
