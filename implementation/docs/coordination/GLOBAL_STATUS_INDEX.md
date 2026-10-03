@@ -4,12 +4,12 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-001 |
+| Index revision | GSI-002 (decision update CDR-001..003; IF-1 audit GIE-002 pending) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
 | Canonical | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca` (= `origin/HEAD`; unchanged since 2026-09-28) |
-| Operating contract | `CLAUDE_CODE_WORKER_CONTRACT_v1.0`. Two competing Draft PRs, #20 and #21. Selection is USER_DECISION_REQUIRED (see GLOBAL_CURRENT_HANDOFF) |
+| Operating contract | `CLAUDE_CODE_WORKER_CONTRACT_v1.0` at PR #21 exact HEAD `f1b5afb` is the operational routing SSoT (CDR-001). PR #20 is SUPERSEDED_DUPLICATE (not merged, retained) |
 
 ## 1. Maturity scale and state columns
 
@@ -56,7 +56,7 @@ CI column key:
 | 19 | Global Language & Search | `feature/global-language-search-v1` @ `eda65bf` (on #5) | #6 | SYNTHETIC_VERIFIED | code ✓ `82ae07c` (run 36709513419) / head docs-only | **Sequential trial PASS** (as row 18) | NOT_MERGED | `implementation/docs/global_language_search/STATUS.md` |
 | 20 | Entity Metadata coverage | `ccr-41677301-10nj3u` @ `a013f1c` (on #6) | #7 | **REAL_DATA_VERIFIED** (SEC/Wikidata ingest run 36847160494; search/display only, not PIT feature evidence) | code ✓ `773b264` (run 36848115601) / head docs-only | clean | NOT_MERGED | `implementation/docs/entity_metadata/STATUS.md` |
 | 21 | Producer readiness audit | `ccr-e0fc1e48-9tcto3` @ `f415615` | none | audit artifact (no maturity) | docs/report only | clean | NOT_MERGED | `implementation/reports/producer_readiness_audit_2026-10-01.md` |
-| 22 | Worker Contract (coordination) | `ccr-2e16018a-qukwmg` @ `f1b5afb` and `integration/claude-worker-contract-v1` @ `d87d4cd` | #21 and #20 | DESIGN (operating document) | docs only; NOT_RUN (no docs CI) | **#20 × #21 add/add conflict** (IF-3) | NOT_MERGED | the contract itself |
+| 22 | Worker Contract (coordination) | `ccr-2e16018a-qukwmg` @ `f1b5afb` (#21, **operational SSoT**, CDR-001); `integration/claude-worker-contract-v1` @ `d87d4cd` (#20, SUPERSEDED_DUPLICATE) | #21 (#20 superseded) | DESIGN (operating document) | docs only; NOT_RUN (no docs CI) | #20 × #21 add/add conflict, resolved by CDR-001 (#20 is not merged) | NOT_MERGED (#21 canonical merge not approved) | the contract itself |
 | 23 | Global Handoff (this index) | `integration/global-handoff-v1` | none | routing/index | docs only | — | NOT_MERGED (live branch by design) | `GLOBAL_CURRENT_HANDOFF.md` |
 | 24 | Dynamic Workflow | — | — | `DYNAMIC_WORKFLOW_V1_SOFTWARE_FROZEN`, per the user's 2026-10-03 instruction | NOT_FOUND_IN_REPOSITORY: no Dynamic Workflow artifact or checkpoint file exists on any of the 28 branches | — | — | none |
 | 25 | Daily operation pipeline | — | — | DESIGN (not started) | — | — | — | — |
@@ -85,7 +85,8 @@ Stale merged heads, no action: `feature/track-d-rig-news` and `claude/track-d-ri
 | #13 RIG ingestion | `8bb990b` | STALE_CI_REVALIDATION_REQUIRED | No Actions run ever (local exact-HEAD pytest 410 passed). Sentinel IF-2 vs #7. Real provider: USER_DECISION (source/paid) |
 | #16 SEC 8-K | `ef65caa` | DEPENDENCY_BLOCKED (#13) | HEAD ✓ |
 | #4 Track C | `ff78c4f` | CONTINUE_IMPLEMENTATION, gated by USER_DECISION_REQUIRED | C8 A6 numeric configuration and 5 method details await approval (`ccr-22e3ff16`). IF-1 cross-track overlap needs a merge-order decision |
-| #20 / #21 Worker Contract | `d87d4cd` / `f1b5afb` | POLICY_BLOCKED, USER_DECISION_REQUIRED | Two SSoT candidates at the same paths, mutually conflicting (IF-3) |
+| #21 Worker Contract | `f1b5afb` | Operational routing SSoT (CDR-001); canonical merge = USER_DECISION_REQUIRED | Docs-only. Clean against canonical |
+| #20 Worker Contract duplicate | `d87d4cd` | SUPERSEDED_DUPLICATE (CDR-001) | Not merged. History retained. §J exception not adopted |
 
 ## 4. Dependency DAG
 
@@ -127,7 +128,7 @@ Evidence: `implementation/docs/coordination/evidence/GIE-001_trial_integration_2
 - **IF-2: branch-isolation sentinels.**
   - #10 and #14 assert "PR #9 not merged here" (`infra_boundary.load_infra() is None`). #13 asserts that PR #7's `reports/entity_metadata` is absent.
   - These are false by design after integration. Each owner must convert its sentinel when its dependency merges. This is LOCAL_FIXABLE for the owner, not for other workers.
-- **IF-3: Worker Contract duplicate.**
+- **IF-3: Worker Contract duplicate.** Resolved by CDR-001: #21 is the SSoT and #20 is superseded.
   - #20 and #21 both add `CLAUDE.md` and `implementation/docs/coordination/CLAUDE_CODE_WORKER_CONTRACT.md` as v1.0, which is an add/add conflict.
   - The texts differ in meaning: #20 §J adds an exception, "unless an approved contract explicitly permits it", to the no-future-fill rule, and #20 §M narrows the numerical/semantic invariance check to "where an existing approved fingerprint exists". Neither is in the user's 2026-10-03 specification. #21 reproduces the specification and adds coordination locations, document relationships, a change log and a start-prompt appendix.
 - **IF-4: CI gaps.** #12 and #13 have never run on Actions, and `ccr-22e3ff16` has no workflow trigger. Local exact-HEAD runs in this checkpoint are recorded in GIE-001 and are **not** CI_VERIFIED.

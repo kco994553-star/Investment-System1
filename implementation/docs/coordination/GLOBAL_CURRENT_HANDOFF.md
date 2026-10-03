@@ -4,18 +4,19 @@ Routing/index SSoT only. This file is not a calculation, policy, approval or pub
 
 | Field | Value |
 |---|---|
-| Handoff ID | GCH-001 (first global handoff) |
-| Recorded | 2026-10-03T01:18:13Z (commit `b118b68`) |
+| Handoff ID | GCH-002 (supersedes GCH-001 as the current handoff; GCH-001 is kept in GLOBAL_HANDOFF_HISTORY) |
+| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 updates after the user decisions CDR-001..003 |
 | Primary Integration Writer | Claude Code session `session_019znshzTYgyBnuuBmSxdPFN`, designated by the user on 2026-10-03 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md` |
 | Canonical branch / HEAD | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. This matches the last independent audit checkpoint, and canonical has not moved since 2026-09-28 |
 | Remote refs audited | 28 branches, 17 open PRs (#4, #5, #6, #7, #9–#21; #8 closed, #1–#3 merged) |
-| Operating contract | `CLAUDE_CODE_WORKER_CONTRACT_v1.0`. Two candidates exist (IF-3). Selecting one is USER_DECISION_REQUIRED |
+| Operating contract | `CLAUDE_CODE_WORKER_CONTRACT_v1.0` at **PR #21 exact HEAD** `f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798` (blob `617ef6d4…`) is the operational routing SSoT (CDR-001). PR #20 is SUPERSEDED_DUPLICATE: not merged, history retained, §J exception not adopted. #21 canonical merge is not approved |
 | Supersedes | nothing. The root `Investment-System1 · CURRENT_HANDOFF.md` remains the canonical Track A/historical handoff, and Track C appends to it on its own branches. It is older than the current parallel state and is not edited here |
 
 ## 1. Read next
 
-1. `GLOBAL_STATUS_INDEX.md` (same directory): per-capability `BRANCH_STATE`, `INTEGRATION_STATE`, `CANONICAL_STATE`, maturity, PR classification, dependency DAG.
+0. The operating contract at its operational SSoT pin (CDR-001): `git show f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798:implementation/docs/coordination/CLAUDE_CODE_WORKER_CONTRACT.md`.
+1. `COORDINATION_DECISION_REGISTER.md`, then `GLOBAL_STATUS_INDEX.md` (same directory): per-capability `BRANCH_STATE`, `INTEGRATION_STATE`, `CANONICAL_STATE`, maturity, PR classification, dependency DAG.
 2. `evidence/GIE-001_trial_integration_2026-10-03.md`: trial integration of every open PR tip.
 3. The scoped STATUS/HANDOFF of your capability (paths in the index), then its Decision Register and approval evidence.
 
@@ -46,18 +47,19 @@ Nothing else is on canonical, and no capability other than Track A is `INTEGRATE
 
 ## 4. USER_DECISION_REQUIRED queue
 
-1. **Worker Contract SSoT (IF-3).** Choose #21 (`ccr-2e16018a-qukwmg`) or #20 (`integration/claude-worker-contract-v1`).
-   - #20 adds a §J exception ("unless an approved contract explicitly permits it") to the no-future-fill PIT rule. That is a PIT relaxation the user specification does not contain.
-   - #20 also narrows §M invariance to existing fingerprints.
-   - Until the choice is made, where the two differ, workers follow the user's 2026-10-03 specification text, which #21 reproduces.
-2. **Track C ↔ producers merge order (IF-1).** Track C `2137883` adds lineage fields and `evaluate_stamped` wrappers inside the protected `technical/engine.py`, `macro/engine.py` and `contracts/models.py`. Values are invariant, but byte and serialized-shape guards in #11, #12, #14, #15, #17 and #18 pin the pre-change bytes. The options:
-   - (A) Track C merges first, and the producer owners re-pin their guards after re-verifying their values and semantic hashes.
-   - (B) Producers merge first, and Track C moves its additions out of protected files. That changes the Track C SOFTWARE_FROZEN C4 phase, so it needs approval.
-   - In both cases, accepting the Track C edit to Technical and Macro engine files is a cross-capability protected-boundary acceptance (contract §N). No Technical or Macro owner approval of it was found.
-3. **Track C C8.** A6 numeric configuration plus 5 method details. Then A8 and A10. The first real CAL_VERIFY access is a separate gate.
-4. **Canonical merges.** Any merge of #5 → #6 → (#7, #9 → #17 → #19), etc. is the user's decision. Start with the integration-ready chain #5 → #6.
-5. **Publication grants.** P01 research-display, Frozen and Live grants are all NONE.
-6. **Data and providers.** The Macro ALFRED key, a news provider, and an exchange-calendar vintage source.
+Decided in this round (see `COORDINATION_DECISION_REGISTER.md`):
+
+- **CDR-001.** Worker Contract SSoT = PR #21 exact HEAD. PR #20 is SUPERSEDED_DUPLICATE. This is not canonical-merge approval.
+- **CDR-002.** The Track C ↔ producer merge order (IF-1) is **not chosen**. A result-invariant compatibility audit comes first (GIE-002). A/B returns to the user only if a change to one side's Frozen or protected contract is proven unavoidable.
+- **CDR-003.** Track C C8: method policy is separated from numeric configuration. Already-approved method scope and synthetic/software validation continue autonomously on the Track C owner branch. Each unapproved method choice is presented with its result impact. α, B, L, seed, effect floor, minimum support and the real calibration configuration form a separate preregistered approval gate before CAL_VERIFY. No CAL_VERIFY or Holdout access.
+
+Still open:
+
+1. **IF-1 outcome.** Pending GIE-002. Escalated to A/B only if proven unavoidable.
+2. **Track C C8 unapproved method choices.** Per-choice impact is reported. Approval and the separate numeric-configuration gate remain with the user.
+3. **Canonical merges.** Any merge, including #21 and the integration-ready chain #5 → #6.
+4. **Publication grants.** P01 research-display, Frozen and Live grants remain NONE.
+5. **Data and providers.** The Macro ALFRED key, a news provider, and an exchange-calendar vintage source.
 
 ## 5. Next autonomous actions (Primary Integration Writer)
 
