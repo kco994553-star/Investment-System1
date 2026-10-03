@@ -55,17 +55,17 @@ Decided in this round (see `COORDINATION_DECISION_REGISTER.md`):
 
 Still open:
 
-1. **IF-1 execution (CDR-004: A1 + owner adoption).** Decided. In progress as stacked proposal branches with Draft PRs into #11, #15, #18, #12, #14 and #17, each gated on an independent before/after invariance PASS. Owner merge of each proposal is the owner's (or the user's) act.
-2. **Track C C8 (CDR-005): executed by the owner** on `ccr-22e3ff16-p7n5k5` (9a9364c, 972a23f, b9e01a97). New **USER_DECISION_REQUIRED — authoritative G-SUP method** (owner report `implementation/reports/track_c_c8_gsup_mb_vs_kernel_counterexample_2026-10-03.md`): the approved M-B simulation and the implemented kernel differ in exactly two conventions — D1 replicate-variance block count (⌈n/L⌉−1 vs ⌊n/L⌋; bites only when L divides n) and D2 degenerate replicate scoring (never exceeds vs counts as exceedance). Minimal counterexamples CE1–CE5 (e.g. n=5, L=2, B=19: M-B p=0.10 vs kernel p=0.15; n=4, L=2: M-B NOT_RUN vs kernel runs). Options: **K** kernel authoritative (re-establish size under the kernel's conventions), **M** M-B authoritative (new `_v2` method version; `_v1` retained), **C** another explicit convention with new evidence. No option selected; numeric configuration stays unapproved; CAL_VERIFY/Holdout not accessed. Actions run 37097149378 on b9e01a97 in progress; GIE-005 independent audit in progress.
-3. **Canonical merges.** Any merge, including #21 and the integration-ready chain #5 → #6.
-4. **Publication grants.** P01 research-display, Frozen and Live grants remain NONE.
-5. **Data and providers.** The Macro ALFRED key, a news provider, and an exchange-calendar vintage source.
+1. **Canonical merges** (always gated). Integration candidate: #30 `86ad362` (FRESH at 06:58Z, 9/9 Actions green; re-audit GIE-006 pending).
+2. **Publication grants.** P01 research-display, Frozen and Live grants remain NONE.
+3. **Data and providers.** The Macro ALFRED key, a news provider, and an exchange-calendar vintage source.
 
-Separate compatibility-repair items (CDR-004), to be handled in the actual integration context:
+Decided and in execution:
 
-- #10/#14 CI-mode `models.py` compare and their compat evidence;
-- the 3 dependency-not-merged sentinels (#10, #13, #14);
-- Track C acceptance-tool allow-lists and canonical pin; the #14 CI `git diff --exit-code` step.
+- **CDR-004** IF-1 = A1 + owner adoption: proposals #22–#27 pushed (writer gates PASS; Codex independent audit PASS; integration-owner verification pending). Remaining evidence-only adoption items outside #22–#27: #9 `docs/producer_infrastructure/evidence/validation.json` and #7 `docs/entity_metadata/evidence/numeric_fingerprint` record pre-adoption Technical/Macro fingerprints.
+- **CDR-005** executed by the Track C owner (`9a9364c`, `972a23f`, `b9e01a9`); Actions 37097149378 SUCCESS on `b9e01a9`.
+- **CDR-006** G-SUP method = M (additive v2, v1 preserved). **CDR-007** source descriptor (source/vintage/sample identity, synthetic scope). **CDR-008** implementer is Codex; the Primary Integration Writer verifies (13-point list) and does not implement. No Codex Track C branch exists yet.
+
+Not approved (CDR-006/007 list): α, B, L / block rule, seed, effect floor, minimum support, size tolerance, dependence envelope / margin, real source taxonomy/default, real CAL_VERIFY access, C8 foundation ↔ G-SUP registry unification, Holdout, C8 SOFTWARE FROZEN, publication grant, Official, LIVE, canonical merge.
 
 ## 5. Next autonomous actions (Primary Integration Writer)
 

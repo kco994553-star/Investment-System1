@@ -4,7 +4,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-004 (CDR-004/005 execution in progress; Track C owner tip b9e01a97; Actions run 37097149378 dispatched) |
+| Index revision | GSI-005 (fresh reconciliation 2026-10-03T06:58Z: Track C tip CI SUCCESS; A1 proposals #22–#27; Codex #28/#29/#30; CDR-006/007/008) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
@@ -37,7 +37,7 @@ CI column key:
 |---|---|---|---|---|---|---|---|---|
 | 1 | Track A REAL-DATA main | canonical (`recovery/track-a-real-data-frozen` @ `a79642f`, merged) | #3 merged | **INTEGRATED** (FROZEN_VERIFIED) | merged | merged as `bd6bf42` | MERGED | root `Investment-System1 · TRACK_A_REAL_DATA_STATUS.md` |
 | 2 | Track B Personal Investment Layer | canonical (P0 only) | — | IMPLEMENTED (P0 contracts FROZEN); P1+ NOT_STARTED | — | — | P0 MERGED | root `Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md` |
-| 3 | Track C EVL (C0–C8) | `feature/track-c-evl` @ `ff78c4f`; ahead: `ccr-22e3ff16-p7n5k5` @ **`b9e01a97`** (owner tip; no PR) | #4 | SYNTHETIC_VERIFIED (C0–C7 SOFTWARE_FROZEN, 8/11 software phases; C8 PARTIAL_FOUNDATION_VERIFIED + G-SUP fail-closed repairs 9a9364c/b9e01a97). Real PIT validation NOT_RUN | #4 HEAD ✓ (run 36994387375). `ccr-22e3ff16` @ `b9e01a97`: Actions run **37097149378** (workflow_dispatch by the integration writer, `contents: read`) in progress at 04:37Z; owner-reported local full suite 923 passed at 972a23f | Text-clean with every branch. IF-1 decided: CDR-004 (A1 + owner adoption); producer re-pin proposals in progress | NOT_MERGED | `feature/track-c-evl`: root `CURRENT_HANDOFF` + `implementation/reports/track_c_decision_register_2026-10-01.md` (owner tip has CDR-005 entries) |
+| 3 | Track C EVL (C0–C8) | `feature/track-c-evl` @ `ff78c4f`; ahead: `ccr-22e3ff16-p7n5k5` @ **`b9e01a9`** (owner tip; no PR) | #4 | SYNTHETIC_VERIFIED (C0–C7 SOFTWARE_FROZEN, 8/11 software phases; C8 PARTIAL_FOUNDATION_VERIFIED + G-SUP fail-closed repairs). Real PIT validation NOT_RUN | #4 HEAD ✓ (run 36994387375). `b9e01a9` ✓ **Actions run 37097149378 SUCCESS** (workflow_dispatch, 04:37–04:52Z) | Text-clean with every branch. Included in combined trial #30. Next: G-SUP v2 (CDR-006) + source descriptor (CDR-007), implementer Codex per CDR-008 (no branch yet) | NOT_MERGED | `feature/track-c-evl`: root `CURRENT_HANDOFF` + `implementation/reports/track_c_decision_register_2026-10-01.md` |
 | 4 | Track D RIG/News P0–P4 | canonical | #1 merged | SYNTHETIC_VERIFIED · canonical MERGED | merged | merged | MERGED (P0–P4) | root `Investment-System1 · RIG News Architecture v0.1.md` |
 | 5 | Track E Prompt Library v1 | canonical | #2 merged | SYNTHETIC_VERIFIED · canonical MERGED (PLV1_CONTENT_V1.0 Frozen) | merged | merged | MERGED | root `Investment-System1 · TRACK_E_PROMPT_LIBRARY_V1_STATUS.md` |
 | 6 | QGV Real Producer | `ccr-db5d5960-qen9yi` @ `5eec129` | #10 | **REAL_DATA_VERIFIED** (500/500 persisted × 3 dates from Track A Frozen raw; not fully scored; READY coverage 0) | code ✓ `4b772c2` (run 36852186517) / head docs-only | Trial: clean merge. Sentinel IF-2 fails by design after #9 merges | NOT_MERGED | `implementation/docs/qgv_producer/STATUS.md` |
@@ -87,6 +87,20 @@ Stale merged heads, no action: `feature/track-d-rig-news` and `claude/track-d-ri
 | #4 Track C | `ff78c4f` | CONTINUE_IMPLEMENTATION, gated by USER_DECISION_REQUIRED | C8 A6 numeric configuration and 5 method details await approval (`ccr-22e3ff16`). IF-1 cross-track overlap needs a merge-order decision |
 | #21 Worker Contract | `f1b5afb` | Operational routing SSoT (CDR-001); canonical merge = USER_DECISION_REQUIRED | Docs-only. Clean against canonical |
 | #20 Worker Contract duplicate | `d87d4cd` | SUPERSEDED_DUPLICATE (CDR-001) | Not merged. History retained. §J exception not adopted |
+
+## 3a. Proposal, Codex and integration-trial PRs (fresh 2026-10-03T06:58Z)
+
+| PR | Head | Base | Author / owner | Purpose | CI on head | Classification |
+|---|---|---|---|---|---|---|
+| #22 | `integration/a1-adoption/pr11-technical-producer` @ `248e3d3` | #11 owner branch @ `a2e0790` | Primary Integration Writer (CDR-004 proposal) | C-28 adoption re-pin + Technical owner adoption record | NOT_RUN | Writer gate PASS; independent Codex audit PASS (#30 evidence); integration-owner verification GIE-006 pending |
+| #23 | `integration/a1-adoption/pr15-technical-model` @ `5c9dd5a` | #15 @ `ce58704` | same | re-pin | NOT_RUN | same |
+| #24 | `integration/a1-adoption/pr18-us-equity-session` @ `9c71781` | #18 @ `2c088ce` | same | re-pin | NOT_RUN | same |
+| #25 | `integration/a1-adoption/pr12-macro-producer` @ `4a07099` | #12 @ `61d3352` | same | re-pin + separate current-dated Macro owner adoption record; additive post-adoption fingerprint record | NOT_RUN | same |
+| #26 | `integration/a1-adoption/pr14-leaderboard` @ `a4805db` | #14 @ `0d48d86` | same | re-pin | NOT_RUN | same |
+| #27 | `integration/a1-adoption/pr17-p01` @ `dc7daf7` | #17 @ `21039a0` | same | re-pin; additive post-adoption invariance record | NOT_RUN | same |
+| #28 | `codex/takeover-integration-2026-10-03` @ `db9a032` | canonical | Codex | takeover audit (scoped docs under `implementation/docs/codex_takeover/`, incl. a PROPOSED source-identity contract) | see GIE-006 | docs/evidence; not a Global Handoff writer |
+| #29 | `codex/web-producer-integration-readiness-2026-10-03` @ `d044458` | #19 @ `c3dbf8a` | Codex | withheld producer-contract Web fixture; locale/mobile/failure E2E | 2/2 ✓ | READY_FOR_INTEGRATION_AUDIT (stacked on #19) |
+| #30 | `codex/combined-integration-2026-10-03` @ `86ad362` | canonical | Codex | combined trial: Track C `b9e01a9` + #5/#6/#7/#9/#10/#13/#16/#19 + #22–#27 + #21 + #29, plus integration-context compat repairs (`41a6efb`, `0366a3c`) and CI runtime pins (`0ea00d2`, `86ad362`) | 9/9 ✓ | **FRESH** integration candidate (all constituents equal current heads at 06:58Z). INTEGRATION_STATE trial green; CANONICAL_STATE NOT_MERGED; independent re-audit GIE-006 pending |
 
 ## 4. Dependency DAG
 

@@ -58,3 +58,9 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - Owner commits 9a9364c, 972a23f, b9e01a97 on `ccr-22e3ff16-p7n5k5`. The integration writer did not create `track-c/c8-fail-closed-repair-v1`; its first workflow run was stopped before that writer started and relaunched with the four producer writers plus a read-only Track C auditor.
 - Actions run 37097149378 (`track-c-evl-validation.yml`, workflow_dispatch, `contents: read`) dispatched on the owner tip by the integration writer.
 - New USER_DECISION_REQUIRED routed to the user: authoritative G-SUP method (K / M / C), from the owner's register entry. Not decided here.
+
+## GCH-004 · 2026-10-03T06:58Z · fresh reconciliation; CDR-006/007/008 recorded
+
+- Fresh fetch: canonical `b8e39a2` unchanged; Track C owner tip `b9e01a9` (Actions 37097149378 SUCCESS); A1 proposals #22–#27 pushed by the integration writer's workflow (adversarial review agents failed on a session rate limit, so integration-owner verification is pending); Codex PRs #28 (takeover audit), #29 (Web fixture/E2E), #30 (combined trial, FRESH, 9/9 green).
+- No Codex Track C branch, PR or commit found.
+- CDR-006 (G-SUP = M, additive v2), CDR-007 (source descriptor), CDR-008 (Codex implements; integration writer verifies) recorded verbatim.

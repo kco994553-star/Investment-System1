@@ -124,3 +124,47 @@ Effect:
 - The two fail-open repairs apply existing approved policy (Q3 Development-only; Q4 / A6-S4 one-shot no-retest) and add negative regressions. No new method policy, no numeric value.
 - The M-B simulation vs implemented kernel difference is presented as a minimal counterexample, and the authoritative-method choice is a separate USER_DECISION_REQUIRED.
 - Numeric configuration stays unapproved. CAL_VERIFY and Holdout are not accessed.
+
+## CDR-006 · Track C G-SUP authoritative method = M (approved M-B convention; additive v2)
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** (routing record. The Track C scoped Decision Register is the policy authority and must record this itself) |
+| Decided at | 2026-10-03 (user message in session `session_019znshzTYgyBnuuBmSxdPFN`, after the owner's K/M/C item at `b9e01a9`) |
+| Resolves | the USER_DECISION_REQUIRED in `implementation/reports/track_c_c8_gsup_mb_vs_kernel_counterexample_2026-10-03.md` (owner branch `ccr-22e3ff16-p7n5k5` @ `b9e01a9`) |
+
+User wording (verbatim):
+
+> M 승인. 승인된 M-B simulation convention을 authoritative G-SUP method로 유지한다. 별도 v2를 additive 구현한다. 현재 G-SUP v1은 history-preserving 방식으로 보존하며 rewrite/delete하지 않는다. v2는 승인된 M-B와: statistic / replicate construction / variance convention / degenerate handling / tie handling 을 exact하게 일치시켜야 한다. independent oracle과 counterexample로 v1/v2 차이를 고정한다. 기존 v1 결과를 v2 결과로 소급 재작성하지 않는다.
+
+## CDR-007 · G-SUP one-shot source identity: source descriptor (synthetic/software-validation scope)
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** (routing record; Track C register is the authority) |
+| Decided at | 2026-10-03, same message |
+
+User wording (verbatim):
+
+> synthetic/software-validation 범위에서 source descriptor 구현을 승인한다. one-shot identity는 content serialization hash만으로 정의하지 않는다. outcome 접근 전에 등록된: source identity / vintage identity / sample identity 에 bind한다. 2.0 → 2 같은 의미 보존 재인코딩, campaign/root/label 변경으로 동일 검증 대상을 재소비할 수 없어야 한다. source descriptor 또는 lineage가 불완전하면 fail-closed한다.
+
+Explicitly NOT approved by CDR-006/007 (user wording, verbatim list): α, B, L / block rule, seed, effect floor, minimum support, size tolerance, dependence envelope / margin, 실제 source taxonomy/default, 실제 CAL_VERIFY 접근, C8 foundation registry와 G-SUP registry 통합, Holdout 소비, C8 SOFTWARE FROZEN 선언, publication grant, Official, LIVE, canonical merge.
+
+## CDR-008 · Ownership boundary for CDR-006/007 implementation (Codex) and integration-owner verification
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** (routing) |
+| Decided at | 2026-10-03, same message |
+
+User wording (verbatim):
+
+> 현재 Codex가 별도 worker로 Track C C8의 사용자 승인 범위를 구현 중일 수 있다. 그 작업을 중단하거나 인수하거나 중복 구현하지 마라.
+> Codex가 이미 위 승인 범위의 Track C 작업을 시작했거나 branch/commit/PR을 만들었다면 그 branch를 READ-ONLY upstream으로 취급하라. Claude Code Main은: 같은 G-SUP v2를 다시 구현하지 않는다. 같은 source descriptor를 다시 구현하지 않는다. Codex branch를 rewrite/rebase/force-push하지 않는다. Codex scoped STATUS/evidence를 대신 작성하지 않는다.
+> Claude Code Main만 Global Handoff shared routing/index를 관리한다. Capability worker와 Codex는 Global Handoff writer가 아니다.
+
+Effect:
+
+- The Primary Integration Writer does not implement G-SUP v2 or the source descriptor. As of the fetch at 2026-10-03T06:58Z, no Codex Track C branch, PR or commit exists; Codex branches present are `codex/takeover-integration-2026-10-03` (#28), `codex/web-producer-integration-readiness-2026-10-03` (#29), `codex/combined-integration-2026-10-03` (#30).
+- When a Codex Track C result appears, the Primary Integration Writer verifies it read-only against the user's 13-point list (exact HEAD, approval record, changed files, v1 preservation, M-B↔v2 exact agreement, p=0.10/0.15 counterexample, source/vintage/sample negative cases, 2.0→2 re-encoding rejection, campaign/root/label bypass rejection, targeted regression, full regression, Actions, CAL_VERIFY/Holdout untouched) before reflecting it here.
+- The Track C Claude owner session is informed of CDR-006/007/008 so that it does not start a duplicate implementation.
