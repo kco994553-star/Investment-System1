@@ -1,0 +1,18 @@
+{
+  "source_head": "3b6ed7eac3fe8f0f852b4d42eb57cf5f3ff497eb",
+  "tests": 1277,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "new_test_cases": 112,
+  "baseline_test_cases": 1165,
+  "command": "PYTHONPATH=src /workspace/gsup-v2-oracle-venv311/bin/python -m pytest -q --junitxml=/workspace/takeover-evidence/gsup-v2/full-regression.xml",
+  "artifacts": {
+    "full-regression.xml": "1c4d3ded52a6a5681aa801472927074bb3fea29aaa200c13b3907349471a4e7e",
+    "full-regression311.log": "ecaef05933992429d47ec0949527e509c3d729239e98a92b677ed6e9f6f86e6b",
+    "WORKFLOW_BASELINE.json": "67b9f1156225fde213612890ea3e45687923655ef15d2cb12f744d45de3befcf"
+  },
+  "CAL_VERIFY_accesses": 0,
+  "Holdout_consumptions": 0,
+  "new_v2_method_kernel_active": false
+}

@@ -1,0 +1,462 @@
+[
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/macro/0/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/macro/0/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/macro/0/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/macro/0/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/macro/1/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/macro/1/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/macro/1/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/macro/1/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/macro/2/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/macro/2/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/macro/2/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/macro/2/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/macro/3/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/macro/3/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/macro/3/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/macro/3/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/0/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/0/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/0/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/0/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/1/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/1/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/1/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/1/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/2/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/2/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/2/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/2/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/3/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/3/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/3/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/3/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/4/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/4/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/4/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/4/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/5/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/5/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/5/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/5/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/6/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/6/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/6/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/6/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/7/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/7/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/7/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/7/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/8/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/8/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/8/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/8/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/9/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/9/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/9/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/9/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/10/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/10/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/10/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/10/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/11/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/11/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/11/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/11/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/12/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/12/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/12/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/12/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/13/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/13/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/13/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/13/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/14/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/14/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/14/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/14/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/15/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/15/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/15/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/15/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/16/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/16/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/16/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/16/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/17/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/17/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/17/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/17/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/18/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/18/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/18/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/18/source_vintages"
+  }
+]

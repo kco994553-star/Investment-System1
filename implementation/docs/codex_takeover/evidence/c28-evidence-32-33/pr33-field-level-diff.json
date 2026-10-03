@@ -1,0 +1,357 @@
+[
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/macro/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/macro/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/macro/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/macro/source_vintages"
+  },
+  {
+    "after": "2694f486e2361989c141469bc15e01b0711fe849bd6e77c26d0ffed9f3d73d76",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c1_integration_boundary.json"
+  },
+  {
+    "after": "6f846d2fcc2640619e919c2df5bb7adc3bf09af59e1f6875359327d742757392",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c2_c3_commit_mapping.json"
+  },
+  {
+    "after": "70b3adce9e21a5a8b2b3fbe8b1d5e2ff1088743413290f09bb6e4fbc04329bee",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c2_evidence.json"
+  },
+  {
+    "after": "3b661627c530d13a9de51a2411a8c2ace667c62e14a9a99141cc703f1efdb911",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c3_evidence.json"
+  },
+  {
+    "after": "1069f4e640b0cad7b5a64c6ee51a7b029f247bbafacc8ecf3cc296f4b39094fe",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c4_commit_mapping.json"
+  },
+  {
+    "after": "5f01523d9df115e5c8e6891b70b19eea1b5ac70271760bebefa6f2b7f649ea7a",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c4_evidence.json"
+  },
+  {
+    "after": "5312d18888505d4a6afe924ad4490f2fb5b98ef5cd49dd0c57c968a3d7d19f91",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c4_upstream_readiness.json"
+  },
+  {
+    "after": "6e4d97c00985d51676c32a8ce2d744a93647465fa7f05fdec8c1288c9046445f",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c5_commit_mapping.json"
+  },
+  {
+    "after": "46d14922549dd93f375101285372552dcabd8c8bd82739b705ba074ccea53c56",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c5_evidence.json"
+  },
+  {
+    "after": "16e9a191be48991a7c2d44363d9b7b70a118a5bff009fd5055fcb3b2fa2cc164",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c6_acceptance_2026-10-01.json"
+  },
+  {
+    "after": "1a2ba671e6ada9e2f8a3b073f63679f894c3be43543e9902f74f96b3fdbc60c6",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c6_boundary_audit_2026-09-30.json"
+  },
+  {
+    "after": "2efacdeca0a8b8d37d40331f076a0075bfc3d338a62e7610bb01be9efe804ae9",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c6_execution_evidence.json"
+  },
+  {
+    "after": "88ff7838c440fdbd8e7e5ebe46824f2f3090dff289ddf7c321ea689b11615515",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c6_freeze_policy_audit.json"
+  },
+  {
+    "after": "6cd15cbc161d30483faf00992e45e3c02bbe840a260fb737ddd9a8b163a0a83c",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c6_statistical_kernels_evidence.json"
+  },
+  {
+    "after": "74c18435559cb5375ad798f1f2479a64e21948685918175ae1f45af29d3bc32a",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c7_acceptance_2026-10-01.json"
+  },
+  {
+    "after": "5aba99663eb3b913b95a06c358af3946df5db649610e6448e3c9b1d45e3eb093",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c7_g1_d2_approval_2026-10-01.json"
+  },
+  {
+    "after": "ba351d8554fc6f7bc03249348aa63424f6c4b516ca7662cdb42f1242f0d94e36",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c7_policy_boundary_evidence_2026-10-01.json"
+  },
+  {
+    "after": "e3ba85ad8fa2a2e49aa8003aa1b663fd9758e20a7bfeec136ecd558bcc084987",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c8_a6_method_approval_2026-10-02.json"
+  },
+  {
+    "after": "e2b7fc75337d6f1c203a0b54cae78aef84e6e3d3de7b8168379dcf8e86ac0789",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c8_a6_method_simulation_2026-10-02.json"
+  },
+  {
+    "after": "262a1e3be64f7f1a7bdb75bf288eb0f8dea8603e5f55bb61248a35ed866c62ed",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c8_a6_partial_approval_2026-10-02.json"
+  },
+  {
+    "after": "e994b4c4359644c31066f40e47f9891cd6f093efdbaa666c5c59ab16b2064d0c",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c8_c10_contract_drafts.json"
+  },
+  {
+    "after": "e78ac3e735bd8c4683d536dc23cbba4ed422ac650008efb7eda54f7cb13d3b5b",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c8_gsup_mb_vs_kernel_counterexample_2026-10-03.json"
+  },
+  {
+    "after": "f82266d9f41946ce648b5c70782a2e8b8ad8732fe06db7bc881b07f1fd96f6d1",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c8_gsup_method_impact_evidence_2026-10-03.json"
+  },
+  {
+    "after": "e41aeeb7ae223f3300f4f2fefc35738cb7db624936395c017de68a076de46aef",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c8_package_A_approval_dossier_2026-10-02.json"
+  },
+  {
+    "after": "b0b783ff0efc3beb61dd5a9590f2406c2a47bd827334bff2215491f5b3ec6691",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c8_partial_approval_2026-10-02.json"
+  },
+  {
+    "after": "de7bbd05c7a2d1edd148341251f2e0d24ad54a46772468bb3a403ab813b2d689",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_c8_partial_foundation_verification_2026-10-02.json"
+  },
+  {
+    "after": "84a4f7a2f48668346deded898c6abcec93f228bcff230dc6f305cf19a16504f3",
+    "kind": "ADDED",
+    "path": "/reports_sha256/reports/track_c_policy_preparation_validation_2026-10-01.json"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/aapl/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/aapl/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/aapl/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/aapl/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/amd/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/amd/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/amd/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/amd/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/asml/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/asml/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/asml/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/asml/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/avgo/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/avgo/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/avgo/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/avgo/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/intc/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/intc/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/intc/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/intc/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/klac/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/klac/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/klac/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/klac/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/lrcx/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/lrcx/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/lrcx/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/lrcx/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/msft/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/msft/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/msft/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/msft/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/nvda/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/nvda/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/nvda/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/nvda/source_vintages"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/qcom/available_at"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/qcom/data_stamp_refs"
+  },
+  {
+    "after": null,
+    "kind": "ADDED",
+    "path": "/technical/qcom/input_hash"
+  },
+  {
+    "after": [],
+    "kind": "ADDED",
+    "path": "/technical/qcom/source_vintages"
+  }
+]

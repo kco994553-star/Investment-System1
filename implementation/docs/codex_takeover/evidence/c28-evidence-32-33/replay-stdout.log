@@ -1,0 +1,100 @@
+{
+  "runtime": "3.11.16 (main, Sep 24 2026, 17:56:40) [Clang 22.1.3 ]",
+  "scope": "Deterministic committed fixture replay; no CAL_VERIFY/Holdout/provider or full-suite invocation",
+  "32": {
+    "before": {
+      "command": [
+        "/workspace/validation-venv311/bin/python",
+        "/workspace/c28-evidence-audit-trees/pr32-before/implementation/tools/producer_engine_fingerprint.py",
+        "/workspace/c28-evidence-audit-trees/pr32-before/implementation/src"
+      ],
+      "tool_sha256": "f4b8bca1e1b08249e56660963ce499401dcb379b2602080b2bd65fee277c6931",
+      "stdout_sha256": "4ba44a8c77dbe17da7e69da2ba4e6eff6e1ac30b37fdbf59bba73cae5187e4ce",
+      "repeatable": true,
+      "return_code": 0,
+      "normalized_harness_hashes_match_exact_tool": true
+    },
+    "after": {
+      "command": [
+        "/workspace/validation-venv311/bin/python",
+        "/workspace/c28-evidence-audit-trees/pr32-after/implementation/tools/producer_engine_fingerprint.py",
+        "/workspace/c28-evidence-audit-trees/pr32-after/implementation/src"
+      ],
+      "tool_sha256": "f4b8bca1e1b08249e56660963ce499401dcb379b2602080b2bd65fee277c6931",
+      "stdout_sha256": "f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866",
+      "repeatable": true,
+      "return_code": 0,
+      "normalized_harness_hashes_match_exact_tool": true
+    },
+    "field_diff_count": 92,
+    "lineage_additions": 92,
+    "investment_existing_field_differences": 0,
+    "stripped_equals_before": true,
+    "stripped_hashes": {
+      "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+      "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+      "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+      "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+      "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+    }
+  },
+  "33": {
+    "before": {
+      "command": [
+        "/workspace/validation-venv311/bin/python",
+        "/workspace/c28-evidence-audit-trees/pr33-before/implementation/docs/entity_metadata/evidence/numeric_fingerprint.py",
+        "/workspace/c28-evidence-audit-trees/pr33-before/implementation"
+      ],
+      "tool_sha256": "f216bc43674d8f670151ee3489bef7af6e31dabf6d9c6a6bf3d7d8a149fb6446",
+      "stdout_sha256": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535",
+      "repeatable": true,
+      "return_code": 0
+    },
+    "after": {
+      "command": [
+        "/workspace/validation-venv311/bin/python",
+        "/workspace/c28-evidence-audit-trees/pr33-after/implementation/docs/entity_metadata/evidence/numeric_fingerprint.py",
+        "/workspace/c28-evidence-audit-trees/pr33-after/implementation"
+      ],
+      "tool_sha256": "f216bc43674d8f670151ee3489bef7af6e31dabf6d9c6a6bf3d7d8a149fb6446",
+      "stdout_sha256": "9b9a276e4daa0c1f52e8d90ec3d8829aa8799d47c2a7cc2017ddce11937d483d",
+      "repeatable": true,
+      "return_code": 0
+    },
+    "field_diff_count": 71,
+    "lineage_additions": 44,
+    "added_report_inventory_entries": [
+      "reports/track_c_c1_integration_boundary.json",
+      "reports/track_c_c2_c3_commit_mapping.json",
+      "reports/track_c_c2_evidence.json",
+      "reports/track_c_c3_evidence.json",
+      "reports/track_c_c4_commit_mapping.json",
+      "reports/track_c_c4_evidence.json",
+      "reports/track_c_c4_upstream_readiness.json",
+      "reports/track_c_c5_commit_mapping.json",
+      "reports/track_c_c5_evidence.json",
+      "reports/track_c_c6_acceptance_2026-10-01.json",
+      "reports/track_c_c6_boundary_audit_2026-09-30.json",
+      "reports/track_c_c6_execution_evidence.json",
+      "reports/track_c_c6_freeze_policy_audit.json",
+      "reports/track_c_c6_statistical_kernels_evidence.json",
+      "reports/track_c_c7_acceptance_2026-10-01.json",
+      "reports/track_c_c7_g1_d2_approval_2026-10-01.json",
+      "reports/track_c_c7_policy_boundary_evidence_2026-10-01.json",
+      "reports/track_c_c8_a6_method_approval_2026-10-02.json",
+      "reports/track_c_c8_a6_method_simulation_2026-10-02.json",
+      "reports/track_c_c8_a6_partial_approval_2026-10-02.json",
+      "reports/track_c_c8_c10_contract_drafts.json",
+      "reports/track_c_c8_gsup_mb_vs_kernel_counterexample_2026-10-03.json",
+      "reports/track_c_c8_gsup_method_impact_evidence_2026-10-03.json",
+      "reports/track_c_c8_package_A_approval_dossier_2026-10-02.json",
+      "reports/track_c_c8_partial_approval_2026-10-02.json",
+      "reports/track_c_c8_partial_foundation_verification_2026-10-02.json",
+      "reports/track_c_policy_preparation_validation_2026-10-01.json"
+    ],
+    "unchanged_existing_report_entries": 140,
+    "investment_existing_field_differences": 0,
+    "stripped_equals_before": true,
+    "exact_reconstructed_stdout_sha256": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535"
+  }
+}

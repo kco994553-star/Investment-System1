@@ -1,0 +1,318 @@
+{
+  "workflow_id": "C28_EVIDENCE_ADOPTION_32_33_READONLY_2026_10_03",
+  "baseline_remote_observed_at": "2026-10-03T07:46:02.433621+00:00",
+  "reviewed_at": "2026-10-03T07:57:47.297184+00:00",
+  "remote_snapshot_sha256": "9c014ca42bfa3e2decbc8ccbe9bfa11f33bb437f29b97c11da65e36d64734972",
+  "workflow_baseline": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "global": "6dedaaf36a417e9301ba22ea9595bff5f37acb38",
+    "integration": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "open_draft_prs": 28,
+    "branches": 41
+  },
+  "separation": "These two external upstream Draft PRs add evidence only. They are neither Codex PR increments nor part of native G-SUP675 validation or its fixed prior baseline.",
+  "reviewer_actions": "READ_ONLY_GIT_OBJECTS_AND_REMOTE_API; isolated tree exports and evidence writes only; no commits, refs, dispatch, source edits, full-suite runs, CAL_VERIFY or Holdout",
+  "criteria": {
+    "32": {
+      "1_exact_additive_paths_history_and_CDR004": "PASS",
+      "2_independent_fingerprint_and_existing_value_invariance": "PASS",
+      "3_validation_evidence_actual_observation_and_NOT_RUN_qualification": "PASS_WITH_DECLARED_VS_EXECUTED_SOURCE_ATTRIBUTION"
+    },
+    "33": {
+      "1_exact_additive_paths_history_and_CDR004": "PASS",
+      "2_independent_fingerprint_and_existing_value_invariance": "PASS",
+      "3_validation_evidence_actual_observation_and_NOT_RUN_qualification": "PASS_WITH_DECLARED_VS_EXECUTED_SOURCE_ATTRIBUTION"
+    }
+  },
+  "proposals": {
+    "32": {
+      "head_branch": "integration/a1-adoption/pr9-producer-infra",
+      "head": "e9aee0cb8b80e17f7ae12e01156f6670135de2fa",
+      "owner_base_branch": "feature/producer-infrastructure-v1",
+      "relation": {
+        "base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+        "head": "e9aee0cb8b80e17f7ae12e01156f6670135de2fa",
+        "merge_base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+        "ahead": 1,
+        "behind": 0
+      },
+      "changed_paths": [
+        "M\timplementation/docs/producer_infrastructure/STATUS.md",
+        "A\timplementation/docs/producer_infrastructure/evidence/c28_adoption_post_adoption_2026-10-03.json"
+      ],
+      "append_only_lines": 18,
+      "historical_validation_sha256": "bc6757dc49bcaad9c264544cfe0acc382fa5e2aa00a7a08e4aaf741765cd2ac4",
+      "record_sha256": "aa673b45bc1702ef0ee27f424bee2eed67e1c7a2235844921921dc86401585ae",
+      "source_tests_tools_workflows_changed": [],
+      "existing_test_pin_search": "NO_MATCH_NO_REPIN",
+      "authority_register": "6dedaaf36a417e9301ba22ea9595bff5f37acb38",
+      "CDR004_full_quote_exact": true,
+      "reconstructed_after_tree": "f6f5f560f6fb223c8d1363c2b8a861e41ce15310",
+      "declared_local_after_commit": "c325cc0fc31966a645b295e610189e9514b1e296",
+      "same_commit_claim": "NOT_MADE; independent reconstruction proves exact TREE identity, not identity of an unreferenced local commit",
+      "adopted_source_blobs_equal_exact_owner": {
+        "contracts/lineage.py": {
+          "after_blob": "288cabadcd0fe975fb9e2605f1f39b767ccc462b",
+          "owner_blob": "288cabadcd0fe975fb9e2605f1f39b767ccc462b"
+        },
+        "contracts/models.py": {
+          "after_blob": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+          "owner_blob": "ef4f80ec91622ffd332f641daf6501d66d87372d"
+        },
+        "technical/engine.py": {
+          "after_blob": "5365653fda6374aeace986c63cce9939921ebb64",
+          "owner_blob": "5365653fda6374aeace986c63cce9939921ebb64"
+        },
+        "macro/engine.py": {
+          "after_blob": "08d79c20147d2a13413e98269042e6cf7d3973a8",
+          "owner_blob": "08d79c20147d2a13413e98269042e6cf7d3973a8"
+        }
+      },
+      "fingerprints": {
+        "before": {
+          "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+          "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+          "n_qgv": 19,
+          "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+          "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+          "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+        },
+        "after": {
+          "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+          "macro": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501",
+          "n_qgv": 19,
+          "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+          "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+          "technical": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+        },
+        "92_lineage_additions_only": true,
+        "stripped_exactly_restores_before": true,
+        "known_technical_macro_pair_match": true
+      },
+      "criteria": {
+        "1_exact_additive_paths_history_and_CDR004": "PASS",
+        "2_independent_fingerprint_and_existing_value_invariance": "PASS",
+        "3_validation_evidence_actual_observation_and_NOT_RUN_qualification": "PASS_WITH_DECLARED_VS_EXECUTED_SOURCE_ATTRIBUTION"
+      },
+      "declared_owner_tests_not_reexecuted": {
+        "owner_tip_f8af596_pytest_full": {
+          "summary": "431 passed in 27.24s",
+          "exit": "exit=0"
+        },
+        "owner_tip_f8af596_mini_pytest_shim": {
+          "summary": "431 passed, 0 failed in 22.93s (runner: mini_pytest shim, not pytest)",
+          "exit": "exit=0"
+        },
+        "after_tree_pytest_full_context_only": {
+          "summary": "961 passed in 437.03s (0:07:17)",
+          "exit": "exit=0"
+        },
+        "after_tree_note": "merged tree full suite: 961 passed, 0 failed. Context only: no test on PR #9 pins these values",
+        "proposal_branch": {
+          "tree": "owner tip + a draft of this record, before the docs note was appended (no test reads docs/); the re-run at the exact proposal commit is reported in the Draft PR body",
+          "pytest_full": {
+            "summary": "431 passed in 34.92s",
+            "exit": "exit=0"
+          },
+          "mini_pytest_shim": {
+            "summary": "431 passed, 0 failed in 25.88s (runner: mini_pytest shim, not pytest)",
+            "exit": "exit=0"
+          },
+          "equals_owner_tip_counts": true
+        },
+        "recorded_counts_in_validation_json": "431 passed (409 PR6 baseline + 22)"
+      },
+      "owner_record_qualification": "JSON proposal validation described a pre-final-doc draft; exact proposal full-suite counts are declared in PR body. This reviewer did not rerun either full suite or shim and does not label declarations as own execution.",
+      "actual_reviewer_execution": {
+        "fingerprint_generators": "EXECUTED_TWICE_EACH_BEFORE_AFTER_NATIVE_PYTHON3.11.16",
+        "normalized_field_replay": "EXECUTED",
+        "full_pytest": "NOT_RUN_DOCS_ONLY",
+        "mini_pytest": "NOT_RUN",
+        "Web_E2E": "NOT_RUN",
+        "dispatch": "NOT_RUN"
+      },
+      "Actions": {
+        "actual_independent_observation": "BRANCH_ALL_EVENT_MODES_QUERY_TOTAL0",
+        "Actions_executed_by_reviewer": "NOT_RUN",
+        "evidence": "pr32-actions-observed.json",
+        "qualification": "No proposal Actions observed; original owner TrackC Actions is separate exact-owner scope, not this proposal.",
+        "root_observed_all_branch_event_modes": {
+          "source": "Root executed gh API with additional network permission; this reviewer inspected exact raw receipt, did not reexecute it",
+          "file": "PR32_ALL_BRANCH_ACTIONS_ROOT.json",
+          "sha256": "a2790a384d7d281e7395679000c35d27768d89dbd7052f725b8f4688beb59915",
+          "total_count": 0,
+          "workflow_runs": []
+        },
+        "current_classification": "NO_ACTIONS_OBSERVED_ALL_BRANCH_MODES_ROOT_RECEIPT; reviewer performed no dispatch"
+      },
+      "BRANCH_STATE": "REMOTE_DRAFT_EVIDENCE_ONLY_PROPOSAL",
+      "INTEGRATION_STATE": "NOT_MERGED_TO_OWNER_TRACKC_NOT_MERGED_IN_PROPOSAL",
+      "CANONICAL_STATE": "NOT_MERGED_UNCHANGED_b8",
+      "maturity_change": "NONE_DOCUMENTATION_AND_EVIDENCE_ONLY",
+      "blockers": [
+        "Owner adoption merge pending; no canonical merge authorized"
+      ],
+      "USER_DECISION_REQUIRED": "NONE_FOR_READ_ONLY_REVIEW",
+      "next_autonomous_action": "Primary Integration Writer may consume this exact independent review; retain owner proposal semantics and do not treat it as merged source adoption"
+    },
+    "33": {
+      "head_branch": "integration/a1-adoption/pr7-entity-metadata",
+      "head": "9626ab06cd2b93cdd250159347cdda5d08f76e03",
+      "owner_base_branch": "ccr-41677301-10nj3u",
+      "relation": {
+        "base": "a013f1c1758642f90a65fe11df69fc234c143a48",
+        "head": "9626ab06cd2b93cdd250159347cdda5d08f76e03",
+        "merge_base": "a013f1c1758642f90a65fe11df69fc234c143a48",
+        "ahead": 1,
+        "behind": 0
+      },
+      "changed_paths": [
+        "M\timplementation/docs/entity_metadata/HANDOFF.md",
+        "A\timplementation/docs/entity_metadata/evidence/c28_adoption_post_adoption_2026-10-03.json"
+      ],
+      "append_only_lines": 17,
+      "historical_validation_sha256": "28d7e79dc0017e1449e21a3aea587086f761b8cbe3d3829058a030efa380acf4",
+      "record_sha256": "d31924fbe2288b624a2c96f6cf293ce1f4021154a0a317fd3e7d5fe9a71e7bc3",
+      "source_tests_tools_workflows_changed": [],
+      "existing_test_pin_search": "NO_MATCH_NO_REPIN",
+      "authority_register": "6dedaaf36a417e9301ba22ea9595bff5f37acb38",
+      "CDR004_full_quote_exact": true,
+      "reconstructed_after_tree": "3c2a0a39ccbf173df1d23064be1c1b123e31baa6",
+      "declared_local_after_commit": "d1dd81ce9cd3ca146246b5828dff575bad6f0fd1",
+      "same_commit_claim": "NOT_MADE; independent reconstruction proves exact TREE identity, not identity of an unreferenced local commit",
+      "adopted_source_blobs_equal_exact_owner": {
+        "contracts/lineage.py": {
+          "after_blob": "288cabadcd0fe975fb9e2605f1f39b767ccc462b",
+          "owner_blob": "288cabadcd0fe975fb9e2605f1f39b767ccc462b"
+        },
+        "contracts/models.py": {
+          "after_blob": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+          "owner_blob": "ef4f80ec91622ffd332f641daf6501d66d87372d"
+        },
+        "technical/engine.py": {
+          "after_blob": "5365653fda6374aeace986c63cce9939921ebb64",
+          "owner_blob": "5365653fda6374aeace986c63cce9939921ebb64"
+        },
+        "macro/engine.py": {
+          "after_blob": "08d79c20147d2a13413e98269042e6cf7d3973a8",
+          "owner_blob": "08d79c20147d2a13413e98269042e6cf7d3973a8"
+        }
+      },
+      "fingerprints": {
+        "before_stdout_sha256": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535",
+        "after_stdout_sha256": "9b9a276e4daa0c1f52e8d90ec3d8829aa8799d47c2a7cc2017ddce11937d483d",
+        "lineage_additions": 44,
+        "report_inventory_additions": 27,
+        "existing_140_report_digests_unchanged": true,
+        "all_existing_investment_fields_unchanged": true,
+        "minus_four_keys_only_sha256": "3f4668613767808307a2b42c0a98afad6f902f61f6fbe652c78add7135eae10e",
+        "minus_report_additions_only_sha256": "ce845bb644931ac02e07a9cd39d7ac364158bdb0b1998a8684d3cf66406db2a8",
+        "minus_both_exact_reconstructed_stdout_sha256": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535",
+        "qualification": "The27 report inventory additions are separately disclosed tree additions, not C28 schema or changed existing numerical outputs."
+      },
+      "criteria": {
+        "1_exact_additive_paths_history_and_CDR004": "PASS",
+        "2_independent_fingerprint_and_existing_value_invariance": "PASS",
+        "3_validation_evidence_actual_observation_and_NOT_RUN_qualification": "PASS_WITH_DECLARED_VS_EXECUTED_SOURCE_ATTRIBUTION"
+      },
+      "declared_owner_tests_not_reexecuted": {
+        "owner_tip_a013f1c_pytest_full": {
+          "summary": "419 passed in 27.18s",
+          "exit": "exit=0"
+        },
+        "owner_tip_a013f1c_mini_pytest_shim": {
+          "summary": "419 passed, 0 failed in 21.83s (runner: mini_pytest shim, not pytest)",
+          "exit": "exit=0"
+        },
+        "after_tree_pytest_full_context_only": {
+          "summary": "949 passed in 437.03s (0:07:17)",
+          "exit": "exit=0"
+        },
+        "after_tree_note": "merged tree full suite: 949 passed, 0 failed. Context only: no test on PR #7 pins these values",
+        "proposal_branch": {
+          "tree": "owner tip + a draft of this record, before the docs note was appended (no test reads docs/); the re-run at the exact proposal commit is reported in the Draft PR body",
+          "pytest_full": {
+            "summary": "419 passed in 34.92s",
+            "exit": "exit=0"
+          },
+          "mini_pytest_shim": {
+            "summary": "419 passed, 0 failed in 25.34s (runner: mini_pytest shim, not pytest)",
+            "exit": "exit=0"
+          },
+          "equals_owner_tip_counts": true
+        },
+        "recorded_counts_in_validation_json": "419/419 PASS (CI and local)"
+      },
+      "owner_record_qualification": "JSON proposal validation described a pre-final-doc draft; exact proposal full-suite counts are declared in PR body. This reviewer did not rerun either full suite or shim and does not label declarations as own execution.",
+      "actual_reviewer_execution": {
+        "fingerprint_generators": "EXECUTED_TWICE_EACH_BEFORE_AFTER_NATIVE_PYTHON3.11.16",
+        "normalized_field_replay": "EXECUTED",
+        "full_pytest": "NOT_RUN_DOCS_ONLY",
+        "mini_pytest": "NOT_RUN",
+        "Web_E2E": "NOT_RUN",
+        "dispatch": "NOT_RUN"
+      },
+      "Actions": {
+        "actual_independent_observation": "EXACT_COMMIT_PULL_REQUEST_RUNS_EMPTY_FIRST_PAGE_CONNECTOR",
+        "Actions_executed_by_reviewer": "NOT_RUN",
+        "evidence": "pr33-actions-exact-pr-observed.json",
+        "full_branch_query_status": "AUTHENTICATION_FAILED_HTTP401; raw response retained in pr33-actions-observed.json",
+        "other_event_modes": "Initially NOT_OBSERVED_INDEPENDENTLY; see separately attributed root receipt below",
+        "qualification": "Owner declares Actions NOT_RUN. Connector observes no exact-commit PR-triggered runs; this does not prove absence of every push/dispatch mode. No failure relabeled as success.",
+        "root_observed_all_branch_event_modes": {
+          "source": "Root executed gh API with additional network permission; this reviewer inspected exact raw receipt, did not reexecute it",
+          "file": "PR33_ALL_BRANCH_ACTIONS_ROOT.json",
+          "sha256": "a2790a384d7d281e7395679000c35d27768d89dbd7052f725b8f4688beb59915",
+          "total_count": 0,
+          "workflow_runs": []
+        },
+        "current_classification": "NO_ACTIONS_OBSERVED_ALL_BRANCH_MODES_ROOT_RECEIPT; reviewer performed no dispatch"
+      },
+      "BRANCH_STATE": "REMOTE_DRAFT_EVIDENCE_ONLY_PROPOSAL",
+      "INTEGRATION_STATE": "NOT_MERGED_TO_OWNER_TRACKC_NOT_MERGED_IN_PROPOSAL",
+      "CANONICAL_STATE": "NOT_MERGED_UNCHANGED_b8",
+      "maturity_change": "NONE_DOCUMENTATION_AND_EVIDENCE_ONLY",
+      "blockers": [
+        "Owner adoption merge pending; no canonical merge authorized"
+      ],
+      "USER_DECISION_REQUIRED": "NONE_FOR_READ_ONLY_REVIEW",
+      "next_autonomous_action": "Primary Integration Writer may consume this exact independent review; retain owner proposal semantics and do not treat it as merged source adoption"
+    }
+  },
+  "scoped_acceptance": "3/3 for each evidence-only proposal; no claim of merged adoption or full-suite independent rerun. Actual no-Actions observation includes root-attributed all-branch receipts for both proposals, not a successful workflow run.",
+  "artifacts": {
+    "PR32_ALL_BRANCH_ACTIONS_ROOT.json": "a2790a384d7d281e7395679000c35d27768d89dbd7052f725b8f4688beb59915",
+    "PR33_ALL_BRANCH_ACTIONS_ROOT.json": "a2790a384d7d281e7395679000c35d27768d89dbd7052f725b8f4688beb59915",
+    "SCOPED_REVIEW.md": "629f96edaf89458f594f355dcfae4bda1f8a405e7381620eb87c40145f7c8ca6",
+    "independent-offline-fingerprint-replay.json": "97dff401232567b12f692fe9932dbebae0ed62a1e3e0c0cf74cad4cfd67d87f2",
+    "pr32-actions-observed.json": "a2790a384d7d281e7395679000c35d27768d89dbd7052f725b8f4688beb59915",
+    "pr32-adoption-record.json": "aa673b45bc1702ef0ee27f424bee2eed67e1c7a2235844921921dc86401585ae",
+    "pr32-after-normalized.json": "a008dce4a21212e39c7ddde99d4427e6876c9c6bf4605dd18a33bb9ef6109058",
+    "pr32-after-stderr-1.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pr32-after-stderr-2.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pr32-after-stdout-1.json": "f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866",
+    "pr32-after-stdout-2.json": "f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866",
+    "pr32-before-normalized.json": "50a710106e570de5cbecdf0a081fbaad9956a7b5fe8174e36824caf080027215",
+    "pr32-before-stderr-1.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pr32-before-stderr-2.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pr32-before-stdout-1.json": "4ba44a8c77dbe17da7e69da2ba4e6eff6e1ac30b37fdbf59bba73cae5187e4ce",
+    "pr32-before-stdout-2.json": "4ba44a8c77dbe17da7e69da2ba4e6eff6e1ac30b37fdbf59bba73cae5187e4ce",
+    "pr32-field-level-diff.json": "fa77b3b56d189bf2626e851efbbafdbd84247a160372a76d7c0daacd4bc909d8",
+    "pr33-actions-exact-pr-observed.json": "2a9a69f91e419ce8e753f7ed3464d9a94fedfda78205c0ffb4ec7663a9d1fe4b",
+    "pr33-actions-observed.json": "15cefd0528700471275adcd28427cb4efc001367156b099ea3300fc79d9c1292",
+    "pr33-adoption-record.json": "d31924fbe2288b624a2c96f6cf293ce1f4021154a0a317fd3e7d5fe9a71e7bc3",
+    "pr33-after-stderr-1.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pr33-after-stderr-2.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pr33-after-stdout-1.json": "9b9a276e4daa0c1f52e8d90ec3d8829aa8799d47c2a7cc2017ddce11937d483d",
+    "pr33-after-stdout-2.json": "9b9a276e4daa0c1f52e8d90ec3d8829aa8799d47c2a7cc2017ddce11937d483d",
+    "pr33-before-stderr-1.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pr33-before-stderr-2.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pr33-before-stdout-1.json": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535",
+    "pr33-before-stdout-2.json": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535",
+    "pr33-field-level-diff.json": "04e63a6ac740897b87186ac1b6e5638a3f44e4c6065249fca590b45d6c3ce58f",
+    "replay-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "replay-stdout.log": "d954c2f714a96f109e6b6fb59566a3b01358599fc9f211589e516d2300002819",
+    "replay_fingerprints.py": "8057469d264ed79f605e9ae2797d01c9f658018c35cf3d8cd7d09aa0b35b4c8a",
+    "review_proposals.py": "2dfd95cc25ab3c8d4936f7c9d76d40649dd84713907a114200d1d338da576848"
+  }
+}

@@ -1,0 +1,512 @@
+{
+  "record": "INDEPENDENT_FINAL_SOURCE_AUTHORITY_PRESERVATION_DELTA_REVIEW",
+  "created_at_utc": "2026-10-03T07:33:01.769293+00:00",
+  "agent": "/root/track_c_audit",
+  "scope": "READ_ONLY_GIT_TREE_AND_SOURCE_REVIEW_NO_NEW_TESTS",
+  "baseline_checkpoint_utc": "2026-10-03T06:48:04Z",
+  "baseline": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "owner": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "integration": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "global": "f26dc7adbfedd9209e757b5e8566c665c7bbd677",
+    "open_pr": 25,
+    "old_native_passed": 1165,
+    "old_native_scope": "HISTORICAL_EXACT_71d5773dd235f93682722b9db762dc254379491e_ONLY",
+    "C0_C7": "SOFTWARE_FROZEN",
+    "C8": "SYNTHETIC_VERIFIED_PARTIAL_NOT_FROZEN",
+    "new_method_v2": "DESIGN"
+  },
+  "target": {
+    "worktree": "/workspace/gsup-v2-integration",
+    "branch": "codex/track-c-gsup-v2-2026-10-03",
+    "head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "source_head_validated_by_root": "3b6ed7eac3fe8f0f852b4d42eb57cf5f3ff497eb",
+    "base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "merge_base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "git_status": "CLEAN"
+  },
+  "status": "PASS_SOURCE_AUTHORITY_PRESERVATION",
+  "acceptance": {
+    "met": 3,
+    "total": 3,
+    "criteria": [
+      {
+        "id": 1,
+        "status": "PASS",
+        "finding": "Owner/Frozen/canonical/integration-existing source and test blobs identical; historical Track C evidence byte-identical except explicitly approved append-only scoped Decision Register."
+      },
+      {
+        "id": 2,
+        "status": "PASS",
+        "finding": "Only source additions are approved synthetic source admission and isolated v1 compatibility wrapper. No active M-B v2/reduction choice, real access, calibration/default change, grants or foundation registry change."
+      },
+      {
+        "id": 3,
+        "status": "PASS",
+        "finding": "Concrete exact-SHA delta, protected blob manifest hashes, current source hashes and preserved prior checkpoint hashes recorded; no prior evidence rewritten."
+      }
+    ]
+  },
+  "protection_checks": {
+    "integration_existing_source_tests": {
+      "base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "checked_blobs": 331,
+      "changed_existing_paths": [],
+      "status": "PASS",
+      "baseline_path_blob_manifest_sha256": "856a3eb74babe2682583f7f2261e8cf74f9fa52f6609a8bc17fc1b1aece63a80"
+    },
+    "owner_evl_existing_source_tests": {
+      "base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "checked_blobs": 41,
+      "changed_existing_paths": [],
+      "status": "PASS",
+      "baseline_path_blob_manifest_sha256": "0ef5208c2623277b1b03897885b4d3b6c26110ed076d8d070dd82959d4a11a79"
+    },
+    "pre_c8_frozen_existing_source_tests": {
+      "base": "86e345e54678de05ebcdf2e1db53c9dbe72ca52a",
+      "checked_blobs": 232,
+      "changed_existing_paths": [],
+      "status": "PASS",
+      "baseline_path_blob_manifest_sha256": "6a5334287a783f7576ff9484d0fddd7b3e9e5b80f09642df3726e0ec625069ab"
+    },
+    "canonical_track_a_raw_qgv_personal": {
+      "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "checked_blobs": 7351,
+      "changed_existing_paths": [],
+      "status": "PASS",
+      "baseline_path_blob_manifest_sha256": "5928df4ca41edc0470974f84c9179fbd49afefb93b8c1084621df4e51a43128b"
+    },
+    "owner_track_c_historical_evidence": {
+      "base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "checked_blobs": 100,
+      "changed_existing_paths": [],
+      "status": "PASS",
+      "baseline_path_blob_manifest_sha256": "120c1530c5b19eb65623c9f5160ee823215c1cc13a7228927dfeb4709a2bdabb"
+    },
+    "exact_approved_c28_source": {
+      "base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "checked_blobs": 4,
+      "changed_existing_paths": [],
+      "status": "PASS",
+      "baseline_path_blob_manifest_sha256": "43e30531d392ebd508663d8c411b30dc536bdb063e8a7801843cb255a389b09a"
+    },
+    "final_vs_native_validated_source_tests": {
+      "base": "3b6ed7eac3fe8f0f852b4d42eb57cf5f3ff497eb",
+      "checked_blobs": 337,
+      "changed_existing_paths": [],
+      "status": "PASS",
+      "baseline_path_blob_manifest_sha256": "99a1ba69611725ddd24d60a084fa17aa4f0f1f5e0e747fc9540ffbb606a01162"
+    },
+    "scoped_decision_register": {
+      "base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "baseline_blob": "62f0034cf7a91b4744aa944baf463d0c2c08e7bb",
+      "target_blob": "cf41f04a8eeae3808dd9a8ea94a159d73c7306ae",
+      "original_byte_length": 17206,
+      "new_byte_length": 19295,
+      "original_sha256": "e665f5a6c07abf849f3863b3535f89e811515dec6e2a3c4f93decbaae8f47597",
+      "new_sha256": "6ef0c0debeb627bc0a378930cd87102fc590cf74a2a7a3db388ed308982be5f4",
+      "original_byte_prefix_preserved": true,
+      "appended_utf8": "\n\n## TC-C8-GSUP-M-V2-2026-10-03 — additive explicit user approval\n\nRecorded 2026-10-03T06:56:04.745959+00:00; authority current explicit user instruction, exact JSON `track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json` blob `a5279d516c028f0a8cb9166ee2d54366da00877b`. Choice **M APPROVED**: approved M-B convention authoritative under `C8_GSUP_STUDENTIZED_CBB_v2`; v1 preserved and no historical result rewritten. Exact statistic/replicate/variance/degenerate/tie conformity and independent oracle/counterexamples required. Actual numeric configuration, CAL_VERIFY and Holdout remain NOT APPROVED. Earlier method-choice-pending entries are SUPERSEDED only for M-vs-K/C; all prior evidence remains historical.\n\nA separate exact floating reduction ambiguity was discovered: existing math.fsum, pinned Python3.11 scalar sum, and original NumPy simulation arithmetic can change exceedances/degenerate counts. **USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION**, no tolerance/reduction selected. This does not reopen the approved M-B block/degenerate convention. Existing fail-closed undefined original statistic remains required.\n\n## TC-C8-GSUP-SOURCE-IDENTITY-SYNTHETIC-2026-10-03 — additive explicit user approval\n\nSame exact user record approves preregistered trusted source/vintage/sample descriptor binding before outcome in synthetic/software-validation scope only. Content serialization is integrity evidence, not consumption identity. Equivalent 2.0→2, campaign/root/label changes cannot consume the same target twice. Existing profile/role grouping and kernel semantics preserved; missing/unresolved/incomplete lineage FAIL_CLOSED. Real taxonomy/defaults, actual CAL_VERIFY, foundation registry integration, Holdout, C8 Freeze and Official/publication remain NOT APPROVED. Earlier source-identity proposal is now APPROVED only within this bounded scope; original proposal is not rewritten.\n\nPrior register byte prefix SHA256 `e665f5a6c07abf849f3863b3535f89e811515dec6e2a3c4f93decbaae8f47597` is retained exactly. Owner branches and shared Global metadata remain read-only.\n",
+      "approval_blob": "a5279d516c028f0a8cb9166ee2d54366da00877b",
+      "status": "PASS_APPROVED_APPEND_ONLY"
+    }
+  },
+  "changed_files": [
+    {
+      "status": "M",
+      "path": ".github/workflows/codex-integration-readiness.yml",
+      "git_blob": "6564e1efd3a6708902d5d0318911318497a528b6",
+      "sha256": "c8988072e16f00892940f73d3fc37da3689009516af75f26549ebbbda9077c3c"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/p01-research-publication.yml",
+      "git_blob": "c8c7fa5ab9a0fc08113d1d91ff3c49d0eb8f7a48",
+      "sha256": "dfa41959d6eb0c06649d5a24954733b284e17aa139a5329dc0fe7ee9efb59b27"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/qgv-invalidation-binding.yml",
+      "git_blob": "83ae9c616635a93a709acd97809bcb52a103b7d7",
+      "sha256": "370896126bfa393dfd8208332f95b7da1cda03f45e8a019c21cce40937405c07"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/sec-primary-disclosure.yml",
+      "git_blob": "9d89d9e687abe7875bb791c1178d0cca9614f7f0",
+      "sha256": "9529cf66d759c90619a7b6332e7cf0bae8c2ecba2cc6c8491c9e4b647514140b"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/technical-real-model.yml",
+      "git_blob": "08e11010372448229a8a5f0d6a7be436fc1dbb12",
+      "sha256": "e578cbd6ca8afaa076886aebbc91736dec1e3f04beb8fb4ca69c107497b4099e"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/technical-real-producer.yml",
+      "git_blob": "e3a52065934f1d7a3477270ee58e9d559a026cc7",
+      "sha256": "797237d74af820751ef12059ee59f7238a17245f963336e04d1ed11b99aec2e9"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/us-equity-session.yml",
+      "git_blob": "0f38297db73b0d806f09965aa705a8ccb6d93cd2",
+      "sha256": "3163a6ed78b7e3f10477a458f7702ceba8590f61c6fef961f870ae4b15914b59"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/web-mvp-validation.yml",
+      "git_blob": "f8be434b7f6c0009e648161d113ffafb59808841",
+      "sha256": "94c08def52440322f65ee8131e8b8b0810d4b23caa5e84243c72bfca7c1925da"
+    },
+    {
+      "status": "A",
+      "path": "implementation/docs/codex_takeover/evidence/gsup_source_identity/CHECKPOINT.json",
+      "git_blob": "0e9c88bd6efe85188bfe54e600dce085d396401f",
+      "sha256": "7a806eacec5663cbc3cbe6f23332d204fbe85c957fdc67f4c122205197461782"
+    },
+    {
+      "status": "A",
+      "path": "implementation/docs/codex_takeover/evidence/gsup_source_identity/SCOPED_HANDOFF.md",
+      "git_blob": "c406d6b69f410d056aa6225eb15d8a8f4588ed57",
+      "sha256": "41310cc956e86dd5e7c9921e4222ebeabc67701fa95d2c6a629d1ade1c698e9d"
+    },
+    {
+      "status": "A",
+      "path": "implementation/docs/codex_takeover/evidence/gsup_source_identity/targeted-python311.log",
+      "git_blob": "588ea8d39c9422fd7f5b54c1ee2e327021f762fb",
+      "sha256": "aa4881bbcac0c1e030b5e37e6199c7b4b13cf1d2e7485540c6d0d4ec0a72b42a"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_identity_independent/INDEPENDENT_RECEIPT_2026-10-03.json",
+      "git_blob": "4ec6a732d14cdae8c148f47f0955c2ea8a87bde9",
+      "sha256": "35655e0458a2f44bd34c40d0a2d399e86d6754ab68a6a3492913cc62adfab887"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_identity_independent/INDEPENDENT_REVIEW_2026-10-03.md",
+      "git_blob": "4b09be3948256d709f684d8b2ed7b0e441c2ddba",
+      "sha256": "9026c143f7ad6ee1a6ea978dd3d10e2fcee06fda6e052a7ddc49b4041c061456"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_identity_independent/INDEPENDENT_TESTS_2026-10-03.xml",
+      "git_blob": "79b73368eb1a81c639b9eeaa6fde4e57649d667c",
+      "sha256": "b85eccad6e1c8abbe4e16bb7e98170cdc27c26060c1d2a6500991a2ed60bb97f"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_oracle/ARITHMETIC_REDUCTION_REVIEW_2026-10-03.md",
+      "git_blob": "4c2af0c772f6552e12f71a9d0ce68e004963487c",
+      "sha256": "93988d5098feecb4b815934dc76edc835be73cc9ef7fe70d0fddd5cc3be49973"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_oracle/ARITHMETIC_REDUCTION_TRACES_2026-10-03.json",
+      "git_blob": "635dacf25f883ded07f283ff222f2b4b61699ca9",
+      "sha256": "796ad12b4356701d6d7ac3e70e81bfe1ec66110fb0084d70ed6fd3e175fbe617"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_oracle/ARTIFACT_MANIFEST_2026-10-03.json",
+      "git_blob": "5abc05e1c44970e17f681454216b5bdb64596750",
+      "sha256": "bde909227ba4bc92039ec1ca981ff57240ad79d359fd471b7fcfb84a42dc3a53"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_oracle/DIAGNOSTIC_TESTS_2026-10-03.log",
+      "git_blob": "5c6b4084344957a7e5a25b3f11689e75d841f728",
+      "sha256": "033fb2c250179ef897c71b5e827c29cc42a4963d2e60fca95af2a591d57b8fd8"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_oracle/DIAGNOSTIC_TESTS_2026-10-03.xml",
+      "git_blob": "75f1b2eff660950b2d2e3f92789d38d3bd17e156",
+      "sha256": "c28e27a8893d4ed956566f70fbaf4b9d2a26eb3aa8cb650973c7ed71c0522347"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json",
+      "git_blob": "a5279d516c028f0a8cb9166ee2d54366da00877b",
+      "sha256": "0fc8ed2b55b3aba4cf566f0e7c9e7146324ae4aec5e22c307fd9a9a8ae9991d8"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.md",
+      "git_blob": "02a97be1bd1133c3d934942d618428ae7ac771c5",
+      "sha256": "550cf4727897b76549d84391bc1e3a3a57a374e5fec25d0a4c969ab36b306fc0"
+    },
+    {
+      "status": "M",
+      "path": "implementation/reports/track_c_decision_register_2026-10-01.md",
+      "git_blob": "cf41f04a8eeae3808dd9a8ea94a159d73c7306ae",
+      "sha256": "6ef0c0debeb627bc0a378930cd87102fc590cf74a2a7a3db388ed308982be5f4"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/track_c_gsup_identity_kernel_invariance_2026-10-03.json",
+      "git_blob": "a869856118a427cc9c6e435caa71120f5412bcd8",
+      "sha256": "62542ec3d1a82ffb28e56aa77a6bde24ed15bafc5b8809534c3eacafeae9d57e"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/track_c_gsup_identity_kernel_invariance_2026-10-03.md",
+      "git_blob": "f80c175aa765eaac0223ade945a5edef6844d409",
+      "sha256": "100d3f293e198481aa325841b7e3aeb2522a34dcfdd250c782f3d0bc521eb4ca"
+    },
+    {
+      "status": "A",
+      "path": "implementation/src/investment_system/evl/gsup_source_identity.py",
+      "git_blob": "fa93bf88f8d77b293421a8d0b5095757b22f72d8",
+      "sha256": "d34fc10d396f37fce65a5580263d2d35207e7d2f4f347fe300c1f1b81c33c548"
+    },
+    {
+      "status": "A",
+      "path": "implementation/src/investment_system/evl/superiority_source_identity.py",
+      "git_blob": "71bf737578866b762a0ee82506f8f5db9418f8ba",
+      "sha256": "3ad8ca25f724cd3d07271ec8a38b95ca8779fe57f14ccf252e1030aa7acca0fa"
+    },
+    {
+      "status": "A",
+      "path": "implementation/tests/test_evl_gsup_identity_kernel_invariance.py",
+      "git_blob": "7f991f40ba097a996a2d4758645b9e46353ef088",
+      "sha256": "e0ddbdc2ae689b81359705ea5d249ad5882f3552f5fe32c23494288314b38d1f"
+    },
+    {
+      "status": "A",
+      "path": "implementation/tests/test_evl_gsup_mb_reduction_diagnostic.py",
+      "git_blob": "201ac43edeec26dc0dfb7b39e60fe76e2f941902",
+      "sha256": "d66935e3ae304b7b399efa7cf0fef63057298ac4a80a70aea0cb650c9f5435f5"
+    },
+    {
+      "status": "A",
+      "path": "implementation/tests/test_evl_gsup_source_identity.py",
+      "git_blob": "06c33af5634f7635cae6bf5f0ac292d0e9e7192d",
+      "sha256": "a92cdf85c9d972749b5d4f173f92adec4483e30005548b500d852464b1b2b1fb"
+    },
+    {
+      "status": "A",
+      "path": "implementation/tests/test_evl_gsup_v2_identity_adversarial.py",
+      "git_blob": "6d7cb0642a8f152debbcdd6c7db3df8f7d3b514c",
+      "sha256": "c794a93d117e78fd854f101a6925a4d62624e8e469978c87b0fc5c7fed2f0576"
+    },
+    {
+      "status": "A",
+      "path": "implementation/tools/gsup_mb_reduction_diagnostic.py",
+      "git_blob": "5baa1adb6db32f0f1f8ff3f0dffbfd34e9086571",
+      "sha256": "b793a1e76d2a4dbe5f79152a04b18ebe0aa5006f0efd2e1542fc720b701ab3d5"
+    }
+  ],
+  "workflow_review": [
+    {
+      "path": ".github/workflows/codex-integration-readiness.yml",
+      "dependency_addition_only": false,
+      "additional_change": "Enumerated approved additions; every owner-existing Track C blob remains exact-protected; source path triggers added",
+      "target_blob": "6564e1efd3a6708902d5d0318911318497a528b6",
+      "target_sha256": "c8988072e16f00892940f73d3fc37da3689009516af75f26549ebbbda9077c3c"
+    },
+    {
+      "path": ".github/workflows/p01-research-publication.yml",
+      "dependency_addition_only": true,
+      "additional_change": null,
+      "target_blob": "c8c7fa5ab9a0fc08113d1d91ff3c49d0eb8f7a48",
+      "target_sha256": "dfa41959d6eb0c06649d5a24954733b284e17aa139a5329dc0fe7ee9efb59b27"
+    },
+    {
+      "path": ".github/workflows/qgv-invalidation-binding.yml",
+      "dependency_addition_only": true,
+      "additional_change": null,
+      "target_blob": "83ae9c616635a93a709acd97809bcb52a103b7d7",
+      "target_sha256": "370896126bfa393dfd8208332f95b7da1cda03f45e8a019c21cce40937405c07"
+    },
+    {
+      "path": ".github/workflows/sec-primary-disclosure.yml",
+      "dependency_addition_only": true,
+      "additional_change": null,
+      "target_blob": "9d89d9e687abe7875bb791c1178d0cca9614f7f0",
+      "target_sha256": "9529cf66d759c90619a7b6332e7cf0bae8c2ecba2cc6c8491c9e4b647514140b"
+    },
+    {
+      "path": ".github/workflows/technical-real-model.yml",
+      "dependency_addition_only": true,
+      "additional_change": null,
+      "target_blob": "08e11010372448229a8a5f0d6a7be436fc1dbb12",
+      "target_sha256": "e578cbd6ca8afaa076886aebbc91736dec1e3f04beb8fb4ca69c107497b4099e"
+    },
+    {
+      "path": ".github/workflows/technical-real-producer.yml",
+      "dependency_addition_only": true,
+      "additional_change": null,
+      "target_blob": "e3a52065934f1d7a3477270ee58e9d559a026cc7",
+      "target_sha256": "797237d74af820751ef12059ee59f7238a17245f963336e04d1ed11b99aec2e9"
+    },
+    {
+      "path": ".github/workflows/us-equity-session.yml",
+      "dependency_addition_only": true,
+      "additional_change": null,
+      "target_blob": "0f38297db73b0d806f09965aa705a8ccb6d93cd2",
+      "target_sha256": "3163a6ed78b7e3f10477a458f7702ceba8590f61c6fef961f870ae4b15914b59"
+    },
+    {
+      "path": ".github/workflows/web-mvp-validation.yml",
+      "dependency_addition_only": true,
+      "additional_change": null,
+      "target_blob": "f8be434b7f6c0009e648161d113ffafb59808841",
+      "target_sha256": "94c08def52440322f65ee8131e8b8b0810d4b23caa5e84243c72bfca7c1925da"
+    }
+  ],
+  "source_authority_review": {
+    "approval": {
+      "commit": "8230007f5edb86aec949166e25fd62a680db3ae2",
+      "path": "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json",
+      "git_blob": "a5279d516c028f0a8cb9166ee2d54366da00877b"
+    },
+    "active_M_v2_source_files": [],
+    "legacy_superiority_blob": "8a1254d7b77514f6015dfff4af0e4a53f57f22af",
+    "v1_delegates": [
+      "legacy.validate_registration",
+      "legacy.assess_feasibility",
+      "legacy._evaluate",
+      "legacy._result",
+      "legacy.development_dependence_estimate"
+    ],
+    "globals_monkeypatch": "NONE",
+    "identity_validation_mode": "SYNTHETIC_IDENTITY_COMPATIBILITY_ONLY",
+    "source_identity_protocol": "C8_GSUP_SOURCE_IDENTITY_v1",
+    "source_taxonomy_defaults": "REAL_NOT_CHANGED_NOT_APPROVED",
+    "real_provider": "DECLARED_SYNTHETIC_TRUE_AND_LEGACY_SCOPE_REQUIRED_BEFORE_PROVIDER_CALL",
+    "missing_or_incomplete_binding": "FAIL_CLOSED_BEFORE_OUTCOME",
+    "claim_resolved_binding": "EXACT_AUTHORITY_REFERENCE_REGISTRATION_REFERENCE_DESCRIPTOR_HASH_PROFILE_ROLE",
+    "real_CAL_VERIFY": "NOT_ACCESSED_BY_THIS_REVIEW_NOT_AUTHORIZED",
+    "Holdout": "NOT_ACCESSED_BY_THIS_REVIEW_UNCONSUMED",
+    "grants": "NONE",
+    "C0_C7_Frozen": "UNCHANGED",
+    "C8_Freeze": "NOT_GRANTED",
+    "numeric_configuration": "NOT_APPROVED_NO_SELECTION"
+  },
+  "authority_classification": {
+    "previous_method_choice_pending": "SUPERSEDED_FOR_M_VS_K_C_ONLY",
+    "M_direction": "CURRENT_APPROVED_NEW_VERSION_ONLY",
+    "previous_source_identity_proposal": "SUPERSEDED_APPROVED_SYNTHETIC_SUBSCOPE_ONLY",
+    "old_v1_source_results": "CURRENT_PRESERVED_SOURCE_AND_HISTORICAL_UNREWRITTEN_RESULTS",
+    "floating_reduction": "CURRENT_USER_DECISION_REQUIRED",
+    "real_numeric_ACCESS_Holdout_grants": "CURRENT_SEPARATE_CLOSED_GATES"
+  },
+  "delta": {
+    "new_source_modules": 2,
+    "new_tests": 4,
+    "new_diagnostic_tools": 1,
+    "existing_source_test_edits": 0,
+    "workflow_dependency_additions": 8,
+    "workflow_exact_existing_guard_compatibility_fix": 1,
+    "approved_register_append": 1,
+    "prior_critical_blockers": 2,
+    "prior_M_direction_blocker": "RESOLVED_BY_EXPLICIT_M_APPROVAL_NEW_VERSION_ONLY",
+    "prior_source_identity_blocker": "RESOLVED_SYNTHETIC_SCOPE_ONLY",
+    "new_arithmetic_blocker": "USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION",
+    "current_critical_policy_blockers": 1,
+    "method_v2_maturity": "DESIGN_UNCHANGED_NO_ACTIVE_KERNEL",
+    "source_identity_subscope": "SYNTHETIC_VERIFIED_WITH_EXISTING_TARGETED_AND_INDEPENDENT_EVIDENCE_NO_REAL_VALIDATION",
+    "canonical_delta": "NONE_NOT_MERGED",
+    "real_access_or_grants_delta": "NONE",
+    "code_history_vs_fixed_baseline": {
+      "commits": 14,
+      "changed_files": 31,
+      "added_files": 22,
+      "modified_files": 9,
+      "deleted_files": 0,
+      "insertions": 16719,
+      "deletions": 10,
+      "scope": "History/source inventory counts only; not capability progress or permission grants"
+    }
+  },
+  "ci_guard_compatibility_finding": {
+    "status": "RESOLVED_BY_ROOT_AT_FINAL_675",
+    "path": ".github/workflows/codex-integration-readiness.yml",
+    "initial_source_head": "3b6ed7eac3fe8f0f852b4d42eb57cf5f3ff497eb",
+    "initial_reason": "Broad diff from owner incorrectly rejected approved additive identity source/test files.",
+    "final_guard_review": "All 41 owner-existing paths still compared by exact git diff; only six explicitly enumerated approved source/test additions accepted; all unexpected Track C additions fail. Existing canonical Track A and C28 source diff checks retained; contents read only.",
+    "owner_existing_files": 41,
+    "approved_actual_additions": [
+      "implementation/src/investment_system/evl/gsup_source_identity.py",
+      "implementation/src/investment_system/evl/superiority_source_identity.py",
+      "implementation/tests/test_evl_gsup_identity_kernel_invariance.py",
+      "implementation/tests/test_evl_gsup_mb_reduction_diagnostic.py",
+      "implementation/tests/test_evl_gsup_source_identity.py",
+      "implementation/tests/test_evl_gsup_v2_identity_adversarial.py"
+    ],
+    "unexpected_additions": [],
+    "guard_execution": {
+      "status": "PASS_OBSERVED_ROOT_EXISTING_LOG",
+      "executed_by": "ROOT",
+      "head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "script_path": "/workspace/takeover-evidence/gsup-v2/protection-check.sh",
+      "script_sha256": "04ffc37ba89f3a295647cdf5a8ac00fb8ff8fa1efede8a6e3cea9038a4e76fed",
+      "log_path": "/workspace/takeover-evidence/gsup-v2/protection-check.log",
+      "log_sha256": "e4dd572beb10195376cf908966654f9c26d8085dcf111c556c2433c6a1cea7d2",
+      "stdout": "Preserved 41 exact owner files; approved additive files 6\n",
+      "scope": "Exact YAML protection step only; owner-existing source blobs and precisely enumerated additions, canonical data/gate evidence and C28 sources. No real-validation, publication or repository-wide grant."
+    },
+    "reviewer_edit": "NONE"
+  },
+  "actual_execution_this_task": {
+    "tests": "NOT_RUN",
+    "Actions": "NOT_RUN",
+    "CAL_VERIFY": "NOT_ACCESSED",
+    "Holdout": "NOT_ACCESSED",
+    "source_or_global_writes": [],
+    "only_written_artifact": "/workspace/takeover-evidence/gsup-v2/final-preservation.json"
+  },
+  "prior_checkpoints": {
+    "/workspace/takeover-evidence/track_c/final-authority-review.json": {
+      "sha256": "4f875c7af4d5b9c4f8121727e33757207d5d706ca080a3a3b21f68c0ab05a5c2",
+      "status": "PRESERVED_READ_ONLY"
+    },
+    "/workspace/takeover-evidence/gsup-v2/kernel-authority/receipt.json": {
+      "sha256": "b6ab6bdd37512d5c318d6be000ee6f73b2099dcd635a3906cf514d396b83500a",
+      "status": "PRESERVED_READ_ONLY"
+    },
+    "/workspace/takeover-evidence/gsup-v2/kernel-invariance/checkpoint.json": {
+      "sha256": "46562b2b7b05f1aa8967fd30f3d2f923655972f36dc841e937ff17b8c9485d79",
+      "status": "PRESERVED_READ_ONLY"
+    },
+    "/workspace/takeover-evidence/gsup-v2/kernel-invariance/immutable311.log": {
+      "sha256": "0530f4844c3984a822d131fddd576b4d06d6b0ca025f7354a5d1b985e7bed427",
+      "status": "PRESERVED_READ_ONLY"
+    }
+  },
+  "validation_status": {
+    "root_full_native": {
+      "status": "PASS_OBSERVED_EXISTING_JUNIT_AND_LOG",
+      "executed_by": "ROOT",
+      "source_head": "3b6ed7eac3fe8f0f852b4d42eb57cf5f3ff497eb",
+      "junit": {
+        "tests": 1277,
+        "errors": 0,
+        "failures": 0,
+        "skipped": 0
+      },
+      "junit_path": "/workspace/takeover-evidence/gsup-v2/full-regression.xml",
+      "junit_sha256": "1c4d3ded52a6a5681aa801472927074bb3fea29aaa200c13b3907349471a4e7e",
+      "log_path": "/workspace/takeover-evidence/gsup-v2/full-regression311.log",
+      "log_sha256": "ecaef05933992429d47ec0949527e509c3d729239e98a92b677ed6e9f6f86e6b",
+      "final_source_test_equivalence": "PASS_ONLY_WORKFLOW_CHANGE_3b6_TO_675"
+    },
+    "current_exact_head_actions": "PENDING_ROOT_EXECUTION_NOT_CLAIMED_PASS",
+    "prior_native_1165": "HISTORICAL_NOT_CURRENT_HEAD_PASS"
+  },
+  "BRANCH_STATE": "READ_ONLY_PRESERVATION_AND_AUTHORITY_PASS_APPROVED_ADDITIONS",
+  "INTEGRATION_STATE": "ROOT_NATIVE_1277_PASS_SOURCE_IDENTICAL_FINAL_CI_PENDING",
+  "CANONICAL_STATE": "UNCHANGED_NOT_MERGED",
+  "board": {
+    "Agent": "/root/track_c_audit",
+    "Task": "Final preservation DELTA review",
+    "Status": "COMPLETE_3_OF_3",
+    "BranchHEAD": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "actualDelta": "2 approved identity source modules; 4 new test files; existing source/tests 0 edits; approved register append preserved prefix; 8 dependency updates; enumerated-addition protection guard repair reviewed; preserved receipt added",
+    "Blocker": "M-B floating arithmetic USER_DECISION_REQUIRED",
+    "Next": "Root exact-head Actions and arithmetic decision before active v2 implementation"
+  }
+}

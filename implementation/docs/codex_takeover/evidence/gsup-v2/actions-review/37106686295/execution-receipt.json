@@ -1,0 +1,223 @@
+{
+  "run_id": 37106686295,
+  "workflow": "web-mvp-validation",
+  "run_attempt": 1,
+  "run_head_sha": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37106686295",
+  "jobs": [
+    {
+      "job_id": 111156485873,
+      "job_name": "validate",
+      "run_head_sha": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "actual_checkout_sha": "547676da75308b02a35f9cef1b5be3b028bdf101",
+      "checkout_source": "connector job log git log -1 --format=%H",
+      "checkout_tree_equals_pr_head": true,
+      "status": "completed",
+      "conclusion": "success",
+      "pytest_log_summaries": [
+        "1277 passed in 328.56s"
+      ],
+      "log_sha256": "0cafdfca122110b6bdc859c184731ebe4838b291ffbf1a2c864a583774fd0f4c",
+      "printed_json_assertion_results": [
+        {
+          "passed": true,
+          "checks": 26,
+          "entities": 509,
+          "average_query_ms": 2.0564325999999995
+        }
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run python -m pip install pytest==9.1.1 numpy==2.3.5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run PYTHONPATH=src python -m pytest -q",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run npm install --no-save playwright@1.58.2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Run mkdir -p implementation/reports/web_mvp",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_id": 11268815169,
+      "name": "web-mvp-validation",
+      "github_artifact_digest": "sha256:b4e22c87c2a5d39032cfa86d4d1f710dd66933c0eee7902fa985e692a3256dfb",
+      "local_download_sha256": "b4e22c87c2a5d39032cfa86d4d1f710dd66933c0eee7902fa985e692a3256dfb",
+      "digest_verified": true,
+      "xml_results": [],
+      "browser_results": [
+        {
+          "path": "global-language-search-browser.json",
+          "check_groups": 8,
+          "data": {
+            "passed": true,
+            "checks": [
+              "global search exact/alias/prefix/fuzzy same canonical route",
+              "industry and macro navigation; no fake investor",
+              "ko/en UI, persistence, QGV/Technical/Macro/Portfolio/Leaderboard/source_original unchanged",
+              "source language filter independent; localized summaries retain raw originals",
+              "existing News Network labels use global display locale and preserve model",
+              "research controls localized, Frozen payload/preview unchanged",
+              "mobile/desktop search and settings without overflow",
+              "storage failure preserves settings source"
+            ],
+            "errors": []
+          }
+        },
+        {
+          "path": "browser.json",
+          "check_groups": 10,
+          "data": {
+            "passed": true,
+            "checks": [
+              "default fail-closed missing data",
+              "six routes 360/390/1280 without overflow",
+              "portfolio to company and original QGV",
+              "interest persistence and group membership",
+              "news-network switch, node focus, expansion, zoom, filters",
+              "research canonical select fill preview copy",
+              "network pan and drag preserve view state",
+              "group rename delete and preferences backup",
+              "back navigation and deep link",
+              "no page errors"
+            ],
+            "errors": []
+          }
+        }
+      ],
+      "entity_metadata_results": [
+        {
+          "path": "entity_metadata_search.json",
+          "data": {
+            "n_companies": 500,
+            "by_kind": {
+              "ticker": {
+                "labels": 500,
+                "top1": 500,
+                "shared_label_candidates": 0
+              },
+              "canonical_name": {
+                "labels": 500,
+                "top1": 500,
+                "shared_label_candidates": 0
+              },
+              "en-US": {
+                "labels": 1101,
+                "top1": 1101,
+                "shared_label_candidates": 0
+              },
+              "ko-KR": {
+                "labels": 722,
+                "top1": 722,
+                "shared_label_candidates": 0
+              },
+              "listing_ticker": {
+                "labels": 238,
+                "top1": 238,
+                "shared_label_candidates": 0
+              },
+              "historical_name": {
+                "labels": 316,
+                "top1": 316,
+                "shared_label_candidates": 0
+              },
+              "historical_ticker": {
+                "labels": 16,
+                "top1": 16,
+                "shared_label_candidates": 0
+              }
+            },
+            "failures": [],
+            "pass": true
+          }
+        }
+      ],
+      "fixture_contract_results": [],
+      "files_sha256": {
+        "news-mobile.png": "ef75a22deafb836f3091a22d58f1ae94184c98f976b7177997c83092448c4a79",
+        "entity_metadata_search.json": "6f01f218a8c4a07fc6dcf88985a7a7af52d68b2b1ba6dfada1e2334cfb92476a",
+        "research-mobile.png": "1ad897dc2d04eefc47415ffd65b92507bcba265d41cb01c2483bff315da8affe",
+        "home-mobile.png": "1244055bd795d48c12c9a49917674225a95320095b670cf473e71be787fac629",
+        "global-language-search-browser.json": "cc8cb144e3a49b4389e4f76b88b0779d5cf631e2481e41fe879839a1261de2a4",
+        "browser.json": "8be9b59226cc8bc660e7e85153cfb59a6a336cacad5b1a971a3abeb7d757062f",
+        "portfolio-mobile.png": "7c7cb2acb9d36d1a3b04cb262e39df56ed3e5692c35781d3f1bf14ba62d46ad6",
+        "company-nvda-mobile.png": "4050e5cac52b4c9560255d608ef4ece22a9b9bfd971d22730a92a35fecaa1264",
+        "global-language-search.png": "d312c2b65f51187567ef53c7a5e4bf4aa404a5b0d68502ebf4cd9c5b637491b2"
+      },
+      "retrieval": "GitHub connector archive plus authorized file_id download"
+    }
+  ]
+}

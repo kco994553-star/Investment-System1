@@ -1,0 +1,186 @@
+{
+  "workflow_id": "GSUP_M_V2_SOURCE_IDENTITY_2026_10_03",
+  "fixed_baseline_file": "WORKFLOW_BASELINE.json",
+  "branch": "codex/track-c-gsup-v2-2026-10-03",
+  "head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "merge_base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "commits_including_history_preserving_merges": 14,
+  "files_added": 22,
+  "files_modified": 9,
+  "files_deleted": 0,
+  "lines_added": 16719,
+  "lines_deleted": 10,
+  "changed_files": [
+    {
+      "status": "M",
+      "path": ".github/workflows/codex-integration-readiness.yml"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/p01-research-publication.yml"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/qgv-invalidation-binding.yml"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/sec-primary-disclosure.yml"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/technical-real-model.yml"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/technical-real-producer.yml"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/us-equity-session.yml"
+    },
+    {
+      "status": "M",
+      "path": ".github/workflows/web-mvp-validation.yml"
+    },
+    {
+      "status": "A",
+      "path": "implementation/docs/codex_takeover/evidence/gsup_source_identity/CHECKPOINT.json"
+    },
+    {
+      "status": "A",
+      "path": "implementation/docs/codex_takeover/evidence/gsup_source_identity/SCOPED_HANDOFF.md"
+    },
+    {
+      "status": "A",
+      "path": "implementation/docs/codex_takeover/evidence/gsup_source_identity/targeted-python311.log"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_identity_independent/INDEPENDENT_RECEIPT_2026-10-03.json"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_identity_independent/INDEPENDENT_REVIEW_2026-10-03.md"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_identity_independent/INDEPENDENT_TESTS_2026-10-03.xml"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_oracle/ARITHMETIC_REDUCTION_REVIEW_2026-10-03.md"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_oracle/ARITHMETIC_REDUCTION_TRACES_2026-10-03.json"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_oracle/ARTIFACT_MANIFEST_2026-10-03.json"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_oracle/DIAGNOSTIC_TESTS_2026-10-03.log"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/gsup_v2_oracle/DIAGNOSTIC_TESTS_2026-10-03.xml"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.md"
+    },
+    {
+      "status": "M",
+      "path": "implementation/reports/track_c_decision_register_2026-10-01.md"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/track_c_gsup_identity_kernel_invariance_2026-10-03.json"
+    },
+    {
+      "status": "A",
+      "path": "implementation/reports/track_c_gsup_identity_kernel_invariance_2026-10-03.md"
+    },
+    {
+      "status": "A",
+      "path": "implementation/src/investment_system/evl/gsup_source_identity.py"
+    },
+    {
+      "status": "A",
+      "path": "implementation/src/investment_system/evl/superiority_source_identity.py"
+    },
+    {
+      "status": "A",
+      "path": "implementation/tests/test_evl_gsup_identity_kernel_invariance.py"
+    },
+    {
+      "status": "A",
+      "path": "implementation/tests/test_evl_gsup_mb_reduction_diagnostic.py"
+    },
+    {
+      "status": "A",
+      "path": "implementation/tests/test_evl_gsup_source_identity.py"
+    },
+    {
+      "status": "A",
+      "path": "implementation/tests/test_evl_gsup_v2_identity_adversarial.py"
+    },
+    {
+      "status": "A",
+      "path": "implementation/tools/gsup_mb_reduction_diagnostic.py"
+    }
+  ],
+  "production_modules_added": 2,
+  "existing_production_source_modified": 0,
+  "active_authoritative_M_v2_methods_added": 0,
+  "test_cases_added": 112,
+  "test_modules_added": 4,
+  "local_tests_passing_before": 1165,
+  "local_tests_passing_after": 1277,
+  "source_tested_locally": "3b6ed7eac3fe8f0f852b4d42eb57cf5f3ff497eb",
+  "final_source_test_blobs_equal_tested_source": true,
+  "Draft_PR_added": 1,
+  "remote_branch_added": 1,
+  "open_PRs_before": 25,
+  "open_PRs_after": 28,
+  "remote_branches_before": 38,
+  "remote_branches_after": 41,
+  "approved_decisions_recorded": 2,
+  "new_approval_decisions_inferred": 0,
+  "critical_approval_blockers_resolved": 2,
+  "new_result_impact_arithmetic_blocker": 1,
+  "C8_maturity_before": "SYNTHETIC_VERIFIED",
+  "C8_maturity_after": "SYNTHETIC_VERIFIED",
+  "capability_maturity_delta_stages": 0,
+  "source_identity_subcomponent_before": "DESIGN",
+  "source_identity_subcomponent_after": "SYNTHETIC_VERIFIED",
+  "source_identity_subcomponent_delta_stages": 2,
+  "software_frozen_delta": 0,
+  "CAL_VERIFY_accesses": 0,
+  "Holdout_consumptions": 0,
+  "publication_grants": 0,
+  "Official_promotions": 0,
+  "canonical_merges": 0,
+  "unapproved_numeric_policy_changes": 0,
+  "Codex_Global_writes": 0,
+  "external_Global_upstream_commits": 2,
+  "protected_v1_Frozen_source_tests_changed": 0,
+  "scoped_decision_register_additive_append": 1,
+  "Actions_final_checkpoint": "8_NEW_WORKFLOWS_SUCCESS",
+  "external_new_Draft_PRs": 2,
+  "external_new_branches": 2,
+  "final_remote_observed_at": "2026-10-03T07:46:02.433621+00:00",
+  "new_Actions_SUCCESS": 8,
+  "new_Actions_FAIL": 0,
+  "new_verified_artifact_archives": 3,
+  "final_exact_head_native_tests_passed": 1277,
+  "final_producer_Web_E2E_groups_passed": 6,
+  "final_Macro_separate_checkout_tests_passed": 11
+}

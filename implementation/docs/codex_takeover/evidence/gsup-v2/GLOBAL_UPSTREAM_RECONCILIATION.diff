@@ -1,0 +1,163 @@
+diff --git a/implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md b/implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md
+index ac1bb0a..5be04b8 100644
+--- a/implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md
++++ b/implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md
+@@ -124,3 +124,66 @@ Effect:
+ - The two fail-open repairs apply existing approved policy (Q3 Development-only; Q4 / A6-S4 one-shot no-retest) and add negative regressions. No new method policy, no numeric value.
+ - The M-B simulation vs implemented kernel difference is presented as a minimal counterexample, and the authoritative-method choice is a separate USER_DECISION_REQUIRED.
+ - Numeric configuration stays unapproved. CAL_VERIFY and Holdout are not accessed.
++
++## CDR-006 · Track C G-SUP authoritative method = M (approved M-B convention; additive v2)
++
++| Field | Value |
++|---|---|
++| Status | **USER_DECIDED** (routing record. The Track C scoped Decision Register is the policy authority and must record this itself) |
++| Decided at | 2026-10-03 (user message in session `session_019znshzTYgyBnuuBmSxdPFN`, after the owner's K/M/C item at `b9e01a9`) |
++| Resolves | the USER_DECISION_REQUIRED in `implementation/reports/track_c_c8_gsup_mb_vs_kernel_counterexample_2026-10-03.md` (owner branch `ccr-22e3ff16-p7n5k5` @ `b9e01a9`) |
++
++User wording (verbatim):
++
++> M 승인. 승인된 M-B simulation convention을 authoritative G-SUP method로 유지한다. 별도 v2를 additive 구현한다. 현재 G-SUP v1은 history-preserving 방식으로 보존하며 rewrite/delete하지 않는다. v2는 승인된 M-B와: statistic / replicate construction / variance convention / degenerate handling / tie handling 을 exact하게 일치시켜야 한다. independent oracle과 counterexample로 v1/v2 차이를 고정한다. 기존 v1 결과를 v2 결과로 소급 재작성하지 않는다.
++
++## CDR-007 · G-SUP one-shot source identity: source descriptor (synthetic/software-validation scope)
++
++| Field | Value |
++|---|---|
++| Status | **USER_DECIDED** (routing record; Track C register is the authority) |
++| Decided at | 2026-10-03, same message |
++
++User wording (verbatim):
++
++> synthetic/software-validation 범위에서 source descriptor 구현을 승인한다. one-shot identity는 content serialization hash만으로 정의하지 않는다. outcome 접근 전에 등록된: source identity / vintage identity / sample identity 에 bind한다. 2.0 → 2 같은 의미 보존 재인코딩, campaign/root/label 변경으로 동일 검증 대상을 재소비할 수 없어야 한다. source descriptor 또는 lineage가 불완전하면 fail-closed한다.
++
++Explicitly NOT approved by CDR-006/007 (user wording, verbatim list): α, B, L / block rule, seed, effect floor, minimum support, size tolerance, dependence envelope / margin, 실제 source taxonomy/default, 실제 CAL_VERIFY 접근, C8 foundation registry와 G-SUP registry 통합, Holdout 소비, C8 SOFTWARE FROZEN 선언, publication grant, Official, LIVE, canonical merge.
++
++## CDR-008 · Ownership boundary for CDR-006/007 implementation (Codex) and integration-owner verification
++
++| Field | Value |
++|---|---|
++| Status | **USER_DECIDED** (routing) |
++| Decided at | 2026-10-03, same message |
++
++User wording (verbatim):
++
++> 현재 Codex가 별도 worker로 Track C C8의 사용자 승인 범위를 구현 중일 수 있다. 그 작업을 중단하거나 인수하거나 중복 구현하지 마라.
++> Codex가 이미 위 승인 범위의 Track C 작업을 시작했거나 branch/commit/PR을 만들었다면 그 branch를 READ-ONLY upstream으로 취급하라. Claude Code Main은: 같은 G-SUP v2를 다시 구현하지 않는다. 같은 source descriptor를 다시 구현하지 않는다. Codex branch를 rewrite/rebase/force-push하지 않는다. Codex scoped STATUS/evidence를 대신 작성하지 않는다.
++> Claude Code Main만 Global Handoff shared routing/index를 관리한다. Capability worker와 Codex는 Global Handoff writer가 아니다.
++
++Effect:
++
++- The Primary Integration Writer does not implement G-SUP v2 or the source descriptor. As of the fetch at 2026-10-03T06:58Z, no Codex Track C branch, PR or commit exists; Codex branches present are `codex/takeover-integration-2026-10-03` (#28), `codex/web-producer-integration-readiness-2026-10-03` (#29), `codex/combined-integration-2026-10-03` (#30).
++- When a Codex Track C result appears, the Primary Integration Writer verifies it read-only against the user's 13-point list (exact HEAD, approval record, changed files, v1 preservation, M-B↔v2 exact agreement, p=0.10/0.15 counterexample, source/vintage/sample negative cases, 2.0→2 re-encoding rejection, campaign/root/label bypass rejection, targeted regression, full regression, Actions, CAL_VERIFY/Holdout untouched) before reflecting it here.
++- The Track C Claude owner session is informed of CDR-006/007/008 so that it does not start a duplicate implementation.
++
++## CDR-009 · Codex active-write exclusion on Track C C8 paths
++
++| Field | Value |
++|---|---|
++| Status | **USER_DECIDED** (routing / write-set rule) |
++| Decided at | 2026-10-03 (user message in session `session_019znshzTYgyBnuuBmSxdPFN`, ~07:03Z) |
++| Lifts when | Codex checkpoint for that work is DONE or HANDOFF_READY |
++
++User wording (verbatim):
++
++> Codex active-write exclusion: Codex가 현재 작업 중인 Track C C8 owner branch에서 변경 중이거나 변경 예정인 evl/superiority*, G-SUP v2, source-descriptor, 관련 C8 oracle/test/acceptance/evidence 경로는 Codex checkpoint가 DONE 또는 HANDOFF_READY가 될 때까지 Claude Code Main의 write set에서 제외한다. Integration trial에서 해당 파일을 읽거나 임시 merge하여 검증하는 것은 허용하지만 commit으로 수정·repin·resolve하지 않는다. 충돌이 발견되면 Codex 작업을 덮어쓰지 말고 integration evidence로 기록한다.
++
++Effect on the Primary Integration Writer's write set (until Codex DONE/HANDOFF_READY):
++
++- Excluded from any commit by the Primary Integration Writer or its agents: `implementation/src/investment_system/evl/superiority*`, any G-SUP v2 module, any source-descriptor module, and the related C8 oracle/test/acceptance/evidence paths on the Track C owner branch (including `tests/test_evl_c8*`, `tests/evl_c8*`, `tools/track_c_c8*`, `implementation/reports/track_c_c8*`, and the Track C decision register).
++- Allowed: reading these files; temporary (uncommitted / never-pushed) merges in integration trials for verification.
++- Not allowed: committing a modification, repin or conflict resolution touching them. A conflict found in an integration trial is recorded as integration evidence, not resolved.
++- State at recording: no Codex commit on `ccr-22e3ff16-p7n5k5` (tip `b9e01a9`) and no Codex Track C branch at the 07:03Z fetch. None of the Primary Integration Writer's in-flight tasks write these paths.
+diff --git a/implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md b/implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md
+index c1eca5c..8edc0bd 100644
+--- a/implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md
++++ b/implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md
+@@ -55,17 +55,17 @@ Decided in this round (see `COORDINATION_DECISION_REGISTER.md`):
+ 
+ Still open:
+ 
+-1. **IF-1 execution (CDR-004: A1 + owner adoption).** Decided. In progress as stacked proposal branches with Draft PRs into #11, #15, #18, #12, #14 and #17, each gated on an independent before/after invariance PASS. Owner merge of each proposal is the owner's (or the user's) act.
+-2. **Track C C8 (CDR-005): executed by the owner** on `ccr-22e3ff16-p7n5k5` (9a9364c, 972a23f, b9e01a97). New **USER_DECISION_REQUIRED — authoritative G-SUP method** (owner report `implementation/reports/track_c_c8_gsup_mb_vs_kernel_counterexample_2026-10-03.md`): the approved M-B simulation and the implemented kernel differ in exactly two conventions — D1 replicate-variance block count (⌈n/L⌉−1 vs ⌊n/L⌋; bites only when L divides n) and D2 degenerate replicate scoring (never exceeds vs counts as exceedance). Minimal counterexamples CE1–CE5 (e.g. n=5, L=2, B=19: M-B p=0.10 vs kernel p=0.15; n=4, L=2: M-B NOT_RUN vs kernel runs). Options: **K** kernel authoritative (re-establish size under the kernel's conventions), **M** M-B authoritative (new `_v2` method version; `_v1` retained), **C** another explicit convention with new evidence. No option selected; numeric configuration stays unapproved; CAL_VERIFY/Holdout not accessed. Actions run 37097149378 on b9e01a97 in progress; GIE-005 independent audit in progress.
+-3. **Canonical merges.** Any merge, including #21 and the integration-ready chain #5 → #6.
+-4. **Publication grants.** P01 research-display, Frozen and Live grants remain NONE.
+-5. **Data and providers.** The Macro ALFRED key, a news provider, and an exchange-calendar vintage source.
++1. **Canonical merges** (always gated). Integration candidate: #30 `86ad362` (FRESH at 06:58Z, 9/9 Actions green; re-audit GIE-006 pending).
++2. **Publication grants.** P01 research-display, Frozen and Live grants remain NONE.
++3. **Data and providers.** The Macro ALFRED key, a news provider, and an exchange-calendar vintage source.
+ 
+-Separate compatibility-repair items (CDR-004), to be handled in the actual integration context:
++Decided and in execution:
+ 
+-- #10/#14 CI-mode `models.py` compare and their compat evidence;
+-- the 3 dependency-not-merged sentinels (#10, #13, #14);
+-- Track C acceptance-tool allow-lists and canonical pin; the #14 CI `git diff --exit-code` step.
++- **CDR-004** IF-1 = A1 + owner adoption: proposals #22–#27 pushed (writer gates PASS; Codex independent audit PASS; integration-owner verification pending). Remaining evidence-only adoption items outside #22–#27: #9 `docs/producer_infrastructure/evidence/validation.json` and #7 `docs/entity_metadata/evidence/numeric_fingerprint` record pre-adoption Technical/Macro fingerprints.
++- **CDR-005** executed by the Track C owner (`9a9364c`, `972a23f`, `b9e01a9`); Actions 37097149378 SUCCESS on `b9e01a9`.
++- **CDR-006** G-SUP method = M (additive v2, v1 preserved). **CDR-007** source descriptor (source/vintage/sample identity, synthetic scope). **CDR-008** implementer is Codex; the Primary Integration Writer verifies (13-point list) and does not implement. No Codex Track C branch exists yet.
++
++Not approved (CDR-006/007 list): α, B, L / block rule, seed, effect floor, minimum support, size tolerance, dependence envelope / margin, real source taxonomy/default, real CAL_VERIFY access, C8 foundation ↔ G-SUP registry unification, Holdout, C8 SOFTWARE FROZEN, publication grant, Official, LIVE, canonical merge.
+ 
+ ## 5. Next autonomous actions (Primary Integration Writer)
+ 
+diff --git a/implementation/docs/coordination/GLOBAL_HANDOFF_HISTORY.md b/implementation/docs/coordination/GLOBAL_HANDOFF_HISTORY.md
+index a124893..ba3e361 100644
+--- a/implementation/docs/coordination/GLOBAL_HANDOFF_HISTORY.md
++++ b/implementation/docs/coordination/GLOBAL_HANDOFF_HISTORY.md
+@@ -58,3 +58,13 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
+ - Owner commits 9a9364c, 972a23f, b9e01a97 on `ccr-22e3ff16-p7n5k5`. The integration writer did not create `track-c/c8-fail-closed-repair-v1`; its first workflow run was stopped before that writer started and relaunched with the four producer writers plus a read-only Track C auditor.
+ - Actions run 37097149378 (`track-c-evl-validation.yml`, workflow_dispatch, `contents: read`) dispatched on the owner tip by the integration writer.
+ - New USER_DECISION_REQUIRED routed to the user: authoritative G-SUP method (K / M / C), from the owner's register entry. Not decided here.
++
++## GCH-004 · 2026-10-03T06:58Z · fresh reconciliation; CDR-006/007/008 recorded
++
++- Fresh fetch: canonical `b8e39a2` unchanged; Track C owner tip `b9e01a9` (Actions 37097149378 SUCCESS); A1 proposals #22–#27 pushed by the integration writer's workflow (adversarial review agents failed on a session rate limit, so integration-owner verification is pending); Codex PRs #28 (takeover audit), #29 (Web fixture/E2E), #30 (combined trial, FRESH, 9/9 green).
++- No Codex Track C branch, PR or commit found.
++- CDR-006 (G-SUP = M, additive v2), CDR-007 (source descriptor), CDR-008 (Codex implements; integration writer verifies) recorded verbatim.
++
++## GCH-004a · 2026-10-03T07:03Z · CDR-009 Codex active-write exclusion recorded
++
++- Track C C8 G-SUP v2 / source-descriptor / related C8 oracle/test/acceptance/evidence paths are out of the Primary Integration Writer's write set until Codex is DONE or HANDOFF_READY. Read and temporary trial merges allowed; conflicts are recorded, never resolved by commit.
+diff --git a/implementation/docs/coordination/GLOBAL_STATUS_INDEX.md b/implementation/docs/coordination/GLOBAL_STATUS_INDEX.md
+index a9f650b..4b433c1 100644
+--- a/implementation/docs/coordination/GLOBAL_STATUS_INDEX.md
++++ b/implementation/docs/coordination/GLOBAL_STATUS_INDEX.md
+@@ -4,7 +4,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
+ 
+ | Field | Value |
+ |---|---|
+-| Index revision | GSI-004 (CDR-004/005 execution in progress; Track C owner tip b9e01a97; Actions run 37097149378 dispatched) |
++| Index revision | GSI-005 (fresh reconciliation 2026-10-03T06:58Z: Track C tip CI SUCCESS; A1 proposals #22–#27; Codex #28/#29/#30; CDR-006/007/008) |
+ | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
+ | Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
+ | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
+@@ -37,7 +37,7 @@ CI column key:
+ |---|---|---|---|---|---|---|---|---|
+ | 1 | Track A REAL-DATA main | canonical (`recovery/track-a-real-data-frozen` @ `a79642f`, merged) | #3 merged | **INTEGRATED** (FROZEN_VERIFIED) | merged | merged as `bd6bf42` | MERGED | root `Investment-System1 · TRACK_A_REAL_DATA_STATUS.md` |
+ | 2 | Track B Personal Investment Layer | canonical (P0 only) | — | IMPLEMENTED (P0 contracts FROZEN); P1+ NOT_STARTED | — | — | P0 MERGED | root `Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md` |
+-| 3 | Track C EVL (C0–C8) | `feature/track-c-evl` @ `ff78c4f`; ahead: `ccr-22e3ff16-p7n5k5` @ **`b9e01a97`** (owner tip; no PR) | #4 | SYNTHETIC_VERIFIED (C0–C7 SOFTWARE_FROZEN, 8/11 software phases; C8 PARTIAL_FOUNDATION_VERIFIED + G-SUP fail-closed repairs 9a9364c/b9e01a97). Real PIT validation NOT_RUN | #4 HEAD ✓ (run 36994387375). `ccr-22e3ff16` @ `b9e01a97`: Actions run **37097149378** (workflow_dispatch by the integration writer, `contents: read`) in progress at 04:37Z; owner-reported local full suite 923 passed at 972a23f | Text-clean with every branch. IF-1 decided: CDR-004 (A1 + owner adoption); producer re-pin proposals in progress | NOT_MERGED | `feature/track-c-evl`: root `CURRENT_HANDOFF` + `implementation/reports/track_c_decision_register_2026-10-01.md` (owner tip has CDR-005 entries) |
++| 3 | Track C EVL (C0–C8) | `feature/track-c-evl` @ `ff78c4f`; ahead: `ccr-22e3ff16-p7n5k5` @ **`b9e01a9`** (owner tip; no PR) | #4 | SYNTHETIC_VERIFIED (C0–C7 SOFTWARE_FROZEN, 8/11 software phases; C8 PARTIAL_FOUNDATION_VERIFIED + G-SUP fail-closed repairs). Real PIT validation NOT_RUN | #4 HEAD ✓ (run 36994387375). `b9e01a9` ✓ **Actions run 37097149378 SUCCESS** (workflow_dispatch, 04:37–04:52Z) | Text-clean with every branch. Included in combined trial #30. Next: G-SUP v2 (CDR-006) + source descriptor (CDR-007), implementer Codex per CDR-008 (no branch yet) | NOT_MERGED | `feature/track-c-evl`: root `CURRENT_HANDOFF` + `implementation/reports/track_c_decision_register_2026-10-01.md` |
+ | 4 | Track D RIG/News P0–P4 | canonical | #1 merged | SYNTHETIC_VERIFIED · canonical MERGED | merged | merged | MERGED (P0–P4) | root `Investment-System1 · RIG News Architecture v0.1.md` |
+ | 5 | Track E Prompt Library v1 | canonical | #2 merged | SYNTHETIC_VERIFIED · canonical MERGED (PLV1_CONTENT_V1.0 Frozen) | merged | merged | MERGED | root `Investment-System1 · TRACK_E_PROMPT_LIBRARY_V1_STATUS.md` |
+ | 6 | QGV Real Producer | `ccr-db5d5960-qen9yi` @ `5eec129` | #10 | **REAL_DATA_VERIFIED** (500/500 persisted × 3 dates from Track A Frozen raw; not fully scored; READY coverage 0) | code ✓ `4b772c2` (run 36852186517) / head docs-only | Trial: clean merge. Sentinel IF-2 fails by design after #9 merges | NOT_MERGED | `implementation/docs/qgv_producer/STATUS.md` |
+@@ -88,6 +88,20 @@ Stale merged heads, no action: `feature/track-d-rig-news` and `claude/track-d-ri
+ | #21 Worker Contract | `f1b5afb` | Operational routing SSoT (CDR-001); canonical merge = USER_DECISION_REQUIRED | Docs-only. Clean against canonical |
+ | #20 Worker Contract duplicate | `d87d4cd` | SUPERSEDED_DUPLICATE (CDR-001) | Not merged. History retained. §J exception not adopted |
+ 
++## 3a. Proposal, Codex and integration-trial PRs (fresh 2026-10-03T06:58Z)
++
++| PR | Head | Base | Author / owner | Purpose | CI on head | Classification |
++|---|---|---|---|---|---|---|
++| #22 | `integration/a1-adoption/pr11-technical-producer` @ `248e3d3` | #11 owner branch @ `a2e0790` | Primary Integration Writer (CDR-004 proposal) | C-28 adoption re-pin + Technical owner adoption record | NOT_RUN | Writer gate PASS; independent Codex audit PASS (#30 evidence); integration-owner verification GIE-006 pending |
++| #23 | `integration/a1-adoption/pr15-technical-model` @ `5c9dd5a` | #15 @ `ce58704` | same | re-pin | NOT_RUN | same |
++| #24 | `integration/a1-adoption/pr18-us-equity-session` @ `9c71781` | #18 @ `2c088ce` | same | re-pin | NOT_RUN | same |
++| #25 | `integration/a1-adoption/pr12-macro-producer` @ `4a07099` | #12 @ `61d3352` | same | re-pin + separate current-dated Macro owner adoption record; additive post-adoption fingerprint record | NOT_RUN | same |
++| #26 | `integration/a1-adoption/pr14-leaderboard` @ `a4805db` | #14 @ `0d48d86` | same | re-pin | NOT_RUN | same |
++| #27 | `integration/a1-adoption/pr17-p01` @ `dc7daf7` | #17 @ `21039a0` | same | re-pin; additive post-adoption invariance record | NOT_RUN | same |
++| #28 | `codex/takeover-integration-2026-10-03` @ `db9a032` | canonical | Codex | takeover audit (scoped docs under `implementation/docs/codex_takeover/`, incl. a PROPOSED source-identity contract) | see GIE-006 | docs/evidence; not a Global Handoff writer |
++| #29 | `codex/web-producer-integration-readiness-2026-10-03` @ `d044458` | #19 @ `c3dbf8a` | Codex | withheld producer-contract Web fixture; locale/mobile/failure E2E | 2/2 ✓ | READY_FOR_INTEGRATION_AUDIT (stacked on #19) |
++| #30 | `codex/combined-integration-2026-10-03` @ `86ad362` | canonical | Codex | combined trial: Track C `b9e01a9` + #5/#6/#7/#9/#10/#13/#16/#19 + #22–#27 + #21 + #29, plus integration-context compat repairs (`41a6efb`, `0366a3c`) and CI runtime pins (`0ea00d2`, `86ad362`) | 9/9 ✓ | **FRESH** integration candidate (all constituents equal current heads at 06:58Z). INTEGRATION_STATE trial green; CANONICAL_STATE NOT_MERGED; independent re-audit GIE-006 pending |
++
+ ## 4. Dependency DAG
+ 
+ Stacked PRs (`→` means "is the base of"):

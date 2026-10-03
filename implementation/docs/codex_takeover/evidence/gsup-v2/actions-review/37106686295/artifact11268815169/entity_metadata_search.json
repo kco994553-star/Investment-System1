@@ -1,0 +1,42 @@
+{
+ "n_companies": 500,
+ "by_kind": {
+  "ticker": {
+   "labels": 500,
+   "top1": 500,
+   "shared_label_candidates": 0
+  },
+  "canonical_name": {
+   "labels": 500,
+   "top1": 500,
+   "shared_label_candidates": 0
+  },
+  "en-US": {
+   "labels": 1101,
+   "top1": 1101,
+   "shared_label_candidates": 0
+  },
+  "ko-KR": {
+   "labels": 722,
+   "top1": 722,
+   "shared_label_candidates": 0
+  },
+  "listing_ticker": {
+   "labels": 238,
+   "top1": 238,
+   "shared_label_candidates": 0
+  },
+  "historical_name": {
+   "labels": 316,
+   "top1": 316,
+   "shared_label_candidates": 0
+  },
+  "historical_ticker": {
+   "labels": 16,
+   "top1": 16,
+   "shared_label_candidates": 0
+  }
+ },
+ "failures": [],
+ "pass": true
+}

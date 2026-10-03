@@ -1,0 +1,70 @@
+{
+  "record": "APPEND_ONLY_FINAL_PRESERVATION_BASELINE_METADATA_ADDENDUM",
+  "recorded_at_utc": "2026-10-03T07:35:57.033380+00:00",
+  "agent": "/root/track_c_audit",
+  "status": "PASS",
+  "acceptance": {
+    "met": 1,
+    "total": 1
+  },
+  "original_receipt": {
+    "path": "/workspace/takeover-evidence/gsup-v2/final-preservation.json",
+    "sha256": "6d4d4586979d1d40b2514e4a3e984e58b71298ee89512ba0287b39cfc3a27180",
+    "preserved_byte_for_byte": true
+  },
+  "corrections": [
+    {
+      "field": "baseline.old_native_scope",
+      "original_value": "HISTORICAL_EXACT_71d5773dd235f93682722b9db762dc254379491e_ONLY",
+      "corrected_value": "FIXED_06_48_BASELINE_FINAL_ACTIONS_RUN_37102973395_ACTUAL_COMBINED_CHECKOUT_86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "reason": "The selected 2026-10-03 06:48:04 baseline already had independent final exact-HEAD Actions success at 86ad362; initial 71d 1165 PASS exists as separate historical evidence and is not the selected baseline run."
+    }
+  ],
+  "fixed_baseline": {
+    "checkpoint_utc": "2026-10-03T06:48:04Z",
+    "branch": "codex/combined-integration-2026-10-03",
+    "exact_head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "workflow_run_id": 37102973395,
+    "workflow_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37102973395",
+    "workflow_run_head_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "combined_job_id": 111145988956,
+    "combined_actual_checkout_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "conclusion": "success",
+    "actual_full_native_junit": {
+      "tests": 1165,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "macro_checkout_separate": "4a07099e36ec3cecda24b82ecedad53800f0aa81"
+  },
+  "evidence": [
+    {
+      "path": "/workspace/Investment-System1/implementation/docs/codex_takeover/evidence/final-actions/37102973395/execution-receipt.json",
+      "sha256": "aa70bbfadad78bdaa022d18526ad78b94f636b23e399cef082fe9cceb1681131"
+    },
+    {
+      "path": "/workspace/Investment-System1/implementation/docs/codex_takeover/evidence/final-actions/CHECKPOINT.json",
+      "sha256": "7f78c4d16d91dadcdca3ea4625ec1b0c5c4958ab91d48eb88a2f257685d04c4d"
+    },
+    {
+      "path": "/workspace/Investment-System1/implementation/docs/codex_takeover/evidence/final-actions/37102973395/extracted/combined-junit.xml",
+      "sha256": "aee8c691d37632ef9693d3a7ab599155bffb12aae8be172ea36325aa2395845c"
+    }
+  ],
+  "scope": "Metadata qualification only; original source preservation manifest and final 675d0d29 identity compatibility conclusions unchanged. Baseline 1165 PASS does not promote real validation, maturity, grants or canonical state.",
+  "tests_actually_executed": "NOT_RUN",
+  "Actions_actually_executed": "NOT_RUN",
+  "real_CAL_VERIFY": "NOT_ACCESSED",
+  "Holdout": "NOT_ACCESSED",
+  "historical_receipts_modified": [],
+  "board": {
+    "Agent": "/root/track_c_audit",
+    "Task": "Baseline evidence metadata addendum",
+    "Status": "COMPLETE_1_OF_1",
+    "BranchHEAD": "675d0d298fbaab5b8473ed048a561ef84e2f3e78_ORIGINAL_REVIEW_SCOPE",
+    "actualDelta": "One append-only metadata addendum; selected baseline Actions 37102973395/86ad362 identified; original receipt preserved",
+    "Blocker": "NONE_FOR_METADATA_TASK",
+    "Next": "Root publish additive evidence with original receipt plus this correction"
+  }
+}

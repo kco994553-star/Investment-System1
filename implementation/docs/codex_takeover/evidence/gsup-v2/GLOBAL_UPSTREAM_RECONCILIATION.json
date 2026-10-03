@@ -1,0 +1,37 @@
+{
+  "baseline_global_sha": "f26dc7adbfedd9209e757b5e8566c665c7bbd677",
+  "current_global_sha": "6dedaaf36a417e9301ba22ea9595bff5f37acb38",
+  "observed_at": "2026-10-03T07:34:25.095153+00:00",
+  "classification": "CURRENT_ROUTING_POLICY_CONSISTENT; HISTORICAL_BRANCH_ABSENCE_OBSERVATION_SUPERSEDED",
+  "upstream_commits": 2,
+  "writer": "existing Claude Primary Integration Writer; READ_ONLY upstream",
+  "decisions": {
+    "CDR-006": "CURRENT; matches scoped explicit M-B additive-v2 approval",
+    "CDR-007": "CURRENT; matches scoped synthetic source identity approval",
+    "CDR-008": "CURRENT; Codex implements, Claude validates read-only and owns Global",
+    "CDR-009": "CURRENT; Claude active-write exclusion on Codex Track C paths until DONE/HANDOFF_READY"
+  },
+  "historical_qualifications": [
+    {
+      "claim": "No Codex Track C branch/PR at 06:58/07:03",
+      "classification": "HISTORICAL_OBSERVATION; SUPERSEDED by actual PR31/current675d checkpoint",
+      "new_fact": "DraftPR31 exists; branch675d exact API-published"
+    },
+    {
+      "claim": "PR30 9/9 Actions green",
+      "classification": "COUNT_UNIT_QUALIFICATION",
+      "new_fact": "Independent baseline verifies eight workflow runs; native workflow has two jobs. Do not expand count to nine distinct workflow runs."
+    }
+  ],
+  "new_arithmetic_authority_approval_found": false,
+  "scoped_source_and_approval_registers_remain_policy_authority": true,
+  "shared_global_files_changed_by_codex": 0,
+  "global_diff_sha256": "866401681ea94f0f56f3718298fa9c1aee5df94f1ecce3b6d4224928cb9d92d8",
+  "exact_source_blobs": {
+    "implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md": "8edc0bd30ed8c9a3fb7d65e3bcf6e80a12e23933",
+    "implementation/docs/coordination/GLOBAL_STATUS_INDEX.md": "4b433c1e1f9018265b5a29db4d719515b4a80984",
+    "implementation/docs/coordination/GLOBAL_HANDOFF_HISTORY.md": "ba3e361ee160822da206119ef22fc4fc5f6a9438",
+    "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md": "5be04b819e7db110e2230282a2f6440c666ddca8"
+  },
+  "baseline_reset": false
+}
