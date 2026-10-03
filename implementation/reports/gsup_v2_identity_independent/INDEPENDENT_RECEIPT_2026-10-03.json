@@ -1,0 +1,105 @@
+{
+  "schema": "C8_GSUP_SOURCE_IDENTITY_INDEPENDENT_REVIEW_v1",
+  "recorded_at": "2026-10-03T07:16:48.421647+00:00",
+  "scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY",
+  "protocol": "C8_GSUP_SOURCE_IDENTITY_v1",
+  "approval_base_head": "8230007f5edb86aec949166e25fd62a680db3ae2",
+  "approval_git_blob": "a5279d516c028f0a8cb9166ee2d54366da00877b",
+  "approval_sha256": "0fc8ed2b55b3aba4cf566f0e7c9e7146324ae4aec5e22c307fd9a9a8ae9991d8",
+  "review_branch": "codex/gsup-v2-identity-adversarial-2026-10-03",
+  "review_base_head": "8230007f5edb86aec949166e25fd62a680db3ae2",
+  "merge_base_with_executed_source": "8230007f5edb86aec949166e25fd62a680db3ae2",
+  "executed_source_head": "d9a8cffd5339312264ba40c497163ed9544fb27c",
+  "source_identity_implementation_commit": "0b8b3ad3d3538d9ad224858acbd452d7b193423a",
+  "source_sha256": {
+    "implementation/src/investment_system/evl/gsup_source_identity.py": "d34fc10d396f37fce65a5580263d2d35207e7d2f4f347fe300c1f1b81c33c548",
+    "implementation/src/investment_system/evl/superiority_source_identity.py": "3ad8ca25f724cd3d07271ec8a38b95ca8779fe57f14ccf252e1030aa7acca0fa"
+  },
+  "owned_test_path": "implementation/tests/test_evl_gsup_v2_identity_adversarial.py",
+  "owned_test_sha256": "c794a93d117e78fd854f101a6925a4d62624e8e469978c87b0fc5c7fed2f0576",
+  "runtime": "Python 3.11.16",
+  "command": "PYTHONPATH=/workspace/gsup-v2-integration/implementation/src:/workspace/gsup-v2-integration/implementation /workspace/validation-venv311/bin/python -m pytest --noconftest -q /workspace/gsup-identity-adversarial/implementation/tests/test_evl_gsup_v2_identity_adversarial.py --junitxml=/workspace/takeover-evidence/track_c/identity-independent/combined-identity-wrapper-fixed.xml",
+  "tests_actually_executed": {
+    "tests": 48,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "duration_seconds": 0.403,
+    "status": "PASS"
+  },
+  "acceptance_criteria": [
+    {
+      "criterion": "trusted identity before outcome and missing lineage failclosed",
+      "status": "COMPLETE_SYNTHETIC"
+    },
+    {
+      "criterion": "repeat/relabel/reencode/crash/concurrency preaccess blocking",
+      "status": "COMPLETE_SYNTHETIC"
+    },
+    {
+      "criterion": "unchanged profile-role grouping and numerical/foundation isolation",
+      "status": "COMPLETE_SYNTHETIC"
+    },
+    {
+      "criterion": "preservation and independent review receipt",
+      "status": "COMPLETE_SYNTHETIC"
+    }
+  ],
+  "criteria_completed": 4,
+  "criteria_total": 4,
+  "preservation": {
+    "tracked_original_files_on_review_branch": 8088,
+    "original_tracked_diff": "EMPTY",
+    "protected_source_byte_guards": 4,
+    "protected_source_byte_guards_status": "PASS",
+    "historical_opaque_records": "PRESERVED_AND_FAILCLOSED",
+    "foundation_unification": "NOT_PERFORMED"
+  },
+  "maturity_before": "DESIGN",
+  "maturity_after": "SYNTHETIC_VERIFIED",
+  "maturity_scope": "source identity only; not M-B v2 numeric software or real validation",
+  "BRANCH_STATE": "LOCAL_INDEPENDENT_TEST_EVIDENCE_READY_FOR_NORMAL_MERGE",
+  "INTEGRATION_STATE": "SYNTHETIC_TRIAL_VERIFIED_AT_D9_OWNED_TESTS_NOT_YET_MERGED",
+  "CANONICAL_STATE": "UNCHANGED_NOT_MERGED",
+  "actions_actually_executed": "NOT_RUN",
+  "CAL_VERIFY_actual_access": "NOT_RUN",
+  "Holdout_actual_access": "NOT_RUN",
+  "user_decision_required_for_this_identity_review": false,
+  "separate_numeric_blocker": "USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION",
+  "trusted_coordinator_assumptions": [
+    "Authority pin is injected outside untrusted attempt specifications.",
+    "Bootstrap and truthful descriptor issuance precede outcomes and are trusted coordinator operations.",
+    "Privileged deletion or resetting/replacing trusted configuration is outside this bounded local POSIX threat model.",
+    "Providers truthfully declared synthetic are compliant synthetic-only readers; flags are not cryptographic reader attestation."
+  ],
+  "intermediate_diagnostics_retained_externally": [
+    {
+      "status": "22_PASS_13_FAIL",
+      "cause": "ordinary-worker append denied because journal created0444",
+      "source_state": "WORK_IN_PROGRESS_UNCOMMITTED; initial module hash NOT_CAPTURED"
+    },
+    {
+      "junit": "direct-identity.xml",
+      "status": "37_PASS_1_FAIL",
+      "cause": "test typo used nonexistent Conservative group; corrected to original Defensive"
+    },
+    {
+      "junit": "direct-identity-fixed.xml",
+      "status": "38_PASS"
+    },
+    {
+      "junit": "combined-identity-wrapper.xml",
+      "status": "46_PASS_1_FAIL",
+      "cause": "positive fixture raw commitment unbound; preserved v1 check correctly rejected; fixture corrected"
+    },
+    {
+      "junit": "combined-identity-wrapper-fixed.xml",
+      "status": "48_PASS"
+    }
+  ],
+  "next_autonomous_action": "Normal merge additive owned tests/evidence into integration and execute approved CI.",
+  "artifacts_sha256": {
+    "INDEPENDENT_TESTS_2026-10-03.xml": "b85eccad6e1c8abbe4e16bb7e98170cdc27c26060c1d2a6500991a2ed60bb97f",
+    "INDEPENDENT_REVIEW_2026-10-03.md": "9026c143f7ad6ee1a6ea978dd3d10e2fcee06fda6e052a7ddc49b4041c061456"
+  }
+}
