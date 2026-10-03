@@ -1,0 +1,13 @@
+{
+  "exact_source_head": "e91dc773af600ff66d31575ce3774490a0b0be8c",
+  "parent": "2b53b27fe0f570557159d02552911e9e1cc7be9c",
+  "existing_G3_probe_only": true,
+  "new_app_sha256": "324587d29091d772f5a4bcffdcb3874faeda1a10648a266fa0f28bfaa5bd1a84",
+  "parent_app_sha256": "9e34e1edc022050519161b061320ae8d0fad4121e2cbfa221a731b33467e5aee",
+  "researchMarker_byte_identical_to_parent": true,
+  "researchMarker_sha256": "5d38aea974e73c6d78a7140d21f86fb9f6a5e4cd9476b338fdc559011ddf5ca6",
+  "bundle_builder_admission": "STILL_ACCEPTED",
+  "source_mutations": 0,
+  "real_data_provider_calls": 0,
+  "raw_data_json_sha256": "4f0fe999b9cd4e08c82bf40a8b807fbc255edf24e5f49ce7aaea391afe6e6230"
+}

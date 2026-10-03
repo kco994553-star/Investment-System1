@@ -1,0 +1,1352 @@
+{
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "branches": [
+    {
+      "branch": "ccr-2e16018a-qukwmg",
+      "head": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 1,
+      "behind": 0,
+      "prs": [
+        21
+      ],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "ccr-22e3ff16-p7n5k5",
+      "head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 63,
+      "behind": 0,
+      "prs": [],
+      "latest_actions": [
+        {
+          "id": 37097149378,
+          "name": "track-c-evl-validation",
+          "head_sha": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T04:37:19Z",
+          "updated_at": "2026-10-03T04:52:10Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37097149378"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 37097149378,
+          "name": "track-c-evl-validation",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37097149378"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "ccr-41677301-10nj3u",
+      "head": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 15,
+      "behind": 0,
+      "prs": [
+        7
+      ],
+      "latest_actions": [
+        {
+          "id": 36848115601,
+          "name": "web-mvp-validation",
+          "head_sha": "773b264d955f949f4da9f5c4304621490af46f19",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T10:16:39Z",
+          "updated_at": "2026-10-01T10:18:06Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36848115601"
+        },
+        {
+          "id": 36847160494,
+          "name": "entity-metadata-ingest",
+          "head_sha": "d6ab7b389d4493e250b02efc0f8956b477619f07",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T10:07:45Z",
+          "updated_at": "2026-10-01T10:10:31Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36847160494"
+        }
+      ],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "ccr-db5d5960-qen9yi",
+      "head": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 8,
+      "behind": 0,
+      "prs": [
+        10
+      ],
+      "latest_actions": [
+        {
+          "id": 36852186517,
+          "name": "qgv-producer-real",
+          "head_sha": "4b772c2c24dcff8cd7ef56e82412dcc719f77267",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T10:56:02Z",
+          "updated_at": "2026-10-01T11:08:27Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36852186517"
+        },
+        {
+          "id": 36851716398,
+          "name": "qgv-producer-real",
+          "head_sha": "47484b5c6bf30028fc43c55c7fad38668f674ae3",
+          "status": "completed",
+          "conclusion": "failure",
+          "created_at": "2026-10-01T10:51:22Z",
+          "updated_at": "2026-10-01T10:55:22Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36851716398"
+        }
+      ],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "ccr-e0fc1e48-9tcto3",
+      "head": "f4156150022bbc0ce18948c6bc949ff01a194a7d",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 1,
+      "behind": 0,
+      "prs": [],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "claude/investment-system-top500-validation-alrugm",
+      "head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 0,
+      "behind": 0,
+      "prs": [],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": true
+    },
+    {
+      "branch": "claude/lol-coach-relay-format-y8uk0x",
+      "head": "57032bf8b0fab9230cd3e29d51ca49ab3f20df96",
+      "merge_base": "ebf8263e925b657f38463988ba85eb3ce2d7bb51",
+      "ahead": 2,
+      "behind": 9,
+      "prs": [],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "claude/track-d-rig-news-p0-ot2gy6",
+      "head": "da86dfc26dcaa5c32c60762683dcca702a0c57b8",
+      "merge_base": "da86dfc26dcaa5c32c60762683dcca702a0c57b8",
+      "ahead": 0,
+      "behind": 23,
+      "prs": [],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": true
+    },
+    {
+      "branch": "codex/takeover-integration-2026-10-03",
+      "head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 0,
+      "behind": 0,
+      "prs": [],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": true
+    },
+    {
+      "branch": "docs/qgv-context-policy-approvals",
+      "head": "b42f2be2a3688aaacb278239dfdd3c8253b1acf9",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 8,
+      "behind": 0,
+      "prs": [],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/global-language-search-v1",
+      "head": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 10,
+      "behind": 0,
+      "prs": [
+        6
+      ],
+      "latest_actions": [
+        {
+          "id": 36709518222,
+          "name": "web-mvp-validation",
+          "head_sha": "82ae07c5f0758038abda98cd8db9e0a0f2de1ee3",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-09-30T11:35:51Z",
+          "updated_at": "2026-09-30T11:38:08Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36709518222"
+        },
+        {
+          "id": 36709513419,
+          "name": "web-mvp-validation",
+          "head_sha": "82ae07c5f0758038abda98cd8db9e0a0f2de1ee3",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-09-30T11:35:49Z",
+          "updated_at": "2026-09-30T11:36:49Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36709513419"
+        },
+        {
+          "id": 36709323409,
+          "name": "web-mvp-validation",
+          "head_sha": "9156aea4583a2e27a001aa5fa2666832496c4188",
+          "status": "completed",
+          "conclusion": "failure",
+          "created_at": "2026-09-30T11:34:00Z",
+          "updated_at": "2026-09-30T11:35:06Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36709323409"
+        }
+      ],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/leaderboard-real-producer-v1",
+      "head": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 5,
+      "behind": 0,
+      "prs": [
+        14
+      ],
+      "latest_actions": [
+        {
+          "id": 36979467756,
+          "name": "leaderboard-real-producer",
+          "head_sha": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T07:36:37Z",
+          "updated_at": "2026-10-02T07:37:55Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36979467756"
+        },
+        {
+          "id": 36857856181,
+          "name": "leaderboard-real-producer",
+          "head_sha": "a045768bae9488db35087dc4e4faadef327bdeea",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T11:50:11Z",
+          "updated_at": "2026-10-01T11:51:21Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36857856181"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 36979467756,
+          "name": "leaderboard-real-producer",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36979467756"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/macro-real-producer-v1",
+      "head": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 18,
+      "behind": 0,
+      "prs": [
+        12
+      ],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/p01-research-publication-v1",
+      "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 17,
+      "behind": 0,
+      "prs": [
+        17
+      ],
+      "latest_actions": [
+        {
+          "id": 36994066298,
+          "name": "p01-research-publication",
+          "head_sha": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T10:11:13Z",
+          "updated_at": "2026-10-02T10:11:47Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994066298"
+        },
+        {
+          "id": 36994037862,
+          "name": "p01-research-publication",
+          "head_sha": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T10:10:55Z",
+          "updated_at": "2026-10-02T10:11:30Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994037862"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 36994066298,
+          "name": "p01-research-publication",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994066298"
+        },
+        {
+          "id": 36994037862,
+          "name": "p01-research-publication",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994037862"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/producer-infrastructure-v1",
+      "head": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 16,
+      "behind": 0,
+      "prs": [
+        9
+      ],
+      "latest_actions": [
+        {
+          "id": 36982361014,
+          "name": "web-mvp-validation",
+          "head_sha": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T08:08:28Z",
+          "updated_at": "2026-10-02T08:09:38Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36982361014"
+        },
+        {
+          "id": 36851240626,
+          "name": "web-mvp-validation",
+          "head_sha": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T10:46:43Z",
+          "updated_at": "2026-10-01T10:48:02Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36851240626"
+        },
+        {
+          "id": 36851092310,
+          "name": "web-mvp-validation",
+          "head_sha": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T10:45:18Z",
+          "updated_at": "2026-10-01T10:46:25Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36851092310"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 36982361014,
+          "name": "web-mvp-validation",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36982361014"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/qgv-invalidation-binding-v1",
+      "head": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 18,
+      "behind": 0,
+      "prs": [
+        19
+      ],
+      "latest_actions": [
+        {
+          "id": 37003833035,
+          "name": "p01-research-publication",
+          "head_sha": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T11:56:52Z",
+          "updated_at": "2026-10-02T11:57:21Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37003833035"
+        },
+        {
+          "id": 37003833031,
+          "name": "qgv-invalidation-binding",
+          "head_sha": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T11:56:52Z",
+          "updated_at": "2026-10-02T11:57:25Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37003833031"
+        },
+        {
+          "id": 37003828940,
+          "name": "qgv-invalidation-binding",
+          "head_sha": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T11:56:49Z",
+          "updated_at": "2026-10-02T11:57:20Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37003828940"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 37003833035,
+          "name": "p01-research-publication",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37003833035"
+        },
+        {
+          "id": 37003833031,
+          "name": "qgv-invalidation-binding",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37003833031"
+        },
+        {
+          "id": 37003828940,
+          "name": "qgv-invalidation-binding",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37003828940"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/rig-news-real-ingestion-v1",
+      "head": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 2,
+      "behind": 0,
+      "prs": [
+        13
+      ],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/sec-primary-disclosure-v1",
+      "head": "ef65caa5437a04610fa43f93209afb9193ba24aa",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 4,
+      "behind": 0,
+      "prs": [
+        16
+      ],
+      "latest_actions": [
+        {
+          "id": 36979915604,
+          "name": "sec-primary-disclosure",
+          "head_sha": "ef65caa5437a04610fa43f93209afb9193ba24aa",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T07:41:40Z",
+          "updated_at": "2026-10-02T07:42:18Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36979915604"
+        },
+        {
+          "id": 36979911841,
+          "name": "sec-primary-disclosure",
+          "head_sha": "ef65caa5437a04610fa43f93209afb9193ba24aa",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T07:41:37Z",
+          "updated_at": "2026-10-02T07:42:14Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36979911841"
+        },
+        {
+          "id": 36979806378,
+          "name": "sec-primary-disclosure",
+          "head_sha": "e2107da30f307351d004ede8f20e4cd7c2570ca5",
+          "status": "completed",
+          "conclusion": "failure",
+          "created_at": "2026-10-02T07:40:28Z",
+          "updated_at": "2026-10-02T07:41:01Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36979806378"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 36979915604,
+          "name": "sec-primary-disclosure",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36979915604"
+        },
+        {
+          "id": 36979911841,
+          "name": "sec-primary-disclosure",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36979911841"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/technical-real-model-v1",
+      "head": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 5,
+      "behind": 0,
+      "prs": [
+        15
+      ],
+      "latest_actions": [
+        {
+          "id": 36859556090,
+          "name": "technical-real-producer",
+          "head_sha": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T12:06:10Z",
+          "updated_at": "2026-10-01T12:06:50Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36859556090"
+        },
+        {
+          "id": 36859556060,
+          "name": "technical-real-model",
+          "head_sha": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T12:06:10Z",
+          "updated_at": "2026-10-01T12:06:48Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36859556060"
+        },
+        {
+          "id": 36859548966,
+          "name": "technical-real-model",
+          "head_sha": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T12:06:06Z",
+          "updated_at": "2026-10-01T12:06:38Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36859548966"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 36859556090,
+          "name": "technical-real-producer",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36859556090"
+        },
+        {
+          "id": 36859556060,
+          "name": "technical-real-model",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36859556060"
+        },
+        {
+          "id": 36859548966,
+          "name": "technical-real-model",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36859548966"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/technical-real-producer-v1",
+      "head": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 3,
+      "behind": 0,
+      "prs": [
+        11
+      ],
+      "latest_actions": [
+        {
+          "id": 36855446809,
+          "name": "technical-real-producer",
+          "head_sha": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T11:27:09Z",
+          "updated_at": "2026-10-01T11:27:45Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36855446809"
+        },
+        {
+          "id": 36855439113,
+          "name": "technical-real-producer",
+          "head_sha": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T11:27:04Z",
+          "updated_at": "2026-10-01T11:27:37Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36855439113"
+        },
+        {
+          "id": 36855325300,
+          "name": "technical-real-producer",
+          "head_sha": "8941c2c6dffa239bba606e6ea56e8f355cef3419",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T11:25:58Z",
+          "updated_at": "2026-10-01T11:26:40Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36855325300"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 36855446809,
+          "name": "technical-real-producer",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36855446809"
+        },
+        {
+          "id": 36855439113,
+          "name": "technical-real-producer",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36855439113"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/track-c-evl",
+      "head": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 54,
+      "behind": 0,
+      "prs": [
+        4
+      ],
+      "latest_actions": [
+        {
+          "id": 36994387375,
+          "name": "track-c-evl-validation",
+          "head_sha": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T10:14:39Z",
+          "updated_at": "2026-10-02T10:27:07Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994387375"
+        },
+        {
+          "id": 36992436625,
+          "name": "track-c-evl-validation",
+          "head_sha": "8579a78c926b3ac221cb52230867c07737ce3432",
+          "status": "completed",
+          "conclusion": "failure",
+          "created_at": "2026-10-02T09:54:08Z",
+          "updated_at": "2026-10-02T10:08:52Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36992436625"
+        },
+        {
+          "id": 36991881782,
+          "name": "track-c-evl-validation",
+          "head_sha": "87b92bd509b6c6adf00901fa6fbaf03ef5a9fcd6",
+          "status": "completed",
+          "conclusion": "failure",
+          "created_at": "2026-10-02T09:48:15Z",
+          "updated_at": "2026-10-02T09:51:10Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36991881782"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 36994387375,
+          "name": "track-c-evl-validation",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994387375"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/track-d-rig-news",
+      "head": "da86dfc26dcaa5c32c60762683dcca702a0c57b8",
+      "merge_base": "da86dfc26dcaa5c32c60762683dcca702a0c57b8",
+      "ahead": 0,
+      "behind": 23,
+      "prs": [],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": true
+    },
+    {
+      "branch": "feature/track-e-prompt-library-v1",
+      "head": "d226481e1b49e0910642478ae80545598e2e5a98",
+      "merge_base": "d226481e1b49e0910642478ae80545598e2e5a98",
+      "ahead": 0,
+      "behind": 38,
+      "prs": [],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": true
+    },
+    {
+      "branch": "feature/us-equity-session-v1",
+      "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 8,
+      "behind": 0,
+      "prs": [
+        18
+      ],
+      "latest_actions": [
+        {
+          "id": 36997929255,
+          "name": "us-equity-session",
+          "head_sha": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T10:52:59Z",
+          "updated_at": "2026-10-02T10:53:31Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929255"
+        },
+        {
+          "id": 36997929226,
+          "name": "technical-real-model",
+          "head_sha": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T10:52:59Z",
+          "updated_at": "2026-10-02T10:53:28Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929226"
+        },
+        {
+          "id": 36997929115,
+          "name": "technical-real-producer",
+          "head_sha": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-02T10:52:59Z",
+          "updated_at": "2026-10-02T10:53:37Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929115"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 36997929255,
+          "name": "us-equity-session",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929255"
+        },
+        {
+          "id": 36997929226,
+          "name": "technical-real-model",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929226"
+        },
+        {
+          "id": 36997929115,
+          "name": "technical-real-producer",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929115"
+        },
+        {
+          "id": 36997922976,
+          "name": "us-equity-session",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997922976"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "feature/web-mvp-v1",
+      "head": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 6,
+      "behind": 0,
+      "prs": [
+        5
+      ],
+      "latest_actions": [
+        {
+          "id": 36418935056,
+          "name": "web-mvp-validation",
+          "head_sha": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-09-28T11:59:07Z",
+          "updated_at": "2026-09-28T12:00:10Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36418935056"
+        },
+        {
+          "id": 36418929879,
+          "name": "web-mvp-validation",
+          "head_sha": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-09-28T11:59:04Z",
+          "updated_at": "2026-09-28T12:02:13Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36418929879"
+        },
+        {
+          "id": 36418633210,
+          "name": "web-mvp-validation",
+          "head_sha": "f58f1f38585420811d3fad6ad0b17a9e281e3c39",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-09-28T11:56:01Z",
+          "updated_at": "2026-09-28T11:56:59Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36418633210"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 36418935056,
+          "name": "web-mvp-validation",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36418935056"
+        },
+        {
+          "id": 36418929879,
+          "name": "web-mvp-validation",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36418929879"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "integration/a1-adoption/pr11-technical-producer",
+      "head": "248e3d3e83db9a2db3d90583ae53929db936d0f3",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 4,
+      "behind": 0,
+      "prs": [
+        22
+      ],
+      "latest_actions": [
+        {
+          "id": 37098417854,
+          "name": "technical-real-producer",
+          "head_sha": "248e3d3e83db9a2db3d90583ae53929db936d0f3",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T05:00:38Z",
+          "updated_at": "2026-10-03T05:01:12Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37098417854"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 37098417854,
+          "name": "technical-real-producer",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37098417854"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "integration/a1-adoption/pr12-macro-producer",
+      "head": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 19,
+      "behind": 0,
+      "prs": [
+        25
+      ],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "integration/a1-adoption/pr14-leaderboard",
+      "head": "a4805dbcdf37b890f74f6d00c00952ff95b91c8f",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 6,
+      "behind": 0,
+      "prs": [
+        26
+      ],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "integration/a1-adoption/pr15-technical-model",
+      "head": "5c9dd5abd760116df626e9b2e88e3fe48852066a",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 6,
+      "behind": 0,
+      "prs": [
+        23
+      ],
+      "latest_actions": [
+        {
+          "id": 37098445694,
+          "name": "technical-real-model",
+          "head_sha": "5c9dd5abd760116df626e9b2e88e3fe48852066a",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T05:01:04Z",
+          "updated_at": "2026-10-03T05:01:39Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37098445694"
+        },
+        {
+          "id": 37098445693,
+          "name": "technical-real-producer",
+          "head_sha": "5c9dd5abd760116df626e9b2e88e3fe48852066a",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T05:01:04Z",
+          "updated_at": "2026-10-03T05:01:41Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37098445693"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 37098445694,
+          "name": "technical-real-model",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37098445694"
+        },
+        {
+          "id": 37098445693,
+          "name": "technical-real-producer",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37098445693"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "integration/a1-adoption/pr17-p01",
+      "head": "dc7daf70a42fb3f2bbfe96a775a1654a92ff95c1",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 20,
+      "behind": 0,
+      "prs": [
+        27
+      ],
+      "latest_actions": [
+        {
+          "id": 37099960099,
+          "name": "p01-research-publication",
+          "head_sha": "dc7daf70a42fb3f2bbfe96a775a1654a92ff95c1",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T05:29:04Z",
+          "updated_at": "2026-10-03T05:29:39Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37099960099"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 37099960099,
+          "name": "p01-research-publication",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37099960099"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "integration/a1-adoption/pr18-us-equity-session",
+      "head": "9c71781c62e46a4f2972d58c1439ef6ca2a85b07",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 9,
+      "behind": 0,
+      "prs": [
+        24
+      ],
+      "latest_actions": [
+        {
+          "id": 37098468364,
+          "name": "technical-real-model",
+          "head_sha": "9c71781c62e46a4f2972d58c1439ef6ca2a85b07",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T05:01:27Z",
+          "updated_at": "2026-10-03T05:01:56Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37098468364"
+        },
+        {
+          "id": 37098468339,
+          "name": "us-equity-session",
+          "head_sha": "9c71781c62e46a4f2972d58c1439ef6ca2a85b07",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T05:01:27Z",
+          "updated_at": "2026-10-03T05:02:00Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37098468339"
+        },
+        {
+          "id": 37098468316,
+          "name": "technical-real-producer",
+          "head_sha": "9c71781c62e46a4f2972d58c1439ef6ca2a85b07",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-03T05:01:27Z",
+          "updated_at": "2026-10-03T05:01:57Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37098468316"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 37098468364,
+          "name": "technical-real-model",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37098468364"
+        },
+        {
+          "id": 37098468339,
+          "name": "us-equity-session",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37098468339"
+        },
+        {
+          "id": 37098468316,
+          "name": "technical-real-producer",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37098468316"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "integration/claude-worker-contract-v1",
+      "head": "d87d4cd14c7e31d0d0fc17a447ee37346102e0ff",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 2,
+      "behind": 0,
+      "prs": [],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "integration/global-handoff-v1",
+      "head": "f26dc7adbfedd9209e757b5e8566c665c7bbd677",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 7,
+      "behind": 0,
+      "prs": [],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "integration/web-mvp-language-search",
+      "head": "e09d24e028475e924f2e20cee5ad6bd79f891391",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 2,
+      "behind": 0,
+      "prs": [],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "integration/web-mvp-language-search-audit",
+      "head": "9fd8099fed59961f990cb64e99d4953a931ea508",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "ahead": 1,
+      "behind": 0,
+      "prs": [],
+      "latest_actions": [
+        {
+          "id": 36844773375,
+          "name": "web-sequential-integration-gate",
+          "head_sha": "9fd8099fed59961f990cb64e99d4953a931ea508",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-10-01T09:45:22Z",
+          "updated_at": "2026-10-01T09:47:15Z",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36844773375"
+        }
+      ],
+      "exact_head_actions": [
+        {
+          "id": 36844773375,
+          "name": "web-sequential-integration-gate",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36844773375"
+        }
+      ],
+      "canonical_contains_head": false
+    },
+    {
+      "branch": "recovery/track-a-real-data-frozen",
+      "head": "a79642f7aa174cc37b981298d0ff1cec6b04e974",
+      "merge_base": "a79642f7aa174cc37b981298d0ff1cec6b04e974",
+      "ahead": 0,
+      "behind": 5,
+      "prs": [],
+      "latest_actions": [],
+      "exact_head_actions": [],
+      "canonical_contains_head": true
+    }
+  ],
+  "open_prs": [
+    {
+      "number": 27,
+      "draft": true,
+      "state": "open",
+      "head": "integration/a1-adoption/pr17-p01",
+      "head_sha": "dc7daf70a42fb3f2bbfe96a775a1654a92ff95c1",
+      "base": "feature/p01-research-publication-v1",
+      "base_sha": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "title": "[proposal] #17 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "number": 26,
+      "draft": true,
+      "state": "open",
+      "head": "integration/a1-adoption/pr14-leaderboard",
+      "head_sha": "a4805dbcdf37b890f74f6d00c00952ff95b91c8f",
+      "base": "feature/leaderboard-real-producer-v1",
+      "base_sha": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+      "title": "[proposal] #14 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "number": 25,
+      "draft": true,
+      "state": "open",
+      "head": "integration/a1-adoption/pr12-macro-producer",
+      "head_sha": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "base": "feature/macro-real-producer-v1",
+      "base_sha": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+      "title": "[proposal] #12 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "number": 24,
+      "draft": true,
+      "state": "open",
+      "head": "integration/a1-adoption/pr18-us-equity-session",
+      "head_sha": "9c71781c62e46a4f2972d58c1439ef6ca2a85b07",
+      "base": "feature/us-equity-session-v1",
+      "base_sha": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "title": "[proposal] #18 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "number": 23,
+      "draft": true,
+      "state": "open",
+      "head": "integration/a1-adoption/pr15-technical-model",
+      "head_sha": "5c9dd5abd760116df626e9b2e88e3fe48852066a",
+      "base": "feature/technical-real-model-v1",
+      "base_sha": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "title": "[proposal] #15 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "number": 22,
+      "draft": true,
+      "state": "open",
+      "head": "integration/a1-adoption/pr11-technical-producer",
+      "head_sha": "248e3d3e83db9a2db3d90583ae53929db936d0f3",
+      "base": "feature/technical-real-producer-v1",
+      "base_sha": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "title": "[proposal] #11 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "number": 21,
+      "draft": true,
+      "state": "open",
+      "head": "ccr-2e16018a-qukwmg",
+      "head_sha": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "base_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "title": "Claude Code Worker Contract v1.0 + CLAUDE.md routing (docs only)"
+    },
+    {
+      "number": 19,
+      "draft": true,
+      "state": "open",
+      "head": "feature/qgv-invalidation-binding-v1",
+      "head_sha": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "base": "feature/p01-research-publication-v1",
+      "base_sha": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "title": "Add QGV invalidation binding without activating display"
+    },
+    {
+      "number": 18,
+      "draft": true,
+      "state": "open",
+      "head": "feature/us-equity-session-v1",
+      "head_sha": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "base": "feature/technical-real-model-v1",
+      "base_sha": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "title": "US equity trading session v1: calendar vintage binder and close-availability guard"
+    },
+    {
+      "number": 17,
+      "draft": true,
+      "state": "open",
+      "head": "feature/p01-research-publication-v1",
+      "head_sha": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "base": "feature/producer-infrastructure-v1",
+      "base_sha": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "title": "P01 research publication v1: envelope and predicate, display stays off"
+    },
+    {
+      "number": 16,
+      "draft": true,
+      "state": "open",
+      "head": "feature/sec-primary-disclosure-v1",
+      "head_sha": "ef65caa5437a04610fa43f93209afb9193ba24aa",
+      "base": "feature/rig-news-real-ingestion-v1",
+      "base_sha": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+      "title": "SEC 8-K primary disclosure v1 (general news stays unavailable)"
+    },
+    {
+      "number": 15,
+      "draft": true,
+      "state": "open",
+      "head": "feature/technical-real-model-v1",
+      "head_sha": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "base": "feature/technical-real-producer-v1",
+      "base_sha": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "title": "Technical REAL Model v1: M1 features and M2 regime (M3 held)"
+    },
+    {
+      "number": 14,
+      "draft": true,
+      "state": "open",
+      "head": "feature/leaderboard-real-producer-v1",
+      "head_sha": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "base_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "title": "Leaderboard REAL Producer v1: existing engine replay, research snapshot, publication blocked"
+    },
+    {
+      "number": 13,
+      "draft": true,
+      "state": "open",
+      "head": "feature/rig-news-real-ingestion-v1",
+      "head_sha": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "base_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "title": "RIG news ingestion v1: implementation baseline / integration wait"
+    },
+    {
+      "number": 12,
+      "draft": true,
+      "state": "open",
+      "head": "feature/macro-real-producer-v1",
+      "head_sha": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+      "base": "feature/producer-infrastructure-v1",
+      "base_sha": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+      "title": "Macro REAL Producer v1: implementation baseline / integration wait"
+    },
+    {
+      "number": 11,
+      "draft": true,
+      "state": "open",
+      "head": "feature/technical-real-producer-v1",
+      "head_sha": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "base_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "title": "Technical real-input producer v1 (PIT gate, model NOT_AVAILABLE)"
+    },
+    {
+      "number": 10,
+      "draft": true,
+      "state": "open",
+      "head": "ccr-db5d5960-qen9yi",
+      "head_sha": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "base_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "title": "QGV Real Producer v1: per-company PIT persistence, batch manifest, exporter"
+    },
+    {
+      "number": 9,
+      "draft": true,
+      "state": "open",
+      "head": "feature/producer-infrastructure-v1",
+      "head_sha": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "base": "feature/global-language-search-v1",
+      "base_sha": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "title": "Producer Infrastructure v1: producer contract, fail-closed bundle exporter, raw persistence design (stacked on PR #6)"
+    },
+    {
+      "number": 7,
+      "draft": true,
+      "state": "open",
+      "head": "ccr-41677301-10nj3u",
+      "head_sha": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "base": "feature/global-language-search-v1",
+      "base_sha": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "title": "Entity Metadata Coverage: CIK-bound Top-500 search metadata (stacked on #6)"
+    },
+    {
+      "number": 6,
+      "draft": true,
+      "state": "open",
+      "head": "feature/global-language-search-v1",
+      "head_sha": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "base": "feature/web-mvp-v1",
+      "base_sha": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "title": "Global Language & Search implementation baseline"
+    },
+    {
+      "number": 5,
+      "draft": true,
+      "state": "open",
+      "head": "feature/web-mvp-v1",
+      "head_sha": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "base_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "title": "Web MVP v1: personal mobile cockpit with read-only upstream adapters"
+    },
+    {
+      "number": 4,
+      "draft": true,
+      "state": "open",
+      "head": "feature/track-c-evl",
+      "head_sha": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "base_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "title": "Track C: C7 software frozen; C8-C10 policy packages await approval"
+    }
+  ]
+}

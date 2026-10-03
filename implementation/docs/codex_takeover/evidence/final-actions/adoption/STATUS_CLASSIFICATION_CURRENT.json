@@ -1,0 +1,36 @@
+{
+  "record": "FINAL_ACTIONS_STATUS_CLASSIFICATION_CORRECTION",
+  "supersedes": "STATUS_CLASSIFICATION.json historical filename list only",
+  "CURRENT": [
+    "CHECKPOINT-final.json",
+    "37102973395-final-completed-jobs.json",
+    "macro-final-success.json",
+    "fingerprint-comparison-clarification.json",
+    "checkout-source-tree-comparison.json"
+  ],
+  "SUPERSEDED": [
+    "37102973395-final-jobs.json"
+  ],
+  "HISTORICAL": [
+    "37102973395-062730-jobs.json",
+    "37102973395-062730-run.json",
+    "37102973395-jobs.json",
+    "37102973395-run.json",
+    "37102973410-062730-jobs.json",
+    "37102973410-062730-run.json",
+    "37102973419-062730-jobs.json",
+    "37102973419-062730-run.json",
+    "37102973430-062730-jobs.json",
+    "37102973430-062730-run.json",
+    "37102973449-062730-jobs.json",
+    "37102973449-062730-run.json",
+    "37102973450-062730-jobs.json",
+    "37102973450-062730-run.json",
+    "37102973469-062730-jobs.json",
+    "37102973469-062730-run.json",
+    "37102973469-jobs.json",
+    "37102973469-run.json",
+    "summary-062730.json"
+  ],
+  "reason": "Use exact existing filenames; provisional snapshots retained, final native completed-job receipt is current."
+}

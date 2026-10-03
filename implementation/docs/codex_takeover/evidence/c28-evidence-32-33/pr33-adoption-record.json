@@ -1,0 +1,385 @@
+{
+ "record_id": "ENTITY_METADATA_C28_ADOPTION_POST_ADOPTION_2026-10-03",
+ "scope": "PR #7 Entity Metadata (ccr-41677301-10nj3u): post-adoption record for the numerical-invariance fingerprint committed in docs/entity_metadata/evidence/validation.json L90-93 and HANDOFF.md L71-73, under the Track C additive lineage/schema change (C-28 adoption, CDR-004)",
+ "recorded_at_utc": "2026-10-03T07:33:02Z",
+ "record_kind": "history-preserving additive evidence. evidence/validation.json and the existing HANDOFF.md text are not edited and keep the pre-adoption value; HANDOFF.md gets an appended note only; no test, source or tool change",
+ "authority": {
+  "user_decision": "CDR-004 (USER_DECIDED, 2026-10-03)",
+  "register_location": "origin/integration/global-handoff-v1 @ 6dedaaf36a417e9301ba22ea9595bff5f37acb38 : implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md, section \"CDR-004 · IF-1 resolved: Option A1 + Technical/Macro owner adoption\"",
+  "cdr_004_quoted": "IF-1은 A1 + Technical/Macro owner adoption으로 승인한다. … Producer owners는 새 schema를 대상으로 기존 numerical/semantic invariance를 다시 검증한 뒤 필요한 byte constants/fingerprints를 history-preserving 방식으로 repin한다. 단순히 테스트를 통과시키기 위해 pin을 변경하지 말고, 이전/이후 기존 필드 값과 계산 결과가 동일하다는 independent comparison을 먼저 PASS해야 한다. Track C Frozen chain은 rewrite하지 않는다. #10/#14 및 dependency-not-merged sentinel은 실제 integration context에 맞게 별도 compatibility repair 대상으로 처리한다. … canonical merge는 아직 수행하지 않는다.",
+  "cdr_004_full_user_wording_from_register": [
+   "IF-1은 A1 + Technical/Macro owner adoption으로 승인한다.",
+   "Track C 2137883의 additive lineage/schema 변경을 integration target으로 유지한다. Technical은 canonical C-28의 upstream ownership과 정합시키고, Macro는 동일 변경에 대한 별도 additive owner adoption record를 작성한다.",
+   "이 승인은 기존 Technical/Macro 계산식, 값, regime, zone, Macro state, QGV, ranking을 변경하는 승인이 아니다.",
+   "Producer owners는 새 schema를 대상으로 기존 numerical/semantic invariance를 다시 검증한 뒤 필요한 byte constants/fingerprints를 history-preserving 방식으로 repin한다.",
+   "단순히 테스트를 통과시키기 위해 pin을 변경하지 말고, 이전/이후 기존 필드 값과 계산 결과가 동일하다는 independent comparison을 먼저 PASS해야 한다.",
+   "Track C Frozen chain은 rewrite하지 않는다.",
+   "#10/#14 및 dependency-not-merged sentinel은 실제 integration context에 맞게 별도 compatibility repair 대상으로 처리한다.",
+   "Macro의 이 adoption을 과거 승인으로 소급하지 말고 현재 owner adoption으로 기록한다.",
+   "canonical merge는 아직 수행하지 않는다."
+  ],
+  "prepared_by": "Primary Integration Writer (Claude Code session session_019znshzTYgyBnuuBmSxdPFN) under CDR-004; becomes the owner's record when merged into ccr-41677301-10nj3u by the owner or the user",
+  "what_this_record_is": "evidence-only post-adoption record of a committed numerical fingerprint; no pin is moved because no test pins these values (E1)",
+  "not_an_approval_of": [
+   "any Technical/Macro formula, value, regime, zone or Macro state change",
+   "QGV or ranking change",
+   "any threshold or numeric configuration",
+   "any publication grant",
+   "CAL_VERIFY or Holdout access",
+   "canonical merge"
+  ]
+ },
+ "E1_pin_check": {
+  "question": "does any test on the owner branch pin these values?",
+  "owner_sha": "a013f1c1758642f90a65fe11df69fc234c143a48",
+  "command": "git grep -n <c> origin/ccr-41677301-10nj3u -- implementation/tests  (c in 82165414, 7bbfad69, d1b9cd91, 112b245b, 53d930a7, a1714480, producer_engine_fingerprint, numeric_fingerprint, engine_numerical_fingerprint)",
+  "result": "no match for any of them under implementation/tests",
+  "whole_tree_matches_of_d1b9cd91": [
+   "implementation/docs/entity_metadata/HANDOFF.md:72,73",
+   "implementation/docs/entity_metadata/evidence/validation.json:91,92"
+  ],
+  "consequence": "evidence-only adoption; no test repin is needed or made"
+ },
+ "trees": {
+  "before": {
+   "description": "owner tip ccr-41677301-10nj3u as-is",
+   "sha": "a013f1c1758642f90a65fe11df69fc234c143a48",
+   "tree": "ccd6bd45341b6685bdbeec5693324a0c23872e08",
+   "merge_base_with_canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "after": {
+   "description": "owner tip + Track C owner tip merged with git merge --no-ff (throwaway local commit in a detached worktree; never pushed, no ref created)",
+   "base_sha": "a013f1c1758642f90a65fe11df69fc234c143a48",
+   "merged_ref": "origin/ccr-22e3ff16-p7n5k5",
+   "merged_sha": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+   "track_c_actions_run_on_merged_sha": "37097149378 SUCCESS (as recorded in GLOBAL_CURRENT_HANDOFF GCH-002; not re-run here)",
+   "throwaway_merge_commit": "d1dd81ce9cd3ca146246b5828dff575bad6f0fd1",
+   "throwaway_merge_tree": "3c2a0a39ccbf173df1d23064be1c1b123e31baa6",
+   "conflicts": 0
+  },
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+ },
+ "adopted_files_identity": {
+  "contracts/lineage.py": {
+   "blob_before": null,
+   "blob_track_c_owner_tip": "288cabadcd0fe975fb9e2605f1f39b767ccc462b",
+   "blob_after_tree": "288cabadcd0fe975fb9e2605f1f39b767ccc462b",
+   "after_equals_track_c": true
+  },
+  "contracts/models.py": {
+   "blob_before": "2367d2ee2dfffa60482ba2f4cb671ece09340b1e",
+   "blob_track_c_owner_tip": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+   "blob_after_tree": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+   "after_equals_track_c": true
+  },
+  "technical/engine.py": {
+   "blob_before": "0f6c274d25957c564b6578ca2805dc50b8dc3f92",
+   "blob_track_c_owner_tip": "5365653fda6374aeace986c63cce9939921ebb64",
+   "blob_after_tree": "5365653fda6374aeace986c63cce9939921ebb64",
+   "after_equals_track_c": true
+  },
+  "macro/engine.py": {
+   "blob_before": "f7b9979d52e031991888b697c62098d4a3dac301",
+   "blob_track_c_owner_tip": "08d79c20147d2a13413e98269042e6cf7d3973a8",
+   "blob_after_tree": "08d79c20147d2a13413e98269042e6cf7d3973a8",
+   "after_equals_track_c": true
+  }
+ },
+ "generator": {
+  "path": "implementation/docs/entity_metadata/evidence/numeric_fingerprint.py",
+  "sha256_before": "f216bc43674d8f670151ee3489bef7af6e31dabf6d9c6a6bf3d7d8a149fb6446",
+  "sha256_after": "f216bc43674d8f670151ee3489bef7af6e31dabf6d9c6a6bf3d7d8a149fb6446",
+  "invocation": "cd <tree>/implementation && python3 docs/entity_metadata/evidence/numeric_fingerprint.py <tree>/implementation | sha256sum",
+  "output_is_the_normalized_dict": "the script prints json.dumps(out, sort_keys=True, ensure_ascii=False, default=str) of the cleaned to_dict() outputs, so its stdout is the normalized dict and the recorded fingerprint is sha256(stdout)",
+  "python": "Python 3.11.15"
+ },
+ "commands": [
+  "git -C /home/user/Investment-System1 fetch origin",
+  "git worktree add --detach <wf>/pr7-before a013f1c1758642f90a65fe11df69fc234c143a48",
+  "git worktree add --detach <wf>/pr7-after a013f1c1758642f90a65fe11df69fc234c143a48 && (cd <wf>/pr7-after && git merge --no-ff --no-edit b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565)  # 0 conflicts",
+  "cd <tree>/implementation && python3 docs/entity_metadata/evidence/numeric_fingerprint.py <tree>/implementation > nf.json; sha256sum nf.json   # both trees, twice each",
+  "python3 <harness>/field_diff.py pr7-before.nf.json pr7-after.nf.json",
+  "sha256sum of the six artifact files and the Frozen Universe snapshot listed in validation.json   # both trees",
+  "cd <tree>/implementation && python3 tools/ingest_entity_metadata.py build && git status --porcelain   # both throwaway trees; empty status = byte-identical rebuild",
+  "cd <tree>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf   # owner tip, after tree, proposal branch",
+  "cd <tree>/implementation && python3 tools/mini_pytest.py   # owner tip and proposal branch"
+ ],
+ "numeric_fingerprint": {
+  "pre_adoption_committed": {
+   "validation_json_L91_pr6_head_eda65bf": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535",
+   "validation_json_L92_pr7_head": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535"
+  },
+  "before_reproduced_sha256_stdout": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535",
+  "before_equals_committed": true,
+  "after_sha256_stdout": "9b9a276e4daa0c1f52e8d90ec3d8829aa8799d47c2a7cc2017ddce11937d483d",
+  "repeatable": {
+   "before": true,
+   "after": true
+  },
+  "decomposition_of_after": {
+   "after_minus_four_keys_only": "3f4668613767808307a2b42c0a98afad6f902f61f6fbe652c78add7135eae10e",
+   "after_minus_27_track_c_report_entries_only": "ce845bb644931ac02e07a9cd39d7ac364158bdb0b1998a8684d3cf66406db2a8",
+   "after_minus_four_keys_and_minus_27_track_c_report_entries": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535",
+   "reconstruction_equals_pre_adoption_d1b9cd91": true
+  }
+ },
+ "field_level_diff": {
+  "method": "recursive walk of the script's own stdout JSON (already cleaned by the script's VOLATILE filter); every leaf compared by value and type (ADDED / REMOVED / CHANGED / CHANGED_TYPE / LEN)",
+  "total_entries": 71,
+  "by_kind": {
+   "ADDED": 71
+  },
+  "by_section": {
+   "macro": 4,
+   "reports_sha256": 27,
+   "technical": 40
+  },
+  "engine_sections": {
+   "entries": 44,
+   "by_kind_section_key_after_value": [
+    {
+     "kind": "ADDED",
+     "section": "macro",
+     "key": "available_at",
+     "after_value": null,
+     "count": 1
+    },
+    {
+     "kind": "ADDED",
+     "section": "macro",
+     "key": "data_stamp_refs",
+     "after_value": [],
+     "count": 1
+    },
+    {
+     "kind": "ADDED",
+     "section": "macro",
+     "key": "input_hash",
+     "after_value": null,
+     "count": 1
+    },
+    {
+     "kind": "ADDED",
+     "section": "macro",
+     "key": "source_vintages",
+     "after_value": [],
+     "count": 1
+    },
+    {
+     "kind": "ADDED",
+     "section": "technical",
+     "key": "available_at",
+     "after_value": null,
+     "count": 10
+    },
+    {
+     "kind": "ADDED",
+     "section": "technical",
+     "key": "data_stamp_refs",
+     "after_value": [],
+     "count": 10
+    },
+    {
+     "kind": "ADDED",
+     "section": "technical",
+     "key": "input_hash",
+     "after_value": null,
+     "count": 10
+    },
+    {
+     "kind": "ADDED",
+     "section": "technical",
+     "key": "source_vintages",
+     "after_value": [],
+     "count": 10
+    }
+   ],
+   "technical_after_minus_four_keys_equals_before": true,
+   "macro_after_minus_four_keys_equals_before": true,
+   "identical": {
+    "qgv": true,
+    "portfolio": true,
+    "leaderboard": true,
+    "leaderboard_order": true,
+    "data_json_sha256": true
+   }
+  },
+  "reports_sha256_inventory": {
+   "entries": 27,
+   "kinds": [
+    "ADDED"
+   ],
+   "pre_existing_committed_entries": 140,
+   "pre_existing_entries_unchanged": true,
+   "added_entries_equal_json_files_added_by_track_c_b8e39a2_to_b9e01a97": true,
+   "track_c_name_status_for_those_files": [
+    "A"
+   ],
+   "added_entries": [
+    "reports/track_c_c1_integration_boundary.json",
+    "reports/track_c_c2_c3_commit_mapping.json",
+    "reports/track_c_c2_evidence.json",
+    "reports/track_c_c3_evidence.json",
+    "reports/track_c_c4_commit_mapping.json",
+    "reports/track_c_c4_evidence.json",
+    "reports/track_c_c4_upstream_readiness.json",
+    "reports/track_c_c5_commit_mapping.json",
+    "reports/track_c_c5_evidence.json",
+    "reports/track_c_c6_acceptance_2026-10-01.json",
+    "reports/track_c_c6_boundary_audit_2026-09-30.json",
+    "reports/track_c_c6_execution_evidence.json",
+    "reports/track_c_c6_freeze_policy_audit.json",
+    "reports/track_c_c6_statistical_kernels_evidence.json",
+    "reports/track_c_c7_acceptance_2026-10-01.json",
+    "reports/track_c_c7_g1_d2_approval_2026-10-01.json",
+    "reports/track_c_c7_policy_boundary_evidence_2026-10-01.json",
+    "reports/track_c_c8_a6_method_approval_2026-10-02.json",
+    "reports/track_c_c8_a6_method_simulation_2026-10-02.json",
+    "reports/track_c_c8_a6_partial_approval_2026-10-02.json",
+    "reports/track_c_c8_c10_contract_drafts.json",
+    "reports/track_c_c8_gsup_mb_vs_kernel_counterexample_2026-10-03.json",
+    "reports/track_c_c8_gsup_method_impact_evidence_2026-10-03.json",
+    "reports/track_c_c8_package_A_approval_dossier_2026-10-02.json",
+    "reports/track_c_c8_partial_approval_2026-10-02.json",
+    "reports/track_c_c8_partial_foundation_verification_2026-10-02.json",
+    "reports/track_c_policy_preparation_validation_2026-10-01.json"
+   ],
+   "classification": "tree-inventory difference: the script hashes every reports/*.json present in the tree, and the throwaway merge brings in 27 new Track C report files (git name-status A; no existing file modified). Not a C-28 schema effect and not a change to any existing value"
+  },
+  "harness_sources": {
+   "field_diff.py": "\"\"\"Recursive field-level diff of two JSON documents. Reports ADDED / REMOVED / CHANGED (value or type) / LEN.\nUsage: python3 field_diff.py before.json after.json [--skip-top key,key]\"\"\"\nimport json, sys, collections\na = json.load(open(sys.argv[1])); b = json.load(open(sys.argv[2]))\nskip = set(sys.argv[4].split(',')) if len(sys.argv) > 4 and sys.argv[3] == '--skip-top' else set()\ndiffs = []\ndef walk(x, y, path):\n    if type(x) is not type(y):\n        diffs.append(('CHANGED_TYPE', path, x, y)); return\n    if isinstance(x, dict):\n        for k in sorted(set(x) | set(y)):\n            if k not in y: diffs.append(('REMOVED', path + [k], x[k], None))\n            elif k not in x: diffs.append(('ADDED', path + [k], None, y[k]))\n            else: walk(x[k], y[k], path + [k])\n    elif isinstance(x, list):\n        if len(x) != len(y): diffs.append(('LEN', path, len(x), len(y)))\n        for i, (p, q) in enumerate(zip(x, y)): walk(p, q, path + [i])\n    elif x != y:\n        diffs.append(('CHANGED', path, x, y))\nfor k in sorted(set(a) | set(b)):\n    if k in skip: continue\n    if k not in b: diffs.append(('REMOVED', [k], a[k], None))\n    elif k not in a: diffs.append(('ADDED', [k], None, b[k]))\n    else: walk(a[k], b[k], [k])\ndef leafkey(p): return next((s for s in reversed(p) if isinstance(s, str)), None)\nsummary = {\n  'total_entries': len(diffs),\n  'by_kind': dict(collections.Counter(d[0] for d in diffs)),\n  'by_top_section': dict(collections.Counter(str(d[1][0]) for d in diffs)),\n}\nc = collections.Counter((d[0], str(d[1][0]), leafkey(d[1]), json.dumps(d[3], sort_keys=True)) for d in diffs)\nsummary['by_kind_section_key_after_value'] = [{'kind': k[0], 'section': k[1], 'key': k[2], 'after_value': json.loads(k[3]), 'count': n} for k, n in sorted(c.items())]\nsummary['entries'] = [{'kind': d[0], 'path': d[1], 'before': d[2], 'after': d[3]} for d in diffs]\nprint(json.dumps(summary, indent=1, sort_keys=True, ensure_ascii=False))\n"
+  },
+  "harness_sha256": {
+   "field_diff.py": "d90c249a440297ed578cb5c133246f5c710aa6b40fcb14e61c88fc16735e7581"
+  }
+ },
+ "other_committed_hashes_reproduced_unchanged": {
+  "data_json_sha256": {
+   "before": {
+    "a": "8206d6c562eb1639904d5fe406165ddac67eec88bcfd970ad23345ccd0a349db",
+    "b": "649a144d8084875a2c047ba7ae1e25a0c04140015ce702aa442cb18d68da913c"
+   },
+   "after": {
+    "a": "8206d6c562eb1639904d5fe406165ddac67eec88bcfd970ad23345ccd0a349db",
+    "b": "649a144d8084875a2c047ba7ae1e25a0c04140015ce702aa442cb18d68da913c"
+   }
+  },
+  "committed_reports_json_sha256_140": {
+   "before_count": 140,
+   "all_unchanged_in_after": true,
+   "set_sha256_before": "31a4effed76556e5e41f8730bf6fa8745c6866f51f3cf42cba5303e79f981395",
+   "set_sha256_after_restricted_to_pre_existing": "31a4effed76556e5e41f8730bf6fa8745c6866f51f3cf42cba5303e79f981395"
+  },
+  "artifact_sha256": {
+   "committed": {
+    "reports/entity_metadata/top500_entity_metadata_2024-12-31.json": "d5a338ddf6c6be0aae3c72703070e62d320844fb2d56ca0786869ddd9b596b00",
+    "reports/entity_metadata/coverage_2024-12-31.json": "6a60ecf1c19514939b8d47b67c597fc0564fce2c5ad88bcd0790843a13300235",
+    "reports/entity_metadata/sources/sec_submissions_extract.json": "d37e0d322dc0f01795475ddcc102fda06b3fdd8244ea61edf6b9981b9a39af12",
+    "reports/entity_metadata/sources/sec_company_tickers_extract.json": "8a4c00b726c84227652d9def417019b3d21cebdefc802db412ce6b0b6c8c118f",
+    "reports/entity_metadata/sources/wikidata_cik_extract.json": "e622ca24b50fdfd0bb5507b0e812c91ed22a474f89758d516ef8894371244c13",
+    "reports/entity_metadata/sources/kis_overseas_master_extract.json": "c9e9eb566148b418f373759b954cc59cbce729a0790008c84d7d2bcb5bbe0c86",
+    "universe:reports/gate_evidence/official_snapshot_2024-12-31.json": "75f795f838a608a6554e9a3fa3aa8e9e56e72fdfad4e5f8f74623aa00c7a47c9"
+   },
+   "before": {
+    "reports/entity_metadata/top500_entity_metadata_2024-12-31.json": "d5a338ddf6c6be0aae3c72703070e62d320844fb2d56ca0786869ddd9b596b00",
+    "reports/entity_metadata/coverage_2024-12-31.json": "6a60ecf1c19514939b8d47b67c597fc0564fce2c5ad88bcd0790843a13300235",
+    "reports/entity_metadata/sources/sec_submissions_extract.json": "d37e0d322dc0f01795475ddcc102fda06b3fdd8244ea61edf6b9981b9a39af12",
+    "reports/entity_metadata/sources/sec_company_tickers_extract.json": "8a4c00b726c84227652d9def417019b3d21cebdefc802db412ce6b0b6c8c118f",
+    "reports/entity_metadata/sources/wikidata_cik_extract.json": "e622ca24b50fdfd0bb5507b0e812c91ed22a474f89758d516ef8894371244c13",
+    "reports/entity_metadata/sources/kis_overseas_master_extract.json": "c9e9eb566148b418f373759b954cc59cbce729a0790008c84d7d2bcb5bbe0c86",
+    "universe:reports/gate_evidence/official_snapshot_2024-12-31.json": "75f795f838a608a6554e9a3fa3aa8e9e56e72fdfad4e5f8f74623aa00c7a47c9"
+   },
+   "after": {
+    "reports/entity_metadata/top500_entity_metadata_2024-12-31.json": "d5a338ddf6c6be0aae3c72703070e62d320844fb2d56ca0786869ddd9b596b00",
+    "reports/entity_metadata/coverage_2024-12-31.json": "6a60ecf1c19514939b8d47b67c597fc0564fce2c5ad88bcd0790843a13300235",
+    "reports/entity_metadata/sources/sec_submissions_extract.json": "d37e0d322dc0f01795475ddcc102fda06b3fdd8244ea61edf6b9981b9a39af12",
+    "reports/entity_metadata/sources/sec_company_tickers_extract.json": "8a4c00b726c84227652d9def417019b3d21cebdefc802db412ce6b0b6c8c118f",
+    "reports/entity_metadata/sources/wikidata_cik_extract.json": "e622ca24b50fdfd0bb5507b0e812c91ed22a474f89758d516ef8894371244c13",
+    "reports/entity_metadata/sources/kis_overseas_master_extract.json": "c9e9eb566148b418f373759b954cc59cbce729a0790008c84d7d2bcb5bbe0c86",
+    "universe:reports/gate_evidence/official_snapshot_2024-12-31.json": "75f795f838a608a6554e9a3fa3aa8e9e56e72fdfad4e5f8f74623aa00c7a47c9"
+   },
+   "all_equal": true
+  },
+  "deterministic_rebuild": {
+   "command": "python3 tools/ingest_entity_metadata.py build",
+   "git_status_after_build": {
+    "before": "",
+    "after": ""
+   },
+   "result": "byte-identical in both trees",
+   "coverage_printed": {
+    "pr7-before": {
+     "canonical_company_name": 500,
+     "ko_KR_company_name": 476,
+     "aliases": 497,
+     "n_rejections": 122,
+     "with_registry_provenance": 500
+    },
+    "pr7-after": {
+     "canonical_company_name": 500,
+     "ko_KR_company_name": 476,
+     "aliases": 497,
+     "n_rejections": 122,
+     "with_registry_provenance": 500
+    }
+   }
+  }
+ },
+ "tests": {
+  "owner_tip_a013f1c_pytest_full": {
+   "summary": "419 passed in 27.18s",
+   "exit": "exit=0"
+  },
+  "owner_tip_a013f1c_mini_pytest_shim": {
+   "summary": "419 passed, 0 failed in 21.83s (runner: mini_pytest shim, not pytest)",
+   "exit": "exit=0"
+  },
+  "after_tree_pytest_full_context_only": {
+   "summary": "949 passed in 437.03s (0:07:17)",
+   "exit": "exit=0"
+  },
+  "after_tree_note": "merged tree full suite: 949 passed, 0 failed. Context only: no test on PR #7 pins these values",
+  "proposal_branch": {
+   "tree": "owner tip + a draft of this record, before the docs note was appended (no test reads docs/); the re-run at the exact proposal commit is reported in the Draft PR body",
+   "pytest_full": {
+    "summary": "419 passed in 34.92s",
+    "exit": "exit=0"
+   },
+   "mini_pytest_shim": {
+    "summary": "419 passed, 0 failed in 25.34s (runner: mini_pytest shim, not pytest)",
+    "exit": "exit=0"
+   },
+   "equals_owner_tip_counts": true
+  },
+  "recorded_counts_in_validation_json": "419/419 PASS (CI and local)"
+ },
+ "verdict": {
+  "gate": "PASS",
+  "statement": "In the normalized engine outputs (qgv, technical, macro, portfolio, leaderboard, leaderboard_order) the only differences between BEFORE (a013f1c) and AFTER (a013f1c + Track C b9e01a97) are the four added keys available_at=null, data_stamp_refs=[], source_vintages=[], input_hash=null on the 10 technical snapshots and the 1 macro snapshot (44 ADDED entries; nothing removed or changed). data.json sha256 (default and demo), all 140 committed reports/*.json sha256, the six entity-metadata artifact sha256, the Frozen Universe sha256 and the deterministic registry rebuild reproduce unchanged",
+  "scope_note": "The whole-stdout sha256 also moves because the script's reports/*.json inventory picks up the 27 report files the Track C merge adds (all git status A). That is a tree-inventory difference, not a value change. Removing those 27 entries and the four keys reproduces d1b9cd91... byte-for-byte (see numeric_fingerprint.decomposition_of_after)",
+  "post_adoption_values": {
+   "sha256_stdout_after_tree": "9b9a276e4daa0c1f52e8d90ec3d8829aa8799d47c2a7cc2017ddce11937d483d",
+   "after_minus_27_track_c_report_entries_only": "ce845bb644931ac02e07a9cd39d7ac364158bdb0b1998a8684d3cf66406db2a8"
+  },
+  "pre_adoption_value_kept_in_validation_json_and_handoff": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535"
+ },
+ "not_changed": [
+  "implementation/docs/entity_metadata/evidence/validation.json (byte-identical)",
+  "existing HANDOFF.md text (note appended only)",
+  "implementation/docs/entity_metadata/evidence/numeric_fingerprint.py",
+  "any file under implementation/src, implementation/tests or implementation/tools",
+  "Technical/Macro formulas, values, regime, zone, Macro state, QGV, ranking",
+  "Track C Frozen chain (Track C is not merged into this branch)",
+  "any other branch"
+ ],
+ "not_run": [
+  "GitHub Actions for this proposal branch (docs-only change; no workflow on this branch has a matching push/pull_request path filter)",
+  "Web browser E2E and Node search tests (no product file changed)",
+  "CAL_VERIFY / Holdout (never accessed)"
+ ],
+ "states": {
+  "BRANCH_STATE": "proposal branch integration/a1-adoption/pr7-entity-metadata created from PR #7 tip a013f1c",
+  "INTEGRATION_STATE": "NOT_MERGED into ccr-41677301-10nj3u; Track C not merged into this branch",
+  "CANONICAL_STATE": "NOT_MERGED"
+ }
+}

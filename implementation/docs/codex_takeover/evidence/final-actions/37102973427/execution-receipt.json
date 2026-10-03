@@ -1,0 +1,150 @@
+{
+  "kind": "READONLY_INHERITED_WEB_ACTIONS_RECEIPT_V1",
+  "run_id": 37102973427,
+  "run_head_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "actual_checkout_sha": "5a0bcb54e1b683af08c965194ec05dad227a502b",
+  "checkout_semantics": "GitHub synthetic PR merge commit; distinct SHA from owner HEAD",
+  "actual_checkout_tree": "93982063e20229be3ed7daab97019c4a6aa33ee3",
+  "owner_head_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "owner_head_tree": "93982063e20229be3ed7daab97019c4a6aa33ee3",
+  "trees_equal": true,
+  "conclusion": "success",
+  "job_id": 111145989165,
+  "job_conclusion": "success",
+  "steps": [
+    {
+      "name": "Set up job",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v4",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-python@v5",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-node@v4",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run python -m pip install pytest==9.1.1",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run PYTHONPATH=src python -m pytest -q",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run npm install --no-save playwright@1.58.2",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run mkdir -p implementation/reports/web_mvp",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/upload-artifact@v4",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-node@v4",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-python@v5",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/checkout@v4",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "native_pytest": {
+    "passed": 1165,
+    "errors": 0,
+    "failures": 0,
+    "elapsed_seconds": 450.84,
+    "evidence": "connector job log line1165passed"
+  },
+  "original_browser_and_search_artifacts": [
+    {
+      "artifact_file": "global-language-search-browser.json",
+      "result": {
+        "passed": true,
+        "checks": [
+          "global search exact/alias/prefix/fuzzy same canonical route",
+          "industry and macro navigation; no fake investor",
+          "ko/en UI, persistence, QGV/Technical/Macro/Portfolio/Leaderboard/source_original unchanged",
+          "source language filter independent; localized summaries retain raw originals",
+          "existing News Network labels use global display locale and preserve model",
+          "research controls localized, Frozen payload/preview unchanged",
+          "mobile/desktop search and settings without overflow",
+          "storage failure preserves settings source"
+        ],
+        "errors": []
+      },
+      "sha256": "cc8cb144e3a49b4389e4f76b88b0779d5cf631e2481e41fe879839a1261de2a4"
+    },
+    {
+      "artifact_file": "browser.json",
+      "result": {
+        "passed": true,
+        "checks": [
+          "default fail-closed missing data",
+          "six routes 360/390/1280 without overflow",
+          "portfolio to company and original QGV",
+          "interest persistence and group membership",
+          "news-network switch, node focus, expansion, zoom, filters",
+          "research canonical select fill preview copy",
+          "network pan and drag preserve view state",
+          "group rename delete and preferences backup",
+          "back navigation and deep link",
+          "no page errors"
+        ],
+        "errors": []
+      },
+      "sha256": "8be9b59226cc8bc660e7e85153cfb59a6a336cacad5b1a971a3abeb7d757062f"
+    }
+  ],
+  "new_withheld_contract_harness": "NOT_RUN in this inherited workflow; separately verified by run37102973395",
+  "job_log_sha256": "0f4cdcfd8ff075101d7efd9671f4233dba579eb3591cd36c4ea9e220f6daf7b2",
+  "artifact": {
+    "id": 11267235184,
+    "github_uploaded_sha256": "05326aa4282797515922ed5f2b8590cd5e5ea811a874c117e56454fc2570bb1a",
+    "local_download_sha256": "05326aa4282797515922ed5f2b8590cd5e5ea811a874c117e56454fc2570bb1a",
+    "digest_match": true,
+    "bytes": 699220,
+    "retrieval_route": "GitHub connector"
+  },
+  "grant_changes": "NONE",
+  "source_changes": "NONE by this audit",
+  "reruns": "NOT_RUN",
+  "original_node_search": {
+    "passed": true,
+    "checks": 26,
+    "evidence": "connector log emitted native search JSON"
+  },
+  "entity_metadata_search": {
+    "failures": [],
+    "artifact_json_sha256": "6f01f218a8c4a07fc6dcf88985a7a7af52d68b2b1ba6dfada1e2334cfb92476a"
+  }
+}

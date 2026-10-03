@@ -1,0 +1,192 @@
+{
+  "source_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "scope": "READ_ONLY_TEST_VECTOR_ORACLE",
+  "observed_existing_producer_negative_combinations": 10,
+  "observed_Frozen_schema1_bypass_shapes": 20,
+  "cases": [
+    {
+      "state": "LIVE",
+      "methodology_status": "IDEA",
+      "metadata_location": "section.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "LIVE",
+      "methodology_status": "IDEA",
+      "metadata_location": "section.producer.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "LIVE",
+      "methodology_status": "PROVISIONAL",
+      "metadata_location": "section.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "LIVE",
+      "methodology_status": "PROVISIONAL",
+      "metadata_location": "section.producer.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "LIVE",
+      "methodology_status": "PROVISIONAL_INITIAL_PRIOR",
+      "metadata_location": "section.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "LIVE",
+      "methodology_status": "PROVISIONAL_INITIAL_PRIOR",
+      "metadata_location": "section.producer.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "LIVE",
+      "methodology_status": "PROVISIONAL_RESEARCH",
+      "metadata_location": "section.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "LIVE",
+      "methodology_status": "PROVISIONAL_RESEARCH",
+      "metadata_location": "section.producer.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "LIVE",
+      "methodology_status": "RESEARCH",
+      "metadata_location": "section.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "LIVE",
+      "methodology_status": "RESEARCH",
+      "metadata_location": "section.producer.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "methodology_status": "IDEA",
+      "metadata_location": "section.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "methodology_status": "IDEA",
+      "metadata_location": "section.producer.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "methodology_status": "PROVISIONAL",
+      "metadata_location": "section.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "methodology_status": "PROVISIONAL",
+      "metadata_location": "section.producer.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "methodology_status": "PROVISIONAL_INITIAL_PRIOR",
+      "metadata_location": "section.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "methodology_status": "PROVISIONAL_INITIAL_PRIOR",
+      "metadata_location": "section.producer.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "methodology_status": "PROVISIONAL_RESEARCH",
+      "metadata_location": "section.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "methodology_status": "PROVISIONAL_RESEARCH",
+      "metadata_location": "section.producer.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "methodology_status": "RESEARCH",
+      "metadata_location": "section.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    },
+    {
+      "state": "FROZEN_SNAPSHOT",
+      "methodology_status": "RESEARCH",
+      "metadata_location": "section.producer.methodology",
+      "actual_existing_producer": "REJECTED_ResearchStatusError",
+      "actual_Frozen_web": "ACCEPTED",
+      "expected_NEW_integration_admission": "REJECT_WITHOUT_REWRITE_OR_ARTIFACTS",
+      "raw_input_unchanged": true
+    }
+  ],
+  "real_data_provider_calls": 0,
+  "grants_issued": 0,
+  "new_UI_implementation": false,
+  "active_Primary_Web_batch": "wf5; independent observer only"
+}

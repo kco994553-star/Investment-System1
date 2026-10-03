@@ -1,0 +1,22 @@
+{
+  "exact_source_head": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+  "base_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "tests": 1295,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "new_cases": 18,
+  "previous_cases_reconfirmed": 1277,
+  "Python": "3.11.16",
+  "command": "PYTHONPATH=src /workspace/gsup-v2-oracle-venv311/bin/python -m pytest -q --junitxml=/workspace/takeover-evidence/integration-hardening/full-regression.xml",
+  "artifacts_sha256": {
+    "full-regression.xml": "4e7b8ff11346e3cedb5b02f2fa8c0ee3b309dd9359dcaa00fd21e895cb46b125",
+    "full-regression311.log": "6b7d201439a4160ed0fcc0b3112f569773a799157d1e4456ea20cdd398c9fdb3",
+    "BASELINE.json": "fcc1ba19d5ef23e883c6d78958173aa29dd4424f21d42242d98dc280feeb2061"
+  },
+  "actual_CAL_VERIFY_accesses": 0,
+  "Holdout_consumptions": 0,
+  "publication_grants": 0,
+  "Official_promotions": 0,
+  "canonical_merges": 0
+}

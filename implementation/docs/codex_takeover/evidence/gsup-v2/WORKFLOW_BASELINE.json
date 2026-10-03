@@ -1,0 +1,43 @@
+{
+  "workflow_id": "GSUP_M_V2_SOURCE_IDENTITY_2026_10_03",
+  "observed_at": "2026-10-03T06:48:04Z",
+  "canonical_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "owner_branch": "ccr-22e3ff16-p7n5k5",
+  "owner_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+  "integration_branch": "codex/combined-integration-2026-10-03",
+  "integration_head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "global_handoff_branch": "integration/global-handoff-v1",
+  "global_handoff_head": "f26dc7adbfedd9209e757b5e8566c665c7bbd677",
+  "open_pr_count": 25,
+  "remote_branch_count": 38,
+  "github_count_snapshot_observed_at": "2026-10-03T06:45:00Z",
+  "test_baseline": {
+    "passing": 1165,
+    "source_head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "actions_run_id": 37102973395
+  },
+  "maturity": {
+    "Track C C8": "SYNTHETIC_VERIFIED",
+    "new M v2 kernel": "DESIGN",
+    "source identity protocol": "DESIGN"
+  },
+  "software_frozen": {
+    "C0-C7": true,
+    "C8": false
+  },
+  "scoped_blocker_count": 2,
+  "scoped_blockers": [
+    "M versus K authority decision",
+    "synthetic source identity protocol authorization"
+  ],
+  "excluded_future_decisions": [
+    "real numeric configuration",
+    "CAL_VERIFY access",
+    "Holdout consumption",
+    "registry unification",
+    "C8 Freeze",
+    "Official/publication",
+    "canonical merge"
+  ],
+  "fixed_baseline": true
+}

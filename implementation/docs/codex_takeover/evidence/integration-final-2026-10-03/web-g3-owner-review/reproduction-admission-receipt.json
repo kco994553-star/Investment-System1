@@ -1,0 +1,28 @@
+{
+  "source_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "scope": "HAND_BUILT_TEST_VECTOR_ONLY",
+  "web_schema1_admission": "ACCEPTED",
+  "frozen_builder": "ACCEPTED",
+  "producer_admission": {
+    "status": "REJECTED",
+    "error_type": "ResearchStatusError",
+    "message": "methodology.status: methodology status PROVISIONAL_RESEARCH cannot be published as LIVE (P01 keeps schema-1 unchanged; a research lifecycle is not a grant)"
+  },
+  "existing_research_statuses": [
+    "IDEA",
+    "PROVISIONAL",
+    "PROVISIONAL_INITIAL_PRIOR",
+    "PROVISIONAL_RESEARCH",
+    "RESEARCH"
+  ],
+  "source_sha256": {
+    "implementation/src/investment_system/product/web_mvp.py": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323",
+    "implementation/src/investment_system/product/web_assets/app.js": "7944757a8fb67f889dd54d8b87c2986e9b47d6592c1bd0ab681a842bf3dbead9"
+  },
+  "copied_app_js_identical": true,
+  "real_data_provider_calls": 0,
+  "CAL_VERIFY_actual_access": "NOT_RUN",
+  "Holdout_actual_access": "NOT_RUN",
+  "grants_issued": 0,
+  "source_changes": 0
+}

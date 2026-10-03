@@ -1,0 +1,24 @@
+{
+  "run_id": 37109899437,
+  "job_id": 111165610337,
+  "job_name": "macro-adoption-offline",
+  "enclosing_run_head": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+  "actual_checkout": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+  "artifact_id": 11269685643,
+  "github_sha256": "525d4860fa54e09d091ccb45083bcc25b7613ddb1f75b3b9c464eafb3be34cdb",
+  "local_download_sha256": "525d4860fa54e09d091ccb45083bcc25b7613ddb1f75b3b9c464eafb3be34cdb",
+  "hash_match": true,
+  "bytes": 697,
+  "retrieval_route": "GitHub connector artifact downloader then authorized file reference download",
+  "direct_Azure_route": "NOT_ATTEMPTED_PREVIOUSLY_BLOCKED",
+  "artifact_zip": "37109899437/macro-artifact.zip",
+  "junit": "37109899437/macro-extracted/macro-adoption-junit.xml",
+  "junit_sha256": "bf160543d81fa4d7c14585f67c949933ba40220eb129fe954b90f21bc79668e7",
+  "junit_summary": {
+    "tests": 11,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "classification": "CURRENT_EXACT_SEPARATE_MACRO_CHECKOUT_NOT_FC_COMBINED_SOURCE"
+}

@@ -1,0 +1,27 @@
+{
+  "review": "F1 independent same-tree source protection review",
+  "result": "PASS_NO_BLOCKING_FINDING",
+  "source_base": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "global_routing_sha": "6cd7eeedda28e3a15bf8e27655d35d2b4d9ee971",
+  "baseline_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "reviewed_helper_sha256": "8c059e443763136d12769c7ba9ef3e2389850a2d61ea0ee63d5a355c1fc6d892",
+  "python": "3.11.16",
+  "targeted_test_result": "25 PASS",
+  "standalone_cases": "21 expected-result matches",
+  "full_suite": "NOT_RUN",
+  "actions": "NOT_RUN",
+  "protected_source_changes": 0,
+  "original_repository_ref_changes": 0,
+  "files": {
+    "source_inventory.json": "514879e23b7bdc1a0c106e5567b0455a4613099e4ef7a5496ee704a6d6714d35",
+    "old_helper_counterexample.json": "8fc256c960098319cb1805fc27c5590b23e6dacc7d6327fbe189cb2b91524eca",
+    "independent_probes.py": "8724e739a2834a600fb88d4869fa6f186eef8397d0b4c0daf27268c8336fd411",
+    "independent_results.json": "57ee171928a522660ced454f53ac60c3487491837d593557482f84ecec9f89b3",
+    "targeted-pytest.log": "9fa2856ea668bd089c901aa737fcfee90bdbc86116726e3253271964fa6bbbba",
+    "DESIGN_REVIEW.md": "b17b22fa14ac098e1492c40d3c54b5d68aec9fda3df5e1acddf301a5aa47e486"
+  },
+  "limit": "Distinct source paths retain pre-existing pair byte comparison; no investment semantics or models acceptance change.",
+  "verified_source_commit": "8b10c258d0ce92159c25491263c0fb08ae0e7738",
+  "commit_helper_sha256": "8c059e443763136d12769c7ba9ef3e2389850a2d61ea0ee63d5a355c1fc6d892",
+  "tests_executed_on": "working delta with byte-identical helper, then exact committed helper identity verified"
+}

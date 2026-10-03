@@ -1,0 +1,33 @@
+{
+  "source_head": "bfa3e26a6fad894bfde7d96149f9d05555bac53c",
+  "status": "PASS",
+  "frozen_source_test_count": 232,
+  "frozen_source_test_changed": [],
+  "current_evl_source_test_count": 43,
+  "current_evl_changed": [],
+  "canonical_track_a_qgv_personal_count": 7351,
+  "canonical_track_a_qgv_personal_changed": [],
+  "preserved_upstream_heads": [
+    "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+    "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+    "a013f1c1758642f90a65fe11df69fc234c143a48",
+    "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+    "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+    "248e3d3e83db9a2db3d90583ae53929db936d0f3",
+    "5c9dd5abd760116df626e9b2e88e3fe48852066a",
+    "9c71781c62e46a4f2972d58c1439ef6ca2a85b07",
+    "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+    "a4805dbcdf37b890f74f6d00c00952ff95b91c8f",
+    "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+    "ef65caa5437a04610fa43f93209afb9193ba24aa",
+    "dc7daf70a42fb3f2bbfe96a775a1654a92ff95c1",
+    "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+    "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798"
+  ],
+  "missing_ancestors": [],
+  "real_CAL_VERIFY": "NOT_RUN",
+  "Holdout": "UNCONSUMED",
+  "canonical_merge": "NOT_RUN",
+  "publication_grants": "NONE"
+}

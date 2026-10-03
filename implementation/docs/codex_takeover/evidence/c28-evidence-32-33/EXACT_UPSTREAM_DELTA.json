@@ -1,0 +1,26 @@
+{
+  "32": {
+    "diff_name_status": [
+      "M\timplementation/docs/producer_infrastructure/STATUS.md",
+      "A\timplementation/docs/producer_infrastructure/evidence/c28_adoption_post_adoption_2026-10-03.json"
+    ],
+    "diff_numstat": [
+      "18\t0\timplementation/docs/producer_infrastructure/STATUS.md",
+      "396\t0\timplementation/docs/producer_infrastructure/evidence/c28_adoption_post_adoption_2026-10-03.json"
+    ],
+    "merge_base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+    "ahead_behind": "1\t0"
+  },
+  "33": {
+    "diff_name_status": [
+      "M\timplementation/docs/entity_metadata/HANDOFF.md",
+      "A\timplementation/docs/entity_metadata/evidence/c28_adoption_post_adoption_2026-10-03.json"
+    ],
+    "diff_numstat": [
+      "17\t0\timplementation/docs/entity_metadata/HANDOFF.md",
+      "385\t0\timplementation/docs/entity_metadata/evidence/c28_adoption_post_adoption_2026-10-03.json"
+    ],
+    "merge_base": "a013f1c1758642f90a65fe11df69fc234c143a48",
+    "ahead_behind": "1\t0"
+  }
+}

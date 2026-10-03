@@ -1,0 +1,25 @@
+{
+  "workflow_id": "C28_EVIDENCE_ADOPTION_32_33_READONLY_2026_10_03",
+  "observed_at": "2026-10-03T07:46:02.433621+00:00",
+  "canonical_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "owner_branches": {
+    "integration/a1-adoption/pr9-producer-infra": "e9aee0cb8b80e17f7ae12e01156f6670135de2fa",
+    "integration/a1-adoption/pr7-entity-metadata": "9626ab06cd2b93cdd250159347cdda5d08f76e03"
+  },
+  "owner_bases": {
+    "PR32": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+    "PR33": "a013f1c1758642f90a65fe11df69fc234c143a48"
+  },
+  "integration_branch_head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "global_handoff_head": "6dedaaf36a417e9301ba22ea9595bff5f37acb38",
+  "open_pr_count": 28,
+  "remote_branch_count": 41,
+  "relevant_test_baseline": "NOT_RUN independently at owner proposals; owner-declared counts separately attributed in FINAL_REVIEW.json",
+  "maturity": {
+    "Producer Infrastructure": "SYNTHETIC_VERIFIED",
+    "Entity Metadata": "REAL_DATA_VERIFIED_DISPLAY_ONLY"
+  },
+  "blocker_count": 0,
+  "scope": "READ_ONLY_ADDITIVE_OWNER_EVIDENCE_AUDIT_ONLY; no source implementation",
+  "fixed_baseline": true
+}

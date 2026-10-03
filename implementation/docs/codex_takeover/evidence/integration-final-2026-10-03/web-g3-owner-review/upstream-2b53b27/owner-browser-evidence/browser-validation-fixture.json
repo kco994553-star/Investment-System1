@@ -1,0 +1,92 @@
+{
+  "kind": "WEB_RESEARCH_GUARD_BROWSER_VALIDATION_V1",
+  "mode": "fixture",
+  "passed": true,
+  "checks": [
+    "served data.json still carries the hand-built research sections unchanged",
+    "ko-KR: withheld sections show NOT_AVAILABLE + reason and no value on every route",
+    "ko-KR: each research-marked section is withheld where it is shown",
+    "ko-KR: valid LIVE, legacy FROZEN universe, DEMO and NOT_AVAILABLE still render",
+    "en-US: withheld sections show NOT_AVAILABLE + reason and no value on every route",
+    "en-US: each research-marked section is withheld where it is shown",
+    "en-US: valid LIVE, legacy FROZEN universe, DEMO and NOT_AVAILABLE still render",
+    "research-marked FROZEN universe is withheld in the companies legend and search rows",
+    "fixture: sections without research markers render exactly as with the pre-guard app.js",
+    "pre-guard app.js reproduces the G3 leak on the same bundle (defect evidence)",
+    "data.json bytes unchanged and no page errors"
+  ],
+  "errors": [],
+  "baseline_compared": true,
+  "runtime": {
+    "node": "v24.19.0",
+    "chromium": "151.0.7922.173"
+  },
+  "observed": {
+    "pre_guard_leaks": {
+      "ko-KR home": [
+        "11.11",
+        "22.22",
+        "77.77",
+        "RESEARCH_PROBE_QGV",
+        "RESEARCH_PROBE_REGIME",
+        "RESEARCH_PROBE_ZONE",
+        "RESEARCH_PROBE_CHANGES",
+        "RESEARCH_PROBE_NEWS"
+      ],
+      "ko-KR portfolio": [
+        "11.11",
+        "22.22",
+        "RESEARCH_PROBE_QGV",
+        "RESEARCH_PROBE_REGIME",
+        "RESEARCH_PROBE_ZONE"
+      ],
+      "ko-KR leaderboard": [
+        "66.66"
+      ],
+      "ko-KR news": [
+        "RESEARCH_PROBE_NEWS"
+      ],
+      "ko-KR company/nvda": [
+        "11.11",
+        "22.22",
+        "RESEARCH_PROBE_QGV",
+        "RESEARCH_PROBE_REGIME",
+        "RESEARCH_PROBE_ZONE"
+      ],
+      "en-US home": [
+        "11.11",
+        "22.22",
+        "77.77",
+        "RESEARCH_PROBE_QGV",
+        "RESEARCH_PROBE_REGIME",
+        "RESEARCH_PROBE_ZONE",
+        "RESEARCH_PROBE_CHANGES",
+        "RESEARCH_PROBE_NEWS"
+      ],
+      "en-US portfolio": [
+        "11.11",
+        "22.22",
+        "RESEARCH_PROBE_QGV",
+        "RESEARCH_PROBE_REGIME",
+        "RESEARCH_PROBE_ZONE"
+      ],
+      "en-US leaderboard": [
+        "66.66"
+      ],
+      "en-US news": [
+        "RESEARCH_PROBE_NEWS"
+      ],
+      "en-US company/nvda": [
+        "11.11",
+        "22.22",
+        "RESEARCH_PROBE_QGV",
+        "RESEARCH_PROBE_REGIME",
+        "RESEARCH_PROBE_ZONE"
+      ]
+    }
+  },
+  "research_display": "NONE",
+  "frozen_grant": "NONE",
+  "live_grant": "NONE",
+  "real_data_validation": "NOT_RUN"
+}

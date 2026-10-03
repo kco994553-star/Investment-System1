@@ -1,0 +1,158 @@
+{
+  "source_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "global_routing_head": "6cd7eeedda28e3a15bf8e27655d35d2b4d9ee971",
+  "canonical_baseline": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "read_mode": "explicit Git objects; no ref mutation",
+  "shared_count": 11,
+  "non_models_count": 10,
+  "files": [
+    {
+      "path": "investment_system/contracts/enums.py",
+      "producer_users": [
+        "qgv"
+      ],
+      "models_exception": false,
+      "current_blob": "4adf48f6b0648c6a7692cb6b0893201e646fe3e7",
+      "canonical_blob": "4adf48f6b0648c6a7692cb6b0893201e646fe3e7",
+      "current_sha256": "5cd6c7694544dcba4717590ad24534ab0f8e115d8352235bf88bf37657433bcf",
+      "canonical_sha256": "5cd6c7694544dcba4717590ad24534ab0f8e115d8352235bf88bf37657433bcf",
+      "byte_identical": true,
+      "bytes": 2534
+    },
+    {
+      "path": "investment_system/contracts/models.py",
+      "producer_users": [
+        "qgv",
+        "leaderboard"
+      ],
+      "models_exception": true,
+      "current_blob": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+      "canonical_blob": "2367d2ee2dfffa60482ba2f4cb671ece09340b1e",
+      "current_sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+      "canonical_sha256": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+      "byte_identical": false,
+      "bytes": 7067
+    },
+    {
+      "path": "investment_system/qgv/analysis.py",
+      "producer_users": [
+        "qgv",
+        "leaderboard"
+      ],
+      "models_exception": false,
+      "current_blob": "fc91d9fc7f9803759cbff07f59bfb325aae150b4",
+      "canonical_blob": "fc91d9fc7f9803759cbff07f59bfb325aae150b4",
+      "current_sha256": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+      "canonical_sha256": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+      "byte_identical": true,
+      "bytes": 4996
+    },
+    {
+      "path": "investment_system/qgv/factors.py",
+      "producer_users": [
+        "qgv",
+        "leaderboard"
+      ],
+      "models_exception": false,
+      "current_blob": "20c6fb2d1383a100c54e5b4ef6d64ff553449690",
+      "canonical_blob": "20c6fb2d1383a100c54e5b4ef6d64ff553449690",
+      "current_sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+      "canonical_sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+      "byte_identical": true,
+      "bytes": 3417
+    },
+    {
+      "path": "investment_system/qgv/leaderboard.py",
+      "producer_users": [
+        "leaderboard"
+      ],
+      "models_exception": false,
+      "current_blob": "2670d81b67fa309cd4fb305926fd8169991c4f20",
+      "canonical_blob": "2670d81b67fa309cd4fb305926fd8169991c4f20",
+      "current_sha256": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+      "canonical_sha256": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+      "byte_identical": true,
+      "bytes": 2270
+    },
+    {
+      "path": "investment_system/qgv/pipeline.py",
+      "producer_users": [
+        "qgv"
+      ],
+      "models_exception": false,
+      "current_blob": "6b89f2aac4cb270850a32d74609110c28442d383",
+      "canonical_blob": "6b89f2aac4cb270850a32d74609110c28442d383",
+      "current_sha256": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+      "canonical_sha256": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+      "byte_identical": true,
+      "bytes": 2310
+    },
+    {
+      "path": "investment_system/qgv/raw_map.py",
+      "producer_users": [
+        "qgv"
+      ],
+      "models_exception": false,
+      "current_blob": "038c1c6027da0da83c734cb8ca28d16d93a92e62",
+      "canonical_blob": "038c1c6027da0da83c734cb8ca28d16d93a92e62",
+      "current_sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "canonical_sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "byte_identical": true,
+      "bytes": 7642
+    },
+    {
+      "path": "investment_system/qgv/scoring.py",
+      "producer_users": [
+        "qgv",
+        "leaderboard"
+      ],
+      "models_exception": false,
+      "current_blob": "05672d2cde18b4d3563579ce57aadc64cb0182f8",
+      "canonical_blob": "05672d2cde18b4d3563579ce57aadc64cb0182f8",
+      "current_sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+      "canonical_sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+      "byte_identical": true,
+      "bytes": 4794
+    },
+    {
+      "path": "investment_system/validation/historical.py",
+      "producer_users": [
+        "qgv"
+      ],
+      "models_exception": false,
+      "current_blob": "ffade49fa31b2fc738dbe099afcf67980501c0ca",
+      "canonical_blob": "ffade49fa31b2fc738dbe099afcf67980501c0ca",
+      "current_sha256": "02315a38e102bc312478dd1f00da401865db42d60423b21371b05879849a4aa8",
+      "canonical_sha256": "02315a38e102bc312478dd1f00da401865db42d60423b21371b05879849a4aa8",
+      "byte_identical": true,
+      "bytes": 25637
+    },
+    {
+      "path": "investment_system/validation/vertical_slice.py",
+      "producer_users": [
+        "qgv"
+      ],
+      "models_exception": false,
+      "current_blob": "c227b9e2afdffa17786ac1bed77422d4dfb7300c",
+      "canonical_blob": "c227b9e2afdffa17786ac1bed77422d4dfb7300c",
+      "current_sha256": "4ab06fce30064ccf0a54f2c8e6dd39b4b97fdb996511958fac24d25d031a98dc",
+      "canonical_sha256": "4ab06fce30064ccf0a54f2c8e6dd39b4b97fdb996511958fac24d25d031a98dc",
+      "byte_identical": true,
+      "bytes": 9030
+    },
+    {
+      "path": "investment_system/versions.py",
+      "producer_users": [
+        "qgv"
+      ],
+      "models_exception": false,
+      "current_blob": "a9b854b93580a7349f89a1aee13eb2eda2cf2964",
+      "canonical_blob": "a9b854b93580a7349f89a1aee13eb2eda2cf2964",
+      "current_sha256": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11",
+      "canonical_sha256": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11",
+      "byte_identical": true,
+      "bytes": 616
+    }
+  ],
+  "all_non_models_unchanged": true
+}

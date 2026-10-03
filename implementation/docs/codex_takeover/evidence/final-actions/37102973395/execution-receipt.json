@@ -1,0 +1,255 @@
+{
+  "kind": "READONLY_ACTIONS_EXECUTION_RECEIPT_V1",
+  "run_id": 37102973395,
+  "run_attempt": 1,
+  "run_head_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "head_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "head_branch": "codex/combined-integration-2026-10-03",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37102973395",
+  "actual_actions_execution": true,
+  "tool_manifest_actions_field": "NOT_RUN: tools do not themselves dispatch workflows; receipt identifies enclosing actual Actions execution",
+  "grants": {
+    "research_display": "NONE",
+    "frozen": "NONE",
+    "live": "NONE"
+  },
+  "cal_verify_access": "NOT_RUN",
+  "holdout_consumption": "NOT_RUN",
+  "official_promotion": "NOT_RUN",
+  "canonical_merge": "NOT_RUN",
+  "jobs": [
+    {
+      "id": 111145988870,
+      "name": "macro-adoption-offline",
+      "head_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "run_head_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "actual_checkout_sha": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "api_head_sha_semantics": "GitHub job metadata head_sha is enclosing workflow run head, not checkout override",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install pytest==9.1.1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Exact existing Macro adoption proposal; offline only",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 111145988956,
+      "name": "combined-offline",
+      "head_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "run_head_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "actual_checkout_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "api_head_sha_semantics": "GitHub job metadata head_sha is enclosing workflow run head, not checkout override",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install pytest==9.1.1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Exact source checkpoint",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Preserve exact owner Track C and canonical Track A evidence",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Full existing regression with actual integrated dependencies",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Producer to existing Web withheld-contract fixture",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Browser tooling",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Withheld publication, locales, mobile, loading and retry E2E",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 11267060303,
+      "name": "codex-integration-readiness-86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "github_sha256": "30d1f80b1b69dd904e88fc90ed8e5262675d11547ff4c278db18035d6e86bdbb",
+      "download_sha256": "30d1f80b1b69dd904e88fc90ed8e5262675d11547ff4c278db18035d6e86bdbb",
+      "digest_match": true,
+      "bytes": 105106,
+      "retrieval_route": "GitHub connector artifact downloader",
+      "local_path": "/workspace/takeover-evidence/web/actions/37102973395/combined-artifact.zip"
+    },
+    {
+      "id": 11266823557,
+      "name": "macro-adoption-4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "github_sha256": "5fa34f36bba73db3a3961cab08c8d403bf2e95d7e1df50fb4e11527d5b3fd2a1",
+      "download_sha256": "5fa34f36bba73db3a3961cab08c8d403bf2e95d7e1df50fb4e11527d5b3fd2a1",
+      "digest_match": true,
+      "bytes": 697,
+      "retrieval_route": "GitHub connector artifact downloader",
+      "local_path": "/workspace/takeover-evidence/web/actions/37102973395/macro-artifact.zip"
+    }
+  ],
+  "junit_suites": [
+    {
+      "path": "/workspace/takeover-evidence/web/actions/37102973395/combined-artifact/combined-junit.xml",
+      "actual_checkout_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "summary": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "1165",
+        "time": "419.080",
+        "timestamp": "2026-10-03T06:25:08.150566+00:00",
+        "hostname": "runnervm8df0l"
+      }
+    },
+    {
+      "path": "/workspace/takeover-evidence/web/actions/37102973395/macro-artifact/macro-adoption-junit.xml",
+      "actual_checkout_sha": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "summary": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "11",
+        "time": "0.188",
+        "timestamp": "2026-10-03T06:25:07.676969+00:00",
+        "hostname": "runnervm8df0l"
+      }
+    }
+  ],
+  "browser": {
+    "passed": true,
+    "checks": [
+      "producer PASS, PARTIAL and BLOCKED remain NOT_AVAILABLE with grants NONE",
+      "original provenance, as_of, freshness and methodology survive Web build and fetch",
+      "ko/en and mobile/desktop routes disclose absence without leaking withheld values",
+      "loading is visible while contract fetch is pending",
+      "HTTP and malformed JSON fail visibly and retry restores the original bundle",
+      "bundle and search catalog bytes stay unchanged after all interactions"
+    ],
+    "errors": [],
+    "runtime": {
+      "node": "v24.21.0",
+      "chromium": "145.0.7632.6"
+    },
+    "fixture_data_sha256": "dc92e1e5e7dabd4531c389370d40b26aac8e7ff1b8f808b1a39f666e1f846de6",
+    "artifact_json_sha256": "92b884bd0dc3de1e68dbdfd1256658f1cbfb0c76a7d46c9f29cce063cbb4e3c6",
+    "screenshot_inspection": "PASS: 390px English Home shows NOT_AVAILABLE/Awaiting data and historical Universe warning; no visible withheld value or horizontal overflow"
+  },
+  "extracted_artifact_sha256": {
+    "withheld-home-en-390.png": "a1faf5699b29149523c7f8613841326c149b985a31ec9375742b3570e3040fb5",
+    "fixture-manifest.json": "0a936d571e7053bb7687fb0425826bed326782efc68d05477c441e4433a59db7",
+    "browser-validation.json": "92b884bd0dc3de1e68dbdfd1256658f1cbfb0c76a7d46c9f29cce063cbb4e3c6",
+    "records.test-vector.json": "6adebb3b3df2a29910a116dbf6e67e0acd4aafcd2e448f442b9b5e8fefe2690a"
+  }
+}

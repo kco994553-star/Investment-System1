@@ -1,0 +1,117 @@
+{
+  "record": "CODEX_FINAL_CYCLE_CHECKPOINT_V1",
+  "observed_at": "2026-10-03T06:38:45.115390+00:00",
+  "audit_branch": "codex/takeover-integration-2026-10-03",
+  "audit_parent_head": "9b3ef3cc5e79188f4946870e7a02077066c8d04a",
+  "branch": "codex/combined-integration-2026-10-03",
+  "exact_head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "base_and_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "global_handoff_head": "f26dc7adbfedd9209e757b5e8566c665c7bbd677",
+  "combined_ahead_behind_canonical": {
+    "ahead": 149,
+    "behind": 0
+  },
+  "changed_files": "See initial16-tip merge topology, compatibility scoped checkpoint, CI repair checkpoint and final-source-relationship.json; only own proposal branches changed",
+  "maturity_before_after": "UNCHANGED for all24inventory entries; verified combined trial is not canonical integration or real-data/policy promotion",
+  "tests_actually_executed": {
+    "full_local_bfa3e26": "Python3.11.16/nativepytest1160PASS; no skipped-failure repair",
+    "final_local_71d5773_targeted": "29PASS",
+    "CI_runtime_repair_0ea00d27_targeted": "170PASS",
+    "exact_head_final_local_full": "NOT_RUN; final exact-head Actions supplies full regression",
+    "exact_head_final_Actions_full": "1165PASS,0failures,0errors,0skipped",
+    "macro_independent_actual_checkout": "4a07099e36ec3cecda24b82ecedad53800f0aa81;11PASS",
+    "web_producer_contract_browser": "6groupsPASS,42locale/width/route combinations; fixture only, grantsNONE"
+  },
+  "actions_actually_executed": {
+    "codex-integration-readiness": {
+      "id": 37102973395,
+      "actual_combined_checkout": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "actual_macro_checkout": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "technical-real-producer": {
+      "id": 37102973419,
+      "conclusion": "success"
+    },
+    "technical-real-model": {
+      "id": 37102973449,
+      "conclusion": "success"
+    },
+    "us-equity-session": {
+      "id": 37102973430,
+      "conclusion": "success"
+    },
+    "sec-primary-disclosure": {
+      "id": 37102973410,
+      "conclusion": "success"
+    },
+    "p01-research-publication": {
+      "id": 37102973469,
+      "conclusion": "success"
+    },
+    "qgv-invalidation-binding": {
+      "id": 37102973450,
+      "conclusion": "success"
+    },
+    "web-mvp-validation": {
+      "id": 37102973427,
+      "conclusion": "success"
+    }
+  },
+  "inherited_ci_checkout": {
+    "run_head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "actual_checkout": "5a0bcb54e1b683af08c965194ec05dad227a502b",
+    "actual_checkout_kind": "GitHub synthetic PR merge; distinct SHA",
+    "both_exact_trees": "93982063e20229be3ed7daab97019c4a6aa33ee3"
+  },
+  "runtime_capabilities": {
+    "LOCAL_GIT": "PASS",
+    "WORKSPACE_WRITE": "PASS",
+    "REMOTE_READ": "PASS",
+    "REMOTE_WRITE": "PASS via authenticated exact-SHA Git object API",
+    "BRANCH_CREATE": "PASS via API",
+    "COMMIT_LOCAL": "PASS",
+    "PUSH": "Git transport BLOCKEDHTTP401; no further retry; API publication PASS",
+    "PR_CREATE": "PASS PR28/29/30",
+    "PR_UPDATE": "PASS",
+    "ACTIONS_READ": "PASS",
+    "ACTIONS_DISPATCH": "PASS actual existingPR26run37101443041SUCCESS",
+    "NETWORK_GITHUB": "PASS with additional sandbox network permission",
+    "effective_approval_policy": "auto_review, not never",
+    "sandbox_mode": "workspace-write",
+    "artifact_retrieval": "direct Azure redirect403; authorized connector fallbackPASS with localSHA256 verification"
+  },
+  "preservation": {
+    "non_codex_remote_heads_unchanged": 35,
+    "source_test_blobs_equal_validated71d": 331,
+    "owner_EVL_files_unchanged": 43,
+    "pre_C8_frozen_source_tests_unchanged": 232,
+    "canonical_TrackA_QGV_personal_files_unchanged": 7351,
+    "owner_TrackC_evidence_approval_register_unchanged": 100,
+    "C28_exact_approved_shared_files_unchanged": 4,
+    "upstream_original_tips_ancestry_preserved": 16,
+    "Global_Handoff_writes": "NOT_RUN",
+    "history_rewrite": "NOT_RUN"
+  },
+  "numerical_semantic_invariance": "Existing investment values/decisions unchanged;688additive lineage keys and2approved normalized-output fingerprint changes explicitly disclosed in addendum",
+  "dependency": "Existing CDR004proposal chain and16original tips; parent history retained. TrackC method/source identity decision precedes its next software cycle",
+  "blocker": "USER_DECISION_REQUIRED for GSUP K/M/C and trusted source/sample identity enforcement contract; no implementation selected",
+  "USER_DECISION_REQUIRED": true,
+  "not_run": {
+    "real_CAL_VERIFY_access": "NOT_RUN",
+    "Holdout_consumption": "NOT_RUN",
+    "numeric_calibration_configuration": "NOT_SELECTED",
+    "research_frozen_live_grants": "ALL_NONE",
+    "Official_promotion": "NOT_RUN",
+    "canonical_merge": "NOT_RUN",
+    "production_deployment": "NOT_RUN",
+    "paid_provider_actions": "NOT_RUN"
+  },
+  "next_autonomous_action": "After pending method/source identity answer: preservev1 and implement only selected approved software scope on own branch, independent oracle/regression; keep calibration/Holdout/grants separate",
+  "BRANCH_STATE": "PUBLISHED_EXACT_HEAD;8CURRENT_ACTIONS_SUCCESS",
+  "INTEGRATION_STATE": "HISTORY_PRESERVING_COMBINED_TRIAL_VERIFIED;existingadoptionPRsREAD_ONLY_DRAFT;notcanonical",
+  "CANONICAL_STATE": "NOT_MERGED;canonicalunchanged",
+  "end_condition": "Scoped independent approved READY repairs/fixtures/CI/evidence completed; actual C8decision boundary reached",
+  "primary_integration_writer_handoff": "Existing designated Claude session retains Global authority. Ingest this scoped additive checkpoint into Global only by its Primary Integration Writer."
+}

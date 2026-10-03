@@ -1,0 +1,31 @@
+{
+  "branch": "codex/takeover-integration-2026-10-03",
+  "expected_head": "a0360c7e7410b80c0491db814b5221560d9d6507",
+  "objects": [
+    {
+      "type": "blob",
+      "sha": "0f9869c7aae37d8af47a90e3369f27c6c71a7525"
+    },
+    {
+      "type": "tree",
+      "sha": "a93bc14e26d8685c2822d72cf4810bc977af1b8f"
+    },
+    {
+      "type": "tree",
+      "sha": "ed6226eedce9d86847d67ba4d58f63c9260d02fe"
+    },
+    {
+      "type": "tree",
+      "sha": "10054483619fa2e2445b2631b77797a79de569d5"
+    },
+    {
+      "type": "tree",
+      "sha": "354dca98d116bef68cbc2101364906b1ae9c923c"
+    },
+    {
+      "type": "commit",
+      "sha": "a0360c7e7410b80c0491db814b5221560d9d6507"
+    }
+  ],
+  "remote_head": "a0360c7e7410b80c0491db814b5221560d9d6507"
+}

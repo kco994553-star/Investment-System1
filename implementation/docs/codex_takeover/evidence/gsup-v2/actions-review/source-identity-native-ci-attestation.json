@@ -1,0 +1,22 @@
+{
+  "source_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "actual_ci_test_case_counts": {
+    "tests.test_evl_gsup_identity_kernel_invariance": 11,
+    "tests.test_evl_gsup_mb_reduction_diagnostic": 20,
+    "tests.test_evl_gsup_source_identity": 33,
+    "tests.test_evl_gsup_v2_identity_adversarial": 48
+  },
+  "source_file_identities": {
+    "implementation/src/investment_system/evl/gsup_source_identity.py": {
+      "git_blob": "fa93bf88f8d77b293421a8d0b5095757b22f72d8",
+      "sha256": "d34fc10d396f37fce65a5580263d2d35207e7d2f4f347fe300c1f1b81c33c548"
+    },
+    "implementation/src/investment_system/evl/superiority_source_identity.py": {
+      "git_blob": "71bf737578866b762a0ee82506f8f5db9418f8ba",
+      "sha256": "3ad8ca25f724cd3d07271ec8a38b95ca8779fe57f14ccf252e1030aa7acca0fa"
+    }
+  },
+  "source_lookup": "exact local Git objects for source HEAD verified by native Actions checkout; no rewrite",
+  "synthetic_source_identity_only": true,
+  "authoritative_M_B_v2_numeric_kernel_active": false
+}

@@ -1,0 +1,69 @@
+{
+  "C6_boundary": {
+    "status": "PASS",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "tested_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "behind": 0,
+    "ahead": 63,
+    "canonical_blob_count": 7698,
+    "preserved_start_blob_count": 7774,
+    "newly_changed_existing_phase_source_tests": [],
+    "unexpected_protected_changes": [],
+    "unexpected_new_scope_files": [],
+    "prior_authorized_four_file_repair": "PRESERVED",
+    "Track_A_B_D_E_Web": "PRESERVED_BY_GIT_BLOB_IDENTITY",
+    "EVL_SPEC_v0.1": "UNCHANGED"
+  },
+  "C7_preservation": {
+    "status": "PASS",
+    "frozen_source_tests_preserved": 225,
+    "existing_source_tests_changed": [],
+    "unexpected_changes": [],
+    "historical_A_B_and_inactive_packages": "PRESERVED_BY_BLOB_IDENTITY",
+    "boundary": {
+      "status": "PASS",
+      "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "tested_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "behind": 0,
+      "ahead": 63,
+      "canonical_blob_count": 7698,
+      "preserved_start_blob_count": 7774,
+      "newly_changed_existing_phase_source_tests": [],
+      "unexpected_protected_changes": [],
+      "unexpected_new_scope_files": [],
+      "prior_authorized_four_file_repair": "PRESERVED",
+      "Track_A_B_D_E_Web": "PRESERVED_BY_GIT_BLOB_IDENTITY",
+      "EVL_SPEC_v0.1": "UNCHANGED"
+    }
+  },
+  "C8_preservation": {
+    "status": "PASS",
+    "baseline": "86e345e54678de05ebcdf2e1db53c9dbe72ca52a",
+    "frozen_existing_source_test_count": 232,
+    "frozen_source_tests_changed": [],
+    "historical_unexpected_changes": [],
+    "history_overlays": "APPEND_ONLY_PREFIX_VERIFIED",
+    "unauthorized_new_files": [],
+    "original_Package_A_and_dossier": "UNCHANGED",
+    "Packages_B_C": "UNCHANGED_PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+    "Track_A_B_D_E_Web_Producer_QGV_Entity": "PRESERVED_BY_BLOB_IDENTITY",
+    "canonical_boundary": {
+      "status": "PASS",
+      "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "tested_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "behind": 0,
+      "ahead": 63,
+      "canonical_blob_count": 7698,
+      "preserved_start_blob_count": 7774,
+      "newly_changed_existing_phase_source_tests": [],
+      "unexpected_protected_changes": [],
+      "unexpected_new_scope_files": [],
+      "prior_authorized_four_file_repair": "PRESERVED",
+      "Track_A_B_D_E_Web": "PRESERVED_BY_GIT_BLOB_IDENTITY",
+      "EVL_SPEC_v0.1": "UNCHANGED"
+    }
+  }
+}

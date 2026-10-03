@@ -1,0 +1,203 @@
+{
+  "schema": "G_SUP_FINAL_REMOTE_TOPOLOGY_INDEPENDENT_REVIEW_v1",
+  "reviewed_at": "2026-10-03T07:39:09.964504+00:00",
+  "remote_observed_at": "2026-10-03T07:34:25.095153+00:00",
+  "worker": "adoption_audit independent read-only reviewer",
+  "source_artifacts": {
+    "/workspace/takeover-evidence/gsup-v2/REMOTE_POST_PR_SNAPSHOT.json": "03aec3b34187e2e124d2b3a9705a57ff58cb125a9d9623556ccb86864b3005ad",
+    "/workspace/takeover-evidence/runtime/branches-final.json": "250e871faf868a7d3a65720fd653207c77ab161376e2a412b7631b14585fd44b",
+    "/workspace/takeover-evidence/runtime/final-open-prs.json": "e2e1cdda52144ac6b51100999a49513b2ce4047d3c4f2e178a3d306a61246f56",
+    "/workspace/takeover-evidence/runtime/actions-by-branch.json": "3e3faae533f86a6ba8246b48282e734667455fdaaaedb2e029547c82eb8a5442"
+  },
+  "criteria": {
+    "1_remote_topology_preservation": "PASS_WITH_ONE_EXTERNAL_READ_ONLY_GLOBAL_DELTA",
+    "2_exact_ancestry_and_original_owner_history": "PASS"
+  },
+  "delta": {
+    "prior_remote_branches": 38,
+    "prior_non_codex_branches": 35,
+    "unchanged_prior_non_codex_heads": 34,
+    "changed_prior_non_codex_heads": [
+      {
+        "branch": "integration/global-handoff-v1",
+        "before": "f26dc7adbfedd9209e757b5e8566c665c7bbd677",
+        "after": "6dedaaf36a417e9301ba22ea9595bff5f37acb38"
+      }
+    ],
+    "new_remote_branches": [
+      {
+        "branch": "codex/track-c-gsup-v2-2026-10-03",
+        "head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78"
+      }
+    ],
+    "missing_prior_branches": [],
+    "current_remote_branches": 39,
+    "current_open_prs": 26,
+    "all_open_prs_draft": true,
+    "existing_non_codex_open_prs_checked": 22,
+    "existing_non_codex_pr_summary_differences": []
+  },
+  "observed_heads": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "global": "6dedaaf36a417e9301ba22ea9595bff5f37acb38",
+    "owner": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "integration": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "current": "675d0d298fbaab5b8473ed048a561ef84e2f3e78"
+  },
+  "global_update": {
+    "classification": "CURRENT_READ_ONLY_UPSTREAM_ROUTING_AND_COORDINATION_AUTHORITY",
+    "old_routing_head_classification": "SUPERSEDED_FOR_CURRENT_REMOTE_ROUTING; retained historical audit and fixed workflow baseline",
+    "fixed_prior_workflow_baseline": "f26dc7adbfedd9209e757b5e8566c665c7bbd677",
+    "new_head": "6dedaaf36a417e9301ba22ea9595bff5f37acb38",
+    "relation": {
+      "base": "f26dc7adbfedd9209e757b5e8566c665c7bbd677",
+      "head": "6dedaaf36a417e9301ba22ea9595bff5f37acb38",
+      "merge_base": "f26dc7adbfedd9209e757b5e8566c665c7bbd677",
+      "head_ahead": 2,
+      "head_behind": 0,
+      "base_is_ancestor": true
+    },
+    "commits": [
+      {
+        "head": "ae6e94a181fa65d11872035c67c410ffaec46e21",
+        "parents": "f26dc7adbfedd9209e757b5e8566c665c7bbd677",
+        "author": "Claude",
+        "author_email": "noreply@anthropic.com",
+        "authored_at": "2026-10-03T07:01:36Z",
+        "committer": "Claude",
+        "committer_email": "noreply@anthropic.com",
+        "committed_at": "2026-10-03T07:01:36Z",
+        "subject": "docs(integration): fresh reconciliation; record CDR-006/007/008 (G-SUP M, source descriptor, Codex boundary)"
+      },
+      {
+        "head": "6dedaaf36a417e9301ba22ea9595bff5f37acb38",
+        "parents": "ae6e94a181fa65d11872035c67c410ffaec46e21",
+        "author": "Claude",
+        "author_email": "noreply@anthropic.com",
+        "authored_at": "2026-10-03T07:04:09Z",
+        "committer": "Claude",
+        "committer_email": "noreply@anthropic.com",
+        "committed_at": "2026-10-03T07:04:09Z",
+        "subject": "docs(integration): record CDR-009 Codex active-write exclusion on Track C C8 paths"
+      }
+    ],
+    "changed_files": [
+      "M\timplementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+      "M\timplementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md",
+      "M\timplementation/docs/coordination/GLOBAL_HANDOFF_HISTORY.md",
+      "M\timplementation/docs/coordination/GLOBAL_STATUS_INDEX.md"
+    ],
+    "authority_note": "CDR006/007 confirm approvals; CDR008 reserves Codex work and Primary Integration Writer Global role; CDR009 excludes active Codex C8 paths from Claude writes until DONE/HANDOFF_READY. Read-only reviewer neither updates Global nor mutates upstream; root performs scoped authority reconciliation.",
+    "fixed_prior_workflow_baseline_qualification": "f26 is the retained prior audit/coordination baseline supplied by the parent, not current remote Global. This review does not claim the current integration-readiness YAML contains an f26 literal; its protection step pins canonicalb8 and ownerb9. External Global advancement does not rewrite those fixed commit objects or this proposed source675."
+  },
+  "relationships": {
+    "current_vs_parent_integration": {
+      "base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "merge_base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "head_ahead": 14,
+      "head_behind": 0,
+      "base_is_ancestor": true
+    },
+    "current_vs_owner": {
+      "base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "merge_base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "head_ahead": 100,
+      "head_behind": 0,
+      "base_is_ancestor": true
+    },
+    "current_vs_canonical": {
+      "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "head_ahead": 163,
+      "head_behind": 0,
+      "base_is_ancestor": true
+    }
+  },
+  "new_stacked_pr": {
+    "number": 31,
+    "state": "open",
+    "draft": true,
+    "head_branch": "codex/track-c-gsup-v2-2026-10-03",
+    "head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "base_branch": "codex/combined-integration-2026-10-03",
+    "base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "created_at": "2026-10-03T07:32:27Z",
+    "updated_at": "2026-10-03T07:32:27Z",
+    "merged_at": null,
+    "body_sha256": "9fa2d1c277e0bd9397e68f6c1d0f94c0fa1458dc73bcdbb53bcd024478d2eeb3"
+  },
+  "original_owner_history": {
+    "active_owner_branches": [
+      "ccr-22e3ff16-p7n5k5"
+    ],
+    "owner_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "original_track_c_pr": {
+      "number": 4,
+      "state": "open",
+      "draft": true,
+      "head_branch": "feature/track-c-evl",
+      "head": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+      "base_branch": "claude/investment-system-top500-validation-alrugm",
+      "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "created_at": "2026-09-28T11:27:05Z",
+      "updated_at": "2026-10-02T10:14:39Z",
+      "merged_at": null,
+      "body_sha256": "4f04caf731cedfcdc9134adf28904a6a87f334f8841d811cd6aa5d38a00b5798"
+    },
+    "original_pr_head_is_owner_ancestor": {
+      "base": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+      "head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "merge_base": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+      "head_ahead": 9,
+      "head_behind": 0,
+      "base_is_ancestor": true
+    },
+    "owner_head_is_current_ancestor": {
+      "base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "merge_base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "head_ahead": 100,
+      "head_behind": 0,
+      "base_is_ancestor": true
+    },
+    "statement": "PR4 remains Draft/Open at original headff78; active owner is separate branchb9. PR31 is stacked into parentCodex86ad, not an owner-branch update or canonical merge. Exact commit ancestry retained; no source/history mutation executed in this review."
+  },
+  "owner_actions_scope": {
+    "snapshot_source": "/workspace/takeover-evidence/runtime/actions-by-branch.json",
+    "owner_runs": [
+      {
+        "id": 37097149378,
+        "name": "track-c-evl-validation",
+        "head_branch": "ccr-22e3ff16-p7n5k5",
+        "head_sha": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+        "event": "workflow_dispatch",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-03T04:37:19Z"
+      }
+    ],
+    "original_pr_latest_run": {
+      "id": 36994387375,
+      "name": "track-c-evl-validation",
+      "head_branch": "feature/track-c-evl",
+      "head_sha": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-02T10:14:39Z"
+    },
+    "qualification": "Previously observed TrackC owner Actions success covers exact ownerb9 and original PRheadff78 scoped workflows. It does not cover new sourceidentity675, authoritative Mv2, current combined full suite, realCAL, Holdout, Freeze, Official or publication. Current675 Actions require separate exact-head receipts maintained by root."
+  },
+  "state": {
+    "BRANCH_STATE": "REMOTE_CODEX_PROPOSAL675_PRESENT",
+    "INTEGRATION_STATE": "DRAFT_STACKED_PR31_INTO86AD_NOT_MERGED",
+    "CANONICAL_STATE": "UNCHANGED_b8_NOT_INCLUDED"
+  },
+  "mutations_executed": "NONE; local evidence only",
+  "actual_CAL_VERIFY": "NOT_ACCESSED",
+  "Holdout": "UNCONSUMED",
+  "progress_semantics": "Delta and acceptance criteria only; commit/test counts are graph/validation evidence and are not percentage progress."
+}

@@ -1,0 +1,11 @@
+{
+  "run_id": 37102973395,
+  "run_head_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "job_id": 111145988870,
+  "status": "completed",
+  "conclusion": "success",
+  "actual_checkout_sha": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+  "native_test_summary": "11 passed in 0.19s",
+  "scope": "existing exact Macro adoption proposal; offline synthetic supplied vintages, not real ALFRED/CAL_VERIFY/Holdout",
+  "log_file": "37102973395-macro-job-connector.log"
+}

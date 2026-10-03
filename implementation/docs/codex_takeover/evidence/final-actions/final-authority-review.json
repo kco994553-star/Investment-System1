@@ -1,0 +1,133 @@
+{
+  "record": "FINAL_READ_ONLY_AUTHORITY_PRESERVATION_REVIEW",
+  "created_at": "2026-10-03T06:29:39.072565+00:00",
+  "head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "owner_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+  "global_head": "f26dc7adbfedd9209e757b5e8566c665c7bbd677",
+  "status": "PASS",
+  "protection_checks": {
+    "previous_validated_source_tests": {
+      "base": "71d5773dd235f93682722b9db762dc254379491e",
+      "status": "PASS",
+      "checked_blobs": 331,
+      "changed_files": []
+    },
+    "owner_evl_source_tests": {
+      "base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "status": "PASS",
+      "checked_blobs": 43,
+      "changed_files": []
+    },
+    "pre_c8_frozen_232": {
+      "base": "86e345e54678de05ebcdf2e1db53c9dbe72ca52a",
+      "status": "PASS",
+      "checked_blobs": 232,
+      "changed_files": []
+    },
+    "canonical_track_a_qgv_personal_protected": {
+      "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "status": "PASS",
+      "checked_blobs": 7351,
+      "changed_files": []
+    },
+    "owner_track_c_historical_evidence_approvals_register": {
+      "base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "status": "PASS",
+      "checked_blobs": 100,
+      "changed_files": []
+    },
+    "exact_approved_c28": {
+      "base": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "status": "PASS",
+      "checked_blobs": 4,
+      "changed_files": []
+    }
+  },
+  "authority": {
+    "worker_contract_git_blob": "617ef6d485db85cbe4d22376d06c472902ed10e8",
+    "scoped_track_c_register_git_blob": "62f0034cf7a91b4744aa944baf463d0c2c08e7bb",
+    "CDR004_source": "f26dc7adbfedd9209e757b5e8566c665c7bbd677:implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+    "CDR004_git_blob": "ac1bb0aa4b9a43801ee60170a56fe56683178617",
+    "CDR004_effect": "A1 exact additive lineage adoption; independent invariance before history-preserving re-pin; no Frozen rewrite, formula/ranking change or canonical merge approval",
+    "CDR003_effect": "method and real numeric configuration separate; no actual CAL_VERIFY/Holdout access",
+    "CDR005_effect": "repair already approved no-retest/Development policy; evidence is NOT_AN_APPROVAL; authoritative method separately undecided"
+  },
+  "decision_queue": [
+    {
+      "gate": "C8_AUTHORITATIVE_METHOD",
+      "status": "USER_DECISION_REQUIRED",
+      "choices": [
+        "K implemented convention",
+        "M approved simulation convention under new version",
+        "C explicit alternate with new evidence"
+      ],
+      "numeric_configuration_included": false
+    },
+    {
+      "gate": "C8_SOURCE_SAMPLE_IDENTITY",
+      "status": "PROPOSED_NOT_APPROVED",
+      "authority": "scoped owner/source identity design required before robust pre-access replay implementation",
+      "statistical_convention_selected": false
+    },
+    {
+      "gate": "REAL_NUMERIC_CONFIGURATION",
+      "status": "NOT_APPROVED_SEPARATE_PREREGISTERED_GATE",
+      "fields": [
+        "alpha",
+        "B",
+        "L_or_rule",
+        "seed",
+        "size_tolerance",
+        "envelope_and_margin",
+        "effect_floor",
+        "minimum_support",
+        "actual_calibration_configuration"
+      ]
+    },
+    {
+      "gate": "REAL_CAL_VERIFY_ACCESS",
+      "status": "NOT_APPROVED_NOT_ACCESSED"
+    },
+    {
+      "gate": "HOLDOUT_CONSUMPTION",
+      "status": "NOT_APPROVED_UNCONSUMED"
+    },
+    {
+      "gate": "C8_A8_A10_C9_C10",
+      "status": "NOT_APPROVED_NOT_ACTIVE"
+    },
+    {
+      "gate": "CANONICAL_MERGE_PUBLICATION_OFFICIAL_LIVE_PRODUCTION",
+      "status": "SEPARATE_APPROVAL_REQUIRED_NOT_GRANTED"
+    }
+  ],
+  "source_identity_proposal_sha256": "32728237836c275da6cf82702b0c46e588ae1698f33d815b2de1904be8f3dd92",
+  "existing_actions_evidence": {
+    "head": "71d5773dd235f93682722b9db762dc254379491e",
+    "run_id": 37102512487,
+    "final_head_equivalent_source_tests": {
+      "base": "71d5773dd235f93682722b9db762dc254379491e",
+      "status": "PASS",
+      "checked_blobs": 331,
+      "changed_files": []
+    },
+    "final_head_actions": "IN_PROGRESS_PER_ROOT_CHECKPOINT_NOT_CLAIMED_PASS",
+    "previous_run_junit_observed": {
+      "tests": 1165,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "previous_junit_sha256": "4a123904f771ea21cee243d1a6c87d997a7846781aae6a82c437b2517ee85d7c"
+  },
+  "additional_tests": "NOT_RUN_BY_THIS_REVIEW",
+  "additional_actions": "NOT_RUN_BY_THIS_REVIEW",
+  "CAL_VERIFY": "NOT_ACCESSED",
+  "Holdout": "NOT_ACCESSED",
+  "source_or_global_mutations": [],
+  "BRANCH_STATE": "EXACT_FINAL_SOURCE_PRESERVED_NEW_CI_PENDING",
+  "INTEGRATION_STATE": "READ_ONLY_AUTHORITY_AND_PRESERVATION_PASS; source/tests identical to prior validated Actions HEAD",
+  "CANONICAL_STATE": "NOT_MERGED",
+  "maturity_change": "NONE",
+  "next_action": "Root finishes final exact-HEAD Actions and publishes scoped exact handoff; policy/access/grant queues remain separate"
+}

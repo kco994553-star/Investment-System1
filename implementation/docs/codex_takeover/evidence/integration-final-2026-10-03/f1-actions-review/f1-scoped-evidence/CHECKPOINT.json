@@ -1,0 +1,121 @@
+{
+  "workflow": "PRODUCER_SHARED_SOURCE_F1_HARDENING_2026_10_03",
+  "branch": "codex/shared-source-protection-2026-10-03",
+  "source_head": "8b10c258d0ce92159c25491263c0fb08ae0e7738",
+  "base": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "merge_base": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "routing_source_global": "6cd7eeedda28e3a15bf8e27655d35d2b4d9ee971",
+  "evidence_authority": "GIE-006 F1 implementation protection repair under CDR-004; no statistical/investment policy change",
+  "criteria": {
+    "1_same_tree_exact_canonical_nonmodels_protection_failclosed": "PASS",
+    "2_existing_two_exact_models_and_mixedpair_policy_preserved": "PASS",
+    "3_all_vacuous_paths_negative_regression_and_source_value_invariance": "PASS",
+    "4_targeted_validation_exactsha_preservation_scopedreceipt_normalcommit": "PASS"
+  },
+  "changed_existing_files": [
+    "implementation/tests/test_producer_source_compat.py",
+    "implementation/tools/producer_source_compat.py"
+  ],
+  "maturity_before": "SYNTHETIC_VERIFIED",
+  "maturity_after": "SYNTHETIC_VERIFIED",
+  "overall_capability_maturity_change": "NONE; software protection defect repaired, no new real/integrated/operational grant",
+  "tests_actually_executed": {
+    "runtime": "CPython3.11.16 nativepytest9.1.1",
+    "before_command": "PYTHONPATH=src /workspace/validation-venv311/bin/python -m pytest -q tests/test_producer_source_compat.py tests/test_qgv_producer_infra_compat.py tests/test_leaderboard_producer_infra_compat.py",
+    "before_result": "9 passed in1.02s on exact675",
+    "final_command": "PYTHONPATH=implementation/src /workspace/validation-venv311/bin/python -m pytest -q implementation/tests/test_producer_source_compat.py implementation/tests/test_qgv_producer_infra_compat.py implementation/tests/test_leaderboard_producer_infra_compat.py",
+    "final_result": "27 passed in1.25s;25helpercases+2fullQGV/LBcompatprobes",
+    "before_mutation_matrix": "10/10 altered paths wronglyPASS",
+    "after_mutation_matrix": "10/10 identical altered inputs correctlyFAIL"
+  },
+  "fingerprint_invariance": {
+    "command_before_and_after": "PYTHONPATH=implementation/src /workspace/validation-venv311/bin/python implementation/tools/producer_engine_fingerprint.py implementation/src",
+    "exact_before_after_stdout_identical": true,
+    "sha256": "f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866",
+    "source_investment_decision_fields": "All source bytes unchanged; deterministic tool output unchanged; no scoring/ranking/regime/default changes"
+  },
+  "preservation": {
+    "all_original_source_files_byte_identical": 215,
+    "only_two_existing_files_changed": true,
+    "models_constants_ast_and_approval_pairs": "UNCHANGED",
+    "EVL_Frozen_GSUP_sources_tests_and_owner_decisions": "UNCHANGED"
+  },
+  "independent_review": {
+    "worker": "same_tree_protection_review",
+    "test_result": "25 targetedPASS true3.11 and21/21independent expected-result cases",
+    "actual_replace_ref_probe": "OrdinaryGit reads replacement fixture; helper --no-replace-objects reads original exact object and rejects changed file",
+    "original_repository_ref_mutations": false,
+    "receipt_sha256": "e8c4282a1533a89103586322779447c39441220813adcab73b606b990af2efab",
+    "scope": "Disposable fixtures only; no original source or remote mutation"
+  },
+  "Actions_actually_executed": "NOT_RUN",
+  "full_suite_actually_executed": "NOT_RUN_THIS_WORKER_ROOT_TO_RUN_AFTER_FINAL_MERGE",
+  "push": "NOT_RUN",
+  "canonical_merge": "NOT_RUN_NOT_AUTHORIZED",
+  "dependencies": [
+    "Canonicalb8Gitobject must exist in helperrepository; absent meansFAIL",
+    "Root normalmerge and final fullsuite/Actions for integratedHEAD"
+  ],
+  "blockers": [],
+  "USER_DECISION_REQUIRED": "NONE_FOR_LOCAL_FIXABLE_F1_REPAIR",
+  "next_autonomous_action": "Root normalmerge, appropriatefinalcombinedregression/Actions and proposal publication",
+  "BRANCH_STATE": "LOCAL_NORMAL_COMMITTED",
+  "INTEGRATION_STATE": "PARENT_MERGE_PENDING",
+  "CANONICAL_STATE": "UNCHANGED_NOT_MERGED",
+  "actual_CAL_VERIFY": "NOT_ACCESSED",
+  "Holdout": "UNCONSUMED",
+  "artifacts": {
+    "implementation/docs/codex_takeover/evidence/shared-source-hardening/AFTER_F1_MUTATION_MATRIX.json": {
+      "sha256": "5f4134666af75b187b82c0f9785a5ac55d1b51fc3528b2a276d9a003fd995c01",
+      "bytes": 5178
+    },
+    "implementation/docs/codex_takeover/evidence/shared-source-hardening/BEFORE_F1_MUTATION_MATRIX.json": {
+      "sha256": "4481caa48c706b25381b490dc9a7657e005d32e693f1ec9523b7e9e0dbe1bb84",
+      "bytes": 1827
+    },
+    "implementation/docs/codex_takeover/evidence/shared-source-hardening/FINGERPRINT_AFTER.json": {
+      "sha256": "f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866",
+      "bytes": 433
+    },
+    "implementation/docs/codex_takeover/evidence/shared-source-hardening/FINGERPRINT_BEFORE.json": {
+      "sha256": "f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866",
+      "bytes": 433
+    },
+    "implementation/docs/codex_takeover/evidence/shared-source-hardening/TARGETED_PYTHON311.log": {
+      "sha256": "8760f708bc87cfeb9f66ea29e270d1344761621c01085af05d063b3f16e4e2ab",
+      "bytes": 99
+    },
+    "implementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/DESIGN_REVIEW.md": {
+      "sha256": "b17b22fa14ac098e1492c40d3c54b5d68aec9fda3df5e1acddf301a5aa47e486",
+      "bytes": 4155
+    },
+    "implementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/FINAL_REVIEW.json": {
+      "sha256": "e8c4282a1533a89103586322779447c39441220813adcab73b606b990af2efab",
+      "bytes": 1646
+    },
+    "implementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/independent_probes.py": {
+      "sha256": "8724e739a2834a600fb88d4869fa6f186eef8397d0b4c0daf27268c8336fd411",
+      "bytes": 7724
+    },
+    "implementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/independent_results.json": {
+      "sha256": "57ee171928a522660ced454f53ac60c3487491837d593557482f84ecec9f89b3",
+      "bytes": 4243
+    },
+    "implementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/old_helper_counterexample.json": {
+      "sha256": "8fc256c960098319cb1805fc27c5590b23e6dacc7d6327fbe189cb2b91524eca",
+      "bytes": 666
+    },
+    "implementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/source_inventory.json": {
+      "sha256": "514879e23b7bdc1a0c106e5567b0455a4613099e4ef7a5496ee704a6d6714d35",
+      "bytes": 6159
+    },
+    "implementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/targeted-pytest.log": {
+      "sha256": "9fa2856ea668bd089c901aa737fcfee90bdbc86116726e3253271964fa6bbbba",
+      "bytes": 99
+    }
+  },
+  "protection_delta": {
+    "before": "Ten non-models shared paths compare against themselves in SAME_TREE",
+    "after": "All ten exact canonical source bytes independently checked; missing baseline fails closed"
+  }
+}

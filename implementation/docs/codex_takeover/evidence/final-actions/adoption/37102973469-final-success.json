@@ -1,0 +1,13 @@
+{
+  "run": 37102973469,
+  "job": 111145989374,
+  "name": "p01-research-publication",
+  "run_head_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "conclusion": "success",
+  "actual_checkout_sha": [
+    "5a0bcb54e1b683af08c965194ec05dad227a502b"
+  ],
+  "native_test_summaries": [
+    "1165 passed in 453.23s"
+  ]
+}

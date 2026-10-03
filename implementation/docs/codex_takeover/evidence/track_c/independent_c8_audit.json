@@ -1,0 +1,181 @@
+{
+  "cases": {
+    "CE1": {
+      "B": 19,
+      "L": 2,
+      "MB_reference": {
+        "full_blocks": 1,
+        "status": "NOT_RUN"
+      },
+      "kernel_oracle": {
+        "degenerate": 5,
+        "exceedances": 5,
+        "full_blocks": 2,
+        "p": 0.3,
+        "status": "RUN"
+      },
+      "kernel_p": 0.3,
+      "seed": 1,
+      "x": [
+        0.03,
+        -0.01,
+        0.02,
+        0.01
+      ]
+    },
+    "CE2": {
+      "B": 19,
+      "L": 2,
+      "MB_reference": {
+        "degenerate": 1,
+        "exceedances": 0,
+        "full_blocks": 2,
+        "p": 0.05,
+        "status": "RUN"
+      },
+      "kernel_oracle": {
+        "degenerate": 1,
+        "exceedances": 1,
+        "full_blocks": 3,
+        "p": 0.1,
+        "status": "RUN"
+      },
+      "kernel_p": 0.1,
+      "seed": 1,
+      "x": [
+        0.03,
+        -0.01,
+        0.02,
+        0.01,
+        0.0,
+        0.02
+      ]
+    },
+    "CE3": {
+      "B": 19,
+      "L": 2,
+      "MB_reference": {
+        "degenerate": 0,
+        "exceedances": 0,
+        "full_blocks": 2,
+        "p": 0.05,
+        "status": "RUN"
+      },
+      "kernel_oracle": {
+        "degenerate": 0,
+        "exceedances": 0,
+        "full_blocks": 2,
+        "p": 0.05,
+        "status": "RUN"
+      },
+      "kernel_p": 0.05,
+      "seed": 1,
+      "x": [
+        0.03,
+        -0.01,
+        0.02,
+        0.01,
+        0.0
+      ]
+    },
+    "CE4": {
+      "B": 19,
+      "L": 2,
+      "MB_reference": {
+        "degenerate": 1,
+        "exceedances": 1,
+        "full_blocks": 2,
+        "p": 0.1,
+        "status": "RUN"
+      },
+      "kernel_oracle": {
+        "degenerate": 1,
+        "exceedances": 2,
+        "full_blocks": 2,
+        "p": 0.15,
+        "status": "RUN"
+      },
+      "kernel_p": 0.15,
+      "seed": 200,
+      "x": [
+        -0.016,
+        -0.007,
+        0.053,
+        0.023,
+        0.005
+      ]
+    },
+    "CE5": {
+      "B": 19,
+      "L": 2,
+      "MB_reference": {
+        "degenerate": 0,
+        "exceedances": 5,
+        "full_blocks": 3,
+        "p": 0.3,
+        "status": "RUN"
+      },
+      "kernel_oracle": {
+        "degenerate": 0,
+        "exceedances": 4,
+        "full_blocks": 4,
+        "p": 0.25,
+        "status": "RUN"
+      },
+      "kernel_p": 0.25,
+      "seed": 18,
+      "x": [
+        0.008,
+        0.003,
+        -0.02,
+        0.019,
+        0.012,
+        -0.01,
+        0.019,
+        0.002
+      ]
+    }
+  },
+  "numeric_reencoding_retest": {
+    "accepted": true,
+    "decision": "NOT_RUN_EFFECT_FLOOR_DEFERRED",
+    "first_access_key": "7072b3ad734e86533faad3b33f2eb7751f91101e08e188cfd97d2304f306865c",
+    "first_content_hash": "af5e45d4950d9ed77cb310155176fb069fd8bd17b1c508591dd4777135a55ff7",
+    "first_statistical_status": "STAT_PASS",
+    "official": false,
+    "same_cells": true,
+    "same_numerical_observations": true,
+    "second_access_key": "724792de1f9cb4bf765f165e918d9de7341c075bc8b364ed33c9fc5e8c358cfa",
+    "second_content_hash": "b96f70db01945918737887e55d860a1ac248b849bfaa85d3c32eb807848b034c",
+    "second_statistical_status": "STAT_PASS"
+  },
+  "randomized": {
+    "MB_kernel_agree_when_difference_inactive": 281,
+    "eligible": 281,
+    "kernel_oracle_matches": 300
+  },
+  "scope": "SYNTHETIC_ONLY_NO_REAL_CAL_VERIFY_OR_HOLDOUT_ACCESS",
+  "simple_campaign_retest": {
+    "blocked": true,
+    "reason": "CAL_VERIFY target already assessed/verdicted; no retest under a new registration"
+  },
+  "unapproved_envelope_cap": {
+    "contains_hardcoded_point_099": true,
+    "estimate_phi": 0.4666681372255668,
+    "points": [
+      {
+        "kind": "AR1_GAUSSIAN",
+        "phi": 0.0
+      },
+      {
+        "kind": "AR1_GAUSSIAN",
+        "phi": 0.99
+      }
+    ],
+    "registered_margin": 2.0
+  },
+  "uncommitted_development": {
+    "blocked": true,
+    "reason": "estimate series is not the preregistered Development source content"
+  }
+}

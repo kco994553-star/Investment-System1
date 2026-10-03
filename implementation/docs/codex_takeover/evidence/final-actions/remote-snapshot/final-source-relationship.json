@@ -1,0 +1,33 @@
+{
+  "record": "FINAL_SOURCE_RELATIONSHIP_AND_UPSTREAM_PRESERVATION",
+  "observed_at": "2026-10-03T06:28:24.281743+00:00",
+  "branch": "codex/combined-integration-2026-10-03",
+  "head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "ahead_behind_canonical": "0\t149",
+  "exact_implementation_source_tree": "e43a6e584e8d18474ef71132561afde10eb26983",
+  "exact_test_tree": "5196a5fd00d7ef0120c99ec942dd55c60d60de54",
+  "validated_source_head": "71d5773dd235f93682722b9db762dc254379491e",
+  "source_tests_data_unchanged_since_validated_head": true,
+  "files_changed_since_validated_head": [
+    ".github/workflows/codex-integration-readiness.yml",
+    ".github/workflows/p01-research-publication.yml",
+    ".github/workflows/qgv-invalidation-binding.yml",
+    ".github/workflows/sec-primary-disclosure.yml",
+    ".github/workflows/technical-real-model.yml",
+    ".github/workflows/technical-real-producer.yml",
+    ".github/workflows/us-equity-session.yml",
+    ".github/workflows/web-mvp-validation.yml",
+    "implementation/docs/producer_compatibility/CI_RUNTIME_REPAIR_2026-10-03.md",
+    "implementation/docs/producer_compatibility/evidence/2026-10-03/ci-runtime-repair/CHECKPOINT.json",
+    "implementation/docs/producer_compatibility/evidence/2026-10-03/ci-runtime-repair/targeted-native311.log",
+    "implementation/docs/producer_compatibility/evidence/2026-10-03/ci-runtime-repair/yaml-validation.json"
+  ],
+  "all_non_codex_remote_heads_unchanged": true,
+  "non_codex_heads_count": 35,
+  "remote_head_drift": [],
+  "BRANCH_STATE": "PUBLISHED_EXACT_HEAD_VALIDATED_SOURCE_CI_RUNTIME_REPAIR",
+  "INTEGRATION_STATE": "COMBINED_TRIAL_ONLY_FINAL_HEAD_ACTIONS_IN_PROGRESS",
+  "CANONICAL_STATE": "NOT_MERGED"
+}

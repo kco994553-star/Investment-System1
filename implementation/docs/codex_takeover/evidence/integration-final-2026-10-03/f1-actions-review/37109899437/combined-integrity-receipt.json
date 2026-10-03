@@ -1,0 +1,49 @@
+{
+  "run_id": 37109899437,
+  "job_id": 111165610205,
+  "job_name": "combined-offline",
+  "enclosing_run_head": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+  "actual_checkout": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+  "artifact_id": 11269037961,
+  "github_sha256": "d7f5e980a8a92a82076f09532de9133fa3b800384958c4daebbb14b1dcd34cd9",
+  "local_download_sha256": "d7f5e980a8a92a82076f09532de9133fa3b800384958c4daebbb14b1dcd34cd9",
+  "bytes": 107840,
+  "hash_match": true,
+  "retrieval_route": "GitHub connector artifact downloader then authorized file reference download",
+  "direct_Azure_route": "NOT_ATTEMPTED_PREVIOUSLY_BLOCKED",
+  "artifact_zip": "37109899437/combined-artifact.zip",
+  "junit": "37109899437/combined-extracted/combined-junit.xml",
+  "junit_sha256": "ab28332e5dca372f613b94275484583ff7754d52b7fb24cf9290dede06bed03a",
+  "junit_summary": {
+    "tests": 1295,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "kind": "PRODUCER_CONTRACT_WEB_BROWSER_VALIDATION_V1",
+    "passed": true,
+    "checks": [
+      "producer PASS, PARTIAL and BLOCKED remain NOT_AVAILABLE with grants NONE",
+      "original provenance, as_of, freshness and methodology survive Web build and fetch",
+      "ko/en and mobile/desktop routes disclose absence without leaking withheld values",
+      "loading is visible while contract fetch is pending",
+      "HTTP and malformed JSON fail visibly and retry restores the original bundle",
+      "bundle and search catalog bytes stay unchanged after all interactions"
+    ],
+    "errors": [],
+    "runtime": {
+      "node": "v24.21.0",
+      "chromium": "145.0.7632.6"
+    },
+    "fixture_data_sha256": "dc92e1e5e7dabd4531c389370d40b26aac8e7ff1b8f808b1a39f666e1f846de6",
+    "Actions": "NOT_RUN",
+    "real_data_validation": "NOT_RUN",
+    "research_display": "NONE",
+    "frozen_grant": "NONE",
+    "live_grant": "NONE"
+  },
+  "browser_sha256": "92b884bd0dc3de1e68dbdfd1256658f1cbfb0c76a7d46c9f29cce063cbb4e3c6",
+  "Actions_field_semantics": "Fixture/browser manifest Actions NOT_RUN says tool does not dispatch Actions. Enclosing GitHub run37109899437 actually executed the browser step; completed-success logs and artifact provide actual Actions evidence.",
+  "classification": "CURRENT_EXACT_FC_HEAD_NATIVE_FULL_REGRESSION_AND_6_FIXTURE_E2E_GROUPS"
+}

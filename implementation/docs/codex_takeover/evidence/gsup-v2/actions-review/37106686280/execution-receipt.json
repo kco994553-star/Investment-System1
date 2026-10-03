@@ -1,0 +1,77 @@
+{
+  "run_id": 37106686280,
+  "workflow": "technical-real-producer",
+  "run_attempt": 1,
+  "run_head_sha": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37106686280",
+  "jobs": [
+    {
+      "job_id": 111156485874,
+      "job_name": "offline",
+      "run_head_sha": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "actual_checkout_sha": "547676da75308b02a35f9cef1b5be3b028bdf101",
+      "checkout_source": "connector job log git log -1 --format=%H",
+      "checkout_tree_equals_pr_head": true,
+      "status": "completed",
+      "conclusion": "success",
+      "pytest_log_summaries": [
+        "1277 passed in 471.94s"
+      ],
+      "log_sha256": "77a2e4f6e4f14517f394e5e51dda13a72dd5d6d8c1db4f4aa0be35b14352172b",
+      "printed_json_assertion_results": [],
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Install native regression runner",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Offline producer tests and full native pytest regression",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        }
+      ]
+    }
+  ],
+  "artifacts": []
+}

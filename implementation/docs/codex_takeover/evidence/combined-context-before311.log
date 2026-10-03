@@ -1,0 +1,14 @@
+..F                                                                      [100%]
+=================================== FAILURES ===================================
+________________ test_pr7_registry_is_read_only_and_not_copied _________________
+
+    def test_pr7_registry_is_read_only_and_not_copied():
+>       assert not (REPO / "implementation" / "reports" / "entity_metadata").exists()
+E       AssertionError: assert not True
+E        +  where True = exists()
+E        +    where exists = (((PosixPath('/workspace/combined-trial') / 'implementation') / 'reports') / 'entity_metadata').exists
+
+tests/test_rig_news_ingest.py:192: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_rig_news_ingest.py::test_pr7_registry_is_read_only_and_not_copied
+1 failed, 2 passed in 0.69s
