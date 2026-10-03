@@ -1,0 +1,55 @@
+name: track-c-evl-validation
+on:
+  push:
+    branches: [feature/track-c-evl]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: implementation
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch current canonical and Track C remotes
+        run: git fetch --no-tags origin claude/investment-system-top500-validation-alrugm feature/track-c-evl
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pytest
+        run: python -m pip install pytest
+      - name: Targeted C8 approved foundation tests
+        run: PYTHONPATH=src python -m pytest -q tests/test_evl_c8*.py
+      - name: Targeted C7 tests
+        run: PYTHONPATH=src python -m pytest -q tests/test_evl_c7*.py
+      - name: Targeted C6 regression
+        run: PYTHONPATH=src python -m pytest -q tests/test_evl_c6*.py
+      - name: Previous phase C0-C5 regression
+        run: PYTHONPATH=src python -m pytest -q tests/test_evl_c[0-5]*.py
+      - name: Full regression
+        run: PYTHONPATH=src python -m pytest -q
+      - name: PIT lineage Holdout cross-track audit and complete C6 evidence
+        run: PYTHONPATH=src:. python tools/track_c_c6_acceptance.py
+      - name: C7 complete acceptance and C0-C6 preservation audit
+        run: PYTHONPATH=src:. python tools/track_c_c7_acceptance.py
+      - name: C8 partial foundation acceptance and C0-C7 preservation
+        run: PYTHONPATH=src:. python tools/track_c_c8_partial_acceptance.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: track-c-c6-evidence-${{ github.sha }}
+          path: implementation/reports/track_c_c6_generated/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: track-c-c7-evidence-${{ github.sha }}
+          path: implementation/reports/track_c_c7_generated/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: track-c-c8-partial-evidence-${{ github.sha }}
+          path: implementation/reports/track_c_c8_partial_generated/

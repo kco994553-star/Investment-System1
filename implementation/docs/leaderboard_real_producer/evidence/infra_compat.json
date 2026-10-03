@@ -1,0 +1,269 @@
+{
+ "kind": "LEADERBOARD_PRODUCER_INFRA_COMPAT",
+ "infra_pin": {
+  "branch": "feature/producer-infrastructure-v1",
+  "commit": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+  "code_commit": "bcfdcd2487f643feddda7a0fa2cace085ffc28a3",
+  "src_unchanged_since": "5fa7ce0647b6af91d767c54ecaaa3e31d1ab63e4",
+  "pr": 9
+ },
+ "infra_src": "/tmp/infra-pin/implementation/src",
+ "status": "PASS",
+ "checks": {
+  "shared_leaderboard_sources_identical": {
+   "status": "PASS",
+   "files": {
+    "investment_system/contracts/models.py": {
+     "infra": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+     "own": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506"
+    },
+    "investment_system/qgv/leaderboard.py": {
+     "infra": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+     "own": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248"
+    },
+    "investment_system/qgv/scoring.py": {
+     "infra": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+     "own": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629"
+    },
+    "investment_system/qgv/factors.py": {
+     "infra": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+     "own": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e"
+    },
+    "investment_system/qgv/analysis.py": {
+     "infra": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+     "own": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88"
+    }
+   }
+  },
+  "infra_importable": {
+   "status": "PASS",
+   "infra_src": "/tmp/infra-pin/implementation/src"
+  },
+  "infra_api_complete": {
+   "status": "PASS",
+   "missing": []
+  },
+  "2024-06-30:export_reload_valid": {
+   "status": "PASS",
+   "n_records": 500,
+   "ranked": 500
+  },
+  "2024-06-30:leaderboard_section_rows": {
+   "status": "PASS",
+   "n": 500
+  },
+  "2024-06-30:web_fields_match_partial_contract": {
+   "status": "PASS",
+   "present_on_engine_row": [
+    "company_id",
+    "rank",
+    "ticker",
+    "total_score"
+   ],
+   "absent_on_engine_row": [
+    "consensus",
+    "daily_move",
+    "market_cap_rank",
+    "reevaluation_trigger",
+    "scenario"
+   ],
+   "adapter_missing": [
+    "market_cap_rank",
+    "daily_move",
+    "consensus",
+    "scenario",
+    "reevaluation_trigger"
+   ],
+   "web_reads": [
+    "rows[].rank",
+    "rows[].company_id",
+    "rows[].ticker",
+    "rows[].market_cap_rank",
+    "rows[].total_score",
+    "rows[].daily_move",
+    "rows[].consensus",
+    "rows[].scenario",
+    "rows[].reevaluation_trigger"
+   ]
+  },
+  "2024-06-30:canonical_serialization_agrees": {
+   "status": "PASS"
+  },
+  "2024-06-30:research_candidate_rejected": {
+   "status": "PASS",
+   "error": {
+    "type": "ResearchStatusError",
+    "code": "RESEARCH_STATUS_NOT_PUBLISHABLE",
+    "message": "methodology.status: methodology status PROVISIONAL_RESEARCH cannot be published as FROZEN_SNAPSHOT (pending approval of PROPOSAL_P01)"
+   }
+  },
+  "2024-06-30:shape_probe_valid_except_research_status": {
+   "status": "PASS",
+   "error": null
+  },
+  "2024-06-30:published_not_available": {
+   "status": "PASS",
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT",
+   "registry_placeholder": "LEADERBOARD_NO_UPSTREAM_QGV"
+  },
+  "2024-06-30:file_inputs_reverify": {
+   "status": "PASS"
+  },
+  "2024-06-30:bundle_assembles_and_web_validates": {
+   "status": "PASS",
+   "leaderboard_state": "NOT_AVAILABLE",
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT"
+  },
+  "2024-06-30:engine_not_called": {
+   "status": "PASS"
+  },
+  "2024-09-30:export_reload_valid": {
+   "status": "PASS",
+   "n_records": 500,
+   "ranked": 500
+  },
+  "2024-09-30:leaderboard_section_rows": {
+   "status": "PASS",
+   "n": 500
+  },
+  "2024-09-30:web_fields_match_partial_contract": {
+   "status": "PASS",
+   "present_on_engine_row": [
+    "company_id",
+    "rank",
+    "ticker",
+    "total_score"
+   ],
+   "absent_on_engine_row": [
+    "consensus",
+    "daily_move",
+    "market_cap_rank",
+    "reevaluation_trigger",
+    "scenario"
+   ],
+   "adapter_missing": [
+    "market_cap_rank",
+    "daily_move",
+    "consensus",
+    "scenario",
+    "reevaluation_trigger"
+   ],
+   "web_reads": [
+    "rows[].rank",
+    "rows[].company_id",
+    "rows[].ticker",
+    "rows[].market_cap_rank",
+    "rows[].total_score",
+    "rows[].daily_move",
+    "rows[].consensus",
+    "rows[].scenario",
+    "rows[].reevaluation_trigger"
+   ]
+  },
+  "2024-09-30:canonical_serialization_agrees": {
+   "status": "PASS"
+  },
+  "2024-09-30:research_candidate_rejected": {
+   "status": "PASS",
+   "error": {
+    "type": "ResearchStatusError",
+    "code": "RESEARCH_STATUS_NOT_PUBLISHABLE",
+    "message": "methodology.status: methodology status PROVISIONAL_RESEARCH cannot be published as FROZEN_SNAPSHOT (pending approval of PROPOSAL_P01)"
+   }
+  },
+  "2024-09-30:shape_probe_valid_except_research_status": {
+   "status": "PASS",
+   "error": null
+  },
+  "2024-09-30:published_not_available": {
+   "status": "PASS",
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT",
+   "registry_placeholder": "LEADERBOARD_NO_UPSTREAM_QGV"
+  },
+  "2024-09-30:file_inputs_reverify": {
+   "status": "PASS"
+  },
+  "2024-09-30:bundle_assembles_and_web_validates": {
+   "status": "PASS",
+   "leaderboard_state": "NOT_AVAILABLE",
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT"
+  },
+  "2024-09-30:engine_not_called": {
+   "status": "PASS"
+  },
+  "2024-12-31:export_reload_valid": {
+   "status": "PASS",
+   "n_records": 500,
+   "ranked": 500
+  },
+  "2024-12-31:leaderboard_section_rows": {
+   "status": "PASS",
+   "n": 500
+  },
+  "2024-12-31:web_fields_match_partial_contract": {
+   "status": "PASS",
+   "present_on_engine_row": [
+    "company_id",
+    "rank",
+    "ticker",
+    "total_score"
+   ],
+   "absent_on_engine_row": [
+    "consensus",
+    "daily_move",
+    "market_cap_rank",
+    "reevaluation_trigger",
+    "scenario"
+   ],
+   "adapter_missing": [
+    "market_cap_rank",
+    "daily_move",
+    "consensus",
+    "scenario",
+    "reevaluation_trigger"
+   ],
+   "web_reads": [
+    "rows[].rank",
+    "rows[].company_id",
+    "rows[].ticker",
+    "rows[].market_cap_rank",
+    "rows[].total_score",
+    "rows[].daily_move",
+    "rows[].consensus",
+    "rows[].scenario",
+    "rows[].reevaluation_trigger"
+   ]
+  },
+  "2024-12-31:canonical_serialization_agrees": {
+   "status": "PASS"
+  },
+  "2024-12-31:research_candidate_rejected": {
+   "status": "PASS",
+   "error": {
+    "type": "ResearchStatusError",
+    "code": "RESEARCH_STATUS_NOT_PUBLISHABLE",
+    "message": "methodology.status: methodology status PROVISIONAL_RESEARCH cannot be published as FROZEN_SNAPSHOT (pending approval of PROPOSAL_P01)"
+   }
+  },
+  "2024-12-31:shape_probe_valid_except_research_status": {
+   "status": "PASS",
+   "error": null
+  },
+  "2024-12-31:published_not_available": {
+   "status": "PASS",
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT",
+   "registry_placeholder": "LEADERBOARD_NO_UPSTREAM_QGV"
+  },
+  "2024-12-31:file_inputs_reverify": {
+   "status": "PASS"
+  },
+  "2024-12-31:bundle_assembles_and_web_validates": {
+   "status": "PASS",
+   "leaderboard_state": "NOT_AVAILABLE",
+   "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT"
+  },
+  "2024-12-31:engine_not_called": {
+   "status": "PASS"
+  }
+ }
+}

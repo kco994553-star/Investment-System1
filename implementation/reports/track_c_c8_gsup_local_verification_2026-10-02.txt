@@ -1,0 +1,14 @@
+..............................................                           [100%]
+910 passed in 578.07s (0:09:38)
+== c6
+exit=0
+es":[],"unexpected_protected_changes":[]},"cross_track":"PASS_BLOB_AUDIT","lineage_provenance":"REGISTERED_HASH_BOUND_CURRENT_RESOLUTION_VERIFIED","negative_regression":"Required FAIL/NOT_RUN/budget/invalidation tests run before this artifact","real_research":"NOT_RUN_MISSING_COMPLETE_REAL_FAMILY"}
+
+== c7
+exit=0
+_and_inactive_packages":"PRESERVED_BY_BLOB_IDENTITY","status":"PASS","unexpected_changes":[]},"real_pit_research_validation":"NOT_RUN_MISSING_COMPLETE_REAL_FAMILY","scope":"SYNTHETIC_SOFTWARE_VALIDATION","status":"PASS","tax_mode":"EXCLUDED","tested_head":"a156a350979a1f22c960224a756da7bb24abb7c5"}
+
+== c8_partial
+exit=0
+PPROVED_FOUNDATION_PROTOCOL_PASS","tested_head":"a156a350979a1f22c960224a756da7bb24abb7c5","unapproved_policy":{"A10":"PROPOSED_NOT_APPROVED_NOT_ACTIVE","A6":"PROPOSED_NOT_APPROVED_NOT_ACTIVE","A8":"PROPOSED_NOT_APPROVED_NOT_ACTIVE","REAL_RESEARCH_CONFIGURATION":"PROPOSED_NOT_APPROVED_NOT_ACTIVE"}}
+

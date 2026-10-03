@@ -6,11 +6,13 @@ not claimed as recovered v0.6 package.
 
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import datetime
 from uuid import uuid4
 
 from ..contracts.enums import ExecutionZone, TechnicalRegime
 from ..contracts.models import QGVSnapshot, TechnicalSnapshot
+from ..contracts.lineage import StampedValue, derived_lineage
 from ..versions import IMPLEMENTATION_KIND, TECHNICAL_STRUCTURAL
 
 
@@ -62,3 +64,17 @@ class TechnicalEngine:
             mutated_qgv=False,
             synthetic=synthetic,
         )
+
+    def evaluate_stamped(
+        self, company_id: str, as_of: datetime, returns: tuple[StampedValue, ...],
+        qgv: QGVSnapshot | None = None, synthetic: bool = False,
+    ) -> TechnicalSnapshot:
+        if not returns:
+            raise ValueError("strict Technical evaluation requires returns")
+        times = tuple(row.measured_at for row in returns)
+        if len(set(times)) != len(times) or times != tuple(sorted(times)):
+            raise ValueError("returns must be unique and chronological")
+        lineage = derived_lineage({str(i): value for i, value in enumerate(returns)},
+                                  as_of, synthetic=synthetic)
+        output = self.evaluate(company_id, as_of, [r.value for r in returns], qgv, synthetic)
+        return replace(output, **lineage)

@@ -1,0 +1,41 @@
+{
+  "phase": "C6",
+  "status": "IMPLEMENTING_NOT_FROZEN",
+  "subsection": "TC-D3P-003_v1_EXECUTION_VERIFIED",
+  "approval_kst": "2026-09-30T19:38:07+09:00",
+  "implementation_commit": "fb1cc7415703142ecd01461fbe1c89e7e2d51c7e",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "policy": "TC-D3P-003_v1 APPROVED",
+  "ci": {
+    "run_id": 36705694417,
+    "job_id": 109855289599,
+    "conclusion": "success",
+    "targeted": 137,
+    "c6_execution_cases": 34,
+    "c0_c5_cases": 103,
+    "full": 533,
+    "completed_kst": "2026-09-30T19:59:25+09:00"
+  },
+  "pit_no_lookahead": "execution outcome only; future features/publications and foreign/Holdout outcome evidence rejected",
+  "lineage": "immutable complete input_evidence, experiment/split/code/data/report hashes; current ledger invalidation checked",
+  "holdout_consumed": false,
+  "investor_qgv": "NOT_IMPLEMENTED / FUTURE_TRACK_C_INPUT",
+  "tax_mode": "EXCLUDED",
+  "official": false,
+  "robustness_pass": false,
+  "remaining_acceptance": [
+    "PSR",
+    "DSR",
+    "PBO",
+    "bootstrap",
+    "Reality Check / multiple testing",
+    "parameter/regime/universe perturbations",
+    "negative controls",
+    "parameter drift"
+  ],
+  "blocking_decision": "TC-D3P-004 PROPOSED_NOT_APPROVED",
+  "other_track_runtime_changes": [],
+  "local_git_fetch": "NOT_RUN: no shell tool",
+  "tests": "real pytest on GitHub Actions; no local pytest claim",
+  "temporary_normal_merge": "NOT_RUN this phase"
+}

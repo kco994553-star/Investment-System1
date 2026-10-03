@@ -1,0 +1,31 @@
+{
+  "phase": "C4",
+  "status": "SOFTWARE_FROZEN",
+  "spec": "EVL_SPEC_v0.1",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "implementation_commit": "0cb9a7c0daeacb7eeb1279925e9a054a21cb22a9",
+  "integration_commit": "5bba39c9071b5ede128d9b98ef3375019a9db336",
+  "regression": {
+    "targeted": 88,
+    "full": 484,
+    "normal_merge_integration": 484
+  },
+  "authorized_upstream_repair_files": [
+    "implementation/src/investment_system/contracts/lineage.py",
+    "implementation/src/investment_system/contracts/models.py",
+    "implementation/src/investment_system/macro/engine.py",
+    "implementation/src/investment_system/technical/engine.py"
+  ],
+  "other_upstream_code_changes": [],
+  "real_7_year_data_qualified": false,
+  "official": false,
+  "holdout_consumed": false,
+  "tax_mode": "EXCLUDED",
+  "next_phase": "C5",
+  "next_phase_status": "PREFLIGHT_ONLY_PENDING_TC-D3P-002",
+  "evidence_sha256": {
+    "track_c_c4_integration.txt": "f322b1faec495c39c2326a05cd2c414e74227de8fabc6dffbb5f8360b79b17a5",
+    "track_c_c4_targeted.txt": "defae41edc4b56c528cf1c8ba13ca06c5ec7ab75f1104096b632a323b73d650e",
+    "track_c_c4_full.txt": "d1ccca2efb91e7fab94b86e602e9b822ca7a296abd9ef354972fa3c7c7b1f143"
+  }
+}

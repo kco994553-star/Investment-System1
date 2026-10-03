@@ -1,0 +1,50 @@
+{
+  "kind": "LEADERBOARD_REAL_PRODUCER_VALIDATION",
+  "generated_at": "2026-10-01T11:40:00+00:00",
+  "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "qgv_pin": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+  "infra_pin": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+  "tests": {
+    "mini_pytest": "424 passed",
+    "pytest": "424 passed",
+    "producer": "18 passed",
+    "research_publication_counterexamples": "10 passed"
+  },
+  "infra_compat": "PASS",
+  "publication": "NOT_AVAILABLE",
+  "reason_code": "LEADERBOARD_RESEARCH_ONLY_NO_EXPORT",
+  "pass_means": "VALID_PERSISTENCE_IDENTITY_LINEAGE_AND_EXISTING_RANKING_CONTRACT_ONLY",
+  "dates": [
+    {"as_of": "2024-06-30", "universe_id": "uni_cb35a6200b61", "expected": 500, "eligible": 500, "ranked": 500, "not_ranked": 0, "PARTIAL": 471, "BLOCKED": 29, "READY": 0, "null_total": 29, "tie_groups": 1, "tied": 29, "within_tie": "POLICY_BLOCKED", "ranking_fingerprint": "b02a64f64ecee7e5d5c4bb1771020418bbcfa6c7c6c4d880fb559b015437857e", "manifest_semantic_sha256": "a878988a49d5edee2a9200069d7c15bdaff01680a0da69729b757fa5a6409741"},
+    {"as_of": "2024-09-30", "universe_id": "uni_12c3852b8333", "expected": 500, "eligible": 500, "ranked": 500, "not_ranked": 0, "PARTIAL": 469, "BLOCKED": 31, "READY": 0, "null_total": 31, "tie_groups": 1, "tied": 31, "within_tie": "POLICY_BLOCKED", "ranking_fingerprint": "7073bfd9890e3839ce77d5519019d598198bedd273e1c3c6fd330ad81febdb1c", "manifest_semantic_sha256": "707efa49a7784427d3e7c401a21f9e4da5ebd9a941e2fe8adc56e36dfa51b49f"},
+    {"as_of": "2024-12-31", "universe_id": "uni_0d1a30b1ee47", "expected": 500, "eligible": 500, "ranked": 500, "not_ranked": 0, "PARTIAL": 468, "BLOCKED": 32, "READY": 0, "null_total": 32, "tie_groups": 1, "tied": 32, "within_tie": "POLICY_BLOCKED", "ranking_fingerprint": "754a7cee04b941d9d2936880b90368f5f7c1e2e3625a4e9ff1e61635809ded5a", "manifest_semantic_sha256": "54685a6905d57064e60564ca2d405217efd91292ebf6ea6902ea63f31d1bf665"}
+  ],
+  "readiness": {
+    "LEADERBOARD_ENGINE_AUDITED": "YES",
+    "LEADERBOARD_REAL_INPUT_READY": "YES",
+    "LEADERBOARD_SNAPSHOT_READY": "YES",
+    "LEADERBOARD_BATCH_READY": "YES",
+    "LEADERBOARD_EXPORTER_READY": "YES",
+    "PRODUCER_INFRA_COMPATIBLE": "YES",
+    "WEB_LEADERBOARD_CONTRACT_READY": "NO",
+    "REAL_LEADERBOARD_RESEARCH_PRODUCER_READY": "YES",
+    "OFFICIAL_LEADERBOARD_PRODUCER_READY": "NO",
+    "COMMON_RESEARCH_PUBLICATION_PREDICATE": "APPLICABLE_NOT_ADOPTED"
+  },
+  "research_publication": {
+    "document": "implementation/docs/leaderboard_real_producer/RESEARCH_PUBLICATION.md",
+    "p01": "NOT_APPROVED",
+    "research_data_state_in_schema1": false,
+    "qgv_only_exception": false,
+    "axes_separated": ["data_state", "producer_validation", "methodology_lifecycle", "track_c_validation", "data_completeness"],
+    "cases": {
+      "qgv": {"pr": 10, "pin": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b"},
+      "macro": {"pr": 12, "pin": "61d3352d5d68c7830e924f17613598ca79fcec6f"},
+      "leaderboard_handoff": {"pr": 14, "pin": "1f6b2d2f020843b13222b66a3f9bce82cded5bef"},
+      "technical": {"pr": 15, "pin": "ce587040e7beb31b66a423eab6ca89767f2a2cf8"}
+    },
+    "probe_commit": "c38ea87e9d796f1f7b8e1c19c69aca6e12f06792",
+    "track_c_observed_not_used": "31e7aedaac4b7fb9c8058cd8bc5959a80db0e9a0",
+    "counterexample": "RESEARCH label, producer PASS, forged Track C attestation, and m1/m2 APPROVED cannot become LIVE or OFFICIAL"
+  }
+}

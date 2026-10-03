@@ -1,0 +1,115 @@
+{
+ "CE1_n4_L2": {
+  "data": [
+   0.03,
+   -0.01,
+   0.02,
+   0.01
+  ],
+  "B": 19,
+  "seed": 1,
+  "MB": "NOT_RUN",
+  "kernel": {
+   "p": 0.3,
+   "r": 5,
+   "degenerate": 5
+  }
+ },
+ "CE2_n6_L2": {
+  "data": [
+   0.03,
+   -0.01,
+   0.02,
+   0.01,
+   0.0,
+   0.02
+  ],
+  "B": 19,
+  "seed": 1,
+  "MB": {
+   "p": 0.05,
+   "r": 0,
+   "degenerate": 1
+  },
+  "kernel": {
+   "p": 0.1,
+   "r": 1,
+   "degenerate": 1
+  }
+ },
+ "CE3_n5_L2": {
+  "data": [
+   0.03,
+   -0.01,
+   0.02,
+   0.01,
+   0.0
+  ],
+  "B": 19,
+  "seed": 1,
+  "MB": {
+   "p": 0.05,
+   "r": 0,
+   "degenerate": 0
+  },
+  "kernel": {
+   "p": 0.05,
+   "r": 0,
+   "degenerate": 0
+  }
+ },
+ "CE4_decision_flip_L_not_dividing_n": {
+  "data": [
+   -0.016,
+   -0.007,
+   0.053,
+   0.023,
+   0.005
+  ],
+  "L": 2,
+  "B": 19,
+  "seed": 200,
+  "MB": {
+   "p": 0.1,
+   "r": 1,
+   "degenerate": 1
+  },
+  "kernel": {
+   "p": 0.15,
+   "r": 2,
+   "degenerate": 1
+  }
+ },
+ "agreement_when_L_not_divides_n_and_no_degenerate": {
+  "cases": 300,
+  "identical": 300
+ },
+ "CE5_block_count_only_L_divides_n": {
+  "data": [
+   0.008,
+   0.003,
+   -0.02,
+   0.019,
+   0.012,
+   -0.01,
+   0.019,
+   0.002
+  ],
+  "n": 8,
+  "L": 2,
+  "B": 19,
+  "seed": 18,
+  "MB_blocks": 3,
+  "kernel_blocks": 4,
+  "MB": {
+   "p": 0.3,
+   "r": 5,
+   "degenerate": 0
+  },
+  "kernel": {
+   "p": 0.25,
+   "r": 4,
+   "degenerate": 0
+  }
+ }
+}

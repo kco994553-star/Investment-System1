@@ -1,0 +1,3099 @@
+{
+ "manifest_kind": "QGV_PRODUCER_BATCH_MANIFEST",
+ "manifest_version": 1,
+ "operational": {
+  "code_commit": "4b772c2c24dcff8cd7ef56e82412dcc719f77267",
+  "files": {
+   "qgv_company_snapshots_2024-09-30.jsonl": {
+    "bytes": 5462558,
+    "sha256": "689b9b230f1d228c5c3915a1338976ac33205d4e259e3ddce3bb99bd7c89dc6c"
+   }
+  },
+  "generated_at": "2026-10-01T11:04:16.533966+00:00",
+  "run_id": "36852186517"
+ },
+ "semantic": {
+  "as_of": "2024-09-30T00:00:00+00:00",
+  "complete": true,
+  "counts": {
+   "FAIL": 0,
+   "NOT_RUN": 0,
+   "PASS": 500
+  },
+  "data_lineage": {
+   "inputs_sha256": "c3d473a36b10c99836e54bffbb60b283ef0697c3fdda93b462f94669ac303ea8",
+   "n_inputs": 1000,
+   "raw_source": {
+    "artifact": "c21-raw-store-36305927245",
+    "artifact_digest": "sha256:712e43bcc1fcd137e5e99ccdda2440850eda56015e02037293d8eac8db399f94",
+    "blob_verification": "per-input sha256 vs committed data/raw/STORE_INDEX.json and store manifest",
+    "kind": "GITHUB_ACTIONS_ARTIFACT",
+    "run_id": 36305927245
+   },
+   "store_index_sha256": "ece81ac9f5ad6a528088c19dcfb98898b33b41c53a7a8543864ba1f04ba642d6"
+  },
+  "engine_run": {
+   "n_cross_section": 500,
+   "n_investable": 495,
+   "n_missing": 5,
+   "n_name_errors": 0,
+   "n_selected": 469,
+   "ranked_sha256": "f6ae8402cb93c6b35c97ba7058b62b5d15438a63398c9d71048c3f91f4689156",
+   "selected_sha256": "7ef3c178544b77047768d03d375a5654b544a66f2b7f0719589f4854d79da0bf"
+  },
+  "expected_count": 500,
+  "methodology": {
+   "cross_section_rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+   "cross_section_rule_status": "PROVISIONAL_RESEARCH",
+   "implementation_line": "investment_system_impl-v0.2.0",
+   "qgv_analysis_contract": "v1.7.6",
+   "qgv_standard_version": "v1.5-balanced",
+   "qgv_system_version": "v1.7",
+   "run_parameter_set_hash": "21f704d731eedd800f56dd9ca00850a021d989a4bec6a30dd31d72829118cac9",
+   "run_profile_id": "profile-balanced-provisional",
+   "weights_sha256": "9e961bf717110cf811b65cfc8ec8474b68425d8801d813c6890517fb85091231"
+  },
+  "persisted_count": 500,
+  "records": [
+   {
+    "company_id": "aapl",
+    "semantic_sha256": "72193ffab2bc6aae52dbcb1b9943ef802d0adb958e3d06e547426589416867fe",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "abbv",
+    "semantic_sha256": "3f132e71ce1e3aaf9c4277d28ae46bc05b1684ef744e33a3b471e4980737692b",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "abnb",
+    "semantic_sha256": "08f4230f641a9278a808ea3ecbe7b9c0019d55022be624b1dda571450515390f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "abt",
+    "semantic_sha256": "8aa03238e9b2e6e385d8bd662035a2e86e3090ab18b9343a0547dd7bd8dce2bc",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "acn",
+    "semantic_sha256": "b0eb79159abb8caa3654f1aeaaec43984fe3b6da1a7a49852b9d8d196275e816",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "adbe",
+    "semantic_sha256": "a4d84ff924f9a5955e5ee7644d91443d739beb80a11d8ab68033f732970b27d5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "adi",
+    "semantic_sha256": "f61f5837381f3ff968f0e77d4568cd4b1f4119d6bc4bbca1606545bd1b44ae2d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "adp",
+    "semantic_sha256": "3ffc7183cda43de6cc8c4de51f285b6162a88db1b48c899f06fd9321af772480",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "aep",
+    "semantic_sha256": "3ef5b73232eb3e372bc2da97034816e206893ad125d20b5b019360bd49cf30d9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "afl",
+    "semantic_sha256": "a61f40e92aae5cd83af0c53ef9c487cc341c6cb9b01d0da11f456be0190836bd",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ajg",
+    "semantic_sha256": "f9d5f2292edc6bdbd64c0c5b29d76f5aa53ba21e5865363925748fedf6c9ffed",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "all",
+    "semantic_sha256": "4610f0eb9e087df76d53992d0e1d7d8f257fc50fc4336e6ff0fe66ad4c2851f7",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "amat",
+    "semantic_sha256": "ad8fcdf1c72c06bd01326bca3e9c62f0d9f31deb6a78b6730cc603681ee37b3e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "amd",
+    "semantic_sha256": "1799348a18efe1604dc3f82663c1698ddae332795486761e58399690f7f75973",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ame",
+    "semantic_sha256": "2adfa0ef79dd9ae0fad7dff108de4033217ad29907907da565de54bc2e29d953",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "amgn",
+    "semantic_sha256": "87afc33056cfe08df66982cc9c61ba50aeb256a6bd91bdbac54af1da981af802",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "amt",
+    "semantic_sha256": "9157216e88b2ea41c372025b1d475dee76ae688b48d27e8c15a4310cabce3aca",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "amzn",
+    "semantic_sha256": "cbc93a8ac22e5a3ab2528969f0554786983e9fede3c7b45a277d4352b5824147",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "anet",
+    "semantic_sha256": "9691b4de58e04d1cba3c0dd52e2396ca9a63b8c7fdd15fbba93ae0c2f989a319",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "aon",
+    "semantic_sha256": "6a997be9f5a559d8e26f7c1536382adf50ce36505fe78823d067948284005a0b",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "apd",
+    "semantic_sha256": "1724d95133c1751b8377059d5bef30d01e55fd8329402600277921c14a2cd035",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "aph",
+    "semantic_sha256": "a152dfc5781c2ecb35f1f769a7c3b355595c71b9fb5f2aa6239446e2707a66f4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "apo",
+    "semantic_sha256": "65058f0f3053bdd66f7e879a1de9b45e9cd3b7626f98e43a9e2a3e3bb7dcadda",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "app",
+    "semantic_sha256": "4c371f1a249aaa6a07bc35c7b6023bb735f287a9a7d24e8fbd01c7c13ae489f2",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "avgo",
+    "semantic_sha256": "6eccb1582750a4cd561924cbeb1d82d55438c84529e5b86c0894e76735c9a523",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "axp",
+    "semantic_sha256": "c86c2341c04b36c3d6a2ecaacf09b9727f9ba81cec986ac19b50beaff6dee18e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ba",
+    "semantic_sha256": "d890a583dd6984d9a4e7f821e3da48e27a4776dd1dbb494550da7f65ff51e796",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "bac",
+    "semantic_sha256": "582cc2cbd2ec78b8ef1a04d232082ad30b21209b71ee850c72384f9f46cd7a88",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "bdx",
+    "semantic_sha256": "ba201d26e86b9b9ccf448a392a9fa61b8fa9ca429b92df7740d16587529e9bc6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "bkng",
+    "semantic_sha256": "db9d86c1a28fe5552c0bad42d151b43478814c5d68643c7e47a114f5e1b7a9a5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "bkr",
+    "semantic_sha256": "2e83ec88189d561f9c765c3da52a8ca14f16a59fa70f812fdcd66fa282cec2f9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "blk",
+    "semantic_sha256": "ea32b3acee051e1f1c701015e2ae2a623705d6dc494185b94f32f6a08d234fd2",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "bmy",
+    "semantic_sha256": "266e6097c620d020873b031b11a9c9202ed0d51402ff0bb9123ab0f48b5be4fc",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "bny",
+    "semantic_sha256": "d163cad1b1d92eb6a0820f8d5650281568c38188108ee7b9486837bf3d4b885c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "brk_b",
+    "semantic_sha256": "9a91d6836cfdbe39c82dde68868bb49dfb2e179588b2483bb9de61454c3a44a6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "bsx",
+    "semantic_sha256": "8cfa8e0793db02a55cd3111164fc0aeb2041683f10c8734c81e6be96d5104844",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "bx",
+    "semantic_sha256": "81e437eda68689ddf4c284bf9c8cefc1a8db8be0d1010fa94d5101a51ddf78af",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "c",
+    "semantic_sha256": "b0923d7cda1c12fbbdeb3eb2026087460d218258196fdc01838abeb8f4c5ed19",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cah",
+    "semantic_sha256": "19c0e76f54b143f13e96264009a8e9cc6caedfed1d4d666284bfd83d3970a79e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cat",
+    "semantic_sha256": "052770ed3c7f7e78f76d2bc7ac099a907386dcb08fb996014181380df946090d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cb",
+    "semantic_sha256": "7d7dbe493b3af82fe8af8f22dc936d2f130617ad2e61a663785e9cae0a2bbe65",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cdns",
+    "semantic_sha256": "2072b81a562ed26c832f8486c9376c72188ad99381983b177dc277ba51d0b488",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ceg",
+    "semantic_sha256": "fc4034612759f388f6e9405e3af56b472ade464f38a874cbe1509bb96b56d0c6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ci",
+    "semantic_sha256": "6e12b4e6ddd46dd4964a4718d56a626f79b8c46a9eaeda18947953b774741522",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cl",
+    "semantic_sha256": "899cd864f4bf9c3643146b9c8da55cd522ed5c34048d7fe81c3481df99b0f9fe",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cmcsa",
+    "semantic_sha256": "87b9659f8c557bf5124b5a4a4145aa66118d90a8077c7797e99fc7d39d359123",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cme",
+    "semantic_sha256": "19b17b1fdb3a80976db7c95eaa98a433d31a2cff2a1a6e979174df97f1cc8cdf",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cmi",
+    "semantic_sha256": "55101c26d5eb083c731f48fa93891db572e9fa72a6266697fccf8284c66b3aef",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cof",
+    "semantic_sha256": "f716d19817c7507c30f48198d1a414723f3e3e0b62ca0306b34f06ac0a4bbe40",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "coin",
+    "semantic_sha256": "511628ba09080f650315efc7fc77058d6ffa42f2e69a16db9d6532a48463e564",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cop",
+    "semantic_sha256": "123b058e9139c653aee0d30cef2e2b803b862f43bc211359efaee06ecfbbfc71",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cor",
+    "semantic_sha256": "9370b1e00815a55df9cbe391c90c8246ce246e1579d991c7610f913d869a14c8",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cost",
+    "semantic_sha256": "aa9cd63326e3c742636ffbd110436d6d195d3f5807d61b15f9464a286f1285af",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cp",
+    "semantic_sha256": "b1a14545fb385696e9a19c1d7c3e31593df5c0813e651a92692c3d85778f5c31",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "crh",
+    "semantic_sha256": "77bc34801a9987fd2bb781cbc9a8a41205c272c70a8a8885166cfd31fbf71919",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "crm",
+    "semantic_sha256": "e5af543eb1a28115d1cd0bd91a03b92c99b373a6f909e0ce6b104658b6540c3a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "crwd",
+    "semantic_sha256": "ee64febfa7626eb6216bfb28b0f34ac2f241e54eca4e92474be1f93d23162dc5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "csco",
+    "semantic_sha256": "c120a2bcd14174af684c052f104dd68cea5b8122aa6509e549aedc64bddeb37d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "csx",
+    "semantic_sha256": "063ed09ce09a3b28ac169bb09796c39cf54aa5df122af67392a480cab3a6882a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ctas",
+    "semantic_sha256": "ab74e78c8ee29ed58a992f49fa5aaa977b80608b67041f6ed71098eedf0ef98b",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ctva",
+    "semantic_sha256": "723bbe9001b8d5366a5af25e363b4e0bf9aacd9e9ba106ecbf359ac6ea8d157c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cvna",
+    "semantic_sha256": "a6a6793dd2addb5cbc0c9b17e19b01eb7ddd1aed8318098f4eea1231fad7d18f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cvs",
+    "semantic_sha256": "f6feb176101cf737544977142487c461f16ee0c6cc27045dcfc5126f2bbd9298",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "cvx",
+    "semantic_sha256": "515299cc85badd036057a903c39d3fb5c9c17ab615c7a5a3af057af7c9b8f641",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "d",
+    "semantic_sha256": "1781b40e118e0de6c1c9ae2c96095d4e7222b9059c03dbd9bb4bb243ef01de9f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "dal",
+    "semantic_sha256": "10c4a51b494043f515c897130094d600cd962865c8d77699d1775bc9ec1e59ab",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "dash",
+    "semantic_sha256": "18065343ab038e2f14b8f9ba2d59644b0295be6c91088121096b55c827e5eb8a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ddog",
+    "semantic_sha256": "6e12d990e0a25d44d929bfefae920468f33e794b940a85afb06a00bab332e816",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "de",
+    "semantic_sha256": "38cf905e9c9f1c6c864ee935df72fb26d337708a3036203f67f1444f55c4c65d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "dell",
+    "semantic_sha256": "2ed03d77a156e174b4a099f42b9720e8371964c45847fb744b90f2d14a33770f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "dhr",
+    "semantic_sha256": "7593e294223112e1f5ab3a7fb8e50db2089fb3c492e05bb8d4e65c9cde76b3e0",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "dis",
+    "semantic_sha256": "067c201d4f27dddde713def5ae315d1b11bc1b2859374c8e81c682f299698acb",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "dlr",
+    "semantic_sha256": "e2db29873cc07ce133b5a86ca53f838587097618170e7291ebd973302d292148",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "duk",
+    "semantic_sha256": "83d4caec613cb44f1fd20a15fe51dc9f4b0ede6b8b44fcdb6718ac74d33542b6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "dvn",
+    "semantic_sha256": "2a77a5cad361f835168b9d3b10f828555b0d0f0f08cd816946e2724154b611d4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ebay",
+    "semantic_sha256": "1fa314e139764ceda5af63636d630733a5eda9e227839c223340e40907d28ac6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ecl",
+    "semantic_sha256": "23db279b47fea94a67658d5b29350b34af4c2b4c345bc299f7104c1625381a70",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "elv",
+    "semantic_sha256": "55677ace54bb1b3b17400e525f5338959377124acf5bf492b74386edff8528e8",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "emr",
+    "semantic_sha256": "3d5290d3ef48ecab85e2d0b0e7b7e92b05b6b47b17af8713d8808b43f72076ab",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "enb",
+    "semantic_sha256": "2525ba262c8f06a906ffe39cf11ae7a37a6607cc145978950a58782910b2d8f2",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "eog",
+    "semantic_sha256": "a2e7b11d16a99dd2550c15a99ef9b0e19117cc94bbbf670230829a012cbaafcd",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "epd",
+    "semantic_sha256": "7905246061fb277734db8e66f76d677c88813085de23ec5a4af5667ef9c050c4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "eqix",
+    "semantic_sha256": "0a211a309232968fe5ec1a20c3b263ee266c8c933e917fd17e2c8ec4dca3a3d6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "et",
+    "semantic_sha256": "29fe4442657821c45b0aa85e51250d8061c235b7be05856c5654e350e8491c49",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "etn",
+    "semantic_sha256": "2acbd6d2eb39d07b1b36cb907596196efcc2f4427d3167814dc544e807fa10b8",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "etr",
+    "semantic_sha256": "17d3fbc1022afb841a8915b90a05be2cb927bff5cb34062f9ad4433072105af7",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ew",
+    "semantic_sha256": "92e9f4b645b44d3dd55f1adb0e843e6691d5c888f87452888b11e21da946e9dc",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "f",
+    "semantic_sha256": "45190833589737f282b338b60d6d870d7cfad3274abbefd553d9dfa906f44bef",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "fang",
+    "semantic_sha256": "2a135585bd25903ef406e54899b656ff73d18699c96b5df5c55b64c888609221",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "fast",
+    "semantic_sha256": "55c5b943a5ebe5024f663c64c5469a12d821ffdf631906f56539d272aa88f9e2",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "fcx",
+    "semantic_sha256": "be2eaa295801756660a47686bc159bd8cf4642cd88855a48a1b4cd1e097d1c3a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "fdx",
+    "semantic_sha256": "56da947881ff02ddf6f6ac6c9c71bc17b61dd6c9b5fc3c2cd6fff153114995b6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ftnt",
+    "semantic_sha256": "1e1d1261c3e33b57e4b9230eb6acbd50b1e50991c51cf36eae971032c8ef43e9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "gd",
+    "semantic_sha256": "3aedbd6be45c3785cfc5703d1504c9de7114bee1c783cf186ef207b4f2b00b2a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ge",
+    "semantic_sha256": "df1dab24196fcbf40bb7e08698b366376aff65529e01eb28bd14cf211002cf4f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "gev",
+    "semantic_sha256": "bbace5719c612345589ff4119bd9ca2a04b61caf888474ceb28e6397732a3876",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "gild",
+    "semantic_sha256": "0f8c24fd04f50f84dea43af196a000d7a2c13f2c3e2ecd9b0f36b76883a30753",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "glw",
+    "semantic_sha256": "78a708c2e937f06947162f2ab42ba983e4a4b92953e422f269f4798849d7668f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "gm",
+    "semantic_sha256": "f43613a3877c01c9898ea65a39e9c6ae41ab59d162a87b5fa63b72260dcd43e6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "googl",
+    "semantic_sha256": "702ca7363142612b7adc373b96494363b3ebb1d15e36df64b5051c307fa2e015",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "grmn",
+    "semantic_sha256": "c834a069154de7c321e1bbc355ba69d7adb56970f00a689aa9972f5564daeb5d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "gs",
+    "semantic_sha256": "be2d5f1174ae1cb394c752960e41892ea860d4a43d96365968b9040fa01ed61c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "gww",
+    "semantic_sha256": "6d4b7e8426b78a65d803ddc8f6c26dfd099511df5dea9f4053fa156315cd946b",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "hca",
+    "semantic_sha256": "fc9679a0b7141073fdcf45c0e83f71fe20f5f4ccef5b506a445456296b45552a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "hd",
+    "semantic_sha256": "c454ae04d5142b9a0ad9657efd6b995e3e3c43506dfa2e1cacb1f5652ca79571",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "hlt",
+    "semantic_sha256": "7555e0aa454407c2be5316015dc742d8a35230d582537be780fd2a03926d86c0",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "hon",
+    "semantic_sha256": "1b178acf7b441fb5c46c11664aa82e12a9a60caafcfdedcae9e6f03e9331b370",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "hood",
+    "semantic_sha256": "24f7d7fd4575f415fb03b8552866d41f7d7f1a410bdd2405ac5a42890e2a77b3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "hpe",
+    "semantic_sha256": "2559621a4229d08c6395449cd26401d87de56c246a16bd91bf0ffff640b8b362",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "hubb",
+    "semantic_sha256": "f9a0d492b0e0404c916f394b35e8e3af32b18d1ad677b340ce9a7439c7582454",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "hwm",
+    "semantic_sha256": "b78e295a8191af7f755624ade990a0ee425da180444bffac2e419170556fa457",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ibm",
+    "semantic_sha256": "11157a23d8010cc75d0386eac4a982fad4b432ac7a6461938e47ebd73b44657d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ice",
+    "semantic_sha256": "71c5cfa49944b29609bf614781f97b58936779f238e0d56c1df9daf08442a39e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "intc",
+    "semantic_sha256": "e5c1eff1e7eecacbe73ec5c560932559535143ab28b1f730e1a1c8e617af9917",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "intu",
+    "semantic_sha256": "bbcce2faea7747c6a785e70f86afa0cfa3cdc3cc2f5cfbc7cc808630d3f4f673",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "isrg",
+    "semantic_sha256": "01169410772432c56a4740431f2f2170e5b5c679f0df970f0b9d8b2f7e17bccc",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "itw",
+    "semantic_sha256": "df454bcec3ca7adf793d03244aa4886d766ce1819b5194680f94196b5058ca82",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "jci",
+    "semantic_sha256": "13b1063573dd1fc88daf40793a002e60924c3bb9735a83ec7b23857d9fe03aba",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "jnj",
+    "semantic_sha256": "632d3341c0d24682e311131c40c12bc21f1928429bfae575c054b25a569cca3c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "jpm",
+    "semantic_sha256": "70402e2d8591ae35bcda14ca2bfe55d2c692fc526ffbd11779ae71a5eea33a93",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "keys",
+    "semantic_sha256": "7af8d62650b09e294be44c0e32129ea1e8eed9f8289a610256245fc2499727d3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "kkr",
+    "semantic_sha256": "06f0ec58023b7ac3a7afcf7693145ccff67c26167f5939f783bd79e4f2203819",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "klac",
+    "semantic_sha256": "8820e78827a7fe4b719f98f7141d94b7bf8309b4c6ac0cdc60d9c82c86e05919",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "kmi",
+    "semantic_sha256": "938d664c6db0cbaedb478abc7199a245064609c5e55c5febebada7cd5a961432",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ko",
+    "semantic_sha256": "c822ff89c190f290f96eb0fa8349fa87c9216110ab4e7c97ec032c2bebd46c17",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "lin",
+    "semantic_sha256": "e37ff94a9a267d65ce22dddd91e740d983c0b864d5f2609f98484c5a753d6cd9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "lly",
+    "semantic_sha256": "cbcf3ae5c279ad3c92f3527eddfdce1b68a3c7b60351752f6c5ebf6edf61b91c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "lmt",
+    "semantic_sha256": "6f48a4e2558f39509e87428a2da6fc07d9d1d5a910ced349de075d4581de3430",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "lng",
+    "semantic_sha256": "3e0a20de3c5760d1c87784bd0e950f395308b09c033b4732a92c539ee064a37b",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "low",
+    "semantic_sha256": "87a5ac882799997d6700055be19b3cc5ebbf1ca1b2435c3e94733d7c4294040c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "lrcx",
+    "semantic_sha256": "0ec7758e078b3cf464b05badc0f9ad72e4facb7fb81dbae0dee72c73211cda06",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ma",
+    "semantic_sha256": "04ae1c5eddb16750d957b0f87f3f0d07af3a41584bbe69d0ff590a2bc5500586",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mar",
+    "semantic_sha256": "bcc54298fb243b9a98aefee2c8b1d10c5743fb7f4e5071d5ca1164a7d4a042fe",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mcd",
+    "semantic_sha256": "52a4ce65d68b46daad770a66db311697a115b27b4bbd98814dce8cd2116ed83f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mck",
+    "semantic_sha256": "0071b4ffea7561f5126bb0175fef22a8da83542ba169f12cd61c2d6fb3f38eb7",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mco",
+    "semantic_sha256": "3ee91b7233b1a01be09a001d1be72d625b8680c109fd4bfe2955c6c5fa0963ea",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mdlz",
+    "semantic_sha256": "080485c0cb7e473ccad6c55f73e44043e96d0a559b044f43e7b49b6a831c2076",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mdt",
+    "semantic_sha256": "847979050eb9005833107a8e3f2bd9143a0940ac1cb5a622f6fc0649ef042bf4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "meli",
+    "semantic_sha256": "46ba6db152b421c5a7e194582ead567d76c084256d8b6c6a635840a3e9694ef3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "met",
+    "semantic_sha256": "6d4ec753e5291d17a1374096ca46012fc090474f4d4d07b4d12ef8d0bb96b715",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "meta",
+    "semantic_sha256": "10deeb5fc0488dc928810ecc21295bdb281859e0eaffcd4e1e23087869618512",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mmm",
+    "semantic_sha256": "dc4f387e681973def0345a9e86141680c9d9614751dbcb448d60a3874bda6288",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mnst",
+    "semantic_sha256": "9fc32237a81e837a1dbb4abcfad78349d942a027ebdffc62d6d2b61a9af689a5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mo",
+    "semantic_sha256": "23246ef7bf9f4d7579556302b87a821814c1d53fbac1ee0e537f517d12984afa",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mpc",
+    "semantic_sha256": "51ba6b5f834c238d930e8600e61f1666ad55ee9a651107fb1a6c2d807d8e60f7",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mplx",
+    "semantic_sha256": "71cbc9a029d1e7f8565f83b8de382076001d82551f8b47fddb6d054db8950daf",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mpwr",
+    "semantic_sha256": "9cff4c75391f59c1c1ff2191446af56c8b8e1197c0aa8d2f4fa6f617f95089a7",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mrk",
+    "semantic_sha256": "cd25784e44668351dd15c0b5e6dc842634a20da0c677e84d601a366f1dd1c4f9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mrna",
+    "semantic_sha256": "27508d6da332842f863cbb8ddff6f4b5b8bc8023e5d8f4ad7bad25ba8e7a67bb",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mrsh",
+    "semantic_sha256": "9573841e0e497557a8cdb04b34afbe96e1d3e0a2d369386cc5039355a3fb0e47",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mrvl",
+    "semantic_sha256": "ee12751491b5c106f36878efa0932578431e93ff0de6c78f6673ecd9613f9b1a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ms",
+    "semantic_sha256": "7e9c19e60321fa3fa3c5db8ef1cc1e8a7529fd09fad63fa04a7ad0e1b3a77cb4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "msft",
+    "semantic_sha256": "c27724c4d55dbd986500ae90c8bb974a976085ac6c326bc611dcf8fc4a69a435",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "msi",
+    "semantic_sha256": "53e75b580e3a28b9c3aec0939616f6ee71ec1de740571697ebe01912a2a6d9bd",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mstr",
+    "semantic_sha256": "c67ae881ab9d76889bb173f4110b7919e82adf5e9282085207b2ffe2799193b7",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "mu",
+    "semantic_sha256": "b5dd3533eb072e7d74fc73f34e9252449f09cf65d4f72dba5bb175de32463ecd",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ndaq",
+    "semantic_sha256": "4d74da74dca3797809877cea2a6360935587c0e4c7d319164f07623c7a746ad4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "nee",
+    "semantic_sha256": "e095e78697696ff87926e430a1da74218defb2e22db927d00fe40f9bb80ad030",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "nem",
+    "semantic_sha256": "d96d88f9c3f2b39806d9489f8abf1fdf9bf1e7419e7d595de9c513b2c1687638",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "net",
+    "semantic_sha256": "542283b2521b8370ae293c4bed82e5da23292a7441955a31b969767e6b85fb29",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "nflx",
+    "semantic_sha256": "c8d1f5af2b6916e24d0cc12d42cb354014dab2c38d2b0304c708b4c42521ab1c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "nke",
+    "semantic_sha256": "e1fa0a21e260ebaf8f06e5ccafd96f8fc2f6f6898998e56b8822056e3cd11d71",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "noc",
+    "semantic_sha256": "5833a7a024174199f82cffe44e980029d9cd52e53d210a250dd98e0349be2058",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "now",
+    "semantic_sha256": "7fe504adabeeeb82d594c843c4d550abc6447d9fac1136603bb84169684b48f5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "nsc",
+    "semantic_sha256": "4b3c05e4337f83bec3138d60ee80e3f018315f03c9fb1ba18ab30cb2d1d493b4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "nue",
+    "semantic_sha256": "06c58becab68cdf7d8403f43d5e09736db400f78cecf5dbeda64e59bd4be0bc4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "nvda",
+    "semantic_sha256": "629beb7b1c3fb5b6907e38ff10b23e422d4fe80d8639f8f216d7fe8a07221951",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "nxpi",
+    "semantic_sha256": "33d14154cdf7095515d616c6c835bbb48fa5c76682163f43f54d79ec9f6a99a9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "o",
+    "semantic_sha256": "f2e1097fb5073024ceeacc0c391bb7229e2a13d205d1409a57654564b0dba210",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "oke",
+    "semantic_sha256": "16968b03a230e2fb83ceaaa8aeb59206ec70d8135f10bb6159e269fe18b0d7a3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "orcl",
+    "semantic_sha256": "9403d2cab07376e689c9c09a21e8732878bdce98669000f7fcdde13ca58972e1",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "orly",
+    "semantic_sha256": "ee01c668947b5a005f483af0f02f0ee3cbdb62f24a344f18f031d751e14910ef",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "oxy",
+    "semantic_sha256": "ce99b51366f1757978a1b35054dfa1f1a416378c87006f3131eda7c50437e076",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "panw",
+    "semantic_sha256": "09dead3817d5efdcd24b444943a53795d717b7b703ef1e77e0dad70fae8d248f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "pcar",
+    "semantic_sha256": "8fa4b9e02d0bace5cdd2281453d71f292414db9fbf5310dd46035b454f7252d9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "pep",
+    "semantic_sha256": "edd0ff05f08004859e11eff01ef4203755f0fdd7828659a87d427d767e862680",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "pfe",
+    "semantic_sha256": "e575f7578c220f4774f6bdef3d7f06b5c80ec0e0d53769d7c41ea22dff9fff63",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "pg",
+    "semantic_sha256": "c351b298d19d5f901f20c7655a29d248222b1e43cc758cac255f38e4375b302f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "pgr",
+    "semantic_sha256": "fbe625953a27ad9f3b47f9185b6408fa2eb88c5116f451f0a056cc96cf9e8d65",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ph",
+    "semantic_sha256": "9f72de3b0b9328458ef331b9cd4c66fda1f7324b5432c6769a883fe0cce673cd",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:a",
+    "semantic_sha256": "1356d7aa5098530145bd11e634cf5c25da05995699b7be1c5f3b1a3df60b5f28",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:acgl",
+    "semantic_sha256": "04b08420f316ab61c7d5c4ed0759893aac0abe603f41844b73e6c41474be395d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:adm",
+    "semantic_sha256": "94c39fde5307dcf77cb3735549aa9a5adc18220939e4b5d30ec8d605f6f46010",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:adsk",
+    "semantic_sha256": "4cfa7b54838e16a8fe06c7be55ae6f9c3ab44fc97a17b6f1476cd4b1d695476e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:aee",
+    "semantic_sha256": "fa13c5146e460c7ac723ccfbd6a4872405e4be97cb9c56706530032347e4e740",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:aig",
+    "semantic_sha256": "f30aebcd042fa5592d2c553dfd6f04cf9a7bc60257b366247284caf7766ac40d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:algn",
+    "semantic_sha256": "22599bcae9bbcb799c54b77e570230479c1d6eabe865f500b8780672b637552e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:amcr",
+    "semantic_sha256": "51aea2c379388911cf1ef0cf0cb7d7aeec34effd7a398165e48acac02bd545c3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:amp",
+    "semantic_sha256": "dc63784a521349a2c459777ef9ff69fdc19cc4a3a70da2e260df0dc4a256c504",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:aptv",
+    "semantic_sha256": "ffed90f16f9772c1e500277605c2b5f3381ef87a2cc7bb12fff3bb3195a06156",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:are",
+    "semantic_sha256": "f8514e36f433e6e7ad842433c23728952d8ecd9ffc87f7f9c1eab2aa3ddc4baf",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ato",
+    "semantic_sha256": "62e2d1985035ac0129d1a48792330c8aeaf8f6de0a8cec92f0a82738e65f8c01",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:avb",
+    "semantic_sha256": "d8fad8f69cb58bffa7b658183512eff120311f4ba124572f859b9efc49353842",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:avy",
+    "semantic_sha256": "3e12015f71fcf41406d5a6caddd5c9838a1773a72ed56b86d55d3f86e5d40c61",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:awk",
+    "semantic_sha256": "f6ba50fa68187d57cfc640a83e1c7a14b518933ab306dd616a5cff6b13002366",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:axon",
+    "semantic_sha256": "7495fb7bf827bda5c7e9352b6af625511903b87bf11bb418c6936c84e251da43",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:azo",
+    "semantic_sha256": "5b1359087fff7c5441a6c3c16cd8567a4c90e3ee2faeecf954ad5c718d16e2c5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ball",
+    "semantic_sha256": "2f62b175c4f79f90dc135bed88fa3e6a08aa7363823a559239faa0a5a0a4c8a4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:bax",
+    "semantic_sha256": "ae50c865cad48f1c30e095c5565e7fd7e3b5b87cb5e1fd2d1e4fe2a4457a0e1f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:bby",
+    "semantic_sha256": "23ce797a542c01a39b53c467884ede45750c68d71380505546405c6fbae03ce1",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:bf-b",
+    "semantic_sha256": "6f249759548555ce1b7f153e49b19f735ae27fb69a2e2ab17b41ca3446101143",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:biib",
+    "semantic_sha256": "81432ae42e4a12abb0838c246956aaf878a412c57e5f44d1a05944d69d723e52",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:bldr",
+    "semantic_sha256": "460b7060728e09d9de382a9d3f62b214067980b6a49bde4aa7cebcf8f47552bc",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:br",
+    "semantic_sha256": "1ed3462d709b2cd853ff3b599b2d950421f5eddcae7b98192f86cfa6567143b0",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:bro",
+    "semantic_sha256": "8fbaf71f6c1ad40ce5e45ea88b02e0dc866fb5d07398613c6e9b4332d0193188",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:carr",
+    "semantic_sha256": "acb350fd07bae0a3558c7af8e19eaa7d9d5436644f77e782c260d666d79e270c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:cboe",
+    "semantic_sha256": "2876706e05140a4db799f90fda7cd406fce976fffc264938a79d1a6f032affd9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:cbre",
+    "semantic_sha256": "72d18844a7ba582f9576c49d4fcc17704500575e19ab71673c8ff73f9d0a98ec",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:cci",
+    "semantic_sha256": "44b2025fe9b3d57f933431349f89d8c377b788b96654a873bac6c8281f7e1dc0",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ccl",
+    "semantic_sha256": "f10dad8e2eac6ea916b6bf3737caf156fda61680f8ec9ad10d4287b23c66f789",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:cdw",
+    "semantic_sha256": "257501a1f1439122232921f1c5ac6fd0354ed014862083995e806f1069338a60",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:cfg",
+    "semantic_sha256": "931b361f05031ffee96183c2fdb2038c0298dd751951c8e177e4d813e889a506",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:chd",
+    "semantic_sha256": "aefd22c112fc512ee071a2e6e694340e407f6c3d67e3761e15a3fd2545a776ed",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:chtr",
+    "semantic_sha256": "01f95010f6a2b4a98ea5739d41a9955ebd15ca2a3466d0ff63753917f74cda88",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:cinf",
+    "semantic_sha256": "b5e8ad54afece8a8c78c896b9f10ac7bcc0c9b83eb3f0d00ec91bb89b1dcce30",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:clx",
+    "semantic_sha256": "0219189d2ed4c82fcd10b282393effda750cf609435823154bec620934fc976b",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:cmg",
+    "semantic_sha256": "0c3d39353c2607373e1ef50fec67e86de5a0cd474ce20ba05c13a8590ee9ee0c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:cms",
+    "semantic_sha256": "258f4632398d40905b94be55c6a74ac7c54c634156370b146eba4f1d124659e0",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:cnc",
+    "semantic_sha256": "c792d2f88ecfba03c12931dfdb29b5ff97193cae68b8b967dd9799e44232999a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:cnp",
+    "semantic_sha256": "47bc1e8a5b75f554a1540ad08a97efc4477c9707ecb5c2493a7a81f34295a1a1",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:coo",
+    "semantic_sha256": "b56fac4a788656eda1f2342233a37629177d86e21ea7394ee392353cd4b2b308",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:cpay",
+    "semantic_sha256": "3b15c8da1b8e039c530e60ca4d52177d86d8946941a5ed90d190f59389344fc0",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:cprt",
+    "semantic_sha256": "2c22ea033e65d932cbb19706b7e96d37cf5df3f9f5d4679a7c1c8067289392c2",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:csgp",
+    "semantic_sha256": "69a8770fdf179a402c2c9b5b832087c5e83b9506329d25f82206cd7e759c9646",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ctra",
+    "semantic_sha256": "4f6125d5161984e50ff259b40c0f3a9ca62813ce7cd8e495cebb794cce357a8c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ctsh",
+    "semantic_sha256": "647d0690eaf48397a0e3221ba8c6ce0f5d43249c6fd692f36f7e794588495a70",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:dd",
+    "semantic_sha256": "b3ee51eaf18066542f9ea1d4d40f0e141f7376f3809fbca21d4b6f777052e2d9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:deck",
+    "semantic_sha256": "cd3a589e7f2fb00e82e837d1a7e32aadc2b2b804d9ccc72e1b6cffdc8935f56d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:dfs",
+    "semantic_sha256": "efd826674e52ebd4fbb9b25995c7326e45d641b691d6771ce220ae51659f29af",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:dg",
+    "semantic_sha256": "0b3e626e54645d587aa2a6c374f3842d214a0d3021b64d982ff07fea741ecd3d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:dgx",
+    "semantic_sha256": "89f182182f0e03c99191bf61f9f0468c9bebf58ef00a4e7a149ee61ea76c0461",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:dhi",
+    "semantic_sha256": "71436e9516fea8d7e229ce6f5677374b9fdb5701fc6eecee21721b3749a6990e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:dltr",
+    "semantic_sha256": "98d85da80b96fce6c3b814b4ccd98cf0301e8cdafe03aa9263396708a6625037",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:doc",
+    "semantic_sha256": "208c5fbba8b95a268d2ce9d793e2f1908e3751f3fc1616e5d6fc185950c11e35",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:dov",
+    "semantic_sha256": "1f99c9a1add6fcb1c7436270cf5d3cb2d038470e911c800eebd1f8a7edc6ed49",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:dow",
+    "semantic_sha256": "a56dfab67be3fd2e4747871b210c12eb0cdd5551ab654d98f64fe3e28cfe80c9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:dri",
+    "semantic_sha256": "a0c209cecb67d2363780bdf3191fa00cf38d72316aa20b14ce3dfff55d0e1b23",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:dte",
+    "semantic_sha256": "2816069772457604702a6684b2ec49230f2499c69e4f5cd11cf48f42bb9b2066",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:dxcm",
+    "semantic_sha256": "cc8e91a3bebcd88981a8ed670537dd39422c196053fa6d4d58233f40b38bf809",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ea",
+    "semantic_sha256": "3347d4efe5a8b45a1e579f4dc2fbfa239ed8caa3b180e58b0a4260a213335cc3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ed",
+    "semantic_sha256": "bcf4f9cedd93c3acda1ec0055ba410d8efb21cbea72de99d871069e141be89ad",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:efx",
+    "semantic_sha256": "13aca0ec6c34dff9cf98276c3034e529cf4230c6fad316d1ef240a8addf0e420",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:eg",
+    "semantic_sha256": "a5985843f0a9481763f7c8b37427fec67ec9b790c2b817d9c921223a3284f75c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:eix",
+    "semantic_sha256": "c322e7926abe8926fcea2d1cc34cf5c625487f1cd47736888d68ba11146213f5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:el",
+    "semantic_sha256": "1ec3b6769a809d2895f91cfa0c5aa264098004fad820b9b05bb197eb7df60fa5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:eqr",
+    "semantic_sha256": "55906e70a1b13cc3c14e2ce30b81fe12224045f1c20a0c8d27a0948e53f0cb6f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:eqt",
+    "semantic_sha256": "78d03c79781056bcb68edcca3c6518b300728b9be99f8534b8eb7c1978e25a62",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:erie",
+    "semantic_sha256": "1a540123c45bf4b086e02b8683b15cb57a4b2f8cdc256cff8e13c1da939e75d1",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:es",
+    "semantic_sha256": "278bf5109cc1d93ef849f4cbbff0a2a3bad6d731d03e5509367e9396c77cc64e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ess",
+    "semantic_sha256": "8ec2fa84c83b0b8834dfa8309a044bbcf35427aba076371defdf61a125025c6f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:exc",
+    "semantic_sha256": "ddbd022adcb804992c3317f9e95200da08378bd064bf065b4bc86f17bb5b1db6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:expd",
+    "semantic_sha256": "c38323ec66982e5d5e0ce52d6fad33facc75a9426f0d9e7ce74c4d4bb404b8c3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:expe",
+    "semantic_sha256": "e1ba2a9b71a1633d101ad3a2aa62bf137797b461c7103ccb0291b251a696d61f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:exr",
+    "semantic_sha256": "c6c3e3840d74f843c01450b69fbcd980c3e9dbb73c14522d29b0e01f51c67928",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:fds",
+    "semantic_sha256": "de11f482448fde00bbb9b4cfe292cd03edb96092b253be00250755394d90cba5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:fe",
+    "semantic_sha256": "59085c4a44fc27849db67fa03c5c878d5712a1d0c6a7ca8ef870ab7c029d4532",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:fico",
+    "semantic_sha256": "6fda1bcd99546780b9fe65b9db0d53540f613cfeaffb65a1b5d897a369449e93",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:fis",
+    "semantic_sha256": "8353ccfa778cbbef3ccfba31b197e08707c60bb91f971faaed5d47856745d601",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:fisv",
+    "semantic_sha256": "92226dfff99bb06cca5194c769bc8d2479a16abc97468e9c632a197f013d6951",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:fitb",
+    "semantic_sha256": "0a6342783ee91f4dc0f18a0c297a10d507d6b58974f5166b41169f9cb7fb337f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:foxa",
+    "semantic_sha256": "34409e8ebf84fefc6fa3996a03953788161c1349c5af5397f5fc4b737b69ceae",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:fslr",
+    "semantic_sha256": "5981bc9ba19a804c64ac876231c9b3285db58743d5f65610ee24a16a6204f409",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ftv",
+    "semantic_sha256": "d7c261a7ae2580c1752701f5cd0ab09acfea07733c5d038ccc1d5e5887cef25e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:gddy",
+    "semantic_sha256": "7b7bea35adcddef27cbf7c5d029bada022f8e34a1bef88109d6942fa13e972f7",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:gehc",
+    "semantic_sha256": "71149813552525034690d88fae11ddd5af314abd200a5ebe21af8ee0697875ac",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:gen",
+    "semantic_sha256": "5b3d020764def6c699d4dbe776887055c83fa822159d4ea6a01299f642e4da30",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:gis",
+    "semantic_sha256": "6c140591cdeba605d52b743c49810b69cb362799bfd7c3b3a07fb67f8eef545f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:gpc",
+    "semantic_sha256": "1363d8209b5935ba868085959caaa76a5a1537a9b92c3e080d16e7b252807740",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:gpn",
+    "semantic_sha256": "73b21b2b6a0f410d7b07f05d229b22126652549b4535b9b43fd9253850a95000",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:hal",
+    "semantic_sha256": "57145121033d75db972d3f490287b5f2da3093212beeb9c1c93ef425b721dc07",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:hban",
+    "semantic_sha256": "6daa8c0142f1b80bd672229eaf56cc8f9706032bc3a8309ddd4fa3b5383289ca",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:hig",
+    "semantic_sha256": "5c5b87a3939b87e4848cd238ab3662c120b1c769cb68f8a03376542ca1b3720e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:hpq",
+    "semantic_sha256": "4ff5f4c70db3700e951bc1594c1b1042d26aec91f0f968b4c6f627054c130cee",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:hrl",
+    "semantic_sha256": "077f3d2f3d5a3bc1444be4f7468a1332450ca09e8ab85528d235dbca101745a6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:hsy",
+    "semantic_sha256": "dcf08ff2e8ae228198d9ce7329a9e74b5622016734c3a904d8f77997190a8020",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:hum",
+    "semantic_sha256": "8f34807f88f8545cf5e2b65defcb18caca7fd009092122afb7cfe2f52aa1744e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:idxx",
+    "semantic_sha256": "c61c24d1d21509053aa520a45f5d742326256829779cc8df6c9a45c865df08d4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:iex",
+    "semantic_sha256": "7d258691e071bfe062a717025f156721a15e7c2e56779bc9e99b035922ac92e4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:iff",
+    "semantic_sha256": "4acf9ee47d02759bed0dbaa33002646b402a8d4c5e4cb099e33386b1f1f3d319",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:invh",
+    "semantic_sha256": "cb7476abf649e4aed2ccde5b071a7fb50f8d721fd6772298561c50b10af82211",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ip",
+    "semantic_sha256": "af1772d6fcde60a8472d6d3e3b62b27566ec0d63179ae4d2cf10ff850b887f3a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:iqv",
+    "semantic_sha256": "b32d7e03d59a0fd2ab579e7432d71a8a798acb4ff7863b7492edd6abb1837f42",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ir",
+    "semantic_sha256": "460fa18489a989843d90fd673498cec3cc94e7addf3e54bd5cc09cdd70f5094c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:irm",
+    "semantic_sha256": "2cc3310a6efb861b597bf5fa915f9512cc8f7aad1d8fb323f63d125231028111",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:it",
+    "semantic_sha256": "debfcdd580c4637ce143e5fa870df4575aa5f751fa27bcac1f652a0f3bdd2c87",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:j",
+    "semantic_sha256": "d522efffaedc041b3bbf72954521c868e1762a45a8b6053861be7208bc1eb0e3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:jbht",
+    "semantic_sha256": "6076cd3207e233c06677f2b4e270ff6911280a042147e2162cf16578b6822827",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:kdp",
+    "semantic_sha256": "c8a9b83c544618b71380d29d338692a171b7aba4cbc9243b3f3ca4e62dfab2bc",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:key",
+    "semantic_sha256": "df416d7abf631224702ddf927a7ed8679d6928bcbab39e3cd990f6eda341f866",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:khc",
+    "semantic_sha256": "cd8214458843256cc075ddda4992372069c5047858fe7ca86c49b998ea01436e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:kmb",
+    "semantic_sha256": "854da304800ac3c9963bb45e7d88da08d2e26302efe745605fc28c3d0a3dfda3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:kr",
+    "semantic_sha256": "ed59330248bd932c442a1253ca973ba54eb5bde129f854f0b271447f5f5ebbd8",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:kvue",
+    "semantic_sha256": "22e532133e0ff7dadf0cd10de9fcdf6823421a7f6cea847d7523e3d188c59c36",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:l",
+    "semantic_sha256": "23ecc1efc0ac859fbb015fb20ed47bf872b839f93be512b8c834682f0e158f5d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ldos",
+    "semantic_sha256": "6681596704342c762eeffe0718825042826025473c3bb9d834864be31206ac2f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:len",
+    "semantic_sha256": "c09cc93ae008cbb499ad06906e2c81e77c7276c6f0d43f2c29678d534fa55303",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:lh",
+    "semantic_sha256": "3cb7b9fc93e9aff4905bb023f9a9ba669eaef75604b05f6697a8bae63993df4e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:lhx",
+    "semantic_sha256": "02a93699506b500840b7a558222f9d9717ca01ce458873819a8fcb3c9652529e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:lii",
+    "semantic_sha256": "776b2be201540569cdfad51cd101ac7337396f51d8cf2e783a6a66c14960a6fb",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:lnt",
+    "semantic_sha256": "142eab7ef9fcafef8b003eca2924f8f0e162078c06db86f0efa9a8794523933d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:lulu",
+    "semantic_sha256": "7f3fef6d18fb4880a91ee6a1ca9b5cf81caf4d246dab5126c28910a4a098637c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:luv",
+    "semantic_sha256": "e37f7f388fd9526a5568d4a127e5af22b3d67ec77053537ccd80e2341d5ff87e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:lvs",
+    "semantic_sha256": "fbea1293a6d5625bdb1832c05dbb0286a38fe9fcffadaa8dc12b764762b68682",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:lyb",
+    "semantic_sha256": "887dba6d2a8e61470a6c30ce0e0d8b67b6646fb63d3841f33b0f128b78171291",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:lyv",
+    "semantic_sha256": "15740d4e8a9a19403ce1861a19c3aaca70f9edd8eb06e7344c2080c2a8ad7da2",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:maa",
+    "semantic_sha256": "1ba2489fb78d322209f89669e3305c43a99e66e3ccdfbcf022f13eb1592c4349",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:mas",
+    "semantic_sha256": "cbda7d4b90f3b045d19c3ae05191f48b60aaf201fc557b64d6ae69552b28a9c7",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:mchp",
+    "semantic_sha256": "527d31e31601bbc5e24465f292fe1897a5968c4746bf322e4ca6394108fd9ed5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:mkc",
+    "semantic_sha256": "484b325deb15e82adfc57dc3ac2e267875fae780db66a603e19287777cc12f5a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:mlm",
+    "semantic_sha256": "f782704fdd35964438c75c93c4d05c9b801beacb71e6839535a14d03add269c4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:moh",
+    "semantic_sha256": "cf6e21b6e29c8c5b3fcbd997a49f53513a201c811bb39cd993272f9420afafc9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:msci",
+    "semantic_sha256": "ab37b0f4664d40c29a702a099f54aed59e725ed6834b75a060865532c2084182",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:mtb",
+    "semantic_sha256": "5028bb6c3f3bc334578dea6d96d42cd8e3cdb9fd730fbbe00d18e9f5b1a2e807",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:mtd",
+    "semantic_sha256": "6eb677acef484eff4e86cfa22e8ca2fd995900049f4e68b57163f6de899cad56",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:nrg",
+    "semantic_sha256": "d7a04017bc9658d1463fb076db0c1f725a315cb06ea065ea80e9426ccdca65df",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ntap",
+    "semantic_sha256": "70430d24f72c86776180ff96f45032159e7682ce31a1436a6b978cc224319065",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ntrs",
+    "semantic_sha256": "1430d4088619b28b636eac2d2efc5bb338568d6c3f24b9cac6d580bbf86d17fe",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:nvr",
+    "semantic_sha256": "c2456ca7316051fd27a398126efa054db6bb21b49227944d2ede3c902a2c15a7",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:odfl",
+    "semantic_sha256": "002d092f85a523f346cc430ec2c3cbfaf61cc55b7f2c55ae4f95743ec4bf8f09",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:omc",
+    "semantic_sha256": "0d5873cbfcaf4eb93e196b67ab7203c5d5b0d00a9acfaa96fb76703e05353a74",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:on",
+    "semantic_sha256": "6efbc7dd1ae972a7b9559640c8ddff9bec0371ab26c1048ff0045765cc4ff4bc",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:otis",
+    "semantic_sha256": "28eb146322563d7d8cf615e845e83e493a701b46cdb9054a1162fd13d8fe65cb",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:payx",
+    "semantic_sha256": "a5a5e4b4f6bb78fad17b708bfed9e382d48bb24101432d9cc5568d3ff8a7482a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:pcg",
+    "semantic_sha256": "2e0f6716b70a6c18f109815b325852226e9398b8367e9d06a3b711a89ca86b33",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:peg",
+    "semantic_sha256": "55fc56b995f99f8a5d28db565efcfd1c9b71a30dab63adb1108b3dd241df0c20",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:pfg",
+    "semantic_sha256": "1e231195787a2e0953a5e4ac2db396585f221046c6a3f3e7abf205500b86341f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:phm",
+    "semantic_sha256": "ad2fa953c5f66ac687980cae23abc3121e5a46879bab13a1673465250de09721",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:pkg",
+    "semantic_sha256": "6b098a38d3e95b3936efcc735e0951c31a8fcd42a9e6d8eca6d01258d8bffa47",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:pnr",
+    "semantic_sha256": "c61fc52ed97c7651ff50dc1d8ad8805109e4dbc5bfde5e0e1f67c87fa965f070",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:podd",
+    "semantic_sha256": "d86702280cd406c525972029fc3b7d46f6cc03647c779b546fe64a4e69cd35b8",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ppg",
+    "semantic_sha256": "812f64a76ce98eb73f3059ee31c3f6da51f78a69535c5350052094cf1c7f447f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ppl",
+    "semantic_sha256": "fc060d3cf57e58ea7ea6a542c4f285beeb532eb0eac494d3764f738d858b14d6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:pru",
+    "semantic_sha256": "2abae44b5a2920a069fddea8d8c1e1cddfe68ceb08bafd83a9cda100b738baad",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ptc",
+    "semantic_sha256": "d81bbf295fab863a53edc4c6af9194c32d557e60f3ea7a33a281e5919109d168",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:pypl",
+    "semantic_sha256": "9b8a8ed71c4455470822b91e1d8bfd3a1cd935cfb6c9dbec410b0d5ca460af0a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:rf",
+    "semantic_sha256": "0245653a5631625fb76b5ba6857197f20994a1e85aa36a7d87ff7c8fbd096d73",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:rjf",
+    "semantic_sha256": "133a26b8c8533446cbb302ed4accd555a4b28790b7d12b67b39681e334dd2521",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:rmd",
+    "semantic_sha256": "7aa33d7348f6c8ae2c0ad7a7ae5e92a194daebcdb7486fdaa62146b5b108aedf",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:rol",
+    "semantic_sha256": "f36c5da059271824fa332742bcf07caa39afc9a4b0171a808262ba7a28d97865",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:rop",
+    "semantic_sha256": "02ff8bc8b43270131023ff8a7c0ad17eb439a2a9dd1cf10e56f13df6c5c41b27",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:sbac",
+    "semantic_sha256": "05362764c71abb636e01108bb802ed152886101c6adfb7640eaf610eeeb121c9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:smci",
+    "semantic_sha256": "3bc8a797b5feb0a047b46c0807ffc0e7b7f00451b0749b40e0b0781bfa9d0904",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ste",
+    "semantic_sha256": "04e393bdbf0e301a6299d6d2d372f0421db0d21dfc7ab506617ab4deace81cb1",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:stld",
+    "semantic_sha256": "8b4bb4f84e56dbb62e4183bd51a3b26a20a4781831657268fab1b1713e04c1cc",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:stz",
+    "semantic_sha256": "9ad4916a358bc44ff101266c4498abaf01cc343ddae759876038442366d8329e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:sw",
+    "semantic_sha256": "933a422ed6ec3e7210b0e658b5b66a9dc0737c98d29f5dfeebac8d685a702e82",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:swk",
+    "semantic_sha256": "aea4d7d2f7e6c409576375e3003544ed6efba767ed6b0ffb6b95bbc67cb6069f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:swks",
+    "semantic_sha256": "ae7932a676c11d68183affb531a5bb38363b93a708b27ef89fcefd536085f743",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:syf",
+    "semantic_sha256": "2a7b696551a2c13bfd8c4a4c07d3d769c904a765bccd3b1d0c255cf8464f97cd",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:syy",
+    "semantic_sha256": "21de9d2037a2cd0d417a164b45ef1d80bf596892234a0bfc72298e9a8b91c040",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:tdy",
+    "semantic_sha256": "347e3a4a8f12b17fead8b9a4a5c8e6b574e3192e6d14acdb8421145d4cb1dd04",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:tpl",
+    "semantic_sha256": "17bf13b5993af826b740ce2dc66eee1cc33227859bcc83b017b16a95a28f8da4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:trow",
+    "semantic_sha256": "fef42a873c5c9b53f962cf92c9a2f066bdfd20acf6f0b0e92defd59fb253bef6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:tsco",
+    "semantic_sha256": "00a7f216f94498a7aab63793a10535b841a321d93cc89a7b8e68a8b968514c61",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:tsn",
+    "semantic_sha256": "ecb12e45d60fc66770a7455782912c38fe5422c51eb48801b0ede55078a3fa35",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ttwo",
+    "semantic_sha256": "dc390c5529352eb5d31297dba611442a8f4a0926db5c6c3fc93969399c5647ac",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:txt",
+    "semantic_sha256": "890fea6ed56c89f2ae4c7f2d11830e1054d17084c711b9ac396a96c1e723d2ce",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:tyl",
+    "semantic_sha256": "c96d2dced0568741e9729e2d3d3916f420c1f59cfdba580b9ae32cfe22c9ccae",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ual",
+    "semantic_sha256": "2f0719f356920c10d3d2e2f205a22177a586009f962dbf4a4cf11e65de1caea9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:ulta",
+    "semantic_sha256": "1574b8df86a5abd60138d401a04913e5a244ba481c03e4e9beeb67ca9d7e8308",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:vici",
+    "semantic_sha256": "fc5d326a957999f44ff7367c62d3b869a81778302ab0782f7798316b391c44be",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:vlto",
+    "semantic_sha256": "d52b5e96a8091c946c7c8c85e61f046f3de15c4c8502f5dec1e0a2a08c01b325",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:vmc",
+    "semantic_sha256": "c41251d51382dd75af0d3de36a1141630747d212f07c7801e16e33201bfe0230",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:vrsk",
+    "semantic_sha256": "ef4f79e8d6435201bfdabc18d74826389dd73df32cf6f6df3307b8ae7989a0a1",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:vrsn",
+    "semantic_sha256": "a8dae43c55db18fb9a30ca6260d26f5b2b1aa06e723320457cea88c5361e1fea",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:vst",
+    "semantic_sha256": "e5cab0bf19b46c48470ccf5e2b614ba9c890c788c660bfe765ac10514af79e43",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:vtr",
+    "semantic_sha256": "03280bb2bc030063d3602a73e7fe23ae273dc5838b882653997bcd690db6e837",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:wab",
+    "semantic_sha256": "b672cdba7a6b774f18d79e20cb0117061318d137f3bb2fb6825b8b0eeec56b14",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:wat",
+    "semantic_sha256": "9fdd3ddf71b2b13a206647eb4cc24074951c59be7fa6ae73726e42ad5a1bfddc",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:wday",
+    "semantic_sha256": "150251c5ee52a009ee0ff4dccd0684128591e31112ed7bd085b46de7e698ce2c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:wec",
+    "semantic_sha256": "0635059eeea5971059640b058231141fe143d8a86620179c2b3ba08c2ea428b3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:wrb",
+    "semantic_sha256": "98f5fc21409d920a36b4bef2cfd343e8c14348d6ff17c6c065046b62bc7a2fad",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:wst",
+    "semantic_sha256": "fd02343588e937fac3b57a9a2c317c40f085ee08e338d3a354083c4433b015d6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:wtw",
+    "semantic_sha256": "2b9efaf6b0ca478f306be561dcffd73b32a875be97b899662cc6bcb70d72a32b",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:wy",
+    "semantic_sha256": "b7a48e54b5b1d1dc1770da7f67ca068e158dada369e9c578b3d813b31607666b",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:xel",
+    "semantic_sha256": "1d27f1a7de730b4dd08bab2b07d987bcf09916ced0e4a1c33ff1f1853eec75c1",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:xyl",
+    "semantic_sha256": "a9c019e114495a2dfaf5c671c0f63891037c9a131b0c477a3bcb361981f7b0ae",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:yum",
+    "semantic_sha256": "a22415b92525bec36bd0a97e18bec603d67be7906fde05014e5cd8dfde92812d",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:zbh",
+    "semantic_sha256": "a5faad6f9d559b0d07b529201143114e84f0fa75ffa35d794a79cd2609979538",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:zbra",
+    "semantic_sha256": "9c49f3b1cfd4887f1e1174deaf24c34505425dc0c35d7b319686768b878eba2e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "plan:zts",
+    "semantic_sha256": "6463ca1768c2a54b105db38cf32d944d1395f4ffd6c46d5578c1fe5a0ba04e5c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "pld",
+    "semantic_sha256": "f5704138bffe8b54df912d8e7aee23538da2f681601a768aac905aabf7d65848",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "pltr",
+    "semantic_sha256": "efe214e9ce6364e94a72352c9dcad1e47754c5282a73d58e63d371855d62ddb3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "pm",
+    "semantic_sha256": "9bd6dde18fc0dcd71e8a16dba9d3c520d6d263f39ddcb01aed043de0d2cbd2b3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "pnc",
+    "semantic_sha256": "ca3805401214d1ef7ee5117cf662bcf31e7c2e81dfa8456a619e2af718d0a435",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "psa",
+    "semantic_sha256": "12a35cfe9bc88782ffe84402e09768f762966ed721a8f8f4d27e29cd7a577051",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "psx",
+    "semantic_sha256": "406009d6862db775ac8bfb331964672ad2e4089cee2f6dd5a71d462aec021788",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "pwr",
+    "semantic_sha256": "ea2a23d7354865458b034cee493a74e1abf4e218e850122d8c8cd9ef47928fc0",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "qcom",
+    "semantic_sha256": "a5ffc6ce9b174f95ea2c539ec829b8f8dc933f80da5bae23862397b984538ed0",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000004447",
+    "semantic_sha256": "6f0ad27a844fabb8f295bf07a92cb86453fdb15547a3748625064202f73ebf78",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000034088",
+    "semantic_sha256": "2d7f7ac84d9a119944c0fe8d10f607ee40817c0c645e0d8b003100dd71c88cb0",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000046619",
+    "semantic_sha256": "8502c5541ee0b74e8d9bbe5692475478847524e270b9e61f2a6077bfd3029a38",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000055067",
+    "semantic_sha256": "29658db1b9c8d916029358a789954e2001848901d541f7bc5feb517f8eb2be78",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000070318",
+    "semantic_sha256": "810fbc160283db4158d09067fed5aca44145ddb1103d6eea756b18e6efb2e3b3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000105016",
+    "semantic_sha256": "f1e0da170e2b11ffbe67fe2a4dbacc48578ed5a9e5996e6c1ccc96153ee516e8",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000105634",
+    "semantic_sha256": "af620da914b060eb2fa4d8a072c7b28ac28df8721a6b3815eebcbad35a6bc458",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000110621",
+    "semantic_sha256": "752bf695fdb3f4753f59126107551ea568ac6a2df00f7e371e6b2e7c3ac100bb",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000719955",
+    "semantic_sha256": "6af584e1fcd0dad221121644b409366b40609e1bb1a65cf700d1e20c4b50742e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000790051",
+    "semantic_sha256": "853d1715641d5a5d00a6b2afe67cb7cfb21481655b67089fa867745f42204441",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000794170",
+    "semantic_sha256": "a4c678000a76d776dda7bdc8e8b8e57ac4e39c59c36064c301c53d5b8128087f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000798941",
+    "semantic_sha256": "12edab98908294ddad89b05de5a34c0333471915d10ff2987636b3a3f50ee5c9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000859737",
+    "semantic_sha256": "4b37d4a1227d7132b767daf338390af90de8a8ae6b46de37167ff9904b7ce095",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000861884",
+    "semantic_sha256": "7b2102f6165071e854aa5ca334e15152dc291d0c7fe5e55c2352f443712f0581",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0000912593",
+    "semantic_sha256": "40f642ccf5497a46787fbc4d8e61b25948d690ffd9d96ed0e659833aca7edbed",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001013462",
+    "semantic_sha256": "aefe9009bf23bbb364387ad283c9a5249e201fada13fe7d9327ac1c45c7534af",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001056696",
+    "semantic_sha256": "b45b3d8066d521661fb8b6f5a542cf203e9af4eed4fe8b09d146167849116035",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001082554",
+    "semantic_sha256": "f8573c4ba9f7da9dcd0b5f53fb17ebe76543b09efd4883fe91b89e741ec37ad6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001089063",
+    "semantic_sha256": "a61a7113b40598a6dfe503b39ca4f6b9adea4a3c49dbcf084e7e46038849799a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001096343",
+    "semantic_sha256": "e65e3ebc82e25039d53564c510923254da847a6e37d6df3bcc0115c0bd3aad70",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001101302",
+    "semantic_sha256": "9723005de827352d5028ec5d615d02fbcf16263550f529d71717de960995de00",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001110803",
+    "semantic_sha256": "02f76081cef24452fc89800e3bfbb8c93206169f81f658a495e9b261bb4479f3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001176948",
+    "semantic_sha256": "37215546ead8cbfcc4dd90436523ed72b2cd8f6c95d24083a0d575ac1e80545e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001178670",
+    "semantic_sha256": "434b309cddd93bf423a101784be4d244681e0ccc55cd07996954a8f3b4eec9f9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001262823",
+    "semantic_sha256": "307ee0023a71ad959a0c899899d8ff5a1f339e74314aeae620048c18204be3cd",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001315098",
+    "semantic_sha256": "a1c7e0c42aa5dcebd80cedc0c6e2154238e62f8814d8e502228c9be12a06e51c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001331875",
+    "semantic_sha256": "e44ea7491f31187ba5a7d79b7cc6767abc5723ff8654c5ba5ceeda146cfc9fcb",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001393052",
+    "semantic_sha256": "ad2500962515af5553f5c224fc09cf74da8c1b9b14b844ed83fe6051bcf2ebaf",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001397911",
+    "semantic_sha256": "7bab3c3512b525bc8b4b563cba205732f2eede72d74829bf62011fc7c30bd1f1",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001402436",
+    "semantic_sha256": "9c500a263e35f2aba222640ee4931b31cde86bc5a46a6a1f608148b377723d19",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001404655",
+    "semantic_sha256": "83581a571d5b52057d61aa0765a2a5b74e5f19c84e9d2ebbcf065699039c75e5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001441816",
+    "semantic_sha256": "d09f23308d8e5fe9c67c8e1fa216a3d592a85de721b6ef5917786dd0883d1c53",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001443646",
+    "semantic_sha256": "cb02e40f3bdfdd1dc6a3837c0ab9f0df4cd841273044c319333c588ec565c690",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001468174",
+    "semantic_sha256": "c8273e54f299cc7585bafb8bea400e4a6d5ddc6ca3568d3c0217e5d6c9d52450",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001474432",
+    "semantic_sha256": "d7c66d4cde1da3be5816999cfc159b0fd8ed0229241ee1726a7636bf749f230e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001506293",
+    "semantic_sha256": "65c557a4a98f033d1e9f99adc8d130cde6077b321b51e6569c5b149659247d77",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001512673",
+    "semantic_sha256": "2263c314e75ebfb826f7e71c38d22dfe4adaca749a1d5a2245016c26e9cf77c2",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001552033",
+    "semantic_sha256": "9b59bbfa4913dc13d688763d2b19e511f2ea13a4209a3b73b211a9da52f894b3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001560385",
+    "semantic_sha256": "dc2a98360231eca7e5ce65e392aeaff6ab204a3091496a79ccdda3dff8e62489",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001579298",
+    "semantic_sha256": "86fdea4097c33019ca40a5f454cf3a598ec5a61c40301dd204d0443d7eafde9a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001585521",
+    "semantic_sha256": "fee00627ba8ce1455e1094b0ddfafdbf102be5ebf1683460a157a7d899ce66b9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001618732",
+    "semantic_sha256": "9089434789e96b2e08fd8ea9bbe0ff463145f084b1b5355305c57c4f990928c9",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001650164",
+    "semantic_sha256": "d7e916aa448331e6ec8d5422d7740ccb506c6e095820cc8e3e85660be13a9f35",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001671933",
+    "semantic_sha256": "ab4bce8071df0978c5a05e77c05a858f5b2fc9b5087a15e47d7bacb81dba284e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001713683",
+    "semantic_sha256": "e8b9541842a562797daf56f366d83b0c4b3cbf0e6395ffde602f829760cbbe65",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001722482",
+    "semantic_sha256": "d2e80d1d1531870c5b83706ea37ac8ddcf6375b9a32c87dc1fe9107904129e92",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001758730",
+    "semantic_sha256": "65576b8d7d6a83b37c112f71c13fd2985c6175b7999afa039ec4d3356473cbfd",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001773383",
+    "semantic_sha256": "8e5c6bc2eaca6c5a121b797519854ecc433647bef4eb68ddeff8baa23d06e19e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001802768",
+    "semantic_sha256": "23275c2be9bd744d7921d7f09ee8767b634030f6d6b2564e334b247d6e9073a0",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001805284",
+    "semantic_sha256": "3eb03b8a0882ab27d12bc01273338027a903378407a26ccce50d30c0d298fa9b",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001823945",
+    "semantic_sha256": "afa7464064f9f8cf61a54b23d9d0efb3478c32060168e698e77ed18defda540b",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001834584",
+    "semantic_sha256": "65e21449c6362466523ec269ca282ae1344dc8e0b093a759c3bbfb3e51972d03",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001849253",
+    "semantic_sha256": "497aa7953ca66b0927e32a3291a460fa39184e56e280faed166ce0ab850c7dbc",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001868159",
+    "semantic_sha256": "1aaa743de5b476410515136d1b452babf0f190666e8f5e182db2355047f09a1b",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001880661",
+    "semantic_sha256": "ec4cf6a9a57942a577636b385b430328c17a90cfc4460a78dc72822707e0e8b5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001883685",
+    "semantic_sha256": "99633ed0108eabd861aa1136cdf5ac3035e6e781d488da949acb06ed801feeb6",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0001973266",
+    "semantic_sha256": "9400a949cc98264c34fcfaf51f67460b38a206dc83ba3637617a97d1771e2203",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "r1000:0002011641",
+    "semantic_sha256": "1a7a7c6e3a617d1eb78874543b3bd1cc3836bf495d120a9598756e0bc035b0a3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "rcl",
+    "semantic_sha256": "a50f7787200b4eb2ee7785a64555511b7d46e2dbf64b546c9d70bde702c9a8f1",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "regn",
+    "semantic_sha256": "8488dcb750e23f68d2bb6bdbd9127516a2ded1a9691a3261a737b376212c8e21",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "rok",
+    "semantic_sha256": "c52c26695ef15f8785eb539cc0b4082e5eb437a7d2748c6be711aa39c23832c4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "rost",
+    "semantic_sha256": "7fcd42e2a8ce5c90f8aacda26d11967e4fc48ca36e8ce6fb573fe821bf8efd14",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "rsg",
+    "semantic_sha256": "86ab6166668cb6be7783fe45e517c929af4517e867e171ac412742a397d24fc4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "rtx",
+    "semantic_sha256": "28af6bcf94805dc09b056e04ba95f86dd23aa277646438d9de4b1a984aa06974",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "sbux",
+    "semantic_sha256": "92098826da96e0ef5f18be775a64473d5244d6f4f24d61238850ff6ec839636c",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "scco",
+    "semantic_sha256": "23a983960eacbe27f047de227f8f1bd1f7e7fbc4930299ea9c9110f54aac374f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "schw",
+    "semantic_sha256": "2a51f75ae98520f57d8883db039c67ca8f69d9604cc44659fa1589c2c396cf98",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "shw",
+    "semantic_sha256": "51f3cb031058600e3f822f74ba9c9924ab5c94e19b1d128e9288cb2f64c8ba23",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "slb",
+    "semantic_sha256": "ba6c507fd1dd9d7b2d9ea38705d9b61d6d2d12198b906f51e8908c647559ede7",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "snow",
+    "semantic_sha256": "2fa5282141a648727d33487b968a79648cfd145702e95de06899590bb5596ba3",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "snps",
+    "semantic_sha256": "ddc4d5ba1737e51daf9b924a70b3d2bc92328fe1be3724e732f3b7dd69471a81",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "so",
+    "semantic_sha256": "e4c833b8611a6174a3e5d6186c5af9db4c13171a3503faf8f4851380260e1052",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "spg",
+    "semantic_sha256": "a9a4e728de7a237d93432ebb1cde273abebfe08d3362c3a2393f3cb0d586db3e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "spgi",
+    "semantic_sha256": "0267602ae0421accf5d92d95db7450b04dcd0edb371d8db5871b09be7ead9d79",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "sre",
+    "semantic_sha256": "b892195988b4be8811b285e3905b7164a72395930c30caa63e76cb929f381a49",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "stt",
+    "semantic_sha256": "eaabf515cc90b467564c050a75bfc90a021b87b9a98a2a68238715400a97fa54",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "stx",
+    "semantic_sha256": "293f5d432aecb024e01ee729625a57bd64b279f8cb2f1d029ed193fbf5afc3ed",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "syk",
+    "semantic_sha256": "82ff22c8a4f863dfa014bb8c0b66d3d4b00b4b3acb56d5facba03b27eb364385",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "t",
+    "semantic_sha256": "44453f0e1ba6189e01d41a6e500ce8fc2ee5f2239d168c1a8f741aa6ba137c02",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "tdg",
+    "semantic_sha256": "d6a37baa31fc2c9efbabad36ede067f4d17e1383abf4e6c24fdef3cb846649be",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "team",
+    "semantic_sha256": "c36dac72a2b7c7c1294e608bff0607f142b135d10ff5c6cfd831c25a66587706",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "tel",
+    "semantic_sha256": "3f01307fef4a08bf4bb4ede7df567c565db5dd1a5b04018c9317ade0600001bb",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ter",
+    "semantic_sha256": "afb4e12be7a4a14ba0c66afd88e5e220ac505c21e214420142d727f5aed9668a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "tfc",
+    "semantic_sha256": "029f1c776ec5f55da9fe05dd5264613a64526ce78bc52bf1725009202e3ec4ce",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "tgt",
+    "semantic_sha256": "f760bbc9ebab2bfee8bfc3e408c5d4ec249b886787596217767fcf25ce429525",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "tjx",
+    "semantic_sha256": "b74924f005d5b2bbea3686ffbbfb82983cdd0df9c476e685e5eeab687e9be8be",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "tmo",
+    "semantic_sha256": "febc9812757e3f820364ec3da112ae3002fb810c28c01ca2c96413be8b849f2a",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "tmus",
+    "semantic_sha256": "62760753ca3ecf700c8aa4183c83cce13254a25f51c1c8769bb08cf2f1795fb5",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "trgp",
+    "semantic_sha256": "81645f1f901917db50bd400096a5aae07cd885013b9d326ec07d35a87b5a7fde",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "trv",
+    "semantic_sha256": "0a3e10806122b7138b093e4c81ab97d7dabcbf887ad420419667994cf5aef70e",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "tsla",
+    "semantic_sha256": "2f22058acf19d68722c47d92a21bf36c7d930b8b88e8579365cd1b8fd9307642",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "tt",
+    "semantic_sha256": "24feb011eb225587056bfce4ebbb586b9b0925e4c9390edc668fb7e794344899",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "txn",
+    "semantic_sha256": "916d473c25d8abba40037679d8ecf3810394896e360e72c88da7f43df4399243",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "uber",
+    "semantic_sha256": "ab52d34e4aa0c45f8b7061a1fe787c49d78c4ea6395bc3361f860ec2f395b6c1",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "unh",
+    "semantic_sha256": "76d2292048af4c3f74d4b7e37e580da8bb01ba7f128b11c1c148836571a86141",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "unp",
+    "semantic_sha256": "811d4d004f81cff8babec707c03bae1e6976ed9a43637580220b4e04c2662c09",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "ups",
+    "semantic_sha256": "bb745351c3c3a138c194b76185f9e2f46da7cd15533995a64087cde76aa81242",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "uri",
+    "semantic_sha256": "7c353b957a33ce06d0092c41340e73c051507ae1b1e141e39829072fa221e337",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "usb",
+    "semantic_sha256": "0536a1bba316974136d4d7562b856d3db46deeebc7c6979263fd8de13bafe589",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "v",
+    "semantic_sha256": "f20714e7b309b3d9f432262ed0012b420632378d002954e2e7ceeb27960b8ea4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "vlo",
+    "semantic_sha256": "f3a76192c6beda94ed2783243f66cf8e3beb531795455ed5d26eeffb77fb7347",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "vrt",
+    "semantic_sha256": "16e4d2926bbd61328c69082c02694ed6ebd85e57c7d36a5f3a9b2076533d0d97",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "vrtx",
+    "semantic_sha256": "afc61ac86cde15a48b20d9053d0688b9c34d4493daebac3b73eaa87b483fa9b0",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "vz",
+    "semantic_sha256": "679313530ebabca2dcf704b94c75a7b76533f6c59c1f63fd45fdda8d8bfc2478",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "wbd",
+    "semantic_sha256": "543eb598012001daa2368581125d61304052790d114ab63a7e3531cd4577816f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "wdc",
+    "semantic_sha256": "f588ac507d859503780a45ec3ffc772bc9996e33da9f6cb310c2e75b33139a6b",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "well",
+    "semantic_sha256": "29c6b45bcde9843c4892d23f7e9ba85491fcc1b8e8a38f40e4975af83f60783f",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "wfc",
+    "semantic_sha256": "0ce7049fee0e1493008e3ed4175efdf87e9e7bad436c1afaa49c1b50c1a3c5a4",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "wm",
+    "semantic_sha256": "071523d191e9932a77b579370555f497cce4af6e010a04afc066de579f473252",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "wmb",
+    "semantic_sha256": "c2e5f96a638b42be990c05c97a87f2c8727faddc5db02fcf463b118a0438b953",
+    "status": "PASS",
+    "status_reasons": []
+   },
+   {
+    "company_id": "wmt",
+    "semantic_sha256": "47fefdad553b4247609b72c0eccc887d38ad22d1885b1abeaeb7199203b69c13",
+    "status": "PASS",
+    "status_reasons": []
+   }
+  ],
+  "records_sha256": "91df2422d63969b97f146b9c698c50e155c05d31b6d0335eca78e97967e16d70",
+  "research_state": {
+   "calibrated": false,
+   "full_pit_pass": false,
+   "official_pass": false,
+   "official_selection": false,
+   "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+   "status": "PROVISIONAL_RESEARCH",
+   "track_c_validated": false
+  },
+  "sample_ids": null,
+  "scope": "FULL_UNIVERSE",
+  "scope_note": null,
+  "universe": {
+   "evidence": {
+    "freeze_manifest": {
+     "bytes": 8781,
+     "file": "reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json",
+     "sha256": "5789dc3d3b10dd29d466931bf9c6f459d2569d15071f80dfd50236d0b0cef006"
+    },
+    "gate_evidence": {
+     "bytes": 1213873,
+     "file": "reports/gate_evidence/gate_chain_2024-09-30_real_gha.json",
+     "sha256": "66fbd0f0bebc442f953d65c2fffb76a4939c82b33b90ed850853faeb5bdf3915"
+    },
+    "official_snapshot": {
+     "bytes": 180565,
+     "file": "reports/gate_evidence/official_snapshot_2024-09-30.json",
+     "sha256": "367b8dba1a00c0b9293a9242d29255c1a9342201684bd5bb1a0168384b21e9e4"
+    }
+   },
+   "members_sha256": "9f5928e73753e46b0327986e3993ac89bfef7fa2cf02b7b0b79d76a08ee32d97",
+   "membership_basis": "DERIVED_AT_AS_OF",
+   "n_members": 500,
+   "policy_status": "OFFICIAL",
+   "universe_id": "uni_12c3852b8333",
+   "universe_kind": "US_MCAP_TOP500_OFFICIAL"
+  }
+ },
+ "semantic_sha256": "60ab75359203df85433f6227db563d0f225df26bcf55ee5daadcbf4a7cf3ebd5"
+}

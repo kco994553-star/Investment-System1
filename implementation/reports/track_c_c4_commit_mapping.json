@@ -1,0 +1,25 @@
+{
+  "transport": "GitHub Git Data API; author/timestamp differ, complete trees identical",
+  "mappings": [
+    {
+      "local": "b1e3effe6276d0aed1fe0e5823e76d6d10ad7b5f",
+      "remote": "21378835883c5a9740143899c70d75d6405aa55a",
+      "tree": "2e3eaac80decdae0485ba5f5f7439c8d96884d5e"
+    },
+    {
+      "local": "0cb9a7c0daeacb7eeb1279925e9a054a21cb22a9",
+      "remote": "eb8e5368ab7d380b6a350e79ab9e1914bb5f7315",
+      "tree": "13d2cf1009bfac47286086b8d39eac5e1732e0e8"
+    },
+    {
+      "local": "f89364fe575d45d895769e336ed6079ebca62c53",
+      "remote": "8727b61bf2c0f99fc91c8e48ca37bac270cb589c",
+      "tree": "913423eb2b129e720cffe7136e5beb1f7260b319"
+    },
+    {
+      "local": "b182046eb88b8bc5f78bb1b5e965adb04bf508d8",
+      "remote": "e9d38e4397fe5735a1858a98f23fd7c3f89cfb87",
+      "tree": "cc79598671b469c3f80c21ca7ab1e08c40f1cfbf"
+    }
+  ]
+}

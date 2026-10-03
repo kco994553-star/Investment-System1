@@ -1,0 +1,36 @@
+{
+  "as_of": null,
+  "contract": "PRODUCER_SNAPSHOT",
+  "data": null,
+  "data_sha256": null,
+  "data_state": "NOT_AVAILABLE",
+  "expires_at": null,
+  "generated_at": "2026-10-01T11:00:00+00:00",
+  "methodology": {
+    "blocker": "B3: engine is v0.6 structural placeholder (synthetic); official indicator/return policy is not frozen",
+    "id": "NONE",
+    "status": "NOT_AVAILABLE",
+    "version": "NONE"
+  },
+  "producer_id": "technical.real_input",
+  "producer_version": "technical-real-producer-v1",
+  "provenance": {
+    "inputs": [],
+    "source": null
+  },
+  "reason": "운영 Snapshot이 연결되지 않았습니다.",
+  "reason_code": "TECHNICAL_NO_REAL_MODEL",
+  "requested_as_of": "2024-12-31T23:59:59+00:00",
+  "schema_version": 1,
+  "scope": {
+    "entity_ids": null,
+    "kind": "DOCUMENT"
+  },
+  "section": "technical",
+  "synthetic": false,
+  "usable_until": null,
+  "validation": {
+    "checks": [],
+    "status": "NOT_RUN"
+  }
+}

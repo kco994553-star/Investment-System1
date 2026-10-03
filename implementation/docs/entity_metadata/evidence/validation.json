@@ -1,0 +1,249 @@
+{
+ "kind": "ENTITY_METADATA_V1_BASELINE_EVIDENCE",
+ "recorded_at": "2026-10-01",
+ "status": "IMPLEMENTED / REGRESSION PASS / WAIT (Draft PR #7, not merged)",
+ "branch": "ccr-41677301-10nj3u",
+ "tested_code_sha": "773b264",
+ "evidence_parent_sha": "6c4648e36d3d066c2859d7c346f48e1325103875",
+ "dependency_chain": [
+  {
+   "pr": 5,
+   "head": "feature/web-mvp-v1",
+   "sha": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+   "base": "claude/investment-system-top500-validation-alrugm@b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+   "state": "OPEN/DRAFT"
+  },
+  {
+   "pr": 6,
+   "head": "feature/global-language-search-v1",
+   "sha": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+   "base": "feature/web-mvp-v1",
+   "state": "OPEN/DRAFT"
+  },
+  {
+   "pr": 7,
+   "head": "ccr-41677301-10nj3u",
+   "base": "feature/global-language-search-v1",
+   "state": "OPEN/DRAFT"
+  }
+ ],
+ "universe": {
+  "universe_id": "uni_0d1a30b1ee47",
+  "as_of": "2024-12-31",
+  "sha256": "75f795f838a608a6554e9a3fa3aa8e9e56e72fdfad4e5f8f74623aa00c7a47c9"
+ },
+ "ci": {
+  "ingest_run": "https://github.com/kco994553-star/Investment-System1/actions/runs/36847160494",
+  "ingest_raw_artifact_id": 11153956757,
+  "validation_run": "https://github.com/kco994553-star/Investment-System1/actions/runs/36848115601",
+  "validation_artifact_id": 11154726084,
+  "validation_code_sha": "773b264"
+ },
+ "artifact_sha256": {
+  "reports/entity_metadata/top500_entity_metadata_2024-12-31.json": "d5a338ddf6c6be0aae3c72703070e62d320844fb2d56ca0786869ddd9b596b00",
+  "reports/entity_metadata/coverage_2024-12-31.json": "6a60ecf1c19514939b8d47b67c597fc0564fce2c5ad88bcd0790843a13300235",
+  "reports/entity_metadata/sources/sec_submissions_extract.json": "d37e0d322dc0f01795475ddcc102fda06b3fdd8244ea61edf6b9981b9a39af12",
+  "reports/entity_metadata/sources/sec_company_tickers_extract.json": "8a4c00b726c84227652d9def417019b3d21cebdefc802db412ce6b0b6c8c118f",
+  "reports/entity_metadata/sources/wikidata_cik_extract.json": "e622ca24b50fdfd0bb5507b0e812c91ed22a474f89758d516ef8894371244c13",
+  "reports/entity_metadata/sources/kis_overseas_master_extract.json": "c9e9eb566148b418f373759b954cc59cbce729a0790008c84d7d2bcb5bbe0c86"
+ },
+ "coverage_before": {
+  "ticker": 500,
+  "canonical_company_name": 75,
+  "common_english_name": 11,
+  "ko_KR_company_name": 11,
+  "aliases": 11,
+  "additional_listing_tickers": 0,
+  "historical_names": 0,
+  "historical_tickers": 0,
+  "with_registry_provenance": 0,
+  "n_company_entities": 500
+ },
+ "coverage_after": {
+  "additional_listing_tickers": 82,
+  "aliases": 497,
+  "canonical_company_name": 500,
+  "common_english_name": 456,
+  "historical_names": 236,
+  "historical_tickers": 14,
+  "ko_KR_company_name": 476,
+  "missing_entities": [],
+  "n_company_entities": 500,
+  "n_members": 500,
+  "n_rejections": 122,
+  "ticker": 500,
+  "universe_id": "uni_0d1a30b1ee47",
+  "with_registry_provenance": 500
+ },
+ "rejections_by_reason": {
+  "AMBIGUOUS_ACROSS_ENTITIES": 6,
+  "AMBIGUOUS_CIK_ITEMS": 2,
+  "IMPLAUSIBLE_LABEL": 1,
+  "LISTING_NAME_MISMATCH": 5,
+  "NON_COMMON_LISTING": 51,
+  "NOT_STOCK_LISTING": 2,
+  "NO_HANGUL": 54,
+  "TOO_SHORT": 1
+ },
+ "deterministic_rebuild": "PASS - registry rebuilt from committed sources is byte-identical (ingest workflow cmp, pytest, local recheck at 6c4648e)",
+ "numerical_invariance": {
+  "script": "docs/entity_metadata/evidence/numeric_fingerprint.py",
+  "fingerprint_sha256_pr6_head_eda65bf": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535",
+  "fingerprint_sha256_pr7_head": "d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535",
+  "covers": [
+   "QGV",
+   "Technical",
+   "Macro",
+   "Portfolio",
+   "Leaderboard rows and order",
+   "data.json sha256 (default and demo build)",
+   "140 committed reports/*.json sha256"
+  ]
+ },
+ "regression": {
+  "pytest": "419/419 PASS (CI and local)",
+  "pr6_node_search_locale": "26/26 PASS",
+  "top500_exhaustive_resolution": "3393/3393 labels resolve top-1 to their own company_id",
+  "web_mvp_browser": "10/10 PASS",
+  "global_search_browser": "8/8 PASS"
+ },
+ "unresolved": {
+  "no_ko_KR_name": [
+   "ajg",
+   "crh",
+   "mmm",
+   "mplx",
+   "plan:avb",
+   "plan:ball",
+   "plan:cdw",
+   "plan:ctra",
+   "plan:dfs",
+   "plan:dhi",
+   "plan:eqt",
+   "plan:hpq",
+   "plan:l",
+   "plan:msci",
+   "plan:nvr",
+   "plan:ppl",
+   "plan:ptc",
+   "plan:syy",
+   "r1000:0000004447",
+   "r1000:0000859737",
+   "r1000:0001880661",
+   "r1000:0001897982",
+   "schw",
+   "tjx"
+  ],
+  "no_en_US_common_label": [
+   "alab",
+   "app",
+   "blk",
+   "ceg",
+   "cvna",
+   "dell",
+   "ebay",
+   "ibkr",
+   "mrvl",
+   "plan:adsk",
+   "plan:axon",
+   "plan:eqt",
+   "plan:erie",
+   "plan:fico",
+   "plan:gddy",
+   "plan:gehc",
+   "plan:hpq",
+   "plan:invh",
+   "plan:ir",
+   "plan:kvue",
+   "plan:lulu",
+   "plan:podd",
+   "plan:smci",
+   "plan:sw",
+   "plan:tpl",
+   "plan:vici",
+   "plan:vlto",
+   "r1000:0000096223",
+   "r1000:0000105634",
+   "r1000:0000719955",
+   "r1000:0001046102",
+   "r1000:0001397911",
+   "r1000:0001579298",
+   "r1000:0001758730",
+   "r1000:0001805284",
+   "r1000:0001818874",
+   "r1000:0001823945",
+   "r1000:0001849253",
+   "r1000:0001883685",
+   "r1000:0001897982",
+   "r1000:0001973266",
+   "scco",
+   "trgp",
+   "vrt"
+  ],
+  "ambiguity_rejections": [
+   {
+    "company_id": "csco",
+    "field": "alias",
+    "reason": "AMBIGUOUS_ACROSS_ENTITIES",
+    "source": "wikidata:Q173395",
+    "value": "시스코"
+   },
+   {
+    "company_id": "dell",
+    "field": "wikidata_item",
+    "reason": "AMBIGUOUS_CIK_ITEMS",
+    "source": "wikidata",
+    "value": [
+     "Q27500963",
+     "Q30873"
+    ]
+   },
+   {
+    "company_id": "low",
+    "field": "common_name",
+    "reason": "AMBIGUOUS_ACROSS_ENTITIES",
+    "source": "wikidata:Q1373493",
+    "value": "로우스"
+   },
+   {
+    "company_id": "pcar",
+    "field": "listing_name",
+    "reason": "AMBIGUOUS_ACROSS_ENTITIES",
+    "source": "kis_master:NAS",
+    "value": "파카"
+   },
+   {
+    "company_id": "ph",
+    "field": "alias",
+    "reason": "AMBIGUOUS_ACROSS_ENTITIES",
+    "source": "wikidata:Q1470619",
+    "value": "파카"
+   },
+   {
+    "company_id": "plan:hpq",
+    "field": "wikidata_item",
+    "reason": "AMBIGUOUS_CIK_ITEMS",
+    "source": "wikidata",
+    "value": [
+     "Q21404084",
+     "Q80978"
+    ]
+   },
+   {
+    "company_id": "plan:l",
+    "field": "listing_name",
+    "reason": "AMBIGUOUS_ACROSS_ENTITIES",
+    "source": "kis_master:NYS",
+    "value": "로우스"
+   },
+   {
+    "company_id": "plan:syy",
+    "field": "listing_name",
+    "reason": "AMBIGUOUS_ACROSS_ENTITIES",
+    "source": "kis_master:NYS",
+    "value": "시스코"
+   }
+  ],
+  "not_indexed": "CIK values are not search keys (e.g. BLK pre-2024 CIK 0001364742)"
+ }
+}

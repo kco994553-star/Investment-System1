@@ -1,0 +1,17 @@
+{
+  "kind": "QGV_INVALIDATION_BINDING_VERIFICATION",
+  "runner": "mini_pytest shim, not pytest",
+  "base": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+  "full_passed": 460,
+  "full_failed": 0,
+  "targeted_passed": 16,
+  "targeted_failed": 0,
+  "fixture_provenance_sha256": "e4538c1529868a9cc39a073ea27db760e3da0796ec5a2088fd0e5217902119f8",
+  "fixture_subject_sha256": "729af08566de8638e92a95927b14c540f9653963e99db3add64966ec2a7fb5dd",
+  "publication": "NOT_AVAILABLE",
+  "research_display_grant": "NONE",
+  "frozen_grant": "NONE",
+  "live_grant": "NONE",
+  "research_display_active": false,
+  "scores_recomputed": false
+}

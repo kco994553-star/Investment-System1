@@ -1,0 +1,17 @@
+{
+ "kind": "QGV_PLAIN_ENGINE_FINGERPRINT",
+ "as_of": "2024-12-31T00:00:00+00:00",
+ "horizon_as_of": "2025-03-31T00:00:00+00:00",
+ "universe_id": "uni_0d1a30b1ee47",
+ "n_universe": 500,
+ "n_selected": 468,
+ "n_investable": 494,
+ "n_missing": 6,
+ "n_name_errors": 0,
+ "n_linked": 468,
+ "equal_weight_realized": -0.015298288539394689,
+ "ranked_sha256": "3e75c3c5f9b38a1483f02ff0c0b297e8174c018ebd2c79bfa8a8f650873e85f9",
+ "selected_sha256": "f4bd15053823e9b60fb6afb7e50b5e9f19aa92c1e9ef02fa24aa36ce1e0eb222",
+ "wall_s": 77.996,
+ "network_attempts": 0
+}

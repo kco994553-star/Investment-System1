@@ -1,0 +1,875 @@
+{
+  "recorded_at_utc": "2026-10-01 11:17:56 UTC",
+  "status": "DOCUMENTATION_AND_PRESERVATION_VERIFIED_C7_BLOCKED",
+  "tested_head": "3a76bb436bb8d78a0954775b9a16a93ceb8404a9",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "C7": {
+    "runtime_implemented": false,
+    "targeted_tests": "NOT_RUN_POLICY_BOUNDARY",
+    "mandatory_acceptance": "NOT_RUN_POLICY_BOUNDARY",
+    "software_frozen": false,
+    "blockers": [
+      "ELIGIBLE_VS_PARETO_GRAPH_VERTEX_UNIVERSE",
+      "SIGNED_VS_MAGNITUDE_DRIFT_COMPARISON"
+    ],
+    "proposed_approval": [
+      "C7-G1",
+      "C7-D2"
+    ]
+  },
+  "existing_software_regression": {
+    "C6_targeted": 130,
+    "C0_C5": 103,
+    "C0_C6_total": 233,
+    "full": 629,
+    "counts_source": "ACTUAL_JOB_LOG"
+  },
+  "actions": {
+    "run_id": 36853351818,
+    "job_id": 110339931930,
+    "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36853351818",
+    "head": "3a76bb436bb8d78a0954775b9a16a93ceb8404a9",
+    "conclusion": "success",
+    "completed_at": "2026-10-01T11:08:51Z",
+    "all_steps_success": true
+  },
+  "artifact": [
+    {
+      "id": 11155609858,
+      "name": "track-c-c6-evidence-3a76bb436bb8d78a0954775b9a16a93ceb8404a9",
+      "digest": "sha256:5e879edfd5385ecdd265b99627d1eec48fe430dbd4d50ead311cd8facca98ac7",
+      "expires_at": "2026-12-30T11:07:09Z",
+      "expired": false
+    }
+  ],
+  "actual_C6_evidence": {
+    "Holdout": "UNCONSUMED_NO_READER",
+    "PIT_no_lookahead": "SYNTHETIC_CONTRACT_PATHS_VERIFIED",
+    "acceptance": {
+      "cohorts": {
+        "EXPANDING-PRIMARY": {
+          "decision": "NOT_ASSESSED_PENDING_C8",
+          "holdout_state": "UNCONSUMED",
+          "official": false,
+          "real_pit_research_validated": false,
+          "registration_hash": "7e6fa4931853162541e2a116522843e97aa342c10297446ae11a7e16cef166b3",
+          "results": {
+            "BOOTSTRAP": {
+              "reason": null,
+              "report_file": "robustness-report-2862d9fd55894083dc6c62c3944fe4c6f95ab5343679be5ad52ca1cc24393fc7.json",
+              "report_hash": "a1d521da90331445b3dfee2c76b0f242ac637231a05637b0d579bff51ae3d8db",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-BOOTSTRAP"
+            },
+            "COST_STRESS": {
+              "reason": null,
+              "report_file": "robustness-report-6b93b0d63ac4998fd4de86d4b57ef9cf327e6b95007f0c1536af66b232650210.json",
+              "report_hash": "40b669db2adb3ecac7daa35be1b7f3538081ba41e5192b2af905c250ecfebac0",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-COST_STRESS"
+            },
+            "CSCV_PBO": {
+              "reason": null,
+              "report_file": "robustness-report-76c483c6f2f424594cd51cf2c38bf129426e2ce9be49b680916dd59985738bb9.json",
+              "report_hash": "b740565194d08de3e8835dd9aea6d184cbd68d3b85627b08e9dc81e9fbbf207c",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-CSCV_PBO"
+            },
+            "DRIFT": {
+              "reason": null,
+              "report_file": "robustness-report-248d37778b818e09e15ee76046011b37172a2e1ca56eef15f1b2b3d827caaa5f.json",
+              "report_hash": "1a3925b58d0a37242812ca49a7c1a80a626b95ec81b6b15f63d448d4e9a1e482",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-DRIFT"
+            },
+            "DSR_ATTEMPTS": {
+              "reason": null,
+              "report_file": "robustness-report-c3c3e98c1b770a900d3e0c287656336608787aff23beb23cc8ce6634bce2ae2c.json",
+              "report_hash": "61062a2d39dd1a44837ccf52bb11b3d3d68c0ff64e99003eb64293d9d6019f3f",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-DSR_ATTEMPTS"
+            },
+            "DSR_DISTINCT": {
+              "reason": null,
+              "report_file": "robustness-report-6b365fc77e181611d9877932c6f3fce49d221e45d139d62f47a69baa31a72134.json",
+              "report_hash": "a7ce5f6f6939afc80714c68a5dfda508abe0a2a8102fc35d562e3a62c20a0957",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-DSR_DISTINCT"
+            },
+            "EQUAL_CONTROL": {
+              "reason": null,
+              "report_file": "robustness-report-1af50f345bb761f1e0d89dcfda9e5174e8a92eb5b594327a11068a3707b89126.json",
+              "report_hash": "c950807aad1482ad8b580225c4a4aebc9e77bf9d27449f15afc5c8e8b1314919",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-EQUAL_CONTROL"
+            },
+            "EXECUTION_DELAY": {
+              "reason": null,
+              "report_file": "robustness-report-8ce33f6337ce6bee1228d829ecc304f520d4180fdc0293f81c96b1c609819ef8.json",
+              "report_hash": "55f7e1aa9684f2618d12b275458e240e26995010b3800bd557670c20b961ea92",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-EXECUTION_DELAY"
+            },
+            "MCAP_CONTROL": {
+              "reason": null,
+              "report_file": "robustness-report-8d79b12508845794db3e3f33218f7c19d89572eeb40d4fbbff755429c47154d8.json",
+              "report_hash": "8739973fda3714935112da20d233c7f7c739045c10fea08f1dd05eb55c1b66db",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-MCAP_CONTROL"
+            },
+            "PARAMETER": {
+              "reason": null,
+              "report_file": "robustness-report-bfe9efbe6b6ca5c3aa0de07f5108fb7815aca2b9b279f3923b0a0dc029f7d539.json",
+              "report_hash": "a62cf738609e53eb047a1f970c3db586aeb618dc4c623b88dd4d9134a51f10b3",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-PARAMETER"
+            },
+            "PSR": {
+              "reason": null,
+              "report_file": "robustness-report-072efe0b40dc37673ecff21ff37665b4bd8a3dbef3a309393663799516008435.json",
+              "report_hash": "41ec055a11ea5496afac909fd6b144c127ffd0951a9ac428ec229f9520e939bd",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-PSR"
+            },
+            "RANDOM_RANKING": {
+              "reason": null,
+              "report_file": "robustness-report-069d3ff343d430dbf404c7bc2c561f3ccacc5a0307a64f1289783089054bb7ba.json",
+              "report_hash": "19d40b0f0b26cc10634010446eca453789b74075b4ccafda86c28b03bc254a3d",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-RANDOM_RANKING"
+            },
+            "RANDOM_WEIGHTS": {
+              "reason": null,
+              "report_file": "robustness-report-a938982749d8f8202cd7ed8a20b1de082f0d3c1b0dbc364707283e90d7756b3d.json",
+              "report_hash": "c5da04b8d462d22617a87c798dcac8ca8390af475c2b969f5091dc3fc9b49394",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-RANDOM_WEIGHTS"
+            },
+            "REALITY_EQUAL": {
+              "reason": null,
+              "report_file": "robustness-report-c2603b21be109707eea48a4a1d39897b573627d6e03f32dd2ab7d7cf1593b6b0.json",
+              "report_hash": "a99fdc54a00d8bcee9e23255f360448afff0d3e6754ea0529af5ec59dd10a499",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-REALITY_EQUAL"
+            },
+            "REALITY_MCAP": {
+              "reason": null,
+              "report_file": "robustness-report-eae7ee3616504e25fd5a5a78f1f5288e55a45178e3a30d9b2485266aed0fec3b.json",
+              "report_hash": "3ee05ef9162550fbb317f3835a711badb925b30a80917cf3fba8b00ef3439fad",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-REALITY_MCAP"
+            },
+            "REGIME": {
+              "reason": null,
+              "report_file": "robustness-report-fee85229eb92fa950a4e0e395eef6842d41785d57dc73f65780d9e0eea56d66f.json",
+              "report_hash": "e5ea6ea1d0fa6bf870cba05ba32bbcedbb6d9626ef402b55cf5ad5d506070fcf",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-REGIME"
+            },
+            "UNIVERSE": {
+              "reason": null,
+              "report_file": "robustness-report-983235babef30d40202353699ad5b2ddbc5b86b24d5af4e5981453e62f45dd6f.json",
+              "report_hash": "9c851a920fd625634ddd1e9323a8d2a35929e00a7a19605ef9e909cbd39c51fb",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-UNIVERSE"
+            }
+          },
+          "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+          "software_freeze_eligible": true,
+          "source_hash": "245e642711f6d4237f415b9d9f7adaa0ded1d0b1df00516610fe6bfd6aad2737",
+          "status": "PASS",
+          "tax_mode": "EXCLUDED"
+        },
+        "EXPANDING-REBALANCE_GAP_STRESS": {
+          "decision": "NOT_ASSESSED_PENDING_C8",
+          "holdout_state": "UNCONSUMED",
+          "official": false,
+          "real_pit_research_validated": false,
+          "registration_hash": "8aaef36f872c1a5a61819d91ca400babe45963c5617f6094d301c94fb86ae8c1",
+          "results": {
+            "BOOTSTRAP": {
+              "reason": null,
+              "report_file": "robustness-report-2862d9fd55894083dc6c62c3944fe4c6f95ab5343679be5ad52ca1cc24393fc7.json",
+              "report_hash": "a8cc95832e4aeec5257a20b34b2b126460a94961232c181694cd101207c8f418",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-BOOTSTRAP"
+            },
+            "COST_STRESS": {
+              "reason": null,
+              "report_file": "robustness-report-6b93b0d63ac4998fd4de86d4b57ef9cf327e6b95007f0c1536af66b232650210.json",
+              "report_hash": "2646b3f0d6b8713542e25e4f194b8b22a9428dd4abd633c4abcb1cb741d39074",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-COST_STRESS"
+            },
+            "CSCV_PBO": {
+              "reason": null,
+              "report_file": "robustness-report-76c483c6f2f424594cd51cf2c38bf129426e2ce9be49b680916dd59985738bb9.json",
+              "report_hash": "ba103d0e96035250dbca6dffe3b39cef41ff7356334dcdf2e9333b4195b07ed8",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-CSCV_PBO"
+            },
+            "DRIFT": {
+              "reason": null,
+              "report_file": "robustness-report-248d37778b818e09e15ee76046011b37172a2e1ca56eef15f1b2b3d827caaa5f.json",
+              "report_hash": "acd6cfbb6e3212562f71b2ce2b0bd5d1ad48ab27b0612546fb07f51b42498805",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-DRIFT"
+            },
+            "DSR_ATTEMPTS": {
+              "reason": null,
+              "report_file": "robustness-report-c3c3e98c1b770a900d3e0c287656336608787aff23beb23cc8ce6634bce2ae2c.json",
+              "report_hash": "1f226e9609af72c51eb464be5a649a443546c4dbab9b50f25d29da3667cead63",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-DSR_ATTEMPTS"
+            },
+            "DSR_DISTINCT": {
+              "reason": null,
+              "report_file": "robustness-report-6b365fc77e181611d9877932c6f3fce49d221e45d139d62f47a69baa31a72134.json",
+              "report_hash": "056c589d95c7a23fa3acfde221d55edcd961864e8f3452c3b57f9e0a543ef63f",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-DSR_DISTINCT"
+            },
+            "EQUAL_CONTROL": {
+              "reason": null,
+              "report_file": "robustness-report-1af50f345bb761f1e0d89dcfda9e5174e8a92eb5b594327a11068a3707b89126.json",
+              "report_hash": "72774971ae199e44ff258ebdfe83a4d160998030c9064f42fb99ee00e644699c",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-EQUAL_CONTROL"
+            },
+            "EXECUTION_DELAY": {
+              "reason": null,
+              "report_file": "robustness-report-8ce33f6337ce6bee1228d829ecc304f520d4180fdc0293f81c96b1c609819ef8.json",
+              "report_hash": "db90c15d9f58d62a2f08d94a8085f2b48a818a8e3b7120476d7d1a8c28c488d4",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-EXECUTION_DELAY"
+            },
+            "MCAP_CONTROL": {
+              "reason": null,
+              "report_file": "robustness-report-8d79b12508845794db3e3f33218f7c19d89572eeb40d4fbbff755429c47154d8.json",
+              "report_hash": "88027aa1ae65b88b09b5157218d931e44c0ad991639b01918a6972296b79e03d",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-MCAP_CONTROL"
+            },
+            "PARAMETER": {
+              "reason": null,
+              "report_file": "robustness-report-bfe9efbe6b6ca5c3aa0de07f5108fb7815aca2b9b279f3923b0a0dc029f7d539.json",
+              "report_hash": "3a79bb9bf7d8cd440ab8e90e89a38270a892690f35a0bdce388e490e30c252e4",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-PARAMETER"
+            },
+            "PSR": {
+              "reason": null,
+              "report_file": "robustness-report-072efe0b40dc37673ecff21ff37665b4bd8a3dbef3a309393663799516008435.json",
+              "report_hash": "4e7e5a0f2616bc9ea563880fe340e81c47f917ad1bd36377b34fbf83026f9613",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-PSR"
+            },
+            "RANDOM_RANKING": {
+              "reason": null,
+              "report_file": "robustness-report-069d3ff343d430dbf404c7bc2c561f3ccacc5a0307a64f1289783089054bb7ba.json",
+              "report_hash": "ccbb0488cfaee55366b9a45de6d994ae9dc6f0b30b28c22a1bad7ad36ec9b1bb",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-RANDOM_RANKING"
+            },
+            "RANDOM_WEIGHTS": {
+              "reason": null,
+              "report_file": "robustness-report-a938982749d8f8202cd7ed8a20b1de082f0d3c1b0dbc364707283e90d7756b3d.json",
+              "report_hash": "09905251357337e7f673469533a4c9caedd3dea08947b9730aa305a280717ae1",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-RANDOM_WEIGHTS"
+            },
+            "REALITY_EQUAL": {
+              "reason": null,
+              "report_file": "robustness-report-c2603b21be109707eea48a4a1d39897b573627d6e03f32dd2ab7d7cf1593b6b0.json",
+              "report_hash": "a4f0f0fddffb597b7d8ec33dc3be5369d23de0f7ca8f14e7177b58aca49847c9",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-REALITY_EQUAL"
+            },
+            "REALITY_MCAP": {
+              "reason": null,
+              "report_file": "robustness-report-eae7ee3616504e25fd5a5a78f1f5288e55a45178e3a30d9b2485266aed0fec3b.json",
+              "report_hash": "710fc98625cfd213c5e0a9a2e173198a840433f542e6f38fa804f7dab290dc85",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-REALITY_MCAP"
+            },
+            "REGIME": {
+              "reason": null,
+              "report_file": "robustness-report-fee85229eb92fa950a4e0e395eef6842d41785d57dc73f65780d9e0eea56d66f.json",
+              "report_hash": "0f15acf8bf1885e949760aaa38586bbae95e8cdd7823a63a54c402f543bd4c91",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-REGIME"
+            },
+            "UNIVERSE": {
+              "reason": null,
+              "report_file": "robustness-report-983235babef30d40202353699ad5b2ddbc5b86b24d5af4e5981453e62f45dd6f.json",
+              "report_hash": "74b08acfcbb2f16ca4d3affa6712503ba1e9354471dcab95e954f28a3259f8a0",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-UNIVERSE"
+            }
+          },
+          "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+          "software_freeze_eligible": true,
+          "source_hash": "f7ff4be7f54769ef34ca42b68aa59fce1886d88e5ee2da66664bcbd0cbe723d3",
+          "status": "PASS",
+          "tax_mode": "EXCLUDED"
+        },
+        "ROLLING-PRIMARY": {
+          "decision": "NOT_ASSESSED_PENDING_C8",
+          "holdout_state": "UNCONSUMED",
+          "official": false,
+          "real_pit_research_validated": false,
+          "registration_hash": "09ed81a0afb0ecad0c49d3aac9c7d268178ad80e837cdd613e1b351a1445eb67",
+          "results": {
+            "BOOTSTRAP": {
+              "reason": null,
+              "report_file": "robustness-report-2862d9fd55894083dc6c62c3944fe4c6f95ab5343679be5ad52ca1cc24393fc7.json",
+              "report_hash": "83ab176e47171ffc9af189aba00407dabf73d8ea6385e839108db51e18ae9387",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-BOOTSTRAP"
+            },
+            "COST_STRESS": {
+              "reason": null,
+              "report_file": "robustness-report-6b93b0d63ac4998fd4de86d4b57ef9cf327e6b95007f0c1536af66b232650210.json",
+              "report_hash": "9c7c7296db1ec30199c11bfdd0906f4f4cacffd7ae3d85ced5eb10255b6d2ba0",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-COST_STRESS"
+            },
+            "CSCV_PBO": {
+              "reason": null,
+              "report_file": "robustness-report-76c483c6f2f424594cd51cf2c38bf129426e2ce9be49b680916dd59985738bb9.json",
+              "report_hash": "9c673980caf743d9e6548d186e0c0be6676f60d30d8f666802aeba3ced65f51c",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-CSCV_PBO"
+            },
+            "DRIFT": {
+              "reason": null,
+              "report_file": "robustness-report-248d37778b818e09e15ee76046011b37172a2e1ca56eef15f1b2b3d827caaa5f.json",
+              "report_hash": "11f7c79eb6040d4740d41b854b18321a5eb5cc5ac47dc1d4517b94017767a6c0",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-DRIFT"
+            },
+            "DSR_ATTEMPTS": {
+              "reason": null,
+              "report_file": "robustness-report-c3c3e98c1b770a900d3e0c287656336608787aff23beb23cc8ce6634bce2ae2c.json",
+              "report_hash": "845a8ee9c340d808a7b14df379792bd1ef7d85f3f6b8671d1f59d460cd5a5ebf",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-DSR_ATTEMPTS"
+            },
+            "DSR_DISTINCT": {
+              "reason": null,
+              "report_file": "robustness-report-6b365fc77e181611d9877932c6f3fce49d221e45d139d62f47a69baa31a72134.json",
+              "report_hash": "983944c553709d4df3c54f59c338c75477dd8fc6eb4a7b62722cee07d18e4d88",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-DSR_DISTINCT"
+            },
+            "EQUAL_CONTROL": {
+              "reason": null,
+              "report_file": "robustness-report-1af50f345bb761f1e0d89dcfda9e5174e8a92eb5b594327a11068a3707b89126.json",
+              "report_hash": "f3f70cb4d32ef34df34b3dc619668e80dee23e4f8dfc52540b676e7359d90d5b",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-EQUAL_CONTROL"
+            },
+            "EXECUTION_DELAY": {
+              "reason": null,
+              "report_file": "robustness-report-8ce33f6337ce6bee1228d829ecc304f520d4180fdc0293f81c96b1c609819ef8.json",
+              "report_hash": "340f476f22c7fc7e365028c552e8c49b63502b9e0bae51e4817d915a4fcaa70f",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-EXECUTION_DELAY"
+            },
+            "MCAP_CONTROL": {
+              "reason": null,
+              "report_file": "robustness-report-8d79b12508845794db3e3f33218f7c19d89572eeb40d4fbbff755429c47154d8.json",
+              "report_hash": "7c71a731a5e739df83de8f0febf4710ccbccd5aee8347b93446c2dee6d9026ea",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-MCAP_CONTROL"
+            },
+            "PARAMETER": {
+              "reason": null,
+              "report_file": "robustness-report-bfe9efbe6b6ca5c3aa0de07f5108fb7815aca2b9b279f3923b0a0dc029f7d539.json",
+              "report_hash": "06b551a39b0ffff4f0e2e19ecf9f94ff3aac3e9243a335f35d3f4ce713c3a755",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-PARAMETER"
+            },
+            "PSR": {
+              "reason": null,
+              "report_file": "robustness-report-072efe0b40dc37673ecff21ff37665b4bd8a3dbef3a309393663799516008435.json",
+              "report_hash": "33634c124d62c3006872d961a17a599462bb36142271d76561ba1bcf8e534a47",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-PSR"
+            },
+            "RANDOM_RANKING": {
+              "reason": null,
+              "report_file": "robustness-report-069d3ff343d430dbf404c7bc2c561f3ccacc5a0307a64f1289783089054bb7ba.json",
+              "report_hash": "d55bebb885c42256c533bff863e1ba7922ba491f08d4688a6443a03cc5155ad1",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-RANDOM_RANKING"
+            },
+            "RANDOM_WEIGHTS": {
+              "reason": null,
+              "report_file": "robustness-report-a938982749d8f8202cd7ed8a20b1de082f0d3c1b0dbc364707283e90d7756b3d.json",
+              "report_hash": "81983797d84bcf0169f0fad1db570aacef2b6d669defbf90ff501f96589decd3",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-RANDOM_WEIGHTS"
+            },
+            "REALITY_EQUAL": {
+              "reason": null,
+              "report_file": "robustness-report-c2603b21be109707eea48a4a1d39897b573627d6e03f32dd2ab7d7cf1593b6b0.json",
+              "report_hash": "f0391809d4fce601c76b10956dcddd51b278e9fb0fd14cd228c395989ec3b0bb",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-REALITY_EQUAL"
+            },
+            "REALITY_MCAP": {
+              "reason": null,
+              "report_file": "robustness-report-eae7ee3616504e25fd5a5a78f1f5288e55a45178e3a30d9b2485266aed0fec3b.json",
+              "report_hash": "2306714addd563212790ede45198d73e634c7741aa9f5bd31db4ffd09376df5e",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-REALITY_MCAP"
+            },
+            "REGIME": {
+              "reason": null,
+              "report_file": "robustness-report-fee85229eb92fa950a4e0e395eef6842d41785d57dc73f65780d9e0eea56d66f.json",
+              "report_hash": "9539aadbb749efc567ffb5015bdb289f266ba5a39fda6909fd9bcdecc6920f3a",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-REGIME"
+            },
+            "UNIVERSE": {
+              "reason": null,
+              "report_file": "robustness-report-983235babef30d40202353699ad5b2ddbc5b86b24d5af4e5981453e62f45dd6f.json",
+              "report_hash": "1ce477c8f683e7f43dd31c6d1d7ccf3cd6b770e6ae6827f510e8fe17e948f137",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-UNIVERSE"
+            }
+          },
+          "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+          "software_freeze_eligible": true,
+          "source_hash": "7cbe97b64ad55b664ec86358d4379dfcfc81355db9a258e468804fb35fe278bb",
+          "status": "PASS",
+          "tax_mode": "EXCLUDED"
+        },
+        "ROLLING-REBALANCE_GAP_STRESS": {
+          "decision": "NOT_ASSESSED_PENDING_C8",
+          "holdout_state": "UNCONSUMED",
+          "official": false,
+          "real_pit_research_validated": false,
+          "registration_hash": "639bcd6ef067e8a518be7f0834fd4b21c1ace792450170e6b917df70490698c3",
+          "results": {
+            "BOOTSTRAP": {
+              "reason": null,
+              "report_file": "robustness-report-2862d9fd55894083dc6c62c3944fe4c6f95ab5343679be5ad52ca1cc24393fc7.json",
+              "report_hash": "935d274265e9d9162df66ddcb68cbdf0fd933d11b92bab4097473ca546281d21",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-BOOTSTRAP"
+            },
+            "COST_STRESS": {
+              "reason": null,
+              "report_file": "robustness-report-6b93b0d63ac4998fd4de86d4b57ef9cf327e6b95007f0c1536af66b232650210.json",
+              "report_hash": "7cdaa65e96c90f0d1bfd6955b8304987284798a44922918f6d9730345380e044",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-COST_STRESS"
+            },
+            "CSCV_PBO": {
+              "reason": null,
+              "report_file": "robustness-report-76c483c6f2f424594cd51cf2c38bf129426e2ce9be49b680916dd59985738bb9.json",
+              "report_hash": "704cc074406d72306fd84b77cf03e9f93741a56f222e6a59cfda299f1203f727",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-CSCV_PBO"
+            },
+            "DRIFT": {
+              "reason": null,
+              "report_file": "robustness-report-248d37778b818e09e15ee76046011b37172a2e1ca56eef15f1b2b3d827caaa5f.json",
+              "report_hash": "27ec6de3bd33abcc065a33dabe8b4827716cc26cca2aa13d64b4d5e54f98e812",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-DRIFT"
+            },
+            "DSR_ATTEMPTS": {
+              "reason": null,
+              "report_file": "robustness-report-c3c3e98c1b770a900d3e0c287656336608787aff23beb23cc8ce6634bce2ae2c.json",
+              "report_hash": "a6557e6ec2e0975b4d41fa2b344fd1c5713969b0cb368ae7746b707b54796c05",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-DSR_ATTEMPTS"
+            },
+            "DSR_DISTINCT": {
+              "reason": null,
+              "report_file": "robustness-report-6b365fc77e181611d9877932c6f3fce49d221e45d139d62f47a69baa31a72134.json",
+              "report_hash": "cc35418317f7d04cb9bfa45ffa4ac3cca16fe3eb66855a6af517373f88d9cde0",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-DSR_DISTINCT"
+            },
+            "EQUAL_CONTROL": {
+              "reason": null,
+              "report_file": "robustness-report-1af50f345bb761f1e0d89dcfda9e5174e8a92eb5b594327a11068a3707b89126.json",
+              "report_hash": "364ff3c8a38496f29e5f927f1721a3808e8dadf1b9a85b2ec9e1a842b0305a1f",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-EQUAL_CONTROL"
+            },
+            "EXECUTION_DELAY": {
+              "reason": null,
+              "report_file": "robustness-report-8ce33f6337ce6bee1228d829ecc304f520d4180fdc0293f81c96b1c609819ef8.json",
+              "report_hash": "d7be196f5e1d4db7074ac27d62b1ea5c3530c7730c08e0b9462e6756227d236f",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-EXECUTION_DELAY"
+            },
+            "MCAP_CONTROL": {
+              "reason": null,
+              "report_file": "robustness-report-8d79b12508845794db3e3f33218f7c19d89572eeb40d4fbbff755429c47154d8.json",
+              "report_hash": "d9543995083c7079452f90baee643a7b604d9a2f1d277596923f89264b195f3f",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-MCAP_CONTROL"
+            },
+            "PARAMETER": {
+              "reason": null,
+              "report_file": "robustness-report-bfe9efbe6b6ca5c3aa0de07f5108fb7815aca2b9b279f3923b0a0dc029f7d539.json",
+              "report_hash": "e32a6dc94360221f4e50a6dbf2789b0764530c214377614faf3749832956735b",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-PARAMETER"
+            },
+            "PSR": {
+              "reason": null,
+              "report_file": "robustness-report-072efe0b40dc37673ecff21ff37665b4bd8a3dbef3a309393663799516008435.json",
+              "report_hash": "31bb1c39c4d35b377123ff294bdee141d1f1d81f0dc43f612701dc9e2e8a7cbd",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-PSR"
+            },
+            "RANDOM_RANKING": {
+              "reason": null,
+              "report_file": "robustness-report-069d3ff343d430dbf404c7bc2c561f3ccacc5a0307a64f1289783089054bb7ba.json",
+              "report_hash": "18aff921daebb35ba6b40d80684c51b6b410fcb0184c0af216bebf2f40c896be",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-RANDOM_RANKING"
+            },
+            "RANDOM_WEIGHTS": {
+              "reason": null,
+              "report_file": "robustness-report-a938982749d8f8202cd7ed8a20b1de082f0d3c1b0dbc364707283e90d7756b3d.json",
+              "report_hash": "959bd9a6cd30f79ab7cb9d5d22835c091f4f48d502530d629b63bacd6c53445c",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-RANDOM_WEIGHTS"
+            },
+            "REALITY_EQUAL": {
+              "reason": null,
+              "report_file": "robustness-report-c2603b21be109707eea48a4a1d39897b573627d6e03f32dd2ab7d7cf1593b6b0.json",
+              "report_hash": "05e36275f6e0cb1954a65891cdcdfc06bcb0f82f994193c1c0d59c3b591f0ddc",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-REALITY_EQUAL"
+            },
+            "REALITY_MCAP": {
+              "reason": null,
+              "report_file": "robustness-report-eae7ee3616504e25fd5a5a78f1f5288e55a45178e3a30d9b2485266aed0fec3b.json",
+              "report_hash": "fa9d76a9329b2a3b2ee98978511231331b07456c0c0fcb63601367f780705258",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-REALITY_MCAP"
+            },
+            "REGIME": {
+              "reason": null,
+              "report_file": "robustness-report-fee85229eb92fa950a4e0e395eef6842d41785d57dc73f65780d9e0eea56d66f.json",
+              "report_hash": "7276e561bb24403c07e3127efba9ac8698ab901aaf274183c65340bc3fbeb534",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-REGIME"
+            },
+            "UNIVERSE": {
+              "reason": null,
+              "report_file": "robustness-report-983235babef30d40202353699ad5b2ddbc5b86b24d5af4e5981453e62f45dd6f.json",
+              "report_hash": "1f3e0c0c5f50c595b4cd991bd438e9e088b63e1840f1dfe31f584ea16a8f6b10",
+              "role": "MANDATORY",
+              "status": "PASS",
+              "trial_id": "robustness-UNIVERSE"
+            }
+          },
+          "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+          "software_freeze_eligible": true,
+          "source_hash": "4042982d3d6f5256fa871847329591bcb233c3c4e2075f2b33475738c48442e2",
+          "status": "PASS",
+          "tax_mode": "EXCLUDED"
+        }
+      },
+      "decision": "NOT_ASSESSED_PENDING_C8",
+      "holdout_state": "UNCONSUMED",
+      "official": false,
+      "real_pit_research_validation": "NOT_RUN_MISSING_COMPLETE_REAL_FAMILY",
+      "scope": "SYNTHETIC_SOFTWARE_VALIDATION",
+      "status": "PASS",
+      "tax_mode": "EXCLUDED"
+    },
+    "acceptance_hash": "a9ca68be0c8592279f8df3945a7309ba66a46c21803f9acb83b8742345ee5336",
+    "boundary_audit": {
+      "EVL_SPEC_v0.1": "UNCHANGED",
+      "Track_A_B_D_E_Web": "PRESERVED_BY_GIT_BLOB_IDENTITY",
+      "ahead": 41,
+      "behind": 0,
+      "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_blob_count": 7698,
+      "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "newly_changed_existing_phase_source_tests": [],
+      "preserved_start_blob_count": 7774,
+      "prior_authorized_four_file_repair": "PRESERVED",
+      "status": "PASS",
+      "tested_head": "3a76bb436bb8d78a0954775b9a16a93ceb8404a9",
+      "unexpected_new_scope_files": [],
+      "unexpected_protected_changes": []
+    },
+    "cross_track": "PASS_BLOB_AUDIT",
+    "lineage_provenance": "REGISTERED_HASH_BOUND_CURRENT_RESOLUTION_VERIFIED",
+    "negative_regression": "Required FAIL/NOT_RUN/budget/invalidation tests run before this artifact",
+    "real_research": "NOT_RUN_MISSING_COMPLETE_REAL_FAMILY"
+  },
+  "candidate_tree_audit": {
+    "status": "PASS",
+    "changed_files": [
+      "Investment System · Project Index.md",
+      "Investment-System1 · Artifact Evidence Register 2026-09-23.md",
+      "Investment-System1 · CURRENT_HANDOFF.md",
+      "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+      "Investment-System1 · HANDOFF_HISTORY.md",
+      "Investment-System1 · Master Status Index 2026-09-22.md",
+      "implementation/reports/track_c_decision_register_2026-10-01.md",
+      "implementation/reports/track_c_c10_policy_package_C.md",
+      "implementation/reports/track_c_c7_implementation_contract_preparation.md",
+      "implementation/reports/track_c_c7_policy_boundary_2026-10-01.md",
+      "implementation/reports/track_c_c7_policy_boundary_evidence_2026-10-01.json",
+      "implementation/reports/track_c_c8_c10_contract_drafts.json",
+      "implementation/reports/track_c_c8_policy_package_A.md",
+      "implementation/reports/track_c_c9_policy_package_B.md"
+    ],
+    "source_tests_workflows": "UNCHANGED_BY_BLOB_IDENTITY",
+    "historical_approvals_proposals_evidence": "UNCHANGED_BY_BLOB_IDENTITY",
+    "real_holdout": "UNCONSUMED_NO_READER",
+    "cross_track": "PRESERVED_ALL_EXISTING_BLOBS_EXCEPT_7_AUTHORIZED_TRACK_C_STATUS_OVERLAYS"
+  },
+  "toy_policy_witness": {
+    "status": "POLICY_COUNTEREXAMPLES_VERIFIED_C7_NOT_IMPLEMENTED",
+    "recorded_at_utc": "2026-10-01 10:45:14 UTC",
+    "repository_head": "15fed506d4e67d89861221281e4879002e431b4a",
+    "scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY",
+    "calculation_engine": "functions.exec JavaScript exact small-integer arithmetic",
+    "checks": {
+      "exact_pareto": true,
+      "eligible_graph_edges": true,
+      "eligible_full_component": true,
+      "eligible_selection": true,
+      "pareto_graph_no_edges": true,
+      "pareto_graph_no_plateau": true,
+      "selection_disagrees": true,
+      "signed_selects_P": true,
+      "magnitude_selects_Q": true,
+      "drift_selection_disagrees": true
+    },
+    "plateau": {
+      "toy_only": true,
+      "points": [
+        {
+          "id": "P",
+          "x": 0,
+          "v": [
+            3,
+            1
+          ]
+        },
+        {
+          "id": "B",
+          "x": 1,
+          "v": [
+            1,
+            1
+          ]
+        },
+        {
+          "id": "Q",
+          "x": 2,
+          "v": [
+            1,
+            3
+          ]
+        }
+      ],
+      "tolerance": 2,
+      "objective_direction": "max",
+      "pareto": [
+        "P",
+        "Q"
+      ],
+      "G1": {
+        "vertices": [
+          "P",
+          "B",
+          "Q"
+        ],
+        "edges": [
+          [
+            "P",
+            "B"
+          ],
+          [
+            "B",
+            "Q"
+          ]
+        ],
+        "components": [
+          [
+            "B",
+            "P",
+            "Q"
+          ]
+        ],
+        "stable": [
+          [
+            "B",
+            "P",
+            "Q"
+          ]
+        ],
+        "selection": [
+          "P",
+          "Q"
+        ]
+      },
+      "G2": {
+        "vertices": [
+          "P",
+          "Q"
+        ],
+        "edges": [],
+        "components": [
+          [
+            "P"
+          ],
+          [
+            "Q"
+          ]
+        ],
+        "stable": [],
+        "selection": []
+      }
+    },
+    "drift": {
+      "toy_only": true,
+      "raw": [
+        {
+          "id": "P",
+          "signed": -1
+        },
+        {
+          "id": "Q",
+          "signed": 0
+        }
+      ],
+      "D1_signed_min": [
+        "P"
+      ],
+      "D2_magnitude_min": [
+        "Q"
+      ]
+    },
+    "not_a_C7_runtime_or_acceptance_run": true,
+    "C7_targeted_tests": "NOT_RUN_POLICY_BOUNDARY",
+    "C7_acceptance": "NOT_RUN_POLICY_BOUNDARY",
+    "C7_software_freeze": false,
+    "mandatory_phase_acceptance": "NOT_RUN",
+    "real_pit_research_validation": "NOT_RUN_MISSING_COMPLETE_REAL_FAMILY",
+    "holdout_state": "UNCONSUMED_NO_CONTENT_OR_RESULT_ACCESS",
+    "official": false,
+    "investor_qgv": "FUTURE_TRACK_C_INPUT",
+    "frozen_phase_count": 7,
+    "total_phases": 11,
+    "package_A_B_C": "PROPOSED_NOT_APPROVED_NOT_ACTIVE"
+  },
+  "packages": "A_B_C_PREPARED_PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+  "contract_drafts_runtime_loadable": false,
+  "parallel_read_audit": {
+    "producer_infrastructure": {
+      "head": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+      "latest_change": "DOCS_ONLY_RAW_PERSISTENCE_OPTIONS",
+      "imported_or_modified": false
+    },
+    "qgv_real_producer": {
+      "branch": "ccr-db5d5960-qen9yi",
+      "head": "8d531fb72301251ad237d64a27286df151bf05aa",
+      "contract_status_read": true,
+      "reported_grade": "REAL_RESEARCH_PRODUCER_EXPORT_BLOCKED",
+      "limitations": [
+        "PROVISIONAL_RESEARCH",
+        "PROVISIONAL_INITIAL_PRIOR",
+        "NO_READY_SCORE_COVERAGE",
+        "SEC_COMPANYFACTS_VALUE_MAY_BE_RESTATED"
+      ],
+      "not_complete_EVL_family": true,
+      "imported_or_modified": false
+    },
+    "entity_metadata": {
+      "head": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "use": "SEARCH_PRESENTATION_ONLY_NOT_PIT_FEATURE",
+      "imported_or_modified": false
+    }
+  },
+  "holdout": "UNCONSUMED_NO_CONTENT_OR_RESULT_ACCESS",
+  "real_pit_research_validation": "NOT_RUN_MISSING_COMPLETE_REAL_FAMILY",
+  "official": false,
+  "investor_qgv": "FUTURE_TRACK_C_INPUT",
+  "frozen_phases": "C0_C6_7_OF_11_63.6_PERCENT_PHASE_COUNT_ONLY",
+  "no_merge_force_push_history_rewrite": true
+}

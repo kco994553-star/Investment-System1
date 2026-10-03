@@ -1,0 +1,170 @@
+{
+ "port_matches_kernel": true,
+ "1_estimator": {
+  "phi=0|n_dev=24": {
+   "mean_hat": -0.045,
+   "p05": -0.358,
+   "share_below_true": 0.584
+  },
+  "phi=0|n_dev=60": {
+   "mean_hat": -0.019,
+   "p05": -0.229,
+   "share_below_true": 0.559
+  },
+  "phi=0|n_dev=120": {
+   "mean_hat": -0.01,
+   "p05": -0.157,
+   "share_below_true": 0.542
+  },
+  "phi=0.3|n_dev=24": {
+   "mean_hat": 0.21,
+   "p05": -0.121,
+   "share_below_true": 0.666
+  },
+  "phi=0.3|n_dev=60": {
+   "mean_hat": 0.264,
+   "p05": 0.059,
+   "share_below_true": 0.596
+  },
+  "phi=0.3|n_dev=120": {
+   "mean_hat": 0.282,
+   "p05": 0.137,
+   "share_below_true": 0.572
+  },
+  "phi=0.6|n_dev=24": {
+   "mean_hat": 0.45,
+   "p05": 0.12,
+   "share_below_true": 0.784
+  },
+  "phi=0.6|n_dev=60": {
+   "mean_hat": 0.542,
+   "p05": 0.347,
+   "share_below_true": 0.684
+  },
+  "phi=0.6|n_dev=120": {
+   "mean_hat": 0.57,
+   "p05": 0.442,
+   "share_below_true": 0.63
+  }
+ },
+ "1_ma2_note": {
+  "true_rho1": 0.6666666666666666,
+  "true_rho2": 0.3333333333333333,
+  "AR1_with_rho1_implies_rho2": 0.444
+ },
+ "2_envelope": {
+  "n=24,L=3|t3 vs AR1(iid)": {
+   "true_size": 0.12,
+   "gaussian_AR1_size": 0.098
+  },
+  "n=24,L=3|garch vs AR1(iid)": {
+   "true_size": 0.09,
+   "gaussian_AR1_size": 0.085
+  },
+  "n=24,L=3|ar03_garch vs AR1(ar03)": {
+   "true_size": 0.124,
+   "gaussian_AR1_size": 0.112
+  },
+  "n=24,L=3|ma2 vs AR1(ar067)": {
+   "true_size": 0.143,
+   "gaussian_AR1_size": 0.204
+  },
+  "n=60,L=4|t3 vs AR1(iid)": {
+   "true_size": 0.105,
+   "gaussian_AR1_size": 0.092
+  },
+  "n=60,L=4|garch vs AR1(iid)": {
+   "true_size": 0.096,
+   "gaussian_AR1_size": 0.087
+  },
+  "n=60,L=4|ar03_garch vs AR1(ar03)": {
+   "true_size": 0.113,
+   "gaussian_AR1_size": 0.118
+  },
+  "n=60,L=4|ma2 vs AR1(ar067)": {
+   "true_size": 0.138,
+   "gaussian_AR1_size": 0.189
+  }
+ },
+ "3_degenerate": {
+  "continuous n=8,L=4": 16.878,
+  "coarse_discrete n=8,L=4": {
+   "mean_degenerate_per_dataset": 41.51,
+   "size_conservative_rule": 0.0
+  },
+  "continuous n=12,L=6": 7.0905,
+  "coarse_discrete n=12,L=6": {
+   "mean_degenerate_per_dataset": 31.6,
+   "size_conservative_rule": 0.0
+  },
+  "continuous n=24,L=3": 0.0,
+  "coarse_discrete n=24,L=3": {
+   "mean_degenerate_per_dataset": 0.0,
+   "size_conservative_rule": 0.092
+  }
+ },
+ "4_variance": {
+  "iid|n=12,L=3": {
+   "full": 0.088,
+   "with_partial": 0.088,
+   "overlap": 0.126
+  },
+  "iid|n=26,L=4": {
+   "full": 0.093,
+   "with_partial": 0.096,
+   "overlap": 0.116
+  },
+  "iid|n=36,L=4": {
+   "full": 0.088,
+   "with_partial": 0.088,
+   "overlap": 0.105
+  },
+  "ar03|n=12,L=3": {
+   "full": 0.109,
+   "with_partial": 0.109,
+   "overlap": 0.14
+  },
+  "ar03|n=26,L=4": {
+   "full": 0.122,
+   "with_partial": 0.125,
+   "overlap": 0.133
+  },
+  "ar03|n=36,L=4": {
+   "full": 0.116,
+   "with_partial": 0.116,
+   "overlap": 0.118
+  },
+  "ar06|n=12,L=3": {
+   "full": 0.171,
+   "with_partial": 0.171,
+   "overlap": 0.188
+  },
+  "ar06|n=26,L=4": {
+   "full": 0.17,
+   "with_partial": 0.171,
+   "overlap": 0.159
+  },
+  "ar06|n=36,L=4": {
+   "full": 0.163,
+   "with_partial": 0.163,
+   "overlap": 0.147
+  }
+ },
+ "5_seed": {
+  "iid|n=24,L=3": {
+   "fixed_seed_size_min": 0.08,
+   "fixed_seed_size_max": 0.1,
+   "fresh_indices_size": 0.087
+  },
+  "ar03|n=24,L=3": {
+   "fixed_seed_size_min": 0.122,
+   "fixed_seed_size_max": 0.145,
+   "fresh_indices_size": 0.133
+  },
+  "ar03|n=60,L=4": {
+   "fixed_seed_size_min": 0.113,
+   "fixed_seed_size_max": 0.132,
+   "fresh_indices_size": 0.125
+  }
+ }
+}

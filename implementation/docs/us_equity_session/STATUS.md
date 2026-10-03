@@ -1,0 +1,76 @@
+# US_EQUITY_TRADING_SESSION_V1 — status
+
+Approved contract, implemented beside the Technical model.
+`technical/real_model_v1.py`, `technical/engine.py`, `technical/pit_market.py`,
+and `providers/yahoo_chart.py` are not modified.
+
+**Session / Technical implementation baseline / INTEGRATION WAIT.**
+Draft only. Not merged. Not a research-display grant, Frozen grant, Live grant, or Track C change.
+
+| State | Verdict |
+|---|---|
+| Session binder | Implemented for an explicit vintage and one listing interval |
+| Close-availability guard | Implemented as a lower bound. Provider publication time is not claimed |
+| REAL_TECHNICAL_RESEARCH_PRODUCER_READY | NO. No exchange-issued vintage has been replayed end to end |
+| OFFICIAL_TECHNICAL_PRODUCER_READY | NO. Track C is unchanged |
+
+M1 and M2 formulas, M3, the placeholder engine, QGV, Macro, Track C, Web publication,
+and Portfolio are not part of this change.
+
+The inner research record still reports `exchange_calendar: UNBOUND` because that
+string is produced by the untouched model. The binding envelope carries `calendar_id`.
+
+Do not derive `session_index` from a calendar-day rule.
+Do not treat fixture vintages as the NYSE or Nasdaq calendar.
+
+## PR #18
+
+| Check | Result |
+|---|---|
+| URL | https://github.com/kco994553-star/Investment-System1/pull/18 |
+| State | OPEN, draft |
+| Base | `feature/technical-real-model-v1` `ce587040e7beb31b66a423eab6ca89767f2a2cf8` |
+| Head at this evidence commit | this commit. It is not the code SHA below |
+| Merge-base with base | `ce587040e7beb31b66a423eab6ca89767f2a2cf8` |
+| Diff vs base before this docs commit | session package only: `sessions/`, `docs/us_equity_session/`, `tests/test_us_equity_session_v1.py`, `.github/workflows/us-equity-session.yml` |
+| Mergeability at code SHA | MERGEABLE, mergeStateStatus CLEAN |
+| Merged | NO |
+
+## Code SHA and Actions
+
+Code SHA is the implementation commit. This evidence commit does not change it.
+
+| Identity | SHA |
+|---|---|
+| Code commit | `1d9bc11a23a967f350cf6782468efff6aeb17a66` |
+| `implementation/src/investment_system/sessions` tree at the code commit | `5d26bcb5931345dd8eac4649cb3424dfb6809166` |
+| `implementation/src/investment_system/technical` tree | `ddf49c251328a8b3f637bc923e7f021e822181fa` (same blob as base `ce587040`) |
+
+Actions below completed with conclusion `success` on code SHA `1d9bc11a23a967f350cf6782468efff6aeb17a66`. No other SHA is claimed.
+
+| Workflow | Event | Run | Job | Conclusion |
+|---|---|---|---|---|
+| us-equity-session | push | [36980569432](https://github.com/kco994553-star/Investment-System1/actions/runs/36980569432) | 110753918406 offline | success |
+| us-equity-session | pull_request #18 | [36997605461](https://github.com/kco994553-star/Investment-System1/actions/runs/36997605461) | 110807810864 offline | success |
+| technical-real-model | pull_request #18 | [36997605404](https://github.com/kco994553-star/Investment-System1/actions/runs/36997605404) | 110807810836 offline | success |
+| technical-real-producer | pull_request #18 | [36997605344](https://github.com/kco994553-star/Investment-System1/actions/runs/36997605344) | 110807810381 offline | success |
+
+`c21-real-data` is `workflow_dispatch` only and did not run.
+
+## Actions on docs SHA `4fed17b`
+
+These four runs completed `success` on `4fed17bb538743ccd786ef7f0741c43e04288b28` after that commit. The sessions tree at that SHA is still `5d26bcb5931345dd8eac4649cb3424dfb6809166`. They are recorded here, not inside `4fed17b` itself.
+
+| Workflow | Event | Run | Job | Conclusion |
+|---|---|---|---|---|
+| us-equity-session | push | [36997783024](https://github.com/kco994553-star/Investment-System1/actions/runs/36997783024) | 110808357166 offline | success |
+| us-equity-session | pull_request #18 | [36997788664](https://github.com/kco994553-star/Investment-System1/actions/runs/36997788664) | 110808375863 offline | success |
+| technical-real-model | pull_request #18 | [36997788668](https://github.com/kco994553-star/Investment-System1/actions/runs/36997788668) | 110808375763 offline | success |
+| technical-real-producer | pull_request #18 | [36997788666](https://github.com/kco994553-star/Investment-System1/actions/runs/36997788666) | 110808376016 offline | success |
+
+This file's commit is a later docs commit. It does not list its own Actions run, because that run cannot exist until after the commit. Code SHA stays `1d9bc11a23a967f350cf6782468efff6aeb17a66`.
+
+
+## C-28 upstream adoption — additive note (2026-10-03)
+
+Lines 3-5 above ("`technical/real_model_v1.py`, `technical/engine.py`, `technical/pit_market.py`, and `providers/yahoo_chart.py` are not modified") stay true for this PR's own delta: this proposal changes no source file, and the adopted `technical/engine.py` bytes (`86607bf7…`, Track C `2137883`) arrive via integration of the Track C tip, not via this PR. The Technical owner adoption record is `docs/technical_real_producer/C28_UPSTREAM_ADOPTION_2026-10-03.md` (referenced, not duplicated). The session binder and research outputs are identical before and after the adoption: `evidence/c28_adoption_invariance_2026-10-03.json` (PASS, zero field differences; recorded before the pin edit). `tests/test_us_equity_session_v1.py` keeps `ENGINE_SHA_PRE_ADOPTION = f7268f52…` and adds `ENGINE_SHA_C28_ADOPTED = 86607bf7…`, selected state-exactly from the adopted feature itself; `MODEL_SHA`, `PIT_SHA` and `YAHOO_SHA` are unchanged. Prepared by the Primary Integration Writer; becomes the owner's adoption when merged into `feature/us-equity-session-v1`. `CANONICAL_STATE`: NOT_MERGED.

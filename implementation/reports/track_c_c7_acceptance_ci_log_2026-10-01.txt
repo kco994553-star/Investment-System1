@@ -1,0 +1,347 @@
+﻿2026-10-01T11:54:17.7709593Z Current runner version: '2.337.0'
+2026-10-01T11:54:17.7731915Z ##[group]Runner Image Provisioner
+2026-10-01T11:54:17.7732731Z Hosted Compute Agent
+2026-10-01T11:54:17.7733308Z Version: 20260901.588
+2026-10-01T11:54:17.7733885Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-01T11:54:17.7734894Z Build Date: 2026-09-01T19:56:44Z
+2026-10-01T11:54:17.7735626Z Worker ID: {aa946e5f-2091-4ac9-ae37-3559f872c394}
+2026-10-01T11:54:17.7736278Z Azure Region: westus3
+2026-10-01T11:54:17.7736854Z ##[endgroup]
+2026-10-01T11:54:17.7738380Z ##[group]Operating System
+2026-10-01T11:54:17.7738951Z Ubuntu
+2026-10-01T11:54:17.7739494Z 24.04.5
+2026-10-01T11:54:17.7739962Z LTS
+2026-10-01T11:54:17.7740688Z ##[endgroup]
+2026-10-01T11:54:17.7741233Z ##[group]Runner Image
+2026-10-01T11:54:17.7741783Z Image: ubuntu-24.04
+2026-10-01T11:54:17.7742323Z Version: 20260927.320.1
+2026-10-01T11:54:17.7743496Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-01T11:54:17.7745115Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-01T11:54:17.7745983Z ##[endgroup]
+2026-10-01T11:54:17.7747044Z ##[group]GITHUB_TOKEN Permissions
+2026-10-01T11:54:17.7749142Z Contents: read
+2026-10-01T11:54:17.7749771Z Metadata: read
+2026-10-01T11:54:17.7750276Z ##[endgroup]
+2026-10-01T11:54:17.7752196Z Secret source: Actions
+2026-10-01T11:54:17.7753081Z Cache mode: write
+2026-10-01T11:54:17.7753715Z Prepare workflow directory
+2026-10-01T11:54:17.8155240Z Prepare all required actions
+2026-10-01T11:54:17.8212948Z Getting action download info
+2026-10-01T11:54:18.1528759Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-01T11:54:18.2213581Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-10-01T11:54:18.2836465Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-01T11:54:18.4610083Z Complete job name: validate
+2026-10-01T11:54:18.5405079Z ##[group]Run actions/checkout@v4
+2026-10-01T11:54:18.5405878Z with:
+2026-10-01T11:54:18.5406255Z   fetch-depth: 0
+2026-10-01T11:54:18.5406704Z   repository: kco994553-star/Investment-System1
+2026-10-01T11:54:18.5410114Z   token: ***
+2026-10-01T11:54:18.5410494Z   ssh-strict: true
+2026-10-01T11:54:18.5410877Z   ssh-user: git
+2026-10-01T11:54:18.5411279Z   persist-credentials: true
+2026-10-01T11:54:18.5411724Z   clean: true
+2026-10-01T11:54:18.5412124Z   sparse-checkout-cone-mode: true
+2026-10-01T11:54:18.5412583Z   fetch-tags: false
+2026-10-01T11:54:18.5412971Z   show-progress: true
+2026-10-01T11:54:18.5413358Z   lfs: false
+2026-10-01T11:54:18.5413718Z   submodules: false
+2026-10-01T11:54:18.5414115Z   set-safe-directory: true
+2026-10-01T11:54:18.5414710Z   allow-unsafe-pr-checkout: false
+2026-10-01T11:54:18.5415396Z ##[endgroup]
+2026-10-01T11:54:18.6406330Z Syncing repository: kco994553-star/Investment-System1
+2026-10-01T11:54:18.6409194Z ##[group]Getting Git version info
+2026-10-01T11:54:18.6410662Z Working directory is '/home/runner/work/Investment-System1/Investment-System1'
+2026-10-01T11:54:18.6412582Z [command]/usr/bin/git version
+2026-10-01T11:54:18.6466443Z git version 2.55.0
+2026-10-01T11:54:18.6497845Z ##[endgroup]
+2026-10-01T11:54:18.6503975Z Temporarily overriding HOME='/home/runner/work/_temp/a7d02690-d767-4c47-80b3-cdff4af2c6df' before making global git config changes
+2026-10-01T11:54:18.6505430Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-01T11:54:18.6510126Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Investment-System1/Investment-System1
+2026-10-01T11:54:18.6556166Z Deleting the contents of '/home/runner/work/Investment-System1/Investment-System1'
+2026-10-01T11:54:18.6572378Z ##[group]Initializing the repository
+2026-10-01T11:54:18.6573906Z [command]/usr/bin/git init /home/runner/work/Investment-System1/Investment-System1
+2026-10-01T11:54:18.6672281Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-01T11:54:18.6674724Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-01T11:54:18.6676379Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-01T11:54:18.6677614Z hint: call:
+2026-10-01T11:54:18.6678277Z hint:
+2026-10-01T11:54:18.6679128Z hint: 	git config --global init.defaultBranch <name>
+2026-10-01T11:54:18.6680119Z hint:
+2026-10-01T11:54:18.6681022Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-01T11:54:18.6682574Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-01T11:54:18.6683826Z hint:
+2026-10-01T11:54:18.6684682Z hint: 	git branch -m <name>
+2026-10-01T11:54:18.6685450Z hint:
+2026-10-01T11:54:18.6686224Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-01T11:54:18.6687275Z Initialized empty Git repository in /home/runner/work/Investment-System1/Investment-System1/.git/
+2026-10-01T11:54:18.6705986Z [command]/usr/bin/git remote add origin https://github.com/kco994553-star/Investment-System1
+2026-10-01T11:54:18.6733410Z ##[endgroup]
+2026-10-01T11:54:18.6734868Z ##[group]Disabling automatic garbage collection
+2026-10-01T11:54:18.6737690Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-01T11:54:18.6763069Z ##[endgroup]
+2026-10-01T11:54:18.6764215Z ##[group]Setting up auth
+2026-10-01T11:54:18.6769792Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-01T11:54:18.6795697Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-01T11:54:18.7096143Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-01T11:54:18.7126964Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-01T11:54:18.7309260Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-01T11:54:18.7338874Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-01T11:54:18.7520948Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-01T11:54:18.7552435Z ##[endgroup]
+2026-10-01T11:54:18.7553754Z ##[group]Fetching the repository
+2026-10-01T11:54:18.7563264Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-10-01T11:54:21.4514102Z From https://github.com/kco994553-star/Investment-System1
+2026-10-01T11:54:21.4517769Z  * [new branch]      ccr-41677301-10nj3u -> origin/ccr-41677301-10nj3u
+2026-10-01T11:54:21.4521109Z  * [new branch]      ccr-db5d5960-qen9yi -> origin/ccr-db5d5960-qen9yi
+2026-10-01T11:54:21.4524223Z  * [new branch]      ccr-e0fc1e48-9tcto3 -> origin/ccr-e0fc1e48-9tcto3
+2026-10-01T11:54:21.4529049Z  * [new branch]      claude/investment-system-top500-validation-alrugm -> origin/claude/investment-system-top500-validation-alrugm
+2026-10-01T11:54:21.4534780Z  * [new branch]      claude/lol-coach-relay-format-y8uk0x -> origin/claude/lol-coach-relay-format-y8uk0x
+2026-10-01T11:54:21.4537879Z  * [new branch]      claude/track-d-rig-news-p0-ot2gy6 -> origin/claude/track-d-rig-news-p0-ot2gy6
+2026-10-01T11:54:21.4541013Z  * [new branch]      feature/global-language-search-v1 -> origin/feature/global-language-search-v1
+2026-10-01T11:54:21.4544255Z  * [new branch]      feature/leaderboard-real-producer-v1 -> origin/feature/leaderboard-real-producer-v1
+2026-10-01T11:54:21.4547898Z  * [new branch]      feature/macro-real-producer-v1 -> origin/feature/macro-real-producer-v1
+2026-10-01T11:54:21.4551331Z  * [new branch]      feature/producer-infrastructure-v1 -> origin/feature/producer-infrastructure-v1
+2026-10-01T11:54:21.4555197Z  * [new branch]      feature/rig-news-real-ingestion-v1 -> origin/feature/rig-news-real-ingestion-v1
+2026-10-01T11:54:21.4558735Z  * [new branch]      feature/technical-real-producer-v1 -> origin/feature/technical-real-producer-v1
+2026-10-01T11:54:21.4561680Z  * [new branch]      feature/track-c-evl -> origin/feature/track-c-evl
+2026-10-01T11:54:21.4564044Z  * [new branch]      feature/track-d-rig-news -> origin/feature/track-d-rig-news
+2026-10-01T11:54:21.4566890Z  * [new branch]      feature/track-e-prompt-library-v1 -> origin/feature/track-e-prompt-library-v1
+2026-10-01T11:54:21.4569349Z  * [new branch]      feature/web-mvp-v1  -> origin/feature/web-mvp-v1
+2026-10-01T11:54:21.4572539Z  * [new branch]      integration/web-mvp-language-search -> origin/integration/web-mvp-language-search
+2026-10-01T11:54:21.4576042Z  * [new branch]      integration/web-mvp-language-search-audit -> origin/integration/web-mvp-language-search-audit
+2026-10-01T11:54:21.4580281Z  * [new branch]      recovery/track-a-real-data-frozen -> origin/recovery/track-a-real-data-frozen
+2026-10-01T11:54:21.4586138Z [command]/usr/bin/git branch --list --remote origin/feature/track-c-evl
+2026-10-01T11:54:21.4588380Z   origin/feature/track-c-evl
+2026-10-01T11:54:21.4593034Z [command]/usr/bin/git rev-parse refs/remotes/origin/feature/track-c-evl
+2026-10-01T11:54:21.4595640Z c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a
+2026-10-01T11:54:21.4599416Z ##[endgroup]
+2026-10-01T11:54:21.4601705Z ##[group]Determining the checkout info
+2026-10-01T11:54:21.4603828Z ##[endgroup]
+2026-10-01T11:54:21.4605256Z [command]/usr/bin/git sparse-checkout disable
+2026-10-01T11:54:21.4638226Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-01T11:54:21.4662055Z ##[group]Checking out the ref
+2026-10-01T11:54:21.4665080Z [command]/usr/bin/git checkout --progress --force -B feature/track-c-evl refs/remotes/origin/feature/track-c-evl
+2026-10-01T11:54:21.7262741Z Switched to a new branch 'feature/track-c-evl'
+2026-10-01T11:54:21.7265490Z branch 'feature/track-c-evl' set up to track 'origin/feature/track-c-evl'.
+2026-10-01T11:54:21.7280890Z ##[endgroup]
+2026-10-01T11:54:21.7317288Z [command]/usr/bin/git log -1 --format=%H
+2026-10-01T11:54:21.7337958Z c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a
+2026-10-01T11:54:21.7511984Z ##[group]Run git fetch --no-tags origin claude/investment-system-top500-validation-alrugm feature/track-c-evl
+2026-10-01T11:54:21.7513024Z [36;1mgit fetch --no-tags origin claude/investment-system-top500-validation-alrugm feature/track-c-evl[0m
+2026-10-01T11:54:21.7686929Z shell: /usr/bin/bash -e {0}
+2026-10-01T11:54:21.7687271Z ##[endgroup]
+2026-10-01T11:54:22.1383973Z From https://github.com/kco994553-star/Investment-System1
+2026-10-01T11:54:22.1385331Z  * branch            claude/investment-system-top500-validation-alrugm -> FETCH_HEAD
+2026-10-01T11:54:22.1386354Z  * branch            feature/track-c-evl -> FETCH_HEAD
+2026-10-01T11:54:22.1519708Z ##[group]Run actions/setup-python@v5
+2026-10-01T11:54:22.1520194Z with:
+2026-10-01T11:54:22.1520453Z   python-version: 3.11
+2026-10-01T11:54:22.1520812Z   check-latest: false
+2026-10-01T11:54:22.1523565Z   token: ***
+2026-10-01T11:54:22.1523869Z   update-environment: true
+2026-10-01T11:54:22.1524615Z   allow-prereleases: false
+2026-10-01T11:54:22.1525042Z   freethreaded: false
+2026-10-01T11:54:22.1525392Z ##[endgroup]
+2026-10-01T11:54:22.2771530Z ##[group]Installed versions
+2026-10-01T11:54:22.2847743Z (node:2238) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-01T11:54:22.2849048Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-01T11:54:22.2849833Z Successfully set up CPython (3.11.16)
+2026-10-01T11:54:22.2850834Z ##[endgroup]
+2026-10-01T11:54:22.2979565Z ##[group]Run python -m pip install pytest
+2026-10-01T11:54:22.2980288Z [36;1mpython -m pip install pytest[0m
+2026-10-01T11:54:22.3049999Z shell: /usr/bin/bash -e {0}
+2026-10-01T11:54:22.3050600Z env:
+2026-10-01T11:54:22.3051240Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:54:22.3052271Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-01T11:54:22.3053220Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:54:22.3054073Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:54:22.3055039Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:54:22.3055930Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-01T11:54:22.3056669Z ##[endgroup]
+2026-10-01T11:54:23.0849626Z Collecting pytest
+2026-10-01T11:54:23.1385112Z   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+2026-10-01T11:54:23.1504746Z Collecting iniconfig>=1.0.1 (from pytest)
+2026-10-01T11:54:23.1543267Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+2026-10-01T11:54:23.1672783Z Collecting packaging>=22 (from pytest)
+2026-10-01T11:54:23.1707455Z   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+2026-10-01T11:54:23.1812986Z Collecting pluggy<2,>=1.5 (from pytest)
+2026-10-01T11:54:23.1850125Z   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+2026-10-01T11:54:23.1995938Z Collecting pygments>=2.7.2 (from pytest)
+2026-10-01T11:54:23.2029190Z   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+2026-10-01T11:54:23.2100057Z Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+2026-10-01T11:54:23.2286086Z Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+2026-10-01T11:54:23.2333210Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+2026-10-01T11:54:23.2378372Z Downloading packaging-26.3-py3-none-any.whl (129 kB)
+2026-10-01T11:54:23.2439500Z Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+2026-10-01T11:54:23.2614270Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 79.9 MB/s  0:00:00
+2026-10-01T11:54:23.3187483Z Installing collected packages: pygments, pluggy, packaging, iniconfig, pytest
+2026-10-01T11:54:24.1169258Z 
+2026-10-01T11:54:24.1179365Z Successfully installed iniconfig-2.3.0 packaging-26.3 pluggy-1.6.0 pygments-2.21.0 pytest-9.1.1
+2026-10-01T11:54:24.1663083Z ##[group]Run PYTHONPATH=src python -m pytest -q tests/test_evl_c7*.py
+2026-10-01T11:54:24.1663647Z [36;1mPYTHONPATH=src python -m pytest -q tests/test_evl_c7*.py[0m
+2026-10-01T11:54:24.1705396Z shell: /usr/bin/bash -e {0}
+2026-10-01T11:54:24.1705653Z env:
+2026-10-01T11:54:24.1705912Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:54:24.1706317Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-01T11:54:24.1706728Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:54:24.1707086Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:54:24.1707438Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:54:24.1707796Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-01T11:54:24.1708111Z ##[endgroup]
+2026-10-01T11:55:20.3654085Z ........................................................................ [ 74%]
+2026-10-01T11:55:20.3938621Z .........................                                                [100%]
+2026-10-01T11:55:20.3939707Z 97 passed in 55.70s
+2026-10-01T11:55:20.4218926Z ##[group]Run PYTHONPATH=src python -m pytest -q tests/test_evl_c6*.py
+2026-10-01T11:55:20.4219518Z [36;1mPYTHONPATH=src python -m pytest -q tests/test_evl_c6*.py[0m
+2026-10-01T11:55:20.4260733Z shell: /usr/bin/bash -e {0}
+2026-10-01T11:55:20.4261107Z env:
+2026-10-01T11:55:20.4261612Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:55:20.4262084Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-01T11:55:20.4262555Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:55:20.4262915Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:55:20.4263273Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:55:20.4263837Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-01T11:55:20.4264150Z ##[endgroup]
+2026-10-01T11:55:39.6775483Z ........................................................................ [ 55%]
+2026-10-01T11:55:46.6930221Z ..........................................................               [100%]
+2026-10-01T11:55:46.6930920Z 130 passed in 26.12s
+2026-10-01T11:55:46.7187253Z ##[group]Run PYTHONPATH=src python -m pytest -q tests/test_evl_c[0-5]*.py
+2026-10-01T11:55:46.7187764Z [36;1mPYTHONPATH=src python -m pytest -q tests/test_evl_c[0-5]*.py[0m
+2026-10-01T11:55:46.7223077Z shell: /usr/bin/bash -e {0}
+2026-10-01T11:55:46.7223332Z env:
+2026-10-01T11:55:46.7223598Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:55:46.7224012Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-01T11:55:46.7224546Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:55:46.7224908Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:55:46.7225287Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:55:46.7225655Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-01T11:55:46.7225961Z ##[endgroup]
+2026-10-01T11:55:47.2773239Z ........................................................................ [ 69%]
+2026-10-01T11:55:47.6409593Z ...............................                                          [100%]
+2026-10-01T11:55:47.6410190Z 103 passed in 0.77s
+2026-10-01T11:55:47.6753766Z ##[group]Run PYTHONPATH=src python -m pytest -q
+2026-10-01T11:55:47.6754543Z [36;1mPYTHONPATH=src python -m pytest -q[0m
+2026-10-01T11:55:47.6793174Z shell: /usr/bin/bash -e {0}
+2026-10-01T11:55:47.6793426Z env:
+2026-10-01T11:55:47.6793690Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:55:47.6794103Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-01T11:55:47.6794649Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:55:47.6795039Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:55:47.6795395Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:55:47.6795754Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-01T11:55:47.6796062Z ##[endgroup]
+2026-10-01T11:55:55.6696337Z ........................................................................ [  9%]
+2026-10-01T11:56:01.9637225Z ........................................................................ [ 19%]
+2026-10-01T11:56:02.0629505Z ........................................................................ [ 29%]
+2026-10-01T11:56:02.7127527Z ........................................................................ [ 39%]
+2026-10-01T11:56:28.8423730Z ........................................................................ [ 49%]
+2026-10-01T11:57:01.7671823Z ........................................................................ [ 59%]
+2026-10-01T11:57:24.0810199Z ........................................................................ [ 69%]
+2026-10-01T11:57:25.5273336Z ........................................................................ [ 79%]
+2026-10-01T11:57:26.1023139Z ........................................................................ [ 89%]
+2026-10-01T11:57:26.6033531Z ........................................................................ [ 99%]
+2026-10-01T11:57:27.0998500Z ......                                                                   [100%]
+2026-10-01T11:57:27.0998911Z 726 passed in 99.26s (0:01:39)
+2026-10-01T11:57:27.1431015Z ##[group]Run PYTHONPATH=src:. python tools/track_c_c6_acceptance.py
+2026-10-01T11:57:27.1431479Z [36;1mPYTHONPATH=src:. python tools/track_c_c6_acceptance.py[0m
+2026-10-01T11:57:27.1468462Z shell: /usr/bin/bash -e {0}
+2026-10-01T11:57:27.1468713Z env:
+2026-10-01T11:57:27.1468977Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:27.1469386Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-01T11:57:27.1469916Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:27.1470279Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:27.1470634Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:27.1471008Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-01T11:57:27.1471310Z ##[endgroup]
+2026-10-01T11:57:30.8127732Z TRACK_C_C6_EVIDENCE={"Holdout":"UNCONSUMED_NO_READER","PIT_no_lookahead":"SYNTHETIC_CONTRACT_PATHS_VERIFIED","acceptance":{"cohorts":{"EXPANDING-PRIMARY":{"decision":"NOT_ASSESSED_PENDING_C8","holdout_state":"UNCONSUMED","official":false,"real_pit_research_validated":false,"registration_hash":"a958db78717c3bd374ff63f014973f6d26d771e0d21b1bd48cf24320832d7ec6","results":{"BOOTSTRAP":{"reason":null,"report_file":"robustness-report-2862d9fd55894083dc6c62c3944fe4c6f95ab5343679be5ad52ca1cc24393fc7.json","report_hash":"d74b2cd2fc8db28c8afafb4dc59d294396a649d91b9c0c13e0d5f00c2b3a0469","role":"MANDATORY","status":"PASS","trial_id":"robustness-BOOTSTRAP"},"COST_STRESS":{"reason":null,"report_file":"robustness-report-6b93b0d63ac4998fd4de86d4b57ef9cf327e6b95007f0c1536af66b232650210.json","report_hash":"8e136fe769ae5d8d1280a95ce6387ff6ab32dc8082e4064e02ec444181f8d94f","role":"MANDATORY","status":"PASS","trial_id":"robustness-COST_STRESS"},"CSCV_PBO":{"reason":null,"report_file":"robustness-report-76c483c6f2f424594cd51cf2c38bf129426e2ce9be49b680916dd59985738bb9.json","report_hash":"db26ef67d1e56fd0b60859c63641b5c70709ec100021a7232e8dd6c1f4397df6","role":"MANDATORY","status":"PASS","trial_id":"robustness-CSCV_PBO"},"DRIFT":{"reason":null,"report_file":"robustness-report-248d37778b818e09e15ee76046011b37172a2e1ca56eef15f1b2b3d827caaa5f.json","report_hash":"4b77a205d66073d26fea8e14c85c7cda75ef606725d10274fd61da7cae6aa33a","role":"MANDATORY","status":"PASS","trial_id":"robustness-DRIFT"},"DSR_ATTEMPTS":{"reason":null,"report_file":"robustness-report-c3c3e98c1b770a900d3e0c287656336608787aff23beb23cc8ce6634bce2ae2c.json","report_hash":"791264255d5fa9d3fb71ecf1d1fb76a374f8974522fe771f154ecbbcd707ef81","role":"MANDATORY","status":"PASS","trial_id":"robustness-DSR_ATTEMPTS"},"DSR_DISTINCT":{"reason":null,"report_file":"robustness-report-6b365fc77e181611d9877932c6f3fce49d221e45d139d62f47a69baa31a72134.json","report_hash":"db19deec2e8088996805c53a6a32f58f970b97bcda84028c3602bf649756855c","role":"MANDATORY","status":"PASS","trial_id":"robustness-DSR_DISTINCT"},"EQUAL_CONTROL":{"reason":null,"report_file":"robustness-report-1af50f345bb761f1e0d89dcfda9e5174e8a92eb5b594327a11068a3707b89126.json","report_hash":"feebb9f46616e46252dd74dc29b80fab81aaf651113ea2519c4338df2f12e2b0","role":"MANDATORY","status":"PASS","trial_id":"robustness-EQUAL_CONTROL"},"EXECUTION_DELAY":{"reason":null,"report_file":"robustness-report-8ce33f6337ce6bee1228d829ecc304f520d4180fdc0293f81c96b1c609819ef8.json","report_hash":"322e0780d7452c93c5d9e16fed19bad9cfa663d8f14eb5627390ab5c8aecb9b6","role":"MANDATORY","status":"PASS","trial_id":"robustness-EXECUTION_DELAY"},"MCAP_CONTROL":{"reason":null,"report_file":"robustness-report-8d79b12508845794db3e3f33218f7c19d89572eeb40d4fbbff755429c47154d8.json","report_hash":"ec7edae332da9074d851bc4fd455c7ebcf057062538adc35d2d19c521d9d3ff3","role":"MANDATORY","status":"PASS","trial_id":"robustness-MCAP_CONTROL"},"PARAMETER":{"reason":null,"report_file":"robustness-report-bfe9efbe6b6ca5c3aa0de07f5108fb7815aca2b9b279f3923b0a0dc029f7d539.json","report_hash":"ddbe83831a53e8ae793ac3a4ca3c4933910640912acd3b892ee0b01d003610ac","role":"MANDATORY","status":"PASS","trial_id":"robustness-PARAMETER"},"PSR":{"reason":null,"report_file":"robustness-report-072efe0b40dc37673ecff21ff37665b4bd8a3dbef3a309393663799516008435.json","report_hash":"07019074d708c0daa440c86c8bfdeb28c65337cff15dedbd20836e6bd7b7b197","role":"MANDATORY","status":"PASS","trial_id":"robustness-PSR"},"RANDOM_RANKING":{"reason":null,"report_file":"robustness-report-069d3ff343d430dbf404c7bc2c561f3ccacc5a0307a64f1289783089054bb7ba.json","report_hash":"37b376aa2c270544a2aa83f5539cf02659752b234011818e94ce8fed14872042","role":"MANDATORY","status":"PASS","trial_id":"robustness-RANDOM_RANKING"},"RANDOM_WEIGHTS":{"reason":null,"report_file":"robustness-report-a938982749d8f8202cd7ed8a20b1de082f0d3c1b0dbc364707283e90d7756b3d.json","report_hash":"304701ce1b16b20c53e4eb516889a6b4f3acbfff3235367893e4953107dfb866","role":"MANDATORY","status":"PASS","trial_id":"robustness-RANDOM_WEIGHTS"},"REALITY_EQUAL":{"reason":null,"report_file":"robustness-report-c2603b21be109707eea48a4a1d39897b573627d6e03f32dd2ab7d7cf1593b6b0.json","report_hash":"b5d4ec37c8e235e2e7f3618df4c4c6a33745ffc02129211eb83a445d2bc2933c","role":"MANDATORY","status":"PASS","trial_id":"robustness-REALITY_EQUAL"},"REALITY_MCAP":{"reason":null,"report_file":"robustness-report-eae7ee3616504e25fd5a5a78f1f5288e55a45178e3a30d9b2485266aed0fec3b.json","report_hash":"1ec37463f8517dc3ede683f0fc1bf811a063213eb44b013ad19b96b10e6b0855","role":"MANDATORY","status":"PASS","trial_id":"robustness-REALITY_MCAP"},"REGIME":{"reason":null,"report_file":"robustness-report-fee85229eb92fa950a4e0e395eef6842d41785d57dc73f65780d9e0eea56d66f.json","report_hash":"f7446be4cc5cea944c01a561c5ce100afd589355f3c5d817d161ebbdba25cd03","role":"MANDATORY","status":"PASS","trial_id":"robustness-REGIME"},"UNIVERSE":{"reason":null,"report_file":"robustness-report-983235babef30d40202353699ad5b2ddbc5b86b24d5af4e5981453e62f45dd6f.json","report_hash":"80884151e73f8e3a130397245c8964bb611e46333113b94e6ae3410fd6253eff","role":"MANDATORY","status":"PASS","trial_id":"robustness-UNIVERSE"}},"scope":"SYNTHETIC_SOFTWARE_VALIDATION","software_freeze_eligible":true,"source_hash":"c0fb26a7a7bbf0d927bda16fbb8ac7a824b8761c4e295d277babb5efc7e9e60f","status":"PASS","tax_mode":"EXCLUDED"},"EXPANDING-REBALANCE_GAP_STRESS":{"decision":"NOT_ASSESSED_PENDING_C8","holdout_state":"UNCONSUMED","official":false,"real_pit_research_validated":false,"registration_hash":"16ba9fd72c49670763764b55a8c7d56ee4bdd9e8af3a7ad546f55b4804d3d71b","results":{"BOOTSTRAP":{"reason":null,"report_file":"robustness-report-2862d9fd55894083dc6c62c3944fe4c6f95ab5343679be5ad52ca1cc24393fc7.json","report_hash":"5cab98f6c7242f539f64e3e4d41d8736c766888f3fd17fd4ca52fb5918a2aefd","role":"MANDATORY","status":"PASS","trial_id":"robustness-BOOTSTRAP"},"COST_STRESS":{"reason":null,"report_file":"robustness-report-6b93b0d63ac4998fd4de86d4b57ef9cf327e6b95007f0c1536af66b232650210.json","report_hash":"2c4c85e84c1513a1e95610e2a5c6795c52e5b5fb67bea0f6789324ade7bd52bc","role":"MANDATORY","status":"PASS","trial_id":"robustness-COST_STRESS"},"CSCV_PBO":{"reason":null,"report_file":"robustness-report-76c483c6f2f424594cd51cf2c38bf129426e2ce9be49b680916dd59985738bb9.json","report_hash":"9bad8d8ac37ed956d89c1220c272a21127194e5bd561c7bd20456283e4c2dcb0","role":"MANDATORY","status":"PASS","trial_id":"robustness-CSCV_PBO"},"DRIFT":{"reason":null,"report_file":"robustness-report-248d37778b818e09e15ee76046011b37172a2e1ca56eef15f1b2b3d827caaa5f.json","report_hash":"b994e6cf05615c51025238bb61cb1c6684ef30765959540303be44e9764f4b08","role":"MANDATORY","status":"PASS","trial_id":"robustness-DRIFT"},"DSR_ATTEMPTS":{"reason":null,"report_file":"robustness-report-c3c3e98c1b770a900d3e0c287656336608787aff23beb23cc8ce6634bce2ae2c.json","report_hash":"43d23e958755404fa591e7f8017b0a27b2729b28b9c4bcb600a5457dc78353b9","role":"MANDATORY","status":"PASS","trial_id":"robustness-DSR_ATTEMPTS"},"DSR_DISTINCT":{"reason":null,"report_file":"robustness-report-6b365fc77e181611d9877932c6f3fce49d221e45d139d62f47a69baa31a72134.json","report_hash":"f78a21ffe68d8accedc86624c8f1574e554e1c1ddbb6047a77dd9e34944f93f5","role":"MANDATORY","status":"PASS","trial_id":"robustness-DSR_DISTINCT"},"EQUAL_CONTROL":{"reason":null,"report_file":"robustness-report-1af50f345bb761f1e0d89dcfda9e5174e8a92eb5b594327a11068a3707b89126.json","report_hash":"5d32d7184031bd2e5dec219cf7dec924d40b3ff8957d7bdb0f26b098532214b2","role":"MANDATORY","status":"PASS","trial_id":"robustness-EQUAL_CONTROL"},"EXECUTION_DELAY":{"reason":null,"report_file":"robustness-report-8ce33f6337ce6bee1228d829ecc304f520d4180fdc0293f81c96b1c609819ef8.json","report_hash":"ff694b6262280d1a8408f1de0cca7ff317b0328349cead9fd43dfa4fa08697ef","role":"MANDATORY","status":"PASS","trial_id":"robustness-EXECUTION_DELAY"},"MCAP_CONTROL":{"reason":null,"report_file":"robustness-report-8d79b12508845794db3e3f33218f7c19d89572eeb40d4fbbff755429c47154d8.json","report_hash":"58878026ac1ddc0ecfcd43dae6046b3df2bf48bec1c819ba9dec6d6f5bc4ebc9","role":"MANDATORY","status":"PASS","trial_id":"robustness-MCAP_CONTROL"},"PARAMETER":{"reason":null,"report_file":"robustness-report-bfe9efbe6b6ca5c3aa0de07f5108fb7815aca2b9b279f3923b0a0dc029f7d539.json","report_hash":"a2931140de9c13fdc2be7d421c8cf8c1ffadf465fb7c3f4d7fd8dd475a5957fd","role":"MANDATORY","status":"PASS","trial_id":"robustness-PARAMETER"},"PSR":{"reason":null,"report_file":"robustness-report-072efe0b40dc37673ecff21ff37665b4bd8a3dbef3a309393663799516008435.json","report_hash":"a7575ca9bd6a42bc4e91414882dc1b001d96b77173c32642471ea732b8fa620a","role":"MANDATORY","status":"PASS","trial_id":"robustness-PSR"},"RANDOM_RANKING":{"reason":null,"report_file":"robustness-report-069d3ff343d430dbf404c7bc2c561f3ccacc5a0307a64f1289783089054bb7ba.json","report_hash":"abd7247ca2390a240ef34493a6ecdc8864f3fc57231d87406ba3931565bfcda5","role":"MANDATORY","status":"PASS","trial_id":"robustness-RANDOM_RANKING"},"RANDOM_WEIGHTS":{"reason":null,"report_file":"robustness-report-a938982749d8f8202cd7ed8a20b1de082f0d3c1b0dbc364707283e90d7756b3d.json","report_hash":"a08049e58587909486a758f64aac6e191d92e4cf610266add5f7627c876c499c","role":"MANDATORY","status":"PASS","trial_id":"robustness-RANDOM_WEIGHTS"},"REALITY_EQUAL":{"reason":null,"report_file":"robustness-report-c2603b21be109707eea48a4a1d39897b573627d6e03f32dd2ab7d7cf1593b6b0.json","report_hash":"62c87659f7982f167cf0b6c0df857260a48b369ab11fe0061b54e1cddc668f66","role":"MANDATORY","status":"PASS","trial_id":"robustness-REALITY_EQUAL"},"REALITY_MCAP":{"reason":null,"report_file":"robustness-report-eae7ee3616504e25fd5a5a78f1f5288e55a45178e3a30d9b2485266aed0fec3b.json","report_hash":"9aa3e0db4dff0443bedfa98129f11571d7c837c8bff0f2e6d63b5919ae73b394","role":"MANDATORY","status":"PASS","trial_id":"robustness-REALITY_MCAP"},"REGIME":{"reason":null,"report_file":"robustness-report-fee85229eb92fa950a4e0e395eef6842d41785d57dc73f65780d9e0eea56d66f.json","report_hash":"a1a459d9f042b72a716f11be5bff4af62a40ef38188c4d045f001efb052f460c","role":"MANDATORY","status":"PASS","trial_id":"robustness-REGIME"},"UNIVERSE":{"reason":null,"report_file":"robustness-report-983235babef30d40202353699ad5b2ddbc5b86b24d5af4e5981453e62f45dd6f.json","report_hash":"65bf07ff59955de6d56b901ff75f421d7d2385e33f0e742d3f87273287eaa897","role":"MANDATORY","status":"PASS","trial_id":"robustness-UNIVERSE"}},"scope":"SYNTHETIC_SOFTWARE_VALIDATION","software_freeze_eligible":true,"source_hash":"3dde2f311825d3541a28f9ffe8e1c2902843a14eaafd0740296682540f7b250a","status":"PASS","tax_mode":"EXCLUDED"},"ROLLING-PRIMARY":{"decision":"NOT_ASSESSED_PENDING_C8","holdout_state":"UNCONSUMED","official":false,"real_pit_research_validated":false,"registration_hash":"0dec168258b1661d0835868709b71290b387122f864162a801ccf07c4012d715","results":{"BOOTSTRAP":{"reason":null,"report_file":"robustness-report-2862d9fd55894083dc6c62c3944fe4c6f95ab5343679be5ad52ca1cc24393fc7.json","report_hash":"93648462ff28ce867edd42f96af0bd3fd05c9a7514c7c71f81410a0c62b57415","role":"MANDATORY","status":"PASS","trial_id":"robustness-BOOTSTRAP"},"COST_STRESS":{"reason":null,"report_file":"robustness-report-6b93b0d63ac4998fd4de86d4b57ef9cf327e6b95007f0c1536af66b232650210.json","report_hash":"c43c37dedcc20984e04b68d289b972b9b6481d3c6d04dcc725a730042c13b183","role":"MANDATORY","status":"PASS","trial_id":"robustness-COST_STRESS"},"CSCV_PBO":{"reason":null,"report_file":"robustness-report-76c483c6f2f424594cd51cf2c38bf129426e2ce9be49b680916dd59985738bb9.json","report_hash":"3a9be6f4351aca5d89a8b39153d7c68c522589fe88dde354df233b62eb67b599","role":"MANDATORY","status":"PASS","trial_id":"robustness-CSCV_PBO"},"DRIFT":{"reason":null,"report_file":"robustness-report-248d37778b818e09e15ee76046011b37172a2e1ca56eef15f1b2b3d827caaa5f.json","report_hash":"f3d453748c056f0f05fb0eb673a44b5974ee345972149d18a93cf93627166de5","role":"MANDATORY","status":"PASS","trial_id":"robustness-DRIFT"},"DSR_ATTEMPTS":{"reason":null,"report_file":"robustness-report-c3c3e98c1b770a900d3e0c287656336608787aff23beb23cc8ce6634bce2ae2c.json","report_hash":"f0a18a4f5178957dd4efc6a5a12adfa81420055c5577ce5c34be9e920b2134d8","role":"MANDATORY","status":"PASS","trial_id":"robustness-DSR_ATTEMPTS"},"DSR_DISTINCT":{"reason":null,"report_file":"robustness-report-6b365fc77e181611d9877932c6f3fce49d221e45d139d62f47a69baa31a72134.json","report_hash":"a16394c058bdddb40dcd5c342b4c17f5969bf93722f2aceda6b691f56784498c","role":"MANDATORY","status":"PASS","trial_id":"robustness-DSR_DISTINCT"},"EQUAL_CONTROL":{"reason":null,"report_file":"robustness-report-1af50f345bb761f1e0d89dcfda9e5174e8a92eb5b594327a11068a3707b89126.json","report_hash":"0c8aa8313c0406f7b44a2c0bef04855ccb03a9582f4019fb23fa7a3570b464d5","role":"MANDATORY","status":"PASS","trial_id":"robustness-EQUAL_CONTROL"},"EXECUTION_DELAY":{"reason":null,"report_file":"robustness-report-8ce33f6337ce6bee1228d829ecc304f520d4180fdc0293f81c96b1c609819ef8.json","report_hash":"fbc9a4c0bf8526832cfaf4402edcc40cc711707eb5daf16bfb122d722c322a3b","role":"MANDATORY","status":"PASS","trial_id":"robustness-EXECUTION_DELAY"},"MCAP_CONTROL":{"reason":null,"report_file":"robustness-report-8d79b12508845794db3e3f33218f7c19d89572eeb40d4fbbff755429c47154d8.json","report_hash":"5e5141cb2bf4425d78bed7d016bd178369651a7959c3c2035ed514fa884391e6","role":"MANDATORY","status":"PASS","trial_id":"robustness-MCAP_CONTROL"},"PARAMETER":{"reason":null,"report_file":"robustness-report-bfe9efbe6b6ca5c3aa0de07f5108fb7815aca2b9b279f3923b0a0dc029f7d539.json","report_hash":"914087886610d8da2b763fcb5252ae90d1ada3fb7a2198559ed1dc5733c65ec0","role":"MANDATORY","status":"PASS","trial_id":"robustness-PARAMETER"},"PSR":{"reason":null,"report_file":"robustness-report-072efe0b40dc37673ecff21ff37665b4bd8a3dbef3a309393663799516008435.json","report_hash":"0da437cf68780b0e5129f034e44384ec27eed5e760e8d8320f640c70dadad8af","role":"MANDATORY","status":"PASS","trial_id":"robustness-PSR"},"RANDOM_RANKING":{"reason":null,"report_file":"robustness-report-069d3ff343d430dbf404c7bc2c561f3ccacc5a0307a64f1289783089054bb7ba.json","report_hash":"34de3625277496af80acc9b47eda7a517a6a620dc59eaad97bf85db25b3617d6","role":"MANDATORY","status":"PASS","trial_id":"robustness-RANDOM_RANKING"},"RANDOM_WEIGHTS":{"reason":null,"report_file":"robustness-report-a938982749d8f8202cd7ed8a20b1de082f0d3c1b0dbc364707283e90d7756b3d.json","report_hash":"d928de4ab2ced145e9e57b5ae2e2d614239f35c5ccd9b46ab0a72ac546391e7f","role":"MANDATORY","status":"PASS","trial_id":"robustness-RANDOM_WEIGHTS"},"REALITY_EQUAL":{"reason":null,"report_file":"robustness-report-c2603b21be109707eea48a4a1d39897b573627d6e03f32dd2ab7d7cf1593b6b0.json","report_hash":"bbc139ae4c2620f544279f84746b119fa68da8f8d92f9b4c5534e5cc7ec9b1c4","role":"MANDATORY","status":"PASS","trial_id":"robustness-REALITY_EQUAL"},"REALITY_MCAP":{"reason":null,"report_file":"robustness-report-eae7ee3616504e25fd5a5a78f1f5288e55a45178e3a30d9b2485266aed0fec3b.json","report_hash":"f855bfd59a17d7bf67b816cf32642e7910f430b61729745a8621e76c131831a1","role":"MANDATORY","status":"PASS","trial_id":"robustness-REALITY_MCAP"},"REGIME":{"reason":null,"report_file":"robustness-report-fee85229eb92fa950a4e0e395eef6842d41785d57dc73f65780d9e0eea56d66f.json","report_hash":"641814a0d1e1a1a53bd326c9a5ea190072d8816f71205c6437ba0b778cda732d","role":"MANDATORY","status":"PASS","trial_id":"robustness-REGIME"},"UNIVERSE":{"reason":null,"report_file":"robustness-report-983235babef30d40202353699ad5b2ddbc5b86b24d5af4e5981453e62f45dd6f.json","report_hash":"4b5ee01458d167f88e7164bed00094389731c6d39af567cfe3fdbe59362a1077","role":"MANDATORY","status":"PASS","trial_id":"robustness-UNIVERSE"}},"scope":"SYNTHETIC_SOFTWARE_VALIDATION","software_freeze_eligible":true,"source_hash":"9c319839f93f818ba368f7c91044714aa07d98d6d91702825e1d6406f12b0a32","status":"PASS","tax_mode":"EXCLUDED"},"ROLLING-REBALANCE_GAP_STRESS":{"decision":"NOT_ASSESSED_PENDING_C8","holdout_state":"UNCONSUMED","official":false,"real_pit_research_validated":false,"registration_hash":"3284a43aed1e0a78ad39615a1814f277b49a08d81de20d2d6d2af9e50ced9af3","results":{"BOOTSTRAP":{"reason":null,"report_file":"robustness-report-2862d9fd55894083dc6c62c3944fe4c6f95ab5343679be5ad52ca1cc24393fc7.json","report_hash":"1d0139583d7a9165e3b0fef2284111b5bbd6154adcdfcb990846841e3243e143","role":"MANDATORY","status":"PASS","trial_id":"robustness-BOOTSTRAP"},"COST_STRESS":{"reason":null,"report_file":"robustness-report-6b93b0d63ac4998fd4de86d4b57ef9cf327e6b95007f0c1536af66b232650210.json","report_hash":"3621af409ba480741baf59399e3a5cbe7798074cb4219e12448ec89b87270ac3","role":"MANDATORY","status":"PASS","trial_id":"robustness-COST_STRESS"},"CSCV_PBO":{"reason":null,"report_file":"robustness-report-76c483c6f2f424594cd51cf2c38bf129426e2ce9be49b680916dd59985738bb9.json","report_hash":"ab6f2efe2394e774837ac55993d0e6fbd309c5390b17305722d907b07c85e498","role":"MANDATORY","status":"PASS","trial_id":"robustness-CSCV_PBO"},"DRIFT":{"reason":null,"report_file":"robustness-report-248d37778b818e09e15ee76046011b37172a2e1ca56eef15f1b2b3d827caaa5f.json","report_hash":"4cc796218388c748514f69878e9a91713ffcb8e44427cdc50c52b6fb9bf91f94","role":"MANDATORY","status":"PASS","trial_id":"robustness-DRIFT"},"DSR_ATTEMPTS":{"reason":null,"report_file":"robustness-report-c3c3e98c1b770a900d3e0c287656336608787aff23beb23cc8ce6634bce2ae2c.json","report_hash":"0d50a298c6b0692682e2d1b80e55eb72cc1423b969927985d0996f0ae7a11a3c","role":"MANDATORY","status":"PASS","trial_id":"robustness-DSR_ATTEMPTS"},"DSR_DISTINCT":{"reason":null,"report_file":"robustness-report-6b365fc77e181611d9877932c6f3fce49d221e45d139d62f47a69baa31a72134.json","report_hash":"eba5eae2f2889c2984c9ce14101ce0cdfdff022999a147728ac0a13479ccb199","role":"MANDATORY","status":"PASS","trial_id":"robustness-DSR_DISTINCT"},"EQUAL_CONTROL":{"reason":null,"report_file":"robustness-report-1af50f345bb761f1e0d89dcfda9e5174e8a92eb5b594327a11068a3707b89126.json","report_hash":"2d1020c7acbb01ea9306d43a9aef40911d8c3ec0537566959d1e3a1dd413c59b","role":"MANDATORY","status":"PASS","trial_id":"robustness-EQUAL_CONTROL"},"EXECUTION_DELAY":{"reason":null,"report_file":"robustness-report-8ce33f6337ce6bee1228d829ecc304f520d4180fdc0293f81c96b1c609819ef8.json","report_hash":"19cd11293dd43eda7b4a3fd9fa6cb575c218daf581a1509b2357ac5a3bba57e2","role":"MANDATORY","status":"PASS","trial_id":"robustness-EXECUTION_DELAY"},"MCAP_CONTROL":{"reason":null,"report_file":"robustness-report-8d79b12508845794db3e3f33218f7c19d89572eeb40d4fbbff755429c47154d8.json","report_hash":"b076cc60b6987edbc4a5597bbe2f348924864eabc2b0a55cff14c3d48541e350","role":"MANDATORY","status":"PASS","trial_id":"robustness-MCAP_CONTROL"},"PARAMETER":{"reason":null,"report_file":"robustness-report-bfe9efbe6b6ca5c3aa0de07f5108fb7815aca2b9b279f3923b0a0dc029f7d539.json","report_hash":"2e108e9dfc96ef662263fcb2673fed54ba59d240cdbc14edfcb5e5669788dbdf","role":"MANDATORY","status":"PASS","trial_id":"robustness-PARAMETER"},"PSR":{"reason":null,"report_file":"robustness-report-072efe0b40dc37673ecff21ff37665b4bd8a3dbef3a309393663799516008435.json","report_hash":"32c92f345ae1e293541d6ad18e7c5eda30b837b00b2d831cd143d3f10b709181","role":"MANDATORY","status":"PASS","trial_id":"robustness-PSR"},"RANDOM_RANKING":{"reason":null,"report_file":"robustness-report-069d3ff343d430dbf404c7bc2c561f3ccacc5a0307a64f1289783089054bb7ba.json","report_hash":"d975f38b68fc51ed9f9921dd9c95f592e0494e08accde463805f1954e4391199","role":"MANDATORY","status":"PASS","trial_id":"robustness-RANDOM_RANKING"},"RANDOM_WEIGHTS":{"reason":null,"report_file":"robustness-report-a938982749d8f8202cd7ed8a20b1de082f0d3c1b0dbc364707283e90d7756b3d.json","report_hash":"64540b126b8fba76f13703b3f502da4eeae9968f54da69a7c8a28f007240a02f","role":"MANDATORY","status":"PASS","trial_id":"robustness-RANDOM_WEIGHTS"},"REALITY_EQUAL":{"reason":null,"report_file":"robustness-report-c2603b21be109707eea48a4a1d39897b573627d6e03f32dd2ab7d7cf1593b6b0.json","report_hash":"bb0e78f9dd0fbf4de451f190ff9885c8078c305d39ce822aa24b44a44eaf6e36","role":"MANDATORY","status":"PASS","trial_id":"robustness-REALITY_EQUAL"},"REALITY_MCAP":{"reason":null,"report_file":"robustness-report-eae7ee3616504e25fd5a5a78f1f5288e55a45178e3a30d9b2485266aed0fec3b.json","report_hash":"078ae7f486ce99ae7a69a5b380b39641036f1d842e3002b758d0160d927901e6","role":"MANDATORY","status":"PASS","trial_id":"robustness-REALITY_MCAP"},"REGIME":{"reason":null,"report_file":"robustness-report-fee85229eb92fa950a4e0e395eef6842d41785d57dc73f65780d9e0eea56d66f.json","report_hash":"15b1497265ae1c0f5e7763af5d79e24742e9ced053a825377e787026c2dae8ae","role":"MANDATORY","status":"PASS","trial_id":"robustness-REGIME"},"UNIVERSE":{"reason":null,"report_file":"robustness-report-983235babef30d40202353699ad5b2ddbc5b86b24d5af4e5981453e62f45dd6f.json","report_hash":"ff7b6f0d16817703ce3103938e433024f0b8f318a34b2993097ee3b654030561","role":"MANDATORY","status":"PASS","trial_id":"robustness-UNIVERSE"}},"scope":"SYNTHETIC_SOFTWARE_VALIDATION","software_freeze_eligible":true,"source_hash":"3a1f4a3b72c1a98bd7f5ab06e53c8436e2c8b2c889cacf121a4ba41dfc98f95b","status":"PASS","tax_mode":"EXCLUDED"}},"decision":"NOT_ASSESSED_PENDING_C8","holdout_state":"UNCONSUMED","official":false,"real_pit_research_validation":"NOT_RUN_MISSING_COMPLETE_REAL_FAMILY","scope":"SYNTHETIC_SOFTWARE_VALIDATION","status":"PASS","tax_mode":"EXCLUDED"},"acceptance_hash":"58d3b3f35a9e62089a6c8ca94677ed0f1c1eee10c0f399d1075087890ec51cdd","boundary_audit":{"EVL_SPEC_v0.1":"UNCHANGED","Track_A_B_D_E_Web":"PRESERVED_BY_GIT_BLOB_IDENTITY","ahead":48,"behind":0,"canonical":"b8e39a2196a6d7794a04a0cd5393c68329e126ca","canonical_blob_count":7698,"merge_base":"b8e39a2196a6d7794a04a0cd5393c68329e126ca","newly_changed_existing_phase_source_tests":[],"preserved_start_blob_count":7774,"prior_authorized_four_file_repair":"PRESERVED","status":"PASS","tested_head":"c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a","unexpected_new_scope_files":[],"unexpected_protected_changes":[]},"cross_track":"PASS_BLOB_AUDIT","lineage_provenance":"REGISTERED_HASH_BOUND_CURRENT_RESOLUTION_VERIFIED","negative_regression":"Required FAIL/NOT_RUN/budget/invalidation tests run before this artifact","real_research":"NOT_RUN_MISSING_COMPLETE_REAL_FAMILY"}
+2026-10-01T11:57:30.8254819Z ##[group]Run PYTHONPATH=src:. python tools/track_c_c7_acceptance.py
+2026-10-01T11:57:30.8255278Z [36;1mPYTHONPATH=src:. python tools/track_c_c7_acceptance.py[0m
+2026-10-01T11:57:30.8291090Z shell: /usr/bin/bash -e {0}
+2026-10-01T11:57:30.8291338Z env:
+2026-10-01T11:57:30.8291602Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:30.8292009Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-01T11:57:30.8292421Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:30.8292775Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:30.8293124Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:30.8293513Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-01T11:57:30.8293808Z ##[endgroup]
+2026-10-01T11:57:37.0724224Z TRACK_C_C7_EVIDENCE={"Investor_QGV":"FUTURE_TRACK_C_INPUT","PIT_no_lookahead":"PASS_CURRENT_C4_C5_C6_C7_RESOLUTION","configuration_scope":"SYNTHETIC_SOFTWARE_VALIDATION_ONLY","holdout_state":"UNCONSUMED_NO_READER","integrated":{"Investor_QGV":"FUTURE_TRACK_C_INPUT","acceptance":{"holdout_state":"UNCONSUMED","official":false,"real_pit_validated":false,"registration_hash":"addccbdf37f7565a837c9741422efbc96cf9bf2e393d1f13c92cb6af00995daa","report_hash":"516ca461e7c1ea74d0c57c5012f75fc7346fe0481051086d948eb7774a72da45","scope":"SYNTHETIC_SOFTWARE_VALIDATION","software_freeze_eligible":true,"status":"PASS","trial_id":"selection-complete-landscape"},"code_hash":"f479ce9ee343a50700043f9e1c1a4a45b71a653db420236c0c7d74824be931c2","configuration_scope":"SYNTHETIC_SOFTWARE_VALIDATION_ONLY","holdout_state":"UNCONSUMED","official":false,"profiles":{"Aggressive":{"candidates":[{"candidate_id":"ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996","dataset_vintages":{"EXPANDING-PRIMARY":"v1","EXPANDING-REBALANCE_GAP_STRESS":"v1","ROLLING-PRIMARY":"v1","ROLLING-REBALANCE_GAP_STRESS":"v1"},"evaluator_id":"integrated-fixture-v1","landscape_lineage_hash":"2d5a57f3812f14d9dbd534e980a353fef606cc810b29b257e53ec8f7b95b4640","objective_dimensions":[["EXPANDING-PRIMARY","net_cagr"],["EXPANDING-PRIMARY","net_mdd"],["EXPANDING-REBALANCE_GAP_STRESS","net_cagr"],["EXPANDING-REBALANCE_GAP_STRESS","net_mdd"],["ROLLING-PRIMARY","net_cagr"],["ROLLING-PRIMARY","net_mdd"],["ROLLING-REBALANCE_GAP_STRESS","net_cagr"],["ROLLING-REBALANCE_GAP_STRESS","net_mdd"]],"official":false,"oos_values":[3.820461235846139,0.03527112848070346,3.820461235846139,0.03527112848070346,3.820461235846139,0.03527112848070346,3.820461235846139,0.03527112848070346],"parameters":{"cash_buffer":0.0,"technical_lookback":1},"registered_metrics":[{"direction":"max","formula_id":"EVL_METRICS_v1:NET_OF_TRADING_COST_PRE_TAX:cagr","metric_id":"net_cagr","path":["views","NET_OF_TRADING_COST_PRE_TAX","cagr"],"provenance":"C6_BASELINE_C3_METRICS","units":"DECIMAL_RETURN_PER_YEAR","version":"EVL_METRICS_v1"},{"direction":"min","formula_id":"EVL_METRICS_v1:NET_OF_TRADING_COST_PRE_TAX:mdd","metric_id":"net_mdd","path":["views","NET_OF_TRADING_COST_PRE_TAX","mdd"],"provenance":"C6_BASELINE_C3_METRICS","units":"DECIMAL_DRAWDOWN","version":"EVL_METRICS_v1"}],"research_decision":"NOT_ASSESSED_PENDING_C8","scope":"SYNTHETIC_SOFTWARE_VALIDATION","selection_lineage_hash":"5ca9dc35811509edb0996ad31292bd0d3f1725d9340c845f4e6551faab4e6b4d","source_checkpoint":"FROZEN_C4_C5_C6_SYNTHETIC_HASH_CHECKPOINT","tax_mode":"EXCLUDED"}],"components":[{"component_members":["25657c2ed264fcca5909c618e9d949df8a3f153e059061344da91c73838e76cb","ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"],"costs":{"ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996":"1"},"domain_ranges":{"cash_buffer":"1/5","technical_lookback":"0"},"representatives":["ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"],"restricted_candidates":["ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"],"tie_semantics":"TIED_EQUIVALENT_REPRESENTATIVES"}],"profile":"Aggressive","representative_tie_set":["ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"]},"Balanced":{"candidates":[{"candidate_id":"ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996","dataset_vintages":{"EXPANDING-PRIMARY":"v1","EXPANDING-REBALANCE_GAP_STRESS":"v1","ROLLING-PRIMARY":"v1","ROLLING-REBALANCE_GAP_STRESS":"v1"},"evaluator_id":"integrated-fixture-v1","landscape_lineage_hash":"2d5a57f3812f14d9dbd534e980a353fef606cc810b29b257e53ec8f7b95b4640","objective_dimensions":[["EXPANDING-PRIMARY","net_cagr"],["EXPANDING-PRIMARY","net_mdd"],["EXPANDING-REBALANCE_GAP_STRESS","net_cagr"],["EXPANDING-REBALANCE_GAP_STRESS","net_mdd"],["ROLLING-PRIMARY","net_cagr"],["ROLLING-PRIMARY","net_mdd"],["ROLLING-REBALANCE_GAP_STRESS","net_cagr"],["ROLLING-REBALANCE_GAP_STRESS","net_mdd"]],"official":false,"oos_values":[3.820461235846139,0.03527112848070346,3.820461235846139,0.03527112848070346,3.820461235846139,0.03527112848070346,3.820461235846139,0.03527112848070346],"parameters":{"cash_buffer":0.0,"technical_lookback":1},"registered_metrics":[{"direction":"max","formula_id":"EVL_METRICS_v1:NET_OF_TRADING_COST_PRE_TAX:cagr","metric_id":"net_cagr","path":["views","NET_OF_TRADING_COST_PRE_TAX","cagr"],"provenance":"C6_BASELINE_C3_METRICS","units":"DECIMAL_RETURN_PER_YEAR","version":"EVL_METRICS_v1"},{"direction":"min","formula_id":"EVL_METRICS_v1:NET_OF_TRADING_COST_PRE_TAX:mdd","metric_id":"net_mdd","path":["views","NET_OF_TRADING_COST_PRE_TAX","mdd"],"provenance":"C6_BASELINE_C3_METRICS","units":"DECIMAL_DRAWDOWN","version":"EVL_METRICS_v1"}],"research_decision":"NOT_ASSESSED_PENDING_C8","scope":"SYNTHETIC_SOFTWARE_VALIDATION","selection_lineage_hash":"1439400d730c684edc8bdda2819d528d83bed2f07756df7c8411b0e41aa03a88","source_checkpoint":"FROZEN_C4_C5_C6_SYNTHETIC_HASH_CHECKPOINT","tax_mode":"EXCLUDED"}],"components":[{"component_members":["25657c2ed264fcca5909c618e9d949df8a3f153e059061344da91c73838e76cb","ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"],"costs":{"ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996":"1"},"domain_ranges":{"cash_buffer":"1/5","technical_lookback":"0"},"representatives":["ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"],"restricted_candidates":["ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"],"tie_semantics":"TIED_EQUIVALENT_REPRESENTATIVES"}],"profile":"Balanced","representative_tie_set":["ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"]},"Defensive":{"candidates":[{"candidate_id":"ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996","dataset_vintages":{"EXPANDING-PRIMARY":"v1","EXPANDING-REBALANCE_GAP_STRESS":"v1","ROLLING-PRIMARY":"v1","ROLLING-REBALANCE_GAP_STRESS":"v1"},"evaluator_id":"integrated-fixture-v1","landscape_lineage_hash":"2d5a57f3812f14d9dbd534e980a353fef606cc810b29b257e53ec8f7b95b4640","objective_dimensions":[["EXPANDING-PRIMARY","net_cagr"],["EXPANDING-PRIMARY","net_mdd"],["EXPANDING-REBALANCE_GAP_STRESS","net_cagr"],["EXPANDING-REBALANCE_GAP_STRESS","net_mdd"],["ROLLING-PRIMARY","net_cagr"],["ROLLING-PRIMARY","net_mdd"],["ROLLING-REBALANCE_GAP_STRESS","net_cagr"],["ROLLING-REBALANCE_GAP_STRESS","net_mdd"]],"official":false,"oos_values":[3.820461235846139,0.03527112848070346,3.820461235846139,0.03527112848070346,3.820461235846139,0.03527112848070346,3.820461235846139,0.03527112848070346],"parameters":{"cash_buffer":0.0,"technical_lookback":1},"registered_metrics":[{"direction":"max","formula_id":"EVL_METRICS_v1:NET_OF_TRADING_COST_PRE_TAX:cagr","metric_id":"net_cagr","path":["views","NET_OF_TRADING_COST_PRE_TAX","cagr"],"provenance":"C6_BASELINE_C3_METRICS","units":"DECIMAL_RETURN_PER_YEAR","version":"EVL_METRICS_v1"},{"direction":"min","formula_id":"EVL_METRICS_v1:NET_OF_TRADING_COST_PRE_TAX:mdd","metric_id":"net_mdd","path":["views","NET_OF_TRADING_COST_PRE_TAX","mdd"],"provenance":"C6_BASELINE_C3_METRICS","units":"DECIMAL_DRAWDOWN","version":"EVL_METRICS_v1"}],"research_decision":"NOT_ASSESSED_PENDING_C8","scope":"SYNTHETIC_SOFTWARE_VALIDATION","selection_lineage_hash":"eb3664a40191bd4d91d816fed223e9ed8f44cf6d76af5fd5b801ff20620ba873","source_checkpoint":"FROZEN_C4_C5_C6_SYNTHETIC_HASH_CHECKPOINT","tax_mode":"EXCLUDED"}],"components":[{"component_members":["25657c2ed264fcca5909c618e9d949df8a3f153e059061344da91c73838e76cb","ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"],"costs":{"ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996":"1"},"domain_ranges":{"cash_buffer":"1/5","technical_lookback":"0"},"representatives":["ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"],"restricted_candidates":["ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"],"tie_semantics":"TIED_EQUIVALENT_REPRESENTATIVES"}],"profile":"Defensive","representative_tie_set":["ff5204ecf3c8e8b940a11453286903b8508230cae2b8840a0a46bbcc869ec996"]}},"real_pit_research_validation":"NOT_RUN_MISSING_COMPLETE_REAL_FAMILY","report_hash":"516ca461e7c1ea74d0c57c5012f75fc7346fe0481051086d948eb7774a72da45","scope":"SYNTHETIC_SOFTWARE_VALIDATION","source_checkpoint_hash":"833b98926b3070198e664148a9222773c399afaadfde3e83cd0133717a91f23f","stage_hashes":["afe6001bb4a10f561a7aa913baf57972c1c13a88ad6ab7a6c8aebcf6167a2f99","eedad45d81244247218313a7301d225b0343ed91bb7bb605037d54658c3eff0c","6149481d659e905b1f9fdb37c9a4aaa6251328e9295f08a819cf865b67a45089","103f0ae756c7d0027a633b82abdd5fb71af5d981034ecdf8dc7949118e56aa98","c516d644eaa0d3668938053a8c06823b40da24d72463db5e5882446f8c46d335","069c89829dcdbf33514f7332330f72c6895ded3908af592352f41c327de69b78","5ca9dc35811509edb0996ad31292bd0d3f1725d9340c845f4e6551faab4e6b4d","332fec18fa45f0da177c969ff94edc65757b5e9704e5a0e173e7ba17f4b62602","1fc1ef957cf6f332c143b67149ac6c461d6c2084dff94d4f95d38ebb04bbf988","ebd445c21e76de01fb1c6f75427ff435f4a28e79117e2a329eb004b14db37ffa","fbd13e9a5bc92b14c730721d193a263a5b93213ab5ad6f9c11084bb756707abe","096d7c730900ed69298f20db0912b7a78cbd5d829b033755ae3bee62871aa9d6","1439400d730c684edc8bdda2819d528d83bed2f07756df7c8411b0e41aa03a88","faf974bbedc261e22efeb9ff90ffc95bf22f40c40d5c528595f06f3305fa5120","9557f889cbd2c90a8dff37d3b05bc55babfb2c0e83bf1c52e1b8888cfbc5b24a","4cd72c4523f2bf43cff196a73fce3427654261f811a9b3f7f1603fc06eb12798","de31ff0da997d564b53dbe9e3083426f2b04a3ae065e49c0cd6f40c566216715","a884eb3ed8e4e9fa5401dc37e79cbecbc56974b595780b19f609b1ee7f54b034","eb3664a40191bd4d91d816fed223e9ed8f44cf6d76af5fd5b801ff20620ba873","1a99a1b33303b5b1e78804cf3e14708cfc96a1247857834b62d2483e17441ff7","aec2e0953deacc3505092532d462e94fd382b77527f954cae816f7f56fa75dff"]},"lineage_provenance":"PASS_CURRENT_ANCESTOR_AND_ALL_STAGE_HASH_RESOLUTION","mandatory":{"CENTER":"PASS","COMPLEXITY":"PASS","DISTINCTNESS":"PASS","DRIFT":"PASS","ELIGIBILITY":"PASS","LANDSCAPE":"PASS","PARETO":"PASS","PLATEAU":"PASS","PROFILE_CANDIDATE":"PASS"},"negative_paths":"VERIFIED_BY_TARGETED_C7_AND_PREVIOUS_PHASE_TESTS","official":false,"packages_A_B_C":"PROPOSED_NOT_APPROVED_NOT_ACTIVE","preservation":{"boundary":{"EVL_SPEC_v0.1":"UNCHANGED","Track_A_B_D_E_Web":"PRESERVED_BY_GIT_BLOB_IDENTITY","ahead":48,"behind":0,"canonical":"b8e39a2196a6d7794a04a0cd5393c68329e126ca","canonical_blob_count":7698,"merge_base":"b8e39a2196a6d7794a04a0cd5393c68329e126ca","newly_changed_existing_phase_source_tests":[],"preserved_start_blob_count":7774,"prior_authorized_four_file_repair":"PRESERVED","status":"PASS","tested_head":"c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a","unexpected_new_scope_files":[],"unexpected_protected_changes":[]},"existing_source_tests_changed":[],"frozen_source_tests_preserved":225,"historical_A_B_and_inactive_packages":"PRESERVED_BY_BLOB_IDENTITY","status":"PASS","unexpected_changes":[]},"real_pit_research_validation":"NOT_RUN_MISSING_COMPLETE_REAL_FAMILY","scope":"SYNTHETIC_SOFTWARE_VALIDATION","status":"PASS","tax_mode":"EXCLUDED","tested_head":"c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a"}
+2026-10-01T11:57:37.0970580Z ##[group]Run actions/upload-artifact@v4
+2026-10-01T11:57:37.0970851Z with:
+2026-10-01T11:57:37.0971153Z   name: track-c-c6-evidence-c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a
+2026-10-01T11:57:37.0971549Z   path: implementation/reports/track_c_c6_generated/
+2026-10-01T11:57:37.0971845Z   if-no-files-found: warn
+2026-10-01T11:57:37.0972059Z   compression-level: 6
+2026-10-01T11:57:37.0972258Z   overwrite: false
+2026-10-01T11:57:37.0972459Z   include-hidden-files: false
+2026-10-01T11:57:37.0972677Z env:
+2026-10-01T11:57:37.0972909Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:37.0973314Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-01T11:57:37.0973707Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:37.0974065Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:37.0974607Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:37.0975025Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-01T11:57:37.0975337Z ##[endgroup]
+2026-10-01T11:57:37.2546420Z (node:2385) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-01T11:57:37.2547079Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-01T11:57:37.3017292Z With the provided path, there will be 218 files uploaded
+2026-10-01T11:57:37.3022788Z Artifact name is valid!
+2026-10-01T11:57:37.3023378Z Root directory input is valid!
+2026-10-01T11:57:37.6505420Z Beginning upload of artifact content to blob storage
+2026-10-01T11:57:37.8621815Z (node:2385) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-01T11:57:38.3010492Z Uploaded bytes 582668
+2026-10-01T11:57:38.3596065Z Finished uploading artifact content to blob storage!
+2026-10-01T11:57:38.3597430Z SHA256 digest of uploaded artifact zip is d21bb1acd35449bded7a80d3c68fca00bad05f01c32b0be1980944791eff97ff
+2026-10-01T11:57:38.3599270Z Finalizing artifact upload
+2026-10-01T11:57:38.5977786Z Artifact track-c-c6-evidence-c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a.zip successfully finalized. Artifact ID 11160980432
+2026-10-01T11:57:38.5979239Z Artifact track-c-c6-evidence-c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a has been successfully uploaded! Final size is 582668 bytes. Artifact ID is 11160980432
+2026-10-01T11:57:38.5984583Z Artifact download URL: https://github.com/kco994553-star/Investment-System1/actions/runs/36858285603/artifacts/11160980432
+2026-10-01T11:57:38.6108423Z ##[group]Run actions/upload-artifact@v4
+2026-10-01T11:57:38.6108697Z with:
+2026-10-01T11:57:38.6108996Z   name: track-c-c7-evidence-c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a
+2026-10-01T11:57:38.6109395Z   path: implementation/reports/track_c_c7_generated/
+2026-10-01T11:57:38.6109694Z   if-no-files-found: warn
+2026-10-01T11:57:38.6109931Z   compression-level: 6
+2026-10-01T11:57:38.6110150Z   overwrite: false
+2026-10-01T11:57:38.6110360Z   include-hidden-files: false
+2026-10-01T11:57:38.6110587Z env:
+2026-10-01T11:57:38.6110828Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:38.6111234Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-01T11:57:38.6111635Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:38.6111994Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:38.6112356Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-01T11:57:38.6112758Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-01T11:57:38.6113069Z ##[endgroup]
+2026-10-01T11:57:38.7736327Z (node:2398) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-01T11:57:38.7736989Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-01T11:57:38.8091155Z With the provided path, there will be 227 files uploaded
+2026-10-01T11:57:38.8096751Z Artifact name is valid!
+2026-10-01T11:57:38.8097205Z Root directory input is valid!
+2026-10-01T11:57:39.1371672Z Beginning upload of artifact content to blob storage
+2026-10-01T11:57:39.3550354Z (node:2398) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-01T11:57:39.8192109Z Uploaded bytes 615766
+2026-10-01T11:57:39.8777882Z Finished uploading artifact content to blob storage!
+2026-10-01T11:57:39.8779126Z SHA256 digest of uploaded artifact zip is 788d4986f6b11f47a28f1f82add83fe7b70eb770a189c790c302612a6430bbab
+2026-10-01T11:57:39.8781042Z Finalizing artifact upload
+2026-10-01T11:57:40.1520903Z Artifact track-c-c7-evidence-c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a.zip successfully finalized. Artifact ID 11160655634
+2026-10-01T11:57:40.1522533Z Artifact track-c-c7-evidence-c5932f9f4ef7395835cadeda3b5a46d9dc1a1d4a has been successfully uploaded! Final size is 615766 bytes. Artifact ID is 11160655634
+2026-10-01T11:57:40.1527579Z Artifact download URL: https://github.com/kco994553-star/Investment-System1/actions/runs/36858285603/artifacts/11160655634
+2026-10-01T11:57:40.1688363Z Post job cleanup.
+2026-10-01T11:57:40.2841369Z (node:2410) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-01T11:57:40.2842790Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-01T11:57:40.2986985Z Post job cleanup.
+2026-10-01T11:57:40.3817093Z [command]/usr/bin/git version
+2026-10-01T11:57:40.3856505Z git version 2.55.0
+2026-10-01T11:57:40.3893490Z Temporarily overriding HOME='/home/runner/work/_temp/07d32f82-0d67-4f65-b26a-9d309378042a' before making global git config changes
+2026-10-01T11:57:40.3896974Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-01T11:57:40.3900170Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Investment-System1/Investment-System1
+2026-10-01T11:57:40.3936326Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-01T11:57:40.3969854Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-01T11:57:40.4185291Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-01T11:57:40.4212104Z http.https://github.com/.extraheader
+2026-10-01T11:57:40.4224872Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-01T11:57:40.4255277Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-01T11:57:40.4453786Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-01T11:57:40.4485293Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-01T11:57:40.4853401Z Cleaning up orphan processes
+2026-10-01T11:57:40.5092819Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

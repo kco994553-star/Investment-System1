@@ -1,0 +1,30 @@
+{
+  "kind": "WEB_PRODUCER_INTEGRATION_PRESERVATION_V1",
+  "source_base": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+  "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "branch": "codex/web-producer-integration-readiness-2026-10-03",
+  "existing_tracked_files_compared": 7768,
+  "changed_existing_tracked_files": [],
+  "source_and_tool_sha256": {
+    "implementation/src/investment_system/product/web_mvp.py": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323",
+    "implementation/src/investment_system/product/web_assets/app.js": "7944757a8fb67f889dd54d8b87c2986e9b47d6592c1bd0ab681a842bf3dbead9",
+    "implementation/docs/producer_infrastructure/P01_APPROVAL_2026-10-02.md": "0c8f69460ee63b5ee8692fc451a3279e62b6751de0992df07937c42e377189bf",
+    "implementation/src/investment_system/publication/authorization.py": "36786fc7d585d51a77fe50e483af76b9d994ae6c76063c712da94faab12e5aa2",
+    "implementation/tools/build_producer_contract_web_fixture.py": "143175d003c6ddd9c0e10730599dfa4be78cbcfc1de2da49777e19aad3dca578",
+    "implementation/tools/producer_contract_web_browser_test.js": "e47217f7d06ee2c9a40d339bff4d6b6812dd38cd9a88f86f049422bcdb5aba29"
+  },
+  "artifact_sha256": {
+    "browser-validation.json": "91519777d6a907c2697dd3aef0a95a8a37206b0e117e2dba13eae9293b227457",
+    "fixture-manifest.json": "f0e884a271518018df63c3b2aa2601925003a03301a9e1cdfa1d197f6223b61e",
+    "p01-runtime-fingerprint.log": "203d330a7f313c8d9ad2bd0305b5d9df6fcbafb3f0db4371d8f67a18229cae0e",
+    "records.test-vector.json": "6adebb3b3df2a29910a116dbf6e67e0acd4aafcd2e448f442b9b5e8fefe2690a",
+    "targeted-py311.log": "d1e454be3bec8e5550cf59417123071b84b6dd78d751f6d68541045f437f4296",
+    "withheld-home-en-390.png": "acd12b40c14a9203defb60bbf7c0ded0e1f5b909715a9b31101d5ded2666e9fb"
+  },
+  "maturity_before": "SYNTHETIC_VERIFIED",
+  "maturity_after": "SYNTHETIC_VERIFIED",
+  "BRANCH_STATE": "LOCAL_ADDITIVE_VALIDATION_PASS; NEW_ACTIONS_NOT_RUN",
+  "INTEGRATION_STATE": "P01_WITHHELD_PRODUCER_TO_EXISTING_WEB_FIXTURE_E2E_PASS_LOCAL",
+  "CANONICAL_STATE": "NOT_MERGED",
+  "USER_DECISION_REQUIRED": false
+}

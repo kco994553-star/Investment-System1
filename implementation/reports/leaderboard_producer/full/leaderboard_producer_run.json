@@ -1,0 +1,63 @@
+{
+ "code_commit": "11e18d8be60c20480b6ab3d2241d752e96b0cd47",
+ "generated_at": "2026-10-01T11:40:00+00:00",
+ "dates": [
+  {
+   "as_of": "2024-06-30",
+   "expected": 500,
+   "eligible": 500,
+   "ranked": 500,
+   "not_ranked": 0,
+   "coverage": {
+    "BLOCKED": 29,
+    "PARTIAL": 471
+   },
+   "null_total_score_count": 29,
+   "tie_group_count": 1,
+   "tied_company_count": 29,
+   "within_tie_order_approval": "POLICY_BLOCKED",
+   "ranking_fingerprint": "b02a64f64ecee7e5d5c4bb1771020418bbcfa6c7c6c4d880fb559b015437857e",
+   "semantic_sha256": "a878988a49d5edee2a9200069d7c15bdaff01680a0da69729b757fa5a6409741",
+   "publication": "NOT_AVAILABLE",
+   "universe_id": "uni_cb35a6200b61"
+  },
+  {
+   "as_of": "2024-09-30",
+   "expected": 500,
+   "eligible": 500,
+   "ranked": 500,
+   "not_ranked": 0,
+   "coverage": {
+    "BLOCKED": 31,
+    "PARTIAL": 469
+   },
+   "null_total_score_count": 31,
+   "tie_group_count": 1,
+   "tied_company_count": 31,
+   "within_tie_order_approval": "POLICY_BLOCKED",
+   "ranking_fingerprint": "7073bfd9890e3839ce77d5519019d598198bedd273e1c3c6fd330ad81febdb1c",
+   "semantic_sha256": "707efa49a7784427d3e7c401a21f9e4da5ebd9a941e2fe8adc56e36dfa51b49f",
+   "publication": "NOT_AVAILABLE",
+   "universe_id": "uni_12c3852b8333"
+  },
+  {
+   "as_of": "2024-12-31",
+   "expected": 500,
+   "eligible": 500,
+   "ranked": 500,
+   "not_ranked": 0,
+   "coverage": {
+    "BLOCKED": 32,
+    "PARTIAL": 468
+   },
+   "null_total_score_count": 32,
+   "tie_group_count": 1,
+   "tied_company_count": 32,
+   "within_tie_order_approval": "POLICY_BLOCKED",
+   "ranking_fingerprint": "754a7cee04b941d9d2936880b90368f5f7c1e2e3625a4e9ff1e61635809ded5a",
+   "semantic_sha256": "54685a6905d57064e60564ca2d405217efd91292ebf6ea6902ea63f31d1bf665",
+   "publication": "NOT_AVAILABLE",
+   "universe_id": "uni_0d1a30b1ee47"
+  }
+ ]
+}

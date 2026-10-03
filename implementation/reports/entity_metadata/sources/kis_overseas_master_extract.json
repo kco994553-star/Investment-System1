@@ -1,0 +1,3927 @@
+{
+ "columns": [
+  "national_code",
+  "exchange_id",
+  "exchange_code",
+  "exchange_name",
+  "symbol",
+  "realtime_symbol",
+  "ko_name",
+  "en_name",
+  "security_type"
+ ],
+ "failures": [],
+ "fetcher": "tools/ingest_entity_metadata.py v1",
+ "files": [
+  {
+   "exchange": "NAS",
+   "fetched_at": "2026-10-01T10:10:19.841041+00:00",
+   "http_status": 200,
+   "sha256": "71c52ddc02d45782bb3f1ea484b43a7262fa9cfb8775569c6127601d67ae1d9a",
+   "source_url": "https://new.real.download.dws.co.kr/common/master/nasmst.cod.zip"
+  },
+  {
+   "exchange": "NYS",
+   "fetched_at": "2026-10-01T10:10:20.464826+00:00",
+   "http_status": 200,
+   "sha256": "9976f1ad936e07e12ae89b1f53e84cb5f2be724aabe5cc1bb430754bd9bb7492",
+   "source_url": "https://new.real.download.dws.co.kr/common/master/nysmst.cod.zip"
+  },
+  {
+   "exchange": "AMS",
+   "fetched_at": "2026-10-01T10:10:20.859812+00:00",
+   "http_status": 200,
+   "sha256": "95f54bca04b49efafd2cb1db2faf6bc41674d7ab24d9b62f7785fcb5938d820a",
+   "source_url": "https://new.real.download.dws.co.kr/common/master/amsmst.cod.zip"
+  }
+ ],
+ "note": "Korea Investment & Securities public overseas master files; matched only on SEC-issued tickers of the Universe CIK and English-name cross-check.",
+ "rows": [
+  {
+   "en_name": "AGILENT TECHNOLOGIES INC",
+   "exchange": "NYS",
+   "ko_name": "애질런트 테크놀로지스",
+   "security_type": "2",
+   "symbol": "A"
+  },
+  {
+   "en_name": "APPLE INC",
+   "exchange": "NAS",
+   "ko_name": "애플",
+   "security_type": "2",
+   "symbol": "AAPL"
+  },
+  {
+   "en_name": "ABBVIE INC",
+   "exchange": "NYS",
+   "ko_name": "애브비",
+   "security_type": "2",
+   "symbol": "ABBV"
+  },
+  {
+   "en_name": "AIRBNB INC",
+   "exchange": "NAS",
+   "ko_name": "에어비앤비",
+   "security_type": "2",
+   "symbol": "ABNB"
+  },
+  {
+   "en_name": "ABBOTT LABORATORIES",
+   "exchange": "NYS",
+   "ko_name": "애보트 래브러토리스",
+   "security_type": "2",
+   "symbol": "ABT"
+  },
+  {
+   "en_name": "ARCH CAPITAL GROUP",
+   "exchange": "NAS",
+   "ko_name": "아치 캐피털 그룹",
+   "security_type": "2",
+   "symbol": "ACGL"
+  },
+  {
+   "en_name": "ARCH CAPITAL GROUP DEP SHS EACH REP 1/1000TH NCUM PFD SER G",
+   "exchange": "NAS",
+   "ko_name": "아치 캐피털 그룹 우선주 G",
+   "security_type": "2",
+   "symbol": "ACGLN"
+  },
+  {
+   "en_name": "ARCH CAPITAL GROUP 5.45% NON CUM DEP REP 1/1000 PFD SER F",
+   "exchange": "NAS",
+   "ko_name": "아치 캐피털 그룹 우선주 F(5.450%)",
+   "security_type": "2",
+   "symbol": "ACGLO"
+  },
+  {
+   "en_name": "ACCENTURE PLC",
+   "exchange": "NYS",
+   "ko_name": "액센추어",
+   "security_type": "2",
+   "symbol": "ACN"
+  },
+  {
+   "en_name": "ADOBE INC",
+   "exchange": "NAS",
+   "ko_name": "어도비",
+   "security_type": "2",
+   "symbol": "ADBE"
+  },
+  {
+   "en_name": "ANALOG DEVICES INC",
+   "exchange": "NAS",
+   "ko_name": "아날로그 디바이시스",
+   "security_type": "2",
+   "symbol": "ADI"
+  },
+  {
+   "en_name": "ARCHER-DANIELS-MIDLAND CO",
+   "exchange": "NYS",
+   "ko_name": "아처 대니얼스 미들랜드",
+   "security_type": "2",
+   "symbol": "ADM"
+  },
+  {
+   "en_name": "AUTOMATIC DATA PROCESSING INC",
+   "exchange": "NAS",
+   "ko_name": "오토매틱 데이터 프로세싱",
+   "security_type": "2",
+   "symbol": "ADP"
+  },
+  {
+   "en_name": "AUTODESK INC",
+   "exchange": "NAS",
+   "ko_name": "오토데스크",
+   "security_type": "2",
+   "symbol": "ADSK"
+  },
+  {
+   "en_name": "AMEREN CORP",
+   "exchange": "NYS",
+   "ko_name": "애머런",
+   "security_type": "2",
+   "symbol": "AEE"
+  },
+  {
+   "en_name": "AMERICAN ELECTRIC POWER CO INC",
+   "exchange": "NAS",
+   "ko_name": "아메리칸 일렉트릭 파워",
+   "security_type": "2",
+   "symbol": "AEP"
+  },
+  {
+   "en_name": "AFLAC INC",
+   "exchange": "NYS",
+   "ko_name": "애플랙",
+   "security_type": "2",
+   "symbol": "AFL"
+  },
+  {
+   "en_name": "AFFIRM HLDGS INC",
+   "exchange": "NAS",
+   "ko_name": "어펌 홀딩스",
+   "security_type": "2",
+   "symbol": "AFRM"
+  },
+  {
+   "en_name": "AMERICAN INTERNATIONAL GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "아메리칸 인터내셔널 그룹",
+   "security_type": "2",
+   "symbol": "AIG"
+  },
+  {
+   "en_name": "GALLAGHER(ARTHUR J.)& CO",
+   "exchange": "NYS",
+   "ko_name": "아서 갤러거 앤드 컴퍼니",
+   "security_type": "2",
+   "symbol": "AJG"
+  },
+  {
+   "en_name": "ASTERA LABS INC",
+   "exchange": "NAS",
+   "ko_name": "아스테라 랩스",
+   "security_type": "2",
+   "symbol": "ALAB"
+  },
+  {
+   "en_name": "ALLSTATE CORP",
+   "exchange": "NYS",
+   "ko_name": "올스테이트",
+   "security_type": "2",
+   "symbol": "ALL"
+  },
+  {
+   "en_name": "ALNYLAM PHARMACEUTICALS INC",
+   "exchange": "NAS",
+   "ko_name": "앨나일램 파머슈티컬스",
+   "security_type": "2",
+   "symbol": "ALNY"
+  },
+  {
+   "en_name": "APPLIED MATERIALS INC",
+   "exchange": "NAS",
+   "ko_name": "어플라이드 머티어리얼즈",
+   "security_type": "2",
+   "symbol": "AMAT"
+  },
+  {
+   "en_name": "ADVANCED MICRO DEVICES INC",
+   "exchange": "NAS",
+   "ko_name": "AMD",
+   "security_type": "2",
+   "symbol": "AMD"
+  },
+  {
+   "en_name": "AMETEK INC",
+   "exchange": "NYS",
+   "ko_name": "아메텍",
+   "security_type": "2",
+   "symbol": "AME"
+  },
+  {
+   "en_name": "AMGEN INC",
+   "exchange": "NAS",
+   "ko_name": "암젠",
+   "security_type": "2",
+   "symbol": "AMGN"
+  },
+  {
+   "en_name": "JPMORGAN CHASE FINL CO LLC ALERIAN MLP INDEX  ETNS DUE 28/01",
+   "exchange": "AMS",
+   "ko_name": "ALERIAN MLP ETN",
+   "security_type": "3",
+   "symbol": "AMJB"
+  },
+  {
+   "en_name": "AMERIPRISE FINANCIAL INC",
+   "exchange": "NYS",
+   "ko_name": "어메리프라이즈 파이낸셜",
+   "security_type": "2",
+   "symbol": "AMP"
+  },
+  {
+   "en_name": "AMERICAN TOWER CORP",
+   "exchange": "NYS",
+   "ko_name": "아메리칸 타워",
+   "security_type": "2",
+   "symbol": "AMT"
+  },
+  {
+   "en_name": "AMAZON COM INC",
+   "exchange": "NAS",
+   "ko_name": "아마존닷컴",
+   "security_type": "2",
+   "symbol": "AMZN"
+  },
+  {
+   "en_name": "ARISTA NETWORKS INC",
+   "exchange": "NYS",
+   "ko_name": "아리스타 네트웍스",
+   "security_type": "2",
+   "symbol": "ANET"
+  },
+  {
+   "en_name": "AON PLC (IE)",
+   "exchange": "NYS",
+   "ko_name": "에이온",
+   "security_type": "2",
+   "symbol": "AON"
+  },
+  {
+   "en_name": "AIR PRODUCTS & CHEMICALS INC",
+   "exchange": "NYS",
+   "ko_name": "에어 프라덕츠 앤드 케미컬스",
+   "security_type": "2",
+   "symbol": "APD"
+  },
+  {
+   "en_name": "AMPHENOL CORP",
+   "exchange": "NYS",
+   "ko_name": "암페놀",
+   "security_type": "2",
+   "symbol": "APH"
+  },
+  {
+   "en_name": "APOLLO GLOBAL MANAGEMENT INC",
+   "exchange": "NYS",
+   "ko_name": "아폴로 글로벌 매니지먼트",
+   "security_type": "2",
+   "symbol": "APO"
+  },
+  {
+   "en_name": "APOLLO GLOBAL MANAGEMENT INC 7.625% FXD RESETTABLE JR SUB NO",
+   "exchange": "NYS",
+   "ko_name": "아폴로 글로벌 매니지먼트 후순위채권(2053 7.625%)",
+   "security_type": "2",
+   "symbol": "APOS"
+  },
+  {
+   "en_name": "APPLOVIN CORP",
+   "exchange": "NAS",
+   "ko_name": "앱러빈",
+   "security_type": "2",
+   "symbol": "APP"
+  },
+  {
+   "en_name": "ALEXANDRIA REAL ESTATE EQUITIES",
+   "exchange": "NYS",
+   "ko_name": "알렉산드리아 리얼 에스테이트 에퀴티스",
+   "security_type": "2",
+   "symbol": "ARE"
+  },
+  {
+   "en_name": "ARES MANAGEMENT CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "아레스 매니지먼트",
+   "security_type": "2",
+   "symbol": "ARES"
+  },
+  {
+   "en_name": "ATMOS ENERGY CORP",
+   "exchange": "NYS",
+   "ko_name": "애트모스 에너지",
+   "security_type": "2",
+   "symbol": "ATO"
+  },
+  {
+   "en_name": "BROADCOM INC",
+   "exchange": "NAS",
+   "ko_name": "브로드컴",
+   "security_type": "2",
+   "symbol": "AVGO"
+  },
+  {
+   "en_name": "AMERICAN WATER WORKS COMPANY INC",
+   "exchange": "NYS",
+   "ko_name": "아메리칸 워터 웍스",
+   "security_type": "2",
+   "symbol": "AWK"
+  },
+  {
+   "en_name": "AXON ENTERPRISE INC",
+   "exchange": "NAS",
+   "ko_name": "액손 엔터프라이즈",
+   "security_type": "2",
+   "symbol": "AXON"
+  },
+  {
+   "en_name": "AMERICAN EXPRESS CO",
+   "exchange": "NYS",
+   "ko_name": "아메리칸 엑스프레스",
+   "security_type": "2",
+   "symbol": "AXP"
+  },
+  {
+   "en_name": "AUTOZONE INC",
+   "exchange": "NYS",
+   "ko_name": "오토존",
+   "security_type": "2",
+   "symbol": "AZO"
+  },
+  {
+   "en_name": "BOEING CO",
+   "exchange": "NYS",
+   "ko_name": "보잉",
+   "security_type": "2",
+   "symbol": "BA"
+  },
+  {
+   "en_name": "BANK OF AMERICA CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "뱅크오브아메리카",
+   "security_type": "2",
+   "symbol": "BAC"
+  },
+  {
+   "en_name": "BOOZ ALLEN HAMILTON HLDG CORP",
+   "exchange": "NYS",
+   "ko_name": "부즈 알렌 해밀턴 홀딩",
+   "security_type": "2",
+   "symbol": "BAH"
+  },
+  {
+   "en_name": "BALL CORP",
+   "exchange": "NYS",
+   "ko_name": "볼",
+   "security_type": "2",
+   "symbol": "BALL"
+  },
+  {
+   "en_name": "BEST BUY CO INC",
+   "exchange": "NYS",
+   "ko_name": "베스트 바이",
+   "security_type": "2",
+   "symbol": "BBY"
+  },
+  {
+   "en_name": "BECTON DICKINSON & CO",
+   "exchange": "NYS",
+   "ko_name": "벡턴 디킨슨",
+   "security_type": "2",
+   "symbol": "BDX"
+  },
+  {
+   "en_name": "BROWN-FORMAN CORP",
+   "exchange": "NYS",
+   "ko_name": "브라운 포맨 A",
+   "security_type": "2",
+   "symbol": "BF/A"
+  },
+  {
+   "en_name": "BROWN-FORMAN CORP",
+   "exchange": "NYS",
+   "ko_name": "브라운 포맨 B",
+   "security_type": "2",
+   "symbol": "BF/B"
+  },
+  {
+   "en_name": "BIOGEN INC",
+   "exchange": "NAS",
+   "ko_name": "바이오젠",
+   "security_type": "2",
+   "symbol": "BIIB"
+  },
+  {
+   "en_name": "BOOKING HOLDINGS INC",
+   "exchange": "NAS",
+   "ko_name": "부킹 홀딩스",
+   "security_type": "2",
+   "symbol": "BKNG"
+  },
+  {
+   "en_name": "BAKER HUGHES COMPANY",
+   "exchange": "NAS",
+   "ko_name": "베이커 휴즈",
+   "security_type": "2",
+   "symbol": "BKR"
+  },
+  {
+   "en_name": "BUILDERS FIRSTSOURCE INC",
+   "exchange": "NYS",
+   "ko_name": "빌더스 퍼스트소스",
+   "security_type": "2",
+   "symbol": "BLDR"
+  },
+  {
+   "en_name": "BLACKROCK INC",
+   "exchange": "NYS",
+   "ko_name": "블랙록",
+   "security_type": "2",
+   "symbol": "BLK"
+  },
+  {
+   "en_name": "BRISTOL-MYERS SQUIBB CO",
+   "exchange": "NYS",
+   "ko_name": "브리스톨 마이어스 스큅",
+   "security_type": "2",
+   "symbol": "BMY"
+  },
+  {
+   "en_name": "BANK OF NY MELLON CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "BANK OF NY MELLON CORPORATION",
+   "security_type": "2",
+   "symbol": "BNY"
+  },
+  {
+   "en_name": "BROADRIDGE FINANCIAL SOLUTION INC",
+   "exchange": "NYS",
+   "ko_name": "브로드리지 파이낸셜 솔루션",
+   "security_type": "2",
+   "symbol": "BR"
+  },
+  {
+   "en_name": "BERKSHIRE HATHAWAY INC",
+   "exchange": "NYS",
+   "ko_name": "버크셔 해서웨이 A",
+   "security_type": "2",
+   "symbol": "BRK/A"
+  },
+  {
+   "en_name": "BERKSHIRE HATHAWAY INC",
+   "exchange": "NYS",
+   "ko_name": "버크셔 해서웨이 B",
+   "security_type": "2",
+   "symbol": "BRK/B"
+  },
+  {
+   "en_name": "BROWN & BROWN INC",
+   "exchange": "NYS",
+   "ko_name": "브라운 앤드 브라운",
+   "security_type": "2",
+   "symbol": "BRO"
+  },
+  {
+   "en_name": "BOSTON SCIENTIFIC CORP",
+   "exchange": "NYS",
+   "ko_name": "보스턴 사이언티픽",
+   "security_type": "2",
+   "symbol": "BSX"
+  },
+  {
+   "en_name": "BURLINGTON STORES INC",
+   "exchange": "NYS",
+   "ko_name": "벌링턴 스토어스",
+   "security_type": "2",
+   "symbol": "BURL"
+  },
+  {
+   "en_name": "BLACKSTONE INC",
+   "exchange": "NYS",
+   "ko_name": "블랙스톤",
+   "security_type": "2",
+   "symbol": "BX"
+  },
+  {
+   "en_name": "CITIGROUP INC",
+   "exchange": "NYS",
+   "ko_name": "씨티그룹",
+   "security_type": "2",
+   "symbol": "C"
+  },
+  {
+   "en_name": "CARDINAL HEALTH INC",
+   "exchange": "NYS",
+   "ko_name": "카디널 헬스",
+   "security_type": "2",
+   "symbol": "CAH"
+  },
+  {
+   "en_name": "CARRIER GLOBAL CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "캐리어 글로벌",
+   "security_type": "2",
+   "symbol": "CARR"
+  },
+  {
+   "en_name": "CATERPILLAR INC",
+   "exchange": "NYS",
+   "ko_name": "캐터필러",
+   "security_type": "2",
+   "symbol": "CAT"
+  },
+  {
+   "en_name": "CHUBB LTD SWITZERLAND",
+   "exchange": "NYS",
+   "ko_name": "처브",
+   "security_type": "2",
+   "symbol": "CB"
+  },
+  {
+   "en_name": "CBOE GLOBAL MARKETS INC",
+   "exchange": "AMS",
+   "ko_name": "CBOE 글로벌 마켓",
+   "security_type": "2",
+   "symbol": "CBOE"
+  },
+  {
+   "en_name": "CBRE GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "CBRE 그룹",
+   "security_type": "2",
+   "symbol": "CBRE"
+  },
+  {
+   "en_name": "CROWN CASTLE INC",
+   "exchange": "NYS",
+   "ko_name": "크라운 캐슬",
+   "security_type": "2",
+   "symbol": "CCI"
+  },
+  {
+   "en_name": "CARNIVAL CORP LTD",
+   "exchange": "NYS",
+   "ko_name": "카니발",
+   "security_type": "2",
+   "symbol": "CCL"
+  },
+  {
+   "en_name": "COMCAST HOLDINGS CORPORATION 2% CNV PREF SEC15/10/2029 USD71",
+   "exchange": "NYS",
+   "ko_name": "컴캐스트 홀딩스 우선주",
+   "security_type": "2",
+   "symbol": "CCZ"
+  },
+  {
+   "en_name": "CADENCE DESIGN SYSTEMS INC",
+   "exchange": "NAS",
+   "ko_name": "케이던스 디자인 시스템즈",
+   "security_type": "2",
+   "symbol": "CDNS"
+  },
+  {
+   "en_name": "CDW CORP",
+   "exchange": "NAS",
+   "ko_name": "CDW",
+   "security_type": "2",
+   "symbol": "CDW"
+  },
+  {
+   "en_name": "CONSTELLATION ENERGY CORPORATION",
+   "exchange": "NAS",
+   "ko_name": "컨스털레이션 에너지",
+   "security_type": "2",
+   "symbol": "CEG"
+  },
+  {
+   "en_name": "CITIZENS FINANCIAL GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "시티즌스 파이낸셜 그룹",
+   "security_type": "2",
+   "symbol": "CFG"
+  },
+  {
+   "en_name": "CARLYLE GROUP INC",
+   "exchange": "NAS",
+   "ko_name": "칼라일 그룹",
+   "security_type": "2",
+   "symbol": "CG"
+  },
+  {
+   "en_name": "CARLYLE FIN LLC 4.625% SRN 15/05/2061 USD25",
+   "exchange": "NAS",
+   "ko_name": "칼라일 파이낸스 일반채권(2061-05-15 4.625%)",
+   "security_type": "2",
+   "symbol": "CGABL"
+  },
+  {
+   "en_name": "CHURCH & DWIGHT",
+   "exchange": "NYS",
+   "ko_name": "처치 앤드 드와이트",
+   "security_type": "2",
+   "symbol": "CHD"
+  },
+  {
+   "en_name": "CHARTER COMMUNICATIONS INC",
+   "exchange": "NAS",
+   "ko_name": "차터 커뮤니케이션스",
+   "security_type": "2",
+   "symbol": "CHTR"
+  },
+  {
+   "en_name": "CHARTER COMMUNICATIONS INC CUMULATIVE REDEEMABLE PFD SER A",
+   "exchange": "NAS",
+   "ko_name": "차터 커뮤니케이션스 누적 상환우선주 A",
+   "security_type": "2",
+   "symbol": "CHTRP"
+  },
+  {
+   "en_name": "THE CIGNA GROUP",
+   "exchange": "NYS",
+   "ko_name": "시그나 그룹",
+   "security_type": "2",
+   "symbol": "CI"
+  },
+  {
+   "en_name": "CINCINNATI FINANCIAL CORP",
+   "exchange": "NAS",
+   "ko_name": "신시내티 파이낸셜",
+   "security_type": "2",
+   "symbol": "CINF"
+  },
+  {
+   "en_name": "COLGATE-PALMOLIVE CO",
+   "exchange": "NYS",
+   "ko_name": "콜게이트 팜올리브",
+   "security_type": "2",
+   "symbol": "CL"
+  },
+  {
+   "en_name": "CLOROX CO",
+   "exchange": "NYS",
+   "ko_name": "크로락스",
+   "security_type": "2",
+   "symbol": "CLX"
+  },
+  {
+   "en_name": "COMCAST CORP",
+   "exchange": "NAS",
+   "ko_name": "컴캐스트",
+   "security_type": "2",
+   "symbol": "CMCSA"
+  },
+  {
+   "en_name": "CME GROUP INC",
+   "exchange": "NAS",
+   "ko_name": "CME 그룹",
+   "security_type": "2",
+   "symbol": "CME"
+  },
+  {
+   "en_name": "CHIPOTLE MEXICAN GRILL",
+   "exchange": "NYS",
+   "ko_name": "치폴레 멕시칸 그릴",
+   "security_type": "2",
+   "symbol": "CMG"
+  },
+  {
+   "en_name": "CUMMINS INC",
+   "exchange": "NYS",
+   "ko_name": "커민스",
+   "security_type": "2",
+   "symbol": "CMI"
+  },
+  {
+   "en_name": "CMS ENERGY CORP",
+   "exchange": "NYS",
+   "ko_name": "CMS 에너지",
+   "security_type": "2",
+   "symbol": "CMS"
+  },
+  {
+   "en_name": "CMS ENERGY CORP 4.200% DEP SHS REP 1/1000 CUM PF ST SR C",
+   "exchange": "NYS",
+   "ko_name": "CMS 에너지 우선주 C(4.200% 누적)",
+   "security_type": "2",
+   "symbol": "CMS/C"
+  },
+  {
+   "en_name": "CMS ENERGY CORP 5.625%JUNIOR SUBORD NTS 15/03/2078 USD25",
+   "exchange": "NYS",
+   "ko_name": "CMS 에너지 후순위채권(2078-03-15 5.625%)",
+   "security_type": "2",
+   "symbol": "CMSA"
+  },
+  {
+   "en_name": "CMS ENERGY CORP 5.875% JUNIOR SUBORDINATED NTS DUE 2078",
+   "exchange": "NYS",
+   "ko_name": "CMS 에너지 후순위채권(2078-10-15 5.875%)",
+   "security_type": "2",
+   "symbol": "CMSC"
+  },
+  {
+   "en_name": "CMS ENERGY CORP 5.875%JNR SUBORD NTS DUE01/03/2079 USD25",
+   "exchange": "NYS",
+   "ko_name": "CMS 에너지 후순위채권(2079-03-01 5.875%)",
+   "security_type": "2",
+   "symbol": "CMSD"
+  },
+  {
+   "en_name": "CENTENE CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "센틴",
+   "security_type": "2",
+   "symbol": "CNC"
+  },
+  {
+   "en_name": "CENTERPOINT ENERGY INC",
+   "exchange": "NYS",
+   "ko_name": "센터포인트 에너지",
+   "security_type": "2",
+   "symbol": "CNP"
+  },
+  {
+   "en_name": "CAPITAL ONE FINANCIAL CORP",
+   "exchange": "NYS",
+   "ko_name": "캐피털 원 파이낸셜",
+   "security_type": "2",
+   "symbol": "COF"
+  },
+  {
+   "en_name": "COINBASE GLOBAL INC",
+   "exchange": "NAS",
+   "ko_name": "코인베이스 글로벌",
+   "security_type": "2",
+   "symbol": "COIN"
+  },
+  {
+   "en_name": "COOPER COS INC",
+   "exchange": "NAS",
+   "ko_name": "쿠퍼",
+   "security_type": "2",
+   "symbol": "COO"
+  },
+  {
+   "en_name": "CONOCOPHILLIPS",
+   "exchange": "NYS",
+   "ko_name": "코노코필립스",
+   "security_type": "2",
+   "symbol": "COP"
+  },
+  {
+   "en_name": "CENCORA INC",
+   "exchange": "NYS",
+   "ko_name": "센코라",
+   "security_type": "2",
+   "symbol": "COR"
+  },
+  {
+   "en_name": "COSTCO WHOLESALE CORP",
+   "exchange": "NAS",
+   "ko_name": "코스트코 홀세일",
+   "security_type": "2",
+   "symbol": "COST"
+  },
+  {
+   "en_name": "CANADIAN PAC KANS CITY LTD",
+   "exchange": "NYS",
+   "ko_name": "캐나디안 퍼시픽 레일웨이",
+   "security_type": "2",
+   "symbol": "CP"
+  },
+  {
+   "en_name": "CORPAY INC",
+   "exchange": "NYS",
+   "ko_name": "코페이",
+   "security_type": "2",
+   "symbol": "CPAY"
+  },
+  {
+   "en_name": "COUPANG INC",
+   "exchange": "NYS",
+   "ko_name": "쿠팡",
+   "security_type": "2",
+   "symbol": "CPNG"
+  },
+  {
+   "en_name": "COPART INC",
+   "exchange": "NAS",
+   "ko_name": "코파트",
+   "security_type": "2",
+   "symbol": "CPRT"
+  },
+  {
+   "en_name": "CRH",
+   "exchange": "NYS",
+   "ko_name": "CRH",
+   "security_type": "2",
+   "symbol": "CRH"
+  },
+  {
+   "en_name": "SALESFORCE INC",
+   "exchange": "NYS",
+   "ko_name": "세일스포스",
+   "security_type": "2",
+   "symbol": "CRM"
+  },
+  {
+   "en_name": "CROWDSTRIKE HOLDINGS INC",
+   "exchange": "NAS",
+   "ko_name": "크라우드스트라이크 홀딩스",
+   "security_type": "2",
+   "symbol": "CRWD"
+  },
+  {
+   "en_name": "CISCO SYSTEMS INC",
+   "exchange": "NAS",
+   "ko_name": "시스코 시스템즈",
+   "security_type": "2",
+   "symbol": "CSCO"
+  },
+  {
+   "en_name": "COSTAR GROUP INC",
+   "exchange": "NAS",
+   "ko_name": "코스타 그룹",
+   "security_type": "2",
+   "symbol": "CSGP"
+  },
+  {
+   "en_name": "CARLISLE COS INC",
+   "exchange": "NYS",
+   "ko_name": "칼라일",
+   "security_type": "2",
+   "symbol": "CSL"
+  },
+  {
+   "en_name": "CSX CORP",
+   "exchange": "NAS",
+   "ko_name": "CSX",
+   "security_type": "2",
+   "symbol": "CSX"
+  },
+  {
+   "en_name": "CINTAS CORP",
+   "exchange": "NAS",
+   "ko_name": "신타스",
+   "security_type": "2",
+   "symbol": "CTAS"
+  },
+  {
+   "en_name": "COGNIZANT TECHNOLOGY SOLUTIONS CORP",
+   "exchange": "NAS",
+   "ko_name": "코그니전트 테크놀로지 솔루션스",
+   "security_type": "2",
+   "symbol": "CTSH"
+  },
+  {
+   "en_name": "CORTEVA INC",
+   "exchange": "NYS",
+   "ko_name": "코르테바",
+   "security_type": "2",
+   "symbol": "CTVA"
+  },
+  {
+   "en_name": "CARVANA CO",
+   "exchange": "NYS",
+   "ko_name": "카바나",
+   "security_type": "2",
+   "symbol": "CVNA"
+  },
+  {
+   "en_name": "CVS HEALTH CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "CVS 헬스",
+   "security_type": "2",
+   "symbol": "CVS"
+  },
+  {
+   "en_name": "CHEVRON CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "셰브론",
+   "security_type": "2",
+   "symbol": "CVX"
+  },
+  {
+   "en_name": "DOMINION ENERGY INC",
+   "exchange": "NYS",
+   "ko_name": "도미니언 에너지",
+   "security_type": "2",
+   "symbol": "D"
+  },
+  {
+   "en_name": "DELTA AIR LINES INC",
+   "exchange": "NYS",
+   "ko_name": "델타 에어라인스",
+   "security_type": "2",
+   "symbol": "DAL"
+  },
+  {
+   "en_name": "DOORDASH INC",
+   "exchange": "NAS",
+   "ko_name": "도어대시",
+   "security_type": "2",
+   "symbol": "DASH"
+  },
+  {
+   "en_name": "DUPONT DE NEMOURS INC",
+   "exchange": "NYS",
+   "ko_name": "듀폰",
+   "security_type": "2",
+   "symbol": "DD"
+  },
+  {
+   "en_name": "DATADOG INC",
+   "exchange": "NAS",
+   "ko_name": "데이터도그",
+   "security_type": "2",
+   "symbol": "DDOG"
+  },
+  {
+   "en_name": "DEERE & CO",
+   "exchange": "NYS",
+   "ko_name": "디어",
+   "security_type": "2",
+   "symbol": "DE"
+  },
+  {
+   "en_name": "DECKERS OUTDOOR CORP",
+   "exchange": "NYS",
+   "ko_name": "덱커 아웃도어",
+   "security_type": "2",
+   "symbol": "DECK"
+  },
+  {
+   "en_name": "DELL TECHNOLOGIES INC",
+   "exchange": "NYS",
+   "ko_name": "델 테크놀로지스",
+   "security_type": "2",
+   "symbol": "DELL"
+  },
+  {
+   "en_name": "DOLLAR GENERAL CORP",
+   "exchange": "NYS",
+   "ko_name": "달러 제너럴",
+   "security_type": "2",
+   "symbol": "DG"
+  },
+  {
+   "en_name": "QUEST DIAGNOSTICS INC",
+   "exchange": "NYS",
+   "ko_name": "퀘스트 다이어그노스틱스",
+   "security_type": "2",
+   "symbol": "DGX"
+  },
+  {
+   "en_name": "DR HORTON INC",
+   "exchange": "NYS",
+   "ko_name": "닥터 호턴",
+   "security_type": "2",
+   "symbol": "DHI"
+  },
+  {
+   "en_name": "DANAHER CORP",
+   "exchange": "NYS",
+   "ko_name": "다나허",
+   "security_type": "2",
+   "symbol": "DHR"
+  },
+  {
+   "en_name": "WALT DISNEY COMPANY (THE)",
+   "exchange": "NYS",
+   "ko_name": "월트 디즈니",
+   "security_type": "2",
+   "symbol": "DIS"
+  },
+  {
+   "en_name": "DRAFTKINGS INC",
+   "exchange": "NAS",
+   "ko_name": "드래프트킹스",
+   "security_type": "2",
+   "symbol": "DKNG"
+  },
+  {
+   "en_name": "DICKS SPORTING GOODS INC",
+   "exchange": "NYS",
+   "ko_name": "딕스 스포팅 굿즈",
+   "security_type": "2",
+   "symbol": "DKS"
+  },
+  {
+   "en_name": "DIGITAL REALTY TRUST INC",
+   "exchange": "NYS",
+   "ko_name": "디지털 리얼티 트러스트",
+   "security_type": "2",
+   "symbol": "DLR"
+  },
+  {
+   "en_name": "DOLLAR TREE INC",
+   "exchange": "NAS",
+   "ko_name": "달러 트리",
+   "security_type": "2",
+   "symbol": "DLTR"
+  },
+  {
+   "en_name": "DOCUSIGN INC",
+   "exchange": "NAS",
+   "ko_name": "도큐사인",
+   "security_type": "2",
+   "symbol": "DOCU"
+  },
+  {
+   "en_name": "DOVER CORP",
+   "exchange": "NYS",
+   "ko_name": "도버",
+   "security_type": "2",
+   "symbol": "DOV"
+  },
+  {
+   "en_name": "DOW INC",
+   "exchange": "NYS",
+   "ko_name": "다우",
+   "security_type": "2",
+   "symbol": "DOW"
+  },
+  {
+   "en_name": "DARDEN RESTAURANTS INC",
+   "exchange": "NYS",
+   "ko_name": "다든 레스토랑",
+   "security_type": "2",
+   "symbol": "DRI"
+  },
+  {
+   "en_name": "DYNATRACE INC",
+   "exchange": "NYS",
+   "ko_name": "다이나트레이스",
+   "security_type": "2",
+   "symbol": "DT"
+  },
+  {
+   "en_name": "DTE ENERGY CO 4.375% JR SUB DEB 2020 SER G (15/10/80)",
+   "exchange": "NYS",
+   "ko_name": "DTE 에너지 후순위채권(2080-10-15 4.375%)",
+   "security_type": "2",
+   "symbol": "DTB"
+  },
+  {
+   "en_name": "DTE ENERGY CO",
+   "exchange": "NYS",
+   "ko_name": "DTE 에너지",
+   "security_type": "2",
+   "symbol": "DTE"
+  },
+  {
+   "en_name": "DTE ENERGY CO 6.25% 2025 JR SUB DEB SER H 01/10/2085",
+   "exchange": "NYS",
+   "ko_name": "DTE 에너지 후순위채권 H(2085-10-01 6.250%)",
+   "security_type": "2",
+   "symbol": "DTK"
+  },
+  {
+   "en_name": "DTE ENERGY CO 5.25% JR SUB DEBNTRS SR E 01/12/77 USD25",
+   "exchange": "NYS",
+   "ko_name": "DTE 에너지 후순위채권(2077-12-01 5.250%)",
+   "security_type": "2",
+   "symbol": "DTW"
+  },
+  {
+   "en_name": "DUKE ENERGY CORP",
+   "exchange": "NYS",
+   "ko_name": "듀크 에너지",
+   "security_type": "2",
+   "symbol": "DUK"
+  },
+  {
+   "en_name": "DUKE ENERGY CORP 5.625%JNR SUBORD DEB DUE15/09/2078 USD25",
+   "exchange": "NYS",
+   "ko_name": "듀크 에너지 후순위채권(2078-09-15 5.625%)",
+   "security_type": "2",
+   "symbol": "DUKB"
+  },
+  {
+   "en_name": "DUKE ENERGY CORP 7.375% SNR 01/08/2029 USD",
+   "exchange": "NYS",
+   "ko_name": "듀크 에너지 7.375% 선순위채권",
+   "security_type": "2",
+   "symbol": "DUKU"
+  },
+  {
+   "en_name": "DEVON ENERGY CORP",
+   "exchange": "NYS",
+   "ko_name": "데번 에너지",
+   "security_type": "2",
+   "symbol": "DVN"
+  },
+  {
+   "en_name": "DEXCOM INC",
+   "exchange": "NAS",
+   "ko_name": "덱스컴",
+   "security_type": "2",
+   "symbol": "DXCM"
+  },
+  {
+   "en_name": "EBAY INC",
+   "exchange": "NAS",
+   "ko_name": "이베이",
+   "security_type": "2",
+   "symbol": "EBAY"
+  },
+  {
+   "en_name": "ECOLAB INC",
+   "exchange": "NYS",
+   "ko_name": "에코랩",
+   "security_type": "2",
+   "symbol": "ECL"
+  },
+  {
+   "en_name": "CONSOLIDATED EDISON INC",
+   "exchange": "NYS",
+   "ko_name": "컨솔리데이티드 에디슨",
+   "security_type": "2",
+   "symbol": "ED"
+  },
+  {
+   "en_name": "EQUIFAX INC",
+   "exchange": "NYS",
+   "ko_name": "에퀴팩스",
+   "security_type": "2",
+   "symbol": "EFX"
+  },
+  {
+   "en_name": "EVEREST GROUP LTD",
+   "exchange": "NYS",
+   "ko_name": "에베레스트 그룹",
+   "security_type": "2",
+   "symbol": "EG"
+  },
+  {
+   "en_name": "EDISON INTERNATIONAL",
+   "exchange": "NYS",
+   "ko_name": "에디슨 인터내셔널",
+   "security_type": "2",
+   "symbol": "EIX"
+  },
+  {
+   "en_name": "ESTEE LAUDER COMPANIES INC",
+   "exchange": "NYS",
+   "ko_name": "에스티 로더",
+   "security_type": "2",
+   "symbol": "EL"
+  },
+  {
+   "en_name": "ELEVANCE HEALTH INC",
+   "exchange": "NYS",
+   "ko_name": "엘리밴스 헬스",
+   "security_type": "2",
+   "symbol": "ELV"
+  },
+  {
+   "en_name": "EMCOR GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "엠코 그룹",
+   "security_type": "2",
+   "symbol": "EME"
+  },
+  {
+   "en_name": "EMERSON ELECTRIC CO",
+   "exchange": "NYS",
+   "ko_name": "에머슨 일렉트릭",
+   "security_type": "2",
+   "symbol": "EMR"
+  },
+  {
+   "en_name": "ENBRIDGE INC",
+   "exchange": "NYS",
+   "ko_name": "엔브리지",
+   "security_type": "2",
+   "symbol": "ENB"
+  },
+  {
+   "en_name": "EOG RESOURCES INC",
+   "exchange": "NYS",
+   "ko_name": "EOG 리소시스",
+   "security_type": "2",
+   "symbol": "EOG"
+  },
+  {
+   "en_name": "ENTERPRISE PRODS PARTNERS L P",
+   "exchange": "NYS",
+   "ko_name": "엔터프라이즈 프라덕츠 파트너스",
+   "security_type": "2",
+   "symbol": "EPD"
+  },
+  {
+   "en_name": "EQUINIX INC",
+   "exchange": "NAS",
+   "ko_name": "에퀴닉스",
+   "security_type": "2",
+   "symbol": "EQIX"
+  },
+  {
+   "en_name": "EQT CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "EQT",
+   "security_type": "2",
+   "symbol": "EQT"
+  },
+  {
+   "en_name": "ERIE INDEMNITY CO",
+   "exchange": "NAS",
+   "ko_name": "이리 인뎀너티",
+   "security_type": "2",
+   "symbol": "ERIE"
+  },
+  {
+   "en_name": "EVERSOURCE ENERGY",
+   "exchange": "NYS",
+   "ko_name": "에버소스 에너지",
+   "security_type": "2",
+   "symbol": "ES"
+  },
+  {
+   "en_name": "ESSEX PROPERTY TRUST INC",
+   "exchange": "NYS",
+   "ko_name": "에섹스 프라퍼티 트러스트",
+   "security_type": "2",
+   "symbol": "ESS"
+  },
+  {
+   "en_name": "ENERGY TRANSFER LP",
+   "exchange": "NYS",
+   "ko_name": "에너지 트랜스퍼",
+   "security_type": "2",
+   "symbol": "ET"
+  },
+  {
+   "en_name": "EATON CORPORATION PLC",
+   "exchange": "NYS",
+   "ko_name": "이턴 코퍼레이션",
+   "security_type": "2",
+   "symbol": "ETN"
+  },
+  {
+   "en_name": "ENTERGY CORP",
+   "exchange": "NYS",
+   "ko_name": "엔터지",
+   "security_type": "2",
+   "symbol": "ETR"
+  },
+  {
+   "en_name": "EDWARDS LIFESCIENCES CORP",
+   "exchange": "NYS",
+   "ko_name": "에드워즈 라이프사이언시스",
+   "security_type": "2",
+   "symbol": "EW"
+  },
+  {
+   "en_name": "EXELON CORP",
+   "exchange": "NAS",
+   "ko_name": "엑셀론",
+   "security_type": "2",
+   "symbol": "EXC"
+  },
+  {
+   "en_name": "EXPAND ENERGY CORPORATION",
+   "exchange": "NAS",
+   "ko_name": "익스팬드 에너지",
+   "security_type": "2",
+   "symbol": "EXE"
+  },
+  {
+   "en_name": "EXPEDITORS INTERN OF WASHINGTON INC",
+   "exchange": "NYS",
+   "ko_name": "익스피다이터스 인터내셔널 오브 워싱턴",
+   "security_type": "2",
+   "symbol": "EXPD"
+  },
+  {
+   "en_name": "EXPEDIA GROUP INC",
+   "exchange": "NAS",
+   "ko_name": "익스피디아 그룹",
+   "security_type": "2",
+   "symbol": "EXPE"
+  },
+  {
+   "en_name": "EXTRA SPACE STORAGE INC",
+   "exchange": "NYS",
+   "ko_name": "엑스트라 스페이스 스토리지",
+   "security_type": "2",
+   "symbol": "EXR"
+  },
+  {
+   "en_name": "FORD MOTOR CO",
+   "exchange": "NYS",
+   "ko_name": "포드 모터",
+   "security_type": "2",
+   "symbol": "F"
+  },
+  {
+   "en_name": "DIAMONDBACK ENERGY INC",
+   "exchange": "NAS",
+   "ko_name": "다이아몬드백 에너지",
+   "security_type": "2",
+   "symbol": "FANG"
+  },
+  {
+   "en_name": "FASTENAL",
+   "exchange": "NAS",
+   "ko_name": "패스널",
+   "security_type": "2",
+   "symbol": "FAST"
+  },
+  {
+   "en_name": "FIRST CITIZENS BANCSHARES INC",
+   "exchange": "NAS",
+   "ko_name": "퍼스트 시티즌스 뱅크셰어스",
+   "security_type": "2",
+   "symbol": "FCNCA"
+  },
+  {
+   "en_name": "FIRST CITIZENS BANCSHARES INC DEL DEP SH REPSTG 1/40TH NON C",
+   "exchange": "NAS",
+   "ko_name": "퍼스트 시티즌스 뱅크셰어스 예탁주(비누적)",
+   "security_type": "2",
+   "symbol": "FCNCN"
+  },
+  {
+   "en_name": "FIRST CITIZENS BANCSHARES INC DEL 5.625% NON-CUM PERPETUAL P",
+   "exchange": "NAS",
+   "ko_name": "퍼스트 시티즌스 뱅크셰어스 우선주 C(5.625%)",
+   "security_type": "2",
+   "symbol": "FCNCO"
+  },
+  {
+   "en_name": "FIRST CITIZENS BANCSHARES INC DEL 5.375 DEP REP 1/40TH PFD S",
+   "exchange": "NAS",
+   "ko_name": "퍼스트 시티즌스 뱅크셰어스 우선주 A(5.375%)",
+   "security_type": "2",
+   "symbol": "FCNCP"
+  },
+  {
+   "en_name": "FREEPORT-MCMORAN INC",
+   "exchange": "NYS",
+   "ko_name": "프리포트 맥모란",
+   "security_type": "2",
+   "symbol": "FCX"
+  },
+  {
+   "en_name": "FACTSET RESEARCH SYSTEMS",
+   "exchange": "NYS",
+   "ko_name": "팩트셋 리서치 시스템스",
+   "security_type": "2",
+   "symbol": "FDS"
+  },
+  {
+   "en_name": "FEDEX CORP",
+   "exchange": "NYS",
+   "ko_name": "페덱스",
+   "security_type": "2",
+   "symbol": "FDX"
+  },
+  {
+   "en_name": "FIRSTENERGY CORP",
+   "exchange": "NYS",
+   "ko_name": "퍼스트에너지",
+   "security_type": "2",
+   "symbol": "FE"
+  },
+  {
+   "en_name": "FERGUSON ENTERPRISES INC.",
+   "exchange": "NYS",
+   "ko_name": "퍼거슨 엔터프라이지스",
+   "security_type": "2",
+   "symbol": "FERG"
+  },
+  {
+   "en_name": "FAIR ISAAC CORP",
+   "exchange": "NYS",
+   "ko_name": "페어 아이작",
+   "security_type": "2",
+   "symbol": "FICO"
+  },
+  {
+   "en_name": "FIDELITY NATL INFORMATION SERVICES",
+   "exchange": "NYS",
+   "ko_name": "피델리티 내셔널 인포메이션 서비시스",
+   "security_type": "2",
+   "symbol": "FIS"
+  },
+  {
+   "en_name": "FISERV INC",
+   "exchange": "NAS",
+   "ko_name": "파이서브",
+   "security_type": "2",
+   "symbol": "FISV"
+  },
+  {
+   "en_name": "FIFTH THIRD BANCORP",
+   "exchange": "NYS",
+   "ko_name": "피프스 서드 뱅코프",
+   "security_type": "2",
+   "symbol": "FITB"
+  },
+  {
+   "en_name": "FOX CORP",
+   "exchange": "NAS",
+   "ko_name": "폭스 B",
+   "security_type": "2",
+   "symbol": "FOX"
+  },
+  {
+   "en_name": "FOX CORP",
+   "exchange": "NAS",
+   "ko_name": "폭스 A",
+   "security_type": "2",
+   "symbol": "FOXA"
+  },
+  {
+   "en_name": "FIRST SOLAR INC",
+   "exchange": "NAS",
+   "ko_name": "퍼스트 솔라",
+   "security_type": "2",
+   "symbol": "FSLR"
+  },
+  {
+   "en_name": "FORTINET INC",
+   "exchange": "NAS",
+   "ko_name": "포티넷",
+   "security_type": "2",
+   "symbol": "FTNT"
+  },
+  {
+   "en_name": "FORTIVE CORP",
+   "exchange": "NYS",
+   "ko_name": "포티브",
+   "security_type": "2",
+   "symbol": "FTV"
+  },
+  {
+   "en_name": "LIBERTY MEDIA CORPORATION",
+   "exchange": "NAS",
+   "ko_name": "리버티 포뮬러 원 A",
+   "security_type": "2",
+   "symbol": "FWONA"
+  },
+  {
+   "en_name": "LIBERTY MEDIA CORPORATION",
+   "exchange": "NAS",
+   "ko_name": "리버티 포뮬러 원 C",
+   "security_type": "2",
+   "symbol": "FWONK"
+  },
+  {
+   "en_name": "GENERAL DYNAMICS CORP",
+   "exchange": "NYS",
+   "ko_name": "제너럴 다이내믹스",
+   "security_type": "2",
+   "symbol": "GD"
+  },
+  {
+   "en_name": "GODADDY INC",
+   "exchange": "NYS",
+   "ko_name": "고대디",
+   "security_type": "2",
+   "symbol": "GDDY"
+  },
+  {
+   "en_name": "GE AEROSPACE",
+   "exchange": "NYS",
+   "ko_name": "GE에어로스페이스",
+   "security_type": "2",
+   "symbol": "GE"
+  },
+  {
+   "en_name": "GE HEALTHCARE TECHNOLOGIES INC",
+   "exchange": "NAS",
+   "ko_name": "GE 헬스케어 테크놀로지스",
+   "security_type": "2",
+   "symbol": "GEHC"
+  },
+  {
+   "en_name": "GEN DIGITAL INC",
+   "exchange": "NAS",
+   "ko_name": "젠 디지털",
+   "security_type": "2",
+   "symbol": "GEN"
+  },
+  {
+   "en_name": "GE VERNOVA INC",
+   "exchange": "NYS",
+   "ko_name": "GE베르노바",
+   "security_type": "2",
+   "symbol": "GEV"
+  },
+  {
+   "en_name": "GILEAD SCIENCES INC",
+   "exchange": "NAS",
+   "ko_name": "길리어드 사이언스",
+   "security_type": "2",
+   "symbol": "GILD"
+  },
+  {
+   "en_name": "GENERAL MILLS INC",
+   "exchange": "NYS",
+   "ko_name": "제너럴 밀스",
+   "security_type": "2",
+   "symbol": "GIS"
+  },
+  {
+   "en_name": "CORNING INC",
+   "exchange": "NYS",
+   "ko_name": "코닝",
+   "security_type": "2",
+   "symbol": "GLW"
+  },
+  {
+   "en_name": "GENERAL MOTORS CO",
+   "exchange": "NYS",
+   "ko_name": "제너럴 모터스",
+   "security_type": "2",
+   "symbol": "GM"
+  },
+  {
+   "en_name": "ALPHABET INC",
+   "exchange": "NAS",
+   "ko_name": "알파벳 C",
+   "security_type": "2",
+   "symbol": "GOOG"
+  },
+  {
+   "en_name": "ALPHABET INC",
+   "exchange": "NAS",
+   "ko_name": "알파벳 A",
+   "security_type": "2",
+   "symbol": "GOOGL"
+  },
+  {
+   "en_name": "ALPHABET INC DEP SHS REPSTG 1/20TH INT A",
+   "exchange": "NAS",
+   "ko_name": "알파벳 6.25% 의무전환우선 예탁주 A",
+   "security_type": "2",
+   "symbol": "GOOGM"
+  },
+  {
+   "en_name": "ALPHABET INC DEP SHS REPSTG 1/20TH INT B",
+   "exchange": "NAS",
+   "ko_name": "알파벳 6.25% 의무전환우선 예탁주 B",
+   "security_type": "2",
+   "symbol": "GOOGN"
+  },
+  {
+   "en_name": "GENUINE PARTS CO",
+   "exchange": "NYS",
+   "ko_name": "제뉴인 파츠",
+   "security_type": "2",
+   "symbol": "GPC"
+  },
+  {
+   "en_name": "GLOBAL PAYMENTS INC",
+   "exchange": "NYS",
+   "ko_name": "글로벌 페이먼츠",
+   "security_type": "2",
+   "symbol": "GPN"
+  },
+  {
+   "en_name": "GARMIN LTD",
+   "exchange": "NYS",
+   "ko_name": "가민",
+   "security_type": "2",
+   "symbol": "GRMN"
+  },
+  {
+   "en_name": "GOLDMAN SACHS GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "골드만삭스",
+   "security_type": "2",
+   "symbol": "GS"
+  },
+  {
+   "en_name": "W.W. GRAINGER INC",
+   "exchange": "NYS",
+   "ko_name": "WW 그레인저",
+   "security_type": "2",
+   "symbol": "GWW"
+  },
+  {
+   "en_name": "HALLIBURTON CO",
+   "exchange": "NYS",
+   "ko_name": "할리버턴",
+   "security_type": "2",
+   "symbol": "HAL"
+  },
+  {
+   "en_name": "HUNTINGTON BANCSHARES INC",
+   "exchange": "NAS",
+   "ko_name": "헌팅턴 뱅크셰어스",
+   "security_type": "2",
+   "symbol": "HBAN"
+  },
+  {
+   "en_name": "HUNTINGTON BANCSHARES INC DEP SHS REPSTG 1/40TH INT NON CUM",
+   "exchange": "NAS",
+   "ko_name": "헌팅턴 뱅크셰어스 우선주 J(6.875%)",
+   "security_type": "2",
+   "symbol": "HBANL"
+  },
+  {
+   "en_name": "HUNTINGTON BANCSHARES INC 5.7%DEP SHS RTG 1/1000TH NON CUM P",
+   "exchange": "NAS",
+   "ko_name": "헌팅턴 뱅크셰어스 우선주 I(5.700%)",
+   "security_type": "2",
+   "symbol": "HBANM"
+  },
+  {
+   "en_name": "HUNTINGTON BANCSHARES INC DEP SH REP 1/40TH PERP PFD SER H U",
+   "exchange": "NAS",
+   "ko_name": "헌팅턴 뱅크셰어스 우선주 H",
+   "security_type": "2",
+   "symbol": "HBANP"
+  },
+  {
+   "en_name": "HUNTINGTON BANCSHARES INC 5.5 DEP NON CUM SR L",
+   "exchange": "NAS",
+   "ko_name": "헌팅턴 뱅크셰어즈 5.5 비누적 예탁",
+   "security_type": "2",
+   "symbol": "HBANZ"
+  },
+  {
+   "en_name": "HCA HEALTHCARE INC",
+   "exchange": "NYS",
+   "ko_name": "HCA 헬스케어",
+   "security_type": "2",
+   "symbol": "HCA"
+  },
+  {
+   "en_name": "HOME DEPOT INC",
+   "exchange": "NYS",
+   "ko_name": "홈 디포",
+   "security_type": "2",
+   "symbol": "HD"
+  },
+  {
+   "en_name": "HEICO CORP",
+   "exchange": "NYS",
+   "ko_name": "헤이코",
+   "security_type": "2",
+   "symbol": "HEI"
+  },
+  {
+   "en_name": "HEICO CORP",
+   "exchange": "NYS",
+   "ko_name": "헤이코 A",
+   "security_type": "2",
+   "symbol": "HEI/A"
+  },
+  {
+   "en_name": "THE HARTFORD INSURANCE GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "하트포드 인슈어런스 그룹",
+   "security_type": "2",
+   "symbol": "HIG"
+  },
+  {
+   "en_name": "HILTON WORLDWIDE HOLDINGS INC",
+   "exchange": "NYS",
+   "ko_name": "힐튼 월드와이드 홀딩스",
+   "security_type": "2",
+   "symbol": "HLT"
+  },
+  {
+   "en_name": "HONEYWELL INTERNATIONAL INC",
+   "exchange": "NAS",
+   "ko_name": "허니웰 인터내셔널",
+   "security_type": "2",
+   "symbol": "HON"
+  },
+  {
+   "en_name": "ROBINHOOD MARKETS INC",
+   "exchange": "NAS",
+   "ko_name": "로빈훗 마케츠",
+   "security_type": "2",
+   "symbol": "HOOD"
+  },
+  {
+   "en_name": "HEWLETT PACKARD ENTERPRISE CO",
+   "exchange": "NYS",
+   "ko_name": "휴렛 팩커드 엔터프라이즈",
+   "security_type": "2",
+   "symbol": "HPE"
+  },
+  {
+   "en_name": "HP INCORPORATION",
+   "exchange": "NYS",
+   "ko_name": "HP",
+   "security_type": "2",
+   "symbol": "HPQ"
+  },
+  {
+   "en_name": "HORMEL FOODS CORP",
+   "exchange": "NYS",
+   "ko_name": "호멜 푸즈",
+   "security_type": "2",
+   "symbol": "HRL"
+  },
+  {
+   "en_name": "HERSHEY COMPANY",
+   "exchange": "NYS",
+   "ko_name": "허쉬",
+   "security_type": "2",
+   "symbol": "HSY"
+  },
+  {
+   "en_name": "HUBBELL INC",
+   "exchange": "NYS",
+   "ko_name": "허벨",
+   "security_type": "2",
+   "symbol": "HUBB"
+  },
+  {
+   "en_name": "HUBSPOT INC",
+   "exchange": "NYS",
+   "ko_name": "허브스팟",
+   "security_type": "2",
+   "symbol": "HUBS"
+  },
+  {
+   "en_name": "HUMANA INC",
+   "exchange": "NYS",
+   "ko_name": "휴마나",
+   "security_type": "2",
+   "symbol": "HUM"
+  },
+  {
+   "en_name": "HOWMET AEROSPACE INC",
+   "exchange": "NYS",
+   "ko_name": "하우멧 에어로스페이스",
+   "security_type": "2",
+   "symbol": "HWM"
+  },
+  {
+   "en_name": "INTERACTIVE BROKERS GROUP INC",
+   "exchange": "NAS",
+   "ko_name": "인터랙티브 브로커스 그룹",
+   "security_type": "2",
+   "symbol": "IBKR"
+  },
+  {
+   "en_name": "INTERNATIONAL BUS MACH CORP",
+   "exchange": "NYS",
+   "ko_name": "IBM",
+   "security_type": "2",
+   "symbol": "IBM"
+  },
+  {
+   "en_name": "INTERCONTINENTAL EXCHANGE INC",
+   "exchange": "NYS",
+   "ko_name": "인터컨티넨털 익스체인지",
+   "security_type": "2",
+   "symbol": "ICE"
+  },
+  {
+   "en_name": "IDEXX LABORATORIES INC",
+   "exchange": "NAS",
+   "ko_name": "아이덱스 래버러토리스",
+   "security_type": "2",
+   "symbol": "IDXX"
+  },
+  {
+   "en_name": "IDEX CORP",
+   "exchange": "NYS",
+   "ko_name": "아이덱스",
+   "security_type": "2",
+   "symbol": "IEX"
+  },
+  {
+   "en_name": "INTERNATIONAL FLAVORS & FRAGRANCES",
+   "exchange": "NYS",
+   "ko_name": "인터내셔널 플레이버스 앤드 프레그런스",
+   "security_type": "2",
+   "symbol": "IFF"
+  },
+  {
+   "en_name": "ILLUMINA INC",
+   "exchange": "NAS",
+   "ko_name": "일루미나",
+   "security_type": "2",
+   "symbol": "ILMN"
+  },
+  {
+   "en_name": "INTEL CORP",
+   "exchange": "NAS",
+   "ko_name": "인텔",
+   "security_type": "2",
+   "symbol": "INTC"
+  },
+  {
+   "en_name": "INTUIT INC",
+   "exchange": "NAS",
+   "ko_name": "인튜이트",
+   "security_type": "2",
+   "symbol": "INTU"
+  },
+  {
+   "en_name": "INVITATION HOMES INC",
+   "exchange": "NYS",
+   "ko_name": "인비테이션 홈스",
+   "security_type": "2",
+   "symbol": "INVH"
+  },
+  {
+   "en_name": "INTERNATIONAL PAPER CO",
+   "exchange": "NYS",
+   "ko_name": "인터내셔널 페이퍼",
+   "security_type": "2",
+   "symbol": "IP"
+  },
+  {
+   "en_name": "IQVIA HOLDINGS INC",
+   "exchange": "NYS",
+   "ko_name": "아이큐비아 홀딩스",
+   "security_type": "2",
+   "symbol": "IQV"
+  },
+  {
+   "en_name": "INGERSOLL RAND INC",
+   "exchange": "NYS",
+   "ko_name": "잉가솔랜드",
+   "security_type": "2",
+   "symbol": "IR"
+  },
+  {
+   "en_name": "IRON MOUNTAIN INC",
+   "exchange": "NYS",
+   "ko_name": "아이언 마운틴",
+   "security_type": "2",
+   "symbol": "IRM"
+  },
+  {
+   "en_name": "INTUITIVE SURGICAL INC",
+   "exchange": "NAS",
+   "ko_name": "인튜이티브 서지컬",
+   "security_type": "2",
+   "symbol": "ISRG"
+  },
+  {
+   "en_name": "GARTNER INC",
+   "exchange": "NYS",
+   "ko_name": "가트너",
+   "security_type": "2",
+   "symbol": "IT"
+  },
+  {
+   "en_name": "ILLINOIS TOOL WORKS INC",
+   "exchange": "NYS",
+   "ko_name": "일리노이 툴 웍스",
+   "security_type": "2",
+   "symbol": "ITW"
+  },
+  {
+   "en_name": "JACOBS SOLUTIONS INC",
+   "exchange": "NYS",
+   "ko_name": "제이콥스 솔루션스",
+   "security_type": "2",
+   "symbol": "J"
+  },
+  {
+   "en_name": "HUNT(J.B.)TRANSPORT SERVICES INC",
+   "exchange": "NAS",
+   "ko_name": "JB 헌트 트랜스포트 서비시스",
+   "security_type": "2",
+   "symbol": "JBHT"
+  },
+  {
+   "en_name": "JABIL INC",
+   "exchange": "NYS",
+   "ko_name": "자빌",
+   "security_type": "2",
+   "symbol": "JBL"
+  },
+  {
+   "en_name": "JOHNSON CONTROLS INTERNATIONAL PLC",
+   "exchange": "NYS",
+   "ko_name": "존슨 콘트롤즈 인터내셔널",
+   "security_type": "2",
+   "symbol": "JCI"
+  },
+  {
+   "en_name": "JEFFERIES FINANCIAL GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "제프리스 파이낸셜 그룹",
+   "security_type": "2",
+   "symbol": "JEF"
+  },
+  {
+   "en_name": "JOHNSON & JOHNSON",
+   "exchange": "NYS",
+   "ko_name": "존슨 앤드 존슨",
+   "security_type": "2",
+   "symbol": "JNJ"
+  },
+  {
+   "en_name": "JPMORGAN CHASE & CO.",
+   "exchange": "NYS",
+   "ko_name": "제이피모간 체이스",
+   "security_type": "2",
+   "symbol": "JPM"
+  },
+  {
+   "en_name": "KEURIG DR PEPPER INC",
+   "exchange": "NAS",
+   "ko_name": "큐리그 닥터 페퍼",
+   "security_type": "2",
+   "symbol": "KDP"
+  },
+  {
+   "en_name": "KEYCORP",
+   "exchange": "NYS",
+   "ko_name": "키코프",
+   "security_type": "2",
+   "symbol": "KEY"
+  },
+  {
+   "en_name": "KEYSIGHT TECHNOLOGIES INC",
+   "exchange": "NYS",
+   "ko_name": "키사이트 테크놀로지스",
+   "security_type": "2",
+   "symbol": "KEYS"
+  },
+  {
+   "en_name": "KRAFT HEINZ CO",
+   "exchange": "NYS",
+   "ko_name": "크래프트 하인즈",
+   "security_type": "2",
+   "symbol": "KHC"
+  },
+  {
+   "en_name": "KIMCO REALTY CORP",
+   "exchange": "NYS",
+   "ko_name": "킴코 리얼티",
+   "security_type": "2",
+   "symbol": "KIM"
+  },
+  {
+   "en_name": "KKR & CO INC",
+   "exchange": "NYS",
+   "ko_name": "KKR & CO",
+   "security_type": "2",
+   "symbol": "KKR"
+  },
+  {
+   "en_name": "KKR GROUP FIN CO IX LLC 4.625% SUB NOTES DUE 01/04/2061",
+   "exchange": "NYS",
+   "ko_name": "KKR 그룹 파이낸스 9 후순위채권(2061-04-01 4.625%)",
+   "security_type": "2",
+   "symbol": "KKRS"
+  },
+  {
+   "en_name": "KKR & CO INC 6.875% NOTES DUE 01/06/2065 USD25",
+   "exchange": "NYS",
+   "ko_name": "KKR & CO 일반채권(2026-06-01 6.875%)",
+   "security_type": "2",
+   "symbol": "KKRT"
+  },
+  {
+   "en_name": "KLA CORPORATION",
+   "exchange": "NAS",
+   "ko_name": "KLA",
+   "security_type": "2",
+   "symbol": "KLAC"
+  },
+  {
+   "en_name": "KIMBERLY CLARK CORP",
+   "exchange": "NAS",
+   "ko_name": "킴벌리클라크",
+   "security_type": "2",
+   "symbol": "KMB"
+  },
+  {
+   "en_name": "KINDER MORGAN INC",
+   "exchange": "NYS",
+   "ko_name": "킨더 모건",
+   "security_type": "2",
+   "symbol": "KMI"
+  },
+  {
+   "en_name": "COCA-COLA CO",
+   "exchange": "NYS",
+   "ko_name": "코카콜라",
+   "security_type": "2",
+   "symbol": "KO"
+  },
+  {
+   "en_name": "KROGER CO",
+   "exchange": "NYS",
+   "ko_name": "크로거",
+   "security_type": "2",
+   "symbol": "KR"
+  },
+  {
+   "en_name": "KENVUE INC",
+   "exchange": "NYS",
+   "ko_name": "켄뷰",
+   "security_type": "2",
+   "symbol": "KVUE"
+  },
+  {
+   "en_name": "LOEWS CORP",
+   "exchange": "NYS",
+   "ko_name": "로우스",
+   "security_type": "2",
+   "symbol": "L"
+  },
+  {
+   "en_name": "LEIDOS HOLDINGS INC",
+   "exchange": "NYS",
+   "ko_name": "레이도스 홀딩스",
+   "security_type": "2",
+   "symbol": "LDOS"
+  },
+  {
+   "en_name": "LENNAR CORP",
+   "exchange": "NYS",
+   "ko_name": "레나",
+   "security_type": "2",
+   "symbol": "LEN"
+  },
+  {
+   "en_name": "LENNAR CORP",
+   "exchange": "NYS",
+   "ko_name": "레나 B",
+   "security_type": "2",
+   "symbol": "LEN/B"
+  },
+  {
+   "en_name": "LABCORP HOLDINGS INC",
+   "exchange": "NYS",
+   "ko_name": "랩코프",
+   "security_type": "2",
+   "symbol": "LH"
+  },
+  {
+   "en_name": "L3 HARRIS TECHNOLOGIES INC",
+   "exchange": "NYS",
+   "ko_name": "L3 해리스 테크놀로지스",
+   "security_type": "2",
+   "symbol": "LHX"
+  },
+  {
+   "en_name": "LENNOX INTERNATIONAL INC",
+   "exchange": "NYS",
+   "ko_name": "레녹스 인터내셔널",
+   "security_type": "2",
+   "symbol": "LII"
+  },
+  {
+   "en_name": "LINDE PLC",
+   "exchange": "NAS",
+   "ko_name": "린데",
+   "security_type": "2",
+   "symbol": "LIN"
+  },
+  {
+   "en_name": "ELI LILLY AND COMPANY",
+   "exchange": "NYS",
+   "ko_name": "일라이 릴리",
+   "security_type": "2",
+   "symbol": "LLY"
+  },
+  {
+   "en_name": "LOCKHEED MARTIN CORP",
+   "exchange": "NYS",
+   "ko_name": "록히드 마틴",
+   "security_type": "2",
+   "symbol": "LMT"
+  },
+  {
+   "en_name": "CHENIERE ENERGY INC",
+   "exchange": "NYS",
+   "ko_name": "셰니어 에너지",
+   "security_type": "2",
+   "symbol": "LNG"
+  },
+  {
+   "en_name": "LOWE S COMPANIES INC",
+   "exchange": "NYS",
+   "ko_name": "로스 컴퍼니스",
+   "security_type": "2",
+   "symbol": "LOW"
+  },
+  {
+   "en_name": "LPL FINL HLDGS INC",
+   "exchange": "NAS",
+   "ko_name": "LPL 파이낸셜 홀딩스",
+   "security_type": "2",
+   "symbol": "LPLA"
+  },
+  {
+   "en_name": "LAM RESEARCH CORP",
+   "exchange": "NAS",
+   "ko_name": "램 리서치",
+   "security_type": "2",
+   "symbol": "LRCX"
+  },
+  {
+   "en_name": "LULULEMON ATHLETICA INC",
+   "exchange": "NAS",
+   "ko_name": "룰루레몬 애슬레티카",
+   "security_type": "2",
+   "symbol": "LULU"
+  },
+  {
+   "en_name": "SOUTHWEST AIRLINES CO",
+   "exchange": "NYS",
+   "ko_name": "사우스웨스트 에어라인스",
+   "security_type": "2",
+   "symbol": "LUV"
+  },
+  {
+   "en_name": "LAS VEGAS SANDS CORP",
+   "exchange": "NYS",
+   "ko_name": "라스베이거스 샌즈",
+   "security_type": "2",
+   "symbol": "LVS"
+  },
+  {
+   "en_name": "LYONDELLBASELL INDUSTRIES N V",
+   "exchange": "NYS",
+   "ko_name": "라이온델바젤 인더스트리스",
+   "security_type": "2",
+   "symbol": "LYB"
+  },
+  {
+   "en_name": "LIVE NATION ENTERTAINMENT INC",
+   "exchange": "NYS",
+   "ko_name": "라이브 네이션 엔터테인먼트",
+   "security_type": "2",
+   "symbol": "LYV"
+  },
+  {
+   "en_name": "MASTERCARD INCORPORATED",
+   "exchange": "NYS",
+   "ko_name": "마스타카드",
+   "security_type": "2",
+   "symbol": "MA"
+  },
+  {
+   "en_name": "MID-AMERICA APARTMENT COMMUNITIES",
+   "exchange": "NYS",
+   "ko_name": "미드아메리카 어파트먼트 커뮤니티스",
+   "security_type": "2",
+   "symbol": "MAA"
+  },
+  {
+   "en_name": "MANHATTAN ASSOCIATES INC",
+   "exchange": "NAS",
+   "ko_name": "맨해튼 어소시에이츠",
+   "security_type": "2",
+   "symbol": "MANH"
+  },
+  {
+   "en_name": "MARRIOTT INTERNATIONAL INC",
+   "exchange": "NAS",
+   "ko_name": "메리어트 인터내셔널",
+   "security_type": "2",
+   "symbol": "MAR"
+  },
+  {
+   "en_name": "MASCO CORP",
+   "exchange": "NYS",
+   "ko_name": "매스코",
+   "security_type": "2",
+   "symbol": "MAS"
+  },
+  {
+   "en_name": "MCDONALD S CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "맥도날드",
+   "security_type": "2",
+   "symbol": "MCD"
+  },
+  {
+   "en_name": "MICROCHIP TECHNOLOGY",
+   "exchange": "NAS",
+   "ko_name": "마이크로칩 테크놀로지",
+   "security_type": "2",
+   "symbol": "MCHP"
+  },
+  {
+   "en_name": "MICROCHIP TECHNOLOGY DEP SHS REPSTG 1/20TH PFD CONV SER A",
+   "exchange": "NAS",
+   "ko_name": "마이크로칩 테크놀로지 우선주 A(7.500% 의무전환)",
+   "security_type": "2",
+   "symbol": "MCHPP"
+  },
+  {
+   "en_name": "MCKESSON CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "매케손",
+   "security_type": "2",
+   "symbol": "MCK"
+  },
+  {
+   "en_name": "MOODYS CORP",
+   "exchange": "NYS",
+   "ko_name": "무디스",
+   "security_type": "2",
+   "symbol": "MCO"
+  },
+  {
+   "en_name": "MONGODB INC",
+   "exchange": "NAS",
+   "ko_name": "몽고DB",
+   "security_type": "2",
+   "symbol": "MDB"
+  },
+  {
+   "en_name": "MONDELEZ INTL INC",
+   "exchange": "NAS",
+   "ko_name": "몬덜리즈 인터내셔널",
+   "security_type": "2",
+   "symbol": "MDLZ"
+  },
+  {
+   "en_name": "MEDTRONIC PLC",
+   "exchange": "NYS",
+   "ko_name": "메드트로닉",
+   "security_type": "2",
+   "symbol": "MDT"
+  },
+  {
+   "en_name": "MERCADOLIBRE INC",
+   "exchange": "NAS",
+   "ko_name": "메르카도리브레",
+   "security_type": "2",
+   "symbol": "MELI"
+  },
+  {
+   "en_name": "METLIFE INC",
+   "exchange": "NYS",
+   "ko_name": "메트라이프",
+   "security_type": "2",
+   "symbol": "MET"
+  },
+  {
+   "en_name": "METLIFE INC PRF SERIE  A  FLOATING RATE USD25",
+   "exchange": "NYS",
+   "ko_name": "메트라이프 우선주 A(변동금리)",
+   "security_type": "2",
+   "symbol": "MET/A"
+  },
+  {
+   "en_name": "META PLATFORMS INC",
+   "exchange": "NAS",
+   "ko_name": "메타 플랫폼스(페이스북)",
+   "security_type": "2",
+   "symbol": "META"
+  },
+  {
+   "en_name": "MCCORMICK & COMPANY INC",
+   "exchange": "NYS",
+   "ko_name": "매코믹 앤드 컴퍼니",
+   "security_type": "2",
+   "symbol": "MKC"
+  },
+  {
+   "en_name": "MCCORMICK & COMPANY INC",
+   "exchange": "NYS",
+   "ko_name": "매코믹 앤드 컴퍼니 V",
+   "security_type": "2",
+   "symbol": "MKC/V"
+  },
+  {
+   "en_name": "MARKEL GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "마켈 그룹",
+   "security_type": "2",
+   "symbol": "MKL"
+  },
+  {
+   "en_name": "MARTIN MARIETTA MATERIALS INC",
+   "exchange": "NYS",
+   "ko_name": "마틴 마리에타 머티리얼스",
+   "security_type": "2",
+   "symbol": "MLM"
+  },
+  {
+   "en_name": "3M COMPANY",
+   "exchange": "NYS",
+   "ko_name": "3M",
+   "security_type": "2",
+   "symbol": "MMM"
+  },
+  {
+   "en_name": "MONSTER BEVERAGE CORP",
+   "exchange": "NAS",
+   "ko_name": "몬스터 베버리지",
+   "security_type": "2",
+   "symbol": "MNST"
+  },
+  {
+   "en_name": "ALTRIA GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "알트리아 그룹",
+   "security_type": "2",
+   "symbol": "MO"
+  },
+  {
+   "en_name": "MOLINA HEALTHCARE INC",
+   "exchange": "NYS",
+   "ko_name": "몰리나 헬스케어",
+   "security_type": "2",
+   "symbol": "MOH"
+  },
+  {
+   "en_name": "MARATHON PETROLEUM CORP",
+   "exchange": "NYS",
+   "ko_name": "매러선 페트롤리엄",
+   "security_type": "2",
+   "symbol": "MPC"
+  },
+  {
+   "en_name": "MPLX LP",
+   "exchange": "NYS",
+   "ko_name": "MPLX",
+   "security_type": "2",
+   "symbol": "MPLX"
+  },
+  {
+   "en_name": "MONOLITHIC POWER SYSTEM INC",
+   "exchange": "NAS",
+   "ko_name": "모놀리식 파워 시스템",
+   "security_type": "2",
+   "symbol": "MPWR"
+  },
+  {
+   "en_name": "MERCK & CO INC",
+   "exchange": "NYS",
+   "ko_name": "머크",
+   "security_type": "2",
+   "symbol": "MRK"
+  },
+  {
+   "en_name": "MARSH & MCLENNAN COMPANIES INC",
+   "exchange": "NYS",
+   "ko_name": "MARSH & MCLENNAN COMPANIES INC",
+   "security_type": "2",
+   "symbol": "MRSH"
+  },
+  {
+   "en_name": "MARVELL TECHNOLOGY INC",
+   "exchange": "NAS",
+   "ko_name": "마벨 테크놀로지 그룹",
+   "security_type": "2",
+   "symbol": "MRVL"
+  },
+  {
+   "en_name": "MORGAN STANLEY",
+   "exchange": "NYS",
+   "ko_name": "모간스탠리",
+   "security_type": "2",
+   "symbol": "MS"
+  },
+  {
+   "en_name": "MORGAN STANLEY NON-CUM DEP SH REP 1/1000 PFD SER I",
+   "exchange": "NYS",
+   "ko_name": "모간스탠리 우선주 I",
+   "security_type": "2",
+   "symbol": "MS/I"
+  },
+  {
+   "en_name": "MSCI INC",
+   "exchange": "NYS",
+   "ko_name": "MSCI",
+   "security_type": "2",
+   "symbol": "MSCI"
+  },
+  {
+   "en_name": "MICROSOFT CORP",
+   "exchange": "NAS",
+   "ko_name": "마이크로소프트",
+   "security_type": "2",
+   "symbol": "MSFT"
+  },
+  {
+   "en_name": "MOTOROLA SOLUTIONS INC",
+   "exchange": "NYS",
+   "ko_name": "모토로라 솔루션스",
+   "security_type": "2",
+   "symbol": "MSI"
+  },
+  {
+   "en_name": "STRATEGY INC",
+   "exchange": "NAS",
+   "ko_name": "스트래티지",
+   "security_type": "2",
+   "symbol": "MSTR"
+  },
+  {
+   "en_name": "M & T BANK CORP",
+   "exchange": "NYS",
+   "ko_name": "M&T 뱅크",
+   "security_type": "2",
+   "symbol": "MTB"
+  },
+  {
+   "en_name": "METTLER-TOLEDO INTERNATIONAL INC",
+   "exchange": "NYS",
+   "ko_name": "메틀러 톨레도 인터내셔널",
+   "security_type": "2",
+   "symbol": "MTD"
+  },
+  {
+   "en_name": "MICRON TECHNOLOGY INC",
+   "exchange": "NAS",
+   "ko_name": "마이크론 테크놀로지",
+   "security_type": "2",
+   "symbol": "MU"
+  },
+  {
+   "en_name": "NASDAQ INC",
+   "exchange": "NAS",
+   "ko_name": "나스닥",
+   "security_type": "2",
+   "symbol": "NDAQ"
+  },
+  {
+   "en_name": "NEXTERA ENERGY INC",
+   "exchange": "NYS",
+   "ko_name": "넥스트에라 에너지",
+   "security_type": "2",
+   "symbol": "NEE"
+  },
+  {
+   "en_name": "NEWMONT CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "뉴몬트",
+   "security_type": "2",
+   "symbol": "NEM"
+  },
+  {
+   "en_name": "CLOUDFLARE INC",
+   "exchange": "NYS",
+   "ko_name": "클라우드플레어",
+   "security_type": "2",
+   "symbol": "NET"
+  },
+  {
+   "en_name": "NETFLIX INC",
+   "exchange": "NAS",
+   "ko_name": "넷플릭스",
+   "security_type": "2",
+   "symbol": "NFLX"
+  },
+  {
+   "en_name": "NISOURCE INC",
+   "exchange": "NYS",
+   "ko_name": "나이소스",
+   "security_type": "2",
+   "symbol": "NI"
+  },
+  {
+   "en_name": "NIKE INC",
+   "exchange": "NYS",
+   "ko_name": "나이키 B",
+   "security_type": "2",
+   "symbol": "NKE"
+  },
+  {
+   "en_name": "NORTHROP GRUMMAN CORP",
+   "exchange": "NYS",
+   "ko_name": "노스롭 그루만",
+   "security_type": "2",
+   "symbol": "NOC"
+  },
+  {
+   "en_name": "SERVICENOW INC",
+   "exchange": "NYS",
+   "ko_name": "서비스나우",
+   "security_type": "2",
+   "symbol": "NOW"
+  },
+  {
+   "en_name": "NRG ENERGY INC",
+   "exchange": "NYS",
+   "ko_name": "NRG 에너지",
+   "security_type": "2",
+   "symbol": "NRG"
+  },
+  {
+   "en_name": "NORFOLK SOUTHERN CORP",
+   "exchange": "NYS",
+   "ko_name": "노퍽서던",
+   "security_type": "2",
+   "symbol": "NSC"
+  },
+  {
+   "en_name": "NETAPP INC",
+   "exchange": "NAS",
+   "ko_name": "넷앱",
+   "security_type": "2",
+   "symbol": "NTAP"
+  },
+  {
+   "en_name": "NUTANIX INC",
+   "exchange": "NAS",
+   "ko_name": "누타닉스",
+   "security_type": "2",
+   "symbol": "NTNX"
+  },
+  {
+   "en_name": "NATERA INC",
+   "exchange": "NAS",
+   "ko_name": "나테라",
+   "security_type": "2",
+   "symbol": "NTRA"
+  },
+  {
+   "en_name": "NORTHERN TRUST CORP",
+   "exchange": "NAS",
+   "ko_name": "노던 트러스트",
+   "security_type": "2",
+   "symbol": "NTRS"
+  },
+  {
+   "en_name": "NORTHERN TRUST CORP 4.7 DEP SHS REP 1/1000TH NON CUM PFD E",
+   "exchange": "NAS",
+   "ko_name": "노던 트러스트 우선주 E(4.700%)",
+   "security_type": "2",
+   "symbol": "NTRSO"
+  },
+  {
+   "en_name": "NUCOR CORP",
+   "exchange": "NYS",
+   "ko_name": "뉴코",
+   "security_type": "2",
+   "symbol": "NUE"
+  },
+  {
+   "en_name": "NVIDIA CORP",
+   "exchange": "NAS",
+   "ko_name": "엔비디아",
+   "security_type": "2",
+   "symbol": "NVDA"
+  },
+  {
+   "en_name": "NVR INC",
+   "exchange": "NYS",
+   "ko_name": "NVR",
+   "security_type": "2",
+   "symbol": "NVR"
+  },
+  {
+   "en_name": "NEWS CORP NEW",
+   "exchange": "NAS",
+   "ko_name": "뉴스 코퍼레이션 B",
+   "security_type": "2",
+   "symbol": "NWS"
+  },
+  {
+   "en_name": "NEWS CORP NEW",
+   "exchange": "NAS",
+   "ko_name": "뉴스 코퍼레이션 A",
+   "security_type": "2",
+   "symbol": "NWSA"
+  },
+  {
+   "en_name": "NXP SEMICONDUCTORS N V",
+   "exchange": "NAS",
+   "ko_name": "NXP 세미컨덕터스",
+   "security_type": "2",
+   "symbol": "NXPI"
+  },
+  {
+   "en_name": "REALTY INCOME CORP",
+   "exchange": "NYS",
+   "ko_name": "리얼티 인컴",
+   "security_type": "2",
+   "symbol": "O"
+  },
+  {
+   "en_name": "OLD DOMINION FREIGHT LINE INC",
+   "exchange": "NAS",
+   "ko_name": "올드 도미니언 프레이트 라인",
+   "security_type": "2",
+   "symbol": "ODFL"
+  },
+  {
+   "en_name": "ONEOK INC",
+   "exchange": "NYS",
+   "ko_name": "원오크",
+   "security_type": "2",
+   "symbol": "OKE"
+  },
+  {
+   "en_name": "OMNICOM GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "옴니콤 그룹",
+   "security_type": "2",
+   "symbol": "OMC"
+  },
+  {
+   "en_name": "ON SEMICONDUCTOR CORP",
+   "exchange": "NAS",
+   "ko_name": "온 세미컨덕터",
+   "security_type": "2",
+   "symbol": "ON"
+  },
+  {
+   "en_name": "ORACLE CORP",
+   "exchange": "NYS",
+   "ko_name": "오라클",
+   "security_type": "2",
+   "symbol": "ORCL"
+  },
+  {
+   "en_name": "OREILLY AUTOMOTIVE INC NEW",
+   "exchange": "NAS",
+   "ko_name": "오릴리 오토모티브",
+   "security_type": "2",
+   "symbol": "ORLY"
+  },
+  {
+   "en_name": "OTIS WORLDWIDE CORP",
+   "exchange": "NYS",
+   "ko_name": "오티스 월드와이드",
+   "security_type": "2",
+   "symbol": "OTIS"
+  },
+  {
+   "en_name": "BLUE OWL CAPITAL INC",
+   "exchange": "NYS",
+   "ko_name": "블루 아울 캐피털",
+   "security_type": "2",
+   "symbol": "OWL"
+  },
+  {
+   "en_name": "OCCIDENTAL PETROLEUM CORP",
+   "exchange": "NYS",
+   "ko_name": "옥시덴털 페트롤리엄",
+   "security_type": "2",
+   "symbol": "OXY"
+  },
+  {
+   "en_name": "EVERPURE INC",
+   "exchange": "NYS",
+   "ko_name": "에버퓨어",
+   "security_type": "2",
+   "symbol": "P"
+  },
+  {
+   "en_name": "PALO ALTO NETWORKS INC",
+   "exchange": "NAS",
+   "ko_name": "팰로 앨토 네트웍스",
+   "security_type": "2",
+   "symbol": "PANW"
+  },
+  {
+   "en_name": "PAYCHEX INC",
+   "exchange": "NAS",
+   "ko_name": "페이첵스",
+   "security_type": "2",
+   "symbol": "PAYX"
+  },
+  {
+   "en_name": "PACCAR INC",
+   "exchange": "NAS",
+   "ko_name": "파카",
+   "security_type": "2",
+   "symbol": "PCAR"
+  },
+  {
+   "en_name": "PG&E CORP",
+   "exchange": "NYS",
+   "ko_name": "퍼시픽 가스 앤드 일렉트릭",
+   "security_type": "2",
+   "symbol": "PCG"
+  },
+  {
+   "en_name": "PUBLIC SERVICE ENTERPRISE GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "퍼블릭 서비스 엔터프라이즈",
+   "security_type": "2",
+   "symbol": "PEG"
+  },
+  {
+   "en_name": "PEPSICO INC",
+   "exchange": "NAS",
+   "ko_name": "펩시코",
+   "security_type": "2",
+   "symbol": "PEP"
+  },
+  {
+   "en_name": "PFIZER INC",
+   "exchange": "NYS",
+   "ko_name": "화이자",
+   "security_type": "2",
+   "symbol": "PFE"
+  },
+  {
+   "en_name": "PRINCIPAL FINANCIAL GROUP",
+   "exchange": "NAS",
+   "ko_name": "프린서플 파이낸셜 그룹",
+   "security_type": "2",
+   "symbol": "PFG"
+  },
+  {
+   "en_name": "PRUDENTIAL FINANCIAL INC 4.125% JUNIOR SUB NOTES DUE (01/09/",
+   "exchange": "NYS",
+   "ko_name": "푸르덴셜 파이낸셜 후순위채권(4.125%)",
+   "security_type": "2",
+   "symbol": "PFH"
+  },
+  {
+   "en_name": "PROCTER & GAMBLE CO",
+   "exchange": "NYS",
+   "ko_name": "프록터 앤드 갬블",
+   "security_type": "2",
+   "symbol": "PG"
+  },
+  {
+   "en_name": "PROGRESSIVE CORP(OHIO)",
+   "exchange": "NYS",
+   "ko_name": "프로그레시브",
+   "security_type": "2",
+   "symbol": "PGR"
+  },
+  {
+   "en_name": "PARKER-HANNIFIN CORP",
+   "exchange": "NYS",
+   "ko_name": "파카 하니핀",
+   "security_type": "2",
+   "symbol": "PH"
+  },
+  {
+   "en_name": "PULTE GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "풀티 그룹",
+   "security_type": "2",
+   "symbol": "PHM"
+  },
+  {
+   "en_name": "PINTEREST INC",
+   "exchange": "NYS",
+   "ko_name": "핀터레스트",
+   "security_type": "2",
+   "symbol": "PINS"
+  },
+  {
+   "en_name": "PACKAGING CORP OF AMERICA",
+   "exchange": "NYS",
+   "ko_name": "패키징 코퍼레이션 오브 아메리카",
+   "security_type": "2",
+   "symbol": "PKG"
+  },
+  {
+   "en_name": "PROLOGIS INC",
+   "exchange": "NYS",
+   "ko_name": "프로로지스",
+   "security_type": "2",
+   "symbol": "PLD"
+  },
+  {
+   "en_name": "PALANTIR TECH INC",
+   "exchange": "NAS",
+   "ko_name": "팔란티어 테크",
+   "security_type": "2",
+   "symbol": "PLTR"
+  },
+  {
+   "en_name": "PHILIP MORRIS INTERNATIONAL INC",
+   "exchange": "NYS",
+   "ko_name": "필립 모리스 인터내셔널",
+   "security_type": "2",
+   "symbol": "PM"
+  },
+  {
+   "en_name": "PNC FINANCIAL SERVICES GROUP",
+   "exchange": "NYS",
+   "ko_name": "PNC 파이낸셜 서비시스",
+   "security_type": "2",
+   "symbol": "PNC"
+  },
+  {
+   "en_name": "PENTAIR PLC",
+   "exchange": "NYS",
+   "ko_name": "펜테어",
+   "security_type": "2",
+   "symbol": "PNR"
+  },
+  {
+   "en_name": "INSULET CORPORATION",
+   "exchange": "NAS",
+   "ko_name": "인슐릿",
+   "security_type": "2",
+   "symbol": "PODD"
+  },
+  {
+   "en_name": "PPG INDUSTRIES INC",
+   "exchange": "NYS",
+   "ko_name": "PPG 인더스트리스",
+   "security_type": "2",
+   "symbol": "PPG"
+  },
+  {
+   "en_name": "PPL CORP",
+   "exchange": "NYS",
+   "ko_name": "PPL",
+   "security_type": "2",
+   "symbol": "PPL"
+  },
+  {
+   "en_name": "PPL CORP CORPORATE UNIT",
+   "exchange": "NYS",
+   "ko_name": "PPL 코프 코퍼레이트 유닛",
+   "security_type": "2",
+   "symbol": "PPLC"
+  },
+  {
+   "en_name": "PRUDENTIAL FINANCIAL INC 5.950%JUNIOR SUBORD NOTES DUE 2062",
+   "exchange": "NYS",
+   "ko_name": "푸르덴셜 파이낸셜 후순위채권(5.950%)",
+   "security_type": "2",
+   "symbol": "PRH"
+  },
+  {
+   "en_name": "PRUDENTIAL FINANCIAL INC 5.625%JUNIOR SUBORDINATED NOTES DUE",
+   "exchange": "NYS",
+   "ko_name": "푸르덴셜 파이낸셜 후순위채권(5.625%)",
+   "security_type": "2",
+   "symbol": "PRS"
+  },
+  {
+   "en_name": "PRUDENTIAL FINANCIAL INC",
+   "exchange": "NYS",
+   "ko_name": "푸르덴셜 파이낸셜",
+   "security_type": "2",
+   "symbol": "PRU"
+  },
+  {
+   "en_name": "PUBLIC STORAGE",
+   "exchange": "NYS",
+   "ko_name": "퍼블릭 스토리지",
+   "security_type": "2",
+   "symbol": "PSA"
+  },
+  {
+   "en_name": "PHILLIPS 66",
+   "exchange": "NYS",
+   "ko_name": "필립스 66",
+   "security_type": "2",
+   "symbol": "PSX"
+  },
+  {
+   "en_name": "PTC INC",
+   "exchange": "NAS",
+   "ko_name": "PTC",
+   "security_type": "2",
+   "symbol": "PTC"
+  },
+  {
+   "en_name": "QUANTA SERVICES",
+   "exchange": "NYS",
+   "ko_name": "콴타 서비시스",
+   "security_type": "2",
+   "symbol": "PWR"
+  },
+  {
+   "en_name": "PAYPAL HOLDINGS INC",
+   "exchange": "NAS",
+   "ko_name": "페이팔 홀딩스",
+   "security_type": "2",
+   "symbol": "PYPL"
+  },
+  {
+   "en_name": "QUALCOMM INC",
+   "exchange": "NAS",
+   "ko_name": "퀄컴",
+   "security_type": "2",
+   "symbol": "QCOM"
+  },
+  {
+   "en_name": "RB GLOBAL INC",
+   "exchange": "NYS",
+   "ko_name": "RB 글로벌",
+   "security_type": "2",
+   "symbol": "RBA"
+  },
+  {
+   "en_name": "ROBLOX CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "로블록스",
+   "security_type": "2",
+   "symbol": "RBLX"
+  },
+  {
+   "en_name": "ROYAL CARIBBEAN GROUP",
+   "exchange": "NYS",
+   "ko_name": "로열 캐리비언 크루즈",
+   "security_type": "2",
+   "symbol": "RCL"
+  },
+  {
+   "en_name": "REGENERON PHARMACEUTICALS INC",
+   "exchange": "NAS",
+   "ko_name": "리제네론 파머슈티컬스",
+   "security_type": "2",
+   "symbol": "REGN"
+  },
+  {
+   "en_name": "REGIONS FINANCIAL CORP",
+   "exchange": "NYS",
+   "ko_name": "리전스 파이낸셜",
+   "security_type": "2",
+   "symbol": "RF"
+  },
+  {
+   "en_name": "RAYMOND JAMES FINANCIAL INC",
+   "exchange": "NYS",
+   "ko_name": "레이먼드 제임스 파이낸셜",
+   "security_type": "2",
+   "symbol": "RJF"
+  },
+  {
+   "en_name": "ROCKET COMPANIES INC",
+   "exchange": "NYS",
+   "ko_name": "로켓 컴퍼니스",
+   "security_type": "2",
+   "symbol": "RKT"
+  },
+  {
+   "en_name": "RESMED INC",
+   "exchange": "NYS",
+   "ko_name": "레즈메드",
+   "security_type": "2",
+   "symbol": "RMD"
+  },
+  {
+   "en_name": "ROCKWELL AUTOMATION INC",
+   "exchange": "NYS",
+   "ko_name": "로크웰 오토메이션",
+   "security_type": "2",
+   "symbol": "ROK"
+  },
+  {
+   "en_name": "ROLLINS INC",
+   "exchange": "NYS",
+   "ko_name": "롤린스",
+   "security_type": "2",
+   "symbol": "ROL"
+  },
+  {
+   "en_name": "ROPER TECHNOLOGIES INC",
+   "exchange": "NAS",
+   "ko_name": "로퍼 테크놀로지스",
+   "security_type": "2",
+   "symbol": "ROP"
+  },
+  {
+   "en_name": "ROSS STORES INC",
+   "exchange": "NAS",
+   "ko_name": "로스 스토어스",
+   "security_type": "2",
+   "symbol": "ROST"
+  },
+  {
+   "en_name": "RPM INTERNATIONAL INC",
+   "exchange": "NYS",
+   "ko_name": "RPM 인터내셔널",
+   "security_type": "2",
+   "symbol": "RPM"
+  },
+  {
+   "en_name": "REPUBLIC SERVICES INC",
+   "exchange": "NYS",
+   "ko_name": "리퍼블릭 서비시스",
+   "security_type": "2",
+   "symbol": "RSG"
+  },
+  {
+   "en_name": "RTX CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "RTX",
+   "security_type": "2",
+   "symbol": "RTX"
+  },
+  {
+   "en_name": "RYAN SPECIALTY HOLDINGS INC",
+   "exchange": "NYS",
+   "ko_name": "라이언 스페셜티 홀딩스",
+   "security_type": "2",
+   "symbol": "RYAN"
+  },
+  {
+   "en_name": "SBA COMMUNICATIONS CORP",
+   "exchange": "NAS",
+   "ko_name": "SBA 커뮤니케이션스",
+   "security_type": "2",
+   "symbol": "SBAC"
+  },
+  {
+   "en_name": "STARBUCKS CORP",
+   "exchange": "NAS",
+   "ko_name": "스타벅스",
+   "security_type": "2",
+   "symbol": "SBUX"
+  },
+  {
+   "en_name": "SOUTHERN COPPER CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "서던 코퍼",
+   "security_type": "2",
+   "symbol": "SCCO"
+  },
+  {
+   "en_name": "CHARLES SCHWAB CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "찰스 슈왑",
+   "security_type": "2",
+   "symbol": "SCHW"
+  },
+  {
+   "en_name": "SHERWIN-WILLIAMS CO",
+   "exchange": "NYS",
+   "ko_name": "셔윈 윌리엄스",
+   "security_type": "2",
+   "symbol": "SHW"
+  },
+  {
+   "en_name": "SLB LIMITED",
+   "exchange": "NYS",
+   "ko_name": "슐럼버거",
+   "security_type": "2",
+   "symbol": "SLB"
+  },
+  {
+   "en_name": "SUPER MICRO COMPUTER INC",
+   "exchange": "NAS",
+   "ko_name": "슈퍼 마이크로 컴퓨터",
+   "security_type": "2",
+   "symbol": "SMCI"
+  },
+  {
+   "en_name": "SUPER MICRO COMPUTER INC 7 % DEP SHS REPSTG 1/20TH PFD CONV",
+   "exchange": "NAS",
+   "ko_name": "슈퍼마이크로 7% 의무전환우선 예탁주",
+   "security_type": "2",
+   "symbol": "SMCIP"
+  },
+  {
+   "en_name": "SNAP-ON INC",
+   "exchange": "NYS",
+   "ko_name": "스냅 온",
+   "security_type": "2",
+   "symbol": "SNA"
+  },
+  {
+   "en_name": "SNOWFLAKE INC",
+   "exchange": "NYS",
+   "ko_name": "스노우플레이크",
+   "security_type": "2",
+   "symbol": "SNOW"
+  },
+  {
+   "en_name": "SYNOPSYS INC",
+   "exchange": "NAS",
+   "ko_name": "시놉시스",
+   "security_type": "2",
+   "symbol": "SNPS"
+  },
+  {
+   "en_name": "SOUTHERN CO.",
+   "exchange": "NYS",
+   "ko_name": "서던",
+   "security_type": "2",
+   "symbol": "SO"
+  },
+  {
+   "en_name": "SOFI TECHNOLOGIES INC",
+   "exchange": "NAS",
+   "ko_name": "소파이 테크놀로지스",
+   "security_type": "2",
+   "symbol": "SOFI"
+  },
+  {
+   "en_name": "SOUTHERN CO. 5.25% JR SUB NTS SR 2017B 01/12/77 USD25",
+   "exchange": "NYS",
+   "ko_name": "서던 후순위채권(2077-12-01 5.250%)",
+   "security_type": "2",
+   "symbol": "SOJC"
+  },
+  {
+   "en_name": "SOUTHERN CO. 4.95%JR SUB NOTES SER 2020A 30/01/2080",
+   "exchange": "NYS",
+   "ko_name": "서던 후순위채권(2080-01-30 4.950%)",
+   "security_type": "2",
+   "symbol": "SOJD"
+  },
+  {
+   "en_name": "SOUTHERN CO. JUNIOR SUB NTS DUE 15/10/2060 SER 2020C",
+   "exchange": "NYS",
+   "ko_name": "서던 후순위채권(2060-10-15 4.200%)",
+   "security_type": "2",
+   "symbol": "SOJE"
+  },
+  {
+   "en_name": "SOUTHERN CO. SER 2025A 6.50% JR SUB NT DUE 15/03/2085",
+   "exchange": "NYS",
+   "ko_name": "서던 후순위채권(2085-03-15 6.500%)",
+   "security_type": "2",
+   "symbol": "SOJF"
+  },
+  {
+   "en_name": "SOUTHERN CO. 2025 SERIES A CORPORATE UNITS",
+   "exchange": "NYS",
+   "ko_name": "SOUTHERN CO. 2025 SERIES A CORPORATE UNITS",
+   "security_type": "2",
+   "symbol": "SOMN"
+  },
+  {
+   "en_name": "SIMON PROPERTY GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "사이먼 프라퍼티 그룹",
+   "security_type": "2",
+   "symbol": "SPG"
+  },
+  {
+   "en_name": "S&P GLOBAL INC",
+   "exchange": "NYS",
+   "ko_name": "S&P 글로벌",
+   "security_type": "2",
+   "symbol": "SPGI"
+  },
+  {
+   "en_name": "SEMPRA",
+   "exchange": "NYS",
+   "ko_name": "셈프라",
+   "security_type": "2",
+   "symbol": "SRE"
+  },
+  {
+   "en_name": "SEMPRA 5.750% JUNIOR SUBORDINATED NTS DUE 2079",
+   "exchange": "NYS",
+   "ko_name": "셈프라 에너지 후순위채권(20749-01-07 5.750%)",
+   "security_type": "2",
+   "symbol": "SREA"
+  },
+  {
+   "en_name": "SS&C TECHNOLOGIES HOLDINGS INC",
+   "exchange": "NAS",
+   "ko_name": "SS&C 테크놀로지스 홀딩스",
+   "security_type": "2",
+   "symbol": "SSNC"
+  },
+  {
+   "en_name": "STERIS PLC",
+   "exchange": "NYS",
+   "ko_name": "스테리스",
+   "security_type": "2",
+   "symbol": "STE"
+  },
+  {
+   "en_name": "STEEL DYNAMICS INC",
+   "exchange": "NAS",
+   "ko_name": "스틸 다이내믹스",
+   "security_type": "2",
+   "symbol": "STLD"
+  },
+  {
+   "en_name": "STRATEGY INC VAR RT SER A PERP STRETCH PREFERRED STK",
+   "exchange": "NAS",
+   "ko_name": "스트래티지 스트래치 우선주(9.000%)",
+   "security_type": "2",
+   "symbol": "STRC"
+  },
+  {
+   "en_name": "STRATEGY INC 10% NON CUM PREF SER A PERP STRIDE WI",
+   "exchange": "NAS",
+   "ko_name": "스트래티지 스트라이드 우선주(10.000%)",
+   "security_type": "2",
+   "symbol": "STRD"
+  },
+  {
+   "en_name": "STRATEGY INC 10.00% SER A PERPETUAL STRIFE PFD STK",
+   "exchange": "NAS",
+   "ko_name": "스트래티지 스트라이프 우선주(10.000%)",
+   "security_type": "2",
+   "symbol": "STRF"
+  },
+  {
+   "en_name": "STRATEGY INC 8.00% SERIES A PERPETUAL STRIKE PFD",
+   "exchange": "NAS",
+   "ko_name": "스트래티지 스트라이크 우선주(8.000%)",
+   "security_type": "2",
+   "symbol": "STRK"
+  },
+  {
+   "en_name": "STATE STREET CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "스테이트 스트리트",
+   "security_type": "2",
+   "symbol": "STT"
+  },
+  {
+   "en_name": "SEAGATE TECHNOLOGY HOLDINGS PLC",
+   "exchange": "NAS",
+   "ko_name": "시게이트 테크놀로지 홀딩스",
+   "security_type": "2",
+   "symbol": "STX"
+  },
+  {
+   "en_name": "CONSTELLATION BRANDS INC",
+   "exchange": "NYS",
+   "ko_name": "컨스털레이션 브랜즈",
+   "security_type": "2",
+   "symbol": "STZ"
+  },
+  {
+   "en_name": "SUN COMMUNITIES INC",
+   "exchange": "NYS",
+   "ko_name": "선 커뮤니티스",
+   "security_type": "2",
+   "symbol": "SUI"
+  },
+  {
+   "en_name": "SMURFIT WESTROCK PLC",
+   "exchange": "NYS",
+   "ko_name": "스머핏 웨스트록",
+   "security_type": "2",
+   "symbol": "SW"
+  },
+  {
+   "en_name": "SYNCHRONY FINANCIAL",
+   "exchange": "NYS",
+   "ko_name": "싱크로니 파이낸셜",
+   "security_type": "2",
+   "symbol": "SYF"
+  },
+  {
+   "en_name": "STRYKER CORP",
+   "exchange": "NYS",
+   "ko_name": "스트라이커",
+   "security_type": "2",
+   "symbol": "SYK"
+  },
+  {
+   "en_name": "SYSCO CORP",
+   "exchange": "NYS",
+   "ko_name": "시스코",
+   "security_type": "2",
+   "symbol": "SYY"
+  },
+  {
+   "en_name": "AT&T INC",
+   "exchange": "NYS",
+   "ko_name": "AT&T",
+   "security_type": "2",
+   "symbol": "T"
+  },
+  {
+   "en_name": "AT&T INC 5.35% GLOBAL NOTES DUE 01/11/2066 USD25",
+   "exchange": "NYS",
+   "ko_name": "AT&T 일반채권(2066-11-01 5.350%)",
+   "security_type": "2",
+   "symbol": "TBB"
+  },
+  {
+   "en_name": "TRANSDIGM GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "트랜스다임 그룹",
+   "security_type": "2",
+   "symbol": "TDG"
+  },
+  {
+   "en_name": "TELEDYNE TECHNOLOGIES INC",
+   "exchange": "NYS",
+   "ko_name": "텔레다인 테크놀로지스",
+   "security_type": "2",
+   "symbol": "TDY"
+  },
+  {
+   "en_name": "ATLASSIAN CORP",
+   "exchange": "NAS",
+   "ko_name": "아틀라시언",
+   "security_type": "2",
+   "symbol": "TEAM"
+  },
+  {
+   "en_name": "TE CONNECTIVITY PLC",
+   "exchange": "NYS",
+   "ko_name": "TE 커넥티비티",
+   "security_type": "2",
+   "symbol": "TEL"
+  },
+  {
+   "en_name": "TERADYNE INC",
+   "exchange": "NAS",
+   "ko_name": "테라다인",
+   "security_type": "2",
+   "symbol": "TER"
+  },
+  {
+   "en_name": "TRUIST FINANCIAL CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "트루이스트 파이낸셜",
+   "security_type": "2",
+   "symbol": "TFC"
+  },
+  {
+   "en_name": "TARGET CORP",
+   "exchange": "NYS",
+   "ko_name": "타겟",
+   "security_type": "2",
+   "symbol": "TGT"
+  },
+  {
+   "en_name": "TJX COS INC",
+   "exchange": "NYS",
+   "ko_name": "TJX",
+   "security_type": "2",
+   "symbol": "TJX"
+  },
+  {
+   "en_name": "TKO GROUP HLDGS INC",
+   "exchange": "NYS",
+   "ko_name": "TKO 그룹 홀딩스",
+   "security_type": "2",
+   "symbol": "TKO"
+  },
+  {
+   "en_name": "THERMO FISHER SCIENTIFIC INC",
+   "exchange": "NYS",
+   "ko_name": "써모 피셔 사이언티픽",
+   "security_type": "2",
+   "symbol": "TMO"
+  },
+  {
+   "en_name": "T-MOBILE US INC",
+   "exchange": "NAS",
+   "ko_name": "T 모바일 US",
+   "security_type": "2",
+   "symbol": "TMUS"
+  },
+  {
+   "en_name": "T MOBILE USA INC 5.500% NOTES DUE 01/06/2070",
+   "exchange": "NAS",
+   "ko_name": "T 모바일 USA 일반채권(2070-06-01 5.500%)",
+   "security_type": "2",
+   "symbol": "TMUSI"
+  },
+  {
+   "en_name": "T MOBILE USA INC 6.250% NOTES DUE 01/09/2069",
+   "exchange": "NAS",
+   "ko_name": "T 모바일 USA 일반채권(2069-09-01 6.250%)",
+   "security_type": "2",
+   "symbol": "TMUSL"
+  },
+  {
+   "en_name": "T MOBILE USA INC 5.500% NOTES DUE 01/03/2070",
+   "exchange": "NAS",
+   "ko_name": "T 모바일 USA 일반채권(2070-03-01 5.500%)",
+   "security_type": "2",
+   "symbol": "TMUSZ"
+  },
+  {
+   "en_name": "TOAST INC",
+   "exchange": "NYS",
+   "ko_name": "토스트",
+   "security_type": "2",
+   "symbol": "TOST"
+  },
+  {
+   "en_name": "TUTOR PERINI CORP",
+   "exchange": "NYS",
+   "ko_name": "튜터 페리니",
+   "security_type": "2",
+   "symbol": "TPC"
+  },
+  {
+   "en_name": "TPG INC",
+   "exchange": "NAS",
+   "ko_name": "TPG",
+   "security_type": "2",
+   "symbol": "TPG"
+  },
+  {
+   "en_name": "TPG OPERATING GROUP II LP 6.95% JR NTS 15/03/2064 USD25",
+   "exchange": "NAS",
+   "ko_name": "TPG 오퍼레이팅 그룹 2 후순위채권(2064-03-15 6.950%)",
+   "security_type": "2",
+   "symbol": "TPGXL"
+  },
+  {
+   "en_name": "TEXAS PACIFIC LAND CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "텍사스 퍼시픽 랜드",
+   "security_type": "2",
+   "symbol": "TPL"
+  },
+  {
+   "en_name": "TARGA RESOURCES CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "타르가 리소시스",
+   "security_type": "2",
+   "symbol": "TRGP"
+  },
+  {
+   "en_name": "TRIMBLE INC",
+   "exchange": "NAS",
+   "ko_name": "트림블",
+   "security_type": "2",
+   "symbol": "TRMB"
+  },
+  {
+   "en_name": "PRICE T ROWE GROUPS",
+   "exchange": "NAS",
+   "ko_name": "티 로 프라이스 그룹",
+   "security_type": "2",
+   "symbol": "TROW"
+  },
+  {
+   "en_name": "TRANSUNION",
+   "exchange": "NYS",
+   "ko_name": "트랜스유니언",
+   "security_type": "2",
+   "symbol": "TRU"
+  },
+  {
+   "en_name": "TRAVELERS COMPANIES INC",
+   "exchange": "NYS",
+   "ko_name": "트래블러스 컴퍼니스",
+   "security_type": "2",
+   "symbol": "TRV"
+  },
+  {
+   "en_name": "TRACTOR SUPPLY CO",
+   "exchange": "NAS",
+   "ko_name": "트랙터 서플라이",
+   "security_type": "2",
+   "symbol": "TSCO"
+  },
+  {
+   "en_name": "TESLA INC",
+   "exchange": "NAS",
+   "ko_name": "테슬라",
+   "security_type": "2",
+   "symbol": "TSLA"
+  },
+  {
+   "en_name": "TYSON FOODS INC",
+   "exchange": "NYS",
+   "ko_name": "타이슨 푸드",
+   "security_type": "2",
+   "symbol": "TSN"
+  },
+  {
+   "en_name": "TRANE TECHNOLOGIES PLC",
+   "exchange": "NYS",
+   "ko_name": "트레인 테크놀로지",
+   "security_type": "2",
+   "symbol": "TT"
+  },
+  {
+   "en_name": "THE TRADE DESK INC",
+   "exchange": "NAS",
+   "ko_name": "트레이드 데스크",
+   "security_type": "2",
+   "symbol": "TTD"
+  },
+  {
+   "en_name": "TAKE TWO INTERACTIVE SOFTWARE INC",
+   "exchange": "NAS",
+   "ko_name": "테이크 투 인터랙티브 소프트웨어",
+   "security_type": "2",
+   "symbol": "TTWO"
+  },
+  {
+   "en_name": "TRADEWEB MARKETS INC",
+   "exchange": "NAS",
+   "ko_name": "트레이드웹 마케츠",
+   "security_type": "2",
+   "symbol": "TW"
+  },
+  {
+   "en_name": "TWILIO INC",
+   "exchange": "NYS",
+   "ko_name": "트윌리오",
+   "security_type": "2",
+   "symbol": "TWLO"
+  },
+  {
+   "en_name": "TEXAS INSTRUMENTS INC",
+   "exchange": "NAS",
+   "ko_name": "텍사스 인스트루먼츠",
+   "security_type": "2",
+   "symbol": "TXN"
+  },
+  {
+   "en_name": "TYLER TECHNOLOGIES INC",
+   "exchange": "NYS",
+   "ko_name": "타일러 테크놀로지스",
+   "security_type": "2",
+   "symbol": "TYL"
+  },
+  {
+   "en_name": "UNITED AIRLINES HOLDINGS INC",
+   "exchange": "NAS",
+   "ko_name": "유나이티드 에어라인스 홀딩스",
+   "security_type": "2",
+   "symbol": "UAL"
+  },
+  {
+   "en_name": "UBER TECHNOLOGIES INC",
+   "exchange": "NYS",
+   "ko_name": "우버 테크놀로지스",
+   "security_type": "2",
+   "symbol": "UBER"
+  },
+  {
+   "en_name": "UBIQUITI INC",
+   "exchange": "NYS",
+   "ko_name": "유비퀴티",
+   "security_type": "2",
+   "symbol": "UI"
+  },
+  {
+   "en_name": "ULTA BEAUTY INC",
+   "exchange": "NAS",
+   "ko_name": "울타 뷰티",
+   "security_type": "2",
+   "symbol": "ULTA"
+  },
+  {
+   "en_name": "UNITEDHEALTH GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "유나이티드헬스 그룹",
+   "security_type": "2",
+   "symbol": "UNH"
+  },
+  {
+   "en_name": "UNION PACIFIC CORP",
+   "exchange": "NYS",
+   "ko_name": "유니언 퍼시픽",
+   "security_type": "2",
+   "symbol": "UNP"
+  },
+  {
+   "en_name": "UNITED PARCEL SERVICE INC",
+   "exchange": "NYS",
+   "ko_name": "UPS",
+   "security_type": "2",
+   "symbol": "UPS"
+  },
+  {
+   "en_name": "UNITED RENTALS INC",
+   "exchange": "NYS",
+   "ko_name": "유나이티드 렌탈스",
+   "security_type": "2",
+   "symbol": "URI"
+  },
+  {
+   "en_name": "US BANCORP",
+   "exchange": "NYS",
+   "ko_name": "US 뱅코프",
+   "security_type": "2",
+   "symbol": "USB"
+  },
+  {
+   "en_name": "US FOODS HOLDING CORP",
+   "exchange": "NYS",
+   "ko_name": "US 푸즈 홀딩",
+   "security_type": "2",
+   "symbol": "USFD"
+  },
+  {
+   "en_name": "UNITED THERAPEUTICS CORP",
+   "exchange": "NAS",
+   "ko_name": "유나이티드 테라퓨틱스",
+   "security_type": "2",
+   "symbol": "UTHR"
+  },
+  {
+   "en_name": "VISA INC",
+   "exchange": "NYS",
+   "ko_name": "비자",
+   "security_type": "2",
+   "symbol": "V"
+  },
+  {
+   "en_name": "VEEVA SYSTEMS INC",
+   "exchange": "NYS",
+   "ko_name": "비바 시스템스",
+   "security_type": "2",
+   "symbol": "VEEV"
+  },
+  {
+   "en_name": "VICI PROPERTIES INC",
+   "exchange": "NYS",
+   "ko_name": "비치 프라퍼티스",
+   "security_type": "2",
+   "symbol": "VICI"
+  },
+  {
+   "en_name": "VALERO ENERGY CORP",
+   "exchange": "NYS",
+   "ko_name": "발레로 에너지",
+   "security_type": "2",
+   "symbol": "VLO"
+  },
+  {
+   "en_name": "VERALTO CORPORATION",
+   "exchange": "NYS",
+   "ko_name": "버럴토",
+   "security_type": "2",
+   "symbol": "VLTO"
+  },
+  {
+   "en_name": "VULCAN MATERIALS CO",
+   "exchange": "NYS",
+   "ko_name": "벌칸 머티리얼스",
+   "security_type": "2",
+   "symbol": "VMC"
+  },
+  {
+   "en_name": "VIVMARK RESIDENTIAL",
+   "exchange": "NYS",
+   "ko_name": "비브마크 레지덴셜",
+   "security_type": "2",
+   "symbol": "VMRK"
+  },
+  {
+   "en_name": "VERISK ANALYTICS INC",
+   "exchange": "NAS",
+   "ko_name": "베리스크 애널리틱스",
+   "security_type": "2",
+   "symbol": "VRSK"
+  },
+  {
+   "en_name": "VERISIGN",
+   "exchange": "NAS",
+   "ko_name": "베리사인",
+   "security_type": "2",
+   "symbol": "VRSN"
+  },
+  {
+   "en_name": "VERTIV HOLDINGS CO",
+   "exchange": "NYS",
+   "ko_name": "버티브 홀딩스",
+   "security_type": "2",
+   "symbol": "VRT"
+  },
+  {
+   "en_name": "VERTEX PHARMACEUTICAL",
+   "exchange": "NAS",
+   "ko_name": "버텍스 파머슈티컬",
+   "security_type": "2",
+   "symbol": "VRTX"
+  },
+  {
+   "en_name": "VISTRA CORP",
+   "exchange": "NYS",
+   "ko_name": "비스트라 에너지",
+   "security_type": "2",
+   "symbol": "VST"
+  },
+  {
+   "en_name": "VENTAS INC",
+   "exchange": "NYS",
+   "ko_name": "벤타스",
+   "security_type": "2",
+   "symbol": "VTR"
+  },
+  {
+   "en_name": "INVERSE VIX SHORT-TERM FUTURES ETNS DUE MARCH 22  2045",
+   "exchange": "AMS",
+   "ko_name": "INVERSE VIX SHORT TERM FUTURES ETN - MAR 22 2045",
+   "security_type": "3",
+   "symbol": "VYLD"
+  },
+  {
+   "en_name": "VERIZON COMMUNICATIONS",
+   "exchange": "NYS",
+   "ko_name": "버라이존 커뮤니케이션스",
+   "security_type": "2",
+   "symbol": "VZ"
+  },
+  {
+   "en_name": "WESTINGHOUSE AIR BRAKE TECH CORP",
+   "exchange": "NYS",
+   "ko_name": "왑텍",
+   "security_type": "2",
+   "symbol": "WAB"
+  },
+  {
+   "en_name": "WATERS CORP",
+   "exchange": "NYS",
+   "ko_name": "워터스",
+   "security_type": "2",
+   "symbol": "WAT"
+  },
+  {
+   "en_name": "WARNER BROS DISCOVERY INC",
+   "exchange": "NAS",
+   "ko_name": "워너 브로스 디스커버리",
+   "security_type": "2",
+   "symbol": "WBD"
+  },
+  {
+   "en_name": "WORKDAY INC",
+   "exchange": "NAS",
+   "ko_name": "워크데이",
+   "security_type": "2",
+   "symbol": "WDAY"
+  },
+  {
+   "en_name": "WESTERN DIGITAL CORP",
+   "exchange": "NAS",
+   "ko_name": "웨스턴 디지털",
+   "security_type": "2",
+   "symbol": "WDC"
+  },
+  {
+   "en_name": "WEC ENERGY GROUP INC",
+   "exchange": "NYS",
+   "ko_name": "WEC 에너지 그룹",
+   "security_type": "2",
+   "symbol": "WEC"
+  },
+  {
+   "en_name": "WELLTOWER INC.",
+   "exchange": "NYS",
+   "ko_name": "웰타워",
+   "security_type": "2",
+   "symbol": "WELL"
+  },
+  {
+   "en_name": "WELLS FARGO & COMPANY",
+   "exchange": "NYS",
+   "ko_name": "웰스파고",
+   "security_type": "2",
+   "symbol": "WFC"
+  },
+  {
+   "en_name": "WASTE MANAGEMENT INC",
+   "exchange": "NYS",
+   "ko_name": "웨이스트 매니지먼트",
+   "security_type": "2",
+   "symbol": "WM"
+  },
+  {
+   "en_name": "WILLIAMS COMPANIES INC",
+   "exchange": "NYS",
+   "ko_name": "윌리엄스 컴퍼니스",
+   "security_type": "2",
+   "symbol": "WMB"
+  },
+  {
+   "en_name": "WALMART INC",
+   "exchange": "NAS",
+   "ko_name": "월마트",
+   "security_type": "2",
+   "symbol": "WMT"
+  },
+  {
+   "en_name": "BERKLEY(W.R.)CORP",
+   "exchange": "NYS",
+   "ko_name": "WR 버클리",
+   "security_type": "2",
+   "symbol": "WRB"
+  },
+  {
+   "en_name": "WILLIAMS-SONOMA INC",
+   "exchange": "NYS",
+   "ko_name": "윌리엄스 소노마",
+   "security_type": "2",
+   "symbol": "WSM"
+  },
+  {
+   "en_name": "WATSCO INC",
+   "exchange": "NYS",
+   "ko_name": "와츠코",
+   "security_type": "2",
+   "symbol": "WSO"
+  },
+  {
+   "en_name": "WATSCO INC",
+   "exchange": "NYS",
+   "ko_name": "와츠코 B",
+   "security_type": "2",
+   "symbol": "WSO/B"
+  },
+  {
+   "en_name": "WEST PHARMACEUTICAL SERVICES INC",
+   "exchange": "NYS",
+   "ko_name": "웨스트 파마슈티컬 서비시즈",
+   "security_type": "2",
+   "symbol": "WST"
+  },
+  {
+   "en_name": "WILLIS TOWERS WATSON PLC",
+   "exchange": "NAS",
+   "ko_name": "윌리스 타워스 왓슨",
+   "security_type": "2",
+   "symbol": "WTW"
+  },
+  {
+   "en_name": "WEYERHAEUSER COMPANY",
+   "exchange": "NYS",
+   "ko_name": "와이어하우저",
+   "security_type": "2",
+   "symbol": "WY"
+  },
+  {
+   "en_name": "XCEL ENERGY INC",
+   "exchange": "NAS",
+   "ko_name": "엑셀 에너지",
+   "security_type": "2",
+   "symbol": "XEL"
+  },
+  {
+   "en_name": "XCEL ENERGY INC 6.25% SUB NTS DUE 15/10/2085 USD25",
+   "exchange": "NAS",
+   "ko_name": "엑셀 에너지 후순위채권(2085-10-15 6.250%)",
+   "security_type": "2",
+   "symbol": "XELLL"
+  },
+  {
+   "en_name": "XYLEM INC",
+   "exchange": "NYS",
+   "ko_name": "자일럼",
+   "security_type": "2",
+   "symbol": "XYL"
+  },
+  {
+   "en_name": "BLOCK INC",
+   "exchange": "NYS",
+   "ko_name": "블록",
+   "security_type": "2",
+   "symbol": "XYZ"
+  },
+  {
+   "en_name": "YUM BRANDS INC",
+   "exchange": "NYS",
+   "ko_name": "염 브랜즈",
+   "security_type": "2",
+   "symbol": "YUM"
+  },
+  {
+   "en_name": "ZILLOW GROUP INC",
+   "exchange": "NAS",
+   "ko_name": "질로우 그룹 C",
+   "security_type": "2",
+   "symbol": "Z"
+  },
+  {
+   "en_name": "ZIMMER BIOMET HOLDINGS INC",
+   "exchange": "NYS",
+   "ko_name": "짐머 바이오멧 홀딩스",
+   "security_type": "2",
+   "symbol": "ZBH"
+  },
+  {
+   "en_name": "ZEBRA TECHNOLOGIES",
+   "exchange": "NAS",
+   "ko_name": "지브라 테크놀로지스",
+   "security_type": "2",
+   "symbol": "ZBRA"
+  },
+  {
+   "en_name": "ZILLOW GROUP INC",
+   "exchange": "NAS",
+   "ko_name": "질로우 그룹",
+   "security_type": "2",
+   "symbol": "ZG"
+  },
+  {
+   "en_name": "ZOOM COMMUNICATIONS INC",
+   "exchange": "NAS",
+   "ko_name": "줌 커뮤니케이션스",
+   "security_type": "2",
+   "symbol": "ZM"
+  },
+  {
+   "en_name": "ZSCALER INC",
+   "exchange": "NAS",
+   "ko_name": "지스케일러",
+   "security_type": "2",
+   "symbol": "ZS"
+  },
+  {
+   "en_name": "ZOETIS INC",
+   "exchange": "NYS",
+   "ko_name": "조에티스",
+   "security_type": "2",
+   "symbol": "ZTS"
+  }
+ ],
+ "source_kind": "KIS_OVERSEAS_STOCK_MASTER"
+}

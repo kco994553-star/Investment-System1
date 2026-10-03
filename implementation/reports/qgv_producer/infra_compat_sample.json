@@ -1,0 +1,136 @@
+{
+ "kind": "QGV_PRODUCER_INFRA_COMPAT",
+ "infra_pin": {
+  "branch": "feature/producer-infrastructure-v1",
+  "commit": "5fa7ce0647b6af91d767c54ecaaa3e31d1ab63e4",
+  "code_commit": "bcfdcd2487f643feddda7a0fa2cace085ffc28a3"
+ },
+ "infra_src": "/home/runner/work/Investment-System1/Investment-System1/infra/implementation/src",
+ "status": "PASS",
+ "checks": {
+  "shared_qgv_sources_identical": {
+   "status": "PASS",
+   "files": {
+    "investment_system/contracts/models.py": {
+     "infra": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+     "own": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506"
+    },
+    "investment_system/contracts/enums.py": {
+     "infra": "5cd6c7694544dcba4717590ad24534ab0f8e115d8352235bf88bf37657433bcf",
+     "own": "5cd6c7694544dcba4717590ad24534ab0f8e115d8352235bf88bf37657433bcf"
+    },
+    "investment_system/versions.py": {
+     "infra": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11",
+     "own": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11"
+    },
+    "investment_system/qgv/analysis.py": {
+     "infra": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+     "own": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88"
+    },
+    "investment_system/qgv/scoring.py": {
+     "infra": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+     "own": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629"
+    },
+    "investment_system/qgv/factors.py": {
+     "infra": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+     "own": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e"
+    },
+    "investment_system/qgv/raw_map.py": {
+     "infra": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+     "own": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac"
+    },
+    "investment_system/qgv/pipeline.py": {
+     "infra": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+     "own": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4"
+    },
+    "investment_system/validation/vertical_slice.py": {
+     "infra": "4ab06fce30064ccf0a54f2c8e6dd39b4b97fdb996511958fac24d25d031a98dc",
+     "own": "4ab06fce30064ccf0a54f2c8e6dd39b4b97fdb996511958fac24d25d031a98dc"
+    },
+    "investment_system/validation/historical.py": {
+     "infra": "02315a38e102bc312478dd1f00da401865db42d60423b21371b05879849a4aa8",
+     "own": "02315a38e102bc312478dd1f00da401865db42d60423b21371b05879849a4aa8"
+    }
+   }
+  },
+  "infra_importable": {
+   "status": "PASS",
+   "infra_src": "/home/runner/work/Investment-System1/Investment-System1/infra/implementation/src"
+  },
+  "infra_api_complete": {
+   "status": "PASS",
+   "missing": []
+  },
+  "2024-12-31:export_reload_valid": {
+   "status": "PASS",
+   "n_records": 5,
+   "counts": {
+    "FAIL": 0,
+    "NOT_RUN": 0,
+    "PASS": 5
+   }
+  },
+  "2024-12-31:qgv_section_entity_map": {
+   "status": "PASS",
+   "n_entities": 5
+  },
+  "2024-12-31:web_read_fields_present": {
+   "status": "PASS",
+   "web_reads": [
+    "Q_score",
+    "G_score",
+    "V_score",
+    "total_score",
+    "confidence",
+    "coverage_state"
+   ],
+   "missing": []
+  },
+  "2024-12-31:canonical_serialization_agrees": {
+   "status": "PASS"
+  },
+  "2024-12-31:research_candidate_rejected": {
+   "status": "PASS",
+   "error": {
+    "type": "ResearchStatusError",
+    "code": "RESEARCH_STATUS_NOT_PUBLISHABLE",
+    "message": "methodology.status: methodology status PROVISIONAL_RESEARCH cannot be published as FROZEN_SNAPSHOT (pending approval of PROPOSAL_P01)"
+   }
+  },
+  "2024-12-31:shape_probe_valid_except_research_status": {
+   "status": "PASS",
+   "error": null,
+   "note": "in-memory only; proves research status is the sole Infrastructure blocker"
+  },
+  "2024-12-31:published_not_available": {
+   "status": "PASS",
+   "reason_code": "QGV_RESEARCH_ONLY_NO_EXPORT"
+  },
+  "2024-12-31:file_inputs_reverify": {
+   "status": "PASS",
+   "inputs": [
+    {
+     "artifact_id": "file:reports/qgv_producer/sample/qgv_batch_manifest_2024-12-31.json",
+     "sha256": "329cb2849cbce61ec0009be8701d433731a75ffd4d0cd09143901c43aaba9d82",
+     "bytes": 4498
+    },
+    {
+     "artifact_id": "file:reports/qgv_producer/sample/qgv_company_snapshots_2024-12-31.jsonl",
+     "sha256": "538bc9284183fb5ebd854b5cb650ea4ba7e14f72de9aba7aceeaad884a96c92e",
+     "bytes": 53890
+    }
+   ]
+  },
+  "2024-12-31:bundle_assembles_and_web_validates": {
+   "status": "PASS",
+   "qgv_state": "NOT_AVAILABLE",
+   "qgv_reason_code": "QGV_RESEARCH_ONLY_NO_EXPORT"
+  },
+  "2024-12-31:identity_keys_match_web_companies": {
+   "status": "PASS",
+   "n_not_in_web_companies": 0,
+   "sample": [],
+   "note": "informational: the Web companies list is the Frozen 2024-12-31 Universe; other dates may differ"
+  }
+ }
+}

@@ -5,11 +5,13 @@ Does not promote v0.1.4 Candidate. Does not mutate QGV raw scores.
 
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import datetime
 from uuid import uuid4
 
 from ..contracts.enums import MacroState
 from ..contracts.models import MacroSnapshot
+from ..contracts.lineage import StampedValue, derived_lineage
 from ..versions import IMPLEMENTATION_KIND, MACRO_CANDIDATE, MACRO_CONFIRMED
 
 
@@ -42,3 +44,11 @@ class MacroEngine:
             mutated_qgv=False,
             synthetic=synthetic,
         )
+
+    def evaluate_stamped(self, as_of: datetime, indicators: dict[str, StampedValue],
+                         synthetic: bool = False) -> MacroSnapshot:
+        if set(indicators) != {"growth", "inflation"}:
+            raise ValueError("strict Macro evaluation requires growth and inflation")
+        lineage = derived_lineage(indicators, as_of, synthetic=synthetic)
+        output = self.evaluate(as_of, {k: v.value for k, v in indicators.items()}, synthetic)
+        return replace(output, **lineage)
