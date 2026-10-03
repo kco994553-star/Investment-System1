@@ -383,3 +383,13 @@ iframe {
 .global-search .item {overflow-wrap:anywhere;}
 header {flex-wrap:wrap;}
 header>a:last-child {font-size:12px;min-height:44px;display:flex;align-items:center;}
+
+/* Production-shaped state presentation. LIVE and each freshness value have their own rule; STALE is never
+   a suffix inside the LIVE badge. Colours only; no layout change for existing badges. */
+.badge.LIVE {background:#dcefe3;color:#1b5a40;}
+.badge.freshness {max-width:100%;overflow-wrap:anywhere;margin-left:2px;}
+.badge.freshness.FRESH {background:#e4f2ea;color:#1d5c43;}
+.badge.freshness.STALE {background:#fbe2c2;color:#6f3d00;box-shadow:inset 0 0 0 1px #c9853a;}
+.badge.freshness.NOT_USABLE {background:#f5dddd;color:#76262a;box-shadow:inset 0 0 0 1px #b85c60;}
+.producer-meta {margin:4px 0;}
+.producer-meta [data-meta] {white-space:normal;}
