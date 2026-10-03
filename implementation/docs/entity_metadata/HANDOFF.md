@@ -111,3 +111,20 @@ PR CI: https://github.com/kco994553-star/Investment-System1/actions/runs/3684811
 
 An optional metadata refresh (edit `reports/entity_metadata/REFRESH_REQUEST`) changes data, not scope. Re-verify sections 6–8
 after any refresh. Until then: WAIT.
+
+## 12. Additive note 2026-10-03: C-28 adoption evidence record (user CDR-004)
+
+This section is appended. Nothing above it is rewritten, and the §7 values stay as recorded. The Primary Integration Writer prepared it under user CDR-004 (2026-10-03). It becomes the owner's record when the owner or the user merges it into `ccr-41677301-10nj3u`.
+
+| Item | Value |
+|---|---|
+| Record | [`evidence/c28_adoption_post_adoption_2026-10-03.json`](evidence/c28_adoption_post_adoption_2026-10-03.json) |
+| Authority | User CDR-004 (2026-10-03): IF-1 = A1 + Technical/Macro owner adoption of the Track C additive lineage/schema change. Existing numerical/semantic invariance is re-verified on the new schema before any fingerprint is re-recorded. This is not an approval to change any Technical/Macro formula, value, regime, zone, Macro state, QGV or ranking. It is not canonical-merge approval |
+| Pin check | No test on this branch (`a013f1c`) pins `d1b9cd91…`. It appears only in §7 and `evidence/validation.json`. Evidence-only adoption, so no test repin |
+| Gate | BEFORE `a013f1c` vs AFTER `a013f1c` + Track C owner tip `b9e01a97` (`--no-ff`, 0 conflicts, throwaway `d1dd81ce`, never pushed). Generator: `docs/entity_metadata/evidence/numeric_fingerprint.py`, unchanged. The engine outputs (QGV, Technical, Macro, Portfolio, Leaderboard rows and order) differ only by the four keys `available_at=null`, `data_stamp_refs=[]`, `source_vintages=[]`, `input_hash=null` on 10 technical snapshots and 1 macro snapshot (44 ADDED entries; nothing removed or changed). **PASS** |
+| Values | BEFORE reproduces `d1b9cd913c51f65b084b2ff4596f3361834bb5419dbcf17ff19eb7f1b032a535`. AFTER whole-stdout sha256 is `9b9a276e…`. That value also reflects 27 extra `reports/*.json` entries: the script hashes every report present in the tree, and the throwaway merge adds 27 Track C report files (all status `A`). Removing those 27 entries and the four keys reproduces `d1b9cd91…` byte for byte. Without the 27 entries, the post-adoption value is `ce845bb6…` |
+| Other committed hashes reproduced unchanged (both trees) | `data.json` sha256 for the default build (`8206d6c5…`) and the demo build (`649a144d…`). All 140 committed `reports/*.json` sha256. The six entity-metadata artifact sha256. The Frozen Universe `75f795f8…`. The deterministic registry rebuild is byte-identical |
+| Tests | Owner tip `a013f1c`: pytest 419 passed, mini_pytest shim 419 passed / 0 failed. This proposal: same counts. Merged throwaway tree: pytest 949 passed, 0 failed |
+| Not changed | `evidence/validation.json`, `evidence/numeric_fingerprint.py`, the text above, and every file under `src/`, `tests/`, `tools/`. Track C is not merged into this branch |
+| GitHub Actions | NOT_RUN for this proposal (docs-only; no matching workflow path filter) |
+| BRANCH_STATE / INTEGRATION_STATE / CANONICAL_STATE | proposal branch `integration/a1-adoption/pr7-entity-metadata` from `a013f1c` / NOT_MERGED into the owner branch / NOT_MERGED |
