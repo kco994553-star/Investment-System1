@@ -68,9 +68,12 @@ No TTL or cadence number is defined in this infrastructure.
 
 ## 4. Research / provisional outputs
 
-The Web schema-1 has no state for validated-research data. Publishing `PROVISIONAL_RESEARCH` (or the `CalibrationLifecycle` values
+The Web schema-1 has no state for research data, and `RESEARCH` is not added to it.
+Publishing `PROVISIONAL_RESEARCH` (or the `CalibrationLifecycle` values
 IDEA / RESEARCH / PROVISIONAL / PROVISIONAL_INITIAL_PRIOR) as `LIVE` or `FROZEN_SNAPSHOT` raises `ResearchStatusError`.
-Until `PROPOSAL_P01_RESEARCH_DATA_STATE.md` is approved, such producers must emit `NOT_AVAILABLE`.
+P01 is approved as an additive `publication_envelope` (`docs/research_publication/CONTRACT.md`).
+Research-display, Frozen, and Live grants are none, so these sections still emit `NOT_AVAILABLE`.
+The envelope is not placed inside section `data`.
 
 ## 5. Producer interface (`producers/registry.py`)
 

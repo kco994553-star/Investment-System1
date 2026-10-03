@@ -50,7 +50,7 @@ Recorded: 2026-10-01 (UTC). Use this file to take over from GitHub alone; no cha
 | DAILY_OPERATION_READY | **NO**. No producer, no schedule, no Universe interim policy, no hosting |
 
 ## Open decisions (BLOCKED; not implemented)
-- **P01**: Web state for research/provisional outputs (QGV PROVISIONAL_RESEARCH). Until decided, the QGV section stays NOT_AVAILABLE.
+- **P01**: Policy approved (`P01_APPROVAL_2026-10-02.md`). Phase 1 predicate and envelope are in `docs/research_publication/`. Grants stay NONE, so the QGV section stays NOT_AVAILABLE. DISPLAY_RESEARCH is not active.
 - **P02 (D3-P)**: Universe between Official dates (carry-forward / quarterly / daily reconstruction / interpolation / staleness limit).
 - **P03**: Durable raw storage location, the public-redistribution question, and an optional refresh stopgap. **Time-bound: 2026-12-26.**
   The detailed comparison is in `P03_RAW_STORAGE_COMPARISON.md`. The read-only restore check (run 36850391139) PASSED 6808/6808.

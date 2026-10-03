@@ -2,8 +2,9 @@
 
 Data states are exactly the Web schema-1 states (product.web_mvp.STATES); no new state is
 introduced here. STALE is a derived freshness of a LIVE snapshot (see freshness.py), not a
-state. Research/provisional outputs are not publishable as LIVE or FROZEN_SNAPSHOT until a
-Web data state for them is approved (docs/producer_infrastructure/PROPOSAL_P01_RESEARCH_DATA_STATE.md).
+state. Research/provisional outputs are not publishable as LIVE or FROZEN_SNAPSHOT.
+P01 is an additive publication envelope, not a new schema-1 state
+(docs/producer_infrastructure/P01_APPROVAL_2026-10-02.md).
 """
 from __future__ import annotations
 
@@ -199,7 +200,8 @@ def validate_snapshot(s: Any) -> dict:
             raise ValidationStatusError(f'{state} requires producer validation PASS', 'validation.status')
         if m['status'] in RESEARCH_STATUSES:
             raise ResearchStatusError(f'methodology status {m["status"]} cannot be published as {state} '
-                                      '(pending approval of PROPOSAL_P01)', 'methodology.status')
+                                      '(P01 keeps schema-1 unchanged; a research lifecycle is not a grant)',
+                                      'methodology.status')
     return s
 
 

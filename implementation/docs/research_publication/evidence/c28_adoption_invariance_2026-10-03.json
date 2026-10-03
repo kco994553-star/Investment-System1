@@ -1,0 +1,305 @@
+{
+  "record_id": "P01_C28_ADOPTION_INVARIANCE_2026-10-03",
+  "scope": "P01 Research Publication (PR #17 feature/p01-research-publication-v1) consumer pins of the Technical/Macro engine fingerprint and protected engine bytes",
+  "recorded_at_utc": "2026-10-03",
+  "record_kind": "history-preserving additive evidence; does not overwrite docs/research_publication/evidence/invariance.json",
+  "authority": {
+    "user_decision": "CDR-004 2026-10-03 (user): IF-1 approved as A1 + Technical/Macro owner adoption; Track C 2137883 additive lineage/schema change kept as integration target; Technical aligned with canonical C-28 upstream ownership; not an approval to change any Technical/Macro formula, value, regime, zone, Macro state, QGV or ranking; producers re-verify numerical/semantic invariance on the new schema before repinning byte constants/fingerprints history-preservingly; an independent before/after comparison must PASS first; Track C Frozen chain is not rewritten; #10/#14 and dependency-not-merged sentinels are separate compatibility-repair items; canonical merge not yet performed.",
+    "canonical_register": "Investment-System1 . Contract Conflict Register 2026-09-23.md C-28 L348-353: Technical output has no available_at; PIL must not create times; fix belongs to the Technical system (upstream PATCH: add available_at from input data stamps). No register item exists for Macro lineage fields (Macro adoption is a separate current owner adoption record, not retroactive).",
+    "prepared_by": "Primary Integration Writer under user CDR-004 2026-10-03; becomes the owner's adoption when merged into the owner branch by the owner or the user"
+  },
+  "trees": {
+    "before": {
+      "description": "PR #17 tip as-is",
+      "sha": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "stacked_on_pr9": "f8af5960",
+      "merge_base_with_canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+    },
+    "after": {
+      "description": "PR #17 tip + Track C owner tip merged with git merge --no-ff (throwaway, never pushed)",
+      "base_sha": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "merged_ref": "origin/ccr-22e3ff16-p7n5k5",
+      "merged_sha": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+      "throwaway_merge_commit": "ccdbd03694cec9cbc367bc93dd7de09985c93883",
+      "conflicts": 0
+    },
+    "track_c_commit_under_adoption": "21378835883c5a9740143899c70d75d6405aa55a",
+    "track_c_owner_tip_note": "task text named 972a23fcf3a4dae2373ebbbfc7fce746340a0661; after fetch the tip was b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565 (972a23fc is its ancestor); the four adopted files are byte-identical across 2137883, 972a23fc-lineage and b9e01a97",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "pr19_stacked_on_pr17": "c3dbf8a (inherits this re-pin via stacking; has no pins of its own; no change needed)"
+  },
+  "adopted_files_identity": {
+    "contracts/lineage.py": {
+      "blob_2137883": "288cabadcd0fe975fb9e2605f1f39b767ccc462b",
+      "blob_track_c_owner_tip": "288cabadcd0fe975fb9e2605f1f39b767ccc462b",
+      "blob_after_tree": "288cabadcd0fe975fb9e2605f1f39b767ccc462b",
+      "sha256_after": "ddfac6ef9bac1eb3a54a60bfbd78218d8f0aa57b91185ffadaaa5458aeb9c454",
+      "sha256_before": null,
+      "exists_before": false
+    },
+    "contracts/models.py": {
+      "blob_2137883": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+      "blob_track_c_owner_tip": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+      "blob_after_tree": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+      "sha256_after": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+      "sha256_before": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+      "exists_before": true
+    },
+    "technical/engine.py": {
+      "blob_2137883": "5365653fda6374aeace986c63cce9939921ebb64",
+      "blob_track_c_owner_tip": "5365653fda6374aeace986c63cce9939921ebb64",
+      "blob_after_tree": "5365653fda6374aeace986c63cce9939921ebb64",
+      "sha256_after": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+      "sha256_before": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+      "exists_before": true
+    },
+    "macro/engine.py": {
+      "blob_2137883": "08d79c20147d2a13413e98269042e6cf7d3973a8",
+      "blob_track_c_owner_tip": "08d79c20147d2a13413e98269042e6cf7d3973a8",
+      "blob_after_tree": "08d79c20147d2a13413e98269042e6cf7d3973a8",
+      "sha256_after": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+      "sha256_before": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+      "exists_before": true
+    }
+  },
+  "fingerprint_tool": {
+    "path": "implementation/tools/producer_engine_fingerprint.py",
+    "origin": "PR #9",
+    "sha256_before": "f4b8bca1e1b08249e56660963ce499401dcb379b2602080b2bd65fee277c6931",
+    "sha256_after": "f4b8bca1e1b08249e56660963ce499401dcb379b2602080b2bd65fee277c6931",
+    "identical": true
+  },
+  "commands": [
+    "git -C /home/user/Investment-System1 fetch origin",
+    "git worktree add --detach <wf>/before 21039a0a7f9677b123abd8587fd8d89784a73a3c",
+    "git worktree add --detach <wf>/after 21039a0a7f9677b123abd8587fd8d89784a73a3c && (cd <wf>/after && git merge --no-ff --no-edit b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565)  # 0 conflicts -> ccdbd036",
+    "(cd <tree>/implementation && python3 tools/producer_engine_fingerprint.py src)  # both trees",
+    "(cd <tree>/implementation && python3 dump_norm.py src <tree>_norm.json)  # exec's the tool's own source up to its final print and dumps norm(t), norm(m), norm(q), norm(lb), norm(book) in full",
+    "field-by-field walk of before_norm.json vs after_norm.json (ADDED/REMOVED/CHANGED/LEN)",
+    "(cd <tree>/implementation && PYTHONPATH=src python3 pub_dump.py . <tree>_pub.json)  # loads the PR's own test module fixtures; dumps decide()/extract()/attach_publication_envelope() outputs; cmp before/after",
+    "sha256 of the seven protected files and the combined digest exactly as test_protected_engine_bytes_are_unchanged computes it, both trees",
+    "(cd <tree>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf tests/test_p01_research_publication.py)  # both trees, BEFORE any pin edit",
+    "(cd <wf>/before/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf)  # full suite baseline"
+  ],
+  "engine_fingerprints": {
+    "before": {
+      "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+      "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+      "n_qgv": 19,
+      "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+      "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+      "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+    },
+    "after": {
+      "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+      "macro": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501",
+      "n_qgv": 19,
+      "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+      "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+      "technical": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+    },
+    "changed_keys": [
+      "macro",
+      "technical"
+    ],
+    "unchanged_keys": [
+      "leaderboard",
+      "n_qgv",
+      "portfolio_official_book",
+      "qgv"
+    ]
+  },
+  "norm_field_level_diff": {
+    "method": "recursive walk of the tool's own norm() output (DROP set applied by the tool itself); every leaf compared by value and type",
+    "total_entries": 92,
+    "kinds_present": [
+      "ADDED"
+    ],
+    "sections_touched": [
+      "macro",
+      "technical"
+    ],
+    "entries": [
+      {
+        "kind": "ADDED",
+        "section": "macro",
+        "key": "available_at",
+        "value": null,
+        "count": 4
+      },
+      {
+        "kind": "ADDED",
+        "section": "macro",
+        "key": "data_stamp_refs",
+        "value": [],
+        "count": 4
+      },
+      {
+        "kind": "ADDED",
+        "section": "macro",
+        "key": "input_hash",
+        "value": null,
+        "count": 4
+      },
+      {
+        "kind": "ADDED",
+        "section": "macro",
+        "key": "source_vintages",
+        "value": [],
+        "count": 4
+      },
+      {
+        "kind": "ADDED",
+        "section": "technical",
+        "key": "available_at",
+        "value": null,
+        "count": 19
+      },
+      {
+        "kind": "ADDED",
+        "section": "technical",
+        "key": "data_stamp_refs",
+        "value": [],
+        "count": 19
+      },
+      {
+        "kind": "ADDED",
+        "section": "technical",
+        "key": "input_hash",
+        "value": null,
+        "count": 19
+      },
+      {
+        "kind": "ADDED",
+        "section": "technical",
+        "key": "source_vintages",
+        "value": [],
+        "count": 19
+      }
+    ],
+    "snapshots": {
+      "technical": 19,
+      "macro": 4
+    },
+    "after_minus_lineage_keys_equals_before": {
+      "technical": true,
+      "macro": true
+    },
+    "qgv_leaderboard_portfolio_identical_as_is": true,
+    "distinct_added_value_sets": [
+      "{\"available_at\": null, \"data_stamp_refs\": [], \"input_hash\": null, \"source_vintages\": []}"
+    ],
+    "note": "data_stamp_refs already exists as a nested key inside qgv and portfolio_official_book snapshots in BEFORE (19 each); those nested values are unchanged; only the four top-level keys on TechnicalSnapshot/MacroSnapshot were added",
+    "dump_sha256": {
+      "before_norm.json": "740046ee5eba6154f26aa50ccdb62d77296349534d202d048a02a9e53a3c19e3",
+      "after_norm.json": "9849394f6451ce28af33205de50113371ba7408fd6c2780c125c693e62138f8d"
+    }
+  },
+  "protected_engine_bytes": {
+    "files": [
+      "qgv/pipeline.py",
+      "qgv/leaderboard.py",
+      "qgv/book.py",
+      "technical/engine.py",
+      "macro/engine.py",
+      "product/web_mvp.py",
+      "producers/assembler.py"
+    ],
+    "combined_digest_before": "1d6c56e4bcf356758ecec8c0524bf2a345eb99acd568278e0366599f3dd2f259",
+    "combined_digest_after": "e6de46714f4405b52d4b25a418cc4081ff6df9d8891f332f59cc47e5ccc6c909",
+    "per_file_sha256_before": {
+      "qgv/pipeline.py": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+      "qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+      "qgv/book.py": "cbc334cf10e089792c1a119536109de2fe3cafc0e492e1e77676fd0b8bf7cf84",
+      "technical/engine.py": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+      "macro/engine.py": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+      "product/web_mvp.py": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323",
+      "producers/assembler.py": "c427daddcb4cfff002c8f4c77a6c0d66ca8c9ebb7087d40fd454761181f1c877"
+    },
+    "per_file_sha256_after": {
+      "qgv/pipeline.py": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+      "qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+      "qgv/book.py": "cbc334cf10e089792c1a119536109de2fe3cafc0e492e1e77676fd0b8bf7cf84",
+      "technical/engine.py": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+      "macro/engine.py": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+      "product/web_mvp.py": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323",
+      "producers/assembler.py": "c427daddcb4cfff002c8f4c77a6c0d66ca8c9ebb7087d40fd454761181f1c877"
+    },
+    "changed_files": [
+      "technical/engine.py",
+      "macro/engine.py"
+    ]
+  },
+  "publication_outputs_on_pr_fixtures": {
+    "method": "pub_dump.py loads tests/test_p01_research_publication.py fixtures (_fact variants x 5 grant cases = 40 decide() calls; extract() on _qgv/_leaderboard/_macro/_technical; decide(extract(...)); attach_publication_envelope bare/attached/reordered on _bundle())",
+    "n_decisions": 40,
+    "n_extracted": 4,
+    "sha256_before": "5cd69c68a55b8830f15103650688972b8a2ad9c93ed1b1b06b4843c380e6dc88",
+    "sha256_after": "5cd69c68a55b8830f15103650688972b8a2ad9c93ed1b1b06b4843c380e6dc88",
+    "identical": true
+  },
+  "test_runs_before_any_pin_edit": {
+    "before_tree_p01_file": "13 passed in 0.37s (pytest)",
+    "after_tree_p01_file": "2 failed, 11 passed in 0.36s (pytest): test_engine_fingerprints_match_the_pre_change_pin (observed macro 7e427949..., technical 66cb2383...), test_protected_engine_bytes_are_unchanged (observed e6de4671...)",
+    "before_tree_full_suite": "444 passed in 26.08s (pytest; matches invariance.json full_suite 444 passed)"
+  },
+  "committed_hashes_affected_under_after": {
+    "implementation/docs/research_publication/evidence/invariance.json": {
+      "keys": [
+        "fingerprint_before.macro",
+        "fingerprint_before.technical",
+        "protected_digest"
+      ],
+      "action": "NOT overwritten; post-adoption values recorded in this additive record"
+    },
+    "implementation/docs/producer_infrastructure/evidence/validation.json": {
+      "keys": [
+        "engine_numerical_fingerprint.macro",
+        "engine_numerical_fingerprint.technical"
+      ],
+      "action": "belongs to PR #9 base f8af596 (blob e2bae658), outside this proposal's scope; left untouched; noted for PR #9's own adoption item"
+    }
+  },
+  "pins": {
+    "pre_adoption": {
+      "FINGERPRINTS": {
+        "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+        "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+        "n_qgv": 19,
+        "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+        "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+        "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+      },
+      "PROTECTED_DIGEST": "1d6c56e4bcf356758ecec8c0524bf2a345eb99acd568278e0366599f3dd2f259",
+      "origin": "PR #17 @ 21039a0, 2026-10-02"
+    },
+    "post_adoption": {
+      "FINGERPRINTS": {
+        "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+        "macro": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501",
+        "n_qgv": 19,
+        "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+        "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+        "technical": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655"
+      },
+      "PROTECTED_DIGEST": "e6de46714f4405b52d4b25a418cc4081ff6df9d8891f332f59cc47e5ccc6c909",
+      "reason": "C-28 upstream adoption of Track C 2137883 per user CDR-004 2026-10-03"
+    },
+    "selection": "state-exact: tests/test_p01_research_publication.py::_c28_adoption_state() detects the adopted schema from the feature itself (four lineage fields on TechnicalSnapshot and MacroSnapshot via dataclasses.fields, and evaluate_stamped on TechnicalEngine/MacroEngine); all-present selects the adopted pin, none-present selects the pre-adoption pin, a partial state raises; detected state vs observed bytes/fingerprint mismatch still FAILS; no key is stripped from the fingerprint (A2 not approved); no 'either value accepted'"
+  },
+  "verdict": "PASS",
+  "pass_criterion": "every pre-existing field value and every computed result identical; the only differences are the four added keys available_at=null, data_stamp_refs=[], source_vintages=[], input_hash=null wherever a TechnicalSnapshot/MacroSnapshot is serialized",
+  "not_changed": [
+    "Technical/Macro formulas, values, regime, zone, Macro state, QGV, ranking",
+    "any source under implementation/src",
+    "dependency-not-merged sentinels and CI-mode models.py compare in #10/#14 (separate CDR-004 items)",
+    "Track C Frozen chain",
+    "docs/research_publication/evidence/invariance.json (historical record kept verbatim)",
+    "docs/producer_infrastructure/evidence/validation.json (PR #9)"
+  ],
+  "states": {
+    "BRANCH_STATE": "proposal branch integration/a1-adoption/pr17-p01 created from 21039a0",
+    "INTEGRATION_STATE": "NOT_MERGED into feature/p01-research-publication-v1; Track C not merged into this branch",
+    "CANONICAL_STATE": "NOT_MERGED"
+  }
+}
