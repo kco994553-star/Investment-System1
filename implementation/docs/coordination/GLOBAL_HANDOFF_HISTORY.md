@@ -68,3 +68,7 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 ## GCH-004a · 2026-10-03T07:03Z · CDR-009 Codex active-write exclusion recorded
 
 - Track C C8 G-SUP v2 / source-descriptor / related C8 oracle/test/acceptance/evidence paths are out of the Primary Integration Writer's write set until Codex is DONE or HANDOFF_READY. Read and temporary trial merges allowed; conflicts are recorded, never resolved by commit.
+
+## GCH-005 · 2026-10-03T07:55Z · GIE-006 recorded
+
+- #30 FRESH_WITH_FINDINGS (no blocking; local 1165/1165). #22–#27 integration-owner verification PASS (66/66). New proposals #32 (#9) and #33 (#7) pushed and verified. Web G3 defect found (Web validator lacks the research guard). Codex `codex/track-c-gsup-v2-2026-10-03` @ `675d0d2` IN_PROGRESS (CDR-009 exclusion active).

@@ -4,7 +4,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-005 (fresh reconciliation 2026-10-03T06:58Z: Track C tip CI SUCCESS; A1 proposals #22–#27; Codex #28/#29/#30; CDR-006/007/008) |
+| Index revision | GSI-006 (GIE-006: #30 FRESH_WITH_FINDINGS; #22–#27 verified; #32/#33 added; Codex G-SUP v2 branch IN_PROGRESS under CDR-009; Web G3 defect) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
@@ -92,7 +92,7 @@ Stale merged heads, no action: `feature/track-d-rig-news` and `claude/track-d-ri
 
 | PR | Head | Base | Author / owner | Purpose | CI on head | Classification |
 |---|---|---|---|---|---|---|
-| #22 | `integration/a1-adoption/pr11-technical-producer` @ `248e3d3` | #11 owner branch @ `a2e0790` | Primary Integration Writer (CDR-004 proposal) | C-28 adoption re-pin + Technical owner adoption record | NOT_RUN | Writer gate PASS; independent Codex audit PASS (#30 evidence); integration-owner verification GIE-006 pending |
+| #22 | `integration/a1-adoption/pr11-technical-producer` @ `248e3d3` | #11 owner branch @ `a2e0790` | Primary Integration Writer (CDR-004 proposal) | C-28 adoption re-pin + Technical owner adoption record | NOT_RUN | Writer gate PASS; Codex independent audit PASS; **integration-owner verification PASS (GIE-006 §2)** |
 | #23 | `integration/a1-adoption/pr15-technical-model` @ `5c9dd5a` | #15 @ `ce58704` | same | re-pin | NOT_RUN | same |
 | #24 | `integration/a1-adoption/pr18-us-equity-session` @ `9c71781` | #18 @ `2c088ce` | same | re-pin | NOT_RUN | same |
 | #25 | `integration/a1-adoption/pr12-macro-producer` @ `4a07099` | #12 @ `61d3352` | same | re-pin + separate current-dated Macro owner adoption record; additive post-adoption fingerprint record | NOT_RUN | same |
@@ -100,7 +100,11 @@ Stale merged heads, no action: `feature/track-d-rig-news` and `claude/track-d-ri
 | #27 | `integration/a1-adoption/pr17-p01` @ `dc7daf7` | #17 @ `21039a0` | same | re-pin; additive post-adoption invariance record | NOT_RUN | same |
 | #28 | `codex/takeover-integration-2026-10-03` @ `db9a032` | canonical | Codex | takeover audit (scoped docs under `implementation/docs/codex_takeover/`, incl. a PROPOSED source-identity contract) | see GIE-006 | docs/evidence; not a Global Handoff writer |
 | #29 | `codex/web-producer-integration-readiness-2026-10-03` @ `d044458` | #19 @ `c3dbf8a` | Codex | withheld producer-contract Web fixture; locale/mobile/failure E2E | 2/2 ✓ | READY_FOR_INTEGRATION_AUDIT (stacked on #19) |
-| #30 | `codex/combined-integration-2026-10-03` @ `86ad362` | canonical | Codex | combined trial: Track C `b9e01a9` + #5/#6/#7/#9/#10/#13/#16/#19 + #22–#27 + #21 + #29, plus integration-context compat repairs (`41a6efb`, `0366a3c`) and CI runtime pins (`0ea00d2`, `86ad362`) | 9/9 ✓ | **FRESH** integration candidate (all constituents equal current heads at 06:58Z). INTEGRATION_STATE trial green; CANONICAL_STATE NOT_MERGED; independent re-audit GIE-006 pending |
+| #30 | `codex/combined-integration-2026-10-03` @ `86ad362` | canonical | Codex | combined trial: Track C `b9e01a9` + #5/#6/#7/#9/#10/#13/#16/#19 + #22–#27 + #21 + #29, plus integration-context compat repairs (`41a6efb`, `0366a3c`) and CI runtime pins (`0ea00d2`, `86ad362`) | 9/9 ✓ | **FRESH**; INTEGRATION_STATE **TRIAL_INTEGRATION_VERIFIED_WITH_NONBLOCKING_FINDINGS** (GIE-006 §1: local 1165/1165 reproduced; F1–F7 non-blocking); CANONICAL_STATE NOT_MERGED |
+
+| #32 | `integration/a1-adoption/pr9-producer-infra` @ `e9aee0c` | #9 @ `f8af596` | Primary Integration Writer (CDR-004) | additive post-adoption evidence record (no test/src) | NOT_RUN (no matching workflow) | verified PASS (GIE-006 §3) |
+| #33 | `integration/a1-adoption/pr7-entity-metadata` @ `9626ab0` | #7 @ `a013f1c` | same | additive post-adoption evidence record | NOT_RUN | verified PASS (GIE-006 §3) |
+| — | `codex/track-c-gsup-v2-2026-10-03` @ `675d0d2` (no PR) | built on #30 `86ad362` | Codex (CDR-008) | G-SUP M-B diagnostic, synthetic source-identity admission (`evl/gsup_source_identity.py`, `evl/superiority_source_identity.py`), tests, evidence | not checked yet | **IN_PROGRESS**: its CHECKPOINT says BRANCH_STATE LOCAL_COMMITTED_SYNTHETIC_VERIFIED, INTEGRATION_STATE PARENT_NORMAL_MERGE_AND_WRAPPER_REGRESSION_PENDING. CDR-009 write exclusion active. 13-point verification on HANDOFF_READY |
 
 ## 4. Dependency DAG
 
