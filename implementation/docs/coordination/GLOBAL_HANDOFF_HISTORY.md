@@ -48,3 +48,7 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - GIE-004: C8 method-choice impact analysis, with 2 LOCAL_FIXABLE fail-opens for the Track C owner. Not authoritative.
 - GIE-003 (earlier this round): source overlap and escalation sweep.
 - No capability-branch edit, canonical merge, grant, CAL_VERIFY or Holdout access. No maturity change.
+
+## GCH-003 · 2026-10-03 · CDR-004 (IF-1 = A1 + owner adoption) and CDR-005 (C8 repair) recorded
+
+- User wording recorded verbatim in `COORDINATION_DECISION_REGISTER.md`. GCH §4 updated. Execution starts as stacked proposal branches; no owner branch is committed to.

@@ -55,31 +55,17 @@ Decided in this round (see `COORDINATION_DECISION_REGISTER.md`):
 
 Still open:
 
-1. **IF-1: A/B escalated after proof (GIE-002).** No result-invariant layout keeps both Track C Frozen content and the producer pins unmodified. The adversarial skeptic did not refute this. Both minimal options were measured identical in values, decisions and lineage. They differ in schema ownership:
-   - **A.** Lineage stays in the core TechnicalSnapshot/MacroSnapshot.
-     - Track C is untouched.
-     - 6 producer branches re-pin 9 byte and 3 fingerprint constants. The #10/#14 CI-mode `models.py` compare and their evidence also change.
-     - Every Technical/Macro serialization gains 4 null keys.
-     - This matches the core shape canonical C-28 prescribes, but C-28 assigns the fix to the Technical owner, and no item covers Macro.
-   - **B.** Lineage becomes a Track C sidecar (`evl/stamped.py`).
-     - Core schema and engines stay canonical, and producers are untouched.
-     - Track C changes 2 C4-frozen blobs and restores 3 repair files, then re-accepts C4 identity (C4–C8 re-verification).
-     - `evaluate_bound` gains a `lineage` key.
-     - C-28 stays open.
-   - The "four authorized C4 repairs" authorization is self-recorded by Track C: no user quote, no Technical/Macro owner acceptance.
-2. **Track C C8 method choices (GIE-004).** 15 METHOD_POLICY items and 1 numeric item, with per-choice impact. Key points:
-   - the implemented kernel deviates from the approved M-B simulation when L divides n (items 3a and 4);
-   - the S7 effect floor is deferred;
-   - the numeric gate stays separate (CDR-003).
+1. **IF-1 execution (CDR-004: A1 + owner adoption).** Decided. In progress as stacked proposal branches with Draft PRs into #11, #15, #18, #12, #14 and #17, each gated on an independent before/after invariance PASS. Owner merge of each proposal is the owner's (or the user's) act.
+2. **Track C C8 (CDR-005).** In progress on a stacked branch off `ccr-22e3ff16`: evidence record, two fail-closed repairs with negative regressions, and the M-B vs kernel minimal counterexample. The authoritative-method choice will return as USER_DECISION_REQUIRED.
 3. **Canonical merges.** Any merge, including #21 and the integration-ready chain #5 → #6.
 4. **Publication grants.** P01 research-display, Frozen and Live grants remain NONE.
 5. **Data and providers.** The Macro ALFRED key, a news provider, and an exchange-calendar vintage source.
 
-Required at integration under either IF-1 option (owner actions, not decisions):
+Separate compatibility-repair items (CDR-004), to be handled in the actual integration context:
 
-- rebaseline the Track C acceptance-tool allow-lists and canonical pin;
-- the #14 CI `git diff --exit-code` step;
-- the 3 IF-2 sentinels.
+- #10/#14 CI-mode `models.py` compare and their compat evidence;
+- the 3 dependency-not-merged sentinels (#10, #13, #14);
+- Track C acceptance-tool allow-lists and canonical pin; the #14 CI `git diff --exit-code` step.
 
 ## 5. Next autonomous actions (Primary Integration Writer)
 

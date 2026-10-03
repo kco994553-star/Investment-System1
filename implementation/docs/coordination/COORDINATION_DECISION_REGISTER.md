@@ -69,3 +69,58 @@ Effect:
 ## Standing constraints restated by the user in the same message
 
 > 이 세 결정 처리 후 다른 READY integration/audit 작업은 계속 진행한다. 단순 checkpoint 때문에 멈추지 않는다. canonical merge, publication grant, Official/LIVE promotion은 수행하지 않는다.
+
+## CDR-004 · IF-1 resolved: Option A1 + Technical/Macro owner adoption
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** |
+| Decided at | 2026-10-03 (user message in session `session_019znshzTYgyBnuuBmSxdPFN`, after GIE-002) |
+| Supersedes | the open A/B item of CDR-002. CDR-002's audit requirement was satisfied by GIE-002 |
+| Scope | integration target and repin procedure. **Not** a formula, value, regime, zone, Macro state, QGV or ranking change. **Not** canonical-merge approval |
+
+User wording (verbatim):
+
+> IF-1은 A1 + Technical/Macro owner adoption으로 승인한다.
+> Track C 2137883의 additive lineage/schema 변경을 integration target으로 유지한다. Technical은 canonical C-28의 upstream ownership과 정합시키고, Macro는 동일 변경에 대한 별도 additive owner adoption record를 작성한다.
+> 이 승인은 기존 Technical/Macro 계산식, 값, regime, zone, Macro state, QGV, ranking을 변경하는 승인이 아니다.
+> Producer owners는 새 schema를 대상으로 기존 numerical/semantic invariance를 다시 검증한 뒤 필요한 byte constants/fingerprints를 history-preserving 방식으로 repin한다.
+> 단순히 테스트를 통과시키기 위해 pin을 변경하지 말고, 이전/이후 기존 필드 값과 계산 결과가 동일하다는 independent comparison을 먼저 PASS해야 한다.
+> Track C Frozen chain은 rewrite하지 않는다.
+> #10/#14 및 dependency-not-merged sentinel은 실제 integration context에 맞게 별도 compatibility repair 대상으로 처리한다.
+> Macro의 이 adoption을 과거 승인으로 소급하지 말고 현재 owner adoption으로 기록한다.
+> canonical merge는 아직 수행하지 않는다.
+
+Effect:
+
+- Integration target: Track C `2137883` additive lineage/schema change (`contracts/lineage.py`, 4 optional fields on TechnicalSnapshot/MacroSnapshot, `evaluate_stamped` on both engines). Track C Frozen chain is not rewritten.
+- Technical: owner adoption aligned with canonical C-28 (Contract Conflict Register 2026-09-23 L348-353: "Fix belongs to the Technical system (upstream PATCH: add available_at from input data stamps)").
+- Macro: a **separate, additive, current-dated** owner adoption record. Not retroactive.
+- Producer repin order: (1) independent before/after comparison of existing field values and computed results PASS; (2) history-preserving repin of byte constants/fingerprints (prior pin retained in the record; new pin added with reason and authority). A pin change without a recorded PASS comparison is not allowed.
+- #10/#14 CI-mode `models.py` compare and the dependency-not-merged sentinels (#10, #13, #14): separate compatibility-repair items in the actual integration context.
+- Execution: the Primary Integration Writer prepares the adoption records and repins as **stacked proposal branches with Draft PRs into each owner branch**. No owner branch is committed to or rewritten. Owner branches without an active owner session are noted in each PR.
+
+## CDR-005 · Track C C8: evidence recording, fail-open repair, M-B vs kernel counterexample
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** (routing record. The Track C scoped Decision Register remains the policy authority) |
+| Decided at | 2026-10-03, same message |
+
+User wording (verbatim):
+
+> GIE-004와 독립 분석 결과를 Track C Decision Register에 history-preserving evidence로 기록하라. 분석 결과 자체를 승인으로 기록하지 않는다.
+> 기존 승인 정책을 우회하는 두 fail-open 경로는 LOCAL_FIXABLE implementation defect로 처리하고 수정·negative regression을 추가하라.
+> CAL_VERIFY one-shot identity는 단순 campaign_id 변경으로 우회할 수 없어야 하며, Development-only evidence gate는 provenance/type label을 신뢰하는 것이 아니라 승인된 source identity와 lineage를 검증해야 한다.
+> 수정으로 새로운 method policy를 만들지 않는다.
+> 이후 M-B approved simulation과 current G-SUP kernel의 정확한 차이를 최소 반례로 제시하고, 어느 쪽을 authoritative method로 할지 별도 USER_DECISION_REQUIRED로 올려라.
+> α/B/L/seed/effect floor/minimum support 등 numeric configuration은 계속 미승인이다.
+> CAL_VERIFY/Holdout은 접근하지 않는다.
+
+Effect:
+
+- Work is prepared on a stacked branch off the Track C tip `ccr-22e3ff16-p7n5k5` @ `97d1b94`, with a Draft PR into that owner branch. The Track C owner session is notified. No C0–C7 Frozen blob is changed.
+- GIE-004 is recorded in the Track C Decision Register as evidence only, with status "NOT_AN_APPROVAL".
+- The two fail-open repairs apply existing approved policy (Q3 Development-only; Q4 / A6-S4 one-shot no-retest) and add negative regressions. No new method policy, no numeric value.
+- The M-B simulation vs implemented kernel difference is presented as a minimal counterexample, and the authoritative-method choice is a separate USER_DECISION_REQUIRED.
+- Numeric configuration stays unapproved. CAL_VERIFY and Holdout are not accessed.
