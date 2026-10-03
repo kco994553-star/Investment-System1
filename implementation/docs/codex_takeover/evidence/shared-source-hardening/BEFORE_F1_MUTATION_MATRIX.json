@@ -1,0 +1,56 @@
+{
+  "exact_source_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "same_tree_mutation_observations": {
+    "investment_system/contracts/enums.py": {
+      "overall_status": "PASS",
+      "tampered_file_status": "PASS",
+      "before_fix_mode": "BYTE_IDENTICAL"
+    },
+    "investment_system/qgv/analysis.py": {
+      "overall_status": "PASS",
+      "tampered_file_status": "PASS",
+      "before_fix_mode": "BYTE_IDENTICAL"
+    },
+    "investment_system/qgv/factors.py": {
+      "overall_status": "PASS",
+      "tampered_file_status": "PASS",
+      "before_fix_mode": "BYTE_IDENTICAL"
+    },
+    "investment_system/qgv/leaderboard.py": {
+      "overall_status": "PASS",
+      "tampered_file_status": "PASS",
+      "before_fix_mode": "BYTE_IDENTICAL"
+    },
+    "investment_system/qgv/pipeline.py": {
+      "overall_status": "PASS",
+      "tampered_file_status": "PASS",
+      "before_fix_mode": "BYTE_IDENTICAL"
+    },
+    "investment_system/qgv/raw_map.py": {
+      "overall_status": "PASS",
+      "tampered_file_status": "PASS",
+      "before_fix_mode": "BYTE_IDENTICAL"
+    },
+    "investment_system/qgv/scoring.py": {
+      "overall_status": "PASS",
+      "tampered_file_status": "PASS",
+      "before_fix_mode": "BYTE_IDENTICAL"
+    },
+    "investment_system/validation/historical.py": {
+      "overall_status": "PASS",
+      "tampered_file_status": "PASS",
+      "before_fix_mode": "BYTE_IDENTICAL"
+    },
+    "investment_system/validation/vertical_slice.py": {
+      "overall_status": "PASS",
+      "tampered_file_status": "PASS",
+      "before_fix_mode": "BYTE_IDENTICAL"
+    },
+    "investment_system/versions.py": {
+      "overall_status": "PASS",
+      "tampered_file_status": "PASS",
+      "before_fix_mode": "BYTE_IDENTICAL"
+    }
+  },
+  "result": "10/10 altered protected paths wrongly accepted before fix"
+}
