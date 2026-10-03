@@ -485,3 +485,12 @@ ccr-22e3ff16-p7n5k5); no existing source/test blob changed. Local: C8 184, C7 97
 acceptance PASS (no Actions run: workflow triggers on feature/track-c-evl only). G-SUP decision remains NOT_RUN_EFFECT_FLOOR_DEFERRED;
 real scope NOT_RUN. Evidence: implementation/reports/track_c_c8_gsup_implementation_2026-10-02.md. STOP for numeric configuration and
 confirmation of five implementation-defined method details before any real CAL_VERIFY access. C8 NOT FROZEN; 8/11 = 72.7%; Holdout UNCONSUMED.
+
+
+## Track C C8 G-SUP fail-open fix — 2026-10-03
+
+Commit 9a9364c enforces already-approved Q3 (Development-only estimate, computed inside the registry and hash-validated) and
+Q4/A6-S4 (one-shot keyed by preregistered CAL_VERIFY content commitment + profile/role in a shared access registry; no retest
+across campaign/role_id/label/root). Local: C8 197, C7 97, C6 130, C0–C5 103, full 923 PASS; acceptance runners PASS.
+Evidence implementation/reports/track_c_c8_gsup_fix_2026-10-03.md (also discloses kernel vs Q1 simulation convention
+differences). Five method details and all numerics remain unapproved; C8 NOT FROZEN; Holdout UNCONSUMED.
