@@ -64,3 +64,7 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - Fresh fetch: canonical `b8e39a2` unchanged; Track C owner tip `b9e01a9` (Actions 37097149378 SUCCESS); A1 proposals #22–#27 pushed by the integration writer's workflow (adversarial review agents failed on a session rate limit, so integration-owner verification is pending); Codex PRs #28 (takeover audit), #29 (Web fixture/E2E), #30 (combined trial, FRESH, 9/9 green).
 - No Codex Track C branch, PR or commit found.
 - CDR-006 (G-SUP = M, additive v2), CDR-007 (source descriptor), CDR-008 (Codex implements; integration writer verifies) recorded verbatim.
+
+## GCH-004a · 2026-10-03T07:03Z · CDR-009 Codex active-write exclusion recorded
+
+- Track C C8 G-SUP v2 / source-descriptor / related C8 oracle/test/acceptance/evidence paths are out of the Primary Integration Writer's write set until Codex is DONE or HANDOFF_READY. Read and temporary trial merges allowed; conflicts are recorded, never resolved by commit.
