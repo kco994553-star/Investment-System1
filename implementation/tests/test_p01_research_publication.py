@@ -34,7 +34,10 @@ NOW = datetime(2026, 10, 2, 12, tzinfo=timezone.utc)
 QGV_HASH = "ab" * 32
 LB_HASH = "cd" * 32
 TECH_HASH = "ef" * 32
-FINGERPRINTS = {
+# Pre-adoption pin. Origin: PR #17 feature/p01-research-publication-v1 @ 21039a0 (2026-10-02),
+# tools/producer_engine_fingerprint.py (PR #9) run against this branch's own engines, whose
+# technical/engine.py (sha256 f7268f52...) and macro/engine.py (sha256 c593a2ef...) equal canonical b8e39a2.
+FINGERPRINTS_PRE_ADOPTION = {
     "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
     "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
     "n_qgv": 19,
@@ -42,6 +45,56 @@ FINGERPRINTS = {
     "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
     "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7",
 }
+# Adopted pin. Reason: C-28 upstream adoption of Track C 2137883 per user CDR-004 2026-10-03.
+# Track C 2137883 adds four optional lineage fields (available_at, data_stamp_refs, source_vintages,
+# input_hash) to TechnicalSnapshot and MacroSnapshot; the legacy evaluate() bodies are byte-identical.
+# Independent before/after comparison (docs/research_publication/evidence/c28_adoption_invariance_2026-10-03.json)
+# showed the tool's norm() output differs ONLY by those keys (available_at=null, data_stamp_refs=[],
+# source_vintages=[], input_hash=null) on the 19 technical and 4 macro snapshots. No pre-existing field,
+# regime, zone, state, QGV, leaderboard or portfolio value changed. The pin is not loosened: exactly one of
+# the two dicts is expected, selected by the detected schema state (see _c28_adoption_state).
+FINGERPRINTS_C28_ADOPTED = {
+    "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+    "macro": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501",
+    "n_qgv": 19,
+    "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+    "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+    "technical": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655",
+}
+# Protected combined digest over the seven engine/product files (test_protected_engine_bytes_are_unchanged).
+# Pre-adoption value: PR #17 @ 21039a0 (2026-10-02).
+PROTECTED_DIGEST_PRE_ADOPTION = "1d6c56e4bcf356758ecec8c0524bf2a345eb99acd568278e0366599f3dd2f259"
+# Adopted value: C-28 upstream adoption of Track C 2137883 per user CDR-004 2026-10-03. Only
+# technical/engine.py (sha256 86607bf7...) and macro/engine.py (sha256 a0a7c983...) differ from the
+# pre-adoption state; the other five files are byte-identical.
+PROTECTED_DIGEST_C28_ADOPTED = "e6de46714f4405b52d4b25a418cc4081ff6df9d8891f332f59cc47e5ccc6c909"
+LINEAGE_FIELDS = frozenset({"available_at", "data_stamp_refs", "source_vintages", "input_hash"})
+
+
+def _c28_adoption_state() -> bool:
+    """True when Track C 2137883's additive lineage schema is present in this tree.
+
+    Detected from the adopted feature itself, never from file bytes: the four optional lineage
+    fields on TechnicalSnapshot/MacroSnapshot and the evaluate_stamped entry points. Nothing is
+    evaluated. A partial state (some signals present, others absent) is neither pin and fails.
+    """
+    import dataclasses
+
+    from investment_system.contracts.models import MacroSnapshot, TechnicalSnapshot
+    from investment_system.macro.engine import MacroEngine
+    from investment_system.technical.engine import TechnicalEngine
+
+    signals = {
+        "technical_snapshot_lineage_fields": LINEAGE_FIELDS <= {f.name for f in dataclasses.fields(TechnicalSnapshot)},
+        "macro_snapshot_lineage_fields": LINEAGE_FIELDS <= {f.name for f in dataclasses.fields(MacroSnapshot)},
+        "technical_evaluate_stamped": hasattr(TechnicalEngine, "evaluate_stamped"),
+        "macro_evaluate_stamped": hasattr(MacroEngine, "evaluate_stamped"),
+    }
+    if all(signals.values()):
+        return True
+    if not any(signals.values()):
+        return False
+    raise AssertionError(f"partial C-28 adoption state is not a pinned state: {signals}")
 
 
 def _fact(**over):
@@ -365,7 +418,12 @@ def test_engine_fingerprints_match_the_pre_change_pin():
         cwd=str(ROOT),
     )
     observed = json.loads(completed.stdout)
-    assert observed == FINGERPRINTS
+    adopted = _c28_adoption_state()
+    expected = FINGERPRINTS_C28_ADOPTED if adopted else FINGERPRINTS_PRE_ADOPTION
+    # State-exact: the detected schema state selects exactly one pin; any other content fails.
+    assert observed == expected, {"c28_adopted": adopted, "observed": observed}
+    changed = {key for key in FINGERPRINTS_PRE_ADOPTION if FINGERPRINTS_PRE_ADOPTION[key] != FINGERPRINTS_C28_ADOPTED[key]}
+    assert changed == {"macro", "technical"}
 
 
 def test_protected_engine_bytes_are_unchanged():
@@ -382,4 +440,6 @@ def test_protected_engine_bytes_are_unchanged():
     for rel in paths:
         digest.update(rel.encode())
         digest.update((SRC / rel).read_bytes())
-    assert digest.hexdigest() == "1d6c56e4bcf356758ecec8c0524bf2a345eb99acd568278e0366599f3dd2f259"
+    adopted = _c28_adoption_state()
+    expected = PROTECTED_DIGEST_C28_ADOPTED if adopted else PROTECTED_DIGEST_PRE_ADOPTION
+    assert digest.hexdigest() == expected, {"c28_adopted": adopted, "observed": digest.hexdigest()}
