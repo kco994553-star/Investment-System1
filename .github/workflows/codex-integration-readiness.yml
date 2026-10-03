@@ -30,7 +30,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m pip install pytest
+      - run: python -m pip install pytest==9.1.1
       - name: Exact source checkpoint
         run: git rev-parse HEAD
       - name: Preserve exact owner Track C and canonical Track A evidence
@@ -40,7 +40,7 @@ jobs:
           git diff --exit-code b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565 -- implementation/src/investment_system/technical/engine.py implementation/src/investment_system/macro/engine.py implementation/src/investment_system/contracts/models.py implementation/src/investment_system/contracts/lineage.py
       - name: Full existing regression with actual integrated dependencies
         working-directory: implementation
-        run: python -m pytest -q --junitxml=/tmp/combined-junit.xml
+        run: PYTHONPATH=src python -m pytest -q --junitxml=/tmp/combined-junit.xml
       - name: Producer to existing Web withheld-contract fixture
         run: python implementation/tools/build_producer_contract_web_fixture.py --out /tmp/withheld-web --evidence /tmp/withheld-web-evidence
       - uses: actions/setup-node@v4
@@ -72,10 +72,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m pip install pytest
+      - run: python -m pip install pytest==9.1.1
       - name: Exact existing Macro adoption proposal; offline only
         working-directory: implementation
-        run: python -m pytest -q tests/test_macro_real_producer.py --junitxml=/tmp/macro-adoption-junit.xml
+        run: PYTHONPATH=src python -m pytest -q tests/test_macro_real_producer.py --junitxml=/tmp/macro-adoption-junit.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:
