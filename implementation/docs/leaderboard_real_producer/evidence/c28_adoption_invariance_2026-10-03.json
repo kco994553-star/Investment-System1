@@ -1,0 +1,570 @@
+{
+ "record": "LEADERBOARD_REAL_PRODUCER_C28_ADOPTION_INVARIANCE_2026-10-03 (PR #14)",
+ "purpose": "Independent before/after invariance comparison for the C-28 upstream adoption of Track C 2137883 (user CDR-004 2026-10-03). Recorded on throwaway trees BEFORE any pin was edited. Not an approval record. Leaderboard is a consumer (QGV records only); no owner adoption record is written in this scope.",
+ "authority": "User CDR-004 2026-10-03 (verbatim in GLOBAL_CURRENT_HANDOFF and the Technical/Macro adoption records); canonical C-28 register item L348-353 (Technical upstream PATCH: add available_at from input data stamps). No register item exists for Leaderboard.",
+ "prepared_by": "Primary Integration Writer, Claude Code session session_019znshzTYgyBnuuBmSxdPFN",
+ "trees": {
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "track_c_commit_under_adoption": "21378835883c5a9740143899c70d75d6405aa55a",
+  "track_c_owner_tip_at_record_time": {
+   "ref": "origin/ccr-22e3ff16-p7n5k5",
+   "sha": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+   "blob_check": "git ls-tree: contracts/lineage.py 288cabad…, contracts/models.py ef4f80ec…, technical/engine.py 5365653f…, macro/engine.py 08d79c20… identical between the tip and 2137883; 2137883 is an ancestor of the tip",
+   "sha256_at_tip": {
+    "technical/engine.py": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c",
+    "macro/engine.py": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10",
+    "contracts/models.py": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+    "contracts/lineage.py": "ddfac6ef9bac1eb3a54a60bfbd78218d8f0aa57b91185ffadaaa5458aeb9c454"
+   },
+   "sha256_at_canonical_and_pr14_tip": {
+    "technical/engine.py": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+    "macro/engine.py": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+    "contracts/models.py": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+    "contracts/lineage.py": "ABSENT"
+   }
+  },
+  "pr_tip_BEFORE": {
+   "branch": "feature/leaderboard-real-producer-v1",
+   "sha": "0d48d863afec0d50481d585a3d1ae0e56d4b380c"
+  },
+  "AFTER_throwaway_merge": {
+   "sha": "b9386e2fcf456f4608cd586ff360abc3cf71913f",
+   "parents": [
+    "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+    "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565"
+   ],
+   "conflicts": 0,
+   "pushed": false,
+   "leaderboard_files_changed_by_merge": "none (git diff PR tip..AFTER over leaderboard_producer/, the two tools, the producer tests and docs/leaderboard_real_producer is empty)"
+  },
+  "proposal_branch": "integration/a1-adoption/pr14-leaderboard (from 0d48d86)",
+  "qgv_exports_source": {
+   "ref": "PR #10 ccr-db5d5960-qen9yi @ 5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+   "how": "git archive 5eec129 implementation/reports/qgv_producer/full | tar -x (read-only, never merged)"
+  },
+  "official_snapshots": "reports/gate_evidence/official_snapshot_{2024-06-30,2024-09-30,2024-12-31}.json (canonical, present in both trees)"
+ },
+ "commands": [
+  "git -C <repo> fetch origin && git ls-tree origin/ccr-22e3ff16-p7n5k5 -- <four files> vs git ls-tree 2137883 -- <four files>; git show <ref>:<file> | sha256sum",
+  "git worktree add --detach <BEFORE> 0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+  "git worktree add --detach <AFTER> 0d48d863afec0d50481d585a3d1ae0e56d4b380c && git -C <AFTER> merge --no-ff --no-edit b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565   # 0 conflicts (throwaway identity, never pushed)",
+  "git archive 5eec129ef81641f0bc11f5adbb43d0b2122ee24b implementation/reports/qgv_producer/full | tar -x -C <qgv_exports> --strip-components=3",
+  "cd <tree>/implementation && PYTHONPATH=src python3 gate14.py <dump.json> <qgv_exports>/full   # run in BEFORE and in AFTER; replays tools/leaderboard_producer.py's path in-process with generated_at=2026-10-01T11:40:00+00:00 code_commit=11e18d8 require_real=True, export_batch + load_export round trip, load_export of the committed evidence, the test module's _run()/_snap() helpers, and TechnicalEngine/MacroEngine legacy evaluate().to_dict()",
+  "python3 fielddiff_strict.py <before.json> <after.json> <fielddiff.json>   # recursive field-level diff, every path classified",
+  "cd <BEFORE>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf   # pre-change baseline",
+  "cd <BEFORE>/implementation && LEADERBOARD_QGV_EXPORTS=<qgv_exports>/full PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf tests/test_leaderboard_real_producer.py tests/test_leaderboard_producer_infra_compat.py tests/test_research_publication_contract.py",
+  "cd <AFTER>/implementation && LEADERBOARD_QGV_EXPORTS=<qgv_exports>/full PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf <same three files>   # before any pin edit",
+  "cd <proposal>/implementation && PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf   # after the pin edit",
+  "cp <proposal>/implementation/tests/test_leaderboard_real_producer.py <AFTER>/implementation/tests/ && LEADERBOARD_QGV_EXPORTS=... PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf <same three files>   # repinned test in the adopted tree",
+  "negative: append '# third content' to technical/engine.py in <AFTER>, rerun the pin test (must FAIL); git checkout 0d48d86 -- macro/engine.py (partial adoption), rerun (must FAIL); git checkout 0d48d86 -- both engines with adopted models.py, rerun (must FAIL); git checkout -- to restore"
+ ],
+ "volatile_fields_excluded_from_comparison": {
+  "operational_ids": [
+   "run_id",
+   "leaderboard_snapshot_id",
+   "qgv_snapshot_id"
+  ],
+  "engine_ids": [
+   "technical_snapshot_id",
+   "macro_snapshot_id"
+  ],
+  "why": "uuid per call/run; the PR's own test asserts qgv_snapshot_id differs between two identical runs. Every semantic field, every semantic_sha256, ranking_fingerprint, lineage_hash, records_sha256, generated_at and code_commit are compared in full."
+ },
+ "artifacts_compared": [
+  "real_replay/<day>: offline replay of the three Frozen as-of dates over the PR #10 5eec129 QGV exports and canonical Official snapshots; full manifest semantic dict, all 500 record semantic dicts, semantic_sha256 lists, ranking_fingerprint, lineage_hash, records_sha256, stable operational fields; equality with the committed reports/leaderboard_producer/full export; export_batch/load_export round trip",
+  "synthetic_runs/<spec>: the test module's _run() over five specs (rank_by_total, tie, replay_spec, score_change, single): full records and manifests (operational uuids stripped)",
+  "qgv_snapshot_semantic_probe: to_jsonable(AnalysisEngine().analyze(...)) minus qgv_snapshot_id (the QGV shape this producer embeds)",
+  "methodology_weights_sha256",
+  "committed_evidence_sha256 / committed_docs_evidence_sha256: file sha256 of reports/leaderboard_producer/full/* and docs/leaderboard_real_producer/evidence/*; committed_evidence_reload: load_export of the committed files under each tree's code",
+  "technical_legacy_to_dict / macro_legacy_to_dict: TechnicalEngine().evaluate() over five return series and MacroEngine().evaluate() over five indicator sets (NOT consumed by this producer; recorded to show the exact shape change)",
+  "source_sha256_actual for the nine PINNED_SHA files plus contracts/models.py and contracts/lineage.py; source_sha256_pinned; pin_test_result per file; adoption_state (hasattr evaluate_stamped on both engines, dataclass field lists of TechnicalSnapshot/MacroSnapshot/QGVSnapshot)"
+ ],
+ "per_artifact_sha256_before": {
+  "adoption_state": "eda38403e1690c0f2e53c202605f8d2ffbf5d7250d14bb2fddb5af55bfe55d07",
+  "committed_docs_evidence_sha256": "0eb80845ff1ba7c2e398c016031f20e37ccdacce0e664362696fbba8bd07ebe4",
+  "committed_evidence_reload": "1f01afefdce8226fd24bb4c8dbe810fe469792f9bf7374bb3a5e9dd461a5006e",
+  "committed_evidence_sha256": "8d29410774633240da02e2d795a9f1297be09e426a17703aea5fb2892497e014",
+  "macro_legacy_to_dict": "da2c4fcd621c255927b361f0b974b1b8a372a67590b0dbc8f47d6324ba23f85f",
+  "methodology_weights_sha256": "305c03209b3204ad11ced760ef99025d92c2934c204b68a5123090cd4bb86e75",
+  "pin_test_result": "5814057e8bd7620014af4f470ffe461212784e349f5335a77c225bcf344c4b6d",
+  "qgv_snapshot_semantic_probe": "ecbbe09bdb85a795f13736cbbc9694084e7c753ee9acf967cd7ddb09e6757363",
+  "real_replay/2024-06-30/manifest_semantic": "a878988a49d5edee2a9200069d7c15bdaff01680a0da69729b757fa5a6409741",
+  "real_replay/2024-06-30/records_semantic": "153cbc3fc4cd3cfef7d88721a257e8a4a7ae7890428988e1ebce2ff6bf1eacc4",
+  "real_replay/2024-06-30/record_semantic_sha256_list": "f8aff007f9d0e47c47382ebb91c499a4dc8a82f76a020a3f56ac52164ec6f9be",
+  "real_replay/2024-06-30/manifest_operational_stable": "7b5d469d48c3f37b81a1c2789df6b68261d5a60c2d0fa5bdd7a68ed083d00526",
+  "real_replay/2024-06-30/committed_equal": "857f10e9ace85059adafada868191ec28d07cc8f8f69f0b3b96afbe7ed88d4ce",
+  "real_replay/2024-09-30/manifest_semantic": "707efa49a7784427d3e7c401a21f9e4da5ebd9a941e2fe8adc56e36dfa51b49f",
+  "real_replay/2024-09-30/records_semantic": "b6c79698b7f09edf9d9b86169d6058e829865628294ec9b69fbe75ce0a7ffd76",
+  "real_replay/2024-09-30/record_semantic_sha256_list": "6c0f2d5af571f13c5885d36373b73c632ad8a0fd364464dff97a61854c4cb2c2",
+  "real_replay/2024-09-30/manifest_operational_stable": "7b5d469d48c3f37b81a1c2789df6b68261d5a60c2d0fa5bdd7a68ed083d00526",
+  "real_replay/2024-09-30/committed_equal": "857f10e9ace85059adafada868191ec28d07cc8f8f69f0b3b96afbe7ed88d4ce",
+  "real_replay/2024-12-31/manifest_semantic": "54685a6905d57064e60564ca2d405217efd91292ebf6ea6902ea63f31d1bf665",
+  "real_replay/2024-12-31/records_semantic": "0b62d82f6c7e105d8de2f1290d1efdbc9a8c823b01548a41f0251d08420d4990",
+  "real_replay/2024-12-31/record_semantic_sha256_list": "c97b66bad7f756e6d7e3ff18972c228dd4bc71f23d430cccb10673d7217f103b",
+  "real_replay/2024-12-31/manifest_operational_stable": "7b5d469d48c3f37b81a1c2789df6b68261d5a60c2d0fa5bdd7a68ed083d00526",
+  "real_replay/2024-12-31/committed_equal": "857f10e9ace85059adafada868191ec28d07cc8f8f69f0b3b96afbe7ed88d4ce",
+  "source_sha256_actual": "abc40b4e98c821ca686e2e8a3574da580ed2d068c8e5c634ff144f7d99d6a874",
+  "source_sha256_pinned": "0160e1ac79bcc66be5d445552c8bdfa5e22842e3d86199c1efe357c0eef55014",
+  "synthetic_runs/rank_by_total": "100e27ab4810eb6ddafa8ca434d5f3be63a32910c2c4e1748809700c2d59df3c",
+  "synthetic_runs/replay_spec": "122122bb22c8e2fa670a05113b0fa7b81277a22d7997a97ff7590505f4097eb1",
+  "synthetic_runs/score_change": "64e9dfc7da75899a1a80481c19be78631eb0bc53f1aa1758ecc9656541d2ac8f",
+  "synthetic_runs/single": "54ebcfc9c9d1c9603238938de40151207b14a41faacb68c2ce05754db5ae6c6d",
+  "synthetic_runs/tie": "7e6ca1e8a5a4ab624a49ce142cc5ff7063d50c61220b377844e8b9bb50516956",
+  "technical_legacy_to_dict": "45de9c9bb533ce3a6afede676a3aac1eacc3a661dff81e422d3b129f0458e2aa"
+ },
+ "per_artifact_sha256_after": {
+  "adoption_state": "976abe649a864934c6fc6c29337dff52bdd28bd7c01394d85660fbb897cd38a5",
+  "committed_docs_evidence_sha256": "0eb80845ff1ba7c2e398c016031f20e37ccdacce0e664362696fbba8bd07ebe4",
+  "committed_evidence_reload": "1f01afefdce8226fd24bb4c8dbe810fe469792f9bf7374bb3a5e9dd461a5006e",
+  "committed_evidence_sha256": "8d29410774633240da02e2d795a9f1297be09e426a17703aea5fb2892497e014",
+  "macro_legacy_to_dict": "68f4f9cc8b3f97a8696b0cc0e65e01e4b8f03ad505ee47a1e1098e13bdd7163a",
+  "methodology_weights_sha256": "305c03209b3204ad11ced760ef99025d92c2934c204b68a5123090cd4bb86e75",
+  "pin_test_result": "beb5946833932ccc86360dd66d71fd8dcea5461f6fbd5f5082c5cc3295eaf4ca",
+  "qgv_snapshot_semantic_probe": "ecbbe09bdb85a795f13736cbbc9694084e7c753ee9acf967cd7ddb09e6757363",
+  "real_replay/2024-06-30/manifest_semantic": "a878988a49d5edee2a9200069d7c15bdaff01680a0da69729b757fa5a6409741",
+  "real_replay/2024-06-30/records_semantic": "153cbc3fc4cd3cfef7d88721a257e8a4a7ae7890428988e1ebce2ff6bf1eacc4",
+  "real_replay/2024-06-30/record_semantic_sha256_list": "f8aff007f9d0e47c47382ebb91c499a4dc8a82f76a020a3f56ac52164ec6f9be",
+  "real_replay/2024-06-30/manifest_operational_stable": "7b5d469d48c3f37b81a1c2789df6b68261d5a60c2d0fa5bdd7a68ed083d00526",
+  "real_replay/2024-06-30/committed_equal": "857f10e9ace85059adafada868191ec28d07cc8f8f69f0b3b96afbe7ed88d4ce",
+  "real_replay/2024-09-30/manifest_semantic": "707efa49a7784427d3e7c401a21f9e4da5ebd9a941e2fe8adc56e36dfa51b49f",
+  "real_replay/2024-09-30/records_semantic": "b6c79698b7f09edf9d9b86169d6058e829865628294ec9b69fbe75ce0a7ffd76",
+  "real_replay/2024-09-30/record_semantic_sha256_list": "6c0f2d5af571f13c5885d36373b73c632ad8a0fd364464dff97a61854c4cb2c2",
+  "real_replay/2024-09-30/manifest_operational_stable": "7b5d469d48c3f37b81a1c2789df6b68261d5a60c2d0fa5bdd7a68ed083d00526",
+  "real_replay/2024-09-30/committed_equal": "857f10e9ace85059adafada868191ec28d07cc8f8f69f0b3b96afbe7ed88d4ce",
+  "real_replay/2024-12-31/manifest_semantic": "54685a6905d57064e60564ca2d405217efd91292ebf6ea6902ea63f31d1bf665",
+  "real_replay/2024-12-31/records_semantic": "0b62d82f6c7e105d8de2f1290d1efdbc9a8c823b01548a41f0251d08420d4990",
+  "real_replay/2024-12-31/record_semantic_sha256_list": "c97b66bad7f756e6d7e3ff18972c228dd4bc71f23d430cccb10673d7217f103b",
+  "real_replay/2024-12-31/manifest_operational_stable": "7b5d469d48c3f37b81a1c2789df6b68261d5a60c2d0fa5bdd7a68ed083d00526",
+  "real_replay/2024-12-31/committed_equal": "857f10e9ace85059adafada868191ec28d07cc8f8f69f0b3b96afbe7ed88d4ce",
+  "source_sha256_actual": "1e61d6f7db6b4500a4246055215c15a1c19d5390ba3de8790847e5c84f472dd3",
+  "source_sha256_pinned": "0160e1ac79bcc66be5d445552c8bdfa5e22842e3d86199c1efe357c0eef55014",
+  "synthetic_runs/rank_by_total": "100e27ab4810eb6ddafa8ca434d5f3be63a32910c2c4e1748809700c2d59df3c",
+  "synthetic_runs/replay_spec": "122122bb22c8e2fa670a05113b0fa7b81277a22d7997a97ff7590505f4097eb1",
+  "synthetic_runs/score_change": "64e9dfc7da75899a1a80481c19be78631eb0bc53f1aa1758ecc9656541d2ac8f",
+  "synthetic_runs/single": "54ebcfc9c9d1c9603238938de40151207b14a41faacb68c2ce05754db5ae6c6d",
+  "synthetic_runs/tie": "7e6ca1e8a5a4ab624a49ce142cc5ff7063d50c61220b377844e8b9bb50516956",
+  "technical_legacy_to_dict": "c0aac122be7fe9944c55777892e2da57b97907fec150386fbec38e4ce59f4b60"
+ },
+ "per_artifact_identical": [
+  "committed_docs_evidence_sha256",
+  "committed_evidence_reload",
+  "committed_evidence_sha256",
+  "methodology_weights_sha256",
+  "qgv_snapshot_semantic_probe",
+  "real_replay/2024-06-30/committed_equal",
+  "real_replay/2024-06-30/manifest_operational_stable",
+  "real_replay/2024-06-30/manifest_semantic",
+  "real_replay/2024-06-30/record_semantic_sha256_list",
+  "real_replay/2024-06-30/records_semantic",
+  "real_replay/2024-09-30/committed_equal",
+  "real_replay/2024-09-30/manifest_operational_stable",
+  "real_replay/2024-09-30/manifest_semantic",
+  "real_replay/2024-09-30/record_semantic_sha256_list",
+  "real_replay/2024-09-30/records_semantic",
+  "real_replay/2024-12-31/committed_equal",
+  "real_replay/2024-12-31/manifest_operational_stable",
+  "real_replay/2024-12-31/manifest_semantic",
+  "real_replay/2024-12-31/record_semantic_sha256_list",
+  "real_replay/2024-12-31/records_semantic",
+  "source_sha256_pinned",
+  "synthetic_runs/rank_by_total",
+  "synthetic_runs/replay_spec",
+  "synthetic_runs/score_change",
+  "synthetic_runs/single",
+  "synthetic_runs/tie"
+ ],
+ "per_artifact_different": [
+  "adoption_state",
+  "macro_legacy_to_dict",
+  "pin_test_result",
+  "source_sha256_actual",
+  "technical_legacy_to_dict"
+ ],
+ "real_replay": {
+  "2024-06-30": {
+   "ranking_fingerprint_before": "b02a64f64ecee7e5d5c4bb1771020418bbcfa6c7c6c4d880fb559b015437857e",
+   "ranking_fingerprint_after": "b02a64f64ecee7e5d5c4bb1771020418bbcfa6c7c6c4d880fb559b015437857e",
+   "manifest_semantic_sha256_before": "a878988a49d5edee2a9200069d7c15bdaff01680a0da69729b757fa5a6409741",
+   "manifest_semantic_sha256_after": "a878988a49d5edee2a9200069d7c15bdaff01680a0da69729b757fa5a6409741",
+   "lineage_hash": "e0cd87c1364c1a5e91780317add3e7ef2cb0b5ac03651b9792af5b7aa62ea994",
+   "records_sha256": "61771b0a14faca06498db132accbd1a2ca2214dbd5ae41c43cdb2797098f8c8e",
+   "committed_evidence_reload": {
+    "manifest_semantic_sha256": "a878988a49d5edee2a9200069d7c15bdaff01680a0da69729b757fa5a6409741",
+    "ranking_fingerprint": "b02a64f64ecee7e5d5c4bb1771020418bbcfa6c7c6c4d880fb559b015437857e"
+   },
+   "equal_to_committed_before": {
+    "manifest_semantic_dict": true,
+    "manifest_semantic_sha256": true,
+    "operational_generated_at_code_commit": true,
+    "ranking_fingerprint": true,
+    "record_semantic_dicts": true,
+    "record_semantic_sha256_list": true
+   },
+   "equal_to_committed_after": {
+    "manifest_semantic_dict": true,
+    "manifest_semantic_sha256": true,
+    "operational_generated_at_code_commit": true,
+    "ranking_fingerprint": true,
+    "record_semantic_dicts": true,
+    "record_semantic_sha256_list": true
+   },
+   "export_reload_equal": [
+    true,
+    true
+   ],
+   "counts": {
+    "eligible_count": 500,
+    "expected_count": 500,
+    "not_ranked_count": 0,
+    "null_total_score_count": 29,
+    "ranked_count": 500,
+    "tie_group_count": 1,
+    "tied_company_count": 29,
+    "upstream_fail_count": 0,
+    "upstream_not_run_count": 0,
+    "within_tie_order_approval": "POLICY_BLOCKED"
+   },
+   "coverage_counts": {
+    "BLOCKED": 29,
+    "PARTIAL": 471
+   },
+   "universe_id": "uni_cb35a6200b61",
+   "top3": [
+    [
+     "nvda",
+     1,
+     50.1613
+    ],
+    [
+     "anet",
+     2,
+     50.1156
+    ],
+    [
+     "plan:lyv",
+     3,
+     48.9839
+    ]
+   ],
+   "qgv_input": {
+    "n_qgv_records": 500,
+    "official_snapshot_sha256": "1bbc039885ae7606a36f954aedcf955b17834e8a10a5547e59c150e53d788f8d",
+    "qgv_manifest_semantic_sha256": "96b62849c0db00d79fee6ef99624d24ad1d5e0417fcd22626e4ce0e848143562"
+   }
+  },
+  "2024-09-30": {
+   "ranking_fingerprint_before": "7073bfd9890e3839ce77d5519019d598198bedd273e1c3c6fd330ad81febdb1c",
+   "ranking_fingerprint_after": "7073bfd9890e3839ce77d5519019d598198bedd273e1c3c6fd330ad81febdb1c",
+   "manifest_semantic_sha256_before": "707efa49a7784427d3e7c401a21f9e4da5ebd9a941e2fe8adc56e36dfa51b49f",
+   "manifest_semantic_sha256_after": "707efa49a7784427d3e7c401a21f9e4da5ebd9a941e2fe8adc56e36dfa51b49f",
+   "lineage_hash": "9bf336e364b4a6cd8ee05bd61af217df58cfb02f94804a0dc574cb811a92b23c",
+   "records_sha256": "87a7e5b84d11011f73c4e2aa0037e890bc4a4e4548479315ccbcac4c835a4d31",
+   "committed_evidence_reload": {
+    "manifest_semantic_sha256": "707efa49a7784427d3e7c401a21f9e4da5ebd9a941e2fe8adc56e36dfa51b49f",
+    "ranking_fingerprint": "7073bfd9890e3839ce77d5519019d598198bedd273e1c3c6fd330ad81febdb1c"
+   },
+   "equal_to_committed_before": {
+    "manifest_semantic_dict": true,
+    "manifest_semantic_sha256": true,
+    "operational_generated_at_code_commit": true,
+    "ranking_fingerprint": true,
+    "record_semantic_dicts": true,
+    "record_semantic_sha256_list": true
+   },
+   "equal_to_committed_after": {
+    "manifest_semantic_dict": true,
+    "manifest_semantic_sha256": true,
+    "operational_generated_at_code_commit": true,
+    "ranking_fingerprint": true,
+    "record_semantic_dicts": true,
+    "record_semantic_sha256_list": true
+   },
+   "export_reload_equal": [
+    true,
+    true
+   ],
+   "counts": {
+    "eligible_count": 500,
+    "expected_count": 500,
+    "not_ranked_count": 0,
+    "null_total_score_count": 31,
+    "ranked_count": 500,
+    "tie_group_count": 1,
+    "tied_company_count": 31,
+    "upstream_fail_count": 0,
+    "upstream_not_run_count": 0,
+    "within_tie_order_approval": "POLICY_BLOCKED"
+   },
+   "coverage_counts": {
+    "BLOCKED": 31,
+    "PARTIAL": 469
+   },
+   "universe_id": "uni_12c3852b8333",
+   "top3": [
+    [
+     "nvda",
+     1,
+     50.1613
+    ],
+    [
+     "anet",
+     2,
+     50.1156
+    ],
+    [
+     "plan:lyv",
+     3,
+     48.9839
+    ]
+   ],
+   "qgv_input": {
+    "n_qgv_records": 500,
+    "official_snapshot_sha256": "367b8dba1a00c0b9293a9242d29255c1a9342201684bd5bb1a0168384b21e9e4",
+    "qgv_manifest_semantic_sha256": "60ab75359203df85433f6227db563d0f225df26bcf55ee5daadcbf4a7cf3ebd5"
+   }
+  },
+  "2024-12-31": {
+   "ranking_fingerprint_before": "754a7cee04b941d9d2936880b90368f5f7c1e2e3625a4e9ff1e61635809ded5a",
+   "ranking_fingerprint_after": "754a7cee04b941d9d2936880b90368f5f7c1e2e3625a4e9ff1e61635809ded5a",
+   "manifest_semantic_sha256_before": "54685a6905d57064e60564ca2d405217efd91292ebf6ea6902ea63f31d1bf665",
+   "manifest_semantic_sha256_after": "54685a6905d57064e60564ca2d405217efd91292ebf6ea6902ea63f31d1bf665",
+   "lineage_hash": "f8474b0672b0ccafcb014ba46ed76fca305b50a6c77b7b2bd70bff2418bf91ef",
+   "records_sha256": "b8f37f49ddbfd3412b972267ef642899e87f142b1a6b06b0e6f89274c51a2639",
+   "committed_evidence_reload": {
+    "manifest_semantic_sha256": "54685a6905d57064e60564ca2d405217efd91292ebf6ea6902ea63f31d1bf665",
+    "ranking_fingerprint": "754a7cee04b941d9d2936880b90368f5f7c1e2e3625a4e9ff1e61635809ded5a"
+   },
+   "equal_to_committed_before": {
+    "manifest_semantic_dict": true,
+    "manifest_semantic_sha256": true,
+    "operational_generated_at_code_commit": true,
+    "ranking_fingerprint": true,
+    "record_semantic_dicts": true,
+    "record_semantic_sha256_list": true
+   },
+   "equal_to_committed_after": {
+    "manifest_semantic_dict": true,
+    "manifest_semantic_sha256": true,
+    "operational_generated_at_code_commit": true,
+    "ranking_fingerprint": true,
+    "record_semantic_dicts": true,
+    "record_semantic_sha256_list": true
+   },
+   "export_reload_equal": [
+    true,
+    true
+   ],
+   "counts": {
+    "eligible_count": 500,
+    "expected_count": 500,
+    "not_ranked_count": 0,
+    "null_total_score_count": 32,
+    "ranked_count": 500,
+    "tie_group_count": 1,
+    "tied_company_count": 32,
+    "upstream_fail_count": 0,
+    "upstream_not_run_count": 0,
+    "within_tie_order_approval": "POLICY_BLOCKED"
+   },
+   "coverage_counts": {
+    "BLOCKED": 32,
+    "PARTIAL": 468
+   },
+   "universe_id": "uni_0d1a30b1ee47",
+   "top3": [
+    [
+     "nvda",
+     1,
+     50.1613
+    ],
+    [
+     "anet",
+     2,
+     50.1156
+    ],
+    [
+     "plan:lyv",
+     3,
+     48.9839
+    ]
+   ],
+   "qgv_input": {
+    "n_qgv_records": 500,
+    "official_snapshot_sha256": "75f795f838a608a6554e9a3fa3aa8e9e56e72fdfad4e5f8f74623aa00c7a47c9",
+    "qgv_manifest_semantic_sha256": "082640970976f321578c64261ac5d03da2416cab659c02068a2c1d8a364bf3ba"
+   }
+  }
+ },
+ "synthetic_runs": {
+  "rank_by_total": {
+   "ranking_fingerprint": "29e5784d942b6a905efa68520d395158a2d1447e858ef3f18a8b8f6991874f2e",
+   "manifest_semantic_sha256": "e51c886b0d9eccbe484cb348890979365e41d31a3b2ddbab91bf334c423643e3",
+   "identical_before_after": true
+  },
+  "replay_spec": {
+   "ranking_fingerprint": "e21075dcc253f40af8eaf9408c4043296964bb3bfc2c25b4fe53240080f11d0d",
+   "manifest_semantic_sha256": "45dc0e11a3660d018d1df526d7c9c185aa704430bf28ccc7f78c66b486e0f211",
+   "identical_before_after": true
+  },
+  "score_change": {
+   "ranking_fingerprint": "cf09cee3e4afbe1fbcc1c9ee508c91a59b096095cafaba99fe90df6462e73636",
+   "manifest_semantic_sha256": "53d74b3f84027a34c710ed6e8cdc0851d66dfbd9b8c59822921486c685ae8c3b",
+   "identical_before_after": true
+  },
+  "single": {
+   "ranking_fingerprint": "e590f3e4f803f07f8f4a172404c96ab2e6f5b05db5189c6b04cb465b0bc5557c",
+   "manifest_semantic_sha256": "9f4ab0df4f3474ccb538a5d7342fda0882a6d1fefed808f8369f69a4ef53f725",
+   "identical_before_after": true
+  },
+  "tie": {
+   "ranking_fingerprint": "59780a4f24f4512c55d6c9174666698c43c272af2eddad317d7d3fc6352c307e",
+   "manifest_semantic_sha256": "a6da69a29e3b0bfb5d7f869005da17bbbfa47e045909b56ea1b44f52922fbbc0",
+   "identical_before_after": true
+  }
+ },
+ "committed_evidence_sha256": {
+  "reports/leaderboard_producer/full": {
+   "leaderboard_batch_manifest_2024-06-30.json": "ac1f84cedeb2d344e79c2d6d567543640e4eef02b3f859d11cb560c5b309c8e4",
+   "leaderboard_batch_manifest_2024-09-30.json": "f77dadd0cdb93cf62b677aa79c1a36948af17160caa0a5491fb1f6622ce8871a",
+   "leaderboard_batch_manifest_2024-12-31.json": "bc3c9d1bc4b97f641509d3e1fe8b68bb91cb28fe819f9732886c99edd6eb2c99",
+   "leaderboard_company_snapshots_2024-06-30.jsonl": "7e6bd6d13ca55484ab4e11ce129084329ee3f01777e258ab468f700f5e6afdd2",
+   "leaderboard_company_snapshots_2024-09-30.jsonl": "80714de3daaba2ec98ddf6f82d3a7172a782eb2f6925f992a080a2b852794e41",
+   "leaderboard_company_snapshots_2024-12-31.jsonl": "2c6c346fea31f5d82421cdbd5a7332f431a3f65451e60e77a7cf74500d47f889",
+   "leaderboard_producer_run.json": "dc428c450300c2af023512421b89b7f87dc250d3da69de64128343fea6560200"
+  },
+  "docs/leaderboard_real_producer/evidence": {
+   "infra_compat.json": "0ca7f415b9c29cb0b1ad6de1f9e37cfb864fdb81e4709707681fea60540b0d06",
+   "validation.json": "cc54b9dd47dd405aab02b18c52dc2934aa481f55116f008b9d0c485df1434f3e"
+  },
+  "identical_before_after": true
+ },
+ "committed_hash_change_under_AFTER": "NONE. Every committed ranking_fingerprint and manifest semantic_sha256 reproduces under AFTER and every record semantic dict is equal; no post-adoption evidence record is needed. evidence/infra_compat.json's shared_leaderboard_sources_identical entry for contracts/models.py (5313bbd4…) describes the CI-mode compare against the Producer Infrastructure pin and is a separate compatibility-repair item per CDR-004; it is not rewritten here.",
+ "field_level_diff": {
+  "classifier": "fielddiff_strict.py (recursive, every path; additions allowed only for the four adoption keys with legacy values on TechnicalSnapshot/MacroSnapshot to_dict; meta diffs allowed only when they equal the Track C 2137883 state)",
+  "summary": "total_diffs=51 adoption_key_additions=40 meta_expected=11 unexpected=0",
+  "leaderboard_outputs_differences": 0,
+  "adoption_key_additions": [
+   "/macro_legacy_to_dict/emergency/available_at = null",
+   "/macro_legacy_to_dict/emergency/data_stamp_refs = []",
+   "/macro_legacy_to_dict/emergency/input_hash = null",
+   "/macro_legacy_to_dict/emergency/source_vintages = []",
+   "/macro_legacy_to_dict/expansion/available_at = null",
+   "/macro_legacy_to_dict/expansion/data_stamp_refs = []",
+   "/macro_legacy_to_dict/expansion/input_hash = null",
+   "/macro_legacy_to_dict/expansion/source_vintages = []",
+   "/macro_legacy_to_dict/neutral/available_at = null",
+   "/macro_legacy_to_dict/neutral/data_stamp_refs = []",
+   "/macro_legacy_to_dict/neutral/input_hash = null",
+   "/macro_legacy_to_dict/neutral/source_vintages = []",
+   "/macro_legacy_to_dict/none/available_at = null",
+   "/macro_legacy_to_dict/none/data_stamp_refs = []",
+   "/macro_legacy_to_dict/none/input_hash = null",
+   "/macro_legacy_to_dict/none/source_vintages = []",
+   "/macro_legacy_to_dict/stagflation/available_at = null",
+   "/macro_legacy_to_dict/stagflation/data_stamp_refs = []",
+   "/macro_legacy_to_dict/stagflation/input_hash = null",
+   "/macro_legacy_to_dict/stagflation/source_vintages = []",
+   "/technical_legacy_to_dict/empty/available_at = null",
+   "/technical_legacy_to_dict/empty/data_stamp_refs = []",
+   "/technical_legacy_to_dict/empty/input_hash = null",
+   "/technical_legacy_to_dict/empty/source_vintages = []",
+   "/technical_legacy_to_dict/high_vol/available_at = null",
+   "/technical_legacy_to_dict/high_vol/data_stamp_refs = []",
+   "/technical_legacy_to_dict/high_vol/input_hash = null",
+   "/technical_legacy_to_dict/high_vol/source_vintages = []",
+   "/technical_legacy_to_dict/range/available_at = null",
+   "/technical_legacy_to_dict/range/data_stamp_refs = []",
+   "/technical_legacy_to_dict/range/input_hash = null",
+   "/technical_legacy_to_dict/range/source_vintages = []",
+   "/technical_legacy_to_dict/trend_down/available_at = null",
+   "/technical_legacy_to_dict/trend_down/data_stamp_refs = []",
+   "/technical_legacy_to_dict/trend_down/input_hash = null",
+   "/technical_legacy_to_dict/trend_down/source_vintages = []",
+   "/technical_legacy_to_dict/trend_up/available_at = null",
+   "/technical_legacy_to_dict/trend_up/data_stamp_refs = []",
+   "/technical_legacy_to_dict/trend_up/input_hash = null",
+   "/technical_legacy_to_dict/trend_up/source_vintages = []"
+  ],
+  "meta_expected": [
+   "/adoption_state/macro_has_evaluate_stamped: False -> True",
+   "/adoption_state/macro_snapshot_fields: len 9 -> 13 (+4 lineage fields)",
+   "/adoption_state/technical_has_evaluate_stamped: False -> True",
+   "/adoption_state/technical_snapshot_fields: len 13 -> 17 (+4 lineage fields)",
+   "/pin_test_result/src/investment_system/macro/engine.py: True -> False (pre-adoption pin vs adopted bytes; repin target)",
+   "/pin_test_result/src/investment_system/technical/engine.py: True -> False (pre-adoption pin vs adopted bytes; repin target)",
+   "/source_sha256_actual/src/investment_system/contracts/lineage.py: ABSENT… -> ddfac6ef… (== Track C 2137883)",
+   "/source_sha256_actual/src/investment_system/contracts/models.py: 5313bbd4… -> fa386626… (== Track C 2137883)",
+   "/source_sha256_actual/src/investment_system/macro/engine.py: c593a2ef… -> a0a7c983… (== Track C 2137883)",
+   "/source_sha256_actual/src/investment_system/technical/engine.py: f7268f52… -> 86607bf7… (== Track C 2137883)",
+   "/tree/head: 0d48d863afec0d50481d585a3d1ae0e56d4b380c -> b9386e2fcf456f4608cd586ff360abc3cf71913f"
+  ],
+  "unexpected": []
+ },
+ "adoption_state_detector": {
+  "before": {
+   "macro_has_evaluate_stamped": false,
+   "technical_has_evaluate_stamped": false,
+   "technical_snapshot_fields_n": 13,
+   "macro_snapshot_fields_n": 9,
+   "qgv_snapshot_fields_n": 28
+  },
+  "after": {
+   "macro_has_evaluate_stamped": true,
+   "technical_has_evaluate_stamped": true,
+   "technical_snapshot_fields_n": 17,
+   "macro_snapshot_fields_n": 13,
+   "qgv_snapshot_fields_n": 28
+  },
+  "qgv_snapshot_fields_identical": true
+ },
+ "pins": {
+  "file": "implementation/tests/test_leaderboard_real_producer.py",
+  "selection": "state-exact from the adopted feature itself (hasattr(TechnicalEngine,'evaluate_stamped'), hasattr(MacroEngine,'evaluate_stamped'), the four field names on TechnicalSnapshot and on MacroSnapshot); all four signals -> adopted, none -> pre-adoption, mixed -> sentinel C28_ADOPTION_STATE_INCONSISTENT (fails). Nothing loosened; no key stripped (A2 not approved); the other seven PINNED_SHA entries unchanged.",
+  "technical/engine.py": {
+   "pre_adoption": "f7268f52b3134fff8173bcb633552f1b567419aa68afa9977dd98f9846563bdf",
+   "c28_adopted": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c"
+  },
+  "macro/engine.py": {
+   "pre_adoption": "c593a2ef3b1be06960dde46ccc34db9f1858d1357336614ccf15bbb57ccec80b",
+   "c28_adopted": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10"
+  },
+  "unchanged_pins": {
+   "src/investment_system/personal/portfolio.py": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+   "src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+   "src/investment_system/qgv/factors.py": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+   "src/investment_system/qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+   "src/investment_system/qgv/portfolio.py": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+   "src/investment_system/qgv/scoring.py": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+   "src/investment_system/validation/vertical_slice.py": "4ab06fce30064ccf0a54f2c8e6dd39b4b97fdb996511958fac24d25d031a98dc"
+  }
+ },
+ "tests": {
+  "pre_change_baseline_BEFORE_full_suite": "424 passed in 20.68s (PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf, tree 0d48d86, no LEADERBOARD_QGV_EXPORTS)",
+  "BEFORE_pr_test_files_with_qgv_exports": "28 passed in 7.44s (test_leaderboard_real_producer.py 18 incl. test_real_replay_matches_committed_evidence_when_qgv_export_present executed 4.41s, test_leaderboard_producer_infra_compat.py 1, test_research_publication_contract.py 10)",
+  "AFTER_pr_test_files_with_qgv_exports_before_pin_edit": "1 failed, 27 passed in 7.54s — only test_cross_track_sources_are_unchanged (technical/engine.py 86607bf7… != pinned f7268f52…; macro/engine.py likewise); sentinel test passed (Track C adds no producers package)",
+  "proposal_branch_full_suite_after_pin_edit": "424 passed in 27.90s (equals the pre-change result; no LEADERBOARD_QGV_EXPORTS)",
+  "proposal_branch_pr_test_files_with_qgv_exports": "28 passed in 4.59s; C28_ADOPTED=False; selected pins f7268f52… / c593a2ef…",
+  "AFTER_tree_with_repinned_test": "28 passed in 4.52s (tree b9386e2 = PR tip + Track C tip b9e01a9, repinned test copied in); C28_ADOPTED=True; selected pins 86607bf7… / a0a7c983…",
+  "negative_1_third_content": "'# third content' appended to technical/engine.py in AFTER -> test_cross_track_sources_are_unchanged 1 failed (AssertionError technical/engine.py); restored (86607bf7…)",
+  "negative_2_partial_adoption": "macro/engine.py checked out at PR tip bytes (c593a2ef…) with technical adopted -> C28_ADOPTED=None, both engine pins = C28_ADOPTION_STATE_INCONSISTENT -> 1 failed; restored (a0a7c983…)",
+  "negative_3_engines_pre_adoption_models_adopted": "both engines at PR tip bytes with adopted models.py -> C28_ADOPTED=None -> 1 failed; restored",
+  "NOT_RUN": [
+   "GitHub Actions (no run exists for the proposal branch)",
+   "mini_pytest shim runner",
+   "LEADERBOARD_PRODUCER_INFRA_SRC CI-mode infra compat (separate item; needs PR #9 checkout)",
+   "combined tree with Producer Infrastructure / other producers (GIE-001 scope, not this gate)"
+  ]
+ },
+ "not_changed": [
+  "ranking formula, eligibility, tie handling, any numeric value, any source under implementation/src",
+  "tests/test_leaderboard_producer_infra_compat.py (dependency-not-merged sentinel) and evidence/infra_compat.json / tools/leaderboard_producer_infra_compat.py CI-mode models.py compare — separate items per CDR-004",
+  ".github/workflows/leaderboard-real-producer.yml canonical git diff --exit-code step — separate item per CDR-004",
+  "Track C Frozen chain, canonical baseline, Holdout / CAL_VERIFY (not accessed)"
+ ],
+ "verdict": "PASS",
+ "state": {
+  "BRANCH_STATE": "proposal branch integration/a1-adoption/pr14-leaderboard from PR #14 tip 0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+  "INTEGRATION_STATE": "trial-merged with Track C tip b9e01a9 on a throwaway tree (0 conflicts); not merged into the owner branch",
+  "CANONICAL_STATE": "NOT_MERGED"
+ }
+}
