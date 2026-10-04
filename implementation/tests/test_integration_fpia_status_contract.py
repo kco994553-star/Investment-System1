@@ -158,7 +158,7 @@ def test_positive_controls(tmp_path, control):
     K, R0 = w.c["K"], w.c["R0"]
     base = K if control == "PC1_merge_K_R" else w.git.change(K, {"docs-only/README.md": "docs\n"}, "K' docs only")
     T = w.git.merge(base, R0, "Track C landing")
-    w.git.ref(tk.CANON_REF, T)          # live canonical has advanced to the landing commit
+    w.set_canonical(T)                  # live canonical (authority remote) has advanced to the landing commit
     G = w.register(R0, [], subjects=[T])
     r = w.fpia(T, G)
     assert r["fpia"]["status"] == "FPIA_PASS", r["fpia"]

@@ -28,6 +28,10 @@ NEUTRAL_ATTRIBUTES = ("* !merge !text !eol !crlf !ident !filter !diff !working-t
 # TLS trust). They cannot change object content: index-pack re-hashes every received object.
 NETWORK_ENV_NAMES = ("HTTPS_PROXY", "https_proxy", "NO_PROXY", "no_proxy", "GIT_SSL_CAINFO",
                      "SSL_CERT_FILE", "SSL_CERT_DIR", "CURL_CA_BUNDLE")
+# A fetch can exit 0 while refusing ref updates (e.g. "warning: rejected <ref> because shallow roots
+# are not allowed to be updated" from a shallow source; " ! [rejected] ..." status lines). The output
+# is inspected, not only the exit code; any such line makes the fetch incomplete (fail-closed).
+REJECTED_LINE = re.compile(r"^\s*!\s|\brejected\b|^error:", re.I)
 
 
 class GitError(RuntimeError):
@@ -51,6 +55,17 @@ def base_env(home):
             "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull, "GIT_NO_REPLACE_OBJECTS": "1",
             "GIT_TERMINAL_PROMPT": "0", "GIT_ATTR_NOSYSTEM": "1", "GIT_NO_LAZY_FETCH": "1",
             "GIT_ASKPASS": "", "SSH_ASKPASS": ""}
+
+
+def rejected_lines(stderr_text):
+    """Ref-update refusals reported on a fetch's stderr (remote-side chatter is ignored)."""
+    out = []
+    for line in stderr_text.splitlines():
+        if line.startswith(("remote:", "hint:")):
+            continue
+        if REJECTED_LINE.search(line):
+            out.append(line.strip())
+    return out
 
 
 def blob_id(data: bytes) -> str:
@@ -123,12 +138,43 @@ class Sandbox:
         args = ["-c", "transfer.fsckObjects=true", "-c", "fetch.fsckObjects=true", "fetch", "--no-tags",
                 "--no-write-fetch-head", "--no-recurse-submodules", "--no-auto-gc", url, *refspecs]
         proc = self.run(args, env=env, check=False)
-        self.fetch_log.append({"label": label, "source": source, "network": network,
-                               "refspecs": list(refspecs), "rc": proc.returncode,
-                               "network_env_names": sorted(n for n in NETWORK_ENV_NAMES if network and n in os.environ)})
+        rejected = rejected_lines(proc.stderr.decode(errors="replace"))
+        entry = {"label": label, "source": source, "network": network, "refspecs": list(refspecs),
+                 "rc": proc.returncode, "rejected": rejected,
+                 "network_env_names": sorted(n for n in NETWORK_ENV_NAMES if network and n in os.environ)}
+        self.fetch_log.append(entry)
         if proc.returncode != 0:
             raise GitError("fetch %s failed: %s" % (label or source, proc.stderr.decode(errors="replace").strip()[-800:]))
+        if rejected:
+            raise GitError("fetch %s rejected %d ref update(s) although it exited 0 (incomplete source; environment "
+                           "unverified): %s" % (label or source, len(rejected), rejected[:5]))
+        # every explicit <40-hex>:<ref> refspec must have landed exactly (objects present and ref written)
+        missing = []
+        for spec in refspecs:
+            src, _, dst = spec.lstrip("+").partition(":")
+            if HEX40.match(src) and dst:
+                got = self.run(["rev-parse", "--verify", "--quiet", dst + "^{commit}"], check=False).stdout.decode().strip()
+                if got != src:
+                    missing.append(src)
+        if missing:
+            entry["missing"] = missing
+            raise GitError("fetch %s did not deliver %s (incomplete source; environment unverified)"
+                           % (label or source, missing[:5]))
         return proc
+
+    def is_shallow(self):
+        """True when the sandbox itself became shallow (it must never be)."""
+        return self.out("rev-parse", "--is-shallow-repository").strip() != "false"
+
+    def source_is_shallow(self, source):
+        """``git rev-parse --is-shallow-repository`` of a local source repository (read-only).
+        Raises GitError when it cannot be determined (fail-closed: environment unverified)."""
+        proc = self.run(["-C", str(source), "rev-parse", "--is-shallow-repository"], git_dir=False, check=False)
+        answer = proc.stdout.decode(errors="replace").strip()
+        if proc.returncode != 0 or answer not in ("true", "false"):
+            raise GitError("cannot determine whether --repo is shallow: %s"
+                           % proc.stderr.decode(errors="replace").strip()[-300:])
+        return answer == "true"
 
     def ls_remote(self, source, *patterns, network=False):
         env = dict(self.env)

@@ -131,6 +131,7 @@ class Runner:
         proc = subprocess.run(cmd, cwd=str(cwd), env=env, capture_output=True)
         result = RunResult(label=label, mode="VERBATIM", rc=proc.returncode,
                            stdout=proc.stdout.decode("utf-8", "replace"), stderr=proc.stderr.decode("utf-8", "replace"),
+                           stdout_raw=proc.stdout, stderr_raw=proc.stderr,
                            trace=None, run_dir=str(run_dir), cwd=str(cwd), env_names=sorted(env), pythonpath=pythonpath,
                            tmp=str(run_dir / "tmp"))
         self._release(run_dir)

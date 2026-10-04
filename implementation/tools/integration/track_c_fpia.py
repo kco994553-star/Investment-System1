@@ -9,7 +9,14 @@ Frozen records or any branch, never writes to the caller's repository, and never
 
 There are no reference-SHA options: R (Track C) and V (v2) come only from the authenticated
 CDR manifest. Exit codes: 0 FPIA_PASS, 1 FPIA_FAIL, 2 FPIA_NOT_RUN (including usage errors).
-Output schema TRACK_C_FPIA/2: a canonical ``result`` section, its sha256, and ``run`` metadata.
+Output schema TRACK_C_FPIA/2: a canonical ``result`` section, its sha256, and ``run`` metadata. The
+frozen tools' complete stdout/stderr on T are written next to the output as ``<out>.verbatim/``
+(file names and sha256 in ``result.frozen_tools_on_T.steps[].verbatim``).
+
+Environment (fix round F1/F2): a shallow --repo, a caller fetch that refuses or does not deliver any
+ref update, or a missing reference/evidence object makes the audit NOT_RUN (environment unverified),
+never a determinate FAIL or PASS. The canonical ref used for FROZEN_TOOLS_ON_T is read with
+``git ls-remote`` from the authority remote, never from a caller-local remote-tracking ref.
 """
 from __future__ import annotations
 
@@ -76,8 +83,22 @@ DEFAULT_OPTIONS = {"authority_remote": fauth.AUTHORITY_REMOTE, "require_clean_ve
                    "installed_versions": None, "max_workers": None, "lanes": None}
 
 
+VERBATIM_DIR_SUFFIX = ".verbatim"
+VERBATIM_NORMALISATION = ("complete, untruncated stream; the only change is that the FPIA work-directory path "
+                          "is written as <work> (as everywhere in this JSON, AC-38); the sha256/bytes of the "
+                          "exact raw stream are in run.verbatim_raw")
+
+
 def sha256(b):
     return hashlib.sha256(b).hexdigest()
+
+
+def normalise_work(raw, work):
+    """Replace the (resolved and as-given) work-directory path by ``<work>`` in raw bytes."""
+    out = raw
+    for w in sorted({str(Path(work).resolve()), os.path.abspath(str(work))}, key=len, reverse=True):
+        out = out.replace(w.encode(), b"<work>")
+    return out
 
 
 def canonical_bytes(obj):
@@ -127,10 +148,15 @@ def summary_line(result):
     pairs = []
     for site, v in sorted(vals.items()):
         pairs.append("%s R %s -> T %s" % (site.split(":")[-1], str(v.get("R"))[:8], str(v.get("T"))[:8]))
+    hist = str(st.get("historical_frozen_identity"))
+    h = result.get("historical_frozen_identity") or {}
+    if "byte_protected_only" in h:
+        hist += " (replayed %d records + %d CI logs; %d byte-protected only)" % (
+            len(h["scope"]["replayed_records"]), len(h["scope"]["replayed_ci_logs"]), len(h["byte_protected_only"]))
     return " | ".join([result["fpia"]["status"],
                        "%s (%s)" % (st.get("code_identity"), "; ".join(pairs)),
                        "%s [BRANCH_FROZEN_VALIDATION, verbatim]" % st.get("frozen_tools_on_T"),
-                       str(st.get("historical_frozen_identity")), str(st.get("track_c_projection")),
+                       hist, str(st.get("track_c_projection")),
                        str(st.get("integration_interference")),
                        "v2_binding %s" % st.get("v2_binding"), "full_regression %s" % st.get("full_regression")])
 
@@ -152,6 +178,11 @@ class Audit:
                        "ordering_note": fchk.overlay_ordering_note()}
         self.st = self.result["statuses"]
         self.lanes = {}
+        # F4: full frozen-tool streams on T, written as side files next to the JSON output
+        self.verbatim_files, self.verbatim_raw = {}, {}
+        # F2: canonical premise of FROZEN_TOOLS_ON_T (set only when that lane is scheduled)
+        self.canonical_auth = {"status": "NOT_RUN", "value": None, "detail": "T-frozen lane not scheduled"}
+        self.canonical_query = None
 
     # -- inputs ----------------------------------------------------------------------------------
     def resolve(self, value, label):
@@ -174,18 +205,51 @@ class Audit:
         if missing:
             self.sb.fetch(self.repo, ["%s:refs/fpia/in/%s" % (s, s) for s in missing], label="references")
 
+    # -- caller repository completeness (CDR-014 §7/§14; fix round F1) ------------------------------------
+    def check_caller_repository(self):
+        """A shallow --repo leaves the audit environment unverified: NOT_RUN, never a determinate FAIL or
+        PASS. Raises GitError in that case. (Refused or undelivered caller fetches are caught by
+        Sandbox.fetch and by caller_fetch_problems.)"""
+        env = self.result.setdefault("environment", {}).setdefault("caller_repository", {"status": "NOT_RUN"})
+        shallow = self.sb.source_is_shallow(self.repo)
+        env["shallow"] = shallow
+        if shallow:
+            raise fgit.GitError("--repo is a shallow repository (git rev-parse --is-shallow-repository = true); "
+                                "environment unverified")
+
+    def caller_fetch_problems(self):
+        return [{"label": f["label"], "rejected": f["rejected"][:20], "missing": f.get("missing", [])[:20]}
+                for f in self.sb.fetch_log if f["source"] == self.repo and (f["rejected"] or f.get("missing"))]
+
+    def environment_not_run(self, detail):
+        env = self.result.setdefault("environment", {}).setdefault("caller_repository", {})
+        env.update(status="NOT_RUN", detail=detail, fetch_problems=self.caller_fetch_problems())
+        self.st["authority"] = "NOT_RUN"
+        auth = self.result.setdefault("authority", {"checks": []})
+        auth["status"] = "NOT_RUN"
+        auth.setdefault("checks", []).append({"id": "AC-01", "status": "NOT_RUN",
+                                              "detail": "caller repository incomplete (environment unverified): %s"
+                                                        % detail[-400:]})
+        return self.finish()
+
     # -- main --------------------------------------------------------------------------------------
     def run(self):
         r = self.result
         try:
+            self.check_caller_repository()
             T = self.resolve(self.tree_arg, "--tree")
             G = self.resolve(self.register_arg, "--register-commit")
             self.populate([T, G])
+            if self.sb.is_shallow():
+                raise fgit.GitError("the FPIA sandbox became shallow; environment unverified")
         except fgit.GitError as exc:
             self.st["authority"] = "NOT_RUN"
             r["authority"] = {"status": "NOT_RUN", "checks": [{"id": "AC-01", "status": "NOT_RUN",
                                                                "detail": "inputs unavailable: %s" % str(exc)[-400:]}]}
+            r["environment"]["caller_repository"].update(status="NOT_RUN", detail=str(exc)[-400:],
+                                                         fetch_problems=self.caller_fetch_problems())
             return self.finish()
+        r["environment"]["caller_repository"]["status"] = "PASS"
         self.T, self.G = T, G
         r["subject"] = {"tree": T, "tree_object": self.sb.tree_id(T)}
         r["merge_result_audited"] = T
@@ -207,6 +271,10 @@ class Audit:
         ref_status = self.reference_checks()
         r["authority"]["status"] = ref_status
         self.st["authority"] = ref_status
+        if self.caller_fetch_problems():
+            # a refused or undelivered caller fetch that an optional step tolerated still leaves the
+            # environment unverified; this overrides any determinate result (F1)
+            return self.environment_not_run("a caller fetch refused or did not deliver ref updates")
         if ref_status != "PASS":
             return self.finish()
         self.pi, self.vs = None, [V for V in self.Vs if self.v_applies.get(V)]
@@ -416,7 +484,28 @@ class Audit:
                                       "code_pinned": bool(e and e.sha in pins)})
         heads = sorted({x["head"] for x in logs} | {e["head"] for r in recs for e in r["embedded"]}
                        | {r["head"] for r in recs if "head" in r})
-        self.frozen = {"records": recs, "logs": logs, "approvals": approvals, "unbound": unbound, "heads": heads}
+        # F7 disclosure: Frozen records/logs that no replay re-derives (byte identity only)
+        replayed = {x["path"] for x in recs} | set(evidence_logs)
+        unbound_paths = {u["path"] for u in unbound}
+        approval_paths = {a["path"] for a in approvals}
+        byte_only = []
+        for p in sorted(set(record_paths) | set(log_paths)):
+            if p in replayed:
+                continue
+            src = "R" if p in tR else "V"
+            tree = tR if src == "R" else sb.tree(next(V for V in self.Vs if self.v_applies.get(V) and p in sb.tree(V)))
+            if p in unbound_paths:
+                why = "unbound Frozen evidence (see frozen_universe.unbound)"
+            elif p in approval_paths:
+                why = "approval referenced by Track C code: blob-pinned and consistency-checked, not replayed"
+            elif p in log_paths:
+                why = "CI log without a TRACK_C_*_EVIDENCE line: content is not re-derived by any replay"
+            else:
+                why = "no embedded tool evidence and no CI-log binding: content is not re-derived by any replay"
+            byte_only.append({"path": p, "kind": "ci_log" if p in log_paths else "record", "source": src,
+                              "blob": tree[p].sha, "reason": why})
+        self.frozen = {"records": recs, "logs": logs, "approvals": approvals, "unbound": unbound, "heads": heads,
+                       "byte_protected_only": byte_only, "replayed_logs": sorted(evidence_logs)}
         self.result.setdefault("derivation", {})["frozen_universe"] = {
             "tools": sorted(self.tools), "records": [{k: v for k, v in r.items()} for r in recs],
             "evidence_lines": [{k: v for k, v in x.items() if k != "body"} | {"sha256": sha256(x["body"].encode())}
@@ -448,7 +537,12 @@ class Audit:
                 self.fetch_refs([h])
             except fgit.GitError:
                 pass
-            if not sb.has_commit(h) or not sb.is_ancestor(h, R):
+            if not sb.has_commit(h):
+                # missing object: the caller repository is incomplete, not a determinate FAIL (F1)
+                add("AC-04", "NOT_RUN", "Frozen evidence head object unavailable in --repo (environment unverified)",
+                    head=h)
+                status = "NOT_RUN" if status == "PASS" else status
+            elif not sb.is_ancestor(h, R):
                 add("AC-04", "FAIL", "Frozen evidence head is not an ancestor of R", head=h)
                 status = "FAIL"
         c8 = self.by_kind.get("C8_PARTIAL")
@@ -891,10 +985,13 @@ class Audit:
             return sess
 
         def lane_T_frozen():
-            repo_canon = self.repo_canonical()
-            refs = {canon_ref: repo_canon} if repo_canon else {}
-            root, entries = self.materialise("T-frozen", T, refs)
-            out = {"canonical_ref": {"name": canon_ref, "value": repo_canon}, "steps": []}
+            canon = self.canonical_auth
+            out = {"canonical_ref": canon, "steps": []}
+            if canon["status"] != "PASS":
+                # the canonical premise is unavailable: the frozen tools are not run (F1/F2)
+                out["not_run"] = "canonical premise unavailable: %s" % canon.get("detail")
+                return out
+            root, entries = self.materialise("T-frozen", T, {canon_ref: canon["value"]})
             if self.wf_T is None:
                 out["error"] = "Track C workflow absent at T"
                 return out
@@ -903,7 +1000,8 @@ class Audit:
                 if st["kind"] in ("git", "pip"):
                     out["steps"].append({"step": st["name"], "kind": st["kind"], "executed": False,
                                          "deviation": "network/setup step not executed; FPIA sets the canonical ref "
-                                                      "from --repo and verifies pins (AC-36)"})
+                                                      "from the authority remote (git ls-remote; recorded) and "
+                                                      "verifies pins (AC-36)"})
                     continue
                 if st["kind"] == "pytest":
                     files = self.expand(st, set(entries))
@@ -930,10 +1028,19 @@ class Audit:
                             if msg and msg in err[0]:
                                 matched = msg
                                 break
+                    base = "%02d-%s" % (i, st["script_path"].rsplit("/", 1)[-1])
+                    streams = {}
+                    for kind, raw in (("stdout", res["stdout_raw"]), ("stderr", res["stderr_raw"])):
+                        data = normalise_work(raw, self.work)
+                        name = "%s.%s" % (base, kind)
+                        self.verbatim_files[name] = data
+                        self.verbatim_raw[name] = {"sha256": sha256(raw), "bytes": len(raw)}
+                        streams[kind] = {"file": name, "sha256": sha256(data), "bytes": len(data)}
                     out["steps"].append({"step": st["name"], "kind": "tool", "tool": st["script_path"],
                                          "blob": sb.tree(T).get(st["script_path"]).sha if sb.tree(T).get(st["script_path"]) else None,
                                          "rc": res.rc, "evidence_line_sha256": sha256(line[0].encode()) if line else None,
-                                         "first_error": err[0][:400] if err else None, "matched_tool_message": matched})
+                                         "first_error": err[0] if err else None, "matched_tool_message": matched,
+                                         "verbatim": dict(streams, normalisation=VERBATIM_NORMALISATION)})
                 else:
                     out["steps"].append({"step": st["name"], "kind": st["kind"], "executed": False,
                                          "deviation": "unrecognised step; NOT_RUN"})
@@ -952,6 +1059,9 @@ class Audit:
         if self.opts["lanes"] is not None:
             wanted = set(self.opts["lanes"])
             jobs = {k: v for k, v in jobs.items() if k.split(":")[0] in wanted}
+        if "T-frozen" in jobs:
+            # sequential, before any lane starts: the only sandbox write of the dynamic phase
+            self.canonical_auth = self.canonical_from_authority()
         results = {}
         with concurrent.futures.ThreadPoolExecutor(max_workers=self.opts["max_workers"]) as ex:
             futs = {ex.submit(fn): name for name, fn in jobs.items()}
@@ -1095,10 +1205,40 @@ class Audit:
         return {"node": NETWORK_NODE, "file": file_part, "valid": valid, "present_at_T": t is not None,
                 "rule": "honoured only while its file is byte-identical to R's (PIW ruling); disclosed deviation"}
 
-    def repo_canonical(self):
-        ref = "refs/fpia/src/remotes/origin/" + self.BRANCH
-        out = self.sb.run(["rev-parse", "--verify", "--quiet", ref], check=False).stdout.decode().strip()
-        return out or None
+    def canonical_from_authority(self):
+        """The canonical ref value used for FROZEN_TOOLS_ON_T (F2): read with ``git ls-remote`` from the
+        configured authority remote, never from a caller-local remote-tracking ref. The value, source
+        and ref are recorded in the result; the query time is run metadata (AC-38). Unreachable,
+        absent or object-less -> NOT_RUN for that component (F1)."""
+        remote = self.opts["authority_remote"]
+        network = fauth.is_network(remote)
+        ref = "refs/heads/" + self.BRANCH
+        rec = {"name": "refs/remotes/origin/" + self.BRANCH, "value": None, "status": "NOT_RUN",
+               "source": {"remote": remote, "ref": ref, "method": "git ls-remote of the authority remote",
+                          "default_remote": remote == fauth.AUTHORITY_REMOTE}}
+        self.canonical_query = {"queried_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                                "remote": remote, "ref": ref, "value": None}
+        try:
+            value = self.sb.ls_remote(remote, ref, network=network).get(ref)
+        except fgit.GitError as exc:
+            rec["detail"] = "authority remote unreachable: %s" % str(exc)[-300:]
+            return rec
+        if not value or not fgit.HEX40.match(value):
+            rec["detail"] = "canonical ref absent at the authority remote"
+            return rec
+        self.canonical_query["value"] = value
+        if not self.sb.has_commit(value):
+            try:
+                self.sb.fetch(remote, ["+%s:refs/fpia/authority/canonical" % ref], network=network,
+                              label="authority-canonical")
+            except fgit.GitError as exc:
+                rec["detail"] = "canonical commit not obtainable from the authority remote: %s" % str(exc)[-300:]
+                return rec
+        if not self.sb.has_commit(value):
+            rec["detail"] = "canonical commit object unavailable (environment unverified)"
+            return rec
+        rec.update(value=value, status="PASS")
+        return rec
 
     def ci_log_runtime(self, E):
         logs = [x for x in self.frozen["logs"] if x["head"] == E]
@@ -1346,7 +1486,16 @@ class Audit:
         self.st["historical_frozen_identity"] = {"PRESERVED": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
                                                  "NOT_PRESERVED": "HISTORICAL_FROZEN_IDENTITY_NOT_PRESERVED",
                                                  "NOT_RUN": "NOT_RUN"}[hist]
+        byte_only = [dict(b, byte_identical_in_T=tT.get(b["path"]) is not None and tT[b["path"]].sha == b["blob"])
+                     for b in self.frozen["byte_protected_only"]]
         r["historical_frozen_identity"] = {"status": self.st["historical_frozen_identity"], "checks": hist_checks,
+                                           "scope": {"replayed_records": sorted(x["path"] for x in self.frozen["records"]),
+                                                     "replayed_ci_logs": self.frozen["replayed_logs"],
+                                                     "note": "the status covers the replayed records and CI logs; "
+                                                             "byte_protected_only items are protected by byte "
+                                                             "identity only (track_c_projection AC-15) and are "
+                                                             "not re-derived (F7 disclosure)"},
+                                           "byte_protected_only": byte_only,
                                            "r_replay": {"canonical_ref_pinned_to": self.K, "tools": r_tools,
                                                         "note": "no Actions-equality claim for R"},
                                            "replays": {E: {"canonical_ref_pinned_to": v["canonical_ref_pinned_to"],
@@ -1576,6 +1725,12 @@ class Audit:
             v2_detail["authentication"] = {"register_blob": r["authority"].get("register_blob"),
                                            "section_sha256": r["authority"].get("section_sha256"),
                                            "manifest_line": r["authority"].get("manifest_line")}
+        elif any(c["status"] == "FAIL" for c in self.v2_checks):
+            # F3: T carries A_V-type paths (derived from V) while no authenticated V is an ancestor of
+            # T. NOT_APPLICABLE is reserved for a T without any A_V-type path.
+            v2 = "FAIL"
+            v2_detail.update({"V": [], "V_not_ancestor_of_T": list(self.Vs), "A_V_count": len(self.av),
+                              "A_V_paths_in_T": sorted(c["path"] for c in self.v2_checks if c["status"] == "FAIL")})
         self.st["v2_binding"] = v2
         r["v2_binding"] = dict(v2_detail, status=v2)
         # ---------------- full regression (PIW D3-A) ----------------
@@ -1668,7 +1823,8 @@ class Audit:
         # ---------------- frozen tools on T (AC-32) ----------------
         lfz = lanes.get("T-frozen") or {}
         ft = "NOT_RUN"
-        if lfz and "error" not in lfz:
+        # NOT_RUN whenever the canonical premise (authority ls-remote value) is unavailable (F1/F2)
+        if lfz and "error" not in lfz and (lfz.get("canonical_ref") or {}).get("status") == "PASS":
             steps = [s for s in lfz["steps"] if s.get("rc") is not None]
             tools_run = [s for s in steps if s["kind"] == "tool"]
             unknown = [s for s in lfz["steps"] if s.get("deviation") == "unrecognised step; NOT_RUN"]
@@ -1940,8 +2096,18 @@ def run_fpia(repo, tree, register_commit, cdr, out=None, work_dir=None, keep_wor
            "run": {"started_utc": datetime.datetime.fromtimestamp(started, datetime.timezone.utc).isoformat(),
                    "duration_s": round(time.time() - started, 1), "work_dir": str(work), "host": platform.node(),
                    "argv": sys.argv, "ref_writes": audit.sb.ref_log if audit else [],
-                   "fetches": audit.sb.fetch_log if audit else [], "runs": audit.runner.runs if audit else []}}
+                   "fetches": audit.sb.fetch_log if audit else [], "runs": audit.runner.runs if audit else [],
+                   "canonical_ref_query": audit.canonical_query if audit else None,
+                   "verbatim_raw": audit.verbatim_raw if audit else {}, "verbatim_dir": None}}
     if out:
+        files = audit.verbatim_files if audit else {}
+        if files:
+            # F4: the frozen tools' complete streams, next to the JSON output (names as in the result)
+            vdir = Path(out).parent / (Path(out).name + VERBATIM_DIR_SUFFIX)
+            vdir.mkdir(parents=True, exist_ok=True)
+            for name, data in sorted(files.items()):
+                (vdir / name).write_bytes(data)
+            doc["run"]["verbatim_dir"] = str(vdir)
         Path(out).write_text(json.dumps(doc, indent=1, sort_keys=True, ensure_ascii=False) + "\n")
     if not keep_work:
         shutil.rmtree(work, ignore_errors=True)

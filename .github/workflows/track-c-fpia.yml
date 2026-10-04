@@ -1,8 +1,11 @@
 name: track-c-fpia
-# Hardened Track C Frozen Projection Identity Audit (CDR-014). Dispatch-only and read-only:
-# it never pushes, comments or writes refs on the remote. The audited subject defaults to the
-# checked-out commit; R and V come only from the authenticated CDR manifest (no reference inputs).
+# Hardened Track C Frozen Projection Identity Audit (CDR-014). Read-only: it never pushes, comments
+# or writes refs on the remote. R and V come only from the authenticated CDR manifest (no reference
+# inputs). On pull_request the audit subject is the PR head commit (not the synthetic merge commit)
+# and the register commit is the authority handoff-branch tip read with git ls-remote; on
+# workflow_dispatch both are inputs (subject default: the checked-out commit).
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       register_commit:
@@ -21,11 +24,18 @@ permissions:
 jobs:
   fpia:
     runs-on: ubuntu-latest
+    timeout-minutes: 150
     env:
       PYTHONDONTWRITEBYTECODE: "1"
     steps:
+      - name: Free runner disk (an audit needs about 5 GB of work space)
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost
+          df -h /
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - name: Fetch every branch for the object store (read-only)
         run: git fetch --no-tags origin '+refs/heads/*:refs/remotes/origin/*'
@@ -35,40 +45,64 @@ jobs:
       - name: Install pinned runtime
         run: python -m pip install pytest==9.1.1 numpy==2.3.5
       - name: FPIA Tier 1 tests
+        if: github.event_name == 'workflow_dispatch'
         working-directory: implementation
         run: PYTHONPATH=src python -m pytest -q -p no:cacheprovider tests/test_integration_fpia_*.py
       - name: FPIA Tier 2 real-history checks (must not skip)
+        if: github.event_name == 'workflow_dispatch'
         working-directory: implementation
         env:
           FPIA_REQUIRE_HISTORY: "1"
         run: PYTHONPATH=src python -m pytest -q -p no:cacheprovider tests/integration_fpia_real_history_checks.py
-      - name: FPIA audit
+      - name: FPIA audit (the job fails only on FPIA_FAIL or FPIA_NOT_RUN)
         env:
           FPIA_REGISTER_COMMIT: ${{ inputs.register_commit }}
           FPIA_CDR: ${{ inputs.cdr }}
-          FPIA_TREE: ${{ inputs.tree }}
+          FPIA_TREE: ${{ inputs.tree || github.event.pull_request.head.sha }}
         run: |
           tree="${FPIA_TREE:-$GITHUB_SHA}"
+          cdr="${FPIA_CDR:-CDR-014}"
+          register="$FPIA_REGISTER_COMMIT"
+          if [ -z "$register" ]; then
+            register="$(git ls-remote origin refs/heads/integration/global-handoff-v1 | cut -f1)"
+          fi
+          echo "audit subject T=$tree register_commit=$register cdr=$cdr event=$GITHUB_EVENT_NAME"
+          out="$RUNNER_TEMP/fpia-out"
+          mkdir -p "$out"
           set +e
           python implementation/tools/integration/track_c_fpia.py --repo . --tree "$tree" \
-            --register-commit "$FPIA_REGISTER_COMMIT" --cdr "$FPIA_CDR" --out "$RUNNER_TEMP/fpia.json" \
-            > "$RUNNER_TEMP/fpia-summary.txt"
+            --register-commit "$register" --cdr "$cdr" --out "$out/fpia.json" > "$out/fpia-summary.txt"
           rc=$?
           set -e
+          python - "$out/fpia.json" > "$out/fpia-status.txt" <<'PY' || true
+          import json
+          import sys
+          doc = json.load(open(sys.argv[1]))
+          r = doc["result"]
+          print("fpia: %s" % r["fpia"]["status"])
+          for reason in r["fpia"].get("reasons", []):
+              print("  reason: %s" % reason)
+          for name, value in sorted(r["statuses"].items()):
+              print("%s: %s" % (name, value))
+          print("result_sha256: %s" % doc["result_sha256"])
+          PY
           {
             echo "### Track C FPIA (CDR-014)"
             echo ""
-            echo "Six-component result (CODE_IDENTITY_DIVERGED is reported as fact; FROZEN_TOOLS_ON_T is a separate"
-            echo "verbatim BRANCH_FROZEN_VALIDATION class; exit 0 is not a Frozen PASS and not merge approval):"
+            echo "Subject T: $tree (event $GITHUB_EVENT_NAME). CODE_IDENTITY_DIVERGED is reported as fact;"
+            echo "FROZEN_TOOLS_ON_T is a separate verbatim BRANCH_FROZEN_VALIDATION class; exit 0 is not a"
+            echo "Frozen PASS and not merge approval. Exit code: $rc (0 PASS, 1 FAIL, 2 NOT_RUN)."
             echo ""
             echo '```'
-            cat "$RUNNER_TEMP/fpia-summary.txt"
+            cat "$out/fpia-summary.txt"
+            cat "$out/fpia-status.txt"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-          cat "$RUNNER_TEMP/fpia-summary.txt"
+          cat "$out/fpia-summary.txt"
+          cat "$out/fpia-status.txt"
           exit $rc
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: track-c-fpia-${{ github.sha }}
-          path: ${{ runner.temp }}/fpia.json
+          name: track-c-fpia-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/fpia-out/

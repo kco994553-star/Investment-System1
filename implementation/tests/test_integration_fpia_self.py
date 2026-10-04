@@ -1,5 +1,5 @@
 """FPIA self-constraints: closed path literals, no numeric thresholds, no SHA/PR literals, clean
-placement (AC-14, AC-39, AC-40, AC-41) and the dispatch-only workflow contract."""
+placement (AC-14, AC-39, AC-40, AC-41) and the workflow contract (pull_request + dispatch, F6)."""
 import ast
 import re
 
@@ -98,11 +98,27 @@ def test_fpia_files_complement_clean(tmp_path):
         assert not p.endswith("__init__.py") and "conftest" not in p
 
 
-def test_dispatch_workflow_contract():
+def test_workflow_contract_pull_request_and_dispatch():
+    """Fix round F6: pull_request (PR head SHA as the subject, not the synthetic merge) plus
+    workflow_dispatch; read-only; the job fails only through FPIA's own exit code (1 FAIL, 2 NOT_RUN)."""
     text = WORKFLOW.read_text()
     wf = fd.parse_workflow(text)
     assert wf["name"] == "track-c-fpia" and "validate" not in wf["jobs"]
-    assert "workflow_dispatch:" in text and "pull_request" not in text and "\n  push:" not in text
-    assert "contents: read" in text and "fetch-depth: 0" in text
+    on = text.split("\non:\n", 1)[1].split("\npermissions:", 1)[0]
+    assert "\n  pull_request:" in "\n" + on and "\n  workflow_dispatch:" in "\n" + on
+    assert "\n  push:" not in "\n" + on
+    assert "contents: read" in text and "write" not in text.split("\npermissions:", 1)[1].split("\njobs:", 1)[0]
+    assert "fetch-depth: 0" in text and "timeout-minutes:" in text
+    assert "ref: ${{ github.event.pull_request.head.sha || github.sha }}" in text
+    assert "github.event.pull_request.head.sha" in text.split("FPIA_TREE:", 1)[1].split("\n", 1)[0]
+    runs = "\n".join(s["run"] for s in wf["steps"])
+    assert "${{" not in runs                        # event data reaches the shell only through env
     assert "GITHUB_STEP_SUMMARY" in text and "FPIA_REQUIRE_HISTORY" in text
-    assert "${{ inputs." not in "\n".join(s["run"] for s in wf["steps"])
+    audit = [s for s in wf["steps"] if "track_c_fpia.py" in s["run"]]
+    assert len(audit) == 1 and audit[0]["run"].rstrip().endswith("exit $rc")
+    assert "--out \"$out/fpia.json\"" in audit[0]["run"] and 'r["statuses"]' in audit[0]["run"]
+    gated = [s for s in wf["steps"] if "-m pytest" in s["run"]]      # Tier 1/2 run on dispatch only
+    assert gated and all("if: github.event_name == 'workflow_dispatch'" in text.split(s["run"], 1)[0].rsplit("- name:", 1)[1]
+                         for s in gated)
+    upload = text.split("actions/upload-artifact", 1)[1]
+    assert "if: always()" in upload and "fpia-out/" in upload

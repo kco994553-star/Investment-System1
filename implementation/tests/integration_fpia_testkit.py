@@ -54,6 +54,7 @@ IF1 = sorted(p for p in _MODELS["C6"].allowed if p.startswith("implementation/sr
 LINEAGE = _MODELS["C6"].start_equal_literals[0]
 BRANCH = _MODELS["C6"].consts["BRANCH"]
 CANON_REF = "refs/remotes/origin/" + BRANCH
+CANON_HEAD = "refs/heads/" + BRANCH
 NETWORK_FILE = "implementation/" + fpia.NETWORK_NODE.split("::")[0]
 NFC_REPORT = "implementation/reports/track_c_r\u00e9sum\u00e9_2001.md"
 NETWORK_TEST = fpia.NETWORK_NODE.split("::")[1]
@@ -624,7 +625,7 @@ class World:
         self.c["F"] = F
         T0 = g.merge(V0, F, "T0 merge foreign capability into v2 head")
         self.c["T0"] = T0
-        g.ref(CANON_REF, K)
+        self.set_canonical(K)
         g.ref("refs/heads/main", T0)
         G0 = self.register(R0, [V0], subjects=[T0], parent=K)
         self.c["G0"] = G0
@@ -665,6 +666,24 @@ class World:
             g.ref(HANDOFF, G)
         return G
 
+    def set_canonical(self, sha, authority=True, caller_tracking=True):
+        """The live canonical: refs/heads/<BRANCH> is what the authority remote advertises (FPIA reads it
+        with ls-remote); refs/remotes/origin/<BRANCH> is a caller-local remote-tracking ref (never trusted)."""
+        if authority:
+            self.git.ref(CANON_HEAD, sha)
+        if caller_tracking:
+            self.git.ref(CANON_REF, sha)
+
+    def shallow_clone(self, dest: Path):
+        """A clone of this world whose only change is a ``shallow`` file naming the root commit: every
+        object is present, yet git reports the repository as shallow and a fetch from it refuses every
+        ref update while exiting 0 (the CDR-014 §7/§14 defect)."""
+        dest = Path(dest)
+        subprocess.run(["git", "clone", "-q", "--mirror", "--shared", str(self.repo), str(dest)], env=self.git.env,
+                       check=True)
+        (dest / "shallow").write_text(self.c["K"] + "\n")
+        return dest
+
     def _has(self, ref):
         return subprocess.run(["git", "--git-dir", str(self.repo), "rev-parse", "--verify", "--quiet", ref],
                               capture_output=True, env=self.git.env).returncode == 0
@@ -679,15 +698,15 @@ class World:
         w.git.tick = self.git.tick + 1000
         return w
 
-    def fpia(self, T, G=None, cdr=TEST_CDR, options=None, keep=False, work=None):
+    def fpia(self, T, G=None, cdr=TEST_CDR, options=None, keep=False, work=None, repo=None, out=None, doc=False):
         opts = {"authority_remote": str(self.repo), "require_clean_verifier": False}
         opts.update(options or {})
         work = Path(work) if work else Path(tempfile.mkdtemp(prefix="w-fpia-", dir=self.root))
         if work.exists() and any(work.iterdir()):
             work = Path(tempfile.mkdtemp(prefix="w-fpia-", dir=self.root))
-        doc = fpia.run_fpia(str(self.repo), T, G or self.c["G0"], cdr, work_dir=str(work / "w"), keep_work=keep,
-                            options=opts)
-        return doc["result"]
+        d = fpia.run_fpia(str(repo or self.repo), T, G or self.c["G0"], cdr, out=out, work_dir=str(work / "w"),
+                          keep_work=keep, options=opts)
+        return d if doc else d["result"]
 
     def audit(self, T, G=None, cdr=TEST_CDR, options=None):
         """Static-phase audit object (authority, derivation, reference checks, static checks)."""

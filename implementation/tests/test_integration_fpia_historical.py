@@ -115,3 +115,27 @@ def test_approvals_bound_by_code_pin(tmp_path):
     approvals = a.frozen["approvals"]
     assert approvals and all(x["code_pinned"] for x in approvals)
     assert {x["path"] for x in approvals} == {REPORTS + "track_c_c8_partial_approval_2001.json"}
+
+
+def test_byte_protected_only_records_disclosed(tmp_path):
+    """Fix round F7: Frozen records and CI logs that no replay re-derives (the c4/c5 evidence,
+    statistical-kernel, execution, policy-boundary and freeze-audit shapes) are listed under
+    historical_frozen_identity.byte_protected_only, so HISTORICAL_FROZEN_IDENTITY_PRESERVED is not
+    overstated; the replayed scope is stated next to it."""
+    w = tk.variant(tmp_path)
+    plain = {REPORTS + "track_c_c5_evidence_2001.json": json.dumps({"phase": "C5", "status": "PASS"}),
+             REPORTS + "track_c_c6_execution_ci_log_2001.txt": "2001-01-01T00:00:00.0000000Z 42 passed\n"}
+    R2, G = new_reference(w, plain, "R' with byte-protected-only Frozen records")
+    r = w.fpia(R2, G, options={"lanes": ["E", "R"]})
+    h = r["historical_frozen_identity"]
+    listed = {b["path"]: b for b in h["byte_protected_only"]}
+    assert set(plain) <= set(listed)
+    assert listed[REPORTS + "track_c_c5_evidence_2001.json"]["kind"] == "record"
+    assert listed[REPORTS + "track_c_c6_execution_ci_log_2001.txt"]["kind"] == "ci_log"
+    assert REPORTS + "track_c_c8_partial_approval_2001.json" in listed          # approval: pinned, not replayed
+    assert all(b["byte_identical_in_T"] and b["source"] == "R" for b in listed.values())
+    replayed = set(h["scope"]["replayed_records"]) | set(h["scope"]["replayed_ci_logs"])
+    assert not replayed & set(listed)
+    assert REPORTS + "track_c_c6_acceptance_2001.json" in replayed
+    assert h["status"] == "HISTORICAL_FROZEN_IDENTITY_PRESERVED", h["checks"]
+    assert "byte-protected only" in r["summary"]

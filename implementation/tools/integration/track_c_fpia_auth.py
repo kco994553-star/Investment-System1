@@ -26,6 +26,10 @@ FENCE = "fpia-reference-manifest"
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
 
 
+def is_network(remote):
+    return remote.startswith(("https://", "http://", "ssh://", "git://"))
+
+
 class AuthResult(dict):
     status = property(lambda self: self["status"])
 
@@ -149,7 +153,7 @@ def authenticate(sb, register_commit, cdr, fetch_refs, authority_remote=AUTHORIT
     # 1. handoff tip from the authority remote (never from the caller's repository)
     try:
         sb.fetch(authority_remote, ["+refs/heads/%s:refs/fpia/authority/handoff-tip" % HANDOFF_BRANCH],
-                 network=authority_remote.startswith(("https://", "http://", "ssh://", "git://")),
+                 network=is_network(authority_remote),
                  label="authority-remote")
         tip = sb.commit("refs/fpia/authority/handoff-tip")
     except fgit.GitError as exc:

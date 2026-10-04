@@ -210,8 +210,9 @@ def projection_identity(sb, R, Vs, T, proj, av, v_applies):
                                     path=p))
             elif CONFLICT_MARKER.search(tb[len(base):]):
                 checks.append(check("AC-18", "NOT_PRESERVED", "conflict marker in appended delta", path=p))
-    # v2 byte binding (AC-21); only when an authenticated V is an ancestor of T (otherwise the
-    # A_V-type paths are unattributed complement files, AC-05)
+    # v2 byte binding (AC-21). When an authenticated V is an ancestor of T, every A_V path must carry V's
+    # bytes. When none is, any A_V-type path present in T is a v2 binding FAIL (fix round F3; the
+    # path is also an unattributed complement file, AC-05); a T without A_V-type paths is NOT_APPLICABLE.
     v2 = []
     applicable = [V for V in Vs if v_applies.get(V)]
     for p in sorted(av) if applicable else []:
@@ -224,6 +225,13 @@ def projection_identity(sb, R, Vs, T, proj, av, v_applies):
             v2.append(check("AC-21", "FAIL", "A_V path without an applicable V", path=p))
         elif t is None or t != vals.pop():
             v2.append(check("AC-21", "FAIL", "A_V bytes/mode differ from V", path=p))
+    for p in sorted(av) if not applicable else []:
+        t = tT.get(p)
+        if t is None:
+            continue
+        same = any(sb.tree(V).get(p) == t for V in Vs)
+        v2.append(check("AC-21", "FAIL", "A_V-type path in T while no authenticated V is an ancestor of T"
+                        + ("" if same else "; bytes/mode also differ from V"), path=p, bytes_equal_V=same))
     return checks, v2, changed
 
 
@@ -449,6 +457,13 @@ def closure_identity(sb, T, R, Vs, v_applies, proj, av, orders):
 
 
 def workflow_spoof(sb, T, Vs, v_applies, complement, track_c_workflow, proj, av):
+    """AC-32.spoof (fix round F5). Spoofing is a complement workflow that claims the Track C workflow
+    name, or that runs/references Track C paths (tools/track_c_*, Track C tests, A_V) under its own
+    conditions; an unparseable workflow is fail-closed. A generic job id/name collision alone (e.g.
+    ``validate``) is not spoofing. Attribution is limited to R's Track C workflow (a path of R, never in
+    the complement) and V's Track C additions: a workflow V added that carries A_V content, byte-
+    identical in T to an applicable authenticated V. V's whole tree attributes nothing, and a workflow
+    claiming the Track C name is never attributable."""
     out = []
     tT = sb.tree(T)
     tc_text = sb.read(T, track_c_workflow) or b""
@@ -465,34 +480,40 @@ def workflow_spoof(sb, T, Vs, v_applies, complement, track_c_workflow, proj, av)
         text = sb.blob(tT[p].sha).decode("utf-8", "replace")
         wf = fd.parse_workflow(text)
         reasons = []
-        if wf["name"] and wf["name"] == tc["name"]:
+        claims_name = bool(wf["name"]) and wf["name"] == tc["name"]
+        if claims_name:
             reasons.append("workflow name equals the Track C workflow name")
-        if (set(wf["jobs"]) | set(wf["job_names"])) & tc_ids:
-            reasons.append("job id/name collides with the Track C workflow")
         if not wf["jobs"]:
             reasons.append("unparseable workflow (fail-closed)")
+        track_c_ref = av_ref = None
         for token in re.findall(r"[A-Za-z0-9_./*?\[\]-]+", text):
             if "/" not in token and not token.endswith(".py"):
                 continue
             cands = {token, fd.IMPL + "/" + token}
-            if any(proj.ns(c) and not c.endswith("/") for c in cands if "*" not in c and "?" not in c and "[" not in c):
-                reasons.append("references a Track C namespace path: " + token)
-                break
             if any(c in av_tokens for c in cands):
-                reasons.append("references an A_V path: " + token)
-                break
-            if any(ch in token for ch in "*?["):
+                av_ref = av_ref or token
+                continue
+            if track_c_ref is None and any(proj.ns(c) and not c.endswith("/") for c in cands
+                                           if "*" not in c and "?" not in c and "[" not in c):
+                track_c_ref = "references a Track C namespace path: " + token
+            elif track_c_ref is None and any(ch in token for ch in "*?["):
                 hit = [q for q in list(proj.classes) + sorted(av) if proj.ns(q) and
                        (fnmatch.fnmatchcase(q, token) or fnmatch.fnmatchcase(q, fd.IMPL + "/" + token))]
                 if hit:
-                    reasons.append("glob matches Track C paths: " + token)
-                    break
+                    track_c_ref = "glob matches Track C paths: " + token
+        if track_c_ref:
+            reasons.append(track_c_ref)
+        if av_ref:
+            reasons.append("references an A_V path: " + av_ref)
         if not reasons:
             continue
-        attributed = any(v_applies.get(V) and sb.tree(V).get(p) == tT[p] for V in Vs)
-        if not attributed:
-            out.append({"id": "AC-32.spoof", "finding": "complement workflow claims or runs Track C scope "
-                        "without attribution", "path": p, "reasons": reasons})
+        attributed_to = [V for V in Vs if not claims_name and av_ref and v_applies.get(V)
+                         and sb.tree(V).get(p) == tT[p]]
+        if not attributed_to:
+            collision = sorted((set(wf["jobs"]) | set(wf["job_names"])) & tc_ids)
+            out.append(dict({"id": "AC-32.spoof", "finding": "complement workflow claims or runs Track C scope "
+                             "without attribution", "path": p, "reasons": reasons},
+                            **({"job_id_collision_note": collision} if collision else {})))
     return out
 
 
