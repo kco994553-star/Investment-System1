@@ -4,7 +4,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-018 (CDR-013: F1 scope resolved, no change; MAC-X1 top integration blocker, analysis in progress) |
+| Index revision | GSI-019 (GIE-012: MAC-X1 root cause reproduced; resolution needs a user D3 decision; no implementation) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
@@ -166,4 +166,5 @@ Evidence: `implementation/docs/coordination/evidence/GIE-001_trial_integration_2
   - #20 and #21 both add `CLAUDE.md` and `implementation/docs/coordination/CLAUDE_CODE_WORKER_CONTRACT.md` as v1.0, which is an add/add conflict.
   - The texts differ in meaning: #20 §J adds an exception, "unless an approved contract explicitly permits it", to the no-future-fill rule, and #20 §M narrows the numerical/semantic invariance check to "where an existing approved fingerprint exists". Neither is in the user's 2026-10-03 specification. #21 reproduces the specification and adds coordination locations, document relationships, a change log and a start-prompt appendix.
 - **GIE-003 (source overlap and escalation sweep, 2026-10-03).** Besides IF-1, no PR modifies a pre-existing file owned by a capability outside its own stack. #17 appends to the P01 approval record without changing it; #9 normalizes the Web error type with the accept/reject set unchanged. A heuristic sweep of 13,187 added source lines found 0 grant/Official/LIVE/Holdout escalations (a pattern sweep, not a proof). Evidence: `evidence/GIE-003_source_overlap_escalation_2026-10-03.md`.
+- **MAC-X1 (GIE-012, 2026-10-04): USER_DECISION_REQUIRED.** The frozen Track C acceptance tools fail on any advanced or integrated canonical through three mechanisms: the live canonical pin (C6.a, C8.6), closed-world new-file allowlists (C6.d, C7.3, C8.4), and the whole-package code identity hash. None of 35 audited heads violates a Frozen invariant. The Frozen records require an Integration Audit that was never defined. Options and recommendation: GIE-012 §5.
 - **IF-4: CI gaps.** #12 and #13 have never run on Actions, and `ccr-22e3ff16` has no workflow trigger. Local exact-HEAD runs in this checkpoint are recorded in GIE-001 and are **not** CI_VERIFIED.

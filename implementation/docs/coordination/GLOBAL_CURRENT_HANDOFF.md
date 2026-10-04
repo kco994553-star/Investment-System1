@@ -4,8 +4,8 @@ Routing/index SSoT only. This file is not a calculation, policy, approval or pub
 
 | Field | Value |
 |---|---|
-| Handoff ID | GCH-012 (supersedes GCH-011 as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
-| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011; GCH-009 after GIE-010; GCH-010 after CDR-012; GCH-011 after GIE-011; GCH-012 after CDR-013 (2026-10-04) |
+| Handoff ID | GCH-013 (supersedes GCH-012 as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
+| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011; GCH-009 after GIE-010; GCH-010 after CDR-012; GCH-011 after GIE-011; GCH-012 after CDR-013; GCH-013 after GIE-012 (2026-10-04) |
 | Primary Integration Writer | Claude Code session `session_019znshzTYgyBnuuBmSxdPFN`, designated by the user on 2026-10-03 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md` |
 | Canonical branch / HEAD | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. This matches the last independent audit checkpoint, and canonical has not moved since 2026-09-28 |
@@ -72,7 +72,7 @@ Decided and in execution:
 - **CDR-012 executed (GIE-011):** #31 `c9e0fa7` independently re-verified, VERIFIED_WITH_FINDINGS, no blocking finding. Successor trial PR #40 `acaf1b5` (#39 + #31 + #35): 1518 passed, 10/10 CI.
 - **Still open (USER_DECISION_REQUIRED, not decided here):**
   - (F1 scope question RESOLVED — NO ADDITIONAL CHANGE by CDR-013: M-B statistic only.)
-  - **MAC-X1 is the top integration blocker (CDR-013):** how Track C Frozen acceptance is certified on an advanced or integrated canonical. Being analysed; options go to the user if a D3 is needed.
+  - **MAC-X1 (top integration blocker; GIE-012): USER_DECISION_REQUIRED (D3).** Root cause: the frozen Track C tools pin canonical `b8e39a2` live, reject every file added outside a closed Track C list, and Track C's code identity hashes every `*.py` under `src/investment_system`. No head violates a Frozen invariant, and no merge order avoids the pin. The Frozen records require a separate Integration Audit that was never defined or approved. Options and recommendation in GIE-012 §5 (recommended: a hardened, additive PIW Integration Audit on each exact merge-result SHA, with code identity reported as DIVERGED, adopted by a new CDR and a Track C scoped register entry). Not implemented: both adversarial design reviews refuted the first design.
   - Track C landing vehicle (`b9e01a9` lineage, the #31/#35 stack, or a #30-based combined merge) and MAC-X1 (Track C acceptance tooling on integrated trees) from GIE-009.
   - Scope of #21, #37, #28 and docs/qgv-context for any canonical-merge package.
 

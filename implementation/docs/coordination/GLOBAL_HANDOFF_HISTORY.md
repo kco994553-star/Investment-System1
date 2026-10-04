@@ -159,3 +159,10 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - User decision recorded verbatim. CDR-012 F1 covers the M-B statistic only; the frozen v1 Development estimator keeps `(v - m) ** 2`; no v1 change and no v2-only estimator.
 - MAC-X1 is now the top integration blocker. Analysis starts from a fresh fetch under the user's constraints (no PR-specific or hard-coded SHA exceptions, no weakening of Frozen acceptance, PIT, provenance or Holdout isolation, PR #40 preserved as exact-tree evidence, no owner-branch edits). A D3 goes to the user as options.
 - Canonical `b8e39a2` unchanged. Maturity transitions: none.
+
+## GCH-013 · 2026-10-04 · GIE-012 recorded (MAC-X1 analysis; D3 required; nothing implemented)
+
+- MAC-X1 reproduced with the unmodified frozen tools in private clones. Root cause: a live canonical pin (no merge order avoids it), closed-world new-file allowlists, and Track C's whole-package code identity hash. None of 35 audited heads violates a Frozen invariant. The Frozen records require a separate Integration Audit that was never defined or approved.
+- An additive Frozen Projection Identity Audit was designed. Both adversarial reviews refuted it as specified (code identity pinned to PASS; bytecode, pytest plugin and config bypasses; unattributed appends to the Track C register; unauthenticated reference heads; hidden ordering assumption). The gate stopped before implementation. Adopting any audit verdict as Track C acceptance is a D3.
+- Five D3 items with recommendations routed to the user (GIE-012 §5). No branch, PR, frozen tool, Frozen record or owner branch was changed; PR #40 is untouched.
+- Canonical `b8e39a2` unchanged. Maturity transitions: none.
