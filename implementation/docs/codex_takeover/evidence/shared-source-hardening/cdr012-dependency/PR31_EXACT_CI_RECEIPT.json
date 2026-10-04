@@ -1,0 +1,40 @@
+{
+  "pr": 31,
+  "source_head": "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240",
+  "artifact_zip_sha256": "4468a2d54ceee93cb7a309b407c0e06a928a2771852959e46af3abf39c7a5f2c",
+  "full_pass": 1472,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "junit": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "1472",
+      "time": "291.561",
+      "timestamp": "2026-10-04T03:39:54.415512+00:00",
+      "hostname": "runnervm8df0l"
+    }
+  ],
+  "replay_case_count": 15,
+  "replay_status": "PASS",
+  "numerical_output_sha256": "bb883332e44e97689bc28ab36f55a88e295ee44149dd4306a94401607cec9227",
+  "replay_source_sha256": {
+    "docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/authoritative-v2/CDR010_APPROVAL.json": "2e0ad6e96bd1b0494fd739cc55a03b337d326fd6dff2863203ebc9b6bd036231",
+    "docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/CDR012_APPROVAL.json": "91f40de84ec27c8e0d74d6175ffe4d2cac4ccf78dc63f06a269141e0bea9e187",
+    "src/investment_system/evl/superiority.py": "c61268921e5a9147e90810747e9ab6cd2896dd2fab89cb314d390dc0ff760498",
+    "src/investment_system/evl/superiority_v2.py": "4733f41ee5c85a8a159047a8f2f996fed9edc9a1a4e14d01aa671b33a8a1fa64",
+    "tests/evl_c8_gsup_v2_cdr012_oracle.py": "fdf999c763f0f03fb4b4590daddf8e7a2b04b4050790ff648466be4eec099326",
+    "tests/evl_c8_gsup_v2_oracle.py": "e2db7498b6819783ac5d977c34950078f632c4e4dbb2ddf973b26cace8a9c6f5",
+    "tools/verify_gsup_v2_arithmetic.py": "04b3012cbe0f94a17d8a94022252c2b1d0f18e54bd08e6728d4e09a4a84e1e91"
+  },
+  "browser_check_groups_pass": 6,
+  "source_hashes_match_exact_published_commit": true,
+  "grants": "NONE",
+  "run_id": 37174701678,
+  "native_artifact_id": 11292768387,
+  "workflows_success": 8,
+  "check_jobs_success": 9
+}

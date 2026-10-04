@@ -62,3 +62,24 @@ There is no USER_DECISION_REQUIRED for this LOCAL_FIXABLE defect.
 Parent next action: normal history-preserving merge, final combined regression
 and actual Actions receipts for the final proposed source. Scoped exact hashes
 and preservation evidence are in `CHECKPOINT.json`.
+
+
+## CDR-012 dependency successor · 2026-10-04
+
+After PR31 `c9e0fa7e4078290b5db9cb798cf52c0d0cd66240` reached
+HANDOFF_READY/CI_VERIFIED (1472 PASS, 8/8 workflows, exact artifact verified),
+PR35 normally merges that exact dependency. No merge conflicts. The original
+shared-source F1 helper/tests remain byte-identical to PR35 `8318b78`; the
+new GIE-010 F1 squaring/F3 all-degenerate repair is inherited byte-identically
+from PR31. Local merged shared-source regression:27 PASS, no failures/skips.
+
+New acceptance and immutable PR31 CI receipt: `cdr012-dependency/`.
+PR35's fresh exact-head full Actions result/checkouts/artifact digests are in
+its current PR description after publication; until then CI is pending.
+Previous full1413 and older F1 probes remain historical, not fresh merge results.
+Current v2 handoff: `../../gsup_v2_handoff_2026_10_03/CURRENT_HANDOFF_V2_CDR012.md`.
+
+Claude Main independently re-verifies F1/F3 and owns PR39's fresh successor
+combined trial. No Global/integration/PR39 update. C0-C7 SOFTWARE_FROZEN,
+C8 SYNTHETIC_VERIFIED/NOT_FROZEN, maturity delta0. No numeric configuration,
+CAL_VERIFY/Holdout/C8 Freeze/publication/Official/LIVE/canonical merge.
