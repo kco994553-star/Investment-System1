@@ -1,0 +1,73 @@
+{
+  "excludes": [
+    "ARTIFACT_MANIFEST.json"
+  ],
+  "files": [
+    {
+      "bytes": 5408,
+      "path": "CE4_APPEND_ONLY_RECONCILIATION_2026-10-03.md",
+      "sha256": "1460ff57471c8f5de97e1ddf776ea0047350f10f841ced085ca407c1f1a998b7"
+    },
+    {
+      "bytes": 1986,
+      "path": "EXECUTION_COMMANDS.json",
+      "sha256": "0ad4fb227d86a091398086a077485b9966cea1f3fa231eda7d7af804fb48024a"
+    },
+    {
+      "bytes": 2936,
+      "path": "FINAL_RECEIPT.json",
+      "sha256": "54d5dfde38f699028e683d46c49c358e78362b9f741b245b959b4bd3c60f92d5"
+    },
+    {
+      "bytes": 34900,
+      "path": "cpython311_numpy235.json",
+      "sha256": "4796cef9cbb1502b75ab49b790f43c51d03e86397155c2c2f28de7ff3c9c4ef9"
+    },
+    {
+      "bytes": 0,
+      "path": "cpython311_numpy235.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 130,
+      "path": "cpython311_numpy235.stdout.log",
+      "sha256": "3629d8efc95c069015d86d61aff020ce43b19e7fdfbf03347c79d28e9f6fa687"
+    },
+    {
+      "bytes": 34864,
+      "path": "cpython312_numpy235.json",
+      "sha256": "e400ec8eec9139cc5c67c68167662f28062c9d1609809a5181781e772d32d2c3"
+    },
+    {
+      "bytes": 0,
+      "path": "cpython312_numpy235.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 130,
+      "path": "cpython312_numpy235.stdout.log",
+      "sha256": "97ce02a3db6b0ff5180127c6547beedf2663c21c08add30349480aa7d846374f"
+    },
+    {
+      "bytes": 34765,
+      "path": "cpython313_numpy224.json",
+      "sha256": "720eb5887912d75e865bacdcbb39f0e26e85aa47e98da21c3c95170b92188f55"
+    },
+    {
+      "bytes": 0,
+      "path": "cpython313_numpy224.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 129,
+      "path": "cpython313_numpy224.stdout.log",
+      "sha256": "2c3db3ff5085d3f60d30e391efecd97c029778101bd4a242789463fd747bf5b5"
+    },
+    {
+      "bytes": 7647,
+      "path": "replay_exact_ce4.py",
+      "sha256": "48cdb61d447d1bfcf1402c80f95aee8490397cb256cb52029153291aeee0844b"
+    }
+  ],
+  "scope": "ADDITIVE_CE4_RECONCILIATION"
+}

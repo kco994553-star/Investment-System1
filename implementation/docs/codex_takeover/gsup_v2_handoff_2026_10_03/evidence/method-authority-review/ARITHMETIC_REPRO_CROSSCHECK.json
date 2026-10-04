@@ -1,0 +1,1206 @@
+{
+  "CE4_label_reconciliation": {
+    "finding": "An internal review request reversed the labels; both immutable JSON and MD say M-B .10 versus v1 .15. All available current M-B transports reproduce .10 on this fixture.",
+    "historical_blob": {
+      "git_blob": "2cba1cc5d3f5b177e984291074193ee6eab3ba6c",
+      "sha256": "e78ac3e735bd8c4683d536dc23cbba4ed422ac650008efb7eda54f7cb13d3b5b"
+    },
+    "immutable_MB": {
+      "degenerate": 1,
+      "p": 0.1,
+      "r": 1
+    },
+    "immutable_v1_kernel": {
+      "degenerate": 1,
+      "p": 0.15,
+      "r": 2
+    },
+    "status": "NO_SOURCE_OR_RESULT_CONTRADICTION"
+  },
+  "arithmetic_worker_execution_observed": {
+    "existing_fixtures_per_process": 9,
+    "fresh_process_pairs_byte_identical": "3/3",
+    "fresh_processes": 6,
+    "reported_frozen_index_combinations_per_process": 176
+  },
+  "decision": {
+    "authoritative_v2": "NOT_IMPLEMENTED",
+    "selected_reduction": null,
+    "status": "USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION"
+  },
+  "driver_AST_inspected": true,
+  "driver_sha256": "908085730799a76bf86fc5a43cbc43343445b72a83702a489a3675e7c080d4ec",
+  "historical_environment_limits": {
+    "Python_3_11_15_in_historical_reproducibility": "C6 index/kernel subsection only; does not independently pin NumPy M-B simulation",
+    "exact_historical_MB_aggregate_replay_claim": "NOT_SUPPORTED_BY_ANY_CANDIDATE",
+    "simulation_full_runtime": "UNVERIFIED",
+    "simulation_numpy_version": "UNRECORDED"
+  },
+  "independently_verified": {
+    "archive_files": 26,
+    "computed_trace_counts_and_plus_one": 154,
+    "distinct_pinned_sources": 8,
+    "exact_source_binding_checks": 48,
+    "numeric_trace_commitments": 216,
+    "original_literal_p_hex_matches": 28,
+    "shared_fixture_definitions": 9,
+    "shared_frozen_case_index_streams": 9,
+    "status_counts": {
+      "COMPUTED_DIAGNOSTIC_ONLY": 154,
+      "NOT_RUN": 62
+    }
+  },
+  "numpy_2_3_5_on_Python_3_13_with_installed_2_2_4": "NOT_RUN_NO_FALLBACK_OR_REPIN",
+  "original_run_prefix": {
+    "AST_sha256": "8ac9671c8fc36037a1a5824cddffc734c9c5466d36f3db152b66cf152b2b88df",
+    "explicit_transport_substitution": "Original rng.integers supplied normative Frozen C6 Python random.Random starts; not original NumPy RNG stream",
+    "statements_through_out": 18,
+    "unchanged_S_plus1_expressions": true,
+    "unrelated_removed_section": "M-C/BM_t"
+  },
+  "owner_HEAD": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+  "process_receipts": [
+    {
+      "bytes": 827676,
+      "canonical_numeric_output_sha256": "89f42083caa6bfa030695fb8ca06f2c467f5ae7ff7bbbf91236b164c2824df7b",
+      "path": "cpython311_numpy235_process1.json",
+      "runtime": {
+        "compiler": "Clang 22.1.3 ",
+        "executable_sha256": "ec579de7512e84d960bc642a840de69c785c52d6adf89e3a15f51717b29be40f",
+        "machine": "x86_64",
+        "numpy": "2.3.5",
+        "numpy_multiarray_sha256": "0d0e64bcc05c6c9b888abaf35c3ac090acc884e955c8acbedb54c774533bbb3a",
+        "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "python_version": "3.11.16"
+      },
+      "sha256": "ab9e39f1954f19ef04ac211e4ae1a9d88f450aa05962811d5b533edc6fe32d6e"
+    },
+    {
+      "bytes": 827676,
+      "canonical_numeric_output_sha256": "89f42083caa6bfa030695fb8ca06f2c467f5ae7ff7bbbf91236b164c2824df7b",
+      "path": "cpython311_numpy235_process2.json",
+      "runtime": {
+        "compiler": "Clang 22.1.3 ",
+        "executable_sha256": "ec579de7512e84d960bc642a840de69c785c52d6adf89e3a15f51717b29be40f",
+        "machine": "x86_64",
+        "numpy": "2.3.5",
+        "numpy_multiarray_sha256": "0d0e64bcc05c6c9b888abaf35c3ac090acc884e955c8acbedb54c774533bbb3a",
+        "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "python_version": "3.11.16"
+      },
+      "sha256": "ab9e39f1954f19ef04ac211e4ae1a9d88f450aa05962811d5b533edc6fe32d6e"
+    },
+    {
+      "bytes": 826914,
+      "canonical_numeric_output_sha256": "2e773f6fbc5d715de368bd11066fbc58126bca5afdbe96788f3b36aba0e25fa1",
+      "path": "cpython312_numpy235_process1.json",
+      "runtime": {
+        "compiler": "Clang 22.1.3 ",
+        "executable_sha256": "fa67443527ed9647f760d807e2a38f26340757123e643c4639cf273ed15d5ea7",
+        "machine": "x86_64",
+        "numpy": "2.3.5",
+        "numpy_multiarray_sha256": "ba96467ae494babaf7c3458b09cc03c4200c2e10010860d80e452ffb8b01c8cd",
+        "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "python_version": "3.12.14"
+      },
+      "sha256": "f95d7515ed924d8a4c994e9125436b39cf5196cf45ee06bbd8e4bee9d2052bb1"
+    },
+    {
+      "bytes": 826914,
+      "canonical_numeric_output_sha256": "2e773f6fbc5d715de368bd11066fbc58126bca5afdbe96788f3b36aba0e25fa1",
+      "path": "cpython312_numpy235_process2.json",
+      "runtime": {
+        "compiler": "Clang 22.1.3 ",
+        "executable_sha256": "fa67443527ed9647f760d807e2a38f26340757123e643c4639cf273ed15d5ea7",
+        "machine": "x86_64",
+        "numpy": "2.3.5",
+        "numpy_multiarray_sha256": "ba96467ae494babaf7c3458b09cc03c4200c2e10010860d80e452ffb8b01c8cd",
+        "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "python_version": "3.12.14"
+      },
+      "sha256": "f95d7515ed924d8a4c994e9125436b39cf5196cf45ee06bbd8e4bee9d2052bb1"
+    },
+    {
+      "bytes": 671612,
+      "canonical_numeric_output_sha256": "a26158485dfd0f6e865089824e378163dbe5a65f6ddaed0b7f7db3d48d9f5e73",
+      "path": "cpython313_numpy224_process1.json",
+      "runtime": {
+        "compiler": "GCC 14.2.0",
+        "executable_sha256": "17b78e0a93175e86f9ac03141924fd7a7f0c0c52e66b34bfa0de20ffef989df1",
+        "machine": "x86_64",
+        "numpy": "2.2.4",
+        "numpy_multiarray_sha256": "58db7bfae037f398785f0c90e1fdc24c5c8f2c107e8c896b822a99bb400d9a52",
+        "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "python_version": "3.13.5"
+      },
+      "sha256": "0c1cf30d3a0a7f32bba0f8c52ffe42058f46af78d5d6046469c1f0894b181be5"
+    },
+    {
+      "bytes": 671612,
+      "canonical_numeric_output_sha256": "a26158485dfd0f6e865089824e378163dbe5a65f6ddaed0b7f7db3d48d9f5e73",
+      "path": "cpython313_numpy224_process2.json",
+      "runtime": {
+        "compiler": "GCC 14.2.0",
+        "executable_sha256": "17b78e0a93175e86f9ac03141924fd7a7f0c0c52e66b34bfa0de20ffef989df1",
+        "machine": "x86_64",
+        "numpy": "2.2.4",
+        "numpy_multiarray_sha256": "58db7bfae037f398785f0c90e1fdc24c5c8f2c107e8c896b822a99bb400d9a52",
+        "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+        "python_version": "3.13.5"
+      },
+      "sha256": "0c1cf30d3a0a7f32bba0f8c52ffe42058f46af78d5d6046469c1f0894b181be5"
+    }
+  ],
+  "record": "PR31_INDEPENDENT_READ_ONLY_ARITHMETIC_RECEIPT_CROSSCHECK",
+  "recorded_at_utc": "2026-10-03T10:34:12.651015+00:00",
+  "reviewer_actions": {
+    "CAL_VERIFY_accesses": 0,
+    "Freeze_grants": 0,
+    "GitHub_Actions": "NOT_RUN",
+    "Holdout_consumptions": 0,
+    "canonical_merges": 0,
+    "numeric_defaults_selected": 0,
+    "numeric_kernel": "NOT_RUN",
+    "numerical_driver": "NOT_RUN",
+    "publication_grants": 0,
+    "repo_or_remote_changes": 0,
+    "repository_tests": "NOT_RUN"
+  },
+  "reviewer_scope": "Read-only Git blobs, source AST, receipt hashes, JSON counts and exact commitments; no numerical-kernel or index-stream reexecution",
+  "runtime_case_summaries": {
+    "cpython311_numpy235": {
+      "ARITHMETIC_LEFT_SUM": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 0,
+            "p": 0.4,
+            "p_hex": "0x1.999999999999ap-2",
+            "r": 7,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 1,
+            "p": 0.35,
+            "p_hex": "0x1.6666666666666p-2",
+            "r": 6,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 1,
+            "p": 0.35,
+            "p_hex": "0x1.6666666666666p-2",
+            "r": 6,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 0,
+            "p": 0.4,
+            "p_hex": "0x1.999999999999ap-2",
+            "r": 7,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "p": 0.35,
+          "p_hex": "0x1.6666666666666p-2",
+          "r_recovered": 6,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "ARITHMETIC_NUMPY_FLIP": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 2,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 2,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 0,
+            "p": 0.2,
+            "p_hex": "0x1.999999999999ap-3",
+            "r": 3,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 2,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "p": 0.2,
+          "p_hex": "0x1.999999999999ap-3",
+          "r_recovered": 3,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "ARITHMETIC_TIE": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 2,
+            "p": 0.4,
+            "p_hex": "0x1.999999999999ap-2",
+            "r": 7,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 1
+          },
+          "MATH_FSUM": {
+            "degenerate": 2,
+            "p": 0.45,
+            "p_hex": "0x1.ccccccccccccdp-2",
+            "r": 8,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 3
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 2,
+            "p": 0.45,
+            "p_hex": "0x1.ccccccccccccdp-2",
+            "r": 8,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 3
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 2,
+            "p": 0.4,
+            "p_hex": "0x1.999999999999ap-2",
+            "r": 7,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 1
+          }
+        },
+        "literal_original": {
+          "p": 0.45,
+          "p_hex": "0x1.ccccccccccccdp-2",
+          "r_recovered": 8,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "CE1_RUNNABILITY": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+            "status": "NOT_RUN"
+          },
+          "MATH_FSUM": {
+            "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+            "status": "NOT_RUN"
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+            "status": "NOT_RUN"
+          }
+        },
+        "literal_original": {
+          "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+          "simulation_raw_p": "NaN",
+          "simulation_raw_p_hex": null,
+          "status": "DIAGNOSTIC_FAIL_CLOSED_BOUNDARY"
+        }
+      },
+      "CE2_BLOCKS_AND_DEGENERACY": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 1,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 1,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 1,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "p": 0.05,
+          "p_hex": "0x1.999999999999ap-5",
+          "r_recovered": 0,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "CE3_CONTROL": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "p": 0.05,
+          "p_hex": "0x1.999999999999ap-5",
+          "r_recovered": 0,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "CE4_DEGENERACY": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 1,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 1,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 1,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 1,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "p": 0.1,
+          "p_hex": "0x1.999999999999ap-4",
+          "r_recovered": 1,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "CE5_BLOCK_COUNT": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 0,
+            "p": 0.3,
+            "p_hex": "0x1.3333333333333p-2",
+            "r": 5,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 0,
+            "p": 0.3,
+            "p_hex": "0x1.3333333333333p-2",
+            "r": 5,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 0,
+            "p": 0.3,
+            "p_hex": "0x1.3333333333333p-2",
+            "r": 5,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 0,
+            "p": 0.3,
+            "p_hex": "0x1.3333333333333p-2",
+            "r": 5,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "p": 0.3,
+          "p_hex": "0x1.3333333333333p-2",
+          "r_recovered": 5,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "UNDEFINED_ORIGINAL": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+            "status": "NOT_RUN"
+          },
+          "MATH_FSUM": {
+            "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+            "status": "NOT_RUN"
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+            "status": "NOT_RUN"
+          }
+        },
+        "literal_original": {
+          "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+          "simulation_raw_p": 0.05,
+          "simulation_raw_p_hex": "0x1.999999999999ap-5",
+          "status": "DIAGNOSTIC_FAIL_CLOSED_BOUNDARY"
+        }
+      }
+    },
+    "cpython312_numpy235": {
+      "ARITHMETIC_LEFT_SUM": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 1,
+            "p": 0.35,
+            "p_hex": "0x1.6666666666666p-2",
+            "r": 6,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 1,
+            "p": 0.35,
+            "p_hex": "0x1.6666666666666p-2",
+            "r": 6,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 1,
+            "p": 0.35,
+            "p_hex": "0x1.6666666666666p-2",
+            "r": 6,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 0,
+            "p": 0.4,
+            "p_hex": "0x1.999999999999ap-2",
+            "r": 7,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "p": 0.35,
+          "p_hex": "0x1.6666666666666p-2",
+          "r_recovered": 6,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "ARITHMETIC_NUMPY_FLIP": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 2,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 2,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 0,
+            "p": 0.2,
+            "p_hex": "0x1.999999999999ap-3",
+            "r": 3,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 2,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "p": 0.2,
+          "p_hex": "0x1.999999999999ap-3",
+          "r_recovered": 3,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "ARITHMETIC_TIE": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 2,
+            "p": 0.45,
+            "p_hex": "0x1.ccccccccccccdp-2",
+            "r": 8,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 3
+          },
+          "MATH_FSUM": {
+            "degenerate": 2,
+            "p": 0.45,
+            "p_hex": "0x1.ccccccccccccdp-2",
+            "r": 8,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 3
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 2,
+            "p": 0.45,
+            "p_hex": "0x1.ccccccccccccdp-2",
+            "r": 8,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 3
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 2,
+            "p": 0.4,
+            "p_hex": "0x1.999999999999ap-2",
+            "r": 7,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 1
+          }
+        },
+        "literal_original": {
+          "p": 0.45,
+          "p_hex": "0x1.ccccccccccccdp-2",
+          "r_recovered": 8,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "CE1_RUNNABILITY": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+            "status": "NOT_RUN"
+          },
+          "MATH_FSUM": {
+            "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+            "status": "NOT_RUN"
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+            "status": "NOT_RUN"
+          }
+        },
+        "literal_original": {
+          "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+          "simulation_raw_p": "NaN",
+          "simulation_raw_p_hex": null,
+          "status": "DIAGNOSTIC_FAIL_CLOSED_BOUNDARY"
+        }
+      },
+      "CE2_BLOCKS_AND_DEGENERACY": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 1,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 1,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 1,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "p": 0.05,
+          "p_hex": "0x1.999999999999ap-5",
+          "r_recovered": 0,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "CE3_CONTROL": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "p": 0.05,
+          "p_hex": "0x1.999999999999ap-5",
+          "r_recovered": 0,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "CE4_DEGENERACY": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 1,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 1,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 1,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 1,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "p": 0.1,
+          "p_hex": "0x1.999999999999ap-4",
+          "r_recovered": 1,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "CE5_BLOCK_COUNT": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 0,
+            "p": 0.3,
+            "p_hex": "0x1.3333333333333p-2",
+            "r": 5,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 0,
+            "p": 0.3,
+            "p_hex": "0x1.3333333333333p-2",
+            "r": 5,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "degenerate": 0,
+            "p": 0.3,
+            "p_hex": "0x1.3333333333333p-2",
+            "r": 5,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 0,
+            "p": 0.3,
+            "p_hex": "0x1.3333333333333p-2",
+            "r": 5,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "p": 0.3,
+          "p_hex": "0x1.3333333333333p-2",
+          "r_recovered": 5,
+          "status": "EXACT_P_HEX_MATCH"
+        }
+      },
+      "UNDEFINED_ORIGINAL": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+            "status": "NOT_RUN"
+          },
+          "MATH_FSUM": {
+            "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+            "status": "NOT_RUN"
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+            "status": "NOT_RUN"
+          }
+        },
+        "literal_original": {
+          "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+          "simulation_raw_p": 0.05,
+          "simulation_raw_p_hex": "0x1.999999999999ap-5",
+          "status": "DIAGNOSTIC_FAIL_CLOSED_BOUNDARY"
+        }
+      }
+    },
+    "cpython313_numpy224": {
+      "ARITHMETIC_LEFT_SUM": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 1,
+            "p": 0.35,
+            "p_hex": "0x1.6666666666666p-2",
+            "r": 6,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 1,
+            "p": 0.35,
+            "p_hex": "0x1.6666666666666p-2",
+            "r": 6,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 0,
+            "p": 0.4,
+            "p_hex": "0x1.999999999999ap-2",
+            "r": 7,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+          "status": "NOT_RUN"
+        }
+      },
+      "ARITHMETIC_NUMPY_FLIP": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 2,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 2,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 2,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+          "status": "NOT_RUN"
+        }
+      },
+      "ARITHMETIC_TIE": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 2,
+            "p": 0.45,
+            "p_hex": "0x1.ccccccccccccdp-2",
+            "r": 8,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 3
+          },
+          "MATH_FSUM": {
+            "degenerate": 2,
+            "p": 0.45,
+            "p_hex": "0x1.ccccccccccccdp-2",
+            "r": 8,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 3
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 2,
+            "p": 0.4,
+            "p_hex": "0x1.999999999999ap-2",
+            "r": 7,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 1
+          }
+        },
+        "literal_original": {
+          "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+          "status": "NOT_RUN"
+        }
+      },
+      "CE1_RUNNABILITY": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+            "status": "NOT_RUN"
+          },
+          "MATH_FSUM": {
+            "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+            "status": "NOT_RUN"
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "reason": "FEWER_THAN_TWO_VARIANCE_BLOCKS",
+            "status": "NOT_RUN"
+          }
+        },
+        "literal_original": {
+          "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+          "status": "NOT_RUN"
+        }
+      },
+      "CE2_BLOCKS_AND_DEGENERACY": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 1,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 1,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 1,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+          "status": "NOT_RUN"
+        }
+      },
+      "CE3_CONTROL": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 0,
+            "p": 0.05,
+            "p_hex": "0x1.999999999999ap-5",
+            "r": 0,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+          "status": "NOT_RUN"
+        }
+      },
+      "CE4_DEGENERACY": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 1,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 1,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 1,
+            "p": 0.1,
+            "p_hex": "0x1.999999999999ap-4",
+            "r": 1,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+          "status": "NOT_RUN"
+        }
+      },
+      "CE5_BLOCK_COUNT": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "degenerate": 0,
+            "p": 0.3,
+            "p_hex": "0x1.3333333333333p-2",
+            "r": 5,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "MATH_FSUM": {
+            "degenerate": 0,
+            "p": 0.3,
+            "p_hex": "0x1.3333333333333p-2",
+            "r": 5,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "degenerate": 0,
+            "p": 0.3,
+            "p_hex": "0x1.3333333333333p-2",
+            "r": 5,
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+            "tie": 0
+          }
+        },
+        "literal_original": {
+          "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+          "status": "NOT_RUN"
+        }
+      },
+      "UNDEFINED_ORIGINAL": {
+        "candidates": {
+          "ACTUAL_PYTHON_BUILTIN_SUM": {
+            "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+            "status": "NOT_RUN"
+          },
+          "MATH_FSUM": {
+            "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+            "status": "NOT_RUN"
+          },
+          "NUMPY_CUMULATIVE_2_3_5": {
+            "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+            "status": "NOT_RUN"
+          },
+          "PYTHON_311_LEFT_SUM_RECONSTRUCTION": {
+            "reason": "UNDEFINED_ORIGINAL_STATISTIC",
+            "status": "NOT_RUN"
+          }
+        },
+        "literal_original": {
+          "reason": "NUMPY_2_3_5_NOT_INSTALLED_FOR_THIS_RUNTIME",
+          "status": "NOT_RUN"
+        }
+      }
+    }
+  },
+  "source_HEAD": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "source_bindings": {
+    "implementation/reports/track_c_c8_a6_method_decision_package_2026-10-02.md": {
+      "git_blob": "54872fdf13a66d848772bb62dfdb2f7138170fb6",
+      "sha256": "b98c35420b529e4b9b02e429115ff0cd6c24339de01af074f6731b3264656042"
+    },
+    "implementation/reports/track_c_c8_a6_method_simulation_source_2026-10-02.py": {
+      "git_blob": "e112f41f34d4ead287699657750875770b4c4705",
+      "sha256": "c1f56a3f709c5fed65336fb5f33473f957c8caad706bfc4e48534ca3161f34ce"
+    },
+    "implementation/reports/track_c_c8_gsup_mb_vs_kernel_counterexample_2026-10-03.md": {
+      "git_blob": "62d8cd4c451325051a07b003a801d8454bff3b21",
+      "sha256": "2157fd76c53d19132f7ea497ad473d81110f41dae9b4b75768d1a5de213e4a1c"
+    },
+    "implementation/reports/track_c_c8_gsup_mb_vs_kernel_counterexample_source_2026-10-03.py": {
+      "git_blob": "f2b2b1e53dfb70beee74baf0b34b178e6a20e0c3",
+      "sha256": "403d662c1f8d4176bd3004e9ce0b5557f9c28e14a9ad308412d2b38995c7721b"
+    },
+    "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json": {
+      "git_blob": "a5279d516c028f0a8cb9166ee2d54366da00877b",
+      "sha256": "0fc8ed2b55b3aba4cf566f0e7c9e7146324ae4aec5e22c307fd9a9a8ae9991d8"
+    },
+    "implementation/src/investment_system/evl/statistical_kernels.py": {
+      "git_blob": "28e1c1842625bacabc6ffc9c9b172261e7d6585a",
+      "sha256": "61f70937456d8a54cb027a7522f2a2d1c890bccc92f9f19de28082a2001e12d1"
+    },
+    "implementation/src/investment_system/evl/superiority.py": {
+      "git_blob": "8a1254d7b77514f6015dfff4af0e4a53f57f22af",
+      "sha256": "c61268921e5a9147e90810747e9ab6cd2896dd2fab89cb314d390dc0ff760498"
+    },
+    "implementation/tools/gsup_mb_reduction_diagnostic.py": {
+      "git_blob": "5baa1adb6db32f0f1f8ff3f0dffbfd34e9086571",
+      "sha256": "b793a1e76d2a4dbe5f79152a04b18ebe0aa5006f0efd2e1542fc720b701ab3d5"
+    }
+  },
+  "status": "PASS_EVIDENCE_ONLY_NO_REDUCTION_SELECTED"
+}

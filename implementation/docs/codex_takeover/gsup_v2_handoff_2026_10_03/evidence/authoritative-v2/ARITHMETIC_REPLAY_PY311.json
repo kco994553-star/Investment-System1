@@ -1,0 +1,196 @@
+{
+  "Holdout": 0,
+  "actual_CAL_VERIFY": 0,
+  "arithmetic_contract": {
+    "block_sums": "DIRECT",
+    "degeneracy": "SQRT_V_OVER_N_GT_ZERO",
+    "reducer": "MATH_FSUM",
+    "replicate_aggregation": "BLOCK_GROUPING"
+  },
+  "cases": [
+    {
+      "fixture_hash": "a5815dcb4da092b4c06bf0d831cc82ff8c1352f1a220ca6e6bbccd838b5b5471",
+      "id": "CE1_RUNNABILITY",
+      "status": "MATCHED_NOT_RUN"
+    },
+    {
+      "degenerate": 1,
+      "exceedances": 0,
+      "fixture_hash": "f3ebe1776122391aa9bca241e133f89200fd0dd4ce9436a607179e2a308a3cfd",
+      "id": "CE2_BLOCKS_AND_DEGENERACY",
+      "indices_hash": "069e4b525c5de64e4f9d468318225709710207fc34b986bad03c24829705e3c5",
+      "oracle_exact_hash": "b7e2fe4a2a4927d3ea7742434a3c4ca055242f05215707c6f38270a240116221",
+      "p_value": {
+        "decimal": "0.05",
+        "hex": "0x1.999999999999ap-5"
+      },
+      "production_exact_hash": "b7e2fe4a2a4927d3ea7742434a3c4ca055242f05215707c6f38270a240116221",
+      "replicate_trace_exact_hash": "b6eba795e5c5f1cf4da2c36c95c110fa1d3459178d7b100a4316e2735c8ece3e",
+      "status": "EXACT_DECIMAL_AND_HEX_PASS",
+      "ties": 0,
+      "variance_blocks": 2
+    },
+    {
+      "degenerate": 0,
+      "exceedances": 0,
+      "fixture_hash": "832fca8d8ac5273812712a6671911fe6a7b5dd65fe596b54cbbd8eda15588445",
+      "id": "CE3_CONTROL",
+      "indices_hash": "b1d1ba61efce442b97805a369e740238c84fd4e65a42cfaf26e2aec45b8d9a17",
+      "oracle_exact_hash": "fe4b0e1b2f16455baacd036dde3b2c8338c0b93a180147805e6779edd99a28d7",
+      "p_value": {
+        "decimal": "0.05",
+        "hex": "0x1.999999999999ap-5"
+      },
+      "production_exact_hash": "fe4b0e1b2f16455baacd036dde3b2c8338c0b93a180147805e6779edd99a28d7",
+      "replicate_trace_exact_hash": "f858ea31a0fe117fb1cc0ed04cb2a3262027627316fdddaef52597460756a634",
+      "status": "EXACT_DECIMAL_AND_HEX_PASS",
+      "ties": 0,
+      "variance_blocks": 2
+    },
+    {
+      "degenerate": 1,
+      "exceedances": 1,
+      "fixture_hash": "a9393688698e0612db182b30596e57db4d1b8363e9921d5c34c3b726986fd080",
+      "id": "CE4_DEGENERACY",
+      "indices_hash": "53f20709dba170885fb9e52960b4b5b88d042241734e845a1d70d817f4e9a616",
+      "oracle_exact_hash": "a643a12bb74d215a4e441a9675b74998cf9ce2a1459078a27eb9d52cbe9fc480",
+      "p_value": {
+        "decimal": "0.1",
+        "hex": "0x1.999999999999ap-4"
+      },
+      "preserved_v1_p_value": {
+        "decimal": "0.15",
+        "hex": "0x1.3333333333333p-3"
+      },
+      "production_exact_hash": "a643a12bb74d215a4e441a9675b74998cf9ce2a1459078a27eb9d52cbe9fc480",
+      "replicate_trace_exact_hash": "7c718810779c974cacf596db6b0de3f2a16c26122438bc74faae1d9c27bbf671",
+      "status": "EXACT_DECIMAL_AND_HEX_PASS",
+      "ties": 0,
+      "variance_blocks": 2
+    },
+    {
+      "degenerate": 0,
+      "exceedances": 5,
+      "fixture_hash": "6b85eb72fbd68f27eeead6652b52756bb9797bfa510b7da894bb617c171e689e",
+      "id": "CE5_BLOCK_COUNT",
+      "indices_hash": "1a916753c30156dcc0fd7034e6ad06776a80a277c223517eb6d9be0be5609678",
+      "oracle_exact_hash": "e5ba1e1cf5725999c18d04745dfcfb336a3709709a82ace52a34c5f574676143",
+      "p_value": {
+        "decimal": "0.3",
+        "hex": "0x1.3333333333333p-2"
+      },
+      "production_exact_hash": "e5ba1e1cf5725999c18d04745dfcfb336a3709709a82ace52a34c5f574676143",
+      "replicate_trace_exact_hash": "4ab8ee6fc50851a9473838c7958a6d1412c9faf6ab965bcf6586cdf47bd3b7eb",
+      "status": "EXACT_DECIMAL_AND_HEX_PASS",
+      "ties": 0,
+      "variance_blocks": 3
+    },
+    {
+      "degenerate": 2,
+      "exceedances": 1,
+      "fixture_hash": "56d19d8e27fab03c2d1c0c03b879b29590562aca0fa7ee322991695eb356aedc",
+      "id": "ARITHMETIC_NUMPY_FLIP",
+      "indices_hash": "00a884bc8f3db281c4ca15a8d8027812f582e374a5ecd28cb3ff2ad019e3d633",
+      "oracle_exact_hash": "0a2198756649878ab0e57cd25e5184256f06e924a294b86176f04c5106b78969",
+      "p_value": {
+        "decimal": "0.1",
+        "hex": "0x1.999999999999ap-4"
+      },
+      "production_exact_hash": "0a2198756649878ab0e57cd25e5184256f06e924a294b86176f04c5106b78969",
+      "replicate_trace_exact_hash": "609739f3d66f3d65c082184d110473192d3249ab21e6ca6214921215a3fc0c02",
+      "status": "EXACT_DECIMAL_AND_HEX_PASS",
+      "ties": 0,
+      "variance_blocks": 2
+    },
+    {
+      "degenerate": 1,
+      "exceedances": 6,
+      "fixture_hash": "4ab547d25dd19ce5ef0c85fb2d2fa7fa089a7aa140235a480415c0a079490b6b",
+      "id": "ARITHMETIC_LEFT_SUM",
+      "indices_hash": "1fb9ff099a6e14766979d541b0fc0004148d387e313cb0fbe78fc1a5d6173d7d",
+      "oracle_exact_hash": "907ce22cf11ddfbd5e3bd1117d43b297b3ae22e395ff5d94e084b91be40e6536",
+      "p_value": {
+        "decimal": "0.35",
+        "hex": "0x1.6666666666666p-2"
+      },
+      "production_exact_hash": "907ce22cf11ddfbd5e3bd1117d43b297b3ae22e395ff5d94e084b91be40e6536",
+      "replicate_trace_exact_hash": "1a526bfa147f4b076677e4de35a33bb919086a55a2167b8de853d7064afb2d43",
+      "status": "EXACT_DECIMAL_AND_HEX_PASS",
+      "ties": 0,
+      "variance_blocks": 2
+    },
+    {
+      "degenerate": 2,
+      "exceedances": 8,
+      "fixture_hash": "5a3db30c504a85cc40e8127db3ea43b3fa54f3d85a2162dd6e8b3b84a0eea51f",
+      "id": "ARITHMETIC_TIE",
+      "indices_hash": "14d1211cc75ab16b36e263fb119e1e865b2863974e3be9da517e3286072da9d3",
+      "oracle_exact_hash": "1adafc8ea3c110f2c47cbfc71f8c931ebf1c7d78c593998b6916627aa6960e29",
+      "p_value": {
+        "decimal": "0.45",
+        "hex": "0x1.ccccccccccccdp-2"
+      },
+      "production_exact_hash": "1adafc8ea3c110f2c47cbfc71f8c931ebf1c7d78c593998b6916627aa6960e29",
+      "replicate_trace_exact_hash": "5d07a2f0baf278b8f1cb1c4352ee2713a66dd234052516a0cc7d505e2a77d984",
+      "status": "EXACT_DECIMAL_AND_HEX_PASS",
+      "ties": 3,
+      "variance_blocks": 2
+    },
+    {
+      "fixture_hash": "61fa76819abd5ad0d757d1b4a646bfb87ed1cca756046dd45725ec667db898a4",
+      "id": "UNDEFINED_ORIGINAL",
+      "status": "MATCHED_NOT_RUN"
+    },
+    {
+      "degenerate": 2,
+      "exceedances": 10,
+      "fixture_hash": "8b30b8b51e23247572c172c9e9f32e79c88bc6ff8eeebeba23aa19e40c69e0ae",
+      "id": "OPERAND_SEED275",
+      "indices_hash": "4dd5aa5799db7317b5f3abbe3b00c2fac4d5a9939606791c6160764c78868591",
+      "oracle_exact_hash": "9059698057cb0976d41e57d6c30bb43f4d189a2775e3c82c7dc1fe58aa0ee7f9",
+      "p_value": {
+        "decimal": "0.55",
+        "hex": "0x1.199999999999ap-1"
+      },
+      "production_exact_hash": "9059698057cb0976d41e57d6c30bb43f4d189a2775e3c82c7dc1fe58aa0ee7f9",
+      "replicate_trace_exact_hash": "8cf8fa012bbbf565f96dcd56ca6f32cda81402d06eb6c43e1c222424199c0f24",
+      "status": "EXACT_DECIMAL_AND_HEX_PASS",
+      "ties": 0,
+      "variance_blocks": 2
+    },
+    {
+      "degenerate": 9,
+      "exceedances": 1,
+      "fixture_hash": "b10579106099d1a25323abe86f3b1cbc41843033006c3fd518b92f0de30ebd0b",
+      "id": "STANDARD_ERROR_UNDERFLOW",
+      "indices_hash": "5350edfbe52c0ecd8bea96aa051020b7a1ba55d4a81fae8374c48450c9133d87",
+      "oracle_exact_hash": "a7827ade004909ec1c4f0d97de36a9027a7e0e1c677f5fda77cdb9eee1ab5d9a",
+      "p_value": {
+        "decimal": "0.1",
+        "hex": "0x1.999999999999ap-4"
+      },
+      "production_exact_hash": "a7827ade004909ec1c4f0d97de36a9027a7e0e1c677f5fda77cdb9eee1ab5d9a",
+      "replicate_trace_exact_hash": "03b72460d3dd4f75c1886f29398b75a30b0cf39cce3126127f398ccda81807ee",
+      "status": "EXACT_DECIMAL_AND_HEX_PASS",
+      "ties": 0,
+      "variance_blocks": 5
+    }
+  ],
+  "grants": 0,
+  "historical_v1_rewritten": false,
+  "numeric_defaults": 0,
+  "numerical_output_sha256": "d4642fa50523c75f4278afc5463c9751d582c427077916788e8fd39f1f99cfd5",
+  "runtime": {
+    "implementation": "CPython",
+    "python": "3.11.16"
+  },
+  "scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY",
+  "source_sha256": {
+    "docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/authoritative-v2/CDR010_APPROVAL.json": "2e0ad6e96bd1b0494fd739cc55a03b337d326fd6dff2863203ebc9b6bd036231",
+    "src/investment_system/evl/superiority.py": "c61268921e5a9147e90810747e9ab6cd2896dd2fab89cb314d390dc0ff760498",
+    "src/investment_system/evl/superiority_v2.py": "41f67dd28200370f472016e16214ee08edb31dcd75aba91726494799a6614603",
+    "tests/evl_c8_gsup_v2_oracle.py": "e2db7498b6819783ac5d977c34950078f632c4e4dbb2ddf973b26cace8a9c6f5",
+    "tools/verify_gsup_v2_arithmetic.py": "fa4295124667de17eb3123cefdc16565d353a105ec575cbb07bcb1ea14a308fc"
+  },
+  "status": "PASS"
+}

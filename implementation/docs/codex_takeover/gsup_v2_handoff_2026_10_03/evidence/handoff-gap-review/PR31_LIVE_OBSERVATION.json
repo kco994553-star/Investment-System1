@@ -1,0 +1,51 @@
+{
+  "observed_at": "2026-10-03T10:24:05.937Z",
+  "source": "github_get_pr_info read-only connector",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/31",
+      "number": 31,
+      "state": "open",
+      "merged": false,
+      "mergeable": true,
+      "draft": true,
+      "body": "## Result\nRecords the user-approved M-B method decision and synthetic source identity decision additively. Preserves G-SUP v1 source, Frozen tests/evidence and historical results. Builds on the exact PR #30 combined-integration head 86ad3628dd5c62c6d873e42511e577f24f4fb588; this is a Draft proposal, not canonical completion.\n\nSynthetic source descriptors bind trusted, pre-outcome registered source/vintage/sample identity and unchanged profile/role groups. Reencoding, relabeling and campaign changes cannot bypass consumption under the pinned authority. Durable claim/access intents and fail-closed lineage/provider checks cover crashes, interrupted journals and response mismatches. An identity-only compatibility wrapper delegates the unchanged v1 kernel; it does not activate authoritative M-B v2.\n\n## Verification\nLocal Python 3.11.16 / NumPy 2.3.5 / pytest 9.1.1 full regression: 1,277 PASS, zero failures/errors/skips (baseline 1,165; 112 new cases). Tested source 3b6ed7eac3fe8f0f852b4d42eb57cf5f3ff497eb; final 675d0d298fbaab5b8473ed048a561ef84e2f3e78 changes only the CI protection guard/path routing. That guard separately passes and preserves 41 exact owner EVL files while permitting precisely six approved additions. Independent diagnostic, adversarial identity tests and unmocked kernel-result invariance are committed. Final GitHub Actions: eight new workflows SUCCESS on final675, each 1,277 PASS. Native37106686279 actually checks out675d and validates producer-to-existing-Web6 groups; independent Macro11PASS actually checks out4a07099. Inherited workflows check out synthetic merge547676da75308b02a35f9cef1b5be3b028bdf101 (distinct commit, identical tree0d4852e3b682cad038fd432dc1625167022ca82e). All three artifact digests match local SHA256. Old1165 tests are reconfirmed; only112 added cases count as test delta.\n\n## Remaining decision\nM is approved. Active authoritative M-B v2 is NOT_IMPLEMENTED_PENDING_ARITHMETIC_REDUCTION. Independent fixed-input/Frozen-C6-index counterexamples show fsum p=.10 vs literal NumPy reduction p=.20. Exact historical NumPy version was not recorded. Arithmetic selection materially changes validation results and requires the user's choice; this PR selects none. See implementation/reports/gsup_v2_oracle/ARITHMETIC_REDUCTION_REVIEW_2026-10-03.md.\n\nNo actual numeric configuration/defaults, actual CAL_VERIFY access, Holdout consumption, foundation-registry unification, C8 Freeze, publication/Official grant, canonical merge or deployment. Trusted synthetic authority configuration is external to untrusted attempt specs; privileged authority replacement/deletion is outside the protocol threat model.\n\nBRANCH_STATE: descriptor and diagnostics synthetically verified, exact675 published with8/8 final workflowsSUCCESS. INTEGRATION_STATE: Draft proposal atop exactPR30/86ad, not merged. CANONICAL_STATE: unchanged b8e39a2196a6d7794a04a0cd5393c68329e126ca. C8 remains SYNTHETIC_VERIFIED / NOT_FROZEN.\n\n\nGlobal read-only reconciliation: current6dedaaf36a417e9301ba22ea9595bff5f37acb38 CDR006-009 preserves Codex implementation ownership and Claude integration-owner read-only review; no shared Global write by Codex. External PR32/33 are separate owner evidence proposals and are not included in this green675 source. Final scoped handoff and portable Actions evidence are published in audit PR28 at exacte07beb9ecd77bdeb0cc94465259caa8c2f022f1f under implementation/docs/codex_takeover/CHECKPOINT_2026-10-03_GSUP_V2_SOURCE_IDENTITY.md.\n\nImmutable checkpoint: https://github.com/kco994553-star/Investment-System1/blob/e07beb9ecd77bdeb0cc94465259caa8c2f022f1f/implementation/docs/codex_takeover/CHECKPOINT_2026-10-03_GSUP_V2_SOURCE_IDENTITY.md\nLater read-only Global6cd7eeedda28e3a15bf8e27655d35d2b4d9ee971 GIE006 independently validates the PR30 baseline and owner adoptions. Its old no-PR/checkpoint-state routing is superseded by actualPR31 and this final675/e07 scoped handoff. Separate Source/Web hardening work preserves this675 checkpoint.\n",
+      "title": "Track C: approved synthetic source identity and M-B arithmetic review",
+      "base": "codex/combined-integration-2026-10-03",
+      "base_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "head": "codex/track-c-gsup-v2-2026-10-03",
+      "head_sha": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "head_repo_id": 1379547477,
+      "head_repo_full_name": "kco994553-star/Investment-System1",
+      "merge_commit_sha": "547676da75308b02a35f9cef1b5be3b028bdf101",
+      "user": {
+        "login": "kco994553-star",
+        "name": "kco994553-star",
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/331178773?v=4",
+        "id": 331178773
+      },
+      "requested_reviewers": null,
+      "requested_team_reviewers": null,
+      "diff": null,
+      "comments": null,
+      "created_at": "2026-10-03T07:32:27Z",
+      "updated_at": "2026-10-03T08:13:15Z",
+      "closed_at": null,
+      "merged_at": null,
+      "commits": 14,
+      "changed_files": 31,
+      "additions": 16719,
+      "deletions": 10,
+      "display_url": "https://github.com/kco994553-star/Investment-System1/pull/31",
+      "display_title": "Track C: approved synthetic source identity and M-B arithmetic review"
+    },
+    "isError": false
+  }
+}

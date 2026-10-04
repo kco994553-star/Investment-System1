@@ -1,0 +1,89 @@
+{
+  "Actions": "NOT_RUN_BY_THIS_WORKER",
+  "acceptance_completed": 4,
+  "acceptance_total": 4,
+  "actual_preserved_v1_replays": 3,
+  "authoritative_v2_implemented": false,
+  "cause": "DEGENERATE_SCORING_ONLY_FOR_CE4",
+  "exact_helper_AST_replays": 3,
+  "files": [
+    {
+      "bytes": 5408,
+      "path": "CE4_APPEND_ONLY_RECONCILIATION_2026-10-03.md",
+      "sha256": "1460ff57471c8f5de97e1ddf776ea0047350f10f841ced085ca407c1f1a998b7"
+    },
+    {
+      "bytes": 1986,
+      "path": "EXECUTION_COMMANDS.json",
+      "sha256": "0ad4fb227d86a091398086a077485b9966cea1f3fa231eda7d7af804fb48024a"
+    },
+    {
+      "bytes": 34900,
+      "path": "cpython311_numpy235.json",
+      "sha256": "4796cef9cbb1502b75ab49b790f43c51d03e86397155c2c2f28de7ff3c9c4ef9"
+    },
+    {
+      "bytes": 0,
+      "path": "cpython311_numpy235.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 130,
+      "path": "cpython311_numpy235.stdout.log",
+      "sha256": "3629d8efc95c069015d86d61aff020ce43b19e7fdfbf03347c79d28e9f6fa687"
+    },
+    {
+      "bytes": 34864,
+      "path": "cpython312_numpy235.json",
+      "sha256": "e400ec8eec9139cc5c67c68167662f28062c9d1609809a5181781e772d32d2c3"
+    },
+    {
+      "bytes": 0,
+      "path": "cpython312_numpy235.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 130,
+      "path": "cpython312_numpy235.stdout.log",
+      "sha256": "97ce02a3db6b0ff5180127c6547beedf2663c21c08add30349480aa7d846374f"
+    },
+    {
+      "bytes": 34765,
+      "path": "cpython313_numpy224.json",
+      "sha256": "720eb5887912d75e865bacdcbb39f0e26e85aa47e98da21c3c95170b92188f55"
+    },
+    {
+      "bytes": 0,
+      "path": "cpython313_numpy224.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 129,
+      "path": "cpython313_numpy224.stdout.log",
+      "sha256": "2c3db3ff5085d3f60d30e391efecd97c029778101bd4a242789463fd747bf5b5"
+    },
+    {
+      "bytes": 7647,
+      "path": "replay_exact_ce4.py",
+      "sha256": "48cdb61d447d1bfcf1402c80f95aee8490397cb256cb52029153291aeee0844b"
+    }
+  ],
+  "historical_direction": "M-B=.10/r1 versus v1=.15/r2; both degenerate1",
+  "new_fixtures": 0,
+  "new_repository_tests": 0,
+  "prior_arithmetic_package_manifest_entries_preserved": 26,
+  "prior_arithmetic_package_manifest_sha256": "8daa09d6adcdc88a77a573aea192c4c8b908676dfb99544731c0b6cb6178fa40",
+  "recorded_at_utc": "2026-10-03T10:34:43.108205+00:00",
+  "safety": {
+    "C8_Freeze": 0,
+    "CAL_VERIFY_accesses": 0,
+    "Holdout_consumptions": 0,
+    "canonical_merges": 0,
+    "numeric_configuration_choices": 0,
+    "publication": 0
+  },
+  "selected_reduction": null,
+  "status": "HANDOFF_READY_CE4_RECONCILIATION_ONLY",
+  "unique_changed_replicate_1_based": 10,
+  "whole_regression": "NOT_RUN_BY_THIS_WORKER"
+}
