@@ -1,0 +1,95 @@
+{
+  "kind": "FINAL_PREPUBLICATION_GITHUB_FRESH_READ",
+  "recorded_at": "2026-10-04T23:31:00.594Z",
+  "chart": {
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/41",
+    "head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+    "branch": "codex/chart-contract-mcp-api-v0-1",
+    "state": "open",
+    "draft": true,
+    "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "integration": {
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/42",
+    "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+    "base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+    "state": "open",
+    "draft": true,
+    "merge": "0db0d3087ac1a0dff805348de060f23cae451a2d"
+  },
+  "canonical": {
+    "branch": "claude/investment-system-top500-validation-alrugm",
+    "head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "global": {
+    "branch": "integration/global-handoff-v1",
+    "head": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e"
+  },
+  "owner_runs": [
+    {
+      "id": 37234682865,
+      "name": "technical-real-model",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682865",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "status": "completed",
+      "conclusion": "success",
+      "updated_at": "2026-10-04T21:16:03Z"
+    },
+    {
+      "id": 37234682891,
+      "name": "us-equity-session",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682891",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "status": "completed",
+      "conclusion": "success",
+      "updated_at": "2026-10-04T21:18:41Z"
+    },
+    {
+      "id": 37234682853,
+      "name": "qgv-invalidation-binding",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682853",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "status": "completed",
+      "conclusion": "success",
+      "updated_at": "2026-10-04T21:22:10Z"
+    },
+    {
+      "id": 37234682866,
+      "name": "p01-research-publication",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682866",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "status": "completed",
+      "conclusion": "success",
+      "updated_at": "2026-10-04T21:22:36Z"
+    },
+    {
+      "id": 37234682873,
+      "name": "technical-real-producer",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682873",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "status": "completed",
+      "conclusion": "success",
+      "updated_at": "2026-10-04T21:22:17Z"
+    },
+    {
+      "id": 37234682890,
+      "name": "sec-primary-disclosure",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682890",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "status": "completed",
+      "conclusion": "success",
+      "updated_at": "2026-10-04T21:22:26Z"
+    },
+    {
+      "id": 37234682864,
+      "name": "track-c-fpia",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682864",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "status": "completed",
+      "conclusion": "success",
+      "updated_at": "2026-10-04T21:55:07Z"
+    }
+  ],
+  "baseline_tree": "d1db6c66b4897db6294044ae40b2f433cffd8134",
+  "scope": "Read-only remote evidence; no new implementation grant, FPIA rerun, independent closure or canonical merge"
+}

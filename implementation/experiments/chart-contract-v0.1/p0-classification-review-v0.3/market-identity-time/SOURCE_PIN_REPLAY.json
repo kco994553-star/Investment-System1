@@ -1,0 +1,88 @@
+{
+  "sources": [
+    {
+      "tree": "chart",
+      "path": "implementation/src/investment_system/contracts/global_universe.py",
+      "head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+      "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+      "git_blob": "4dcbb8d7cb65aa35e91d680ea19b169346defee8"
+    },
+    {
+      "tree": "chart",
+      "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+      "head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+      "sha256": "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534",
+      "git_blob": "2670eee1b5d9f093875ab41100e09d866d7d5e91"
+    },
+    {
+      "tree": "chart",
+      "path": "implementation/tools/fetch_real_data.py",
+      "head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+      "sha256": "840005fa3fff7f3dfb30de08de1ae6d404547fccf577e1ea5f2ac7db50444889",
+      "git_blob": "b5dbcedd43026bc99b108302d45aa9678606b5c5"
+    },
+    {
+      "tree": "chart",
+      "path": "implementation/reports/us_sec_tickers_listings.json",
+      "head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+      "sha256": "f532cc80edf5305f787e1091cc24244423acd9084375f01727bbd4508d351316",
+      "git_blob": "747a1219e50c639fc5929afe643c6d83c92d30d4"
+    },
+    {
+      "tree": "integration_readonly",
+      "path": "implementation/src/investment_system/contracts/global_universe.py",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+      "git_blob": "4dcbb8d7cb65aa35e91d680ea19b169346defee8"
+    },
+    {
+      "tree": "integration_readonly",
+      "path": "implementation/src/investment_system/sessions/listing.py",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "sha256": "6e4ba184c3c707de378f91a9243b7a377cac59d892893d4377588664895112c4",
+      "git_blob": "0bc31f63f79f565234b5976233a7063016d7f287"
+    },
+    {
+      "tree": "integration_readonly",
+      "path": "implementation/src/investment_system/sessions/calendar.py",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "sha256": "01fd84ef6e64db1bc8b588127953efb15395abef375b5529b56b4ef7e0f3b19b",
+      "git_blob": "3c31c8ef1d920f51cb8579f66f00f2d78ee16fc6"
+    },
+    {
+      "tree": "integration_readonly",
+      "path": "implementation/src/investment_system/sessions/binder.py",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "sha256": "a030a19fbbe812b66a7527b22aa502547d424f14b7ca817b3016046a37880e5a",
+      "git_blob": "771baf79a43caa3804e0478a87c417ac6fdc25c9"
+    },
+    {
+      "tree": "integration_readonly",
+      "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "sha256": "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534",
+      "git_blob": "2670eee1b5d9f093875ab41100e09d866d7d5e91"
+    },
+    {
+      "tree": "integration_readonly",
+      "path": "implementation/src/investment_system/technical/pit_market.py",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "sha256": "9c2a56deec51d6b4cd97d9d9ef5afc9236a3bb32018918b6b7e575fb0119f32e",
+      "git_blob": "85dd0c8ad3b5263e1067e09e775a495d99ae9f9a"
+    },
+    {
+      "tree": "integration_readonly",
+      "path": "implementation/tools/fetch_real_data.py",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "sha256": "840005fa3fff7f3dfb30de08de1ae6d404547fccf577e1ea5f2ac7db50444889",
+      "git_blob": "b5dbcedd43026bc99b108302d45aa9678606b5c5"
+    },
+    {
+      "tree": "integration_readonly",
+      "path": "implementation/reports/us_sec_tickers_listings.json",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "sha256": "f532cc80edf5305f787e1091cc24244423acd9084375f01727bbd4508d351316",
+      "git_blob": "747a1219e50c639fc5929afe643c6d83c92d30d4"
+    }
+  ]
+}

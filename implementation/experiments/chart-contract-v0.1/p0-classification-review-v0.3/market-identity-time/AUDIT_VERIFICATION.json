@@ -1,0 +1,125 @@
+{
+  "kind": "SOURCE_AUDIT_VERIFICATION_NOT_PRODUCTION_TEST",
+  "checked_at": "2026-10-04T23:24:54.203297+00:00",
+  "symbol_count": 19,
+  "prior_original_raw_hashes_match": 19,
+  "current_sec_associations_match_existing_ciks": 17,
+  "official_source_hashes": [
+    {
+      "source_id": "sec_tickers_exchange",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "sec_association_documentation",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "tel_stock_info",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "hanmi_dart_identity",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "nasdaqtrader_calendar",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "nyse_hours_calendar",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "jpx_hours",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "jpx_2024_actual_go_live",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "jpx_calendar",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "krx_stock_hours",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "nasdaq_calendar_2021",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "nasdaq_calendar_2022",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "nasdaq_calendar_2023",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "nasdaq_calendar_2024",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "nasdaq_calendar_2025",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "nasdaq_system_hours",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "nasdaq_carter_2025_closure",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "gev_when_issued",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "gev_regular_way",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "yahoo_exchange_delay",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "asml_share_form",
+      "sha256_matches": true,
+      "bytes_matches": true
+    },
+    {
+      "source_id": "krx_kospi_csat_2025",
+      "sha256_matches": true,
+      "bytes_matches": true
+    }
+  ],
+  "historical_PIT_ready_count": 0,
+  "exact_quote_state_ready_count": 0,
+  "production_tests": "NOT_RUN",
+  "Actions": "NOT_RUN",
+  "FPIA": "NOT_RUN",
+  "new_grants": 0
+}

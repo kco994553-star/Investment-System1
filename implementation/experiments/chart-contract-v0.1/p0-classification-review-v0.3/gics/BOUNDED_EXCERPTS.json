@@ -1,0 +1,36 @@
+{
+  "kind": "BOUNDED_SOURCE_EXCERPTS_FOR_AUDIT_ONLY",
+  "recorded_at_utc": "2026-10-04T23:17:19.470779+00:00",
+  "not_taxonomy_or_assignment_dataset": true,
+  "excerpts": {
+    "GICS-S01": [
+      "Each company is assigned a single GICS® classification in each of the four tiers"
+    ],
+    "GICS-S02": [
+      "11 sectors, 25 industry groups, 74 industries, and 163 sub-industries."
+    ],
+    "GICS-S03": [
+      "Equity securities directly linked to a company have the same classification as the company."
+    ],
+    "GICS-S04": [
+      "GICS History includes classifications based on from and thru dates"
+    ],
+    "GICS-S05": [
+      "historical company-level GICS® codes and descriptions"
+    ],
+    "GICS-S06": [
+      "only internally for non-production purposes",
+      "unauthorized bots, scrapers, crawlers, AI agents, MCP servers or connectors"
+    ],
+    "GICS-S07": [
+      "personal, internal, non-commercial purposes",
+      "a classification system or historical databases"
+    ],
+    "GICS-S08": [
+      "after the close of business (ET) on Friday, March 17, 2023."
+    ],
+    "GICS-S09": [
+      "This consultation may or may not result in any changes to the GICS structure."
+    ]
+  }
+}

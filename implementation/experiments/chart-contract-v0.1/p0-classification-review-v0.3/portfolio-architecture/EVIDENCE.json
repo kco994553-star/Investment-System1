@@ -1,0 +1,222 @@
+{
+  "document_kind": "ADDITIVE_READ_ONLY_ARCHITECTURE_REVIEW",
+  "status": "PROPOSAL_NOT_ADOPTED",
+  "inspected_at_utc": "2026-10-04T23:17:26.347931+00:00",
+  "heads": {
+    "chart": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+    "integrated": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+  },
+  "scope_counts": {
+    "core": 81,
+    "extended": 24,
+    "research_candidate": 8
+  },
+  "source_pins": [
+    {
+      "source_tree": "chart",
+      "head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+      "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+      "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+      "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96",
+      "bytes": 4618,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "chart",
+      "head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+      "path": "implementation/experiments/chart-contract-v0.1/evidence/portfolio-reference-source.json",
+      "git_blob": "3928240e87a865a881788dc55c0ca33a352013d6",
+      "sha256": "a2056e061a99723dc48ab28349d4e30d461da9927588f2ed4fcc3783182537e8",
+      "bytes": 983,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "chart",
+      "head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-design/P0_CHART_CONTRACT_AND_WIRING_v0.1.md",
+      "git_blob": "798259b8411c54bdf49388479f5b69fe356d4826",
+      "sha256": "78eafedefcbecbf5b5ab19f170640413750a1ff0e768443184f36b9959bbb07a",
+      "bytes": 36459,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "chart",
+      "head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/P0_IMPLEMENTATION_PREREQUISITES_v0.2.md",
+      "git_blob": "e639934dd0d396385694262aed596be4f5fef6a2",
+      "sha256": "aac0d5f068e768a3952d5211626b6d04a4ecd2fd7d2a31579a0f3076433fe97c",
+      "bytes": 18383,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "chart",
+      "head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/portfolio/PORTFOLIO_SOURCE_READINESS.md",
+      "git_blob": "0820e824228a54643c05bea5b9fb917ccd2ade1f",
+      "sha256": "f622b4d4b0231a481595fa847dab9e00365833d80c4788516cf18fe0a0e2d66a",
+      "bytes": 20401,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "chart",
+      "head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+      "path": "QGV Portfolio · Specification v1.1.md",
+      "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+      "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e",
+      "bytes": 9158,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "integrated",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/personal/portfolio.py",
+      "git_blob": "9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e",
+      "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+      "bytes": 5986,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "integrated",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/personal/money.py",
+      "git_blob": "119b29dfec8ff50471bfbddca2591ff44fc7d291",
+      "sha256": "894e7cab7e3ca87dcad14ee644ef34448850698fb93dda600cd3aa75e0a37418",
+      "bytes": 2178,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "integrated",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/personal/ports.py",
+      "git_blob": "495e472fd87ea75ffc4a71e4169aec249cb25a99",
+      "sha256": "a4fa05cc660db1779eb44babbbb8568f0c97723dc1b74a722f977f338be670fb",
+      "bytes": 4257,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "integrated",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/contracts/models.py",
+      "git_blob": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+      "sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+      "bytes": 7067,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "integrated",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/contracts/portfolio_input.py",
+      "git_blob": "e8363f1c1da7f5f5c94c09fd84ed61e558fb561f",
+      "sha256": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+      "bytes": 1215,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "integrated",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/qgv/portfolio.py",
+      "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+      "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+      "bytes": 7686,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "integrated",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/qgv/identifiers.py",
+      "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+      "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+      "bytes": 3163,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "integrated",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/producers/adapters.py",
+      "git_blob": "55d690a6b5d96d5aa800d0b2c93714adaa78341c",
+      "sha256": "2be3d220c9b84c3bc4d51be48c17cce7b4f62c3c18e73bcc2f49d903a54b6549",
+      "bytes": 4912,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "integrated",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/product/entity_metadata.py",
+      "git_blob": "42202d4caeaffddb6325b5c48f4c59a42ae56576",
+      "sha256": "7837e316edb7330c60225c95cb3649c4d10bde2ce9bb8ac02ea9c977dd10f012",
+      "bytes": 16998,
+      "matches_pinned_blob_bytes": true
+    },
+    {
+      "source_tree": "integrated",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/product/web_assets/app.js",
+      "git_blob": "c00ec69fe9222aa5a1516d3f0cec6cd56ea62b25",
+      "sha256": "9774bee4b51b34ed68ce0467b01dc13028306c8f46589bd3e3283b2778a209f2",
+      "bytes": 38098,
+      "matches_pinned_blob_bytes": true
+    }
+  ],
+  "reference_replay": {
+    "reference_rows": 19,
+    "unique_source_holding_ids": 19,
+    "weight_units_total": 10000,
+    "cash_units": 0,
+    "source_total_units": 10000,
+    "all_reference_security_ids_unresolved": true,
+    "all_type_memberships_unresolved": true,
+    "source_classification_available_at": null,
+    "authored_theme_group_units": {
+      "반도체 장비": 3000,
+      "AI·반도체": 2500,
+      "Big Tech": 2000,
+      "기타산업": 2500
+    },
+    "authored_theme_percent_labels_reference_only": {
+      "반도체 장비": 30.0,
+      "AI·반도체": 25.0,
+      "Big Tech": 20.0,
+      "기타산업": 25.0
+    },
+    "checks_meaning": "Deterministic existing reference replay, not production admission or implemented aggregation tests."
+  },
+  "semantic_findings": {
+    "industry_source_labels": "USER_ALLOCATION_GROUP_NOT_GICS",
+    "successor_dimension": "StrategyTheme_PROPOSAL",
+    "target_origin": "USER_SPEC_REFERENCE_REFERENCE_FIXTURE_NOT_AUTO_PRODUCTION",
+    "actual_source": "NOT_AVAILABLE",
+    "type_classification": "NOT_AVAILABLE",
+    "overlap_source": "DERIVED_FROM_EXACT_COMPLETE_TYPE_MEMBERSHIP_NOT_INDEPENDENT",
+    "multi_theme_future_policy": "UNDECIDED",
+    "current_target_dependency_on_actual": "NONE",
+    "current_target_dependency_on_quarterly_history": "NONE",
+    "gics_source_licensing_owner": "SEPARATE_SOURCE_AUDIT"
+  },
+  "runtime_checks": "NOT_RUN",
+  "frozen_edits": 0,
+  "production_code_edits": 0,
+  "prior_files_rewritten": 0,
+  "new_assignments_authored": 0,
+  "publication_grants_issued": 0,
+  "notes": [
+    "Inspection clock is not original source available_at/effective_at.",
+    "No source licensing claim or company GICS assignment is authored in this architecture evidence.",
+    "Exact integer replay uses existing reference units only; no production Decimal precision or threshold selected."
+  ],
+  "fresh_source_search": {
+    "tree": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+    "actual_snapshot_constructor_hits": [
+      {
+        "path": "implementation/tests/test_pil_p0_contracts.py",
+        "line": 155
+      },
+      {
+        "path": "implementation/tests/test_pil_p0_contracts.py",
+        "line": 181
+      }
+    ],
+    "concrete_broker_adapter_in_personal_source": "NOT_FOUND_PROTOCOL_ONLY",
+    "actual_named_data_artifact_search": "NO_FILENAME_MATCH",
+    "limitations": "Absence of constructors or matching filenames is scoped repository evidence, not proof about external accounts or unseen files."
+  }
+}

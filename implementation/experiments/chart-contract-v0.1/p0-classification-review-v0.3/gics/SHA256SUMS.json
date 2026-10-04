@@ -1,0 +1,25 @@
+{
+  "kind": "AUDIT_ARTIFACT_INTEGRITY_ONLY",
+  "files": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/gics/BOUNDED_EXCERPTS.json",
+      "bytes": 1210,
+      "sha256": "19e31d5d078db858439613acab20a29ba4bf053b66d8a41e8eadd7903e7a3427"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/gics/GICS_FEASIBILITY_AUDIT_v0.3.md",
+      "bytes": 10575,
+      "sha256": "1aa828c213e2399f7b8bfc7cb78b83b83470428da6eddb05bf0e6cbc799b23cd"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/gics/REPOSITORY_EVIDENCE.json",
+      "bytes": 3163,
+      "sha256": "7db45fadbe2e7b3e9e277be7db5b17e73f27cff491ec8944dccf06bcf5c5ebee"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/gics/SOURCE_REGISTER.json",
+      "bytes": 9360,
+      "sha256": "579b8f0de614a007dae6e8889a063bd21b891bf059344df4cd51daf9d23f0177"
+    }
+  ]
+}

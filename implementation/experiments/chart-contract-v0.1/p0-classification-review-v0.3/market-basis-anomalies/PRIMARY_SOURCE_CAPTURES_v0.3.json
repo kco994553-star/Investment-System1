@@ -1,0 +1,83 @@
+{
+  "kind": "PRIMARY_BASIS_ACTION_SOURCE_CANDIDATES_NOT_ADMISSION",
+  "rows": [
+    {
+      "name": "lrcx_split_2024",
+      "source_url": "https://newsroom.lamresearch.com/2024-05-21-Lam-Research-Corporation-Announces-10-Billion-Share-Repurchase-Authorization-and-a-10-for-1-Stock-Split",
+      "started_at": "2026-10-04T23:15:57.474226+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing fetch_real_data._get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:16:03.663350+00:00",
+      "status": "FAILED",
+      "exception_type": "URLError",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "klac_split_2026_8k",
+      "source_url": "https://ir.kla.com/sec-filings/all-sec-filings/content/0001193125-26-212093/d116682d8k.htm",
+      "started_at": "2026-10-04T23:15:57.475472+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing fetch_real_data._get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:16:03.662836+00:00",
+      "status": "FAILED",
+      "exception_type": "URLError",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "avgo_split_2024",
+      "source_url": "https://investors.broadcom.com/news-releases/news-release-details/broadcom-inc-announces-second-quarter-fiscal-year-2024-financial",
+      "started_at": "2026-10-04T23:15:57.475908+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing fetch_real_data._get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:16:03.662159+00:00",
+      "status": "FAILED",
+      "exception_type": "URLError",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "tokyo_split_2026_notice",
+      "source_url": "https://www.tel.com/news/ir/2026/20260529_001.html",
+      "started_at": "2026-10-04T23:16:03.662230+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing fetch_real_data._get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:16:03.663835+00:00",
+      "status": "FAILED",
+      "exception_type": "URLError",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "tiingo_eod_documentation",
+      "source_url": "https://www.tiingo.com/documentation/end-of-day",
+      "started_at": "2026-10-04T23:16:03.662867+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing fetch_real_data._get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:16:03.663931+00:00",
+      "status": "FAILED",
+      "exception_type": "URLError",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    },
+    {
+      "name": "yahoo_adjusted_close_help",
+      "source_url": "https://help.yahoo.com/kb/SLN28256.html",
+      "started_at": "2026-10-04T23:16:03.663384+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing fetch_real_data._get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:16:03.663737+00:00",
+      "status": "FAILED",
+      "exception_type": "URLError",
+      "error": "<urlopen error [Errno 104] Connection reset by peer>"
+    }
+  ]
+}
