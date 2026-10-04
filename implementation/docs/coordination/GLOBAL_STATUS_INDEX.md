@@ -4,7 +4,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-012 (CDR-010/011 recorded; #31 new HANDOFF_READY `e0b6d80` with CDR-010 v2; #35 `8318b78`; CDR-011 re-verification in progress) |
+| Index revision | GSI-013 (GIE-009 readiness: 4 chains READY_AFTER_OWNER_ACTIONS; #31 v2 re-verification in progress; A1 proposal CI entries corrected) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
@@ -92,12 +92,12 @@ Stale merged heads, no action: `feature/track-d-rig-news` and `claude/track-d-ri
 
 | PR | Head | Base | Author / owner | Purpose | CI on head | Classification |
 |---|---|---|---|---|---|---|
-| #22 | `integration/a1-adoption/pr11-technical-producer` @ `248e3d3` | #11 owner branch @ `a2e0790` | Primary Integration Writer (CDR-004 proposal) | C-28 adoption re-pin + Technical owner adoption record | NOT_RUN | Writer gate PASS; Codex independent audit PASS; **integration-owner verification PASS (GIE-006 §2)** |
-| #23 | `integration/a1-adoption/pr15-technical-model` @ `5c9dd5a` | #15 @ `ce58704` | same | re-pin | NOT_RUN | same |
-| #24 | `integration/a1-adoption/pr18-us-equity-session` @ `9c71781` | #18 @ `2c088ce` | same | re-pin | NOT_RUN | same |
-| #25 | `integration/a1-adoption/pr12-macro-producer` @ `4a07099` | #12 @ `61d3352` | same | re-pin + separate current-dated Macro owner adoption record; additive post-adoption fingerprint record | NOT_RUN | same |
-| #26 | `integration/a1-adoption/pr14-leaderboard` @ `a4805db` | #14 @ `0d48d86` | same | re-pin | NOT_RUN | same |
-| #27 | `integration/a1-adoption/pr17-p01` @ `dc7daf7` | #17 @ `21039a0` | same | re-pin; additive post-adoption invariance record | NOT_RUN | same |
+| #22 | `integration/a1-adoption/pr11-technical-producer` @ `248e3d3` | #11 owner branch @ `a2e0790` | Primary Integration Writer (CDR-004 proposal) | C-28 adoption re-pin + Technical owner adoption record | exact-head Actions ✓ (see GIE-009 §5) | Writer gate PASS; Codex independent audit PASS; **integration-owner verification PASS (GIE-006 §2)** |
+| #23 | `integration/a1-adoption/pr15-technical-model` @ `5c9dd5a` | #15 @ `ce58704` | same | re-pin | exact-head Actions ✓ (see GIE-009 §5) | same |
+| #24 | `integration/a1-adoption/pr18-us-equity-session` @ `9c71781` | #18 @ `2c088ce` | same | re-pin | exact-head Actions ✓ (see GIE-009 §5) | same |
+| #25 | `integration/a1-adoption/pr12-macro-producer` @ `4a07099` | #12 @ `61d3352` | same | re-pin + separate current-dated Macro owner adoption record; additive post-adoption fingerprint record | targeted only: Codex macro job, 11 passed on `4a07099` (no full-suite run; GIE-009 §5) | same |
+| #26 | `integration/a1-adoption/pr14-leaderboard` @ `a4805db` | #14 @ `0d48d86` | same | re-pin | exact-head Actions ✓ (see GIE-009 §5) | same |
+| #27 | `integration/a1-adoption/pr17-p01` @ `dc7daf7` | #17 @ `21039a0` | same | re-pin; additive post-adoption invariance record | exact-head Actions ✓ (see GIE-009 §5) | same |
 | #28 | `codex/takeover-integration-2026-10-03` @ `b20d178` (12:47Z; the latest commit adds 2 docs files: a PR31 HANDOFF_READY checkpoint and a CI receipt) | canonical | Codex | takeover audit (scoped docs under `implementation/docs/codex_takeover/`, incl. a PROPOSED source-identity contract) | see GIE-006 | docs/evidence only; not a Global Handoff writer |
 | #29 | `codex/web-producer-integration-readiness-2026-10-03` @ `d044458` | #19 @ `c3dbf8a` | Codex | withheld producer-contract Web fixture; locale/mobile/failure E2E | 2/2 ✓ | READY_FOR_INTEGRATION_AUDIT (stacked on #19) |
 | #30 | `codex/combined-integration-2026-10-03` @ `86ad362` | canonical | Codex | combined trial: Track C `b9e01a9` + #5/#6/#7/#9/#10/#13/#16/#19 + #22–#27 + #21 + #29, plus integration-context compat repairs (`41a6efb`, `0366a3c`) and CI runtime pins (`0ea00d2`, `86ad362`) | 9/9 ✓ | **FRESH**; INTEGRATION_STATE **TRIAL_INTEGRATION_VERIFIED_WITH_NONBLOCKING_FINDINGS** (GIE-006 §1: local 1165/1165 reproduced; F1–F7 non-blocking); CANONICAL_STATE NOT_MERGED |

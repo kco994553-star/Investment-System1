@@ -115,3 +115,12 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - Independent re-verification started (workflow `wf_8f1764e8-c3c`), using the CDR-010 reference oracle that was built before Codex's v2 existed. If no blocking finding: the CDR-011 combined trial of #38 + #31 + #35 on fresh heads, published for CI. #38's results are not reused.
 - The pre-v2 harness dry run (#38 `7e3861b` + #31 `29c2c20` + #35 `722c812`) passed all checks and is recorded as harness validation only, not as the CDR-011 trial.
 - Canonical `b8e39a2` unchanged. Maturity transitions: none.
+
+## GCH-008b · 2026-10-04 · GIE-009 recorded (canonical-merge readiness, oracle and harness prep)
+
+- Four chain readiness audits, each adversarially verified: QGV → Leaderboard, Producer Infrastructure / Web, Technical / US Session, Macro. All READY_AFTER_OWNER_ACTIONS. Every merge in every order had 0 conflicts. S2 (Track C first) full suites: 982, 1028, 984, 972 passed.
+- Cross-chain constraints recorded: QL-B5 (the Leaderboard owner workflow diffs against live canonical), the IF-2 second-merger rule, CI runtime ports (`0ea00d2` plus numpy 2.3.5), MAC-X1 (Track C acceptance tools on integrated trees; reclassified as USER_DECISION_REQUIRED), no post-merge CI on canonical.
+- CDR-010 reference oracle ready (C6 replica 0 mismatches; 681-case battery; two independent implementations bit-identical). Critic spot-check: Codex's v2 equals the oracle's `pow`-squaring variant (r/deg/ties/p 676/676; 27 T/t-bit differences). Formal result goes to GIE-010.
+- Trial harness hardened by the Primary Integration Writer before the CDR-011 trial (reviewed allowlist, junit minimum and zero skips, verified v2 blob).
+- GSI A1 proposal CI entries corrected (exact-head Actions exist; #25 targeted only).
+- Canonical `b8e39a2` unchanged. Maturity transitions: none.
