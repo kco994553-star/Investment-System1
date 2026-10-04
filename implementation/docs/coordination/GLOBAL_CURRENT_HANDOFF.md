@@ -4,8 +4,8 @@ Routing/index SSoT only. This file is not a calculation, policy, approval or pub
 
 | Field | Value |
 |---|---|
-| Handoff ID | GCH-008 (supersedes GCH-007 as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
-| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011 |
+| Handoff ID | GCH-009 (supersedes GCH-008 as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
+| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011; GCH-009 after GIE-010 (2026-10-04) |
 | Primary Integration Writer | Claude Code session `session_019znshzTYgyBnuuBmSxdPFN`, designated by the user on 2026-10-03 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md` |
 | Canonical branch / HEAD | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. This matches the last independent audit checkpoint, and canonical has not moved since 2026-09-28 |
@@ -55,7 +55,7 @@ Decided in this round (see `COORDINATION_DECISION_REGISTER.md`):
 
 Still open:
 
-1. **Canonical merges** (always gated). Integration candidates: #30 `86ad362` (TRIAL_INTEGRATION_VERIFIED_WITH_NONBLOCKING_FINDINGS, GIE-006) and its published extension #38 `7e3861b` (#30 + #32 + #33 + #34 + #36; 9/9 CI ✓, GIE-008 §4). #31 and #35 are verified (GIE-008 §1, §3) but wait on the arithmetic decision.
+1. **Canonical merges** (always gated). Integration evidence: #30 `86ad362` (GIE-006), #38 `7e3861b` (GIE-008 §4), and the CDR-011 trial #39 `0d31e06` (#38 + #31 + #35; 1441 passed; 10/10 CI; GIE-010 §3). Per-chain owner-route readiness: GIE-009 (all four audited chains READY_AFTER_OWNER_ACTIONS).
 2. **Publication grants.** P01 research-display, Frozen and Live grants remain NONE.
 3. **Data and providers.** The Macro ALFRED key, a news provider, and an exchange-calendar vintage source.
 
@@ -67,6 +67,12 @@ Decided and in execution:
 
 - **CDR-010 (decided): M-B v2 arithmetic contract** = `math.fsum` reducer, block grouping, direct block sums, replicate mean `(Σ full block sums + partial)/n`, degenerate when `sqrt(v/n) > 0` is false. v1 and its historical results are preserved; v2 is additive. Codex implements it in PR #31 (CDR-008). Resolves the arithmetic item raised in PR #31 and reproduced in GIE-008 §2. It is not C8 FROZEN, CAL_VERIFY, numeric configuration, Holdout, Official or publication approval.
 - **CDR-011 (decided):** the CDR-009 write exclusion applies again until PR #31's next HANDOFF_READY; read-only tracking only. At that checkpoint: fresh fetch, continue the 13-point verification with items 5 and 6b re-run plus the user's added list (GIE-008 successor), then a new combined trial of the verified trial + #31 + #35 on fresh heads. #38's results are not reused as the new trial.
+- **CDR-011 executed (GIE-010):** #31 `e0b6d80` reached HANDOFF_READY and was independently re-verified: VERIFIED_WITH_FINDINGS, no blocking finding. The CDR-011 combined trial is PR #39 `0d31e06` (#38 + #31 + #35, fresh heads): 1441 passed, 10/10 CI.
+- **Open, raised by GIE-010 (USER_DECISION_REQUIRED, not decided here):**
+  - F1 squaring operator in v2: Python `** 2` (libm `pow`, current v2, matches the GIE-008 column CDR-010 cites) or correctly rounded `d*d` (matches the approved simulation's NumPy squares). It changes p on constructed near-tie inputs.
+  - F3 undefined or near-undefined statistic: exact long-run variance 0 with float residue currently yields the minimum p, even with a strongly negative statistic and all replicates degenerate; a guard would be a new rule.
+  - Track C landing vehicle (`b9e01a9` lineage, the #31/#35 stack, or a #30-based combined merge) and MAC-X1 (Track C acceptance tooling on integrated trees) from GIE-009.
+  - Scope of #21, #37, #28 and docs/qgv-context for any canonical-merge package.
 
 Not approved (CDR-006/007 list): α, B, L / block rule, seed, effect floor, minimum support, size tolerance, dependence envelope / margin, real source taxonomy/default, real CAL_VERIFY access, C8 foundation ↔ G-SUP registry unification, Holdout, C8 SOFTWARE FROZEN, publication grant, Official, LIVE, canonical merge.
 

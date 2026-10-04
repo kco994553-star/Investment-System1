@@ -1,0 +1,789 @@
+{
+ "vp": {
+  "items": [
+   {
+    "item": "(1) Exact HEAD",
+    "status": "PASS",
+    "evidence": "Fresh fetch at 00:40Z into an isolated bare repo (alternates = main odb), plus ls-remote at the start and again at 01:04Z. Results: refs/heads/codex/track-c-gsup-v2-2026-10-03 = refs/pull/31/head = e0b6d809058511d4bef7ad1aeccad79c5eae3ff8; refs/heads/codex/integration-hardening-2026-10-03 = refs/pull/35/head = 8318b78de7ebaca63b857f8c85a12d071863c492; refs/pull/30/head = 86ad362. Main-checkout `git fetch origin` fails with 'bad object worktrees/s2/HEAD' and later 'worktrees/wt-neg/HEAD'. Those are other agents' worktrees whose HEADs live in temporary object dirs. All needed objects were present and the isolated fetch succeeded. Commits: 29c2c20..e0b6d80 is one commit (e0b6d80, parent 29c2c20, 2026-10-04 00:23:39Z). 722c812..8318b78 is two commits: e0b6d80, and merge 8318b78 with parents 722c812 and e0b6d80 in that order. `merge-base --is-ancestor`: e0b6d80 is an ancestor of 8318b78 (YES), and 722c812, 29c2c20 and 86ad362 are ancestors as expected. `diff --name-status 29c2c20 e0b6d80`: 21 A, 7 M, 0 D, 0 mode changes, 3613+/3-. New src (1): evl/superiority_v2.py. New tests (4): tests/evl_c8_gsup_v2_oracle.py and test_evl_gsup_v2_{arithmetic,registry,repair_negatives}.py. New tools (1): tools/verify_gsup_v2_arithmetic.py. New docs/evidence (15): under docs/codex_takeover/gsup_v2_handoff_2026_10_03/, including ACCEPTANCE_MANIFEST_V2.json, CURRENT_HANDOFF_V2_CDR010.md and evidence/authoritative-v2/*. Modified workflows (4): codex-integration-readiness, leaderboard-real-producer, qgv-producer-real, track-c-evl-validation. Modified register (1): reports/track_c_decision_register_2026-10-01.md. Modified docs (2): the scoped CURRENT_HANDOFF.md and STATUS.md. `diff e0b6d80 8318b78`: 16 files. Outside docs there are exactly 2: M tools/producer_source_compat.py and M tests/test_producer_source_compat.py. 14 docs are added under docs/codex_takeover/evidence/shared-source-hardening/. Patch comparison: `git diff --full-index e0b6d80 8318b78` and `git diff --full-index 29c2c20 722c812` are byte-equal (1122 lines each, both sha256 22283ec2...). The F1-only subpatch is also equal (9f3b677a...). Blob ids at 8318b78 equal 722c812 (13cc621f / 55c9f7f5); at e0b6d80 they equal 29c2c20. diff 722c812..8318b78 == diff 29c2c20..e0b6d80 (both b7fdaacc...). 8318b78's tree 3721c541 equals a clean `git merge-tree --write-tree 722c812 e0b6d80`, run in a temp odb: no manual resolution."
+   },
+   {
+    "item": "(2) Approval record",
+    "status": "PASS",
+    "evidence": "CDR010_APPROVAL.json at e0b6d80 (blob 3a9eecbb; the same blob at 8318b78). Its routing_source_commit e30241f, blob 46e4a67b and sha256 43e6409a... all match the global register at e30241f (I recomputed them). Its routing_record_verbatim (2428 bytes) is byte-equal to the register slice from '## CDR-010' up to '## CDR-011' at offset 17189. That slice contains the 738-byte 'User wording (verbatim)' block with the five arithmetic lines. Differences: none in the quoted text. The CDR-010 block is also unchanged at the current global tip 539e673. What the JSON adds beyond the quote: record/authority labels; method C8_GSUP_STUDENTIZED_CBB_v2; the arithmetic_contract enum {reducer MATH_FSUM, replicate_aggregation BLOCK_GROUPING, block_sums DIRECT, degeneracy SQRT_V_OVER_N_GT_ZERO}; numeric_configuration NOT_APPROVED; scope SYNTHETIC_SOFTWARE_VALIDATION_ONLY; v1 IMMUTABLE_NO_RETROACTIVE_REWRITE; and an 8-item not_approved list. That list is shorter than the verbatim 13-item list: the alpha/B/L/seed, effect floor, minimum support, size tolerance and envelope items are folded into numeric_configuration. The enum does not separately encode the replicate-mean formula (the F2 axis). Only the verbatim text and the scoped register carry it. The pins in superiority_v2.py (APPROVAL_BLOB 3a9eecbb, source approval a5279d51) equal the actual blobs. Scoped Track C register 29c2c20 -> e0b6d80: 26 '+' lines and 0 '-' lines. The new file is a byte-prefix extension of the old one (startswith True, +1707 bytes) and is identical at 8318b78. The appended text records CDR-010 and reads the replicate mean as `(math.fsum(full block sums) + partial)/n`, which is the oracle's default F2 reading. It explicitly lists numeric configuration, source taxonomy, CAL_VERIFY, Holdout, registry unification, C8 Freeze, publication/grants, Official/LIVE, protected-17 repin, canonical merge and deployment as unapproved. Nothing in the diff approves any of them. I also grepped every added 'approv' line in 29c2c20..e0b6d80: no out-of-scope approval claim."
+   },
+   {
+    "item": "(3) Changed files and workflow non-weakening",
+    "status": "PASS",
+    "evidence": "Every pre-existing file modified 29c2c20..e0b6d80, with reason: (a) codex-integration-readiness.yml adds 7 path triggers for the v2 files and approval JSON (closes IRV2-003). It adds 5 entries to allowed_additions for the new additive Track C files; the diff --exit-code guard vs b9e01a9 on existing files is unchanged. It adds a 'CDR-010 exact production and independent oracle replay' step and uploads its JSON. (b) leaderboard-real-producer.yml: offline-tests gains defaults.run.shell bash, and `pip install pytest` becomes `python -m pip install pytest==9.1.1 numpy==2.3.5`. (c) qgv-producer-real.yml: offline-tests defaults gain shell bash, with the same pinned install. (d) track-c-evl-validation.yml: pinned install with numpy. (e) The scoped CURRENT_HANDOFF.md and STATUS.md are byte-prefix appends (+638 and +721 bytes). (f) The Track C register is append-only (item 2). The only '-' lines in the whole diff are the 3 old pip-install lines. Across all 15 workflows at e0b6d80 there is no continue-on-error, -k, --deselect or --ignore, no step was removed, and no path filter was narrowed (only additions). N3: fixed. Every pytest-running workflow now installs numpy==2.3.5, including the 3 push-only ones flagged in GIE-008. NB4 '| tail' masking: fixed for qgv-producer-real and leaderboard-real-producer offline-tests. An explicit `shell: bash` runs as `bash --noprofile --norc -eo pipefail`, so pytest failures propagate through `| tail`. NB4 shallow checkout: NOT fixed (see non-blocking findings)."
+   },
+   {
+    "item": "(4) v1 preservation",
+    "status": "PASS",
+    "evidence": "evl/superiority.py is blob 8a1254d7b77514f6015dfff4af0e4a53f57f22af at b9e01a9, 29c2c20, e0b6d80 and 8318b78. tests/evl_c8_gsup_oracle.py (a5f00fa9) and tests/test_evl_c8_gsup.py (c1e91024) are identical at all four. All pre-existing evl/*, tests/test_evl_* and tests/evl_* files compared by (mode, blob): 43 files from b9e01a9 and 49 from 29c2c20, with 0 changed or missing at e0b6d80 and at 8318b78. superiority_source_identity.py (71bf7375) and gsup_source_identity.py (fa93bf88) are byte-identical to 29c2c20 at both heads. implementation/reports/**/*.json: 199 at 29c2c20 with 0 changed or missing at either head, and 167 at b9e01a9 with 0 changed. Of the 371 files under implementation/reports at 29c2c20, the only change is the append-only register. No deletions or mode changes in either range. Grep of superiority_v2.py, the verifier and the new tests: no setattr, sys.modules, legacy.X= or kernels.X= assignment. The only setattr calls are pytest monkeypatch fixtures in tests, which are restored at teardown. Runtime check (scratchpad runtime_identity_check.py): I snapshotted id() and values of all module globals of superiority (54), statistical_kernels (28), superiority_source_identity (9), calibration_contracts (35) and walkforward (36), plus the class dicts of GsupRegistry and IdentityBoundGsupRegistry. Then I imported superiority_v2, ran v2.studentized_cbb and v2.authority(), and compared. Result: problems=[] at both heads, v2.legacy is v1, and v1.studentized_cbb output is identical before and after importing and using v2."
+   },
+   {
+    "item": "(10) Targeted regression at e0b6d80 (numpy venv)",
+    "status": "PASS",
+    "evidence": "Private venv: Python 3.11.15, numpy 2.3.5, pytest 9.1.1. Command: `PYTHONPATH=src python -m pytest -q -rA tests/test_evl_gsup_*.py tests/test_evl_c8*.py`. Result: 430 passed, 0 failed/error/skip, 317.7 s, exit 0. Per file: test_evl_c8_contracts 47, c8_evidence 22, c8_gsup 84, c8_ledger 18, c8_protocol 29, gsup_identity_kernel_invariance 11, gsup_mb_reduction_diagnostic 20, gsup_source_identity 33, gsup_v2_arithmetic 86, gsup_v2_identity_adversarial 48, gsup_v2_registry 21, gsup_v2_repair_negatives 11. The new v2 files total 86+21+11 = 118, matching Codex's final-targeted 118. Codex's tools/verify_gsup_v2_arithmetic.py run locally: status PASS, exit 0, numerical_output_sha256 d4642fa50523c75f4278afc5463c9751d582c427077916788e8fd39f1f99cfd5, equal to Codex's claim."
+   },
+   {
+    "item": "(11) Full regression at e0b6d80 and 8318b78 (numpy venv)",
+    "status": "PASS",
+    "evidence": "e0b6d80: `PYTHONPATH=src python -m pytest -q --junitxml` gives 1395 passed, 0 failures/errors/skips, 415.4 s, exit 0 (JUnit sha256 49b5ce90...). This is the single final-source full run Codex marked NOT_RUN locally, and it matches Codex's 1395 union. 8318b78: 1413 passed, 0 failures/errors/skips, 541.8 s, exit 0 (JUnit sha256 473f6aa2...). Test-ID set difference: 0 tests only in e0b6d80 and exactly 18 only in 8318b78, all in tests.test_producer_source_compat (collect-only: 7 at e0b6d80 vs 25 at 8318b78). Actual +18 = expected +18. Note: the local worktrees have full history, so the F1 helper could resolve canonical b8e39a2."
+   },
+   {
+    "item": "(12) Actions",
+    "status": "PASS",
+    "evidence": "All runs are event pull_request, run_attempt 1, status completed, conclusion success. Nothing was in progress at check time (~00:50Z). PR #31 (head_sha e0b6d809058511d4bef7ad1aeccad79c5eae3ff8 on every run, via get_workflow_run): 8 runs, 9 jobs. 37164876759 codex-integration-readiness (jobs combined-offline 111325650861, macro-adoption-offline 111325650948); 37164876751 qgv-invalidation-binding; 37164876783 technical-real-producer; 37164876761 p01-research-publication; 37164876780 technical-real-model; 37164876764 us-equity-session; 37164876772 web-mvp-validation (job validate); 37164876752 sec-primary-disclosure. PR #35 (head_sha 8318b78de7ebaca63b857f8c85a12d071863c492 on every run): 7 runs, 8 jobs. 37164938869 codex-integration-readiness (combined-offline 111325824624, macro-adoption-offline 111325824526); 37164938912 technical-real-producer; 37164938848 us-equity-session; 37164938843 technical-real-model; 37164938826 sec-primary-disclosure; 37164938783 p01-research-publication; 37164938816 qgv-invalidation-binding. web-mvp-validation ran only for #31: its PR path filter matches .github/workflows/web-mvp-validation.yml in the 86ad362..e0b6d80 PR diff, and #35's diff vs base e0b6d80 has no matching path. What each job checks out: combined-offline checks out the exact head (ref: github.event.pull_request.head.sha, fetch-depth 0). macro-adoption-offline checks out the pinned Macro 4a07099e36ec3cecda24b82ecedad53800f0aa81. All other jobs use the default actions/checkout, i.e. the synthetic merge refs/pull/N/merge. I fetched both merge refs: pull/31/merge 6987b308 (parents 86ad362, e0b6d80) has tree 5400a042, identical to e0b6d80's tree; pull/35/merge 092b9a0f (parents e0b6d80, 8318b78) has tree 3721c541, identical to 8318b78's tree. So the synthetic-merge jobs tested the exact head trees. Push-only workflows (track-c-evl-validation, qgv-producer-real, leaderboard-real-producer) were not triggered: their branch filters do not match. Artifacts exist: #31 11288623515 (digest sha256:9616fdf1...) and #35 11288962164 (sha256:23d98fc0...). Downloading their content or job logs to confirm the 1395/1413 CI counts was NOT_RUN: the blob storage host is refused by the proxy (403)."
+   },
+   {
+    "item": "(13) CAL_VERIFY/Holdout untouched; real descriptors/providers fail closed for v2",
+    "status": "PASS",
+    "evidence": "`git diff --name-only 86ad362 8318b78` (195 A, 14 M): 0 paths matching data/, gate_evidence, holdout or cal_verify. The 8318b78 tree has 0 holdout/cal_verify paths. Added .py lines in 86ad362..8318b78: 0 hits for socket, urllib, requests, http(s)://, httpx, aiohttp, urlopen, ftplib, smtplib, yfinance, sec.gov, os.system or webbrowser. Every subprocess call site is a local `git` call or `sys.executable`. At both heads, gate_evidence and data are identical to canonical b8e39a2, and the technical/macro engines and contracts models/lineage are identical to b9e01a9. Independent runtime probe (scratchpad failclosed_probe.py) at both heads, all refused. Real descriptors (synthetic=False, temporal_origin ACTUAL, scope REAL_PIT, configuration_scope REAL, real role_designation_ref) raise MissingPrerequisite with 0 provider calls. A provider with synthetic=False or scope REAL is refused with MissingPrerequisite before any call (0 calls; the claim stays spent). A provider that declares synthetic but returns synthetic=False data is refused with IntegrityFailure after 1 call, and a retry makes 0 further calls. Direct v2._evaluate on real data raises MissingPrerequisite('real CAL_VERIFY access is not approved'). Registering with real scope, temporal_origin or configuration_scope is refused with 0 claims."
+   },
+   {
+    "item": "Engine fingerprint at 8318b78 (tools/producer_engine_fingerprint.py src)",
+    "status": "PASS",
+    "evidence": "sha256 of the output is f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866 at 8318b78, byte-identical at e0b6d80. technical 66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655; macro 7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501; qgv a1714480...; leaderboard 112b245b...; portfolio_official_book 53d930a7...; n_qgv 19. All match the expected f690f9c0 / 66cb2383 / 7e427949."
+   },
+   {
+    "item": "Scope checks (read-only, cleanup)",
+    "status": "PASS",
+    "evidence": "No commit, push, comment or review on any codex/* branch or PR; GitHub was used through read-only MCP calls only. All work was in scratchpad/wf10/vp-preservation: two detached worktrees, throwaway merge-tree objects in a temp GIT_OBJECT_DIRECTORY, and a private venv. Both worktrees were removed; `git worktree prune --dry-run` listed nothing of others' and prune was run; the temp odb, fetch repo and probe dirs were deleted. The main checkout is untouched (HEAD f1b5afb, clean status). The wf9 oracle README was only read. Global routing moved e30241f -> 539e673 (the Primary's own GCH-008a commit, touching only HISTORY and STATUS_INDEX); the CDR-010 block there is byte-unchanged."
+   }
+  ],
+  "findings_blocking": [],
+  "findings_nonblocking": [
+   "NB4 shallow-checkout remnant (pre-existing, push-only, not triggered by #31/#35). qgv-producer-real offline-tests still uses the default actions/checkout (fetch-depth 1) and never fetches canonical. leaderboard-real-producer is also shallow but fetches the canonical branch. At 8318b78 the F1 helper tests need canonical b8e39a2, so these jobs would fail closed if triggered. With the new pipefail the failure would now be visible, not masked. '| tail' masking itself is fixed.",
+   "The main checkout cannot `git fetch origin` because other agents' worktrees (first wf9/.../s2, later wf9/verify-technical-session/wt-neg) have HEADs in temporary object dirs ('bad object worktrees/<x>/HEAD'). I fetched into an isolated bare repo with alternates and confirmed with ls-remote. Environment hygiene for those agents.",
+   "CDR010_APPROVAL.json arithmetic_contract enum pins only reducer, grouping, block sums and degeneracy. The replicate-mean formula (the F2 axis) is carried only by the verbatim quote and the scoped register text '(math.fsum(full block sums) + partial)/n', which is the oracle default. The JSON not_approved list (8 items) folds the individual numeric items into numeric_configuration NOT_APPROVED.",
+   "Source-level observation for the item-5/6 verifiers (I graded nothing here): superiority_v2 squares with `(b - length*mean) ** 2`, i.e. CPython float_pow, which calls libm pow. That is the oracle's labelled F1 variant `square_pow`, not the oracle default `square='mul'`. The oracle README says this axis changes T bits on its 12 E-SQUARE cases, and never r or p in its battery. Replicate mean `(fsum(full_sums) + partial)/n` matches the oracle default F2 reading `partial_add='add'`.",
+   "Pre-existing and out of scope: c21-real-data.yml (workflow_dispatch only, unchanged) runs `mini_pytest.py | tail -1` without explicit bash/pipefail.",
+   "Cosmetic: the appended register and scoped docs have missing spaces ('independent13-point', 'fresh38+31+35', 'protected17', 'delta0', 'exact29c')."
+  ],
+  "conditional_user_decisions": [
+   "Only if the item-5 verifier finds that v2's `** 2` squaring (the square_pow variant) changes r or p, not just T bits, on any graded case: CDR-010 does not literally pin d*d vs d**2. Choosing one would then be USER_DECISION_REQUIRED (Worker Contract D.15). If only T bits differ, my items are unaffected."
+  ],
+  "not_run": [
+   "Downloading CI artifact or job-log content to confirm the CI JUnit counts (1395 at #31, 1413 at #35) and the 'Exact source checkpoint' output. The blob storage host (productionresultssa*.blob.core.windows.net) is refused by the agent proxy (CONNECT 403), via both curl and gh. Run metadata, head_sha and conclusions were verified through the API.",
+   "Oracle comparison (compare_v2.py against expected_cdr010.json) and the CE4/FLIP/LEFT_SUM/TIE/seed-275 grading: items 5-9 are outside this task's items. Only Codex's own verifier tool was run (PASS, hash d4642fa5...).",
+   "Browser/E2E: not in this task's items."
+  ],
+  "summary": "I checked items 1, 2, 3, 4, 10, 11, 12 and 13 plus the scope checks, and they all PASS at e0b6d80 (PR #31) and 8318b78 (PR #35). There are no blocking findings.\n\n- **Heads:** both SHAs are confirmed by a fresh fetch and by ls-remote at start and end.\n- **8318b78:** a clean merge of 722c812 and e0b6d80. Its F1 patch is byte-equal to the earlier 29c2c20..722c812 F1 change (full patch sha256 22283ec2, both ranges).\n- **Approval record:** CDR010_APPROVAL.json quotes the entire CDR-010 section of the global register at e30241f byte-for-byte. The scoped Track C register is a pure byte-prefix append and approves nothing out of scope.\n- **v1 preservation:** v1 superiority.py is still 8a1254d7. All pre-existing evl and test_evl files (43 from b9e01a9, 49 from 29c2c20), all 199 report JSONs and both source-identity modules are byte-identical. A runtime check shows importing and running v2 leaves every v1 module global and both registry classes as the original objects.\n- **Workflows:** nothing weakened. The numpy-missing issue (N3) is fixed. Under the earlier NB4 note, the '| tail' masking is fixed but the shallow checkout is not.\n- **Targeted regression (e0b6d80):** 430 passed, 118 of them in the new v2 files.\n- **Full regression:** e0b6d80 gives 1395 passed with 0 failures. That is the single final-source full run Codex left as NOT_RUN. 8318b78 gives 1413 passed with 0 failures, exactly +18 F1 cases.\n- **Actions:** all succeeded at the exact head SHAs, 8 runs (9 jobs) for #31 and 7 runs (8 jobs) for #35. Only the combined-offline job checks out the exact head and macro-adoption-offline checks out the pinned 4a07099; the other jobs test the synthetic merge, whose tree equals the head tree for both PRs. I could not download CI artifacts or logs because the proxy blocks the storage host.\n- **CAL_VERIFY/Holdout:** no data, gate_evidence, Holdout or CAL_VERIFY path is touched and no network code was added. Real descriptors, providers and responses all fail closed for v2.\n- **Engine fingerprint (8318b78):** f690f9c0…, technical 66cb2383…, macro 7e427949…, as expected.\n\nOne note for the item-5 verifier: v2 squares with `** 2`, which is the oracle's labelled F1 `square_pow` variant rather than its default, while its replicate mean follows the oracle's default reading. Logs, JUnit files and probe scripts are in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf10/vp-preservation/."
+ },
+ "vo": {
+  "items": [
+   {
+    "item": "0. Exact HEADs and fetch (start and end)",
+    "status": "PASS",
+    "evidence": "`git -C /home/user/Investment-System1 fetch origin`. The fetch printed `bad object worktrees/s2/HEAD`, a stale worktree of another agent, but every subject object resolved. Start: PR #31 codex/track-c-gsup-v2-2026-10-03 = e0b6d809058511d4bef7ad1aeccad79c5eae3ff8; PR #35 codex/integration-hardening-2026-10-03 = 8318b78de7ebaca63b857f8c85a12d071863c492 (parents 722c812 and e0b6d80); routing branch = e30241f. End (`git ls-remote`): refs/heads and refs/pull/31/head = e0b6d80, refs/pull/35/head = 8318b78, so both subjects are unmoved. integration/global-handoff-v1 moved during the run to 539e673 (GCH-008a). That commit only touches GLOBAL_HANDOFF_HISTORY and GLOBAL_STATUS_INDEX; the register diff from e30241f is empty. Read-only throughout: no commit, push, comment or review. I used one detached worktree at e0b6d80, removed and pruned at the end, with 0 dirty files before removal. No temporary object database was needed. The main checkout stayed at f1b5afb, untouched."
+   },
+   {
+    "item": "1a. Reducer = math.fsum at every sum (superiority_v2.py @ e0b6d80, sha256 41f67dd2…, equals the manifest)",
+    "status": "PASS",
+    "evidence": "Every float sum, from `grep -n 'fsum|sum(|+='`: L73 `mean = math.fsum(x) / n`; L74 circular block sums `math.fsum(x[(start + j) % n] for j in range(length))`; L75 lrv `math.fsum((b - length*mean) ** 2 ...)/(n*length)`; L88 replicate full blocks `math.fsum(values[j*length:(j+1)*length])`; L89 partial `math.fsum(values[blocks*length:])`; L90 `(math.fsum(full_sums) + partial) / n`, where the only non-fsum float add is the contract's literal `+ partial`; L91 replicate variance `math.fsum(...)/(blocks*length)`. There is no builtin `sum()` or numpy. L101-103 accumulate integers (deg/ties/exceed). L111 p is int/int division. L151/L153 are integer counters in assess_feasibility, outside the statistic."
+   },
+   {
+    "item": "1b. Replicate grouping = block grouping; block sums = direct summation",
+    "status": "PASS",
+    "evidence": "L87-90: values are taken in C6 index order; the q full blocks are summed directly per slice (L88), the partial block directly (L89), and the mean is built from block sums (L90). It is not fsum over the n samples. On 676 graded cases v2 fully equals the labelled `grouping_samples` variant in only 90, and `literal_numpy` (cumsum) is not matched; see 2. The observed statistic also uses direct circular sums (L74)."
+   },
+   {
+    "item": "1c. Replicate mean formula and F2 partial reading",
+    "status": "PASS",
+    "evidence": "L90 `ms = (math.fsum(full_sums) + partial) / n` is the oracle default reading fsum(full)+partial, the same as the GIE-008 'fsum / blocks' column that CDR-010 cites. Measured: v2 fully equals the default-partial reading (square_pow variant, partial_add='add') on 676/676, but `partial_single_fsum` on only 106/676 and `square_pow+partial_single_fsum` on 107/676. F2 is therefore settled the default way, and no decision is needed."
+   },
+   {
+    "item": "1d. Variance blocks = ceil(n/L)-1; final block when L divides n; centering and denominators",
+    "status": "PASS",
+    "evidence": "L70 `blocks = (n + length - 1) // length - 1`. L71 raises MissingStatisticalEvidence when `length > n or blocks < 2`, so there is no p. When L divides n, the partial at L89 is the last full block of length L: it enters the mean (L90) but not the variance (L91 iterates over full_sums only). The 320 battery cases with L | n all match on r/deg/ties/p. Centering and denominators: L75 (S_s - L*mean)^2/(n*L) and L78 se = sqrt(lrv/n); L91 (b_j - L*ms)^2/(q*L), centred on the replicate mean, and L94 sv = sqrt(v/n). All equal to the oracle and to run()."
+   },
+   {
+    "item": "1e. Squaring operator (F1)",
+    "status": "PASS_WITH_CONDITIONAL_DECISION",
+    "evidence": "L75 and L91 use Python float `** 2`, not `d*d` or math.pow. I checked on the 6 traced terms where the readings differ: `d**2 == ctypes libm pow(d, 2.0)` holds, `d**2` is not correctly rounded (checked against Fraction(d)**2), and `d*d` is correctly rounded. The ARITHMETIC_CONTRACT dict (L22-25) does not name the squaring operator, and CDR-010 does not pin it. Approved run() squares with NumPy, which is correctly rounded like `d*d`. The GIE-008c probe (fsum/blocks), whose column CDR-010 cites, and Codex's own test oracle both use `**2`."
+   },
+   {
+    "item": "1f. Degeneracy predicate, ties counted with >=, degenerate never exceeds, p=(r+1)/(B+1)",
+    "status": "PASS",
+    "evidence": "L94-95 `sv = math.sqrt(variance / n); is_degenerate = not sv > 0`, which is exactly not (sqrt(v/n) > 0). L96 a degenerate replicate gets t=None. L99 `tie = not is_degenerate and t == statistic`. L100 `exceeds = not is_degenerate and t >= statistic`. L111 `p_value = (exceed + 1) / (replicates + 1)`, with B including degenerate replicates. Measured: deg, ties and degenerate pattern exact on 676/676 graded cases."
+   },
+   {
+    "item": "1g. Undefined statistic (F3); tolerance/epsilon/rounding/fallback/default (must be none)",
+    "status": "PASS",
+    "evidence": "Undefined statistic: L79-80 `if not se > 0: raise MissingStatisticalEvidence('zero standard error; statistic undefined')`. Non-finite lrv, statistic, variance or t raise at L76-77, L81-83, L92-93 and L97-98. OverflowError and ZeroDivisionError become MissingStatisticalEvidence at L54-55. All of these fail closed with no p. There is no epsilon, isclose, round or abs. The kernel's only numeric literals are the integer structure constants and the 0 in `> 0`. Inputs must be explicit (L65-68: int seed, positive-int L and B; `_series` requires finite values). `size_tolerance` (L156) is read from the registration, not a default, and lives in assess_feasibility only."
+   },
+   {
+    "item": "1h. Additive v2 and how it is selected",
+    "status": "PASS",
+    "evidence": "The only src change since 29c2c20 is the new file superiority_v2.py (+222). v1 superiority.py has blob 8a1254d7 and statistical_kernels.py blob 28e1c184, both identical at b9e01a9, 29c2c20, e0b6d80 and 8318b78. L20 `METHOD = 'C8_GSUP_STUDENTIZED_CBB_v2'`, L21 POLICY `TC-C8-GSUP-M-V2-CDR006-CDR010`. Selection: validate_registration (L120-121) requires schema == METHOD and policy == POLICY, with no fallback; GsupV2Registry (L208-222) uses the v2 validate, feasibility and evaluate; `_evaluate` L194 calls the same studentized_cbb I tested. No other src module imports v2. authority() (L31-45) pins CDR010_APPROVAL.json at blob 3a9eecbb (verified with git hash-object). Its `routing_record_verbatim` is a byte-exact substring of the register (blob 46e4a67b at e30241f) starting at the CDR-010 header. It also pins the source-identity approval a5279d51."
+   },
+   {
+    "item": "1i. Index stream (C6)",
+    "status": "PASS",
+    "evidence": "v2 calls statistical_kernels.circular_block_indices, whose blob 28e1c184 is unchanged. The direct tuple comparison against oracle c6_indices is equal on 681/681 cases, and v2's indices_hash equals walkforward.digest(oracle indices) on 676/676."
+   },
+   {
+    "item": "2 / Item 5. M-B and v2 exact agreement: compare_v2.py against expected_cdr010.json",
+    "status": "PASS_WITH_CONDITIONAL_DECISION",
+    "evidence": "Adapter: work/v2_adapter.py (sha256 42d7ecb6…), strong mode exposing T, r, deg, p, ties and per-replicate draws from production `superiority_v2.studentized_cbb`, with authority() active. Command: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<oracle>:<wt>/implementation/src:<work> <oracle>/venv/bin/python <oracle>/compare_v2.py --adapter v2_adapter:adapter`. Result: `MISMATCH_IN_27_CASES`, rc=1 (fixtures 5/5, random 633/648, subnormal 10/10, square_axis 0/12, undefined 1/1). Per field on the 676 graded cases (work/fieldwise.py): T.hex 664, r 676, deg 676, ties 676, p.hex 676, per-replicate bits 660 cases (17 of 71,004 replicates differ), degenerate pattern 676. v2 equals the live labelled variant `square_pow` on 676/676 graded cases: T, r, deg, ties, p and every t bit. The default reading matches 649. The other variants match far less: partial_single_fsum 106, grouping_samples 90, predicate_v_positive 639. Mismatch classes: 27/27 are square_pow only. v2's mismatch report is byte-identical (same ids and strings) to the oracle's `self:pow_mutant` self-test, and `self:primary` still gives EXACT_MATCH_ALL_GRADED. First 5 mismatches, each traced to a single squared term where d**2 != d*d (work/first5_traces.json): (1) R-cont_normal_6dp-001 b29 j0 d=0x1.20e0a03e4e6f5p-7: v 0x1.4f0001bd965a1p-17 vs 0x1.4f0001bd965a2p-17, t 0x1.327da0d7a643fp+2 vs …43ep+2, code E unchanged. (2) R-cont_normal_6dp-025 b9 j2: t -0x1.b3f7e73511205p-1 vs …204p-1, N. (3) R-cont_normal_6dp-060 b92 j0: t 0x1.ca6bc91b47d45p-2 vs …46p-2, N. (4) R-cont_normal_repr-031 b4 j0: t -0x1.0ba1096e44ad3p+1 vs …ad4p+1, N. (5) R-cont_ar1-039 b189 j0: t -0x1.33e6a3a8f04cdp-1 vs …4ccp-1, N. In all five, block sums, partial and mean are bit-identical and r/p are unchanged. E-SQUARE-00..11: the observed T differs by 1 ulp (e.g. -0x1.3f43d3fbba142p-1 vs …141p-1) through an lrv square term. Cross-check against the GIE-008c probe committed at e30241f (sha256 e2312fd8…), mb_scalar(fsum, blocks), i.e. the column CDR-010 cites: equal to v2 on 676/676 for T bits, r, deg, ties and p. Extra stress on 16,773 fresh random cases (work/stress.py): square_pow full equality 16,773/16,773; default reading r/deg/ties/p 16,773/16,773, T bits 16,768, t bits in 16,448 cases."
+   },
+   {
+    "item": "3. ALT oracle (exact-rational IEEE emulation) against v2, all 681 cases",
+    "status": "PASS_WITH_CONDITIONAL_DECISION",
+    "evidence": "In work/fieldwise.py, both returned OK on 676 cases. Equal: T.hex 664, r 676, deg 676, ties 676, p.hex 676, t bits per case 660, replicate bits 70,987/71,004, full equality 649. This is the same as the primary default, because ALT emulates correctly rounded `d*d`; every difference is the F1 axis. Status on the other 5 cases: v2 raised MissingStatisticalEvidence and ALT returned UNDEFINED_STATISTIC_ZERO_SE, so both fail closed. On the 16,773-case stress, a 1,686-case ALT sample had equal r/deg/ties on 1,686."
+   },
+   {
+    "item": "Item 6a. CE4 counterexample (n=5, L=2, B=19, seed 200)",
+    "status": "PASS",
+    "evidence": "Production v2: r=1, deg=1, ties=0, p=0.1 (0x1.999999999999ap-4), T 0x1.01cab10fef960p+0. Actual v1 from the b9e01a9 archive (blob-verified via oracle load_v1) gives r=2, deg=1, p=0.15, with the same T and the same codes `NNNNNNNNNDNNNNNNNEN`. v1 at the PR head (same blob) is identical. The only difference is replicate b9, which is degenerate in float64: v1 counts it as an exceedance and v2 never does. v2 and v1 have identical indices_hash. Codex's verify tool independently records preserved_v1_p_value 0.15 and v2 p 0.1."
+   },
+   {
+    "item": "Item 6b. Named fixtures on production v2: CE4, FLIP, LEFT_SUM, TIE, seed275",
+    "status": "PASS",
+    "evidence": "Script: work/fixtures.py. For all five fixtures v2 r/deg/ties/p, T.hex and every t bit equal the oracle and ALT. CE4: 1/1/0, .10, T 0x1.01cab10fef960p+0. FLIP: 1/2/0, .10, T 0x1.3988e1409212ep+0. LEFT_SUM: 6/1/0, .35, T 0x1.8624f6c0a4dbcp+0. TIE: 8/2/3, .45, T 0x0.0p+0. SEED275: 10/2/0, .55, T 0x1.0aaaaaaaaaaacp-54. These are the expected CDR-010 values .10/.10/.35/.45/.55, and they equal the exact-decimal values 2/20, 2/20, 7/20, 9/20, 11/20 on 5/5. Actual v1 at b9e01a9 gives .15/.20/.40/.55/.60, explained as follows: CE4 +1 (b9 degenerate, counted only by v1); FLIP +2 (b5, b11); LEFT_SUM +1 (b12); TIE +2 (b7, b12); SEED275 +2 (b4, b13) and -1 (b18). SEED275 b18: v1's sample-grouped mean is 0x1.999999999999ap-61, giving t 0x1.f9f6e4990f22ap-55 < T. v2's block-grouped mean is 0x1.999999999999ap-60, giving t 0x1.7b792b72cb59ep-53 >= T. Net 11/20 for v1. Exact binary gives 3/20, 2/20, 7/20, 9/20, 10/20. CE4 b9 is not degenerate in exact binary arithmetic (v > 0) and exceeds T. SEED275 b18 is N in exact binary, a rounding difference. In exact decimal SEED275 b18 is an exact tie, so it is counted and p is still 11/20."
+   },
+   {
+    "item": "5. Degeneracy handling: 10 E-SUBNORMAL and 6 E-UNDEF/NEARUNDEF cases (F3/F4)",
+    "status": "PASS",
+    "evidence": "Script: work/edges.py. E-SUBNORMAL-00..09: v2 returns a p on 10/10 and is bit-exact with CDR-010 and ALT (T, r, deg, ties; p 16/20, 19/20, 13/20, 2/20, 10/20, 2/20, 17/20, 1/20, 12/20, 15/20). 30 degenerate replicates have v > 0 but sqrt(v/n) == 0; the predicate correctly declares them degenerate with no division. v1 raises ZeroDivisionError on 10/10 (F4, frozen v1). Exact readings give larger p on 6/10 cases, e.g. 19/20, because the float predicate is contract-mandated. Five cases (CONST-POS, CONST-ZERO, ALT-L2, NEARUNDEF-0102, NEARUNDEF-0307) are undefined: v2 fails closed with `MissingStatisticalEvidence: zero standard error; statistic undefined` and no p, the same as the oracle and ALT (UNDEFINED), v1 (MissingStatisticalEvidence) and both exact readings. Literal run() returns 1/(B+1) on these (fail-open). E-UNDEF-PERIOD3-L3 is graded: v2 p=0.05, r=0, deg=0, T 0x1.a9ab36e693f5dp+53 (about 1.5e16), equal to CDR-010, ALT, v1 and run(); exact decimal and exact binary say it is undefined (F3; contract-silent)."
+   },
+   {
+    "item": "6. Codex's own tools and tests, and their pinned traces against the independent oracle",
+    "status": "PASS",
+    "evidence": "`PYTHONPATH=src:. python tools/verify_gsup_v2_arithmetic.py`: rc=0, status PASS, numerical_output_sha256 d4642fa5…. That equals Codex's ARITHMETIC_REPLAY_PY311 and PY312 evidence, with identical cases and source hashes. `PYTHONPATH=src python -m pytest -q tests/test_evl_gsup_v2_arithmetic.py`: 86 passed. With the registry and repair-negatives files added: 118 passed, equal to the manifest's 118. Agreement with the independent oracle (default `d*d` reading), work/codex_pins_vs_oracle.py: 171/171 GOLDEN_TRACES lines are equal over 9 fixtures (CE2, CE3, CE4, CE5, FLIP, LEFT_SUM, TIE, SEED275 and SE_UNDERFLOW). The 8/8 EXPECTED (p, r, deg, ties, q) tuples agree. CE1 and UNDEFINED_ORIGINAL are NOT_RUN in both. Five fixtures share exact inputs with the oracle (F-CE4, F-FLIP, F-LEFT_SUM, F-TIE, F-SEED275), and their T equals expected_cdr010 on 5/5. ALT is bit-identical to the oracle on all 9 OK fixtures. Codex's test oracle (tests/evl_c8_gsup_v2_oracle.py) on the 681 battery cases equals our square_pow variant on 676/676 and our default on 649/676, because it also uses `**2`."
+   },
+   {
+    "item": "Info: carry-over to PR #35 (8318b78)",
+    "status": "NOT_RUN",
+    "evidence": "I did not execute anything at 8318b78. Blob identity only: superiority_v2.py (370e9b42), superiority.py, statistical_kernels.py, superiority_source_identity.py, metrics.py, walkforward.py, calibration_contracts.py, evl_c8_gsup_v2_oracle.py, test_evl_gsup_v2_arithmetic.py, verify_gsup_v2_arithmetic.py, CDR010_APPROVAL.json and the source-identity approval are all byte-identical between e0b6d80 and 8318b78, and `git diff e0b6d80 8318b78 -- evl` is empty."
+   }
+  ],
+  "findings_blocking": [],
+  "findings_nonblocking": [
+   "F1 (squaring axis not pinned): superiority_v2.py L75 and L91 square with Python `** 2`, which calls libm pow and is not always correctly rounded on glibc 2.39. Against the CDR-010 oracle's default `d*d` (correctly rounded, the same as run()'s NumPy squares), T bits differ on 12/676 graded cases (all E-SQUARE) and per-replicate t bits on 17/71,004 replicates in 16 cases. r, deg, ties and p never differ: 676/676 in the battery and 16,773/16,773 in extra stress. v2 is bit-identical to the labelled `square_pow` variant on 676/676 and to the GIE-008c 'fsum/blocks' probe that CDR-010 cites on 676/676. Because pow is used, T and t bits depend on libm and may not reproduce on another platform or glibc version. That platform dependence is not measured (NOT_RUN).",
+   "Codex's 'independent' test oracle (tests/evl_c8_gsup_v2_oracle.py) also uses `** 2`, so it is not independent of production on the F1 axis. None of Codex's 9 pinned fixtures contains a square where pow != mul (171/171 golden lines are identical under both readings), so Codex's suite cannot detect this axis. The pre-built CDR-010 oracle and the ALT oracle did detect it.",
+   "F3: E-UNDEF-PERIOD3-L3. The exact lrv is 0 (statistic undefined), but float64 lrv is a tiny positive number, so v2 returns the minimum p = 1/20 with T = 0x1.a9ab36e693f5dp+53 (about 1.5e16). This is identical to the CDR-010 reference, ALT, v1 and run(); CDR-010 does not cover this case. Truly zero-se cases (5/5) fail closed with MissingStatisticalEvidence.",
+   "Info (F5): the float sqrt(v/n) predicate mandated by CDR-010 diverges from exact arithmetic on subnormal inputs. For example E-SUBNORMAL-00 gives v2 16/20 vs exact 19/20; 6/10 such cases differ. CE4 and SEED275 differ from exact binary (3/20 and 10/20) but agree with exact decimal. These follow from the binary64 contract and are not v2 defects.",
+   "Info: during verification the routing branch integration/global-handoff-v1 moved from e30241f to 539e673 (GCH-008a). Only GLOBAL_HANDOFF_HISTORY and GLOBAL_STATUS_INDEX changed; the CDR register is unchanged, so the routing used here is still current.",
+   "Info: v2's ARITHMETIC_CONTRACT record (L22-25) and CDR010_APPROVAL.json name the reducer, grouping, block sums and degeneracy predicate, but not the squaring operator or the partial-add reading. v2 implements F2 as fsum(full)+partial, the oracle default and the cited GIE-008 column."
+  ],
+  "conditional_user_decisions": [
+   "F1 squaring operator in M-B v2. Option 1: accept Codex's Python `d ** 2` (libm pow). This is bit-identical to the GIE-008c 'fsum / blocks' column that CDR-010 cites and to Codex's oracle on 676/676, but its T/t bits depend on the platform. Option 2: require correctly rounded `d*d`. This equals approved run()'s NumPy squares and the CDR-010 oracle default, and v2 would have to change L75/L91. Measured effect of the choice: T bits on 12/676 graded cases and t bits on 17/71,004 replicates; r/deg/ties/p unchanged on 676/676 plus 16,773 stress cases. Until decided, item 5 = PASS_WITH_CONDITIONAL_DECISION (exact match to labelled variant square_pow on all 676 graded cases). Route to the user / Track C owner; this is not something the Integration Writer may decide.",
+   "F3 near-undefined observed statistic: when exact lrv = 0 but float lrv > 0 (E-UNDEF-PERIOD3-L3), v2, like the CDR-010 reference, returns the minimum p 1/(B+1). Making this fail closed would need a new numeric threshold or guard. That is a new threshold, so USER_DECISION_REQUIRED for the Track C owner/user. It does not block item 5, because v2 matches the reference."
+  ],
+  "not_run": [
+   "Any execution at PR #35 head 8318b78; only blob identity of the v2 arithmetic files was checked.",
+   "Oracle comparison under Python 3.12/3.13. Codex's PY312 replay evidence was compared only by hash, not re-run.",
+   "Other glibc/libm platforms, so the F1 platform dependence of v2 T/t bits is not measured.",
+   "End-to-end GsupV2Registry path through my oracle adapter. The adapter calls the public studentized_cbb that `_evaluate` (L194) uses; Codex's registry tests ran (part of the 118 passed) but were not compared with the oracle.",
+   "Full regression, GitHub Actions, browser/E2E, source-identity negatives, and the other 13-point items. These are outside this label's scope (items 5, 6a, 6b and the CDR-011 arithmetic list).",
+   "prove_c6.py rerun. Not needed: v2 uses the unchanged C6 kernel (blob 28e1c184), and a direct index comparison was done on 681/681 cases."
+  ],
+  "summary": "vo-oracle at PR #31 e0b6d809058511d4bef7ad1aeccad79c5eae3ff8 (unmoved at end; PR #35 8318b78 also unmoved and carries byte-identical v2 files). The reviewed code is superiority_v2.py L58-113. It is additive (new module, METHOD C8_GSUP_STUDENTIZED_CBB_v2, selected by registration schema/policy and GsupV2Registry; v1 blob 8a1254d7 untouched). It implements CDR-010 and CDR-006 line by line: fsum at every sum, direct block sums, block-grouped mean (fsum(full)+partial)/n, q = ceil(n/L)-1 with the final block excluded from variance, not(sqrt(v/n) > 0), ties counted with >=, degenerate never counted, p = (r+1)/(B+1), fail-closed on zero se or non-finite values, and no tolerance or default. The one unpinned choice is squaring with Python `**2` (libm pow, F1). Item 5: compare_v2 gives MISMATCH_IN_27_CASES against the CDR-010 default reading. All 27 mismatches are T/t-bit differences from pow vs correctly rounded squaring, and r/deg/ties/p.hex are exact on 676/676. v2 is bit-identical (T, r, deg, ties, p, all 71,004 replicate t bits) to the labelled `square_pow` variant on 676/676 and to the GIE-008c fsum/blocks probe cited by CDR-010. ALT oracle: the same picture on 681 cases. Index stream equal on 681/681. Verdict for item 5: PASS_WITH_CONDITIONAL_DECISION (F1). Item 6a PASS: CE4 v2 .10 vs v1 .15, the single degenerate replicate b9 counted only by v1. Item 6b PASS: production v2 gives CE4/FLIP/LEFT_SUM/TIE/seed275 = .10/.10/.35/.45/.55, bit-exact with the oracle and ALT. It equals exact decimal 5/5 and differs from v1 .15/.20/.40/.55/.60 by the degenerate-replicates-counted rule plus SEED275 b18 (grouped vs flat mean). Degeneracy: 10/10 subnormal cases are exact with CDR-010 (v1 raises ZeroDivisionError). 5/5 undefined cases fail closed (literal run() is fail-open there). PERIOD3-L3 returns p = 1/20 like the reference (F3). Codex's tools: verify PASS with sha d4642fa5, matching their PY311/312 replay; 86 and 118 tests passed; 171/171 golden trace lines and 8/8 EXPECTED tuples equal the independent oracle. However, Codex's oracle shares `**2` and its fixtures cannot detect F1. No blocking findings. Two conditional user decisions: F1 squaring operator, and the F3 near-undefined guard. Artifacts are in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf10/vo-oracle/work/ (v2_adapter.py, v2_compare.json, fieldwise.json, first5_traces.json, fixtures.json, edges.json, codex_pins_vs_oracle.json, codex_verify_out.json, stress_out.txt). Worktree removed and pruned."
+ },
+ "vr": {
+  "items": [
+   {
+    "item": "0. SHAs and scope",
+    "status": "PASS",
+    "evidence": "git fetch origin, then ls-remote at the start and again at the end gave the same values: codex/track-c-gsup-v2-2026-10-03 = refs/pull/31/head = e0b6d809058511d4bef7ad1aeccad79c5eae3ff8, and codex/integration-hardening-2026-10-03 = refs/pull/35/head = 8318b78de7ebaca63b857f8c85a12d071863c492. integration/global-handoff-v1 moved during the run (539e673, then 5a8dd49); e30241f is an ancestor. Both PRs were used read-only through detached worktrees under wf10/vr-refuter, which were removed and pruned at the end. Main checkout f1b5afb is untouched (status clean). The PR #35 implementation/src tree has no diff from e0b6d80 (evl tree 1fa0d697 in both), and the 8000-case output digest on the #35 worktree equals the #31 digest (5f46edde...). The kernel findings therefore apply to both heads. PR #31 check runs: 9/9 success."
+   },
+   {
+    "item": "1. Pre-built oracle battery (676 graded) via compare_v2.py with my adapter around superiority_v2.studentized_cbb",
+    "status": "FAIL",
+    "evidence": "Verdict MISMATCH_IN_27_CASES, exit 1 (oracle file sha256 values match the recorded ones). Fixtures 5/5, edge_subnormal 10/10 and edge_undefined graded 1/1 match exactly. The 27 mismatches are 12 E-SQUARE cases (T bits) and 15 random cases (per-replicate t bits only). All 27 have matches_reference = variant:square_pow, and none differs in r, deg, ties or p. This is exactly the oracle's pow_mutant signature (27). The partial-add mutant (569 cases), samples mutant (585), v>0 mutant (10) and v1 mutant (634) are all excluded. FAIL here means FAIL against the oracle's default reading only. The difference sits on the F1 axis that CDR-010 does not pin literally (see item 3)."
+   },
+   {
+    "item": "2. My own fuzzer, 8000 new cases vs the ALT oracle (exact-rational IEEE emulation). Covers n 3..64; L 1..30 including L=1, L=n-1, L dividing n, q=2 and q=1; B in {1,19,99,999}; seeds negative, >=2^32 and >=2^64; 18 families",
+    "status": "FAIL",
+    "evidence": "gen_cases.py with GEN_SEED 0x5EED20261004; cases_main.json sha256 c3b542bd...; run_fuzz.py. 4437 cases were computed by both v2 and ALT, covering 546,703 replicates; this includes q=2 (1078 cases), L dividing n (2028), L=1 (1244), negative seeds (1370) and seeds >=2^32 (1522). 4347 cases match ALT exactly on T, r, deg, ties, p and every replicate's t bits and degenerate pattern. The other 90 match only my pow copy of ALT (alt_pow.py, which squares with d**2 and is otherwise identical) and differ in t bits only. 3563 cases were refused by both, and v2 matched ALT's refusal class every time: 2396 for fewer than two variance blocks (every q<2 case, including all L=n-1 and q=1 cases), 859 for zero standard error, and 308 for overflow/unsupported finite range. There were 0 cases where v2 returns a p and ALT refuses, and 0 non-MissingStatisticalEvidence raises. v2's trace block sums and partial sums equal the exact-rational sums at ALT's starts in every replicate (trace_bad = 0). p == (r+1)/(B+1) bit-for-bit, and 0 <= r <= B - deg, in every case. A third, independent float implementation of mine also matched v2 exactly on 1660 cases. FAIL is again against the default (d*d) reading only."
+   },
+   {
+    "item": "3. F1 squaring axis: v2 uses Python (b - L*m) ** 2 (libm pow) at superiority_v2.py lines 75 and 91",
+    "status": "FAIL",
+    "evidence": "The difference reaches p, not only bits. Minimal reproducer: studentized_cbb([8.7,0.0,0.0,0.0,-2.9,2.9,2.9,8.7,-2.9], block_length=2, replicates=19, seed=11). v2 gives T=0x1.cf1f15ba01c38p+0, r=3, ties=1, p=0.2. ALT and the primary oracle (correctly rounded d*d) give T=...c3ap+0, r=2, ties=0, p=0.15. alt_pow and the primary oracle with square='pow' reproduce v2 exactly. Cause: (-0x1.eeeeeeeeeeeeep+1)**2 = 0x1.de6f8091a2b3bp+3 under glibc 2.39 pow, against the correctly rounded 0x1.de6f8091a2b3ap+3. Second reproducer: [0.3,0.0,0.8999999999999999,0.3,-0.3,0.0,-0.3,0.3,-0.3,0.3,0.3,0.3], L=3, B=19, seed=13. Here T is identical; a pow-squared replicate variance makes one t tie T, so v2 has r=2, p=0.15 against ALT r=1, p=0.1. With B=1, seed 364 or 1308 gives p 1.0 vs 0.5. Search scale: 400k random cases gave 0 r/p flips (T bits differ in 187, t bits in 21,907); 120k scaled-integer tie-rich cases gave 2 tie-count flips; 400k more gave 6 flips, 2 of them changing r and p. T-bit-only example: [0.1,-0.35,0.1,-0.1,0.1,-0.1,0.1,-0.1], L=2, B=1, seed=0 gives v2 T ...331d vs ALT ...331c. This is a conditional axis, so FAIL against the d*d reading and exact match to variant:square_pow. Codex's own oracle (tests/evl_c8_gsup_v2_oracle.py lines 87 and 106) also uses ** 2, so its tests cannot see this axis."
+   },
+   {
+    "item": "4. Invalid inputs fail closed",
+    "status": "PASS",
+    "evidence": "invalid_inputs.py, 48 probes. Values of NaN, +inf, -inf, all-NaN, True/False, str, Decimal, Fraction, None, complex, list and bytes raise ValueError. Empty input and n=1 raise MissingStatisticalEvidence (insufficient observations). n=2 with L=1, n=3/4 with L=2 (q=1), L=n-1, L=n, L=n+1 and L=10**6 raise MissingStatisticalEvidence (fewer than two variance blocks). B of 0, -1, True, 19.0, '19' or None raise ValueError; so do L of 0, -1, True, 2.0 or None, and seed of None, 7.0, True, '7' or Decimal(7). Finite inputs that become non-finite after scaling raise MissingStatisticalEvidence('unsupported finite arithmetic range'): L*mean overflow, fsum intermediate overflow, 1e300 inputs, squares overflowing at 1e155, and ±max-float. No invalid probe returned a p. Non-blocking notes are under findings."
+   },
+   {
+    "item": "5. Ties counted with >=",
+    "status": "PASS",
+    "evidence": "degen_ties.py part C plus the main fuzz. 312 cases with 10,569 ties match ALT on r and ties, including 12 cases (147 ties) with T != 0 and 5 more T != 0 tie cases in the main fuzz. On every computed case, v2's r equals #(t>T) + #(t==T) and its ties equal #(t==T) (ge_identity failures = 0). Trace flags satisfy exceeds == (not degenerate and t >= T) and tie == (t == T) in every replicate."
+   },
+   {
+    "item": "6. Degeneracy predicate exactly 'not sqrt(v/n) > 0'",
+    "status": "PASS",
+    "evidence": "degen_ties.py parts A and B covered 720,641 replicates, each checked against both a Fraction rule (v/n <= 2^-1075) and the hardware rule; 0 predicate mismatches. Categories: 43,762 with v == 0, including exact block-sum cancellation; 902 in 20 cases with v > 0 but fl(v/n) == 0, all degenerate, which is where a v>0 predicate would differ; 113,392 with v/n subnormal and sqrt > 0, all non-degenerate. Every case's deg count and per-replicate pattern match ALT. The 14 bit mismatches there are all T/t bits that match alt_pow exactly. glibc pow is exact for deep-subnormal squares (0 of 400k), so F1 cannot flip degeneracy."
+   },
+   {
+    "item": "7. Determinism (same input, fresh processes, PYTHONHASHSEED, other CPython minors)",
+    "status": "PASS",
+    "evidence": "determinism.py hashes the full outputs, including traces and indices_hash, for all 8000 cases. The digest is 5f46edde9ae1549b3547a61784147ba957eb999f959faca6012eefe834822f72 in every run: in-process repeat; fresh processes under 3.11.15 with PYTHONHASHSEED 0, 1, 4294967295 and random; /usr/bin/python3.12 (3.12.3) with 0 and random; /usr/bin/python3.13 (3.13.14) with 0 and random; and the #35 worktree. The v2 kernel needs only the stdlib. Not covered: a different libm or OS (see not_run)."
+   },
+   {
+    "item": "8. Registry level: v2 assessment statistic equals the kernel",
+    "status": "PASS",
+    "evidence": "registry_probe.py drives GsupV2Registry with the repository's synthetic source fixture (tmp dirs under my scratch dir only; no real data). Feasibility was FEASIBLE and method C8_GSUP_STUDENTIZED_CBB_v2. All 7 computed cells equal the direct kernel call on statistic hex, p hex, exceedances, degenerate_replicates, ties, draws_hash and traces_hash. The exactly undefined cell ([1.0]*12, se == 0) is NOT_RUN with the kernel's reason, and the overall statistical_status is NOT_RUN. The provider was called once."
+   },
+   {
+    "item": "9. F3: an undefined original statistic should map to NOT_RUN rather than min p (reported, not graded)",
+    "status": "FAIL",
+    "evidence": "Reported as a user decision, not graded against Codex. v2 maps NOT_RUN only when float se is not > 0. Where the exact lrv is 0 but float residue gives lrv > 0, v2 returns a p, matching both CDR-010 oracles bit-for-bit. Main fuzz: 53 such cases, all with |T| > 1e12; 39 got min p, 17 have T < 0, and 3 have T < 0 with min p because all replicates are degenerate. Oracle E-UNDEF-PERIOD3-L3 gives p=1/20. Kernel reproducers: [0.05]*12, L=2, B=19, seed=7 gives T=+1.77e16 and p=0.05; [-0.2,-0.1]*6, L=2, B=19, seed=7 (mean -0.15) gives T=-1.69e16, deg=19 and p=0.05. Registry with all 8 cells set to these two patterns: every cell REJECT_H0 at p=0.05 (including the 4 negative-T cells), statistical_status STAT_PASS, decision NOT_RUN_EFFECT_FLOOR_DEFERRED, official False. The 5 exactly undefined oracle cases raise MissingStatisticalEvidence; literal run() returns min p on them."
+   }
+  ],
+  "findings_blocking": [
+   "F1 (conditional axis): v2 squares with Python ** 2 (libm pow) at superiority_v2.py lines 75 and 91, not correctly rounded d*d. This changes p, not only bits. Reproducer: studentized_cbb([8.7,0.0,0.0,0.0,-2.9,2.9,2.9,8.7,-2.9], block_length=2, replicates=19, seed=11) gives v2 p=0.2 (r=3, ties=1, T=0x1.cf1f15ba01c38p+0), while the CDR-010 oracles' default d*d reading gives p=0.15 (r=2, ties=0, T=...c3ap+0). Second reproducer: [0.3,0.0,0.8999999999999999,0.3,-0.3,0.0,-0.3,0.3,-0.3,0.3,0.3,0.3], L=3, B=19, seed=13 gives 0.15 vs 0.1. v2 matches only variant:square_pow: 27/27 oracle-battery mismatches, 90/4437 in my fuzz plus 14 targeted (bits only), and the 2 constructed p flips. CDR-010 does not pin squaring literally. NumPy ** 2 in the approved run() is correctly rounded, so v2's p and T can depend on the platform's libm. This blocks a PASS for items 5/6b only under the d*d reading; the user or Integration Writer must choose the axis. Codex's oracle shares ** 2 and cannot detect it."
+  ],
+  "findings_nonblocking": [
+   "F3 (contract-silent): v2 returns p for statistics that are exactly undefined (exact lrv 0, float lrv > 0 from rounding residue), including min p with a negative T when all replicates are degenerate. At registry level this gives cells REJECT_H0 and statistical_status STAT_PASS. Both CDR-010 oracles agree bit-for-bit, so this is CDR-010-literal behaviour; a guard would be a USER_DECISION.",
+   "Huge int input (10**400) raises OverflowError from _series/_finite before the try block in studentized_cbb, not MissingStatisticalEvidence. At registry level finite_number also raises OverflowError, which the registry records as CRASH_NO_RETRY. This still fails closed and returns no p.",
+   "The kernel accepts any iterable through the inherited v1 _series(tuple(values)), so a dict (keys) or a set is taken as a series and a p is returned. The registry path always builds a tuple, so it is not reachable there.",
+   "Seed sign aliasing, inherited from random.Random in the approved C6 circular_block_indices: seed s and -s give identical indices and results (12345/-12345 and 2^40/-2^40 checked).",
+   "math.fsum raises OverflowError on intermediate overflow even when the exact sum is finite, e.g. [1.7e308,1.7e308,-1.7e308,-1.7e308,...]. v2 maps this to NOT_RUN; the exact-rational ALT would compute a result. This is fail-closed and consistent with 'Arithmetic = math.fsum'.",
+   "F2 reading confirmed: v2 uses fsum(full)+partial (line 90), the oracle default and the GIE-008 'fsum / blocks' reading. No partial-axis mismatch appeared anywhere.",
+   "Codex's 118 targeted v2 tests pass locally and tools/verify_gsup_v2_arithmetic.py reports PASS. Both share the ** 2 axis with the implementation."
+  ],
+  "conditional_user_decisions": [
+   "F1: is Python ** 2 (libm pow, not correctly rounded on glibc 2.39, platform-dependent) acceptable under CDR-010 'Arithmetic = math.fsum', or must squaring be correctly rounded (d*d, matching NumPy in the approved run())? The choice changes p on constructed inputs (0.2 vs 0.15 and 0.15 vs 0.1 at B=19) and the T/t bits recorded in cells, draws_hash and traces_hash.",
+   "F3: should an exactly or near-undefined original statistic, or an all-degenerate replicate set, become NOT_RUN instead of min p? Any guard is a new threshold or rule and needs a USER_DECISION; v2 currently follows CDR-010 literally."
+  ],
+  "not_run": [
+   "Cross-libm/OS determinism (macOS libm, musl, Windows CRT): not available offline. F1 implies T/t bits and possibly p may differ there.",
+   "Python 3.12/3.13 under NumPy venvs: not needed, since the v2 kernel uses only the stdlib; 3.12.3 and 3.13.14 ran with system interpreters.",
+   "A full Codex repository pytest suite beyond the 3 v2 test files: outside the refuter scope.",
+   "Exact-decimal comparison: not part of this adversarial task."
+  ],
+  "summary": "I could not show that v2 at e0b6d80 (identical in #35 at 8318b78) implements CDR-010 exactly under the oracle's default reading. It does reproduce CDR-010 exactly apart from one axis, F1 squaring: v2 squares with Python `** 2` (libm pow) where the oracles use correctly rounded `d*d`. Against the ALT exact-rational oracle and my own fuzzers (8000 random cases plus 2700 targeted degeneracy and tie cases), v2 matches on reducer, direct block sums, block grouping, fsum(full)+partial, the sqrt(v/n) > 0 predicate (including 902 replicates with v>0 but v/n rounding to 0), >= tie counting, the p formula, refusal classes and C6 starts. Every mismatch matches variant:square_pow. Contrary to the oracle prep, F1 does change p: [8.7,0,0,0,-2.9,2.9,2.9,8.7,-2.9], L=2, B=19, seed=11 gives p=0.2 in v2 and 0.15 under d*d. Invalid inputs fail closed, and nothing invalid returned a p. Results are deterministic across fresh processes, PYTHONHASHSEED values and CPython 3.11, 3.12 and 3.13. Registry cells equal the kernel. F3 is reported, not graded: exactly undefined statistics get a p, including min p with negative T, and a registry made only of such cells reaches STAT_PASS. Both F1 and F3 need a user or routing decision. Evidence is in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf10/vr-refuter/: res_main.json, res_degen_ties.json, pow_tie2.json, pow_small_repro.json, reg_out*.json, invalid_out.json, det_*.json and v2_compare.json. The worktrees are removed and pruned."
+ },
+ "vi": {
+  "items": [
+   {
+    "item": "Setup / exact SHAs (read-only subject)",
+    "status": "PASS",
+    "evidence": "`git -C /home/user/Investment-System1 fetch origin` updated the refs. It also printed 'fatal: bad object worktrees/wt-neg/HEAD' because another agent's wf9 worktree has its HEAD (b37fcac) in a temporary object dir. `git ls-remote origin` at start and at end gave the same values: codex/track-c-gsup-v2-2026-10-03 = e0b6d809058511d4bef7ad1aeccad79c5eae3ff8, codex/integration-hardening-2026-10-03 = 8318b78de7ebaca63b857f8c85a12d071863c492 (parents 722c812f3d7e0a047b722ba2c0f8bb64b02c942c + e0b6d80), integration/global-handoff-v1 = 539e673745cbcb7454203d01802454f34eee4f87 (routing moved past e30241f; CDR-006..011 were read at e30241f). Comparison baseline: 29c2c202aabc480c8251fc44b7b488417a56177f. I used detached worktrees wf10/vi-identity/{wt31,wt35,wt29}. Each showed `git status --porcelain --ignored` = 0 lines at the end, then `git worktree remove --force` + `prune`. No throwaway merge or temp ODB was needed, because 8318b78 is itself the merge. Main checkout f1b5afb2 [ccr-2e16018a-qukwmg] was not touched (0 status lines). Nothing was committed, pushed, commented or reviewed on any codex/* branch. Runtime: CPython 3.11.15, pytest 9.1.1, no NumPy (none of these paths needs it)."
+   },
+   {
+    "item": "Source identity preservation: gsup_source_identity.py / superiority_source_identity.py byte-unchanged vs 29c2c20",
+    "status": "PASS",
+    "evidence": "`git rev-parse <c>:<path>` gives the same blob at 29c2c20, e0b6d80 and 8318b78. gsup_source_identity.py = fa93bf88f8d77b293421a8d0b5095757b22f72d8 (sha256 d34fc10d...c33c548). superiority_source_identity.py = 71bf737578866b762a0ee82506f8f5db9418f8ba (sha256 3ad8ca25...acca0fa). Both sha256 values equal the ones recorded in GIE-008. Also unchanged across all three SHAs: superiority.py 8a1254d7 (sha256 c6126892...0498), statistical_kernels.py 28e1c184, calibration_contracts.py 5ed82394, walkforward.py 6aa2f0d4, and the approval JSON reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json a5279d51. The only source change in `git diff --stat 29c2c20 e0b6d80 -- implementation/src` is the new evl/superiority_v2.py (+222; sha256 41f67dd28200370f472016e16214ee08edb31dcd75aba91726494799a6614603, the same at 8318b78). Between e0b6d80 and 8318b78 there is no diff under implementation/src; the F1 merge adds only tools/producer_source_compat.py, tests/test_producer_source_compat.py and evidence files. Unchanged at e0b6d80: tests/test_evl_gsup_source_identity.py, test_evl_gsup_v2_identity_adversarial.py, test_evl_gsup_identity_kernel_invariance.py and test_evl_c8_gsup.py. The Track C decision register at 29c2c20 is a byte prefix of the e0b6d80 version (21287 -> 22994 bytes)."
+   },
+   {
+    "item": "v2 wiring read (registry structure)",
+    "status": "PASS",
+    "evidence": "Read in superiority_v2.py: GsupV2Registry subclasses IdentityBoundGsupRegistry and overrides only _validate_spec, _feasibility, _evaluate, _result and _attach. It inherits register/record_feasibility/assess, the coordinator-pinned SourceAuthority (record_root = authority/gsup_assessments), the claim journal and the one-shot access protocol unchanged. _record_key = digest([PROTOCOL, binding, profile, role]) carries no method field. Stable sample keys digest([source_id, vintage, sample_id, profile, role]) are method-independent too, so v1 (identity wrapper) and v2 share one consumption space. v2 validate_registration requires schema C8_GSUP_STUDENTIZED_CBB_v2 + policy TC-C8-GSUP-M-V2-CDR006-CDR010 and then runs the frozen v1 gates on a relabelled copy. authority() pins CDR010_APPROVAL.json (blob 3a9eecbb) and the original approval (a5279d51)."
+   },
+   {
+    "item": "Codex identity + v2 registry tests, run for count comparison",
+    "status": "PASS",
+    "evidence": "From implementation/: `PYTHONPATH=src:. python3 -B -m pytest -q -p no:cacheprovider -rf tests/test_evl_gsup_source_identity.py tests/test_evl_gsup_v2_identity_adversarial.py tests/test_evl_gsup_identity_kernel_invariance.py` gave 92 passed at 29c2c20, e0b6d80 and 8318b78. Per-file --co: 33+48+11, the same as GIE-008's 92. The first e0b6d80 run took 226 s under machine load; the 8318b78 run took 1.30 s. `... tests/test_evl_gsup_v2_registry.py tests/test_evl_gsup_v2_repair_negatives.py` gave 32 passed (21+11) at e0b6d80 and 8318b78. Codex's claimed 'final targeted 118 (86 arithmetic + 21 registry + 11 repair negatives)': `pytest tests/test_evl_gsup_v2_arithmetic.py tests/test_evl_gsup_v2_registry.py tests/test_evl_gsup_v2_repair_negatives.py` gave 118 passed at both SHAs, so the counts match. Gaps in the Codex v2 registry tests: method switching is tested only after a completed first attempt and with one campaign/label/hash change. They have no SIGKILL, multi-process race, numeric re-encoding, response-identity mutation beyond source_id, or relabel coverage on the v2 path. My probes below cover these."
+   },
+   {
+    "item": "Previous GIE-008 identity probes re-run on the v1 path (unchanged harness)",
+    "status": "PASS",
+    "evidence": "I copied the GIE-008 harness from wf8/verify-identity/probes byte-for-byte into vi-identity/v1rerun-{31,35}/probes (sha256 probe_lib cbda540d..., run_probes a8cf0ab6..., probe_worker 472a8a0e..., probe_lowlevel 2d69607f...). I ran it against the src at e0b6d80 and 8318b78. `PROBE_SRC=<wt>/implementation/src python3 -B run_probes.py` gave 151/151 PASS at both. probe_lowlevel.py gave 8/8 refusals, identical to the GIE-008 lowlevel.json. Per-check comparison with GIE-008 out/results.json after normalising pids, 64-hex hashes and temp paths: 0 differing observations out of 151 at each SHA. This covers 7a-7d, 8.01-8.13, 9a, 9b (4 SIGKILL points), 9c (8-proc x5, 8-proc x3, 16 threads) and the trust boundary. v1 identity behaviour is unchanged."
+   },
+   {
+    "item": "(7) source/vintage/sample identity negatives through the v2 registry",
+    "status": "PASS",
+    "evidence": "My own harness vi-identity/probes/v2probes.py + v2lib.py has independent fixtures: 8 periods, my own sample-id scheme and typed literals. It runs through V2.GsupV2Registry and got 87/87 PASS at both e0b6d80 and 8318b78. 7.01 (12 bad bindings: None, {}, missing descriptor_hash, extra key, unknown ref, altered hash, swapped ref/hash, foreign authority_ref, foreign binding, foreign registration under the pinned ref, int values, list): all refused at register (MissingPrerequisite NOT_RUN_MISSING_SOURCE_IDENTITY or IntegrityFailure) with 0 provider reads, 0 claims and no local registration file. 7.02 (22 descriptor-completeness mutations: missing/blank/int vintage, missing source_id, missing/naive/pre-authority registered_at, missing/empty period_ids, missing cohort/control, stream without sample_ids, one sample missing/extra/duplicate/None, outcomes field, synthetic False, ACTUAL origin, real role designation, missing role_designation_ref, unknown schema): all refused with no descriptor record written. The naive timestamp raises PITViolation (see F4). 7.03 (11 cases: spec role_id/profile/role/verify_periods differ from the descriptor, descriptor issued after attempt registration, non-fixture lineage, lineage field missing, dev label = verify label, dev hash = verify hash, v1 spec into the v2 registry, v2 schema with v1 policy): refused at register, 0 reads, 0 claims. 7.04: Development series content differs from its registered hash -> refused in record_feasibility after the claim (charged, fail closed). A new-campaign retry is refused, with 0 reads and 0 accesses. dataset_role CAL_VERIFY for the dev series is refused. An opaque file or symlink in the pinned v1 history store closes v2 admission (MissingPrerequisite). 7.05 (25 provider-response mutations: source_id, vintage, registration_ref, descriptor_hash, authority_ref, identity missing, extra identity key, identity period_ids, identity of another registered descriptor, samples reordered, sample replaced, extra sample, missing sample, vector long/short, extra/missing cohort, extra/missing control, role_id, dataset_role HOLDOUT, synthetic missing/False, values not matching the commitment, dataset_id label): each gives exactly 1 read, then a refusal and a durable result {method v2, NOT_RUN, CRASH_NO_RETRY, SYNTHETIC_M_B_V2_ONLY} with no STAT. Retries refused with 0 reads: resume on the same registration, a new v2 campaign/root, and a v1-identity switch. 7.06 trace: resolve, resolve, claim, resolve, load_claim, begin_access, PROVIDER_READ, validate_response, v2_evaluate. 7.07 (identity resolved after outcome access): a descriptor newly issued during the read and returned -> refused. The trusted descriptor rewritten during the read -> 'trusted descriptor changed after registration'. accessed_at equal to or before registered_at -> refused before the provider. A descriptor deleted or tampered after the claim (with recomputed hash) -> refused before the provider, 0 reads. 7.08 (unregistered authority): object(), None, wrong expected ref, altered manifest hash, copied authority dir and missing root (not auto-created) are all refused. Ad hoc adhoc_overlap.py at both SHAs: second descriptors with 1 overlapping sample, a 3-period subset, a 9-period superset, relabelled period_ids or rotated samples are all refused at record_feasibility, 0 reads, claims stay 1."
+   },
+   {
+    "item": "(8) re-encoding refused as the same target on the v2 path",
+    "status": "PASS",
+    "evidence": "14/14 graded checks PASS at both SHAs. Each first v2 attempt completed with STAT_PASS (method v2). Each second attempt, in the same root with a new campaign and in a new root with a new campaign and label, was refused at record_feasibility ('same stable samples already reserved; no relabel/reencode/retry'). There were 0 provider reads, and claims/accesses/results were unchanged. Pairs: 8.01 2.0->2, 8.02 0.0->-0.0, 8.03 -0.0->0, 8.04 2->2.0, 8.06 decimal strings, 8.07 decimal.Decimal; verify_content_hash really differed in all six. 8.05: JSON text with '3e0' exponents (hash differs) and with reversed key order + indent=3 (same canonical hash) were both refused. 8.08: 2.0->2 plus a coordinator-issued role_id relabel was refused. 8.09a/b: 2.0->2 combined with a v1id->v2 or v2->v1id method switch was refused. 8.11: a first v2 attempt whose provider returns decimal strings (IntegrityFailure 'finite numeric value required') or Decimal (TypeError, see F4) never produces STAT. It leaves one durable v2 NOT_RUN/CRASH_NO_RETRY and the retry gets 0 reads. Positive controls: 8.12a, the frozen plain v1 GsupRegistry (no source identity), evaluates both 2.0 and 2 (STAT_PASS twice), so the probe does detect a reopen. 8.12b: v2 with disjoint samples and int encoding is admitted (STAT_PASS)."
+   },
+   {
+    "item": "(9) bypass: campaign/role_id/label/root/alpha/seed/B/L, v1<->v2 switch, SIGKILL replay, concurrent double-claim",
+    "status": "PASS",
+    "evidence": "52/52 graded checks PASS at both SHAs, plus 2 informational observations (see the NB findings). 9.01: after a completed v2 consumption I made 13 second-attempt variants, each in the same root and in a new root: campaign_id, verify_dataset_id label, local root only, alpha 0.25, seed 32, B 39, L 3, feasibility seed, registered_at, development label+series, role_id via a coordinator-issued descriptor over the same samples, spec role_id only, and everything at once. All 25 were refused before any provider call. In the same root, attempts are stopped by the local target_key collision at register; in a new root, by the shared claim journal. A direct assess on a second registration is refused ('feasibility tampered or reassigned'). 9.02 method switching (second attempt always feasible, L=2), each refused before the provider with claims/results/accesses unchanged: v1id completed->v2 (new root; only the method differs; same root); v2 completed->v1id (same three); v1id or v2 claimed with feasibility but no access ->other; v1id or v2 provider crash (CRASH_NO_RETRY) ->other; v2 or v1id NOT_RUN_INFEASIBLE (L=6) ->other. Other-method registry assessing a registration+claim in the same root -> refused at schema validation; the original attempt then completes with exactly 1 read. v2 spec into v1id -> refused at register. Frozen plain v1 consumption recorded in the coordinator-pinned v1 history store -> v2 refused (MissingPrerequisite). 9.03 SIGKILL (rc -9, subprocess v2 attempt) at 6 points: in_provider, after_claim_before_feasibility, inside_v2_feasibility, intent_before_journal_append, after_begin_access_before_shared_access, inside_v2_kernel (after the provider read). Every replay was refused with 0 provider reads: resume v2 same root, v2 new campaign+root, v1id method switch, v2 role_id-relabel descriptor. Provider reads stayed at 1 for in_provider and inside_v2_kernel and 0 otherwise. No STAT exists for the target. A disjoint-sample control was still admitted, except after the intent kill, where the whole authority is closed (F5). 9.04: a BaseException (KeyboardInterrupt) in the provider gives a durable v2 CRASH_NO_RETRY, and both the retry and a v1id retry are refused, 1 read total. 9.05 multi-process races with a file barrier: (a) 8 processes, 4 v2 + 4 v1id, distinct campaigns and roots, same binding, 5 rounds; winners v2, v2, v2, v1id, v2. (b) 8 identical v2 processes in different roots, 3 rounds. (c) 8 processes each with its own coordinator-issued descriptor (same samples, different role_id), mixed v1id/v2, 3 rounds. Every round: exactly 1 admitted, 7 refused at record_feasibility before the provider, 1 provider read, 1 claim, 1 access, 1 STAT."
+   },
+   {
+    "item": "Probe sensitivity (my probes fail when the property is removed)",
+    "status": "PASS",
+    "evidence": "These are in-memory monkeypatch mutants selected by the VI_MUTANT env var in v2lib.py; no subject file was modified. All ran on the e0b6d80 src. claim_per_registration (sample keys salted with registration_hash, i.e. a version/campaign reset): 66/155 FAIL, including all of 8.01-8.09, all of 9.02.a1-e2, the 9.01 new-root variants and the 7.05 retry checks. skip_response_identity (validate_response returns data unchecked): 13 FAIL, namely 7.05 source_id/vintage/refs/hash/authority/identity-missing/extra-key/period_ids/other-descriptor/reordered/replaced and 7.07 two late-identity cases. any_authority (registry accepts any authority object): 2 FAIL (7.08 object/None). no_lock (flock removed): 2 of 3 race probes FAIL (overlapping journal rows, 0 admitted or claims=2)."
+   },
+   {
+    "item": "N2 (no identity-string canonicalization / no capability gate on register_descriptor): still present? made worse by v2?",
+    "status": "PASS",
+    "evidence": "N2 is still present. The code is byte-unchanged, and Codex's CURRENT_HANDOFF_V2_CDR010.md says 'The earlier N2 trusted-issuer identity normalization issue remains a before-real-source boundary'. The v2 path does not make it worse, which is the question this item asks. Probe N2 ran at both SHAs: after a v2 or a v1id consumption under source_id NFC 'vi-src-é', I issued descriptors through `registry.source_authority.register_descriptor` on the attempt-side GsupV2Registry object. Variants: trailing space, upper case, NFD, vintage with a trailing space, sample ids spelled 'i.0' instead of 'i'. Each produced a second full v2 STAT_PASS evaluation of byte-identical content (1 read each). An identical-identity control descriptor (only registered_at differs) was refused at the claim. This is the same mechanism and the same outcome as GIE-008 F1/N2 on v1. v2 adds no new route: GsupV2Registry adds no identity input and inherits register_descriptor exposure unchanged. The only delta is that the existing relabel route can now also reach the v2 method. Non-blocking, as in GIE-008."
+   }
+  ],
+  "findings_blocking": [],
+  "findings_nonblocking": [
+   "N2 (carried over, unchanged; not worsened by v2): identity strings are byte-compared with no NFC/case/whitespace canonicalization. register_descriptor has no capability gate and is reachable from the attempt-side registry object (registry.source_authority). On the v2 path a re-issued descriptor with a variant source_id, vintage or sample-id spelling re-opens byte-identical content for a second full v2 evaluation. This is within the declared coordinator-trust boundary and should be fixed before any real-source work (Codex acknowledges this).",
+   "NB-plainv1 (pre-existing, out of declared model, not a v2 regression): the cross-version one-shot guard covers only the source-bound registries (IdentityBoundGsupRegistry v1 and GsupV2Registry). The frozen plain v1 GsupRegistry keys consumption by content commitment and never consults the SourceAuthority. Its records close v2 admission only when they sit in the coordinator-pinned v1 history store (verified fail-closed). (a) Plain v1 with an unpinned store, or invoked unbound on a GsupV2Registry instance (writing content-keyed files into authority/gsup_assessments, which _check_anchor does not scan), followed by v2 on the same samples: v2 ADMITTED. (b) v2 followed by plain v1 with its own store: plain v1 ADMITTED (adhoc_unbound.py at e0b6d80/8318b78; 9.02 informational). The identical behaviour with v1id instead of v2 at 29c2c20 (adhoc_unbound29.py) shows this predates v2. Defense-in-depth options: fail closed on gsup_assessments records that are not bound to a journal claim, or have the coordinator never expose the frozen GsupRegistry for identity-bound targets.",
+   "F2-equivalent on v2 (out of declared model): attempt code that bootstraps its own authority and builds GsupV2Registry over it re-evaluates the same content (TB.01). The wrapper only checks isinstance(SourceAuthority), so protection rests on the coordinator injecting the registry.",
+   "F4 (carried over): a naive descriptor registered_at raises PITViolation (a ValueError), and Decimal provider values raise TypeError in digest. Both still fail closed (no record, or a durable v2 CRASH_NO_RETRY with no STAT), but they are not IntegrityFailure/MissingPrerequisite.",
+   "F5 (carried over): a SIGKILL between the claim-intent write and the journal append closes the whole authority, including disjoint samples and descriptor issuance ('interrupted or foreign reservation intent; fail closed'). No recovery path is defined.",
+   "F7 (carried over, now also on v2): a SIGKILL in the provider read or inside the v2 kernel after the read leaves no result record. The target stays spent only through the shared access and source access receipts.",
+   "Process note: the initial `git fetch origin` printed 'fatal: bad object worktrees/wt-neg/HEAD' / 'did not send all necessary objects', caused by another agent's wf9 worktree whose HEAD lives in a temp object dir. Remote refs nonetheless matched ls-remote at start and end."
+  ],
+  "conditional_user_decisions": [
+   "Only if the user wants the one-shot guarantee to extend across the frozen plain v1 GsupRegistry (content-keyed, no source identity) for the same synthetic targets, a decision is needed on how to do that without modifying frozen v1 (e.g. coordinator policy or an authority-side fail-closed scan of gsup_assessments). CDR-006/007/010/011 do not require it, and current behaviour is unchanged since 29c2c20.",
+   "N2 canonicalization and an issuance capability gate remain a before-real-source boundary. Real source taxonomy/default is not approved, so no decision is needed for the current synthetic scope."
+  ],
+  "not_run": [
+   "Items 1-6 and 10-13 of the 13-point map (other workers' labels), including arithmetic/oracle comparison, full regression and Actions; I ran test_evl_gsup_v2_arithmetic.py only to reproduce Codex's 118 count.",
+   "GitHub Actions for e0b6d80 / 8318b78 were not inspected by this label.",
+   "Full repository regression suite.",
+   "Python 3.12 / 3.13; all probes ran on CPython 3.11.15 only.",
+   "Multi-host / NFS / non-POSIX flock and fsync semantics and true power loss; only SIGKILL and in-process BaseException were simulated.",
+   "Hostile attempt code tampering with authority files beyond the informational out-of-model probes (TB.01, unbound plain-v1).",
+   "Real CAL_VERIFY, Holdout, real provider data, real source taxonomy, numeric configuration: not accessed, not approved.",
+   "Throwaway merge / temp GIT_OBJECT_DIRECTORY: not needed, because 8318b78 is itself the merge commit."
+  ],
+  "summary": "Items 7, 8 and 9 and source-identity preservation PASS on the v2 path at both e0b6d809058511d4bef7ad1aeccad79c5eae3ff8 (#31) and 8318b78de7ebaca63b857f8c85a12d071863c492 (#35), in synthetic scope. No blocking findings. Both refs were unchanged at the final ls-remote; integration/global-handoff-v1 is now 539e673.\n\nSource identity is byte-preserved. gsup_source_identity.py (fa93bf88) and superiority_source_identity.py (71bf7375) are unchanged vs 29c2c20, as are superiority.py, the kernel helpers and the approval JSON. The only source change is the new superiority_v2.py (sha256 41f67dd2..., the same at both SHAs). GsupV2Registry inherits the trusted authority, claim journal and one-shot protocol unchanged, and its stable sample keys do not depend on the method.\n\nCodex's tests match their claimed counts:\n- Identity tests: 92 at 29c2c20, e0b6d80 and 8318b78.\n- v2 registry + repair negatives: 32 at both SHAs.\n- Codex's targeted set: 118 at both SHAs.\n\nThe GIE-008 v1 identity harness, re-run unchanged, gives 151/151 plus 8/8 low-level refusals at both SHAs. Its observations are identical to GIE-008 after normalising pids, hashes and paths.\n\nMy own v2 harness gives 159/159 at each SHA: 153 graded checks plus 6 recorded observations.\n- Item 7 (87 checks): bad bindings, incomplete descriptors, spec/lineage misalignment and unregistered authorities are refused before any provider read. Provider-identity mutations get exactly one read, then a durable v2 CRASH_NO_RETRY and no retry. Identity issued or rewritten after access is refused.\n- Item 8 (14 checks): 2.0/2, ±0.0, 1e0, key order/whitespace, decimal strings and Decimal are all refused as the same target with 0 reads. Positive controls show the probe does detect a reopen.\n- Item 9 (52 checks): changes to campaign, role_id, label, local root, alpha/seed/B/L, registered_at and development data are refused before any provider call. Every v1-identity to v2 switch and back is also refused: after completion, feasibility-only, crash and infeasible first attempts. Replays after SIGKILL at 6 points stay charged. Multi-process races admit exactly one attempt in 11/11 rounds.\n- Probe sensitivity: in-memory mutants (no lock, per-registration claims, unchecked response identity, any authority object) make the matching probes FAIL.\n\nN2 is still present and not worsened. Identity strings are not canonicalized, and register_descriptor has no capability gate. Relabelled descriptors re-open identical content under v2 exactly as under v1. v2 adds no new route.\n\nPre-existing, non-blocking: the frozen plain v1 GsupRegistry, which has no source identity, can coexist with v2 unless its records sit in the coordinator-pinned history store. That store is checked fail-closed. The same behaviour exists at 29c2c20. F2, F4, F5 and F7 carry over.\n\nArtifacts are under /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf10/vi-identity/:\n- Probes: probes/{v2lib.py, v2worker.py, v2probes.py, adhoc_overlap.py, adhoc_unbound.py} and probes29/adhoc_unbound29.py. v2lib.py now also holds the mutant block (sha256 e79fcb11...; before the mutant block was appended it was d7ab5a6e...).\n- Results: out31/results-7-8-9-n2.json (sha256 2b800371...) and out35/results-7-8-9-n2.json (923f938c...).\n- v1 re-run: v1rerun-{31,35}/out/results.json.\n- Logs: logs/*.log.\n\nWorktrees were removed and pruned. The main checkout and the codex/* branches were not touched."
+ },
+ "syn": {
+  "table": [
+   {
+    "row": "13-pt 1. Exact HEAD",
+    "status": "PASS",
+    "evidence": "All four verifiers agree. My own check: `git fetch origin` (rc=0, 01:31Z) and `git ls-remote` at start and end (01:44Z) give the same subject refs. #31 branch = refs/pull/31/head = e0b6d809058511d4bef7ad1aeccad79c5eae3ff8. #35 branch = refs/pull/35/head = 8318b78de7ebaca63b857f8c85a12d071863c492. pull/30 = 86ad362. 8318b78 has parents 722c812 and e0b6d80; 29c2c20..e0b6d80 is 1 commit. Routing moved e30241f -> 539e673 -> 5a8dd49, but `git diff e30241f origin/integration/global-handoff-v1 -- COORDINATION_DECISION_REGISTER.md` is 0 lines, so CDR-006..011 are unchanged."
+   },
+   {
+    "row": "13-pt 2. Approval record",
+    "status": "PASS",
+    "evidence": "Established by preservation. My own check: CDR010_APPROVAL.json is blob 3a9eecbb at both heads. Its routing_record_verbatim (2428 bytes) is found byte-exact at offset 17189 of the e30241f register and contains all 5 user arithmetic lines. v2.authority() ran without error in every run I made (it hashes this file and checks approval blob a5279d51). The Track C register at 29c2c20 is a byte prefix of the one at e0b6d80 (21287 -> 22994 bytes), and the appended text reads the replicate mean as (math.fsum(full block sums)+partial)/n. Gap (non-blocking): the JSON arithmetic_contract enum names neither the squaring operator nor the partial-add reading."
+   },
+   {
+    "row": "13-pt 3. Changed files / workflow non-weakening",
+    "status": "PASS",
+    "evidence": "Established by preservation: 21 A / 7 M / 0 D; 4 workflows only add triggers, pinned numpy installs and shell bash; no continue-on-error, -k, --deselect or narrowed filters. My own check: `git diff --name-status 29c2c20 e0b6d80 -- implementation/src implementation/tests` shows 5 A and 0 M/D. Across b9e01a9..e0b6d80 under src/tests/reports, the only non-A path is the append-only register. Remaining note: NB4 shallow checkout in qgv-producer-real (non-blocking)."
+   },
+   {
+    "row": "13-pt 4. v1 preservation",
+    "status": "PASS",
+    "evidence": "Established by preservation (blobs, 43/49 pre-existing evl/test files, 199 report JSONs, runtime-identity check problems=[]), oracle (1h) and identity. My own check: superiority.py is 8a1254d7 and statistical_kernels.py is 28e1c184 at b9e01a9, 29c2c20, e0b6d80 and 8318b78. v1 at the head still gives CE4/FLIP/LEFT_SUM/TIE/SEED275 = .15/.20/.40/.55/.60 (work/repro31.json)."
+   },
+   {
+    "row": "13-pt 5. M-B <-> v2 exact agreement",
+    "status": "PASS_WITH_CONDITIONAL_DECISION (F1)",
+    "evidence": "Oracle and refuter disagreed (oracle PASS_WITH_CONDITIONAL vs refuter FAIL against the d*d reading), so I re-derived it with my own adapter (work/ss_adapter.py). compare_v2.py gives MISMATCH_IN_27_CASES (rc=1) at both e0b6d80 and 8318b78, and every mismatch is tagged variant:square_pow. Against the CDR-010 default on 676 graded cases: r, deg, ties and p.hex 676/676; T 664; t bits 660; full 649. Against a live oracle square_pow run: 676/676, including 71,004/71,004 replicate t bits. Against the GIE-008c probe fsum/blocks (the generator of the GIE-008 §2 column that CDR-010 cites; committed at e30241f, sha256 e2312fd8, uses Python **2): T, r, deg, ties and p 676/676. Resolution: the refuter's FAIL holds only against the oracle's own d*d default. Neither the CDR-010 text nor its cited column fixes that default. v2 matches the cited column's reading exactly, so this is not blocking."
+   },
+   {
+    "row": "13-pt 6a. Historical CE4",
+    "status": "PASS",
+    "evidence": "Established by oracle. My own check (n=5, L=2, B=19, seed 200): v1 at the head gives r=2, deg=1, p=.15. Oracle default, ALT, GIE-008c probe, literal NumPy run() and exact decimal all give .10 (2/20). Exact binary gives 3/20, which is the GIE-008 N4 caveat."
+   },
+   {
+    "row": "13-pt 6b. Production-v2 counterexample",
+    "status": "PASS",
+    "evidence": "Established by oracle and refuter. My own check on production superiority_v2.studentized_cbb: CE4 gives r=1, deg=1, ties=0, p=0.1, T 0x1.01cab10fef960p+0, against v1's 0.15 on the same tree. Identical at 8318b78 (same blob 370e9b42)."
+   },
+   {
+    "row": "13-pt 7. Source/vintage/sample identity negatives",
+    "status": "PASS",
+    "evidence": "Established by identity with its own harness: 87/87 at both heads, the GIE-008 harness re-run 151/151 plus 8/8 low-level refusals, and mutant sensitivity confirmed. No disagreement; I did not re-run it."
+   },
+   {
+    "row": "13-pt 8. 2.0->2 re-encoding",
+    "status": "PASS",
+    "evidence": "Established by identity: 14/14 at both heads with 0 provider reads, and positive controls detect a reopen. No disagreement."
+   },
+   {
+    "row": "13-pt 9. Campaign/root/label bypass",
+    "status": "PASS",
+    "evidence": "Established by identity: 52/52 at both heads, v1id<->v2 switches refused, SIGKILL replays at 6 points make 0 reads, and races admit exactly one attempt in 11/11 rounds. No disagreement."
+   },
+   {
+    "row": "13-pt 10. Targeted regression",
+    "status": "PASS",
+    "evidence": "Preservation: 430 passed. Identity: 118, 92 and 32 at both heads. Oracle: 86/118. Refuter: 118. My own check from local JUnit (private venv, py3.11.15, numpy 2.3.5, pytest 9.1.1): the gsup and c8 files total 430 at both heads, and the v2 files total 118 (86+21+11). Codex's tools/verify_gsup_v2_arithmetic.py gives PASS with numerical_output_sha256 d4642fa5..., which equals Codex's claim and preservation's and oracle's runs."
+   },
+   {
+    "row": "13-pt 11. Full regression",
+    "status": "PASS",
+    "evidence": "Preservation: 1395 / 1413. My own check (detached worktrees, `PYTHONPATH=src python -m pytest -q`): e0b6d80 gives 1395 passed with 0 failures, errors or skips (rc=0, logs/full31.xml). 8318b78 gives 1413 passed (rc=0, logs/full35.xml). Test-ID difference: 0 only at #31; 18 only at #35, all in tests.test_producer_source_compat. CI logs fetched via MCP get_job_logs agree: #31 combined-offline checked out e0b6d80 and printed '1395 passed in 446.99s'; #35 checked out 8318b78 and printed '1413 passed in 458.57s'."
+   },
+   {
+    "row": "13-pt 12. Actions",
+    "status": "PASS",
+    "evidence": "Preservation: run IDs, and the synthetic-merge trees equal the head trees. Refuter: #31 9/9. My own check (list_workflow_runs): #31 has 8 runs on head_sha e0b6d80, all completed/success (37164876759 codex-integration-readiness plus 7 siblings). #35 has 7 runs on 8318b78, all success (37164938869 plus 6). The job logs show the exact-head checkout, 'Preserved 41 exact owner files' and the counts above. This upgrades preservation's NOT_RUN on CI content. Push-only workflows were not triggered."
+   },
+   {
+    "row": "13-pt 13. CAL_VERIFY/Holdout untouched",
+    "status": "PASS",
+    "evidence": "Established by preservation: 0 data/gate_evidence/holdout/cal_verify paths in 86ad362..8318b78, no network code, and a fail-closed probe on real descriptors, providers and responses. Identity 7.02 independently shows synthetic=False, ACTUAL and real role descriptors refused. No disagreement."
+   },
+   {
+    "row": "CDR-011 exact HEAD",
+    "status": "PASS",
+    "evidence": "Same as item 1 (all four verifiers plus my fetch and ls-remote at start and end)."
+   },
+   {
+    "row": "CDR-011 approved arithmetic contract",
+    "status": "PASS",
+    "evidence": "The four pinned axes match. Oracle 1a-1d and 1f: line-by-line source read. Refuter: 4347/4437 fuzz cases exact against ALT, with the other 90 pow-only. My own source read of superiority_v2.py L58-113: math.fsum at every sum, direct block sums, q=ceil(n/L)-1, ms=(fsum(full)+partial)/n, `not sqrt(v/n) > 0`, ties counted with >=, degenerate never exceeds, p=(r+1)/(B+1). The variants partial_single_fsum (106/676), grouping_samples and predicate_v_positive are excluded. Squaring is the axis left unpinned (F1)."
+   },
+   {
+    "row": "CDR-011 v1 preservation",
+    "status": "PASS",
+    "evidence": "Same as item 4."
+   },
+   {
+    "row": "CDR-011 M-B v2 implementation",
+    "status": "PASS_WITH_CONDITIONAL_DECISION (F1)",
+    "evidence": "It is additive: a new module only, METHOD C8_GSUP_STUDENTIZED_CBB_v2, selected by schema/policy and GsupV2Registry with no fallback (oracle 1h, identity wiring read). Refuter: registry cells equal the kernel (7/7). Arithmetic is bit-identical to the cited GIE-008c column (item 5)."
+   },
+   {
+    "row": "CDR-011 independent oracle",
+    "status": "PASS_WITH_CONDITIONAL_DECISION (F1)",
+    "evidence": "Primary oracle and ALT (oracle verifier): r, deg, ties and p exact 676/676, with 27 T/t-bit mismatches all on F1. Index stream 681/681. Refuter: ALT fuzz plus a third own implementation (1660 cases exact). My own compare_v2 run reproduces the oracle verifier's numbers exactly at both heads."
+   },
+   {
+    "row": "CDR-011 CE4",
+    "status": "PASS",
+    "evidence": "v2 .10 (r1/d1/t0) in my run, the oracle run and the refuter run; v1 .15."
+   },
+   {
+    "row": "CDR-011 FLIP",
+    "status": "PASS",
+    "evidence": "v2 .10 (r1/d2/t0, T 0x1.3988e1409212ep+0) in my run and the oracle run. v1 .20 and literal NumPy run() .20 differ, as GIE-008 §2 recorded."
+   },
+   {
+    "row": "CDR-011 LEFT_SUM",
+    "status": "PASS",
+    "evidence": "v2 .35 (r6/d1) in my run and the oracle run; v1 .40."
+   },
+   {
+    "row": "CDR-011 TIE",
+    "status": "PASS",
+    "evidence": "v2 .45 (r8/d2/ties 3, T 0x0.0p+0) in my run and the oracle run; v1 .55. The partial_single_fsum variant would give ties 2."
+   },
+   {
+    "row": "CDR-011 seed 275",
+    "status": "PASS",
+    "evidence": "v2 .55 (r10/d2, T 0x1.0aaaaaaaaaaacp-54) in my run and the oracle run. v1 .60; exact decimal 11/20; exact binary and literal run() 10/20."
+   },
+   {
+    "row": "CDR-011 exact decimal comparison",
+    "status": "PASS",
+    "evidence": "Oracle established it; refuter NOT_RUN; I reproduced it. The fixtures equal exact decimal 5/5 (2/20, 2/20, 7/20, 9/20, 11/20). Over the battery, v2 p equals exact decimal on 619 of 675 graded cases where exact decimal is defined: random 599/648, square 12/12, subnormal 3/10. The differences are decimal ties/degeneracy and the contract-mandated float predicate. This is information, not a defect."
+   },
+   {
+    "row": "CDR-011 degeneracy handling",
+    "status": "PASS",
+    "evidence": "Oracle: 10/10 subnormal cases bit-exact, and 5/5 undefined cases fail closed with MissingStatisticalEvidence. Refuter: 720,641 replicates with 0 predicate mismatches, including 902 with v>0 but fl(v/n)=0. My own battery: subnormal 10/10 exact; the 5 undefined cases give NOT_RUN 'zero standard error', the same as the GIE-008c probe. F3 is recorded separately as a conditional decision."
+   },
+   {
+    "row": "CDR-011 targeted regression",
+    "status": "PASS",
+    "evidence": "Same as item 10."
+   },
+   {
+    "row": "CDR-011 full regression",
+    "status": "PASS",
+    "evidence": "Same as item 11 (preservation, my own runs and the CI logs)."
+   },
+   {
+    "row": "CDR-011 Actions",
+    "status": "PASS",
+    "evidence": "Same as item 12."
+   },
+   {
+    "row": "CDR-011 source identity preservation",
+    "status": "PASS",
+    "evidence": "Identity: gsup_source_identity fa93bf88 and superiority_source_identity 71bf7375 unchanged; 92 identity tests at 29c2c20, e0b6d80 and 8318b78; GIE-008 harness 151/151. Preservation agrees. My own check: both blobs are identical at 29c2c20, e0b6d80 and 8318b78."
+   },
+   {
+    "row": "#35 F1 preserved on new head",
+    "status": "PASS",
+    "evidence": "Preservation: full-patch equality, clean merge-tree, +18 tests. My own check: `git diff --full-index e0b6d80 8318b78 | sha256sum` = `git diff --full-index 29c2c20 722c812 | sha256sum` = 22283ec2.... The parents are 722c812 and e0b6d80, and there is no src diff between e0b6d80 and 8318b78. Local 8318b78 full run: 1413 passed, with the +18 producer_source_compat tests passing. CI on exact 8318b78: 1413 passed. The v2 compare at 8318b78 is identical to e0b6d80. Refuter: 8000-case digest equal."
+   }
+  ],
+  "verdict": "VERIFIED_WITH_FINDINGS",
+  "trial_go": true,
+  "blocking": [],
+  "nonblocking": [
+   "F1 squaring axis, facts (I reproduced them). superiority_v2.py L75 and L91 square with Python `** 2` (libm pow, which is not always correctly rounded on glibc 2.39). The oracle default squares with a correctly rounded `d*d`, as NumPy run() does. On the battery the difference is T bits in 12/676 cases and t bits in 17 replicates across 16 cases; r and p never change there. The refuter's constructed near-tie reproducers do change p, which corrects the oracle prep's 'never r/p' claim (that claim holds only for its battery). R1 [8.7,0,0,0,-2.9,2.9,2.9,8.7,-2.9], L=2, B=19, seed=11: v2 gives 0.2 against 0.15 under d*d. R2 (L=3, B=19, seed=13): 0.15 against 0.1. With B=1: 1.0 against 0.5. In all four p-changing cases v2's p equals the GIE-008c fsum/blocks probe, exact decimal and exact binary; literal NumPy run() agrees in 3 of the 4. T and t bits depend on the platform libm (not measured).",
+   "Codex did not disclose the squaring choice: ARITHMETIC_CONTRACT, the CDR010_APPROVAL enum and ACCEPTANCE_MANIFEST_V2 selected_arithmetic do not name it, and the manifest says new_D3_required_for_this_implementation=false. Codex's own test oracle (tests/evl_c8_gsup_v2_oracle.py L87/L106) also uses `**2`, and none of its fixtures exercise the axis, so Codex's 118 tests cannot detect F1 (oracle and refuter).",
+   "F3 facts (contract-literal, matches every CDR-010 reference including the GIE-008c probe). Example: [0.05]*12, L=2, B=19, seed=7 gives T about +1.77e16 and p=0.05. Worse: [-0.2,-0.1]*6 gives T about -1.69e16 with all 19 replicates degenerate and p=0.05 (minimum p for a hugely negative statistic). v1 gives 1.0 and literal run() 0.9 on that input. The refuter reports that a registry made of such cells reaches STAT_PASS (I reproduced the kernel level only). Truly zero-se cases fail closed.",
+   "F2 settled: v2 uses (fsum(full)+partial)/n, which is the cited GIE-008 §2 'fsum / blocks' reading and the Track C register text. No partial-axis mismatch appeared anywhere: 676/676 by me, and also none in the refuter's fuzz.",
+   "N2 (carried over, not worsened by v2; identity): identity strings are not canonicalized and register_descriptor has no capability gate, so relabelled descriptors re-open identical content under v2 as under v1. Must be fixed before real-source work.",
+   "NB-plainv1 (pre-existing since 29c2c20; identity): the frozen plain v1 GsupRegistry, which is content-keyed with no source identity, can coexist with v2 unless its records sit in the coordinator-pinned history store (that store is checked fail-closed). F2-equivalent, F4, F5 and F7 carry over (identity).",
+   "Refuter input notes, all fail-closed or unreachable via the registry: 10**400 raises OverflowError rather than MissingStatisticalEvidence; the kernel accepts any iterable (dict or set) through v1 _series, but the registry always builds a tuple; seed s and -s alias (inherited from C6); fsum intermediate overflow gives NOT_RUN.",
+   "NB4 remnant (preservation): qgv-producer-real offline-tests still uses a shallow checkout without canonical. It is push-only and not triggered for #31/#35, and `| tail` masking is now fixed via bash pipefail. c21-real-data `| tail` without pipefail is pre-existing and dispatch-only.",
+   "The CDR010_APPROVAL.json enum omits the replicate-mean formula and the squaring operator, and its 8-item not_approved list folds the individual numeric items into numeric_configuration NOT_APPROVED. The verbatim quote is byte-exact.",
+   "Environment: other agents' worktrees with HEADs in temp ODBs broke the main-checkout fetch for earlier verifiers; my fetch at 01:31Z succeeded. The routing branch moved to 5a8dd49 (GIE-009) with the CDR register byte-unchanged. Cosmetic missing spaces in the appended register and docs."
+  ],
+  "conditional_user_decisions": [
+   "F1 squaring operator (Worker Contract D.15: the choice changes validation results). Option A: keep Python `d**2` (libm pow). This is bit-identical to the GIE-008c 'fsum / blocks' column that CDR-010 cites (676/676 plus all reproducers), to v1 and to Codex's oracle, but it depends on the platform. Option B: require correctly rounded `d*d`, which equals NumPy run(), the oracle default and ALT; Codex would then have to change L75/L91 and item 5 would be re-run. Measured effect: T bits 12/676 and t bits in 17/71,004 replicates on the battery, and p on constructed near-tie inputs (0.2 vs 0.15, 0.15 vs 0.1 at B=19). NOT blocking: v2 does not diverge from the reading fixed by the CDR-010 text and its cited GIE-008 §2 column. Route to the user or Track C owner.",
+   "F3 undefined or near-undefined observed statistic, including all-degenerate replicate sets with negative T, which currently get the minimum p 1/(B+1) and can reach REJECT_H0/STAT_PASS at registry level. Any NOT_RUN guard is a new rule or threshold, so it is a user decision. NOT blocking: v2 matches CDR-010 literally and the cited probe.",
+   "Only if wanted beyond the current scope (identity): extend the one-shot guarantee across the frozen plain v1 GsupRegistry without modifying v1, and add N2 canonicalization plus an issuance capability gate. Neither is required by CDR-006/007/010/011 for synthetic scope; both become necessary before any real-source work."
+  ],
+  "summary": "I reconciled the four reports on PR #31 @ e0b6d809058511d4bef7ad1aeccad79c5eae3ff8 and PR #35 @ 8318b78de7ebaca63b857f8c85a12d071863c492. Both refs were unmoved between my fetch and the final ls-remote (01:31Z and 01:44Z). Verdict: VERIFIED_WITH_FINDINGS, trial_go = true, no blocking findings. Items 1, 4, 10 and 11 are PASS by my own commands.\n\n**The one real disagreement was F1 (squaring), so I re-derived it.**\n- v2 squares with Python `**2` (libm pow).\n- With my own adapter, compare_v2 gives MISMATCH_IN_27_CASES against the oracle's default `d*d` reading at both heads. Every mismatch is tagged variant:square_pow, and r, deg, ties and p are exact on 676/676.\n- v2 is bit-identical, including all 71,004 replicate t bits, to a live square_pow oracle run. It is also identical on 676/676 to the GIE-008c 'fsum / blocks' probe, which generated the GIE-008 §2 column that CDR-010 cites and also uses `**2`.\n- I confirmed the refuter's new fact: F1 can change p on constructed near-tie inputs (0.2 vs 0.15, 0.15 vs 0.1 at B=19). In every such case v2's p equals the cited probe, exact decimal and exact binary.\n- The CDR-010 text does not fix squaring, and v2 follows the cited column's reading. So F1 is a conditional user decision (Contract D.15), not a blocker. The refuter's FAIL holds only under the oracle's own default.\n- F3 (undefined or all-degenerate statistic, including a negative-T case that gets minimum p) is contract-literal and matches every reference. It is also a conditional user decision.\n\n**My own re-derivations of the other rows:**\n- v1 and identity blobs are unchanged across b9e01a9, 29c2c20, e0b6d80 and 8318b78.\n- The approval quote is byte-exact, and the register is append-only.\n- All five fixtures give .10/.10/.35/.45/.55, equal to exact decimal on 5/5, against v1's .15/.20/.40/.55/.60.\n- Local full runs give 1395 passed at e0b6d80 and 1413 at 8318b78, with 0 failures, errors or skips. The gsup and c8 files total 430, of which the v2 files total 118. Codex's verifier hash d4642fa5 is reproduced.\n- Actions: #31 has 8 runs on e0b6d80 and #35 has 7 runs on 8318b78, all success. Through MCP job logs I also confirmed the CI counts on the exact heads (1395 / 1413), which preservation had to leave NOT_RUN.\n- The #35 F1 patch is byte-equal to the earlier F1 change (sha256 22283ec2, both ranges).\n\nItems 7, 8, 9 and 13 rest on single-verifier evidence from identity and preservation, which they ran themselves; nobody disputed them.\n\nMy worktrees are removed and pruned, and the main checkout is untouched (f1b5afb, clean). Evidence is in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf10/skeptic-synthesis/:\n- work/: battery31.json, pow_live31.json, pow_live35.json, v2_compare31.json, v2_compare35.json, repro31.json, codex_verify31.json\n- logs/: full31.xml, full35.xml, ci31_combined.log, ci35_combined.log\n- lsremote_start.txt, lsremote_end.txt"
+ },
+ "trial": {
+  "items": [
+   {
+    "item": "1. Fresh fetch and constituent heads",
+    "status": "PASS",
+    "evidence": "`git -C /home/user/Investment-System1 fetch origin`, then rev-parse and ls-remote at 01:47Z. All heads are as expected: integration/next-trial-2026-10-03=7e3861b2daf8f80c7f36f490baab8ab9d35113b1; codex/track-c-gsup-v2-2026-10-03=e0b6d809058511d4bef7ad1aeccad79c5eae3ff8; codex/integration-hardening-2026-10-03=8318b78de7ebaca63b857f8c85a12d071863c492; codex/combined-integration-2026-10-03=86ad3628dd5c62c6d873e42511e577f24f4fb588; canonical claude/investment-system-top500-validation-alrugm=b8e39a2196a6d7794a04a0cd5393c68329e126ca; Track C owner ccr-22e3ff16-p7n5k5=b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565. Routing branch integration/global-handoff-v1 has moved from e30241f to 5a8dd49 (docs only: GCH-008a, then GIE-009/GSI-013/GCH-008b); CDR-011 text read at 5a8dd49. 8318b78 has parents 722c812 and e0b6d80, and its tree 3721c541 equals `git merge-tree --write-tree 722c812 e0b6d80`, so it is a clean merge with no extra changes."
+   },
+   {
+    "item": "2. Harness run (copy of wf9/prep-next-trial/next_trial.sh, sha256 2e2d45f6..., unmodified)",
+    "status": "PASS",
+    "evidence": "`bash wf10/cdr011-trial/next_trial.sh --label CDR011_TRIAL --port 8782 --keep --venv wf10/cdr011-trial/venv311 7e3861b e0b6d80 8318b78`. Harness rc=0. summary.json verdict HARNESS_STEPS_ALL_PASS {PASS:22, HITS_LISTED_FOR_REVIEW:1}. Private venv: py3.11.15, numpy 2.3.5, pytest 9.1.1, same freeze as the dry run. Summary: wf10/cdr011-trial/runs/CDR011_TRIAL-20261004T014751Z/summary.json. The harness had no bug, so no diff was needed. Trial commit 8e471133 (temporary object store), tree 2a9b79984fa746607fa23ef1a1f680801d91dd5a."
+   },
+   {
+    "item": "2a. merge_conflicts",
+    "status": "PASS",
+    "evidence": "rc=0. merges.tsv: #31 rc 0 -> 575b15f7, #35 rc 0 -> 8e471133. 0 conflicted paths, 0 ort auto-merged paths."
+   },
+   {
+    "item": "2b. tree_identity",
+    "status": "PASS",
+    "evidence": "rc=0. Trial tree 2a9b799 equals the direct `merge-tree 7e3861b 8318b78`. Second-merge name-status sha256 9d92947b... equals the #31..#35 delta. First merge touches 193 files, the same as #31 vs merge-base 86ad362. The tree is new, so a full suite was required."
+   },
+   {
+    "item": "2c. preservation_gate_ci (#31/#35 workflow step extracted from the trial's codex-integration-readiness.yml and run verbatim)",
+    "status": "PASS",
+    "evidence": "rc=0. Output: 'Preserved 41 exact owner files; approved additive files 10'. `git diff --exit-code b8e39a2 -- reports/gate_evidence data` is empty. `git diff --exit-code b9e01a9 -- IF-1 four files` is empty."
+   },
+   {
+    "item": "2d. protected_paths (web_mvp blob; #35 integrated-mode canonical shared-source protection; live tamper probe; Track C allowlist; CDR-009 C8 set; IF-1)",
+    "status": "PASS",
+    "evidence": "rc=0. web_mvp.py blob = 10ad8c7624a0a31e602be699144cbcb534c96e53. producer_source_compat.CANONICAL_SOURCE_COMMIT = b8e39a2. Same-tree compare_shared_sources PASS for qgv SHARED (10 paths, EXACT_CANONICAL_SOURCE_PROTECTION; models.py EXACT_CDR004_SCHEMA_ACCEPTANCE C28_ADOPTED) and leaderboard SHARED (5 paths). Tamper probe: untampered copy PASS, tampered qgv/scoring.py FAIL. 41 Track C owner files unchanged; additions sit inside the reviewed 11-entry allowlist, and the declared list equals it. C8 paths that exist at b9e01a9 are unchanged. IF-1 blobs 5365653f/08d79c20/ef4f80ec/288cabad equal the owner's."
+   },
+   {
+    "item": "2e. source_provenance",
+    "status": "PASS",
+    "evidence": "rc=0. diff vs b8e39a2 over implementation/data and reports/gate_evidence is empty. No CAL_VERIFY- or Holdout-named paths. The only commits foreign to #35 are exactly {575b15f:[7e3861b,e0b6d80], 8e47113:[575b15f,8318b78]}. Delta vs #38 tip: ci 11, src 3 (all additions: gsup_source_identity.py, superiority_source_identity.py, superiority_v2.py), tools 3, tests 9, docs_reports 183, data 0. The 11 CI changes are pip pins to 'pytest==9.1.1 numpy==2.3.5', plus the readiness workflow's path list, preservation gate and v2 replay step."
+   },
+   {
+    "item": "2f. escalation_sweep (runtime grants plus individual hit review)",
+    "status": "PASS",
+    "evidence": "rc=0. Runtime: ACTIVE_AUTHORIZATIONS=(); summarize_grants() = {research_display: NONE, frozen: NONE, live: NONE}. Text sweep: 77 hits vs #38 tip (73 docs, 2 src, 2 tests) and 257 vs canonical (212 docs, 23 src, 18 tests, 4 tools). I reviewed all of them individually, including the full context of every hit not marked negated. Code hits are fail-closed guards (superiority_v2.py:172 MissingPrerequisite('real CAL_VERIFY access is not approved'); superiority.py IntegrityFailure/MissingPrerequisite; PROMOTION_FORBIDDEN raises), forbidden-value sets (qgv_input.PROMOTED, record.PROMOTED_VALUES), negative tests expecting data_state='LIVE' to be rejected, and TEST VECTOR fixtures. Doc hits are negated or conditional policy text ('C8 NOT FROZEN', 'before CAL_VERIFY access', 'No grant is issued', 'RESEARCH_DISPLAY_ACTIVE | NO'). Two false positives: 'C8.\\n\\nC0-C7 are SOFTWARE FROZEN', and 'not approval of ... Holdout consumption' split across lines. 0 hits for OFFICIAL_FLAG_TRUE, GRANT_KIND_RECORD, GRANT_VALUE_NOT_NONE, ACTIVE_AUTHORIZATIONS_NONEMPTY and PUBLICATION_MODE_ACTIVE. Nothing activates publication, Official or LIVE."
+   },
+   {
+    "item": "2g. engine_fingerprints",
+    "status": "PASS",
+    "evidence": "rc=0. producer_engine_fingerprint.py output sha256 f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866 under both system python3 and the numpy venv. technical 66cb2383..., macro 7e427949..., qgv a1714480..., leaderboard 112b245b..., portfolio_official_book 53d930a7..., n_qgv 19. 0 mismatches."
+   },
+   {
+    "item": "2h. full_pytest (numpy 2.3.5 venv)",
+    "status": "PASS",
+    "evidence": "rc=0. `PYTHONPATH=src venv/bin/python -m pytest -q -p no:cacheprovider` in the trial worktree: 1441 passed, 0 failed, 0 errors, 0 skipped (lower bound 1323), 118 modules, 414.5 s. Groups: track_c_c8_v1 200/200, gsup_additive 230/230, all test_evl_* 760/760, producer_source_compat 25/25, web_research_guard 15/15, web_state_presentation 13/13, web_mvp_and_search 23/23."
+   },
+   {
+    "item": "2i. track_c_v1 preservation",
+    "status": "PASS",
+    "evidence": "rc=0. superiority.py blob 8a1254d7 = owner. C8 v1 tests/oracle/fixture unchanged. 22 existing evl sources unchanged. 29 historical track_c_c8 reports/tools unchanged; the only additions are the two source-identity approval files that already existed at 29c2c20. Trial superiority_v2.py blob 370e9b42 = blob at e0b6d80. Register append-only: 17206 -> 22994 bytes (+50 lines)."
+   },
+   {
+    "item": "2j. web_mvp_validation (browser/E2E, port 8782)",
+    "status": "PASS",
+    "evidence": "rc=0. web_mvp and demo build; global_language_search_test (passed: true, 26 checks, 509 entities); entity_metadata_search_test; private copies of web_mvp_browser_test.js and global_language_search_browser_test.js. browser.json and global-language-search-browser.json both report passed: true; 34 PASS lines, no FAIL."
+   },
+   {
+    "item": "2k. web_research_guard",
+    "status": "PASS",
+    "evidence": "rc=0. pytest 15 passed. Fixture plus browser test: {mode: fixture, passed: true, checks: 10}."
+   },
+   {
+    "item": "2l. web_state_presentation",
+    "status": "PASS",
+    "evidence": "rc=0. pytest 13 passed. Fixture plus browser test: 29 PASS lines; browser-validation passed: True."
+   },
+   {
+    "item": "2m. producer contract fixture and browser (codex-integration-readiness)",
+    "status": "PASS",
+    "evidence": "producer_contract_fixture rc=0. producer_contract_browser rc=0: browser-validation passed True, errors [], grants NONE."
+   },
+   {
+    "item": "2n. macro_adoption_pinned (readiness job at 4a07099)",
+    "status": "PASS",
+    "evidence": "rc=0. tests/test_macro_real_producer.py: 11 passed."
+   },
+   {
+    "item": "2o. ci_path_filters",
+    "status": "PASS",
+    "evidence": "rc=0. Base #30 86ad362: 226 changed files (under the 300-file limit). 10 workflows trigger: codex-integration-readiness, p01-research-publication, qgv-invalidation-binding, sec-primary-disclosure, technical-real-model, technical-real-producer, us-equity-session, web-mvp-validation, web-research-guard, web-state-presentation. No dispatch needed and no gaps."
+   },
+   {
+    "item": "2p. intree_writes and remote_recheck",
+    "status": "PASS",
+    "evidence": "intree_writes rc=0: 0 tracked changes, 0 untracked files. remote_recheck rc=0: all 3 inputs and 3 baselines unchanged."
+   },
+   {
+    "item": "2q. Supplemental: new CI step 'CDR-010 exact production and independent oracle replay', which the harness does not run",
+    "status": "PASS",
+    "evidence": "`PYTHONDONTWRITEBYTECODE=1 venv/bin/python implementation/tools/verify_gsup_v2_arithmetic.py` on trial tree 2a9b799: rc=0, status PASS, scope SYNTHETIC_SOFTWARE_VALIDATION_ONLY, grants/Holdout/actual_CAL_VERIFY/numeric_defaults all 0. numerical_output_sha256 d4642fa5... equals Codex's recorded ARITHMETIC_REPLAY_PY311.json. Tree still clean afterwards. This is Codex's own tool; I count it as a CI-parity check, not as independent v2 verification."
+   },
+   {
+    "item": "3. Branch integration/cdr011-trial-2026-10-04 created, tree checked, pushed",
+    "status": "PASS",
+    "evidence": "Own worktree on the normal object dir, starting at 7e3861b. `git merge --no-ff -F msg` for #31, then for #35, as Claude <noreply@anthropic.com>; both commits are SSH-signed. m1=5d0a49b3e214c546166c8497ab9c3de9aae3bb05 (parents 7e3861b, e0b6d80; tree 37ff16a3 = harness m1 tree). HEAD=0d31e06022c3162e83f2ff5a984b07e59e4e216b (parents 5d0a49b, 8318b78; tree 2a9b79984fa746607fa23ef1a1f680801d91dd5a = harness trial tree). Both messages end exactly with the Co-Authored-By and Claude-Session lines. Inputs re-checked with ls-remote right before `git push -u origin integration/cdr011-trial-2026-10-04`: new branch created, rc 0, no force."
+   },
+   {
+    "item": "3b. Draft PR opened",
+    "status": "PASS",
+    "evidence": "PR #39 https://github.com/kco994553-star/Investment-System1/pull/39: draft=true, base codex/combined-integration-2026-10-03 @ 86ad362, head @ 0d31e06, 226 files, title as specified. The body covers purpose (do not merge), exact heads and merge SHAs, every harness check, the supplemental step, the escalation review, what is not included, states, the note that #38's results are not reused, and the list of things not approved. It ends with the required footer. 0 comments; I commented on no PR."
+   },
+   {
+    "item": "4. PR CI check runs (polled every 60 s; all done about 10 min after the push)",
+    "status": "PASS",
+    "evidence": "10/10 workflow runs, event=pull_request, head_sha=0d31e06022c3162e83f2ff5a984b07e59e4e216b, attempt 1, all completed/success: 37169669821 codex-integration-readiness (jobs combined-offline 111339872439 and macro-adoption-offline 111339872500); 37169669870 web-mvp-validation (validate); 37169669883 web-research-guard (guard); 37169669909 web-state-presentation (presentation); 37169669865 sec-primary-disclosure; 37169669849 technical-real-model; 37169669869 p01-research-publication; 37169669867 us-equity-session; 37169669859 qgv-invalidation-binding; 37169669875 technical-real-producer. The combined-offline log shows the checkout at 0d31e06, 'Preserved 41 exact owner files; approved additive files 10' and '1441 passed in 398.79s'; the v2 replay and withheld-contract E2E steps succeeded (passed true, grants NONE). The other workflows check out refs/pull/39/merge 8840694f, whose tree is 2a9b799, the same tree."
+   },
+   {
+    "item": "4b. Workflows that did not trigger (not dispatched)",
+    "status": "DEFERRED",
+    "evidence": "By path filter / design: c21-real-data, entity-metadata-ingest and qgv-producer-real (harness classes them DO_NOT_DISPATCH: real-data fetch or commit-back); raw-artifact-restore-check (not trial-relevant); leaderboard-real-producer (optional, low value); track-c-evl-validation (owner-branch acceptance tool, not applicable to integrated trees). Dispatching any of them is the integration writer's decision."
+   },
+   {
+    "item": "5. Cleanup and final remote re-check",
+    "status": "PASS",
+    "evidence": "Harness worktrees wt-trial and wt-macro-pin removed, temporary object dir deleted, my wt-branch removed, `git worktree prune` run. Worktree list now holds only the main checkout plus the pre-existing gh and rig-news worktrees, which are not mine. Main checkout untouched: branch ccr-2e16018a-qukwmg @ f1b5afb, status clean. Local branch integration/cdr011-trial-2026-10-04 kept, tracking origin. Port 8782 free. Final ls-remote at 02:10Z: all inputs and baselines unchanged; integration/cdr011-trial-2026-10-04=0d31e06; global-handoff-v1=5a8dd49."
+   }
+  ],
+  "findings_blocking": [],
+  "findings_nonblocking": [
+   "The harness (written before v2) does not run the new codex-integration-readiness step `verify_gsup_v2_arithmetic.py`. I ran it separately on the trial tree (rc=0, output hash matches Codex's record), and CI ran it too (step 8 success). Future harness versions should add it as a step.",
+   "`implementation/tests/evl_c8_gsup_v2_oracle.py` is in both the declared and reviewed 11-entry allowlist, but the workflow gate's protected() predicate does not match it (it is not test_evl_* and not one of the two named evl_c8 files). The gate therefore counts 10 approved additions, not 11, and that allowlist entry never takes effect in the gate. The file is a new addition and no owner file changes, so this is harmless, but it is a small gap in #31's gate (Codex-owned; recorded only).",
+   "Routing branch integration/global-handoff-v1 has moved from the e30241f named in the routing to 5a8dd49 (docs only: GCH-008a, GIE-009, GSI-013, GCH-008b). CDR-011 was read at 5a8dd49.",
+   "Local deviations from CI recorded by the harness: Playwright 1.56.1 (chromium-1194) vs CI 1.58.2; Node v22.22.0 vs CI 22/24; web_mvp browser tests run as private copies on port 8782. CI has since run the same tree with the CI versions, all green.",
+   "pull_request workflows other than codex-integration-readiness check out refs/pull/39/merge (8840694f, parents 86ad362 and 0d31e06). Its tree equals 2a9b799, so every run tested the identical tree.",
+   "Full suite count is 1441 locally and in CI (combined-offline), against 1323 in the pre-v2 dry run and 1193 on #38 alone. #38's numbers were not reused.",
+   "The independent CDR-010 oracle comparison of v2 is outside this task (GIE-010 verifiers). This trial only ties the trial's superiority_v2.py blob (370e9b42) to the blob at e0b6d80."
+  ],
+  "conditional_user_decisions": [
+   "Canonical merge of any part of this combined state is USER_DECISION_REQUIRED (CANONICAL_STATE: NOT_MERGED, canonical b8e39a2 unchanged). PR #39 is a CI-verification vehicle only and must not be merged.",
+   "How Track C acceptance is certified on integrated trees or on an advanced canonical is still open (GIE-009 MAC-X1, USER_DECISION_REQUIRED). This trial did not run tools/track_c_c6/c7/c8_partial_acceptance.py, by design.",
+   "Nothing here approves numeric configuration (alpha/B/L/seed/effect floor/minimum support/size tolerance/envelope/margin), real CAL_VERIFY, Holdout, C8 Freeze, grants or Official/LIVE. Each remains a separate user decision.",
+   "Whether to dispatch any of the 6 non-triggered workflows is the integration writer's call. Three of them (c21-real-data, entity-metadata-ingest, qgv-producer-real) are classed DO_NOT_DISPATCH because they fetch real data or commit back."
+  ],
+  "not_run": [
+   "Dispatch of the 6 non-triggered workflows (c21-real-data, entity-metadata-ingest, leaderboard-real-producer, qgv-producer-real, raw-artifact-restore-check, track-c-evl-validation): not dispatched, per instructions.",
+   "Independent oracle comparison (prep-v2-oracle compare_v2.py) of superiority_v2.py: belongs to the separate GIE-010 re-verification; not repeated here.",
+   "Track C owner acceptance tools (track_c_c6/c7/c8_partial_acceptance.py) on the integrated tree: they reject non-Track-C files by design (MAC-X1).",
+   "Any real CAL_VERIFY, Holdout or provider data access: not performed (prohibited).",
+   "Signature verification of the two new merge commits: commits are SSH-signed (gpgsig present), but the local %G? check reports N because gpg.ssh.allowedSignersFile is not configured."
+  ],
+  "summary": "The CDR-011 combined trial (#38 7e3861b + PR #31 e0b6d80 + PR #35 8318b78, on fresh heads) passed every local check, and CI ran 10/10 green on the pushed trial branch. Nothing from #38 was reused.\n\nThe harness copy was unmodified and ran with label CDR011_TRIAL, port 8782 and a numpy 2.3.5 venv. Every step returned rc=0 and the verdict is HARNESS_STEPS_ALL_PASS (22 PASS plus 1 HITS_LISTED_FOR_REVIEW). Key results:\n- 0 merge conflicts.\n- Full suite: 1441 passed, 0 failed, 0 errors, 0 skipped.\n- Engine fingerprints f690f9c0 (technical 66cb2383, macro 7e427949).\n- web_mvp.py blob 10ad8c76.\n- #35's integrated canonical shared-source protection passes, and the live tamper probe fails as intended.\n- Track C preserved: v1 blob 8a1254d7, the #31 gate run verbatim reports 41 owner files preserved and 10 additions, IF-1 files equal b9e01a9, register append-only, v2 blob 370e9b42 equals e0b6d80.\n- No data or gate_evidence change vs canonical; history is #38 + #35 (which contains #31) + exactly two merge commits.\n- Runtime grants all NONE. All 77 and 257 escalation hits were reviewed one by one; none activates anything.\n- Supplemental: the new CI step verify_gsup_v2_arithmetic.py also passed, and its output hash matches Codex's record.\n\nNew branch integration/cdr011-trial-2026-10-04:\n- m1 5d0a49b3e214c546166c8497ab9c3de9aae3bb05\n- HEAD 0d31e06022c3162e83f2ff5a984b07e59e4e216b\n- tree 2a9b79984fa746607fa23ef1a1f680801d91dd5a, equal to the harness trial tree\n\nIt was pushed as a new branch with no force. Draft PR #39 (https://github.com/kco994553-star/Investment-System1/pull/39) targets base #30 86ad362.\n\nCI on head 0d31e06: all 10 PR-triggered workflows succeeded (runs 37169669821, …870, …883, …909, …865, …849, …869, …867, …859, …875; 11 jobs). The codex-integration-readiness run also reports 1441 passed. The 6 non-triggered workflows were left undispatched. Worktrees and the temporary object store have been removed. Codex branches, the main checkout and canonical b8e39a2 are untouched, and no PR comments were made.\n\nStates:\n- BRANCH_STATE: pushed @ 0d31e06.\n- INTEGRATION_STATE: locally verified; CI on the exact head: 10/10 success.\n- CANONICAL_STATE: NOT_MERGED. A canonical merge needs a user decision (USER_DECISION_REQUIRED).\n\nNo maturity transition.\n\nFiles are in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf10/cdr011-trial/:\n- runs/CDR011_TRIAL-20261004T014751Z/summary.json\n- console_CDR011_TRIAL.log\n- supp/gsup-v2-arithmetic.json\n- pr_body.md"
+ },
+ "tv": {
+  "items": [
+   {
+    "item": "1. Fresh fetch and constituent heads (trial item 1)",
+    "status": "CONFIRMED (PASS)",
+    "evidence": "I ran `git fetch origin` at 02:12Z, then rev-parse and ls-remote. All heads match the report: 7e3861b2, e0b6d809, 8318b78d, 86ad3628, b8e39a21, b9e01a97, and global-handoff-v1=5a8dd49b. The routing branch moved e30241f..5a8dd49 (539e673 GCH-008a, 5a8dd49 GIE-009/GSI-013/GCH-008b), touching 4 files, all docs or evidence. CDR-011 was read at 5a8dd49. 8318b78 has parents 722c812 and e0b6d80, tree 3721c541. In my temp object store, `git merge-tree --write-tree 722c812 e0b6d80` gives 3721c541b0f4."
+   },
+   {
+    "item": "1b. Published branch tree equals a fresh local re-merge (temp object store)",
+    "status": "CONFIRMED (PASS)",
+    "evidence": "With GIT_OBJECT_DIRECTORY set to my odb and the main odb as alternate:\n- merge-tree 7e3861b+e0b6d80 gives 37ff16a3, the same as the 5d0a49b tree, rc 0.\n- A synthetic m1 commit merged with 8318b78 gives 2a9b7998, the same as the 0d31e06 tree, rc 0. The direct merge 7e3861b+8318b78 also gives 2a9b7998.\n- `--messages` reports 0 Auto-merging/CONFLICT lines on both merges.\n- refs/pull/39/merge 8840694f has parents 86ad362 and 0d31e06 and tree 2a9b7998.\n- Second-merge name-status sha256 9d92947bdf454cae equals the e0b6d80..8318b78 delta.\n- The first merge touches 193 files, the same as #31 vs merge-base 86ad362.\n- `rev-list 0d31e06 ^8318b78 ^7e3861b` = {0d31e06, 5d0a49b} exactly.\n- Both commits carry the Co-Authored-By and Claude-Session trailers and an SSH signature block. The signature was not verified."
+   },
+   {
+    "item": "2. PR #39 check runs: head_sha and conclusions (my own read-only GitHub queries)",
+    "status": "CONFIRMED (PASS)",
+    "evidence": "get_check_runs: 11 check runs, all completed/success. list_workflow_runs on the branch: 10 runs, all event=pull_request, head_sha=0d31e06022c3, run_attempt=1, conclusion=success. IDs: 37169669821 readiness (jobs combined-offline 111339872439, macro-adoption-offline 111339872500), …870 web-mvp, …883 research-guard, …909 state-presentation, …865 sec, …849 tech-model, …869 p01, …867 us-equity, …859 qgv-inval, …875 tech-producer. combined-offline steps 5–13 all succeeded, including 'Preserve exact owner Track C…' (6), 'Full existing regression' (7, 01:59:51–02:06:30) and 'CDR-010 exact production and independent oracle replay' (8). Artifact codex-integration-readiness-0d31e06… has head_sha 0d31e06. From the YAML: readiness checks out `pull_request.head.sha` (0d31e06); the other 9 use the default refs/pull/39/merge (tree 2a9b799, identical); macro-adoption-offline checks out pinned 4a07099, not the trial tree."
+   },
+   {
+    "item": "2b. Expected workflows that did not run",
+    "status": "CONFIRMED (no PR-triggered workflow missing)",
+    "evidence": "I parsed the `on:` block of all 16 workflows in the trial tree. Exactly 10 have a pull_request trigger, and all 10 ran. 226 changed files vs 86ad362 is under the 300-file filter limit. The 6 that did not run have no pull_request trigger at all:\n- c21-real-data: dispatch only; real fetch and commit-back.\n- entity-metadata-ingest: push to ccr-41677301 or dispatch; commit-back.\n- qgv-producer-real: push to ccr-db5d5960 or dispatch; has push/commit lines.\n- leaderboard-real-producer: push or dispatch.\n- raw-artifact-restore-check: push or dispatch.\n- track-c-evl-validation: push to feature/track-c-evl or dispatch; runs the c6/c7/c8 acceptance tools.\nCorrection to the report's reason for leaderboard-real-producer ('optional, low value'): its 'Cross-track sources unchanged vs canonical' step runs `git diff --exit-code canonical -- qgv technical macro contracts …`. That would FAIL by design on any tree containing #30: 12 paths differ, the same 12 already at 86ad362. It is not applicable to integrated trees, not merely optional."
+   },
+   {
+    "item": "3a. Fingerprint tool re-run on the trial tree",
+    "status": "CONFIRMED (PASS)",
+    "evidence": "I ran `producer_engine_fingerprint.py implementation/src` in a detached worktree at 0d31e06 under system python3.11.15 and under my private venv (numpy 2.3.5, pytest 9.1.1). Both outputs have sha256 f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866: technical 66cb2383…, macro 7e427949…, qgv a1714480…, leaderboard 112b245b…, portfolio_official_book 53d930a7…, n_qgv 19. I also ran the same tool on exported #38 (7e3861b) and #30 (86ad362) src+fixtures: byte-identical output. Against canonical b8e39a2 the output differs in technical and macro only. That difference is already present at 86ad362 and is not introduced by #31/#35."
+   },
+   {
+    "item": "3b. web_mvp.py blob check",
+    "status": "CONFIRMED (PASS)",
+    "evidence": "`git rev-parse 0d31e06:…/product/web_mvp.py` and `git hash-object` on the worktree file both give 10ad8c7624a0a31e602be699144cbcb534c96e53. That equals the harness constant WEB_MVP_BLOB and the blob at 7e3861b, 86ad362, e0b6d80 and 8318b78."
+   },
+   {
+    "item": "3c. #31 preservation gate step re-run verbatim",
+    "status": "CONFIRMED (PASS)",
+    "evidence": "I extracted the step's `run` text by YAML-parsing the trial's codex-integration-readiness.yml (32 lines, sha256 ce8b8e2f…) and ran it with `bash -e -o pipefail` in the trial worktree. Output: 'Preserved 41 exact owner files; approved additive files 10', rc=0. The trailing `git diff --exit-code` against b8e39a2 (gate_evidence, data) and b9e01a9 (the 4 IF-1 files) passed, and the tree stayed clean. I confirmed the report's nonblocking note: protected() does not match tests/evl_c8_gsup_v2_oracle.py, so 10 = 3 src + 7 test_evl_gsup_* files, and that allowlist entry is never used by the gate."
+   },
+   {
+    "item": "3d. #35 integrated-mode shared-source protection with tamper probe",
+    "status": "CONFIRMED (PASS; probe stronger than reported)",
+    "evidence": "My own probe35.py imports the trial's producer_source_compat (CANONICAL_SOURCE_COMMIT=b8e39a2) and reads the SHARED tuples via AST. Same-tree compare_shared_sources on the trial src:\n- qgv: 10 paths PASS. models.py is EXACT_CDR004_SCHEMA_ACCEPTANCE C28_ADOPTED; the other 9 are EXACT_CANONICAL_SOURCE_PROTECTION.\n- leaderboard: 5 paths PASS.\nFor every one of the 15 paths, on a private copy: untampered copy PASS, appended-byte tamper FAIL, deleted file FAIL. A whitespace tamper of qgv/scoring.py FAILs in both same-tree and pair mode."
+   },
+   {
+    "item": "3e. Targeted v2, identity and C8 tests (numpy venv)",
+    "status": "CONFIRMED (PASS)",
+    "evidence": "`PYTHONPATH=src venv/bin/python -m pytest -q -p no:cacheprovider` on the 7 test_evl_gsup_* modules plus test_producer_source_compat: 255 passed, 0 failed/errors/skipped. Split: v2_arithmetic 86, v2_registry 21, v2_repair_negatives 11, v2_identity_adversarial 48, source_identity 33, identity_kernel_invariance 11, mb_reduction_diagnostic 20 (G-SUP total 230), producer_source_compat 25. C8 v1 (test_evl_c8_contracts/evidence/gsup/ledger/protocol): 200 passed. These match the report's 230/230, 25/25 and 200/200."
+   },
+   {
+    "item": "3f. Supplemental verify_gsup_v2_arithmetic.py (Codex tool, CI parity)",
+    "status": "CONFIRMED (PASS)",
+    "evidence": "rc=0, status PASS, scope SYNTHETIC_SOFTWARE_VALIDATION_ONLY, grants/Holdout/actual_CAL_VERIFY/numeric_defaults 0, historical_v1_rewritten False. numerical_output_sha256 d4642fa50523c75f… equals ARITHMETIC_REPLAY_PY311.json. ACCEPTANCE_MANIFEST_V2.json status is HANDOFF_READY_APPROVED_SYNTHETIC_V2_SCOPE. As in the report, this is not independent CDR-010 verification."
+   },
+   {
+    "item": "Track C v1 preservation, IF-1, register, data (report items 2e/2i)",
+    "status": "CONFIRMED (PASS)",
+    "evidence": "- superiority.py blob 8a1254d7 at the trial, b9e01a9, e0b6d80 and 7e3861b; superiority_v2.py blob 370e9b42 at the trial and e0b6d80.\n- IF-1 blobs at the trial equal b9e01a9: technical/engine 5365653f, macro/engine 08d79c20, contracts/models ef4f80ec, lineage 288cabad.\n- The track_c decision register at the trial (22994 B) starts byte-for-byte with the #38/owner register (17206 B); numstat +50/-0.\n- 0 diff lines vs b8e39a2 over implementation/data and reports/gate_evidence; no CAL_VERIFY- or Holdout-named paths.\n- Delta vs #38: 195 A and 14 M; ci 11, src 3 (all evl additions), tools 3, tests 9, docs 183, data 0. No src change outside evl/."
+   },
+   {
+    "item": "Report item 2e: description of the 11 CI changes",
+    "status": "PARTIALLY REFUTED (description incomplete; nonblocking)",
+    "evidence": "The report says the 11 CI changes are pip pins plus the readiness workflow's path list, preservation gate and v2 replay step. In fact e0b6d80 also adds `shell: bash` to job `defaults.run`: a new defaults block in leaderboard-real-producer.yml and a new key in qgv-producer-real.yml. GitHub then runs steps with `bash --noprofile --norc -eo pipefail`, so steps like `python -m pytest … | tail -5` and `mini_pytest.py | tail -5` now fail on a failing producer instead of being masked by tail. This makes CI stricter and is not an escalation. Neither workflow ran on #39, so the change is unexercised in this trial."
+   },
+   {
+    "item": "4. Escalation sweep review (report item 2f) plus my own broader sweeps",
+    "status": "CONFIRMED (conclusion); minor characterization errors",
+    "evidence": "Reproduced with the harness patterns copied verbatim: 77 hits vs #38 (73 docs, 2 src, 2 tests) and 257 vs canonical (212/23/18/4).\n\nI read all 77 delta hits:\n- 68 doc hits flagged as negated are genuine negations, zero counts, or the negative-test name `holdout_state-CONSUMED` in a junit artifact.\n- The 6 hits the heuristic flagged as not negated all resolve on multi-line context:\n  - gsup_source_identity.py:9 docstring: 'It neither … nor reads outcomes, chooses numeric conventions or grants real CAL_VERIFY access'.\n  - register-before.bin:27: 'No C7 policy … Holdout consumption … is supplied'.\n  - FINAL_ACTIONS_REVIEW.md:54: 'not real investment validation, Freeze, Official promotion'.\n  - INDEPENDENT_REVIEW lines 5–6: 'not approval of … Holdout consumption, publication or Official promotion'.\n  - OPEN_PRS_BASELINE: 'pending C8.\\n\\nC0-C7 are SOFTWARE FROZEN' (false positive).\n\nMy own sweeps:\n- (a) Broad keyword sweep over every added code/CI line (40 hits): fail-closed guards (superiority_v2.py:172; gsup_source_identity.py:436–438 admits only synthetic=True; superiority_source_identity.py:135–137 requires a declared synthetic provider), frozen=True dataclasses, official=False / promotion_authority=None / NOT_RUN asserts, synthetic fixtures.\n- (b) JSON key/value scan of all 103 added JSON docs: 0 positive grant/official/live/publication/holdout/cal_verify values. The 11 hits are frozen-index-stream counts.\n- (c) The 4 zip artifacts: grants NONE, live/official false, publication BLOCKED.\n- (d) Paragraph-level multi-line scan of md/log/bin/json/py/xml: 69 subject+verb paragraphs, 0 without a negation cue. The single weak-cue paragraph is 'Holdout consumptions 0 (+0)'.\n- Runtime on the trial tree: ACTIVE_AUTHORIZATIONS=() and summarize_grants() all NONE; the publication package is unchanged vs #38.\n\nCorrections:\n- The report files gsup_source_identity.py:9 under 'fail-closed guards'; it is a negated docstring, and it is the harness's 1 code hit not flagged as negated.\n- The PR body says 'three code lines'; there are 4 code/test hits.\n- 'Two false positives' undercounts the 6 multi-line cases above, all benign."
+   },
+   {
+    "item": "5. No #38 result presented as this trial's result",
+    "status": "CONFIRMED",
+    "evidence": "- Collect-only on the trial tree: 1441 tests. On #38 (7e3861b, separate worktree): 1193. The 1441 cannot come from #38.\n- The harness junit full-pytest.xml (timestamp 01:48:07Z, inside the run window 01:47:51–01:56:43) contains 1441 tests, 0 failures/errors/skips, 118 modules, including 230 test_evl_gsup_* tests that do not exist on #38.\n- All 42 web evidence JSONs in the run dir were written inside the run window.\n- The fingerprint equals #38's, but that is an invariance result; I recomputed it on the trial tree.\n- PR #39 body explicitly says #38 results are not reused; 0 comments, 0 reviews."
+   },
+   {
+    "item": "Report 2j–2m browser/E2E and 2n macro pinned",
+    "status": "UNVERIFIED by local re-run (consistent evidence)",
+    "evidence": "I did not re-run the browser tests; the task scoped item 3 to other checks. The harness artifacts report passed: true, errors [] and in-window timestamps. CI jobs web-mvp-validation/validate, web-research-guard/guard, web-state-presentation/presentation and combined-offline step 13 (withheld E2E) succeeded on tree 2a9b799. macro-adoption-offline succeeded, but it checks out pinned 4a07099, not the trial tree."
+   },
+   {
+    "item": "CI log contents claimed in report item 4 ('Preserved 41…', '1441 passed in 398.79s', checkout at 0d31e06 in log)",
+    "status": "UNVERIFIED",
+    "evidence": "My attempt to fetch the job log through the gh API was denied by the permission system, and I did not try another route. Step-level conclusions, step timings (step 7 ran about 6.6 min), artifact metadata (head_sha 0d31e06) and the YAML checkout ref support the claim, but I did not read the log text itself."
+   },
+   {
+    "item": "Report item 3b: PR #39 metadata",
+    "status": "CONFIRMED",
+    "evidence": "draft=true, state open, base codex/combined-integration-2026-10-03 @ 86ad362, head @ 0d31e06, 226 changed files, 37 commits (= rev-list 86ad362..0d31e06), mergeable_state clean. The body ends with the required footer. 0 comments, 0 reviews."
+   },
+   {
+    "item": "Report item 5 / final remote re-check",
+    "status": "CONFIRMED (PASS)",
+    "evidence": "Final ls-remote at 02:26:49Z: every input and baseline is unchanged, cdr011-trial=0d31e06, pull/39/head=0d31e06, pull/39/merge=8840694f, global-handoff-v1=5a8dd49. The worktree list holds only the main checkout plus the pre-existing gh and rig-news worktrees. Main checkout: ccr-2e16018a-qukwmg @ f1b5afb, 0 status lines. I removed my worktrees (wt, wt38), the temp object store and the exported trees, ran `git worktree prune`, and refetched, so FETCH_HEAD resolves again."
+   }
+  ],
+  "findings_blocking": [],
+  "findings_nonblocking": [
+   "Report item 2e's CI-change description is incomplete. e0b6d80 (#31) also adds `shell: bash` to job defaults in .github/workflows/leaderboard-real-producer.yml (new defaults block) and qgv-producer-real.yml. This enables `-eo pipefail`, so `pytest … | tail -5` steps now fail on test failure instead of being masked. It is a stricter-CI change, not an escalation, but neither workflow ran for PR #39, so it is unexercised in this trial. Codex-owned; recorded only.",
+   "Three workflows whose YAML the trial delta modifies (leaderboard-real-producer, qgv-producer-real, track-c-evl-validation) were not exercised by any CI run in this trial. This is by trigger design: they have no pull_request trigger. Separately, leaderboard-real-producer's cross-track `git diff --exit-code canonical` step would fail by design on any tree containing #30 (12 qgv/technical/macro/contracts paths already differ at 86ad362), so 'not applicable' is a more accurate reason than the report's 'optional, low value'.",
+   "Report item 2f files gsup_source_identity.py:9 under 'fail-closed guards'. It is a module docstring, negated across lines ('neither … nor … or grants real CAL_VERIFY access'), and it is the harness's single code hit not flagged as negated. The PR body says 'three code lines'; there are 4 code/test hits (2 src, 2 tests). 'Two false positives' undercounts the 6 multi-line or false-positive cases. All are benign, and the escalation conclusion holds.",
+   "Confirmed the report's own note: #31's gate predicate protected() does not cover implementation/tests/evl_c8_gsup_v2_oracle.py, so the gate counts 10 additions and never uses that 11th allowlist entry. No owner file changes. Codex-owned; recorded only.",
+   "Engine fingerprint f690f9c0 is invariant relative to #38 (7e3861b) and #30 (86ad362), as I recomputed byte-for-byte. It is not equal to canonical b8e39a2 (technical and macro differ), but that difference is already in the #30 base and is not caused by #31/#35. The report's '0 mismatches' refers to system python vs venv only.",
+   "macro_adoption_pinned (local and CI macro-adoption-offline) tests pinned commit 4a07099, not the trial tree. The report labels it as pinned, so this is not a misstatement, but it is not evidence about the trial tree."
+  ],
+  "conditional_user_decisions": [
+   "Canonical merge of any part of this combined state remains USER_DECISION_REQUIRED. CANONICAL_STATE: NOT_MERGED; canonical b8e39a2 is unchanged at 02:26:49Z.",
+   "Whether to dispatch any of the non-PR-triggered workflows is the integration writer's call. That includes the offline leaderboard-real-producer, whose pipefail change is otherwise unexercised and whose cross-track step will fail on integrated trees by design. Three workflows (c21-real-data, entity-metadata-ingest, qgv-producer-real) contain commit-back or real-data steps.",
+   "How Track C acceptance is certified on integrated trees (MAC-X1) remains open. track-c-evl-validation runs the c6/c7/c8 acceptance tools and was not run.",
+   "Nothing verified here approves numeric configuration, real CAL_VERIFY, Holdout, C8 Freeze, grants, Official/LIVE, or a canonical merge."
+  ],
+  "not_run": [
+   "Full test-suite re-run by me. I ran collect-only (1441 on the trial vs 1193 on #38), the targeted v2/identity/producer_source_compat tests (255 passed) and the C8 v1 tests (200 passed), and inspected the harness junit.",
+   "Browser/E2E re-runs (web_mvp, global-language-search, web_research_guard, web_state_presentation, producer_contract browser). I relied on artifact inspection and the CI job conclusions.",
+   "Reading CI job log text: the gh API log download was denied by the permission system and I did not try another route.",
+   "Independent CDR-010 oracle comparison (prep-v2-oracle compare_v2.py) of superiority_v2.py: outside this task (GIE-010).",
+   "Dispatch of the 6 non-PR-triggered workflows: not dispatched (read-only role).",
+   "Verification of the SSH signatures on 5d0a49b and 0d31e06: the signature blocks are present, but no allowed-signers file is configured.",
+   "Re-run of the harness next_trial.sh itself: not repeated. I re-ran its individual checks independently instead.",
+   "Any CAL_VERIFY, Holdout or real provider data access: not performed (prohibited)."
+  ],
+  "summary": "The CDR-011 trial report holds up on every substantive claim. I found no blocking finding and nothing that changes its conclusion. Three descriptive points in the report are wrong or incomplete, and two claims remain unverified.\n\n**Confirmed independently (read-only):**\n- **Heads and merge:** all 8 heads match the report, fetched at 02:12Z and unchanged at 02:26Z. Re-merging the constituent heads in a temporary object store reproduces the published trees exactly: 37ff16a3 for the first merge and 2a9b7998 for the branch head. The merges had 0 conflicts and 0 auto-merged files. The only non-input commits are the two merge commits.\n- **CI:** 10 of 10 PR-triggered workflows (11 jobs) ran as pull_request on head 0d31e06, attempt 1, all successful. Readiness checks out the head SHA; the others check out refs/pull/39/merge, which has the same tree. The other 6 workflows have no pull_request trigger, so none is missing.\n- **Re-runs on the trial tree:**\n  - Fingerprint f690f9c0 under both interpreters, byte-identical to #38 and #30.\n  - web_mvp.py blob 10ad8c76.\n  - The #31 preservation gate, run verbatim, reports 41 owner files preserved and 10 additions.\n  - #35's protection: an untampered copy passes, and every one of the 15 SHARED paths fails when tampered or deleted.\n  - Targeted tests: 255 passed (230 G-SUP plus 25 producer_source_compat), and C8 v1 200 passed.\n  - The v2 replay hash d4642fa5 matches Codex's record. Runtime grants are all NONE.\n  - Track C v1 and IF-1 blobs, the append-only register, and the unchanged data and gate_evidence all check out.\n- **Escalation:** the harness counts reproduce (77 against #38, 257 against canonical) and I reviewed every one of the 77. My own broader sweeps found nothing that activates a grant, publication, Official, LIVE, CAL_VERIFY or Holdout. Those sweeps covered every added code and CI line, the structured values in 103 JSON files, the zip artifacts, and paragraph-level negations spanning lines.\n- **No #38 reuse:** the trial collects 1441 tests against 1193 on #38, and the harness junit is in the run window and contains the v2 tests.\n\n**Corrections to the report:**\n1. **CI changes (item 2e):** the report says they are pip pins plus readiness steps. In fact e0b6d80 also adds `shell: bash`, which turns on pipefail, to leaderboard-real-producer and qgv-producer-real. That makes CI stricter, but neither workflow ran in this trial, so the change is untested.\n2. **Escalation wording (item 2f):** the second src hit, gsup_source_identity.py:9, is a docstring that negates across lines, not a guard. The PR body says three code lines; there are four. The report lists two false positives; there are six multi-line cases. All of them are benign.\n3. **leaderboard-real-producer:** this workflow cannot apply to integrated trees. Its cross-track check against canonical would fail by design on anything containing #30. The report calls it \"optional, low value\", which understates this.\n\n**Unverified:**\n- The CI log text (\"1441 passed in 398.79s\"). The log download was denied by the permission system. Step conclusions and artifact metadata are consistent with it.\n- The browser and E2E results. I did not re-run them; the local artifacts and the CI jobs are green.\n\nStates:\n- BRANCH_STATE: integration/cdr011-trial-2026-10-04 @ 0d31e06.\n- INTEGRATION_STATE: trial checks independently confirmed as above.\n- CANONICAL_STATE: NOT_MERGED. Canonical b8e39a2 is unchanged, and a canonical merge needs a user decision (USER_DECISION_REQUIRED).\n\nMy temporary worktrees and object store are removed, and the main checkout is untouched. My outputs are in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf10/trial-verify/out/, mainly probe35.json, gate_step.sh, targeted_v2.xml, c8_v1.xml, h_vs38.json, broad_code.txt and gsup_v2_arith.json."
+ }
+}

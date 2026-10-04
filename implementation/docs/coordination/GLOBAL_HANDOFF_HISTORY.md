@@ -124,3 +124,10 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - Trial harness hardened by the Primary Integration Writer before the CDR-011 trial (reviewed allowlist, junit minimum and zero skips, verified v2 blob).
 - GSI A1 proposal CI entries corrected (exact-head Actions exist; #25 targeted only).
 - Canonical `b8e39a2` unchanged. Maturity transitions: none.
+
+## GCH-009 · 2026-10-04 · GIE-010 recorded (CDR-011 re-verification of #31 v2; CDR-011 trial PR #39)
+
+- #31 `e0b6d80` re-verified independently against the CDR-010 oracle built before Codex's v2: VERIFIED_WITH_FINDINGS, no blocking finding. Items 1–4, 6a, 6b, 7–13 and the CDR-011 list PASS; item 5 PASS_WITH_CONDITIONAL_DECISION (squaring operator). #35 `8318b78` F1 patch byte-equal to the verified `722c812`.
+- CDR-011 combined trial published by the Primary Integration Writer: PR #39 `integration/cdr011-trial-2026-10-04` @ `0d31e06` = #38 `7e3861b` + #31 `e0b6d80` + #35 `8318b78`. Hardened harness all PASS, full suite 1441 passed, 10/10 CI. Adversarial trial check: no blocking finding. #38's results not reused.
+- New USER_DECISION_REQUIRED items routed (not decided): F1 squaring operator; F3 undefined-statistic guard. F3 reproduced by the Primary Integration Writer on production v2.
+- Canonical `b8e39a2` unchanged. Maturity transitions: none (C8 SYNTHETIC_VERIFIED, NOT FROZEN).
