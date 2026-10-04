@@ -1,0 +1,827 @@
+{
+ "vp": {
+  "items": [
+   {
+    "item": "(1) Exact HEAD and full diff classification",
+    "status": "PASS",
+    "evidence": "A fresh fetch into a private clone shows origin/codex/track-c-gsup-v2-2026-10-03 = refs/pull/31/head = c9e0fa7e4078290b5db9cb798cf52c0d0cd66240, tree c922ea9f, single parent e0b6d809. ls-remote returned the same values at the start, mid-run and end. e0b6d80..c9e0fa7 is exactly 1 commit. diff --name-status gives 32 files: 25 A, 7 M, 0 D, 0 mode changes, +8049/-22.\n- src (1 M): evl/superiority_v2.py\n- tests (1 M, 2 A): test_evl_gsup_v2_arithmetic.py; new evl_c8_gsup_v2_cdr012_oracle.py and test_evl_gsup_v2_cdr012.py\n- tools (1 M): verify_gsup_v2_arithmetic.py\n- workflow (1 M): codex-integration-readiness.yml\n- scoped register (1 M): reports/track_c_decision_register_2026-10-01.md, byte-prefix append\n- docs (2 M, both byte-prefix appends): scoped CURRENT_HANDOFF.md and STATUS.md\n- docs/evidence (23 A): ACCEPTANCE_MANIFEST_CDR012.json, CURRENT_HANDOFF_V2_CDR012.md and 21 files under evidence/cdr012-repair/\n- Nothing under reports/*.json, data/ or gate_evidence. Engine and contract files are unchanged vs b9e01a9.\n- Context: Global integration/global-handoff-v1 has moved 1620f71 -> cd0963f (GCH-010a, docs only). The register blob is unchanged (bc402d6b)."
+   },
+   {
+    "item": "(2) Approval record and scoped register",
+    "status": "PASS",
+    "evidence": "CDR012_APPROVAL.json (blob e16038e9, equal to SUPPLEMENT_BLOB in v2):\n- source_commit 1620f71, blob bc402d6b and sha256 eaa7960d match my recomputation on the global register at 1620f71. The blob is unchanged at cd0963f.\n- quoted_decision is byte-identical (2623 bytes) to the register's CDR-012 section, from '## CDR-012' to EOF, and occurs exactly once.\n- Its arithmetic_contract holds the 4 CDR-010 keys plus squaring=MULTIPLICATION and all_degenerate=NOT_RUN. Boundary fields are all 0/false.\n\nScoped Track C register: e0b6d80's 22994 bytes are an exact prefix of the new 24373 bytes. The appended text records F1/F3 only and states that numeric config, CAL_VERIFY, Holdout, C8 Freeze, publication/Official/LIVE and canonical merge are NOT_APPROVED.\n\nA keyword sweep of every added line found no approval of numeric config, CAL_VERIFY, Holdout, Freeze, grants, Official/LIVE or canonical merge. All 16 source_sha256 entries in ACCEPTANCE_MANIFEST_CDR012.json match the files."
+   },
+   {
+    "item": "(3a) superiority_v2.py diff (blob 370e9b42 -> 8e56a66e)",
+    "status": "PASS",
+    "evidence": "Semantic arithmetic changes are exactly two:\n- F1: the observed LRV (L89-90) and the replicate variance (L106-107) changed from `(b - length*m) ** 2` to `deviations = (b - length*m ...); fsum(d * d for d in deviations)`. Operand order, fsum and the divisors are unchanged.\n- F3: L124-125 adds `if degenerate == replicates: raise MissingStatisticalEvidence(\"all bootstrap replicates degenerate\")` after the full loop, before any p is built.\n\nNon-arithmetic changes:\n- docstrings;\n- ARITHMETIC_CONTRACT gains the labels squaring/all_degenerate;\n- authority() additionally pins CDR012_APPROVAL.json by git blob e16038e9 and checks method and contract. This is a new fail-closed integrity check; its return value is not consumed anywhere in src.\n\nNo epsilon, tolerance, threshold, rounding or new default was added. Grep finds no `**2`, pow or round. The only remaining `**` are dict unpacking. size_tolerance at L174 is pre-existing and unchanged.\n\nEvery multiply or square at the new head:\n- L84 `(n+length-1)//length - 1` (int)\n- L89 `length*mean`\n- L90 `d*d` (squaring) and `n*length` (int)\n- L103 `j*length`, `(j+1)*length` (int index)\n- L104 `blocks*length` (int index)\n- L106 `length*ms`\n- L107 `d*d` (squaring) and `blocks*length` (int)\n\nIndependent confirmation: compare_cdr012 against the wf11 oracle, run with the strict reason regex, returns EXACT_MATCH_ALL_GRADED. 747 cases are graded (710 STAT bit-exact, 37 NOT_RUN). Detectors: F1 0/16, F3 0/37, boundary 0/17, near-undef 0/14. The control run at e0b6d80 reproduces MISMATCH_IN_68. The registry probe returns ALL_SCENARIOS_CDR012_EXPECTED (S1/S2 NOT_RUN, S3 STAT_PASS)."
+   },
+   {
+    "item": "(3b) test_evl_gsup_v2_arithmetic.py diff",
+    "status": "PASS",
+    "evidence": "No test or assertion was deleted. The collection is still 86 tests; one test was renamed (test_oracle_exact_fingerprints -> test_historical_cdr010_oracle_exact_fingerprints, which still uses the historical oracle H).\n\nAST and byte comparison: the EXACT_FINGERPRINTS, GOLDEN_TRACES (9 keys), EXPECTED, FIXTURES, UNDERFLOW and SEED275 literals are byte-identical to e0b6d80. No pinned hex trace changed for any fixture. Only CONTRACT gains the 2 labels.\n\nOne change of target: the two GOLDEN_TRACES assertions (L140-141 and L231-232) now check H's traces instead of production's. I verified that production at c9e0fa7 still matches all 9 golden pins bit for bit. Running the old e0b6d80 test file against new production fails only on the arithmetic_contract label; with that label neutralised, the production cases all pass.\n\nThe new pins in test_evl_gsup_v2_cdr012.py are exactly the d*d values from the independent wf11 oracle:\n- I rebuilt all 12 PINS fingerprints and all 3 NOT_RUN_PINS from independent floats.\n- NEAR_TIE_TRACES matches 19/19 rows; 4 rows differ under pow.\n- Near-tie scalars match: p 0x1.333...p-3 (3/20, against 4/20 under pow), LRV, T 0x1.cf1f15ba01c3ap+0, and row-4 t ...c38p+0.\n- Primary and alt oracles agree.\n- For the 8 original fixtures plus underflow, d*d equals pow, so only the contract label differs."
+   },
+   {
+    "item": "(3c) verify_gsup_v2_arithmetic.py diff",
+    "status": "PASS",
+    "evidence": "- The comparator import switched from the historical oracle to the CDR-012 oracle.\n- APPROVED_CONTRACT gains 2 labels.\n- All 11 original cases and their asserts are kept (CE4 .10 vs v1 .15). 4 cases were added: F1 near-tie with p .15 / r 2 asserted, F3 seeds 7 and 11, and [.05]*12.\n- The hashed paths now include both oracles and the supplement.\n- Local run on 3.11.15: PASS, 15 cases, numerical_output_sha256 bb883332..."
+   },
+   {
+    "item": "(3d) codex-integration-readiness.yml diff",
+    "status": "PASS",
+    "evidence": "- Path triggers: +3 (the 2 new test files and CDR012_APPROVAL.json).\n- protected(): adds evl_c8_gsup_v2_oracle.py and evl_c8_gsup_v2_cdr012_oracle.py, which makes the gate stricter.\n- allowed_additions: exactly +2 (evl_c8_gsup_v2_cdr012_oracle.py and test_evl_gsup_v2_cdr012.py).\n- One step was renamed (CDR-010/012 replay).\n- Nothing was removed: the owner-file diff gate, the gate_evidence/data and engine-file diffs, the full pytest step, numpy==2.3.5 and the exact-head checkout are unchanged.\n- No other workflow changed.\n- CI gate output on the exact head: 'Preserved 41 exact owner files; approved additive files 13'."
+   },
+   {
+    "item": "(3e) Codex's 'additive / history-preserving' claim",
+    "status": "PASS",
+    "evidence": "History-preserving is verified byte for byte:\n- Unchanged at e0b6d80 and c9e0fa7: CDR010_APPROVAL.json (3a9eecbb), the evidence/authoritative-v2 tree (1e3f570e), ACCEPTANCE_MANIFEST_V2.json, CURRENT_HANDOFF_V2_CDR010.md, the historical oracle evl_c8_gsup_v2_oracle.py (aca5567d, sha256 e2db7498), reports/gsup_v2_oracle and gsup_v2_identity_independent, test_evl_gsup_v2_registry.py and repair_negatives, and gsup_mb_reduction_diagnostic.py.\n- The historical hex tables are byte-preserved.\n- The only M/D files are the 7 listed in item 1, and the 3 docs among them are prefix appends.\n\nAccurate scoping of 'additive': the evidence, approval, oracle and pins are additive. v2 source, the v2 arithmetic test, the tool and the workflow were edited in place, which is inherent to repairing authoritative v2 as CDR-012 directs. The e0b6d80 pow behaviour survives only in git history and in H; METHOD and POLICY IDs are unchanged."
+   },
+   {
+    "item": "(4) v1, identity and report preservation",
+    "status": "PASS",
+    "evidence": "Blobs unchanged across b9e01a9, e0b6d80, c9e0fa7 and 4cf8ead:\n- evl/superiority.py 8a1254d7\n- statistical_kernels.py 28e1c184\n- evl_c8_gsup_oracle.py a5f00fa9\n- evl_c8_fixture.py ee598132\n- simulation source e112f41f\n- gsup_source_identity fa93bf88 and superiority_source_identity 71bf7375 (absent at b9e01a9, unchanged since)\n\nProtected set (evl/ src, test_evl_*, evl_c8_*): 41 files at b9e01a9 with 0 changed. 52 at e0b6d80, of which only the 2 declared v2 files changed. The 2 new files are the only additions, and none were removed.\n\nAll 199 report JSONs at e0b6d80 are unchanged (0 diffs). Since b9e01a9, reports/ shows only A entries plus the register.\n\nRuntime check: all 54 v1 globals are identical after importing and using v2. v1 near-tie p is .20 and v2 is .15."
+   },
+   {
+    "item": "(5) Targeted regression (private venv, Py 3.11.15, numpy 2.3.5, pytest 9.1.1)",
+    "status": "PASS",
+    "evidence": "- test_evl_gsup* plus test_evl_c8* at c9e0fa7: 507 passed, 0 failed/errors/skips. That is GIE-010's 430 plus 77.\n- Per file: c8_contracts 47, c8_evidence 22, c8_gsup 84, c8_ledger 18, c8_protocol 29, identity_kernel_invariance 11, mb_reduction_diagnostic 20, source_identity 33, v2_arithmetic 86, v2_cdr012 77, v2_identity_adversarial 48, v2_registry 21, v2_repair_negatives 11.\n- The 4 v2 files alone give 195 at both c9e0fa7 and 4cf8ead.\n- evl_c8_gsup_v2_cdr012_oracle.py is a helper module, not a test file."
+   },
+   {
+    "item": "(6) Full regression at c9e0fa7",
+    "status": "PASS",
+    "evidence": "Authoritative run, in a private git checkout at exactly c9e0fa7: 1471 passed, 1 deselected, 0 failures/errors/skips (JUnit sha256 ce139970...). The deselected test is the pre-existing tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2, which makes a live SEC network call; I left it out deliberately to honour the no-real-provider rule.\n\nAn earlier run on a git-archive extract collected all 1472 tests. The live test passed in 0.25 s. 3 tests failed only because the extract has no .git (they call git show/rev-parse); all 3 pass in the git checkout.\n\nCI on the exact head reports 1472 passed (= 1395 + 77), which matches Codex's manifest claim."
+   },
+   {
+    "item": "(7) Actions on c9e0fa7",
+    "status": "PASS",
+    "evidence": "8 runs, 9 jobs, all completed/success, all head_sha c9e0fa7, run_attempt 1:\n- 37174701678 codex-integration-readiness (combined-offline and macro-adoption-offline)\n- 37174701577 web-mvp-validation\n- 37174701657 p01-research-publication\n- 37174701643 qgv-invalidation-binding\n- 37174701616 us-equity-session\n- 37174701620 sec-primary-disclosure\n- 37174701587 technical-real-producer\n- 37174701592 technical-real-model\n\nOnly combined-offline (job 111354801213) checks out the exact head. Its log shows `ref: c9e0fa7...`, `HEAD is now at c9e0fa7`, rev-parse = c9e0fa7, the gate at 41/13, '1472 passed in 291.58s' with no fail or skip, the browser E2E passed, and artifact 11292768387 with zip sha256 4468a2d5....\n\nmacro-adoption-offline checks out the pinned 4a07099. The other 7 use the default PR merge ref. track-c-evl-validation runs on push to feature/track-c-evl only, so it did not run."
+   },
+   {
+    "item": "(8) Engine fingerprints",
+    "status": "PASS",
+    "evidence": "tools/producer_engine_fingerprint.py output sha256 is f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866 at c9e0fa7, 4cf8ead and e0b6d80, under both system python3 and the numpy venv. The values equal GIE-010 EXPECTED_FP (technical 66cb2383, macro 7e427949, qgv a1714480, n_qgv 19, leaderboard 112b245b, portfolio 53d930a7)."
+   },
+   {
+    "item": "(9) #35 current head",
+    "status": "PASS",
+    "evidence": "#35 = refs/pull/35/head = 4cf8ead0 (moved from 8318b78), a merge with parents 8318b78 and c9e0fa7, so it now contains c9e0fa7.\n\nF1 patch equality:\n- The F1 subpatch (producer_source_compat.py plus its test) is byte-equal across 29c2c20..722c812, e0b6d80..8318b78 and c9e0fa7..4cf8ead (all sha256 9f3b677a).\n- The full patch c9e0fa7..4cf8ead (c24845d3, 1264 lines) no longer equals 22283ec2. The only reason is that the merge commit carries 6 docs-only extras on top of a clean merge (merge-tree 99a633bf vs actual tree de61d093): a prefix append to SCOPED_HANDOFF.md and 5 new cdr012-dependency evidence files.\n- There is no src/test diff vs c9e0fa7 besides the 2 F1 files, so the #31 files are byte-identical.\n\nLocal full suite in a git checkout: 1489 passed, 1 deselected (the same live SEC test), 0 fail/err/skip.\n\nCI: 7 runs on 4cf8ead, all success. Readiness run 37175320382 needed attempt 2:\n- attempt 1, combined-offline job 111356632535, FAILED: '1 failed, 1489 passed', test_live_sec_fetch IncompleteRead, a network flake unrelated to CDR-012;\n- attempt 2, job 111358436249, checked out the exact 4cf8ead: '1490 passed', gate 41/13, artifact digest 1be0188c...."
+   }
+  ],
+  "findings_blocking": [],
+  "findings_nonblocking": [
+   "test_evl_gsup_v2_arithmetic.py L140-141 and L231-232: the frozen GOLDEN_TRACES assertions now target the historical oracle H instead of production output. The pins are byte-preserved, production still matches all 9 bit for bit (verified independently), and production stays transitively pinned through output == new oracle == new PINS. Still, no test asserts production == GOLDEN_TRACES directly any more, and the change was not needed: d*d equals pow on these fixtures.",
+   "#35 merge 4cf8ead is not a pure merge. Besides merging c9e0fa7 it adds 6 docs-only files, so the full patch hash (22283ec2) no longer matches. The F1 subpatch (9f3b677a) and all src/tests are byte-equal. DEPENDENCY_ACCEPTANCE's 'normal_merge/conflicts 0' is accurate about conflicts but does not mention the extra docs in the merge commit.",
+   "#35 readiness CI needed a rerun. Attempt 1 failed on a pre-existing live-network test (test_live_sec_fetch_is_optional_and_not_stage2, IncompleteRead); attempt 2 succeeded with 1490. Report attempt 2 as the exact-head CI result, and do not omit attempt 1.",
+   "The full suite contains a pre-existing test that fetches live data from SEC. In my authoritative runs I deselected it, so the local counts are 1471 and 1489 plus 1 deselected each. It did execute once in an earlier archive-extract run (0.25 s, passed); I don't know whether SEC was actually reached.",
+   "v2 METHOD and POLICY IDs (C8_GSUP_STUDENTIZED_CBB_v2 / TC-C8-GSUP-M-V2-CDR006-CDR010) are unchanged although the arithmetic changed. Only the 6-key arithmetic_contract label and the authority() supplement distinguish e0b6d80-v2 outputs from c9e0fa7-v2 outputs. This is consistent with CDR-012 being a v2 supplement; information only.",
+   "authority() adds a new fail-closed integrity pin on CDR012_APPROVAL.json (blob e16038e9). It is not arithmetic; test_supplement_refuses_before_registration_or_outcome covers it.",
+   "Because F3 is implemented in the kernel, all-degenerate null draws in development-only assess_feasibility are now counted as 'undefined' (not rejected) in the empirical size. This is consistent with the existing zero-SE handling; information only.",
+   "Codex's new evl_c8_gsup_v2_cdr012_oracle.py is a restatement by the same author as the historical oracle. It is independent of production but not of Codex's earlier oracle. Independence here rests on the wf11 oracle (primary + exact-rational alt), which matched on 747/747 graded cases.",
+   "Global routing moved 1620f71 -> cd0963f (GCH-010a, docs only). COORDINATION_DECISION_REGISTER blob bc402d6b is unchanged, so the approval quote stays valid."
+  ],
+  "conditional_user_decisions": [],
+  "not_run": [
+   "Live SEC test test_live_sec_fetch_is_optional_and_not_stage2 in the authoritative local full runs: deselected to avoid real-provider access (it ran once in the earlier archive-extract run).",
+   "Python 3.12/3.13 and cross-platform libm runs locally.",
+   "Downloading the CI artifact ZIPs (11292768387, 11293246210). The counts come from the MCP job logs, not from the JUnit artifacts.",
+   "Browser/E2E locally. Only the CI log shows the browser step passed.",
+   "Agent proxy status check: denied by the permission classifier and not pursued.",
+   "PR #39 successor combined trial: not in this task's scope."
+  ],
+  "summary": "PR #31 at c9e0fa7 verifies: no blocking findings, no new user decision. All 9 items PASS on my own runs, oracle and probes, not on Codex's claims.\n\n- **Head:** origin and refs/pull/31/head both equal c9e0fa7, one commit on e0b6d80, 32 files (25 added, 7 modified, 0 deleted).\n- **Approval:** CDR012_APPROVAL.json quotes the CDR-012 section of the register at 1620f71 byte for byte; its commit, blob and sha256 recompute exactly. The scoped Track C register only appends to the old bytes. Nothing approves numeric config, CAL_VERIFY, Holdout, Freeze, grants, Official/LIVE or canonical merge.\n- **superiority_v2.py:** the only arithmetic changes are `d*d` squaring at L90 and L107, and the all-degenerate NOT_RUN raise at L124-125. No epsilon, tolerance, threshold or rounding was added. Two non-arithmetic additions: two new labels in the arithmetic contract, and a pin on the approval file inside `authority()`.\n- **Independent oracle:** EXACT_MATCH_ALL_GRADED on 747 cases (710 bit-exact, 37 NOT_RUN); every detector is at 0. The same comparison against e0b6d80 reproduces the expected 68 mismatches. The registry probe passes all three scenarios.\n- **Tests:** none deleted, and the old hex pins are byte-preserved. The new pins in test_evl_gsup_v2_cdr012.py are exactly the `d*d` values my oracle gives. Two old golden-trace assertions now check the historical oracle instead of production. I confirmed production still matches all 9 of those pins bit for bit, so this is a non-blocking finding.\n- **Workflow:** the allowlist gains exactly the 2 new test files and no step is weakened.\n- **v1 and history:** v1 and identity modules, all 199 report JSONs and every historical CDR-010 record are unchanged. The two new files are additive; v2 source, test, tool and workflow were edited in place, as repairing v2 requires.\n- **Regression:**\n  - Targeted gsup and c8 tests: 507 passed. The four v2 files account for 195.\n  - Local full run: 1471 passed, 1 deselected, 0 failures or skips. The deselected test is the existing live SEC fetch, left out to avoid real-provider access.\n  - CI on the exact head: 1472 passed in the combined-offline job, the only job that checks out c9e0fa7 itself. All 8 runs (9 jobs) succeeded.\n- **Engine fingerprints:** f690f9c0 at all three heads.\n- **#35:** now at 4cf8ead, a merge of 8318b78 and c9e0fa7.\n  - The F1 subpatch is byte-equal to the earlier ones (9f3b677a). The full-patch hash differs only because the merge commit also adds 6 docs files.\n  - Local full run: 1489 passed plus the same deselected test.\n  - CI: the first readiness run failed on a network flake in that live SEC test. The rerun on the exact head passed 1490, and all 7 runs succeeded.\n\nThe private clone, extracts and venv are deleted. The main checkout is untouched (f1b5afb, clean) and the oracle directory still matches its SHA256SUMS. Evidence is in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf12/vp-diff-preservation/out/."
+ },
+ "vo": {
+  "items": [
+   {
+    "item": "0. Heads and routing at verification time",
+    "status": "PASS",
+    "evidence": "Private shared clone only (no worktree in /home/user/Investment-System1). ls-remote at start and end: refs/pull/31/head = origin/codex/track-c-gsup-v2-2026-10-03 = c9e0fa7e4078290b5db9cb798cf52c0d0cd66240, unchanged during the run. #35 has moved from 8318b78 to 4cf8ead024457172712d9ee54bdce665dbedeb2f ('Merge CI-verified CDR-012 PR31 repair into preserved PR35 hardening'), which already contains c9e0fa7 (merge-base --is-ancestor). superiority_v2.py is the same blob 8e56a66e at c9e0fa7 and at 4cf8ead. v1 superiority.py (8a1254d7) and statistical_kernels.py (28e1c184) are unchanged since e0b6d80. integration/global-handoff-v1 moved from 1620f71 to cd0963f. That commit is docs only (GCH-010a, 2 files: GLOBAL_HANDOFF_HISTORY and GLOBAL_STATUS_INDEX). The CDR-012 wording at 1620f71 matches the task text word for word."
+   },
+   {
+    "item": "1. F1 source facts (README step 2)",
+    "status": "PASS",
+    "evidence": "grep for '** 2', pow( and math.pow in superiority_v2.py at c9e0fa7 finds no arithmetic hit. The only '**' matches are dict unpacking (lines 58, 140, 234, 239). Both squarings are now math.fsum(d * d for d in deviations): lrv at line 90 and replicate variance at line 107. The source diff from e0b6d80 touches only superiority_v2.py."
+   },
+   {
+    "item": "2. Adapter mapping for Codex's NOT_RUN signal, and proof it does not hide other errors",
+    "status": "PASS",
+    "evidence": "Codex's F3 signal is `raise MissingStatisticalEvidence(\"all bootstrap replicates degenerate\")` at line 125, under `if degenerate == replicates`, after the full replicate loop. Mapping of record (strict): --not-run-exc MissingStatisticalEvidence --not-run-reason-regex '^all bootstrap replicates degenerate$' --no-p-none-is-not-run --not-run-result '__never__=__never__'. Under this mapping only that exact message counts as NOT_RUN. Any other refusal is REFUSED_OTHER, and p=None or a status dict cannot count. The default mapping (any MissingStatisticalEvidence counts as NOT_RUN) was also run. Negative control: a private mutant copy that raises the same exception with a different message ('unsupported finite arithmetic range') on the deg == B cases passes the default compare (EXACT_MATCH, rc 0), so the default mapping alone can hide a wrong refusal. The strict compare catches that mutant (MISMATCH_IN_37, F3_WRONG_REFUSAL_CLASS 37), and so does the direct ALT check (37 NOT_RUN->MSE_OTHER). The real head passes the strict mapping."
+   },
+   {
+    "item": "3. Kernel compare_cdr012.py on all graded cases and dedicated fixtures (README step 3)",
+    "status": "PASS",
+    "evidence": "Default and strict runs both give rc 0 and EXACT_MATCH_ALL_GRADED, with 747 graded: 710 STAT and 37 NOT_RUN. Per group: fixtures 5/5, random 648/648, edge_subnormal 10/10, edge_square_axis 12/12, edge_undefined 1/1 (the 5 UNDEFINED_SE cases are reported, not graded), cdr012_f3_all_degenerate 37/37, cdr012_f3_boundary 17/17, cdr012_f1_square 4/4, cdr012_near_undefined 13/13. Detectors: F1 0/16, F3 0/37, boundary 0/17, near-undefined 0/14. Triage counts are empty. The ties and draws fields were exposed; no --allow-missing flag was used. Outputs: wf12/vo-cdr012-oracle/cdr012_compare{,_strict}.json and .stdout."
+   },
+   {
+    "item": "4. ALT oracle (exact-rational IEEE emulation) run directly on all 752 cases against Codex v2",
+    "status": "PASS",
+    "evidence": "direct_v2_vs_alt.py calls ALT and the primary oracle live; it does not read the stored expected values. Transitions: STAT->STAT 710, NOT_RUN->NOT_RUN_F3 37, UNDEFINED_SE->MSE_OTHER 5. Mismatches: 0. 71,899 replicates were checked bit for bit: T.hex, r, deg, ties, p.hex, every draw bit and None position, and each trace's degenerate/tie/exceeds flags against the ALT D/X/E codes. p was also checked against (r+1)/(B+1). These four sets are equal at 37 cases each: v2 F3 refusals, ALT deg == B, stored NOT_RUN, and primary NOT_RUN. A read-only sys.settrace capture at the raise site shows, for all 37 cases, degenerate == replicates == B, all B draws None and line 125. The live oracles agree with the stored JSON on every case (0 oracle issues). Output: direct_v2_vs_alt.json."
+   },
+   {
+    "item": "5. Exact agreement on every non-NOT_RUN case, and NOT_RUN on exactly the deg == B cases",
+    "status": "PASS",
+    "evidence": "Items 3 and 4 both agree exactly. All 710 STAT cases match on T.hex, r, deg, ties, p.hex and per-replicate bits. NOT_RUN occurs on exactly the 37 cases with deg == B and nowhere else. No NOT_RUN appears on any of the 17 deg == B-1 boundary cases or the 14 near-undefined cases. First 5 mismatches: none. An extra fresh deterministic sweep of 6,000 new synthetic cases (degeneracy-prone and generic families, B in {1..19}) gave v2 vs ALT STAT 3494 bit-exact, NOT_RUN 101 agreeing, UNDEFINED_SE 2405, and 0 mismatches."
+   },
+   {
+    "item": "6. Dedicated fixtures: per-case values",
+    "status": "PASS",
+    "evidence": "F1 p-flip reproducers under d*d: [8.7,0,0,0,-2.9,2.9,2.9,8.7,-2.9] L2 B19 s11 gives T 0x1.cf1f15ba01c3ap+0, r 2, p 0.15 (3/20). The n12 L3 B19 s13 series gives T 0x1.95b6370f1fb1bp+0, r 1, p 0.10 (2/20). Their B1 variants (s364, s1308) give p 1/2. Near-undefined [0.05]*12 L2 B19 s7 gives T 0x1.f5a7cecdb684cp+53, deg 0, p 0.05; all 13 near-undefined cases keep a p, including mixed-degeneracy cases with deg 11, 12 and 106. All 17 boundary cases (deg == B-1, for example POS9 B19 s1960 with deg 18 and p 1/20) keep a p. Every F3 fixture returns NOT_RUN: the GIE-010 reproducers [-0.2,-0.1]*6 at s7 and s11, constant-block, constant, scaled, rounding-induced, seed-lucky, X5, zero-mean and the 4 subnormal-underflow cases. Listing: dedicated_rows.txt."
+   },
+   {
+    "item": "7. The five GIE-008 fixtures on production v2, and CE4 on v1",
+    "status": "PASS",
+    "evidence": "Inputs rebuilt from the GIE-008c probe's decimal literals at 1620f71 and run through the public studentized_cbb (authority checks included): CE4 L2 B19 s200 p 0.10 (r1 deg1); FLIP L3 B19 s46 p 0.10 (r1 deg2); LEFT_SUM L4 B19 s34 p 0.35 (r6 deg1); TIE L2 B19 s72 p 0.45 (r8 deg2 ties3, T 0x0.0p+0); SEED275 L2 B19 s275 p 0.55 (r10 deg2). None is all-degenerate. All five are bit-identical to ALT on T, r, deg, ties and draws. CE4 on v1 at c9e0fa7, blob-verified unchanged, gives p 0.15 (r2 deg1). Output: gie008_fixtures.json, ALL_MATCH true."
+   },
+   {
+    "item": "8. Registry-level probe (README step 4)",
+    "status": "PASS",
+    "evidence": "registry_probe_cdr012.py gives rc 0 and ALL_SCENARIOS_CDR012_EXPECTED. S1 (8 all-degenerate cells): statistical_status NOT_RUN, all cells NOT_RUN, 0 REJECT_H0 on F3 cells. S2: NOT_RUN, with 1 NOT_RUN cell and 7 REJECT_H0. S3 control ([0.05]*12): STAT_PASS with REJECT_H0. In all scenarios the decision is NOT_RUN_EFFECT_FLOOR_DEFERRED, official is false, mode is SYNTHETIC_M_B_V2_ONLY, with 1 provider call."
+   },
+   {
+    "item": "9. Oracle self-test suite against c9e0fa7 (README step 5)",
+    "status": "PASS",
+    "evidence": "run_selftests.sh, writing to wf12/vo-cdr012-oracle/selftest: self:primary and self:alt are EXACT. Every negative mutant is detected exactly as the README table records: pow 31; f3_off 37; f3_broad 20 (boundary 17/17); f3_any 119; eps_abs and eps_rel 21 (near-undefined 14/14); f3_p_one 37; vpos 14; f3_exact_predicate 26; pow+f3_off 68; v1 747. v2_head31 is EXACT_MATCH_ALL_GRADED. Registry shims: none, f3_kernel_raise and f3_registry_only pass; eps_guard_kernel gives CDR012_DEVIATION (S3 turns NOT_RUN), as expected. The eps-guard adapter shim on head31 gives MISMATCH_IN_21, as expected."
+   },
+   {
+    "item": "10. Harness sensitivity on private mutant copies of the head (scratch only, deleted afterwards)",
+    "status": "PASS",
+    "evidence": "d**2 mutant: compare MISMATCH_IN_31 (F1 16/16, F1_POW_SQUARING_SUSPECT 31); direct check 31 mismatches. F3 removed: 37/37 F3_MISSING_PRODUCED_P; direct 37 NOT_RUN->STAT. F3 widened to deg >= B-1: 20 mismatches (boundary 17/17); direct 20 STAT->NOT_RUN_F3. Wrong-message refusal: see item 2. Outputs: negctl/."
+   },
+   {
+    "item": "11. CI context (GitHub read-only; taken from GitHub, not re-verified here)",
+    "status": "DEFERRED",
+    "evidence": "#31 at c9e0fa7: all 9 check runs completed with success (validate, combined-offline, macro-adoption-offline, 6x offline). #35 at 4cf8ead, at check time: macro-adoption-offline and 2 offline runs succeeded; combined-offline and 4 offline runs were still in progress. The #35 CI result is DEFERRED because it was still running."
+   },
+   {
+    "item": "12. Hygiene",
+    "status": "PASS",
+    "evidence": "Both oracle directories are unchanged: SHA256SUMS gives 0 non-OK, and no file is newer than the pre-run marker. No worktree was registered in /home/user/Investment-System1, its checkout status is clean, and nothing was written to any remote, codex/* branch or PR. No CAL_VERIFY, Holdout or real-provider access. The private clone, the head31 extract, regprobe, mutant copies and selftest work dirs were deleted. Results kept under wf12/vo-cdr012-oracle/."
+   }
+  ],
+  "findings_blocking": [],
+  "findings_nonblocking": [
+   "The README's default adapter mapping (any MissingStatisticalEvidence counts as NOT_RUN) is not enough on its own. A private mutant that refuses the deg == B cases with a different message still gets EXACT_MATCH under that mapping. Record the strict mapping (--not-run-reason-regex '^all bootstrap replicates degenerate$' --no-p-none-is-not-run --not-run-result '__never__=__never__') as the mapping of record. c9e0fa7 passes the strict mapping and the direct ALT check.",
+   "The task said #35 does not yet contain c9e0fa7; that is out of date. #35 moved from 8318b78 to 4cf8ead, a merge that contains c9e0fa7, and its superiority_v2.py blob (8e56a66e) is identical to #31's. #35 CI was still in progress when checked.",
+   "integration/global-handoff-v1 moved from 1620f71 to cd0963f during the work (docs only: GCH-010a tracks #31 CDR-012 HANDOFF_READY). The CDR-012 text was verified at 1620f71.",
+   "The 5 UNDEFINED_SE cases (se not > 0) are contract-silent and ungraded. v2 refuses them with MissingStatisticalEvidence 'zero standard error; statistic undefined', unchanged from e0b6d80; the registry maps this to cell NOT_RUN.",
+   "Registry-probe limitation carried over from the oracle README: at the fixture parameters (n12, L2, B19, seed 7) no deg == B-1 cell can be built, so the deg == B-1 boundary is covered only by the kernel compare (0/17 mismatched).",
+   "Codex's ACCEPTANCE_MANIFEST_CDR012.json status (HANDOFF_READY_APPROVED_SYNTHETIC_V2_SCOPE) and its local receipts were not used as evidence."
+  ],
+  "conditional_user_decisions": [],
+  "not_run": [
+   "Repository pytest suites at c9e0fa7 or 4cf8ead (Codex tests not executed here)",
+   "GitHub Actions re-runs (only check-run status was read)",
+   "Python 3.12/3.13 and cross-platform libm runs (Python 3.11.15, numpy 2.3.5, glibc 2.39 only)",
+   "A separate kernel compare on #35 at 4cf8ead (not re-run because superiority_v2.py, superiority.py and statistical_kernels.py blobs are identical to c9e0fa7)",
+   "The PR #39 successor combined trial",
+   "Any CAL_VERIFY, Holdout or real-provider access (prohibited)"
+  ],
+  "summary": "Codex's v2 at c9e0fa7e4078290b5db9cb798cf52c0d0cd66240 matches the independent CDR-012 oracle exactly, so item 5 is PASS. F1: both squarings are d*d, with no **2 or pow left in v2 arithmetic. F3: v2 raises MissingStatisticalEvidence('all bootstrap replicates degenerate') when degenerate == replicates. The adapter of record maps only that exact message to NOT_RUN. compare_cdr012.py gives EXACT_MATCH_ALL_GRADED (rc 0) under both the default and the strict mapping: 747 graded, 710 STAT bit-exact over 71,899 replicates and 37 NOT_RUN, with detectors F1 0/16, F3 0/37, boundary 0/17 and near-undefined 0/14. The ALT oracle, run live on all 752 cases, agrees with v2 bit for bit with 0 mismatches, and NOT_RUN occurs on exactly the 37 deg == B cases. A raise-site trace confirms degenerate == B with all draws None. Values: F1 reproducers p .15 and .10; [0.05]*12 L2 B19 s7 keeps p .05 (T 0x1.f5a7cecdb684cp+53). GIE-008 fixtures on v2: CE4 .10, FLIP .10, LEFT_SUM .35, TIE .45, SEED275 .55 (none all-degenerate); CE4 on v1 gives .15. The registry probe gives ALL_SCENARIOS_CDR012_EXPECTED. The self-test suite and private mutant controls all behave as expected. A fresh 6,000-case sweep against ALT found 0 mismatches. One caveat: the default any-MissingStatisticalEvidence mapping can hide a wrong refusal, so the strict mapping is the one of record. #35 is now at 4cf8ead, already contains c9e0fa7, and has the identical v2 blob; its CI was still in progress. Results are in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf12/vo-cdr012-oracle/."
+ },
+ "vr": {
+  "items": [
+   {
+    "item": "Heads and routing (read-only)",
+    "status": "PASS",
+    "evidence": "ls-remote was identical at the start and end of the run. #31 refs/pull/31/head = codex/track-c-gsup-v2-2026-10-03 = c9e0fa7e4078290b5db9cb798cf52c0d0cd66240. #35 has moved to 4cf8ead024457172712d9ee54bdce665dbedeb2f ('Merge CI-verified CDR-012 PR31 repair into preserved PR35 hardening'), which now contains c9e0fa7 (merge-base --is-ancestor is true). Between c9e0fa7 and 4cf8ead the following blobs are identical: superiority_v2 8e56a66, statistical_kernels 28e1c18, superiority 8a1254d, superiority_source_identity 71bf737, gsup_source_identity fa93bf8, walkforward, calibration_contracts, CDR012_APPROVAL e16038e and CDR010_APPROVAL 3a9eecb. So the kernel and registry results below also hold for #35's v2 code. integration/global-handoff-v1 moved from 1620f71 to cd0963f, but only GLOBAL_HANDOFF_HISTORY and GLOBAL_STATUS_INDEX changed. COORDINATION_DECISION_REGISTER blob bc402d6 is unchanged, and its sha256 eaa7960d… matches CDR012_APPROVAL.json source_git_blob/source_sha256. The user's F1/F3 text is quoted verbatim there. No Codex branch, PR or comment was written. No worktree was registered in /home/user/Investment-System1, and the private clone was deleted after use."
+   },
+   {
+    "item": "F1 static scan (AST and grep, v2 plus everything on its kernel path)",
+    "status": "PASS",
+    "evidence": "I ran my own AST scanner (vr-refuter/ast_scan.py) over superiority_v2.py and found 0 BinOp Pow, 0 pow/math.pow/operator.pow, 0 numpy and 0 statistics. Squaring is `d * d` at superiority_v2.py:90 (lrv) and :107 (replicate variance), over generators of `b - length*mean` and `b - length*ms`. sqrt is math.sqrt (correctly rounded), never `** 0.5`. The kernel-path helpers (statistical_kernels._series/_positive_integer/circular_block_indices, walkforward.digest, calibration_contracts) contain no Pow. The only Pow hits in called modules are: v1 superiority.studentized_cbb :99/:109, which v2 never calls; statistical_kernels.probabilistic_sharpe :116-117, which v2 does not reach; and legacy development_dependence_estimate :247, which the v2 registry's pre-access feasibility does reach. That last one is not the M-B statistic; see the non-blocking findings."
+   },
+   {
+    "item": "F1 fuzz: production v2 vs ALT exact-rational d*d oracle, values where pow != mul",
+    "status": "PASS",
+    "evidence": "Searching 3,000,000 doubles on glibc 2.39 found 2029 where d**2 != d*d. pow was the less accurate one in 2027, and mul was never wrong. I embedded these in 3600 cases of my own (f1/f1_cases.py):\n- A1 (1200): L=1, mean m0 exactly, deviations exactly ±pow-bad, so every lrv square is pow-bad.\n- A2 (600): exact zero mean, L 1..6.\n- R (1200): random with embedded pow-bad values, L 1..7.\n- S (600): decimal values plus scaled pow-bad values.\nB was in {1, 2, 19, 99, 199}, with negative and 64-bit seeds included. The run exercised 35,446 pow-bad squarings (24,305 in lrv, 11,141 in replicates). Production vs oracle_cdr012_alt: 0 mismatches in 3600/3600 cases on class, T.hex, r, deg, ties, p.hex and every per-replicate t bit and degenerate position. Power check: an in-memory pow mutant (production source with d*d replaced by d**2) diverges in 575 cases (T bits 438, draws 157)."
+   },
+   {
+    "item": "F3 kernel: all-degenerate replicate sets in many shapes -> NOT_RUN",
+    "status": "PASS",
+    "evidence": "I generated my own shape battery (f3/f3_cases.py, 6940 cases) and added 294 searched cases. Across 7234 cases there are 0 production-vs-ALT mismatches. 424 cases are NOT_RUN under ALT (deg == B):\n- constant series: 2\n- constant blocks: 18\n- exactly cancelling block sums: 12\n- period-L patterns: 9\n- seed-lucky L=1 series: 118\n- one-ulp nudged series: 14\n- structural all-degenerate series at B=19/99/199: 96, and at B=999/4999: 64 (plus 1 in the generic LARGEB family)\n- seed-lucky at B=19: 27, and at B=49: 3\n- subnormal underflow (v>0 but sqrt(v/n)==0): 60 (B1 29, B2 11, B3 12, B5 8). In 40 of these every replicate has v>0, so a v>0 predicate would miss them.\nIn all 424 cases production raises MissingStatisticalEvidence('all bootstrap replicates degenerate'); it raises this in no other case, and no p is returned. Power on the same sets: an f3_off mutant is caught in 424 cases, a p=1.0 mutant in 424, a deg>=B-1 mutant in 1385, a v>0-predicate mutant in 60 (exactly the subnormal set), and an epsilon-guard mutant in 1970."
+   },
+   {
+    "item": "F3 boundary: deg == B-1 still produces p",
+    "status": "PASS",
+    "evidence": "1341 cases have deg == B-1. 298 of them have B>=2: 254 at B 2..4, 40 at B=19 with deg 18, and 4 at B=49 with deg 48. Production returns STAT with p bit-identical to ALT in every case: 0x1.999999999999ap-5 (1/20), 0x1.999999999999ap-4 (2/20), and 1/50 and 2/50 at B=49."
+   },
+   {
+    "item": "Near-undefined original statistic with non-degenerate replicates keeps the CDR-010-literal p (no epsilon)",
+    "status": "PASS",
+    "evidence": "[0.05]*12, L2, B19, seed 7 gives T 0x1.f5a7cecdb684cp+53, deg 0, p 0.05, identical to ALT. 339 STAT cases in my sets have |T|>1e12, and all 339 are bit-identical to ALT. At registry level the R6 scenario ([0.05]*12 in all 8 cells) gives STAT_PASS with every cell REJECT_H0, bit-identical."
+   },
+   {
+    "item": "No new epsilon/tolerance/threshold",
+    "status": "PASS",
+    "evidence": "git diff e0b6d80..c9e0fa7 under implementation/src touches only superiority_v2.py. The added lines contain no numeric literal, isclose, abs(), round(), min/max, or comparison with a small constant. The only new comparison is `if degenerate == replicates:` at :124, an integer equality evaluated after the full replicate loop. An AST listing of every Compare in v2 shows the existing structural checks plus `1/(B+1) > alpha` and `size <= alpha + size_tolerance`, both pre-existing feasibility checks in the v1 structure. CDR012_APPROVAL.json records epsilon_tolerance_threshold_added: false, and the code is consistent with that. The changes to tools/verify_gsup_v2_arithmetic.py and to the workflow do not touch production."
+   },
+   {
+    "item": "F3 at registry level (my own probe, GsupV2Registry with the head's synthetic identity fixture)",
+    "status": "PASS",
+    "evidence": "reg/reg_probe.py ran 9 scenarios; overall PASS, and PASS again under PYTHONHASHSEED 1 and 999. Parameters per scenario:\n- R1: structural all-degenerate, n28 L4, B19 and B999.\n- R2: subnormal at B5/alpha .2, B1/alpha .6 and B3/alpha .3.\n- R3: seed-lucky at B19.\n- R4: 7 strong cells plus 1 all-degenerate cell.\n- R5: every cell deg == B-1.\n- R6: [0.05]*12.\nEvery F3 cell is exactly {status: NOT_RUN, reason: 'all bootstrap replicates degenerate'}, with no p_value key and no comparison evidence. statistical_status is NOT_RUN in R1-R4, including the 7+1 mix; no F3 cell is ever REJECT_H0 and no F3 scenario reaches STAT_PASS. R5 and R6 give STAT_PASS, with cells bit-identical to ALT. decision is NOT_RUN_EFFECT_FLOOR_DEFERRED, official False, one provider call."
+   },
+   {
+    "item": "One-shot source slot after an F3 NOT_RUN",
+    "status": "PASS",
+    "evidence": "After an F3 NOT_RUN the slot stays consumed: claims 1, accesses 1, provider_calls 1, and feasibility, access and result records all present. Every retry was refused, and the counts stayed at 1/1/1:\n- same registry, assess again: IntegrityFailure 'source-bound target is one-shot; no retry'\n- record_feasibility again on the same key\n- new registry root with the same spec\n- changed campaign_id, seed and B\n- a re-instantiated SourceAuthority over the same anchor\n- a v1 IdentityBoundGsupRegistry over the same samples\n- two re-hashed descriptors with the same stable samples\nAll of these raised 'same stable samples already reserved; no relabel/reencode/retry'. Re-issuing the identical descriptor raised 'immutable record exists'. The F3 path did not reopen the slot."
+   },
+   {
+    "item": "Determinism: fresh processes, PYTHONHASHSEED, second CPython minor",
+    "status": "PASS",
+    "evidence": "I hashed production outputs, including traces and indices_hash, over 2051 cases (1493 STAT, 276 zero-SE, 282 F3 NOT_RUN). The sha256 2311023f12bef95c… was identical for PYTHONHASHSEED 0, 1, 4242 and random, and for Python 3.11.15, 3.12.3, 3.13.14 and 3.10.20. Registry cells and statistical_status were identical across 3 runs; only source_binding.authority_ref differs, because each run creates its own fixture authority."
+   },
+   {
+    "item": "CI on the heads (information only; I did not rely on any Codex PASS claim)",
+    "status": "PASS",
+    "evidence": "#31 c9e0fa7: 9/9 check runs succeeded (web-mvp-validation run 37174701577 has head_sha c9e0fa7). #35 4cf8ead: 8/8 succeeded (codex-integration-readiness run 37175320382, attempt 2, head_sha 4cf8ead)."
+   },
+   {
+    "item": "Minimal reproducers for mismatches",
+    "status": "PASS",
+    "evidence": "No mismatch was found in 3600 F1 cases, 7234 F3 cases, or 9 registry scenarios, so there is nothing to reproduce. Scripts and results are under /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf12/vr-refuter/ (common.py, f1/, f3/, reg/, det/; head extract in head31/)."
+   }
+  ],
+  "findings_blocking": [],
+  "findings_nonblocking": [
+   "v2's registry feasibility still uses `** 2` in one legacy function, outside the M-B statistic. superiority.py:247 development_dependence_estimate (frozen v1 blob 8a1254d7) computes the Development lag-1 phi denominator as `(v - m) ** 2`. GsupV2Registry inherits record_feasibility from superiority_source_identity.py:93, which calls this function, so the result feeds the v2 feasibility envelope. On random n=60 series, phi bits differ between pow and mul in 16 of 20000. The fixture is not affected: DEV has 0 pow-bad deviations, and its phi is negative, so it is clipped to 0. Changing this function would modify frozen v1 code.",
+   "assess_feasibility (superiority_v2.py:165-171) now catches the new F3 MissingStatisticalEvidence as `undefined`. That case is not counted as a rejection but stays in the size denominator, the same treatment as zero-SE. At e0b6d80 an all-degenerate simulated null would have given p=1/(B+1) and could have counted as a rejection. This adds no epsilon. For continuous Gaussian AR1 nulls it is practically unreachable.",
+   "The F3 refusal uses the same exception class (MissingStatisticalEvidence) as zero-SE and geometry refusals; only the message 'all bootstrap replicates degenerate' tells them apart. The registry keeps that message in cell.reason, and the top-level reasons list is empty.",
+   "Overflow now fails closed with a different message. With `d*d` an overflowing square becomes inf and the kernel raises 'nonfinite long-run variance' / 'nonfinite replicate variance'. With `**2` it would raise OverflowError, which the public wrapper maps to 'unsupported finite arithmetic range'. Both outcomes are NOT_RUN.",
+   "Information on pre-existing, unchanged design: claim keys include profile and role (gsup_source_identity.claim). After an F3 NOT_RUN, a registration under a different profile with the same sample ids is admitted and makes a new claim. This is the existing per-profile/role slot design (those source files are unchanged since e0b6d80), not something F3 reopens."
+  ],
+  "conditional_user_decisions": [
+   "Scope of F1's 'authoritative v2': if it covers the whole v2 registry path, including the pre-access Development dependence estimator, then legacy development_dependence_estimate `(v - m) ** 2` (superiority.py:247, shared frozen v1) needs a decision. CDR-006 forbids modifying v1, so this would need a v2-only additive estimator, which is a user or Track C owner call. If F1 means only the M-B statistic, c9e0fa7 complies fully. Either way, routing this is for the Primary Integration Writer."
+  ],
+  "not_run": [
+   "Cross-platform libm or non-glibc behaviour (only glibc 2.39 x86_64 is available offline).",
+   "Codex's own pytest suites and verify_gsup_v2_arithmetic.py: deliberately not used as evidence, per the adversarial brief.",
+   "The prebuilt oracle battery (compare_cdr012.py / registry_probe_cdr012.py) was not re-run here, to keep this check independent; only oracle_cdr012_alt was used, as the reference.",
+   "Subnormal all-degenerate cases at B>5: none were found within the search budget. Seed-lucky all-degenerate cases at B=19/49 and structural ones at B up to 4999 were covered.",
+   "CAL_VERIFY, Holdout and real-provider access were never attempted."
+  ],
+  "summary": "I could not refute that c9e0fa7 implements CDR-012 exactly. No blocking finding.\n\n**F1:**\n- v2 has no `**`, pow, numpy or statistics anywhere. Squaring is `d * d` at superiority_v2.py:90 and :107, and sqrt is math.sqrt.\n- 3600 cases built by my own generator, including 35,446 squarings where pow and mul differ on this glibc, gave 0 bit mismatches against the ALT exact-rational d*d oracle. A pow mutant fails 575 of them.\n\n**F3:**\n- Across 7234 of my own cases, all 424 all-degenerate sets fail closed: production raises MissingStatisticalEvidence('all bootstrap replicates degenerate'), never returns a p, and agrees with ALT on every case. The sets cover constant series, constant blocks, cancelling block sums, period-L patterns, seed-lucky series, 60 subnormal cases where v>0 but sqrt(v/n)==0, B=1, and B up to 4999.\n- deg == B-1 cases (40 at B=19, 4 at B=49, 254 at small B) keep a bit-exact p.\n- 339 near-undefined cases, including [0.05]*12, keep the CDR-010-literal p.\n- No epsilon, tolerance or threshold was added. The only new comparison is the integer test `degenerate == replicates`.\n- At registry level, every F3 cell is NOT_RUN with no p, and any F3 cell makes statistical_status NOT_RUN, including 7 strong cells plus 1 all-degenerate cell. Boundary and near-undefined controls give STAT_PASS.\n\n**One-shot slot:** an F3 NOT_RUN consumes it: claim, access and result records are durable. 9 retry or relabel variants, plus a re-instantiated authority and a v1 registry, were all refused.\n\n**Determinism:** outputs are identical across PYTHONHASHSEED values and Python 3.10, 3.11, 3.12 and 3.13.\n\n**#35:** now at 4cf8ead. It contains c9e0fa7, all F1/F3-relevant source and approval blobs are identical, and CI is green on both heads.\n\n**Non-blocking:**\n- v1 frozen development_dependence_estimate still squares with `** 2` and is reached by v2's pre-access feasibility. This is a scope question, routed as a conditional decision.\n- Feasibility counts an F3 refusal as undefined rather than as a rejection."
+ },
+ "vi": {
+  "items": [
+   {
+    "item": "Exact heads and routing (read-only subject)",
+    "status": "PASS",
+    "evidence": "I used a private clone at wf12/vi-identity/repo (`--shared`, origin set to the real remote). It is not registered as a worktree of /home/user/Investment-System1 and has since been deleted. ls-remote gave the same values at start and end: codex/track-c-gsup-v2-2026-10-03 = refs/pull/31/head = c9e0fa7e4078290b5db9cb798cf52c0d0cd66240, whose single parent is e0b6d809058511d4bef7ad1aeccad79c5eae3ff8. #35 has MOVED: codex/integration-hardening-2026-10-03 = refs/pull/35/head = 4cf8ead024457172712d9ee54bdce665dbedeb2f, 'Merge CI-verified CDR-012 PR31 repair into preserved PR35 hardening', parents 8318b78 and c9e0fa7. So #35 now CONTAINS c9e0fa7. Routing has also moved, from 1620f71 to cd0963f (GCH-010a; 1620f71 is an ancestor). I read CDR-012 at 1620f71. CDR012_APPROVAL.json quotes the CDR-012 register block byte-exactly; I recomputed this (register blob bc402d6b, sha256 eaa7960d). The main checkout (f1b5afb2) shows 0 status lines. Nothing was committed, pushed or commented on any codex/* branch."
+   },
+   {
+    "item": "Identity modules byte-identical to e0b6d80 at c9e0fa7 (and at #35 4cf8ead)",
+    "status": "PASS",
+    "evidence": "`git rev-parse <c>:<path>` gives the same blob at 29c2c20, e0b6d80, c9e0fa7 and 4cf8ead for:\n- gsup_source_identity.py fa93bf88 (sha256 d34fc10d...)\n- superiority_source_identity.py 71bf7375 (3ad8ca25...)\n- superiority.py 8a1254d7\n- statistical_kernels.py 28e1c184\n- calibration_contracts.py 5ed82394\n- walkforward.py 6aa2f0d4\n- ledger.py dab59520\n- selection_contracts.py 18e9758b\n- the source-identity approval JSON a5279d51\n- CDR010_APPROVAL.json 3a9eecbb\n\nThe only src change from e0b6d80 to c9e0fa7 is evl/superiority_v2.py (370e9b42 -> 8e56a66e, sha256 4733f41e..., equal to Codex's manifest; +26/-8). The diff touches only the docstring, ARITHMETIC_CONTRACT (+squaring/all_degenerate), authority() (adds the pinned CDR012 supplement, blob e16038e9) and the kernel (d*d, plus `if degenerate == replicates: raise MissingStatisticalEvidence('all bootstrap replicates degenerate')`). The text from `def validate_registration` to end of file (validate_registration, assess_feasibility, _evaluate, GsupV2Registry) has the same sha256 8115cb83... at e0b6d80 and c9e0fa7. There is no src diff between c9e0fa7 and 4cf8ead. These test files are unchanged across e0b6d80, c9e0fa7 and 4cf8ead: test_evl_gsup_source_identity, test_evl_gsup_v2_identity_adversarial, test_evl_gsup_identity_kernel_invariance, test_evl_gsup_v2_registry, test_evl_gsup_v2_repair_negatives, test_evl_c8_gsup, evl_c8_gsup_v2_oracle."
+   },
+   {
+    "item": "Codex test counts (identity, v2 registry, cdr012, arithmetic, c8)",
+    "status": "PASS",
+    "evidence": "Command, run from implementation/: `PYTHONPATH=src:. python3 -B -m pytest -q -p no:cacheprovider`, on CPython 3.11.15 with pytest 9.1.1 and no numpy.\n- c9e0fa7: identity 92 passed (33+48+11); v2 registry + repair negatives 32 (21+11); arithmetic 86; test_evl_gsup_v2_cdr012 77; test_evl_c8_gsup 84.\n- 4cf8ead (#35): the same counts (92/32/86/77/84).\n- e0b6d80: 92/32/86/84; the cdr012 file does not exist there.\n\nThese match Codex's manifest: independent targeted 77, existing 118 (86+21+11), local targeted 195 = 77+118. Codex's own F3 registry test covers only one retry: campaign_id and verify_dataset_id label changed in a new root with the same binding. My probes below cover the rest."
+   },
+   {
+    "item": "F3 NOT_RUN on the v2 registry path (first attempt)",
+    "status": "PASS",
+    "evidence": "Own fixture: role [0.0]*12, controls -[0.2,0.1]*6, so every one of the 8 cells has delta [0.2,0.1]*6.\n- The kernel refuses this delta with 'all bootstrap replicates degenerate' at L2 for B19 seeds 7/11/13 and for B39. The pre-built CDR-012 oracle agrees (NOT_RUN, deg == B).\n- The same delta at L=3 gives p .05.\n- GsupV2Registry: feasibility FEASIBLE; result statistical NOT_RUN, decision NOT_RUN_EFFECT_FLOOR_DEFERRED, method v2, SYNTHETIC_M_B_V2_ONLY, official False. All 8 cells are NOT_RUN with that reason and have no p_value. Counts: 1 read, 1 claim, 1 access, 1 durable result.\n- Mixed case (7 strong cells + 1 F3 cell): 7 REJECT_H0 at p .05, 1 NOT_RUN, overall NOT_RUN.\n- Differential: the same probe at e0b6d80 gives STAT_PASS with 8/8 REJECT_H0 at p .05, which reproduces GIE-010 F3 at registry level."
+   },
+   {
+    "item": "F3 NOT_RUN cannot reset or re-claim the consumed source (retries after an all-degenerate NOT_RUN)",
+    "status": "PASS",
+    "evidence": "Own harness wf12/vi-identity/probes/viprobes.py (vilib.py, viworker.py), section S2: 28 checks, all PASS at c9e0fa7 and 4cf8ead. Each retry was refused before any provider call. Claims, accesses, results and reads stayed unchanged, and the NOT_RUN result bytes were unchanged.\n- R01 assess again on the same key -> 'one-shot; no retry'.\n- R02 re-register in the same root -> registration exists.\n- R03 same root, new campaign -> claim 'same stable samples already reserved'.\n- R04 new root, identical spec -> refused at claim.\n- R05 new root, identical spec, direct assess -> 'one-shot'. The shared feasibility/result key does not depend on root.\n- R06 new campaign + label -> refused.\n- R07 L=3 -> refused at claim. A positive control in a separate authority shows the same content at L=3 would be STAT_PASS.\n- R08 L=3 direct assess -> 'feasibility tampered or reassigned'.\n- R09-R14 seed 11, B39, alpha .25, feasibility seed, later registered_at, different Development series -> each refused.\n- R15/R16 switch v2 -> v1 identity wrapper (also with L3) -> refused.\n- R17 coordinator-issued role_id-relabel descriptor over the same samples + L3 -> refused.\n- R18 relabelled period ids -> refused.\n- R19 a single overlapping sample -> refused.\n- R20/R21 re-encoding role 0.0->0 and 0.0->-0.0 (hash differs) -> refused.\n- R22 everything at once -> refused.\n- R23 original key with a provider returning non-degenerate content -> refused.\n- R24 record_feasibility again -> refused.\n- R25 a fresh SourceAuthority object, same key -> refused.\n\nMixed case (S3, 6 checks): an L3 retry (which would turn the result into STAT_PASS), a v1id switch, and a role_id relabel + seed 11 are all refused. v1id consuming first and v2 retrying second is also refused.\n\nControl: a disjoint-sample descriptor in the same authority is still admitted (STAT_PASS), so the authority is not closed globally."
+   },
+   {
+    "item": "Re-encoding (2.0->2 analogues) on the v2 path",
+    "status": "PASS",
+    "evidence": "S4: 11/11 PASS. Pairs: STAT_PASS first (role 0.0) then role 0 (int); F3 first (controls 1.0) then controls 1 (int); F3 then role 0; F3 then -0.0. Each was refused in the same root and in a new root with a new label, with 0 reads. Re-encoding combined with a method switch in either direction (v2->v1id, v1id->v2) is also refused. Positive control: the frozen plain v1 GsupRegistry, which has no identity, evaluates both encodings (STAT_PASS twice), so the probe does detect a reopen."
+   },
+   {
+    "item": "Descriptor / lineage / binding / authority negatives through GsupV2Registry",
+    "status": "PASS",
+    "evidence": "S5: 41/41 PASS.\n- Bad bindings (9) refused at register, with 0 reads/claims and no local registration file: None, {}, missing descriptor_hash, extra key, all-zero hash, swapped registration_ref, foreign authority_ref, int values, list.\n- Spec/lineage negatives (12) refused at register: role_id, profile, role or verify_periods differ from the descriptor; registered_at before descriptor issuance; non-fixture lineage; development label equal to verify label; development hash equal to verify hash; v1 schema into v2; v2 schema with v1 policy; real scope; ACTUAL origin.\n- Descriptor mutations (13) refused at issuance with no record written: synthetic False, ACTUAL origin, real role designation, missing source_id, blank vintage, outcomes field, duplicate sample, one sample mapped to two periods, predates the authority, naive timestamp, empty periods, missing cohort, unknown schema.\n- A Development series that differs from its hash is refused after the claim (charged); a new-campaign retry is refused with 0 reads.\n- dataset_role CAL_VERIFY for the Development series is refused.\n- An opaque record in the pinned v1 history store closes v2 admission (MissingPrerequisite).\n- A non-SourceAuthority object, None, a wrong expected ref and an altered manifest hash are all refused."
+   },
+   {
+    "item": "Provider response identity mutations (F3 content)",
+    "status": "PASS",
+    "evidence": "S6: 10/10 PASS. Mutations: source_id, vintage, descriptor_hash, registration_ref, identity missing, samples reordered, role_id, dataset_role HOLDOUT, synthetic False, content differing from the commitment. Each gave exactly 1 read, then a refusal and a durable v2 result {NOT_RUN, CRASH_NO_RETRY, SYNTHETIC_M_B_V2_ONLY}. The L=3 retry was refused with 0 extra reads."
+   },
+   {
+    "item": "SIGKILL replay during an F3 attempt",
+    "status": "PASS",
+    "evidence": "S7: 6/6 PASS. The subprocess was killed with rc -9 at:\n- in_provider\n- inside_v2_kernel_at_f3 (killed when the kernel raises the all-degenerate refusal, before the NOT_RUN cell or result is written)\n- before_result_write\n- after_begin_access_before_shared_access\n- after_claim_before_feasibility\n- intent_before_journal_append\n\nEvery replay was refused: resume on the same registration, a new v2 campaign + root, v2 L=3, a v1id switch, and a role_id-relabel descriptor. Provider reads stayed at 1 for the first three points and 0 for the rest. No STAT result exists. The disjoint-sample control is admitted afterwards at 5 points. After the intent kill the whole authority is closed ('interrupted or foreign reservation intent; fail closed'); this is known F5, carried over."
+   },
+   {
+    "item": "Multi-process double claim (F3 target)",
+    "status": "PASS",
+    "evidence": "S8: 10/10 PASS.\n- (a) 5 rounds of 8 processes (4 v2 + 4 v1id, L2/L3 mix, distinct campaigns and roots, same binding, file barrier): exactly 1 admitted per round. The other 7 were refused at the claim before the provider. Each round had 1 claim, 1 read, 1 access, 1 result. The winner varies by scheduling: NOT_RUN if an L2 process wins, STAT_PASS if an L3 one does. This is a concurrent first attempt; the claim precedes any outcome access.\n- (b) After a completed F3 NOT_RUN, 8 concurrent retries with changed L, seed, label, campaign, root and method: 0 admitted, 0 new reads, claims, accesses or results.\n- (c) 4 rounds of 8 processes, each with its own coordinator-issued role_id descriptor over the same samples: exactly 1 admitted."
+   },
+   {
+    "item": "Probe sensitivity (in-memory mutants, no subject file modified)",
+    "status": "PASS",
+    "evidence": "- per_registration_claims (sample keys salted by registration hash, i.e. a version/attempt reset): 45/58 FAIL across S2, S3, S4, S7 and S8.\n- release_on_not_run (a hypothetical F3 that releases the reservation on NOT_RUN): 11 FAIL, including S1.01, S2.R03, S3.L3 and S8.b.\n- Both mutants combined: 47 FAIL.\n- no_lock (flock removed): 4/6 race checks FAIL.\n\nSo the probes detect an F3-based reset if one existed."
+   },
+   {
+    "item": "Cross-head consistency of my harness",
+    "status": "PASS",
+    "evidence": "Totals: c9e0fa7 114/114 PASS; 4cf8ead 114/114 PASS. The two runs give identical normalized observations, except S8.a3, where only the race winner differs (scheduling). At e0b6d80 the result is 103/114. All 11 failures are F3-outcome assertions: the first outcome is STAT_PASS instead of NOT_RUN, and no F3 refusal exists for the kill hook. Every retry/identity sub-check is still refused there, so identity behaviour is unchanged and only the kernel outcome changed.\n\nArtifacts in wf12/vi-identity:\n- runs/final-h31.json sha256 a7123e26...\n- runs/final-h35.json ca510e3e...\n- runs/final-h0b6.json 7707ab66...\n- mutant runs runs/mut-*.json\n- Codex test logs logs/pytest_*.log and logs/codex_tests_summary.txt\n- probes: vilib.py ce79691e, viprobes.py 47f93413, viworker.py ed7c0a67"
+   }
+  ],
+  "findings_blocking": [],
+  "findings_nonblocking": [
+   "N2 (carried over, unchanged code, not worsened by CDR-012) now has a concrete F3 consequence. After a v2 F3 NOT_RUN, a re-issued descriptor with a variant identity string is admitted and re-evaluates the same content; at L=3 the result is STAT_PASS. Variants tested: source_id 'vi12-src ' (trailing space), 'VI12-SRC', or vintage with a trailing space. register_descriptor is reachable from the attempt-side registry.source_authority. The same route works after a non-F3 v2 CRASH_NO_RETRY (STAT_PASS), so F3 adds no new route. It remains a before-real-source boundary, as in GIE-008/GIE-010.",
+   "NB-plainv1 (pre-existing, out of declared model): after a v2 F3 NOT_RUN, the frozen plain v1 GsupRegistry with its own unpinned store evaluates the same all-degenerate content as STAT_PASS (v1 kernel, adhoc_plainv1.py). It is identical at e0b6d80. With the plain-v1 records in the coordinator-pinned history store, v2 is refused fail-closed (MissingPrerequisite, 0 reads).",
+   "v1 semantics stay unchanged by design (CDR-012 is v2-only): the v1 identity wrapper grades the all-degenerate positive input [0.2,0.1]*6 as REJECT_H0 p .05 in every cell (STAT_PASS). The one-shot guard prevents switching v2 <-> v1id after seeing an outcome (R15/R16/S3.V1/S3.V1FIRST/S7). Which method a target is routed to first therefore remains a coordinator responsibility.",
+   "F5 (carried over): a SIGKILL between the claim-intent write and the journal append closes the whole authority, including disjoint samples and descriptor issuance. F7 (carried over): a SIGKILL in the provider, at the F3 kernel refusal, or before the result write leaves no result record; the target stays spent only through the access receipts.",
+   "Information: F3 also applies inside assess_feasibility. An all-degenerate null replication now raises MSE and counts as 'undefined', not rejected, while staying in the replications denominator. At e0b6d80 it produced p = 1/(B+1) and counted as a rejection. The feasibility happens after the claim, so there is no identity effect. The size semantics belong to the other verifier labels.",
+   "Process note: I extracted the three heads with `git archive` of the whole implementation/ tree, which included implementation/data/raw (producer ingest-run JSONs). No CAL_VERIFY or holdout path exists there. No probe or test opened those files. The extracts and the clone were deleted afterwards."
+  ],
+  "conditional_user_decisions": [
+   "Carried over from GIE-010 and still not required in synthetic scope: N2 identity-string canonicalization and a capability gate on register_descriptor before any real-source work. Without them, a coordinator-side relabel can re-open an F3 NOT_RUN (or any consumed) target under v2.",
+   "Carried over: whether the one-shot guarantee should cover the frozen plain v1 GsupRegistry (content-keyed) for identity-bound targets, without modifying frozen v1 (coordinator policy or an authority-side scan). CDR-006/007/010/011/012 do not require it."
+  ],
+  "not_run": [
+   "GitHub Actions for c9e0fa7 / 4cf8ead were not inspected by this label (GitHub MCP not used); the preservation/Actions label covers them.",
+   "Full repository regression suite; I ran only the identity, v2 registry, repair-negative, arithmetic, cdr012 and c8 gsup test files.",
+   "Kernel bit-exact comparison against the CDR-012 oracle (compare_cdr012.py) and the oracle registry probe. These belong to the oracle label; I used the oracle only to confirm my F3 fixtures are deg == B.",
+   "The GIE-008 v1 harness re-run on the v1 path; the identity modules are byte-identical, so I relied on blob equality plus my own v2-path probes.",
+   "Python 3.12 / 3.13; everything ran on CPython 3.11.15.",
+   "Multi-host / NFS flock semantics and true power loss; only SIGKILL was simulated.",
+   "Real CAL_VERIFY, Holdout, real provider data or real source taxonomy: not accessed, not approved."
+  ],
+  "summary": "Source identity and registry preservation at c9e0fa7 (#31): PASS. No blocking findings. The same holds at #35, whose head has moved to 4cf8ead: a merge of 8318b78 and c9e0fa7, so #35 now contains c9e0fa7. Routing has also moved, from 1620f71 to cd0963f (GCH-010a).\n\n**Byte preservation.** The identity modules are byte-identical across 29c2c20, e0b6d80, c9e0fa7 and 4cf8ead: gsup_source_identity.py fa93bf88, superiority_source_identity.py 71bf7375, superiority.py and the kernel/contract helpers, the approval JSON, and CDR010_APPROVAL. The only source change is superiority_v2.py: d*d squaring, a pinned CDR-012 supplement in authority(), and `raise MissingStatisticalEvidence('all bootstrap replicates degenerate')` when every replicate is degenerate. The registry part of that file (validate_registration through GsupV2Registry) is byte-identical to e0b6d80.\n\n**Codex test counts** (I re-ran them; they match Codex's claims):\n\n| head | identity | v2 registry + repair negatives | arithmetic | cdr012 | c8 gsup |\n|---|---|---|---|---|---|\n| c9e0fa7 | 92 | 32 | 86 | 77 | 84 |\n| 4cf8ead | 92 | 32 | 86 | 77 | 84 |\n\n**My own harness** (own fixtures, sample ids and authority): 114/114 PASS at both c9e0fa7 and 4cf8ead.\n- An F3 first attempt through GsupV2Registry gives 8/8 cells NOT_RUN with no p and a durable NOT_RUN result. At e0b6d80 the same probe gives STAT_PASS at p .05, which reproduces GIE-010 F3.\n- After the F3 NOT_RUN, 25 retry variants were refused before any provider read with state unchanged: same key, same root, new root, new campaign or label, L=3 (which would otherwise give STAT_PASS), seed, B, alpha, feasibility seed, registered_at, Development series, a v2 to v1-identity switch, a role_id or period relabel through a new descriptor, a single overlapping sample, 0.0 to 0 and -0.0 re-encodings, and all of these at once.\n- The mixed case (7 strong cells + 1 F3 cell) and the case where v1-identity consumes first are refused the same way.\n- Re-encoding: 11/11. Descriptor, lineage, binding and authority negatives: 41/41. Provider response mutations: 10/10, each 1 read then a durable CRASH_NO_RETRY.\n- SIGKILL at 6 points, including at the F3 refusal itself: every replay refused, reads unchanged.\n- Multi-process races: exactly 1 admitted per round. 8 concurrent retries after an F3 NOT_RUN: 0 admitted.\n- In-memory mutants (per-registration claims, a NOT_RUN that releases the reservation, no lock) make the matching probes FAIL. So the probes would catch an F3-based reset.\n\n**Carried-over issues (non-blocking):**\n- N2: a coordinator-side descriptor re-issue with a variant identity string re-opens an F3 NOT_RUN target as STAT_PASS at L=3. The same route works after a non-F3 outcome, so F3 adds no new route.\n- NB-plainv1: the frozen plain v1 GsupRegistry with an unpinned store grades the same all-degenerate content as STAT_PASS. This is identical at e0b6d80.\n- F5 and F7 carry over unchanged.\n\nArtifacts are in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf12/vi-identity/:\n- probes/{vilib.py, viprobes.py, viworker.py, adhoc_plainv1.py}\n- runs/final-h31.json (a7123e26), runs/final-h35.json (ca510e3e), runs/final-h0b6.json (7707ab66)\n- runs/mut-*.json\n- logs/pytest_*.log and logs/codex_tests_summary.txt\n\nThe private clone and the head extracts were deleted; I did not touch the main checkout or any codex/* branch."
+ },
+ "syn": {
+  "table": [
+   {
+    "row": "1. Exact HEAD",
+    "status": "PASS",
+    "evidence": "Fresh fetch into my own private clone. ls-remote gives codex/track-c-gsup-v2-2026-10-03 = refs/pull/31/head = c9e0fa7e4078290b5db9cb798cf52c0d0cd66240, with single parent e0b6d809. All four reports agree. Global routing has moved from 1620f71 to cd0963f; that change is docs only (GLOBAL_HANDOFF_HISTORY and GLOBAL_STATUS_INDEX). The COORDINATION_DECISION_REGISTER blob is still bc402d6b."
+   },
+   {
+    "row": "2. CDR-012 approval record",
+    "status": "PASS",
+    "evidence": "I recomputed this myself. CDR012_APPROVAL.json is blob e16038e9, which equals SUPPLEMENT_BLOB in v2. Its source_commit 1620f71, blob bc402d6b and sha256 eaa7960d match the register. quoted_decision is byte-identical (2623 bytes) to the register text from '## CDR-012' to EOF, and that text occurs exactly once. arithmetic_contract holds the 4 CDR-010 keys plus squaring=MULTIPLICATION and all_degenerate=NOT_RUN. epsilon_tolerance_threshold_added is false, and CAL_VERIFY, Holdout, numeric config, Official/LIVE and canonical merge are all 0. The scoped Track C register is a byte-prefix append (22994 -> 24373 bytes) that records numeric config, CAL_VERIFY, Holdout, Freeze, publication/Official/LIVE and canonical merge as NOT_APPROVED."
+   },
+   {
+    "row": "3. Diff classification, in-place v2 edits, preserved historical pins",
+    "status": "PASS",
+    "evidence": "e0b6d80..c9e0fa7 is one commit touching 32 files (25 added, 7 modified, 0 deleted, +8049/-22).\n- Modified: superiority_v2.py, test_evl_gsup_v2_arithmetic.py, verify_gsup_v2_arithmetic.py, codex-integration-readiness.yml, and three prefix-appended docs (the scoped register, CURRENT_HANDOFF.md and STATUS.md; I checked the byte prefix of each).\n- Nothing changed under reports/*.json or data/.\n\nCodex's 'additive' claim is accurate for the evidence, approval, oracle and pins. The v2 source, arithmetic test, tool and workflow were edited in place, which CDR-012 F1 implies ('v2의 squaring은 d*d로 고정'). METHOD and POLICY IDs are unchanged.\n\nHistorical records are byte-preserved: CDR010_APPROVAL 3a9eecbb, the authoritative-v2 tree 1e3f570e, ACCEPTANCE_MANIFEST_V2 ca249423 and historical oracle H aca5567d. In test_evl_gsup_v2_arithmetic.py the GOLDEN_TRACES and EXACT_FINGERPRINTS literals are unchanged, but the two golden-trace assertions now check H rather than production. I re-ran production against all 9 GOLDEN_TRACES pins: 9 of 9 match bit for bit. That retargeting is a non-blocking finding."
+   },
+   {
+    "row": "4. F1 implementation",
+    "status": "PASS",
+    "evidence": "Both M-B squarings are now `fsum(d * d for d in deviations)`: lrv at superiority_v2.py:90 and replicate variance at :107. Operand order, fsum and the divisors are unchanged. There is no `**2`, pow or math.pow in v2 arithmetic; the only `**` are dict unpacking.\n\nScope note (non-blocking): frozen v1 superiority.py:247 (development_dependence_estimate) still computes `(v - m) ** 2`. v2's pre-access feasibility reaches it through the inherited record_feasibility.\n- GIE-010 F1, which CDR-012 resolves, named only the v2 kernel lines. CDR-012 also says v1 stays unchanged.\n- The function only feeds the FEASIBLE/INFEASIBLE envelope and never produces a p-value.\n- My own reproduction on random n=60 series: the denominator differs between pow and mul in 15/20000 cases and phi bits in 12/20000.\n- The fixture DEV series is unaffected: 0 deviations where pow differs, phi -0.2555, which is clipped to 0."
+   },
+   {
+    "row": "5. F3 implementation",
+    "status": "PASS",
+    "evidence": "Lines 124-125: `if degenerate == replicates: raise MissingStatisticalEvidence(\"all bootstrap replicates degenerate\")`. It sits after the full replicate loop and before any p is built. Partially degenerate sets keep the (r+1)/(B+1) denominator.\n\nOn the registry path, _evaluate maps the refusal to cell {status NOT_RUN, reason}, with no p_value. I re-ran the GIE-010 reproducers ([-0.2,-0.1]*6, L2, B19, seeds 7 and 11) on production: both raise the F3 message."
+   },
+   {
+    "row": "6. No new epsilon/tolerance/threshold",
+    "status": "PASS",
+    "evidence": "The added source lines contain no numeric literal, isclose, abs, round, min/max or small-constant comparison. The only new comparison is the integer test `degenerate == replicates`. size_tolerance at L174 existed before and is unchanged. The refuter's AST listing agrees, and the strict compare's near-undefined detector is 0/14 (an eps-guard mutant is caught 21/21 in the oracle self-tests)."
+   },
+   {
+    "row": "7. Independent oracle (CDR-012 expectations)",
+    "status": "PASS",
+    "evidence": "I ran it myself with the strict mapping of record: compare_cdr012.py --adapter v2kernel --not-run-reason-regex '^all bootstrap replicates degenerate$' --no-p-none-is-not-run --not-run-result '__never__=__never__'.\n- Result: rc 0, EXACT_MATCH_ALL_GRADED, 747 graded, with empty triage counts. By group: fixtures 5, random 648, subnormal 10, square_axis 12, undefined 1, f3_all_degenerate 37, f3_boundary 17, f1_square 4, near_undefined 13.\n- The oracle report also reran the ALT exact-rational oracle live on all 752 cases with 0 mismatches, plus a fresh 6000-case sweep with 0 mismatches.\n- Integrity: the oracle SHA256SUMS show 0 non-OK files, and nothing in either oracle directory is newer than my run marker."
+   },
+   {
+    "row": "8. F1 detectors and the two p-flip reproducers",
+    "status": "PASS",
+    "evidence": "The F1_square_pow detector is 0/16 in my strict run.\n\nReproducer A, [8.7,0,0,0,-2.9,2.9,2.9,8.7,-2.9] L2 B19 s11:\n- production: p 0.15, r 2, ties 0, T 0x1.cf1f15ba01c3ap+0;\n- an in-memory pow mutant of the head source: p 0.20, r 3, ties 1, T ...c38p+0;\n- v1: p 0.20.\n\nReproducer B (n12, L3, B19, s13): p 0.10 in the oracle report, and it is inside the cdr012_f1_square group, which matched 4/4 in my compare.\n\nThe refuter's 3600-case fuzz covered 35,446 squarings where pow and mul differ, with 0 mismatches; its pow mutant fails 575 of those cases."
+   },
+   {
+    "row": "9. All-degenerate -> NOT_RUN (kernel and registry)",
+    "status": "PASS",
+    "evidence": "Kernel: the F3 detector is 0/37 in my strict run. The refuter's 424 all-degenerate cases all raise the F3 message and no other case does.\n\nRegistry: my run of registry_probe_cdr012.py gives rc 0 and ALL_SCENARIOS_CDR012_EXPECTED.\n- S1: 8/8 cells NOT_RUN ('all bootstrap replicates degenerate', p None), statistical NOT_RUN.\n- S2: 1 NOT_RUN plus 7 REJECT_H0, statistical NOT_RUN.\n- S3 ([0.05]*12): STAT_PASS.\n- Every scenario: decision NOT_RUN_EFFECT_FLOOR_DEFERRED, official False, SYNTHETIC_M_B_V2_ONLY, 1 provider call."
+   },
+   {
+    "row": "10. deg == B-1 boundary",
+    "status": "PASS",
+    "evidence": "Boundary detector 0/17 in my strict run, with p bit-exact. The refuter covered 298 cases at B>=2 (40 at B=19 with deg 18, 4 at B=49) and all were bit-identical to ALT. Limitation: at the registry fixture parameters no deg == B-1 cell can be built, so this boundary is covered at kernel level only."
+   },
+   {
+    "row": "11. Near-undefined non-degenerate keeps p",
+    "status": "PASS",
+    "evidence": "I re-ran [0.05]*12 L2 B19 s7 on production: p 0.05, deg 0, T 0x1.f5a7cecdb684cp+53. The near-undefined detector is 0/14. The refuter's 339 cases with |T|>1e12 are all bit-identical to ALT, and registry S3/R6 give STAT_PASS."
+   },
+   {
+    "row": "12. GIE-008 fixtures on production v2",
+    "status": "PASS",
+    "evidence": "I re-ran these through the public studentized_cbb, authority checks included:\n- CE4: p .10 (r1, deg1)\n- FLIP: p .10 (r1, deg2)\n- LEFT_SUM: p .35 (r6, deg1)\n- TIE: p .45 (r8, deg2, ties3, T 0x0.0p+0)\n- SEED275: p .55 (r10, deg2)\nThese equal the CDR-010 'fsum / blocks' column. CE4 on v1 is .15. None of the five is all-degenerate."
+   },
+   {
+    "row": "13. v1 preservation",
+    "status": "PASS",
+    "evidence": "These blobs are identical at b9e01a9, e0b6d80, c9e0fa7 and 4cf8ead:\n- superiority.py 8a1254d7\n- statistical_kernels.py 28e1c184\n- evl_c8_gsup_oracle.py a5f00fa9\nI also ran a runtime check: all 54 v1 module globals are identical after importing v2, running authority() and a kernel call. v1 near-tie p is .20 and v2 is .15."
+   },
+   {
+    "row": "14. Source identity preservation; no slot reopen after F3 NOT_RUN",
+    "status": "PASS",
+    "evidence": "Blobs are unchanged from e0b6d80 through 4cf8ead: gsup_source_identity fa93bf88, superiority_source_identity 71bf7375 and CDR010_APPROVAL 3a9eecbb. The registry part of v2 (validate_registration through GsupV2Registry) has an identical sha256 at e0b6d80 and c9e0fa7.\n\nThe identity harness passes 114/114 at both c9e0fa7 and 4cf8ead. After an F3 NOT_RUN it refused 25 retry/relabel/re-encode/method-switch variants, 6 SIGKILL replays and 8 concurrent retries. Mutants that release the slot are caught. The refuter independently confirms 9 retry variants refused, with claim/access/provider counts staying at 1/1/1.\n\nTwo carried-over issues remain unchanged and non-blocking: N2 (re-issuing a descriptor with a variant identity string reopens the target, with no new route via F3) and NB-plainv1. The targeted run includes Codex's test_actual_registry_f3_blocks_stat_pass_and_stays_consumed, which passed."
+   },
+   {
+    "row": "15. Targeted regression",
+    "status": "PASS",
+    "evidence": "I ran tests/test_evl_gsup*.py and tests/test_evl_c8*.py in a private checkout at exactly c9e0fa7 (Py 3.11.15, numpy 2.3.5, pytest 9.1.1): 507 passed, 0 failed, errored or skipped. This equals the preservation report's 507. The identity report independently got per-file counts of 92/32/86/77/84."
+   },
+   {
+    "row": "16. Full regression",
+    "status": "PASS",
+    "evidence": "My own run in a private checkout at exactly c9e0fa7: 1471 passed, 1 deselected, rc 0. JUnit shows tests 1471 with 0 failures, errors or skips (sha256 b9d819dc...). The deselected test is the pre-existing live SEC fetch test_live_sec_fetch_is_optional_and_not_stage2, left out under the no-real-provider rule. CI on the exact head ran all 1472 and passed."
+   },
+   {
+    "row": "17. Actions",
+    "status": "PASS",
+    "evidence": "Read via GitHub MCP. #31 at c9e0fa7 has 9/9 check runs completed with success. combined-offline job 111354801213 has head_sha c9e0fa7, run_attempt 1, and success on every step, including the full regression and the 'CDR-010/012 exact production and independent oracle replay' step. I did not use Codex's own PASS claims as evidence."
+   },
+   {
+    "row": "18. Engine fingerprints",
+    "status": "PASS",
+    "evidence": "My run of tools/producer_engine_fingerprint.py at c9e0fa7 gives output sha256 f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866. Components: technical 66cb2383, macro 7e427949, qgv a1714480, n_qgv 19, leaderboard 112b245b, portfolio 53d930a7. These equal the GIE-010 expected values and Codex's producer-fingerprints.json hash."
+   },
+   {
+    "row": "19. #35 state",
+    "status": "PASS",
+    "evidence": "#35 has moved to 4cf8ead0, 'Merge CI-verified CDR-012 PR31 repair into preserved PR35 hardening', with parents 8318b78 and c9e0fa7, so it now contains c9e0fa7. superiority_v2.py is the same blob 8e56a66e.\n\nThe merge is not pure. Compared with a clean merge-tree result (99a633bf against the actual tree de61d093), it adds 6 docs-only files: a SCOPED_HANDOFF prefix append and 5 cdr012-dependency evidence files.\n\nThe F1 subpatch on producer_source_compat.py and its test is byte-equal across 29c2c20..722c812, e0b6d80..8318b78 and c9e0fa7..4cf8ead (my plain git diff hash is 1fd3e4eb).\n\nCI: 8/8 check runs completed with success. The oracle report's DEFERRED (CI still in progress at the time) is now resolved. Readiness run 37175320382 needed attempt 2: attempt 1 failed on the live SEC network test (IncompleteRead), and attempt 2 passed with head_sha 4cf8ead."
+   }
+  ],
+  "verdict": "VERIFIED_WITH_FINDINGS",
+  "trial_go": true,
+  "reviewed_additions": [
+   "implementation/tests/evl_c8_gsup_v2_cdr012_oracle.py",
+   "implementation/tests/test_evl_gsup_v2_cdr012.py",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/ACCEPTANCE_MANIFEST_CDR012.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/CURRENT_HANDOFF_V2_CDR012.md",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/ARTIFACT_MANIFEST.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/CDR012_APPROVAL.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/FRESH_TAKEOVER_SNAPSHOT.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/LOCAL_VALIDATION_RECEIPT.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/cdr012-independent-authoring-and-review.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/cdr012-independent-authoring-and-review.md",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/cdr012-independent-initial-hashes.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/cdr012-independent-red-kernel.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/cdr012-independent-targeted.log",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/cdr012-independent-targeted.xml",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/full-source-start-hashes.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/oracle-test-files-frozen.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/pr31-full.log",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/pr31-full.xml",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/preservation-first.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/producer-fingerprints.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/replay311-first.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/replay312-first.json",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/targeted-first.log",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/targeted-first.xml",
+   "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/tool-repair-history.json"
+  ],
+  "blocking": [],
+  "nonblocking": [
+   "F1 scope: frozen v1 superiority.py:247 (development_dependence_estimate) still computes the Development lag-1 phi denominator as `(v - m) ** 2`. GsupV2Registry reaches it through the record_feasibility it inherits from superiority_source_identity.py. It only feeds the pre-access FEASIBLE/INFEASIBLE envelope (phi = min(max(phi,0)+margin, 0.99) for the AR1 null) and never produces a p-value. GIE-010 F1, which CDR-012 resolves, named only the v2 kernel squarings, and CDR-012 keeps v1 unchanged, so c9e0fa7 complies with F1 as decided. My reproduction on random n=60 series: the denominator differs between pow and mul in 15/20000 cases and phi bits in 12/20000. The fixture DEV series has 0 deviations where pow differs and phi -0.2555, which is clipped to 0, so no current fixture is affected.",
+   "test_evl_gsup_v2_arithmetic.py L140-141 and L231-232: the frozen GOLDEN_TRACES assertions now check historical oracle H instead of production. The pins are byte-preserved and production still matches all 9 bit for bit (I re-ran this), but no test asserts production == GOLDEN_TRACES directly any more. Production stays pinned transitively through the new oracle O and test_evl_gsup_v2_cdr012 PINS.",
+   "v2 METHOD/POLICY IDs (C8_GSUP_STUDENTIZED_CBB_v2 / TC-C8-GSUP-M-V2-CDR006-CDR010) are unchanged although the squaring arithmetic changed in place. Outputs from e0b6d80-v2 and c9e0fa7-v2 are distinguishable only by the 6-key arithmetic_contract and the authority() supplement pin. This is consistent with CDR-012 being a v2 supplement; information only.",
+   "The oracle README's default adapter mapping, which counts any MissingStatisticalEvidence as NOT_RUN, can hide a wrong refusal; a mutant with a different message passes under it. Use the strict mapping (--not-run-reason-regex '^all bootstrap replicates degenerate$' --no-p-none-is-not-run --not-run-result '__never__=__never__') as the mapping of record. c9e0fa7 passes it in my own run.",
+   "The F3 refusal shares the MissingStatisticalEvidence class with zero-SE and geometry refusals. Only the message distinguishes it, and the registry keeps that message in cell.reason.",
+   "In assess_feasibility, all-degenerate simulated nulls are now counted as 'undefined': they stay in the size denominator and are not counted as rejections. At e0b6d80 they gave p = 1/(B+1) and could count as rejections. No epsilon is involved, and this is practically unreachable for continuous AR1 nulls.",
+   "With d*d an overflowing square fails closed as 'nonfinite long-run/replicate variance' instead of OverflowError mapping to 'unsupported finite arithmetic range'. Both outcomes are NOT_RUN.",
+   "#35 merge 4cf8ead is not a pure merge: it adds 6 docs-only files (a SCOPED_HANDOFF prefix append and 5 cdr012-dependency evidence files). The full-patch hash therefore differs from 22283ec2. The F1 subpatch and all src/tests are byte-equal; my plain git diff hash is 1fd3e4eb, the preservation report's is 9f3b677a under its own diff invocation, and both show equality across all three ranges.",
+   "#35 readiness run 37175320382 needed attempt 2. Attempt 1 (combined-offline) failed on the pre-existing live SEC network test with IncompleteRead; attempt 2 passed on exact 4cf8ead. Report both attempts. The oracle report's DEFERRED was a snapshot taken while that run was still in progress.",
+   "My local full runs deselect the pre-existing live SEC test test_live_sec_fetch_is_optional_and_not_stage2 to respect the no-real-provider rule, giving 1471 passed + 1 deselected. CI ran all 1472.",
+   "Carried over unchanged from GIE-010: N2 (identity strings are not canonicalized and register_descriptor has no capability gate; a variant-string descriptor re-issue reopens a consumed target, F3 included, with no new route); NB-plainv1 (the frozen plain v1 GsupRegistry with an unpinned store can grade the same content); F5/F7 SIGKILL residues.",
+   "At the registry-probe fixture parameters (n12, L2, B19, seed 7) no deg == B-1 cell can be built, so the deg == B-1 boundary is verified at kernel level only (17/17, plus the refuter's 298 cases).",
+   "Codex's new evl_c8_gsup_v2_cdr012_oracle.py is by the same author as historical oracle H. Independence rests on the wf11 oracle (primary plus exact-rational ALT), which I re-ran against c9e0fa7 with EXACT_MATCH_ALL_GRADED.",
+   "ACCEPTANCE_MANIFEST_CDR012.json still says current_actions 'PENDING_PUBLICATION' (a stale field; CI has since completed). Its local counts (1472/195/77) match CI and my runs.",
+   "Global routing moved 1620f71 -> cd0963f (GCH-010a, docs only). The register blob bc402d6b is unchanged, so the approval quote is still valid."
+  ],
+  "conditional_user_decisions": [
+   "F1 scope, only if the user meant 'authoritative v2' to cover v2's whole registry path, including the pre-access Development dependence estimator: frozen v1 development_dependence_estimate `(v - m) ** 2` at superiority.py:247 would then need a v2-only additive estimator, since CDR-006 and CDR-012 forbid modifying v1. That would be a user or Track C owner decision. Under the reading in GIE-010 F1 and the CDR-012 routing scope (the M-B statistic), c9e0fa7 complies fully. The synthetic trial does not need this.",
+   "Carried over from GIE-010, not required in synthetic scope: N2 identity-string canonicalization and a capability gate on register_descriptor before any real-source work.",
+   "Carried over, not required by CDR-006/007/010/011/012: whether the one-shot guarantee should also cover the frozen plain v1 GsupRegistry for identity-bound targets (coordinator policy or an authority-side scan, without modifying frozen v1)."
+  ],
+  "summary": "**Verdict: VERIFIED_WITH_FINDINGS. trial_go is true.** PR #31 at c9e0fa7e4078290b5db9cb798cf52c0d0cd66240 implements CDR-012 F1 and F3, and no finding blocks it. HEAD, v1 preservation, targeted and full regression, F1 and F3 are all PASS on my own runs, not on Codex's claims.\n\nThe four reports agreed on the facts. I re-derived the three points where they diverged:\n- **#35 CI:** the oracle report had it DEFERRED because CI was still running. All 8 check runs on 4cf8ead have now succeeded, with readiness passing on attempt 2 after a live SEC network flake on attempt 1.\n- **F1 scope:** the refuter found that frozen v1 development_dependence_estimate still squares with `** 2` and is reached by v2's pre-access feasibility. I confirmed this is real but outside F1 as decided:\n  - GIE-010 F1 named only the v2 kernel lines, and CDR-012 keeps v1 unchanged.\n  - The function only feeds the FEASIBLE/INFEASIBLE envelope, never a p-value.\n  - It affects about 12 in 20000 random series and no current fixture.\n  - I recorded it as non-blocking, with a conditional user decision in case the user meant all of v2.\n- **Golden-trace retargeting:** the preservation report found two old assertions now check the historical oracle instead of production. Production still matches all 9 pins bit for bit, so this is non-blocking.\n\nWhat I re-ran myself in a private clone (since deleted):\n- **Approval record:** CDR012_APPROVAL.json quotes the CDR-012 register section byte for byte, and its blob and sha256 recompute exactly.\n- **Source diff:** the only arithmetic changes in superiority_v2.py are `d*d` squaring at L90 and L107 and the all-degenerate NOT_RUN raise at L124-125. No epsilon, tolerance or threshold was added.\n- **Independent oracle, strict mapping:** EXACT_MATCH_ALL_GRADED on 747 cases. All four detectors are at zero: F1 0/16, F3 0/37, deg == B-1 boundary 0/17, near-undefined 0/14.\n- **Registry probe:** ALL_SCENARIOS_CDR012_EXPECTED.\n- **Direct values on production v2:**\n  - F1 reproducer: p .15, against .20 with `** 2`.\n  - `[0.05]*12`: keeps p .05.\n  - GIE-008 fixtures: CE4 .10, FLIP .10, LEFT_SUM .35, TIE .45, SEED275 .55; CE4 on v1 is .15.\n  - GIE-010 F3 reproducers: both refuse as NOT_RUN.\n- **v1:** all 54 v1 module globals are unchanged after using v2.\n- **Regression:** targeted 507 passed. Full suite 1471 passed plus 1 deselected live-SEC test, with 0 failures; CI ran all 1472.\n- **Engine fingerprint:** f690f9c0, matching the expected value.\n- **Evidence files:** all 16 hashes in the acceptance manifest and all 20 in the artifact manifest match.\n- **#35:** now at 4cf8ead, which contains c9e0fa7 and has the identical v2 blob. The F1 subpatch is byte-equal; the merge commit also adds 6 docs-only files.\n\nSource identity: no slot reopens after an F3 NOT_RUN. The identity harness passed 114/114 and the refuter's retry probes agree. The older N2 and plain-v1 issues carry over unchanged.\n\nreviewed_additions lists all 25 files added since e0b6d80:\n- **The 2 test files:** I read the oracle module in full, ran the new tests (77 pass), and its pins equal the independent oracle's values.\n- **The 23 docs and evidence files:** I checked format, the manifest hashes and the approval quote, and found no escalation and no secrets. I did not use their PASS claims as evidence.\n\nOutputs are in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf12/skeptic-synthesis/out/. The main checkout is untouched (f1b5afb, clean), the oracle directories still match their SHA256SUMS, and nothing was written to any codex/* branch or PR."
+ },
+ "trial": {
+  "summary": "I built the CDR-012 successor trial on fresh heads, pushed it as a new branch and opened Draft PR #40. All 10 PR-triggered workflows passed on the exact head.\n\n**Inputs and branch**\n- Inputs: #39 at 0d31e06, #31 at c9e0fa7, and #35, which has moved to 4cf8ead.\n- #35 has already absorbed the CDR-012 repair. 4cf8ead is Codex's two-parent merge of c9e0fa7 into 8318b78. Its merge commit also adds 6 Codex evidence/doc files beyond a plain merge, with no source changes.\n- The branch integration/cdr012-successor-trial-2026-10-04 is at acaf1b5, built as #39 plus #31 (merge 368b5a1) plus #35 (merge acaf1b5).\n- Its tree, 40220de1, differs from #39's tree 2a9b7998, so this is not NO_NEW_CONTENT. It equals the harness trial tree and a direct merge of #35 into #39.\n\n**Harness results**\n- I ran a private copy of successor_trial.sh with label CDR012_SUCCESSOR_TRIAL, port 8802, VERIFIED_V2_COMMIT=c9e0fa7 and the 36-entry reviewed allowlist.\n- Every step returned rc 0: 25 PASS, 2 REVIEW_REQUIRED, 0 FAIL, 0 NOT_RUN. The harness exit code is 4 (meaning items need review). The full test suite ran 1518 of 1518.\n- I had to patch the copy before this run; the diff is recorded. The prepared harness requires the CI-declared allowlist (13 paths) to equal the whole reviewed list (36 paths, 23 of them docs), which can never hold.\n  - An unpatched run FAILED protected_paths for exactly that reason and no other.\n  - The patched copy compares the CI list with the 13 gate-protected entries, and still checks all 36 files byte-for-byte against c9e0fa7.\n- I reviewed both REVIEW_REQUIRED items and found nothing to block on. Four escalation hits are one sentence beginning \"No real numeric configuration/CAL_VERIFY/Holdout…\", where the \"No\" falls outside the scanner's line window. The other is a renamed CI step whose command is unchanged.\n\n**Independent CDR-012 oracle on the trial tree**\n- The comparison passes (rc 0) in both default and strict-message modes: 747 graded, 0 mismatches, every detector at 0.\n- The registry probe passes (rc 0): all-degenerate cells give NOT_RUN, and the near-undefined control stays STAT_PASS.\n- Codex's verify_gsup_v2_arithmetic.py passes (rc 0). Its numeric output hash matches Codex's #31 CI receipt.\n\n**CI on Draft PR #40**\n- All 10 workflow runs succeeded on head acaf1b5, attempt 1, all 11 jobs.\n- The 6 workflows without a pull_request trigger did not run and were not dispatched.\n- I posted no comments on any PR and changed no Codex branch.\n\n**States and cleanup**\n- Canonical is NOT_MERGED; a canonical merge is USER_DECISION_REQUIRED. Nothing here approves numeric configuration, CAL_VERIFY, Holdout, C8 Freeze, grants or Official/LIVE.\n- The private clone and large temporary files are deleted, and the source repo's worktree list is unchanged.",
+  "items": [
+   {
+    "item": "Fresh heads (ls-remote 04:55Z, harness fetch 04:59Z, pre-push 05:10Z)",
+    "status": "PASS",
+    "evidence": "#39 integration/cdr011-trial-2026-10-04 = 0d31e06022c3162e83f2ff5a984b07e59e4e216b (as expected). #31 codex/track-c-gsup-v2-2026-10-03 = c9e0fa7e4078290b5db9cb798cf52c0d0cd66240 (as expected). #35 codex/integration-hardening-2026-10-03 = 4cf8ead024457172712d9ee54bdce665dbedeb2f (moved from 8318b78). Base #30 = 86ad362, canonical = b8e39a2, Track C owner = b9e01a9: all unchanged. Heads were identical at the end."
+   },
+   {
+    "item": "#35 absorbed the c9e0fa7 repair?",
+    "status": "PASS",
+    "evidence": "Yes. 4cf8ead's parents are 8318b78 and c9e0fa7 ('Merge CI-verified CDR-012 PR31 repair into preserved PR35 hardening'). Its tree de61d09 differs from a plain merge-tree(8318b78,c9e0fa7) = 99a633b only by 6 Codex docs/evidence files under implementation/docs/codex_takeover/evidence/shared-source-hardening/: SCOPED_HANDOFF.md (append) and 5 new files in cdr012-dependency/. No source, test, tool or CI change. Topology: STACKED."
+   },
+   {
+    "item": "Harness selection and patch",
+    "status": "PASS",
+    "evidence": "Used wf11/prep-successor-trial/successor_trial.sh (sha256 1af6de78…; its dry runs behaved as designed). Ran a private copy (sha256 09d244cf…) with --reviewed-allowlist (36 entries = 11 previous + 25 reviewed, exactly the files c9e0fa7 adds vs e0b6d80). Patch diff: /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf12/successor-trial/harness_patch.diff. It does two things: (a) the harness's protected-path rule now also covers evl_c8_gsup_v2_oracle.py and evl_c8_gsup_v2_cdr012_oracle.py, matching c9e0fa7's workflow gate; (b) the CI-declared allowed_additions list is compared with the gate-protected part of the reviewed list (13 = 13) instead of the whole 36."
+   },
+   {
+    "item": "Unpatched harness probe (protected_paths only, kept for the record)",
+    "status": "FAIL",
+    "evidence": "Harness rc 1. protected_paths FAILED only on declared_differs_from_reviewed: the reviewed list has 23 docs entries the CI list cannot contain. declared_minus_reviewed, outside_reviewed, changed and unexpected_additions were all empty. Log: /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf12/successor-trial/console_unpatched_probe.log"
+   },
+   {
+    "item": "Harness CDR012_SUCCESSOR_TRIAL run 20261004T045936Z (overall)",
+    "status": "PASS",
+    "evidence": "Harness exit code 4. Every step rc 0: 25 PASS, 2 REVIEW_REQUIRED (both reviewed, see below), 0 FAIL, 0 NOT_RUN. Run kind SUCCESSOR_TRIAL. Summary: /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf12/successor-trial/harness/runs/CDR012_SUCCESSOR_TRIAL-20261004T045936Z/summary.json"
+   },
+   {
+    "item": "merge_conflicts / tree_identity / no_reuse",
+    "status": "PASS",
+    "evidence": "All rc 0. 0 conflicts. Each merge changes only paths its input changed. Trial tree 40220de1 equals a direct merge-tree of #35 into #39 and differs from #39's tree 2a9b7998, so the run is not NO_NEW_CONTENT."
+   },
+   {
+    "item": "preservation_gate_ci (CI step run verbatim)",
+    "status": "PASS",
+    "evidence": "rc 0. Output 'Preserved 41 exact owner files; approved additive files 13'. gate_evidence/data diff vs b8e39a2 and IF-1 diff vs b9e01a9 are both empty."
+   },
+   {
+    "item": "protected_paths (patched)",
+    "status": "PASS",
+    "evidence": "rc 0. web_mvp blob 10ad8c76. #35 same-tree protection holds for qgv (10 paths) and leaderboard (5); the live tamper probe fails as intended. No added path falls outside the reviewed list, and the CI list equals its 13 gate-protected entries. The C8 path set is unchanged and every C8 addition is reviewed. Flag DECLARED_ALLOWLIST_CHANGED_VS_39: +2 (the two CDR-012 test files)."
+   },
+   {
+    "item": "source_provenance",
+    "status": "PASS",
+    "evidence": "rc 0. No implementation/data or gate_evidence change vs canonical; 0 CAL_VERIFY/Holdout-named paths. History = #39 + #31 + #35 + exactly 2 merge commits with the expected parents. Delta vs #39: 38 paths (30 added, 8 modified, 0 deleted)."
+   },
+   {
+    "item": "escalation_sweep",
+    "status": "PASS",
+    "evidence": "rc 0, harness status REVIEW_REQUIRED, reviewed individually. Runtime grants all NONE; ACTIVE_AUTHORIZATIONS empty. 6 hits vs #39. The 4 non-negated hits are CURRENT_HANDOFF.md:61 and STATUS.md:49 (gsup_v2_handoff_2026_10_03), patterns LIVE_ACTIVATION and CANONICAL_MERGE_DONE, on the sentence 'No real numeric configuration/CAL_VERIFY/Holdout/C8 Freeze, grants, Official/LIVE or canonical merge is approved.' The 'No' is on the previous line, so these are negations, not escalations. The 2 likely-negated hits are benign: test_evl_gsup_v2_cdr012.py:278 asserts official False / promotion_authority None, and pr31-full.xml contains an existing test name holdout_state-CONSUMED. The full scan against canonical lists 263 hits (#39's 257 plus these 6), listed only."
+   },
+   {
+    "item": "engine_fingerprints",
+    "status": "PASS",
+    "evidence": "rc 0. Fingerprint output sha256 f690f9c0… on both system python and the numpy venv."
+   },
+   {
+    "item": "full_pytest",
+    "status": "PASS",
+    "evidence": "rc 0. 1518 passed, 0 failed, 0 errors, 0 skipped (minimum 1441). Track C: C8 v1 200/200, G-SUP additive 307/307, all test_evl_* 837/837."
+   },
+   {
+    "item": "gsup_v2_replay (Codex verify_gsup_v2_arithmetic.py, CI parity)",
+    "status": "PASS",
+    "evidence": "rc 0. Tool status PASS. Holdout, actual_CAL_VERIFY, grants and numeric_defaults all 0; historical_v1_rewritten false. Contract: squaring=MULTIPLICATION, all_degenerate=NOT_RUN. Numeric output sha256 bb883332e44e9768…, which equals Codex's #31 CI receipt and differs from #39's CDR-010 value, as expected under F1."
+   },
+   {
+    "item": "independent_oracle (inside the harness)",
+    "status": "PASS",
+    "evidence": "rc 0. compare_cdr012.py verdict EXACT_MATCH_ALL_GRADED."
+   },
+   {
+    "item": "CDR-012 independent oracle on the trial tree (git archive of acaf1b5)",
+    "status": "PASS",
+    "evidence": "The oracle's SHA256SUMS check passed (rc 0).\n\nDefault comparison (compare_cdr012 --adapter v2kernel): rc 0, EXACT_MATCH_ALL_GRADED. 747 graded (710 STAT bit-exact, 37 NOT_RUN), 0 mismatches. Detectors: F1 pow 0/16, F3 all-degenerate 0/37, boundary 0/17, near-undefined 0/14.\n\nStrict comparison (--not-run-reason-regex '^all bootstrap replicates degenerate$'): rc 0, same result.\n\nRegistry probe (registry_probe_cdr012.py): rc 0, ALL_SCENARIOS_CDR012_EXPECTED. S1: NOT_RUN, 8 F3 cells. S2: NOT_RUN, 1 F3 cell. S3 control: STAT_PASS.\n\nSource check: grep finds no '** 2', 'pow(' or 'math.pow' in superiority_v2.py.\n\nOutputs: /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf12/successor-trial/oracle/"
+   },
+   {
+    "item": "track_c_v1",
+    "status": "PASS",
+    "evidence": "rc 0. v1 kernel blob 8a1254d7 unchanged; all existing evl sources and C8 v1 tests unchanged. superiority_v2.py blob 8e56a66e equals the one at c9e0fa7. All 36 reviewed files are byte-identical to c9e0fa7. The Track C register is append-only (73 lines added). In a separate check, c9e0fa7's appends to the register, CURRENT_HANDOFF.md and STATUS.md keep the e0b6d80 content as a prefix."
+   },
+   {
+    "item": "cdr012_static_scan",
+    "status": "PASS",
+    "evidence": "rc 0. No SQUARE_BY_POW, POW_CALL or AUGASSIGN_POW in superiority_v2.py, gsup_source_identity.py or superiority_source_identity.py."
+   },
+   {
+    "item": "web_mvp_validation / web_research_guard / web_state_presentation / producer_contract_fixture / producer_contract_browser / macro_adoption_pinned",
+    "status": "PASS",
+    "evidence": "All rc 0. Browser validations passed; producer browser live_grant NONE; macro pin 4a07099: 11 passed."
+   },
+   {
+    "item": "ci_path_filters",
+    "status": "PASS",
+    "evidence": "rc 0, harness status REVIEW_REQUIRED, reviewed. The only change is the step rename 'CDR-010 exact production…' to 'CDR-010/012 exact production and independent oracle replay'. The replay command is identical to what the harness expects. 10 workflows predicted to trigger against base #30."
+   },
+   {
+    "item": "intree_writes / remote_recheck",
+    "status": "PASS",
+    "evidence": "Both rc 0. 0 untracked or modified files in the trial worktree. Heads and baselines unchanged at the end of the run. Source repository worktree list unchanged."
+   },
+   {
+    "item": "Codex CDR012_APPROVAL.json quote fidelity",
+    "status": "PASS",
+    "evidence": "quoted_decision is an exact substring of COORDINATION_DECISION_REGISTER.md at 1620f71 (blob sha256 eaa7960d… matches), and contains the verbatim F1/F3 user text."
+   },
+   {
+    "item": "New branch integration/cdr012-successor-trial-2026-10-04",
+    "status": "PASS",
+    "evidence": "Built in a private clone. Identity Claude <noreply@anthropic.com>. Merge 1: 368b5a17a98e8fc17f0082ea168c7e86641d1d43 (parents 0d31e06, c9e0fa7). Merge 2: acaf1b5a82859ac2750a130ebe88f8b4d272ac66 (parents 368b5a1, 4cf8ead). Each message ends with the Co-Authored-By and Claude-Session lines. Tree 40220de13a7026445950d6dd7184bc90ee68a83d equals the harness tree. Pushed as a new branch without force; ls-remote shows acaf1b5."
+   },
+   {
+    "item": "Draft PR",
+    "status": "PASS",
+    "evidence": "https://github.com/kco994553-star/Investment-System1/pull/40 (draft, base codex/combined-integration-2026-10-03). Title: 'CDR-012 successor trial: #39 + PR #31 (F1 d*d, F3 NOT_RUN) + PR #35 (fresh heads)'. The body includes the harness patch disclosure, the review of both REVIEW_REQUIRED items, the oracle results, the states, the no-reuse statement, the no-approval list and the required footer."
+   },
+   {
+    "item": "PR #40 CI (head_sha acaf1b5a82859ac2750a130ebe88f8b4d272ac66, event pull_request, attempt 1)",
+    "status": "PASS",
+    "evidence": "10 of 10 runs succeeded (11 of 11 jobs):\n- codex-integration-readiness 37179194391 (combined-offline + macro-adoption-offline; all 14 steps succeeded, including 'CDR-010/012 exact production and independent oracle replay')\n- web-mvp-validation 37179194376\n- web-research-guard 37179194343\n- web-state-presentation 37179194479\n- technical-real-model 37179194420\n- technical-real-producer 37179194356\n- us-equity-session 37179194440\n- p01-research-publication 37179194381\n- sec-primary-disclosure 37179194389\n- qgv-invalidation-binding 37179194365\n\nCompleted between 05:12:26Z and 05:21:12Z."
+   },
+   {
+    "item": "Workflows that did not trigger",
+    "status": "DEFERRED",
+    "evidence": "Not triggered because they have no pull_request trigger; not dispatched by rule: c21-real-data, entity-metadata-ingest and qgv-producer-real (must not be dispatched); raw-artifact-restore-check (not relevant to the trial); leaderboard-real-producer (low value); track-c-evl-validation (does not apply to an integration tree)."
+   },
+   {
+    "item": "Cleanup",
+    "status": "PASS",
+    "evidence": "Deleted the private clone and its worktree, the trial extract, the regprobe working dir, the private venv and the harness work dirs. Evidence and logs are kept in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf12/successor-trial/ (13M). /home/user/Investment-System1 is untouched: worktree list unchanged, status clean, HEAD f1b5afb."
+   }
+  ],
+  "findings_blocking": [],
+  "findings_nonblocking": [
+   "Harness defect (successor_trial.sh, cmd_protected): the check requires the CI-declared allowed_additions to equal the whole reviewed list. allowed_additions only governs gate-protected paths, so a reviewed list that includes docs can never match. The harness's protected-path rule was also stale: c9e0fa7 added evl_c8_gsup_v2_oracle.py and evl_c8_gsup_v2_cdr012_oracle.py to the workflow gate. Fixed in my private copy only (diff at .../wf12/successor-trial/harness_patch.diff). The unpatched result (FAIL, with that as the only cause) is recorded. The prepared harness in wf11 is unchanged.",
+   "Harness exit code is 4, not 0, because escalation_sweep and ci_path_filters report REVIEW_REQUIRED by design. Both were reviewed individually: one negated sentence spread over two lines, and a renamed CI step with the same command. Neither is a FAIL or a NOT_RUN.",
+   "The escalation scanner checks negation only within the same line, so two-line sentences such as 'No real numeric configuration/CAL_VERIFY/Holdout/C8 Freeze,\\ngrants, Official/LIVE or canonical merge is approved.' are flagged. This is a false positive, not an escalation.",
+   "#35 4cf8ead is not a plain merge. Codex's merge commit itself adds 6 docs/evidence files (shared-source-hardening/SCOPED_HANDOFF.md append + cdr012-dependency/*). None is source, test, tool, CI or C8 scope; they are included in the trial and listed in the PR body.",
+   "I did not extract the CI test count from the codex-integration-readiness logs or artifact, because the allowed read tools have no access to job logs. CI success is shown by step and job conclusions; the local count is 1518.",
+   "I did not copy Codex's PASS claims (PR31 1472 passed, CI receipt). The only cross-reference is that the locally computed replay numeric hash bb883332… equals the value in Codex's receipt."
+  ],
+  "conditional_user_decisions": [
+   "Canonical merge of any of #31, #35, #39 or #40 is USER_DECISION_REQUIRED. #40 is CI-only and must not be merged.",
+   "The Primary Integration Writer should decide whether to accept the harness patch semantics (CI list compared with the gate-protected part of the reviewed list) as the reviewed interpretation of the allowlist instruction, before recording this trial as CI_VERIFIED in a GIE entry on integration/global-handoff-v1. I did not write any Global or GIE entry.",
+   "This trial approves no numeric configuration (alpha/B/L/seed/effect floor, etc.), CAL_VERIFY access, Holdout consumption, C8 Freeze, Research/Frozen/Live grants or Official/LIVE promotion. Maturity transitions: none."
+  ],
+  "not_run": [
+   "Dispatch of the 6 workflows without a pull_request trigger (by rule).",
+   "Extracting the CI pytest count from logs or artifact (no job-log or artifact-content access with the allowed read tools).",
+   "Python 3.12/3.13 local runs; cross-platform libm behaviour.",
+   "Any CAL_VERIFY, Holdout, real-provider or network data (forbidden; none read).",
+   "Running the unpatched harness end to end (only the protected_paths and ci_path_filters probe was run unpatched)."
+  ]
+ },
+ "tv": {
+  "summary": "I could not refute any substantive claim in the CDR-012 successor trial report (Draft PR #40, integration/cdr012-successor-trial-2026-10-04 @ acaf1b5, tree 40220de1). Everything below was re-done in a private --shared clone under wf12/trial-verify, which has since been deleted. Heads were checked at 05:23Z and again at 05:46Z.\n\n- **Re-merge:** I re-merged #39 0d31e06 + #31 c9e0fa7 + #35 4cf8ead myself. The result is tree 40220de1 with 0 conflicts. A direct single-base merge of #35 into #39 gives the same tree. The branch adds exactly the two Claude merge commits.\n- **#35 head:** 4cf8ead's tree differs from a plain merge-tree(8318b78, c9e0fa7) only by the 6 Codex docs/evidence files.\n- **PR #40 CI:** all 10 runs and all 11 check runs are on head_sha acaf1b5, event pull_request, attempt 1, conclusion success.\n- **CI preservation gate:** run verbatim on the trial tree, it returns rc 0 with \"Preserved 41 exact owner files; approved additive files 13\". Three tamper probes fail as they should: an owner file, an unapproved test_evl_ addition, and a gate_evidence file.\n- **#35 protection:** qgv 10 paths and leaderboard 5 paths PASS. A tamper or delete probe on each of the 11 protected paths fails as intended.\n- **Engine fingerprint:** f690f9c0 on both interpreters.\n- **Codex replay tool:** rc 0, numeric hash bb883332…. This equals Codex's #31 CI receipt and differs from #39's d4642fa5.\n- **CDR-012 independent oracle:** default and strict-message runs are both EXACT_MATCH_ALL_GRADED (747 graded, 0 mismatches; F1 0/16, F3 0/37, boundary 0/17, near-undefined 0/14). The registry probe gives ALL_SCENARIOS_CDR012_EXPECTED. As a negative control, the same oracle on e0b6d80 still reports 68 mismatches, so it does catch the old behaviour in this environment.\n- **Tests:** the targeted tests pass 534/534 (C8 v1 200, G-SUP additive 307). The full suite collects 1518 tests; I ran 1517, all passed, and deselected one live-SEC-fetch test (see below).\n- **Escalation hits:** all 6 are what the report says they are.\n- **Harness patch:** it is disclosed accurately and is sound. Each side of it matches what I checked: CI-declared list 13 = reviewed-and-gate-protected 13 = actual additions 13.\n- **#39 results:** none are presented as this trial's.\n\nThere are no blocking findings. The nonblocking ones are below:\n\n- The report says the only workflow change is the step rename. That is true of steps only: the workflow also adds 3 path filters, 2 gate-predicate entries and 2 allowed additions.\n- The trial's full suite (like #39's and CI) ran a test that tries a live SEC fetch. I could not confirm whether that request was blocked.\n- The PR #40 body still says CI is pending.\n- The CI gate does not pin the content of the allowed additive files. Only the local harness does.\n- The replay tool's Holdout/CAL_VERIFY/grants=0 fields are hard-coded, so they are not evidence of anything.\n- The CI test count remains unverified: the artifact download was blocked by the proxy.",
+  "items": [
+   {
+    "item": "Claim: fresh heads (#39 0d31e06, #31 c9e0fa7, #35 4cf8ead; #30 86ad362, canonical b8e39a2, Track C owner b9e01a9), unchanged at end",
+    "status": "CONFIRMED",
+    "evidence": "My ls-remote at 05:23:40Z and 05:46:47Z gives the same heads: #39 0d31e06…, #31 c9e0fa7…, #35 4cf8ead…, #30 86ad362…, canonical alrugm b8e39a2…, Track C owner ccr-22e3ff16-p7n5k5 b9e01a9…, #40 acaf1b5…. The relevant refs did not change between the two checks. The trial's own lsremote_start and lsremote_prepush snapshots agree. integration/global-handoff-v1 is now cd0963f (GCH-010a, a child of 1620f71). The COORDINATION_DECISION_REGISTER blob sha256 is eaa7960d at both 1620f71 and cd0963f."
+   },
+   {
+    "item": "Claim: #35 4cf8ead absorbed c9e0fa7; differs from plain merge only by 6 Codex docs/evidence files; STACKED",
+    "status": "CONFIRMED",
+    "evidence": "4cf8ead's parents are 8318b78 and c9e0fa7, and the PR #35 base is c9e0fa7. git merge-tree 8318b78 c9e0fa7 gives 99a633b. Diffing it against 4cf8ead's tree de61d09 shows only shared-source-hardening/SCOPED_HANDOFF.md (an append: +21 lines, 0 deletions) plus 5 new files under cdr012-dependency/. There is no change to src, tests, tools or CI."
+   },
+   {
+    "item": "Claim: re-merge reproduces tree 40220de1; 0 conflicts; equals direct merge of #35 into #39; differs from #39 tree 2a9b7998; delta 38 paths (30 A / 8 M / 0 D); history = inputs + exactly 2 merge commits",
+    "status": "CONFIRMED",
+    "evidence": "My own merges: merge-tree 0d31e06+c9e0fa7 gives 33d2c4b6, which equals 368b5a1's tree. Merging that with 4cf8ead gives 40220de13a70…, which equals acaf1b5's tree. A direct merge-tree 0d31e06+4cf8ead (single merge base 8318b78) also gives 40220de1. All merges return rc 0. The trial tree differs from 2a9b7998. git diff 0d31e06 acaf1b5 shows 30 A and 8 M. rev-list acaf1b5 ^0d31e06 ^c9e0fa7 ^4cf8ead returns exactly acaf1b5 and 368b5a1. Their parents are as stated, the author is Claude <noreply@anthropic.com>, and both messages end with the Co-Authored-By and Claude-Session lines. Not mentioned in the report: the harness's #35 merge step was criss-cross (merge bases c9e0fa7 and 8318b78). This is harmless, because the single-base direct merge gives the identical tree."
+   },
+   {
+    "item": "Claim: PR #40 CI 10/10 success on acaf1b5, pull_request, attempt 1, 11/11 jobs, 05:12:26Z-05:21:12Z",
+    "status": "CONFIRMED",
+    "evidence": "list_workflow_runs on the branch returns exactly the 10 run ids given in the report (37179194391/376/343/479/420/356/440/381/389/365). Every one has head_sha acaf1b5a82859ac2750a130ebe88f8b4d272ac66, event pull_request, run_attempt 1 and conclusion success. get_check_runs shows 11 runs, all success. Job completions range from 05:12:26Z (macro-adoption-offline) to 05:21:12Z (validate). In combined-offline, steps 1-14 all succeeded, including 'CDR-010/012 exact production and independent oracle replay'. That step took about 0s in CI, which is consistent with the 0.14s local runtime of verify_gsup_v2_arithmetic.py. The tool exits non-zero on any assert failure, so the step's success is meaningful."
+   },
+   {
+    "item": "Claim: 6 workflows without pull_request trigger not run and not dispatched",
+    "status": "CONFIRMED (DEFERRED is correct)",
+    "evidence": "I parsed the triggers in the trial tree's workflows. The 10 with pull_request ran. The 6 without it are c21-real-data, entity-metadata-ingest, leaderboard-real-producer, qgv-producer-real, raw-artifact-restore-check and track-c-evl-validation. None has a run on this branch: there are only 10 runs and all are pull_request events."
+   },
+   {
+    "item": "Claim: no comments posted on any PR; no Codex branch changed",
+    "status": "CONFIRMED",
+    "evidence": "get_comments returns [] for #31, #35, #39 and #40. The heads of #31 (c9e0fa7) and #35 (4cf8ead) are unchanged from the trial start through 05:46Z."
+   },
+   {
+    "item": "Rerun: #31 preservation gate step verbatim on trial tree",
+    "status": "PASS",
+    "evidence": "I extracted the 'Preserve exact owner Track C and canonical Track A evidence' run block from the trial's codex-integration-readiness.yml and ran it with bash -e at a checkout of acaf1b5. Result: rc 0, 'Preserved 41 exact owner files; approved additive files 13'. The gate_evidence/data diff vs b8e39a2 and the IF-1 diff vs b9e01a9 are both empty. Tamper probes on throwaway local commits (never pushed): appending to evl/superiority.py gives rc 1; adding tests/test_evl_probe_unapproved.py gives rc 1 ('Unapproved Track C additions'); editing a gate_evidence JSON gives rc 1. Editing the allowed addition evl_c8_gsup_v2_cdr012_oracle.py gives rc 0, which is by design: the gate does not pin additive content."
+   },
+   {
+    "item": "Rerun: #35 same-tree protection with tamper probe",
+    "status": "PASS",
+    "evidence": "I wrote an independent probe (trial-verify/probe35.py) that loads the trial's producer_source_compat.py. CANONICAL_SOURCE_COMMIT is b8e39a2. compare_shared_sources(src, src) returns PASS for the qgv SHARED set (10 paths) and the leaderboard SHARED set (5 paths). The modes are EXACT_CANONICAL_SOURCE_PROTECTION, plus EXACT_CDR004_SCHEMA_ACCEPTANCE for models.py. The tamper probe covers all 11 union paths, each edited and also deleted: untampered PASS, and tampered or deleted FAIL in every case. That is stronger than the harness's single qgv/scoring.py probe. The blobs of producer_source_compat.py, qgv/leaderboard_producer_infra_compat.py and test_producer_source_compat.py are identical in acaf1b5, 4cf8ead, 8318b78 and #39. The web_mvp.py blob is 10ad8c76."
+   },
+   {
+    "item": "Claim: protected_paths (patched) - additions within reviewed list; CI-declared list equals gate-protected reviewed entries (13=13); flag +2 vs #39",
+    "status": "CONFIRMED",
+    "evidence": "I computed this independently with the trial workflow's protected() predicate. allowed_additions (13) equals reviewed36 ∩ protected (13), which equals the actual protected additions vs b9e01a9 (13). Additions minus reviewed is empty, and the 23 non-gate reviewed entries are all under docs/. The workflow diff vs #39 adds evl_c8_gsup_v2_cdr012_oracle.py and test_evl_gsup_v2_cdr012.py to allowed_additions, which is the +2 flag."
+   },
+   {
+    "item": "Claim: harness patch disclosed accurately; unpatched probe FAILED only on declared_differs_from_reviewed",
+    "status": "CONFIRMED",
+    "evidence": "The prepared harness has sha256 1af6de78…, byte-equal to harness_orig. The patched copy has sha256 09d244cf…. harness_patch.diff matches the actual file diff. Change (a) mirrors c9e0fa7's gate predicate exactly (workflow lines 59-63). Change (b) leaves the changed, unexpected and outside_reviewed checks untouched, so it is not a weakening in my review. The unpatched protected_paths.json shows FAIL with declared_differs_from_reviewed=True and reviewed_minus_declared=23, while outside_reviewed, declared_minus_reviewed, changed and unexpected_additions are all empty. reviewed36 is the union of DEFAULT_ALLOWLIST (11) and the 25 files c9e0fa7 adds vs e0b6d80; the two sets do not overlap."
+   },
+   {
+    "item": "Claim: harness run 20261004T045936Z: 27 steps rc 0, 25 PASS, 2 REVIEW_REQUIRED, exit 4",
+    "status": "CONFIRMED",
+    "evidence": "summary.json gives executed_steps 27, every step rc 0, 25 PASS, 2 REVIEW_REQUIRED (escalation_sweep and ci_path_filters), exit_code 4, run_kind SUCCESSOR_TRIAL. full_pytest.json reports 1518/1518. no_reuse gives trial tree 40220de1 ≠ base_39 tree 2a9b7998."
+   },
+   {
+    "item": "Rerun: engine fingerprint tool on trial tree",
+    "status": "PASS",
+    "evidence": "producer_engine_fingerprint.py implementation/src was run on system python 3.11.15 (no numpy) and on the oracle venv (numpy 2.3.5). Both outputs have sha256 f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866, identical to the harness files. This equals the #39 value in GIE-010, which is expected because the producer engines are unchanged. I recomputed it here, so it is not reused."
+   },
+   {
+    "item": "Claim: full_pytest 1518 passed; C8 v1 200/200, G-SUP additive 307/307, test_evl_* 837/837",
+    "status": "CONFIRMED WITH QUALIFICATION",
+    "evidence": "collect-only on acaf1b5 gives 1518 tests. My full run in the numpy venv was 1517 passed, 0 failed, 0 errors, 0 skipped, with 1 deselected. The deselected test was tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2, which calls try_fetch_companyfacts against the live SEC endpoint. test_evl_* passed 837/837, and the tree was clean afterwards. In the targeted run, the C8 v1 modules total 200 (47+22+84+18+29) and the G-SUP additive modules total 307. The harness junit shows that the trial's 1518 included the live-SEC test (0.244s, passed)."
+   },
+   {
+    "item": "Rerun: targeted v2/identity/C8/#35 tests (numpy venv)",
+    "status": "PASS",
+    "evidence": "534 passed, 0 failed/errors/skips (targeted.xml): test_evl_c8_* 200; test_evl_gsup_identity_kernel_invariance 11, mb_reduction_diagnostic 20, source_identity 33, v2_arithmetic 86, v2_cdr012 77, v2_identity_adversarial 48, v2_registry 21, v2_repair_negatives 11; test_producer_source_compat 25; qgv and leaderboard infra compat 1 each."
+   },
+   {
+    "item": "Claim/rerun: gsup_v2_replay (Codex verify_gsup_v2_arithmetic.py) rc 0, PASS, numeric hash bb883332…, equals #31 CI receipt, differs from #39",
+    "status": "CONFIRMED",
+    "evidence": "rc 0 on both the numpy venv and system python. Status PASS and numerical_output_sha256 bb883332e44e97689bc28ab36f55a88e295ee44149dd4306a94401607cec9227 on both. The same value appears in cdr012-dependency/PR31_EXACT_CI_RECEIPT.json and LOCAL_VALIDATION_RECEIPT.json; #39's value is d4642fa5…. The contract reports squaring MULTIPLICATION and all_degenerate NOT_RUN. Of the 15 cases, 4 are MATCHED_NOT_RUN, including CDR012_F3_ALL_DEGENERATE seeds 7 and 11. CDR012_F1_NEAR_TIE asserts p .15, and CDR012_POSITIVE_RESIDUAL_UNCHANGED keeps a p. Caveat: the tool compares against Codex's own oracle, and its Holdout/CAL_VERIFY/grants/numeric_defaults=0 fields are hard-coded literals."
+   },
+   {
+    "item": "Rerun: CDR-012 independent oracle compare on trial tree (default + strict) and registry probe",
+    "status": "PASS",
+    "evidence": "The oracle's SHA256SUMS check passes (90 entries, rc 0). extract_head.sh acaf1b5 extracted 575 files. The default compare_cdr012 --adapter v2kernel returns rc 0, EXACT_MATCH_ALL_GRADED, 747 graded, 0 mismatches (fixtures 5, random 648, subnormal 10, square_axis 12, undefined 1, F3 all-degenerate 37, boundary 17, F1 square 4, near-undefined 13). Detectors: F1 0/16, F3 0/37, boundary 0/17, near-undefined 0/14. The 5 UNDEFINED_SE cases are ungraded and raise MSE 'zero standard error'. The strict run with --not-run-reason-regex '^all bootstrap replicates degenerate$' gives rc 0 and the same result. registry_probe_cdr012 returns rc 0, ALL_SCENARIOS_CDR012_EXPECTED: S1 NOT_RUN with 8/8 cells NOT_RUN, S2 NOT_RUN with 1 NOT_RUN cell and 7 REJECT_H0, S3 STAT_PASS. Negative control on e0b6d80: rc 1, MISMATCH_IN_68_CASES (F1 16/16, F3 37/37), matching the oracle README, so the oracle discriminates in this environment."
+   },
+   {
+    "item": "Claim: cdr012_static_scan / F1 source fact - no ** 2, pow(, math.pow, augmented pow",
+    "status": "CONFIRMED",
+    "evidence": "grep finds no hit. An AST walk of superiority_v2.py, gsup_source_identity.py and superiority_source_identity.py finds no Pow BinOp, no Pow AugAssign, no pow/hypot/square/power calls and no numpy import. In the e0b6d80→c9e0fa7 diff of superiority_v2.py, the two '(b - L*m) ** 2' terms become 'd * d', and 'if degenerate == replicates: raise MissingStatisticalEvidence(\"all bootstrap replicates degenerate\")' is added. No epsilon or tolerance is added; the only 'tolerance' (line 174, spec size_tolerance) is pre-existing and unchanged."
+   },
+   {
+    "item": "Claim: track_c_v1 - v1 kernel 8a1254d7 unchanged; v2 8e56a66e = c9e0fa7; 36 reviewed files byte-identical to c9e0fa7; register append-only (+73)",
+    "status": "CONFIRMED",
+    "evidence": "superiority.py is 8a1254d7 at both acaf1b5 and b9e01a9, and superiority_v2.py at acaf1b5 is 8e56a66e. Every one of the 32 paths c9e0fa7 changes vs e0b6d80 has the same blob in acaf1b5, which also covers verify_gsup_v2_arithmetic.py and the workflow, neither of which is in the reviewed list. The Track C register is prefix-preserving vs b9e01a9 (+73 lines), #39 (+23) and e0b6d80 (+23). CURRENT_HANDOFF.md and STATUS.md are prefix-preserving vs e0b6d80, #39 and 8318b78, and SCOPED_HANDOFF.md vs 8318b78."
+   },
+   {
+    "item": "Claim: escalation_sweep reviewed - 4 non-negated hits are a two-line negated sentence; 2 likely-negated hits benign; grants NONE",
+    "status": "CONFIRMED",
+    "evidence": "In the trial tree, CURRENT_HANDOFF.md lines 60-61 and STATUS.md lines 48-49 read 'No real numeric configuration/CAL_VERIFY/Holdout/C8 Freeze,\\ngrants, Official/LIVE or canonical merge is approved.' The harness negation check only looks at ±120 characters on the same line (successor_trial.sh lines 818 and 848-850), so the 'No' on the previous line is missed. test_evl_gsup_v2_cdr012.py:278 asserts official False and promotion_authority None. The pr31-full.xml hit is the existing test name '[holdout_state-CONSUMED]'. My own broader sweep of the added lines vs #39 (excluding xml/log) found no escalation. 'C8 SYNTHETIC_VERIFIED_NOT_FROZEN' already exists at #39. I did not re-run the runtime-grants check; I read the harness file (grants NONE, ACTIVE_AUTHORIZATIONS empty)."
+   },
+   {
+    "item": "Claim: ci_path_filters - 'the only change is the step rename'; replay command identical",
+    "status": "PARTIALLY REFUTED (wording; non-substantive)",
+    "evidence": "The step rename and the identical replay command are confirmed. As a description of the workflow diff vs #39, however, the statement is wrong. git diff 0d31e06 acaf1b5 -- .github shows four kinds of change: (1) +3 pull_request path filters (evl_c8_gsup_v2_cdr012_oracle.py, test_evl_gsup_v2_cdr012.py, CDR012_APPROVAL.json); (2) gate protected() extended with evl_c8_gsup_v2_oracle.py and evl_c8_gsup_v2_cdr012_oracle.py; (3) allowed_additions +2; (4) the step rename. The harness check only compares step names and run commands. The report mentions (2) and (3) elsewhere but never mentions (1). None of these weakens the gate."
+   },
+   {
+    "item": "Claim: Codex CDR012_APPROVAL.json quote fidelity",
+    "status": "CONFIRMED",
+    "evidence": "source_commit is 1620f71 and source_git_blob is bc402d6b, which equals git rev-parse 1620f71:…/COORDINATION_DECISION_REGISTER.md. source_sha256 eaa7960d matches. quoted_decision (2372 chars) is an exact substring of the register, and the user's F1 and F3 sentences each appear in it verbatim; in the register they sit on two '> ' lines. The approval file blob e16038e9 equals the SUPPLEMENT_BLOB that superiority_v2.authority() pins."
+   },
+   {
+    "item": "Check: #39 results not presented as this trial's",
+    "status": "CONFIRMED",
+    "evidence": "The CI run ids differ: #39's are 37169669821… (GIE-010) and #40's are 37179194xxx, all with head_sha acaf1b5. The test counts differ (1518 vs #39's 1441), as do the replay hashes (bb883332 vs d4642fa5) and the trees (40220de1 vs 2a9b7998). The oracle and registry probe ran on an extract of acaf1b5. The only value shared with #39 is the engine fingerprint f690f9c0, which was recomputed (by the harness and by me) and is expected to be the same. #39's numbers appear only as comparison baselines, labelled as such (for example 263 = 257 + 6)."
+   },
+   {
+    "item": "Claim: Draft PR #40 (draft, base codex/combined-integration-2026-10-03, title, body disclosures, footer)",
+    "status": "CONFIRMED (one stale sentence)",
+    "evidence": "draft true, base 86ad362, head acaf1b5, 41 commits, mergeable_state clean. The body contains the patch disclosure, the review of both REVIEW_REQUIRED items, the oracle results, the states, the no-reuse statement, the no-approval list and the required footer. Its INTEGRATION_STATE still says 'CI on this exact head is pending: CI_VERIFIED is not claimed'. That is now stale, though it overclaims nothing."
+   },
+   {
+    "item": "Rerun: macro adoption pinned 4a07099",
+    "status": "PASS",
+    "evidence": "A full git archive of 4a07099 runs tests/test_macro_real_producer.py with 11 passed. An earlier attempt that extracted only src and tests had 1 failure; that was an artifact of my partial extraction and does not reflect the code. The CI macro-adoption-offline job also succeeded."
+   },
+   {
+    "item": "Claim: cleanup - private clone deleted; source repo untouched",
+    "status": "CONFIRMED",
+    "evidence": "In successor-trial, src_worktrees_before equals src_worktrees_after, which also equals my starting worktree list. The successor-trial dir (13M) holds only harness runs, oracle outputs and logs, with no clone. /home/user/Investment-System1 has a clean status at HEAD f1b5afb. My own clone and extracts are deleted, and my end-of-run worktree list is unchanged."
+   },
+   {
+    "item": "CI pytest count for #40 (combined-offline)",
+    "status": "UNVERIFIED",
+    "evidence": "actions_get download_workflow_run_artifact returned a signed URL for artifact 11294317468, but the download was refused by the sandbox proxy (CONNECT 403). Job logs were not read. The trial's stated reason ('allowed read tools have no access') is imprecise: the URL can be obtained but not downloaded."
+   },
+   {
+    "item": "Claim: no real-provider/network data read",
+    "status": "UNVERIFIED",
+    "evidence": "The trial harness's full suite executed test_live_sec_fetch_is_optional_and_not_stage2, which calls try_fetch_companyfacts against the live SEC endpoint with a 6s timeout. It took 0.244s and passed, which is consistent with the request being blocked and the test taking its fail-closed branch, but I cannot confirm which branch ran. I deselected that test in my own run. My attempt to read the proxy status was denied, and I did not pursue it further."
+   }
+  ],
+  "findings_blocking": [],
+  "findings_nonblocking": [
+   "The report's ci_path_filters statement 'the only change is the step rename' covers steps only. The workflow diff vs #39 also adds 3 pull_request path filters, 2 gate protected() entries and 2 allowed_additions. The report mentions the last two elsewhere but never the path filters. Descriptive error only; none of these weakens the gate.",
+   "Live-provider attempt: the full suite (in the trial harness, in #39 and in CI) includes tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2, which tries a live SEC companyfacts fetch. The trial ran it (0.244s, passed), most likely on the fail-closed branch because the request was blocked, but this is not verified. The claim 'no real-provider data read' therefore only holds for data, not for connection attempts. Future harness runs should deselect this test, and I did so in my rerun (1517 passed + 1 deselected).",
+   "The PR #40 body still says CI on this head is pending and CI_VERIFIED is not claimed. CI has completed (10/10 success); the body has not been updated.",
+   "The CI preservation gate does not pin the content of allowed additive files: tampering with evl_c8_gsup_v2_cdr012_oracle.py still passes the gate step. Content identity of the 36 reviewed files against c9e0fa7 is enforced only by the local harness (track_c_v1, which I confirmed independently). This is a pre-existing design property, not a defect of the trial.",
+   "verify_gsup_v2_arithmetic.py hard-codes status PASS and Holdout/actual_CAL_VERIFY/grants/numeric_defaults=0. Only its rc and the asserts carry meaning, and it compares against Codex's own oracle. The trial's gsup_v2_replay item cites those literals as evidence.",
+   "The harness's #35 merge step had two merge bases (c9e0fa7 and 8318b78), which the report does not mention. It is harmless: a single-base direct merge of 0d31e06 and 4cf8ead (merge base 8318b78) gives the identical tree 40220de1.",
+   "The report says the CI artifact could not be accessed because of the read tools. More precisely, the signed artifact URL can be obtained, but the sandbox proxy blocks the download (CONNECT 403). The CI test count stays unverified either way.",
+   "The engine fingerprint f690f9c0 is the same value as #39's. It was recomputed here, and since the producer engines are unchanged this is expected rather than a sign of reuse."
+  ],
+  "conditional_user_decisions": [
+   "Canonical merge of #31, #35, #39 or #40 is USER_DECISION_REQUIRED. #40 is CI-only and must not be merged.",
+   "The Primary Integration Writer decides whether to accept the harness patch semantics (CI-declared list compared with the gate-protected part of the reviewed list) before recording CI_VERIFIED for this trial in a GIE entry. My review finds the patch faithful to c9e0fa7's gate and not a weakening: the changed, unexpected and outside_reviewed checks are untouched, and declared 13 = reviewed∩protected 13 = actual additions 13.",
+   "The Primary Integration Writer should decide whether trial and verification harnesses must deselect the live-SEC-fetch test so they never attempt real-provider access. CI runs it as well.",
+   "Nothing verified here approves numeric configuration, CAL_VERIFY access, Holdout consumption, C8 Freeze, Research/Frozen/Live grants or Official/LIVE promotion. Maturity delta: none."
+  ],
+  "not_run": [
+   "Downloading the CI artifact or job logs for #40 (the proxy blocked the signed-URL download), so the CI pytest count is unverified.",
+   "test_live_sec_fetch_is_optional_and_not_stage2, deliberately deselected to avoid real-provider access.",
+   "The proxy status read, which was denied by the permission classifier and not pursued.",
+   "Re-running the successor_trial.sh harness end to end, patched or unpatched. I re-executed its components independently instead.",
+   "Local browser validations (web_mvp, web_research_guard, web_state_presentation, producer_contract_browser). I relied on the PR #40 CI runs for these.",
+   "Independent re-run of the runtime-grants check (harness output read only).",
+   "Python 3.12/3.13 and cross-platform libm behaviour.",
+   "Registry-level deg == B-1 boundary scenario: it is an oracle limitation at the fixture parameters and is covered only by the kernel compare (17/17).",
+   "Any CAL_VERIFY, Holdout or real-provider data access: none performed."
+  ]
+ }
+}

@@ -1,0 +1,571 @@
+{
+ "oracle": {
+  "items": [
+   {
+    "item": "0. Known state + setup",
+    "status": "PASS",
+    "evidence": "Fresh ls-remote from a private --shared clone (origin = github kco994553-star/Investment-System1). canonical b8e39a2196a6; ccr-22e3ff16-p7n5k5 b9e01a976a0e; #30 86ad3628dd5c; #31 = codex/track-c-gsup-v2-2026-10-03 e0b6d809058511d4bef7ad1aeccad79c5eae3ff8; #35 8318b78de7eb; #38 7e3861b2daf8; #39 0d31e06022c3; global-handoff 1620f7118dbe. All match KNOWN STATE. lsremote_start.txt and lsremote_end.txt are identical, so no remote ref moved during the run. The private clone and the e0b6d80 extract were deleted afterwards. No worktree was added to /home/user/Investment-System1. wf9/prep-v2-oracle was copied to base/: every file is byte-identical, verified with cmp, diff -rq on venv, src_b9e01a9 and selftest. The one exception is README.md, renamed to README_prep-v2-oracle_CDR010.md and still byte-identical."
+   },
+   {
+    "item": "1. CDR-012 reference (primary + ALT wrappers)",
+    "status": "PASS",
+    "evidence": "base/oracle_cdr012.py (sha256 efcbf2ea59c4cc15858257adb3d9c3d220e73cfbc3e1d67ce57046fd99bce21c) wraps oracle_cdr010.mb_v2 defaults (d*d, fsum, blocks, direct sums, (fsum(full)+partial)/n, not sqrt(v/n)>0, ties >=, (r+1)/(B+1)). It returns NOT_RUN_ALL_REPLICATES_DEGENERATE / class NOT_RUN, with no p and no r, iff deg == B. Its f3 modes off, broad and any exist only for mutants. base/oracle_cdr012_alt.py (fa563e91f8991de0c690a4300a6b80743f2b67d1c0c2576dbaded58880bf3733) restates the rule over the exact-rational IEEE emulation, which decides degeneracy in Fractions. The two are bit-identical on 752/752 cases (T, r, deg, ties, p, codes, every t bit; for NOT_RUN: class, deg, T, codes), and the build aborts on any disagreement. Checks: deg == B-1 keeps a p (17 boundary cases). [0.05]*12, L2, B19, seed 7 keeps p 1/20, deg 0, T 0x1.f5a7cecdb684cp+53."
+   },
+   {
+    "item": "2. expected_cdr012.json",
+    "status": "PASS",
+    "evidence": "base/expected_cdr012.json, sha256 d98fae6005d9411ca0ebbfdffe9f3b45f8481153a86924a94f1d4e86688b25c7, 6,110,693 bytes. Two builds are identical apart from runtime_seconds. Built by build_expected_cdr012.py (a7d7d76d...) with PYTHONPATH=.:src_b9e01a9/implementation/src. Battery re-grade: 681 cases, of which 676 are graded under CDR-010 and 5 are UNDEFINED_SE. 0 became NOT_RUN; the maximum degenerate share is E-SUBNORMAL-04 at 9/19. 0 other changes: status, T, r, deg, ties, p, codes, t bits, indices hash, mean, lrv and se all match expected_cdr010.json. Alt identical 681/681. Totals: 752 cases, 710 STAT, 37 NOT_RUN, 5 UNDEFINED_SE; 71,899 graded replicates. Dedicated fixtures: (a) 37 all-degenerate cases. They include the GIE-010 reproducer [-0.2,-0.1]*6 L2 B19 at seeds 7 and 11 (CDR-010 literal p 1/20, deg 19); constant-block and constant series with positive and negative mean; B=1; scaled 2^±400; rounding-induced cases with exact lrv != 0; seed-lucky B19 cases with non-constant float blocks (seeds 4813, 84181, 77127); moderate-T X5 cases; exact zero-mean T==0 cases with B 1-4; and 4 subnormal-underflow cases. B covers {1,2,3,4,5,9,19,99,199}, n 4..23, L 1..7. (b) 17 boundary cases with deg == B-1, including B=1 with deg 0 and B19 with deg 18. (c) F1 detectors: 12 E-SQUARE plus 4 refuter cases. Verified independently: [8.7,0,0,0,-2.9,2.9,2.9,8.7,-2.9] L2 B19 s11 gives d*d p 3/20 (.15) vs pow 4/20 (.20); [0.3,0,0.8999999999999999,...] L3 B19 s13 gives 2/20 (.10) vs 3/20 (.15); the B1 twins give 1/2 vs 2/2. (d) 13 near-undefined cases that keep a p, plus E-UNDEF-PERIOD3-L3. Every fixture's construction is asserted at build time."
+   },
+   {
+    "item": "3. compare_cdr012.py + self-test vs v2 e0b6d80 and mutants",
+    "status": "PASS",
+    "evidence": "base/compare_cdr012.py (0280963894861c4ebcb7b9e5414c9b5a75df8a55ad2580586154a264dc293df2) and adapters_cdr012.py (37e24119c1e4a65246981e2843f8dfa0dbc9a0a5c940a826f84d9ca03be5e995). The harness treats NOT_RUN as an outcome class. The adapter mapping is configurable and documented: --not-run-exc matched against the exception MRO (default MissingStatisticalEvidence), --not-run-reason-regex, --not-run-result key=value pairs, and p None treated as NOT_RUN. On STAT cases it requires exact T.hex, r, deg, ties, p.hex and draws bits; on F3 cases it requires the exact NOT_RUN class. Self-tests (selftest_cdr012/SUMMARY.json, d87f6e8e...): primary and alt EXACT_MATCH_ALL_GRADED on 747. v2@e0b6d80 MISMATCH_IN_68: F1_POW_SQUARING_SUSPECT 31 (12 E-SQUARE + 15 random t-bit + 4 refuter); F3_MISSING_PRODUCED_P 37/37; boundary 0/17 and near-undefined 0/14 clean. The 68 rows equal the oracle pow+F3-off mutant's rows exactly. Mutants: pow 31 (F1 16/16); F3 off 37/37; F3 broad (deg>=B-1) 20 (boundary 17/17); F3 any 119; eps abs/rel 21 each (near-undefined 14/14); F3 p=1.0 37; exact-predicate 26/37; vpos 4/37 (subnormal F3 cases); v1 747. v2@e0b6d80 plus an in-memory F3 shim (scratch only) clears F3 to 0/37 and leaves only the 31 F1 rows, which shows the default mapping works."
+   },
+   {
+    "item": "4. Registry-level probe",
+    "status": "PASS",
+    "evidence": "base/registry_probe_cdr012.py (aea3fcad1f2b8ef402fcd220da4681a43531e25ad06f6682cadf1ed36f1f4ed8). It discovers the v2 module, its registry class and the head's synthetic fixture helpers; all are overridable. It reads n, L, B, seed and alpha from the head spec (12, 2, 19, 7, 0.2) and re-checks each planted series with the oracle. Run at e0b6d80 (selftest_cdr012/registry_probe_e0b6d80.json, 9a06e8aa...) reproduces GIE-010 F3 at registry level, CDR012_DEVIATION, rc 1. S1, with all 8 cells all-degenerate: statistical_status STAT_PASS and 8/8 cells REJECT_H0 at p .05, oracle deg 19 == B. The 4 negative-mean cells (T ~ -1.32e16) are also REJECT_H0. S2, with 7 strong cells and 1 all-degenerate cell: STAT_PASS, with the F3 cell REJECT_H0. S3, the [0.05]*12 control: STAT_PASS, as CDR-012-literal expects. Shim self-tests (probe_selftest_shims.py, in memory, scratch only): f3_kernel_raise and f3_registry_only both give ALL_SCENARIOS_CDR012_EXPECTED, rc 0; eps_guard_kernel is caught in S3."
+   },
+   {
+    "item": "5. README + sha256",
+    "status": "PASS",
+    "evidence": "base/README.md (2617afd24aa07d46fda588761a3e06123f569db7c3b37e9e35508ebd8cecd374) gives the exact commands for the new #31 head: private clone, extract_head.sh, source grep for F1/F3, compare_cdr012 --adapter v2kernel, registry probe, and optional run_selftests.sh with SELFTEST_OUT. It also gives the expected compliant results, the PASS/FAIL/NOT_RUN mapping and the triage tags. base/SHA256SUMS (5e3e4b92ceb0fb4f0ad0576d507c1be136b826b26ec9aca4b86f0ba186e35283) lists 90 files, everything except venv/, src_b9e01a9/ and itself. Other key hashes: extract_head.sh 1bae6a1a..., run_selftests.sh ff0eb291..., fixtures_subnormal_f3.json e983f8f1..., probe_selftest_shims.py 1b9a22d1..., expected_cdr010.json 2b646b3d... (unchanged), selftest_cdr012/v2_e0b6d80.json 53c8c1ae..."
+   }
+  ],
+  "blockers": [
+   {
+    "id": "B1",
+    "class": "OWNER_ACTION",
+    "description": "The actual CDR-012 re-verification of PR #31 cannot run yet. #31 is still e0b6d80 (pow squaring at superiority_v2.py L75/L91, no F3), and Codex has not declared a CDR-012 HANDOFF_READY head. This prep task itself is not blocked.",
+    "owner": "Codex (PR #31, CDR-008 owner)",
+    "unblock": "Codex pushes the CDR-012 head and declares HANDOFF_READY. Claude Main then runs README section 5 (compare_cdr012 rc 0 and registry_probe rc 0 required) and continues to the fresh successor combined trial of #39."
+   }
+  ],
+  "findings_nonblocking": [
+   "On every one of its 68 mismatches, v2@e0b6d80 equals this oracle's pow-squaring + F3-off mutant (same ids, same mismatch strings), and it is bit-exact everywhere else. That covers the 37 new F3 fixtures, 17 boundary cases and 13 near-undefined cases.",
+   "Severity illustration: at e0b6d80, all-degenerate negative-mean cells ([-0.2,-0.1]*6, T ~ -1.32e16) reach REJECT_H0 under the one-sided GREATER test, and S1 reaches STAT_PASS. Literal run() returns a p on all 37 F3 fixtures. v1 returns a p on 33 and raises ZeroDivisionError on the 4 subnormal ones.",
+   "Periodic decimal-zero-mean series are always UNDEFINED_SE in float: 216 digit triples and 22,415 random patterns, all with se == 0. So no B=19 zero-mean F3 fixture can be built that way. The zero-mean F3 coverage uses exact binary zero mean (T == 0) with B 1-4, which are seed-lucky cases.",
+   "The 4 subnormal-underflow F3 fixtures are all-degenerate only under the mandated float predicate (v > 0 but fl(v/n) == 0). Exact arithmetic and a `v > 0` predicate call some replicates non-degenerate. An implementation that uses exact or v>0 degeneracy would miss F3 there (vpos mutant 4/37; exact-predicate mutant misses 11).",
+   "At the head's fixture parameters (n12, L2, B19, seed 7) a registry cell with deg == B-1 cannot be constructed: n12/L2 defect series stay below 0.5 per-replicate degeneracy. So an over-broad F3 rule (deg >= B-1) is detectable only by the kernel compare (17/17), not by the registry probe.",
+   "If Codex implements F3 only in the registry (kernel still returns p), compare_cdr012 reports F3_MISSING_PRODUCED_P 37 while the registry probe passes. The README instructs recording kernel FAIL and registry PASS separately and routing the difference, without merging them into one PASS.",
+   "Triage labels such as EPSILON_GUARD_SUSPECT and F3_OVERBROAD are heuristic hints only; grading is exact. The registry probe output for shim 'none' is byte-identical to the plain run (determinism).",
+   "extract_head.sh extracts only implementation/src, implementation/tests, implementation/docs/codex_takeover and implementation/reports/track_c_c8*. It refuses, and deletes its output, if any non-.py holdout/cal_verify/gate_evidence/data file appears. Nothing like that was present at e0b6d80 (529 files)."
+  ],
+  "not_run": [
+   "Comparison against Codex's next #31 head: it does not exist yet (by design).",
+   "Repository pytest suites (targeted and full regression): not required for this prep.",
+   "GitHub Actions: no dispatch or re-run, per the read-only rule.",
+   "Python 3.12/3.13 and other numpy versions.",
+   "Cross-platform libm behaviour of pow.",
+   "A registry-level deg == B-1 boundary scenario: infeasible at the fixture parameters (see findings)."
+  ],
+  "verdict": "PREP_READY",
+  "summary": "The independent CDR-012 expectations are built under /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf11/prep-cdr012-oracle/base/, which is a byte-identical copy of the wf9 CDR-010 oracle plus new cdr012 files.\n\nThe CDR-012 reference is the CDR-010 default plus one rule: deg == B gives class NOT_RUN. It exists in a primary version and an exact-rational ALT version, and the two are bit-identical on 752/752 cases.\n\nexpected_cdr012.json (sha256 d98fae60…) has 752 cases: 710 STAT graded bit-exact over 71,899 replicates, 37 F3 NOT_RUN, and 5 ungraded UNDEFINED_SE. Re-grading the 681-case battery made 0 cases NOT_RUN and changed 0 other values. The dedicated fixtures are:\n- 37 all-degenerate cases across B 1..199 (positive, negative and zero mean, B=1, constant blocks, rounding-induced, seed-lucky B19, subnormal);\n- 17 boundary cases with deg == B-1;\n- 16 F1 detectors: 12 E-SQUARE plus 4 refuter cases. The refuter p-flips were verified: .15 vs .20 and .10 vs .15;\n- 14 near-undefined cases that keep a p.\n\ncompare_cdr012.py treats NOT_RUN as an outcome class and has a configurable, documented NOT_RUN adapter mapping (exception MRO, reason regex, result keys, p None). Against v2 at e0b6d80 it catches F1 on 16/16 detectors (31 rows) and F3 on 37/37, with zero false mismatches on the boundary and near-undefined cases. Its mismatch rows equal the oracle's pow+F3-off mutant row for row. All 12 mutants are caught.\n\nThe registry probe at e0b6d80 reproduces GIE-010 F3 at registry level: STAT_PASS with 8/8 all-degenerate cells REJECT_H0 (S1), and STAT_PASS with the single F3 cell REJECT_H0 (S2). The S3 near-undefined control stays STAT_PASS, as CDR-012 expects. In-memory shim self-tests confirm the probe passes a compliant F3 implementation and fails an epsilon guard.\n\nThe README gives the exact commands for the new head and the SHA256SUMS covers 90 files. Remote refs were unchanged throughout, and the private clone and extracts are deleted. The only blocker is OWNER_ACTION: Codex still has to reach CDR-012 HANDOFF_READY on #31."
+ },
+ "harness": {
+  "items": [
+   {
+    "item": "Adapted harness written",
+    "status": "PASS",
+    "evidence": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf11/prep-successor-trial/successor_trial.sh, sha256 1af6de78248e97aaa06786effc662ec5a91872288c48bacea60d2abcc881971b, 1693 lines. Source was wf9/prep-next-trial/next_trial.sh, sha256 2e2d45f61903a5bc8912bc40395c20560b065bcb8a8f04c9dd1c9fb6514a47ac, 1146 lines; a copy is kept as next_trial.orig.sh. Unified diff: successor_vs_next_trial.diff (sha256 1c36435b0f8de76e0fc3af85a2f37f64b1d701f03356ed8819a37c7319f2bd08), +768/-221 lines. New helper subcommands: tree_identity, no_reuse, static_scan, replay_eval, oracle_eval, escalation_aggregate. The fetch step is replaced by private_clone_fetch. New steps: no_reuse, gsup_v2_replay, independent_oracle, cdr012_static_scan. Usage: successor_trial.sh --label L --verified-v2-commit SHA [--reviewed-allowlist F] [--reviewed-c8-evidence F] [--min-tests N] [--force-checks] [--oracle P --oracle-python PY --oracle-args S] [--port N] SHA39 SHA31 SHA35. Exit codes: 0 = successor or DRY_RUN, all PASS; 3 = NO_NEW_CONTENT with no FAIL; 4 = REVIEW_REQUIRED only; 1 = any FAIL or NOT_RUN; 2 = usage error."
+   },
+   {
+    "item": "Isolation (no worktree or fetch in the main repo)",
+    "status": "PASS",
+    "evidence": "Each run clones /home/user/Investment-System1 into WORK/repo with git clone --no-checkout --shared. The source is shallow, so git copies the objects instead of sharing them. The run then sets origin to https://github.com/kco994553-star/Investment-System1, fetches with --prune and unshallows (about 4.5s). It asserts the clone's git dir differs from the source and is not inside it. All worktrees and merges stay inside that clone, and WORK is deleted at exit. Each run logs 'source repository worktree list unchanged: yes'. The main repo worktree list is identical before and after (3 entries). The manual probe clone was deleted. No push, PR, comment, dispatch or re-run. Final ls-remote: #39 0d31e06, #31 e0b6d80, #35 8318b78, canonical b8e39a2, owner b9e01a9, #30 86ad362, #38 7e3861b, all unchanged."
+   },
+   {
+    "item": "Adaptation 1: base #39, new #31/#35, ancestor check, INDEPENDENT fallback",
+    "status": "PASS",
+    "evidence": "Inputs are #39 (integration/cdr011-trial-2026-10-04), #31 and #35, each checked against ls-remote and the tracking ref. If #31 is an ancestor of #35 the topology is STACKED and the harness checks that the trial tree equals a direct merge-tree of #39 and #35. If not, it reports INDEPENDENT (WARNING in the log, a review flag, and a line in the summary verdict), still merges #31 then #35, and checks against an independent merge-tree replay. An input already contained in HEAD is recorded NOOP_ALREADY_CONTAINED. The original d1==d2 check would fail on the real successor (#39 already contains the old #31/#35, which gives criss-cross merge bases). It is replaced by: each real merge changes only paths its input changed since all its merge bases. Provenance now subtracts both #31 and #35 history and expects exactly the merges actually made. Self-test A (base #38, DRY_RUN override): 2 real merges, tree 2a9b799 equals the direct merge-tree, 2 harness commits with exact parents. Self-test B2 (base #30, #38 in the #31 slot): INDEPENDENT reported, replay tree 2a9b799 equals the trial tree. Branch overrides are refused for non-DRY labels (usage rc=2)."
+   },
+   {
+    "item": "Adaptation 2: VERIFIED_V2_COMMIT required",
+    "status": "PASS",
+    "evidence": "Without --verified-v2-commit the harness exits rc=2 ('no default: the v2 blob check must never silently compare against e0b6d80'). checks.py itself refuses without a full sha. The commit must be an ancestor of (or equal to) the #31 or #35 head: self-test E2 with 7e3861b -> verify_inputs FAIL. Self-test F with 29c2c20 (no superiority_v2.py) -> track_c_v1 FAIL on both items. A non-DRY label is refused while #31 = e0b6d80 (E1/E1b: REFUSED), while VERIFIED_V2_COMMIT = e0b6d80, or when the base is not 0d31e06. New gating item: every reviewed-allowlist file must be byte-identical to the verified commit."
+   },
+   {
+    "item": "Adaptation 3: reviewed allowlist (--reviewed-allowlist, plus --reviewed-c8-evidence)",
+    "status": "PASS",
+    "evidence": "The default is the 11 entries. A file can replace it; the file is copied into the run directory and its sha256 recorded. The CI-declared allowed_additions must equal the reviewed set, and every tc_protected addition must be inside it. New rule: every C8-scope addition (evl/superiority*|gsup*, tests/test_evl_c8*|test_evl_gsup*|evl_c8*, tools/track_c_c8*, reports/track_c_c8*) must be in the allowlist or in the reviewed C8 evidence list. That list defaults to the 2 source-identity approval reports already in #39. Those reports must stay byte-identical to #39. Self-tests: C1 (11 entries from a file) PASS; C2 (10 entries) FAIL; C3 (12 entries) FAIL; C4 (one report missing) FAIL."
+   },
+   {
+    "item": "Adaptation 4: MIN_TESTS default 1441",
+    "status": "PASS",
+    "evidence": "--min-tests, default 1441. The forced run counted 1441 total, 1441 passed, 0 failed/errors/skipped."
+   },
+   {
+    "item": "Adaptation 5a: Codex CI-parity replay step (gsup_v2_replay)",
+    "status": "PASS",
+    "evidence": "Runs python implementation/tools/verify_gsup_v2_arithmetic.py with the venv (Python 3.11.15, numpy 2.3.5, pytest 9.1.1) from the trial root, as CI does. PASS needs rc=0, status PASS, Holdout/actual_CAL_VERIFY/grants/numeric_defaults = 0 and historical_v1_rewritten = false. Dry-run output sha256 af5b558d6d982c82e93d9369bf3846d37d8c70ead12ad26fb962af5ac2f0c6bc, byte-identical to wf10's #39 supplementary output. numerical_output_sha256 d4642fa50523c75f4278afc5463c9751d582c427077916788e8fd39f1f99cfd5; equality with that #39 value is recorded as information only."
+   },
+   {
+    "item": "Adaptation 5b: optional independent oracle step",
+    "status": "PASS",
+    "evidence": "--oracle PATH; NOT_RUN when the file is absent. By default it uses wf11/prep-cdr012-oracle/compare_cdr012.py, falling back to prep-cdr012-oracle/base/compare_cdr012.py (the only place it exists now); the path and sha256 used are recorded. It runs with PYTHONPATH=<oracle dir>:<trial src>, PYTHONDONTWRITEBYTECODE=1 and cwd in my run directory. Default args '--adapter v2kernel --out {out}'. PASS needs rc=0 and a JSON status of PASS or verdict EXACT_MATCH_ALL_GRADED. Stub tests: D1 PASS -> PASS; D2 JSON status FAIL -> FAIL; D3 rc=1 -> FAIL; D4 no JSON and rc=0 -> PASS (exit status only); D5 absent -> NOT_RUN."
+   },
+   {
+    "item": "Adaptation 5c: no-reuse check (NO_NEW_CONTENT)",
+    "status": "PASS",
+    "evidence": "no_reuse compares the trial tree with the #39 tree. If they are identical, the step status is NO_NEW_CONTENT and the run is not called a successor (summary run_kind NO_NEW_CONTENT, is_successor_trial false, marker file, exit 3). The remaining checks are recorded NOT_RUN unless --force-checks. no_reuse runs even under --only/--skip."
+   },
+   {
+    "item": "Adaptation 6: escalation status REVIEW_REQUIRED",
+    "status": "PASS",
+    "evidence": "escalation_aggregate returns REVIEW_REQUIRED (never PASS) when the delta-vs-#39 sweep has non-negated hits, FAIL if the runtime grants check fails, PASS otherwise. The summary verdict lists each hit needing review as path:line pattern plus context. Self-test A2 (delta vs #38): REVIEW_REQUIRED, 6 non-negated hits listed (gsup_source_identity.py:9 CAL_VERIFY_ACCESS, INDEPENDENT_REVIEW_2026-10-03.md:5/6, OPEN_PRS_BASELINE.json:10205, register-before.bin:27, FINAL_ACTIONS_REVIEW.md:54) and 71 likely-negated hits listed. Dry run: 0 delta hits -> PASS; full-vs-canonical 257 hits listed only."
+   },
+   {
+    "item": "DRY RUN 1: DRY_RUN_PRE_CDR012 without --force-checks (runs/DRY_RUN_PRE_CDR012-20261004T032434Z)",
+    "status": "PASS",
+    "evidence": "Final harness 1af6de78, port 8792. Command: successor_trial.sh --label DRY_RUN_PRE_CDR012 --verified-v2-commit e0b6d809058511d4bef7ad1aeccad79c5eae3ff8 --port 8792 0d31e06022c3162e83f2ff5a984b07e59e4e216b e0b6d809058511d4bef7ad1aeccad79c5eae3ff8 8318b78de7ebaca63b857f8c85a12d071863c492. Exit 3, 11.6s wall. Steps: env_setup 0.6s, private_clone_fetch 4.5s, verify_inputs 1.4s (STACKED), verify_baselines 1.3s, build_trial 0.8s (both merges NOOP_ALREADY_CONTAINED, trial = 0d31e06), merge_conflicts PASS, tree_identity PASS, no_reuse NO_NEW_CONTENT (tree 2a9b79984fa746607fa23ef1a1f680801d91dd5a = #39 tree), remote_recheck PASS 2.2s, 18 checks NOT_RUN (NO_NEW_CONTENT). Verdict: 'NO_NEW_CONTENT ... NOT a successor trial; 18 checks not re-run; checks: EXECUTED_STEPS_PASS'. No crash, no successor claim."
+   },
+   {
+    "item": "DRY RUN 2: same inputs with --force-checks; the full check set on tree 2a9b799 (runs/DRY_RUN_PRE_CDR012-20261004T032452Z)",
+    "status": "PASS",
+    "evidence": "Final harness 1af6de78. Exit 1, 8m55s wall. 24 steps PASS: env/clone/inputs/baselines/build/merge_conflicts/tree_identity; preservation_gate_ci ('Preserved 41 exact owner files; approved additive files 10'); protected_paths; source_provenance; escalation_sweep (7.8s); engine_fingerprints f690f9c0 for both pythons; full_pytest 423.2s (1441/1441, C8 v1 200/200, G-SUP additive 230/230); gsup_v2_replay 0.2s; track_c_v1 (v2 blob 370e9b42 = e0b6d80; register append-only); web_mvp_validation 21.3s; web_research_guard 12.1s; web_state_presentation 48.7s; producer_contract_fixture 0.3s; producer_contract_browser 2.3s; macro_adoption_pinned 1.8s (11 passed); ci_path_filters (readiness parity PASS); intree_writes; remote_recheck. no_reuse = NO_NEW_CONTENT. The two FAILs are the next two items. An earlier forced run with the pre-fix harness 7831bfb6 gave the same result: 1441 passed, 9m02s (runs_superseded/)."
+   },
+   {
+    "item": "Forced run: cdr012_static_scan on the pre-CDR-012 tree",
+    "status": "FAIL",
+    "evidence": "Expected negative control. The AST scan finds SQUARE_BY_POW at superiority_v2.py L75 and L91 in the e0b6d80 v2 that #39 carries (lrv/variance ** 2), which is exactly the F1 violation CDR-012 removes. gsup_source_identity.py and superiority_source_identity.py: PASS. This shows the scan is live; it is not a defect in the trial content of #39 as of CDR-010."
+   },
+   {
+    "item": "Forced run: independent_oracle on the pre-CDR-012 tree",
+    "status": "FAIL",
+    "evidence": "Expected negative control, run against the sibling's work-in-progress comparator prep-cdr012-oracle/base/compare_cdr012.py (sha256 0280963894861c4ebcb7b9e5414c9b5a75df8a55ad2580586154a264dc293df2). Verdict MISMATCH_IN_68_CASES: triage F1_POW_SQUARING_SUSPECT 31, F3_MISSING_PRODUCED_P 37. Result JSON sha256 53c8c1ae4892d6aa503057247064b053d38f9b20b9295dc217c172ef09642256. This validates the plumbing only; it is not an authoritative verification."
+   },
+   {
+    "item": "Harness bugs found and fixed in my copy (no product code touched)",
+    "status": "PASS",
+    "evidence": "(1) remote_recheck reported a spurious FAIL after a fatal verify_inputs, because baselines.tsv was missing; this was latent in the original too. It now depends on verify_inputs and tolerates a missing baselines file (E1b: NOT_RUN 'dependency verify_inputs is FAIL'). (2) The no-new-content verdict said ALL_PASS while 18 checks were skipped; it now says EXECUTED_STEPS_PASS. (3) An f-string with backslashes in the static-scan note would have crashed under Python 3.11; the note is now written by the Python helper. (4) --help line range. (5) Design fixes for paths the dry run cannot reach: d1==d2 replaced by per-merge subset checks; foreign-commit computation; no-op merges; INDEPENDENT topology. (6) Added a codex-integration-readiness CI-parity item: a new, renamed or removed step, or a changed replay command, gives REVIEW_REQUIRED. Probe: #39 PASS, #38 REVIEW_REQUIRED."
+   },
+   {
+    "item": "Real CDR-012 successor trial",
+    "status": "NOT_RUN",
+    "evidence": "New #31/#35 heads do not exist yet; remote #31 is still e0b6d80 and #35 still 8318b78. The real run needs Codex HANDOFF_READY plus Claude Main's independent F1/F3 verification first."
+   }
+  ],
+  "blockers": [
+   {
+    "id": "B1",
+    "class": "OWNER_ACTION",
+    "description": "The real successor trial needs Codex's CDR-012 heads on #31 (codex/track-c-gsup-v2-2026-10-03) and #35 (codex/integration-hardening-2026-10-03) with HANDOFF_READY. At the end of this task both were unchanged (e0b6d80 / 8318b78), and the harness refuses a non-DRY label while #31 = e0b6d80.",
+    "owner": "Codex (PR #31/#35), then Claude Main (Primary Integration Writer)",
+    "unblock": "After Codex pushes and Claude Main verifies F1/F3 independently at the new #31 head, run: successor_trial.sh --label CDR012_SUCCESSOR_TRIAL --verified-v2-commit <verified new #31 sha> [--reviewed-allowlist <re-reviewed list incl. any new Codex test files, equal to the CI-declared allowed_additions>] [--reviewed-c8-evidence <list incl. any new reports/track_c_c8* files>] [--oracle <final compare_cdr012.py>] --port <private port> 0d31e06022c3162e83f2ff5a984b07e59e4e216b <new31> <new35>"
+   }
+  ],
+  "findings_nonblocking": [
+   "The default oracle resolves to prep-cdr012-oracle/base/compare_cdr012.py because no top-level compare_cdr012.py exists. The sha256 actually used is recorded every run. Pass --oracle explicitly once the sibling finalizes it. That oracle exits 0 only for EXACT_MATCH_ALL_GRADED, and the harness understands its 'verdict' key.",
+   "Expected outcome on the real successor if Codex adds new test files: protected_paths FAILs until a re-reviewed --reviewed-allowlist equal to the CI-declared list is passed. If Codex adds or renames a readiness CI step (for example a CDR-012 replay), ci_path_filters becomes REVIEW_REQUIRED until the harness mirror is confirmed. Both are by design.",
+   "cdr012_static_scan is an AST-only check: comments and strings are excluded, and F3 is behavioural and cannot be checked statically. It FAILs on ** 2 or pow() squaring in superiority_v2.py and gives REVIEW_REQUIRED for other power operators or for powers in other additive evl sources.",
+   "The per-merge subset check (merge delta must lie within the input's delta since its merge bases) could false-FAIL in a rare case: the #39 side renamed a file that the input modified. The offending paths are listed in that case.",
+   "The escalation negation heuristic is permissive. Only non-negated delta hits drive REVIEW_REQUIRED, as specified; likely-negated delta hits are counted and listed in the TSV.",
+   "Expected for the real run: gsup_v2_replay records numerical_output_sha256 against #39's d4642fa5 as information only. F3 (and possibly F1) may change it legitimately.",
+   "The --base-branch/--br31/--br35 overrides exist only for DRY_RUN_* self-tests and are refused otherwise. A non-DRY label also requires base == 0d31e06 (the CI-verified #39 tip).",
+   "Private venv /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf11/prep-successor-trial/venv311: pip freeze identical to the venv of the #39 CDR011_TRIAL run.",
+   "Kept artifacts: runs/ (the two final dry runs), runs_superseded/ (pre-fix harness runs), selftest/ (allowlist files, oracle stubs, self-test consoles; selftest/runs = final-harness self-tests G, E1b, B2, A2, C2b), successor_vs_next_trial.diff."
+  ],
+  "not_run": [
+   "Real CDR-012 successor combined trial (no new #31/#35 heads yet)",
+   "Any GitHub Actions run, dispatch or re-run (read-only by rule)",
+   "Authoritative independent F1/F3 verification of a new #31 head (Claude Main's task after Codex HANDOFF_READY); the oracle was run only as a plumbing check against pre-CDR-012 content",
+   "CAL_VERIFY, Holdout or real-provider data access (none performed)"
+  ],
+  "verdict": "HARNESS_READY: DRY_RUN_PRE_CDR012 reported NO_NEW_CONTENT cleanly (exit 3, no successor claim), and the forced full check set ran end to end on #39's tree (1441/1441 passed, browser/E2E, fingerprints and protected paths PASS). The only FAILs were the 2 expected negative controls on pre-CDR-012 v2. The real successor trial is NOT_RUN until Codex delivers the CDR-012 heads (OWNER_ACTION).",
+  "summary": "The successor-trial harness is ready at /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf11/prep-successor-trial/successor_trial.sh (sha256 1af6de78248e97aaa06786effc662ec5a91872288c48bacea60d2abcc881971b). It is adapted from next_trial.sh 2e2d45f6 (+768/-221 lines).\n\nChanges:\n- Base is #39 0d31e06 and the inputs are the #31 and #35 heads. A STACKED vs INDEPENDENT topology check replaces the fatal ancestor assertion; INDEPENDENT is reported and the merges proceed #31 then #35. Inputs already contained in the base are recorded as no-op merges.\n- --verified-v2-commit is required, with no default.\n- --reviewed-allowlist and --reviewed-c8-evidence: any unreviewed Track C or C8-scope addition FAILs.\n- MIN_TESTS defaults to 1441.\n- New steps: gsup_v2_replay (output sha256 recorded); an optional independent_oracle; a no_reuse check that labels an unchanged tree NO_NEW_CONTENT; a CDR-012 F1 AST static scan; and a readiness CI-parity item.\n- Escalation hits are now REVIEW_REQUIRED and listed in the verdict.\n- Each run uses a private clone, so it never creates a worktree in or fetches into /home/user/Investment-System1.\n\nDry run on 0d31e06 + e0b6d80 + 8318b78, port 8792:\n- Without --force-checks: exit 3 in 11.6s. Both merges were no-ops, the tree 2a9b799 equals #39's, the run was labelled NO_NEW_CONTENT and 18 checks were recorded NOT_RUN.\n- With --force-checks: 8m55s. 24 steps PASS, including pytest 1441/1441 (423s), all browser steps, fingerprints f690f9c0, protected paths and the preservation gate. The replay output was byte-identical to #39's (numerical d4642fa5). The only FAILs were the expected negative controls on pre-CDR-012 v2: the static scan found ** 2 at superiority_v2.py L75/L91, and the work-in-progress oracle reported 68 mismatches.\n\nSelf-tests covered the real-merge, INDEPENDENT, allowlist-negative, oracle, refusal and stale-head paths. Harness bugs fixed: a spurious remote_recheck FAIL that was also in the original; a misleading NO_NEW_CONTENT verdict; an f-string that would have crashed; and merge/provenance logic that would have failed on the successor topology.\n\nMain repo worktrees were unchanged and the private clone was deleted. Nothing was pushed. The real successor trial waits for Codex's CDR-012 heads."
+ },
+ "rig": {
+  "audit": {
+   "items": [
+    {
+     "item": "(a) #13 feature/rig-news-real-ingestion-v1: head, base, stack, CI",
+     "status": "NOT_RUN",
+     "evidence": "Head 8bb990bd5a6b2009906329b933a67e2303bbb8c7 (tree 3541b60b). Base is canonical b8e39a2 (merge-base b8e39a2, 0 behind / 2 ahead). Draft, mergeable_state clean. CI on the exact head: 0 check runs (MCP get_check_runs #13 total_count=0). The branch carries only canonical's c21-real-data.yml (workflow_dispatch only), so no workflow can ever run on #13. 'code ✓ / head docs-only' does NOT apply. `git diff --name-only f853908 8bb990b` shows docs only (AUDIT.md, CONTRACT.md, STATUS.md, evidence/validation.json), but code commit f853908 has no CI either (its own PR body records check_runs=0). Read-only pins in contract.py: ENTITY_METADATA_AUDITED_SHA a013f1c (#7 head, unchanged) and PRODUCER_INFRA_AUDITED_SHA 6fe9eee, which is now 1 commit behind the #9 head f8af596. The PR body's 'pins still current' is stale. Owner disposition in STATUS.md and the PR body: 'INTEGRATION WAIT ... Do not merge PR #13'."
+    },
+    {
+     "item": "(a) #16 feature/sec-primary-disclosure-v1: head, base, stack, CI",
+     "status": "PASS",
+     "evidence": "Head ef65caa5437a04610fa43f93209afb9193ba24aa (tree 8281ad90). Base is #13 8bb990b; stacked: canonical ⊂ 8bb990b ⊂ ef65caa (0 behind / 4 ahead of canonical). Draft, mergeable_state clean. HEAD ✓: sec-primary-disclosure run 36979915604 (pull_request; merge ref 5b655d3 = ef65caa into 8bb990b) and run 36979911841 (push), both success with head_sha ef65caa checked via API. Job log: CPython 3.12.14, `python tools/mini_pytest.py`, 423 passed 0 failed; 'Preparing worktree (detached HEAD 6fe9eee)' succeeded because #9's tip was 6fe9eee at 07:41Z on 10-02. Runs 1 and 2 on e2107da FAILED (shallow checkout). #16 changes #13 code (contract.py, raw.py, rig_input.py), so #13's exact code tree is CI-verified only through #16. Reproducibility of this PASS: see the CI reproducibility item."
+    },
+    {
+     "item": "(a) #16 CI reproducibility today (owner workflow re-run simulation)",
+     "status": "FAIL",
+     "evidence": "Simulated the owner job: depth-1 clone of ef65caa, then the workflow's own commands `git fetch --depth=1 origin ccr-41677301-10nj3u` and `git fetch --depth=1 origin feature/producer-infrastructure-v1` from GitHub (read-only), which fetched a013f1c and f8af596. Result: 6fe9eee ABSENT. `python3.12 tools/mini_pytest.py` gives 422 passed, 1 failed (test_rig_news_ingest.py::test_producer_infrastructure_compatibility_and_absence; 'fatal: invalid reference: 6fe9eee'). A depth-1 fetch of the post-#33 #7 tip (9626ab0) leaves a013f1c ABSENT, so test_pr7_registry_is_read_only_and_not_copied will also fail once #33 fast-forwards into #7. The recorded HEAD ✓ is therefore not reproducible: a re-run, or a canonical-merge PR of #16, is red today. Log: logs/sim16_mini312.log."
+    },
+    {
+     "item": "(a) #21 ccr-2e16018a-qukwmg (Worker Contract, docs only) standalone",
+     "status": "PASS",
+     "evidence": "Head f1b5afb (tree 1a9ab197), base canonical b8e39a2 (0 behind / 1 ahead). It adds only CLAUDE.md (blob 4d510bcb) and implementation/docs/coordination/CLAUDE_CODE_WORKER_CONTRACT.md (blob 617ef6d4, equal to the GCH CDR-001 pin); canonical has neither. Trial --no-ff onto canonical: 0 conflicts, tree 1a9ab197 = f1b5afb tree. Full native pytest 396 passed (canonical b8e39a2 is also 396). mini_pytest 396/0. Engine fingerprint sha256 4ba44a8c…, identical to canonical, so no code impact. CI: N/A (0 check runs; no workflow matches docs-only paths). 0 file overlap with the RIG chain. #21 is already contained in #30 86ad362, #38 7e3861b and #39 0d31e06 (merge 583041a)."
+    },
+    {
+     "item": "(a) #21 vs #20 integration/claude-worker-contract-v1 (SUPERSEDED_DUPLICATE, CDR-001)",
+     "status": "FAIL",
+     "evidence": "`git merge-tree --write-tree f1b5afb d87d4cd` returns rc=1 with an add/add CONFLICT in both CLAUDE.md and CLAUDE_CODE_WORKER_CONTRACT.md. #20 is closed and unmerged, and d87d4cd is not an ancestor of #30, #38 or #39. Semantic differences confirmed. #20 §J adds 'unless an approved contract explicitly permits it'. #20 §M narrows invariance to 'where an existing approved fingerprint exists'. #20 must not be merged. This FAIL is the expected duplicate conflict, not a #21 defect."
+    },
+    {
+     "item": "(b) merge order onto canonical",
+     "status": "PASS",
+     "evidence": "Stack order is #13 8bb990b, then #16 ef65caa; merging #16 alone would also bring in #13. The RIG chain vs canonical is 21 added files, 0 modified or deleted. It has 0 path overlap with Track C b9e01a9, #5, #6, #7+#33, #9+#32 and #21. The order relative to Track C and the Web chain does not matter for content. S1 end → S2 end equals canonical → b9e01a9 (`git diff --raw` identical), and S3 end → S4 end likewise. S3a (RIG first, with #9 before #7) and S3b (Web first, stack order) both end at the same tree 8bde54b9. Two ordering constraints remain. (1) IF-2 second-merger rule: the #13 sentinel conversion must be in #13/#16 before whichever of {#7, RIG chain} reaches canonical second; otherwise canonical carries 1 red test. (2) #16's workflow must be repaired before its canonical-merge PR, which would trigger it. Merge-order lines are in the summary."
+    },
+    {
+     "item": "(c) S1: chain alone on canonical b8e39a2 (--no-ff, private clone)",
+     "status": "PASS",
+     "evidence": "Step 1 #13 gives tree 3541b60b (= 8bb990b tree; never on Actions): targeted test_rig_news_ingest.py 14 passed. Step 2 #16 gives tree 8281ad90 (= ef65caa tree, CI ✓ 36979915604): targeted 27 passed. 0 conflicts at both steps. End commit c9c018b. Full native `PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider -rf` (Py 3.11.15, pytest 9.1.1): 423 passed, 0 failed, 0 skipped (junit). mini_pytest 423/0, equal to the CI count. Fingerprint sha256 4ba44a8c… (pre-adoption: technical 82165414, macro 7bbfad69, qgv a1714480, leaderboard 112b245b, portfolio 53d930a7; n_qgv 19), equal to canonical. The tool is a private copy of f8af596:implementation/tools/producer_engine_fingerprint.py (sha256 f4b8bca1…)."
+    },
+    {
+     "item": "(c) S2: Track C b9e01a9 first, then chain",
+     "status": "PASS",
+     "evidence": "Step 1 Track C gives tree 3ed79c6a (= b9e01a9; CI run 37097149378): targeted test_evl_* 530 passed. Step 2 #13 gives NEW tree 15bee6e3: 14 passed. Step 3 #16 gives NEW tree c608fec6 (commit b1760aa): 27 passed. 0 conflicts. Full native 953 passed, 0 failed, 0 skipped (443 s; 396 + 530 + 27). Fingerprint sha256 f690f9c0… (post-adoption: technical 66cb2383, macro 7e427949; others unchanged), equal to GIE-009 S2. Preservation: 0 diffs vs b9e01a9 in evl/, test_evl_*, tools/track_c*, reports/track_c*. Track A gate_evidence and data vs canonical: 0. Frozen rig/ outside ingest/: 0. S2 end vs b9e01a9: 21 A only."
+    },
+    {
+     "item": "(c) S3a: RIG first, then Web chain (#5, #6, #9+#32, #7+#33)",
+     "status": "FAIL",
+     "evidence": "0 conflicts at all steps. Trees: rig13 3541b60b (14 passed), sec16 8281ad90 (27), web5 859cfc0e NEW (35), lang6 4145bdec NEW (32), infra9+32 ea7e6731 NEW (49; #9 producers present, sentinel still passes), em7+33 8bde54b9 NEW (1 failed / 36 passed: test_pr7_registry_is_read_only_and_not_copied). End commit 6b3ea0c. Full native: 467 passed, 1 failed (only that sentinel). mini_pytest 467/1. Fingerprint 4ba44a8c… (pre-adoption). This FAIL is exactly the predicted IF-2 sentinel and nothing else."
+    },
+    {
+     "item": "(c) S3b: Web chain first (#5, #6, #7+#33, #9+#32), then RIG",
+     "status": "FAIL",
+     "evidence": "0 conflicts. Trees: web5 dd640e8b (= a4e49c8), lang6 7e03505f (= eda65bf), em7+33 71bf6491 (= 9626ab0; 10 passed), infra9+32 16ebbdee (= GIE-009 S1-04; 22 passed), rig13 68196e6e NEW (1 failed / 13 passed, sentinel), sec16 8bde54b9 (1 failed / 26 passed, sentinel). End commit e8c08e6, tree 8bde54b9, identical to the S3a end (order invariance). Full native 467 passed, 1 failed (the sentinel). mini_pytest 467/1. Fingerprint 4ba44a8c…. S3 end vs canonical: 91 A, 0 M/D."
+    },
+    {
+     "item": "(c) S4 (extra): Track C, then Web chain, then RIG (the #30-like content without the other chains)",
+     "status": "FAIL",
+     "evidence": "0 conflicts. Steps 2–5 trees (5bf3f58e, fb3eadb3, fa3c2a80, 7e16783f) equal GIE-009 S2-01..04. rig13 662a286c NEW (1 failed / 13), sec16 6b78c5b2 NEW (1 failed / 26). End commit 2d60c47. Full native: 997 passed, 1 failed (the sentinel only; 434 s). mini_pytest 471 passed, 17 failed (16 test_evl_* import errors plus the sentinel). Fingerprint f690f9c0… (post-adoption). S3 end → S4 end equals the canonical → b9e01a9 delta, with 0 Track C path diffs vs b9e01a9."
+    },
+    {
+     "item": "(c) IF-2 sentinels fail exactly when #7 is present",
+     "status": "PASS",
+     "evidence": "Assertion: test_rig_news_ingest.py:192 `assert not (REPO/'implementation'/'reports'/'entity_metadata').exists()`. The test blob f1f29325 is identical in #13 and #16, so '#16 :192' is the same sentinel. It PASSES in every tree without #7, including trees with #5, #6 and #9+#32 (S3a step 5; producers_pkg present). It FAILS at the first step where #7's reports/entity_metadata appears (S3a step 6, S3b steps 5–6, S4 steps 6–7). No other test is order-sensitive."
+    },
+    {
+     "item": "(c) engine fingerprints at scenario ends",
+     "status": "PASS",
+     "evidence": "S1, S3a and S3b give 4ba44a8c77dbe17d… (pre-adoption, equal to canonical b8e39a2 and canonical+#21). S2 and S4 give f690f9c08b6b2692… (technical 66cb2383, macro 7e427949), equal to the GIE-009 S2 and #30-based values. The RIG chain does not change any engine fingerprint."
+    },
+    {
+     "item": "(c) owner CI runner (mini_pytest shim, used by #16's workflow) at scenario ends",
+     "status": "FAIL",
+     "evidence": "S1 423/0 PASS. S2 427 passed, 16 failed (test_evl_c1..c8 import errors: pytest has no 'mark'). S3a and S3b 467/1 (sentinel). S4 471/17. Native pytest has no such import failures. The owner sec-primary-disclosure workflow is red on any tree containing Track C."
+    },
+    {
+     "item": "(d) Codex integration-context repair 0366a3c in #30 (with 41a6efb and 0ea00d2)",
+     "status": "PASS",
+     "evidence": "Only two RIG-chain files differ between ef65caa and #30, #38 and #39: test_rig_news_ingest.py (f1f29325 → 040efda) and sec-primary-disclosure.yml. The changes came in three commits. 41a6efb removed the :192 absence assert and added `_read_only_registry`: the registry is absent, or present and byte-identical to the a013f1c blob (GIE-006 F2). 0366a3c added `_registry_required_by_head`: `git ls-tree HEAD` decides whether the tree commits the registry, and the committed blob must equal the git-blob id of the pinned bytes. A git failure raises AssertionError rather than being read as isolation, and a committed-but-deleted directory fails. 0366a3c also added 4 negative tests, one of them @pytest.mark.parametrize (F3). 0ea00d2 changed the workflow to fetch-depth 0, full pin fetches, Python 3.11 and native pytest 9.1.1. Local runs of 040efda: isolated S1 tree 19 passed (1 deselected); S3a end with #7: 19 passed; S4 end with the producer test included: 33 passed (RIG + SEC). Under mini_pytest the module fails to import: 0 passed, 1 failed, AttributeError 'mark'. Sec-primary-disclosure owner run 5 (37102512499) on #30 71d5773 FAILED for this reason before 0ea00d2. What an owner conversion needs (described only): see blocker RS-B1."
+    },
+    {
+     "item": "(e) GIE-006 F6: shared /tmp/rig-news-producer-ro worktree",
+     "status": "FAIL",
+     "evidence": "Created by the RIG test only; no tool or workflow references it. `_producer_validate` (test_rig_news_ingest.py:270-276, used by test_producer_infrastructure_compatibility_and_absence) runs `git worktree add --detach /tmp/rig-news-producer-ro 6fe9eee` with cwd=REPO when the path is missing, and never removes it. The worktree registers in the common .git of whichever checkout ran the test. The host entry /home/user/Investment-System1/.git/worktrees/rig-news-producer-ro has reflog '0000→6fe9eee Claude <noreply@anthropic.com> 1791015729' (2026-10-03T08:22:09Z): an agent ran the test from a main-repo worktree. That leak was reproduced in isolation: each trial run (private tmpfs /tmp via unshare) created and registered the path in the private clone. Two further defects were reproduced. (1) Missing-but-registered: once the path vanishes, the next run fails with 'fatal: ... is a missing but already registered worktree' (logs/F6_missing_but_registered_repro.log). `git worktree prune` does not clear it while some other repo's directory exists at that path; on this host the main repo's worktree occupies it. (2) Fail-open: an existing path is reused with no check of its commit or cleanliness. A stub contract.py (not 6fe9eee) planted at the path made test_producer_infrastructure_compatibility_and_absence PASS (logs/F6_failopen_demo.log). The host worktree is currently clean at 6fe9eee (porcelain 0), so today's results are valid. It was NOT removed, and its mtimes are unchanged by this audit. Class OWNER_ACTION (RS-B3)."
+    },
+    {
+     "item": "(f) real-provider state (scoped STATUS, no network)",
+     "status": "PASS",
+     "evidence": "#13 STATUS: REAL_NEWS_PROVIDER_READY NO, RIG_REAL_PRODUCER_READY NO, CONSENSUS_PRODUCER_READY NO. PROVIDER_CANDIDATES.md: keyless SEC/IR-RSS/GDELT are NOT_ACTIVATED; keyed or paid wires are PROVIDER_BLOCKED. No provider is selected (USER_DECISION; possibly paid). #16 STATUS: SEC_PRIMARY_DISCLOSURE_PROVIDER_READY 'YES for supplied Atom bytes. Live fetch is configuration-gated and was not run'; SEC_ENTITY_MAPPING_READY NO; GENERAL_NEWS_PROVIDER_READY NO. `fetch_sec_atom` requires SEC_USER_AGENT or INVESTMENT_SYSTEM_SEC_UA before urlopen and is limited to www.sec.gov and data.sec.gov. Its only caller is a test asserting SEC_USER_AGENT_REQUIRED, and no workflow or tool calls it. publish_web_disclosure always raises WEB_PUBLICATION_BLOCKED; general_news_snapshot stays NOT_AVAILABLE/NEWS_NO_SOURCE. No grant, Official or Holdout change in the 21 added files. Nothing was fetched."
+    },
+    {
+     "item": "(g) workflows on these branches and post-canonical-merge behaviour",
+     "status": "FAIL",
+     "evidence": "#13 has no own workflow. #16 adds sec-primary-disclosure.yml: on pull_request (no filters) and on push to feature/sec-primary-disclosure-v1 only. After a canonical merge it would not run on canonical: the push filter excludes it and there is no post-merge CI, consistent with GIE-009 §2.5. It would run on every later PR whose merge ref contains it, i.e. all PRs into canonical. The owner version (depth 1, branch-tip depth-1 pin fetch, Py 3.12, mini_pytest) is red today (422/1, the 6fe9eee item), red on any tree with Track C (16 shim import failures), and red after #33 fast-forwards into #7 (a013f1c missing). Py 3.12 also breaks the P01 fingerprint once #17 is present, per Codex 0ea00d2 evidence (not re-run here). The 0ea00d2 form is green in integration contexts: runs 37102973410 (#30), 37122132766 (#38), 37169669865 (#39), 37164938826 (#35), 37174701620 (#31 c9e0fa7). Cross-chain: in a depth-1 checkout without pin fetches, the RIG tests fail 2 (25 passed / 2 failed, S1 end; logs/sims1_shallow_rig.log). Every full-suite workflow with a shallow checkout therefore goes red once RIG is on canonical: owner web-mvp-validation, p01, qgv-invalidation, technical and us-equity. All of these are already on the GIE-009 §2.3 fetch-depth-0 port list. c21-real-data is workflow_dispatch only and unchanged."
+    },
+    {
+     "item": "remote freshness",
+     "status": "PASS",
+     "evidence": "ls-remote at 03:36:15Z, 03:52:42Z and 04:15:24Z: no constituent moved (#13 8bb990b, #16 ef65caa, #21 f1b5afb, #20 d87d4cd, Track C b9e01a9, #5 a4e49c8, #6 eda65bf, #7 a013f1c, #33 9626ab0, #9 f8af596, #32 e9aee0c, canonical b8e39a2). Out-of-scope moves during the audit: #31 e0b6d80 → c9e0fa7 (Codex CDR-012 HANDOFF_READY), #35 8318b78 → 4cf8ead, global-handoff 1620f71 → cd0963f (GCH-010a)."
+    },
+    {
+     "item": "host isolation and cleanup",
+     "status": "PASS",
+     "evidence": "All merges and tests ran in a private --shared clone under audit-rig-sec/repo, with origin set to GitHub, fetched read-only. Every test ran inside `unshare -m` with a private tmpfs /tmp, so the RIG test never saw or touched the host /tmp/rig-news-producer-ro. Host checks: main checkout f1b5afb, porcelain 0. The shared worktree's admin-file mtimes and its .git pointer are unchanged (host_state_mid vs host_state_end; the only diff is the PIW's own gh worktree moving to cd0963f). All 7 trial worktrees were removed, and the private clone and 4 simulation repos were deleted. No push, PR, comment, dispatch or re-run."
+    }
+   ],
+   "blockers": [
+    {
+     "id": "RS-B1",
+     "class": "OWNER_ACTION",
+     "description": "IF-2 sentinel test_rig_news_ingest.py:192 (test_pr7_registry_is_read_only_and_not_copied; same blob f1f29325 in #13 and #16) goes red the moment #7's reports/entity_metadata is in the tree. Reproduced in S3a, S3b and S4: 1 failed, everything else green. With current heads, whichever of {#7, RIG chain} reaches canonical second leaves canonical with this red test.",
+     "owner": "#13 owner (then forward into #16)",
+     "unblock": "Described only, not written. (1) On feature/rig-news-real-ingestion-v1, replace the :192 assert with context-aware logic equivalent to #30's 41a6efb+0366a3c. If HEAD does not commit the registry, the working-tree directory must be absent: keep strict absence rather than #30's 'absent or identical' for the isolated case. If HEAD commits it, the committed blob must equal the pinned a013f1c blob id, the file bytes must match, and a git failure must fail closed. Optionally, to close GIE-006 F2 ('identical' cannot tell #7's artifact from a RIG copy), also require `git merge-base --is-ancestor a013f1c HEAD` when the registry is committed; this needs full history. (2) Write the negatives as loops, not pytest.mark.parametrize, or switch the runner as in RS-B2. (3) Merge the new #13 head into #16; the file is unchanged in #16, so the merge is clean. Land this before the second of {#7, RIG} merges to canonical."
+    },
+    {
+     "id": "RS-B2",
+     "class": "CI_GAP",
+     "description": "#13 has never run on Actions (no workflow on the branch; f853908 and 8bb990b both have 0 check runs). #16's exact-head PASS (36979915604) cannot be reproduced today: the owner workflow's `git fetch --depth=1` of branch tips no longer contains 6fe9eee, so a re-run gives 422 passed / 1 failed. After #33 fast-forwards into #7, a013f1c is missing as well. The mini_pytest shim fails 16 Track C modules on any tree with Track C, and Py 3.12 breaks the P01 fingerprint with #17. A canonical-merge PR of #16 would show this check red.",
+     "owner": "#16 owner (#13 owner for #13 coverage)",
+     "unblock": "Port the #30 0ea00d2 form into .github/workflows/sec-primary-disclosure.yml: checkout fetch-depth 0, non-shallow pin fetch (or fetch the exact SHAs), Python 3.11, `pip install pytest==9.1.1`, `PYTHONPATH=src python -m pytest -q`. Add a trigger that covers the #13 branch, e.g. push on feature/rig-news-real-ingestion-v1. Then run Actions on both new exact heads."
+    },
+    {
+     "id": "RS-B3",
+     "class": "OWNER_ACTION",
+     "description": "GIE-006 F6: the RIG test creates the fixed-path worktree /tmp/rig-news-producer-ro and never removes it. It registers in whatever repo ran the test; the main repo has it since 2026-10-03T08:22:09Z. The check is fail-open: it reuses any existing directory without verifying it is 6fe9eee (stub demo passed). It also fails permanently with 'missing but already registered worktree' once the path disappears without a prune. After a canonical merge, every full-suite run on this host or on a developer machine inherits this.",
+     "owner": "#13 owner (test_rig_news_ingest.py::_producer_validate); host cleanup of the existing worktree by the user or owner after the fix",
+     "unblock": "Replace the fixed path with a per-run temp dir (pytest tmp_path or tempfile). Materialise 6fe9eee without registering a worktree, e.g. `git archive 6fe9eee implementation/src | tar -x -C <tmp>`, or use `git worktree add` with `git worktree remove --force` plus prune in a finally/fixture teardown. Assert that the materialised commit equals PRODUCER_INFRA_AUDITED_SHA rather than trusting existence. Do not remove the current host worktree until the fix lands; it was left in place per instruction."
+    },
+    {
+     "id": "RS-B4",
+     "class": "CI_GAP",
+     "description": "Cross-chain: the RIG tests need git objects a013f1c and 6fe9eee from other branches. In any depth-1 checkout without pin fetches they fail 2 tests (reproduced 25/2). Once RIG is on canonical, every shallow full-suite workflow goes red (owner web-mvp-validation, p01, qgv-invalidation, technical, us-equity). There is also a durability risk: if #9 is not merged and its branch is deleted, 6fe9eee becomes unreachable even with fetch-depth 0.",
+     "owner": "owners of the full-suite workflows (the GIE-009 §2.3 port list), plus the #13 owner for the pin-durability design",
+     "unblock": "Apply the 0ea00d2 fetch-depth-0 port to every full-suite workflow before or with the RIG canonical merge. Keep the #7 and #9 pin commits reachable (merge #9 or keep its branch), or have the owner re-pin to commits that canonical history will contain."
+    },
+    {
+     "id": "RS-B5",
+     "class": "OWNER_ACTION",
+     "description": "Owner disposition: #13 STATUS.md and the PR body say 'RIG / NEWS INGESTION IMPLEMENTATION BASELINE / INTEGRATION WAIT ... Do not merge PR #13'. The #16 PR body says 'Do not merge.'",
+     "owner": "#13/#16 owner (or user override)",
+     "unblock": "Owner records that the baseline is ready for canonical integration once RS-B1..B3 land, or the user overrides."
+    },
+    {
+     "id": "RS-B6",
+     "class": "USER_DECISION_REQUIRED",
+     "description": "Canonical merge of #13 then #16 (contract §D.12), and the landing vehicle. The RIG chain, with Codex's repairs (41a6efb, 0366a3c, 0ea00d2) and #21, is already inside the #30/#38/#39 lineage. Choosing an owner-route merge or a #30-based combined merge is the open landing-vehicle decision recorded in GCH-010.",
+     "owner": "user",
+     "unblock": "User approves the canonical merge and the vehicle. Then run an exact-SHA pre-merge trial with Actions on the exact merge, in the stated order."
+    },
+    {
+     "id": "RS-B7",
+     "class": "USER_DECISION_REQUIRED",
+     "description": "Real-provider state (does not block a software merge): no news provider is selected (keyed or paid PROVIDER_BLOCKED; keyless candidates NOT_ACTIVATED). SEC 8-K live fetch is configuration-gated (SEC_USER_AGENT) and has never run; the SEC path works on supplied bytes only. Maturity stays SYNTHETIC_VERIFIED.",
+     "owner": "user",
+     "unblock": "User selects a provider, including any paid service, and authorizes SEC live-fetch activation as a separate change. Neither is needed for the software merge."
+    }
+   ],
+   "findings_nonblocking": [
+    "Engine invariance: the RIG chain is 21 added files, 0 modified, 0 path overlap with Track C, the Web chain and #21, and leaves fingerprints unchanged (4ba44a8c… without Track C, f690f9c0… with Track C). Frozen rig/ modules outside ingest/ are byte-identical to canonical.",
+    "#16 changes #13 code (rig/ingest/contract.py, raw.py, rig_input.py) and appends to #13's CONTRACT.md and STATUS.md. History is not rewritten, but #13's own code tree (3541b60b) has only local evidence: targeted 14 passed here, and GSI's 410 is local mini_pytest from an earlier checkpoint.",
+    "GSI index corrections for the Primary Integration Writer. Row 14 / §3a '#16 HEAD ✓ (run 36979915604)' should carry 'not reproducible on re-run since #9 moved to f8af596 (shallow pin fetch)'. Row 13 '#13 Sentinel IF-2 fails after #7 merges' is confirmed, and the same sentinel blob is in #16. The '#13 → #9 @ 6fe9eee' pin is now 1 behind the #9 head.",
+    "RIG's build_news_snapshot can build LIVE (caller-supplied expires_at) or FROZEN_SNAPSHOT news PRODUCER_SNAPSHOTs. There is no caller, no provider and no grant. P01 publication gating (#17) is not part of this chain. Not an escalation, but worth noting for the P01 integration.",
+    "Owner sec-primary-disclosure run history: 1 and 2 FAIL on e2107da (shallow), 3 and 4 PASS on ef65caa, 5 FAIL on #30 71d5773 (mini_pytest cannot import 0366a3c's parametrize). Runs 6–15 (0ea00d2 form) PASS on #30, #31, #35, #38 and #39.",
+    "#30's 040efda conversion verified locally: isolated tree 19 passed, S3a end 19 passed, S4 end 33 passed (RIG+SEC including the producer test). A full suite with it substituted was NOT_RUN. With the conversion, S4 would otherwise have 0 failures (997 + new tests).",
+    "The S2 and S4 Track C step trees equal b9e01a9 (CI 37097149378), and the Track C targeted suite passed locally 530/530 twice. S3b step 4 tree 16ebbdee and S4 steps 2–5 equal the GIE-009 local trees. No chain-end tree here (8281ad90 excepted) has run on Actions.",
+    "Out-of-scope remote moves during the audit: #31 → c9e0fa7 (CDR-012 HANDOFF_READY), #35 → 4cf8ead, global-handoff → cd0963f. None touches the RIG chain paths' owner heads.",
+    "Evidence files (scratch, read-only for others): /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf11/audit-rig-sec/logs/{C,W21,S1,S2,S3a,S3b,S4}/ (steps.txt, end.txt, full.xml, full.log, mini.log, fp.json), logs/F6_missing_but_registered_repro.log, logs/F6_failopen_demo.log, logs/sim16_mini312.log, logs/sims1_shallow_rig.log. Scripts: ns_run.sh, trial.sh, end.sh, run_all.sh, f6_failopen_demo.sh. Private fingerprint tool: tools/producer_engine_fingerprint.py (sha256 f4b8bca1…)."
+   ],
+   "not_run": [
+    "GitHub Actions on any trial tree (read-only audit; no push or dispatch). All S1–S4 and W21 results are LOCAL_VERIFIED, not CI_VERIFIED.",
+    "Full suite on the #13-only tree 3541b60b: targeted 14/14 only. The S1 full suite ran at the #16 tree.",
+    "Full suite with #30's converted RIG test substituted (targeted runs only: 19, 19, 33 passed).",
+    "Owner workflow under Python 3.12 with the native runner, and the P01-under-3.12 fingerprint claim (#17 is not in these scenarios; cited from Codex 0ea00d2 evidence).",
+    "Web browser/E2E steps in S3 and S4 (covered by GIE-009; RIG adds no Web files).",
+    "Downstream #10, #14, #17, #19 and #29 in the RIG context; post-merge branch-deletion durability (reasoning only).",
+    "Any SEC live fetch or news-provider access, CAL_VERIFY, Holdout; no grant, publication, Official or LIVE change.",
+    "A separate adversarial verifier pass on these claims."
+   ],
+   "verdict": "READY_AFTER_OWNER_ACTIONS",
+   "summary": "The RIG → SEC 8-K chain (#13 then #16) is ready for a canonical-merge decision once the owner actions below are done; the merge itself stays with the user. #21 on its own is READY_FOR_CANONICAL_MERGE_DECISION. Nothing was merged or pushed.\n\n**Heads**\n- #13 is at 8bb990b on canonical b8e39a2. It has never run on Actions: there is no workflow on the branch, and the code commit under it, f853908, has no CI either.\n- #16 is at ef65caa, stacked on #13. It passed CI on its exact head on 2026-10-02 (run 36979915604, 423 tests). A re-run today would fail. I simulated the job: its shallow fetch of the #9 branch no longer contains the pinned commit 6fe9eee, because #9 has moved on to f8af596. Result: 422 passed, 1 failed.\n- #21 is at f1b5afb and is docs only. It merges cleanly onto canonical: 396 passed (same as canonical), identical engine fingerprint, no workflow applies. It has an add/add conflict with #20 in both files; #20 is closed as a duplicate and must never be merged. #21 is already inside #30, #38 and #39.\n\n**Local trials** (private clone, every test inside a private /tmp namespace so the shared worktree was never touched)\n\n| Scenario | Order | Full suite | Fingerprint |\n|---|---|---|---|\n| S1 | chain alone on canonical | 423 passed, 0 failed | 4ba44a8c… (pre-adoption) |\n| S2 | Track C b9e01a9 first, then chain | 953 passed, 0 failed | f690f9c0… (post-adoption) |\n| S3a | RIG first, then Web (#5, #6, #9+#32, #7+#33) | 467 passed, 1 failed | 4ba44a8c… |\n| S3b | Web first (#5, #6, #7+#33, #9+#32), then RIG | 467 passed, 1 failed | 4ba44a8c… |\n| S4 (extra) | Track C, then Web, then RIG | 997 passed, 1 failed | f690f9c0… |\n\n- Every merge in every order had 0 conflicts.\n- S3a and S3b end on the same tree (8bde54b9), so the RIG/Web order does not change the result.\n- The single failure in S3a, S3b and S4 is the IF-2 sentinel at test_rig_news_ingest.py:192, the same file in #13 and #16. It passes whenever #7 is absent, including with #5, #6 and #9 present, and fails exactly from the step where #7's reports/entity_metadata appears.\n- Track C, Track A and the frozen RIG modules are preserved.\n\n**#30's repair**\n- Codex's 41a6efb + 0366a3c rewrite that sentinel to accept either \"absent\" or \"committed and byte-identical to the a013f1c registry\"; 0ea00d2 fixes the SEC workflow (full history, Python 3.11, native pytest).\n- Run locally, the rewritten test passes on the isolated tree (19), on S3a (19) and on S4 (33).\n- Under the mini_pytest runner the owner workflow uses, the whole file fails to import because of one parametrized test.\n\n**F6, the shared /tmp/rig-news-producer-ro worktree** (confirmed defect; owner fix described, not done)\n- The RIG test creates it under a fixed path, never removes it, and registers it in whichever repo ran the test; an agent's run did that to the main repo at 2026-10-03T08:22:09Z.\n- If the path already exists the test reuses it without checking the commit: a stub planted there made the compatibility test pass.\n- If the path disappears while still registered, every later run fails with \"missing but already registered\".\n- I left the host worktree in place.\n\n**Provider state:** no news provider is selected (keyed or paid sources are blocked). The SEC path works on supplied bytes only and live fetch has never run.\n\n**Workflows**\n- #16's sec-primary-disclosure.yml does not run on canonical after a merge (its push trigger is limited to the #16 branch).\n- It does run on every later PR into canonical. In its owner form it is red today, red on any tree with Track C, and will also lose a013f1c once #33 fast-forwards into #7.\n- Separately, once the chain is on canonical, any full-suite workflow with a shallow checkout fails 2 RIG tests (reproduced 25 passed, 2 failed).\n\n**Merge-order lines**\n1. Owner: on feature/rig-news-real-ingestion-v1 (from 8bb990b), convert the :192 sentinel (RS-B1) and fix F6 (RS-B3) in test_rig_news_ingest.py; add a CI trigger for the branch.\n2. Owner: merge feature/rig-news-real-ingestion-v1@<new head> into feature/sec-primary-disclosure-v1 (from ef65caa). Port the 0ea00d2 form into .github/workflows/sec-primary-disclosure.yml. Get Actions green on both exact heads.\n3. Owner: lift the \"Do not merge / INTEGRATION WAIT\" disposition on #13 and #16.\n4. Optional, separate decision, order-free: merge ccr-22e3ff16-p7n5k5@b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565 into claude/investment-system-top500-validation-alrugm.\n5. Web chain lines per GIE-009, in any order relative to RIG. The sentinel conversion must land before the second of {#7, RIG chain}.\n6. merge feature/rig-news-real-ingestion-v1@<post-conversion head> into claude/investment-system-top500-validation-alrugm\n7. merge feature/sec-primary-disclosure-v1@<post-forward-merge head> into claude/investment-system-top500-validation-alrugm\n8. Independent, any position: merge ccr-2e16018a-qukwmg@f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798 into claude/investment-system-top500-validation-alrugm. Never merge integration/claude-worker-contract-v1@d87d4cd.\n\nThe alternative vehicle is the #30-based combined merge, which already carries the RIG chain with Codex's repairs and #21. Choosing between that and the owner route is a user decision.\n\n**Blockers**\n- RS-B1, RS-B3, RS-B5 (owner actions): sentinel conversion, F6 fix, owner disposition.\n- RS-B2, RS-B4 (CI gaps): #13 has no CI and #16's workflow is broken on re-run; shallow full-suite workflows will fail the RIG tests after merge.\n- RS-B6 (user decision): the canonical merge itself and the landing vehicle.\n- RS-B7 (user decision, does not block the software merge): news provider selection and SEC live-fetch activation.\n\n**Freshness and cleanup:** no constituent head moved during the audit (03:36–04:15Z). Out of scope, #31, #35 and the global-handoff branch moved. The private clone and all simulation repos were deleted; the scripts and logs stay in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf11/audit-rig-sec/."
+  },
+  "verify": {
+   "checks": [
+    {
+     "claim": "Remote heads unchanged: #13 8bb990b, #16 ef65caa, #21 f1b5afb, #20 d87d4cd, Track C b9e01a9, #5 a4e49c8, #6 eda65bf, #7 a013f1c, #33 9626ab0, #9 f8af596, #32 e9aee0c, canonical b8e39a2. Out of scope: #31 c9e0fa7, #35 4cf8ead, global-handoff cd0963f",
+     "result": "CONFIRMED",
+     "evidence": "ls-remote at 2026-10-04T04:18:57Z and again at 04:36:50Z. All listed heads are exactly as claimed, and nothing moved between the two queries. #30 86ad362, #38 7e3861b and #39 0d31e06 are also unchanged."
+    },
+    {
+     "claim": "#13 has 0 check runs. Only c21-real-data.yml (workflow_dispatch) is on the branch. Base is canonical (0 behind / 2 ahead), tree 3541b60b. f853908..8bb990b is docs only. Pins are a013f1c and 6fe9eee, and 6fe9eee is 1 commit behind the #9 head",
+     "result": "CONFIRMED",
+     "evidence": "MCP get_check_runs #13 returned total_count=0. ls-tree of .github/workflows at 8bb990b lists only c21-real-data.yml, and its trigger is workflow_dispatch. merge-base is b8e39a2, left-right count 0/2. The diff f853908..8bb990b touches 4 docs files. contract.py lines 25-26 hold the pins. rev-list 6fe9eee..f8af596 = 1 (f8af596 committed 2026-10-02T08:08:22Z, after the 07:41Z CI run). The PR #13 body still says 'Pins still current'. Nit: c21-real-data could still be dispatched on the branch, but it is a real-data fetch with commit-back, not a test run, so the 'no test CI' conclusion holds."
+    },
+    {
+     "claim": "#16 head ef65caa passed CI: runs 36979915604 (pull_request) and 36979911841 (push), 423 passed under mini_pytest. Runs 1 and 2 on e2107da failed",
+     "result": "CONFIRMED",
+     "evidence": "MCP get_check_runs #16 shows 2 'offline' runs, both success. actions_get on both runs returns head_sha ef65caa5437a…, conclusion success. Tail of job log 110751862692: '423 passed, 0 failed in 27.49s (runner: mini_pytest shim, not pytest)'. The run list shows runs 1 and 2 on e2107da as failure. The CPython 3.12.14 and 'Preparing worktree 6fe9eee' log lines were not re-read (unverified)."
+    },
+    {
+     "claim": "#16's PASS is not reproducible today: an owner re-run gives 422 passed / 1 failed because 6fe9eee is absent. After #33 fast-forwards into #7, a013f1c is absent too",
+     "result": "CONFIRMED",
+     "evidence": "Fresh repo with origin set to GitHub. Depth-1 fetch of ef65caa, then the workflow's own fetches: git fetch --depth=1 of ccr-41677301-10nj3u and of feature/producer-infrastructure-v1. Result: a013f1c PRESENT, f8af596 PRESENT, 6fe9eee ABSENT. Running python3.12 tools/mini_pytest.py inside a private-/tmp namespace gives '422 passed, 1 failed' with 'fatal: invalid reference: 6fe9eee…' (logs/sim16_mini312.log). Control: the same tree with full history gives 423/0 under py3.12 mini_pytest (logs/S1/mini312.log). A depth-1 fetch of 9626ab0, whose parent is a013f1c, leaves a013f1c ABSENT."
+    },
+    {
+     "claim": "#21 standalone: docs only, merges cleanly, 396 passed, fingerprint unchanged, CI N/A, already contained in #30, #38 and #39",
+     "result": "CONFIRMED",
+     "evidence": "diff b8e39a2..f1b5afb: A CLAUDE.md, A CLAUDE_CODE_WORKER_CONTRACT.md. --no-ff merge onto canonical gives tree 1a9ab197, equal to the head tree. Full native pytest: 396 passed, 0 failed (67 s). Engine fingerprint 4ba44a8c77dbe17d, the same as canonical. 0 check runs. f1b5afb is an ancestor of 86ad362, 7e3861b and 0d31e06 (merge 583041a). CDR-001 pins contract blob 617ef6d4, which equals the blob at f1b5afb."
+    },
+    {
+     "claim": "#21 and #20 conflict add/add in both files; #20 must not be merged",
+     "result": "CONFIRMED",
+     "evidence": "git merge-tree --write-tree f1b5afb d87d4cd exits rc=1 with CONFLICT (add/add) in CLAUDE.md (4d510bcb vs 29845257) and in the contract (617ef6d4 vs 145af470). d87d4cd is not an ancestor of #30, #38 or #39, and #20 is closed. The semantic differences in §J and §M were not re-read (unverified)."
+    },
+    {
+     "claim": "The RIG chain is 21 added files with 0 modified, and has 0 path overlap with Track C, #5, #6, #7+#33, #9+#32 and #21",
+     "result": "CONFIRMED",
+     "evidence": "git diff --name-status b8e39a2 ef65caa gives 21 A. Intersecting with the changed-file lists of b9e01a9, a4e49c8, eda65bf, 9626ab0, e9aee0c and f1b5afb gives 0 for each."
+    },
+    {
+     "claim": "S1 (chain alone): trees 3541b60b and 8281ad90, targeted 14 and 27, full suite 423/0, mini_pytest 423/0, fingerprint 4ba44a8c",
+     "result": "CONFIRMED",
+     "evidence": "My own --no-ff merges in a dedicated private clone. Step trees 3541b60b and 8281ad90 equal the head trees. Targeted: 14 passed, then 27 passed. End tree 8281ad90: full `PYTHONPATH=src python3 -m pytest -q -p no:cacheprovider` (Py 3.11.15, pytest 9.1.1) gives 423 passed in 79 s; junit tests=423, failures 0, errors 0, skipped 0. mini_pytest (py3.12) 423/0. Fingerprint sha256 4ba44a8c77dbe17d (technical 82165414, macro 7bbfad69, qgv a1714480, leaderboard 112b245b, portfolio 53d930a7, n_qgv 19), equal to canonical."
+    },
+    {
+     "claim": "S2 (Track C first): trees 3ed79c6a, 15bee6e3 and c608fec6, full suite 953/0, fingerprint f690f9c0, Track C preserved, mini_pytest 427/16",
+     "result": "CONFIRMED (pytest scope only)",
+     "evidence": "Step trees 3ed79c6a (= b9e01a9), 15bee6e3 and c608fec6. Targeted 530, 14 and 27 passed. Full native suite 953 passed in 442 s. Fingerprint f690f9c08b6b2692 (technical 66cb2383, macro 7e427949). The S2 end has 0 diffs vs b9e01a9 in evl/, test_evl_*, tools/track_c* and reports/track_c*, and adds 21 files only. `git diff --raw` from the S1 end to the S2 end equals canonical → b9e01a9 (158 entries). mini_pytest py3.12: 427 passed, 16 failed; all 16 failures are test_evl_* modules with AttributeError: pytest has no 'mark'. Not covered by this PASS: Track C's own acceptance tool fails on this tree (see missed blockers)."
+    },
+    {
+     "claim": "S3a (RIG first, then Web): 0 conflicts, trees 859cfc0e, 4145bdec, ea7e6731 and 8bde54b9, full suite 467 passed / 1 failed (the sentinel only), fingerprint 4ba44a8c",
+     "result": "CONFIRMED",
+     "evidence": "Trees and targeted results match exactly: 14, 27, 35, 32, 49, then 1 failed / 36 passed at the #7+#33 step. Full native suite on tree 8bde54b9: '1 failed, 467 passed in 84 s'. junit tests=468, failures 1. The only failure is test_pr7_registry_is_read_only_and_not_copied. Fingerprint 4ba44a8c77dbe17d. The S3 end vs canonical is 91 A."
+    },
+    {
+     "claim": "S3b (Web first, then RIG) ends at the same tree 8bde54b9; the RIG steps fail only the sentinel",
+     "result": "CONFIRMED",
+     "evidence": "Trees dd640e8b, 7e03505f, 71bf6491, 16ebbdee, 68196e6e, then 8bde54b9, which equals the S3a end tree. Targeted: rig13 1 failed / 13 passed, sec16 1 failed / 26 passed, sentinel only. No separate full suite was run because the tree is identical to S3a's."
+    },
+    {
+     "claim": "S4 (Track C, then Web, then RIG): trees equal the GIE-009 values, full suite 997 passed / 1 failed (sentinel), fingerprint f690f9c0",
+     "result": "CONFIRMED",
+     "evidence": "Trees 3ed79c6a, 5bf3f58e, fb3eadb3, fa3c2a80, 7e16783f, 662a286c (1 failed / 13 passed) and 6b78c5b2 (1 failed / 26 passed). Full native suite: '1 failed, 997 passed in 442 s', sentinel only. Fingerprint f690f9c08b6b2692. The delta from the S3 end to the S4 end equals canonical → b9e01a9. 0 Track C path diffs vs b9e01a9. S4 mini_pytest 471/17 was not re-run (unverified)."
+    },
+    {
+     "claim": "The IF-2 sentinel at test_rig_news_ingest.py:192 is the same blob f1f29325 in #13 and #16, and fails exactly when #7's reports/entity_metadata appears",
+     "result": "CONFIRMED",
+     "evidence": "rev-parse gives f1f29325 for the test at both 8bb990b and ef65caa. Line 192 is `assert not (REPO/'implementation'/'reports'/'entity_metadata').exists()`. It passes at every step before #7, including S3a step 5 with #9+#32, and fails at the first step where entity_metadata is present (S3a step 6, S3b steps 5–6, S4 steps 6–7)."
+    },
+    {
+     "claim": "#30's repair: 41a6efb, 0366a3c and 0ea00d2. Only 2 RIG-chain files differ in #30, #38 and #39. The converted test passes locally. Run 5 failed on mini_pytest",
+     "result": "CONFIRMED",
+     "evidence": "Of the 21 RIG files, only test_rig_news_ingest.py (040efda in all three) and sec-primary-disclosure.yml differ from ef65caa in 86ad362, 7e3861b and 0d31e06. 41a6efb adds _read_only_registry plus 1 test. 0366a3c adds _registry_required_by_head plus 4 tests, one of them parametrize. In #30, the 0ea00d2 form of the YAML has fetch-depth 0, full pin fetches, py3.11, pytest==9.1.1 and native pytest. With 040efda substituted (producer test included): S1 tree 33 passed, S3a tree 33 passed. Run 37102512499 (#30 71d5773) concluded failure."
+    },
+    {
+     "claim": "The 0ea00d2-form sec-primary-disclosure runs are green on #30, #38, #39, #35 and #31",
+     "result": "CONFIRMED",
+     "evidence": "list_workflow_runs: 37102973410 (86ad362), 37122132766 (7e3861b), 37169669865 (0d31e06), 37164938826 (8318b78) and 37174701620 (c9e0fa7) all succeeded. One newer success, run 16 (37175320383, #35 4cf8ead, 03:52Z), is not in the audit's 6–15 list."
+    },
+    {
+     "claim": "GIE-006 F6: fixed-path worktree leak; missing-but-registered failure; fail-open reuse; host registration made at 2026-10-03T08:22:09Z",
+     "result": "CONFIRMED",
+     "evidence": "Host .git/worktrees/rig-news-producer-ro/logs/HEAD reads '0000…→6fe9eee Claude <noreply@anthropic.com> 1791015729', which is 2026-10-03T08:22:09Z. The code is at test lines 270-276. Reproduced in my namespace (logs/F6_probe.log): run A registered the path in the private clone. Run B, with the path gone but still registered, failed with \"fatal: '/tmp/rig-news-producer-ro' is a missing but already registered worktree\". Run C planted a stub producers/contract.py that is not even a git repo ('fatal: not a git repository') and the compatibility test still PASSED. `git worktree prune -n` in the private clone does not clear the entry while the host path exists."
+    },
+    {
+     "claim": "Real-provider state: no provider is selected; SEC live fetch is gated and never called; publication is blocked; no grant, Official or Holdout change",
+     "result": "CONFIRMED",
+     "evidence": "fetch_sec_atom calls sec_user_agent, which needs SEC_USER_AGENT or INVESTMENT_SYSTEM_SEC_UA, before urlopen, and only allows www.sec.gov and data.sec.gov. Its only caller is the test, which uses monkeypatch.delenv on both variables first, so there is no accidental network call. publish_web_disclosure always raises WEB_PUBLICATION_BLOCKED. PROVIDER_CANDIDATES lists SEC, IR-RSS and GDELT as NOT_ACTIVATED and keyed wires as PROVIDER_BLOCKED. Grepping the 21 files for grant/holdout/official/CAL_VERIFY finds only 'Not an Official news provider' and official_name fields. Nothing was fetched."
+    },
+    {
+     "claim": "Workflows: #16's workflow does not run on canonical post-merge. A shallow checkout without pins fails 2 RIG tests. The listed full-suite workflows are all on the GIE-009 §2.3 port list",
+     "result": "PARTIAL",
+     "evidence": "Triggers confirmed: pull_request with no filter, and push only to feature/sec-primary-disclosure-v1. A depth-1 clone of ef65caa without pin fetches gives 2 failed, 25 passed (logs/simshallow_rig.log). REFUTED in part: GIE-009 §2 item 3 lists only #11, #15, #18, #17 and #19, so owner web-mvp-validation (#5) is NOT on that port list. The list of affected workflows is also incomplete (see corrections)."
+    },
+    {
+     "claim": "Owner disposition: 'Do not merge' on #13 and #16",
+     "result": "CONFIRMED",
+     "evidence": "PR #13 body: 'INTEGRATION WAIT … Draft. Do not merge.' PR #16 body ends 'Do not merge.' STATUS.md disposition is 'Do not merge PR #13'."
+    }
+   ],
+   "corrections": [
+    "RS-B4 / item (g): the claim 'All of these are already on the GIE-009 §2.3 fetch-depth-0 port list' is wrong for web-mvp-validation. GIE-009 §2 item 3 lists #11, #15, #18, #17 and #19 only. Owner #5's web-mvp-validation (depth 1, full `python -m pytest -q`, pull_request with a paths filter) is ported only inside the #30 lineage. The affected-workflow list is also incomplete. leaderboard-real-producer.yml (#14) and qgv-producer-real.yml (#10) both run full regression on a default depth-1 main checkout with `shell: bash` (pipefail on) and no a013f1c/6fe9eee fetch into that checkout. They are still unported even in #39 0d31e06 (fetch-depth: 0 count = 0 in both). Both are push-only and path-filtered on their owner branches, so they go red once those branches carry the RIG chain.",
+    "RS-B3 / F6 is not avoided by the alternative vehicle. #30/#38/#39's converted test 040efda still has `worktree = Path(\"/tmp/rig-news-producer-ro\")` at line 353, with the same create-and-never-remove, fail-open logic. RS-B3 therefore applies whichever vehicle lands, not only to the owner route.",
+    "Item (b), 'The order relative to Track C … does not matter for content': this is true for tree content and native pytest, but not for Track C's own acceptance tooling. tools/track_c_c6_acceptance.py boundary_audit raises 'new file outside authorized Track C: [.github/workflows/sec-primary-disclosure.yml, implementation/docs/rig_news_ingest/…]' on the S2 end tree. On the unchanged Track C tip b9e01a9, with origin/canonical set to the S1 end (RIG landed), it raises 'canonical advanced; fresh integration audit required'; with canonical at b8e39a2 it PASSES. track-c-evl-validation runs these tools (run 37097149378 on b9e01a9). This is GIE-009 §2.4 MAC-X1, and it belongs in the RIG merge-order constraints.",
+    "RS-B1's suggested unblock (strict absence for the isolated case, loops instead of parametrize) is by design not byte-identical to #30's 040efda. It will therefore conflict when the #30/#38/#39 lineage is later combined with a canonical that took the owner route. A scratch-only probe merged a non-identical edit of line 192 onto canonical+chain and then merge-tree'd it against 86ad362: 'CONFLICT (content): Merge conflict in implementation/tests/test_rig_news_ingest.py'. The same applies to the sec-primary-disclosure.yml port unless it matches the lineage's YAML byte for byte. The vehicles are not freely interchangeable after the owner route is chosen.",
+    "Item (a) #13, 'no workflow can ever run on #13': c21-real-data (workflow_dispatch) can be dispatched on any branch that carries it. It is a real-data fetch with commit-back, not a test run, so the 'no test CI on #13' conclusion stands. This is a wording nit.",
+    "Freshness / CI addendum: sec-primary-disclosure run 16 (37175320383, pull_request on #35 4cf8ead, success, 03:52Z) is a 0ea00d2-form run that the audit's 'runs 6–15' list omits.",
+    "Host-state baseline: the audit's 'admin-file mtimes unchanged' baseline no longer holds, because of this verifier. A `git -C /tmp/rig-news-producer-ro status --porcelain` run without GIT_OPTIONAL_LOCKS=0 refreshed the host worktree's index stat cache. .git/worktrees/rig-news-producer-ro/index mtime moved from 2026-10-03T08:22:10Z to 2026-10-04T04:19:46Z. HEAD (6fe9eee), gitdir, the .git pointer and porcelain (0) are unchanged; the worktree was not removed or modified otherwise."
+   ],
+   "missed_blockers": [
+    "USER_DECISION_REQUIRED (cross-chain, already registered as GIE-009 §2.4 MAC-X1, but missing from the RIG audit's blockers and merge-order lines): Track C's acceptance tools (track_c_c6/c7/c8_partial_acceptance.py, run by track-c-evl-validation) pin canonical b8e39a2 and reject any new non-Track-C file. If the RIG chain lands on canonical before Track C, Track C's certification steps go red on its unchanged tip ('canonical advanced; fresh integration audit required', reproduced on b9e01a9). Any combined tree with Track C + RIG fails boundary_audit ('new file outside authorized Track C', reproduced on S2 end c608fec6). The user decision on how Track C acceptance is certified on an advanced or integrated canonical must come before, or together with, the RIG canonical merge whenever Track C has not landed first.",
+    "CI_GAP (extends RS-B4): leaderboard-real-producer.yml (#14 0d48d86, and unchanged in #39 0d31e06) and qgv-producer-real.yml (#10 5eec129, and unchanged in 0d31e06) run full native and mini_pytest regression on a depth-1 main checkout without fetching a013f1c/6fe9eee. Under `shell: bash` (pipefail) they will fail the 2 RIG pin tests once their owner branches contain the RIG chain. Neither is on the GIE-009 §2.3 port list, and neither was ported in the #30 lineage.",
+    "USER_DECISION_REQUIRED (part of the RS-B6 vehicle choice, not stated by the audit): the owner-route conversion that RS-B1 recommends differs deliberately from #30's 040efda. Choosing the owner route therefore guarantees a content conflict in test_rig_news_ingest.py (probe-confirmed against 86ad362), and likely in sec-primary-disclosure.yml, when the #30/#38/#39 lineage (which also carries Track C, Web and the other chains) is later reconciled with canonical. Either the owner adopts 040efda and the lineage YAML byte for byte, or the vehicle decision must accept re-resolving these files in the lineage."
+   ],
+   "verdict_upheld": true,
+   "corrected_verdict": "READY_AFTER_OWNER_ACTIONS (upheld) for the #13 → #16 chain, with these additions. (1) MAC-X1 (USER_DECISION_REQUIRED) is a cross-chain merge-order constraint: landing RIG on canonical before Track C, or combining the two, makes Track C's acceptance tooling fail until the user decides how Track C acceptance is certified. (2) RS-B3/F6 applies to both vehicles, because #30's 040efda still uses the fixed /tmp worktree. (3) RS-B4 also covers leaderboard-real-producer and qgv-producer-real, and web-mvp-validation is not on the GIE-009 §2.3 port list. (4) The owner-route conversion must match the #30 lineage byte for byte, or the vehicle choice must accept a guaranteed conflict. #21 alone stays READY_FOR_CANONICAL_MERGE_DECISION. The canonical merge stays USER_DECISION_REQUIRED, provider activation stays USER_DECISION_REQUIRED, and nothing was merged or pushed.",
+   "summary": "I could not refute the audit's main claims. Every head, tree and test count I re-ran matches, so READY_AFTER_OWNER_ACTIONS holds for #13 → #16. I did find one missed cross-chain blocker, two gaps in the blocker list, one vehicle clash, and a side effect of my own on the host.\n\n**What I re-ran** (my own private clone, unshallowed from GitHub; every test inside a private-/tmp namespace):\n- **Freshness:** ls-remote at 04:18:57Z and 04:36:50Z. No constituent moved.\n- **CI on head:** #13 has 0 check runs. #16's two successful runs are on ef65caa, and the log shows 423 passed. #21 needs no CI.\n- **#16 re-run simulation:** with the workflow's own shallow fetches, 6fe9eee is absent and the result is 422 passed / 1 failed. The same tree with full history gives 423/0. A depth-1 fetch of 9626ab0 lacks a013f1c. Without pin fetches the RIG tests give 25 passed / 2 failed.\n- **#21:** merges to tree 1a9ab197, 396/0, fingerprint 4ba44a8c, same as canonical. merge-tree against #20 gives add/add conflicts in both files.\n\n| Scenario | Trees | Full native suite | Fingerprint |\n|---|---|---|---|\n| S1 (chain alone) | 3541b60b, 8281ad90 | 423/0 (mini_pytest 423/0) | 4ba44a8c |\n| S2 (Track C first) | 3ed79c6a, 15bee6e3, c608fec6 | 953/0 (mini_pytest 427/16) | f690f9c0 |\n| S3a (RIG first) | … 8bde54b9 | 467 passed / 1 failed (sentinel only) | 4ba44a8c |\n| S3b (Web first) | ends at 8bde54b9 | same tree as S3a | — |\n| S4 (Track C, Web, RIG) | 6b78c5b2 | 997 passed / 1 failed (sentinel only) | f690f9c0 |\n\n- Every step tree matches the audit, with 0 conflicts.\n- #30's converted test 040efda passes 33/33 on both the S1 and S3a trees.\n- F6 reproduced: the \"missing but already registered\" failure, and a non-git stub at the fixed path passing the compatibility test.\n- Provider gating, the \"Do not merge\" dispositions and the 0ea00d2-form green runs are all confirmed.\n\n**Missed blocker (USER_DECISION_REQUIRED, already GIE-009 MAC-X1):** the Track C acceptance tools pin canonical to b8e39a2 and reject new non-Track-C files.\n- On the S2 end, `boundary_audit` raises \"new file outside authorized Track C\" and lists the RIG files.\n- On Track C's unchanged tip b9e01a9, with canonical set to the S1 end (RIG landed), it raises \"canonical advanced\". With canonical at b8e39a2 it passes.\n- So the audit's \"order relative to Track C does not matter\" holds only for tree content and pytest.\n\n**Gaps in the audit's blockers**\n- **RS-B4:** web-mvp-validation is not on the GIE-009 §2.3 port list, despite the audit saying it is. leaderboard-real-producer and qgv-producer-real also run shallow full suites and are unported even in #39.\n- **RS-B3 (F6):** #30's 040efda still has the fixed `/tmp/rig-news-producer-ro` path at line 353, so F6 applies whichever vehicle lands.\n\n**Vehicle clash:** RS-B1's suggested conversion deliberately differs from 040efda. A scratch-only probe of a non-identical edit to line 192 conflicts with 86ad362. Choosing the owner route therefore means re-resolving this file (and probably the workflow) in the #30 lineage later.\n\n**Side effects I caused:**\n- One `git status` without `GIT_OPTIONAL_LOCKS=0` refreshed the host `/tmp/rig-news-producer-ro` worktree's index. Its mtime changed to 2026-10-04T04:19:46Z. HEAD is still 6fe9eee, porcelain 0, and the worktree was not removed.\n- I briefly wrote `/tmp/x_*` temp files and an empty `/run/vrs` directory outside my dir; both are deleted.\n- The main checkout is untouched (f1b5afb, porcelain 0). All private clones and simulation repos are deleted. No push, PR, comment, dispatch or re-run.\n\n**Not re-run (unverified):** S4 mini_pytest 471/17, the #20 §J/§M semantic wording, and the CPython 3.12.14 / worktree lines in the CI log.\n\nEverything is in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf11/verify-rig-sec/:\n- scripts: `ns.sh`, `trial.sh`, `full.sh`\n- logs: `logs/{S1,S2,S3a,S3b,S4,W21}` (`steps.txt`, `full.log`, `full.xml`, `fp.json`, `mini312.log`), `logs/sim16_mini312.log`, `logs/simshallow_rig.log`, `logs/F6_probe.log`"
+  }
+ },
+ "critic": {
+  "gaps": [
+   {
+    "priority": "P1",
+    "gap": "The prep batch's blockers are out of date. All three reports name 'B1 OWNER_ACTION: Codex has not reached CDR-012 HANDOFF_READY' as their blocker, but Codex has since pushed. #31 is now c9e0fa7 (GCH-010a; 9/9 check runs success). #35 is now 4cf8ead, a merge of c9e0fa7 into 8318b78 (8/8 success). The topology is STACKED: c9e0fa7 is an ancestor of 4cf8ead. merge-tree 0d31e06+c9e0fa7 = 33d2c4b6 and 0d31e06+4cf8ead = 40220de1, both with 0 conflicts. Run with its defaults on these heads, the harness will not exit 0. (a) protected_paths FAILs: the CI-declared allowed_additions now has 13 entries, while DEFAULT_ALLOWLIST has 11. The two new ones are tests/evl_c8_gsup_v2_cdr012_oracle.py and tests/test_evl_gsup_v2_cdr012.py. Failing here is the correct fail-closed outcome. (b) ci_path_filters will be REVIEW_REQUIRED. The readiness step was renamed 'CDR-010/012 exact production…', and protected() now also covers evl_c8_gsup_v2_oracle.py and evl_c8_gsup_v2_cdr012_oracle.py. The harness's tc_protected comment, 'identical predicate to #31's workflow gate', is no longer true. (c) The escalation sweep, run with the harness's own code on the real delta, finds 6 hits, 4 of them not negated: CURRENT_HANDOFF.md:61 and STATUS.md:49, the line '…grants, Official/LIVE or canonical merge is approved.' The negation 'No' is on the line before, so these are benign, but they still give REVIEW_REQUIRED.",
+    "next_action": "For the real CDR012_SUCCESSOR_TRIAL, pass a re-reviewed 13-entry --reviewed-allowlist equal to the CI-declared list. Update the tc_protected mirror to match the new protected() predicate. Record a human disposition for each escalation and ci_path_filters item. Expect exit 4 (REVIEW_REQUIRED), not 0, and never report it as PASS.",
+    "owner": "Primary Integration Writer (Claude Main)"
+   },
+   {
+    "priority": "P1",
+    "gap": "MAC-X1 also covers #21, which refutes RIG audit merge-order line 8 ('#21 independent, any position'). I spot-checked this. Track C's acceptance tools reject any canonical advance and any new non-Track-C file. That includes #21's CLAUDE.md and its contract document. #39's 10/10 CI never runs these tools, and neither does the successor harness: track-c-evl-validation.yml triggers only on push to feature/track-c-evl or on workflow_dispatch. The 'CI_VERIFIED' trials therefore leave out Track C acceptance without saying so.",
+    "next_action": "The user decides MAC-X1: either Track C lands on canonical first, or the user sets how Track C acceptance is certified on an advanced or integrated canonical. Until then, every merge-order line, #21 included, carries this constraint. Trial reports and the harness should record the Track C acceptance tools as NOT_RUN (MAC-X1) instead of leaving them out.",
+    "owner": "user (USER_DECISION_REQUIRED); PIW to amend merge-order lines and trial reporting"
+   },
+   {
+    "priority": "P1",
+    "gap": "No trial has merged every chain via the owner route. S1–S4 covered canonical + Track C + the Web chain (#5, #6, #7+#33, #9+#32) + RIG only. These were never merged together: #10, #11, #12, #14, #15, #17, #18, #19, #29, #21 together with everything else, and the post-conversion owner heads, which do not exist yet. The only all-chains evidence is the #30/#38/#39 lineage. That lineage carries Codex repairs that the owner heads lack (040efda, the 0ea00d2 workflow port and the shallow-workflow ports), so it does not stand in for the owner route. An owner conversion that is not byte-identical to the lineage is guaranteed to conflict (verifier probe against 86ad362).",
+    "next_action": "Once the owner actions are done and the user has picked the vehicle, run an exact-SHA union trial in the decided order. It should cover the full suite, browser/E2E, fingerprints, Track C acceptance as MAC-X1 decides, the leaderboard/qgv/web-mvp shallow-workflow ports, and Actions on the exact union commit.",
+    "owner": "PIW (CI_GAP); prerequisites are owner actions and a user decision"
+   },
+   {
+    "priority": "P1",
+    "gap": "The Track C vehicle is undecided. The owner route would land b9e01a9 (v1 C8 plus 530 tests) only. The CDR-010/012 authoritative v2 exists only on the Codex branch #31, which sits on the #30 lineage, so the owner route has no way to carry v2. C8 Freeze is still not approved.",
+    "next_action": "The landing-vehicle decision recorded in GCH-010 must also say which vehicle carries Track C plus v2/CDR-012, and how this interacts with MAC-X1. Until that is decided, do not treat any RIG or #21 owner-route merge as order-free.",
+    "owner": "user (USER_DECISION_REQUIRED)"
+   },
+   {
+    "priority": "P2",
+    "gap": "F6, the fixed-path /tmp/rig-news-producer-ro worktree that is reused fail-open, exists in both vehicles: the lineage's 040efda has it at line 353. The #30 vehicle is therefore not ready to carry RIG to canonical either. RS-B1's suggested conversion (strict absence, loops) intentionally differs from 040efda, which guarantees a conflict between the vehicles.",
+    "next_action": "Write one conversion that fixes both the sentinel and F6, and adopt it byte-identically on feature/rig-news-real-ingestion-v1 and in the Codex lineage. Port sec-primary-disclosure.yml byte-identically to the lineage's YAML.",
+    "owner": "#13/#16 owner and Codex (OWNER_ACTION)"
+   },
+   {
+    "priority": "P2",
+    "gap": "The harness checks VERIFIED_V2_COMMIT only for ancestry: it must be an ancestor of, or equal to, the #31 or #35 head. If #31 moves past the verified commit, only the reviewed-allowlist files are checked for byte identity against it. Later changes to tools/verify_gsup_v2_arithmetic.py, codex-integration-readiness.yml, the scoped register or the docs would be listed but would still PASS. gsup_v2_replay trusts that replay tool's own status.",
+    "next_action": "For a non-DRY label, require the #31 head to equal VERIFIED_V2_COMMIT. Alternatively, extend the byte-identity check to every path #31 changed since e0b6d80 (32 paths at c9e0fa7) and return REVIEW_REQUIRED on any drift.",
+    "owner": "PIW (harness)"
+   },
+   {
+    "priority": "P2",
+    "gap": "The harness's oracle step is weaker than the prep. It checks only the verdict. It does not run the registry probe. It runs without a strict F3 reason regex. It returns PASS when rc is 0 even if no JSON was written (self-test D4). It does not pin the oracle's sha256 or the sha256 of expected_cdr012.json, and compare_cdr012 itself does not hash its expectation file. The escalation negation regex also matches a bare '0', 'no', 'zero' or 'NOT_' within ±120 characters, so any hit inside a one-line JSON/XML evidence file counts as negated. Example: pr31-full.xml:1, which contains errors=\"0\".",
+    "next_action": "Add registry_probe_cdr012 as a second oracle step on the trial tree. Pass --not-run-reason-regex '^all bootstrap replicates degenerate$' (rc 0 at c9e0fa7). Make a missing result JSON a FAIL. Pin compare_cdr012.py to 0280963… and expected_cdr012.json to d98fae60…. Make code/CI hits, and hits in single-line machine files, REVIEW_REQUIRED whatever the negation heuristic says.",
+    "owner": "PIW (harness)"
+   },
+   {
+    "priority": "P3",
+    "gap": "Coverage gaps in the expectation set. None of them is a CDR-012 scoping error. (a) The 5 UNDEFINED_SE cases are ungraded, so an implementation that produced a p there would still be EXACT_MATCH_ALL_GRADED; at c9e0fa7 all 5 refuse with 'zero standard error'. (b) Result identity is not checked: METHOD and POLICY ('TC-C8-GSUP-M-V2-CDR006-CDR010') are the same at e0b6d80 and c9e0fa7 even though bits and outcomes changed. Only ARITHMETIC_CONTRACT (+squaring MULTIPLICATION, +all_degenerate NOT_RUN) and the authority() supplement blob e16038e9 tell them apart. (c) The F1 behavioural detectors rely on glibc 2.39's pow(x,2) being inexact; under a libm where pow(x,2) is correctly rounded they could not tell d*d from pow. The AST scan is the platform-independent check. (d) On the feasibility path, an F3 refusal is counted as 'undefined' in the size denominator, so F3 can only lower empirical size. This is not covered, and is negligible for continuous null series. (e) A registry-level deg == B-1 case cannot be built at the fixture parameters (known).",
+    "next_action": "Claude Main's authoritative verification should assert the arithmetic_contract dict and the CDR012_APPROVAL supplement pin, and record UNDEFINED_SE behaviour as REVIEW_REQUIRED if any case returns a p. Record the libm dependence next to the F1 result.",
+    "owner": "Primary Integration Writer (Claude Main)"
+   },
+   {
+    "priority": "P3",
+    "gap": "Actions have never run on any RIG chain-end tree, or on #13 at all. The post-conversion heads do not exist yet. The owner sec-primary-disclosure workflow fails on re-run (422/1) and on any tree containing Track C (mini_pytest shows 16 import failures). leaderboard-real-producer.yml and qgv-producer-real.yml are unported shallow full suites, and web-mvp-validation is not on the GIE-009 §2.3 port list (RS-B2/RS-B4 as the verifier extended them).",
+    "next_action": "The owner ports the 0ea00d2 form and adds a trigger for #13. Run Actions on both new exact heads. Extend the GIE-009 port list to #5, #10 and #14 before or together with the RIG canonical merge.",
+    "owner": "#13/#16 owners and full-suite workflow owners (CI_GAP)"
+   }
+  ],
+  "spot_checks": [
+   {
+    "claim": "The CDR-012 expectation set, the default NOT_RUN adapter mapping and the registry probe are correctly scoped and work against Codex's real HANDOFF_READY head. Prep claimed: F3 fires only when deg == B, no epsilon is added, near-undefined cases keep a p, the F1 detectors tell d*d from pow, and the default mapping fits a MissingStatisticalEvidence raise.",
+    "result": "CONFIRMED (non-authoritative spot-check; this is not Claude Main's F1/F3 verification)",
+    "evidence": "Private clone; c9e0fa7 extracted with extract_head.sh (554 files); oracle SHA256SUMS OK. compare_cdr012 --adapter v2kernel: rc 0, EXACT_MATCH_ALL_GRADED, 747 graded. Detectors: F1 0/16, F3 0/37, boundary 0/17, near-undefined 0/14. With the strict --not-run-reason-regex '^all bootstrap replicates degenerate$': rc 0. The 5 UNDEFINED_SE cases refuse with 'zero standard error'. registry_probe_cdr012: rc 0. S1 is NOT_RUN. S2 is NOT_RUN with cells NOT_RUN plus REJECT_H0. S3 ([0.05]*12) is STAT_PASS, which is the CDR-012-literal result. Source at c9e0fa7: the squares are written as `d * d` (diff hunks at L89 and L106), and the kernel raises MissingStatisticalEvidence('all bootstrap replicates degenerate') iff degenerate == replicates. The harness AST scan finds 0 findings in superiority_v2.py, with 2 self-multiplications. S2's gate-level NOT_RUN comes from the owner v1 aggregation in superiority.py L451-452 (any NOT_RUN cell makes the gate NOT_RUN), which is unchanged from b9e01a9, so the probe adds no new rule. Outputs are under completeness-critic/: cdr012_compare_c9e0fa7.json 73e66ce8…, cdr012_compare_c9e0fa7_strict.json e235952a…, cdr012_registry_probe_c9e0fa7.json 9ab3e840…."
+   },
+   {
+    "claim": "The successor harness fails closed on the real CDR-012 inputs: unreviewed additions FAIL, topology is handled, and it is ready to run.",
+    "result": "PARTIAL. Fail-closed behaviour holds; the harness is ready only after the inputs and checks listed in the gaps are fixed.",
+    "evidence": "c9e0fa7 is an ancestor of 4cf8ead, so the topology is STACKED. 0d31e06 is not in 4cf8ead. Direct merge-trees are clean (33d2c4b6 and 40220de1). The delta against #39 is 38 files; the non-doc ones are the readiness yml, the Track C register, superiority_v2.py, 2 added tests, the arithmetic test and the replay tool. None of the 38 is a RIG-chain path. allowed_additions parsed from codex-integration-readiness.yml: 0d31e06 has 11, c9e0fa7 and 4cf8ead have 13, so the default allowlist gives protected_paths FAIL. The readiness step was renamed and protected() gained 2 paths, so the CI-parity item is REVIEW_REQUIRED. Escalation sweep (harness code): 6 hits, 4 not negated, so REVIEW_REQUIRED. VERIFIED_V2_COMMIT is checked only for ancestry (harness lines 1295-1306), which is a gap. CI: #31 9/9 success (03:39–03:48Z); #35 8/8 success (03:52–04:13Z)."
+   },
+   {
+    "claim": "RIG audit merge-order line 8: #21 (f1b5afb) is independent and can merge to canonical at any position.",
+    "result": "REFUTED for Track C acceptance tooling (MAC-X1). Content and pytest order-independence still hold.",
+    "evidence": "Private-clone worktree at b9e01a9, calling tools.track_c_c6_acceptance.boundary_audit(). With the canonical ref at b8e39a2: PASS. With the canonical ref at f1b5afb (#21 fast-forwarded): ValueError 'canonical advanced; fresh integration audit required'. On b9e01a9 merged --no-ff with f1b5afb and canonical at b8e39a2: ValueError \"new file outside authorized Track C: ['CLAUDE.md', 'implementation/docs/coordination/CLAUDE_CODE_WORKER_CONTRACT.md']\". The C7 tool has the same canonical pin (line 55). track-c-evl-validation.yml (also in 0d31e06) runs only on push to feature/track-c-evl or on workflow_dispatch, so neither the #39 PR CI nor the successor harness runs these tools. The canonical ref was restored, the worktree removed and the clone deleted."
+   }
+  ],
+  "readiness_rows": [
+   {
+    "chain": "RIG -> SEC 8-K (#13 feature/rig-news-real-ingestion-v1 8bb990b -> #16 feature/sec-primary-disclosure-v1 ef65caa)",
+    "verdict": "READY_AFTER_OWNER_ACTIONS (the verifier upheld it and I uphold it). This means ready for a canonical-merge decision, not ready to merge. LOCAL_VERIFIED only: no chain-end tree has run on Actions, and the all-chains owner-route union trial is NOT_RUN.",
+    "blocking": "OWNER_ACTION: RS-B1 sentinel conversion, which must be byte-identical to whatever the lineage adopts; RS-B3 F6, which applies to both vehicles (040efda L353); RS-B5 'Do not merge' disposition. CI_GAP: RS-B2 (#13 has never run CI; #16's owner workflow fails on re-run, 422/1); RS-B4 extended to leaderboard-real-producer and qgv-producer-real, and web-mvp-validation is not on the GIE-009 port list; union trial NOT_RUN. USER_DECISION_REQUIRED: RS-B6 canonical merge and vehicle (the owner route conflicts with the lineage unless the files are byte-identical); MAC-X1 (any canonical advance before Track C turns Track C acceptance red); Track C/v2 vehicle. RS-B7 provider/SEC live-fetch decision (USER_DECISION_REQUIRED) does not block the software merge."
+   },
+   {
+    "chain": "#21 ccr-2e16018a-qukwmg f1b5afb (Worker Contract, docs only)",
+    "verdict": "READY_FOR_CANONICAL_MERGE_DECISION, but NOT order-free. Standalone: 396 passed, fingerprint 4ba44a8c unchanged, CI N/A, already contained in #30, #38 and #39.",
+    "blocking": "USER_DECISION_REQUIRED: the canonical merge itself, plus MAC-X1. I reproduced that merging #21 to canonical before Track C makes Track C's boundary_audit fail with 'canonical advanced', and a combined tree fails with 'new file outside authorized Track C: CLAUDE.md, CLAUDE_CODE_WORKER_CONTRACT.md'. So #21 must be sequenced after Track C or covered by the MAC-X1 decision. Never merge #20 d87d4cd (add/add duplicate)."
+   },
+   {
+    "chain": "CDR-012 F1/F3 at #31 c9e0fa7 (Codex HANDOFF_READY, GCH-010a)",
+    "verdict": "PREP_READY. My non-authoritative spot-check passed (compare rc 0, EXACT_MATCH_ALL_GRADED 747; registry probe rc 0). The authoritative F1/F3 re-verification is NOT_RUN by me; it belongs to Claude Main and GCH-010a records it as in progress.",
+    "blocking": "None from the prep. The authoritative verification should add the strict F3 reason regex, the arithmetic_contract and supplement pin assertions, and a record of how the UNDEFINED_SE cases behave."
+   },
+   {
+    "chain": "Fresh successor of #39 (0d31e06 + #31 c9e0fa7 + #35 4cf8ead)",
+    "verdict": "NOT_RUN by me. The harness is ready, provided the inputs and checks in the gaps are fixed. Expected outcome: protected_paths FAIL with the default allowlist; with a re-reviewed 13-entry allowlist, exit 4 (REVIEW_REQUIRED from ci_path_filters and 4 escalation hits). The topology is STACKED and merges cleanly.",
+    "blocking": "Before the run: Claude Main's F1/F3 verification of c9e0fa7, the re-reviewed 13-entry allowlist, and the tc_protected mirror update. Recommended: require the #31 head to equal VERIFIED_V2_COMMIT, and add the registry probe step. Track C acceptance tools: NOT_RUN (MAC-X1)."
+   }
+  ],
+  "summary": "Overall: the prep batch is sound and correctly scoped to CDR-012, but its blockers are out of date, the successor harness needs three fixes before a real run, and the RIG audit missed that MAC-X1 also blocks merging #21 in any order.\n\n**What changed since the prep.** Codex pushed: #31 is now c9e0fa7 (CDR-012 HANDOFF_READY, GCH-010a, 9/9 CI green) and #35 is now 4cf8ead (merges c9e0fa7, STACKED, 8/8 green). Global-handoff is at cd0963f. Canonical b8e39a2, #39 0d31e06, Track C b9e01a9, #13 8bb990b, #16 ef65caa and #21 f1b5afb are unchanged (ls-remote 04:52Z and 05:00Z). So every \"B1: waiting for Codex\" blocker in the three reports is out of date.\n\n**CDR-012 expectation set: complete and correctly scoped.**\n- F3 applies only when deg == B. deg == B-1 keeps a p (17 cases), and near-undefined cases keep a p (14).\n- No epsilon is added anywhere; the epsilon mutants are caught.\n- The F1 detectors flip p between d*d and pow (16 of 16 caught at the old head e0b6d80), but only because this glibc's pow is inexact. The AST scan is the platform-independent check.\n- The registry probe is meaningful. Its S2 gate-level NOT_RUN comes from the owner's unchanged v1 aggregation (any NOT_RUN cell makes the gate NOT_RUN), so it adds no new rule.\n- Spot-check 1, run against c9e0fa7 itself (not the authoritative verification):\n  - compare_cdr012: rc 0, EXACT_MATCH_ALL_GRADED on 747 cases, also with a strict F3 reason regex.\n  - Registry probe: rc 0 (S1 NOT_RUN, S2 NOT_RUN, S3 STAT_PASS).\n  - Source: d*d squaring, and the refusal is raised iff degenerate == replicates.\n- Minor coverage gaps:\n  - The 5 UNDEFINED_SE cases are ungraded.\n  - METHOD and POLICY are unchanged even though the bits changed; only the arithmetic_contract and the supplement pin mark the change.\n  - The feasibility path is not covered.\n\n**Successor harness: fails closed where it must, but is weaker in three places.**\n- Holds: VERIFIED_V2_COMMIT is required, unreviewed additions FAIL, an unchanged tree is reported NO_NEW_CONTENT with exit 3, and escalation hits give REVIEW_REQUIRED. Spot-check 2 on the real heads: STACKED topology, clean merge-trees, and a 38-file delta.\n- Expected non-PASS outcomes, by design:\n  - protected_paths FAILs with the default 11-entry allowlist, because the CI-declared list is now 13.\n  - The CI-parity check needs review: the readiness step was renamed and its protected-paths predicate gained 2 paths.\n  - The escalation sweep finds 4 benign hits that are not negated.\n  - So the expected result is exit 4, not 0.\n- Weaknesses:\n  - VERIFIED_V2_COMMIT is only checked for ancestry, so if #31 moves on after verification, files outside the allowlist go unchecked.\n  - The oracle step checks only the verdict: no registry probe, no strict reason regex, PASS on rc 0 even without JSON, and no hash pins.\n  - The negation heuristic is permissive: any hit inside a one-line JSON/XML file is treated as negated.\n\n**RIG audit: verdict sound after verification, with one more correction.**\n- READY_AFTER_OWNER_ACTIONS is upheld together with the verifier's corrections.\n- Spot-check 3 refutes \"#21 independent, any position\". Track C's boundary_audit passes with canonical at b8e39a2. With canonical at f1b5afb (#21 merged) it fails \"canonical advanced\". On Track C plus #21 it fails \"new file outside authorized Track C\" (CLAUDE.md and the contract doc).\n- Neither #39's CI nor the harness runs these Track C acceptance tools.\n- Still uncovered for the canonical-merge package, in priority order:\n  1. A trial merging every chain via the owner route has never been run. The #30/#38/#39 lineage is not a substitute, because it carries Codex repairs the owner heads lack.\n  2. The Track C vehicle: v2/CDR-012 exists only on the Codex lineage, and C8 Freeze is not approved.\n  3. MAC-X1 is a USER_DECISION that applies to RIG, #21 and every other canonical advance.\n  4. F6 applies to both vehicles.\n\n**Readiness:**\n- RIG -> SEC 8-K: READY_AFTER_OWNER_ACTIONS. That means ready for a merge decision, not ready to merge; nothing on this chain has run on Actions.\n- #21: READY_FOR_CANONICAL_MERGE_DECISION, but not order-free (MAC-X1).\n\n**Housekeeping.** I wrote only to completeness-critic/. The private clone and worktree are deleted, the main worktree list is unchanged, the main checkout is clean at f1b5afb, and the oracle directory's SHA256SUMS still verify. No push, PR, comment or dispatch."
+ }
+}

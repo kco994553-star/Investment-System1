@@ -4,8 +4,8 @@ Routing/index SSoT only. This file is not a calculation, policy, approval or pub
 
 | Field | Value |
 |---|---|
-| Handoff ID | GCH-010 (supersedes GCH-009 as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
-| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011; GCH-009 after GIE-010; GCH-010 after CDR-012 (2026-10-04) |
+| Handoff ID | GCH-011 (supersedes GCH-010 as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
+| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011; GCH-009 after GIE-010; GCH-010 after CDR-012; GCH-011 after GIE-011 (2026-10-04) |
 | Primary Integration Writer | Claude Code session `session_019znshzTYgyBnuuBmSxdPFN`, designated by the user on 2026-10-03 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md` |
 | Canonical branch / HEAD | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. This matches the last independent audit checkpoint, and canonical has not moved since 2026-09-28 |
@@ -55,7 +55,7 @@ Decided in this round (see `COORDINATION_DECISION_REGISTER.md`):
 
 Still open:
 
-1. **Canonical merges** (always gated). Integration evidence: #30 `86ad362` (GIE-006), #38 `7e3861b` (GIE-008 §4), and the CDR-011 trial #39 `0d31e06` (#38 + #31 + #35; 1441 passed; 10/10 CI; GIE-010 §3). Per-chain owner-route readiness: GIE-009 (all four audited chains READY_AFTER_OWNER_ACTIONS).
+1. **Canonical merges** (always gated). Latest integration evidence: successor trial #40 `acaf1b5` (#39 + #31 `c9e0fa7` + #35 `4cf8ead`; 1518 passed; 10/10 CI; GIE-011 §2). Earlier: #30 (GIE-006), #38 (GIE-008 §4), #39 (GIE-010 §3). Per-chain owner-route readiness: GIE-009 (four chains) and GIE-011 §3 (RIG → SEC 8-K), all READY_AFTER_OWNER_ACTIONS; #21 ready for decision but subject to MAC-X1. The all-chains owner-route union trial has not been run.
 2. **Publication grants.** P01 research-display, Frozen and Live grants remain NONE.
 3. **Data and providers.** The Macro ALFRED key, a news provider, and an exchange-calendar vintage source.
 
@@ -69,7 +69,9 @@ Decided and in execution:
 - **CDR-011 (decided):** the CDR-009 write exclusion applies again until PR #31's next HANDOFF_READY; read-only tracking only. At that checkpoint: fresh fetch, continue the 13-point verification with items 5 and 6b re-run plus the user's added list (GIE-008 successor), then a new combined trial of the verified trial + #31 + #35 on fresh heads. #38's results are not reused as the new trial.
 - **CDR-011 executed (GIE-010):** #31 `e0b6d80` reached HANDOFF_READY and was independently re-verified: VERIFIED_WITH_FINDINGS, no blocking finding. The CDR-011 combined trial is PR #39 `0d31e06` (#38 + #31 + #35, fresh heads): 1441 passed, 10/10 CI.
 - **CDR-012 (decided 2026-10-04):** F1 squaring in v2 = `d*d` (no `** 2` / libm `pow`); F3 all-degenerate replicate set = NOT_RUN, no statistical PASS, no new epsilon/tolerance/threshold. Codex implements additively (CDR-008); the Primary Integration Writer re-verifies F1/F3 after Codex's next HANDOFF_READY and runs a fresh successor of trial #39. Write exclusion on the C8 paths applies until then.
+- **CDR-012 executed (GIE-011):** #31 `c9e0fa7` independently re-verified, VERIFIED_WITH_FINDINGS, no blocking finding. Successor trial PR #40 `acaf1b5` (#39 + #31 + #35): 1518 passed, 10/10 CI.
 - **Still open (USER_DECISION_REQUIRED, not decided here):**
+  - F1 scope: whether CDR-012's `d*d` rule also covers the frozen v1 Development dependence estimator `(v - m) ** 2` that v2 reaches before outcome access (affects only FEASIBLE/INFEASIBLE, never a p-value; v1 must stay unchanged, so it would need a v2-only additive estimator).
   - Track C landing vehicle (`b9e01a9` lineage, the #31/#35 stack, or a #30-based combined merge) and MAC-X1 (Track C acceptance tooling on integrated trees) from GIE-009.
   - Scope of #21, #37, #28 and docs/qgv-context for any canonical-merge package.
 

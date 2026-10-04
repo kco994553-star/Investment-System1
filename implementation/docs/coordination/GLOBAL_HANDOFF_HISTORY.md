@@ -144,3 +144,12 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - Codex pushed #31 `c9e0fa7` ("Repair approved CDR-012 v2 squaring and all-degenerate fail-closed"; `ACCEPTANCE_MANIFEST_CDR012.json` HANDOFF_READY_APPROVED_SYNTHETIC_V2_SCOPE). Its check suite completed at 03:50Z. #35 is still `8318b78` and does not yet contain `c9e0fa7`; Codex states it will merge it after #31's CI.
 - Independent re-verification started (workflow `wf_4e6007e2-97e`), using the CDR-012 expectations prepared before this head existed. If no blocking finding: the fresh successor of trial #39 on the freshest #31/#35 heads, published for CI. #39's results are not reused.
 - Canonical `b8e39a2` unchanged. Maturity transitions: none.
+
+## GCH-011 · 2026-10-04 · GIE-011 recorded (CDR-012 re-verification; successor trial PR #40; RIG → SEC 8-K readiness)
+
+- #31 `c9e0fa7` independently re-verified against the CDR-012 expectations built before the repair: VERIFIED_WITH_FINDINGS, 19/19 rows PASS, no blocking finding. F1 (`d*d`) and F3 (all-degenerate → NOT_RUN) exact; no epsilon; v1, identity and historical pins preserved; no source reopen after an F3 NOT_RUN. #35 `4cf8ead` carries the same F1 patch.
+- Successor trial of #39 published by the Primary Integration Writer: PR #40 `integration/cdr012-successor-trial-2026-10-04` @ `acaf1b5` (#39 + #31 `c9e0fa7` + #35 `4cf8ead`). 1518 passed, independent oracle exact on the trial tree, 10/10 CI, adversarial check no blocking. #39's results not reused.
+- RIG → SEC 8-K chain READY_AFTER_OWNER_ACTIONS; #21 ready for decision but subject to MAC-X1.
+- New narrow question routed: whether CDR-012 F1 also covers the frozen v1 Development estimator reached before outcome access.
+- Harness maintained: live SEC test deselected; real runs require the #31 head to equal the verified commit.
+- Canonical `b8e39a2` unchanged. Maturity transitions: none.

@@ -1,0 +1,1706 @@
+#!/usr/bin/env bash
+# successor_trial.sh - CDR-012 fresh successor of combined trial #39 (Primary Integration Writer).
+#
+# Adapted from the hardened CDR-011 harness next_trial.sh (sha256 2e2d45f6..., the harness that
+# produced trial #39). Builds, in a throwaway detached worktree of a PRIVATE clone,
+#     T = (#39 tip)  --no-ff merge  (#31 head)  --no-ff merge  (#35 head)
+# then runs the checks listed by --list-checks, writes summary.json and deletes the private clone.
+#
+# Isolation: the harness never creates a worktree in, fetches into, or writes to the source
+# repository (--src-repo, default /home/user/Investment-System1). It clones it into
+# WORK/repo (git clone --no-checkout --shared; a shallow source is copied instead), points that
+# clone's origin at the real remote, fetches (and unshallows) there, and builds every worktree and
+# merge inside the clone. The whole WORK directory is deleted at exit unless --keep.
+#
+# Merge order (documented choice): #31 first, then #35.
+#   * Codex stacks #35 on #31. The harness checks whether the #31 head is an ancestor of the #35
+#     head. STACKED (ancestor): same convention as #39. INDEPENDENT (#35 has not absorbed the new
+#     #31): the harness still merges #31 and then #35, reports the topology prominently and checks
+#     the result against an independent merge-tree replay instead of a direct #39+#35 merge.
+#   * An input already contained in the current trial HEAD is not merged again (git would say
+#     "Already up to date"); it is recorded as NOOP_ALREADY_CONTAINED.
+#   * No-reuse rule (CDR-011/CDR-012): if the trial tree equals #39's tree the run is labelled
+#     NO_NEW_CONTENT, it is never called a successor trial, and the remaining checks are recorded
+#     NOT_RUN unless --force-checks is given.
+#
+# READ-ONLY on GitHub and on every remote ref: only `git fetch` / `git ls-remote` run against the
+# remote. It never pushes, comments, dispatches or re-runs anything. It never reads CAL_VERIFY or
+# Holdout data and never fetches provider data. Track C C8 paths and codex/* branches are merged
+# for verification only; the harness never edits any repository file.
+#
+# Usage:
+#   successor_trial.sh --label LABEL --verified-v2-commit SHA [options] SHA39 SHA31 SHA35
+#     LABEL   DRY_RUN_* (harness validation) or e.g. CDR012_SUCCESSOR_TRIAL (the real trial).
+#             A non-DRY_RUN label is refused while #31 is still at the pre-CDR-012 head e0b6d80,
+#             while VERIFIED_V2_COMMIT is e0b6d80, or when SHA39 is not the verified #39 tip 0d31e06.
+#   required:
+#     --verified-v2-commit SHA   commit whose evl/superiority_v2.py (and reviewed allowlist files)
+#                                were independently verified; no default. Must be an ancestor of
+#                                (or equal to) the #31 or #35 head.
+#   options:
+#     --reviewed-allowlist FILE  reviewed Track C additive allowlist, one repo path per line ('#'
+#                                comments). Default: the 11 entries verified for #39. The trial's
+#                                declared CI allowlist must equal it; any addition outside it FAILs.
+#     --reviewed-c8-evidence FILE  reviewed C8-scope additions that are not in the allowlist (reports
+#                                / tools). Default: the 2 approval reports present in #39.
+#     --min-tests N    full-suite lower bound (default 1441 = #39 count; tests are only added)
+#     --force-checks   run every check even when the trial tree equals #39's (NO_NEW_CONTENT)
+#     --oracle PATH    independent CDR-012 oracle; NOT_RUN when the file is absent. Default:
+#                      .../wf11/prep-cdr012-oracle/compare_cdr012.py, else .../prep-cdr012-oracle/base/compare_cdr012.py
+#                      (the path and sha256 actually used are recorded). Run with PYTHONPATH=<oracle dir>:<trial src>,
+#                      PYTHONDONTWRITEBYTECODE=1, cwd = the run directory. PASS needs exit 0 and, if it writes JSON,
+#                      status PASS or verdict EXACT_MATCH_ALL_GRADED.
+#     --oracle-python PY   interpreter for the oracle (default: the harness venv python)
+#     --oracle-args STR    oracle arguments; placeholders {src} {wt} {out} {oracle_dir}
+#                          (default: '--adapter v2kernel --out {out}', the compare_cdr012.py CLI)
+#     --port N         private HTTP port for the two browser tests that hard-code 8765 (default 8792)
+#     --only a,b,...   run only these checks (setup/build steps always run)
+#     --skip a,b,...   skip these checks (recorded NOT_RUN)
+#     --keep           keep the private clone, worktrees and work directory
+#     --venv DIR       Python 3.11 venv with numpy==2.3.5 + pytest==9.1.1 (created if absent)
+#     --base DIR       harness base directory (default: directory of this script)
+#     --src-repo DIR   read-only clone source (default /home/user/Investment-System1)
+#     --base-branch B / --br31 B / --br35 B   branch-name overrides, DRY_RUN_* labels only (self-tests)
+#     --list-checks    print check names and exit
+#   exit codes: 0 successor trial (or DRY_RUN with new content) and every step PASS;
+#               3 NO_NEW_CONTENT (not a successor trial) and no FAIL among executed steps;
+#               4 no FAIL / NOT_RUN but REVIEW_REQUIRED steps; 1 any FAIL or NOT_RUN; 2 usage error.
+set -euo pipefail
+
+SRC_REPO=${SRC_REPO:-/home/user/Investment-System1}
+REMOTE=origin
+GH_REPO=kco994553-star/Investment-System1
+EXPECTED_ORIGIN_RE='github\.com[/:]kco994553-star/Investment-System1(\.git)?/?$'
+BR39_DEFAULT=integration/cdr011-trial-2026-10-04
+BR31_DEFAULT=codex/track-c-gsup-v2-2026-10-03
+BR35_DEFAULT=codex/integration-hardening-2026-10-03
+BR30=codex/combined-integration-2026-10-03
+BR_CANON=claude/investment-system-top500-validation-alrugm
+BR_OWNER_TC=ccr-22e3ff16-p7n5k5
+CANON=b8e39a2196a6d7794a04a0cd5393c68329e126ca
+OWNER_TC=b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565
+PR30=86ad3628dd5c62c6d873e42511e577f24f4fb588
+MACRO_PIN=4a07099e36ec3cecda24b82ecedad53800f0aa81
+PR39_TIP=0d31e06022c3162e83f2ff5a984b07e59e4e216b    # CI-verified trial #39 (GIE-010)
+PR39_TREE=2a9b79984fa746607fa23ef1a1f680801d91dd5a
+PREV31=e0b6d809058511d4bef7ad1aeccad79c5eae3ff8      # #31 head inside #39 = pre-CDR-012 (CDR-010) v2
+PREV35=8318b78de7ebaca63b857f8c85a12d071863c492      # #35 head inside #39
+MERGE_DATE=${MERGE_DATE:-2026-10-04T00:00:00+00:00}
+SYSPY=${SYSPY:-python3}
+ORACLE_DIR_DEFAULT=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf11/prep-cdr012-oracle
+DEFAULT_ORACLE=$ORACLE_DIR_DEFAULT/compare_cdr012.py
+[ -f "$DEFAULT_ORACLE" ] || [ ! -f "$ORACLE_DIR_DEFAULT/base/compare_cdr012.py" ] || DEFAULT_ORACLE=$ORACLE_DIR_DEFAULT/base/compare_cdr012.py
+export PLAYWRIGHT_BROWSERS_PATH=${PLAYWRIGHT_BROWSERS_PATH:-/opt/pw-browsers}
+export NODE_PATH=${NODE_PATH:-/opt/node-tools/node_modules}
+
+CHECKS_ALL=(merge_conflicts tree_identity no_reuse preservation_gate_ci protected_paths source_provenance
+            escalation_sweep engine_fingerprints full_pytest gsup_v2_replay independent_oracle track_c_v1
+            cdr012_static_scan web_mvp_validation web_research_guard web_state_presentation
+            producer_contract_fixture producer_contract_browser macro_adoption_pinned ci_path_filters
+            intree_writes remote_recheck)
+# checks that still run when the trial tree equals #39's tree and --force-checks is not given
+STRUCTURAL_CHECKS=",merge_conflicts,tree_identity,no_reuse,remote_recheck,"
+
+usage_exit() { echo "$1" >&2; exit 2; }
+LABEL="" PORT=8792 ONLY="" SKIP="" KEEP=0 VENV="" BASE="" VERIFIED_V2_ARG="" ALLOWLIST_ARG="" C8EV_ARG=""
+MIN_TESTS_ARG=1441 FORCE=0 ORACLE=$DEFAULT_ORACLE ORACLE_PY="" ORACLE_ARGS='--adapter v2kernel --out {out}'
+BR39=$BR39_DEFAULT BR31=$BR31_DEFAULT BR35=$BR35_DEFAULT BR_OVERRIDE=0
+POS=()
+need() { [ $# -ge 2 ] && [ -n "$2" ] || usage_exit "option $1 needs a value"; }
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --label) need "$@"; LABEL=$2; shift 2 ;;
+    --verified-v2-commit) need "$@"; VERIFIED_V2_ARG=$2; shift 2 ;;
+    --reviewed-allowlist) need "$@"; ALLOWLIST_ARG=$2; shift 2 ;;
+    --reviewed-c8-evidence) need "$@"; C8EV_ARG=$2; shift 2 ;;
+    --min-tests) need "$@"; MIN_TESTS_ARG=$2; shift 2 ;;
+    --force-checks) FORCE=1; shift ;;
+    --oracle) need "$@"; ORACLE=$2; shift 2 ;;
+    --oracle-python) need "$@"; ORACLE_PY=$2; shift 2 ;;
+    --oracle-args) [ $# -ge 2 ] || usage_exit "option $1 needs a value"; ORACLE_ARGS=$2; shift 2 ;;
+    --port) need "$@"; PORT=$2; shift 2 ;;
+    --only) need "$@"; ONLY=$2; shift 2 ;;
+    --skip) need "$@"; SKIP=$2; shift 2 ;;
+    --keep) KEEP=1; shift ;;
+    --venv) need "$@"; VENV=$2; shift 2 ;;
+    --base) need "$@"; BASE=$2; shift 2 ;;
+    --src-repo) need "$@"; SRC_REPO=$2; shift 2 ;;
+    --base-branch) need "$@"; BR39=$2; BR_OVERRIDE=1; shift 2 ;;
+    --br31) need "$@"; BR31=$2; BR_OVERRIDE=1; shift 2 ;;
+    --br35) need "$@"; BR35=$2; BR_OVERRIDE=1; shift 2 ;;
+    --list-checks) printf '%s\n' "${CHECKS_ALL[@]}"; exit 0 ;;
+    -h|--help) sed -n '2,67p' "$0"; exit 0 ;;
+    -*) usage_exit "unknown option $1" ;;
+    *) POS+=("$1"); shift ;;
+  esac
+done
+[ -n "$LABEL" ] || usage_exit "--label is required"
+[[ "$LABEL" =~ ^[A-Za-z0-9_.-]+$ ]] || usage_exit "bad label"
+[ -n "$VERIFIED_V2_ARG" ] || usage_exit "--verified-v2-commit is required (no default: the v2 blob check must never silently compare against e0b6d80)"
+[[ "$VERIFIED_V2_ARG" =~ ^[0-9a-f]{7,40}$ ]] || usage_exit "--verified-v2-commit must be a hex commit id"
+[ ${#POS[@]} -eq 3 ] || usage_exit "need exactly 3 SHAs: SHA39 SHA31 SHA35"
+[[ "$PORT" =~ ^[0-9]+$ ]] || usage_exit "bad port"
+[[ "$MIN_TESTS_ARG" =~ ^[0-9]+$ ]] && [ "$MIN_TESTS_ARG" -ge 1 ] || usage_exit "bad --min-tests"
+if [ "$BR_OVERRIDE" = 1 ] && [[ "$LABEL" != DRY_RUN* ]]; then usage_exit "branch overrides are allowed only with DRY_RUN_* labels"; fi
+for f in "$ALLOWLIST_ARG" "$C8EV_ARG"; do [ -z "$f" ] || [ -r "$f" ] || usage_exit "cannot read $f"; done
+ARG39=${POS[0]} ARG31=${POS[1]} ARG35=${POS[2]}
+for c in ${ONLY//,/ } ${SKIP//,/ }; do
+  printf '%s\n' "${CHECKS_ALL[@]}" | grep -qx -- "$c" || usage_exit "unknown check $c"
+done
+[ -d "$SRC_REPO/.git" ] || [ -f "$SRC_REPO/.git" ] || usage_exit "source repository $SRC_REPO not found"
+
+SELF=$(readlink -f "$0")
+SELF_SHA=$(sha256sum "$SELF" | cut -d' ' -f1)
+BASE=${BASE:-$(dirname "$SELF")}
+BASE=$(readlink -f "$BASE")
+case "$BASE/" in "$(readlink -f "$SRC_REPO")"/*) usage_exit "--base must not be inside the source repository" ;; esac
+VENV=${VENV:-$BASE/venv311}
+RUNID="${LABEL}-$(date -u +%Y%m%dT%H%M%SZ)"
+OUT="$BASE/runs/$RUNID"
+WORK="$BASE/work/$RUNID"
+PRIV="$WORK/repo"
+WT="$WORK/wt-trial"
+WTM="$WORK/wt-macro-pin"
+PY="$VENV/bin/python"
+ORACLE_PY=${ORACLE_PY:-$PY}
+mkdir -p "$OUT"/{logs,results,junit,py,private_js,web,ci_extract,inputs,oracle_cwd} "$WORK"
+STEPS="$OUT/steps.tsv"
+printf 'step\tstatus\trc\tseconds\tlog\tnote\n' > "$STEPS"
+STEPNO=0
+FATAL=0
+NNC=0          # 1 once no_reuse finds the trial tree identical to #39's tree
+TOPOLOGY=""    # STACKED | INDEPENDENT (set by verify_inputs)
+declare -A STATUS
+
+log() { printf '%s [%s] %s\n' "$(date -u +%FT%TZ)" "$LABEL" "$*" | tee -a "$OUT/harness.log" >&2; }
+
+# reviewed lists are copied into the run directory so the summary pins exactly what was used
+if [ -n "$ALLOWLIST_ARG" ]; then cp "$ALLOWLIST_ARG" "$OUT/inputs/reviewed_allowlist.txt"; export REVIEWED_ALLOWLIST_FILE="$OUT/inputs/reviewed_allowlist.txt"; fi
+if [ -n "$C8EV_ARG" ]; then cp "$C8EV_ARG" "$OUT/inputs/reviewed_c8_evidence.txt"; export REVIEWED_C8_EVIDENCE_FILE="$OUT/inputs/reviewed_c8_evidence.txt"; fi
+SRC_WT_BEFORE=$(git -C "$SRC_REPO" worktree list --porcelain | sha256sum | cut -d' ' -f1)
+
+# ---------------------------------------------------------------- helper Python (materialized per run)
+CHECKS_PY="$OUT/py/checks.py"
+cat > "$CHECKS_PY" <<'PYEOF'
+#!/usr/bin/env python3
+"""successor_trial.sh helper: read-only git/tree analysis. No network; writes only to given output paths."""
+import ast, collections, hashlib, importlib.util, json, os, re, shutil, subprocess, sys, tempfile
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+LABEL = os.environ.get("TRIAL_LABEL", "UNLABELLED")
+CANON = "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+OWNER = "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565"
+PREV31 = "e0b6d809058511d4bef7ad1aeccad79c5eae3ff8"
+PR39_REPLAY_NUMERICAL_SHA = "d4642fa50523c75f4278afc5463c9751d582c427077916788e8fd39f1f99cfd5"  # #39 / e0b6d80 (CDR-010)
+WEB_MVP = "implementation/src/investment_system/product/web_mvp.py"
+WEB_MVP_BLOB = "10ad8c7624a0a31e602be699144cbcb534c96e53"
+SUPERIORITY = "implementation/src/investment_system/evl/superiority.py"
+SUPERIORITY_BLOB = "8a1254d7b77514f6015dfff4af0e4a53f57f22af"
+V2_PATH = "implementation/src/investment_system/evl/superiority_v2.py"
+REGISTER = "implementation/reports/track_c_decision_register_2026-10-01.md"
+READINESS_WF = ".github/workflows/codex-integration-readiness.yml"
+# Default reviewed additive allowlist = the 6 entries at 29c2c20 (GIE-008 §1) + the 5 CDR-010 v2 entries at
+# e0b6d80 (CDR-011 re-verification, GIE-010). Override with --reviewed-allowlist after reviewing Codex's additions.
+DEFAULT_ALLOWLIST = frozenset({
+    "implementation/src/investment_system/evl/superiority_v2.py",
+    "implementation/tests/evl_c8_gsup_v2_oracle.py",
+    "implementation/tests/test_evl_gsup_v2_arithmetic.py",
+    "implementation/tests/test_evl_gsup_v2_registry.py",
+    "implementation/tests/test_evl_gsup_v2_repair_negatives.py",
+    "implementation/src/investment_system/evl/gsup_source_identity.py",
+    "implementation/src/investment_system/evl/superiority_source_identity.py",
+    "implementation/tests/test_evl_gsup_source_identity.py",
+    "implementation/tests/test_evl_gsup_v2_identity_adversarial.py",
+    "implementation/tests/test_evl_gsup_identity_kernel_invariance.py",
+    "implementation/tests/test_evl_gsup_mb_reduction_diagnostic.py",
+})
+# Default reviewed C8-scope additions outside the allowlist: the two approval reports carried by #39
+# (approval JSON blob a5279d51 recorded in GIE-010 item evidence).
+DEFAULT_C8_EVIDENCE = frozenset({
+    "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json",
+    "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.md",
+})
+IF1 = ("implementation/src/investment_system/technical/engine.py",
+       "implementation/src/investment_system/macro/engine.py",
+       "implementation/src/investment_system/contracts/models.py",
+       "implementation/src/investment_system/contracts/lineage.py")
+C8_SCOPE = re.compile(r"^implementation/(src/investment_system/evl/(superiority|gsup)[^/]*"
+                      r"|tests/(test_evl_c8|test_evl_gsup|evl_c8)[^/]*|tools/track_c_c8[^/]*"
+                      r"|reports/track_c_c8[^/]*|reports/track_c_decision_register[^/]*)$")
+EXPECTED_FP = {
+    "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+    "macro": "7e427949a4c15ebaf78304cfec2d7a952f8bfec2a694371801ad90d09fe0c501",
+    "n_qgv": 19,
+    "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+    "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+    "technical": "66cb23830d65d1867df895a52d6cf3adef52c84a8ee2645d2c06617711a5e655",
+}
+EXPECTED_FP_SHA = "f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866"
+
+
+def load_list(env, default):
+    """Reviewed path list from a file named by env (one path per line, '#' comments) or the default."""
+    f = os.environ.get(env)
+    if not f:
+        return default, "default"
+    paths = set()
+    for raw in Path(f).read_text().splitlines():
+        line = raw.split("#", 1)[0].strip()
+        if not line:
+            continue
+        if not re.fullmatch(r"implementation/[A-Za-z0-9_./-]+", line) or ".." in line:
+            raise SystemExit(f"bad path in {f}: {raw!r}")
+        paths.add(line)
+    if not paths:
+        raise SystemExit(f"{f} lists no paths")
+    return frozenset(paths), f"{f} (sha256 {hashlib.sha256(Path(f).read_bytes()).hexdigest()})"
+
+
+def git(repo, *args, binary=False):
+    p = subprocess.run(["git", "-C", str(repo), *args], capture_output=True)
+    if p.returncode != 0:
+        raise RuntimeError(f"git {' '.join(args)} rc={p.returncode}: {p.stderr.decode(errors='replace')}")
+    return p.stdout if binary else p.stdout.decode()
+
+
+def ls_tree(repo, ref):
+    res = {}
+    for rec in git(repo, "ls-tree", "-r", "--full-tree", "-z", ref).split("\0"):
+        if rec:
+            meta, path = rec.split("\t", 1)
+            res[path] = meta.split()[2]
+    return res
+
+
+def blob(repo, ref, path):
+    return git(repo, "cat-file", "blob", f"{ref}:{path}", binary=True)
+
+
+def is_ancestor(repo, a, b):
+    return subprocess.run(["git", "-C", str(repo), "merge-base", "--is-ancestor", a, b]).returncode == 0
+
+
+def emit(path, obj):
+    obj = {"label": LABEL, **obj}
+    Path(path).write_text(json.dumps(obj, indent=1, sort_keys=False, default=str) + "\n")
+    brief = {k: v for k, v in obj.items() if k in ("status", "review_flags", "counts", "label")}
+    print(json.dumps(brief, indent=1, default=str))
+
+
+def overall(items):
+    sts = [i["status"] for i in items]
+    if "FAIL" in sts:
+        return "FAIL"
+    if "NOT_RUN" in sts:
+        return "INCOMPLETE"
+    if "REVIEW_REQUIRED" in sts:
+        return "REVIEW_REQUIRED"
+    return "PASS"
+
+
+def tc_protected(path):  # identical predicate to #31's workflow gate (as of c9e0fa7: + the two v2 oracle helpers)
+    # PATCH (wf12/successor-trial): c9e0fa7 extended the workflow gate's protected() set with
+    # evl_c8_gsup_v2_oracle.py and evl_c8_gsup_v2_cdr012_oracle.py; mirror it so the harness predicate stays identical.
+    return (path.startswith("implementation/src/investment_system/evl/")
+            or path in {"implementation/tests/evl_c8_fixture.py", "implementation/tests/evl_c8_gsup_oracle.py",
+                        "implementation/tests/evl_c8_gsup_v2_oracle.py", "implementation/tests/evl_c8_gsup_v2_cdr012_oracle.py"}
+            or (path.startswith("implementation/tests/test_evl_") and path.endswith(".py")))
+
+
+def parse_allowlist(text):
+    m = re.search(r"allowed_additions\s*=\s*\{(.*?)\}", text, re.S)
+    if m is None:
+        return None
+    return {a or b for a, b in re.findall(r"'([^']+)'|\"([^\"]+)\"", m.group(1))}
+
+
+def rc_of(status):
+    return 0 if status in ("PASS", "INCOMPLETE", "REVIEW_REQUIRED") else 1
+
+
+def read_merges(path):
+    rows = []
+    for line in Path(path).read_text().splitlines():
+        pr, sha, rc, head, action, parent = (line.split("\t") + [""] * 6)[:6]
+        rows.append({"pr": pr, "sha": sha, "rc": rc, "head": head, "action": action, "parent": parent})
+    return rows
+
+
+# ------------------------------------------------------------------ junit
+def junit_summary(path):
+    root = ET.parse(path).getroot()
+    tot = collections.Counter()
+    per_mod = collections.defaultdict(collections.Counter)
+    failing = []
+    for c in root.iter("testcase"):
+        cls = c.get("classname", "")
+        parts = cls.split(".")
+        mod = parts[1] if parts[0] == "tests" and len(parts) > 1 else parts[0]
+        if c.find("failure") is not None:
+            k = "failed"
+        elif c.find("error") is not None:
+            k = "error"
+        elif c.find("skipped") is not None:
+            k = "skipped"
+        else:
+            k = "passed"
+        tot[k] += 1
+        tot["total"] += 1
+        per_mod[mod][k] += 1
+        per_mod[mod]["total"] += 1
+        if k in ("failed", "error"):
+            failing.append(f"{cls}::{c.get('name')}")
+    groups = {
+        "track_c_c8_v1": lambda m: m.startswith("test_evl_c8"),
+        "track_c_gsup_additive": lambda m: m.startswith("test_evl_gsup"),
+        "track_c_all_test_evl": lambda m: m.startswith("test_evl_"),
+        "producer_source_compat": lambda m: m == "test_producer_source_compat",
+        "producer_infra_compat": lambda m: m.endswith("producer_infra_compat") or m == "test_c28_integration_compat",
+        "web_research_guard": lambda m: m == "test_web_research_guard",
+        "web_state_presentation": lambda m: m == "test_web_state_presentation",
+        "web_mvp_and_search": lambda m: m in ("test_web_mvp", "test_global_language_search", "test_entity_metadata_coverage"),
+    }
+    g = {}
+    for name, pred in groups.items():
+        c = collections.Counter()
+        for m, cnt in per_mod.items():
+            if pred(m):
+                c.update(cnt)
+        g[name] = dict(c)
+    return {"totals": dict(tot), "groups": g, "failing": failing, "modules": len(per_mod)}
+
+
+def cmd_junit(args):
+    path, out = args
+    s = junit_summary(path)
+    t = s["totals"]
+    min_tests = int(os.environ["MIN_TESTS"])  # lower bound; tests are only ever added
+    status = "PASS" if (t.get("total", 0) >= min_tests and t.get("failed", 0) == 0 and t.get("error", 0) == 0
+                        and t.get("skipped", 0) == 0) else "FAIL"
+    emit(out, {"status": status, "junit": path, "counts": t, "min_tests": min_tests, "skipped_must_be_zero": True, **s})
+    return 0 if status == "PASS" else 1
+
+
+# ------------------------------------------------------------------ workflow step extraction
+def cmd_extract_step(args):
+    import yaml
+    wf, step_name, out = args
+    doc = yaml.safe_load(Path(wf).read_text())
+    for job_id, job in (doc.get("jobs") or {}).items():
+        for st in job.get("steps") or []:
+            if st.get("name") == step_name:
+                Path(out).write_text(st["run"])
+                print(json.dumps({"workflow": wf, "job": job_id, "step": step_name, "bytes": len(st["run"]),
+                                  "sha256": hashlib.sha256(st["run"].encode()).hexdigest()}))
+                return 0
+    print(f"step not found: {step_name!r} in {wf}", file=sys.stderr)
+    return 1
+
+
+# ------------------------------------------------------------------ private copies of 8765 browser tests
+def cmd_privatejs(args):
+    src, dst, port, outdir = args
+    t = Path(src).read_text()
+    n_port = t.count("127.0.0.1:8765")
+    n_out = t.count('"implementation/reports/web_mvp"')
+    if n_port < 1 or n_out != 1:
+        print(f"unexpected source shape: port refs={n_port} out refs={n_out}", file=sys.stderr)
+        return 1
+    t2 = t.replace("127.0.0.1:8765", f"127.0.0.1:{int(port)}").replace('"implementation/reports/web_mvp"', json.dumps(outdir))
+    if "8765" in t2 or "implementation/reports" in t2:
+        print("residual 8765 or in-tree output path after rewrite", file=sys.stderr)
+        return 1
+    Path(dst).write_text(t2)
+    print(json.dumps({"src": src, "dst": dst, "port_refs_rewritten": n_port, "out_refs_rewritten": n_out,
+                      "src_sha256": hashlib.sha256(t.encode()).hexdigest()}))
+    return 0
+
+
+# ------------------------------------------------------------------ tree identity (merge replay)
+def merge_tree(wt, a, b):
+    p = subprocess.run(["git", "-C", str(wt), "-c", "gc.auto=0", "merge-tree", "--write-tree", a, b], capture_output=True)
+    return p.returncode, p.stdout.decode().split("\n", 1)[0].strip()
+
+
+def changed_paths(wt, a, b):
+    return set(git(wt, "diff", "--no-renames", "--name-only", a, b).split("\n")) - {""}
+
+
+def cmd_tree_identity(args):
+    wt, trial, base, sha31, sha35, merges, topology, out = args
+    items, flags = [], []
+    t = git(wt, "rev-parse", f"{trial}^{{tree}}").strip()
+    rows = read_merges(merges)
+    trees = {name: git(wt, "rev-parse", f"{c}^{{tree}}").strip() for name, c in
+             (("base_39", base), ("pr31", sha31), ("pr35", sha35), ("trial", trial))}
+    # every real merge changes only paths that its input changed since a merge base with the parent
+    for r in rows:
+        if r["action"] != "MERGED":
+            items.append({"item": f"merge PR #{r['pr']}: {r['action']}", "status": "PASS", "head": r["head"]})
+            continue
+        mbs = git(wt, "merge-base", "--all", r["parent"], r["sha"]).split()
+        allowed = set().union(*(changed_paths(wt, mb, r["sha"]) for mb in mbs)) if mbs else None
+        delta = changed_paths(wt, r["parent"], r["head"])
+        extra = sorted(delta - allowed) if allowed is not None else sorted(delta)
+        items.append({"item": f"merge PR #{r['pr']}: changes only paths the input changed since its merge base(s)",
+                      "status": "PASS" if allowed is not None and not extra else "FAIL",
+                      "merge_bases": mbs, "criss_cross": len(mbs) > 1, "delta_paths": len(delta),
+                      "input_delta_paths": len(allowed or ()), "outside_input_delta": extra[:50]})
+    if topology == "STACKED":
+        rc, direct = merge_tree(wt, base, sha35)
+        items.append({"item": "STACKED: trial tree equals a direct merge-tree of #35 into #39", "status":
+                      "PASS" if rc == 0 and direct == t else "FAIL", "trial_tree": t, "direct_tree": direct, "rc": rc})
+    else:
+        flags.append({"flag": "PR35_DID_NOT_ABSORB_PR31", "detail": "#31 head is not an ancestor of #35 head; merged #31 then #35"})
+        rc1, t1 = merge_tree(wt, base, sha31)
+        env = dict(os.environ, GIT_AUTHOR_NAME="replay", GIT_AUTHOR_EMAIL="replay@invalid", GIT_COMMITTER_NAME="replay",
+                   GIT_COMMITTER_EMAIL="replay@invalid", GIT_AUTHOR_DATE="2000-01-01T00:00:00+00:00",
+                   GIT_COMMITTER_DATE="2000-01-01T00:00:00+00:00")
+        if is_ancestor(wt, sha31, base):
+            c1 = base
+        else:
+            c1 = subprocess.run(["git", "-C", wt, "commit-tree", t1, "-p", base, "-p", sha31, "-m", "replay"],
+                                capture_output=True, env=env, check=True).stdout.decode().strip()
+        rc2, t2 = merge_tree(wt, c1, sha35)
+        items.append({"item": "INDEPENDENT: trial tree equals an independent merge-tree replay (#39+#31, then +#35)",
+                      "status": "PASS" if rc1 == 0 and rc2 == 0 and t2 == t else "FAIL", "trial_tree": t,
+                      "replay_tree": t2, "rc": [rc1, rc2]})
+    info = {"trees": trees, "trial_equals_base_tree": t == trees["base_39"],
+            "delta_paths_vs_base": len(changed_paths(wt, base, trial)),
+            "pr31_to_pr35_delta_paths": len(changed_paths(wt, sha31, sha35)) if is_ancestor(wt, sha31, sha35) else None}
+    emit(out, {"status": overall(items), "topology": topology, "items": items, "info": info, "review_flags": flags})
+    return rc_of(overall(items))
+
+
+def cmd_no_reuse(args):
+    wt, trial, base, sha31, sha35, pr39_tree, out = args
+    t = git(wt, "rev-parse", f"{trial}^{{tree}}").strip()
+    tb = git(wt, "rev-parse", f"{base}^{{tree}}").strip()
+    same_as = {name: git(wt, "rev-parse", f"{c}^{{tree}}").strip() == t for name, c in
+               (("pr31_head", sha31), ("pr35_head", sha35), ("canonical", CANON), ("trackc_owner", OWNER))}
+    identical = t == tb
+    status = "NO_NEW_CONTENT" if identical else "PASS"
+    note = (f"trial tree {t} == base (#39) tree; NOT a successor trial" if identical
+            else f"trial tree {t} differs from base (#39) tree {tb}")
+    Path(out).with_suffix(".note").write_text(note + "\n")
+    emit(out, {"status": status, "trial_tree": t, "base_39_tree": tb, "base_is_ci_verified_39_tree": tb == pr39_tree,
+               "trial_equals_base_39_tree": identical, "trial_tree_equals": same_as,
+               "run_kind": "NO_NEW_CONTENT" if identical else "NEW_CONTENT",
+               "delta_paths_vs_base": len(changed_paths(wt, base, trial))})
+    return 0
+
+
+# ------------------------------------------------------------------ protected paths
+def cmd_protected(args):
+    wt, trial, base, out = args
+    wt = Path(wt)
+    reviewed, reviewed_src = load_list("REVIEWED_ALLOWLIST_FILE", DEFAULT_ALLOWLIST)
+    c8ev, c8ev_src = load_list("REVIEWED_C8_EVIDENCE_FILE", DEFAULT_C8_EVIDENCE)
+    items, flags = [], []
+    trial_tree, owner_tree, base_tree = ls_tree(wt, trial), ls_tree(wt, OWNER), ls_tree(wt, base)
+    b = trial_tree.get(WEB_MVP)
+    items.append({"item": "web_mvp.py blob", "status": "PASS" if b == WEB_MVP_BLOB else "FAIL",
+                  "expected": WEB_MVP_BLOB, "actual": b})
+    # producer_source_compat integrated (same-tree) canonical protection, as fixed by #35
+    tools = wt / "implementation/tools"
+    try:
+        spec = importlib.util.spec_from_file_location("psc_trial_probe", tools / "producer_source_compat.py")
+        compat = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compat)
+        shared = {}
+        for name in ("qgv_producer_infra_compat.py", "leaderboard_producer_infra_compat.py"):
+            for node in ast.parse((tools / name).read_bytes()).body:
+                if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "SHARED" for t in node.targets):
+                    shared[name] = tuple(ast.literal_eval(node.value))
+        src = wt / "implementation/src"
+        has_canon_mode = getattr(compat, "CANONICAL_SOURCE_COMMIT", None)
+        items.append({"item": "producer_source_compat pins canonical baseline", "status":
+                      "PASS" if has_canon_mode == CANON else "FAIL", "actual": has_canon_mode})
+        union = sorted(set().union(*shared.values()))
+        for name, paths in shared.items():
+            r = compat.compare_shared_sources(src, src, paths)
+            problems, modes = [], {}
+            for rel, d in r["files"].items():
+                modes[rel] = d.get("mode")
+                if rel == compat.MODELS:
+                    if d.get("mode") != "EXACT_CDR004_SCHEMA_ACCEPTANCE" or d["status"] != "PASS":
+                        problems.append(rel)
+                    modes[rel] += ":" + ",".join(str(s.get("state")) for s in d.get("states", []))
+                elif (d.get("mode") != "EXACT_CANONICAL_SOURCE_PROTECTION" or d.get("baseline_available") is not True
+                      or d.get("own") != d.get("baseline_sha256") or d["status"] != "PASS"):
+                    problems.append(rel)
+            items.append({"item": f"integrated same-tree protection via {name} SHARED ({len(paths)} paths)",
+                          "status": "PASS" if r["status"] == "PASS" and not problems else "FAIL",
+                          "result": r["status"], "problems": problems, "modes": modes})
+        tmp = Path(tempfile.mkdtemp(prefix="psc-probe-"))
+        try:
+            for rel in union:
+                (tmp / rel).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(src / rel, tmp / rel)
+            pos = compat.compare_shared_sources(tmp, tmp, tuple(union))["status"]
+            victim = "investment_system/qgv/scoring.py"
+            (tmp / victim).write_bytes((tmp / victim).read_bytes() + b"\n# successor_trial harness tamper probe\n")
+            negr = compat.compare_shared_sources(tmp, tmp, tuple(union))
+            neg = negr["status"]
+            items.append({"item": "protection is live: untampered copy PASS, one-byte-class tamper of qgv/scoring.py FAIL",
+                          "status": "PASS" if pos == "PASS" and neg == "FAIL" and negr["files"][victim]["status"] == "FAIL" else "FAIL",
+                          "untampered": pos, "tampered": neg, "protected_paths": union})
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+    except Exception as e:  # noqa: BLE001
+        items.append({"item": "producer_source_compat probe", "status": "FAIL", "error": f"{type(e).__name__}: {e}"})
+    # Track C owner files vs b9e01a9 except the additive allowlist declared by the trial's workflow gate
+    existing = sorted(p for p in owner_tree if tc_protected(p))
+    changed = [p for p in existing if trial_tree.get(p) != owner_tree[p]]
+    additions = sorted(p for p in trial_tree if tc_protected(p) and p not in owner_tree)
+    wf_text = blob(wt, trial, READINESS_WF).decode() if READINESS_WF in trial_tree else ""
+    declared = parse_allowlist(wf_text)
+    unexpected = sorted(set(additions) - (declared or set()))
+    outside_reviewed = sorted(set(additions) - reviewed)
+    # PATCH (wf12/successor-trial): the workflow's allowed_additions can only govern gate-protected paths, so it is
+    # compared with the gate-protected part of the reviewed list. Reviewed non-protected entries (docs/evidence) are
+    # listed separately and are still byte-compared with the verified commit by track_c_v1.
+    reviewed_gate = frozenset(p for p in reviewed if tc_protected(p))
+    reviewed_non_gate = sorted(set(reviewed) - reviewed_gate)
+    declared_mismatch = declared is None or set(declared) != set(reviewed_gate)
+    items.append({"item": "Track C owner files (b9e01a9) byte-identical; additions within the REVIEWED allowlist and declared list equals it",
+                  "status": "PASS" if declared is not None and not changed and not unexpected and not outside_reviewed and not declared_mismatch else "FAIL",
+                  "reviewed_allowlist_source": reviewed_src, "reviewed_allowlist": sorted(reviewed),
+                  "outside_reviewed_allowlist": outside_reviewed, "declared_differs_from_reviewed": declared_mismatch,
+                  "declared_minus_reviewed": sorted((declared or set()) - reviewed),
+                  "reviewed_minus_declared": sorted(reviewed - (declared or set())),
+                  "reviewed_gate_protected": sorted(reviewed_gate), "reviewed_non_gate_entries": reviewed_non_gate,
+                  "declared_compared_with": "reviewed entries matching the gate predicate (patch wf12/successor-trial)",
+                  "existing_protected_files": len(existing), "changed": changed, "additions": additions,
+                  "declared_allowlist": sorted(declared or []), "unexpected_additions": unexpected})
+    if declared is not None and declared != DEFAULT_ALLOWLIST:
+        flags.append({"flag": "DECLARED_ALLOWLIST_CHANGED_VS_39", "added": sorted(declared - DEFAULT_ALLOWLIST),
+                      "removed": sorted(DEFAULT_ALLOWLIST - declared)})
+    c8_changed = [p for p in owner_tree if C8_SCOPE.match(p) and p != REGISTER and trial_tree.get(p) != owner_tree[p]]
+    c8_added = sorted(p for p in trial_tree if C8_SCOPE.match(p) and p not in owner_tree)
+    items.append({"item": "CDR-009 C8 path set (src/tests/tools/reports) existing at b9e01a9 unchanged",
+                  "status": "PASS" if not c8_changed else "FAIL", "changed": sorted(c8_changed)})
+    c8_unreviewed = sorted(set(c8_added) - reviewed - c8ev)
+    items.append({"item": "every C8-scope addition vs b9e01a9 is reviewed (allowlist or reviewed C8 evidence list)",
+                  "status": "PASS" if not c8_unreviewed else "FAIL", "unreviewed": c8_unreviewed,
+                  "c8_added": c8_added, "reviewed_c8_evidence_source": c8ev_src, "reviewed_c8_evidence": sorted(c8ev)})
+    # non-allowlist C8 additions that #39 already carries (approval/evidence reports) are history: byte-identical
+    hist = sorted(p for p in base_tree if C8_SCOPE.match(p) and p not in owner_tree and p not in reviewed and p != REGISTER)
+    hist_changed = [p for p in hist if trial_tree.get(p) != base_tree[p]]
+    items.append({"item": "C8-scope evidence additions already in #39 are byte-identical (history-preserving)",
+                  "status": "PASS" if not hist_changed else "FAIL", "paths": hist, "changed_or_deleted": hist_changed})
+    if1 = {p: (owner_tree.get(p), trial_tree.get(p)) for p in IF1}
+    items.append({"item": "IF-1 files equal to Track C b9e01a9", "status":
+                  "PASS" if all(a is not None and a == b for a, b in if1.values()) else "FAIL", "blobs": if1})
+    emit(out, {"status": overall(items), "items": items, "review_flags": flags})
+    return rc_of(overall(items))
+
+
+# ------------------------------------------------------------------ Track C v1 preservation + verified v2 identity
+def cmd_trackc_v1(args):
+    wt, trial, junit, out = args
+    wt = Path(wt)
+    v2_ref = os.environ.get("VERIFIED_V2_COMMIT", "")
+    if not re.fullmatch(r"[0-9a-f]{40}", v2_ref):
+        raise SystemExit("VERIFIED_V2_COMMIT (full sha) is required; there is no default")
+    reviewed, reviewed_src = load_list("REVIEWED_ALLOWLIST_FILE", DEFAULT_ALLOWLIST)
+    items, flags = [], []
+    trial_tree, owner_tree = ls_tree(wt, trial), ls_tree(wt, OWNER)
+    items.append({"item": "evl/superiority.py blob 8a1254d7 (v1 kernel)", "status":
+                  "PASS" if trial_tree.get(SUPERIORITY) == SUPERIORITY_BLOB == owner_tree.get(SUPERIORITY) else "FAIL",
+                  "trial": trial_tree.get(SUPERIORITY), "owner": owner_tree.get(SUPERIORITY)})
+    v1_tests = sorted(p for p in owner_tree if re.match(r"^implementation/tests/(evl_c8_|test_evl_c8_)[^/]*\.py$", p))
+    ch = [p for p in v1_tests if trial_tree.get(p) != owner_tree[p]]
+    items.append({"item": "C8 v1 tests/oracle/fixture unchanged vs b9e01a9", "status": "PASS" if v1_tests and not ch else "FAIL",
+                  "files": {p: owner_tree[p] for p in v1_tests}, "changed": ch})
+    evl_src = sorted(p for p in owner_tree if p.startswith("implementation/src/investment_system/evl/"))
+    ch = [p for p in evl_src if trial_tree.get(p) != owner_tree[p]]
+    items.append({"item": "all existing evl sources unchanged vs b9e01a9", "status": "PASS" if not ch else "FAIL",
+                  "count": len(evl_src), "changed": ch})
+    hist = sorted(p for p in owner_tree if re.match(r"^implementation/(reports/track_c_c8|tools/track_c_c8)", p))
+    ch = [p for p in hist if trial_tree.get(p) != owner_tree[p]]
+    added = sorted(p for p in trial_tree if re.match(r"^implementation/(reports/track_c_c8|tools/track_c_c8)", p) and p not in owner_tree)
+    items.append({"item": "v1 historical C8 evidence/tools unchanged (additive only)", "status": "PASS" if not ch else "FAIL",
+                  "count": len(hist), "changed": ch, "added": added})
+    verified_tree = ls_tree(wt, v2_ref)
+    v2_verified = verified_tree.get(V2_PATH)
+    items.append({"item": "trial evl/superiority_v2.py blob equals the blob at the REQUIRED independently verified commit",
+                  "status": "PASS" if v2_verified and trial_tree.get(V2_PATH) == v2_verified else "FAIL",
+                  "trial": trial_tree.get(V2_PATH), "verified_commit": v2_ref, "verified_blob": v2_verified,
+                  "verified_commit_is_pre_cdr012_e0b6d80": v2_ref == PREV31})
+    cover = {p: (verified_tree.get(p), trial_tree.get(p)) for p in sorted(reviewed)}
+    diff = sorted(p for p, (a, b) in cover.items() if a != b)
+    items.append({"item": "every reviewed-allowlist file is byte-identical to the verified commit (present at both or absent at both)",
+                  "status": "PASS" if not diff else "FAIL", "reviewed_allowlist_source": reviewed_src,
+                  "differs": {p: cover[p] for p in diff}, "files": len(cover)})
+    if v2_ref == PREV31:
+        flags.append({"flag": "VERIFIED_V2_COMMIT_IS_PRE_CDR012", "detail": "e0b6d80 = CDR-010 v2 without F1/F3; valid only for DRY_RUN"})
+    before, after = blob(wt, OWNER, REGISTER), blob(wt, trial, REGISTER)
+    items.append({"item": "Track C decision register append-only vs b9e01a9", "status": "PASS" if after.startswith(before) else "FAIL",
+                  "bytes_before": len(before), "bytes_after": len(after),
+                  "lines_appended": after[len(before):].count(b"\n") if after.startswith(before) else None})
+    if Path(junit).is_file():
+        s = junit_summary(junit)
+        for g in ("track_c_c8_v1", "track_c_gsup_additive", "track_c_all_test_evl"):
+            c = s["groups"][g]
+            items.append({"item": f"junit {g}", "status": "PASS" if c.get("total", 0) > 0 and not c.get("failed") and not c.get("error") else "FAIL",
+                          "counts": c, "failing": [f for f in s["failing"] if (".test_evl_" in f)]})
+    else:
+        items.append({"item": "junit Track C groups", "status": "NOT_RUN", "reason": f"no junit at {junit}"})
+    emit(out, {"status": overall(items), "items": items, "review_flags": flags})
+    return rc_of(overall(items))
+
+
+# ------------------------------------------------------------------ CDR-012 F1 static scan (AST; read-only)
+POW_CALLS = {"pow", "power", "float_power", "square"}
+
+
+def pow_findings(source):
+    tree = ast.parse(source)
+    found = []
+    for node in ast.walk(tree):
+        kind = None
+        if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Pow):
+            r = node.right
+            kind = "SQUARE_BY_POW" if isinstance(r, ast.Constant) and r.value in (2, 2.0) and not isinstance(r.value, bool) else "OTHER_POW"
+        elif isinstance(node, ast.AugAssign) and isinstance(node.op, ast.Pow):
+            kind = "AUGASSIGN_POW"
+        elif isinstance(node, ast.Call):
+            f = node.func
+            name = f.id if isinstance(f, ast.Name) else f.attr if isinstance(f, ast.Attribute) else None
+            if name in POW_CALLS:
+                kind = "POW_CALL"
+        if kind:
+            found.append({"kind": kind, "line": node.lineno, "col": node.col_offset,
+                          "code": ast.get_source_segment(source, node)})
+    selfmul = sum(1 for n in ast.walk(tree) if isinstance(n, ast.BinOp) and isinstance(n.op, ast.Mult)
+                  and ast.dump(n.left) == ast.dump(n.right))
+    return sorted(found, key=lambda d: (d["line"], d["col"])), selfmul
+
+
+def cmd_static_scan(args):
+    wt, trial, out = args
+    trial_tree, owner_tree = ls_tree(wt, trial), ls_tree(wt, OWNER)
+    files = sorted(p for p in trial_tree if p.startswith("implementation/src/investment_system/evl/")
+                   and p.endswith(".py") and p not in owner_tree)
+    items = []
+    for p in files:
+        src = blob(wt, trial, p).decode()
+        found, selfmul = pow_findings(src)
+        squares = [f for f in found if f["kind"] in ("SQUARE_BY_POW", "POW_CALL", "AUGASSIGN_POW")]
+        if p == V2_PATH:
+            status = "FAIL" if squares else ("REVIEW_REQUIRED" if found else "PASS")
+            item = "authoritative v2 (superiority_v2.py): no ** 2 / pow() squaring (CDR-012 F1: d*d only)"
+        else:
+            status = "REVIEW_REQUIRED" if found else "PASS"
+            item = f"additive evl source {p.rsplit('/', 1)[1]}: power operators listed for review"
+        items.append({"item": item, "path": p, "status": status, "findings": found, "self_multiplications": selfmul})
+    if V2_PATH not in files:
+        items.append({"item": "authoritative v2 module present", "path": V2_PATH, "status": "FAIL"})
+    Path(out).with_suffix(".note").write_text("; ".join(
+        f"{i['path'].rsplit('/', 1)[1]}: {i['status']} {[(f['kind'], f['line']) for f in i.get('findings', [])]}" for i in items) + "\n")
+    emit(out, {"status": overall(items), "items": items, "scope": "static AST scan of additive evl sources; comments/strings "
+               "excluded; does not prove runtime arithmetic; F3 is behavioural and not statically checkable"})
+    return rc_of(overall(items))
+
+
+# ------------------------------------------------------------------ Codex CI-parity replay
+def cmd_replay_eval(args):
+    stdout_path, rc, out = args
+    raw = Path(stdout_path).read_bytes()
+    items = [{"item": "verify_gsup_v2_arithmetic.py rc == 0", "status": "PASS" if rc == "0" else "FAIL", "rc": int(rc)}]
+    try:
+        d = json.loads(raw)
+    except ValueError as e:
+        d = None
+        items.append({"item": "output is JSON", "status": "FAIL", "error": str(e)})
+    if d is not None:
+        items.append({"item": "tool status PASS", "status": "PASS" if d.get("status") == "PASS" else "FAIL", "value": d.get("status")})
+        zero = {k: d.get(k) for k in ("Holdout", "actual_CAL_VERIFY", "grants", "numeric_defaults")}
+        items.append({"item": "tool reports Holdout/CAL_VERIFY/grants/numeric_defaults all 0 and v1 history not rewritten",
+                      "status": "PASS" if all(v == 0 for v in zero.values()) and d.get("historical_v1_rewritten") is False else "FAIL",
+                      "values": {**zero, "historical_v1_rewritten": d.get("historical_v1_rewritten")}})
+    num = (d or {}).get("numerical_output_sha256")
+    emit(out, {"status": overall(items), "items": items, "output_sha256": hashlib.sha256(raw).hexdigest(),
+               "output_bytes": len(raw), "numerical_output_sha256": num,
+               "numerical_equals_39_cdr010_value": num == PR39_REPLAY_NUMERICAL_SHA,
+               "pr39_cdr010_numerical_sha256": PR39_REPLAY_NUMERICAL_SHA, "scope": (d or {}).get("scope"),
+               "arithmetic_contract": (d or {}).get("arithmetic_contract"),
+               "note": "Codex's own CI-parity tool; not an independent verification"})
+    return rc_of(overall(items))
+
+
+def cmd_oracle_eval(args):
+    oracle, rc, result, out = args
+    items = [{"item": "independent oracle exit status", "status": "PASS" if rc == "0" else "FAIL", "rc": int(rc)}]
+    rp = Path(result)
+    detail = None
+    if rp.is_file():
+        try:
+            detail = json.loads(rp.read_text())
+        except ValueError as e:
+            items.append({"item": "oracle result JSON parses", "status": "FAIL", "error": str(e)})
+        if isinstance(detail, dict) and "status" in detail:
+            items.append({"item": "oracle result status PASS", "status": "PASS" if detail["status"] == "PASS" else "FAIL",
+                          "value": detail["status"]})
+        elif isinstance(detail, dict) and "verdict" in detail:  # compare_cdr012.py reports a verdict, not a status
+            items.append({"item": "oracle verdict EXACT_MATCH_ALL_GRADED", "value": detail["verdict"],
+                          "status": "PASS" if detail["verdict"] in ("EXACT_MATCH_ALL_GRADED", "PASS") else "FAIL"})
+        elif isinstance(detail, dict):
+            items.append({"item": "oracle result JSON has neither status nor verdict (exit status only)",
+                          "status": "PASS" if rc == "0" else "FAIL"})
+    else:
+        items.append({"item": "oracle wrote no result JSON (verdict from exit status only)", "status": "PASS" if rc == "0" else "FAIL"})
+    summ = {}
+    if isinstance(detail, dict):
+        summ = {"verdict": detail.get("verdict"), "triage_counts": detail.get("triage_counts"),
+                "groups": {g: {k: v for k, v in r.items() if k in ("graded", "exact_match", "mismatch")}
+                           for g, r in (detail.get("groups") or {}).items() if isinstance(r, dict)}}
+    Path(out).with_suffix(".note").write_text(f"rc={rc} verdict={summ.get('verdict')} oracle={oracle}\n")
+    emit(out, {"status": overall(items), "items": items, "oracle": oracle, "result_summary": summ,
+               "oracle_sha256": hashlib.sha256(Path(oracle).read_bytes()).hexdigest(),
+               "result": result if rp.is_file() else None,
+               "result_sha256": hashlib.sha256(rp.read_bytes()).hexdigest() if rp.is_file() else None})
+    return rc_of(overall(items))
+
+
+# ------------------------------------------------------------------ source / provenance
+def cmd_provenance(args):
+    wt, trial, base, sha31, sha35, merges, out = args
+    wt = Path(wt)
+    items, flags = [], []
+    d = git(wt, "diff", "--name-status", CANON, trial, "--", "implementation/data", "implementation/reports/gate_evidence").strip()
+    items.append({"item": "no implementation/data or reports/gate_evidence change vs canonical b8e39a2",
+                  "status": "PASS" if d == "" else "FAIL", "diff": d.splitlines()})
+    names = git(wt, "diff", "--name-only", CANON, trial).splitlines()
+    calhold = [n for n in names if re.search(r"(?i)cal[_-]?verify|holdout", n)]
+    items.append({"item": "paths named like CAL_VERIFY/Holdout changed vs canonical (listed for review)", "status": "PASS",
+                  "paths": calhold})
+    if calhold:
+        flags.append({"flag": "CAL_VERIFY_HOLDOUT_NAMED_PATHS_REVIEW", "paths": calhold})
+    rl = lambda rng: set(git(wt, "rev-list", rng).split())  # noqa: E731
+    extra = rl(f"{base}..{trial}") - rl(f"{base}..{sha31}") - rl(f"{base}..{sha35}")
+    parents = {c: git(wt, "rev-list", "--parents", "-n1", c).split()[1:] for c in extra}
+    rows = read_merges(merges)
+    expected = {r["head"]: [r["parent"], r["sha"]] for r in rows if r["action"] == "MERGED"}
+    items.append({"item": f"trial history = #39 + #31 + #35 + exactly {len(expected)} harness merge commit(s) with exact parents",
+                  "status": "PASS" if parents == expected else "FAIL", "foreign_commits": parents, "expected": expected,
+                  "merges": rows})
+    ns = git(wt, "diff", "--no-renames", "--name-status", base, trial).splitlines()
+    cats = collections.defaultdict(list)
+    for line in ns:
+        st, path = line.split("\t", 1)
+        cat = ("ci" if path.startswith(".github/") else "src" if path.startswith("implementation/src/") else
+               "tools" if path.startswith("implementation/tools/") else "tests" if path.startswith("implementation/tests/") else
+               "data" if path.startswith("implementation/data/") else "docs_reports")
+        cats[cat].append(f"{st}\t{path}")
+    binaries = [l for l in ns if re.search(r"\.(zip|png|jpe?g|gif|bin|parquet|gz|pdf)$", l, re.I)]
+    items.append({"item": "delta vs #39 tip by category (listed)", "status": "PASS" if not cats.get("data") else "FAIL",
+                  "counts": {k: len(v) for k, v in cats.items()},
+                  "code_ci_test_changes": cats.get("src", []) + cats.get("tools", []) + cats.get("ci", []) + cats.get("tests", []),
+                  "binary_files": binaries})
+    deleted = [l.split("\t", 1)[1] for l in ns if l.startswith("D\t")]
+    items.append({"item": "no file deleted vs #39 (additive / history-preserving expectation)",
+                  "status": "REVIEW_REQUIRED" if deleted else "PASS", "deleted": deleted})
+    emit(out, {"status": overall(items), "items": items, "review_flags": flags})
+    return rc_of(overall(items))
+
+
+# ------------------------------------------------------------------ escalation sweep
+PATTERNS = [
+    ("RESEARCH_DISPLAY_ACTIVE", r"RESEARCH_DISPLAY_ACTIVE"),
+    ("ACTIVE_AUTHORIZATIONS_NONEMPTY", r"\bACTIVE_AUTHORIZATIONS\b\s*(?::[^=\n]{0,40})?=(?!=)(?!\s*\(\s*\))"),
+    ("GRANT_VALUE_NOT_NONE", r"(?i)\b(?:research_display|frozen|live|publication)_grants?\b[\"']?\s*[:=]\s*[\"']?(?!none\b|null\b|not_|\{|\[|\()[A-Za-z_]+"),
+    ("GRANT_KIND_RECORD", r"[\"']grant_kind[\"']\s*:\s*[\"'](?:RESEARCH_DISPLAY|FROZEN|LIVE)[\"']"),
+    ("GRANT_PRESENT", r"(?i)\bgrants?\b[^\n]{0,60}?\b(?:PRESENT|GRANTED|ISSUED)\b"),
+    ("PUBLICATION_MODE_ACTIVE", r"(?i)publication_mode[\"']?\s*[:=]\s*[\"']?(?:RESEARCH|FROZEN|LIVE|OFFICIAL)\w*"),
+    ("OFFICIAL_PROMOTION", r"(?i)\bpromot\w*\b[^\n]{0,80}?\bofficial\b|\bofficial\b[^\n]{0,80}?\bpromot\w*\b"),
+    ("OFFICIAL_FLAG_TRUE", r"(?i)[\"']official[\"']\s*:\s*(?:true|[\"'](?:yes|true|approved|granted|active)[\"'])"),
+    ("LIVE_STATE_VALUE", r"[\"']?(?:data_state|state|status|mode|publication_state|stage|maturity)[\"']?\s*[:=]\s*[\"']LIVE[\"']"),
+    ("LIVE_ACTIVATION", r"(?i)\bgo[- ]live\b|\bLIVE\b[^\n]{0,40}?\b(?:APPROVED|GRANTED|ENABLED|ACTIVATED)\b"),
+    ("C8_FREEZE", r"(?i)\bC8\b[^\n]{0,60}?\bFROZEN\b|C8_SOFTWARE_FROZEN[\"']?\s*[:=]\s*(?:True|true)"),
+    ("CAL_VERIFY_ACCESS", r"(?i)cal[_ -]?verify[^\n]{0,80}?\b(?:access\w*|consum\w*|unlock\w*|opened)\b"),
+    ("HOLDOUT_CONSUMPTION", r"(?i)holdout[^\n]{0,80}?\b(?:consum\w*|access\w*|unlock\w*)\b"),
+    ("NUMERIC_CONFIG_APPROVED", r"(?i)numeric[^\n]{0,40}?\bconfig\w*[^\n]{0,60}?\bAPPROVED\b"),
+    ("CANONICAL_MERGE_DONE", r"(?i)canonical[^\n]{0,30}?\bmerge\w*[^\n]{0,40}?\b(?:approved|done|completed|granted)\b"),
+]
+NEG = re.compile(r"(?i)\b(?:not|no|none|never|neither|nor|without|forbid\w*|reject\w*|refus\w*|denied|deny|deferred|absent|"
+                 r"unapproved|unconsumed|cannot|must not|blocked|withheld|zero|0)\b|NOT_|_NONE\b|\bUN[A-Z_]+")
+
+
+def category(path):
+    return ("ci" if path.startswith(".github/") else "src" if path.startswith("implementation/src/") else
+            "tools" if path.startswith("implementation/tools/") else "tests" if path.startswith("implementation/tests/") else
+            "docs_reports")
+
+
+def cmd_escalation(args):
+    wt, base, trial, scope, prefix = args
+    raw = subprocess.run(["git", "-C", wt, "diff", "-U0", "--no-color", "--no-ext-diff", "--no-renames", base, trial],
+                         capture_output=True, check=True).stdout.decode("utf-8", errors="replace")
+    comp = [(n, re.compile(p)) for n, p in PATTERNS]
+    hits, path, ln = [], None, 0
+    for line in raw.split("\n"):
+        if line.startswith("+++ "):
+            path = line[6:] if line.startswith("+++ b/") else None
+            continue
+        if line.startswith("@@"):
+            m = re.match(r"@@ -\S+ \+(\d+)", line)
+            ln = int(m.group(1)) if m else 0
+            continue
+        if line.startswith("+") and path is not None:
+            text = line[1:]
+            for name, rx in comp:
+                for k, m in enumerate(rx.finditer(text)):
+                    if k >= 20:
+                        break
+                    ctx = text[max(0, m.start() - 120): m.end() + 120]
+                    hits.append({"path": path, "line": ln, "category": category(path), "pattern": name,
+                                 "likely_negated": bool(NEG.search(ctx)), "context": ctx})
+            ln += 1
+    counts = collections.Counter((h["category"], h["pattern"]) for h in hits)
+    code = [h for h in hits if h["category"] in ("src", "tools", "ci")]
+    code_unneg = [h for h in code if not h["likely_negated"]]
+    unneg = [h for h in hits if not h["likely_negated"]]
+    by_cat = collections.Counter(h["category"] for h in hits)
+    with open(prefix + ".tsv", "w") as f:
+        f.write("scope\tcategory\tpattern\tlikely_negated\tpath\tline\tcontext\n")
+        for h in hits:
+            f.write("\t".join([scope, h["category"], h["pattern"], str(h["likely_negated"]), h["path"], str(h["line"]),
+                               h["context"].replace("\t", " ").replace("\r", " ")]) + "\n")
+    status = "NO_HITS" if not hits else "HITS_LISTED_FOR_REVIEW"
+    emit(prefix + ".json", {"status": status, "scope": scope, "base": base, "trial": trial,
+                            "counts": {"total": len(hits), "not_negated": len(unneg), "by_category": dict(by_cat),
+                                       "code_ci_hits": len(code), "code_ci_hits_not_negated": len(code_unneg)},
+                            "by_category_pattern": {f"{c}|{p}": n for (c, p), n in sorted(counts.items())},
+                            "not_negated_hits": unneg, "code_ci_hits": code, "hits_tsv": prefix + ".tsv"})
+    return 0
+
+
+def cmd_escalation_aggregate(args):
+    """REVIEW_REQUIRED (never PASS) whenever the delta-vs-#39 sweep has non-negated hits; FAIL if runtime grants fail."""
+    d, = args
+    d = Path(d)
+    rt = json.loads((d / "escalation_runtime_grants.json").read_text())
+    delta = json.loads((d / "escalation_delta_vs_base.json").read_text())
+    full = json.loads((d / "escalation_full_vs_canonical.json").read_text())
+    review = [{"path": h["path"], "line": h["line"], "pattern": h["pattern"], "category": h["category"],
+               "context": h["context"][:240]} for h in delta["not_negated_hits"]]
+    if rt["status"] != "PASS":
+        status = "FAIL"
+    elif review:
+        status = "REVIEW_REQUIRED"
+    else:
+        status = "PASS"
+    note = (f"{len(review)} non-negated delta-vs-#39 hit(s) need human review "
+            f"({delta['counts']['total'] - len(review)} likely-negated delta hits listed)" if review else
+            f"0 non-negated delta hits ({delta['counts']['total']} likely-negated delta hits listed); "
+            f"full-vs-canonical {full['counts']['total']} hits listed only (that history was reviewed in GIE-010)")
+    (d / "escalation_sweep.note").write_text(note + "\n")
+    emit(d / "escalation_sweep.json", {"status": status, "runtime_grants": rt["status"],
+         "sweeps": {s["scope"]: s["counts"] for s in (delta, full)}, "review_required_hits": review,
+         "negated_delta_hits_listed": delta["counts"]["total"] - len(review),
+         "rule": "REVIEW_REQUIRED whenever the delta sweep (vs #39) has hits not matched by the negation heuristic; "
+                 "full-vs-canonical hits are listed only"})
+    return 0 if rt["status"] == "PASS" else 1
+
+
+def cmd_grants(args):
+    wt, out = args
+    sys.path.insert(0, str(Path(wt) / "implementation/src"))
+    from investment_system.publication import authorization as A
+    from investment_system.publication import envelope as E  # noqa: F401  (import must succeed)
+    g = A.summarize_grants()
+    items = [{"item": "ACTIVE_AUTHORIZATIONS is empty", "status": "PASS" if tuple(A.ACTIVE_AUTHORIZATIONS) == () else "FAIL",
+              "value": repr(A.ACTIVE_AUTHORIZATIONS)},
+             {"item": "summarize_grants() all NONE", "status": "PASS" if g and all(v == "NONE" for v in g.values()) else "FAIL",
+              "grants": g}]
+    emit(out, {"status": overall(items), "items": items})
+    return rc_of(overall(items))
+
+
+# ------------------------------------------------------------------ CI path filters
+SAFETY = {
+    "c21-real-data.yml": ("DO_NOT_DISPATCH", "real-data gate chain / Official pipeline inputs; provider fetch"),
+    "entity-metadata-ingest.yml": ("DO_NOT_DISPATCH", "network fetch (SEC/Wikidata/KIS) and commits back to the dispatched branch"),
+    "qgv-producer-real.yml": ("DO_NOT_DISPATCH", "real-producer job downloads the Track A raw store and pushes evidence commits to the dispatched branch"),
+    "raw-artifact-restore-check.yml": ("NOT_TRIAL_RELEVANT", "verifies one fixed historical artifact; independent of the trial tree"),
+    "leaderboard-real-producer.yml": ("OPTIONAL_LOW_VALUE", "offline tests vs pinned checkouts, but pytest is piped through tail (masks failures) and no numpy is installed"),
+    "track-c-evl-validation.yml": ("NOT_APPLICABLE_TO_INTEGRATION_TREE", "owner-branch acceptance audits reject non-Track-C files by design; unpinned pytest, no numpy (#31 diagnostic tests would fail)"),
+}
+
+
+def glob_re(p):
+    out, i = "", 0
+    while i < len(p):
+        if p.startswith("**", i):
+            out += ".*"
+            i += 2
+        elif p[i] == "*":
+            out += "[^/]*"
+            i += 1
+        elif p[i] == "?":
+            out += "[^/]"
+            i += 1
+        else:
+            out += re.escape(p[i])
+            i += 1
+    return re.compile("^" + out + "$")
+
+
+def filter_match(patterns, files):
+    rules = [(p.startswith("!"), glob_re(p[1:] if p.startswith("!") else p)) for p in patterns]
+    hit = []
+    for f in files:
+        ok = False
+        for neg, rx in rules:
+            if rx.match(f):
+                ok = not neg
+        if ok:
+            hit.append(f)
+    return hit
+
+
+# codex-integration-readiness steps at #39 0d31e06 (what this harness mirrors). A new, renamed or removed step means the
+# harness may no longer mirror CI: REVIEW_REQUIRED until the integration writer maps it.
+KNOWN_READINESS_STEPS = {
+    "combined-offline": ["uses:actions/checkout@v4", "uses:actions/setup-python@v5",
+                         "run:python -m pip install pytest==9.1.1 numpy==2.3.5", "name:Exact source checkpoint",
+                         "name:Preserve exact owner Track C and canonical Track A evidence",
+                         "name:Full existing regression with actual integrated dependencies",
+                         "name:CDR-010 exact production and independent oracle replay",
+                         "name:Producer to existing Web withheld-contract fixture", "uses:actions/setup-node@v4",
+                         "name:Browser tooling", "name:Install Chromium",
+                         "name:Withheld publication, locales, mobile, loading and retry E2E", "uses:actions/upload-artifact@v4"],
+    "macro-adoption-offline": ["uses:actions/checkout@v4", "uses:actions/setup-python@v5",
+                               "run:python -m pip install pytest==9.1.1 numpy==2.3.5",
+                               "name:Exact existing Macro adoption proposal; offline only", "uses:actions/upload-artifact@v4"],
+}
+REPLAY_RUN = "python implementation/tools/verify_gsup_v2_arithmetic.py > /tmp/gsup-v2-arithmetic.json"
+
+
+def readiness_parity(wt, trial):
+    import yaml
+    doc = yaml.safe_load(blob(wt, trial, READINESS_WF))
+    cur, replay_runs = {}, []
+    for job_id, job in (doc.get("jobs") or {}).items():
+        keys = []
+        for st in job.get("steps") or []:
+            key = ("name:" + st["name"]) if st.get("name") else ("uses:" + st["uses"]) if st.get("uses") else ("run:" + str(st.get("run", "")).strip())
+            keys.append(key)
+            if "verify_gsup_v2_arithmetic.py" in str(st.get("run", "")):
+                replay_runs.append(str(st["run"]).strip())
+        cur[job_id] = keys
+    new = sorted(f"{j}|{k}" for j, ks in cur.items() for k in ks if k not in KNOWN_READINESS_STEPS.get(j, []))
+    gone = sorted(f"{j}|{k}" for j, ks in KNOWN_READINESS_STEPS.items() for k in ks if k not in cur.get(j, []))
+    replay_ok = replay_runs == [REPLAY_RUN]
+    return {"item": "codex-integration-readiness steps unchanged vs #39 (harness mirrors them); replay command unchanged",
+            "status": "PASS" if not new and not gone and replay_ok else "REVIEW_REQUIRED",
+            "new_or_renamed_steps": new, "removed_steps": gone, "replay_runs": replay_runs, "replay_run_expected": REPLAY_RUN}
+
+
+def cmd_pathfilters(args):
+    import yaml
+    wt, trial, out, *bases = args
+    wfs = {}
+    for path in git(wt, "ls-tree", "--name-only", trial, ".github/workflows/").split():
+        doc = yaml.safe_load(blob(wt, trial, path))
+        on = doc.get("on", doc.get(True))
+        if isinstance(on, str):
+            on = {on: None}
+        elif isinstance(on, list):
+            on = {k: None for k in on}
+        wfs[path.rsplit("/", 1)[1]] = on or {}
+    result = {}
+    for spec in bases:
+        name, sha = spec.split("=", 1)
+        mb = git(wt, "merge-base", sha, trial).strip()
+        files = git(wt, "diff", "--name-only", mb, trial).split()
+        rows = {}
+        for wf, on in sorted(wfs.items()):
+            pr = on.get("pull_request", "ABSENT") if isinstance(on, dict) else "ABSENT"
+            if pr == "ABSENT":
+                trig, why = False, "no pull_request trigger"
+            elif not pr or not (pr.get("paths") or pr.get("paths-ignore")):
+                trig, why = True, "pull_request without path filter"
+            elif pr.get("paths"):
+                m = filter_match(pr["paths"], files)
+                trig, why = bool(m), f"paths matched {len(m)}: {m[:6]}"
+            else:
+                rest = [f for f in files if not filter_match(pr["paths-ignore"], [f])]
+                trig, why = bool(rest), f"paths-ignore leaves {len(rest)}"
+            disp = isinstance(on, dict) and "workflow_dispatch" in on
+            safety = SAFETY.get(wf, ("TRIAL_RELEVANT", ""))
+            rec = None
+            if not trig and disp and safety[0] == "TRIAL_RELEVANT":
+                rec = f"gh workflow run {wf} -R kco994553-star/Investment-System1 --ref <trial-branch>"
+            rows[wf] = {"triggers_on_pr": trig, "why": why, "workflow_dispatch": disp, "safety": safety[0],
+                        "safety_note": safety[1], "recommended_dispatch": rec,
+                        "ci_gap": (not trig and safety[0] == "TRIAL_RELEVANT" and not disp)}
+        result[name] = {"base_sha": sha, "merge_base": mb, "changed_files": len(files),
+                        "over_300_file_filter_limit": len(files) > 300, "workflows": rows,
+                        "not_triggered": sorted(w for w, r in rows.items() if not r["triggers_on_pr"]),
+                        "dispatch_commands": [r["recommended_dispatch"] for r in rows.values() if r["recommended_dispatch"]],
+                        "ci_gaps_no_dispatch": sorted(w for w, r in rows.items() if r["ci_gap"])}
+    items = [readiness_parity(wt, trial)]
+    emit(out, {"status": overall(items), "items": items, "bases": result})
+    return 0
+
+
+# ------------------------------------------------------------------ engine fingerprints
+def cmd_fingerprints(args):
+    out, *files = args
+    items = []
+    for spec in files:
+        name, path = spec.split("=", 1)
+        raw = Path(path).read_bytes()
+        sha = hashlib.sha256(raw).hexdigest()
+        try:
+            got = json.loads(raw)
+        except ValueError as e:
+            items.append({"item": name, "status": "FAIL", "error": str(e)})
+            continue
+        diff = {k: (EXPECTED_FP.get(k), got.get(k)) for k in set(EXPECTED_FP) | set(got) if EXPECTED_FP.get(k) != got.get(k)}
+        items.append({"item": f"{name}: tool output sha256 and values", "status": "PASS" if sha == EXPECTED_FP_SHA and not diff else "FAIL",
+                      "output_sha256": sha, "expected_sha256": EXPECTED_FP_SHA, "technical": got.get("technical"),
+                      "macro": got.get("macro"), "values": got, "mismatches": diff})
+    emit(out, {"status": overall(items), "items": items})
+    return rc_of(overall(items))
+
+
+# ------------------------------------------------------------------ summary
+def cmd_summary(args):
+    outdir, = args
+    outdir = Path(outdir)
+    meta = json.loads((outdir / "meta.json").read_text())
+    steps = []
+    lines = (outdir / "steps.tsv").read_text().splitlines()[1:]
+    for line in lines:
+        name, status, rc, secs, logf, note = (line.split("\t") + [""] * 6)[:6]
+        r = outdir / "results" / f"{name}.json"
+        detail = json.loads(r.read_text()) if r.is_file() else None
+        steps.append({"step": name, "status": status, "rc": None if rc == "-" else int(rc), "seconds": float(secs),
+                      "log": logf, "note": note,
+                      "review_flags": (detail or {}).get("review_flags"),
+                      "result_file": str(r) if r.is_file() else None})
+    extra = {}
+    for f in sorted((outdir / "results").glob("*.json")):
+        if f.stem.startswith("escalation_") or f.stem in ("full_pytest", "ci_path_filters", "engine_fingerprints",
+                                                           "gsup_v2_replay", "independent_oracle", "no_reuse"):
+            d = json.loads(f.read_text())
+            extra[f.stem] = {k: d.get(k) for k in ("status", "counts", "scope", "numerical_output_sha256",
+                                                     "output_sha256", "trial_tree", "base_39_tree") if k in d}
+    nnc = meta["run_kind"] == "NO_NEW_CONTENT"
+    skipped_nnc = [s["step"] for s in steps if s["status"] == "NOT_RUN" and s["note"].startswith("NO_NEW_CONTENT")]
+    fails = [s["step"] for s in steps if s["status"] == "FAIL"]
+    not_run = [s["step"] for s in steps if s["status"] in ("NOT_RUN", "INCOMPLETE") and s["step"] not in skipped_nnc]
+    review = [s["step"] for s in steps if s["status"] == "REVIEW_REQUIRED"]
+    review_detail = {}
+    for s in review:
+        d = json.loads((outdir / "results" / f"{s}.json").read_text()) if (outdir / "results" / f"{s}.json").is_file() else {}
+        if s == "escalation_sweep":
+            review_detail[s] = [f"{h['path']}:{h['line']} {h['pattern']}: {h['context'][:160]}" for h in d.get("review_required_hits", [])]
+        else:
+            review_detail[s] = [i.get("item") for i in d.get("items", []) if i.get("status") == "REVIEW_REQUIRED"]
+    executed = [s for s in steps if s["status"] != "NOT_RUN"]
+    if fails:
+        checks = "HAS_FAIL"
+    elif not_run:
+        checks = "HAS_NOT_RUN"
+    elif review:
+        checks = "REVIEW_REQUIRED"
+    elif skipped_nnc:
+        checks = "EXECUTED_STEPS_PASS"
+    else:
+        checks = "ALL_PASS"
+    if nnc:
+        head = ("NO_NEW_CONTENT: trial tree equals #39's tree; NOT a successor trial"
+                + ("; checks were forced (--force-checks)" if meta["force_checks"] else f"; {len(skipped_nnc)} checks not re-run"))
+        exit_code = 1 if fails else 3
+    else:
+        head = {"SUCCESSOR_TRIAL": "SUCCESSOR_TRIAL", "DRY_RUN": f"DRY_RUN ({meta['label']}): harness validation only"}.get(
+            meta["run_kind"], f"{meta['run_kind']}: trial not built or no-reuse check incomplete; no trial claim")
+        exit_code = 0 if checks == "ALL_PASS" else 4 if checks == "REVIEW_REQUIRED" else 1
+    parts = [head, f"checks: {checks}"]
+    if meta.get("topology") == "INDEPENDENT":
+        parts.append("TOPOLOGY INDEPENDENT: #35 has not absorbed the #31 head; the harness merged #31 then #35")
+    flags = [f"{st['step']}:{f.get('flag')}" for st in steps for f in (st.get("review_flags") or [])]
+    if fails:
+        parts.append("FAIL: " + ", ".join(fails))
+    if not_run:
+        parts.append("NOT_RUN: " + ", ".join(not_run))
+    for s, lst in review_detail.items():
+        parts.append(f"REVIEW_REQUIRED {s} ({len(lst)}): " + " | ".join(lst[:20]) + (" | ..." if len(lst) > 20 else ""))
+    if flags:
+        parts.append("review flags: " + ", ".join(flags))
+    verdict = " ; ".join(parts)
+    s = {"label": meta["label"], "run_kind": meta["run_kind"], "is_successor_trial": meta["is_successor_trial"],
+         "notice": meta["notice"], "verdict": verdict, "checks_verdict": checks, "exit_code": exit_code,
+         "fail_steps": fails, "not_run_steps": not_run, "skipped_no_new_content": skipped_nnc,
+         "review_required": review_detail, "review_flags": flags, "topology": meta.get("topology"), "meta": meta, "steps": steps, "key_results": extra,
+         "counts": collections.Counter(st["status"] for st in steps), "executed_steps": len(executed)}
+    (outdir / "summary.json").write_text(json.dumps(s, indent=1, default=str) + "\n")
+    w = max(len(st["step"]) for st in steps)
+    for st in steps:
+        print(f"{st['step']:<{w}}  {st['status']:<16} rc={st['rc']}  {st['seconds']:8.1f}s  {st['note']}")
+    print("run_kind:", meta["run_kind"], "| is_successor_trial:", meta["is_successor_trial"])
+    print("verdict:", verdict)
+    print("counts:", dict(s["counts"]), "exit:", exit_code)
+    return 0
+
+
+def main():
+    cmd, args = sys.argv[1], sys.argv[2:]
+    fn = {"junit": cmd_junit, "extract-step": cmd_extract_step, "privatejs": cmd_privatejs, "protected": cmd_protected,
+          "trackc_v1": cmd_trackc_v1, "provenance": cmd_provenance, "escalation": cmd_escalation,
+          "escalation_aggregate": cmd_escalation_aggregate, "grants": cmd_grants, "pathfilters": cmd_pathfilters,
+          "fingerprints": cmd_fingerprints, "summary": cmd_summary, "tree_identity": cmd_tree_identity,
+          "no_reuse": cmd_no_reuse, "static_scan": cmd_static_scan, "replay_eval": cmd_replay_eval,
+          "oracle_eval": cmd_oracle_eval}[cmd]
+    sys.exit(fn(args))
+
+
+if __name__ == "__main__":
+    main()
+PYEOF
+
+# ---------------------------------------------------------------- step runner
+selected() {
+  local n=$1
+  if [ -n "$ONLY" ] && ! [[ ",$ONLY," == *",$n,"* ]]; then return 1; fi
+  if [ -n "$SKIP" ] && [[ ",$SKIP," == *",$n,"* ]]; then return 1; fi
+  return 0
+}
+
+record() { # name status rc seconds log note
+  STATUS[$1]=$2
+  printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" "${6//$'\t'/ }" >> "$STEPS"
+}
+
+# run_step NAME FATAL DEPS(comma list or -) FUNC [ARGS...]
+run_step() {
+  local name=$1 fatal=$2 deps=$3; shift 3
+  local always=0
+  case "$name" in env_setup|private_clone_fetch|verify_inputs|verify_baselines|build_trial) always=1 ;; esac
+  if [ "$always" = 0 ] && ! selected "$name"; then record "$name" NOT_RUN - 0 - "not selected (--only/--skip)"; return 0; fi
+  if [ "$FATAL" = 1 ]; then record "$name" NOT_RUN - 0 - "earlier fatal step failed"; return 0; fi
+  if [ "$NNC" = 1 ] && [ "$FORCE" = 0 ] && [ "$always" = 0 ] && [[ "$STRUCTURAL_CHECKS" != *",$name,"* ]]; then
+    record "$name" NOT_RUN - 0 - "NO_NEW_CONTENT: trial tree equals #39 tree; not re-run (pass --force-checks to run)"; return 0
+  fi
+  local d
+  for d in ${deps//,/ }; do
+    [ "$d" = "-" ] && continue
+    if [ "${STATUS[$d]:-NOT_RUN}" != PASS ]; then record "$name" NOT_RUN - 0 - "dependency $d is ${STATUS[$d]:-NOT_RUN}"; return 0; fi
+  done
+  STEPNO=$((STEPNO + 1))
+  local logf; logf="$OUT/logs/$(printf '%02d' "$STEPNO")_${name}.log"
+  log "BEGIN $name"
+  local t0 t1 rc
+  t0=$(date +%s.%N)
+  set +e
+  ( set -euo pipefail; "$@" ) > "$logf" 2>&1
+  rc=$?
+  set -e
+  t1=$(date +%s.%N)
+  local secs; secs=$("$SYSPY" -c "print(round($t1-$t0,1))")
+  local status=FAIL
+  local rj="$OUT/results/${name}.json"
+  if [ "$rc" -eq 0 ]; then
+    status=PASS
+    if [ -f "$rj" ]; then
+      local s; s=$("$SYSPY" -c 'import json,sys; print(json.load(open(sys.argv[1])).get("status","PASS"))' "$rj")
+      # a result file may only refine a PASS (e.g. REVIEW_REQUIRED, NO_NEW_CONTENT); it can never turn rc!=0 into PASS
+      [ -n "$s" ] && status=$s
+    fi
+  fi
+  local note=""
+  [ -f "$OUT/results/${name}.note" ] && note=$(head -n1 "$OUT/results/${name}.note")
+  record "$name" "$status" "$rc" "$secs" "$logf" "$note"
+  log "END   $name rc=$rc status=$status ${secs}s log=$logf ${note:+($note)}"
+  if [ "$rc" -ne 0 ]; then
+    log "----- last 25 lines of $logf (display only; rc already recorded) -----"
+    tail -n 25 "$logf" | sed 's/^/    | /' >&2 || true
+    if [ "$fatal" = 1 ]; then FATAL=1; log "FATAL: $name failed; remaining steps will be NOT_RUN"; fi
+  fi
+  return 0
+}
+
+# ---------------------------------------------------------------- cleanup
+cleanup() {
+  local rc=$?
+  set +e
+  if [ -f "$OUT/web/http-server.pid" ]; then kill "$(cat "$OUT/web/http-server.pid")" 2>/dev/null; fi
+  if [ "$KEEP" = 0 ]; then
+    local w
+    if [ -e "$PRIV/.git" ]; then
+      for w in "$WT" "$WTM"; do
+        if [ -d "$w" ]; then git -C "$PRIV" worktree remove --force "$w" >> "$OUT/harness.log" 2>&1; fi
+      done
+    fi
+    case "$WORK" in "$BASE"/work/*) rm -rf "$WORK" ;; esac
+    rmdir "$BASE/work" 2>/dev/null
+    log "cleanup: private clone, worktrees and work dir deleted ($WORK)"
+  else
+    log "cleanup: --keep set; private clone $PRIV and worktrees retained"
+  fi
+  local after; after=$(git -C "$SRC_REPO" worktree list --porcelain | sha256sum | cut -d' ' -f1)
+  log "source repository worktree list unchanged: $([ "$after" = "$SRC_WT_BEFORE" ] && echo yes || echo "NO ($SRC_WT_BEFORE -> $after)")"
+  return $rc
+}
+trap cleanup EXIT
+
+# ---------------------------------------------------------------- steps
+step_env_setup() {
+  if [ ! -x "$PY" ]; then
+    "$SYSPY" -m venv "$VENV"
+    "$VENV/bin/pip" install -q numpy==2.3.5 pytest==9.1.1
+  fi
+  "$PY" -c 'import sys,numpy,pytest; assert sys.version_info[:2]==(3,11), sys.version; assert numpy.__version__=="2.3.5", numpy.__version__; assert pytest.__version__=="9.1.1", pytest.__version__; print("venv", sys.version.split()[0], "numpy", numpy.__version__, "pytest", pytest.__version__)'
+  "$VENV/bin/pip" freeze > "$OUT/results/venv-freeze.txt"
+  "$SYSPY" -c 'import sys,yaml; print("system", sys.version.split()[0], "pyyaml", yaml.__version__)'
+  node --version
+  "$SYSPY" -c 'import json,sys; print("playwright", json.load(open(sys.argv[1]))["version"])' "$NODE_PATH/playwright/package.json"
+  ls -d "$PLAYWRIGHT_BROWSERS_PATH"/chromium-* "$PLAYWRIGHT_BROWSERS_PATH"/chromium_headless_shell-*
+  git --version
+}
+
+step_private_clone_fetch() {
+  local url a b
+  url=$(git -C "$SRC_REPO" remote get-url "$REMOTE")
+  [[ "$url" =~ $EXPECTED_ORIGIN_RE ]] || { echo "unexpected origin URL in source repo: $url"; return 1; }
+  # read-only use of the source repository: it is only cloned (a shallow source is copied, not shared)
+  git clone -q --no-checkout --shared "$SRC_REPO" "$PRIV"
+  git -C "$PRIV" remote set-url "$REMOTE" "$url"
+  git -C "$PRIV" config gc.auto 0
+  git -C "$PRIV" config maintenance.auto false
+  a=$(readlink -f "$(git -C "$PRIV" rev-parse --path-format=absolute --git-common-dir)")
+  b=$(readlink -f "$(git -C "$SRC_REPO" rev-parse --path-format=absolute --git-common-dir)")
+  [ "$a" != "$b" ] || { echo "ISOLATION: private clone shares the source git dir"; return 1; }
+  case "$a/" in "$(readlink -f "$SRC_REPO")"/*) echo "ISOLATION: private clone inside source repo"; return 1 ;; esac
+  echo "private clone $PRIV git dir $a; alternates: $(cat "$PRIV/.git/objects/info/alternates" 2>/dev/null || echo none)"
+  git -C "$PRIV" fetch --prune "$REMOTE"
+  if [ -f "$PRIV/.git/shallow" ]; then git -C "$PRIV" fetch -q --unshallow "$REMOTE"; echo "unshallowed private clone"; fi
+  [ ! -f "$PRIV/.git/shallow" ] || { echo "private clone still shallow"; return 1; }
+  echo "remote-tracking refs: $(git -C "$PRIV" for-each-ref "refs/remotes/$REMOTE" | wc -l)"
+}
+
+remote_head() { git -C "$PRIV" ls-remote "$REMOTE" "refs/heads/$1" | cut -f1; }
+input_sha() { cut -f3 "$OUT/results/inputs.tsv" | sed -n "${1}p"; }
+
+step_verify_inputs() {
+  local ok=0 pr br arg full remote tracking
+  : > "$OUT/results/inputs.tsv"
+  for spec in "39|$BR39|$ARG39" "31|$BR31|$ARG31" "35|$BR35|$ARG35"; do
+    IFS='|' read -r pr br arg <<< "$spec"
+    full=$(git -C "$PRIV" rev-parse --verify --quiet "${arg}^{commit}") || { echo "PR#$pr: $arg does not resolve"; ok=1; continue; }
+    remote=$(remote_head "$br")
+    tracking=$(git -C "$PRIV" rev-parse "refs/remotes/$REMOTE/$br")
+    printf '%s\t%s\t%s\t%s\t%s\n' "$pr" "$br" "$full" "$remote" "$tracking" | tee -a "$OUT/results/inputs.tsv"
+    if [ "$full" != "$remote" ] || [ "$full" != "$tracking" ]; then echo "PR#$pr head mismatch: arg=$full ls-remote=$remote tracking=$tracking"; ok=1; fi
+  done
+  [ $ok -eq 0 ] || return 1
+  local s39 s31 s35 v2
+  s39=$(input_sha 1); s31=$(input_sha 2); s35=$(input_sha 3)
+  v2=$(git -C "$PRIV" rev-parse --verify --quiet "${VERIFIED_V2_ARG}^{commit}") || { echo "VERIFIED_V2_COMMIT $VERIFIED_V2_ARG does not resolve"; return 1; }
+  echo "$v2" > "$OUT/results/verified_v2_commit.txt"
+  echo "VERIFIED_V2_COMMIT $v2"
+  if git -C "$PRIV" merge-base --is-ancestor "$v2" "$s31" || git -C "$PRIV" merge-base --is-ancestor "$v2" "$s35"; then
+    echo "OK: VERIFIED_V2_COMMIT is an ancestor of (or equal to) the #31 or #35 head"
+  else
+    echo "FAIL: VERIFIED_V2_COMMIT $v2 is not in the history of #31 $s31 or #35 $s35"; return 1
+  fi
+  if [[ "$LABEL" != DRY_RUN* ]]; then
+    [ "$s31" != "$PREV31" ] || { echo "REFUSED: label $LABEL is not a dry run but #31 is still at the pre-CDR-012 head $PREV31"; return 1; }
+    [ "$v2" != "$PREV31" ] || { echo "REFUSED: label $LABEL is not a dry run but VERIFIED_V2_COMMIT is the pre-CDR-012 head $PREV31"; return 1; }
+    [ "$s39" = "$PR39_TIP" ] || { echo "REFUSED: label $LABEL is not a dry run but base $s39 is not the CI-verified #39 tip $PR39_TIP"; return 1; }
+    # PIW 2026-10-04: a real trial must run on exactly the independently verified #31 head (GIE-011 critic gap)
+    [ "$s31" = "$v2" ] || { echo "REFUSED: label $LABEL is not a dry run but #31 head $s31 is not the verified v2 commit $v2"; return 1; }
+  fi
+  if git -C "$PRIV" merge-base --is-ancestor "$s31" "$s35"; then
+    TOPOLOGY=STACKED
+    echo "OK: #31 is an ancestor of #35 (STACKED: #35 has absorbed #31)"
+  else
+    TOPOLOGY=INDEPENDENT
+    echo "WARNING: #31 $s31 is NOT an ancestor of #35 $s35 (INDEPENDENT: #35 has not absorbed the new #31); the harness merges #31 then #35 and reports it"
+  fi
+  echo "$TOPOLOGY" > "$OUT/results/topology.txt"
+  for c in "$s39" "$s31" "$s35"; do
+    git -C "$PRIV" merge-base --is-ancestor "$CANON" "$c" || { echo "FAIL: canonical $CANON not ancestor of $c"; return 1; }
+    git -C "$PRIV" merge-base --is-ancestor "$OWNER_TC" "$c" || { echo "FAIL: Track C owner $OWNER_TC not ancestor of $c"; return 1; }
+  done
+  echo "OK: canonical b8e39a2 and Track C b9e01a9 are ancestors of all three heads"
+  local anc
+  for spec in "#31_contains_prev31_e0b6d80|$PREV31|$s31" "#35_contains_prev35_8318b78|$PREV35|$s35" \
+              "#39_contains_#31|$s31|$s39" "#39_contains_#35|$s35|$s39"; do
+    IFS='|' read -r what a c <<< "$spec"
+    if git -C "$PRIV" merge-base --is-ancestor "$a" "$c"; then anc=yes; else anc=no; fi
+    echo "$what: $anc"
+  done
+  echo "merge-base(#39,#31)=$(git -C "$PRIV" merge-base --all "$s39" "$s31" | tr '\n' ' ')"
+  echo "merge-base(#39,#35)=$(git -C "$PRIV" merge-base --all "$s39" "$s35" | tr '\n' ' ')"
+  echo "#31 commits not in #39: $(git -C "$PRIV" rev-list --count "$s39..$s31"); #35 commits not in #39: $(git -C "$PRIV" rev-list --count "$s39..$s35")"
+  echo "TOPOLOGY=$TOPOLOGY ($(git -C "$PRIV" rev-list --count "$s31..$s35") #35-only commits beyond #31)" > "$OUT/results/verify_inputs.note"
+}
+
+step_verify_baselines() {
+  local ok=0 got what br want
+  : > "$OUT/results/baselines.tsv"
+  for spec in "canonical|$BR_CANON|$CANON" "trackc_owner|$BR_OWNER_TC|$OWNER_TC" "pr30_base|$BR30|$PR30"; do
+    IFS='|' read -r what br want <<< "$spec"
+    got=$(remote_head "$br")
+    printf '%s\t%s\t%s\t%s\n' "$what" "$br" "$want" "$got" | tee -a "$OUT/results/baselines.tsv"
+    [ "$got" = "$want" ] || { echo "BASELINE MOVED: $what $br expected $want got $got"; ok=1; }
+  done
+  git -C "$PRIV" cat-file -e "$MACRO_PIN^{commit}" && echo "macro pin $MACRO_PIN present"
+  local s39; s39=$(input_sha 1)
+  if [ "$s39" = "$PR39_TIP" ]; then echo "base is the CI-verified #39 tip $PR39_TIP"; else echo "NOTE: base $s39 is not the CI-verified #39 tip $PR39_TIP"; fi
+  for c in "$PREV31" "$PREV35"; do
+    if git -C "$PRIV" merge-base --is-ancestor "$c" "$s39"; then echo "base contains #39 constituent $c"; else echo "NOTE: base does not contain #39 constituent $c"; fi
+  done
+  return $ok
+}
+
+step_build_trial() {
+  local s39 s31 s35
+  s39=$(input_sha 1); s31=$(input_sha 2); s35=$(input_sha 3)
+  git -C "$PRIV" worktree add --detach "$WT" "$s39"
+  cd "$WT"
+  export GIT_AUTHOR_DATE="$MERGE_DATE" GIT_COMMITTER_DATE="$MERGE_DATE"
+  local G=(git -c gc.auto=0 -c maintenance.auto=false -c commit.gpgsign=false -c user.name="CDR-012 successor trial harness" -c user.email="trial-harness@invalid")
+  local pr sha br out rc parent
+  : > "$OUT/results/merges.tsv"
+  for spec in "31|$s31|$BR31" "35|$s35|$BR35"; do
+    IFS='|' read -r pr sha br <<< "$spec"
+    parent=$(git rev-parse HEAD)
+    if git merge-base --is-ancestor "$sha" HEAD; then
+      echo "PR #$pr $sha is already contained in trial HEAD $parent: NOOP_ALREADY_CONTAINED (no merge commit)"
+      printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$pr" "$sha" 0 "$parent" NOOP_ALREADY_CONTAINED "$parent" | tee -a "$OUT/results/merges.tsv"
+      continue
+    fi
+    set +e
+    out=$("${G[@]}" merge --no-ff --no-edit -m "[$LABEL] Merge PR #$pr $br @ $sha into CDR-012 successor trial of #39" "$sha" 2>&1)
+    rc=$?
+    set -e
+    printf '%s\n' "$out"
+    printf '%s\n' "$out" | grep -E '^Auto-merging ' > "$OUT/results/automerged_pr$pr.txt" || true
+    printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$pr" "$sha" "$rc" "$(git rev-parse HEAD)" MERGED "$parent" | tee -a "$OUT/results/merges.tsv"
+    if [ "$rc" -ne 0 ]; then
+      git diff --name-only --diff-filter=U | tee "$OUT/results/conflicts_pr$pr.txt"
+      "${G[@]}" merge --abort || true
+      echo "MERGE CONFLICT merging PR #$pr"; return 1
+    fi
+    [ "$(git rev-parse HEAD^2)" = "$sha" ] && [ "$(git rev-parse HEAD^1)" = "$parent" ] || { echo "merge commit parents unexpected"; return 1; }
+  done
+  echo "trial commit $(git rev-parse HEAD) tree $(git rev-parse 'HEAD^{tree}')"
+  echo "merges: $(cut -f5 "$OUT/results/merges.tsv" | tr '\n' ' ')" > "$OUT/results/build_trial.note"
+}
+
+step_merge_conflicts() {
+  cat "$OUT/results/merges.tsv"
+  local n; n=$(find "$OUT/results" -maxdepth 1 -name 'conflicts_pr*.txt' -exec cat {} + | wc -l)
+  echo "conflicted paths: $n"; echo "auto-merged (ort) paths:"
+  find "$OUT/results" -maxdepth 1 -name 'automerged_pr*.txt' -exec cat {} +
+  [ "$n" -eq 0 ]
+}
+
+step_tree_identity() {
+  "$SYSPY" "$CHECKS_PY" tree_identity "$WT" "$TRIAL" "$(input_sha 1)" "$(input_sha 2)" "$(input_sha 3)" \
+    "$OUT/results/merges.tsv" "$TOPOLOGY" "$OUT/results/tree_identity.json"
+}
+
+step_no_reuse() {
+  "$SYSPY" "$CHECKS_PY" no_reuse "$WT" "$TRIAL" "$(input_sha 1)" "$(input_sha 2)" "$(input_sha 3)" "$PR39_TREE" "$OUT/results/no_reuse.json"
+}
+
+step_preservation_gate_ci() {
+  cd "$WT"
+  "$SYSPY" "$CHECKS_PY" extract-step .github/workflows/codex-integration-readiness.yml \
+    "Preserve exact owner Track C and canonical Track A evidence" "$OUT/ci_extract/preserve_gate.sh"
+  echo "----- extracted CI step (verbatim) -----"; cat "$OUT/ci_extract/preserve_gate.sh"; echo "----- run -----"
+  PATH="$VENV/bin:$PATH" bash --noprofile --norc -eo pipefail "$OUT/ci_extract/preserve_gate.sh"
+}
+
+step_protected_paths() {
+  "$SYSPY" "$CHECKS_PY" protected "$WT" "$TRIAL" "$(input_sha 1)" "$OUT/results/protected_paths.json"
+}
+
+step_source_provenance() {
+  "$SYSPY" "$CHECKS_PY" provenance "$WT" "$TRIAL" "$(input_sha 1)" "$(input_sha 2)" "$(input_sha 3)" \
+    "$OUT/results/merges.tsv" "$OUT/results/source_provenance.json"
+}
+
+step_escalation_sweep() {
+  "$SYSPY" "$CHECKS_PY" escalation "$WT" "$(input_sha 1)" "$TRIAL" "delta_vs_pr39_tip" "$OUT/results/escalation_delta_vs_base"
+  "$SYSPY" "$CHECKS_PY" escalation "$WT" "$CANON" "$TRIAL" "full_vs_canonical" "$OUT/results/escalation_full_vs_canonical"
+  "$PY" "$CHECKS_PY" grants "$WT" "$OUT/results/escalation_runtime_grants.json" || echo "runtime grants check rc=$? (aggregate decides)"
+  "$SYSPY" "$CHECKS_PY" escalation_aggregate "$OUT/results"
+}
+
+step_engine_fingerprints() {
+  cd "$WT"
+  "$SYSPY" implementation/tools/producer_engine_fingerprint.py implementation/src > "$OUT/results/fingerprint_syspy.json"
+  "$PY" implementation/tools/producer_engine_fingerprint.py implementation/src > "$OUT/results/fingerprint_venv.json"
+  sha256sum "$OUT/results/fingerprint_syspy.json" "$OUT/results/fingerprint_venv.json"
+  "$SYSPY" "$CHECKS_PY" fingerprints "$OUT/results/engine_fingerprints.json" \
+    "system-python3=$OUT/results/fingerprint_syspy.json" "venv-numpy=$OUT/results/fingerprint_venv.json"
+}
+
+step_full_pytest() {
+  cd "$WT/implementation"
+  local rc=0
+  # PIW 2026-10-04: deselect the pre-existing live-provider test so no network connection is attempted (GIE-011)
+  PYTHONPATH=src "$PY" -m pytest -q -p no:cacheprovider -rf --deselect tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2 --junitxml="$OUT/junit/full-pytest.xml" || rc=$?
+  echo "pytest rc=$rc"
+  # lower bound: 1441 = #39 full count (CI and local); tests are only added
+  MIN_TESTS="$MIN_TESTS_ARG" "$SYSPY" "$CHECKS_PY" junit "$OUT/junit/full-pytest.xml" "$OUT/results/full_pytest.json" || rc=1
+  "$SYSPY" -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d["counts"], "min", d["min_tests"])' "$OUT/results/full_pytest.json" \
+    | tee "$OUT/results/full_pytest.note"
+  return $rc
+}
+
+step_gsup_v2_replay() {
+  # CI parity: codex-integration-readiness step "CDR-010 exact production and independent oracle replay"
+  cd "$WT"
+  local rc=0
+  "$PY" implementation/tools/verify_gsup_v2_arithmetic.py > "$OUT/results/gsup_v2_replay.stdout.json" 2> "$OUT/results/gsup_v2_replay.stderr" || rc=$?
+  echo "replay rc=$rc"; cat "$OUT/results/gsup_v2_replay.stderr"
+  sha256sum "$OUT/results/gsup_v2_replay.stdout.json"
+  "$SYSPY" "$CHECKS_PY" replay_eval "$OUT/results/gsup_v2_replay.stdout.json" "$rc" "$OUT/results/gsup_v2_replay.json" || rc=1
+  "$SYSPY" -c 'import json,sys; d=json.load(open(sys.argv[1])); print("output sha256", d["output_sha256"][:16], "numerical", (d["numerical_output_sha256"] or "-")[:16], "equals #39:", d["numerical_equals_39_cdr010_value"])' \
+    "$OUT/results/gsup_v2_replay.json" | tee "$OUT/results/gsup_v2_replay.note"
+  return $rc
+}
+
+step_independent_oracle() {
+  local res="$OUT/results/independent_oracle.out.json" dir args rc=0
+  dir=$(dirname "$ORACLE")
+  args=${ORACLE_ARGS//\{src\}/$WT/implementation/src}
+  args=${args//\{wt\}/$WT}
+  args=${args//\{out\}/$res}
+  args=${args//\{oracle_dir\}/$dir}
+  echo "oracle $ORACLE sha256 $(sha256sum "$ORACLE" | cut -d' ' -f1)"
+  echo "python $ORACLE_PY; args: $args; cwd $OUT/oracle_cwd"
+  # shellcheck disable=SC2086  # args is a deliberate word list
+  (cd "$OUT/oracle_cwd" && PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$dir:$WT/implementation/src" "$ORACLE_PY" "$ORACLE" $args) || rc=$?
+  echo "oracle rc=$rc"
+  "$SYSPY" "$CHECKS_PY" oracle_eval "$ORACLE" "$rc" "$res" "$OUT/results/independent_oracle.json"
+}
+
+step_track_c_v1() {
+  VERIFIED_V2_COMMIT="$(cat "$OUT/results/verified_v2_commit.txt")" \
+    "$SYSPY" "$CHECKS_PY" trackc_v1 "$WT" "$TRIAL" "$OUT/junit/full-pytest.xml" "$OUT/results/track_c_v1.json"
+}
+
+step_cdr012_static_scan() {
+  "$SYSPY" "$CHECKS_PY" static_scan "$WT" "$TRIAL" "$OUT/results/cdr012_static_scan.json"
+  cat "$OUT/results/cdr012_static_scan.note"
+}
+
+wait_http() {
+  local url=$1 i
+  for i in $(seq 1 50); do
+    if "$SYSPY" -c 'import sys,urllib.request; urllib.request.urlopen(sys.argv[1], timeout=2)' "$url" 2>/dev/null; then return 0; fi
+    sleep 0.2
+  done
+  echo "server did not answer at $url"; return 1
+}
+
+port_free() {
+  "$SYSPY" -c 'import socket,sys; s=socket.socket(); s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1); s.bind(("127.0.0.1", int(sys.argv[1]))); s.close()' "$1" \
+    || { echo "port $1 is in use; pass --port"; return 1; }
+}
+
+step_web_mvp_validation() {
+  local S="$OUT/web/serve" R="$OUT/web/reports_web_mvp"
+  rm -rf "$S"; mkdir -p "$S" "$R"
+  cd "$WT"
+  echo "# CI step: web_mvp build + demo build (private output dirs)"
+  PYTHONPATH=implementation/src "$PY" -m investment_system.product.web_mvp --out "$S/web-mvp"
+  "$PY" implementation/tools/build_web_mvp_demo.py --out "$S/web-mvp-demo"
+  port_free "$PORT"
+  "$SYSPY" -m http.server "$PORT" --bind 127.0.0.1 --directory "$S" > "$OUT/web/http-server.log" 2>&1 &
+  local srv=$!
+  echo "$srv" > "$OUT/web/http-server.pid"
+  trap 'kill '"$srv"' 2>/dev/null || true; rm -f "'"$OUT"'/web/http-server.pid"' EXIT
+  wait_http "http://127.0.0.1:$PORT/web-mvp/"
+  echo "# CI step: node global_language_search_test.js"
+  node implementation/tools/global_language_search_test.js "$S/web-mvp-demo"
+  echo "# CI step: node entity_metadata_search_test.js"
+  node implementation/tools/entity_metadata_search_test.js "$S/web-mvp" "$R/entity_metadata_search.json"
+  echo "# CI step: node web_mvp_browser_test.js (private copy: port $PORT, output $R)"
+  "$SYSPY" "$CHECKS_PY" privatejs implementation/tools/web_mvp_browser_test.js "$OUT/private_js/web_mvp_browser_test.js" "$PORT" "$R"
+  node "$OUT/private_js/web_mvp_browser_test.js"
+  echo "# CI step: node global_language_search_browser_test.js (private copy)"
+  "$SYSPY" "$CHECKS_PY" privatejs implementation/tools/global_language_search_browser_test.js "$OUT/private_js/global_language_search_browser_test.js" "$PORT" "$R"
+  node "$OUT/private_js/global_language_search_browser_test.js"
+  "$SYSPY" -c 'import json,sys; [print(p, json.load(open(p))["passed"]) or None for p in sys.argv[1:]]; assert all(json.load(open(p))["passed"] is True for p in sys.argv[1:])' \
+    "$R/browser.json" "$R/global-language-search-browser.json"
+  echo "NOTE: CI's web-mvp-validation also runs the full pytest suite first; that is the separate full_pytest step here."
+}
+
+step_web_research_guard() {
+  cd "$WT/implementation"
+  PYTHONPATH=src "$PY" -m pytest -q -p no:cacheprovider tests/test_web_research_guard.py --junitxml="$OUT/junit/web-research-guard.xml"
+  cd "$WT"
+  "$PY" implementation/tools/build_web_research_guard_fixture.py --out "$OUT/web/research-guard" --evidence "$OUT/web/research-guard-evidence"
+  node implementation/tools/web_research_guard_browser_test.js --dir "$OUT/web/research-guard" --evidence "$OUT/web/research-guard-evidence"
+  ls -1 "$OUT/web/research-guard-evidence"
+}
+
+step_web_state_presentation() {
+  cd "$WT/implementation"
+  PYTHONPATH=src "$PY" -m pytest -q -p no:cacheprovider tests/test_web_state_presentation.py --junitxml="$OUT/junit/web-state-presentation.xml"
+  cd "$WT"
+  "$PY" implementation/tools/build_web_state_presentation_fixture.py --out "$OUT/web/state" --evidence "$OUT/web/state-evidence"
+  "$PY" implementation/tools/build_web_mvp_demo.py --out "$OUT/web/state-demo"
+  node implementation/tools/web_state_presentation_browser_test.js --dir "$OUT/web/state" --evidence "$OUT/web/state-evidence" --demo-dir "$OUT/web/state-demo"
+  "$SYSPY" -c 'import json,sys; d=json.load(open(sys.argv[1])); print("browser-validation passed:", d.get("passed")); assert d.get("passed") is True' "$OUT/web/state-evidence/browser-validation.json"
+}
+
+step_producer_contract_fixture() {
+  cd "$WT"
+  "$PY" implementation/tools/build_producer_contract_web_fixture.py --out "$OUT/web/withheld-web" --evidence "$OUT/web/withheld-web-evidence"
+  ls -1 "$OUT/web/withheld-web-evidence"
+}
+
+step_producer_contract_browser() {
+  cd "$WT"
+  node implementation/tools/producer_contract_web_browser_test.js --dir "$OUT/web/withheld-web" --evidence "$OUT/web/withheld-web-evidence"
+  "$SYSPY" -c 'import json,sys; d=json.load(open(sys.argv[1])); print("browser-validation passed:", d.get("passed")); assert d.get("passed") is True' "$OUT/web/withheld-web-evidence/browser-validation.json"
+}
+
+step_macro_adoption_pinned() {
+  # codex-integration-readiness job macro-adoption-offline: pinned ref, independent of the trial tree.
+  git -C "$PRIV" worktree add --detach "$WTM" "$MACRO_PIN"
+  cd "$WTM/implementation"
+  PYTHONPATH=src "$PY" -m pytest -q -p no:cacheprovider tests/test_macro_real_producer.py --junitxml="$OUT/junit/macro-adoption.xml"
+}
+
+step_ci_path_filters() {
+  "$SYSPY" "$CHECKS_PY" pathfilters "$WT" "$TRIAL" "$OUT/results/ci_path_filters.json" \
+    "base_pr30_like_pr39=$PR30" "base_pr39_branch=$(input_sha 1)" "base_canonical=$CANON"
+}
+
+step_intree_writes() {
+  cd "$WT"
+  git status --porcelain --untracked-files=all > "$OUT/results/intree_status.txt"
+  echo "tracked modified/deleted:"; grep -vE '^\?\? ' "$OUT/results/intree_status.txt" || true
+  echo "untracked (count): $(grep -cE '^\?\? ' "$OUT/results/intree_status.txt" || true)"
+  ! grep -qvE '^\?\? ' "$OUT/results/intree_status.txt"
+}
+
+step_remote_recheck() {
+  local moved=0 pr br want got what
+  while IFS=$'\t' read -r pr br want _ _; do
+    got=$(remote_head "$br"); echo "PR#$pr $br start=$want now=$got"
+    [ "$got" = "$want" ] || { echo "HEAD MOVED: $br"; moved=1; }
+  done < "$OUT/results/inputs.tsv"
+  if [ -f "$OUT/results/baselines.tsv" ]; then
+    while IFS=$'\t' read -r what br want _; do
+      got=$(remote_head "$br"); echo "$what $br expected=$want now=$got"
+      [ "$got" = "$want" ] || { echo "BASELINE MOVED: $br"; moved=1; }
+    done < "$OUT/results/baselines.tsv"
+  else
+    echo "baselines.tsv absent (verify_baselines did not run): baselines not re-checked"
+    echo "baselines not re-checked (verify_baselines did not run)" > "$OUT/results/remote_recheck.note"
+  fi
+  return $moved
+}
+
+# ---------------------------------------------------------------- main
+STARTED=$(date -u +%FT%TZ)
+export TRIAL_LABEL="$LABEL"
+log "harness $SELF sha256 $SELF_SHA"
+log "label $LABEL; verified v2 commit arg $VERIFIED_V2_ARG; force_checks $FORCE; min_tests $MIN_TESTS_ARG"
+log "out $OUT ; work $WORK (private clone $PRIV) ; port $PORT ; source repo $SRC_REPO (read-only)"
+
+run_step env_setup 1 - step_env_setup
+run_step private_clone_fetch 1 - step_private_clone_fetch
+run_step verify_inputs 1 - step_verify_inputs
+[ -f "$OUT/results/topology.txt" ] && TOPOLOGY=$(cat "$OUT/results/topology.txt")
+run_step verify_baselines 0 - step_verify_baselines
+run_step build_trial 1 - step_build_trial
+TRIAL=""
+if [ "${STATUS[build_trial]}" = PASS ]; then TRIAL=$(git -C "$WT" rev-parse HEAD); fi
+export TRIAL
+if [ "${STATUS[build_trial]}" != PASS ] && [ -n "$(cat "$OUT"/results/conflicts_pr*.txt 2>/dev/null)" ]; then
+  # build_trial stopped on a conflict: record the conflict list as the merge_conflicts result
+  record merge_conflicts FAIL 1 0 - "conflicts: $(cat "$OUT"/results/conflicts_pr*.txt | tr '\n' ' ')"
+else
+  run_step merge_conflicts 0 build_trial step_merge_conflicts
+fi
+run_step tree_identity 0 build_trial step_tree_identity
+# no_reuse is evaluated even under --only/--skip: it decides whether this run may be called a successor trial
+ONLY_SAVED=$ONLY SKIP_SAVED=$SKIP; ONLY=""; SKIP=""
+run_step no_reuse 0 build_trial step_no_reuse
+ONLY=$ONLY_SAVED SKIP=$SKIP_SAVED
+if [ "${STATUS[no_reuse]:-}" = NO_NEW_CONTENT ]; then
+  NNC=1
+  log "NO_NEW_CONTENT: the trial tree equals #39's tree. This run is NOT a successor trial.$([ "$FORCE" = 1 ] && echo ' --force-checks: running the full check set anyway.' || echo ' Remaining checks are recorded NOT_RUN.')"
+  : > "$OUT/NO_NEW_CONTENT"
+fi
+run_step preservation_gate_ci 0 build_trial step_preservation_gate_ci
+run_step protected_paths 0 build_trial step_protected_paths
+run_step source_provenance 0 build_trial step_source_provenance
+run_step escalation_sweep 0 build_trial step_escalation_sweep
+run_step engine_fingerprints 0 build_trial step_engine_fingerprints
+run_step full_pytest 0 build_trial step_full_pytest
+run_step gsup_v2_replay 0 build_trial step_gsup_v2_replay
+if [ ! -f "$ORACLE" ] && selected independent_oracle && [ "$FATAL" = 0 ] && ! { [ "$NNC" = 1 ] && [ "$FORCE" = 0 ]; }; then
+  record independent_oracle NOT_RUN - 0 - "oracle not present at $ORACLE"
+else
+  run_step independent_oracle 0 build_trial step_independent_oracle
+fi
+run_step track_c_v1 0 build_trial step_track_c_v1
+run_step cdr012_static_scan 0 build_trial step_cdr012_static_scan
+run_step web_mvp_validation 0 build_trial step_web_mvp_validation
+run_step web_research_guard 0 build_trial step_web_research_guard
+run_step web_state_presentation 0 build_trial step_web_state_presentation
+run_step producer_contract_fixture 0 build_trial step_producer_contract_fixture
+run_step producer_contract_browser 0 producer_contract_fixture step_producer_contract_browser
+run_step macro_adoption_pinned 0 - step_macro_adoption_pinned
+run_step ci_path_filters 0 build_trial step_ci_path_filters
+run_step intree_writes 0 build_trial step_intree_writes
+FATAL_SAVED=$FATAL; FATAL=0
+run_step remote_recheck 0 verify_inputs step_remote_recheck
+FATAL=$FATAL_SAVED
+
+ENDED=$(date -u +%FT%TZ)
+TRIAL_TREE=""; [ -n "$TRIAL" ] && TRIAL_TREE=$(git -C "$WT" rev-parse "$TRIAL^{tree}")
+if [ "$NNC" = 1 ]; then RUN_KIND=NO_NEW_CONTENT
+elif [ -z "$TRIAL" ] || [ "${STATUS[no_reuse]:-}" != PASS ]; then RUN_KIND=UNDETERMINED
+elif [[ "$LABEL" == DRY_RUN* ]]; then RUN_KIND=DRY_RUN
+else RUN_KIND=SUCCESSOR_TRIAL; fi
+case "$RUN_KIND" in
+  SUCCESSOR_TRIAL) NOTICE="CDR-012 successor combined trial of #39 (new content vs #39 tree)." ;;
+  DRY_RUN) NOTICE="$LABEL: harness validation only. This is NOT the CDR-012 successor trial and its results must not be reported as trial results." ;;
+  NO_NEW_CONTENT) NOTICE="NO_NEW_CONTENT: the trial tree equals #39's tree ($TRIAL_TREE). This run is not a successor trial; #39's results are not re-labelled as successor results." ;;
+  *) NOTICE="Trial was not built or the no-reuse check did not complete; no trial claim is made." ;;
+esac
+log "run kind $RUN_KIND: $NOTICE"
+RUN_KIND="$RUN_KIND" NOTICE="$NOTICE" "$SYSPY" - "$OUT/meta.json" <<PY
+import json, os, sys
+rd = lambda p: open(p).read().splitlines() if os.path.exists(p) else []
+json.dump({"label": "$LABEL", "run_kind": os.environ["RUN_KIND"], "is_successor_trial": os.environ["RUN_KIND"] == "SUCCESSOR_TRIAL",
+           "notice": os.environ["NOTICE"], "harness": "$SELF", "harness_sha256": "$SELF_SHA", "started": "$STARTED", "ended": "$ENDED",
+           "force_checks": $FORCE == 1, "min_tests": $MIN_TESTS_ARG, "topology": "$TOPOLOGY",
+           "verified_v2_commit": (rd("$OUT/results/verified_v2_commit.txt") or [None])[0], "verified_v2_commit_arg": "$VERIFIED_V2_ARG",
+           "reviewed_allowlist_file": "${REVIEWED_ALLOWLIST_FILE:-}" or "default (11 entries)",
+           "reviewed_c8_evidence_file": "${REVIEWED_C8_EVIDENCE_FILE:-}" or "default (2 approval reports in #39)",
+           "oracle": "$ORACLE", "oracle_present": os.path.isfile("$ORACLE"),
+           "inputs_tsv": rd("$OUT/results/inputs.tsv"), "baselines_tsv": rd("$OUT/results/baselines.tsv"),
+           "merge_order": "#39 tip --no-ff #31 head --no-ff #35 head (already-contained inputs are NOOP)",
+           "merges_tsv": rd("$OUT/results/merges.tsv"),
+           "trial_commit": "$TRIAL", "trial_tree": "$TRIAL_TREE", "pr39_tip": "$PR39_TIP", "pr39_tree": "$PR39_TREE",
+           "merge_date": "$MERGE_DATE", "port": $PORT, "venv": "$VENV", "out": "$OUT", "work": "$WORK", "keep": $KEEP,
+           "src_repo": "$SRC_REPO", "private_clone": "$PRIV",
+           "deviations_from_ci": ["local Playwright 1.56.1 (chromium-1194) vs CI 1.58.2", "local Node $(node --version) vs CI 22/24",
+                                  "web-mvp browser tests run as private copies with port $PORT and private output dir",
+                                  "one full pytest run (numpy venv) stands in for the full-suite steps of all workflows"]},
+          open(sys.argv[1], "w"), indent=1)
+PY
+"$SYSPY" "$CHECKS_PY" summary "$OUT" | tee "$OUT/summary.txt" >&2
+log "summary: $OUT/summary.json"
+EXIT_CODE=$("$SYSPY" -c 'import json,sys; print(json.load(open(sys.argv[1]))["exit_code"])' "$OUT/summary.json")
+exit "$EXIT_CODE"
