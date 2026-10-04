@@ -153,3 +153,9 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - New narrow question routed: whether CDR-012 F1 also covers the frozen v1 Development estimator reached before outcome access.
 - Harness maintained: live SEC test deselected; real runs require the #31 head to equal the verified commit.
 - Canonical `b8e39a2` unchanged. Maturity transitions: none.
+
+## GCH-012 · 2026-10-04 · CDR-013 recorded (F1 scope RESOLVED — NO ADDITIONAL CHANGE; MAC-X1 prioritized)
+
+- User decision recorded verbatim. CDR-012 F1 covers the M-B statistic only; the frozen v1 Development estimator keeps `(v - m) ** 2`; no v1 change and no v2-only estimator.
+- MAC-X1 is now the top integration blocker. Analysis starts from a fresh fetch under the user's constraints (no PR-specific or hard-coded SHA exceptions, no weakening of Frozen acceptance, PIT, provenance or Holdout isolation, PR #40 preserved as exact-tree evidence, no owner-branch edits). A D3 goes to the user as options.
+- Canonical `b8e39a2` unchanged. Maturity transitions: none.

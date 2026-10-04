@@ -4,8 +4,8 @@ Routing/index SSoT only. This file is not a calculation, policy, approval or pub
 
 | Field | Value |
 |---|---|
-| Handoff ID | GCH-011 (supersedes GCH-010 as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
-| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011; GCH-009 after GIE-010; GCH-010 after CDR-012; GCH-011 after GIE-011 (2026-10-04) |
+| Handoff ID | GCH-012 (supersedes GCH-011 as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
+| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011; GCH-009 after GIE-010; GCH-010 after CDR-012; GCH-011 after GIE-011; GCH-012 after CDR-013 (2026-10-04) |
 | Primary Integration Writer | Claude Code session `session_019znshzTYgyBnuuBmSxdPFN`, designated by the user on 2026-10-03 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md` |
 | Canonical branch / HEAD | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. This matches the last independent audit checkpoint, and canonical has not moved since 2026-09-28 |
@@ -71,7 +71,8 @@ Decided and in execution:
 - **CDR-012 (decided 2026-10-04):** F1 squaring in v2 = `d*d` (no `** 2` / libm `pow`); F3 all-degenerate replicate set = NOT_RUN, no statistical PASS, no new epsilon/tolerance/threshold. Codex implements additively (CDR-008); the Primary Integration Writer re-verifies F1/F3 after Codex's next HANDOFF_READY and runs a fresh successor of trial #39. Write exclusion on the C8 paths applies until then.
 - **CDR-012 executed (GIE-011):** #31 `c9e0fa7` independently re-verified, VERIFIED_WITH_FINDINGS, no blocking finding. Successor trial PR #40 `acaf1b5` (#39 + #31 + #35): 1518 passed, 10/10 CI.
 - **Still open (USER_DECISION_REQUIRED, not decided here):**
-  - F1 scope: whether CDR-012's `d*d` rule also covers the frozen v1 Development dependence estimator `(v - m) ** 2` that v2 reaches before outcome access (affects only FEASIBLE/INFEASIBLE, never a p-value; v1 must stay unchanged, so it would need a v2-only additive estimator).
+  - (F1 scope question RESOLVED — NO ADDITIONAL CHANGE by CDR-013: M-B statistic only.)
+  - **MAC-X1 is the top integration blocker (CDR-013):** how Track C Frozen acceptance is certified on an advanced or integrated canonical. Being analysed; options go to the user if a D3 is needed.
   - Track C landing vehicle (`b9e01a9` lineage, the #31/#35 stack, or a #30-based combined merge) and MAC-X1 (Track C acceptance tooling on integrated trees) from GIE-009.
   - Scope of #21, #37, #28 and docs/qgv-context for any canonical-merge package.
 

@@ -326,3 +326,31 @@ Scope of this decision, as recorded by the routing writer:
 - Until Codex's next HANDOFF_READY, the CDR-009/CDR-011 write exclusion applies to the same Track C C8 paths; the Primary Integration Writer tracks read-only and does not duplicate the implementation.
 
 Still not approved (user's same message): numeric configuration, CAL_VERIFY, Holdout, C8 Freeze, publication/Official/LIVE, canonical merge.
+
+## CDR-013 · CDR-012 F1 scope = M-B statistic only — RESOLVED — NO ADDITIONAL CHANGE; MAC-X1 prioritized
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** |
+| Decided at | 2026-10-04 (user message in session `session_019znshzTYgyBnuuBmSxdPFN`, after GCH-011 / `dc958a8`) |
+| Resolves | the F1 scope question in GIE-011 §1 |
+
+User wording (verbatim, excerpt):
+
+> F1 범위는 CDR-012 승인 의도대로 M-B 통계량으로 한정한다.
+>
+> frozen v1 Development dependence estimator의 "(v - m) ** 2"는 이번 CDR-012 범위 밖으로 유지한다.
+>
+> 현재 evidence상 해당 값은 feasibility envelope에만 사용되고 M-B p-value에는 사용되지 않으므로, 이를 이유로 v1을 수정하거나 v2 전용 estimator를 새로 만들지 마라.
+>
+> 따라서 F1 scope question은:
+> "RESOLVED — NO ADDITIONAL CHANGE"
+> 로 history-preserving 방식으로 기록한다.
+>
+> 그 다음 canonical merge를 진행하지 말고 MAC-X1을 최우선 integration blocker로 처리한다.
+
+Recorded effect:
+
+- **F1 scope question: RESOLVED — NO ADDITIONAL CHANGE.** CDR-012 F1 covers the M-B statistic only. The frozen v1 `development_dependence_estimate` (`superiority.py:247`, `(v - m) ** 2`) stays as it is; no v1 change and no v2-only estimator.
+- **MAC-X1** (Track C Frozen acceptance tooling on an advanced or integrated canonical; GIE-009 §2.4, GIE-011 §3) becomes the top integration blocker. The user's constraints for that work, in the same message: no temporary PR-specific or hard-coded SHA exception; do not weaken Frozen acceptance meaning, PIT/no-lookahead, Frozen history, provenance or Holdout isolation; preserve PR #40 as exact-tree historical evidence without relabelling; do not modify #21, RIG or other owner branches without ownership; prefer deterministic verification. A D1/D2 implementation within approved scope proceeds through verification; a new Frozen acceptance meaning, a policy relaxation, a canonical merge ordering policy or another D3 is presented as options with a recommendation, not implemented.
+- Still prohibited (same message): canonical merge, CAL_VERIFY, Holdout consumption, C8 Freeze, numeric configuration, publication grant, Official/LIVE promotion, #17 protected digest repin.
