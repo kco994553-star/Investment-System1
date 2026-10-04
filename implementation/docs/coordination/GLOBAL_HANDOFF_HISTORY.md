@@ -131,3 +131,10 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - CDR-011 combined trial published by the Primary Integration Writer: PR #39 `integration/cdr011-trial-2026-10-04` @ `0d31e06` = #38 `7e3861b` + #31 `e0b6d80` + #35 `8318b78`. Hardened harness all PASS, full suite 1441 passed, 10/10 CI. Adversarial trial check: no blocking finding. #38's results not reused.
 - New USER_DECISION_REQUIRED items routed (not decided): F1 squaring operator; F3 undefined-statistic guard. F3 reproduced by the Primary Integration Writer on production v2.
 - Canonical `b8e39a2` unchanged. Maturity transitions: none (C8 SYNTHETIC_VERIFIED, NOT FROZEN).
+
+## GCH-010 · 2026-10-04 · CDR-012 recorded (F1 squaring = d*d; F3 all-degenerate = NOT_RUN)
+
+- User decision recorded verbatim in `COORDINATION_DECISION_REGISTER.md`. F1: authoritative v2 squares with `d*d`; `** 2` / libm `pow` are not used. F3: when every bootstrap replicate is degenerate, G-SUP produces no statistical PASS and fails closed as NOT_RUN. No new epsilon, tolerance or threshold is approved.
+- Codex implements both additively in #31 with independent oracle, negative and full regression, Actions and a scoped handoff. The Primary Integration Writer re-verifies F1/F3 after Codex's next HANDOFF_READY and runs a fresh successor of trial #39. The C8 write exclusion applies until then.
+- Still not approved: numeric configuration, CAL_VERIFY, Holdout, C8 Freeze, publication/Official/LIVE, canonical merge.
+- Canonical `b8e39a2` unchanged. Maturity transitions: none.

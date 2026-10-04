@@ -300,3 +300,29 @@ User wording (verbatim, excerpts):
 Additional verification scope named by the user for the new checkpoint: exact HEAD, approved arithmetic contract, v1 preservation, M-B v2 implementation, independent oracle, CE4, FLIP, LEFT_SUM, TIE, seed 275, exact decimal comparison, degeneracy handling, targeted regression, full regression, Actions, source identity preservation. Next combined trial checks named by the user: merge conflicts, full regression, browser/E2E, producer contracts, engine fingerprints, protected paths, Track C preservation, source/provenance, no publication/Official/LIVE escalation.
 
 Effect: CDR-009's write exclusion, which had reached its end condition at `29c2c20`, applies again to the same paths until PR #31's next HANDOFF_READY. Read-only tracking and temporary, never-pushed trial merges stay allowed.
+
+## CDR-012 · G-SUP M-B v2: squaring = d*d (F1); all-degenerate replicates fail closed as NOT_RUN (F3)
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** (supplement to the CDR-010 arithmetic contract, v2 only) |
+| Decided at | 2026-10-04 (user message in session `session_019znshzTYgyBnuuBmSxdPFN`, after GCH-009 / `a267917`) |
+| Resolves | F1 and F3 raised in GIE-010 §2 |
+| Implementer | Codex, additive and history-preserving (CDR-008 unchanged) |
+| Verifier | Primary Integration Writer, after Codex's next HANDOFF_READY |
+
+User wording (verbatim):
+
+> F1: G-SUP M-B v2의 squaring은 d*d로 고정한다. ** 2/libm pow를 authoritative v2에서 사용하지 않는다. 이는 arithmetic reproducibility 계약의 보완이며 기존 v1/history를 변경하지 않는다.
+> F3: bootstrap replicate가 모두 degenerate인 경우 G-SUP은 statistical PASS를 생성하지 않고 NOT_RUN으로 fail-closed한다. 이 승인은 float residual을 판정하기 위한 새로운 epsilon/tolerance/threshold를 승인하지 않는다.
+> Codex가 두 변경을 additive/history-preserving 방식으로 구현하고 independent oracle·negative regression·full regression·Actions·scoped handoff까지 진행한다. Claude Main은 Codex HANDOFF_READY 후 F1/F3를 독립 재검증하고 PR #39의 fresh successor combined trial을 수행한다.
+> numeric configuration, CAL_VERIFY, Holdout, C8 Freeze, publication/Official/LIVE, canonical merge는 여전히 승인하지 않는다.
+
+Scope of this decision, as recorded by the routing writer:
+
+- F1 fixes the squaring operator inside v2 as correctly rounded multiplication (`d*d`), the reading used by the GIE-009 reference oracle's default and by the approved simulation's NumPy squares. `** 2` and libm `pow` are excluded from authoritative v2. v1 and every historical record stay unchanged.
+- F3 applies when every bootstrap replicate is degenerate (degenerate means `sqrt(v/n) > 0` is false, per CDR-010). G-SUP then produces no statistical PASS and fails closed as NOT_RUN.
+- F3 does not add any epsilon, tolerance or threshold. Consequently a near-undefined original statistic whose replicates are not all degenerate (GIE-010 §2 example `[0.05]*12`) keeps the CDR-010-literal result; it is not covered by this decision.
+- Until Codex's next HANDOFF_READY, the CDR-009/CDR-011 write exclusion applies to the same Track C C8 paths; the Primary Integration Writer tracks read-only and does not duplicate the implementation.
+
+Still not approved (user's same message): numeric configuration, CAL_VERIFY, Holdout, C8 Freeze, publication/Official/LIVE, canonical merge.
