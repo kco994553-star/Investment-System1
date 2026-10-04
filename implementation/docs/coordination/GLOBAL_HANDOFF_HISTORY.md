@@ -108,3 +108,10 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - Not approved and not implied: numeric configuration (α, B, L, seed, effect floor, minimum support, size tolerance, dependence envelope/margin), real CAL_VERIFY access, Holdout, C8 Freeze, publication grant, Official/LIVE, canonical merge, the #17 protected-digest repin.
 - The Track C scoped Decision Register is Codex-owned and inside the exclusion; it is not written here. No PR comment was posted to #31.
 - Canonical `b8e39a2` unchanged. Maturity transitions: none.
+
+## GCH-008a · 2026-10-04T00:40Z · PR #31 new HANDOFF_READY (CDR-010 v2); CDR-011 re-verification started
+
+- Codex pushed #31 `e0b6d80` ("Implement approved CDR-010 M-B v2 and synthetic acceptance"; `ACCEPTANCE_MANIFEST_V2.json` status HANDOFF_READY_APPROVED_SYNTHETIC_V2_SCOPE) and #35 `8318b78` (merge of `e0b6d80` into the F1 fix). The CDR-011 end condition is met. CDR-008 still applies: Codex branches stay read-only for the Primary Integration Writer.
+- Independent re-verification started (workflow `wf_8f1764e8-c3c`), using the CDR-010 reference oracle that was built before Codex's v2 existed. If no blocking finding: the CDR-011 combined trial of #38 + #31 + #35 on fresh heads, published for CI. #38's results are not reused.
+- The pre-v2 harness dry run (#38 `7e3861b` + #31 `29c2c20` + #35 `722c812`) passed all checks and is recorded as harness validation only, not as the CDR-011 trial.
+- Canonical `b8e39a2` unchanged. Maturity transitions: none.
