@@ -6,17 +6,29 @@ Frozen records or any branch, never writes to the caller's repository, and never
 
     python implementation/tools/integration/track_c_fpia.py --repo PATH --tree <40-hex T> \
         --register-commit <40-hex G> --cdr CDR-014 --out FILE.json [--work-dir DIR] [--keep-work]
+    python implementation/tools/integration/track_c_fpia.py --verify-output FILE.json \
+        [--expect-result-sha256 <64-hex>]
 
 There are no reference-SHA options: R (Track C) and V (v2) come only from the authenticated
 CDR manifest. Exit codes: 0 FPIA_PASS, 1 FPIA_FAIL, 2 FPIA_NOT_RUN (including usage errors).
 Output schema TRACK_C_FPIA/2: a canonical ``result`` section, its sha256, and ``run`` metadata. The
 frozen tools' complete stdout/stderr on T are written next to the output as ``<out>.verbatim/``
-(file names and sha256 in ``result.frozen_tools_on_T.steps[].verbatim``).
+(file names and sha256 in ``result.frozen_tools_on_T.steps[].verbatim``). An existing non-empty --out
+or side-file directory is refused (FPIA_NOT_RUN, nothing written); ``--verify-output`` rechecks a
+written output (result_sha256 and every side file).
 
 Environment (fix round F1/F2): a shallow --repo, a caller fetch that refuses or does not deliver any
 ref update, or a missing reference/evidence object makes the audit NOT_RUN (environment unverified),
 never a determinate FAIL or PASS. The canonical ref used for FROZEN_TOOLS_ON_T is read with
 ``git ls-remote`` from the authority remote, never from a caller-local remote-tracking ref.
+
+Fix round 2: complement workflows are read with a YAML loader and their names normalised (NFKC,
+casefold, default-ignorables removed, UTS #39 skeleton) and what they run is resolved through YAML
+decoding, working-directory, shell tokens, local scripts and composite actions (track_c_fpia_workflows;
+dynamically constructed invocations are NOT_CLAIMED); fetch status lines are parsed structurally;
+result_sha256 does not depend on the interpreter or venv location (paths written as <python>,
+<site-packages>, <stdlib>, <venv>; real values in run.path_tokens); authority transport is disclosed by
+environment-variable name only (run.authority_transport).
 """
 from __future__ import annotations
 
@@ -41,12 +53,14 @@ try:
     from . import track_c_fpia_derive as fd
     from . import track_c_fpia_git as fgit
     from . import track_c_fpia_runner as frun
+    from . import track_c_fpia_workflows as fw
 except ImportError:
     import track_c_fpia_auth as fauth
     import track_c_fpia_checks as fchk
     import track_c_fpia_derive as fd
     import track_c_fpia_git as fgit
     import track_c_fpia_runner as frun
+    import track_c_fpia_workflows as fw
 
 SCHEMA = "TRACK_C_FPIA/2"
 # The single pre-existing live-network test node (PIW ruling): listed explicitly, never
@@ -70,6 +84,7 @@ NON_CLAIMS = [
     "grandchild processes spawned by tests are covered statically and by spawn records only "
     "(module provenance of grandchildren is not traced)",
     "no numeric threshold, default or tolerance is introduced; all comparisons are exact",
+    fw.DYNAMIC_NON_CLAIM,
 ]
 LATENT_POLICY_NOTES = [
     "L1 shared-overlay conflicts or unauthorized resolutions FAIL (fail-closed; not relaxed)",
@@ -84,21 +99,84 @@ DEFAULT_OPTIONS = {"authority_remote": fauth.AUTHORITY_REMOTE, "require_clean_ve
 
 
 VERBATIM_DIR_SUFFIX = ".verbatim"
-VERBATIM_NORMALISATION = ("complete, untruncated stream; the only change is that the FPIA work-directory path "
-                          "is written as <work> (as everywhere in this JSON, AC-38); the sha256/bytes of the "
-                          "exact raw stream are in run.verbatim_raw")
+VERBATIM_NORMALISATION = ("complete, untruncated stream; the only changes are that the FPIA work-directory path "
+                          "is written as <work> and the verifier interpreter/site/stdlib/venv paths as <python>, "
+                          "<site-packages>, <stdlib>, <venv> (as everywhere in this JSON, AC-38); the sha256/bytes "
+                          "of the exact raw stream are in run.verbatim_raw")
 
 
 def sha256(b):
     return hashlib.sha256(b).hexdigest()
 
 
+# ---- environment-path normalisation (fix round 2, G5; AC-38) -----------------------------------------
+# result_sha256 must not depend on where the verifier interpreter or its venv lives: every hashed string
+# (and every side file) has these absolute paths replaced by stable tokens; the real values are kept in
+# run.path_tokens. A path is replaced only at a path boundary (never inside a longer file name).
+_ENV_PATHS = {}
+
+
+def interpreter_path_tokens():
+    """[(absolute path, token)], longest path first."""
+    import site
+    import sysconfig
+    pairs = {}
+
+    def add(path, token):
+        if not path:
+            return
+        for v in sorted({str(path), os.path.realpath(str(path)), os.path.abspath(str(path))}):
+            if v and v != os.sep:
+                pairs.setdefault(v, token)
+
+    add(sys.executable, "<python>")
+    paths = sysconfig.get_paths()
+    for key in ("purelib", "platlib"):
+        add(paths.get(key), "<site-packages>")
+    for d in sorted(getattr(site, "getsitepackages", lambda: [])()):
+        add(d, "<site-packages>")
+    for key in ("stdlib", "platstdlib"):
+        add(paths.get(key), "<stdlib>")
+    if sys.prefix != sys.base_prefix:
+        add(sys.prefix, "<venv>")
+    return sorted(pairs.items(), key=lambda kv: (-len(kv[0]), kv[0]))
+
+
+def _env_path_rx():
+    if "rx" not in _ENV_PATHS:
+        pairs = interpreter_path_tokens()
+        _ENV_PATHS["pairs"] = pairs
+        _ENV_PATHS["map"] = dict(pairs)
+        _ENV_PATHS["bmap"] = {os.fsencode(p): tok.encode() for p, tok in pairs}
+        alt = "|".join(re.escape(p) for p, _ in pairs)
+        _ENV_PATHS["rx"] = re.compile("(?:%s)(?![A-Za-z0-9_.+~-])" % alt) if pairs else None
+        _ENV_PATHS["brx"] = re.compile(("(?:%s)(?![A-Za-z0-9_.+~-])" % alt).encode()) if pairs else None
+    return _ENV_PATHS
+
+
+def normalise_env_paths(value):
+    e = _env_path_rx()
+    if isinstance(value, str) and e["rx"] is not None:
+        return e["rx"].sub(lambda m: e["map"][m.group(0)], value)
+    if isinstance(value, bytes) and e["brx"] is not None:
+        return e["brx"].sub(lambda m: e["bmap"][m.group(0)], value)
+    return value
+
+
+def path_token_record():
+    out = {}
+    for path, token in _env_path_rx()["pairs"]:
+        out.setdefault(token, []).append(path)
+    return {k: sorted(v) for k, v in sorted(out.items())}
+
+
 def normalise_work(raw, work):
-    """Replace the (resolved and as-given) work-directory path by ``<work>`` in raw bytes."""
+    """Replace the (resolved and as-given) work-directory path by ``<work>`` and the interpreter/site
+    paths by their tokens in raw bytes."""
     out = raw
     for w in sorted({str(Path(work).resolve()), os.path.abspath(str(work))}, key=len, reverse=True):
         out = out.replace(w.encode(), b"<work>")
-    return out
+    return normalise_env_paths(out)
 
 
 def canonical_bytes(obj):
@@ -153,8 +231,8 @@ def summary_line(result):
     if "byte_protected_only" in h:
         hist += " (replayed %d records + %d CI logs; %d byte-protected only)" % (
             len(h["scope"]["replayed_records"]), len(h["scope"]["replayed_ci_logs"]), len(h["byte_protected_only"]))
-    return " | ".join([result["fpia"]["status"],
-                       "%s (%s)" % (st.get("code_identity"), "; ".join(pairs)),
+    ci_text = "%s (%s)" % (st.get("code_identity"), "; ".join(pairs)) if pairs else str(st.get("code_identity"))
+    return " | ".join([result["fpia"]["status"], ci_text,
                        "%s [BRANCH_FROZEN_VALIDATION, verbatim]" % st.get("frozen_tools_on_T"),
                        hist, str(st.get("track_c_projection")),
                        str(st.get("integration_interference")),
@@ -522,7 +600,18 @@ class Audit:
 
         status = "PASS"
         if not sb.is_ancestor(R, T):
-            add("AC-04", "FAIL", "R is not an ancestor of T (squash or non-merge-preserving landing)")
+            # G6: distinguish "Track C not integrated in this tree" from a landing that brought Track C
+            # content without R's ancestry; the status is FAIL in both cases (never relabelled)
+            tT = sb.tree(T)
+            present = sorted(p for p in sb.tree(R) if self.proj.ns(p) and p in tT)
+            if not present:
+                add("AC-04", "FAIL", "R is not an ancestor of T: R is absent from T's history and no Track C "
+                    "projection path of R is present at T (Track C not integrated in this tree)",
+                    case="R_ABSENT_TRACK_C_NOT_INTEGRATED", track_c_paths_present_at_T=0)
+            else:
+                add("AC-04", "FAIL", "R is not an ancestor of T although Track C projection paths of R are present "
+                    "at T (squash or non-merge-preserving landing)", case="NON_MERGE_PRESERVING_LANDING",
+                    track_c_paths_present_at_T=len(present), examples=present[:5])
             status = "FAIL"
         for V in self.Vs:
             if not sb.is_ancestor(R, V):
@@ -659,10 +748,13 @@ class Audit:
                 if dname:
                     tcm_all.add(dname)
         self.tcm_all = tcm_all
+        static_info = {}
         comp, findings = fchk.complement_static(sb, T, R, self.Vs, self.v_applies, self.proj,
                                                 {p for p in self.av if any(self.v_applies.get(V) for V in self.Vs)},
                                                 tcm_all, self.config_names or [], config_dirs,
-                                                fd.TRACK_C_WORKFLOW, None)
+                                                fd.TRACK_C_WORKFLOW, None, info=static_info)
+        # G1/G2: a static layer that could not run (e.g. no YAML loader) is NOT_RUN, never NONE
+        self.static_not_run = list(static_info.get("not_run", []))
         self.complement = set(comp)
         orders = [("tools", list(fd.STATIC_ROOTS)), ("pytest", ["implementation", "implementation/src"])]
         closure, checked = fchk.closure_identity(sb, T, R, self.Vs, self.v_applies, self.proj, self.av, orders)
@@ -679,7 +771,10 @@ class Audit:
         self.static_findings = static
         r["integration_interference"] = {"complement_count": len(comp), "static_findings": static,
                                          "closure_names_checked": checked, "gitattributes": attr_info,
-                                         "config_names": self.config_names, "config_dirs": sorted(config_dirs)}
+                                         "config_names": self.config_names, "config_dirs": sorted(config_dirs),
+                                         "workflow_analysis": static_info.get("workflow_analysis"),
+                                         "dynamic_invocation_detection": fw.DYNAMIC_INVOCATION_DETECTION,
+                                         "static_not_run": self.static_not_run}
 
     # -- runtime provenance (AC-36, AC-29, review LOW) ---------------------------------------------------
     def runtime_phase(self):
@@ -1216,10 +1311,13 @@ class Audit:
         rec = {"name": "refs/remotes/origin/" + self.BRANCH, "value": None, "status": "NOT_RUN",
                "source": {"remote": remote, "ref": ref, "method": "git ls-remote of the authority remote",
                           "default_remote": remote == fauth.AUTHORITY_REMOTE}}
+        passed, ignored = fgit.network_env(network)
         self.canonical_query = {"queried_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                                "remote": remote, "ref": ref, "value": None}
+                                "remote": remote, "ref": ref, "value": None, "network": network,
+                                "proxy_or_ca_env_passed": passed, "proxy_or_ca_env_present": bool(passed),
+                                "ignored_proxy_like_env_present": ignored}
         try:
-            value = self.sb.ls_remote(remote, ref, network=network).get(ref)
+            value = self.sb.ls_remote(remote, ref, network=network, label="authority-canonical").get(ref)
         except fgit.GitError as exc:
             rec["detail"] = "authority remote unreachable: %s" % str(exc)[-300:]
             return rec
@@ -1580,7 +1678,7 @@ class Audit:
                                                   "(or is an authenticated V version / append)", "source": "GIT_OBJECT_IDENTITY"})
         # ---------------- interference (AC-22..35) ----------------
         inter_findings = list(self.static_findings)
-        inter_nr = []
+        inter_nr = list(getattr(self, "static_not_run", []))
         vs = getattr(self, "vs", [])
         ref_lane = lanes.get("V:" + vs[0]) if vs else lr
         ref_name = ("V:" + vs[0]) if vs else "R"
@@ -2066,15 +2164,97 @@ def scrub(obj, work):
         return [scrub(v, work) for v in obj if not isinstance(v, frun.RunResult)]
     if isinstance(obj, tuple):
         return [scrub(v, work) for v in obj]
-    if isinstance(obj, str) and w in obj:
-        return obj.replace(w, "<work>")
+    if isinstance(obj, str):
+        return normalise_env_paths(obj.replace(w, "<work>") if w in obj else obj)
     if isinstance(obj, (set, frozenset)):
         return sorted(scrub(v, work) for v in obj)
     return obj
 
 
+# ---- output handling (fix round 2, G4) ---------------------------------------------------------------
+def output_preflight(out):
+    """None, or the reason why ``out`` cannot receive a new result without leaving stale side files:
+    a non-empty existing output file, an output path that is a directory, or a verbatim side-file
+    directory that already exists and is not empty (or is not a directory)."""
+    if not out:
+        return None
+    o = Path(out)
+    vdir = o.parent / (o.name + VERBATIM_DIR_SUFFIX)
+    if o.is_dir():
+        return "--out %s is a directory" % o
+    if o.exists() and o.stat().st_size:
+        return "--out %s exists and is not empty (refusing to overwrite a previous result)" % o
+    if vdir.exists() and (not vdir.is_dir() or any(vdir.iterdir())):
+        return "side-file directory %s exists and is not empty (stale side files would sit next to a new " \
+               "result)" % vdir
+    return None
+
+
+def verify_output(path, expect_result_sha256=None):
+    """Recheck a written FPIA output (``--verify-output``): result_sha256 against the canonical bytes of
+    ``result``, every side file named in ``result.frozen_tools_on_T.steps[].verbatim`` (sha256 and bytes),
+    no unreferenced file in ``<out>.verbatim/`` and, when given, result_sha256 against an external anchor
+    (e.g. the CI log line). Returns (status, report): VERIFIED, MISMATCH or NOT_RUN (unreadable)."""
+    p = Path(path)
+    rep = {"path": str(p), "checks": [], "not_verifiable": [
+        "run.verbatim_raw (raw streams are not stored; outside result_sha256)",
+        "a consistent re-hash of result and side files is detected only against an external anchor "
+        "(--expect-result-sha256)"]}
+
+    def check(name, ok, **extra):
+        rep["checks"].append(dict({"check": name, "status": "PASS" if ok else "MISMATCH"}, **extra))
+
+    try:
+        doc = json.loads(p.read_text())
+        result = doc["result"]
+        recorded = doc["result_sha256"]
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        rep["error"] = "unreadable FPIA output: %s" % exc
+        return "NOT_RUN", rep
+    rep["schema"] = doc.get("schema")
+    check("schema", doc.get("schema") == SCHEMA)
+    actual = sha256(canonical_bytes(result))
+    check("result_sha256 equals sha256(canonical result)", actual == recorded, recorded=recorded, actual=actual)
+    if expect_result_sha256 is not None:
+        check("result_sha256 equals the external anchor", recorded == expect_result_sha256,
+              expected=expect_result_sha256)
+    steps = ((result.get("frozen_tools_on_T") or {}).get("steps") or [])
+    referenced = {}
+    for st in steps:
+        for kind in ("stdout", "stderr"):
+            v = (st.get("verbatim") or {}).get(kind)
+            if isinstance(v, dict):
+                referenced[v.get("file")] = v
+    vdir = p.parent / (p.name + VERBATIM_DIR_SUFFIX)
+    present = sorted(x.name for x in vdir.iterdir()) if vdir.is_dir() else []
+    for name, v in sorted(referenced.items(), key=lambda kv: str(kv[0])):
+        f = vdir / str(name)
+        if not f.is_file():
+            check("side file present: %s" % name, False)
+            continue
+        data = f.read_bytes()
+        check("side file sha256/bytes: %s" % name, sha256(data) == v.get("sha256") and len(data) == v.get("bytes"),
+              recorded={"sha256": v.get("sha256"), "bytes": v.get("bytes")},
+              actual={"sha256": sha256(data), "bytes": len(data)})
+    extra = sorted(set(present) - set(referenced))
+    check("no unreferenced side files", not extra, unreferenced=extra)
+    status = "VERIFIED" if all(c["status"] == "PASS" for c in rep["checks"]) else "MISMATCH"
+    rep["status"] = status
+    rep["side_files"] = len(referenced)
+    return status, rep
+
+
 def run_fpia(repo, tree, register_commit, cdr, out=None, work_dir=None, keep_work=False, options=None):
     started = time.time()
+    refused = output_preflight(out)
+    if refused:
+        # G4: never leave stale side files next to a new result; nothing is written or run
+        result = {"schema": SCHEMA, "statuses": {}, "non_claims": NON_CLAIMS,
+                  "fpia": {"status": "FPIA_NOT_RUN", "reasons": ["output refused: %s" % refused]},
+                  "summary": "FPIA_NOT_RUN | output refused: %s" % refused}
+        return {"schema": SCHEMA, "result": result, "result_sha256": sha256(canonical_bytes(result)),
+                "run": {"started_utc": datetime.datetime.fromtimestamp(started, datetime.timezone.utc).isoformat(),
+                        "argv": sys.argv, "output_refused": refused, "written": False}}
     created = work_dir is None
     work = Path(work_dir) if work_dir else Path(tempfile.mkdtemp(prefix="track-c-fpia-"))
     if not created and work.exists() and any(work.iterdir()):
@@ -2098,16 +2278,24 @@ def run_fpia(repo, tree, register_commit, cdr, out=None, work_dir=None, keep_wor
                    "argv": sys.argv, "ref_writes": audit.sb.ref_log if audit else [],
                    "fetches": audit.sb.fetch_log if audit else [], "runs": audit.runner.runs if audit else [],
                    "canonical_ref_query": audit.canonical_query if audit else None,
-                   "verbatim_raw": audit.verbatim_raw if audit else {}, "verbatim_dir": None}}
+                   "authority_transport": {
+                       "env_names_passed_to_network_git": list(fgit.NETWORK_ENV_NAMES),
+                       "queries": [x for x in (audit.sb.transport_log if audit else [])
+                                   if str(x.get("label", "")).startswith("authority")],
+                       "values_recorded": False},
+                   "path_tokens": path_token_record(),
+                   "verbatim_raw": audit.verbatim_raw if audit else {}, "verbatim_dir": None, "verbatim_files": []}}
     if out:
         files = audit.verbatim_files if audit else {}
         if files:
-            # F4: the frozen tools' complete streams, next to the JSON output (names as in the result)
+            # F4: the frozen tools' complete streams, next to the JSON output (names as in the result);
+            # the directory is new or empty (G4 preflight), so no stale side file survives
             vdir = Path(out).parent / (Path(out).name + VERBATIM_DIR_SUFFIX)
             vdir.mkdir(parents=True, exist_ok=True)
             for name, data in sorted(files.items()):
                 (vdir / name).write_bytes(data)
             doc["run"]["verbatim_dir"] = str(vdir)
+            doc["run"]["verbatim_files"] = sorted(files)
         Path(out).write_text(json.dumps(doc, indent=1, sort_keys=True, ensure_ascii=False) + "\n")
     if not keep_work:
         shutil.rmtree(work, ignore_errors=True)
@@ -2123,7 +2311,21 @@ class _Parser(argparse.ArgumentParser):
         raise SystemExit(2)
 
 
+def verify_main(argv):
+    p = _Parser(description="Recheck a written FPIA output and its side files", allow_abbrev=False)
+    p.add_argument("--verify-output", required=True)
+    p.add_argument("--expect-result-sha256")
+    a = p.parse_args(argv)
+    status, rep = verify_output(a.verify_output, a.expect_result_sha256)
+    print(json.dumps(rep, indent=1, sort_keys=True))
+    print("fpia-output: %s" % status)
+    return {"VERIFIED": 0, "MISMATCH": 1}.get(status, 2)
+
+
 def main(argv=None):
+    argv = sys.argv[1:] if argv is None else list(argv)
+    if any(x == "--verify-output" or x.startswith("--verify-output=") for x in argv):
+        return verify_main(argv)
     p = _Parser(description=__doc__.split("\n")[0], allow_abbrev=False)
     p.add_argument("--repo", required=True)
     p.add_argument("--tree", required=True)

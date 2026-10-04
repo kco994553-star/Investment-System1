@@ -4,6 +4,10 @@ name: track-c-fpia
 # inputs). On pull_request the audit subject is the PR head commit (not the synthetic merge commit)
 # and the register commit is the authority handoff-branch tip read with git ls-remote; on
 # workflow_dispatch both are inputs (subject default: the checked-out commit).
+# Scope (fix round 2, G7; recommended interpretation "FPIA applies to merge results containing R",
+# pending the user's confirmation): on pull_request the audit job runs only when the PR's base or head
+# branch matches integration/** (PIW integration / trial merge results); other PRs (e.g. pre-Track C
+# capability PRs) get a skipped job, not a red check. workflow_dispatch always runs.
 on:
   pull_request:
   workflow_dispatch:
@@ -23,6 +27,10 @@ permissions:
   contents: read
 jobs:
   fpia:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      startsWith(github.event.pull_request.base.ref, 'integration/') ||
+      startsWith(github.event.pull_request.head.ref, 'integration/')
     runs-on: ubuntu-latest
     timeout-minutes: 150
     env:
@@ -42,8 +50,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install pinned runtime
-        run: python -m pip install pytest==9.1.1 numpy==2.3.5
+      - name: Install pinned runtime (PyYAML is FPIA's workflow loader, AC-32.spoof)
+        run: python -m pip install pytest==9.1.1 numpy==2.3.5 PyYAML==6.0.1
       - name: FPIA Tier 1 tests
         if: github.event_name == 'workflow_dispatch'
         working-directory: implementation
@@ -86,6 +94,9 @@ jobs:
               print("%s: %s" % (name, value))
           print("result_sha256: %s" % doc["result_sha256"])
           PY
+          # G4: recheck the written output and its side files (informational; never changes the exit code)
+          python implementation/tools/integration/track_c_fpia.py --verify-output "$out/fpia.json" \
+            > "$out/fpia-verify.txt" 2>&1 || true
           {
             echo "### Track C FPIA (CDR-014)"
             echo ""
@@ -96,10 +107,12 @@ jobs:
             echo '```'
             cat "$out/fpia-summary.txt"
             cat "$out/fpia-status.txt"
+            tail -n 1 "$out/fpia-verify.txt"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           cat "$out/fpia-summary.txt"
           cat "$out/fpia-status.txt"
+          tail -n 1 "$out/fpia-verify.txt"
           exit $rc
       - uses: actions/upload-artifact@v4
         if: always()

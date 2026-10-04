@@ -28,10 +28,19 @@ NEUTRAL_ATTRIBUTES = ("* !merge !text !eol !crlf !ident !filter !diff !working-t
 # TLS trust). They cannot change object content: index-pack re-hashes every received object.
 NETWORK_ENV_NAMES = ("HTTPS_PROXY", "https_proxy", "NO_PROXY", "no_proxy", "GIT_SSL_CAINFO",
                      "SSL_CERT_FILE", "SSL_CERT_DIR", "CURL_CA_BUNDLE")
+# Proxy/CA-like names that are NOT passed to any git process; their presence is disclosed by name only.
+IGNORED_NETWORK_ENV_NAMES = ("HTTP_PROXY", "http_proxy", "ALL_PROXY", "all_proxy", "GIT_PROXY_COMMAND",
+                             "GIT_SSL_CAPATH", "GIT_SSL_NO_VERIFY", "REQUESTS_CA_BUNDLE")
 # A fetch can exit 0 while refusing ref updates (e.g. "warning: rejected <ref> because shallow roots
 # are not allowed to be updated" from a shallow source; " ! [rejected] ..." status lines). The output
 # is inspected, not only the exit code; any such line makes the fetch incomplete (fail-closed).
-REJECTED_LINE = re.compile(r"^\s*!\s|\brejected\b|^error:", re.I)
+# Fix round 2 (G3): the status lines are parsed structurally - " <flag> <summary> <from> -> <to>
+# [(<reason>)]" - and a refusal is the flag column "!", the summary "[rejected]" or a reason field
+# naming "rejected"; ref names (e.g. a branch feature/rejected-ideas) are never matched as text.
+STATUS_LINE = re.compile(r"^ (?P<flag>[ +\-t*!=]) (?P<summary>\[[^\]]*\]|\S+)\s+(?P<src>\S+)\s+->\s+(?P<dst>\S+)"
+                         r"(?:\s+\((?P<reason>[^()]*)\))?\s*$")
+SHALLOW_REJECTION = re.compile(r"^warning: rejected (?P<ref>\S+) because (?P<why>.+)$")
+REJECTED_REASON = re.compile(r"\brejected\b", re.I)
 
 
 class GitError(RuntimeError):
@@ -58,14 +67,28 @@ def base_env(home):
 
 
 def rejected_lines(stderr_text):
-    """Ref-update refusals reported on a fetch's stderr (remote-side chatter is ignored)."""
+    """Ref-update refusals reported on a fetch's stderr (remote-side chatter is ignored): ``error:``
+    lines, ``warning: rejected <ref> because ...`` lines and status lines whose flag column is ``!``,
+    whose summary is ``[rejected]`` or whose reason field names a rejection (G3)."""
     out = []
     for line in stderr_text.splitlines():
         if line.startswith(("remote:", "hint:")):
             continue
-        if REJECTED_LINE.search(line):
+        if line.lower().startswith("error:") or SHALLOW_REJECTION.match(line):
+            out.append(line.strip())
+            continue
+        m = STATUS_LINE.match(line)
+        if m and (m.group("flag") == "!" or m.group("summary") == "[rejected]"
+                  or REJECTED_REASON.search(m.group("reason") or "")):
             out.append(line.strip())
     return out
+
+
+def network_env(network):
+    """(names passed to a network git operation, proxy/CA-like names present but never passed)."""
+    passed = sorted(n for n in NETWORK_ENV_NAMES if network and n in os.environ)
+    ignored = sorted(n for n in IGNORED_NETWORK_ENV_NAMES if n in os.environ)
+    return passed, ignored
 
 
 def blob_id(data: bytes) -> str:
@@ -96,6 +119,7 @@ class Sandbox:
         self.env = base_env(self.home)
         self.ref_log = []
         self.fetch_log = []
+        self.transport_log = []
         self._trees = {}
         self._blobs = {}
         self.run(["init", "--bare", "-q", str(self.git_dir)], git_dir=False)
@@ -143,6 +167,7 @@ class Sandbox:
                  "rc": proc.returncode, "rejected": rejected,
                  "network_env_names": sorted(n for n in NETWORK_ENV_NAMES if network and n in os.environ)}
         self.fetch_log.append(entry)
+        self._transport("fetch", label, source, network, proc.returncode)
         if proc.returncode != 0:
             raise GitError("fetch %s failed: %s" % (label or source, proc.stderr.decode(errors="replace").strip()[-800:]))
         if rejected:
@@ -176,7 +201,14 @@ class Sandbox:
                            % proc.stderr.decode(errors="replace").strip()[-300:])
         return answer == "true"
 
-    def ls_remote(self, source, *patterns, network=False):
+    def _transport(self, op, label, source, network, rc):
+        """F2 disclosure: whether proxy/CA environment variables were present (names only, never values)."""
+        passed, ignored = network_env(network)
+        self.transport_log.append({"op": op, "label": label, "remote": source, "network": network, "rc": rc,
+                                   "proxy_or_ca_env_passed": passed, "proxy_or_ca_env_present": bool(passed),
+                                   "ignored_proxy_like_env_present": ignored})
+
+    def ls_remote(self, source, *patterns, network=False, label=""):
         env = dict(self.env)
         if network:
             for name in NETWORK_ENV_NAMES:
@@ -186,6 +218,7 @@ class Sandbox:
         if not network and not re.match(r"^[a-z]+://", source):
             url = "file://" + str(Path(source).resolve())
         proc = self.run(["ls-remote", url, *patterns], env=env, check=False, git_dir=True)
+        self._transport("ls-remote", label, source, network, proc.returncode)
         if proc.returncode != 0:
             raise GitError("ls-remote failed: " + proc.stderr.decode(errors="replace").strip()[-400:])
         refs = {}
