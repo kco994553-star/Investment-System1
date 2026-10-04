@@ -235,3 +235,29 @@ Three actual runtimes with two fresh processes each reproduce the fixed fixtures
 HANDOFF_READY applies only to the approved synthetic source-identity and completed decision-evidence package. Authoritative M-B v2 remains NOT_IMPLEMENTED_PENDING_ARITHMETIC_REDUCTION; exact M-B-to-production-v2 agreement and its production counterexample/oracle are DEFERRED / NOT_RUN. Existing M approval and v1/profile/role semantics are preserved. Primary independently reviews exact published references; Codex does not write shared Global routing.
 
 CAL_VERIFY, Holdout, actual numeric configuration, foundation registry unification, C8 Freeze, publication/Official, canonical merge and deployment remain unapproved and were not performed. Earlier register bytes, approval records, Frozen evidence, historical counterexamples and v1 results are preserved.
+
+## CDR-010/011 fresh-GitHub continuation · recorded 2026-10-04
+
+**USER_DECIDED arithmetic contract**, discovered by fresh fetch at Global read-only
+commit `e30241f49e31f4ac5ab0d4f322ecddc78a044d75`. CDR-010 quotes the user's
+approval of math.fsum, block grouping, direct block sums, replicate mean
+`(math.fsum(full block sums) + partial)/n`, and degeneracy when `sqrt(v/n)>0`
+is false. This supersedes the earlier arithmetic-reduction-pending status only
+for additive `C8_GSUP_STUDENTIZED_CBB_v2`. It does not rewrite the original M/source
+approval JSON or literal NumPy/builtin diagnostic and historical results.
+The exact quoted approval, immutable routing source identity and pinned local
+approval carrier are in scoped `evidence/authoritative-v2/CDR010_APPROVAL.json`.
+
+Execution evidence / NOT_A_NEW_POLICY: separate v2 module and source-bound registry,
+independent M-B oracle, exact decimal/hex trace regressions and cross-runtime replay.
+Existing v1 source/results and Frozen chain are unchanged. CDR-011 preserves Codex
+implementation ownership; Primary Integration Writer owns independent13-point
+re-verification and the fresh38+31+35 successor trial. See the new scoped handoff
+and acceptance manifest for actual local validation; current publish-time Actions
+and exact SHA are recorded separately in PR31. Global and other owner branches
+were not written by this continuation.
+
+All actual numeric configuration, real source taxonomy/default, CAL_VERIFY,
+Holdout, foundation registry unification, C8 Freeze, publication/grants, Official/LIVE,
+protected17 digest repin, canonical merge and deployment remain unapproved.
+C0-C7 SOFTWARE_FROZEN; C8 SYNTHETIC_VERIFIED / NOT_FROZEN; maturity delta0.

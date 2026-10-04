@@ -1,0 +1,64 @@
+{
+  "record": "CDR010_AUTHORITATIVE_V2_SCOPED_ACCEPTANCE",
+  "status": "HANDOFF_READY_APPROVED_SYNTHETIC_V2_SCOPE",
+  "branch": "codex/track-c-gsup-v2-2026-10-03",
+  "previous_head": "29c2c202aabc480c8251fc44b7b488417a56177f",
+  "base_and_merge_base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "canonical_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "global_read_only_head": "e30241f49e31f4ac5ab0d4f322ecddc78a044d75",
+  "arithmetic_authority": "USER_DECIDED_CDR010; copied verbatim with immutable source identity",
+  "kernel": "IMPLEMENTED_ADDITIVE_M_B_V2_SYNTHETIC_SCOPE",
+  "selected_arithmetic": {
+    "reducer": "MATH_FSUM",
+    "replicate_aggregation": "BLOCK_GROUPING",
+    "block_sums": "DIRECT",
+    "degeneracy": "SQRT_V_OVER_N_GT_ZERO"
+  },
+  "local_validation_receipt": "evidence/authoritative-v2/LOCAL_VALIDATION_RECEIPT.json",
+  "local_final_targeted_pass": 118,
+  "local_prior_full_pass": 1296,
+  "local_testcase_union": 1395,
+  "current_single_full_regression": "NOT_RUN_LOCALLY; publication Actions pending",
+  "current_actions": "NOT_RUN_AT_LOCAL_ASSEMBLY; exact current HEAD/checkouts/results/digests will be recorded in PR31",
+  "source_sha256": {
+    "implementation/src/investment_system/evl/superiority_v2.py": "41f67dd28200370f472016e16214ee08edb31dcd75aba91726494799a6614603",
+    "implementation/tests/evl_c8_gsup_v2_oracle.py": "e2db7498b6819783ac5d977c34950078f632c4e4dbb2ddf973b26cace8a9c6f5",
+    "implementation/tests/test_evl_gsup_v2_arithmetic.py": "6f7b24013016b9956a3ff4496f717826db6dbea3e7af5c1a6127807eb7014b17",
+    "implementation/tests/test_evl_gsup_v2_registry.py": "2d81fdb3b70d20cd074cd2b7b32b4e3b7118036758084e9f0ac1962f98a83989",
+    "implementation/tests/test_evl_gsup_v2_repair_negatives.py": "8c896575532b60f31769ab63a406e70c9df575ae51ff8dd07d50bb1c19046b81",
+    "implementation/tools/verify_gsup_v2_arithmetic.py": "fa4295124667de17eb3123cefdc16565d353a105ec575cbb07bcb1ea14a308fc"
+  },
+  "v1_Frozen_existing_source_tests_reports": "BYTE_PRESERVED",
+  "Decision_Register_HISTORY": "BYTE_PREFIX_PRESERVED",
+  "external_primary_13_point_review": "PENDING_FRESH_CHECKPOINT; items5/6b must be reverified",
+  "integration_successor_trial": "PENDING_PRIMARY_OWNER; fresh38+31+35; old38CI not reused",
+  "maturity": {
+    "C0_C7": "SOFTWARE_FROZEN",
+    "C8": "SYNTHETIC_VERIFIED_NOT_FROZEN",
+    "delta": 0
+  },
+  "boundaries": {
+    "actual_CAL_VERIFY": 0,
+    "Holdout": 0,
+    "actual_numeric_configuration": 0,
+    "publication_grants": 0,
+    "Official_LIVE": 0,
+    "canonical_merges": 0,
+    "paid_resources": 0
+  },
+  "new_D3_required_for_this_implementation": false,
+  "still_unapproved": [
+    "real numeric configuration",
+    "A8/A10",
+    "source taxonomy/default",
+    "CAL_VERIFY",
+    "Holdout",
+    "C8 Freeze",
+    "publication",
+    "Official/LIVE",
+    "canonical merge",
+    "Web17protected digest repin"
+  ],
+  "independent_review": "Initial3findings CLOSED by independent successor review; external Primary13pointreview pending",
+  "independent_repair_review_sha256": "3ea71449e679ebdba0b8e465ac5224c9158e7ee6f93a6f6dfc2cfb829667623c"
+}

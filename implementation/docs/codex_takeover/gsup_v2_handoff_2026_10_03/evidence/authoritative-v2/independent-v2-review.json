@@ -1,0 +1,452 @@
+{
+  "record": "INDEPENDENT_CDR010_V2_READ_ONLY_REVIEW",
+  "reviewed_at_utc": "2026-10-04T00:17:53.343397+00:00",
+  "reviewer": {
+    "attribution": "Codex independent arithmetic-oracle worker, this session",
+    "independence": "Authored the independent oracle/arithmetic tests previously. Did not author production superiority_v2.py, registry tests, verifier, approval JSON or workflow delta. This is an independent production/wiring source review; it is not an independent third-party review of the reviewer-authored oracle.",
+    "global_13_point_main_writer": "Separate external verification; not performed or certified here",
+    "handoff_ready_assigned": false
+  },
+  "repository": {
+    "path": "/workspace/Investment-System1",
+    "head": "29c2c202aabc480c8251fc44b7b488417a56177f",
+    "branch": "codex/track-c-gsup-v2-2026-10-03",
+    "review_target": "Exact working-tree source hashes below; new v2 files are uncommitted/untracked at review time.",
+    "authority_commit": "e30241f49e31f4ac5ab0d4f322ecddc78a044d75",
+    "authority_path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+    "authority_hashes": {
+      "sha256": "43e6409a7de5d62ed9a6e253fd2a010efd59bdbf17288036c4efd9781e57e5ae",
+      "git_blob_sha1": "46e4a67b2fb7c3b961fe9dc35b9b981e6fe6662a",
+      "bytes": 21897
+    }
+  },
+  "conclusion": {
+    "status": "COMPLIES_IN_REVIEWED_SCOPE_WITH_FINDINGS",
+    "arithmetic_mismatch_observed": false,
+    "grant_or_one_shot_bypass_observed": false,
+    "finding_counts": {
+      "HIGH": 0,
+      "MEDIUM": 2,
+      "LOW": 1
+    },
+    "release_or_handoff_verdict": "NOT_ASSIGNED"
+  },
+  "compliance": {
+    "arithmetic": {
+      "status": "COMPLIES",
+      "basis": "Direct math.fsum block sums; q=integer ceil(n/L)-1; final 1..L block contributes to (fsum(full_sums)+partial)/n but not variance; observed/replicate sqrt(v/n)>0 predicates; ties use == and >=; degenerates excluded from exceedances with denominator B+1 unchanged. No epsilon/rounding/fallback. Finite overflow error classification is IRV2-001."
+    },
+    "wiring_and_schema_adaptation": {
+      "status": "COMPLIES",
+      "basis": "Registry overrides _validate_spec, _feasibility, _evaluate, _result and _attach. Compatibility schema/policy substitution exists only in a temporary copied validation input. An in-memory probe confirmed original spec unchanged, returned registration stays v2, estimate validation accepts it, result hash binds original v2 spec, and result is labeled v2. No v1 globals or records are relabeled."
+    },
+    "no_v1_rewrite": {
+      "status": "COMPLIES_FOR_REVIEWED_FILES",
+      "basis": "Exact working-file bytes compared against local baseline HEAD for 10 historical arithmetic, identity, tests, diagnostic and approval/source paths; all equal. No commit/history rewrite was performed by reviewer. Production v2 and new tests/tool/approval are additive."
+    },
+    "one_shot": {
+      "status": "COMPLIES_BY_SOURCE_REVIEW",
+      "basis": "Inherited trusted authority and shared record root are unchanged. Claim precedes feasibility; begin_access precedes provider; stable sample keys contain source/vintage/sample/profile/role, not method version/campaign/root/label. Infeasible and crash paths stay spent. Registry tests cover v1-to-v2 and v2-to-v1 retry refusal, missing/incomplete/substituted identity, Development binding and provider/response refusal. These tests were inspected, not rerun in this review. This conclusion relies on the existing trusted descriptor-issuance boundary and unchanged source identifiers. The known N2 normalization/issuance-capability gap remains an upstream gate before any real-source use; this review does not certify canonical identity equivalence for alternate spellings."
+    },
+    "no_grants": {
+      "status": "COMPLIES",
+      "basis": "Synthetic scope gates remain; effect floor is deferred; registry results retain official=False, promotion_authority=None and real_holdout_eligible=False. No actual CAL_VERIFY/Holdout reader or configuration default was added. Workflow remains contents:read and adds validation/artifact steps, not promotion/deployment."
+    },
+    "approval_provenance": {
+      "status": "COMPLIES",
+      "basis": "Runtime pinned approval blob 3a9eecbba5a7454c5d81ee6db209aecc4bdf113b matches bytes. Recorded coordination source SHA256/blob and verbatim CDR-010 section match e30241f exactly. Original M/source approval and v1 A6 pins also match."
+    },
+    "workflow": {
+      "status": "COMPLIES_WITH_COVERAGE_FINDING",
+      "basis": "Latest delta permits four additive protected paths while retaining exact owner-file guards; adds replay trigger/run/upload, full pytest and exact PR-head checkout. No weakened historical guard or write permissions observed. IRV2-003 covers missing approval-only trigger. No new Actions execution was reviewed or launched."
+    },
+    "CDR011_routing": {
+      "status": "REVIEW_BOUNDARY_RESPECTED_EXTERNAL_VERIFICATION_OUTSTANDING",
+      "basis": "Reviewer wrote only the two requested audit artifacts and did not change source/tests/workflow/registries, commit, push, create a combined trial, or assign HANDOFF_READY. Working snapshot is uncommitted at baseline 29c2c20, not a new committed checkpoint. Global 13-point fresh-head verification, full regression completion, Actions and combined-trial checks remain with the separate external main writer."
+    },
+    "N3_dependency_workflow_delta": {
+      "status": "ADDRESSED_BY_REVIEWED_CONFIGURATION",
+      "basis": "Three inherited branch-filtered push workflows (also retaining existing workflow_dispatch) now pin pytest 9.1.1 and NumPy 2.3.5 for offline regression. Trigger/permission headers remain byte-identical to baseline. The user did not authorize dispatch, and none was performed. No owner branch was edited by reviewer."
+    },
+    "NB4_pipeline_failure_propagation": {
+      "status": "ADDRESSED_BY_REVIEWED_CONFIGURATION_AND_LOCAL_PROBE",
+      "basis": "QGV and Leaderboard offline-tests jobs add defaults.run.shell=bash. GitHub explicit bash enables -eo pipefail. Local reproduction using bash --noprofile --norc -eo pipefail gives false|tail -1 => 1, true|tail -1 => 0. QGV real-producer job is byte-identical to baseline; no real-producer workflow was dispatched."
+    },
+    "N2_real_source_normalization": {
+      "status": "DEFERRED_UPSTREAM_POLICY_GATE_BEFORE_REAL_SOURCE",
+      "basis": "Identity strings currently remain raw byte identities, and coordinator issuance capability is a declared trust boundary. Canonical Unicode/case/whitespace equivalence and real-source taxonomy/default policy were not introduced. Per the user instruction and existing unapproved real-source scope, N2 remains unresolved before real-source work; it is not marked fixed by synthetic v2 arithmetic."
+    },
+    "authority_pin_negatives": {
+      "status": "COVERAGE_REVIEWED_OWNER_EVIDENCE_INSPECTED",
+      "basis": "Registry tests now include missing/tampered CDR010 approval negatives and assert refusal before provider calls or claims. Inspected /workspace/investment-audit/v2-authority.log and JUnit: 2 passed, 19 deselected, zero failures/errors/skips. Evidence is the owner run, not a new reviewer execution."
+    }
+  },
+  "findings": [
+    {
+      "id": "IRV2-001",
+      "severity": "MEDIUM",
+      "category": "numerical_error_normalization",
+      "status": "OPEN",
+      "title": "Finite-input overflow bypasses per-cell NOT_RUN conversion",
+      "locations": [
+        {
+          "path": "implementation/src/investment_system/evl/superiority_v2.py",
+          "line": 65
+        },
+        {
+          "path": "implementation/src/investment_system/evl/superiority_v2.py",
+          "line": 83
+        },
+        {
+          "path": "implementation/src/investment_system/evl/superiority_v2.py",
+          "line": 180
+        },
+        {
+          "path": "implementation/src/investment_system/evl/superiority_v2.py",
+          "line": 184
+        }
+      ],
+      "evidence": [
+        "studentized_cbb([1e308]*5, block_length=2, replicates=1, seed=0) raises OverflowError: intermediate overflow in fsum.",
+        "studentized_cbb([1e200,-1e200,0.,1e200,-1e200], block_length=2, replicates=1, seed=0) raises OverflowError while squaring residuals, before isfinite(lrv).",
+        "Synthetic _evaluate with the second finite vector and zero controls propagates OverflowError because it catches only MissingStatisticalEvidence.",
+        "Finite role=[1e308]*5 and control=[-1e308]*5 produce infinite differences and _evaluate propagates ValueError: metrics require finite numeric inputs."
+      ],
+      "impact": "Unsupported arithmetic range aborts all cells through inherited CRASH_NO_RETRY rather than producing a per-cell NOT_RUN reason. No p-value, PASS, grant, or reopened one-shot was observed; durable crash refusal is preserved by inspected inherited code.",
+      "recommendation": "Normalize fsum/square overflow and nonfinite derived deltas into MissingStatisticalEvidence within v2 numerical boundaries, preserving the approved reducer/grouping and durable claim semantics; add focused finite-extreme regressions.",
+      "approval_contract_violation": false
+    },
+    {
+      "id": "IRV2-002",
+      "severity": "MEDIUM",
+      "category": "verifier_schema_completeness",
+      "status": "OPEN",
+      "title": "Standalone verifier accepts omitted mandatory result fields",
+      "locations": [
+        {
+          "path": "implementation/tools/verify_gsup_v2_arithmetic.py",
+          "line": 50
+        },
+        {
+          "path": "implementation/tools/verify_gsup_v2_arithmetic.py",
+          "line": 67
+        }
+      ],
+      "evidence": [
+        "expected is selected from production keys; it does not require the complete public v1-plus-v2 schema.",
+        "In-memory fault injection removed draws and arithmetic_contract from genuine production results; verifier returned PASS on CE3_CONTROL, OPERAND_SEED275 and STANDARD_ERROR_UNDERFLOW. Source files were not modified.",
+        "Removing variance_blocks was caught later by KeyError; the confirmed gap is specifically fields not subsequently dereferenced.",
+        "The displayed report arithmetic_contract is copied from v2.ARITHMETIC_CONTRACT, so it does not prove each returned result carried that contract."
+      ],
+      "impact": "Replay evidence alone can claim exact agreement for an incomplete API response. Current production includes these fields, and the separate 86-test arithmetic suite requires them, so this is a verifier weakness rather than an observed current arithmetic mismatch.",
+      "recommendation": "Require an explicit complete public key set, validate result arithmetic_contract against the approved literal contract, and compare that schema against the independent oracle rather than selecting expected keys from production.",
+      "approval_contract_violation": false
+    },
+    {
+      "id": "IRV2-003",
+      "severity": "LOW",
+      "category": "workflow_coverage",
+      "status": "OPEN",
+      "title": "Approval-JSON-only changes do not trigger readiness workflow",
+      "locations": [
+        {
+          "path": ".github/workflows/codex-integration-readiness.yml",
+          "line": 4
+        }
+      ],
+      "evidence": [
+        "The final reviewed workflow adds the v2 source, oracle/tests and replay-tool trigger, runs the replay, and uploads /tmp/gsup-v2-arithmetic.json.",
+        "The pull_request paths omit implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/authoritative-v2/CDR010_APPROVAL.json; an isolated approval record change does not match any listed trigger."
+      ],
+      "impact": "Approval-only edits can miss automatic pinned-authority validation. Runtime pinning still refuses missing/tampered approval; workflow_dispatch and combined source changes remain available. This is a future CI coverage gap.",
+      "recommendation": "Add the exact CDR010 approval JSON path to pull_request.paths; retain the authority pin and immutable historical-file checks.",
+      "approval_contract_violation": false
+    }
+  ],
+  "source_hashes": {
+    "implementation/src/investment_system/evl/superiority_v2.py": {
+      "sha256": "e3f7a9977625be671fd5154b70ff8871b14459a16b3d5f838a9caf6f613a8c59",
+      "git_blob_sha1": "ceee14dc9ad7c0ba48189574cbd72ad3971d6a40",
+      "bytes": 10809
+    },
+    "implementation/tests/test_evl_gsup_v2_registry.py": {
+      "sha256": "2d81fdb3b70d20cd074cd2b7b32b4e3b7118036758084e9f0ac1962f98a83989",
+      "git_blob_sha1": "1eb623bf50488dcf2ce292def30edd646cea24b6",
+      "bytes": 7382
+    },
+    "implementation/tools/verify_gsup_v2_arithmetic.py": {
+      "sha256": "f9344b529dc4c737a8c9b867e922fd99556dadf80d1470726b067aa4ea0157ed",
+      "git_blob_sha1": "f788d887056a6be13fca1d38e9351e2d34aa4727",
+      "bytes": 3711
+    },
+    "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/authoritative-v2/CDR010_APPROVAL.json": {
+      "sha256": "2e0ad6e96bd1b0494fd739cc55a03b337d326fd6dff2863203ebc9b6bd036231",
+      "git_blob_sha1": "3a9eecbba5a7454c5d81ee6db209aecc4bdf113b",
+      "bytes": 3488
+    },
+    ".github/workflows/codex-integration-readiness.yml": {
+      "sha256": "e8f3ae2812a7e450be24517c872030374af41734cd126507adab18daff9b50a1",
+      "git_blob_sha1": "10ba816333675d58de98226b215001b12b034898",
+      "bytes": 6680
+    },
+    "implementation/tests/evl_c8_gsup_v2_oracle.py": {
+      "sha256": "e2db7498b6819783ac5d977c34950078f632c4e4dbb2ddf973b26cace8a9c6f5",
+      "git_blob_sha1": "aca5567dbb61c0b3e31531a228420af441961a9e",
+      "bytes": 5932
+    },
+    "implementation/tests/test_evl_gsup_v2_arithmetic.py": {
+      "sha256": "6f7b24013016b9956a3ff4496f717826db6dbea3e7af5c1a6127807eb7014b17",
+      "git_blob_sha1": "8ac4b88bcf3154a5ac2dafa3923d58099528bd7e",
+      "bytes": 39433
+    },
+    "implementation/src/investment_system/evl/superiority.py": {
+      "sha256": "c61268921e5a9147e90810747e9ab6cd2896dd2fab89cb314d390dc0ff760498",
+      "git_blob_sha1": "8a1254d7b77514f6015dfff4af0e4a53f57f22af",
+      "bytes": 26569
+    },
+    "implementation/src/investment_system/evl/statistical_kernels.py": {
+      "sha256": "61f70937456d8a54cb027a7522f2a2d1c890bccc92f9f19de28082a2001e12d1",
+      "git_blob_sha1": "28e1c1842625bacabc6ffc9c9b172261e7d6585a",
+      "bytes": 14964
+    },
+    "implementation/src/investment_system/evl/gsup_source_identity.py": {
+      "sha256": "d34fc10d396f37fce65a5580263d2d35207e7d2f4f347fe300c1f1b81c33c548",
+      "git_blob_sha1": "fa93bf88f8d77b293421a8d0b5095757b22f72d8",
+      "bytes": 23974
+    },
+    "implementation/src/investment_system/evl/superiority_source_identity.py": {
+      "sha256": "3ad8ca25f724cd3d07271ec8a38b95ca8779fe57f14ccf252e1030aa7acca0fa",
+      "git_blob_sha1": "71bf737578866b762a0ee82506f8f5db9418f8ba",
+      "bytes": 8874
+    },
+    "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json": {
+      "sha256": "0fc8ed2b55b3aba4cf566f0e7c9e7146324ae4aec5e22c307fd9a9a8ae9991d8",
+      "git_blob_sha1": "a5279d516c028f0a8cb9166ee2d54366da00877b",
+      "bytes": 4260
+    },
+    "implementation/reports/track_c_c8_a6_method_simulation_source_2026-10-02.py": {
+      "sha256": "c1f56a3f709c5fed65336fb5f33473f957c8caad706bfc4e48534ca3161f34ce",
+      "git_blob_sha1": "e112f41f34d4ead287699657750875770b4c4705",
+      "bytes": 3302
+    },
+    "implementation/reports/track_c_c8_a6_method_approval_2026-10-02.json": {
+      "sha256": "e3ba85ad8fa2a2e49aa8003aa1b663fd9758e20a7bfeec136ecd558bcc084987",
+      "git_blob_sha1": "a6f994144ac8e7073c74fdd16983c92eac54eb5f",
+      "bytes": 1594
+    },
+    "implementation/reports/track_c_c8_a6_partial_approval_2026-10-02.json": {
+      "sha256": "262a1e3be64f7f1a7bdb75bf288eb0f8dea8603e5f55bb61248a35ed866c62ed",
+      "git_blob_sha1": "4f897ec79f341653d8a69aecdfe7aa7eb33b6566",
+      "bytes": 1823
+    },
+    "/workspace/investment-audit/global-oracle.py": {
+      "sha256": "e2312fd87e29c4f3b057bfcf7b054e02ba81b916e02b08b3e241f5def64b74b2",
+      "git_blob_sha1": "ec671fa87f18aff22450d1a6ede285bc6b5402c7",
+      "bytes": 6010
+    },
+    ".github/workflows/track-c-evl-validation.yml": {
+      "sha256": "9dd09fc991eeb4a131f3c85594e0ce878d4ce017c224ca81f4e2436214330813",
+      "git_blob_sha1": "2cc85ba4a2f222826c5ea50bdf80359ea890e6ac",
+      "bytes": 2211
+    },
+    ".github/workflows/leaderboard-real-producer.yml": {
+      "sha256": "d242494bec6e0a877f547d6ab404ff03cb6a4be97afcdaa8b665d8990f5f2af3",
+      "git_blob_sha1": "da568b4e43561b194fab5ed2cf9479f5702946b7",
+      "bytes": 3139
+    },
+    ".github/workflows/qgv-producer-real.yml": {
+      "sha256": "c4ae20933585080b6cbeef14ff94cfb8fbacb40d37784aa4cac6b158b73f8bd3",
+      "git_blob_sha1": "efec0e794c664dc9458429aab4f0ab1c54d77ee3",
+      "bytes": 6787
+    },
+    "/workspace/investment-audit/global-latest-review.md": {
+      "sha256": "dfbd5816035c101b4dde9c62dd5871433c881033cafdbb040576ed3b7e802763",
+      "git_blob_sha1": "2a882e2e43b1dc3b131d61d6527cacabf63c32d6",
+      "bytes": 13068
+    },
+    "/workspace/investment-audit/global-current-handoff.md": {
+      "sha256": "23e65cadb5d98598c9e51102e962ee4eaadc3a98d77c1546f6db4bd5df37be5f",
+      "git_blob_sha1": "15977cbc0c64da8ff67396b818f695e0c71f402f",
+      "bytes": 11132
+    },
+    "/workspace/investment-audit/v2-authority.log": {
+      "sha256": "b72275b4e68b6f37d8c40407fff5159aec2308200810467ae158bf9083857e1e",
+      "git_blob_sha1": "e6dabec777bacb4d649344af3f675149102288a7",
+      "bytes": 113
+    },
+    "/workspace/investment-audit/v2-authority-junit.xml": {
+      "sha256": "2772bbe01f447447b4597aaaf7b68265a759d6185679d6676048c408e018c23a",
+      "git_blob_sha1": "6bd100cf917906e8e10872cd8e5396822c67464a",
+      "bytes": 537
+    }
+  },
+  "historical_preservation_paths": [
+    "implementation/src/investment_system/evl/superiority.py",
+    "implementation/src/investment_system/evl/statistical_kernels.py",
+    "implementation/src/investment_system/evl/gsup_source_identity.py",
+    "implementation/src/investment_system/evl/superiority_source_identity.py",
+    "implementation/tests/evl_c8_gsup_oracle.py",
+    "implementation/tests/test_evl_c8_gsup.py",
+    "implementation/tests/test_evl_gsup_mb_reduction_diagnostic.py",
+    "implementation/tools/gsup_mb_reduction_diagnostic.py",
+    "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json",
+    "implementation/reports/track_c_c8_a6_method_simulation_source_2026-10-02.py"
+  ],
+  "earlier_86_test_evidence": {
+    "performed_in": "Earlier oracle-authoring turn, not repeated during this review",
+    "cwd": "/workspace/Investment-System1/implementation",
+    "command": "PYTHONDONTWRITEBYTECODE=1 /workspace/investment-audit/venv311/bin/python -m pytest -p no:cacheprovider tests/test_evl_gsup_v2_arithmetic.py -q",
+    "runtime": {
+      "implementation": "CPython",
+      "python": "3.11.16",
+      "pytest": "9.1.1",
+      "executable": "/workspace/investment-audit/venv311/bin/python"
+    },
+    "counts": {
+      "passed": 86,
+      "failed": 0,
+      "skipped": 0
+    },
+    "elapsed_seconds": 0.73,
+    "log_path": null,
+    "log_note": "No persistent log file was produced for this reviewer-run command. Its terminal output is retained in conversation tool result chunk 141ad5: 86 passed in 0.73s. Do not attribute v2-authority.log (2 approval tests) or preliminary full logs to this run.",
+    "coverage": "171 immutable full hex traces; all 9 diagnostic cases plus exact seed275; CE4 .10 vs v1 .15, FLIP .10, LEFT_SUM .35, TIE .45, seed275 .55; underflow, invalid inputs, Frozen C6 stream and API keys."
+  },
+  "new_review_probes": [
+    {
+      "id": "finite_extreme_arithmetic",
+      "command_form": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /workspace/investment-audit/venv311/bin/python - <<PY (in-memory synthetic probes) PY",
+      "outcome": "Reproduced raw fsum and squared-residual OverflowError; _evaluate propagated overflow/nonfinite-delta ValueError; no p-value returned.",
+      "references": [
+        "IRV2-001"
+      ]
+    },
+    {
+      "id": "observed_se_underflow",
+      "fixture": {
+        "delta": [
+          0.0,
+          0.0,
+          5e-162
+        ],
+        "block_length": 1,
+        "replicates": 1,
+        "seed": 0
+      },
+      "lrv_hex": "0x0.0000000000001p-1022",
+      "se_hex": "0x0.0p+0",
+      "outcome": "MissingStatisticalEvidence: zero standard error; statistic undefined. Positive LRV alone is not sufficient; predicate complies."
+    },
+    {
+      "id": "replicate_se_underflow_short_probe",
+      "fixture": {
+        "delta": [
+          0.0,
+          0.0,
+          4e-162,
+          4e-162,
+          4e-162,
+          4e-160
+        ],
+        "block_length": 1,
+        "replicates": 1,
+        "seed": 0
+      },
+      "lrv_hex": "0x0.000000000115cp-1022",
+      "outcome": "Observed statistic defined; single sampled replicate degenerate. Complete 19-draw evidence is the earlier 86-test run, not repeated here."
+    },
+    {
+      "id": "schema_adapter_in_memory",
+      "outcome": "V2 spec stays unchanged, returned validation copy preserves v2 schema/policy, Development estimate passes unchanged validation, result registration_hash binds v2 and all grants remain closed."
+    },
+    {
+      "id": "verifier_schema_fault_injection",
+      "altered_cases": [
+        "CE3_CONTROL",
+        "OPERAND_SEED275",
+        "STANDARD_ERROR_UNDERFLOW"
+      ],
+      "removed_result_fields": [
+        "draws",
+        "arithmetic_contract"
+      ],
+      "outcome": "PASS despite omitted mandatory result fields. In-memory replacement restored in finally; no source edits. A separate omission of variance_blocks raised KeyError.",
+      "references": [
+        "IRV2-002"
+      ]
+    },
+    {
+      "id": "approval_and_preservation",
+      "outcome": "Pinned approval, coordination source hashes and exact verbatim CDR010 verified; 10 historical files byte-equal to baseline HEAD."
+    },
+    {
+      "id": "NB4_bash_pipefail",
+      "shell": "bash --noprofile --norc -eo pipefail -c",
+      "outcomes": [
+        {
+          "pipeline": "false | tail -1",
+          "exit_code": 1
+        },
+        {
+          "pipeline": "true | tail -1",
+          "exit_code": 0
+        }
+      ],
+      "workflow_headers_unchanged": true,
+      "qgv_real_producer_job_byte_identical_to_baseline": true,
+      "workflows_dispatched": 0
+    }
+  ],
+  "limits": [
+    "No full regression, normal 86-test rerun, or new Actions run.",
+    "No actual CAL_VERIFY/Holdout/real-data access; all probes use explicit synthetic vectors and read-only approval sources.",
+    "Cross-version one-shot durability conclusions use source review and inspected owner test coverage; no physical authority/registry was created for new probes.",
+    "The verifier header fields actual_CAL_VERIFY/Holdout/grants/historical_v1_rewritten are declarations, not independent history audits; this review independently checks the scoped source preservation.",
+    "Global13point fresh-head verification and handoff decision remain outside this review.",
+    "N2 remains an explicit unresolved before-real-source upstream policy gate; trusted synthetic identity issuance does not certify normalization/canonical-source equivalence."
+  ],
+  "writes": [
+    "/workspace/investment-audit/independent-v2-review.json",
+    "/workspace/investment-audit/independent-v2-review.md"
+  ],
+  "known_upstream_policy_gates": [
+    {
+      "external_id": "N2",
+      "status": "UNRESOLVED_DEFERRED_BEFORE_REAL_SOURCE",
+      "scope": "Identity normalization and descriptor-issuance capability; real-source taxonomy/defaults unapproved",
+      "source": "/workspace/investment-audit/global-latest-review.md",
+      "reviewer_action": "Documented existing gate; no source normalization changes or new real-source policy."
+    }
+  ],
+  "owner_authority_negative_evidence": {
+    "attribution": "Owner run, inspected by independent reviewer; not rerun",
+    "command": "Not recorded in the inspected log; do not infer exact invocation",
+    "runtime": "JUnit does not identify interpreter version; owner runtime is not independently established by this log",
+    "passed": 2,
+    "deselected": 19,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "elapsed_seconds_log": 0.09,
+    "log_path": "/workspace/investment-audit/v2-authority.log",
+    "junit_path": "/workspace/investment-audit/v2-authority-junit.xml"
+  },
+  "workflow_delta_manifest": {
+    ".github/workflows/codex-integration-readiness.yml": {
+      "baseline_git_blob_sha1": "6564e1efd3a6708902d5d0318911318497a528b6",
+      "reviewed_git_blob_sha1": "10ba816333675d58de98226b215001b12b034898"
+    },
+    ".github/workflows/track-c-evl-validation.yml": {
+      "baseline_git_blob_sha1": "174d7de0abd4122ff74cb1f7146f8e0a3be94254",
+      "reviewed_git_blob_sha1": "2cc85ba4a2f222826c5ea50bdf80359ea890e6ac"
+    },
+    ".github/workflows/leaderboard-real-producer.yml": {
+      "baseline_git_blob_sha1": "a0ccaea6e2afbcd9e4a6f4a5d0d8facb316709c1",
+      "reviewed_git_blob_sha1": "da568b4e43561b194fab5ed2cf9479f5702946b7"
+    },
+    ".github/workflows/qgv-producer-real.yml": {
+      "baseline_git_blob_sha1": "c3a44c6ddaaa7fd4e3f09c8f86280e5f616ce58b",
+      "reviewed_git_blob_sha1": "efec0e794c664dc9458429aab4f0ab1c54d77ee3"
+    }
+  }
+}

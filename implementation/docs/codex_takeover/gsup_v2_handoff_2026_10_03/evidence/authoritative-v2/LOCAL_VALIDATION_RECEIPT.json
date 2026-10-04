@@ -1,0 +1,29 @@
+{
+  "status": "PASS_BOUNDED_SYNTHETIC_SCOPE",
+  "prior_full": {
+    "cases": 1296,
+    "existing_cases": 1277,
+    "v2_registry_cases": 19,
+    "source_state": "before independent-review overflow/verifier repairs; exact source hashes in original independent review",
+    "junit_sha256": "551b870c066e3263884c3fa2dd9aa84d014cb70a03cdf7031acbe335b913a814"
+  },
+  "final_targeted": {
+    "cases": 118,
+    "failed": 0,
+    "skipped": 0,
+    "junit_sha256": "cbfef9f6107059901fcf4aed1d29b20ad0ce178a2a76e724c11c67424a51737d"
+  },
+  "unique_testcase_union": 1395,
+  "reconfirmed_case_overlap": 19,
+  "final_single_full_run": "NOT_RUN_LOCALLY; fresh Actions will run all1395",
+  "existing_source_files_byte_preserved": 215,
+  "existing_test_files_byte_preserved": 122,
+  "existing_report_json_byte_preserved": 199,
+  "source_sha256": {
+    "implementation/src/investment_system/evl/superiority_v2.py": "41f67dd28200370f472016e16214ee08edb31dcd75aba91726494799a6614603",
+    "implementation/tests/test_evl_gsup_v2_arithmetic.py": "6f7b24013016b9956a3ff4496f717826db6dbea3e7af5c1a6127807eb7014b17",
+    "implementation/tests/test_evl_gsup_v2_registry.py": "2d81fdb3b70d20cd074cd2b7b32b4e3b7118036758084e9f0ac1962f98a83989",
+    "implementation/tests/test_evl_gsup_v2_repair_negatives.py": "8c896575532b60f31769ab63a406e70c9df575ae51ff8dd07d50bb1c19046b81",
+    "implementation/tools/verify_gsup_v2_arithmetic.py": "fa4295124667de17eb3123cefdc16565d353a105ec575cbb07bcb1ea14a308fc"
+  }
+}

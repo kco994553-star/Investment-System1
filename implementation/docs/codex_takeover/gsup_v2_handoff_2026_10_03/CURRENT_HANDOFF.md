@@ -36,3 +36,13 @@ Baseline675 Actions are immutable historical evidence. The primary writer verifi
 Global is a routing index owned by the external Primary Integration Writer; no shared Global update is included. Other active Web branches remain read-only. Independent latest-owner findings are archived in the primary audit proposal, outside this scoped statistical/source-identity package.
 
 Parent maturityΔ0, new test cases0, new policy choices0. CAL_VERIFY/Holdout/numeric configuration/C8Freeze/publication/canonical merge/deployment remain excluded. The source-identity and decision-evidence package is ready for review; the arithmetic choice and authoritative-v2 implementation remain explicitly pending.
+
+## Successor handoff · CDR-010/011 continuation, 2026-10-04
+
+The earlier arithmetic-pending status is superseded within the explicitly approved
+synthetic scope by [CURRENT_HANDOFF_V2_CDR010.md](CURRENT_HANDOFF_V2_CDR010.md)
+and `ACCEPTANCE_MANIFEST_V2.json`. Fresh Global commit e30241f records the user's
+math.fsum/direct-block/block-grouping/standard-error-predicate approval and
+Codex ownership. Earlier evidence and this entire preceding record are preserved.
+Current exact carrier SHA and fresh Actions are recorded in PR31; old675/29c CI
+is not reused as execution of the new v2 code. All real-access/promotion gates stay closed.
