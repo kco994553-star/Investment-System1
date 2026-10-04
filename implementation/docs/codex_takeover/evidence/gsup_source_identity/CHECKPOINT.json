@@ -1,0 +1,61 @@
+{
+  "schema": "G_SUP_SOURCE_IDENTITY_SCOPED_CHECKPOINT_v1",
+  "branch": "codex/gsup-source-identity-2026-10-03",
+  "source_head": "0b8b3ad3d3538d9ad224858acbd452d7b193423a",
+  "base": "8230007f5edb86aec949166e25fd62a680db3ae2",
+  "merge_base": "8230007f5edb86aec949166e25fd62a680db3ae2",
+  "approval_blob": "a5279d516c028f0a8cb9166ee2d54366da00877b",
+  "changed_source_files": [
+    "implementation/src/investment_system/evl/gsup_source_identity.py",
+    "implementation/tests/test_evl_gsup_source_identity.py"
+  ],
+  "maturity_before": "DESIGN",
+  "maturity_after": "SYNTHETIC_VERIFIED",
+  "SOFTWARE_FROZEN": false,
+  "BRANCH_STATE": "LOCAL_COMMITTED_SYNTHETIC_VERIFIED",
+  "INTEGRATION_STATE": "PARENT_NORMAL_MERGE_AND_WRAPPER_REGRESSION_PENDING",
+  "CANONICAL_STATE": "NOT_INCLUDED",
+  "tests_actually_executed": {
+    "command": "PYTHONPATH=implementation/src /workspace/validation-venv311/bin/python -m pytest -q implementation/tests/test_evl_gsup_source_identity.py implementation/tests/test_evl_c8_gsup.py",
+    "runtime": "3.11.16 (main, Sep 24 2026, 17:56:40) [Clang 22.1.3 ]",
+    "result": "117 passed in 12.97s",
+    "new_identity_cases": 33,
+    "existing_unchanged_GSUP_cases": 84,
+    "earlier_local_result": "20 PASS / 13 FAIL; read-only append journal fixed to0644 only; immutable records remain0444"
+  },
+  "independent_validation": "Reviewer reports38/38PASS; separate reviewer-owned evidence, not executed by this worker",
+  "Actions_actually_executed": "NOT_RUN",
+  "full_suite_actually_executed": "NOT_RUN_THIS_WORKER",
+  "push": "NOT_RUN",
+  "canonical_merge": "NOT_RUN_NOT_AUTHORIZED",
+  "baseline_blob_preservation": {
+    "tracked_files_checked": 8088,
+    "changed_existing_files": []
+  },
+  "artifacts": {
+    "implementation/src/investment_system/evl/gsup_source_identity.py": {
+      "sha256": "d34fc10d396f37fce65a5580263d2d35207e7d2f4f347fe300c1f1b81c33c548",
+      "bytes": 23974
+    },
+    "implementation/tests/test_evl_gsup_source_identity.py": {
+      "sha256": "a92cdf85c9d972749b5d4f173f92adec4483e30005548b500d852464b1b2b1fb",
+      "bytes": 15131
+    },
+    "implementation/docs/codex_takeover/evidence/gsup_source_identity/targeted-python311.log": {
+      "sha256": "aa4881bbcac0c1e030b5e37e6199c7b4b13cf1d2e7485540c6d0d4ec0a72b42a",
+      "bytes": 181
+    }
+  },
+  "dependencies": [
+    "Externally pinned SourceAnchor outside untrusted attempt specs",
+    "Parent source-bound wrapper",
+    "Independent adversarial integration tests"
+  ],
+  "blockers": [
+    "Actual CAL_VERIFY/Holdout and real source taxonomy/configuration unapproved",
+    "Authoritative M-v2 arithmetic reduction separately USER_DECISION_REQUIRED, identity protocol chooses no arithmetic"
+  ],
+  "USER_DECISION_REQUIRED": "NONE_FOR_APPROVED_SYNTHETIC_IDENTITY_SOFTWARE_SCOPE",
+  "next_autonomous_action": "Parent normal merge and combined regression/Actions",
+  "numerical_semantics": "No outcome reads/conversion; exact synthetic legacy kernel inputs/results preserved. No M-v2 activation, real validation, numeric approval, Freeze or grant."
+}

@@ -33,6 +33,7 @@ jobs:
     defaults:
       run:
         working-directory: implementation
+        shell: bash
     steps:
       - uses: actions/checkout@v4
       - name: Producer Infrastructure v1 (read-only, pinned)
@@ -43,7 +44,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install pytest
+      - run: python -m pip install pytest==9.1.1 numpy==2.3.5
       - name: Full regression (mini_pytest shim)
         run: python tools/mini_pytest.py | tail -1
       - name: Full regression (pytest) with Producer Infrastructure compatibility enabled

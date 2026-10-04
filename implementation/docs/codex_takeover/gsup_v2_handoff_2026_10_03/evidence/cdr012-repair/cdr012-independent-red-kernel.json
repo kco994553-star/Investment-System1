@@ -1,0 +1,5357 @@
+{
+  "reviewer": "Codex independent oracle/test author, this session",
+  "baseline_head": "e0b6d809058511d4bef7ad1aeccad79c5eae3ff8",
+  "production_sha256": "41f67dd28200370f472016e16214ee08edb31dcd75aba91726494799a6614603",
+  "oracle_sha256": "fdf999c763f0f03fb4b4590daddf8e7a2b04b4050790ff648466be4eec099326",
+  "runtime": {
+    "python": "3.11.16",
+    "implementation": "CPython",
+    "executable": "/workspace/investment-audit/venv311/bin/python"
+  },
+  "command_form": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /workspace/investment-audit/venv311/bin/python - <<PY [three synthetic kernel red probes] PY",
+  "cwd": "/workspace/Investment-System1/implementation",
+  "expected_pin_provenance": "New oracle independently derived before production repair; historical production outputs are baseline evidence only, never expected pins.",
+  "cases": [
+    {
+      "id": "F1_NEAR_TIE",
+      "fixture": {
+        "delta": [
+          {
+            "decimal": "8.7",
+            "hex": "0x1.1666666666666p+3"
+          },
+          {
+            "decimal": "0.0",
+            "hex": "0x0.0p+0"
+          },
+          {
+            "decimal": "0.0",
+            "hex": "0x0.0p+0"
+          },
+          {
+            "decimal": "0.0",
+            "hex": "0x0.0p+0"
+          },
+          {
+            "decimal": "-2.9",
+            "hex": "-0x1.7333333333333p+1"
+          },
+          {
+            "decimal": "2.9",
+            "hex": "0x1.7333333333333p+1"
+          },
+          {
+            "decimal": "2.9",
+            "hex": "0x1.7333333333333p+1"
+          },
+          {
+            "decimal": "8.7",
+            "hex": "0x1.1666666666666p+3"
+          },
+          {
+            "decimal": "-2.9",
+            "hex": "-0x1.7333333333333p+1"
+          }
+        ],
+        "block_length": 2,
+        "replicates": 19,
+        "seed": 11
+      },
+      "expected_from_new_independent_oracle": {
+        "status": "COMPUTED",
+        "p_value": {
+          "decimal": "0.15",
+          "hex": "0x1.3333333333333p-3"
+        },
+        "statistic": {
+          "decimal": "1.809068067466582",
+          "hex": "0x1.cf1f15ba01c3ap+0"
+        },
+        "long_run_variance": {
+          "decimal": "10.278888888888886",
+          "hex": "0x1.48eca8641fdb8p+3"
+        }
+      },
+      "historical_production": {
+        "method": "C8_GSUP_STUDENTIZED_CBB_v2",
+        "arithmetic_contract": {
+          "reducer": "MATH_FSUM",
+          "replicate_aggregation": "BLOCK_GROUPING",
+          "block_sums": "DIRECT",
+          "degeneracy": "SQRT_V_OVER_N_GT_ZERO"
+        },
+        "n": 9,
+        "mean": {
+          "decimal": "1.9333333333333331",
+          "hex": "0x1.eeeeeeeeeeeeep+0"
+        },
+        "long_run_variance": {
+          "decimal": "10.278888888888888",
+          "hex": "0x1.48eca8641fdb9p+3"
+        },
+        "statistic": {
+          "decimal": "1.8090680674665816",
+          "hex": "0x1.cf1f15ba01c38p+0"
+        },
+        "variance_blocks": 4,
+        "exceedances": 3,
+        "degenerate_replicates": 0,
+        "ties": 1,
+        "replicates": 19,
+        "p_value": {
+          "decimal": "0.2",
+          "hex": "0x1.999999999999ap-3"
+        },
+        "draws": [
+          {
+            "decimal": "1.0606601717798205",
+            "hex": "0x1.0f876ccdf6cd6p+0"
+          },
+          {
+            "decimal": "-1.0864289525102226",
+            "hex": "-0x1.16203534757d5p+0"
+          },
+          {
+            "decimal": "-2.172857905020445",
+            "hex": "-0x1.16203534757d4p+1"
+          },
+          {
+            "decimal": "2.6673253468463227",
+            "hex": "0x1.556aeabe3f979p+1"
+          },
+          {
+            "decimal": "1.8090680674665816",
+            "hex": "0x1.cf1f15ba01c38p+0"
+          },
+          {
+            "decimal": "-0.5264879916862282",
+            "hex": "-0x1.0d8fd5840ee24p-1"
+          },
+          {
+            "decimal": "-1.5450786078738146",
+            "hex": "-0x1.8b8a458a9136cp+0"
+          },
+          {
+            "decimal": "0.0",
+            "hex": "0x0.0p+0"
+          },
+          {
+            "decimal": "0.28410823428622684",
+            "hex": "0x1.22ed44db22753p-2"
+          },
+          {
+            "decimal": "-0.5948179165159315",
+            "hex": "-0x1.308bf95505858p-1"
+          },
+          {
+            "decimal": "-0.27160723812755544",
+            "hex": "-0x1.16203534757d1p-2"
+          },
+          {
+            "decimal": "-0.2632439958431141",
+            "hex": "-0x1.0d8fd5840ee24p-2"
+          },
+          {
+            "decimal": "4.485785409753577",
+            "hex": "0x1.1f171baff0ff2p+2"
+          },
+          {
+            "decimal": "-2.1622499104693413",
+            "hex": "-0x1.14c49ae59f53fp+1"
+          },
+          {
+            "decimal": "0.9428090415820635",
+            "hex": "0x1.e2b7dddfefa67p-1"
+          },
+          {
+            "decimal": "-0.29104275004359953",
+            "hex": "-0x1.2a071c54b35ddp-2"
+          },
+          {
+            "decimal": "0.0",
+            "hex": "0x0.0p+0"
+          },
+          {
+            "decimal": "-0.7216617351891164",
+            "hex": "-0x1.717da59ed2e04p-1"
+          },
+          {
+            "decimal": "1.603567451474546",
+            "hex": "0x1.9a8365810363dp+0"
+          }
+        ],
+        "traces": [
+          {
+            "replicate_mean": {
+              "decimal": "2.255555555555555",
+              "hex": "0x1.20b60b60b60b5p+1"
+            },
+            "variance": {
+              "decimal": "0.8306172839506171",
+              "hex": "0x1.a946ab2c1ed89p-1"
+            },
+            "se": {
+              "decimal": "0.30379402450977594",
+              "hex": "0x1.3715c7dff5769p-2"
+            },
+            "block_sums": [
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-2.9",
+              "hex": "-0x1.7333333333333p+1"
+            },
+            "statistic": {
+              "decimal": "1.0606601717798205",
+              "hex": "0x1.0f876ccdf6cd6p+0"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "0.9666666666666663",
+              "hex": "0x1.eeeeeeeeeeeecp-1"
+            },
+            "variance": {
+              "decimal": "7.125138888888887",
+              "hex": "0x1.c802468acf133p+2"
+            },
+            "se": {
+              "decimal": "0.8897651930511958",
+              "hex": "0x1.c78f4daa8c4b6p-1"
+            },
+            "block_sums": [
+              {
+                "decimal": "-2.9",
+                "hex": "-0x1.7333333333333p+1"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "statistic": {
+              "decimal": "-1.0864289525102226",
+              "hex": "-0x1.16203534757d5p+0"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "0.6444444444444444",
+              "hex": "0x1.49f49f49f49f4p-1"
+            },
+            "variance": {
+              "decimal": "3.1667283950617273",
+              "hex": "0x1.95575b260d666p+1"
+            },
+            "se": {
+              "decimal": "0.5931767953674639",
+              "hex": "0x1.2fb4de71b2dcfp-1"
+            },
+            "block_sums": [
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "statistic": {
+              "decimal": "-2.172857905020445",
+              "hex": "-0x1.16203534757d4p+1"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "3.5444444444444443",
+              "hex": "0x1.c5b05b05b05b0p+1"
+            },
+            "variance": {
+              "decimal": "3.2835339506172843",
+              "hex": "0x1.a44ad72a9a7c3p+1"
+            },
+            "se": {
+              "decimal": "0.6040174712904773",
+              "hex": "0x1.3541c72acf78ep-1"
+            },
+            "block_sums": [
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "8.7",
+                "hex": "0x1.1666666666666p+3"
+              },
+              {
+                "decimal": "11.6",
+                "hex": "0x1.7333333333333p+3"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "statistic": {
+              "decimal": "2.6673253468463227",
+              "hex": "0x1.556aeabe3f979p+1"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": true
+          },
+          {
+            "replicate_mean": {
+              "decimal": "3.544444444444444",
+              "hex": "0x1.c5b05b05b05afp+1"
+            },
+            "variance": {
+              "decimal": "7.138117283950615",
+              "hex": "0x1.c8d6e9e06522ap+2"
+            },
+            "se": {
+              "decimal": "0.8905751751880239",
+              "hex": "0x1.c7f978281fc2dp-1"
+            },
+            "block_sums": [
+              {
+                "decimal": "8.7",
+                "hex": "0x1.1666666666666p+3"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "8.7",
+                "hex": "0x1.1666666666666p+3"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "8.7",
+              "hex": "0x1.1666666666666p+3"
+            },
+            "statistic": {
+              "decimal": "1.8090680674665816",
+              "hex": "0x1.cf1f15ba01c38p+0"
+            },
+            "degenerate": false,
+            "tie": true,
+            "exceeds": true
+          },
+          {
+            "replicate_mean": {
+              "decimal": "1.2888888888888888",
+              "hex": "0x1.49f49f49f49f4p+0"
+            },
+            "variance": {
+              "decimal": "13.484552469135801",
+              "hex": "0x1.af81742e044c5p+3"
+            },
+            "se": {
+              "decimal": "1.2240439565970478",
+              "hex": "0x1.395af1da73654p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-2.9",
+                "hex": "-0x1.7333333333333p+1"
+              },
+              {
+                "decimal": "-2.9",
+                "hex": "-0x1.7333333333333p+1"
+              },
+              {
+                "decimal": "8.7",
+                "hex": "0x1.1666666666666p+3"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "2.9",
+              "hex": "0x1.7333333333333p+1"
+            },
+            "statistic": {
+              "decimal": "-0.5264879916862282",
+              "hex": "-0x1.0d8fd5840ee24p-1"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "0.322222222222222",
+              "hex": "0x1.49f49f49f49f1p-2"
+            },
+            "variance": {
+              "decimal": "9.785709876543207",
+              "hex": "0x1.39248909fcb67p+3"
+            },
+            "se": {
+              "decimal": "1.042737309869408",
+              "hex": "0x1.0af0d5143547bp+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "-2.9",
+                "hex": "-0x1.7333333333333p+1"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "-2.9",
+                "hex": "-0x1.7333333333333p+1"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-2.9",
+              "hex": "-0x1.7333333333333p+1"
+            },
+            "statistic": {
+              "decimal": "-1.5450786078738146",
+              "hex": "-0x1.8b8a458a9136cp+0"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "1.9333333333333331",
+              "hex": "0x1.eeeeeeeeeeeeep+0"
+            },
+            "variance": {
+              "decimal": "5.723472222222221",
+              "hex": "0x1.6e4d5e6f80919p+2"
+            },
+            "se": {
+              "decimal": "0.7974593143381619",
+              "hex": "0x1.984c9655f22bap-1"
+            },
+            "block_sums": [
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "8.7",
+                "hex": "0x1.1666666666666p+3"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-2.9",
+              "hex": "-0x1.7333333333333p+1"
+            },
+            "statistic": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "2.255555555555555",
+              "hex": "0x1.20b60b60b60b5p+1"
+            },
+            "variance": {
+              "decimal": "11.576728395061727",
+              "hex": "0x1.72748f1b6edebp+3"
+            },
+            "se": {
+              "decimal": "1.1341530562524877",
+              "hex": "0x1.2257dacd434c5p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "11.6",
+                "hex": "0x1.7333333333333p+3"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "2.9",
+              "hex": "0x1.7333333333333p+1"
+            },
+            "statistic": {
+              "decimal": "0.28410823428622684",
+              "hex": "0x1.22ed44db22753p-2"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "1.2888888888888888",
+              "hex": "0x1.49f49f49f49f4p+0"
+            },
+            "variance": {
+              "decimal": "10.564413580246912",
+              "hex": "0x1.520fad1192853p+3"
+            },
+            "se": {
+              "decimal": "1.083431461209497",
+              "hex": "0x1.155bc3a55a2f3p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-2.9",
+                "hex": "-0x1.7333333333333p+1"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "8.7",
+                "hex": "0x1.1666666666666p+3"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "statistic": {
+              "decimal": "-0.5948179165159315",
+              "hex": "-0x1.308bf95505858p-1"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "1.6111111111111112",
+              "hex": "0x1.9c71c71c71c72p+0"
+            },
+            "variance": {
+              "decimal": "12.666913580246911",
+              "hex": "0x1.95575b260d667p+3"
+            },
+            "se": {
+              "decimal": "1.1863535907349279",
+              "hex": "0x1.2fb4de71b2dcfp+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "11.6",
+                "hex": "0x1.7333333333333p+3"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "2.9",
+              "hex": "0x1.7333333333333p+1"
+            },
+            "statistic": {
+              "decimal": "-0.27160723812755544",
+              "hex": "-0x1.16203534757d1p-2"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "1.611111111111111",
+              "hex": "0x1.9c71c71c71c71p+0"
+            },
+            "variance": {
+              "decimal": "13.484552469135801",
+              "hex": "0x1.af81742e044c5p+3"
+            },
+            "se": {
+              "decimal": "1.2240439565970478",
+              "hex": "0x1.395af1da73654p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "8.7",
+                "hex": "0x1.1666666666666p+3"
+              },
+              {
+                "decimal": "8.7",
+                "hex": "0x1.1666666666666p+3"
+              },
+              {
+                "decimal": "-2.9",
+                "hex": "-0x1.7333333333333p+1"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "statistic": {
+              "decimal": "-0.2632439958431141",
+              "hex": "-0x1.0d8fd5840ee24p-2"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "4.51111111111111",
+              "hex": "0x1.20b60b60b60b5p+2"
+            },
+            "variance": {
+              "decimal": "2.9720524691358037",
+              "hex": "0x1.7c6c371e77980p+1"
+            },
+            "se": {
+              "decimal": "0.5746547242703225",
+              "hex": "0x1.263924de7742fp-1"
+            },
+            "block_sums": [
+              {
+                "decimal": "8.7",
+                "hex": "0x1.1666666666666p+3"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "11.6",
+                "hex": "0x1.7333333333333p+3"
+              },
+              {
+                "decimal": "11.6",
+                "hex": "0x1.7333333333333p+3"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "2.9",
+              "hex": "0x1.7333333333333p+1"
+            },
+            "statistic": {
+              "decimal": "4.485785409753577",
+              "hex": "0x1.1f171baff0ff2p+2"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": true
+          },
+          {
+            "replicate_mean": {
+              "decimal": "0.3222222222222222",
+              "hex": "0x1.49f49f49f49f4p-2"
+            },
+            "variance": {
+              "decimal": "4.996682098765431",
+              "hex": "0x1.3fc9a3b6ad31ep+2"
+            },
+            "se": {
+              "decimal": "0.7451086497034011",
+              "hex": "0x1.7d7ee184e2ba5p-1"
+            },
+            "block_sums": [
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "-2.9",
+                "hex": "-0x1.7333333333333p+1"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "5.8",
+                "hex": "0x1.7333333333333p+2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "statistic": {
+              "decimal": "-2.1622499104693413",
+              "hex": "-0x1.14c49ae59f53fp+1"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "2.9",
+              "hex": "0x1.7333333333333p+1"
+            },
+            "variance": {
+              "decimal": "9.46125",
+              "hex": "0x1.2ec28f5c28f5cp+3"
+            },
+            "se": {
+              "decimal": "1.0253048327204939",
+              "hex": "0x1.067a60a4f71c1p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "5.8",
+                "hex": "0x1.7333333333333p+2"
+              },
+              {
+                "decimal": "8.7",
+                "hex": "0x1.1666666666666p+3"
+              },
+              {
+                "decimal": "11.6",
+                "hex": "0x1.7333333333333p+3"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "statistic": {
+              "decimal": "0.9428090415820635",
+              "hex": "0x1.e2b7dddfefa67p-1"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "1.611111111111111",
+              "hex": "0x1.9c71c71c71c71p+0"
+            },
+            "variance": {
+              "decimal": "11.031635802469134",
+              "hex": "0x1.610329161f9adp+3"
+            },
+            "se": {
+              "decimal": "1.1071302142862236",
+              "hex": "0x1.1b6ce2bec5d66p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "-2.9",
+                "hex": "-0x1.7333333333333p+1"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "8.7",
+                "hex": "0x1.1666666666666p+3"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "8.7",
+              "hex": "0x1.1666666666666p+3"
+            },
+            "statistic": {
+              "decimal": "-0.29104275004359953",
+              "hex": "-0x1.2a071c54b35ddp-2"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "1.9333333333333331",
+              "hex": "0x1.eeeeeeeeeeeeep+0"
+            },
+            "variance": {
+              "decimal": "3.2705555555555543",
+              "hex": "0x1.a2a1907f6e5d2p+1"
+            },
+            "se": {
+              "decimal": "0.602822578980246",
+              "hex": "0x1.34a5293c0564bp-1"
+            },
+            "block_sums": [
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "statistic": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "1.2888888888888888",
+              "hex": "0x1.49f49f49f49f4p+0"
+            },
+            "variance": {
+              "decimal": "7.177052469135801",
+              "hex": "0x1.cb54d3e12750fp+2"
+            },
+            "se": {
+              "decimal": "0.8930007135206681",
+              "hex": "0x1.c93763b7c07a8p-1"
+            },
+            "block_sums": [
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "5.799999999999999",
+                "hex": "0x1.7333333333332p+2"
+              },
+              {
+                "decimal": "-2.9",
+                "hex": "-0x1.7333333333333p+1"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "2.9",
+              "hex": "0x1.7333333333333p+1"
+            },
+            "statistic": {
+              "decimal": "-0.7216617351891164",
+              "hex": "-0x1.717da59ed2e04p-1"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "3.8666666666666663",
+              "hex": "0x1.eeeeeeeeeeeeep+1"
+            },
+            "variance": {
+              "decimal": "13.082222222222223",
+              "hex": "0x1.a2a1907f6e5d5p+3"
+            },
+            "se": {
+              "decimal": "1.2056451579604923",
+              "hex": "0x1.34a5293c0564cp+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "11.6",
+                "hex": "0x1.7333333333333p+3"
+              },
+              {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              {
+                "decimal": "11.6",
+                "hex": "0x1.7333333333333p+3"
+              },
+              {
+                "decimal": "11.6",
+                "hex": "0x1.7333333333333p+3"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "statistic": {
+              "decimal": "1.603567451474546",
+              "hex": "0x1.9a8365810363dp+0"
+            },
+            "degenerate": false,
+            "tie": false,
+            "exceeds": false
+          }
+        ],
+        "indices_hash": "831a2d00dad86912f0b3617de64e2c859d3924c13f64d8b49a66111741697cf2",
+        "block_length": 2,
+        "seed": 11,
+        "one_sided": "GREATER"
+      },
+      "red_condition_confirmed": true
+    },
+    {
+      "id": "F3_ALL_DEGENERATE_7",
+      "fixture": {
+        "delta": [
+          {
+            "decimal": "-0.2",
+            "hex": "-0x1.999999999999ap-3"
+          },
+          {
+            "decimal": "-0.1",
+            "hex": "-0x1.999999999999ap-4"
+          },
+          {
+            "decimal": "-0.2",
+            "hex": "-0x1.999999999999ap-3"
+          },
+          {
+            "decimal": "-0.1",
+            "hex": "-0x1.999999999999ap-4"
+          },
+          {
+            "decimal": "-0.2",
+            "hex": "-0x1.999999999999ap-3"
+          },
+          {
+            "decimal": "-0.1",
+            "hex": "-0x1.999999999999ap-4"
+          },
+          {
+            "decimal": "-0.2",
+            "hex": "-0x1.999999999999ap-3"
+          },
+          {
+            "decimal": "-0.1",
+            "hex": "-0x1.999999999999ap-4"
+          },
+          {
+            "decimal": "-0.2",
+            "hex": "-0x1.999999999999ap-3"
+          },
+          {
+            "decimal": "-0.1",
+            "hex": "-0x1.999999999999ap-4"
+          },
+          {
+            "decimal": "-0.2",
+            "hex": "-0x1.999999999999ap-3"
+          },
+          {
+            "decimal": "-0.1",
+            "hex": "-0x1.999999999999ap-4"
+          }
+        ],
+        "block_length": 2,
+        "replicates": 19,
+        "seed": 7
+      },
+      "expected_from_new_independent_oracle": {
+        "status": "NOT_RUN",
+        "reason": "all bootstrap replicates degenerate",
+        "p_value_present": false,
+        "diagnostic_evidence": {
+          "method": "C8_GSUP_STUDENTIZED_CBB_v2",
+          "n": 12,
+          "mean": {
+            "decimal": "-0.15",
+            "hex": "-0x1.3333333333333p-3"
+          },
+          "long_run_variance": {
+            "decimal": "1.5407439555097887e-33",
+            "hex": "0x1.0000000000000p-109"
+          },
+          "statistic": {
+            "decimal": "-1.3237825311415408e+16",
+            "hex": "-0x1.783ddb1a48e38p+53"
+          },
+          "variance_blocks": 5,
+          "exceedances": 0,
+          "degenerate_replicates": 19,
+          "ties": 0,
+          "replicates": 19,
+          "draws": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "traces": [
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            }
+          ],
+          "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+          "block_length": 2,
+          "seed": 7,
+          "one_sided": "GREATER",
+          "arithmetic_contract": {
+            "reducer": "MATH_FSUM",
+            "replicate_aggregation": "BLOCK_GROUPING",
+            "block_sums": "DIRECT",
+            "degeneracy": "SQRT_V_OVER_N_GT_ZERO",
+            "squaring": "MULTIPLICATION",
+            "all_degenerate": "NOT_RUN"
+          },
+          "indices": [
+            [
+              5,
+              6,
+              2,
+              3,
+              6,
+              7,
+              10,
+              11,
+              0,
+              1,
+              1,
+              2
+            ],
+            [
+              8,
+              9,
+              1,
+              2,
+              5,
+              6,
+              9,
+              10,
+              0,
+              1,
+              8,
+              9
+            ],
+            [
+              3,
+              4,
+              0,
+              1,
+              1,
+              2,
+              6,
+              7,
+              6,
+              7,
+              1,
+              2
+            ],
+            [
+              3,
+              4,
+              1,
+              2,
+              8,
+              9,
+              6,
+              7,
+              0,
+              1,
+              9,
+              10
+            ],
+            [
+              1,
+              2,
+              3,
+              4,
+              10,
+              11,
+              10,
+              11,
+              9,
+              10,
+              0,
+              1
+            ],
+            [
+              9,
+              10,
+              9,
+              10,
+              6,
+              7,
+              0,
+              1,
+              3,
+              4,
+              0,
+              1
+            ],
+            [
+              8,
+              9,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              2,
+              3,
+              8,
+              9
+            ],
+            [
+              1,
+              2,
+              9,
+              10,
+              4,
+              5,
+              8,
+              9,
+              10,
+              11,
+              2,
+              3
+            ],
+            [
+              1,
+              2,
+              9,
+              10,
+              9,
+              10,
+              10,
+              11,
+              3,
+              4,
+              5,
+              6
+            ],
+            [
+              1,
+              2,
+              8,
+              9,
+              11,
+              0,
+              1,
+              2,
+              9,
+              10,
+              0,
+              1
+            ],
+            [
+              9,
+              10,
+              3,
+              4,
+              7,
+              8,
+              10,
+              11,
+              8,
+              9,
+              6,
+              7
+            ],
+            [
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              7,
+              8,
+              5,
+              6,
+              4,
+              5
+            ],
+            [
+              3,
+              4,
+              2,
+              3,
+              11,
+              0,
+              3,
+              4,
+              1,
+              2,
+              9,
+              10
+            ],
+            [
+              4,
+              5,
+              8,
+              9,
+              7,
+              8,
+              5,
+              6,
+              11,
+              0,
+              7,
+              8
+            ],
+            [
+              4,
+              5,
+              9,
+              10,
+              1,
+              2,
+              1,
+              2,
+              8,
+              9,
+              6,
+              7
+            ],
+            [
+              2,
+              3,
+              5,
+              6,
+              2,
+              3,
+              7,
+              8,
+              6,
+              7,
+              0,
+              1
+            ],
+            [
+              10,
+              11,
+              1,
+              2,
+              8,
+              9,
+              9,
+              10,
+              5,
+              6,
+              5,
+              6
+            ],
+            [
+              11,
+              0,
+              5,
+              6,
+              9,
+              10,
+              7,
+              8,
+              9,
+              10,
+              7,
+              8
+            ],
+            [
+              1,
+              2,
+              1,
+              2,
+              4,
+              5,
+              7,
+              8,
+              11,
+              0,
+              10,
+              11
+            ]
+          ],
+          "circular_block_sums": [
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            }
+          ],
+          "se": {
+            "decimal": "1.1331166295920986e-17",
+            "hex": "0x1.a20bd700c2c3ep-57"
+          }
+        }
+      },
+      "historical_production": {
+        "method": "C8_GSUP_STUDENTIZED_CBB_v2",
+        "arithmetic_contract": {
+          "reducer": "MATH_FSUM",
+          "replicate_aggregation": "BLOCK_GROUPING",
+          "block_sums": "DIRECT",
+          "degeneracy": "SQRT_V_OVER_N_GT_ZERO"
+        },
+        "n": 12,
+        "mean": {
+          "decimal": "-0.15",
+          "hex": "-0x1.3333333333333p-3"
+        },
+        "long_run_variance": {
+          "decimal": "1.5407439555097887e-33",
+          "hex": "0x1.0000000000000p-109"
+        },
+        "statistic": {
+          "decimal": "-1.3237825311415408e+16",
+          "hex": "-0x1.783ddb1a48e38p+53"
+        },
+        "variance_blocks": 5,
+        "exceedances": 0,
+        "degenerate_replicates": 19,
+        "ties": 0,
+        "replicates": 19,
+        "p_value": {
+          "decimal": "0.05",
+          "hex": "0x1.999999999999ap-5"
+        },
+        "draws": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "traces": [
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          }
+        ],
+        "indices_hash": "3ff9e393b764f040b49bc5601c82ee7d3836794bc827bc1e7dbe940ae2d9aaa5",
+        "block_length": 2,
+        "seed": 7,
+        "one_sided": "GREATER"
+      },
+      "red_condition_confirmed": true
+    },
+    {
+      "id": "F3_ALL_DEGENERATE_11",
+      "fixture": {
+        "delta": [
+          {
+            "decimal": "-0.2",
+            "hex": "-0x1.999999999999ap-3"
+          },
+          {
+            "decimal": "-0.1",
+            "hex": "-0x1.999999999999ap-4"
+          },
+          {
+            "decimal": "-0.2",
+            "hex": "-0x1.999999999999ap-3"
+          },
+          {
+            "decimal": "-0.1",
+            "hex": "-0x1.999999999999ap-4"
+          },
+          {
+            "decimal": "-0.2",
+            "hex": "-0x1.999999999999ap-3"
+          },
+          {
+            "decimal": "-0.1",
+            "hex": "-0x1.999999999999ap-4"
+          },
+          {
+            "decimal": "-0.2",
+            "hex": "-0x1.999999999999ap-3"
+          },
+          {
+            "decimal": "-0.1",
+            "hex": "-0x1.999999999999ap-4"
+          },
+          {
+            "decimal": "-0.2",
+            "hex": "-0x1.999999999999ap-3"
+          },
+          {
+            "decimal": "-0.1",
+            "hex": "-0x1.999999999999ap-4"
+          },
+          {
+            "decimal": "-0.2",
+            "hex": "-0x1.999999999999ap-3"
+          },
+          {
+            "decimal": "-0.1",
+            "hex": "-0x1.999999999999ap-4"
+          }
+        ],
+        "block_length": 2,
+        "replicates": 19,
+        "seed": 11
+      },
+      "expected_from_new_independent_oracle": {
+        "status": "NOT_RUN",
+        "reason": "all bootstrap replicates degenerate",
+        "p_value_present": false,
+        "diagnostic_evidence": {
+          "method": "C8_GSUP_STUDENTIZED_CBB_v2",
+          "n": 12,
+          "mean": {
+            "decimal": "-0.15",
+            "hex": "-0x1.3333333333333p-3"
+          },
+          "long_run_variance": {
+            "decimal": "1.5407439555097887e-33",
+            "hex": "0x1.0000000000000p-109"
+          },
+          "statistic": {
+            "decimal": "-1.3237825311415408e+16",
+            "hex": "-0x1.783ddb1a48e38p+53"
+          },
+          "variance_blocks": 5,
+          "exceedances": 0,
+          "degenerate_replicates": 19,
+          "ties": 0,
+          "replicates": 19,
+          "draws": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "traces": [
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            },
+            {
+              "replicate_mean": {
+                "decimal": "-0.15000000000000002",
+                "hex": "-0x1.3333333333334p-3"
+              },
+              "variance": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "se": {
+                "decimal": "0.0",
+                "hex": "0x0.0p+0"
+              },
+              "block_sums": [
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                },
+                {
+                  "decimal": "-0.30000000000000004",
+                  "hex": "-0x1.3333333333334p-2"
+                }
+              ],
+              "partial_sum": {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              "statistic": null,
+              "degenerate": true,
+              "tie": false,
+              "exceeds": false
+            }
+          ],
+          "indices_hash": "ff76aa040a42e240bb8c1ee601497e99c07500a84128bf4943303f5233099935",
+          "block_length": 2,
+          "seed": 11,
+          "one_sided": "GREATER",
+          "arithmetic_contract": {
+            "reducer": "MATH_FSUM",
+            "replicate_aggregation": "BLOCK_GROUPING",
+            "block_sums": "DIRECT",
+            "degeneracy": "SQRT_V_OVER_N_GT_ZERO",
+            "squaring": "MULTIPLICATION",
+            "all_degenerate": "NOT_RUN"
+          },
+          "indices": [
+            [
+              7,
+              8,
+              8,
+              9,
+              7,
+              8,
+              7,
+              8,
+              8,
+              9,
+              9,
+              10
+            ],
+            [
+              3,
+              4,
+              2,
+              3,
+              8,
+              9,
+              7,
+              8,
+              10,
+              11,
+              9,
+              10
+            ],
+            [
+              2,
+              3,
+              1,
+              2,
+              7,
+              8,
+              4,
+              5,
+              2,
+              3,
+              1,
+              2
+            ],
+            [
+              8,
+              9,
+              11,
+              0,
+              10,
+              11,
+              0,
+              1,
+              9,
+              10,
+              6,
+              7
+            ],
+            [
+              7,
+              8,
+              10,
+              11,
+              11,
+              0,
+              9,
+              10,
+              10,
+              11,
+              2,
+              3
+            ],
+            [
+              9,
+              10,
+              0,
+              1,
+              8,
+              9,
+              1,
+              2,
+              0,
+              1,
+              0,
+              1
+            ],
+            [
+              3,
+              4,
+              3,
+              4,
+              9,
+              10,
+              0,
+              1,
+              7,
+              8,
+              5,
+              6
+            ],
+            [
+              7,
+              8,
+              9,
+              10,
+              3,
+              4,
+              8,
+              9,
+              3,
+              4,
+              10,
+              11
+            ],
+            [
+              4,
+              5,
+              7,
+              8,
+              0,
+              1,
+              10,
+              11,
+              1,
+              2,
+              7,
+              8
+            ],
+            [
+              10,
+              11,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              1,
+              2,
+              11,
+              0
+            ],
+            [
+              4,
+              5,
+              5,
+              6,
+              3,
+              4,
+              8,
+              9,
+              4,
+              5,
+              0,
+              1
+            ],
+            [
+              1,
+              2,
+              9,
+              10,
+              1,
+              2,
+              6,
+              7,
+              1,
+              2,
+              4,
+              5
+            ],
+            [
+              6,
+              7,
+              1,
+              2,
+              0,
+              1,
+              10,
+              11,
+              0,
+              1,
+              3,
+              4
+            ],
+            [
+              3,
+              4,
+              0,
+              1,
+              7,
+              8,
+              6,
+              7,
+              11,
+              0,
+              6,
+              7
+            ],
+            [
+              6,
+              7,
+              1,
+              2,
+              9,
+              10,
+              10,
+              11,
+              3,
+              4,
+              10,
+              11
+            ],
+            [
+              4,
+              5,
+              5,
+              6,
+              1,
+              2,
+              4,
+              5,
+              5,
+              6,
+              0,
+              1
+            ],
+            [
+              6,
+              7,
+              1,
+              2,
+              2,
+              3,
+              3,
+              4,
+              11,
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              1,
+              0,
+              1,
+              7,
+              8,
+              7,
+              8,
+              2,
+              3,
+              10,
+              11
+            ],
+            [
+              8,
+              9,
+              3,
+              4,
+              7,
+              8,
+              8,
+              9,
+              3,
+              4,
+              11,
+              0
+            ]
+          ],
+          "circular_block_sums": [
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            }
+          ],
+          "se": {
+            "decimal": "1.1331166295920986e-17",
+            "hex": "0x1.a20bd700c2c3ep-57"
+          }
+        }
+      },
+      "historical_production": {
+        "method": "C8_GSUP_STUDENTIZED_CBB_v2",
+        "arithmetic_contract": {
+          "reducer": "MATH_FSUM",
+          "replicate_aggregation": "BLOCK_GROUPING",
+          "block_sums": "DIRECT",
+          "degeneracy": "SQRT_V_OVER_N_GT_ZERO"
+        },
+        "n": 12,
+        "mean": {
+          "decimal": "-0.15",
+          "hex": "-0x1.3333333333333p-3"
+        },
+        "long_run_variance": {
+          "decimal": "1.5407439555097887e-33",
+          "hex": "0x1.0000000000000p-109"
+        },
+        "statistic": {
+          "decimal": "-1.3237825311415408e+16",
+          "hex": "-0x1.783ddb1a48e38p+53"
+        },
+        "variance_blocks": 5,
+        "exceedances": 0,
+        "degenerate_replicates": 19,
+        "ties": 0,
+        "replicates": 19,
+        "p_value": {
+          "decimal": "0.05",
+          "hex": "0x1.999999999999ap-5"
+        },
+        "draws": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "traces": [
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          },
+          {
+            "replicate_mean": {
+              "decimal": "-0.15000000000000002",
+              "hex": "-0x1.3333333333334p-3"
+            },
+            "variance": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "se": {
+              "decimal": "0.0",
+              "hex": "0x0.0p+0"
+            },
+            "block_sums": [
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              },
+              {
+                "decimal": "-0.30000000000000004",
+                "hex": "-0x1.3333333333334p-2"
+              }
+            ],
+            "partial_sum": {
+              "decimal": "-0.30000000000000004",
+              "hex": "-0x1.3333333333334p-2"
+            },
+            "statistic": null,
+            "degenerate": true,
+            "tie": false,
+            "exceeds": false
+          }
+        ],
+        "indices_hash": "ff76aa040a42e240bb8c1ee601497e99c07500a84128bf4943303f5233099935",
+        "block_length": 2,
+        "seed": 11,
+        "one_sided": "GREATER"
+      },
+      "red_condition_confirmed": true
+    }
+  ],
+  "red_count": 3,
+  "production_unchanged_during_capture": true,
+  "full_suite_run": false
+}

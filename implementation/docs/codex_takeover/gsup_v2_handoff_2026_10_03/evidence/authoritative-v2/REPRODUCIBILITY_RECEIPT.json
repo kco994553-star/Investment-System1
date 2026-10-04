@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "fresh_processes": 4,
+  "runtime_pairs": [
+    "CPython 3.11.16 x2 byte-identical",
+    "CPython 3.12.14 x2 byte-identical"
+  ],
+  "all_runtime_numerical_sha256": "d4642fa50523c75f4278afc5463c9751d582c427077916788e8fd39f1f99cfd5",
+  "second_process_raw_outputs_local": "/workspace/investment-audit",
+  "current_source_preservation": {
+    "source": {
+      "existing_files": 215,
+      "changed": []
+    },
+    "tests": {
+      "existing_files": 122,
+      "changed": []
+    },
+    "workflows": {
+      "existing_files": 14,
+      "changed": [
+        ".github/workflows/codex-integration-readiness.yml",
+        ".github/workflows/track-c-evl-validation.yml",
+        ".github/workflows/qgv-producer-real.yml",
+        ".github/workflows/leaderboard-real-producer.yml"
+      ]
+    },
+    "report_json": {
+      "existing_files": 199,
+      "changed": []
+    }
+  },
+  "producer_fingerprint_sha256": "f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866",
+  "original_historical_runtime_replay_certified": false,
+  "numeric_configuration": "NOT_APPROVED",
+  "final_source_replays_reconfirmed": true
+}

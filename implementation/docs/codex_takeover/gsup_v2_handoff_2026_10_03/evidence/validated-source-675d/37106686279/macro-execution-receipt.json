@@ -1,0 +1,22 @@
+{
+  "run_id": 37106686279,
+  "job_id": 111156486079,
+  "run_head_sha": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "actual_checkout_sha": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+  "checkout_evidence": "macro-job111156486079.connector.log git log -1 --format=%H",
+  "tests": 11,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "artifact_id": 11268445230,
+  "github_artifact_digest": "sha256:6816821106fe6f590ffa5cc5f138fc773ed5daef559542df4409fb7b83fba19a",
+  "local_download_sha256": "6816821106fe6f590ffa5cc5f138fc773ed5daef559542df4409fb7b83fba19a",
+  "digest_verified": true,
+  "artifact_files_sha256": {
+    "macro-adoption-junit.xml": "c8c241ac4f38630544e44b6b1b5b38ef270f0c232d0272f4d8aa074e96212040"
+  },
+  "log_archive_sha256": "45988488b9e0d27df25802a82f537f5fa0ab3565c875e6eaa893c95cd1ecff6c",
+  "download_route": "GitHub connector artifact download followed by authorized file_id download; no direct Azure retry",
+  "CAL_VERIFY_actual_access": "NOT_RUN",
+  "Holdout_actual_access": "NOT_RUN"
+}

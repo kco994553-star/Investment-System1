@@ -1,0 +1,173 @@
+{
+  "BRANCH_STATE": "EXACT_PR31_675_SOURCE_REVIEWED; evidence new LOCAL_ONLY outside repository",
+  "CANONICAL_STATE": "NOT_UPDATED_BY_THIS_WORKER",
+  "INTEGRATION_STATE": "DECISION_EVIDENCE_READY; no active authoritativev2 implementation/prod integration claim",
+  "acceptance": {
+    "completed": 4,
+    "criteria": [
+      {
+        "evidence": "16 historical exact blobs directly verified; peer independent 20 historical bindings preserved; original Q1 approval, simulation, Frozen C6 and current M-v2 approval have exact source bindings",
+        "id": 1,
+        "status": "PASS"
+      },
+      {
+        "evidence": "Approved statistic, ceil(n/L)-1 full-block rule, remnant, all-n center, qL denominator, degenerate/tie and plus-one rules separated from complete arithmetic transport; NumPy evaluation RNG separated from mandatory Frozen C6 Python random.Random",
+        "id": 2,
+        "status": "PASS"
+      },
+      {
+        "evidence": "Actual available runtime/library receipts qualified; unknown historical NumPy simulation environment explicitly unverified; Python3.11 sum cannot be generalized to3.12/3.13; NumPy2.3.5 candidate NOT_RUN under installed2.2.4",
+        "id": 3,
+        "status": "PASS_WITH_DECLARED_REPRODUCIBILITY_LIMITS"
+      },
+      {
+        "evidence": "Limited source AST extraction and all six immutable replay receipts independently cross-checked; neutral three-candidate decision checklist; CE4 internal label reversal resolved directly from preserved source",
+        "id": 4,
+        "status": "PASS"
+      }
+    ],
+    "total": 4
+  },
+  "actions_actually_executed": [
+    "Read exact Git blobs",
+    "Verify source AST and literal fixture definitions without executing kernels",
+    "Verify26archivehashes/48sourcebindings/216tracecommitments/154counts",
+    "Read six fresh-process output receipts and verify three byte-identical process pairs"
+  ],
+  "approved_semantics": {
+    "degenerate": "nonexceedance; fixed B denominator; no retry/B_eff",
+    "original": "all-n mean and all-n overlapping circular L-block LRV with denominator nL",
+    "p": "(r+1)/(B+1)",
+    "q": "ceil(n/L)-1",
+    "rem": "n-qL in1..L; last block excluded from variance evenifrem=L",
+    "replicate_mean": "all n draws including last block",
+    "replicate_variance": "first q full-block sums centered at L*all-n-replicate-mean; denominator qL",
+    "runnability": "q>=2; undefined original statistic fail-closedNOT_RUN",
+    "tie": "nondegenerate Tstar>=T"
+  },
+  "arithmetic_worker_execution": "Six actually-executed fresh processes, nine existing fixtures each,176reportedFrozen-index comparisons each; this receipt verifies commitments/counts and does not claim an independent numerical rerun",
+  "artifacts": [
+    {
+      "bytes": 38735,
+      "path": "ARITHMETIC_REPRO_CROSSCHECK.json",
+      "sha256": "f69f306af5358fe175bf7a0fd08cb7af4e0b416287e523b32bfeef007c3b1ce9"
+    },
+    {
+      "bytes": 9481,
+      "path": "DECISION_CHECKLIST.md",
+      "sha256": "45b2584cbd1575cba98f1717c62e8465e1be0f01ef5bbaf0aa97c7351787d9f7"
+    },
+    {
+      "bytes": 10937,
+      "path": "SOURCE_AUTHORITY_MANIFEST.json",
+      "sha256": "0c96bdc2a313ea2f5240d1026503fb58029bb415c15aabf9751b75802647b317"
+    },
+    {
+      "bytes": 11852,
+      "path": "verify_replay_receipts.py",
+      "sha256": "2e0acaeaa5a67ba2a46ad6637832ed7d7850704836090cb8429a148a9d8b5309"
+    }
+  ],
+  "authority_classification": [
+    {
+      "classification": "CURRENT_INHERITED_WITH_VERSION_MAPPING",
+      "limit": "M-B method/currentv2 mapping is supplied by later explicit M approval; numeric/access permissions excluded",
+      "record": "Original2026-10-02 Q1 method andQ2-Q6 approval"
+    },
+    {
+      "classification": "CURRENT",
+      "limit": "M-Bv2 only; arithmetic choice remains USER_DECISION_REQUIRED; identity synthetic/software validation only",
+      "record": "2026-10-03 explicit M/source-descriptor approval"
+    },
+    {
+      "classification": "SUPERSEDED_FOR_METHOD_CHOICE_ONLY",
+      "limit": "Preserve historical text; no numeric/access/grant supersession",
+      "record": "OriginalpackagependingheaderandoldM/K/Cdecisionqueue"
+    },
+    {
+      "classification": "HISTORICAL_EVIDENCE_IMMUTABLE",
+      "limit": "Scoped method evidence; do not elevate transport/version or old broad sampled-equivalence wording to unapproved exact floating policy",
+      "record": "OriginalNumPy simulation/counterexamples"
+    },
+    {
+      "classification": "CURRENT",
+      "limit": "Python random.Random index convention stays mandatory and immutable",
+      "record": "FrozenC6 index contract/source"
+    },
+    {
+      "classification": "RESOLVED_NO_POLICY_OR_SOURCE_CONFLICT",
+      "limit": "Both owner JSON and MD say M-B .10 versus v1 .15; current evidence matches",
+      "record": "CE4 discrepancy allegation"
+    }
+  ],
+  "current_result_impacts": {
+    "CE2": "samep.05 butdifferentdegeneratecounts across transports; p alone insufficient for full-trace identity",
+    "CE4": "immutable M-B .10/r1/deg1 vsv1 .15/r2/deg1; newliteralp.10",
+    "builtin_version_flip": "actualCPython3.11p.40/r7/deg0 vs3.12/3.13p.35/r6/deg1",
+    "numpy_flip": "p.10 vs.20; r1/deg2 vsr3/deg0",
+    "tie_transport": "leftsum p.40/r7/tie1 vsfsum/qualifiedNumPyp.45/r8/tie3; >= policy unchanged"
+  },
+  "decision_queue": [
+    {
+      "choices": [
+        "literalQ1NumPycumulative algebra qualifiedwith2.3.5",
+        "M-Bequationswithmath.fsum",
+        "explicit3.11-styleleft-to-rightbinary64"
+      ],
+      "item": "Complete arithmetic transport/runtime qualification for separately versioned authoritativeM-Bv2",
+      "selected": null,
+      "status": "USER_DECISION_REQUIRED"
+    }
+  ],
+  "exact_source_HEAD": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "historical_exact_claim": "NOT_SUPPORTED_BY_ANY_CANDIDATE_UNRECORDED_NUMPY_SIMULATION_ENVIRONMENT_AND_DIFFERENT_MANDATORY_RNG",
+  "maturity": {
+    "C0_C7": "SOFTWARE_FROZEN_PRESERVED",
+    "C8": "NOT_FROZEN",
+    "authoritative_M_v2": "DESIGN_NOT_IMPLEMENTED_PENDING_ARITHMETIC",
+    "identity_infrastructure": "EXISTING_V1_COMPATIBILITY_SCOPE_NOT_M_V2_COMPLETION"
+  },
+  "next": "Primary writer may archive this additive decision evidence; authoritativev2 implementation starts only after explicit arithmetic decision. Other independently READY work may continue.",
+  "original_owner_HEAD": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+  "preservation": {
+    "CAL_VERIFY_accesses": 0,
+    "Holdout_consumptions": 0,
+    "canonical_merges": 0,
+    "grants": 0,
+    "numeric_thresholds_or_tolerances_added": 0,
+    "owner_register_prefix_bytes": 17206,
+    "prefix_preserved": true,
+    "remote_mutations": 0,
+    "required_historical_bindings": 16,
+    "source_or_repo_mutations": 0,
+    "source_policy_or_Frozen_changes": 0
+  },
+  "record": "PR31_INDEPENDENT_METHOD_AUTHORITY_FINAL_REVIEW",
+  "recorded_at_utc": "2026-10-03T10:38:12.128909+00:00",
+  "replay_crosscheck": {
+    "archive_files": 26,
+    "computed_trace_counts_and_plus_one": 154,
+    "distinct_pinned_sources": 8,
+    "exact_source_binding_checks": 48,
+    "numeric_trace_commitments": 216,
+    "original_literal_p_hex_matches": 28,
+    "shared_fixture_definitions": 9,
+    "shared_frozen_case_index_streams": 9,
+    "status_counts": {
+      "COMPUTED_DIAGNOSTIC_ONLY": 154,
+      "NOT_RUN": 62
+    }
+  },
+  "reviewer": "/root/track_c_audit",
+  "reviewer_execution": {
+    "Actions": "NOT_RUN",
+    "exit_code": 0,
+    "full_regression": "NOT_RUN",
+    "index_stream_replay": "NOT_RUN",
+    "numerical_replay": "NOT_RUN",
+    "production_v2_oracle": "NOT_RUN",
+    "receipt_verifier_command": "python /workspace/takeover-evidence/pr31-handoff/method-authority-review/verify_replay_receipts.py",
+    "repository_tests": "NOT_RUN"
+  },
+  "scope": "READ_ONLY_METHOD_AUTHORITY_AND_SYNTHETIC_REPLAY_RECEIPT_REVIEW"
+}

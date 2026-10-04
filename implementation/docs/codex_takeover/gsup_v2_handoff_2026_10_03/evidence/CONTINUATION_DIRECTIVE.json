@@ -1,0 +1,9 @@
+{
+  "record": "USER_EXECUTION_DIRECTIVE_NOT_ARITHMETIC_APPROVAL",
+  "recorded_at": "2026-10-03T10:40:00.277722+00:00",
+  "verbatim_user_instruction": "현재 checkpoint에서 Autonomous Execution을 계속해.\nG-SUP arithmetic reduction은 결과를 바꾸는 미승인 결정이므로 임의 선택하지 말고, literal NumPy / math.fsum / builtin sum의 재현성·기존 M-B 정합성·결과 차이를 비교한 decision evidence를 완성해.\n그 결정을 제외한 READY 작업은 병렬로 계속 진행하고, PR #31을 HANDOFF_READY까지 완성해.\nCAL_VERIFY·Holdout·numeric config·C8 Freeze·publication·canonical merge는 하지 마.\n보고형식은 처음 코덱스 기본값으로 진행해",
+  "arithmetic_reduction_selected": null,
+  "M_approval": "RETAINED",
+  "scope": "SYNTHETIC_SOFTWARE_IDENTITY_AND_DECISION_EVIDENCE_HANDOFF",
+  "prohibited_actions_performed": 0
+}

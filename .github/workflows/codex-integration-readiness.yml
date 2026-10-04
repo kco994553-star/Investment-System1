@@ -12,6 +12,21 @@ on:
       - 'implementation/tests/test_producer_source_compat.py'
       - 'implementation/tests/test_*producer_infra_compat.py'
       - 'implementation/tests/test_rig_news_ingest.py'
+      - 'implementation/src/investment_system/evl/gsup_source_identity.py'
+      - 'implementation/src/investment_system/evl/superiority_source_identity.py'
+      - 'implementation/src/investment_system/evl/superiority_v2.py'
+      - 'implementation/tests/evl_c8_gsup_v2_oracle.py'
+      - 'implementation/tests/evl_c8_gsup_v2_cdr012_oracle.py'
+      - 'implementation/tests/test_evl_gsup_v2_cdr012.py'
+      - 'implementation/tests/test_evl_gsup_v2_arithmetic.py'
+      - 'implementation/tests/test_evl_gsup_v2_registry.py'
+      - 'implementation/tools/verify_gsup_v2_arithmetic.py'
+      - 'implementation/tests/test_evl_gsup_v2_repair_negatives.py'
+      - 'implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/authoritative-v2/CDR010_APPROVAL.json'
+      - 'implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/CDR012_APPROVAL.json'
+      - 'implementation/tests/test_evl_gsup_*identity*.py'
+      - 'implementation/tests/test_evl_gsup_mb_reduction_diagnostic.py'
+      - 'implementation/tools/gsup_mb_reduction_diagnostic.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -30,17 +45,52 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m pip install pytest==9.1.1
+      - run: python -m pip install pytest==9.1.1 numpy==2.3.5
       - name: Exact source checkpoint
         run: git rev-parse HEAD
       - name: Preserve exact owner Track C and canonical Track A evidence
         run: |
-          git diff --exit-code b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565 -- implementation/src/investment_system/evl implementation/tests/evl_c8_fixture.py implementation/tests/evl_c8_gsup_oracle.py 'implementation/tests/test_evl_*.py'
+          python - <<'PY'
+          import subprocess
+          owner = 'b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565'
+          def paths(ref):
+              return set(subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', ref], text=True).splitlines())
+          def protected(path):
+              return (path.startswith('implementation/src/investment_system/evl/')
+                      or path in {'implementation/tests/evl_c8_fixture.py', 'implementation/tests/evl_c8_gsup_oracle.py',
+                                  'implementation/tests/evl_c8_gsup_v2_oracle.py',
+                                  'implementation/tests/evl_c8_gsup_v2_cdr012_oracle.py'}
+                      or (path.startswith('implementation/tests/test_evl_') and path.endswith('.py')))
+          existing = {path for path in paths(owner) if protected(path)}
+          subprocess.run(['git', 'diff', '--exit-code', owner, 'HEAD', '--', *sorted(existing)], check=True)
+          allowed_additions = {
+              'implementation/src/investment_system/evl/gsup_source_identity.py',
+              'implementation/src/investment_system/evl/superiority_source_identity.py',
+              'implementation/src/investment_system/evl/superiority_v2.py',
+              'implementation/tests/evl_c8_gsup_v2_oracle.py',
+              'implementation/tests/evl_c8_gsup_v2_cdr012_oracle.py',
+              'implementation/tests/test_evl_gsup_v2_cdr012.py',
+              'implementation/tests/test_evl_gsup_v2_arithmetic.py',
+              'implementation/tests/test_evl_gsup_v2_registry.py',
+              'implementation/tests/test_evl_gsup_v2_repair_negatives.py',
+              'implementation/tests/test_evl_gsup_source_identity.py',
+              'implementation/tests/test_evl_gsup_v2_identity_adversarial.py',
+              'implementation/tests/test_evl_gsup_identity_kernel_invariance.py',
+              'implementation/tests/test_evl_gsup_mb_reduction_diagnostic.py',
+          }
+          additions = {path for path in paths('HEAD') - paths(owner) if protected(path)}
+          unexpected = additions - allowed_additions
+          if unexpected:
+              raise SystemExit('Unapproved Track C additions: ' + ', '.join(sorted(unexpected)))
+          print(f'Preserved {len(existing)} exact owner files; approved additive files {len(additions)}')
+          PY
           git diff --exit-code b8e39a2196a6d7794a04a0cd5393c68329e126ca -- implementation/reports/gate_evidence implementation/data
           git diff --exit-code b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565 -- implementation/src/investment_system/technical/engine.py implementation/src/investment_system/macro/engine.py implementation/src/investment_system/contracts/models.py implementation/src/investment_system/contracts/lineage.py
       - name: Full existing regression with actual integrated dependencies
         working-directory: implementation
         run: PYTHONPATH=src python -m pytest -q --junitxml=/tmp/combined-junit.xml
+      - name: CDR-010/012 exact production and independent oracle replay
+        run: python implementation/tools/verify_gsup_v2_arithmetic.py > /tmp/gsup-v2-arithmetic.json
       - name: Producer to existing Web withheld-contract fixture
         run: python implementation/tools/build_producer_contract_web_fixture.py --out /tmp/withheld-web --evidence /tmp/withheld-web-evidence
       - uses: actions/setup-node@v4
@@ -60,6 +110,7 @@ jobs:
           name: codex-integration-readiness-${{ github.event.pull_request.head.sha || github.sha }}
           path: |
             /tmp/combined-junit.xml
+            /tmp/gsup-v2-arithmetic.json
             /tmp/withheld-web-evidence
   macro-adoption-offline:
     runs-on: ubuntu-latest
@@ -72,7 +123,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m pip install pytest==9.1.1
+      - run: python -m pip install pytest==9.1.1 numpy==2.3.5
       - name: Exact existing Macro adoption proposal; offline only
         working-directory: implementation
         run: PYTHONPATH=src python -m pytest -q tests/test_macro_real_producer.py --junitxml=/tmp/macro-adoption-junit.xml

@@ -1,0 +1,19 @@
+{
+  "base": "8230007f5edb86aec949166e25fd62a680db3ae2",
+  "branch": "codex/gsup-v2-oracle-2026-10-03",
+  "existing_tracked_file_count": 8088,
+  "existing_tracked_diff": "",
+  "file_sha256": {
+    "implementation/reports/gsup_v2_oracle/ARITHMETIC_REDUCTION_REVIEW_2026-10-03.md": "93988d5098feecb4b815934dc76edc835be73cc9ef7fe70d0fddd5cc3be49973",
+    "implementation/reports/gsup_v2_oracle/ARITHMETIC_REDUCTION_TRACES_2026-10-03.json": "796ad12b4356701d6d7ac3e70e81bfe1ec66110fb0084d70ed6fd3e175fbe617",
+    "implementation/reports/gsup_v2_oracle/DIAGNOSTIC_TESTS_2026-10-03.log": "033fb2c250179ef897c71b5e827c29cc42a4963d2e60fca95af2a591d57b8fd8",
+    "implementation/reports/gsup_v2_oracle/DIAGNOSTIC_TESTS_2026-10-03.xml": "c28e27a8893d4ed956566f70fbaf4b9d2a26eb3aa8cb650973c7ed71c0522347",
+    "implementation/tests/test_evl_gsup_mb_reduction_diagnostic.py": "d66935e3ae304b7b399efa7cf0fef63057298ac4a80a70aea0cb650c9f5435f5",
+    "implementation/tools/gsup_mb_reduction_diagnostic.py": "b793a1e76d2a4dbe5f79152a04b18ebe0aa5006f0efd2e1542fc720b701ab3d5"
+  },
+  "full_repository_regression": "NOT_RUN_BY_THIS_WORKER",
+  "actions": "NOT_RUN_BY_THIS_WORKER",
+  "active_method_changes": 0,
+  "CAL_VERIFY_access": 0,
+  "Holdout_consumption": 0
+}

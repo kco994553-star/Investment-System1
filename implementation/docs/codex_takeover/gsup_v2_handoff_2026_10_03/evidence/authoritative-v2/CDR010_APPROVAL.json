@@ -1,0 +1,29 @@
+{
+  "record": "TC_C8_GSUP_V2_CDR010_ARITHMETIC_APPROVAL",
+  "authority": "USER_DECIDED_CDR_010_FRESH_GITHUB",
+  "routing_source_commit": "e30241f49e31f4ac5ab0d4f322ecddc78a044d75",
+  "routing_source_path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+  "routing_source_blob": "46e4a67b2fb7c3b961fe9dc35b9b981e6fe6662a",
+  "routing_source_sha256": "43e6409a7de5d62ed9a6e253fd2a010efd59bdbf17288036c4efd9781e57e5ae",
+  "routing_record_verbatim": "## CDR-010 · Track C G-SUP M-B v2 authoritative arithmetic contract\n\n| Field | Value |\n|---|---|\n| Status | **USER_DECIDED** (method arithmetic convention for the CDR-006 v2 only) |\n| Decided at | 2026-10-03 (user message in session `session_019znshzTYgyBnuuBmSxdPFN`, after GCH-007 / `50b2a13`) |\n| Resolves | USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION raised by Codex in PR #31 and independently reproduced in GIE-008 §2 |\n| Implementer | Codex, in PR #31 (CDR-008 unchanged) |\n\nUser wording (verbatim):\n\n> Track C G-SUP M-B v2 arithmetic convention에 대한 사용자 결정을 기록한다.\n>\n> 승인된 authoritative arithmetic contract:\n>\n> Arithmetic = math.fsum\n> Replicate aggregation = block grouping\n> Block sums = direct summation\n> Replicate mean = (Σ full block sums + partial) / n\n> Degeneracy predicate = 기존 승인된 run() 의미와 동일하게\n> sqrt(v/n) > 0 이 false이면 degenerate\n>\n> 즉 다음 세 축을 함께 승인한다.\n>\n> 1. reducer = math.fsum\n> 2. replicate grouping = block grouping\n> 3. block-sum construction = direct block sums\n>\n> 기존 G-SUP v1과 historical evidence/result는 보존한다.\n> v2는 additive version이며 v1 결과를 소급 변경하지 않는다.\n\nScope of this decision, as recorded by the routing writer:\n\n- It fixes the four arithmetic fields that GIE-008 §2 said must be pinned together: reducer, replicate grouping, block-sum construction and degeneracy predicate.\n- It does not change any other CDR-006 field (statistic, replicate construction, variance convention, tie handling) or CDR-007.\n- In GIE-008 §2 terms this is the \"fsum / blocks\" column. On the five recorded fixtures that column gives CE4 .10, FLIP .10, LEFT_SUM .35, TIE .45, seed 275 .55. These are evidence values to be re-checked against Codex's v2, not acceptance thresholds set by this register.\n\nNot approved by this decision, per the user's same message (verbatim list):\n\n> - numeric calibration configuration\n> - α / B / L / seed\n> - effect floor\n> - minimum support\n> - size tolerance\n> - dependence envelope / margin\n> - 실제 CAL_VERIFY 접근\n> - Holdout\n> - C8 Freeze\n> - publication grant\n> - Official / LIVE\n> - canonical merge\n> - validator hardening이 요구하는 #17 protected digest repin\n\nThe user also stated that this decision is not to be read as C8 FROZEN, CAL_VERIFY approval, numeric configuration approval, Holdout approval, Official or publication.\n\n",
+  "method": "C8_GSUP_STUDENTIZED_CBB_v2",
+  "arithmetic_contract": {
+    "reducer": "MATH_FSUM",
+    "replicate_aggregation": "BLOCK_GROUPING",
+    "block_sums": "DIRECT",
+    "degeneracy": "SQRT_V_OVER_N_GT_ZERO"
+  },
+  "numeric_configuration": "NOT_APPROVED",
+  "scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY",
+  "v1": "IMMUTABLE_NO_RETROACTIVE_REWRITE",
+  "not_approved": [
+    "CAL_VERIFY",
+    "Holdout",
+    "C8_Freeze",
+    "publication",
+    "Official",
+    "LIVE",
+    "canonical_merge",
+    "protected_digest_repin"
+  ]
+}

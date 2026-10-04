@@ -1,0 +1,27 @@
+{
+  "workflow": "PR31_DECISION_EVIDENCE_HANDOFF_2026_10_03",
+  "observed_at": "2026-10-03T10:17:42.819330+00:00",
+  "canonical_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "owner_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+  "PR31_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "PR31_base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "F1_integration_head": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+  "global_head": "994eb114ef14838d09d6233cfd2367d4d19738e2",
+  "open_pr_count": 31,
+  "draft_pr_count": 31,
+  "remote_branch_count": 44,
+  "existing_PR31_validation": {
+    "native_run": 37106686279,
+    "tests": 1277
+  },
+  "maturity": "SYNTHETIC_VERIFIED_PARENT_C8;SOURCE_IDENTITY_SYNTHETIC_VERIFIED",
+  "kernel": "NOT_IMPLEMENTED_PENDING_ARITHMETIC_REDUCTION",
+  "arithmetic_choice": "UNAPPROVED_NO_SELECTION",
+  "full_new_ci": "NOT_RUN_AT_BASELINE",
+  "CAL_VERIFY": 0,
+  "Holdout": 0,
+  "numeric_config_choices": 0,
+  "C8_Freeze": 0,
+  "publication": 0,
+  "canonical_merges": 0
+}

@@ -1,0 +1,429 @@
+{
+  "record": "FRESH_GIE010_CDR012_TAKEOVER",
+  "canonical_branch": "claude/investment-system-top500-validation-alrugm",
+  "canonical_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "global_read_only_head": "1620f7118dbe91283cde1cc1431cdea236ab0829",
+  "fresh_fetch": true,
+  "open_pr_count": 34,
+  "related_prs": {
+    "4": {
+      "number": 4,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "branch": "feature/track-c-evl",
+      "head": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "base_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+    },
+    "28": {
+      "number": 28,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "branch": "codex/takeover-integration-2026-10-03",
+      "head": "b20d1786aa8e8fe13476e9c0e83cf7b50794e409",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "base_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+    },
+    "30": {
+      "number": 30,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "branch": "codex/combined-integration-2026-10-03",
+      "head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "base_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+    },
+    "31": {
+      "number": 31,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "branch": "codex/track-c-gsup-v2-2026-10-03",
+      "head": "e0b6d809058511d4bef7ad1aeccad79c5eae3ff8",
+      "base": "codex/combined-integration-2026-10-03",
+      "base_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588"
+    },
+    "35": {
+      "number": 35,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "branch": "codex/integration-hardening-2026-10-03",
+      "head": "8318b78de7ebaca63b857f8c85a12d071863c492",
+      "base": "codex/track-c-gsup-v2-2026-10-03",
+      "base_sha": "e0b6d809058511d4bef7ad1aeccad79c5eae3ff8"
+    },
+    "37": {
+      "number": 37,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "branch": "feature/dynamic-workflow-m0",
+      "head": "d83c03ec0c7063dc72a23af3fea7f86fc4b6b1aa",
+      "base": "claude/investment-system-top500-validation-alrugm",
+      "base_sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+    },
+    "38": {
+      "number": 38,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "branch": "integration/next-trial-2026-10-03",
+      "head": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+      "base": "codex/combined-integration-2026-10-03",
+      "base_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588"
+    },
+    "39": {
+      "number": 39,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "branch": "integration/cdr011-trial-2026-10-04",
+      "head": "0d31e06022c3162e83f2ff5a984b07e59e4e216b",
+      "base": "codex/combined-integration-2026-10-03",
+      "base_sha": "86ad3628dd5c62c6d873e42511e577f24f4fb588"
+    }
+  },
+  "ancestry": [
+    {
+      "pr": 39,
+      "head": "0d31e06022c3162e83f2ff5a984b07e59e4e216b",
+      "branch": "integration/cdr011-trial-2026-10-04",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t186",
+      "base_merge_base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "base_behind_ahead": "0\t37"
+    },
+    {
+      "pr": 38,
+      "head": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+      "branch": "integration/next-trial-2026-10-03",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t162",
+      "base_merge_base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "base_behind_ahead": "0\t13"
+    },
+    {
+      "pr": 37,
+      "head": "d83c03ec0c7063dc72a23af3fea7f86fc4b6b1aa",
+      "branch": "feature/dynamic-workflow-m0",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t3",
+      "base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "base_behind_ahead": "0\t3"
+    },
+    {
+      "pr": 36,
+      "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "branch": "integration/web/production-state-presentation-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t23",
+      "base_merge_base": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "base_behind_ahead": "0\t4"
+    },
+    {
+      "pr": 35,
+      "head": "8318b78de7ebaca63b857f8c85a12d071863c492",
+      "branch": "codex/integration-hardening-2026-10-03",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t171",
+      "base_merge_base": "e0b6d809058511d4bef7ad1aeccad79c5eae3ff8",
+      "base_behind_ahead": "0\t6"
+    },
+    {
+      "pr": 34,
+      "head": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "branch": "integration/web/research-render-guard-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t19",
+      "base_merge_base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "base_behind_ahead": "0\t3"
+    },
+    {
+      "pr": 33,
+      "head": "9626ab06cd2b93cdd250159347cdda5d08f76e03",
+      "branch": "integration/a1-adoption/pr7-entity-metadata",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t16",
+      "base_merge_base": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "base_behind_ahead": "0\t1"
+    },
+    {
+      "pr": 32,
+      "head": "e9aee0cb8b80e17f7ae12e01156f6670135de2fa",
+      "branch": "integration/a1-adoption/pr9-producer-infra",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t17",
+      "base_merge_base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "base_behind_ahead": "0\t1"
+    },
+    {
+      "pr": 31,
+      "head": "e0b6d809058511d4bef7ad1aeccad79c5eae3ff8",
+      "branch": "codex/track-c-gsup-v2-2026-10-03",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t165",
+      "base_merge_base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "base_behind_ahead": "0\t16"
+    },
+    {
+      "pr": 30,
+      "head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "branch": "codex/combined-integration-2026-10-03",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t149",
+      "base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "base_behind_ahead": "0\t149"
+    },
+    {
+      "pr": 29,
+      "head": "d0444583197c96f61fce811573dfd59670fd4f78",
+      "branch": "codex/web-producer-integration-readiness-2026-10-03",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t19",
+      "base_merge_base": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "base_behind_ahead": "0\t1"
+    },
+    {
+      "pr": 28,
+      "head": "b20d1786aa8e8fe13476e9c0e83cf7b50794e409",
+      "branch": "codex/takeover-integration-2026-10-03",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t7",
+      "base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "base_behind_ahead": "0\t7"
+    },
+    {
+      "pr": 27,
+      "head": "dc7daf70a42fb3f2bbfe96a775a1654a92ff95c1",
+      "branch": "integration/a1-adoption/pr17-p01",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t20",
+      "base_merge_base": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "base_behind_ahead": "0\t3"
+    },
+    {
+      "pr": 26,
+      "head": "a4805dbcdf37b890f74f6d00c00952ff95b91c8f",
+      "branch": "integration/a1-adoption/pr14-leaderboard",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t6",
+      "base_merge_base": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+      "base_behind_ahead": "0\t1"
+    },
+    {
+      "pr": 25,
+      "head": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "branch": "integration/a1-adoption/pr12-macro-producer",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t19",
+      "base_merge_base": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+      "base_behind_ahead": "0\t1"
+    },
+    {
+      "pr": 24,
+      "head": "9c71781c62e46a4f2972d58c1439ef6ca2a85b07",
+      "branch": "integration/a1-adoption/pr18-us-equity-session",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t9",
+      "base_merge_base": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "base_behind_ahead": "0\t1"
+    },
+    {
+      "pr": 23,
+      "head": "5c9dd5abd760116df626e9b2e88e3fe48852066a",
+      "branch": "integration/a1-adoption/pr15-technical-model",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t6",
+      "base_merge_base": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "base_behind_ahead": "0\t1"
+    },
+    {
+      "pr": 22,
+      "head": "248e3d3e83db9a2db3d90583ae53929db936d0f3",
+      "branch": "integration/a1-adoption/pr11-technical-producer",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t4",
+      "base_merge_base": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "base_behind_ahead": "0\t1"
+    },
+    {
+      "pr": 21,
+      "head": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
+      "branch": "ccr-2e16018a-qukwmg",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t1",
+      "base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "base_behind_ahead": "0\t1"
+    },
+    {
+      "pr": 19,
+      "head": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "branch": "feature/qgv-invalidation-binding-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t18",
+      "base_merge_base": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "base_behind_ahead": "0\t1"
+    },
+    {
+      "pr": 18,
+      "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "branch": "feature/us-equity-session-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t8",
+      "base_merge_base": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "base_behind_ahead": "0\t3"
+    },
+    {
+      "pr": 17,
+      "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "branch": "feature/p01-research-publication-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t17",
+      "base_merge_base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "base_behind_ahead": "0\t1"
+    },
+    {
+      "pr": 16,
+      "head": "ef65caa5437a04610fa43f93209afb9193ba24aa",
+      "branch": "feature/sec-primary-disclosure-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t4",
+      "base_merge_base": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+      "base_behind_ahead": "0\t2"
+    },
+    {
+      "pr": 15,
+      "head": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "branch": "feature/technical-real-model-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t5",
+      "base_merge_base": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "base_behind_ahead": "0\t2"
+    },
+    {
+      "pr": 14,
+      "head": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+      "branch": "feature/leaderboard-real-producer-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t5",
+      "base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "base_behind_ahead": "0\t5"
+    },
+    {
+      "pr": 13,
+      "head": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+      "branch": "feature/rig-news-real-ingestion-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t2",
+      "base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "base_behind_ahead": "0\t2"
+    },
+    {
+      "pr": 12,
+      "head": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+      "branch": "feature/macro-real-producer-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t18",
+      "base_merge_base": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+      "base_behind_ahead": "0\t3"
+    },
+    {
+      "pr": 11,
+      "head": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "branch": "feature/technical-real-producer-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t3",
+      "base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "base_behind_ahead": "0\t3"
+    },
+    {
+      "pr": 10,
+      "head": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+      "branch": "ccr-db5d5960-qen9yi",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t8",
+      "base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "base_behind_ahead": "0\t8"
+    },
+    {
+      "pr": 9,
+      "head": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "branch": "feature/producer-infrastructure-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t16",
+      "base_merge_base": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "base_behind_ahead": "0\t6"
+    },
+    {
+      "pr": 7,
+      "head": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "branch": "ccr-41677301-10nj3u",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t15",
+      "base_merge_base": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "base_behind_ahead": "0\t5"
+    },
+    {
+      "pr": 6,
+      "head": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "branch": "feature/global-language-search-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t10",
+      "base_merge_base": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "base_behind_ahead": "0\t4"
+    },
+    {
+      "pr": 5,
+      "head": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "branch": "feature/web-mvp-v1",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t6",
+      "base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "base_behind_ahead": "0\t6"
+    },
+    {
+      "pr": 4,
+      "head": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+      "branch": "feature/track-c-evl",
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "canonical_behind_ahead": "0\t54",
+      "base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "base_behind_ahead": "0\t54"
+    }
+  ],
+  "decision": "CDR012 USER_DECIDED supplement of CDR010",
+  "risk": "CRITICAL",
+  "write_scope": [
+    "PR31",
+    "PR35",
+    "scoped status/evidence/Decision Register only"
+  ],
+  "read_only": [
+    "canonical",
+    "PR37",
+    "PR38",
+    "PR39",
+    "Global",
+    "integration owner branches"
+  ],
+  "v1_history_Frozen": "PRESERVED",
+  "actual_numeric_configuration": 0,
+  "actual_CAL_VERIFY": 0,
+  "Holdout": 0,
+  "C8_Freeze": 0,
+  "publication_Official_LIVE": 0,
+  "canonical_merge": 0,
+  "new_D3": false
+}

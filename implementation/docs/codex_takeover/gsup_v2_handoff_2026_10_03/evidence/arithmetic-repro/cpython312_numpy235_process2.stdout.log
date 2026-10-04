@@ -1,0 +1,1 @@
+{"python": "3.12.14", "numpy": "2.3.5", "fixtures": 9, "grid_checks": 176, "canonical_numeric_output_sha256": "2e773f6fbc5d715de368bd11066fbc58126bca5afdbe96788f3b36aba0e25fa1", "status": "EVIDENCE_ONLY_NO_REDUCTION_SELECTED"}

@@ -1,0 +1,41 @@
+{
+  "record": "ROOT_BOUNDED_HANDOFF_VALIDATION",
+  "recorded_at": "2026-10-03T10:42:42.165961+00:00",
+  "source_checkpoint": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "all_source_test_workflow_report_JSON_blobs_match": true,
+  "preserved_counts": {
+    "source": 215,
+    "tests": 122,
+    "workflows": 14,
+    "report_JSON": 199
+  },
+  "report_JSON_inventory_additions": 0,
+  "register_existing_prefix_sha256": "6ef0c0debeb627bc0a378930cd87102fc590cf74a2a7a3db388ed308982be5f4",
+  "register_append_only": true,
+  "fingerprints": {
+    "producer-engine": {
+      "whole_stdout_before_after_identical": true,
+      "sha256": "f690f9c08b6b2692af5c0c1cdfc957c768ffa13841406f837f4f899518320866"
+    },
+    "entity-metadata": {
+      "whole_stdout_before_after_identical": true,
+      "sha256": "bb6c330f15ad26f9ea6f99d0d341dad8768baac3e48376d46c570bdedcde1a3b"
+    }
+  },
+  "new_source_test_workflow_files": 0,
+  "new_test_cases": 0,
+  "new_fixture_definitions": 0,
+  "arithmetic_choice": null,
+  "M_v2_kernel": "NOT_IMPLEMENTED_PENDING_ARITHMETIC_REDUCTION",
+  "CAL_VERIFY_access": 0,
+  "Holdout_consumption": 0,
+  "numeric_configuration_choices": 0,
+  "C8_Freeze": 0,
+  "publication_grants": 0,
+  "Official": 0,
+  "canonical_merges": 0,
+  "current_carrier_full_pytest_at_assembly": "NOT_RUN; immutable675 source validation preserved; actual post-publish CI checked separately",
+  "BRANCH_STATE": "HANDOFF_READY_DECLARED_SYNTHETIC_IDENTITY_AND_DECISION_EVIDENCE_SCOPE",
+  "INTEGRATION_STATE": "DRAFT_PR31_NOT_MERGED",
+  "CANONICAL_STATE": "UNCHANGED_B8_NOT_MERGED"
+}
