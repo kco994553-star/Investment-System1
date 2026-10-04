@@ -1,0 +1,18 @@
+{
+  "commands": [
+    {
+      "label": "cpython311_numpy235",
+      "cmd": "/workspace/gsup-v2-oracle-venv311/bin/python -B /workspace/takeover-evidence/pr31-handoff/ce4-reconciliation/replay_exact_ce4.py --repository /workspace/gsup-v2-integration --prior-replay /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython311_numpy235_process1.json --out /workspace/takeover-evidence/pr31-handoff/ce4-reconciliation/cpython311_numpy235.json > /workspace/takeover-evidence/pr31-handoff/ce4-reconciliation/cpython311_numpy235.stdout.log 2> /workspace/takeover-evidence/pr31-handoff/ce4-reconciliation/cpython311_numpy235.stderr.log"
+    },
+    {
+      "label": "cpython312_numpy235",
+      "cmd": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python -B /workspace/takeover-evidence/pr31-handoff/ce4-reconciliation/replay_exact_ce4.py --repository /workspace/gsup-v2-integration --prior-replay /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython312_numpy235_process1.json --out /workspace/takeover-evidence/pr31-handoff/ce4-reconciliation/cpython312_numpy235.json > /workspace/takeover-evidence/pr31-handoff/ce4-reconciliation/cpython312_numpy235.stdout.log 2> /workspace/takeover-evidence/pr31-handoff/ce4-reconciliation/cpython312_numpy235.stderr.log"
+    },
+    {
+      "label": "cpython313_numpy224",
+      "cmd": "/usr/bin/python3.13 -B /workspace/takeover-evidence/pr31-handoff/ce4-reconciliation/replay_exact_ce4.py --repository /workspace/gsup-v2-integration --prior-replay /workspace/takeover-evidence/pr31-handoff/arithmetic-repro/cpython313_numpy224_process1.json --out /workspace/takeover-evidence/pr31-handoff/ce4-reconciliation/cpython313_numpy224.json > /workspace/takeover-evidence/pr31-handoff/ce4-reconciliation/cpython313_numpy224.stdout.log 2> /workspace/takeover-evidence/pr31-handoff/ce4-reconciliation/cpython313_numpy224.stderr.log"
+    }
+  ],
+  "expected_exit_code": 0,
+  "scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY"
+}

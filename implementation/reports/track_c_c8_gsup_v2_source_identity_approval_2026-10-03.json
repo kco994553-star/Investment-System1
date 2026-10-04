@@ -1,0 +1,69 @@
+{
+  "record": "TC_C8_GSUP_M_V2_AND_SOURCE_DESCRIPTOR_APPROVAL_2026_10_03",
+  "recorded_at_utc": "2026-10-03T06:56:04.745959+00:00",
+  "approval_time_source": "Current explicit user message; wall-clock approval timestamp not supplied, recorded_at is processing time",
+  "authority": "EXPLICIT_CURRENT_USER_INSTRUCTION",
+  "user_instruction_verbatim": "Track C G-SUP method decision\nM을 승인한다. 승인된 M-B simulation convention을 G-SUP의 authoritative method로 유지하고 이를 별도 v2로 구현한다. 현재 G-SUP v1은 history-preserving 방식으로 보존하며 rewrite/delete하지 않는다.\nv2는 승인된 M-B와 statistic, replicate construction, variance convention, degenerate/tie handling을 exact하게 일치시켜야 하며 independent oracle과 counterexample로 v1/v2 차이를 고정한다. 기존 v1 결과를 v2 결과로 소급 재작성하지 않는다.\n이 승인은 α, B, L/block rule, seed, effect floor, minimum support, size tolerance, dependence envelope/margin 등 실제 numeric configuration을 승인하지 않는다. CAL_VERIFY 및 Holdout 접근도 승인하지 않는다.\nG-SUP one-shot source identity\nsynthetic/software-validation 범위에서 제안된 source descriptor 구현을 승인한다.\none-shot identity는 관측값의 직렬화/content hash만으로 정의하지 않고, outcome 접근 전에 등록된 source identity, vintage identity 및 sample identity에 bind한다. 2.0 → 2 같은 의미 보존 재인코딩이나 campaign/root/label 변경으로 동일 검증 대상을 재소비할 수 없어야 한다.\n기존 profile/role grouping과 승인된 통계 kernel semantics는 변경하지 않는다. source descriptor가 없거나 lineage가 불완전하면 fail-closed한다.\n이번 승인은 실제 source taxonomy/default, 실제 CAL_VERIFY 데이터 접근, C8 foundation registry와 G-SUP registry의 통합, Holdout 소비, C8 Freeze, Official/publication을 승인하지 않는다.\n두 결정을 Decision Register에 history-preserving 방식으로 기록한 뒤, 승인 범위의 구현·negative regression·independent oracle·전체 회귀를 Autonomous Execution으로 진행하라. 기존 v1/Frozen evidence를 rewrite하지 마라.",
+  "base_head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "owner_readonly_head": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+  "method": {
+    "choice": "M",
+    "method_version": "C8_GSUP_STUDENTIZED_CBB_v2",
+    "status": "M_B_CONVENTION_APPROVED_NEW_VERSION_ONLY",
+    "exact_match_required": [
+      "statistic",
+      "replicate_construction",
+      "variance_convention",
+      "degenerate_handling",
+      "tie_handling"
+    ],
+    "v1_preservation": "IMMUTABLE_NO_RETROACTIVE_RESULT_REWRITE",
+    "numeric_configuration": "NOT_APPROVED"
+  },
+  "source_identity": {
+    "protocol_version": "C8_GSUP_SOURCE_IDENTITY_v1",
+    "status": "APPROVED_SYNTHETIC_SOFTWARE_VALIDATION_ONLY",
+    "registered_before_outcome": true,
+    "stable_identity": [
+      "source_identity",
+      "vintage_identity",
+      "sample_identity"
+    ],
+    "same_target_reencoding_campaign_root_label_bypass": "FORBIDDEN",
+    "profile_role_grouping": "UNCHANGED",
+    "missing_or_incomplete_lineage": "FAIL_CLOSED",
+    "foundation_registry_unification": "NOT_APPROVED",
+    "real_source_taxonomy_defaults": "NOT_APPROVED"
+  },
+  "not_approved": [
+    "alpha",
+    "B",
+    "L_or_block_rule",
+    "seed",
+    "effect_floor",
+    "minimum_support",
+    "size_tolerance",
+    "dependence_envelope",
+    "margin",
+    "actual_numeric_configuration",
+    "real_CAL_VERIFY_access",
+    "Holdout_consumption",
+    "C8_Freeze",
+    "Official_promotion",
+    "publication_grants",
+    "canonical_merge",
+    "deployment"
+  ],
+  "additional_discovered_boundary": {
+    "status": "USER_DECISION_REQUIRED_ARITHMETIC_REDUCTION",
+    "reason": "Approved NumPy simulation transport, scalar reference and existing math.fsum can produce different exceedance/degenerate counts with identical frozen indices; no choice inferred from M approval",
+    "M_choice_remains_approved": true
+  },
+  "state": {
+    "C0_C7": "SOFTWARE_FROZEN_UNCHANGED",
+    "C8": "NOT_FROZEN",
+    "CAL_VERIFY": "NOT_ACCESSED",
+    "Holdout": "UNCONSUMED",
+    "grants": "ALL_NONE"
+  }
+}

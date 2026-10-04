@@ -1,0 +1,320 @@
+{
+  "run_id": 37106686279,
+  "workflow": "codex-integration-readiness",
+  "run_attempt": 1,
+  "run_head_sha": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37106686279",
+  "jobs": [
+    {
+      "job_id": 111156486079,
+      "job_name": "macro-adoption-offline",
+      "run_head_sha": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "actual_checkout_sha": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "checkout_source": "connector job log git log -1 --format=%H",
+      "checkout_tree_equals_pr_head": false,
+      "status": "completed",
+      "conclusion": "success",
+      "pytest_log_summaries": [
+        "11 passed in 0.30s"
+      ],
+      "log_sha256": "45988488b9e0d27df25802a82f537f5fa0ab3565c875e6eaa893c95cd1ecff6c",
+      "printed_json_assertion_results": [],
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run python -m pip install pytest==9.1.1 numpy==2.3.5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Exact existing Macro adoption proposal; offline only",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ]
+    },
+    {
+      "job_id": 111156486141,
+      "job_name": "combined-offline",
+      "run_head_sha": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "actual_checkout_sha": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "checkout_source": "connector job log git log -1 --format=%H",
+      "checkout_tree_equals_pr_head": true,
+      "status": "completed",
+      "conclusion": "success",
+      "pytest_log_summaries": [
+        "1277 passed in 288.64s"
+      ],
+      "log_sha256": "5b43061968d0eb816fc8551fd9c0540ccc2a3e9c945e0cee03990c7f3cd9038a",
+      "printed_json_assertion_results": [],
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run python -m pip install pytest==9.1.1 numpy==2.3.5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Exact source checkpoint",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Preserve exact owner Track C and canonical Track A evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Full existing regression with actual integrated dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Producer to existing Web withheld-contract fixture",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Browser tooling",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Withheld publication, locales, mobile, loading and retry E2E",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 26
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 27
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_id": 11268445230,
+      "name": "macro-adoption-4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "github_artifact_digest": "sha256:6816821106fe6f590ffa5cc5f138fc773ed5daef559542df4409fb7b83fba19a",
+      "local_download_sha256": "6816821106fe6f590ffa5cc5f138fc773ed5daef559542df4409fb7b83fba19a",
+      "digest_verified": true,
+      "xml_results": [
+        {
+          "path": "macro-adoption-junit.xml",
+          "suites": [
+            {
+              "name": "pytest",
+              "tests": "11",
+              "failures": "0",
+              "errors": "0",
+              "skipped": "0",
+              "time": "0.298"
+            }
+          ]
+        }
+      ],
+      "browser_results": [],
+      "entity_metadata_results": [],
+      "fixture_contract_results": [],
+      "files_sha256": {
+        "macro-adoption-junit.xml": "c8c241ac4f38630544e44b6b1b5b38ef270f0c232d0272f4d8aa074e96212040"
+      },
+      "retrieval": "GitHub connector archive plus authorized file_id download"
+    },
+    {
+      "artifact_id": 11268415800,
+      "name": "codex-integration-readiness-675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+      "github_artifact_digest": "sha256:3a7054bbca344cf07bb3ff3520502f603f0d22e45efb33b24432e7d71f9aee69",
+      "local_download_sha256": "3a7054bbca344cf07bb3ff3520502f603f0d22e45efb33b24432e7d71f9aee69",
+      "digest_verified": true,
+      "xml_results": [
+        {
+          "path": "combined-junit.xml",
+          "suites": [
+            {
+              "name": "pytest",
+              "tests": "1277",
+              "failures": "0",
+              "errors": "0",
+              "skipped": "0",
+              "time": "288.619"
+            }
+          ]
+        }
+      ],
+      "browser_results": [
+        {
+          "path": "withheld-web-evidence/browser-validation.json",
+          "check_groups": 6,
+          "data": {
+            "kind": "PRODUCER_CONTRACT_WEB_BROWSER_VALIDATION_V1",
+            "passed": true,
+            "checks": [
+              "producer PASS, PARTIAL and BLOCKED remain NOT_AVAILABLE with grants NONE",
+              "original provenance, as_of, freshness and methodology survive Web build and fetch",
+              "ko/en and mobile/desktop routes disclose absence without leaking withheld values",
+              "loading is visible while contract fetch is pending",
+              "HTTP and malformed JSON fail visibly and retry restores the original bundle",
+              "bundle and search catalog bytes stay unchanged after all interactions"
+            ],
+            "errors": [],
+            "runtime": {
+              "node": "v24.21.0",
+              "chromium": "145.0.7632.6"
+            },
+            "fixture_data_sha256": "dc92e1e5e7dabd4531c389370d40b26aac8e7ff1b8f808b1a39f666e1f846de6",
+            "Actions": "NOT_RUN",
+            "real_data_validation": "NOT_RUN",
+            "research_display": "NONE",
+            "frozen_grant": "NONE",
+            "live_grant": "NONE"
+          }
+        }
+      ],
+      "entity_metadata_results": [],
+      "fixture_contract_results": [
+        {
+          "path": "withheld-web-evidence/fixture-manifest.json",
+          "data": {
+            "Actions": "NOT_RUN",
+            "bundle_canonical_sha256": "ab68d03728e88eab8a801ec45d06b86822aa9babfd4712118203709a4518580f",
+            "data_json_sha256": "dc92e1e5e7dabd4531c389370d40b26aac8e7ff1b8f808b1a39f666e1f846de6",
+            "engine_execution": "NOT_RUN",
+            "entities_json_sha256": "376611b1b78530bd487bf6b4106487f6f7f5f0b56614c4e8655b6ebb176a88f1",
+            "evaluation_clock": "2026-10-03T12:00:00+00:00",
+            "frozen_grant": "NONE",
+            "kind": "WITHHELD_PRODUCER_CONTRACT_WEB_FIXTURE_V1",
+            "live_grant": "NONE",
+            "producer_as_of": "2026-10-02T20:00:00Z",
+            "records_sha256": "6adebb3b3df2a29910a116dbf6e67e0acd4aafcd2e448f442b9b5e8fefe2690a",
+            "records_unchanged": true,
+            "research_display": "NONE",
+            "schema1_sections_unchanged": true,
+            "scope": "TEST VECTORS ONLY; NOT_REAL_DATA_VERIFIED; NO_DISPLAY_GRANT",
+            "withheld_tokens": [
+              "9876.54321",
+              "8765.43219",
+              "7654.32198",
+              "RESEARCH_REGIME_TEST_ONLY"
+            ]
+          }
+        }
+      ],
+      "files_sha256": {
+        "combined-junit.xml": "84662fb1ae4c33d95c34e7d55287a33557d959abbcdf63bb1ef1d4de795b06b0",
+        "withheld-web-evidence/withheld-home-en-390.png": "a1faf5699b29149523c7f8613841326c149b985a31ec9375742b3570e3040fb5",
+        "withheld-web-evidence/fixture-manifest.json": "0a936d571e7053bb7687fb0425826bed326782efc68d05477c441e4433a59db7",
+        "withheld-web-evidence/browser-validation.json": "92b884bd0dc3de1e68dbdfd1256658f1cbfb0c76a7d46c9f29cce063cbb4e3c6",
+        "withheld-web-evidence/records.test-vector.json": "6adebb3b3df2a29910a116dbf6e67e0acd4aafcd2e448f442b9b5e8fefe2690a"
+      },
+      "retrieval": "GitHub connector archive plus authorized file_id download"
+    }
+  ]
+}

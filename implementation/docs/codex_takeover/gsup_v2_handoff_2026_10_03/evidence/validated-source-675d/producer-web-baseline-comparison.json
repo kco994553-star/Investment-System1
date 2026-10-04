@@ -1,0 +1,24 @@
+{
+  "baseline_source_head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+  "baseline_run_id": 37102973395,
+  "final_source_head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "final_run_id": 37106686279,
+  "scope": "synthetic withheld Producer-Web artifacts only; no real numerical validation",
+  "checks": {
+    "fixture-manifest.json": {
+      "baseline86ad_sha256": "0a936d571e7053bb7687fb0425826bed326782efc68d05477c441e4433a59db7",
+      "final675d_sha256": "0a936d571e7053bb7687fb0425826bed326782efc68d05477c441e4433a59db7",
+      "byte_identical": true
+    },
+    "records.test-vector.json": {
+      "baseline86ad_sha256": "6adebb3b3df2a29910a116dbf6e67e0acd4aafcd2e448f442b9b5e8fefe2690a",
+      "final675d_sha256": "6adebb3b3df2a29910a116dbf6e67e0acd4aafcd2e448f442b9b5e8fefe2690a",
+      "byte_identical": true
+    },
+    "browser-validation.json": {
+      "baseline86ad_sha256": "92b884bd0dc3de1e68dbdfd1256658f1cbfb0c76a7d46c9f29cce063cbb4e3c6",
+      "final675d_sha256": "92b884bd0dc3de1e68dbdfd1256658f1cbfb0c76a7d46c9f29cce063cbb4e3c6",
+      "byte_identical": true
+    }
+  }
+}

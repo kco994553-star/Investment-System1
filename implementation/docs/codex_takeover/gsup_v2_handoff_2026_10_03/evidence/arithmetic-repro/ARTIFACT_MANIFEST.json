@@ -1,0 +1,138 @@
+{
+  "excludes": [
+    "ARTIFACT_MANIFEST.json"
+  ],
+  "files": [
+    {
+      "bytes": 705893,
+      "path": "COMPARISON_RESULTS.json",
+      "sha256": "5ef3031e0b96a6b7c2e3b10bdea9640aff8b70b073ed703cb74f27a556a0132a"
+    },
+    {
+      "bytes": 13324,
+      "path": "DECISION_EVIDENCE_COMPLETE_2026-10-03.md",
+      "sha256": "9d66948fdaef9a3fb14ef702d5133cc61cc8651197ddf57a10ad9cb6195e87a6"
+    },
+    {
+      "bytes": 3918,
+      "path": "EXECUTION_COMMANDS.json",
+      "sha256": "ac9b2aefb400472434219505aa205617d037212e5de1c8630cfb39bb855062f9"
+    },
+    {
+      "bytes": 5873,
+      "path": "FINAL_RECEIPT.json",
+      "sha256": "0bce7818aa97c9051f891588ff9d9d1326a45428e1c3feed58e78f6b8261069e"
+    },
+    {
+      "bytes": 7611,
+      "path": "compare_replays.py",
+      "sha256": "b1b50988c0aa0964c7181e1ccf5df6b4594a805437e15929999aed8bc2b32521"
+    },
+    {
+      "bytes": 0,
+      "path": "compare_replays.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 210,
+      "path": "compare_replays.stdout.log",
+      "sha256": "96e1129e0bdb810512d80ff2b0d7af56beb77e045f4d50447b61c71ccf8aaf16"
+    },
+    {
+      "bytes": 827676,
+      "path": "cpython311_numpy235_process1.json",
+      "sha256": "ab9e39f1954f19ef04ac211e4ae1a9d88f450aa05962811d5b533edc6fe32d6e"
+    },
+    {
+      "bytes": 0,
+      "path": "cpython311_numpy235_process1.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 227,
+      "path": "cpython311_numpy235_process1.stdout.log",
+      "sha256": "8fd4b4aad2d2d450bf118d411dbe8bb1441560fe9232483159b86ccab1597f8f"
+    },
+    {
+      "bytes": 827676,
+      "path": "cpython311_numpy235_process2.json",
+      "sha256": "ab9e39f1954f19ef04ac211e4ae1a9d88f450aa05962811d5b533edc6fe32d6e"
+    },
+    {
+      "bytes": 0,
+      "path": "cpython311_numpy235_process2.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 227,
+      "path": "cpython311_numpy235_process2.stdout.log",
+      "sha256": "8fd4b4aad2d2d450bf118d411dbe8bb1441560fe9232483159b86ccab1597f8f"
+    },
+    {
+      "bytes": 826914,
+      "path": "cpython312_numpy235_process1.json",
+      "sha256": "f95d7515ed924d8a4c994e9125436b39cf5196cf45ee06bbd8e4bee9d2052bb1"
+    },
+    {
+      "bytes": 0,
+      "path": "cpython312_numpy235_process1.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 227,
+      "path": "cpython312_numpy235_process1.stdout.log",
+      "sha256": "b14ed537341668dda374cc63773321faadeb48a520a780983cf03b30b3554208"
+    },
+    {
+      "bytes": 826914,
+      "path": "cpython312_numpy235_process2.json",
+      "sha256": "f95d7515ed924d8a4c994e9125436b39cf5196cf45ee06bbd8e4bee9d2052bb1"
+    },
+    {
+      "bytes": 0,
+      "path": "cpython312_numpy235_process2.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 227,
+      "path": "cpython312_numpy235_process2.stdout.log",
+      "sha256": "b14ed537341668dda374cc63773321faadeb48a520a780983cf03b30b3554208"
+    },
+    {
+      "bytes": 671612,
+      "path": "cpython313_numpy224_process1.json",
+      "sha256": "0c1cf30d3a0a7f32bba0f8c52ffe42058f46af78d5d6046469c1f0894b181be5"
+    },
+    {
+      "bytes": 0,
+      "path": "cpython313_numpy224_process1.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 226,
+      "path": "cpython313_numpy224_process1.stdout.log",
+      "sha256": "518ed72a6ecbb2208e046a98a2e5401b1407424f4557dac2a1b9bf77a5a1f150"
+    },
+    {
+      "bytes": 671612,
+      "path": "cpython313_numpy224_process2.json",
+      "sha256": "0c1cf30d3a0a7f32bba0f8c52ffe42058f46af78d5d6046469c1f0894b181be5"
+    },
+    {
+      "bytes": 0,
+      "path": "cpython313_numpy224_process2.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 226,
+      "path": "cpython313_numpy224_process2.stdout.log",
+      "sha256": "518ed72a6ecbb2208e046a98a2e5401b1407424f4557dac2a1b9bf77a5a1f150"
+    },
+    {
+      "bytes": 14173,
+      "path": "replay_arithmetic_candidates.py",
+      "sha256": "908085730799a76bf86fc5a43cbc43343445b72a83702a489a3675e7c080d4ec"
+    }
+  ],
+  "scope": "ARITHMETIC_DECISION_EVIDENCE_ADDITIVE_ONLY"
+}

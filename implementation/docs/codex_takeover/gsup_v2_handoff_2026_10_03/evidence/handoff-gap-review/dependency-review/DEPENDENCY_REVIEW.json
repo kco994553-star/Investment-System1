@@ -1,0 +1,304 @@
+{
+  "review": "PR31 additive handoff DAG and exact-CI qualification",
+  "review_status": "PASS_WITH_EXPLICIT_LIMITS",
+  "routing_sha": "994eb114ef14838d09d6233cfd2367d4d19738e2",
+  "PR31": {
+    "head": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+    "head_branch": "codex/track-c-gsup-v2-2026-10-03",
+    "base_branch": "codex/combined-integration-2026-10-03",
+    "state": "OPEN_DRAFT"
+  },
+  "PR35": {
+    "head": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+    "base": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "head_branch": "codex/integration-hardening-2026-10-03",
+    "base_branch": "codex/track-c-gsup-v2-2026-10-03",
+    "state": "OPEN_DRAFT",
+    "merge_base": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "ahead": 4,
+    "behind": 0,
+    "source31_is_ancestor": true,
+    "head_tree": "e236e62a6ff8b0a151710c5e7a77068d08ab0256"
+  },
+  "change_inventory_PR35": [
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/AFTER_F1_MUTATION_MATRIX.json",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/BEFORE_F1_MUTATION_MATRIX.json",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/CHECKPOINT.json",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/FINGERPRINT_AFTER.json",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/FINGERPRINT_BEFORE.json",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/SCOPED_HANDOFF.md",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/TARGETED_PYTHON311.log",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/DESIGN_REVIEW.md",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/FINAL_REVIEW.json",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/independent_probes.py",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/independent_results.json",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/old_helper_counterexample.json",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/source_inventory.json",
+    "A\timplementation/docs/codex_takeover/evidence/shared-source-hardening/independent-review/targeted-pytest.log",
+    "M\timplementation/tests/test_producer_source_compat.py",
+    "M\timplementation/tools/producer_source_compat.py"
+  ],
+  "conditional_PR31_docs_extension": {
+    "assumption": "Only k>0 new additive static reports/docs commits on source675; no PR35 merge/rewrite.",
+    "merge_base_after": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "PR35_relative_to_new_PR31": {
+      "ahead": 4,
+      "behind": "k"
+    },
+    "new_PR31_head_is_ancestor_of_existing_PR35_head": false,
+    "preserved_source675_is_ancestor_of_both": true,
+    "repair": "Normal merge new PR31 into PR35 later; no rebase/reset/force push required.",
+    "future_GitHub_synthetic_merge": "New target docs produce a new merge SHA/tree; prior d7c relation is historical."
+  },
+  "CI_qualification": {
+    "PR35_native_exact": {
+      "run_id": 37109899437,
+      "job_id": 111165610205,
+      "head": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "tests": 1295
+    },
+    "six_inherited_checkout": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+    "separate_macro_actual": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+    "different_commits_identical_tree_current_capture": [
+      {
+        "sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+        "tree": "e236e62a6ff8b0a151710c5e7a77068d08ab0256",
+        "parents": [
+          "c624bcca8ea82822fcf06cf81d71db9b99665bd2",
+          "91599ba296c9c6d8506f86b6cdb746340b6ef730"
+        ],
+        "receipt_sha256": "46807d1272b196378d41b087cae7e2793338d150f1b16092b2656e246a868798"
+      },
+      {
+        "sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+        "tree": "e236e62a6ff8b0a151710c5e7a77068d08ab0256",
+        "parents": [
+          "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+          "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f"
+        ],
+        "receipt_sha256": "533cc5ed69acd444b4bc047952e54a19e775deb66f8f39b2bbf41ac388f7cfef"
+      }
+    ],
+    "new_handoff_SHA_ci": "NOT_RUN; old exact-head CI must remain historical, even if executable bytes are preserved.",
+    "prior_PR31_source_ci": "run37106686279/1277 only source675; source reference only, not re-executed by this reviewer."
+  },
+  "workflows_raw_log_verified": [
+    {
+      "workflow": "qgv-invalidation-binding",
+      "run_id": 37109899449,
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610311,
+          "actual_checkout_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+          "checkout_kind": "GITHUB_SYNTHETIC_PR_MERGE_DISTINCT_COMMIT_IDENTICAL_TREE",
+          "pytest_passed": 1295,
+          "summary": "1295 passed in 471.93s (0:07:51)",
+          "raw_log_sha256": "bcd90c4798013925769b0074998a967c30c1a25df1cc031314bdbb8b42d20350",
+          "checkout_and_count_independently_found": true,
+          "api_status": "completed",
+          "api_conclusion": "success",
+          "jobs_api_receipt_sha256": "e1c777db6c900d3a6bc9a18e1ebe3f3f9266cd8cbbca239a30d61d11750f4539"
+        }
+      ]
+    },
+    {
+      "workflow": "codex-integration-readiness",
+      "run_id": 37109899437,
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610205,
+          "actual_checkout_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+          "checkout_kind": "EXACT_PR_HEAD",
+          "pytest_passed": 1295,
+          "summary": "1295 passed in 439.44s (0:07:19)",
+          "raw_log_sha256": "ac5f73c948f0f0028a30656f993960234cbf619866b59f33e2c905ee4c944736",
+          "checkout_and_count_independently_found": true,
+          "api_status": "completed",
+          "api_conclusion": "success",
+          "jobs_api_receipt_sha256": "097ba3106d19a351afba0390e274b32a670aef1c2b5947a1f4a8906828e650c9"
+        },
+        {
+          "job_id": 111165610337,
+          "actual_checkout_sha": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+          "checkout_kind": "PINNED_MACRO_ADOPTION_PROPOSAL",
+          "pytest_passed": 11,
+          "summary": "11 passed in 0.30s",
+          "raw_log_sha256": "913e1b16e641f35d8ad41ff336e62d240a7e972baf5f7dceeb23c996f816b6d4",
+          "checkout_and_count_independently_found": true,
+          "api_status": "completed",
+          "api_conclusion": "success",
+          "jobs_api_receipt_sha256": "097ba3106d19a351afba0390e274b32a670aef1c2b5947a1f4a8906828e650c9"
+        }
+      ]
+    },
+    {
+      "workflow": "technical-real-model",
+      "run_id": 37109899400,
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610080,
+          "actual_checkout_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+          "checkout_kind": "GITHUB_SYNTHETIC_PR_MERGE_DISTINCT_COMMIT_IDENTICAL_TREE",
+          "pytest_passed": 1295,
+          "summary": "1295 passed in 482.84s (0:08:02)",
+          "raw_log_sha256": "e7801b8dbad54bd40780bb4f3d66e7aed17d76bb02e96bce851648e0f992b387",
+          "checkout_and_count_independently_found": true,
+          "api_status": "completed",
+          "api_conclusion": "success",
+          "jobs_api_receipt_sha256": "54102cee6e31058761641805fe085675807e8c2b0a680096f9773bced0105730"
+        }
+      ]
+    },
+    {
+      "workflow": "sec-primary-disclosure",
+      "run_id": 37109899391,
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610029,
+          "actual_checkout_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+          "checkout_kind": "GITHUB_SYNTHETIC_PR_MERGE_DISTINCT_COMMIT_IDENTICAL_TREE",
+          "pytest_passed": 1295,
+          "summary": "1295 passed in 497.52s (0:08:17)",
+          "raw_log_sha256": "b8a63574d06a69d1c81f9317f19eb657dc04bbc36c23c8c98644dc8feff3ce76",
+          "checkout_and_count_independently_found": true,
+          "api_status": "completed",
+          "api_conclusion": "success",
+          "jobs_api_receipt_sha256": "c804b52953d624a556a953a390d537b858801af0c9e5dc96b648e1ec6109776b"
+        }
+      ]
+    },
+    {
+      "workflow": "technical-real-producer",
+      "run_id": 37109899401,
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610061,
+          "actual_checkout_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+          "checkout_kind": "GITHUB_SYNTHETIC_PR_MERGE_DISTINCT_COMMIT_IDENTICAL_TREE",
+          "pytest_passed": 1295,
+          "summary": "1295 passed in 310.05s (0:05:10)",
+          "raw_log_sha256": "452132784aed4f63c931bad3948c233f1467557eff8ae7683f950429f4da9dce",
+          "checkout_and_count_independently_found": true,
+          "api_status": "completed",
+          "api_conclusion": "success",
+          "jobs_api_receipt_sha256": "30fd19594504747e122d69b2f115a25f474da8c3079ef6d3ad1a40be2362dbb6"
+        }
+      ]
+    },
+    {
+      "workflow": "us-equity-session",
+      "run_id": 37109899426,
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610208,
+          "actual_checkout_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+          "checkout_kind": "GITHUB_SYNTHETIC_PR_MERGE_DISTINCT_COMMIT_IDENTICAL_TREE",
+          "pytest_passed": 1295,
+          "summary": "1295 passed in 282.46s (0:04:42)",
+          "raw_log_sha256": "d35647a19ba29305677e791315a06d5cd6bbaa3c6390de6a20d0b277803dc830",
+          "checkout_and_count_independently_found": true,
+          "api_status": "completed",
+          "api_conclusion": "success",
+          "jobs_api_receipt_sha256": "98987c5da81a7b5cb22413828319e350affe90b7fda78b310160603cb1ef2710"
+        }
+      ]
+    },
+    {
+      "workflow": "p01-research-publication",
+      "run_id": 37109899414,
+      "enclosing_run_head_sha": "fc6720bdc8143e97bf25e37e4091b1f2aa54b69f",
+      "state": "CURRENT_COMPLETED_SUCCESS",
+      "jobs": [
+        {
+          "job_id": 111165610042,
+          "actual_checkout_sha": "d7c9908c827cac1a53e5b1654e0a7502ee10b34d",
+          "checkout_kind": "GITHUB_SYNTHETIC_PR_MERGE_DISTINCT_COMMIT_IDENTICAL_TREE",
+          "pytest_passed": 1295,
+          "summary": "1295 passed in 290.54s (0:04:50)",
+          "raw_log_sha256": "0ad76b4f633f373c9fd6cd02316feab508534b214623e8b64b5a3fc70c87635f",
+          "checkout_and_count_independently_found": true,
+          "api_status": "completed",
+          "api_conclusion": "success",
+          "jobs_api_receipt_sha256": "d2bf364be665c931ecbc7c222796d4bd810a7a5f2c255ba9ece24fd0c65322ba"
+        }
+      ]
+    }
+  ],
+  "artifact_junit_verified": [
+    {
+      "path": "37109899437/combined-extracted/combined-junit.xml",
+      "sha256": "ab28332e5dca372f613b94275484583ff7754d52b7fb24cf9290dede06bed03a",
+      "tests": 1295,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "37109899437/macro-extracted/macro-adoption-junit.xml",
+      "sha256": "bf160543d81fa4d7c14585f67c949933ba40220eb129fe954b90f21bc79668e7",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "docs_only_risks": [
+    {
+      "kind": "REPORT_INVENTORY_HASH",
+      "source": "implementation/docs/entity_metadata/evidence/numeric_fingerprint.py:46",
+      "effect": "Any added reports/**/*.json outside entity_metadata adds a reports_sha256 entry and changes whole stdout digest. Engine and existing-report values may remain identical; separately classify new inventory and preserve old pin/evidence."
+    },
+    {
+      "kind": "HISTORICAL_NEW_FILE_ALLOWLIST",
+      "source": "implementation/tools/track_c_c8_partial_acceptance.py:44",
+      "effect": "Historical C6/C7/C8 acceptance tools only allow new report paths beginning implementation/reports/track_c_ among their report exceptions. New docs/other report folders can be listed unauthorized, in addition to pre-existing combined additions. No blanket raw tool PASS without exact scope qualification."
+    },
+    {
+      "kind": "SOURCE_CODE_HASH",
+      "source": "implementation/src/investment_system/evl/calibration_contracts.py:74",
+      "effect": "C8 code_hash and C6 fixture CODE hash Python files under src/investment_system only; additive static reports/docs preserve these if src remains exact. Existing approval JSON path/blob guards still require exact preservation."
+    },
+    {
+      "kind": "TEST_DISCOVERY",
+      "source": "Default pytest collection",
+      "effect": "Keep handoff additions static JSON/Markdown/artifact logs. New test_*.py files under docs can affect discovery and invalidate an assumption of unchanged collected tests."
+    },
+    {
+      "kind": "EXACT_CI_AND_TRIGGERS",
+      "source": ".github/workflows/codex-integration-readiness.yml:2",
+      "effect": "Docs-only tip does not establish new exact-SHA CI. PR31 overall three-dot change includes existing G-SUP source paths, so a synchronize may trigger workflow despite tip being docs-only; actual dispatch/run result must be observed."
+    },
+    {
+      "kind": "CURRENT_OWNER_EXCLUSION",
+      "source": "CDR-008/009 at routing994eb",
+      "effect": "Only Codex owns its scoped handoff; do not rewrite Global/register/approvals or another owner source. DONE/HANDOFF_READY releases named active-write exclusion but does not approve numerical convention, Frozen/grant/canonical merge."
+    }
+  ],
+  "review_execution": {
+    "full_suite": "NOT_RUN",
+    "Actions_dispatch": "NOT_RUN",
+    "network_mutations": 0,
+    "repository_ref_mutations": 0,
+    "source_or_register_or_Global_edits": 0,
+    "notes_only_directory": "/workspace/takeover-evidence/pr31-handoff/handoff-gap-review/dependency-review"
+  },
+  "states": {
+    "BRANCH_STATE": "CURRENT_SOURCE_DAG_VERIFIED; new handoff head pending",
+    "INTEGRATION_STATE": "PR35 descendant of old675; future PR31 extension requires normal forward integration",
+    "CANONICAL_STATE": "NOT_MERGED_UNCHANGED"
+  },
+  "USER_DECISION_REQUIRED": "Arithmetic reduction remains unapproved; not an obstacle to this static exact handoff."
+}

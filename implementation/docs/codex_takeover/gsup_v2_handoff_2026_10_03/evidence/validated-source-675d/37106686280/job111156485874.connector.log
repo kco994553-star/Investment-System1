@@ -1,0 +1,258 @@
+﻿2026-10-03T07:32:34.7824272Z Current runner version: '2.337.0'
+2026-10-03T07:32:34.7863826Z ##[group]Runner Image Provisioner
+2026-10-03T07:32:34.7865492Z Hosted Compute Agent
+2026-10-03T07:32:34.7866348Z Version: 20260901.588
+2026-10-03T07:32:34.7867654Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-03T07:32:34.7868863Z Build Date: 2026-09-01T19:56:44Z
+2026-10-03T07:32:34.7870051Z Worker ID: {8005c5b9-f116-4c8c-95fb-7defc8ed08cb}
+2026-10-03T07:32:34.7871358Z Azure Region: eastus
+2026-10-03T07:32:34.7872245Z ##[endgroup]
+2026-10-03T07:32:34.7874840Z ##[group]Operating System
+2026-10-03T07:32:34.7875893Z Ubuntu
+2026-10-03T07:32:34.7876775Z 24.04.5
+2026-10-03T07:32:34.7878005Z LTS
+2026-10-03T07:32:34.7878899Z ##[endgroup]
+2026-10-03T07:32:34.7879863Z ##[group]Runner Image
+2026-10-03T07:32:34.7880821Z Image: ubuntu-24.04
+2026-10-03T07:32:34.7881877Z Version: 20260927.320.1
+2026-10-03T07:32:34.7884065Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-03T07:32:34.7886871Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-03T07:32:34.7888857Z ##[endgroup]
+2026-10-03T07:32:34.7890786Z ##[group]GITHUB_TOKEN Permissions
+2026-10-03T07:32:34.7893755Z Contents: read
+2026-10-03T07:32:34.7894816Z Metadata: read
+2026-10-03T07:32:34.7895955Z ##[endgroup]
+2026-10-03T07:32:34.7899444Z Secret source: Actions
+2026-10-03T07:32:34.7901027Z Cache mode: write
+2026-10-03T07:32:34.7902224Z Prepare workflow directory
+2026-10-03T07:32:34.8397082Z Prepare all required actions
+2026-10-03T07:32:34.8471182Z Getting action download info
+2026-10-03T07:32:35.0453124Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-03T07:32:35.1448372Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-10-03T07:32:35.3361707Z Complete job name: offline
+2026-10-03T07:32:35.4177996Z ##[group]Run actions/checkout@v4
+2026-10-03T07:32:35.4179017Z with:
+2026-10-03T07:32:35.4179493Z   fetch-depth: 0
+2026-10-03T07:32:35.4180017Z   repository: kco994553-star/Investment-System1
+2026-10-03T07:32:35.4183836Z   token: ***
+2026-10-03T07:32:35.4184283Z   ssh-strict: true
+2026-10-03T07:32:35.4184731Z   ssh-user: git
+2026-10-03T07:32:35.4185188Z   persist-credentials: true
+2026-10-03T07:32:35.4185686Z   clean: true
+2026-10-03T07:32:35.4186147Z   sparse-checkout-cone-mode: true
+2026-10-03T07:32:35.4186688Z   fetch-tags: false
+2026-10-03T07:32:35.4187153Z   show-progress: true
+2026-10-03T07:32:35.4187812Z   lfs: false
+2026-10-03T07:32:35.4188236Z   submodules: false
+2026-10-03T07:32:35.4188689Z   set-safe-directory: true
+2026-10-03T07:32:35.4189212Z   allow-unsafe-pr-checkout: false
+2026-10-03T07:32:35.4190023Z ##[endgroup]
+2026-10-03T07:32:35.5238942Z Syncing repository: kco994553-star/Investment-System1
+2026-10-03T07:32:35.5241742Z ##[group]Getting Git version info
+2026-10-03T07:32:35.5243158Z Working directory is '/home/runner/work/Investment-System1/Investment-System1'
+2026-10-03T07:32:35.5245003Z [command]/usr/bin/git version
+2026-10-03T07:32:35.5306191Z git version 2.55.0
+2026-10-03T07:32:35.5331207Z ##[endgroup]
+2026-10-03T07:32:35.5346574Z Temporarily overriding HOME='/home/runner/work/_temp/556c1705-3bfc-40a3-a47e-d7b4a42c720f' before making global git config changes
+2026-10-03T07:32:35.5349252Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-03T07:32:35.5352735Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Investment-System1/Investment-System1
+2026-10-03T07:32:35.5412196Z Deleting the contents of '/home/runner/work/Investment-System1/Investment-System1'
+2026-10-03T07:32:35.5417676Z ##[group]Initializing the repository
+2026-10-03T07:32:35.5422705Z [command]/usr/bin/git init /home/runner/work/Investment-System1/Investment-System1
+2026-10-03T07:32:35.5541254Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-03T07:32:35.5544967Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-03T07:32:35.5546824Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-03T07:32:35.5548249Z hint: call:
+2026-10-03T07:32:35.5548948Z hint:
+2026-10-03T07:32:35.5549871Z hint: 	git config --global init.defaultBranch <name>
+2026-10-03T07:32:35.5550869Z hint:
+2026-10-03T07:32:35.5551787Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-03T07:32:35.5553285Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-03T07:32:35.5554588Z hint:
+2026-10-03T07:32:35.5555318Z hint: 	git branch -m <name>
+2026-10-03T07:32:35.5556127Z hint:
+2026-10-03T07:32:35.5557143Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-03T07:32:35.5559392Z Initialized empty Git repository in /home/runner/work/Investment-System1/Investment-System1/.git/
+2026-10-03T07:32:35.5561432Z [command]/usr/bin/git remote add origin https://github.com/kco994553-star/Investment-System1
+2026-10-03T07:32:35.5612151Z ##[endgroup]
+2026-10-03T07:32:35.5613443Z ##[group]Disabling automatic garbage collection
+2026-10-03T07:32:35.5617016Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-03T07:32:35.5653158Z ##[endgroup]
+2026-10-03T07:32:35.5654278Z ##[group]Setting up auth
+2026-10-03T07:32:35.5661041Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T07:32:35.5700298Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T07:32:35.6143176Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T07:32:35.6184017Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T07:32:35.6418354Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T07:32:35.6456244Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T07:32:35.6689030Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-03T07:32:35.6732992Z ##[endgroup]
+2026-10-03T07:32:35.6733830Z ##[group]Fetching the repository
+2026-10-03T07:32:35.6744435Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/* +547676da75308b02a35f9cef1b5be3b028bdf101:refs/remotes/pull/31/merge
+2026-10-03T07:32:36.4658517Z From https://github.com/kco994553-star/Investment-System1
+2026-10-03T07:32:36.4660871Z  * [new branch]      ccr-22e3ff16-p7n5k5                      -> origin/ccr-22e3ff16-p7n5k5
+2026-10-03T07:32:36.4663117Z  * [new branch]      ccr-2e16018a-qukwmg                      -> origin/ccr-2e16018a-qukwmg
+2026-10-03T07:32:36.4665412Z  * [new branch]      ccr-41677301-10nj3u                      -> origin/ccr-41677301-10nj3u
+2026-10-03T07:32:36.4668019Z  * [new branch]      ccr-db5d5960-qen9yi                      -> origin/ccr-db5d5960-qen9yi
+2026-10-03T07:32:36.4670027Z  * [new branch]      ccr-e0fc1e48-9tcto3                      -> origin/ccr-e0fc1e48-9tcto3
+2026-10-03T07:32:36.4672616Z  * [new branch]      claude/investment-system-top500-validation-alrugm -> origin/claude/investment-system-top500-validation-alrugm
+2026-10-03T07:32:36.4675521Z  * [new branch]      claude/lol-coach-relay-format-y8uk0x     -> origin/claude/lol-coach-relay-format-y8uk0x
+2026-10-03T07:32:36.4678467Z  * [new branch]      claude/track-d-rig-news-p0-ot2gy6        -> origin/claude/track-d-rig-news-p0-ot2gy6
+2026-10-03T07:32:36.4680842Z  * [new branch]      codex/combined-integration-2026-10-03    -> origin/codex/combined-integration-2026-10-03
+2026-10-03T07:32:36.4683026Z  * [new branch]      codex/takeover-integration-2026-10-03    -> origin/codex/takeover-integration-2026-10-03
+2026-10-03T07:32:36.4685576Z  * [new branch]      codex/track-c-gsup-v2-2026-10-03         -> origin/codex/track-c-gsup-v2-2026-10-03
+2026-10-03T07:32:36.4688508Z  * [new branch]      codex/web-producer-integration-readiness-2026-10-03 -> origin/codex/web-producer-integration-readiness-2026-10-03
+2026-10-03T07:32:36.4690090Z  * [new branch]      docs/qgv-context-policy-approvals        -> origin/docs/qgv-context-policy-approvals
+2026-10-03T07:32:36.4691411Z  * [new branch]      feature/global-language-search-v1        -> origin/feature/global-language-search-v1
+2026-10-03T07:32:36.4692797Z  * [new branch]      feature/leaderboard-real-producer-v1     -> origin/feature/leaderboard-real-producer-v1
+2026-10-03T07:32:36.4694089Z  * [new branch]      feature/macro-real-producer-v1           -> origin/feature/macro-real-producer-v1
+2026-10-03T07:32:36.4695351Z  * [new branch]      feature/p01-research-publication-v1      -> origin/feature/p01-research-publication-v1
+2026-10-03T07:32:36.4697161Z  * [new branch]      feature/producer-infrastructure-v1       -> origin/feature/producer-infrastructure-v1
+2026-10-03T07:32:36.4698948Z  * [new branch]      feature/qgv-invalidation-binding-v1      -> origin/feature/qgv-invalidation-binding-v1
+2026-10-03T07:32:36.4700861Z  * [new branch]      feature/rig-news-real-ingestion-v1       -> origin/feature/rig-news-real-ingestion-v1
+2026-10-03T07:32:36.4702796Z  * [new branch]      feature/sec-primary-disclosure-v1        -> origin/feature/sec-primary-disclosure-v1
+2026-10-03T07:32:36.4704055Z  * [new branch]      feature/technical-real-model-v1          -> origin/feature/technical-real-model-v1
+2026-10-03T07:32:36.4705299Z  * [new branch]      feature/technical-real-producer-v1       -> origin/feature/technical-real-producer-v1
+2026-10-03T07:32:36.4706707Z  * [new branch]      feature/track-c-evl                      -> origin/feature/track-c-evl
+2026-10-03T07:32:36.4708125Z  * [new branch]      feature/track-d-rig-news                 -> origin/feature/track-d-rig-news
+2026-10-03T07:32:36.4709324Z  * [new branch]      feature/track-e-prompt-library-v1        -> origin/feature/track-e-prompt-library-v1
+2026-10-03T07:32:36.4710537Z  * [new branch]      feature/us-equity-session-v1             -> origin/feature/us-equity-session-v1
+2026-10-03T07:32:36.4711612Z  * [new branch]      feature/web-mvp-v1                       -> origin/feature/web-mvp-v1
+2026-10-03T07:32:36.4712952Z  * [new branch]      integration/a1-adoption/pr11-technical-producer -> origin/integration/a1-adoption/pr11-technical-producer
+2026-10-03T07:32:36.4714634Z  * [new branch]      integration/a1-adoption/pr12-macro-producer -> origin/integration/a1-adoption/pr12-macro-producer
+2026-10-03T07:32:36.4716044Z  * [new branch]      integration/a1-adoption/pr14-leaderboard -> origin/integration/a1-adoption/pr14-leaderboard
+2026-10-03T07:32:36.4718043Z  * [new branch]      integration/a1-adoption/pr15-technical-model -> origin/integration/a1-adoption/pr15-technical-model
+2026-10-03T07:32:36.4719600Z  * [new branch]      integration/a1-adoption/pr17-p01         -> origin/integration/a1-adoption/pr17-p01
+2026-10-03T07:32:36.4722747Z  * [new branch]      integration/a1-adoption/pr18-us-equity-session -> origin/integration/a1-adoption/pr18-us-equity-session
+2026-10-03T07:32:36.4724324Z  * [new branch]      integration/claude-worker-contract-v1    -> origin/integration/claude-worker-contract-v1
+2026-10-03T07:32:36.4725567Z  * [new branch]      integration/global-handoff-v1            -> origin/integration/global-handoff-v1
+2026-10-03T07:32:36.4726820Z  * [new branch]      integration/web-mvp-language-search      -> origin/integration/web-mvp-language-search
+2026-10-03T07:32:36.4728874Z  * [new branch]      integration/web-mvp-language-search-audit -> origin/integration/web-mvp-language-search-audit
+2026-10-03T07:32:36.4730264Z  * [new branch]      recovery/track-a-real-data-frozen        -> origin/recovery/track-a-real-data-frozen
+2026-10-03T07:32:36.4731532Z  * [new ref]         547676da75308b02a35f9cef1b5be3b028bdf101 -> pull/31/merge
+2026-10-03T07:32:36.4733696Z ##[endgroup]
+2026-10-03T07:32:36.4734501Z ##[group]Determining the checkout info
+2026-10-03T07:32:36.4735341Z ##[endgroup]
+2026-10-03T07:32:36.4735835Z [command]/usr/bin/git sparse-checkout disable
+2026-10-03T07:32:36.4788905Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-03T07:32:36.4825579Z ##[group]Checking out the ref
+2026-10-03T07:32:36.4830947Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/31/merge
+2026-10-03T07:32:36.9414746Z Note: switching to 'refs/remotes/pull/31/merge'.
+2026-10-03T07:32:36.9415864Z 
+2026-10-03T07:32:36.9416174Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-03T07:32:36.9416813Z changes and commit them, and you can discard any commits you make in this
+2026-10-03T07:32:36.9417939Z state without impacting any branches by switching back to a branch.
+2026-10-03T07:32:36.9418362Z 
+2026-10-03T07:32:36.9418618Z If you want to create a new branch to retain commits you create, you may
+2026-10-03T07:32:36.9419198Z do so (now or later) by using -c with the switch command. Example:
+2026-10-03T07:32:36.9419506Z 
+2026-10-03T07:32:36.9419671Z   git switch -c <new-branch-name>
+2026-10-03T07:32:36.9419917Z 
+2026-10-03T07:32:36.9420081Z Or undo this operation with:
+2026-10-03T07:32:36.9420292Z 
+2026-10-03T07:32:36.9420465Z   git switch -
+2026-10-03T07:32:36.9420660Z 
+2026-10-03T07:32:36.9420990Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-03T07:32:36.9421372Z 
+2026-10-03T07:32:36.9421783Z HEAD is now at 547676d Merge 675d0d298fbaab5b8473ed048a561ef84e2f3e78 into 86ad3628dd5c62c6d873e42511e577f24f4fb588
+2026-10-03T07:32:36.9458074Z ##[endgroup]
+2026-10-03T07:32:36.9506883Z [command]/usr/bin/git log -1 --format=%H
+2026-10-03T07:32:36.9536878Z 547676da75308b02a35f9cef1b5be3b028bdf101
+2026-10-03T07:32:36.9893647Z ##[group]Run actions/setup-python@v5
+2026-10-03T07:32:36.9894102Z with:
+2026-10-03T07:32:36.9894412Z   python-version: 3.11
+2026-10-03T07:32:36.9894750Z   check-latest: false
+2026-10-03T07:32:36.9897989Z   token: ***
+2026-10-03T07:32:36.9898349Z   update-environment: true
+2026-10-03T07:32:36.9898710Z   allow-prereleases: false
+2026-10-03T07:32:36.9899046Z   freethreaded: false
+2026-10-03T07:32:36.9899397Z ##[endgroup]
+2026-10-03T07:32:37.1303361Z ##[group]Installed versions
+2026-10-03T07:32:37.1395504Z (node:2291) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-03T07:32:37.1397669Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-03T07:32:37.1398631Z Successfully set up CPython (3.11.16)
+2026-10-03T07:32:37.1399863Z ##[endgroup]
+2026-10-03T07:32:37.1580351Z ##[group]Run python -m pip install pytest==9.1.1 numpy==2.3.5
+2026-10-03T07:32:37.1581053Z [36;1mpython -m pip install pytest==9.1.1 numpy==2.3.5[0m
+2026-10-03T07:32:37.1932332Z shell: /usr/bin/bash -e {0}
+2026-10-03T07:32:37.1932931Z env:
+2026-10-03T07:32:37.1933456Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T07:32:37.1934279Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-03T07:32:37.1935076Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T07:32:37.1935787Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T07:32:37.1936527Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T07:32:37.1937510Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-03T07:32:37.1938179Z ##[endgroup]
+2026-10-03T07:32:38.1186851Z Collecting pytest==9.1.1
+2026-10-03T07:32:38.1756994Z   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+2026-10-03T07:32:38.3833511Z Collecting numpy==2.3.5
+2026-10-03T07:32:38.3894318Z   Downloading numpy-2.3.5-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+2026-10-03T07:32:38.4243623Z Collecting iniconfig>=1.0.1 (from pytest==9.1.1)
+2026-10-03T07:32:38.4284227Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+2026-10-03T07:32:38.4433490Z Collecting packaging>=22 (from pytest==9.1.1)
+2026-10-03T07:32:38.4473940Z   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+2026-10-03T07:32:38.4595967Z Collecting pluggy<2,>=1.5 (from pytest==9.1.1)
+2026-10-03T07:32:38.4633840Z   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+2026-10-03T07:32:38.4809523Z Collecting pygments>=2.7.2 (from pytest==9.1.1)
+2026-10-03T07:32:38.4849663Z   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+2026-10-03T07:32:38.4977346Z Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+2026-10-03T07:32:38.5191392Z Downloading numpy-2.3.5-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.9 MB)
+2026-10-03T07:32:38.6429928Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 143.3 MB/s  0:00:00
+2026-10-03T07:32:38.6474279Z Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+2026-10-03T07:32:38.6539043Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+2026-10-03T07:32:38.6603039Z Downloading packaging-26.3-py3-none-any.whl (129 kB)
+2026-10-03T07:32:38.6667445Z Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+2026-10-03T07:32:38.6749166Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 180.9 MB/s  0:00:00
+2026-10-03T07:32:38.7761004Z Installing collected packages: pygments, pluggy, packaging, numpy, iniconfig, pytest
+2026-10-03T07:32:41.7663971Z 
+2026-10-03T07:32:41.7676027Z Successfully installed iniconfig-2.3.0 numpy-2.3.5 packaging-26.3 pluggy-1.6.0 pygments-2.21.0 pytest-9.1.1
+2026-10-03T07:32:41.8412815Z ##[group]Run PYTHONPATH=src python -m pytest -q
+2026-10-03T07:32:41.8413243Z [36;1mPYTHONPATH=src python -m pytest -q[0m
+2026-10-03T07:32:41.8480648Z shell: /usr/bin/bash -e {0}
+2026-10-03T07:32:41.8480913Z env:
+2026-10-03T07:32:41.8481200Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T07:32:41.8481649Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-03T07:32:41.8482107Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T07:32:41.8482495Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T07:32:41.8482905Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T07:32:41.8483307Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-03T07:32:41.8483643Z ##[endgroup]
+2026-10-03T07:32:53.4918628Z ........................................................................ [  5%]
+2026-10-03T07:33:02.3632967Z ........................................................................ [ 11%]
+2026-10-03T07:33:03.0884785Z ........................................................................ [ 16%]
+2026-10-03T07:33:03.8642319Z ........................................................................ [ 22%]
+2026-10-03T07:33:31.5580158Z ........................................................................ [ 28%]
+2026-10-03T07:33:56.3173821Z ........................................................................ [ 33%]
+2026-10-03T07:34:38.5659008Z ........................................................................ [ 39%]
+2026-10-03T07:38:16.0001025Z ........................................................................ [ 45%]
+2026-10-03T07:38:29.6254713Z ........................................................................ [ 50%]
+2026-10-03T07:40:22.6673163Z ........................................................................ [ 56%]
+2026-10-03T07:40:24.0560709Z ........................................................................ [ 62%]
+2026-10-03T07:40:26.6455851Z ........................................................................ [ 67%]
+2026-10-03T07:40:28.5809669Z ........................................................................ [ 73%]
+2026-10-03T07:40:30.8416304Z ........................................................................ [ 78%]
+2026-10-03T07:40:32.7607445Z ........................................................................ [ 84%]
+2026-10-03T07:40:33.3376184Z ........................................................................ [ 90%]
+2026-10-03T07:40:33.6013622Z ........................................................................ [ 95%]
+2026-10-03T07:40:34.2909981Z .....................................................                    [100%]
+2026-10-03T07:40:34.2912167Z 1277 passed in 471.94s (0:07:51)
+2026-10-03T07:40:34.4415199Z Post job cleanup.
+2026-10-03T07:40:34.5702335Z (node:2611) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-03T07:40:34.5703377Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-03T07:40:34.5972748Z Post job cleanup.
+2026-10-03T07:40:34.6994862Z [command]/usr/bin/git version
+2026-10-03T07:40:34.7053467Z git version 2.55.0
+2026-10-03T07:40:34.7102444Z Temporarily overriding HOME='/home/runner/work/_temp/14ed7b46-6e16-4fc7-a217-72f9a219c36f' before making global git config changes
+2026-10-03T07:40:34.7104093Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-03T07:40:34.7112002Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Investment-System1/Investment-System1
+2026-10-03T07:40:34.7159730Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T07:40:34.7203400Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T07:40:34.7523554Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T07:40:34.7556888Z http.https://github.com/.extraheader
+2026-10-03T07:40:34.7570972Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-03T07:40:34.7606719Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T07:40:34.7888317Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T07:40:34.7926756Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T07:40:34.8336596Z Cleaning up orphan processes
+2026-10-03T07:40:34.8669168Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+
