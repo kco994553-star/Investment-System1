@@ -89,13 +89,19 @@ def test_fpia_files_complement_clean(tmp_path):
     for path in TESTS:
         changes["implementation/tests/" + path.name] = path.read_bytes()
     changes[".github/workflows/track-c-fpia.yml"] = WORKFLOW.read_bytes()
+    vendor = "implementation/tools/integration/_vendor/"
+    for path in sorted((FPIA_DIR / "_vendor").rglob("*")):
+        if path.is_file() and "__pycache__" not in path.parts:
+            changes[vendor + path.relative_to(FPIA_DIR / "_vendor").as_posix()] = path.read_bytes()
+    assert vendor + "yaml/__init__.py" in changes
     T = w.git.change(w.c["T0"], changes, "add FPIA files")
     a = w.audit(T)
     assert a.ref_status == "PASS"
     assert a.static_findings == [], a.static_findings
     for p in changes:
         assert not a.proj.ns(p), p
-        assert not p.endswith("__init__.py") and "conftest" not in p
+        assert "conftest" not in p
+        assert not p.endswith("__init__.py") or p.startswith(vendor), p   # packages only in FPIA's new _vendor tree
 
 
 def test_workflow_contract_pull_request_and_dispatch():

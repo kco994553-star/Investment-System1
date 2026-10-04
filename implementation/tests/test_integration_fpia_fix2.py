@@ -535,9 +535,9 @@ def test_summary_without_site_values_has_no_empty_parentheses():
     assert "NOT_RUN ()" not in fpia.summary_line(result)
 
 
-# ---- G7: PR trigger scope; PyYAML pinned ------------------------------------------------------------------
+# ---- G7: PR trigger scope; PyYAML vendored, not installed ----------------------------------------------------
 def test_workflow_pull_request_scope_integration_branches():
-    import yaml
+    yaml = fw.yaml
     path = tk.REPO_ROOT / ".github" / "workflows" / "track-c-fpia.yml"
     doc = yaml.safe_load(path.read_text())
     on = doc.get("on", doc.get(True))
@@ -548,7 +548,7 @@ def test_workflow_pull_request_scope_integration_branches():
                     "startsWith(github.event.pull_request.base.ref, 'integration/') || "
                     "startsWith(github.event.pull_request.head.ref, 'integration/')")
     install = [s["run"] for s in doc["jobs"]["fpia"]["steps"] if "pip install" in s.get("run", "")]
-    assert install and "PyYAML==" in install[0]
+    assert install and "PyYAML" not in install[0] and "pytest==9.1.1" in install[0]   # the audit uses _vendor/yaml
     assert "FPIA applies to merge results containing R" in path.read_text()
 
 

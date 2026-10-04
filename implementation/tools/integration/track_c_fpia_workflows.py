@@ -42,8 +42,11 @@ import re
 import shlex
 import unicodedata
 
-try:
-    import yaml
+try:  # vendored pure-Python PyYAML 6.0.1 (_vendor/README.md); never an installed copy
+    if __package__:
+        from ._vendor import yaml
+    else:
+        from _vendor import yaml
 except ImportError:  # fail-closed: the caller reports the workflow analysis NOT_RUN
     yaml = None
 
@@ -191,7 +194,8 @@ class Unparseable(Exception):
 def loader_info():
     if yaml is None:
         return None
-    return {"module": "yaml", "version": getattr(yaml, "__version__", None),
+    return {"module": "yaml", "version": getattr(yaml, "__version__", None), "source": "vendored (_vendor/yaml)",
+            "with_libyaml": getattr(yaml, "__with_libyaml__", None),
             "validity_gate": "yaml.safe_load", "composer": "yaml.compose(Loader=yaml.SafeLoader) (pure Python)"}
 
 
