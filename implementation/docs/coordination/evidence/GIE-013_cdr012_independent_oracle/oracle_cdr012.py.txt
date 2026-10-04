@@ -1,0 +1,83 @@
+"""CDR-012 reference oracle for Track C G-SUP M-B v2 (thin wrapper over the CDR-010 oracle).
+
+SYNTHETIC SOFTWARE-VALIDATION ONLY. Not repository code; no authority. Written by the Primary
+Integration Writer's read-only prep agent (label prep-cdr012-oracle). It never reads CAL_VERIFY /
+Holdout data and never touches the network. It does not implement or patch Codex's v2.
+
+CDR-012 (USER_DECIDED 2026-10-04, COORDINATION_DECISION_REGISTER @ 1620f71) supplements CDR-010:
+  F1  squaring inside v2 is d*d (correctly rounded). `** 2` / libm pow are excluded.
+      -> oracle_cdr010.mb_v2 default square='mul' is already this reading; it is pinned here.
+  F3  when EVERY bootstrap replicate is degenerate (degenerate iff `sqrt(v/n) > 0` is false, CDR-010),
+      G-SUP produces no statistical PASS and fails closed as NOT_RUN.
+      -> if deg == B the kernel outcome class is NOT_RUN: no p, no r, nothing that can grade REJECT_H0.
+  No new epsilon / tolerance / threshold. Therefore:
+      * deg == B-1 still yields p = (r+1)/(B+1);
+      * a near-undefined original statistic (exact lrv 0, float lrv > 0) whose replicates are not ALL
+        degenerate keeps the CDR-010-literal p (e.g. [0.05]*12, L=2, B=19, seed 7: T ~ +1.77e16, p .05);
+      * se not > 0 (UNDEFINED_STATISTIC_ZERO_SE) and q < 2 are unchanged from CDR-010 (handled before
+        any replicate is drawn; CDR-012 adds nothing there).
+
+The F3 rule is evaluated after the full CDR-010 replicate loop, on the CDR-010 degenerate count.
+`f3` has diagnostic modes used only to build negative mutants: 'all' (CDR-012), 'off' (CDR-010 literal),
+'broad' (deg >= B-1), 'any' (deg > 0).
+"""
+from __future__ import annotations
+
+import oracle_cdr010 as O
+
+ORACLE_ID = "prep-cdr012-oracle/oracle_cdr012.py (2026-10-04)"
+CONTRACT = "CDR-012 (= CDR-010 + F1 d*d + F3 all-degenerate -> NOT_RUN)"
+
+STATUS_OK = O.STATUS_OK
+STATUS_NOT_RUN_GEOMETRY = O.STATUS_NOT_RUN            # q < 2 (unchanged)
+STATUS_UNDEFINED = O.STATUS_UNDEFINED                 # se not > 0 (unchanged, contract-silent at CDR-010)
+STATUS_NOT_RUN_ALL_DEGENERATE = "NOT_RUN_ALL_REPLICATES_DEGENERATE"   # F3
+
+# outcome classes used by compare_cdr012.py
+CLASS_STAT = "STAT"                   # a p-value is produced
+CLASS_NOT_RUN = "NOT_RUN"             # F3 fail-closed
+CLASS_UNDEFINED = "UNDEFINED_SE"      # se not > 0 (ungraded: not decided by CDR-010 / CDR-012)
+CLASS_GEOMETRY = "NOT_RUN_GEOMETRY"   # q < 2 (ungraded)
+
+_STATUS_TO_CLASS = {STATUS_OK: CLASS_STAT, STATUS_NOT_RUN_ALL_DEGENERATE: CLASS_NOT_RUN,
+                    STATUS_UNDEFINED: CLASS_UNDEFINED, STATUS_NOT_RUN_GEOMETRY: CLASS_GEOMETRY}
+
+_STAT_ONLY_KEYS = ("T", "r", "ties", "p", "p_hex", "p_fraction", "t_hex", "trace", "trace_sha256")
+
+
+def f3_triggers(deg: int, B: int, mode: str = "all") -> bool:
+    if mode == "all":
+        return deg == B
+    if mode == "off":
+        return False
+    if mode == "broad":
+        return deg >= B - 1
+    if mode == "any":
+        return deg > 0
+    raise ValueError(mode)
+
+
+def apply_f3(o: dict, B: int, mode: str = "all") -> dict:
+    """Map a CDR-010 kernel result (primary or alt shape) to its CDR-012 outcome."""
+    status = o["status"]
+    if status != STATUS_OK:
+        return dict(o, contract=CONTRACT, f3_mode=mode, outcome_class=_STATUS_TO_CLASS[status])
+    if f3_triggers(o["deg"], B, mode):
+        pre = {k: o.get(k) for k in ("T_hex", "r", "deg", "ties", "p_fraction", "codes")}
+        out = {k: v for k, v in o.items() if k not in _STAT_ONLY_KEYS}
+        return dict(out, status=STATUS_NOT_RUN_ALL_DEGENERATE, outcome_class=CLASS_NOT_RUN, contract=CONTRACT,
+                    f3_mode=mode, pre_f3_cdr010=pre)
+    return dict(o, contract=CONTRACT, f3_mode=mode, outcome_class=CLASS_STAT)
+
+
+def mb_v2_cdr012(x, L, B, seed, *, f3="all", square="mul", trace=False, **diagnostic_axes):
+    """CDR-012 reference. Defaults are the CDR-012 reading; non-default kwargs are negative mutants."""
+    o = O.mb_v2(x, L, B, seed, square=square, trace=trace, **diagnostic_axes)
+    return apply_f3(o, B, f3)
+
+
+if __name__ == "__main__":
+    for x, L, B, s in (([-0.2, -0.1] * 6, 2, 19, 7), ([-0.2, -0.1] * 6, 2, 19, 11), ([0.05] * 12, 2, 19, 7),
+                       ([8.7, 0, 0, 0, -2.9, 2.9, 2.9, 8.7, -2.9], 2, 19, 11)):
+        o = mb_v2_cdr012(x, L, B, s)
+        print(o["status"], o["outcome_class"], o.get("p_fraction"), o.get("deg"), o.get("T_hex"), o.get("pre_f3_cdr010"))

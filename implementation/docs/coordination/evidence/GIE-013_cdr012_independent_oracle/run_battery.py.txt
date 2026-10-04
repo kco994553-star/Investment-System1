@@ -1,0 +1,354 @@
+"""Steps 3-5: fixture battery + randomized battery + edge battery; writes expected_cdr010.json.
+
+Run (from this directory):
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=.:src_b9e01a9/implementation/src ./venv/bin/python run_battery.py
+  (src_b9e01a9 = git archive b9e01a9 implementation/src; v1/C6 blobs are verified at import)
+"""
+import hashlib
+import json
+import math
+import os
+import platform
+import random
+import sys
+import time
+import warnings
+from collections import Counter
+from decimal import Decimal, getcontext
+
+import numpy
+import scipy
+
+import oracle_cdr010 as O
+import oracle_cdr010_alt as A
+
+getcontext().prec = 60
+warnings.filterwarnings("ignore", category=RuntimeWarning, module="mb_sim_source_e112f41f")  # BM_t on constant data
+HERE = os.path.dirname(os.path.abspath(__file__))
+MASTER_SEED = 20261003
+PER_FAMILY = 72
+
+FIXTURES = {  # GIE-008 section 2 / GIE-008c inputs (decimal strings), expected CDR-010 p from GIE-008 section 2
+    "CE4": (["-0.016", "-0.007", "0.053", "0.023", "0.005"], 2, 19, 200, "1/10"),
+    "FLIP": ([".01", ".01", "-.01", "-.02", ".02", ".01", ".01", ".01"], 3, 19, 46, "2/20"),
+    "LEFT_SUM": (["-.02", ".01", ".02", "0", ".01", ".01", ".01", "-.01", ".01"], 4, 19, 34, "7/20"),
+    "TIE": ([".02", "0", "-.02", "-.01", ".01", "0"], 2, 19, 72, "9/20"),
+    "SEED275": ([".01", "-.03", ".04", "-.01", "-.01"], 2, 19, 275, "11/20"),
+}
+
+
+def dec(i, places):
+    return str(Decimal(i).scaleb(-places))
+
+
+def gen_values(fam, n, g):
+    if fam == "cont_normal_6dp":
+        mu, sd = g.choice([0, 0.002, -0.002, 0.005, 0.01, -0.005]), g.choice([0.01, 0.02, 0.05])
+        return [f"{mu + sd * g.gauss(0, 1):.6f}" for _ in range(n)]
+    if fam == "cont_normal_repr":
+        mu, sd = g.choice([0, 0.003, -0.003, 0.01]), g.choice([0.01, 0.03])
+        return [repr(mu + sd * g.gauss(0, 1)) for _ in range(n)]
+    if fam == "cont_ar1":
+        phi, mu, sd = g.uniform(-0.5, 0.85), g.choice([0, 0.004, -0.004, 0.01]), 0.02
+        e, out = 0.0, []
+        for _ in range(n):
+            e = phi * e + g.gauss(0, 1) * math.sqrt(1 - phi * phi)
+            out.append(f"{mu + sd * e:.8f}")
+        return out
+    if fam == "cont_heavy_t3":
+        mu = g.choice([0, 0.003, -0.003, 0.008])
+        out = []
+        for _ in range(n):
+            chi = sum(g.gauss(0, 1) ** 2 for _ in range(3)) / 3
+            out.append(f"{mu + 0.02 * g.gauss(0, 1) / math.sqrt(chi):.7f}")
+        return out
+    if fam == "quant_cent":
+        lo, hi = g.choice([(-3, 3), (-2, 3), (-3, 2), (-1, 2)])
+        return [dec(g.randint(lo, hi), 2) for _ in range(n)]
+    if fam == "quant_bp":
+        drift = g.choice([0, 5, -5, 10])
+        return [dec(g.randint(-60, 60) + drift, 4) for _ in range(n)]
+    if fam == "quant_coarse":
+        pool = [-2, -1, 0, 0, 0, 1, 1, 2, 3]
+        return [dec(g.choice(pool), 2) for _ in range(n)]
+    if fam == "dyadic":
+        return [str(Decimal(g.randint(-4, 4)) / Decimal(64)) for _ in range(n)]
+    if fam == "decimal_zero_mean":
+        ints = [g.randint(-3, 3) for _ in range(n)]
+        ints[-1] -= sum(ints)
+        return [dec(i, 2) for i in ints]
+    raise ValueError(fam)
+
+
+FAMILIES = ["cont_normal_6dp", "cont_normal_repr", "cont_ar1", "cont_heavy_t3", "quant_cent", "quant_bp",
+            "quant_coarse", "dyadic", "decimal_zero_mean"]
+
+
+def random_cases():
+    g = random.Random(MASTER_SEED)
+    cases = []
+    for fam in FAMILIES:
+        for i in range(PER_FAMILY):
+            n = g.randint(4, 30)
+            Ls = [L for L in range(1, 7) if L <= n and O.geometry(n, L)[1] >= 2]
+            L = g.choice(Ls)
+            B = g.choice([19, 99, 199])
+            seed = g.randint(0, 2 ** 31 - 1) if g.random() < 0.8 else g.randint(0, 1000)
+            cases.append({"id": f"R-{fam}-{i:03d}", "family": fam, "x_dec": gen_values(fam, n, g),
+                          "L": L, "B": B, "seed": seed})
+    return cases
+
+
+def subnormal_cases(count=10):
+    g = random.Random(7)
+    out = []
+    while len(out) < count:
+        n = g.randint(6, 14)
+        L = g.choice([1, 2, 3])
+        if O.geometry(n, L)[1] < 2:
+            continue
+        c = 2.0 ** g.randint(-545, -530)
+        sign = g.choice([-1, 1])
+        x = [g.randint(-3, 3) * c for _ in range(n)]
+        x[g.randrange(n)] = sign * 0.001 * g.choice([1, 2, 3])
+        seed = g.randint(0, 10 ** 6)
+        a = O.mb_v2(x, L, 19, seed, trace=False)
+        b = O.mb_v2(x, L, 19, seed, trace=False, predicate="v_positive")
+        if a["status"] == "OK" and a["deg"] != b["deg"]:
+            out.append({"id": f"E-SUBNORMAL-{len(out):02d}", "family": "edge_subnormal_predicate",
+                        "x_dec": [repr(v) for v in x], "L": L, "B": 19, "seed": seed})
+    return out
+
+
+def square_axis_cases(count=12):
+    """Cases where Python d**2 (libm pow) and d*d give different T bits (CDR-010 does not pin squaring)."""
+    g = random.Random(99)
+    out = []
+    while len(out) < count:
+        n = g.randint(4, 30)
+        L = g.choice([L for L in range(1, 7) if O.geometry(n, L)[1] >= 2])
+        x = [repr(g.choice([0, 0.003, -0.003]) + 0.02 * g.gauss(0, 1)) for _ in range(n)]
+        xf = [float(v) for v in x]
+        seed = g.randint(0, 2 ** 31 - 1)
+        a = O.mb_v2(xf, L, 19, seed, trace=False)
+        b = O.mb_v2(xf, L, 19, seed, trace=False, square="pow")
+        if a["T_hex"] != b["T_hex"]:
+            out.append({"id": f"E-SQUARE-{len(out):02d}", "family": "edge_square_axis", "x_dec": x, "L": L,
+                        "B": 19 if len(out) % 2 == 0 else 99, "seed": seed})
+    return out
+
+
+def undefined_cases():
+    raw = [("E-UNDEF-CONST-POS", ["0.01"] * 8, 2, 19, 11), ("E-UNDEF-CONST-ZERO", ["0"] * 6, 2, 19, 12),
+           ("E-UNDEF-ALT-L2", ["0.01", "-0.01"] * 4, 2, 19, 13), ("E-UNDEF-PERIOD3-L3", ["0.02", "-0.01", "0.05"] * 3, 3, 19, 14),
+           ("E-NEARUNDEF-0102-L2", ["0.01", "0.02"] * 4, 2, 19, 15), ("E-NEARUNDEF-0307-L2", ["0.03", "0.07"] * 5, 2, 99, 16)]
+    return [{"id": i, "family": "edge_undefined_statistic", "x_dec": x, "L": L, "B": B, "seed": s}
+            for i, x, L, B, s in raw]
+
+
+def fixture_cases():
+    return [{"id": f"F-{k}", "family": "gie008_fixture", "x_dec": x, "L": L, "B": B, "seed": s,
+             "gie008_expected_p_fraction": e} for k, (x, L, B, s, e) in FIXTURES.items()]
+
+
+def frac_eq(a, b):
+    from fractions import Fraction
+    return Fraction(a) == Fraction(b)
+
+
+def evaluate(case):
+    xd, L, B, seed = case["x_dec"], case["L"], case["B"], case["seed"]
+    xf = [float(s) for s in xd]
+    n = len(xf)
+    rec = {"id": case["id"], "family": case["family"], "n": n, "L": L, "B": B, "seed": seed,
+           "x_dec": xd, "x_hex": [v.hex() for v in xf]}
+    if "gie008_expected_p_fraction" in case:
+        rec["gie008_expected_p_fraction"] = case["gie008_expected_p_fraction"]
+    pri = O.mb_v2(xf, L, B, seed, trace=True)
+    keep = ("status", "k", "q", "rem", "mean_hex", "lrv_hex", "se_hex", "T_hex", "r", "deg", "ties", "p",
+            "p_hex", "p_fraction", "codes", "t_hex", "indices_sha256", "trace_sha256")
+    rec["cdr010"] = {k: pri[k] for k in keep if k in pri}
+    # second implementation
+    alt = A.mb_v2_alt(xf, L, B, seed)
+    if pri["status"] == "OK":
+        agree = (alt["status"] == "OK" and alt["T_hex"] == pri["T_hex"] and alt["r"] == pri["r"]
+                 and alt["deg"] == pri["deg"] and alt["ties"] == pri["ties"] and alt["p"] == pri["p"]
+                 and alt["p"].hex() == pri["p_hex"] and alt["codes"] == pri["codes"]
+                 and alt["t_hex"] == pri["t_hex"]
+                 and alt["starts"] == [row["starts"] for row in pri["trace"]])
+    else:
+        agree = alt["status"] == pri["status"]
+    rec["alt_bit_identical"] = agree
+    # diagnostic variants of the unpinned / alternative axes
+    var = {}
+    for name, kw in (("square_pow", {"square": "pow"}), ("partial_single_fsum", {"partial_add": "fsum"}),
+                     ("grouping_samples", {"grouping": "samples"}), ("predicate_v_positive", {"predicate": "v_positive"})):
+        o = O.mb_v2(xf, L, B, seed, trace=False, **kw)
+        var[name] = {k: o.get(k) for k in ("status", "T_hex", "r", "deg", "ties", "p_fraction", "codes")}
+        var[name]["same_as_cdr010"] = (o["status"] == pri["status"] and o.get("T_hex") == pri.get("T_hex")
+                                       and o.get("codes") == pri.get("codes"))
+        var[name]["same_t_bits"] = o.get("t_hex") == pri.get("t_hex")
+        var[name]["same_r_deg_ties"] = (o.get("r"), o.get("deg"), o.get("ties")) == (pri.get("r"), pri.get("deg"), pri.get("ties"))
+    rec["variants"] = var
+    # comparators
+    ed, eb = O.exact_decimal(xd, L, B, seed), O.exact_binary(xf, L, B, seed)
+    ln = O.literal_numpy_run(xf, L, B, seed, per_replicate=True)
+    v1 = O.v1_kernel(xf, L, B, seed)
+    rec["exact_decimal"] = {k: ed.get(k) for k in ("status", "r", "deg", "ties", "p_fraction", "codes", "T_sign")}
+    rec["exact_binary"] = {k: eb.get(k) for k in ("status", "r", "deg", "ties", "p_fraction", "codes", "T_sign")}
+    rec["literal_numpy"] = {k: ln.get(k) for k in ("status", "r", "deg", "ties", "p", "p_fraction", "S_plus1_hex",
+                                                   "T_hex", "codes", "undefined_statistic")}
+    rec["v1_kernel"] = {k: v1.get(k) for k in ("status", "r", "deg", "ties", "p", "T_hex", "codes", "indices_hash")}
+    flips = {}
+    if pri["status"] == "OK":
+        for kind, other in (("exact_decimal", ed), ("exact_binary", eb), ("literal_numpy", ln), ("v1", v1)):
+            if other.get("status") != "OK" or "codes" not in other:
+                flips[kind] = {"status": other.get("status")}
+                continue
+            f, s = O.classify_flips(pri["codes"], other["codes"], kind, n=n, L=L,
+                                    binary_codes=eb.get("codes") if kind == "exact_decimal" else None)
+            flips[kind] = {"r_equal": other["r"] == pri["r"], "flips": f, "silent": s}
+    rec["flip_classification"] = flips
+    return rec
+
+
+def sha256_file(p):
+    return hashlib.sha256(open(p, "rb").read()).hexdigest()
+
+
+def main():
+    t0 = time.time()
+    proof = json.load(open(os.path.join(HERE, "c6_replica_proof.json")))
+    groups = {"fixtures": fixture_cases(), "random": random_cases(),
+              "edge_subnormal": subnormal_cases(), "edge_square_axis": square_axis_cases(),
+              "edge_undefined": undefined_cases()}
+    results = {g: [evaluate(c) for c in cs] for g, cs in groups.items()}
+    # summaries
+    summ = {}
+    for gname, recs in results.items():
+        s = Counter()
+        reasons = {k: Counter() for k in ("exact_decimal", "exact_binary", "literal_numpy", "v1")}
+        causes = Counter()
+        for r in recs:
+            s["cases"] += 1
+            s["cdr010_status:" + r["cdr010"]["status"]] += 1
+            s["alt_bit_identical"] += r["alt_bit_identical"]
+            s["replicates"] += r["B"] if r["cdr010"]["status"] == "OK" else 0
+            for vname, v in r["variants"].items():
+                s[f"variant_{vname}_differs_bits_or_codes"] += not v["same_as_cdr010"]
+                s[f"variant_{vname}_differs_r_deg_ties"] += not v["same_r_deg_ties"]
+                s[f"variant_{vname}_differs_T_bits"] += v.get("T_hex") != r["cdr010"].get("T_hex")
+                s[f"variant_{vname}_differs_any_t_bits"] += not v["same_t_bits"]
+                if r["cdr010"]["status"] == "OK" and v.get("status") == "OK":
+                    s[f"variant_{vname}_differs_p"] += v["p_fraction"] != r["cdr010"]["p_fraction"]
+            for kind, f in r["flip_classification"].items():
+                if "flips" not in f:
+                    s[f"{kind}_not_comparable:{f.get('status')}"] += 1
+                    continue
+                s[f"{kind}_p_differs"] += not f["r_equal"]
+                s[f"{kind}_cases_with_flips"] += bool(f["flips"])
+                s[f"{kind}_flipped_replicates"] += len(f["flips"])
+                s[f"{kind}_silent_state_diffs"] += len(f["silent"])
+                for fl in f["flips"]:
+                    reasons[kind][fl["reason"]] += 1
+                    if "cause" in fl:
+                        causes[fl["reason"] + "/" + fl["cause"]] += 1
+            if r["cdr010"]["status"] == "OK":
+                s["cdr010_cases_with_deg"] += r["cdr010"]["deg"] > 0
+                s["cdr010_cases_with_ties"] += r["cdr010"]["ties"] > 0
+                s["cdr010_total_deg_replicates"] += r["cdr010"]["deg"]
+                s["cdr010_total_tie_replicates"] += r["cdr010"]["ties"]
+                s["cdr010_eq_exact_decimal_p"] += r["exact_decimal"].get("p_fraction") == r["cdr010"]["p_fraction"]
+                s["cdr010_eq_exact_binary_p"] += r["exact_binary"].get("p_fraction") == r["cdr010"]["p_fraction"]
+                s["cdr010_eq_literal_numpy_p"] += r["literal_numpy"].get("p_fraction") == r["cdr010"]["p_fraction"]
+                s["cdr010_eq_v1_p"] += (r["v1_kernel"].get("status") == "OK"
+                                        and r["v1_kernel"]["p"] == r["cdr010"]["p"])
+                s["cdr010_T_eq_literal_numpy_T_bits"] += r["literal_numpy"].get("T_hex") == r["cdr010"]["T_hex"]
+                s["cdr010_T_eq_v1_T_bits"] += r["v1_kernel"].get("T_hex") == r["cdr010"]["T_hex"]
+                s["cdr010_codes_eq_exact_binary"] += r["exact_binary"].get("codes") == r["cdr010"]["codes"]
+                s["cdr010_codes_eq_exact_decimal"] += r["exact_decimal"].get("codes") == r["cdr010"]["codes"]
+        fam = {}
+        for r in recs:
+            if r["cdr010"]["status"] != "OK":
+                continue
+            f = fam.setdefault(r["family"], Counter())
+            f["cases"] += 1
+            for kind, key in (("exact_decimal", "exact_decimal"), ("exact_binary", "exact_binary"),
+                              ("literal_numpy", "literal_numpy")):
+                f[kind + "_p_differs"] += r[key].get("p_fraction") != r["cdr010"]["p_fraction"]
+            f["v1_p_differs"] += r["v1_kernel"].get("p") != r["cdr010"]["p"]
+            f["partial_single_fsum_p_differs"] += r["variants"]["partial_single_fsum"]["p_fraction"] != r["cdr010"]["p_fraction"]
+            f["grouping_samples_p_differs"] += r["variants"]["grouping_samples"]["p_fraction"] != r["cdr010"]["p_fraction"]
+            f["cases_with_deg"] += r["cdr010"]["deg"] > 0
+            f["cases_with_ties"] += r["cdr010"]["ties"] > 0
+        summ_family = {k: dict(sorted(v.items())) for k, v in fam.items()}
+        summ[gname] = {"counts": dict(sorted(s.items())), "per_family": summ_family, "flip_reasons": {k: dict(v) for k, v in reasons.items()},
+                       "exact_decimal_flip_causes": dict(causes)}
+    fixture_check = []
+    for r in results["fixtures"]:
+        fixture_check.append({"id": r["id"], "cdr010_p_fraction": r["cdr010"]["p_fraction"],
+                              "cdr010_p": r["cdr010"]["p"], "r": r["cdr010"]["r"], "deg": r["cdr010"]["deg"],
+                              "ties": r["cdr010"]["ties"], "T_hex": r["cdr010"]["T_hex"],
+                              "gie008_expected_p_fraction": r["gie008_expected_p_fraction"],
+                              "agrees_with_gie008": frac_eq(r["cdr010"]["p_fraction"], r["gie008_expected_p_fraction"]),
+                              "exact_decimal": r["exact_decimal"]["p_fraction"],
+                              "exact_binary": r["exact_binary"]["p_fraction"],
+                              "literal_numpy": r["literal_numpy"]["p_fraction"],
+                              "literal_numpy_S_plus1_hex": r["literal_numpy"]["S_plus1_hex"],
+                              "v1": r["v1_kernel"].get("p"), "alt_bit_identical": r["alt_bit_identical"]})
+    axis = {"square_pow_changes_T_bits": [], "square_pow_changes_p": [], "partial_single_fsum_changes_p": [],
+            "partial_single_fsum_changes_r_deg_ties": [], "grouping_samples_changes_p": [],
+            "predicate_v_positive_changes_deg": [], "literal_numpy_p_differs": [], "v1_p_differs": []}
+    for recs in results.values():
+        for r in recs:
+            c, v = r["cdr010"], r["variants"]
+            if c["status"] != "OK":
+                continue
+            if v["square_pow"]["T_hex"] != c["T_hex"]:
+                axis["square_pow_changes_T_bits"].append(r["id"])
+            if v["square_pow"]["p_fraction"] != c["p_fraction"]:
+                axis["square_pow_changes_p"].append(r["id"])
+            if v["partial_single_fsum"]["p_fraction"] != c["p_fraction"]:
+                axis["partial_single_fsum_changes_p"].append(r["id"])
+            if not v["partial_single_fsum"]["same_r_deg_ties"]:
+                axis["partial_single_fsum_changes_r_deg_ties"].append(r["id"])
+            if v["grouping_samples"]["p_fraction"] != c["p_fraction"]:
+                axis["grouping_samples_changes_p"].append(r["id"])
+            if v["predicate_v_positive"]["deg"] != c["deg"]:
+                axis["predicate_v_positive_changes_deg"].append(r["id"])
+            if r["literal_numpy"].get("p_fraction") != c["p_fraction"]:
+                axis["literal_numpy_p_differs"].append(r["id"])
+            if r["v1_kernel"].get("p") != c["p"]:
+                axis["v1_p_differs"].append(r["id"])
+    files = ["oracle_cdr010.py", "oracle_cdr010_alt.py", "prove_c6.py", "run_battery.py", "compare_v2.py",
+             "sim_source_e112f41f.py", "c6_replica_proof.json"]
+    doc = {
+        "schema": "prep-v2-oracle/expected_cdr010 v1",
+        "authority": "NONE. Read-only integration prep evidence; not a Track C approval, not an acceptance "
+                     "threshold. Synthetic software-validation inputs only. No CAL_VERIFY/Holdout/network.",
+        "contract": "CDR-010 (+ unchanged CDR-006 fields) as implemented by oracle_cdr010.mb_v2 defaults: "
+                    "square=mul, grouping=blocks, partial_add=add, predicate=sqrt_v_over_n",
+        "environment": {"python": sys.version.split()[0], "numpy": numpy.__version__, "scipy": scipy.__version__,
+                        "platform": platform.platform(), "libc": "-".join(platform.libc_ver())},
+        "sources": {"simulation_blob": O.SIM_SOURCE_BLOB, "simulation_sha256": O.SIM_SOURCE_SHA256,
+                    "c6_kernel_blob": O.C6_KERNEL_BLOB, "v1_kernel_blob": O.V1_KERNEL_BLOB,
+                    "v1_worktree_commit": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+                    "routing": "origin/integration/global-handoff-v1 @ e30241f (CDR-010, GIE-008, GIE-008c)"},
+        "c6_replica_proof": proof,
+        "fixture_check": fixture_check,
+        "summary": summ,
+        "axis_discriminators": {k: {"count": len(v), "ids": v} for k, v in axis.items()},
+        "cases": results,
+        "file_sha256": {f: sha256_file(os.path.join(HERE, f)) for f in files if os.path.exists(os.path.join(HERE, f))},
+        "runtime_seconds": None,
+    }
+    doc["runtime_seconds"] = round(time.time() - t0, 1)
+    with open(os.path.join(HERE, "expected_cdr010.json"), "w") as fh:
+        json.dump(doc, fh, indent=1, sort_keys=False)
+    print(json.dumps({"fixture_check": fixture_check, "summary": summ,
+                      "axis_discriminator_counts": {k: len(v) for k, v in axis.items()}, "runtime_seconds": doc["runtime_seconds"]},
+                     indent=1))
+
+
+if __name__ == "__main__":
+    main()

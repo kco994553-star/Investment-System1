@@ -1,0 +1,49 @@
+"""Step 2: prove the C6 index replica (and the alt's direct-start generator) against the real frozen
+C6 circular_block_indices at b9e01a9 (imported read-only from the detached worktree via PYTHONPATH)."""
+import json
+import random
+import sys
+
+import oracle_cdr010 as O
+import oracle_cdr010_alt as A
+
+
+def main(n_combos=3000):
+    _, ck = O.load_v1()  # blob-verified statistical_kernels (C6) and superiority (v1)
+    gen = random.Random(20261003)
+    combos = [(5, 2, 19, 200), (8, 3, 19, 46), (9, 4, 19, 34), (6, 2, 19, 72), (5, 2, 19, 275)]
+    seed_pool = [0, 1, -1, 2 ** 31 - 1, 2 ** 32, 2 ** 63 + 12345, -(2 ** 40), 10 ** 20 + 7]
+    while len(combos) < n_combos:
+        n = gen.randint(1, 64)
+        L = gen.randint(1, n)
+        B = gen.choice([1, 2, 3, 19, 20, 50, 99, 199]) if gen.random() < 0.6 else gen.randint(1, 40)
+        r = gen.random()
+        seed = (gen.choice(seed_pool) if r < 0.1 else gen.randint(-10 ** 6, -1) if r < 0.2
+                else gen.randint(0, 2 ** 64) if r < 0.4 else gen.randint(0, 10 ** 6))
+        combos.append((n, L, B, seed))
+    mism_primary = mism_alt = mism_starts = 0
+    replicates = 0
+    for (n, L, B, seed) in combos:
+        real = ck.circular_block_indices(n=n, block_length=L, replicates=B, seed=seed)
+        mine = O.c6_indices(n, L, B, seed)
+        k = -(-n // L)
+        alt_rows = A.starts_direct(n, L, B, seed)
+        alt_ix = tuple(tuple([(s + j) % n for s in row for j in range(L)][:n]) for row in alt_rows)
+        replicates += B
+        mism_primary += real != mine
+        mism_alt += real != alt_ix
+        mism_starts += [list(O.starts_from_indices(ix, L, k)) for ix in real] != alt_rows
+    out = {"combos": len(combos), "replicates_compared": replicates,
+           "mismatch_primary_c6_indices": mism_primary, "mismatch_alt_direct_starts_indices": mism_alt,
+           "mismatch_alt_starts_vs_real_block_starts": mism_starts,
+           "n_range": [min(c[0] for c in combos), max(c[0] for c in combos)],
+           "distinct_seeds": len({c[3] for c in combos}), "negative_seed_combos": sum(c[3] < 0 for c in combos),
+           "seed_ge_2^32_combos": sum(c[3] >= 2 ** 32 for c in combos),
+           "real_kernel_blob": O.C6_KERNEL_BLOB, "python": sys.version.split()[0]}
+    return out
+
+
+if __name__ == "__main__":
+    res = main()
+    print(json.dumps(res, indent=1))
+    json.dump(res, open("c6_replica_proof.json", "w"), indent=1)

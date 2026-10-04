@@ -1,0 +1,69 @@
+"""Self-test of registry_probe_cdr012.py's PASS and FAIL directions with in-memory wrappers.
+
+NOT a v2 implementation and not for any repository path: each shim only post-processes the head's own kernel /
+evaluator output inside this process, to show the probe accepts an F3-compliant behaviour and rejects deviations.
+  usage: ... probe_selftest_shims.py <shim> --work <dir> [--out f]
+  shims: none | f3_kernel_raise | f3_registry_only | eps_guard_kernel
+Also usable as compare_cdr012.py adapters: probe_selftest_shims:adapter_f3_kernel_raise / adapter_eps_guard_kernel.
+"""
+import sys
+
+import registry_probe_cdr012 as RP
+
+
+def install(name):
+    from investment_system.evl import superiority_v2 as v2
+    from investment_system.evl.statistical_kernels import MissingStatisticalEvidence
+    orig_kernel = v2.studentized_cbb
+    if name == "f3_kernel_raise":
+        def k(delta, **kw):
+            res = orig_kernel(delta, **kw)
+            if res["degenerate_replicates"] == res["replicates"]:
+                raise MissingStatisticalEvidence("every bootstrap replicate degenerate")
+            return res
+        v2.studentized_cbb = k
+    elif name == "eps_guard_kernel":
+        def k(delta, **kw):
+            res = orig_kernel(delta, **kw)
+            if res["long_run_variance"] < 2.0 ** -80:
+                raise MissingStatisticalEvidence("long-run variance below epsilon")
+            return res
+        v2.studentized_cbb = k
+    elif name == "f3_registry_only":
+        orig_eval = v2.GsupV2Registry._evaluate
+
+        def ev(s, data):
+            cells = orig_eval(s, data)
+            for c in cells.values():
+                if c.get("status") in ("REJECT_H0", "NOT_REJECTED") and c["degenerate_replicates"] == c["replicates"]:
+                    c.clear()
+                    c.update(status="NOT_RUN", reason="every bootstrap replicate degenerate")
+            return cells
+        v2.GsupV2Registry._evaluate = staticmethod(ev)
+    elif name != "none":
+        raise SystemExit("unknown shim " + name)
+
+
+_ADAPTERS = {}
+
+
+def _shimmed_kernel_adapter(name):
+    """compare_cdr012.py adapter over the head kernel with an in-memory shim (harness self-test only)."""
+    if name not in _ADAPTERS:
+        import adapters_cdr012 as AD
+        install(name)
+        _ADAPTERS[name] = AD.make_kernel_adapter()
+    return _ADAPTERS[name]
+
+
+def adapter_f3_kernel_raise(x, L, B, seed):
+    return _shimmed_kernel_adapter("f3_kernel_raise")(x, L, B, seed)
+
+
+def adapter_eps_guard_kernel(x, L, B, seed):
+    return _shimmed_kernel_adapter("eps_guard_kernel")(x, L, B, seed)
+
+
+if __name__ == "__main__":
+    install(sys.argv[1])
+    sys.exit(RP.main(sys.argv[2:]))

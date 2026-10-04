@@ -1,0 +1,29 @@
+"""CDR-012 wrapper over the second, independently structured CDR-010 implementation (exact-rational IEEE emulation).
+
+SYNTHETIC SOFTWARE-VALIDATION ONLY; not repository code; no authority. Shares no code with oracle_cdr012.py
+(the F3 rule is restated here on purpose). Degeneracy comes from oracle_cdr010_alt, which decides it in
+Fractions (fl(v/n) == 0 iff v/n <= 2**-1075) instead of evaluating sqrt(v/n) > 0 in hardware floats.
+
+F3 (CDR-012): every replicate degenerate (count of 'D' codes == B) -> NOT_RUN, no p.
+F1 (CDR-012): the alt emulates d*d as one correctly rounded product (r_mul(d, d)); it has no pow path.
+"""
+from __future__ import annotations
+
+import oracle_cdr010_alt as A
+
+NOT_RUN_ALL_DEGENERATE = "NOT_RUN_ALL_REPLICATES_DEGENERATE"
+_CLASS = {"OK": "STAT", NOT_RUN_ALL_DEGENERATE: "NOT_RUN", "UNDEFINED_STATISTIC_ZERO_SE": "UNDEFINED_SE",
+          "NOT_RUN_FEWER_THAN_TWO_VARIANCE_BLOCKS": "NOT_RUN_GEOMETRY"}
+
+
+def mb_v2_cdr012_alt(x, L, B, seed):
+    o = A.mb_v2_alt(x, L, B, seed)
+    if o["status"] != "OK":
+        return dict(o, outcome_class=_CLASS[o["status"]])
+    every_replicate_degenerate = len(o["codes"]) == B and all(c == "D" for c in o["codes"])
+    if every_replicate_degenerate:
+        return {"status": NOT_RUN_ALL_DEGENERATE, "outcome_class": "NOT_RUN", "deg": o["deg"],
+                "T_hex": o["T_hex"], "codes": o["codes"], "starts": o["starts"],
+                "pre_f3_cdr010": {"T_hex": o["T_hex"], "r": o["r"], "deg": o["deg"], "ties": o["ties"],
+                                  "p_fraction": o["p_fraction"], "codes": o["codes"]}}
+    return dict(o, outcome_class="STAT")

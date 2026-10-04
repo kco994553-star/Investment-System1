@@ -1,0 +1,78 @@
+[
+ {
+  "x_hex": [
+   "0x1.0000000000000p-538",
+   "0x0.0p+0",
+   "0x1.0000000000000p-537",
+   "0x1.0000000000000p-538",
+   "0x1.0624dd2f1a9fcp-9",
+   "0x1.0000000000000p-538",
+   "-0x1.8000000000000p-537"
+  ],
+  "L": 1,
+  "B": 1,
+  "seed": 2,
+  "T": "0x1.1482f86c40c43p+0",
+  "underflow_degenerate_replicates": 1,
+  "vpos_deg": 0,
+  "provenance": "work/search_subnormal.py random.Random(3)"
+ },
+ {
+  "x_hex": [
+   "0x1.8000000000000p-535",
+   "-0x1.89374bc6a7efap-9",
+   "0x0.0p+0",
+   "0x0.0p+0",
+   "0x1.0000000000000p-535",
+   "0x1.8000000000000p-535",
+   "-0x1.0000000000000p-535"
+  ],
+  "L": 2,
+  "B": 3,
+  "seed": 565,
+  "T": "-0x1.2ee73dadc9b57p+0",
+  "underflow_degenerate_replicates": 1,
+  "vpos_deg": 2,
+  "provenance": "work/search_subnormal.py random.Random(3)"
+ },
+ {
+  "x_hex": [
+   "-0x1.0624dd2f1a9fcp-9",
+   "0x0.0p+0",
+   "0x1.0000000000000p-536",
+   "-0x1.0000000000000p-536",
+   "0x1.0000000000000p-536",
+   "0x1.0000000000000p-536",
+   "0x0.0p+0",
+   "0x1.0000000000000p-536"
+  ],
+  "L": 2,
+  "B": 2,
+  "seed": 13,
+  "T": "-0x1.279a74590331cp+0",
+  "underflow_degenerate_replicates": 1,
+  "vpos_deg": 1,
+  "provenance": "work/search_subnormal.py random.Random(3)"
+ },
+ {
+  "x_hex": [
+   "0x1.0000000000000p-536",
+   "0x1.0000000000000p-537",
+   "-0x1.0000000000000p-537",
+   "0x1.0000000000000p-537",
+   "-0x1.0000000000000p-537",
+   "0x1.0000000000000p-537",
+   "-0x1.0000000000000p-536",
+   "-0x1.8000000000000p-536",
+   "-0x1.0000000000000p-537",
+   "-0x1.0624dd2f1a9fcp-10"
+  ],
+  "L": 1,
+  "B": 3,
+  "seed": 4,
+  "T": "-0x1.0dd90273c3ce2p+0",
+  "underflow_degenerate_replicates": 3,
+  "vpos_deg": 0,
+  "provenance": "work/search_subnormal.py random.Random(3)"
+ }
+]

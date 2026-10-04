@@ -1,0 +1,132 @@
+"""Skeptic-synthesis independent M-B / v1 oracle (own code). Synthetic fixtures only.
+Reducers: fsum, left (explicit left fold), numpy (literal run() algebra), exact (Fraction).
+Groupings for scalar reducers: 'samples' (replicate mean over n sampled obs) or 'blocks'
+((sum of q full block sums)+partial)/n as in run())."""
+import math, random, sys, json
+from fractions import Fraction
+
+def c6_indices(n, L, B, seed):
+    rng = random.Random(seed); out = []
+    for _ in range(B):
+        ix = []
+        while len(ix) < n:
+            s = rng.randrange(n); ix.extend((s + j) % n for j in range(L))
+        out.append(tuple(ix[:n]))
+    return out
+
+def left(xs):
+    acc = 0.0
+    for v in xs: acc = acc + v
+    return acc
+
+RED = {'fsum': math.fsum, 'left': left}
+
+def mb_scalar(x, L, B, seed, red='fsum', grouping='samples'):
+    R = RED[red]; n = len(x); k = math.ceil(n / L); q = k - 1; rem = n - q * L
+    if q < 2: return {'status': 'NOT_RUN'}
+    m = R(x) / n
+    S = [R([x[(s + j) % n] for j in range(L)]) for s in range(n)]
+    lrv = R([(s - L * m) ** 2 for s in S]) / (n * L)
+    if not lrv > 0: return {'status': 'NOT_RUN_UNDEFINED'}
+    T = m / math.sqrt(lrv / n)
+    r = deg = ties = 0
+    for ix in c6_indices(n, L, B, seed):
+        vals = [x[i] for i in ix]
+        blocks = [R(vals[j * L:(j + 1) * L]) for j in range(q)]
+        last = R(vals[q * L:])
+        ms = R(vals) / n if grouping == 'samples' else (R(blocks) + last) / n
+        v = R([(b - L * ms) ** 2 for b in blocks]) / (q * L)
+        sv = math.sqrt(v / n)
+        if not sv > 0:
+            deg += 1; continue
+        t = (ms - m) / sv
+        if t == T: ties += 1
+        r += t >= T
+    return {'r': r, 'deg': deg, 'ties': ties, 'p': (r + 1) / (B + 1), 'T': T.hex()}
+
+def mb_numpy(x, L, B, seed):
+    import numpy as np
+    xa = np.array([x], dtype=float); Rr, n = xa.shape; k = math.ceil(n / L); rem = n - (k - 1) * L
+    if k - 1 < 2: return {'status': 'NOT_RUN'}
+    xx = np.concatenate([xa, xa[:, :L]], 1); cs = np.concatenate([np.zeros((Rr, 1)), np.cumsum(xx, 1)], 1); s = np.arange(n)
+    full = cs[:, s + L] - cs[:, s]; part = cs[:, s + rem] - cs[:, s]; m = xa.mean(1)
+    lrv = ((full - L * m[:, None]) ** 2).sum(1) / (n * L); se = np.sqrt(lrv / n)
+    if not se[0] > 0: return {'status': 'NOT_RUN_UNDEFINED'}
+    TS = m / se
+    r = deg = 0
+    for ix in c6_indices(n, L, B, seed):
+        st = np.array([[ix[j * L] for j in range(k)]])
+        sums = np.take_along_axis(full, st[:, :k - 1], 1); last = np.take_along_axis(part, st[:, k - 1:], 1)[:, 0]
+        ms = (sums.sum(1) + last) / n
+        v = ((sums - L * ms[:, None]) ** 2).sum(1) / ((k - 1) * L); sv = np.sqrt(v / n)
+        if not sv[0] > 0: deg += 1; continue
+        r += bool(((ms - m) / sv)[0] >= TS[0])
+    return {'r': r, 'deg': deg, 'p': (r + 1) / (B + 1)}
+
+def mb_exact(x, L, B, seed, mode='decimal'):
+    F = [Fraction(str(v)) if mode == 'decimal' else Fraction(v) for v in x]
+    n = len(F); k = math.ceil(n / L); q = k - 1
+    if q < 2: return {'status': 'NOT_RUN'}
+    m = sum(F) / n
+    S = [sum(F[(s + j) % n] for j in range(L)) for s in range(n)]
+    lrv = sum((s - L * m) ** 2 for s in S) / (n * L)
+    if lrv == 0: return {'status': 'NOT_RUN_UNDEFINED'}
+    def sgn(z): return (z > 0) - (z < 0)
+    r = deg = ties = 0
+    for ix in c6_indices(n, L, B, seed):
+        vals = [F[i] for i in ix]; ms = sum(vals) / n
+        blocks = [sum(vals[j * L:(j + 1) * L]) for j in range(q)]
+        v = sum((b - L * ms) ** 2 for b in blocks) / (q * L)
+        if v == 0: deg += 1; continue
+        a = ms - m  # compare a/sqrt(v) >= m/sqrt(lrv)  <=> a*sqrt(lrv) >= m*sqrt(v)
+        sx, sy = sgn(a), sgn(m)
+        X2, Y2 = a * a * lrv, m * m * v
+        if sx != sy: ge = sx > sy
+        elif sx == 0: ge = True
+        elif sx > 0: ge = X2 >= Y2
+        else: ge = X2 <= Y2
+        if sx == sy and X2 == Y2: ties += 1
+        r += ge
+    return {'r': r, 'deg': deg, 'ties': ties, 'p': str(Fraction(r + 1, B + 1))}
+
+def v1_own(x, L, B, seed):
+    n = len(x); full = n // L
+    if L > n or full < 2: return {'status': 'NOT_RUN'}
+    m = math.fsum(x) / n
+    S = [math.fsum(x[(s + j) % n] for j in range(L)) for s in range(n)]
+    lrv = math.fsum((s - L * m) ** 2 for s in S) / (n * L)
+    if not lrv > 0: return {'status': 'NOT_RUN_UNDEFINED'}
+    T = m / math.sqrt(lrv / n); r = deg = 0
+    for ix in c6_indices(n, L, B, seed):
+        vals = [x[i] for i in ix]; ms = math.fsum(vals) / n
+        blocks = [math.fsum(vals[j * L:(j + 1) * L]) for j in range(full)]
+        v = math.fsum((b - L * ms) ** 2 for b in blocks) / (full * L)
+        if not v > 0: deg += 1; r += 1; continue
+        r += (ms - m) / math.sqrt(v / n) >= T
+    return {'r': r, 'deg': deg, 'p': (r + 1) / (B + 1), 'T': T.hex()}
+
+FIX = {
+ 'CE4': ([-0.016, -0.007, 0.053, 0.023, 0.005], 2, 19, 200),
+ 'FLIP': ([.01, .01, -.01, -.02, .02, .01, .01, .01], 3, 19, 46),
+ 'LEFT_SUM': ([-.02, .01, .02, 0, .01, .01, .01, -.01, .01], 4, 19, 34),
+ 'TIE': ([.02, 0, -.02, -.01, .01, 0], 2, 19, 72),
+ 'OPERAND_SEED275': ([.01, -.03, .04, -.01, -.01], 2, 19, 275),
+}
+if __name__ == '__main__':
+    out = {'python': sys.version.split()[0]}
+    try:
+        import numpy; out['numpy'] = numpy.__version__
+    except ImportError: out['numpy'] = None
+    for name, (x, L, B, seed) in FIX.items():
+        x = [float(v) for v in x]; row = {}
+        for red in ('fsum', 'left'):
+            for g in ('samples', 'blocks'):
+                row[f'{red}/{g}'] = mb_scalar(x, L, B, seed, red, g)
+        row['builtin_sum/samples'] = (lambda: (RED.__setitem__('b', sum), mb_scalar(x, L, B, seed, 'b', 'samples'))[1])()
+        row['builtin_sum/blocks'] = mb_scalar(x, L, B, seed, 'b', 'blocks')
+        if out['numpy']: row['numpy_literal'] = mb_numpy(x, L, B, seed)
+        row['exact_decimal'] = mb_exact(x, L, B, seed, 'decimal')
+        row['exact_binary'] = mb_exact(x, L, B, seed, 'binary')
+        row['v1_own'] = v1_own(x, L, B, seed)
+        out[name] = row
+    print(json.dumps(out, indent=1))

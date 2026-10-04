@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Read-only extraction of the paths the v2 kernel/registry probes need from one commit.
+# Usage: extract_head.sh <git-dir-or-clone> <commit> <out-dir>
+# Extracts implementation/src, implementation/tests, implementation/docs/codex_takeover and
+# implementation/reports/track_c_c8* only. It never extracts implementation/data or gate_evidence, and refuses
+# (deleting the output) if any extracted non-.py file name mentions holdout/cal_verify.
+set -euo pipefail
+repo=$1; commit=$2; out=$3
+rm -rf "$out"; mkdir -p "$out"
+mapfile -t extra < <(git -C "$repo" ls-tree -r --name-only "$commit" implementation/reports | grep '^implementation/reports/track_c_c8' || true)
+git -C "$repo" archive "$commit" implementation/src implementation/tests implementation/docs/codex_takeover "${extra[@]}" | tar -x -C "$out"
+# Source files (*.py) whose names mention holdout/cal_verify are code, not data, and are kept; any other such file,
+# or anything under gate_evidence / implementation/data, makes the extraction refuse (and be deleted).
+bad=$(find "$out" -type f \( -iname '*holdout*' -o -iname '*cal_verify*' -o -path '*/gate_evidence/*' -o -path '*/implementation/data/*' \) ! -name '*.py')
+if [ -n "$bad" ]; then
+  echo "refusing: non-source holdout/cal_verify/data path extracted:" >&2; echo "$bad" >&2; rm -rf "$out"; exit 3
+fi
+git -C "$repo" rev-parse "$commit^{commit}" > "$out/COMMIT"
+echo "extracted $(cat "$out/COMMIT") -> $out ($(find "$out" -type f | wc -l) files)"

@@ -1,0 +1,118 @@
+"""Second, independently structured implementation of the CDR-010 M-B v2 contract.
+
+SYNTHETIC SOFTWARE-VALIDATION ONLY; not repository code. Shares no code with oracle_cdr010.py.
+
+Structural differences from oracle_cdr010.mb_v2 (on purpose):
+  * block starts are drawn directly (k = ceil(n/L) calls of random.Random(seed).randrange(n) per replicate);
+    no index list is built (equivalence with C6 is proven separately in prove_c6.py);
+  * every floating-point operation is emulated as an exact rational followed by ONE round-to-nearest-even
+    to binary64: sums via Fraction then float() (CPython int/int true division is correctly rounded),
+    products / quotients the same way, sqrt via math.isqrt with a sticky bit. math.fsum, '*', '/', '**'
+    and math.sqrt are never used for the statistic itself;
+  * the circular block sums and partial sums are tabulated once per start and looked up per replicate;
+  * the replicate loop is column-wise: each stage is computed for all B replicates before the next stage;
+  * degeneracy is decided in Fractions: fl(v/n) == 0 iff v/n <= 2**-1075 (half the smallest subnormal,
+    which rounds to the even value 0), which is equivalent to 'sqrt(v/n) > 0 is false' for v >= 0.
+"""
+from __future__ import annotations
+
+import math
+import random
+from fractions import Fraction
+
+HALF_MIN_SUBNORMAL = Fraction(1, 2 ** 1075)
+
+
+def rnd(q: Fraction) -> float:
+    """Round an exact rational to binary64, round-half-even (CPython int/int true division)."""
+    return q.numerator / q.denominator
+
+
+def r_sum(vals) -> float:
+    return rnd(sum((Fraction(v) for v in vals), Fraction(0)))
+
+
+def r_add(a: float, b: float) -> float:
+    return rnd(Fraction(a) + Fraction(b))
+
+
+def r_sub(a: float, b: float) -> float:
+    return rnd(Fraction(a) - Fraction(b))
+
+
+def r_mul(a, b) -> float:
+    return rnd(Fraction(a) * Fraction(b))
+
+
+def r_div(a, b) -> float:
+    return rnd(Fraction(a) / Fraction(b))
+
+
+def r_sqrt(a: float) -> float:
+    """Correctly rounded sqrt of a non-negative binary64 value via integer isqrt + sticky bit."""
+    if a == 0:
+        return 0.0
+    fa = Fraction(a)
+    shift = 2 * 1200
+    scaled = fa.numerator * (1 << shift) // fa.denominator  # exact: denominator is a power of two
+    if scaled * fa.denominator != fa.numerator * (1 << shift):
+        raise AssertionError("non-dyadic input")
+    root = math.isqrt(scaled)
+    exact = root * root == scaled
+    num = 2 * root + (0 if exact else 1)  # sticky bit keeps round-half-even correct
+    return rnd(Fraction(num, 1 << (shift // 2 + 1)))
+
+
+def starts_direct(n, L, B, seed):
+    k = -(-n // L)
+    rng = random.Random(seed)
+    return [[rng.randrange(n) for _ in range(k)] for _ in range(B)]
+
+
+def mb_v2_alt(x, L, B, seed):
+    xs = [float(v) for v in x]
+    n = len(xs)
+    k = -(-n // L)
+    q, rem = k - 1, n - (k - 1) * L
+    if q < 2:
+        return {"status": "NOT_RUN_FEWER_THAN_TWO_VARIANCE_BLOCKS"}
+    circ = xs + xs  # circular access without modulo
+    table_full = [r_sum(circ[s:s + L]) for s in range(n)]
+    table_part = [r_sum(circ[s:s + rem]) for s in range(n)]
+    m = r_div(r_sum(xs), n)
+    Lm = r_mul(L, m)
+    lrv = r_div(r_sum([r_mul(d, d) for d in (r_sub(S, Lm) for S in table_full)]), n * L)
+    lrv_n = r_div(lrv, n)
+    if Fraction(lrv_n) == 0:
+        return {"status": "UNDEFINED_STATISTIC_ZERO_SE"}
+    se = r_sqrt(lrv_n)
+    T = r_div(m, se)
+    ST = starts_direct(n, L, B, seed)
+    # column-wise stages over all replicates
+    FB = [[table_full[s] for s in row[:q]] for row in ST]            # B x q full block sums
+    PB = [table_part[row[q]] for row in ST]                          # B partials
+    SUMF = [r_sum(fb) for fb in FB]                                  # Sigma full block sums
+    MS = [r_div(r_add(sf, p), n) for sf, p in zip(SUMF, PB)]          # replicate means
+    LMS = [r_mul(L, ms) for ms in MS]
+    V = [r_div(r_sum([r_mul(d, d) for d in (r_sub(bs, lms) for bs in fb)]), q * L)
+         for fb, lms in zip(FB, LMS)]
+    DEGEN = [Fraction(v) / n <= HALF_MIN_SUBNORMAL for v in V]        # Fraction-decided degeneracy
+    SV = [None if dg else r_sqrt(r_div(v, n)) for v, dg in zip(V, DEGEN)]
+    TT = [None if sv is None else r_div(r_sub(ms, m), sv) for ms, sv in zip(MS, SV)]
+    FT = Fraction(T)
+    codes, t_hex = [], []
+    for t in TT:
+        if t is None:
+            codes.append("D")
+            t_hex.append(None)
+            continue
+        ft = Fraction(t)
+        codes.append("X" if ft == FT else ("E" if ft > FT else "N"))
+        t_hex.append(t.hex())
+    r = sum(c in "EX" for c in codes)
+    # self-consistency of the emulated ops against the hardware ops (not used for the result)
+    assert se == math.sqrt(lrv / n) and all(
+        (sv is None) == (not math.sqrt(v / n) > 0) for v, sv in zip(V, SV))
+    return {"status": "OK", "T": T, "T_hex": T.hex(), "r": r, "deg": codes.count("D"),
+            "ties": codes.count("X"), "p": rnd(Fraction(r + 1, B + 1)), "p_fraction": f"{r + 1}/{B + 1}",
+            "codes": "".join(codes), "t_hex": t_hex, "starts": ST}

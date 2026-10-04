@@ -1,0 +1,203 @@
+"""Compare an M-B v2 implementation against expected_cdr012.json (CDR-012 = CDR-010 + F1 d*d + F3 all-degenerate NOT_RUN).
+
+SYNTHETIC SOFTWARE-VALIDATION ONLY; no authority.
+
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=.:<head extract>/implementation/src ./venv/bin/python compare_cdr012.py \
+      --adapter v2kernel [--v2-module investment_system.evl.superiority_v2] [--v2-func studentized_cbb] \
+      [--not-run-exc MissingStatisticalEvidence[,OtherClass]] [--not-run-reason-regex REGEX] \
+      [--not-run-result status=NOT_RUN,...] [--no-p-none-is-not-run] [--allow-missing-draws] [--allow-missing-ties] \
+      [--groups g1,g2] [--out result.json]
+
+  --adapter self:<name> runs a built-in reference or negative mutant (see adapters_cdr012.BUILTINS);
+  --adapter module:attr loads any callable returning the normalized dict documented in adapters_cdr012.
+
+Grading (expected outcome class from expected_cdr012.json, per case):
+  STAT     the implementation must produce a statistic and match EXACTLY: T.hex, r, deg, ties, p.hex and every
+           per-replicate t bit / degenerate position (draws). Missing ties/draws are mismatches unless allowed.
+  NOT_RUN  (F3: every replicate degenerate) the implementation must return outcome class NOT_RUN (mapped refusal).
+           Producing any p, or refusing in an unmapped way, is a mismatch.
+  UNDEFINED_SE / NOT_RUN_GEOMETRY  ungraded (CDR-010/012 silent); what the implementation does is reported.
+Exit code 0 only for verdict EXACT_MATCH_ALL_GRADED.
+"""
+import argparse
+import importlib
+import json
+import os
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+GRADED = ("STAT", "NOT_RUN")
+
+
+def load_adapter(a):
+    import adapters_cdr012 as AD
+    spec = a.adapter
+    if spec.startswith("self:"):
+        return AD.builtin(spec[5:])
+    if spec == "v2kernel":
+        items = AD.DEFAULT_RESULT_ITEMS
+        if a.not_run_result:
+            items = tuple(tuple(kv.split("=", 1)) for kv in a.not_run_result.split(","))
+        return AD.make_kernel_adapter(a.v2_module, a.v2_func,
+                                      not_run_exceptions=tuple(a.not_run_exc.split(",")) if a.not_run_exc else (),
+                                      not_run_reason_regex=a.not_run_reason_regex, not_run_result_items=items,
+                                      p_none_is_not_run=not a.no_p_none_is_not_run)
+    mod, _, attr = spec.partition(":")
+    return getattr(importlib.import_module(mod), attr)
+
+
+def stat_mismatches(case, got, allow_missing_draws, allow_missing_ties):
+    exp = case["cdr012"]
+    mism = []
+    T = got.get("T")
+    if not isinstance(T, float) or T.hex() != exp["T_hex"]:
+        mism.append(f"T {T.hex() if isinstance(T, float) else T!r} != {exp['T_hex']}")
+    for key in ("r", "deg"):
+        if got.get(key) != exp[key]:
+            mism.append(f"{key} {got.get(key)!r} != {exp[key]}")
+    p = got.get("p")
+    if not isinstance(p, float) or p.hex() != exp["p_hex"]:
+        mism.append(f"p {p!r} != {exp['p']} ({exp['p_fraction']})")
+    if "ties" in got:
+        if got["ties"] != exp["ties"]:
+            mism.append(f"ties {got['ties']} != {exp['ties']}")
+    elif not allow_missing_ties:
+        mism.append("ties not exposed")
+    if "draws" in got:
+        d = got["draws"]
+        if len(d) != case["B"]:
+            mism.append(f"len(draws) {len(d)} != B {case['B']}")
+        else:
+            bad = [b for b, (t, h) in enumerate(zip(d, exp["t_hex"]))
+                   if (t is None) != (h is None) or (t is not None and float(t).hex() != h)]
+            if bad:
+                mism.append(f"draws differ at replicates {bad[:12]}{'...' if len(bad) > 12 else ''} ({len(bad)})")
+    elif not allow_missing_draws:
+        mism.append("draws (per-replicate t) not exposed")
+    return mism
+
+
+def triage(case, got):
+    """Classify a mismatch. Returns (tag, details)."""
+    exp = case["cdr012"]
+    ec, gc = exp["outcome_class"], got.get("outcome_class")
+    B = case["B"]
+    if ec == "NOT_RUN":
+        if gc == "STAT":
+            pre = exp["pre_f3_cdr010"]
+            same010 = (isinstance(got.get("T"), float) and got["T"].hex() == pre["T_hex"] and got.get("r") == pre["r"]
+                       and got.get("deg") == pre["deg"])
+            return "F3_MISSING_PRODUCED_P", {"got_p": got.get("p"), "got_deg": got.get("deg"), "B": B,
+                                             "matches_cdr010_literal": same010}
+        return "F3_WRONG_REFUSAL_CLASS", {"got_class": gc, "reason": got.get("reason")}
+    # expected STAT
+    if gc != "STAT":
+        if gc == "NOT_RUN":
+            near = abs(float.fromhex(exp["T_hex"])) > 1e12   # tiny float lrv (heuristic label only, not graded)
+            det = {"deg": exp["deg"], "B": B, "T": exp["T_hex"], "lrv": exp.get("lrv_hex"), "reason": got.get("reason")}
+            if exp["deg"] == B - 1:
+                return ("F3_OVERBROAD_OR_EPSILON_GUARD" if near else "F3_OVERBROAD_DEG_EQ_B_MINUS_1"), det
+            if near:
+                return "EPSILON_GUARD_SUSPECT_NEAR_UNDEFINED", det
+            if exp["deg"] > 0:
+                return "F3_OVERBROAD_SOME_DEGENERATE", det
+            return "UNEXPECTED_NOT_RUN", det
+        return "UNEXPECTED_REFUSAL", {"got_class": gc, "reason": got.get("reason")}
+    hits = []
+    gT = got["T"].hex() if isinstance(got.get("T"), float) else None
+    gdraws = None
+    if "draws" in got and len(got["draws"]) == B:
+        gdraws = [None if t is None else float(t).hex() for t in got["draws"]]
+    for vname, v in case["variants"].items():
+        if v.get("outcome_class") != "STAT":
+            continue
+        if (v.get("r"), v.get("deg"), v.get("T_hex")) == (got.get("r"), got.get("deg"), gT):
+            hits.append("variant:" + vname)
+    ln, v1 = case.get("literal_numpy", {}), case.get("v1_kernel", {})
+    if ln.get("status") == "OK" and (ln.get("r"), ln.get("deg")) == (got.get("r"), got.get("deg")):
+        hits.append("literal_numpy(r,deg)")
+    if v1.get("status") == "OK" and (v1.get("r"), v1.get("deg")) == (got.get("r"), got.get("deg")):
+        hits.append("v1(r,deg)")
+    tag = "F1_POW_SQUARING_SUSPECT" if "variant:square_pow" in hits else "ARITHMETIC_MISMATCH"
+    if gdraws is not None and tag == "ARITHMETIC_MISMATCH" and gT == exp["T_hex"] and got.get("r") == exp["r"]:
+        tag = "PER_REPLICATE_BITS_MISMATCH"
+    return tag, {"matches_reference": hits}
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--adapter", required=True, help="v2kernel | self:<builtin> | module:attr")
+    ap.add_argument("--expected", default=os.path.join(HERE, "expected_cdr012.json"))
+    ap.add_argument("--groups", default=None)
+    ap.add_argument("--v2-module", default="investment_system.evl.superiority_v2")
+    ap.add_argument("--v2-func", default="studentized_cbb")
+    ap.add_argument("--not-run-exc", default="MissingStatisticalEvidence")
+    ap.add_argument("--not-run-reason-regex", default=None)
+    ap.add_argument("--not-run-result", default=None, help="comma list key=value; default status/outcome/"
+                                                           "statistical_status/outcome_class = NOT_RUN")
+    ap.add_argument("--no-p-none-is-not-run", action="store_true")
+    ap.add_argument("--allow-missing-draws", action="store_true")
+    ap.add_argument("--allow-missing-ties", action="store_true")
+    ap.add_argument("--out")
+    a = ap.parse_args(argv)
+    exp = json.load(open(a.expected))
+    adapter = load_adapter(a)
+    report = {"adapter": a.adapter, "adapter_config": {k: v for k, v in vars(a).items() if k not in ("out",)},
+              "expected_file": a.expected, "groups": {}}
+    total_mism, tags = 0, {}
+    caught = {k: set() for k in exp["detector_index"]}
+    for g in (a.groups.split(",") if a.groups else list(exp["cases"])):
+        rows, n_ok, n_bad, ungraded = [], 0, 0, []
+        for case in exp["cases"][g]:
+            x = [float.fromhex(h) for h in case["x_hex"]]
+            try:
+                got = adapter(x, case["L"], case["B"], case["seed"])
+            except Exception as exc:  # noqa: BLE001
+                got = {"outcome_class": "RAISED_UNMAPPED", "reason": f"{type(exc).__name__}: {str(exc)[:200]}"}
+            ec = case["cdr012"]["outcome_class"]
+            if ec not in GRADED:
+                ungraded.append({"id": case["id"], "expected_class": ec, "got_class": got.get("outcome_class"),
+                                 "got_p": got.get("p"), "reason": got.get("reason"),
+                                 "literal_numpy_p": case.get("literal_numpy", {}).get("p"),
+                                 "v1_status": case.get("v1_kernel", {}).get("status")})
+                continue
+            if ec == "NOT_RUN":
+                mism = [] if got.get("outcome_class") == "NOT_RUN" else [
+                    f"expected NOT_RUN (F3, deg {case['cdr012']['deg']} == B {case['B']}); got "
+                    f"{got.get('outcome_class')} p={got.get('p')!r} deg={got.get('deg')!r} reason={got.get('reason')!r}"]
+            elif got.get("outcome_class") != "STAT":
+                mism = [f"expected STAT p={case['cdr012']['p_fraction']} (deg {case['cdr012']['deg']}, B {case['B']}); "
+                        f"got {got.get('outcome_class')} reason={got.get('reason')!r}"]
+            else:
+                mism = stat_mismatches(case, got, a.allow_missing_draws, a.allow_missing_ties)
+            if mism:
+                n_bad += 1
+                tag, det = triage(case, got)
+                tags[tag] = tags.get(tag, 0) + 1
+                rows.append({"id": case["id"], "expected_class": ec, "got_class": got.get("outcome_class"),
+                             "mismatches": mism, "triage": tag, "details": det})
+                for dname, ids in exp["detector_index"].items():
+                    if case["id"] in ids:
+                        caught[dname].add(case["id"])
+            else:
+                n_ok += 1
+        total_mism += n_bad
+        report["groups"][g] = {"graded": n_ok + n_bad, "exact_match": n_ok, "mismatch": n_bad, "mismatches": rows,
+                               "ungraded_contract_silent": ungraded}
+    report["triage_counts"] = dict(sorted(tags.items()))
+    report["detectors"] = {d: {"cases": len(ids), "mismatched": len(caught[d]), "ids_mismatched": sorted(caught[d])}
+                           for d, ids in exp["detector_index"].items()}
+    report["verdict"] = "EXACT_MATCH_ALL_GRADED" if total_mism == 0 else f"MISMATCH_IN_{total_mism}_CASES"
+    txt = json.dumps(report, indent=1, default=str)
+    if a.out:
+        open(a.out, "w").write(txt)
+    summary = {g: {k: v for k, v in r.items() if k in ("graded", "exact_match", "mismatch")}
+               for g, r in report["groups"].items()}
+    print(json.dumps({"adapter": a.adapter, "verdict": report["verdict"], "triage_counts": report["triage_counts"],
+                      "detectors": {d: f"{v['mismatched']}/{v['cases']}" for d, v in report["detectors"].items()},
+                      "summary": summary}, indent=1))
+    return 0 if total_mism == 0 else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

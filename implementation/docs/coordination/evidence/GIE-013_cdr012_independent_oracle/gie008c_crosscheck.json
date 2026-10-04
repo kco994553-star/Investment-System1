@@ -1,0 +1,22 @@
+{
+ "cases": 676,
+ "eq_primary_r_deg_ties_T": 664,
+ "eq_pow_variant_r_deg_ties_T": 676,
+ "eq_primary_p": 676,
+ "status_mismatch": [],
+ "pow_variant_mismatch": [],
+ "primary_T_mismatch_ids": [
+  "E-SQUARE-00",
+  "E-SQUARE-01",
+  "E-SQUARE-02",
+  "E-SQUARE-03",
+  "E-SQUARE-04",
+  "E-SQUARE-05",
+  "E-SQUARE-06",
+  "E-SQUARE-07",
+  "E-SQUARE-08",
+  "E-SQUARE-09",
+  "E-SQUARE-10",
+  "E-SQUARE-11"
+ ]
+}

@@ -1,0 +1,278 @@
+"""Registry-level CDR-012 F3 probe for the G-SUP M-B v2 registry at an arbitrary head.
+
+SYNTHETIC SOFTWARE-VALIDATION ONLY; no authority. Uses only synthetic fixture providers and temporary stores under
+--work (one fresh store per scenario). Never reads CAL_VERIFY / Holdout / real-provider data; the head's own
+`_evaluate` refuses any provider result that is not marked synthetic.
+
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<oracle dir>:<head>/implementation/src:<head>/implementation \
+      <oracle dir>/venv/bin/python registry_probe_cdr012.py --work <scratch dir> [--out probe.json]
+      [--v2-module investment_system.evl.superiority_v2] [--registry-class GsupV2Registry]
+      [--fixture-module tests.test_evl_gsup_identity_kernel_invariance]
+
+Coupling to Codex's code shape is deliberately small and every element is overridable / discovered:
+  * v2 module: METHOD, POLICY, studentized_cbb, and a registry class (default GsupV2Registry; otherwise the
+    single class in the module whose name ends with 'Registry' and that has register/assess);
+  * the head's own synthetic identity fixture helpers (source_fixture, feasibility, ACCESSED_AT), which Codex's
+    v2 registry tests use; spec = {**fixture spec, schema: v2.METHOD, policy: v2.POLICY} exactly as those tests do;
+  * n, L, B, seed, alpha are read from the registered spec, and every planted series is re-checked with the
+    CDR-012 oracle at those exact parameters before it is used (constant-block series stay all-degenerate for
+    any seed, so a seed change does not silently void the probe).
+
+Scenarios
+  S1_ALL_CELLS_ALL_DEGENERATE      every cell's series has deg == B (oracle) and se > 0. CDR-010-literal: p = 1/(B+1)
+                                   in every cell -> REJECT_H0 everywhere -> STAT_PASS. CDR-012: every cell NOT_RUN.
+                                   ASSERT: no cell REJECT_H0, statistical_status != STAT_PASS (expected NOT_RUN).
+  S2_ONE_CELL_ALL_DEGENERATE       7 cells strong genuine effect (REJECT_H0 under both readings), 1 all-degenerate
+                                   cell. ASSERT: that cell not REJECT_H0 and statistical_status != STAT_PASS.
+  S3_CONTROL_NEAR_UNDEFINED        every cell [0.05]*n style near-undefined series whose replicates are NOT all
+                                   degenerate. CDR-012 approves no epsilon, so the CDR-010-literal outcome stays:
+                                   ASSERT: cells keep their oracle status (REJECT_H0) and STAT_PASS is reproduced.
+                                   (A head that turns these into NOT_RUN has added an unapproved guard.)
+Exit code 0 iff every scenario matches its CDR-012 expectation.
+"""
+import argparse
+import importlib
+import inspect
+import json
+import os
+import random
+import shutil
+import sys
+import traceback
+from copy import copy  # noqa: F401  (providers must survive copy(); the head's bound() copies them)
+from pathlib import Path
+
+import oracle_cdr012 as P
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+class PlantedProvider:
+    """Synthetic numerical provider: role = 0.0 and control = -d, so delta = 0.0 - (-d) == d exactly."""
+    synthetic = True
+
+    def __init__(self, cohorts, controls, deltas, role_id="cand-fixture-1"):
+        self.cohorts, self.controls, self.deltas, self.role_id, self.calls = cohorts, controls, deltas, role_id, []
+
+    def __call__(self, dataset_id):
+        self.calls.append(dataset_id)
+        out = {}
+        for cohort in self.cohorts:
+            n = len(next(iter(self.deltas.values())))
+            out[cohort] = {"role": tuple([0.0] * n),
+                           "controls": {c: tuple(-d for d in self.deltas[(cohort, c)]) for c in self.controls}}
+        return {"dataset_role": "CAL_VERIFY", "dataset_id": dataset_id, "role_id": self.role_id, "synthetic": True,
+                "cohorts": out}
+
+
+def discover(a):
+    api = {}
+    v2 = importlib.import_module(a.v2_module)
+    api["v2_module"] = v2.__name__
+    api["v2_file"] = v2.__file__
+    reg = getattr(v2, a.registry_class, None) if a.registry_class else None
+    if reg is None:
+        cands = [obj for name, obj in vars(v2).items() if inspect.isclass(obj) and name.endswith("Registry")
+                 and obj.__module__ == v2.__name__ and hasattr(obj, "register") and hasattr(obj, "assess")]
+        if len(cands) != 1:
+            raise SystemExit(f"API_CHANGED: cannot pick a v2 registry class from {[c.__name__ for c in cands]}")
+        reg = cands[0]
+    api["registry_class"] = reg.__name__
+    fx = importlib.import_module(a.fixture_module)
+    api["fixture_module"] = fx.__name__
+    for name in ("source_fixture", "feasibility", "ACCESSED_AT"):
+        if not hasattr(fx, name):
+            raise SystemExit(f"API_CHANGED: {a.fixture_module}.{name} missing")
+    legacy = importlib.import_module(a.legacy_module)
+    api["cohorts"], api["controls"] = list(legacy.REQUIRED_COHORTS), list(legacy.SUPPORTED_CONTROLS)
+    api["METHOD"], api["POLICY"] = v2.METHOD, v2.POLICY
+    return v2, reg, fx, legacy, api
+
+
+def block_length(legacy, spec):
+    try:
+        return legacy._block_length(spec["block_rule"], spec["verify_periods"])
+    except Exception:  # noqa: BLE001
+        return spec["block_rule"]["block_length"]
+
+
+def oracle_cell(series, L, B, seed, alpha):
+    o = P.mb_v2_cdr012(series, L, B, seed)
+    lit = P.mb_v2_cdr012(series, L, B, seed, f3="off")
+    if o["outcome_class"] == "STAT":
+        status = "REJECT_H0" if o["p"] <= alpha else "NOT_REJECTED"
+    else:
+        status = "NOT_RUN"
+    lit_status = ("REJECT_H0" if lit["p"] <= alpha else "NOT_REJECTED") if lit["outcome_class"] == "STAT" else "NOT_RUN"
+    return {"cdr012_class": o["outcome_class"], "cdr012_p": o.get("p"), "deg": o.get("deg"),
+            "T_hex": o.get("T_hex"), "cdr012_cell_status": status, "cdr010_literal_p": lit.get("p"),
+            "cdr010_literal_cell_status": lit_status}
+
+
+def all_degenerate_pool(n, L, B, seed):
+    """Constant-block series (period divides L): all-degenerate for every seed when the oracle says so."""
+    pats = [[-0.2, -0.1], [0.2, 0.1], [0.1, 0.7], [0.3, 0.6], [-0.3, -0.6], [0.9], [-0.9], [0.45], [0.11],
+            [0.05, -0.02, 0.01, 0.03], [0.02, -0.01, 0.05]]
+    out = []
+    for p in pats:
+        if L % len(p) or n % len(p):
+            continue
+        x = (p * (n // len(p) + 1))[:n]
+        o = P.mb_v2_cdr012(x, L, B, seed)
+        if o["outcome_class"] == "NOT_RUN":
+            out.append(x)
+    return out
+
+
+def near_undefined_pool(n, L, B, seed, alpha):
+    out = []
+    for a in (0.05, 0.1, 0.03, 0.07, 0.15, 0.2):
+        x = [a] * n
+        o = P.mb_v2_cdr012(x, L, B, seed)
+        if o["outcome_class"] == "STAT" and o["deg"] < B and abs(float.fromhex(o["T_hex"])) > 1e12 and o["p"] <= alpha:
+            out.append(x)
+    return out
+
+
+def strong_series(n, L, B, seed, alpha, rng):
+    for _ in range(200):
+        x = [round(1.0 + 0.1 * rng.gauss(0, 1), 6) for _ in range(n)]
+        o = P.mb_v2_cdr012(x, L, B, seed)
+        if o["outcome_class"] == "STAT" and o["p"] <= alpha and o["deg"] == 0 and abs(float.fromhex(o["T_hex"])) < 1e6:
+            return x
+    raise SystemExit("could not build a strong-effect series")
+
+
+def run_scenario(name, plan, v2, reg_cls, fx, legacy, api, work):
+    sdir = Path(work) / name
+    if sdir.exists():
+        shutil.rmtree(sdir)
+    sdir.mkdir(parents=True)
+    prov = PlantedProvider(api["cohorts"], api["controls"], plan)
+    spec, authority, binding, provider, _v1 = fx.source_fixture(sdir, prov)
+    spec = {**spec, "schema": v2.METHOD, "policy": v2.POLICY}
+    registry = reg_cls(sdir / "v2-attempt", authority)
+    key = registry.register(spec, source_binding=binding)
+    gate = fx.feasibility(registry, key)
+    rec = {"scenario": name, "feasibility_status": gate.get("status"), "spec": {
+        "verify_periods": spec["verify_periods"], "block_rule": spec["block_rule"], "replicates": spec["replicates"],
+        "seed": spec["seed"], "alpha": spec["alpha"]}}
+    try:
+        result = registry.assess(key, provider, accessed_at=fx.ACCESSED_AT)
+    except Exception as exc:  # noqa: BLE001
+        rec["assess_raised"] = f"{type(exc).__name__}: {exc}"
+        rec["traceback"] = traceback.format_exc()[-2000:]
+        return rec
+    L, B, seed, alpha = block_length(legacy, spec), spec["replicates"], spec["seed"], spec["alpha"]
+    data = prov("recheck")
+    cells = []
+    for cname, cell in sorted(result["cells"].items()):
+        cohort, control = cname.split("|")
+        blk = data["cohorts"][cohort]
+        delta = [a_ - c_ for a_, c_ in zip(blk["role"], blk["controls"][control])]
+        planted = plan[(cohort, control)]
+        row = {"cell": cname, "delta_equals_planted": [d.hex() for d in delta] == [float(w).hex() for w in planted],
+               "registry_status": cell.get("status"), "registry_p": cell.get("p_value"),
+               "registry_reason": cell.get("reason"), "registry_deg": cell.get("degenerate_replicates"),
+               "oracle": oracle_cell(delta, L, B, seed, alpha)}
+        try:
+            k = v2.studentized_cbb(tuple(delta), block_length=L, replicates=B, seed=seed)
+            row["head_kernel"] = {"p": k.get("p_value"), "deg": k.get("degenerate_replicates"),
+                                  "T_hex": k["statistic"].hex() if isinstance(k.get("statistic"), float) else None,
+                                  "status": k.get("status")}
+        except Exception as exc:  # noqa: BLE001
+            row["head_kernel"] = {"raised": f"{type(exc).__name__}: {exc}"}
+        cells.append(row)
+    rec.update(statistical_status=result.get("statistical_status"), decision=result.get("decision"),
+               official=result.get("official"), method=result.get("method"),
+               validation_mode=result.get("validation_mode"), L=L, B=B, seed=seed, alpha=alpha, cells=cells,
+               provider_calls=len(provider.calls))
+    return rec
+
+
+def judge(rec, kind):
+    """CDR-012 assertions for one scenario."""
+    if "assess_raised" in rec:
+        return {"verdict": "ASSESS_RAISED", "pass": False, "why": rec["assess_raised"]}
+    cells = rec["cells"]
+    f3_cells = [c for c in cells if c["oracle"]["cdr012_class"] == "NOT_RUN"]
+    problems = []
+    if not all(c["delta_equals_planted"] for c in cells):
+        problems.append("delta differs from planted series")
+    for c in f3_cells:
+        if c["registry_status"] in ("REJECT_H0", "NOT_REJECTED"):
+            problems.append(f"F3 cell {c['cell']} produced {c['registry_status']} p={c['registry_p']} "
+                            f"(oracle deg {c['oracle']['deg']} == B)")
+    if kind in ("S1", "S2"):
+        if rec["statistical_status"] == "STAT_PASS":
+            problems.append("statistical_status STAT_PASS with all-degenerate cell(s)")
+        if rec["statistical_status"] != "NOT_RUN":
+            problems.append(f"statistical_status {rec['statistical_status']} != NOT_RUN (expected)")
+    for c in cells:
+        if c["oracle"]["cdr012_class"] == "STAT" and c["registry_status"] != c["oracle"]["cdr012_cell_status"]:
+            problems.append(f"cell {c['cell']} {c['registry_status']} != oracle {c['oracle']['cdr012_cell_status']}")
+    if kind == "S3" and rec["statistical_status"] != "STAT_PASS":
+        problems.append(f"control: statistical_status {rec['statistical_status']} != STAT_PASS (CDR-012-literal; "
+                        "a NOT_RUN here means an unapproved epsilon/guard)")
+    reached = {"STAT_PASS": rec["statistical_status"] == "STAT_PASS",
+               "REJECT_H0_on_F3_cells": sum(c["registry_status"] == "REJECT_H0" for c in f3_cells)}
+    return {"verdict": "CDR012_EXPECTED" if not problems else "CDR012_DEVIATION", "pass": not problems,
+            "problems": problems, "f3_cells": len(f3_cells), "reached": reached}
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--work", required=True)
+    ap.add_argument("--out")
+    ap.add_argument("--v2-module", default="investment_system.evl.superiority_v2")
+    ap.add_argument("--registry-class", default="GsupV2Registry")
+    ap.add_argument("--fixture-module", default="tests.test_evl_gsup_identity_kernel_invariance")
+    ap.add_argument("--legacy-module", default="investment_system.evl.superiority")
+    a = ap.parse_args(argv)
+    a.work = str(Path(a.work).resolve())   # the head's authority requires an absolute, resolved, non-symlink root
+    v2, reg_cls, fx, legacy, api = discover(a)
+    head_root = Path(v2.__file__).resolve().parents[4]
+    commit_file = head_root / "COMMIT"
+    api["head_commit"] = commit_file.read_text().strip() if commit_file.exists() else None
+    # parameters come from the head's own fixture spec (probe once with a throwaway provider)
+    tmp = Path(a.work) / "_param_probe"
+    if tmp.exists():
+        shutil.rmtree(tmp)
+    tmp.mkdir(parents=True)
+    dummy = PlantedProvider(api["cohorts"], api["controls"],
+                            {(c, k): [0.0] * 2 for c in api["cohorts"] for k in api["controls"]})
+    spec0 = fx.source_fixture(tmp, dummy)[0]
+    n, L, B, seed, alpha = (spec0["verify_periods"], block_length(legacy, spec0), spec0["replicates"], spec0["seed"],
+                            spec0["alpha"])
+    api["params"] = {"n": n, "L": L, "B": B, "seed": seed, "alpha": alpha}
+    keys = [(c, k) for c in api["cohorts"] for k in api["controls"]]
+    degs = all_degenerate_pool(n, L, B, seed)
+    nears = near_undefined_pool(n, L, B, seed, alpha)
+    if not degs or not nears:
+        raise SystemExit(f"no planted series available at n={n} L={L} B={B} seed={seed}: deg={len(degs)} near={len(nears)}")
+    rng = random.Random(20261004)
+    s1 = {key: degs[i % len(degs)] for i, key in enumerate(keys)}
+    s2 = {key: strong_series(n, L, B, seed, alpha, rng) for key in keys}
+    s2[keys[len(keys) // 2]] = degs[0]
+    s3 = {key: nears[i % len(nears)] for i, key in enumerate(keys)}
+    out = {"probe": "prep-cdr012-oracle/registry_probe_cdr012.py", "api": api, "scenarios": {}}
+    for name, kind, plan in (("S1_ALL_CELLS_ALL_DEGENERATE", "S1", s1), ("S2_ONE_CELL_ALL_DEGENERATE", "S2", s2),
+                             ("S3_CONTROL_NEAR_UNDEFINED", "S3", s3)):
+        rec = run_scenario(name, plan, v2, reg_cls, fx, legacy, api, a.work)
+        rec["judgement"] = judge(rec, kind)
+        out["scenarios"][name] = rec
+    out["overall"] = "ALL_SCENARIOS_CDR012_EXPECTED" if all(s["judgement"]["pass"] for s in out["scenarios"].values()) \
+        else "CDR012_DEVIATION"
+    txt = json.dumps(out, indent=1, default=str)
+    if a.out:
+        open(a.out, "w").write(txt)
+    print(json.dumps({"overall": out["overall"], "api": api,
+                      "scenarios": {k: {"statistical_status": v.get("statistical_status"),
+                                        "cell_statuses": sorted({c["registry_status"] for c in v.get("cells", [])}),
+                                        "judgement": v["judgement"]} for k, v in out["scenarios"].items()}},
+                     indent=1, default=str))
+    return 0 if out["overall"] == "ALL_SCENARIOS_CDR012_EXPECTED" else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

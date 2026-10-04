@@ -172,3 +172,10 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - User decision recorded verbatim with a machine-readable FPIA reference manifest (`f362926`): Track C reference `b9e01a9`, v2 reference `c9e0fa7`, verification subject #40 `acaf1b5`. Frozen records stay exact-tree history and are not rewritten; code identity is reported SAME/DIVERGED; branch Frozen validation and canonical integration acceptance stay separate evidence classes.
 - Hardened FPIA implementation and verification started (workflow `wf_d1bfad32-955`): plan with acceptance criteria from every GIE-012 refuting finding, adversarial plan review, implementation on a new PIW branch (new files only), baseline and #40 runs, tamper probes, regression and CI, completeness.
 - Canonical `b8e39a2` unchanged. Maturity transitions: none.
+
+## GCH-014a · 2026-10-04 · hardened FPIA implemented (PR #42); fix round running; independent oracle persisted
+
+- Hardened FPIA implemented on `integration/fpia-hardened-v1` @ `dc0bf79` (Draft PR #42; 22 new files on #40). Independent verification: baseline `b9e01a9` FPIA_PASS / CODE_IDENTITY_SAME; #40 `acaf1b5` FPIA_PASS / CODE_IDENTITY_DIVERGED with frozen-tool FAIL recorded verbatim; 24 independent tamper trees all failed on the correct component; full suite 1690 passed; CI 6/6.
+- Defects found and being fixed on the same branch (no new D3): a shallow `--repo` turned an environment NOT_RUN into a frozen-tool FAIL with FPIA_PASS; canonical ref taken from the caller repo; a v2 label; truncated verbatim output; workflow attribution scope; the FPIA workflow cannot run until it has a trigger outside the default branch.
+- The independent CDR-012 oracle is persisted under `evidence/GIE-013_cdr012_independent_oracle/` so the CDR-014 §12 replay stays reproducible.
+- Canonical `b8e39a2` unchanged. Maturity transitions: none.

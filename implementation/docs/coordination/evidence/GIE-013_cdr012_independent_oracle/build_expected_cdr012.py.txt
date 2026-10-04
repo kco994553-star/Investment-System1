@@ -1,0 +1,394 @@
+"""Build expected_cdr012.json: re-grade the 681-case CDR-010 battery under CDR-012 and add dedicated CDR-012 fixtures.
+
+SYNTHETIC SOFTWARE-VALIDATION ONLY; no authority; no CAL_VERIFY / Holdout / network.
+
+Run (from this directory):
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=.:src_b9e01a9/implementation/src ./venv/bin/python build_expected_cdr012.py
+
+Every expected value is produced by BOTH oracle_cdr012.mb_v2_cdr012 (primary) and oracle_cdr012_alt.mb_v2_cdr012_alt
+(exact-rational IEEE emulation); the build aborts unless they agree bit-for-bit on every case. Each dedicated
+fixture also asserts the property it was constructed for (all-degenerate / deg == B-1 / near-undefined with a p /
+pow-vs-mul difference), so a wrong construction cannot silently enter the expected file.
+"""
+import hashlib
+import json
+import math
+import os
+import platform
+import sys
+import time
+import warnings
+from collections import Counter
+from fractions import Fraction
+
+import numpy
+import scipy
+
+import oracle_cdr010 as O
+import oracle_cdr012 as P
+import oracle_cdr012_alt as Q
+
+warnings.filterwarnings("ignore", category=RuntimeWarning, module="mb_sim_source_e112f41f")
+HERE = os.path.dirname(os.path.abspath(__file__))
+BASE_EXPECTED = os.path.join(HERE, "expected_cdr010.json")
+REFUTER_POW_REPRO = [  # GIE-010 refuter (wf10/vr-refuter/pow_small_repro.json), exact binary64 inputs
+    (["0x1.3333333333333p-2", "0x0.0p+0", "0x1.cccccccccccccp-1", "0x1.3333333333333p-2", "-0x1.3333333333333p-2",
+      "0x0.0p+0", "-0x1.3333333333333p-2", "0x1.3333333333333p-2", "-0x1.3333333333333p-2", "0x1.3333333333333p-2",
+      "0x1.3333333333333p-2", "0x1.3333333333333p-2"], 3),
+    (["0x1.1666666666666p+3", "0x0.0p+0", "0x0.0p+0", "0x0.0p+0", "-0x1.7333333333333p+1", "0x1.7333333333333p+1",
+      "0x1.7333333333333p+1", "0x1.1666666666666p+3", "-0x1.7333333333333p+1"], 2),
+]
+
+
+def up(v, k):
+    for _ in range(abs(k)):
+        v = math.nextafter(v, math.inf if k > 0 else -math.inf)
+    return v
+
+
+def defect(a, n, j, k):
+    x = [a] * n
+    x[j] = up(a, k)
+    return x
+
+
+def load_subnormal():
+    """fixtures_subnormal_f3.json: from work/search_subnormal.py (random.Random(3)); replicates degenerate by underflow."""
+    path = os.path.join(HERE, "fixtures_subnormal_f3.json")
+    return json.load(open(path))
+
+
+X5N = [-0.2, -0.1, -0.2, -0.1, -0.2]
+X5P = [0.2, 0.1, 0.2, 0.1, 0.2]
+POS9 = defect(0.9, 9, 3, 16)          # exact lrv != 0; ~56% of start tuples give a degenerate replicate
+NEG14 = defect(-0.47, 14, 0, -1)      # exact lrv != 0; ~54%
+NEG9 = defect(-0.9, 9, 0, -16)
+ZERO4 = [0.1, -0.1, 0.1, -0.1]        # binary-exact zero mean, T == 0
+ZERO5 = [0.5, -0.25, -0.25, 0.5, -0.5]  # dyadic, binary-exact zero mean
+
+
+def f3_cases():
+    """Expected NOT_RUN under CDR-012: CDR-010 status OK (se > 0) and every replicate degenerate."""
+    c = []
+
+    def add(cid, family, x, L, B, seed, note):
+        c.append({"id": cid, "family": family, "x": list(x), "L": L, "B": B, "seed": seed, "note": note,
+                  "expect": "NOT_RUN"})
+    add("F3-GIE010-PERIOD2-NEG-S7", "f3_constant_blocks_negative_mean", [-0.2, -0.1] * 6, 2, 19, 7,
+        "GIE-010 F3 reproducer; v2@e0b6d80 p .05 deg 19")
+    add("F3-GIE010-PERIOD2-NEG-S11", "f3_constant_blocks_negative_mean", [-0.2, -0.1] * 6, 2, 19, 11,
+        "GIE-010 F3 reproducer; v2@e0b6d80 p .05 deg 19")
+    add("F3-PERIOD2-POS-n12-L2-B99", "f3_constant_blocks_positive_mean", [0.2, 0.1] * 6, 2, 99, 3, "")
+    add("F3-PERIOD2-NEG-n10-L4-B199", "f3_constant_blocks_negative_mean", [-0.2, -0.1] * 5, 4, 199, 21,
+        "n % L != 0 (rem 2)")
+    add("F3-PERIOD2-POS-n10-L2-B19", "f3_constant_blocks_positive_mean", [0.1, 0.7] * 5, 2, 19, 10, "")
+    add("F3-PERIOD2-POS-n22-L6-B99", "f3_constant_blocks_positive_mean", [0.3, 0.6] * 11, 6, 99, 22, "")
+    add("F3-PERIOD4-POS-n12-L4-B19", "f3_constant_blocks_positive_mean", [0.05, -0.02, 0.01, 0.03] * 3, 4, 19, 9, "")
+    add("F3-CONST-POS-0.9-n9-L3-B19", "f3_constant_series_positive_mean", [0.9] * 9, 3, 19, 1, "")
+    add("F3-CONST-NEG-0.9-n13-L5-B99", "f3_constant_series_negative_mean", [-0.9] * 13, 5, 99, 2, "n % L != 0")
+    add("F3-CONST-POS-0.45-n21-L5-B199", "f3_constant_series_positive_mean", [0.45] * 21, 5, 199, 4, "")
+    add("F3-CONST-POS-0.11-n19-L5-B19", "f3_constant_series_positive_mean", [0.11] * 19, 5, 19, 5, "")
+    add("F3-CONST-NEG-0.43-n23-L7-B19", "f3_constant_series_negative_mean", [-0.43] * 23, 7, 19, 6, "L = 7")
+    add("F3-CONST-POS-0.9-n9-L3-B1", "f3_constant_series_B1", [0.9] * 9, 3, 1, 0, "B = 1")
+    add("F3-CONST-NEG-0.19-n11-L3-B1", "f3_constant_series_B1", [-0.19] * 11, 3, 1, 99, "B = 1")
+    add("F3-CONST-SCALED-LARGE-B19", "f3_constant_series_scaled", [0.9 * 2.0 ** 400] * 9, 3, 19, 3, "0.9 * 2**400")
+    add("F3-CONST-SCALED-SMALL-B19", "f3_constant_series_scaled", [-0.9 * 2.0 ** -400] * 9, 3, 19, 3, "-0.9 * 2**-400")
+    add("F3-ROUNDING-POS-n9-L3-B19", "f3_rounding_induced", defect(0.9, 9, 0, 1), 3, 19, 7,
+        "exact lrv != 0 and exact replicate v != 0; float block sums all equal")
+    add("F3-ROUNDING-NEG-n18-L6-B99", "f3_rounding_induced", defect(-0.9, 18, 9, -2), 6, 99, 8,
+        "exact lrv != 0; float block sums all equal")
+    add("F3-SEEDLUCK-POS-n9-L3-B19-s4813", "f3_seed_lucky_B19", POS9, 3, 19, 4813,
+        "non-constant float blocks; same series at seed 1960 has deg 18")
+    add("F3-SEEDLUCK-NEG-n14-L5-B19-s84181", "f3_seed_lucky_B19", NEG14, 5, 19, 84181,
+        "non-constant float blocks; same series at seed 10868 has deg 18")
+    add("F3-SEEDLUCK-NEG-n9-L3-B19-s77127", "f3_seed_lucky_B19", NEG9, 3, 19, 77127, "seed 7077 has deg 18")
+    add("F3-SEEDLUCK-POS-n9-L3-B3-s0", "f3_seed_lucky_small_B", POS9, 3, 3, 0, "")
+    add("F3-SEEDLUCK-POS-n9-L3-B5-s27", "f3_seed_lucky_small_B", POS9, 3, 5, 27, "")
+    add("F3-SEEDLUCK-POS-n9-L3-B9-s280", "f3_seed_lucky_small_B", POS9, 3, 9, 280, "")
+    add("F3-X5-NEG-B1-s74", "f3_seed_lucky_moderate_T", X5N, 2, 1, 74, "T ~ -12.6; B = 1")
+    add("F3-X5-NEG-B2-s390", "f3_seed_lucky_moderate_T", X5N, 2, 2, 390, "T ~ -12.6")
+    add("F3-X5-NEG-B3-s38188", "f3_seed_lucky_moderate_T", X5N, 2, 3, 38188, "T ~ -12.6")
+    add("F3-X5-POS-B2-s390", "f3_seed_lucky_moderate_T", X5P, 2, 2, 390, "T ~ +12.6")
+    add("F3-ZERO-EXACT-n4-L1-B1-s2", "f3_zero_mean_T0", ZERO4, 1, 1, 2, "mean == 0 exactly, T == 0; B = 1")
+    add("F3-ZERO-EXACT-n4-L1-B2-s152", "f3_zero_mean_T0", ZERO4, 1, 2, 152, "mean == 0 exactly, T == 0")
+    add("F3-ZERO-EXACT-n4-L1-B3-s633", "f3_zero_mean_T0", ZERO4, 1, 3, 633, "mean == 0 exactly, T == 0")
+    add("F3-ZERO-EXACT-n4-L1-B4-s2881", "f3_zero_mean_T0", ZERO4, 1, 4, 2881, "mean == 0 exactly, T == 0")
+    add("F3-ZERO-DYADIC-n5-L1-B2-s2766", "f3_zero_mean_T0", ZERO5, 1, 2, 2766, "mean == 0 exactly, T == 0")
+    for i, s in enumerate(load_subnormal()):
+        add(f"F3-SUBNORMAL-UNDERFLOW-{i:02d}", "f3_subnormal_underflow", [float.fromhex(h) for h in s["x_hex"]],
+            s["L"], s["B"], s["seed"], "replicates degenerate by underflow (v > 0, fl(v/n) == 0); "
+                                       "a `v > 0` predicate would not call them degenerate")
+    return c
+
+
+def boundary_cases():
+    """Expected STAT (a p) under CDR-012: deg == B-1 (and a few deg == B-2 controls)."""
+    c = []
+
+    def add(cid, family, x, L, B, seed, want_deg, note=""):
+        c.append({"id": cid, "family": family, "x": list(x), "L": L, "B": B, "seed": seed, "note": note,
+                  "expect": "STAT", "want_deg": want_deg})
+    add("BND-SEEDLUCK-POS-n9-L3-B19-s1960", "boundary_deg_B_minus_1", POS9, 3, 19, 1960, 18)
+    add("BND-SEEDLUCK-NEG-n14-L5-B19-s10868", "boundary_deg_B_minus_1", NEG14, 5, 19, 10868, 18)
+    add("BND-SEEDLUCK-NEG-n9-L3-B19-s7077", "boundary_deg_B_minus_1", NEG9, 3, 19, 7077, 18)
+    add("BND-SEEDLUCK-POS-n9-L3-B3-s1", "boundary_deg_B_minus_1", POS9, 3, 3, 1, 2)
+    add("BND-SEEDLUCK-POS-n9-L3-B5-s5", "boundary_deg_B_minus_1", POS9, 3, 5, 5, 4)
+    add("BND-SEEDLUCK-POS-n9-L3-B9-s27", "boundary_deg_B_minus_1", POS9, 3, 9, 27, 8)
+    add("BND-SEEDLUCK-NEG-n14-L5-B9-s18", "boundary_deg_B_minus_1", NEG14, 5, 9, 18, 8)
+    add("BND-X5-NEG-B1-s0", "boundary_deg_B_minus_1_B1", X5N, 2, 1, 0, 0, "B = 1, deg 0 = B-1")
+    add("BND-X5-NEG-B2-s26", "boundary_deg_B_minus_1", X5N, 2, 2, 26, 1)
+    add("BND-X5-NEG-B3-s390", "boundary_deg_B_minus_1", X5N, 2, 3, 390, 2)
+    add("BND-X5-POS-B2-s26", "boundary_deg_B_minus_1", X5P, 2, 2, 26, 1)
+    add("BND-ZERO-EXACT-n4-L1-B1-s0", "boundary_deg_B_minus_1_B1", ZERO4, 1, 1, 0, 0, "B = 1, T == 0")
+    add("BND-ZERO-EXACT-n4-L1-B2-s1", "boundary_deg_B_minus_1", ZERO4, 1, 2, 1, 1, "T == 0")
+    add("BND-ZERO-EXACT-n4-L1-B3-s28", "boundary_deg_B_minus_1", ZERO4, 1, 3, 28, 2, "T == 0")
+    add("BND-ZERO-EXACT-n4-L1-B4-s633", "boundary_deg_B_minus_1", ZERO4, 1, 4, 633, 3, "T == 0")
+    add("BND-ZERO-DYADIC-n5-L1-B2-s13", "boundary_deg_B_minus_1", ZERO5, 1, 2, 13, 1, "T == 0")
+    add("BND-ZERO-DYADIC-n5-L1-B3-s347", "boundary_deg_B_minus_1", ZERO5, 1, 3, 347, 2, "T == 0")
+    return c
+
+
+def f1_cases():
+    c = []
+    for (xh, L) in REFUTER_POW_REPRO:
+        x = [float.fromhex(h) for h in xh]
+        for B, seed in ((19, 13), (1, 1308)) if L == 3 else ((19, 11), (1, 364)):
+            c.append({"id": f"F1-REFUTER-n{len(x)}-L{L}-B{B}-s{seed}", "family": "f1_pow_p_flip", "x": x, "L": L,
+                      "B": B, "seed": seed, "expect": "STAT", "want_pow_p_differs": True,
+                      "note": "GIE-010 refuter p-flip reproducer (pow_small_repro.json)"})
+    return c
+
+
+def near_undefined_cases():
+    """Near-undefined original statistic (tiny float lrv, |T| ~ 1e15..1e16) whose replicates are NOT all degenerate."""
+    c = []
+
+    def add(cid, family, x, L, B, seed, note=""):
+        c.append({"id": cid, "family": family, "x": list(x), "L": L, "B": B, "seed": seed, "note": note,
+                  "expect": "STAT", "want_near_undefined": True})
+    add("NU-CONST-POS-0.05-n12-L2-B19-s7", "near_undefined_deg0", [0.05] * 12, 2, 19, 7,
+        "GIE-010 F3 example; CDR-012 keeps the CDR-010-literal p .05")
+    add("NU-CONST-POS-0.05-n12-L2-B1-s7", "near_undefined_deg0_B1", [0.05] * 12, 2, 1, 7, "B = 1, deg 0 = B-1")
+    add("NU-CONST-NEG-0.05-n12-L2-B19-s7", "near_undefined_deg0", [-0.05] * 12, 2, 19, 7, "")
+    add("NU-CONST-POS-0.05-n6-L1-B19-s3", "near_undefined_deg0", [0.05] * 6, 1, 19, 3, "L = 1")
+    add("NU-CONST-POS-0.1-n6-L2-B99-s5", "near_undefined_deg0", [0.1] * 6, 2, 99, 5, "")
+    add("NU-PERIOD2-NEG-n14-L2-B19-s7", "near_undefined_deg0", [-0.2, -0.1] * 7, 2, 19, 7,
+        "same pattern as the GIE-010 F3 reproducer but n = 14: no replicate degenerate")
+    add("NU-PERIOD3-n12-L3-B199-s14", "near_undefined_deg0", [0.02, -0.01, 0.05] * 4, 3, 199, 14, "")
+    add("NU-PERIOD2-n18-L2-B19-s15", "near_undefined_deg0", [0.01, 0.02] * 9, 2, 19, 15, "")
+    add("NU-PERIOD2-n10-L2-B99-s16", "near_undefined_deg0", [0.3, 0.6] * 5, 2, 99, 16, "")
+    add("NU-PERIOD2-n12-L2-B19-s16", "near_undefined_deg0", [0.03, 0.07] * 6, 2, 19, 16, "")
+    add("NU-SEEDLUCK-POS-n9-L3-B19-s0", "near_undefined_mixed_deg", POS9, 3, 19, 0, "0 < deg < B-1")
+    add("NU-SEEDLUCK-NEG-n14-L5-B19-s0", "near_undefined_mixed_deg", NEG14, 5, 19, 0, "0 < deg < B-1")
+    add("NU-SEEDLUCK-POS-n9-L3-B199-s3", "near_undefined_mixed_deg", POS9, 3, 199, 3, "0 < deg < B-1")
+    return c
+
+
+# --------------------------------------------------------------------------- evaluation
+GRADE_KEYS = ("status", "outcome_class", "k", "q", "rem", "mean_hex", "lrv_hex", "se_hex", "T_hex", "r", "deg", "ties",
+              "p", "p_hex", "p_fraction", "codes", "t_hex", "indices_sha256", "pre_f3_cdr010")
+
+
+def alt_agrees(pri, alt):
+    if pri["outcome_class"] != alt["outcome_class"] or pri["status"] != alt["status"]:
+        return False
+    if pri["outcome_class"] == "STAT":
+        return (alt["T_hex"] == pri["T_hex"] and alt["r"] == pri["r"] and alt["deg"] == pri["deg"]
+                and alt["ties"] == pri["ties"] and alt["p"].hex() == pri["p_hex"] and alt["codes"] == pri["codes"]
+                and alt["t_hex"] == pri["t_hex"])
+    if pri["outcome_class"] == "NOT_RUN":
+        return alt["deg"] == pri["deg"] and alt["T_hex"] == pri["T_hex"] and alt["codes"] == pri["pre_f3_cdr010"]["codes"]
+    return True
+
+
+def exact_lrv_zero(x, L):
+    n = len(x)
+    F = [Fraction(v) for v in x]
+    m = sum(F, Fraction(0)) / n
+    c = F + F
+    return all(sum(c[s:s + L], Fraction(0)) == L * m for s in range(n))
+
+
+def short(o):
+    keep = ("status", "outcome_class", "T_hex", "r", "deg", "ties", "p_fraction", "codes")
+    return {k: o.get(k) for k in keep if k in o}
+
+
+def evaluate(rec_in, *, comparators=True, base=None):
+    x, L, B, seed = rec_in["x"], rec_in["L"], rec_in["B"], rec_in["seed"]
+    xf = [float(v) for v in x]
+    rec = {k: rec_in[k] for k in ("id", "family") if k in rec_in}
+    rec.update(n=len(xf), L=L, B=B, seed=seed, x_hex=[v.hex() for v in xf])
+    for k in ("x_dec", "note", "gie008_expected_p_fraction"):
+        if k in rec_in:
+            rec[k] = rec_in[k]
+    pri = P.mb_v2_cdr012(xf, L, B, seed, trace=False)
+    alt = Q.mb_v2_cdr012_alt(xf, L, B, seed)
+    rec["cdr012"] = {k: pri[k] for k in GRADE_KEYS if k in pri}
+    rec["alt_bit_identical"] = alt_agrees(pri, alt)
+    var = {}
+    for name, kw in (("square_pow", {"square": "pow"}), ("partial_single_fsum", {"partial_add": "fsum"}),
+                     ("grouping_samples", {"grouping": "samples"}), ("predicate_v_positive", {"predicate": "v_positive"}),
+                     ("f3_off_cdr010_literal", {"f3": "off"}), ("f3_broad_deg_ge_B_minus_1", {"f3": "broad"}),
+                     ("f3_any_degenerate", {"f3": "any"})):
+        o = P.mb_v2_cdr012(xf, L, B, seed, trace=False, **kw)
+        var[name] = dict(short(o), same_as_cdr012=(o["status"] == pri["status"] and o.get("T_hex") == pri.get("T_hex")
+                                                   and o.get("codes") == pri.get("codes")
+                                                   and o.get("t_hex") == pri.get("t_hex")))
+    rec["variants"] = var
+    rec["exact_lrv_zero"] = exact_lrv_zero(xf, L)
+    if base is not None:  # battery case: comparators already computed in expected_cdr010.json (same code)
+        rec["literal_numpy"] = base["literal_numpy"]
+        rec["v1_kernel"] = base["v1_kernel"]
+        rec["exact_binary"] = base["exact_binary"]
+        rec["exact_decimal"] = base["exact_decimal"]
+    elif comparators:
+        eb = O.exact_binary(xf, L, B, seed)
+        rec["exact_binary"] = {k: eb.get(k) for k in ("status", "r", "deg", "ties", "p_fraction", "codes", "T_sign")}
+        ln = O.literal_numpy_run(xf, L, B, seed, per_replicate=True)
+        rec["literal_numpy"] = {k: ln.get(k) for k in ("status", "r", "deg", "ties", "p", "p_fraction", "S_plus1_hex",
+                                                       "T_hex", "codes", "undefined_statistic")}
+        v1 = O.v1_kernel(xf, L, B, seed)
+        rec["v1_kernel"] = {k: v1.get(k) for k in ("status", "r", "deg", "ties", "p", "T_hex", "codes")}
+    return rec
+
+
+def check_construction(case, rec):
+    """Abort if a dedicated fixture does not have the property it was built for."""
+    c = rec["cdr012"]
+    pre = P.mb_v2_cdr012([float.fromhex(h) for h in rec["x_hex"]], case["L"], case["B"], case["seed"], f3="off")
+    assert pre["status"] == "OK", (case["id"], "CDR-010 status must be OK (se > 0)", pre["status"])
+    if case["expect"] == "NOT_RUN":
+        assert pre["deg"] == case["B"] and c["outcome_class"] == "NOT_RUN", (case["id"], pre["deg"], case["B"])
+    else:
+        assert c["outcome_class"] == "STAT", case["id"]
+        if "want_deg" in case:
+            assert c["deg"] == case["want_deg"], (case["id"], c["deg"], case["want_deg"])
+        if case.get("want_near_undefined"):
+            assert c["deg"] < case["B"] and abs(float.fromhex(c["T_hex"])) > 1e12, (case["id"], c["deg"], c["T_hex"])
+        if case.get("want_pow_p_differs"):
+            assert rec["variants"]["square_pow"]["p_fraction"] != c["p_fraction"], case["id"]
+    if not rec["alt_bit_identical"]:
+        raise AssertionError(("primary and alt disagree", case["id"]))
+
+
+def sha256_file(p):
+    return hashlib.sha256(open(p, "rb").read()).hexdigest()
+
+
+def main():
+    t0 = time.time()
+    base = json.load(open(BASE_EXPECTED))
+    base_sha = sha256_file(BASE_EXPECTED)
+    groups, regrade = {}, {"cases": 0, "cdr010_graded": 0, "became_not_run": [], "changed_other": [],
+                           "alt_bit_identical": 0, "cdr010_status_counts": Counter()}
+    for g, cases in base["cases"].items():
+        out = []
+        for bc in cases:
+            src = {"id": bc["id"], "family": bc["family"], "x": [float.fromhex(h) for h in bc["x_hex"]], "L": bc["L"],
+                   "B": bc["B"], "seed": bc["seed"], "x_dec": bc["x_dec"]}
+            if "gie008_expected_p_fraction" in bc:
+                src["gie008_expected_p_fraction"] = bc["gie008_expected_p_fraction"]
+            rec = evaluate(src, base=bc)
+            old, new = bc["cdr010"], rec["cdr012"]
+            regrade["cases"] += 1
+            regrade["cdr010_status_counts"][old["status"]] += 1
+            regrade["cdr010_graded"] += old["status"] == "OK"
+            regrade["alt_bit_identical"] += rec["alt_bit_identical"]
+            if new["outcome_class"] == "NOT_RUN":
+                regrade["became_not_run"].append(bc["id"])
+            else:
+                same = all(old.get(k) == new.get(k) for k in ("status", "T_hex", "r", "deg", "ties", "p_hex",
+                                                              "p_fraction", "codes", "t_hex", "indices_sha256",
+                                                              "mean_hex", "lrv_hex", "se_hex"))
+                if not same:
+                    regrade["changed_other"].append(bc["id"])
+            out.append(rec)
+        groups[g] = out
+    regrade["cdr010_status_counts"] = dict(regrade["cdr010_status_counts"])
+    dedicated = {"cdr012_f3_all_degenerate": f3_cases(), "cdr012_f3_boundary": boundary_cases(),
+                 "cdr012_f1_square": f1_cases(), "cdr012_near_undefined": near_undefined_cases()}
+    for g, cases in dedicated.items():
+        out = []
+        for case in cases:
+            rec = evaluate(case)
+            rec["expect"] = case["expect"]
+            check_construction(case, rec)
+            out.append(rec)
+        groups[g] = out
+    # detector index
+    det = {
+        "F1_square_pow": [r["id"] for r in groups["edge_square_axis"]] + [r["id"] for r in groups["cdr012_f1_square"]],
+        "F3_all_degenerate_expect_NOT_RUN": [r["id"] for r in groups["cdr012_f3_all_degenerate"]],
+        "F3_boundary_deg_B_minus_1_expect_p": [r["id"] for r in groups["cdr012_f3_boundary"]],
+        "near_undefined_expect_p": [r["id"] for r in groups["cdr012_near_undefined"]] + ["E-UNDEF-PERIOD3-L3"],
+    }
+    # summary
+    summ = {}
+    for g, recs in groups.items():
+        s = Counter()
+        for r in recs:
+            c = r["cdr012"]
+            s["cases"] += 1
+            s["class:" + c["outcome_class"]] += 1
+            s["alt_bit_identical"] += r["alt_bit_identical"]
+            if c["outcome_class"] == "STAT":
+                s["graded_replicates"] += r["B"]
+                s["deg_eq_B_minus_1"] += c["deg"] == r["B"] - 1
+                s["cases_with_deg"] += c["deg"] > 0
+            for vname, v in r["variants"].items():
+                s[f"variant_{vname}_differs"] += not v["same_as_cdr012"]
+                s[f"variant_{vname}_class_differs"] += v["outcome_class"] != c["outcome_class"]
+                if v["outcome_class"] == "STAT" and c["outcome_class"] == "STAT":
+                    s[f"variant_{vname}_p_differs"] += v["p_fraction"] != c["p_fraction"]
+            s["exact_lrv_zero"] += r["exact_lrv_zero"]
+            if r.get("literal_numpy", {}).get("status") == "OK" and c["outcome_class"] == "NOT_RUN":
+                s["literal_numpy_returns_p_on_NOT_RUN"] += 1
+            if r.get("v1_kernel", {}).get("status") == "OK" and c["outcome_class"] == "NOT_RUN":
+                s["v1_returns_p_on_NOT_RUN"] += 1
+        summ[g] = dict(sorted(s.items()))
+    total = Counter()
+    for g, recs in groups.items():
+        for r in recs:
+            total["cases"] += 1
+            total["class:" + r["cdr012"]["outcome_class"]] += 1
+            total["alt_bit_identical"] += r["alt_bit_identical"]
+    files = ["oracle_cdr010.py", "oracle_cdr010_alt.py", "oracle_cdr012.py", "oracle_cdr012_alt.py",
+             "build_expected_cdr012.py", "fixtures_subnormal_f3.json", "compare_cdr012.py", "adapters_cdr012.py",
+             "registry_probe_cdr012.py", "probe_selftest_shims.py", "extract_head.sh", "run_selftests.sh",
+             "sim_source_e112f41f.py", "c6_replica_proof.json", "expected_cdr010.json"]
+    doc = {
+        "schema": "prep-cdr012-oracle/expected_cdr012 v1",
+        "authority": "NONE. Read-only integration prep evidence; not a Track C approval, not an acceptance threshold. "
+                     "Synthetic software-validation inputs only. No CAL_VERIFY/Holdout/network.",
+        "contract": P.CONTRACT + "; reference = oracle_cdr012.mb_v2_cdr012 defaults (square=mul, grouping=blocks, "
+                    "partial_add=add, predicate=sqrt_v_over_n, f3=all); second implementation oracle_cdr012_alt",
+        "routing": "origin/integration/global-handoff-v1 @ 1620f7118dbe91283cde1cc1431cdea236ab0829 "
+                   "(COORDINATION_DECISION_REGISTER CDR-010, CDR-012; GIE-010)",
+        "outcome_classes": {"STAT": "a p-value is produced; T/r/deg/ties/p/per-replicate t bits graded exactly",
+                            "NOT_RUN": "F3: every replicate degenerate; the implementation must fail closed (no p)",
+                            "UNDEFINED_SE": "se not > 0; CDR-010/012 silent; ungraded, reported",
+                            "NOT_RUN_GEOMETRY": "q < 2; ungraded"},
+        "environment": {"python": sys.version.split()[0], "numpy": numpy.__version__, "scipy": scipy.__version__,
+                        "platform": platform.platform(), "libc": "-".join(platform.libc_ver())},
+        "base_expected_cdr010_sha256": base_sha,
+        "battery_regrade": regrade,
+        "detector_index": det,
+        "totals": dict(total),
+        "summary": summ,
+        "cases": groups,
+        "file_sha256": {f: sha256_file(os.path.join(HERE, f)) for f in files if os.path.exists(os.path.join(HERE, f))},
+        "runtime_seconds": None,
+    }
+    doc["runtime_seconds"] = round(time.time() - t0, 1)
+    with open(os.path.join(HERE, "expected_cdr012.json"), "w") as fh:
+        json.dump(doc, fh, indent=1)
+    print(json.dumps({"battery_regrade": {k: (v if not isinstance(v, list) else {"count": len(v), "ids": v[:20]})
+                                          for k, v in regrade.items()},
+                      "totals": dict(total), "summary": summ,
+                      "detector_counts": {k: len(v) for k, v in det.items()},
+                      "runtime_seconds": doc["runtime_seconds"]}, indent=1))
+
+
+if __name__ == "__main__":
+    main()

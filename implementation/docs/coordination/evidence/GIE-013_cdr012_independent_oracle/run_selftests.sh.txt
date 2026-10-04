@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Harness self-tests: oracle references, negative mutants, and (optionally) a head extract (default: the e0b6d80 baseline).
+# Usage: [SELFTEST_OUT=<dir>] [SELFTEST_WORK=<dir>] run_selftests.sh [<head extract dir containing implementation/src>] [<label>]
+set -uo pipefail
+HERE=$(cd "$(dirname "$0")" && pwd)
+HEAD_DIR=${1:-}
+LABEL=${2:-head}
+PY="$HERE/venv/bin/python"
+OUT="${SELFTEST_OUT:-$HERE/selftest_cdr012}"
+mkdir -p "$OUT"
+export PYTHONDONTWRITEBYTECODE=1
+cd "$HERE"
+for a in primary alt pow_mutant f3_off_mutant f3_broad_mutant f3_any_mutant eps_abs_mutant eps_rel_mutant \
+         f3_p_one_mutant vpos_mutant pow_and_f3_off_mutant f3_exact_predicate_mutant v1; do
+  PYTHONPATH="$HERE:$HERE/src_b9e01a9/implementation/src" "$PY" compare_cdr012.py --adapter "self:$a" \
+    --out "$OUT/$a.json" > "$OUT/$a.stdout"; echo "self:$a rc=$?"
+done
+if [ -n "$HEAD_DIR" ]; then
+  W="${SELFTEST_WORK:-$(cd "$HERE/.." && pwd)/work}/probe_$LABEL"; mkdir -p "$W"
+  PYTHONPATH="$HERE:$HEAD_DIR/implementation/src" "$PY" compare_cdr012.py --adapter v2kernel \
+    --out "$OUT/v2_$LABEL.json" > "$OUT/v2_$LABEL.stdout"; echo "v2kernel[$LABEL] rc=$?"
+  PYTHONPATH="$HERE:$HEAD_DIR/implementation/src:$HEAD_DIR/implementation" "$PY" registry_probe_cdr012.py \
+    --work "$W/registry" --out "$OUT/registry_probe_$LABEL.json" > "$OUT/registry_probe_$LABEL.stdout"; echo "registry_probe[$LABEL] rc=$?"
+  for s in none f3_kernel_raise f3_registry_only eps_guard_kernel; do
+    PYTHONPATH="$HERE:$HEAD_DIR/implementation/src:$HEAD_DIR/implementation" "$PY" probe_selftest_shims.py "$s" \
+      --work "$W/shim_$s" --out "$OUT/registry_probe_${LABEL}_shim_$s.json" > "$OUT/registry_probe_${LABEL}_shim_$s.stdout"
+    echo "registry_probe[$LABEL]+shim:$s rc=$?"
+  done
+  for a in adapter_f3_kernel_raise adapter_eps_guard_kernel; do
+    PYTHONPATH="$HERE:$HEAD_DIR/implementation/src" "$PY" compare_cdr012.py --adapter "probe_selftest_shims:$a" \
+      --out "$OUT/v2_${LABEL}_shim_$a.json" > "$OUT/v2_${LABEL}_shim_$a.stdout"; echo "v2kernel[$LABEL]+$a rc=$?"
+  done
+  rm -rf "$W"
+fi
+"$PY" - "$OUT" <<'PYEOF'
+import json, os, sys
+out = sys.argv[1]
+rows = {}
+for f in sorted(os.listdir(out)):
+    if not f.endswith(".stdout"):
+        continue
+    d = json.load(open(os.path.join(out, f)))
+    if "verdict" in d:
+        rows[f[:-7]] = {"verdict": d["verdict"], "triage": d["triage_counts"], "detectors": d["detectors"]}
+    else:
+        rows[f[:-7]] = {"overall": d["overall"], "scenarios": {k: [v["statistical_status"], v["cell_statuses"],
+                        v["judgement"]["verdict"]] for k, v in d["scenarios"].items()}}
+json.dump(rows, open(os.path.join(out, "SUMMARY.json"), "w"), indent=1)
+print(json.dumps(rows, indent=1))
+PYEOF

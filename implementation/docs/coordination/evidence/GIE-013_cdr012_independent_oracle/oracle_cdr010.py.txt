@@ -1,0 +1,461 @@
+"""Independent reference oracle for Track C G-SUP M-B v2 under CDR-010.
+
+SYNTHETIC SOFTWARE-VALIDATION ONLY. This file is NOT repository code. It was written by
+the Primary Integration Writer's read-only prep agent (label prep-v2-oracle) without
+looking at Codex's v2 implementation (PR #31). It never reads CAL_VERIFY / Holdout data
+and never touches the network.
+
+Sources the arithmetic was derived from (read-only):
+  * approved M-B simulation  implementation/reports/track_c_c8_a6_method_simulation_source_2026-10-02.py
+    git blob e112f41f34d4ead287699657750875770b4c4705 (identical at b9e01a9 and at
+    origin/codex/track-c-gsup-v2-2026-10-03 @ 29c2c20), functions run() / 'S_plus1'.
+  * frozen C6 index convention statistical_kernels.circular_block_indices
+    (git blob 28e1c1842625bacabc6ffc9c9b172261e7d6585a @ b9e01a9): Python random.Random(seed),
+    per replicate draw start = rng.randrange(n) until >= n indices, block = (start+j) % n, truncate to n.
+  * v1 kernel superiority.studentized_cbb (git blob 8a1254d7b77514f6015dfff4af0e4a53f57f22af @ b9e01a9),
+    used only as a comparator.
+
+CDR-010 contract implemented by mb_v2() (defaults square='mul', grouping='blocks', partial_add='add'):
+  n = len(x); k = ceil(n/L); q = k-1 (variance blocks); rem = n - q*L (partial length, 1..L)
+  requires q >= 2 (run(): okS = (k-1) >= 2), otherwise NOT_RUN
+  m      = fsum(x) / n
+  S_s    = fsum(x[(s+j) % n] for j < L)              (direct circular block sums, every start s)
+  lrv    = fsum((S_s - L*m)^2 over s) / (n*L)
+  se     = sqrt(lrv / n); statistic undefined iff not se > 0 (run(): TS = nan; see README)
+  T      = m / se
+  replicate b, C6 starts s_0..s_{k-1}:
+    full block sums  b_j = fsum(x[(s_j+i) % n] for i < L), j < q
+    partial          P   = fsum(x[(s_q+i) % n] for i < rem)
+    ms  = (fsum(b_0..b_{q-1}) + P) / n                (Sigma full block sums, then + partial)
+    v   = fsum((b_j - L*ms)^2 over j < q) / (q*L)
+    sv  = sqrt(v / n); degenerate iff not sv > 0      (degenerate never exceeds)
+    t   = (ms - m) / sv; exceed iff t >= T (ties counted); tie iff t == T
+  p = (r+1)/(B+1)
+
+Arithmetic axes that CDR-010 does not spell out and that this oracle makes explicit:
+  square      'mul'  d*d (correctly rounded; equals NumPy arr**2 used by run())
+              'pow'  Python d**2 (libm pow; NOT correctly rounded on glibc 2.39 for ~0.085% of doubles)
+  partial_add 'add'  fsum(full block sums) + partial  (GIE-008 section 2 'fsum / blocks' column; run() structure)
+              'fsum' fsum(full block sums + [partial])
+  grouping    'blocks' (CDR-010) / 'samples' (fsum over the n sampled values; diagnostic only)
+"""
+from __future__ import annotations
+
+import hashlib
+import importlib.util
+import json
+import math
+import os
+import random
+import sys
+from fractions import Fraction
+
+ORACLE_ID = "prep-v2-oracle/oracle_cdr010.py (2026-10-03)"
+HERE = os.path.dirname(os.path.abspath(__file__))
+SIM_SOURCE_BLOB = "e112f41f34d4ead287699657750875770b4c4705"
+SIM_SOURCE_SHA256 = "c1f56a3f709c5fed65336fb5f33473f957c8caad706bfc4e48534ca3161f34ce"
+C6_KERNEL_BLOB = "28e1c1842625bacabc6ffc9c9b172261e7d6585a"
+V1_KERNEL_BLOB = "8a1254d7b77514f6015dfff4af0e4a53f57f22af"
+
+STATUS_OK = "OK"
+STATUS_NOT_RUN = "NOT_RUN_FEWER_THAN_TWO_VARIANCE_BLOCKS"
+STATUS_UNDEFINED = "UNDEFINED_STATISTIC_ZERO_SE"
+
+# replicate outcome codes
+DEG, TIE, EXC, NOX = "D", "X", "E", "N"  # degenerate / tie (t == T, counted) / t > T / t < T
+
+
+def git_blob_sha1(raw: bytes) -> str:
+    return hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+
+
+def canonical_sha256(obj) -> str:
+    return hashlib.sha256(json.dumps(obj, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def geometry(n: int, L: int):
+    k = -(-n // L)
+    q = k - 1
+    return k, q, n - q * L
+
+
+def _check(x, L, B, seed):
+    for name, val in (("L", L), ("B", B)):
+        if type(val) is not int or val <= 0:
+            raise ValueError(name + " must be a positive int")
+    if type(seed) is not int:
+        raise ValueError("seed must be an int")
+    xs = tuple(float(v) for v in x)
+    if len(xs) < 2 or not all(math.isfinite(v) for v in xs):
+        raise ValueError("need >= 2 finite observations")
+    if L > len(xs):
+        raise ValueError("block length exceeds n")
+    return xs
+
+
+# --------------------------------------------------------------------------- C6 replica
+def c6_indices(n: int, L: int, B: int, seed: int):
+    """Replica of frozen C6 statistical_kernels.circular_block_indices (blob 28e1c184)."""
+    rng = random.Random(seed)
+    out = []
+    for _ in range(B):
+        ix = []
+        while len(ix) < n:
+            start = rng.randrange(n)
+            ix.extend((start + j) % n for j in range(L))
+        out.append(tuple(ix[:n]))
+    return tuple(out)
+
+
+def starts_from_indices(ix, L, k):
+    return tuple(ix[j * L] for j in range(k))
+
+
+# --------------------------------------------------------------------------- CDR-010 oracle
+def _sq(d, square):
+    if square == "mul":
+        return d * d
+    if square == "pow":
+        return d ** 2
+    raise ValueError(square)
+
+
+def mb_v2(x, L, B, seed, *, square="mul", grouping="blocks", partial_add="add", predicate="sqrt_v_over_n",
+          trace=True):
+    """CDR-010 M-B v2 reference. Defaults are the CDR-010 reading; other kwargs are diagnostics."""
+    x = _check(x, L, B, seed)
+    n = len(x)
+    k, q, rem = geometry(n, L)
+    head = {"oracle": ORACLE_ID, "contract": "CDR-010", "square": square, "grouping": grouping,
+            "partial_add": partial_add, "predicate": predicate, "n": n, "L": L, "B": B, "seed": seed, "k": k, "q": q, "rem": rem}
+    if q < 2:
+        return dict(head, status=STATUS_NOT_RUN)
+    m = math.fsum(x) / n
+    S = [math.fsum([x[(s + j) % n] for j in range(L)]) for s in range(n)]
+    lrv = math.fsum([_sq(Ss - L * m, square) for Ss in S]) / (n * L)
+    se = math.sqrt(lrv / n)
+    head.update(mean_hex=m.hex(), lrv_hex=lrv.hex(), se_hex=se.hex())
+    if not se > 0:
+        return dict(head, status=STATUS_UNDEFINED)
+    T = m / se
+    indices = c6_indices(n, L, B, seed)
+    r = deg = ties = 0
+    codes, t_hex, rows = [], [], []
+    for b, ix in enumerate(indices):
+        vals = [x[i] for i in ix]
+        blocks = [math.fsum(vals[j * L:(j + 1) * L]) for j in range(q)]
+        partial = math.fsum(vals[q * L:])
+        if grouping == "blocks":
+            if partial_add == "add":
+                ms = (math.fsum(blocks) + partial) / n
+            elif partial_add == "fsum":
+                ms = math.fsum(blocks + [partial]) / n
+            else:
+                raise ValueError(partial_add)
+        elif grouping == "samples":
+            ms = math.fsum(vals) / n
+        else:
+            raise ValueError(grouping)
+        v = math.fsum([_sq(bs - L * ms, square) for bs in blocks]) / (q * L)
+        sv = math.sqrt(v / n)
+        if predicate == "sqrt_v_over_n":
+            degenerate = not sv > 0          # CDR-010 / run(): sqrt(v/n) > 0 is false
+        elif predicate == "v_positive":
+            degenerate = not v > 0           # diagnostic only (v1-style predicate)
+        else:
+            raise ValueError(predicate)
+        if degenerate:
+            deg += 1
+            code, t = DEG, None
+        elif not sv > 0:                     # only reachable with predicate='v_positive': t = x/0
+            code, t = "Z", None
+        else:
+            t = (ms - m) / sv
+            if t == T:
+                ties += 1
+                code = TIE
+            else:
+                code = EXC if t > T else NOX
+            if t >= T:
+                r += 1
+        codes.append(code)
+        t_hex.append(None if t is None else t.hex())
+        if trace:
+            rows.append({"b": b, "starts": list(starts_from_indices(ix, L, k)),
+                         "block_sums": [v_.hex() for v_ in blocks], "partial": partial.hex(),
+                         "mean": ms.hex(), "v": v.hex(), "sv": sv.hex(), "code": code,
+                         "t": None if t is None else t.hex()})
+    out = dict(head, status=STATUS_OK, T=T, T_hex=T.hex(), r=r, deg=deg, ties=ties,
+               p=(r + 1) / (B + 1), p_hex=((r + 1) / (B + 1)).hex(), p_fraction=f"{r + 1}/{B + 1}",
+               codes="".join(codes), t_hex=t_hex,
+               indices_sha256=canonical_sha256([list(i) for i in indices]))
+    if trace:
+        out["trace"] = rows
+        out["trace_sha256"] = canonical_sha256(rows)
+    return out
+
+
+# --------------------------------------------------------------------------- exact comparators
+def _sgn(z):
+    return (z > 0) - (z < 0)
+
+
+def exact_mb(F, L, B, seed):
+    """M-B statistic in exact rational arithmetic (no rounding anywhere; sqrt removed by squaring)."""
+    n = len(F)
+    k, q, rem = geometry(n, L)
+    if q < 2:
+        return {"status": STATUS_NOT_RUN}
+    m = sum(F, Fraction(0)) / n
+    S = [sum((F[(s + j) % n] for j in range(L)), Fraction(0)) for s in range(n)]
+    lrv = sum(((Ss - L * m) ** 2 for Ss in S), Fraction(0)) / (n * L)
+    if lrv == 0:
+        return {"status": STATUS_UNDEFINED}
+    r = deg = ties = 0
+    codes = []
+    for ix in c6_indices(n, L, B, seed):
+        vals = [F[i] for i in ix]
+        blocks = [sum(vals[j * L:(j + 1) * L], Fraction(0)) for j in range(q)]
+        ms = (sum(blocks, Fraction(0)) + sum(vals[q * L:], Fraction(0))) / n
+        v = sum(((bs - L * ms) ** 2 for bs in blocks), Fraction(0)) / (q * L)
+        if v == 0:
+            deg += 1
+            codes.append(DEG)
+            continue
+        # t >= T  <=>  (ms-m)/sqrt(v/n) >= m/sqrt(lrv/n)  <=>  a*sqrt(lrv) >= m*sqrt(v),  a = ms-m
+        a = ms - m
+        sa, sm = _sgn(a), _sgn(m)
+        lhs2, rhs2 = a * a * lrv, m * m * v
+        if sa != sm:
+            cmp = 1 if sa > sm else -1
+        elif sa == 0:
+            cmp = 0
+        elif sa > 0:
+            cmp = (lhs2 > rhs2) - (lhs2 < rhs2)
+        else:
+            cmp = (lhs2 < rhs2) - (lhs2 > rhs2)
+        if cmp == 0:
+            ties += 1
+            codes.append(TIE)
+        else:
+            codes.append(EXC if cmp > 0 else NOX)
+        r += cmp >= 0
+    return {"status": STATUS_OK, "r": r, "deg": deg, "ties": ties, "p_fraction": f"{r + 1}/{B + 1}",
+            "codes": "".join(codes), "T_sign": _sgn(m)}
+
+
+def exact_decimal(x_decimal, L, B, seed):
+    """Inputs read as decimal numbers: strings are used verbatim; floats via their shortest repr."""
+    F = [Fraction(v) if isinstance(v, str) else Fraction(repr(float(v))) for v in x_decimal]
+    return dict(exact_mb(F, L, B, seed), reading="decimal")
+
+
+def exact_binary(x, L, B, seed):
+    """Inputs read as the exact binary64 values the float pipeline sees."""
+    F = [Fraction(float(v)) for v in x]
+    return dict(exact_mb(F, L, B, seed), reading="binary")
+
+
+# --------------------------------------------------------------------------- literal NumPy run()
+_SIM = None
+
+
+def load_simulation_module(path=None):
+    """Import the UNMODIFIED approved simulation source (blob-verified byte copy)."""
+    global _SIM
+    if _SIM is not None:
+        return _SIM
+    path = path or os.path.join(HERE, "sim_source_e112f41f.py")
+    raw = open(path, "rb").read()
+    if git_blob_sha1(raw) != SIM_SOURCE_BLOB or hashlib.sha256(raw).hexdigest() != SIM_SOURCE_SHA256:
+        raise RuntimeError("simulation source bytes do not match blob e112f41f")
+    spec = importlib.util.spec_from_file_location("mb_sim_source_e112f41f", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    _SIM = mod
+    return mod
+
+
+class C6StartFeed:
+    """Stands in for run()'s rng: each rng.integers(0, n, (1, k)) call returns the next C6 start row."""
+
+    def __init__(self, start_rows, n, k):
+        self.rows, self.n, self.k, self.calls = list(start_rows), n, k, 0
+
+    def integers(self, low, high, size):
+        import numpy as np
+        if low != 0 or high != self.n or tuple(size) != (1, self.k):
+            raise AssertionError(("unexpected rng.integers call", low, high, size))
+        row = self.rows[self.calls]
+        self.calls += 1
+        return np.array([row], dtype=np.int64)
+
+
+def _numpy_transcription(x, L, start_rows):
+    """Line-by-line transcription of run() for R=1 to expose per-replicate degeneracy and t."""
+    import numpy as np
+    xa = np.array([x], dtype=float)
+    R, n = xa.shape
+    k = math.ceil(n / L)
+    rem = n - (k - 1) * L
+    xx = np.concatenate([xa, xa[:, :L]], 1)
+    cs = np.concatenate([np.zeros((R, 1)), np.cumsum(xx, 1)], 1)
+    s = np.arange(n)
+    full = cs[:, s + L] - cs[:, s]
+    part = cs[:, s + rem] - cs[:, s]
+    m = xa.mean(1)
+    lrv = ((full - L * m[:, None]) ** 2).sum(1) / (n * L)
+    se = np.sqrt(lrv / n)
+    TS = np.where(se > 0, m / np.where(se > 0, se, 1), np.nan)
+    rows = []
+    for row in start_rows:
+        st = np.array([row])
+        sums = np.take_along_axis(full, st[:, :k - 1], 1)
+        last = np.take_along_axis(part, st[:, k - 1:], 1)[:, 0]
+        ms = (sums.sum(1) + last) / n
+        v = ((sums - L * ms[:, None]) ** 2).sum(1) / ((k - 1) * L)
+        sv = np.sqrt(v / n)
+        degen = not bool(sv[0] > 0)
+        t = None if degen else float(((ms - m) / sv)[0])
+        exceed = bool((np.where(sv > 0, (ms - m) / np.where(sv > 0, sv, 1), -np.inf) >= TS)[0])
+        rows.append((degen, t, exceed))
+    return float(TS[0]), rows
+
+
+def literal_numpy_run(x, L, B, seed, *, per_replicate=True):
+    """Call the unmodified run() with C6 starts; S_plus1 is the literal M-B p-value."""
+    import numpy as np
+    sim = load_simulation_module()
+    x = _check(x, L, B, seed)
+    n = len(x)
+    k, q, rem = geometry(n, L)
+    rows = [starts_from_indices(ix, L, k) for ix in c6_indices(n, L, B, seed)]
+    feed = C6StartFeed(rows, n, k)
+    out = sim.run(np.array([x], dtype=float), L, B, feed)
+    if feed.calls != B:
+        raise AssertionError("run() did not consume exactly B start rows")
+    p = float(out["S_plus1"][0])
+    res = {"numpy": np.__version__, "S_plus1_hex": p.hex()}
+    if q < 2 or math.isnan(p):
+        res.update(status=STATUS_NOT_RUN, p=None)
+        return res
+    r = round(p * (B + 1)) - 1
+    if (r + 1) / (B + 1) != p:
+        raise AssertionError("cannot recover r from S_plus1")
+    res.update(status=STATUS_OK, r=r, p=p, p_fraction=f"{r + 1}/{B + 1}")
+    if not per_replicate:
+        return res
+    # per-replicate: unmodified run() with B=1 per row, plus the transcription for degeneracy / t
+    single = []
+    for row in rows:
+        f1 = C6StartFeed([row], n, k)
+        p1 = float(sim.run(np.array([x], dtype=float), L, 1, f1)["S_plus1"][0])
+        single.append(p1 == 1.0)
+        if p1 not in (0.5, 1.0):
+            raise AssertionError(p1)
+    TS, trans = _numpy_transcription(x, L, rows)
+    if sum(single) != r or [e for _, _, e in trans] != single:
+        raise AssertionError("run() per-replicate flags disagree with transcription or aggregate")
+    codes = []
+    for (degen, t, exceed) in trans:
+        if degen:
+            codes.append(DEG)
+        elif t == TS:
+            codes.append(TIE)
+        else:
+            codes.append(EXC if exceed else NOX)
+    res.update(T_hex=TS.hex() if not math.isnan(TS) else "nan", deg=sum(1 for c in codes if c == DEG),
+               ties=sum(1 for c in codes if c == TIE), codes="".join(codes),
+               undefined_statistic=math.isnan(TS))
+    return res
+
+
+# --------------------------------------------------------------------------- v1 kernel comparator
+_V1 = None
+
+
+def load_v1():
+    """Import the real v1 kernel from PYTHONPATH (detached worktree at b9e01a9), blob-verified."""
+    global _V1
+    if _V1 is None:
+        from investment_system.evl import superiority, statistical_kernels
+        for mod, blob in ((superiority, V1_KERNEL_BLOB), (statistical_kernels, C6_KERNEL_BLOB)):
+            if git_blob_sha1(open(mod.__file__, "rb").read()) != blob:
+                raise RuntimeError("v1/C6 kernel blob mismatch: " + mod.__file__)
+        _V1 = (superiority, statistical_kernels)
+    return _V1
+
+
+def v1_kernel(x, L, B, seed):
+    sup, _ = load_v1()
+    try:
+        res = sup.studentized_cbb(list(float(v) for v in x), block_length=L, replicates=B, seed=seed)
+    except Exception as exc:  # MissingStatisticalEvidence etc.
+        return {"status": "RAISED:" + type(exc).__name__ + ":" + str(exc)}
+    T = res["statistic"]
+    codes = []
+    for t in res["draws"]:
+        if t is None:
+            codes.append(DEG)
+        elif t == T:
+            codes.append(TIE)
+        else:
+            codes.append(EXC if t > T else NOX)
+    return {"status": STATUS_OK, "method": res["method"], "r": res["exceedances"],
+            "deg": res["degenerate_replicates"], "ties": codes.count(TIE), "p": res["p_value"],
+            "T_hex": T.hex(), "codes": "".join(codes), "indices_hash": res["indices_hash"]}
+
+
+# --------------------------------------------------------------------------- flip classification
+def counted(code, kind):
+    return code in (EXC, TIE) or (kind == "v1" and code == DEG)
+
+
+def classify_flips(primary_codes, other_codes, kind, *, n, L, binary_codes=None):
+    """Replicates whose 'counted toward r' bit differs between CDR-010 and a comparator, with a reason.
+
+    reasons: DEGENERATE (exactly one side degenerate), V1_DEGENERATE_COUNTED (both degenerate; v1 counts it),
+             TIE (either side an exact tie), V1_VARIANCE_BLOCKS (v1 uses n//L blocks, v2 n/L-1, when L | n),
+             ROUNDING (both regular, opposite sides of T).
+    For exact_decimal the cause is split: DECIMAL_INPUT if exact_binary agrees with CDR-010 on that replicate,
+    otherwise FLOAT_ARITHMETIC.
+    Also returns non-flipping state differences (e.g. D vs N) so degeneracy disagreements stay visible.
+    """
+    flips, silent = [], []
+    for b, (a, o) in enumerate(zip(primary_codes, other_codes)):
+        ca, co = counted(a, "v2"), counted(o, kind)
+        if ca == co:
+            if a != o and (a == DEG) != (o == DEG):
+                silent.append({"b": b, "cdr010": a, kind: o, "kind": "DEGENERACY_ONLY"})
+            elif a != o and (a == TIE) != (o == TIE):
+                silent.append({"b": b, "cdr010": a, kind: o, "kind": "TIE_ONLY"})
+            continue
+        if (a == DEG) != (o == DEG):
+            reason = "DEGENERATE"
+        elif a == DEG and o == DEG:
+            reason = "V1_DEGENERATE_COUNTED"
+        elif TIE in (a, o):
+            reason = "TIE"
+        elif kind == "v1" and n % L == 0:
+            reason = "V1_VARIANCE_BLOCKS"
+        else:
+            reason = "ROUNDING"
+        row = {"b": b, "cdr010": a, kind: o, "reason": reason}
+        if kind == "exact_decimal" and binary_codes is not None:
+            row["cause"] = ("DECIMAL_INPUT" if counted(binary_codes[b], "v2") == ca else "FLOAT_ARITHMETIC")
+        flips.append(row)
+    return flips, silent
+
+
+if __name__ == "__main__":
+    FIX = {
+        "CE4": (["-0.016", "-0.007", "0.053", "0.023", "0.005"], 2, 19, 200),
+        "FLIP": ([".01", ".01", "-.01", "-.02", ".02", ".01", ".01", ".01"], 3, 19, 46),
+        "LEFT_SUM": (["-.02", ".01", ".02", "0", ".01", ".01", ".01", "-.01", ".01"], 4, 19, 34),
+        "TIE": ([".02", "0", "-.02", "-.01", ".01", "0"], 2, 19, 72),
+        "SEED275": ([".01", "-.03", ".04", "-.01", "-.01"], 2, 19, 275),
+    }
+    for name, (xd, L, B, seed) in FIX.items():
+        xf = [float(s) for s in xd]
+        o = mb_v2(xf, L, B, seed, trace=False)
+        print(name, o["status"], o.get("r"), o.get("deg"), o.get("ties"), o.get("p"), o.get("T_hex"), o.get("codes"))

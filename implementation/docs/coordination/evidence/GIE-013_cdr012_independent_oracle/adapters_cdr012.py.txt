@@ -1,0 +1,179 @@
+"""Adapters for compare_cdr012.py. Every adapter is a callable adapter(x, L, B, seed) -> normalized dict:
+
+  outcome_class : "STAT"            a statistic/p-value was produced
+                  "NOT_RUN"         the implementation failed closed in the way mapped as NOT_RUN (see below)
+                  "REFUSED_OTHER"   it refused, but not in the mapped NOT_RUN way (e.g. reason regex did not match)
+                  "RAISED_UNMAPPED" it raised an exception class that is not mapped to NOT_RUN
+  T, r, deg, p  : required for STAT (float, int, int, float)
+  ties, draws   : per-replicate detail for STAT (draws: list of float t or None for a degenerate replicate)
+  reason, raw   : free text for refusals
+
+GENERIC v2 KERNEL ADAPTER (make_kernel_adapter) - configure it to whatever Codex's next #31 head uses for F3:
+  module / func         default investment_system.evl.superiority_v2 : studentized_cbb, called as
+                        func(list(x), block_length=L, replicates=B, seed=seed) (kwarg names configurable)
+  not_run_exceptions    exception class names (any class in the raised exception's MRO) that mean NOT_RUN.
+                        Default: MissingStatisticalEvidence (what e0b6d80 raises for zero SE / < 2 variance blocks
+                        and what the registry maps to cell status NOT_RUN).
+  not_run_reason_regex  optional; if set, a mapped exception (or a NOT_RUN result's reason) only counts as NOT_RUN
+                        when re.search(regex, message) matches; otherwise REFUSED_OTHER. Use it to insist that the
+                        F3 refusal is the all-degenerate refusal, not, say, an epsilon guard.
+  not_run_result_items  (key, value) pairs; a returned dict with res[key] == value is NOT_RUN
+                        (default: status=NOT_RUN, outcome=NOT_RUN, statistical_status=NOT_RUN).
+  p_none_is_not_run     a returned dict whose p-value key is None counts as NOT_RUN (default True).
+  key map               statistic/exceedances/degenerate_replicates/ties/p_value/draws (v1/v2 shape at e0b6d80).
+
+Expected mapping for CDR-012 (documented, not assumed): if Codex implements F3 by raising
+MissingStatisticalEvidence (as e0b6d80 does for zero SE) the default config is right; if Codex adds a new exception
+class (e.g. a subclass of MissingStatisticalEvidence) it is still caught through the MRO; if Codex returns a result
+dict with status NOT_RUN and/or p_value None the default result mapping is right. Whatever is used, the registry cell
+for that series must end up with status NOT_RUN (registry_probe_cdr012.py checks that separately).
+"""
+from __future__ import annotations
+
+import importlib
+import re
+
+import oracle_cdr012 as P
+import oracle_cdr012_alt as Q
+
+DEFAULT_RESULT_ITEMS = (("status", "NOT_RUN"), ("outcome", "NOT_RUN"), ("statistical_status", "NOT_RUN"),
+                        ("outcome_class", "NOT_RUN"))
+V1_KEYS = {"T": "statistic", "r": "exceedances", "deg": "degenerate_replicates", "ties": "ties", "p": "p_value",
+           "draws": "draws"}
+
+
+def _mro_names(exc):
+    return {c.__name__ for c in type(exc).__mro__}
+
+
+def make_kernel_adapter(module="investment_system.evl.superiority_v2", func="studentized_cbb", *,
+                        not_run_exceptions=("MissingStatisticalEvidence",), not_run_reason_regex=None,
+                        not_run_result_items=DEFAULT_RESULT_ITEMS, p_none_is_not_run=True, key_map=None,
+                        kw_block="block_length", kw_reps="replicates", kw_seed="seed"):
+    fn = getattr(importlib.import_module(module), func)
+    km = dict(V1_KEYS, **(key_map or {}))
+    rx = re.compile(not_run_reason_regex) if not_run_reason_regex else None
+    exc_names = set(not_run_exceptions)
+
+    def _a(x, L, B, seed):
+        try:
+            res = fn(list(x), **{kw_block: L, kw_reps: B, kw_seed: seed})
+        except Exception as exc:  # noqa: BLE001
+            msg = f"{type(exc).__name__}: {exc}"
+            if _mro_names(exc) & exc_names:
+                if rx is not None and not rx.search(str(exc)):
+                    return {"outcome_class": "REFUSED_OTHER", "reason": msg}
+                return {"outcome_class": "NOT_RUN", "reason": msg}
+            return {"outcome_class": "RAISED_UNMAPPED", "reason": msg[:300]}
+        if not isinstance(res, dict):
+            return {"outcome_class": "RAISED_UNMAPPED", "reason": "non-dict result " + type(res).__name__}
+        for k, v in not_run_result_items:
+            if res.get(k) == v:
+                reason = str(res.get("reason", ""))
+                if rx is not None and not rx.search(reason):
+                    return {"outcome_class": "REFUSED_OTHER", "reason": reason, "raw_status": v}
+                return {"outcome_class": "NOT_RUN", "reason": reason, "raw_status": v}
+        if p_none_is_not_run and res.get(km["p"]) is None:
+            return {"outcome_class": "NOT_RUN", "reason": "p-value is None", "raw_status": res.get("status")}
+        out = {"outcome_class": "STAT", "T": res[km["T"]], "r": res[km["r"]], "deg": res[km["deg"]],
+               "p": res[km["p"]], "raw_status": res.get("status")}
+        if km["ties"] in res:
+            out["ties"] = res[km["ties"]]
+        if km["draws"] in res:
+            out["draws"] = list(res[km["draws"]])
+        return out
+    return _a
+
+
+# --------------------------------------------------------------------------- oracle-based builtins / mutants
+def _from_oracle_result(o):
+    if o["outcome_class"] == "STAT":
+        return {"outcome_class": "STAT", "T": float.fromhex(o["T_hex"]), "r": o["r"], "deg": o["deg"], "p": o["p"],
+                "ties": o["ties"], "draws": [None if h is None else float.fromhex(h) for h in o["t_hex"]]}
+    if o["outcome_class"] == "NOT_RUN":
+        return {"outcome_class": "NOT_RUN", "reason": o["status"]}
+    return {"outcome_class": "NOT_RUN", "reason": o["status"]}   # zero SE / geometry: refusals (ungraded cases)
+
+
+def oracle_adapter(**kw):
+    def _a(x, L, B, seed):
+        return _from_oracle_result(P.mb_v2_cdr012(x, L, B, seed, **kw))
+    return _a
+
+
+def alt_adapter():
+    def _a(x, L, B, seed):
+        o = Q.mb_v2_cdr012_alt(x, L, B, seed)
+        if o["outcome_class"] == "STAT":
+            return {"outcome_class": "STAT", "T": o["T"], "r": o["r"], "deg": o["deg"], "p": o["p"], "ties": o["ties"],
+                    "draws": [None if h is None else float.fromhex(h) for h in o["t_hex"]]}
+        return {"outcome_class": "NOT_RUN", "reason": o["status"]}
+    return _a
+
+
+def eps_guard_adapter(kind):
+    """Negative mutant: CDR-012 plus an (unapproved) epsilon guard on the long-run variance -> NOT_RUN."""
+    def _a(x, L, B, seed):
+        o = P.mb_v2_cdr012(x, L, B, seed)
+        if "lrv_hex" in o:
+            lrv, se, m = float.fromhex(o["lrv_hex"]), float.fromhex(o["se_hex"]), float.fromhex(o["mean_hex"])
+            if (kind == "abs" and lrv < 2.0 ** -80) or (kind == "rel" and se < 2.0 ** -40 * abs(m)):
+                return {"outcome_class": "NOT_RUN", "reason": f"epsilon guard ({kind})"}
+        return _from_oracle_result(o)
+    return _a
+
+
+def f3_p_one_adapter():
+    """Negative mutant: all-degenerate -> a 'conservative' p = 1.0 instead of NOT_RUN (still a statistic)."""
+    def _a(x, L, B, seed):
+        o = P.mb_v2_cdr012(x, L, B, seed)
+        if o["outcome_class"] == "NOT_RUN":
+            return {"outcome_class": "STAT", "T": float.fromhex(o["T_hex"]), "r": B, "deg": o["deg"], "p": 1.0,
+                    "ties": 0, "draws": [None] * B}
+        return _from_oracle_result(o)
+    return _a
+
+
+def f3_exact_predicate_adapter():
+    """Negative mutant: decides 'every replicate degenerate' in exact rational arithmetic (exact v == 0) instead of
+    the CDR-010 float predicate; otherwise the CDR-010 float result. Misses rounding-/underflow-induced F3 cases."""
+    import oracle_cdr010 as O
+
+    def _a(x, L, B, seed):
+        o = P.mb_v2_cdr012(x, L, B, seed, f3="off")
+        if o["outcome_class"] != "STAT":
+            return _from_oracle_result(o)
+        eb = O.exact_binary(x, L, B, seed)
+        if eb.get("status") == "OK" and eb["deg"] == B:
+            return {"outcome_class": "NOT_RUN", "reason": "exact all-degenerate"}
+        return _from_oracle_result(o)
+    return _a
+
+
+def v1_adapter():
+    import oracle_cdr010 as O
+    sup, _ = O.load_v1()
+    return make_kernel_adapter(sup.__name__, "studentized_cbb")
+
+
+BUILTINS = {
+    "primary": lambda: oracle_adapter(),
+    "alt": alt_adapter,
+    "pow_mutant": lambda: oracle_adapter(square="pow"),
+    "f3_off_mutant": lambda: oracle_adapter(f3="off"),
+    "f3_broad_mutant": lambda: oracle_adapter(f3="broad"),
+    "f3_any_mutant": lambda: oracle_adapter(f3="any"),
+    "eps_abs_mutant": lambda: eps_guard_adapter("abs"),
+    "eps_rel_mutant": lambda: eps_guard_adapter("rel"),
+    "f3_p_one_mutant": f3_p_one_adapter,
+    "vpos_mutant": lambda: oracle_adapter(predicate="v_positive"),
+    "pow_and_f3_off_mutant": lambda: oracle_adapter(square="pow", f3="off"),
+    "f3_exact_predicate_mutant": f3_exact_predicate_adapter,
+    "v1": v1_adapter,
+}
+
+
+def builtin(name):
+    if name not in BUILTINS:
+        raise SystemExit("unknown builtin adapter " + name + "; known: " + ", ".join(sorted(BUILTINS)))
+    return BUILTINS[name]()

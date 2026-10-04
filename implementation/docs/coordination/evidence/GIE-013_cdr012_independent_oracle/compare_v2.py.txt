@@ -1,0 +1,178 @@
+"""Compare an M-B v2 implementation against expected_cdr010.json (exact, bit-for-bit).
+
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=.:<v2 worktree>/implementation/src ./venv/bin/python compare_v2.py \
+      --adapter mymodule:adapter [--groups fixtures,random,edge_subnormal,edge_square_axis,edge_undefined] [--out result.json]
+
+An adapter is a callable adapter(x: list[float], L: int, B: int, seed: int) -> dict with
+  required: T (float statistic), r (int exceedances), deg (int degenerate replicates), p (float p-value)
+  optional: status (str; anything but "OK" means the implementation refused), ties (int),
+            draws (list, one per replicate: float t*_b, or None for a degenerate replicate),
+            indices_hash / indices (whatever the implementation exposes; reported, not graded)
+or it raises (recorded as RAISED:<ExceptionType>).
+adapter_v1_shaped(fn) wraps a function returning v1-style keys
+(statistic, exceedances, degenerate_replicates, p_value, draws) and called as fn(x, block_length=L, replicates=B, seed=seed).
+
+Built-in adapters for self-tests: self:primary, self:alt, self:pow_mutant, self:fsum_partial_mutant,
+self:samples_mutant, self:vpos_mutant, self:v1.
+"""
+import argparse
+import importlib
+import json
+import os
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def adapter_v1_shaped(fn):
+    def _a(x, L, B, seed):
+        res = fn(list(x), block_length=L, replicates=B, seed=seed)
+        out = {"T": res["statistic"], "r": res["exceedances"], "deg": res["degenerate_replicates"],
+               "p": res["p_value"], "status": res.get("status", "OK")}
+        if "draws" in res:
+            out["draws"] = list(res["draws"])
+        for k in ("ties", "indices_hash"):
+            if k in res:
+                out[k] = res[k]
+        return out
+    return _a
+
+
+def _builtin(name):
+    import oracle_cdr010 as O
+    import oracle_cdr010_alt as A
+
+    def from_oracle(**kw):
+        def _a(x, L, B, seed):
+            o = O.mb_v2(x, L, B, seed, trace=False, **kw)
+            if o["status"] != "OK":
+                return {"status": o["status"]}
+            draws = [None if h is None else float.fromhex(h) for h in o["t_hex"]]
+            return {"status": "OK", "T": o["T"], "r": o["r"], "deg": o["deg"], "p": o["p"], "ties": o["ties"],
+                    "draws": draws}
+        return _a
+
+    if name == "primary":
+        return from_oracle()
+    if name == "pow_mutant":
+        return from_oracle(square="pow")
+    if name == "fsum_partial_mutant":
+        return from_oracle(partial_add="fsum")
+    if name == "samples_mutant":
+        return from_oracle(grouping="samples")
+    if name == "vpos_mutant":
+        return from_oracle(predicate="v_positive")
+    if name == "alt":
+        def _alt(x, L, B, seed):
+            o = A.mb_v2_alt(x, L, B, seed)
+            if o["status"] != "OK":
+                return {"status": o["status"]}
+            return {"status": "OK", "T": o["T"], "r": o["r"], "deg": o["deg"], "p": o["p"], "ties": o["ties"],
+                    "draws": [None if h is None else float.fromhex(h) for h in o["t_hex"]]}
+        return _alt
+    if name == "v1":
+        sup, _ = O.load_v1()
+        return adapter_v1_shaped(sup.studentized_cbb)
+    raise SystemExit("unknown builtin adapter " + name)
+
+
+def load_adapter(spec):
+    mod, _, attr = spec.partition(":")
+    if mod == "self":
+        return _builtin(attr)
+    return getattr(importlib.import_module(mod), attr)
+
+
+def compare_case(case, got):
+    """Return list of mismatch strings (empty = exact match) for one expected case."""
+    exp = case["cdr010"]
+    if exp["status"] != "OK":
+        return None  # contract-silent / not-run case: reported, not graded
+    mism = []
+    if got.get("status", "OK") != "OK":
+        return ["status " + str(got.get("status")) + " != OK"]
+    T = got.get("T")
+    if not isinstance(T, float) or T.hex() != exp["T_hex"]:
+        mism.append(f"T {T.hex() if isinstance(T, float) else T!r} != {exp['T_hex']}")
+    for key in ("r", "deg"):
+        if got.get(key) != exp[key]:
+            mism.append(f"{key} {got.get(key)!r} != {exp[key]}")
+    p = got.get("p")
+    if not isinstance(p, float) or p.hex() != exp["p_hex"]:
+        mism.append(f"p {p!r} != {exp['p']} ({exp['p_fraction']})")
+    if "ties" in got and got["ties"] != exp["ties"]:
+        mism.append(f"ties {got['ties']} != {exp['ties']}")
+    if "draws" in got:
+        d = got["draws"]
+        if len(d) != case["B"]:
+            mism.append(f"len(draws) {len(d)} != B {case['B']}")
+        else:
+            bad = [b for b, (t, h) in enumerate(zip(d, exp["t_hex"]))
+                   if (t is None) != (h is None) or (t is not None and float(t).hex() != h)]
+            if bad:
+                mism.append(f"draws differ at replicates {bad[:12]}{'...' if len(bad) > 12 else ''}")
+    return mism
+
+
+def which_reference(case, got):
+    """Name the stored references whose (r, deg) the implementation reproduces, to diagnose a mismatch."""
+    hits = []
+    for vname, v in case["variants"].items():
+        if v.get("status") == "OK" and (v.get("r"), v.get("deg")) == (got.get("r"), got.get("deg")) \
+                and v.get("T_hex") == (got["T"].hex() if isinstance(got.get("T"), float) else None):
+            hits.append("variant:" + vname)
+    ln = case["literal_numpy"]
+    if ln.get("status") == "OK" and (ln.get("r"), ln.get("deg")) == (got.get("r"), got.get("deg")):
+        hits.append("literal_numpy(r,deg)")
+    v1 = case["v1_kernel"]
+    if v1.get("status") == "OK" and (v1.get("r"), v1.get("deg")) == (got.get("r"), got.get("deg")):
+        hits.append("v1(r,deg)")
+    return hits
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--adapter", required=True)
+    ap.add_argument("--expected", default=os.path.join(HERE, "expected_cdr010.json"))
+    ap.add_argument("--groups", default=None, help="comma list; default = every group in the expected file")
+    ap.add_argument("--out")
+    a = ap.parse_args(argv)
+    exp = json.load(open(a.expected))
+    adapter = load_adapter(a.adapter)
+    report = {"adapter": a.adapter, "expected_file": a.expected, "groups": {}}
+    total_mism = 0
+    for g in (a.groups.split(",") if a.groups else list(exp["cases"])):
+        rows, n_ok, n_bad, ungraded = [], 0, 0, []
+        for case in exp["cases"][g]:
+            x = [float.fromhex(h) for h in case["x_hex"]]
+            try:
+                got = adapter(x, case["L"], case["B"], case["seed"])
+            except Exception as exc:  # noqa: BLE001
+                got = {"status": "RAISED:" + type(exc).__name__ + ":" + str(exc)[:120]}
+            mism = compare_case(case, got)
+            if mism is None:
+                ungraded.append({"id": case["id"], "expected_status": case["cdr010"]["status"],
+                                 "v2_status": got.get("status", "OK"), "v2_p": got.get("p"),
+                                 "literal_numpy_p": case["literal_numpy"].get("p"),
+                                 "v1_status": case["v1_kernel"].get("status")})
+                continue
+            if mism:
+                n_bad += 1
+                rows.append({"id": case["id"], "mismatches": mism, "matches_reference": which_reference(case, got)})
+            else:
+                n_ok += 1
+        total_mism += n_bad
+        report["groups"][g] = {"graded": n_ok + n_bad, "exact_match": n_ok, "mismatch": n_bad,
+                               "mismatches": rows, "ungraded_contract_silent": ungraded}
+    report["verdict"] = "EXACT_MATCH_ALL_GRADED" if total_mism == 0 else f"MISMATCH_IN_{total_mism}_CASES"
+    txt = json.dumps(report, indent=1, default=str)
+    if a.out:
+        open(a.out, "w").write(txt)
+    summary = {g: {k: v for k, v in r.items() if k in ("graded", "exact_match", "mismatch")}
+               for g, r in report["groups"].items()}
+    print(json.dumps({"adapter": a.adapter, "verdict": report["verdict"], "summary": summary}, indent=1))
+    return 0 if total_mism == 0 else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

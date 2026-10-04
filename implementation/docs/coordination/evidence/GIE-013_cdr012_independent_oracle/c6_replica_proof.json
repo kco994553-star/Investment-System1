@@ -1,0 +1,16 @@
+{
+ "combos": 3000,
+ "replicates_compared": 113013,
+ "mismatch_primary_c6_indices": 0,
+ "mismatch_alt_direct_starts_indices": 0,
+ "mismatch_alt_starts_vs_real_block_starts": 0,
+ "n_range": [
+  1,
+  64
+ ],
+ "distinct_seeds": 2716,
+ "negative_seed_combos": 372,
+ "seed_ge_2^32_combos": 736,
+ "real_kernel_blob": "28e1c1842625bacabc6ffc9c9b172261e7d6585a",
+ "python": "3.11.15"
+}
