@@ -1,0 +1,343 @@
+{
+  "record": "INDEPENDENT_CDR010_V2_REPAIR_REVIEW",
+  "reviewed_at_utc": "2026-10-04T00:22:47.040441+00:00",
+  "reviewer": {
+    "attribution": "Codex independent arithmetic-oracle worker, this session",
+    "independence": "Authored the independent oracle/arithmetic tests previously. Did not author production superiority_v2.py, registry tests, verifier, approval JSON or workflow delta. This is an independent production/wiring source review; it is not an independent third-party review of the reviewer-authored oracle.",
+    "global_13_point_main_writer": "Separate external verification; not performed or certified here",
+    "handoff_ready_assigned": false
+  },
+  "prior_review": {
+    "json": "/workspace/investment-audit/independent-v2-review.json",
+    "markdown": "/workspace/investment-audit/independent-v2-review.md",
+    "sha256_before_and_after": {
+      "/workspace/investment-audit/independent-v2-review.json": "4a171405d40d6f36edffd2bc15cf830f9d6dcb4ba478d46960f776f23cb995cb",
+      "/workspace/investment-audit/independent-v2-review.md": "e578e94912564fef8175308c14c3266687ab4a02db3fe5643570d85493a5657e"
+    },
+    "preserved_byte_for_byte": true,
+    "relationship": "Separate follow-up closes findings; original review is unchanged."
+  },
+  "repository": {
+    "path": "/workspace/Investment-System1",
+    "head": "29c2c202aabc480c8251fc44b7b488417a56177f",
+    "branch": "codex/track-c-gsup-v2-2026-10-03",
+    "target": "Final reviewed working-tree byte snapshot. New files remain uncommitted at this HEAD; hashes below identify repairs independently of commit status.",
+    "authority_commit": "e30241f49e31f4ac5ab0d4f322ecddc78a044d75"
+  },
+  "conclusion": {
+    "status": "ALL_THREE_REPAIR_FINDINGS_CLOSED_IN_REVIEWED_SCOPE",
+    "closed_findings": [
+      "IRV2-001",
+      "IRV2-002",
+      "IRV2-003"
+    ],
+    "unresolved_repair_findings": [],
+    "new_issues_observed": [],
+    "handoff_ready_assigned": false,
+    "publication_or_grant_assigned": false,
+    "external_global13_verification": "Remains separate; not certified here."
+  },
+  "finding_dispositions": [
+    {
+      "id": "IRV2-001",
+      "original_severity": "MEDIUM",
+      "status": "CLOSED_VERIFIED",
+      "basis": "Public wrapper validates raw inputs before catching arithmetic OverflowError/ZeroDivisionError as MissingStatisticalEvidence. Nonfinite derived role-control differences become per-cell NOT_RUN. Independent fsum/square/derived-delta/zero-division probes all refused a p-value; _evaluate returned NOT_RUN rather than aborting. Normal fsum/block/RNG operation sequence remains unchanged by source inspection."
+    },
+    {
+      "id": "IRV2-002",
+      "original_severity": "MEDIUM",
+      "status": "CLOSED_VERIFIED",
+      "basis": "Verifier requires exact independently literal PUBLIC_KEYS and APPROVED_CONTRACT, selects oracle keys from the public schema, and reports the approved literal contract. Independent omission of draws/contract, unknown-field and changed-contract faults now fail at the first valid fixture; all in-memory replacements restored."
+    },
+    {
+      "id": "IRV2-003",
+      "original_severity": "LOW",
+      "status": "CLOSED_VERIFIED",
+      "basis": "pull_request.paths includes the exact CDR010_APPROVAL.json path, so an approval-only change matches. Repair-test path is also in trigger/protected-addition allowlist; existing preservation and replay/upload steps remain. No workflow dispatch was performed."
+    }
+  ],
+  "focused_independent_probes": {
+    "runtime": {
+      "python": "3.11.16",
+      "implementation": "CPython",
+      "executable": "/workspace/investment-audit/venv311/bin/python"
+    },
+    "command_form": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /workspace/investment-audit/venv311/bin/python - <<PY [in-memory synthetic fault probes] PY",
+    "cwd": "/workspace/Investment-System1/implementation",
+    "passed": 9,
+    "results": [
+      {
+        "probe": "fsum_overflow",
+        "status": "PASS",
+        "exception": "MissingStatisticalEvidence",
+        "cause": "OverflowError",
+        "message": "unsupported finite arithmetic range"
+      },
+      {
+        "probe": "residual_square_overflow",
+        "status": "PASS",
+        "exception": "MissingStatisticalEvidence",
+        "cause": "OverflowError",
+        "message": "unsupported finite arithmetic range"
+      },
+      {
+        "probe": "derived_delta_overflow",
+        "status": "PASS",
+        "cells": {
+          "C|K": {
+            "status": "NOT_RUN",
+            "reason": "nonfinite derived return difference"
+          }
+        }
+      },
+      {
+        "probe": "finite_delta_variance_overflow",
+        "status": "PASS",
+        "cells": {
+          "C|K": {
+            "status": "NOT_RUN",
+            "reason": "unsupported finite arithmetic range"
+          }
+        }
+      },
+      {
+        "probe": "zero_division_boundary_fault",
+        "status": "PASS",
+        "exception": "MissingStatisticalEvidence",
+        "cause": "ZeroDivisionError"
+      },
+      {
+        "probe": "verifier_missing_draws",
+        "status": "PASS",
+        "exception": "AssertionError",
+        "message": "incomplete/unknown production result schema: CE3_CONTROL",
+        "stopped_at_first_valid_fixture": true
+      },
+      {
+        "probe": "verifier_missing_contract",
+        "status": "PASS",
+        "exception": "AssertionError",
+        "message": "incomplete/unknown production result schema: CE3_CONTROL",
+        "stopped_at_first_valid_fixture": true
+      },
+      {
+        "probe": "verifier_altered_contract",
+        "status": "PASS",
+        "exception": "AssertionError",
+        "message": "unapproved result arithmetic contract",
+        "stopped_at_first_valid_fixture": true
+      },
+      {
+        "probe": "verifier_unknown_field",
+        "status": "PASS",
+        "exception": "AssertionError",
+        "message": "incomplete/unknown production result schema: CE3_CONTROL",
+        "stopped_at_first_valid_fixture": true
+      }
+    ],
+    "persistent_probe_log": null,
+    "conversation_tool_result_chunk": "9de037",
+    "normal_118_or_86_suite_rerun": false,
+    "physical_registry_created": false
+  },
+  "static_repair_checks": {
+    "verifier_literal_public_keys_exact": true,
+    "verifier_literal_approved_contract_exact": true,
+    "approval_only_path_matches_trigger": true,
+    "historical_files_byte_equal_to_HEAD": 10,
+    "unchanged_since_original_review": [
+      "implementation/tests/test_evl_gsup_v2_registry.py",
+      "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/authoritative-v2/CDR010_APPROVAL.json",
+      "implementation/tests/evl_c8_gsup_v2_oracle.py",
+      "implementation/tests/test_evl_gsup_v2_arithmetic.py",
+      "implementation/src/investment_system/evl/superiority.py",
+      "implementation/src/investment_system/evl/statistical_kernels.py",
+      "implementation/src/investment_system/evl/gsup_source_identity.py",
+      "implementation/src/investment_system/evl/superiority_source_identity.py",
+      "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json",
+      "implementation/reports/track_c_c8_a6_method_simulation_source_2026-10-02.py",
+      "implementation/reports/track_c_c8_a6_method_approval_2026-10-02.json",
+      "implementation/reports/track_c_c8_a6_partial_approval_2026-10-02.json",
+      ".github/workflows/track-c-evl-validation.yml",
+      ".github/workflows/leaderboard-real-producer.yml",
+      ".github/workflows/qgv-producer-real.yml"
+    ]
+  },
+  "owner_final_targeted_evidence": {
+    "attribution": "Owner execution; log/XML inspected independently, not rerun",
+    "log": "/workspace/investment-audit/v2-final-targeted.log",
+    "junit": "/workspace/investment-audit/v2-final-targeted.xml",
+    "total_passed": 118,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "case_counts": {
+      "tests.test_evl_gsup_v2_arithmetic": 86,
+      "tests.test_evl_gsup_v2_registry": 21,
+      "tests.test_evl_gsup_v2_repair_negatives": 11
+    },
+    "elapsed_seconds_log": 0.51,
+    "suite_metadata": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "118",
+        "time": "0.514",
+        "timestamp": "2026-10-04T00:18:44.100307+00:00",
+        "hostname": "be70578a5232"
+      }
+    ],
+    "exact_command": "Not recorded in supplied log/XML; user identified arithmetic+registry+repair targeted suite. Do not infer an exact invocation.",
+    "runtime_note": "Owner uses prepared venv311 per session; supplied XML does not independently record Python/pytest versions. Independent fault-probe runtime is recorded separately."
+  },
+  "compliance": {
+    "arithmetic": "CDR010 reducer/grouping/direct sums/SE predicate, ceil(n/L)-1, ties >= and B+1 remain unchanged by inspected repair. Owner new-source evidence includes all 86 exact arithmetic tests.",
+    "wiring": "Same registry hooks; unsupported derived arithmetic now yields NOT_RUN cells; no fallback or new policy.",
+    "no_v1_rewrite": "Ten historical source/test/approval paths remain exactly byte-equal to HEAD; v1 and Frozen C6 hashes unchanged.",
+    "one_shot": "Shared authority/claim/access implementations unchanged from original review. Per-cell NOT_RUN still results in durable aggregate failure after an already charged access; no version reset or retry path added.",
+    "no_grants": "Synthetic gates, deferred effect floor and closed Official/promotion/Holdout eligibility remain unchanged. No actual CAL_VERIFY/Holdout reader/default or grant added by the repairs.",
+    "N3_NB4": "Dependency pins and explicit offline bash settings unchanged from original reviewed fixes.",
+    "N2": "Unresolved upstream normalization/issuance policy gate before real-source work; not changed or marked fixed."
+  },
+  "known_upstream_policy_gates": [
+    {
+      "external_id": "N2",
+      "status": "UNRESOLVED_DEFERRED_BEFORE_REAL_SOURCE",
+      "scope": "Identity normalization and descriptor-issuance capability; real-source taxonomy/defaults unapproved",
+      "source": "/workspace/investment-audit/global-latest-review.md",
+      "reviewer_action": "Documented existing gate; no source normalization changes or new real-source policy."
+    }
+  ],
+  "final_source_hashes": {
+    "implementation/src/investment_system/evl/superiority_v2.py": {
+      "sha256": "41f67dd28200370f472016e16214ee08edb31dcd75aba91726494799a6614603",
+      "git_blob_sha1": "370e9b4204ba30772dae9ce1f031350a2c7ad05e",
+      "bytes": 11396
+    },
+    "implementation/tests/test_evl_gsup_v2_registry.py": {
+      "sha256": "2d81fdb3b70d20cd074cd2b7b32b4e3b7118036758084e9f0ac1962f98a83989",
+      "git_blob_sha1": "1eb623bf50488dcf2ce292def30edd646cea24b6",
+      "bytes": 7382
+    },
+    "implementation/tools/verify_gsup_v2_arithmetic.py": {
+      "sha256": "fa4295124667de17eb3123cefdc16565d353a105ec575cbb07bcb1ea14a308fc",
+      "git_blob_sha1": "0b134fd88f70054bbbbec04d5cef9684ff0d0ec2",
+      "bytes": 4413
+    },
+    "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/authoritative-v2/CDR010_APPROVAL.json": {
+      "sha256": "2e0ad6e96bd1b0494fd739cc55a03b337d326fd6dff2863203ebc9b6bd036231",
+      "git_blob_sha1": "3a9eecbba5a7454c5d81ee6db209aecc4bdf113b",
+      "bytes": 3488
+    },
+    ".github/workflows/codex-integration-readiness.yml": {
+      "sha256": "12ee056c95ac9c612d106841420b11ac18d9414f5a3ff8cf5c7d88abb39acca2",
+      "git_blob_sha1": "f36f9df3a6dcb518274edf002bbcf115bb988181",
+      "bytes": 6942
+    },
+    "implementation/tests/evl_c8_gsup_v2_oracle.py": {
+      "sha256": "e2db7498b6819783ac5d977c34950078f632c4e4dbb2ddf973b26cace8a9c6f5",
+      "git_blob_sha1": "aca5567dbb61c0b3e31531a228420af441961a9e",
+      "bytes": 5932
+    },
+    "implementation/tests/test_evl_gsup_v2_arithmetic.py": {
+      "sha256": "6f7b24013016b9956a3ff4496f717826db6dbea3e7af5c1a6127807eb7014b17",
+      "git_blob_sha1": "8ac4b88bcf3154a5ac2dafa3923d58099528bd7e",
+      "bytes": 39433
+    },
+    "implementation/src/investment_system/evl/superiority.py": {
+      "sha256": "c61268921e5a9147e90810747e9ab6cd2896dd2fab89cb314d390dc0ff760498",
+      "git_blob_sha1": "8a1254d7b77514f6015dfff4af0e4a53f57f22af",
+      "bytes": 26569
+    },
+    "implementation/src/investment_system/evl/statistical_kernels.py": {
+      "sha256": "61f70937456d8a54cb027a7522f2a2d1c890bccc92f9f19de28082a2001e12d1",
+      "git_blob_sha1": "28e1c1842625bacabc6ffc9c9b172261e7d6585a",
+      "bytes": 14964
+    },
+    "implementation/src/investment_system/evl/gsup_source_identity.py": {
+      "sha256": "d34fc10d396f37fce65a5580263d2d35207e7d2f4f347fe300c1f1b81c33c548",
+      "git_blob_sha1": "fa93bf88f8d77b293421a8d0b5095757b22f72d8",
+      "bytes": 23974
+    },
+    "implementation/src/investment_system/evl/superiority_source_identity.py": {
+      "sha256": "3ad8ca25f724cd3d07271ec8a38b95ca8779fe57f14ccf252e1030aa7acca0fa",
+      "git_blob_sha1": "71bf737578866b762a0ee82506f8f5db9418f8ba",
+      "bytes": 8874
+    },
+    "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json": {
+      "sha256": "0fc8ed2b55b3aba4cf566f0e7c9e7146324ae4aec5e22c307fd9a9a8ae9991d8",
+      "git_blob_sha1": "a5279d516c028f0a8cb9166ee2d54366da00877b",
+      "bytes": 4260
+    },
+    "implementation/reports/track_c_c8_a6_method_simulation_source_2026-10-02.py": {
+      "sha256": "c1f56a3f709c5fed65336fb5f33473f957c8caad706bfc4e48534ca3161f34ce",
+      "git_blob_sha1": "e112f41f34d4ead287699657750875770b4c4705",
+      "bytes": 3302
+    },
+    "implementation/reports/track_c_c8_a6_method_approval_2026-10-02.json": {
+      "sha256": "e3ba85ad8fa2a2e49aa8003aa1b663fd9758e20a7bfeec136ecd558bcc084987",
+      "git_blob_sha1": "a6f994144ac8e7073c74fdd16983c92eac54eb5f",
+      "bytes": 1594
+    },
+    "implementation/reports/track_c_c8_a6_partial_approval_2026-10-02.json": {
+      "sha256": "262a1e3be64f7f1a7bdb75bf288eb0f8dea8603e5f55bb61248a35ed866c62ed",
+      "git_blob_sha1": "4f897ec79f341653d8a69aecdfe7aa7eb33b6566",
+      "bytes": 1823
+    },
+    ".github/workflows/track-c-evl-validation.yml": {
+      "sha256": "9dd09fc991eeb4a131f3c85594e0ce878d4ce017c224ca81f4e2436214330813",
+      "git_blob_sha1": "2cc85ba4a2f222826c5ea50bdf80359ea890e6ac",
+      "bytes": 2211
+    },
+    ".github/workflows/leaderboard-real-producer.yml": {
+      "sha256": "d242494bec6e0a877f547d6ab404ff03cb6a4be97afcdaa8b665d8990f5f2af3",
+      "git_blob_sha1": "da568b4e43561b194fab5ed2cf9479f5702946b7",
+      "bytes": 3139
+    },
+    ".github/workflows/qgv-producer-real.yml": {
+      "sha256": "c4ae20933585080b6cbeef14ff94cfb8fbacb40d37784aa4cac6b158b73f8bd3",
+      "git_blob_sha1": "efec0e794c664dc9458429aab4f0ab1c54d77ee3",
+      "bytes": 6787
+    },
+    "implementation/tests/test_evl_gsup_v2_repair_negatives.py": {
+      "sha256": "8c896575532b60f31769ab63a406e70c9df575ae51ff8dd07d50bb1c19046b81",
+      "git_blob_sha1": "a9f83bbb40a8dcffa65f02f93fc8fbeed0bb0533",
+      "bytes": 2928
+    }
+  },
+  "evidence_hashes": {
+    "/workspace/investment-audit/v2-final-targeted.log": {
+      "sha256": "060b3d7b94ed5b198e057c507cee4a1a38de94f176b31df37de2092e49b055fe",
+      "git_blob_sha1": "c45e0d33a920d762b3c44c8c8dc7fb9cc27469ae",
+      "bytes": 180
+    },
+    "/workspace/investment-audit/v2-final-targeted.xml": {
+      "sha256": "cbfef9f6107059901fcf4aed1d29b20ad0ce178a2a76e724c11c67424a51737d",
+      "git_blob_sha1": "daa823dec60d3c53de2d4328541f830bd514af62",
+      "bytes": 18226
+    },
+    "/workspace/investment-audit/independent-v2-review.json": {
+      "sha256": "4a171405d40d6f36edffd2bc15cf830f9d6dcb4ba478d46960f776f23cb995cb",
+      "git_blob_sha1": "f2fcbf1911360f82157b388744277a579d0e528f",
+      "bytes": 25359
+    },
+    "/workspace/investment-audit/independent-v2-review.md": {
+      "sha256": "e578e94912564fef8175308c14c3266687ab4a02db3fe5643570d85493a5657e",
+      "git_blob_sha1": "79ecf8e493ae6b193d8425c06c52688cdc27805a",
+      "bytes": 14481
+    }
+  },
+  "limits": [
+    "Only focused faults and static/hash checks; no normal targeted/full regression rerun or Actions dispatch.",
+    "No physical one-shot registry created and no real data accessed.",
+    "Findings closure is local source review, not fresh committed HEAD/Actions/Global13 certification.",
+    "No HANDOFF_READY, canonical merge, publication permission or maturity promotion assigned."
+  ],
+  "writes": [
+    "/workspace/investment-audit/independent-v2-repair-review.json",
+    "/workspace/investment-audit/independent-v2-repair-review.md"
+  ]
+}

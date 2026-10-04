@@ -1,0 +1,748 @@
+{
+  "record": "FRESH_GITHUB_TAKEOVER_START_SNAPSHOT",
+  "observed_at_utc": "2026-10-04T00:13:02.576478+00:00",
+  "canonical_branch": "claude/investment-system-top500-validation-alrugm",
+  "canonical_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "global_read_only_head": "e30241f49e31f4ac5ab0d4f322ecddc78a044d75",
+  "open_prs": [
+    {
+      "pr": 38,
+      "head": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+      "canonical_ahead": 162,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "pr_base_ahead": 13,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "branch": "integration/next-trial-2026-10-03",
+      "base_branch": "codex/combined-integration-2026-10-03",
+      "title": "Integration trial: #30 + C-28 evidence (#32/#33) + Web render guard (#34) + production-state UI (#36)"
+    },
+    {
+      "pr": 37,
+      "head": "d83c03ec0c7063dc72a23af3fea7f86fc4b6b1aa",
+      "canonical_ahead": 3,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base_ahead": 3,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "branch": "feature/dynamic-workflow-m0",
+      "base_branch": "claude/investment-system-top500-validation-alrugm",
+      "title": "Dynamic Workflow M0: deterministic risk router and trace"
+    },
+    {
+      "pr": 36,
+      "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "canonical_ahead": 23,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "pr_base_ahead": 4,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "branch": "integration/web/production-state-presentation-v1",
+      "base_branch": "integration/web/research-render-guard-v1",
+      "title": "[proposal] Web production-shaped state presentation (freshness, withheld metadata, ko/en, error fallback)"
+    },
+    {
+      "pr": 35,
+      "head": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+      "canonical_ahead": 169,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "pr_base_ahead": 5,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "branch": "codex/integration-hardening-2026-10-03",
+      "base_branch": "codex/track-c-gsup-v2-2026-10-03",
+      "title": "Integration: repair vacuous same-tree shared-source protection"
+    },
+    {
+      "pr": 34,
+      "head": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "canonical_ahead": 19,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "pr_base_ahead": 3,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "branch": "integration/web/research-render-guard-v1",
+      "base_branch": "feature/producer-infrastructure-v1",
+      "title": "[proposal] Web render guard: research/provisional sections never render as LIVE/FROZEN (G3)"
+    },
+    {
+      "pr": 33,
+      "head": "9626ab06cd2b93cdd250159347cdda5d08f76e03",
+      "canonical_ahead": 16,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "pr_base_ahead": 1,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "branch": "integration/a1-adoption/pr7-entity-metadata",
+      "base_branch": "ccr-41677301-10nj3u",
+      "title": "[proposal] #7 C-28 adoption evidence record (CDR-004)"
+    },
+    {
+      "pr": 32,
+      "head": "e9aee0cb8b80e17f7ae12e01156f6670135de2fa",
+      "canonical_ahead": 17,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "pr_base_ahead": 1,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "branch": "integration/a1-adoption/pr9-producer-infra",
+      "base_branch": "feature/producer-infrastructure-v1",
+      "title": "[proposal] #9 C-28 adoption evidence record (CDR-004)"
+    },
+    {
+      "pr": 31,
+      "head": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "canonical_ahead": 164,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "pr_base_ahead": 15,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "branch": "codex/track-c-gsup-v2-2026-10-03",
+      "base_branch": "codex/combined-integration-2026-10-03",
+      "title": "Track C: approved synthetic source identity and M-B arithmetic review"
+    },
+    {
+      "pr": 30,
+      "head": "86ad3628dd5c62c6d873e42511e577f24f4fb588",
+      "canonical_ahead": 149,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base_ahead": 149,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "branch": "codex/combined-integration-2026-10-03",
+      "base_branch": "claude/investment-system-top500-validation-alrugm",
+      "title": "Integration trial: preserved C-28 adoption, producer compatibility and existing-Web E2E"
+    },
+    {
+      "pr": 29,
+      "head": "d0444583197c96f61fce811573dfd59670fd4f78",
+      "canonical_ahead": 19,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "pr_base_ahead": 1,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "branch": "codex/web-producer-integration-readiness-2026-10-03",
+      "base_branch": "feature/qgv-invalidation-binding-v1",
+      "title": "Existing Web: withheld producer-contract fixture and locale/mobile/failure E2E"
+    },
+    {
+      "pr": 28,
+      "head": "b20d1786aa8e8fe13476e9c0e83cf7b50794e409",
+      "canonical_ahead": 7,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base_ahead": 7,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "branch": "codex/takeover-integration-2026-10-03",
+      "base_branch": "claude/investment-system-top500-validation-alrugm",
+      "title": "Fresh takeover audit: exact remote state, capability inventory and verified integration receipts"
+    },
+    {
+      "pr": 27,
+      "head": "dc7daf70a42fb3f2bbfe96a775a1654a92ff95c1",
+      "canonical_ahead": 20,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "pr_base_ahead": 3,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "branch": "integration/a1-adoption/pr17-p01",
+      "base_branch": "feature/p01-research-publication-v1",
+      "title": "[proposal] #17 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "pr": 26,
+      "head": "a4805dbcdf37b890f74f6d00c00952ff95b91c8f",
+      "canonical_ahead": 6,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+      "pr_base_ahead": 1,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+      "branch": "integration/a1-adoption/pr14-leaderboard",
+      "base_branch": "feature/leaderboard-real-producer-v1",
+      "title": "[proposal] #14 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "pr": 25,
+      "head": "4a07099e36ec3cecda24b82ecedad53800f0aa81",
+      "canonical_ahead": 19,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+      "pr_base_ahead": 1,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+      "branch": "integration/a1-adoption/pr12-macro-producer",
+      "base_branch": "feature/macro-real-producer-v1",
+      "title": "[proposal] #12 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "pr": 24,
+      "head": "9c71781c62e46a4f2972d58c1439ef6ca2a85b07",
+      "canonical_ahead": 9,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "pr_base_ahead": 1,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "branch": "integration/a1-adoption/pr18-us-equity-session",
+      "base_branch": "feature/us-equity-session-v1",
+      "title": "[proposal] #18 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "pr": 23,
+      "head": "5c9dd5abd760116df626e9b2e88e3fe48852066a",
+      "canonical_ahead": 6,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "pr_base_ahead": 1,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "branch": "integration/a1-adoption/pr15-technical-model",
+      "base_branch": "feature/technical-real-model-v1",
+      "title": "[proposal] #15 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "pr": 22,
+      "head": "248e3d3e83db9a2db3d90583ae53929db936d0f3",
+      "canonical_ahead": 4,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "pr_base_ahead": 1,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "branch": "integration/a1-adoption/pr11-technical-producer",
+      "base_branch": "feature/technical-real-producer-v1",
+      "title": "[proposal] #11 C-28 adoption re-pin (CDR-004)"
+    },
+    {
+      "pr": 21,
+      "head": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
+      "canonical_ahead": 1,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base_ahead": 1,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "branch": "ccr-2e16018a-qukwmg",
+      "base_branch": "claude/investment-system-top500-validation-alrugm",
+      "title": "Claude Code Worker Contract v1.0 + CLAUDE.md routing (docs only)"
+    },
+    {
+      "pr": 19,
+      "head": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "canonical_ahead": 18,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "pr_base_ahead": 1,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "branch": "feature/qgv-invalidation-binding-v1",
+      "base_branch": "feature/p01-research-publication-v1",
+      "title": "Add QGV invalidation binding without activating display"
+    },
+    {
+      "pr": 18,
+      "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "canonical_ahead": 8,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "pr_base_ahead": 3,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "branch": "feature/us-equity-session-v1",
+      "base_branch": "feature/technical-real-model-v1",
+      "title": "US equity trading session v1: calendar vintage binder and close-availability guard"
+    },
+    {
+      "pr": 17,
+      "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "canonical_ahead": 17,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "pr_base_ahead": 1,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "branch": "feature/p01-research-publication-v1",
+      "base_branch": "feature/producer-infrastructure-v1",
+      "title": "P01 research publication v1: envelope and predicate, display stays off"
+    },
+    {
+      "pr": 16,
+      "head": "ef65caa5437a04610fa43f93209afb9193ba24aa",
+      "canonical_ahead": 4,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+      "pr_base_ahead": 2,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+      "branch": "feature/sec-primary-disclosure-v1",
+      "base_branch": "feature/rig-news-real-ingestion-v1",
+      "title": "SEC 8-K primary disclosure v1 (general news stays unavailable)"
+    },
+    {
+      "pr": 15,
+      "head": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "canonical_ahead": 5,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "pr_base_ahead": 2,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "branch": "feature/technical-real-model-v1",
+      "base_branch": "feature/technical-real-producer-v1",
+      "title": "Technical REAL Model v1: M1 features and M2 regime (M3 held)"
+    },
+    {
+      "pr": 14,
+      "head": "0d48d863afec0d50481d585a3d1ae0e56d4b380c",
+      "canonical_ahead": 5,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base_ahead": 5,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "branch": "feature/leaderboard-real-producer-v1",
+      "base_branch": "claude/investment-system-top500-validation-alrugm",
+      "title": "Leaderboard REAL Producer v1: existing engine replay, research snapshot, publication blocked"
+    },
+    {
+      "pr": 13,
+      "head": "8bb990bd5a6b2009906329b933a67e2303bbb8c7",
+      "canonical_ahead": 2,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base_ahead": 2,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "branch": "feature/rig-news-real-ingestion-v1",
+      "base_branch": "claude/investment-system-top500-validation-alrugm",
+      "title": "RIG news ingestion v1: implementation baseline / integration wait"
+    },
+    {
+      "pr": 12,
+      "head": "61d3352d5d68c7830e924f17613598ca79fcec6f",
+      "canonical_ahead": 18,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+      "pr_base_ahead": 3,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "6fe9eee5668388fa4a200904520a0b5a46c90b6f",
+      "branch": "feature/macro-real-producer-v1",
+      "base_branch": "feature/producer-infrastructure-v1",
+      "title": "Macro REAL Producer v1: implementation baseline / integration wait"
+    },
+    {
+      "pr": 11,
+      "head": "a2e0790dd7fb267ebaa7d052acae59220ecf631e",
+      "canonical_ahead": 3,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base_ahead": 3,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "branch": "feature/technical-real-producer-v1",
+      "base_branch": "claude/investment-system-top500-validation-alrugm",
+      "title": "Technical real-input producer v1 (PIT gate, model NOT_AVAILABLE)"
+    },
+    {
+      "pr": 10,
+      "head": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b",
+      "canonical_ahead": 8,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base_ahead": 8,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "branch": "ccr-db5d5960-qen9yi",
+      "base_branch": "claude/investment-system-top500-validation-alrugm",
+      "title": "QGV Real Producer v1: per-company PIT persistence, batch manifest, exporter"
+    },
+    {
+      "pr": 9,
+      "head": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "canonical_ahead": 16,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "pr_base_ahead": 6,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "branch": "feature/producer-infrastructure-v1",
+      "base_branch": "feature/global-language-search-v1",
+      "title": "Producer Infrastructure v1: producer contract, fail-closed bundle exporter, raw persistence design (stacked on PR #6)"
+    },
+    {
+      "pr": 7,
+      "head": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "canonical_ahead": 15,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "pr_base_ahead": 5,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "branch": "ccr-41677301-10nj3u",
+      "base_branch": "feature/global-language-search-v1",
+      "title": "Entity Metadata Coverage: CIK-bound Top-500 search metadata (stacked on #6)"
+    },
+    {
+      "pr": 6,
+      "head": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4",
+      "canonical_ahead": 10,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "pr_base_ahead": 4,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "branch": "feature/global-language-search-v1",
+      "base_branch": "feature/web-mvp-v1",
+      "title": "Global Language & Search implementation baseline"
+    },
+    {
+      "pr": 5,
+      "head": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "canonical_ahead": 6,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base_ahead": 6,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "branch": "feature/web-mvp-v1",
+      "base_branch": "claude/investment-system-top500-validation-alrugm",
+      "title": "Web MVP v1: personal mobile cockpit with read-only upstream adapters"
+    },
+    {
+      "pr": 4,
+      "head": "ff78c4f6c4a1a8fd15db21807de6be3905c89548",
+      "canonical_ahead": 54,
+      "canonical_behind": 0,
+      "canonical_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "pr_base_ahead": 54,
+      "pr_base_behind": 0,
+      "pr_base_merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "branch": "feature/track-c-evl",
+      "base_branch": "claude/investment-system-top500-validation-alrugm",
+      "title": "Track C: C7 software frozen; C8-C10 policy packages await approval"
+    }
+  ],
+  "fresh_read_of_existing_ci_logs": [
+    {
+      "pr": 31,
+      "run_id": 37117616684,
+      "job_id": 111187361082,
+      "head": "29c2c202aabc480c8251fc44b7b488417a56177f",
+      "tests": [
+        "1277 passed in 476.32s (0:07:56)"
+      ],
+      "checkout_lines": [
+        "2026-10-03T10:48:45.0792656Z [command]/usr/bin/git log -1 --format=%H",
+        "2026-10-03T10:48:50.0503048Z ##[group]Run git rev-parse HEAD",
+        "2026-10-03T10:48:50.0503390Z \u001b[36;1mgit rev-parse HEAD\u001b[0m"
+      ],
+      "browser": [
+        "2026-10-03T10:56:46.7975995Z 1277 passed in 476.32s (0:07:56)",
+        "2026-10-03T10:57:11.1674580Z   \"passed\": true,",
+        "2026-10-03T10:57:11.1675615Z     \"producer PASS, PARTIAL and BLOCKED remain NOT_AVAILABLE with grants NONE\","
+      ],
+      "evidence_kind": "FRESH_READ_OF_EXISTING_EXACT_HEAD_ACTIONS_NOT_A_NEW_RUN"
+    },
+    {
+      "pr": 35,
+      "run_id": 37117674617,
+      "job_id": 111187527603,
+      "head": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+      "tests": [
+        "1295 passed in 461.60s (0:07:41)"
+      ],
+      "checkout_lines": [
+        "2026-10-03T10:49:49.5897514Z [command]/usr/bin/git log -1 --format=%H",
+        "2026-10-03T10:49:56.4120392Z ##[group]Run git rev-parse HEAD",
+        "2026-10-03T10:49:56.4120758Z \u001b[36;1mgit rev-parse HEAD\u001b[0m"
+      ],
+      "browser": [
+        "2026-10-03T10:57:38.8079868Z 1295 passed in 461.60s (0:07:41)",
+        "2026-10-03T10:58:14.7394804Z   \"passed\": true,",
+        "2026-10-03T10:58:14.7395854Z     \"producer PASS, PARTIAL and BLOCKED remain NOT_AVAILABLE with grants NONE\","
+      ],
+      "evidence_kind": "FRESH_READ_OF_EXISTING_EXACT_HEAD_ACTIONS_NOT_A_NEW_RUN"
+    },
+    {
+      "pr": 38,
+      "run_id": 37123374305,
+      "job_id": 111203721269,
+      "head": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+      "tests": [
+        "1193 passed in 481.85s (0:08:01)"
+      ],
+      "checkout_lines": [
+        "2026-10-03T12:35:47.5326366Z [command]/usr/bin/git log -1 --format=%H",
+        "2026-10-03T12:35:50.2652939Z ##[group]Run git rev-parse HEAD",
+        "2026-10-03T12:35:50.2653306Z \u001b[36;1mgit rev-parse HEAD\u001b[0m"
+      ],
+      "browser": [
+        "2026-10-03T12:43:52.7903854Z 1193 passed in 481.85s (0:08:01)",
+        "2026-10-03T12:44:19.9330039Z   \"passed\": true,",
+        "2026-10-03T12:44:19.9330681Z     \"producer PASS, PARTIAL and BLOCKED remain NOT_AVAILABLE with grants NONE\","
+      ],
+      "evidence_kind": "FRESH_READ_OF_EXISTING_EXACT_HEAD_ACTIONS_NOT_A_NEW_RUN"
+    }
+  ],
+  "existing_manifest_hash_checks": 105,
+  "prior_pr31_source_reuse": {
+    "source": "29c2c202aabc480c8251fc44b7b488417a56177f",
+    "baseline": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+    "preserved_files": 550,
+    "status": "PASS"
+  },
+  "start_states": {
+    "4": {
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean"
+    },
+    "28": {
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean"
+    },
+    "30": {
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean"
+    },
+    "31": {
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "runs": [
+        {
+          "id": 37117616707,
+          "name": "web-mvp-validation",
+          "head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117616662,
+          "name": "technical-real-model",
+          "head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117616660,
+          "name": "technical-real-producer",
+          "head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117616736,
+          "name": "qgv-invalidation-binding",
+          "head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117616719,
+          "name": "us-equity-session",
+          "head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117616687,
+          "name": "sec-primary-disclosure",
+          "head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117616722,
+          "name": "p01-research-publication",
+          "head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117616684,
+          "name": "codex-integration-readiness",
+          "head_sha": "29c2c202aabc480c8251fc44b7b488417a56177f",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "35": {
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "runs": [
+        {
+          "id": 37117674599,
+          "name": "technical-real-producer",
+          "head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117674614,
+          "name": "us-equity-session",
+          "head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117674603,
+          "name": "qgv-invalidation-binding",
+          "head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117674608,
+          "name": "p01-research-publication",
+          "head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117674601,
+          "name": "sec-primary-disclosure",
+          "head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117674617,
+          "name": "codex-integration-readiness",
+          "head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+          "conclusion": "success"
+        },
+        {
+          "id": 37117674626,
+          "name": "technical-real-model",
+          "head_sha": "722c812f3d7e0a047b722ba2c0f8bb64b02c942c",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "37": {
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean"
+    },
+    "38": {
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "runs": [
+        {
+          "id": 37123374305,
+          "name": "codex-integration-readiness",
+          "head_sha": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+          "conclusion": "success"
+        },
+        {
+          "id": 37122132740,
+          "name": "web-research-guard",
+          "head_sha": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+          "conclusion": "success"
+        },
+        {
+          "id": 37122132800,
+          "name": "web-state-presentation",
+          "head_sha": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+          "conclusion": "success"
+        },
+        {
+          "id": 37122132811,
+          "name": "technical-real-model",
+          "head_sha": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+          "conclusion": "success"
+        },
+        {
+          "id": 37122132766,
+          "name": "sec-primary-disclosure",
+          "head_sha": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+          "conclusion": "success"
+        },
+        {
+          "id": 37122132809,
+          "name": "web-mvp-validation",
+          "head_sha": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+          "conclusion": "success"
+        },
+        {
+          "id": 37122132720,
+          "name": "qgv-invalidation-binding",
+          "head_sha": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+          "conclusion": "success"
+        },
+        {
+          "id": 37122132808,
+          "name": "p01-research-publication",
+          "head_sha": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+          "conclusion": "success"
+        },
+        {
+          "id": 37122132832,
+          "name": "us-equity-session",
+          "head_sha": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+          "conclusion": "success"
+        },
+        {
+          "id": 37122132856,
+          "name": "technical-real-producer",
+          "head_sha": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1",
+          "conclusion": "success"
+        }
+      ]
+    }
+  },
+  "important_difference_from_prior_context": "CDR010/011 USER_DECIDED arithmetic contract discovered on Global read-only branch; old pending status superseded in this bounded scope"
+}

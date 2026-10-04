@@ -23,3 +23,14 @@ Current read-only Global routing: `994eb114ef14838d09d6233cfd2367d4d19738e2`. CD
 Next action: Primary reviews the exact published package. After the user's explicit arithmetic/runtime choice, Codex appends the decision and implements separate v2 with independent oracle, fixed v1/v2 counterexamples, negatives and full regression. Remaining independent integration evidence and owner work continue under their existing ownership.
 
 CAL_VERIFY0; Holdout0; actual numeric configuration choices0; C8Freeze0; publication/grants0; Official0; canonical merges0; deployment0. No paid data/service or real provider was used.
+
+## Successor status · CDR-010/011 continuation, 2026-10-04
+
+**Authoritative M-B v2 is implemented** under the newly discovered explicit CDR-010
+arithmetic approval. Earlier `NOT_IMPLEMENTED_PENDING_ARITHMETIC_REDUCTION` applies
+to the old exact29c checkpoint only. The current bounded acceptance and handoff
+are [CURRENT_HANDOFF_V2_CDR010.md](CURRENT_HANDOFF_V2_CDR010.md) and
+`ACCEPTANCE_MANIFEST_V2.json`; publication-time exact HEAD/Actions are in PR31.
+External Primary Integration Writer CDR-011 re-verification and its successor
+combined trial remain pending. Parent maturity stays SYNTHETIC_VERIFIED / C8 NOT_FROZEN.
+No actual CAL_VERIFY/Holdout, numeric configuration, grants, Official/LIVE or canonical merge.
