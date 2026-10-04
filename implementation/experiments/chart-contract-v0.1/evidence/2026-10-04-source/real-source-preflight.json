@@ -1,0 +1,75 @@
+{
+  "preflight": {
+    "inspection": "STORED_BYTES_AND_SHAPE_ONLY",
+    "evidence": {
+      "manifest_sha256": "73a5f6f8d1c7ed05a3863b193a468359a61a034c59726a514a75a8bde18d59e1",
+      "artifact_id": "yahoo_chart:NVDA:5d",
+      "source_kind": "YAHOO_CHART",
+      "http_status": 200,
+      "fetcher": "existing fetch_real_data._get / source feasibility probe",
+      "content_type": "application/json;charset=utf-8",
+      "raw_sha256": "469e185faec7925e724efdc23546967e86f6b3ccbc3ba8d05a2767f968f722a6",
+      "raw_bytes": 1758,
+      "fetched_at": "2026-10-04T10:24:05.100367+00:00",
+      "store_persisted_at": "2026-10-04T10:24:05.100367+00:00",
+      "acquisition_at": null,
+      "acquisition_evidence_ref": null,
+      "slot": "LATEST_STORED_RECORD",
+      "limitations": [
+        "ACQUISITION_TIME_NOT_IN_STORE_SCHEMA",
+        "PIT_NOT_VERIFIED",
+        "PUBLICATION_DISABLED"
+      ]
+    },
+    "schema": {
+      "provider_symbol": "NVDA",
+      "request_interval": "1d",
+      "request_range": "5d",
+      "point_count": 5,
+      "currency": "USD",
+      "timezone": "America/New_York",
+      "first_observation": "2026-09-28T13:30:00.000Z",
+      "last_observation": "2026-10-02T13:30:00.000Z",
+      "fields": {
+        "open": {
+          "present": true,
+          "non_null_count": 5
+        },
+        "high": {
+          "present": true,
+          "non_null_count": 5
+        },
+        "low": {
+          "present": true,
+          "non_null_count": 5
+        },
+        "close": {
+          "present": true,
+          "non_null_count": 5
+        },
+        "volume": {
+          "present": true,
+          "non_null_count": 5
+        }
+      }
+    },
+    "chart_candidate_created": false,
+    "pit_status": "NOT_VERIFIED",
+    "publication_grant": null
+  },
+  "identity_binding_attempt": {
+    "status": "BLOCKED",
+    "reason": "identity.company_id: required"
+  },
+  "acquisition": {
+    "url": "https://query1.finance.yahoo.com/v8/finance/chart/NVDA?interval=1d&range=5d",
+    "started_at": "2026-10-04T10:23:16.489426+00:00",
+    "method": "existing fetch_real_data._get single call",
+    "source_original_bytes_preserved": true,
+    "http_status": 200,
+    "content_type": "application/json;charset=utf-8",
+    "bytes": 1758,
+    "sha256": "469e185faec7925e724efdc23546967e86f6b3ccbc3ba8d05a2767f968f722a6",
+    "completed_at": "2026-10-04T10:23:22.885843+00:00"
+  }
+}

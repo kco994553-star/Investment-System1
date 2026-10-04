@@ -1,0 +1,35 @@
+# Chart Contract capability handoff
+
+Scope: PR #41 only; isolated experiment on canonical b8e39a2196a6d7794a04a0cd5393c68329e126ca. GCH-014 / bb4cb174 was fresh-read at continuation. This file is scoped evidence, not a change to Global Handoff or an integration-owner instruction.
+
+| Dimension | State |
+|---|---|
+| Shared OHLCV candidate / read-only RawDatasetStore bridge | IMPLEMENTED; synthetic contract/store tests PASS |
+| Actual source | One no-key NVDA daily5d response, HTTP200; five complete OHLCV rows; exact-byte offline source preflight PASS |
+| Original historical raw baseline | NOT_REPLAYED; blobs absent from fresh checkout. Manifests alone are not data |
+| Complete real identity / session / PIT | BLOCKED by missing sourced mapping and exchange-calendar/vintage evidence |
+| Renderer | SYNTHETIC_VERIFIED; no real publication enabled |
+| MCP server | NOT_IMPLEMENTED; optional future reader over shared payload |
+| Canonical / owner integration | NOT_MERGED; exact merge-result FPIA NOT_RUN |
+
+## Evidence
+
+- `ACCEPTANCE.json`: 36 contract +17 store +3 captured-source tests =56 PASS. Browser:12 checks at each of360/390/1280px. No full existing Python regression or GitHub Actions success claimed.
+- `reviews/chart_guard_review.md`: independent challenge history and final reviewed file hashes. G6 (daily bar → exchange-local session mapping) remains deferred; no UTC-day policy was invented.
+- `evidence/2026-10-04-source`: immutable small captured response bytes, source URL, HTTP status, raw hash, acquisition window, later RawDatasetStore persistence and explicit no-identity result.
+- `evidence/acceptance-demo-v1.json`: prior synthetic-only checkpoint retained.
+
+## Reuse and boundaries
+
+Reused `tools/fetch_real_data.py:_get`, `ingestion/raw_store.py:RawDatasetStore.put`, existing manifest layout and the common candidate normalizer. No network client or financial calculator was duplicated. Existing Python source, owner branches, Frozen records, numeric policy, publication grants, Holdout and canonical were unchanged.
+
+These additive experiment files are not an exemption from closed-world Frozen checks. Before integration, the designated integration owner must assess the exact merge-result SHA under the current FPIA rules. Existing same-named `yahoo_chart` slots may contain `TIINGO_DAILY_RAW`; actual `source_kind` and original URL control adapter choice, never filename alone.
+
+## Minimal next dependencies
+
+1. A recoverable archive/source locator for original raw bytes matching frozen manifests, where historical replay is needed. Fresh data must not overwrite vintage claims.
+2. Existing issuer/security/listing schema populated from sourced, dated identity records. Current ticker reports are not historical listing evidence.
+3. Technical US Equity Session owner contract plus an exchange-calendar vintage for daily labels, finality and availability; provider timezone and currentTradingPeriod alone are insufficient.
+4. Web/P01 integration and scoped publication disposition after readiness is evidenced. No grant is issued here.
+
+No payment or account information was used or requested. Remaining data/identity/integration dependencies are explicitly recorded; no missing part is represented as completed.

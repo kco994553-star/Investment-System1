@@ -36,7 +36,7 @@ node node_modules/playwright/cli.js install chromium --only-shell
 node browser_test.cjs
 ```
 
-Open `dist/index.html`. Build output is deliberately ignored by git. Browser tests use Playwright 1.58.2, matching the previously inspected repository browser-validation runtime. The bundle runs without a runtime CDN or provider request. Unit tests use Node's test runner, not missing pytest.
+Open `dist/index.html`. Build output is deliberately ignored by git. Browser tests use Playwright 1.58.2, matching the previously inspected repository browser-validation runtime. The bundle runs without a runtime CDN or provider request. Unit tests use Node's test runner. The current 56-test suite includes the offline real-source replay; it never makes provider requests.
 
 ## Integration / boundaries
 
@@ -75,4 +75,45 @@ That alternate binary is a verification environment dependency, not an applicati
 - https://github.com/alphavantage/alpha_vantage_mcp — MCP exposes underlying API functions, not extra entitlement/PIT guarantees.
 - https://tradingview.github.io/lightweight-charts/docs — renderer/build variants; library is not a data source.
 
-Provider facts above are documentation checks, not successful authenticated provider calls. No pricing decision is made.
+The initial architecture-review provider facts above were documentation checks. The continuation below records actual no-key Yahoo acquisition separately. No authenticated provider call, pricing decision or paid purchase was made.
+
+
+## Continuation: real source preflight and read-only store bridge
+
+Fresh-read baseline and global handoff remained `b8e39a2` / `bb4cb174` (GCH-014); PR41 remote parent `497a426d26763efdba5d3450e776265aa19e9ed6`. Scope remains this experiment only.
+
+- `raw_store_bridge.mjs` reads the existing RawDatasetStore layout without creating directories, altering original manifests, changing raw bytes, or making network calls. It validates byte SHA/size, provider/source URL, interval/range, timestamp, paths and schema shape.
+- `inspectStoredArtifact` works before issuer/security/listing resolution. It reports `STORED_BYTES_AND_SHAPE_ONLY`, not financial/PIT validation or a publishable candidate.
+- `readYahooRawCandidate` requires explicit identity and reuses the common normalizer. Unknown identity is not derived from a ticker. Real candidates remain NOT_AVAILABLE and cannot reach this DEMO renderer.
+- Existing `tools/fetch_real_data.py:_get` acquired one NVDA daily5d response (HTTP200, five OHLCV points) and one separate monthly split-events response. Existing `RawDatasetStore.put` persisted the daily bytes in a separate scratch store. Exact bytes and acquisition evidence are preserved under `evidence/2026-10-04-source/`; the original canonical raw store was not changed.
+- Acquisition completed at 2026-10-04 19:23:22.885843 KST. Store persistence occurred later at 19:24:05.100367 KST. The bridge explicitly labels this distinction. Neither timestamp is historical market availability.
+- A fresh scan found 1,404 Yahoo-named manifests: 1,346 cannot be replayed because local raw files are absent, and 58 declare TIINGO_DAILY_RAW rather than Yahoo. All original blob files are absent from this checkout. This does not invalidate historical owner-run evidence; it means current fresh replay cannot claim to reproduce it. Never replace its vintage silently with today's response.
+- Source capture is not provider entitlement or redistribution approval, exchange-official data, PIT history or an operational chart. The fresh original is kept for small-scale reproducible validation.
+
+Run the read-only preflight with an options JSON containing `root`, `artifact_id`, `symbol`, and `range`:
+
+```sh
+node store_cli.mjs inspect OPTIONS.json
+node store_cli.mjs audit ../../data/raw
+```
+
+`node store_cli.mjs candidate OPTIONS.json` additionally requires `identity` (company_id/security_id/listing_id/symbol) and `as_of`. No default mapping is supplied. Scope of `audit` is latest Yahoo-named slots, not all 6,830 historical source artifacts, and history directories are not replayed.
+
+### Verification and repairs in this continuation
+
+Contract36 + store17 + real source replay3 = **56/56 PASS**. The renderer passed 12 browser checks at each of 360/390/1280 px. Mobile buttons and keyboard arrows expose exact OHLCV, clearing data also clears stale values, and the contract can be downloaded as JSON. These are presentation changes, not new indicators or methodologies.
+
+Independent review found malformed quote alignment/container acceptance, persisted request/basis conflicts, fetch-before-bar acceptance, malformed metadata, fabricated corporate-action reference acceptance and interval conflicts. All were repaired with regression cases. A preflight quote-array gap was found on the first review and fixed. `24:00` normalization is now rejected through one shared timestamp validator.
+
+**Deferred:** G6 exchange-local day/session binding. Timestamp ordering alone is not proof of a valid daily-session series. No invented UTC trading-day rule, fixed DST offset, exchange calendar, adjusted basis or availability time is added. Full production identity/calendar/P01 integration remains pending. No new numeric policy is adopted.
+
+### Recommended sequence
+
+1. Restore archived original bytes by exact hash when historical baseline replay is required; keep fresh captures in separately identified slots/artifacts.
+2. Reuse `contracts/global_universe.py` with sourced issuer → security → dated listing records; do not make ticker the identity key.
+3. Reuse Technical US Equity Session owner contracts and an exchange-calendar vintage for bar/session labels and finality.
+4. Only after those dependencies are evidenced, connect the shared payload to Web/P01. MCP remains an optional thin reader of that exact result.
+
+See `HANDOFF.md` for the owner integration boundary. Previous acceptance is preserved at `evidence/acceptance-demo-v1.json`.
+
+Standalone export: run `node export_demo.mjs` after building. It inlines the pinned renderer/font/data and retains licenses. Packaging validation initially timed out because its longer report header put the chart below the viewport; the browser harness now scrolls the chart into view before testing coordinates. Final standalone checks PASS at all three sizes. This harness repair changes no chart data or financial policy.

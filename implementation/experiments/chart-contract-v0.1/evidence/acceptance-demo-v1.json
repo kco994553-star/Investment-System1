@@ -1,0 +1,79 @@
+{
+  "date": "2026-10-04",
+  "baseline": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "scope": "SYNTHETIC_DEMO_ONLY",
+  "contract_tests": {
+    "passed": 26,
+    "failed": 0
+  },
+  "independent_adversarial_probes": {
+    "passed": 6,
+    "failed": 0
+  },
+  "browser_runtime": {
+    "playwright": "1.58.2",
+    "chromium_distribution": "@sparticuz/chromium@153.0.0"
+  },
+  "browser": [
+    {
+      "width": 360,
+      "result": "PASS",
+      "checks": [
+        "no-overflow",
+        "OHLC-exact",
+        "zero-vs-null-volume",
+        "crosshair-values",
+        "range",
+        "empty",
+        "blocked",
+        "restore",
+        "no-page-errors"
+      ]
+    },
+    {
+      "width": 390,
+      "result": "PASS",
+      "checks": [
+        "no-overflow",
+        "OHLC-exact",
+        "zero-vs-null-volume",
+        "crosshair-values",
+        "range",
+        "empty",
+        "blocked",
+        "restore",
+        "no-page-errors"
+      ]
+    },
+    {
+      "width": 1280,
+      "result": "PASS",
+      "checks": [
+        "no-overflow",
+        "OHLC-exact",
+        "zero-vs-null-volume",
+        "crosshair-values",
+        "range",
+        "empty",
+        "blocked",
+        "restore",
+        "no-page-errors"
+      ]
+    }
+  ],
+  "visual_review": "390px screenshot inspected; Korean text and OHLCV chart readable",
+  "production_API": "NOT_CONNECTED",
+  "MCP_server": "NOT_IMPLEMENTED",
+  "historical_PIT": "NOT_VERIFIED",
+  "canonical_merge": "NOT_PERFORMED",
+  "full_existing_regression": "NOT_RUN",
+  "build": {
+    "contract": "CHART_CANDIDATE/0.1",
+    "fixture": true,
+    "raw_sha256": "f2c9f37007cb607e64801d3d2fd349d8f9f5031793c9b442c44412b00f02b400",
+    "data_sha256": "d006c4947c738b618397894a0b3c27e3c237377ed3697f260f9e474300ea0925",
+    "renderer": "lightweight-charts@5.2.1",
+    "renderer_sha256": "e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf",
+    "state": "DEMO_ONLY"
+  }
+}

@@ -24,9 +24,26 @@ test('API and MCP carry same source values, distinct transport lineage',()=>{con
 test('Alpaca offline shape has same exact series',()=>{const f=fixture('alpaca');const d=normalizeStoredResponse(f.bytes,f.ctx);assert.deepEqual(d.points,doc().points);assert.equal(d.price_basis,'RAW_REQUEST_DECLARED');});
 test('Alpaca unfinished pagination blocked',()=>{const f=fixture('alpaca');const r=JSON.parse(f.bytes);r.next_page_token='page2';f.bytes=Buffer.from(JSON.stringify(r));f.ctx.raw_sha256=hash(f.bytes);assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/pagination/);});
 test('Alpaca adjustment must be explicit; no asof PIT inference',()=>{const f=fixture('alpaca');delete f.ctx.request.adjustment;f.ctx.request.asof='2024-01-01';assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/raw only/);});
-test('empty response remains empty',()=>{const f=rawMutation(r=>r.timestamp=[]);assert.equal(normalizeStoredResponse(f.bytes,f.ctx).points.length,0);});
+test('empty response remains empty',()=>{const f=rawMutation(r=>{r.timestamp=[];for(const key of ['open','high','low','close','volume'])r.indicators.quote[0][key]=[];});assert.equal(normalizeStoredResponse(f.bytes,f.ctx).points.length,0);});
 test('minute feed is not relabelled daily',()=>{const f=rawMutation(r=>r.meta.dataGranularity='1m');assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/daily interval/);});
 test('persisted candidate without identity/provenance rejected',()=>{for(const key of ['identity','provenance']){const d=doc();delete d[key];assert.throws(()=>validateCandidate(d));}});
 test('partial OHLC still enforces available envelope pairs',()=>{const f=rawMutation(r=>{r.indicators.quote[0].open[0]=null;r.indicators.quote[0].high[0]=1;});assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/envelope/);});
 test('invalid calendar day rejected rather than repaired',()=>{const f=fixture();f.ctx.as_of='2024-02-30T00:00:00Z';assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/calendar/);});
 test('missing Alpaca OHLC is explicit null',()=>{const f=fixture('alpaca');const r=JSON.parse(f.bytes);delete r.bars.DEMO[0].o;f.bytes=Buffer.from(JSON.stringify(r));f.ctx.raw_sha256=hash(f.bytes);assert.equal(normalizeStoredResponse(f.bytes,f.ctx).points[0].open,null);});
+
+test('malformed quote arrays and multiple quote records rejected',()=>{
+ for(const mutate of [r=>r.indicators.quote.push(r.indicators.quote[0]),r=>r.indicators.quote[0].open={},r=>r.indicators.quote[0].open.pop(),r=>r.indicators.quote[0].volume.push(1)]){
+  const f=rawMutation(mutate);assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/quote/);
+ }
+});
+test('missing whole field remains null, not malformed truncated array',()=>{const f=rawMutation(r=>delete r.indicators.quote[0].volume);assert(normalizeStoredResponse(f.bytes,f.ctx).points.every(p=>p.volume===null));});
+test('observation cannot postdate original response acquisition',()=>{const f=fixture();f.ctx.fetched_at='2024-01-01T00:00:00Z';assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/after fetched_at/);});
+test('later acquisition does not become historical availability',()=>{const d=doc();assert(Date.parse(d.provenance.fetched_at)>Date.parse(d.as_of));assert.equal(d.points[0].available_at,null);assert.equal(d.pit_status,'NOT_VERIFIED');});
+test('persisted Alpaca raw basis requires original explicit request',()=>{for(const mutate of [d=>delete d.provenance.request,d=>d.provenance.request.adjustment='all',d=>d.provenance.request.currency='KRW']){const f=fixture('alpaca');const d=normalizeStoredResponse(f.bytes,f.ctx);mutate(d);assert.throws(()=>validateCandidate(d),/raw only|currency/);}});
+test('malformed currency and timezone rejected',()=>{for(const mutate of [r=>r.meta.currency=[],r=>r.meta.exchangeTimezoneName={},r=>r.meta.exchangeTimezoneName='Not/AZone']){const f=rawMutation(mutate);assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/currency|timezone/);}});
+test('request and response interval conflict rejected',()=>{const f=fixture();f.ctx.request={interval:'1m'};assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/daily interval/);});
+test('unverified corporate action references cannot be added to candidate',()=>{const d=doc();d.corporate_action_refs=['made-up'];assert.throws(()=>validateCandidate(d),/corporate action/);});
+
+test('persisted Yahoo interval conflict rejected',()=>{const d=doc();d.provenance.request={interval:'1m'};assert.throws(()=>validateCandidate(d),/daily interval/);});
+
+test('24:00 is not silently advanced to next date',()=>{const f=fixture();f.ctx.as_of='2024-01-13T24:00:00Z';assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/invalid clock/);});

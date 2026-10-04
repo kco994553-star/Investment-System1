@@ -4,8 +4,10 @@ import { createHash } from 'node:crypto';
 export const VERSION = 'CHART_CANDIDATE/0.1';
 export function fail(message) { throw new Error(message); }
 const text = (v, name) => typeof v === 'string' && v.trim() ? v : fail(`${name}: required`);
-function instant(v, name) {
+export function instant(v, name) {
   if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d\d:\d\d)$/.test(v) || !Number.isFinite(Date.parse(v))) fail(`${name}: timezone-aware timestamp required`);
+  const [hour,minute,second]=v.slice(11,19).split(':').map(Number);
+  if(hour>23||minute>59||second>59) fail(`${name}: invalid clock`);
   const [y,m,d]=v.slice(0,10).split('-').map(Number);
   const calendar=new Date(0);calendar.setUTCFullYear(y,m-1,d);calendar.setUTCHours(0,0,0,0);
   if(calendar.getUTCFullYear()!==y||calendar.getUTCMonth()!==m-1||calendar.getUTCDate()!==d) fail(`${name}: invalid calendar date`);
@@ -42,13 +44,17 @@ export function normalizeStoredResponse(bytes, ctx) {
     if (!Array.isArray(results) || results.length !== 1 || raw.chart.error) fail('one successful Yahoo result required');
     const r = results[0];
     if (r.meta?.symbol !== symbol) fail('source identity mismatch');
-    if ((r.meta.dataGranularity ?? ctx.request?.interval) !== '1d') fail('daily interval evidence required');
+    if ((r.meta.dataGranularity ?? ctx.request?.interval) !== '1d' || (ctx.request?.interval !== undefined && ctx.request.interval !== '1d')) fail('daily interval evidence required');
     // Never use parse_chart's missing-timestamp=>now or missing-currency=>USD defaults.
     timezone = r.meta.exchangeTimezoneName ?? null;
     currency = r.meta.currency ?? null;
     if (!Array.isArray(r.timestamp)) fail('timestamp array missing');
-    const q = r.indicators?.quote?.[0];
-    if (!q) fail('quote missing');
+    const quotes = r.indicators?.quote;
+    if (!Array.isArray(quotes) || quotes.length !== 1 || !quotes[0] || typeof quotes[0] !== 'object' || Array.isArray(quotes[0])) fail('one quote object required');
+    const q = quotes[0];
+    for (const key of ['open','high','low','close','volume']) {
+      if (q[key] !== undefined && (!Array.isArray(q[key]) || q[key].length !== r.timestamp.length)) fail(`${key}: quote array length mismatch`);
+    }
     points = r.timestamp.map((t, i) => {
       if (typeof t !== 'number' || !Number.isFinite(t)) fail('invalid epoch timestamp');
       return {time: new Date(t * 1000).toISOString(), open:q.open?.[i] ?? null,
@@ -95,7 +101,20 @@ export function validateCandidate(doc) {
   for(const key of ['artifact_id','source_reference']) text(doc.provenance[key],`provenance.${key}`);
   if(!/^[0-9a-f]{64}$/.test(doc.provenance.raw_sha256)) fail('raw hash required');
   if(!Number.isInteger(doc.provenance.raw_bytes)||doc.provenance.raw_bytes<0) fail('raw byte count required');
-  instant(doc.provenance.fetched_at,'fetched_at');
+  const fetched = Date.parse(instant(doc.provenance.fetched_at,'fetched_at'));
+  if(doc.currency !== null && (typeof doc.currency !== 'string' || !/^[A-Z]{3}$/.test(doc.currency))) fail('invalid currency metadata');
+  if(doc.timezone !== null) {
+    text(doc.timezone,'timezone');
+    try { new Intl.DateTimeFormat('en-US',{timeZone:doc.timezone}); } catch { fail('invalid timezone metadata'); }
+  }
+  if(!Array.isArray(doc.corporate_action_refs) || doc.corporate_action_refs.length) fail('corporate action verification not implemented');
+  if(doc.provenance.provider === 'yahoo-chart' && doc.provenance.request?.interval !== undefined && doc.provenance.request.interval !== '1d') fail('daily interval evidence conflict');
+  if(doc.provenance.provider === 'alpaca') {
+    const req=doc.provenance.request;
+    if(req?.timeframe !== '1Day' || req?.adjustment !== 'raw') fail('prototype supports explicit 1Day/raw only');
+    text(req.feed,'feed');text(req.currency,'request currency');
+    if(req.currency !== doc.currency) fail('currency request mismatch');
+  }
   if(!['API','MCP','FIXTURE'].includes(doc.provenance.transport)) fail('transport required');
   if(doc.provenance.transport==='FIXTURE'&&!doc.synthetic) fail('fixture cannot be real');
   if(doc.provenance.transport==='MCP') for(const key of ['mcp_server','mcp_tool','upstream_evidence_ref']) text(doc.provenance[key],key);
@@ -110,6 +129,7 @@ export function validateCandidate(doc) {
     const stamp = Date.parse(instant(p.time,'bar time'));
     if (stamp <= previous) fail('duplicate or out-of-order time');
     if (stamp > cutoff) fail('observation after as_of');
+    if (stamp > fetched) fail('observation after fetched_at');
     previous = stamp;
     for (const key of ['open','high','low','close','volume']) {
       if (!Object.hasOwn(p,key) || p[key] === undefined) fail(`${key}: explicit null required`);

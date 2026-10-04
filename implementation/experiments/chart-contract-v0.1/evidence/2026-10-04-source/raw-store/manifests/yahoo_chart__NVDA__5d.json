@@ -1,0 +1,12 @@
+{
+  "artifact_id": "yahoo_chart:NVDA:5d",
+  "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/NVDA?interval=1d&range=5d",
+  "source_kind": "YAHOO_CHART",
+  "fetched_at": "2026-10-04T10:24:05.100367+00:00",
+  "sha256": "469e185faec7925e724efdc23546967e86f6b3ccbc3ba8d05a2767f968f722a6",
+  "bytes": 1758,
+  "content_type": "application/json;charset=utf-8",
+  "fetcher": "existing fetch_real_data._get / source feasibility probe",
+  "http_status": 200,
+  "notes": "Single source feasibility capture; request receipt times in ../fetch-evidence.json; store fetched_at is persistence time, not exchange availability."
+}

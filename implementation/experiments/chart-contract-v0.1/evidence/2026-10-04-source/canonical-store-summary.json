@@ -1,0 +1,48 @@
+{
+  "scope": "YAHOO_NAMED_LATEST_SLOTS_ONLY",
+  "manifest_count": 1404,
+  "counts": {
+    "BYTES_AND_SHAPE_CHECKED": 0,
+    "MISSING_LOCAL_FILE": 1346,
+    "UNSUPPORTED_SOURCE_KIND": 58,
+    "INVALID": 0
+  },
+  "financial_validity": "NOT_EVALUATED",
+  "identity_binding": "NOT_EVALUATED",
+  "historical_PIT": "NOT_VERIFIED",
+  "note": "Manifest presence is not raw-data availability. History slots and other source kinds are outside this scan.",
+  "baseline": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "source_reason_counts": {
+    "ENOENT": 1346,
+    "unsupported source_kind": 58
+  },
+  "unsupported_examples": [
+    {
+      "manifest": "yahoo_chart__AGR__5y.json",
+      "status": "UNSUPPORTED_SOURCE_KIND",
+      "reason": "unsupported source_kind: TIINGO_DAILY_RAW"
+    },
+    {
+      "manifest": "yahoo_chart__AL__5y.json",
+      "status": "UNSUPPORTED_SOURCE_KIND",
+      "reason": "unsupported source_kind: TIINGO_DAILY_RAW"
+    },
+    {
+      "manifest": "yahoo_chart__AMED__5y.json",
+      "status": "UNSUPPORTED_SOURCE_KIND",
+      "reason": "unsupported source_kind: TIINGO_DAILY_RAW"
+    },
+    {
+      "manifest": "yahoo_chart__ANSS__5y.json",
+      "status": "UNSUPPORTED_SOURCE_KIND",
+      "reason": "unsupported source_kind: TIINGO_DAILY_RAW"
+    },
+    {
+      "manifest": "yahoo_chart__APLS__5y.json",
+      "status": "UNSUPPORTED_SOURCE_KIND",
+      "reason": "unsupported source_kind: TIINGO_DAILY_RAW"
+    }
+  ],
+  "blob_directory_non_placeholder_files": 0,
+  "old_baseline_replay": "NOT_RUN_MISSING_BYTES"
+}
