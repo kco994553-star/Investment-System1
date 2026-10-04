@@ -1,0 +1,150 @@
+{
+  "reviewed_helper_sha256": "8c059e443763136d12769c7ba9ef3e2389850a2d61ea0ee63d5a355c1fc6d892",
+  "source_base": "675d0d298fbaab5b8473ed048a561ef84e2f3e78",
+  "canonical_baseline": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "cases": [
+    {
+      "case": "adopted models with ten original protected sources",
+      "expected": "PASS",
+      "actual": "PASS",
+      "accepted": true
+    },
+    {
+      "case": "all canonical source controls",
+      "expected": "PASS",
+      "actual": "PASS",
+      "accepted": true
+    },
+    {
+      "case": "dirty same-tree investment_system/contracts/enums.py",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true,
+      "failed_path": "investment_system/contracts/enums.py"
+    },
+    {
+      "case": "dirty same-tree investment_system/qgv/analysis.py",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true,
+      "failed_path": "investment_system/qgv/analysis.py"
+    },
+    {
+      "case": "dirty same-tree investment_system/qgv/factors.py",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true,
+      "failed_path": "investment_system/qgv/factors.py"
+    },
+    {
+      "case": "dirty same-tree investment_system/qgv/leaderboard.py",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true,
+      "failed_path": "investment_system/qgv/leaderboard.py"
+    },
+    {
+      "case": "dirty same-tree investment_system/qgv/pipeline.py",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true,
+      "failed_path": "investment_system/qgv/pipeline.py"
+    },
+    {
+      "case": "dirty same-tree investment_system/qgv/raw_map.py",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true,
+      "failed_path": "investment_system/qgv/raw_map.py"
+    },
+    {
+      "case": "dirty same-tree investment_system/qgv/scoring.py",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true,
+      "failed_path": "investment_system/qgv/scoring.py"
+    },
+    {
+      "case": "dirty same-tree investment_system/validation/historical.py",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true,
+      "failed_path": "investment_system/validation/historical.py"
+    },
+    {
+      "case": "dirty same-tree investment_system/validation/vertical_slice.py",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true,
+      "failed_path": "investment_system/validation/vertical_slice.py"
+    },
+    {
+      "case": "dirty same-tree investment_system/versions.py",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true,
+      "failed_path": "investment_system/versions.py"
+    },
+    {
+      "case": "missing current same-tree file",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true,
+      "failed_path": "investment_system/contracts/enums.py"
+    },
+    {
+      "case": "same-resolved symlink alias mutation",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true
+    },
+    {
+      "case": "missing Git object no fallback",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true
+    },
+    {
+      "case": "missing baseline source path no fallback",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true
+    },
+    {
+      "case": "Git unavailable is structured failure",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true
+    },
+    {
+      "case": "external exact mixed old/adopted models",
+      "expected": "PASS",
+      "actual": "PASS",
+      "accepted": true
+    },
+    {
+      "case": "external unequal bytes remain rejected",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true
+    },
+    {
+      "case": "caller Git HEAD cannot substitute helper baseline",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true
+    },
+    {
+      "case": "local replacement ref ignored for exact baseline",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "accepted": true,
+      "disposable_fixture_only": true
+    }
+  ],
+  "case_count": 21,
+  "all_expected_results_matched": true,
+  "protected_source_written": false,
+  "original_repository_ref_mutations": false,
+  "external_actions": "NOT_RUN"
+}
