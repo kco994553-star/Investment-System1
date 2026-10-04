@@ -354,3 +354,221 @@ Recorded effect:
 - **F1 scope question: RESOLVED — NO ADDITIONAL CHANGE.** CDR-012 F1 covers the M-B statistic only. The frozen v1 `development_dependence_estimate` (`superiority.py:247`, `(v - m) ** 2`) stays as it is; no v1 change and no v2-only estimator.
 - **MAC-X1** (Track C Frozen acceptance tooling on an advanced or integrated canonical; GIE-009 §2.4, GIE-011 §3) becomes the top integration blocker. The user's constraints for that work, in the same message: no temporary PR-specific or hard-coded SHA exception; do not weaken Frozen acceptance meaning, PIT/no-lookahead, Frozen history, provenance or Holdout isolation; preserve PR #40 as exact-tree historical evidence without relabelling; do not modify #21, RIG or other owner branches without ownership; prefer deterministic verification. A D1/D2 implementation within approved scope proceeds through verification; a new Frozen acceptance meaning, a policy relaxation, a canonical merge ordering policy or another D3 is presented as options with a recommendation, not implemented.
 - Still prohibited (same message): canonical merge, CAL_VERIFY, Holdout consumption, C8 Freeze, numeric configuration, publication grant, Official/LIVE promotion, #17 protected digest repin.
+
+## CDR-014 · MAC-X1 resolved by a hardened Frozen Projection Identity Audit (FPIA); GIE-012 §5 decisions
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** |
+| Decided at | 2026-10-04 (user message in session `session_019znshzTYgyBnuuBmSxdPFN`, after GCH-013 / `818bd69`) |
+| Resolves | MAC-X1 D3 items GIE-012 §5-1 … §5-5 |
+| Implementer / verifier | Primary Integration Writer (additive integration tooling on a PIW branch; no owner or Codex branch is modified) |
+
+User wording (verbatim):
+
+> MAC-X1 GIE-012의 D3 결정을 다음과 같이 승인한다.
+>
+> 1. Integration acceptance
+>
+> §5-1은 (a) 를 승인한다.
+>
+> Track C의 기존 Frozen 기록과 exact-tree identity는 역사적 evidence로 그대로 보존한다.
+>
+> 이를 rewrite하거나 현재 canonical에 맞추어 재해석하지 않는다.
+>
+> 대신 canonical/integration merge-result SHA마다 별도의:
+>
+> "Frozen Projection Identity Audit (FPIA)"
+>
+> 를 수행하여 Track C integration acceptance를 판정한다.
+>
+> 단, 적대적 리뷰에서 첫 FPIA 설계가 반박되었으므로 그 초안을 그대로 구현하는 것은 승인하지 않는다.
+>
+> 아래 조건을 충족하는 hardened FPIA로 수정한 뒤 구현·검증한다.
+>
+> 2. Code identity
+>
+> 통합 tree에서 package-level code identity가 기존 Frozen identity와 달라졌다면 이를 PASS 또는 SAME으로 정규화하지 마라.
+>
+> 반드시:
+>
+> "DIVERGED"
+>
+> 로 사실 그대로 기록한다.
+>
+> DIVERGED 자체는 다른 capability의 정상적인 additive Python 변경 때문에 발생할 수 있으므로 자동 Frozen violation으로 간주하지 않는다.
+>
+> 대신 FPIA가 Track C projection의 보존과 비간섭을 별도로 증명해야 한다.
+>
+> 3. Historical Frozen evidence
+>
+> 기존:
+>
+> - Frozen evidence
+> - Frozen hashes
+> - Frozen acceptance
+> - historical registration
+> - Decision history
+> - v1 history
+>
+> 를 rewrite하지 않는다.
+>
+> Frozen identity는 당시 exact tree에 대한 historical statement로 유지한다.
+>
+> 4. Reference authentication
+>
+> FPIA가 사용하는 모든 reference head/evidence는 명시적으로 인증한다.
+>
+> 임의의 reference SHA나 caller-supplied reference를 신뢰하지 않는다.
+>
+> 승인된 Decision Register / scoped evidence / immutable Git ancestry와 연결되지 않은 reference는 fail-closed한다.
+>
+> 5. Track C projection
+>
+> Integration tree에서 Track C-owned/protected projection을 구성하고 다음을 검증한다.
+>
+> - protected source byte identity
+> - protected test byte identity
+> - Frozen evidence identity
+> - approved additive history
+> - provenance
+> - no unauthorized mutation
+> - no deletion/substitution
+>
+> Projection 정의 자체가 새로운 Frozen contract 의미를 만들지 않도록 기존 ownership/evidence에서 도출한다.
+>
+> 6. CDR-012 / v2 binding
+>
+> v2 파일은 현재 검증된 CDR-012 head:
+>
+> "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240"
+>
+> 및 승인된 GIE/CDR evidence에 cryptographically/byte-wise binding한다.
+>
+> Integration tree에서 동일성을 확인하고 CDR-012/v2 targeted tests 및 필요한 oracle replay를 다시 실행한다.
+>
+> Hard-coded PR-specific exception을 만들지 않는다.
+>
+> 7. Runtime/test integrity
+>
+> 적대적 리뷰에서 확인된 우회경로를 반드시 차단한다.
+>
+> 최소한 다음을 검증한다.
+>
+> - committed ".pyc" 또는 다른 bytecode substitution
+> - pytest plugin injection
+> - pytest configuration manipulation
+> - environment/configuration을 통한 test suppression
+> - collection 변경
+> - required test deselection
+> - 실행 source와 audited source 불일치
+>
+> 검증 환경/provenance가 확인되지 않으면 fail-closed한다.
+>
+> 8. Decision Register provenance
+>
+> Track C Decision Register의 append를 단순히 "append-only"라는 이유만으로 신뢰하지 않는다.
+>
+> 새 append가 승인된 decision/evidence와 연결되는지 provenance를 검증한다.
+>
+> 출처 없는 append 또는 승인 경계를 확장하는 append는 integration acceptance를 만들 수 없다.
+>
+> 9. Shared overlay / merge result
+>
+> shared overlay conflict를 사전 추론으로 PASS시키지 않는다.
+>
+> history-preserving merge 후 실제 merge-result tree를 대상으로 audit한다.
+>
+> 충돌, unauthorized resolution 또는 Track C protected content 변화가 있으면 fail-closed한다.
+>
+> 10. FPIA 결과 상태
+>
+> 최소한 다음 개념을 구분한다.
+>
+> - HISTORICAL_FROZEN_IDENTITY_PRESERVED
+> - CODE_IDENTITY_SAME / DIVERGED
+> - TRACK_C_PROJECTION_PRESERVED
+> - INTEGRATION_INTERFERENCE_NONE / FOUND
+> - FPIA_PASS / FAIL / NOT_RUN
+>
+> "DIVERGED"를 "SAME" 또는 기존 Frozen PASS로 위장하지 않는다.
+>
+> 11. Registration
+>
+> §5-2 추천안을 승인한다.
+>
+> Python code 변경이 있는 중간 merge에서 기존 registration이 fail-closed되는 것을 수용한다.
+>
+> 새 registration은 필요한 capability/code integration이 끝난 최종 canonical candidate에서 생성한다.
+>
+> 중간 tree마다 기존 registration을 억지로 유효하게 만들지 않는다.
+>
+> 12. v2 인증
+>
+> §5-3 추천안을 승인한다.
+>
+> 검증된 head와 byte identity를 binding하고 v2 tests/oracle을 재실행한다.
+>
+> 13. Shared overlay
+>
+> §5-4 추천안을 승인한다.
+>
+> fail-closed를 유지하고 history-preserving merge-result를 audit한다.
+>
+> 14. Track C branch CI
+>
+> §5-5 추천안을 승인한다.
+>
+> canonical 이동으로 기존 Track C branch acceptance가 red가 되는 것을 숨기거나 acceptance 조건을 완화하지 않는다.
+>
+> Branch/Frozen historical validation과 canonical integration acceptance를 별개의 evidence class로 유지한다.
+>
+> 15. 구현/검증
+>
+> 위 승인 범위 안에서 hardened FPIA를 구현한다.
+>
+> 순서:
+>
+> PLAN
+> → adversarial findings를 acceptance criteria로 변환
+> → implementation
+> → targeted negative tests
+> → baseline "b9e01a9" 검증
+> → PR #40 "acaf1b5" 검증
+> → tamper/adversarial probes
+> → full regression where applicable
+> → completeness review
+> → evidence 기록
+>
+> 첫 FPIA 설계를 반박했던 adversarial cases는 반드시 regression으로 고정한다.
+>
+> 새로운 수치 threshold/default/tolerance를 만들지 않는다.
+>
+> 16. 계속 금지
+>
+> 이번 승인은 다음을 승인하지 않는다.
+>
+> - canonical merge
+> - C8 Freeze
+> - numeric configuration
+> - CAL_VERIFY
+> - Holdout 접근/소비
+> - publication grant
+> - Official/LIVE promotion
+> - #17 protected digest repin
+> - Frozen evidence rewrite
+> - 기존 Track C acceptance 완화
+> - 다른 owner branch의 임의 수정
+>
+> 새로운 D3가 없다면 hardened FPIA 구현·검증과 integration-order 분석까지 자율적으로 계속 진행한다.
+>
+> 새 D3가 발생하면 그 지점에서만 중단한다.
+
+FPIA reference manifest (machine-readable; written by the routing writer). FPIA must accept a reference only if its value, or the short form quoted, appears inside the user-verbatim (`> `) lines of this CDR entry, this register commit is an ancestor of `origin/integration/global-handoff-v1`, and the register at that commit is a byte prefix of the register at the branch tip:
+
+```fpia-reference-manifest
+{"cdr": "CDR-014",
+ "track_c_reference": {"sha": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565", "quoted_as": "b9e01a9", "role": "Track C accepted head (baseline); Frozen evidence heads must be its ancestors"},
+ "v2_reference": {"sha": "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240", "quoted_as": "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240", "role": "verified CDR-012 v2 head (GIE-011)"},
+ "verification_subjects": [{"sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66", "quoted_as": "acaf1b5", "role": "PR #40 tree to audit; not a reference"}]}
+```
