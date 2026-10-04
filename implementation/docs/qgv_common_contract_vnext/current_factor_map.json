@@ -1,0 +1,371 @@
+{
+  "status": "OBSERVATION_ONLY_NOT_NEW_REGISTRY",
+  "source_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "nodes": [
+    {
+      "axis": "Q",
+      "factor_id": "competitive_advantage",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.2,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "competitive_advantage_rubric"
+      ],
+      "actual_meaning": "direct rubric score",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "Q",
+      "factor_id": "roic_wacc",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.2,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "net_income",
+        "invested_capital",
+        "wacc"
+      ],
+      "actual_meaning": "spread proxy; financial N/A",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "Q",
+      "factor_id": "market_position",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.15,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "market_share",
+        "peer_median_market_share"
+      ],
+      "actual_meaning": "share-relative or share-only proxy",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "Q",
+      "factor_id": "fcf_quality",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.15,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "fcf",
+        "revenue"
+      ],
+      "actual_meaning": "FCF margin proxy",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "Q",
+      "factor_id": "margin_quality",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.1,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "ebit",
+        "revenue",
+        "nim"
+      ],
+      "actual_meaning": "margin proxy; financial NIM branch",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "Q",
+      "factor_id": "financial_health",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.1,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "cash",
+        "total_debt",
+        "revenue",
+        "cet1"
+      ],
+      "actual_meaning": "balance-sheet proxy; financial CET1 branch",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "Q",
+      "factor_id": "management_quality",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.1,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "management_quality_rubric"
+      ],
+      "actual_meaning": "management rubric; not capital allocation",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "G",
+      "factor_id": "next_3_5y_growth",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.25,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "revenue",
+        "revenue_prev"
+      ],
+      "actual_meaning": "historical current/prior YoY proxy; no forecast or CAGR",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "G",
+      "factor_id": "growth_efficiency",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.2,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "revenue",
+        "revenue_prev",
+        "invested_capital"
+      ],
+      "actual_meaning": "growth/capital intensity proxy",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "G",
+      "factor_id": "revenue_growth",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.15,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "revenue",
+        "revenue_prev"
+      ],
+      "actual_meaning": "YoY linear clip",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "G",
+      "factor_id": "eps_fcf_per_share_growth",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.15,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "eps",
+        "eps_prev",
+        "fcf",
+        "revenue_prev"
+      ],
+      "actual_meaning": "EPS YoY else FCF/prior-revenue-1; semantic review required",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "G",
+      "factor_id": "growth_durability",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.15,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "growth_durability_rubric"
+      ],
+      "actual_meaning": "direct rubric score",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "G",
+      "factor_id": "excess_growth_vs_industry",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.1,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "raw_fields": [
+        "revenue",
+        "revenue_prev",
+        "industry_revenue_growth"
+      ],
+      "actual_meaning": "growth spread",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "V",
+      "factor_id": "fundamental_value",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.25,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "raw_fields": [
+        "dcf_value",
+        "price",
+        "eps"
+      ],
+      "actual_meaning": "DCF value/price else fixed PE heuristic",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "V",
+      "factor_id": "reverse_dcf",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.2,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "raw_fields": [
+        "reverse_dcf_implied_growth",
+        "price",
+        "eps",
+        "revenue",
+        "revenue_prev"
+      ],
+      "actual_meaning": "supplied implied growth or PE proxy vs revenue YoY",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "V",
+      "factor_id": "peer_relative_value",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.15,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "raw_fields": [
+        "peer_median_multiple",
+        "own_multiple"
+      ],
+      "actual_meaning": "relative multiple",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "V",
+      "factor_id": "historical_valuation",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.15,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "raw_fields": [
+        "hist_valuation_percentile"
+      ],
+      "actual_meaning": "direct field; historical producer supplies PE-change proxy",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "V",
+      "factor_id": "margin_of_safety",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.1,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "raw_fields": [
+        "dcf_value",
+        "price",
+        "eps"
+      ],
+      "actual_meaning": "conservative value proxy",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "V",
+      "factor_id": "sector_context",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.1,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "raw_fields": [
+        "sector_context_score"
+      ],
+      "actual_meaning": "direct supplied score",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    },
+    {
+      "axis": "V",
+      "factor_id": "theme_premium_discount",
+      "factor_version_ref": "b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py",
+      "current_local_weight": 0.05,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "raw_fields": [
+        "theme_premium_score"
+      ],
+      "actual_meaning": "direct supplied score",
+      "subfactors": [],
+      "subfactor_status": "NOT_DEFINED_IN_CURRENT_ENGINE",
+      "mapping_source": "qgv/raw_map.py:map_raw",
+      "normalization_status": "LEGACY_PINNED_NO_NEW_DEFAULT"
+    }
+  ],
+  "candidate_weights": {
+    "initial_prior": {
+      "lifecycle": "PROVISIONAL_INITIAL_PRIOR",
+      "weights": {
+        "fundamental_value": 0.25,
+        "reverse_dcf": 0.2,
+        "peer_relative_value": 0.15,
+        "historical_valuation": 0.15,
+        "margin_of_safety": 0.1,
+        "sector_context": 0.1,
+        "theme_premium_discount": 0.05
+      }
+    },
+    "equal_research": {
+      "lifecycle": "RESEARCH",
+      "weights": {
+        "fundamental_value": 0.14285714285714285,
+        "peer_relative_value": 0.14285714285714285,
+        "historical_valuation": 0.14285714285714285,
+        "sector_context": 0.14285714285714285,
+        "theme_premium_discount": 0.14285714285714285,
+        "reverse_dcf": 0.14285714285714285,
+        "margin_of_safety": 0.14285714285714285
+      }
+    },
+    "mos_tilt_research": {
+      "lifecycle": "RESEARCH",
+      "weights": {
+        "fundamental_value": 0.15,
+        "peer_relative_value": 0.15,
+        "historical_valuation": 0.1,
+        "sector_context": 0.1,
+        "theme_premium_discount": 0.1,
+        "reverse_dcf": 0.15,
+        "margin_of_safety": 0.25
+      }
+    }
+  }
+}
