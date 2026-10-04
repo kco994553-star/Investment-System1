@@ -138,3 +138,9 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - Codex implements both additively in #31 with independent oracle, negative and full regression, Actions and a scoped handoff. The Primary Integration Writer re-verifies F1/F3 after Codex's next HANDOFF_READY and runs a fresh successor of trial #39. The C8 write exclusion applies until then.
 - Still not approved: numeric configuration, CAL_VERIFY, Holdout, C8 Freeze, publication/Official/LIVE, canonical merge.
 - Canonical `b8e39a2` unchanged. Maturity transitions: none.
+
+## GCH-010a · 2026-10-04T03:55Z · PR #31 CDR-012 HANDOFF_READY; F1/F3 re-verification started
+
+- Codex pushed #31 `c9e0fa7` ("Repair approved CDR-012 v2 squaring and all-degenerate fail-closed"; `ACCEPTANCE_MANIFEST_CDR012.json` HANDOFF_READY_APPROVED_SYNTHETIC_V2_SCOPE). Its check suite completed at 03:50Z. #35 is still `8318b78` and does not yet contain `c9e0fa7`; Codex states it will merge it after #31's CI.
+- Independent re-verification started (workflow `wf_4e6007e2-97e`), using the CDR-012 expectations prepared before this head existed. If no blocking finding: the fresh successor of trial #39 on the freshest #31/#35 heads, published for CI. #39's results are not reused.
+- Canonical `b8e39a2` unchanged. Maturity transitions: none.
