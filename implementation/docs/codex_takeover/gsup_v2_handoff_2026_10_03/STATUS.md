@@ -34,3 +34,16 @@ are [CURRENT_HANDOFF_V2_CDR010.md](CURRENT_HANDOFF_V2_CDR010.md) and
 External Primary Integration Writer CDR-011 re-verification and its successor
 combined trial remain pending. Parent maturity stays SYNTHETIC_VERIFIED / C8 NOT_FROZEN.
 No actual CAL_VERIFY/Holdout, numeric configuration, grants, Official/LIVE or canonical merge.
+
+
+## CDR-012 successor routing · 2026-10-04
+
+Fresh Global `1620f7118dbe91283cde1cc1431cdea236ab0829` records USER_DECIDED
+F1 squaring=`d*d` and F3 all-degenerate replicates=NOT_RUN. Current scoped
+checkpoint: [CURRENT_HANDOFF_V2_CDR012.md](CURRENT_HANDOFF_V2_CDR012.md) and
+`ACCEPTANCE_MANIFEST_CDR012.json`. The entire preceding entry remains historical;
+original CDR-010 approval/evidence/oracle and hex pins are not repinned.
+Exact carrier SHA and post-publication CI receipts are in the current PR31/35
+descriptions. Claude Main owns F1/F3 independent re-verification and the fresh
+successor of PR39. No real numeric configuration/CAL_VERIFY/Holdout/C8 Freeze,
+grants, Official/LIVE or canonical merge is approved.

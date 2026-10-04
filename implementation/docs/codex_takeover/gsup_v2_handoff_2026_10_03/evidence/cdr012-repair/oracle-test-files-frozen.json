@@ -1,0 +1,31 @@
+{
+  "status": "FROZEN_TARGETED_PASS",
+  "frozen_at_utc": "2026-10-04T03:29:14.777918+00:00",
+  "reviewer": "Codex independent oracle/test author, this session",
+  "source_sha256": {
+    "implementation/tests/evl_c8_gsup_v2_cdr012_oracle.py": "fdf999c763f0f03fb4b4590daddf8e7a2b04b4050790ff648466be4eec099326",
+    "implementation/tests/test_evl_gsup_v2_cdr012.py": "51d7e177601370674972be6c7f210f42a0a0ff340da0465544a07723558e74ad"
+  },
+  "counts": {
+    "passed": 77,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "actual_registry_cases": 4
+  },
+  "count_note": "Actual targeted/JUnit count is 77 total, already including all four actual registry cases; 81 was a stale expected count, not the observed result. No new cases added.",
+  "targeted_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /workspace/investment-audit/venv311/bin/python -m pytest -p no:cacheprovider tests/test_evl_gsup_v2_cdr012.py -q --junitxml=/workspace/investment-audit/gie010-repair/cdr012-independent-targeted.xml > /workspace/investment-audit/gie010-repair/cdr012-independent-targeted.log",
+  "runtime": {
+    "implementation": "CPython",
+    "python": "3.11.16",
+    "pytest": "9.1.1",
+    "executable": "/workspace/investment-audit/venv311/bin/python"
+  },
+  "targeted_log": "/workspace/investment-audit/gie010-repair/cdr012-independent-targeted.log",
+  "targeted_junit": "/workspace/investment-audit/gie010-repair/cdr012-independent-targeted.xml",
+  "full_suite_ready_on_frozen_source": true,
+  "read_only_review_status": "PASS_NO_NEW_FINDINGS",
+  "review_json": "/workspace/investment-audit/gie010-repair/cdr012-independent-authoring-and-review.json",
+  "source_changes_after_freeze": false,
+  "no_full_suite_run_by_worker": true
+}

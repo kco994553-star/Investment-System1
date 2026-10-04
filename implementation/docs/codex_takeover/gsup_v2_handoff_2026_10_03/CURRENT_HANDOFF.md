@@ -46,3 +46,16 @@ math.fsum/direct-block/block-grouping/standard-error-predicate approval and
 Codex ownership. Earlier evidence and this entire preceding record are preserved.
 Current exact carrier SHA and fresh Actions are recorded in PR31; old675/29c CI
 is not reused as execution of the new v2 code. All real-access/promotion gates stay closed.
+
+
+## CDR-012 successor routing · 2026-10-04
+
+Fresh Global `1620f7118dbe91283cde1cc1431cdea236ab0829` records USER_DECIDED
+F1 squaring=`d*d` and F3 all-degenerate replicates=NOT_RUN. Current scoped
+checkpoint: [CURRENT_HANDOFF_V2_CDR012.md](CURRENT_HANDOFF_V2_CDR012.md) and
+`ACCEPTANCE_MANIFEST_CDR012.json`. The entire preceding entry remains historical;
+original CDR-010 approval/evidence/oracle and hex pins are not repinned.
+Exact carrier SHA and post-publication CI receipts are in the current PR31/35
+descriptions. Claude Main owns F1/F3 independent re-verification and the fresh
+successor of PR39. No real numeric configuration/CAL_VERIFY/Holdout/C8 Freeze,
+grants, Official/LIVE or canonical merge is approved.

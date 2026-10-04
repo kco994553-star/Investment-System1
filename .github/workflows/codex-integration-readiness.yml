@@ -16,11 +16,14 @@ on:
       - 'implementation/src/investment_system/evl/superiority_source_identity.py'
       - 'implementation/src/investment_system/evl/superiority_v2.py'
       - 'implementation/tests/evl_c8_gsup_v2_oracle.py'
+      - 'implementation/tests/evl_c8_gsup_v2_cdr012_oracle.py'
+      - 'implementation/tests/test_evl_gsup_v2_cdr012.py'
       - 'implementation/tests/test_evl_gsup_v2_arithmetic.py'
       - 'implementation/tests/test_evl_gsup_v2_registry.py'
       - 'implementation/tools/verify_gsup_v2_arithmetic.py'
       - 'implementation/tests/test_evl_gsup_v2_repair_negatives.py'
       - 'implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/authoritative-v2/CDR010_APPROVAL.json'
+      - 'implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/CDR012_APPROVAL.json'
       - 'implementation/tests/test_evl_gsup_*identity*.py'
       - 'implementation/tests/test_evl_gsup_mb_reduction_diagnostic.py'
       - 'implementation/tools/gsup_mb_reduction_diagnostic.py'
@@ -54,7 +57,9 @@ jobs:
               return set(subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', ref], text=True).splitlines())
           def protected(path):
               return (path.startswith('implementation/src/investment_system/evl/')
-                      or path in {'implementation/tests/evl_c8_fixture.py', 'implementation/tests/evl_c8_gsup_oracle.py'}
+                      or path in {'implementation/tests/evl_c8_fixture.py', 'implementation/tests/evl_c8_gsup_oracle.py',
+                                  'implementation/tests/evl_c8_gsup_v2_oracle.py',
+                                  'implementation/tests/evl_c8_gsup_v2_cdr012_oracle.py'}
                       or (path.startswith('implementation/tests/test_evl_') and path.endswith('.py')))
           existing = {path for path in paths(owner) if protected(path)}
           subprocess.run(['git', 'diff', '--exit-code', owner, 'HEAD', '--', *sorted(existing)], check=True)
@@ -63,6 +68,8 @@ jobs:
               'implementation/src/investment_system/evl/superiority_source_identity.py',
               'implementation/src/investment_system/evl/superiority_v2.py',
               'implementation/tests/evl_c8_gsup_v2_oracle.py',
+              'implementation/tests/evl_c8_gsup_v2_cdr012_oracle.py',
+              'implementation/tests/test_evl_gsup_v2_cdr012.py',
               'implementation/tests/test_evl_gsup_v2_arithmetic.py',
               'implementation/tests/test_evl_gsup_v2_registry.py',
               'implementation/tests/test_evl_gsup_v2_repair_negatives.py',
@@ -82,7 +89,7 @@ jobs:
       - name: Full existing regression with actual integrated dependencies
         working-directory: implementation
         run: PYTHONPATH=src python -m pytest -q --junitxml=/tmp/combined-junit.xml
-      - name: CDR-010 exact production and independent oracle replay
+      - name: CDR-010/012 exact production and independent oracle replay
         run: python implementation/tools/verify_gsup_v2_arithmetic.py > /tmp/gsup-v2-arithmetic.json
       - name: Producer to existing Web withheld-contract fixture
         run: python implementation/tools/build_producer_contract_web_fixture.py --out /tmp/withheld-web --evidence /tmp/withheld-web-evidence
