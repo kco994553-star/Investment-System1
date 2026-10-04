@@ -1,0 +1,334 @@
+{
+  "record": "INDEPENDENT_CDR012_ORACLE_AUTHORING_AND_BOUNDED_PRODUCTION_REVIEW",
+  "at_utc": "2026-10-04T03:28:41.540781+00:00",
+  "reviewer": {
+    "attribution": "Codex independent oracle/test author, this session",
+    "authored": "Only the two new authorized test paths and independent evidence under gie010-repair.",
+    "independence": "New formula derived from original A6 simulation and CDR012, no production/historical/diagnostic imports in oracle. Pins generated from this independent arithmetic and corroborated with read-only GIE008c scalar formula adapted in memory to multiplication; no expected pins sourced from production. Production/verifier/workflow adaptations are main-owner work, reviewed read-only.",
+    "handoff_ready_assigned": false,
+    "global_verifier": "Primary Integration Writer remains separate external verification."
+  },
+  "baseline": {
+    "head": "e0b6d809058511d4bef7ad1aeccad79c5eae3ff8",
+    "sha256": {
+      "implementation/tests/evl_c8_gsup_v2_oracle.py": "e2db7498b6819783ac5d977c34950078f632c4e4dbb2ddf973b26cace8a9c6f5",
+      "implementation/tests/test_evl_gsup_v2_arithmetic.py": "6f7b24013016b9956a3ff4496f717826db6dbea3e7af5c1a6127807eb7014b17",
+      "implementation/tests/evl_c8_gsup_oracle.py": "649b87089e5e09aa86407ed035ecac87dcc2fa0f105835125f7b4056a014827a",
+      "implementation/tests/test_evl_c8_gsup.py": "e9c28cbb0147c8cbdf0a3e6587dd2273f13de9c9e1efa541b8bec8d08dc8b097",
+      "implementation/src/investment_system/evl/superiority.py": "c61268921e5a9147e90810747e9ab6cd2896dd2fab89cb314d390dc0ff760498",
+      "implementation/src/investment_system/evl/statistical_kernels.py": "61f70937456d8a54cb027a7522f2a2d1c890bccc92f9f19de28082a2001e12d1",
+      "implementation/src/investment_system/evl/gsup_source_identity.py": "d34fc10d396f37fce65a5580263d2d35207e7d2f4f347fe300c1f1b81c33c548",
+      "implementation/src/investment_system/evl/superiority_source_identity.py": "3ad8ca25f724cd3d07271ec8a38b95ca8779fe57f14ccf252e1030aa7acca0fa",
+      "implementation/src/investment_system/evl/superiority_v2.py": "41f67dd28200370f472016e16214ee08edb31dcd75aba91726494799a6614603",
+      "implementation/tests/test_evl_gsup_v2_registry.py": "2d81fdb3b70d20cd074cd2b7b32b4e3b7118036758084e9f0ac1962f98a83989",
+      "implementation/tests/test_evl_gsup_v2_repair_negatives.py": "8c896575532b60f31769ab63a406e70c9df575ae51ff8dd07d50bb1c19046b81",
+      "implementation/tools/verify_gsup_v2_arithmetic.py": "fa4295124667de17eb3123cefdc16565d353a105ec575cbb07bcb1ea14a308fc"
+    },
+    "authority_commit": "1620f7118dbe91283cde1cc1431cdea236ab0829",
+    "reviewer": "Codex independent oracle/test author, this session",
+    "scope": "CDR012 F1/F3 synthetic validation only"
+  },
+  "final_working_head": "e0b6d809058511d4bef7ad1aeccad79c5eae3ff8",
+  "status": "PASS_IN_AUTHORIZED_REVIEWED_SCOPE",
+  "new_findings": [],
+  "unresolved_CDR012_findings": [],
+  "checks": {
+    "F1_multiplication": "COMPLIES: both authoritative variance sums use d*d; no Pow AST node in v2. Reducer, direct block sums, grouped mean, Frozen C6 RNG, ceil(n/L)-1 and SE predicate remain as approved.",
+    "F3_all_degenerate": "COMPLIES: exact degenerate==replicates check after all B draws raises MissingStatisticalEvidence before return; no p-value exists. New oracle raises OracleNotRun with diagnostic-only evidence without p.",
+    "partial_degeneracy": "COMPLIES: remaining valid draws retain denominator B+1; CE4 r=1,d=1,p=.10.",
+    "positive_literal_residue": "COMPLIES: [.05]*12 at seeds7/11 has positive residual LRV, zero degenerate draws and p=.05, unchanged without epsilon/tolerance.",
+    "actual_registry": "COMPLIES: four new actual-assess tests cover all-F3 and one-F3/seven-REJECT_H0 mixed cells at seeds7/11. Aggregate is NOT_RUN, grants stay closed, one claim/provider read stays consumed; both same-key assess retry and renamed-root/campaign feasibility retry are refused.",
+    "supplement_authority": "COMPLIES: original CDR010 bytes/pin unchanged; supplemental CDR012 source commit/blob/SHA256 and exact quoted section verified; runtime supplemental blob matches. Missing/tampered supplement refused before registration/provider/claim in two new tests.",
+    "verifier": "COMPLIES: imports new independent oracle, retains explicit PUBLIC_KEYS and independently literal six-key APPROVED_CONTRACT, checks complete schema, exact repr/hex, near-tie p=.15 and both all-degenerate refusals; reports sources for both old/new oracle and both approvals.",
+    "workflow": "COMPLIES: new oracle/test/supplement paths trigger readiness; new oracle/test allowed as additive protected paths; predicate covers old/new v2 oracles, and historical owner-file guards unchanged; replay renamed CDR010/012 and still uploaded. No new dispatch/grants.",
+    "historical_preservation": "COMPLIES: old CDR010 oracle, v1 oracle/tests/kernel, Frozen C6 and identity modules remain byte-identical to initial baseline hashes. Old active arithmetic EXACT_FINGERPRINTS and GOLDEN_TRACES literals match e0b6d80 AST values; owner only adapted their evaluation to H while active comparisons use O.",
+    "scope_and_grants": "COMPLIES in reviewed synthetic scope: no epsilon, rounding, numeric default, actual CAL_VERIFY/Holdout or new grant. N2 real-source normalization/issuance remains a separate unresolved upstream gate."
+  },
+  "source_hashes": {
+    "implementation/tests/evl_c8_gsup_v2_cdr012_oracle.py": {
+      "sha256": "fdf999c763f0f03fb4b4590daddf8e7a2b04b4050790ff648466be4eec099326",
+      "git_blob_sha1": "82d256beb531500eead76e1d9f743e4ea1e65b02",
+      "bytes": 5831
+    },
+    "implementation/tests/test_evl_gsup_v2_cdr012.py": {
+      "sha256": "51d7e177601370674972be6c7f210f42a0a0ff340da0465544a07723558e74ad",
+      "git_blob_sha1": "6cc33bb13fa50ba95337c0699ac1dcb734925bff",
+      "bytes": 19169
+    },
+    "implementation/src/investment_system/evl/superiority_v2.py": {
+      "sha256": "4733f41ee5c85a8a159047a8f2f996fed9edc9a1a4e14d01aa671b33a8a1fa64",
+      "git_blob_sha1": "8e56a66e011c83f0d8a7bc222c1705c407887268",
+      "bytes": 12744
+    },
+    "implementation/tools/verify_gsup_v2_arithmetic.py": {
+      "sha256": "04b3012cbe0f94a17d8a94022252c2b1d0f18e54bd08e6728d4e09a4a84e1e91",
+      "git_blob_sha1": "9647d1b601a10b87b68effcc856c59c472c095ab",
+      "bytes": 5207
+    },
+    ".github/workflows/codex-integration-readiness.yml": {
+      "sha256": "4af6061dd0ca6fc191425d19af21a07a13ef36fc6fc6265b27030dcc5b76b3b6",
+      "git_blob_sha1": "0fddb87381ce8d4cb3c9cc0d45d3dedd5eb74e94",
+      "bytes": 7491
+    },
+    "implementation/tests/evl_c8_gsup_v2_oracle.py": {
+      "sha256": "e2db7498b6819783ac5d977c34950078f632c4e4dbb2ddf973b26cace8a9c6f5",
+      "git_blob_sha1": "aca5567dbb61c0b3e31531a228420af441961a9e",
+      "bytes": 5932
+    },
+    "implementation/tests/test_evl_gsup_v2_arithmetic.py": {
+      "sha256": "2640f88d87b110a6b24c54abc71f9df6da470594dde4478cc649527e2c2d9478",
+      "git_blob_sha1": "5280e303fa845534c94dfc0ca5b1a19d9a7901ad",
+      "bytes": 39993
+    },
+    "implementation/tests/test_evl_gsup_v2_registry.py": {
+      "sha256": "2d81fdb3b70d20cd074cd2b7b32b4e3b7118036758084e9f0ac1962f98a83989",
+      "git_blob_sha1": "1eb623bf50488dcf2ce292def30edd646cea24b6",
+      "bytes": 7382
+    },
+    "implementation/tests/test_evl_gsup_v2_repair_negatives.py": {
+      "sha256": "8c896575532b60f31769ab63a406e70c9df575ae51ff8dd07d50bb1c19046b81",
+      "git_blob_sha1": "a9f83bbb40a8dcffa65f02f93fc8fbeed0bb0533",
+      "bytes": 2928
+    },
+    "implementation/src/investment_system/evl/superiority.py": {
+      "sha256": "c61268921e5a9147e90810747e9ab6cd2896dd2fab89cb314d390dc0ff760498",
+      "git_blob_sha1": "8a1254d7b77514f6015dfff4af0e4a53f57f22af",
+      "bytes": 26569
+    },
+    "implementation/src/investment_system/evl/statistical_kernels.py": {
+      "sha256": "61f70937456d8a54cb027a7522f2a2d1c890bccc92f9f19de28082a2001e12d1",
+      "git_blob_sha1": "28e1c1842625bacabc6ffc9c9b172261e7d6585a",
+      "bytes": 14964
+    },
+    "implementation/src/investment_system/evl/gsup_source_identity.py": {
+      "sha256": "d34fc10d396f37fce65a5580263d2d35207e7d2f4f347fe300c1f1b81c33c548",
+      "git_blob_sha1": "fa93bf88f8d77b293421a8d0b5095757b22f72d8",
+      "bytes": 23974
+    },
+    "implementation/src/investment_system/evl/superiority_source_identity.py": {
+      "sha256": "3ad8ca25f724cd3d07271ec8a38b95ca8779fe57f14ccf252e1030aa7acca0fa",
+      "git_blob_sha1": "71bf737578866b762a0ee82506f8f5db9418f8ba",
+      "bytes": 8874
+    },
+    "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/authoritative-v2/CDR010_APPROVAL.json": {
+      "sha256": "2e0ad6e96bd1b0494fd739cc55a03b337d326fd6dff2863203ebc9b6bd036231",
+      "git_blob_sha1": "3a9eecbba5a7454c5d81ee6db209aecc4bdf113b",
+      "bytes": 3488
+    },
+    "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/CDR012_APPROVAL.json": {
+      "sha256": "91f40de84ec27c8e0d74d6175ffe4d2cac4ccf78dc63f06a269141e0bea9e187",
+      "git_blob_sha1": "e16038e90117ae4873ac56c1234a26e5bf3d9c0f",
+      "bytes": 3668
+    },
+    "implementation/reports/track_c_c8_a6_method_simulation_source_2026-10-02.py": {
+      "sha256": "c1f56a3f709c5fed65336fb5f33473f957c8caad706bfc4e48534ca3161f34ce",
+      "git_blob_sha1": "e112f41f34d4ead287699657750875770b4c4705",
+      "bytes": 3302
+    }
+  },
+  "evidence_hashes": {
+    "/workspace/investment-audit/gie010-repair/cdr012-independent-initial-hashes.json": {
+      "sha256": "cd62dcf82a72dd8d7f3d4f6fcd2037c754378ff8d09e5a53e69714e57fa94dbb",
+      "git_blob_sha1": "b75e1f947a5e87b777c2e6a210c4bb2f07b51c1c",
+      "bytes": 1818
+    },
+    "/workspace/investment-audit/gie010-repair/cdr012-independent-red-kernel.json": {
+      "sha256": "faf5826882a4764d5352e124dfe9a10c3e9b1feb61c0f26b1b2c18b5b2b25139",
+      "git_blob_sha1": "fab29adcf407acd1f1772d3422dbc27c16cd6bc9",
+      "bytes": 154702
+    },
+    "/workspace/investment-audit/gie010-repair/cdr012-independent-targeted.log": {
+      "sha256": "285c573272405d686fbbdf67b4b0837333d579077271556bd58bab17b62243a6",
+      "git_blob_sha1": "c977808273012fb6178b2fae8cde42c66f181f17",
+      "bytes": 179
+    },
+    "/workspace/investment-audit/gie010-repair/cdr012-independent-targeted.xml": {
+      "sha256": "b06c7ca43a6e61fe3d749a4b92997d17a4d3cf8835d46160b8a5f0b0135ad140",
+      "git_blob_sha1": "afc4f81a5b5f9ad1a14f2c482de4584cc153ccd8",
+      "bytes": 11414
+    },
+    "/workspace/investment-audit/gie010-repair/targeted-first.log": {
+      "sha256": "6ad06c75c18dbe4a684b6fec96a51378357234be5d09afb9f39bf40bb6178350",
+      "git_blob_sha1": "085780abe0ab0af7f4fd5465620332712b01fc86",
+      "bytes": 180
+    },
+    "/workspace/investment-audit/gie010-repair/targeted-first.xml": {
+      "sha256": "b8528cb753af9fd7ffdeb618ef068eb84a3a88114bff847ed0dcbc12bbd9b5a8",
+      "git_blob_sha1": "ff7738425f590a1e716db741d8e717033dfd0301",
+      "bytes": 18370
+    },
+    "/workspace/investment-audit/gie010-repair/replay311-first.json": {
+      "sha256": "9dc271b07acfc7c0ec524814c431770c225418bbfda58dceb3d917c79a8b1368",
+      "git_blob_sha1": "71d1c093f9cd67a5825f49c9072c2f22e2bd9c9a",
+      "bytes": 10675
+    },
+    "/workspace/investment-audit/gie010-repair/replay312-first.json": {
+      "sha256": "641d249dadc6dd78e908d664fd539f71add2cf57940173581dab1dc61eccd5a0",
+      "git_blob_sha1": "360ef2a1a7e12d2f75df7ab6ca5347a64948deb7",
+      "bytes": 10675
+    },
+    "/workspace/investment-audit/gie010-repair/COORDINATION_DECISION_REGISTER.md": {
+      "sha256": "eaa7960d8856e7a99a4e1fbbc2f5334e29402bc66d0af6cfe5647ddbc1131688",
+      "git_blob_sha1": "bc402d6bd6159263fe6f16342986efb70a0647a6",
+      "bytes": 24521
+    },
+    "/workspace/investment-audit/gie010-repair/GIE-010_cdr011_reverification_trial39_2026-10-04.md": {
+      "sha256": "94943af131ec914e9df50ee55e02adb31ad764d087e3c5db2b6d85a5675c81ac",
+      "git_blob_sha1": "f4705d4b8e1d59872dae9cf551543bdcfe8e1111",
+      "bytes": 8934
+    },
+    "/workspace/investment-audit/global-oracle.py": {
+      "sha256": "e2312fd87e29c4f3b057bfcf7b054e02ba81b916e02b08b3e241f5def64b74b2",
+      "git_blob_sha1": "ec671fa87f18aff22450d1a6ede285bc6b5402c7",
+      "bytes": 6010
+    }
+  },
+  "new_pin_catalog": {
+    "computed_full_output_hex_fingerprints": {
+      "CE2_BLOCKS_AND_DEGENERACY": "93b36dafe30cf8d367824114478ad1a9a3eb3541423e5cbcd00816f20a385ac6",
+      "CE3_CONTROL": "4cf8fad70398583376870d6880ae13bfde753356771b1df574fdde782c6f3c96",
+      "CE4_DEGENERACY": "41baf9841ad1e9ca5528d4941e3f6ab0e9bb4ced03852111281b6bf76483ef8f",
+      "CE5_BLOCK_COUNT": "5ecfa4384a520d9a4720dd8bfcccf00a86c642cca0eeda6b850f17459ecc6581",
+      "ARITHMETIC_NUMPY_FLIP": "2aa1c1ba095f7cfd6db5b88a7807e883232c81b0fa828c9e06472904a095064b",
+      "ARITHMETIC_LEFT_SUM": "1600c28ab62ac5c360cb1d6d6824fc358c05fb88b391b66c386bceef145007bd",
+      "ARITHMETIC_TIE": "bd9e3b6ff4fa785980beeb41980909643537f7662b0b206aa283620f4ed9214c",
+      "OPERAND_SEED275": "6d1c2212cbb78accfc1e1fca9f2e060219f3a0cf9548bbd10bed8dd73b1b6f49",
+      "F1_NEAR_TIE": "96c7d7e1e4b64e3198d2b5cdefbd509217c55a48def2b0a8c39da813d1e0aeb6",
+      "CONSTANT_LITERAL_7": "4973a029cc47d9f67b58b132d100b030a0b584773bb390f7fec9ae5249674721",
+      "CONSTANT_LITERAL_11": "d4344abe0f1872ee3a4ed45242be5aec860c0404c19c5c0c634544f9e7f24f60",
+      "SE_UNDERFLOW": "3edd2612196b843dd4f3d8a09e991742f326da6442bbf72be0930d49da523b74"
+    },
+    "not_run_diagnostic_hex_fingerprints": {
+      "ALL_DEGENERATE_7": "708578b3032d49bb5f6555a489cfa099ffe27c16a699b4ae266e8dcf98317371",
+      "ALL_DEGENERATE_11": "8e4ffffb6297551ef86956dd861b71e2df93da4109db0e555205139388905df8",
+      "ALL_SE_UNDERFLOW": "888584d4ab4340331c5bef06c36721da493546d68e364d68fbecf5790e9c4b2b"
+    },
+    "full_near_tie_trace_literal_count": 19,
+    "independent_crosschecked_trace_rows": 267,
+    "normal_fixture_numerical_bits": "All pre-existing computed diagnostic/seed275/underflow fixtures unchanged. New full-result hashes differ for the two additional contract keys; no historical pin changed.",
+    "near_tie_changes": [
+      {
+        "field": "result.long_run_variance",
+        "historical": "0x1.48eca8641fdb9p+3",
+        "cdr012": "0x1.48eca8641fdb8p+3"
+      },
+      {
+        "field": "result.statistic",
+        "historical": "0x1.cf1f15ba01c38p+0",
+        "cdr012": "0x1.cf1f15ba01c3ap+0"
+      },
+      {
+        "field": "result.exceedances",
+        "historical": 3,
+        "cdr012": 2
+      },
+      {
+        "field": "result.ties",
+        "historical": 1,
+        "cdr012": 0
+      },
+      {
+        "field": "result.draws[18]",
+        "historical": "0x1.9a8365810363dp+0",
+        "cdr012": "0x1.9a8365810363fp+0"
+      },
+      {
+        "field": "result.traces[1].variance",
+        "historical": "0x1.c802468acf133p+2",
+        "cdr012": "0x1.c802468acf132p+2"
+      },
+      {
+        "field": "result.traces[4].tie",
+        "historical": true,
+        "cdr012": false
+      },
+      {
+        "field": "result.traces[4].exceeds",
+        "historical": true,
+        "cdr012": false
+      },
+      {
+        "field": "result.traces[7].variance",
+        "historical": "0x1.6e4d5e6f80919p+2",
+        "cdr012": "0x1.6e4d5e6f80918p+2"
+      },
+      {
+        "field": "result.traces[7].se",
+        "historical": "0x1.984c9655f22bap-1",
+        "cdr012": "0x1.984c9655f22b9p-1"
+      },
+      {
+        "field": "result.traces[18].variance",
+        "historical": "0x1.a2a1907f6e5d5p+3",
+        "cdr012": "0x1.a2a1907f6e5d4p+3"
+      },
+      {
+        "field": "result.traces[18].se",
+        "historical": "0x1.34a5293c0564cp+0",
+        "cdr012": "0x1.34a5293c0564bp+0"
+      },
+      {
+        "field": "result.traces[18].statistic",
+        "historical": "0x1.9a8365810363dp+0",
+        "cdr012": "0x1.9a8365810363fp+0"
+      },
+      {
+        "field": "result.se",
+        "historical": "0x1.1195ae7e7974fp+0",
+        "cdr012": "0x1.1195ae7e7974ep+0"
+      },
+      {
+        "field": "result.p_value",
+        "historical": "0x1.999999999999ap-3",
+        "cdr012": "0x1.3333333333333p-3"
+      }
+    ]
+  },
+  "red_before_production_repair": {
+    "path": "/workspace/investment-audit/gie010-repair/cdr012-independent-red-kernel.json",
+    "cases": 3,
+    "observed": "Unchanged e0b6d80 production returned near-tie .20 and both all-degenerate seeds .05; independently expected .15 and NOT_RUN respectively.",
+    "preserved": true
+  },
+  "new_targeted_evidence": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /workspace/investment-audit/venv311/bin/python -m pytest -p no:cacheprovider tests/test_evl_gsup_v2_cdr012.py -q --junitxml=/workspace/investment-audit/gie010-repair/cdr012-independent-targeted.xml > /workspace/investment-audit/gie010-repair/cdr012-independent-targeted.log",
+    "cwd": "/workspace/Investment-System1/implementation",
+    "runtime": {
+      "implementation": "CPython",
+      "python": "3.11.16",
+      "pytest": "9.1.1",
+      "executable": "/workspace/investment-audit/venv311/bin/python"
+    },
+    "passed": 77,
+    "failed": 0,
+    "skipped": 0,
+    "elapsed_seconds": 0.4,
+    "log": "/workspace/investment-audit/gie010-repair/cdr012-independent-targeted.log",
+    "junit": "/workspace/investment-audit/gie010-repair/cdr012-independent-targeted.xml",
+    "registry_assess_cases": [
+      "test_actual_registry_f3_blocks_stat_pass_and_stays_consumed[False-7]",
+      "test_actual_registry_f3_blocks_stat_pass_and_stays_consumed[False-11]",
+      "test_actual_registry_f3_blocks_stat_pass_and_stays_consumed[True-7]",
+      "test_actual_registry_f3_blocks_stat_pass_and_stays_consumed[True-11]"
+    ]
+  },
+  "owner_evidence_inspected": {
+    "existing_targeted": "targeted-first.log/XML: owner report118PASS; not rerun by independent worker.",
+    "replay": "replay311-first.json: 15 PASS, source SHA256 matches current production.",
+    "replay_numeric_hash": "bb883332e44e97689bc28ab36f55a88e295ee44149dd4306a94401607cec9227",
+    "replay_runtime": {
+      "implementation": "CPython",
+      "python": "3.11.16"
+    }
+  },
+  "limits": [
+    "No full-suite or Actions execution by this worker. Full regression/Actions/new checkpoint remain main-owner responsibilities.",
+    "Source hashes identify current uncommitted snapshot; a future commit/checkpoint must revalidate them.",
+    "Bounded review does not close N2 before-real-source policy gate or authorize maturity/promotion/publication/canonical merge.",
+    "No production, legacy, historical oracle, old pin, workflow or documentation edits by this worker; no commit or push."
+  ],
+  "frozen_authored_paths": [
+    "implementation/tests/evl_c8_gsup_v2_cdr012_oracle.py",
+    "implementation/tests/test_evl_gsup_v2_cdr012.py"
+  ]
+}

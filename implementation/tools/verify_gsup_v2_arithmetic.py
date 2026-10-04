@@ -8,14 +8,15 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "src"), str(ROOT)]
 from investment_system.evl import superiority as v1, superiority_v2 as v2
-from tests.evl_c8_gsup_v2_oracle import OracleNotRun, oracle_studentized
+from tests.evl_c8_gsup_v2_cdr012_oracle import OracleNotRun, oracle_studentized
 from tools.gsup_mb_reduction_diagnostic import CASES
 
 PUBLIC_KEYS = frozenset({"method", "arithmetic_contract", "n", "mean", "long_run_variance", "statistic",
                          "variance_blocks", "exceedances", "degenerate_replicates", "ties", "replicates",
                          "p_value", "draws", "traces", "indices_hash", "block_length", "seed", "one_sided"})
 APPROVED_CONTRACT = {"reducer": "MATH_FSUM", "replicate_aggregation": "BLOCK_GROUPING",
-                     "block_sums": "DIRECT", "degeneracy": "SQRT_V_OVER_N_GT_ZERO"}
+                     "block_sums": "DIRECT", "degeneracy": "SQRT_V_OVER_N_GT_ZERO",
+                     "squaring": "MULTIPLICATION", "all_degenerate": "NOT_RUN"}
 
 
 def exact(value):
@@ -38,7 +39,13 @@ def verify():
                 {"id": "OPERAND_SEED275", "delta": [.01, -.03, .04, -.01, -.01],
                  "block_length": 2, "replicates": 19, "seed": 275},
                 {"id": "STANDARD_ERROR_UNDERFLOW", "delta": [0., 0., 4e-162, 4e-162, 4e-162, 4e-160],
-                 "block_length": 1, "replicates": 19, "seed": 0})
+                 "block_length": 1, "replicates": 19, "seed": 0},
+                {"id": "CDR012_F1_NEAR_TIE", "delta": [8.7, 0., 0., 0., -2.9, 2.9, 2.9, 8.7, -2.9],
+                 "block_length": 2, "replicates": 19, "seed": 11},
+                *({"id": "CDR012_F3_ALL_DEGENERATE_SEED" + str(seed), "delta": [-.2, -.1] * 6,
+                   "block_length": 2, "replicates": 19, "seed": seed} for seed in (7, 11)),
+                {"id": "CDR012_POSITIVE_RESIDUAL_UNCHANGED", "delta": [.05] * 12,
+                 "block_length": 2, "replicates": 19, "seed": 7})
     cases = []
     for fixture in fixtures:
         name = fixture["id"]
@@ -67,9 +74,12 @@ def verify():
             old = v1.studentized_cbb(**args)
             assert production["p_value"] == .10 and old["p_value"] == .15
             row["preserved_v1_p_value"] = exact(old["p_value"])
+        if name == "CDR012_F1_NEAR_TIE":
+            assert production["p_value"] == .15 and production["exceedances"] == 2
         cases.append(row)
-    paths = [Path(v2.__file__), ROOT / "tests/evl_c8_gsup_v2_oracle.py", Path(__file__),
-             Path(v1.__file__), v2.APPROVAL_PATH]
+    paths = [Path(v2.__file__), ROOT / "tests/evl_c8_gsup_v2_cdr012_oracle.py",
+             ROOT / "tests/evl_c8_gsup_v2_oracle.py", Path(__file__),
+             Path(v1.__file__), v2.APPROVAL_PATH, v2.SUPPLEMENT_PATH]
     return {"scope": "SYNTHETIC_SOFTWARE_VALIDATION_ONLY", "status": "PASS",
             "runtime": {"implementation": platform.python_implementation(), "python": platform.python_version()},
             "arithmetic_contract": APPROVED_CONTRACT, "cases": cases,

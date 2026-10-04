@@ -1,8 +1,9 @@
-"""Additive M-B v2 under CDR-006/010; synthetic validation only.
+"""Additive M-B v2 under CDR-006/010/012; synthetic validation only.
 
 No v1 globals, records, or arithmetic are replaced. CDR-010 fixes fsum,
 direct block sums, block-grouped replicate means and the run() standard-error
-degeneracy predicate. Numerical configuration and real data access stay closed.
+degeneracy predicate. CDR-012 fixes multiplication squaring and refuses an
+all-degenerate replicate set. Numerical configuration and real access stay closed.
 """
 from copy import deepcopy
 from hashlib import sha1
@@ -22,14 +23,18 @@ POLICY = "TC-C8-GSUP-M-V2-CDR006-CDR010"
 ARITHMETIC_CONTRACT = {
     "reducer": "MATH_FSUM", "replicate_aggregation": "BLOCK_GROUPING",
     "block_sums": "DIRECT", "degeneracy": "SQRT_V_OVER_N_GT_ZERO",
+    "squaring": "MULTIPLICATION", "all_degenerate": "NOT_RUN",
 }
 APPROVAL_PATH = (Path(__file__).resolve().parents[3] / "docs/codex_takeover/"
                 "gsup_v2_handoff_2026_10_03/evidence/authoritative-v2/CDR010_APPROVAL.json")
 APPROVAL_BLOB = "3a9eecbba5a7454c5d81ee6db209aecc4bdf113b"
+SUPPLEMENT_PATH = (Path(__file__).resolve().parents[3] / "docs/codex_takeover/"
+                   "gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/CDR012_APPROVAL.json")
+SUPPLEMENT_BLOB = "e16038e90117ae4873ac56c1234a26e5bf3d9c0f"
 
 
 def authority():
-    """Pinned original M/source approval and separately recorded CDR-010."""
+    """Pinned original M/source, unchanged CDR-010 and additive CDR-012."""
     legacy.authority()
     raw = APPROVAL_PATH.read_bytes()
     if sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest() != APPROVAL_BLOB:
@@ -40,9 +45,17 @@ def authority():
     source = original.read_bytes()
     if sha1(b"blob " + str(len(source)).encode() + b"\0" + source).hexdigest() != expected:
         raise IntegrityFailure("changed M-v2/source-identity approval")
-    if record["method"] != METHOD or record["arithmetic_contract"] != ARITHMETIC_CONTRACT:
+    base_contract = {key: ARITHMETIC_CONTRACT[key] for key in
+                     ("reducer", "replicate_aggregation", "block_sums", "degeneracy")}
+    if record["method"] != METHOD or record["arithmetic_contract"] != base_contract:
         raise IntegrityFailure("v2 approved arithmetic contract mismatch")
-    return record
+    supplemental_raw = SUPPLEMENT_PATH.read_bytes()
+    if sha1(b"blob " + str(len(supplemental_raw)).encode() + b"\0" + supplemental_raw).hexdigest() != SUPPLEMENT_BLOB:
+        raise IntegrityFailure("changed v2 CDR-012 arithmetic supplement")
+    supplement = json.loads(supplemental_raw)
+    if supplement["method"] != METHOD or supplement["arithmetic_contract"] != ARITHMETIC_CONTRACT:
+        raise IntegrityFailure("v2 approved arithmetic supplement mismatch")
+    return {**record, "arithmetic_contract": deepcopy(ARITHMETIC_CONTRACT), "supplement": supplement}
 
 
 def studentized_cbb(delta, *, block_length, replicates, seed):
@@ -60,7 +73,8 @@ def _studentized_cbb(x, *, block_length, replicates, seed):
 
     The last block is excluded from replicate variance even when n is divisible
     by L. Degenerate replicates do not exceed; ties do. All B draws retain the
-    plus-one denominator. No tolerance, rounding, fallback or numeric default.
+    plus-one denominator when at least one replicate is defined. An entirely
+    degenerate set is NOT_RUN. No tolerance, rounding, fallback or numeric default.
     """
     _positive_integer(block_length, "block_length")
     _positive_integer(replicates, "replicates")
@@ -72,7 +86,8 @@ def _studentized_cbb(x, *, block_length, replicates, seed):
         raise MissingStatisticalEvidence("fewer than two M-B variance blocks")
     mean = math.fsum(x) / n
     sums = [math.fsum(x[(start + j) % n] for j in range(length)) for start in range(n)]
-    lrv = math.fsum((b - length * mean) ** 2 for b in sums) / (n * length)
+    deviations = (b - length * mean for b in sums)
+    lrv = math.fsum(d * d for d in deviations) / (n * length)
     if not math.isfinite(lrv):
         raise MissingStatisticalEvidence("nonfinite long-run variance")
     se = math.sqrt(lrv / n)
@@ -88,7 +103,8 @@ def _studentized_cbb(x, *, block_length, replicates, seed):
         full_sums = [math.fsum(values[j * length:(j + 1) * length]) for j in range(blocks)]
         partial = math.fsum(values[blocks * length:])
         ms = (math.fsum(full_sums) + partial) / n
-        variance = math.fsum((b - length * ms) ** 2 for b in full_sums) / (blocks * length)
+        deviations = (b - length * ms for b in full_sums)
+        variance = math.fsum(d * d for d in deviations) / (blocks * length)
         if not math.isfinite(variance):
             raise MissingStatisticalEvidence("nonfinite replicate variance")
         sv = math.sqrt(variance / n)
@@ -105,6 +121,8 @@ def _studentized_cbb(x, *, block_length, replicates, seed):
         traces.append({"replicate_mean": ms, "variance": variance, "se": sv,
                        "block_sums": tuple(full_sums), "partial_sum": partial,
                        "statistic": t, "degenerate": is_degenerate, "tie": tie, "exceeds": exceeds})
+    if degenerate == replicates:
+        raise MissingStatisticalEvidence("all bootstrap replicates degenerate")
     return {"method": METHOD, "arithmetic_contract": deepcopy(ARITHMETIC_CONTRACT),
             "n": n, "mean": mean, "long_run_variance": lrv, "statistic": statistic,
             "variance_blocks": blocks, "exceedances": exceed, "degenerate_replicates": degenerate,

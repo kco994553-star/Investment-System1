@@ -1,7 +1,8 @@
-"""CDR-010 synthetic arithmetic regressions, independent of production code.
+"""CDR-010 history and current CDR-012 synthetic arithmetic regressions.
 
 The immutable hex trace tables were derived from the original run() formula
 and cross-checked against the read-only GIE-008c global probe (fsum/blocks).
+They remain historical; current production uses the independent CDR-012 oracle.
 Only CASES fixture definitions are imported from the historical diagnostic.
 No tolerance, rounding, real data, calibration default, or historical edit.
 The production module is mandatory: a missing module fails collection.
@@ -17,7 +18,8 @@ from pathlib import Path
 import pytest
 
 from investment_system.evl.superiority_v2 import studentized_cbb
-from tests import evl_c8_gsup_v2_oracle as O
+from tests import evl_c8_gsup_v2_oracle as H
+from tests import evl_c8_gsup_v2_cdr012_oracle as O
 from tools.gsup_mb_reduction_diagnostic import CASES
 
 
@@ -28,7 +30,8 @@ UNDERFLOW = {"delta": [0., 0., 4e-162, 4e-162, 4e-162, 4e-160],
 FIXTURES = {case["id"]: {k: v for k, v in case.items() if k != "id"}
             for case in (*CASES, SEED275)}
 CONTRACT = {"reducer": "MATH_FSUM", "replicate_aggregation": "BLOCK_GROUPING",
-            "block_sums": "DIRECT", "degeneracy": "SQRT_V_OVER_N_GT_ZERO"}
+            "block_sums": "DIRECT", "degeneracy": "SQRT_V_OVER_N_GT_ZERO",
+            "squaring": "MULTIPLICATION", "all_degenerate": "NOT_RUN"}
 TRACE_KEYS = ("replicate_mean", "variance", "se", "block_sums", "partial_sum",
               "statistic", "degenerate", "tie", "exceeds")
 PUBLIC_KEYS = ("method", "n", "mean", "long_run_variance", "statistic",
@@ -112,8 +115,8 @@ def test_oracle_is_independent_and_has_no_numeric_defaults():
 
 
 @pytest.mark.parametrize("case_id", tuple(EXPECTED))
-def test_oracle_exact_fingerprints(case_id):
-    output = O.oracle_studentized(**FIXTURES[case_id])
+def test_historical_cdr010_oracle_exact_fingerprints(case_id):
+    output = H.oracle_studentized(**FIXTURES[case_id])
     wire = json.dumps(exact(output), sort_keys=True, separators=(",", ":"))
     assert hashlib.sha256(wire.encode()).hexdigest() == EXACT_FINGERPRINTS[case_id]
 
@@ -131,7 +134,11 @@ def test_approved_results_and_every_trace_field_exact(engine, case_id):
     assert (output["p_value"], output["exceedances"], output["degenerate_replicates"],
             output["ties"], output["variance_blocks"]) == EXPECTED[case_id]
     assert len(output["traces"]) == arguments["replicates"]
-    assert [trace_pin(row) for row in output["traces"]] == GOLDEN_TRACES[case_id].splitlines()
+    # These immutable pins describe the historical CDR-010 squaring choice.
+    # CDR-012 current outputs are compared losslessly to the new independent
+    # oracle above; its separate near-tie pins detect the approved axis change.
+    historical = H.oracle_studentized(**arguments)
+    assert [trace_pin(row) for row in historical["traces"]] == GOLDEN_TRACES[case_id].splitlines()
     assert exact(output["draws"]) == exact([row["statistic"] for row in output["traces"]])
     assert output["p_value"] == (output["exceedances"] + 1) / (arguments["replicates"] + 1)
     for row in output["traces"]:
@@ -221,7 +228,8 @@ def test_positive_variance_standard_error_underflow_is_degenerate(engine):
     assert oracle["se"] > 0 and oracle["long_run_variance"] > 0
     assert exact({key: output[key] for key in PUBLIC_KEYS}) == exact(
         {key: oracle[key] for key in PUBLIC_KEYS})
-    assert [trace_pin(row) for row in output["traces"]] == GOLDEN_TRACES["SE_UNDERFLOW"].splitlines()
+    historical = H.oracle_studentized(**UNDERFLOW)
+    assert [trace_pin(row) for row in historical["traces"]] == GOLDEN_TRACES["SE_UNDERFLOW"].splitlines()
     row = output["traces"][2]
     assert row["variance"].hex() == "0x0.0000000000001p-1022"
     assert row["variance"] > 0 and row["variance"] / len(UNDERFLOW["delta"]) == 0
