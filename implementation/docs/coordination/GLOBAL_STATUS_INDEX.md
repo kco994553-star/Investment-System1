@@ -4,7 +4,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-019 (GIE-012: MAC-X1 root cause reproduced; resolution needs a user D3 decision; no implementation) |
+| Index revision | GSI-020 (CDR-014: hardened FPIA approved for MAC-X1; implementation in progress) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |

@@ -166,3 +166,9 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - An additive Frozen Projection Identity Audit was designed. Both adversarial reviews refuted it as specified (code identity pinned to PASS; bytecode, pytest plugin and config bypasses; unattributed appends to the Track C register; unauthenticated reference heads; hidden ordering assumption). The gate stopped before implementation. Adopting any audit verdict as Track C acceptance is a D3.
 - Five D3 items with recommendations routed to the user (GIE-012 §5). No branch, PR, frozen tool, Frozen record or owner branch was changed; PR #40 is untouched.
 - Canonical `b8e39a2` unchanged. Maturity transitions: none.
+
+## GCH-014 · 2026-10-04 · CDR-014 recorded (hardened FPIA approved for MAC-X1)
+
+- User decision recorded verbatim with a machine-readable FPIA reference manifest (`f362926`): Track C reference `b9e01a9`, v2 reference `c9e0fa7`, verification subject #40 `acaf1b5`. Frozen records stay exact-tree history and are not rewritten; code identity is reported SAME/DIVERGED; branch Frozen validation and canonical integration acceptance stay separate evidence classes.
+- Hardened FPIA implementation and verification started (workflow `wf_d1bfad32-955`): plan with acceptance criteria from every GIE-012 refuting finding, adversarial plan review, implementation on a new PIW branch (new files only), baseline and #40 runs, tamper probes, regression and CI, completeness.
+- Canonical `b8e39a2` unchanged. Maturity transitions: none.
