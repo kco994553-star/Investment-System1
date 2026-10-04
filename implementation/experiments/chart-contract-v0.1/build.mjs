@@ -1,0 +1,16 @@
+import {mkdirSync,copyFileSync,writeFileSync,readFileSync,cpSync} from 'node:fs';
+import {fixture} from './fixture.mjs';
+import {normalizeStoredResponse,renderInput,hash} from './contract.mjs';
+const f=fixture(); const doc=normalizeStoredResponse(f.bytes,f.ctx);const rows=renderInput(doc);
+mkdirSync('dist',{recursive:true});
+copyFileSync('node_modules/lightweight-charts/dist/lightweight-charts.standalone.production.js','dist/lightweight-charts.js');
+copyFileSync('node_modules/lightweight-charts/LICENSE','dist/LICENSE.lightweight-charts');
+copyFileSync('NOTICE.lightweight-charts','dist/NOTICE.lightweight-charts');
+copyFileSync('page.html','dist/index.html');copyFileSync('app.js','dist/app.js');
+copyFileSync('node_modules/@fontsource/noto-sans-kr/400.css','dist/font.css');
+copyFileSync('node_modules/@fontsource/noto-sans-kr/LICENSE','dist/LICENSE.font');
+cpSync('node_modules/@fontsource/noto-sans-kr/files','dist/files',{recursive:true});
+writeFileSync('dist/data.json',JSON.stringify(doc,null,2));
+writeFileSync('dist/data.js',`window.CHART_DEMO=${JSON.stringify({doc,rows})};`);
+writeFileSync('dist/build-evidence.json',JSON.stringify({contract:doc.contract,fixture:true,raw_sha256:hash(f.bytes),data_sha256:hash(Buffer.from(JSON.stringify(doc,null,2))),renderer:'lightweight-charts@5.2.1',renderer_sha256:hash(readFileSync('dist/lightweight-charts.js')),state:'DEMO_ONLY'},null,2));
+console.log('Built 12 synthetic daily records; volume missing=1, zero=1; PIT NOT_VERIFIED; no network data.');

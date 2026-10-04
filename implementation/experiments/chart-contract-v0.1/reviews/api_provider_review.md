@@ -1,0 +1,31 @@
+# API/provider independent review
+
+Recommendation: API-first production ingestion, optional read-only MCP for interactive research. Ranking for this project's chart-data path: (1) API-first now, (2) hybrid when an actual AI workflow warrants it, (3) MCP-first. Long-term hybrid is sensible only if MCP calls the same backend/provider adapters and stored snapshots, not a second source-of-truth pipeline. This is architectural inference, not a provider guarantee.
+
+Prior audit establishes raw-store/hash/PIT infrastructure already exists, while O/H/L are dropped by current parsers. MCP installation cannot repair that gap or create missing indicators/consensus contracts. Direct API gives explicit paging, range, feed, basis and reproducible bytes under application control; MCP may also expose structured data but must meet exactly the same persistence/metadata checks.
+
+## Verified official sources (2026-10-04 retrieval)
+
+1. Alpaca bars: https://docs.alpaca.markets/us/reference/stockbars (web ref turn1view0). Daily through intraday/multimonth timeframes, date bounds, pagination. Adjustment options raw/split/dividend/spin-off/all; split changes price and volume. Feed sip all US exchanges vs iex one exchange. Important: `asof` identifies ticker/entity across renames, NOT a data-vintage query. Without real-time entitlement, default end is at least 15 minutes old. Inference: never treat `asof` as historical no-lookahead certification.
+
+2. Alpaca plans: https://docs.alpaca.markets/us/docs/about-market-data-api (turn1view1). Basic has real-time IEX, historical data since 2016, latest-15-min limitation, 200 historical API calls/min. Algo Trader Plus offers all-US-exchange realtime and higher limits. Market-data endpoints require credentials (historical crypto excepted). Account plan and user's entitlement not inspected. US daily-bar candidate; do not label IEX volume consolidated-market volume.
+
+3. Massive aggregate bars: https://massive.com/docs/rest/stocks/aggregates/custom-bars (turn1view2). Explicit historical OHLC+volume from eligible trades; no bar when no eligible trades. Eastern Time intervals include pre/post market; `adjusted` means split adjustment (default true), not dividend total return. Basic is EOD/2-year access, Starter/Developer delayed 15 minutes, Advanced realtime; histories differ by plan. No user's actual entitlement tested. Appropriate US OHLCV candidate; EOD Basic's 2 years would not satisfy a 2020–2025 replay.
+
+4. Massive/Benzinga consensus: https://www.massive.com/docs/rest/partners/benzinga/consensus-ratings (turn7view1, turn3search0). Separate selected Benzinga expansion plan; two-hour update cadence. Mean target, high/low and unique target/rating contributor counts. Median is absent from documented response. `date` filters the publication-date range being aggregated; default aggregates all ratings. Inference: this is not proof of a vintage-consensus snapshot at historical decision time; historical distribution/revision storage still needed. Endpoint docs take precedence over generic blog calling all endpoints real-time.
+
+5. Massive/Benzinga individual ratings: https://www.massive.com/docs/rest/partners/benzinga/analyst-ratings (turn5view2, turn7view2). Rating date, last_updated, firm/analyst identity, raw and corporate-action-adjusted targets, previous target, directional action available. Expansion access; realtime update claim. `last_updated` is latest record update, not proof of first availability/version history. Revision-preserving ingestion needed. Optional fields must remain null; calculating a missing median requires an explicitly approved aggregation population/method.
+
+6. Official Twelve Data MCP: https://github.com/twelvedata/mcp (turn5view1). Connects assistants to Twelve Data financial API; account required. Hosted server ties access to personal account via OAuth; self-host alternative uses API key. Thus MCP does not imply extra dataset entitlement or remove provider dependency. README says to ensure the plan includes requested data. Official analysis endpoint announcement: https://twelvedata.com/news/twelve-data-unveils-analysis-data-with-estimations-and-recommendations (turn7view0); current main API docs exceeded retrieval size, so exact current target schema/plan/basis was not sufficiently verified and should not be represented as confirmed.
+
+## Selection and rollout
+
+For daily US chart MVP, evaluate Alpaca bars vs Massive EOD using the exact required history horizon and feed coverage. Do not choose a paid plan yet. Document minimum data acceptance: nonempty O/H/L/C/V, symbol/listing identity, source/feed, currency, session timezone, explicit adjustment basis, event timestamps, fetch timestamp, actual availability evidence or marked uncertainty, full pagination, null/gap behavior, raw response hash. Keep raw/unadjusted history and corporate actions separate so a later split does not silently change a historical decision input. Adjusted chart display and strict PIT backtest are distinct outputs.
+
+Consensus is a separate procurement/schema task: provider consensus definition, contributor population, date window, median availability, currency, target basis and revisions require explicit mapping. Massive/Benzinga is documented enough to evaluate but requires entitlement; its consensus response alone does not meet every requested field. No paid account, login or API request performed.
+
+For foreign listings (Tokyo Electron, Hanmi etc.), the cited US endpoints cannot be assumed to cover native exchange listings. Twelve Data multi-market coverage may merit a later exact-symbol/venue/entitlement check; ADR substitution is a user/model decision, not an implicit implementation detail.
+
+## Historical integrity decision
+
+Neither REST nor MCP establishes PIT correctness on its own. Both require immutable raw capture, event/published/available/fetched timestamp separation, source revision tracking, adjustment version, and deterministic normalization. Historical bar timestamps or rating issue dates cannot be silently copied into available_at. Existing research/official publication boundaries stay unchanged. MCP-produced technical indicator values cannot replace frozen engine methodology merely because the provider exposes them.
