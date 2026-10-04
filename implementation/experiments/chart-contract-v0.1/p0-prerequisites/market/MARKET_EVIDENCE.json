@@ -1,0 +1,290 @@
+{
+  "kind": "MARKET_P0_PREREQUISITE_READ_ONLY_EVIDENCE",
+  "observed_at": "2026-10-04T11:41:38.351114+00:00",
+  "git_pins": {
+    "pr41": "97685ddcfb510fe16c2260eae5aed94be230c669",
+    "trial": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66"
+  },
+  "new_probes": [
+    {
+      "symbol": "NVDA",
+      "raw_sha256": "357347e0031ba982cb145478a076eec0b0a1febd2dc59eb9b624d5281db2183a",
+      "hash_matches_record": true,
+      "byte_count_matches_record": true,
+      "row_count": 1255,
+      "complete_ohlcv_rows": 1255,
+      "incomplete_rows": [],
+      "array_lengths_match": true,
+      "strictly_ordered": true,
+      "timestamp_unique": true,
+      "ohlc_envelope_violations": [],
+      "finite_or_nonnegative_volume_violations": [],
+      "zero_volume_rows": 0,
+      "adjclose_array_length": 1255,
+      "events_request_includes_actions": false,
+      "events_in_response": [],
+      "quote_state_fields_present": {
+        "marketState": false,
+        "exchangeDataDelayedBy": false,
+        "quoteType": false,
+        "regularMarketTime": true,
+        "currentTradingPeriod": true
+      },
+      "provider_current_regular_end_utc": "2026-10-02T20:00:00+00:00",
+      "regular_market_time_utc": "2026-10-02T20:00:01+00:00",
+      "historical_available_at": null,
+      "readiness": "CURRENT_SOURCE_SHAPE_VERIFIED_NOT_PRODUCTION_READY"
+    },
+    {
+      "symbol": "MSFT",
+      "raw_sha256": "b2c375cc515006e968e26c17aab6afb3e85029af5988c99d5915dfe9f80f5e98",
+      "hash_matches_record": true,
+      "byte_count_matches_record": true,
+      "row_count": 1255,
+      "complete_ohlcv_rows": 1255,
+      "incomplete_rows": [],
+      "array_lengths_match": true,
+      "strictly_ordered": true,
+      "timestamp_unique": true,
+      "ohlc_envelope_violations": [],
+      "finite_or_nonnegative_volume_violations": [],
+      "zero_volume_rows": 0,
+      "adjclose_array_length": 1255,
+      "events_request_includes_actions": false,
+      "events_in_response": [],
+      "quote_state_fields_present": {
+        "marketState": false,
+        "exchangeDataDelayedBy": false,
+        "quoteType": false,
+        "regularMarketTime": true,
+        "currentTradingPeriod": true
+      },
+      "provider_current_regular_end_utc": "2026-10-02T20:00:00+00:00",
+      "regular_market_time_utc": "2026-10-02T20:00:01+00:00",
+      "historical_available_at": null,
+      "readiness": "CURRENT_SOURCE_SHAPE_VERIFIED_NOT_PRODUCTION_READY"
+    },
+    {
+      "symbol": "8035.T",
+      "raw_sha256": "4b73393390ac0f41865f6ceab82e682d4b3a69fcf9d42b8264b3ca908c7eb758",
+      "hash_matches_record": true,
+      "byte_count_matches_record": true,
+      "row_count": 1222,
+      "complete_ohlcv_rows": 1222,
+      "incomplete_rows": [],
+      "array_lengths_match": true,
+      "strictly_ordered": true,
+      "timestamp_unique": true,
+      "ohlc_envelope_violations": [
+        149
+      ],
+      "finite_or_nonnegative_volume_violations": [],
+      "zero_volume_rows": 0,
+      "adjclose_array_length": 1222,
+      "events_request_includes_actions": false,
+      "events_in_response": [],
+      "quote_state_fields_present": {
+        "marketState": false,
+        "exchangeDataDelayedBy": false,
+        "quoteType": false,
+        "regularMarketTime": true,
+        "currentTradingPeriod": true
+      },
+      "provider_current_regular_end_utc": "2026-10-02T06:30:00+00:00",
+      "regular_market_time_utc": "2026-10-02T06:30:00+00:00",
+      "historical_available_at": null,
+      "readiness": "CURRENT_SOURCE_SHAPE_VERIFIED_NOT_PRODUCTION_READY"
+    },
+    {
+      "symbol": "042700.KS",
+      "raw_sha256": "0fd4f74e03fa3908dda2ae4b7970537fef9e1d855003bd7179c6a3f180390552",
+      "hash_matches_record": true,
+      "byte_count_matches_record": true,
+      "row_count": 1221,
+      "complete_ohlcv_rows": 1220,
+      "incomplete_rows": [
+        {
+          "row_index": 970,
+          "bar_timestamp_utc": "2025-09-19T00:00:00+00:00",
+          "values": {
+            "open": null,
+            "high": null,
+            "low": null,
+            "close": null,
+            "volume": null
+          }
+        }
+      ],
+      "array_lengths_match": true,
+      "strictly_ordered": true,
+      "timestamp_unique": true,
+      "ohlc_envelope_violations": [
+        560,
+        740,
+        859
+      ],
+      "finite_or_nonnegative_volume_violations": [],
+      "zero_volume_rows": 13,
+      "adjclose_array_length": 1221,
+      "events_request_includes_actions": false,
+      "events_in_response": [],
+      "quote_state_fields_present": {
+        "marketState": false,
+        "exchangeDataDelayedBy": false,
+        "quoteType": false,
+        "regularMarketTime": true,
+        "currentTradingPeriod": true
+      },
+      "provider_current_regular_end_utc": "2026-10-02T06:00:00+00:00",
+      "regular_market_time_utc": "2026-10-02T06:30:19+00:00",
+      "historical_available_at": null,
+      "readiness": "CURRENT_SOURCE_SHAPE_VERIFIED_NOT_PRODUCTION_READY"
+    }
+  ],
+  "total_probe_rows": 4953,
+  "complete_probe_rows": 4952,
+  "historical_store": {
+    "tracked_manifests": 6808,
+    "non_placeholder_blob_files": 0,
+    "non_placeholder_history_files": 0,
+    "yahoo_chart_id_source_kinds": {
+      "YAHOO_CHART": 1346,
+      "TIINGO_DAILY_RAW": 58
+    }
+  },
+  "bundled_repair_evidence": [
+    {
+      "path": "implementation/reports/gate_evidence/ca_unit_sources/PARA_price_source.json",
+      "role": "REPAIR_EVIDENCE",
+      "source_original": true,
+      "provider_symbol": "PSKY",
+      "sha256": "d3627be917c0a5f4f51de223e1fe7e41b99622d88c4937f27225c4a56aeb1e21",
+      "bytes": 140070,
+      "rows": 1255,
+      "first_timestamp_utc": "2021-09-27T13:30:00+00:00",
+      "last_timestamp_utc": "2026-09-25T13:30:00+00:00",
+      "full_OHLCV_rows": 1255,
+      "production_identity_binding": "NOT_CERTIFIED_BY_CHART_AUDIT"
+    },
+    {
+      "path": "implementation/reports/gate_evidence/ca_unit_sources/PARA_historical_chart.json",
+      "role": "REPAIR_EVIDENCE",
+      "source_original": false,
+      "provider_symbol": "PARA",
+      "sha256": "783acf76637c00809699c7afb4bb6649f61fa0686dc69fba890482fb79471dbd",
+      "bytes": 115778,
+      "rows": 969,
+      "first_timestamp_utc": "2021-09-27T13:30:00+00:00",
+      "last_timestamp_utc": "2025-08-06T13:30:00+00:00",
+      "full_OHLCV_rows": 969,
+      "production_identity_binding": "NOT_CERTIFIED_BY_CHART_AUDIT"
+    }
+  ],
+  "source_refs": [
+    {
+      "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+      "git_blob": "2670eee1b5d9f093875ab41100e09d866d7d5e91",
+      "sha256": "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534",
+      "bytes": 3874
+    },
+    {
+      "path": "implementation/src/investment_system/contracts/global_universe.py",
+      "git_blob": "4dcbb8d7cb65aa35e91d680ea19b169346defee8",
+      "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+      "bytes": 6228
+    },
+    {
+      "path": "implementation/src/investment_system/sessions/binder.py",
+      "git_blob": "771baf79a43caa3804e0478a87c417ac6fdc25c9",
+      "sha256": "a030a19fbbe812b66a7527b22aa502547d424f14b7ca817b3016046a37880e5a",
+      "bytes": 7749
+    },
+    {
+      "path": "implementation/src/investment_system/sessions/calendar.py",
+      "git_blob": "3c31c8ef1d920f51cb8579f66f00f2d78ee16fc6",
+      "sha256": "01fd84ef6e64db1bc8b588127953efb15395abef375b5529b56b4ef7e0f3b19b",
+      "bytes": 10802
+    },
+    {
+      "path": "implementation/src/investment_system/sessions/listing.py",
+      "git_blob": "0bc31f63f79f565234b5976233a7063016d7f287",
+      "sha256": "6e4ba184c3c707de378f91a9243b7a377cac59d892893d4377588664895112c4",
+      "bytes": 1134
+    },
+    {
+      "path": "implementation/src/investment_system/technical/pit_market.py",
+      "git_blob": "85dd0c8ad3b5263e1067e09e775a495d99ae9f9a",
+      "sha256": "9c2a56deec51d6b4cd97d9d9ef5afc9236a3bb32018918b6b7e575fb0119f32e",
+      "bytes": 7218
+    },
+    {
+      "path": "implementation/src/investment_system/ingestion/raw_store.py",
+      "git_blob": "dfd6597a23fc05214234a2c7545316b4d942645c",
+      "sha256": "c4cfdbc314f8d670aee7d0a94f261177967ad3fcdfb36f224111af2f716ebb0e",
+      "bytes": 3395
+    },
+    {
+      "path": "implementation/src/investment_system/ingestion/replay.py",
+      "git_blob": "e12a6e7672a7aab0009cbb8e5c491f73e9fe33a0",
+      "sha256": "cc48fd32461f170acd6b0bf339752a35076ddbcf5c0ad535afc15c656d606b3c",
+      "bytes": 4507
+    },
+    {
+      "path": "implementation/tools/fetch_real_data.py",
+      "git_blob": "b5dbcedd43026bc99b108302d45aa9678606b5c5",
+      "sha256": "840005fa3fff7f3dfb30de08de1ae6d404547fccf577e1ea5f2ac7db50444889",
+      "bytes": 12438
+    },
+    {
+      "path": "implementation/tools/fetch_tiingo_prices.py",
+      "git_blob": "87d6f6c06c195e4d57b7a11df8e593f3ae4441b1",
+      "sha256": "284852bfdef5d796d365425216e7b48f00d4a54bf0436d2733ba8036afab6c1b",
+      "bytes": 14055
+    },
+    {
+      "path": "implementation/tools/audit_mcap_store.py",
+      "git_blob": "1983d614ae4a091cf4c732c2d5f6eb9be4936b8b",
+      "sha256": "c44d803792e584aa94b3eb3d1e7e3cfccea73404ad637832cb7bc202cd124007",
+      "bytes": 35768
+    },
+    {
+      "path": "implementation/docs/us_equity_session/STATUS.md",
+      "git_blob": "b1873a2f20d82325e08d2126b2229861ce77276c",
+      "sha256": "80256f3e73db01109a52a655079a40c30152126f70f17ed992fd079b109d6031",
+      "bytes": 5586
+    },
+    {
+      "path": "implementation/docs/us_equity_session/CONTRACT.md",
+      "git_blob": "2963603ff53fa98309123dfa6eb6904a0ad98ef0",
+      "sha256": "5db9bf7cdedb6d79a5dffeb12d72a1b5ff481dafdc30bd36310e5e4820942162",
+      "bytes": 3761
+    },
+    {
+      "path": "implementation/reports/us_sec_tickers_listings.json",
+      "git_blob": "747a1219e50c639fc5929afe643c6d83c92d30d4",
+      "sha256": "f532cc80edf5305f787e1091cc24244423acd9084375f01727bbd4508d351316",
+      "bytes": 504522
+    },
+    {
+      "path": "implementation/reports/gate_evidence/ca_unit_price_identity_repair.json",
+      "git_blob": "5056c35a231915db7657d7fb03082921f8561082",
+      "sha256": "3d1fec9967524c76f3f168ba9ab403dcf5ccbb6c96385e7ba583bad6dd0ed092",
+      "bytes": 2606
+    },
+    {
+      "path": "implementation/reports/gate_evidence/ca_unit_policy_v1.json",
+      "git_blob": "000660afd7d01de5ede5e56769822fec44ba323d",
+      "sha256": "839d856de07c2614ef396227b33a4b8c22cfc09fd47af35b442ee2d4eb4f7573",
+      "bytes": 41566
+    },
+    {
+      "path": "implementation/reports/gate_evidence/track_a_data_vintage_comparison_2026-09-27.json",
+      "git_blob": "905636386c2dcdbff0ca5f62f30f045755ac8afc",
+      "sha256": "5e9718de7cc7b93ef2eb2ec55ffc2e148ef155a523cbafb66569ca8e969d08d5",
+      "bytes": 408222
+    }
+  ],
+  "production_validation": "NOT_RUN",
+  "canonical_write": false,
+  "publication_grant": null
+}

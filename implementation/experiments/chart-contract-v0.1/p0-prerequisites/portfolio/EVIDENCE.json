@@ -1,0 +1,257 @@
+{
+  "audit_type": "READ_ONLY_P0_PORTFOLIO_IMPLEMENTATION_PREREQUISITES",
+  "observed_at": "2026-10-04T11:42:34.602808+00:00",
+  "observed_at_kst": "2026-10-04T20:42:34.602808+09:00",
+  "pins": {
+    "pr41_design": "97685ddcfb510fe16c2260eae5aed94be230c669",
+    "integrated_trial": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+    "canonical_design_baseline": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "sources": [
+    {
+      "path": "implementation/src/investment_system/personal/portfolio.py",
+      "git_blob": "9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e",
+      "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+      "bytes": 5986
+    },
+    {
+      "path": "implementation/src/investment_system/personal/ports.py",
+      "git_blob": "495e472fd87ea75ffc4a71e4169aec249cb25a99",
+      "sha256": "a4fa05cc660db1779eb44babbbb8568f0c97723dc1b74a722f977f338be670fb",
+      "bytes": 4257
+    },
+    {
+      "path": "implementation/src/investment_system/personal/money.py",
+      "git_blob": "119b29dfec8ff50471bfbddca2591ff44fc7d291",
+      "sha256": "894e7cab7e3ca87dcad14ee644ef34448850698fb93dda600cd3aa75e0a37418",
+      "bytes": 2178
+    },
+    {
+      "path": "implementation/src/investment_system/personal/timecontract.py",
+      "git_blob": "0310a7e16bd86308ebcf90888032572269daf14b",
+      "sha256": "dee41dce8153740e75faa1810f9ffa5c150d13f3f4cf3d6f5f452348a7219d73",
+      "bytes": 1893
+    },
+    {
+      "path": "implementation/src/investment_system/personal/quality.py",
+      "git_blob": "0ee6796efb0ab97e781852509953f3e30e3f16d2",
+      "sha256": "b6cefc19927bb3da00060920174de0f2d21dd7616299d9ebd81ad65870a349b7",
+      "bytes": 988
+    },
+    {
+      "path": "implementation/src/investment_system/personal/versioning.py",
+      "git_blob": "685e2d6024a6a0bac2183458a01832e2df63a6ab",
+      "sha256": "af84bfd95e198c3e1c29381ca9d688728da8a7a128dec4994da49d5186416def",
+      "bytes": 1944
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/portfolio.py",
+      "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+      "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+      "bytes": 7686
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/identifiers.py",
+      "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+      "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+      "bytes": 3163
+    },
+    {
+      "path": "implementation/src/investment_system/contracts/portfolio_input.py",
+      "git_blob": "e8363f1c1da7f5f5c94c09fd84ed61e558fb561f",
+      "sha256": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+      "bytes": 1215
+    },
+    {
+      "path": "implementation/src/investment_system/contracts/models.py",
+      "git_blob": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+      "sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+      "bytes": 7067
+    },
+    {
+      "path": "implementation/src/investment_system/producers/adapters.py",
+      "git_blob": "55d690a6b5d96d5aa800d0b2c93714adaa78341c",
+      "sha256": "2be3d220c9b84c3bc4d51be48c17cce7b4f62c3c18e73bcc2f49d903a54b6549",
+      "bytes": 4912
+    },
+    {
+      "path": "implementation/src/investment_system/product/web_assets/app.js",
+      "git_blob": "c00ec69fe9222aa5a1516d3f0cec6cd56ea62b25",
+      "sha256": "9774bee4b51b34ed68ce0467b01dc13028306c8f46589bd3e3283b2778a209f2",
+      "bytes": 38098
+    },
+    {
+      "path": "implementation/src/investment_system/product/web_mvp.py",
+      "git_blob": "10ad8c7624a0a31e602be699144cbcb534c96e53",
+      "sha256": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323",
+      "bytes": 7517
+    },
+    {
+      "path": "implementation/src/investment_system/product/entity_metadata.py",
+      "git_blob": "42202d4caeaffddb6325b5c48f4c59a42ae56576",
+      "sha256": "7837e316edb7330c60225c95cb3649c4d10bde2ce9bb8ac02ea9c977dd10f012",
+      "bytes": 16998
+    },
+    {
+      "path": "implementation/src/investment_system/providers/sec_submissions.py",
+      "git_blob": "039d9be5dfcba7ccc6f50e2dc21d3ab43fc52acf",
+      "sha256": "600c4d86c1db4da97887fdd0e9c7f7d39f47749920c573bcd3eaeb7cf1d71d0f",
+      "bytes": 2472
+    },
+    {
+      "path": "implementation/tools/fetch_ishares_reference.py",
+      "git_blob": "36d7fe7e0787f1cb681dc3de588b0fc9925a40ce",
+      "sha256": "68d8c0d8ced7832c0b2a39dec56ed5e21751ef1901bf236b1b40b9eaf69db0cf",
+      "bytes": 9484
+    },
+    {
+      "path": "implementation/tools/reconstruct_sp500_from_wikipedia.py",
+      "git_blob": "5abb5757fb1baa499fe07f579d9a0f48f94df11c",
+      "sha256": "d22dc13febe8dd8a09a725896f5d0cdf09ce3123e31eb85562ddcba1e09eb29a",
+      "bytes": 4985
+    },
+    {
+      "path": "implementation/tools/fetch_krx_data.py",
+      "git_blob": "92469ae0ab1faa8f2c7afcd7a9e4f6cec9a836b8",
+      "sha256": "2d824d3d75176ca3f2a139135fe48d86aa31f8694dd8982cebb456d538ce1fb2",
+      "bytes": 4127
+    },
+    {
+      "path": "implementation/tests/test_pil_p0_contracts.py",
+      "git_blob": "d4ce9d26547c23b1f12b5fbf8664b188f7c33f4f",
+      "sha256": "c6e38d1024f3ec9f9c92f15bf215b2c852b6bdef83bfe0b5efa1faca36db9d86",
+      "bytes": 12617
+    },
+    {
+      "path": "implementation/docs/web_mvp/CONTRACT.md",
+      "git_blob": "230ecfae28da4f268db08c77a4f0480e21860b4e",
+      "sha256": "f49f4e0b95bf3e6c76e6af3f73344fac60b3d8fa9ac21f7c8fd8e1d13e09d8b2",
+      "bytes": 5905
+    },
+    {
+      "path": "Investment-System1 · CURRENT_HANDOFF.md",
+      "git_blob": "54f0469eafefd4685ea858efc476ab86a0d2e99b",
+      "sha256": "ab25934b3e7c938492dff26b6e290905acc627c64bcb9b54a27137b058324187",
+      "bytes": 37145
+    },
+    {
+      "path": "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+      "git_blob": "d8a32977f325bdaf15ead22fa3d3961942da35dc",
+      "sha256": "3e49be6bd61add53c1b278ef07ee2ccfe693a205b8d2c457cc611c276f194455",
+      "bytes": 70885
+    },
+    {
+      "path": "QGV Portfolio · Specification v1.1.md",
+      "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+      "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e",
+      "bytes": 9158
+    },
+    {
+      "path": "implementation/data/raw/manifests/ishares_holdings__IWB__20241231.json",
+      "git_blob": "c92cea4442e7bd6a19e6645f86b124d4cf65a42e",
+      "sha256": "f111892fdc5f94292b679a7b925231ce3879b85a0e05f18b97f95829d5ff5d80",
+      "bytes": 544
+    }
+  ],
+  "actual_constructor_inventory": [
+    {
+      "path": "implementation/tests/test_pil_p0_contracts.py",
+      "line": 155,
+      "kind": "TEST_FIXTURE"
+    },
+    {
+      "path": "implementation/tests/test_pil_p0_contracts.py",
+      "line": 181,
+      "kind": "TEST_FIXTURE"
+    }
+  ],
+  "absence_scope": {
+    "git_tree": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+    "searches": [
+      "all tracked .py for ActualPortfolioSnapshot calls",
+      "rg BrokerAdapter / PositionSource across src, tests, documents",
+      "tracked filename inventory portfolio/holdings/broker/account/personal/fx",
+      "classification/taxonomy/SIC/GICS across source/tools/docs"
+    ],
+    "limitations": "Repository check only. No external user account or broker storage accessed."
+  },
+  "readiness": {
+    "actual_source": "NOT_AVAILABLE",
+    "actual_contract": "EXISTS_FROZEN_P0_ONLY",
+    "account_aggregation": "EXISTS_DOMAIN_REUSE",
+    "fx_pit_contract": "EXISTS_NO_ACTUAL_SOURCE_BINDING",
+    "standard_industry_assignments": "NOT_AVAILABLE",
+    "type_assignments": "NOT_AVAILABLE",
+    "quarterly_actual_history": "NOT_AVAILABLE",
+    "target_reference": "EXISTS_REFERENCE_ONLY"
+  },
+  "important_gaps": [
+    "ConvertedMoney original+FX lineage is dropped when only converted Money is retained in Position/cash",
+    "Actual cash has no account/source/timing identity",
+    "complete/sync_quality lacks linked received/missing account receipt",
+    "positions and target snapshots lack available_at/input artifact refs",
+    "Decimal context/ordering not explicit source refs",
+    "qgv Holding.actual_weight originates model/target, not actual account",
+    "Web actual_weight ?? target_weight remains incompatible fallback",
+    "producer portfolio_section only accepts model PortfolioSnapshot",
+    "native country taxonomies need declared namespace or sourced crosswalk"
+  ],
+  "external_primary_sources": [
+    {
+      "url": "https://www.sec.gov/search-filings/standard-industrial-classification-sic-code-list",
+      "ref_id": "turn4view0",
+      "role": "OFFICIAL_SIC_CATALOG_AND_DISSEMINATED_FILING_USE",
+      "status": "DOCUMENTATION_READ_ASSIGNMENT_FEED_NOT_CAPTURED"
+    },
+    {
+      "url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+      "ref_id": "turn3view0",
+      "role": "OFFICIAL_PUBLIC_SUBMISSIONS_ACCESS",
+      "status": "DOCUMENTATION_READ_NO_API_KEY_REQUIRED"
+    },
+    {
+      "url": "https://www.jpx.co.jp/english/sicc/sectors/01.html",
+      "ref_id": "turn3view2",
+      "role": "OFFICIAL_SECTOR_GUIDELINES",
+      "status": "DOCUMENTATION_READ_NO_ASSIGNMENT_ACTIVATED"
+    },
+    {
+      "url": "https://www.jpx.co.jp/english/sicc/sectors/",
+      "ref_id": "turn4view2",
+      "role": "OFFICIAL_SECTOR_CHANGE_HISTORY_ROUTE",
+      "status": "DOCUMENTATION_READ_HISTORY_NOT_MATERIALIZED"
+    },
+    {
+      "url": "https://kind.krx.co.kr/corpgeneral/corpList.do?method=loadInitPage",
+      "ref_id": "turn4view1",
+      "role": "OFFICIAL_CURRENT_COMPANY_INDUSTRY_COLUMN",
+      "status": "DOCUMENTATION_READ_HISTORY_VERSION_NOT_CONFIRMED"
+    },
+    {
+      "url": "https://www.msci.com/indexes/index-resources/gics",
+      "ref_id": "turn3view1",
+      "role": "OFFICIAL_GICS_DESCRIPTION",
+      "status": "DOCUMENTATION_READ_ASSIGNMENT_ACCESS_NOT_VERIFIED"
+    },
+    {
+      "url": "https://www.msci.com/indexes/documents/methodology/1_MSCI_Global_Industry_Classification_Standard_GICS_Methodology_20250220.pdf",
+      "ref_id": "turn4view3",
+      "role": "OFFICIAL_20250220_GICS_METHODOLOGY_DOCUMENT",
+      "status": "DOCUMENTATION_READ_NOT_CLAIMED_LATEST_ASSIGNMENT_FEED"
+    }
+  ],
+  "proposals": [
+    "P-V02-01 actual input evidence binding",
+    "P-V02-02 account completeness receipt",
+    "P-V02-03 numeric result reference",
+    "P-V02-04 distinct unavailability capability reasons",
+    "P-V02-05 native classification namespace and join authority",
+    "P-V02-06 quarterly evidence manifest"
+  ],
+  "prohibited_actions_performed": [],
+  "verification": "SOURCE_INSPECTION_AND_PUBLIC_DOCUMENTATION_ONLY_NO_NEW_RUNTIME_TEST_PASS",
+  "report": {
+    "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/portfolio/PORTFOLIO_SOURCE_READINESS.md",
+    "sha256": "f622b4d4b0231a481595fa847dab9e00365833d80c4788516cf18fe0a0e2d66a"
+  }
+}

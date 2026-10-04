@@ -1,0 +1,414 @@
+{
+  "kind": "MARKET_SOURCE_FEASIBILITY_PROBE",
+  "acquisition_is_historical_availability": false,
+  "rows": [
+    {
+      "symbol": "NVDA",
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/NVDA?interval=1d&range=5y",
+      "started_at": "2026-10-04T11:38:55.545834+00:00",
+      "method": "existing tools/fetch_real_data.py _get single request; no retries; no credentials",
+      "historical_available_at": null,
+      "publication_grant": null,
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 141128,
+      "sha256": "357347e0031ba982cb145478a076eec0b0a1febd2dc59eb9b624d5281db2183a",
+      "chart_error": null,
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_NVDA_5y_original.json",
+      "meta": {
+        "currency": "USD",
+        "symbol": "NVDA",
+        "exchangeName": "NMS",
+        "fullExchangeName": "NasdaqGS",
+        "instrumentType": "EQUITY",
+        "firstTradeDate": 917015400,
+        "regularMarketTime": 1790971201,
+        "hasPrePostMarketData": true,
+        "gmtoffset": -14400,
+        "timezone": "EDT",
+        "exchangeTimezoneName": "America/New_York",
+        "regularMarketPrice": 233.95,
+        "regularMarketChangePercent": 1.338,
+        "fulldayPrice": 234.222,
+        "fulldayChange": 3.09,
+        "fulldayChangePercent": 1.338,
+        "fiftyTwoWeekHigh": 237.88,
+        "fiftyTwoWeekLow": 164.27,
+        "regularMarketDayHigh": 237.87,
+        "regularMarketDayLow": 233.6,
+        "regularMarketVolume": 134470648,
+        "longName": "NVIDIA Corporation",
+        "shortName": "NVIDIA Corporation",
+        "chartPreviousClose": 20.742,
+        "priceHint": 2,
+        "currentTradingPeriod": {
+          "pre": {
+            "timezone": "EDT",
+            "end": 1790947800,
+            "start": 1790928000,
+            "gmtoffset": -14400
+          },
+          "regular": {
+            "timezone": "EDT",
+            "end": 1790971200,
+            "start": 1790947800,
+            "gmtoffset": -14400
+          },
+          "post": {
+            "timezone": "EDT",
+            "end": 1790985600,
+            "start": 1790971200,
+            "gmtoffset": -14400
+          }
+        },
+        "dataGranularity": "1d",
+        "range": "5y",
+        "validRanges": [
+          "1d",
+          "5d",
+          "1mo",
+          "3mo",
+          "6mo",
+          "1y",
+          "2y",
+          "5y",
+          "10y",
+          "ytd",
+          "max"
+        ]
+      },
+      "point_count": 1255,
+      "first_utc": "2021-10-04T13:30:00+00:00",
+      "last_utc": "2026-10-02T13:30:00+00:00",
+      "fields": {
+        "open": {
+          "array_length": 1255,
+          "non_null": 1255
+        },
+        "high": {
+          "array_length": 1255,
+          "non_null": 1255
+        },
+        "low": {
+          "array_length": 1255,
+          "non_null": 1255
+        },
+        "close": {
+          "array_length": 1255,
+          "non_null": 1255
+        },
+        "volume": {
+          "array_length": 1255,
+          "non_null": 1255
+        }
+      },
+      "completed_at": "2026-10-04T11:39:03.371933+00:00"
+    },
+    {
+      "symbol": "MSFT",
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/MSFT?interval=1d&range=5y",
+      "started_at": "2026-10-04T11:39:03.371944+00:00",
+      "method": "existing tools/fetch_real_data.py _get single request; no retries; no credentials",
+      "historical_available_at": null,
+      "publication_grant": null,
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 136251,
+      "sha256": "b2c375cc515006e968e26c17aab6afb3e85029af5988c99d5915dfe9f80f5e98",
+      "chart_error": null,
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_MSFT_5y_original.json",
+      "meta": {
+        "currency": "USD",
+        "symbol": "MSFT",
+        "exchangeName": "NMS",
+        "fullExchangeName": "NasdaqGS",
+        "instrumentType": "EQUITY",
+        "firstTradeDate": 511108200,
+        "regularMarketTime": 1790971201,
+        "hasPrePostMarketData": true,
+        "gmtoffset": -14400,
+        "timezone": "EDT",
+        "exchangeTimezoneName": "America/New_York",
+        "regularMarketPrice": 517.53,
+        "regularMarketChangePercent": 0.922,
+        "fulldayPrice": 517.2,
+        "fulldayChange": 4.73,
+        "fulldayChangePercent": 0.922,
+        "fiftyTwoWeekHigh": 553.72,
+        "fiftyTwoWeekLow": 349.2,
+        "regularMarketDayHigh": 522.5,
+        "regularMarketDayLow": 513.66,
+        "regularMarketVolume": 17179496,
+        "longName": "Microsoft Corporation",
+        "shortName": "Microsoft Corporation",
+        "chartPreviousClose": 289.1,
+        "priceHint": 2,
+        "currentTradingPeriod": {
+          "pre": {
+            "timezone": "EDT",
+            "start": 1790928000,
+            "end": 1790947800,
+            "gmtoffset": -14400
+          },
+          "regular": {
+            "timezone": "EDT",
+            "start": 1790947800,
+            "end": 1790971200,
+            "gmtoffset": -14400
+          },
+          "post": {
+            "timezone": "EDT",
+            "start": 1790971200,
+            "end": 1790985600,
+            "gmtoffset": -14400
+          }
+        },
+        "dataGranularity": "1d",
+        "range": "5y",
+        "validRanges": [
+          "1d",
+          "5d",
+          "1mo",
+          "3mo",
+          "6mo",
+          "1y",
+          "2y",
+          "5y",
+          "10y",
+          "ytd",
+          "max"
+        ]
+      },
+      "point_count": 1255,
+      "first_utc": "2021-10-04T13:30:00+00:00",
+      "last_utc": "2026-10-02T13:30:00+00:00",
+      "fields": {
+        "open": {
+          "array_length": 1255,
+          "non_null": 1255
+        },
+        "high": {
+          "array_length": 1255,
+          "non_null": 1255
+        },
+        "low": {
+          "array_length": 1255,
+          "non_null": 1255
+        },
+        "close": {
+          "array_length": 1255,
+          "non_null": 1255
+        },
+        "volume": {
+          "array_length": 1255,
+          "non_null": 1255
+        }
+      },
+      "completed_at": "2026-10-04T11:39:09.222389+00:00"
+    },
+    {
+      "symbol": "8035.T",
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/8035.T?interval=1d&range=5y",
+      "started_at": "2026-10-04T11:39:09.222399+00:00",
+      "method": "existing tools/fetch_real_data.py _get single request; no retries; no credentials",
+      "historical_available_at": null,
+      "publication_grant": null,
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 90729,
+      "sha256": "4b73393390ac0f41865f6ceab82e682d4b3a69fcf9d42b8264b3ca908c7eb758",
+      "chart_error": null,
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_8035_T_5y_original.json",
+      "meta": {
+        "currency": "JPY",
+        "symbol": "8035.T",
+        "exchangeName": "JPX",
+        "fullExchangeName": "Tokyo",
+        "instrumentType": "EQUITY",
+        "firstTradeDate": 946944000,
+        "regularMarketTime": 1790922600,
+        "hasPrePostMarketData": false,
+        "gmtoffset": 32400,
+        "timezone": "JST",
+        "exchangeTimezoneName": "Asia/Tokyo",
+        "regularMarketPrice": 12100.0,
+        "regularMarketChangePercent": -3.816,
+        "fulldayPrice": 12100.0,
+        "fulldayChange": -480.0,
+        "fulldayChangePercent": -3.816,
+        "fiftyTwoWeekHigh": 16252.0,
+        "fiftyTwoWeekLow": 5586.0,
+        "regularMarketDayHigh": 12435.0,
+        "regularMarketDayLow": 11995.0,
+        "regularMarketVolume": 19102700,
+        "longName": "Tokyo Electron Limited",
+        "shortName": "TOKYO ELECTRON",
+        "chartPreviousClose": 3260.0,
+        "priceHint": 2,
+        "currentTradingPeriod": {
+          "pre": {
+            "timezone": "JST",
+            "end": 1790899200,
+            "start": 1790899200,
+            "gmtoffset": 32400
+          },
+          "regular": {
+            "timezone": "JST",
+            "end": 1790922600,
+            "start": 1790899200,
+            "gmtoffset": 32400
+          },
+          "post": {
+            "timezone": "JST",
+            "end": 1790922600,
+            "start": 1790922600,
+            "gmtoffset": 32400
+          }
+        },
+        "dataGranularity": "1d",
+        "range": "5y",
+        "validRanges": [
+          "1d",
+          "5d",
+          "1mo",
+          "3mo",
+          "6mo",
+          "1y",
+          "2y",
+          "5y",
+          "10y",
+          "ytd",
+          "max"
+        ]
+      },
+      "point_count": 1222,
+      "first_utc": "2021-10-04T00:00:00+00:00",
+      "last_utc": "2026-10-02T00:00:00+00:00",
+      "fields": {
+        "open": {
+          "array_length": 1222,
+          "non_null": 1222
+        },
+        "high": {
+          "array_length": 1222,
+          "non_null": 1222
+        },
+        "low": {
+          "array_length": 1222,
+          "non_null": 1222
+        },
+        "close": {
+          "array_length": 1222,
+          "non_null": 1222
+        },
+        "volume": {
+          "array_length": 1222,
+          "non_null": 1222
+        }
+      },
+      "completed_at": "2026-10-04T11:39:15.701093+00:00"
+    },
+    {
+      "symbol": "042700.KS",
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/042700.KS?interval=1d&range=5y",
+      "started_at": "2026-10-04T11:39:15.701101+00:00",
+      "method": "existing tools/fetch_real_data.py _get single request; no retries; no credentials",
+      "historical_available_at": null,
+      "publication_grant": null,
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 81041,
+      "sha256": "0fd4f74e03fa3908dda2ae4b7970537fef9e1d855003bd7179c6a3f180390552",
+      "chart_error": null,
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_042700_KS_5y_original.json",
+      "meta": {
+        "currency": "KRW",
+        "symbol": "042700.KS",
+        "exchangeName": "KSC",
+        "fullExchangeName": "KSE",
+        "instrumentType": "EQUITY",
+        "firstTradeDate": 1122249600,
+        "regularMarketTime": 1790922619,
+        "hasPrePostMarketData": false,
+        "gmtoffset": 32400,
+        "timezone": "KST",
+        "exchangeTimezoneName": "Asia/Seoul",
+        "regularMarketPrice": 272000.0,
+        "regularMarketChangePercent": 1.304,
+        "fulldayPrice": 272000.0,
+        "fulldayChange": 3500.0,
+        "fulldayChangePercent": 1.304,
+        "fiftyTwoWeekHigh": 426000.0,
+        "fiftyTwoWeekLow": 100200.0,
+        "regularMarketDayHigh": 281000.0,
+        "regularMarketDayLow": 267500.0,
+        "regularMarketVolume": 659070,
+        "longName": "HANMI Semiconductor Co., Ltd.",
+        "shortName": "HANMISemi",
+        "chartPreviousClose": 15250.0,
+        "priceHint": 2,
+        "currentTradingPeriod": {
+          "pre": {
+            "timezone": "KST",
+            "start": 1790893800,
+            "end": 1790899200,
+            "gmtoffset": 32400
+          },
+          "regular": {
+            "timezone": "KST",
+            "start": 1790899200,
+            "end": 1790920800,
+            "gmtoffset": 32400
+          },
+          "post": {
+            "timezone": "KST",
+            "start": 1790920800,
+            "end": 1790931600,
+            "gmtoffset": 32400
+          }
+        },
+        "dataGranularity": "1d",
+        "range": "5y",
+        "validRanges": [
+          "1d",
+          "5d",
+          "1mo",
+          "3mo",
+          "6mo",
+          "1y",
+          "2y",
+          "5y",
+          "10y",
+          "ytd",
+          "max"
+        ]
+      },
+      "point_count": 1221,
+      "first_utc": "2021-10-05T00:00:00+00:00",
+      "last_utc": "2026-10-02T00:00:00+00:00",
+      "fields": {
+        "open": {
+          "array_length": 1221,
+          "non_null": 1220
+        },
+        "high": {
+          "array_length": 1221,
+          "non_null": 1220
+        },
+        "low": {
+          "array_length": 1221,
+          "non_null": 1220
+        },
+        "close": {
+          "array_length": 1221,
+          "non_null": 1220
+        },
+        "volume": {
+          "array_length": 1221,
+          "non_null": 1220
+        }
+      },
+      "completed_at": "2026-10-04T11:39:21.279501+00:00"
+    }
+  ]
+}
