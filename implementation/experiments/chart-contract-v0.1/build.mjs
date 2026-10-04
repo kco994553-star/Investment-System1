@@ -1,3 +1,5 @@
+import {renderPortfolioInput} from './portfolio_contract.mjs';
+import {fictionalPortfolioFixture} from './portfolio_fixture.mjs';
 import {mkdirSync,copyFileSync,writeFileSync,readFileSync,cpSync} from 'node:fs';
 import {fixture} from './fixture.mjs';
 import {normalizeStoredResponse,renderInput,hash} from './contract.mjs';
@@ -14,3 +16,10 @@ writeFileSync('dist/data.json',JSON.stringify(doc,null,2));
 writeFileSync('dist/data.js',`window.CHART_DEMO=${JSON.stringify({doc,rows})};`);
 writeFileSync('dist/build-evidence.json',JSON.stringify({contract:doc.contract,fixture:true,raw_sha256:hash(f.bytes),data_sha256:hash(Buffer.from(JSON.stringify(doc,null,2))),renderer:'lightweight-charts@5.2.1',renderer_sha256:hash(readFileSync('dist/lightweight-charts.js')),state:'DEMO_ONLY'},null,2));
 console.log('Built 12 synthetic daily records; volume missing=1, zero=1; PIT NOT_VERIFIED; no network data.');
+
+const reference=JSON.parse(readFileSync('portfolio_reference.json','utf8'));
+const portfolios={reference:renderPortfolioInput(reference),demo:renderPortfolioInput(fictionalPortfolioFixture())};
+writeFileSync('dist/portfolio-data.js',`window.PORTFOLIO_CHARTS=${JSON.stringify(portfolios).replaceAll('<','\\u003c')};`);
+copyFileSync('portfolio_app.js','dist/portfolio_app.js');
+copyFileSync('inventory_app.js','dist/inventory_app.js');
+writeFileSync('dist/inventory-data.js',`window.CHART_INVENTORY=${readFileSync('chart_inventory.json','utf8').replaceAll('<','\\u003c')};`);

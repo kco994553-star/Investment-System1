@@ -33,3 +33,11 @@ These additive experiment files are not an exemption from closed-world Frozen ch
 4. Web/P01 integration and scoped publication disposition after readiness is evidenced. No grant is issued here.
 
 No payment or account information was used or requested. Remaining data/identity/integration dependencies are explicitly recorded; no missing part is represented as completed.
+
+## Portfolio / requirements continuation
+
+Source-derived19-holding TARGET reference, unknown actual company types, separate fictional overlap fixture, and three portfolio display components now exist in this PR. Scope is REFERENCE/DEMO only. 19 unit tests +11 independent oracle checks (one covers40 generated portfolios) +3 viewport browser validation PASS; combined node suite75 PASS.
+
+Requirements inventory: core81 preserved; repository additions24; Macro Candidate8 kept separate. New J7 rows require subsequent implementation layer audit rather than assumed completion. Detailed complete list: `CHART_INVENTORY.md`, machine-readable `chart_inventory.json`, with UI search/filter.
+
+Next independent work can connect existing sourced Portfolio snapshots/classification histories while the price identity/session path continues. User-specified groups are not GICS; no actual account or company type is inferred. Preserve quarterly snapshots and missing-vs-none classification. Full historical identity, P01 and FPIA integration remain pending; no existing owner branch was changed.
