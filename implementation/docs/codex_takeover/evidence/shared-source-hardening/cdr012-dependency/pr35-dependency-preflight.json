@@ -1,0 +1,13 @@
+{
+  "previous_head": "8318b78de7ebaca63b857f8c85a12d071863c492",
+  "new_dependency": "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240",
+  "merge_conflicts": 0,
+  "merge": "NORMAL_NO_FF_TWO_PARENT; not committed yet",
+  "preserved_F1": "BYTE_IDENTICAL_TO_8318b78",
+  "v2_source_tests_approvals": "BYTE_IDENTICAL_TO_c9e0fa7",
+  "local_full_pr31": 1472,
+  "fresh_pr31_CI": "8/8 workflows SUCCESS, native1472; artifacts verified",
+  "new_full_pr35": "MANDATORY_NATIVE_ACTIONS_PENDING; previous1413 not fresh evidence",
+  "numeric_defaults_CALVERIFY_Holdout_grants_canonical_merge": 0,
+  "other_owner_writes": 0
+}

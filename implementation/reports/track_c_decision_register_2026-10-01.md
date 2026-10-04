@@ -261,3 +261,26 @@ All actual numeric configuration, real source taxonomy/default, CAL_VERIFY,
 Holdout, foundation registry unification, C8 Freeze, publication/grants, Official/LIVE,
 protected17 digest repin, canonical merge and deployment remain unapproved.
 C0-C7 SOFTWARE_FROZEN; C8 SYNTHETIC_VERIFIED / NOT_FROZEN; maturity delta0.
+
+
+## CDR-012 arithmetic supplement · Codex implementation route (2026-10-04)
+
+Fresh read-only Global `1620f7118dbe91283cde1cc1431cdea236ab0829`,
+`COORDINATION_DECISION_REGISTER.md` CDR-012, is USER_DECIDED. The exact quoted
+approval and source blob/hash are pinned in
+`implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/cdr012-repair/CDR012_APPROVAL.json`.
+
+F1: authoritative v2 squared residuals use multiplication `d*d`; observed and
+replicate reductions retain math.fsum/direct block sums/block grouping and
+CDR-010 operand order. F3: all B replicates degenerate under `sqrt(v/n)>0`
+false means NOT_RUN, no statistical PASS and no p-value. Partly degenerate
+sets keep B+1. No epsilon/tolerance/threshold/numeric default is introduced.
+The `[0.05]*12` non-all-degenerate literal case is outside the added guard.
+
+V1, prior approvals, Decision history and historical evidence remain unchanged.
+New evidence, oracle and acceptance are additive CDR-012 records. Codex repairs
+PR31, verifies its exact HEAD, and normally merges that dependency into PR35.
+Claude Main re-verifies F1/F3 after HANDOFF_READY and owns PR39's fresh successor
+combined trial. Global/PR39/integration owner branches remain read-only.
+Numeric configuration/CAL_VERIFY/Holdout/C8 Freeze/publication/Official/LIVE/
+canonical merge are NOT_APPROVED. C8 maturity delta0, still NOT_FROZEN.

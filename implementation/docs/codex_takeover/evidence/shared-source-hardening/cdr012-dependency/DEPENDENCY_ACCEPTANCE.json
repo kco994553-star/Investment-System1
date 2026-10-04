@@ -1,0 +1,33 @@
+{
+  "record": "PR35_NORMAL_DEPENDENCY_CDR012",
+  "status": "HANDOFF_READY_INHERITED_APPROVED_SYNTHETIC_SCOPE",
+  "previous_head": "8318b78de7ebaca63b857f8c85a12d071863c492",
+  "dependency_head": "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240",
+  "normal_merge": true,
+  "conflicts": 0,
+  "inherited_source": "BYTE_IDENTICAL_TO_EXACT_PR31",
+  "shared_source_protection": "BYTE_IDENTICAL_TO_PREVIOUS_PR35",
+  "local_targeted_pass": 27,
+  "source_sha256": {
+    "implementation/src/investment_system/evl/superiority_v2.py": "4733f41ee5c85a8a159047a8f2f996fed9edc9a1a4e14d01aa671b33a8a1fa64",
+    "implementation/tests/evl_c8_gsup_v2_cdr012_oracle.py": "fdf999c763f0f03fb4b4590daddf8e7a2b04b4050790ff648466be4eec099326",
+    "implementation/tests/test_evl_gsup_v2_cdr012.py": "51d7e177601370674972be6c7f210f42a0a0ff340da0465544a07723558e74ad",
+    "implementation/tools/producer_source_compat.py": "8c059e443763136d12769c7ba9ef3e2389850a2d61ea0ee63d5a355c1fc6d892",
+    "implementation/tests/test_producer_source_compat.py": "588182d3fb8a17903fa054fdb25dd579b251078a99a1f790887761262c97d46c"
+  },
+  "new_full_local": "NOT_RUN; exact inherited v2 source evidence reused, mandatory native full Actions on merge pending",
+  "current_actions": "PENDING_PUBLICATION; actual exact HEAD/results/artifact digests recorded in PR35 description",
+  "history": "NO_REBASE_NO_FORCE_NO_REWRITE; preceding scoped handoff preserved",
+  "scope": "APPROVED_CDR012_SYNTHETIC_ONLY",
+  "Claude_Main_next": "Independent F1/F3 re-verification and PR39 fresh successor combined trial",
+  "other_owner_branches": "UNCHANGED_READ_ONLY",
+  "boundaries": {
+    "actual_numeric_configuration": 0,
+    "actual_CAL_VERIFY": 0,
+    "Holdout": 0,
+    "C8_Freeze": 0,
+    "publication_Official_LIVE": 0,
+    "canonical_merge": 0
+  },
+  "new_D3": false
+}

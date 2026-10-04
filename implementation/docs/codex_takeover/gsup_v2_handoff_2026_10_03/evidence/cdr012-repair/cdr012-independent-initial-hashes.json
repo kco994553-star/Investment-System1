@@ -1,0 +1,20 @@
+{
+  "head": "e0b6d809058511d4bef7ad1aeccad79c5eae3ff8",
+  "sha256": {
+    "implementation/tests/evl_c8_gsup_v2_oracle.py": "e2db7498b6819783ac5d977c34950078f632c4e4dbb2ddf973b26cace8a9c6f5",
+    "implementation/tests/test_evl_gsup_v2_arithmetic.py": "6f7b24013016b9956a3ff4496f717826db6dbea3e7af5c1a6127807eb7014b17",
+    "implementation/tests/evl_c8_gsup_oracle.py": "649b87089e5e09aa86407ed035ecac87dcc2fa0f105835125f7b4056a014827a",
+    "implementation/tests/test_evl_c8_gsup.py": "e9c28cbb0147c8cbdf0a3e6587dd2273f13de9c9e1efa541b8bec8d08dc8b097",
+    "implementation/src/investment_system/evl/superiority.py": "c61268921e5a9147e90810747e9ab6cd2896dd2fab89cb314d390dc0ff760498",
+    "implementation/src/investment_system/evl/statistical_kernels.py": "61f70937456d8a54cb027a7522f2a2d1c890bccc92f9f19de28082a2001e12d1",
+    "implementation/src/investment_system/evl/gsup_source_identity.py": "d34fc10d396f37fce65a5580263d2d35207e7d2f4f347fe300c1f1b81c33c548",
+    "implementation/src/investment_system/evl/superiority_source_identity.py": "3ad8ca25f724cd3d07271ec8a38b95ca8779fe57f14ccf252e1030aa7acca0fa",
+    "implementation/src/investment_system/evl/superiority_v2.py": "41f67dd28200370f472016e16214ee08edb31dcd75aba91726494799a6614603",
+    "implementation/tests/test_evl_gsup_v2_registry.py": "2d81fdb3b70d20cd074cd2b7b32b4e3b7118036758084e9f0ac1962f98a83989",
+    "implementation/tests/test_evl_gsup_v2_repair_negatives.py": "8c896575532b60f31769ab63a406e70c9df575ae51ff8dd07d50bb1c19046b81",
+    "implementation/tools/verify_gsup_v2_arithmetic.py": "fa4295124667de17eb3123cefdc16565d353a105ec575cbb07bcb1ea14a308fc"
+  },
+  "authority_commit": "1620f7118dbe91283cde1cc1431cdea236ab0829",
+  "reviewer": "Codex independent oracle/test author, this session",
+  "scope": "CDR012 F1/F3 synthetic validation only"
+}
