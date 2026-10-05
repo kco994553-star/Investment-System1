@@ -123,25 +123,66 @@
   "next": "WAIT_DEPENDENCY; execute affected acceptance only on exact owner return/write-set/source change. No further record or notification for same self/control inputs.",
   "metadata_verification": {
     "result": "PASS",
-    "checks": 17,
-    "scope": "queue/wait guards/dedup/historical receipts/authority boundaries; Product tests NOT_RUN",
-    "diff_check": "PASS"
+    "checks": {
+      "lease_released": true,
+      "wait_six_zero": true,
+      "ready_zero": true,
+      "tasks_closed_or_wait": true,
+      "metrics_unchanged": true,
+      "blockers_unique": true,
+      "no_product_promotion": true,
+      "material_continuation_not_claimed": true,
+      "followup_hop_not_claimed": true,
+      "event_exact_comment_not_invented": true,
+      "own_event_dedup": true,
+      "Main_exact_receipt": true,
+      "Main_is_consumer_only": true,
+      "global_bound": true,
+      "owner_unchanged": true,
+      "no_tests_replayed": true,
+      "no_source_return": true,
+      "no_D3_change": true,
+      "no_PR_notification": true,
+      "prior_receipts_untouched": true,
+      "new_receipt_task_done": true
+    },
+    "count": 21,
+    "scope": "Event and Main-consumption metadata only; Product tests NOT_RUN"
+  },
+  "post_publication_global_return": {
+    "fresh_global": "19a1c3a1470cd974983fd489760516ee247a40b4",
+    "prior_own_publication": "c6e23232235d1516b0ebfe800688cb568341684f",
+    "source_path": "implementation/docs/coordination/evidence/main_runtime_receipt_2026-10-05/RECEIPT.json",
+    "source_blob": "6fcc9a8d10c15a8d75777163ca1dc40862cd2f76",
+    "source_platform": {
+      "head": "8599558dd1ec7e546ab46c230557ccf9e844e171",
+      "comment_id": 5990208500,
+      "main_comment_consumed": 5989810728,
+      "status": "CONSUMED",
+      "source_owner_ack": false,
+      "source_adoption": false,
+      "combined_blockers": 9,
+      "closed_product_blockers": 0
+    },
+    "independent_verification": "Exact8599558/comment5990208500/Main5989810728 and source ACK/adoption false match own immutable handoff and current owner source",
+    "scope": "Main loop-handoff receipt consumption only; Product gates0/dependencies reduced0, no source return",
+    "claim": "9b2ded6da6c0835bd4727b44284b2b09e0885e36"
   },
   "artifact_manifest": [
     {
       "path": "implementation/docs/product_platform/automation/STATE.json",
-      "bytes": 29432,
-      "sha256": "7e2c6f3d9a0a908c74577a94952dd7891a8d6746c24e85fc0c3234dd0b5ab013"
+      "bytes": 30494,
+      "sha256": "b47ae4d1d7429a9647199a3c421bb8bb65eca524528856b4255937ddbccc082d"
     },
     {
       "path": "implementation/docs/product_platform/automation/CHECKPOINT.md",
-      "bytes": 7510,
-      "sha256": "b660cf64288b408455f8031c58bbe970ed1cbd425de803f0af2e4f9c39efe871"
+      "bytes": 8093,
+      "sha256": "a56fe1116eaf8bb307bdae5b150d87f4e4bcfdfc0b0192f7375b5baed16de86c"
     },
     {
       "path": "implementation/docs/product_platform/CURRENT_HANDOFF.md",
-      "bytes": 8043,
-      "sha256": "b5db534be52de9fecfc6a11074af269c338574c6b2ba82da0289b050ba3cfe0c"
+      "bytes": 8626,
+      "sha256": "b989412f2feac1dac7c694788f4781e5e4cf645a50ac39cac271cf19d0cc85e1"
     }
   ]
 }

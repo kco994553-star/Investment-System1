@@ -1,9 +1,9 @@
 {
   "schema": "platform-ssot-autonomous-execution-state-v1",
-  "observed_at_utc": "2026-10-05T07:59:12.646Z",
+  "observed_at_utc": "2026-10-05T08:02:52.173Z",
   "directive_received_at_kst": "2026-10-05T16:15:41+09:00",
   "role": "Product Platform independent specialist audit",
-  "execution_state": "IN_PROGRESS",
+  "execution_state": "WAIT_DEPENDENCY",
   "acceptance_complete": false,
   "publication_branch": "codex/product-platform-storage-auth-review-2026-10-05",
   "publication_identity": "Containing commit; publication completed on branch before this checkpoint is authoritative",
@@ -26,7 +26,7 @@
     "owner_source": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_branch": "integration/global-handoff-v1",
-    "global": "76df9e6a71fa91ff5ee260bc6087185facae3779",
+    "global": "19a1c3a1470cd974983fd489760516ee247a40b4",
     "pr45_head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
     "web": "fb086eac4321140493ce554a541343cebbb81ed6",
     "p01": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
@@ -80,6 +80,12 @@
       "subject": "Automatic scheduler/event execution",
       "classification": "CURRENT",
       "conclusion": "First real PR45 webhook invocation and justified no-op recorded. Material-change implementation continuation and hourly followup execution remain UNVERIFIED."
+    },
+    {
+      "subject": "Global Main loop-consumption receipt",
+      "classification": "CURRENT",
+      "ref": "19a1c3a1470cd974983fd489760516ee247a40b4",
+      "conclusion": "Main explicitly consumed own8599558/comment5990208500; implementation owner ACK/adoption still false, blockers9 unchanged. Main FPIA/D006 changes do not admit a Product package."
     }
   ],
   "capabilities": {
@@ -244,12 +250,13 @@
   "coordination_metrics": {
     "acceptance_criteria_closed": 1,
     "closed_scope": "Main audit-return artifact consumption gap only",
-    "new_Main_receipts_consumed": 0,
+    "new_Main_receipts_consumed": 1,
     "new_implementation_owner_source_returns_consumed": 0,
     "Product_gates_closed": 0,
     "Product_integration_dependencies_reduced": 0,
     "automation_acceptance_criteria_closed_this_run": 1,
-    "automation_closed_scope": "First event invocation/fresh-read/self-dedup no-op only; no Product closure"
+    "automation_closed_scope": "First event invocation/fresh-read/self-dedup no-op only; no Product closure",
+    "loop_handoff_Main_consumption_closed_this_run": 1
   },
   "owner_actions_remaining": 9,
   "patch_ready_owner_actions": 2,
@@ -449,11 +456,15 @@
       "classification": "WAIT_DEPENDENCY",
       "dependency": "Genuine material owner/source/CI/approved-decision/tool-target return permitting READY action",
       "next_automatic_action": "Record actual material input -> permitted affected execution -> verification -> publication; a self/control no-op is insufficient"
+    },
+    {
+      "id": "consume:main-loop-8599558",
+      "classification": "DONE",
+      "reference": "https://github.com/kco994553-star/Investment-System1/blob/19a1c3a1470cd974983fd489760516ee247a40b4/implementation/docs/coordination/evidence/main_runtime_receipt_2026-10-05/RECEIPT.json",
+      "acceptance": "Exact8599558, own comment5990208500 and prior Main5989810728 match; source_ack/adoption false retained; bounded independent metadata verification"
     }
   ],
-  "ready_tasks": [
-    "consume:main-loop-8599558"
-  ],
+  "ready_tasks": [],
   "pending_ci": [],
   "D3_current_decisions": [],
   "reserved_D3": [
@@ -473,31 +484,7 @@
     "CI_terminal_consumable_now": 0,
     "SSoT_update_closure_ready": 0
   },
-  "lease": {
-    "run_id": "platform-event-18584e20-c090-11f1-9b73-43ef0de39283",
-    "writer": "Product Platform independent specialist webhook executor",
-    "acquired_at_utc": "2026-10-05T08:02:07.637Z",
-    "expires_at_utc": "2026-10-05T08:32:07.637Z",
-    "parent": "c6e23232235d1516b0ebfe800688cb568341684f",
-    "scope": [
-      "implementation/docs/product_platform/automation/STATE.json",
-      "implementation/docs/product_platform/automation/CHECKPOINT.md",
-      "implementation/docs/product_platform/automation/evidence/event_18584e20_2026-10-05.json",
-      "implementation/docs/product_platform/CURRENT_HANDOFF.md"
-    ],
-    "input_fingerprint": "Main-loop-consumption:19a1c3a1470cd974983fd489760516ee247a40b4:8599558:5990208500",
-    "source_fingerprints": {
-      "owner_branch": "codex/product-platform-audit-v1",
-      "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
-      "owner_source": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
-      "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
-      "global_branch": "integration/global-handoff-v1",
-      "global": "76df9e6a71fa91ff5ee260bc6087185facae3779",
-      "pr45_head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
-      "web": "fb086eac4321140493ce554a541343cebbb81ed6",
-      "p01": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
-    }
-  },
+  "lease": null,
   "lease_protocol": {
     "scope": "This audit branch only",
     "claim": "Exact fresh parent commit, force=false update/readback before write-producing READY; losing child re-reads",
@@ -610,6 +597,8 @@
     "material_continuation": "NOT_VERIFIED",
     "prior_tests_reexecuted": false,
     "no_PR_comment": true,
-    "reason": "Only previously unrecorded PR45 item is exact own marker; all dependency refs unchanged. Persist first-invocation acceptance once, no recurring control-only writes."
+    "reason": "First event no-op receipt published; post-publication re-evaluation discovered Main's newly published loop-consumption receipt and consumed its Platform-only scope. Actual source adoption absent.",
+    "new_Main_loop_receipt_global": "19a1c3a1470cd974983fd489760516ee247a40b4",
+    "new_Main_loop_claim": "9b2ded6da6c0835bd4727b44284b2b09e0885e36"
   }
 }
