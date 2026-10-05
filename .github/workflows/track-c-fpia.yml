@@ -116,6 +116,25 @@ jobs:
           cat "$out/fpia-status.txt"
           tail -n 2 "$out/fpia-verify.txt"
           exit $rc
+      - name: Record workflow execution source (observation only; no acceptance)
+        if: always()
+        env:
+          FPIA_REPOSITORY: ${{ github.repository }}
+          FPIA_WORKFLOW_SHA: ${{ github.workflow_sha }}
+          FPIA_WORKFLOW_REF: ${{ github.workflow_ref }}
+          FPIA_EVENT_SHA: ${{ github.sha }}
+          FPIA_SUBJECT_SHA: ${{ inputs.tree || github.event.pull_request.head.sha || github.sha }}
+          FPIA_RUN_ID: ${{ github.run_id }}
+          FPIA_RUN_ATTEMPT: ${{ github.run_attempt }}
+          FPIA_JOB_KEY: ${{ github.job }}
+          FPIA_EVENT_NAME: ${{ github.event_name }}
+        run: |
+          out="$RUNNER_TEMP/fpia-out"
+          mkdir -p "$out"
+          # Old receipts remain unchanged. Missing facts stay UNAVAILABLE, never subject fallback.
+          python implementation/tools/integration/track_c_fpia_ci_receipt.py --repo . \
+            --verifier-path implementation/tools/integration \
+            > "$out/fpia-ci-receipt.json" || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
