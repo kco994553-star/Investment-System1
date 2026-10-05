@@ -14,9 +14,11 @@
     "expires_at_utc": "2026-10-05T05:22:20.444Z",
     "ttl_minutes": 30,
     "scope": "OWNER_BRANCH_PLATFORM_VALIDATION_HARDENING",
-    "verified_remote_acquisition": false,
+    "verified_remote_acquisition": true,
     "acquisition_parent_head": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
-    "reason": "Repair source-pinned malformed provenance, blank identity, and non-reference lineage defects; D1/D2 only"
+    "reason": "Repair source-pinned malformed provenance, blank identity, and non-reference lineage defects; D1/D2 only",
+    "acquisition_commit": "2ad984e2c536f5b9b4383be49583ed0f44aa41fa",
+    "verified_at_utc": "2026-10-05T04:52:43.632Z"
   },
   "pending_ci": [],
   "checkpoint": "validation_hardening_lease_claim"
