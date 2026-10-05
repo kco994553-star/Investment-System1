@@ -4,8 +4,8 @@ Routing/index SSoT only. This file is not a calculation, policy, approval or pub
 
 | Field | Value |
 |---|---|
-| Handoff ID | GCH-014b (supersedes GCH-014a as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
-| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011; GCH-009 after GIE-010; GCH-010 after CDR-012; GCH-011 after GIE-011; GCH-012 after CDR-013; GCH-013 after GIE-012; GCH-014 after CDR-014 (2026-10-04); GCH-014a/014b FPIA fix rounds (2026-10-04/05) |
+| Handoff ID | GCH-015 (supersedes GCH-014b as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
+| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011; GCH-009 after GIE-010; GCH-010 after CDR-012; GCH-011 after GIE-011; GCH-012 after CDR-013; GCH-013 after GIE-012; GCH-014 after CDR-014 (2026-10-04); GCH-014a/014b FPIA fix rounds (2026-10-04/05); GCH-015 after CDR-015 (2026-10-05 12:15 KST) |
 | Primary Integration Writer | Claude Code session `session_019znshzTYgyBnuuBmSxdPFN`, designated by the user on 2026-10-03 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md` |
 | Canonical branch / HEAD | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. This matches the last independent audit checkpoint, and canonical has not moved since 2026-09-28 |
@@ -46,6 +46,8 @@ Nothing else is on canonical, and no capability other than Track A is `INTEGRATE
 | 9 | Daily operation pipeline | not started | DESIGN |
 
 ## 4. USER_DECISION_REQUIRED queue
+
+**CDR-015 (2026-10-05 12:15 KST): decision authority delegated.** D1 implementation/docs/tests/CI/automation and D2 policy choices, numeric configuration, contract changes, versioned successors, migrations, canonical merges, publication and deployment are decided and executed by the responsible Work with evidence and verification, without asking the user again. Only D3 = paid payment, paid subscription, extra charges or exceeding a free quota goes to the user; if a cost cannot be established, only that resource is held. Real securities orders, fund movements and actions outside the project are outside the delegation. PIT, provenance, evidence integrity, honest reporting, no skipped tests and no Frozen/history rewrite stay mandatory. Self-decisions are recorded with reason, impact, verification and recovery (PIW: `PIW_DECISION_RECORDS.md`; owners: their scoped registers). Every open item below is being reclassified under CDR-015; the "USER_DECISION_REQUIRED" labels in the rest of this section are historical until each item has a PIW or owner decision record. Scoped owners adopt CDR-015 at their next fresh read; their branches and scoped records keep the single-writer rule.
 
 Decided in this round (see `COORDINATION_DECISION_REGISTER.md`):
 

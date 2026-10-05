@@ -4,12 +4,14 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-021 (FPIA PR #42 at `523e702`, CI green, fix round 3 running; PRs #41 comment, #43, #44 routed) |
+| Index revision | GSI-022 (CDR-015 decision authority delegation recorded; open items under reclassification; FPIA fix round 3 running) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
 | Canonical | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca` (= `origin/HEAD`; unchanged since 2026-09-28) |
 | Operating contract | `CLAUDE_CODE_WORKER_CONTRACT_v1.0` at PR #21 exact HEAD `f1b5afb` is the operational routing SSoT (CDR-001). PR #20 is SUPERSEDED_DUPLICATE (not merged, retained) |
+
+**Decision authority (CDR-015, 2026-10-05 12:15 KST):** classifications below that read USER_DECISION_REQUIRED or "not approved" were made under the earlier authority. Under CDR-015 they are D2 for the responsible Work (decide with evidence, record reason/impact/verification/recovery), except paid resources (D3). Reclassification in progress; PIW decisions go to `PIW_DECISION_RECORDS.md`.
 
 ## 1. Maturity scale and state columns
 

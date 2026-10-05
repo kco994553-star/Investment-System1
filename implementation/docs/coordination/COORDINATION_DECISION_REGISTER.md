@@ -572,3 +572,50 @@ FPIA reference manifest (machine-readable; written by the routing writer). FPIA 
  "v2_reference": {"sha": "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240", "quoted_as": "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240", "role": "verified CDR-012 v2 head (GIE-011)"},
  "verification_subjects": [{"sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66", "quoted_as": "acaf1b5", "role": "PR #40 tree to audit; not a reference"}]}
 ```
+
+## CDR-015 · Decision Authority delegation (D1/D2 self-decision; D3 = cost only); supersedes re-approval requirements
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** |
+| Decided at | 2026-10-05 12:15 KST (2026-10-05T03:15Z; user message in session `session_019znshzTYgyBnuuBmSxdPFN`, after GCH-014b / `b5b4ca6`) |
+| Supersedes | the user re-approval requirements in CDR-001 … CDR-014, within the scope below. Every earlier entry and approval record is preserved unchanged |
+| Applies to | every Investment-System1 Work (owners, Codex, Claude Code workers, the Primary Integration Writer), including automatic resumption |
+
+User wording (verbatim):
+
+> Investment-System1의 Decision Authority를 다음과 같이 변경·승인한다.
+>
+> 이 지시는 기존의 사용자 재승인 요구를 아래 범위에서 대체한다. 실제 KST 시각과 사용자 원문을 Decision Register에 append하고 Global/scoped Handoff에 반영하라. 과거 승인 기록은 보존한다.
+>
+> D1:
+> 일반 구현·문서·테스트·CI·자동화는 자율 실행한다.
+>
+> D2:
+> 프로젝트 목표에 필요한 정책 선택, 수치 configuration, 계약 변경, versioned successor, migration, canonical merge, publication, 배포는 근거와 검증을 갖춰 자체 결정·실행한다. D3로 분류됐다는 이유만으로 사용자 승인을 다시 요청하지 않는다.
+>
+> D3:
+> 유료 결제·유료 구독·추가 과금·무료 quota 초과만 사용자 승인을 요청한다. 비용 발생 여부를 확인할 수 없으면 해당 자원 사용만 보류한다.
+>
+> 실제 증권 주문·자금 이동과 프로젝트 밖의 행동은 위임 범위에 포함되지 않는다.
+>
+> 권한 확대는 검증 면제가 아니다. PIT, provenance, evidence 무결성과 결과의 정직한 표시는 유지한다. 실패를 숨기거나 테스트를 skip하여 PASS를 만들지 않는다. 기존 Frozen/history는 rewrite하지 않고 후속 버전으로 변경한다.
+>
+> 현재 미결정 사항은 새 권한 기준으로 재분류한다. FPIA D3-a~e도 요구사항·대안·영향을 검토하여 자체 해결한다. 탐지·검증하지 못한 범위를 숨기고 전체 PASS로 확대하지 않는다.
+>
+> 각 자체 결정에는 이유·영향·검증·복구 방법을 기록한다. 전체 프로젝트 완성을 기다리지 말고 검증된 작은 기능 묶음부터 단계적으로 통합한다.
+>
+> 각 Work의 자동 재개에도 이 권한 기준을 적용한다. 실행 가능한 backlog가 있으면 계속 진행하고, 실제 외부 입력 부재나 해결 불가능한 blocker가 있을 때만 대기한다. 다른 owner의 변경은 기존 routing과 단일 작성자 규칙을 따른다.
+>
+> 현재 작업을 중단하거나 처음부터 다시 시작하지 말고, 이 결정을 기록한 뒤 이어서 진행하라.
+
+Recorded effect (routing writer's reading; the user wording above governs):
+
+- **D1** (autonomous): implementation, documentation, tests, CI and automation.
+- **D2** (decide and execute with evidence and verification, without asking the user again): policy choices needed for the project goal, numeric configuration, contract changes, versioned successors, migrations, canonical merges, publication and deployment. An item previously listed as "not approved" or as a D3 in CDR-003 … CDR-014 (for example canonical merge, numeric configuration, C8 Freeze, CAL_VERIFY, Holdout access, publication grants, Official/LIVE promotion, the #17 digest repin, FPIA D3-a … D3-e, the G7 interpretation) is now D2: it needs a recorded decision with reason, impact, verification and recovery, and the evidence that supports it, not a new user approval.
+- **D3** (ask the user): only paid payment, paid subscription, extra charges, or exceeding a free quota. If whether a cost arises cannot be established, only the use of that resource is held.
+- **Outside the delegation:** real securities orders, movements of funds, and actions outside the project.
+- **Unchanged obligations:** PIT/no-lookahead, provenance, evidence integrity and honest reporting of results; no hidden failure and no skipped test to reach PASS; Frozen records and history are changed only by successor versions, never rewritten; undetected or unverified scope is disclosed and never folded into an overall PASS.
+- **Self-decision records:** decisions taken under this delegation are recorded with reason, impact, verification and recovery. The Primary Integration Writer records its own in `PIW_DECISION_RECORDS.md` (this directory); capability owners record theirs in their scoped Decision Registers.
+- **Integration cadence:** verified small bundles are integrated step by step, without waiting for the whole project.
+- **Ownership:** changes to another owner's branch or scoped records still follow the existing routing and single-writer rules. Scoped owners adopt this entry at their next fresh read; the Primary Integration Writer does not write their scoped registers or handoffs.

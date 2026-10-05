@@ -187,3 +187,10 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - A container restart killed the round-2 verifiers; they were resumed from the workflow journal and completed.
 - Routing received: PR #43 (Codex write-path instruction), PR #41 Chart owner comment on PR #42 (A-G1/A-G2), PR #44 spec-only. Not adopted as decisions.
 - Canonical `b8e39a2` unchanged. Maturity transitions: none.
+
+## GCH-015 · 2026-10-05 12:15 KST · CDR-015 recorded (decision authority delegation)
+
+- User decision recorded verbatim with the actual KST time as CDR-015: D1 autonomous; D2 (policy, numeric configuration, contracts, successors, migrations, canonical merges, publication, deployment) decided and executed with evidence and verification, without re-approval; D3 = paid or quota-exceeding resources only. Real orders, fund movements and actions outside the project are not delegated. Verification, PIT, provenance, evidence integrity, honest reporting and history preservation are unchanged.
+- Earlier approvals and records preserved. New append-only `PIW_DECISION_RECORDS.md` for the Primary Integration Writer's own D2 decisions (reason, impact, verification, recovery).
+- Open items, including FPIA D3-a … D3-e and the G7 interpretation, are being reclassified and decided under CDR-015; verified small bundles will be integrated step by step. FPIA fix round 3 continues without restart.
+- Canonical `b8e39a2` unchanged at this entry. Maturity transitions: none.
