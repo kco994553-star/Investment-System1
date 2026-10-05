@@ -423,25 +423,17 @@
     "preflight_cli_pass": 6
   },
   "lease": {
-    "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
-    "run_id": null,
+    "status": "RUNNING",
+    "run_id": "manual-chart-portable-preflight-20261005T041827682Z",
     "holder_kind": "MANUAL_ROOT",
-    "acquired_at_utc": "2026-10-05T03:03:26.899Z",
-    "expires_at_utc": "2026-10-05T05:02:54.234Z",
-    "ttl_minutes": 60,
-    "allowed_automatic_ttl_minutes": 30,
+    "acquired_at_utc": "2026-10-05T04:18:27.682Z",
+    "expires_at_utc": "2026-10-05T04:48:27.682Z",
+    "ttl_minutes": 30,
     "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": true,
-    "acquisition_parent_head": "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
-    "mutual_exclusion": "PROTOCOL_NOT_PROVIDER_GUARANTEE",
-    "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease.",
-    "acquisition_commit": "74df6784071137bdca911964af94c8e1b6928c92",
-    "verified_at_utc": "2026-10-05T04:02:54.236Z",
-    "verified_published_packet": "32069065a0c4a62e4390d76675eb9c7681456c87",
-    "previous_run_id": "manual-chart-dependency-delta-20261005T030326898Z",
-    "reason": "Current user authorizes durable Global-only dependency intake and automatic approved-write-set production continuation; renewal before expiry",
-    "renewed_at_utc": "2026-10-05T04:02:54.236Z",
-    "released_at_utc": "2026-10-05T04:14:14.034Z"
+    "verified_remote_acquisition": false,
+    "acquisition_parent_head": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+    "reason": "Actual archived replay uses another checkout and writes inside repository; portable source-pinned replay and malformed packet diagnostic repair",
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
   },
   "publication": {
     "status": "V07_CONTINUATION_POLICY_AND_DEPENDENCY_CHECKPOINT_VERIFIED",
@@ -718,6 +710,31 @@
     "global_only_semantic_change_is_input": true,
     "after_all_six_closed": "AUTOMATIC_APPROVED_WRITE_SET_PRODUCTION_VERTICAL_SLICE",
     "actual_D3_boundary_preserved": true
-  }
+  },
+  "lease_history": [
+    {
+      "state_at_commit": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+      "lease": {
+        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+        "run_id": null,
+        "holder_kind": "MANUAL_ROOT",
+        "acquired_at_utc": "2026-10-05T03:03:26.899Z",
+        "expires_at_utc": "2026-10-05T05:02:54.234Z",
+        "ttl_minutes": 60,
+        "allowed_automatic_ttl_minutes": 30,
+        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+        "verified_remote_acquisition": true,
+        "acquisition_parent_head": "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+        "mutual_exclusion": "PROTOCOL_NOT_PROVIDER_GUARANTEE",
+        "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease.",
+        "acquisition_commit": "74df6784071137bdca911964af94c8e1b6928c92",
+        "verified_at_utc": "2026-10-05T04:02:54.236Z",
+        "verified_published_packet": "32069065a0c4a62e4390d76675eb9c7681456c87",
+        "previous_run_id": "manual-chart-dependency-delta-20261005T030326898Z",
+        "reason": "Current user authorizes durable Global-only dependency intake and automatic approved-write-set production continuation; renewal before expiry",
+        "renewed_at_utc": "2026-10-05T04:02:54.236Z",
+        "released_at_utc": "2026-10-05T04:14:14.034Z"
+      }
+    }
+  ]
 }
-
