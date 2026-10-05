@@ -63,15 +63,15 @@
       "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
       "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
       "36": "fb086eac4321140493ce554a541343cebbb81ed6",
-      "41": "d84afa219221e31ca78f5759360ae97489a0c8d2",
+      "41": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
       "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
       "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
       "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
       "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
       "47": "7215a9f60ad7128b1748f405051eac684298614f"
     },
-    "observed_at_utc": "2026-10-05T09:14:49.571Z",
-    "owner_output_head": "d84afa219221e31ca78f5759360ae97489a0c8d2",
+    "observed_at_utc": "2026-10-05T09:18:52.550Z",
+    "owner_output_head": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
     "event_watermarks": {
       "17": {
         "issue_comments": {
@@ -537,16 +537,16 @@
   },
   "last_processed": {
     "source_head": "8fc47b0a3c9a262718b706519d6d91a051629636",
-    "owner_head": "d84afa219221e31ca78f5759360ae97489a0c8d2",
-    "processed_at_utc": "2026-10-05T09:14:49.571Z",
-    "run_id": "manual-chart-magicpath-d3a-2026-10-05T090050954Z",
+    "owner_head": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+    "processed_at_utc": "2026-10-05T09:18:52.550Z",
+    "run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
     "input_heads": {
       "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
       "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
       "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
       "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
       "36": "fb086eac4321140493ce554a541343cebbb81ed6",
-      "41": "d84afa219221e31ca78f5759360ae97489a0c8d2",
+      "41": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
       "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
       "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
       "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
@@ -554,7 +554,7 @@
       "47": "7215a9f60ad7128b1748f405051eac684298614f"
     },
     "global_head": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
-    "status": "NATIVE_MAGICPATH_SAMPLE_IMPLEMENTED_VERIFIED_D3AR_ADOPTED_GATES6_UNCHANGED",
+    "status": "V013_NATIVE_SAMPLE_AND_POLICY_VERIFIED_SCOPED_REFERENCE_REPAIR_COMPLETE",
     "evidence_refs": [
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md",
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json",
@@ -634,21 +634,16 @@
     "magicpath_sample": "NATIVE_EDITABLE_REACT_IMPLEMENTED_VERIFIED_EXACT_BUILD_BROWSER18_OF18"
   },
   "lease": {
-    "status": "ACTIVE",
-    "run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
-    "owner": "/root Chart owner",
-    "acquired_at_utc": "2026-10-05T09:17:29.146Z",
-    "expires_at_utc": "2026-10-05T09:32:29.146Z",
-    "source_start_head": "2ebccd24c00442539b12c6a5ab3b28c22f5c28e2",
-    "reason": "Correct one dangling production planning reference discovered during handoff review; preserve first reference in receipt",
-    "write_set": [
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json",
-      "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
-    ]
+    "status": "NONE",
+    "last_run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
+    "released_after_verified_publication": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+    "released_at_utc": "2026-10-05T09:18:52.550Z",
+    "reason": "Verified scoped reference repair complete; no lease held for exactCI/ownerdependency",
+    "release_commit_note": "Current containingHEAD resolved via Git"
   },
   "publication": {
     "status": "V013_NATIVE_MAGICPATH_SAMPLE_AND_DELEGATED_POLICY_VERIFIED",
-    "latest_published_owner_head": "d84afa219221e31ca78f5759360ae97489a0c8d2",
+    "latest_published_owner_head": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
     "scoped_output_paths": [
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
       "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
@@ -882,7 +877,7 @@
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/MAGICPATH_RECEIPT.json": "93c6fe209ff1562444c9634c47a4c817ebd0cb775b12b73d544aa9819fde6b15",
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/OWNER_INTAKE.json": "8074ee686630125833f55135bbaddb535ef789aeed22e1d716297e0931e00fcf",
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/VALIDATION_RECEIPT.json": "efaf94527420a6d0190b3b95d1193acb0f459429728879f959e6b23fcc6ca15f",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json": "2344935db7b76aee93f0bc4c1929fab3a38a5844fa432c54913db03ad8750c68",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json": "bb684544013d9e939dca2bc2687f87b0079412b012808011895fd660e94fde5b",
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/browser/actual-390.png": "5416ca2bb61c436f8b7c315fc6c4649d6c4a72d53936abfbb486aba5015ca440",
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/browser/target-390.png": "c8d78a269e6064085af130c7c2dabcaf78553cb1462bebcc5509ab9607fec21a",
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/LICENSE-Noto-Sans-KR.txt": "18aabf190848725e2576eefb5c29ba06aac1029d02132252a7f312eac2e50cf3",
@@ -969,7 +964,9 @@
       "ca067990f5a81e06c23171bb92238e22f4eede9b",
       "42a186e1e892d0e2da692553bd223d1e1b1e0336",
       "64f6057eb34e6b70c828433a53c5364f325e28b3",
-      "d84afa219221e31ca78f5759360ae97489a0c8d2"
+      "d84afa219221e31ca78f5759360ae97489a0c8d2",
+      "837a14276470c51d6cc2800b75be0fa16a011e70",
+      "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8"
     ],
     "update_after_publish": "Only after remote HEAD/file bytes and output hashes are verified. STATE.json itself is excluded from output fingerprint; current commit identity cannot be self-embedded.",
     "bootstrap_verified_owner_head": "df1743b22680cd6d56dd286fd737cb053a7175ad",
@@ -1000,7 +997,7 @@
         "immutable_state_ref": "4752bca2d58a61ef5821a0556b6480fc527fac80:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
       }
     ],
-    "latest_evidence_tree": "4d16dbd025035af2cca2eaab326142bf2e69b12f",
+    "latest_evidence_tree": "180efc047837f7b1aa041a1b5a481a9577e88ca5",
     "verification": {
       "exact_written_bytes_match_remote": true,
       "new_packet_files": 22,
@@ -1016,7 +1013,15 @@
       "browser_checks": 18,
       "task_readback_exact": true,
       "task_schedule_cadence_enabled_title_preserved": true,
-      "verified_at_utc": "2026-10-05T09:14:49.571Z"
+      "verified_at_utc": "2026-10-05T09:14:49.571Z",
+      "write_set_reference_repair": {
+        "exact_remote_bytes": true,
+        "real_conditional_owner_receipt_verified": true,
+        "all_gate_a_g2_closed": false,
+        "all_other141_current_hashes_match": true,
+        "first_invalid_reference_retained": true,
+        "verified_at_utc": "2026-10-05T09:18:52.550Z"
+      }
     },
     "current_PR41_Actions": {
       "source_head": "d84afa219221e31ca78f5759360ae97489a0c8d2",
@@ -1085,7 +1090,9 @@
       "ca067990f5a81e06c23171bb92238e22f4eede9b",
       "42a186e1e892d0e2da692553bd223d1e1b1e0336",
       "64f6057eb34e6b70c828433a53c5364f325e28b3",
-      "d84afa219221e31ca78f5759360ae97489a0c8d2"
+      "d84afa219221e31ca78f5759360ae97489a0c8d2",
+      "837a14276470c51d6cc2800b75be0fa16a011e70",
+      "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8"
     ],
     "owned_comment_marker": "<!-- chart-owner-handoff:v0.5 -->",
     "retained_owned_comment_ids": [
@@ -1497,6 +1504,24 @@
       },
       "evidence_head": "d84afa219221e31ca78f5759360ae97489a0c8d2",
       "released_at_utc": "2026-10-05T09:14:49.571Z"
+    },
+    {
+      "event": "VERIFIED_REFERENCE_REPAIR_RELEASE",
+      "lease": {
+        "status": "ACTIVE",
+        "run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
+        "owner": "/root Chart owner",
+        "acquired_at_utc": "2026-10-05T09:17:29.146Z",
+        "expires_at_utc": "2026-10-05T09:32:29.146Z",
+        "source_start_head": "2ebccd24c00442539b12c6a5ab3b28c22f5c28e2",
+        "reason": "Correct one dangling production planning reference discovered during handoff review; preserve first reference in receipt",
+        "write_set": [
+          "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json",
+          "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+        ]
+      },
+      "evidence_head": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+      "released_at_utc": "2026-10-05T09:18:52.550Z"
     }
   ],
   "automation_audit": {
@@ -1868,6 +1893,39 @@
         "actual_chart_merge_result_fpia": "NOT_RUN"
       },
       "reason": "Verified nativeSAMPLE implementation + delegatedpolicy checkpoint"
+    },
+    {
+      "at_utc": "2026-10-05T09:18:52.550Z",
+      "last_processed": {
+        "source_head": "8fc47b0a3c9a262718b706519d6d91a051629636",
+        "owner_head": "d84afa219221e31ca78f5759360ae97489a0c8d2",
+        "processed_at_utc": "2026-10-05T09:14:49.571Z",
+        "run_id": "manual-chart-magicpath-d3a-2026-10-05T090050954Z",
+        "input_heads": {
+          "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+          "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+          "41": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+          "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+          "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+          "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "47": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        "global_head": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+        "status": "NATIVE_MAGICPATH_SAMPLE_IMPLEMENTED_VERIFIED_D3AR_ADOPTED_GATES6_UNCHANGED",
+        "evidence_refs": [
+          "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md",
+          "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json",
+          "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BROWSER_CHECK.json"
+        ],
+        "ci_terminal_claim": false,
+        "governance_closure": false,
+        "actual_chart_merge_result_fpia": "NOT_RUN"
+      },
+      "reason": "D1 one dangling planning reference corrected and byte verified; immutable first reference in scoped correction_history"
     }
   ],
   "pending_history": [
@@ -1991,7 +2049,7 @@
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/MAGICPATH_RECEIPT.json": "93c6fe209ff1562444c9634c47a4c817ebd0cb775b12b73d544aa9819fde6b15",
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/OWNER_INTAKE.json": "8074ee686630125833f55135bbaddb535ef789aeed22e1d716297e0931e00fcf",
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/VALIDATION_RECEIPT.json": "efaf94527420a6d0190b3b95d1193acb0f459429728879f959e6b23fcc6ca15f",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json": "2344935db7b76aee93f0bc4c1929fab3a38a5844fa432c54913db03ad8750c68",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json": "bb684544013d9e939dca2bc2687f87b0079412b012808011895fd660e94fde5b",
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/browser/actual-390.png": "5416ca2bb61c436f8b7c315fc6c4649d6c4a72d53936abfbb486aba5015ca440",
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/browser/target-390.png": "c8d78a269e6064085af130c7c2dabcaf78553cb1462bebcc5509ab9607fec21a",
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/LICENSE-Noto-Sans-KR.txt": "18aabf190848725e2576eefb5c29ba06aac1029d02132252a7f312eac2e50cf3",
@@ -2005,9 +2063,9 @@
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-3.css": "e9c23ec753bef15b62ba2da58572d4210ce28dbe57c0fe388504778a66d6f4d5",
       "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/index.css": "7ed623c33948e02ee7bd28e26d94eb11685b365c97237f514d60b51e06fa210f"
     },
-    "evidence_commit": "d84afa219221e31ca78f5759360ae97489a0c8d2",
-    "evidence_tree": "4d16dbd025035af2cca2eaab326142bf2e69b12f",
-    "verified_at_utc": "2026-10-05T09:14:49.571Z"
+    "evidence_commit": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+    "evidence_tree": "180efc047837f7b1aa041a1b5a481a9577e88ca5",
+    "verified_at_utc": "2026-10-05T09:18:52.550Z"
   },
   "owner_actions_current": {
     "fpia_latest_source": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
@@ -2043,6 +2101,13 @@
       "kind": "LOCAL_DRAFT_WRITE",
       "first_failure": "exec Argument list too long, no process created/no file mutation",
       "repair": "Write JSON string chunks through apply_patch and atomic concat; no authority/financial change"
+    },
+    {
+      "at_utc": "2026-10-05T09:18:52.550Z",
+      "type": "D1_WRITE_SET_REFERENCE_CORRECTION",
+      "first_reference": "p0-owner-intake-v0.9/WRITE_SET.json nonexistent",
+      "repair": "Existing p0-fixture-review-v0.9/WRITE_SET.json#production_candidates + exact Main conditional acceptance receipt, all_gatefalse verified",
+      "production_gate_delta": 0
     }
   ],
   "execution_policy_history": [
