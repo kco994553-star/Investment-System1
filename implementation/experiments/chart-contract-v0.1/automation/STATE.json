@@ -92,13 +92,6 @@
         "state": "open",
         "draft": true
       },
-      "44": {
-        "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
-        "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
-        "branch": "codex/qgv-common-contract-vnext-spec-2026-10-04",
-        "state": "open",
-        "draft": true
-      },
       "41": {
         "head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
         "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
@@ -110,6 +103,13 @@
         "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
         "base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
         "branch": "integration/fpia-hardened-v1",
+        "state": "open",
+        "draft": true
+      },
+      "44": {
+        "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+        "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "branch": "codex/qgv-common-contract-vnext-spec-2026-10-04",
         "state": "open",
         "draft": true
       }
@@ -491,9 +491,9 @@
       "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
       "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
       "36": "fb086eac4321140493ce554a541343cebbb81ed6",
-      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
       "41": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
-      "42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+      "42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
     },
     "event_watermarks": {
       "17": {
@@ -718,23 +718,24 @@
     "new_chart_d3": false
   },
   "lease": {
-    "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
-    "run_id": null,
+    "status": "HELD",
+    "run_id": "manual-root-v06-20261005005901",
     "holder_kind": "MANUAL_ROOT",
-    "acquired_at_utc": "2026-10-05T00:31:02Z",
-    "expires_at_utc": "2026-10-05T01:31:02Z",
+    "acquired_at_utc": "2026-10-05T00:59:01Z",
+    "expires_at_utc": "2026-10-05T01:59:01.000Z",
     "ttl_minutes": 60,
     "allowed_automatic_ttl_minutes": 30,
     "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": true,
-    "acquisition_parent_head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+    "verified_remote_acquisition": false,
+    "acquisition_parent_head": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
     "mutual_exclusion": "PROTOCOL_NOT_PROVIDER_GUARANTEE",
     "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease.",
     "acquisition_commit": "df1743b22680cd6d56dd286fd737cb053a7175ad",
     "verified_at_utc": "2026-10-05T00:37:38.114590+00:00",
     "released_at_utc": "2026-10-05T00:41:53.010829+00:00",
     "verified_published_packet": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
-    "previous_run_id": "manual-root-v05-20261005"
+    "previous_run_id": "manual-root-v05-20261005",
+    "reason": "Current user continuation: bounded executable owner-return preflight gap; no source gate closure or package/protected production change"
   },
   "publication": {
     "status": "PACKET_AND_HANDOFF_VERIFIED",
@@ -832,7 +833,8 @@
     "allowlisted_write_scopes": [
       "implementation/experiments/chart-contract-v0.1/automation/",
       "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/",
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/"
     ],
     "do_not_ignore_dependency_semantics_from_an_owned_checkpoint": true,
     "require_current_comment_body_sha256_match": true,
@@ -898,7 +900,7 @@
     "self_event_processing": "No duplicate production/evidence work; live manual lease and narrow attribution preserved."
   },
   "approval_pins": {
-    "explicit_user_scope": "2026-10-05 Chart bounded readiness and actual automatic resume; production/protected/package changes not authorized",
+    "explicit_user_scope": "2026-10-05 latest Chart continuation through success within Chart-owned scope; no canonical merge/Frozen/Holdout/PIT/Official or other-owner writes",
     "global_routing_head": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
     "worker_routing_pr21": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
     "fpia_governance": "OPEN",
