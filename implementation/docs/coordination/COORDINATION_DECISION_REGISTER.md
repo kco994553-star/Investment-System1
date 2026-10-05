@@ -1077,3 +1077,407 @@ Recorded effect (routing writer's reading; the user wording above governs):
 - Fixed meanings for the routing: the Strategy Theme is a user-defined Strategy Theme / Portfolio Bucket, not GICS, and the economic meaning of the four buckets (반도체 장비 30, AI·반도체 25, Big Tech 20, 기타산업 25) is not changed; a Chart-side Decimal sum of 100.000% does not make an authoritative root; security identity reuses Issuer → Security → dated Listing and ticker-only identity is not accepted; no Chart-only identity layer; Product authority is separate from source/data rights, and the Product/P01 owner answers the applicability question with A, B or C.
 - Blocker 6 (FPIA governance/admissibility) is the Integration critical path. Items previously labelled D3 are not re-asked when CDR-015 already delegates them.
 - **Protected boundaries (§13) for this Work.** CDR-015 delegated canonical merges, numeric configuration, publication and deployment as D2; §13 of this later directive lists canonical merge, a Frozen semantics change, Holdout consumption, PIT/no-lookahead relaxation, Official/LIVE promotion, paid payment and arbitrary change of another owner's protected contract as actions not taken without explicit approval. Until the user reconciles the two, the Primary Integration Writer applies the narrower rule: none of those actions is taken in this Work without an explicit user approval naming it. CDR-015 otherwise stays in force (D1/D2 self-decision for everything else, D3 = cost).
+
+## CDR-017 · Claude Main = Primary Integration Coordinator for all audit/implementation Works (standing)
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** (standing operating directive) |
+| Decided at | 2026-10-05 13:05 KST (2026-10-05T04:05Z; user message in session `session_019znshzTYgyBnuuBmSxdPFN`, after CDR-016 / `5e33b30`) |
+| Relates to | CDR-001 (Worker Contract routing), CDR-015 (authority), CDR-016 (Chart routing, protected boundaries) |
+
+User wording (verbatim):
+
+> Investment-System1 Claude Main / Integration Work를 앞으로 전체 감사·구현 Work의
+> Primary Integration Coordinator로 계속 운영한다.
+>
+> 이 지시는 QGV / Chart / Product Platform 작업을 Main이 중복 구현하라는 뜻이 아니다.
+>
+> 각 scoped Work는 자기 영역을 독립적으로 계속 진행하며,
+> Claude Main의 책임은 scoped Work 사이의 cross-owner dependency를 실제로 해소하고,
+> Global Handoff와 Integration/FPIA를 통해 전체 시스템이 앞으로 진행되게 만드는 것이다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 1. FRESH GITHUB FIRST
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 매 실행/재개 시 실제 GitHub를 fresh-read한다.
+>
+> 최소 확인:
+>
+> - canonical/default + exact HEAD
+> - integration/global-handoff-v1
+> - GLOBAL_CURRENT_HANDOFF
+> - GLOBAL_STATUS_INDEX
+> - COORDINATION_DECISION_REGISTER
+> - Decision / Approval / Evidence / Conflict registers
+> - Integration/FPIA scoped handoff
+> - QGV scoped handoff
+> - Chart scoped handoff
+> - Product Platform scoped handoff
+> - Portfolio/Identity handoff
+> - Product/P01 handoff
+> - Web handoff
+> - open PR / Actions / reviews
+> - owner branch/HEAD
+> - active lease/write-set
+>
+> 실제 GitHub와 명시적 사용자 approval/decision evidence를
+> 과거 대화나 오래된 Handoff보다 우선한다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 2. PRIMARY ROLE
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> Main은 다음을 담당한다.
+>
+> 1. cross-owner dependency routing
+> 2. Global Handoff coordination
+> 3. Integration/FPIA
+> 4. owner write-set 충돌 방지
+> 5. scoped Work 결과의 integration readiness 판정
+> 6. D1/D2 자동 진행 조율
+> 7. 실제 D3만 사용자에게 escalation
+> 8. canonical integration 준비
+>
+> Main은 각 scoped Work의 전문 업무를 불필요하게 다시 수행하지 않는다.
+>
+> 예:
+>
+> QGV scoring 연구
+> → QGV Work 소유
+>
+> Chart contract/rendering
+> → Chart Work 소유
+>
+> Auth/Tenant/Connector/Reconciliation
+> → Product Platform Work 소유
+>
+> Portfolio Target
+> → Portfolio owner
+>
+> Security/Listing identity
+> → Identity owner
+>
+> Product publication authority
+> → Product/P01 owner
+>
+> Main은 이들을 연결한다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 3. THREE CONTINUOUS AUDIT WORKS
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 현재 다음 세 Work가 독립 자동진행 중인 것으로 취급한다.
+>
+> A. QGV 구조 재감사
+> B. Chart 구현 감사
+> C. Product Platform 구현 감사
+>
+> 각 Work의 최신 scoped Handoff를 dependency input으로 사용한다.
+>
+> 각 Work에서:
+>
+> OWNER_ACTION_REQUIRED
+>
+> 가 발생하면 단순 기록하고 기다리지 않는다.
+>
+> Main이 authoritative owner를 확인하고 해당 owner에게 routing한다.
+>
+> 가능하면 machine/checkable receipt / evidence / acceptance criteria 형태로 전달한다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 4. OWNER ROUTING LOOP
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 각 OWNER_ACTION_REQUIRED에 대해:
+>
+> Finding
+> ↓
+> Authoritative Owner
+> ↓
+> Required Artifact
+> ↓
+> Exact Path / PR / Branch
+> ↓
+> Acceptance Criteria
+> ↓
+> Owner Action
+> ↓
+> Evidence Receipt
+> ↓
+> Scoped Work 재소비
+> ↓
+> Blocker 재판정
+>
+> 루프를 유지한다.
+>
+> "다른 owner가 해야 한다"
+>
+> 라고 기록하는 것만으로 완료 처리하지 않는다.
+>
+> 실제 routing 또는 owner-consumable handoff packet까지 만든다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 5. GLOBAL-ONLY CHANGE PROPAGATION
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 중요:
+>
+> 어떤 dependency 변화가 owner PR HEAD 변경 없이
+> Global Handoff / Status / Decision Register에만 기록될 수 있다.
+>
+> 이 경우에도 영향받는 scoped Work가 이를 소비할 수 있도록 routing한다.
+>
+> 특히:
+>
+> - QGV decision/approval
+> - Chart Portfolio/Identity/Product/FPIA dependency
+> - Platform Auth/Tenant/Connector dependency
+>
+> 의 material semantic delta를 확인한다.
+>
+> 모든 Global commit을 모든 Work에 broadcast하지 않는다.
+>
+> 해당 Work의 blocker/dependency에 실제 영향을 주는 변화만 전달한다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 6. CHART CURRENT ROUTING
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> Chart PR #41의 최신 scoped handoff를 fresh-read한다.
+>
+> 마지막 확인 기준 Lane A에는 다음 6 gate가 있었다.
+>
+> 1. authoritative TARGET root
+> 2. Security mapping
+> 3. Theme revision/version
+> 4. Product authority
+> 5. owner write-set acceptance
+> 6. FPIA governance/admissibility
+>
+> 이를 최신 evidence로 다시 확인한다.
+>
+> 각 gate의 owner를 명시적으로 routing한다.
+>
+> 예상 ownership은 참고일 뿐이며 fresh-read가 우선한다.
+>
+> TARGET root
+> → Portfolio
+>
+> Security mapping
+> → Identity
+>
+> Theme revision
+> → Portfolio / Classification
+>
+> Product authority
+> → Product/P01
+>
+> write-set
+> → Web/Product/Integration
+>
+> FPIA
+> → Integration
+>
+> 기존 사용자 결정으로 D3→D2 범위가 완화된 항목은
+> 과거 D3 상태를 관성적으로 유지하지 않는다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 7. QGV ROUTING
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> QGV Work의 최신 unresolved items를 읽는다.
+>
+> 예:
+>
+> - Missing-Data
+> - requiredness/applicability
+> - method/version identity
+> - G 3–5Y
+> - EPS→FCF
+> - V normalization/metadata
+> - Composite
+> - WeightOverride
+>
+> QGV Work 자체가 수행 가능한 연구/감사/검증은 맡기고,
+> 다른 owner consumer/integration dependency만 Main이 routing한다.
+>
+> QGV production semantics를 Main이 임의로 결정하지 않는다.
+>
+> 실제 numeric/method/policy D3만 사용자에게 올린다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 8. PRODUCT PLATFORM ROUTING
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> Product Platform Work의 최신 capability matrix와 blockers를 읽는다.
+>
+> 범위:
+>
+> - Auth
+> - Tenant isolation
+> - Financial Connector
+> - financial record sync/import
+> - Reconciliation
+> - immutable/auditable records
+> - Read-only hard gate
+> - Product API
+> - Web/PWA
+> - investment-engine integration
+>
+> 보안/tenant/read-only 문제는 fail-closed로 처리한다.
+>
+> Platform Work에서 다른 owner dependency가 발견되면
+> Main이 routing한다.
+>
+> 실제 credential/금융계정/production auth/유료 connector는
+> 사용자 승인 없는 자동 진행 대상이 아니다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 9. D1 / D2 / D3
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 현재 승인된 authority policy를 fresh-read하여 적용한다.
+>
+> D1:
+> 자동 진행
+>
+> D2:
+> 근거·검증·복구계획을 남기고 보수적으로 자동 진행
+>
+> D3:
+> 실제 사용자 결정 필요
+>
+> 과거 D3 label만 보고 멈추지 않는다.
+>
+> 최신 Decision Register에서 D2로 재분류되었으면 자동 진행한다.
+>
+> 반대로 protected semantic 변경을 D2로 임의 낮추지 않는다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 10. INTEGRATION / FPIA
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> FPIA는 Main의 핵심 책임이다.
+>
+> 구분:
+>
+> - implementation
+> - CI
+> - independent review
+> - adversarial review
+> - governance closure
+> - GIE closure
+> - canonical applicability
+> - exact merge-result FPIA
+>
+> CI PASS만으로 전체 closure를 선언하지 않는다.
+>
+> 발견된 우회/환경 의존성은 승인 범위에서:
+>
+> repair
+> → targeted regression
+> → full/affected regression
+> → independent/adversarial verification
+> → evidence
+> → closure
+>
+> 까지 자동 진행한다.
+>
+> 실제 D3만 사용자에게 escalation한다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 11. LEASE / CONCURRENCY
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 각 scoped Work/owner branch의 lease를 존중한다.
+>
+> active writer가 있으면 같은 branch에 쓰지 않는다.
+>
+> Main이 다른 owner branch를 직접 덮어쓰지 않는다.
+>
+> Global Handoff는 Primary Integration Writer 규칙을 따른다.
+>
+> force push / history rewrite 금지.
+>
+> 장시간 CI를 기다리며 write lease를 붙잡지 않는다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 12. AUTO-CONTINUATION
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 사용자에게 매 단계마다 "계속할까요?"라고 묻지 않는다.
+>
+> D1/D2 범위에서:
+>
+> - routing
+> - retry
+> - repair
+> - retest
+> - regression
+> - evidence collection
+> - review
+> - owner handoff
+> - dependency propagation
+> - integration trial
+>
+> 은 자동으로 계속한다.
+>
+> 한 Work가 D3에 막혀도 다른 독립 Work와 owner routing은 계속한다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 13. COMPLETION CRITERION
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> Main의 성공 기준은 문서량이나 PR 수가 아니다.
+>
+> 다음이 개선되어야 한다.
+>
+> - unresolved owner dependencies ↓
+> - duplicate work ↓
+> - stale WAITING ↓
+> - D1/D2 autonomous completion ↑
+> - cross-owner propagation ↑
+> - integration readiness ↑
+> - production blockers ↓
+>
+> scoped Work가 OWNER_ACTION_REQUIRED를 반복해서 보고하는데
+> 아무 owner도 실제 action을 받지 않는 상태를 허용하지 않는다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 14. REPORT
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 의미 있는 변화가 있을 때 다음만 보고한다.
+>
+> 1. canonical / Global exact HEAD
+> 2. Integration/FPIA 상태
+> 3. QGV blockers / owner routing
+> 4. Chart blockers / owner routing
+> 5. Platform blockers / owner routing
+> 6. 이번에 해결된 dependency
+> 7. 진행 중 owner actions
+> 8. D1/D2 자동 진행 결과
+> 9. 실제 USER_D3_REQUIRED
+> 10. 다음 critical path
+>
+> No material change면 불필요한 장문 보고를 만들지 않는다.
+>
+> 최종 원칙:
+>
+> Scoped Work는 전문 업무를 수행한다.
+> Claude Main은 서로 연결한다.
+> OWNER_ACTION_REQUIRED는 routing한다.
+> D1/D2는 자동 진행한다.
+> 실제 D3만 사용자에게 돌아온다.
+> Global Handoff는 전체 시스템의 dependency routing SSoT 역할을 한다.
+
+Recorded effect (routing writer's reading; the user wording above governs):
+
+- The Integration / Claude Main Work is the Primary Integration Coordinator: cross-owner dependency routing, Global Handoff coordination, Integration/FPIA, write-set conflict prevention, integration-readiness judgement of scoped results, D1/D2 coordination, escalation of real D3 only, and canonical integration preparation. It does not redo scoped Works' specialist work (QGV scoring research, Chart contract/rendering, Product Platform auth/tenant/connector/reconciliation, Portfolio Target, Security/Listing identity, Product publication authority).
+- Three continuous audit Works are treated as running independently: QGV structural re-audit, Chart implementation audit, Product Platform implementation audit. Every OWNER_ACTION_REQUIRED they report is routed to its authoritative owner as an owner-consumable, machine-checkable packet and tracked through the loop Finding → Owner → Artifact → Path → Acceptance → Owner action → Evidence receipt → Scoped re-consumption → Blocker re-judgement. Recording "another owner must act" alone does not close an item.
+- The Global Handoff is the dependency-routing SSoT. Material semantic deltas recorded only on the Global branch are propagated to the affected scoped Work through a channel it consumes; non-material Global commits are not broadcast.
+- QGV production semantics are not decided by Main; QGV research/audit/verification stays with the QGV Work. Product Platform security, tenant and read-only issues fail closed; real credentials, financial accounts, production auth and paid connectors are not progressed automatically without user approval.
+- D1/D2/D3 follow the current authority policy (CDR-015 as narrowed by CDR-016 §13 and this entry); a past D3 label is not a reason to stop, and a protected semantic change is not lowered to D2.
+- Leases and concurrency: active writers' branches are not written; no other owner's branch is overwritten; no force push or history rewrite; no write lease is held while waiting on long CI.

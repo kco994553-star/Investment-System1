@@ -200,3 +200,8 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - User directive recorded verbatim as CDR-016: route Chart PR #41's six production blockers (TARGET root, security mapping, Strategy Theme revision, Product authority, owner write-set acceptance, FPIA governance/admissibility) to their authoritative owners with machine-checkable requests and acceptance criteria; verify existing artifacts; do not implement Chart features or duplicate owners' work; handle the Chart automation gap minimally.
 - §13 of the directive lists canonical merge and other protected actions as not taken without explicit approval; until the user reconciles it with CDR-015, the Primary Integration Writer applies the narrower rule in this Work.
 - Fresh state: canonical `b8e39a2`; handoff `d92363f`; PR #41 `74df678`; PR #42 `523e702` (fix round 3 running); PR #43 `4c5f7ff`; PR #44 `cb1906b`.
+
+## GCH-015b · 2026-10-05 13:05 KST · CDR-017 recorded (Primary Integration Coordinator, standing)
+
+- User directive recorded verbatim as CDR-017: Claude Main coordinates the QGV structural re-audit, Chart implementation audit and Product Platform implementation audit Works; routes every OWNER_ACTION_REQUIRED to its authoritative owner as a machine-checkable packet and tracks the loop to re-judgement; propagates only material Global-only deltas to affected Works; keeps FPIA closure as its core responsibility; respects leases and single-writer rules.
+- Fresh state: canonical `b8e39a2`; PR #42 `11d2f25` (fix round 3 pushed); Chart PR #41 `1e8c24c` (lease renewal only); QGV active on `codex/qgv-missing-data-decision-gate-2026-10-05` @ `4fb08a0` (no PR yet), #44 `cb1906b`, publication-evidence branch `11cd2f5`; no Product Platform branch or PR found on GitHub.
