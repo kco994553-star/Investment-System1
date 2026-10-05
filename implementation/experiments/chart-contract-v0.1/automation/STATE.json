@@ -634,12 +634,17 @@
     "magicpath_sample": "NATIVE_EDITABLE_REACT_IMPLEMENTED_VERIFIED_EXACT_BUILD_BROWSER18_OF18"
   },
   "lease": {
-    "status": "NONE",
-    "last_run_id": "manual-chart-magicpath-d3a-2026-10-05T090050954Z",
-    "released_after_verified_publication": "d84afa219221e31ca78f5759360ae97489a0c8d2",
-    "released_at_utc": "2026-10-05T09:14:49.571Z",
-    "reason": "NativeSAMPLE/browser/evidence/delegatedpolicy complete and verified; no lease held for owner/exactCI prerequisites",
-    "release_commit_note": "Containing currentHEAD resolved from Git/PR, not self-embedded"
+    "status": "ACTIVE",
+    "run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
+    "owner": "/root Chart owner",
+    "acquired_at_utc": "2026-10-05T09:17:29.146Z",
+    "expires_at_utc": "2026-10-05T09:32:29.146Z",
+    "source_start_head": "2ebccd24c00442539b12c6a5ab3b28c22f5c28e2",
+    "reason": "Correct one dangling production planning reference discovered during handoff review; preserve first reference in receipt",
+    "write_set": [
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json",
+      "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    ]
   },
   "publication": {
     "status": "V013_NATIVE_MAGICPATH_SAMPLE_AND_DELEGATED_POLICY_VERIFIED",
