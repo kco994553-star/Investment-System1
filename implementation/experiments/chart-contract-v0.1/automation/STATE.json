@@ -569,10 +569,11 @@
     "expires_at_utc": "2026-10-05T07:47:27.874Z",
     "ttl_minutes": 20,
     "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": false,
+    "verified_remote_acquisition": true,
     "acquisition_parent_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
     "reason": "Consume actual late Global7dac Main execution-coverage receipt/CDR022; no new audits or product code",
-    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+    "acquisition_commit": "5ad8432cefcf12a802395bc349cc34abd7a2eb45"
   },
   "publication": {
     "status": "V012_FIGMA_EDITABLE_STRUCTURAL_AND_PR46_TECHNICAL_PASS_PUBLICATION_VERIFIED",
@@ -1119,6 +1120,12 @@
       "actual_stage": "EDITABLE_SAMPLE_CREATED_STRUCTURAL_PASS_POST_FIX_VISUAL_BLOCKED",
       "magicpath": "HISTORICAL_READ_ONLY",
       "quota_expansion_authorized": false
+    },
+    "ssot_execution_loop": {
+      "decision": "CDR-022",
+      "global": "7dac637f499a0771b3eb54da24295624f0803558",
+      "independent_ready_continue_after_checkpoint": true,
+      "protected_authority_unchanged": true
     }
   },
   "lease_history": [
@@ -1619,41 +1626,24 @@
     }
   ],
   "prepared_publication": {
-    "status": "VERIFIED_REMOTE_PUBLICATION",
-    "run_id": "manual-chart-figma-20261005T064515261Z",
-    "source_start_head": "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
-    "preparation_parent": "a5cf1a1862aac7340dabfe169f4383da89f610cb",
-    "Global": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8",
+    "status": "PREPARED_REMOTE_VERIFICATION_PENDING",
+    "run_id": "manual-chart-late-global-20261005T072727874Z",
+    "source_start_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
+    "preparation_parent": "5ad8432cefcf12a802395bc349cc34abd7a2eb45",
+    "Global": "7dac637f499a0771b3eb54da24295624f0803558",
     "PR46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
     "output_sha256": {
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/BROWSER_CHECK.json": "363b443697c017e762eab8fafbd981860a32921a5072c25e7bda040bc3d5e2ce",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_CALLS.json": "7f6a32c08598502ca2a2d21c1caf99e101cf4e87de3afea8200165516acf705e",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json": "0b63213cd7eeaa23a1b11ee5f80096a1a081f12a53716c90343b837ba83987b6",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json": "2c2792b6694e32ec9ad1cfb8b9b585ecaace9ae51a313e0ace3b0c6f5f4cded8",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/GATES_AND_GAPS.json": "1104d448c3dd08a7a07698de9c3310d0ff3ce6ff6dad3e62eadfe046982aab9b",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "c33306c865112950f4881ebc83676ca58b8e0a951eddb3b39ee4624e3846b57c",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/SOURCE_VIEW.json": "5f0987ad86b4cfb3e50a28facf3141e1ab75f5ab0ecf53a1bd05924d73bd192a",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/VALIDATION_RECEIPT.json": "ce0431f5a991ff9dd376d6794b8118a654473279cd39e00271e8c8cba82bbb4a",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json": "197bc50dc796b1c5de98b57fefaec7279dae737e2f2471e474b9bf2cc22192f7",
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "637bc08332ec20ede69180706edfd4c4c49fa4c0ad73eb4db6743b062eeeac27"
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json": "9e9fb2f5247a0248fd54e6f31b3ec9023977d232d72980bd4827a9c8cd60b64b",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "e7e4e08bc9454aa72e54ea1e87e99a04efa9a3d7ddbc46460a1f18a97abaf02d",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "6d4843bbff28e7b68784695bf4bd3b8f86abbb207aba428abbcd954240c97923"
     },
     "evidence_paths": [
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/BROWSER_CHECK.json",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_CALLS.json",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json",
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/SOURCE_VIEW.json",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/VALIDATION_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json",
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
     ],
     "do_not_advance_processed_before_remote_verification": true,
-    "remaining_production_gates": 6,
-    "postfix_figma_visual": "NOT_RUN_TOOL_QUOTA_BLOCKED",
-    "evidence_commit": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
-    "verified_at_utc": "2026-10-05T07:23:44.868132+00:00"
+    "remaining_production_gates": 6
   },
   "owner_actions_current": {
     "fpia_latest_source": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
@@ -1761,6 +1751,43 @@
       "do_not_advance_processed_before_remote_verification": true,
       "evidence_commit": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
       "verified_at_utc": "2026-10-05T06:37:31.129Z"
+    },
+    {
+      "status": "VERIFIED_REMOTE_PUBLICATION",
+      "run_id": "manual-chart-figma-20261005T064515261Z",
+      "source_start_head": "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+      "preparation_parent": "a5cf1a1862aac7340dabfe169f4383da89f610cb",
+      "Global": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8",
+      "PR46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "output_sha256": {
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/BROWSER_CHECK.json": "363b443697c017e762eab8fafbd981860a32921a5072c25e7bda040bc3d5e2ce",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_CALLS.json": "7f6a32c08598502ca2a2d21c1caf99e101cf4e87de3afea8200165516acf705e",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json": "0b63213cd7eeaa23a1b11ee5f80096a1a081f12a53716c90343b837ba83987b6",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json": "2c2792b6694e32ec9ad1cfb8b9b585ecaace9ae51a313e0ace3b0c6f5f4cded8",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/GATES_AND_GAPS.json": "1104d448c3dd08a7a07698de9c3310d0ff3ce6ff6dad3e62eadfe046982aab9b",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "c33306c865112950f4881ebc83676ca58b8e0a951eddb3b39ee4624e3846b57c",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/SOURCE_VIEW.json": "5f0987ad86b4cfb3e50a28facf3141e1ab75f5ab0ecf53a1bd05924d73bd192a",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/VALIDATION_RECEIPT.json": "ce0431f5a991ff9dd376d6794b8118a654473279cd39e00271e8c8cba82bbb4a",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json": "197bc50dc796b1c5de98b57fefaec7279dae737e2f2471e474b9bf2cc22192f7",
+        "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "637bc08332ec20ede69180706edfd4c4c49fa4c0ad73eb4db6743b062eeeac27"
+      },
+      "evidence_paths": [
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/BROWSER_CHECK.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_CALLS.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/GATES_AND_GAPS.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/SOURCE_VIEW.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/VALIDATION_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json",
+        "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
+      ],
+      "do_not_advance_processed_before_remote_verification": true,
+      "remaining_production_gates": 6,
+      "postfix_figma_visual": "NOT_RUN_TOOL_QUOTA_BLOCKED",
+      "evidence_commit": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
+      "verified_at_utc": "2026-10-05T07:23:44.868132+00:00"
     }
   ],
   "policy_adoption_receipts": [

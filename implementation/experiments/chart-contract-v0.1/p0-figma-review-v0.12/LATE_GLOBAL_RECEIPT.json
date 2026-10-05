@@ -1,0 +1,87 @@
+{
+  "kind": "LATE_GLOBAL_OWNER_RETURN_CONSUMPTION_NOT_REPEAT_AUDIT",
+  "recorded_at_utc": "2026-10-05T07:28:42.419Z",
+  "run_id": "manual-chart-late-global-20261005T072727874Z",
+  "chart_source_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
+  "lease": "5ad8432cefcf12a802395bc349cc34abd7a2eb45",
+  "global": "7dac637f499a0771b3eb54da24295624f0803558",
+  "source_receipt_path": "implementation/docs/coordination/evidence/main_execution_coverage_2026-10-05/RECEIPT.json",
+  "source_receipt_git_blob": "fc5e0e4d0dadb85c83a92af4aca4dc87b95222a5",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "main_implementation": {
+    "branch": "codex/fpia-execution-coverage-2026-10-05",
+    "head": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
+    "tree": "8660fe1335f99275dec01f3f2f0a1f3535eeaa8e",
+    "parent": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+    "scope": "Two additive files; PIW-D003/D005 raw v2 limitations consumer",
+    "targeted": 16,
+    "affected": 683,
+    "passed": true,
+    "first_failure": "15 missing-implementation RED retained in scratch; green fixes and one added case",
+    "identity": "TREE_IDENTICAL; no COMMIT_IDENTICAL claim",
+    "closure": "BOUNDED_IMPLEMENTATION_VERIFIED; full governance closure remains OPEN"
+  },
+  "coverage": {
+    "authentication": "NOT_VERIFIED",
+    "blockers": [
+      {
+        "code": "DYNAMIC_EXECUTION_UNCOVERED",
+        "decision": "PIW-D003",
+        "next_action": "Resolve acceptance-relevant executed bytes or independently verify enforced noninterference",
+        "observed": [
+          "NOT_CLAIMED",
+          "NOT_CLAIMED"
+        ]
+      },
+      {
+        "code": "EXTERNAL_EXECUTION_UNANALYSED",
+        "decision": "PIW-D005",
+        "next_action": "Bind immutable external execution inventory to analysed bytes or verified noninterference",
+        "observed": [
+          "NOT_ANALYSED",
+          "NOT_ANALYSED"
+        ]
+      },
+      {
+        "code": "DESCENDANT_EXECUTION_UNCOVERED",
+        "decision": "PIW-D003",
+        "next_action": "Close descendant module provenance; spawn records alone are insufficient"
+      }
+    ],
+    "errors": [],
+    "external_inventory_sha256": "0dc097023db4452eb27be3437e26fec83e1858ede448868a570e0c189f8f7d65",
+    "external_reference_count": 41,
+    "integration_acceptance": "BLOCKED",
+    "raw_fpia_status": "FPIA_PASS",
+    "result_sha256": "6261005636109c32705ae7a4e9266a1cac3ddab588ce96dcbcab8ac893231500",
+    "scope": "RAW_RESULT_EXECUTION_LIMITATIONS_ONLY",
+    "spawn_count": 3,
+    "spawn_inventory_sha256": "4c16e0eaf2866b3a245358a54595767a5592eaafde76d22103b101c065a00aae",
+    "status": "COVERAGE_BLOCKED",
+    "subject_sha": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6"
+  },
+  "owner_tests": "Main16targeted+683affected PASS reused in owner exact scope; not rerun by Chart",
+  "policy": {
+    "decision": "CDR-022",
+    "meaning": "Continue independent READY D1/D2 after checkpoint; no protected authority expansion or architecture restart",
+    "applied": true
+  },
+  "github_vs_global": {
+    "global_chart_head": "a5cf1a1862aac7340dabfe169f4383da89f610cb",
+    "actual_chart_before_intake": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
+    "difference": "Global Chart snapshot a5 lease-only predates verified f3 evidence/e8 release; actual editableFigma source/browserevidence and current Github win; production0/6 unchanged"
+  },
+  "lane_a_remaining": 6,
+  "lane_a_gate_delta": 0,
+  "lane_b_admitted": "0/19",
+  "figma_visual": "POST_FIX_NOT_RUN_TOOL_QUOTA_BLOCKED",
+  "ready_independent_tasks_after_intake": 0,
+  "exact_dependencies": [
+    "Figma MCP access restore for only3postfixscreenshots",
+    "Accountable source-owner currentTARGET/commonSecurity/Theme receipts",
+    "Product applicability/fullwrite-set acceptance",
+    "Main FPIA trust/authentication/coverage/attribution/applicability/GIE closure"
+  ],
+  "new_user_d3": false,
+  "actual_chart_merge_result_fpia": "NOT_RUN"
+}

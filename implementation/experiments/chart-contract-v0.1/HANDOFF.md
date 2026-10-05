@@ -150,3 +150,8 @@ Continue the existing safe checkpoint with [scoped handoff](p0-risk-policy-v0.10
 - LaneA6OPEN/0closed: S1/S2/S3/G1 OWNER_ACTION_REQUIRED; G2/G3 PARTIALLY_RESOLVED; IMPLEMENTATION_NOT_READY. LaneB8statusfamiliesunchanged,Market0/19;23155rawrows/anomalies preserved. No newD3/protectedcode/packagePython.
 - Automationv0.11productiveCIfollowup verified; one mutable rootHANDOFF hashSTATE_STALE fixedafterremoteverification; no provenmissedtrigger/newframework. ExistingMain/CIpromptsexactreadbackPASS, schedule/enabledunchanged.
 - Scoped complete details/tests/failurehistory/owneractions/L1–L5/nextstep: `p0-figma-review-v0.12/HANDOFF.md`, `FIGMA_RECEIPT.json`, `FPIA_CURRENT_RECEIPT.json`, `GATES_AND_GAPS.json`. Nextdesignactiononlypostfixscreenshotswhenquotaallows; independentlyconsumeownerreturns, thenautomaticapprovedverticalslice.
+
+
+## Late Global owner-return consumption · v0.12
+
+Global `7dac637f499a0771b3eb54da24295624f0803558` / CDR-022 consumed; Main coverage proposalce2ea5b is implemented but current6fea FPIA rawPASS→COVERAGE_BLOCKED, authenticationNOT_VERIFIED, governance0/6. Owner16+683 evidence reused; no repeataudit. Global's Charta5snapshot is older than actualf3evidence/e8release; actualGitHub used. LaneA6/0closed,Market0/19 unchanged. See `p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json` and appended scopedHANDOFF. IndependentREADY work complete; restoredFigmaquota/actualownerreturns are exactnext triggers, no newD3.
