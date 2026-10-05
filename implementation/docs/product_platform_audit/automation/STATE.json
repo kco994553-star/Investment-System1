@@ -7,22 +7,19 @@
     "fpia_pr_42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
     "independent_audit_pr_45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
   },
-  "lease": {
-    "status": "RUNNING",
-    "run_id": "platform-validation-hardening-20261005T045220444Z",
-    "holder_kind": "AUTOMATION_MAIN",
-    "acquired_at_utc": "2026-10-05T04:52:20.444Z",
-    "expires_at_utc": "2026-10-05T05:22:20.444Z",
-    "ttl_minutes": 30,
-    "scope": "OWNER_BRANCH_PLATFORM_VALIDATION_HARDENING",
-    "verified_remote_acquisition": true,
-    "acquisition_parent_head": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
-    "reason": "Repair source-pinned malformed provenance, blank identity, and non-reference lineage defects; D1/D2 only",
-    "acquisition_commit": "2ad984e2c536f5b9b4383be49583ed0f44aa41fa",
-    "verified_at_utc": "2026-10-05T04:52:43.632Z"
-  },
-  "pending_ci": [],
-  "checkpoint": "validation_hardening_ready_for_exact_head_ci",
+  "lease": null,
+  "pending_ci": [
+    {
+      "workflow": "product-platform-audit",
+      "run_id": 37265731093,
+      "head_sha": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37265731093"
+    }
+  ],
+  "checkpoint": "validation_hardening_published_pending_exact_head_ci",
   "validation_hardening": {
     "focused_tests": "9/9 PASS after expected RED reproductions",
     "local_full_regression": "NOT_COMPLETED_CREDENTIAL_EXPOSURE_GUARD",
@@ -36,6 +33,8 @@
       "PPF-006_DURABLE_AUTHENTICATED_RECORDS",
       "AUTHENTICATED_PRODUCT_API"
     ],
-    "production_capability_promoted": false
+    "production_capability_promoted": false,
+    "publication_head": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
+    "published_at_utc": "2026-10-05T04:58:43.450Z"
   }
 }
