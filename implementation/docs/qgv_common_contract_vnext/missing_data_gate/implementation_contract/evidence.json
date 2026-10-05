@@ -1,0 +1,79 @@
+{
+  "status": "DOCUMENT_AND_PROTECTED_BYTE_VERIFICATION_PASS",
+  "checked_at_utc": "2026-10-05T01:18:18.181733+00:00",
+  "scope": "Inactive design/reference checking only; no new test/schema/runtime implementation",
+  "input_heads": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "owner_intake": "ed907b8f5a046008319cddecc6ef40b9bd6759dc",
+    "pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "integration": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+  },
+  "lease_commit": "828247ed579be0c528a0005e50cba4f1a4bcc832",
+  "approval_sha256": "65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf",
+  "approval_scope_checks": "PASS_M1_M5_PRINCIPLES_ONLY_RUNTIME_FALSE",
+  "cross_document_review": "PASS_UNIFIED_REGISTERED_PLANNED_ADMITTED_CONTRIBUTING_TERMS",
+  "production_source_checks": {
+    "count": 33,
+    "all_sha256_match": true,
+    "reference": "../../evidence/baseline.json"
+  },
+  "golden_fixture": {
+    "sha256": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040",
+    "unchanged": true,
+    "rerun": false
+  },
+  "prior_scoped_artifacts": {
+    "unchanged_sha256": {
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/CURRENT_BEHAVIOR.md": "2c22782aed9db68346c7baa5c65ce47bd51567f04f833947903a2bbddfe4d529",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/DECISION_PACKAGE.md": "4688ce49186906f0878809113c921eec60ed28d5291a3ba4b6b9be4a5338ae6f",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/POLICY_COMPARISON.md": "860605488131568a7402c5ba7cebfc5323acfa1846cb93f5deb9c497fae14800",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/SIMULATION.md": "fb042b1a50175143b93fe125e01928f38401a3749a0d6899773d866986a832d4",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/CONTROL.md": "32e203bd6a5707631bb634f3dca7fe538b59575f7ca48f0d664b198c4812fad0",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/receipts/2026-10-05_setup.json": "29823eb091947bec6009e532b4e94592394e7071ad008987c2073ffaaf1f0435",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/current_behavior_probe.py": "fb45e498c157230fe01817523052fd7f98d48f5ebd4824e564c30d996d40fd75",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/evidence/current_behavior_probes.json": "44cee852c7a9d86e78227a06ff04af0eab1c57070e4804bab35d381c4dce82d4",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/evidence/fresh_baseline.json": "f592a84cfe49ac0abba07d8fc77ee0bcb2b27aff9c6dd06bd2995bfcb0b83af7",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/evidence/verification.json": "b8b78bc768a036ed00b215003a51065ab36cfe3ee5ce32be9599aabebe5c4319",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/simulate_policies.py": "e32368037380ee9257f7adf055c88cc7a6e664d3e7c2016610f8805d4c35fb36",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/simulation_results.json": "b6bf654324207337a42e512de41f2601ccda0403f0cc4ba6a0053bdee8ff507f"
+    }
+  },
+  "prior_tracked_byte_check": {
+    "count": 7731,
+    "excluded_current_updates": [
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/CURRENT_HANDOFF.md",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/DECISION_REGISTER.md",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/README.md",
+      "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/STATE.json"
+    ],
+    "result": "ALL_OTHER_PRIOR_TRACKED_FILES_BYTE_IDENTICAL_TO_ED907B8"
+  },
+  "markdown_reference_check": {
+    "count": 35,
+    "broken": []
+  },
+  "regression_plan_evidence_mapping": {
+    "families": 14,
+    "synthetic_case_count": 102,
+    "policy_output_count": 408,
+    "scenario_ids_exist": true,
+    "simulation_rerun": false
+  },
+  "new_test_or_actions_execution": "NOT_RUN_DESIGN_ONLY",
+  "new_runtime_schema_test_code_diff": "NONE",
+  "prior_pr44_ci": "Retained for cb1906b207623168fd70f3dcdb5b30f2d82d807d, not promoted to owner HEAD",
+  "pit_oos": "NOT_RUN",
+  "holdout": "UNCONSUMED",
+  "legacy_score_changed": false,
+  "production_semantics_changed": false,
+  "history_rewritten": false,
+  "doc_sha256": {
+    "README.md": "a40dfec911906dbb55e080aff902cbe8699bdf7822f2a449ae068ca6290da582",
+    "automation_verification.json": "d673f238e80755e808c5d705769d4fe781d142fee4904d31ade6167aee6401b2",
+    "CONTRACT.md": "5203e09c36c612aa573789a5cdf8bcf1fb76f26fad105171e21b31828e13f76b",
+    "MIGRATION_BOUNDARY.md": "3383f5525a00be108e4fc194a1c0ad8940fa98b7b6be30da4febba2e6b350a3c",
+    "REGRESSION_PLAN.md": "d64daa8d183740900cfd5e01d2938b1fe7118db479e14517baa7586fd27f2a7e",
+    "REUSE_MAP.md": "36ba64706bdc00eba5c33243ddd04cadd9eda5e5cf2da187797ed3c8ad10f18f",
+    "approval.json": "65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf"
+  }
+}

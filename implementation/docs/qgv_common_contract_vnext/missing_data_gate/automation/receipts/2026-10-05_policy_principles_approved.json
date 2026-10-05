@@ -1,0 +1,22 @@
+{
+  "kind": "M1_M5_LIMITED_PRINCIPLE_APPROVAL_AND_DESIGN_RECEIPT",
+  "approval_id": "QCC-P01-M1-M5-PRINCIPLES-2026-10-05",
+  "approved_at_kst": "2026-10-05T09:57:52+09:00",
+  "approval_sha256": "65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf",
+  "authority": "Explicit user instruction in this Work conversation; not inferred from PR review/merge/CI",
+  "input_owner_head": "ed907b8f5a046008319cddecc6ef40b9bd6759dc",
+  "lease_commit": "828247ed579be0c528a0005e50cba4f1a4bcc832",
+  "policy_principles": "APPROVED_RECORDED",
+  "implementation_contract": "PROPOSED_INACTIVE_DESIGN_ONLY",
+  "actual_factor_roles_na_ranking_bindings": "UNRESOLVED_NOT_APPROVED",
+  "runtime_implementation": "NOT_STARTED_NOT_AUTHORIZED",
+  "legacy_scores_changed": false,
+  "history_rewritten": false,
+  "holdout": "UNCONSUMED",
+  "new_runtime_tests_actions_pit_oos": "NOT_RUN",
+  "prior_simulation": "102/408/270 evidence reused, not rerun",
+  "next_gate": "Method/profile binding and consumer admission decision package",
+  "automation_prompt_update": "SUCCESS_ENABLED_SAME_CHAT_EXACT_44_42_SUBSCRIPTIONS_PRESERVED",
+  "webhook_delivery": "NOT_TESTED",
+  "lease_release": "Lease null in the atomic owner publication tree"
+}

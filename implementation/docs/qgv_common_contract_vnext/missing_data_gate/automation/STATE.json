@@ -12,14 +12,8 @@
     "pr_events": "6ac2f22087288191abd144fb4a7655f8",
     "ci_followup": "6ac2efbd34fc8191a60dccbbe338c291"
   },
-  "status": "RUNNING_IMPLEMENTATION_CONTRACT_DESIGN",
-  "lease": {
-    "run_token": "qgv-implementation-contract-manual-2026-10-05-095752-approval",
-    "input_head": "ed907b8f5a046008319cddecc6ef40b9bd6759dc",
-    "input_approval_time_kst": "2026-10-05T09:57:52+09:00",
-    "scope": "DESIGN_AND_VERIFICATION_PLAN_ONLY",
-    "disposition": "RUNNING"
-  },
+  "status": "IDLE_WAITING_FOR_METHOD_PROFILE_BINDING_AND_CONSUMER_DECISIONS",
+  "lease": null,
   "pending_runs": [],
   "pending_long_tests": [],
   "last_observed_heads": {
@@ -64,11 +58,11 @@
   "webhook_configuration": "CREATE_AND_UPDATE_SUCCESS_ENABLED",
   "webhook_delivery": "NOT_TESTED",
   "decisions": {
-    "QCC-P01.M1": "PROPOSED_NOT_APPROVED",
-    "QCC-P01.M2": "PROPOSED_NOT_APPROVED",
-    "QCC-P01.M3": "PROPOSED_NOT_APPROVED",
-    "QCC-P01.M4": "PROPOSED_NOT_APPROVED",
-    "QCC-P01.M5": "PROPOSED_NOT_APPROVED"
+    "QCC-P01.M1": "APPROVED_PRINCIPLES_ONLY",
+    "QCC-P01.M2": "APPROVED_PRINCIPLES_ONLY",
+    "QCC-P01.M3": "APPROVED_PRINCIPLES_ONLY",
+    "QCC-P01.M4": "APPROVED_PRINCIPLES_ONLY",
+    "QCC-P01.M5": "APPROVED_PRINCIPLES_ONLY"
   },
   "approval_source": "Explicit user messages and authenticated scoped approval records; PR reviews/merges do not independently grant semantic authority",
   "protected": {
@@ -78,5 +72,24 @@
     "holdout_consumed": false,
     "paid_purchase_allowed": false
   },
-  "delivery_head": "Resolve remote owner ref; deliberately not self-referential"
+  "delivery_head": "Resolve remote owner ref; deliberately not self-referential",
+  "approval_ref": {
+    "id": "QCC-P01-M1-M5-PRINCIPLES-2026-10-05",
+    "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/approval.json",
+    "sha256": "65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf",
+    "approved_at_kst": "2026-10-05T09:57:52+09:00",
+    "scope": "EXACT_M1_M5_PRINCIPLES_ONLY"
+  },
+  "implementation_contract": "PROPOSED_INACTIVE_DESIGN_ONLY",
+  "runtime_implementation_authorized": false,
+  "last_manual_disposition": "DESIGN_READY_POLICY_VALUES_UNRESOLVED",
+  "last_automation_prompt_update": {
+    "scope": "M1_M5_APPROVED_PRINCIPLES_ONLY_DESIGN_STOP",
+    "result": "SUCCESS_ENABLED_SAME_CHAT",
+    "trigger_prs": [
+      44,
+      42
+    ],
+    "event_delivery": "NOT_TESTED"
+  }
 }

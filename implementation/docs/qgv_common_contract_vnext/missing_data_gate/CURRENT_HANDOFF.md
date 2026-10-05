@@ -1,6 +1,6 @@
 # QGV Missing-Data Gate — scoped handoff · 2026-10-05
 
-**STATUS: DECISION_READY / RECOMMENDED_NOT_APPROVED / INACTIVE / SPEC-ONLY.**
+**STATUS: MISSING_DATA_POLICY_PRINCIPLES_APPROVED / IMPLEMENTATION_CONTRACT_DESIGN_READY / INACTIVE / SPEC-ONLY.**
 
 This is an additive Phase B continuation. Read this handoff and
 [DECISION_PACKAGE.md](DECISION_PACKAGE.md) before starting work. Do not repeat
@@ -67,8 +67,10 @@ a separate preserved issue.
 
 ## M1–M5 and recommendation
 
-All IDs are local **PROPOSED / NOT_APPROVED / INACTIVE**, under QCC-P01 with
-QCC-P02 cross-cutting admission. They are not approved global CDRs.
+The following table preserves the historical Phase B recommendations at ed907b8.
+Current approval is only the explicit M1-M5 principles in the new approval record
+below; stronger implementation/binding choices remain unapproved. IDs are scoped
+QCC-P01 references, not new global CDRs.
 
 | ID | Recommended policy principle |
 |---|---|
@@ -109,7 +111,7 @@ unchanged. Holdout is UNCONSUMED. Canonical, PR #44 and integration branches are
 not modified or merged. Existing golden expectations and earlier spec/status/
 publication records remain byte-preserved.
 
-**Next single user decision:** approve or amend the explicitly enumerated
+**Historical Phase B recommendation (superseded by the limited approval below):** approve or amend the explicitly enumerated
 M1–M5 guarded-Hybrid policy principles in `DECISION_PACKAGE.md`.
 
 After policy acceptance, assemble the exact method/profile binding and impact
@@ -133,5 +135,51 @@ Two enabled automations target this Work's chat: PR-event resume
 follow-up `6ac2efbd34fc8191a60dccbbe338c291`. See [control](automation/CONTROL.md)
 and [state](automation/STATE.json). Real webhook delivery is NOT_TESTED;
 no pending run is fabricated. Phase B has no PR number at this checkpoint.
-M1-M5 remain NOT_APPROVED. Own-branch optimistic leases, event receipts and
+M1-M5 principle status is superseded by the new approval record below. Runtime
+and concrete bindings remain NOT_APPROVED. Own-branch optimistic leases, event receipts and
 control-only change exclusions protect duplicate writes/self-trigger loops.
+
+## Current checkpoint — principle approval and inactive implementation design
+
+- User approval: **2026-10-05T09:57:52+09:00**, exact M1-M5 principles only.
+- [Approval record](implementation_contract/approval.json) is authoritative for the
+  scope. It supersedes earlier NOT_APPROVED statements only for those principles,
+  not the older proposal's all-active completeness/ranking rule, universal N/A
+  exclusion or optional-zero request suppression.
+- [Implementation Contract](implementation_contract/CONTRACT.md): INACTIVE,
+  SPEC-ONLY, runtime_enabled=false; not a new production policy or evaluator.
+- [Reuse map](implementation_contract/REUSE_MAP.md) and
+  [regression plan](implementation_contract/REGRESSION_PLAN.md) reuse existing
+  source/provenance/weight/version structures and prior evidence.
+- [Migration boundary](implementation_contract/MIGRATION_BOUNDARY.md): separate
+  method/profile binding, consumer criteria and implementation/version migration.
+- Intake owner HEAD ed907b8f5a046008319cddecc6ef40b9bd6759dc; design lease commit
+  828247ed579be0c528a0005e50cba4f1a4bcc832. Resolve delivery HEAD from owner ref;
+  no self-referential SHA is invented. PR #44/42 and canonical input pins above
+  are unchanged. Phase B still has no PR; no new Actions were run for this design.
+- This phase creates no runtime/schema/tests implementation. Prior 102x4/408/270
+  and original 71 golden are reused evidence, not newly run vNext acceptance.
+  Production/source/golden/previous proposal evidence stays unchanged.
+- M1-M5 are **APPROVED_PRINCIPLES_ONLY**. Actual 20-factor roles, conditional/N/A
+  predicates, admission-reason/scope bindings, completeness/ranking methods,
+  numeric thresholds and calculation/score/consumer migration are NOT_APPROVED.
+- Next single gate: bounded **method/profile binding and consumer admission
+  Decision Package**. This design does not authorize that package's values or
+  production implementation. Independently authorized design/evidence work can
+  continue; result-affecting choices require separate D3/user approval.
+- Q/G/V, G/FCF, V methods/metadata, composite, runtime WeightOverride, weights,
+  boards/records, PIT policies, Frozen history, Holdout and canonical/PR44 merge
+  remain protected. Global Handoff was not edited.
+- Both existing automation prompts were updated to the exact limited principle
+  approval and design stop, preserving #44/#42 subscriptions and this chat.
+  [Configuration verification](implementation_contract/automation_verification.json)
+  records API success/enabled readback; event delivery is still NOT_TESTED and
+  trigger inventory readback is not exposed. No new automation or pending CI run
+  was created. The publication releases this run's lease and checkpoints the
+  unresolved binding/consumer decisions.
+- [Design verification](implementation_contract/evidence.json): 33 pinned
+  production-source hashes and original golden hash match; 7,731 prior tracked
+  files outside four explicit current-status updates are byte-identical to
+  ed907b8. Document links and fourteen regression-family evidence mappings passed
+  reference checks. This is document/protected-byte verification,
+  not execution of the future Missing-Data runtime or new Actions.

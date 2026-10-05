@@ -1,9 +1,10 @@
 # QGV Missing-Data Decision Gate v0.1
 
-**INACTIVE / SPEC-ONLY / RECOMMENDED NOT APPROVED.**
+**INACTIVE / SPEC-ONLY. M1-M5 PRINCIPLES APPROVED; bindings/runtime NOT APPROVED.**
 
-Start with [DECISION_PACKAGE.md](DECISION_PACKAGE.md). It contains the five
-minimum policy choices and one recommended integrated policy. Continue from
+Start with [Implementation Contract](implementation_contract/README.md) and its
+exact principle approval record. The older [DECISION_PACKAGE.md](DECISION_PACKAGE.md)
+is preserved proposal history, including stronger unapproved choices. Continue from
 [CURRENT_HANDOFF.md](CURRENT_HANDOFF.md); do not repeat Remote Recovery.
 
 | Artifact | Purpose |

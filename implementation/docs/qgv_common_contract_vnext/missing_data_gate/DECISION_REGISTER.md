@@ -1,10 +1,13 @@
 # QGV Missing-Data scoped Decision Register
 
-**Proposal record only. No production policy is approved or active.**
+**Current: M1–M5 policy principles APPROVED; concrete bindings/runtime NOT APPROVED.**
+Historical proposal entries below are preserved.
 
 This additive register subdivides the existing local QCC-P01 proposal. It does
 not rename global CDR decisions, change Context AP1–AP3, or edit Frozen records.
 QCC-P02 is referenced for validation/PIT admission. Date: 2026-10-05 KST.
+
+## Historical proposal table — ed907b8 before limited user approval
 
 | Local proposal ID | Policy surface | Recommendation | Class if adopted for production semantics | Status |
 |---|---|---|---|---|
@@ -36,3 +39,28 @@ Future user approval must be added as a new event with actual KST timestamp,
 exact approved clause/version/document hash, authority and exclusions. Do not
 replace this proposal event or infer approval from successful tests. Policy
 acceptance and runtime authorization must be separate recorded grants.
+
+## Append-only user approval event — 2026-10-05T09:57:52+09:00
+
+Approval ID: QCC-P01-M1-M5-PRINCIPLES-2026-10-05.
+Authority: explicit user message in this Work; no PR/CI-derived approval.
+Record: [implementation_contract/approval.json](implementation_contract/approval.json).
+Record SHA-256: `65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf`.
+Prior proposal: ed907b8f5a046008319cddecc6ef40b9bd6759dc,
+DECISION_PACKAGE SHA-256 4688ce49186906f0878809113c921eec60ed28d5291a3ba4b6b9be4a5338ae6f.
+
+| Clause | Approved scope | Current status |
+|---|---|---|
+| M1 | Separate requiredness and economic applicability | APPROVED_PRINCIPLE_ONLY |
+| M2 | Ordinary missing vs related PIT/integrity; admission before weights; no weight/denominator bypass | APPROVED_PRINCIPLE_ONLY |
+| M3 | Ordinary missing keeps planned denominator; proven contract N/A may be excluded | APPROVED_PRINCIPLE_ONLY |
+| M4 | Diagnostic/partial contribution distinct from complete/ranking eligibility | APPROVED_PRINCIPLE_ONLY |
+| M5 | Zero removes numeric contribution, not evidence/requiredness/applicability/PIT/integrity/provenance; Official/Custom isolation | APPROVED_PRINCIPLE_ONLY |
+
+No actual role/predicate/taxonomy/coverage/ranking method/cutoff, numeric policy,
+financial score recalculation, G/FCF/V/composite change, runtime wiring, Official
+weight, implementation/version migration, history rewrite, Holdout or merge is
+approved. Older all-active completeness/ranking, mandatory N/A exclusion and
+optional-zero input suppression remain proposals. New Implementation Contract
+is INACTIVE/DESIGN-ONLY. This append changes current principle status without
+rewriting historical proposal/simulation evidence.
