@@ -3,7 +3,7 @@
   "observed_at_utc": "2026-10-05T08:02:52.173Z",
   "directive_received_at_kst": "2026-10-05T16:15:41+09:00",
   "role": "Product Platform independent specialist audit",
-  "execution_state": "WAIT_DEPENDENCY",
+  "execution_state": "IN_PROGRESS",
   "acceptance_complete": false,
   "publication_branch": "codex/product-platform-storage-auth-review-2026-10-05",
   "publication_identity": "Containing commit; publication completed on branch before this checkpoint is authoritative",
@@ -464,7 +464,14 @@
       "acceptance": "Exact8599558, own comment5990208500 and prior Main5989810728 match; source_ack/adoption false retained; bounded independent metadata verification"
     }
   ],
-  "ready_tasks": [],
+  "ready_tasks": [
+    {
+      "id": "PP-D3-POLICY-v1",
+      "classification": "READY",
+      "authority": "USER_DIRECTIVE",
+      "acceptance": "Exact policy receipt, scoped reclassification, own prompts updated/readback; no other-owner takeover"
+    }
+  ],
   "pending_ci": [],
   "D3_current_decisions": [],
   "reserved_D3": [
@@ -484,7 +491,18 @@
     "CI_terminal_consumable_now": 0,
     "SSoT_update_closure_ready": 0
   },
-  "lease": null,
+  "lease": {
+    "run_id": "platform-d3-delegation-2026-10-05T090201094Z",
+    "writer": "Product Platform independent auditor /root",
+    "scope": [
+      "implementation/docs/product_platform/automation/",
+      "implementation/docs/product_platform/CURRENT_HANDOFF.md"
+    ],
+    "parent": "edd9b0eb7fcb714c0025aec0aa2a736cd040e6ed",
+    "acquired_at_utc": "2026-10-05T09:02:01.094Z",
+    "expires_at_utc": "2026-10-05T09:32:01.094Z",
+    "purpose": "Apply user D3-A/D3-R directive; reclassify pending decisions; synchronize own automation policy only"
+  },
   "lease_protocol": {
     "scope": "This audit branch only",
     "claim": "Exact fresh parent commit, force=false update/readback before write-producing READY; losing child re-reads",
