@@ -3,7 +3,7 @@
   "observed_at_utc": "2026-10-05T07:36:38.141Z",
   "directive_received_at_kst": "2026-10-05T16:15:41+09:00",
   "role": "Product Platform independent specialist audit",
-  "execution_state": "WAIT_DEPENDENCY",
+  "execution_state": "IN_PROGRESS",
   "acceptance_complete": false,
   "publication_branch": "codex/product-platform-storage-auth-review-2026-10-05",
   "publication_identity": "Containing commit; publication completed on branch before this checkpoint is authoritative",
@@ -442,7 +442,9 @@
       "next_automatic_action": "Read-only schema/access-policy/log audit on the exact approved DEV; no discovery/replacement or tenant-policy writes"
     }
   ],
-  "ready_tasks": [],
+  "ready_tasks": [
+    "record:first-event-noop-receipt"
+  ],
   "pending_ci": [],
   "D3_current_decisions": [],
   "reserved_D3": [
@@ -462,7 +464,31 @@
     "CI_terminal_consumable_now": 0,
     "SSoT_update_closure_ready": 0
   },
-  "lease": null,
+  "lease": {
+    "run_id": "platform-event-18584e20-c090-11f1-9b73-43ef0de39283",
+    "writer": "Product Platform independent specialist webhook executor",
+    "acquired_at_utc": "2026-10-05T07:57:12.389Z",
+    "expires_at_utc": "2026-10-05T08:27:12.389Z",
+    "parent": "8599558dd1ec7e546ab46c230557ccf9e844e171",
+    "scope": [
+      "implementation/docs/product_platform/automation/STATE.json",
+      "implementation/docs/product_platform/automation/CHECKPOINT.md",
+      "implementation/docs/product_platform/automation/evidence/event_18584e20_2026-10-05.json",
+      "implementation/docs/product_platform/CURRENT_HANDOFF.md"
+    ],
+    "input_fingerprint": "delivery:18584e20-c090-11f1-9b73-43ef0de39283;comment:5990208500;own:8599558dd1ec7e546ab46c230557ccf9e844e171",
+    "source_fingerprints": {
+      "owner_branch": "codex/product-platform-audit-v1",
+      "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
+      "owner_source": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
+      "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "global_branch": "integration/global-handoff-v1",
+      "global": "76df9e6a71fa91ff5ee260bc6087185facae3779",
+      "pr45_head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+      "web": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "p01": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
+    }
+  },
   "lease_protocol": {
     "scope": "This audit branch only",
     "claim": "Exact fresh parent commit, force=false update/readback before write-producing READY; losing child re-reads",
