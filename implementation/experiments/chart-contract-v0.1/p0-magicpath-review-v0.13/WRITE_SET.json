@@ -1,0 +1,99 @@
+{
+  "owner": "Chart",
+  "exactRoot": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/",
+  "scope": "Additive nonprotected SAMPLEsource/browser/receipts; root scopedHANDOFF append +sharedSTATE",
+  "componentFiles": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/App.tsx",
+      "owner": "Chart SAMPLEartifact",
+      "protected": false,
+      "P01digestImpact": 0,
+      "TrackCpackagePythonCodeHashImpact": 0,
+      "WebOwnerProductionImpact": 0,
+      "PortfolioOwnerImpact": 0,
+      "IntegrationOwnerProductionImpact": 0
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/ChartStrategyThemeSAMPLEACTUALUnavailable.css",
+      "owner": "Chart SAMPLEartifact",
+      "protected": false,
+      "P01digestImpact": 0,
+      "TrackCpackagePythonCodeHashImpact": 0,
+      "WebOwnerProductionImpact": 0,
+      "PortfolioOwnerImpact": 0,
+      "IntegrationOwnerProductionImpact": 0
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/ChartStrategyThemeSAMPLEACTUALUnavailable.tsx",
+      "owner": "Chart SAMPLEartifact",
+      "protected": false,
+      "P01digestImpact": 0,
+      "TrackCpackagePythonCodeHashImpact": 0,
+      "WebOwnerProductionImpact": 0,
+      "PortfolioOwnerImpact": 0,
+      "IntegrationOwnerProductionImpact": 0
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/chartSampleView.ts",
+      "owner": "Chart SAMPLEartifact",
+      "protected": false,
+      "P01digestImpact": 0,
+      "TrackCpackagePythonCodeHashImpact": 0,
+      "WebOwnerProductionImpact": 0,
+      "PortfolioOwnerImpact": 0,
+      "IntegrationOwnerProductionImpact": 0
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-0.css",
+      "owner": "Chart SAMPLEartifact",
+      "protected": false,
+      "P01digestImpact": 0,
+      "TrackCpackagePythonCodeHashImpact": 0,
+      "WebOwnerProductionImpact": 0,
+      "PortfolioOwnerImpact": 0,
+      "IntegrationOwnerProductionImpact": 0
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-1.css",
+      "owner": "Chart SAMPLEartifact",
+      "protected": false,
+      "P01digestImpact": 0,
+      "TrackCpackagePythonCodeHashImpact": 0,
+      "WebOwnerProductionImpact": 0,
+      "PortfolioOwnerImpact": 0,
+      "IntegrationOwnerProductionImpact": 0
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-2.css",
+      "owner": "Chart SAMPLEartifact",
+      "protected": false,
+      "P01digestImpact": 0,
+      "TrackCpackagePythonCodeHashImpact": 0,
+      "WebOwnerProductionImpact": 0,
+      "PortfolioOwnerImpact": 0,
+      "IntegrationOwnerProductionImpact": 0
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-3.css",
+      "owner": "Chart SAMPLEartifact",
+      "protected": false,
+      "P01digestImpact": 0,
+      "TrackCpackagePythonCodeHashImpact": 0,
+      "WebOwnerProductionImpact": 0,
+      "PortfolioOwnerImpact": 0,
+      "IntegrationOwnerProductionImpact": 0
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/index.css",
+      "owner": "Chart SAMPLEartifact",
+      "protected": false,
+      "P01digestImpact": 0,
+      "TrackCpackagePythonCodeHashImpact": 0,
+      "WebOwnerProductionImpact": 0,
+      "PortfolioOwnerImpact": 0,
+      "IntegrationOwnerProductionImpact": 0
+    }
+  ],
+  "protectedWrites": 0,
+  "productionWriteSet": "p0-owner-intake-v0.9/WRITE_SET.json planning proposal only; not automatically accepted by this packet"
+}

@@ -1,0 +1,74 @@
+{
+  "schema": "chart-magicpath-sample-receipt-v1",
+  "recorded_at_utc": "2026-10-05T09:04:32.821Z",
+  "projectId": "457727891984232448",
+  "componentId": "457764208520613888",
+  "revisionId": "457764208524808192",
+  "generatedName": "wisely-world-3816",
+  "projectCreated": false,
+  "primaryTool": "MagicPath",
+  "scope": "SAMPLE_PRESENTATION_ONLY",
+  "build": "COMPLETED",
+  "buildCompletedAt": "2026-10-05T08:00:10.272Z",
+  "nativeMCPPreview": "OBSERVED",
+  "browser": "PASS_18_OF_18_EXACT_BUILD_LOCAL_MIRROR",
+  "sampleSource": "p0-figma-review-v0.12/SOURCE_VIEW.json",
+  "sourceSnapshotSha256": "5f0987ad86b4cfb3e50a28facf3141e1ab75f5ab0ecf53a1bd05924d73bd192a",
+  "svg": "LITERAL_ORIGINAL_PRESERVED",
+  "serverNormalization": "TSX formatting and scaffold Google-font import normalized to Noto; exact9returned files persisted. No finance recomputation.",
+  "font": "Original124 Noto400 WOFF2 subsets embedded whole into4CSS files; existing license copied.",
+  "quotaAtIntake": {
+    "limit": 50,
+    "used": 15,
+    "remaining": 35,
+    "freeCredits": 20,
+    "paidPurchase": false
+  },
+  "failures": [
+    {
+      "step": "archive_fonts",
+      "result": "124WOFF2ignored by actual allowlist",
+      "repair": "Embed original full font bytes in CSS, no asset discarded"
+    },
+    {
+      "step": "archive_css",
+      "result": "COMPONENT_ARCHIVE_FILE_TOO_LARGE 2569795>1048576",
+      "repair": "Size-aware CSS chunks <=799811bytes; 124fonts retained",
+      "initialEqualCountChunkFailure": "1072586>1048576 preserved"
+    },
+    {
+      "step": "upload_command",
+      "result": "curl26 missing default archive name",
+      "repair": "Use actual complete archive filepath"
+    },
+    {
+      "step": "browser_direct",
+      "result": "ERR_EMPTY_RESPONSE",
+      "repair": "Download same builtHTML/JS/CSS with curl; verify unchanged hashes locally"
+    },
+    {
+      "step": "browser_local_separate_process",
+      "result": "ERR_CONNECTION_REFUSED",
+      "cause": "Each exec command isolated network namespace",
+      "repair": "HTTP server and browser in same Node execution;18/18PASS"
+    }
+  ],
+  "fallback": "MagicPath unavailable/quota→existing GitHub renderer + local browser/mobile + deterministic artifacts; no paid expansion; no duplicate Figma management",
+  "figmaHistoricalFinalVisual": "NOT_RUN_QUOTA_BLOCKED; not relabeled PASS; optional historical capture superseded as active design prerequisite",
+  "financial": {
+    "target": "REFERENCE_SAMPLE_ONLY",
+    "actual": "NOT_AVAILABLE_NO_TARGET_FALLBACK",
+    "dimensions": 4,
+    "productionGateCount": 6,
+    "marketAdmission": 0
+  },
+  "toolUse": [
+    "MagicPath production MCP",
+    "GitHub API",
+    "Playwright1.58.2 Chromium153",
+    "Superpowers scoped systematic-debugging/verification-before-completion"
+  ],
+  "context7": "Existing exact lightweight-charts5.2.1 official/version evidence reused; no new chart library/dependency",
+  "productionDeployment": false,
+  "protectedWrites": 0
+}

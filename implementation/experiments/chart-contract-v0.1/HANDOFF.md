@@ -155,3 +155,10 @@ Continue the existing safe checkpoint with [scoped handoff](p0-risk-policy-v0.10
 ## Late Global owner-return consumption · v0.12
 
 Global `7dac637f499a0771b3eb54da24295624f0803558` / CDR-022 consumed; Main coverage proposalce2ea5b is implemented but current6fea FPIA rawPASS→COVERAGE_BLOCKED, authenticationNOT_VERIFIED, governance0/6. Owner16+683 evidence reused; no repeataudit. Global's Charta5snapshot is older than actualf3evidence/e8release; actualGitHub used. LaneA6/0closed,Market0/19 unchanged. See `p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json` and appended scopedHANDOFF. IndependentREADY work complete; restoredFigmaquota/actualownerreturns are exactnext triggers, no newD3.
+
+
+## MagicPath primary / delegated D3-A-R checkpoint v0.13
+
+Native SAMPLE component457764208520613888/revision457764208524808192 IMPLEMENTED_VERIFIED. Exact-built browser18/18PASS (1280/390), ACTUAL fourNOT_AVAILABLE/SVG0, originalfinancialSAMPLE preserved. Full scoped handoff/evidence: p0-magicpath-review-v0.13/HANDOFF.md. MagicPath primary; quota/unavailable→existingGitHubrenderer/localbrowser artifacts automatically, no payment/duplicateFigma. Figma historicalfinalvisual remainsNOT_RUN.
+
+Latest user D1/D2/D3-A/D3-R policy adopted with exact DECISION_RECEIPT; no newD3-R request and no ownerboundary takeover. Latest Globala83fccc + PR47exact7215 read:6/7ActionsSUCCESS, FPIA37284465900attempt1pending; prior46hash-verifiedrawPASS remains separately bound. Sixproductiongates OPEN,0closed; Market0/19,8gapstates unchanged. SAMPLEimplementation/evidence continues independently; currentTARGET production IMPLEMENTATION_NOT_READY. Rootpublicationhash refreshed after actualAPI/Gitreadback; historicalreceipts preserved.

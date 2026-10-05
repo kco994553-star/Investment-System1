@@ -498,15 +498,15 @@
   },
   "pending": [
     {
-      "kind": "READ_ONLY_FIGMA_POST_FIX_VISUAL_CHECK",
-      "file_key": "CoAKYXmagWAS8LRRkpqbZr",
-      "node_ids": [
-        "6:36",
-        "6:37",
-        "6:38"
-      ],
-      "disposition": "EXTERNAL_TOOL_QUOTA_BLOCKED; retry only when access restored, no paid upgrade/newfile/productiongate",
-      "required": "Three post-fix screenshots compare with SOURCE_VIEW/current browser; no source implementation rerun",
+      "kind": "OWNER_EXACT_CI_FOLLOWUP",
+      "pr": 47,
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "run_id": 37284465900,
+      "attempt": 1,
+      "workflow": "track-c-fpia",
+      "observed_status": "in_progress",
+      "last_observed_at_utc": "2026-10-05T09:08:30.805Z",
+      "role": "Read-only consume currentterminalreceipt, Mainownsrepair/governance",
       "does_not_block_independent_chart_work": true
     }
   ],
@@ -1121,18 +1121,33 @@
       "frontend_ready_contracts"
     ],
     "primary_design_tool": {
-      "name": "Figma",
-      "file_key": "CoAKYXmagWAS8LRRkpqbZr",
-      "url": "https://www.figma.com/design/CoAKYXmagWAS8LRRkpqbZr",
-      "actual_stage": "EDITABLE_SAMPLE_CREATED_STRUCTURAL_PASS_POST_FIX_VISUAL_BLOCKED",
-      "magicpath": "HISTORICAL_READ_ONLY",
-      "quota_expansion_authorized": false
+      "provider": "MagicPath",
+      "project_id": "457727891984232448",
+      "component_id": "457764208520613888",
+      "revision_id": "457764208524808192",
+      "scope": "SAMPLE_PRESENTATION_IMPLEMENTED_VERIFIED",
+      "fallback": "EXISTING_GITHUB_RENDERER_LOCAL_BROWSER_ARTIFACTS_AUTO_CONTINUE",
+      "historicalFigma": "Preserve3views; historicalfinalvisualNOT_RUN notactiveprerequisite"
     },
     "ssot_execution_loop": {
       "decision": "CDR-022",
       "global": "7dac637f499a0771b3eb54da24295624f0803558",
       "independent_ready_continue_after_checkpoint": true,
       "protected_authority_unchanged": true
+    },
+    "delegated_approval": {
+      "version": "D3 Delegated Approval Policy v1.0",
+      "classes": [
+        "D1",
+        "D2",
+        "D3-A",
+        "D3-R"
+      ],
+      "condition": "All user conditions + concrete existingSSoT authority proof, reversible independently/deterministically verified conservative choice",
+      "reserved": "User supplied full reserved list in DECISION_RECEIPT.json",
+      "unknown": "D3-R",
+      "scope": "Only dependentlane waits; does not replace actualsource facts/ownerwrite-set/governance",
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json"
     }
   },
   "lease_history": [
@@ -1696,29 +1711,71 @@
       "disposition": "EXACT_TERMINAL_FAILURE_CONSUMED_NO_RETRY_OTHER_OWNER_ACTION_REQUIRED",
       "consumed_at_utc": "2026-10-05T06:37:31.129Z",
       "receipt": "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json"
+    },
+    {
+      "at_utc": "2026-10-05T09:08:30.805Z",
+      "pending": [
+        {
+          "kind": "READ_ONLY_FIGMA_POST_FIX_VISUAL_CHECK",
+          "file_key": "CoAKYXmagWAS8LRRkpqbZr",
+          "node_ids": [
+            "6:36",
+            "6:37",
+            "6:38"
+          ],
+          "disposition": "EXTERNAL_TOOL_QUOTA_BLOCKED; retry only when access restored, no paid upgrade/newfile/productiongate",
+          "required": "Three post-fix screenshots compare with SOURCE_VIEW/current browser; no source implementation rerun",
+          "does_not_block_independent_chart_work": true
+        }
+      ],
+      "disposition": "FigmaNOT_RUN retained as historical evidence; userMagicPathprimary supersedes active design prerequisite"
     }
   ],
   "prepared_publication": {
-    "status": "VERIFIED_REMOTE_PUBLICATION",
-    "run_id": "manual-chart-late-global-20261005T072727874Z",
-    "source_start_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
-    "preparation_parent": "5ad8432cefcf12a802395bc349cc34abd7a2eb45",
-    "Global": "7dac637f499a0771b3eb54da24295624f0803558",
-    "PR46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
-    "output_sha256": {
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json": "c37a32a43dc7a1a5ec54d671152a58b8a4ef623957f1a62e3961098d7ae95fa3",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "677dc6c52a5066dbdd1237c34c4958b522cee5d78caff31eb0397185086cc3c3",
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "aed7f626f4c81ea3174b9383a859ea6cd6e4a2860935e9e22b54dd6ba54e27c3"
-    },
+    "status": "PREPARED_NOT_YET_VERIFIED",
+    "run_id": "manual-chart-magicpath-d3a-2026-10-05T090050954Z",
+    "source_start_head": "8fc47b0a3c9a262718b706519d6d91a051629636",
+    "preparation_parent": "42a186e1e892d0e2da692553bd223d1e1b1e0336",
+    "Global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+    "PR47": "7215a9f60ad7128b1748f405051eac684298614f",
     "evidence_paths": [
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/MAGICPATH_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BUILD_MANIFEST.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BROWSER_CHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/OWNER_INTAKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/AUTOMATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md"
     ],
     "do_not_advance_processed_before_remote_verification": true,
     "remaining_production_gates": 6,
-    "evidence_commit": "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
-    "verified_at_utc": "2026-10-05T07:31:00.597Z"
+    "output_sha256": {
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/AUTOMATION_RECEIPT.json": "0411581e5f67a19993975511f1a47d917617ec3ff9669b1b91b4ff2e71f96b9b",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BROWSER_CHECK.json": "15b2625f9a669c7a1555f88c22d9e025388a508ec07dd207812ac1620bb24470",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BUILD_MANIFEST.json": "a11e46336d5f34057f946ffa1ff165cd282fc1beda533c67eaa14c61aefe1fe5",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json": "7743ef04790e6b9356b10e8d6be0168e4a4c2efe02e65a6f78830578cc42f9e0",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/GATES_AND_GAPS.json": "eb99158dec9aebbaf6a3bdb8d4a53d408b959e9a6ae9b2c051a61c746382e437",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md": "117b7a37aeb76ba07c654f7b17ae2d4c92ca4905c7958cc61f8ef0ad0d448bf4",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/MAGICPATH_RECEIPT.json": "93c6fe209ff1562444c9634c47a4c817ebd0cb775b12b73d544aa9819fde6b15",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/OWNER_INTAKE.json": "8074ee686630125833f55135bbaddb535ef789aeed22e1d716297e0931e00fcf",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/VALIDATION_RECEIPT.json": "efaf94527420a6d0190b3b95d1193acb0f459429728879f959e6b23fcc6ca15f",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json": "2344935db7b76aee93f0bc4c1929fab3a38a5844fa432c54913db03ad8750c68",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "4a5db13bc5fcf083b5354369da4205bd1c7ae3014617bd720c9f556bc4caf592",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/App.tsx": "a7d42b4975d1fff5c03cd541fc55ce6a1a4d27b3a8a611a73c448de10f8d2681",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/ChartStrategyThemeSAMPLEACTUALUnavailable.css": "8cf9ea613222c55e2af7935b24c63fa9c1085c9fb0694234c3fb14dccd5d0829",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/ChartStrategyThemeSAMPLEACTUALUnavailable.tsx": "a47adbf4e7574f0640ba862d6e8a9578863d645847ea65a74cc93cf6be87d0ac",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/chartSampleView.ts": "e1a8a4499efd16cb75cd89b2277a00641fc382bbcfe40d4b3fed5a95ebd7e90b",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-0.css": "e1092e58393157917dba2e7fa6c801f81ae60de2b594921c685bc2fec010671d",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-1.css": "37d3bcdafd566ccc7e4f1da733f893a17ee05446e1db096ab05c1807ecc6ed94",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-2.css": "7e4e2545ce0cf4dee3deff4f87ac3117312a78efaedbe65366dae65c8630bcf5",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-3.css": "e9c23ec753bef15b62ba2da58572d4210ce28dbe57c0fe388504778a66d6f4d5",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/index.css": "7ed623c33948e02ee7bd28e26d94eb11685b365c97237f514d60b51e06fa210f",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/browser/actual-390.png": "5416ca2bb61c436f8b7c315fc6c4649d6c4a72d53936abfbb486aba5015ca440",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/browser/target-390.png": "c8d78a269e6064085af130c7c2dabcaf78553cb1462bebcc5509ab9607fec21a"
+    }
   },
   "owner_actions_current": {
     "fpia_latest_source": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
@@ -1748,6 +1805,12 @@
       "failure": "Local variable text shadowed output helper after files prepared; no ref mutation from failed script",
       "repair": "Resumed saved prepared content; exact4remote files verified",
       "initial_failure_preserved": true
+    },
+    {
+      "at_utc": "2026-10-05T09:09:24.591Z",
+      "kind": "LOCAL_DRAFT_WRITE",
+      "first_failure": "exec Argument list too long, no process created/no file mutation",
+      "repair": "Write JSON string chunks through apply_patch and atomic concat; no authority/financial change"
     }
   ],
   "execution_policy_history": [
@@ -1765,6 +1828,73 @@
         "tools_use_scope": "Read actual versions/docs/access first; use one design tool selected target; no new design/approval restart; connected service is not production authority"
       },
       "superseded_by": "chart-v0.10"
+    },
+    {
+      "at_utc": "2026-10-05T09:08:30.805Z",
+      "policy": {
+        "version": "chart-v0.10",
+        "path": "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md",
+        "authority": "Latest explicit user Risk-Proportional Verification instruction 2026-10-05",
+        "global_only_semantic_change_is_input": true,
+        "after_all_six_closed": "AUTOMATIC_APPROVED_WRITE_SET_PRODUCTION_VERTICAL_SLICE",
+        "actual_D3_boundary_preserved": true,
+        "latest_user_continuation_kst": "2026-10-05T13:13:37+09:00",
+        "independent_d1_d2_completion": "Existing SAMPLE UI defects, validation/evidence/handoff continue while production owner/CI inputs remain",
+        "latest_user_tools_instruction_kst": "2026-10-05T14:18:36+09:00",
+        "tools_use_scope": "Read actual versions/docs/access first; use one design tool selected target; no new design/approval restart; connected service is not production authority",
+        "risk_proportional_verification": true,
+        "classes": [
+          "FAST",
+          "STANDARD",
+          "CRITICAL"
+        ],
+        "full_regression_by_default": false,
+        "agent_budget": {
+          "default_chart_owner": 1,
+          "optional_backend_pit_verifier": 1,
+          "visual_adversarial_panel": false
+        },
+        "evidence_reuse": "Exact current tree/input compatibility; no repeated completed UI/raw audits; reused PASS remains historical",
+        "latest_user_risk_policy": "2026-10-05",
+        "run_metrics": [
+          "requirements_closed",
+          "blockers_closed",
+          "new_blockers",
+          "vertical_slice_progress",
+          "production_ready_contracts",
+          "frontend_ready_contracts"
+        ],
+        "primary_design_tool": {
+          "provider": "MagicPath",
+          "project_id": "457727891984232448",
+          "component_id": "457764208520613888",
+          "revision_id": "457764208524808192",
+          "scope": "SAMPLE_PRESENTATION_IMPLEMENTED_VERIFIED",
+          "fallback": "EXISTING_GITHUB_RENDERER_LOCAL_BROWSER_ARTIFACTS_AUTO_CONTINUE",
+          "historicalFigma": "Preserve3views; historicalfinalvisualNOT_RUN notactiveprerequisite"
+        },
+        "ssot_execution_loop": {
+          "decision": "CDR-022",
+          "global": "7dac637f499a0771b3eb54da24295624f0803558",
+          "independent_ready_continue_after_checkpoint": true,
+          "protected_authority_unchanged": true
+        },
+        "delegated_approval": {
+          "version": "D3 Delegated Approval Policy v1.0",
+          "classes": [
+            "D1",
+            "D2",
+            "D3-A",
+            "D3-R"
+          ],
+          "condition": "All user conditions + concrete existingSSoT authority proof, reversible independently/deterministically verified conservative choice",
+          "reserved": "User supplied full reserved list in DECISION_RECEIPT.json",
+          "unknown": "D3-R",
+          "scope": "Only dependentlane waits; does not replace actualsource facts/ownerwrite-set/governance",
+          "receipt": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json"
+        }
+      },
+      "reason": "Latest user MagicPath primary/fallback and D3-A/R delegated authority"
     }
   ],
   "prepared_publication_history": [
@@ -1871,6 +2001,28 @@
       "postfix_figma_visual": "NOT_RUN_TOOL_QUOTA_BLOCKED",
       "evidence_commit": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
       "verified_at_utc": "2026-10-05T07:23:44.868132+00:00"
+    },
+    {
+      "status": "VERIFIED_REMOTE_PUBLICATION",
+      "run_id": "manual-chart-late-global-20261005T072727874Z",
+      "source_start_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
+      "preparation_parent": "5ad8432cefcf12a802395bc349cc34abd7a2eb45",
+      "Global": "7dac637f499a0771b3eb54da24295624f0803558",
+      "PR46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "output_sha256": {
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json": "c37a32a43dc7a1a5ec54d671152a58b8a4ef623957f1a62e3961098d7ae95fa3",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "677dc6c52a5066dbdd1237c34c4958b522cee5d78caff31eb0397185086cc3c3",
+        "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "aed7f626f4c81ea3174b9383a859ea6cd6e4a2860935e9e22b54dd6ba54e27c3"
+      },
+      "evidence_paths": [
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md",
+        "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
+      ],
+      "do_not_advance_processed_before_remote_verification": true,
+      "remaining_production_gates": 6,
+      "evidence_commit": "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
+      "verified_at_utc": "2026-10-05T07:31:00.597Z"
     }
   ],
   "policy_adoption_receipts": [

@@ -1,0 +1,157 @@
+{
+  "remote_component_files": [
+    {
+      "path": "src/App.tsx",
+      "bytes": 562,
+      "sha256": "a7d42b4975d1fff5c03cd541fc55ce6a1a4d27b3a8a611a73c448de10f8d2681",
+      "git_blob_sha1": "d3fb0e8e97ec18541efa0f712ad0fd54843f1fe7"
+    },
+    {
+      "path": "src/components/generated/ChartStrategyThemeSAMPLEACTUALUnavailable.css",
+      "bytes": 2330,
+      "sha256": "8cf9ea613222c55e2af7935b24c63fa9c1085c9fb0694234c3fb14dccd5d0829",
+      "git_blob_sha1": "bde3593d5f1c98218b2c1e9935b35bac0a027cdb"
+    },
+    {
+      "path": "src/components/generated/ChartStrategyThemeSAMPLEACTUALUnavailable.tsx",
+      "bytes": 3391,
+      "sha256": "a47adbf4e7574f0640ba862d6e8a9578863d645847ea65a74cc93cf6be87d0ac",
+      "git_blob_sha1": "e24e90b278a2ab745d4565e76caa73b0e5e62d83"
+    },
+    {
+      "path": "src/components/generated/chartSampleView.ts",
+      "bytes": 13514,
+      "sha256": "e1a8a4499efd16cb75cd89b2277a00641fc382bbcfe40d4b3fed5a95ebd7e90b",
+      "git_blob_sha1": "783f00b1e8863214f4b5cd45a05ec6b85649544e"
+    },
+    {
+      "path": "src/components/generated/noto-fonts-0.css",
+      "bytes": 799274,
+      "sha256": "e1092e58393157917dba2e7fa6c801f81ae60de2b594921c685bc2fec010671d",
+      "git_blob_sha1": "c453948ffb52b918a096744aefcceab57ee2ee8d"
+    },
+    {
+      "path": "src/components/generated/noto-fonts-1.css",
+      "bytes": 798164,
+      "sha256": "37d3bcdafd566ccc7e4f1da733f893a17ee05446e1db096ab05c1807ecc6ed94",
+      "git_blob_sha1": "db0f7d12fcb3b8bf841e4898b2256d9d78159542"
+    },
+    {
+      "path": "src/components/generated/noto-fonts-2.css",
+      "bytes": 799811,
+      "sha256": "7e4e2545ce0cf4dee3deff4f87ac3117312a78efaedbe65366dae65c8630bcf5",
+      "git_blob_sha1": "0179972431e60f2dd4def5be7a47cdb3c2dcea6b"
+    },
+    {
+      "path": "src/components/generated/noto-fonts-3.css",
+      "bytes": 165843,
+      "sha256": "e9c23ec753bef15b62ba2da58572d4210ce28dbe57c0fe388504778a66d6f4d5",
+      "git_blob_sha1": "e251b17c39ba3d5a6d0574fb33f8647567aa50e7"
+    },
+    {
+      "path": "src/index.css",
+      "bytes": 5176,
+      "sha256": "7ed623c33948e02ee7bd28e26d94eb11685b365c97237f514d60b51e06fa210f",
+      "git_blob_sha1": "50bae790bea58431af426411f4854bf35520f6a7"
+    }
+  ],
+  "browser": {
+    "delivery": "LOCAL_HTTP_MIRROR_OF_EXACT_DOWNLOADED_MAGICPATH_BUILD",
+    "originalDirectBrowserFailure": "ERR_EMPTY_RESPONSE (preserved separately); curl exact HTML/JS/CSS download succeeded",
+    "scope": "FAST_PRESENTATION_ONLY_EXACT_MAGICPATH_BUILD_BROWSER",
+    "componentId": "457764208520613888",
+    "revisionId": "457764208524808192",
+    "url": "https://designs.magicpath.ai/v1/wisely-world-3816",
+    "checkedAt": "2026-10-05T08:05:26.041Z",
+    "result": "PASS",
+    "viewports": [
+      {
+        "width": 1280,
+        "status": "PASS",
+        "checks": [
+          "four-distinct-dimensions",
+          "explicit-sample-target",
+          "exact-source-clock-unit-denominator-provenance",
+          "original-124-subset-font-loaded",
+          "literal-source-svg-and-legend",
+          "eight-type-values-not-available",
+          "no-horizontal-overflow-both-modes",
+          "actual-not-available-with-zero-target-geometry",
+          "keyboard-target-return-no-page-errors"
+        ],
+        "font": {
+          "family": "\"Noto Sans KR\", system-ui, sans-serif",
+          "loaded": true
+        },
+        "pageErrors": []
+      },
+      {
+        "width": 390,
+        "status": "PASS",
+        "checks": [
+          "four-distinct-dimensions",
+          "explicit-sample-target",
+          "exact-source-clock-unit-denominator-provenance",
+          "original-124-subset-font-loaded",
+          "literal-source-svg-and-legend",
+          "eight-type-values-not-available",
+          "no-horizontal-overflow-both-modes",
+          "actual-not-available-with-zero-target-geometry",
+          "keyboard-target-return-no-page-errors"
+        ],
+        "font": {
+          "family": "\"Noto Sans KR\", system-ui, sans-serif",
+          "loaded": true
+        },
+        "pageErrors": []
+      }
+    ],
+    "fullRegressionRun": false,
+    "productionE2E": "NOT_RUN",
+    "financialSemanticsChanged": false
+  },
+  "compiled": [
+    {
+      "path": "v1/wisely-world-3816/assets/index-CIfZOejS.js",
+      "bytes": 200986,
+      "sha256": "43eb453bfe3f470806943c0762ec6dfe872508d3e5295a621affaa6f982e63ff"
+    },
+    {
+      "path": "v1/wisely-world-3816/assets/index-Vewc0nh9.css",
+      "bytes": 2570405,
+      "sha256": "032be1ec712311f44a21762d2bb4007332f1778a39745c7b6566a4a7b9e74196"
+    },
+    {
+      "path": "v1/wisely-world-3816/index.html",
+      "bytes": 47348,
+      "sha256": "2a7cb49eb47841c8a71cb322210c3c73ceeea6dea84a5d4bbb37fe82e30adaec"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "actual-1280.png",
+      "bytes": 116246,
+      "sha256": "1dbca3e2b560bf3b2b7aa2a00954cfb65ceb44a5240ddc20ba1a14006c277953",
+      "git_blob_sha1": "a163736a25edfb8860e3e4c3101b3511a87a7d1a"
+    },
+    {
+      "path": "actual-390.png",
+      "bytes": 104687,
+      "sha256": "5416ca2bb61c436f8b7c315fc6c4649d6c4a72d53936abfbb486aba5015ca440",
+      "git_blob_sha1": "531d6a468927023b9346447283bbae42331c0d66"
+    },
+    {
+      "path": "target-1280.png",
+      "bytes": 268507,
+      "sha256": "aea657b36ea8f2ea222f9c69301f8b6c62c3cd7fff26400d62398fc17a9daca1",
+      "git_blob_sha1": "642b98e3a48c2c95edcf9cc4aa9d6d52d887fca7"
+    },
+    {
+      "path": "target-390.png",
+      "bytes": 285072,
+      "sha256": "c8d78a269e6064085af130c7c2dabcaf78553cb1462bebcc5509ab9607fec21a",
+      "git_blob_sha1": "371e2fa41bc72bfce3f886f3ba7171d551e10b10"
+    }
+  ],
+  "archive_sha256": "0a6037d3f9dd6d6fb76728ae61932cc9f434d0cc4387fc5a4d681cf49317479a"
+}
