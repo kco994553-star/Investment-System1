@@ -1,0 +1,1848 @@
+{
+ "fpia_src": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf17/fix3/dev/old523/implementation/tools/integration",
+ "rows": [
+  {
+   "T": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+   "analysed": [
+    ".github/workflows/codex-integration-readiness.yml",
+    ".github/workflows/entity-metadata-ingest.yml",
+    ".github/workflows/leaderboard-real-producer.yml",
+    ".github/workflows/p01-research-publication.yml",
+    ".github/workflows/qgv-invalidation-binding.yml",
+    ".github/workflows/qgv-producer-real.yml",
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/sec-primary-disclosure.yml",
+    ".github/workflows/technical-real-model.yml",
+    ".github/workflows/technical-real-producer.yml",
+    ".github/workflows/us-equity-session.yml",
+    ".github/workflows/web-mvp-validation.yml",
+    ".github/workflows/web-research-guard.yml",
+    ".github/workflows/web-state-presentation.yml"
+   ],
+   "complement_count": 451,
+   "label": "acaf1b5",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/codex-integration-readiness.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/leaderboard-real-producer.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/p01-research-publication.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-invalidation-binding.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-producer-real.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/sec-primary-disclosure.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-model.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-producer.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/us-equity-session.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 7.0,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": true
+   }
+  },
+  {
+   "T": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+   "analysed": [],
+   "complement_count": 0,
+   "label": "b9e01a9",
+   "mention_set": null,
+   "notes": [],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.5,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "465354a6479810a175fbefe32ef2c993b1e214c2",
+   "analysed": [
+    ".github/workflows/codex-integration-readiness.yml",
+    ".github/workflows/entity-metadata-ingest.yml",
+    ".github/workflows/leaderboard-real-producer.yml",
+    ".github/workflows/p01-research-publication.yml",
+    ".github/workflows/qgv-invalidation-binding.yml",
+    ".github/workflows/qgv-producer-real.yml",
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/sec-primary-disclosure.yml",
+    ".github/workflows/technical-real-model.yml",
+    ".github/workflows/technical-real-producer.yml",
+    ".github/workflows/track-c-fpia.yml",
+    ".github/workflows/us-equity-session.yml",
+    ".github/workflows/web-mvp-validation.yml",
+    ".github/workflows/web-research-guard.yml",
+    ".github/workflows/web-state-presentation.yml"
+   ],
+   "complement_count": 474,
+   "label": "465354a",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/codex-integration-readiness.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/leaderboard-real-producer.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/p01-research-publication.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-invalidation-binding.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-producer-real.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/sec-primary-disclosure.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-model.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-producer.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd .) (via implementation/tools/integration/track_c_fpia.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/track-c-fpia.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/us-equity-session.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 2.3,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": true
+   }
+  },
+  {
+   "T": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+   "analysed": [
+    ".github/workflows/codex-integration-readiness.yml",
+    ".github/workflows/entity-metadata-ingest.yml",
+    ".github/workflows/leaderboard-real-producer.yml",
+    ".github/workflows/p01-research-publication.yml",
+    ".github/workflows/qgv-invalidation-binding.yml",
+    ".github/workflows/qgv-producer-real.yml",
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/sec-primary-disclosure.yml",
+    ".github/workflows/technical-real-model.yml",
+    ".github/workflows/technical-real-producer.yml",
+    ".github/workflows/track-c-fpia.yml",
+    ".github/workflows/us-equity-session.yml",
+    ".github/workflows/web-mvp-validation.yml",
+    ".github/workflows/web-research-guard.yml",
+    ".github/workflows/web-state-presentation.yml"
+   ],
+   "complement_count": 496,
+   "label": "523e702",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/codex-integration-readiness.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/leaderboard-real-producer.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/p01-research-publication.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-invalidation-binding.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-producer-real.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/sec-primary-disclosure.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-model.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-producer.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd .) (via implementation/tools/integration/track_c_fpia.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/track-c-fpia.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/us-equity-session.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 2.4,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": true
+   }
+  },
+  {
+   "T": "0e5f07d27ccd752beba9fedda8e63934894246e3",
+   "analysed": [],
+   "complement_count": 0,
+   "label": "L1",
+   "mention_set": null,
+   "notes": [],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.7,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "b6023113686b717055f7f1270b9311b7064eb386",
+   "analysed": [],
+   "complement_count": 2,
+   "label": "L2",
+   "mention_set": null,
+   "notes": [],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.6,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "d099dd6107cc4d8594794ec7fdc94889fdc8885d",
+   "analysed": [
+    ".github/workflows/codex-integration-readiness.yml",
+    ".github/workflows/entity-metadata-ingest.yml",
+    ".github/workflows/leaderboard-real-producer.yml",
+    ".github/workflows/p01-research-publication.yml",
+    ".github/workflows/qgv-invalidation-binding.yml",
+    ".github/workflows/qgv-producer-real.yml",
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/sec-primary-disclosure.yml",
+    ".github/workflows/technical-real-model.yml",
+    ".github/workflows/technical-real-producer.yml",
+    ".github/workflows/us-equity-session.yml",
+    ".github/workflows/web-mvp-validation.yml",
+    ".github/workflows/web-research-guard.yml",
+    ".github/workflows/web-state-presentation.yml"
+   ],
+   "complement_count": 863,
+   "label": "T28",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/codex-integration-readiness.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/leaderboard-real-producer.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/p01-research-publication.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-invalidation-binding.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-producer-real.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/sec-primary-disclosure.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-model.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-producer.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/us-equity-session.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 1.9,
+   "self_placement": null,
+   "static_findings": [
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/docs/codex_takeover/evidence/track_c/independent_c8_audit.py"
+    }
+   ],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": true
+   }
+  },
+  {
+   "T": "0d31e06022c3162e83f2ff5a984b07e59e4e216b",
+   "analysed": [
+    ".github/workflows/codex-integration-readiness.yml",
+    ".github/workflows/entity-metadata-ingest.yml",
+    ".github/workflows/leaderboard-real-producer.yml",
+    ".github/workflows/p01-research-publication.yml",
+    ".github/workflows/qgv-invalidation-binding.yml",
+    ".github/workflows/qgv-producer-real.yml",
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/sec-primary-disclosure.yml",
+    ".github/workflows/technical-real-model.yml",
+    ".github/workflows/technical-real-producer.yml",
+    ".github/workflows/us-equity-session.yml",
+    ".github/workflows/web-mvp-validation.yml",
+    ".github/workflows/web-research-guard.yml",
+    ".github/workflows/web-state-presentation.yml"
+   ],
+   "complement_count": 444,
+   "label": "0d31e06",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/codex-integration-readiness.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/leaderboard-real-producer.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/p01-research-publication.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-invalidation-binding.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-producer-real.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/sec-primary-disclosure.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-model.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-producer.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/us-equity-session.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 2.6,
+   "self_placement": null,
+   "static_findings": [
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/ce4-reconciliation/replay_exact_ce4.py"
+    },
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/docs/codex_takeover/gsup_v2_handoff_2026_10_03/evidence/handoff-gap-review/bounded_checks.py"
+    },
+    {
+     "finding": "unattributed Track C-namespace file",
+     "id": "AC-21",
+     "path": "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.json"
+    },
+    {
+     "finding": "unattributed Track C-namespace file",
+     "id": "AC-21",
+     "path": "implementation/reports/track_c_c8_gsup_v2_source_identity_approval_2026-10-03.md"
+    },
+    {
+     "finding": "unattributed Track C-namespace file",
+     "id": "AC-21",
+     "path": "implementation/reports/track_c_gsup_identity_kernel_invariance_2026-10-03.json"
+    },
+    {
+     "finding": "unattributed Track C-namespace file",
+     "id": "AC-21",
+     "path": "implementation/reports/track_c_gsup_identity_kernel_invariance_2026-10-03.md"
+    },
+    {
+     "finding": "unattributed Track C-namespace file",
+     "id": "AC-21",
+     "path": "implementation/src/investment_system/evl/gsup_source_identity.py"
+    },
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/src/investment_system/evl/gsup_source_identity.py"
+    },
+    {
+     "finding": "unattributed Track C-namespace file",
+     "id": "AC-21",
+     "path": "implementation/src/investment_system/evl/superiority_source_identity.py"
+    },
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/src/investment_system/evl/superiority_source_identity.py"
+    },
+    {
+     "finding": "unattributed Track C-namespace file",
+     "id": "AC-21",
+     "path": "implementation/src/investment_system/evl/superiority_v2.py"
+    },
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/src/investment_system/evl/superiority_v2.py"
+    },
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/tests/test_evl_gsup_identity_kernel_invariance.py"
+    },
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/tests/test_evl_gsup_mb_reduction_diagnostic.py"
+    },
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/tests/test_evl_gsup_source_identity.py"
+    },
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/tests/test_evl_gsup_v2_arithmetic.py"
+    },
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/tests/test_evl_gsup_v2_identity_adversarial.py"
+    },
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/tests/test_evl_gsup_v2_registry.py"
+    },
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/tests/test_evl_gsup_v2_repair_negatives.py"
+    },
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/tools/verify_gsup_v2_arithmetic.py"
+    },
+    {
+     "finding": "complement workflow claims or runs Track C scope without attribution",
+     "followed": [
+      "implementation/tools/verify_gsup_v2_arithmetic.py",
+      "implementation/tools/build_producer_contract_web_fixture.py"
+     ],
+     "id": "AC-32.spoof",
+     "path": ".github/workflows/codex-integration-readiness.yml",
+     "reasons": [
+      "references a Track C namespace path: implementation/src/investment_system/evl/gsup_source_identity.py",
+      "python run by the workflow imports Track C modules: implementation/tools/verify_gsup_v2_arithmetic.py (via implementation/tools/verify_gsup_v2_arithmetic.py)"
+     ],
+     "track_c_references": [
+      "ns: implementation/src/investment_system/evl/gsup_source_identity.py",
+      "ns: implementation/src/investment_system/evl/superiority_source_identity.py",
+      "ns: implementation/src/investment_system/evl/superiority_v2.py",
+      "ns: implementation/tests/evl_c8_fixture.py",
+      "ns: implementation/tests/evl_c8_gsup_oracle.py"
+     ]
+    }
+   ],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "a028c8822d85348e0f712551752126cd1571858d",
+   "analysed": [],
+   "complement_count": 0,
+   "label": "TL",
+   "mention_set": null,
+   "notes": [],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.6,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "1551c149f4bd8a41a8b54463cb3e8b1fe950d898",
+   "analysed": [],
+   "complement_count": 7,
+   "label": "origin_docs_qgv-context-policy-approvals",
+   "mention_set": null,
+   "notes": [],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.7,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "7115b36c1e68d0243e4c75b341f19751fc434aff",
+   "analysed": [
+    ".github/workflows/qgv-producer-real.yml"
+   ],
+   "complement_count": 33,
+   "label": "pr_10",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-producer-real.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.8,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "02384ab1f3f829af4fe9c07e532b229473580e64",
+   "analysed": [
+    ".github/workflows/technical-real-producer.yml"
+   ],
+   "complement_count": 15,
+   "label": "pr_11",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-producer.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.7,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "a230058c5093c9cfe2ce35d759d78941edeb1db7",
+   "analysed": [
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/web-mvp-validation.yml"
+   ],
+   "complement_count": 56,
+   "label": "pr_12",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.9,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "d975224342af6010e99d3bc1ccec49e598ac660c",
+   "analysed": [],
+   "complement_count": 16,
+   "label": "pr_13",
+   "mention_set": null,
+   "notes": [],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.7,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "ba38ee450364489adc1bbc439b4bb050e2e2dccf",
+   "analysed": [
+    ".github/workflows/leaderboard-real-producer.yml"
+   ],
+   "complement_count": 27,
+   "label": "pr_14",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/leaderboard-real-producer.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.7,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "817a572d896092f89ee78d212542c401c77abfb2",
+   "analysed": [
+    ".github/workflows/technical-real-model.yml",
+    ".github/workflows/technical-real-producer.yml"
+   ],
+   "complement_count": 20,
+   "label": "pr_15",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-model.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-producer.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.8,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "7c06d54e3cb173140737c245cf7ea5707cf1c7dc",
+   "analysed": [
+    ".github/workflows/sec-primary-disclosure.yml"
+   ],
+   "complement_count": 21,
+   "label": "pr_16",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/sec-primary-disclosure.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.7,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "281aefac61866fd19340cc0fd48d0ca80babeeb9",
+   "analysed": [
+    ".github/workflows/p01-research-publication.yml",
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/web-mvp-validation.yml"
+   ],
+   "complement_count": 63,
+   "label": "pr_17",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/p01-research-publication.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.9,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "66badac38a2280fe4c7231ae9062851a2b26dbc5",
+   "analysed": [
+    ".github/workflows/technical-real-model.yml",
+    ".github/workflows/technical-real-producer.yml",
+    ".github/workflows/us-equity-session.yml"
+   ],
+   "complement_count": 30,
+   "label": "pr_18",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-model.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-producer.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/us-equity-session.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.7,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "d3257d7be587446d798341eeb8383cdd1c402ba9",
+   "analysed": [
+    ".github/workflows/p01-research-publication.yml",
+    ".github/workflows/qgv-invalidation-binding.yml",
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/web-mvp-validation.yml"
+   ],
+   "complement_count": 70,
+   "label": "pr_19",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/p01-research-publication.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-invalidation-binding.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.8,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "0ca8e01ea3c55297d294ef7cff5f630bc5d9eb54",
+   "analysed": [],
+   "complement_count": 2,
+   "label": "pr_21",
+   "mention_set": null,
+   "notes": [],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.8,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "3dec8b9f31a8fbc4a93ad9a0ea959422d90ed31e",
+   "analysed": [
+    ".github/workflows/technical-real-producer.yml"
+   ],
+   "complement_count": 17,
+   "label": "pr_22",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-producer.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.7,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "905905eb77012e61c9f7b20483c4f6ec50f63f1a",
+   "analysed": [
+    ".github/workflows/technical-real-model.yml",
+    ".github/workflows/technical-real-producer.yml"
+   ],
+   "complement_count": 21,
+   "label": "pr_23",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-model.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-producer.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.7,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "ae3c2fdb05350e5f7ff7cfb7db78cc59cf33896d",
+   "analysed": [
+    ".github/workflows/technical-real-model.yml",
+    ".github/workflows/technical-real-producer.yml",
+    ".github/workflows/us-equity-session.yml"
+   ],
+   "complement_count": 31,
+   "label": "pr_24",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-model.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/technical-real-producer.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/us-equity-session.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.9,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "4c1c7f7dc0beb4ce17f9cb03cbcd6d800efa72b6",
+   "analysed": [
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/web-mvp-validation.yml"
+   ],
+   "complement_count": 59,
+   "label": "pr_25",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.9,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "9e4be0fa4fd5aa27b790ccb5d3bff83ca9d8b40b",
+   "analysed": [
+    ".github/workflows/leaderboard-real-producer.yml"
+   ],
+   "complement_count": 28,
+   "label": "pr_26",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself",
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/leaderboard-real-producer.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.8,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "ccfe5ba96536dd727af82626185ddbca57bf9cf4",
+   "analysed": [
+    ".github/workflows/p01-research-publication.yml",
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/web-mvp-validation.yml"
+   ],
+   "complement_count": 64,
+   "label": "pr_27",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/p01-research-publication.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 1.0,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "6204d0d30b6932667aaf5f8163ffccb30aea809b",
+   "analysed": [],
+   "complement_count": 412,
+   "label": "pr_28",
+   "mention_set": null,
+   "notes": [],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.8,
+   "self_placement": null,
+   "static_findings": [
+    {
+     "finding": "unattributed importer of Track C modules (latent L3)",
+     "id": "AC-21",
+     "path": "implementation/docs/codex_takeover/evidence/track_c/independent_c8_audit.py"
+    }
+   ],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "4f7ed0c4324bf5b5e9bb7070bc88d1a43d73dec3",
+   "analysed": [
+    ".github/workflows/p01-research-publication.yml",
+    ".github/workflows/qgv-invalidation-binding.yml",
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/web-mvp-validation.yml"
+   ],
+   "complement_count": 77,
+   "label": "pr_29",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/p01-research-publication.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation) (via implementation/tools/mini_pytest.py): not a spoof by itself"
+     ],
+     "path": ".github/workflows/qgv-invalidation-binding.yml"
+    },
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.9,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "52dcc6d7c41623b9bd12833a4bbc9b4347a11883",
+   "analysed": [
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/web-mvp-validation.yml"
+   ],
+   "complement_count": 52,
+   "label": "pr_32",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.9,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "ebf852685a2508a7ae506f28fb5233ac2305d83f",
+   "analysed": [
+    ".github/workflows/entity-metadata-ingest.yml",
+    ".github/workflows/web-mvp-validation.yml"
+   ],
+   "complement_count": 43,
+   "label": "pr_33",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.8,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "1cc9097f6070effc628e585655151a66488a9ec4",
+   "analysed": [
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/web-mvp-validation.yml",
+    ".github/workflows/web-research-guard.yml"
+   ],
+   "complement_count": 55,
+   "label": "pr_34",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.9,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "6bc4121159789ecbd32ae8d21639359324321880",
+   "analysed": [
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/web-mvp-validation.yml",
+    ".github/workflows/web-research-guard.yml",
+    ".github/workflows/web-state-presentation.yml"
+   ],
+   "complement_count": 59,
+   "label": "pr_36",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 1.1,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "ee7a7f60f50b1c8bf9d6a7968a87837fc2b360f4",
+   "analysed": [],
+   "complement_count": 3,
+   "label": "pr_37",
+   "mention_set": null,
+   "notes": [],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.7,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "1321c5674d856d12852120823a5b4b45a86d1972",
+   "analysed": [
+    ".github/workflows/web-mvp-validation.yml"
+   ],
+   "complement_count": 16,
+   "label": "pr_5",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.7,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "ff839730fcdff7802cf6bbb92a2c9e38a059f62e",
+   "analysed": [
+    ".github/workflows/web-mvp-validation.yml"
+   ],
+   "complement_count": 25,
+   "label": "pr_6",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.7,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "c5768551238375a28f8a897942e2d330c1bc959a",
+   "analysed": [
+    ".github/workflows/entity-metadata-ingest.yml",
+    ".github/workflows/web-mvp-validation.yml"
+   ],
+   "complement_count": 42,
+   "label": "pr_7",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.9,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  },
+  {
+   "T": "a3dabc2b5728fecda35031703e2e592eb4925782",
+   "analysed": [
+    ".github/workflows/raw-artifact-restore-check.yml",
+    ".github/workflows/web-mvp-validation.yml"
+   ],
+   "complement_count": 51,
+   "label": "pr_9",
+   "mention_set": null,
+   "notes": [
+    {
+     "notes": [
+      "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+     ],
+     "path": ".github/workflows/web-mvp-validation.yml"
+    }
+   ],
+   "out_of_tree_references": null,
+   "reached": null,
+   "seconds": 0.8,
+   "self_placement": null,
+   "static_findings": [],
+   "static_not_run": [],
+   "track_c_identity": {
+    "filename_stem": "track-c-evl-validation",
+    "job_ids_names": [
+     "validate"
+    ],
+    "names": [
+     "track-c-evl-validation"
+    ]
+   },
+   "v_applies": {
+    "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240": false
+   }
+  }
+ ]
+}

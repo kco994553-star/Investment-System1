@@ -1,0 +1,154 @@
+C00  control        fpia=NOT_FOUND expect=NOT_FOUND          gh_err=False gh_name='probe' gh_run=None emu=None | base acaf1b5 + benign workflow
+C01  control        fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | S0: exact Track C name
+C02  control        fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | S9: bash script running Track C tool
+C03  control        fpia=NOT_FOUND expect=NOT_FOUND(D3-c)    gh_err=False gh_name='probe' gh_run=None emu=True | S15: string-concatenated path (D3-c non-claim)
+C04  control        fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | bash -c with cd (claimed handled)
+C05  control        fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | working-directory: implementation/tools + relative tool
+Y01  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | name via alias of an anchor defined on an env value
+Y02  G1             fpia=FOUND     expect=FOUND(fail-closed) gh_err=True gh_name=None gh_run=None emu=None | name via alias, anchor defined later in a job env (forward ref invalid
+Y03  G1             fpia=FOUND     expect=FOUND              gh_err=True gh_name=None gh_run=None emu=None | name inside a root merge key (<<: {name: ...})
+Y04  G1             fpia=FOUND     expect=FOUND(fail-closed) gh_err=True gh_name=None gh_run=None emu=None | multi-document: doc1 benign, doc2 Track C name
+Y05  G1             fpia=FOUND     expect=FOUND              gh_err=True gh_name=None gh_run=None emu=None | explicit document markers ---/... single doc
+Y06  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | flow-style whole workflow
+Y07  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | block literal strip |-
+Y08  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation\n\n\n' gh_run=None emu=None | block literal keep |+ with trailing blank lines
+Y09  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | folded >- split across lines with no space (escaped in double quotes)
+Y10  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name=' track-c-evl-validation' gh_run=None emu=None | block literal with indentation indicator |2- (leading space in value)
+Y11  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | verbatim tag !<tag:yaml.org,2002:str>
+Y12  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | %TAG handle !e! -> !e!str
+Y13  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | local tag !foo on quoted name
+Y14  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | UTF-8 BOM
+Y15  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | CRLF line endings
+Y16  G1             fpia=FOUND     expect=FOUND              gh_err=True gh_name=None gh_run=None emu=None | lone CR line endings
+Y17  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | tab after colon (name:\tvalue)
+Y18  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation\t' gh_run=None emu=None | trailing tab inside quoted value
+Y19  G1             fpia=FOUND     expect=FOUND              gh_err=True gh_name='probe' gh_run=None emu=None | duplicate name keys, Track C second
+Y20  G1             fpia=FOUND     expect=FOUND              gh_err=True gh_name='track-c-evl-validation' gh_run=None emu=None | duplicate name keys, Track C first
+Y21  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | very long line: 200k spaces then comment after name
+Y22  G1             fpia=FOUND     expect=FOUND              gh_err=True gh_name=None gh_run=None emu=None | very long implicit key (>1024 chars) before name
+Y23  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | complex key ? name : value
+Y24  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | escaped key "na\u006De"
+Y25  G1             fpia=FOUND     expect=FOUND              gh_err=True gh_name=None gh_run=None emu=None | NEL (U+0085) as line break between keys
+Y26  G1             fpia=FOUND     expect=NOT_FOUND?         gh_err=False gh_name='probe' gh_run=None emu=None | comment ending in U+2028 then name key (PyYAML sees key; 1.2 parser se
+Y27  G1             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run='track-c-evl-validation' emu=None | run-name constant expression ${{ 'track-c-evl-validation' }}
+Y28  G1             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run="${{ format('track-c-{0}-validation', 'evl') }}" emu=None | run-name format() expression
+Y29  G1             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run="${{ format('track-c-{0}-validation', 'evl') }}" emu=None | run-name with embedded expression track-c-${{ 'evl' }}-validation
+Y30  G1             fpia=NOT_FOUND expect=NOT_FOUND          gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | name contains expression syntax (workflow name does not evaluate)
+U01  G1-confusable  fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track-c-evl-validation⠀' gh_run=None emu=None | trailing U+2800 BRAILLE PATTERN BLANK
+U02  G1-confusable  fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track-c-evl⠀-validation' gh_run=None emu=None | U+2800 replacing nothing, inserted mid-name
+U03  G1-confusable  fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track-c-evl-validation𝅙' gh_run=None emu=None | trailing U+1D159 MUSICAL SYMBOL NULL NOTEHEAD
+U04  G1-confusable  fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track-c-evl-valı̇datı̇on' gh_run=None emu=None | dotless i + U+0307 COMBINING DOT ABOVE for each i
+U05  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track‑c‑evl‑validation' gh_run=None emu=None | U+2011 NON-BREAKING HYPHEN for hyphens
+U06  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track﹣c﹣evl﹣validation' gh_run=None emu=None | U+FE63 SMALL HYPHEN-MINUS
+U07  G1-confusable  fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track—c—evl—validation' gh_run=None emu=None | U+2E3A/2014? EM DASH for hyphens
+U08  G1-confusable  fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track\xadc\xadevl\xadvalidation' gh_run=None emu=None | U+00AD SOFT HYPHEN for hyphens (renders invisible)
+U09  G1-confusable  fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track-c-evl-validation￼' gh_run=None emu=None | U+FFFC OBJECT REPLACEMENT trailing
+U10  G1-confusable  fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\ufff9' gh_run=None emu=None | U+FFF9 INTERLINEAR ANNOTATION ANCHOR trailing
+U11  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='trасk-с-еvl-vаlidаtіоn' gh_run=None emu=None | Cyrillic a/c/e/o/i mix
+U12  G1-confusable  fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track-c-evl-valİdatİon' gh_run=None emu=None | U+0130 capital I with dot (casefold i + U+0307)
+U13  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track˗c˗evl˗validation' gh_run=None emu=None | U+2024 ONE DOT LEADER? no - U+A4FE? use U+02D7 MODIFIER MINUS for hyph
+U14  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-͏c-͏evl-͏validation' gh_run=None emu=None | U+0332 combining low line after every char? no: single U+034F CGJ (DI)
+U15  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c-evl-validationㅤ' gh_run=None emu=None | trailing U+3164 HANGUL FILLER (DI)
+U16  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c-evl-validationᅟᅠ' gh_run=None emu=None | trailing U+115F + U+1160 (DI)
+U17  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\u2028' gh_run=None emu=None | trailing U+2028 LINE SEPARATOR in quoted scalar
+U18  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c-evا-vaاidation' gh_run=None emu=None | U+0627 ARABIC ALEF for l (RTL)
+U19  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c-ev׀-va׀idation' gh_run=None emu=None | l -> U+05C0 HEBREW PUNCTUATION PASEQ
+U20  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\u180e' gh_run=None emu=None | trailing U+180E MONGOLIAN VOWEL SEPARATOR
+U21  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c\u2063-evl-validation' gh_run=None emu=None | U+2063 INVISIBLE SEPARATOR mid
+U22  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\U0001bca1' gh_run=None emu=None | trailing U+1BCA1 SHORTHAND FORMAT CONTINUING OVERLAP (DI)
+U23  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\u200b' gh_run=None emu=None | U+0338? no: U+20E0? -> trailing U+200B ZWSP (DI)
+U24  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\U000e0020' gh_run=None emu=None | trailing U+E0020 TAG SPACE (DI)
+U25  G1-confusable  fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\u3000' gh_run=None emu=None | trailing ideographic space U+3000 (NFKC space, strip)
+U26  G1-confusable  fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track-c-evl-validation𖿤' gh_run=None emu=None | trailing U+16FE4 KHITAN FILLER (Cf, not DI in Unicode 15.1)
+F01  G1-stem        fpia=FOUND     expect=FOUND              gh_err=False gh_name=None gh_run=None emu=None | no name; file track-c-evl-validation.yaml
+F02  G1-stem        fpia=FOUND     expect=FOUND              gh_err=False gh_name=None gh_run=None emu=None | no name; file Track-C-EVL-Validation.YML
+F03  G1-stem        fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name=None gh_run=None emu=None | no name; stem with trailing U+2800
+F04  G1-stem        fpia=FOUND     expect=NOT_FOUND(ignored by GitHub) gh_err=False gh_name=None gh_run=None emu=None | no name; file in subdirectory (GitHub ignores)
+I01  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | cd ${{ github.workspace }}/implementation/tools && python <tool>
+I02  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | cd "$GITHUB_WORKSPACE/implementation/tools" && python <tool>
+I03  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | working-directory: ${{ github.workspace }}/implementation/tools
+I04  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | pushd implementation/tools
+I05  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | cd -P implementation/tools
+I06  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | cd -- implementation/tools
+I07  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | env -C implementation/tools python <tool>
+I08  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | bash -ec 'cd implementation/tools && python <tool>' (combined flags)
+I09  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | sh -xc 'cd ... && python <tool>'
+I10  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | PYTHONPATH=implementation/tools python -m track_c_c6_acceptance
+I11  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | python -m <tree module> (implementation/src/ci_probe/__main__.py) call
+I12  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | python script: os.chdir('implementation/tools') then os.system('python
+I13  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | make target running the tool (Makefile recipe)
+I14  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | npm script running the tool (package.json)
+I15  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | bash -o pipefail ci/tc.sh (option with value before script)
+I16  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | bash --noprofile --norc -eo pipefail ci/tc.sh (GitHub's own bash templ
+I17  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | timeout 600 bash ci/tc.sh (wrapper not in WRAPPERS)
+I18  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | nice -n 5 python ci/run.py (wrapper with option)
+I19  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | extension-less, shebang-less executable script ./ci/run-tc (bash ENOEX
+I20  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | shell line continuation splitting the path (implementation/to\<NL>ols/
+I21  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | ANSI-C quoting $'\x69mplementation/tools/...'
+I22  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | brace expansion implementation/t{o,}ols/... (extra argv ignored by the
+I23  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=False | absolute runner path /home/runner/work/<repo>/<repo>/implementation/to
+I24  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | $PWD prefix: python "$PWD/implementation/tools/<tool>"
+I25  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | ${PWD} prefix
+I26  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | python f-string with cwd prefix in a followed script
+I27  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | env indirection, literal full path in env (claimed: all scalars scanne
+I28  G2             fpia=NOT_FOUND expect=NOT_FOUND(D3-c)    gh_err=False gh_name='probe' gh_run=None emu=True | env indirection, directory in env + cd $D (paths in shell variables: D
+I29  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | reusable workflow (job uses ./.github/workflows/x.yml) whose step uses
+I30  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=False | reusable workflow from the same repository by remote ref (owner/repo/.
+I31  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | composite action runs ${{ github.action_path }}/run.sh which calls the
+I32  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | composite action runs $GITHUB_ACTION_PATH/run.sh
+I33  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | node local action (runs.using node20, main index.js) spawning the tool
+I34  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=False | docker local action (Dockerfile ENTRYPOINT with /github/workspace path
+I35  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | pytest @argsfile (-k evl_c6 inside the file)
+I36  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | PYTEST_ADDOPTS='-k evl_c6' + bare pytest
+I37  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | pytest -c custom ini with addopts -k evl_c6
+I38  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | pytest -o testpaths=tests/test_evl_c6*.py (selection through an ini ov
+I39  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | pytest --ignore-glob selecting only Track C tests
+I40  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | pytest.main(['-k','evl_c6']) in a followed python script
+I41  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=False | Windows runner, backslash path
+I42  G2             fpia=NOT_FOUND expect=NOT_FOUND(D3-c)    gh_err=False gh_name='probe' gh_run=None emu=True | matrix value supplies the tool file name (expression: D3-c)
+I43  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | uv run --directory implementation/tools python <tool>
+I44  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | subshell ( cd implementation/tools; python <tool> )
+I45  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | python -c with runpy.run_path literal (control)
+I46  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | git -C implementation/tools ls-files | python? -> git -C then python v
+I47  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | export then cd: cd implementation; cd tools (two cds on separate lines
+I48  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | cd inside if-block: if true; then cd implementation/tools; fi; python 
+I49  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | heredoc to bash: bash <<EOF with cd/python inside
+I50  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | python script with cwd kwarg via pathlib constant parts
+U27  G1-confusable-icu fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='traϲk-ϲ-evl-validation' gh_run=None emu=None | U+03F2 GREEK LUNATE SIGMA SYMBOL for c (ICU skeleton c; NFKC -> final 
+U28  G1-confusable-icu fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='track﹘c﹘evl﹘validation' gh_run=None emu=None | U+FE58 SMALL EM DASH for hyphens (ICU skeleton '-'; NFKC -> em dash)
+U29  G1-confusable-icu fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='track-c-ev￨-va￨idation' gh_run=None emu=None | U+FFE8 HALFWIDTH FORMS LIGHT VERTICAL for l (ICU skeleton l; NFKC -> U
+U30  G1-confusable-icu fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='track-c-evl-val˛dat˛on' gh_run=None emu=None | U+02DB OGONEK for i (ICU skeleton i)
+U31  G1-confusable-icu fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='track-c-evl-valͺdatͺon' gh_run=None emu=None | U+037A GREEK YPOGEGRAMMENI for i (ICU skeleton i)
+U32  G1-confusable-icu fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='traϲk-c-evl-validation' gh_run=None emu=None | single U+03F2 for the lone c in 'track' only
+U33  G1-control     fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\x7f' gh_run=None emu=None | trailing DEL via \x7f escape
+U34  G1-control     fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\x80' gh_run=None emu=None | trailing C1 control U+0080 via \x80 escape
+U35  G1-control     fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\x85' gh_run=None emu=None | trailing NEL via \N escape
+U36  G1-control     fpia=FOUND     expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\x1f' gh_run=None emu=None | trailing U+001F via \x1f escape (Python strip() treats it as whitespac
+U37  G1-control     fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\x01' gh_run=None emu=None | trailing U+0001 via \x01 escape
+U38  G1-control     fpia=NOT_FOUND expect=FOUND?             gh_err=False gh_name='track-c-evl-validation\x9f' gh_run=None emu=None | trailing U+009F via \x9f escape
+I51  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | multi-line quoted argument: cd + python on a line whose quote closes o
+I52  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | CDPATH=implementation cd tools
+I53  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | cd with a glob: cd implementation/tool*
+I54  G2             fpia=NOT_FOUND expect=NOT_FOUND(D3-c)    gh_err=False gh_name='probe' gh_run=None emu=True | step env SCRIPT relative to the step working-directory + python "$SCRI
+I55  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | python -m <tree package> whose __main__ calls the tool by its full lit
+I56  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | PYTHONPATH=ci python -m runner (module only on PYTHONPATH) calling the
+I57  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | reusable workflow with the literal tool path (control)
+Y31  G1xG2          fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | run text via alias of an anchored env value
+Y32  G1xG2          fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | working-directory via alias (anchor on an env value) + bare tool name
+Y33  G1xG2          fpia=FOUND     expect=FOUND              gh_err=True gh_name='probe' gh_run=None emu=True | step mapping through a merge key (<<: {working-directory: ...}) + bare
+Y34  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | name via alias whose anchor is a job name defined earlier (name key pl
+Y35  G1             fpia=FOUND     expect=FOUND(fail-closed) gh_err=True gh_name=None gh_run=None emu=None | deeply nested flow sequence (RecursionError in the loader) + Track C n
+Y36  G1             fpia=NOT_FOUND expect=NOT_FOUND          gh_err=False gh_name='probe' gh_run=None emu=None | 1 MB workflow (1000-line block scalar) with a benign name (loader cost
+Y37  G1             fpia=NOT_FOUND expect=NOT_FOUND(GitHub shows 'track-c-evl- validation') gh_err=False gh_name='track-c-evl- validation' gh_run=None emu=None | folded block scalar >- over two lines joining 'track-c-evl-' and 'vali
+Y38  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation   ' gh_run=None emu=None | literal block |- with trailing spaces stripped by strip()
+Y39  G1             fpia=NOT_FOUND expect=NOT_FOUND(folds to a space) gh_err=False gh_name='track-c-evl- validation' gh_run=None emu=None | single-quoted with escaped quote doubling and line folding
+Y40  G1             fpia=FOUND     expect=FOUND              gh_err=False gh_name='track-c-evl-validation' gh_run=None emu=None | double-quoted with escaped line break (no space)
+I58  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | find ... -exec python {} \; (tool selected by a glob in find)
+I59  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=False | shell: python {0} with os.chdir + subprocess bare tool name
+I60  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | python ${{ github.workspace }}/implementation/tools/<tool> (rooted arg
+I61  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | cd implementation && cd tools && python <tool> on one line
+I62  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | symlink ci/tc.py -> ../implementation/tools/track_c_c6_acceptance.py r
+I63  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | symlinked directory ci/tools -> ../implementation/tools; cd ci/tools &
+I64  G2             fpia=FOUND     expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | uses: ./ (root composite action action.yml at repository root)
+I65  G2             fpia=NOT_FOUND expect=FOUND              gh_err=False gh_name='probe' gh_run=None emu=True | job-level defaults.run.working-directory via ${{ github.workspace }}
+rc=0

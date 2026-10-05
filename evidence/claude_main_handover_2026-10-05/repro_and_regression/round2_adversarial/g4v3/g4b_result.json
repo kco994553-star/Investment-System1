@@ -1,0 +1,18 @@
+{
+ "rc": 0,
+ "status": "fpia-output: VERIFIED",
+ "checks_mentioning_traversal": [
+  {
+   "actual": {
+    "bytes": 16,
+    "sha256": "26a2b2f5de8bc7e161f38470d97fd0c56a39fcc33ae4b38b94883c4c87fd09fb"
+   },
+   "check": "side file sha256/bytes: ../../outside-secret.txt",
+   "recorded": {
+    "bytes": 16,
+    "sha256": "26a2b2f5de8bc7e161f38470d97fd0c56a39fcc33ae4b38b94883c4c87fd09fb"
+   },
+   "status": "PASS"
+  }
+ ]
+}

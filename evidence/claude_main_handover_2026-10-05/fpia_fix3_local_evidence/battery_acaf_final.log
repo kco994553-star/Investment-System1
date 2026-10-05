@@ -1,0 +1,157 @@
+C00  control            holds                        r2=NOT_FOUND fix3=NOT_FOUND 
+C01  control            holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+C02  control            holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance (via scripts/ci_probe.sh); names a Track C file: implementation/tools/track_c_c6_acceptance
+C03  control            D3-c                         r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py (via scripts/probe_runner.py)
+C04  control            holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+C05  control            holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+Y01  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y02  G1                 holds                        r2=FOUND     fix3=FOUND     unparseable workflow (fail-closed): found undefined alias 'n'   in "<unicode string>", line 1, column 7:     name: *n           ^
+Y03  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y04  G1                 holds                        r2=FOUND     fix3=FOUND     unparseable workflow (fail-closed): expected a single document in the stream   in "<unicode string>", line 1, column 1:     name: probe     ^ but foun
+Y05  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y06  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y07  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y08  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y09  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y10  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): ' track-c-evl-validatio
+Y11  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y12  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y13  G1                 holds                        r2=FOUND     fix3=FOUND     unparseable workflow (fail-closed): could not determine a constructor for the tag '!foo'   in "<unicode string>", line 1, column 7:     name: !foo "tr
+Y14  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y15  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y16  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y17  G1                 holds                        r2=FOUND     fix3=FOUND     unparseable workflow (fail-closed): while scanning for the next token found character '\t' that cannot start any token   in "<unicode string>", line 1
+Y18  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y19  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y20  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y21  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y22  G1                 holds                        r2=FOUND     fix3=FOUND     unparseable workflow (fail-closed): mapping values are not allowed here   in "<unicode string>", line 2, column 1103:      ... KKKKKKKKKKKKKKKKKKKKKKK
+Y23  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y24  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y25  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y26  G1                 over-detection (conservative r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y27  G1                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow run-name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): "${{ 'track-c-evl-v
+Y28  G1                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow run-name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): "${{ format('track-
+Y29  G1                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow run-name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): "track-c-${{ 'evl' 
+Y30  G1                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): "${{ 'track-c-evl-valid
+U01  G1-confusable      LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U02  G1-confusable      not a confusable (visible ga r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl⠀-validatio
+U03  G1-confusable      LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U04  G1-confusable      LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-valı̇datı̇
+U05  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track‑c‑evl‑validation
+U06  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track﹣c﹣evl﹣validation
+U07  G1-confusable      not a confusable (em dash vi r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track—c—evl—validation
+U08  G1-confusable      not a confusable (soft hyphe r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track\xadc\xadevl\xadv
+U09  G1-confusable      not a confusable (U+FFFC ren r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U10  G1-confusable      LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U11  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'trасk-с-еvl-vаlidаtіоn
+U12  G1-confusable      not a confusable (capital do r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-valİdatİon
+U13  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track˗c˗evl˗validation
+U14  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-͏c-͏evl-͏validat
+U15  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U16  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U17  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U18  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evا-vaاidation
+U19  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-ev׀-va׀idation
+U20  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U21  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c\u2063-evl-vali
+U22  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U23  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U24  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U25  G1-confusable      holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U26  G1-confusable      LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+F01  G1-stem            holds                        r2=FOUND     fix3=FOUND     workflow filename stem claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-v
+F02  G1-stem            holds                        r2=FOUND     fix3=FOUND     case/Unicode variant of a projection path; workflow filename stem claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C
+F03  G1-stem            LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow filename stem claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-v
+F04  G1-stem            over-detection (conservative r2=FOUND     fix3=FOUND     workflow filename stem claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-v
+I01  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I02  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I03  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I04  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I05  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I06  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I07  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I08  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I09  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I10  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance
+I11  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py (via implementation/src/ci_probe/__main__.py)
+I12  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py (via ci/run_tc.py)
+I13  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance (via Makefile); names a Track C file: implementation/tools/track_c_c6_acceptance.py (via Ma
+I14  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance (via package.json); names a Track C file: implementation/tools/track_c_c6_acceptance.py (vi
+I15  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance (via ci/tc.sh); names a Track C file: implementation/tools/track_c_c6_acceptance.py (via ci
+I16  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py (via ci/tc.sh)
+I17  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py (via ci/tc.sh)
+I18  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py (via ci/run.py)
+I19  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py (via ci/run-tc)
+I20  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I21  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance; names a Track C file: implementation/tools/track_c_c6_acceptance.py
+I22  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I23  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance; names a Track C file: implementation/tools/track_c_c6_acceptance.py
+I24  G2                 D3-c                         r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance; names a Track C file: implementation/tools/track_c_c6_acceptance.py
+I25  G2                 D3-c                         r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance; names a Track C file: implementation/tools/track_c_c6_acceptance.py
+I26  G2                 D3-c                         r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance (via ci/run2.py); names a Track C file: implementation/tools/track_c_c6_acceptance.py (via 
+I27  G2                 holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance; names a Track C file: implementation/tools/track_c_c6_acceptance.py
+I28  G2                 D3-c                         r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I29  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py (via .github/workflows/x.yml); mentions Track C scope: tool track_c_c6_acceptance.py
+I30  G2                 NEW_D3 candidate             r2=NOT_FOUND fix3=FOUND     same-repository remote workflow or action, content not in T (fail-closed): kco994553-star/Investment-System1/.github/workflows/x.yml@feature/other
+I31  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance (via .github/actions/tc/run.sh); names a Track C file: implementation/tools/track_c_c6_acce
+I32  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance (via .github/actions/tc/run.sh); names a Track C file: implementation/tools/track_c_c6_acce
+I33  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance (via .github/actions/tcnode/index.js); names a Track C file: implementation/tools/track_c_c
+I34  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance (via .github/actions/tcdocker/Dockerfile); names a Track C file: implementation/tools/track
+I35  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     selects Track C tests: -k evl_c6 (via ci/tc.args)
+I36  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     selects Track C tests: -k evl_c6
+I37  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     selects Track C tests: -k evl_c6 (via ci/tc.ini)
+I38  G2                 holds                        r2=FOUND     fix3=FOUND     glob matches Track C paths: tests/test_evl_c6_*.py
+I39  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     pytest exclusions narrow the suite and keep Track C tests: --ignore-glob tests/test_[!e]*
+I40  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     selects Track C tests: -k evl_c6])) (via ci/run_tests.py)
+I41  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py; names a Track C file: implementation/tools/track_c_c6_acceptance.py
+I42  G2                 D3-c                         r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I43  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I44  G2                 holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I45  G2                 holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance; names a Track C file: implementation/tools/track_c_c6_acceptance.py
+I46  G2                 holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I47  G2                 holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I48  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I49  G2                 holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I50  G2                 D3-c                         r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py (via ci/run3.py)
+U27  G1-confusable-icu  LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'traϲk-ϲ-evl-validation
+U28  G1-confusable-icu  LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track﹘c﹘evl﹘validation
+U29  G1-confusable-icu  LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-ev￨-va￨idation
+U30  G1-confusable-icu  LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-val˛dat˛on
+U31  G1-confusable-icu  LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-valͺdatͺon
+U32  G1-confusable-icu  LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'traϲk-c-evl-validation
+U33  G1-control         LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U34  G1-control         LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U35  G1-control         holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U36  G1-control         holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U37  G1-control         LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+U38  G1-control         LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+I51  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I52  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I53  G2                 holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py; glob matches Track C paths: implementation/tool*; names the Track C workflow: .github/workflows
+I54  G2                 D3-c                         r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I55  G2                 holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance (via implementation/src/ci_probe2/__main__.py); names a Track C file: implementation/tools/
+I56  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance (via ci/runner.py); names a Track C file: implementation/tools/track_c_c6_acceptance.py (vi
+I57  G2                 holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance (via .github/workflows/x.yml); names a Track C file: implementation/tools/track_c_c6_accept
+Y31  G1xG2              holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance; names a Track C file: implementation/tools/track_c_c6_acceptance.py
+Y32  G1xG2              holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+Y33  G1xG2              holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+Y34  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y35  G1                 holds                        r2=FOUND     fix3=FOUND     unparseable workflow (fail-closed): maximum recursion depth exceeded
+Y36  G1                 holds                        r2=NOT_FOUND fix3=NOT_FOUND 
+Y37  G1                 holds                        r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl- validatio
+Y38  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+Y39  G1                 holds                        r2=NOT_FOUND fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl- validatio
+Y40  G1                 holds                        r2=FOUND     fix3=FOUND     workflow name claims the Track C identity (identity key 'trackcevlvalidation' contains the Track C key 'trackcevlvalidation'): 'track-c-evl-validation
+I58  G2                 D3-c                         r2=NOT_FOUND fix3=FOUND     glob matches Track C paths: track_c_c6*.py
+I59  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I60  G2                 holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance; names a Track C file: implementation/tools/track_c_c6_acceptance.py
+I61  G2                 holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+I62  G2                 holds                        r2=FOUND     fix3=FOUND     symlink or gitlink in complement; unparseable python in complement (fail-closed EVLREF); unparseable local script (fail-closed): ci/tc.py; mentions Tr
+I63  G2                 holds                        r2=FOUND     fix3=FOUND     symlink or gitlink in complement; mentions Track C scope: tool track_c_c6_acceptance.py
+I64  G2                 holds                        r2=FOUND     fix3=FOUND     names the Track C workflow: .github/workflows/track-c-evl-validation.yml; mentions Track C scope: tool track_c_c6_acceptance.py (via action.yml); refe
+I65  G2                 LOCAL_FIXABLE (D1)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+Y41  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+Y42  G2                 LOCAL_FIXABLE (D2)           r2=NOT_FOUND fix3=FOUND     mentions Track C scope: tool track_c_c6_acceptance.py
+Y43  G2                 holds                        r2=FOUND     fix3=FOUND     mentions Track C scope: module tools.track_c_c6_acceptance; names a Track C file: implementation/tools/track_c_c6_acceptance.py
+rc=0

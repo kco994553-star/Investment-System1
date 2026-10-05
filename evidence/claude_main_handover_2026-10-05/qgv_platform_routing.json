@@ -1,0 +1,552 @@
+{
+ "workflow_run": "wf_2e2232f2-8be",
+ "completed_agents": [
+  {
+   "label": "read-qgv",
+   "agentId": "ab0d4c5fcef700499",
+   "result": {
+    "work_identity": "QGV Work (CDR-017 \"A. QGV structural re-audit\"): QGV Common Contract vNext plus the Missing-Data / Method-Profile Binding decision gate. Owner branch codex/qgv-missing-data-decision-gate-2026-10-05 @ 4fb08a05728d83519b72a2bd995669f0cb06003a. The only write path is implementation/docs/qgv_common_contract_vnext/missing_data_gate/. Work chat: conversation 6ac230f1-0ff0-83ee-a932-45244e2c4afe. STATE.owner_pr_number=null. It inherits spec PR #44, which is read-only for the Work. Facts below were read at 2026-10-05T04:10:53Z from a private clone at /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf20/read-qgv/repo.",
+    "branches_prs": [
+     "codex/qgv-missing-data-decision-gate-2026-10-05 @ 4fb08a0 (owner branch; NO PR: GitHub list_pull_requests head filter, state=all, returned []; 10 commits ahead of canonical b8e39a2; last push 2026-10-05T03:39:38Z, 36b6b18->4fb08a0)",
+     "codex/qgv-architecture-reconciliation-review-2026-10-05 @ 4fb08a0 (NEW: branch_creation 2026-10-05T04:08:51Z per GET /repos/.../activity; no PR; no commits of its own; owner and lease unknown)",
+     "codex/qgv-common-contract-vnext-spec-2026-10-04 @ cb1906b207623168fd70f3dcdb5b30f2d82d807d = PR #44 (Draft, open, mergeable_state=clean, base canonical b8e39a2, 0 comments; CI runs 37245014376 push / 37245037812 PR SUCCESS per PR body and STATE.known_ci_evidence)",
+     "codex/qgv-common-contract-vnext-publication-evidence-2026-10-04 @ 11cd2f5ac545af54d943dc206396c1fb6926689c (evidence-only branch, no PR)",
+     "docs/qgv-context-policy-approvals @ b42f2be (QGV Context/Filter AP1-AP3 approved, AP4-AP6 NOT APPROVED; no PR)",
+     "ccr-db5d5960-qen9yi @ 5eec129 = PR #10 QGV Real Producer (Draft)",
+     "feature/qgv-invalidation-binding-v1 @ c3dbf8a = PR #19 (Draft)",
+     "feature/leaderboard-real-producer-v1 @ 0d48d86 = PR #14 (Draft)",
+     "feature/p01-research-publication-v1 @ 21039a0 = PR #17 (Draft)",
+     "integration/fpia-hardened-v1 @ 11d2f25 = PR #42 (Draft; QGV watches it read-only; head moved 523e702->11d2f25 at 2026-10-05T03:50:01Z)",
+     "codex/chart-contract-mcp-api-v0-1 @ 1e8c24c = PR #41 (Chart)",
+     "integration/global-handoff-v1 @ b3532a2 (CDR-017 recorded)",
+     "canonical claude/investment-system-top500-validation-alrugm @ b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+    ],
+    "handoff_paths": [
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/CURRENT_HANDOFF.md (latest scoped handoff: BINDING_DECISION_READY / INDEPENDENT_REVIEW_PASS / INACTIVE / SPEC-ONLY, with Phase B history below it)",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/DECISION_REGISTER.md (scoped append-only register: QCC-P01 M1-M5 and the B1-B7 technical verdicts)",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/approval.json (sha256 65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf, recomputed and matching the STATE pin; user approval 2026-10-05T09:57:52+09:00, EXACT_M1_M5_PRINCIPLES_ONLY)",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/INDEPENDENT_REVIEW.md",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/CONSUMER_PROFILE_REVIEW.md",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/FACTOR_ROLE_AUDIT.md",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/APPLICABILITY_AUDIT.md",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/B4_REVIEW.md",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/work_authority.json",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/authority_drift.json",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/MIGRATION_BOUNDARY.md",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/STATE.json (lease and continuation state)",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/CONTROL.md",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/CONTINUATION_PROTOCOL.md",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/CANARY_ACCEPTANCE.md",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05:implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/receipts/2026-10-05_final_v2_configuration_readback.json (automation wake configuration)",
+     "origin/codex/qgv-common-contract-vnext-spec-2026-10-04:implementation/docs/qgv_common_contract_vnext/STATUS.md and AUDIT.md (QCC-P01..P05 decision queue, H1-H10)",
+     "11cd2f5:implementation/docs/qgv_common_contract_vnext/publication/TRANSPORT_REPUBLICATION_VERIFICATION_2026-10-04.json",
+     "b8e39a2:'Investment-System1 · Contract Conflict Register 2026-09-23.md' (C-03 Q7 label, C-24 StrategyProfile, C-29 QGV-Technical scale, C-30 Official Weight Dataset; there is no separate QGV conflict register)",
+     "origin/docs/qgv-context-policy-approvals:implementation/reports/qgv_context_filter_decision_register.md",
+     "origin/feature/leaderboard-real-producer-v1:implementation/docs/leaderboard_real_producer/STATUS.md (policy blockers 1-7)",
+     "origin/ccr-db5d5960-qen9yi:implementation/docs/qgv_producer/STATUS.md",
+     "origin/integration/global-handoff-v1:implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md (CDR-015/016/017)",
+     "origin/integration/global-handoff-v1:implementation/docs/coordination/GLOBAL_STATUS_INDEX.md line 114 (PR #44 row)"
+    ],
+    "leases": "VERIFIED: lease ACTIVE on codex/qgv-missing-data-decision-gate-2026-10-05 (STATE.json at 4fb08a0). token=qgv-b47-muupb538; owner=\"manual-B4-B7-explicit-user-approval\"; input_owner_head=36b6b1840fe4bd22d7bb310407e2cea4050e0c2d; task=\"approved-identity-invariants-and-admission-consolidation\"; claimed_at_kst=2026-10-05T12:39:35.838071+09:00 (03:39:35Z); expiry=null; status=RUNNING_B4_B7_INACTIVE_CONTRACT_AND_CONSOLIDATION; pending_runs=[]; pending_long_tests=[]. No commit after the claim as of 04:10:53Z, so the lease has been held for about 31 minutes with no output yet. Protocol (CONTROL.md): optimistic git-ref compare-and-swap lease, force:false. A stale lease may not be taken over, and there is no invented expiry. Main must not write this branch. HOP1 cannot claim until this lease is released. The new branch codex/qgv-architecture-reconciliation-review-2026-10-05 was created at 04:08:51Z from 4fb08a0. Its lease, owner and write set are UNKNOWN; no STATE change exists on it.",
+    "watched_channels": "VERIFIED from receipts/2026-10-05_final_v2_configuration_readback.json (03:21Z) and STATE.json:\n(1) Event watch 6ac2f22087288191abd144fb4a7655f8 \"QGV Work 자동 재개\". condition_watch, unscheduled. Fires only on exact PRs #44 and #42: opened, ready_for_review, closed/merge, synchronize (commit updates), submitted human reviews, created human conversation and inline comments. Target chat 6ac230f1-0ff0-83ee-a932-45244e2c4afe. last_run_time=null. Real event delivery NOT_TESTED; trigger readback NOT_EXPOSED.\n(2) Hourly watch 6ac2efbd34fc8191a60dccbbe338c291 \"QGV CI·State 후속 실행\". RRULE hourly from DTSTART 2026-10-05T00:31:53Z. Checks pending CI first, then the STATE.continuation_plan.tasks selector. Its chat is 6ac3012d-9bf4-83e8-b2ba-bb8c3ab9d10a, which differs from the Work chat, and the platform has no setter to change it. last_run_time=2026-10-05T02:09:22Z.\nThe Work has NO owner PR (owner_pr_number=null). PR #44 is its inherited spec PR and is open, Draft and spec-only. Per CONTROL.md, once an owner PR exists only its number is added to the same watch.\nNOT woken by: Global handoff pushes, PRs #10/#14/#17/#19/#41, or the new architecture-reconciliation branch.\nPending event: PR #42 synchronize at 03:50:01Z (523e702->11d2f25) is a pending event for QGV, since STATE.last_processed_heads.pr42=523e702. It touches no qgv paths, so it is non-material.\nINFERRED: (a) a human conversation comment on PR #42 (Main's own PR) or on PR #44 is currently the only push-style channel into the QGV chat, and its delivery is untested; (b) otherwise Global-only deltas reach QGV only when the hourly or event run fresh-reads Global routing, which ranks below the scoped Handoff in its precedence order.",
+    "items": [
+     {
+      "id": "QGV-X01",
+      "work": "QGV structural re-audit (binding gate B5/B6)",
+      "title": "Result validity (B5) and consumer/ranking admission (B6) vs Leaderboard's unwritten PARTIAL/BLOCKED rule",
+      "kind": "CROSS_OWNER_CONSUMER_ADOPTION (+ USER_DECISION_CANDIDATE for actual criteria/cohort/cutoff)",
+      "owner_hint": "QGV Work supplies the inactive B5/B6 reference contract. The Leaderboard owner (#14) answers whether its blocker #4 is governed by QGV B6, and P01 (#17) and Invalidation (#19) owners confirm compatibility. The actual ranking/completeness rule is a real policy decision for the user.",
+      "consumers": [
+       "Leaderboard #14 (leaderboard_producer/rank.py partial_blocked_filter=NOT_DEFINED_NOT_INVENTED; qgv/leaderboard.py ranks every snapshot)",
+       "P01 #17 (publication/predicate.py: PARTIAL disclosure only with grant; grants NONE)",
+       "Invalidation #19 (publication/qgv_binding.py current_valid != scoring validity)",
+       "Web/P01 #29/#34/#36 (render-only)",
+       "Portfolio (validation/vertical_slice.py selects Q/G-present results)",
+       "Track Record",
+       "integration/compatibility.py"
+      ],
+      "evidence": "VERIFIED: binding_gate/CONSUMER_PROFILE_REVIEW.md (B5/B6 APPROVE_RECOMMENDED; legacy partial Q=56,G=70,total=63 ranked 2nd in a probe). Leaderboard STATUS.md 'Policy blockers' #4: 'No written rule for whether PARTIAL/BLOCKED should be excluded. Existing engine includes them.' Real data per date: 468-471 PARTIAL, 29-32 BLOCKED, READY 0 of 500 (leaderboard and qgv_producer STATUS).",
+      "scoped_state": "B5=APPROVE_RECOMMENDED and B6=APPROVE_RECOMMENDED_SCOPED_CONSUMER_BOUNDARY (technical recommendations, not user approval). No consumer has adopted them. No owner answer from Leaderboard/P01/#19 exists. Actual criteria are D3 per the QGV Work."
+     },
+     {
+      "id": "QGV-X02",
+      "work": "QGV structural re-audit (B4 method/version identity)",
+      "title": "Producers and consumers must eventually carry immutable method/version refs; the current methodology tuple is coarse",
+      "kind": "CROSS_OWNER_CONSUMER_ADOPTION (future; notice only now)",
+      "owner_hint": "QGV Work owns the B4 contract. Owners of the QGV Producer #10, Leaderboard producer #14 (qgv_input.py checks semantic hash/version/weights), Invalidation #19 (methodology tuple qgv_system_version/qgv_standard_version/qgv_analysis_contract/implementation_line/weights_sha256/cross_section_rule_id) and Track Record adopt it once QGV publishes an adopted inactive contract.",
+      "consumers": [
+       "QGV Producer #10",
+       "Leaderboard #14",
+       "Invalidation #19",
+       "P01 #17",
+       "Track Record",
+       "Chart #41 (C04 Historical QGV, I11 QGV version performance)"
+      ],
+      "evidence": "VERIFIED: binding_gate/B4_REVIEW.md (6 cases/17 checks; static versions and hashes cannot certify the selected computation). DECISION_PACKAGE.md B4: absent method refs mean LEGACY_UNASSESSED. qgv_binding.py lines 29-30, 45-47, 94-107 on c3dbf8a.",
+      "scoped_state": "STATE.binding_gate.B4=APPROVE_RECOMMENDED_IDENTITY_ONLY. The lease owner label and commit 4fb08a0 message say 'approved B4 B7', but no B4/B7 approval record exists at 4fb08a0, so the approval is UNVERIFIED. Runtime adoption is not authorized. No consumer action is due yet."
+     },
+     {
+      "id": "QGV-X03",
+      "work": "QGV structural re-audit (B7 / WeightOverride)",
+      "title": "WeightOverride runtime wiring depends on Personal-layer C-24/C-30 authority and the factor-node map",
+      "kind": "CROSS_OWNER_DEPENDENCY (+ USER_DECISION_CANDIDATE for wiring and Official weight maturity)",
+      "owner_hint": "Personal Investment Layer owner: C-24 is to be resolved at PIL P1; C-30 needs an Official Weight Dataset SSoT. Runtime wiring is a real policy decision for the user. QGV only defines the B7 weight-only boundary.",
+      "consumers": [
+       "Personal/Custom namespace (personal/weights.py, versioning.py)",
+       "Web",
+       "Leaderboard (Official isolation)"
+      ],
+      "evidence": "VERIFIED: canonical Contract Conflict Register 2026-09-23 C-24 (OPEN-NONBLOCKING) and C-30 (OPEN, 'maturity not assigned by guess'). CONSUMER_PROFILE_REVIEW.md B7. MIGRATION_BOUNDARY.md §6 WeightOverride.",
+      "scoped_state": "B7=APPROVE_RECOMMENDED_WEIGHT_ONLY_BOUNDARY; user approval is claimed in the lease label only, with no record. Wiring is unauthorized. INFERRED: no active PIL owner branch or PR found."
+     },
+     {
+      "id": "QGV-X04",
+      "work": "QGV structural re-audit (B2 applicability / N/A)",
+      "title": "N/A proof needs a dated issuer/profile classification authority, which does not exist",
+      "kind": "CROSS_OWNER_DEPENDENCY (+ USER_DECISION_CANDIDATE for actual predicates and the denominator exclusion, e.g. financial Q 56->70)",
+      "owner_hint": "Identity/Classification owner (INFERRED: the same Issuer -> Security -> dated Listing owner as Chart blocker 2) for a dated financial/general classification with effective interval and provenance. QGV supplies the predicate/proof contract.",
+      "consumers": [
+       "QGV Q scoring (roic_wacc financial exclusion, NIM/CET1 branches)",
+       "Leaderboard #14",
+       "Chart #41 (shares the Identity owner)"
+      ],
+      "evidence": "VERIFIED: binding_gate/APPLICABILITY_AUDIT.md: ProfileKind is not dated classification; Identifier sector/industry has no dated provenance; qgv/financial_issuer.py:39-46 overrides profile; pipeline context-divergence probe gives Q 35.8 vs 34.97; 56/1=56 vs 56/0.8=70. Contract Conflict Register C-25 security_id vs company_id is OPEN.",
+      "scoped_state": "B2=APPROVE_RECOMMENDED_PROOF_CONTRACT_ONLY; concrete predicates MORE_EVIDENCE_REQUIRED; no classification authority artifact exists; no owner answer."
+     },
+     {
+      "id": "QGV-X05",
+      "work": "QGV structural re-audit (B1 requiredness)",
+      "title": "Rubric and context inputs have no source, so completeness can never be true (READY 0/500)",
+      "kind": "CROSS_OWNER_DEPENDENCY (data supply) (+ D3-cost if a paid provider is needed)",
+      "owner_hint": "QGV Producer #10 / data-source owner for competitive_advantage_rubric, management_quality_rubric, growth_durability_rubric, sector_context_score and theme_premium_score. QGV keeps the role research.",
+      "consumers": [
+       "QGV completeness (B5)",
+       "Leaderboard READY coverage",
+       "Chart QGV charts"
+      ],
+      "evidence": "VERIFIED: FACTOR_ROLE_AUDIT.md (SUPPORTED 3 / PROPOSED 10 / UNRESOLVED 7; roles assigned 0/20; sector_context and theme_premium have 'no current historical source producer'). qgv_producer STATUS.md: 'no name reaches READY. Rubric Q/G inputs ... have no source'.",
+      "scoped_state": "B1=MORE_EVIDENCE_REQUIRED_FOR_ACTUAL_ROLES. No data owner action exists or has been requested."
+     },
+     {
+      "id": "QGV-X06",
+      "work": "QGV structural re-audit (Q7)",
+      "title": "C-03 Q7 Management Quality vs Capital Allocation label",
+      "kind": "USER_DECISION_CANDIDATE (pre-existing)",
+      "owner_hint": "User or original package (Contract Conflict Register: 'user or original package must pick the official label'). QGV defers the management_quality role until then.",
+      "consumers": [
+       "QGV Q axis",
+       "Leaderboard",
+       "Chart"
+      ],
+      "evidence": "VERIFIED: Contract Conflict Register 2026-09-23 C-03 DECISION REQUIRED / OPEN-ISOLATED; FACTOR_ROLE_AUDIT.md management_quality UNRESOLVED.",
+      "scoped_state": "Open since 2026-09-23; no user decision recorded."
+     },
+     {
+      "id": "QGV-X07",
+      "work": "QGV structural re-audit (QCC-P03)",
+      "title": "G 3-5Y proxy and EPS->FCF fallback intended-method choices (to be decided separately)",
+      "kind": "USER_DECISION_CANDIDATE (after QGV's internal impact package) + consumer notice",
+      "owner_hint": "The QGV Work prepares the common impact package. The method choice is a real method decision for the user under CDR-017 §7. A forecast/CAGR dataset may need a provider; a paid one is CDR-015 D3 (cost).",
+      "consumers": [
+       "G score -> (Q+G)/2 -> Leaderboard #14 rank",
+       "integration/compatibility.py",
+       "Portfolio selection",
+       "Chart #41 (C04/I09/I11)",
+       "Track Record"
+      ],
+      "evidence": "VERIFIED: AUDIT.md H8 CONFIRMED (revenue YoY proxy, no forecast/CAGR) and H9 PARTIALLY_CONFIRMED (fcf/revenue_prev-1). CURRENT_HANDOFF names this as the next semantic package after B4+B7.",
+      "scoped_state": "QCC-P03 PROPOSED/NOT_APPROVED; package not yet produced; no runtime change."
+     },
+     {
+      "id": "QGV-X08",
+      "work": "QGV structural re-audit (QCC-P04)",
+      "title": "V normalization/method and V metadata (confidence/coverage reuse quality.value)",
+      "kind": "CROSS_OWNER_CONSUMER_DEPENDENCY (Chart deferral, Web display) (+ USER_DECISION_CANDIDATE for methods)",
+      "owner_hint": "QGV Work for the research. Chart #41 has explicitly deferred V/Reverse DCF/MOS/scenario-target semantics to QGV reconciliation. Web displays V confidence/coverage.",
+      "consumers": [
+       "Chart #41 (p0-design/P0_CHART_CONTRACT_AND_WIRING_v0.1.md:21,231 DEFERRED_TO_V_QGV_RECONCILIATION)",
+       "Web #5/#34/#36",
+       "P01 #17"
+      ],
+      "evidence": "VERIFIED: AUDIT.md H10 CONFIRMED; FACTOR_ROLE_AUDIT lists 4 V factors UNRESOLVED (fundamental_value, reverse_dcf, historical_valuation, margin_of_safety); Chart branch 1e8c24c deferral text.",
+      "scoped_state": "Not started. INFERRED: not on Chart Lane A's current critical path (Target Theme slice)."
+     },
+     {
+      "id": "QGV-X09",
+      "work": "QGV structural re-audit (QCC-P05)",
+      "title": "Composite (Q+G)/2 excluding V: consumers depend on the legacy formula",
+      "kind": "USER_DECISION_CANDIDATE (formula/axes/weights) + consumer notice",
+      "owner_hint": "QGV designs it; real numeric/method decision for the user; downstream of G/V methods.",
+      "consumers": [
+       "Leaderboard #14 (sort total then Q)",
+       "integration/compatibility.py:25 '(Q+G)/2 >= 50'",
+       "qgv/scoring attractiveness_10 (C-29, Technical scale)",
+       "validation cross-section",
+       "Chart #41 (H01/J01/J07)",
+       "Track Record"
+      ],
+      "evidence": "VERIFIED: AUDIT.md H6; b8e39a2:implementation/src/investment_system/integration/compatibility.py:25; Contract Conflict Register C-29.",
+      "scoped_state": "KEEP legacy; no package; no change proposed now."
+     },
+     {
+      "id": "QGV-X10",
+      "work": "QGV structural re-audit (validation/promotion)",
+      "title": "Real PIT/OOS (gate G4), Track C C7-C10 and FPIA code identity for any future QGV runtime change",
+      "kind": "CROSS_OWNER_DEPENDENCY",
+      "owner_hint": "Track C owner (C7-C10, CAL_VERIFY, Holdout access) and Main (FPIA). Any QGV package Python change makes the FPIA code identity DIVERGED.",
+      "consumers": [
+       "Track C / EVL",
+       "Integration/FPIA PR #42",
+       "Official promotion path"
+      ],
+      "evidence": "VERIFIED: MIGRATION_BOUNDARY.md §5 G4/G5; qgv_producer STATUS 'OFFICIAL_QGV_PRODUCER_READY NO - Track C C7-C10 not complete'; CURRENT_HANDOFF 'Holdout UNCONSUMED', 'real PIT-OOS NOT_RUN'.",
+      "scoped_state": "No QGV runtime change exists, so there is no current FPIA impact. Holdout and Official/LIVE are protected (CDR-016 §13)."
+     },
+     {
+      "id": "QGV-X11",
+      "work": "Main/PIW (Global records about QGV)",
+      "title": "Global is stale or misattributed on QGV; QGV handoff asks PIW to incorporate its pins",
+      "kind": "OWNER_ACTION_ON_MAIN",
+      "owner_hint": "Primary Integration Writer (Global single writer).",
+      "consumers": [
+       "All Works reading Global",
+       "QGV Work",
+       "Chart #41"
+      ],
+      "evidence": "VERIFIED: GLOBAL_STATUS_INDEX.md:114 lists PR #44 Author/owner as 'Chart owner' (INFERRED wrong: PR #44 is the QGV Common Contract vNext package). GCH-015 current handoff has no entry for the missing-data gate, M1-M5 approval (65a360a4...), B1-B7, the active lease or the new architecture-reconciliation branch; only GCH-015b history notes 'QGV active ... @4fb08a0'. QGV CURRENT_HANDOFF 'Coordination note for the Primary Integration Writer' flags GCH-014/GSI-020 as stale and asks PIW to incorporate the PR #44 and Phase B pins.",
+      "scoped_state": "Open; PIW-owned; no owner dependency."
+     },
+     {
+      "id": "QGV-X12",
+      "work": "Main -> QGV propagation",
+      "title": "Material Global-only deltas (CDR-016 §13, CDR-017 §7) not yet observed by the QGV Work, and no reliable wake channel",
+      "kind": "CROSS_OWNER_PROPAGATION",
+      "owner_hint": "Main routes; the QGV Work consumes it.",
+      "consumers": [
+       "QGV Work (chat 6ac230f1-0ff0-83ee-a932-45244e2c4afe; hourly chat 6ac3012d-9bf4-83e8-b2ba-bb8c3ab9d10a)"
+      ],
+      "evidence": "VERIFIED: STATE.last_observed_heads.global_routing=d92363f (CDR-015 only); Global is now b3532a2 (CDR-016 at 5e33b30, CDR-017 at b3532a2); STATE.authority_resolution records CDR-015 as observed but keeps narrower task limits; event watch is PR #44/#42 only; owner_pr_number=null.",
+      "scoped_state": "Not propagated. INFERRED options: (a) comment on Main's own PR #42 or on #44, which triggers QGV's event watch (delivery NOT_TESTED); (b) ask QGV to open an owner PR and add it to its trigger set; (c) rely on the hourly fresh-read."
+     },
+     {
+      "id": "QGV-X13",
+      "work": "Authority reconciliation (QGV D2/D3 line)",
+      "title": "CDR-015 D2 delegation vs the QGV Work's D3 list and CDR-017 §7 'real numeric/method/policy D3 to user'",
+      "kind": "USER_DECISION_CANDIDATE",
+      "owner_hint": "User (Main must not decide QGV production semantics); the QGV Work may reclassify in its own scoped register on a fresh read.",
+      "consumers": [
+       "QGV Work",
+       "every QGV consumer above"
+      ],
+      "evidence": "VERIFIED: work_authority.json and authority_drift.json; both automation prompts list method replacement, requiredness/N/A predicates, ranking/coverage cutoffs, normalization/composite, WeightOverride wiring, migration, PR44/canonical merge and deployment as D3 needing user approval. CDR-015 classifies policy, numeric configuration, migration, merge and deploy as D2. CDR-017 recorded effect: 'a protected semantic change is not lowered to D2'.",
+      "scoped_state": "Unreconciled. No user answer exists."
+     },
+     {
+      "id": "QGV-X14",
+      "work": "QGV (new branch)",
+      "title": "Identify owner, lease and write set of codex/qgv-architecture-reconciliation-review-2026-10-05 before routing",
+      "kind": "COORDINATION_CHECK (possible duplicate writer)",
+      "owner_hint": "INFERRED: likely the CDR-017 'QGV structural re-audit' session; unconfirmed.",
+      "consumers": [
+       "QGV Work",
+       "Main routing"
+      ],
+      "evidence": "VERIFIED: GitHub activity API shows branch_creation at 2026-10-05T04:08:51Z, 0000000 -> 4fb08a0; no PR; no commits beyond 4fb08a0.",
+      "scoped_state": "Unknown purpose; no STATE or lease on it yet."
+     },
+     {
+      "id": "QGV-X15",
+      "work": "QGV Context/Filter policy (separate Work)",
+      "title": "Context AP4 Macro / AP5 News / AP6 Publication not approved",
+      "kind": "CROSS_OWNER_RELATED (lower priority; not in the re-audit's current list)",
+      "owner_hint": "Context policy Work on docs/qgv-context-policy-approvals, with the Macro (#12), RIG/News (#13/#16) and P01 (#17) owners.",
+      "consumers": [
+       "Macro #12",
+       "RIG #13/#16",
+       "P01 #17"
+      ],
+      "evidence": "VERIFIED: qgv_context_filter_decision_register.md 'AP4 Macro NOT APPROVED; AP5 News NOT APPROVED; AP6 Publication NOT APPROVED'.",
+      "scoped_state": "Dormant since 2026-10-02 (b42f2be)."
+     }
+    ],
+    "internal_only_items": [
+     "QGV-I01 B4+B7 inactive contract continuation. RUNNING under lease qgv-b47-muupb538, claimed 03:39:35Z, no output yet. QGV does this itself; Main only reads the result and then re-judges X02/X03. The B4/B7 approval record is not yet published.",
+     "QGV-I02 Two-hop real scheduler canary. Task QGV_AUTO_HOP1_LEGACY_METHOD_MANIFEST is READY (fingerprint 7544a7376f5ad1fef9127bfec19ebd5e0d18d701fa74710a473962fdca2435e1; output automation/canary/hop1_method_replay_manifest.json). HOP2 QGV_AUTO_HOP2_INDEPENDENT_MANIFEST_CLOSURE is an unbound template. Status 2-HOP PLAN_READY / ACTUAL_HOPS_NOT_EXECUTED / AUTONOMOUS_CONTINUATION_NOT_VERIFIED; blocked until the active lease is released.",
+     "QGV-I03 B1 factor-role research for the 20 factors (3 SUPPORTED / 10 PROPOSED / 7 UNRESOLVED; 0/20 roles assigned). Internal except the data supply (X05) and C-03 (X06).",
+     "QGV-I04 B3 admission rubric design (stale/estimated/conflicting/identifier states) and the QCC-P02 public PIT entry boundary (analyze_raw maps without require_available). Design is internal; runtime is D3 per QGV; PIT relaxation is protected.",
+     "QGV-I05 G 3-5Y and EPS->FCF common impact research package: the next semantic package per CURRENT_HANDOFF. Research is internal; only the method choice goes to the user (X07).",
+     "QGV-I06 V normalization/method and V metadata research (QCC-P04). Internal; consumers in X08.",
+     "QGV-I07 Missing-Data implementation contract (INACTIVE, runtime_enabled=false), regression plan and migration boundary. Runtime waits on the B1/B2/B3/B5/B6 bindings.",
+     "QGV-I08 Automation hygiene. Event delivery NOT_TESTED; hourly watch posts to a different chat (6ac3012d...) with no conversation setter; trigger readback NOT_EXPOSED. QGV's own platform repair.",
+     "QGV-I09 STATE watermarks stale: pr42 523e702 vs actual 11d2f25; global d92363f vs b3532a2. The #42 delta (FPIA fix round 3, no qgv paths) is NO_ACTION for QGV; refreshed on the next wake.",
+     "QGV-I10 PR #44 upkeep: Draft spec-only package, CI SUCCESS on cb1906b. No QGV action is pending; a merge would be a canonical merge, which is protected (CDR-016 §13)."
+    ],
+    "facts": [
+     "VERIFIED: canonical b8e39a2196a6d7794a04a0cd5393c68329e126ca; Global integration/global-handoff-v1 b3532a2 (push 04:06:56Z); QGV owner branch 4fb08a0 (push 03:39:38Z). Observed at 04:10:53Z.",
+     "VERIFIED: the QGV owner branch commit chain from canonical is cb1906b (PR #44 transport) -> 11cd2f5 (publication evidence) -> ed907b8 (Phase B gate) -> 828247e (lease) -> 478a7a4 (M1-M5 principles plus inactive implementation contract) -> 9a07a19 (lease) -> 1e79920 (binding intake checkpoint) -> 004e256 (lease) -> 36b6b18 (binding gate B1-B7 plus continuation repair) -> 4fb08a0 (lease claim for the B4/B7 continuation).",
+     "VERIFIED: M1-M5 are APPROVED_PRINCIPLES_ONLY (user, 2026-10-05T09:57:52+09:00; approval.json sha256 65a360a4... recomputed and matching). Actual roles, predicates, cutoffs, runtime, migration and merge are NOT approved.",
+     "VERIFIED: STATE.binding_gate is B1 MORE_EVIDENCE_REQUIRED_FOR_ACTUAL_ROLES; B2 APPROVE_RECOMMENDED_PROOF_CONTRACT_ONLY; B3 APPROVE_RECOMMENDED; B4 APPROVE_RECOMMENDED_IDENTITY_ONLY; B5 APPROVE_RECOMMENDED; B6 APPROVE_RECOMMENDED_SCOPED_CONSUMER_BOUNDARY; B7 APPROVE_RECOMMENDED_WEIGHT_ONLY_BOUNDARY; production_enabled=false. These are technical recommendations, not user approval.",
+     "VERIFIED: the 4fb08a0 commit changes only automation/STATE.json. Its message is 'claim approved B4 B7 inactive contract continuation' and its lease owner label is 'manual-B4-B7-explicit-user-approval'. No new approval record file exists.",
+     "VERIFIED: the QGV Work has no open or closed PR for its owner branch. PR #44 (Draft, open, clean, 0 comments) is its inherited spec PR. The event wake set is exactly PRs #44 and #42.",
+     "VERIFIED: PR #42's only conversation comment is 5986162506 (Chart handoff, 2026-10-05T00:40:32Z); QGV recorded its disposition as NO_ACTION.",
+     "VERIFIED: Leaderboard #14 policy blocker #4 states there is no written rule on excluding PARTIAL/BLOCKED. On real data READY is 0 of 500 for each of the three Frozen dates.",
+     "VERIFIED: Technical engine (b8e39a2) references only qgv_snapshot_id; Macro engine states it does not mutate QGV. integration/compatibility.py:25 uses (Q+G)/2>=50 on Q/G-present snapshots.",
+     "VERIFIED: CDR-017 §7 says Main routes only the QGV consumer and integration dependencies, does not decide QGV production semantics, and sends only real numeric/method/policy D3 items to the user.",
+     "VERIFIED: a new branch codex/qgv-architecture-reconciliation-review-2026-10-05 was created at 04:08:51Z at 4fb08a0."
+    ],
+    "unverified": [
+     "Whether the user actually approved B4+B7. Only the lease owner label and commit message say so; no approval record exists at 4fb08a0. Do not report it as approved.",
+     "The purpose, owner and lease of codex/qgv-architecture-reconciliation-review-2026-10-05. It may be the CDR-017 'QGV structural re-audit' session, or a duplicate writer.",
+     "Whether either QGV automation has actually fired since its 03:21Z readback. Event delivery is NOT_TESTED, and the hourly watch's last recorded run is 02:09:22Z. It is also unknown whether the 03:50Z PR #42 synchronize woke the QGV chat.",
+     "Whether a comment authored by the PIW account counts as a 'human' comment under the QGV event filter, and so whether commenting on #42 or #44 would deliver.",
+     "Owner attribution: Identity/Classification as owner of dated financial classification (X04), and the Personal (PIL) owner for C-24/C-30 (X03), are inferred from register text; no active owner branch was located.",
+     "The GSI #44 'Chart owner' attribution is judged wrong because the PR #44 title, body and branch are QGV Common Contract vNext. The intent of the PIW's original entry was not checked.",
+     "Whether Chart's TARGET root (which uses the Official v1.1 reference weights in qgv/portfolio.py) brings QGV into Chart blocker 1. That is left to the separate Chart routing workflow; the QGV Work's write set does not include qgv/portfolio.py.",
+     "Whether any QGV method decision needs a paid data provider (forecast/consensus), which would make it CDR-015 D3 (cost)."
+    ],
+    "summary": "The QGV Work is active on its own branch, codex/qgv-missing-data-decision-gate-2026-10-05 @ 4fb08a0, and has no PR of its own. Its event automation wakes only on PRs #44 and #42; a separate hourly watch posts to a different chat, and real event delivery has never been tested. Global-only changes such as CDR-016 and CDR-017 do not wake it: it last observed Global at d92363f, which only includes CDR-015.\n\nA lease is active: token qgv-b47-muupb538, claimed 03:39:35Z with no expiry, labelled as a manual B4+B7 continuation under explicit user approval. No B4/B7 approval record has been published, so treat that approval as unverified.\n\nStatus: M1-M5 are approved as principles only. B1-B7 are technical recommendations (B1 needs more evidence; B2-B7 are recommended for approval). Every runtime change, migration and merge is unauthorized. The two-step scheduler continuation check is ready but has not run.\n\nA new branch, codex/qgv-architecture-reconciliation-review-2026-10-05, appeared at 04:08:51Z from 4fb08a0. Identify its owner and lease before routing anything to QGV.\n\nCross-owner work for Main:\n- **X01:** Leaderboard #14's open PARTIAL/BLOCKED ranking rule is the same question as QGV's B5/B6 consumer-admission recommendation (READY is 0 of 500 on real data). P01 #17, #19 and Web are also consumers.\n- **X02:** future method/version identity refs for producer #10, Leaderboard, #19 and Track Record.\n- **X03:** WeightOverride wiring depends on the Personal layer's C-24/C-30 items.\n- **X04:** N/A proof needs a dated issuer classification from the Identity owner.\n- **X05:** rubric and context inputs have no data source.\n- **X08:** Chart #41 has deferred V semantics to QGV.\n- **X09:** composite consumers.\n- **X10:** Track C, FPIA and PIT/OOS.\n- **X11:** Main's own Global fixes: the status index lists #44's owner as Chart, and the current handoff omits the QGV gate state.\n- **X12:** propagate CDR-016/017 to QGV through a channel it actually consumes.\n\nPossible user decisions: C-03 (Q7 label), the G 3-5Y and EPS->FCF method choices, V methods, the composite formula, actual roles/predicates/ranking criteria, and whether CDR-015's D2 scope or QGV's D3 list governs QGV semantics (X13).\n\nQGV does the rest itself: the B4/B7 contract, the two-step canary, B1/B3 research, the G/FCF and V research packages, and the inactive Missing-Data contract."
+   }
+  },
+  {
+   "label": "read-platform",
+   "agentId": "adce0a074f391921d",
+   "result": {
+    "work_identity": "read-platform: read-only discovery of the Product Platform implementation audit Work (CDR-017 §3C/§8) for Claude Main, the PIW (session_019znshzTYgyBnuuBmSxdPFN). Private clone at /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf20/read-platform/repo. Last fetch 2026-10-05T04:17:26Z. No writes, comments, leases or FPIA runs.",
+    "branches_prs": [
+     "canonical claude/investment-system-top500-validation-alrugm @ b8e39a2196a6d7794a04a0cd5393c68329e126ca (unchanged)",
+     "integration/global-handoff-v1 @ b3532a2ebbe95310bbf222937466eb04a0211263 (CDR-017 recorded; GCH-015b)",
+     "Worker Contract SSoT: ccr-2e16018a-qukwmg @ f1b5afb (PR #21), blob 617ef6d (not present on the global-handoff branch)",
+     "PR #41 Chart codex/chart-contract-mcp-api-v0-1: MOVED 1e8c24c -> a0ad46b (04:14Z, '[chart-owner-resume] record verified continuation policy and release shared lease'; adds p0-dependency-continuation-v0.7/)",
+     "NEW branch codex/qgv-architecture-reconciliation-review-2026-10-05 @ df5c704 (04:16Z; at list_branches time it was 4fb08a0); 'reconciliation' here means QGV V-vs-Q/G architecture, not financial reconciliation",
+     "PR #5 Web MVP feature/web-mvp-v1 @ a4e49c8",
+     "PR #6 Language/Search feature/global-language-search-v1 @ eda65bf",
+     "PR #7 Entity Metadata ccr-41677301-10nj3u @ a013f1c (+ #33 evidence @ 9626ab0)",
+     "PR #9 Producer Infra feature/producer-infrastructure-v1 @ f8af596 (+ #32 evidence @ e9aee0c)",
+     "PR #17 P01 feature/p01-research-publication-v1 @ 21039a0 (+ #27 re-pin @ dc7daf7)",
+     "PR #19 Invalidation feature/qgv-invalidation-binding-v1 @ c3dbf8a",
+     "PR #29 d044458 / #34 a3cbf13 / #36 fb086ea (Web proposals)",
+     "Track B PIL P0 on canonical: commit 48a6243 (implementation/src/investment_system/personal/, 10 files; tests/test_pil_p0_contracts.py)",
+     "PR #42 FPIA integration/fpia-hardened-v1 @ 11d2f25 (unchanged)",
+     "NO Product Platform branch or PR exists (55 origin branches, 44 PR refs, 0 issues)"
+    ],
+    "handoff_paths": [
+     "b3532a2:implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md (CDR-015 L576-622; CDR-016 L623-1079; CDR-017 L1081-1484; §1 'Product Platform scoped handoff' L1117; §2 ownership 'Auth/Tenant/Connector/Reconciliation -> Product Platform Work' L1153-1154; §5 'Platform Auth/Tenant/Connector dependency' L1236; §8 Platform routing L1312-1335)",
+     "b3532a2:implementation/docs/coordination/GLOBAL_HANDOFF_HISTORY.md L204-207 (GCH-015b: 'no Product Platform branch or PR found on GitHub')",
+     "b3532a2:implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md (GCH-015; critical path row 8 'Track B / Portfolio actual operation: P1+ not started, DESIGN')",
+     "b3532a2:implementation/docs/coordination/GLOBAL_STATUS_INDEX.md (GSI-022: no Product Platform row; nearest rows are #2 Track B PIL and #26 Portfolio actual operation)",
+     "f1b5afb:implementation/docs/coordination/CLAUDE_CODE_WORKER_CONTRACT.md (§B single-writer: scoped workers write their own STATUS/HANDOFF; §D/§N protected boundaries; §O checkpoint fields)",
+     "b8e39a2:'Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md' (Track B architecture FROZEN; Broker Hub §10-11 read-only; §25 P3 Broker Read Layer)",
+     "b8e39a2:'Investment-System1 · Contract Conflict Register 2026-09-23.md' L316-375 (C-24..C-31)",
+     "b8e39a2:implementation/src/investment_system/personal/ports.py (BrokerAdapter Protocol, FORBIDDEN_BROKER_METHODS)",
+     "b8e39a2:implementation/src/investment_system/personal/{portfolio,security,versioning,quality}.py",
+     "a4e49c8:implementation/docs/web_mvp/{CONTRACT,STATUS}.md",
+     "f8af596:implementation/docs/producer_infrastructure/STATUS.md",
+     "21039a0:implementation/docs/research_publication/STATUS.md",
+     "c3dbf8a:implementation/docs/invalidation_binding/STATUS.md",
+     "a013f1c:implementation/docs/entity_metadata/STATUS.md",
+     "a0ad46b:implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md (A-G1 Product/P01, L3 'actual Product/API authority route absent', ACTUAL NOT_AVAILABLE)"
+    ],
+    "leases": "None taken, read or touched. No Product Platform lease, STATE file or write-set exists on any ref, because there is no Platform branch. I did not read or touch Chart's shared lease (released at a0ad46b according to its commit message) or the QGV scoped leases.",
+    "watched_channels": "None created. I made read-only calls only: git fetch, git grep/show/log, GitHub MCP list_pull_requests/list_branches/list_issues/search_pull_requests/search_code/pull_request_read(#41), claude-code-remote list_sessions(mine), and ListAgents.",
+    "items": [
+     {
+      "id": "PLAT-00",
+      "kind": "OWNER_ACTION_REQUIRED (publication) / NOT_PUBLISHED",
+      "title": "Product Platform implementation audit Work: scoped handoff and capability matrix NOT_PUBLISHED on GitHub",
+      "work": "Product Platform implementation audit (CDR-017 §3C)",
+      "owner_hint": "Product Platform Work. Its session or agent identity is UNKNOWN: it is not among the 10 CCR sessions of this account, ListAgents shows no local peer, and no codex/* or ccr-* branch carries Platform content",
+      "consumers": [
+       "Claude Main / PIW (CDR-017 §1, §8, §14 item 5)",
+       "Chart Work PR #41 (ACTUAL and Product/API route)",
+       "Track B / Portfolio owner",
+       "Web owner",
+       "Product/P01 owner"
+      ],
+      "evidence": "VERIFIED. (1) git grep -l -F <pat> across all 55 unique ref tips (refs/remotes/origin/* + refs/remotes/pr/*): 'Product Platform' -> 2 files, both at b3532a2 (CDR register and history). 'capability matrix' -> b3532a2 CDR L1314, plus b20d178 codex_takeover/TAKEOVER_AUDIT.md 'Runtime capability matrix', which is the Codex git/push runtime matrix and unrelated. 'Read-only hard gate', 'Financial Connector', 'Product API', 'Tenant', 'tenant', 'PWA', '금융계정' -> only b3532a2 CDR-017 text. 0 hits for 'product platform', 'Product-Platform', 'product_platform', 'PRODUCT_PLATFORM', 'Capability Matrix', 'read-only hard gate', 'READ_ONLY_HARD_GATE', '테넌트', 'multi-tenant', 'oauth', 'Plaid', 'MyData', '마이데이터', 'service worker', 'manifest.webmanifest', 'product_api'. 'OAuth' appears only in the Chart third-party MCP reviews (1e8c24c). '플랫폼' appears only in 'Meta Platforms' entity names. (2) GitHub PR search over title, body and comments: 'Product Platform' 0, tenant 0, connector 0, PWA 0, 'capability matrix' 0, platform 0, 플랫폼 0, 'Personal Investment Layer' 0. broker, reconciliation -> #41 only. auth -> #42 only. hosting -> #5, #6, #9. (3) list_issues: 0 issues. (4) search_code 'Product Platform': 0. (5) git log --all (494 commits): no Platform/tenant/connector/PWA subject. (6) Branch names: none match platform|tenant|auth|connector|pwa|product|account|broker|personal|track-b (only a QGV 'reconciliation' branch and a Web 'production-state' branch). (7) GCH-015b already records 'no Product Platform branch or PR found on GitHub'.",
+      "scoped_state": "NOT_PUBLISHED. BRANCH_STATE none, INTEGRATION_STATE none, CANONICAL_STATE none. No OWNER_ACTION_REQUIRED from this Work exists to route, so no owner answer can be claimed."
+     },
+     {
+      "id": "PLAT-01",
+      "kind": "ROUTING_REQUEST_SPEC (what Main needs from the Platform Work)",
+      "title": "Publish the scoped handoff and capability matrix in a machine-checkable form Main can consume",
+      "work": "Product Platform implementation audit",
+      "owner_hint": "Product Platform Work (its own owner branch; single-writer per Worker Contract §B)",
+      "consumers": [
+       "Claude Main / PIW"
+      ],
+      "evidence": "INFERRED specification. It follows the CDR-017 §1/§4/§8 requirements and Worker Contract §B/§O, and copies the Chart PR #41 precedent (scoped HANDOFF.md plus <!-- chart-owner-checkpoint:vX --> PR-body markers, VERIFY/receipt JSON). Location: the Work's own branch, e.g. codex/product-platform-audit-2026-10-05, opened as a Draft PR against canonical b8e39a2. It must be docs/evidence-only, adding new paths only. It must not touch package Python (that would change Track C code_hash; see FPIA), the protected web_mvp.py/P01 digests, the Global files or other owners' branches. Files under implementation/docs/product_platform/: (a) HANDOFF.md with the Worker Contract §O fields (exact branch/HEAD, base/merge-base, changed files, maturity before->after, tests and Actions actually run, evidence hashes, dependencies, blockers, next autonomous action, BRANCH_STATE/INTEGRATION_STATE/CANONICAL_STATE). (b) CAPABILITY_MATRIX.json with one row per CDR-017 §8 scope area: Auth, Tenant isolation, Financial Connector, financial record sync/import, Reconciliation, immutable/auditable records, Read-only hard gate, Product API, Web/PWA, investment-engine integration. Each row carries {capability_id, maturity on the GSI scale DESIGN..OPERATIONAL, evidence[{path, sha, sha256}], existing_component_reused[{pr, sha, path}], fail_closed_rule, blockers[{id, class LOCAL_FIXABLE|DEPENDENCY_BLOCKED|DATA_BLOCKED|POLICY_BLOCKED|USER_DECISION_REQUIRED|REMOTE_WRITE_BLOCKED, d_class D1|D2|D3, protected_boundary bool}]}. (c) OWNER_ACTIONS.json with one packet per OWNER_ACTION_REQUIRED: {finding_id, authoritative_owner, required_artifact, exact_path, branch_or_pr, acceptance_criteria (executable or checkable), d_class, protected_boundary, evidence_receipt_slot, status}. (d) DECISION_REGISTER.md for CDR-015 self-decisions with reason, impact, verification and recovery. (e) A PR-body marker '<!-- platform-owner-checkpoint:vN -->' that names the exact evidence SHA. Credentials, account numbers, tokens or real financial data must never be committed.",
+      "scoped_state": "REQUESTED_NOT_DELIVERED. There is no channel to deliver this request: no PR or issue exists to comment on, and no session is reachable (see internal items)."
+     },
+     {
+      "id": "PLAT-D1",
+      "kind": "DEPENDENCY_SEAM (existing canonical contract)",
+      "title": "Track B Personal Investment Layer P0 contracts define the Financial Connector and read-only hard-gate seam",
+      "work": "Track B PIL (P0 FROZEN on canonical; P1+ NOT_STARTED)",
+      "owner_hint": "Track B / Portfolio owner. No active owner branch or session found. GSI row 2/26 scoped status is the root PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md",
+      "consumers": [
+       "Product Platform: Financial Connector, sync/import, Read-only hard gate, investment-engine integration",
+       "Chart (ACTUAL)"
+      ],
+      "evidence": "VERIFIED at b8e39a2 (commit 48a6243). personal/ports.py defines a BrokerAdapter Protocol that is READ-ONLY v1: connect, refresh_auth, disconnect, get_capabilities, get_accounts, get_balances, get_positions, get_transactions, get_orders, get_sync_status, sync. It also defines FORBIDDEN_BROKER_METHODS = (place_order, submit_order, cancel_order, modify_order, transfer, withdraw), states 'Credentials never leave the adapter', and has BrokerCapability, Unsupported and SyncStatus. personal/portfolio.py has ActualPortfolioSnapshot with an account_scope check on Position.account_id and Decimal weights. personal/security.py makes Security resolution fail closed (RESOLVED/AMBIGUOUS/UNRESOLVED; CompanyLink PROPOSED). personal/versioning.py has ResultNamespace. The handoff (§10-11) puts orders, transfer, withdrawal and auto-trading out of scope for v1. Open conflicts: C-24 (StrategyProfile name), C-25 (security_id vs company_id, OPEN), C-26 (must not read Holding.actual_weight as actual), C-27 (Gap is descriptive and never order_intents), C-28 (Technical available_at; OPEN-BLOCKING for PIL P4), C-29, C-30, C-31. Acceptance for the Platform: the connector implements this Protocol or files a CONTRACT CHANGE through the Track B owner. No forbidden method exists anywhere in the call path. security_id comes only from the Resolver, and uncertain matches fail closed.",
+      "scoped_state": "P0 MERGED/FROZEN on canonical; P1 (Strategy), P2 (Portfolio), P3 (Broker Read Layer) NOT_STARTED"
+     },
+     {
+      "id": "PLAT-D2",
+      "kind": "DEPENDENCY_SEAM (open PR)",
+      "title": "Web MVP #5 (+#6) is the Web base for Web/PWA and Auth; it deliberately has no auth, hosting or PWA",
+      "work": "Web MVP v1 / Global Language & Search",
+      "owner_hint": "Web owner (feature/web-mvp-v1 and feature/global-language-search-v1 workers; CDR-016/017 'Web owner')",
+      "consumers": [
+       "Product Platform: Web/PWA, Auth"
+      ],
+      "evidence": "VERIFIED. a4e49c8:implementation/docs/web_mvp/CONTRACT.md says 'No new AI API, auth, payments, cloud scheduler or service. No public deployment of personal data.' It also records W-D04 (browser localStorage prefs, no multi-device sync) and W-D06 (read-only JSON bundle, no upload endpoint), and lists INTEGRATION_REQUIRED item 5: 'Hosting/access choice before private daily use on phone'. STATUS.md is FREEZE_READY (presentation), not LIVE. Across all 55 tips there are 0 hits for 'manifest.webmanifest' and 'service worker', so no PWA artifact exists. GCH §5 1c: hardening the web_mvp.py validator needs a #17 protected-digest repin.",
+      "scoped_state": "SYNTHETIC_VERIFIED, FREEZE_READY; Actions sequential trial PASS (#5->#6); NOT_MERGED"
+     },
+     {
+      "id": "PLAT-D3",
+      "kind": "DEPENDENCY_SEAM (open PR)",
+      "title": "Producer Infrastructure #9 schema-1 bundle and PRODUCER_SNAPSHOT v1 are the existing read contract a Product API would serve",
+      "work": "Producer Infrastructure v1",
+      "owner_hint": "Producer infra owner. The CCR session_01UNYysALcG5d5GrjRqufk7Z 'producer readiness audit' (outcome branch feature/producer-infrastructure-v1) is COMPLETED/idle",
+      "consumers": [
+       "Product Platform: Product API, immutable/auditable records"
+      ],
+      "evidence": "VERIFIED f8af596:implementation/docs/producer_infrastructure/STATUS.md lists contract (PRODUCER_SNAPSHOT v1, fail-closed validation, source re-hash), freshness (FRESH/STALE/NOT_USABLE/NOT_APPLICABLE), canonical JSON + sha256 serialization, a registry with explicit NOT_AVAILABLE producers, an atomic deterministic schema-1 assembler, a raw_persistence manifest and tools/export_web_bundle.py. CI HEAD passes (run 36982361014). Stacked on #6.",
+      "scoped_state": "SYNTHETIC_VERIFIED; READY_FOR_INTEGRATION_AUDIT; NOT_MERGED"
+     },
+     {
+      "id": "PLAT-D4",
+      "kind": "DEPENDENCY_SEAM (authority)",
+      "title": "P01 #17 publication predicate gates anything a Product API or Web exposes",
+      "work": "P01 Research Publication",
+      "owner_hint": "Product/P01 owner (feature/p01-research-publication-v1)",
+      "consumers": [
+       "Product Platform: Product API, Web/PWA",
+       "Chart A-G1"
+      ],
+      "evidence": "VERIFIED 21039a0:implementation/docs/research_publication/STATUS.md: policy APPROVED/ACTIVE (P01_APPROVAL_2026-10-02.md at f8af596), RESEARCH_DISPLAY_ACTIVE NO, and Research-display, Frozen and Live grants all NONE. Under CDR-015 a grant is D2 for the P01 owner and needs a recorded decision. Chart v0.7 (a0ad46b) still lists A-G1 'Product/P01 owner applicability A/B/C ... absent' and L3 'actual Product/API authority route absent'.",
+      "scoped_state": "SYNTHETIC_VERIFIED; grants NONE; NOT_MERGED"
+     },
+     {
+      "id": "PLAT-D5",
+      "kind": "DEPENDENCY_SEAM (open PR)",
+      "title": "QGV invalidation binding #19 supplies the invalidation chain that auditable records and the API must carry",
+      "work": "QGV Invalidation binding",
+      "owner_hint": "Invalidation binding owner (feature/qgv-invalidation-binding-v1; QGV family)",
+      "consumers": [
+       "Product Platform: immutable/auditable records, Product API"
+      ],
+      "evidence": "VERIFIED c3dbf8a:implementation/docs/invalidation_binding/STATUS.md: INVALIDATION_VOCABULARY_IMPLEMENTED YES, CHAIN_RESOLVER_READY YES, no display grant; 460 passed locally; CI HEAD passes (runs 37003833031/035). Stacked on #17.",
+      "scoped_state": "SYNTHETIC_VERIFIED; NOT_MERGED"
+     },
+     {
+      "id": "PLAT-D6",
+      "kind": "DEPENDENCY_SEAM (identity)",
+      "title": "Entity Metadata #7 and the identity layer are inputs to resolving imported holdings to security_id",
+      "work": "Entity Metadata Coverage / Security-Listing identity",
+      "owner_hint": "#7 author session_01Ti1tpPF3KtnzGtVgSYXaZh is ARCHIVED. The Identity owner (CDR-016/017) is unassigned on GitHub",
+      "consumers": [
+       "Product Platform: financial record sync/import, Reconciliation",
+       "Chart A-S2"
+      ],
+      "evidence": "VERIFIED a013f1c:implementation/docs/entity_metadata/STATUS.md: CIK-bound Top-500 search metadata, REAL_DATA_VERIFIED for search/display only and not PIT. C-25 security_id vs company_id is OPEN. Chart v0.7 A-S2 says 'Identity owner common reviewed 19 Security/share-form bindings absent'. CDR-016 fixed meaning: Issuer -> Security -> dated Listing, and ticker-only identity is not accepted.",
+      "scoped_state": "REAL_DATA_VERIFIED (search scope); NOT_MERGED; identity owner artifact absent"
+     },
+     {
+      "id": "PLAT-D7",
+      "kind": "CROSS_OWNER_OVERLAP (write-set / duplicate-API risk)",
+      "title": "Chart's proposed shared read API and ACTUAL views overlap the Platform's Product API and financial sync",
+      "work": "Chart implementation audit (PR #41)",
+      "owner_hint": "Chart Work for its contract and rendering; a Product API owner is still to be identified (Platform vs Product/P01)",
+      "consumers": [
+       "Claude Main (CDR-017 §2.4 write-set conflict prevention)",
+       "Chart Work",
+       "Product Platform"
+      ],
+      "evidence": "VERIFIED: the PR #41 body says 'Exact domain result feeds one shared contract/read API/Web' and 'ACTUAL stays NOT_AVAILABLE; target fallback is prohibited'. v0.7 HANDOFF L63 says 'actual Product/API authority route absent' and L67-68 says TARGET/ACTUAL are distinct and ACTUAL is NOT_AVAILABLE. INFERRED: Chart's future ACTUAL and quarterly-Actual views depend on Platform financial sync feeding a Track B ActualPortfolioSnapshot. Chart's shared read API and the Platform Product API must have one owner, or two APIs will be built.",
+      "scoped_state": "OPEN; neither side has published an API ownership claim"
+     },
+     {
+      "id": "PLAT-D8",
+      "kind": "DEPENDENCY_SEAM (investment-engine integration)",
+      "title": "QGV architecture review references Personal WeightOverride as numeric-tree arithmetic, not QGV runtime wiring",
+      "work": "QGV structural re-audit",
+      "owner_hint": "QGV Work (Main must not decide QGV semantics)",
+      "consumers": [
+       "Product Platform: investment-engine integration",
+       "Track B P1"
+      ],
+      "evidence": "VERIFIED: df5c704 adds QGV architecture_reconciliation_work docs that cite git:4fb08a0:implementation/src/investment_system/personal/weights.py. Its text says 'Existing Personal WeightOverride is numeric-tree arithmetic, not QGV runtime wiring' and 'Production WeightOverride wiring, formula/Composite changes' still need domain authority.",
+      "scoped_state": "QGV evidence-only review branch (no PR)"
+     },
+     {
+      "id": "PLAT-D9",
+      "kind": "REUSE_CANDIDATE (protected, read-only)",
+      "title": "Existing immutable/provenance patterns for auditable financial records",
+      "work": "Track A ingestion / Track B versioning",
+      "owner_hint": "Track A (canonical FROZEN_VERIFIED), Track B",
+      "consumers": [
+       "Product Platform: immutable/auditable records, Reconciliation"
+      ],
+      "evidence": "VERIFIED: b8e39a2:implementation/src/investment_system/ingestion/raw_store.py defines RawDatasetStore with blobs/, manifests/, history/ and provenance manifests. personal/versioning.py has hash/provenance and ResultNamespace (OFFICIAL/CUSTOM_ACTIVE/SANDBOX/PREVIEW/BACKTEST/...). INFERRED: Platform may reuse these by import or by pattern only. Changing them would cross Frozen boundaries (Worker Contract §N; CDR-016 §13).",
+      "scoped_state": "canonical; protected"
+     },
+     {
+      "id": "PLAT-G1",
+      "kind": "PROTECTED_BOUNDARY (fail-closed)",
+      "title": "Platform security, tenant and read-only issues fail closed. Real credentials, financial accounts, production auth and paid connectors are not progressed automatically",
+      "work": "Product Platform",
+      "owner_hint": "User for explicit approval (credentials, accounts, production auth). D3 only when a cost is involved (paid connector or quota)",
+      "consumers": [
+       "Product Platform",
+       "Claude Main"
+      ],
+      "evidence": "VERIFIED: CDR-017 §8 (b3532a2 L1329-1335) and Recorded effect L1481. CDR-015 L617: 'Outside the delegation: real securities orders, movements of funds, and actions outside the project'. CDR-016 §13 narrower rule (canonical merge, Official/LIVE, paid payment, change of another owner's protected contract). PIL handoff §11: Buy/Sell, Transfer/Withdrawal and Auto Trading are out of scope.",
+      "scoped_state": "STANDING RULE; no Platform request pending"
+     },
+     {
+      "id": "PLAT-G2",
+      "kind": "GLOBAL_ONLY_DELTA (to propagate once a consumer channel exists)",
+      "title": "Material Global-only decisions the Platform Work must consume",
+      "work": "Product Platform",
+      "owner_hint": "Claude Main (propagation per CDR-017 §5)",
+      "consumers": [
+       "Product Platform Work"
+      ],
+      "evidence": "VERIFIED: CDR-015 (recorded d92363f; D1/D2 self-decision, D3 = cost only, orders and fund movement excluded), CDR-016 §13 (narrower protected-action rule) and CDR-017 (Platform routing, fail-closed, credentials, auth and paid connectors need user approval) exist only on integration/global-handoff-v1 @ b3532a2. No Platform channel exists to deliver them.",
+      "scoped_state": "PENDING_CHANNEL"
+     }
+    ],
+    "internal_only_items": [
+     "Main D1 (own write-set): GSI-022 has no Product Platform row. Add one at the next GSI revision ('Product Platform implementation audit: NOT_PUBLISHED; no branch/PR; search evidence 04:17Z'). In GCH, cite the exact search commands in place of the bare GCH-015b sentence.",
+     "Routing gap: the Platform Work's identity and channel are unknown. There is no PR or issue to comment on, no CCR session in list_sessions(mine) titled Platform, and ListAgents shows no local peer. The only remaining path is the user relaying where that Work runs and asking it to publish per PLAT-01. This is an information request, not a D3 decision; Main should not record it as USER_D3_REQUIRED.",
+     "Until the Platform publishes, Main must not author a Platform capability matrix itself (CDR-017: it does not redo scoped specialist work). It can pre-stage owner-packet stubs only for the seams already verified (PLAT-D1..D9) so that it can route them as soon as Platform findings arrive.",
+     "Fresh-state delta for Main's other workflows: PR #41 moved to a0ad46b (v0.7, shared lease released per commit subject), and a new QGV evidence branch codex/qgv-architecture-reconciliation-review-2026-10-05 @ df5c704 exists. Both postdate the 04:05Z state in the task."
+    ],
+    "facts": [
+     "VERIFIED: fetch at 2026-10-05T04:17:26Z found 55 origin branches, 44 PR head refs and 55 unique tips. Canonical b8e39a2; global handoff b3532a2; PR #42 11d2f25; PR #44 cb1906b; QGV missing-data 4fb08a0; publication-evidence 11cd2f5.",
+     "VERIFIED: 'Product Platform' appears in the repository only in CDR-017 (COORDINATION_DECISION_REGISTER.md L1094, L1117, L1154, L1175, L1314, L1478-1481) and GLOBAL_HANDOFF_HISTORY.md L206-207, both at b3532a2.",
+     "VERIFIED: CDR-017 §8 scope list is Auth, Tenant isolation, Financial Connector, financial record sync/import, Reconciliation, immutable/auditable records, Read-only hard gate, Product API, Web/PWA, investment-engine integration (b3532a2 L1316-1326).",
+     "VERIFIED: no Product Platform branch, PR, issue, commit message, scoped handoff, STATUS or capability matrix exists on GitHub. Result: NOT_PUBLISHED.",
+     "VERIFIED: the repository has 0 GitHub issues (list_issues totalCount 0).",
+     "VERIFIED: the only 'capability matrix' outside CDR-017 is the Codex runtime matrix at b20d178:implementation/docs/codex_takeover/TAKEOVER_AUDIT.md L9 (git/push/Actions capabilities). It is unrelated to Platform.",
+     "VERIFIED: no PWA artifact exists on any ref (0 hits for manifest.webmanifest and 'service worker'). Web MVP #5 contract explicitly excludes auth, payments, services and public deployment.",
+     "VERIFIED: Track B PIL P0 on canonical (48a6243) contains a READ-ONLY BrokerAdapter Protocol with FORBIDDEN_BROKER_METHODS, ActualPortfolioSnapshot with account_scope, and a fail-closed Security resolver. P1+ is NOT_STARTED (GSI rows 2 and 26; GCH critical path row 8).",
+     "VERIFIED: the Worker Contract SSoT is f1b5afb (blob 617ef6d). §B says capability workers record their state in their own scoped STATUS/HANDOFF and the PIW reflects it into the Global docs.",
+     "VERIFIED: list_sessions(mine) returned 10 CCR sessions (takeover main, Track C, QGV producer, producer readiness audit, entity metadata [archived], 2x Track A recovery, LoL coach, Track D, top-500 takeover). None is a Product Platform Work. ListAgents: no reachable local peer.",
+     "VERIFIED: every PR is authored by the account kco994553-star. Owners are distinguished by branch and session, not by GitHub user."
+    ],
+    "unverified": [
+     "INFERRED: the Product Platform Work may exist as a Codex task, a ChatGPT project or a session in another account or environment that has not pushed to GitHub. Its existence and identity cannot be verified from GitHub or this account's CCR session list.",
+     "INFERRED: the PLAT-01 publication path (implementation/docs/product_platform/, branch codex/product-platform-audit-<date>, the listed JSON fields, the '<!-- platform-owner-checkpoint:vN -->' marker) is a recommended convention modeled on Chart PR #41 and Worker Contract §O. It is not an existing repository rule.",
+     "INFERRED: owner labels (Track B/Portfolio owner, Identity owner, Web owner, Product/P01 owner) come from CDR-016/017 role names and branch names. No Global doc maps them to concrete sessions, and the Identity and Portfolio owners have no GitHub artifact.",
+     "INFERRED: Chart's 'one shared contract/read API' and the Platform Product API are the same artifact class and need a single owner decision. Neither Work has stated this.",
+     "INFERRED: Chart's future ACTUAL views depend on Platform financial sync feeding a Track B ActualPortfolioSnapshot. Chart's current TARGET Theme slice does not need ACTUAL.",
+     "NOT_RUN: no tests, CI or FPIA were run (read-only discovery)."
+    ],
+    "summary": "The Product Platform implementation audit Work has NOT_PUBLISHED anything on GitHub. I found no branch, PR, issue, commit or file from it, and no scoped handoff or capability matrix. I searched all 55 unique ref tips with git grep, all PR titles, bodies and comments with GitHub search, the issues list, code search, commit messages and branch names. Its scope terms appear only in the CDR-017 directive text itself (b3532a2), which matches GCH-015b. The Work is also not among this account's 10 CCR sessions, and no local peer is reachable, so Main currently has no channel to reach it. The routing gap is owner identity: the user can say where that Work runs. That is an information request, not D3.\n\nWhat Main needs (PLAT-01): a docs-only Draft PR on the Work's own branch containing implementation/docs/product_platform/:\n- HANDOFF.md with the Worker Contract §O fields\n- CAPABILITY_MATRIX.json, one row for each of the 10 CDR-017 §8 areas, with maturity, evidence SHAs, a fail-closed rule, blockers and D-class\n- OWNER_ACTIONS.json packets (finding, owner, artifact, path/PR, acceptance, d_class, protected flag, receipt slot)\n- DECISION_REGISTER.md for CDR-015 self-decisions\n- a PR-body checkpoint marker\n\nExisting components the Platform will depend on:\n- **Track B PIL P0 on canonical (48a6243), Track B/Portfolio owner, P1+ not started.** It already has a read-only BrokerAdapter with forbidden order/transfer methods, a fail-closed Security resolver, ActualPortfolioSnapshot with account scope, and open conflicts C-24..C-31.\n- **Web MVP #5 a4e49c8 and #6 eda65bf, Web owner.** There is no auth, hosting or PWA; hosting/access is listed as INTEGRATION_REQUIRED.\n- **Producer infrastructure #9 f8af596.** The schema-1 bundle and PRODUCER_SNAPSHOT v1 are the read contract a Product API would serve.\n- **P01 #17 21039a0, Product/P01 owner.** All grants are NONE.\n- **Invalidation #19 c3dbf8a.**\n- **Entity metadata #7 a013f1c.** Its author session is archived, the Identity owner is unassigned, and C-25 is open.\n- **Chart #41 a0ad46b.** It overlaps the Platform on the shared read API and ACTUAL views.\n- **QGV df5c704.** It concerns Personal WeightOverride wiring.\n\nStanding rules: Platform security, tenant and read-only issues fail closed. Real credentials, accounts, production auth and paid connectors need explicit user approval. Orders and fund movement are outside CDR-015.\n\nFresh deltas: PR #41 is now a0ad46b, and a new QGV branch df5c704 has appeared."
+   }
+  }
+ ]
+}

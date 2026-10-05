@@ -1,0 +1,175 @@
+{
+ "base": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-real/out/fpia_c1_acaf1b5_A.json",
+ "base_result_sha256": "5a9e3e2af5a41076e4701df1b7116d8250532ea23a552bb0f466652560b8ac47",
+ "cases": {
+  "B0_genuine": {
+   "expect": "VERIFIED (with and without anchor)",
+   "observed": {
+    "anchor": {
+     "rc": 0,
+     "status_line": "fpia-output: VERIFIED",
+     "failed_checks": [],
+     "error": null,
+     "stderr_tail": ""
+    },
+    "no_anchor": {
+     "rc": 0,
+     "status_line": "fpia-output: VERIFIED",
+     "failed_checks": [],
+     "error": null,
+     "stderr_tail": ""
+    }
+   },
+   "note": ""
+  },
+  "T1_run_section": {
+   "expect": "MISMATCH or a declared non-verifiable run.* scope (only run.verbatim_raw is declared)",
+   "observed": {
+    "anchor": {
+     "rc": 0,
+     "status_line": "fpia-output: VERIFIED",
+     "failed_checks": [],
+     "error": null,
+     "stderr_tail": ""
+    }
+   },
+   "note": "run.authority_transport (F2), run.canonical_ref_query, run.path_tokens (G5), run.fetches, run.argv emptied/changed"
+  },
+  "T2_duplicate_result_key": {
+   "expect": "MISMATCH/NOT_RUN (non-canonical JSON with two 'result' members)",
+   "observed": {
+    "anchor": {
+     "rc": 0,
+     "status_line": "fpia-output: VERIFIED",
+     "failed_checks": [],
+     "error": null,
+     "stderr_tail": ""
+    },
+    "first_wins_reader_sees": "FPIA_FAIL",
+    "last_wins_reader_sees": "FPIA_PASS"
+   },
+   "note": ""
+  },
+  "T3_consistent_rehash": {
+   "expect": "VERIFIED without anchor (declared non-verifiable); MISMATCH with the external anchor",
+   "observed": {
+    "no_anchor": {
+     "rc": 0,
+     "status_line": "fpia-output: VERIFIED",
+     "failed_checks": [],
+     "error": null,
+     "stderr_tail": ""
+    },
+    "anchor": {
+     "rc": 1,
+     "status_line": "fpia-output: MISMATCH",
+     "failed_checks": [
+      "result_sha256 equals the external anchor"
+     ],
+     "error": null,
+     "stderr_tail": ""
+    }
+   },
+   "note": ""
+  },
+  "T4_hidden_extra": {
+   "expect": "MISMATCH (unreferenced file)",
+   "observed": {
+    "anchor": {
+     "rc": 1,
+     "status_line": "fpia-output: MISMATCH",
+     "failed_checks": [
+      "no unreferenced side files"
+     ],
+     "error": null,
+     "stderr_tail": ""
+    }
+   },
+   "note": ""
+  },
+  "T5_symlink_side_file": {
+   "expect": "VERIFIED is acceptable (identical bytes)",
+   "observed": {
+    "anchor": {
+     "rc": 0,
+     "status_line": "fpia-output: VERIFIED",
+     "failed_checks": [],
+     "error": null,
+     "stderr_tail": ""
+    }
+   },
+   "note": ""
+  },
+  "T6_ascii_locale": {
+   "expect": "VERIFIED (the file is genuine)",
+   "observed": {
+    "anchor": {
+     "rc": 2,
+     "status_line": "fpia-output: NOT_RUN",
+     "failed_checks": [],
+     "error": "unreadable FPIA output: 'ascii' codec can't decode byte 0xc2 in position 2860: ordinal not in range(128)",
+     "stderr_tail": ""
+    },
+    "same_with_utf8": {
+     "rc": 0,
+     "status_line": "fpia-output: VERIFIED",
+     "failed_checks": [],
+     "error": null,
+     "stderr_tail": ""
+    }
+   },
+   "note": ""
+  },
+  "C1_out_parent_missing": {
+   "expect": "refused up front with FPIA_NOT_RUN exit 2 (G4: nothing runs when the output cannot be written)",
+   "observed": {
+    "rc": 1,
+    "stdout_tail": "",
+    "stderr_tail": "thon3.11/pathlib.py\", line 1044, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/g4v3/cases/C1_parent_missing/no/such/dir/fpia.json'\n",
+    "written": false
+   },
+   "note": "the audit runs to the end first; with a real tree that is 25-45 min of work before the crash"
+  },
+  "C2_cli_ascii_locale": {
+   "expect": "a result file written (UTF-8) and exit 2 (FPIA_NOT_RUN)",
+   "observed": {
+    "rc": 1,
+    "stdout_tail": "",
+    "stderr_tail": "l/repo/implementation/tools/integration/track_c_fpia.py\", line 2299, in run_fpia\n    Path(out).write_text(json.dumps(doc, indent=1, sort_keys=True, ensure_ascii=False) + \"\\n\")\n  File \"/usr/lib/python3.11/pathlib.py\", line 1079, in write_text\n    return f.write(data)\n           ^^^^^^^^^^^^^\nUnicodeEncodeError: 'ascii' codec can't encode character '\\xa7' in position 1858: ordinal not in range(128)\n",
+    "written": true
+   },
+   "note": ""
+  },
+  "C3_out_dangling_symlink": {
+   "expect": "refused, or written at --out itself",
+   "observed": {
+    "rc": 2,
+    "stdout_tail": "FPIA_NOT_RUN | NOT_RUN | NOT_RUN [BRANCH_FROZEN_VALIDATION, verbatim] | NOT_RUN | NOT_RUN | NOT_RUN | v2_binding NOT_RUN | full_regression NOT_RUN\n",
+    "stderr_tail": "",
+    "written": true,
+    "target_written": true
+   },
+   "note": ""
+  },
+  "C4_out_existing_empty_file": {
+   "expect": "accepted (empty file)",
+   "observed": {
+    "rc": 2,
+    "stdout_tail": "FPIA_NOT_RUN | NOT_RUN | NOT_RUN [BRANCH_FROZEN_VALIDATION, verbatim] | NOT_RUN | NOT_RUN | NOT_RUN | v2_binding NOT_RUN | full_regression NOT_RUN\n",
+    "stderr_tail": "",
+    "written": true
+   },
+   "note": ""
+  },
+  "C5_out_nonempty": {
+   "expect": "refused, exit 2, nothing written",
+   "observed": {
+    "rc": 2,
+    "stdout_tail": "-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/g4v3/cases/C5_nonempty/fpia.json exists and is not empty (refusing to overwrite a previous result)\n",
+    "stderr_tail": "",
+    "written": true
+   },
+   "note": ""
+  }
+ }
+}

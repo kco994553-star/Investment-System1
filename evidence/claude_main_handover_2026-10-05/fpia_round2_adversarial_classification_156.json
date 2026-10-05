@@ -1,0 +1,2644 @@
+[
+ {
+  "id": "C00",
+  "group": "control",
+  "desc": "base acaf1b5 + benign workflow",
+  "expected": "NOT_FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "C01",
+  "group": "control",
+  "desc": "S0: exact Track C name",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "C02",
+  "group": "control",
+  "desc": "S9: bash script running Track C tool",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: tools/track_c_c6_acceptance.py (via scripts/ci_probe.sh)",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via scripts/ci_probe.sh)"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "C03",
+  "group": "control",
+  "desc": "S15: string-concatenated path (D3-c non-claim)",
+  "expected": "NOT_FOUND(D3-c)",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "D3-c",
+  "why": "pinned S15 (string-built path)"
+ },
+ {
+  "id": "C04",
+  "group": "control",
+  "desc": "bash -c with cd (claimed handled)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: track_c_c6_acceptance.py",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "C05",
+  "group": "control",
+  "desc": "working-directory: implementation/tools + relative tool",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: track_c_c6_acceptance.py",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y01",
+  "group": "G1",
+  "desc": "name via alias of an anchor defined on an env value",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y02",
+  "group": "G1",
+  "desc": "name via alias, anchor defined later in a job env (forward ref invalid YAML)",
+  "expected": "FOUND(fail-closed)",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "unparseable workflow (fail-closed): found undefined alias 'n'   in \"<unicode string>\", line 1, column 7:     name: *n           ^"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": true,
+   "name": null,
+   "run_name": null
+  },
+  "class": "holds",
+  "why": "conservative: the GitHub parser rejects this file"
+ },
+ {
+  "id": "Y03",
+  "group": "G1",
+  "desc": "name inside a root merge key (<<: {name: ...})",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": true,
+   "name": null,
+   "run_name": null
+  },
+  "class": "holds",
+  "why": "conservative: the GitHub parser rejects this file"
+ },
+ {
+  "id": "Y04",
+  "group": "G1",
+  "desc": "multi-document: doc1 benign, doc2 Track C name",
+  "expected": "FOUND(fail-closed)",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "unparseable workflow (fail-closed): expected a single document in the stream   in \"<unicode string>\", line 1, column 1:     name: probe     ^ but found another document   in \"<unicode string>\", line 8, column 1:     ---     ^"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": true,
+   "name": null,
+   "run_name": null
+  },
+  "class": "holds",
+  "why": "conservative: the GitHub parser rejects this file"
+ },
+ {
+  "id": "Y05",
+  "group": "G1",
+  "desc": "explicit document markers ---/... single doc",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": true,
+   "name": null,
+   "run_name": null
+  },
+  "class": "holds",
+  "why": "conservative: the GitHub parser rejects this file"
+ },
+ {
+  "id": "Y06",
+  "group": "G1",
+  "desc": "flow-style whole workflow",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y07",
+  "group": "G1",
+  "desc": "block literal strip |-",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y08",
+  "group": "G1",
+  "desc": "block literal keep |+ with trailing blank lines",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\n\\n\\n'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation\n\n\n",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y09",
+  "group": "G1",
+  "desc": "folded >- split across lines with no space (escaped in double quotes)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y10",
+  "group": "G1",
+  "desc": "block literal with indentation indicator |2- (leading space in value)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): ' track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": " track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y11",
+  "group": "G1",
+  "desc": "verbatim tag !<tag:yaml.org,2002:str>",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y12",
+  "group": "G1",
+  "desc": "%TAG handle !e! -> !e!str",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y13",
+  "group": "G1",
+  "desc": "local tag !foo on quoted name",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "unparseable workflow (fail-closed): could not determine a constructor for the tag '!foo'   in \"<unicode string>\", line 1, column 7:     name: !foo \"track-c-evl-validation\"           ^"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y14",
+  "group": "G1",
+  "desc": "UTF-8 BOM",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y15",
+  "group": "G1",
+  "desc": "CRLF line endings",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y16",
+  "group": "G1",
+  "desc": "lone CR line endings",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": true,
+   "name": null,
+   "run_name": null
+  },
+  "class": "holds",
+  "why": "conservative: the GitHub parser rejects this file"
+ },
+ {
+  "id": "Y17",
+  "group": "G1",
+  "desc": "tab after colon (name:\\tvalue)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "unparseable workflow (fail-closed): while scanning for the next token found character '\\t' that cannot start any token   in \"<unicode string>\", line 1, column 6:     name:\ttrack-c-evl-validation          ^"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y18",
+  "group": "G1",
+  "desc": "trailing tab inside quoted value",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\t'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation\t",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y19",
+  "group": "G1",
+  "desc": "duplicate name keys, Track C second",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": true,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": "conservative: the GitHub parser rejects this file"
+ },
+ {
+  "id": "Y20",
+  "group": "G1",
+  "desc": "duplicate name keys, Track C first",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": true,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": "conservative: the GitHub parser rejects this file"
+ },
+ {
+  "id": "Y21",
+  "group": "G1",
+  "desc": "very long line: 200k spaces then comment after name",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y22",
+  "group": "G1",
+  "desc": "very long implicit key (>1024 chars) before name",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "unparseable workflow (fail-closed): mapping values are not allowed here   in \"<unicode string>\", line 2, column 1103:      ... KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK: x                                          ^"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": true,
+   "name": null,
+   "run_name": null
+  },
+  "class": "holds",
+  "why": "conservative: the GitHub parser rejects this file"
+ },
+ {
+  "id": "Y23",
+  "group": "G1",
+  "desc": "complex key ? name : value",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y24",
+  "group": "G1",
+  "desc": "escaped key \"na\\u006De\"",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y25",
+  "group": "G1",
+  "desc": "NEL (U+0085) as line break between keys",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": true,
+   "name": null,
+   "run_name": null
+  },
+  "class": "holds",
+  "why": "conservative: the GitHub parser rejects this file"
+ },
+ {
+  "id": "Y26",
+  "group": "G1",
+  "desc": "comment ending in U+2028 then name key (PyYAML sees key; 1.2 parser sees comment)",
+  "expected": "NOT_FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "over-detection (conservative)",
+  "why": "PyYAML (YAML 1.1) ends the comment at U+2028 and sees the key; the GitHub TS parser keeps it a comment"
+ },
+ {
+  "id": "Y27",
+  "group": "G1",
+  "desc": "run-name constant expression ${{ 'track-c-evl-validation' }}",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": "track-c-evl-validation"
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "GitHub folds the literal expression: oracle runName='track-c-evl-validation'; FPIA compares the raw text"
+ },
+ {
+  "id": "Y28",
+  "group": "G1",
+  "desc": "run-name format() expression",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": "${{ format('track-c-{0}-validation', 'evl') }}"
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "constant format() in run-name is evaluated by GitHub at run time to the Track C name"
+ },
+ {
+  "id": "Y29",
+  "group": "G1",
+  "desc": "run-name with embedded expression track-c-${{ 'evl' }}-validation",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": "${{ format('track-c-{0}-validation', 'evl') }}"
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "embedded constant expression in run-name evaluates to the Track C name"
+ },
+ {
+  "id": "Y30",
+  "group": "G1",
+  "desc": "name contains expression syntax (workflow name does not evaluate)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "expected FOUND (variant label corrected): the GitHub oracle folds name: ${{ 'track-c-evl-validation' }} to the Track C name"
+ },
+ {
+  "id": "U01",
+  "group": "G1-confusable",
+  "desc": "trailing U+2800 BRAILLE PATTERN BLANK",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation⠀",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "trailing U+2800 renders blank; not UTS #39-confusable and not Default_Ignorable"
+ },
+ {
+  "id": "U02",
+  "group": "G1-confusable",
+  "desc": "U+2800 replacing nothing, inserted mid-name",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl⠀-validation",
+   "run_name": null
+  },
+  "class": "not a confusable (visible gap mid-name)",
+  "why": ""
+ },
+ {
+  "id": "U03",
+  "group": "G1-confusable",
+  "desc": "trailing U+1D159 MUSICAL SYMBOL NULL NOTEHEAD",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation𝅙",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "trailing U+1D159 renders blank/empty"
+ },
+ {
+  "id": "U04",
+  "group": "G1-confusable",
+  "desc": "dotless i + U+0307 COMBINING DOT ABOVE for each i",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-valı̇datı̇on",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "U+0131 + U+0307 renders as 'i'; the UTS #39 skeleton keeps U+0307"
+ },
+ {
+  "id": "U05",
+  "group": "G1-confusable",
+  "desc": "U+2011 NON-BREAKING HYPHEN for hyphens",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track‑c‑evl‑validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track‑c‑evl‑validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U06",
+  "group": "G1-confusable",
+  "desc": "U+FE63 SMALL HYPHEN-MINUS",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track﹣c﹣evl﹣validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track﹣c﹣evl﹣validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U07",
+  "group": "G1-confusable",
+  "desc": "U+2E3A/2014? EM DASH for hyphens",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track—c—evl—validation",
+   "run_name": null
+  },
+  "class": "not a confusable (em dash visibly longer)",
+  "why": ""
+ },
+ {
+  "id": "U08",
+  "group": "G1-confusable",
+  "desc": "U+00AD SOFT HYPHEN for hyphens (renders invisible)",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track­c­evl­validation",
+   "run_name": null
+  },
+  "class": "not a confusable (soft hyphens vanish: 'trackcevlvalidation')",
+  "why": ""
+ },
+ {
+  "id": "U09",
+  "group": "G1-confusable",
+  "desc": "U+FFFC OBJECT REPLACEMENT trailing",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation￼",
+   "run_name": null
+  },
+  "class": "not a confusable (U+FFFC renders a visible box)",
+  "why": ""
+ },
+ {
+  "id": "U10",
+  "group": "G1-confusable",
+  "desc": "U+FFF9 INTERLINEAR ANNOTATION ANCHOR trailing",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation￹",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "U+FFF9 is an invisible format character outside Default_Ignorable"
+ },
+ {
+  "id": "U11",
+  "group": "G1-confusable",
+  "desc": "Cyrillic a/c/e/o/i mix",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'trасk-с-еvl-vаlidаtіоn'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "trасk-с-еvl-vаlidаtіоn",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U12",
+  "group": "G1-confusable",
+  "desc": "U+0130 capital I with dot (casefold i + U+0307)",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-valİdatİon",
+   "run_name": null
+  },
+  "class": "not a confusable (capital dotted I visibly different)",
+  "why": ""
+ },
+ {
+  "id": "U13",
+  "group": "G1-confusable",
+  "desc": "U+2024 ONE DOT LEADER? no - U+A4FE? use U+02D7 MODIFIER MINUS for hyphen",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track˗c˗evl˗validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track˗c˗evl˗validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U14",
+  "group": "G1-confusable",
+  "desc": "U+0332 combining low line after every char? no: single U+034F CGJ (DI)",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-͏c-͏evl-͏validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-͏c-͏evl-͏validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U15",
+  "group": "G1-confusable",
+  "desc": "trailing U+3164 HANGUL FILLER (DI)",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validationㅤ'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validationㅤ",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U16",
+  "group": "G1-confusable",
+  "desc": "trailing U+115F + U+1160 (DI)",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validationᅟᅠ'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validationᅟᅠ",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U17",
+  "group": "G1-confusable",
+  "desc": "trailing U+2028 LINE SEPARATOR in quoted scalar",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\u2028'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation ",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U18",
+  "group": "G1-confusable",
+  "desc": "U+0627 ARABIC ALEF for l (RTL)",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evا-vaاidation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evا-vaاidation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U19",
+  "group": "G1-confusable",
+  "desc": "l -> U+05C0 HEBREW PUNCTUATION PASEQ",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-ev׀-va׀idation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-ev׀-va׀idation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U20",
+  "group": "G1-confusable",
+  "desc": "trailing U+180E MONGOLIAN VOWEL SEPARATOR",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\u180e'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation᠎",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U21",
+  "group": "G1-confusable",
+  "desc": "U+2063 INVISIBLE SEPARATOR mid",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c\\u2063-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c⁣-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U22",
+  "group": "G1-confusable",
+  "desc": "trailing U+1BCA1 SHORTHAND FORMAT CONTINUING OVERLAP (DI)",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\U0001bca1'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation𛲡",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U23",
+  "group": "G1-confusable",
+  "desc": "U+0338? no: U+20E0? -> trailing U+200B ZWSP (DI)",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\u200b'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation​",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U24",
+  "group": "G1-confusable",
+  "desc": "trailing U+E0020 TAG SPACE (DI)",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\U000e0020'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation󠀠",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U25",
+  "group": "G1-confusable",
+  "desc": "trailing ideographic space U+3000 (NFKC space, strip)",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\u3000'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation　",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U26",
+  "group": "G1-confusable",
+  "desc": "trailing U+16FE4 KHITAN FILLER (Cf, not DI in Unicode 15.1)",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation𖿤",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "U+16FE4 KHITAN FILLER is invisible, outside the embedded Default_Ignorable ranges"
+ },
+ {
+  "id": "F01",
+  "group": "G1-stem",
+  "desc": "no name; file track-c-evl-validation.yaml",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow filename stem equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": null,
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "F02",
+  "group": "G1-stem",
+  "desc": "no name; file Track-C-EVL-Validation.YML",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow filename stem equals the Track C workflow name or filename stem after normalisation (N1): 'Track-C-EVL-Validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": null,
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "F03",
+  "group": "G1-stem",
+  "desc": "no name; stem with trailing U+2800",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": null,
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "filename stem with trailing U+2800"
+ },
+ {
+  "id": "F04",
+  "group": "G1-stem",
+  "desc": "no name; file in subdirectory (GitHub ignores)",
+  "expected": "NOT_FOUND(ignored by GitHub)",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow filename stem equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": null,
+  "class": "over-detection (conservative)",
+  "why": "GitHub ignores workflow files in subdirectories"
+ },
+ {
+  "id": "I01",
+  "group": "G2",
+  "desc": "cd ${{ github.workspace }}/implementation/tools && python <tool>",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "claimed: cd and ${{ github.workspace }}; command() ignores any cd whose argument contains '$', and _subst turns the workspace expression into $GITHUB_WORKSPACE first"
+ },
+ {
+  "id": "I02",
+  "group": "G2",
+  "desc": "cd \"$GITHUB_WORKSPACE/implementation/tools\" && python <tool>",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "same root cause: cd \"$GITHUB_WORKSPACE/...\" is ignored"
+ },
+ {
+  "id": "I03",
+  "group": "G2",
+  "desc": "working-directory: ${{ github.workspace }}/implementation/tools",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "claimed working-directory + workspace: the base keeps the ${{ github.workspace }}/ prefix (only tokens are stripped)"
+ },
+ {
+  "id": "I04",
+  "group": "G2",
+  "desc": "pushd implementation/tools",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "pushd not modelled"
+ },
+ {
+  "id": "I05",
+  "group": "G2",
+  "desc": "cd -P implementation/tools",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "cd -P: the option is taken as the directory"
+ },
+ {
+  "id": "I06",
+  "group": "G2",
+  "desc": "cd -- implementation/tools",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "cd --: the option is taken as the directory"
+ },
+ {
+  "id": "I07",
+  "group": "G2",
+  "desc": "env -C implementation/tools python <tool>",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "env -C not modelled"
+ },
+ {
+  "id": "I08",
+  "group": "G2",
+  "desc": "bash -ec 'cd implementation/tools && python <tool>' (combined flags)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "claimed bash -c: combined flags -ec pop the command string; it is then treated as a script path"
+ },
+ {
+  "id": "I09",
+  "group": "G2",
+  "desc": "sh -xc 'cd ... && python <tool>'",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "sh -xc: same"
+ },
+ {
+  "id": "I10",
+  "group": "G2",
+  "desc": "PYTHONPATH=implementation/tools python -m track_c_c6_acceptance",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "python -m <Track C tool module> with PYTHONPATH=implementation/tools"
+ },
+ {
+  "id": "I11",
+  "group": "G2",
+  "desc": "python -m <tree module> (implementation/src/ci_probe/__main__.py) calling the tool with subprocess cwd=",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "followed module: subprocess cwd='tools' literal kwarg not modelled"
+ },
+ {
+  "id": "I12",
+  "group": "G2",
+  "desc": "python script: os.chdir('implementation/tools') then os.system('python track_c_c6_acceptance.py')",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "os.chdir literal not modelled"
+ },
+ {
+  "id": "I13",
+  "group": "G2",
+  "desc": "make target running the tool (Makefile recipe)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "Makefile recipe not followed (or a non-claim; see NEW_D3)"
+ },
+ {
+  "id": "I14",
+  "group": "G2",
+  "desc": "npm script running the tool (package.json)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "package.json script not followed (or a non-claim; see NEW_D3)"
+ },
+ {
+  "id": "I15",
+  "group": "G2",
+  "desc": "bash -o pipefail ci/tc.sh (option with value before script)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "bash -o pipefail ci/tc.sh: 'pipefail' is taken as the script"
+ },
+ {
+  "id": "I16",
+  "group": "G2",
+  "desc": "bash --noprofile --norc -eo pipefail ci/tc.sh (GitHub's own bash template)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "GitHub's own 'bash --noprofile --norc -eo pipefail <script>' form: same"
+ },
+ {
+  "id": "I17",
+  "group": "G2",
+  "desc": "timeout 600 bash ci/tc.sh (wrapper not in WRAPPERS)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "timeout not in WRAPPERS"
+ },
+ {
+  "id": "I18",
+  "group": "G2",
+  "desc": "nice -n 5 python ci/run.py (wrapper with option)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "nice -n not in WRAPPERS"
+ },
+ {
+  "id": "I19",
+  "group": "G2",
+  "desc": "extension-less, shebang-less executable script ./ci/run-tc (bash ENOEXEC fallback)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "claimed local-script following: a shebang-less executable is silently skipped (bash runs it via ENOEXEC fallback)"
+ },
+ {
+  "id": "I20",
+  "group": "G2",
+  "desc": "shell line continuation splitting the path (implementation/to\\<NL>ols/...)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "backslash-newline is replaced by a space; bash removes it"
+ },
+ {
+  "id": "I21",
+  "group": "G2",
+  "desc": "ANSI-C quoting $'\\x69mplementation/tools/...'",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "ANSI-C quoting"
+ },
+ {
+  "id": "I22",
+  "group": "G2",
+  "desc": "brace expansion implementation/t{o,}ols/... (extra argv ignored by the tool? python runs first)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "brace expansion"
+ },
+ {
+  "id": "I23",
+  "group": "G2",
+  "desc": "absolute runner path /home/runner/work/<repo>/<repo>/implementation/tools/<tool>",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": false,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "absolute GitHub runner workspace path; emulation cannot run it locally, it runs on the runner by construction"
+ },
+ {
+  "id": "I24",
+  "group": "G2",
+  "desc": "$PWD prefix: python \"$PWD/implementation/tools/<tool>\"",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "D3-c",
+  "why": "path in a shell variable ($PWD); optional D2: treat $PWD at step start like the working directory"
+ },
+ {
+  "id": "I25",
+  "group": "G2",
+  "desc": "${PWD} prefix",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "D3-c",
+  "why": "same (${PWD})"
+ },
+ {
+  "id": "I26",
+  "group": "G2",
+  "desc": "python f-string with cwd prefix in a followed script",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "D3-c",
+  "why": "f-string with os.getcwd()"
+ },
+ {
+  "id": "I27",
+  "group": "G2",
+  "desc": "env indirection, literal full path in env (claimed: all scalars scanned)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I28",
+  "group": "G2",
+  "desc": "env indirection, directory in env + cd $D (paths in shell variables: D3-c)",
+  "expected": "NOT_FOUND(D3-c)",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "D3-c",
+  "why": "directory in a shell variable"
+ },
+ {
+  "id": "I29",
+  "group": "G2",
+  "desc": "reusable workflow (job uses ./.github/workflows/x.yml) whose step uses cd ${{ github.workspace }}/...",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "the reusable workflow is followed (I57 control FOUND), but its rooted cd hits the I01 bug"
+ },
+ {
+  "id": "I30",
+  "group": "G2",
+  "desc": "reusable workflow from the same repository by remote ref (owner/repo/.github/workflows/track-c-evl-validation.yml@ref)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": false,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "NEW_D3 candidate",
+  "why": "remote reusable workflow (this repository at another ref): content not in T"
+ },
+ {
+  "id": "I31",
+  "group": "G2",
+  "desc": "composite action runs ${{ github.action_path }}/run.sh which calls the tool",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "claimed composite-action following: ${{ github.action_path }} is not resolved"
+ },
+ {
+  "id": "I32",
+  "group": "G2",
+  "desc": "composite action runs $GITHUB_ACTION_PATH/run.sh",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "$GITHUB_ACTION_PATH not resolved"
+ },
+ {
+  "id": "I33",
+  "group": "G2",
+  "desc": "node local action (runs.using node20, main index.js) spawning the tool",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "local node action is not followed and not failed closed (FPIA fails closed only when action.yml is missing); NEW_D3 if a non-claim is preferred"
+ },
+ {
+  "id": "I34",
+  "group": "G2",
+  "desc": "docker local action (Dockerfile ENTRYPOINT with /github/workspace path)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": false,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "local docker action: same; not emulated (no docker), runs by construction"
+ },
+ {
+  "id": "I35",
+  "group": "G2",
+  "desc": "pytest @argsfile (-k evl_c6 inside the file)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "pytest @argsfile"
+ },
+ {
+  "id": "I36",
+  "group": "G2",
+  "desc": "PYTEST_ADDOPTS='-k evl_c6' + bare pytest",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "PYTEST_ADDOPTS from step env"
+ },
+ {
+  "id": "I37",
+  "group": "G2",
+  "desc": "pytest -c custom ini with addopts -k evl_c6",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "pytest -c ini addopts"
+ },
+ {
+  "id": "I38",
+  "group": "G2",
+  "desc": "pytest -o testpaths=tests/test_evl_c6*.py (selection through an ini override)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "glob matches Track C paths: tests/test_evl_c6_*.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I39",
+  "group": "G2",
+  "desc": "pytest --ignore-glob selecting only Track C tests",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "--ignore-glob leaves only Track C tests"
+ },
+ {
+  "id": "I40",
+  "group": "G2",
+  "desc": "pytest.main(['-k','evl_c6']) in a followed python script",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "pytest.main([...]) list in a followed script"
+ },
+ {
+  "id": "I41",
+  "group": "G2",
+  "desc": "Windows runner, backslash path",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": false,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "Windows runner backslash path; not emulated, runs by construction"
+ },
+ {
+  "id": "I42",
+  "group": "G2",
+  "desc": "matrix value supplies the tool file name (expression: D3-c)",
+  "expected": "NOT_FOUND(D3-c)",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "D3-c",
+  "why": "matrix expression"
+ },
+ {
+  "id": "I43",
+  "group": "G2",
+  "desc": "uv run --directory implementation/tools python <tool>",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "uv run --directory"
+ },
+ {
+  "id": "I44",
+  "group": "G2",
+  "desc": "subshell ( cd implementation/tools; python <tool> )",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: track_c_c6_acceptance.py",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I45",
+  "group": "G2",
+  "desc": "python -c with runpy.run_path literal (control)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I46",
+  "group": "G2",
+  "desc": "git -C implementation/tools ls-files | python? -> git -C then python via xargs (dynamic: D3-c)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I47",
+  "group": "G2",
+  "desc": "export then cd: cd implementation; cd tools (two cds on separate lines)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: track_c_c6_acceptance.py",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I48",
+  "group": "G2",
+  "desc": "cd inside if-block: if true; then cd implementation/tools; fi; python <tool>",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "cd after the 'then' keyword"
+ },
+ {
+  "id": "I49",
+  "group": "G2",
+  "desc": "heredoc to bash: bash <<EOF with cd/python inside",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: track_c_c6_acceptance.py",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I50",
+  "group": "G2",
+  "desc": "python script with cwd kwarg via pathlib constant parts",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "D3-c",
+  "why": "Path('implementation') / 'tools' (string-built)"
+ },
+ {
+  "id": "U27",
+  "group": "G1-confusable-icu",
+  "desc": "U+03F2 GREEK LUNATE SIGMA SYMBOL for c (ICU skeleton c; NFKC -> final sigma)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "traϲk-ϲ-evl-validation",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "ICU 74.2 uspoof_getSkeleton maps U+03F2 to 'c'; FPIA applies NFKC first (-> U+03C2) contrary to its UTS #39 skeleton claim"
+ },
+ {
+  "id": "U28",
+  "group": "G1-confusable-icu",
+  "desc": "U+FE58 SMALL EM DASH for hyphens (ICU skeleton '-'; NFKC -> em dash)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track﹘c﹘evl﹘validation",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "ICU skeleton '-'; NFKC first turns U+FE58 into U+2014"
+ },
+ {
+  "id": "U29",
+  "group": "G1-confusable-icu",
+  "desc": "U+FFE8 HALFWIDTH FORMS LIGHT VERTICAL for l (ICU skeleton l; NFKC -> U+2502)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-ev￨-va￨idation",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "ICU skeleton 'l'; NFKC first turns U+FFE8 into U+2502"
+ },
+ {
+  "id": "U30",
+  "group": "G1-confusable-icu",
+  "desc": "U+02DB OGONEK for i (ICU skeleton i)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-val˛dat˛on",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "ICU skeleton 'i'; NFKC first turns U+02DB into space + U+0328"
+ },
+ {
+  "id": "U31",
+  "group": "G1-confusable-icu",
+  "desc": "U+037A GREEK YPOGEGRAMMENI for i (ICU skeleton i)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-valͺdatͺon",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "ICU skeleton 'i'; NFKC first turns U+037A into space + U+0345"
+ },
+ {
+  "id": "U32",
+  "group": "G1-confusable-icu",
+  "desc": "single U+03F2 for the lone c in 'track' only",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "traϲk-c-evl-validation",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "one lunate sigma is enough"
+ },
+ {
+  "id": "U33",
+  "group": "G1-control",
+  "desc": "trailing DEL via \\x7f escape",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "non-printing DEL"
+ },
+ {
+  "id": "U34",
+  "group": "G1-control",
+  "desc": "trailing C1 control U+0080 via \\x80 escape",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "non-printing C1 control"
+ },
+ {
+  "id": "U35",
+  "group": "G1-control",
+  "desc": "trailing NEL via \\N escape",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\x85'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U36",
+  "group": "G1-control",
+  "desc": "trailing U+001F via \\x1f escape (Python strip() treats it as whitespace)",
+  "expected": "FOUND?",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\x1f'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation\u001f",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "U37",
+  "group": "G1-control",
+  "desc": "trailing U+0001 via \\x01 escape",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation\u0001",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "non-printing C0 control"
+ },
+ {
+  "id": "U38",
+  "group": "G1-control",
+  "desc": "trailing U+009F via \\x9f escape",
+  "expected": "FOUND?",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "non-printing C1 control"
+ },
+ {
+  "id": "I51",
+  "group": "G2",
+  "desc": "multi-line quoted argument: cd + python on a line whose quote closes on the next line",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "fail-open: a quote spanning two lines makes shlex fail and the whole line is dropped"
+ },
+ {
+  "id": "I52",
+  "group": "G2",
+  "desc": "CDPATH=implementation cd tools",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "CDPATH"
+ },
+ {
+  "id": "I53",
+  "group": "G2",
+  "desc": "cd with a glob: cd implementation/tool*",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "glob matches Track C paths: implementation/tool*"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I54",
+  "group": "G2",
+  "desc": "step env SCRIPT relative to the step working-directory + python \"$SCRIPT\" (shell variable: D3-c)",
+  "expected": "NOT_FOUND(D3-c)",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "D3-c",
+  "why": "path in a shell variable"
+ },
+ {
+  "id": "I55",
+  "group": "G2",
+  "desc": "python -m <tree package> whose __main__ calls the tool by its full literal path (control)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: tools/track_c_c6_acceptance.py (via implementation/src/ci_probe2/__main__.py)",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via implementation/src/ci_probe2/__main__.py)"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I56",
+  "group": "G2",
+  "desc": "PYTHONPATH=ci python -m runner (module only on PYTHONPATH) calling the tool by full literal path",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "module found only through PYTHONPATH"
+ },
+ {
+  "id": "I57",
+  "group": "G2",
+  "desc": "reusable workflow with the literal tool path (control)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py (via .github/workflows/x.yml)",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via .github/workflows/x.yml)",
+   "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y31",
+  "group": "G1xG2",
+  "desc": "run text via alias of an anchored env value",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y32",
+  "group": "G1xG2",
+  "desc": "working-directory via alias (anchor on an env value) + bare tool name",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: track_c_c6_acceptance.py",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y33",
+  "group": "G1xG2",
+  "desc": "step mapping through a merge key (<<: {working-directory: ...}) + bare tool name",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: track_c_c6_acceptance.py",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": true,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": "conservative: the GitHub parser rejects this file"
+ },
+ {
+  "id": "Y34",
+  "group": "G1",
+  "desc": "name via alias whose anchor is a job name defined earlier (name key placed after jobs)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y35",
+  "group": "G1",
+  "desc": "deeply nested flow sequence (RecursionError in the loader) + Track C name",
+  "expected": "FOUND(fail-closed)",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "unparseable workflow (fail-closed): maximum recursion depth exceeded"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": true,
+   "name": null,
+   "run_name": null
+  },
+  "class": "holds",
+  "why": "conservative: the GitHub parser rejects this file"
+ },
+ {
+  "id": "Y36",
+  "group": "G1",
+  "desc": "1 MB workflow (1000-line block scalar) with a benign name (loader cost; control NOT_FOUND)",
+  "expected": "NOT_FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y37",
+  "group": "G1",
+  "desc": "folded block scalar >- over two lines joining 'track-c-evl-' and 'validation' with no space? (folding inserts a space)",
+  "expected": "NOT_FOUND(GitHub shows 'track-c-evl- validation')",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl- validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y38",
+  "group": "G1",
+  "desc": "literal block |- with trailing spaces stripped by strip()",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation   '"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation   ",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y39",
+  "group": "G1",
+  "desc": "single-quoted with escaped quote doubling and line folding",
+  "expected": "NOT_FOUND(folds to a space)",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl- validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "Y40",
+  "group": "G1",
+  "desc": "double-quoted with escaped line break (no space)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+  ],
+  "ground_truth_track_c_executed": null,
+  "github_oracle": {
+   "errors": false,
+   "name": "track-c-evl-validation",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I58",
+  "group": "G2",
+  "desc": "find ... -exec python {} \\; (tool selected by a glob in find)",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "D3-c",
+  "why": "path discovered at run time by find -exec"
+ },
+ {
+  "id": "I59",
+  "group": "G2",
+  "desc": "shell: python {0} with os.chdir + subprocess bare tool name",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": false,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "shell: python {0} with os.chdir (same as I12)"
+ },
+ {
+  "id": "I60",
+  "group": "G2",
+  "desc": "python ${{ github.workspace }}/implementation/tools/<tool> (rooted argument, control)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I61",
+  "group": "G2",
+  "desc": "cd implementation && cd tools && python <tool> on one line",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: track_c_c6_acceptance.py",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I62",
+  "group": "G2",
+  "desc": "symlink ci/tc.py -> ../implementation/tools/track_c_c6_acceptance.py run as python ci/tc.py",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "unparseable local script (fail-closed): ci/tc.py (via ci/tc.py)"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I63",
+  "group": "G2",
+  "desc": "symlinked directory ci/tools -> ../implementation/tools; cd ci/tools && python <tool>",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I64",
+  "group": "G2",
+  "desc": "uses: ./ (root composite action action.yml at repository root)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: track_c_c6_acceptance.py (via action.yml)",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via action.yml)"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ },
+ {
+  "id": "I65",
+  "group": "G2",
+  "desc": "job-level defaults.run.working-directory via ${{ github.workspace }}",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D1)",
+  "why": "same as I03 for defaults.run.working-directory"
+ },
+ {
+  "id": "Y41",
+  "group": "G2",
+  "desc": "working-directory given as a literal expression ${{ 'implementation/tools' }} + bare tool name",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "GitHub folds working-directory ${{ 'implementation/tools' }}; emulation runs the tool"
+ },
+ {
+  "id": "Y42",
+  "group": "G2",
+  "desc": "whole run command as one literal expression ${{ 'cd implementation/tools && python <tool>' }}",
+  "expected": "FOUND",
+  "observed_fpia": "NOT_FOUND",
+  "fpia_reasons": [],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "LOCAL_FIXABLE (D2)",
+  "why": "GitHub folds the whole run text (oracle step run = 'cd implementation/tools && python ...'); emulation runs the tool"
+ },
+ {
+  "id": "Y43",
+  "group": "G2",
+  "desc": "run-name literal expression with the Track C name and a step running the tool by literal path (control for G2)",
+  "expected": "FOUND",
+  "observed_fpia": "FOUND",
+  "fpia_reasons": [
+   "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py",
+   "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+  ],
+  "ground_truth_track_c_executed": true,
+  "github_oracle": {
+   "errors": false,
+   "name": "probe",
+   "run_name": null
+  },
+  "class": "holds",
+  "why": ""
+ }
+]

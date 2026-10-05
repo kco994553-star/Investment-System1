@@ -1,0 +1,304 @@
+[
+ {
+  "label": "c1_acaf1b5_A",
+  "tree": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+  "verifier": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "handoff_tip": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+  "python": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-real/venv/bin/python",
+  "repo_refs_sha256": "5b93c3023770b88095c4767df4d84588b1361c0257a26b6016654da45eeb93eb",
+  "start": "2026-10-04T22:05:43Z",
+  "end": "2026-10-04T22:40:31Z",
+  "exit": "0",
+  "wall_s": "2088",
+  "verify": "VERIFIED",
+  "file_sha256": "ebac2f19ab38f12f21715566621ffc98f7e89fc0b79cc1f280f35ae942adf004",
+  "result_sha256": "5a9e3e2af5a41076e4701df1b7116d8250532ea23a552bb0f466652560b8ac47",
+  "fpia": "FPIA_PASS",
+  "reasons": [],
+  "statuses": {
+   "authority": "PASS",
+   "code_identity": "CODE_IDENTITY_DIVERGED",
+   "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+   "full_regression": "PASS",
+   "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+   "integration_interference": "INTEGRATION_INTERFERENCE_NONE",
+   "runtime_provenance": "PASS",
+   "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+   "v2_binding": "PASS"
+  },
+  "summary": "FPIA_PASS | CODE_IDENTITY_DIVERGED (code_hash R 0ef3a900 -> T df34b84f; CODE R 2ed79c3c -> T d0c02ac2) | FROZEN_TOOLS_ON_T_FAIL [BRANCH_FROZEN_VALIDATION, verbatim] | HISTORICAL_FROZEN_IDENTITY_PRESERVED (replayed 4 records + 4 CI logs; 27 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_NONE | v2_binding PASS | full_regression PASS",
+  "interference_findings": [],
+  "dynamic_invocation_detection": "NOT_CLAIMED",
+  "complement_count": 451,
+  "side_files": [
+   "07-track_c_c6_acceptance.py.stderr",
+   "07-track_c_c6_acceptance.py.stdout",
+   "08-track_c_c7_acceptance.py.stderr",
+   "08-track_c_c7_acceptance.py.stdout",
+   "09-track_c_c8_partial_acceptance.py.stderr",
+   "09-track_c_c8_partial_acceptance.py.stdout"
+  ]
+ },
+ {
+  "label": "c2_b9e01a9",
+  "tree": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+  "verifier": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "handoff_tip": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+  "python": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-real/venv/bin/python",
+  "repo_refs_sha256": "5b93c3023770b88095c4767df4d84588b1361c0257a26b6016654da45eeb93eb",
+  "start": "2026-10-04T23:44:07Z",
+  "end": "2026-10-05T00:11:03Z",
+  "exit": "0",
+  "wall_s": "1616",
+  "verify": "VERIFIED",
+  "file_sha256": "52a1ebfe70d65f1414b4004bec1f3a01391cbf1911c58ef4715b4262ab3ab1ec",
+  "result_sha256": "18581ae81f822b8cbae1a9eceb96bab2abd2055f0c1708b455dc4728d842c6f3",
+  "fpia": "FPIA_PASS",
+  "reasons": [],
+  "statuses": {
+   "authority": "PASS",
+   "code_identity": "CODE_IDENTITY_SAME",
+   "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_PASS",
+   "full_regression": "PASS",
+   "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+   "integration_interference": "INTEGRATION_INTERFERENCE_NONE",
+   "runtime_provenance": "PASS",
+   "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+   "v2_binding": "NOT_APPLICABLE"
+  },
+  "summary": "FPIA_PASS | CODE_IDENTITY_SAME (code_hash R 0ef3a900 -> T 0ef3a900; CODE R 2ed79c3c -> T 2ed79c3c) | FROZEN_TOOLS_ON_T_PASS [BRANCH_FROZEN_VALIDATION, verbatim] | HISTORICAL_FROZEN_IDENTITY_PRESERVED (replayed 4 records + 4 CI logs; 25 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_NONE | v2_binding NOT_APPLICABLE | full_regression PASS",
+  "interference_findings": [],
+  "dynamic_invocation_detection": "NOT_CLAIMED",
+  "complement_count": 0,
+  "side_files": [
+   "07-track_c_c6_acceptance.py.stderr",
+   "07-track_c_c6_acceptance.py.stdout",
+   "08-track_c_c7_acceptance.py.stderr",
+   "08-track_c_c7_acceptance.py.stdout",
+   "09-track_c_c8_partial_acceptance.py.stderr",
+   "09-track_c_c8_partial_acceptance.py.stdout"
+  ]
+ },
+ {
+  "label": "c3_S1",
+  "tree": "8b924a26c9008db9891f5c804e093e155ed31992",
+  "verifier": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "handoff_tip": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+  "python": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-real/venv/bin/python",
+  "repo_refs_sha256": "16f93dd8f5aeca44d1038d637b48531caa988bc4137bea59a87c2ce435ad9a8b",
+  "start": "2026-10-05T00:42:50Z",
+  "end": "2026-10-05T01:12:40Z",
+  "exit": "1",
+  "wall_s": "1789",
+  "verify": "VERIFIED",
+  "file_sha256": "2806231b672bfb7c571c8b941a290d2b95cc1c557091a36c6f26bfb44eedd5be",
+  "result_sha256": "7148b5179563b98fd9ac20be8027b45b6b6334803a469940931db27caf82aa3b",
+  "fpia": "FPIA_FAIL",
+  "reasons": [
+   "integration_interference INTEGRATION_INTERFERENCE_FOUND"
+  ],
+  "statuses": {
+   "authority": "PASS",
+   "code_identity": "CODE_IDENTITY_DIVERGED",
+   "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+   "full_regression": "PASS",
+   "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+   "integration_interference": "INTEGRATION_INTERFERENCE_FOUND",
+   "runtime_provenance": "PASS",
+   "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+   "v2_binding": "PASS"
+  },
+  "summary": "FPIA_FAIL | CODE_IDENTITY_DIVERGED (code_hash R 0ef3a900 -> T df34b84f; CODE R 2ed79c3c -> T d0c02ac2) | FROZEN_TOOLS_ON_T_FAIL [BRANCH_FROZEN_VALIDATION, verbatim] | HISTORICAL_FROZEN_IDENTITY_PRESERVED (replayed 4 records + 4 CI logs; 27 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_FOUND | v2_binding PASS | full_regression PASS",
+  "interference_findings": [
+   [
+    "AC-32.spoof",
+    ".github/workflows/probe-a.yml",
+    [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   ]
+  ],
+  "dynamic_invocation_detection": "NOT_CLAIMED",
+  "complement_count": 452,
+  "side_files": [
+   "07-track_c_c6_acceptance.py.stderr",
+   "07-track_c_c6_acceptance.py.stdout",
+   "08-track_c_c7_acceptance.py.stderr",
+   "08-track_c_c7_acceptance.py.stdout",
+   "09-track_c_c8_partial_acceptance.py.stderr",
+   "09-track_c_c8_partial_acceptance.py.stdout"
+  ]
+ },
+ {
+  "label": "c3_S16",
+  "tree": "b33f20cb7fe984d993e429fddc2b6b27e958e79e",
+  "verifier": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "handoff_tip": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+  "python": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-real/venv/bin/python",
+  "repo_refs_sha256": "16f93dd8f5aeca44d1038d637b48531caa988bc4137bea59a87c2ce435ad9a8b",
+  "start": "2026-10-05T01:43:01Z",
+  "end": "2026-10-05T02:08:55Z",
+  "exit": "0",
+  "wall_s": "1554",
+  "verify": "VERIFIED",
+  "file_sha256": "aea35894abc7296db5b95017f1e9ab240fef367e50fb1b7e794987be550740f1",
+  "result_sha256": "935d1b437360d5218daea967af5c98d05d52f4e1838fcc025eaa217d291ed0df",
+  "fpia": "FPIA_PASS",
+  "reasons": [],
+  "statuses": {
+   "authority": "PASS",
+   "code_identity": "CODE_IDENTITY_DIVERGED",
+   "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+   "full_regression": "PASS",
+   "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+   "integration_interference": "INTEGRATION_INTERFERENCE_NONE",
+   "runtime_provenance": "PASS",
+   "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+   "v2_binding": "PASS"
+  },
+  "summary": "FPIA_PASS | CODE_IDENTITY_DIVERGED (code_hash R 0ef3a900 -> T df34b84f; CODE R 2ed79c3c -> T d0c02ac2) | FROZEN_TOOLS_ON_T_FAIL [BRANCH_FROZEN_VALIDATION, verbatim] | HISTORICAL_FROZEN_IDENTITY_PRESERVED (replayed 4 records + 4 CI logs; 27 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_NONE | v2_binding PASS | full_regression PASS",
+  "interference_findings": [],
+  "dynamic_invocation_detection": "NOT_CLAIMED",
+  "complement_count": 453,
+  "side_files": [
+   "07-track_c_c6_acceptance.py.stderr",
+   "07-track_c_c6_acceptance.py.stdout",
+   "08-track_c_c7_acceptance.py.stderr",
+   "08-track_c_c7_acceptance.py.stdout",
+   "09-track_c_c8_partial_acceptance.py.stderr",
+   "09-track_c_c8_partial_acceptance.py.stdout"
+  ]
+ },
+ {
+  "label": "c3_S24",
+  "tree": "14c5a8bee76a8f35de09c76a4775c7de3d7bd506",
+  "verifier": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "handoff_tip": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+  "python": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-real/venv/bin/python",
+  "repo_refs_sha256": "16f93dd8f5aeca44d1038d637b48531caa988bc4137bea59a87c2ce435ad9a8b",
+  "start": "2026-10-05T00:14:09Z",
+  "end": "2026-10-05T00:42:49Z",
+  "exit": "1",
+  "wall_s": "1720",
+  "verify": "VERIFIED",
+  "file_sha256": "ce17a2e3f96e64649b2fe311366d68b0b0631f08dbc4a0ef37f9ad4c3b412b4a",
+  "result_sha256": "1bf307745b296fed70fc717b337e7a6967dfe9dc8565ad9842db95e1fd89424b",
+  "fpia": "FPIA_FAIL",
+  "reasons": [
+   "integration_interference INTEGRATION_INTERFERENCE_FOUND"
+  ],
+  "statuses": {
+   "authority": "PASS",
+   "code_identity": "CODE_IDENTITY_DIVERGED",
+   "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+   "full_regression": "PASS",
+   "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+   "integration_interference": "INTEGRATION_INTERFERENCE_FOUND",
+   "runtime_provenance": "PASS",
+   "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+   "v2_binding": "PASS"
+  },
+  "summary": "FPIA_FAIL | CODE_IDENTITY_DIVERGED (code_hash R 0ef3a900 -> T df34b84f; CODE R 2ed79c3c -> T d0c02ac2) | FROZEN_TOOLS_ON_T_FAIL [BRANCH_FROZEN_VALIDATION, verbatim] | HISTORICAL_FROZEN_IDENTITY_PRESERVED (replayed 4 records + 4 CI logs; 27 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_FOUND | v2_binding PASS | full_regression PASS",
+  "interference_findings": [
+   [
+    "AC-32.spoof",
+    ".github/workflows/probe-a.yml",
+    [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'",
+     "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   ]
+  ],
+  "dynamic_invocation_detection": "NOT_CLAIMED",
+  "complement_count": 452,
+  "side_files": [
+   "07-track_c_c6_acceptance.py.stderr",
+   "07-track_c_c6_acceptance.py.stdout",
+   "08-track_c_c7_acceptance.py.stderr",
+   "08-track_c_c7_acceptance.py.stdout",
+   "09-track_c_c8_partial_acceptance.py.stderr",
+   "09-track_c_c8_partial_acceptance.py.stdout"
+  ]
+ },
+ {
+  "label": "c4_rejected_ideas",
+  "tree": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+  "verifier": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "handoff_tip": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+  "python": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-real/venv/bin/python",
+  "repo_refs_sha256": "bfb1dc3e11d9ca8bb22870f797fb71a4dc28b20ab6086bec39c1800d3d249b27",
+  "start": "2026-10-05T01:12:55Z",
+  "end": "2026-10-05T01:43:00Z",
+  "exit": "0",
+  "wall_s": "1805",
+  "verify": "VERIFIED",
+  "file_sha256": "1c6b2759dc16c71a11456836ee0ff0e212b819b7c40679073328b372fc221f95",
+  "result_sha256": "5a9e3e2af5a41076e4701df1b7116d8250532ea23a552bb0f466652560b8ac47",
+  "fpia": "FPIA_PASS",
+  "reasons": [],
+  "statuses": {
+   "authority": "PASS",
+   "code_identity": "CODE_IDENTITY_DIVERGED",
+   "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+   "full_regression": "PASS",
+   "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+   "integration_interference": "INTEGRATION_INTERFERENCE_NONE",
+   "runtime_provenance": "PASS",
+   "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+   "v2_binding": "PASS"
+  },
+  "summary": "FPIA_PASS | CODE_IDENTITY_DIVERGED (code_hash R 0ef3a900 -> T df34b84f; CODE R 2ed79c3c -> T d0c02ac2) | FROZEN_TOOLS_ON_T_FAIL [BRANCH_FROZEN_VALIDATION, verbatim] | HISTORICAL_FROZEN_IDENTITY_PRESERVED (replayed 4 records + 4 CI logs; 27 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_NONE | v2_binding PASS | full_regression PASS",
+  "interference_findings": [],
+  "dynamic_invocation_detection": "NOT_CLAIMED",
+  "complement_count": 451,
+  "side_files": [
+   "07-track_c_c6_acceptance.py.stderr",
+   "07-track_c_c6_acceptance.py.stdout",
+   "08-track_c_c7_acceptance.py.stderr",
+   "08-track_c_c7_acceptance.py.stdout",
+   "09-track_c_c8_partial_acceptance.py.stderr",
+   "09-track_c_c8_partial_acceptance.py.stdout"
+  ]
+ },
+ {
+  "label": "c5_acaf1b5_B",
+  "tree": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+  "verifier": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "handoff_tip": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+  "python": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-real/alt/elsewhere/venv-b/bin/python",
+  "repo_refs_sha256": "5b93c3023770b88095c4767df4d84588b1361c0257a26b6016654da45eeb93eb",
+  "start": "2026-10-04T23:11:31Z",
+  "end": "2026-10-04T23:44:07Z",
+  "exit": "0",
+  "wall_s": "1956",
+  "verify": "VERIFIED",
+  "file_sha256": "8df71b8611cb3d6cd09a5decfdf2632633c01bf9e6ee2e679863c3e7bbdc8134",
+  "result_sha256": "5a9e3e2af5a41076e4701df1b7116d8250532ea23a552bb0f466652560b8ac47",
+  "fpia": "FPIA_PASS",
+  "reasons": [],
+  "statuses": {
+   "authority": "PASS",
+   "code_identity": "CODE_IDENTITY_DIVERGED",
+   "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+   "full_regression": "PASS",
+   "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+   "integration_interference": "INTEGRATION_INTERFERENCE_NONE",
+   "runtime_provenance": "PASS",
+   "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+   "v2_binding": "PASS"
+  },
+  "summary": "FPIA_PASS | CODE_IDENTITY_DIVERGED (code_hash R 0ef3a900 -> T df34b84f; CODE R 2ed79c3c -> T d0c02ac2) | FROZEN_TOOLS_ON_T_FAIL [BRANCH_FROZEN_VALIDATION, verbatim] | HISTORICAL_FROZEN_IDENTITY_PRESERVED (replayed 4 records + 4 CI logs; 27 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_NONE | v2_binding PASS | full_regression PASS",
+  "interference_findings": [],
+  "dynamic_invocation_detection": "NOT_CLAIMED",
+  "complement_count": 451,
+  "side_files": [
+   "07-track_c_c6_acceptance.py.stderr",
+   "07-track_c_c6_acceptance.py.stdout",
+   "08-track_c_c7_acceptance.py.stderr",
+   "08-track_c_c7_acceptance.py.stdout",
+   "09-track_c_c8_partial_acceptance.py.stderr",
+   "09-track_c_c8_partial_acceptance.py.stdout"
+  ]
+ }
+]

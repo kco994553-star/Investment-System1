@@ -1,0 +1,23 @@
+{
+ "authority_status": "PASS",
+ "dynamic_invocation_detection": "NOT_CLAIMED",
+ "fpia": {
+  "reasons": [
+   "runtime_provenance PROBE_STOPPED",
+   "historical_frozen_identity NOT_RUN",
+   "track_c_projection NOT_RUN",
+   "integration_interference NOT_RUN",
+   "v2_binding NOT_RUN",
+   "full_regression NOT_RUN",
+   "code_identity NOT_RUN (must be determinate)",
+   "frozen_tools_on_T NOT_RUN (must have run)"
+  ],
+  "status": "FPIA_NOT_RUN"
+ },
+ "interference_static": "NONE(static part)",
+ "reached_static": true,
+ "static_findings": [],
+ "static_not_run": [],
+ "tree": "62cc5a1b84b504deb4d29b0133be34c4d7867009",
+ "workflow_notes": []
+}

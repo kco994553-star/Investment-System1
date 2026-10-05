@@ -1,0 +1,90 @@
+{
+ "K_canonical": {
+  "tree": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "fpia": "FPIA_FAIL",
+  "authority": "FAIL",
+  "AC-04": [
+   {
+    "id": "AC-04",
+    "status": "FAIL",
+    "detail": "R is not an ancestor of T: R is absent from T's history and no Track C projection path of R is present at T (Track C not integrated in this tree)",
+    "case": "R_ABSENT_TRACK_C_NOT_INTEGRATED",
+    "track_c_paths_present_at_T": 0
+   }
+  ],
+  "summary": "FPIA_FAIL | NOT_RUN | NOT_RUN [BRANCH_FROZEN_VALIDATION, verbatim] | NOT_RUN | NOT_RUN | NOT_RUN | v2_binding NOT_RUN | full_regression NOT_RUN"
+ },
+ "P1_one_R_path": {
+  "tree": "f2d8c5bab3c759e45b54ef068c8bb0e1a667b81f",
+  "fpia": "FPIA_FAIL",
+  "authority": "FAIL",
+  "AC-04": [
+   {
+    "id": "AC-04",
+    "status": "FAIL",
+    "detail": "R is not an ancestor of T although Track C projection paths of R are present at T (squash or non-merge-preserving landing)",
+    "case": "NON_MERGE_PRESERVING_LANDING",
+    "track_c_paths_present_at_T": 1,
+    "examples": [
+     "implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "summary": "FPIA_FAIL | NOT_RUN | NOT_RUN [BRANCH_FROZEN_VALIDATION, verbatim] | NOT_RUN | NOT_RUN | NOT_RUN | v2_binding NOT_RUN | full_regression NOT_RUN"
+ },
+ "P2_ns_path_not_in_R": {
+  "tree": "4e55f5ced2c4cb284f03b5cccd357142f80625d1",
+  "fpia": "FPIA_FAIL",
+  "authority": "FAIL",
+  "AC-04": [
+   {
+    "id": "AC-04",
+    "status": "FAIL",
+    "detail": "R is not an ancestor of T: R is absent from T's history and no Track C projection path of R is present at T (Track C not integrated in this tree)",
+    "case": "R_ABSENT_TRACK_C_NOT_INTEGRATED",
+    "track_c_paths_present_at_T": 0
+   }
+  ],
+  "summary": "FPIA_FAIL | NOT_RUN | NOT_RUN [BRANCH_FROZEN_VALIDATION, verbatim] | NOT_RUN | NOT_RUN | NOT_RUN | v2_binding NOT_RUN | full_regression NOT_RUN"
+ },
+ "P3_squash": {
+  "tree": "09b89220c0c15254e55dfa50cf0c6a54d3f9c61b",
+  "fpia": "FPIA_FAIL",
+  "authority": "FAIL",
+  "AC-04": [
+   {
+    "id": "AC-04",
+    "status": "FAIL",
+    "detail": "R is not an ancestor of T although Track C projection paths of R are present at T (squash or non-merge-preserving landing)",
+    "case": "NON_MERGE_PRESERVING_LANDING",
+    "track_c_paths_present_at_T": 146,
+    "examples": [
+     "implementation/reports/track_c_c0_acceptance.md",
+     "implementation/reports/track_c_c10_policy_package_C.md",
+     "implementation/reports/track_c_c1_acceptance.md",
+     "implementation/reports/track_c_c1_full_regression.txt",
+     "implementation/reports/track_c_c1_integration_boundary.json"
+    ]
+   }
+  ],
+  "summary": "FPIA_FAIL | NOT_RUN | NOT_RUN [BRANCH_FROZEN_VALIDATION, verbatim] | NOT_RUN | NOT_RUN | NOT_RUN | v2_binding NOT_RUN | full_regression NOT_RUN"
+ },
+ "P4_R_path_with_other_bytes": {
+  "tree": "9d2628dcec608099f1b607db4734f84358d86a9c",
+  "fpia": "FPIA_FAIL",
+  "authority": "FAIL",
+  "AC-04": [
+   {
+    "id": "AC-04",
+    "status": "FAIL",
+    "detail": "R is not an ancestor of T although Track C projection paths of R are present at T (squash or non-merge-preserving landing)",
+    "case": "NON_MERGE_PRESERVING_LANDING",
+    "track_c_paths_present_at_T": 1,
+    "examples": [
+     "implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "summary": "FPIA_FAIL | NOT_RUN | NOT_RUN [BRANCH_FROZEN_VALIDATION, verbatim] | NOT_RUN | NOT_RUN | NOT_RUN | v2_binding NOT_RUN | full_regression NOT_RUN"
+ }
+}

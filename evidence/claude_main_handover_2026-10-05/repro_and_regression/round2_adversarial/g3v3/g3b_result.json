@@ -1,0 +1,29 @@
+{
+ "source_is_shallow_per_git": "true",
+ "Sandbox.fetch": "returned normally (no GitError)",
+ "fetch_log": [
+  {
+   "label": "probe",
+   "source": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/g3v3/w2/S",
+   "network": false,
+   "refspecs": [
+    "+refs/heads/*:refs/fpia/src/heads/*"
+   ],
+   "rc": 0,
+   "rejected": [],
+   "network_env_names": []
+  }
+ ],
+ "sandbox_refs": [
+  "refs/fpia/src/heads/good",
+  ""
+ ],
+ "plain_git_rc": 0,
+ "plain_git_stderr": [
+  "From file:///tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/g3v3/w2/S",
+  " * [new branch]      good       -> refs/x/good",
+  "warning: rejected refs/x/x\u2028y because shallow roots are not allowed to be updated",
+  ""
+ ],
+ "Sandbox.source_is_shallow": true
+}

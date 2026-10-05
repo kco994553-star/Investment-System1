@@ -1,0 +1,38 @@
+[proposal] FPIA fix round 3 H1-H7 (CDR-014 §14): AC-32.spoof as a conservative over-approximation, environment-independent verdict, verifier hardening
+
+H1 identity: GitHub constant expressions in name/run-name are folded ('literal' with '' escapes,
+format() over literals, nested); a non-foldable expression there is FOUND fail-closed (identity not
+statically determinable). Identity keys = for s, NFKC(s), skeleton(s), skeleton(NFKC(s)),
+NFKC(skeleton(s)): casefold, delete everything but ASCII [a-z0-9]; a Track C name/stem key that is a
+SUBSTRING of a key of the workflow's name, run-name or filename stem is a claim. The ICU 74.2 table
+keeps NFKC-unstable sources (1788 code points), fixing the round-2 NFKC-before-skeleton D1 bug.
+
+H2 what a complement workflow can run: the verdict no longer depends on resolving cd,
+working-directory, shell flags, wrappers or quoting. Mention set M from R and A_V only (tool
+stems/basenames, Track C test module stems, Track C module dotted paths, A_V basenames, the Track C
+workflow path); the workflow (decoded + folded, and raw without backslash-newline/quotes, ANSI-C
+decoded) and every in-tree code/config file it can reach (any token naming a tree file, local action
+directories, reusable workflows, make/npm/yarn/pnpm/tox/nox configuration, python -m modules under any
+root, pytest @argsfiles and -c ini files) are scanned; any mention, Track C import, glob over Track C
+paths (whole-suite globs are notes), path naming a Track C file, pytest -k/-m or exclusion selection
+keeping Track C tests, or same-repository remote workflow/action is FOUND unless attributed as before.
+The fix-round-2 resolver output is kept as evidence (resolver_reasons) and for the whole-suite note.
+The running verifier's own files (byte-identical to it or to a version on its history) are
+self-placement, not scanned. Summary line names dynamic_invocation_detection NOT_CLAIMED (D3-c) and
+out_of_tree_code_analysis NOT_ANALYSED (D3-e) whenever their fields are non-empty.
+
+H3 work dir, TMPDIR and interpreter directory resolved once (realpath); plugin_findings compares
+realpath to realpath; pytest's basetemp in FPIA's own child runs written as pytest-of-<user>.
+H4 --verify-output rejects duplicate JSON keys and non-basename side-file names, reads/writes UTF-8
+whatever the locale, records/prints/checks run_sha256 (integrity, not authentication: D3-a); --out
+whose directory is missing or not writable is refused before the audit; CI prints run_sha256.
+H5 fetch/ls-remote output split on LF (and CR) only; status-line regexes ASCII-whitespace only.
+H6 AC-04 counts every Track C-namespace path at T, including paths not in R.
+H7 runtime_provenance.verifier.files lists every file under tools/integration/ (incl. _vendor/**).
+
+Tier 1 regressions in test_integration_fpia_fix3.py pin every round-2 variant (22 D1 + 41 D2 + S24V2
+FOUND; D3-c and D3-e pinned as current behaviour). Open user decisions D3-a..D3-e and the G7
+interpretation are not decided.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_019znshzTYgyBnuuBmSxdPFN

@@ -1,0 +1,12 @@
+{
+ "real": {
+  "rc": 0,
+  "stdout_len": 10675,
+  "stderr_tail": ""
+ },
+ "symlinked": {
+  "rc": 1,
+  "stdout_len": 0,
+  "stderr_tail": "on/tools/verify_gsup_v2_arithmetic.py\", line 87, in verify\n    \"source_sha256\": {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/det3/iso/r3link/trees/T/implementation/tools/verify_gsup_v2_arithmetic.py\", line 87, in <dictcomp>\n    \"source_sha256\": {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},\n                          ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.11/pathlib.py\", line 730, in relative_to\n    raise ValueError(\"{!r} is not in the subpath of {!r}\"\nValueError: '/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/det3/iso/r3link/trees/T/implementation/tools/verify_gsup_v2_arithmetic.py' is not in the subpath of '/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/det3/iso/r3real/trees/T/implementation' OR one path is relative and the other is absolute.\n"
+ }
+}

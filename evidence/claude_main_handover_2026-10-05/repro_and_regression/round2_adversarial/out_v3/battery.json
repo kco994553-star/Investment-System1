@@ -1,0 +1,7195 @@
+[
+ {
+  "desc": "base acaf1b5 + benign workflow",
+  "expect": "NOT_FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "control",
+  "id": "C00",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "S0: exact Track C name",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "control",
+  "id": "C01",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "S9: bash script running Track C tool",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "bash scripts/ci_probe.sh",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-C02-4t1u9s7z/ws/implementation"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: tools/track_c_c6_acceptance.py (via scripts/ci_probe.sh)",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via scripts/ci_probe.sh)"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "bash scripts/ci_probe.sh"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "control",
+  "id": "C02",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "S15: string-concatenated path (D3-c non-claim)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python scripts/probe_runner.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-C03-zgaz4hlg/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "NOT_FOUND(D3-c)",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python scripts/probe_runner.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "control",
+  "id": "C03",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "bash -c with cd (claimed handled)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "bash -c 'cd implementation/tools && python track_c_c6_acceptance.py'",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-C04-akst6l6u/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: track_c_c6_acceptance.py",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "bash -c 'cd implementation/tools && python track_c_c6_acceptance.py'"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "control",
+  "id": "C04",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "working-directory: implementation/tools + relative tool",
+  "emulation": {
+   "log": [
+    {
+     "cwd": "implementation/tools",
+     "rc": 0,
+     "run": "python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-C05-itp3d86q/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: track_c_c6_acceptance.py",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "control",
+  "id": "C05",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "name via alias of an anchor defined on an env value",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y01",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "name via alias, anchor defined later in a job env (forward ref invalid YAML)",
+  "expect": "FOUND(fail-closed)",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "unparseable workflow (fail-closed): found undefined alias 'n'   in \"<unicode string>\", line 1, column 7:     name: *n           ^"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": "Unparseable: found undefined alias 'n'   in \"<unicode string>\", line 1, column 7:     name: *n           ^",
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-f6dp_hmm/f0.yml (Line: 1, Col: 1): Required property is missing: on",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-f6dp_hmm/f0.yml (Line: 1, Col: 1): Required property is missing: jobs",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-f6dp_hmm/f0.yml: Expected mapping end"
+    ],
+    "jobs": [],
+    "name": null,
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y02",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "name inside a root merge key (<<: {name: ...})",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-3amq9wy_/f0.yml (Line: 1, Col: 1): Unexpected value '<<'"
+    ],
+    "jobs": [],
+    "name": null,
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y03",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "multi-document: doc1 benign, doc2 Track C name",
+  "expect": "FOUND(fail-closed)",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "unparseable workflow (fail-closed): expected a single document in the stream   in \"<unicode string>\", line 1, column 1:     name: probe     ^ but found another document   in \"<unicode string>\", line 8, column 1:     ---     ^"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": "Unparseable: expected a single document in the stream   in \"<unicode string>\", line 1, column 1:     name: probe     ^ but found another document   in \"<unicode string>\", line 8, column 1:     ---     ^",
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-bxamotao/f0.yml: Source contains multiple documents; please use YAML.parseAllDocuments() at line 8, column 1:\n\n      - run: echo hi\n---\n^\n"
+    ],
+    "jobs": [],
+    "name": null,
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y04",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "explicit document markers ---/... single doc",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-xw6ov7oo/f0.yml: raw.indexOf is not a function"
+    ],
+    "jobs": [],
+    "name": null,
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y05",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "flow-style whole workflow",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y06",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "block literal strip |-",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y07",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "block literal keep |+ with trailing blank lines",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validation\n\n\n"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\n\\n\\n'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation\n\n\n"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation\n\n\n",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y08",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "folded >- split across lines with no space (escaped in double quotes)",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y09",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "block literal with indentation indicator |2- (leading space in value)",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": " track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): ' track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   " track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": " track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y10",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "verbatim tag !<tag:yaml.org,2002:str>",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y11",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "%TAG handle !e! -> !e!str",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y12",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "local tag !foo on quoted name",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "unparseable workflow (fail-closed): could not determine a constructor for the tag '!foo'   in \"<unicode string>\", line 1, column 7:     name: !foo \"track-c-evl-validation\"           ^"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": "Unparseable: could not determine a constructor for the tag '!foo'   in \"<unicode string>\", line 1, column 7:     name: !foo \"track-c-evl-validation\"           ^",
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y13",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "UTF-8 BOM",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y14",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "CRLF line endings",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y15",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "lone CR line endings",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-dxna5u1i/f0.yml: Nested mappings are not allowed in compact mappings at line 1, column 7:\n\nname: track-c-evl-validation\ron: [push]\rjobs:\r  check:\r    runs-on: ubuntu-late…\n      ^\n",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-dxna5u1i/f0.yml: Unexpected scalar at node end at line 1, column 40:\n\nname: track-c-evl-validation\ron: [push]\rjobs:\r  check:\r    runs-on: ubuntu-late…\n                                       ^^^^^\n",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-dxna5u1i/f0.yml: Nested mappings are not allowed in compact mappings at line 1, column 46:\n\nname: track-c-evl-validation\ron: [push]\rjobs:\r  check:\r    runs-on: ubuntu-late…\n                                             ^\n",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-dxna5u1i/f0.yml: Nested mappings are not allowed in compact mappings at line 1, column 55:\n\nname: track-c-evl-validation\ron: [push]\rjobs:\r  check:\r    runs-on: ubuntu-late…\n                                                      ^\n",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-dxna5u1i/f0.yml: Nested mappings are not allowed in compact mappings at line 1, column 69:\n\n…on: [push]\rjobs:\r  check:\r    runs-on: ubuntu-latest\r    steps:\r      - run: e…\n                                        ^\n",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-dxna5u1i/f0.yml: Nested mappings are not allowed in compact mappings at line 1, column 93:\n\n…push]\rjobs:\r  check:\r    runs-on: ubuntu-latest\r    steps:\r      - run: echo hi\n                                                           ^\n"
+    ],
+    "jobs": [],
+    "name": null,
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y16",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "tab after colon (name:\\tvalue)",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "unparseable workflow (fail-closed): while scanning for the next token found character '\\t' that cannot start any token   in \"<unicode string>\", line 1, column 6:     name:\ttrack-c-evl-validation          ^"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": "Unparseable: while scanning for the next token found character '\\t' that cannot start any token   in \"<unicode string>\", line 1, column 6:     name:\ttrack-c-evl-validation          ^",
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y17",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing tab inside quoted value",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validation\t"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\t'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation\t"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation\t",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y18",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "duplicate name keys, Track C second",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe",
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-n586wncv/f0.yml (Line: 2, Col: 1): 'name' is already defined"
+    ],
+    "jobs": [],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y19",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "duplicate name keys, Track C first",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation",
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-nz8ize5p/f0.yml (Line: 2, Col: 1): 'name' is already defined"
+    ],
+    "jobs": [],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y20",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "very long line: 200k spaces then comment after name",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y21",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "very long implicit key (>1024 chars) before name",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "unparseable workflow (fail-closed): mapping values are not allowed here   in \"<unicode string>\", line 2, column 1103:      ... KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK: x                                          ^"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": "Unparseable: mapping values are not allowed here   in \"<unicode string>\", line 2, column 1103:      ... KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK: x                                          ^",
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-pcd2553z/f0.yml: The : indicator must be at most 1024 chars after the start of an implicit block mapping key at line 2, column 3:\n\nenv:\n  KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK…\n  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"
+    ],
+    "jobs": [],
+    "name": null,
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y22",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "complex key ? name : value",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y23",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "escaped key \"na\\u006De\"",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y24",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "NEL (U+0085) as line break between keys",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe",
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-bcbofk8w/f0.yml: Nested mappings are not allowed in compact mappings at line 1, column 7:\n\nname: probename2: x\n      ^\n"
+    ],
+    "jobs": [],
+    "name": null,
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y25",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "comment ending in U+2028 then name key (PyYAML sees key; 1.2 parser sees comment)",
+  "expect": "NOT_FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation",
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y26",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "run-name constant expression ${{ 'track-c-evl-validation' }}",
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe",
+   "${{ 'track-c-evl-validation' }}"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": "track-c-evl-validation"
+   }
+  },
+  "group": "G1",
+  "id": "Y27",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "run-name format() expression",
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe",
+   "${{ format('track-c-{0}-validation', 'evl') }}"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": "${{ format('track-c-{0}-validation', 'evl') }}"
+   }
+  },
+  "group": "G1",
+  "id": "Y28",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "run-name with embedded expression track-c-${{ 'evl' }}-validation",
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe",
+   "track-c-${{ 'evl' }}-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": "${{ format('track-c-{0}-validation', 'evl') }}"
+   }
+  },
+  "group": "G1",
+  "id": "Y29",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "name contains expression syntax (workflow name does not evaluate)",
+  "expect": "NOT_FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "${{ 'track-c-evl-validation' }}"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y30",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing U+2800 BRAILLE PATTERN BLANK",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation⠀"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation⠀",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U01",
+  "not_run": [],
+  "note": "'track-c-evl-validation⠀'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+2800 replacing nothing, inserted mid-name",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl⠀-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl⠀-validation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U02",
+  "not_run": [],
+  "note": "'track-c-evl⠀-validation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing U+1D159 MUSICAL SYMBOL NULL NOTEHEAD",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation𝅙"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation𝅙",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U03",
+  "not_run": [],
+  "note": "'track-c-evl-validation𝅙'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "dotless i + U+0307 COMBINING DOT ABOVE for each i",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-valı̇datı̇on"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-valı̇datı̇on",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U04",
+  "not_run": [],
+  "note": "'track-c-evl-valı̇datı̇on'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+2011 NON-BREAKING HYPHEN for hyphens",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track‑c‑evl‑validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track‑c‑evl‑validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track‑c‑evl‑validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track‑c‑evl‑validation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U05",
+  "not_run": [],
+  "note": "'track‑c‑evl‑validation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+FE63 SMALL HYPHEN-MINUS",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track﹣c﹣evl﹣validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track﹣c﹣evl﹣validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track﹣c﹣evl﹣validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track﹣c﹣evl﹣validation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U06",
+  "not_run": [],
+  "note": "'track﹣c﹣evl﹣validation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+2E3A/2014? EM DASH for hyphens",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track—c—evl—validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track—c—evl—validation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U07",
+  "not_run": [],
+  "note": "'track—c—evl—validation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+00AD SOFT HYPHEN for hyphens (renders invisible)",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track­c­evl­validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track­c­evl­validation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U08",
+  "not_run": [],
+  "note": "'track\\xadc\\xadevl\\xadvalidation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+FFFC OBJECT REPLACEMENT trailing",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation￼"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation￼",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U09",
+  "not_run": [],
+  "note": "'track-c-evl-validation￼'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+FFF9 INTERLINEAR ANNOTATION ANCHOR trailing",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation￹"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation￹",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U10",
+  "not_run": [],
+  "note": "'track-c-evl-validation\\ufff9'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "Cyrillic a/c/e/o/i mix",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "trасk-с-еvl-vаlidаtіоn"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'trасk-с-еvl-vаlidаtіоn'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "trасk-с-еvl-vаlidаtіоn"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "trасk-с-еvl-vаlidаtіоn",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U11",
+  "not_run": [],
+  "note": "'trасk-с-еvl-vаlidаtіоn'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+0130 capital I with dot (casefold i + U+0307)",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-valİdatİon"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-valİdatİon",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U12",
+  "not_run": [],
+  "note": "'track-c-evl-valİdatİon'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+2024 ONE DOT LEADER? no - U+A4FE? use U+02D7 MODIFIER MINUS for hyphen",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track˗c˗evl˗validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track˗c˗evl˗validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track˗c˗evl˗validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track˗c˗evl˗validation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U13",
+  "not_run": [],
+  "note": "'track˗c˗evl˗validation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+0332 combining low line after every char? no: single U+034F CGJ (DI)",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-͏c-͏evl-͏validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-͏c-͏evl-͏validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-͏c-͏evl-͏validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-͏c-͏evl-͏validation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U14",
+  "not_run": [],
+  "note": "'track-͏c-͏evl-͏validation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing U+3164 HANGUL FILLER (DI)",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validationㅤ"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validationㅤ'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validationㅤ"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validationㅤ",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U15",
+  "not_run": [],
+  "note": "'track-c-evl-validationㅤ'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing U+115F + U+1160 (DI)",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validationᅟᅠ"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validationᅟᅠ'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validationᅟᅠ"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validationᅟᅠ",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U16",
+  "not_run": [],
+  "note": "'track-c-evl-validationᅟᅠ'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing U+2028 LINE SEPARATOR in quoted scalar",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validation "
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\u2028'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation "
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation ",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U17",
+  "not_run": [],
+  "note": "'track-c-evl-validation\\u2028'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+0627 ARABIC ALEF for l (RTL)",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evا-vaاidation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evا-vaاidation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evا-vaاidation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evا-vaاidation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U18",
+  "not_run": [],
+  "note": "'track-c-evا-vaاidation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "l -> U+05C0 HEBREW PUNCTUATION PASEQ",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-ev׀-va׀idation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-ev׀-va׀idation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-ev׀-va׀idation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-ev׀-va׀idation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U19",
+  "not_run": [],
+  "note": "'track-c-ev׀-va׀idation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing U+180E MONGOLIAN VOWEL SEPARATOR",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validation᠎"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\u180e'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation᠎"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation᠎",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U20",
+  "not_run": [],
+  "note": "'track-c-evl-validation\\u180e'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+2063 INVISIBLE SEPARATOR mid",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c⁣-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c\\u2063-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c⁣-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c⁣-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U21",
+  "not_run": [],
+  "note": "'track-c\\u2063-evl-validation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing U+1BCA1 SHORTHAND FORMAT CONTINUING OVERLAP (DI)",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validation𛲡"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\U0001bca1'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation𛲡"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation𛲡",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U22",
+  "not_run": [],
+  "note": "'track-c-evl-validation\\U0001bca1'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+0338? no: U+20E0? -> trailing U+200B ZWSP (DI)",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validation​"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\u200b'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation​"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation​",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U23",
+  "not_run": [],
+  "note": "'track-c-evl-validation\\u200b'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing U+E0020 TAG SPACE (DI)",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validation󠀠"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\U000e0020'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation󠀠"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation󠀠",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U24",
+  "not_run": [],
+  "note": "'track-c-evl-validation\\U000e0020'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing ideographic space U+3000 (NFKC space, strip)",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validation　"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\u3000'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation　"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation　",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U25",
+  "not_run": [],
+  "note": "'track-c-evl-validation\\u3000'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing U+16FE4 KHITAN FILLER (Cf, not DI in Unicode 15.1)",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation𖿤"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation𖿤",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable",
+  "id": "U26",
+  "not_run": [],
+  "note": "'track-c-evl-validation𖿤'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "no name; file track-c-evl-validation.yaml",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "filename stem",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/track-c-evl-validation.yaml",
+    "reasons": [
+     "workflow filename stem equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": null,
+  "gh_oracle": {
+   ".github/workflows/track-c-evl-validation.yaml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": null,
+    "runName": null
+   }
+  },
+  "group": "G1-stem",
+  "id": "F01",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "no name; file Track-C-EVL-Validation.YML",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "case/Unicode variant of a projection path",
+    "id": "AC-19",
+    "path": ".github/workflows/Track-C-EVL-Validation.YML"
+   },
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "filename stem",
+      "match": "N1",
+      "value": "Track-C-EVL-Validation"
+     }
+    ],
+    "path": ".github/workflows/Track-C-EVL-Validation.YML",
+    "reasons": [
+     "workflow filename stem equals the Track C workflow name or filename stem after normalisation (N1): 'Track-C-EVL-Validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": null,
+  "gh_oracle": {
+   ".github/workflows/Track-C-EVL-Validation.YML": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": null,
+    "runName": null
+   }
+  },
+  "group": "G1-stem",
+  "id": "F02",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "no name; stem with trailing U+2800",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": null,
+  "gh_oracle": {
+   ".github/workflows/track-c-evl-validation⠀.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": null,
+    "runName": null
+   }
+  },
+  "group": "G1-stem",
+  "id": "F03",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "no name; file in subdirectory (GitHub ignores)",
+  "expect": "NOT_FOUND(ignored by GitHub)",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "filename stem",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/sub/track-c-evl-validation.yml",
+    "reasons": [
+     "workflow filename stem equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": null,
+  "gh_oracle": {
+   ".github/workflows/sub/track-c-evl-validation.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": null,
+    "runName": null
+   }
+  },
+  "group": "G1-stem",
+  "id": "F04",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "cd ${{ github.workspace }}/implementation/tools && python <tool>",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I01-daqtwgv4/ws/implementation/tools && python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I01-daqtwgv4/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "${{ format('cd {0}/implementation/tools && python track_c_c6_acceptance.py', github.workspace) }}"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I01",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "cd \"$GITHUB_WORKSPACE/implementation/tools\" && python <tool>",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd \"$GITHUB_WORKSPACE/implementation/tools\" && python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I02-5b1py39t/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd \"$GITHUB_WORKSPACE/implementation/tools\" && python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I02",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "working-directory: ${{ github.workspace }}/implementation/tools",
+  "emulation": {
+   "log": [
+    {
+     "cwd": "implementation/tools",
+     "rc": 0,
+     "run": "python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I03-vlir6s89/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I03",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "pushd implementation/tools",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "pushd implementation/tools && python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I04-gp7lamf5/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "pushd implementation/tools && python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I04",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "cd -P implementation/tools",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd -P implementation/tools && python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I05-yb056hlg/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd -P implementation/tools && python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I05",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "cd -- implementation/tools",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd -- implementation/tools && python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I06-8fmlmgac/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd -- implementation/tools && python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I06",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "env -C implementation/tools python <tool>",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "env -C implementation/tools python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I07-cwrjq3se/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "env -C implementation/tools python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I07",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "bash -ec 'cd implementation/tools && python <tool>' (combined flags)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "bash -ec 'cd implementation/tools && python track_c_c6_acceptance.py'",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I08-1hut_jbn/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "bash -ec 'cd implementation/tools && python track_c_c6_acceptance.py'"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I08",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "sh -xc 'cd ... && python <tool>'",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "sh -xc 'cd implementation/tools && python track_c_c6_acceptance.py'",
+     "stderr_tail": "+ cd implementation/tools\n+ python track_c_c6_acceptance.py\n"
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I09-y97fqd1j/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "sh -xc 'cd implementation/tools && python track_c_c6_acceptance.py'"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I09",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "PYTHONPATH=implementation/tools python -m track_c_c6_acceptance",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "PYTHONPATH=implementation/tools python -m track_c_c6_acceptance",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I10-ap2d5qeb/ws/implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I10-ap2d5qeb/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "PYTHONPATH=implementation/tools python -m track_c_c6_acceptance"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I10",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "python -m <tree module> (implementation/src/ci_probe/__main__.py) calling the tool with subprocess cwd=",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation && PYTHONPATH=src python -m ci_probe",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I11-9_hsue7o/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation && PYTHONPATH=src python -m ci_probe"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I11",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "python script: os.chdir('implementation/tools') then os.system('python track_c_c6_acceptance.py')",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python ci/run_tc.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I12-l_3j8592/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python ci/run_tc.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I12",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "make target running the tool (Makefile recipe)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "make tc",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I13-o9ibzypf/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "make tc"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I13",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "npm script running the tool (package.json)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "npm run tc",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I14-tfb6sjzu/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "npm run tc"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I14",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "bash -o pipefail ci/tc.sh (option with value before script)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "bash -o pipefail ci/tc.sh",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I15-a1kb06aq/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "bash -o pipefail ci/tc.sh"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I15",
+  "not_run": [],
+  "note": "the script itself contains the literal tool path; only reached if followed",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "bash --noprofile --norc -eo pipefail ci/tc.sh (GitHub's own bash template)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "bash --noprofile --norc -eo pipefail ci/tc.sh",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I16-8t10kv8w/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "bash --noprofile --norc -eo pipefail ci/tc.sh"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I16",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "timeout 600 bash ci/tc.sh (wrapper not in WRAPPERS)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "timeout 600 bash ci/tc.sh",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I17-5nue82hz/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "timeout 600 bash ci/tc.sh"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I17",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "nice -n 5 python ci/run.py (wrapper with option)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "nice -n 5 python ci/run.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I18-5ybltln9/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "nice -n 5 python ci/run.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I18",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "extension-less, shebang-less executable script ./ci/run-tc (bash ENOEXEC fallback)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "./ci/run-tc",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I19-swzfi564/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "./ci/run-tc"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I19",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "shell line continuation splitting the path (implementation/to\\<NL>ols/...)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python implementation/to\\\nols/track_c_c6_acceptance.py\n",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I20-9uidwprt/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python implementation/to\\\nols/track_c_c6_acceptance.py\n"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I20",
+  "not_run": [],
+  "note": "bash joins backslash-newline with no space",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "ANSI-C quoting $'\\x69mplementation/tools/...'",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python $'\\x69mplementation/tools/track_c_c6_acceptance.py'",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I21-dyob5qbh/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python $'\\x69mplementation/tools/track_c_c6_acceptance.py'"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I21",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "brace expansion implementation/t{o,}ols/... (extra argv ignored by the tool? python runs first)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python implementation/t{o,}ols/track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py', 'implementation/tols/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I22-ojovo1d2/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python implementation/t{o,}ols/track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I22",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "absolute runner path /home/runner/work/<repo>/<repo>/implementation/tools/<tool>",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 2,
+     "run": "python /home/runner/work/Investment-System1/Investment-System1/implementation/tools/track_c_c6_acceptance.py",
+     "stderr_tail": "python: can't open file '/home/runner/work/Investment-System1/Investment-System1/implementation/tools/track_c_c6_acceptance.py': [Errno 2] No such file or directory\n"
+    }
+   ],
+   "marks": [],
+   "track_c_executed": false
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python /home/runner/work/Investment-System1/Investment-System1/implementation/tools/track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I23",
+  "not_run": [],
+  "note": "literal absolute path of the GitHub-hosted runner workspace",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "$PWD prefix: python \"$PWD/implementation/tools/<tool>\"",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python \"$PWD/implementation/tools/track_c_c6_acceptance.py\"",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I24-ygpfnqyk/ws/implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I24-ygpfnqyk/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python \"$PWD/implementation/tools/track_c_c6_acceptance.py\""
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I24",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "${PWD} prefix",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python \"${PWD}/implementation/tools/track_c_c6_acceptance.py\"",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I25-bda26q7x/ws/implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I25-bda26q7x/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python \"${PWD}/implementation/tools/track_c_c6_acceptance.py\""
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I25",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "python f-string with cwd prefix in a followed script",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python ci/run2.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I26-wi656uvk/ws/implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I26-wi656uvk/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python ci/run2.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I26",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "env indirection, literal full path in env (claimed: all scalars scanned)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python \"$SCRIPT\"",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I27-ig5epnme/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python \"$SCRIPT\""
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I27",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "env indirection, directory in env + cd $D (paths in shell variables: D3-c)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd \"$D\" && python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I28-wfsqpjc8/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "NOT_FOUND(D3-c)",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd \"$D\" && python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I28",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "reusable workflow (job uses ./.github/workflows/x.yml) whose step uses cd ${{ github.workspace }}/...",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I29-a75z204v/ws/implementation/tools && python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I29-a75z204v/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "call",
+      "name": "call",
+      "ref": "./.github/workflows/x.yml",
+      "steps": []
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   },
+   ".github/workflows/x.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "inner",
+      "name": "inner",
+      "ref": null,
+      "steps": [
+       {
+        "run": "${{ format('cd {0}/implementation/tools && python track_c_c6_acceptance.py', github.workspace) }}"
+       }
+      ]
+     }
+    ],
+    "name": "x",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I29",
+  "not_run": [],
+  "note": "caller job below replaced",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "reusable workflow from the same repository by remote ref (owner/repo/.github/workflows/track-c-evl-validation.yml@ref)",
+  "emulation": {
+   "log": [
+    {
+     "skipped": "remote reusable workflow kco994553-star/Investment-System1/.github/workflows/x.yml@feature/other not emulated"
+    }
+   ],
+   "marks": [],
+   "track_c_executed": false
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "call",
+      "name": "call",
+      "ref": "kco994553-star/Investment-System1/.github/workflows/x.yml@feature/other",
+      "steps": []
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I30",
+  "not_run": [],
+  "note": "x.yml is not in T; it is read from another branch of the same repository at run time",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "composite action runs ${{ github.action_path }}/run.sh which calls the tool",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "bash /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I31-e3u1y042/ws/.github/actions/tc/run.sh",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I31-e3u1y042/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "uses": "./.github/actions/tc"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I31",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "composite action runs $GITHUB_ACTION_PATH/run.sh",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "bash \"$GITHUB_ACTION_PATH/run.sh\"",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I32-7hizu11n/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "uses": "./.github/actions/tc"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I32",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "node local action (runs.using node20, main index.js) spawning the tool",
+  "emulation": {
+   "log": [
+    {
+     "node": "index.js",
+     "rc": 0,
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I33-mle1au2i/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "uses": "./.github/actions/tcnode"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I33",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "docker local action (Dockerfile ENTRYPOINT with /github/workspace path)",
+  "emulation": {
+   "log": [
+    {
+     "skipped": "using docker not emulated",
+     "uses": "./.github/actions/tcdocker"
+    }
+   ],
+   "marks": [],
+   "track_c_executed": false
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "uses": "./.github/actions/tcdocker"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I34",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "pytest @argsfile (-k evl_c6 inside the file)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation && PYTHONPATH=src python -m pytest -q @../ci/tc.args",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TEST test_evl_c6_stub"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation && PYTHONPATH=src python -m pytest -q @../ci/tc.args"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I35",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "PYTEST_ADDOPTS='-k evl_c6' + bare pytest",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation && PYTHONPATH=src python -m pytest -q",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TEST test_evl_c6_stub"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation && PYTHONPATH=src python -m pytest -q"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I36",
+  "not_run": [],
+  "note": null,
+  "notes": [
+   {
+    "notes": [
+     "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+    ],
+    "path": ".github/workflows/probe-a.yml"
+   }
+  ],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "pytest -c custom ini with addopts -k evl_c6",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation && PYTHONPATH=src python -m pytest -q -c ../ci/tc.ini --rootdir=.",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TEST test_evl_c6_stub"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation && PYTHONPATH=src python -m pytest -q -c ../ci/tc.ini --rootdir=."
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I37",
+  "not_run": [],
+  "note": null,
+  "notes": [
+   {
+    "notes": [
+     "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+    ],
+    "path": ".github/workflows/probe-a.yml"
+   }
+  ],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "pytest -o testpaths=tests/test_evl_c6*.py (selection through an ini override)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation && PYTHONPATH=src python -m pytest -q -o 'testpaths=tests/test_evl_c6_*.py'",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TEST test_evl_c6_stub"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "glob matches Track C paths: tests/test_evl_c6_*.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation && PYTHONPATH=src python -m pytest -q -o 'testpaths=tests/test_evl_c6_*.py'"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I38",
+  "not_run": [],
+  "note": null,
+  "notes": [
+   {
+    "notes": [
+     "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+    ],
+    "path": ".github/workflows/probe-a.yml"
+   }
+  ],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "pytest --ignore-glob selecting only Track C tests",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation && PYTHONPATH=src python -m pytest -q tests --ignore-glob='tests/test_[!e]*'",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TEST test_evl_c6_stub"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation && PYTHONPATH=src python -m pytest -q tests --ignore-glob='tests/test_[!e]*'"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I39",
+  "not_run": [],
+  "note": null,
+  "notes": [
+   {
+    "notes": [
+     "runs the whole pytest suite (cwd implementation): not a spoof by itself"
+    ],
+    "path": ".github/workflows/probe-a.yml"
+   }
+  ],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "pytest.main(['-k','evl_c6']) in a followed python script",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation && PYTHONPATH=src python ../ci/run_tests.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TEST test_evl_c6_stub"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation && PYTHONPATH=src python ../ci/run_tests.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I40",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "Windows runner, backslash path",
+  "emulation": {
+   "log": [
+    {
+     "skipped": "windows runner not emulated"
+    }
+   ],
+   "marks": [],
+   "track_c_executed": false
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python implementation\\tools\\track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I41",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "matrix value supplies the tool file name (expression: D3-c)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": "implementation/tools",
+     "rc": 0,
+     "run": "python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I42-iy2ntvf5/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "NOT_FOUND(D3-c)",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "${{ format('python {0}', matrix.tool) }}"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I42",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "uv run --directory implementation/tools python <tool>",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "uv run --directory implementation/tools python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I43-u2xphulr/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "uv run --directory implementation/tools python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I43",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "subshell ( cd implementation/tools; python <tool> )",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "( cd implementation/tools; python track_c_c6_acceptance.py )",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I44-whi31fwv/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: track_c_c6_acceptance.py",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "( cd implementation/tools; python track_c_c6_acceptance.py )"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I44",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "python -c with runpy.run_path literal (control)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python -c \"import runpy; runpy.run_path('implementation/tools/track_c_c6_acceptance.py', run_name='__main__')\"",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I45-g09107mw/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python -c \"import runpy; runpy.run_path('implementation/tools/track_c_c6_acceptance.py', run_name='__main__')\""
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I45",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "git -C implementation/tools ls-files | python? -> git -C then python via xargs (dynamic: D3-c)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation/tools && ls track_c_c6_acceptance.py | xargs python",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I46-mlqoy5cp/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation/tools && ls track_c_c6_acceptance.py | xargs python"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I46",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "export then cd: cd implementation; cd tools (two cds on separate lines)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation\ncd tools\npython track_c_c6_acceptance.py\n",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I47-6qemlz4a/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: track_c_c6_acceptance.py",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation\ncd tools\npython track_c_c6_acceptance.py\n"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I47",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "cd inside if-block: if true; then cd implementation/tools; fi; python <tool>",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "if true; then cd implementation/tools; fi; python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I48-8miu03s5/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "if true; then cd implementation/tools; fi; python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I48",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "heredoc to bash: bash <<EOF with cd/python inside",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "bash <<EOF\ncd implementation/tools\npython track_c_c6_acceptance.py\nEOF\n",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I49-qks8_k3v/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: track_c_c6_acceptance.py",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "bash <<EOF\ncd implementation/tools\npython track_c_c6_acceptance.py\nEOF\n"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I49",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "python script with cwd kwarg via pathlib constant parts",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python ci/run3.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I50-ejed1wmu/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python ci/run3.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I50",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+03F2 GREEK LUNATE SIGMA SYMBOL for c (ICU skeleton c; NFKC -> final sigma)",
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "traϲk-ϲ-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "traϲk-ϲ-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable-icu",
+  "id": "U27",
+  "not_run": [],
+  "note": "'traϲk-ϲ-evl-validation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+FE58 SMALL EM DASH for hyphens (ICU skeleton '-'; NFKC -> em dash)",
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track﹘c﹘evl﹘validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track﹘c﹘evl﹘validation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable-icu",
+  "id": "U28",
+  "not_run": [],
+  "note": "'track﹘c﹘evl﹘validation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+FFE8 HALFWIDTH FORMS LIGHT VERTICAL for l (ICU skeleton l; NFKC -> U+2502)",
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-ev￨-va￨idation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-ev￨-va￨idation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable-icu",
+  "id": "U29",
+  "not_run": [],
+  "note": "'track-c-ev￨-va￨idation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+02DB OGONEK for i (ICU skeleton i)",
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-val˛dat˛on"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-val˛dat˛on",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable-icu",
+  "id": "U30",
+  "not_run": [],
+  "note": "'track-c-evl-val˛dat˛on'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "U+037A GREEK YPOGEGRAMMENI for i (ICU skeleton i)",
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-valͺdatͺon"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-valͺdatͺon",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable-icu",
+  "id": "U31",
+  "not_run": [],
+  "note": "'track-c-evl-valͺdatͺon'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "single U+03F2 for the lone c in 'track' only",
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "traϲk-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "traϲk-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1-confusable-icu",
+  "id": "U32",
+  "not_run": [],
+  "note": "'traϲk-c-evl-validation'",
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing DEL via \\x7f escape",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1-control",
+  "id": "U33",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing C1 control U+0080 via \\x80 escape",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1-control",
+  "id": "U34",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing NEL via \\N escape",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\x85'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1-control",
+  "id": "U35",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing U+001F via \\x1f escape (Python strip() treats it as whitespace)",
+  "expect": "FOUND?",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validation\u001f"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation\\x1f'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation\u001f"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation\u001f",
+    "runName": null
+   }
+  },
+  "group": "G1-control",
+  "id": "U36",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing U+0001 via \\x01 escape",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation\u0001"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation\u0001",
+    "runName": null
+   }
+  },
+  "group": "G1-control",
+  "id": "U37",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "trailing U+009F via \\x9f escape",
+  "expect": "FOUND?",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1-control",
+  "id": "U38",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "multi-line quoted argument: cd + python on a line whose quote closes on the next line",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation/tools && python track_c_c6_acceptance.py \"arg\ncontinued\"\n",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py', 'arg\\ncontinued'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I51-32qi13_e/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation/tools && python track_c_c6_acceptance.py \"arg\ncontinued\"\n"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I51",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "CDPATH=implementation cd tools",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "CDPATH=implementation cd tools && python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I52-f6m_40kj/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "CDPATH=implementation cd tools && python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I52",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "cd with a glob: cd implementation/tool*",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation/tool* && python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I53-yan57jbe/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "glob matches Track C paths: implementation/tool*"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation/tool* && python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I53",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "step env SCRIPT relative to the step working-directory + python \"$SCRIPT\" (shell variable: D3-c)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": "implementation/tools",
+     "rc": 0,
+     "run": "python \"$SCRIPT\"",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I54-k4a4wz01/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "NOT_FOUND(D3-c)",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python \"$SCRIPT\""
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I54",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "python -m <tree package> whose __main__ calls the tool by its full literal path (control)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation && PYTHONPATH=src python -m ci_probe2",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I55-1w_v725q/ws/implementation"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: tools/track_c_c6_acceptance.py (via implementation/src/ci_probe2/__main__.py)",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via implementation/src/ci_probe2/__main__.py)"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation && PYTHONPATH=src python -m ci_probe2"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I55",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "PYTHONPATH=ci python -m runner (module only on PYTHONPATH) calling the tool by full literal path",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "PYTHONPATH=ci python -m runner",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I56-xiahxcvr/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "PYTHONPATH=ci python -m runner"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I56",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "reusable workflow with the literal tool path (control)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python implementation/tools/track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I57-25c3kpqr/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py (via .github/workflows/x.yml)",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via .github/workflows/x.yml)"
+    ]
+   },
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/x.yml",
+    "reasons": [
+     "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "call",
+      "name": "call",
+      "ref": "./.github/workflows/x.yml",
+      "steps": []
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   },
+   ".github/workflows/x.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "inner",
+      "name": "inner",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python implementation/tools/track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "x",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I57",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "run text via alias of an anchored env value",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python implementation/tools/track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-Y31-1zss6aeb/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python implementation/tools/track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G1xG2",
+  "id": "Y31",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "working-directory via alias (anchor on an env value) + bare tool name",
+  "emulation": {
+   "log": [
+    {
+     "cwd": "implementation/tools",
+     "rc": 0,
+     "run": "python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-Y32-n9c2xcvi/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: track_c_c6_acceptance.py",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G1xG2",
+  "id": "Y32",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "step mapping through a merge key (<<: {working-directory: ...}) + bare tool name",
+  "emulation": {
+   "log": [
+    {
+     "cwd": "implementation/tools",
+     "rc": 0,
+     "run": "python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-Y33-tc6yzx0z/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: track_c_c6_acceptance.py",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-qz1jn7gk/f0.yml (Line: 7, Col: 9): Unexpected value '<<'"
+    ],
+    "jobs": [],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G1xG2",
+  "id": "Y33",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "name via alias whose anchor is a job name defined earlier (name key placed after jobs)",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "track-c-evl-validation",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y34",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "deeply nested flow sequence (RecursionError in the loader) + Track C name",
+  "expect": "FOUND(fail-closed)",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "unparseable workflow (fail-closed): maximum recursion depth exceeded"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": "Unparseable: maximum recursion depth exceeded",
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/gh-jko4g4iy/f0.yml: Maximum call stack size exceeded at line 4, column 782:\n\n…[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[…\n                                        ^\n"
+    ],
+    "jobs": [],
+    "name": null,
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y35",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "1 MB workflow (1000-line block scalar) with a benign name (loader cost; control NOT_FOUND)",
+  "expect": "NOT_FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y36",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "folded block scalar >- over two lines joining 'track-c-evl-' and 'validation' with no space? (folding inserts a space)",
+  "expect": "NOT_FOUND(GitHub shows 'track-c-evl- validation')",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl- validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl- validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y37",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "literal block |- with trailing spaces stripped by strip()",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "N1",
+      "value": "track-c-evl-validation   "
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem after normalisation (N1): 'track-c-evl-validation   '"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation   "
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation   ",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y38",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "single-quoted with escaped quote doubling and line folding",
+  "expect": "NOT_FOUND(folds to a space)",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl- validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl- validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y39",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "double-quoted with escaped line break (no space)",
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "identity_claims": [
+     {
+      "equals": "track-c-evl-validation",
+      "field": "name",
+      "match": "exact",
+      "value": "track-c-evl-validation"
+     }
+    ],
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "workflow name equals the Track C workflow name or filename stem: 'track-c-evl-validation'"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "track-c-evl-validation"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "echo hi"
+       }
+      ]
+     }
+    ],
+    "name": "track-c-evl-validation",
+    "runName": null
+   }
+  },
+  "group": "G1",
+  "id": "Y40",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "find ... -exec python {} \\; (tool selected by a glob in find)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "find implementation/tools -name 'track_c_c6*.py' -exec python {} \\;",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I58-tlqair9f/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "find implementation/tools -name 'track_c_c6*.py' -exec python {} \\;"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I58",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "shell: python {0} with os.chdir + subprocess bare tool name",
+  "emulation": {
+   "log": [
+    {
+     "skipped": "shell python {0} not emulated"
+    }
+   ],
+   "marks": [],
+   "track_c_executed": false
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "import os, subprocess, sys\nos.chdir('implementation/tools')\nsubprocess.run([sys.executable, 'track_c_c6_acceptance.py'], check=True)\n"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I59",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "python ${{ github.workspace }}/implementation/tools/<tool> (rooted argument, control)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I60-5ugfyfws/ws/implementation/tools/track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I60-5ugfyfws/ws/implementation/tools/track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I60-5ugfyfws/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "${{ format('python {0}/implementation/tools/track_c_c6_acceptance.py', github.workspace) }}"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I60",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "cd implementation && cd tools && python <tool> on one line",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation && cd tools && python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I61-27cexu1a/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: track_c_c6_acceptance.py",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd implementation && cd tools && python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I61",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "symlink ci/tc.py -> ../implementation/tools/track_c_c6_acceptance.py run as python ci/tc.py",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "python ci/tc.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['ci/tc.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I62-91n6mbta/ws"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "symlink or gitlink in complement",
+    "id": "AC-19",
+    "path": "ci/tc.py"
+   },
+   {
+    "finding": "unparseable python in complement (fail-closed EVLREF)",
+    "id": "AC-21",
+    "path": "ci/tc.py"
+   },
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "unparseable local script (fail-closed): ci/tc.py (via ci/tc.py)"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python ci/tc.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I62",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "symlinked directory ci/tools -> ../implementation/tools; cd ci/tools && python <tool>",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd ci/tools && python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I63-1y8z3ydw/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "symlink or gitlink in complement",
+    "id": "AC-19",
+    "path": "ci/tools"
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "cd ci/tools && python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I63",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "uses: ./ (root composite action action.yml at repository root)",
+  "emulation": {
+   "log": [
+    {
+     "cwd": ".",
+     "rc": 0,
+     "run": "cd implementation/tools && python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I64-d31z2cz3/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [
+   {
+    "finding": "complement workflow claims or runs Track C scope without attribution",
+    "id": "AC-32.spoof",
+    "path": ".github/workflows/probe-a.yml",
+    "reasons": [
+     "references a Track C namespace path: track_c_c6_acceptance.py (via action.yml)",
+     "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via action.yml)"
+    ]
+   }
+  ],
+  "fpia": "FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "uses": "./"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I64",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ },
+ {
+  "desc": "job-level defaults.run.working-directory via ${{ github.workspace }}",
+  "emulation": {
+   "log": [
+    {
+     "cwd": "implementation/tools",
+     "rc": 0,
+     "run": "python track_c_c6_acceptance.py",
+     "stderr_tail": ""
+    }
+   ],
+   "marks": [
+    "TRACK_C_TOOL track_c_c6_acceptance argv=['track_c_c6_acceptance.py'] cwd=/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/work/emu-I65-wq78y40u/ws/implementation/tools"
+   ],
+   "track_c_executed": true
+  },
+  "expect": "FOUND",
+  "findings": [],
+  "fpia": "NOT_FOUND",
+  "fpia_decoded_names": [
+   "probe"
+  ],
+  "gh_oracle": {
+   ".github/workflows/probe-a.yml": {
+    "errors": [],
+    "jobs": [
+     {
+      "id": "check",
+      "name": "check",
+      "ref": null,
+      "steps": [
+       {
+        "run": "python track_c_c6_acceptance.py"
+       }
+      ]
+     }
+    ],
+    "name": "probe",
+    "runName": null
+   }
+  },
+  "group": "G2",
+  "id": "I65",
+  "not_run": [],
+  "note": null,
+  "notes": [],
+  "wa_status": "PASS"
+ }
+]

@@ -1,0 +1,152 @@
+{
+ "result": {
+  "authority": {
+   "checks": [
+    {
+     "detail": "inputs unavailable: fetch caller-repo failed: fatal: git upload-pack: not our ref 0000000000000000000000000000000000000001\nfatal: remote error: upload-pack: not our ref 0000000000000000000000000000000000000001",
+     "id": "AC-01",
+     "status": "NOT_RUN"
+    }
+   ],
+   "status": "NOT_RUN"
+  },
+  "checks": {},
+  "environment": {
+   "caller_repository": {
+    "detail": "fetch caller-repo failed: fatal: git upload-pack: not our ref 0000000000000000000000000000000000000001\nfatal: remote error: upload-pack: not our ref 0000000000000000000000000000000000000001",
+    "fetch_problems": [],
+    "shallow": false,
+    "status": "NOT_RUN"
+   }
+  },
+  "equality_claims": [],
+  "evidence_validity": "CANONICAL_INVOCATION",
+  "fpia": {
+   "reasons": [
+    "authority NOT_RUN (short-circuit)"
+   ],
+   "status": "FPIA_NOT_RUN"
+  },
+  "latent_policy_notes": [
+   "L1 shared-overlay conflicts or unauthorized resolutions FAIL (fail-closed; not relaxed)",
+   "L2 modification of any path existing at R by another capability FAILS (fail-closed; not relaxed)",
+   "L3 unauthenticated foreign importers of Track C are FOUND (fail-closed; not relaxed)",
+   "L4 any Track C/v2 head beyond the CDR manifest is FAIL/NOT_RUN until a new user-verbatim manifest names it",
+   "L5 any Frozen replay that does not reproduce byte-for-byte is NOT_PRESERVED; no normalisation"
+  ],
+  "non_claims": [
+   "not C6, C7 or C8 acceptance by the frozen tools on T (FROZEN_TOOLS_ON_T is a separate, verbatim BRANCH_FROZEN_VALIDATION evidence class and is never converted)",
+   "not a Frozen PASS and not a re-statement of any Frozen record",
+   "not C8 Freeze, not numeric configuration, not CAL_VERIFY, not Holdout access, not a publication grant, not Official/LIVE",
+   "not canonical-merge approval (Worker Contract §D12; USER_DECISION_REQUIRED)",
+   "the Frozen hashes are not claimed for T; integrated-tree digests are INTEGRATED_TREE_RAW",
+   "CODE_IDENTITY_DIVERGED is reported as fact and is never normalised to SAME or PASS (CDR-014 §2); the COUNTERFACTUAL_CODE_IDENTITY_NORMALISED profile is FAIL-ONLY and never an equality claim",
+   "full regression of non-Track C code is executed as a PASS conjunct but certifies no other capability",
+   "a foreign capability's own Holdout or PIT behaviour that does not touch Track C is outside the projection; Track C's own Holdout/PIT tests run under collection equality",
+   "grandchild processes spawned by tests are covered statically and by spawn records only (module provenance of grandchildren is not traced)",
+   "no numeric threshold, default or tolerance is introduced; all comparisons are exact",
+   "dynamically constructed invocations (string-built paths, paths held in shell variables, importlib with computed names) are not claimed to be detected by the static spoof analysis (open user decision D3-c)"
+  ],
+  "options": {
+   "authority_remote": "https://github.com/kco994553-star/Investment-System1",
+   "installed_versions": null,
+   "lanes": null,
+   "max_workers": null,
+   "plugin_autoload_disabled": true,
+   "pytest_config_pinning": true,
+   "require_clean_verifier": true,
+   "static_layer": true
+  },
+  "ordering_note": "merge-result-only audit (CDR-014 §9, §13): no order-independence claim; shared-overlay conflicts or unauthorized resolutions fail closed (latent L1)",
+  "schema": "TRACK_C_FPIA/2",
+  "statuses": {
+   "authority": "NOT_RUN",
+   "code_identity": "NOT_RUN",
+   "frozen_tools_on_T": "NOT_RUN",
+   "full_regression": "NOT_RUN",
+   "historical_frozen_identity": "NOT_RUN",
+   "integration_interference": "NOT_RUN",
+   "runtime_provenance": "NOT_RUN",
+   "track_c_projection": "NOT_RUN",
+   "v2_binding": "NOT_RUN"
+  },
+  "summary": "FPIA_NOT_RUN | NOT_RUN | NOT_RUN [BRANCH_FROZEN_VALIDATION, verbatim] | NOT_RUN | NOT_RUN | NOT_RUN | v2_binding NOT_RUN | full_regression NOT_RUN"
+ },
+ "result_sha256": "de2cf5acb9e2c68f1f6213b9d61a9d029a53fe6f244e7cb48518b355efd570cf",
+ "run": {
+  "argv": [
+   "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/repo/implementation/tools/integration/track_c_fpia.py",
+   "--repo",
+   "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/repo",
+   "--tree",
+   "0000000000000000000000000000000000000001",
+   "--register-commit",
+   "f36292689eabf7ba3700d57a949fa0fb7343a2c6",
+   "--cdr",
+   "CDR-014",
+   "--out",
+   "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/g4v3/cases/C3_dangling_symlink/fpia.json"
+  ],
+  "authority_transport": {
+   "env_names_passed_to_network_git": [
+    "HTTPS_PROXY",
+    "https_proxy",
+    "NO_PROXY",
+    "no_proxy",
+    "GIT_SSL_CAINFO",
+    "SSL_CERT_FILE",
+    "SSL_CERT_DIR",
+    "CURL_CA_BUNDLE"
+   ],
+   "queries": [],
+   "values_recorded": false
+  },
+  "canonical_ref_query": null,
+  "duration_s": 0.1,
+  "fetches": [
+   {
+    "label": "caller-repo",
+    "network": false,
+    "network_env_names": [],
+    "rc": 128,
+    "refspecs": [
+     "+refs/heads/*:refs/fpia/src/heads/*",
+     "+refs/remotes/*:refs/fpia/src/remotes/*",
+     "+refs/tags/*:refs/fpia/src/tags/*",
+     "0000000000000000000000000000000000000001:refs/fpia/in/0000000000000000000000000000000000000001",
+     "f36292689eabf7ba3700d57a949fa0fb7343a2c6:refs/fpia/in/f36292689eabf7ba3700d57a949fa0fb7343a2c6"
+    ],
+    "rejected": [],
+    "source": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/repo"
+   }
+  ],
+  "host": "vm",
+  "path_tokens": {
+   "<python>": [
+    "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/venv/bin/python",
+    "/usr/bin/python3.11"
+   ],
+   "<site-packages>": [
+    "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/venv/lib/python3.11/dist-packages",
+    "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/venv/lib/python3.11/site-packages",
+    "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/venv/lib/python3/dist-packages",
+    "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/venv/local/lib/python3.11/dist-packages"
+   ],
+   "<stdlib>": [
+    "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/venv/lib/python3.11",
+    "/usr/lib/python3.11"
+   ],
+   "<venv>": [
+    "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/venv"
+   ]
+  },
+  "ref_writes": [],
+  "runs": [],
+  "started_utc": "2026-10-04T23:56:57.709314+00:00",
+  "verbatim_dir": null,
+  "verbatim_files": [],
+  "verbatim_raw": {},
+  "work_dir": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/g4v3/tmp/track-c-fpia-fwenrh8g"
+ },
+ "schema": "TRACK_C_FPIA/2"
+}

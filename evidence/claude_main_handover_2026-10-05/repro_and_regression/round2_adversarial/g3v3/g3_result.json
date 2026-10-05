@@ -1,0 +1,71 @@
+{
+ "git_version": "git version 2.43.0",
+ "cases": {
+  "non_ff": {
+   "rc": 1,
+   "stderr_lines": [
+    "From /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/g3v3/w/src",
+    " ! [rejected]        x\u2028y                  -> refs/o/x\u2028y  (non-fast-forward)",
+    " ! [rejected]        x\u2029y                  -> refs/o/x\u2029y  (non-fast-forward)",
+    " ! [rejected]        x\u0085y                   -> refs/o/x\u0085y  (non-fast-forward)",
+    " ! [rejected]        plainz                 -> refs/o/plainz  (non-fast-forward)",
+    " ! [rejected]        a->b                   -> refs/o/a->b  (non-fast-forward)",
+    " ! [rejected]        q(non-fast-forward)    -> refs/o/q(non-fast-forward)  (non-fast-forward)",
+    " ! [rejected]        feature/rejected-ideas -> refs/o/feature/rejected-ideas  (non-fast-forward)",
+    ""
+   ],
+   "rejected_lines": [
+    "! [rejected]        plainz                 -> refs/o/plainz  (non-fast-forward)",
+    "! [rejected]        a->b                   -> refs/o/a->b  (non-fast-forward)",
+    "! [rejected]        q(non-fast-forward)    -> refs/o/q(non-fast-forward)  (non-fast-forward)",
+    "! [rejected]        feature/rejected-ideas -> refs/o/feature/rejected-ideas  (non-fast-forward)"
+   ],
+   "per_name_detected": {
+    "ls": false,
+    "ps": false,
+    "nel": false,
+    "plain": true,
+    "arrow": true,
+    "paren": true,
+    "rejword": true
+   }
+  },
+  "shallow_source_via_Sandbox_fetch": {
+   "raised": "fetch probe-shallow rejected 4 ref update(s) although it exited 0 (incomplete source; environment unverified): ['warning: rejected refs/fpia/src/remotes/HEAD because shallow roots are not allowed to be updated', 'warning: rejected refs/fpia/src/remotes/master because shallow roots are not allowed to be updated', 'warning: rejected refs/fpia/src/remotes/plainbranch because shallow roots are not allowed to be updated', 'warning: rejected refs/fpia/src/heads/master because shallow roots are not allowed to be updated']",
+   "fetch_log": [
+    {
+     "label": "probe-shallow",
+     "source": "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf16/v2-adversarial/g3v3/w/shallow",
+     "network": false,
+     "refspecs": [
+      "+refs/remotes/origin/*:refs/fpia/src/remotes/*",
+      "+refs/heads/*:refs/fpia/src/heads/*"
+     ],
+     "rc": 0,
+     "rejected": [
+      "warning: rejected refs/fpia/src/remotes/HEAD because shallow roots are not allowed to be updated",
+      "warning: rejected refs/fpia/src/remotes/master because shallow roots are not allowed to be updated",
+      "warning: rejected refs/fpia/src/remotes/plainbranch because shallow roots are not allowed to be updated",
+      "warning: rejected refs/fpia/src/heads/master because shallow roots are not allowed to be updated"
+     ],
+     "network_env_names": []
+    }
+   ]
+  },
+  "shallow_source_plain_git": {
+   "rc": 0,
+   "stderr_lines": [
+    "warning: rejected refs/x/HEAD because shallow roots are not allowed to be updated",
+    "warning: rejected refs/x/master because shallow roots are not allowed to be updated",
+    "warning: rejected refs/x/plainbranch because shallow roots are not allowed to be updated",
+    "warning: rejected refs/x/x\u2028y because shallow roots are not allowed to be updated",
+    ""
+   ],
+   "rejected_lines": [
+    "warning: rejected refs/x/HEAD because shallow roots are not allowed to be updated",
+    "warning: rejected refs/x/master because shallow roots are not allowed to be updated",
+    "warning: rejected refs/x/plainbranch because shallow roots are not allowed to be updated"
+   ]
+  }
+ }
+}

@@ -1,0 +1,854 @@
+{
+ "workflow_run": "wf_4a3fbe46-9d8",
+ "completed_agents": [
+  {
+   "label": "read-portfolio",
+   "agentId": "a2a72f6998b209997",
+   "result": {
+    "owner_identity": "Portfolio owner = Track B Personal Investment Layer. No active Work owns it today (VERIFIED). Its only recorded implementer was Claude session session_01BqJDh9RsUBpjawxmh4cwqN. That session wrote P0 commit 48a6243 on 2026-09-26T01:54Z; get_session shows it SESSION_STATUS_IDLE / bucket COMPLETED, last updated 2026-09-27T09:59Z, with its outcome branch on canonical. The last Track B touch is f30e8df (2026-09-27, kco994553-star account, \"[SSoT] Register Track C and reconcile Track B\", docs only). Track B has no owner branch, no PR, and no scoped STATUS or Decision Register on any of the 99 fetched refs. GSI-022 row 2 reads \"canonical (P0 only), PR —\". Row 26, \"Portfolio actual operation (Track B P1+)\", has owner \"—\" and is DESIGN. This analysis was run read-only for the PIW, session_019znshzTYgyBnuuBmSxdPFN.",
+    "active_work": "None for Track B / Portfolio / Strategy Theme. No branch, PR, session or scoped register is active. The only material that touches the TARGET root and Theme today is Chart PR #41 (codex/chart-contract-mcp-api-v0-1 @ 74df6784071137bdca911964af94c8e1b6928c92), which is a consumer and requester, not an owner. PIW workflows wf_bdfed701-366 (FPIA fix round 3) and wf_4e292ba4-85c (CDR-015 D3/G7 decisions) do not cover Portfolio.",
+    "branches_prs": [
+     "canonical claude/investment-system-top500-validation-alrugm @ b8e39a2196a6d7794a04a0cd5393c68329e126ca: holds Track B P0 (merged via the canonical line; no Track B PR exists), QGV Portfolio Spec v1.1 and OFFICIAL_V11_TARGETS",
+     "PR #41 codex/chart-contract-mcp-api-v0-1 @ 74df6784071137bdca911964af94c8e1b6928c92 (Draft, fresh-read 2026-10-05; 0 issue comments; requester of A-S1/A-S2/A-S3)",
+     "PR #42 integration/fpia-hardened-v1 @ 523e702: only comment is Chart handoff issuecomment-5986162506 (2026-10-05T00:40Z), no owner reply",
+     "origin/integration/global-handoff-v1 @ 5e33b30 (CDR-016 recorded; GSI-022/GCH-015)",
+     "PR #9 feature/producer-infrastructure-v1 @ f8af596: producers/serialization.py (absent on canonical)",
+     "No Track B / Portfolio / Theme branch or PR exists on any of the 99 refs (55 branches + 44 PR heads)"
+    ],
+    "handoff_paths": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-portfolio/run/preflight_current.json (Chart preflight output on the current request, sha256 4529da86a269694abca8bd113a44c485a0832b3410aa6f01df54ae987effae4e)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-portfolio/run/probe_portfolio.py (read-only reuse probe of canonical objects)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-portfolio/run/probe_hash.py (hasher-equivalence probe)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-portfolio/run/receipt_preflight.py and req_74df.json (exact copies from 74df678)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-portfolio/repo (full no-checkout clone with pr/* refs; canonical worktree removed after use)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-portfolio/cdr.md, GLOBAL_STATUS_INDEX.md, GLOBAL_CURRENT_HANDOFF.md (copies from 5e33b30)"
+    ],
+    "contracts_and_artifacts": [
+     {
+      "path": "QGV Portfolio · Specification v1.1.md (§2 Official Baseline lines 13-19; §8, §14, §19 Versioning)",
+      "ref": "b8e39a2 blob 4dbe4cb91c03db37a8d891808052ff644d1f6b07 sha256 d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e (identical on all 99 refs)",
+      "what": "The only authored source of the four buckets: 'Portfolio v1.1 · 2026-09-14', cash 0%, 반도체 장비 30 (ASML 9, LRCX 6, KLAC 5.5, TEL 5, 한미반도체 4.5), AI·반도체 25 (NVDA 8, AMD 5, AVGO 5, QCOM 4, INTC 3), Big Tech 20 (MSFT 7, GOOGL 7, AMZN 6), 기타산업 25 (RTX 6, Stryker 5.5, Eaton 5, Hubbell 3.5, GE Vernova 3, Rockwell 2). §19: changes are recorded as a Portfolio Patch (before/after weights, reason, 적용일), and the official snapshot is preserved. §14: snapshots are never overwritten. Imported into the repo by 6793fc5 (2026-09-24T22:48:15Z).",
+      "relevance": "Authoritative values and membership for A-S1 and A-S3. It is a document, not a root object: it has no portfolio_id, revision id, hash, effective_at or available_at. Design is FROZEN, so it stays read-only."
+     },
+     {
+      "path": "implementation/src/investment_system/qgv/portfolio.py (OFFICIAL_V11_TARGETS, PortfolioEngine.official_v11)",
+      "ref": "b8e39a2 blob de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+      "what": "Flat 19 company_id→float weights. official_v11() returns role REFERENCE_FIXTURE, synthetic=True and a random-uuid portfolio_snapshot_id. portfolio_version = versions.PORTFOLIO_OFFICIAL = 'v1.1-2026-09-14'.",
+      "relevance": "A code mirror of spec §2 that is explicitly not an authoritative root (contracts/portfolio_input.py: 'REFERENCE_FIXTURE only … not the default engine portfolio and not the implicit PIT book'). Its non-deterministic id cannot serve as an immutable root identity."
+     },
+     {
+      "path": "implementation/src/investment_system/qgv/identifiers.py (OFFICIAL_PORTFOLIO_V11)",
+      "ref": "b8e39a2 blob 3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+      "what": "Identifier.sector = Semicap / AI / BigTech / Other. This maps 1:1 to the four buckets (5/5/3/6 members, VERIFIED). tokyo_electron has exchange=None and flag C-08_TEL_MARKET_ID_UNFIXED.",
+      "relevance": "Existing code-level bucket assignment. It sits in a field named 'sector' with English codes and has no catalog id, version or revision, so it is not an adopted Theme catalog. It is not GICS (Chart's portfolio_reference.json already says so)."
+     },
+     {
+      "path": "implementation/src/investment_system/personal/portfolio.py (ModelPortfolioSnapshot / ModelHolding / ActualPortfolioSnapshot / PortfolioGapSnapshot)",
+      "ref": "b8e39a2 blob 9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e (P0 FROZEN, 48a6243)",
+      "what": "ModelPortfolioSnapshot fields: strategy_version_id, as_of, universe_snapshot_id, holdings(security_id, target_weight float, rank, reason_codes, qgv/technical/macro refs), cash_target, portfolio_policy_id, calculation_version. snapshot_hash = content_hash. Sum must be within 1e-9 of 1.",
+      "relevance": "The Track B TARGET contract, but not equivalent to Chart's root. It has no portfolio_id, effective_from/to, available_at or theme/bucket field. It uses float weights, and strategy_version_id requires P1 StrategyVersion (NOT_STARTED). Adding a theme field would change Frozen semantics."
+     },
+     {
+      "path": "implementation/src/investment_system/personal/security.py and personal/versioning.py",
+      "ref": "b8e39a2 (security blob 4bba65c8092c4a29f0974ab35eac975c3b06f1da)",
+      "what": "security.py: private PIL security_id, InMemorySecurityResolver (ticker alone never resolves), CompanyLink status PROPOSED (C-25). versioning.py: content_hash = sha256 of sorted-key compact UTF-8 JSON.",
+      "relevance": "C-39 forbids the common code from importing the Track B private security contract, so A-S2 uses contracts/global_universe.py. content_hash is a canonical-resident hasher the Portfolio owner can use for snapshot_hash."
+     },
+     {
+      "path": "implementation/src/investment_system/contracts/global_universe.py (IssuerIdentity → SecurityIdentity → ListingIdentity)",
+      "ref": "b8e39a2 blob 4dcbb8d7cb65…",
+      "what": "The common identity contract (C-39 RESOLVED). Ticker exists only on a dated listing.",
+      "relevance": "A-S2 (Identity owner). The Portfolio receipt only joins to it by source_row_key/company_id."
+     },
+     {
+      "path": "Investment-System1 · Contract Conflict Register 2026-09-23.md (C-06/D-27, C-07/D-28, C-08/D-29, C-24..C-31, C-39)",
+      "ref": "b8e39a2",
+      "what": "D-27: company_id is canonical on the US track. D-29: TEL = tokyo_electron, bare TEL AMBIGUOUS, venue TSE vs ADR is DECISION REQUIRED. C-25: security_id vs company_id stays OPEN, no mapping created. C-26: Holding.actual_weight is model-side.",
+      "relevance": "Track B's de facto contract-decision record; there is no scoped Track B Decision Register."
+     },
+     {
+      "path": "Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md",
+      "ref": "b8e39a2",
+      "what": "Track B root handoff: Architecture FROZEN, P0 IMPLEMENTED+FROZEN at 48a6243, P1+ NOT STARTED. §26: PATCH / CONTRACT CHANGE / ARCHITECTURE CHANGE classes. §9: ModelPortfolioSnapshot is the result of a Strategy Version.",
+      "relevance": "Portfolio owner handoff required by CDR-016 §0.8. It defines no Strategy Theme/Bucket concept anywhere."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "ref": "74df678 (byte-identical to pinned a89ac6dd4336027ddab52b145ab87e3bc5edb3e5)",
+      "what": "Chart's request: root_owner_return has 15 slots; each of the 19 rows has an 18-slot owner_return keyed by source_row_key reference:company:<company_id>.",
+      "relevance": "The exact shape the Portfolio receipt must fill. It is Chart-owned, so other owners must not edit it."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
+      "ref": "74df678",
+      "what": "Offline checker. Exit codes: 0 INPUT_COMPLETE_UNAUTHENTICATED, 2 INVALID, 3 INCOMPLETE. It enforces one catalog triple, one assignment_revision_id, concept↔theme 1:1, assignment interval covering the root interval, available_at ≤ decision_time and a 64-hex snapshot_hash.",
+      "relevance": "The machine acceptance check for the Portfolio receipt once Chart composes it into the packet."
+     },
+     {
+      "path": "implementation/src/investment_system/producers/serialization.py (canonical_sha256)",
+      "ref": "PR #9 f8af596 / PR #42 523e702 blob 07219d8a; ABSENT on canonical",
+      "what": "Canonical JSON sha256 that Chart names for Decimal-as-string payloads.",
+      "relevance": "VERIFIED equal to personal.versioning.content_hash on a strings-only preimage, so the owner can hash on canonical without depending on unmerged PR #9."
+     },
+     {
+      "path": "implementation/src/investment_system/markets/us.py (US_WORKING_TARGETS)",
+      "ref": "b8e39a2",
+      "what": "17-name US slice renormalized; marked 'PROVISIONAL. Not Official v1.1' (D-16).",
+      "relevance": "Excluded: not a candidate root."
+     }
+    ],
+    "protected_paths": [
+     "implementation/src/investment_system/personal/*.py and implementation/tests/test_pil_p0_contracts.py (Track B P0 FROZEN; adding a theme/portfolio_id field is a Frozen semantics change, which CDR-016 §13 bars without explicit user approval)",
+     "QGV Portfolio · Specification v1.1.md (design FROZEN; authored source, read-only)",
+     "implementation/src/investment_system/qgv/portfolio.py, qgv/identifiers.py, versions.py, contracts/portfolio_input.py (QGV/Track A code; do not rename 'sector' or repurpose the REFERENCE_FIXTURE)",
+     "implementation/src/investment_system/contracts/global_universe.py (common identity, Identity owner)",
+     "implementation/experiments/chart-contract-v0.1/** including TARGET_OWNER_ADMISSION_REQUEST.json and receipt_preflight.py (Chart owner only; owners return separate receipts, and Chart composes them)",
+     "implementation/docs/coordination/* on integration/global-handoff-v1 (PIW single writer)"
+    ],
+    "watched_channels": "The Chart event automation 6ac2eeedb21c81919f04168d69672f0a watches only PRs [41, 17, 18, 19, 34, 36, 42, 44], covering commits, reviews and comments (automation/STATE.json @ 74df678). It does not watch the Global branch or arbitrary branches. Track B has no PR, so a Portfolio receipt committed to a new branch would not wake Chart. It has to be announced as a comment on PR #41 or PR #42, or its new PR has to be added to Chart's watch set. An hourly pending-CI task 6ac2ef0621908191909a27af4c91f101 also exists.",
+    "facts": [
+     "VERIFIED: PR #41 head = 74df6784071137bdca911964af94c8e1b6928c92 (GitHub get + git fetch), Draft, base b8e39a2. PR #41 has 0 issue comments. PR #42's only comment is Chart's handoff 5986162506. No owner answer for A-S1, A-S2 or A-S3 exists anywhere.",
+     "VERIFIED: canonical = b8e39a2196a6d7794a04a0cd5393c68329e126ca; global-handoff = 5e33b30 (CDR-016 is at line 623 of COORDINATION_DECISION_REGISTER.md).",
+     "VERIFIED: a git grep across all 99 refs for 반도체 장비 / AI·반도체 / 기타산업 / Strategy Theme / Portfolio Bucket matches only the QGV Portfolio Spec v1.1, Conflict Register 2026-09-22 C-08, Chart PR #41 files and the global-handoff CDR/history. No branch or PR holds any other TARGET root object or Strategy Theme catalog.",
+     "VERIFIED: the blobs of the spec, qgv/portfolio.py, qgv/identifiers.py, personal/portfolio.py and personal/security.py are identical on all 99 refs. No branch modifies them, and the Chart pins (d93c7ace) equal canonical.",
+     "VERIFIED (ran a probe at the b8e39a2 worktree): the 19 OFFICIAL_V11_TARGETS keys equal the identifiers registry keys. Exact Fraction total = 1. Partition by Identifier.sector: Semicap 3/10 (asml, lrcx, klac, tokyo_electron, hanmi), AI 1/4 (nvda, amd, avgo, qcom, intc), BigTech 1/5 (msft, googl, amzn), Other 1/4 (rtx, stry, etn, hubb, gev, rok). Float sum − 1 = 4.44e-16. official_v11() gives role=REFERENCE_FIXTURE, synthetic=True, random-uuid id. Feeding the v1.1 values into the PIL ModelPortfolioSnapshot invariant passes only with placeholder strategy/universe/policy ids.",
+     "VERIFIED (ran Chart's receipt_preflight.py from 74df678 against the current request, decision-time 2026-10-05T04:00:00+00:00): exit 3 INCOMPLETE, production_readiness IMPLEMENTATION_NOT_READY, 6 OPEN/0 CLOSED, 4 source objects hash-verified. Reference diagnostic: total 1; themes 반도체 장비 3/10, AI·반도체 1/4, Big Tech 1/5, 기타산업 1/4; is_renderable false. 337 OWNER_FIELD_MISSING (14 root + 19×17 row) plus 1 OWNER_RECEIPTS_UNAUTHENTICATED warning.",
+     "VERIFIED: mini_pytest at b8e39a2 on tests/test_pil_p0_contracts.py, test_generic_portfolio_input.py and test_portfolio_ids.py: 18 passed, 0 failed (shim, not pytest).",
+     "VERIFIED: personal.versioning.content_hash (canonical) == producers.serialization.canonical_sha256 (PR #9/#42) on a strings-only preimage that includes Korean text and '5.50'.",
+     "VERIFIED: Chart's per-row owner_return mixes two owners. Portfolio slots: admitted_target_row_id, theme_concept_id, taxonomy_id, taxonomy_version, catalog_revision_id, assignment_revision_id, effective_from, effective_to, available_at, admission_evidence_ref. Identity slots: issuer_id, security_id, security_namespace, security_type, share_class_or_form, identity_revision_id, identity_evidence_ref, company_security_link_ref. All 15 root slots are Portfolio slots.",
+     "VERIFIED: PIL v1 architecture (handoff §3-§9, weights.py) has no Strategy Theme / Portfolio Bucket concept. Its weight tree is QGV/TECHNICAL/MACRO nodes. The buckets exist only in QGV Portfolio Spec v1.1 §2 and as identifiers.py 'sector' codes.",
+     "VERIFIED: spec §19 already defines how composition changes are versioned (Portfolio Patch with before/after, reason and 적용일; the official snapshot is preserved), and §14 says snapshots are never overwritten.",
+     "VERIFIED: CDR-015 makes contract changes, versioned successors and migrations D2 for 'the responsible Work'; D3 is cost only. CDR-016 §13, applied narrowly by the PIW, bars Frozen semantics change, Official/LIVE promotion and arbitrary change of another owner's protected contract without explicit approval.",
+     "VERDICT, reuse (from the verified facts above): there is no equivalent authoritative TARGET root or Theme catalog Chart can reuse as-is. What exists and should be reused rather than re-created: the authored values, membership and bucket partition (spec §2, exact and hash-pinned), the bucket assignment mirror (identifiers.sector), the canonical hasher (personal.versioning.content_hash) and Chart's request/preflight shape. What is missing and must come from the owner: portfolio_id, root/revision id, snapshot_hash preimage, applicability/effective_from semantics, available_at, completeness/denominator receipt, Theme taxonomy/catalog/concept ids, version and assignment revision.",
+     "VERDICT, Theme revision class: a pure identity/version structure (ids, version and assignment revision for exactly the 4 buckets and 19 memberships in spec §2, with no change to names, members, weights or economic meaning). That is D1 (registration/evidence) plus D2 (additive versioned record) under CDR-015 and spec §19. It is not a new investment policy (no formula, threshold, ranking or weight change) and not D3 (no cost). It stays D1/D2 only if the record is additive and Frozen PIL P0 and the Spec are not edited."
+    ],
+    "unverified": [
+     "INFERRED: the right Portfolio/Classification owner for both A-S1 and A-S3 is a single Track B owner Work, matching CDR-016 §10 ('Portfolio: TARGET root + Theme revision'), reading QGV Portfolio Spec v1.1 §2 read-only. No register names this owner explicitly; the QGV Portfolio module (RC26) has no active owner either.",
+     "INFERRED / OWNER_ASSIGNMENT_GAP: no Work exists to take this D2 decision. The register does not settle whether the PIW may designate or spawn a Track B owner session under CDR-015 or whether the user must designate one (Worker Contract §B: workers act on assigned capabilities). This is a routing gap, not a D3, and it is the true first blocker for A-S1/A-S3.",
+     "INFERRED proposed Portfolio-owner write set (new files only, docs/JSON, no package Python, so no Track C code_hash or P01 digest impact): implementation/docs/personal_investment_layer/STATUS.md; DECISION_REGISTER.md (D2 entry with reason, impact, verification, recovery); target_root/TARGET_ROOT_RECEIPT_portfolio-v1.1.r1.json (A-S1); strategy_theme/STRATEGY_THEME_CATALOG.r1.json and STRATEGY_THEME_ASSIGNMENT.r1.json (A-S3). All keyed by Chart's 19 source_row_keys, with weights as lexical Decimal strings, cash '0', denominator 'sum of 19 target weights + cash = 1', and snapshot_hash = personal.versioning.content_hash over a published strings-only preimage. Chart, as the sole writer, composes these and the Identity receipt into its packet.",
+     "INFERRED acceptance criteria for the Portfolio part: (1) the receipt values reproduce spec §2 exactly (19 rows, total 1, themes 3/10, 1/4, 1/5, 1/4, counts 5/5/3/6, cash 0); (2) snapshot_hash recomputes from the published preimage; (3) Chart's preflight on the composed packet reports zero ERROR findings, and the remaining OWNER_FIELD_MISSING paths name only Identity slots (exit stays 3 until A-S2 lands); (4) one catalog triple, one assignment_revision_id, concept↔theme 1:1, assignment interval covering the root interval; (5) the receipt is announced on PR #41 or #42 so Chart's automation wakes.",
+     "INFERRED date semantics (owner D2 choice, not decided anywhere): the owner may declare effective_from from the authored label 2026-09-14 with explicit semantics, and set available_at to the owner record's publication time, leaving historical availability UNKNOWN. In-repo first availability of the spec is 6793fc5 at 2026-09-24T22:48:15Z, a lower bound only. Chart refuses Git-clock substitution unless the owner adopts it explicitly.",
+     "INFERRED risk: the record's applicability label should cite the spec's existing 'Official Baseline' text rather than assert a new OFFICIAL status, to stay clear of the CDR-016 §13 Official-promotion boundary.",
+     "INFERRED dependency order: (0) assign the Portfolio owner Work; (1) A-S1 root receipt, with A-S3 catalog/assignment bound to target_root_id/root_revision_id in the same or the next commit; (2) A-S2 Identity in parallel, joined by source_row_key/company_id (D-29 TEL venue and KR Hanmi remain Identity-side decisions); (3) A-G1 Product authority needs the subject hash from A-S1/A-S3; (4) A-G2 write-set; (5) A-G3 FPIA.",
+     "NOT VERIFIED: whether docs-only JSON under implementation/docs falls outside every FPIA/Track C projection; FPIA source was not read in this task.",
+     "NOT VERIFIED: any owner answer to A, B or C, or any Portfolio/Theme receipt. None exists, and none is claimed."
+    ],
+    "summary": "Track B (Personal Investment Layer) is the nominal Portfolio owner, but no active Work owns it. P0 contracts are FROZEN on canonical b8e39a2 (48a6243, session_01BqJDh9RsUBpjawxmh4cwqN, now idle/completed since 2026-09-27). There is no branch, PR, scoped STATUS or Decision Register, and GSI-022 row 26 has no owner. No authoritative TARGET root object or Strategy Theme catalog exists on any of the 99 refs. The only authored source is QGV Portfolio Spec v1.1 §2 ('Portfolio v1.1 · 2026-09-14', 19 names, cash 0, 30/25/20/25), mirrored by qgv/portfolio.py OFFICIAL_V11_TARGETS (explicitly REFERENCE_FIXTURE, random snapshot id) and qgv/identifiers.py 'sector' codes Semicap/AI/BigTech/Other. I verified that mirror is an exact 1:1 bucket partition (3/10, 1/4, 1/5, 1/4; 5/5/3/6). The PIL ModelPortfolioSnapshot is not an equivalent root: it has no portfolio_id, effective/available time or theme field, uses float weights, and needs P1 StrategyVersion. Running Chart's own preflight (74df678) gives exit 3 INCOMPLETE with 337 missing owner slots and 6 OPEN; source pins and the exact partition pass. So Chart cannot reuse an existing root; the owner must return an additive admission record that binds to spec §2 without changing values. Registering the Theme catalog and assignment for the unchanged four buckets is a pure identity/version structure. That is D1/D2 under CDR-015, consistent with spec §19 Portfolio Patch versioning, not a new policy or a D3, as long as Frozen PIL P0 and the Spec stay untouched. The real gate is that no owner exists: a Work must be assigned (by the PIW under D2, or by the user) before A-S1/A-S3 can move. Two owner-side requirements follow. The receipt must be posted on PR #41/#42 because Chart's automation watches only PRs [41, 17, 18, 19, 34, 36, 42, 44]. And Chart, as the sole writer, must compose the Portfolio and Identity receipts, because its per-row slots mix both owners."
+   }
+  },
+  {
+   "label": "read-chart",
+   "agentId": "a1b887bc261a4cf6f",
+   "result": {
+    "owner_identity": "Chart owner Work = the Codex-run \"Chart\" capability on branch codex/chart-contract-mcp-api-v0-1, Draft PR #41 (author login kco994553-star; commits created through the GitHub API with the prefixes [chart-owner-checkpoint] and [chart-owner-resume]). Its automation was set up in conversation 6ac21ce4-f050-83ec-bfd4-5fa178fc6936. The tasks currently run in conversations 6ac2f2a6-6938-83ec-8ea0-52e22ad3194f (event) and 6ac2ef20-372c-83ee-9857-3ed62a8ed411 (CI). This report was written by a read-only analyst (label read-chart) for the PIW session_019znshzTYgyBnuuBmSxdPFN. It made no remote writes, no comments and no FPIA runs.",
+    "active_work": "VERIFIED by fresh read at 2026-10-05T03:51Z:\n- PR #41 head = 74df6784071137bdca911964af94c8e1b6928c92 (ls-remote and PR API), updated 03:03:39Z. That commit changes only automation/STATE.json. It acquires the lease run_id manual-chart-dependency-delta-20261005T030326898Z: status RUNNING, acquired 2026-10-05T03:03:26.899Z, expires 04:03:26.899Z, parent 1f8008d, reason \"Material FPIA GCH014b adversarial findings; restore previously authorized Chart continuation watches\". No Chart commit has landed since.\n- PR #42 (integration/fpia-hardened-v1) moved from 523e702 to 11d2f25ef8bef3459ca969f50eec190099f15ecb at 03:49:48Z (fix round 3, H1-H7). The diff touches only implementation/tools/integration/*, two FPIA test files and .github/workflows/track-c-fpia.yml.\n- Global tip = 5e33b30 (CDR-016); before it d92363f (CDR-015) and b5b4ca6 (GCH-014b).\nINFERRED: the PR #42 push is a watched synchronize event that should wake the Chart event task. While the manual lease is live until 04:03:26Z, an automated run must stay read-only under RUNBOOK step 1.",
+    "branches_prs": [
+     "PR #41 Draft, codex/chart-contract-mcp-api-v0-1 @ 74df6784071137bdca911964af94c8e1b6928c92, base canonical claude/investment-system-top500-validation-alrugm @ b8e39a2196a6d7794a04a0cd5393c68329e126ca; ahead 14 / behind 0; 314 changed files, all under implementation/experiments/chart-contract-v0.1/ (git diff b8e39a2..74df678 shows 0 paths outside that dir); mergeable_state clean; check runs on 74df678 = 0; issue comments 0, reviews 0, review threads 0 (MCP fresh read)",
+     "PR #41 commit chain b8e39a2..74df678: 497a426, 96d8332, 8668c69 (portfolio_reference.json), 97685dd, 54ee254, 581c61c, d93c7ac (v0.4 readiness; request source commit), df1743b, 1a79c4b (v0.5 packets), a89ac6d (v0.5 release; preflight SOURCE_COMMIT pin), ce978a5 (lease), d56ddb2 (v0.6 preflight evidence), 1f8008d (release), 74df678 (lease, STATE only)",
+     "PR #42 Draft integration/fpia-hardened-v1 @ 11d2f25ef8bef3459ca969f50eec190099f15ecb (was 523e702 at Chart's last read), base integration/cdr012-successor-trial-2026-10-04 @ acaf1b5; one comment, 5986162506, the Chart handoff (body sha256 914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f, unchanged since 00:40:32Z)",
+     "PR #44 Draft codex/qgv-common-contract-vnext-spec-2026-10-04 @ cb1906b207623168fd70f3dcdb5b30f2d82d807d, base canonical b8e39a2, 1 commit, 20 files, 0 comments; INACTIVE / SPEC-ONLY",
+     "origin/codex/qgv-missing-data-decision-gate-2026-10-05 @ ed907b8f5a046008319cddecc6ef40b9bd6759dc (QGV missing-data successor; no open PR; not watched by Chart)",
+     "integration/global-handoff-v1 @ 5e33b30ce47b1875ae3b91fb3ba25d3158947e66 (CDR-016 at line 623 of COORDINATION_DECISION_REGISTER.md); no watched PR has this as head or base (PR #43 has it as base but is unwatched)",
+     "Watched dependency heads in Chart STATE last_processed: #17 21039a0, #18 2c088ce, #19 c3dbf8a, #34 a3cbf13, #36 fb086ea, #42 523e702 (now stale), #44 cb1906b, #41 a89ac6d"
+    ],
+    "handoff_paths": [
+     "implementation/experiments/chart-contract-v0.1/HANDOFF.md @74df678 (root Chart handoff; v0.5 and v0.6 appends)",
+     "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md (current scoped handoff; in STATE approval_pins.latest_scope_handoff)",
+     "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/README.md (CLI usage and exit codes)",
+     "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md",
+     "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md (six-gate table and mermaid dependency graph)",
+     "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_SOURCE_OWNER_CLOSURE_PACKET_v0.5.md (A-S1/S2/S3 owner table)",
+     "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md (A-G1/A-G2 interface packet and narrowed write set)",
+     "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/governance/FPIA_AND_OWNER_PATH_READINESS_v0.4.md (full path matrix, G1-G3 predicates)",
+     "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
+     "https://github.com/kco994553-star/Investment-System1/pull/42#issuecomment-5986162506 (Chart to Integration handoff, v0.5 marker)"
+    ],
+    "contracts_and_artifacts": [
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "ref": "74df678 (byte-identical to a89ac6dd; sha256 4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c)",
+      "what": "The owner-return request (artifact_kind OWNER_ADMISSION_REQUEST_NOT_A_PRODUCTION_ROOT_OR_SCHEMA; this_packet_scope covers A-S1, A-S2 and A-S3 only). It holds 15 root slots and 18 slots for each of the 19 rows, all null.\n\nA-S1 root slots, under /root_owner_return/: portfolio_id, portfolio_version, target_root_id, root_revision_id, snapshot_hash, source_receipt_ref, current_adoption_evidence_ref, applicability_semantics, effective_from, effective_to, available_at, completeness_receipt_ref, denominator_definition, source_use_provenance_ref, authoritative_route_record_ref.\n\nRow slots, under /constituents/{0..18}/owner_return/ (gate grouping is INFERRED from closure_predicates):\n- A-S1: admitted_target_row_id, admission_evidence_ref\n- A-S2: issuer_id, security_id, security_namespace, security_type, share_class_or_form, identity_revision_id, identity_evidence_ref, company_security_link_ref\n- A-S3: theme_concept_id, taxonomy_id, taxonomy_version, catalog_revision_id, assignment_revision_id, effective_from, effective_to, available_at\n\nRequired non-null fields: 337 (every slot except effective_to, which must be present and may be null). Closure predicates are at /closure_predicates/A-S1|A-S2|A-S3. There are no slots for A-G1, A-G2 or A-G3.",
+      "relevance": "This is the exact machine-checkable packet the Portfolio, Identity and Theme owners fill. It cannot carry a dated listing_id (adding a key makes it INVALID) or changed weights (IMMUTABLE_ROW_CHANGED)."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
+      "ref": "74df678 (sha256 ca3a8bf5af7e2618a6e362b38d45d6ac59a2b6c5de9dda5bcb3423f89f90d6c3)",
+      "what": "Offline checker.\n\nCommand: python implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py --repo <git repo containing a89ac6dd and d93c7ac> --packet <request or returned copy> --decision-time <aware ISO> [--output NEW_PATH]\n\nExit codes:\n- 0: INPUT_COMPLETE_UNAUTHENTICATED\n- 2: INVALID (also missing baseline or naive time)\n- 3: INCOMPLETE\n\nOutput always shows production_readiness=IMPLEMENTATION_NOT_READY, open_count=6, production_payload=null, owner_receipts_authentication=NOT_PERFORMED_NO_ADOPTED_RECEIPT_ROUTE and claimed_snapshot_hash_verification=NOT_RUN_ADOPTED_PREIMAGE_MISSING.",
+      "relevance": "Chart's completion check for returned A-S receipts. It never closes any gate, and it does not reject ticker-only security_id values."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+      "ref": "74df678 (last changed 8668c69)",
+      "what": "snapshot_id reference:portfolio-v1.1:2026-09-14, weight_basis TARGET, data_kind USER_SPEC_REFERENCE, total_units 10000, cash_units 0, classification.available_at null.\n\nEach of the 19 holdings has only holding_id, security_id (null for all 19), label, weight_units, industry (=Strategy Theme name) and types (null).",
+      "relevance": "Reference identity only. There is no security, issuer or listing identity; production use is blocked by A-S1/A-S2."
+     },
+     {
+      "path": "QGV Portfolio · Specification v1.1.md L13-20; implementation/src/investment_system/qgv/portfolio.py OFFICIAL_V11_TARGETS L19-37; qgv/identifiers.py OFFICIAL_PORTFOLIO_V11 L15-42",
+      "ref": "canonical b8e39a2 (blobs 4dbe4cb9, de1d17e1, 3c25a9d1 = Chart pins at d93c7ac)",
+      "what": "The authored Target source (spec §2, 'Portfolio v1.1 · 2026-09-14', cash 0%) and the legacy Identifier records (company_id, legal_name, display_name, ticker, exchange, country, sector).",
+      "relevance": "This is the A-S1 source root Chart pins. The date label is not an effective or available time. The Identifier records are ticker and exchange only, not common Security identity."
+     },
+     {
+      "path": "implementation/src/investment_system/contracts/global_universe.py (IssuerIdentity L62, SecurityIdentity L77, ListingIdentity L93); implementation/src/investment_system/personal/security.py (CompanyLink L45, InMemorySecurityResolver.resolve L80)",
+      "ref": "canonical b8e39a2",
+      "what": "The common Issuer -> Security -> dated Listing contract and the fail-closed resolver: a ticker alone is UNRESOLVED and an exchange is required. CompanyLink status is PROPOSED (C-25).",
+      "relevance": "The A-S2 identity contract to reuse. Across all 99 fetched refs, ListingIdentity( appears only in three test files, so no populated 19-security records exist anywhere."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_HANDOFF_ROUTING.json",
+      "ref": "74df678",
+      "what": "kind EXPLICIT_USER_AUTHORIZED_OWNER_HANDOFF_ROUTING; recipient Primary Integration Writer / Integration-FPIA owner via PR #42 (head pinned 523e702); excludes PR35, PR40 and PR44 as recipients; surface is one top-level PR #42 conversation comment; status RESOLVED_FOR_HANDOFF_NOT_YET_SENT (historical pre-send).",
+      "relevance": "The delivery receipt is comment 5986162506 (COMPLETION_RECEIPT_v0.5.json). This is Chart's chosen channel to PIW."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json + TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md",
+      "ref": "74df678",
+      "what": "A-G1 minimum_owner_receipt, six items: policy_applicability_source, exact_admitted_route_and_interface, exact_subject_integrity_and_dependency_binding, current_authority_source_and_invalidation_behavior, lossless_wire_preimage_acceptance, consumer_denial_and_cached_display_clearing. Also lists the narrowed web asset candidates target-theme.html, target-theme-chart.js and target-theme.css.",
+      "relevance": "The A-G1 and A-G2 receipt content. It is prose or JSON input, not a slot schema; the P01/Product A/B/C answer has to map onto these six items."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/governance/IMPLEMENTATION_PATH_MATRIX.json + P01_DIGEST_FRESH_READ_PROOF.json",
+      "ref": "74df678 (basis 523e702)",
+      "what": "Candidate write set with p01_digest and track_c_code_hash flags (all PROPOSED_NOT_OWNER_ACCEPTED, executed=false). The P01 digest proof lists the seven files.",
+      "relevance": "The A-G2 write-set source."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/automation/STATE.json, RUNBOOK.md, SETUP_RECEIPT.json, COMPLETION_RECEIPT_v0.5.json",
+      "ref": "74df678",
+      "what": "Automation coordination: task IDs and selectors, last_observed and last_processed input heads with per-stream watermarks, semantic_input_fingerprint 33ab1b9c58364ffbfc7a673a15022429e24f7119d248144f5e2651c1ce5ae8ac, pending=[], lease, self_update_filter, forbidden_actions, approval_pins.global_routing_head 9d9b2b2 (stale).",
+      "relevance": "Defines what wakes Chart and how it detects deltas."
+     },
+     {
+      "path": "scratch: /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-chart/{runs/,dummy/,wt41/}",
+      "ref": "local only",
+      "what": "runs/readme_cmd.json reproduces the committed CURRENT_INPUT_DIAGNOSTIC.json byte for byte. runs/*.out.json are the dummy-variant outputs. dummy/make_dummies.py generates them; every value is DUMMY-* and none of it is owner evidence. wt41 is a detached worktree of 74df678.",
+      "relevance": "Reproduction evidence for the preflight behavior."
+     }
+    ],
+    "protected_paths": [
+     "P01 seven-file digest (relative to implementation/src/investment_system/): qgv/pipeline.py, qgv/leaderboard.py, qgv/book.py, technical/engine.py, macro/engine.py, product/web_mvp.py, producers/assembler.py. Digest = sha256 over (path bytes + file bytes) in that order (tests/test_p01_research_publication.py test_protected_engine_bytes_are_unchanged). Value e6de46714f4405b52d4b25a418cc4081ff6df9d8891f332f59cc47e5ccc6c909 at both 523e702 and 11d2f25. Canonical b8e39a2 and PR #41 lack product/web_mvp.py and producers/assembler.py.",
+     "Track C whole-package code_hash (evl/calibration_contracts.py code_hash): sha256 over every implementation/src/investment_system/**/*.py, sorted, relpath + NUL + bytes. 204 files; df34b84f54308fda6f084d59a574aa5da2cebdcd88b5c764b2ec2de2b63415d0 at both 523e702 and 11d2f25. Any new or changed package .py changes it.",
+     "implementation/src/investment_system/publication/authorization.py (ACTIVE_AUTHORIZATIONS=() ; grant activation excluded) and publication/predicate.py (policy relaxation excluded)",
+     "implementation/src/investment_system/personal/* Frozen contracts and evl/* Track C projections (excluded_implementation in IMPLEMENTATION_PATH_MATRIX.json)",
+     "publication/extractors.py: outside the P01 digest but Publication/P01-owned and inside code_hash; modified only if the P01 route (answer A) is selected",
+     "Chart allowlisted write scopes (Chart-owned; other owners must not write): implementation/experiments/chart-contract-v0.1/automation/, .../p0-slice-owner-closure-v0.5/, .../HANDOFF.md, .../p0-receipt-preflight-v0.6/",
+     "Global single-writer files on integration/global-handoff-v1 (GLOBAL_CURRENT_HANDOFF.md, GLOBAL_STATUS_INDEX.md, GLOBAL_HANDOFF_HISTORY.md, COORDINATION_DECISION_REGISTER.md): Chart lists Global_Handoff_write as forbidden"
+    ],
+    "watched_channels": "Chart has two tasks.\n\n**Event task 6ac2eeedb21c81919f04168d69672f0a (\"Chart PR 이벤트 재개\")**\n- Mode: github_webhook pull_request triggers.\n- PRs: exactly 41, 17, 18, 19, 34, 36, 42, 44.\n- Settings: enable_commit_updates=true, enable_reviews=true, enable_comments=true, only_on_merge=false.\n- Delivery: synchronize delivery into the chat was observed twice, for PR #41 own commits. Delivery of review, comment and merge events was not tested (NOT_RUN).\n\n**CI task 6ac2ef0621908191909a27af4c91f101 (\"Chart CI 후속 확인\")**\n- Schedule: RRULE FREQ=HOURLY from 20261005T002850Z, timezone Asia/Seoul. The current inventory shows timing_mode condition_watch.\n- It reads STATE.pending first. With pending=[] (the current state) it is a read-only no-op that writes nothing.\n\n**What is not watched**\n- The branch integration/global-handoff-v1.\n- PR #43 (its base is the Global branch).\n- The ed907b8 QGV missing-data branch.\n- Canonical pushes.\n- Repository-wide events.\n\n**Effect of a Global-only commit:** nothing wakes Chart. Chart sees Global only when a watched-PR event or a manual run reads it. Its pinned global_routing_head is still 9d9b2b2, while the Global tip is 5e33b30.\n\n**Existing route for PIW to reach Chart without new automation (INFERRED):** a conversation comment on PR #41 (comments enabled). The PR #42 thread is also watched. Such a comment is not self-filtered unless it carries the Chart marker, the retained ID and a matching body sha256.",
+    "facts": [
+     "VERIFIED: PR #41 head 74df6784071137bdca911964af94c8e1b6928c92 (ls-remote and PR API). The Chart reports IMPLEMENTATION_NOT_READY with 6 OPEN / 0 CLOSED: A-S1, A-S2, A-S3, A-G1, A-G2, A-G3 (STATE.readiness, the v0.6 handoff and the preflight output). Market lane: 0/19 admitted, 8 evidence families.",
+     "VERIFIED: 19 Target constituents. Format: row key / company_id / authored_label / ratio / Theme; source pins are spec line, portfolio.py line and identifiers.py line.\n- reference:company:asml / asml / ASML / 0.09 / 반도체 장비\n- lrcx / LRCX / 0.06 / 반도체 장비\n- klac / KLAC / 0.055 / 반도체 장비\n- tokyo_electron / TEL / 0.05 / 반도체 장비 (identifiers.py: exchange None, country JP, ambiguity flag C-08_TEL_MARKET_ID_UNFIXED)\n- hanmi / 한미반도체 / 0.045 / 반도체 장비 (ticker 042700, KRX)\n- nvda / NVDA / 0.08 / AI·반도체\n- amd / AMD / 0.05 / AI·반도체\n- avgo / AVGO / 0.05 / AI·반도체\n- qcom / QCOM / 0.04 / AI·반도체\n- intc / INTC / 0.03 / AI·반도체\n- msft / MSFT / 0.07 / Big Tech\n- googl / GOOGL / 0.07 / Big Tech\n- amzn / AMZN / 0.06 / Big Tech\n- rtx / RTX / 0.06 / 기타산업\n- stry / Stryker / 0.055 / 기타산업 (ticker SYK, NYSE)\n- etn / Eaton / 0.05 / 기타산업\n- hubb / Hubbell / 0.035 / 기타산업\n- gev / GE Vernova / 0.03 / 기타산업\n- rok / Rockwell / 0.02 / 기타산업\nAll US names except stry use their ticker as the label. Exchanges: NASDAQ for ASML, LRCX, KLAC, NVDA, AMD, AVGO, QCOM, INTC, MSFT, GOOGL, AMZN; NYSE for RTX, SYK, ETN, HUBB, GEV, ROK.\nCounts per Theme: 5/5/3/6. Exact totals 3/10, 1/4, 1/5, 1/4; overall 1 with cash 0. Every row's status is OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED, and every security_id is null in portfolio_reference.json.",
+     "VERIFIED (ran it): the README command at 74df678 (cd wt41; --repo . --decision-time 2026-10-05T01:00:00+00:00) gives exit 3, INCOMPLETE, findings 337 OWNER_FIELD_MISSING (MISSING) + 1 OWNER_RECEIPTS_UNAUTHENTICATED (WARNING), source_objects_checked 4. Its output is byte-identical to the committed CURRENT_INPUT_DIAGNOSTIC.json (sha256 2a0af6419e050cf214343c12ca755255c3e59e04e84ca4d6e4bb31e48c261302). The same packet at 2026-10-05T04:00:00Z with --repo set to my clone also gives exit 3.",
+     "VERIFIED (ran it; scratch dummy copies, every value DUMMY-*, NOT owner evidence):\n- A, fully filled: exit 0, INPUT_COMPLETE_UNAUTHENTICATED, still 6 open\n- B, security_id set to the authored ticker or label (e.g. 'TEL', 'NVDA'): exit 0. The preflight does NOT reject ticker-only identity\n- C, duplicate (namespace, security_id): exit 2 DUPLICATE_SECURITY\n- D, mutated observed weight: exit 2 IMMUTABLE_ROW_CHANGED + INVALID_REFERENCE_ALLOCATION\n- E, root available_at after the decision time: exit 2 INVALID_OWNER_TIME\n- F, two Themes sharing one concept: exit 2 THEME_JOIN_CONFLICT\n- G, a second catalog revision: exit 2 CATALOG_REVISION_CONFLICT\n- H, an extra slot added (e.g. a listing id): exit 2 OWNER_FIELD_SET_CHANGED\n- I, effective_to key removed: exit 2\n- J, row interval starting after the root's: exit 2 ASSIGNMENT_INTERVAL_INCOMPLETE\n- empty git repo: exit 2 PINNED_BASELINE_UNAVAILABLE, no fallback\n- naive decision time: exit 2",
+     "VERIFIED (ran it): python3 -m unittest discover -s implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6 -p 'test_*.py' at the 74df678 worktree ran 29 tests, OK. It fails with StopIteration when run outside a git work tree, because the tests locate .git through HERE.parents.",
+     "VERIFIED (code read): preflight constants are SOURCE_COMMIT=a89ac6dd4336027ddab52b145ab87e3bc5edb3e5 and the REQUEST_PATH above. It byte-compares every non-owner_return field after canonical JSON encoding. It checks four source pins (spec, portfolio.py, identifiers.py, portfolio_reference.json at d93c7ac) by both git-blob SHA-1 and sha256. Interval semantics are half-open [effective_from, effective_to); available_at must be at or before the decision time; each row interval must cover the root interval. Exactly one (taxonomy_id, taxonomy_version, catalog_revision_id) and one assignment_revision_id are allowed. snapshot_hash gets a lexical 64-hex check only. Nothing is ever written except to an --output path created exclusively.",
+     "VERIFIED: the main checkout /home/user/Investment-System1 is shallow but contains a89ac6dd and d93c7ac, so the preflight can run with --repo pointing at it.",
+     "VERIFIED (Chart docs, with existence checks by me): the minimal Target Strategy Theme write set is the v0.4 domain/contract set narrowed by the v0.5 interface/renderer packet. All paths are under implementation/; all are PROPOSED_NOT_OWNER_ACCEPTED and none exists on any of the 99 refs.\n\nPackage Python (changes Track C code_hash, not the P01 digest):\n- src/investment_system/charts/__init__.py NEW (Chart)\n- charts/target_source.py NEW (Chart + Personal/Portfolio)\n- charts/target_theme.py NEW (Chart + Personal/Portfolio)\n- contracts/chart.py NEW (Chart + Product)\n- product/chart_api.py NEW (Product/API + Chart + P01)\n- optional MODIFY publication/extractors.py, only if the P01 route is chosen (P01/Publication)\n\nNon-package:\n- optional tools/serve_chart_api.py, only if an HTTP host is needed (Product/API + Web)\n- web: src/investment_system/product/web_assets/target-theme.html, target-theme-chart.js, target-theme.css NEW (Web + Chart). The v0.5 standalone page avoids the v0.4 edits to app.js, locale.js and style.css and needs no index.html navigation change.\n- tests: tests/test_target_theme_domain.py, tests/test_target_theme_product_contract.py, tests/test_target_theme_api.py, tools/target_theme_chart_browser_test.js\n\nSeven-file P01 digest path: none are touched on the preferred route. The rejected alternative (schema-1 central integration) would edit product/web_mvp.py and producers/assembler.py, changing both the digest and code_hash.",
+     "VERIFIED: the write-set base must be the integration (PR #42) lineage. At canonical b8e39a2 these paths are absent: publication/{extractors,authorization,invalidation}.py, producers/serialization.py, product/web_mvp.py and product/web_assets/. At 11d2f25 they are present. web_mvp.build() at 11d2f25 (L119-121) copies every web_assets *.html/*.css/*.js whose name does not start with research- or network-, so target-theme.* files would be copied without a builder edit.",
+     "VERIFIED (probe at 11d2f25 with an evl import guard; 0 evl modules loaded):\n- ACTIVE_AUTHORIZATIONS == ()\n- GRANT_KINDS = (RESEARCH_DISPLAY, FROZEN, LIVE)\n- publication.extractors.extract(<synthetic Chart doc>) raises ExtractionError 'persisted document matched 0 publication extractors'\n- canonical_bytes keeps tagged strings ('5.50', Korean UTF-8) losslessly; Decimal raises SerializationError 'unsupported type Decimal'\nThese confirm Chart's A-G1 facts at the fresh PR #42 head.",
+     "VERIFIED: PR #41 at 74df678 has 0 issue comments, 0 reviews, 0 review threads and 0 check runs. The PR body carries checkpoint sections with markers <!-- chart-owner-checkpoint:v0.5 --> and <!-- chart-owner-checkpoint:v0.6 -->. No owner closure receipt exists in any stream. Searching all 99 fetched refs outside the Chart directory for the owner-return slot names (theme_concept_id, catalog_revision_id, assignment_revision_id, target_root_id, admitted_target_row_id) found nothing, so no owner answer exists anywhere in the repository.",
+     "VERIFIED (STATE/RUNBOOK): dependency deltas are detected by comparing fresh heads of the eight watched PRs against last_processed.input_heads. They also compare per-PR {issue_comments, reviews, review_comments} watermarks, keyed by id + updated_at + body_sha256, and a semantic input fingerprint (STATE.json excluded).\n- Self-updates are filtered by the commit prefixes [chart-owner-resume]/[chart-owner-checkpoint] plus retained IDs df1743b, 1a79c4b, ce978a5, d56ddb2, and by comment marker + ID 5986162506 + body sha256.\n- If there is no semantic delta and no actionable pending item, the run is read-only with no lease and no writes.\n- With a delta, writes need one shared lease taken by a non-force same-parent commit (TTL 30 min automatic, 60 min manual) and verified on remote.\n- Fresh delta now: PR #42 is 11d2f25, against 523e702 recorded in STATE.",
+     "VERIFIED: PR #44 (cb1906b) and PR #41 share no paths. #44 adds 20 files: docs/qgv_common_contract_vnext/*, tests/test_qgv_common_contract_vnext.py, tools/qgv_contract_audit.py and the workflow qgv-common-contract-vnext.yml. It changes no package src, so it has no code_hash or P01 digest effect. Its evidence/baseline.json pins qgv/portfolio.py at sha256 ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49, the same bytes as Chart's A-S1 source pin. Its 'theme_premium_discount' is a QGV V factor, unrelated to Strategy Theme buckets. Chart treats #44 as a watched, read-only, INACTIVE_SPEC_ONLY dependency that is not a Target prerequisite.",
+     "VERIFIED: the Chart dependency graph (OWNER_CLOSURE_DELTA_v0.5.md):\n- A-S1, A-S2 and A-S3 lead to admitted Target inputs.\n- Those inputs plus G1, G2 and G3 lead to IMPLEMENTATION_READY.\n- Then the owner-approved L1-L5 implementation, then exact Chart merge-result FPIA and acceptance.\n- Market is not an edge into the Target gate.\nChart's next step: run the preflight on returned receipts at an explicit decision time, authenticate the owner evidence separately, then rejudge the six gates and the T01-T14 plan."
+    ],
+    "unverified": [
+     "INFERRED: the PR #42 push at 03:49:48Z (11d2f25) generates a synchronize webhook that wakes the Chart event task. While lease manual-chart-dependency-delta-20261005T030326898Z is live (until 04:03:26Z), an automated run must stay read-only. Whether the manual run itself consumes the delta is unknown.",
+     "INFERRED: the slot-to-gate grouping inside constituents/*/owner_return comes from the closure_predicates text and the preflight's interval logic; the JSON does not tag slots by gate. CDR-016's 'effective_at' maps to Chart's effective_from (plus effective_to and available_at).",
+     "INFERRED gap: CDR-016 requires constituent -> security_id -> share form -> dated Listing. Chart's request has no listing slot, adding one makes it INVALID, and Chart excludes 'Market listing/session/calendar history' from A-S2. Including dated Listing therefore needs a Chart-side request revision (Chart-owned file) or a separate Identity receipt consumed outside this preflight.",
+     "INFERRED gap: ticker-only rejection is not machine-enforced by the preflight (dummy B passed with exit 0). Enforcement must come from the Identity owner's receipt or resolver evidence, i.e. personal/security.py InMemorySecurityResolver, which returns UNRESOLVED for a ticker without an exchange.",
+     "INFERRED gap: A-G1, A-G2 and A-G3 have no machine-checkable slots in any Chart artifact, and the preflight hard-codes all six gates as open. Chart closes gates only by its own rejudgment, so PIW receipts for G1-G3 need their own small JSON packet that Chart can read.",
+     "INFERRED: a changed authoritative Target (new weights or revision) cannot be returned through this request (IMMUTABLE_ROW_CHANGED). The README says it needs a separate owner receipt plus a bounded Chart reconciliation.",
+     "INFERRED: a comment on PR #41 (or #42) is the lowest-cost existing path for PIW to deliver Global-only material deltas to Chart. Review, comment and merge webhook delivery into the Chart chat is recorded as NOT_RUN in STATE.automation_delivery_observed.",
+     "INFERRED: retained_owned_commit_ids omit Chart's own lease commits a89ac6d, 1f8008d and 74df678. Self-filtering relies on the prefixes for those, so a self-event can be ambiguous.",
+     "NOT_RUN by me: replay_existing_authority.py, which hard-codes OWNER_WORKTREE /workspace/scratch/... and writes into the Chart directory; I ran equivalent probes at 11d2f25 instead. Also not run: the v0.4 verify scripts, the 75 Node tests, and any FPIA."
+    ],
+    "summary": "Fresh read at 03:51Z of Chart PR #41 at 74df678: no owner has answered, and the preflight cannot by itself close any gate.\n\n**Request and preflight**\n- The owner-return request TARGET_OWNER_ADMISSION_REQUEST.json (sha256 4d0e163d…) covers only A-S1, A-S2 and A-S3. It has 15 root slots and 18 slots for each of the 19 rows; 337 of them must be non-null.\n- A-G1, A-G2 and A-G3 have no slots at all.\n- I ran receipt_preflight.py on the current request: exit 3 (INCOMPLETE). The output is byte-identical to Chart's committed CURRENT_INPUT_DIAGNOSTIC.json. Exit codes: 0 = INPUT_COMPLETE_UNAUTHENTICATED, 2 = INVALID, 3 = INCOMPLETE. Even a complete packet still reports 6 gates OPEN.\n- On scratch-only dummy copies (all values DUMMY-*, not owner evidence):\n  - A fully filled copy returns exit 0.\n  - A ticker-only security_id also returns exit 0, so the preflight does not enforce CDR-016's no-ticker-only rule.\n  - Adding a listing slot returns exit 2, so CDR-016's dated-Listing binding does not fit this schema.\n  - Changed weights return exit 2.\n- The 29 unit tests pass.\n\n**The 19 Target constituents**\n- The 19 rows are the authored v1.1 baseline (spec §2 = OFFICIAL_V11_TARGETS = portfolio_reference.json). Themes total exactly 30/25/20/25 with cash 0.\n- Every security_id is null. The only identity is legacy company_id plus ticker and exchange; TEL's market is unresolved and Hanmi is 042700 on KRX.\n- No populated Issuer → Security → dated Listing records exist on any of the 99 refs. No owner-return values exist outside the Chart directory.\n\n**Minimal write set**\n- Package Python, which changes the Track C code_hash (currently df34b84f…) but not the P01 digest (currently e6de4671…):\n  - charts/__init__.py, charts/target_source.py, charts/target_theme.py\n  - contracts/chart.py\n  - product/chart_api.py\n  - publication/extractors.py only if the P01 route (answer A) is chosen\n- Web: three new files, web_assets/target-theme.html, target-theme-chart.js and target-theme.css. The existing build already copies them, so no builder edit is needed.\n- Optional tools/serve_chart_api.py if an HTTP host is needed.\n- Tests: three Python test files and one browser test.\n- None of the seven P01 digest files is touched on this route.\n- The base must be the PR #42 integration lineage: canonical b8e39a2 lacks the publication, producers and product runtime.\n- Probes I ran at the new PR #42 head 11d2f25 confirm three things: a Chart document matches 0 publication extractors, there are no active grants, and tagged decimal strings serialize losslessly while native Decimal is rejected.\n\n**PR #41 activity**\n- No comments, reviews or check runs. Chart's only outbound handoff is PR #42 comment 5986162506, unchanged.\n\n**Chart automation**\n- The event task wakes only on pushes, reviews and comments for PRs #41, #17, #18, #19, #34, #36, #42 and #44.\n- The hourly task is a no-op while its pending queue is empty, which it is now.\n- A commit only to the Global branch wakes nothing. Chart still pins Global at 9d9b2b2, while the tip is 5e33b30.\n- Deltas are detected from head SHAs plus comment and review watermarks, with a shared non-force lease before any write.\n- A Chart manual lease is RUNNING until 04:03:26Z.\n- PR #42 moved to 11d2f25 at 03:49:48Z, which is a watched delta.\n\n**PR #44 (cb1906b)**\n- Inactive, spec-only QGV work with zero path overlap with PR #41 and no effect on the hash or digest.\n- It pins the same bytes of qgv/portfolio.py as Chart's A-S1 source.\n- It is not a Target prerequisite."
+   }
+  },
+  {
+   "label": "read-identity",
+   "agentId": "aca1c0483941913e4",
+   "result": {
+    "owner_identity": "Identity owner (VERIFIED from documents): Track A owns the common Issuer -> Security -> dated Listing contract. Canonical b8e39a2 `Investment-System1 · RIG News Architecture v0.1.md` line 50 says \"(5) Ownership | Track A: data/Universe/identity/provenance\". `implementation/src/investment_system/rig/gate.py` lines 43-50 describe `IdentityLookup` as a \"Read-only view of the upstream (Track A-owned) common identity records\". Codex wrote the contract file during the C-39 recovery (commit 36060b3, 2026-09-27, account kco994553-star). VERIFIED gap: no active Track A identity Work, branch, PR, session or scoped identity handoff exists. GLOBAL_STATUS_INDEX at 5e33b30 has no identity capability row. Track A row 1 reads INTEGRATED/FROZEN_VERIFIED with no live branch. No file in any of the 53 Investment-System refs is a scoped identity handoff; the only identity-named handoffs are about Track C G-SUP source identity, which is unrelated. No owner answer for A-S2/B01/B02 exists anywhere: PR #41 has 0 conversation comments, PR #42 has only the Chart handoff comment 5986162506, and an issue search returned 0 results. I am a read-only analyst (label read-identity) for the PIW, session_019znshzTYgyBnuuBmSxdPFN. I made no writes.",
+    "active_work": "Read-only identity analysis for CDR-016 blocker 2 (Security mapping, Chart gate A-S2), plus Lane B B01/B02. Done: fresh clone; contract location, model and owner; a check of all 53 Investment-System ref tips for instance rows; a per-constituent lookup for the 19 rows; a capability check against the canonical contract; Chart's preflight run on the current request and on a synthetic shape test where only the A-S2 slots are filled. The routing recommendation follows. Nothing was pushed, committed, commented, edited or FPIA-run. All outputs are under the scratchpad wf19/read-identity/.",
+    "branches_prs": [
+     "canonical claude/investment-system-top500-validation-alrugm @ b8e39a2196a6d7794a04a0cd5393c68329e126ca: holds the contract (contracts/global_universe.py) and its tests",
+     "PR #41 codex/chart-contract-mcp-api-v0-1 @ 74df6784071137bdca911964af94c8e1b6928c92 (fresh-read, unchanged); preflight pins the request at a89ac6dd4336027ddab52b145ab87e3bc5edb3e5, which is an ancestor of 74df678",
+     "integration/global-handoff-v1 @ 5e33b30ce47b1875ae3b91fb3ba25d3158947e66 (CDR-016 at COORDINATION_DECISION_REGISTER.md around lines 620-1080)",
+     "PR #42 integration/fpia-hardened-v1: the GitHub API now reports head 11d2f25ef8bef3459ca969f50eec190099f15ecb, not 523e702 (fix round 3 has been pushed). global_universe.py is byte-identical there",
+     "PR #18 feature/us-equity-session-v1 @ 2c088cea: sessions/listing.py ListingEvidence wraps ListingIdentity with available_at, evidence_id and source_sha256; binder.py maps Yahoo NMS->XNAS, NYQ->XNYS, PCX->ARCX only",
+     "PR #7 ccr-41677301-10nj3u @ a013f1c: Entity Metadata, SEARCH_PRESENTATION_ONLY, keyed by company_id/CIK; not identity authority",
+     "PR #13 @ 8bb990b / PR #16 @ ef65caa: explicit company_id->issuer_id maps in RIG ingest, with no data rows",
+     "PR #44 @ cb1906b, PR #10 @ 5eec129, PR #9 @ f8af596, PR #4/#31 (Track C): no Issuer/Security/Listing data for the 19",
+     "PR #28 @ b20d178: 'PROPOSED_SOURCE_IDENTITY_CONTRACT' is Track C G-SUP source/sample identity, not security identity (excluded)"
+    ],
+    "handoff_paths": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-identity/repo (full clone with refs/remotes/pr/*)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-identity/work/probe19b.py and probe19b.json (19-row lookup across canonical qgv/identifiers.py, markets/us.py, Track A snapshots and PR #7)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-identity/work/contract_capability_check.py and contract_capability_check.out.json",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-identity/work/a_s2_slot_projection_check.py and a_s2_slot_projection_check.out.json (syn_*.json are SYNTHETIC shape-test packets, never owner data)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-identity/work/preflight_current.json (preflight on the current unfilled request)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-identity/tips.txt (the 54 ref tips searched)"
+    ],
+    "contracts_and_artifacts": [
+     {
+      "path": "implementation/src/investment_system/contracts/global_universe.py",
+      "ref": "b8e39a2 (sha256 7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b; byte-identical on all 53 Investment-System refs, including 74df678, 523e702, 11d2f25, PR #18 and PR #44)",
+      "what": "The common identity contract. IssuerIdentity(issuer_id, legal_name, country_code, identifiers). SecurityIdentity(security_id, issuer_id, security_type, share_class=None, identifiers). ListingIdentity(listing_id, security_id, ticker, mic, currency, valid_from: date, valid_to: date|None exclusive, active_on). Also EligibilityRecord, FXSnapshot and UniverseContext. No revision, available_at or evidence fields on Issuer/Security/Listing, and no company_id link.",
+      "relevance": "The contract that CDR-016 says to reuse for blocker 2. Status is 'PROVISIONAL IMPLEMENTED CONTRACT' per the Global-Korea doc. 21/21 tests pass (test_global_universe_contracts.py + test_rig_p0_foundation.py, run here with pytest 9.1.1 / Python 3.11)."
+     },
+     {
+      "path": "Investment-System1 · Global-Korea Universe and Information Source Contract 2026-09-24.md; Contract Conflict Register 2026-09-23.md (C-06, C-08/D-29, C-25, C-39)",
+      "ref": "b8e39a2",
+      "what": "The SSoT: 'Economic identity: Issuer -> Security -> Listing. Ticker is a listing attribute'. C-39 RESOLVED restored the runtime. C-25 OPEN: security_id vs company_id; CompanyLink is PROPOSED with no mapping created. C-08 OPEN-ISOLATED: D-29 sets TEL identity to company_id=tokyo_electron, bare TEL is AMBIGUOUS, and 'Listing venue (TSE vs ADR) is DECISION REQUIRED for a future JP book'.",
+      "relevance": "Defines the hierarchy and the open boundaries the owner must decide: C-25 company link and the C-08 TEL venue."
+     },
+     {
+      "path": "implementation/src/investment_system/rig/gate.py (IdentityLookup Protocol, lines 43-50)",
+      "ref": "b8e39a2",
+      "what": "Read-only lookup protocol: issuer(), security(), listing(). No production implementation exists in any ref. The only implementations are test doubles in tests/rig_fixtures.py (Ids: security/listing return None) and tests/test_rig_p0_foundation.py.",
+      "relevance": "The natural authoritative read route for Chart. A Track A implementation backed by admitted records would give Chart its deterministic path without a Chart-only identity layer."
+     },
+     {
+      "path": "implementation/src/investment_system/personal/security.py",
+      "ref": "b8e39a2 (Track B P0 FROZEN)",
+      "what": "SecurityRecord(security_id, SecurityIdentifiers{ticker, exchange, share_class, cik, isin, figi}, effective_from/to), InMemorySecurityResolver (ISIN/FIGI or ticker+exchange; a ticker alone never resolves), CompanyLink(status PROPOSED). personal/portfolio.py ModelPortfolioSnapshot keys holdings by security_id.",
+      "relevance": "A second security_id namespace, kept separate from the common contract per C-39. Chart slots security_namespace and company_security_link_ref exist because of it."
+     },
+     {
+      "path": "implementation/src/investment_system/qgv/identifiers.py (OFFICIAL_PORTFOLIO_V11, lines 15-42)",
+      "ref": "b8e39a2",
+      "what": "Legacy company-level alias rows: company_id, names, ticker, exchange string, country. No security_id, no MIC, no dates.",
+      "relevance": "Chart row keys reference:company:<company_id> come from here. Not identity admission (Chart capability I04)."
+     },
+     {
+      "path": "implementation/src/investment_system/markets/us.py (US_LISTINGS)",
+      "ref": "b8e39a2",
+      "what": "Yahoo symbol + CIK + exchange string for 17 US-listed names. tokyo_electron is C-08_NON_US and hanmi is KR_DEFERRED. Its comment 'ASML is the NASDAQ ADR' conflicts with the issuer IR capture in Chart.",
+      "relevance": "Company-level hints only. PR #18 CONTRACT.md says markets/us.py is not listing evidence."
+     },
+     {
+      "path": "implementation/reports/gate_evidence/official_snapshot_2024-{06-30,09-30,12-31}.json",
+      "ref": "b8e39a2 (Track A FROZEN)",
+      "what": "Top-500 UniverseMember rows: company_id, ticker, CIK, rank.",
+      "relevance": "Company-level, CIK-bound PIT membership for 16 of the 19. ASML, TEL and Hanmi are absent. Not security/listing identity."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "ref": "74df678 (identical to the pinned a89ac6d; sha256 4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c)",
+      "what": "19 rows keyed by source_row_key. Per-row owner_return slots for A-S2: issuer_id, security_id, security_namespace, security_type, share_class_or_form, identity_revision_id, identity_evidence_ref, company_security_link_ref. A-S1 and A-S3 slots sit in the same object, plus shared effective_from/effective_to/available_at. There are NO listing slots; Chart routes listings to Lane B B02.",
+      "relevance": "The exact Chart-side target shape for the identity return."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
+      "ref": "74df678",
+      "what": "Offline checker. A-S2 checks are limited to: non-empty exact strings and uniqueness of (security_namespace, security_id) (DUPLICATE_SECURITY). It never resolves ids against any identity store.",
+      "relevance": "Verifies slot shape only. An identity-side checker is needed for content."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json (B01 security_identity, B02 listing_identity_history)",
+      "ref": "74df678",
+      "what": "Chart already routes B01 to 'Track A/common identity owner' and B02 to 'Track A/common identity and market source owners'. The required receipt fields include issuer->security relation, form, interval, source hash, available_at, and listing_id/ticker/MIC/currency/valid_from/valid_to, including GEV when-issued vs regular-way.",
+      "relevance": "The dated-listing part of CDR-016 blocker 2 lands here, in Chart Lane B."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/MARKET19_IDENTITY_TIME_READINESS.json + asml_share_form/tel_stock_info/hanmi_dart_identity/gev_when_issued *_extracted.txt",
+      "ref": "74df678",
+      "what": "Chart-collected current primary-source facts. production_identity_bound_count = 0. internal_issuer_id, internal_security_id and internal_listing_id are BLOCKED for all 19.",
+      "relevance": "Candidate evidence the identity owner may reuse after its own verification. It is not an admitted binding."
+     }
+    ],
+    "protected_paths": [
+     "implementation/src/investment_system/contracts/global_universe.py (Track A common identity owner; any field addition is the owner's versioned change, not PIW or Chart)",
+     "implementation/src/investment_system/personal/security.py, personal/portfolio.py (Track B P0 FROZEN)",
+     "implementation/src/investment_system/qgv/identifiers.py (QGV owner; legacy alias set)",
+     "implementation/src/investment_system/markets/us.py, implementation/reports/gate_evidence/official_snapshot_*.json (Track A FROZEN)",
+     "implementation/src/investment_system/sessions/listing.py, sessions/binder.py (PR #18 US session owner)",
+     "implementation/experiments/chart-contract-v0.1/** including TARGET_OWNER_ADMISSION_REQUEST.json (Chart owner; identity owner should not edit it)",
+     "implementation/docs/coordination/GLOBAL_*.md, PIW_DECISION_RECORDS.md, COORDINATION_DECISION_REGISTER.md (PIW single writer)"
+    ],
+    "watched_channels": "None. Read-only analysis; no PR/webhook subscriptions or artifact watches were created.",
+    "facts": [
+     "VERIFIED contract and model: canonical b8e39a2 implementation/src/investment_system/contracts/global_universe.py (sha256 7fc8e433...). IssuerIdentity{issuer_id, legal_name, country_code, identifiers}; SecurityIdentity{security_id, issuer_id, security_type, share_class?, identifiers}; ListingIdentity{listing_id, security_id, ticker, mic, currency, valid_from: date, valid_to?: date exclusive}. The ticker exists only on the listing. Tests: 21 passed (PYTHONPATH=src python3 -m pytest -q tests/test_global_universe_contracts.py tests/test_rig_p0_foundation.py on a git-archive of b8e39a2).",
+     "VERIFIED it is not elsewhere: entity metadata #7 (search/presentation only, keyed by company_id/CIK), producer infrastructure #9 (only a 'news [].issuer_ids' path), QGV #10 and #44 (no identity rows), Track C #4/#31 (no security identity; #28's source-identity contract is G-SUP sample identity). The contract is byte-identical on all 53 Investment-System ref tips. The 54th tip, the LoL Coach branch, does not have the file.",
+     "VERIFIED that there are no mapping rows anywhere: across all 53 Investment-System ref tips (git grep), constructors of IssuerIdentity/SecurityIdentity/ListingIdentity appear only in tests (test_global_universe_contracts.py, test_rig_p0_foundation.py, rig_fixtures.py, PR #18 test_us_equity_session_v1.py). No JSON/data file has non-null listing_id/security_id/issuer_id values. No production IdentityLookup implementation exists. Test doubles are not bindings; for example, rig_fixtures marks the asml issuer country 'US'.",
+     "VERIFIED per-constituent results (common-contract binding / partial company-level evidence). Abbreviations: qgv = qgv/identifiers.py line; us.py = markets/us.py US_LISTINGS; TA = Track A snapshot ranks 2024-06-30/09-30/12-31; PR7 = entity metadata record.",
+     "1 asml 900: NOT_FOUND. qgv L15 (ASML, 'NASDAQ'); us.py CIK 0000937966 NASDAQ. Absent from TA and PR7. Issuer IR capture: NASDAQ form = registered ordinary shares, ISIN USN070592100 / CUSIP N07059210; Euronext ISIN NL0010273215. This contradicts the us.py comment 'NASDAQ ADR'.",
+     "2 lrcx 600: NOT_FOUND. qgv L16; CIK 0000707549; TA 63/96/100; PR7 yes.",
+     "3 klac 550: NOT_FOUND. qgv L17; CIK 0000319201; TA 86/97/116; PR7 yes.",
+     "4 tokyo_electron 500: NOT_FOUND. qgv L18-27 (ticker 'TEL', exchange None, country JP, flag C-08_TEL_MARKET_ID_UNFIXED). us.py OUT_OF_US_TRACK. Absent from TA and PR7. D-29: TSE vs ADR venue DECISION REQUIRED. Chart IR capture: TSE Prime code 8035; ADR TELWY OTC CUSIP 889110201, ratio ADR:ORD 2:1; the issuer page lists a 1:5 split dated Oct 1, 2026.",
+     "5 hanmi 450: NOT_FOUND. qgv L28 (ticker '042700', exchange 'KRX', country KR). us.py KR_DEFERRED. Absent from TA and PR7. Chart DART capture: KOSPI, code 042700.",
+     "6 nvda 800: NOT_FOUND. qgv L29; CIK 0001045810; TA 3/3/2; PR7 yes.",
+     "7 amd 500: NOT_FOUND. qgv L30; CIK 0000002488; TA 28/28/41; PR7 yes.",
+     "8 avgo 500: NOT_FOUND. qgv L31; CIK 0001730168; TA 9/10/8; PR7 yes.",
+     "9 qcom 400: NOT_FOUND. qgv L32; CIK 0000804328; TA 32/46/52; PR7 yes.",
+     "10 intc 300: NOT_FOUND. qgv L33; CIK 0000050863; TA 70/103/113; PR7 yes.",
+     "11 msft 700: NOT_FOUND. qgv L34; CIK 0000789019; TA 1/2/3; PR7 yes.",
+     "12 googl 700: NOT_FOUND. qgv L35; CIK 0001652044; TA 4/5/5. The PR7 aliases include the class C sibling GOOG, so share class must be explicit.",
+     "13 amzn 600: NOT_FOUND. qgv L36; CIK 0001018724; TA 5/4/4; PR7 yes.",
+     "14 rtx 600: NOT_FOUND. qgv L37; CIK 0000101829; TA 69/60/60; PR7 yes.",
+     "15 stry 550: NOT_FOUND. qgv L38 (company_id 'stry', ticker SYK, NYSE); us.py CIK 0000310764. Track A and PR7 use company_id 'syk' for the same CIK (TA 72/70/69). This is a legacy company_id namespace mismatch that a company->issuer link must resolve.",
+     "16 etn 500: NOT_FOUND. qgv L39; CIK 0001551182; TA 75/73/77; PR7 yes.",
+     "17 hubb 350: NOT_FOUND. qgv L40; CIK 0000048898; TA 398/377/379; PR7 yes.",
+     "18 gev 300: NOT_FOUND. qgv L41; CIK 0001996810; TA 200/152/103; PR7 yes. Chart GE press-release capture: when-issued 'GEV WI' from about 2024-03-27, regular-way 'GEV' on NYSE from 2024-04-02.",
+     "19 rok 200: NOT_FOUND. qgv L42; CIK 0001024478; TA 288/312/293; PR7 yes. Weight units total 10000 (30/25/20/25).",
+     "VERIFIED JP/KR support: the contract carries no US-only restriction. A scratch shape test on the canonical classes accepted all of: XTKS/JPY listing '8035'; XKRX/KRW listing '042700'; an ADR as a separate SecurityIdentity of the same issuer; NY-registry vs ordinary shares as separate securities with different ISINs; share_class 'A'; contiguous when-issued -> regular-way listings. It rejected an empty interval. Downstream gaps: PR #18 binder accepts only NMS->XNAS, NYQ->XNYS and PCX->ARCX, so JP/KR session joins are unsupported (Chart B03 routes them to a separate JP/KR session owner). Korea/Global AnalysisUniverse cannot be OFFICIAL.",
+     "VERIFIED Chart compatibility (ran the check): receipt_preflight.py on the current request gives exit 3, INCOMPLETE, open 6, 337 MISSING findings, of which 152 = 19 rows x 8 A-S2 slots. With only the 8 A-S2 slots filled using SYN- placeholders: exit 3, A-S2 findings 0, and the remaining MISSING slots all belong to A-S1/A-S3 or are shared. Duplicating one security_id gives exit 2 INVALID DUPLICATE_SECURITY. So the preflight checks shape only; arbitrary strings pass, and content needs an identity-side checker.",
+     "VERIFIED slot-to-contract mapping: issuer_id -> IssuerIdentity.issuer_id; security_id -> SecurityIdentity.security_id; security_type -> SecurityIdentity.security_type; share_class_or_form -> SecurityIdentity.share_class (plus security_type for form). Slots with no contract field: security_namespace, identity_revision_id, identity_evidence_ref, company_security_link_ref, effective_from/effective_to/available_at. The contract also lacks available_at/evidence on identity records; PR #18 ListingEvidence is an existing wrapper pattern for listings.",
+     "VERIFIED scope mismatch: Chart A-S2 excludes listings ('Market listing/session/calendar history' is in dependency_exclusions; listings go to Lane B B02). CDR-016 §4 asks for constituent -> security_id -> form -> dated listing. One identity receipt can serve both A-S2 (security part) and B01/B02 (listing part).",
+     "VERIFIED write-set hazard: each row's owner_return mixes A-S1, A-S2 and A-S3 slots plus shared interval slots in one object, in one Chart-owned file. Having Target, Identity and Theme owners each fill a returned copy would put two or more owners on one file, against CDR-016 'no file is edited by two owners'.",
+     "INFERRED routing for blocker 2: OWNER_ACTION_REQUIRED for the Track A/common identity owner. The PIW should first route or assign a Track A identity Work, because none is active. The PIW and Chart do not implement it.",
+     "INFERRED exact artifact: one owner-path receipt, for example implementation/reports/identity/TARGET19_IDENTITY_RECEIPT_v1.json on a Track A owner branch, containing: contract_ref {path, commit b8e39a2, sha256 7fc8e433...}; security_namespace 'investment_system.contracts.global_universe.SecurityIdentity'; identity_revision_id; issuers[]; securities[]; listings[], each in exact dataclass field names plus evidence {source path, sha256, available_at aware, evidence_id}; company_links[] {legacy company_id (both 'stry' and 'syk'), issuer_id, security_id, evidence, status}; rows[19] {source_row_key, issuer_id, security_id, security_type, share_class_or_form, listing_ids[]}; decisions[] for TEL venue (C-08/D-29), ASML form, GOOGL class and the GEV WI interval. Optionally add a Track A IdentityLookup implementation over this file as Chart's deterministic read route.",
+     "INFERRED completion criteria, machine-checkable: (1) every record constructs through the canonical dataclasses with no exception; (2) referential integrity: listing.security_id exists, security.issuer_id exists, row issuer equals security issuer; (3) exactly the 19 source_row_keys of the request with sha256 4d0e163d..., each with a unique security_id and at least one listing active on the decision date; (4) no security_id or listing_id equals a ticker or company_id, and each security carries at least one external identifier (ISIN/CUSIP/local code); (5) US MICs consumable by the PR #18 binder (XNAS/XNYS); (6) projecting rows into the 8 A-S2 slots gives Chart preflight A-S2 findings = 0 with no DUPLICATE_SECURITY or other ERROR; (7) every evidence sha256 resolves to committed bytes and available_at <= decision_time.",
+     "INFERRED dependency order: (a) PIW routes and assigns the Track A identity owner; (b) the owner makes and records D2 decisions (namespace, TEL venue, ASML form, GOOGL class, stry/syk link); (c) records plus evidence for the 19 rows, keyed by source_row_key, which can run in parallel with A-S1 because they do not need admitted_target_row_id; (d) Chart (as file owner) projects them into its packet and reruns the preflight, and A-S3 assignment then binds to the root plus this security map; (e) the listing part feeds Lane B B02 and the PR #18 session joins (US only). JP/KR sessions need a separate owner."
+    ],
+    "unverified": [
+     "No dated listing facts (valid_from/valid_to) are established in the repository for any of the 19, apart from the GEV when-issued/regular-way dates in Chart's capture of a GE press release. Historical first-listing dates for 8035 (TSE) and 042700 (KOSPI) are UNKNOWN.",
+     "Whether the user means Tokyo Electron's TSE domestic shares (8035, JPY) or the OTC ADR TELWY. D-29 leaves this open. Under CDR-015 this is probably a D2 decision for the identity/Portfolio owner, not a user D3, but that is my inference.",
+     "Whether ASML should be modelled as one ordinary-share security with two listings (XAMS/EUR and XNAS/USD) or as two securities (form-specific ISINs). The contract allows either; it is an owner decision.",
+     "Whether the needed primary sources (SEC, issuer IR, JPX, KRX/DART) are free. KRX Data Marketplace and DART require registration or an API key. No paid D3 is expected, but this is not established.",
+     "Whether unpublished owner data (an off-repository security master) exists. I searched only the repository refs.",
+     "Whether Track A's identity contract counts as Frozen. The Global-Korea doc says PROVISIONAL IMPLEMENTED CONTRACT, while Track A REAL-DATA is FROZEN_VERIFIED. Adding revision/evidence fields would be the owner's versioned change.",
+     "Which namespace Track B (frozen) ModelPortfolioSnapshot security_id values should share. The proposal that Track B SecurityRecords reuse the common security_id strings without code change is my inference."
+    ],
+    "summary": "Blocker 2 (Security mapping, A-S2) routes to the Track A common identity owner as OWNER_ACTION_REQUIRED. No identity Work is active, so the PIW has to assign one first.\n\nThe common Issuer -> Security -> dated Listing contract is defined in canonical b8e39a2 `implementation/src/investment_system/contracts/global_universe.py` (sha256 7fc8e433...). It is byte-identical on all 53 Investment-System refs, and Track A owns it (RIG Arch v0.1 line 50; rig/gate.py IdentityLookup). It is not defined in Entity Metadata #7, Producer Infrastructure #9, QGV #10/#44 or Track C.\n\nNo mapping rows exist for any of the 19 constituents in any branch or PR. The only constructions of IssuerIdentity, SecurityIdentity or ListingIdentity are in tests, and no production IdentityLookup exists. What does exist is company-level only:\n- QGV alias rows for all 19.\n- Track A Top-500 CIK membership for 16 of them; ASML, TEL and Hanmi are absent.\n- PR #7 search metadata.\n\nThree specific issues for the owner:\n- **Stryker:** the same company has two different company_ids, 'stry' in QGV/Chart and 'syk' in Track A.\n- **Tokyo Electron:** no venue is assigned (C-08/D-29: TSE 8035 or the ADR TELWY).\n- **ASML:** markets/us.py calls its NASDAQ line an 'ADR', but the issuer's own page says those are registered ordinary shares with an ISIN different from the Euronext one.\n\nThe contract can express the Japanese and Korean cases (XTKS/JPY, XKRX/KRW, the ADR as a separate security). The PR #18 session binder handles US exchanges only.\n\nI ran Chart's preflight. On the current request it returns exit 3 with 152 missing A-S2 slots. With synthetic placeholder fills in the A-S2 slots only, those findings drop to 0 and a duplicated security_id is caught. That shows the preflight checks slot shape only, not content, so an identity-side checker is needed.\n\nChart's A-S2 slots leave out listings; dated listings belong to its Lane B items B01/B02. CDR-016 asks for both, and one owner receipt can serve both. Chart's per-row owner_return object mixes the A-S1, A-S2 and A-S3 slots, so the identity owner should return a separate receipt that Chart projects into its packet. Otherwise more than one owner would edit the same file.\n\nThe exact receipt fields, completion criteria and dependency order are in facts."
+   }
+  },
+  {
+   "label": "read-product_web",
+   "agentId": "a10eb83879362209b",
+   "result": {
+    "owner_identity": "Read-only analyst (label read-product_web) for the Primary Integration Writer, Claude Code session session_019znshzTYgyBnuuBmSxdPFN. Nothing was pushed, committed, commented, reviewed or edited on any branch or PR. No FPIA audit was run. All work stayed in /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-product_web/ (its own clone is at .../read-product_web/repo). This report gives no answer on behalf of any owner. No Product/P01 or Web owner answer to the A/B/C question, or to write-set acceptance, exists anywhere in the repository or on any PR.",
+    "active_work": "CDR-016 blocker 4 (A-G1 Product authority) and the Web/API part of blocker 5 (A-G2 write set), for Chart PR #41.\n\nFresh heads, read 2026-10-05 about 04:05Z:\n- canonical b8e39a2\n- global-handoff 5e33b30 (CDR-016 recorded)\n- PR #41 has moved past the 74df678 checkpoint to 1e8c24c. The only change is automation/STATE.json: the lease was renewed, and its reason reads \"Current user authorizes durable Global-only dependency intake and automatic approved-write-set production continuation\". There is no semantic change to the gates, and #41 still reports 6 OPEN / 0 CLOSED.\n- PR #42 has moved from 523e702 to 11d2f25 (FPIA fix round 3). At read time its check runs were 7 total: 3 success, 4 pending.\n- Unchanged: #5 a4e49c8, #9 f8af596, #17 21039a0, #19 c3dbf8a, #34 a3cbf13, #36 fb086ea. Their heads have CI successes of 2/2, 1/1, 2/2, 3/3, 2/2 and 3/3.\n\nBottom line:\n- The current P01 contract text does not address user-authored TARGET portfolio visualization.\n- The code gates only research-lifecycle content.\n- No owner has answered A, B or C.\n- Blocker 4 should be routed as an owner action to the P01 implementation owner on PR #17. That PR is watched by Chart.\n- Blocker 5 Web/API acceptance falls to Integration (PIW) for new-file and integration-base acceptance. Chart must not touch app.js, locale.js, style.css or index.html, because PIW proposals #34/#36 already edit them. extractors.py is only for the P01 owner, and web_mvp.py and assembler.py stay protected.",
+    "branches_prs": [
+     "#5 feature/web-mvp-v1 @ a4e49c83f5783c19617fb609b8f95b179cb13e84 (Draft, base canonical; Web MVP owner; FREEZE_READY; last updated 2026-09-28; 0 comments, 0 reviews; NOT in Chart's watch list)",
+     "#6 feature/global-language-search-v1 @ eda65bf (on #5; Language/Search; NOT watched by Chart)",
+     "#9 feature/producer-infrastructure-v1 @ f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36 (on #6; holds P01_APPROVAL_2026-10-02.md; owner Claude session session_01UNYysALcG5d5GrjRqufk7Z, IDLE; NOT watched by Chart)",
+     "#17 feature/p01-research-publication-v1 @ 21039a0a7f9677b123abd8587fd8d89784a73a3c (on #9; P01 publication layer; 0 comments, 0 reviews; WATCHED by Chart)",
+     "#19 feature/qgv-invalidation-binding-v1 @ c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e (on #17; QGV invalidation binding; 0 comments, 0 reviews; WATCHED by Chart)",
+     "#27 integration/a1-adoption/pr17-p01 @ dc7daf7 (PIW C-28 re-pin proposal for #17; adds PROTECTED_DIGEST_C28_ADOPTED)",
+     "#29 codex/web-producer-integration-readiness-2026-10-03 @ d044458 (Codex; the only consumer of publication_envelope: a fixture plus a browser test)",
+     "#34 integration/web/research-render-guard-v1 @ a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a (PIW-owned Web proposal on #9; edits app.js, locale.js; WATCHED by Chart)",
+     "#36 integration/web/production-state-presentation-v1 @ fb086eac4321140493ce554a541343cebbb81ed6 (PIW-owned, on #34; edits app.js, index.html, locale.js, network-bridge.js, style.css; WATCHED by Chart)",
+     "#41 codex/chart-contract-mcp-api-v0-1 @ 1e8c24c6f77030425b3dbf59ef8aa6539cafd748 (fresh; was 74df678; base canonical b8e39a2; Chart owner, a Codex/ChatGPT conversation)",
+     "#42 integration/fpia-hardened-v1 @ 11d2f25ef8bef3459ca969f50eec190099f15ecb (fresh; was 523e702; FPIA fix round 3; checks 3 success / 4 pending at read time)",
+     "integration/global-handoff-v1 @ 5e33b30ce47b1875ae3b91fb3ba25d3158947e66"
+    ],
+    "handoff_paths": [
+     "pr/41:implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md (Chart's A-G1/A-G2 owner packet; minimum owner receipt is 6 items)",
+     "pr/41:implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json",
+     "pr/41:implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/governance/IMPLEMENTATION_PATH_MATRIX.json (v0.4 write set, including app.js/locale.js/style.css MODIFY; narrowed in v0.5)",
+     "pr/41:implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md (gate table: A-G1, A-G2)",
+     "pr/41:implementation/experiments/chart-contract-v0.1/automation/STATE.json (watch selectors: PRs 41, 17, 18, 19, 34, 36, 42, 44)",
+     "PR #42 issue comment 5986162506 (Chart handoff; body sha256 914a297f…; asks for A-G1/A-G2 routing)",
+     "pr/17:implementation/docs/research_publication/STATUS.md",
+     "pr/19:implementation/docs/invalidation_binding/STATUS.md",
+     "pr/5:implementation/docs/web_mvp/STATUS.md and CONTRACT.md",
+     "origin/integration/global-handoff-v1:implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md §5 item 1c (web_mvp.py hardening needs a #17 digest repin; not to be done autonomously, per the user on 2026-10-03)",
+     "Scratch evidence: /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-product_web/{probe_p01_target.py, probe_portfolio_route.py, p01digest.py, probe_t42.json, probe_t19.json}"
+    ],
+    "contracts_and_artifacts": [
+     {
+      "path": "implementation/docs/producer_infrastructure/P01_APPROVAL_2026-10-02.md",
+      "ref": "#9 f8af596 (blob ab1a66a); #17 21039a0 (blob 3f23081, sha256 0c8f6946…, which adds an append-only follow-up section)",
+      "what": "P01 policy package P01-A..J. Status APPROVED / ACTIVE_POLICY, approved 2026-10-02T17:08:01+09:00. Research-display, Frozen and Live grants are all NONE.",
+      "relevance": "This is the authority text for A-G1. Its subjects are QGV #10, Macro #12, Leaderboard #14, Technical #15 'and later producers'. Portfolio appears only as an invariance ('does not recalculate ... portfolio action'). User-authored, TARGET or Model Portfolio content is not mentioned."
+     },
+     {
+      "path": "implementation/docs/producer_infrastructure/PROPOSAL_P01_RESEARCH_DATA_STATE.md",
+      "ref": "#17 21039a0",
+      "what": "Original proposal, titled 'Web data state for research / provisional producer outputs'.",
+      "relevance": "Sets P01's scope as research and provisional producer output only."
+     },
+     {
+      "path": "implementation/docs/research_publication/CONTRACT.md + STATUS.md",
+      "ref": "#17 21039a0 (CONTRACT sha256 f3c1442f…)",
+      "what": "PUBLICATION_ENVELOPE v1. Pipeline: persisted document, then structural extractor, then fact, then pure predicate, then envelope. publication_mode is NOT_AVAILABLE or DISPLAY_RESEARCH. There are 4 extractor shapes. RESEARCH_DISPLAY_ACTIVE=NO.",
+      "relevance": "Exact subject definition: subject_sha256 equals the stored semantic hash of one of the 4 registered shapes. Any other document 'matches zero extractors and is refused'. No P01 decision register file exists; P01 decisions live only in the approval record and these files."
+     },
+     {
+      "path": "implementation/src/investment_system/publication/{extractors,facts,predicate,envelope,authorization}.py",
+      "ref": "#17 21039a0; byte-identical at #42 11d2f25",
+      "what": "_EXTRACTORS = qgv, leaderboard, macro, technical. ACTIVE_AUTHORIZATIONS=(). GRANT_KINDS = RESEARCH_DISPLAY, FROZEN, LIVE. attach_publication_envelope takes no grant argument.",
+      "relevance": "Predicate: decide(fact, ACTIVE_AUTHORIZATIONS). Denial is publication_mode NOT_AVAILABLE with reasons such as RESEARCH_DISPLAY_GRANT_NONE, RESEARCH_BYTES_WITHHELD, STALE_DOES_NOT_FALL_BACK..., SYNTHETIC..., BLOCKED_NOT_A_SCORE. Promotion to LIVE, FROZEN_SNAPSHOT, OFFICIAL, VALIDATED or RESEARCH raises PromotionForbidden."
+     },
+     {
+      "path": "implementation/docs/invalidation_binding/CONTRACT.md + publication/invalidation.py, qgv_binding.py",
+      "ref": "#19 c3dbf8a",
+      "what": "RESEARCH_INVALIDATION_EVENT_V1 chain resolver plus a QGV composite binding. It cites 'AUTH-P1..P4, QGV composite subject option C, INV-P1..P8' as already approved.",
+      "relevance": "Invalidation and denial semantics: the current state is valid only with a unique visible CLEAR head. INVALID_CHAIN and AMBIGUOUS fail. Replay applies only when available_at <= decision_time. qgv_binding is QGV-specific and rejects Chart input; resolve_target is generic mechanics only. The text of AUTH-P*/INV-P* exists nowhere in the repository; only this one-line citation does."
+     },
+     {
+      "path": "implementation/tests/test_p01_research_publication.py::test_protected_engine_bytes_are_unchanged",
+      "ref": "#17 (pin 1d6c56e4…); #27/#30+/#42 state-exact pins PRE_ADOPTION 1d6c56e4bcf356758ecec8c0524bf2a345eb99acd568278e0366599f3dd2f259 and C28_ADOPTED e6de46714f4405b52d4b25a418cc4081ff6df9d8891f332f59cc47e5ccc6c909",
+      "what": "Seven-file P01 protected digest over: qgv/pipeline.py, qgv/leaderboard.py, qgv/book.py, technical/engine.py, macro/engine.py, product/web_mvp.py, producers/assembler.py.",
+      "relevance": "Recomputed: #9/#17/#19/#34/#36 give 1d6c56e4; #30/#38/#40/#42 give e6de4671. web_mvp.py blob is 10ad8c7624a0 on every ref from #9 through #42. Any Chart edit to web_mvp.py or assembler.py needs a #17-lineage repin."
+     },
+     {
+      "path": "implementation/docs/web_mvp/CONTRACT.md + STATUS.md",
+      "ref": "#5 a4e49c8",
+      "what": "Web MVP v1. Owner scope: 'presentation/navigation/read-only aggregation/personal cockpit'. FREEZE_READY.",
+      "relevance": "Clauses that bind a Chart Web/API write set: 'Local interests/groups are explicit user organization only; no allocation, broker, scoring, or Official logic'; 'No new AI API, auth, payments, cloud scheduler or service'; W-D02 six routes; INTEGRATION_REQUIRED 1 ('Integration owner merges ...') and 5 ('Hosting/access choice ...'). The PR #5 body says 'Integration owner: normal-merge after review ... No additional feature expansion.'"
+     },
+     {
+      "path": "implementation/src/investment_system/product/web_mvp.py build()",
+      "ref": "#42 11d2f25 (sha256 870fd288…)",
+      "what": "Copies every web_assets file with suffix .html/.css/.js that does not start with research- or network-.",
+      "relevance": "Ran a sandbox build with target-theme.html, target-theme-chart.js and target-theme.css added: all three were copied, rc=0, and web_mvp.py was unchanged. An additive standalone page needs no protected edit."
+     },
+     {
+      "path": "implementation/src/investment_system/producers/registry.py DEFAULT_UNAVAILABLE['portfolio'] + adapters.py + contracts/models.py PortfolioSnapshot/Holding",
+      "ref": "#42 11d2f25 (registry/adapters from #9; models from canonical)",
+      "what": "The schema-1 portfolio section is NOT_AVAILABLE with PORTFOLIO_NO_ACTUAL_HOLDINGS and the note 'B5/B6: Track B P1+ not started; Official profiles need Track C'. Its upstream is PortfolioSnapshot, whose Holding has company_id, ticker and target_weight as float.",
+      "relevance": "An existing non-P01 Product route exists, but it is keyed on company_id/ticker with float weights. That is not Chart-compatible, because CDR-016 forbids ticker-only identity. It is owned by Producer Infra and Track B, not P01."
+     },
+     {
+      "path": "Chart portfolio_reference.json",
+      "ref": "pr/41 (sha256 05f38b9e…)",
+      "what": "19-holding TARGET reference with data_kind USER_SPEC_REFERENCE, weight_basis TARGET and null security_id. 15 of the 19 company_ids are in the frozen Universe.",
+      "relevance": "Probe input only. It is not an admitted root."
+     }
+    ],
+    "protected_paths": [
+     "implementation/src/investment_system/product/web_mvp.py: in the P01 seven-file digest and pinned by tests/test_web_mvp.py. Changing it needs a #17-lineage repin. GCH §5 1c says it is not done autonomously (user instruction of 2026-10-03). CDR-016 §13 forbids arbitrary changes to another owner's protected contract.",
+     "implementation/src/investment_system/producers/assembler.py (seven-file digest)",
+     "implementation/src/investment_system/{qgv/pipeline.py, qgv/leaderboard.py, qgv/book.py, technical/engine.py, macro/engine.py} (seven-file digest)",
+     "implementation/src/investment_system/publication/authorization.py: ACTIVE_AUTHORIZATIONS=(). Activating a grant is the P01/grant owner's call and is outside Chart and PIW scope.",
+     "implementation/src/investment_system/publication/predicate.py: P01 policy predicate; relaxation is prohibited.",
+     "implementation/src/investment_system/publication/extractors.py: P01-owned. Only the P01 owner may add a Target extractor, and only if it chooses answer A. Any change alters the Track C package code_hash.",
+     "implementation/docs/producer_infrastructure/P01_APPROVAL_2026-10-02.md: append-only.",
+     "implementation/src/investment_system/product/web_assets/{app.js, locale.js, style.css, index.html, network-bridge.js}: edited by PIW-owned #34/#36 (and the #5 lineage). Under CDR-016 Chart must not edit them.",
+     "implementation/src/investment_system/personal/*: Track B P0 FROZEN.",
+     "Any new or changed package .py file (for example product/chart_api.py or charts/*.py) changes the Track C whole-package code_hash. FPIA must report CODE_IDENTITY_DIVERGED and must not normalize it."
+    ],
+    "watched_channels": "The Chart event automation 'Chart PR 이벤트 재개' (id 6ac2eeedb21c81919f04168d69672f0a, condition_watch) watches PRs [41, 17, 18, 19, 34, 36, 42, 44] for commits, reviews and comments. 'Chart CI 후속 확인' (id 6ac2ef0621908191909a27af4c91f101) runs hourly. Source: pr/41 automation/STATE.json @ 1e8c24c.\n\nPRs #5, #6 and #9 are NOT watched, so a Web MVP owner answer posted on #5, or anything posted on #9, would not wake Chart. A P01 owner receipt committed or commented on #17 or #19 would wake it. Web/Integration acceptance posted on #34, #36 or #42 would wake it.\n\nGlobal-branch-only commits are not in the PR selectors. The renewed lease's reason claims 'durable Global-only dependency intake' is now authorized, but no Global watcher appears in automations_current_inventory.\n\nOwner Works:\n- P01 (#17/#19): no session ID is recorded in the GSI or the scoped STATUS. Commits are authored by 331178773+kco994553-star@users.noreply.github.com. list_sessions shows no Claude Code session for those branches. Both PRs have 0 comments and 0 reviews.\n- Producer Infrastructure (#9): session_01UNYysALcG5d5GrjRqufk7Z, IDLE/completed, last update 2026-10-02T17:25Z.\n- Web MVP (#5): commit identity kco994553@gmail.com, which #6 and #41 also use. No Claude Code session; idle since 2026-09-28.\n- Web proposals #34/#36: PIW session_019znshzTYgyBnuuBmSxdPFN, per the Claude-Session trailers.\n- Chart: a ChatGPT/Codex conversation (automation conversation_ids 6ac21ce4-…, 6ac2f2a6-…).",
+    "facts": [
+     "VERIFIED (read): The P01 contract text never addresses user-authored TARGET portfolio visualization. Quoted clauses:",
+     "  (1) The PROPOSAL title is 'PROPOSAL P01 — Web data state for research / provisional producer outputs' and says 'Without a state for it, real research outputs cannot reach the Web at all.'",
+     "  (2) The APPROVAL 'Current producer publication' table lists only QGV #10, Macro #12, Leaderboard #14 and Technical #15.",
+     "  (3) P01-A..F: 'No QGV-only exception. The same contract applies to Macro, Technical, Leaderboard, and later producers.' This is the only extensibility clause.",
+     "  (4) P01-G: 'Publication does not recalculate score, rank, regime, zone, or portfolio action.'",
+     "  (5) P01-J: 'must not change or recompute ... Universe, portfolio action, or Track C selection.'",
+     "  (6) research_publication/CONTRACT.md: 'This layer does not score, rank, select, or import QGV, Leaderboard, Macro, Technical, Portfolio, or Track C engines.' Also: 'A missing Yahoo-style or other document matches zero extractors and is refused.'",
+     "  (7) publication_mode allows only NOT_AVAILABLE or DISPLAY_RESEARCH, and 'DISPLAY_RESEARCH is not Official, Validated, Promoted, LIVE, or investment-ready.'",
+     "  The words user, personal, TARGET, allocation, bucket and theme do not appear as publication subjects in any P01 document on #17. Portfolio appears only as an invariance target.",
+     "VERIFIED (ran probe_p01_target.py on extracted trees #42 11d2f25 and #19 c3dbf8a; Track C imports blocked; 0 evl modules loaded):",
+     "  - extract(Chart portfolio_reference.json) and extract(a ChartDocument-like wrapper) both raise ExtractionError 'persisted document matched 0 publication extractors'.",
+     "  - attach_publication_envelope(bundle, [chart_doc]) raises the same ExtractionError.",
+     "  - ACTIVE_AUTHORIZATIONS is () before and after the run; the summary is research_display/frozen/live all NONE.",
+     "  - A hand-built TARGET fact gives decide() = NOT_AVAILABLE ['RESEARCH_DISPLAY_GRANT_NONE']. With an in-memory hypothetical RESEARCH_DISPLAY grant (never persisted) it gives DISPLAY_RESEARCH ['DISCLOSURE_READY']. The only success label P01 can produce for TARGET content is a research-display label.",
+     "VERIFIED (ran probe_portfolio_route.py on #42 and #19): the P01 gate inside the producer contract (ResearchStatusError) fires only for methodology.status in RESEARCH_STATUSES {IDEA, PROVISIONAL, PROVISIONAL_INITIAL_PRIOR, PROVISIONAL_RESEARCH, RESEARCH}.",
+     "  - A portfolio-section PRODUCER_SNAPSHOT with a non-research status (USER_DEFINED), validation PASS and synthetic=false is accepted as FROZEN_SNAPSHOT with no P01 involvement. web_mvp.validate_bundle also accepted a TARGET-only FROZEN_SNAPSHOT portfolio section.",
+     "  - So under current code, whether P01 applies depends on how the TARGET's lifecycle is classified, and the contract does not decide that.",
+     "VERIFIED: In the #42 11d2f25 tree, no production code reads publication_envelope. app.js and the other web_assets have no reference. The only consumers are tools/build_producer_contract_web_fixture.py and producer_contract_web_browser_test.js from Codex #29. resolve_target/resolve_binding have no consumer outside publication/. So no live P01 read route to the Web exists. The nominal route is export, then attach_publication_envelope, then a top-level data.json key that 'only a new client interprets' (P01-H).",
+     "VERIFIED: Chart's 18 authority source pins (EXISTING_AUTHORITY_INTERFACE_DIAGNOSTIC_v0.5.json, taken at 523e702) are 18/18 byte-identical at the fresh #42 head 11d2f25. Chart's A-G1 diagnostics are therefore still current at the new FPIA head.",
+     "VERIFIED: pytest on test_p01_research_publication.py, test_qgv_invalidation_binding.py and test_web_mvp.py gave 37 passed at #42 11d2f25 and 37 passed at #19 c3dbf8a. test_web_research_guard.py, test_web_state_presentation.py and test_producer_infrastructure.py gave 50 passed at #42.",
+     "VERIFIED: Seven-file digest is 1d6c56e4… at #9, #17, #19, #27, #29, #34 and #36, and e6de4671… (C28-adopted) at #30, #38, #40 and #42. web_mvp.py blob is 10ad8c7624a0 on every ref from #9 through #42. On #5 the blob is 4d4c436812b9, because #9 commit bcfdcd2 changed web_mvp.py. Canonical and Chart #41 contain neither web_mvp.py, web_assets/ nor publication/; merge-base(#41, #42) = b8e39a2.",
+     "VERIFIED: A sandbox copy of the #42 src and reports, with target-theme.html, target-theme-chart.js and target-theme.css added, built with the unchanged web_mvp.build (rc=0). All three new assets were copied and web_mvp.py bytes were unchanged.",
+     "VERIFIED: No open PR (#4–#44) contains web_assets/target-theme*, product/chart_api.py, tools/serve_chart_api.py, investment_system/charts/ or contracts/chart.py. The new Chart candidate paths have no other writer.",
+     "VERIFIED: #34 changes app.js and locale.js (plus tests/tools/workflow) relative to #9. #36 changes app.js, index.html, locale.js, network-bridge.js and style.css relative to #34. The v0.4 Chart matrix proposed MODIFY on app.js, locale.js and style.css, which would make a second writer on PIW-owned files. The v0.5 packet narrowed this to a standalone page 'without editing app.js or index.html navigation'.",
+     "VERIFIED: app.js at #5 and at #36 still renders pct(h.actual_weight ?? h.target_weight). Its label reads '모델 비중' when actual is null in the portfolio list; the company card shows it unlabeled. This is a Web-line defect the Chart packet flags as owner-owned.",
+     "VERIFIED: PRs #5, #9, #17, #19, #34, #36 and #41 have 0 issue comments and 0 reviews. PR #42 has exactly one comment, the Chart handoff 5986162506. No Product/P01 or Web owner A/B/C or acceptance receipt exists on any branch or PR.",
+     "VERIFIED: The Personal P0 contracts on canonical (personal/*.py) contain no display, publication, dashboard or grant terms. The Personal Layer architecture handoff designs a 'Personal Dashboard' (P5 UI) and ModelPortfolioSnapshot(security_id, target_weight, …) with 'target_weight != order'. Track B P1+ is NOT_STARTED.",
+     "VERIFIED: Producer registry DEFAULT_UNAVAILABLE['portfolio'] is ('PORTFOLIO_NO_ACTUAL_HOLDINGS', 'B5/B6: Track B P1+ not started; Official profiles need Track C'). The existing schema-1 portfolio route is owned by Producer Infra and Track B and is keyed on company_id plus ticker with float target_weight, so it does not meet CDR-016's identity rule.",
+     "ROUTING PACKET for blocker 4 (A-G1). The owner is the P01 implementation owner (#17/#19 lineage), with Producer Infra (#9) consulted only if the schema-1 portfolio route is chosen.",
+     "  Required artifact: a small receipt committed on the #17 branch (or a successor stacked on it), for example implementation/docs/research_publication/TARGET_APPLICABILITY_RECEIPT_<date>.json plus a .md, with these keys:",
+     "  - answer: A, B or C; decided_under: CDR-015 D2; policy_ref: P01_APPROVAL blob 3f23081 @ 21039a0.",
+     "  - For A: subject definition (extractor shape, plus the subject_sha256 preimage rule bound to an A-S1 root revision); read route (module, function, and the data.json key or endpoint); predicate (decide plus grant kind); invalidation target and resolver; denial tokens; who issues the grant (grants stay NONE until an explicit event); the files the P01 owner itself would change (extractors.py).",
+     "  - For B or C: the minimal contract, meaning subject identity, authority record kind, current-authority clock and invalidation (reusing resolve_target mechanics), denial presentation (reusing NOT_AVAILABLE / web_mvp.unavailable with no new schema-1 state), and an explicit statement that source/data rights are separate.",
+     "  Acceptance checks (machine-checkable):",
+     "  - The receipt exists at the exact path, the answer is one of A, B, C, and every required key is non-null.",
+     "  - For A, extract(chart_subject) returns exactly 1 fact at the owner head.",
+     "  - ACTIVE_AUTHORIZATIONS is unchanged unless a separately recorded explicit grant event exists.",
+     "  - The seven-file digest stays at e6de4671 (C28-adopted) or 1d6c56e4 (pre-adoption).",
+     "  - test_p01_research_publication.py and test_qgv_invalidation_binding.py pass.",
+     "  Dependency: the A/B/C answer does not depend on A-S1, A-S2 or A-S3, so it can proceed now in parallel. Binding the subject hash does depend on A-S1 (root revision).",
+     "ROUTING PACKET for the Web/API part of blocker 5 (A-G2), as an owner matrix:",
+     "  (a) web_assets/target-theme.html, target-theme-chart.js, target-theme.css (ADD): Chart writes them on its own branch. Acceptance is Integration (PIW), because the Web MVP owner froze #5 ('No additional feature expansion') and delegated merging to the Integration owner. No P01 digest impact and no code_hash impact.",
+     "  (b) app.js, locale.js, style.css, index.html, network-bridge.js (MODIFY): not Chart. These are PIW #34/#36 proposals and the #5 lineage. Any cockpit link, or the actual_weight ?? target_weight fix, belongs to the Web line owner.",
+     "  (c) product/chart_api.py (ADD, package Python): Chart writes it. PIW accepts it, with merge-result FPIA (CODE_IDENTITY_DIVERGED expected). Its authority semantics come from the A-G1 receipt.",
+     "  (d) tools/serve_chart_api.py (optional ADD): this is a 'service' plus a hosting choice, which conflicts with the Web MVP contract ('No new ... service'; INTEGRATION_REQUIRED 5). Recommend leaving it out of the first slice; deployment is Integration's D2.",
+     "  (e) publication/extractors.py: P01 owner only, and only under A.",
+     "  (f) web_mvp.py and producers/assembler.py: excluded (protected digest, GCH 1c, CDR-016 §13).",
+     "  Integration base: because Chart's base (canonical) lacks Web and P01, the accepted base must contain #5 → #6 → #9 (→ #17 → #19) and #34/#36, for example the #42 lineage. Selecting it is PIW's A-G2 decision and depends on G3 FPIA closure."
+    ],
+    "unverified": [
+     "INFERRED: The P01 owner's likely answer is C (the current contract cannot decide), which would lead to a B-style minimal contract. Reasons: P01 is scoped to research and provisional producer outputs; its only success mode is DISPLAY_RESEARCH; whether a user-authored TARGET counts as a 'later producer' or as a research lifecycle is not stated. This is an analyst reading only. No owner has answered, and none is claimed.",
+     "INFERRED: The P01 owner Work identity. #17 and #19 commits use the 331178773+kco994553-star noreply identity, which suggests a GitHub web or connector agent such as Codex or ChatGPT, not a Claude Code session. No session or Work ID is recorded in research_publication/STATUS.md, invalidation_binding/STATUS.md or the GSI. Whether that Work is still active or reachable is unknown.",
+     "INFERRED: The Web MVP owner (#5) is a dormant agent Work that shares the kco994553@gmail.com commit identity with #6 and Chart #41. Its PR body and W-D10 mention GitHub connector commits. Whether it would accept write sets now, or whether the PIW is the de facto Web acceptor under CDR-015, is not recorded in any CDR or PIW decision record. It needs a PIW_DECISION_RECORDS entry if the PIW takes that role.",
+     "INFERRED: Whether a standalone target-theme page outside the six cockpit routes (W-D02) counts as a change to the Web MVP protected contract under CDR-016 §13. It is additive and needs no protected file edit, but the Web MVP contract's 'no allocation ... logic' clause concerns local interests/groups, and its relevance to a read-only TARGET allocation view is an owner judgement.",
+     "NOT VERIFIED: the text of AUTH-P1..P4, 'QGV composite subject option C' and INV-P1..P8. It is cited as approved in invalidation_binding/CONTRACT.md:3, but no file on any ref contains it.",
+     "NOT VERIFIED: whether Chart's renewed lease ('durable Global-only dependency intake') adds a watcher on integration/global-handoff-v1. automations_current_inventory still lists only the PR-event and hourly-CI automations.",
+     "NOT RUN: Chart's receipt_preflight.py. It always reports 6 OPEN by design and takes no A-G1/A-G2 receipt input. Also not run: any FPIA audit (excluded by instruction), a browser E2E of a target-theme page, and the full regression.",
+     "NOT VERIFIED: the outcome of PR #42 checks at 11d2f25; 4 of 7 were still pending at read time."
+    ],
+    "summary": "Blocker 4 (A-G1, Product authority) cannot be closed with what is in the repository, and no owner has answered A, B or C. The P01 contract gives no answer for user-authored TARGET display.\n\n**What P01 covers.** The approved P01 package (P01_APPROVAL_2026-10-02.md on #9/#17; research_publication CONTRACT/STATUS on #17 @ 21039a0; invalidation binding on #19 @ c3dbf8a) covers research and provisional producer outputs only:\n- Its subjects are QGV, Macro, Leaderboard, Technical 'and later producers'.\n- The extractor registry has 4 shapes.\n- The only success mode is DISPLAY_RESEARCH.\n- Grants are all NONE.\n- Portfolio appears only as something publication must not recompute. Nothing in the text addresses user-authored TARGET or allocation visualization.\n\n**What the probes showed** (run at #42 11d2f25 and at #19):\n- Every Chart TARGET document is refused with 'matched 0 publication extractors'.\n- The production envelope is deny-only.\n- A hypothetical grant could only label TARGET content 'research display'.\n- The code's P01 gate fires only on research-lifecycle statuses. A non-research portfolio snapshot reaches FROZEN_SNAPSHOT with no P01 involvement, through the Producer Infra / Track B portfolio route. That route is keyed on company_id plus ticker with float weights, so it is not CDR-016-compatible.\n- No production code reads the P01 envelope; no live read route exists.\n\n**Routing.** This is an owner action. The P01 implementation owner on PR #17, a channel Chart watches, should commit a small A/B/C receipt using the keys and checks listed in the facts. The A/B/C answer does not depend on A-S1..A-S3, so it can proceed in parallel now.\n\n**Web/API write set (blocker 5, A-G2).**\n- New target-theme.html/.js/.css: Chart writes; Integration (PIW) accepts. The sandbox build copied all three without touching the protected web_mvp.py.\n- product/chart_api.py: Chart writes; PIW accepts it together with the expected Track C CODE_IDENTITY_DIVERGED report.\n- extractors.py: P01 owner only, and only under answer A.\n- app.js, locale.js, style.css, index.html: excluded for Chart, because PIW #34/#36 already edit them.\n- web_mvp.py and assembler.py: excluded (seven-file digest; GCH 1c; CDR-016 §13). The digest is 1d6c56e4 pre-adoption and e6de4671 C28-adopted, reproduced on fresh refs.\n- An HTTP server conflicts with the Web MVP contract's 'no new service' clause.\n- The integration base must contain #5→#6→#9(→#17→#19) and #34/#36, because Chart's canonical base has no Web or P01 code.\n\n**Owner Works.**\n- P01 (#17/#19): no recorded session.\n- Producer Infra (#9): session_01UNYysALcG5d5GrjRqufk7Z, idle.\n- Web MVP (#5): a dormant agent, not watched by Chart.\n- Web proposals #34/#36: PIW.\n- Chart: a Codex/ChatGPT conversation watching PRs 41, 17, 18, 19, 34, 36, 42, 44.\n\n**Fresh drift.** #41 is now 1e8c24c (STATE.json lease only) and #42 is now 11d2f25 (fix round 3; 4 of 7 checks pending). The 18 authority pins are unchanged at 11d2f25."
+   }
+  },
+  {
+   "label": "read-qgv",
+   "agentId": "a1f120b7f546b214e",
+   "result": {
+    "owner_identity": "read-qgv: a read-only analyst for the Primary Integration Writer (Integration / Claude Main Work, session_019znshzTYgyBnuuBmSxdPFN), under CDR-016 and CDR-017. I made no pushes, commits, PR or issue comments, or branch edits, and ran no FPIA. I wrote only under /tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-qgv/: a private clone at repo/, git-archive exports at tree523/ and treeb8/, and the check script and its output. The subject is the QGV owner (Codex QGV Work, conversation 6ac230f1-0ff0-83ee-a932-45244e2c4afe). It covers PR #10 (QGV Real Producer), PR #44 (QGV Common Contract vNext, INACTIVE/SPEC-ONLY) and the no-PR scoped branch codex/qgv-missing-data-decision-gate-2026-10-05.",
+    "active_work": "VERIFIED (fresh fetch at 2026-10-05T04:14:18Z):\n- The QGV missing-data owner branch is no longer at ed907b8. It is at 4fb08a05728d83519b72a2bd995669f0cb06003a (12:39:38 KST), 8 commits after ed907b8.\n- STATE.json status is RUNNING_B4_B7_INACTIVE_CONTRACT_AND_CONSOLIDATION, with live lease token qgv-b47-muupb538, owner 'manual-B4-B7-explicit-user-approval', task 'approved-identity-invariants-and-admission-consolidation', input head 36b6b18, expiry null.\n- Next queued D2 task: QGV_AUTO_HOP1_LEGACY_METHOD_MANIFEST (READY, fingerprint 7544a737…), with a HOP2 template that is not yet bound.\n- A new ref, codex/qgv-architecture-reconciliation-review-2026-10-05, also points at 4fb08a0 and has no commits of its own.\n- PR #44 is unchanged at cb1906b and PR #10 is unchanged at 5eec129.\n- Chart PR #41 has moved past the checkpoint: 74df678 → 1e8c24c (lease renewal) → 3206906 (13:12 KST, v0.7 'dependency continuation'). It still reports 6 OPEN / 0 CLOSED and already pins 4fb08a0 as a read-only QGV dependency.",
+    "branches_prs": [
+     "canonical claude/investment-system-top500-validation-alrugm @ b8e39a2196a6d7794a04a0cd5393c68329e126ca (unchanged)",
+     "origin/integration/global-handoff-v1 @ b3532a2ebbe95310bbf222937466eb04a0211263 (CDR-017; CDR-016 at 5e33b30; CDR-015 at d92363f)",
+     "PR #41 codex/chart-contract-mcp-api-v0-1 @ 32069065a0c4 (fresh; 74df678 -> 1e8c24c -> 3206906)",
+     "PR #42 integration/fpia-hardened-v1 @ 11d2f25ef8be (moved from 523e702; zero implementation/src diff vs 523e702, only FPIA tools/tests/workflow)",
+     "PR #44 codex/qgv-common-contract-vnext-spec-2026-10-04 @ cb1906b207623168fd70f3dcdb5b30f2d82d807d (Draft, open, mergeable clean, 0 comments; CI runs 37245014376 / 37245037812 are owner-reported SUCCESS, not re-checked by me)",
+     "PR #10 ccr-db5d5960-qen9yi @ 5eec129ef81641f0bc11f5adbb43d0b2122ee24b (QGV Real Producer; GSI: REAL_DATA_VERIFIED, DEPENDENCY_BLOCKED on #9 merge order)",
+     "codex/qgv-missing-data-decision-gate-2026-10-05 @ 4fb08a05728d83519b72a2bd995669f0cb06003a (no PR; owner_pr_number null)",
+     "codex/qgv-architecture-reconciliation-review-2026-10-05 @ 4fb08a05728d83519b72a2bd995669f0cb06003a (same commit; new ref)",
+     "codex/qgv-common-contract-vnext-publication-evidence-2026-10-04 @ 11cd2f5 (PR #44 immutable publication evidence)",
+     "docs/qgv-context-policy-approvals @ b42f2be (QGV Context AP1-AP3; not related to Chart P0)",
+     "PR #19 feature/qgv-invalidation-binding-v1 @ c3dbf8a (P01 chain stacked on #17, not the QGV scoring owner)"
+    ],
+    "handoff_paths": [
+     "4fb08a0:implementation/docs/qgv_common_contract_vnext/missing_data_gate/CURRENT_HANDOFF.md (QGV scoped handoff: BINDING_DECISION_READY / INDEPENDENT_REVIEW_PASS / INACTIVE / SPEC-ONLY)",
+     "4fb08a0:implementation/docs/qgv_common_contract_vnext/missing_data_gate/DECISION_REGISTER.md (QGV scoped register: M1-M5 APPROVED_PRINCIPLE_ONLY; B1-B7 recommendations only)",
+     "4fb08a0:implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/STATE.json",
+     "cb1906b:implementation/docs/qgv_common_contract_vnext/STATUS.md and CONTRACT.md (PR #44)",
+     "5eec129:implementation/docs/qgv_producer/STATUS.md (PR #10)",
+     "3206906:implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md and EXECUTION_POLICY.md (newest Chart scoped handoff)",
+     "1e8c24c:implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md (lines 18, 67-68: QGV pin and deferral)",
+     "b3532a2:implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md (CDR-015 l.576, CDR-016 l.623, CDR-017 l.1081)",
+     "b3532a2:implementation/docs/coordination/GLOBAL_STATUS_INDEX.md (row #44 at l.114 is stale or wrong; see facts)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-qgv/qgv_chart_checks.py and qgv_chart_checks.out.json (my check receipt)"
+    ],
+    "contracts_and_artifacts": [
+     {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/approval.json",
+      "ref": "4fb08a0 (recorded in 478a7a4)",
+      "what": "User approval QCC-P01-M1-M5-PRINCIPLES-2026-10-05, approved_at 2026-10-05T09:57:52+09:00. Status: APPROVED_PRINCIPLE_ONLY for M1-M5. It lists 18 not_approved items (factor roles, N/A predicates, cutoffs, G 3-5Y, EPS->FCF, V normalization, composite, WeightOverride runtime, migration, merge and others). runtime_enabled=false. Verified sha256 65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf matches the register.",
+      "relevance": "Supersedes ed907b8's NOT_APPROVED for the M1-M5 principles. This happened before CDR-015 (12:15 KST), so the ed907b8 premise in Chart v0.6 is stale. No Chart gate consumes it."
+     },
+     {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/DECISION_PACKAGE.md",
+      "ref": "ed907b8f5a046008319cddecc6ef40b9bd6759dc",
+      "what": "The proposal M1-M5 was approved against. Verified sha256 4688ce49186906f0878809113c921eec60ed28d5291a3ba4b6b9be4a5338ae6f.",
+      "relevance": "The NOT_APPROVED baseline that Chart v0.6 pinned."
+     },
+     {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/{work_authority.json,authority_drift.json,DECISION_PACKAGE.md,INDEPENDENT_REVIEW.md,consumer_profiles.json}",
+      "ref": "36b6b18 (current at 4fb08a0)",
+      "what": "B1 = MORE_EVIDENCE_REQUIRED. B2-B7 = APPROVE_RECOMMENDED for inactive principles and reference contract only; B1_B7_approved=false. authority_drift.json records that the owner read CDR-015 at d92363f (register sha256 e4dfb353…, verified) and chose its narrower per-turn scope. consumer_profiles gives a Portfolio consumer row: 'Actual holdings are not QGV endorsement'.",
+      "relevance": "This is the QGV owner's own record on CDR-015 versus its scope. It shows the QGV owner does not treat Portfolio/holding use as depending on QGV score admission."
+     },
+     {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/STATE.json",
+      "ref": "4fb08a0",
+      "what": "Live lease 'manual-B4-B7-explicit-user-approval' (12:39:35 KST). 39 HOP1 semantic_inputs, which include qgv/portfolio.py and qgv/identifiers.py. Automations 6ac2f22087288191abd144fb4a7655f8 (PR events #44/#42) and 6ac2efbd34fc8191a60dccbbe338c291 (hourly CI).",
+      "relevance": "An edit to qgv/portfolio.py or qgv/identifiers.py would move the QGV owner's semantic fingerprint. This is the only coupling between the QGV owner and blockers 1 and 3."
+     },
+     {
+      "path": "implementation/docs/qgv_common_contract_vnext/CONTRACT.md §2 and AUDIT.md QCC-P01..P05",
+      "ref": "cb1906b (PR #44)",
+      "what": "Pins 7 V factor IDs: fundamental_value, peer_relative_value, historical_valuation, sector_context, theme_premium_discount, reverse_dcf, margin_of_safety. QCC-P04 covers V normalization and confidence. QCC-P05 covers composite and Official/Custom config binding.",
+      "relevance": "This is where Chart's deferred V, Reverse DCF, MOS and custom-weight items land in the QGV owner's queue. Scenario, valuation range and target price have no QGV item."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-design/P0_CHART_CONTRACT_AND_WIRING_v0.1.md:21",
+      "ref": "PR #41 3206906 (unchanged since the v0.1 design)",
+      "what": "'V, Reverse DCF, Margin-of-Safety, valuation ranges and scenario-target semantics are DEFERRED_TO_V_QGV_RECONCILIATION. No formula, score, unit, threshold, rubric, scenario probability or custom-weight rule is selected here... P0 composition does not require a QGV score/version to exist.'",
+      "relevance": "Chart's authoritative statement of what is deferred to QGV."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/{HANDOFF.md:21-23,EXECUTION_POLICY.md}; automation/STATE.json",
+      "ref": "PR #41 3206906",
+      "what": "Pins QGV #44 cb1906b INACTIVE/SPEC-ONLY. Pins missing-data successor 4fb08a0 as a read-only dependency: 'design/principle approvals do not adopt Chart-facing V/DCF/MOS semantics'. STATE values: forbidden_actions[9]=QGV_semantic_activation, last_observed.qgv_successor_head=4fb08a0, global_only_dependency_intake=true. Gate table owners are Portfolio, Identity, Portfolio/Classification, Product/P01, Web/Product/Integration and Integration (none is QGV).",
+      "relevance": "Chart already consumes the fresh QGV head. No QGV owner action appears in the six-gate table."
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "ref": "PR #41 1e8c24c (unchanged at 3206906)",
+      "what": "A-S1/A-S2/A-S3 request. authoritative_authored_values_source is 'QGV Portfolio · Specification v1.1.md' §2 Official Baseline. All 19 constituents cite qgv/portfolio.py and qgv/identifiers.py. dependency_exclusions excludes ACTUAL, GICS, Type, Market and any QGV score. portfolio_reference.json has qgv_version NOT_BOUND.",
+      "relevance": "The source files sit in the QGV namespace, but the gates require a Portfolio-owner root and Theme receipt, not QGV semantics."
+     },
+     {
+      "path": "implementation/src/investment_system/qgv/portfolio.py (OFFICIAL_V11_TARGETS), qgv/identifiers.py (OFFICIAL_PORTFOLIO_V11), 'QGV Portfolio · Specification v1.1.md'",
+      "ref": "b8e39a2 (byte-identical at 1e8c24c, d93c7ac, 4fb08a0, cb1906b, 523e702)",
+      "what": "sha256 prefixes: identifiers.py 38c68c1dc35546f6, portfolio.py ecb44165cb163d2e, spec d24eda232102bbb8. portfolio.py's docstring says 'official_v11 / us_working are REFERENCE_FIXTURE constructors only'. OFFICIAL_V11_TARGETS is imported by qgv/book.py, providers/catalog.py, tests/test_portfolio_ids.py, tests/test_us_track.py and tests/test_book_catalog_financial.py. Identifier.sector (Semicap/AI/BigTech/Other) has no scoring consumer in canonical src.",
+      "relevance": "This is a reference fixture, not an authoritative TARGET root. A Portfolio owner must not 'admit' a root by editing these files: that would hit the QGV owner's semantic pins and the QGV book and provider catalog."
+     },
+     {
+      "path": "scratchpad/wf19/read-qgv/qgv_chart_checks.py -> qgv_chart_checks.out.json",
+      "ref": "script sha256 724703916365e89d0efcc28bc1dce629b5fd1ea67229808e689979437d3c781d; output sha256 2d6684ee5d7a492fb516bf16a39174c768cfeb61e02d1f9f6ba6b881c363cb9c",
+      "what": "Run with: cd <scratch>/wf19/read-qgv && python3 qgv_chart_checks.py (Python 3.11.15, exit 0). C1 = CONSISTENT_REFERENCE_NOT_AUTHORITATIVE. C2 = REFUSED_NOT_REUSABLE. C3 = NO_WRITE_COLLISION_WITH_QGV_OWNER.",
+      "relevance": "The checks I actually ran on QGV-to-Chart compatibility (details under facts)."
+     }
+    ],
+    "protected_paths": [
+     "implementation/src/investment_system/qgv/** (QGV scoring semantics, Worker Contract §N). In particular qgv/portfolio.py and qgv/identifiers.py are among the QGV owner's 39 HOP1 semantic pins and must not be edited by a Portfolio, Chart or Identity owner to close A-S1, A-S2 or A-S3",
+     "QGV Portfolio · Specification v1.1.md (repository root; the authored source of the TARGET reference values; history-preserving, successor-only)",
+     "implementation/docs/qgv_common_contract_vnext/missing_data_gate/ (QGV owner_paths; single writer = QGV Work)",
+     "PR #44 tree a951276e (20 added files incl. golden_cases.json and .github/workflows/qgv-common-contract-vnext.yml); not to be edited or merged (QGV STATE protected: pr44_merge_allowed=false, canonical_merge_allowed=false)",
+     "QGV protected values: production Q/G/V, factor weights, G 3-5Y revenue-YoY proxy, EPS->FCF fallback, V normalization/metadata, (Q+G)/2 composite, WeightOverride runtime, Official Leaderboard/TrackRecord. Holdout UNCONSUMED",
+     "Chart forbidden_actions (PR #41 STATE): QGV_semantic_activation, other_owner_branch_write, Global_Handoff_write, canonical_merge, Frozen_change, Track_C_code_hash_or_P01_digest_repin",
+     "Global files (GLOBAL_*, COORDINATION_DECISION_REGISTER.md, PIW_DECISION_RECORDS.md): PIW single writer; the QGV owner and Chart treat them as read-only"
+    ],
+    "watched_channels": "QGV owner channels, from its STATE at 4fb08a0:\n- PR-event resume automation 6ac2f22087288191abd144fb4a7655f8, scoped to exactly #44 and #42.\n- Hourly CI follow-up automation 6ac2efbd34fc8191a60dccbbe338c291.\n- Both target conversation 6ac230f1-0ff0-83ee-a932-45244e2c4afe. The owner records that the CI task's chat differs from the original QGV chat, and real webhook delivery is NOT_TESTED.\n- Neither watches PR #41. The QGV owner dispositioned the Chart handoff comment 5986162506 on PR #42 as NO_ACTION_CHART_HANDOFF (binding_gate/fresh_intake.json; automation/CONTROL.md:58).\n- It reads Global only at run time (last_observed global_routing d92363f, which predates CDR-016 and CDR-017).\n\nChart channels, from STATE at 3206906:\n- Watches #17/#18/#19/#34/#36/#42/#44, the Global head (b3532a2) as material input (global_only_dependency_intake=true), and the qgv_successor_head 4fb08a0.\n\nConsequence: a change on the QGV branch already reaches Chart without any PIW relay. No new QGV→Chart channel is needed for CDR-016 §11.",
+    "facts": [
+     "VERIFIED: the Chart checkpoint is stale. 74df678 is an ancestor of the PR #41 head. The head is now 3206906 ('[chart-owner-checkpoint] adopt Global-aware automatic continuation and round-3 dependency evidence', 13:12 KST; 8 files, all under implementation/experiments/chart-contract-v0.1/). Chart still reports IMPLEMENTATION_NOT_READY with 6 OPEN / 0 CLOSED.",
+     "VERIFIED: the Chart items deferred to QGV are stated in three places: p0-design/P0_CHART_CONTRACT_AND_WIRING_v0.1.md:21 (V, Reverse DCF, Margin-of-Safety, valuation ranges, scenario-target semantics, custom-weight rules -> DEFERRED_TO_V_QGV_RECONCILIATION); p0-receipt-preflight-v0.6/HANDOFF.md:67-68 ('QGV V / Reverse DCF / MOS / scenario / custom weights remain deferred to the QGV owner'); and the v0.7 EXECUTION_POLICY.md (do not decide their production semantics).",
+     "VERIFIED: in chart_inventory.json @1e8c24c the deferred items are C01-C12 (Q/G/V breakdown, Total/attractiveness, Confidence, Historical QGV, Historical valuation, Valuation range, C07 MOS, C08 Reverse DCF, C09 scenario, C10 Target price/range, Peer comparison, Key Drivers), D08, H01, H06 (scenario targets), H08, I01 (portfolio scenario range), I09, I11, I12 (scenario calibration), I13, J01, J03 (portfolio valuation/safety margin), J07 and candidate K05. None of them is in the P0 Target Strategy Theme slice.",
+     "VERIFIED: mapping into the QGV owner queue (PR #44 CONTRACT.md §2 and AUDIT.md). V maps to the 7 pinned V IDs under QCC-P04. Reverse DCF and MOS are the V IDs reverse_dcf and margin_of_safety; today they exist only as proxy scores in qgv/raw_map.py 57-85, with no solver or range. Custom weights map to QCC-P05 (composite plus Official/Custom binding), WeightOverride runtime wiring, and binding-gate B7 ('numeric-only permitted profile mutation').",
+     "VERIFIED: no QGV owner work item covers Negative/Neutral/Positive scenario values, valuation range or target price (C06, C09, C10, H06, I01, I12). A grep of implementation/docs/qgv_common_contract_vnext at 4fb08a0 finds 'scenario' only in the sense of test scenarios. This routing gap lies outside the six P0 blockers.",
+     "VERIFIED: none of the six blockers depends on a QGV owner deliverable. The v0.7 gate table names no QGV owner. TARGET_OWNER_ADMISSION_REQUEST dependency_exclusions and portfolio_reference.json (qgv_version='NOT_BOUND') carry no QGV score. The QGV consumer design in consumer_profiles.json says for Portfolio 'Actual holdings are not QGV endorsement'. CDR-017's user wording assigns 'Portfolio Target -> Portfolio owner' and 'QGV scoring 연구 -> QGV Work' as separate owners.",
+     "VERIFIED check C1: the QGV-namespace TARGET sources and Chart's reference are mutually consistent. Spec §2, qgv/portfolio.py OFFICIAL_V11_TARGETS and identifiers.py at b8e39a2 match Chart portfolio_reference.json at 1e8c24c: 19 rows each, 0 mismatches, exact Decimal total 100.000%, buckets 반도체 장비 30 / AI·반도체 25 / Big Tech 20 / 기타산업 25 equal to the spec headers. But qgv/portfolio.py declares itself a REFERENCE_FIXTURE, all security_id values are null, and no QGV artifact is an authoritative root. Result: CONSISTENT_REFERENCE_NOT_AUTHORITATIVE. Blockers 1 and 3 stay with the Portfolio owner.",
+     "VERIFIED check C2: at PR #42 523e702, publication.qgv_binding.provenance_from_persisted refuses a Chart TARGET Theme shape with BindingContractError 'company record is not QGV_COMPANY_RESULT v1', and publication.extractors.extract raises ExtractionError 'matched 0 publication extractors'. The 523e702..11d2f25 diff has 0 implementation/src lines, so the result holds at the current #42 head. No QGV authority route is reusable for A-G1; that answer belongs to Product/P01.",
+     "VERIFIED check C3: Chart's 17-path candidate write set (v0.4 governance table) intersects none of: the QGV 39 HOP1 semantic pins, the QGV owner paths, or the qgv/ package. Only app.js and web_mvp.py overlap the QGV consumer_profiles source_evidence pins. Those are evidence pins, not QGV-owned files, so a Web change would only make QGV's B6 evidence stale. The QGV owner is not a party to the A-G2 write-set acceptance.",
+     "VERIFIED: the coupling to watch. qgv/portfolio.py and qgv/identifiers.py are both in the QGV owner's HOP1 semantic_inputs. OFFICIAL_V11_TARGETS feeds qgv/book.py, providers/catalog.py and 3 tests. A Portfolio-owner closure of A-S1 or A-S3 must therefore be an additive receipt that keeps the bytes of qgv/portfolio.py (ecb44165…), qgv/identifiers.py (38c68c1d…) and the QGV Portfolio spec (d24eda23…) unchanged. This is machine-checkable by sha256.",
+     "VERIFIED: ed907b8's NOT_APPROVED is stale for M1-M5. The user explicitly approved M1-M5 as principles only at 2026-10-05T09:57:52+09:00 (commit 478a7a4; approval.json sha256 65a360a4… verified). This was before CDR-015 at 12:15 KST.",
+     "VERIFIED: the binding gate at 36b6b18 records B1 MORE_EVIDENCE_REQUIRED and B2-B7 APPROVE_RECOMMENDED, with B1_B7_approved=false. 4fb08a0 (12:39 KST) changes only STATE.json, claiming lease 'manual-B4-B7-explicit-user-approval'. No B4/B7 approval record is committed yet.",
+     "VERIFIED: the ed907b8..4fb08a0 delta is 40 files, all under implementation/docs/qgv_common_contract_vnext/missing_data_gate/. PR #10, PR #44 and the QGV branch touch neither qgv/portfolio.py, qgv/identifiers.py nor the QGV Portfolio spec. PR #44 has no src/ change, and the QGV branch has no src/ change.",
+     "VERIFIED: the QGV owner has read CDR-015 (authority_drift.json; STATE.authority_resolution). Its resolution: 'retain new global delegation as observed evidence, do not infer repeal of current explicit narrower task limitations or adopt result-affecting policy'. HOP1 is classified D2.",
+     "VERIFIED (authority text): COORDINATION_DECISION_REGISTER l.5 says capability policy decisions, QGV included, 'stay in their scoped Decision Registers'. CDR-015 says scoped owners adopt it at their next fresh read and the PIW does not write their registers. CDR-017 says 'QGV production semantics를 Main이 임의로 결정하지 않는다. 실제 numeric/method/policy D3만 사용자에게 올린다' and 'protected semantic 변경을 D2로 임의 낮추지 않는다', and its recorded effect is CDR-015 as narrowed by CDR-016 §13 and CDR-017. Worker Contract §N lists QGV scoring semantics as protected.",
+     "INFERRED, answering the D2 question: ed907b8's NOT_APPROVED status is not now a PIW D2, and is only partly a QGV-owner D2. (a) The M1-M5 premise is already resolved by the explicit user approval. (b) Score-neutral inactive or spec-only work is D1/D2 under CDR-015, and the QGV owner already runs it as D1/D2: the HOP1 manifest, consolidation of B2-B7 as inactive reference principles with runtime_enabled=false, and audits. (c) Result-affecting items are protected QGV scoring semantics. These are actual 20-factor roles, N/A predicates, completeness/ranking cutoffs, G 3-5Y, EPS->FCF, V normalization/metadata, composite, WeightOverride runtime, Official weights and score/version migration. CDR-017 (later than CDR-015) and Worker Contract §N keep them as explicit-user decisions, not D2. (d) The classification is the QGV owner's to record in its scoped register; the PIW must not decide or write it. (e) None of it is on the Chart critical path, so it yields no new USER_D3 under CDR-016.",
+     "VERIFIED: Global is stale for QGV. GSI-022 row #44 (GLOBAL_STATUS_INDEX.md l.114) gives Author/owner = 'Chart owner'. PR #44's body and the QGV scoped handoff identify it as the QGV owner's INACTIVE/SPEC-ONLY publication. GCH and GSI carry no row for codex/qgv-missing-data-decision-gate-2026-10-05 or for the M1-M5 approval; the QGV handoff explicitly asks the PIW to incorporate those pins.",
+     "PROPOSED PIW actions (D1, own scope; nothing I executed): (R1) Correct GSI row #44 to the QGV owner. Add a QGV missing-data row: 4fb08a0, M1-M5 APPROVED_PRINCIPLES_ONLY (QCC-P01-M1-M5-PRINCIPLES-2026-10-05, sha256 65a360a4…), B1-B7 not approved, B4/B7 lease running, INACTIVE/SPEC-ONLY, Chart-blocker dependency NONE. (R2) In the Portfolio-owner packet for A-S1/A-S3, add the acceptance predicate that the three QGV-namespace source sha256s stay unchanged and the receipt is delivered additively outside qgv/. (R3) Send no request to the QGV owner for the six blockers. Record the scenario/valuation-range/target-price ownership gap as post-P0 routing backlog. (R4) No new Chart wake channel: Chart already watches 4fb08a0."
+    ],
+    "unverified": [
+     "The scope and wording of the user's B4+B7 approval implied by lease owner 'manual-B4-B7-explicit-user-approval' at 4fb08a0. No approval record is committed; treat it as a claim until an approval.json-style record appears.",
+     "Whether the QGV owner will reclassify any remaining NOT_APPROVED item as D2 under CDR-015 after reading CDR-016 and CDR-017. Its last recorded Global read is d92363f, and no scoped record exists yet.",
+     "Whether codex/qgv-architecture-reconciliation-review-2026-10-05 is the CDR-017 'QGV structural re-audit' Work. It equals 4fb08a0 and has no commits of its own.",
+     "The identity of the Portfolio (Target) owner. CDR-017 names a 'Portfolio owner', but GSI has only row 26 (Portfolio actual operation, DESIGN, not started) and no active Portfolio Target Work or branch was found. Outside this label, but it bears on blockers 1 and 3.",
+     "That GSI row #44 'Chart owner' is an error rather than a 'reported-by' annotation. All PRs share the kco994553-star account. The inference rests on the #44 body and the QGV handoff.",
+     "PR #44 CI conclusions (runs 37245014376 and 37245037812) and PR #42 CI at 11d2f25 were not re-read by me. Chart v0.7 reports 3 of 7 successful at its read.",
+     "I did not run any QGV owner test (b4_verify.py, consumer_profile_probe.py, continuation_probe tests), Chart's receipt_preflight.py, or any FPIA. C2 ran at 523e702 only; it carries to 11d2f25 by the zero-src diff, not by re-execution."
+    ],
+    "summary": "I fetched fresh at 2026-10-05T04:14Z. The QGV owner is relevant to Chart PR #41 only through deferred, out-of-P0 items, and none of the six Chart blockers depends on a QGV deliverable.\n\n**What Chart defers to QGV.** Chart defers V, Reverse DCF, MOS, valuation range, scenario and custom-weight semantics. The places are p0-design/P0_CHART_CONTRACT_AND_WIRING_v0.1.md:21, v0.6 HANDOFF.md:67-68 and the v0.7 EXECUTION_POLICY. In the inventory these are C01-C12, D08, H01/H06/H08, I01/I09/I11-I13, J01/J03/J07 and K05.\n\n**Where those items sit in the QGV queue (PR #44).**\n- V, reverse_dcf and margin_of_safety are 3 of the 7 pinned V IDs, under QCC-P04.\n- Custom weights fall under QCC-P05, WeightOverride runtime wiring and B7.\n- Scenario values, valuation range and target price have no QGV owner work item. This is a routing gap after P0, not a blocker.\n\n**The six blockers, checked by running them.** Script: wf19/read-qgv/qgv_chart_checks.py, output sha256 2d6684ee….\n- **C1:** the QGV-namespace sources are consistent with Chart's reference but are not an authority. The spec §2, qgv/portfolio.py and qgv/identifiers.py match Chart's reference exactly: 19 rows, Decimal total 100%, buckets 30/25/20/25. qgv/portfolio.py declares itself a REFERENCE_FIXTURE, so this is no authoritative root. Blockers 1 and 3 stay with the Portfolio owner (CDR-017: 'Portfolio Target -> Portfolio owner').\n- **C2:** PR #42's QGV-specific publication binding refuses Chart's TARGET subject, at 523e702 and, by a zero-src diff, at 11d2f25. Blocker 4 is a Product/P01 question.\n- **C3:** Chart's 17-path write set does not collide with the QGV owner's 39 semantic pins or owner paths.\n- **One coupling to enforce:** qgv/portfolio.py and qgv/identifiers.py are QGV semantic pins, and OFFICIAL_V11_TARGETS also feeds qgv/book.py and providers/catalog.py. The Portfolio owner must close A-S1/A-S3 with an additive receipt and leave those files and the QGV Portfolio spec byte-unchanged (checkable by sha256).\n\n**State drift since the checkpoint.**\n- The QGV branch is at 4fb08a0, not ed907b8.\n- The user approved M1-M5 as principles only at 09:57:52 KST (approval.json sha256 65a360a4…).\n- B1-B7 are recommendations and not approved. A lease claiming an explicit B4/B7 approval was taken at 12:39 KST, but no approval record is committed.\n- Chart PR #41 is at 3206906 and already pins 4fb08a0 as read-only.\n- Global GSI row #44 wrongly gives 'Chart owner' as owner, and Global has no QGV missing-data row.\n\n**Is ed907b8's NOT_APPROVED now a D2 under CDR-015?** No for the PIW, and only partly for the QGV owner.\n- The M1-M5 premise is already resolved by the user's approval.\n- Score-neutral inactive work is D1/D2, and the QGV owner already runs it that way.\n- Result-affecting QGV semantics remain explicit-user decisions: factor roles, N/A predicates, cutoffs, method replacements, composite, WeightOverride runtime and migration. The basis is Worker Contract §N and CDR-017 ('QGV production semantics not decided by Main'; 'protected semantic change not lowered to D2').\n- The classification belongs in the QGV owner's scoped register (register l.5).\n- It is not on the Chart critical path, so it adds no new USER_D3 for CDR-016.\n\n**Recommended PIW actions:**\n1. Fix the Global QGV rows.\n2. Add the QGV-file hash-invariance predicate to the Portfolio packet.\n3. Send no QGV owner action for the six blockers."
+   }
+  },
+  {
+   "label": "read-integration",
+   "agentId": "a71aac166b9009d79",
+   "result": {
+    "owner_identity": "Read-only analyst (label read-integration, workflow wf19) for the Primary Integration Writer / Claude Main, session session_019znshzTYgyBnuuBmSxdPFN, repo kco994553-star/Investment-System1. Nothing was pushed or committed to any remote, and no PR, issue or branch was touched. No FPIA audit was run. Local-only objects: commit-tree probe merges in my private clone.",
+    "active_work": "As of 2026-10-05T04:21Z:\n(1) Fix round 3, workflow wf_bdfed701-366, agent a9fd4988a3ef6d479. It pushed 11d2f25 at 03:49:48Z. It is now waiting on real CLI runs at the new head (A = plain venv; B = symlinked venv/TMPDIR plus another USER; then S24V2) under scratchpad/wf17/fix3/cli. Run A was still in progress (no A.rc). The PR #42 body is not updated yet: it still describes 523e702, and the interim body sits at scratchpad/wf17/fix3/dev/pr_body_interim.md.\n(2) Decision round, workflow wf_4e292ba4-85c. Analyses for D3-a, D3-b, D3-c, D3-d, D3-e, G7 and inventory-docs have returned. Agents review-D3-b (a3a044913f3d82c96), a second review agent (a7b9c0eebfda52d5e) and inventory-remote were still running. No PIW decision record (PDR) has been written.\n(3) PR #42 CI on 11d2f25: 6 of 7 workflows succeeded; track-c-fpia run 37260997788, attempt 1, is in progress (started 03:50Z; the previous audit took about 48 minutes).\n(4) Chart PR #41 is active. Its owner holds a shared lease (\"portable preflight replay repair\") at ebeb8b1.",
+    "branches_prs": [
+     "canonical claude/investment-system-top500-validation-alrugm @ b8e39a2196a6d7794a04a0cd5393c68329e126ca (unchanged since 2026-09-28)",
+     "integration/global-handoff-v1 @ b3532a2ebbe95310bbf222937466eb04a0211263 (CDR-017; CDR-016 at 5e33b30; CDR-015 at d92363f). GCH-015 / GSI-022 still describe PR #42 at 523e702",
+     "PR #42 Draft, integration/fpia-hardened-v1 @ 11d2f25ef8bef3459ca969f50eec190099f15ecb (fix round 3 H1-H7; 523e702..11d2f25 = 9 files, +2331/-199), base integration/cdr012-successor-trial-2026-10-04 @ acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+     "PR #41 Draft, codex/chart-contract-mcp-api-v0-1 @ ebeb8b1f2693703d33cff2610c277c7ce3dcbb18 (fresh at 04:21Z). The directive's 74df678 is stale: 74df678..1e8c24c changed only STATE.json, and 1e8c24c..ebeb8b1 changed 8 files under the Chart directory, none of them .py. Merge-base with canonical is b8e39a2; 0 behind. PR #41 has 0 check runs",
+     "Measurement subject: 1e8c24c6f77030425b3dbf59ef8aa6539cafd748 (Chart content; ebeb8b1 adds no .py and no path outside the Chart directory)",
+     "PR #40 integration/cdr012-successor-trial-2026-10-04 @ acaf1b5 (contains R=b9e01a9 and V=c9e0fa7)",
+     "PRs #17 @ 21039a0 and #19 @ c3dbf8a: P01/Web chain without R. PRs #30/#38/#39/#40: P01/Web chain with R",
+     "PR #43 @ 4c5f7ff (Codex write-path note) and PR #44 @ cb1906b (QGV vNext spec-only; GSI wrongly labels it 'Chart owner')"
+    ],
+    "handoff_paths": [
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-integration/out/ (evidence and SHA256SUMS)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-integration/out/chart_g7_measure.json (sha256 833b1a34...)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-integration/out/measure_chart_g7.py (re-run needs: git archive 11d2f25 implementation/tools/integration | tar -x -C <dir>/src)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-integration/out/fpia_recorder_replica.py, rec_TLC.json, rec_KC.json, junit_TLC.xml, junit_KC.xml, test_sub_probe.py, rec_probe.json, junit_probe.xml",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf19/read-integration/repo (private clone with pr/* refs)",
+     "/root/.claude/projects/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/subagents/workflows/wf_bdfed701-366/agent-a9fd4988a3ef6d479.jsonl (fix3 transcript)",
+     "/root/.claude/projects/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/subagents/workflows/wf_4e292ba4-85c/journal.jsonl (analysis results for D3-a..e and G7)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf17/fix3/dev/pr_body_interim.md and h8_table.md (fix3 interim body and H8 table)",
+     "/tmp/claude-0/-home-user-Investment-System1/33fa0ec1-e143-560f-87b9-563dee3b3dc5/scratchpad/wf18/analyse-G7/out/g7_measure.json, g7_latent_imports.json"
+    ],
+    "contracts_and_artifacts": [
+     {
+      "path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+      "ref": "origin/integration/global-handoff-v1 @ b3532a2",
+      "what": "CDR-014 (hardened FPIA plus reference manifest; R=b9e01a9, V=c9e0fa7). CDR-015 (D3-a..e and G7 are now D2, PIW self-decision). CDR-016 §13 (canonical merge, Frozen change, Holdout, PIT, Official/LIVE, payment and other owners' protected contracts need explicit user approval in this Work). CDR-017 (Main = coordinator)",
+      "relevance": "Authority for closing D3-a..e and G7 without the user. Canonical landing of FPIA or Chart still needs explicit user approval naming it"
+     },
+     {
+      "path": "implementation/docs/coordination/PIW_DECISION_RECORDS.md",
+      "ref": "b3532a2",
+      "what": "Header only, 0 entries",
+      "relevance": "No D3-a..e or G7 decision is recorded yet. Every 'decided' claim for those items is false today"
+     },
+     {
+      "path": "implementation/docs/coordination/evidence/",
+      "ref": "b3532a2",
+      "what": "Evidence files run through GIE-013. GIE-014 (FPIA evidence) does not exist",
+      "relevance": "GIE closure is open"
+     },
+     {
+      "path": ".github/workflows/track-c-fpia.yml",
+      "ref": "11d2f25",
+      "what": "The job runs only when the PR base or head ref starts with integration/ (or on dispatch). The subject is the PR head. There is no push trigger",
+      "relevance": "G7: PR #41 (base canonical, head codex/*) never triggers the FPIA job under the current scope"
+     },
+     {
+      "path": "implementation/tools/integration/track_c_fpia.py",
+      "ref": "11d2f25",
+      "what": "lane_T_full (about :1135-1146): pytest with no file arguments, from wd=implementation, using R's 'Full regression' step `PYTHONPATH=src python -m pytest -q`. full_regression (about :1900-1947): FAIL if the junit counts differ from the recorder counts, or on any failure, error or skip. AC-04 case R_ABSENT_TRACK_C_NOT_INTEGRATED gives FAIL",
+      "relevance": "Chart's test_*.py files under implementation/experiments/ are collected by T-full on any applicable Chart merge result"
+     },
+     {
+      "path": "implementation/tools/integration/track_c_fpia_runner.py and track_c_fpia_child.py",
+      "ref": "11d2f25",
+      "what": "Runner: junit_counts (:334) and recorder_counts/node_outcomes (:345-371). Child: recorder pytest_runtest_logreport (:151-155) overwrites entry[when] per nodeid. Nothing handles pytest subtests",
+      "relevance": "Root cause of the subtest false-FAIL and of the masked per-node outcome"
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/governance/IMPLEMENTATION_PATH_MATRIX.json",
+      "ref": "1e8c24c (unchanged at ebeb8b1)",
+      "what": "17 candidate paths, basis_sha 523e702, integration_base_acceptance OPEN_OWNER_ACTION, track_c_code_hash_impact YES for any package Python, frozen_files_to_edit []",
+      "relevance": "The A-G2 write set. Its MODIFY targets do not exist on canonical"
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md:57-58",
+      "ref": "1e8c24c",
+      "what": "A-G2 = Web/API/Integration acceptance of the exact base and write set, including P01/code-hash/FPIA effects. A-G3 = Integration final-head independent/adversarial/completeness review, D3-a/b/c/d, G7 and GIE; CI success alone is not enough",
+      "relevance": "Chart's own closure predicates for the Integration gates"
+     },
+     {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md",
+      "ref": "ebeb8b1",
+      "what": "Chart v0.7: 6 OPEN / 0 CLOSED. A-G3 reason: round-3 exact-head Actions, independent/adversarial review and governance/G7/GIE are incomplete. Chart automation reads Global hourly and follows run 37260997788",
+      "relevance": "The Chart consumer channel for Integration receipts"
+     },
+     {
+      "path": "scratchpad/wf19/read-integration/out/chart_g7_measure.json",
+      "ref": "local probe merges: K+C 5ddf178, TL e424396 base, TL+C e424396, acaf1b5+C 687b4d9, 11d2f25+C 6c998fd",
+      "what": "Applicability markers and latent Track C importers for Chart merge results, computed with FPIA 11d2f25's own derive/checks helpers",
+      "relevance": "Machine evidence for the G7 implications for Chart"
+     }
+    ],
+    "protected_paths": [
+     "integration/fpia-hardened-v1: the fix-round-3 agent is the active writer. Any further change (D3/G7 implementation, subtest fix) is a successor commit after round 3 finishes, from a single writer",
+     "implementation/tools/integration/** and .github/workflows/track-c-fpia.yml (PIW/FPIA-owned; Chart must not edit them)",
+     "Track C projection: implementation/src/investment_system/evl/**, tests/test_evl_*, implementation/tools/track_c_*acceptance*.py, .github/workflows/track-c-evl-validation.yml, Track C reports/register (Track C owner; frozen tools a60c4c5f / 6b9362d0 / e587a8d5)",
+     "P01 seven-file protected digest set, including src/investment_system/product/web_mvp.py and producers/assembler.py (Chart's optional MODIFY rows; P01/Web owners only)",
+     "Global coordination docs on integration/global-handoff-v1 (PIW single writer only)",
+     "codex/chart-contract-mcp-api-v0-1 (Chart owner holds an active shared lease at ebeb8b1)",
+     "codex/* branches (Codex; CDR-008)",
+     "canonical: any merge needs explicit user approval naming it (CDR-016 §13)"
+    ],
+    "watched_channels": "- PR #42 checks: track-c-fpia run 37260997788, attempt 1, head 11d2f25.\n- PR #42 body: still the 523e702 text.\n- wf_bdfed701-366 journal and the agent a9fd4988a3ef6d479 transcript; CLI state files under scratchpad/wf17/fix3/cli (A.rc, B.rc, S.done).\n- wf_4e292ba4-85c journal: review-D3-b and the a7b9c0ee review are running; inventory-remote has no result yet.\n- PR #41 head: ebeb8b1, Chart lease active.\n- origin/integration/global-handoff-v1 tip: b3532a2.\n- PIW_DECISION_RECORDS.md entry count: 0.",
+    "facts": [
+     "VERIFIED (git, 04:21Z): canonical b8e39a2. Handoff b3532a2. PR #42 head 11d2f25 (1 commit after 523e702). PR #41 head ebeb8b1. The 74df678 and 1e8c24c changes are Chart directory only, with no .py added after 1e8c24c.",
+     "VERIFIED (GitHub MCP): PR #42 checks on 11d2f25 = 6 'offline' jobs success (runs 37260997658, 37260997773, 37260997660, 37260997708, 37260997655, 37260997662) plus 'fpia' run 37260997788 in_progress. PR #42 has 0 reviews and 1 comment (the Chart owner handoff, 2026-10-05T00:40Z). The PR body still states head 523e702 and lists only D3-a..d; D3-e is missing.",
+     "VERIFIED (read): the fix3 interim body reports Tier 1 = 490 passed and Tier 2 = 9 passed at 11d2f25 content (venv without PyYAML). On the 523e702 sources, 233 of the 234 new tests fail. The H8 static measurement over 38 real trees plus the new head shows 0 new FOUND. These are the agent's claims, not re-run by me. The H8 table has no TL + #41 row.",
+     "VERIFIED (read in the fix3 transcript, 04:04:57Z): the agent's own gapcheck returned NOT_FOUND for py_json (`python ci/tool.json`), bash_md (`bash ci/notes.md`) and py_txt_via_sh (sh calls `python ci/b.txt`). Files with non-code extensions that a workflow executes are not scanned at 11d2f25. The interim body files this as D3-c territory ('named only inside data'), but these files are executed, not read as data.",
+     "VERIFIED: PIW_DECISION_RECORDS.md @ b3532a2 has 0 entries, and there is no GIE-014 file. D3-a..e and G7 are undecided and not recorded. GIE closure is open.",
+     "VERIFIED (journal wf_4e292ba4-85c): these are proposed D2 decisions, not recorded and not implemented. D3-a: A6, a verifier pin in a PDR. The bootstrap pin P0 is the post-round-3 head plus the D3-a implementation, never 523e702; until it is pinned, every FPIA result is UNPINNED and is not acceptance evidence. D3-b: A3 (a job/check-name collision is not a finding by itself; job identity keys that contain 'trackcevlvalidation' are FOUND). D3-c: B+E (a bounded non-claim, PASS reported as SCOPE_QUALIFIED, M2 constant folding and M3 runtime import hook delivered as bundles). D3-d: #28 is excluded until Codex converts the importer to .py.txt and the exact merge gets FPIA_PASS. D3-e: (b+), a trust list of 7 GitHub actions; other out-of-tree code fails closed; out_of_tree NOT_CLAIMED. G7: G7-1 (content-based applicability; FPIA_NOT_APPLICABLE with exit 3 and never PASS; a one-way rule once R is on canonical; two-stage CI plus a push audit on canonical). Each proposal says to implement after round 3, as a single writer.",
+     "VERIFIED (measure_chart_g7.py with FPIA 11d2f25 helpers): the Chart diff vs K is 314 files, all under implementation/experiments/chart-contract-v0.1/. It has 0 workflows, 0 implementation/src paths, and 12 .py files, none of which imports a Track C module. replay_existing_authority.py only string-matches investment_system.evl inside a RefuseTrackC meta-path guard.",
+     "VERIFIED: all Chart merges are clean: K+C, TL+C (TL = no-ff R onto K), acaf1b5+C and 11d2f25+C. K+C: R not an ancestor; 0 Track C namespace paths; no Track C workflow; 0 frozen tools; 0 V-only paths; 0 latent importers. TL+C, acaf1b5+C and 11d2f25+C: R is an ancestor and there are 146 or 153 Track C namespace paths. In every case, Chart files in the Track C namespace or in R = 0.",
+     "VERIFIED (code read at 11d2f25): K+C has no R and no Track C content, so FPIA would give AC-04 R_ABSENT_TRACK_C_NOT_INTEGRATED, which is FPIA_FAIL today and FPIA_NOT_APPLICABLE under the proposed G7-1. The current track-c-fpia.yml would not run on PR #41 at all (base claude/..., head codex/...).",
+     "VERIFIED: R's 'Full regression' step is `PYTHONPATH=src python -m pytest -q` with no paths. FPIA's T-full lane reuses it from wd=implementation, so it collects Chart's p0-receipt-preflight-v0.6/test_receipt_preflight.py and test_review_edges.py.",
+     "VERIFIED (pytest 9.1.1, materialised TL+C and K+C trees with an FPIA-like .git): Chart's tests give 29 passed and 88 subtests passed. The FPIA recorder replica (same hook code; FPIA's own recorder_counts) counts tests=29, while FPIA's junit_counts gives tests=117. FPIA's full_regression treats `junit != recorder counts` as FAIL. The existing suites at b8e39a2, acaf1b5 and 11d2f25 contain 0 subTest uses; among open PR heads, only #41 has any (2 files). There are 0 'subtest' mentions in FPIA sources.",
+     "VERIFIED (synthetic probe): with one failing subtest, the recorder gives failures=0 and the node 'passed', while junit gives tests=5 and failures=1. FPIA's per-node outcomes hide subtest failures; only the aggregate junit cross-check keeps the result fail-closed.",
+     "VERIFIED: without a .git above it, test_receipt_preflight.py errors at collection (StopIteration at :18). With an object store holding only T's history, it passes (FPIA materialises .git with HEAD at T). With a depth-1 store it gives 6 failed, 26 passed. The whole-suite owner workflows at acaf1b5 (p01, qgv-invalidation, sec, technical x2, us-equity, web-mvp, codex-integration-readiness) use fetch-depth 0.",
+     "VERIFIED: Chart's MODIFY candidates (publication/extractors.py, product/web_assets/app.js, locale.js, style.css, product/web_mvp.py, producers/assembler.py) do not exist on canonical b8e39a2. They exist on #17 21039a0 and #19 c3dbf8a (no R) and on #30, #38, #39 and #40 acaf1b5 (with R). The matrix basis_sha is 523e702, which contains R.",
+     "VERIFIED: the GLOBAL docs are stale. GCH-015 and GSI-022 still show PR #42 at 523e702 and PR #41 at 74df678, and the GSI #44 row names 'Chart owner' although #44 is QGV vNext."
+    ],
+    "unverified": [
+     "INFERRED, end-to-end FPIA not run: an FPIA audit of any applicable merge result that contains Chart's current tests (TL+C, acaf1b5+C, 11d2f25+C, or the future Track C landing over a canonical that already holds Chart) gives full_regression FAIL and therefore FPIA_FAIL, from the subtest junit/recorder mismatch alone. The mechanism was verified with FPIA's own count functions; a full FPIA CLI run was not executed (prohibited).",
+     "INFERRED: for TL+C with today's experiments-only Chart content, CODE_IDENTITY is SAME (no src/investment_system change), FROZEN_TOOLS_ON_T is FAIL (closed-world new-file allowlists; a separate class, not a verdict conjunct), and the static phase shows no interference (no workflow names Chart files; mini_pytest globs only tests/). FPIA's static phase was NOT_RUN on any Chart merge.",
+     "INFERRED: whether T-full's check_trace or spawn audit flags the `git show` subprocesses that Chart's tests spawn is unknown (NOT_RUN). The code read suggests the track_c=False rules do not cover git spawns.",
+     "INFERRED: Chart's future package Python (charts/*, contracts/chart.py, product/chart_api.py) gives CODE_IDENTITY_DIVERGED, which CDR-014 §2 says is reported and is not a FAIL by itself.",
+     "NOT_RUN: the final result of track-c-fpia run 37260997788 on 11d2f25; the fix3 CLI runs A, B and S24V2; independent and adversarial review of fix round 3 (no agent has been launched for them); GIE-014.",
+     "NOT_RUN: any Chart exact merge-result FPIA. No Chart implementation exists yet (L2-L5 not implemented).",
+     "UNKNOWN: whether the user reconciles CDR-015 (canonical merge = D2) with CDR-016 §13 (explicit approval). Until then, landing track-c-fpia.yml on canonical (which G7-1's push audit needs) or landing Chart needs explicit user approval naming it.",
+     "UNKNOWN: the outcomes of review-D3-b, the a7b9c0ee review and inventory-remote (still running)."
+    ],
+    "summary": "The six Integration/FPIA items behind Chart gates A-G2 and A-G3 are all still open, and I found a new FPIA defect that would make every Chart merge result containing Track C fail FPIA. Fresh state at 04:21Z: canonical b8e39a2 is unchanged, the handoff branch is at b3532a2 (CDR-017), PR #42 is at 11d2f25 and Chart PR #41 is at ebeb8b1. The directive's 74df678 and 523e702 are stale.\n\n**FPIA closed vs open**\n\n| Item | State |\n|---|---|\n| FPIA implementation | IMPLEMENTED, not final. Fix round 3 (H1-H7) was pushed as 11d2f25. The agent is still running the real CLI A/B/S24V2 runs and has not updated the PR body. Its own gapcheck found that files with non-code extensions which a workflow executes (`python ci/tool.json`, `bash ci/notes.md`) are not scanned. |\n| CI PASS | OPEN. 6 of 7 succeeded on 11d2f25; track-c-fpia run 37260997788 is in progress. The 7/7 green at 523e702 does not carry over. |\n| Independent review | OPEN, NOT_RUN. PR #42 has 0 reviews. |\n| Adversarial review | OPEN. Round 2 (523e702) found the bypass; round 3 has not been reviewed. |\n| D3-a..e closure | OPEN. They are D2 under CDR-015. wf_4e292ba4-85c has proposals (D3-a A6 pin, D3-b A3, D3-c B+E, D3-d exclude #28, D3-e (b+)), but PIW_DECISION_RECORDS.md has 0 entries. |\n| G7 closure | OPEN. Proposal G7-1: content-based applicability and FPIA_NOT_APPLICABLE. Not recorded. |\n| GIE closure | OPEN. GIE-014 does not exist. |\n| Canonical applicability | OPEN. The FPIA workflow is not on canonical, and landing it needs explicit user approval under CDR-016 §13. |\n| Chart exact-result FPIA | NOT_RUN. There is no Chart implementation yet. |\n\n**Does a Chart merge result contain R? (verified with FPIA 11d2f25 helpers)**\n- **Chart as it is today:** 314 files, all under `implementation/experiments/chart-contract-v0.1/`, with no workflow, no `src/` path and no Track C importer.\n  - Merged into canonical: R absent, 0 Track C paths.\n    - Current FPIA gives FPIA_FAIL (AC-04 R_ABSENT_TRACK_C_NOT_INTEGRATED).\n    - Proposed G7-1 gives FPIA_NOT_APPLICABLE, so Chart would land on its own evidence and the latent-reference list would be empty.\n    - The current CI scope never runs on #41.\n  - Merged onto TL (Track C landed first), acaf1b5 or 11d2f25: R is present, so the audit is applicable and mandatory. Chart adds no Track C path in any of these merges.\n- **Chart's future implementation:** every file in its write set that it modifies (`web_mvp.py`, `assembler.py`, `extractors.py`, `app.js`, `locale.js`, `style.css`) is absent on canonical. Those files exist on #17/#19 (without R) or #30/#38/#39/#40 (with R). Chart's own path matrix uses 523e702, which contains R. A realistic base therefore contains R, so exact merge-result FPIA_PASS is mandatory and the code identity will be DIVERGED (reported, not a FAIL by itself).\n- **What G7 means for Chart:** Chart can land before Track C only as NOT_APPLICABLE (after G7-1 is recorded and implemented, and with explicit user merge approval). Otherwise it needs FPIA_PASS on the exact landing SHA. Either way, Chart's tests are later audited as part of the Track C landing.\n\n**New finding (mechanism verified; end-to-end FPIA not run).** FPIA's full-regression lane collects Chart's `test_*.py` files, which use `unittest.subTest`. Under pytest 9.1.1:\n- junit reports 117 tests, but FPIA's recorder counts 29.\n- FPIA treats that mismatch as a full_regression FAIL, so FPIA_FAIL follows on any applicable tree containing Chart, including the future Track C landing.\n- The recorder also records a node with a failing subtest as passed; only the aggregate junit check keeps it fail-closed.\n- No existing suite uses subTest; #41 is the only open PR that does.\n\nThis is an Integration-owned D1 fix (handle subtests in `track_c_fpia_child.py` and `track_c_fpia_runner.py`, with pass and fail regressions). Chart should not have to adapt its tests to it. Separately, Chart's tests need full git history: they fail in a depth-1 checkout, although today's whole-suite workflows use fetch-depth 0. That is a minor Chart hermeticity note.\n\n**What the PIW can close now without other owners:**\n1. **Integration acceptance of Chart's current write set and base.** The experiments-only content touches no Track C, FPIA, P01 or workflow path and merges clean onto K, TL, acaf1b5 and 11d2f25. This closes only Integration's share of A-G2; the Web, Product and P01 base and write-set acceptance stays with those owners.\n2. **The FPIA requirement statement for Chart.** It should say:\n   - Any landing SHA containing R needs exact merge-result FPIA_PASS.\n   - Package Python makes the code identity DIVERGED; that is reported, not a failure.\n   - Chart must not edit `tools/integration/**`, `track-c-*.yml`, Track C namespace paths or frozen tools.\n   - The subtest defect is an Integration repair item.\n   - A pre-Track-C landing is NOT_APPLICABLE only once G7-1 is decided.\n3. **PDR entries for D3-a..e and G7-1** in PIW_DECISION_RECORDS.md (D2 under CDR-015). Recording them is a handoff-branch write; their implementation waits for round 3 to finish.\n4. **Refresh GCH/GSI and route to Chart.** Update PR #42 to 11d2f25, PR #41 to ebeb8b1, fix the #44 owner label and note that GIE-014 is missing. Then route the A-G2 Integration receipt and the subtest finding to Chart's hourly Global read.\n\n**What needs the FPIA rounds to finish:**\n- the result of run 37260997788 and fix3's CLI runs and PR body;\n- implementation of D3-a (the verifier pin; until P0 is pinned, every FPIA result is UNPINNED and is not acceptance evidence), D3-b, D3-c, D3-e, G7-1 (two-stage CI) and the subtest fix, plus the gap for executed files with non-code extensions;\n- then independent and adversarial review of the final head, then GIE-014.\n\nOnly after all of that can A-G3 close. Chart's exact-result FPIA comes after Chart implements its write set.\n\nNo real cost-type D3 was found. The only user boundary is explicit approval of canonical merges."
+   }
+  }
+ ]
+}

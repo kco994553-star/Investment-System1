@@ -1,0 +1,39 @@
+{
+ "icu_skeleton_target": "track-c-evl-validation",
+ "substitutions_icu_confusable_matched_by_fpia": 362,
+ "substitutions_icu_confusable_missed_by_fpia": [
+  {
+   "cp": "U+02DB",
+   "name": "OGONEK",
+   "for": "i",
+   "nfkc": " ̨"
+  },
+  {
+   "cp": "U+037A",
+   "name": "GREEK YPOGEGRAMMENI",
+   "for": "i",
+   "nfkc": " ͅ"
+  },
+  {
+   "cp": "U+03F2",
+   "name": "GREEK LUNATE SIGMA SYMBOL",
+   "for": "c",
+   "nfkc": "ς"
+  },
+  {
+   "cp": "U+FE58",
+   "name": "SMALL EM DASH",
+   "for": "-",
+   "nfkc": "—"
+  },
+  {
+   "cp": "U+FFE8",
+   "name": "HALFWIDTH FORMS LIGHT VERTICAL",
+   "for": "l",
+   "nfkc": "│"
+  }
+ ],
+ "insertions_icu_empty_skeleton_matched_by_fpia": 4174,
+ "insertions_icu_empty_skeleton_missed_by_fpia": [],
+ "insert_missed_count": 0
+}
