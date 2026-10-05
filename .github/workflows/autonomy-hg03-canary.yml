@@ -1,0 +1,83 @@
+name: autonomy-hg03-canary
+
+on:
+  pull_request:
+    paths:
+      - "implementation/tools/autonomy_executor_gate.py"
+      - "implementation/docs/coordination/governance/AUTONOMY_MODE"
+      - "implementation/docs/coordination/governance/AUTONOMY_GUARD_CONFIG.v1.json"
+      - "implementation/docs/coordination/governance/AUTONOMY_RUNTIME_STATE.json"
+      - ".github/workflows/autonomy-hg03-canary.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  executor-canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Production control remains READ_ONLY
+        working-directory: implementation
+        run: |
+          test "$(python tools/autonomy_executor_gate.py mode)" = "READ_ONLY"
+          if python tools/autonomy_executor_gate.py start-cycle --holder canary --cycle-id ro --branch canary; then
+            echo "::error::READ_ONLY incorrectly allowed cycle start"
+            exit 1
+          fi
+      - name: Exercise RUN/PAUSE limits in isolated copy
+        shell: bash
+        run: |
+          TMP="$(mktemp -d)"
+          mkdir -p "$TMP/repo"
+          cp -a implementation "$TMP/repo/implementation"
+          cd "$TMP/repo"
+          echo RUN > implementation/docs/coordination/governance/AUTONOMY_MODE
+          python implementation/tools/autonomy_executor_gate.py start-cycle --holder canary --cycle-id run1 --branch canary
+          for i in 1 2 3 4 5; do
+            python implementation/tools/autonomy_executor_gate.py before-task --holder canary --cycle-id run1
+          done
+          if python implementation/tools/autonomy_executor_gate.py before-task --holder canary --cycle-id run1; then
+            echo "::error::sixth task was not blocked"
+            exit 1
+          fi
+          for i in 1 2 3; do
+            python implementation/tools/autonomy_executor_gate.py before-repair --holder canary --cycle-id run1 --failure-key F1
+          done
+          if python implementation/tools/autonomy_executor_gate.py before-repair --holder canary --cycle-id run1 --failure-key F1; then
+            echo "::error::fourth repair was not blocked"
+            exit 1
+          fi
+          echo PAUSE > implementation/docs/coordination/governance/AUTONOMY_MODE
+          if python implementation/tools/autonomy_executor_gate.py before-publish --holder canary --cycle-id run1; then
+            echo "::error::PAUSE did not block pre-publish"
+            exit 1
+          fi
+          echo RUN > implementation/docs/coordination/governance/AUTONOMY_MODE
+          python implementation/tools/autonomy_executor_gate.py end-cycle --holder canary --cycle-id run1
+      - name: Prove expired lease is not auto-reclaimed
+        shell: bash
+        run: |
+          TMP="$(mktemp -d)"
+          mkdir -p "$TMP/repo"
+          cp -a implementation "$TMP/repo/implementation"
+          cd "$TMP/repo"
+          echo RUN > implementation/docs/coordination/governance/AUTONOMY_MODE
+          python - <<'PY'
+          import importlib.util, pathlib, sys
+          p=pathlib.Path("implementation/tools/autonomy_executor_gate.py").resolve()
+          s=importlib.util.spec_from_file_location("g",p)
+          g=importlib.util.module_from_spec(s); sys.modules[s.name]=g; s.loader.exec_module(g)
+          g.start_cycle("a","b","c",100)
+          try:
+              g.start_cycle("x","y","z",7301)
+          except g.GateError as e:
+              assert "no automatic reclaim" in str(e)
+          else:
+              raise SystemExit("expired lease was reclaimed")
+          PY
