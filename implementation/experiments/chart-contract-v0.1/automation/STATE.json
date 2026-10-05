@@ -634,12 +634,18 @@
     "magicpath_sample": "NATIVE_EDITABLE_REACT_IMPLEMENTED_VERIFIED_EXACT_BUILD_BROWSER18_OF18"
   },
   "lease": {
-    "status": "NONE",
-    "last_run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
-    "released_after_verified_publication": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
-    "released_at_utc": "2026-10-05T09:18:52.550Z",
-    "reason": "Verified scoped reference repair complete; no lease held for exactCI/ownerdependency",
-    "release_commit_note": "Current containingHEAD resolved via Git"
+    "status": "HELD",
+    "run_id": "manual-chart-terminal-policy-2026-10-05T104549543Z",
+    "holder_kind": "USER_OBSERVED_CHART_OWNER_SESSION",
+    "acquired_at_utc": "2026-10-05T10:45:49.543Z",
+    "expires_at_utc": "2026-10-05T12:45:49.543Z",
+    "ttl_minutes": 120,
+    "target_branch": "codex/chart-contract-mcp-api-v0-1",
+    "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+    "verified_remote_acquisition": false,
+    "acquisition_parent_head": "cda174542f1a1ae95345726f308c24b60262c03b",
+    "reason": "Consume newly terminal PR47 and adopted CDR024 v1.1; Gate A remains disabled",
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
   },
   "publication": {
     "status": "V013_NATIVE_MAGICPATH_SAMPLE_AND_DELEGATED_POLICY_VERIFIED",
