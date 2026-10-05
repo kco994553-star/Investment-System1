@@ -564,22 +564,17 @@
     "actual_chart_merge_result_fpia": "NOT_RUN"
   },
   "lease": {
-    "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
-    "run_id": null,
-    "holder_kind": "CI_FOLLOWUP_AUTOMATION",
-    "acquired_at_utc": "2026-10-05T06:32:43.306Z",
-    "expires_at_utc": "2026-10-05T07:02:43.306Z",
-    "ttl_minutes": 30,
+    "status": "HELD",
+    "run_id": "manual-chart-figma-20261005T064515261Z",
+    "holder_kind": "MANUAL_ROOT",
+    "acquired_at_utc": "2026-10-05T06:45:15.261Z",
+    "expires_at_utc": "2026-10-05T07:45:15.261Z",
+    "ttl_minutes": 60,
     "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": true,
-    "acquisition_parent_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
-    "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
-    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
-    "acquisition_commit": "40a5c266322d36dbf30a683f6f632508352145bc",
-    "verified_at_utc": "2026-10-05T06:36:14.933Z",
-    "previous_run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
-    "released_at_utc": "2026-10-05T06:37:31.129Z",
-    "verified_published_packet": "01a150a2b640c188436fe8cd4fc988a2482c57f8"
+    "verified_remote_acquisition": false,
+    "acquisition_parent_head": "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+    "reason": "Existing SAMPLE UI to editable Figma desktop/mobile, reuse source/fixtures/evidence; FAST browser/render checks, scoped handoff; no production semantic change",
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
   },
   "publication": {
     "status": "V011_PR46_FPIA_TERMINAL_FAILURE_PUBLICATION_VERIFIED",
@@ -1174,6 +1169,27 @@
     },
     {
       "state_at_commit": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
+      "lease": {
+        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+        "run_id": null,
+        "holder_kind": "CI_FOLLOWUP_AUTOMATION",
+        "acquired_at_utc": "2026-10-05T06:32:43.306Z",
+        "expires_at_utc": "2026-10-05T07:02:43.306Z",
+        "ttl_minutes": 30,
+        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+        "verified_remote_acquisition": true,
+        "acquisition_parent_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
+        "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
+        "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+        "acquisition_commit": "40a5c266322d36dbf30a683f6f632508352145bc",
+        "verified_at_utc": "2026-10-05T06:36:14.933Z",
+        "previous_run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
+        "released_at_utc": "2026-10-05T06:37:31.129Z",
+        "verified_published_packet": "01a150a2b640c188436fe8cd4fc988a2482c57f8"
+      }
+    },
+    {
+      "recorded_at_utc": "2026-10-05T06:45:15.261Z",
       "lease": {
         "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
         "run_id": null,
