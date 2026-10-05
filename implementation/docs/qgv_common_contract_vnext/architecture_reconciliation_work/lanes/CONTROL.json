@@ -1,7 +1,17 @@
 {
   "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
   "status": "D3_POLICY_APPLIED_MAIN_PRINCIPLE_CONSUMPTION_CLOSED_READY0",
-  "lease": null,
+  "lease": {
+    "lane_id": "QGV_ARCHITECTURE_RECONCILIATION_AUDIT",
+    "token": "qgv-resume-v11-muv4iuqa",
+    "holder": "QGV-independent-audit-user-session-2026-10-05",
+    "target_branch": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+    "task": "CDR024_V11_ADOPTION_AND_MAIN_INTAKE_RECONCILIATION",
+    "input_review_head": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+    "acquired_at_utc": "2026-10-05T10:45:29.746Z",
+    "ttl_seconds": 7200,
+    "expires_at_utc": "2026-10-05T12:45:29.746Z"
+  },
   "tasks": [
     "LATEST_POLICY_AND_PENDING_RECLASSIFICATION",
     "AUTOMATION_PROMPT_AUTHORITY_ALIGNMENT",
