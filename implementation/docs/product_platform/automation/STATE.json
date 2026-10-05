@@ -3,7 +3,7 @@
   "observed_at_utc": "2026-10-05T09:05:13.520Z",
   "directive_received_at_kst": "2026-10-05T16:15:41+09:00",
   "role": "Product Platform independent specialist audit",
-  "execution_state": "WAIT_DEPENDENCY",
+  "execution_state": "IN_PROGRESS",
   "acceptance_complete": false,
   "publication_branch": "codex/product-platform-storage-auth-review-2026-10-05",
   "publication_identity": "Containing commit; publication completed on branch before this checkpoint is authoritative",
@@ -514,7 +514,26 @@
     "SSoT_update_closure_ready": 0,
     "ready_D1_D2_D3_A": 0
   },
-  "lease": null,
+  "lease": {
+    "run_id": "platform-main-policy-link-b2bb0c30-20261005",
+    "writer": "Product Platform independent specialist audit /root",
+    "scope": [
+      "implementation/docs/product_platform/CURRENT_HANDOFF.md",
+      "implementation/docs/product_platform/automation/STATE.json",
+      "implementation/docs/product_platform/automation/CHECKPOINT.md",
+      "implementation/docs/product_platform/automation/evidence/main_policy_return_5991485958_2026-10-05.json"
+    ],
+    "acquired_at_utc": "2026-10-05T09:14:28.305Z",
+    "expires_at_utc": "2026-10-05T09:44:28.305Z",
+    "parent": "ed525110358861e347c6c05e004035f359b9b63c",
+    "source_fingerprints": {
+      "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
+      "global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+      "main_comment_id": 5991485958,
+      "receipt_sha256": "805c0e26e69149c9af6499e650f0401e1b3e26bbb8b890ec0d7ed9ec93e65e12",
+      "task_input": "ef659579cf9ac83a3aec831958e9e3876e949896177a78610151558177a0f23e"
+    }
+  },
   "lease_protocol": {
     "scope": "This audit branch only",
     "claim": "Exact fresh parent commit, force=false update/readback before write-producing READY; losing child re-reads",
@@ -679,4 +698,3 @@
     }
   ]
 }
-
