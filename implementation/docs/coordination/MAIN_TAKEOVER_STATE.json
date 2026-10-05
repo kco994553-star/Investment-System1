@@ -71,7 +71,8 @@
     "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
     "acquired_at": "2026-10-05 07:58:25 UTC",
     "expires_at": "2026-10-05T08:35:00Z",
-    "scope": "D006 additive standalone preflight +workflow only"
+    "scope": "D006 additive standalone preflight +workflow only",
+    "reason": "Independent review found observer subject checkout assumption incompatible with separate workflow source; bounded additive schema correction, no authority grant"
   },
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
@@ -202,7 +203,9 @@
     "write_set": [
       ".github/workflows/track-c-fpia.yml",
       "implementation/tools/integration/track_c_fpia_applicability.py",
-      "implementation/tests/test_integration_fpia_applicability.py"
+      "implementation/tests/test_integration_fpia_applicability.py",
+      "implementation/tools/integration/track_c_fpia_ci_receipt.py",
+      "implementation/tests/test_integration_fpia_ci_receipt.py"
     ]
   },
   "last_terminal_ci_evidence": "evidence/main_execution_coverage_2026-10-05/RECEIPT.json",
