@@ -574,22 +574,17 @@
     }
   },
   "lease": {
-    "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
-    "run_id": null,
-    "holder_kind": "MANUAL_ROOT",
-    "acquired_at_utc": "2026-10-05T06:19:47.755Z",
-    "expires_at_utc": "2026-10-05T06:49:47.755Z",
+    "status": "HELD",
+    "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
+    "holder_kind": "CI_FOLLOWUP_AUTOMATION",
+    "acquired_at_utc": "2026-10-05T06:32:43.306Z",
+    "expires_at_utc": "2026-10-05T07:02:43.306Z",
     "ttl_minutes": 30,
     "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": true,
-    "acquisition_parent_head": "4752bca2d58a61ef5821a0556b6480fc527fac80",
-    "reason": "Adopt user Risk-Proportional Verification at existing safe checkpoint; update existing task prompts, scoped policy and evidence reuse; no product reruns",
-    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
-    "acquisition_commit": "d187495286697d1e3ceab31d33bc2d0f5e56fd8f",
-    "previous_run_id": "manual-chart-risk-policy-20261005T061947755Z",
-    "released_at_utc": "2026-10-05T06:27:01.193Z",
-    "verified_published_packet": "c21d47d8d5d0c59b1ae9795258fc21cb3667a127",
-    "verified_at_utc": "2026-10-05T06:26:12.913Z"
+    "verified_remote_acquisition": false,
+    "acquisition_parent_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
+    "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
   },
   "publication": {
     "status": "V010_RISK_POLICY_AND_EXISTING_TASK_PROMPTS_VERIFIED",
