@@ -1,0 +1,542 @@
+{
+  "kind": "ACTUAL_EDITABLE_FIGMA_SAMPLE_IMPLEMENTATION_NOT_PRODUCTION_ADMISSION",
+  "recorded_at_utc": "2026-10-05T07:19:07.492658+00:00",
+  "run_id": "manual-chart-figma-20261005T064515261Z",
+  "branch": "codex/chart-contract-mcp-api-v0-1",
+  "fresh_baselines": {
+    "source_chart": "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+    "lease": "a5cf1a1862aac7340dabfe169f4383da89f610cb",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "global_started": "51056c1c1ba051a1892801c7763cd86ada505f7d",
+    "global_latest": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8"
+  },
+  "global_delta": {
+    "paths": [
+      "implementation/docs/coordination/MAIN_TAKEOVER_STATE.json"
+    ],
+    "gate_closure": false,
+    "read_global_handoff_index_register": true,
+    "historical_root_handoff_is_not_current_parallel_status": true
+  },
+  "github_wins_over_handoff": {
+    "global_claimed_chart": "40a5c266322d36dbf30a683f6f632508352145bc",
+    "actual_chart_start": "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+    "difference": "CI follower published v0.11 terminal-failure receipt and released before manual Figma lease; current GitHub used"
+  },
+  "figma": {
+    "file_key": "CoAKYXmagWAS8LRRkpqbZr",
+    "url": "https://www.figma.com/design/CoAKYXmagWAS8LRRkpqbZr",
+    "title": "Investment-System1 Chart — SAMPLE review",
+    "primary": true,
+    "magicpath": "HISTORICAL_READ_ONLY",
+    "file_creation": "ACTUAL_SUCCESS",
+    "native_write": "ACTUAL_SUCCESS",
+    "views": [
+      {
+        "id": "6:36",
+        "width": 1280,
+        "height": 1563,
+        "nonHugText": [],
+        "overlapping": [],
+        "arcs": [
+          {
+            "id": "9:83",
+            "name": "AI·반도체 25% · source SVG dash converted to native arc",
+            "arc": {
+              "startingAngle": -1.5707963705062866,
+              "endingAngle": 0,
+              "innerRadius": 0.7142857313156128
+            },
+            "width": 168,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "color": {
+                  "r": 0.3764705955982208,
+                  "g": 0.7803921699523926,
+                  "b": 0.6980392336845398
+                },
+                "boundVariables": {}
+              }
+            ]
+          },
+          {
+            "id": "9:84",
+            "name": "Big Tech 20% · source SVG dash converted to native arc",
+            "arc": {
+              "startingAngle": 0,
+              "endingAngle": 1.2566370964050293,
+              "innerRadius": 0.7142857313156128
+            },
+            "width": 168,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "color": {
+                  "r": 0.49803921580314636,
+                  "g": 0.658823549747467,
+                  "b": 1
+                },
+                "boundVariables": {}
+              }
+            ]
+          },
+          {
+            "id": "9:85",
+            "name": "기타산업 25% · source SVG dash converted to native arc",
+            "arc": {
+              "startingAngle": 1.2566370964050293,
+              "endingAngle": 2.8274333477020264,
+              "innerRadius": 0.7142857313156128
+            },
+            "width": 168,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "color": {
+                  "r": 0.8509804010391235,
+                  "g": 0.6784313917160034,
+                  "b": 0.4470588266849518
+                },
+                "boundVariables": {}
+              }
+            ]
+          },
+          {
+            "id": "9:86",
+            "name": "반도체 장비 30% · source SVG dash converted to native arc",
+            "arc": {
+              "startingAngle": 2.8274333477020264,
+              "endingAngle": 4.71238899230957,
+              "innerRadius": 0.7142857313156128
+            },
+            "width": 168,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "color": {
+                  "r": 0.8039215803146362,
+                  "g": 0.5803921818733215,
+                  "b": 0.8509804010391235
+                },
+                "boundVariables": {}
+              }
+            ]
+          }
+        ],
+        "actualNoTargetGeometry": null
+      },
+      {
+        "id": "6:37",
+        "width": 390,
+        "height": 3218,
+        "nonHugText": [],
+        "overlapping": [],
+        "arcs": [
+          {
+            "id": "9:87",
+            "name": "AI·반도체 25% · source SVG dash converted to native arc",
+            "arc": {
+              "startingAngle": -1.5707963705062866,
+              "endingAngle": 0,
+              "innerRadius": 0.7142857313156128
+            },
+            "width": 168,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "color": {
+                  "r": 0.3764705955982208,
+                  "g": 0.7803921699523926,
+                  "b": 0.6980392336845398
+                },
+                "boundVariables": {}
+              }
+            ]
+          },
+          {
+            "id": "9:88",
+            "name": "Big Tech 20% · source SVG dash converted to native arc",
+            "arc": {
+              "startingAngle": 0,
+              "endingAngle": 1.2566370964050293,
+              "innerRadius": 0.7142857313156128
+            },
+            "width": 168,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "color": {
+                  "r": 0.49803921580314636,
+                  "g": 0.658823549747467,
+                  "b": 1
+                },
+                "boundVariables": {}
+              }
+            ]
+          },
+          {
+            "id": "9:89",
+            "name": "기타산업 25% · source SVG dash converted to native arc",
+            "arc": {
+              "startingAngle": 1.2566370964050293,
+              "endingAngle": 2.8274333477020264,
+              "innerRadius": 0.7142857313156128
+            },
+            "width": 168,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "color": {
+                  "r": 0.8509804010391235,
+                  "g": 0.6784313917160034,
+                  "b": 0.4470588266849518
+                },
+                "boundVariables": {}
+              }
+            ]
+          },
+          {
+            "id": "9:90",
+            "name": "반도체 장비 30% · source SVG dash converted to native arc",
+            "arc": {
+              "startingAngle": 2.8274333477020264,
+              "endingAngle": 4.71238899230957,
+              "innerRadius": 0.7142857313156128
+            },
+            "width": 168,
+            "fills": [
+              {
+                "type": "SOLID",
+                "visible": true,
+                "opacity": 1,
+                "blendMode": "NORMAL",
+                "color": {
+                  "r": 0.8039215803146362,
+                  "g": 0.5803921818733215,
+                  "b": 0.8509804010391235
+                },
+                "boundVariables": {}
+              }
+            ]
+          }
+        ],
+        "actualNoTargetGeometry": null
+      },
+      {
+        "id": "6:38",
+        "width": 390,
+        "height": 1027,
+        "nonHugText": [],
+        "overlapping": [],
+        "arcs": [],
+        "actualNoTargetGeometry": true
+      }
+    ],
+    "local_component_families": {
+      "card": "6:25",
+      "cardProps": {
+        "titleKey": "Title#6:0",
+        "bodyKey": "Body#6:1"
+      },
+      "legend": "6:28",
+      "legendProps": {
+        "labelKey": "Label#6:2"
+      },
+      "buttonSet": "6:35",
+      "buttons": [
+        {
+          "id": "6:31",
+          "name": "Selected=false",
+          "labelKey": "Label#6:5"
+        },
+        {
+          "id": "6:33",
+          "name": "Selected=true",
+          "labelKey": "Label#6:5"
+        }
+      ]
+    },
+    "source_tokens": 18,
+    "fonts": "Existing Noto Sans KR Regular/Bold reused",
+    "subscribed_library_check": "Default community Button/Card used Inter and incompatible custom lab APIs/tokens. Imported assets inspected, local source mirrors used; no existing project design system assumed.",
+    "web_aliases": "Figma mirror-only aliases; not existing repository CSS variables",
+    "initial_visual_comparison": "FAIL_TEXT_OVERLAP_AND_SVG_DASHOFFSET_IMPORT",
+    "repair": "STRUCTURAL_PASS",
+    "post_fix_visual_comparison": "NOT_RUN_TOOL_QUOTA_BLOCKED",
+    "quota": "Observed Figma MCP Starter plan tool-call limit; no upgrade/payment authorized or performed",
+    "optional_capture": {
+      "capture_id": "1887a0c4-2dd5-4676-a41b-35d1ffbf12cc",
+      "observed_state": "PENDING_NOT_COMPLETED",
+      "endpoint_response": "HTTP200 text/html Site Unavailable,195bytes, capture.js not retrievable in execution network",
+      "result": "NOT_USED_AS_DELIVERABLE; native editable design writes succeeded independently",
+      "no_browser_fallback_or_paid_compute": true
+    }
+  },
+  "verification": {
+    "risk": "FAST_PRESENTATION_ONLY",
+    "browser": {
+      "scope": "FAST_SOURCE_TO_FIGMA_PRESENTATION",
+      "results": [
+        {
+          "width": 1280,
+          "status": "PASS",
+          "checks": [
+            "four-distinct-dimensions",
+            "source-font",
+            "sample-target-time-unit-denominator",
+            "no-horizontal-overflow",
+            "theme-vector-exact-source",
+            "actual-denial-no-target-geometry"
+          ],
+          "pageErrors": []
+        },
+        {
+          "width": 390,
+          "status": "PASS",
+          "checks": [
+            "four-distinct-dimensions",
+            "source-font",
+            "sample-target-time-unit-denominator",
+            "no-horizontal-overflow",
+            "theme-vector-exact-source",
+            "actual-denial-no-target-geometry"
+          ],
+          "pageErrors": []
+        }
+      ],
+      "fullRegressionRun": false
+    },
+    "source_reference_decimal_total": "10000/10000 =100%; reference only, not root admission",
+    "source_reference_hash": "1fae83d8b667fac078e973c25def90c73f4a5520e0b9fcc9b85d5f8f3f11616d",
+    "geometry_checks": [
+      {
+        "node": "9:83",
+        "units": 2500,
+        "denominator": 10000,
+        "span_error_radians": 4.371139006309477e-08,
+        "status": "PASS"
+      },
+      {
+        "node": "9:84",
+        "units": 2000,
+        "denominator": 10000,
+        "span_error_radians": 3.4969112050475815e-08,
+        "status": "PASS"
+      },
+      {
+        "node": "9:85",
+        "units": 2500,
+        "denominator": 10000,
+        "span_error_radians": 7.549789948768648e-08,
+        "status": "PASS"
+      },
+      {
+        "node": "9:86",
+        "units": 3000,
+        "denominator": 10000,
+        "span_error_radians": 5.245366807571372e-08,
+        "status": "PASS"
+      },
+      {
+        "node": "9:87",
+        "units": 2500,
+        "denominator": 10000,
+        "span_error_radians": 4.371139006309477e-08,
+        "status": "PASS"
+      },
+      {
+        "node": "9:88",
+        "units": 2000,
+        "denominator": 10000,
+        "span_error_radians": 3.4969112050475815e-08,
+        "status": "PASS"
+      },
+      {
+        "node": "9:89",
+        "units": 2500,
+        "denominator": 10000,
+        "span_error_radians": 7.549789948768648e-08,
+        "status": "PASS"
+      },
+      {
+        "node": "9:90",
+        "units": 3000,
+        "denominator": 10000,
+        "span_error_radians": 5.245366807571372e-08,
+        "status": "PASS"
+      }
+    ],
+    "native_overlap_count": 0,
+    "actual_target_geometry_count": 0,
+    "post_fix_screenshot_pass": false,
+    "renderer_sha256": "ab6e2ea167d95d04619b096ce8f3518de6128d7f248d4967424761ffe2eb4016",
+    "historical_node75_and_context7": "Reused v0.9 exact-compatible evidence; lightweight-charts5.2.1, indexedContext7v5.2.0 plus officialexacttag5.2.1; Portfolio uses existingSVG, no newchartlibrary",
+    "new_python_regression": false,
+    "new_fpia_run": false,
+    "new_e2e_production": "NOT_RUN",
+    "market_raw_recollection": false,
+    "source_png_hashes": {
+      "source-reference-1280.png": "5757129040497fecf9b5dbbbb959185fc007649d65c89c42bb14679b852535e6",
+      "source-reference-390.png": "f4b485768fd1f5c33d3111e8d47e9b446c6e01054f8a5ecdeb0535779bd816f9",
+      "source-actual-390.png": "1b58fd91ba5159f599f6d1fede2491640b806d6457a4a800139339cf3459849b"
+    }
+  },
+  "actions_current_pr46": [
+    {
+      "id": 37272321129,
+      "name": "technical-real-producer",
+      "head_sha": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321129"
+    },
+    {
+      "id": 37272321224,
+      "name": "technical-real-model",
+      "head_sha": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321224"
+    },
+    {
+      "id": 37272321138,
+      "name": "p01-research-publication",
+      "head_sha": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321138"
+    },
+    {
+      "id": 37272321213,
+      "name": "sec-primary-disclosure",
+      "head_sha": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321213"
+    },
+    {
+      "id": 37272321210,
+      "name": "qgv-invalidation-binding",
+      "head_sha": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321210"
+    },
+    {
+      "id": 37272321179,
+      "name": "us-equity-session",
+      "head_sha": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321179"
+    },
+    {
+      "id": 37272321137,
+      "name": "track-c-fpia",
+      "head_sha": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321137"
+    }
+  ],
+  "fpia_receipt": "FPIA_CURRENT_RECEIPT.json",
+  "automation_audit": {
+    "ci_followup": "WORKING_AS_DESIGNED_PRODUCTIVE_TERMINAL_RECEIPT_PUBLISHED_V011",
+    "scheduled_main_productive_completion": "UNKNOWN",
+    "trigger_missed_proven": false,
+    "lease": "Verified active manual lease; CI read-only abstention preserves mutual exclusion",
+    "bounded_state_issue": {
+      "classification": "STATE_STALE",
+      "scope": "One mutable root HANDOFF hash after v0.11 append; source renderer and107 other recorded outputs match",
+      "mismatch": [
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+          "recorded": "0811cedd14d37341f9486e6f4c0c64cbdbaab9da5eb2068764075744e6d075b8",
+          "actual": "545d1d813699fb9b1cdc8aa7553abf51d644b83071a0dc0f4acef46a388511b2"
+        }
+      ],
+      "fix": "Current publication manifest updated only after fresh remote publication readback; historical receipts unchanged"
+    },
+    "task_prompt_readback": [
+      {
+        "id": "6ac31fca7bb4819183997a9f17f432cb",
+        "prompt_exact": true,
+        "schedule_unchanged": true,
+        "enabled_unchanged": true,
+        "last_run": null
+      },
+      {
+        "id": "6ac2ef0621908191909a27af4c91f101",
+        "prompt_exact": true,
+        "schedule_unchanged": true,
+        "enabled_unchanged": true,
+        "last_run": "2026-10-05T07:12:30.221740+00:00"
+      }
+    ],
+    "framework_created": false
+  },
+  "lane_a_statuses": {
+    "A-S1": "OWNER_ACTION_REQUIRED",
+    "A-S2": "OWNER_ACTION_REQUIRED",
+    "A-S3": "OWNER_ACTION_REQUIRED",
+    "A-G1": "OWNER_ACTION_REQUIRED",
+    "A-G2": "PARTIALLY_RESOLVED",
+    "A-G3": "PARTIALLY_RESOLVED"
+  },
+  "lane_a_remaining": 6,
+  "lane_b_admitted": 0,
+  "lane_b_total": 19,
+  "actual": "NOT_AVAILABLE",
+  "new_user_d3": false,
+  "metrics": {
+    "requirements_closed": 0,
+    "production_blockers_closed": 0,
+    "new_production_blockers": 0,
+    "lane_a_remaining_blockers": 6,
+    "editable_sample_views_created": 3,
+    "vertical_slice_progress": "Existing verified SAMPLE renderer reused; editable Figma3views created and observed defects repaired; post-fix image verification blocked by MCP quota",
+    "production_ready_contracts": "NONE_ADMITTED_FOR_CURRENT_TARGET",
+    "frontend_ready_contracts": "EXISTING_VERIFIED_SAMPLE_CONTRACT_AND_RENDERER; EDITABLE_DESIGN_REVIEW_PARTIAL"
+  },
+  "tools_used": [
+    "GitHub exact read and scoped Git object API publication",
+    "Figma native use_figma and screenshot API; optionalcapture unavailable",
+    "Automations existing Main/CI prompt update and exact readback",
+    "Local Chromium153/Playwright1.58.2 existing browser runtime",
+    "Superpowers current debugging/verification; Figma use/generate-design/generate-library skills",
+    "Context7/official5.2.1 evidence reused, no repeatedlookup"
+  ],
+  "next_exact_steps": [
+    "After Figma quota restores, screenshot only nodes6:36/6:37/6:38 and compare with retained browser source. Do not recreate file or initialization.",
+    "Fresh-consume returned Portfolio/Identity/Theme/Product/write-set/Integration evidence independently; implement approved slice when six gates close."
+  ]
+}

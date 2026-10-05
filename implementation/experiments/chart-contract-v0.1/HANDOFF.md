@@ -140,3 +140,13 @@ Continue the existing safe checkpoint with [scoped handoff](p0-risk-policy-v0.10
 ## 2026-10-05 v0.11 — PR #46 exact FPIA terminal failure
 
 [Scoped receipt](p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json) and [handoff](p0-ci-followup-v0.11/HANDOFF.md) bind PR46 `a3e3f6c` run `37267962000` attempt1/job `111628676484` to terminal **FPIA_FAIL**. Artifact verification passed; full regression failed 2/2184 at the two FPIA self-constraint tests. A-G3 remains OWNER_ACTION_REQUIRED; Lane A 6 open/0 closed, Lane B 0/19. Requirements closed0, blockers closed0, new Chart product blockers0, production-ready contracts0. No retry, PR46 write, production promotion or merge occurred.
+
+
+## Continuation · v0.12 actual editable Figma SAMPLE and fresh PR46 technical PASS
+
+- Source `cff8172625ab8602a75b334cddf5fd5c0dc942d3`; lease `a5cf1a1862aac7340dabfe169f4383da89f610cb`; canonical/base/merge-base `b8e39a2196a6d7794a04a0cd5393c68329e126ca`; freshGlobal `f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8`. Exact final HEAD: verified STATE/publication and current PR/Git metadata.
+- [Figma actual editable SAMPLE](https://www.figma.com/design/CoAKYXmagWAS8LRRkpqbZr): desktop6:36/mobile6:37/ACTUAL6:38, threecomponent families,18source tokens. Existingbrowser2×6PASS; scopedtext/SVGimportdefects fixed; structuraloverlap0/ACTUALtargetgeometry0. Post-fix screenshots NOT_RUN_TOOL_QUOTA_BLOCKED; visualPASS notclaimed.
+- PR46 `6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6` current7/7ActionsSUCCESS; run37272321137attempt1 actualFPIA_PASS artifact11329459485/hashverified; independentreview/governance/GIE/canonicalapplicability stillpending, actualChart merge-resultFPIA NOT_RUN. Prior v0.11FPIA_FAIL preserved.
+- LaneA6OPEN/0closed: S1/S2/S3/G1 OWNER_ACTION_REQUIRED; G2/G3 PARTIALLY_RESOLVED; IMPLEMENTATION_NOT_READY. LaneB8statusfamiliesunchanged,Market0/19;23155rawrows/anomalies preserved. No newD3/protectedcode/packagePython.
+- Automationv0.11productiveCIfollowup verified; one mutable rootHANDOFF hashSTATE_STALE fixedafterremoteverification; no provenmissedtrigger/newframework. ExistingMain/CIpromptsexactreadbackPASS, schedule/enabledunchanged.
+- Scoped complete details/tests/failurehistory/owneractions/L1–L5/nextstep: `p0-figma-review-v0.12/HANDOFF.md`, `FIGMA_RECEIPT.json`, `FPIA_CURRENT_RECEIPT.json`, `GATES_AND_GAPS.json`. Nextdesignactiononlypostfixscreenshotswhenquotaallows; independentlyconsumeownerreturns, thenautomaticapprovedverticalslice.

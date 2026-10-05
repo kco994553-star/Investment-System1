@@ -1,0 +1,32 @@
+{
+  "scope": "FAST_SOURCE_TO_FIGMA_PRESENTATION",
+  "results": [
+    {
+      "width": 1280,
+      "status": "PASS",
+      "checks": [
+        "four-distinct-dimensions",
+        "source-font",
+        "sample-target-time-unit-denominator",
+        "no-horizontal-overflow",
+        "theme-vector-exact-source",
+        "actual-denial-no-target-geometry"
+      ],
+      "pageErrors": []
+    },
+    {
+      "width": 390,
+      "status": "PASS",
+      "checks": [
+        "four-distinct-dimensions",
+        "source-font",
+        "sample-target-time-unit-denominator",
+        "no-horizontal-overflow",
+        "theme-vector-exact-source",
+        "actual-denial-no-target-geometry"
+      ],
+      "pageErrors": []
+    }
+  ],
+  "fullRegressionRun": false
+}

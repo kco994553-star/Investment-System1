@@ -67,9 +67,9 @@
       "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
       "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
       "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
-      "46": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
+      "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6"
     },
-    "observed_at_utc": "2026-10-05T06:37:31.129Z",
+    "observed_at_utc": "2026-10-05T07:19:07.492658+00:00",
     "owner_output_head": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
     "event_watermarks": {
       "17": {
@@ -515,7 +515,20 @@
       "remaining_gates": 6
     }
   },
-  "pending": [],
+  "pending": [
+    {
+      "kind": "READ_ONLY_FIGMA_POST_FIX_VISUAL_CHECK",
+      "file_key": "CoAKYXmagWAS8LRRkpqbZr",
+      "node_ids": [
+        "6:36",
+        "6:37",
+        "6:38"
+      ],
+      "disposition": "EXTERNAL_TOOL_QUOTA_BLOCKED; retry only when access restored, no paid upgrade/newfile/productiongate",
+      "required": "Three post-fix screenshots compare with SOURCE_VIEW/current browser; no source implementation rerun",
+      "does_not_block_independent_chart_work": true
+    }
+  ],
   "readiness": {
     "scope": "OFFLINE_PREFLIGHT_VERIFIED_PRODUCTION_OWNER_GATED",
     "lane_a": "IMPLEMENTATION_NOT_READY",
@@ -545,23 +558,26 @@
       "A-S3": "OWNER_ACTION_REQUIRED",
       "A-G1": "OWNER_ACTION_REQUIRED",
       "A-G2": "PARTIALLY_RESOLVED",
-      "A-G3": "OWNER_ACTION_REQUIRED"
+      "A-G3": "PARTIALLY_RESOLVED"
     },
     "current_independent_repairs": "IMPLEMENTED_VERIFIED",
     "production_owner_dependency_count": 6,
-    "fpia_owner_ci": "CURRENT_PR46_A3E3F6C_7_OF_7_FAILURE_EXACT_FPIA_TERMINAL_FAILURE",
-    "fpia_tool_governance": "BLOCKED_CURRENT_SUBJECT_FPIA_FAIL_GOVERNANCE_NOT_CLOSED_OWNER_ACTION_REQUIRED",
+    "fpia_owner_ci": "PR46_6FEA_7_OF_7_SUCCESS_ARTIFACT_FPIA_PASS_HASH_VERIFIED",
+    "fpia_tool_governance": "CURRENT_REVIEW_GOVERNANCE_GIE_CANONICAL_APPLICABILITY_OWNER_ACTION_REQUIRED",
     "sample_renderer": "IMPLEMENTED_VERIFIED",
     "latest_run_metrics": {
       "requirements_closed": 0,
-      "blockers_closed": 0,
-      "new_blockers": 0,
+      "production_blockers_closed": 0,
+      "new_production_blockers": 0,
       "lane_a_remaining_blockers": 6,
-      "vertical_slice_progress": "Existing SAMPLE implemented/verified; policy adopted; no new product code",
-      "production_ready_contracts": "NONE_ADMITTED_FOR_CURRENT_TARGET_SLICE",
-      "frontend_ready_contracts": "EXISTING_VERIFIED_SAMPLE_RENDERER_AND_FIXTURE_ONLY"
+      "editable_sample_views_created": 3,
+      "vertical_slice_progress": "Existing verified SAMPLE renderer reused; editable Figma3views created and observed defects repaired; post-fix image verification blocked by MCP quota",
+      "production_ready_contracts": "NONE_ADMITTED_FOR_CURRENT_TARGET",
+      "frontend_ready_contracts": "EXISTING_VERIFIED_SAMPLE_CONTRACT_AND_RENDERER; EDITABLE_DESIGN_REVIEW_PARTIAL"
     },
-    "actual_chart_merge_result_fpia": "NOT_RUN"
+    "actual_chart_merge_result_fpia": "NOT_RUN",
+    "L1_L5": "See p0-figma-review-v0.12/HANDOFF.md",
+    "figma_sample": "EDITABLE_CREATED_STRUCTURAL_PASS_POST_FIX_VISUAL_TOOL_QUOTA_BLOCKED"
   },
   "lease": {
     "status": "HELD",
@@ -571,10 +587,11 @@
     "expires_at_utc": "2026-10-05T07:45:15.261Z",
     "ttl_minutes": 60,
     "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": false,
+    "verified_remote_acquisition": true,
     "acquisition_parent_head": "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
     "reason": "Existing SAMPLE UI to editable Figma desktop/mobile, reuse source/fixtures/evidence; FAST browser/render checks, scoped handoff; no production semantic change",
-    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+    "acquisition_commit": "a5cf1a1862aac7340dabfe169f4383da89f610cb"
   },
   "publication": {
     "status": "V011_PR46_FPIA_TERMINAL_FAILURE_PUBLICATION_VERIFIED",
@@ -919,7 +936,9 @@
       "implementation/experiments/chart-contract-v0.1/portfolio_app.js",
       "implementation/experiments/chart-contract-v0.1/page.html",
       "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
-      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/"
+      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/",
+      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/"
     ],
     "do_not_ignore_dependency_semantics_from_an_owned_checkpoint": true,
     "require_current_comment_body_sha256_match": true,
@@ -1077,7 +1096,15 @@
       "vertical_slice_progress",
       "production_ready_contracts",
       "frontend_ready_contracts"
-    ]
+    ],
+    "primary_design_tool": {
+      "name": "Figma",
+      "file_key": "CoAKYXmagWAS8LRRkpqbZr",
+      "url": "https://www.figma.com/design/CoAKYXmagWAS8LRRkpqbZr",
+      "actual_stage": "EDITABLE_SAMPLE_CREATED_STRUCTURAL_PASS_POST_FIX_VISUAL_BLOCKED",
+      "magicpath": "HISTORICAL_READ_ONLY",
+      "quota_expansion_authorized": false
+    }
   },
   "lease_history": [
     {
@@ -1222,7 +1249,29 @@
     "latest_dependency_watermarks": "ADOPTED_ONLY_AFTER_VERIFIED_PUBLICATION",
     "task_configuration_modified": true,
     "proof": "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json",
-    "task_configuration_scope": "Existing Main/CI prompt only; cadence/enabled unchanged; latest scoped risk policy"
+    "task_configuration_scope": "Existing Main/CI prompt only; cadence/enabled unchanged; latest scoped risk policy",
+    "latest_v012": {
+      "CI": "WORKING_AS_DESIGNED_V011_PRODUCTIVE_TERMINAL_RECEIPT",
+      "Main": "UNKNOWN_PRODUCTIVE_COMPLETION",
+      "state_issue": "STATE_STALE_ONE_MUTABLE_HANDOFF_HASH",
+      "no_framework_repair": true,
+      "prompt_readback": [
+        {
+          "id": "6ac31fca7bb4819183997a9f17f432cb",
+          "prompt_exact": true,
+          "schedule_unchanged": true,
+          "enabled_unchanged": true,
+          "last_run": null
+        },
+        {
+          "id": "6ac2ef0621908191909a27af4c91f101",
+          "prompt_exact": true,
+          "schedule_unchanged": true,
+          "enabled_unchanged": true,
+          "last_run": "2026-10-05T07:12:30.221740+00:00"
+        }
+      ]
+    }
   },
   "dependency_classifications": {
     "45": "DOWNSTREAM_CHART_CONSUMER_OWNER_OVERLAP_NOT_TARGET_PREREQUISITE"
@@ -1493,83 +1542,47 @@
     }
   ],
   "prepared_publication": {
-    "status": "VERIFIED_REMOTE_PUBLICATION",
-    "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
-    "source_start_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
-    "subject_head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
-    "workflow_run_id": 37267962000,
+    "status": "PREPARED_REMOTE_VERIFICATION_PENDING",
+    "run_id": "manual-chart-figma-20261005T064515261Z",
+    "source_start_head": "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+    "preparation_parent": "a5cf1a1862aac7340dabfe169f4383da89f610cb",
+    "Global": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8",
+    "PR46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+    "output_sha256": {
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/BROWSER_CHECK.json": "363b443697c017e762eab8fafbd981860a32921a5072c25e7bda040bc3d5e2ce",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_CALLS.json": "7f6a32c08598502ca2a2d21c1caf99e101cf4e87de3afea8200165516acf705e",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json": "0b63213cd7eeaa23a1b11ee5f80096a1a081f12a53716c90343b837ba83987b6",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json": "2c2792b6694e32ec9ad1cfb8b9b585ecaace9ae51a313e0ace3b0c6f5f4cded8",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/GATES_AND_GAPS.json": "1104d448c3dd08a7a07698de9c3310d0ff3ce6ff6dad3e62eadfe046982aab9b",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "c33306c865112950f4881ebc83676ca58b8e0a951eddb3b39ee4624e3846b57c",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/SOURCE_VIEW.json": "5f0987ad86b4cfb3e50a28facf3141e1ab75f5ab0ecf53a1bd05924d73bd192a",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/VALIDATION_RECEIPT.json": "ce0431f5a991ff9dd376d6794b8118a654473279cd39e00271e8c8cba82bbb4a",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json": "197bc50dc796b1c5de98b57fefaec7279dae737e2f2471e474b9bf2cc22192f7",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "637bc08332ec20ede69180706edfd4c4c49fa4c0ad73eb4db6743b062eeeac27"
+    },
     "evidence_paths": [
-      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/BROWSER_CHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_CALLS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/SOURCE_VIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json",
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
     ],
     "do_not_advance_processed_before_remote_verification": true,
-    "evidence_commit": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
-    "verified_at_utc": "2026-10-05T06:37:31.129Z"
+    "remaining_production_gates": 6,
+    "postfix_figma_visual": "NOT_RUN_TOOL_QUOTA_BLOCKED"
   },
   "owner_actions_current": {
-    "fpia_latest_source": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "fpia_latest_source": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
     "owner": "Main/Integration",
-    "ci_failures": [
-      {
-        "id": 37267962003,
-        "name": "qgv-invalidation-binding",
-        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
-        "attempt": 1,
-        "status": "completed",
-        "conclusion": "failure",
-        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962003"
-      },
-      {
-        "id": 37267962024,
-        "name": "us-equity-session",
-        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
-        "attempt": 1,
-        "status": "completed",
-        "conclusion": "failure",
-        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962024"
-      },
-      {
-        "id": 37267961987,
-        "name": "p01-research-publication",
-        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
-        "attempt": 1,
-        "status": "completed",
-        "conclusion": "failure",
-        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961987"
-      },
-      {
-        "id": 37267961909,
-        "name": "sec-primary-disclosure",
-        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
-        "attempt": 1,
-        "status": "completed",
-        "conclusion": "failure",
-        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961909"
-      },
-      {
-        "id": 37267962109,
-        "name": "technical-real-producer",
-        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
-        "attempt": 1,
-        "status": "completed",
-        "conclusion": "failure",
-        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962109"
-      },
-      {
-        "id": 37267961900,
-        "name": "technical-real-model",
-        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
-        "attempt": 1,
-        "status": "completed",
-        "conclusion": "failure",
-        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961900"
-      }
-    ],
-    "root_cause": "D002 numeric threshold512 and literal40hex fixtures violate existing self-constraints; all6fullsuites2FAILED/2183PASSED",
-    "required": "Owner repairs own additive files and verifies full constraints/regression/successor CI; authenticated evidence/admissibility still required",
-    "chart_mutation_allowed": false,
-    "new_chart_D3": false
+    "ci_failures": [],
+    "technical_ci": "7_OF_7_SUCCESS_FPIA_PASS",
+    "governance_closure": false,
+    "next_action": "Current review/coverage/launcher/admissibility/GIE receipt; no Chart duplicate Main implementation"
   },
   "coordination_repair_history": [
     {
@@ -1647,6 +1660,21 @@
       },
       "verified_head": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
       "verified_at_utc": "2026-10-05T05:54:56.485Z"
+    },
+    {
+      "status": "VERIFIED_REMOTE_PUBLICATION",
+      "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
+      "source_start_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
+      "subject_head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "workflow_run_id": 37267962000,
+      "evidence_paths": [
+        "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/HANDOFF.md",
+        "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
+      ],
+      "do_not_advance_processed_before_remote_verification": true,
+      "evidence_commit": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
+      "verified_at_utc": "2026-10-05T06:37:31.129Z"
     }
   ],
   "policy_adoption_receipts": [
@@ -1655,6 +1683,72 @@
       "policy_version": "chart-v0.10",
       "product_requirements_closed": 0,
       "production_gates_closed": 0
+    }
+  ],
+  "owner_actions_history": [
+    {
+      "fpia_latest_source": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "owner": "Main/Integration",
+      "ci_failures": [
+        {
+          "id": 37267962003,
+          "name": "qgv-invalidation-binding",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962003"
+        },
+        {
+          "id": 37267962024,
+          "name": "us-equity-session",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962024"
+        },
+        {
+          "id": 37267961987,
+          "name": "p01-research-publication",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961987"
+        },
+        {
+          "id": 37267961909,
+          "name": "sec-primary-disclosure",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961909"
+        },
+        {
+          "id": 37267962109,
+          "name": "technical-real-producer",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962109"
+        },
+        {
+          "id": 37267961900,
+          "name": "technical-real-model",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961900"
+        }
+      ],
+      "root_cause": "D002 numeric threshold512 and literal40hex fixtures violate existing self-constraints; all6fullsuites2FAILED/2183PASSED",
+      "required": "Owner repairs own additive files and verifies full constraints/regression/successor CI; authenticated evidence/admissibility still required",
+      "chart_mutation_allowed": false,
+      "new_chart_D3": false
     }
   ]
 }

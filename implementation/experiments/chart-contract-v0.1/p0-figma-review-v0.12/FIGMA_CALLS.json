@@ -1,0 +1,644 @@
+{
+  "purpose": "Historical exact successful API scripts/results for this existing file; never replay initialization over populated views. No production or shared repository code written.",
+  "file_key": "CoAKYXmagWAS8LRRkpqbZr",
+  "scripts": {
+    "foundation": "\nawait Promise.all([{family:'Noto Sans KR',style:'Regular'},{family:'Noto Sans KR',style:'Bold'},{family:'Inter',style:'Regular'}].map(f=>figma.loadFontAsync(f)));\nconst page=await figma.getNodeByIdAsync('0:1'); await figma.setCurrentPageAsync(page); page.name='Chart SAMPLE review';\nif(page.children.some(n=>n.name==='TARGET — desktop 1280'))throw new Error('Existing output: read ledger rather than duplicate');\nconst created=[],variables=[],styles=[];\nfunction mark(n){created.push(n.id);return n;}\nasync function createVariableCollection(name,modeNames){const collection=figma.variables.createVariableCollection(name);const defaultMode=collection.modes[0];collection.renameMode(defaultMode.modeId,modeNames[0]);return {collection,modeIds:{[modeNames[0]]:defaultMode.modeId}};}\nconst {collection,modeIds}=await createVariableCollection('Chart source mirrors',['Dark']);const mode=modeIds.Dark;\nconst palette={background:'#0e1624',surface:'#162034',text:'#e5ecf7',secondary:'#aab9cc',warning:'#f0c16c',border:'#2e405b',button:'#24324a',active:'#30425c',badge:'#694611',badgeText:'#ffe0a1',accent:'#8dc9ff'};\nconst colors={};function rgb(h){return {r:parseInt(h.slice(1,3),16)/255,g:parseInt(h.slice(3,5),16)/255,b:parseInt(h.slice(5,7),16)/255};}\nfor(const [name,hex] of Object.entries(palette)){const v=figma.variables.createVariable('source/color/'+name,collection,'COLOR');v.scopes=name==='text'||name==='secondary'||name==='warning'||name==='badgeText'?['TEXT_FILL']:name==='border'?['STROKE_COLOR']:['FRAME_FILL','SHAPE_FILL'];v.setValueForMode(mode,rgb(hex));v.setVariableCodeSyntax('WEB','var(--chart-source-'+name+')');colors[name]=v;variables.push({id:v.id,name:v.name,sourceLiteral:hex});}\nconst spaces={padding:16,mobilePadding:12,gap:20,buttonVertical:8,buttonHorizontal:12,radius:12,buttonRadius:6};const nums={};\nfor(const[name,value]of Object.entries(spaces)){const v=figma.variables.createVariable('source/layout/'+name,collection,'FLOAT');v.scopes=name.toLowerCase().includes('radius')?['CORNER_RADIUS']:['GAP'];v.setValueForMode(mode,value);v.setVariableCodeSyntax('WEB','var(--chart-source-'+name+')');nums[name]=v;variables.push({id:v.id,name:v.name,sourceLiteral:value});}\nfunction paint(name){return figma.variables.setBoundVariableForPaint({type:'SOLID',color:rgb(palette[name])},'color',colors[name]);}\nconst ts={};for(const[name,size,weight]of [['Body',15,'Regular'],['Heading',18,'Bold'],['Title',22.5,'Bold'],['Caption',12,'Regular']]){const s=figma.createTextStyle();s.name='Chart/'+name;s.fontName={family:'Noto Sans KR',style:weight};s.fontSize=size;s.lineHeight={unit:'PERCENT',value:150};ts[name]=s;styles.push({id:s.id,name:s.name});}\nfunction text(parent,value,width,style='Body',color='secondary'){const n=mark(figma.createText());parent.appendChild(n);n.fontName=ts[style].fontName;n.textStyleId=ts[style].id;n.textAutoResize='HEIGHT';n.resize(width,30);n.characters=value;n.fills=[paint(color)];return n;}\nfunction comp(name,width){const c=mark(figma.createComponent());c.name=name;c.description='Source mirror: existing Chart SAMPLE renderer; no source admission or production authority.';c.layoutMode='VERTICAL';c.resize(width,120);c.primaryAxisSizingMode='AUTO';c.counterAxisSizingMode='FIXED';c.itemSpacing=8;c.paddingTop=16;c.paddingBottom=16;c.paddingLeft=16;c.paddingRight=16;c.fills=[paint('surface')];c.strokes=[paint('border')];c.strokeWeight=1;c.setBoundVariable('cornerRadius',nums.radius);c.x=2800;c.y=created.length*15;return c;}\nconst card=comp('Chart/Unavailable Card',366);const titleKey=card.addComponentProperty('Title','TEXT','NOT_AVAILABLE');const bodyKey=card.addComponentProperty('Body','TEXT','자료 미제공 · 0으로 대체하지 않습니다.');const ct=text(card,'NOT_AVAILABLE',334,'Heading','text');ct.componentPropertyReferences={characters:titleKey};const cb=text(card,'자료 미제공 · 0으로 대체하지 않습니다.',334,'Body','warning');cb.componentPropertyReferences={characters:bodyKey};ct.layoutSizingHorizontal='FILL';cb.layoutSizingHorizontal='FILL';\nconst legend=comp('Chart/Legend Row',420);legend.layoutMode='HORIZONTAL';legend.resize(420,36);legend.primaryAxisSizingMode='FIXED';legend.counterAxisSizingMode='AUTO';legend.paddingTop=0;legend.paddingBottom=0;legend.paddingLeft=0;legend.paddingRight=0;legend.fills=[];legend.strokes=[];legend.cornerRadius=0;legend.itemSpacing=8;\nconst sw=mark(figma.createRectangle());legend.appendChild(sw);sw.name='Swatch';sw.resize(4,24);sw.fills=[paint('accent')];const labelKey=legend.addComponentProperty('Label','TEXT','SOURCE legend');const lt=text(legend,'SOURCE legend',408,'Body','secondary');lt.componentPropertyReferences={characters:labelKey};lt.layoutSizingHorizontal='FILL';\nconst buttons=[];\nfor(const selected of [false,true]){const c=mark(figma.createComponent());c.name='Selected='+selected;c.description='Existing SAMPLE data selector; no financial/auth action.';c.layoutMode='HORIZONTAL';c.resize(260,40);c.primaryAxisSizingMode='AUTO';c.counterAxisSizingMode='AUTO';c.counterAxisAlignItems='CENTER';c.paddingTop=8;c.paddingBottom=8;c.paddingLeft=12;c.paddingRight=12;c.fills=[paint(selected?'active':'button')];c.strokes=[paint(selected?'accent':'border')];c.strokeWeight=1;c.setBoundVariable('cornerRadius',nums.buttonRadius);const key=c.addComponentProperty('Label','TEXT','기존 목표비중 참고자료');const t=text(c,'기존 목표비중 참고자료',220,'Body','text');t.textAutoResize='WIDTH_AND_HEIGHT';t.componentPropertyReferences={characters:key};buttons.push(c);}\nconst set=mark(figma.combineAsVariants(buttons,page));set.name='Chart/Mode Button';set.x=2800;set.y=600;for(let i=0;i<buttons.length;i++){buttons[i].x=20;buttons[i].y=20+i*70;}set.resizeWithoutConstraints(350,170);\nfunction wrapper(name,width,x){const w=mark(figma.createAutoLayout('VERTICAL'));w.name=name;w.resize(width,500);w.primaryAxisSizingMode='AUTO';w.counterAxisSizingMode='FIXED';w.fills=[paint('background')];w.paddingTop=24;w.paddingBottom=24;w.paddingLeft=width===1280?114:12;w.paddingRight=width===1280?114:12;w.itemSpacing=18;w.x=x;w.y=100;w.clipsContent=false;return w;}\nconst views=[wrapper('TARGET — desktop 1280',1280,200),wrapper('TARGET — mobile 390',390,1680),wrapper('ACTUAL — NOT_AVAILABLE 390',390,2270)];\nreturn {createdNodeIds:created,collection:{id:collection.id,mode},variables,styles,components:{card:card.id,cardProps:{titleKey,bodyKey},legend:legend.id,legendProps:{labelKey},buttonSet:set.id,buttons:buttons.map(c=>({id:c.id,name:c.name,labelKey:Object.keys(set.componentPropertyDefinitions).find(k=>k.startsWith('Label#'))}))},views:views.map(w=>({id:w.id,name:w.name,width:w.width})),sourceCompatibility:'Subscribed Inter/Button/Card APIs do not map to existing custom Noto lab semantics; local source mirrors reused instead; no shared repository CSS variables implied by Figma WEB aliases'};",
+    "composition": "\nawait Promise.all([{family:'Noto Sans KR',style:'Regular'},{family:'Noto Sans KR',style:'Bold'}].map(f=>figma.loadFontAsync(f)));\nconst page=await figma.getNodeByIdAsync('0:1');await figma.setCurrentPageAsync(page);\nconst input={\"reference\":{\"title\":\"Portfolio · 분류와 중복 SAMPLE\",\"sample\":\"SAMPLE · 검증용 화면\",\"status\":\"SAMPLE · REFERENCE · TARGET · 기존 목표비중 참고자료 · 실제 계좌 아님\",\"buttons\":[{\"label\":\"기존 목표비중 참고자료\",\"selected\":\"true\"},{\"label\":\"가상 중복 유형 예시\",\"selected\":\"false\"},{\"label\":\"ACTUAL · 자료 없음\",\"selected\":\"false\"}],\"meta\":\"포트폴리오 v1.1 · 2026-09-14 · basis: TARGET · source: canonical b8e39a2: QGV Portfolio Specification v1.1 §2 and OFFICIAL_V11_TARGETS; TARGET REFERENCE ONLY · as_of 관측·추출 stamp (UTC): 2026-10-04T10:49:27.857Z — 권위 있는 효력 시점 아님 · effective_at: NOT_AVAILABLE (미제공) · available_at (Portfolio): NOT_AVAILABLE (미제공) · classification.available_at: NOT_AVAILABLE (미제공) · unit: weight_units (제공된 정수 단위), 표시 % · denominator total_units: 10000 (현금 0 단위 및 미분류 포함) · PIT NOT_VERIFIED\",\"font\":\"\\\"Noto Sans KR\\\", system-ui, sans-serif\",\"doc\":{\"contract_version\":\"PORTFOLIO_CHART_CANDIDATE/0.1\",\"snapshot_id\":\"reference:portfolio-v1.1:2026-09-14\",\"portfolio_version\":\"포트폴리오 v1.1 · 2026-09-14\",\"qgv_version\":\"NOT_BOUND\",\"as_of\":\"2026-10-04T10:49:27.857Z\",\"source\":\"canonical b8e39a2: QGV Portfolio Specification v1.1 §2 and OFFICIAL_V11_TARGETS; TARGET REFERENCE ONLY\",\"weight_basis\":\"TARGET\",\"data_kind\":\"USER_SPEC_REFERENCE\",\"total_units\":10000,\"cash_units\":0,\"classification\":{\"version\":\"USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED\",\"source\":\"QGV Portfolio Specification v1.1 §§2,9; sector mapping from qgv/identifiers.py (not GICS)\",\"available_at\":null},\"holdings\":[{\"holding_id\":\"reference:company:asml\",\"security_id\":null,\"label\":\"ASML Holding\",\"weight_units\":900,\"industry\":\"반도체 장비\",\"types\":null},{\"holding_id\":\"reference:company:lrcx\",\"security_id\":null,\"label\":\"Lam Research\",\"weight_units\":600,\"industry\":\"반도체 장비\",\"types\":null},{\"holding_id\":\"reference:company:klac\",\"security_id\":null,\"label\":\"KLA Corporation\",\"weight_units\":550,\"industry\":\"반도체 장비\",\"types\":null},{\"holding_id\":\"reference:company:tokyo_electron\",\"security_id\":null,\"label\":\"Tokyo Electron Limited · 시장 식별 미확정\",\"weight_units\":500,\"industry\":\"반도체 장비\",\"types\":null},{\"holding_id\":\"reference:company:hanmi\",\"security_id\":null,\"label\":\"Hanmi Semiconductor\",\"weight_units\":450,\"industry\":\"반도체 장비\",\"types\":null},{\"holding_id\":\"reference:company:nvda\",\"security_id\":null,\"label\":\"NVIDIA Corporation\",\"weight_units\":800,\"industry\":\"AI·반도체\",\"types\":null},{\"holding_id\":\"reference:company:amd\",\"security_id\":null,\"label\":\"Advanced Micro Devices\",\"weight_units\":500,\"industry\":\"AI·반도체\",\"types\":null},{\"holding_id\":\"reference:company:avgo\",\"security_id\":null,\"label\":\"Broadcom\",\"weight_units\":500,\"industry\":\"AI·반도체\",\"types\":null},{\"holding_id\":\"reference:company:qcom\",\"security_id\":null,\"label\":\"Qualcomm\",\"weight_units\":400,\"industry\":\"AI·반도체\",\"types\":null},{\"holding_id\":\"reference:company:intc\",\"security_id\":null,\"label\":\"Intel\",\"weight_units\":300,\"industry\":\"AI·반도체\",\"types\":null},{\"holding_id\":\"reference:company:msft\",\"security_id\":null,\"label\":\"Microsoft\",\"weight_units\":700,\"industry\":\"Big Tech\",\"types\":null},{\"holding_id\":\"reference:company:googl\",\"security_id\":null,\"label\":\"Alphabet\",\"weight_units\":700,\"industry\":\"Big Tech\",\"types\":null},{\"holding_id\":\"reference:company:amzn\",\"security_id\":null,\"label\":\"Amazon\",\"weight_units\":600,\"industry\":\"Big Tech\",\"types\":null},{\"holding_id\":\"reference:company:rtx\",\"security_id\":null,\"label\":\"RTX Corporation\",\"weight_units\":600,\"industry\":\"기타산업\",\"types\":null},{\"holding_id\":\"reference:company:stry\",\"security_id\":null,\"label\":\"Stryker\",\"weight_units\":550,\"industry\":\"기타산업\",\"types\":null},{\"holding_id\":\"reference:company:etn\",\"security_id\":null,\"label\":\"Eaton\",\"weight_units\":500,\"industry\":\"기타산업\",\"types\":null},{\"holding_id\":\"reference:company:hubb\",\"security_id\":null,\"label\":\"Hubbell\",\"weight_units\":350,\"industry\":\"기타산업\",\"types\":null},{\"holding_id\":\"reference:company:gev\",\"security_id\":null,\"label\":\"GE Vernova\",\"weight_units\":300,\"industry\":\"기타산업\",\"types\":null},{\"holding_id\":\"reference:company:rok\",\"security_id\":null,\"label\":\"Rockwell Automation\",\"weight_units\":200,\"industry\":\"기타산업\",\"types\":null}],\"data_state\":\"REFERENCE\",\"publication_grant\":null,\"pit_status\":\"NOT_VERIFIED\",\"reasons\":[\"DISPLAY_AGGREGATION_ONLY\",\"NO_QGV_RECALCULATION\",\"NO_HISTORICAL_PIT_CERTIFICATION\"],\"industry\":{\"denominator_units\":10000,\"buckets\":[{\"kind\":\"INDUSTRY\",\"label\":\"AI·반도체\",\"units\":2500},{\"kind\":\"INDUSTRY\",\"label\":\"Big Tech\",\"units\":2000},{\"kind\":\"INDUSTRY\",\"label\":\"기타산업\",\"units\":2500},{\"kind\":\"INDUSTRY\",\"label\":\"반도체 장비\",\"units\":3000},{\"kind\":\"UNKNOWN\",\"label\":\"Unknown industry\",\"units\":0},{\"kind\":\"CASH\",\"label\":\"Cash\",\"units\":0}]},\"types\":{\"denominator_units\":10000,\"exposures\":[{\"type\":\"가치\",\"member_units\":0,\"non_member_units\":0,\"unknown_units\":10000,\"cash_units\":0},{\"type\":\"경기민감\",\"member_units\":0,\"non_member_units\":0,\"unknown_units\":10000,\"cash_units\":0},{\"type\":\"경기방어\",\"member_units\":0,\"non_member_units\":0,\"unknown_units\":10000,\"cash_units\":0},{\"type\":\"배당\",\"member_units\":0,\"non_member_units\":0,\"unknown_units\":10000,\"cash_units\":0},{\"type\":\"성장\",\"member_units\":0,\"non_member_units\":0,\"unknown_units\":10000,\"cash_units\":0},{\"type\":\"우량\",\"member_units\":0,\"non_member_units\":0,\"unknown_units\":10000,\"cash_units\":0},{\"type\":\"주도\",\"member_units\":0,\"non_member_units\":0,\"unknown_units\":10000,\"cash_units\":0},{\"type\":\"테마\",\"member_units\":0,\"non_member_units\":0,\"unknown_units\":10000,\"cash_units\":0}],\"note\":\"Independent portfolio-denominator rings. Type memberships may sum above 100%; never renormalize.\"},\"overlap\":{\"denominator_units\":10000,\"buckets\":[{\"kind\":\"NO_TYPES\",\"types\":[],\"units\":0},{\"kind\":\"UNKNOWN\",\"types\":[],\"units\":10000},{\"kind\":\"CASH\",\"types\":[],\"units\":0}],\"note\":\"Exclusive exact membership sets; not pairwise correlation or probability.\"}},\"sections\":[{\"title\":\"GICS\",\"dimension\":\"GICS\",\"state\":\"NOT_AVAILABLE\",\"paragraphs\":[\"NOT_AVAILABLE · GICS 기업별 배정 및 근거가 제공되지 않았습니다. 사용자 배분 그룹이나 가상 산업을 GICS로 대체하지 않습니다.\"],\"legend\":[],\"typeItems\":[]},{\"title\":\"Strategy Theme / Portfolio Bucket\",\"dimension\":\"STRATEGY_THEME\",\"state\":\"AVAILABLE\",\"paragraphs\":[\"기존 사용자가 정한 4개 TARGET 목표 배분 그룹입니다. Strategy Theme / Portfolio Bucket이며 표준 산업분류(GICS)가 아닙니다.\"],\"svg\":\"<svg viewBox=\\\"0 0 200 200\\\" role=\\\"img\\\" aria-label=\\\"TARGET Strategy Theme · 전체 10000 weight_units · 현금 및 미분류 포함\\\" data-denominator=\\\"10000\\\" data-unit=\\\"weight_units\\\"><title>TARGET Strategy Theme · 전체 10000 weight_units · 현금 및 미분류 포함</title><circle cx=\\\"100\\\" cy=\\\"100\\\" r=\\\"72\\\" fill=\\\"none\\\" stroke=\\\"#60c7b2\\\" stroke-width=\\\"24\\\" stroke-dasharray=\\\"113.09733552923257 339.29200658769764\\\" stroke-dashoffset=\\\"0\\\" transform=\\\"rotate(-90 100 100)\\\"><title>AI·반도체: 25% (2500/10000 단위)</title></circle><circle cx=\\\"100\\\" cy=\\\"100\\\" r=\\\"72\\\" fill=\\\"none\\\" stroke=\\\"#7fa8ff\\\" stroke-width=\\\"24\\\" stroke-dasharray=\\\"90.47786842338604 361.91147369354417\\\" stroke-dashoffset=\\\"-113.09733552923257\\\" transform=\\\"rotate(-90 100 100)\\\"><title>Big Tech: 20% (2000/10000 단위)</title></circle><circle cx=\\\"100\\\" cy=\\\"100\\\" r=\\\"72\\\" fill=\\\"none\\\" stroke=\\\"#d9ad72\\\" stroke-width=\\\"24\\\" stroke-dasharray=\\\"113.09733552923257 339.29200658769764\\\" stroke-dashoffset=\\\"-203.5752039526186\\\" transform=\\\"rotate(-90 100 100)\\\"><title>기타산업: 25% (2500/10000 단위)</title></circle><circle cx=\\\"100\\\" cy=\\\"100\\\" r=\\\"72\\\" fill=\\\"none\\\" stroke=\\\"#cd94d9\\\" stroke-width=\\\"24\\\" stroke-dasharray=\\\"135.71680263507906 316.6725394818511\\\" stroke-dashoffset=\\\"-316.6725394818512\\\" transform=\\\"rotate(-90 100 100)\\\"><title>반도체 장비: 30% (3000/10000 단위)</title></circle><text x=\\\"100\\\" y=\\\"105\\\" text-anchor=\\\"middle\\\" fill=\\\"#e5ecf7\\\" font-size=\\\"18\\\">전체 100%</text></svg>\",\"legend\":[{\"label\":\"AI·반도체 25% · 2500/10000 단위\",\"color\":\"rgb(96, 199, 178)\"},{\"label\":\"Big Tech 20% · 2000/10000 단위\",\"color\":\"rgb(127, 168, 255)\"},{\"label\":\"기타산업 25% · 2500/10000 단위\",\"color\":\"rgb(217, 173, 114)\"},{\"label\":\"반도체 장비 30% · 3000/10000 단위\",\"color\":\"rgb(205, 148, 217)\"},{\"label\":\"Theme 미분류 0% · 0/10000 단위\",\"color\":\"rgb(67, 82, 105)\"},{\"label\":\"현금 0% · 0/10000 단위\",\"color\":\"rgb(119, 139, 162)\"}],\"typeItems\":[]},{\"title\":\"Investment Type · 유형 구성\",\"dimension\":\"INVESTMENT_TYPE\",\"state\":\"NOT_AVAILABLE\",\"paragraphs\":[\"각 도넛의 분모는 동일한 전체 포트폴리오입니다. 한 종목이 여러 유형에 포함될 수 있어 유형별 노출 합계는 100%를 넘을 수 있습니다. 미분류는 해당 없음으로 간주하지 않습니다.\",\"NOT_AVAILABLE · 기업별 유형 배정 근거가 없어 전부 미분류입니다. 가상 예시를 선택하면 중복 유형 표시를 확인할 수 있습니다.\",\"확인된 유형 노출: 가치 NOT_AVAILABLE · 미분류 / 경기민감 NOT_AVAILABLE · 미분류 / 경기방어 NOT_AVAILABLE · 미분류 / 배당 NOT_AVAILABLE · 미분류 / 성장 NOT_AVAILABLE · 미분류 / 우량 NOT_AVAILABLE · 미분류 / 주도 NOT_AVAILABLE · 미분류 / 테마 NOT_AVAILABLE · 미분류\"],\"legend\":[],\"typeItems\":[{\"title\":\"가치\",\"body\":\"NOT_AVAILABLE · 미분류 · 알려진 유형 비중 없음 · 미분류 범위 100% (10000/10000 단위) · 현금 0% (0/10000 단위)\"},{\"title\":\"경기민감\",\"body\":\"NOT_AVAILABLE · 미분류 · 알려진 유형 비중 없음 · 미분류 범위 100% (10000/10000 단위) · 현금 0% (0/10000 단위)\"},{\"title\":\"경기방어\",\"body\":\"NOT_AVAILABLE · 미분류 · 알려진 유형 비중 없음 · 미분류 범위 100% (10000/10000 단위) · 현금 0% (0/10000 단위)\"},{\"title\":\"배당\",\"body\":\"NOT_AVAILABLE · 미분류 · 알려진 유형 비중 없음 · 미분류 범위 100% (10000/10000 단위) · 현금 0% (0/10000 단위)\"},{\"title\":\"성장\",\"body\":\"NOT_AVAILABLE · 미분류 · 알려진 유형 비중 없음 · 미분류 범위 100% (10000/10000 단위) · 현금 0% (0/10000 단위)\"},{\"title\":\"우량\",\"body\":\"NOT_AVAILABLE · 미분류 · 알려진 유형 비중 없음 · 미분류 범위 100% (10000/10000 단위) · 현금 0% (0/10000 단위)\"},{\"title\":\"주도\",\"body\":\"NOT_AVAILABLE · 미분류 · 알려진 유형 비중 없음 · 미분류 범위 100% (10000/10000 단위) · 현금 0% (0/10000 단위)\"},{\"title\":\"테마\",\"body\":\"NOT_AVAILABLE · 미분류 · 알려진 유형 비중 없음 · 미분류 범위 100% (10000/10000 단위) · 현금 0% (0/10000 단위)\"}]},{\"title\":\"Type Overlap · 유형 중복 조합\",\"dimension\":\"TYPE_OVERLAP\",\"state\":\"NOT_AVAILABLE\",\"paragraphs\":[\"Investment Type의 완전히 확인된 동일 유형 조합에서 파생합니다. 정확히 같은 유형 조합을 가진 보유분끼리 묶습니다. “성장 + 우량”은 그 두 유형 조합이며, 다른 유형까지 포함한 종목은 별도 조합입니다. 현금·미분류를 포함해 각 보유분은 한 번만 집계합니다. 유형별 노출 합계와 달리 조합 분할의 분모는 전체 100%입니다. 미분류는 빈 유형 조합이 아닙니다.\",\"NOT_AVAILABLE · 유형 조합 미분류 · 원본 유형 배정이 없어 확인된 조합을 표시할 수 없습니다.\"],\"legend\":[],\"typeItems\":[]}]},\"actual\":{\"status\":\"SAMPLE · ACTUAL · NOT_AVAILABLE · 실제 계좌 자료 미제공\",\"meta\":\"ACTUAL · source / as_of / effective_at / available_at: NOT_AVAILABLE · unit: weight_units · denominator total_units: NOT_AVAILABLE · TARGET 대체 없음\",\"svgCount\":0,\"sections\":[{\"title\":\"GICS\",\"dimension\":\"GICS\",\"state\":\"NOT_AVAILABLE\",\"paragraphs\":[\"NOT_AVAILABLE · ACTUAL 원본·분모가 없어 표시할 수 없습니다. TARGET 자료로 대체하지 않습니다.\"]},{\"title\":\"Strategy Theme / Portfolio Bucket\",\"dimension\":\"STRATEGY_THEME\",\"state\":\"NOT_AVAILABLE\",\"paragraphs\":[\"NOT_AVAILABLE · ACTUAL 원본·분모가 없어 표시할 수 없습니다. TARGET 자료로 대체하지 않습니다.\"]},{\"title\":\"Investment Type\",\"dimension\":\"INVESTMENT_TYPE\",\"state\":\"NOT_AVAILABLE\",\"paragraphs\":[\"NOT_AVAILABLE · ACTUAL 원본·분모가 없어 표시할 수 없습니다. TARGET 자료로 대체하지 않습니다.\"]},{\"title\":\"Type Overlap\",\"dimension\":\"TYPE_OVERLAP\",\"state\":\"NOT_AVAILABLE\",\"paragraphs\":[\"NOT_AVAILABLE · ACTUAL 원본·분모가 없어 표시할 수 없습니다. TARGET 자료로 대체하지 않습니다.\"]}]}};const ledger={\"createdNodeIds\":[\"6:25\",\"6:26\",\"6:27\",\"6:28\",\"6:29\",\"6:30\",\"6:31\",\"6:32\",\"6:33\",\"6:34\",\"6:35\",\"6:36\",\"6:37\",\"6:38\"],\"collection\":{\"id\":\"VariableCollectionId:6:2\",\"mode\":\"6:0\"},\"variables\":[{\"id\":\"VariableID:6:3\",\"name\":\"source/color/background\",\"sourceLiteral\":\"#0e1624\"},{\"id\":\"VariableID:6:4\",\"name\":\"source/color/surface\",\"sourceLiteral\":\"#162034\"},{\"id\":\"VariableID:6:5\",\"name\":\"source/color/text\",\"sourceLiteral\":\"#e5ecf7\"},{\"id\":\"VariableID:6:6\",\"name\":\"source/color/secondary\",\"sourceLiteral\":\"#aab9cc\"},{\"id\":\"VariableID:6:7\",\"name\":\"source/color/warning\",\"sourceLiteral\":\"#f0c16c\"},{\"id\":\"VariableID:6:8\",\"name\":\"source/color/border\",\"sourceLiteral\":\"#2e405b\"},{\"id\":\"VariableID:6:9\",\"name\":\"source/color/button\",\"sourceLiteral\":\"#24324a\"},{\"id\":\"VariableID:6:10\",\"name\":\"source/color/active\",\"sourceLiteral\":\"#30425c\"},{\"id\":\"VariableID:6:11\",\"name\":\"source/color/badge\",\"sourceLiteral\":\"#694611\"},{\"id\":\"VariableID:6:12\",\"name\":\"source/color/badgeText\",\"sourceLiteral\":\"#ffe0a1\"},{\"id\":\"VariableID:6:13\",\"name\":\"source/color/accent\",\"sourceLiteral\":\"#8dc9ff\"},{\"id\":\"VariableID:6:14\",\"name\":\"source/layout/padding\",\"sourceLiteral\":16},{\"id\":\"VariableID:6:15\",\"name\":\"source/layout/mobilePadding\",\"sourceLiteral\":12},{\"id\":\"VariableID:6:16\",\"name\":\"source/layout/gap\",\"sourceLiteral\":20},{\"id\":\"VariableID:6:17\",\"name\":\"source/layout/buttonVertical\",\"sourceLiteral\":8},{\"id\":\"VariableID:6:18\",\"name\":\"source/layout/buttonHorizontal\",\"sourceLiteral\":12},{\"id\":\"VariableID:6:19\",\"name\":\"source/layout/radius\",\"sourceLiteral\":12},{\"id\":\"VariableID:6:20\",\"name\":\"source/layout/buttonRadius\",\"sourceLiteral\":6}],\"styles\":[{\"id\":\"S:e4b59abb226db9a8af58f97e13c5693fe17a968e,\",\"name\":\"Chart/Body\"},{\"id\":\"S:99e89a8af7850a0e3e79a316c7d87719571a7265,\",\"name\":\"Chart/Heading\"},{\"id\":\"S:b659f6134aa33b357aac7de84e24cfda87838c13,\",\"name\":\"Chart/Title\"},{\"id\":\"S:7cef8cfab1c37abd35d9ea8ebbdeef5f79de7ef5,\",\"name\":\"Chart/Caption\"}],\"components\":{\"card\":\"6:25\",\"cardProps\":{\"titleKey\":\"Title#6:0\",\"bodyKey\":\"Body#6:1\"},\"legend\":\"6:28\",\"legendProps\":{\"labelKey\":\"Label#6:2\"},\"buttonSet\":\"6:35\",\"buttons\":[{\"id\":\"6:31\",\"name\":\"Selected=false\",\"labelKey\":\"Label#6:5\"},{\"id\":\"6:33\",\"name\":\"Selected=true\",\"labelKey\":\"Label#6:5\"}]},\"views\":[{\"id\":\"6:36\",\"name\":\"TARGET — desktop 1280\",\"width\":1280},{\"id\":\"6:37\",\"name\":\"TARGET — mobile 390\",\"width\":390},{\"id\":\"6:38\",\"name\":\"ACTUAL — NOT_AVAILABLE 390\",\"width\":390}],\"sourceCompatibility\":\"Subscribed Inter/Button/Card APIs do not map to existing custom Noto lab semantics; local source mirrors reused instead; no shared repository CSS variables implied by Figma WEB aliases\"};\nconst created=[],mutated=[];function mark(n){created.push(n.id);return n;}\nconst local=await figma.variables.getLocalVariablesAsync();const vars={};for(const v of local.filter(v=>v.variableCollectionId===ledger.collection.id))vars[v.name]=v;\nconst styles={};for(const s of await figma.getLocalTextStylesAsync())styles[s.name.split('/').pop()]=s;\nconst typeStyle=figma.createTextStyle();typeStyle.name='Chart/Type Heading';typeStyle.fontName={family:'Noto Sans KR',style:'Bold'};typeStyle.fontSize=15;typeStyle.lineHeight={unit:'PERCENT',value:150};styles.TypeHeading=typeStyle;\nfunction paint(name){const v=vars['source/color/'+name];return figma.variables.setBoundVariableForPaint({type:'SOLID',color:{r:0,g:0,b:0}},'color',v);}\nfunction txt(parent,value,width,style='Body',color='secondary'){const n=mark(figma.createText());parent.appendChild(n);n.fontName=styles[style].fontName;n.textStyleId=styles[style].id;n.textAutoResize='HEIGHT';n.resize(width,30);n.characters=value;n.fills=[paint(color)];return n;}\nfunction box(parent,name,width,direction='VERTICAL',surface=false,pad=0){const n=mark(figma.createAutoLayout(direction));parent.appendChild(n);n.name=name;n.resize(width,100);n.primaryAxisSizingMode=direction==='VERTICAL'?'AUTO':'FIXED';n.counterAxisSizingMode=direction==='VERTICAL'?'FIXED':'AUTO';n.itemSpacing=12;n.paddingTop=pad;n.paddingBottom=pad;n.paddingLeft=pad;n.paddingRight=pad;n.fills=surface?[paint('surface')]:[];n.clipsContent=false;if(surface){n.strokes=[paint('border')];n.strokeWeight=1;n.cornerRadius=12;n.setBoundVariable('cornerRadius',vars['source/layout/radius']);}return n;}\nconst card=await figma.getNodeByIdAsync(ledger.components.card),legend=await figma.getNodeByIdAsync(ledger.components.legend);\nasync function unavailable(parent,title,body,width,compact=false){const inst=mark(card.createInstance());parent.appendChild(inst);inst.name=title+' · NOT_AVAILABLE';inst.resize(width,inst.height);inst.primaryAxisSizingMode='AUTO';inst.counterAxisSizingMode='FIXED';if(compact){inst.paddingTop=10;inst.paddingBottom=10;inst.paddingLeft=10;inst.paddingRight=10;inst.cornerRadius=8;}inst.setProperties({[ledger.components.cardProps.titleKey]:title,[ledger.components.cardProps.bodyKey]:body});for(const t of inst.findAllWithCriteria({types:['TEXT']})){t.textAutoResize='HEIGHT';t.resize(width-(compact?20:32),t.height);t.layoutSizingHorizontal='FILL';if(compact&&t.componentPropertyReferences.characters===ledger.components.cardProps.titleKey)t.textStyleId=styles.TypeHeading.id;}return inst;}\nasync function modes(parent,width,actual){const row=box(parent,'자료 선택',width,width<500?'VERTICAL':'HORIZONTAL');row.itemSpacing=9;for(let i=0;i<input.reference.buttons.length;i++){const selected=actual?i===2:i===0;const def=ledger.components.buttons.find(b=>b.name==='Selected='+selected);const main=await figma.getNodeByIdAsync(def.id);const inst=mark(main.createInstance());row.appendChild(inst);inst.setProperties({[def.labelKey]:input.reference.buttons[i].label});inst.name=input.reference.buttons[i].label+(selected?' · selected':'');}return row;}\nconst summary=[];\nfor(const view of ledger.views){const root=await figma.getNodeByIdAsync(view.id);if(root.children.length)throw new Error('Wrapper already populated');mutated.push(root.id);const width=root.width-root.paddingLeft-root.paddingRight;const actual=view.name.startsWith('ACTUAL');const source=actual?input.actual:input.reference;\ntxt(root,input.reference.title,width,'Title','text');\nconst badge=box(root,'SAMPLE label',210,'HORIZONTAL');badge.paddingTop=4;badge.paddingBottom=4;badge.paddingLeft=9;badge.paddingRight=9;badge.fills=[paint('badge')];badge.cornerRadius=5;txt(badge,input.reference.sample,192,'Body','badgeText');\ntxt(root,source.status,width,'Body','text');await modes(root,width,actual);txt(root,source.meta,width,'Body','secondary');\nfor(const s of source.sections){\n if(actual||s.dimension==='GICS'||s.dimension==='TYPE_OVERLAP'){await unavailable(root,s.title,s.paragraphs.join('\\n\\n'),width);continue;}\n const pad=view.width===1280?16:12;const panel=box(root,s.title,width,'VERTICAL',true,pad);const inner=width-pad*2;\n txt(panel,s.title,inner,'Heading','text');for(const p of s.paragraphs)txt(panel,p,inner,'Body',p.startsWith('NOT_AVAILABLE')?'warning':'secondary');\n if(s.svg){const area=box(panel,'Strategy Theme vector and legend',inner,view.width===1280?'HORIZONTAL':'VERTICAL');area.itemSpacing=20;\n const plot=mark(figma.createFrame());area.appendChild(plot);plot.name='Original renderer SVG · denominator 10000 weight_units';plot.resize(200,200);plot.fills=[];plot.clipsContent=false;\n const original=s.svg.replace('<svg ','<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\" ').replace(/<text[^>]*>[\\s\\S]*?<\\/text>/g,'');const svg=mark(figma.createNodeFromSvg(original));plot.appendChild(svg);svg.name='Original source SVG geometry';svg.x=0;svg.y=0;const centre=txt(plot,'전체 100%',160,'Heading','text');centre.textAlignHorizontal='CENTER';centre.x=20;centre.y=86.5;\n const lw=view.width===1280?inner-220:inner;const list=box(area,'원본 범례 · 전체 분모',lw);\n for(const item of s.legend){const inst=mark(legend.createInstance());list.appendChild(inst);inst.resize(lw,inst.height);inst.primaryAxisSizingMode='FIXED';inst.counterAxisSizingMode='AUTO';inst.setProperties({[ledger.components.legendProps.labelKey]:item.label});inst.name=item.label;const t=inst.findAllWithCriteria({types:['TEXT']})[0];t.textAutoResize='HEIGHT';t.resize(lw-12,t.height);t.layoutSizingHorizontal='FILL';const sw=inst.findAllWithCriteria({types:['RECTANGLE']}).find(n=>n.name==='Swatch');const rgb=item.color.match(/\\d+/g).map(Number);sw.fills=[{type:'SOLID',color:{r:rgb[0]/255,g:rgb[1]/255,b:rgb[2]/255}}];}}\n if(s.typeItems?.length){const grid=box(panel,'유형 결측 · 원본 8개',inner);grid.itemSpacing=12;const cols=view.width===1280?4:1;for(let i=0;i<s.typeItems.length;i+=cols){const row=box(grid,'유형 row '+i,inner,cols===1?'VERTICAL':'HORIZONTAL');row.itemSpacing=12;const cell=(inner-12*(cols-1))/cols;for(const item of s.typeItems.slice(i,i+cols))await unavailable(row,item.title,item.body,cell,true);}}\n }\n txt(root,'SAMPLE 디자인 검토 · 기존 참고자료만 표시 · production source/authority 미채택',width,'Caption','secondary');\n const nodes=root.findAll(()=>true);const counts={};for(const n of nodes)counts[n.type]=(counts[n.type]||0)+1;\n const images=nodes.filter(n=>'fills' in n&&Array.isArray(n.fills)&&n.fills.some(f=>f.type==='IMAGE')).map(n=>({id:n.id,name:n.name}));\n const fontMismatches=nodes.filter(n=>n.type==='TEXT'&&n.fontName.family!=='Noto Sans KR').map(n=>({id:n.id,font:n.fontName}));\n const overflows=nodes.filter(n=>n.visible&&'absoluteBoundingBox' in n&&n.absoluteBoundingBox&&n.absoluteBoundingBox.x<root.x-0.01||n.visible&&'absoluteBoundingBox' in n&&n.absoluteBoundingBox&&n.absoluteBoundingBox.x+n.absoluteBoundingBox.width>root.x+root.width+0.01).map(n=>({id:n.id,name:n.name}));\n summary.push({id:root.id,name:root.name,width:root.width,height:root.height,descendants:nodes.length,counts,images,fontMismatches,overflows,actualNoTargetGeometry:actual?nodes.every(n=>!n.name.includes('Original renderer SVG')):null});\n}\nreturn {createdNodeIds:created,mutatedNodeIds:mutated,newTextStyleId:typeStyle.id,views:summary,sourceValueTransformation:'NONE — labels and SVG copied from verified existing renderer; only layout adapted'};",
+    "repair": "\nawait Promise.all([{family:'Noto Sans KR',style:'Regular'},{family:'Noto Sans KR',style:'Bold'}].map(f=>figma.loadFontAsync(f)));\nconst mutated=[],created=[],removed=[],out=[];\nconst starts=[0,Math.PI/2,0.9*Math.PI,1.4*Math.PI],spans=[0.5*Math.PI,0.4*Math.PI,0.5*Math.PI,0.6*Math.PI];\nfor(const id of ['6:36','6:37','6:38']){\nconst root=await figma.getNodeByIdAsync(id);\nfor(const t of root.findAllWithCriteria({types:['TEXT']})){\n if(t.textAutoResize==='NONE'){t.textAutoResize='HEIGHT';if('layoutMode' in t.parent&&t.parent.layoutMode!=='NONE')t.layoutSizingVertical='HUG';mutated.push(t.id);}\n}\nconst holder=root.findAll(n=>n.name==='Original source SVG geometry')[0];\nif(holder){const previous=holder.children.slice();if(previous.length!==4)throw new Error('Expected four source circle paths');\nfor(let i=0;i<4;i++){\n const old=previous[i];const e=figma.createEllipse();holder.appendChild(e);created.push(e.id);\n e.name=['AI·반도체 25%','Big Tech 20%','기타산업 25%','반도체 장비 30%'][i]+' · source SVG dash converted to native arc';\n e.resize(168,168);e.x=16;e.y=16;e.fills=old.strokes;e.strokes=[];\n e.arcData={startingAngle:starts[i]-Math.PI/2,endingAngle:starts[i]+spans[i]-Math.PI/2,innerRadius:60/84};\n removed.push(old.id);old.remove();\n}\nholder.name='Source SVG geometry · native arcs (dashoffset unsupported)';\n}\nconst overlapping=[];\nfor(const p of [root,...root.findAll(n=>n.type==='FRAME'||n.type==='INSTANCE')]){\nif(!('layoutMode'in p)||p.layoutMode==='NONE')continue;\nconst kids=p.children.filter(n=>n.visible&&n.layoutPositioning!=='ABSOLUTE');\nfor(let i=1;i<kids.length;i++){const a=kids[i-1],b=kids[i];if(p.layoutMode==='VERTICAL'&&a.y+a.height>b.y+0.1)overlapping.push([a.id,b.id]);}\n}\nout.push({id,width:root.width,height:root.height,nonHugText:root.findAllWithCriteria({types:['TEXT']}).filter(n=>n.parent.type!=='FRAME'||n.parent.layoutMode!=='NONE').filter(n=>n.textAutoResize==='NONE').map(n=>n.id),overlapping,arcs:root.findAllWithCriteria({types:['ELLIPSE']}).map(n=>({id:n.id,name:n.name,arc:n.arcData,width:n.width,fills:n.fills})),actualNoTargetGeometry:id==='6:38'?root.findAllWithCriteria({types:['ELLIPSE','VECTOR']}).length===0:null});\n}\nreturn{createdNodeIds:created,mutatedNodeIds:mutated,removedNodeIds:removed,views:out,rootCauses:['resize after textAutoResize HEIGHT reset text to fixed-height NONE','createNodeFromSvg retained dashPattern but did not preserve dashoffset; native filled arcs mirror original SVG geometry'],financialInputsChanged:false};"
+  },
+  "results": {
+    "foundation": {
+      "createdNodeIds": [
+        "6:25",
+        "6:26",
+        "6:27",
+        "6:28",
+        "6:29",
+        "6:30",
+        "6:31",
+        "6:32",
+        "6:33",
+        "6:34",
+        "6:35",
+        "6:36",
+        "6:37",
+        "6:38"
+      ],
+      "collection": {
+        "id": "VariableCollectionId:6:2",
+        "mode": "6:0"
+      },
+      "variables": [
+        {
+          "id": "VariableID:6:3",
+          "name": "source/color/background",
+          "sourceLiteral": "#0e1624"
+        },
+        {
+          "id": "VariableID:6:4",
+          "name": "source/color/surface",
+          "sourceLiteral": "#162034"
+        },
+        {
+          "id": "VariableID:6:5",
+          "name": "source/color/text",
+          "sourceLiteral": "#e5ecf7"
+        },
+        {
+          "id": "VariableID:6:6",
+          "name": "source/color/secondary",
+          "sourceLiteral": "#aab9cc"
+        },
+        {
+          "id": "VariableID:6:7",
+          "name": "source/color/warning",
+          "sourceLiteral": "#f0c16c"
+        },
+        {
+          "id": "VariableID:6:8",
+          "name": "source/color/border",
+          "sourceLiteral": "#2e405b"
+        },
+        {
+          "id": "VariableID:6:9",
+          "name": "source/color/button",
+          "sourceLiteral": "#24324a"
+        },
+        {
+          "id": "VariableID:6:10",
+          "name": "source/color/active",
+          "sourceLiteral": "#30425c"
+        },
+        {
+          "id": "VariableID:6:11",
+          "name": "source/color/badge",
+          "sourceLiteral": "#694611"
+        },
+        {
+          "id": "VariableID:6:12",
+          "name": "source/color/badgeText",
+          "sourceLiteral": "#ffe0a1"
+        },
+        {
+          "id": "VariableID:6:13",
+          "name": "source/color/accent",
+          "sourceLiteral": "#8dc9ff"
+        },
+        {
+          "id": "VariableID:6:14",
+          "name": "source/layout/padding",
+          "sourceLiteral": 16
+        },
+        {
+          "id": "VariableID:6:15",
+          "name": "source/layout/mobilePadding",
+          "sourceLiteral": 12
+        },
+        {
+          "id": "VariableID:6:16",
+          "name": "source/layout/gap",
+          "sourceLiteral": 20
+        },
+        {
+          "id": "VariableID:6:17",
+          "name": "source/layout/buttonVertical",
+          "sourceLiteral": 8
+        },
+        {
+          "id": "VariableID:6:18",
+          "name": "source/layout/buttonHorizontal",
+          "sourceLiteral": 12
+        },
+        {
+          "id": "VariableID:6:19",
+          "name": "source/layout/radius",
+          "sourceLiteral": 12
+        },
+        {
+          "id": "VariableID:6:20",
+          "name": "source/layout/buttonRadius",
+          "sourceLiteral": 6
+        }
+      ],
+      "styles": [
+        {
+          "id": "S:e4b59abb226db9a8af58f97e13c5693fe17a968e,",
+          "name": "Chart/Body"
+        },
+        {
+          "id": "S:99e89a8af7850a0e3e79a316c7d87719571a7265,",
+          "name": "Chart/Heading"
+        },
+        {
+          "id": "S:b659f6134aa33b357aac7de84e24cfda87838c13,",
+          "name": "Chart/Title"
+        },
+        {
+          "id": "S:7cef8cfab1c37abd35d9ea8ebbdeef5f79de7ef5,",
+          "name": "Chart/Caption"
+        }
+      ],
+      "components": {
+        "card": "6:25",
+        "cardProps": {
+          "titleKey": "Title#6:0",
+          "bodyKey": "Body#6:1"
+        },
+        "legend": "6:28",
+        "legendProps": {
+          "labelKey": "Label#6:2"
+        },
+        "buttonSet": "6:35",
+        "buttons": [
+          {
+            "id": "6:31",
+            "name": "Selected=false",
+            "labelKey": "Label#6:5"
+          },
+          {
+            "id": "6:33",
+            "name": "Selected=true",
+            "labelKey": "Label#6:5"
+          }
+        ]
+      },
+      "views": [
+        {
+          "id": "6:36",
+          "name": "TARGET — desktop 1280",
+          "width": 1280
+        },
+        {
+          "id": "6:37",
+          "name": "TARGET — mobile 390",
+          "width": 390
+        },
+        {
+          "id": "6:38",
+          "name": "ACTUAL — NOT_AVAILABLE 390",
+          "width": 390
+        }
+      ],
+      "sourceCompatibility": "Subscribed Inter/Button/Card APIs do not map to existing custom Noto lab semantics; local source mirrors reused instead; no shared repository CSS variables implied by Figma WEB aliases"
+    },
+    "composition": {
+      "createdNodeIds": [
+        "7:3",
+        "7:4",
+        "7:5",
+        "7:6",
+        "7:7",
+        "7:8",
+        "7:10",
+        "7:12",
+        "7:14",
+        "7:15",
+        "7:18",
+        "7:19",
+        "7:20",
+        "7:21",
+        "7:22",
+        "7:23",
+        "7:28",
+        "7:29",
+        "7:30",
+        "7:33",
+        "7:36",
+        "7:39",
+        "7:42",
+        "7:45",
+        "7:48",
+        "7:49",
+        "7:50",
+        "7:51",
+        "7:52",
+        "7:53",
+        "7:54",
+        "7:55",
+        "7:58",
+        "7:61",
+        "7:64",
+        "7:67",
+        "7:68",
+        "7:71",
+        "7:74",
+        "7:77",
+        "7:80",
+        "7:83",
+        "7:84",
+        "7:85",
+        "7:86",
+        "7:87",
+        "7:88",
+        "7:89",
+        "7:91",
+        "7:93",
+        "7:95",
+        "7:96",
+        "7:99",
+        "7:100",
+        "7:101",
+        "7:102",
+        "7:103",
+        "7:104",
+        "7:109",
+        "7:110",
+        "7:111",
+        "7:114",
+        "7:117",
+        "7:120",
+        "7:123",
+        "7:126",
+        "7:129",
+        "7:130",
+        "7:131",
+        "7:132",
+        "7:133",
+        "7:134",
+        "7:135",
+        "7:136",
+        "7:139",
+        "7:140",
+        "7:143",
+        "7:144",
+        "7:147",
+        "7:148",
+        "7:151",
+        "7:152",
+        "7:155",
+        "7:156",
+        "7:159",
+        "7:160",
+        "7:163",
+        "7:164",
+        "7:167",
+        "7:170",
+        "7:171",
+        "7:172",
+        "7:173",
+        "7:174",
+        "7:175",
+        "7:176",
+        "7:178",
+        "7:180",
+        "7:182",
+        "7:183",
+        "7:186",
+        "7:189",
+        "7:192",
+        "7:195"
+      ],
+      "mutatedNodeIds": [
+        "6:36",
+        "6:37",
+        "6:38"
+      ],
+      "newTextStyleId": "S:db5e6743436a73083387af36beda096ccae16bc8,",
+      "views": [
+        {
+          "id": "6:36",
+          "name": "TARGET — desktop 1280",
+          "width": 1280,
+          "height": 1511,
+          "descendants": 81,
+          "counts": {
+            "TEXT": 41,
+            "FRAME": 11,
+            "INSTANCE": 19,
+            "VECTOR": 4,
+            "RECTANGLE": 6
+          },
+          "images": [],
+          "fontMismatches": [],
+          "overflows": [],
+          "actualNoTargetGeometry": null
+        },
+        {
+          "id": "6:37",
+          "name": "TARGET — mobile 390",
+          "width": 390,
+          "height": 2734,
+          "descendants": 87,
+          "counts": {
+            "TEXT": 41,
+            "FRAME": 17,
+            "INSTANCE": 19,
+            "VECTOR": 4,
+            "RECTANGLE": 6
+          },
+          "images": [],
+          "fontMismatches": [],
+          "overflows": [],
+          "actualNoTargetGeometry": null
+        },
+        {
+          "id": "6:38",
+          "name": "ACTUAL — NOT_AVAILABLE 390",
+          "width": 390,
+          "height": 969,
+          "descendants": 25,
+          "counts": {
+            "TEXT": 16,
+            "FRAME": 2,
+            "INSTANCE": 7
+          },
+          "images": [],
+          "fontMismatches": [],
+          "overflows": [],
+          "actualNoTargetGeometry": true
+        }
+      ],
+      "sourceValueTransformation": "NONE — labels and SVG copied from verified existing renderer; only layout adapted"
+    },
+    "repair": {
+      "createdNodeIds": [
+        "9:83",
+        "9:84",
+        "9:85",
+        "9:86",
+        "9:87",
+        "9:88",
+        "9:89",
+        "9:90"
+      ],
+      "mutatedNodeIds": [
+        "7:3",
+        "7:5",
+        "7:6",
+        "7:14",
+        "7:19",
+        "7:20",
+        "7:28",
+        "7:49",
+        "7:50",
+        "7:51",
+        "7:52",
+        "7:83",
+        "7:84",
+        "7:86",
+        "7:87",
+        "7:95",
+        "7:100",
+        "7:101",
+        "7:109",
+        "7:130",
+        "7:131",
+        "7:132",
+        "7:133",
+        "7:170",
+        "7:171",
+        "7:173",
+        "7:174",
+        "7:182",
+        "7:195"
+      ],
+      "removedNodeIds": [
+        "7:24",
+        "7:25",
+        "7:26",
+        "7:27",
+        "7:105",
+        "7:106",
+        "7:107",
+        "7:108"
+      ],
+      "views": [
+        {
+          "id": "6:36",
+          "width": 1280,
+          "height": 1563,
+          "nonHugText": [],
+          "overlapping": [],
+          "arcs": [
+            {
+              "id": "9:83",
+              "name": "AI·반도체 25% · source SVG dash converted to native arc",
+              "arc": {
+                "startingAngle": -1.5707963705062866,
+                "endingAngle": 0,
+                "innerRadius": 0.7142857313156128
+              },
+              "width": 168,
+              "fills": [
+                {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.3764705955982208,
+                    "g": 0.7803921699523926,
+                    "b": 0.6980392336845398
+                  },
+                  "boundVariables": {}
+                }
+              ]
+            },
+            {
+              "id": "9:84",
+              "name": "Big Tech 20% · source SVG dash converted to native arc",
+              "arc": {
+                "startingAngle": 0,
+                "endingAngle": 1.2566370964050293,
+                "innerRadius": 0.7142857313156128
+              },
+              "width": 168,
+              "fills": [
+                {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.49803921580314636,
+                    "g": 0.658823549747467,
+                    "b": 1
+                  },
+                  "boundVariables": {}
+                }
+              ]
+            },
+            {
+              "id": "9:85",
+              "name": "기타산업 25% · source SVG dash converted to native arc",
+              "arc": {
+                "startingAngle": 1.2566370964050293,
+                "endingAngle": 2.8274333477020264,
+                "innerRadius": 0.7142857313156128
+              },
+              "width": 168,
+              "fills": [
+                {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.8509804010391235,
+                    "g": 0.6784313917160034,
+                    "b": 0.4470588266849518
+                  },
+                  "boundVariables": {}
+                }
+              ]
+            },
+            {
+              "id": "9:86",
+              "name": "반도체 장비 30% · source SVG dash converted to native arc",
+              "arc": {
+                "startingAngle": 2.8274333477020264,
+                "endingAngle": 4.71238899230957,
+                "innerRadius": 0.7142857313156128
+              },
+              "width": 168,
+              "fills": [
+                {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.8039215803146362,
+                    "g": 0.5803921818733215,
+                    "b": 0.8509804010391235
+                  },
+                  "boundVariables": {}
+                }
+              ]
+            }
+          ],
+          "actualNoTargetGeometry": null
+        },
+        {
+          "id": "6:37",
+          "width": 390,
+          "height": 3218,
+          "nonHugText": [],
+          "overlapping": [],
+          "arcs": [
+            {
+              "id": "9:87",
+              "name": "AI·반도체 25% · source SVG dash converted to native arc",
+              "arc": {
+                "startingAngle": -1.5707963705062866,
+                "endingAngle": 0,
+                "innerRadius": 0.7142857313156128
+              },
+              "width": 168,
+              "fills": [
+                {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.3764705955982208,
+                    "g": 0.7803921699523926,
+                    "b": 0.6980392336845398
+                  },
+                  "boundVariables": {}
+                }
+              ]
+            },
+            {
+              "id": "9:88",
+              "name": "Big Tech 20% · source SVG dash converted to native arc",
+              "arc": {
+                "startingAngle": 0,
+                "endingAngle": 1.2566370964050293,
+                "innerRadius": 0.7142857313156128
+              },
+              "width": 168,
+              "fills": [
+                {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.49803921580314636,
+                    "g": 0.658823549747467,
+                    "b": 1
+                  },
+                  "boundVariables": {}
+                }
+              ]
+            },
+            {
+              "id": "9:89",
+              "name": "기타산업 25% · source SVG dash converted to native arc",
+              "arc": {
+                "startingAngle": 1.2566370964050293,
+                "endingAngle": 2.8274333477020264,
+                "innerRadius": 0.7142857313156128
+              },
+              "width": 168,
+              "fills": [
+                {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.8509804010391235,
+                    "g": 0.6784313917160034,
+                    "b": 0.4470588266849518
+                  },
+                  "boundVariables": {}
+                }
+              ]
+            },
+            {
+              "id": "9:90",
+              "name": "반도체 장비 30% · source SVG dash converted to native arc",
+              "arc": {
+                "startingAngle": 2.8274333477020264,
+                "endingAngle": 4.71238899230957,
+                "innerRadius": 0.7142857313156128
+              },
+              "width": 168,
+              "fills": [
+                {
+                  "type": "SOLID",
+                  "visible": true,
+                  "opacity": 1,
+                  "blendMode": "NORMAL",
+                  "color": {
+                    "r": 0.8039215803146362,
+                    "g": 0.5803921818733215,
+                    "b": 0.8509804010391235
+                  },
+                  "boundVariables": {}
+                }
+              ]
+            }
+          ],
+          "actualNoTargetGeometry": null
+        },
+        {
+          "id": "6:38",
+          "width": 390,
+          "height": 1027,
+          "nonHugText": [],
+          "overlapping": [],
+          "arcs": [],
+          "actualNoTargetGeometry": true
+        }
+      ],
+      "rootCauses": [
+        "resize after textAutoResize HEIGHT reset text to fixed-height NONE",
+        "createNodeFromSvg retained dashPattern but did not preserve dashoffset; native filled arcs mirror original SVG geometry"
+      ],
+      "financialInputsChanged": false
+    }
+  },
+  "first_failures": {
+    "foundation": "Error: in get_componentPropertyDefinitions: Can only get component property definitions of a component set or non-variant component\n    at get (<input>:52:11)\n    at <anonymous> (PLUGIN_1_SOURCE:26:303)\n    at map (native)\n    at <anonymous> (PLUGIN_1_SOURCE:26:245)\n",
+    "repair": "Error: in set_layoutSizingVertical: node must be an auto-layout frame or a child of an auto-layout frame\n    at set (<input>:75:11)\n    at <anonymous> (PLUGIN_1_SOURCE:8:70)\n"
+  },
+  "post_fix_screenshot_errors": [
+    "You've reached the Figma MCP tool call limit on the Starter plan. Upgrade your plan for more tool calls: https://www.figma.com/files/team/1688796624802964744/all-projects?upgrade=mcp_rate_limit_paywall",
+    "You've reached the Figma MCP tool call limit on the Starter plan. Upgrade your plan for more tool calls: https://www.figma.com/files/team/1688796624802964744/all-projects?upgrade=mcp_rate_limit_paywall",
+    "You've reached the Figma MCP tool call limit on the Starter plan. Upgrade your plan for more tool calls: https://www.figma.com/files/team/1688796624802964744/all-projects?upgrade=mcp_rate_limit_paywall"
+  ]
+}
