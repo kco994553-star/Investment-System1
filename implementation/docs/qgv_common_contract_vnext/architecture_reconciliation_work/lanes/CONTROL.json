@@ -89,5 +89,14 @@
     "semantic_changes": 0,
     "disposition": "PASS",
     "new_d3_decision_required": false
+  },
+  "execution_loop": {
+    "policy_id": "QGV-SSOT-AUTONOMOUS-EXECUTION-LOOP-2026-10-05",
+    "policy_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/execution_loop/POLICY.json",
+    "policy_sha256": "5037e5dcaa0ca55afff4e6641de418d9542507786d1ad06c6ad851142bbd3ce8",
+    "task_board_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/execution_loop/TASK_BOARD.json",
+    "status": "POLICY_PUBLISHED_SCOPE_FIXTURE_IN_PROGRESS",
+    "production_enabled": false,
+    "scheduler_hops": 0
   }
 }

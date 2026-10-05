@@ -1,0 +1,182 @@
+{
+  "record_kind": "FRESH_SSOT_RECONCILIATION_AND_EXECUTABLE_DISCOVERY",
+  "recorded_at_utc": "2026-10-05T07:28:01.420Z",
+  "heads": {
+    "review": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+    "claim": "f504ff6db699236bfb8c827992c3fb80f2145c46",
+    "owner": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "global": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "pr42": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+  },
+  "scope": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work",
+  "review_is_not_owner_successor": true,
+  "reconciliation": [
+    {
+      "scope": "Review latest policy and G1/G2/G-C evidence",
+      "state": "CURRENT",
+      "input_head": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+      "hash_verification": "29 local artifact blobs match authenticated remote review tree"
+    },
+    {
+      "scope": "Archived pre-G1/G2 intent-pending labels",
+      "state": "SUPERSEDED",
+      "reason": "Explicit approved semantic record retained; method/numeric selection still unapproved"
+    },
+    {
+      "scope": "Missing-Data owner running lease",
+      "state": "CURRENT",
+      "head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "lease": {
+        "token": "qgv-b47-muupb538",
+        "owner": "manual-B4-B7-explicit-user-approval",
+        "input_owner_head": "36b6b1840fe4bd22d7bb310407e2cea4050e0c2d",
+        "task": "approved-identity-invariants-and-admission-consolidation",
+        "claimed_at_kst": "2026-10-05T12:39:35.838071+09:00",
+        "expiry": null
+      },
+      "termination": "UNVERIFIED",
+      "mutation": false
+    },
+    {
+      "scope": "Global old remote branch list and historical counts",
+      "state": "HISTORICAL",
+      "reason": "Current relevant owner/ref/PR fetched directly, not inherited counts"
+    },
+    {
+      "scope": "PR44 and PR42 Actions",
+      "state": "CURRENT",
+      "effect": "Exact scoped past results retained; no new-HEAD Actions claim",
+      "rerun": false
+    },
+    {
+      "scope": "G/C specialist return Main consumption",
+      "state": "CURRENT",
+      "evidence_comment": 5989173684,
+      "body": "Main consumed cba198e G1/G2 approved semantics and 59 bounded checks as AUDIT_VERIFIED_EXTERNAL",
+      "missing_data_owner_ack": "NOT_EVIDENCED"
+    },
+    {
+      "scope": "Scheduler execution continuity",
+      "state": "UNVERIFIED",
+      "actual_hops": "0/2",
+      "manual_credit": 0,
+      "owner_canary_artifacts": []
+    }
+  ],
+  "executed_discovery": "Existing bounded G/C exact artifact shared-versus-local fixture is READY independently of Missing-Data owner lease; raw-vintage and canary lanes WAIT only",
+  "lookup_failure_history": [
+    {
+      "request": "Guessed global branch claude/investment-system-master-zKtyC",
+      "result": "404",
+      "classification": "REPLAN",
+      "repair": "Resolved actual integration/global-handoff-v1 from established scoped routing"
+    },
+    {
+      "request": "Guessed implementation/docs/global_handoff paths",
+      "result": "404",
+      "classification": "REPLAN",
+      "repair": "Fresh Global tree resolved implementation/docs/coordination paths"
+    }
+  ],
+  "changed_domain_semantics": 0,
+  "old_checks_reused": 59,
+  "other_owner_writes": 0,
+  "global_writes": 0,
+  "ci_receipts": [
+    {
+      "pr": 42,
+      "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "runs": [
+        {
+          "id": 37260997660,
+          "name": "sec-primary-disclosure",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "attempt": 1,
+          "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+        },
+        {
+          "id": 37260997658,
+          "name": "us-equity-session",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "attempt": 1,
+          "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+        },
+        {
+          "id": 37260997655,
+          "name": "qgv-invalidation-binding",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "attempt": 1,
+          "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+        },
+        {
+          "id": 37260997708,
+          "name": "p01-research-publication",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "attempt": 1,
+          "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+        },
+        {
+          "id": 37260997662,
+          "name": "technical-real-producer",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "attempt": 1,
+          "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+        },
+        {
+          "id": 37260997773,
+          "name": "technical-real-model",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "attempt": 1,
+          "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+        },
+        {
+          "id": 37260997788,
+          "name": "track-c-fpia",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "attempt": 1,
+          "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+        }
+      ]
+    },
+    {
+      "pr": 44,
+      "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "runs": [
+        {
+          "id": 37245037812,
+          "name": "qgv-common-contract-vnext",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "attempt": 1,
+          "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+        },
+        {
+          "id": 37245014376,
+          "name": "qgv-common-contract-vnext",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "push",
+          "attempt": 1,
+          "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+        }
+      ]
+    }
+  ]
+}

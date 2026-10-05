@@ -1,3 +1,24 @@
+# QGV SSoT execution loop — policy published; bounded scope lane in progress
+
+STATUS: EXECUTION_POLICY_APPLIED / READY_TASK_EXECUTING / NO_PRODUCTION_SEMANTIC_CHANGE.
+Explicit user authority: SSoT Autonomous Execution Loop v1.0, 2026-10-05T16:15:54+09:00.
+Input review 19e4e47d3f8fc02fb35d33399f7b052317896b62; own lease claim f504ff6db699236bfb8c827992c3fb80f2145c46.
+Policy: lanes/execution_loop/POLICY.json and POLICY.md. Current finite task board: lanes/execution_loop/TASK_BOARD.json.
+
+Existing automatic QGV audit and CI/State follow-up prompts now use Fresh Read → Reconcile → Discover → Execute → Verify → Publish → update scoped SSoT → Re-evaluate → next READY task. Exact configuration readback preserves existing schedule, conversation, enabled state, timezone and title. Prompt-update title drift was repaired and retained in AUTOMATION_READBACK.json. This is configuration evidence, not genuine scheduler execution.
+
+The 29 frozen semantic artifacts match current authenticated review-tree blobs; prior G/C59 and G/V evidence are reused at original pins. New policy targeted consistency PASS. FAST/STANDARD stop ends only task verification, not the Work if another authorized READY lane remains.
+
+The existing G/C artifact-bound shared-versus-local scope fixture remains IN_PROGRESS independently of the Missing-Data owner's active lease. That owner remains4fb08a0 with qgv-b47-muupb538 and no authoritative release/accepted canary. No owner STATE, Global, production, score/history or method is changed. Genuine scheduler continuation remains0/2 UNVERIFIED; manual/configuration credit0.
+
+Main consumption of prior cba198e G1/G2/G-C return is independently observed at PR44 comment5989173684. The relayed HOP1 and Missing-Data scope-consumption packets are still SENT without authenticated owner acknowledgement. Relevant exact PR44 2/2 and PR42 7/7 completed-success runs are retained; no rerun/new-HEAD PASS.
+
+Current next action: finish the already-defined finite scope fixture, verify the changed surface, publish its bounded acceptance return, then re-evaluate all lanes. Current state is not an overall WAIT checkpoint. Actual methods, B2/B3/B5/B6 authority/criteria/runtime, V1/V2 and migration remain D3.
+
+---
+
+# Previous scoped checkpoints — immutable history preserved below
+
 # QGV Risk-Proportional Verification — current operational checkpoint
 
 STATUS: APPLIED / FAST_POLICY_RECORD_PASS / INDEPENDENT_AUDITOR / QGV_SEMANTICS_UNCHANGED.

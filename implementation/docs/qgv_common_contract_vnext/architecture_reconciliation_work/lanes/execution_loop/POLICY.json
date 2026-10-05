@@ -1,0 +1,149 @@
+{
+  "policy_id": "QGV-SSOT-AUTONOMOUS-EXECUTION-LOOP-2026-10-05",
+  "version": "1.0",
+  "record_kind": "USER_APPROVED_EXECUTION_POLICY_NOT_METHOD_AUTHORITY",
+  "authority": "Explicit user SSoT Autonomous Execution Loop v1.0 instruction in QGV Work",
+  "received_at_kst": "2026-10-05T16:15:54+09:00",
+  "recorded_at_utc": "2026-10-05T07:22:30.029Z",
+  "role": "INDEPENDENT_QGV_SPECIALIST_AUDITOR",
+  "repository": "kco994553-star/Investment-System1",
+  "review_branch": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+  "scoped_root": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work",
+  "ssot_order": [
+    "ACTUAL_GITHUB",
+    "AUTHORITATIVE_SCOPED_HANDOFF",
+    "GLOBAL_HANDOFF",
+    "DECISION_APPROVAL_RECORDS",
+    "IMMUTABLE_EVIDENCE_VALIDATION_CI",
+    "OWNER_CONTRACT",
+    "HISTORICAL_CHAT"
+  ],
+  "reconciliation_states": [
+    "CURRENT",
+    "STALE",
+    "SUPERSEDED",
+    "HISTORICAL",
+    "UNVERIFIED",
+    "CONFLICTING"
+  ],
+  "loop": [
+    "FRESH_READ",
+    "RECONCILE",
+    "DISCOVER_EXECUTABLE_WORK",
+    "PRIORITIZE",
+    "EXECUTE",
+    "VERIFY",
+    "PUBLISH",
+    "UPDATE_SCOPED_SSOT",
+    "RE_EVALUATE",
+    "NEXT_READY_TASK"
+  ],
+  "task_states": [
+    "READY",
+    "WAIT_DEPENDENCY",
+    "D3_REQUIRED",
+    "DONE",
+    "SUPERSEDED",
+    "INVALID"
+  ],
+  "priority": [
+    "SHARED_BLOCKER",
+    "CRITICAL_PATH",
+    "SECURITY_INTEGRITY",
+    "OWNER_RETURN_CLOSURE",
+    "INTEGRATION",
+    "ACCEPTANCE_CLOSURE",
+    "BOUNDED_IMPLEMENTATION",
+    "DOCUMENTATION_CLEANUP"
+  ],
+  "failure_states": [
+    "RETRY",
+    "REPAIR",
+    "REPLAN",
+    "WAIT_DEPENDENCY",
+    "D3"
+  ],
+  "owner_return_states": [
+    "SENT",
+    "ACKNOWLEDGED",
+    "IN_PROGRESS",
+    "RETURNED",
+    "INDEPENDENTLY_VERIFIED",
+    "CONSUMED",
+    "CLOSED"
+  ],
+  "wait_requires_all_zero": [
+    "ready_d1_d2",
+    "independent_lane_ready",
+    "bounded_repair_ready",
+    "owner_return_consumable",
+    "ci_terminal_consumable",
+    "ssot_closure_ready"
+  ],
+  "stop_only": [
+    "ALL_ACCEPTANCE_DONE",
+    "REAL_D3",
+    "ALL_D1_D2_WAIT_NO_READY",
+    "ACTUAL_TOOL_SYSTEM_BLOCKER"
+  ],
+  "resume_triggers": [
+    "CI_TERMINAL",
+    "OWNER_RETURNED",
+    "RELEVANT_PR_HEAD_CHANGED",
+    "BLOCKER_CHANGED",
+    "NEW_VERIFIED_EVIDENCE",
+    "D3_APPROVED",
+    "INTEGRATION_RESULT",
+    "CANONICAL_CHANGED",
+    "EXTERNAL_BLOCKER_RESOLVED"
+  ],
+  "verification_policy_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/verification_policy/POLICY.json",
+  "verification_policy_sha256": "61f6391979169318ae7d75b58d4a3cde6916b24031931cdc26de67509d492c23",
+  "verification_stop_means": "Stop verification for the bounded task; continue the work loop if another authorized READY task remains",
+  "exact_evidence_reuse": true,
+  "no_busy_polling": true,
+  "no_duplicate_owner_implementation": true,
+  "default_auditors": 1,
+  "optional_independent_specialists": 1,
+  "write_set": [
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/",
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md"
+  ],
+  "other_owner_branch": "codex/qgv-missing-data-decision-gate-2026-10-05",
+  "other_owner_access": "READ_ONLY",
+  "global_access": "READ_ONLY_WITH_SCOPED_MAIN_RETURN",
+  "publication": "GitHub API blob/tree/commit/ref, force=false, remote parent/tree/blob/readback and own lease checks",
+  "lease": "Acquire current review CONTROL only; verify own unexpired token before mutations; preserve other owner lease; release on WAIT/D3/DONE",
+  "d3_preserved": [
+    "G1_ACTUAL_METHOD_INPUT_HORIZON_NUMERIC_SELECTION",
+    "G2_ALTERNATIVE_METHOD_APPLICABILITY_SELECTION",
+    "B2_B3_B5_B6_REFERENCE_SCOPE_AUTHORITY_AND_CONCRETE_CONSUMER_BINDINGS",
+    "V1_METHOD_NORMALIZATION_FAMILIES",
+    "V2_RESIDUAL_METADATA_METHODOLOGY_WITH_B2_B3_B5_B6",
+    "PRODUCTION_ACTIVATION_MIGRATION"
+  ],
+  "hard_gates": [
+    "PIT_NO_LOOKAHEAD",
+    "FROZEN_HISTORY",
+    "HOLDOUT",
+    "OFFICIAL_LIVE_GRANTS",
+    "FINANCIAL_INTEGRITY",
+    "OTHER_OWNER_AUTHORITY"
+  ],
+  "production_enabled": false,
+  "method_selection": "NOT_APPROVED",
+  "migration": "NOT_APPROVED",
+  "manual_scheduler_hops": 0,
+  "actual_scheduler_acceptance": "Separate genuine HOP1/HOP2 evidence only; configuration updates and manual execution give zero credit",
+  "progress_metrics": [
+    "BLOCKERS_CLOSED",
+    "GATES_CLOSED",
+    "OWNER_RETURNS_CONSUMED",
+    "INTEGRATION_DEPENDENCIES_REDUCED",
+    "ACCEPTANCE_CLOSED",
+    "D1_D2_REMAINING",
+    "D3_REMAINING",
+    "PRODUCTION_CANDIDATE_READINESS"
+  ],
+  "checkpoint_only_at": "Actual WAIT/D3/DONE; READY task completion is not a final stop"
+}

@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "status": "IN_PROGRESS",
+  "source_review_head": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+  "manual_scheduler_credit": 0,
+  "tasks": [
+    {
+      "id": "APPLY_SSOT_EXECUTION_LOOP",
+      "state": "DONE",
+      "authority": "Current explicit user policy",
+      "lane": "FAST",
+      "acceptance": "Targeted policy consistency and existing automation exact prompt/configuration readback"
+    },
+    {
+      "id": "BOUND_G_C_SHARED_LOCAL_SCOPE_FIXTURE",
+      "state": "IN_PROGRESS",
+      "authority": "Existing G/C scoped Handoff next executable task",
+      "lane": "STANDARD",
+      "dependencies": [
+        "29 exact immutable semantic artifacts"
+      ],
+      "acceptance": "Finite inactive composition positive/negative/compatibility checks and source pin verification; no production admission"
+    },
+    {
+      "id": "SOURCE_VINTAGE_G_METHOD_EVIDENCE",
+      "state": "WAIT_DEPENDENCY",
+      "dependencies": [
+        "DATA-G-01",
+        "DATA-G-02",
+        "DATA-G-03",
+        "DATA-G-04",
+        "DATA-G-05"
+      ],
+      "exact_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json",
+      "resume": "Exact archived raw bytes/vintage/share/period packet accepted; source-only bounded extraction"
+    },
+    {
+      "id": "OWNER_HOP1_HOP2_ACCEPTED_OUTPUT",
+      "state": "WAIT_DEPENDENCY",
+      "owner_branch": "codex/qgv-missing-data-decision-gate-2026-10-05",
+      "head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "lease": "qgv-b47-muupb538",
+      "resume": "Authoritative owner release/accepted exact HOP1 output plus genuine scheduler evidence; consume by pinned validator; HOP2 distinct scheduled execution"
+    },
+    {
+      "id": "B2_B3_B5_B6_REFERENCE_SCOPE_AUTHORITY",
+      "state": "D3_REQUIRED",
+      "exact_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/DECISION_PACKAGE.md",
+      "resume": "Explicit bounded reference/scope approval; actual criteria/runtime/migration stay separate"
+    },
+    {
+      "id": "ACTUAL_G_METHOD_HORIZON_G2_NUMERIC_SELECTION",
+      "state": "D3_REQUIRED",
+      "requires": [
+        "Source/vintage readiness",
+        "Future explicit method authority"
+      ],
+      "resume": "Approved exact contract enables only its named bounded next action"
+    },
+    {
+      "id": "V1_V2_PRODUCTION_METHOD_METADATA",
+      "state": "D3_REQUIRED",
+      "prerequisite": "G semantic/consumer convergence",
+      "resume": "Relevant explicit authority only; no prior alternative evidence repeat"
+    },
+    {
+      "id": "PRODUCTION_MIGRATION_ACTIVATION",
+      "state": "D3_REQUIRED",
+      "requires": [
+        "Actual method authority",
+        "Producer/consumer authorized admission",
+        "PIT/source closure"
+      ],
+      "resume": "Specific runtime/migration approval and valid dependencies"
+    },
+    {
+      "id": "PREVIOUS_G_V_G_C_EVIDENCE",
+      "state": "DONE",
+      "acceptance": "Retained at original exact source/output/validator hashes; no invalidation evidence"
+    }
+  ],
+  "domain_blockers": [
+    {
+      "id": "INVALID_NUMERIC_CONSUMER_ADMISSION",
+      "state": "OPEN",
+      "severity": "CRITICAL",
+      "reason": "VERSION_MISMATCH/CALCULATION_ERROR finite numeric result may aggregate/rank in production; inactive fixture does not enforce"
+    },
+    {
+      "id": "METHOD_IDENTITY_HISTORICAL_ATTRIBUTION",
+      "state": "OPEN",
+      "reason": "Legacy actual method/version registration/archival attribution not complete; audit aliases do not grant identity"
+    },
+    {
+      "id": "REAL_SOURCE_PERIOD_SHARE_VINTAGE_PIT",
+      "state": "BLOCKED",
+      "reason": "Exact archived real bytes and matched source/vintage inputs absent; no latest-data replacement"
+    }
+  ],
+  "owner_return_tracking": [
+    {
+      "packet": "G1_G2_G_C_SPECIALIST_cba198e",
+      "state": "CONSUMED_BY_MAIN",
+      "evidence_comment": 5989173684
+    },
+    {
+      "packet": "MAIN_QGV_HOP1_20261005",
+      "state": "SENT_NOT_ACKNOWLEDGED",
+      "evidence_comment": 5988271804,
+      "owner_acknowledgement": "NOT_EVIDENCED"
+    },
+    {
+      "packet": "MAIN_G1_G2_SCOPE_CONSUMPTION_TO_MISSING_DATA_OWNER",
+      "state": "SENT_NOT_ACKNOWLEDGED",
+      "evidence_comment": 5989173684,
+      "owner_acknowledgement": "NOT_EVIDENCED"
+    }
+  ],
+  "next_automatic_action": "Finish finite scope fixture, publish and re-evaluate; if zero READY persist exact WAIT/D3 and resume triggers without new synthetic work"
+}
