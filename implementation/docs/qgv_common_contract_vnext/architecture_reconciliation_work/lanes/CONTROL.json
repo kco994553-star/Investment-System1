@@ -1,7 +1,15 @@
 {
   "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
-  "status": "G1_G2_SEMANTIC_APPROVED_D1_D2_G_C_COMPLETE_INACTIVE",
-  "lease": null,
+  "status": "RUNNING_FAST_RISK_PROPORTIONAL_VERIFICATION_POLICY_RECORD",
+  "lease": {
+    "token": "qgv-rpv-1fcae4e93ee74420b0a0316bece43610",
+    "owner": "QGV_INDEPENDENT_AUDITOR_POLICY_UPDATE",
+    "input_owner_head": "cba198e77370ccb214956015aa7cc490e73307ac",
+    "task": "RISK_PROPORTIONAL_VERIFICATION_POLICY_V1",
+    "input_task_fingerprint": "55f45c68ff8ce4d595c494478dbeda068f02260a21e92db34f944dd802e1fece",
+    "claimed_at_utc": "2026-10-05T06:16:33.763168+00:00",
+    "expiry": null
+  },
   "tasks": [
     "G1_G2_APPROVED_SEMANTIC_CONTRACT",
     "G1_G2_METHOD_FAMILY_COMPARISON",

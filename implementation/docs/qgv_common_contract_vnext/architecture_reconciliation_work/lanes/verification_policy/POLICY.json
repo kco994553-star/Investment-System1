@@ -1,0 +1,69 @@
+{
+  "policy_id": "QGV-RISK-PROPORTIONAL-VERIFICATION-2026-10-05",
+  "version": "1.0",
+  "authority": "Explicit current user instruction in QGV independent specialist audit Work",
+  "user_instruction_received_at_kst": "2026-10-05T15:11:50+09:00",
+  "role": "INDEPENDENT_QGV_SPECIALIST_AUDITOR",
+  "implementation_owner_replacement": false,
+  "main_responsibility": "Implementation and integration remain Main/authorized owner responsibilities",
+  "lanes": {
+    "FAST": {
+      "scope": ["docs", "wording", "metadata", "non-semantic schema formatting", "test fixture", "golden-file plumbing"],
+      "semantic_change": false,
+      "verification": ["targeted test"],
+      "stop_after_pass": true,
+      "default_full_regression": false
+    },
+    "STANDARD": {
+      "scope": ["additive contract field", "serialization", "adapter", "non-semantic runtime plumbing", "backward-compatible metadata"],
+      "semantic_change": false,
+      "verification": ["targeted", "compatibility", "affected regression"],
+      "stop_after_pass": true,
+      "default_full_regression": false
+    },
+    "CRITICAL": {
+      "scope": ["factor definition", "Requiredness", "Applicability", "Missing-Data semantics", "aggregation", "normalization", "weighting", "composite", "calibration", "threshold", "scoring", "PIT/OOS", "Official lifecycle"],
+      "retain_existing_strong_verification": true,
+      "independent_review_required_for": ["new methodology", "V meaning change", "Q/G/V composition", "Missing-Data policy", "new numeric default", "calibration policy", "PIT/OOS semantics", "historical result meaning change"],
+      "adversarial_or_perspective_diverse_when_needed": true,
+      "duplicate_same_question_same_perspective": false
+    }
+  },
+  "classification_rule": "Classify actual affected semantics. A fixture, metadata or golden change affecting expected economic meaning, scoring, admission or historical interpretation is CRITICAL, irrespective of filename. Unclear affected scope retains strong verification.",
+  "evidence_reuse": {
+    "match": ["exact source HEAD/tree refs", "contract version", "inputs", "dependencies", "evidence scope"],
+    "reuse": ["golden tests", "regression", "independent review", "provenance evidence"],
+    "same_tree_488_rerun_without_reason": false,
+    "rerun_when": "New semantic change touches an affected surface or an exact required dependency/input changes",
+    "unchanged_source_on_docs_commit": "Keep prior evidence at its exact immutable pin after proving relevant source/dependency equality; never relabel prior PASS as new-HEAD Actions/full acceptance"
+  },
+  "full_regression_priority": ["methodology change", "shared QGV runtime change", "composite change", "calibration milestone", "production candidate", "affected scope unclear"],
+  "agent_budget": {
+    "default_auditors": 1,
+    "additional_independent_specialists_when_needed": 1,
+    "more_reviewers_only": "CRITICAL decisions actually requiring distinct perspectives",
+    "agent_count_is_confidence": false
+  },
+  "decision_package_fields": ["exact unresolved question", "evidence", "options", "compatibility impact", "recommendation"],
+  "reopen_decided_item_without_new_evidence": false,
+  "audit_to_closure": ["finding", "bounded repair/handoff", "targeted verification", "close"],
+  "main_handoff_dispositions": ["PASS", "FINDING", "BLOCKER", "D3_REQUIRED"],
+  "report_fields": ["Verification Lane", "semantic changes", "reused evidence", "new verification", "skipped expensive verification", "findings closed", "findings opened", "net QGV blockers", "D3 여부"],
+  "protected_boundaries": {
+    "G1_G2_semantic_approval_preserved": true,
+    "M1_M5_B4_B7_principles_preserved": true,
+    "actual_method_numeric_policy_production_activation_migration_remain_D3": true,
+    "PIT_OOS_Official_Frozen_Holdout_canonical_boundaries_preserved": true,
+    "historical_rewrite": false,
+    "runtime_semantics_changed": false,
+    "global_handoff_write": false,
+    "other_owner_lease_takeover": false
+  },
+  "scheduler": {
+    "status": "0/2_UNVERIFIED",
+    "this_policy_update_hops": 0,
+    "exact_versioned_task_acceptance_unchanged": true,
+    "lease_and_authentic_execution_evidence_requirements_unchanged": true,
+    "manual_or_local_checks_are_scheduler_hops": false
+  }
+}
