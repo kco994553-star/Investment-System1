@@ -1,3 +1,15 @@
+# GCH-029 · Gate A HG-01/HG-02 verified; HG-03 runtime guard verified, unattended wake path external · 2026-10-05
+
+- Authority: CDR-024 / Autonomous Execution & Decision Authority SSoT v1.1.
+- HG-01 = VERIFIED. Canonical-target `repository-guard` is required by active ruleset `24499602` and has successful exact-head evidence.
+- HG-02 = VERIFIED. Canonical is protected; deletion and non-fast-forward/force-push are blocked; PR is required; bypass is empty; required status check is GitHub Actions `repository-guard`.
+- HG-03 = PARTIAL_VERIFIED. PR #52 merged `f8c98024e4906a25ee819dec4cab8906dc321d39`; PR #53 canary merged `549f9a86b7508add81f6ed735d7b1fc4bd8aa569`; executor admission behavior and negative limits pass in CI.
+- Remaining Gate A dependency is product-runtime E2E: the scheduled-task interface currently exposes no supported operation for a read-only Watcher to invoke the disabled dedicated Work executor. Converting the Watcher into the executor would violate §§27–29, and enabling the executor before Gate A opens would violate PART G.
+- Production `AUTONOMY_MODE` remains `READ_ONLY`; unattended `RUN` remains disabled.
+- Resume trigger: supported product wake channel / Work invocation capability that preserves Watcher≠Executor, followed by one real `Watcher → Work executor → lease → authorized mutation → pre-publish mode recheck → publish → release` canary.
+- Evidence: `governance/evidence/HG03_RUNTIME_WAKE_E2E_2026-10-05.md`.
+
+---
 # GCH-028 · Autonomous Governance v1.1 adopted; Gate A gaps registered; D3 reclassification started · 2026-10-05
 
 **Authority is now CDR-024 / Autonomous Execution & Decision Authority SSoT v1.1.** PR #48 was merged to Global at `82de599ee90a6beabd774dd22e7e2b939ff75b44`; CDR-025 records the post-merge exact state append-only. Canonical/default remains `b8e39a2196a6d7794a04a0cd5393c68329e126ca`.
