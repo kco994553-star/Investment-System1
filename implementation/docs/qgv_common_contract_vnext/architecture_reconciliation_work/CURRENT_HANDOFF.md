@@ -1,3 +1,30 @@
+# QGV Risk-Proportional Verification — current operational checkpoint
+
+STATUS: APPLIED / FAST_POLICY_RECORD_PASS / INDEPENDENT_AUDITOR / QGV_SEMANTICS_UNCHANGED.
+User authority: QGV-RISK-PROPORTIONAL-VERIFICATION-2026-10-05, received 2026-10-05T15:11:50+09:00.
+Source checkpoint: cba198e77370ccb214956015aa7cc490e73307ac; policy first published at dc2dce6d538d4d66b71f98b59dc47b873312f7d9.
+Policy: [POLICY.md](lanes/verification_policy/POLICY.md), [POLICY.json](lanes/verification_policy/POLICY.json).
+Evidence: [COMPLETION_RECEIPT.json](lanes/verification_policy/COMPLETION_RECEIPT.json).
+
+- Verification Lane: FAST for this docs/configuration-only policy. Actual affected semantics, rather than filename, determine future lanes.
+- Semantic changes: 0. G1/G2 approved meanings, M1–M5 and B4/B7 principles, methods-unselected and inactive production boundaries remain intact.
+- Reused evidence: prior exact G/C 59 checks and independent PASS_WITH_LIMITS stay at immutable source/output pins. Earlier G/V evidence is retained. Prior evidence is not relabeled as current-HEAD CI.
+- New verification: 22 targeted policy assertions PASS; two existing follow-up instruction readbacks exact, with schedule/target/enabled/timezone/title unchanged. Configuration validation is not scheduler execution or Actions PASS.
+- Skipped expensive verification: duplicate G/V/G/C audits, same-tree 488 full regression, new critical adversarial run and extra agents. No methodology/runtime surface changed.
+- Findings closed: 0. Findings opened: 0. Net QGV blockers: change 0; existing consumer admission, method lineage and real-source/PIT blockers remain.
+- D3: no new decision for this approved operational policy. Actual method/numeric/consumer activation/migration decisions remain pending; V1/V2 pending.
+- Agent budget: one QGV auditor; add one independent specialist only when needed; further reviewers only for distinct necessary CRITICAL perspectives.
+- Main dispositions: PASS for policy adoption; existing BLOCKER/D3_REQUIRED remain below. Main/authorized owner retains implementation and integration.
+- Scheduler: 0/2 / UNVERIFIED. This policy update credits zero scheduler hops. Versioned task/acceptance, authentic execution evidence and owner lease safeguards remain unchanged.
+
+FAST: targeted → PASS → stop. STANDARD: targeted → compatibility → affected regression → stop.
+CRITICAL retains strong verification and independent review for methodology, V meaning, composition, missing data, numeric defaults, calibration, PIT/OOS and historical meaning.
+Reuse requires exact semantic source HEAD/tree, contract, input, dependencies and scope. New semantic/input drift reopens only affected evidence. Full regression remains appropriate for methodology/shared runtime/composite/calibration milestone/production candidate/unknown scope.
+
+Next executable task remains the existing bounded G/C shared-versus-local scope integration fixture work, subject to exact input/dependency pins and authorized owner lease. Real source-only vintage work awaits existing bounded data/authority requests. This policy creates no new methodology task, production selection, watcher or decision package.
+
+---
+
 # QGV G1/G2 approved semantics and G/C evidence — current scoped handoff
 
 STATUS: G1_G2_SEMANTIC_APPROVED / D1_D2_G_C_COMPARISON_COMPLETE_INACTIVE / METHODS_UNSELECTED.
@@ -395,3 +422,4 @@ These are pinned findings; no repair or consumer policy has been activated. Miss
 3. Independent V alternative-method impact design may reuse the completed descriptor, exact current reports and replay hashes before the G path resolves. It must preserve unassessed fields and prepare actual D3 choices rather than adopt them.
 
 At intake no accepted actual scheduler canary artifacts were present:0/2, AUTONOMOUS_CONTINUATION UNVERIFIED. Main automation activity/readback is not canary acceptance. Production source, history/golden, Global routing, other owner branches, Official grants, Holdout and merge remain unchanged.
+

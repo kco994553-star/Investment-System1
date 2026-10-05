@@ -1,15 +1,7 @@
 {
   "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
-  "status": "RUNNING_FAST_RISK_PROPORTIONAL_VERIFICATION_POLICY_RECORD",
-  "lease": {
-    "token": "qgv-rpv-1fcae4e93ee74420b0a0316bece43610",
-    "owner": "QGV_INDEPENDENT_AUDITOR_POLICY_UPDATE",
-    "input_owner_head": "cba198e77370ccb214956015aa7cc490e73307ac",
-    "task": "RISK_PROPORTIONAL_VERIFICATION_POLICY_V1",
-    "input_task_fingerprint": "55f45c68ff8ce4d595c494478dbeda068f02260a21e92db34f944dd802e1fece",
-    "claimed_at_utc": "2026-10-05T06:16:33.763168+00:00",
-    "expiry": null
-  },
+  "status": "RISK_PROPORTIONAL_VERIFICATION_APPLIED_G1_G2_G_C_COMPLETE_INACTIVE",
+  "lease": null,
   "tasks": [
     "G1_G2_APPROVED_SEMANTIC_CONTRACT",
     "G1_G2_METHOD_FAMILY_COMPARISON",
@@ -24,7 +16,7 @@
   "manual_execution": true,
   "actual_scheduler_hops_credited": 0,
   "d3_scope": "Current explicit user request: no semantic replacement, numeric adoption, runtime wiring, migration, historical rewrite, PIT/Frozen/Holdout/Official change or canonical/PR merge",
-  "last_lease_token": "qgv-g12-c-c21c6c4203a444dbaae588bf90c958e5",
+  "last_lease_token": "qgv-rpv-1fcae4e93ee74420b0a0316bece43610",
   "completion": {
     "task_id": "QGV_G1_G2_SEMANTIC_CANDIDATE_AND_CONSUMER_CONVERGENCE",
     "task_fingerprint": "8cdd1af81b68e7056fe0041f84fe59689b1954b54a92cc6b7c9d71c703921d50",
@@ -76,5 +68,20 @@
   "historical_pending_semantics_superseded": true,
   "method_selection": "NOT_APPROVED",
   "migration": "NOT_APPROVED",
-  "V1_V2": "PENDING"
+  "V1_V2": "PENDING",
+  "verification_policy": {
+    "policy_id": "QGV-RISK-PROPORTIONAL-VERIFICATION-2026-10-05",
+    "version": "1.0",
+    "policy_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/verification_policy/POLICY.json",
+    "policy_sha256": "61f6391979169318ae7d75b58d4a3cde6916b24031931cdc26de67509d492c23",
+    "authority": "Explicit user instruction 2026-10-05T15:11:50+09:00",
+    "role": "INDEPENDENT_QGV_SPECIALIST_AUDITOR",
+    "default_auditors": 1,
+    "additional_specialists_when_needed": 1,
+    "completion_receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/verification_policy/COMPLETION_RECEIPT.json",
+    "semantic_changes": 0,
+    "disposition": "PASS",
+    "new_d3_decision_required": false
+  }
 }
+
