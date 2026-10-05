@@ -1,6 +1,6 @@
 {
   "schema": "MAIN_D006_APPLICABILITY_RECEIPT/1",
-  "observed_at_utc": "2026-10-05 08:53:30 UTC",
+  "observed_at_utc": "2026-10-05 08:56:34 UTC",
   "authority": "CDR015 D1/D2 narrowed016§13/017/018; risk021; continuation022",
   "publication": {
     "pr": 47,
@@ -81,8 +81,10 @@
       "name": "qgv-invalidation-binding",
       "head": "7215a9f60ad7128b1748f405051eac684298614f",
       "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679954903,
+      "tests": "2242 passed in 1113.72s",
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465865"
     },
     {
@@ -90,8 +92,10 @@
       "name": "sec-primary-disclosure",
       "head": "7215a9f60ad7128b1748f405051eac684298614f",
       "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679954988,
+      "tests": "2242 passed in 1138.42s",
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465941"
     },
     {
@@ -99,8 +103,10 @@
       "name": "us-equity-session",
       "head": "7215a9f60ad7128b1748f405051eac684298614f",
       "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679955675,
+      "tests": "2242 passed in 1100.31s",
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465967"
     },
     {
@@ -108,8 +114,10 @@
       "name": "technical-real-model",
       "head": "7215a9f60ad7128b1748f405051eac684298614f",
       "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679955939,
+      "tests": "2242 passed in 1118.11s",
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465977"
     },
     {
@@ -117,8 +125,10 @@
       "name": "technical-real-producer",
       "head": "7215a9f60ad7128b1748f405051eac684298614f",
       "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679955290,
+      "tests": "2242 passed in 1103.56s",
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284466007"
     }
   ],
@@ -252,7 +262,7 @@
     {
       "id": "CIcurrenthead",
       "state": "WAIT_DEPENDENCY",
-      "needs": "Exact7215 p01 SUCCESS consumed with job111679954752 and 2242PASS; 6 attempt1 runs remain nonterminal"
+      "needs": "Exact7215 has 6/7 SUCCESS consumed with job IDs and 2242PASS each; Track-C attempt1 remains nonterminal"
     },
     {
       "id": "Chart",
@@ -281,14 +291,14 @@
     "canonical_candidate": "NOT_READY"
   },
   "resume_triggers": [
-    "Remaining exact7215 CI6 terminal/artifact",
+    "Exact7215 Track-C terminal/artifact",
     "New independent verifier authority/runtime/external coverage evidence",
     "Chart/QGV bounded owner return/lease release with actual output",
     "ActualPlatformWebadoption/ACK",
     "PortfolioIdentityexplicit accountable owner",
     "Materialapproved decision/canonical change"
   ],
-  "next_automatic_action": "Consume remaining exact7215 terminal results; if failure, classify and repair within D1/D2, else preserve all seven CI receipts separately from authority/GIE/exact-merge acceptance",
+  "next_automatic_action": "Consume exact7215 Track-C terminal result; if failure, classify and repair within D1/D2, else record CI7/7 separately from authority/GIE/exact-merge acceptance",
   "prior_publication": {
     "pr": 47,
     "branch": "codex/fpia-execution-coverage-2026-10-05",
@@ -328,6 +338,61 @@
       "job_id": 111679954752,
       "tests": "2242 passed in 910.35s",
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465856"
+    },
+    {
+      "run_id": 37284465967,
+      "name": "us-equity-session",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679955675,
+      "tests": "2242 passed in 1100.31s",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465967"
+    },
+    {
+      "run_id": 37284466007,
+      "name": "technical-real-producer",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679955290,
+      "tests": "2242 passed in 1103.56s",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284466007"
+    },
+    {
+      "run_id": 37284465977,
+      "name": "technical-real-model",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679955939,
+      "tests": "2242 passed in 1118.11s",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465977"
+    },
+    {
+      "run_id": 37284465865,
+      "name": "qgv-invalidation-binding",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679954903,
+      "tests": "2242 passed in 1113.72s",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465865"
+    },
+    {
+      "run_id": 37284465941,
+      "name": "sec-primary-disclosure",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679954988,
+      "tests": "2242 passed in 1138.42s",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465941"
     }
   ]
 }

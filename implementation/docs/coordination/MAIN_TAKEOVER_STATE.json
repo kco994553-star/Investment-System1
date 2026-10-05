@@ -25,10 +25,10 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "WAIT_EXACT_7215_CI6_AND_OWNER_RETURN_READY_0",
+  "execution_state": "WAIT_EXACT_7215_TRACK_C_CI_AND_OWNER_RETURN_READY_0",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
-    "global_input": "112aaae317d93b442f4987a19c72a54d3072b198",
+    "global_input": "fe9492ae2031dbf3c32594dc7f6470794e224b23",
     "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
     "chart": "5288d038e800c09ca40af0604a947911c4370d9e",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
@@ -134,51 +134,6 @@
       "status": "in_progress",
       "conclusion": null,
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465900"
-    },
-    {
-      "run_id": 37284465865,
-      "name": "qgv-invalidation-binding",
-      "head": "7215a9f60ad7128b1748f405051eac684298614f",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465865"
-    },
-    {
-      "run_id": 37284465941,
-      "name": "sec-primary-disclosure",
-      "head": "7215a9f60ad7128b1748f405051eac684298614f",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465941"
-    },
-    {
-      "run_id": 37284465967,
-      "name": "us-equity-session",
-      "head": "7215a9f60ad7128b1748f405051eac684298614f",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465967"
-    },
-    {
-      "run_id": 37284465977,
-      "name": "technical-real-model",
-      "head": "7215a9f60ad7128b1748f405051eac684298614f",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465977"
-    },
-    {
-      "run_id": 37284466007,
-      "name": "technical-real-producer",
-      "head": "7215a9f60ad7128b1748f405051eac684298614f",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284466007"
     }
   ],
   "next_runnable_backlog": [],
@@ -206,9 +161,9 @@
   ],
   "active_scoped_execution": null,
   "last_terminal_ci_evidence": "evidence/main_execution_coverage_2026-10-05/RECEIPT.json",
-  "last_checkpoint_at_utc": "2026-10-05 08:53:30 UTC",
+  "last_checkpoint_at_utc": "2026-10-05 08:56:34 UTC",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
-  "dependency_content_hash": "7b39c35c6d025d05217d5df3f02b1ab241d19c0b07f195dbdc5b0ead11a4f462",
+  "dependency_content_hash": "58ab02f86ac7c40d89e2cc7dbcedc83d8c16717127f87391c6ad895deac33a72",
   "execution_budget": {
     "new_agents": 0,
     "repeat_audits": 0,
@@ -217,6 +172,61 @@
     "net_blocker_reduction_current_delta": 0
   },
   "last_terminal_ci": [
+    {
+      "run_id": 37284465967,
+      "name": "us-equity-session",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679955675,
+      "tests": "2242 passed in 1100.31s",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465967"
+    },
+    {
+      "run_id": 37284466007,
+      "name": "technical-real-producer",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679955290,
+      "tests": "2242 passed in 1103.56s",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284466007"
+    },
+    {
+      "run_id": 37284465977,
+      "name": "technical-real-model",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679955939,
+      "tests": "2242 passed in 1118.11s",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465977"
+    },
+    {
+      "run_id": 37284465865,
+      "name": "qgv-invalidation-binding",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679954903,
+      "tests": "2242 passed in 1113.72s",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465865"
+    },
+    {
+      "run_id": 37284465941,
+      "name": "sec-primary-disclosure",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679954988,
+      "tests": "2242 passed in 1138.42s",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465941"
+    },
     {
       "run_id": 37284465856,
       "name": "p01-research-publication",
@@ -302,7 +312,7 @@
     "wait_dependencies": [
       "D001D002runtimeacceptance: Exact new runtime receipt/Actions job ID plus independent verifier authority/attestation; declaration cannot manufacture missing independent acceptance",
       "D003D005coverage: Immutable external execution/content and actual descendant/runtime coverage; current additive consumer reportsBLOCKED",
-      "CIcurrenthead: exact7215 p01 SUCCESS consumed; 6 attempt1 runs remain nonterminal; consume without duplicate rerun",
+      "CIcurrenthead: exact7215 has 6/7 SUCCESS consumed; Track-C attempt1 remains nonterminal; consume without duplicate rerun",
       "Chart: Active MagicPath/localfallback ownerlease5288; source/identity ownerunassigned; gates6open; no Mainduplicate",
       "QGV: Active boundedcontract ownerreturn; preserved MissingDatalease; noMainmethodselection",
       "PlatformWeb: Source owner ACK/adoption and boundedWebactualreturn; specialist5990208500consumed notimplementationadoption"

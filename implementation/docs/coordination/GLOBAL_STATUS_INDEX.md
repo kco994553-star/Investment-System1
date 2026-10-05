@@ -4,8 +4,8 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-030 (first exact-7215 CI success consumed; six pending) |
-| Recorded | 2026-10-05T08:53:30.902Z; exact Global parent `112aaae` |
+| Index revision | GSI-031 (exact-7215 CI 6/7 success consumed; Track-C pending) |
+| Recorded | 2026-10-05T08:56:34.503Z; exact Global parent `fe9492a` |
 | Writer | GPT Work `gpt-work-main-2026-10-05-3a80dcef6444`; CDR-018 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
 | Canonical | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca` (= `origin/HEAD`; unchanged since 2026-09-28) |
@@ -206,3 +206,7 @@ Exact50fa CI failure consumed: two logs confirm the same stale branch-gate regre
 
 ## GSI-030 · 2026-10-05 08:53:30 UTC
 Exact7215 P01 run37284465856/job111679954752 SUCCESS, full native 2242PASS consumed. Remaining exact-head CI6 RUNNING; no rerun. CI success is not authority/GIE/exact-merge acceptance. MainREADY0, leaseNULL, productgatesclosed0, candidateNOT_READY.
+
+
+## GSI-031 · 2026-10-05 08:56:34 UTC
+Exact7215 five additional workflows SUCCESS, each full-native 2242PASS; with P01 total6/7 consumed. Track-C run37284465900 RUNNING; no rerun. MainREADY0, leaseNULL, productgatesclosed0, candidateNOT_READY; CI≠authority/GIE/exact-merge acceptance.

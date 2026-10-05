@@ -1,3 +1,7 @@
+# GCH-025 · Exact-7215 CI 6/7 success consumed · 2026-10-05 08:56:34 UTC
+
+Five further exact-head workflows completed SUCCESS: US-equity `37284465967`/job `111679955675`, technical producer `37284466007`/job `111679955290`, technical model `37284465977`/job `111679955939`, QGV invalidation binding `37284465865`/job `111679954903`, and SEC disclosure `37284465941`/job `111679954988`. Each full-native-pytest step recorded **2242 passed**. Together with P01, exact `7215a9f60ad7128b1748f405051eac684298614f` now has 6/7 CI SUCCESS consumed; Track-C `37284465900` remains nonterminal. No duplicate rerun. Main READY=0, lease=null, product gates closed=0, candidate NOT_READY; CI success remains separate from verifier authority, GIE/governance and future exact merge-result acceptance.
+
 # GCH-024 · First exact-7215 CI success consumed · 2026-10-05 08:53:30 UTC
 
 Exact-head run `37284465856` (`p01-research-publication`, attempt1) completed SUCCESS. Job `111679954752` completed its full-native-pytest step with **2242 passed in 910.35s**. This independently confirms the stale regression repair on the GitHub merge-result checkout for that workflow; it does not grant verifier authority, GIE/governance closure, or future exact merge-result acceptance. Six exact-7215 runs remain nonterminal and no duplicate rerun was requested. Main READY=0, lease=null, product gates closed=0, candidate NOT_READY.
