@@ -135,3 +135,8 @@ Late exact CI observation: current a3e3 has six non-FPIA workflow failures (new 
 ## 2026-10-05 v0.10 — Risk-Proportional Verification adopted
 
 Continue the existing safe checkpoint with [scoped handoff](p0-risk-policy-v0.10/HANDOFF.md) and [current risk policy](p0-risk-policy-v0.10/EXECUTION_POLICY.md). FAST renderer/mobile checks; STANDARD contract/negative/affected-integration/browser; CRITICAL only changed financial semantics with necessary independent verification. Default1 Chart owner, optional1 backend/PIT verifier. No default full regression/FPIA/adversarial or repeated immutable evidence audit. Existing Main/CI prompts read back exactly; cadence and protections unchanged. All105 prior output hashes compatible, so v0.9 completed tests/browser evidence reused without reruns. This policy-only checkpoint closes0 product requirements/0 production blockers and creates0 blockers; sixLaneA gates/Market0of19 remain. Global9cd598 adds only Main's PR46 repair lease; exact a3/run37267962000 still running. Production contracts unadmitted; SAMPLE frontend verified. Exact verified publication/coordination HEAD resolves from STATE and current PR41.
+
+
+## 2026-10-05 v0.11 — PR #46 exact FPIA terminal failure
+
+[Scoped receipt](p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json) and [handoff](p0-ci-followup-v0.11/HANDOFF.md) bind PR46 `a3e3f6c` run `37267962000` attempt1/job `111628676484` to terminal **FPIA_FAIL**. Artifact verification passed; full regression failed 2/2184 at the two FPIA self-constraint tests. A-G3 remains OWNER_ACTION_REQUIRED; Lane A 6 open/0 closed, Lane B 0/19. Requirements closed0, blockers closed0, new Chart product blockers0, production-ready contracts0. No retry, PR46 write, production promotion or merge occurred.

@@ -581,10 +581,12 @@
     "expires_at_utc": "2026-10-05T07:02:43.306Z",
     "ttl_minutes": 30,
     "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": false,
+    "verified_remote_acquisition": true,
     "acquisition_parent_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
     "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
-    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+    "acquisition_commit": "40a5c266322d36dbf30a683f6f632508352145bc",
+    "verified_at_utc": "2026-10-05T06:36:14.933Z"
   },
   "publication": {
     "status": "V010_RISK_POLICY_AND_EXISTING_TASK_PROMPTS_VERIFIED",
@@ -1388,23 +1390,17 @@
     }
   ],
   "prepared_publication": {
-    "status": "VERIFIED_REMOTE_PUBLICATION",
-    "run_id": "manual-chart-risk-policy-20261005T061947755Z",
-    "source_start_head": "4752bca2d58a61ef5821a0556b6480fc527fac80",
-    "preparation_parent": "d187495286697d1e3ceab31d33bc2d0f5e56fd8f",
-    "Global": "9cd598c5564827418115ebb15c1c88a0e7811bab",
-    "PR46": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
-    "scoped_handoff": "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/HANDOFF.md",
-    "do_not_advance_processed_before_remote_verification": true,
-    "output_sha256": {
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "0811cedd14d37341f9486e6f4c0c64cbdbaab9da5eb2068764075744e6d075b8",
-      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md": "857fe06cfbfb7b2fedb4c189da0b0705eb1636dbce9c4b043bbe22404a7a4319",
-      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md": "cc3bc3b20f7caea56645255c5a4cdef7e8f7fea1d1139f812dd5d676be228c64",
-      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/HANDOFF.md": "30b50a6dd0018624c395f4905b54428016d0a7a24a1b8ec7ca433616f0636c68",
-      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json": "eca6ab1d5094b2ef485d32c7e698a1726ebae216d75a2fbf93331578318804f0"
-    },
-    "verified_head": "c21d47d8d5d0c59b1ae9795258fc21cb3667a127",
-    "verified_at_utc": "2026-10-05T06:26:12.913Z"
+    "status": "PREPARED_UNPUBLISHED",
+    "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
+    "source_start_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
+    "subject_head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "workflow_run_id": 37267962000,
+    "evidence_paths": [
+      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
+    ],
+    "do_not_advance_processed_before_remote_verification": true
   },
   "owner_actions_current": {
     "fpia_latest_source": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
