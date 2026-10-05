@@ -1,5 +1,8 @@
 # Investment-System1 — Autonomous Execution & Decision Authority SSoT v1.0
 
+> **SUPERSEDED** (2026-10-05) by `Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md` — CDR-024.
+> 이 문서는 이력 보존용이며 운영 기준이 아니다. 본문 1–37절은 v1.1에 그대로 포함되어 있다.
+
 Status: PROPOSED COMMON SSoT  
 Purpose: Investment-System1 공통 자율실행·승인권한 정책  
 Scope: Main / Chart / QGV / Product Platform 및 향후 동일 체계를 사용하는 Work  
