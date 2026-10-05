@@ -1,7 +1,14 @@
 {
   "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
-  "status": "B2_B3_B5_B6_PRINCIPLES_APPROVED_CONTRACT_ACCEPTANCE_CLOSED_READY0",
-  "lease": null,
+  "status": "RUNNING_D3_DELEGATED_POLICY_AND_PENDING_RECLASSIFICATION",
+  "lease": {
+    "token": "qgv-d3-delegation-muv0w6ea",
+    "owner": "QGV-independent-audit-D3-Delegated-Policy-v1.0",
+    "task": "POLICY_AND_PENDING_SCOPE_RECLASSIFICATION",
+    "input_review_head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+    "claimed_at_utc": "2026-10-05T09:03:52.930Z",
+    "expires_at_utc": "2026-10-05T09:33:52.930Z"
+  },
   "tasks": [
     "B2_B3_B5_B6_EXACT_APPROVAL_REGISTER",
     "APPROVED_PRINCIPLES_OBLIGATION_COMPILATION",
