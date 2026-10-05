@@ -1,0 +1,231 @@
+{
+  "schema": "independent-platform-audit-evidence-v1",
+  "observed_at_utc": "2026-10-05T04:29:44.195249+00:00",
+  "branch": "codex/product-platform-foundation-2026-10-05",
+  "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "publication_subject": "containing Git commit; local source manifest below is exact tested subject",
+  "scope": "non-production synthetic audit harness; other owner branches read-only",
+  "overall_status": "PARTIAL",
+  "refs": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "global": "b3532a2ebbe95310bbf222937466eb04a0211263",
+    "platform_owner": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+    "chart": "ebeb8b1f2693703d33cff2610c277c7ce3dcbb18",
+    "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+  },
+  "tests": [
+    {
+      "command": "PYTHONPATH=implementation/src python -m unittest discover -s implementation/tests/product_platform -v",
+      "runner": "stdlib unittest",
+      "passed": 84,
+      "failed": 0,
+      "duration_seconds": 5.191,
+      "per_file": {
+        "implementation/tests/product_platform/test_api.py": 12,
+        "implementation/tests/product_platform/test_auth.py": 14,
+        "implementation/tests/product_platform/test_connector.py": 9,
+        "implementation/tests/product_platform/test_sync.py": 39,
+        "implementation/tests/product_platform/test_web.py": 10
+      },
+      "log": "synthetic-unittest.txt"
+    },
+    {
+      "command": "cd implementation && python tools/mini_pytest.py",
+      "runner": "repository mini_pytest shim, NOT pytest",
+      "passed": 396,
+      "failed": 0,
+      "duration_seconds": 95.29,
+      "log": "canonical-mini-pytest.txt"
+    }
+  ],
+  "independent_final_review": {
+    "prior_suite_passed": 81,
+    "separate_adversarial_probes_passed": 7,
+    "remaining_reproduced_harness_findings": [],
+    "durable_final_regressions_added": 3
+  },
+  "canonical_existing_blob_integrity": {
+    "checked": 7698,
+    "changed": 0,
+    "method": "Git blob SHA-1 compared to every tracked canonical file bytes"
+  },
+  "static_checks": {
+    "javascript_syntax": "PASS node --check",
+    "python_source": "PASS import/unittest",
+    "whitespace": "PASS git diff --check"
+  },
+  "http": "10 actual loopback HTTP integration tests, included in 84; launcher smoke PASS",
+  "browser_mobile_e2e": {
+    "status": "NOT_RUN",
+    "reason": "Chromium executable absent; normal Playwright Chromium installation failed with truncated/empty download"
+  },
+  "upstream_fpia": {
+    "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+    "run_id": 37260997788,
+    "attempt": 1,
+    "status_at_intake": "in_progress",
+    "conclusion": null
+  },
+  "own_github_actions_at_publication": "NOT_RUN / pending observation; local PASS is not Actions PASS",
+  "integrated_result_fpia": "NOT_RUN; adding package Python yields whole-package code identity DIVERGED on later integration",
+  "limitations": [
+    "real auth/provider/account integration not performed",
+    "production tenant/cache/search/jobs/storage isolation not verified",
+    "transaction/statement financial reconciliation NOT_COMPARABLE",
+    "PWA and production Chart/engine wiring not admitted",
+    "local corruption hashes do not constitute externally authenticated immutable ledger",
+    "no canonical merge/deploy/protected semantic change",
+    "manual run is not unattended scheduler-hop verification"
+  ],
+  "source_manifest": [
+    {
+      "path": ".github/workflows/product-platform-synthetic.yml",
+      "sha256": "eae76ad6d2f36a518d4658954da060873d40e2d7fbcb372256e0633df75aa371",
+      "bytes": 926
+    },
+    {
+      "path": "implementation/src/investment_system/product_platform/__init__.py",
+      "sha256": "ecfa1bdc27ef2e0956453b65c5ae2e31664d77550e1df6d11a5ecaeec9500ad8",
+      "bytes": 102
+    },
+    {
+      "path": "implementation/src/investment_system/product_platform/api.py",
+      "sha256": "e37b30b2119e527250b464174cd6e5274d78aec69fb7f326dc24b1293e623306",
+      "bytes": 9865
+    },
+    {
+      "path": "implementation/src/investment_system/product_platform/auth.py",
+      "sha256": "2279a873d79be62cf68fd11e08b6e7f8bcccb4f0e20da4872d2b8c9e1db9a450",
+      "bytes": 9778
+    },
+    {
+      "path": "implementation/src/investment_system/product_platform/connector.py",
+      "sha256": "9f9111cddbc2f4980ec0cd2dea6dd1738a456563399f947677c1dcacca1a2356",
+      "bytes": 7641
+    },
+    {
+      "path": "implementation/src/investment_system/product_platform/domain.py",
+      "sha256": "9f64fb9eb4b7486ac4f363a50c42c0507b6143a50919be3bb4b052c4572f0837",
+      "bytes": 3529
+    },
+    {
+      "path": "implementation/src/investment_system/product_platform/fixture.py",
+      "sha256": "a3fa205873abd9fb3618221343cd780b10c7303a77d36c090f5a646cbd69afa9",
+      "bytes": 2207
+    },
+    {
+      "path": "implementation/src/investment_system/product_platform/service.py",
+      "sha256": "3d75150be15186186c4a5dbb32bf939f57049c0630e4ca9029f4efbb3248855a",
+      "bytes": 18899
+    },
+    {
+      "path": "implementation/src/investment_system/product_platform/store.py",
+      "sha256": "11d7cdc5072f816bdb5f29dc27dfc8837d8cd1a4c42942616311e54f73a5a76a",
+      "bytes": 12442
+    },
+    {
+      "path": "implementation/src/investment_system/product_platform/web.py",
+      "sha256": "c5b005e15a992ad62a2ede3d3731bacde966bcfd06cab9786013a74b05af114e",
+      "bytes": 9867
+    },
+    {
+      "path": "implementation/src/investment_system/product_platform/web_assets/app.js",
+      "sha256": "2c0c0a3ce61291af867c109c5b802cd7e083a30e1263376b90a40ba18aea3458",
+      "bytes": 5706
+    },
+    {
+      "path": "implementation/src/investment_system/product_platform/web_assets/index.html",
+      "sha256": "611ad3f5673522bed9bf758fbfdb0e27afb382dc88d1020cdd49469a55280341",
+      "bytes": 3177
+    },
+    {
+      "path": "implementation/src/investment_system/product_platform/web_assets/style.css",
+      "sha256": "cfff926280badb111ec36cba204fee5f874778aa8dee65f38ade46d2aa53799d",
+      "bytes": 2835
+    },
+    {
+      "path": "implementation/tests/product_platform/test_api.py",
+      "sha256": "d57cf3fc2d42d79626209ec16471b77500bc8f67e3554ab1a529ccdbb7c32e28",
+      "bytes": 12917
+    },
+    {
+      "path": "implementation/tests/product_platform/test_auth.py",
+      "sha256": "1f91e043741448b030de30c33c0bad2115fc0d1fb50fa572cda9fb807dad4da6",
+      "bytes": 9487
+    },
+    {
+      "path": "implementation/tests/product_platform/test_connector.py",
+      "sha256": "d6f30b4f5c2232805728d696a8ac7cc9fd8b42749b334067189574cb0ae46d54",
+      "bytes": 9467
+    },
+    {
+      "path": "implementation/tests/product_platform/test_sync.py",
+      "sha256": "4bfa3299f6c97737481d3f7a91f428e7d1091802f0c9ef95a551b60cec0cd49d",
+      "bytes": 34814
+    },
+    {
+      "path": "implementation/tests/product_platform/test_web.py",
+      "sha256": "694b50cb8ba310e347361fe07d8bd01d692c602fbe7e9c8fb81fd51903ddcb23",
+      "bytes": 12033
+    },
+    {
+      "path": "implementation/tools/product_platform/run_local.py",
+      "sha256": "2e79a8e4bbf4fce3e8bcc1cafa65b69485f93cf9cbbd450b7b21a8c8173c5a5f",
+      "bytes": 2316
+    }
+  ],
+  "logs": {
+    "synthetic-unittest.txt": {
+      "sha256": "478021f8b7ac35c7ff4af3ab7966315d4378682bbbc4220d5a59262c56a21419",
+      "bytes": 13227
+    },
+    "canonical-mini-pytest.txt": {
+      "sha256": "d483741d60312baee4bce17e9c5f2ae8cb201e756294c7c30a09ec91e72c9278",
+      "bytes": 4734
+    }
+  },
+  "owner_reconsumption": {
+    "subject": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+    "focused_tests_passed": 7,
+    "runner": "mini_pytest shim, NOT pytest; no broad owner suite",
+    "initial_import_findings": "CLOSED by independent exact-source import/all-export check",
+    "remaining_findings": [
+      "malformed SourceRecordRef and non-reference lineage admission",
+      "missing financial reconciliation completeness",
+      "blank identity and trusted runtime authorization gaps",
+      "durable verified-byte ledger absent"
+    ],
+    "source_manifest": [
+      {
+        "path": "implementation/src/investment_system/platform/__init__.py",
+        "sha256": "d293e02f1cdc26d1af81a8ab7b56a9bac93c8ccb94f552203f10e332c3dd21b2",
+        "bytes": 610
+      },
+      {
+        "path": "implementation/src/investment_system/platform/contracts.py",
+        "sha256": "75eceb8960e59a6813b025a85e0d9b54a0c5c8ea5f0f6acd18ff292d57d31ef9",
+        "bytes": 5870
+      },
+      {
+        "path": "implementation/tests/test_product_platform_contracts.py",
+        "sha256": "6becc00ac7bf9301859f85972367d2d66a0ac395048ff8afb4758e32f5eb6ab0",
+        "bytes": 4242
+      },
+      {
+        "path": "implementation/docs/product_platform_audit/CURRENT_HANDOFF.md",
+        "sha256": "a71c55c457a5d27a217d623d8e5022e0a2ff8248b3bfa1e4ab79ccf2de5e8615",
+        "bytes": 474
+      },
+      {
+        "path": "implementation/docs/product_platform_audit/STATUS.md",
+        "sha256": "edbbcb08a5e727a298771d3626213a80293a281b9548a97ae436ddbd82362ddf",
+        "bytes": 4051
+      },
+      {
+        "path": "implementation/docs/product_platform_audit/automation/STATE.json",
+        "sha256": "9231f25f1fb674352f9afed591be6299f742bda0eea44b39abccb783e91f6ba3",
+        "bytes": 370
+      }
+    ]
+  }
+}

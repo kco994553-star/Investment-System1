@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Investment System · Platform Audit</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header><div><span class="eyebrow">INVESTMENT SYSTEM</span><h1>금융기록 감사 대시보드</h1></div><span class="badge">SYNTHETIC / DEMO</span></header>
+  <main>
+    <p class="scope">로컬 감사용 합성 계좌입니다. 실제 로그인·금융기록·주문 기능이 아닙니다.</p>
+    <section id="login-panel" class="card">
+      <h2>감사 계정 선택</h2><p>등록된 테스트 인물로 세션과 계좌 격리를 확인합니다. 실제 비밀번호를 입력하지 않습니다.</p>
+      <div class="actions"><button id="login-alice">합성 계정 A</button><button id="login-bob" class="secondary">합성 계정 B</button></div>
+    </section>
+    <section id="dashboard" hidden>
+      <section class="card identity"><div><span class="eyebrow">검증된 테스트 세션</span><h2 id="principal">—</h2><p id="expiry"></p></div><button id="logout" class="secondary">로그아웃</button></section>
+      <section class="card"><div class="section-head"><div><h2>읽기 전용 연결</h2><p id="connection-status">연결이 없습니다.</p></div><div class="actions"><button id="connect">합성 연결 생성</button><button id="sync" disabled>기록 동기화</button><button id="refresh" class="secondary" disabled>상태 확인</button></div></div><p id="sync-status">완료된 동기화가 없습니다.</p></section>
+      <div class="metrics"><section class="card"><span class="eyebrow">계산된 총 자산 · 합성 USD</span><strong id="total">—</strong><p id="total-note">완료된 합성 데이터가 필요합니다.</p></section><section class="card"><span class="eyebrow">보고된 현금</span><strong id="cash">—</strong><p id="cash-note">서버가 제공한 원래 금액을 표시합니다.</p></section><section class="card"><span class="eyebrow">대사 결과</span><strong id="reconciliation-status">—</strong><p>포지션 평가액 + 현금 ↔ 보고된 총액</p></section></div>
+      <section class="card"><h2>보유 내역</h2><p id="portfolio-status">ACTUAL 합성 데이터 / TARGET 분리</p><div class="table-wrap"><table><thead><tr><th scope="col">계좌</th><th scope="col">증권 식별자</th><th scope="col">수량</th><th scope="col">보고된 평가액</th><th scope="col">식별 상태</th></tr></thead><tbody id="positions"><tr><td colspan="5">조회된 내역이 없습니다.</td></tr></tbody></table></div></section>
+      <section class="card"><h2>연결 준비 상태</h2><div id="engine-status" class="dependencies"></div><p>ChartDocument와 QGV 등 기존 owner 계약·공개 권한이 연결되기 전에는 값을 제공하지 않습니다.</p></section>
+    </section>
+    <p id="message" role="status" aria-live="polite">합성 계정을 선택해 감사를 시작하세요.</p>
+  </main>
+  <footer>PRIVATE LOOPBACK AUDIT HARNESS · REAL / LIVE / PWA / PRODUCTION 판정 없음</footer>
+</body>
+</html>

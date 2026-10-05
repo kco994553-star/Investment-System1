@@ -1,0 +1,27 @@
+name: product-platform-synthetic
+on:
+  push:
+    branches: ['codex/product-platform-foundation-2026-10-05']
+  pull_request:
+    paths:
+      - 'implementation/src/investment_system/product_platform/**'
+      - 'implementation/tests/product_platform/**'
+      - '.github/workflows/product-platform-synthetic.yml'
+permissions:
+  contents: read
+jobs:
+  synthetic-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Synthetic authentication, isolation, sync and read-only negative tests
+        env:
+          PYTHONPATH: implementation/src
+        run: python -m unittest discover -s implementation/tests/product_platform -v
+      - name: Existing canonical regression (offline shim; not pytest)
+        working-directory: implementation
+        run: python tools/mini_pytest.py
