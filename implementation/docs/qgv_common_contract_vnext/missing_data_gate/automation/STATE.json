@@ -12,22 +12,15 @@
     "pr_events": "6ac2f22087288191abd144fb4a7655f8",
     "ci_followup": "6ac2efbd34fc8191a60dccbbe338c291"
   },
-  "status": "RUNNING_BINDING_AND_CONTINUATION_AUDIT",
-  "lease": {
-    "token": "qgv-binding-muuo6gsz",
-    "owner": "manual-root-current-user-request",
-    "input_owner_head": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
-    "task": "binding-gate-and-autonomous-continuation-audit",
-    "claimed_at_kst": "2026-10-05T12:07:58.151328+09:00",
-    "expiry": null
-  },
+  "status": "IDLE_BINDING_PACKAGE_READY_HOP1_EXECUTABLE",
+  "lease": null,
   "pending_runs": [],
   "pending_long_tests": [],
   "last_observed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
     "pr42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
-    "global_routing": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e"
+    "global_routing": "d92363f0dd4e4865bcd329d577c5de7bfdd029c8"
   },
   "last_processed_heads": {
     "pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
@@ -89,22 +82,23 @@
   },
   "implementation_contract": "PROPOSED_INACTIVE_DESIGN_ONLY",
   "runtime_implementation_authorized": false,
-  "last_manual_disposition": "DESIGN_READY_POLICY_VALUES_UNRESOLVED",
+  "last_manual_disposition": "D1_D2_PACKAGE_COMPLETED_D3_PENDING_REAL_CANARY_READY",
   "last_automation_prompt_update": {
-    "scope": "M1_M5_APPROVED_PRINCIPLES_ONLY_DESIGN_STOP",
-    "result": "SUCCESS_ENABLED_SAME_CHAT",
+    "scope": "EVENT_PLUS_STATE_CONTINUATION_V2_D1_D2_ONLY",
+    "result": "SUCCESS_ENABLED_READBACK_VERIFIED",
     "trigger_prs": [
       44,
       42
     ],
-    "event_delivery": "NOT_TESTED"
+    "event_delivery": "NOT_TESTED",
+    "state_selector_field": "continuation_plan.tasks"
   },
   "pending_design_work": {
     "objective": "Method/Profile Binding + Consumer Admission Decision Package",
     "authority": "Explicit user design request at 2026-10-05T10:44:21+09:00 in this conversation",
     "scope": "Audit and proposed decisions only; no production implementation or semantic policy adoption",
-    "progress": "Fresh owner/canonical/global/PR refs and scoped handoff/approval verified; factor/applicability/method/profile/consumer audits not started",
-    "next_action": "Resume the authorized design request under a fresh owner lease; do not repeat M1-M5 or Remote Recovery"
+    "progress": "COMPLETE: binding package, independent review, local probes, continuation repair. Real scheduler canary pending.",
+    "next_action": "HOP1 finite legacy replay manifest at next real scheduled execution"
   },
   "last_ci_observation": {
     "owner_input_head": "9a07a196c24e995b38023f5853ddf8adf6b54048",
@@ -112,5 +106,468 @@
     "pending_long_tests": 0,
     "owner_actions": 0,
     "disposition": "NO_PENDING_CI_NO_TESTS_OR_IMPLEMENTATION_STARTED"
+  },
+  "continuation_plan": {
+    "protocol": "QGV_STATE_CONTINUATION_V2",
+    "status": "HOP1_READY_HOP2_TEMPLATE_UNBOUND",
+    "tasks": [
+      {
+        "id": "QGV_AUTO_HOP1_LEGACY_METHOD_MANIFEST",
+        "version": "1",
+        "classification": "D2",
+        "authority_scope": "EXPLICIT_AUTHORIZED_AUDIT_DESIGN_ONLY",
+        "state": "READY",
+        "work_spec": {
+          "objective": "Compile exact20 existing-factor legacy method/input/horizon/fallback/normalization replay lineage manifest from completed binding audit",
+          "execution": "Next real scheduled automation invocation; manual run is not a scheduler hop",
+          "required_scope": "Read and follow CANARY_ACCEPTANCE.md HOP1; preserve unassigned roles and legacy scores; do not rerun broad audit or adopt methods",
+          "after_completion": "Bind exact accepted manifest output and task/output digest to finite HOP2 template; do not execute HOP2 in same platform run"
+        },
+        "semantic_inputs": [
+          {
+            "path": "implementation/src/investment_system/contracts/enums.py",
+            "sha256": "5cd6c7694544dcba4717590ad24534ab0f8e115d8352235bf88bf37657433bcf"
+          },
+          {
+            "path": "implementation/src/investment_system/contracts/models.py",
+            "sha256": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506"
+          },
+          {
+            "path": "implementation/src/investment_system/contracts/raw.py",
+            "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a"
+          },
+          {
+            "path": "implementation/src/investment_system/contracts/strategy.py",
+            "sha256": "9c34249656ac7ba0203546584f7acd2dd96c6f2debb7ba54d54069290cbfe9ac"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/__init__.py",
+            "sha256": "d53a21eca58317bc7bed03e0ca79e2fd56deb8b16d960bf8c31d9d4e1c298e6c"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/fit.py",
+            "sha256": "d7c569cbf8496d752b0782b63986011e6e3e86a7436785bca94fadf7973565a5"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/money.py",
+            "sha256": "894e7cab7e3ca87dcad14ee644ef34448850698fb93dda600cd3aa75e0a37418"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/portfolio.py",
+            "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/ports.py",
+            "sha256": "a4fa05cc660db1779eb44babbbb8568f0c97723dc1b74a722f977f338be670fb"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/quality.py",
+            "sha256": "b6cefc19927bb3da00060920174de0f2d21dd7616299d9ebd81ad65870a349b7"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/security.py",
+            "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/timecontract.py",
+            "sha256": "dee41dce8153740e75faa1810f9ffa5c150d13f3f4cf3d6f5f452348a7219d73"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/versioning.py",
+            "sha256": "af84bfd95e198c3e1c29381ca9d688728da8a7a128dec4994da49d5186416def"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/weights.py",
+            "sha256": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/__init__.py",
+            "sha256": "9a061df332477ecbc2f586abda8c9712efba38b53b46904ac55780cba5fa8b28"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/analysis.py",
+            "sha256": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/book.py",
+            "sha256": "cbc334cf10e089792c1a119536109de2fe3cafc0e492e1e77676fd0b8bf7cf84"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/compatibility.py",
+            "sha256": "6a10dbadfa67fd88e9f5db47256df08b5ef67fd73570439e8c0ec33f735a89b5"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/factors.py",
+            "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/financial_issuer.py",
+            "sha256": "3856593550bd76c7b179553f2030585902363dca05f5d8389fcdf719ec08ce72"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/g_horizon.py",
+            "sha256": "c5241f9178aba9103e663b267fd58818face6cf3c5721b21ee53c8969f091ba2"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/html_sample.py",
+            "sha256": "8a6fba4eb6fb4f45db10e2d77b501723326012de0e8434614132fced8f854aea"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/identifiers.py",
+            "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/leaderboard.py",
+            "sha256": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/pipeline.py",
+            "sha256": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/portfolio.py",
+            "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/quarterly_series.py",
+            "sha256": "1666839c6865b1187cff068bc7881f4e9658457f43b79ca7ded12fa98d89f5cb"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/raw_map.py",
+            "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/scoring.py",
+            "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/simulation.py",
+            "sha256": "27edabf34871bfddad63345e8d3fc305009b59d7d64f9e818dfbbd57b44bd3ba"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/track_record.py",
+            "sha256": "53710f90fd8dd0b3eb1db5cf8fc86979a6cd53215e8f7a542a60c14c0269e4a3"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/us_live.py",
+            "sha256": "51c89905363ae1a0889c6676ec350afca09d0989c2bf3f0fc9d507baf2a8c13b"
+          },
+          {
+            "path": "implementation/src/investment_system/versions.py",
+            "sha256": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/current_factor_map.json",
+            "sha256": "dbddea7a7b098fd4ea1a8c8a16cb2e895259255a9561a81d3f539c86fe5634ce"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/golden_cases.json",
+            "sha256": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/factor_roles.json",
+            "sha256": "fcca6d59c6f735202c6b6e6d5e45e5ed2a06423759184ff949162677a49b78b1"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/b4_cases.json",
+            "sha256": "d18eb58da64b3127a8b8f260870edb10c7dae3dbcce8f7844c916cc5f2783a5d"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/b4_verify.py",
+            "sha256": "4bc0cc5486ff3ff19962cd990e9480083dbef300e68ddd954f7e97cce5740cd8"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/CANARY_ACCEPTANCE.md",
+            "sha256": "0fc3afec0e6c5ac78cc5d389aaafbdbf40beda7466440bc286f167fdcdb19c53"
+          }
+        ],
+        "method_policy_refs": [
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/CONTRACT.md",
+            "sha256": "5203e09c36c612aa573789a5cdf8bcf1fb76f26fad105171e21b31828e13f76b",
+            "id": "MISSING_DATA_INACTIVE_CONTRACT"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/B4_REVIEW.md",
+            "sha256": "46248a360163c66347fe733e6a24130a650d91e5e5161e03dc187f752536ed37",
+            "id": "B4_INDEPENDENT_SOURCE_REVIEW"
+          }
+        ],
+        "approval_dependencies": [
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/approval.json",
+            "sha256": "65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf",
+            "id": "QCC-P01-M1-M5-PRINCIPLES-2026-10-05",
+            "scope": "EXACT_M1_M5_PRINCIPLES_ONLY"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/work_authority.json",
+            "sha256": "f0e804960b9cd600fac9dfb902afe91d3ce18b5b4b53347d4ca322d5f19d8350",
+            "id": "QGV_BINDING_CONTINUATION_USER_REQUEST_2026_10_05",
+            "scope": "EXPLICIT_AUTHORIZED_AUDIT_DESIGN_ONLY"
+          }
+        ],
+        "dependencies": [],
+        "output_contract": {
+          "paths": [
+            "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/canary/hop1_method_replay_manifest.json"
+          ]
+        },
+        "acceptance_ref": {
+          "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/CANARY_ACCEPTANCE.md",
+          "sha256": "0fc3afec0e6c5ac78cc5d389aaafbdbf40beda7466440bc286f167fdcdb19c53",
+          "id": "QGV_CONTINUATION_CANARY_ACCEPTANCE",
+          "version": "1"
+        }
+      }
+    ],
+    "two_hop_task_ids": [
+      "QGV_AUTO_HOP1_LEGACY_METHOD_MANIFEST",
+      "QGV_AUTO_HOP2_INDEPENDENT_MANIFEST_CLOSURE"
+    ],
+    "dependent_templates": [
+      {
+        "id": "QGV_AUTO_HOP2_INDEPENDENT_MANIFEST_CLOSURE",
+        "version": "1",
+        "classification": "D2",
+        "authority_scope": "EXPLICIT_AUTHORIZED_AUDIT_DESIGN_ONLY",
+        "state": "TEMPLATE_REQUIRES_EXACT_HOP1_OUTPUT",
+        "work_spec": {
+          "objective": "Independent exact-HOP1 manifest source/dependency/adversarial test closure",
+          "execution": "Distinct next real scheduled execution after HOP1 accepted",
+          "required_scope": "CANARY_ACCEPTANCE.md HOP2; all20 accounted, unresolved meanings explicit; no D3 choices",
+          "terminal": "TERMINAL_D1_D2_COMPLETE_AWAITING_D3; no invented third task"
+        },
+        "semantic_inputs": [
+          {
+            "path": "implementation/src/investment_system/contracts/enums.py",
+            "sha256": "5cd6c7694544dcba4717590ad24534ab0f8e115d8352235bf88bf37657433bcf"
+          },
+          {
+            "path": "implementation/src/investment_system/contracts/models.py",
+            "sha256": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506"
+          },
+          {
+            "path": "implementation/src/investment_system/contracts/raw.py",
+            "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a"
+          },
+          {
+            "path": "implementation/src/investment_system/contracts/strategy.py",
+            "sha256": "9c34249656ac7ba0203546584f7acd2dd96c6f2debb7ba54d54069290cbfe9ac"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/__init__.py",
+            "sha256": "d53a21eca58317bc7bed03e0ca79e2fd56deb8b16d960bf8c31d9d4e1c298e6c"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/fit.py",
+            "sha256": "d7c569cbf8496d752b0782b63986011e6e3e86a7436785bca94fadf7973565a5"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/money.py",
+            "sha256": "894e7cab7e3ca87dcad14ee644ef34448850698fb93dda600cd3aa75e0a37418"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/portfolio.py",
+            "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/ports.py",
+            "sha256": "a4fa05cc660db1779eb44babbbb8568f0c97723dc1b74a722f977f338be670fb"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/quality.py",
+            "sha256": "b6cefc19927bb3da00060920174de0f2d21dd7616299d9ebd81ad65870a349b7"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/security.py",
+            "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/timecontract.py",
+            "sha256": "dee41dce8153740e75faa1810f9ffa5c150d13f3f4cf3d6f5f452348a7219d73"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/versioning.py",
+            "sha256": "af84bfd95e198c3e1c29381ca9d688728da8a7a128dec4994da49d5186416def"
+          },
+          {
+            "path": "implementation/src/investment_system/personal/weights.py",
+            "sha256": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/__init__.py",
+            "sha256": "9a061df332477ecbc2f586abda8c9712efba38b53b46904ac55780cba5fa8b28"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/analysis.py",
+            "sha256": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/book.py",
+            "sha256": "cbc334cf10e089792c1a119536109de2fe3cafc0e492e1e77676fd0b8bf7cf84"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/compatibility.py",
+            "sha256": "6a10dbadfa67fd88e9f5db47256df08b5ef67fd73570439e8c0ec33f735a89b5"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/factors.py",
+            "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/financial_issuer.py",
+            "sha256": "3856593550bd76c7b179553f2030585902363dca05f5d8389fcdf719ec08ce72"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/g_horizon.py",
+            "sha256": "c5241f9178aba9103e663b267fd58818face6cf3c5721b21ee53c8969f091ba2"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/html_sample.py",
+            "sha256": "8a6fba4eb6fb4f45db10e2d77b501723326012de0e8434614132fced8f854aea"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/identifiers.py",
+            "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/leaderboard.py",
+            "sha256": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/pipeline.py",
+            "sha256": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/portfolio.py",
+            "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/quarterly_series.py",
+            "sha256": "1666839c6865b1187cff068bc7881f4e9658457f43b79ca7ded12fa98d89f5cb"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/raw_map.py",
+            "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/scoring.py",
+            "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/simulation.py",
+            "sha256": "27edabf34871bfddad63345e8d3fc305009b59d7d64f9e818dfbbd57b44bd3ba"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/track_record.py",
+            "sha256": "53710f90fd8dd0b3eb1db5cf8fc86979a6cd53215e8f7a542a60c14c0269e4a3"
+          },
+          {
+            "path": "implementation/src/investment_system/qgv/us_live.py",
+            "sha256": "51c89905363ae1a0889c6676ec350afca09d0989c2bf3f0fc9d507baf2a8c13b"
+          },
+          {
+            "path": "implementation/src/investment_system/versions.py",
+            "sha256": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/current_factor_map.json",
+            "sha256": "dbddea7a7b098fd4ea1a8c8a16cb2e895259255a9561a81d3f539c86fe5634ce"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/golden_cases.json",
+            "sha256": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/factor_roles.json",
+            "sha256": "fcca6d59c6f735202c6b6e6d5e45e5ed2a06423759184ff949162677a49b78b1"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/b4_cases.json",
+            "sha256": "d18eb58da64b3127a8b8f260870edb10c7dae3dbcce8f7844c916cc5f2783a5d"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/b4_verify.py",
+            "sha256": "4bc0cc5486ff3ff19962cd990e9480083dbef300e68ddd954f7e97cce5740cd8"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/CANARY_ACCEPTANCE.md",
+            "sha256": "0fc3afec0e6c5ac78cc5d389aaafbdbf40beda7466440bc286f167fdcdb19c53"
+          }
+        ],
+        "method_policy_refs": [
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/CONTRACT.md",
+            "sha256": "5203e09c36c612aa573789a5cdf8bcf1fb76f26fad105171e21b31828e13f76b",
+            "id": "MISSING_DATA_INACTIVE_CONTRACT"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/B4_REVIEW.md",
+            "sha256": "46248a360163c66347fe733e6a24130a650d91e5e5161e03dc187f752536ed37",
+            "id": "B4_INDEPENDENT_SOURCE_REVIEW"
+          }
+        ],
+        "approval_dependencies": [
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/approval.json",
+            "sha256": "65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf",
+            "id": "QCC-P01-M1-M5-PRINCIPLES-2026-10-05",
+            "scope": "EXACT_M1_M5_PRINCIPLES_ONLY"
+          },
+          {
+            "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/work_authority.json",
+            "sha256": "f0e804960b9cd600fac9dfb902afe91d3ce18b5b4b53347d4ca322d5f19d8350",
+            "id": "QGV_BINDING_CONTINUATION_USER_REQUEST_2026_10_05",
+            "scope": "EXPLICIT_AUTHORIZED_AUDIT_DESIGN_ONLY"
+          }
+        ],
+        "dependencies": [],
+        "output_contract": {
+          "paths": [
+            "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/canary/hop2_manifest_closure.json"
+          ]
+        },
+        "acceptance_ref": {
+          "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/CANARY_ACCEPTANCE.md",
+          "sha256": "0fc3afec0e6c5ac78cc5d389aaafbdbf40beda7466440bc286f167fdcdb19c53",
+          "id": "QGV_CONTINUATION_CANARY_ACCEPTANCE",
+          "version": "1"
+        },
+        "binding_action": "Under own lease after HOP1 acceptance, add exact manifest path/hash to semantic_inputs and dependency {task_id,task_fingerprint,output_digest}; then append finalized task to continuation_plan.tasks"
+      }
+    ],
+    "terminal_after_two_hops": true
+  },
+  "binding_gate": {
+    "status": "DECISION_READY_INACTIVE_RECOMMENDED_NOT_APPROVED",
+    "B1": "MORE_EVIDENCE_REQUIRED_FOR_ACTUAL_ROLES",
+    "B2": "APPROVE_RECOMMENDED_PROOF_CONTRACT_ONLY",
+    "B3": "APPROVE_RECOMMENDED",
+    "B4": "APPROVE_RECOMMENDED_IDENTITY_ONLY",
+    "B5": "APPROVE_RECOMMENDED",
+    "B6": "APPROVE_RECOMMENDED_SCOPED_CONSUMER_BOUNDARY",
+    "B7": "APPROVE_RECOMMENDED_WEIGHT_ONLY_BOUNDARY",
+    "production_enabled": false
+  },
+  "continuation_verification": {
+    "event": "CONFIGURED_DELIVERY_NOT_TESTED",
+    "state": "PATCH_APPLIED_LOCAL_SELECTOR_TESTED_REAL_EXECUTION_NOT_VERIFIED",
+    "two_hop": "PLAN_READY_NOT_EXECUTED",
+    "manual_current_run_is_scheduler_hop": false,
+    "next_executable_task": "QGV_AUTO_HOP1_LEGACY_METHOD_MANIFEST",
+    "route_limitation": "Hourly automation conversation differs original QGV chat; update API has no conversation_id setter; shared repo state/lease"
+  },
+  "authority_resolution": {
+    "observed_global_head": "d92363f0dd4e4865bcd329d577c5de7bfdd029c8",
+    "register_path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+    "register_sha256": "e4dfb35392e173f4ad780e447608613c16010bd6214358e4dc41461424a738eb",
+    "decision_id": "CDR-015",
+    "recorded_scope": "Global user delegation includes policy/migration/merge as D2 and only paid resources as D3",
+    "verbatim_record_location": "d92363f0dd4e4865bcd329d577c5de7bfdd029c8:implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+    "current_turn_scope": "Explicit current QGV request prohibits production implementation/method replacement/role predicate adoption/migration/merge and limits this execution to recommendation and continuation repair",
+    "resolution": "Finish this specifically bounded task as requested; retain new global delegation as observed evidence, do not infer repeal of current explicit narrower task limitations or adopt result-affecting policy in this execution",
+    "production_change": false,
+    "global_write": false
   }
 }

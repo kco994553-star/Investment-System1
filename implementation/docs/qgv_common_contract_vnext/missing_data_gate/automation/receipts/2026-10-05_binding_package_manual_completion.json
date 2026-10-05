@@ -1,0 +1,23 @@
+{
+  "kind": "BINDING_PACKAGE_AND_AUTOMATION_REPAIR_MANUAL_COMPLETION",
+  "authority": "Explicit current user D1/D2 work request; no B policy adoption",
+  "execution": {
+    "kind": "MANUAL",
+    "scheduler_hop": false
+  },
+  "input_owner_head": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+  "lease_commit": "004e256e50f201b2f095fb715a380c50d67f6d75",
+  "disposition": "COMPLETED_CURRENT_DESIGN_SCOPE",
+  "B4": "APPROVE_RECOMMENDED_IDENTITY_ONLY",
+  "package_path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+  "package_sha256": "d673cbbe55317af632e1ce6acf626b8aa572087ee4fc882094961240bb5b1867",
+  "verification_path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/verification.json",
+  "verification_sha256": "d1ce3630643fc18afb1eee50b39476930e3bd7f3a8e9a8ae7b566f6e387ac404",
+  "two_hop": "PLAN_ONLY_FUTURE_EXECUTIONS_REQUIRED",
+  "next_task": "QGV_AUTO_HOP1_LEGACY_METHOD_MANIFEST",
+  "production_enabled": false,
+  "legacy_history_preserved": true,
+  "lease_release": "Atomic final owner publication",
+  "latest_global_head": "d92363f0dd4e4865bcd329d577c5de7bfdd029c8",
+  "narrow_current_request_scope_preserved": true
+}

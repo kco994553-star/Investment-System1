@@ -1,0 +1,205 @@
+{
+  "verified_at_kst": "2026-10-05T12:24:24.371303+09:00",
+  "status": "PASS_INACTIVE_PACKAGE_AND_PROTECTED_BYTES",
+  "source_hash_count": 33,
+  "source_hashes_match": {
+    "implementation/src/investment_system/contracts/enums.py": true,
+    "implementation/src/investment_system/contracts/models.py": true,
+    "implementation/src/investment_system/contracts/raw.py": true,
+    "implementation/src/investment_system/contracts/strategy.py": true,
+    "implementation/src/investment_system/personal/__init__.py": true,
+    "implementation/src/investment_system/personal/fit.py": true,
+    "implementation/src/investment_system/personal/money.py": true,
+    "implementation/src/investment_system/personal/portfolio.py": true,
+    "implementation/src/investment_system/personal/ports.py": true,
+    "implementation/src/investment_system/personal/quality.py": true,
+    "implementation/src/investment_system/personal/security.py": true,
+    "implementation/src/investment_system/personal/timecontract.py": true,
+    "implementation/src/investment_system/personal/versioning.py": true,
+    "implementation/src/investment_system/personal/weights.py": true,
+    "implementation/src/investment_system/qgv/__init__.py": true,
+    "implementation/src/investment_system/qgv/analysis.py": true,
+    "implementation/src/investment_system/qgv/book.py": true,
+    "implementation/src/investment_system/qgv/compatibility.py": true,
+    "implementation/src/investment_system/qgv/factors.py": true,
+    "implementation/src/investment_system/qgv/financial_issuer.py": true,
+    "implementation/src/investment_system/qgv/g_horizon.py": true,
+    "implementation/src/investment_system/qgv/html_sample.py": true,
+    "implementation/src/investment_system/qgv/identifiers.py": true,
+    "implementation/src/investment_system/qgv/leaderboard.py": true,
+    "implementation/src/investment_system/qgv/pipeline.py": true,
+    "implementation/src/investment_system/qgv/portfolio.py": true,
+    "implementation/src/investment_system/qgv/quarterly_series.py": true,
+    "implementation/src/investment_system/qgv/raw_map.py": true,
+    "implementation/src/investment_system/qgv/scoring.py": true,
+    "implementation/src/investment_system/qgv/simulation.py": true,
+    "implementation/src/investment_system/qgv/track_record.py": true,
+    "implementation/src/investment_system/qgv/us_live.py": true,
+    "implementation/src/investment_system/versions.py": true
+  },
+  "golden_sha256": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040",
+  "previous_tracked_preserved_count": 7741,
+  "allowed_current_status_updates": [
+    "implementation/docs/qgv_common_contract_vnext/missing_data_gate/CURRENT_HANDOFF.md",
+    "implementation/docs/qgv_common_contract_vnext/missing_data_gate/DECISION_REGISTER.md",
+    "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/CONTROL.md",
+    "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/STATE.json"
+  ],
+  "unexpected_previous_changes": [],
+  "factor_count": 20,
+  "role_evidence_counts": {
+    "SUPPORTED": 3,
+    "PROPOSED": 10,
+    "UNRESOLVED": 7
+  },
+  "production_requiredness_assigned": 0,
+  "local_root_reproduction": {
+    "B4": {
+      "cases": 6,
+      "assertions": 17,
+      "status": "PASS"
+    },
+    "consumer": {
+      "families": 5,
+      "assertions": 20,
+      "status": "PASS"
+    },
+    "continuation_control": {
+      "tests": 32,
+      "status": "PASS"
+    }
+  },
+  "relative_doc_links": [
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "target": "fresh_intake.json",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "target": "FACTOR_ROLE_AUDIT.md",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "target": "factor_roles.json",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "target": "APPLICABILITY_AUDIT.md",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "target": "B4_REVIEW.md",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "target": "b4_cases.json",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "target": "CONSUMER_PROFILE_REVIEW.md",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "target": "consumer_profiles.json",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "target": "../automation/CONTINUATION_AUDIT.md",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "target": "../automation/CONTINUATION_PROTOCOL.md",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/B4_REVIEW.md",
+      "target": "b4_cases.json",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/B4_REVIEW.md",
+      "target": "b4_verify.py",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/CONSUMER_PROFILE_REVIEW.md",
+      "target": "consumer_profiles.json",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/CONSUMER_PROFILE_REVIEW.md",
+      "target": "consumer_profile_probe.py",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/FACTOR_ROLE_AUDIT.md",
+      "target": "factor_roles.json",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/FACTOR_ROLE_AUDIT.md",
+      "target": "APPLICABILITY_AUDIT.md",
+      "exists": true
+    },
+    {
+      "from": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/CONTINUATION_AUDIT.md",
+      "target": "CONTINUATION_PROTOCOL.md",
+      "exists": true
+    }
+  ],
+  "selector_after_lease_release": {
+    "status": "EXECUTABLE_STATE_WORK",
+    "next_task": {
+      "task_id": "QGV_AUTO_HOP1_LEGACY_METHOD_MANIFEST",
+      "fingerprint": "7544a7376f5ad1fef9127bfec19ebd5e0d18d701fa74710a473962fdca2435e1",
+      "status": "EXECUTABLE_D1_D2"
+    },
+    "tasks": [
+      {
+        "task_id": "QGV_AUTO_HOP1_LEGACY_METHOD_MANIFEST",
+        "fingerprint": "7544a7376f5ad1fef9127bfec19ebd5e0d18d701fa74710a473962fdca2435e1",
+        "status": "EXECUTABLE_D1_D2"
+      }
+    ],
+    "event_input_status": "NO_NEW_MATERIAL_EVENT",
+    "state_input_status": "ELIGIBLE",
+    "unbound_finite_task_ids": [
+      "QGV_AUTO_HOP2_INDEPENDENT_MANIFEST_CLOSURE"
+    ],
+    "mutation_performed": false,
+    "scheduler_execution_verified": false
+  },
+  "actual_scheduler_hops": "NOT_EXECUTED",
+  "real_event_delivery": "NOT_TESTED",
+  "new_Actions": "NOT_RUN",
+  "full_integration_acceptance": "NOT_RUN",
+  "real_PIT_OOS": "NOT_RUN",
+  "holdout": "UNCONSUMED",
+  "production_changed": false,
+  "scores_or_legacy_history_changed": false,
+  "global_files_changed": false,
+  "D3_policy_adopted": false,
+  "final_global_routing_read": {
+    "observed_global_head": "d92363f0dd4e4865bcd329d577c5de7bfdd029c8",
+    "register_path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+    "register_sha256": "e4dfb35392e173f4ad780e447608613c16010bd6214358e4dc41461424a738eb",
+    "decision_id": "CDR-015",
+    "recorded_scope": "Global user delegation includes policy/migration/merge as D2 and only paid resources as D3",
+    "verbatim_record_location": "d92363f0dd4e4865bcd329d577c5de7bfdd029c8:implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+    "current_turn_scope": "Explicit current QGV request prohibits production implementation/method replacement/role predicate adoption/migration/merge and limits this execution to recommendation and continuation repair",
+    "resolution": "Finish this specifically bounded task as requested; retain new global delegation as observed evidence, do not infer repeal of current explicit narrower task limitations or adopt result-affecting policy in this execution",
+    "production_change": false,
+    "global_write": false
+  },
+  "final_independent_review": "PASS_AFTER_FINAL_STATE_PINS_READBACK_AND_AUTHORITY_DRIFT_CHECK",
+  "final_review_sha256": "d7909072469df79420d214090ee4d6617a3e2ad9ee7d8e4146ee6876c1d23b44"
+}

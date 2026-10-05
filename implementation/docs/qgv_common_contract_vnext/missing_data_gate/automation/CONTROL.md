@@ -1,3 +1,27 @@
+# Current control addendum — continuation protocol v2 · 2026-10-05
+
+**This addendum supersedes conflicting historical clauses below.**
+M1–M5 are APPROVED_PRINCIPLES_ONLY; Binding Gate audit/design/recommendation is
+explicitly authorized D1/D2; B policies/production adoption remain NOT_APPROVED.
+See CONTINUATION_PROTOCOL.md, CANARY_ACCEPTANCE.md and STATE.continuation_plan.tasks.
+No new event, self-control-only event, null owner PR or empty CI queue is a no-op
+only when no authorized unfinished exact-input D1/D2 task is executable. Event
+and state input selection are independent. Completed accepted output receipts,
+not intake/wait/NO_ACTION, close finite tasks. Use the same owner CAS lease.
+The existing hourly watch now checks pending CI first and finite state tasks next.
+The existing event watch retains exact #44/#42 triggers; no duplicate watch.
+Current readback receipt is receipts/2026-10-05_final_v2_configuration_readback.json:
+event chat remains6ac230f1-0ff0-83ee-a932-45244e2c4afe; hourly chat differs,
+6ac3012d-9bf4-83e8-b2ba-bb8c3ab9d10a. The exposed update API cannot change its
+conversation target. Both share repository STATE/lease; same-chat routing is not
+verified and no new duplicate automation was created. Event delivery and real
+2-hop execution are NOT_VERIFIED. D3/PIT/Frozen/history/Holdout/no-paid boundaries
+and other-owner/Global read-only rules remain in force.
+
+---
+
+## Historical control v1 — preserved below, conflicting clauses superseded
+
 # QGV Work automatic continuation control
 
 Owner-scoped coordination infrastructure only; no QGV runtime/domain policy.

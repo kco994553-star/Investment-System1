@@ -64,3 +64,26 @@ approved. Older all-active completeness/ranking, mandatory N/A exclusion and
 optional-zero input suppression remain proposals. New Implementation Contract
 is INACTIVE/DESIGN-ONLY. This append changes current principle status without
 rewriting historical proposal/simulation evidence.
+
+
+## Append-only Binding Gate technical recommendation — 2026-10-05
+
+Explicit current user request authorizes D1/D2 binding/consumer audit, independent
+recommendation, synthetic verification, automation failure/continuation repair,
+scoped evidence/Handoff and owner publication. See binding_gate/work_authority.json.
+No B policy adoption is inferred from this authorization or technical review.
+
+| ID | Current technical verdict | Unapproved production value/adoption |
+|---|---|---|
+| B1 | MORE_EVIDENCE_REQUIRED for factor roles; authority mechanism recommended | All20 actual requiredness assignments |
+| B2 | APPROVE_RECOMMENDED modified proof/context/permission boundary | Actual N/A predicates/classification/exclusion |
+| B3 | APPROVE_RECOMMENDED scoped admission-before-weights | Exact reason/rubric/scope and runtime policy |
+| B4 | APPROVE_RECOMMENDED factor vs immutable method/version identity | Actual method replacement/calculation migration |
+| B5 | APPROVE_RECOMMENDED independent result assessments | Actual completeness/validity criteria |
+| B6 | APPROVE_RECOMMENDED scoped consumer matrix, P01 partial disclosure preserved | Ranking/cohort/selection/publication adoption |
+| B7 | APPROVE_RECOMMENDED numeric-only permitted profile mutation | Node authority/runtime wiring/inclusion |
+
+Package: binding_gate/DECISION_PACKAGE.md; independent review:
+binding_gate/INDEPENDENT_REVIEW.md. B4 characterization6cases/17checks, consumer
+5families/20checks, control32tests PASS; score/policy unchanged. Actual scheduler
+HOP1/HOP2 remains NOT_EXECUTED/NOT_VERIFIED. M1–M5 principle approval is preserved.

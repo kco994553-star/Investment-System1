@@ -1,3 +1,104 @@
+# Current QGV Binding/Consumer + Continuation checkpoint · 2026-10-05
+
+**STATUS: BINDING_DECISION_READY / INDEPENDENT_REVIEW_PASS / INACTIVE / SPEC-ONLY.**
+M1–M5 remain APPROVED_PRINCIPLES_ONLY. B1–B7 are recommendations, not user approval.
+This current addendum supersedes old next-step/control-status prose; prior scoped
+Handoff is preserved below as history. Do not redo completed M1–M5/broad audit.
+
+## Actual inputs and publication
+
+Canonical/default: claude/investment-system-top500-validation-alrugm at
+b8e39a2196a6d7794a04a0cd5393c68329e126ca. PR44 Draft/Open at
+cb1906b207623168fd70f3dcdb5b30f2d82d807d; PR42/integration/fpia-hardened-v1 at
+523e702a806a718d163cfbf62aa3fc29d8c3ef3c. Global routing intakeb5b4ca67fce635a5bb2a207e96bcf5399e17deb9 advanced before
+publication tod92363f0dd4e4865bcd329d577c5de7bfdd029c8. CDR-015 records broader
+global delegation; binding_gate/authority_drift.json preserves it. This turn
+retains its explicit narrower no-production/no-migration/no-merge instruction.
+Owner intake1e79920bdea5f5580bf46414a083c06d5d3604d6, held lease checkpoint
+004e256e50f201b2f095fb715a380c50d67f6d75. Owner branch:
+codex/qgv-missing-data-decision-gate-2026-10-05. Resolve its actual delivery HEAD
+from remote ref; no self-referential commit ID. Owner had7 ahead/0 behind at
+intake,8 ahead with claim; final owner publication adds one normal child commit.
+Phase B owner PR=null, not PR44. PR44 is not edited/merged. Existing PR44 CI
+37245014376/37245037812 SUCCESS retained as historical exact-head evidence;
+new owner Actions/full integration/real PIT-OOS NOT_RUN. Holdout UNCONSUMED.
+
+## Completed authorized D1/D2 work
+
+Read binding_gate/DECISION_PACKAGE.md and INDEPENDENT_REVIEW.md first. The package
+contains20-factor roles/maturity/input/applicability mapping, financial denominator
+and profile-context divergence, B4 six-case source characterization, method/profile
+reference binding, independent result/consumer admission, M1–M5 adversarial and
+acyclic dependency review. Role evidence3 SUPPORTED/10 PROPOSED/7 UNRESOLVED;
+all20 actual requiredness roles remain unassigned.
+B1 MORE_EVIDENCE_REQUIRED for actual roles; B2/B3/B4/B5/B6/B7
+APPROVE_RECOMMENDED for expressly bounded principles/reference contract only.
+B2 concrete predicates/exclusion, B3 rubrics/scope, B5/B6 criteria/cohorts,
+method replacements and all runtime adoption remain D3/pending.
+B4 verdict: separate factor identity from immutable method/version/input horizon/
+fallback/normalization identity. Existing hashes/versions are not runtime method
+authentication. Supported Custom APIs reject method edits; future wiring/cache
+isolation is not proven. Historical literal payload preserved; archived executable
+replay NOT_RUN. Root reproduced B4 6cases/17checks; consumer5families/20checks;
+control32tests PASS. Legacy sources/golden/history are preserved.
+
+## Automation failure and repair
+
+Original SKIP followed direct user intake, whose receipt explicitly left all
+binding work incomplete; no scheduler trace proves why it stopped. Observable
+configuration gap: event watch last_run=null, hourly watch empty-CI stop clauses
+and no independent state-task selector. Intake lease=null, so stale lease blocking
+was not evidenced. CONTROL stale approval and CI chat drift were observed.
+Both existing prompts are now patched/readback-enabled, exact event PR44/42
+preserved and hourly cadence unchanged; hourly handles pendingCI then finite
+unfinished D1/D2 STATE.continuation_plan.tasks. Final actual configuration receipt:
+automation/receipts/2026-10-05_final_v2_configuration_readback.json.
+CI chat differs original QGV chat; exposed update cannot retarget conversation.
+Both use same owner STATE/lease; same-chat delivery cannot be claimed. No duplicate
+watch created. Global Handoff and other owner branches remain read-only.
+
+Read automation/CONTINUATION_PROTOCOL.md and CANARY_ACCEPTANCE.md. Fingerprint
+pins semantic paths/hashes/approval scope/method refs/output/validator, not arbitrary
+owner HEAD. Intake/wait/no-action/failed receipt is not completion. Accepted receipt
+needs actual matching source/authority/validator/output bytes. Failed task needs
+finite actionable replan; no stale lease theft. Event suppression does not suppress
+independently eligible state work. Current manual run is not a scheduler hop.
+
+## Exact next executable D1/D2 task / two-hop status
+
+STATE.continuation_plan.tasks has QGV_AUTO_HOP1_LEGACY_METHOD_MANIFEST READY:
+compile20 already-audited legacy method/input/horizon/fallback/normalization/history
+refs under exact39 semantic+2 approval pins and hashed CANARY_ACCEPTANCE.md;
+write automation/canary/hop1_method_replay_manifest.json, independent evidence
+acceptance and actual scheduler receipt. Reuse audit; do not choose new methods.
+Task fingerprint7544a7376f5ad1fef9127bfec19ebd5e0d18d701fa74710a473962fdca2435e1.
+Read-only no-event selector preview is EXECUTABLE_STATE_WORK.
+Next actual scheduled execution must fresh-read and claim same CAS lease.
+
+HOP2 template is QGV_AUTO_HOP2_INDEPENDENT_MANIFEST_CLOSURE. HOP1 must bind exact
+accepted manifest hash/output digest/dependency into one finalized HOP2 task;
+HOP2 runs in a distinct actual scheduler execution, then finite plan terminal
+awaiting D3. Unbound HOP2 cannot be mistaken for terminal completion. No HOP3.
+**2-HOP PLAN_READY / ACTUAL_HOPS_NOT_EXECUTED / AUTONOMOUS_CONTINUATION_NOT_VERIFIED.**
+A local two-step unit test/automation enablement is not real scheduler evidence.
+If actual platform execution IDs/readback are unavailable, preserve that limitation.
+
+## D3 boundary / recommended user decision
+
+Recommend B4+B7 identity/isolation principles first. Next semantic package is
+G3–5Y and EPS→FCF intended-method decisions, separate choices before role binding;
+V methods/metadata, consumer adoption, Missing-Data runtime, composite and overrides
+stay behind their explicit dependencies/authorization. Actual roles, N/A predicates,
+admission/complete/rank rules/cutoffs, arithmetic defaults, method replacement,
+normalization/composite, runtime wiring, version/score migration, Official/grants,
+PIT weakening, Frozen/history/Holdout, merge/deploy/paid use remain unauthorized.
+No production/legacy/Official score/rank migration, old evidence rewrite or Global
+writes occurred. Lease is released in final STATE; pending CI queue remains empty.
+
+---
+
+# Historical scoped Handoff — prior checkpoint preserved below
+
 # QGV Missing-Data Gate — scoped handoff · 2026-10-05
 
 **STATUS: MISSING_DATA_POLICY_PRINCIPLES_APPROVED / IMPLEMENTATION_CONTRACT_DESIGN_READY / INACTIVE / SPEC-ONLY.**
