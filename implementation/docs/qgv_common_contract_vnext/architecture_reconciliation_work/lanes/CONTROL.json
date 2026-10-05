@@ -1,12 +1,7 @@
 {
   "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
-  "status": "RUNNING_MANUAL_D1_D2",
-  "lease": {
-    "token": "qgv-gv-lanes-ce04703e5823",
-    "owner": "this-QGV-manual-Work",
-    "claimed_at_kst": "2026-10-05T13:28:53.197907+09:00",
-    "parent_head": "df5c70447dfa83805395b7cbbcacbc2024e77f3d"
-  },
+  "status": "D1_D2_EVIDENCE_COMPLETE_INACTIVE",
+  "lease": null,
   "tasks": [
     "G_INPUT_METHOD_LINEAGE_AUDIT",
     "V_ALTERNATIVE_IMPACT_ANALYSIS",
@@ -20,5 +15,22 @@
   "production_enabled": false,
   "manual_execution": true,
   "actual_scheduler_hops_credited": 0,
-  "d3_scope": "Current explicit user request: no semantic replacement, numeric adoption, runtime wiring, migration, historical rewrite, PIT/Frozen/Holdout/Official change or canonical/PR merge"
+  "d3_scope": "Current explicit user request: no semantic replacement, numeric adoption, runtime wiring, migration, historical rewrite, PIT/Frozen/Holdout/Official change or canonical/PR merge",
+  "last_lease_token": "qgv-gv-lanes-ce04703e5823",
+  "completion": {
+    "g_lineage": "COMPLETE_INACTIVE",
+    "v_impact": "COMPLETE_INACTIVE_NO_METHOD_SELECTED",
+    "independent_review": "PASS_WITH_LIMITS",
+    "new_characterizations_passed": 79,
+    "production_enabled": false,
+    "scheduler_actual_hops": 0,
+    "scheduler_status": "0/2_UNVERIFIED",
+    "next_task": "INACTIVE_SCOPE_PRESERVING_PRODUCER_CONSUMER_ASSESSMENT_REFERENCE_CLOSURE"
+  },
+  "d3_decisions": [
+    "G1_HORIZON_SEMANTICS",
+    "G2_EPS_FCF_SUBSTITUTE_SEMANTICS",
+    "V1_METHOD_NORMALIZATION_FAMILIES",
+    "V2_RESIDUAL_METADATA_METHODOLOGY_WITH_B2_B3_B5_B6"
+  ]
 }

@@ -1,0 +1,32 @@
+{
+  "artifact_kind": "INACTIVE_B1_METHOD_LINEAGE_DELTA",
+  "status_before": "MORE_EVIDENCE_REQUIRED",
+  "status_after": "MORE_EVIDENCE_REQUIRED",
+  "new_supported_promotions": 0,
+  "production_requiredness_assignments": 0,
+  "total_factor_count": 20,
+  "prior_classifications_preserved": {
+    "SUPPORTED": 3,
+    "PROPOSED": 10,
+    "UNRESOLVED": 7
+  },
+  "new_evidence": [
+    "Six G current input/branch/normalization source closures characterized",
+    "G horizon is disclosed proxy, EPS fallback cross-measure mismatch",
+    "Seven V identities plus grounded alternative impact and source alias delta",
+    "Per-field period/unit/vintage/PIT losses and entry-point differences",
+    "Missing confidence/completeness/method-validity/consumer assessment authority"
+  ],
+  "evidence_only_support": "Known executed arithmetic and descriptor completeness are not factor requiredness authority",
+  "semantic_blockers": [
+    "G1 horizon economic target",
+    "G2 permitted EPS/FCF substitute target",
+    "V1 valuation/peer/history/rubric meaning and data closure",
+    "B2/B3 applicability/input-rubric-PIT admission",
+    "B5/B6 independent result and consumer criteria"
+  ],
+  "actual_method_id_assigned": false,
+  "new_numeric_policy": false,
+  "production_enabled": false,
+  "scheduler_hops_added": 0
+}

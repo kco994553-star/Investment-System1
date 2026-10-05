@@ -1,0 +1,47 @@
+{
+  "status": "INDEPENDENT_REVIEW_PASS_WITH_LIMITS",
+  "scope": "artifact/source integrity, candidate semantics and attribution review; author21 not rerun here",
+  "input_artifacts_sha256": {
+    "V_ALTERNATIVE_RESULTS.json": "aaf38955ec7a37ddb2a6378d535806fec92d77d1ce201757dd212087c8695381",
+    "V_IMPACT_MATRIX.json": "cf481e0071b8ad1a3cb58dfb6fde4c95aaf933457a00057056c30630072de524",
+    "v_alternative_probe.py": "f227304605d5b401ea44137b7914f6f65c76da58b38a8d5d32d1998cc5dedfa1",
+    "build_impact_matrix.py": "53454e0a90f4679bf89a80fbedb7547be49be9a58fc977bf0a99bcbcc2e7672b",
+    "V_ALTERNATIVE_REVIEW.md": "3c4a120cc5c95c30adf4080bf11a4727d36c0b7cdffe8bcefcd9d13af0d60869"
+  },
+  "review_report_sha256": "41debae3695e99af95be489669e87fccbdcf83edb6ddd42ba7278a59b7587a0e",
+  "review_checks": [
+    "matrix result hash binds exact inspected result bytes",
+    "all18 source and inherited descriptor hashes match inspected source snapshot",
+    "exact7 legacy factor records remain without role assignment",
+    "no production method choice or numerical policy selected",
+    "all reported21 author characterizations pass, no independent rerun claimed",
+    "existing source and golden protection digests equal",
+    "three source existing candidate keys only",
+    "equal research scores are exact tie, not sorted list preference",
+    "prior and MOS tilt show opposite literal fixture preferences",
+    "manual work leaves actual scheduler hops unchanged",
+    "additive reverse field correction does not rewrite old descriptor"
+  ],
+  "review_checks_passed": 11,
+  "author_new_characterizations_passed": 21,
+  "source_pins_checked": 18,
+  "production_semantics_changed": false,
+  "scheduler_hops_counted": 0,
+  "b1_role_assignments": 0,
+  "findings": {
+    "equal_weight_order": "exact_tie_groups_recorded; stable iteration is not economic preference",
+    "combined_branch_attribution": "DCF66.0833vsPE58.5 changes bothDCF andreverseinput;controlled existing pair68.0833vs58.5 holdsreverseproxy constant",
+    "arithmetic_order": "Vprior66.08333333333334 andcandidateinitialprior66.08333333333333 preserve exact reducer loop order; no rounding correction",
+    "registered_method": "all7 descriptor identity/version remain null; source anchors are characterization, not registered historical method",
+    "reverse_field": "actual reverse_dcf_implied_growth;prior implied_growth retained in additive correction"
+  },
+  "limits": "Synthetic branch/weight/cohort evidence only; no real company data, behavioral validation, full PIT/OOS, archived exact method dispatch, numeric policy, consumer criterion, grants, production acceptance or actual scheduler receipts.",
+  "final_author_corrections": "Final frozen matrix separately labels combined branch-family and controlled DCF/MOS comparisons; equal weight exact tie and reducer-order distinction retained.",
+  "root_independent_author_probe_replay": "Root message states21 checks and numeric results reproduced; separate root receipt owns that evidence, not child count.",
+  "integrity_correction": {
+    "artifact": "build_impact_matrix.py",
+    "prior_captured_sha256": "b9f86e7785f0fdd485b0f17e689f352897ad632e55eb988ea0e780c207a2ab92",
+    "current_frozen_sha256": "53454e0a90f4679bf89a80fbedb7547be49be9a58fc977bf0a99bcbcc2e7672b",
+    "reason": "Initial reviewer evidence captured the pre-refinement script with matrixc7ed3aac. The final refresh changed matrix and report hashes but omitted refreshing the changed matrix-builder script hash. Root independently reproduced final matrixcf481e with actual frozen script; reviewer corrects the stale pin without modifying author files."
+  }
+}

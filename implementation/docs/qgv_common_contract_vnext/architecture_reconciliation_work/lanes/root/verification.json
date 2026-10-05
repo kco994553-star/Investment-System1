@@ -1,0 +1,59 @@
+{
+  "status": "ROOT_INDEPENDENT_REPRODUCTION_PASS_WITH_LIMITS",
+  "new_characterizations": {
+    "G": {
+      "passed": 47,
+      "total": 47
+    },
+    "V": {
+      "passed": 21,
+      "total": 21
+    },
+    "consumer": {
+      "passed": 11,
+      "failed": 0
+    },
+    "distinct_total": 79
+  },
+  "artifact_integrity_checks": {
+    "g_bytes_G_METHOD_REPLAY_MANIFEST.json": true,
+    "g_bytes_G_LINEAGE_REPLAY.json": true,
+    "g_bytes_G_SYNTHETIC_RAW_FIXTURES.json": true,
+    "g_bytes_G_LINEAGE_VERIFICATION.json": true,
+    "v_bytes_V_ALTERNATIVE_RESULTS.json": true,
+    "v_bytes_V_IMPACT_MATRIX.json": true,
+    "consumer_results_bytes": true,
+    "v_review_hash_V_ALTERNATIVE_RESULTS.json": true,
+    "v_review_hash_V_IMPACT_MATRIX.json": true,
+    "v_review_hash_v_alternative_probe.py": true,
+    "v_review_hash_build_impact_matrix.py": true,
+    "v_review_hash_V_ALTERNATIVE_REVIEW.md": true,
+    "independent_review_report_hash": true,
+    "integration23source_equivalence": true,
+    "prior9trace_support_equivalence": true
+  },
+  "independent_v_artifact_review": {
+    "checks_passed": 11,
+    "source_pins_checked": 18,
+    "not_added_to_79": true
+  },
+  "source_preservation": {
+    "aggregate_sha256": "e2c00ceefad0442d66f50863ab36f83806bb74c54a18514ad6db02d2693ed6dd",
+    "tracked_files": 7770
+  },
+  "limits": [
+    "Source pin replay on explicit synthetic inputs, not economic correctness",
+    "Real cached raw replay NOT_RUN_SOURCE_BLOB_ABSENT",
+    "New Actions/full integration/real PIT/OOS NOT_RUN",
+    "Past broad audit/tests not repeated",
+    "No production or migration acceptance"
+  ],
+  "production_changed": false,
+  "scheduler_hops_added": 0,
+  "g_readiness_derivation": {
+    "rows": 16,
+    "resolved_evidence_hash_pointers": 41,
+    "byte_identical": true,
+    "not_added_to_79": true
+  }
+}

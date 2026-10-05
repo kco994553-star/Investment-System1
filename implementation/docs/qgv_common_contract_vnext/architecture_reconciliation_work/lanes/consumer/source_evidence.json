@@ -1,0 +1,321 @@
+{
+  "status": "READ_ONLY_SOURCE_PIN_COMPARISON",
+  "latest_ref_source": "ROOT_FRESH_REMOTE_READ",
+  "production_sources": [
+    {
+      "path": "implementation/src/investment_system/contracts/models.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/contracts/raw.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/raw_map.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/scoring.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/analysis.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/leaderboard.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/pipeline.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/g_horizon.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "c5241f9178aba9103e663b267fd58818face6cf3c5721b21ee53c8969f091ba2",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "c5241f9178aba9103e663b267fd58818face6cf3c5721b21ee53c8969f091ba2",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/factors.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/providers/memory.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "5d8f4027beef2554518202844333986628e49e858d0899ff751bc24bb21b20bc",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "5d8f4027beef2554518202844333986628e49e858d0899ff751bc24bb21b20bc",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/pit/resolver.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "984d0ce5f01a9e6c236cb4ad96343137a149dc28369087f1a96da854c0bcf243",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "984d0ce5f01a9e6c236cb4ad96343137a149dc28369087f1a96da854c0bcf243",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv_producer/record.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "525fa0b082a0012c20b11adbd6f15dfdd7446494fd90c19322275983d899b948",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "525fa0b082a0012c20b11adbd6f15dfdd7446494fd90c19322275983d899b948",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv_producer/batch.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "9b8be7b1def6b9d98290a937c4278d8ece11b8d6794030c6cd0881a65380e95c",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "9b8be7b1def6b9d98290a937c4278d8ece11b8d6794030c6cd0881a65380e95c",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv_producer/exporter.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "d5fc39a844021d10d413dc674a5b70ebe2889fc267a4642392acaf4230c1103f",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "d5fc39a844021d10d413dc674a5b70ebe2889fc267a4642392acaf4230c1103f",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/leaderboard_producer/qgv_input.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "b65a36cbf486cfb932c8148a49043b0bc1045e30f7a0fefc13faddd756fde3f2",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "b65a36cbf486cfb932c8148a49043b0bc1045e30f7a0fefc13faddd756fde3f2",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/leaderboard_producer/rank.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "e66b8029811eddbf7fa250232cdda6d94837f7e7393b7c96c65513d6477a822a",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "e66b8029811eddbf7fa250232cdda6d94837f7e7393b7c96c65513d6477a822a",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/leaderboard_producer/exporter.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "dc282d0dcb5aebbec59a3531c20b8b67f57474c7aa4fd2f476328424fa270d7b",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "dc282d0dcb5aebbec59a3531c20b8b67f57474c7aa4fd2f476328424fa270d7b",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/publication/qgv_binding.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "f28d94273d94a1bad06daff308182f7cde7f66ec235b2e47882994e591c85853",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "f28d94273d94a1bad06daff308182f7cde7f66ec235b2e47882994e591c85853",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/publication/extractors.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "d88b3b745964d7fcd41630144eb4a72f384acdd27edc667fad73c3926a20a47b",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "d88b3b745964d7fcd41630144eb4a72f384acdd27edc667fad73c3926a20a47b",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/publication/predicate.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "c4b10daa9857af9dfc393d79111d9894a72f5344ca27b2b6681ea0c3b95b2b96",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "c4b10daa9857af9dfc393d79111d9894a72f5344ca27b2b6681ea0c3b95b2b96",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/publication/authorization.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "36786fc7d585d51a77fe50e483af76b9d994ae6c76063c712da94faab12e5aa2",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "36786fc7d585d51a77fe50e483af76b9d994ae6c76063c712da94faab12e5aa2",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/track_record.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "53710f90fd8dd0b3eb1db5cf8fc86979a6cd53215e8f7a542a60c14c0269e4a3",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "53710f90fd8dd0b3eb1db5cf8fc86979a6cd53215e8f7a542a60c14c0269e4a3",
+      "local_equals_fresh": true
+    },
+    {
+      "path": "implementation/src/investment_system/validation/file_store.py",
+      "executed_local_pin": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "local_sha256": "0f4a0cafe6ae466e91fb07e8e300cf562f484fe3ae5e33cdc72366fe700ca751",
+      "fresh_integration_pin": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fresh_integration_blob_sha256": "0f4a0cafe6ae466e91fb07e8e300cf562f484fe3ae5e33cdc72366fe700ca751",
+      "local_equals_fresh": true
+    }
+  ],
+  "context_artifacts": [
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/CONSUMER_PROFILE_REVIEW.md",
+      "local_root": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05",
+      "status": "ESTABLISHED_OWNER_BINDING_INPUT",
+      "sha256": "4d911d4662312fe88f405917aec664fe023277a144327edceb673f0b3f064ac4"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/consumer_profiles.json",
+      "local_root": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05",
+      "status": "ESTABLISHED_OWNER_BINDING_INPUT",
+      "sha256": "77c12f33a651c4b203f2b93cc473949b56e93a3bf3eb6dd34decb12fa447e68c"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md",
+      "local_root": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05",
+      "status": "PUBLISHED_REVIEW_INPUT_AT_ROOT_CONFIRMED_df5c70447dfa83805395b7cbbcacbc2024e77f3d",
+      "sha256": "548fb3c79d9f5b3998d0b32f76fe7ddd4c76b16ef97769661b31efb900e697d7"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/INACTIVE_CONTROL_CONTRACT.md",
+      "local_root": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05",
+      "status": "PUBLISHED_REVIEW_INPUT_AT_ROOT_CONFIRMED_df5c70447dfa83805395b7cbbcacbc2024e77f3d",
+      "sha256": "f0cbe6fc5602239e824fec650e71f2be30a961fd3ca0ecfa5548a497cd8f45c2"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/v_review.md",
+      "local_root": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05",
+      "status": "PUBLISHED_REVIEW_INPUT_AT_ROOT_CONFIRMED_df5c70447dfa83805395b7cbbcacbc2024e77f3d",
+      "sha256": "dfdcc995a98aa905e35ef42447a54ffcc03996a6e28aad286ffe572094fcecf0"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/V_DESCRIPTOR_MANIFEST.json",
+      "local_root": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05",
+      "status": "PUBLISHED_REVIEW_INPUT_AT_ROOT_CONFIRMED_df5c70447dfa83805395b7cbbcacbc2024e77f3d",
+      "sha256": "f28dd9af0944bdac7895cb22ea40790a36888a2936931dc4ff4bca8efd4708d5"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/identity_contract/CONTRACT.md",
+      "local_root": "/workspace/scratch/5f9c0923784f/qgv-missing-data-gate",
+      "status": "OWNER_LOCAL_UNCOMMITTED_NOT_AUTHENTICATED_PUBLISHED_DELIVERY_AT_INTAKE",
+      "sha256": "31b7fb45a985f1cd2764e7bb82076d8097a49d936a81b0e5d94ef847b715b679"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/identity_contract/approval.json",
+      "local_root": "/workspace/scratch/5f9c0923784f/qgv-missing-data-gate",
+      "status": "OWNER_LOCAL_UNCOMMITTED_NOT_AUTHENTICATED_PUBLISHED_DELIVERY_AT_INTAKE",
+      "sha256": "709779f0fff21c7195096dd47342e419ad8a58b71e49bcc951e373b3b561e8e6"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/admission_safety/CONTRACT.md",
+      "local_root": "/workspace/scratch/5f9c0923784f/qgv-missing-data-gate",
+      "status": "OWNER_LOCAL_UNCOMMITTED_NOT_AUTHENTICATED_PUBLISHED_DELIVERY_AT_INTAKE",
+      "sha256": "be28aea9df24edfde53cbe2af6eb974f9ca67b2f84e556dcf110c32f9e3c179d"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/admission_safety/trace_probe_results.json",
+      "local_root": "/workspace/scratch/5f9c0923784f/qgv-missing-data-gate",
+      "status": "OWNER_LOCAL_UNCOMMITTED_NOT_AUTHENTICATED_PUBLISHED_DELIVERY_AT_INTAKE",
+      "sha256": "486f40760832ab31a71f330434b20d12afdc550838b2991c3a28dba274f82c43"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/admission_safety/PRODUCER_CONSUMER_REF_COMPARISON.md",
+      "local_root": "/workspace/scratch/5f9c0923784f/qgv-missing-data-gate",
+      "status": "OWNER_LOCAL_UNCOMMITTED_NOT_AUTHENTICATED_PUBLISHED_DELIVERY_AT_INTAKE",
+      "sha256": "bcccf927fd5e25116bcacd106a98ea189f9499ad3d270777fb9ff5abaf025e72"
+    }
+  ],
+  "prior_trace_path": "/workspace/scratch/5f9c0923784f/qgv-auto-audit/b47-admission-root-trace.json",
+  "prior_trace_sha256": "486f40760832ab31a71f330434b20d12afdc550838b2991c3a28dba274f82c43",
+  "prior_trace_to_fresh_source_comparison": [
+    {
+      "path": "implementation/src/investment_system/qgv/scoring.py",
+      "prior_sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+      "fresh_integration_sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/analysis.py",
+      "prior_sha256": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+      "fresh_integration_sha256": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/leaderboard.py",
+      "prior_sha256": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+      "fresh_integration_sha256": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/contracts/models.py",
+      "prior_sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+      "fresh_integration_sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/leaderboard_producer/qgv_input.py",
+      "prior_sha256": "b65a36cbf486cfb932c8148a49043b0bc1045e30f7a0fefc13faddd756fde3f2",
+      "fresh_integration_sha256": "b65a36cbf486cfb932c8148a49043b0bc1045e30f7a0fefc13faddd756fde3f2",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/leaderboard_producer/rank.py",
+      "prior_sha256": "e66b8029811eddbf7fa250232cdda6d94837f7e7393b7c96c65513d6477a822a",
+      "fresh_integration_sha256": "e66b8029811eddbf7fa250232cdda6d94837f7e7393b7c96c65513d6477a822a",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/publication/extractors.py",
+      "prior_sha256": "d88b3b745964d7fcd41630144eb4a72f384acdd27edc667fad73c3926a20a47b",
+      "fresh_integration_sha256": "d88b3b745964d7fcd41630144eb4a72f384acdd27edc667fad73c3926a20a47b",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/publication/predicate.py",
+      "prior_sha256": "c4b10daa9857af9dfc393d79111d9894a72f5344ca27b2b6681ea0c3b95b2b96",
+      "fresh_integration_sha256": "c4b10daa9857af9dfc393d79111d9894a72f5344ca27b2b6681ea0c3b95b2b96",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/publication/authorization.py",
+      "prior_sha256": "36786fc7d585d51a77fe50e483af76b9d994ae6c76063c712da94faab12e5aa2",
+      "fresh_integration_sha256": "36786fc7d585d51a77fe50e483af76b9d994ae6c76063c712da94faab12e5aa2",
+      "match": true
+    }
+  ],
+  "local_to_fresh_match_count": 23,
+  "local_to_fresh_count": 23,
+  "actual_scheduler_hops": 0,
+  "production_mutation": false,
+  "limits": "Local executed integration checkout remains523e702. Each inspected source compared against exact latest11d2f25 Git blobs. models.py has unrelated Technical/Macro additions; QGV definitions unchanged. Source equivalence alone does not assert remote CI, integration acceptance or archived PIT authority."
+}

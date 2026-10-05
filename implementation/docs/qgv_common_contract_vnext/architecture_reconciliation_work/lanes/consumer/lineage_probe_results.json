@@ -1,0 +1,106 @@
+{
+  "status": "PINNED_CARRIER_CHARACTERIZATION_PASS_NOT_VNEXT_RUNTIME_ACCEPTANCE",
+  "production_enabled": false,
+  "scheduler_hops": 0,
+  "source_sha256": {
+    "implementation/src/investment_system/contracts/models.py": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+    "implementation/src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+    "implementation/src/investment_system/qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+    "implementation/src/investment_system/qgv/factors.py": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+    "implementation/src/investment_system/qgv_producer/record.py": "525fa0b082a0012c20b11adbd6f15dfdd7446494fd90c19322275983d899b948",
+    "implementation/src/investment_system/leaderboard_producer/qgv_input.py": "b65a36cbf486cfb932c8148a49043b0bc1045e30f7a0fefc13faddd756fde3f2"
+  },
+  "script_sha256": "949d3a9dae77bac380d724eed6dfe96a0d96da3e9a39cb3c9d24aa6feaf52b50",
+  "checks": [
+    "both operational code pin variants validate only in synthetic characterization mode",
+    "different operational code pins leave the exact semantic result hash equal",
+    "operational code pins are retained and distinguishable outside the result hash",
+    "factor carrier has no explicit method identity/version",
+    "snapshot has no independent completeness/scoring validity/ranking assessment",
+    "persisted subfactor table cannot add a method identity absent in observation",
+    "changed declared horizon metadata is detectable by semantic hash",
+    "coarse method labels do not distinguish declared horizon variants",
+    "legacy row projection equals despite distinct declared horizon metadata",
+    "legacy row has no method/horizon/result admission assessment fields",
+    "selected source bytes preserved"
+  ],
+  "assertions_passed": 11,
+  "failed": 0,
+  "actual": {
+    "operational_variant_semantic_sha256": [
+      "3d573054ee43bfbce74f6b7c6543ea7d3f88f51181b0c4e6fd13ced173246dbd",
+      "3d573054ee43bfbce74f6b7c6543ea7d3f88f51181b0c4e6fd13ced173246dbd"
+    ],
+    "operational_variant_code_commit": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "horizon_variant_semantic_sha256": [
+      "817d62d8e516e7819a00d7ea410fd610717eb37d2a2dd383f63c455f23b6f3c6",
+      "0589426b6ea5ec0e04a2d8f372c2cf82acc4e3d46f2372393702eaa7a91692ae"
+    ],
+    "horizon_rows": [
+      {
+        "rank": 1,
+        "company_id": "trace_company",
+        "ticker": "TRACE",
+        "qgv_snapshot_id": "SYNTHETIC_LINEAGE_TRACE",
+        "Q_score": 70.0,
+        "G_score": 70.0,
+        "V_score": 70.0,
+        "total_score": 70.0,
+        "freshness": "SYNTHETIC"
+      },
+      {
+        "rank": 1,
+        "company_id": "trace_company",
+        "ticker": "TRACE",
+        "qgv_snapshot_id": "SYNTHETIC_LINEAGE_TRACE",
+        "Q_score": 70.0,
+        "G_score": 70.0,
+        "V_score": 70.0,
+        "total_score": 70.0,
+        "freshness": "SYNTHETIC"
+      }
+    ],
+    "factor_fields": [
+      "factor_id",
+      "notes",
+      "quality",
+      "raw_value",
+      "score_0_100",
+      "stamp_id"
+    ],
+    "snapshot_fields": [
+      "G_score",
+      "Q_score",
+      "V_policy_status",
+      "V_score",
+      "analyzed_at",
+      "as_of",
+      "attractiveness_10",
+      "company_id",
+      "confidence",
+      "coverage_state",
+      "data_stamp_refs",
+      "factor_breakdown",
+      "g_horizon",
+      "implementation_kind",
+      "implementation_line",
+      "key_drivers",
+      "peer_weights",
+      "profile_kind",
+      "qgv_analysis_contract",
+      "qgv_snapshot_id",
+      "qgv_standard_version",
+      "qgv_system_version",
+      "quality_states",
+      "revision_parent_id",
+      "synthetic",
+      "total_score",
+      "type_adjusted_score_100",
+      "v_candidates"
+    ]
+  },
+  "limits": "Manufactured synthetic inputs/operational pins and declared horizon metadata. No alternate economic method, new formula, archived data, full PIT, real company result, production guard, rank policy or publication grant is evaluated. Content hash detects reported metadata drift but is not exact factor-method identity. Existing P01 binding also retains manifest code_commit in its own provenance hash; it is not exercised or weakened here."
+}

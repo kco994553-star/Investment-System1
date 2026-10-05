@@ -1,0 +1,2203 @@
+{
+  "checks": [
+    {
+      "id": "V01_source_branch_impacts",
+      "observed": {
+        "dcf": {
+          "fundamental_value": 75.0,
+          "historical_valuation": 70.0,
+          "margin_of_safety": 33.333333333333336,
+          "peer_relative_value": 50.0,
+          "reverse_dcf": 89.99999999999999,
+          "sector_context": 60.0,
+          "theme_premium_discount": 40.0
+        },
+        "pe": {
+          "fundamental_value": 50.0,
+          "historical_valuation": 70.0,
+          "margin_of_safety": 0.0,
+          "peer_relative_value": 50.0,
+          "reverse_dcf": 99.99999999999999,
+          "sector_context": 60.0,
+          "theme_premium_discount": 40.0
+        }
+      },
+      "pass": true
+    },
+    {
+      "id": "V02_v_inputs_do_not_change_composite",
+      "observed": {
+        "dcf_total": 82.0633,
+        "pe_total": 82.0633
+      },
+      "pass": true
+    },
+    {
+      "id": "V03_reverse_branch_impact",
+      "observed": {
+        "same_dcf_reverse_pe_proxy": 99.99999999999999,
+        "same_dcf_supplied_implied_025": 33.333333333333314
+      },
+      "pass": true
+    },
+    {
+      "id": "V04_missing_compares_reducers",
+      "observed": {
+        "G": 80.79333333333334,
+        "Q": 83.33333333333333,
+        "V_prior": 60.083333333333336,
+        "V_prior_coverage": "PARTIAL",
+        "V_prior_notes": [
+          "sector_context=MISSING_DATA"
+        ],
+        "confidence_assessment": null,
+        "factor_scores": {
+          "fundamental_value": 75.0,
+          "historical_valuation": 70.0,
+          "margin_of_safety": 33.333333333333336,
+          "peer_relative_value": 50.0,
+          "reverse_dcf": 89.99999999999999,
+          "sector_context": null,
+          "theme_premium_discount": 40.0
+        },
+        "input_coverage": null,
+        "inputs": {
+          "dcf_value": 120,
+          "eps": 5,
+          "hist_valuation_percentile": 70,
+          "own_multiple": 20,
+          "peer_median_multiple": 20,
+          "price": 100,
+          "revenue": 120,
+          "revenue_prev": 100,
+          "reverse_dcf_implied_growth": 0.08,
+          "sector_context_score": null,
+          "theme_premium_score": 40
+        },
+        "legacy_composite": 82.0633,
+        "legacy_prior_numeric_admitted_count": 6,
+        "legacy_prior_weighted_presence": 0.9,
+        "legacy_raw_value": {
+          "fundamental_value": 75.0,
+          "historical_valuation": 70.0,
+          "margin_of_safety": 33.333333333333336,
+          "peer_relative_value": 50.0,
+          "reverse_dcf": 89.99999999999999,
+          "sector_context": null,
+          "theme_premium_discount": 40.0
+        },
+        "method_validity": null,
+        "numeric_presence_count": 6,
+        "publication_eligibility": null,
+        "quality": {
+          "fundamental_value": "SYNTHETIC",
+          "historical_valuation": "SYNTHETIC",
+          "margin_of_safety": "SYNTHETIC",
+          "peer_relative_value": "SYNTHETIC",
+          "reverse_dcf": "SYNTHETIC",
+          "sector_context": "MISSING_DATA",
+          "theme_premium_discount": "SYNTHETIC"
+        },
+        "ranking_eligibility": null,
+        "research_candidate_scores": {
+          "equal_research": null,
+          "initial_prior": null,
+          "mos_tilt_research": null
+        },
+        "semantic_completeness": null,
+        "snapshot_coverage_literal": "SYNTHETIC",
+        "snapshot_default_confidence_literal": "MEDIUM",
+        "v_table_confidence_literals": {
+          "fundamental_value": "SYNTHETIC",
+          "historical_valuation": "SYNTHETIC",
+          "margin_of_safety": "SYNTHETIC",
+          "peer_relative_value": "SYNTHETIC",
+          "reverse_dcf": "SYNTHETIC",
+          "sector_context": "MISSING_DATA",
+          "theme_premium_discount": "SYNTHETIC"
+        }
+      },
+      "pass": true
+    },
+    {
+      "id": "V05_same_numbers_financial_profile",
+      "observed": "Financial context currently does not change V methods/applicability",
+      "pass": true
+    },
+    {
+      "id": "V06_history_direction_unresolved",
+      "observed": "Supplied historical field is direct monotonic score input; no percentile polarity inferred",
+      "pass": true
+    },
+    {
+      "id": "V07_existing_weights_reorder_companies",
+      "observed": {
+        "equal_research": [
+          "company_A_valuation_growth_strength",
+          "company_B_safety_strength"
+        ],
+        "initial_prior": [
+          "company_A_valuation_growth_strength",
+          "company_B_safety_strength"
+        ],
+        "mos_tilt_research": [
+          "company_B_safety_strength",
+          "company_A_valuation_growth_strength"
+        ]
+      },
+      "pass": true
+    },
+    {
+      "id": "V08_na_admission_asymmetry_in_impact",
+      "observed": {
+        "G": 70.0,
+        "Q": 70.0,
+        "V_prior": 52.5,
+        "V_prior_coverage": "PARTIAL",
+        "V_prior_notes": [
+          "fundamental_value=NOT_APPLICABLE"
+        ],
+        "confidence_assessment": null,
+        "factor_scores": {
+          "fundamental_value": 70,
+          "historical_valuation": 70,
+          "margin_of_safety": 70,
+          "peer_relative_value": 70,
+          "reverse_dcf": 70,
+          "sector_context": 70,
+          "theme_premium_discount": 70
+        },
+        "input_coverage": null,
+        "legacy_composite": 70.0,
+        "legacy_prior_numeric_admitted_count": 6,
+        "legacy_prior_weighted_presence": 0.75,
+        "legacy_raw_value": {
+          "fundamental_value": 70,
+          "historical_valuation": 70,
+          "margin_of_safety": 70,
+          "peer_relative_value": 70,
+          "reverse_dcf": 70,
+          "sector_context": 70,
+          "theme_premium_discount": 70
+        },
+        "method_validity": null,
+        "numeric_presence_count": 7,
+        "publication_eligibility": null,
+        "quality": {
+          "fundamental_value": "NOT_APPLICABLE",
+          "historical_valuation": "OK",
+          "margin_of_safety": "OK",
+          "peer_relative_value": "OK",
+          "reverse_dcf": "OK",
+          "sector_context": "OK",
+          "theme_premium_discount": "OK"
+        },
+        "ranking_eligibility": null,
+        "research_candidate_scores": {
+          "equal_research": 70.0,
+          "initial_prior": 70.0,
+          "mos_tilt_research": 70.0
+        },
+        "semantic_completeness": null,
+        "snapshot_coverage_literal": "SYNTHETIC",
+        "snapshot_default_confidence_literal": "MEDIUM",
+        "v_table_confidence_literals": {
+          "fundamental_value": "NOT_APPLICABLE",
+          "historical_valuation": "OK",
+          "margin_of_safety": "OK",
+          "peer_relative_value": "OK",
+          "reverse_dcf": "OK",
+          "sector_context": "OK",
+          "theme_premium_discount": "OK"
+        }
+      },
+      "pass": true
+    },
+    {
+      "id": "V09_version_mismatch_still_numeric",
+      "observed": {
+        "G": 70.0,
+        "Q": 70.0,
+        "V_prior": 70.0,
+        "V_prior_coverage": "READY",
+        "V_prior_notes": [],
+        "confidence_assessment": null,
+        "factor_scores": {
+          "fundamental_value": 70,
+          "historical_valuation": 70,
+          "margin_of_safety": 70,
+          "peer_relative_value": 70,
+          "reverse_dcf": 70,
+          "sector_context": 70,
+          "theme_premium_discount": 70
+        },
+        "input_coverage": null,
+        "legacy_composite": 70.0,
+        "legacy_prior_numeric_admitted_count": 7,
+        "legacy_prior_weighted_presence": 1.0,
+        "legacy_raw_value": {
+          "fundamental_value": 70,
+          "historical_valuation": 70,
+          "margin_of_safety": 70,
+          "peer_relative_value": 70,
+          "reverse_dcf": 70,
+          "sector_context": 70,
+          "theme_premium_discount": 70
+        },
+        "method_validity": null,
+        "numeric_presence_count": 7,
+        "publication_eligibility": null,
+        "quality": {
+          "fundamental_value": "VERSION_MISMATCH",
+          "historical_valuation": "OK",
+          "margin_of_safety": "OK",
+          "peer_relative_value": "OK",
+          "reverse_dcf": "OK",
+          "sector_context": "OK",
+          "theme_premium_discount": "OK"
+        },
+        "ranking_eligibility": null,
+        "research_candidate_scores": {
+          "equal_research": 70.0,
+          "initial_prior": 70.0,
+          "mos_tilt_research": 70.0
+        },
+        "semantic_completeness": null,
+        "snapshot_coverage_literal": "SYNTHETIC",
+        "snapshot_default_confidence_literal": "MEDIUM",
+        "v_table_confidence_literals": {
+          "fundamental_value": "VERSION_MISMATCH",
+          "historical_valuation": "OK",
+          "margin_of_safety": "OK",
+          "peer_relative_value": "OK",
+          "reverse_dcf": "OK",
+          "sector_context": "OK",
+          "theme_premium_discount": "OK"
+        }
+      },
+      "pass": true
+    },
+    {
+      "id": "V10_calculation_error_still_numeric",
+      "observed": {
+        "G": 70.0,
+        "Q": 70.0,
+        "V_prior": 70.0,
+        "V_prior_coverage": "READY",
+        "V_prior_notes": [],
+        "confidence_assessment": null,
+        "factor_scores": {
+          "fundamental_value": 70,
+          "historical_valuation": 70,
+          "margin_of_safety": 70,
+          "peer_relative_value": 70,
+          "reverse_dcf": 70,
+          "sector_context": 70,
+          "theme_premium_discount": 70
+        },
+        "input_coverage": null,
+        "legacy_composite": 70.0,
+        "legacy_prior_numeric_admitted_count": 7,
+        "legacy_prior_weighted_presence": 1.0,
+        "legacy_raw_value": {
+          "fundamental_value": 70,
+          "historical_valuation": 70,
+          "margin_of_safety": 70,
+          "peer_relative_value": 70,
+          "reverse_dcf": 70,
+          "sector_context": 70,
+          "theme_premium_discount": 70
+        },
+        "method_validity": null,
+        "numeric_presence_count": 7,
+        "publication_eligibility": null,
+        "quality": {
+          "fundamental_value": "CALCULATION_ERROR",
+          "historical_valuation": "OK",
+          "margin_of_safety": "OK",
+          "peer_relative_value": "OK",
+          "reverse_dcf": "OK",
+          "sector_context": "OK",
+          "theme_premium_discount": "OK"
+        },
+        "ranking_eligibility": null,
+        "research_candidate_scores": {
+          "equal_research": 70.0,
+          "initial_prior": 70.0,
+          "mos_tilt_research": 70.0
+        },
+        "semantic_completeness": null,
+        "snapshot_coverage_literal": "SYNTHETIC",
+        "snapshot_default_confidence_literal": "MEDIUM",
+        "v_table_confidence_literals": {
+          "fundamental_value": "CALCULATION_ERROR",
+          "historical_valuation": "OK",
+          "margin_of_safety": "OK",
+          "peer_relative_value": "OK",
+          "reverse_dcf": "OK",
+          "sector_context": "OK",
+          "theme_premium_discount": "OK"
+        }
+      },
+      "pass": true
+    },
+    {
+      "id": "V11_actual_book_membership_impact",
+      "observed": {
+        "three": {
+          "asml": {
+            "V": 65.83333333333333,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 75.0,
+              "historical_valuation": 75.0,
+              "margin_of_safety": 83.33333333333333,
+              "peer_relative_value": 50.0,
+              "reverse_dcf": 100.0,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": 75.0,
+            "peer_confidence": "LOW",
+            "peer_median": 10.0,
+            "peer_n": 3,
+            "peer_universe": [
+              "nvda",
+              "msft",
+              "asml"
+            ],
+            "pit_price": 20
+          },
+          "msft": {
+            "V": 30.833333333333332,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 25.0,
+              "historical_valuation": 75.0,
+              "margin_of_safety": 0.0,
+              "peer_relative_value": 0.0,
+              "reverse_dcf": 66.66666666666666,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": 75.0,
+            "peer_confidence": "LOW",
+            "peer_median": 10.0,
+            "peer_n": 3,
+            "peer_universe": [
+              "nvda",
+              "msft",
+              "asml"
+            ],
+            "pit_price": 60
+          },
+          "nvda": {
+            "V": 65.83333333333333,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 75.0,
+              "historical_valuation": 75.0,
+              "margin_of_safety": 83.33333333333333,
+              "peer_relative_value": 50.0,
+              "reverse_dcf": 100.0,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": 75.0,
+            "peer_confidence": "LOW",
+            "peer_median": 10.0,
+            "peer_n": 3,
+            "peer_universe": [
+              "nvda",
+              "msft",
+              "asml"
+            ],
+            "pit_price": 20
+          }
+        },
+        "two": {
+          "msft": {
+            "V": 38.33333333333333,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 25.0,
+              "historical_valuation": 75.0,
+              "margin_of_safety": 0.0,
+              "peer_relative_value": 50.0,
+              "reverse_dcf": 66.66666666666666,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": 75.0,
+            "peer_confidence": "LOW",
+            "peer_median": 30.0,
+            "peer_n": 2,
+            "peer_universe": [
+              "nvda",
+              "msft"
+            ],
+            "pit_price": 60
+          },
+          "nvda": {
+            "V": 73.33333333333333,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 75.0,
+              "historical_valuation": 75.0,
+              "margin_of_safety": 83.33333333333333,
+              "peer_relative_value": 100.0,
+              "reverse_dcf": 100.0,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": 75.0,
+            "peer_confidence": "LOW",
+            "peer_median": 30.0,
+            "peer_n": 2,
+            "peer_universe": [
+              "nvda",
+              "msft"
+            ],
+            "pit_price": 20
+          }
+        }
+      },
+      "pass": true
+    },
+    {
+      "id": "V12_sector_labels_not_semantic_peers",
+      "observed": "Legacy comparator is book membership, not sector-peer construction; bias direction unquantified",
+      "pass": true
+    },
+    {
+      "id": "V13_future_prices_and_filings_excluded",
+      "observed": {
+        "future_input": {
+          "msft": {
+            "V": 38.33333333333333,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 25.0,
+              "historical_valuation": 75.0,
+              "margin_of_safety": 0.0,
+              "peer_relative_value": 50.0,
+              "reverse_dcf": 66.66666666666666,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": 75.0,
+            "peer_confidence": "LOW",
+            "peer_median": 30.0,
+            "peer_n": 2,
+            "peer_universe": [
+              "nvda",
+              "msft"
+            ],
+            "pit_price": 60
+          },
+          "nvda": {
+            "V": 73.33333333333333,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 75.0,
+              "historical_valuation": 75.0,
+              "margin_of_safety": 83.33333333333333,
+              "peer_relative_value": 100.0,
+              "reverse_dcf": 100.0,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": 75.0,
+            "peer_confidence": "LOW",
+            "peer_median": 30.0,
+            "peer_n": 2,
+            "peer_universe": [
+              "nvda",
+              "msft"
+            ],
+            "pit_price": 20
+          }
+        },
+        "present": {
+          "msft": {
+            "V": 38.33333333333333,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 25.0,
+              "historical_valuation": 75.0,
+              "margin_of_safety": 0.0,
+              "peer_relative_value": 50.0,
+              "reverse_dcf": 66.66666666666666,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": 75.0,
+            "peer_confidence": "LOW",
+            "peer_median": 30.0,
+            "peer_n": 2,
+            "peer_universe": [
+              "nvda",
+              "msft"
+            ],
+            "pit_price": 60
+          },
+          "nvda": {
+            "V": 73.33333333333333,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 75.0,
+              "historical_valuation": 75.0,
+              "margin_of_safety": 83.33333333333333,
+              "peer_relative_value": 100.0,
+              "reverse_dcf": 100.0,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": 75.0,
+            "peer_confidence": "LOW",
+            "peer_median": 30.0,
+            "peer_n": 2,
+            "peer_universe": [
+              "nvda",
+              "msft"
+            ],
+            "pit_price": 20
+          }
+        }
+      },
+      "pass": true
+    },
+    {
+      "id": "V14_sparse_history_admits_partial",
+      "observed": {
+        "full": {
+          "msft": {
+            "V": 38.33333333333333,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 25.0,
+              "historical_valuation": 75.0,
+              "margin_of_safety": 0.0,
+              "peer_relative_value": 50.0,
+              "reverse_dcf": 66.66666666666666,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": 75.0,
+            "peer_confidence": "LOW",
+            "peer_median": 30.0,
+            "peer_n": 2,
+            "peer_universe": [
+              "nvda",
+              "msft"
+            ],
+            "pit_price": 60
+          },
+          "nvda": {
+            "V": 73.33333333333333,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 75.0,
+              "historical_valuation": 75.0,
+              "margin_of_safety": 83.33333333333333,
+              "peer_relative_value": 100.0,
+              "reverse_dcf": 100.0,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": 75.0,
+            "peer_confidence": "LOW",
+            "peer_median": 30.0,
+            "peer_n": 2,
+            "peer_universe": [
+              "nvda",
+              "msft"
+            ],
+            "pit_price": 20
+          }
+        },
+        "sparse": {
+          "msft": {
+            "V": 27.083333333333332,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 25.0,
+              "historical_valuation": null,
+              "margin_of_safety": 0.0,
+              "peer_relative_value": 50.0,
+              "reverse_dcf": 66.66666666666666,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": null,
+            "peer_confidence": "LOW",
+            "peer_median": 30.0,
+            "peer_n": 2,
+            "peer_universe": [
+              "nvda",
+              "msft"
+            ],
+            "pit_price": 60
+          },
+          "nvda": {
+            "V": 62.083333333333336,
+            "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+            "coverage": "BLOCKED",
+            "eps": 2.0,
+            "factor_scores": {
+              "fundamental_value": 75.0,
+              "historical_valuation": null,
+              "margin_of_safety": 83.33333333333333,
+              "peer_relative_value": 100.0,
+              "reverse_dcf": 100.0,
+              "sector_context": null,
+              "theme_premium_discount": null
+            },
+            "hist_valuation": null,
+            "peer_confidence": "LOW",
+            "peer_median": 30.0,
+            "peer_n": 2,
+            "peer_universe": [
+              "nvda",
+              "msft"
+            ],
+            "pit_price": 20
+          }
+        }
+      },
+      "pass": true
+    },
+    {
+      "id": "V15_historical_method_label_gap",
+      "observed": "Actual 1-prior-price/1-prior-EPS two-point method returns 75; not a historical percentile distribution",
+      "pass": true
+    },
+    {
+      "id": "V16_incomplete_method_validity_reaches_rank",
+      "observed": {
+        "G_quality": "VERSION_MISMATCH",
+        "V_quality": "VERSION_MISMATCH",
+        "board_rank": 1,
+        "board_total": 70.0,
+        "recomputed": false,
+        "snapshot_method_binding": null,
+        "snapshot_total": 70.0
+      },
+      "pass": true
+    },
+    {
+      "id": "V17_direct_future_raw_still_numeric",
+      "observed": {
+        "V": 66.08333333333334,
+        "as_of": "2026-09-14T00:00:00+00:00",
+        "available_at": "2026-09-15T00:00:00+00:00",
+        "coverage_literal": "SYNTHETIC",
+        "interpretation": "Direct analyze_raw does not independently enforce future availability; historical resolver/provider filtering does not protect every entry point.",
+        "total": 82.0633
+      },
+      "pass": true
+    },
+    {
+      "id": "V18_existing_descriptors_not_runtime_bindings",
+      "observed": "Seven characterized method source anchors are not registered production identities/versions",
+      "pass": true
+    },
+    {
+      "id": "V19_metadata_unassessed_preserved",
+      "observed": "Unknowns preserved; MEDIUM/SYNTHETIC literals do not become method confidence/validity evidence",
+      "pass": true
+    },
+    {
+      "id": "V20_factor_identity_prior_preserved",
+      "observed": {
+        "PeerDerivedV_weights": "NOT_FOUND_IN_PINNED_CODE; test name refers to book comparator",
+        "candidate_ids": [
+          "initial_prior",
+          "equal_research",
+          "mos_tilt_research"
+        ],
+        "factors": [
+          "fundamental_value",
+          "peer_relative_value",
+          "historical_valuation",
+          "sector_context",
+          "theme_premium_discount",
+          "reverse_dcf",
+          "margin_of_safety"
+        ]
+      },
+      "pass": true
+    },
+    {
+      "id": "V21_source_bytes_unchanged",
+      "observed": {
+        "aggregate_sha256": "e2c00ceefad0442d66f50863ab36f83806bb74c54a18514ad6db02d2693ed6dd",
+        "tracked_files": 7770
+      },
+      "pass": true
+    }
+  ],
+  "checks_pass": 21,
+  "checks_total": 21,
+  "existing_candidate_weights": {
+    "equal_research": {
+      "lifecycle": "RESEARCH",
+      "weights": {
+        "fundamental_value": 0.14285714285714285,
+        "historical_valuation": 0.14285714285714285,
+        "margin_of_safety": 0.14285714285714285,
+        "peer_relative_value": 0.14285714285714285,
+        "reverse_dcf": 0.14285714285714285,
+        "sector_context": 0.14285714285714285,
+        "theme_premium_discount": 0.14285714285714285
+      }
+    },
+    "initial_prior": {
+      "lifecycle": "PROVISIONAL_INITIAL_PRIOR",
+      "weights": {
+        "fundamental_value": 0.25,
+        "historical_valuation": 0.15,
+        "margin_of_safety": 0.1,
+        "peer_relative_value": 0.15,
+        "reverse_dcf": 0.2,
+        "sector_context": 0.1,
+        "theme_premium_discount": 0.05
+      }
+    },
+    "mos_tilt_research": {
+      "lifecycle": "RESEARCH",
+      "weights": {
+        "fundamental_value": 0.15,
+        "historical_valuation": 0.1,
+        "margin_of_safety": 0.25,
+        "peer_relative_value": 0.15,
+        "reverse_dcf": 0.15,
+        "sector_context": 0.1,
+        "theme_premium_discount": 0.1
+      }
+    }
+  },
+  "golden_changed": false,
+  "new_numeric_formula_or_default": null,
+  "new_requiredness_roles": 0,
+  "original_sources_changed": false,
+  "prior_reconciliation_artifacts": "remote df5c70447dfa83805395b7cbbcacbc2024e77f3d; same local bytes as source pins",
+  "production_semantics_changed": false,
+  "protected_files_after": {
+    "aggregate_sha256": "e2c00ceefad0442d66f50863ab36f83806bb74c54a18514ad6db02d2693ed6dd",
+    "tracked_files": 7770
+  },
+  "protected_files_before": {
+    "aggregate_sha256": "e2c00ceefad0442d66f50863ab36f83806bb74c54a18514ad6db02d2693ed6dd",
+    "tracked_files": 7770
+  },
+  "results": {
+    "book_future_inputs": {
+      "fixture_sector_labels": {
+        "msft": "UNASSESSED",
+        "nvda": "UNASSESSED"
+      },
+      "full_pit_pass": false,
+      "names": 2,
+      "official_pass": false,
+      "rows": {
+        "msft": {
+          "V": 38.33333333333333,
+          "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+          "coverage": "BLOCKED",
+          "eps": 2.0,
+          "factor_scores": {
+            "fundamental_value": 25.0,
+            "historical_valuation": 75.0,
+            "margin_of_safety": 0.0,
+            "peer_relative_value": 50.0,
+            "reverse_dcf": 66.66666666666666,
+            "sector_context": null,
+            "theme_premium_discount": null
+          },
+          "hist_valuation": 75.0,
+          "peer_confidence": "LOW",
+          "peer_median": 30.0,
+          "peer_n": 2,
+          "peer_universe": [
+            "nvda",
+            "msft"
+          ],
+          "pit_price": 60
+        },
+        "nvda": {
+          "V": 73.33333333333333,
+          "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+          "coverage": "BLOCKED",
+          "eps": 2.0,
+          "factor_scores": {
+            "fundamental_value": 75.0,
+            "historical_valuation": 75.0,
+            "margin_of_safety": 83.33333333333333,
+            "peer_relative_value": 100.0,
+            "reverse_dcf": 100.0,
+            "sector_context": null,
+            "theme_premium_discount": null
+          },
+          "hist_valuation": 75.0,
+          "peer_confidence": "LOW",
+          "peer_median": 30.0,
+          "peer_n": 2,
+          "peer_universe": [
+            "nvda",
+            "msft"
+          ],
+          "pit_price": 20
+        }
+      }
+    },
+    "book_sector_labels_swapped": {
+      "fixture_sector_labels": {
+        "msft": "SEMICONDUCTORS",
+        "nvda": "SOFTWARE"
+      },
+      "full_pit_pass": false,
+      "names": 2,
+      "official_pass": false,
+      "rows": {
+        "msft": {
+          "V": 38.33333333333333,
+          "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+          "coverage": "BLOCKED",
+          "eps": 2.0,
+          "factor_scores": {
+            "fundamental_value": 25.0,
+            "historical_valuation": 75.0,
+            "margin_of_safety": 0.0,
+            "peer_relative_value": 50.0,
+            "reverse_dcf": 66.66666666666666,
+            "sector_context": null,
+            "theme_premium_discount": null
+          },
+          "hist_valuation": 75.0,
+          "peer_confidence": "LOW",
+          "peer_median": 30.0,
+          "peer_n": 2,
+          "peer_universe": [
+            "nvda",
+            "msft"
+          ],
+          "pit_price": 60
+        },
+        "nvda": {
+          "V": 73.33333333333333,
+          "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+          "coverage": "BLOCKED",
+          "eps": 2.0,
+          "factor_scores": {
+            "fundamental_value": 75.0,
+            "historical_valuation": 75.0,
+            "margin_of_safety": 83.33333333333333,
+            "peer_relative_value": 100.0,
+            "reverse_dcf": 100.0,
+            "sector_context": null,
+            "theme_premium_discount": null
+          },
+          "hist_valuation": 75.0,
+          "peer_confidence": "LOW",
+          "peer_median": 30.0,
+          "peer_n": 2,
+          "peer_universe": [
+            "nvda",
+            "msft"
+          ],
+          "pit_price": 20
+        }
+      }
+    },
+    "book_sparse_history": {
+      "fixture_sector_labels": {
+        "msft": "UNASSESSED",
+        "nvda": "UNASSESSED"
+      },
+      "full_pit_pass": false,
+      "names": 2,
+      "official_pass": false,
+      "rows": {
+        "msft": {
+          "V": 27.083333333333332,
+          "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+          "coverage": "BLOCKED",
+          "eps": 2.0,
+          "factor_scores": {
+            "fundamental_value": 25.0,
+            "historical_valuation": null,
+            "margin_of_safety": 0.0,
+            "peer_relative_value": 50.0,
+            "reverse_dcf": 66.66666666666666,
+            "sector_context": null,
+            "theme_premium_discount": null
+          },
+          "hist_valuation": null,
+          "peer_confidence": "LOW",
+          "peer_median": 30.0,
+          "peer_n": 2,
+          "peer_universe": [
+            "nvda",
+            "msft"
+          ],
+          "pit_price": 60
+        },
+        "nvda": {
+          "V": 62.083333333333336,
+          "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+          "coverage": "BLOCKED",
+          "eps": 2.0,
+          "factor_scores": {
+            "fundamental_value": 75.0,
+            "historical_valuation": null,
+            "margin_of_safety": 83.33333333333333,
+            "peer_relative_value": 100.0,
+            "reverse_dcf": 100.0,
+            "sector_context": null,
+            "theme_premium_discount": null
+          },
+          "hist_valuation": null,
+          "peer_confidence": "LOW",
+          "peer_median": 30.0,
+          "peer_n": 2,
+          "peer_universe": [
+            "nvda",
+            "msft"
+          ],
+          "pit_price": 20
+        }
+      }
+    },
+    "book_three_peers": {
+      "fixture_sector_labels": {
+        "asml": "SEMICONDUCTORS",
+        "msft": "SOFTWARE",
+        "nvda": "SEMICONDUCTORS"
+      },
+      "full_pit_pass": false,
+      "names": 3,
+      "official_pass": false,
+      "rows": {
+        "asml": {
+          "V": 65.83333333333333,
+          "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+          "coverage": "BLOCKED",
+          "eps": 2.0,
+          "factor_scores": {
+            "fundamental_value": 75.0,
+            "historical_valuation": 75.0,
+            "margin_of_safety": 83.33333333333333,
+            "peer_relative_value": 50.0,
+            "reverse_dcf": 100.0,
+            "sector_context": null,
+            "theme_premium_discount": null
+          },
+          "hist_valuation": 75.0,
+          "peer_confidence": "LOW",
+          "peer_median": 10.0,
+          "peer_n": 3,
+          "peer_universe": [
+            "nvda",
+            "msft",
+            "asml"
+          ],
+          "pit_price": 20
+        },
+        "msft": {
+          "V": 30.833333333333332,
+          "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+          "coverage": "BLOCKED",
+          "eps": 2.0,
+          "factor_scores": {
+            "fundamental_value": 25.0,
+            "historical_valuation": 75.0,
+            "margin_of_safety": 0.0,
+            "peer_relative_value": 0.0,
+            "reverse_dcf": 66.66666666666666,
+            "sector_context": null,
+            "theme_premium_discount": null
+          },
+          "hist_valuation": 75.0,
+          "peer_confidence": "LOW",
+          "peer_median": 10.0,
+          "peer_n": 3,
+          "peer_universe": [
+            "nvda",
+            "msft",
+            "asml"
+          ],
+          "pit_price": 60
+        },
+        "nvda": {
+          "V": 65.83333333333333,
+          "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+          "coverage": "BLOCKED",
+          "eps": 2.0,
+          "factor_scores": {
+            "fundamental_value": 75.0,
+            "historical_valuation": 75.0,
+            "margin_of_safety": 83.33333333333333,
+            "peer_relative_value": 50.0,
+            "reverse_dcf": 100.0,
+            "sector_context": null,
+            "theme_premium_discount": null
+          },
+          "hist_valuation": 75.0,
+          "peer_confidence": "LOW",
+          "peer_median": 10.0,
+          "peer_n": 3,
+          "peer_universe": [
+            "nvda",
+            "msft",
+            "asml"
+          ],
+          "pit_price": 20
+        }
+      }
+    },
+    "book_two_peers": {
+      "fixture_sector_labels": {
+        "msft": "SOFTWARE",
+        "nvda": "SEMICONDUCTORS"
+      },
+      "full_pit_pass": false,
+      "names": 2,
+      "official_pass": false,
+      "rows": {
+        "msft": {
+          "V": 38.33333333333333,
+          "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+          "coverage": "BLOCKED",
+          "eps": 2.0,
+          "factor_scores": {
+            "fundamental_value": 25.0,
+            "historical_valuation": 75.0,
+            "margin_of_safety": 0.0,
+            "peer_relative_value": 50.0,
+            "reverse_dcf": 66.66666666666666,
+            "sector_context": null,
+            "theme_premium_discount": null
+          },
+          "hist_valuation": 75.0,
+          "peer_confidence": "LOW",
+          "peer_median": 30.0,
+          "peer_n": 2,
+          "peer_universe": [
+            "nvda",
+            "msft"
+          ],
+          "pit_price": 60
+        },
+        "nvda": {
+          "V": 73.33333333333333,
+          "V_policy": "PROVISIONAL_INITIAL_PRIOR",
+          "coverage": "BLOCKED",
+          "eps": 2.0,
+          "factor_scores": {
+            "fundamental_value": 75.0,
+            "historical_valuation": 75.0,
+            "margin_of_safety": 83.33333333333333,
+            "peer_relative_value": 100.0,
+            "reverse_dcf": 100.0,
+            "sector_context": null,
+            "theme_premium_discount": null
+          },
+          "hist_valuation": 75.0,
+          "peer_confidence": "LOW",
+          "peer_median": 30.0,
+          "peer_n": 2,
+          "peer_universe": [
+            "nvda",
+            "msft"
+          ],
+          "pit_price": 20
+        }
+      }
+    },
+    "candidate_ordering_scope": "Hypothetical V-only diagnostic comparison; not current Leaderboard ranking (which sorts unchanged Q/G composite). Exact-score tie groups preserved; no new tolerance or tie-break policy.",
+    "candidate_orderings": {
+      "equal_research": [
+        "company_A_valuation_growth_strength",
+        "company_B_safety_strength"
+      ],
+      "initial_prior": [
+        "company_A_valuation_growth_strength",
+        "company_B_safety_strength"
+      ],
+      "mos_tilt_research": [
+        "company_B_safety_strength",
+        "company_A_valuation_growth_strength"
+      ]
+    },
+    "candidate_score_groups": {
+      "equal_research": [
+        {
+          "companies_tied_at_exact_score": [
+            "company_A_valuation_growth_strength",
+            "company_B_safety_strength"
+          ],
+          "score": 62.857142857142854
+        }
+      ],
+      "initial_prior": [
+        {
+          "companies_tied_at_exact_score": [
+            "company_A_valuation_growth_strength"
+          ],
+          "score": 73.5
+        },
+        {
+          "companies_tied_at_exact_score": [
+            "company_B_safety_strength"
+          ],
+          "score": 61.0
+        }
+      ],
+      "mos_tilt_research": [
+        {
+          "companies_tied_at_exact_score": [
+            "company_B_safety_strength"
+          ],
+          "score": 67.5
+        },
+        {
+          "companies_tied_at_exact_score": [
+            "company_A_valuation_growth_strength"
+          ],
+          "score": 57.5
+        }
+      ]
+    },
+    "company_A_valuation_growth_strength": {
+      "G": 70.0,
+      "Q": 70.0,
+      "V_prior": 73.5,
+      "V_prior_coverage": "READY",
+      "V_prior_notes": [],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 100,
+        "historical_valuation": 70,
+        "margin_of_safety": 0,
+        "peer_relative_value": 70,
+        "reverse_dcf": 100,
+        "sector_context": 50,
+        "theme_premium_discount": 50
+      },
+      "input_coverage": null,
+      "legacy_composite": 70.0,
+      "legacy_prior_numeric_admitted_count": 7,
+      "legacy_prior_weighted_presence": 1.0,
+      "legacy_raw_value": {
+        "fundamental_value": 100,
+        "historical_valuation": 70,
+        "margin_of_safety": 0,
+        "peer_relative_value": 70,
+        "reverse_dcf": 100,
+        "sector_context": 50,
+        "theme_premium_discount": 50
+      },
+      "method_validity": null,
+      "numeric_presence_count": 7,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "OK",
+        "historical_valuation": "OK",
+        "margin_of_safety": "OK",
+        "peer_relative_value": "OK",
+        "reverse_dcf": "OK",
+        "sector_context": "OK",
+        "theme_premium_discount": "OK"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": 62.857142857142854,
+        "initial_prior": 73.5,
+        "mos_tilt_research": 57.5
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "OK",
+        "historical_valuation": "OK",
+        "margin_of_safety": "OK",
+        "peer_relative_value": "OK",
+        "reverse_dcf": "OK",
+        "sector_context": "OK",
+        "theme_premium_discount": "OK"
+      }
+    },
+    "company_B_safety_strength": {
+      "G": 70.0,
+      "Q": 70.0,
+      "V_prior": 61.0,
+      "V_prior_coverage": "READY",
+      "V_prior_notes": [],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 50,
+        "historical_valuation": 70,
+        "margin_of_safety": 100,
+        "peer_relative_value": 70,
+        "reverse_dcf": 50,
+        "sector_context": 50,
+        "theme_premium_discount": 50
+      },
+      "input_coverage": null,
+      "legacy_composite": 70.0,
+      "legacy_prior_numeric_admitted_count": 7,
+      "legacy_prior_weighted_presence": 1.0,
+      "legacy_raw_value": {
+        "fundamental_value": 50,
+        "historical_valuation": 70,
+        "margin_of_safety": 100,
+        "peer_relative_value": 70,
+        "reverse_dcf": 50,
+        "sector_context": 50,
+        "theme_premium_discount": 50
+      },
+      "method_validity": null,
+      "numeric_presence_count": 7,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "OK",
+        "historical_valuation": "OK",
+        "margin_of_safety": "OK",
+        "peer_relative_value": "OK",
+        "reverse_dcf": "OK",
+        "sector_context": "OK",
+        "theme_premium_discount": "OK"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": 62.857142857142854,
+        "initial_prior": 61.0,
+        "mos_tilt_research": 67.5
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "OK",
+        "historical_valuation": "OK",
+        "margin_of_safety": "OK",
+        "peer_relative_value": "OK",
+        "reverse_dcf": "OK",
+        "sector_context": "OK",
+        "theme_premium_discount": "OK"
+      }
+    },
+    "consumer_invalid_method_numeric": {
+      "G_quality": "VERSION_MISMATCH",
+      "V_quality": "VERSION_MISMATCH",
+      "board_rank": 1,
+      "board_total": 70.0,
+      "recomputed": false,
+      "snapshot_method_binding": null,
+      "snapshot_total": 70.0
+    },
+    "direct_raw_future_stamp_boundary": {
+      "V": 66.08333333333334,
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "available_at": "2026-09-15T00:00:00+00:00",
+      "coverage_literal": "SYNTHETIC",
+      "interpretation": "Direct analyze_raw does not independently enforce future availability; historical resolver/provider filtering does not protect every entry point.",
+      "total": 82.0633
+    },
+    "existing_pe_fallback_family": {
+      "G": 80.79333333333334,
+      "Q": 83.33333333333333,
+      "V_prior": 58.5,
+      "V_prior_coverage": "READY",
+      "V_prior_notes": [],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 50.0,
+        "historical_valuation": 70.0,
+        "margin_of_safety": 0.0,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 99.99999999999999,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "input_coverage": null,
+      "inputs": {
+        "dcf_value": null,
+        "eps": 5,
+        "hist_valuation_percentile": 70,
+        "own_multiple": 20,
+        "peer_median_multiple": 20,
+        "price": 100,
+        "revenue": 120,
+        "revenue_prev": 100,
+        "reverse_dcf_implied_growth": null,
+        "sector_context_score": 60,
+        "theme_premium_score": 40
+      },
+      "legacy_composite": 82.0633,
+      "legacy_prior_numeric_admitted_count": 7,
+      "legacy_prior_weighted_presence": 1.0,
+      "legacy_raw_value": {
+        "fundamental_value": 50.0,
+        "historical_valuation": 70.0,
+        "margin_of_safety": 0.0,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 99.99999999999999,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "method_validity": null,
+      "numeric_presence_count": 7,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": 52.857142857142854,
+        "initial_prior": 58.5,
+        "mos_tilt_research": 47.0
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      }
+    },
+    "financial_same_valuation_inputs": {
+      "G": 80.79333333333334,
+      "Q": 63.333333333333336,
+      "V_prior": 66.08333333333334,
+      "V_prior_coverage": "READY",
+      "V_prior_notes": [],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 70.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 89.99999999999999,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "input_coverage": null,
+      "inputs": {
+        "dcf_value": 120,
+        "eps": 5,
+        "hist_valuation_percentile": 70,
+        "own_multiple": 20,
+        "peer_median_multiple": 20,
+        "price": 100,
+        "revenue": 120,
+        "revenue_prev": 100,
+        "reverse_dcf_implied_growth": 0.08,
+        "sector_context_score": 60,
+        "theme_premium_score": 40
+      },
+      "legacy_composite": 72.0633,
+      "legacy_prior_numeric_admitted_count": 7,
+      "legacy_prior_weighted_presence": 1.0,
+      "legacy_raw_value": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 70.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 89.99999999999999,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "method_validity": null,
+      "numeric_presence_count": 7,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": 59.76190476190475,
+        "initial_prior": 66.08333333333333,
+        "mos_tilt_research": 57.583333333333336
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "PARTIAL",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      }
+    },
+    "historical_supplied_20": {
+      "G": 80.79333333333334,
+      "Q": 83.33333333333333,
+      "V_prior": 58.583333333333336,
+      "V_prior_coverage": "READY",
+      "V_prior_notes": [],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 20.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 89.99999999999999,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "input_coverage": null,
+      "inputs": {
+        "dcf_value": 120,
+        "eps": 5,
+        "hist_valuation_percentile": 20,
+        "own_multiple": 20,
+        "peer_median_multiple": 20,
+        "price": 100,
+        "revenue": 120,
+        "revenue_prev": 100,
+        "reverse_dcf_implied_growth": 0.08,
+        "sector_context_score": 60,
+        "theme_premium_score": 40
+      },
+      "legacy_composite": 82.0633,
+      "legacy_prior_numeric_admitted_count": 7,
+      "legacy_prior_weighted_presence": 1.0,
+      "legacy_raw_value": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 20.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 89.99999999999999,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "method_validity": null,
+      "numeric_presence_count": 7,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": 52.61904761904761,
+        "initial_prior": 58.583333333333336,
+        "mos_tilt_research": 52.583333333333336
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      }
+    },
+    "historical_supplied_80": {
+      "G": 80.79333333333334,
+      "Q": 83.33333333333333,
+      "V_prior": 67.58333333333334,
+      "V_prior_coverage": "READY",
+      "V_prior_notes": [],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 80.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 89.99999999999999,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "input_coverage": null,
+      "inputs": {
+        "dcf_value": 120,
+        "eps": 5,
+        "hist_valuation_percentile": 80,
+        "own_multiple": 20,
+        "peer_median_multiple": 20,
+        "price": 100,
+        "revenue": 120,
+        "revenue_prev": 100,
+        "reverse_dcf_implied_growth": 0.08,
+        "sector_context_score": 60,
+        "theme_premium_score": 40
+      },
+      "legacy_composite": 82.0633,
+      "legacy_prior_numeric_admitted_count": 7,
+      "legacy_prior_weighted_presence": 1.0,
+      "legacy_raw_value": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 80.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 89.99999999999999,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "method_validity": null,
+      "numeric_presence_count": 7,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": 61.19047619047618,
+        "initial_prior": 67.58333333333333,
+        "mos_tilt_research": 58.583333333333336
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      }
+    },
+    "missing_sector_context": {
+      "G": 80.79333333333334,
+      "Q": 83.33333333333333,
+      "V_prior": 60.083333333333336,
+      "V_prior_coverage": "PARTIAL",
+      "V_prior_notes": [
+        "sector_context=MISSING_DATA"
+      ],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 70.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 89.99999999999999,
+        "sector_context": null,
+        "theme_premium_discount": 40.0
+      },
+      "input_coverage": null,
+      "inputs": {
+        "dcf_value": 120,
+        "eps": 5,
+        "hist_valuation_percentile": 70,
+        "own_multiple": 20,
+        "peer_median_multiple": 20,
+        "price": 100,
+        "revenue": 120,
+        "revenue_prev": 100,
+        "reverse_dcf_implied_growth": 0.08,
+        "sector_context_score": null,
+        "theme_premium_score": 40
+      },
+      "legacy_composite": 82.0633,
+      "legacy_prior_numeric_admitted_count": 6,
+      "legacy_prior_weighted_presence": 0.9,
+      "legacy_raw_value": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 70.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 89.99999999999999,
+        "sector_context": null,
+        "theme_premium_discount": 40.0
+      },
+      "method_validity": null,
+      "numeric_presence_count": 6,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "MISSING_DATA",
+        "theme_premium_discount": "SYNTHETIC"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": null,
+        "initial_prior": null,
+        "mos_tilt_research": null
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "MISSING_DATA",
+        "theme_premium_discount": "SYNTHETIC"
+      }
+    },
+    "no_eps_no_dcf": {
+      "G": 65.79333333333334,
+      "Q": 83.33333333333333,
+      "V_prior": 26.0,
+      "V_prior_coverage": "PARTIAL",
+      "V_prior_notes": [
+        "fundamental_value=MISSING_DATA",
+        "reverse_dcf=MISSING_DATA",
+        "margin_of_safety=MISSING_DATA"
+      ],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": null,
+        "historical_valuation": 70.0,
+        "margin_of_safety": null,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": null,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "input_coverage": null,
+      "inputs": {
+        "dcf_value": null,
+        "eps": null,
+        "hist_valuation_percentile": 70,
+        "own_multiple": 20,
+        "peer_median_multiple": 20,
+        "price": 100,
+        "revenue": 120,
+        "revenue_prev": 100,
+        "reverse_dcf_implied_growth": null,
+        "sector_context_score": 60,
+        "theme_premium_score": 40
+      },
+      "legacy_composite": 74.5633,
+      "legacy_prior_numeric_admitted_count": 4,
+      "legacy_prior_weighted_presence": 0.45,
+      "legacy_raw_value": {
+        "fundamental_value": null,
+        "historical_valuation": 70.0,
+        "margin_of_safety": null,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": null,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "method_validity": null,
+      "numeric_presence_count": 4,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "MISSING_DATA",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "MISSING_DATA",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "MISSING_DATA",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": null,
+        "initial_prior": null,
+        "mos_tilt_research": null
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "MISSING_DATA",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "MISSING_DATA",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "MISSING_DATA",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      }
+    },
+    "numeric_CALCULATION_ERROR": {
+      "G": 70.0,
+      "Q": 70.0,
+      "V_prior": 70.0,
+      "V_prior_coverage": "READY",
+      "V_prior_notes": [],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 70,
+        "historical_valuation": 70,
+        "margin_of_safety": 70,
+        "peer_relative_value": 70,
+        "reverse_dcf": 70,
+        "sector_context": 70,
+        "theme_premium_discount": 70
+      },
+      "input_coverage": null,
+      "legacy_composite": 70.0,
+      "legacy_prior_numeric_admitted_count": 7,
+      "legacy_prior_weighted_presence": 1.0,
+      "legacy_raw_value": {
+        "fundamental_value": 70,
+        "historical_valuation": 70,
+        "margin_of_safety": 70,
+        "peer_relative_value": 70,
+        "reverse_dcf": 70,
+        "sector_context": 70,
+        "theme_premium_discount": 70
+      },
+      "method_validity": null,
+      "numeric_presence_count": 7,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "CALCULATION_ERROR",
+        "historical_valuation": "OK",
+        "margin_of_safety": "OK",
+        "peer_relative_value": "OK",
+        "reverse_dcf": "OK",
+        "sector_context": "OK",
+        "theme_premium_discount": "OK"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": 70.0,
+        "initial_prior": 70.0,
+        "mos_tilt_research": 70.0
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "CALCULATION_ERROR",
+        "historical_valuation": "OK",
+        "margin_of_safety": "OK",
+        "peer_relative_value": "OK",
+        "reverse_dcf": "OK",
+        "sector_context": "OK",
+        "theme_premium_discount": "OK"
+      }
+    },
+    "numeric_NOT_APPLICABLE": {
+      "G": 70.0,
+      "Q": 70.0,
+      "V_prior": 52.5,
+      "V_prior_coverage": "PARTIAL",
+      "V_prior_notes": [
+        "fundamental_value=NOT_APPLICABLE"
+      ],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 70,
+        "historical_valuation": 70,
+        "margin_of_safety": 70,
+        "peer_relative_value": 70,
+        "reverse_dcf": 70,
+        "sector_context": 70,
+        "theme_premium_discount": 70
+      },
+      "input_coverage": null,
+      "legacy_composite": 70.0,
+      "legacy_prior_numeric_admitted_count": 6,
+      "legacy_prior_weighted_presence": 0.75,
+      "legacy_raw_value": {
+        "fundamental_value": 70,
+        "historical_valuation": 70,
+        "margin_of_safety": 70,
+        "peer_relative_value": 70,
+        "reverse_dcf": 70,
+        "sector_context": 70,
+        "theme_premium_discount": 70
+      },
+      "method_validity": null,
+      "numeric_presence_count": 7,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "NOT_APPLICABLE",
+        "historical_valuation": "OK",
+        "margin_of_safety": "OK",
+        "peer_relative_value": "OK",
+        "reverse_dcf": "OK",
+        "sector_context": "OK",
+        "theme_premium_discount": "OK"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": 70.0,
+        "initial_prior": 70.0,
+        "mos_tilt_research": 70.0
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "NOT_APPLICABLE",
+        "historical_valuation": "OK",
+        "margin_of_safety": "OK",
+        "peer_relative_value": "OK",
+        "reverse_dcf": "OK",
+        "sector_context": "OK",
+        "theme_premium_discount": "OK"
+      }
+    },
+    "numeric_VERSION_MISMATCH": {
+      "G": 70.0,
+      "Q": 70.0,
+      "V_prior": 70.0,
+      "V_prior_coverage": "READY",
+      "V_prior_notes": [],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 70,
+        "historical_valuation": 70,
+        "margin_of_safety": 70,
+        "peer_relative_value": 70,
+        "reverse_dcf": 70,
+        "sector_context": 70,
+        "theme_premium_discount": 70
+      },
+      "input_coverage": null,
+      "legacy_composite": 70.0,
+      "legacy_prior_numeric_admitted_count": 7,
+      "legacy_prior_weighted_presence": 1.0,
+      "legacy_raw_value": {
+        "fundamental_value": 70,
+        "historical_valuation": 70,
+        "margin_of_safety": 70,
+        "peer_relative_value": 70,
+        "reverse_dcf": 70,
+        "sector_context": 70,
+        "theme_premium_discount": 70
+      },
+      "method_validity": null,
+      "numeric_presence_count": 7,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "VERSION_MISMATCH",
+        "historical_valuation": "OK",
+        "margin_of_safety": "OK",
+        "peer_relative_value": "OK",
+        "reverse_dcf": "OK",
+        "sector_context": "OK",
+        "theme_premium_discount": "OK"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": 70.0,
+        "initial_prior": 70.0,
+        "mos_tilt_research": 70.0
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "VERSION_MISMATCH",
+        "historical_valuation": "OK",
+        "margin_of_safety": "OK",
+        "peer_relative_value": "OK",
+        "reverse_dcf": "OK",
+        "sector_context": "OK",
+        "theme_premium_discount": "OK"
+      }
+    },
+    "same_dcf_reverse_pe_proxy": {
+      "G": 80.79333333333334,
+      "Q": 83.33333333333333,
+      "V_prior": 68.08333333333334,
+      "V_prior_coverage": "READY",
+      "V_prior_notes": [],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 70.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 99.99999999999999,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "input_coverage": null,
+      "inputs": {
+        "dcf_value": 120,
+        "eps": 5,
+        "hist_valuation_percentile": 70,
+        "own_multiple": 20,
+        "peer_median_multiple": 20,
+        "price": 100,
+        "revenue": 120,
+        "revenue_prev": 100,
+        "reverse_dcf_implied_growth": null,
+        "sector_context_score": 60,
+        "theme_premium_score": 40
+      },
+      "legacy_composite": 82.0633,
+      "legacy_prior_numeric_admitted_count": 7,
+      "legacy_prior_weighted_presence": 1.0,
+      "legacy_raw_value": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 70.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 99.99999999999999,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "method_validity": null,
+      "numeric_presence_count": 7,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": 61.19047619047618,
+        "initial_prior": 68.08333333333333,
+        "mos_tilt_research": 59.083333333333336
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      }
+    },
+    "same_dcf_supplied_implied_025": {
+      "G": 80.79333333333334,
+      "Q": 83.33333333333333,
+      "V_prior": 54.75,
+      "V_prior_coverage": "READY",
+      "V_prior_notes": [],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 70.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 33.333333333333314,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "input_coverage": null,
+      "inputs": {
+        "dcf_value": 120,
+        "eps": 5,
+        "hist_valuation_percentile": 70,
+        "own_multiple": 20,
+        "peer_median_multiple": 20,
+        "price": 100,
+        "revenue": 120,
+        "revenue_prev": 100,
+        "reverse_dcf_implied_growth": 0.25,
+        "sector_context_score": 60,
+        "theme_premium_score": 40
+      },
+      "legacy_composite": 82.0633,
+      "legacy_prior_numeric_admitted_count": 7,
+      "legacy_prior_weighted_presence": 1.0,
+      "legacy_raw_value": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 70.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 33.333333333333314,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "method_validity": null,
+      "numeric_presence_count": 7,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": 51.66666666666666,
+        "initial_prior": 54.75,
+        "mos_tilt_research": 49.083333333333336
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      }
+    },
+    "supplied_dcf_and_implied_growth": {
+      "G": 80.79333333333334,
+      "Q": 83.33333333333333,
+      "V_prior": 66.08333333333334,
+      "V_prior_coverage": "READY",
+      "V_prior_notes": [],
+      "confidence_assessment": null,
+      "factor_scores": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 70.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 89.99999999999999,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "input_coverage": null,
+      "inputs": {
+        "dcf_value": 120,
+        "eps": 5,
+        "hist_valuation_percentile": 70,
+        "own_multiple": 20,
+        "peer_median_multiple": 20,
+        "price": 100,
+        "revenue": 120,
+        "revenue_prev": 100,
+        "reverse_dcf_implied_growth": 0.08,
+        "sector_context_score": 60,
+        "theme_premium_score": 40
+      },
+      "legacy_composite": 82.0633,
+      "legacy_prior_numeric_admitted_count": 7,
+      "legacy_prior_weighted_presence": 1.0,
+      "legacy_raw_value": {
+        "fundamental_value": 75.0,
+        "historical_valuation": 70.0,
+        "margin_of_safety": 33.333333333333336,
+        "peer_relative_value": 50.0,
+        "reverse_dcf": 89.99999999999999,
+        "sector_context": 60.0,
+        "theme_premium_discount": 40.0
+      },
+      "method_validity": null,
+      "numeric_presence_count": 7,
+      "publication_eligibility": null,
+      "quality": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      },
+      "ranking_eligibility": null,
+      "research_candidate_scores": {
+        "equal_research": 59.76190476190475,
+        "initial_prior": 66.08333333333333,
+        "mos_tilt_research": 57.583333333333336
+      },
+      "semantic_completeness": null,
+      "snapshot_coverage_literal": "SYNTHETIC",
+      "snapshot_default_confidence_literal": "MEDIUM",
+      "v_table_confidence_literals": {
+        "fundamental_value": "SYNTHETIC",
+        "historical_valuation": "SYNTHETIC",
+        "margin_of_safety": "SYNTHETIC",
+        "peer_relative_value": "SYNTHETIC",
+        "reverse_dcf": "SYNTHETIC",
+        "sector_context": "SYNTHETIC",
+        "theme_premium_discount": "SYNTHETIC"
+      }
+    }
+  },
+  "scheduler_hops_counted": 0,
+  "scope": "NEW SYNTHETIC V ALTERNATIVE COMPARISONS; not rerun of prior22 characterization or13 regressions",
+  "source_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "source_pins_sha256": {
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/V_DESCRIPTOR_MANIFEST.json": "f28dd9af0944bdac7895cb22ea40790a36888a2936931dc4ff4bca8efd4708d5",
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/v_evidence.json": "7359c80649410312fbc288bd19c6783497547909846d18eacdaf85e674a4f73a",
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/v_review.md": "dfdcc995a98aa905e35ef42447a54ffcc03996a6e28aad286ffe572094fcecf0",
+    "implementation/docs/qgv_common_contract_vnext/golden_cases.json": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040",
+    "implementation/src/investment_system/contracts/enums.py": "5cd6c7694544dcba4717590ad24534ab0f8e115d8352235bf88bf37657433bcf",
+    "implementation/src/investment_system/contracts/models.py": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+    "implementation/src/investment_system/contracts/raw.py": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+    "implementation/src/investment_system/providers/sec_companyfacts.py": "fe236b817858b9698fb2e74d0fe460a46de2e83000134f68ca38f3ab60ee055a",
+    "implementation/src/investment_system/providers/sec_vintage.py": "e0aecc5c02bafa9e9543b03af8fb6a9c961df1f40217b3099829b1934f1c42fd",
+    "implementation/src/investment_system/providers/us_sec.py": "a3ac5f8cac127e96c35c3289c692cbdff0f82f4eb9315929e5df0ee9a61f8f72",
+    "implementation/src/investment_system/providers/yahoo_chart.py": "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534",
+    "implementation/src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+    "implementation/src/investment_system/qgv/factors.py": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+    "implementation/src/investment_system/qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+    "implementation/src/investment_system/qgv/pipeline.py": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+    "implementation/src/investment_system/qgv/raw_map.py": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+    "implementation/src/investment_system/qgv/scoring.py": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+    "implementation/src/investment_system/validation/historical.py": "02315a38e102bc312478dd1f00da401865db42d60423b21371b05879849a4aa8"
+  },
+  "status": "D1_D2_INACTIVE_ALTERNATIVE_IMPACT_COMPLETE"
+}

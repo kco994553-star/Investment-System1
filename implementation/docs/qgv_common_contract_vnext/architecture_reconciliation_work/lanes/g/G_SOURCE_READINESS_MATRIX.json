@@ -1,0 +1,753 @@
+{
+  "B1_status": "MORE_EVIDENCE_REQUIRED",
+  "B2_B3_B5_B6": "Consumer/evidence/applicability/admission policies still unapproved; this matrix does not activate them",
+  "artifact_kind": "INACTIVE_G_SOURCE_READINESS_DEPENDENCY_MATRIX",
+  "conditional_tasks": [
+    {
+      "authority": "D1/D2 exact restoration/evidence only",
+      "next_step_after_source": "Source row lineage only; no replacement methods or scores",
+      "state": "WAITING_DATA_OWNER_SOURCE_BYTES",
+      "task": "Restore exact cached SEC input bytes through authorized data owner and verify manifest/hash"
+    },
+    {
+      "authority": "D1/D2 evidence only",
+      "numeric_calculation": "UNKNOWN_UNTIL_SEPARATE_D3_METHOD_DECLARATION",
+      "state": "WAITING_G1_G2_SOURCE_ARTIFACTS",
+      "task": "Populate inactive forecast/paired FCF-share input contract if exact source artifacts become available"
+    }
+  ],
+  "derived_from": "Existing G manifest/replay only; no new source audit or replay",
+  "global_context": "Parent-confirmed coordinator transfer/CDR018 only; not G semantic adoption; no Global write",
+  "input_hashes": {
+    "G_LINEAGE_REPLAY.json": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3",
+    "G_METHOD_REPLAY_MANIFEST.json": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+  },
+  "new_numeric_policy": null,
+  "new_valuation_or_growth_formula": null,
+  "parent_fresh_global_ref": "6d029732e6bee02038a25685badb937b2666d04e",
+  "production_enabled": false,
+  "production_requiredness_assigned": 0,
+  "row_count": 16,
+  "rows": [
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Chosen target, direction, horizon and scope explicitly documented",
+        "Existing archived proxy lineage retained separately"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Preserved factor ID and current explicit last-YoY proxy",
+        "Requested 3Y/5Y metadata is separate from score computation"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN",
+      "decision_clause": "G1",
+      "dependency_id": "G1-01",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/0",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/synthetic_cases/0/factor_results/0",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        }
+      ],
+      "evidence_status": "UNKNOWN_METHOD_AUTHORITY",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "QGV semantic authority/user D3; source-producing owner documents scope",
+      "required_source_artifacts": [
+        "Versioned economic target/horizon declaration",
+        "Specific decision/approval evidence"
+      ],
+      "subject": "Economic target and horizon intent",
+      "unresolved_or_absent": [
+        "No approved choice of forward forecast versus historical structural growth in consumed evidence"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Hash matches archived manifest",
+        "Period/source fields retained without upgrading absent filing precision"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Committed SEC mini fixture has selected current/prior revenue rows",
+        "Producer source supports dated FactVintage fields"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "EXISTING_SOURCE_VINTAGE_SELECTION_AVAILABLE; historical multi-year growth formula UNKNOWN",
+      "decision_clause": "G1",
+      "dependency_id": "G1-02",
+      "evidence_refs": [
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/committed_SEC_fixture/selected_revenue_rows",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/real_cached_raw_replay",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        }
+      ],
+      "evidence_status": "PARTIAL_SYNTHETIC_ONLY",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "SEC ingestion/data-provenance owner; assignment unresolved",
+      "required_source_artifacts": [
+        "Exact archived raw blob matching recorded SHA256",
+        "Source manifest and issuer/concept/unit/period/accession rows"
+      ],
+      "subject": "Historical revenue source availability",
+      "unresolved_or_absent": [
+        "Cached real companyfacts bytes absent despite provenance manifest",
+        "Mini fixture lacks complete form/start/fy/fp/accession"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Historical family justified separately from forecast family",
+        "Any actual equation/defaults await explicit method authority"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Quarterly-history monitor and GHorizon are source-pinned metadata/evidence structures",
+        "Current scored method consumes only a current/prior pair"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN; no new multi-year formula generated",
+      "decision_clause": "G1",
+      "dependency_id": "G1-03",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/0/input_period",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/source_sha256",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        }
+      ],
+      "evidence_status": "UNKNOWN_REPLACEMENT_METHOD",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "QGV G-method owner under separate D3 semantic selection",
+      "required_source_artifacts": [
+        "Inactive intended-method/input-contract declaration",
+        "Exact historical period/vintage series if a historical family is chosen"
+      ],
+      "subject": "Historical 3–5Y calculation readiness",
+      "unresolved_or_absent": [
+        "No consumed repository calculation demonstrates a scored structural 3–5Y alternative",
+        "Method-specific observation window and gaps authority unresolved"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Forecast known at decision time evidenced rather than inferred from today's forecast",
+        "No fetched_at substitution for past availability"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Current G1 raw inputs are revenue and revenue_prev only"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN; no repository-grounded forecast scoring formula in consumed artifacts",
+      "decision_clause": "G1",
+      "dependency_id": "G1-04",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/0/input_fields",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/0/pit_fields",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        }
+      ],
+      "evidence_status": "ABSENT_IN_CONSUMED_REPLAY",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "Forecast/consensus data owner plus QGV target-method authority; assignment unresolved",
+      "required_source_artifacts": [
+        "Archived forecast vintage with source/provider/reference/hash",
+        "Target period/horizon, publication and availability evidence",
+        "Revision history/issuer scope"
+      ],
+      "subject": "Forecast source/vintage readiness",
+      "unresolved_or_absent": [
+        "No forecast raw field/source snapshot/published vintage consumed",
+        "Forecast origin, target period, revision chain and ex-ante availability missing"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Actual periods and units available for comparison",
+        "No interval tolerance/cutoff invented by this readiness matrix"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Producer selects prior distinct fy/fp/end group",
+        "Synthetic complete case declares annual current/prior periods"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN",
+      "decision_clause": "G1",
+      "dependency_id": "G1-05",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/0/input_source_map/revenue_prev",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/committed_SEC_fixture/precision_caveats",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        }
+      ],
+      "evidence_status": "UNRESOLVED_PAIR_AUTHORITY",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "Fundamental-period data owner plus G economic-method authority",
+      "required_source_artifacts": [
+        "Exact paired period start/end/fiscal labels/unit/concept lineage",
+        "Method-specific gap/period interpretation declaration"
+      ],
+      "subject": "Period adjacency and comparability",
+      "unresolved_or_absent": [
+        "Distinct vintage group does not prove distinct end or adjacent one-year comparator",
+        "Missing starts/forms prevent certifying annual duration"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Factor identity separated from method/version",
+        "No current-source identity retroactively assigned to historical snapshots"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Source replay binds EPS/current-prior branch and input values",
+        "Separate audit-only branch anchor exists"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "OBSERVED_EPS_RATIO_MINUS_ONE_BRANCH_ONLY; new method policy UNKNOWN",
+      "decision_clause": "G2",
+      "dependency_id": "G2-01",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/synthetic_cases/0/factor_results/3",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        }
+      ],
+      "evidence_status": "AVAILABLE_SOURCE_CHARACTERIZATION",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "QGV method identity owner plus EPS data owner",
+      "required_source_artifacts": [
+        "Versioned EPS input-contract/source binding",
+        "Exact method authority if selected for future production"
+      ],
+      "subject": "Existing EPS primary branch",
+      "unresolved_or_absent": [
+        "No authoritative production method ID/version",
+        "Real input lineage still absent"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Paired measures share comparable documented basis",
+        "Numeric synthetic pairing not promoted to real evidence"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Adapter can select diluted/basic EPS concepts and previous selected vintage",
+        "Synthetic replay declares EPS units and periods"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN",
+      "decision_clause": "G2",
+      "dependency_id": "G2-02",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/input_source_map/eps",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/input_source_map/eps_prev",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/synthetic_cases/0/factor_results/3/synthetic_input_period_basis",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        }
+      ],
+      "evidence_status": "UNRESOLVED_REAL_PAIR_EVIDENCE",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "EPS/corporate-action data owner plus method authority",
+      "required_source_artifacts": [
+        "Paired EPS period/concept/share basis and source revisions",
+        "Corporate-action/restatement lineage"
+      ],
+      "subject": "EPS period/share-basis comparability",
+      "unresolved_or_absent": [
+        "Paired diluted/basic, fiscal-duration and share-restatement basis unverified",
+        "Financial/reporting context authority unresolved"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Numerator lineage explicit",
+        "CFO and CAPEX period/currency matching evidenced without invented conversion"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Direct FreeCashFlow or CFO-abs(CAPEX) source branches described",
+        "Current FCF fallback input is reproducibly source-characterized"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN",
+      "decision_clause": "G2",
+      "dependency_id": "G2-03",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/input_source_map/fcf",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/synthetic_cases/1/factor_results/3",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/committed_SEC_fixture/raw",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        }
+      ],
+      "evidence_status": "AVAILABLE_SOURCE_SHAPE_ONLY",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "Cash-flow/SEC data owner; method authority separate",
+      "required_source_artifacts": [
+        "Exact FCF production branch and component concept/unit/period/vintage",
+        "Archived source hashes"
+      ],
+      "subject": "Current FCF numerator source",
+      "unresolved_or_absent": [
+        "Actual producer branch and matched real source rows not in legacy RawFundamentals",
+        "Mini SEC fixture has no real paired FCF evidence"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Prior FCF not substituted with prior revenue",
+        "Actual new formula/branch selection remains D3"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Source adapter can select fcf_prev but drops it",
+        "Current branch consumes revenue_prev instead"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN; no FCF-growth alternative formula created",
+      "decision_clause": "G2",
+      "dependency_id": "G2-04",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/input_period",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/input_source_map/fcf",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/input_fields",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        }
+      ],
+      "evidence_status": "ABSENT_FROM_RUNTIME_INPUT_CONTRACT",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "Cash-flow data owner and QGV G2 method owner",
+      "required_source_artifacts": [
+        "Paired current/prior FCF source periods and vintages if chosen",
+        "Separate inactive alternative method contract"
+      ],
+      "subject": "Previous FCF dependency",
+      "unresolved_or_absent": [
+        "No prior FCF field in scored raw contract or replay input closure",
+        "Actual intended FCF growth equation/branch not approved"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Per-share quantities derive from matching approved basis",
+        "No current-share shortcut or guessed historical shares"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Manifest states fallback consumes no paired FCF/share contract"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN; per-share alternative not present in consumed scored method",
+      "decision_clause": "G2",
+      "dependency_id": "G2-05",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/input_period",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/result_lineage",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/committed_SEC_fixture/raw",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        }
+      ],
+      "evidence_status": "ABSENT_FROM_FALLBACK_METHOD",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "Share/corporate-action data owner plus economic-method authority",
+      "required_source_artifacts": [
+        "Current/prior share basis tied to cash-flow periods",
+        "Split/dilution/security/issuer lineage if per-share family chosen"
+      ],
+      "subject": "Per-share cash-flow dependency",
+      "unresolved_or_absent": [
+        "No prior shares or paired weighted/diluted share basis in consumed fallback",
+        "Current raw shares alone cannot prove per-share comparability"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Different measure requires separate explicit meaning",
+        "Historical legacy branch/result remains unchanged"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Current fallback is FCF/current divided by prior revenue minus one",
+        "Zero prior EPS and absent EPS both select existing cross-measure branch"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "EXISTING_CROSS_MEASURE_BRANCH_RECORDED; replacement UNKNOWN",
+      "decision_clause": "G2",
+      "dependency_id": "G2-06",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/normalization",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/synthetic_cases/1/factor_results/3",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/synthetic_cases/2/factor_results/3",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        }
+      ],
+      "evidence_status": "METHOD_MISMATCH_CONFIRMED",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "User D3/QGV G2 semantic authority",
+      "required_source_artifacts": [
+        "Explicit accepted fallback economic purpose and branch conditions",
+        "Distinct factor/method/version/input contract refs"
+      ],
+      "subject": "Fallback economic meaning and branch selection",
+      "unresolved_or_absent": [
+        "No authority makes it accepted FCF growth/per-share growth/EPS substitute",
+        "Alternative branch semantics UNKNOWN"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Compatible units and intended period pairing evidenced",
+        "No numeric conversion/gap policy selected here"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Synthetic input units/periods declared",
+        "SEC source concept/unit candidates pinned"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN",
+      "decision_clause": "G2",
+      "dependency_id": "G2-07",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/input_source_map",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/pit_fields",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/synthetic_cases/1/factor_results/3/synthetic_input_period_basis",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        }
+      ],
+      "evidence_status": "UNRESOLVED_PRODUCTION_ALIGNMENT",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "Financial-period/currency data owner plus G2 input-contract owner",
+      "required_source_artifacts": [
+        "Per-field source concept/unit/currency/start/end/vintage",
+        "Method-approved comparator accounting basis"
+      ],
+      "subject": "Currency, duration and numerator/denominator alignment",
+      "unresolved_or_absent": [
+        "Legacy exported stamp omits per-field concept/period/accession",
+        "Current/prior currencies/periods not independently validated by scalar calculation"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "No epsilon, tolerance or automatic N/A invented",
+        "Branch source and admission result remain separate"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Zero prior EPS routes to fallback in current replay",
+        "Existing formula/normalization source anchor preserved"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN",
+      "decision_clause": "G2",
+      "dependency_id": "G2-08",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/normalization",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/synthetic_cases/2/factor_results/3",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        }
+      ],
+      "evidence_status": "ZERO_BRANCH_RECORDED_NEGATIVE_POLICY_UNKNOWN",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "User D3/QGV method-domain authority",
+      "required_source_artifacts": [
+        "Explicit domain/zero/negative-base economic interpretation and evidence",
+        "Method-version binding for any replacement"
+      ],
+      "subject": "Zero/negative denominator semantics",
+      "unresolved_or_absent": [
+        "No new negative-base interpretation/transform selected",
+        "No alternative zero-base treatment authority in consumed artifacts"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "Missing evidence not converted to N/A",
+        "No denominator exclusion or predicate activation before D3"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Current factor_applicable is true for all G under both profiles"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN",
+      "decision_clause": "G2",
+      "dependency_id": "G2-09",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/current_runtime_applicability",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/applicability_truth",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        }
+      ],
+      "evidence_status": "UNKNOWN_ECONOMIC_APPLICABILITY",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "QGV sector-method/applicability authority under B2; assignment unresolved",
+      "required_source_artifacts": [
+        "Sector/issuer evidence tied to exact proposed method",
+        "Applicability authority and evidence contract"
+      ],
+      "subject": "Financial-sector applicability",
+      "unresolved_or_absent": [
+        "Boolean execution not evidence that generic corporate FCF/share method applies to financial issuers",
+        "No method-specific financial predicate authority"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "PIT uncertainty preserved rather than upgraded",
+        "available_at and published_at traced independently of weight"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Raw shared stamp has available_at/published_at",
+        "Mini fixture selected rows and precision caveats retained"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN",
+      "decision_clause": "G1+G2",
+      "dependency_id": "SHARED-01",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/0/pit_fields",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/pit_fields",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/committed_SEC_fixture/precision_caveats",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/real_cached_raw_replay",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        }
+      ],
+      "evidence_status": "PARTIAL_DATE_ONLY_SYNTHETIC_EVIDENCE",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "Source provenance/PIT owner plus B3 admission authority",
+      "required_source_artifacts": [
+        "Exact source revisions/file hashes and publication/availability precision",
+        "Per-input source-to-result closure"
+      ],
+      "subject": "Publication/vintage/PIT precision",
+      "unresolved_or_absent": [
+        "Per-field vintage/availability closure absent",
+        "Date-only or missing filing identity not exact intraday proof",
+        "Real source bytes absent"
+      ]
+    },
+    {
+      "acceptance_evidence_needed_for_future_decision": [
+        "No historical inference from current source",
+        "No legacy snapshot rewrite or canonical migration"
+      ],
+      "authoritative_owner_assignment": null,
+      "available_evidence": [
+        "Legacy synthetic payload hash and snapshot ID preserved",
+        "Existing factor identity separate from audit-only observed branches"
+      ],
+      "boundary": "Evidence readiness only; acceptance description is not production admission or D3 approval",
+      "conditional_alternative_method": "UNKNOWN",
+      "decision_clause": "G1+G2",
+      "dependency_id": "SHARED-02",
+      "evidence_refs": [
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "json_pointer": "/persisted_historical_sample",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        },
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/0/result_lineage",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "json_pointer": "/records/3/result_lineage",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        }
+      ],
+      "evidence_status": "INACTIVE_BINDING_AVAILABLE_RUNTIME_UNKNOWN",
+      "method_formula_selected": null,
+      "numeric_policy_selected": null,
+      "production_enabled": false,
+      "production_requiredness": null,
+      "requested_authority_role": "QGV calculation/history owner under separate migration approval",
+      "required_source_artifacts": [
+        "Separate approved method/version/input refs and new result ID/hash",
+        "Archived legacy payload hash and source proof"
+      ],
+      "subject": "Historical parallel result/method protection",
+      "unresolved_or_absent": [
+        "Archived method/input identity not present in historical payload",
+        "Runtime version dispatcher/complete G result lineage absent"
+      ]
+    }
+  ],
+  "scheduler_hops_added": 0,
+  "source_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "supported_promotions": 0,
+  "task_complete": true,
+  "task_scope": "Finite evidence dependency enumeration for G1/G2; all cells have evidence or unresolved authority/source request"
+}

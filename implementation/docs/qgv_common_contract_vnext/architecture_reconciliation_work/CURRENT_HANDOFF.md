@@ -1,3 +1,151 @@
+# QGV G/V evidence lanes — current scoped handoff
+
+STATUS: D1_D2_GV_LINEAGE_IMPACT_COMPLETE / INDEPENDENT_REVIEW_PASS_WITH_LIMITS / INACTIVE.
+This checkpoint supersedes prior next-step prose only. Existing audit, Common Contract,
+Missing-Data and prior review evidence remain inherited. No new QGV design or
+production migration was started.
+
+## Authoritative intake and delivery
+
+- Canonical/default: b8e39a2196a6d7794a04a0cd5393c68329e126ca.
+- Actual audited QGV owner: codex/qgv-missing-data-decision-gate-2026-10-05 @ 4fb08a05728d83519b72a2bd995669f0cb06003a. Its qgv-b47-muupb538 lease remains active/read-only to this Work. Unpublished local owner B4/B7/admission outputs were context, not authenticated completed delivery.
+- Inherited review evidence: df5c70447dfa83805395b7cbbcacbc2024e77f3d; this lane's own scope claim: 17a442e7b247e9426e6bc1ee8e91e3cc2f541505.
+- Evidence-only delivery branch: codex/qgv-architecture-reconciliation-review-2026-10-05. Resolve its actual remote ref for the commit delivering this checkpoint. It is not canonical or the Missing-Data owner STATE. Own lanes/CONTROL.json lease is released by the evidence publication.
+- PR44 Draft/Open: cb1906b207623168fd70f3dcdb5b30f2d82d807d; PR42 Draft/Open: 11d2f25ef8bef3459ca969f50eec190099f15ecb. Neither PR was edited or merged.
+- Global fresh-read progressed b3532a2ebbe95310bbf222937466eb04a0211263 → 6d029732e6bee02038a25685badb937b2666d04e (CDR-018 Main transfer) → af264713b99471fb554e06e8d321f5039be47b47 (Main state/configuration and own routing lease only). QGV semantics stay scoped and protected. Global was not written.
+- Actual GitHub > explicit approval/evidence > scoped Handoff > historical prompt. M1–M5 principles and B4/B7 principles retained; B1 MORE_EVIDENCE_REQUIRED; B2/B3/B5/B6 unapproved recommendations. This user's narrower D3 exclusions govern.
+
+## G method lineage
+
+Read lanes/g/G_LINEAGE_AUDIT.md and G_METHOD_REPLAY_MANIFEST.json.
+All six factor identities have inactive source-pinned descriptors covering raw fields,
+period/source/unit/PIT, observed branch, normalization, result and fallback lineage.
+Actual production method_id/version remain null/unregistered. Observed source IDs
+are audit anchors, distinct from Factor ID and from an approved registry.
+
+G 3–5Y verdict: **INTERIM_PROXY**. The literal branch uses revenue current/prior
+ratio-minus-one and explicitly says last-YoY proxy, not 3–5Y forecast. Requested
+3Y/5Y horizon is metadata only. Detailed economic target still needs G1.
+EPS→FCF fallback verdict: **METHOD_MISMATCH**. Current FCF / prior revenue − 1
+does not establish FCF growth or per-share growth; no accepted substitute/margin
+meaning was inferred. Missing or zero prior EPS can select that branch.
+
+New readiness gaps: SEC previous grouping does not certify adjacent fiscal years;
+per-input concepts/periods/units/accessions are collapsed into a shared stamp;
+fcf_prev is computed then dropped, and prior shares are absent. Paired history,
+forecast vintages and direct-entry PIT admission are unresolved. Existing real
+raw manifest's exact blob is absent: **real cached-source replay NOT_RUN**.
+Committed SEC mini fixture and synthetic mapper replay are explicit local evidence,
+not real issuer PIT/OOS. Archived sample named official is itself SYNTHETIC.
+
+Historical protection: inactive sidecar refs and immutable result payload hashes
+can distinguish parallel calculations without rewriting old scores. Runtime
+factor-method identity/version dispatch and historical attribution cannot be
+declared compatible where archived source/input closure is missing. These are
+migration blockers, not a reason to guess past methods.
+
+The finite follow-on G_SOURCE_READINESS_MATRIX.json adds16 source/authority dependencies,
+with immutable input hashes/pointers and exact missing-artifact requests. Root verified
+its deterministic byte reproduction and all evidence pointers; no new scoring cases.
+
+## V seven-factor alternatives and impacts
+
+Read lanes/v/V_ALTERNATIVE_REVIEW.md, V_IMPACT_MATRIX.json and
+lanes/consumer/V_INDEPENDENT_REVIEW.md. All seven IDs, prior/history and the only
+three concrete research weight candidates are preserved. No V method wins.
+
+KEEP identities/prior/research comparisons; ALIGN shared raw/normalized/method
+and assessment metadata refs; REJECT falsely calling P/E proxy an executed
+reverse-DCF solver; DCF/reverse/peer/history/rubric families remain
+MORE_EVIDENCE_REQUIRED. Producer-validity/consumer admission is
+CHANGE_RECOMMENDED, pending B2/B3/B5/B6 D3 activation.
+
+Source-grounded synthetic impacts:
+- Controlled DCF/MOS branch comparison with reverse P/E proxy fixed: V68.0833 vs58.5.
+- Supplied DCF+implied-growth vs fallback: V66.0833 vs58.5 is a combined family effect.
+- Existing prior gives A73.5>B61; MOS tilt gives B67.5>A57.5; equal research ties exactly62.857142857142854. These are hypothetical V-only comparisons, not current Leaderboard ranking.
+- Book cohort median30→10 moves unchanged issuer peer100→50 and V73.3333→65.8333.
+- Missing old price removes history contribution: V73.3333→62.0833 (11.25 loss), without weight redistribution.
+- Sector-label swap leaves scores unchanged; actual sector-bias magnitude/direction is UNASSESSED.
+- Provider historical path filters future synthetic inputs; direct future-stamped analyze_raw still scores.
+- Actual input field is reverse_dcf_implied_growth. Old descriptor alias implied_growth is corrected additively; original descriptor bytes preserved.
+
+True percentile/peer normalization/DCF or reverse solver outputs without existing
+numeric methods remain UNCOMPUTED. Existing last-bit prior/candidate reduction
+order differences are preserved, with no invented rounding/tolerance.
+
+## Common Contract, B1 and consumer safety
+
+lanes/consumer/QGV_CONSISTENCY_MATRIX.md maps identity/version, raw/normalized,
+fallback, applicability, missingness, coverage, confidence, provenance and PIT.
+Shared meanings ALIGN; distinct economic transformations KEEP; actual semantic
+or runtime corrections are CHANGE_CANDIDATE/D3.
+
+B1 remains **MORE_EVIDENCE_REQUIRED**. Prior3 SUPPORTED/10 PROPOSED/7 UNRESOLVED
+concept evidence preserved; new promotions0, actual requiredness assignments0/20.
+Executed expressions do not provide requiredness authority.
+
+Consumer delta: numeric VERSION_MISMATCH/CALCULATION_ERROR can enter reducers;
+invalid-method tokens in G/V produce a finite total and rank. Exact method refs
+and independent validity/completeness are never produced upstream. Coverage is
+retained but unused for ranking; projected factor/horizon details retain source
+semantic-hash references. Horizon metadata changes are detected by persisted
+hashes; coarse code/weight/version/provenance safeguards also exist. Preserve
+those guards and add producer-owned assessment references before consumer cohort
+selection, rather than recomputing economics in the consumer. Activation is D3.
+
+## D1/D2 completion and verification
+
+G47 + V21 + consumer11 = **79 distinct new characterization checks PASS**,
+independently reproduced by root. Four G JSON, V results/matrix and consumer
+results are byte-identical. Independent V artifact/source review11 checks and18
+pins also PASS; they are not added to the79. Root artifact integrity15 checks PASS.
+Consumer23/23 inspected production files match exact PR42 source; prior9/9
+admission-trace sources match and were reused rather than reaudited.
+
+All7,770 original tracked source/golden/history files retain their aggregate
+digest. Only additive lanes evidence and this bounded scoped Handoff are changed
+on the review branch. Prior broad audits/tests were not repeated. New Actions,
+full integration acceptance, actual real PIT/OOS, Holdout and production migration
+are NOT_RUN/UNCONSUMED. PASS characterizes literal behavior, not economic validity.
+
+## D3 package and next execution
+
+Read lanes/root/DECISION_PACKAGE.md. Minimal next user bundle:
+**G1 horizon economic target + G2 permitted EPS/FCF substitute semantics.**
+Keep V1 method/normalization families unresolved where input/model evidence lacks.
+V2 residual confidence/coverage/validity methodology belongs with consolidated
+B2/B3/B5/B6; inactive shared metadata ALIGN and already-approved B4/B7 do not
+need redundant approvals.
+
+No method replacement, production normalization, requiredness, ranking policy,
+V Official weight, Composite, WeightOverride runtime, calculation migration,
+historical rewrite, Holdout/PIT weakening or PR44/canonical merge was started.
+Literal composite remains (Q+G)/2.
+
+Next independent executable D1/D2 task: bind the exact G/V descriptor/result
+hashes and source-readiness gaps to the existing inactive producer-result and
+consumer/P01 assessment-reference contract; test scope-preserving UNASSESSED/
+rejection carriers without runtime wiring, new criteria or another broad audit.
+Each missing input needs exact source owner/artifact and finite acceptance.
+Do not acquire or overwrite the active Missing-Data owner's lease.
+
+## Scheduler continuation
+
+**0/2 / UNVERIFIED. Manual hops credited0.**
+Fresh owner tree has no accepted automation/canary/ artifacts. Existing QGV main
+and CI/state automations remain enabled/readback; old event automation disabled.
+Configuration is not execution evidence. This Work changed no scheduler prompt,
+schedule, target, owner STATE or canary receipt.
+
+Existing owner's genuine HOP1/HOP2 plan remains separate. Only distinct actual
+scheduler executions with source/authority/validator/output hashes and exact
+HOP2 dependency closure may increment1/2 then2/2. This manual lane is neither hop.
+
+---
+
+# Historical scoped review checkpoint — preserved below
+
 # QGV architecture reconciliation — scoped review handoff
 
 STATUS: EXECUTION_POLICY_APPLIED / D1_D2_RECONCILIATION_COMPLETE / INACTIVE_DESCRIPTORS_VERIFIED.
@@ -47,4 +195,3 @@ These are pinned findings; no repair or consumer policy has been activated. Miss
 3. Independent V alternative-method impact design may reuse the completed descriptor, exact current reports and replay hashes before the G path resolves. It must preserve unassessed fields and prepare actual D3 choices rather than adopt them.
 
 At intake no accepted actual scheduler canary artifacts were present:0/2, AUTONOMOUS_CONTINUATION UNVERIFIED. Main automation activity/readback is not canary acceptance. Production source, history/golden, Global routing, other owner branches, Official grants, Holdout and merge remain unchanged.
-
