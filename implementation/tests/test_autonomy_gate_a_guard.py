@@ -65,16 +65,16 @@ class AutonomyGateAGuardTests(unittest.TestCase):
         original = mode_path
         with tempfile.TemporaryDirectory() as td:
             fake_root = Path(td)
-            p = fake_root / cfg["autonomy_mode_file"].removeprefix("implementation/")
+            p = fake_root / cfg["autonomy_mode_file"]
             p.parent.mkdir(parents=True)
             p.write_text("INVALID\n", encoding="utf-8")
-            old_root = guard.ROOT
+            old_root = guard.REPO_ROOT
             try:
-                guard.ROOT = fake_root
+                guard.REPO_ROOT = fake_root
                 with self.assertRaises(guard.GuardError):
                     guard.validate_mode(cfg)
             finally:
-                guard.ROOT = old_root
+                guard.REPO_ROOT = old_root
 
 
 if __name__ == "__main__":
