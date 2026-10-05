@@ -12,14 +12,8 @@
     "pr_events": "6ac2f22087288191abd144fb4a7655f8",
     "ci_followup": "6ac2efbd34fc8191a60dccbbe338c291"
   },
-  "status": "RUNNING_METHOD_PROFILE_CONSUMER_DECISION_DESIGN",
-  "lease": {
-    "run_token": "qgv-binding-decision-design-2026-10-05T01:45:58.482Z",
-    "input_head": "478a7a4d4fd328f0a5cf4ec9b2b9830161ecc142",
-    "input_fingerprint": "M1_M5_APPROVED_ONLY:65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf;USER_OBJECTIVE:BINDING_DECISION_PACKAGE_ONLY",
-    "scope": "AUDIT_AND_PROPOSED_DECISION_PACKAGE_NO_PRODUCTION",
-    "disposition": "RUNNING"
-  },
+  "status": "IDLE_BINDING_DECISION_PACKAGE_REQUEST_CHECKPOINTED",
+  "lease": null,
   "pending_runs": [],
   "pending_long_tests": [],
   "last_observed_heads": {
@@ -97,5 +91,19 @@
       42
     ],
     "event_delivery": "NOT_TESTED"
+  },
+  "pending_design_work": {
+    "objective": "Method/Profile Binding + Consumer Admission Decision Package",
+    "authority": "Explicit user design request at 2026-10-05T10:44:21+09:00 in this conversation",
+    "scope": "Audit and proposed decisions only; no production implementation or semantic policy adoption",
+    "progress": "Fresh owner/canonical/global/PR refs and scoped handoff/approval verified; factor/applicability/method/profile/consumer audits not started",
+    "next_action": "Resume the authorized design request under a fresh owner lease; do not repeat M1-M5 or Remote Recovery"
+  },
+  "last_ci_observation": {
+    "owner_input_head": "9a07a196c24e995b38023f5853ddf8adf6b54048",
+    "pending_runs": 0,
+    "pending_long_tests": 0,
+    "owner_actions": 0,
+    "disposition": "NO_PENDING_CI_NO_TESTS_OR_IMPLEMENTATION_STARTED"
   }
 }
