@@ -95,5 +95,19 @@
     }
   ],
   "protectedWrites": 0,
-  "productionWriteSet": "p0-owner-intake-v0.9/WRITE_SET.json planning proposal only; not automatically accepted by this packet"
+  "productionWriteSet": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/WRITE_SET.json#production_candidates (planning-only, full acceptance pending)",
+  "reference_correction_history": [
+    {
+      "at_utc": "2026-10-05T09:17:31.937Z",
+      "initial_dangling_reference": "p0-owner-intake-v0.9/WRITE_SET.json planning proposal only; not automatically accepted by this packet",
+      "classification": "D1_SCOPED_DOCUMENTATION_CORRECTION",
+      "repair": "Use existing v0.9 production_candidates and exact Main conditional receipt; no approval/readiness change"
+    }
+  ],
+  "conditionalIntegrationReceipt": {
+    "branch": "integration/global-handoff-v1",
+    "head": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+    "path": "implementation/docs/coordination/evidence/main_takeover_2026-10-05/INTEGRATION_SIDE_CONDITIONAL_ACCEPTANCE.json",
+    "all_gate_a_g2_closed": false
+  }
 }
