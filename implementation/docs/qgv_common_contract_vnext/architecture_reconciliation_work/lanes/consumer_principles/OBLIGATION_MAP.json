@@ -1,0 +1,131 @@
+{
+  "artifact_kind": "APPROVED_PRINCIPLE_OBLIGATION_MAP_INACTIVE",
+  "version": "1.0",
+  "approval_ref": {
+    "id": "QGV-B2-B3-B5-B6-PRINCIPLES-2026-10-05",
+    "version": "1.0",
+    "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+    "locator": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json"
+  },
+  "package_ref": {
+    "id": "B2_B3_B5_B6_RECOMMENDED_REFERENCE_SCOPE_PACKAGE",
+    "version": "16f58f2-recommended",
+    "sha256": "f00a96a0e646b8c3ca3c90dc44d3b20d993ae8465f4c082fd325399c12657b2e",
+    "locator": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/DECISION_PACKAGE.md"
+  },
+  "approved_clauses": {
+    "B2": {
+      "principle": "Producer assessment pins dated subject/context and predeclared predicate/input dependency scope; N/A proof and denominator permission are distinct references.",
+      "required_declarations": [
+        "dated_subject_context",
+        "predeclared_predicate_input_scope",
+        "separate_na_proof_and_denominator_permission"
+      ],
+      "concrete_authority_status": "NOT_APPROVED",
+      "excluded": [
+        "actual_na_predicates",
+        "factor_applicability_assignments",
+        "actual_exclusions",
+        "denominator_changes"
+      ]
+    },
+    "B3": {
+      "principle": "Assessment binds exact method/input/source/PIT evidence and preserves reason plus affected scope; unresolved or rejected evidence cannot manufacture an affirmative assessment.",
+      "required_declarations": [
+        "exact_method_input_source_pit_refs",
+        "preserved_original_reason_and_affected_scope",
+        "no_unresolved_or_rejected_to_affirmative_promotion"
+      ],
+      "concrete_authority_status": "NOT_APPROVED",
+      "excluded": [
+        "quality_rubric",
+        "stale_estimated_conflicting_source_cutoffs",
+        "actual_evidence_classification",
+        "runtime_enforcement"
+      ]
+    },
+    "B5": {
+      "principle": "Coverage, confidence, completeness, scoring validity and numeric existence have independent producer-owned assessment references tied to the exact result/context.",
+      "required_declarations": [
+        "independent_producer_owned_assessments",
+        "exact_result_context_binding",
+        "numeric_existence_is_not_validity_confidence_or_completeness"
+      ],
+      "concrete_authority_status": "NOT_APPROVED",
+      "excluded": [
+        "assessment_formulas",
+        "completeness_rules",
+        "coverage_thresholds",
+        "factor_requiredness_assignments",
+        "actual_scoring_validity_criteria"
+      ]
+    },
+    "B6": {
+      "principle": "Each consumer consumes those same exact references through its own purpose/cohort/admission decision; diagnostic structural acceptance grants no ranking, portfolio or publication eligibility.",
+      "required_declarations": [
+        "same_exact_producer_refs",
+        "separate_consumer_purpose_cohort_admission",
+        "diagnostic_structure_does_not_grant_eligibility"
+      ],
+      "concrete_authority_status": "NOT_APPROVED",
+      "excluded": [
+        "cohort_compatibility_criteria",
+        "ranking_portfolio_criteria",
+        "ranking_cutoffs",
+        "grants",
+        "production_wiring"
+      ]
+    }
+  },
+  "carriage": "Existing reference shape id/version/sha256/locator and producer-owned evidence boundaries retained; no new production class or evaluator.",
+  "per_clause_binding": {
+    "B2": {
+      "scope": "CONTRACT_PRINCIPLES_ONLY",
+      "concrete_policy_ref": null,
+      "factor_bindings": [],
+      "assessment_status": "UNASSESSED",
+      "consumer_admission": "NOT_EVALUATED"
+    },
+    "B3": {
+      "scope": "CONTRACT_PRINCIPLES_ONLY",
+      "concrete_policy_ref": null,
+      "factor_bindings": [],
+      "assessment_status": "UNASSESSED",
+      "consumer_admission": "NOT_EVALUATED"
+    },
+    "B5": {
+      "scope": "CONTRACT_PRINCIPLES_ONLY",
+      "concrete_policy_ref": null,
+      "factor_bindings": [],
+      "assessment_status": "UNASSESSED",
+      "consumer_admission": "NOT_EVALUATED"
+    },
+    "B6": {
+      "scope": "CONTRACT_PRINCIPLES_ONLY",
+      "concrete_policy_ref": null,
+      "factor_bindings": [],
+      "assessment_status": "UNASSESSED",
+      "consumer_admission": "NOT_EVALUATED"
+    }
+  },
+  "V2": {
+    "metadata_alignment": "ALREADY_D1_D2",
+    "assessment_reference_scope_principles": "APPROVED_WITH_B5_B6",
+    "actual_assessment_methodology": "NOT_APPROVED"
+  },
+  "numeric_policy": null,
+  "factor_bindings": [],
+  "runtime_enabled": false,
+  "activation_authorized": false,
+  "score_history_migration_authorized": false,
+  "canonical_merge_authorized": false,
+  "historical_identity": "Previous proposed contracts/probes/results remain immutable historical evidence; current authority comes from this exact approval event.",
+  "production_acceptance": "NOT_VERIFIED",
+  "semantic_validity": "NOT_EVALUATED",
+  "consumer_admission": "NOT_EVALUATED",
+  "consumer_eligibility": {
+    "ranking": false,
+    "portfolio": false,
+    "publication": false
+  }
+}

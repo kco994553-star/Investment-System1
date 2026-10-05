@@ -1,0 +1,197 @@
+{
+  "scope": "INACTIVE_APPROVAL_TO_OBLIGATION_ONLY",
+  "verification_lane": "STANDARD_WITH_INDEPENDENT_PRINCIPLE_REVIEW",
+  "checks": 25,
+  "passed": 25,
+  "cases": [
+    {
+      "case": "approved_package_to_obligations",
+      "expected": "PASS",
+      "actual": "PASS",
+      "pass": true,
+      "observation": {
+        "contract_binding": "PASS",
+        "semantic_validity": "NOT_EVALUATED",
+        "consumer_admission": "NOT_EVALUATED",
+        "runtime_enabled": false
+      }
+    },
+    {
+      "case": "different_package_bytes",
+      "expected": "PACKAGE_IDENTITY",
+      "actual": "PACKAGE_IDENTITY",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "coherently_parsed_but_unpinned_approval",
+      "expected": "EXACT_APPROVAL_REFERENCE",
+      "actual": "EXACT_APPROVAL_REFERENCE",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "stale_approval_id",
+      "expected": "APPROVAL_IDENTITY",
+      "actual": "APPROVAL_IDENTITY",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "wrong_approval_locator",
+      "expected": "APPROVAL_LOCATOR",
+      "actual": "APPROVAL_LOCATOR",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "different_package_reference",
+      "expected": "SAME_APPROVED_PACKAGE_REFERENCE",
+      "actual": "SAME_APPROVED_PACKAGE_REFERENCE",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "drop_B2_clause",
+      "expected": "CLAUSE_INVENTORY",
+      "actual": "CLAUSE_INVENTORY",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "B2_na_proof_merged_with_denominator",
+      "expected": "PRINCIPLE_OBLIGATION_DRIFT",
+      "actual": "PRINCIPLE_OBLIGATION_DRIFT",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "B3_rejected_promoted_to_affirmative",
+      "expected": "PRINCIPLE_OBLIGATION_DRIFT",
+      "actual": "PRINCIPLE_OBLIGATION_DRIFT",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "B5_numeric_existence_implies_validity",
+      "expected": "PRINCIPLE_OBLIGATION_DRIFT",
+      "actual": "PRINCIPLE_OBLIGATION_DRIFT",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "B6_diagnostic_implies_consumer_right",
+      "expected": "PRINCIPLE_OBLIGATION_DRIFT",
+      "actual": "PRINCIPLE_OBLIGATION_DRIFT",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "B5_concrete_method_approved",
+      "expected": "CONCRETE_AUTHORITY_PROMOTION",
+      "actual": "CONCRETE_AUTHORITY_PROMOTION",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "individual_factor_binding",
+      "expected": "INDIVIDUAL_FACTOR_BINDING_FORBIDDEN",
+      "actual": "INDIVIDUAL_FACTOR_BINDING_FORBIDDEN",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "concrete_B2_policy_binding",
+      "expected": "INDIVIDUAL_BINDING_OR_ASSESSMENT_PROMOTION",
+      "actual": "INDIVIDUAL_BINDING_OR_ASSESSMENT_PROMOTION",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "UNASSESSED_promoted_VALID",
+      "expected": "INDIVIDUAL_BINDING_OR_ASSESSMENT_PROMOTION",
+      "actual": "INDIVIDUAL_BINDING_OR_ASSESSMENT_PROMOTION",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "numeric_default_adoption",
+      "expected": "NUMERIC_POLICY_FORBIDDEN",
+      "actual": "NUMERIC_POLICY_FORBIDDEN",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "runtime_enabled",
+      "expected": "PROTECTED_AUTHORITY_EXPANSION",
+      "actual": "PROTECTED_AUTHORITY_EXPANSION",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "activation_authorized",
+      "expected": "PROTECTED_AUTHORITY_EXPANSION",
+      "actual": "PROTECTED_AUTHORITY_EXPANSION",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "score_history_migration_authorized",
+      "expected": "PROTECTED_AUTHORITY_EXPANSION",
+      "actual": "PROTECTED_AUTHORITY_EXPANSION",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "canonical_merge_authorized",
+      "expected": "PROTECTED_AUTHORITY_EXPANSION",
+      "actual": "PROTECTED_AUTHORITY_EXPANSION",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "V2_methodology_inferred_approved",
+      "expected": "V2_SCOPE_COLLAPSE",
+      "actual": "V2_SCOPE_COLLAPSE",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "consumer_validity_inferred_from_contract",
+      "expected": "RESULT_PROMOTION",
+      "actual": "RESULT_PROMOTION",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "eligibility_ranking",
+      "expected": "ELIGIBILITY_PROMOTION",
+      "actual": "ELIGIBILITY_PROMOTION",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "eligibility_portfolio",
+      "expected": "ELIGIBILITY_PROMOTION",
+      "actual": "ELIGIBILITY_PROMOTION",
+      "pass": true,
+      "observation": null
+    },
+    {
+      "case": "eligibility_publication",
+      "expected": "ELIGIBILITY_PROMOTION",
+      "actual": "ELIGIBILITY_PROMOTION",
+      "pass": true,
+      "observation": null
+    }
+  ],
+  "approval_sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+  "mapping_sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+  "validator_sha256": "ce44a21194523c281a6a0a54cc6848805c5d2ac6ca4808ed50c7d9effba7af07",
+  "old_tests_rerun": 0,
+  "production_enforcement": "NOT_IMPLEMENTED",
+  "real_PIT_OOS": "NOT_RUN",
+  "semantic_validity": "NOT_EVALUATED",
+  "consumer_admission": "NOT_EVALUATED",
+  "runtime_enabled": false
+}

@@ -1,3 +1,59 @@
+# Current QGV principle approval and bounded contract closure — 2026-10-05T08:20:35.503409+00:00
+
+STATUS: B2/B3/B5/B6 PRINCIPLES APPROVED / INACTIVE CONTRACT ACCEPTANCE CLOSED /
+READY_D1_D2=0 / WAIT_DEPENDENCY_AND_RESIDUAL_D3 / PRODUCTION_INACTIVE.
+
+Authoritative approval: lanes/consumer_principles/approval.json, explicit user
+submission2026-10-05T17:07:34+09:00; exact package input16f58f20a29516e45e202aee7d3b27b8a1378d5c.
+Decision Register: lanes/consumer_principles/DECISION_REGISTER.md (this Work's
+append-only register; immutable owner register is cross-referenced, not rewritten).
+Current contract: lanes/consumer_principles/APPROVED_CONTRACT.md and OBLIGATION_MAP.json.
+
+Four existing principle-authority questions are closed: B2 exact dated context/
+predicate scope and distinct N/A proof/denominator permission; B3 exact method/
+input/source/PIT and original rejection/unknown scope; B5 independent producer
+assessment refs; B6 same refs and separate consumer-purpose/cohort/admission.
+Actual predicates/rubrics/thresholds/assessment methods/cohort policies and
+individual factor bindings remain NOT_APPROVED. A principle approval does not
+make an actual result VALID, complete, confident, rankable or publishable.
+
+Executed newly opened D1/D2: exact approval/Decision Register, inactive obligation
+compilation and authority-scope negative acceptance, scoped current-state/return
+reconciliation. New25/25 checks PASS. Independent principle review is recorded
+under lanes/consumer_principles. Existing59/79/30 checks reuse63 exact matched
+artifacts at their original immutable scope; reruns0. Old proposal/probe/fixture
+labels remain historical and are not rewritten or counted as current admission.
+No fullrepo regression/new Actions/real PIT/OOS/production enforcement is claimed.
+
+Contract-authority gates closed4; bounded acceptance items closed2; production
+blockers closed0. Same3 production blocker categories remain: invalid numeric
+consumer admission; actual/historical method identity; real source/period/share/
+vintage/PIT closure. New numeric/method/factor decisions0; scores/history untouched.
+
+V2 split: metadata ALIGN already D1/D2; assessment-reference principles now
+APPROVED with B5/B6; actual assessment methodology NOT_APPROVED. G1/G2 and prior
+M1–M5/B4/B7 stay approved; B1 roles0/20. G/V methods/horizon/numerics, actual
+criteria, Composite/WeightOverride, runtime activation, migration/history,
+Official/grants, PIT/Holdout and PR44/canonical merge retain their own gates.
+
+Audit return: lanes/consumer_principles/MAIN_RETURN.json. Main consumption and
+owner ACK are NOT_EVIDENCED. Global fresh input19a1c3a1470cd974983fd489760516ee247a40b4
+is integration/FPIA progression, not QGV methodology authority. Owner4fb08a0
+still holds qgv-b47-muupb538; no termination/release is inferred. Only this review
+execution's lease is released. Scheduler0/2 UNVERIFIED; manual hops0.
+
+After authenticated publication readback, re-evaluate all lanes. Waiting on
+exact source/vintage packets and authenticated owner return/release; concrete
+method/policy/binding/runtime/migration authorization is residual D3. On a
+material change, consume exact evidence and execute newly READY D1/D2 without
+another permission request. No READY task remains merely to report or rerun.
+
+Fresh prepublication Global8acb3c25046310ebe24e87a3eb253948129a5ee9 and authenticated PR44 comment5990706291 confirm Main consumed the prior30-case scope return at ebd7ca3d. PRIOR_SCOPE_RETURN_CONSUMPTION.json closes that prior audit-return consumption tracking item; new principle-approval consumption remains NOT_EVIDENCED. No old tests were rerun or production gate closed.
+
+---
+
+# Preserved prior scoped checkpoints — exact prior content follows
+
 # QGV SSoT Autonomous Execution Loop — bounded closure; actual WAIT/D3 checkpoint
 
 STATUS: BOUNDED_D1_D2_ACCEPTANCE_CLOSED / READY_0 / WAIT_DEPENDENCY_AND_D3 / PRODUCTION_INACTIVE.
