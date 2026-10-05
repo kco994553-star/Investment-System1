@@ -1,0 +1,674 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-10-05",
+  "scope": "Read-only repository intake; canonical, Global/Main, Product owner, independent synthetic audit PR45, Web owner/integration and every locally observed fetched origin ref tip.",
+  "state": "NOT_ADOPTED_IN_OBSERVED_SCOPE",
+  "adoption_requirements": {
+    "approved_supabase_adoption_decision": "NOT_ESTABLISHED",
+    "approved_supabase_contract": "NOT_ESTABLISHED",
+    "supabase_config_dependency_client_schema_or_migration": "NOT_FOUND_IN_OBSERVED_SCOPE",
+    "exact_development_project_locator": "NOT_ESTABLISHED",
+    "development_production_environment_assignment": "NOT_ESTABLISHED",
+    "supabase_environment_variable_contract": "NOT_FOUND_IN_OBSERVED_SCOPE"
+  },
+  "project_environment_gate": "NOT_ESTABLISHED",
+  "primary_refs": [
+    {
+      "role": "canonical",
+      "ref": "refs/remotes/origin/claude/investment-system-top500-validation-alrugm",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+    },
+    {
+      "role": "Global",
+      "ref": "refs/remotes/origin/integration/global-handoff-v1",
+      "commit": "426c8bb750a5237403fee8336be4714548752094"
+    },
+    {
+      "role": "Main",
+      "ref": "refs/remotes/origin/codex/main-takeover-2026-10-05",
+      "commit": "6d029732e6bee02038a25685badb937b2666d04e"
+    },
+    {
+      "role": "Product owner",
+      "ref": "refs/remotes/origin/codex/product-platform-audit-v1",
+      "commit": "78a51462f89eac8e34647cddc4e53ed97e831178"
+    },
+    {
+      "role": "independent audit PR45",
+      "ref": "refs/remotes/origin/codex/product-platform-foundation-2026-10-05",
+      "commit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
+    },
+    {
+      "role": "Web owner",
+      "ref": "refs/remotes/origin/feature/web-mvp-v1",
+      "commit": "a4e49c83f5783c19617fb609b8f95b179cb13e84"
+    },
+    {
+      "role": "Web readiness",
+      "ref": "refs/remotes/origin/codex/web-producer-integration-readiness-2026-10-03",
+      "commit": "d0444583197c96f61fce811573dfd59670fd4f78"
+    },
+    {
+      "role": "Web integration",
+      "ref": "refs/remotes/origin/integration/web-mvp-language-search",
+      "commit": "e09d24e028475e924f2e20cee5ad6bd79f891391"
+    },
+    {
+      "role": "Web presentation",
+      "ref": "refs/remotes/origin/integration/web/production-state-presentation-v1",
+      "commit": "fb086eac4321140493ce554a541343cebbb81ed6"
+    }
+  ],
+  "all_observed_refs": {
+    "enumeration": "git for-each-ref --format='%(refname) %(objectname)' refs/remotes/origin",
+    "ref_count": 60,
+    "unique_tip_count": 58,
+    "includes_symbolic_origin_HEAD": true,
+    "manifest_sha256": "4bcf09b6e4d8653437147063fb9fe453f6f648fbf6bfb498b1636413e3f97ebd",
+    "manifest_hash_encoding": "UTF-8, sorted git for-each-ref output, one ref + space + commit + LF per entry",
+    "manifest": [
+      {
+        "ref": "refs/remotes/origin/HEAD",
+        "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+      },
+      {
+        "ref": "refs/remotes/origin/ccr-22e3ff16-p7n5k5",
+        "commit": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565"
+      },
+      {
+        "ref": "refs/remotes/origin/ccr-2e16018a-qukwmg",
+        "commit": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798"
+      },
+      {
+        "ref": "refs/remotes/origin/ccr-41677301-10nj3u",
+        "commit": "a013f1c1758642f90a65fe11df69fc234c143a48"
+      },
+      {
+        "ref": "refs/remotes/origin/ccr-db5d5960-qen9yi",
+        "commit": "5eec129ef81641f0bc11f5adbb43d0b2122ee24b"
+      },
+      {
+        "ref": "refs/remotes/origin/ccr-e0fc1e48-9tcto3",
+        "commit": "f4156150022bbc0ce18948c6bc949ff01a194a7d"
+      },
+      {
+        "ref": "refs/remotes/origin/claude/investment-system-top500-validation-alrugm",
+        "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+      },
+      {
+        "ref": "refs/remotes/origin/claude/lol-coach-relay-format-y8uk0x",
+        "commit": "57032bf8b0fab9230cd3e29d51ca49ab3f20df96"
+      },
+      {
+        "ref": "refs/remotes/origin/claude/track-d-rig-news-p0-ot2gy6",
+        "commit": "da86dfc26dcaa5c32c60762683dcca702a0c57b8"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/chart-contract-mcp-api-v0-1",
+        "commit": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/combined-integration-2026-10-03",
+        "commit": "86ad3628dd5c62c6d873e42511e577f24f4fb588"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/fpia-fix3-literal-repair-2026-10-05",
+        "commit": "2135962a1e6fd19c3acd220a30c6464431eddf95"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/github-write-path-policy-2026-10-04",
+        "commit": "4c5f7ff9be188a92ec6b5efeb94d01c6708911bd"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/integration-hardening-2026-10-03",
+        "commit": "4cf8ead024457172712d9ee54bdce665dbedeb2f"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/main-takeover-2026-10-05",
+        "commit": "6d029732e6bee02038a25685badb937b2666d04e"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/product-platform-audit-v1",
+        "commit": "78a51462f89eac8e34647cddc4e53ed97e831178"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/product-platform-foundation-2026-10-05",
+        "commit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/qgv-architecture-reconciliation-review-2026-10-05",
+        "commit": "4d53aa3047ba397cda992d2e784316a9d889bc22"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/qgv-common-contract-vnext-publication-evidence-2026-10-04",
+        "commit": "11cd2f5ac545af54d943dc206396c1fb6926689c"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/qgv-common-contract-vnext-spec-2026-10-04",
+        "commit": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/qgv-missing-data-decision-gate-2026-10-05",
+        "commit": "4fb08a05728d83519b72a2bd995669f0cb06003a"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/takeover-integration-2026-10-03",
+        "commit": "b20d1786aa8e8fe13476e9c0e83cf7b50794e409"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/track-c-gsup-v2-2026-10-03",
+        "commit": "c9e0fa7e4078290b5db9cb798cf52c0d0cd66240"
+      },
+      {
+        "ref": "refs/remotes/origin/codex/web-producer-integration-readiness-2026-10-03",
+        "commit": "d0444583197c96f61fce811573dfd59670fd4f78"
+      },
+      {
+        "ref": "refs/remotes/origin/docs/qgv-context-policy-approvals",
+        "commit": "b42f2be2a3688aaacb278239dfdd3c8253b1acf9"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/dynamic-workflow-m0",
+        "commit": "d83c03ec0c7063dc72a23af3fea7f86fc4b6b1aa"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/global-language-search-v1",
+        "commit": "eda65bf5d9203aee05f4d28992d1ccfcd815ebd4"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/leaderboard-real-producer-v1",
+        "commit": "0d48d863afec0d50481d585a3d1ae0e56d4b380c"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/macro-real-producer-v1",
+        "commit": "61d3352d5d68c7830e924f17613598ca79fcec6f"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/p01-research-publication-v1",
+        "commit": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/producer-infrastructure-v1",
+        "commit": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/qgv-invalidation-binding-v1",
+        "commit": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/rig-news-real-ingestion-v1",
+        "commit": "8bb990bd5a6b2009906329b933a67e2303bbb8c7"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/sec-primary-disclosure-v1",
+        "commit": "ef65caa5437a04610fa43f93209afb9193ba24aa"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/technical-real-model-v1",
+        "commit": "ce587040e7beb31b66a423eab6ca89767f2a2cf8"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/technical-real-producer-v1",
+        "commit": "a2e0790dd7fb267ebaa7d052acae59220ecf631e"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/track-c-evl",
+        "commit": "ff78c4f6c4a1a8fd15db21807de6be3905c89548"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/track-d-rig-news",
+        "commit": "da86dfc26dcaa5c32c60762683dcca702a0c57b8"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/track-e-prompt-library-v1",
+        "commit": "d226481e1b49e0910642478ae80545598e2e5a98"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/us-equity-session-v1",
+        "commit": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4"
+      },
+      {
+        "ref": "refs/remotes/origin/feature/web-mvp-v1",
+        "commit": "a4e49c83f5783c19617fb609b8f95b179cb13e84"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/a1-adoption/pr11-technical-producer",
+        "commit": "248e3d3e83db9a2db3d90583ae53929db936d0f3"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/a1-adoption/pr12-macro-producer",
+        "commit": "4a07099e36ec3cecda24b82ecedad53800f0aa81"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/a1-adoption/pr14-leaderboard",
+        "commit": "a4805dbcdf37b890f74f6d00c00952ff95b91c8f"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/a1-adoption/pr15-technical-model",
+        "commit": "5c9dd5abd760116df626e9b2e88e3fe48852066a"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/a1-adoption/pr17-p01",
+        "commit": "dc7daf70a42fb3f2bbfe96a775a1654a92ff95c1"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/a1-adoption/pr18-us-equity-session",
+        "commit": "9c71781c62e46a4f2972d58c1439ef6ca2a85b07"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/a1-adoption/pr7-entity-metadata",
+        "commit": "9626ab06cd2b93cdd250159347cdda5d08f76e03"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/a1-adoption/pr9-producer-infra",
+        "commit": "e9aee0cb8b80e17f7ae12e01156f6670135de2fa"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/cdr011-trial-2026-10-04",
+        "commit": "0d31e06022c3162e83f2ff5a984b07e59e4e216b"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/cdr012-successor-trial-2026-10-04",
+        "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/claude-worker-contract-v1",
+        "commit": "d87d4cd14c7e31d0d0fc17a447ee37346102e0ff"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/fpia-hardened-v1",
+        "commit": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/global-handoff-v1",
+        "commit": "426c8bb750a5237403fee8336be4714548752094"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/next-trial-2026-10-03",
+        "commit": "7e3861b2daf8f80c7f36f490baab8ab9d35113b1"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/web-mvp-language-search",
+        "commit": "e09d24e028475e924f2e20cee5ad6bd79f891391"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/web-mvp-language-search-audit",
+        "commit": "9fd8099fed59961f990cb64e99d4953a931ea508"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/web/production-state-presentation-v1",
+        "commit": "fb086eac4321140493ce554a541343cebbb81ed6"
+      },
+      {
+        "ref": "refs/remotes/origin/integration/web/research-render-guard-v1",
+        "commit": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a"
+      },
+      {
+        "ref": "refs/remotes/origin/recovery/track-a-real-data-frozen",
+        "commit": "a79642f7aa174cc37b981298d0ff1cec6b04e974"
+      }
+    ]
+  },
+  "search": {
+    "completed_scan_results_reused": true,
+    "sequence": [
+      "Filename inventory with git ls-tree -r --name-only",
+      "Filename-only git grep -I -l before narrowed source reads",
+      "Immutable source reads and git blob/SHA-256 evidence"
+    ],
+    "priority_filename_pattern": "supabase|postgres|sqlite|storage|auth|tenant|environment|env|handoff|AGENTS|package\\.json|requirements|pyproject|migration|decision|platform",
+    "extended_filename_pattern": "(supabase|AGENTS\\.md$|\\.env|requirements[^/]*$|pyproject\\.toml$|package[^/]*\\.json$|(?:^|/)migrations?[/_.]|schema|docker|compose)",
+    "per_ref_scans": [
+      {
+        "id": "supabase_mentions",
+        "pattern": "supabase|SUPABASE_|@supabase|supabase\\.co|supabase\\.com",
+        "command_shape": "git grep -I -l -i -E <pattern> <immutable-tip> -- .",
+        "ref_count": 60,
+        "matching_path_count": 0,
+        "error_count": 0
+      },
+      {
+        "id": "project_environment_locators",
+        "pattern": "DATABASE_URL|NEXT_PUBLIC_SUPABASE|SUPABASE_URL|SUPABASE_PROJECT|SUPABASE_ANON|SUPABASE_SERVICE|project[_ -]?ref|project[_ -]?id|database_url",
+        "command_shape": "git grep -I -l -i -E <pattern> <immutable-tip> -- .",
+        "ref_count": 60,
+        "matching_path_count": 0,
+        "error_count": 0
+      }
+    ],
+    "total_per_ref_scan_count": 120,
+    "total_matching_path_count": 0,
+    "total_error_count": 0,
+    "observed_exit_codes": {
+      "1_no_matches": 120
+    },
+    "errors": [],
+    "matching_remote_refs": [],
+    "additional_canonical_environment_name_pattern": "SUPABASE|DATABASE_URL|POSTGRES|PGHOST|PGDATABASE",
+    "additional_canonical_environment_scan": {
+      "source_paths": [
+        "implementation/src",
+        "implementation/tools",
+        ".github"
+      ],
+      "matching_path_count": 0,
+      "exit_code": 1,
+      "errors": []
+    },
+    "runtime_environment_check": {
+      "names_only": true,
+      "pattern": "SUPABASE|DATABASE_URL|POSTGRES|PGHOST|PGDATABASE",
+      "matching_names": [],
+      "values_read_or_recorded": false,
+      "scope": "Current execution environment only; not deployment environments or app accounts."
+    },
+    "dependency_config_result": "No tracked Supabase package/client/config/SQL migration/env file evidence in observed tips. Unrelated chart experiment package manifests and lol-coach pyproject are not adoption evidence."
+  },
+  "evidence": [
+    {
+      "id": "owner_handoff",
+      "commit": "78a51462f89eac8e34647cddc4e53ed97e831178",
+      "path": "implementation/docs/product_platform_audit/CURRENT_HANDOFF.md",
+      "git_blob": "2ab7511f669d7deab27c890fb7750e2962d9c013",
+      "sha256": "0fa15f8c52178bedac380c703024a02ca70eb954e3a8f2418db9a9dadb028a53",
+      "relevant_lines": [
+        7,
+        8,
+        10
+      ],
+      "finding": "Contract foundation only; no operational platform claim. Trusted runtime ownership and durable authenticated records remain open."
+    },
+    {
+      "id": "owner_capability_matrix",
+      "commit": "78a51462f89eac8e34647cddc4e53ed97e831178",
+      "path": "implementation/docs/product_platform_audit/STATUS.md",
+      "git_blob": "0302264340679e21c7a8a28affccacc6eb8f586a",
+      "sha256": "c104eb17f08b109ed331fc3d68006c48aa07a593579845b868236b7702385c2b",
+      "relevant_lines": [
+        18,
+        19,
+        23,
+        25,
+        29,
+        32,
+        43,
+        67,
+        70
+      ],
+      "finding": "Auth/login NOT_STARTED; no authenticated Product API, durable append-only store, or service/database tenant enforcement. D1/D2 contracts and mocks are preserved."
+    },
+    {
+      "id": "owner_contracts",
+      "commit": "78a51462f89eac8e34647cddc4e53ed97e831178",
+      "path": "implementation/src/investment_system/platform/contracts.py",
+      "git_blob": "e68810dbe8399ca9397c83275e2eb84e87726c41",
+      "sha256": "b13686d8ce134ccb61ef78c51d178597404e7a3401e7b22240dcc47c01d0aa7b",
+      "relevant_lines": [
+        1,
+        33,
+        34,
+        43,
+        48,
+        90,
+        91,
+        104,
+        105
+      ],
+      "finding": "Non-production immutable tenant, read-only connector, source provenance, replay and reconciliation contracts. No hosted auth/database implementation."
+    },
+    {
+      "id": "global_routing",
+      "commit": "426c8bb750a5237403fee8336be4714548752094",
+      "path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+      "git_blob": "ed7b25d9d6c0ce8790ef4c4b0ab912d0c0b2bb43",
+      "sha256": "957409372ad707704355599752e1898b12450055a0320d057564d2566292efe3",
+      "relevant_lines": [
+        1153,
+        1154,
+        1334,
+        1335,
+        1481,
+        1483,
+        1499
+      ],
+      "finding": "Product Platform owns Auth/Tenant/Connector/Reconciliation. Real credentials/accounts/production auth/paid connectors and protected integration actions are preserved as dependent approval boundaries. No Supabase adoption recorded."
+    },
+    {
+      "id": "global_pr45_intake",
+      "commit": "426c8bb750a5237403fee8336be4714548752094",
+      "path": "implementation/docs/coordination/evidence/main_takeover_2026-10-05/PLATFORM_PR45_INTAKE.md",
+      "git_blob": "e2bb9c75a3465e173d88767d28b5c1078ade2132",
+      "sha256": "9a85653c72ec6ea40818af24f40bd2fded2fec43ba1600aeb4a187292f391bc3",
+      "relevant_lines": [
+        3,
+        7,
+        30,
+        32,
+        51
+      ],
+      "finding": "PR45 is an isolated synthetic audit harness and does not supersede the Product owner or become admitted production auth/API authority."
+    },
+    {
+      "id": "audit_execution_policy",
+      "commit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+      "path": "implementation/docs/product_platform/AUDIT_EXECUTION_POLICY.md",
+      "git_blob": "dfeee7dca434037a0b8afba24eb8b8199a305a7b",
+      "sha256": "036fd539b6f3fe00730a217cc80b7d6b73a4a33b502e4b6b139488077e44a88d",
+      "relevant_lines": [
+        3,
+        9,
+        11,
+        15,
+        17
+      ],
+      "finding": "D1/D2 audits, fixtures and bounded repairs continue. Real auth/accounts, tenant-policy changes, paid connectors, protected semantics, canonical merge and deployment remain D3 in this scoped audit."
+    },
+    {
+      "id": "audit_contract",
+      "commit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+      "path": "implementation/docs/product_platform/CONTRACT.md",
+      "git_blob": "9ea70cd765a49b14713c0be7abfe4b8deb3d1677",
+      "sha256": "114eec38d10d5e36a8c9a11e6ef51df3bd2fc29f61fbf053875d71919ce8592b",
+      "relevant_lines": [
+        3,
+        17,
+        27,
+        41
+      ],
+      "finding": "Local SQLite storage and synthetic login are audit fixtures. No production secret vault or authentication claim."
+    },
+    {
+      "id": "audit_auth",
+      "commit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+      "path": "implementation/src/investment_system/product_platform/auth.py",
+      "git_blob": "27528a86a460237b23b3bc62769f9f4f2c031617",
+      "sha256": "2279a873d79be62cf68fd11e08b6e7f8bcccb4f0e20da4872d2b8c9e1db9a450",
+      "relevant_lines": [
+        3,
+        21,
+        37,
+        44,
+        99,
+        100,
+        105,
+        130
+      ],
+      "finding": "IdentityProvider protocol, fixture SyntheticIdentityProvider, and in-memory SessionAuth. Production requires an independently approved identity provider and durable session backend."
+    },
+    {
+      "id": "audit_store",
+      "commit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+      "path": "implementation/src/investment_system/product_platform/store.py",
+      "git_blob": "5b5b4b10695fc34f0520dfa63c9ae1c98aeb2e64",
+      "sha256": "11d7cdc5072f816bdb5f29dc27dfc8837d8cd1a4c42942616311e54f73a5a76a",
+      "relevant_lines": [
+        1,
+        6,
+        11,
+        15,
+        23,
+        24,
+        25,
+        27,
+        28,
+        29,
+        30
+      ],
+      "finding": "sqlite3 scoped synthetic store: connections, receipts, records, runs, cursors, snapshots and audit. No production vault claim."
+    },
+    {
+      "id": "audit_loopback_runner",
+      "commit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+      "path": "implementation/tools/product_platform/run_local.py",
+      "git_blob": "7c01f48268bbfd4d7fd5eeda954eca10277b107d",
+      "sha256": "2e79a8e4bbf4fce3e8bcc1cafa65b69485f93cf9cbbd450b7b21a8c8173c5a5f",
+      "relevant_lines": [
+        1,
+        21,
+        24,
+        25,
+        28,
+        31,
+        33,
+        35
+      ],
+      "finding": "Explicit synthetic loopback runner with required SQLite path outside the repository, fixture identity provider and test-only limits."
+    },
+    {
+      "id": "canonical_raw_storage",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/ingestion/raw_store.py",
+      "git_blob": "dfd6597a23fc05214234a2c7545316b4d942645c",
+      "sha256": "c4cfdbc314f8d670aee7d0a94f261177967ad3fcdfb36f224111af2f716ebb0e",
+      "relevant_lines": [
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        58,
+        59
+      ],
+      "finding": "RawDatasetStore uses local files under blobs, manifests and history; no hosted database."
+    },
+    {
+      "id": "canonical_broker_port",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/personal/ports.py",
+      "git_blob": "495e472fd87ea75ffc4a71e4169aec249cb25a99",
+      "sha256": "a4fa05cc660db1779eb44babbbb8568f0c97723dc1b74a722f977f338be670fb",
+      "relevant_lines": [
+        98,
+        99,
+        100,
+        102,
+        103,
+        104
+      ],
+      "finding": "Read-only BrokerAdapter protocol; broker auth remains adapter-owned. This is not product login infrastructure."
+    },
+    {
+      "id": "web_contract",
+      "commit": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "path": "implementation/docs/web_mvp/CONTRACT.md",
+      "git_blob": "230ecfae28da4f268db08c77a4f0480e21860b4e",
+      "sha256": "f49f4e0b95bf3e6c76e6af3f73344fac60b3d8fa9ac21f7c8fd8e1d13e09d8b2",
+      "relevant_lines": [
+        30,
+        33,
+        36,
+        39,
+        62
+      ],
+      "finding": "Static Python plus native JS/CSS; localStorage preferences; no new auth/service or public personal-data hosting."
+    },
+    {
+      "id": "web_operation",
+      "commit": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "path": "implementation/docs/web_mvp/README.md",
+      "git_blob": "3dad2c04777ea2c0eb8019db5adeb963cab47afc",
+      "sha256": "4555495ae64b5cc7c430b1790cdf9af18bbddd01965c4d41ab466661aa6ad186",
+      "relevant_lines": [
+        21,
+        22,
+        23,
+        65,
+        66
+      ],
+      "finding": "No hosting/login/paid service configured; browser preferences have no account sync."
+    },
+    {
+      "id": "web_preferences_storage",
+      "commit": "a4e49c83f5783c19617fb609b8f95b179cb13e84",
+      "path": "implementation/src/investment_system/product/web_assets/app.js",
+      "git_blob": "34755d86078ab2db31f6810215e3590b25d0eba2",
+      "sha256": "a79c285e41875f65dc6bb5e99a0fb6fafaa16ec1200b28107a1d842568b3a3c8",
+      "relevant_lines": [
+        6,
+        38,
+        66
+      ],
+      "finding": "Browser localStorage key investment.web.v1.personal."
+    },
+    {
+      "id": "producer_storage_options",
+      "commit": "d0444583197c96f61fce811573dfd59670fd4f78",
+      "path": "implementation/docs/producer_infrastructure/RAW_PERSISTENCE_OPTIONS.md",
+      "git_blob": "e9d23c4ee4748886684bf4c28f19978e6f42fbbf",
+      "sha256": "f447d7c452845dcc4e120cf333153cb8541438ef1aa6153bccd5658ab979570a",
+      "relevant_lines": [
+        3,
+        10,
+        15,
+        16,
+        17,
+        31,
+        38,
+        44
+      ],
+      "finding": "Historical raw-artifact storage design states STORAGE CHOICE NOT APPROVED; Actions artifacts/cache are the recorded existing copies. It establishes no Supabase adoption."
+    },
+    {
+      "id": "producer_storage_locations",
+      "commit": "d0444583197c96f61fce811573dfd59670fd4f78",
+      "path": "implementation/reports/raw_persistence/storage_locations_2026-10-01.json",
+      "git_blob": "bdccd1ebf57f9230a525f2c1993cee175a8493e9",
+      "sha256": "cc37ee03c20d263655199bf57cff916e55309ab3d5fc40d87e7da0920721cf9d",
+      "relevant_lines": [],
+      "finding": "Pinned raw-artifact storage-location evidence, separate from authenticated personal-account persistence."
+    }
+  ],
+  "existing_structure": {
+    "canonical": "Local filesystem RawDatasetStore and read-only BrokerAdapter protocol; no product authentication backend established.",
+    "product_owner": "Non-production immutable platform contracts and mocks; trusted runtime auth-to-principal-to-tenant enforcement and durable externally authenticated append-only records remain open.",
+    "independent_audit_pr45": "SyntheticIdentityProvider, in-memory SessionAuth, local ownership-scoped SQLite, and synthetic loopback API; audit-only and not admitted production authority.",
+    "web_owner": "Static read-only bundle presentation and browser localStorage preferences; no account sync or configured login/hosting service.",
+    "producer_raw_artifacts": "Filesystem manifests plus recorded Actions artifact/cache persistence; independent of durable authenticated personal-account storage."
+  },
+  "tool_first_use": {
+    "skill_read": "supabase:supabase",
+    "metadata_discovery": "Tool registry metadata only; Supabase tool names/capabilities observed.",
+    "resource_api_state": "NOT_RUN",
+    "distinction": "A callable connected tool establishes availability only. It does not establish permission, repository adoption, exact project identity/environment, or project readiness.",
+    "required_scope_before_resource_use": "Evidence-backed adoption/contract and exact development project/environment locator must be established before any permitted target-specific read.",
+    "supabase_account_organization_project_or_database_resources_queried": false,
+    "unrelated_figma_linear_vercel_resource_queries": "NOT_RUN"
+  },
+  "preserved_boundaries": [
+    "Completed owner and independent audit work, D1/D2 mocks and bounded repairs are preserved.",
+    "Existing owner write sets, protected history, auth/tenant/connector contracts and canonical source remain unchanged.",
+    "Real credentials/accounts, production authentication activation, tenant-policy changes, paid connectors, protected semantic changes, canonical merge and deployment retain the current scoped D3 boundary.",
+    "No project guessed or created, no Supabase account/project inventory, no backend replacement, no owner branch edit and no commit."
+  ],
+  "limitations": [
+    "Negative result is bounded to supplied immutable commits and locally observed fetched origin tips; it is not a claim about all history or external systems.",
+    "Unfetched repositories/refs, deleted or history-only branches, external deployment configuration and private account state were not inspected.",
+    "No operational authentication, multi-tenant service, durable personal-account backend, or Supabase project readiness was exercised.",
+    "Historical storage-choice statements are recorded as source evidence and do not themselves classify every future storage action as requiring approval."
+  ],
+  "authorized_output_paths_only": [
+    "implementation/docs/product_platform/audits/storage_auth_2026-10-05/adoption.json",
+    "implementation/docs/product_platform/audits/storage_auth_2026-10-05/ADOPTION.md"
+  ]
+}

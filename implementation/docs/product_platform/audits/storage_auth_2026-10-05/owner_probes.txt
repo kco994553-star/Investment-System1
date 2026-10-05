@@ -1,0 +1,750 @@
+COMMAND (tests first, before candidate implementation): python implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.py --phase red
+EXIT STATUS: 1 (two expected assertion failures)
+{
+  "candidate_counts": {
+    "failed": 2,
+    "passed": 0
+  },
+  "candidate_results": [
+    {
+      "exception": "AssertionError",
+      "name": "direct_SourceRecordRef_digest_case_equivalence",
+      "observation": "same SHA-256 in different case must identify the same source ref",
+      "result": "FAIL"
+    },
+    {
+      "exception": "AssertionError",
+      "name": "inherited_callable_trade_drift_denied",
+      "observation": "expected ReadOnlyViolation; input accepted",
+      "result": "FAIL"
+    }
+  ],
+  "owner_pin": "78a51462f89eac8e34647cddc4e53ed97e831178",
+  "phase": "tests_first_RED_before_candidate_implementation",
+  "scope": "audit-only fixture; no owner/harness modification"
+}
+
+COMMAND (fixture preservation test before MRO shadowing repair): python - <<'PY'
+import json,runpy
+module=runpy.run_path('implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.py')
+c,tests,manifest=module['load_owner']()
+results=module['candidate_checks'](c,fixture=True)
+print(json.dumps({'phase':'candidate_MRO_shadowing_preservation_RED','results':results,'counts':module['counts'](results)},indent=2,default=str,sort_keys=True))
+raise SystemExit(bool(module['counts'](results)['failed']))
+PY
+EXIT STATUS: 1 (missing read-method denial failed; hash equivalence remained GREEN)
+{
+  "counts": {
+    "failed": 1,
+    "passed": 1
+  },
+  "phase": "candidate_MRO_shadowing_preservation_RED",
+  "results": [
+    {
+      "name": "direct_SourceRecordRef_digest_case_equivalence",
+      "observation": {
+        "missing": [],
+        "orphan": [],
+        "passed": true
+      },
+      "result": "PASS"
+    },
+    {
+      "exception": "AssertionError",
+      "name": "inherited_callable_trade_drift_denied",
+      "observation": "expected ReadOnlyViolation; input accepted",
+      "result": "FAIL"
+    }
+  ]
+}
+
+COMMAND (final verification with MRO shadowing preserved): python implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.py
+EXIT STATUS: 0
+{
+  "additional_controls": {
+    "counts": {
+      "failed": 0,
+      "passed": 78
+    },
+    "results": [
+      {
+        "name": "foreign_tenant_read_denied",
+        "observation": "TenantIsolationError",
+        "result": "PASS"
+      },
+      {
+        "name": "foreign_tenant_import_denied",
+        "observation": "TenantIsolationError",
+        "result": "PASS"
+      },
+      {
+        "name": "foreign_tenant_source_reconciliation_denied",
+        "observation": "TenantIsolationError",
+        "result": "PASS"
+      },
+      {
+        "name": "context_rejects_tenant_id_''",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "context_rejects_tenant_id_' '",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "context_rejects_tenant_id_'\\t'",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "context_rejects_tenant_id_None",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "context_rejects_tenant_id_42",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "context_rejects_principal_id_''",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "context_rejects_principal_id_' '",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "context_rejects_principal_id_'\\t'",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "context_rejects_principal_id_None",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "context_rejects_principal_id_42",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "reference_rejects_blank_tenant_id",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "reference_rejects_blank_connection_id",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "reference_rejects_blank_source_record_id",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "reference_rejects_blank_source_version",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "reference_rejects_digest_'bad'",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "reference_rejects_digest_'gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg'",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "reference_rejects_digest_'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "reference_rejects_digest_'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "reference_rejects_digest_None",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "reference_rejects_digest_42",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "normalized_rejects_refs_()",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "normalized_rejects_refs_(42,)",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "normalized_rejects_refs_[SourceRecordRef(tenant_id='t1', connection_id='conn', source_record_id='r1', source_version='v1', payload_sha256='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')]",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "normalized_rejects_refs_(SourceRecordRef(tenant_id='t1', connection_id='conn', source_record_id='r1', source_version='v1', payload_sha256='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'), 42)",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "source_rejects_blank_tenant_id",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "source_rejects_blank_connection_id",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "source_rejects_blank_account_id",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "source_rejects_blank_source_record_id",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "source_rejects_blank_source_version",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "source_rejects_blank_record_type",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "source_rejects_blank_source",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "source_rejects_blank_raw_payload_ref",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "source_rejects_blank_payload_sha256",
+        "observation": "ValueError",
+        "result": "PASS"
+      },
+      {
+        "name": "import_duplicate_collision_preserves_prior_digest",
+        "observation": "INSERTED; identical/uppercase replay DUPLICATE; collision denied; original preserved; v2 INSERTED",
+        "result": "PASS"
+      },
+      {
+        "name": "source_frozen_assignment_denied",
+        "observation": "FrozenInstanceError",
+        "result": "PASS"
+      },
+      {
+        "name": "normalized_frozen_assignment_denied",
+        "observation": "FrozenInstanceError",
+        "result": "PASS"
+      },
+      {
+        "name": "complete_lineage_passes",
+        "observation": true,
+        "result": "PASS"
+      },
+      {
+        "name": "missing_lineage_fails",
+        "observation": [
+          "SourceRecordRef(tenant_id='t1', connection_id='conn', source_record_id='b', source_version='v1', payload_sha256='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')"
+        ],
+        "result": "PASS"
+      },
+      {
+        "name": "orphan_lineage_fails",
+        "observation": [
+          "SourceRecordRef(tenant_id='t1', connection_id='conn', source_record_id='b', source_version='v1', payload_sha256='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')"
+        ],
+        "result": "PASS"
+      },
+      {
+        "name": "duplicate_normalized_identity_fails",
+        "observation": [
+          "n1"
+        ],
+        "result": "PASS"
+      },
+      {
+        "name": "cross_tenant_normalized_row_fails",
+        "observation": [
+          "n1"
+        ],
+        "result": "PASS"
+      },
+      {
+        "name": "cross_tenant_ref_fails",
+        "observation": [
+          "n1"
+        ],
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'trade'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'buy'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'sell'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'execute_trade'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'create_order'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'place_order'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'submit_order'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'cancel_order'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'modify_order'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'transfer'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'withdraw'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'deposit'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'wire_transfer'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'delete_account'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_' get_positions'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'GET_POSITIONS'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'get_positions '",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_'get_positions\\x00'",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_denies_''",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_allows_connect",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_allows_disconnect",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_allows_get_accounts",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_allows_get_balances",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_allows_get_capabilities",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_allows_get_orders",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_allows_get_positions",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_allows_get_sync_status",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_allows_get_transactions",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_allows_refresh_auth",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "read_only_allows_sync",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "broker_contract_exact_interface_passes",
+        "observation": true,
+        "result": "PASS"
+      },
+      {
+        "name": "broker_contract_public_write_alias_drift_denied",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      },
+      {
+        "name": "broker_contract_missing_allowed_method_drift_denied",
+        "observation": "ReadOnlyViolation",
+        "result": "PASS"
+      }
+    ]
+  },
+  "command": "python implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.py",
+  "owner_focused": {
+    "counts": {
+      "failed": 0,
+      "passed": 9
+    },
+    "results": [
+      {
+        "name": "test_identity_and_reference_values_reject_blank_or_malformed",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "test_import_is_idempotent_and_same_version_content_change_fails",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "test_import_rejects_cross_tenant",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "test_normalized_record_rejects_malformed_lineage_at_construction",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "test_read_only_gate_is_exact_and_detects_broker_contract_drift",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "test_reconciliation_lineage_and_full_coverage",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "test_reconciliation_rejects_duplicate_and_cross_tenant_outputs",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "test_source_record_requires_provenance_time_and_hash",
+        "observation": null,
+        "result": "PASS"
+      },
+      {
+        "name": "test_tenant_scope_is_fail_closed",
+        "observation": null,
+        "result": "PASS"
+      }
+    ]
+  },
+  "owner_pin": "78a51462f89eac8e34647cddc4e53ed97e831178",
+  "pinned_source_manifest": [
+    {
+      "bytes": 1944,
+      "git_blob": "685e2d6024a6a0bac2183458a01832e2df63a6ab",
+      "path": "implementation/src/investment_system/personal/versioning.py",
+      "sha256": "af84bfd95e198c3e1c29381ca9d688728da8a7a128dec4994da49d5186416def"
+    },
+    {
+      "bytes": 988,
+      "git_blob": "0ee6796efb0ab97e781852509953f3e30e3f16d2",
+      "path": "implementation/src/investment_system/personal/quality.py",
+      "sha256": "b6cefc19927bb3da00060920174de0f2d21dd7616299d9ebd81ad65870a349b7"
+    },
+    {
+      "bytes": 7484,
+      "git_blob": "b564215fd1a0ceecb32033e5da377f58f9fa4b0b",
+      "path": "implementation/src/investment_system/personal/weights.py",
+      "sha256": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5"
+    },
+    {
+      "bytes": 4257,
+      "git_blob": "495e472fd87ea75ffc4a71e4169aec249cb25a99",
+      "path": "implementation/src/investment_system/personal/ports.py",
+      "sha256": "a4fa05cc660db1779eb44babbbb8568f0c97723dc1b74a722f977f338be670fb"
+    },
+    {
+      "bytes": 6890,
+      "git_blob": "e68810dbe8399ca9397c83275e2eb84e87726c41",
+      "path": "implementation/src/investment_system/platform/contracts.py",
+      "sha256": "b13686d8ce134ccb61ef78c51d178597404e7a3401e7b22240dcc47c01d0aa7b"
+    },
+    {
+      "bytes": 4765,
+      "git_blob": "a6edf4e4a8eb234f9863139acf4e354f40ddd48a",
+      "path": "implementation/tools/mini_pytest.py",
+      "sha256": "c24c3bb38fa3242b43578ff9c3c92e3f66a71fdcf63d9eb279112c3f1c3a4d28"
+    },
+    {
+      "bytes": 5130,
+      "git_blob": "3aaf216f840e304bab36981012e884bd8d302b96",
+      "path": "implementation/tests/test_product_platform_contracts.py",
+      "sha256": "2c910c860eb14d06e1b31ccc8a3673870884f0b0ac8efb6ef5f0910729c4a364"
+    }
+  ],
+  "previous_harness_source_preservation": {
+    "existing_84_and_396_test_suites_rerun": false,
+    "manifest_entries_checked": 19,
+    "mismatches": []
+  },
+  "repair_candidates": {
+    "audit_only_fixture_GREEN": {
+      "counts": {
+        "failed": 0,
+        "passed": 2
+      },
+      "results": [
+        {
+          "name": "direct_SourceRecordRef_digest_case_equivalence",
+          "observation": {
+            "missing": [],
+            "orphan": [],
+            "passed": true
+          },
+          "result": "PASS"
+        },
+        {
+          "name": "inherited_callable_trade_drift_denied",
+          "observation": {
+            "disabled_read_denial": "ReadOnlyViolation",
+            "inherited_trade_denial": "ReadOnlyViolation",
+            "original_direct_gate": "PASS"
+          },
+          "result": "PASS"
+        }
+      ]
+    },
+    "original_owner_expected_RED": {
+      "counts": {
+        "failed": 2,
+        "passed": 0
+      },
+      "expected_assertion_failures_confirmed": true,
+      "results": [
+        {
+          "exception": "AssertionError",
+          "name": "direct_SourceRecordRef_digest_case_equivalence",
+          "observation": "same SHA-256 in different case must identify the same source ref",
+          "result": "FAIL"
+        },
+        {
+          "exception": "AssertionError",
+          "name": "inherited_callable_trade_drift_denied",
+          "observation": "expected ReadOnlyViolation; input accepted",
+          "result": "FAIL"
+        }
+      ]
+    },
+    "owner_adoption": "NOT_REQUESTED / NOT_DEPLOYED",
+    "root_causes": [
+      "SourceRecord.ref lowercases SHA-256; directly constructed SourceRecordRef retains original case",
+      "validate_broker_contract inspects direct __dict__ and omits inherited public callable members"
+    ]
+  },
+  "runner": "source-pinned in-memory loader using owner mini_pytest shim, not pytest",
+  "runner_manifest": {
+    "bytes": 20526,
+    "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.py",
+    "sha256": "9c56538b500f9b0060426c76c016b2e61fb31e6106c09ec3d616c3183338dda3"
+  },
+  "safety": {
+    "credentials_read": false,
+    "network_providers_invoked": false,
+    "owner_source_modified": false,
+    "package_initializers_executed": false,
+    "previous_19_harness_manifest_files_modified": false,
+    "real_provider_modules_loaded": false
+  },
+  "schema": "independent-owner-probes-v1",
+  "scope": "audit-only; fixtures not deployed or owner-adopted; no production capability promotion",
+  "separate_boundary_observations": [
+    {
+      "classification": "runtime user ownership boundary absent; no service exploit established",
+      "name": "same_tenant_different_principal_replay",
+      "value": "DUPLICATE"
+    },
+    {
+      "classification": "set coverage only; cannot establish financial completeness",
+      "name": "empty_lineage",
+      "value": {
+        "cross_tenant": [],
+        "duplicates": [],
+        "missing": [],
+        "orphan": [],
+        "passed": true
+      }
+    },
+    {
+      "classification": "declared-hash helper does not authenticate or retain raw/provenance metadata",
+      "name": "same_identity_same_digest_different_account_provenance",
+      "value": "DUPLICATE"
+    },
+    {
+      "classification": "case-equivalent SHA-256 causes false missing/orphan; audit-only candidate below",
+      "name": "uppercase_direct_ref",
+      "value": {
+        "cross_tenant": [],
+        "duplicates": [],
+        "missing": [
+          "SourceRecordRef(tenant_id='t1', connection_id='conn', source_record_id='r1', source_version='v1', payload_sha256='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')"
+        ],
+        "orphan": [
+          "SourceRecordRef(tenant_id='t1', connection_id='conn', source_record_id='r1', source_version='v1', payload_sha256='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')"
+        ],
+        "passed": false
+      }
+    },
+    {
+      "classification": "set coverage ignores source multiplicity; contract decision required",
+      "name": "duplicate_source_entries_same_ref",
+      "value": {
+        "cross_tenant": [],
+        "duplicates": [],
+        "missing": [],
+        "orphan": [],
+        "passed": true
+      }
+    },
+    {
+      "classification": "set coverage does not establish one-to-one financial normalization",
+      "name": "source_ref_reuse_distinct_normalized_ids",
+      "value": {
+        "cross_tenant": [],
+        "duplicates": [],
+        "missing": [],
+        "orphan": [],
+        "passed": true
+      }
+    },
+    {
+      "classification": "ledger separately rejects conflict; pre-admission requirement or lineage conflict reporting needed",
+      "name": "same_identity_conflicting_hashes_reconciled",
+      "value": {
+        "cross_tenant": [],
+        "duplicates": [],
+        "missing": [],
+        "orphan": [],
+        "passed": true
+      }
+    },
+    {
+      "classification": "synthetic interface drift gap; actual operation gate still denies trade",
+      "name": "inherited_public_write_alias_interface_probe",
+      "value": {
+        "trade_inherited": true,
+        "validation_passed": true
+      }
+    }
+  ],
+  "source_identity_history": [
+    {
+      "contracts_git_blob": "2a8f3fda96a40f985feea5f023e9edc9a7f22f72",
+      "revision": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+      "tests_git_blob": "5b6243f7c1bca27df8af0af78a7a6f0b14562794"
+    },
+    {
+      "contracts_git_blob": "e68810dbe8399ca9397c83275e2eb84e87726c41",
+      "revision": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
+      "tests_git_blob": "3aaf216f840e304bab36981012e884bd8d302b96"
+    },
+    {
+      "contracts_git_blob": "e68810dbe8399ca9397c83275e2eb84e87726c41",
+      "revision": "78a51462f89eac8e34647cddc4e53ed97e831178",
+      "tests_git_blob": "3aaf216f840e304bab36981012e884bd8d302b96"
+    }
+  ],
+  "summary": {
+    "additional_controls_passed": 78,
+    "audit_only_candidates_GREEN": 2,
+    "baseline_expected_RED": 2,
+    "boundary_observations": 8,
+    "owner_tests_passed": 9,
+    "unexpected_failures": 0
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "schema": "platform-storage-auth-tool-intake-v1",
+  "observed_at_utc": "2026-10-05T05:31:46.611400+00:00",
+  "user_directives_received_kst": [
+    "2026-10-05T14:12:50+09:00",
+    "2026-10-05T14:18:43+09:00"
+  ],
+  "base_audit_sha": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+  "publication_branch": "codex/product-platform-storage-auth-review-2026-10-05",
+  "publication_identity": "containing Git commit, no self-referential SHA fabricated",
+  "refs": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "global": "426c8bb750a5237403fee8336be4714548752094",
+    "platform_owner": "78a51462f89eac8e34647cddc4e53ed97e831178"
+  },
+  "overall_status": "PARTIAL",
+  "supabase": {
+    "adoption_state": "NOT_ADOPTED_IN_OBSERVED_SCOPE",
+    "target_gate": "NOT_ESTABLISHED",
+    "project_resource_api_calls": 0,
+    "schema_access_policies_auth_logs": "NOT_RUN_NO_APPROVED_DEVELOPMENT_TARGET",
+    "refs_scanned": 60,
+    "distinct_tips": 58,
+    "filename_scans": 120,
+    "matches": 0,
+    "errors": 0,
+    "account_permission": "NOT_TESTED",
+    "backend_replaced": false
+  },
+  "new_local_verification": {
+    "command": "python implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.py",
+    "runner": "source-pinned in-memory loader using owner mini_pytest shim, not pytest",
+    "summary": {
+      "additional_controls_passed": 78,
+      "audit_only_candidates_GREEN": 2,
+      "baseline_expected_RED": 2,
+      "boundary_observations": 8,
+      "owner_tests_passed": 9,
+      "unexpected_failures": 0
+    },
+    "root_independent_recheck_exit": 0,
+    "python": "3.12.14",
+    "owner_production_repaired": false,
+    "candidates": "two audit-only fixtures; RED-before-GREEN + refinement history retained"
+  },
+  "retained_harness_receipts": {
+    "source_sha": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+    "source_entries_checked": 19,
+    "mismatches": [],
+    "previous_84_unittest_and_396_mini_pytest_rerun": false,
+    "note": "existing exact-source receipts retained; no new broad/full/browser test claim"
+  },
+  "owner_ci": {
+    "run_id": 37265731093,
+    "attempt": 1,
+    "head_sha": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
+    "observed_status": "completed",
+    "observed_conclusion": "success",
+    "job_id": 111622046572,
+    "targeted_step": "success",
+    "full_regression_step": "success",
+    "counts_from_owner_receipt": {
+      "targeted": 22,
+      "full": 405
+    },
+    "current_owner_source_tests_workflow_drift_from_ci_head": []
+  },
+  "tools": {
+    "GitHub": "repo read permissions and push permission verified; own evidence publication only",
+    "Context7": {
+      "resolve_calls": 1,
+      "query_calls": 1,
+      "library_id": "/python/cpython/v3.11.14",
+      "scope": "public documents for owner CI Python3.11 minor; no dependency change",
+      "result": "SUCCESS"
+    },
+    "Superpowers": "only current-stage parallel review/debugging/TDD/verification skills",
+    "Supabase": "skill+official documentation only; no account/project/schema/policy/log API calls",
+    "Figma_MagicPath_Linear_Vercel": "callable metadata observed; NOT_USED; permissions/projects not assumed",
+    "Automations": "existing prompt only; schedule/destination preserved; no new task"
+  },
+  "source_and_history_boundaries": {
+    "old_harness_source_changed": false,
+    "owner_branch_changed": false,
+    "canonical_changed": false,
+    "global_changed": false,
+    "real_credentials_accounts_used": false,
+    "production_auth_tenant_policy_deploy_changed": false
+  },
+  "artifact_manifest": [
+    {
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/ADOPTION.md",
+      "sha256": "af71ce1d54b6ef0eaf37e51a0fdb8bb820c26f58f93c58c91ea8794b4b0fc78c",
+      "bytes": 13339
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/REPORT.md",
+      "sha256": "2a74575683b94d4f8f16471422b7355d2058f9b29ce8cca8ea72e53d09a813c0",
+      "bytes": 10965
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/TOOL_EXECUTION_POLICY.md",
+      "sha256": "dc356442b198130854ef13e31ae9c10691425aceac2575387d61a2cd8cef5e5c",
+      "bytes": 2787
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/adoption.json",
+      "sha256": "26def936de6eff371ec5201c3d6a9a48d191ce1c8695c1997584f9bc18e132c2",
+      "bytes": 27509
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.json",
+      "sha256": "a1bd74574ffa292b4ed62b105ce06c775ca814dba5040c7671fae327e68cf190",
+      "bytes": 20852
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.py",
+      "sha256": "9c56538b500f9b0060426c76c016b2e61fb31e6106c09ec3d616c3183338dda3",
+      "bytes": 20526
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.txt",
+      "sha256": "93789b0710bf0a32a9558e5b1796636ff296f71b5ece8754e5eb00f2044f5ca0",
+      "bytes": 23058
+    }
+  ]
+}
