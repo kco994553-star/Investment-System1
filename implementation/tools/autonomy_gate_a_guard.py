@@ -87,7 +87,7 @@ def classify_diff(records: list[tuple[str, list[str]]], cfg: dict) -> list[str]:
 def git_name_status(base: str) -> str:
     proc = subprocess.run(
         ["git", "diff", "--name-status", f"{base}...HEAD"],
-        cwd=ROOT.parent,
+        cwd=REPO_ROOT,
         check=False,
         capture_output=True,
         text=True,
@@ -98,7 +98,7 @@ def git_name_status(base: str) -> str:
 
 
 def validate_mode(cfg: dict) -> str:
-    p = ROOT / cfg["autonomy_mode_file"].removeprefix("implementation/")
+    p = REPO_ROOT / cfg["autonomy_mode_file"]
     mode = p.read_text(encoding="utf-8").strip()
     if mode not in cfg["allowed_modes"]:
         raise GuardError(f"invalid AUTONOMY_MODE={mode!r}")
