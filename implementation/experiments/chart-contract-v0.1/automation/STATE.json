@@ -480,13 +480,221 @@
     "event_snapshot_at_utc": "2026-10-05T00:36:12.047914+00:00"
   },
   "last_processed": {
-    "source_head": null,
-    "owner_head": null,
-    "semantic_input_fingerprint": null,
-    "processed_at_utc": null,
-    "run_id": null,
-    "evidence_refs": [],
-    "status": "UNSET_AUTOMATION_CHECKPOINT_NOT_SYNTHETICALLY_MARKED_COMPLETE"
+    "source_head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+    "owner_head": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
+    "semantic_input_fingerprint": "6cc924c6111b5c110adcea5e6c2d2d0d6fcba5c6a58f71f16e9d7bf5ec08c3d8",
+    "processed_at_utc": "2026-10-05T00:41:53.010829+00:00",
+    "run_id": "manual-root-v05-20261005",
+    "input_heads": {
+      "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "41": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+      "42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+    },
+    "event_watermarks": {
+      "17": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "18": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 1,
+          "last_id": 5950833091,
+          "items": [
+            {
+              "id": 5950833091,
+              "updated_at": "2026-10-02T10:54:13Z",
+              "submitted_at": null,
+              "state": null,
+              "commit_id": null,
+              "body_sha256": "e7354fd9eb298954e750257b8fa8f58f5ffec8526587ed566fea2faee841e185"
+            }
+          ]
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "19": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "34": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "36": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "41": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "42": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "44": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      }
+    },
+    "evidence_refs": [
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json"
+    ],
+    "status": "BOUNDED_OWNER_PACKET_EVIDENCE_COMPLETED_NOT_PRODUCTION"
   },
   "pending": [],
   "readiness": {
@@ -510,8 +718,8 @@
     "new_chart_d3": false
   },
   "lease": {
-    "status": "ACTIVE_VERIFIED_REMOTE",
-    "run_id": "manual-root-v05-20261005",
+    "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+    "run_id": null,
     "holder_kind": "MANUAL_ROOT",
     "acquired_at_utc": "2026-10-05T00:31:02Z",
     "expires_at_utc": "2026-10-05T01:31:02Z",
@@ -523,19 +731,84 @@
     "mutual_exclusion": "PROTOCOL_NOT_PROVIDER_GUARANTEE",
     "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease.",
     "acquisition_commit": "df1743b22680cd6d56dd286fd737cb053a7175ad",
-    "verified_at_utc": "2026-10-05T00:37:38.114590+00:00"
+    "verified_at_utc": "2026-10-05T00:37:38.114590+00:00",
+    "released_at_utc": "2026-10-05T00:41:53.010829+00:00",
+    "verified_published_packet": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
+    "previous_run_id": "manual-root-v05-20261005"
   },
   "publication": {
-    "status": "AWAITING_FIRST_PUBLICATION",
-    "latest_published_owner_head": null,
-    "scoped_output_paths": [],
-    "output_sha256": {},
-    "retained_comment_ids": [],
+    "status": "PACKET_AND_HANDOFF_VERIFIED",
+    "latest_published_owner_head": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
+    "scoped_output_paths": [
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
+      "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/INDEPENDENT_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_HANDOFF_ROUTING.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/AUTHORITY_ARTIFACT_MANIFEST_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/EXISTING_AUTHORITY_INTERFACE_DIAGNOSTIC_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/replay_existing_authority.py",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/OWNER_PACKET_CONSISTENCY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_DELTA_EVIDENCE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_SOURCE_OWNER_CLOSURE_PACKET_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/EXISTING_CAPABILITY_PINS_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/LANE_B_VERIFY_RECEIPT_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py"
+    ],
+    "output_sha256": {
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "aaac7c5d117d1c73537690e6d10572884c23834c5561422d06943b05f7abfa52",
+      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md": "a7ab5ee8475f3ac4639043d9f8d3e03588cc05773e751150d26127f79978f2b8",
+      "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json": "754a8d97e82af9d2b79fd6bf495d803f85112b3c7cea75666ea794860cfecef0",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json": "699dd0c832c105666420adfd9c3be0c9863cf3392992dc8f561280cb7417decb",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json": "3bb3c6ee5b7d5016f3acb7651ebd020a8508a0a8243a8340ddc059f0c0c77cfc",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md": "568eeeec27b63b3da41c6a16584e5727ee79bc47e0afa88caa86f9d53349eaf5",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/INDEPENDENT_REVIEW.json": "ba09a028ce6c73bf4e365028ed48faba508e1e076b21186bb9a04485c4d2739f",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md": "4b33475fcfe7528b3beb29acffb0c818fade656a2317a00aa88218730373b607",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_HANDOFF_ROUTING.json": "514c7ddfd9e46b1a5b0f26ad7cb798dcc67efc51518218bbcf8ec6a38f787b83",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/AUTHORITY_ARTIFACT_MANIFEST_v0.5.json": "43daa13655f929249ec0ad2137a8f44316e66f985a41f327dfaf1c442ed18d0d",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/EXISTING_AUTHORITY_INTERFACE_DIAGNOSTIC_v0.5.json": "dde5503cd37c840f3127011d88cdf1b9c5a25a6c3d39a52fe60e95113a50a513",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json": "62b10722f88d242cc1a0aa8f590fe1cbac1ea0eeb3833dff4ce66b42c1a1d4fb",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md": "0b15e87e97c9bdb5cafc6efd4c9cab88efa01e9521eaa65a72fac15d723ee028",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/replay_existing_authority.py": "21300a2f55b8f27b3436b4467e507cfd27dccb7200d7cedf50e083b81005d12a",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/OWNER_PACKET_CONSISTENCY.json": "a6a96fe495ae5775c60054283ef5f20d152ed9bcbd6fb8b5c5b24285144f4f42",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_DELTA_EVIDENCE.json": "7d8aff4b12017797cf89e8f00d1ccea852da95e6382fe037f4ca4e842009633f",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_SOURCE_OWNER_CLOSURE_PACKET_v0.5.md": "f5019aa52649dc83bee5c41616e53d299d6cbd12fa64212be5f0c0cb9b5f48a7",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/EXISTING_CAPABILITY_PINS_v0.5.json": "9ee1dbaba37d1984d5428f8aada1b3d88f93c1ff77a0781ea19405bf39beab82",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json": "d274b1e8cc127aff34a5f1bf654cb969328df96753e503bd463d215ac8693545",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/LANE_B_VERIFY_RECEIPT_v0.5.json": "10725c567a78dae4c0ba7f0433e74be943efa47a846c228b7d5eb9041e218c65",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json": "96500808ea2b47b58c6d7a0ff7f7c2141e096467ee379f1a609afb5a0cf628d6",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md": "da9eb10534a98c57418fc09bcac0cfbd4c43fef58875b3bde3248c2f4693369f",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py": "72e7960e878fda278ec2562c66690265ab28c14c647aaefd2c63907618d1f67f"
+    },
+    "retained_comment_ids": [
+      5986162506
+    ],
     "commit_ids": [
-      "df1743b22680cd6d56dd286fd737cb053a7175ad"
+      "df1743b22680cd6d56dd286fd737cb053a7175ad",
+      "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c"
     ],
     "update_after_publish": "Only after remote HEAD/file bytes and output hashes are verified. STATE.json itself is excluded from output fingerprint; current commit identity cannot be self-embedded.",
-    "bootstrap_verified_owner_head": "df1743b22680cd6d56dd286fd737cb053a7175ad"
+    "bootstrap_verified_owner_head": "df1743b22680cd6d56dd286fd737cb053a7175ad",
+    "retained_comments": [
+      {
+        "pr": 42,
+        "id": 5986162506,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/42#issuecomment-5986162506",
+        "body_sha256": "914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f"
+      }
+    ],
+    "coordination_head_note": "State release containing this receipt is resolved from current PR/Git metadata, not self-embedded."
   },
   "self_update_filter": {
     "automation_titles": [
@@ -547,10 +820,13 @@
       "[chart-owner-checkpoint]"
     ],
     "retained_owned_commit_ids": [
-      "df1743b22680cd6d56dd286fd737cb053a7175ad"
+      "df1743b22680cd6d56dd286fd737cb053a7175ad",
+      "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c"
     ],
     "owned_comment_marker": "<!-- chart-owner-handoff:v0.5 -->",
-    "retained_owned_comment_ids": [],
+    "retained_owned_comment_ids": [
+      5986162506
+    ],
     "require_comment_marker_and_retained_returned_id": true,
     "connected_account_login_is_not_ownership_proof": true,
     "allowlisted_write_scopes": [
@@ -560,7 +836,14 @@
     ],
     "do_not_ignore_dependency_semantics_from_an_owned_checkpoint": true,
     "require_current_comment_body_sha256_match": true,
-    "edited_own_comments": "Read semantic change; retained ID/marker alone never suppresses modified content."
+    "edited_own_comments": "Read semantic change; retained ID/marker alone never suppresses modified content.",
+    "retained_owned_comments": [
+      {
+        "id": 5986162506,
+        "body_sha256": "914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f",
+        "marker": "<!-- chart-owner-handoff:v0.5 -->"
+      }
+    ]
   },
   "fingerprint_policy": {
     "include": "Relevant fresh dependency source/head/authority/decision changes, relevant comment or review revisions, scoped owner source inputs, and pending exact-subject CI state.",
@@ -594,5 +877,31 @@
     "paid_action"
   ],
   "workflow_rule": "Reuse prior audit/history. Process only a real bounded material delta or actionable pending CI; decisions/readiness never advance from scheduling alone.",
-  "verification_ref": "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json"
+  "verification_ref": "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json",
+  "automation_delivery_observed": {
+    "synchronize_webhooks_seen": [
+      {
+        "id": "c6a58c40-c054-11f1-8074-9ef8b625a3b4",
+        "event": "synchronize",
+        "pr": 41,
+        "own_commit": "df1743b22680cd6d56dd286fd737cb053a7175ad"
+      },
+      {
+        "id": "285358a0-c055-11f1-9070-7a3eabeb507d",
+        "event": "synchronize",
+        "pr": 41,
+        "own_commit": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c"
+      }
+    ],
+    "event_delivery_into_this_chat": "OBSERVED",
+    "review_comment_merge_delivery_test": "NOT_RUN",
+    "self_event_processing": "No duplicate production/evidence work; live manual lease and narrow attribution preserved."
+  },
+  "approval_pins": {
+    "explicit_user_scope": "2026-10-05 Chart bounded readiness and actual automatic resume; production/protected/package changes not authorized",
+    "global_routing_head": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+    "worker_routing_pr21": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
+    "fpia_governance": "OPEN",
+    "qgv": "INACTIVE_SPEC_ONLY"
+  }
 }
