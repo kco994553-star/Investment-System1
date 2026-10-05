@@ -61,8 +61,6 @@ class AutonomyGateAGuardTests(unittest.TestCase):
 
     def test_invalid_mode_fails_closed(self):
         cfg = guard.load_config()
-        mode_path = guard.ROOT / cfg["autonomy_mode_file"].removeprefix("implementation/")
-        original = mode_path
         with tempfile.TemporaryDirectory() as td:
             fake_root = Path(td)
             p = fake_root / cfg["autonomy_mode_file"]
