@@ -12,8 +12,15 @@
     "pr_events": "6ac2f22087288191abd144fb4a7655f8",
     "ci_followup": "6ac2efbd34fc8191a60dccbbe338c291"
   },
-  "status": "IDLE_BINDING_DECISION_PACKAGE_REQUEST_CHECKPOINTED",
-  "lease": null,
+  "status": "RUNNING_BINDING_AND_CONTINUATION_AUDIT",
+  "lease": {
+    "token": "qgv-binding-muuo6gsz",
+    "owner": "manual-root-current-user-request",
+    "input_owner_head": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+    "task": "binding-gate-and-autonomous-continuation-audit",
+    "claimed_at_kst": "2026-10-05T12:07:58.151328+09:00",
+    "expiry": null
+  },
   "pending_runs": [],
   "pending_long_tests": [],
   "last_observed_heads": {
