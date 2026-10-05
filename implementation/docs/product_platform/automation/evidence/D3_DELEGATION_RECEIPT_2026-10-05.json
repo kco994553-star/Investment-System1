@@ -1,0 +1,148 @@
+{
+  "schema": "platform-delegated-authority-receipt-v1",
+  "recorded_at_utc": "2026-10-05T09:05:13.520Z",
+  "decision_id": "PP-DA-001",
+  "decision": "Apply latest user D3-A/D3-R policy to this independent Platform audit scope; replace broad historical future labels; reclassify actual pending queue; synchronize both existing execution prompts.",
+  "classification": "D1_EXPLICIT_USER_INSTRUCTION",
+  "user_directive": "../D3_DELEGATED_APPROVAL_POLICY_v1.0.md",
+  "inputs": {
+    "audit_parent": "edd9b0eb7fcb714c0025aec0aa2a736cd040e6ed",
+    "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "owner_source": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
+    "global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "prior_approvals": [
+      "CDR-018 Main scope/ownership",
+      "CDR-021 risk-proportional verification",
+      "CDR-022 execute-to-exhaustion"
+    ],
+    "source_owner_handoff_blob": "2ab7511f669d7deab27c890fb7750e2962d9c013"
+  },
+  "alternatives": [
+    {
+      "option": "Retain blanket D3 for all Auth/Tenant/canonical/deployment labels",
+      "rejected": "Would preserve repeat-approval bottleneck and ignore latest direct policy"
+    },
+    {
+      "option": "Approve every apparently reasonable decision or seize source ownership",
+      "rejected": "Cannot demonstrate alignment and would bypass owner boundary"
+    },
+    {
+      "option": "Evidence-bound per-action classification within accepted role",
+      "selected": true
+    }
+  ],
+  "design_alignment": "Existing independent specialist scope, read-only financial contracts, pinned histories and risk checks remain; directive changes approval routing only.",
+  "protection_checks": {
+    "approved_goal_preserved": true,
+    "no_new_investment_economic_score_meaning": true,
+    "no_protection_relaxation": true,
+    "PIT_provenance_Frozen_history_preserved": true,
+    "no_security_tenant_financial_authority_expansion": true,
+    "no_orders_funds": true,
+    "no_history_evidence_deletion_rewrite": true,
+    "rollback_possible": true,
+    "deterministic_validation_available": true,
+    "conservative_SSoT_alternative_selected": true
+  },
+  "reclassification": {
+    "pending_concrete_decisions_start": 0,
+    "pending_concrete_decisions_end": 0,
+    "pending_converted_to_D3_A": 0,
+    "owner_dependency_blockers": 9,
+    "owner_write_set_takeover": false,
+    "assessment": "All nine active groups require actual owner source/contracts/write-set returns; policy does not make them approval-blocked or close them."
+  },
+  "assessments": [
+    {
+      "scope": "Own audit queue/prompt/decision receipt metadata",
+      "classification": "D1",
+      "basis": "User directive + CDR-021/CDR-022 + own accepted docs write set",
+      "executed": true
+    },
+    {
+      "scope": "Contract-preserving protective successor after accountable owner acceptance",
+      "classification": "D3-A_ELIGIBLE_NOT_GRANTED",
+      "basis": "Existing read-only/provenance contracts and b517a098 candidate receipt; requires exact proposed change matching all ten criteria",
+      "executed": false,
+      "dependency": "Owner source/write-set; never source takeover"
+    },
+    {
+      "scope": "Tenant/auth activation or expanded permission without pinned approved runtime contract",
+      "classification": "D3-R",
+      "reason": "Current SSoT cannot prove design alignment or unchanged authority",
+      "executed": false
+    },
+    {
+      "scope": "Future canonical/deploy action",
+      "classification": "CASE_BY_CASE_NOT_GRANTED",
+      "reason": "No concrete action in this audit write set; independently satisfy all D3-A conditions or retain D3-R"
+    }
+  ],
+  "automation": [
+    {
+      "id": "6ac3505a9b6481919af63cd3355d2fb5",
+      "prompt_exact": true,
+      "enabled_preserved": true,
+      "schedule_preserved": true,
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT"
+    },
+    {
+      "id": "6ac31feebd4081919316ff15e37499b3",
+      "prompt_exact": true,
+      "enabled_preserved": true,
+      "schedule_preserved": true,
+      "is_enabled": false,
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T090500Z\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT"
+    }
+  ],
+  "verification": {
+    "state": "PASS",
+    "product_tests": "NOT_RUN_UNCHANGED_SCOPE; exact historical receipts remain pinned",
+    "owner_source_tests": "NOT_RUN_NO_RETURN",
+    "structural_checks": {
+      "checks": {
+        "four_authority_levels": true,
+        "exact_ten_conditions": true,
+        "all_reserved_exclusions": true,
+        "unknown_reserved": true,
+        "no_fake_conversion": true,
+        "pending_queue_empty": true,
+        "owner_unchanged": true,
+        "canonical_unchanged": true,
+        "no_source_takeover": true,
+        "no_product_closure": true,
+        "capability_matrix_preserved": true,
+        "lease_release": true,
+        "all_wait_guards_zero": true,
+        "no_ready_or_ci": true,
+        "exact_two_auto_readbacks": true,
+        "event_enabled_followup_disabled": true,
+        "no_test_replay": true,
+        "rollback_present": true,
+        "alternatives_present": true,
+        "pinned_approval_inputs": true,
+        "historical_loop_retained": true,
+        "directive_contains_key_exclusions": true,
+        "wait_state": true,
+        "prompt_new_authority": true
+      },
+      "passed": 24,
+      "total": 24,
+      "failed": [],
+      "scope": "own policy/receipt/queue documents; no Product capability proof"
+    }
+  },
+  "rollback": "Append a superseding decision, revert own policy/prompt/queue documents by normal descendant commit and restore both prior automation prompts; preserve current cadence/enablement/triggers and historical receipts. No source/data/rights migration.",
+  "remaining": {
+    "Product_blockers": 9,
+    "READY": 0,
+    "current_D3_R_decisions": 0,
+    "owner_source_adoption": "UNVERIFIED",
+    "verified_whole_capabilities": 0,
+    "Supabase": "NOT_CONFIRMED / NOT_RUN"
+  },
+  "failure_history": [],
+  "ownership": "Global and source owner read-only; candidate cannot certify adoption."
+}

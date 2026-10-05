@@ -1,3 +1,15 @@
+## Current authority — D3 Delegated Approval Policy v1.0
+
+The user's latest directive in [D3_DELEGATED_APPROVAL_POLICY_v1.0.md](D3_DELEGATED_APPROVAL_POLICY_v1.0.md) supersedes conflicting broad D3 labels below; those historical text sections are retained. D1/D2 retain scope. D3-A requires concrete pinned approved goal/Architecture/SSoT/decision evidence for every condition; rationality alone is insufficient. No new investment/economic/score meaning, weakened protection/PIT/provenance/Frozen/history, enlarged security/tenant/financial authority, actual order/funds, destructive evidence change, or irreversible migration. Rollback and deterministic/independent verification are required; choose the conservative SSoT-aligned alternative. Unknown or any reserved exclusion = D3-R.
+
+D3-A: CLASSIFY → AUTO-APPROVE → EXECUTE → VERIFY → DECISION RECEIPT → UPDATE SSoT → RE-EVALUATE → CONTINUE, without another user approval. Receipt includes decision, pinned prior approval, alternatives, design alignment, each protection check, verification and rollback. Reclassify pending old D3 at each fresh read; D3-R blocks its dependent lane only.
+
+Reserved: new paid resource/payment; actual order/funds; real financial credential or authority expansion; any Holdout consumption; Official/LIVE; PIT relaxation; destructive Frozen/history/evidence; security/tenant weakening; irreversible deletion/migration; new meaningful QGV/13F/backtest methodology or numeric threshold/default/cutoff/weight; unproven alignment. Auth/tenant/canonical/deployment labels alone are insufficient to classify: approved bounded protective work may qualify, while absent approved implementation/activation evidence remains D3-R. This does not transfer ownership, writer/write-set, leases or grants. Global and other owner branches remain read-only here.
+
+Current inventory: no pending concrete D3 decisions; nine Product blockers WAIT_DEPENDENCY, not approval blockers. Main ACK does not establish implementation-owner ACK. No owner takeover or Product closure results from this policy adoption.
+
+--- Historical loop retained ---
+
 # Product Platform SSoT Autonomous Execution Loop v1.0
 
 Authority: explicit user directive received2026-10-05 16:15:41 Asia/Seoul. This supplements the existing independent audit role and Risk-Proportional Verification; it does not grant another owner's source/write set. Current queue, receipts and dependencies are in [STATE.json](STATE.json). The audit branch is codex/product-platform-storage-auth-review-2026-10-05; PR45 retains its historical fixture-harness head17244b4. Product source owner remains codex/product-platform-audit-v1.
@@ -41,3 +53,4 @@ Global WAIT requires all six counts zero: READY D1/D2; other-lane READY; bounded
 Material triggers: accepted writer/write set, source/contract/dependency delta, owner return, CI terminal/artifact, approved decision, integration/canonical change or actual tool-target availability. Timestamp-only or already consumed self/control delta does not reopen completed work. A queued READY task can execute without a new external event. Whole Work stops only at acceptance DONE, actual D3, exhausted D1/D2 dependency wait, or an actual unrecoverable tool/system blocker.
 
 At actual WAIT/D3/DONE report exact SSoT, Product blockers closed separately from coordination/acceptance closures, real verification, consumed returns, remaining READY, WAIT references/triggers, D3 and next automatic action. Maintain each named capability's maturity and start/closed/new/end/net, verified capabilities, owner actions, tool-blocked items, gates/dependencies/acceptance criteria and candidate readiness. Test/commit/agent counts are evidence, not progress. No need to ask the user to type “continue” for a permitted next action.
+
