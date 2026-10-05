@@ -56,7 +56,9 @@ _SHA = re.compile(r"[0-9a-f]{40}")
 _REPOSITORY = re.compile(
     r"[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}/[A-Za-z0-9][A-Za-z0-9_.-]{0,99}"
 )
-_PATH = re.compile(r"[A-Za-z0-9_.\-/]+")
+_PATH = re.compile(r"[A-Za-z0-9_.\-/]{1,512}")
+_LABEL = re.compile(r"[\x20-\x7e]{1,256}")
+_EXECUTION_IDS = range(1, 2 ** 64)
 _WORKFLOW = re.compile(r"\.github/workflows/[A-Za-z0-9][A-Za-z0-9_.-]*\.ya?ml")
 
 
@@ -80,7 +82,7 @@ def _valid_repository(value):
 
 
 def _valid_path(value):
-    return (type(value) is str and 0 < len(value) <= 512 and _PATH.fullmatch(value) is not None
+    return (type(value) is str and bool(value) and _PATH.fullmatch(value) is not None
             and all(part not in ("", ".", "..") for part in value.split("/")))
 
 
@@ -90,12 +92,12 @@ def _valid_workflow(value):
 
 def _valid_id(value):
     # bool is an int subclass, but not an execution identifier.
-    return type(value) is int and 0 < value < 2 ** 64
+    return type(value) is int and value in _EXECUTION_IDS
 
 
 def _valid_label(value):
-    return (type(value) is str and 0 < len(value) <= 256 and value.strip() == value
-            and all(32 <= ord(char) <= 126 for char in value))
+    return (type(value) is str and _LABEL.fullmatch(value) is not None
+            and value.strip() == value)
 
 
 def _validate_identity(value, source):

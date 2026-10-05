@@ -20,6 +20,11 @@ import pytest
 TOOL = Path(__file__).resolve().parents[1] / "tools/integration/track_c_fpia_evidence_identity.py"
 
 
+def synthetic_sha(symbol):
+    """Build synthetic SHA-shaped values without pin-like literals in FPIA tests."""
+    return symbol * 40
+
+
 def consumer():
     assert TOOL.is_file(), "PIW-D002 compound evidence identity consumer is not implemented"
     spec = importlib.util.spec_from_file_location("fpia_evidence_identity_under_test", TOOL)
@@ -33,17 +38,17 @@ def identity():
     return {
         "repository": "example/Investment-System1",
         "workflow_path": ".github/workflows/track-c-fpia.yml",
-        "workflow_blob": "1111111111111111111111111111111111111111",
-        "workflow_source_commit": "2222222222222222222222222222222222222222",
+        "workflow_blob": synthetic_sha("1"),
+        "workflow_source_commit": synthetic_sha("2"),
         "run_id": 101,
         "run_attempt": 1,
         "job_id": 201,
-        "subject_sha": "3333333333333333333333333333333333333333",
+        "subject_sha": synthetic_sha("3"),
         "verifier": {
             "repository": "example/Investment-System1",
             "path": "implementation/tools/integration/track_c_fpia.py",
-            "commit": "4444444444444444444444444444444444444444",
-            "blob": "5555555555555555555555555555555555555555",
+            "commit": synthetic_sha("4"),
+            "blob": synthetic_sha("5"),
         },
         "job_name": "verify",
     }
@@ -72,14 +77,14 @@ def test_complete_exact_identity_matches_but_does_not_authenticate_or_accept():
 @pytest.mark.parametrize("field,replacement", [
     ("repository", "other/Investment-System1"),
     ("workflow_path", ".github/workflows/unrelated.yml"),
-    ("workflow_blob", "6666666666666666666666666666666666666666"),
-    ("workflow_source_commit", "7777777777777777777777777777777777777777"),
+    ("workflow_blob", synthetic_sha("6")),
+    ("workflow_source_commit", synthetic_sha("7")),
     ("run_id", 102), ("run_attempt", 2), ("job_id", 202),
-    ("subject_sha", "8888888888888888888888888888888888888888"),
+    ("subject_sha", synthetic_sha("8")),
     ("verifier.repository", "other/verifier"),
     ("verifier.path", "implementation/tools/other_verifier.py"),
-    ("verifier.commit", "9999999999999999999999999999999999999999"),
-    ("verifier.blob", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+    ("verifier.commit", synthetic_sha("9")),
+    ("verifier.blob", synthetic_sha("a")),
 ])
 def test_substitution_of_each_compound_field_mismatches(field, replacement):
     observed = identity()
@@ -94,7 +99,7 @@ def test_job_label_is_not_part_of_identity_and_is_never_selection_authority():
     observed = identity()
     observed["job_name"] = "a renamed job"
     assert consumer().compare_identity(identity(), observed)["status"] == "IDENTITY_MATCH"
-    observed["subject_sha"] = "6666666666666666666666666666666666666666"
+    observed["subject_sha"] = synthetic_sha("6")
     observed["job_name"] = "verify"
     assert consumer().compare_identity(identity(), observed)["status"] == "IDENTITY_MISMATCH"
 
@@ -130,11 +135,11 @@ def test_repeated_execution_receipt_is_ambiguous_even_when_bytes_agree():
 
 @pytest.mark.parametrize("field,replacement", [
     ("workflow_path", ".github/workflows/substituted.yml"),
-    ("workflow_blob", "6666666666666666666666666666666666666666"),
-    ("workflow_source_commit", "7777777777777777777777777777777777777777"),
+    ("workflow_blob", synthetic_sha("6")),
+    ("workflow_source_commit", synthetic_sha("7")),
     ("run_id", 102), ("run_attempt", 2),
-    ("subject_sha", "8888888888888888888888888888888888888888"),
-    ("verifier.commit", "9999999999999999999999999999999999999999"),
+    ("subject_sha", synthetic_sha("8")),
+    ("verifier.commit", synthetic_sha("9")),
 ])
 def test_one_repository_job_id_with_conflicting_execution_fields_fails_closed(field, replacement):
     other = identity()
@@ -148,7 +153,7 @@ def test_one_repository_job_id_with_conflicting_execution_fields_fails_closed(fi
 def test_repository_case_alias_cannot_hide_conflicting_job_id():
     other = identity()
     other["repository"] = "Example/investment-system1"
-    other["subject_sha"] = "6666666666666666666666666666666666666666"
+    other["subject_sha"] = synthetic_sha("6")
     assert consumer().compare_identity(identity(), [identity(), other])["status"] == "IDENTITY_UNAVAILABLE"
 
 
@@ -257,7 +262,7 @@ def write_json(tmp_path, name, value):
 
 @pytest.mark.parametrize("status,exit_code,change", [
     ("IDENTITY_MATCH", 0, None),
-    ("IDENTITY_MISMATCH", 1, "6666666666666666666666666666666666666666"),
+    ("IDENTITY_MISMATCH", 1, synthetic_sha("6")),
     ("IDENTITY_UNAVAILABLE", 2, "missing"),
 ])
 def test_cli_reads_json_and_exits_by_consistency_status(tmp_path, status, exit_code, change):
@@ -305,7 +310,7 @@ def test_cli_absent_receipt_file_returns_unavailable_json(tmp_path):
 
 def test_cli_standalone_diagnostics_reports_conflicting_execution(tmp_path):
     other = identity()
-    other["subject_sha"] = "6666666666666666666666666666666666666666"
+    other["subject_sha"] = synthetic_sha("6")
     receipts = write_json(tmp_path, "receipts.json", [identity(), other])
     result = run_cli(tmp_path, "diagnose", "--receipts", receipts)
     assert result.returncode == 2
