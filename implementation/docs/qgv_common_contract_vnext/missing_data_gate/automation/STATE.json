@@ -12,8 +12,14 @@
     "pr_events": "6ac2f22087288191abd144fb4a7655f8",
     "ci_followup": "6ac2efbd34fc8191a60dccbbe338c291"
   },
-  "status": "IDLE_WAITING_FOR_METHOD_PROFILE_BINDING_AND_CONSUMER_DECISIONS",
-  "lease": null,
+  "status": "RUNNING_METHOD_PROFILE_CONSUMER_DECISION_DESIGN",
+  "lease": {
+    "run_token": "qgv-binding-decision-design-2026-10-05T01:45:58.482Z",
+    "input_head": "478a7a4d4fd328f0a5cf4ec9b2b9830161ecc142",
+    "input_fingerprint": "M1_M5_APPROVED_ONLY:65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf;USER_OBJECTIVE:BINDING_DECISION_PACKAGE_ONLY",
+    "scope": "AUDIT_AND_PROPOSED_DECISION_PACKAGE_NO_PRODUCTION",
+    "disposition": "RUNNING"
+  },
   "pending_runs": [],
   "pending_long_tests": [],
   "last_observed_heads": {
