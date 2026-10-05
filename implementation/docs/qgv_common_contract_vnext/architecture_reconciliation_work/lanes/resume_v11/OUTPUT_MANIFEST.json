@@ -1,5 +1,5 @@
 {
-  "parent": "02c41495b1e80cc9326ddcd318cc2652c341cfbe",
+  "parent": "b8726714e8500a58d69c78e43eaf264c1397fdff",
   "files": [
     {
       "local_file": "AUTHORITY_RECEIPT.json",
@@ -66,6 +66,12 @@
       "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/VERIFICATION.json",
       "sha256": "c309061797431a5d974f28a053385e3009e3e855df9b33cd2de5113eb526ef55",
       "git_blob_sha": "157abcc0fd0d1ff4a93a199a78f7783da7155e02"
+    },
+    {
+      "local_file": "PUBLICATION_HISTORY.json",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/PUBLICATION_HISTORY.json",
+      "sha256": "a63e1f11f6894f42f5f2f914fb773f68afdc0b6a529f1eac8f4bb1b08219f36e",
+      "git_blob_sha": "91a4c51d55158d3e89773d93c83822f12dc558af"
     }
   ],
   "history_preserving": true,
@@ -73,5 +79,7 @@
   "other_owner_writes": 0,
   "Global_writes": 0,
   "runtime_source_changes": 0,
-  "production_enabled": false
+  "production_enabled": false,
+  "prior_prepared_parent": "02c41495b1e80cc9326ddcd318cc2652c341cfbe",
+  "prior_prepared_manifest_sha256": "8c1f9a33bc016eee00c51ad795ac5c720be92a7f00dc5d901ac5f0c788a7ed9e"
 }
