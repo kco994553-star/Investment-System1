@@ -1,0 +1,385 @@
+{
+  "scope": "TARGET_OWNER_CLOSURE_DELTA_ONLY_READ_ONLY_NOT_FULL_MARKET_AUDIT",
+  "refs": {
+    "chart_source": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "fpia_owner": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+    "global_handoff": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e"
+  },
+  "source_pins": [
+    {
+      "path": "QGV Portfolio · Specification v1.1.md",
+      "refs": {
+        "chart_source": {
+          "present": true,
+          "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+          "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+          "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e",
+          "size_bytes": 9158
+        },
+        "canonical": {
+          "present": true,
+          "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+          "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e",
+          "size_bytes": 9158
+        },
+        "fpia_owner": {
+          "present": true,
+          "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+          "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+          "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e",
+          "size_bytes": 9158
+        },
+        "global_handoff": {
+          "present": true,
+          "commit": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+          "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+          "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e",
+          "size_bytes": 9158
+        }
+      },
+      "same_bytes_chart_canonical_fpia": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/portfolio.py",
+      "refs": {
+        "chart_source": {
+          "present": true,
+          "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+          "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+          "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+          "size_bytes": 7686
+        },
+        "canonical": {
+          "present": true,
+          "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+          "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+          "size_bytes": 7686
+        },
+        "fpia_owner": {
+          "present": true,
+          "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+          "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+          "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+          "size_bytes": 7686
+        },
+        "global_handoff": {
+          "present": true,
+          "commit": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+          "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+          "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+          "size_bytes": 7686
+        }
+      },
+      "same_bytes_chart_canonical_fpia": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/identifiers.py",
+      "refs": {
+        "chart_source": {
+          "present": true,
+          "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+          "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+          "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+          "size_bytes": 3163
+        },
+        "canonical": {
+          "present": true,
+          "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+          "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+          "size_bytes": 3163
+        },
+        "fpia_owner": {
+          "present": true,
+          "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+          "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+          "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+          "size_bytes": 3163
+        },
+        "global_handoff": {
+          "present": true,
+          "commit": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+          "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+          "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+          "size_bytes": 3163
+        }
+      },
+      "same_bytes_chart_canonical_fpia": true
+    },
+    {
+      "path": "implementation/src/investment_system/contracts/portfolio_input.py",
+      "refs": {
+        "chart_source": {
+          "present": true,
+          "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+          "git_blob": "e8363f1c1da7f5f5c94c09fd84ed61e558fb561f",
+          "sha256": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+          "size_bytes": 1215
+        },
+        "canonical": {
+          "present": true,
+          "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "git_blob": "e8363f1c1da7f5f5c94c09fd84ed61e558fb561f",
+          "sha256": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+          "size_bytes": 1215
+        },
+        "fpia_owner": {
+          "present": true,
+          "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+          "git_blob": "e8363f1c1da7f5f5c94c09fd84ed61e558fb561f",
+          "sha256": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+          "size_bytes": 1215
+        },
+        "global_handoff": {
+          "present": true,
+          "commit": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+          "git_blob": "e8363f1c1da7f5f5c94c09fd84ed61e558fb561f",
+          "sha256": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+          "size_bytes": 1215
+        }
+      },
+      "same_bytes_chart_canonical_fpia": true
+    },
+    {
+      "path": "implementation/src/investment_system/contracts/global_universe.py",
+      "refs": {
+        "chart_source": {
+          "present": true,
+          "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+          "git_blob": "4dcbb8d7cb65aa35e91d680ea19b169346defee8",
+          "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+          "size_bytes": 6228
+        },
+        "canonical": {
+          "present": true,
+          "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "git_blob": "4dcbb8d7cb65aa35e91d680ea19b169346defee8",
+          "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+          "size_bytes": 6228
+        },
+        "fpia_owner": {
+          "present": true,
+          "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+          "git_blob": "4dcbb8d7cb65aa35e91d680ea19b169346defee8",
+          "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+          "size_bytes": 6228
+        },
+        "global_handoff": {
+          "present": true,
+          "commit": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+          "git_blob": "4dcbb8d7cb65aa35e91d680ea19b169346defee8",
+          "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+          "size_bytes": 6228
+        }
+      },
+      "same_bytes_chart_canonical_fpia": true
+    },
+    {
+      "path": "implementation/src/investment_system/personal/security.py",
+      "refs": {
+        "chart_source": {
+          "present": true,
+          "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+          "git_blob": "4bba65c8092c4a29f0974ab35eac975c3b06f1da",
+          "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0",
+          "size_bytes": 4196
+        },
+        "canonical": {
+          "present": true,
+          "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "git_blob": "4bba65c8092c4a29f0974ab35eac975c3b06f1da",
+          "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0",
+          "size_bytes": 4196
+        },
+        "fpia_owner": {
+          "present": true,
+          "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+          "git_blob": "4bba65c8092c4a29f0974ab35eac975c3b06f1da",
+          "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0",
+          "size_bytes": 4196
+        },
+        "global_handoff": {
+          "present": true,
+          "commit": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+          "git_blob": "4bba65c8092c4a29f0974ab35eac975c3b06f1da",
+          "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0",
+          "size_bytes": 4196
+        }
+      },
+      "same_bytes_chart_canonical_fpia": true
+    },
+    {
+      "path": "implementation/src/investment_system/personal/portfolio.py",
+      "refs": {
+        "chart_source": {
+          "present": true,
+          "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+          "git_blob": "9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e",
+          "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+          "size_bytes": 5986
+        },
+        "canonical": {
+          "present": true,
+          "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "git_blob": "9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e",
+          "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+          "size_bytes": 5986
+        },
+        "fpia_owner": {
+          "present": true,
+          "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+          "git_blob": "9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e",
+          "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+          "size_bytes": 5986
+        },
+        "global_handoff": {
+          "present": true,
+          "commit": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+          "git_blob": "9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e",
+          "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+          "size_bytes": 5986
+        }
+      },
+      "same_bytes_chart_canonical_fpia": true
+    },
+    {
+      "path": "Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md",
+      "refs": {
+        "chart_source": {
+          "present": true,
+          "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+          "git_blob": "f4988e024e90098484ab3462cabe1710b5c6510c",
+          "sha256": "64bb27df6dc389477b219a63c276e6ee71041773845017229f3d6043a010287c",
+          "size_bytes": 22805
+        },
+        "canonical": {
+          "present": true,
+          "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "git_blob": "f4988e024e90098484ab3462cabe1710b5c6510c",
+          "sha256": "64bb27df6dc389477b219a63c276e6ee71041773845017229f3d6043a010287c",
+          "size_bytes": 22805
+        },
+        "fpia_owner": {
+          "present": true,
+          "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+          "git_blob": "f4988e024e90098484ab3462cabe1710b5c6510c",
+          "sha256": "64bb27df6dc389477b219a63c276e6ee71041773845017229f3d6043a010287c",
+          "size_bytes": 22805
+        },
+        "global_handoff": {
+          "present": true,
+          "commit": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+          "git_blob": "f4988e024e90098484ab3462cabe1710b5c6510c",
+          "sha256": "64bb27df6dc389477b219a63c276e6ee71041773845017229f3d6043a010287c",
+          "size_bytes": 22805
+        }
+      },
+      "same_bytes_chart_canonical_fpia": true
+    },
+    {
+      "path": "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+      "refs": {
+        "chart_source": {
+          "present": true,
+          "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+          "git_blob": "e63aca909246148723fbfe9cd2528299b6138bf8",
+          "sha256": "6bd7f8a39fc69cea0bedb3323ea72e5921f1ac1773fd643ced1a08557c1490b3",
+          "size_bytes": 44885
+        },
+        "canonical": {
+          "present": true,
+          "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "git_blob": "e63aca909246148723fbfe9cd2528299b6138bf8",
+          "sha256": "6bd7f8a39fc69cea0bedb3323ea72e5921f1ac1773fd643ced1a08557c1490b3",
+          "size_bytes": 44885
+        },
+        "fpia_owner": {
+          "present": true,
+          "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+          "git_blob": "d8a32977f325bdaf15ead22fa3d3961942da35dc",
+          "sha256": "3e49be6bd61add53c1b278ef07ee2ccfe693a205b8d2c457cc611c276f194455",
+          "size_bytes": 70885
+        },
+        "global_handoff": {
+          "present": true,
+          "commit": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+          "git_blob": "e63aca909246148723fbfe9cd2528299b6138bf8",
+          "sha256": "6bd7f8a39fc69cea0bedb3323ea72e5921f1ac1773fd643ced1a08557c1490b3",
+          "size_bytes": 44885
+        }
+      },
+      "same_bytes_chart_canonical_fpia": false
+    }
+  ],
+  "source_construction_searches": [
+    {
+      "ref_role": "canonical",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "label": "ModelPortfolioSnapshot construction",
+      "expression": "ModelPortfolioSnapshot\\(",
+      "scope": "implementation/src",
+      "exit_code": 1,
+      "matched_lines": [],
+      "interpretation": "NO_CONSTRUCTION_MATCH_IN_SCOPED_PACKAGE_SOURCE"
+    },
+    {
+      "ref_role": "canonical",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "label": "explicit global identity construction",
+      "expression": "IssuerIdentity\\(|SecurityIdentity\\(|ListingIdentity\\(",
+      "scope": "implementation/src",
+      "exit_code": 1,
+      "matched_lines": [],
+      "interpretation": "NO_CONSTRUCTION_MATCH_IN_SCOPED_PACKAGE_SOURCE"
+    },
+    {
+      "ref_role": "canonical",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "label": "Personal security records / CompanyLink / resolver construction",
+      "expression": "SecurityRecord\\(|CompanyLink\\(|InMemorySecurityResolver\\(",
+      "scope": "implementation/src",
+      "exit_code": 1,
+      "matched_lines": [],
+      "interpretation": "NO_CONSTRUCTION_MATCH_IN_SCOPED_PACKAGE_SOURCE"
+    },
+    {
+      "ref_role": "fpia_owner",
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "label": "ModelPortfolioSnapshot construction",
+      "expression": "ModelPortfolioSnapshot\\(",
+      "scope": "implementation/src",
+      "exit_code": 1,
+      "matched_lines": [],
+      "interpretation": "NO_CONSTRUCTION_MATCH_IN_SCOPED_PACKAGE_SOURCE"
+    },
+    {
+      "ref_role": "fpia_owner",
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "label": "explicit global identity construction",
+      "expression": "IssuerIdentity\\(|SecurityIdentity\\(|ListingIdentity\\(",
+      "scope": "implementation/src",
+      "exit_code": 1,
+      "matched_lines": [],
+      "interpretation": "NO_CONSTRUCTION_MATCH_IN_SCOPED_PACKAGE_SOURCE"
+    },
+    {
+      "ref_role": "fpia_owner",
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "label": "Personal security records / CompanyLink / resolver construction",
+      "expression": "SecurityRecord\\(|CompanyLink\\(|InMemorySecurityResolver\\(",
+      "scope": "implementation/src",
+      "exit_code": 1,
+      "matched_lines": [],
+      "interpretation": "NO_CONSTRUCTION_MATCH_IN_SCOPED_PACKAGE_SOURCE"
+    }
+  ],
+  "delta_vs_v04": "No new admitted Target root/security map/Theme catalog or assignment receipt. Existing common identity/resolver reuse boundary is made explicit; owner request is made concrete.",
+  "readiness_promotion_count": 0,
+  "admission_status": "NOT_ADMITTED",
+  "production_validation": "NOT_RUN",
+  "prior_source_arithmetic_replay": "REUSED_NOT_RERUN",
+  "prior_replay_ref": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/lane-a/REPLAY_RESULT.json"
+}

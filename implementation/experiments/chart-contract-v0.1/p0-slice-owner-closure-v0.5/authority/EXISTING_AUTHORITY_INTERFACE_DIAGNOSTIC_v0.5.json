@@ -1,0 +1,281 @@
+{
+  "status": "DIAGNOSTIC_ONLY_EXISTING_OWNER_FUNCTIONS",
+  "generated_at": "2026-10-05T00:19:44.227792+00:00",
+  "source_head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "owner_worktree": "/workspace/scratch/e21499bd6a66/fpia-readonly-work",
+  "source_pins": [
+    {
+      "path": "implementation/src/investment_system/producers/serialization.py",
+      "bytes": 2009,
+      "sha256": "c24ff942b763c204ff8429ab7125b68921f96a43ec8ab43c3e2c14749cabbe33"
+    },
+    {
+      "path": "implementation/src/investment_system/producers/contract.py",
+      "bytes": 13283,
+      "sha256": "61b5eea2b32c9283e2407531e614de9a1b255aff9124d62d0a2168df23faaa6f"
+    },
+    {
+      "path": "implementation/src/investment_system/producers/assembler.py",
+      "bytes": 5110,
+      "sha256": "c427daddcb4cfff002c8f4c77a6c0d66ca8c9ebb7087d40fd454761181f1c877"
+    },
+    {
+      "path": "implementation/src/investment_system/publication/authorization.py",
+      "bytes": 3581,
+      "sha256": "36786fc7d585d51a77fe50e483af76b9d994ae6c76063c712da94faab12e5aa2"
+    },
+    {
+      "path": "implementation/src/investment_system/publication/envelope.py",
+      "bytes": 2324,
+      "sha256": "8e654b8d48aab84aba94ca92541711c2cc44cb76932cee6a1a1fc7d71b2a362e"
+    },
+    {
+      "path": "implementation/src/investment_system/publication/extractors.py",
+      "bytes": 7893,
+      "sha256": "d88b3b745964d7fcd41630144eb4a72f384acdd27edc667fad73c3926a20a47b"
+    },
+    {
+      "path": "implementation/src/investment_system/publication/facts.py",
+      "bytes": 2804,
+      "sha256": "b81838adad0954e6879981071613e4f61744bc6f2071f5917218b04ee6bf57d8"
+    },
+    {
+      "path": "implementation/src/investment_system/publication/predicate.py",
+      "bytes": 4758,
+      "sha256": "c4b10daa9857af9dfc393d79111d9894a72f5344ca27b2b6681ea0c3b95b2b96"
+    },
+    {
+      "path": "implementation/src/investment_system/publication/invalidation.py",
+      "bytes": 8380,
+      "sha256": "804ace62c3a7f6fbe48edbaa46a0c9647e41cb0ece52001cc3bee46ccf17ba27"
+    },
+    {
+      "path": "implementation/src/investment_system/publication/qgv_binding.py",
+      "bytes": 11127,
+      "sha256": "f28d94273d94a1bad06daff308182f7cde7f66ec235b2e47882994e591c85853"
+    },
+    {
+      "path": "implementation/src/investment_system/product/web_mvp.py",
+      "bytes": 7517,
+      "sha256": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323"
+    },
+    {
+      "path": "implementation/src/investment_system/product/web_assets/app.js",
+      "bytes": 38098,
+      "sha256": "9774bee4b51b34ed68ce0467b01dc13028306c8f46589bd3e3283b2778a209f2"
+    },
+    {
+      "path": "implementation/tools/export_web_bundle.py",
+      "bytes": 2982,
+      "sha256": "ffcf74b417800565d6b9911af669bb34efcf1b5308442e0729f06234b87fac0f"
+    },
+    {
+      "path": "implementation/tools/mini_pytest.py",
+      "bytes": 4765,
+      "sha256": "c24c3bb38fa3242b43578ff9c3c92e3f66a71fdcf63d9eb279112c3f1c3a4d28"
+    },
+    {
+      "path": "implementation/tests/test_p01_research_publication.py",
+      "bytes": 20076,
+      "sha256": "b195771b34ef1743dfad29bb1654ddcf8d25189f1732de0692e2fb24129b9dc9"
+    },
+    {
+      "path": "implementation/tests/test_qgv_invalidation_binding.py",
+      "bytes": 17479,
+      "sha256": "c82c5e9926baf634137224985055d0b3ef09afd3e1722cab4309f9f66496daed"
+    },
+    {
+      "path": "implementation/docs/research_publication/CONTRACT.md",
+      "bytes": 3952,
+      "sha256": "f3c1442fc25253469aad0cec1496b921a22c8b603146fe5d5087398e96f363f3"
+    },
+    {
+      "path": "implementation/docs/producer_infrastructure/P01_APPROVAL_2026-10-02.md",
+      "bytes": 4713,
+      "sha256": "0c8f69460ee63b5ee8692fc451a3279e62b6751de0992df07937c42e377189bf"
+    }
+  ],
+  "compatibility_probes": [
+    {
+      "label": "tagged-string canonical serialization",
+      "canonical_utf8": "{\"label\":\"반도체 장비\",\"numeric_kind\":\"lexical_decimal\",\"unit\":\"percent\",\"value\":\"5.50\"}",
+      "sha256": "07e3a54cb69e13976df851a150c9676b624582219cf7b0254cc4d5693f065908",
+      "key_order_invariant": true,
+      "trailing_zero_preserved": true
+    },
+    {
+      "label": "native Decimal unsupported",
+      "exception_type": "SerializationError",
+      "message": "unsupported type Decimal"
+    },
+    {
+      "label": "Chart shape unregistered",
+      "exception_type": "ExtractionError",
+      "message": "EXTRACTION: persisted document matched 0 publication extractors"
+    },
+    {
+      "label": "QGV binding refuses Chart shape",
+      "exception_type": "BindingContractError",
+      "message": "BINDING_CONTRACT: company record is not QGV_COMPANY_RESULT v1"
+    },
+    {
+      "label": "current active grant set",
+      "authorization_count": 0,
+      "summary": {
+        "research_display": "NONE",
+        "frozen": "NONE",
+        "live": "NONE"
+      }
+    },
+    {
+      "label": "generic resolver with available future-effective fixture",
+      "decision_time": "2026-10-05T00:00:00+00:00",
+      "event_effective_at": "2026-10-06T00:00:00+00:00",
+      "event_available_at": "2026-10-04T00:00:00+00:00",
+      "resolution": {
+        "resolution": "CLEAR",
+        "event_id": "7a1dba94a4cc3d425183797e330e4a186382ab68a57f085a6e1507451cde0834",
+        "defect": null
+      },
+      "interpretation": "mechanical available_at visibility is not a TARGET applicability or authority-authentication check; fixture is never admitted"
+    }
+  ],
+  "existing_owner_cases": {
+    "runner": "selected unchanged owner functions using existing mini_pytest raises shim; not pytest",
+    "pytest_available": false,
+    "initial_pytest_attempt": "ModuleNotFoundError: No module named 'pytest'; no owner cases ran on that attempt",
+    "exit_code": 0,
+    "p01_selected_node_ids": [
+      "test_schema1_states_and_active_grants_stay_closed",
+      "test_producer_pass_is_not_a_grant_and_modes_match_without_a_name",
+      "test_explicit_research_grant_stays_out_of_schema1_and_blocked_bytes_stay_hidden",
+      "test_one_grant_does_not_satisfy_another_and_promotion_is_refused",
+      "test_component_label_and_forged_track_c_are_not_authority",
+      "test_authorization_record_is_explicit_and_closed",
+      "test_extractors_copy_hashes_and_drop_scores",
+      "test_same_fact_axes_decide_the_same_way",
+      "test_production_envelope_keeps_sections_and_does_not_activate_display",
+      "test_research_lifecycle_is_still_rejected_as_live",
+      "test_publication_package_does_not_import_engines_or_name_them_in_the_predicate"
+    ],
+    "qgv_binding_file": "implementation/tests/test_qgv_invalidation_binding.py",
+    "passed_cases": [
+      {
+        "node_id": "test_p01_research_publication.py::test_schema1_states_and_active_grants_stay_closed",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_p01_research_publication.py::test_producer_pass_is_not_a_grant_and_modes_match_without_a_name",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_p01_research_publication.py::test_explicit_research_grant_stays_out_of_schema1_and_blocked_bytes_stay_hidden",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_p01_research_publication.py::test_one_grant_does_not_satisfy_another_and_promotion_is_refused",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_p01_research_publication.py::test_component_label_and_forged_track_c_are_not_authority",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_p01_research_publication.py::test_authorization_record_is_explicit_and_closed",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_p01_research_publication.py::test_extractors_copy_hashes_and_drop_scores",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_p01_research_publication.py::test_same_fact_axes_decide_the_same_way",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_p01_research_publication.py::test_production_envelope_keeps_sections_and_does_not_activate_display",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_p01_research_publication.py::test_research_lifecycle_is_still_rejected_as_live",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_p01_research_publication.py::test_publication_package_does_not_import_engines_or_name_them_in_the_predicate",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_admit_rejects_structural_appends_without_sorting",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_as_of_text_is_not_normalized",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_chain_defects_are_not_resolved_by_timestamp",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_code_commit_or_lineage_change_is_a_different_subject_without_rescoring",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_component_absence_does_not_block_or_imply_clear",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_component_event_can_veto_and_component_clear_does_not_grant",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_copy_does_not_mutate_persisted_documents",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_explicit_clear_is_current_but_not_a_grant",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_hash_mismatch_is_not_repaired",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_missing_clear_event_is_unbound_and_not_inferred",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_module_does_not_import_engines_or_issue_grants",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_pit_hides_later_available_events_and_does_not_rewrite_the_past",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_producer_id_is_the_persisted_literal",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_reconstruction_is_deterministic_and_ignores_operational_noise",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_successor_without_visible_predecessor_is_invalid_chain",
+        "status": "PASS"
+      },
+      {
+        "node_id": "test_qgv_invalidation_binding.py::test_suspended_is_not_current_and_does_not_restore_an_invalidated_target",
+        "status": "PASS"
+      }
+    ],
+    "failed_cases": [],
+    "stdout": "27 passed, 0 failed (existing mini_pytest raises shim; not pytest)\n"
+  },
+  "track_c_import_guard": "ACTIVE",
+  "loaded_track_c_modules": [],
+  "production_chart_tests": "NOT_RUN",
+  "merge_result_fpia": "NOT_RUN",
+  "authorization_written_or_activated": false,
+  "source_modified": false
+}

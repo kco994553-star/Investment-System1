@@ -510,7 +510,7 @@
     "new_chart_d3": false
   },
   "lease": {
-    "status": "ACTIVE_MANUAL_INITIALIZATION_PENDING_FIRST_REMOTE_CAS",
+    "status": "ACTIVE_VERIFIED_REMOTE",
     "run_id": "manual-root-v05-20261005",
     "holder_kind": "MANUAL_ROOT",
     "acquired_at_utc": "2026-10-05T00:31:02Z",
@@ -518,10 +518,12 @@
     "ttl_minutes": 60,
     "allowed_automatic_ttl_minutes": 30,
     "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": false,
+    "verified_remote_acquisition": true,
     "acquisition_parent_head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
     "mutual_exclusion": "PROTOCOL_NOT_PROVIDER_GUARANTEE",
-    "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease."
+    "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease.",
+    "acquisition_commit": "df1743b22680cd6d56dd286fd737cb053a7175ad",
+    "verified_at_utc": "2026-10-05T00:37:38.114590+00:00"
   },
   "publication": {
     "status": "AWAITING_FIRST_PUBLICATION",
@@ -529,8 +531,11 @@
     "scoped_output_paths": [],
     "output_sha256": {},
     "retained_comment_ids": [],
-    "commit_ids": [],
-    "update_after_publish": "Only after remote HEAD/file bytes and output hashes are verified. STATE.json itself is excluded from output fingerprint; current commit identity cannot be self-embedded."
+    "commit_ids": [
+      "df1743b22680cd6d56dd286fd737cb053a7175ad"
+    ],
+    "update_after_publish": "Only after remote HEAD/file bytes and output hashes are verified. STATE.json itself is excluded from output fingerprint; current commit identity cannot be self-embedded.",
+    "bootstrap_verified_owner_head": "df1743b22680cd6d56dd286fd737cb053a7175ad"
   },
   "self_update_filter": {
     "automation_titles": [
@@ -541,7 +546,9 @@
       "[chart-owner-resume]",
       "[chart-owner-checkpoint]"
     ],
-    "retained_owned_commit_ids": [],
+    "retained_owned_commit_ids": [
+      "df1743b22680cd6d56dd286fd737cb053a7175ad"
+    ],
     "owned_comment_marker": "<!-- chart-owner-handoff:v0.5 -->",
     "retained_owned_comment_ids": [],
     "require_comment_marker_and_retained_returned_id": true,

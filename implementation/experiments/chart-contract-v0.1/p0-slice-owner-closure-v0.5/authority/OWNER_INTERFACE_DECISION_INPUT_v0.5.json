@@ -1,0 +1,42 @@
+{
+  "status": "OWNER_ACTION_REQUIRED_NOT_ADOPTED",
+  "chart_source_head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+  "runtime_source_head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "existing_gate_id": "A-G1",
+  "new_gate_added": false,
+  "existing_p01_research_route": {
+    "chart_structural_registration": "ABSENT",
+    "active_authorizations_count": 0,
+    "production_display_path": "NOT_AVAILABLE",
+    "user_target_policy_applicability": "OWNER_ACTION_REQUIRED"
+  },
+  "existing_live_chart_http_api": "ABSENT",
+  "canonical_tagged_strings": "COMPATIBLE_WITH_UNCHANGED_EXISTING_SERIALIZER",
+  "native_decimal": "UNSUPPORTED_TYPE",
+  "qgv_binding_for_target_theme": "INCOMPATIBLE_QGV_SPECIFIC",
+  "generic_invalidation_resolver": "MECHANICAL_KERNEL_REUSE_CANDIDATE_OWNER_ADMISSION_REQUIRED",
+  "minimum_owner_receipt": [
+    "policy_applicability_source",
+    "exact_admitted_route_and_interface",
+    "exact_subject_integrity_and_dependency_binding",
+    "current_authority_source_and_invalidation_behavior",
+    "lossless_wire_preimage_acceptance",
+    "consumer_denial_and_cached_display_clearing"
+  ],
+  "smallest_new_asset_candidate_paths": [
+    "implementation/src/investment_system/product/web_assets/target-theme.html",
+    "implementation/src/investment_system/product/web_assets/target-theme-chart.js",
+    "implementation/src/investment_system/product/web_assets/target-theme.css"
+  ],
+  "protected_builder_assembler_modification_needed_for_asset_copy": false,
+  "grant_issued": false,
+  "owner_adoption_record": "NOT_AVAILABLE",
+  "diagnostic_existing_cases": {
+    "runner": "existing mini_pytest raises shim; not pytest",
+    "pass": 27,
+    "fail": 0,
+    "loaded_track_c_modules": []
+  },
+  "production_chart_tests": "NOT_RUN",
+  "exact_chart_merge_result_fpia": "NOT_RUN"
+}

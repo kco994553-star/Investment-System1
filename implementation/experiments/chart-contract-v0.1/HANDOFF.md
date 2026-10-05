@@ -41,3 +41,11 @@ Source-derived19-holding TARGET reference, unknown actual company types, separat
 Requirements inventory: core81 preserved; repository additions24; Macro Candidate8 kept separate. New J7 rows require subsequent implementation layer audit rather than assumed completion. Detailed complete list: `CHART_INVENTORY.md`, machine-readable `chart_inventory.json`, with UI search/filter.
 
 Next independent work can connect existing sourced Portfolio snapshots/classification histories while the price identity/session path continues. User-specified groups are not GICS; no actual account or company type is inferred. Preserve quarterly snapshots and missing-vs-none classification. Full historical identity, P01 and FPIA integration remain pending; no existing owner branch was changed.
+
+## Current bounded owner closure routing — v0.5
+
+This append supersedes earlier routing only; all preceding historical statements and evidence remain unchanged. Intake source PR41 HEAD was `d93c7ace37603d91f1d9342152c97e8acb3d4e8c`; published current HEAD is resolved from this file’s containing commit/PR metadata, not guessed from the intake pin.
+
+Read [v0.5 scoped HANDOFF](p0-slice-owner-closure-v0.5/HANDOFF.md) and [bounded delta](p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md), then the preserved v0.4 readiness report. Target IMPLEMENTATION_NOT_READY remains six distinct gates OPEN/zero CLOSED; Market admission0/19 with eight evidence families. Concrete owner-return packets and existing capability limits now define exact next inputs. No broad audit or requirement expansion.
+
+Actual automatic continuation is configured in this same conversation: [scoped runbook/state/setup receipts](automation/RUNBOOK.md). PR events and pending-CI follow-up are separate; no pending CI exists. Approval/ownership protections persist. All Global and other owner branches remain read-only. No production code, package/protected/Frozen change or merge authorization is created.

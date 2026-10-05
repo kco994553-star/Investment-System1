@@ -1,0 +1,295 @@
+{
+  "kind": "BOUNDED_OWNER_CLOSURE_FRESH_READ_NOT_ADOPTION",
+  "recorded_at_utc": "2026-10-05T00:20:47.936Z",
+  "recorded_at_kst": "2026-10-05T09:20:47.936+09:00",
+  "canonical": {
+    "branch": "claude/investment-system-top500-validation-alrugm",
+    "head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "global": {
+    "head": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+    "handoff": "GCH-014",
+    "index": "GSI-020",
+    "writer": "Claude Code session session_019znshzTYgyBnuuBmSxdPFN"
+  },
+  "chart": {
+    "head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+    "branch": "codex/chart-contract-mcp-api-v0-1",
+    "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "state": "open",
+    "draft": true,
+    "title": "Chart P0 readiness: Target Theme slice and Market admission",
+    "canonical_ahead": 7,
+    "canonical_behind": 0,
+    "merge_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "fpia": {
+    "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+    "base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+    "state": "open",
+    "draft": true,
+    "governance_closure": "NOT_CLOSED",
+    "existing_open": [
+      "D3-a",
+      "D3-b",
+      "D3-c",
+      "D3-d",
+      "G7 interpretation",
+      "final-head independent review",
+      "GIE closure",
+      "canonical merge decision"
+    ]
+  },
+  "reuse_prs": [
+    {
+      "pr": 17,
+      "title": "P01 research publication v1: envelope and predicate, display stays off",
+      "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "branch": "feature/p01-research-publication-v1",
+      "base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "pr": 18,
+      "title": "US equity trading session v1: calendar vintage binder and close-availability guard",
+      "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "branch": "feature/us-equity-session-v1",
+      "base": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "pr": 19,
+      "title": "Add QGV invalidation binding without activating display",
+      "head": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "branch": "feature/qgv-invalidation-binding-v1",
+      "base": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "pr": 34,
+      "title": "[proposal] Web render guard: research/provisional sections never render as LIVE/FROZEN (G3)",
+      "head": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "branch": "integration/web/research-render-guard-v1",
+      "base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "pr": 36,
+      "title": "[proposal] Web production-shaped state presentation (freshness, withheld metadata, ko/en, error fallback)",
+      "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "branch": "integration/web/production-state-presentation-v1",
+      "base": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "state": "open",
+      "draft": true
+    },
+    {
+      "pr": 44,
+      "title": "QGV Common Contract vNext — INACTIVE / SPEC-ONLY",
+      "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "branch": "codex/qgv-common-contract-vnext-spec-2026-10-04",
+      "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "state": "open",
+      "draft": true
+    }
+  ],
+  "owner_actions": [
+    {
+      "pr": 18,
+      "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "runs": [
+        {
+          "id": 36997929226,
+          "name": "technical-real-model",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929226",
+          "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4"
+        },
+        {
+          "id": 36997929255,
+          "name": "us-equity-session",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929255",
+          "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4"
+        },
+        {
+          "id": 36997929115,
+          "name": "technical-real-producer",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929115",
+          "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4"
+        },
+        {
+          "id": 36997922976,
+          "name": "us-equity-session",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "push",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997922976",
+          "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4"
+        }
+      ]
+    },
+    {
+      "pr": 17,
+      "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "runs": [
+        {
+          "id": 36994066298,
+          "name": "p01-research-publication",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994066298",
+          "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
+        },
+        {
+          "id": 36994037862,
+          "name": "p01-research-publication",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "push",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994037862",
+          "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
+        }
+      ]
+    },
+    {
+      "pr": 42,
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "runs": [
+        {
+          "id": 37234682865,
+          "name": "technical-real-model",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682865",
+          "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+        },
+        {
+          "id": 37234682891,
+          "name": "us-equity-session",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682891",
+          "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+        },
+        {
+          "id": 37234682853,
+          "name": "qgv-invalidation-binding",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682853",
+          "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+        },
+        {
+          "id": 37234682866,
+          "name": "p01-research-publication",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682866",
+          "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+        },
+        {
+          "id": 37234682873,
+          "name": "technical-real-producer",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682873",
+          "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+        },
+        {
+          "id": 37234682890,
+          "name": "sec-primary-disclosure",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682890",
+          "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+        },
+        {
+          "id": 37234682864,
+          "name": "track-c-fpia",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682864",
+          "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+        }
+      ]
+    },
+    {
+      "pr": 44,
+      "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "runs": [
+        {
+          "id": 37245037812,
+          "name": "qgv-common-contract-vnext",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "pull_request",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37245037812",
+          "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+        },
+        {
+          "id": 37245014376,
+          "name": "qgv-common-contract-vnext",
+          "status": "completed",
+          "conclusion": "success",
+          "event": "push",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37245014376",
+          "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+        }
+      ]
+    },
+    {
+      "pr": 41,
+      "head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+      "runs": []
+    }
+  ],
+  "reference_mismatches": [
+    {
+      "reference": "581c61c",
+      "actual": "d93c7ac",
+      "finding": "Latest v0.4 already completed readiness; takeover and delta only."
+    },
+    {
+      "source": "Chart experiment HANDOFF.md",
+      "finding": "Still carries early NVDA5-row/demo state without latest v0.4 route; append-only scoped routing update needed."
+    },
+    {
+      "source": "Global GCH-014/GSI-020",
+      "finding": "Routing predates PR41/44 and final PR42 green checks; exact PR/body/run state wins, no governance closure inferred."
+    },
+    {
+      "source": "QGV spec STATUS",
+      "finding": "Authoring-time NOT_RUN differs from actual remote CI success; production remains INACTIVE/SPEC-ONLY."
+    }
+  ],
+  "decisions": {
+    "new_chart_d3": "NONE_CHOSEN",
+    "qgv_semantics": "INACTIVE_SPEC_ONLY",
+    "grants_issued": 0,
+    "requirements": {
+      "core": 81,
+      "extended": 24,
+      "research": 8
+    }
+  },
+  "boundary": "No package/protected/Frozen/owner-branch or Global changes; no market re-collection, Holdout, grant, Official/LIVE or canonical merge."
+}
