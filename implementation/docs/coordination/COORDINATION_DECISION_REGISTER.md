@@ -1481,3 +1481,20 @@ Recorded effect (routing writer's reading; the user wording above governs):
 - QGV production semantics are not decided by Main; QGV research/audit/verification stays with the QGV Work. Product Platform security, tenant and read-only issues fail closed; real credentials, financial accounts, production auth and paid connectors are not progressed automatically without user approval.
 - D1/D2/D3 follow the current authority policy (CDR-015 as narrowed by CDR-016 §13 and this entry); a past D3 label is not a reason to stop, and a protected semantic change is not lowered to D2.
 - Leases and concurrency: active writers' branches are not written; no other owner's branch is overwritten; no force push or history rewrite; no write lease is held while waiting on long CI.
+
+
+## CDR-018 · User-directed GPT Work Main transfer (coordination only)
+
+- Status: USER_DECIDED; recorded at 2026-10-05T13:35:27+09:00.
+- Source: current user message, received 2026-10-05T13:31:19+09:00, plus explicitly applied attachment preserved at `evidence/main_takeover_2026-10-05/USER_EXECUTION_DIRECTIVE.md` (SHA-256 `e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667`).
+- User wording (verbatim):
+
+> 첨부 파일을 실행 지시로 적용해 Claude Main의 통합 담당 역할을 인수하고 계속 진행해. 최신 GitHub부터 확인하고, 이전 writer와의 충돌을 방지한 뒤 FPIA·owner routing·자동 재개를 이어가.
+
+Effect, within the attachment's exact scope:
+
+- This GPT Work (`gpt-work-main-2026-10-05-3a80dcef6444`) is the designated successor Primary Integration Coordinator / Primary Integration Writer. Previous session `session_019znshzTYgyBnuuBmSxdPFN` must not automatically resume shared integration writes; it must fresh-read this transfer and route unpublished outputs to the successor. This is an authority transfer, not proof that an external runtime/scheduler was terminated.
+- Inherited Global exact HEAD `b3532a2ebbe95310bbf222937466eb04a0211263`. Fresh remote checks agreed; no active Global lease artifact or accessible old Main automation was found. One FPIA Actions audit (37260997788, attempt 1, 11d2f25) was still running; that job audits, it does not authorize a second writer. Claude internal runtime/scheduler and unpublished scratch remain UNAVAILABLE/UNKNOWN.
+- Publish only a descendant of the immediately re-read Global parent with non-force ref advancement. A remote movement is a conflict requiring fresh reconciliation; never overwrite another update. Long CI holds no shared write lease. Other owners' scopes, leases and independent automations are preserved.
+- CDR-015 D1/D2 remains narrowed by CDR-016 §13 and CDR-017. No canonical merge, Frozen semantic rewrite, Holdout, PIT relaxation, Official/LIVE, protected owner contract changes, real account/credential/production-auth activation, paid resources or trade execution is newly approved by this transfer. Main does not decide QGV production semantics.
+- Routing comments/packets on relevant repository owner PRs and new Main-only automatic continuation are authorized by attachment §§8–9. Delivery is not receipt; activation is not end-to-end execution.

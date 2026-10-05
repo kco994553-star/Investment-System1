@@ -6,12 +6,16 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 |---|---|
 | Index revision | GSI-022 (CDR-015 decision authority delegation recorded; open items under reclassification; FPIA fix round 3 running) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
-| Writer | Primary Integration Writer, Claude Code session `session_019znshzTYgyBnuuBmSxdPFN` |
+| Writer | GPT Work `gpt-work-main-2026-10-05-3a80dcef6444`; CDR-018 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
 | Canonical | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca` (= `origin/HEAD`; unchanged since 2026-09-28) |
 | Operating contract | `CLAUDE_CODE_WORKER_CONTRACT_v1.0` at PR #21 exact HEAD `f1b5afb` is the operational routing SSoT (CDR-001). PR #20 is SUPERSEDED_DUPLICATE (not merged, retained) |
 
 **Decision authority (CDR-015, 2026-10-05 12:15 KST):** classifications below that read USER_DECISION_REQUIRED or "not approved" were made under the earlier authority. Under CDR-015 they are D2 for the responsible Work (decide with evidence, record reason/impact/verification/recovery), except paid resources (D3). Reclassification in progress; PIW decisions go to `PIW_DECISION_RECORDS.md`.
+
+## Current override · CDR-018
+
+Primary writer transferred to GPT Work. FPIA actual HEAD `11d2f25` / exact audit still running. Platform `codex/product-platform-audit-v1` exists at `c9e1adb`; QGV reconciliation `17a442e7`; Chart `ebeb8b1`. Later owner/scoped evidence supersedes the older rows below. Authority is CDR-015 **narrowed by CDR-016 §13 and CDR-017**, not cost-only D3 for this Work. No capability is newly canonical/operational by this coordination change.
 
 ## 1. Maturity scale and state columns
 

@@ -1,0 +1,39 @@
+{
+  "schema_version": "main-takeover-state-v1",
+  "writer_identity": "gpt-work-main-2026-10-05-3a80dcef6444",
+  "status": "TAKEOVER_ACTIVE",
+  "effective_at_kst": "2026-10-05T13:35:27+09:00",
+  "authority": "User applied attached Main Takeover v1.0; CDR-018",
+  "inherited_global_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+  "previous_writer": "Claude Code session session_019znshzTYgyBnuuBmSxdPFN",
+  "previous_writer_authority": "SUPERSEDED_BY_EXPLICIT_USER_TRANSFER",
+  "previous_runtime_state": "UNKNOWN_NOT_STOPPED_BY_THIS_WORK",
+  "previous_scheduler": "UNAVAILABLE",
+  "observed_global_lease": "No active lease artifact in inherited Global tree",
+  "observed_main_automation": "None in accessible automation inventory",
+  "concurrency_mode": "single designated writer; fresh exact parent and non-force fast-forward only; remote movement requires re-read/reconciliation",
+  "write_scope": [
+    "implementation/docs/coordination/**",
+    "PIW FPIA successor proposal branch only after collision check"
+  ],
+  "excluded_scopes": [
+    "canonical",
+    "other owner branches",
+    "Frozen history",
+    "Holdout",
+    "QGV production semantics",
+    "actual accounts/credentials/production auth",
+    "trade/order/fund transfer"
+  ],
+  "execution_state": "IDLE_NO_SHARED_WRITE_LEASE_HELD",
+  "last_processed_heads": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "global_input": "b3532a2ebbe95310bbf222937466eb04a0211263",
+    "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+  },
+  "automations": {
+    "state": "NOT_CONFIGURED",
+    "end_to_end_verified": false
+  },
+  "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667"
+}

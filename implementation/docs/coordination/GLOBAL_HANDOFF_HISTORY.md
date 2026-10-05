@@ -205,3 +205,8 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 
 - User directive recorded verbatim as CDR-017: Claude Main coordinates the QGV structural re-audit, Chart implementation audit and Product Platform implementation audit Works; routes every OWNER_ACTION_REQUIRED to its authoritative owner as a machine-checkable packet and tracks the loop to re-judgement; propagates only material Global-only deltas to affected Works; keeps FPIA closure as its core responsibility; respects leases and single-writer rules.
 - Fresh state: canonical `b8e39a2`; PR #42 `11d2f25` (fix round 3 pushed); Chart PR #41 `1e8c24c` (lease renewal only); QGV active on `codex/qgv-missing-data-decision-gate-2026-10-05` @ `4fb08a0` (no PR yet), #44 `cb1906b`, publication-evidence branch `11cd2f5`; no Product Platform branch or PR found on GitHub.
+
+
+## GCH-016 · 2026-10-05T13:35:27+09:00 · Main transfer CDR-018
+
+User-designated successor `gpt-work-main-2026-10-05-3a80dcef6444` inherits Global `b3532a2ebbe95310bbf222937466eb04a0211263`. Old writer authority superseded; external runtime status unknown, not terminated here. Fresh-parent non-force publication only; owners and existing automations untouched. FPIA #42 actual11d2f25/audit in progress; GIE-014 unavailable. Platform c9e1adb exists; QGV reconciliation17a442e7. No canonical/semantic promotion. Exact state: MAIN_TAKEOVER_STATE.json.
