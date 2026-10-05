@@ -1,0 +1,376 @@
+{
+  "schema": "main-execution-coverage-checkpoint-v1",
+  "recorded_at_utc": "2026-10-05T07:22:30.181Z",
+  "global_parent": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "implementation": {
+    "branch": "codex/fpia-execution-coverage-2026-10-05",
+    "head": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
+    "tree": "8660fe1335f99275dec01f3f2f0a1f3535eeaa8e",
+    "parent": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+    "scope": "Two additive files; PIW-D003/D005 raw v2 limitations consumer",
+    "targeted": 16,
+    "affected": 683,
+    "passed": true,
+    "first_failure": "15 missing-implementation RED retained in scratch; green fixes and one added case",
+    "identity": "TREE_IDENTICAL; no COMMIT_IDENTICAL claim",
+    "closure": "BOUNDED_IMPLEMENTATION_VERIFIED; full governance closure remains OPEN"
+  },
+  "ci": {
+    "subject": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+    "terminal": "7/7 SUCCESS",
+    "runs": [
+      {
+        "id": 37272321129,
+        "name": "technical-real-producer",
+        "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321129",
+        "workflow_path": ".github/workflows/technical-real-producer.yml"
+      },
+      {
+        "id": 37272321224,
+        "name": "technical-real-model",
+        "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321224",
+        "workflow_path": ".github/workflows/technical-real-model.yml"
+      },
+      {
+        "id": 37272321138,
+        "name": "p01-research-publication",
+        "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321138",
+        "workflow_path": ".github/workflows/p01-research-publication.yml"
+      },
+      {
+        "id": 37272321213,
+        "name": "sec-primary-disclosure",
+        "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321213",
+        "workflow_path": ".github/workflows/sec-primary-disclosure.yml"
+      },
+      {
+        "id": 37272321210,
+        "name": "qgv-invalidation-binding",
+        "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321210",
+        "workflow_path": ".github/workflows/qgv-invalidation-binding.yml"
+      },
+      {
+        "id": 37272321179,
+        "name": "us-equity-session",
+        "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321179",
+        "workflow_path": ".github/workflows/us-equity-session.yml"
+      },
+      {
+        "id": 37272321137,
+        "name": "track-c-fpia",
+        "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321137",
+        "workflow_path": ".github/workflows/track-c-fpia.yml"
+      }
+    ],
+    "fpia_run": 37272321137,
+    "job": 111641751472,
+    "attempt": 1,
+    "artifact": {
+      "id": 11329459485,
+      "node_id": "MDg6QXJ0aWZhY3QxMTMyOTQ1OTQ4NQ==",
+      "name": "track-c-fpia-6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "size_in_bytes": 58524,
+      "url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11329459485",
+      "archive_download_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11329459485/zip",
+      "expired": false,
+      "digest": "sha256:98080e3525bdeb511e03527c6f9935d475183d4d7b01723e0b410e4a3d023861",
+      "created_at": "2026-10-05T07:05:03Z",
+      "updated_at": "2026-10-05T07:05:03Z",
+      "expires_at": "2027-01-03T06:25:14Z",
+      "workflow_run": {
+        "id": 37272321137,
+        "repository_id": 1379547477,
+        "head_repository_id": 1379547477,
+        "head_branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+        "head_sha": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6"
+      }
+    },
+    "archive_sha256": "98080e3525bdeb511e03527c6f9935d475183d4d7b01723e0b410e4a3d023861",
+    "result_sha256": "6261005636109c32705ae7a4e9266a1cac3ddab588ce96dcbcab8ac893231500",
+    "run_sha256": "2fa3c9d70428a3c46e74a483fa0007512689c940eeb884320b917fedb65efe66",
+    "artifact_integrity": "ARCHIVE_DIGEST_AND_JOB_LOG_RESULT_ANCHOR_MATCH; canonical result/run recomputed; six side streams verified",
+    "raw_result": "FPIA_PASS",
+    "current_full_regression": {
+      "passed": 2184,
+      "failed": 0,
+      "skipped": 0,
+      "deselected": 1,
+      "deselected_scope": "Optional live SEC test; same bytes as R; explicitly not executed"
+    },
+    "workflow_runtime_source_commit": "UNAVAILABLE; github.workflow_sha not emitted; run head is subject, not proof of workflow execution source",
+    "subject_workflow_blob": "92002c471830932a1c240006d2a6152bdacb2c1f",
+    "verifier_source": {
+      "git_manifest_checked": 29,
+      "git_manifest_matches": 29,
+      "launcher_hash_matches": true,
+      "checks": {
+        "_vendor/README.md": true,
+        "_vendor/__init__.py": true,
+        "_vendor/yaml/LICENSE": true,
+        "_vendor/yaml/__init__.py": true,
+        "_vendor/yaml/composer.py": true,
+        "_vendor/yaml/constructor.py": true,
+        "_vendor/yaml/dumper.py": true,
+        "_vendor/yaml/emitter.py": true,
+        "_vendor/yaml/error.py": true,
+        "_vendor/yaml/events.py": true,
+        "_vendor/yaml/loader.py": true,
+        "_vendor/yaml/nodes.py": true,
+        "_vendor/yaml/parser.py": true,
+        "_vendor/yaml/reader.py": true,
+        "_vendor/yaml/representer.py": true,
+        "_vendor/yaml/resolver.py": true,
+        "_vendor/yaml/scanner.py": true,
+        "_vendor/yaml/serializer.py": true,
+        "_vendor/yaml/tokens.py": true,
+        "track_c_fpia.py": true,
+        "track_c_fpia_auth.py": true,
+        "track_c_fpia_checks.py": true,
+        "track_c_fpia_child.py": true,
+        "track_c_fpia_counterfactual.py": true,
+        "track_c_fpia_derive.py": true,
+        "track_c_fpia_evidence_identity.py": true,
+        "track_c_fpia_git.py": true,
+        "track_c_fpia_runner.py": true,
+        "track_c_fpia_workflows.py": true
+      }
+    },
+    "verifier_authority": "OPEN: reviewed/authorized independently accepted exact verifier+launcher not yet bound",
+    "authority": {
+      "register_commit": "9cd598c5564827418115ebb15c1c88a0e7811bab",
+      "register_blob": "10d8900beccd35198362eda201b1998afac76618",
+      "section_sha256": "4e7662eb76d3085b8bdfc34bb0991f15bd6b9f6196e0e6e6dbd76cecf3dda755",
+      "reference_authentication": "PASS; not independent verifier authorization"
+    },
+    "raw_limitations": [
+      "CODE_IDENTITY_DIVERGED",
+      "FROZEN_TOOLS_ON_T_FAIL"
+    ],
+    "governance_closed": 0,
+    "governance_total": 6,
+    "integration_ready": false,
+    "canonical_merge_approved": false,
+    "frozen_pass": false
+  },
+  "coverage": {
+    "authentication": "NOT_VERIFIED",
+    "blockers": [
+      {
+        "code": "DYNAMIC_EXECUTION_UNCOVERED",
+        "decision": "PIW-D003",
+        "next_action": "Resolve acceptance-relevant executed bytes or independently verify enforced noninterference",
+        "observed": [
+          "NOT_CLAIMED",
+          "NOT_CLAIMED"
+        ]
+      },
+      {
+        "code": "EXTERNAL_EXECUTION_UNANALYSED",
+        "decision": "PIW-D005",
+        "next_action": "Bind immutable external execution inventory to analysed bytes or verified noninterference",
+        "observed": [
+          "NOT_ANALYSED",
+          "NOT_ANALYSED"
+        ]
+      },
+      {
+        "code": "DESCENDANT_EXECUTION_UNCOVERED",
+        "decision": "PIW-D003",
+        "next_action": "Close descendant module provenance; spawn records alone are insufficient"
+      }
+    ],
+    "errors": [],
+    "external_inventory_sha256": "0dc097023db4452eb27be3437e26fec83e1858ede448868a570e0c189f8f7d65",
+    "external_reference_count": 41,
+    "integration_acceptance": "BLOCKED",
+    "raw_fpia_status": "FPIA_PASS",
+    "result_sha256": "6261005636109c32705ae7a4e9266a1cac3ddab588ce96dcbcab8ac893231500",
+    "scope": "RAW_RESULT_EXECUTION_LIMITATIONS_ONLY",
+    "spawn_count": 3,
+    "spawn_inventory_sha256": "4c16e0eaf2866b3a245358a54595767a5592eaafde76d22103b101c065a00aae",
+    "status": "COVERAGE_BLOCKED",
+    "subject_sha": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6"
+  },
+  "platform": {
+    "pr": 45,
+    "pr_head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+    "implementation_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "audit_return": "8f80395f25119af6b2d78e0d41fc168d515f4746",
+    "returned_comment": 5989651392,
+    "main_receipt": 5989810728,
+    "main_receipt_readback": "EXACT_BODY_MATCH",
+    "artifact_hash_checks": [
+      {
+        "path": "implementation/docs/product_platform/CURRENT_HANDOFF.md",
+        "hash_match": true,
+        "bytes_match": true
+      },
+      {
+        "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/FIRST_GREEN.txt",
+        "hash_match": true,
+        "bytes_match": true
+      },
+      {
+        "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/GREEN.txt",
+        "hash_match": true,
+        "bytes_match": true
+      },
+      {
+        "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/MAIN_HANDOFF.md",
+        "hash_match": true,
+        "bytes_match": true
+      },
+      {
+        "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/RED.txt",
+        "hash_match": true,
+        "bytes_match": true
+      },
+      {
+        "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/REPORT.md",
+        "hash_match": true,
+        "bytes_match": true
+      },
+      {
+        "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/fixture.json",
+        "hash_match": true,
+        "bytes_match": true
+      },
+      {
+        "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/oracle.py",
+        "hash_match": true,
+        "bytes_match": true
+      },
+      {
+        "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/raw/buy.json",
+        "hash_match": true,
+        "bytes_match": true
+      },
+      {
+        "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/raw/closing.json",
+        "hash_match": true,
+        "bytes_match": true
+      },
+      {
+        "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/raw/dividend.json",
+        "hash_match": true,
+        "bytes_match": true
+      },
+      {
+        "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/raw/opening.json",
+        "hash_match": true,
+        "bytes_match": true
+      },
+      {
+        "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py",
+        "hash_match": true,
+        "bytes_match": true
+      }
+    ],
+    "candidate_patch_checks": [
+      {
+        "label": "candidate_patch",
+        "actual": "ecec8109aec1edffe0d59cbcd62f79668b4356e7ebce93226067701c2ab971f1",
+        "match": true
+      },
+      {
+        "label": "owner_source",
+        "actual": "b13686d8ce134ccb61ef78c51d178597404e7a3401e7b22240dcc47c01d0aa7b",
+        "match": true
+      }
+    ],
+    "reused": {
+      "statement_checks": 23,
+      "candidate_checks": 12,
+      "status": "AUDIT_VERIFIED_EXTERNAL; synthetic/disposable candidate scope only"
+    },
+    "source_owner_ack": false,
+    "source_adoption": false,
+    "blocking_platform_web_groups": 9,
+    "closure": "Specialist fixture return CONSUMED; actual implementation findings remain OPEN"
+  },
+  "web": {
+    "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+    "actual_target_blocker": "OPEN; owner return absent",
+    "blocking_findings": 1
+  },
+  "chart": {
+    "head": "a5cf1a1862aac7340dabfe169f4383da89f610cb",
+    "gates_closed": 0,
+    "gates_total": 6,
+    "gates": {
+      "A-S1": "BLOCKED",
+      "A-S2": "BLOCKED",
+      "A-S3": "BLOCKED",
+      "A-G1": "OWNER_ACTION_PENDING",
+      "A-G2": "OWNER_ACTION_PENDING",
+      "A-G3": "OPEN"
+    },
+    "delta": "STATE-only; no gate/source invalidation",
+    "owner_leases": "PRESERVED"
+  },
+  "qgv": {
+    "pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "reconciliation_head": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+    "delta": "Three policy/control/receipt docs only; G1/G2 intent unchanged",
+    "reused_checks": 59,
+    "policy_checks_reported": 22,
+    "actual_hops": "0/2",
+    "production_semantics": "UNSELECTED"
+  },
+  "progress": {
+    "production_blockers_closed": 0,
+    "production_blockers_new": 0,
+    "net_production_blocker_reduction": 0,
+    "ci_evidence_wait_closed": 1,
+    "specialist_return_consumed": 1,
+    "bounded_implementation_completed": 1,
+    "new_agents": 0,
+    "repeated_specialist_audits": 0,
+    "local_full_repo_reruns": 0
+  },
+  "policy": {
+    "verification": "CDR-021; CRITICAL affected/negative; FAST receipt/docs",
+    "loop": "CDR-022 SSoT→Execute→Verify→Publish→Re-evaluate; checkpoint is CONTINUE, not WAIT",
+    "new_d3": 0
+  },
+  "next_ready": [
+    "PIW-D001/D002 independently accepted verifier/launcher and workflow execution-source binding in Main-only additive proposal scope",
+    "PIW-D004 exact optional-importer attribution/omission candidate",
+    "PIW-D006 branch-independent applicability and exact future merge-result receipt"
+  ],
+  "wait_dependencies": [
+    "Actual Platform/Web/Product owner source returns; no duplicate implementation",
+    "Portfolio/Identity accountable owner claim",
+    "QGV owner-approved HOP1 manifest and production semantics"
+  ],
+  "status": "CHECKPOINT_CONTINUE"
+}

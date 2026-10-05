@@ -1,3 +1,15 @@
+## Current checkpoint · GCH-020 · 2026-10-05T07:22:30.181Z
+
+**CHECKPOINT_CONTINUE** under CDR-022. Canonical unchanged `b8e39a2196a6d7794a04a0cd5393c68329e126ca`; exact input Global `f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8`. This containing output commit is the watermark; do not self-trigger solely on this docs publication.
+
+- FPIA#46 exact `6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6`: seven Actions SUCCESS, attempt1. Raw FPIA_PASS, full current CI2184 PASS/0failed/0skipped/1optional-live deselected. Run37272321137/job111641751472/artifact11329459485 archive/result hashes match API/job logs/local canonical recompute. Verifier source29/29 and launcher hash agree. Runtime workflow sourcecommit UNAVAILABLE; subject workflowblob is not execution-source authentication. Independent verifier/launcher authority, authenticated expected receipt, dynamic/descendant/external coverage, importer attribution and exact future merge-result acceptance remain OPEN; governance0/6, no FrozenPASS or INTEGRATION_READY.
+- PIW-D003/D005 bounded read-only limitations consumer implemented: branch `codex/fpia-execution-coverage-2026-10-05` @ `ce2ea5b08b600b07c9a6ba9179a47ea8e199c497`, two additive files; targeted16/16 and affected683/683 PASS. TREE_IDENTICAL to local staged tree. Current v2 artifact remains COVERAGE_BLOCKED (41externalrefs/3spawns). Existing raw status is preserved. This closes a bounded implementation, not the full governance gate.
+- Platform specialist `8f80395f25119af6b2d78e0d41fc168d515f4746` return consumed:13/13 artifact hashes+bytes,23synthetic checks and12candidate checks reused; patch/source hashes match. PR45 receipt5989810728 read back. Actual source owner ACK/adoption absent; Platform/Web combined9blockinggroups unchanged. Web ACTUAL→TARGET fallback1OPEN. No source takeover.
+- Chart exact `a5cf1a1862aac7340dabfe169f4383da89f610cb`: STATE-only delta; production0/6, A-S1/S2/S3 BLOCKED/OWNER_UNASSIGNED, A-G1/G2 OWNER_ACTION_PENDING,A-G3 OPEN. QGV reconciliation `19e4e47d3f8fc02fb35d33399f7b052317896b62`: policy-only delta;59focused evidence reused, actualhops0/2; no method/migration/runtime activation.
+- Shared lease released. Main now re-evaluates and continues READY D1/D2: D001/D002 exact accepted verifier/launcher and execution-source binding; D004 optional importer candidate; D006 applicability/final result. External owner waiting does not stop these Main lanes. No new D3, no new agents, no repeated specialist audit or local fullrepo rerun. Production blocker net0; bounded implementation1, CI evidence wait1 and specialist return1 closed separately.
+
+Evidence: `evidence/main_execution_coverage_2026-10-05/RECEIPT.json`, archive and affected log. Candidate revision below remains NOT_READY/NO_MERGE. CDR-022 is an execution policy, not new protected authority. Existing historical checkpoints remain below.
+
 # Investment-System1 · GLOBAL_CURRENT_HANDOFF
 
 Routing/index SSoT only. This file is not a calculation, policy, approval or publication authority. Scoped Decision Registers, approval evidence and the exact SHA win on any conflict. Draft-branch results recorded here are not canonical completion.

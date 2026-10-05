@@ -5,7 +5,7 @@
   "fresh_scope": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global": "e36bec9be6be3bdf60ac7fd4ef8379a2ba93a7ae",
-    "chart": "40a5c266322d36dbf30a683f6f632508352145bc",
+    "chart": "a5cf1a1862aac7340dabfe169f4383da89f610cb",
     "chart_lease": {
       "status": "HELD",
       "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
@@ -19,10 +19,11 @@
       "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
       "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
     },
-    "global_input": "9cd598c5564827418115ebb15c1c88a0e7811bab",
+    "global_input": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8",
     "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
-    "qgv_reconciliation": "dc2dce6d538d4d66b71f98b59dc47b873312f7d9"
+    "qgv_reconciliation": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+    "platform_specialist": "8f80395f25119af6b2d78e0d41fc168d515f4746"
   },
   "summary": {
     "lane_a_open": 6,
@@ -76,7 +77,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -107,7 +108,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -139,7 +140,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -172,7 +173,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -207,7 +208,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -243,7 +244,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -252,9 +253,10 @@
       "receipt": null,
       "last_consumed_revision": null,
       "state": "IN_PROGRESS",
-      "next_action": "Consume existing new exactHEAD7CI; verifier authorization/coverage/admissibility +final assembled-result acceptance remain; priora3 FPIA_FAIL retained",
+      "next_action": "CI7/7 and archive/result/verifier byte checks consumed; D001-D006 independent authorization/coverage/applicability and final exact merge-result acceptance still OPEN",
       "production_gate": "OPEN",
-      "request_status": "IN_PROGRESS"
+      "request_status": "IN_PROGRESS",
+      "ci_terminal": "7/7 SUCCESS exact6fea attempt1"
     },
     {
       "id": "MAIN-CHART-B01-20261005",
@@ -274,7 +276,7 @@
       ],
       "dependencies": [
         "existing issuer_id/security_id",
-        "issuer\u2192security relation",
+        "issuer→security relation",
         "economic instrument/share class/form",
         "effective interval",
         "source ID/path/hash",
@@ -284,7 +286,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -325,7 +327,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -366,7 +368,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -409,7 +411,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -451,7 +453,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -493,7 +495,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -533,7 +535,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -572,7 +574,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 \u00a713",
+        "CDR-016 §13",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -742,7 +744,7 @@
       "finding": "Imported ACTUAL position identity owner not established",
       "authoritative_owner": null,
       "owner_assignment": "OWNER_UNASSIGNED",
-      "required_artifact": "Issuer\u2192Security\u2192dated Listing authoritative binding",
+      "required_artifact": "Issuer→Security→dated Listing authoritative binding",
       "exact_path_branch_pr": {
         "branch": null,
         "pr": null
@@ -781,7 +783,7 @@
       },
       "acceptance_criteria": [
         "do not block independent contract/design on future FPIA",
-        "no branchCI\u2192canonical acceptance promotion"
+        "no branchCI→canonical acceptance promotion"
       ],
       "dependencies": [
         "actual production package proposal"
@@ -905,8 +907,16 @@
       "comment_id": 5989182963,
       "receipt": null,
       "acceptance_criteria": "SA01 digest representation repair; SA02 inherited method admission repair",
-      "next_action": "Exact accountable owner return required; delivery is not ACK or execution",
-      "delivery_body_sha256": "9467eae1a30f6bf23fdcf1000e3e4be5ceffdab64c71789f0e2a078e5b279b11"
+      "next_action": "Actual implementation owner ACK/write-set and adoption required; candidate evidence return is not source owner ACK",
+      "delivery_body_sha256": "9467eae1a30f6bf23fdcf1000e3e4be5ceffdab64c71789f0e2a078e5b279b11",
+      "specialist_return": {
+        "head": "8f80395f25119af6b2d78e0d41fc168d515f4746",
+        "candidate_head": "b517a09856e9c7414887ae15d496ef6370f243c2",
+        "main_receipt": 5989810728,
+        "verified_scope": "candidate patch hash and12/12 synthetic candidate evidence reused",
+        "source_owner_ack": false,
+        "source_adoption": false
+      }
     },
     {
       "id": "MAIN-QGV-G1G2-RETURN-20261005",
@@ -919,6 +929,22 @@
       "acceptance_criteria": "Consume authenticated G1/G2 intent approval +inactiveG/C package; do not select methods",
       "next_action": "Exact accountable owner return required; delivery is not ACK or execution",
       "delivery_body_sha256": "2be18d5aa66dc27bb428c1a58e5c65daf446562d8433daf511fe5fd6c1ef6e66"
+    },
+    {
+      "id": "MAIN-PLATFORM-FIXTURE-RETURN-20261005-1603",
+      "authoritative_owner": "Product Platform specialist audit Work",
+      "finding": "Statement/raw fixture specialist return",
+      "exact_path_branch_pr": {
+        "head": "8f80395f25119af6b2d78e0d41fc168d515f4746",
+        "pr": 45
+      },
+      "delivery_comment_id": 5989651392,
+      "receipt_comment_id": 5989810728,
+      "request_status": "VERIFIED",
+      "state": "CLOSED",
+      "verified_scope": "13/13 artifacts hash+bytes; 23 synthetic checks reused; audit return consumption only",
+      "source_implementation_closure": false,
+      "next_action": "No repeated audit; consume actual source owner adoption only when returned"
     }
   ],
   "wake_up": "Main PR41 synchronize and API-authored PR17 comment events observed; self-comment deduplicated. Other owner wake/receipt unverified.",
