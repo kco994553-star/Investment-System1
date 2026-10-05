@@ -1,0 +1,591 @@
+{
+  "schema_version": "chart-owner-resume-state-v1",
+  "repository": "kco994553-star/Investment-System1",
+  "owner_branch": "codex/chart-contract-mcp-api-v0-1",
+  "chart_pr": 41,
+  "conversation_id": "6ac21ce4-f050-83ec-bfd4-5fa178fc6936",
+  "state_kind": "OWNER_EVIDENCE_ONLY_PRECODE_AUTOMATION_COORDINATION_NOT_PRODUCTION_AUTHORITY",
+  "initialized_at_utc": "2026-10-05T00:31:02Z",
+  "automations_setup_verified": true,
+  "automation_verification_source": "Root created, updated and peeked both enabled tasks in this exact conversation; setup proof is separate from future run completion.",
+  "automations": {
+    "event": {
+      "id": "6ac2eeedb21c81919f04168d69672f0a",
+      "title": "Chart PR 이벤트 재개",
+      "enabled": true,
+      "conversation_id": "6ac21ce4-f050-83ec-bfd4-5fa178fc6936",
+      "selectors": {
+        "pull_requests": [
+          41,
+          17,
+          18,
+          19,
+          34,
+          36,
+          42,
+          44
+        ],
+        "enable_commit_updates": true,
+        "enable_reviews": true,
+        "enable_comments": true,
+        "only_on_merge": false
+      }
+    },
+    "ci_followup": {
+      "id": "6ac2ef0621908191909a27af4c91f101",
+      "title": "Chart CI 후속 확인",
+      "enabled": true,
+      "conversation_id": "6ac21ce4-f050-83ec-bfd4-5fa178fc6936",
+      "schedule": "HOURLY",
+      "setup_first_run": {
+        "observed_by_root": true,
+        "remote_state": "404_NOT_YET_PUBLISHED",
+        "pending_items": 0,
+        "semantic_work_delta": false,
+        "disposition": "READ_ONLY_NOOP",
+        "ci_completion_claim": false
+      }
+    }
+  },
+  "last_observed": {
+    "snapshot_at_utc": "2026-10-05T00:20:47.936Z",
+    "source_head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+    "owner_branch_head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+    "canonical": {
+      "branch": "claude/investment-system-top500-validation-alrugm",
+      "head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+    },
+    "global_handoff_head": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+    "pull_requests": {
+      "17": {
+        "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+        "branch": "feature/p01-research-publication-v1",
+        "state": "open",
+        "draft": true
+      },
+      "18": {
+        "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "base": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+        "branch": "feature/us-equity-session-v1",
+        "state": "open",
+        "draft": true
+      },
+      "19": {
+        "head": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+        "base": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "branch": "feature/qgv-invalidation-binding-v1",
+        "state": "open",
+        "draft": true
+      },
+      "34": {
+        "head": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+        "base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+        "branch": "integration/web/research-render-guard-v1",
+        "state": "open",
+        "draft": true
+      },
+      "36": {
+        "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "base": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+        "branch": "integration/web/production-state-presentation-v1",
+        "state": "open",
+        "draft": true
+      },
+      "44": {
+        "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+        "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "branch": "codex/qgv-common-contract-vnext-spec-2026-10-04",
+        "state": "open",
+        "draft": true
+      },
+      "41": {
+        "head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "branch": "codex/chart-contract-mcp-api-v0-1",
+        "state": "open",
+        "draft": true
+      },
+      "42": {
+        "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+        "base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+        "branch": "integration/fpia-hardened-v1",
+        "state": "open",
+        "draft": true
+      }
+    },
+    "comment_review_watermarks": {
+      "17": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "18": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 1,
+          "last_id": 5950833091,
+          "items": [
+            {
+              "id": 5950833091,
+              "updated_at": "2026-10-02T10:54:13Z",
+              "submitted_at": null,
+              "state": null,
+              "commit_id": null,
+              "body_sha256": "e7354fd9eb298954e750257b8fa8f58f5ffec8526587ed566fea2faee841e185"
+            }
+          ]
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "19": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "34": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "36": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "41": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "42": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "44": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T00:36:12.047914+00:00",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      }
+    },
+    "actions": [
+      {
+        "pr": 18,
+        "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "runs": [
+          {
+            "id": 36997929226,
+            "name": "technical-real-model",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "pull_request",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929226",
+            "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4"
+          },
+          {
+            "id": 36997929255,
+            "name": "us-equity-session",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "pull_request",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929255",
+            "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4"
+          },
+          {
+            "id": 36997929115,
+            "name": "technical-real-producer",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "pull_request",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997929115",
+            "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4"
+          },
+          {
+            "id": 36997922976,
+            "name": "us-equity-session",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "push",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36997922976",
+            "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4"
+          }
+        ]
+      },
+      {
+        "pr": 17,
+        "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "runs": [
+          {
+            "id": 36994066298,
+            "name": "p01-research-publication",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "pull_request",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994066298",
+            "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
+          },
+          {
+            "id": 36994037862,
+            "name": "p01-research-publication",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "push",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/36994037862",
+            "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
+          }
+        ]
+      },
+      {
+        "pr": 42,
+        "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+        "runs": [
+          {
+            "id": 37234682865,
+            "name": "technical-real-model",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "pull_request",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682865",
+            "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+          },
+          {
+            "id": 37234682891,
+            "name": "us-equity-session",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "pull_request",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682891",
+            "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+          },
+          {
+            "id": 37234682853,
+            "name": "qgv-invalidation-binding",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "pull_request",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682853",
+            "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+          },
+          {
+            "id": 37234682866,
+            "name": "p01-research-publication",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "pull_request",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682866",
+            "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+          },
+          {
+            "id": 37234682873,
+            "name": "technical-real-producer",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "pull_request",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682873",
+            "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+          },
+          {
+            "id": 37234682890,
+            "name": "sec-primary-disclosure",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "pull_request",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682890",
+            "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+          },
+          {
+            "id": 37234682864,
+            "name": "track-c-fpia",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "pull_request",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682864",
+            "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+          }
+        ]
+      },
+      {
+        "pr": 44,
+        "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+        "runs": [
+          {
+            "id": 37245037812,
+            "name": "qgv-common-contract-vnext",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "pull_request",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37245037812",
+            "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+          },
+          {
+            "id": 37245014376,
+            "name": "qgv-common-contract-vnext",
+            "status": "completed",
+            "conclusion": "success",
+            "event": "push",
+            "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37245014376",
+            "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+          }
+        ]
+      },
+      {
+        "pr": 41,
+        "head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "runs": []
+      }
+    ],
+    "evidence_ref": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json",
+    "note": "Observed inputs are not a processed automation checkpoint; old snapshot Actions do not certify a future Chart result.",
+    "event_snapshot_at_utc": "2026-10-05T00:36:12.047914+00:00"
+  },
+  "last_processed": {
+    "source_head": null,
+    "owner_head": null,
+    "semantic_input_fingerprint": null,
+    "processed_at_utc": null,
+    "run_id": null,
+    "evidence_refs": [],
+    "status": "UNSET_AUTOMATION_CHECKPOINT_NOT_SYNTHETICALLY_MARKED_COMPLETE"
+  },
+  "pending": [],
+  "readiness": {
+    "scope": "EVIDENCE_ONLY_PRECODE",
+    "lane_a": "IMPLEMENTATION_NOT_READY",
+    "precode_gates_open": [
+      "A-S1",
+      "A-S2",
+      "A-S3",
+      "A-G1",
+      "A-G2",
+      "A-G3"
+    ],
+    "open_count": 6,
+    "closed_count": 0,
+    "lane_b_admitted_symbols": 0,
+    "lane_b_total_symbols": 19,
+    "production_tests": "NOT_RUN",
+    "chart_merge_result_fpia": "NOT_RUN",
+    "qgv_common_contract": "INACTIVE_SPEC_ONLY",
+    "new_chart_d3": false
+  },
+  "lease": {
+    "status": "ACTIVE_MANUAL_INITIALIZATION_PENDING_FIRST_REMOTE_CAS",
+    "run_id": "manual-root-v05-20261005",
+    "holder_kind": "MANUAL_ROOT",
+    "acquired_at_utc": "2026-10-05T00:31:02Z",
+    "expires_at_utc": "2026-10-05T01:31:02Z",
+    "ttl_minutes": 60,
+    "allowed_automatic_ttl_minutes": 30,
+    "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+    "verified_remote_acquisition": false,
+    "acquisition_parent_head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+    "mutual_exclusion": "PROTOCOL_NOT_PROVIDER_GUARANTEE",
+    "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease."
+  },
+  "publication": {
+    "status": "AWAITING_FIRST_PUBLICATION",
+    "latest_published_owner_head": null,
+    "scoped_output_paths": [],
+    "output_sha256": {},
+    "retained_comment_ids": [],
+    "commit_ids": [],
+    "update_after_publish": "Only after remote HEAD/file bytes and output hashes are verified. STATE.json itself is excluded from output fingerprint; current commit identity cannot be self-embedded."
+  },
+  "self_update_filter": {
+    "automation_titles": [
+      "Chart PR 이벤트 재개",
+      "Chart CI 후속 확인"
+    ],
+    "owned_commit_prefixes": [
+      "[chart-owner-resume]",
+      "[chart-owner-checkpoint]"
+    ],
+    "retained_owned_commit_ids": [],
+    "owned_comment_marker": "<!-- chart-owner-handoff:v0.5 -->",
+    "retained_owned_comment_ids": [],
+    "require_comment_marker_and_retained_returned_id": true,
+    "connected_account_login_is_not_ownership_proof": true,
+    "allowlisted_write_scopes": [
+      "implementation/experiments/chart-contract-v0.1/automation/",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
+    ],
+    "do_not_ignore_dependency_semantics_from_an_owned_checkpoint": true,
+    "require_current_comment_body_sha256_match": true,
+    "edited_own_comments": "Read semantic change; retained ID/marker alone never suppresses modified content."
+  },
+  "fingerprint_policy": {
+    "include": "Relevant fresh dependency source/head/authority/decision changes, relevant comment or review revisions, scoped owner source inputs, and pending exact-subject CI state.",
+    "exclude_paths": [
+      "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    ],
+    "exclude_only_attributed_self_updates": true,
+    "output_exclusion": "Mutable lease timestamps and state commit identity do not create a work delta by themselves.",
+    "no_op": "No semantic delta and no actionable pending item means no lease acquisition, no state/commit/comment/PR write."
+  },
+  "atomic_protocol": {
+    "provider_lock_available": false,
+    "required_remote_operation": "Fresh owner HEAD→commit whose only parent is that HEAD→non-force fast-forward update_ref→verify exact remote SHA and lease run_id/expiry.",
+    "compare_and_swap_condition": "If competing divergent commit moves owner ref, update_ref fails; do not force or automatically rebase lease/output onto the winner. Re-read and remain read-only.",
+    "renewal": "While unexpired, fresh-read remote state and verify same run_id before publishing renewal with new parent/current HEAD and same-holder expiry.",
+    "expiry": "Expired or mismatching run_id prevents every mutation; fresh evaluation and a new verified atomic acquisition are required.",
+    "missing_atomic_capability": "Read-only audit is allowed; every write must be abstained from."
+  },
+  "forbidden_actions": [
+    "canonical_merge",
+    "other_owner_branch_write",
+    "Global_Handoff_write",
+    "Frozen_change",
+    "Track_C_code_hash_or_P01_digest_repin",
+    "grant_issue",
+    "Official_or_LIVE_promotion",
+    "Holdout_access",
+    "PIT_relaxation",
+    "protected_package_production_implementation",
+    "QGV_semantic_activation",
+    "paid_action"
+  ],
+  "workflow_rule": "Reuse prior audit/history. Process only a real bounded material delta or actionable pending CI; decisions/readiness never advance from scheduling alone.",
+  "verification_ref": "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json"
+}
