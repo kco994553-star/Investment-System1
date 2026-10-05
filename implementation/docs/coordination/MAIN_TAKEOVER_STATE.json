@@ -25,7 +25,7 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "CHECKPOINT_READY_CI_PENDING_D2_BACKLOG",
+  "execution_state": "RUNNING_D002_IDENTITY_AND_PLATFORM_RECEIPT",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_input": "af264713b99471fb554e06e8d321f5039be47b47",
@@ -60,7 +60,14 @@
     "followup_delivery_observed": true
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": null,
+  "lease": {
+    "token": "main-d002-owner-intake-20261005-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "acquired_at": "2026-10-05T05:17:37.238Z",
+    "expires_at": "2026-10-05T05:47:37.238Z",
+    "scope": "Global checkpoint + bounded PIW-D002 evidence identity implementation",
+    "reason": "Existing Main continues; event/followup must coalesce without duplicate writer"
+  },
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -174,5 +181,16 @@
     "OWNER_ROUTING_LEDGER.json",
     "evidence/main_takeover_2026-10-05/REMOTE_RECEIPTS.json",
     "evidence/main_takeover_2026-10-05/CHART_TERMINAL_INTAKE.json"
-  ]
+  ],
+  "active_scoped_execution": {
+    "branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+    "parent": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "local_implementer": "delegated fpia_identity_consumer; Main only publishes",
+    "write_set": [
+      "implementation/tools/integration/track_c_fpia_evidence_identity.py",
+      "implementation/tests/test_integration_fpia_evidence_identity.py"
+    ],
+    "existing_ci_preserved": true
+  }
 }
