@@ -6,7 +6,18 @@
     "global": "b3532a2ebbe95310bbf222937466eb04a0211263",
     "fpia_pr_42": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
   },
-  "lease": null,
+  "lease": {
+    "status": "RUNNING",
+    "run_id": "platform-validation-hardening-20261005T045220444Z",
+    "holder_kind": "AUTOMATION_MAIN",
+    "acquired_at_utc": "2026-10-05T04:52:20.444Z",
+    "expires_at_utc": "2026-10-05T05:22:20.444Z",
+    "ttl_minutes": 30,
+    "scope": "OWNER_BRANCH_PLATFORM_VALIDATION_HARDENING",
+    "verified_remote_acquisition": false,
+    "acquisition_parent_head": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+    "reason": "Repair source-pinned malformed provenance, blank identity, and non-reference lineage defects; D1/D2 only"
+  },
   "pending_ci": [],
-  "checkpoint": "initial_contract_foundation"
+  "checkpoint": "validation_hardening_lease_claim"
 }
