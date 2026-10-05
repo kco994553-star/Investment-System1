@@ -1,6 +1,6 @@
 {
   "schema": "platform-ssot-autonomous-execution-state-v1",
-  "observed_at_utc": "2026-10-05T09:17:31.678Z",
+  "observed_at_utc": "2026-10-05T10:47:44.968Z",
   "directive_received_at_kst": "2026-10-05T16:15:41+09:00",
   "role": "Product Platform independent specialist audit",
   "execution_state": "WAIT_DEPENDENCY",
@@ -26,7 +26,7 @@
     "owner_source": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_branch": "integration/global-handoff-v1",
-    "global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+    "global": "1596649912554116196c1ad3c1d41797219f5241",
     "pr45_head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
     "web": "fb086eac4321140493ce554a541343cebbb81ed6",
     "p01": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
@@ -34,22 +34,26 @@
   "policy": {
     "loop": "SSOT_EXECUTION_LOOP.md",
     "verification": "Risk-Proportional; CRITICAL strict; STANDARD targeted/negative/affected; FAST deterministic",
-    "global_decision": "CDR-022 at Global 76df9e6a71fa91ff5ee260bc6087185facae3779",
+    "global_decision": "CDR-024 adopted common v1.1; CDR-025/026 append-only merge/identity receipts",
     "main_coordinator": "gpt-work-main-2026-10-05-3a80dcef6444",
     "auditors": 1,
     "independent_security_verifiers": 0,
     "authority": {
-      "version": "D3 Delegated Approval Policy v1.0",
-      "source": "D3_DELEGATED_APPROVAL_POLICY_v1.0.md",
-      "receipt": "evidence/D3_DELEGATION_RECEIPT_2026-10-05.json",
+      "version": "Autonomous Execution & Decision Authority SSoT v1.1",
+      "decision": "CDR-024",
+      "source": "https://github.com/kco994553-star/Investment-System1/blob/1596649912554116196c1ad3c1d41797219f5241/implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+      "source_head": "1596649912554116196c1ad3c1d41797219f5241",
+      "source_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+      "receipt": "evidence/CDR024_RECONCILIATION_2026-10-05.json",
       "levels": [
         "D1",
         "D2",
         "D3-A",
         "D3-R"
       ],
-      "precedence": "Latest direct user directive supersedes conflicting broad historical D3 labels; no ownership transfer",
-      "unknown": "D3-R"
+      "precedence": "Adopted v1.1 controls; prior v1.0 retained historically; no owner transfer",
+      "unknown": "D3-R",
+      "D3_A_independence": "Separate verification execution without proposer context/reasoning; conservative semantic_delta synthesis"
     }
   },
   "reconciliation": [
@@ -61,7 +65,7 @@
     },
     {
       "subject": "Global scoped consumer",
-      "classification": "CURRENT",
+      "classification": "HISTORICAL",
       "ref": "76df9e6a71fa91ff5ee260bc6087185facae3779",
       "conclusion": "GCH-020 records exact audit consumption and CDR-022; source adoption remains absent. Main FPIA coverage/runtime work is outside this audit write set"
     },
@@ -96,13 +100,13 @@
     },
     {
       "subject": "Global Main loop-consumption receipt",
-      "classification": "CURRENT",
+      "classification": "HISTORICAL",
       "ref": "19a1c3a1470cd974983fd489760516ee247a40b4",
       "conclusion": "Main explicitly consumed own8599558/comment5990208500; implementation owner ACK/adoption still false, blockers9 unchanged. Main FPIA/D006 changes do not admit a Product package."
     },
     {
       "subject": "Latest Global Platform status",
-      "classification": "CURRENT",
+      "classification": "HISTORICAL",
       "ref": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
       "conclusion": "GCH-025 CI pertains to Main FPIA; GCH-022 Platform adoption remains UNVERIFIED; no new Platform source/ACK."
     },
@@ -116,6 +120,18 @@
       "classification": "CURRENT",
       "ref": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5991485958",
       "conclusion": "Policy receipt consumed independently; one wrong relative live policy locator repaired. Not source-owner ACK or Product closure."
+    },
+    {
+      "subject": "CDR-024 common v1.1 adoption",
+      "classification": "CURRENT",
+      "ref": "1596649912554116196c1ad3c1d41797219f5241",
+      "policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+      "conclusion": "PR48 merged; prior scoped v1.0 live authority and executor watcher prompts superseded; manual supervised D1 reconciliation only. RD3-11 confirms owner/evidence dependence, not pending Product decision."
+    },
+    {
+      "subject": "Historical automation executor claim",
+      "classification": "SUPERSEDED",
+      "conclusion": "Both existing prompts now read-only watcher; prompt/config readback is not hard permission isolation or material unattended execution."
     }
   ],
   "capabilities": {
@@ -278,17 +294,12 @@
     }
   ],
   "coordination_metrics": {
-    "acceptance_criteria_closed": 1,
-    "closed_scope": "Main audit-return artifact consumption gap only",
-    "new_Main_receipts_consumed": 1,
-    "new_implementation_owner_source_returns_consumed": 0,
     "Product_gates_closed": 0,
     "Product_integration_dependencies_reduced": 0,
-    "automation_acceptance_criteria_closed_this_run": 0,
-    "automation_closed_scope": "First event invocation/fresh-read/self-dedup no-op only; no Product closure",
-    "loop_handoff_Main_consumption_closed_this_run": 0,
-    "policy_consumption_acceptance_closed_this_run": 1,
-    "locator_acceptance_closed_this_run": 1
+    "new_implementation_owner_source_returns_consumed": 0,
+    "common_policy_reconciliation_closed_this_run": 1,
+    "watcher_prompt_drift_closed_this_run": 1,
+    "unattended_acceptance_closed_this_run": 0
   },
   "owner_actions_remaining": 9,
   "patch_ready_owner_actions": 2,
@@ -469,18 +480,21 @@
     {
       "id": "configure:PR45-event",
       "classification": "DONE",
-      "acceptance": "Supported narrow create success and prompt/enabled/unscheduled readback; event delivery NOT_VERIFIED"
+      "acceptance": "Supported narrow create success and prompt/enabled/unscheduled readback; event delivery NOT_VERIFIED",
+      "historical_evidence_scope": "Valid at previous source-pinned execution only; superseded live watcher role by CDR-024"
     },
     {
       "id": "configure:existing-followup",
       "classification": "DONE",
-      "acceptance": "Same execution prompt read back; prior enabled/schedule/destination preserved"
+      "acceptance": "Same execution prompt read back; prior enabled/schedule/destination preserved",
+      "historical_evidence_scope": "Valid at previous source-pinned execution only; superseded live watcher role by CDR-024"
     },
     {
       "id": "verify:actual-automatic-hop",
       "classification": "DONE",
       "acceptance": "First supplied PR45 webhook invocation reached fresh GitHub reads, reconciliation and justified no-op. No material owner return or implementation continuation was observed.",
-      "reference": "evidence/event_18584e20_2026-10-05.json"
+      "reference": "evidence/event_18584e20_2026-10-05.json",
+      "historical_evidence_scope": "Valid at previous source-pinned execution only; superseded live watcher role by CDR-024"
     },
     {
       "id": "verify:shared-P01-identity-API",
@@ -527,6 +541,27 @@
       "risk": "FAST",
       "reference": "automation/evidence/main_policy_return_5991485958_2026-10-05.json",
       "acceptance": "One live locator repaired to automation/D3_DELEGATED_APPROVAL_POLICY_v1.0.md; every policy Markdown link in own scope resolves; historical evidence preserved"
+    },
+    {
+      "id": "consume:CDR024-v1.1",
+      "classification": "DONE",
+      "risk": "FAST",
+      "reference": "https://github.com/kco994553-star/Investment-System1/blob/1596649912554116196c1ad3c1d41797219f5241/implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+      "acceptance": "Exact adopted blob/Gate A/pending RD3-11 consumed; v1.1 values applied, no D3-A decision manufactured"
+    },
+    {
+      "id": "repair:watcher-executor-prompt-drift",
+      "classification": "DONE",
+      "risk": "FAST",
+      "reference": "WATCHER_PROMPT.md",
+      "acceptance": "Two prompt readbacks match; event scope/cadence/enablement preserved. Technical permission isolation NOT_VERIFIED"
+    },
+    {
+      "id": "verify:Gate-A-hard-enforcement",
+      "classification": "WAIT_DEPENDENCY",
+      "dependency": "Main/governance accountable enforcement owners and exact hard-guard evidence",
+      "reference": "https://github.com/kco994553-star/Investment-System1/blob/1596649912554116196c1ad3c1d41797219f5241/implementation/docs/coordination/governance/AUTONOMY_HARD_GUARD_GAPS_v1.1.md",
+      "next_automatic_action": "Consume exact enforcement evidence; do not enable RUN or claim prompt equals hard guard"
     }
   ],
   "ready_tasks": [],
@@ -555,27 +590,14 @@
     "SSoT_update_closure_ready": 0,
     "ready_D1_D2_D3_A": 0
   },
-  "lease": {
-    "run_id": "platform-cdr024-reconcile-20261005",
-    "writer": "Product Platform independent audit /root",
-    "lane_id": "platform-audit-governance-reconciliation",
-    "acquired_at_utc": "2026-10-05T10:43:38.999Z",
-    "expires_at_utc": "2026-10-05T12:43:38.999Z",
-    "ttl_hours": 2,
-    "parent": "5e5fd1508a7f197a1168333bb13c45b8088a48ba",
-    "scope": [
-      "implementation/docs/product_platform/automation/",
-      "implementation/docs/product_platform/CURRENT_HANDOFF.md"
-    ],
-    "purpose": "D1 supervised CDR-024 policy reconciliation and read-only watcher prompt compliance; no Product/source takeover"
-  },
+  "lease": null,
   "lease_protocol": {
     "scope": "This audit branch only",
     "claim": "Exact fresh parent commit, force=false update/readback before write-producing READY; losing child re-reads",
-    "default_minutes": 30,
     "release_at": "WAIT/checkpoint",
     "no_READY_no_lease_only_commit": true,
-    "other_owner_lease_takeover": false
+    "other_owner_lease_takeover": false,
+    "default_hours": 2
   },
   "automation": {
     "event": {
@@ -623,9 +645,9 @@
     "structured_trigger_filters_exposed_by_peek": false,
     "unattended_execution": "EVENT_NOOP_VERIFIED; MATERIAL_CONTINUATION_NOT_VERIFIED",
     "execution_prompt": "EXECUTOR_PROMPT.md",
-    "single_executor": "Same scoped queue/ref/lease for both wakeup paths",
+    "single_executor": "Only user-observed Work executor until Gate A; scheduled paths are read-only watchers",
     "event_support": "PR45 new conversation/inline comments, reviews and HEAD changes; no branch-push/CI-terminal support",
-    "fallback": "Existing followup currently disabled; no schedule/enablement change authorized by this policy update",
+    "fallback": "Existing settings retained; watchers only signal through non-SSoT wake response, execution-channel hookup unverified",
     "event_noop_receipt": "evidence/event_18584e20_2026-10-05.json",
     "material_change_to_execution_publication": "NOT_VERIFIED",
     "followup_unattended_execution": "NOT_VERIFIED",
@@ -646,7 +668,11 @@
         "is_enabled": false,
         "schedule": "BEGIN:VEVENT\nDTSTART:20261005T090500Z\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT"
       }
-    ]
+    ],
+    "watcher_prompt": "WATCHER_PROMPT.md",
+    "authority": "CDR-024 v1.1",
+    "unattended_executor": "DISABLED_PENDING_GATE_A",
+    "hard_token_isolation": "NOT_VERIFIED"
   },
   "evidence_reuse": {
     "source_contracts_sha256": "b13686d8ce134ccb61ef78c51d178597404e7a3401e7b22240dcc47c01d0aa7b",
@@ -687,18 +713,18 @@
     "protected_semantics": false,
     "deployment": false
   },
-  "next_automatic_action": "On material owner/source/contract/CI/approved-decision/tool-target change, fresh-read and reconcile; consume actual return with proportional verification, publish/rejudge blocker, then execute every newly READY approved task. No unchanged-state busy loop or duplicate owner implementation",
+  "next_automatic_action": "User-observed Work: on actual owner successor/writer acceptance, verify affected SA01/SA02 and financial/Web closures, publish and re-evaluate. Watcher: read-only deduplicated wake signal only; no unattended executor until Gate A verified and user control permits.",
   "last_execution": {
-    "run_id": "platform-main-policy-link-b2bb0c30-20261005",
-    "parent": "ed525110358861e347c6c05e004035f359b9b63c",
-    "claim_head": "e52cd0686800557b963892c4d18870c13a1aaee7",
-    "execution": "MAIN_POLICY_RECEIPT_CONSUMPTION_AND_BOUNDED_LOCATOR_REPAIR",
+    "run_id": "platform-cdr024-reconcile-20261005",
+    "parent": "5e5fd1508a7f197a1168333bb13c45b8088a48ba",
+    "claim_head": "445bdca9ecc5e18afb975826dc9bddfe0f0a7f57",
+    "execution": "SUPERVISED_D1_COMMON_POLICY_AND_READ_ONLY_WATCHER_RECONCILIATION",
     "Product_blockers_closed": 0,
     "owner_source_returns_consumed": 0,
     "prior_tests_reexecuted": false,
     "ownership_changed": false,
-    "evidence": "automation/evidence/main_policy_return_5991485958_2026-10-05.json",
-    "input_fingerprint": "ef659579cf9ac83a3aec831958e9e3876e949896177a78610151558177a0f23e"
+    "evidence": "automation/evidence/CDR024_RECONCILIATION_2026-10-05.json",
+    "tasks_completed": 3
   },
   "decision_reclassification": {
     "pending_concrete_decisions_start": 0,
@@ -757,6 +783,57 @@
       "claim_head": "e52cd0686800557b963892c4d18870c13a1aaee7",
       "released_at_utc": "2026-10-05T09:17:31.678Z",
       "result": "Bounded own-doc repair and policy consumer receipt; Product WAIT_DEPENDENCY"
+    },
+    {
+      "run_id": "platform-cdr024-reconcile-20261005",
+      "writer": "Product Platform independent audit /root",
+      "lane_id": "platform-audit-governance-reconciliation",
+      "acquired_at_utc": "2026-10-05T10:43:38.999Z",
+      "expires_at_utc": "2026-10-05T12:43:38.999Z",
+      "ttl_hours": 2,
+      "parent": "5e5fd1508a7f197a1168333bb13c45b8088a48ba",
+      "scope": [
+        "implementation/docs/product_platform/automation/",
+        "implementation/docs/product_platform/CURRENT_HANDOFF.md"
+      ],
+      "purpose": "D1 supervised CDR-024 policy reconciliation and read-only watcher prompt compliance; no Product/source takeover",
+      "claim_head": "445bdca9ecc5e18afb975826dc9bddfe0f0a7f57",
+      "released_at_utc": "2026-10-05T10:47:44.968Z",
+      "result": "D1 policy/queue/watcher reconciliation; no Product source change"
     }
-  ]
+  ],
+  "operational_values": {
+    "cycle_max_tasks": 5,
+    "lease_ttl_hours": 2,
+    "deadlock_escalation": "TTL×2",
+    "repair_retest_cap": 3,
+    "digest_max_decisions": 10,
+    "digest_max_weeks": 1,
+    "same_module_contract_per_window": 5,
+    "rolling_windows": 3,
+    "veto_hours": 72,
+    "dependent_chain_depth": 3,
+    "token_budget": "UNSET"
+  },
+  "governance": {
+    "mode": "SUPERVISED_SESSION_ONLY",
+    "gate_A": "NOT_VERIFIED",
+    "unattended_executor": "DISABLED_PENDING_GATE_A",
+    "watcher": "READ_ONLY_WAKE_UP",
+    "kill_switch": {
+      "status": "NOT_LOCATED_NOT_VERIFIED",
+      "file_search_scope": "1596649912554116196c1ad3c1d41797219f5241 recursive repository tree",
+      "repository_variable": "NOT_READ",
+      "mode_assumed": false,
+      "changed_by_this_Work": false
+    },
+    "guard_gaps": {
+      "HG01": "NOT_VERIFIED",
+      "HG02": "NOT_VERIFIED",
+      "HG03": "NOT_VERIFIED",
+      "HG09": "NOT_VERIFIED"
+    },
+    "production_gates_closed": 0,
+    "immediate_G2_condition": "NOT_ASSERTED; no secret/user-data probing performed"
+  }
 }

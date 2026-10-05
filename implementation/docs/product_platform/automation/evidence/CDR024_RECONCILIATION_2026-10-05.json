@@ -1,0 +1,187 @@
+{
+  "schema": "platform-cdr024-reconciliation-v1",
+  "recorded_at_utc": "2026-10-05T10:47:44.968Z",
+  "classification": "D1 explicit adopted-policy compliance; not new D3-A",
+  "semantic_delta": "NONE",
+  "input": {
+    "audit_parent": "5e5fd1508a7f197a1168333bb13c45b8088a48ba",
+    "claim_head": "445bdca9ecc5e18afb975826dc9bddfe0f0a7f57",
+    "Global": "1596649912554116196c1ad3c1d41797219f5241",
+    "policy_path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+    "policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+    "merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
+    "guard_register_blob": "1018ff50fc8e624be3b1c9ab403337a4dfc9bb02",
+    "pending_d3_blob": "a556817d4819ed2ec06823a7721927f6f330b975",
+    "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "source": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "pr45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+    "web": "fb086eac4321140493ce554a541343cebbb81ed6"
+  },
+  "decisions": [
+    "Consume CDR-024/25/26 exact common authority; do not rewrite common policy",
+    "Replace live scheduled executor prompts with read-only wake-up watchers",
+    "Update only own scope queue/handoff/prompt and release lease; keep owner runtime blockers open"
+  ],
+  "basis": [
+    "v1.1 PART G G1: supervised work permitted; unattended disabled until Gate A",
+    "v1.1 §§27-29A watchers read-only",
+    "v1.1 §§4A/5A/9A adopted operational values",
+    "RD3-11 remains WAIT_DEPENDENCY, no concrete Product D3"
+  ],
+  "alternatives": [
+    {
+      "option": "Keep historical scheduled executor",
+      "selected": false,
+      "reason": "Conflicts with adopted v1.1"
+    },
+    {
+      "option": "Enable RUN using prompt-only guard",
+      "selected": false,
+      "reason": "Gate A lacks hard enforcement evidence"
+    },
+    {
+      "option": "Supervised D1 reconciliation, read-only watcher and owner wait",
+      "selected": true
+    }
+  ],
+  "automation_readbacks": [
+    {
+      "id": "6ac3505a9b6481919af63cd3355d2fb5",
+      "prompt_exact": true,
+      "enabled_preserved": true,
+      "schedule_preserved": true,
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT"
+    },
+    {
+      "id": "6ac31feebd4081919316ff15e37499b3",
+      "prompt_exact": true,
+      "enabled_preserved": true,
+      "schedule_preserved": true,
+      "is_enabled": false,
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T090500Z\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT"
+    }
+  ],
+  "hard_guard_status": {
+    "mode": "SUPERVISED_SESSION_ONLY",
+    "gate_A": "NOT_VERIFIED",
+    "unattended_executor": "DISABLED_PENDING_GATE_A",
+    "watcher": "READ_ONLY_WAKE_UP",
+    "kill_switch": {
+      "status": "NOT_LOCATED_NOT_VERIFIED",
+      "file_search_scope": "1596649912554116196c1ad3c1d41797219f5241 recursive repository tree",
+      "repository_variable": "NOT_READ",
+      "mode_assumed": false,
+      "changed_by_this_Work": false
+    },
+    "guard_gaps": {
+      "HG01": "NOT_VERIFIED",
+      "HG02": "NOT_VERIFIED",
+      "HG03": "NOT_VERIFIED",
+      "HG09": "NOT_VERIFIED"
+    },
+    "production_gates_closed": 0,
+    "immediate_G2_condition": "NOT_ASSERTED; no secret/user-data probing performed"
+  },
+  "protection": {
+    "owner_source_changed": false,
+    "Global_changed": false,
+    "canonical_changed": false,
+    "credentials_accessed": false,
+    "real_user_data_accessed": false,
+    "trade_order_funds": false,
+    "investment_method_numeric_changed": false,
+    "PIT_Frozen_history_destroyed": false,
+    "unattended_enabled": false
+  },
+  "failure_history": [
+    {
+      "stage": "fresh-read tool argument binding",
+      "kind": "RETRY",
+      "result": "Corrected API argument names; no state mutation"
+    },
+    {
+      "stage": "local preparation structuredClone unavailable",
+      "kind": "REPAIR",
+      "result": "JSON deep-copy used; first failed preparation made no publication"
+    }
+  ],
+  "prior_Product_evidence_reused": true,
+  "Product_tests_rerun": false,
+  "metrics": {
+    "Product_start": 9,
+    "Product_closed": 0,
+    "Product_new": 0,
+    "Product_end": 9,
+    "net_reduction": 0,
+    "whole_VERIFIED_capabilities": 0,
+    "source_returns_consumed": 0,
+    "READY_after_re_evaluation": 0,
+    "D3_current": 0
+  },
+  "rollback": "Restore previous mutable scoped docs by ordinary descendant commit; retain receipt/history. Watcher executor role must not be restored while v1.1/Gate A prohibition is current; resubmission of current read-only prompt has no external financial side effect.",
+  "publication": {
+    "containing_commit_is_identity": true,
+    "parent": "445bdca9ecc5e18afb975826dc9bddfe0f0a7f57",
+    "non_force": true,
+    "remote_readback": "Required before final completion assertion"
+  },
+  "validation": {
+    "passed": true,
+    "checks": 24,
+    "assertions": {
+      "history_prefix:implementation/docs/product_platform/CURRENT_HANDOFF.md": true,
+      "history_prefix:implementation/docs/product_platform/automation/CHECKPOINT.md": true,
+      "historical_loop_body_retained": true,
+      "write_scope_docs_only": true,
+      "lease_released": true,
+      "unchanged_owner": true,
+      "unchanged_canonical": true,
+      "adopted_blob_pin": true,
+      "fresh_global_pin": true,
+      "blockers_remain_open": true,
+      "no_false_product_closure": true,
+      "no_false_capability_promotion": true,
+      "no_D3_invention": true,
+      "no_prior_test_rerun": true,
+      "adopted_operational_values": true,
+      "within_cycle_budget": true,
+      "Gate_A_not_promoted": true,
+      "hard_guard_not_prompt_claim": true,
+      "kill_switch_not_invented": true,
+      "READY_exhausted": true,
+      "watcher_mutation_denials": true,
+      "independent_D3_A_required": true,
+      "automation_config_preserved": true,
+      "no_source_takeover": true
+    },
+    "artifact_manifest": {
+      "implementation/docs/product_platform/CURRENT_HANDOFF.md": {
+        "sha256": "f68c9eaeecd66fd0d67e2b438d28245115a4a39f3150fe16cb25de3dde7adad7",
+        "bytes": 14696
+      },
+      "implementation/docs/product_platform/automation/CHECKPOINT.md": {
+        "sha256": "de85ed89819da3a6fd0c0f3c0e7489903181815f19ed6154aec022b577848309",
+        "bytes": 14005
+      },
+      "implementation/docs/product_platform/automation/SSOT_EXECUTION_LOOP.md": {
+        "sha256": "b29cf3f3d8bf0e014d684c0d58c7395efb160b4c55bc49fd67e2afca3e75d503",
+        "bytes": 11012
+      },
+      "implementation/docs/product_platform/automation/STATE.json": {
+        "sha256": "536bc44baed602ff9005f23bd53b65851350818336f695c3914bc8d98081024e",
+        "bytes": 41453
+      },
+      "implementation/docs/product_platform/automation/EXECUTOR_PROMPT.md": {
+        "sha256": "2fc594d8950aee94cd69e4058c4c5d7c4d75564130c13161daaa68f27b466eec",
+        "bytes": 3857
+      },
+      "implementation/docs/product_platform/automation/WATCHER_PROMPT.md": {
+        "sha256": "c673c0cb50056f5610341f241e895eaf5749f9ea375dce45ccf27832bc3da7f5",
+        "bytes": 2744
+      }
+    },
+    "self_hash": "Excluded to avoid circular evidence; containing commit/Git blob identifies receipt"
+  }
+}

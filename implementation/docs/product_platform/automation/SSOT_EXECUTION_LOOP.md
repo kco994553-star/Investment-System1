@@ -1,3 +1,15 @@
+## Current controlling authority — CDR-024 / v1.1
+
+[Adopted common SSoT v1.1](https://github.com/kco994553-star/Investment-System1/blob/1596649912554116196c1ad3c1d41797219f5241/implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md) at exact Global `1596649912554116196c1ad3c1d41797219f5241`, policy blob `4736bbcb508ce1f4310fbe96cbcfdd8e080b275f`, supersedes conflicting v1.0 loop, broad D3 or executor-watcher prose below. The previous body is retained as historical context, not an independent grant.
+
+Current live executor: [EXECUTOR_PROMPT.md](EXECUTOR_PROMPT.md); read-only watcher: [WATCHER_PROMPT.md](WATCHER_PROMPT.md). PART G Gate A NOT_VERIFIED => unattended executor disabled; user-observed D1/D2 remains permitted. Watchers cannot mutate SSoT/lease/ref/CI or auto-approve D3-A. Prompt compliance is not hard authorization isolation. HG-01/02/03 remain NOT_VERIFIED.
+
+Adopted values: max5 tasks/cycle, lease TTL2h, repair rounds3. §26B independent decision execution and §26F semantic_delta are required for D3-A; the policy's complete reserved boundaries, rollback/digest/veto rules control. No owner/write-set takeover. Kill Switch remains user-only; actual control location is not established here.
+
+---
+
+## Historical v1.0 body retained
+
 ## Current authority — D3 Delegated Approval Policy v1.0
 
 The user's latest directive in [D3_DELEGATED_APPROVAL_POLICY_v1.0.md](D3_DELEGATED_APPROVAL_POLICY_v1.0.md) supersedes conflicting broad D3 labels below; those historical text sections are retained. D1/D2 retain scope. D3-A requires concrete pinned approved goal/Architecture/SSoT/decision evidence for every condition; rationality alone is insufficient. No new investment/economic/score meaning, weakened protection/PIT/provenance/Frozen/history, enlarged security/tenant/financial authority, actual order/funds, destructive evidence change, or irreversible migration. Rollback and deterministic/independent verification are required; choose the conservative SSoT-aligned alternative. Unknown or any reserved exclusion = D3-R.
