@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "owner_branch": "codex/product-platform-audit-v1",
+  "last_processed": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "global": "b3532a2ebbe95310bbf222937466eb04a0211263",
+    "fpia_pr_42": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+  },
+  "lease": null,
+  "pending_ci": [],
+  "checkpoint": "initial_contract_foundation"
+}

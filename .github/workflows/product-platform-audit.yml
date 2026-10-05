@@ -1,0 +1,28 @@
+name: product-platform-audit
+on:
+  push:
+    branches: [codex/product-platform-audit-v1]
+  pull_request:
+    paths:
+      - 'implementation/src/investment_system/platform/**'
+      - 'implementation/tests/test_product_platform_contracts.py'
+      - 'implementation/docs/product_platform_audit/**'
+      - '.github/workflows/product-platform-audit.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pytest
+      - name: Targeted platform and Track B contract tests
+        run: PYTHONPATH=src python -m pytest -q tests/test_product_platform_contracts.py tests/test_pil_p0_contracts.py
+        working-directory: implementation
+      - name: Full regression
+        run: PYTHONPATH=src python -m pytest -q
+        working-directory: implementation
