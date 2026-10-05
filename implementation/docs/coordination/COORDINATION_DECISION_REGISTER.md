@@ -1631,3 +1631,20 @@ Follow-ups:
 3. Verify Gate A controls before enabling unattended AUTONOMY_MODE=RUN.
 4. Pilot one lane for 1–2 weeks and adjust only from operational evidence; operating-value changes remain D3-R.
 
+## CDR-025 · CDR-024 execution receipt — PR #48 merged to Global
+
+- Status: **EXECUTED / APPEND_ONLY_FOLLOW_UP**
+- Recorded: 2026-10-05
+- Class: D1 execution receipt under CDR-024; no new policy authority.
+- PR #48 merge result: `82de599ee90a6beabd774dd22e7e2b939ff75b44`.
+- Global branch after merge: `integration/global-handoff-v1` @ `82de599ee90a6beabd774dd22e7e2b939ff75b44`.
+- Canonical/default branch remains `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca`.
+- PR #48 final head before merge: `1d2c8195ffb936c56ba91d9fe41e627ef172a5e7`.
+- Global sync merge on governance branch: `18e79a9a320b2a7b21a9fa2daad95d4e5d6eb5b3`.
+- Three-file governance diff revalidated before merge:
+  1. `implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md` — append-only CDR-024.
+  2. `implementation/docs/coordination/policies/AUTONOMOUS_EXECUTION_DECISION_AUTHORITY_SSoT_v1.0.md` — historical v1.0 retained and marked SUPERSEDED; original body preserved.
+  3. `implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md` — adopted v1.1.
+- No CDR-024 rewrite is performed by this receipt. This entry records the post-merge exact state append-only.
+- No canonical merge, Holdout consumption, Official/LIVE promotion, production deployment, paid-resource activation, real credential activation, trade/order/fund transfer, PIT relaxation, Frozen/history destruction or protected-owner takeover is authorized by this receipt.
+- Next execution under CDR-024: register PART G Hard-Guard Gaps and begin pending D3 reclassification under §§25, 26A, 26F.
