@@ -25,7 +25,7 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "CI_REPAIR_PUBLISHED_EXACT_NEW_CI_PENDING_OWNER_RETURNS_REQUIRED",
+  "execution_state": "PIW_D003_D005_BOUNDED_CONSUMER_IN_PROGRESS",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_input": "9cd598c5564827418115ebb15c1c88a0e7811bab",
@@ -64,7 +64,14 @@
     "followup_delivery_observed": true
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": null,
+  "lease": {
+    "token": "main-fpia-coverage-20261005-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "acquired_at": "2026-10-05T06:55:50.301Z",
+    "expires_at": "2026-10-05T07:25:50.301Z",
+    "scope": "PIW-D003/D005 read-only execution coverage consumer; Global evidence",
+    "reason": "Runnable authorized bounded proposal; no owner scope takeover"
+  },
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -205,7 +212,16 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": null,
+  "active_scoped_execution": {
+    "token": "main-fpia-coverage-20261005-3a80dcef6444",
+    "branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+    "input_head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+    "write_set": [
+      "implementation/tools/integration/track_c_fpia_execution_coverage.py",
+      "implementation/tests/test_integration_fpia_execution_coverage.py"
+    ],
+    "lane": "CRITICAL"
+  },
   "last_terminal_ci_evidence": "evidence/main_convergence_2026-10-05/FPIA_RECEIPT.json",
   "last_checkpoint_at_utc": "2026-10-05T06:33:50.329307+00:00",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
