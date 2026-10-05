@@ -18,8 +18,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-CONFIG_PATH = ROOT / "docs/coordination/governance/AUTONOMY_GUARD_CONFIG.v1.json"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+IMPLEMENTATION_ROOT = Path(__file__).resolve().parents[1]
+CONFIG_PATH = IMPLEMENTATION_ROOT / "docs/coordination/governance/AUTONOMY_GUARD_CONFIG.v1.json"
 
 
 class GuardError(RuntimeError):
