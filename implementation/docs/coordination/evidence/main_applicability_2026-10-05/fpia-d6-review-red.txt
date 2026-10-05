@@ -1,0 +1,146 @@
+.........FFF....FF                                                       [100%]
+=================================== FAILURES ===================================
+_ test_unmerged_import_or_ambiguous_source_fails_closed[from . import protected_area\n] _
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-31/test_unmerged_import_or_ambigu7'), '87743e7bef04e703805d8e937cef64ec0dc68187', '597915952fba06cabb7c12ee4b167ed7108f0132')
+source = 'from . import protected_area\n'
+
+    @pytest.mark.parametrize('source', [
+        'import package.protected_area\n',
+        'from package import protected_area\n',
+        'from package.protected_area import a\n',
+        'import importlib\nimportlib.import_module("package.protected_area.a")\n',
+        'import importlib\nimportlib.import_module(module_name)\n',
+        'import importlib\nf = importlib.import_module\nf(name)\n',
+        '__import__(name)\n',
+        'from . import protected_area\n',
+        'from .protected_area import a\n',
+        'getattr(__builtins__, "__" + "import__")(name)\n',
+        'this is ( invalid\n',
+    ])
+    def test_unmerged_import_or_ambiguous_source_fails_closed(history, source):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        (repo / 'foreign.py').write_text(source)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'foreign source')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+E       AssertionError: assert 'OUTSIDE_SCOPE_NOT_RUN' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + OUTSIDE_SCOPE_NOT_RUN
+
+implementation/tests/test_integration_fpia_applicability.py:83: AssertionError
+_ test_unmerged_import_or_ambiguous_source_fails_closed[from .protected_area import a\n] _
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-31/test_unmerged_import_or_ambigu8'), '87743e7bef04e703805d8e937cef64ec0dc68187', '597915952fba06cabb7c12ee4b167ed7108f0132')
+source = 'from .protected_area import a\n'
+
+    @pytest.mark.parametrize('source', [
+        'import package.protected_area\n',
+        'from package import protected_area\n',
+        'from package.protected_area import a\n',
+        'import importlib\nimportlib.import_module("package.protected_area.a")\n',
+        'import importlib\nimportlib.import_module(module_name)\n',
+        'import importlib\nf = importlib.import_module\nf(name)\n',
+        '__import__(name)\n',
+        'from . import protected_area\n',
+        'from .protected_area import a\n',
+        'getattr(__builtins__, "__" + "import__")(name)\n',
+        'this is ( invalid\n',
+    ])
+    def test_unmerged_import_or_ambiguous_source_fails_closed(history, source):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        (repo / 'foreign.py').write_text(source)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'foreign source')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+E       AssertionError: assert 'OUTSIDE_SCOPE_NOT_RUN' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + OUTSIDE_SCOPE_NOT_RUN
+
+implementation/tests/test_integration_fpia_applicability.py:83: AssertionError
+_ test_unmerged_import_or_ambiguous_source_fails_closed[getattr(__builtins__, "__" + "import__")(name)\n] _
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-31/test_unmerged_import_or_ambigu9'), '87743e7bef04e703805d8e937cef64ec0dc68187', '597915952fba06cabb7c12ee4b167ed7108f0132')
+source = 'getattr(__builtins__, "__" + "import__")(name)\n'
+
+    @pytest.mark.parametrize('source', [
+        'import package.protected_area\n',
+        'from package import protected_area\n',
+        'from package.protected_area import a\n',
+        'import importlib\nimportlib.import_module("package.protected_area.a")\n',
+        'import importlib\nimportlib.import_module(module_name)\n',
+        'import importlib\nf = importlib.import_module\nf(name)\n',
+        '__import__(name)\n',
+        'from . import protected_area\n',
+        'from .protected_area import a\n',
+        'getattr(__builtins__, "__" + "import__")(name)\n',
+        'this is ( invalid\n',
+    ])
+    def test_unmerged_import_or_ambiguous_source_fails_closed(history, source):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        (repo / 'foreign.py').write_text(source)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'foreign source')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+E       AssertionError: assert 'OUTSIDE_SCOPE_NOT_RUN' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + OUTSIDE_SCOPE_NOT_RUN
+
+implementation/tests/test_integration_fpia_applicability.py:83: AssertionError
+___________ test_unclassified_executable_blocks[launcher.pyw-100644] ___________
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-31/test_unclassified_executable_b0'), '87743e7bef04e703805d8e937cef64ec0dc68187', '597915952fba06cabb7c12ee4b167ed7108f0132')
+filename = 'launcher.pyw', mode = '100644'
+
+    @pytest.mark.parametrize('filename,mode', [('launcher.pyw', '100644'), ('launcher', '100755')])
+    def test_unclassified_executable_blocks(history, filename, mode):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        p = repo / filename
+        p.write_text('#!/usr/bin/python\nimport package.protected_area\n')
+        if mode == '100755':
+            p.chmod(0o755)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'executable')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+E       AssertionError: assert 'OUTSIDE_SCOPE_NOT_RUN' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + OUTSIDE_SCOPE_NOT_RUN
+
+implementation/tests/test_integration_fpia_applicability.py:120: AssertionError
+_____________ test_unclassified_executable_blocks[launcher-100755] _____________
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-31/test_unclassified_executable_b1'), '87743e7bef04e703805d8e937cef64ec0dc68187', '597915952fba06cabb7c12ee4b167ed7108f0132')
+filename = 'launcher', mode = '100755'
+
+    @pytest.mark.parametrize('filename,mode', [('launcher.pyw', '100644'), ('launcher', '100755')])
+    def test_unclassified_executable_blocks(history, filename, mode):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        p = repo / filename
+        p.write_text('#!/usr/bin/python\nimport package.protected_area\n')
+        if mode == '100755':
+            p.chmod(0o755)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'executable')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+E       AssertionError: assert 'OUTSIDE_SCOPE_NOT_RUN' == 'BLOCKED'
+E         
+E         - BLOCKED
+E         + OUTSIDE_SCOPE_NOT_RUN
+
+implementation/tests/test_integration_fpia_applicability.py:120: AssertionError
+=========================== short test summary info ============================
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unmerged_import_or_ambiguous_source_fails_closed[from . import protected_area\n]
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unmerged_import_or_ambiguous_source_fails_closed[from .protected_area import a\n]
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unmerged_import_or_ambiguous_source_fails_closed[getattr(__builtins__, "__" + "import__")(name)\n]
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unclassified_executable_blocks[launcher.pyw-100644]
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unclassified_executable_blocks[launcher-100755]
+5 failed, 13 passed in 0.79s

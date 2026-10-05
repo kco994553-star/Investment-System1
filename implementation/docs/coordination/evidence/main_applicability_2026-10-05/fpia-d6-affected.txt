@@ -1,0 +1,37 @@
+........................................................................ [ 32%]
+........................................................................ [ 65%]
+........................................................................ [ 98%]
+..F.                                                                     [100%]
+=================================== FAILURES ===================================
+_______________________ test_fpia_files_complement_clean _______________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-30/test_fpia_files_complement_cle0')
+
+    def test_fpia_files_complement_clean(tmp_path):
+        """FPIA's own files, added to T0, raise no complement finding (self-placement, AC-41)."""
+        w = tk.variant(tmp_path)
+        changes = {}
+        for path in SOURCES:
+            changes["implementation/tools/integration/" + path.name] = path.read_bytes()
+        for path in TESTS:
+            changes["implementation/tests/" + path.name] = path.read_bytes()
+        changes[".github/workflows/track-c-fpia.yml"] = WORKFLOW.read_bytes()
+        vendor = "implementation/tools/integration/_vendor/"
+        for path in sorted((FPIA_DIR / "_vendor").rglob("*")):
+            if path.is_file() and "__pycache__" not in path.parts:
+                changes[vendor + path.relative_to(FPIA_DIR / "_vendor").as_posix()] = path.read_bytes()
+        assert vendor + "yaml/__init__.py" in changes
+        T = w.git.change(w.c["T0"], changes, "add FPIA files")
+        a = w.audit(T)
+        assert a.ref_status == "PASS"
+>       assert a.static_findings == [], a.static_findings
+E       AssertionError: [{'id': 'AC-32.spoof', 'finding': 'complement workflow claims or runs Track C scope without attribution', 'path': '.gi...mplementation/src/investment_system/evl/a.py (via implementation/tests/test_integration_fpia_applicability.py)'], ...}]
+E       assert [{'id': 'AC-3...y.py)'], ...}] == []
+E         
+E         Left contains one more item: {'id': 'AC-32.spoof', 'finding': 'complement workflow claims or runs Track C scope without attribution', 'path': '.git...implementation/src/investment_system/evl/a.py (via implementation/tests/test_integration_fpia_applicability.py)'], ...}
+E         Use -v to get more diff
+
+tests/test_integration_fpia_self.py:100: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_integration_fpia_self.py::test_fpia_files_complement_clean
+1 failed, 219 passed in 5.72s

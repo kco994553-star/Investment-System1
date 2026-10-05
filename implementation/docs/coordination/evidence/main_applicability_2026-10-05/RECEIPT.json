@@ -1,0 +1,254 @@
+{
+  "schema": "MAIN_D006_APPLICABILITY_RECEIPT/1",
+  "observed_at_utc": "2026-10-05 08:19:50 UTC",
+  "authority": "CDR015 D1/D2 narrowed016§13/017/018; risk021; continuation022",
+  "publication": {
+    "pr": 47,
+    "branch": "codex/fpia-execution-coverage-2026-10-05",
+    "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+    "parent": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+    "tree": "ce6a9092cbeb79f7ac55626b7d8931061167cd4d",
+    "comparison": "TREE_IDENTICAL",
+    "commit_identical": "NOT_CLAIMED",
+    "changed_paths": [
+      ".github/workflows/track-c-fpia.yml",
+      "implementation/tools/integration/track_c_fpia_applicability.py",
+      "implementation/tests/test_integration_fpia_applicability.py",
+      "implementation/tools/integration/track_c_fpia_ci_receipt.py",
+      "implementation/tests/test_integration_fpia_ci_receipt.py"
+    ],
+    "raw_fpia_core_changed": false
+  },
+  "verification": {
+    "lane": "CRITICAL",
+    "affected_tests": 229,
+    "failures": 0,
+    "applicability_tests": 20,
+    "independent_review": "All4boundedfindings addressed; no remaining material finding in corrected areas; actual CI/futuremerge pending",
+    "actual_cdr_loader": "2synthetic source-auth tests; no production authority claim",
+    "full_repo_rerun": false,
+    "history": [
+      "13initial RED missing implementation",
+      "1existing complement check FAIL with219PASS; generic namespace fixture repaired without weakening constraints",
+      "5review negative cases RED before correction",
+      "2observer source/subject cases RED before correction",
+      "Final229PASS"
+    ],
+    "real_history_preflight": {
+      "status": "UNAVAILABLE",
+      "reason": "Local partial object store could not deliver required promisor Git object; no PASS or outside-scope credit",
+      "evidence": "fpia-d6-real.json"
+    }
+  },
+  "ci": [
+    {
+      "run_id": 37282319537,
+      "name": "p01-research-publication",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319537"
+    },
+    {
+      "run_id": 37282319630,
+      "name": "us-equity-session",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319630"
+    },
+    {
+      "run_id": 37282319526,
+      "name": "qgv-invalidation-binding",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319526"
+    },
+    {
+      "run_id": 37282319547,
+      "name": "technical-real-producer",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319547"
+    },
+    {
+      "run_id": 37282319536,
+      "name": "sec-primary-disclosure",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319536"
+    },
+    {
+      "run_id": 37282319562,
+      "name": "track-c-fpia",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319562"
+    },
+    {
+      "run_id": 37282319529,
+      "name": "technical-real-model",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319529"
+    }
+  ],
+  "prior_head_ci": [
+    {
+      "run_id": 37279107247,
+      "name": "track-c-fpia",
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107172,
+      "name": "qgv-invalidation-binding",
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "run_id": 37279107069,
+      "name": "sec-primary-disclosure",
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "run_id": 37279107113,
+      "name": "p01-research-publication",
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "run_id": 37279107162,
+      "name": "technical-real-producer",
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "run_id": 37279107212,
+      "name": "technical-real-model",
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "run_id": 37279107194,
+      "name": "us-equity-session",
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "same_run_rerun_requested": false,
+  "limits": [
+    "All observations authentication NOT_VERIFIED/integration BLOCKED",
+    "Outside scope NOT_RUN never Frozen PASS",
+    "No ancestry plus unresolved calls/non-Python executable source conservative BLOCKED",
+    "Accepted independent verifier/launcher/runtime attestation and full transitive/external scope are missing",
+    "D004 packaging closure applies exact tree only; all14PR28optionalpaths absent",
+    "GIE/governance/futureexactmergeacceptance remain OPEN"
+  ],
+  "qgv_return": {
+    "head": "ebd7ca3d476767af9ff0c92f89cfd132a570c2b3",
+    "semantic_input_blobs_verified": 29,
+    "output_hashes": {
+      "probe": "80bbd7f2fae59de7d5996c67842e04386cb6243d4196f953639de937d622f045",
+      "pins": "2e723b62b798e5e2be7f2136e6e772dc595ecb105f3b070774fde0f6198ec53e",
+      "spec": "741b3b99ea490ca27fc9a78bf80f922152e2e3eba2fbf6f91ad29a153b963c02",
+      "digests": "e480d35a86a0f4cee84d618b72533448f0ce99511791b92ac08df320b66ad8ac",
+      "verification": "682ea9675a66f1af90b4a0f07f8e4fc510f69e0af4dbbef48651a5ab892a44cd"
+    },
+    "evidence30checks": "Owner/root evidence reused at unchanged exact bytes; Main hash/immutable-pin intake only; no repeat30/59audit",
+    "bounded_scope_acceptance_consumed": 1,
+    "production_blockers_closed": 0,
+    "comment_id": 5990706291,
+    "current_control": "Active qgv-b2356-muuz0tbz; boundedapproval principles execution claimed; exact closure return pending",
+    "protected_missing_owner": "4fb08a05728d83519b72a2bd995669f0cb06003a; qgv-b47-muupb538 preserved",
+    "hops": "0/2 UNVERIFIED"
+  },
+  "lane_re_evaluation": [
+    {
+      "id": "D006localimplementation",
+      "state": "DONE",
+      "scope": "Bounded source/workflow implementation verified and published; full CI/exactmerge gate not closed"
+    },
+    {
+      "id": "D001D002runtimeacceptance",
+      "state": "WAIT_DEPENDENCY",
+      "needs": "Exact new runtime receipt/Actions job ID plus independent verifier authority/attestation; declaration cannot manufacture missing independent acceptance"
+    },
+    {
+      "id": "D003D005coverage",
+      "state": "WAIT_DEPENDENCY",
+      "needs": "Immutable external execution/content and actual descendant/runtime coverage; current additive consumer reportsBLOCKED"
+    },
+    {
+      "id": "D004exactpackaging",
+      "state": "DONE",
+      "scope": "14optionalPR28paths absent exact50fa tree; futurecombinedsubject stillpending"
+    },
+    {
+      "id": "CIcurrenthead",
+      "state": "WAIT_DEPENDENCY",
+      "needs": "7attempt1 nonterminal runs; consume onterminal without duplicate rerun"
+    },
+    {
+      "id": "Chart",
+      "state": "WAIT_DEPENDENCY",
+      "needs": "Active MagicPath/localfallback ownerlease5288; source/identity ownerunassigned; gates6open; no Mainduplicate"
+    },
+    {
+      "id": "QGV",
+      "state": "WAIT_DEPENDENCY",
+      "needs": "Active boundedcontract ownerreturn; preserved MissingDatalease; noMainmethodselection"
+    },
+    {
+      "id": "PlatformWeb",
+      "state": "WAIT_DEPENDENCY",
+      "needs": "Source owner ACK/adoption and boundedWebactualreturn; specialist5990208500consumed notimplementationadoption"
+    }
+  ],
+  "wait_check": {
+    "ready_main_d1_d2": 0,
+    "independent_ready_main": 0,
+    "bounded_repair": 0,
+    "immediate_owner_return_unconsumed": 0,
+    "terminal_ci_unconsumed": 0,
+    "remaining_ssot_update": 0,
+    "product_gate_net_closed": 0,
+    "canonical_candidate": "NOT_READY"
+  },
+  "resume_triggers": [
+    "Exact50faCI terminal/artifact",
+    "New independent verifier authority/runtime/external coverage evidence",
+    "Chart/QGV bounded owner return/lease release with actual output",
+    "ActualPlatformWebadoption/ACK",
+    "PortfolioIdentityexplicit accountable owner",
+    "Materialapproved decision/canonical change"
+  ],
+  "next_automatic_action": "Fresh-read exact material delta, consume terminal/owner evidence, repair authorized scoped failure, then re-evaluate; no repeated unchanged audit/poll"
+}

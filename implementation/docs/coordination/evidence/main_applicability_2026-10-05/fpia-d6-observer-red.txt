@@ -1,0 +1,29 @@
+...................FF                                                    [100%]
+=================================== FAILURES ===================================
+____________ test_separate_workflow_checkout_preserves_real_subject ____________
+
+source = (PosixPath('/tmp/pytest-of-root/pytest-37/test_separate_workflow_checkou0/repo'), {'repository': 'example/repo', 'work...pytest-of-root/pytest-37/test_separate_workflow_checkou0/repo/implementation/tools/integration/track_c_fpia_child.py'))
+
+    def test_separate_workflow_checkout_preserves_real_subject(source):
+        repo, c, _ = source
+        git(repo, 'checkout', '-q', c['workflow_sha'])
+>       r = module().collect_receipt(c, repo, 'implementation/tools/integration', workflow_source=True)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: collect_receipt() got an unexpected keyword argument 'workflow_source'
+
+implementation/tests/test_integration_fpia_ci_receipt.py:142: TypeError
+_____________ test_workflow_checkout_mode_rejects_subject_checkout _____________
+
+source = (PosixPath('/tmp/pytest-of-root/pytest-37/test_workflow_checkout_mode_re0/repo'), {'repository': 'example/repo', 'work...pytest-of-root/pytest-37/test_workflow_checkout_mode_re0/repo/implementation/tools/integration/track_c_fpia_child.py'))
+
+    def test_workflow_checkout_mode_rejects_subject_checkout(source):
+        repo, c, _ = source
+>       r = module().collect_receipt(c, repo, 'implementation/tools/integration', workflow_source=True)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: collect_receipt() got an unexpected keyword argument 'workflow_source'
+
+implementation/tests/test_integration_fpia_ci_receipt.py:152: TypeError
+=========================== short test summary info ============================
+FAILED implementation/tests/test_integration_fpia_ci_receipt.py::test_separate_workflow_checkout_preserves_real_subject
+FAILED implementation/tests/test_integration_fpia_ci_receipt.py::test_workflow_checkout_mode_rejects_subject_checkout
+2 failed, 19 passed in 0.71s

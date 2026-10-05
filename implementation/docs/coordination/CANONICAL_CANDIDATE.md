@@ -1,3 +1,8 @@
+# Current candidate checkpoint · 2026-10-05 08:19:50 UTC
+NOT_READY. Proposal50fa local229PASS; newCIpending and independentauthority/runtime/fullcoverage/GIE/exactmergeacceptance OPEN. D004packagingexactsubject verified; no fullgovernanceclaim. QGVinactive scope return1 consumed/productclosure0, ownerprinciplecontractlaneACTIVE; Chart6gates, PlatformWeb9groups. Canonicalb8 unchanged; no merge authorization exercised.
+
+--- Previous history ---
+
 # Candidate current revision · 2026-10-05 07:56:57 UTC
 
 **NOT_READY / NO_MERGE**. Canonical b8e39a2196a6d7794a04a0cd5393c68329e126ca; Main additive #47/9abeb376614dcd14c30f23bb7a99e4652edf0d83 pending CI. PIWD010 closes optionalPR28 omission exactsubject only; verifier authority, runtime authentication, execution coverage and exact future merge-result acceptance remain OPEN. D006 workflow applicability repair READY. Chart8fc gates0/6; Platform specialist859 return consumed, source78a unchanged and combinedWeb/Platform blockers9. No production/canonical approval implied.

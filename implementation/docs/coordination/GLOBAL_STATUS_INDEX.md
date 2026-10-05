@@ -195,3 +195,6 @@ Evidence: `implementation/docs/coordination/evidence/GIE-001_trial_integration_2
 ## GSI-027 · 2026-10-05 07:56:57 UTC
 
 Current Main additive proposal #47/9ab; 207 scopedPASS; exact47CI pending,46CI7/7terminalSUCCESS separate. PIW-D004 exactsubject omission CLOSED; D001/D002 authentication OPEN;D003/D005 coverageblocked; D006 workflow applicability READY. Platform specialist859/5990208500 consumed; sourceadoptionnotverified. Chart8fc gates0/6 and consumedMaincoverage. Product netblockerreduction0; packagingclosure1. No canonical merge; Main continuesREADY.
+
+## GSI-028 · 2026-10-05 08:19:50 UTC
+D006 proposal50fa local229PASS/CI7RUNNING; QGV29pins+5hashverified returnconsumed1, productgatesclosed0; MainREADY0 WAITexternalresults, leaseRELEASED. Exactrefs/limits/resume: evidence/main_applicability_2026-10-05/RECEIPT.json.

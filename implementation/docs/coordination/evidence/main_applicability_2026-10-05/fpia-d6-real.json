@@ -1,0 +1,11 @@
+{
+  "authentication": "NOT_VERIFIED",
+  "fpia_status": "NOT_RUN",
+  "integration_acceptance": "BLOCKED",
+  "reasons": [
+    "fetch caller-repo failed: remote: warning: lazy fetching disabled; some objects may not be available        \nremote: fatal: could not fetch d5ce212023a42de059d5d1a99a97ffeeaf32c281 from promisor remote        \nerror: git upload-pack: git-pack-objects died with error.\nfatal: git upload-pack: aborting due to possible repository corruption on the remote side.\nremote: aborting due to possible repository corruption on the remote side.\u0000\nfatal: protocol error: bad pack header"
+  ],
+  "schema": "FPIA_APPLICABILITY/1",
+  "status": "UNAVAILABLE",
+  "subject": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6"
+}

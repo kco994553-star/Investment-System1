@@ -1,3 +1,13 @@
+# GCH-022 · D006 implementation published / new QGV scope return consumed · 2026-10-05 08:19:50 UTC
+
+Exact FPIA Draft#47 50fa7f49080b3fa3d1808f9745d8f97770d1c9df, parent9ab, treece6a9092cbeb79f7ac55626b7d8931061167cd4d; API/local TREE_IDENTICAL, not COMMIT_IDENTICAL. Branch spelling filter removed; authenticated ancestry/content/import preflight, unresolved executable/import fail-closed, OUTSIDE_SCOPE_NOT_RUN never Frozen PASS. Tools execute from exact workflow_sha checkout separately from subject. Observer explicitly binds workflow checkout and preserves real subject. Raw FPIA core unchanged. Local229 affected PASS, bounded independent4findings corrected, full failure history retained. Actual real-history preflight UNAVAILABLE due partial Git object fetch; CI7attempt1 still nonterminal; no rerun.
+
+New QGV scoped return consumed at ebd7ca3d476767af9ff0c92f89cfd132a570c2b3:29originalsemantic Git blobs and5output SHA256 verified. Owner/root30cases reused, no repeatedaudit. Scopeacceptance1 consumed, productionblockersclosed0. PR44consumption5990706291. CONTROL now active qgv-b2356-muuz0tbz for claimed bounded principle approval; closure pending, preserveownerlane. MissingData4fb/qgv-b47lease remains protected. Chart5288 has activeMagicPath/localfallbacklease; sixproductiongates andmarket0/19 unchanged. Platform5990208500consumed, actualsource adoptionstillUNVERIFIED; Platform/Web9groups remain.
+
+Main re-evaluation READY0; remaining lanes require exact CI/runtime/independentauthority/externalcoverage or actualownerreturns. D004exactpackaging1 CLOSED only for the exact subject; D006localimplementation done but CI/futuremergeacceptance OPEN. Canonical unchangedb8e39a2, candidateNOT_READY, netproductiongatesclosed0. No new D3 request from old labels; protected production/method/canonical decisions preserved. Shared lease released atomically with this checkpoint, no long CI wait under lease. Evidence: evidence/main_applicability_2026-10-05/RECEIPT.json. Resume on material terminal/owner/acceptedauthority result, execute allowed repair/consumption then re-evaluate.
+
+--- Previous checkpoints retained ---
+
 ## Current checkpoint · GCH-021 · 2026-10-05 07:56:57 UTC
 
 **CONTINUE_READY_D006_APPLICABILITY**. Draft #47 exact `9abeb376614dcd14c30f23bb7a99e4652edf0d83` publishes execution coverage consumer and CI runtime observer. 207 targeted/negative/affected PASS, prior 683 unchanged-scope evidence reused. Runtime receipt remains an observation, authentication NOT_VERIFIED; integration BLOCKED. #47 attempt1 Actions pending, #46 exact6fea terminal7/7SUCCESS remains separately bound.

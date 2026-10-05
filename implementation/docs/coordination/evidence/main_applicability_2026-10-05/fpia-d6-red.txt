@@ -1,0 +1,457 @@
+FFFFFFFFFFFFF                                                            [100%]
+=================================== FAILURES ===================================
+_________ test_reference_descendant_applies_regardless_of_branch_name __________
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-28/test_reference_descendant_appl0'), '3d19f1f8ce0b34505ded829f2c11cd4b2bf650a5', '645fca2bce9b20e9c7624dd2214a2a736474a726')
+
+    def test_reference_descendant_applies_regardless_of_branch_name(history):
+        repo, _, reference = history
+        git(repo, 'branch', '-m', 'ordinary-owner-branch')
+>       assert assess(history, reference)['status'] == 'APPLIES'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+implementation/tests/test_integration_fpia_applicability.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+implementation/tests/test_integration_fpia_applicability.py:46: in assess
+    return tool().subject_decision(repo, reference, subject,
+           ^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tool():
+        p = TOOLS / 'track_c_fpia_applicability.py'
+>       assert p.exists(), 'branch-independent applicability is not implemented'
+E       AssertionError: branch-independent applicability is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/workspace/scratch/3a80dcef6444/fpia-coverage/implementation/tools/integration/track_c_fpia_applicability.py').exists
+
+implementation/tests/test_integration_fpia_applicability.py:14: AssertionError
+____________________ test_pre_track_c_is_not_run_never_pass ____________________
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-28/test_pre_track_c_is_not_run_ne0'), '3d19f1f8ce0b34505ded829f2c11cd4b2bf650a5', '645fca2bce9b20e9c7624dd2214a2a736474a726')
+
+    def test_pre_track_c_is_not_run_never_pass(history):
+>       result = assess(history, history[1])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+implementation/tests/test_integration_fpia_applicability.py:58: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+implementation/tests/test_integration_fpia_applicability.py:46: in assess
+    return tool().subject_decision(repo, reference, subject,
+           ^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tool():
+        p = TOOLS / 'track_c_fpia_applicability.py'
+>       assert p.exists(), 'branch-independent applicability is not implemented'
+E       AssertionError: branch-independent applicability is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/workspace/scratch/3a80dcef6444/fpia-coverage/implementation/tools/integration/track_c_fpia_applicability.py').exists
+
+implementation/tests/test_integration_fpia_applicability.py:14: AssertionError
+_ test_unmerged_import_or_ambiguous_source_fails_closed[import investment_system.evl\n] _
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-28/test_unmerged_import_or_ambigu0'), '3d19f1f8ce0b34505ded829f2c11cd4b2bf650a5', '645fca2bce9b20e9c7624dd2214a2a736474a726')
+source = 'import investment_system.evl\n'
+
+    @pytest.mark.parametrize('source', [
+        'import investment_system.evl\n',
+        'from investment_system import evl\n',
+        'from investment_system.evl import a\n',
+        'import importlib\nimportlib.import_module("investment_system.evl.a")\n',
+        'import importlib\nimportlib.import_module(module_name)\n',
+        'import importlib\nf = importlib.import_module\nf(name)\n',
+        '__import__(name)\n',
+        'this is ( invalid\n',
+    ])
+    def test_unmerged_import_or_ambiguous_source_fails_closed(history, source):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        (repo / 'foreign.py').write_text(source)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'foreign source')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+implementation/tests/test_integration_fpia_applicability.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+implementation/tests/test_integration_fpia_applicability.py:46: in assess
+    return tool().subject_decision(repo, reference, subject,
+           ^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tool():
+        p = TOOLS / 'track_c_fpia_applicability.py'
+>       assert p.exists(), 'branch-independent applicability is not implemented'
+E       AssertionError: branch-independent applicability is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/workspace/scratch/3a80dcef6444/fpia-coverage/implementation/tools/integration/track_c_fpia_applicability.py').exists
+
+implementation/tests/test_integration_fpia_applicability.py:14: AssertionError
+_ test_unmerged_import_or_ambiguous_source_fails_closed[from investment_system import evl\n] _
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-28/test_unmerged_import_or_ambigu1'), '3d19f1f8ce0b34505ded829f2c11cd4b2bf650a5', '645fca2bce9b20e9c7624dd2214a2a736474a726')
+source = 'from investment_system import evl\n'
+
+    @pytest.mark.parametrize('source', [
+        'import investment_system.evl\n',
+        'from investment_system import evl\n',
+        'from investment_system.evl import a\n',
+        'import importlib\nimportlib.import_module("investment_system.evl.a")\n',
+        'import importlib\nimportlib.import_module(module_name)\n',
+        'import importlib\nf = importlib.import_module\nf(name)\n',
+        '__import__(name)\n',
+        'this is ( invalid\n',
+    ])
+    def test_unmerged_import_or_ambiguous_source_fails_closed(history, source):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        (repo / 'foreign.py').write_text(source)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'foreign source')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+implementation/tests/test_integration_fpia_applicability.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+implementation/tests/test_integration_fpia_applicability.py:46: in assess
+    return tool().subject_decision(repo, reference, subject,
+           ^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tool():
+        p = TOOLS / 'track_c_fpia_applicability.py'
+>       assert p.exists(), 'branch-independent applicability is not implemented'
+E       AssertionError: branch-independent applicability is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/workspace/scratch/3a80dcef6444/fpia-coverage/implementation/tools/integration/track_c_fpia_applicability.py').exists
+
+implementation/tests/test_integration_fpia_applicability.py:14: AssertionError
+_ test_unmerged_import_or_ambiguous_source_fails_closed[from investment_system.evl import a\n] _
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-28/test_unmerged_import_or_ambigu2'), '3d19f1f8ce0b34505ded829f2c11cd4b2bf650a5', '645fca2bce9b20e9c7624dd2214a2a736474a726')
+source = 'from investment_system.evl import a\n'
+
+    @pytest.mark.parametrize('source', [
+        'import investment_system.evl\n',
+        'from investment_system import evl\n',
+        'from investment_system.evl import a\n',
+        'import importlib\nimportlib.import_module("investment_system.evl.a")\n',
+        'import importlib\nimportlib.import_module(module_name)\n',
+        'import importlib\nf = importlib.import_module\nf(name)\n',
+        '__import__(name)\n',
+        'this is ( invalid\n',
+    ])
+    def test_unmerged_import_or_ambiguous_source_fails_closed(history, source):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        (repo / 'foreign.py').write_text(source)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'foreign source')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+implementation/tests/test_integration_fpia_applicability.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+implementation/tests/test_integration_fpia_applicability.py:46: in assess
+    return tool().subject_decision(repo, reference, subject,
+           ^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tool():
+        p = TOOLS / 'track_c_fpia_applicability.py'
+>       assert p.exists(), 'branch-independent applicability is not implemented'
+E       AssertionError: branch-independent applicability is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/workspace/scratch/3a80dcef6444/fpia-coverage/implementation/tools/integration/track_c_fpia_applicability.py').exists
+
+implementation/tests/test_integration_fpia_applicability.py:14: AssertionError
+_ test_unmerged_import_or_ambiguous_source_fails_closed[import importlib\nimportlib.import_module("investment_system.evl.a")\n] _
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-28/test_unmerged_import_or_ambigu3'), '3d19f1f8ce0b34505ded829f2c11cd4b2bf650a5', '645fca2bce9b20e9c7624dd2214a2a736474a726')
+source = 'import importlib\nimportlib.import_module("investment_system.evl.a")\n'
+
+    @pytest.mark.parametrize('source', [
+        'import investment_system.evl\n',
+        'from investment_system import evl\n',
+        'from investment_system.evl import a\n',
+        'import importlib\nimportlib.import_module("investment_system.evl.a")\n',
+        'import importlib\nimportlib.import_module(module_name)\n',
+        'import importlib\nf = importlib.import_module\nf(name)\n',
+        '__import__(name)\n',
+        'this is ( invalid\n',
+    ])
+    def test_unmerged_import_or_ambiguous_source_fails_closed(history, source):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        (repo / 'foreign.py').write_text(source)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'foreign source')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+implementation/tests/test_integration_fpia_applicability.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+implementation/tests/test_integration_fpia_applicability.py:46: in assess
+    return tool().subject_decision(repo, reference, subject,
+           ^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tool():
+        p = TOOLS / 'track_c_fpia_applicability.py'
+>       assert p.exists(), 'branch-independent applicability is not implemented'
+E       AssertionError: branch-independent applicability is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/workspace/scratch/3a80dcef6444/fpia-coverage/implementation/tools/integration/track_c_fpia_applicability.py').exists
+
+implementation/tests/test_integration_fpia_applicability.py:14: AssertionError
+_ test_unmerged_import_or_ambiguous_source_fails_closed[import importlib\nimportlib.import_module(module_name)\n] _
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-28/test_unmerged_import_or_ambigu4'), '3d19f1f8ce0b34505ded829f2c11cd4b2bf650a5', '645fca2bce9b20e9c7624dd2214a2a736474a726')
+source = 'import importlib\nimportlib.import_module(module_name)\n'
+
+    @pytest.mark.parametrize('source', [
+        'import investment_system.evl\n',
+        'from investment_system import evl\n',
+        'from investment_system.evl import a\n',
+        'import importlib\nimportlib.import_module("investment_system.evl.a")\n',
+        'import importlib\nimportlib.import_module(module_name)\n',
+        'import importlib\nf = importlib.import_module\nf(name)\n',
+        '__import__(name)\n',
+        'this is ( invalid\n',
+    ])
+    def test_unmerged_import_or_ambiguous_source_fails_closed(history, source):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        (repo / 'foreign.py').write_text(source)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'foreign source')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+implementation/tests/test_integration_fpia_applicability.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+implementation/tests/test_integration_fpia_applicability.py:46: in assess
+    return tool().subject_decision(repo, reference, subject,
+           ^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tool():
+        p = TOOLS / 'track_c_fpia_applicability.py'
+>       assert p.exists(), 'branch-independent applicability is not implemented'
+E       AssertionError: branch-independent applicability is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/workspace/scratch/3a80dcef6444/fpia-coverage/implementation/tools/integration/track_c_fpia_applicability.py').exists
+
+implementation/tests/test_integration_fpia_applicability.py:14: AssertionError
+_ test_unmerged_import_or_ambiguous_source_fails_closed[import importlib\nf = importlib.import_module\nf(name)\n] _
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-28/test_unmerged_import_or_ambigu5'), '3d19f1f8ce0b34505ded829f2c11cd4b2bf650a5', '645fca2bce9b20e9c7624dd2214a2a736474a726')
+source = 'import importlib\nf = importlib.import_module\nf(name)\n'
+
+    @pytest.mark.parametrize('source', [
+        'import investment_system.evl\n',
+        'from investment_system import evl\n',
+        'from investment_system.evl import a\n',
+        'import importlib\nimportlib.import_module("investment_system.evl.a")\n',
+        'import importlib\nimportlib.import_module(module_name)\n',
+        'import importlib\nf = importlib.import_module\nf(name)\n',
+        '__import__(name)\n',
+        'this is ( invalid\n',
+    ])
+    def test_unmerged_import_or_ambiguous_source_fails_closed(history, source):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        (repo / 'foreign.py').write_text(source)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'foreign source')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+implementation/tests/test_integration_fpia_applicability.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+implementation/tests/test_integration_fpia_applicability.py:46: in assess
+    return tool().subject_decision(repo, reference, subject,
+           ^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tool():
+        p = TOOLS / 'track_c_fpia_applicability.py'
+>       assert p.exists(), 'branch-independent applicability is not implemented'
+E       AssertionError: branch-independent applicability is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/workspace/scratch/3a80dcef6444/fpia-coverage/implementation/tools/integration/track_c_fpia_applicability.py').exists
+
+implementation/tests/test_integration_fpia_applicability.py:14: AssertionError
+__ test_unmerged_import_or_ambiguous_source_fails_closed[__import__(name)\n] ___
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-28/test_unmerged_import_or_ambigu6'), '3d19f1f8ce0b34505ded829f2c11cd4b2bf650a5', '645fca2bce9b20e9c7624dd2214a2a736474a726')
+source = '__import__(name)\n'
+
+    @pytest.mark.parametrize('source', [
+        'import investment_system.evl\n',
+        'from investment_system import evl\n',
+        'from investment_system.evl import a\n',
+        'import importlib\nimportlib.import_module("investment_system.evl.a")\n',
+        'import importlib\nimportlib.import_module(module_name)\n',
+        'import importlib\nf = importlib.import_module\nf(name)\n',
+        '__import__(name)\n',
+        'this is ( invalid\n',
+    ])
+    def test_unmerged_import_or_ambiguous_source_fails_closed(history, source):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        (repo / 'foreign.py').write_text(source)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'foreign source')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+implementation/tests/test_integration_fpia_applicability.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+implementation/tests/test_integration_fpia_applicability.py:46: in assess
+    return tool().subject_decision(repo, reference, subject,
+           ^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tool():
+        p = TOOLS / 'track_c_fpia_applicability.py'
+>       assert p.exists(), 'branch-independent applicability is not implemented'
+E       AssertionError: branch-independent applicability is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/workspace/scratch/3a80dcef6444/fpia-coverage/implementation/tools/integration/track_c_fpia_applicability.py').exists
+
+implementation/tests/test_integration_fpia_applicability.py:14: AssertionError
+__ test_unmerged_import_or_ambiguous_source_fails_closed[this is ( invalid\n] __
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-28/test_unmerged_import_or_ambigu7'), '3d19f1f8ce0b34505ded829f2c11cd4b2bf650a5', '645fca2bce9b20e9c7624dd2214a2a736474a726')
+source = 'this is ( invalid\n'
+
+    @pytest.mark.parametrize('source', [
+        'import investment_system.evl\n',
+        'from investment_system import evl\n',
+        'from investment_system.evl import a\n',
+        'import importlib\nimportlib.import_module("investment_system.evl.a")\n',
+        'import importlib\nimportlib.import_module(module_name)\n',
+        'import importlib\nf = importlib.import_module\nf(name)\n',
+        '__import__(name)\n',
+        'this is ( invalid\n',
+    ])
+    def test_unmerged_import_or_ambiguous_source_fails_closed(history, source):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        (repo / 'foreign.py').write_text(source)
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'foreign source')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+implementation/tests/test_integration_fpia_applicability.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+implementation/tests/test_integration_fpia_applicability.py:46: in assess
+    return tool().subject_decision(repo, reference, subject,
+           ^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tool():
+        p = TOOLS / 'track_c_fpia_applicability.py'
+>       assert p.exists(), 'branch-independent applicability is not implemented'
+E       AssertionError: branch-independent applicability is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/workspace/scratch/3a80dcef6444/fpia-coverage/implementation/tools/integration/track_c_fpia_applicability.py').exists
+
+implementation/tests/test_integration_fpia_applicability.py:14: AssertionError
+_________________ test_squashed_namespace_content_fails_closed _________________
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-28/test_squashed_namespace_conten0'), 'b80cabc97d30945829d98773cd5e2df07f49442d', '30cd14f4641d391fc7bb30ae4f4705aa5211767f')
+
+    def test_squashed_namespace_content_fails_closed(history):
+        repo, before, _ = history
+        git(repo, 'checkout', '-q', before)
+        p = repo / 'implementation/src/investment_system/evl/new.py'
+        p.parent.mkdir(parents=True)
+        p.write_text('x = 3\n')
+        git(repo, 'add', '.')
+        git(repo, 'commit', '-qm', 'non merge preserving')
+>       assert assess(history, git(repo, 'rev-parse', 'HEAD'))['status'] == 'BLOCKED'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+implementation/tests/test_integration_fpia_applicability.py:91: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+implementation/tests/test_integration_fpia_applicability.py:46: in assess
+    return tool().subject_decision(repo, reference, subject,
+           ^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tool():
+        p = TOOLS / 'track_c_fpia_applicability.py'
+>       assert p.exists(), 'branch-independent applicability is not implemented'
+E       AssertionError: branch-independent applicability is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/workspace/scratch/3a80dcef6444/fpia-coverage/implementation/tools/integration/track_c_fpia_applicability.py').exists
+
+implementation/tests/test_integration_fpia_applicability.py:14: AssertionError
+__________________ test_unknown_reference_never_outside_scope __________________
+
+history = (PosixPath('/tmp/pytest-of-root/pytest-28/test_unknown_reference_never_o0'), 'b80cabc97d30945829d98773cd5e2df07f49442d', '30cd14f4641d391fc7bb30ae4f4705aa5211767f')
+
+    def test_unknown_reference_never_outside_scope(history):
+        repo, before, _ = history
+>       assert tool().subject_decision(repo, 'f'*40, before, lambda _: False,
+               ^^^^^^
+                                       {'investment_system.evl'})['status'] == 'UNAVAILABLE'
+
+implementation/tests/test_integration_fpia_applicability.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tool():
+        p = TOOLS / 'track_c_fpia_applicability.py'
+>       assert p.exists(), 'branch-independent applicability is not implemented'
+E       AssertionError: branch-independent applicability is not implemented
+E       assert False
+E        +  where False = exists()
+E        +    where exists = PosixPath('/workspace/scratch/3a80dcef6444/fpia-coverage/implementation/tools/integration/track_c_fpia_applicability.py').exists
+
+implementation/tests/test_integration_fpia_applicability.py:14: AssertionError
+_________________ test_workflow_has_no_branch_spelling_filter __________________
+
+    def test_workflow_has_no_branch_spelling_filter():
+        text = (TOOLS.parents[2] / '.github/workflows/track-c-fpia.yml').read_text()
+>       assert 'startsWith(' not in text
+E       AssertionError: assert 'startsWith(' not in 'name: track.../fpia-out/\n'
+E         
+E         'startsWith(' is contained here:
+E            ||
+E                 startsWith(github.event.pull_request.base.ref, 'integration/') ||
+E         ?       +++++++++++
+E                 startsWith(github.event.pull_request.head.ref, 'integration/')
+E               runs-on: ubuntu-latest...
+E         
+E         ...Full output truncated (108 lines hidden), use '-vv' to show
+
+implementation/tests/test_integration_fpia_applicability.py:102: AssertionError
+=========================== short test summary info ============================
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_reference_descendant_applies_regardless_of_branch_name
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_pre_track_c_is_not_run_never_pass
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unmerged_import_or_ambiguous_source_fails_closed[import investment_system.evl\n]
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unmerged_import_or_ambiguous_source_fails_closed[from investment_system import evl\n]
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unmerged_import_or_ambiguous_source_fails_closed[from investment_system.evl import a\n]
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unmerged_import_or_ambiguous_source_fails_closed[import importlib\nimportlib.import_module("investment_system.evl.a")\n]
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unmerged_import_or_ambiguous_source_fails_closed[import importlib\nimportlib.import_module(module_name)\n]
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unmerged_import_or_ambiguous_source_fails_closed[import importlib\nf = importlib.import_module\nf(name)\n]
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unmerged_import_or_ambiguous_source_fails_closed[__import__(name)\n]
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unmerged_import_or_ambiguous_source_fails_closed[this is ( invalid\n]
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_squashed_namespace_content_fails_closed
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_unknown_reference_never_outside_scope
+FAILED implementation/tests/test_integration_fpia_applicability.py::test_workflow_has_no_branch_spelling_filter
+13 failed in 0.49s
