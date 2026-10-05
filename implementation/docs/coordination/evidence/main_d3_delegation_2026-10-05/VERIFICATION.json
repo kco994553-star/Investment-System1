@@ -1,0 +1,185 @@
+{
+  "schema": "main-policy-return-verification-v1",
+  "recorded_at_utc": "2026-10-05T09:23:18Z",
+  "verdict": "PASS_BOUNDED_COORDINATION_SCOPE",
+  "structural_checks": [
+    {
+      "id": "JSON_PARSE:evidence/main_d3_delegation_2026-10-05/DECISION_RECEIPT.json",
+      "status": "PASS"
+    },
+    {
+      "id": "JSON_PARSE:evidence/main_d3_delegation_2026-10-05/QGV_PRINCIPLE_RETURN.json",
+      "status": "PASS"
+    },
+    {
+      "id": "JSON_PARSE:evidence/main_d3_delegation_2026-10-05/CHART_RETURN.json",
+      "status": "PASS"
+    },
+    {
+      "id": "JSON_PARSE:evidence/main_d3_delegation_2026-10-05/PLATFORM_RETURN.json",
+      "status": "PASS"
+    },
+    {
+      "id": "JSON_PARSE:MAIN_TAKEOVER_STATE.json",
+      "status": "PASS"
+    },
+    {
+      "id": "JSON_PARSE:OWNER_ROUTING_LEDGER.json",
+      "status": "PASS"
+    },
+    {
+      "id": "APPEND_ONLY:COORDINATION_DECISION_REGISTER.md",
+      "status": "PASS"
+    },
+    {
+      "id": "APPEND_ONLY:PIW_DECISION_RECORDS.md",
+      "status": "PASS"
+    },
+    {
+      "id": "APPEND_ONLY:evidence/main_takeover_2026-10-05/USER_EXECUTION_DIRECTIVE.md",
+      "status": "PASS"
+    },
+    {
+      "id": "HISTORY_PREFIX_PRESERVED",
+      "status": "PASS"
+    },
+    {
+      "id": "PRIOR_HANDOFF_BYTE_BLOCK_PRESERVED",
+      "status": "PASS"
+    },
+    {
+      "id": "POLICY_EXACT_USER_SOURCE",
+      "status": "PASS"
+    },
+    {
+      "id": "D3_ALL_10_CONDITIONS",
+      "status": "PASS"
+    },
+    {
+      "id": "D3_ALL_12_RESERVED",
+      "status": "PASS"
+    },
+    {
+      "id": "SEVEN_RECEIPT_FIELDS",
+      "status": "PASS"
+    },
+    {
+      "id": "UNKNOWN_RESERVED",
+      "status": "PASS"
+    },
+    {
+      "id": "NO_FAKE_MAIN_CONVERSIONS",
+      "status": "PASS"
+    },
+    {
+      "id": "LIVE_SUMMARY_SUPERSEDED",
+      "status": "PASS"
+    },
+    {
+      "id": "CDR023_APPEND_ONCE",
+      "status": "PASS"
+    },
+    {
+      "id": "PIWD013_APPEND_ONCE",
+      "status": "PASS"
+    },
+    {
+      "id": "PENDING_CI_UNCHANGED",
+      "status": "PASS"
+    },
+    {
+      "id": "CI_FAILURE_HISTORY_PRESERVED",
+      "status": "PASS"
+    },
+    {
+      "id": "MAIN_LEASE_RELEASED",
+      "status": "PASS"
+    },
+    {
+      "id": "MAIN_READY0",
+      "status": "PASS"
+    },
+    {
+      "id": "CANDIDATE_PROTECTED",
+      "status": "PASS"
+    },
+    {
+      "id": "PRIOR_LEDGER_ENTRIES_UNCHANGED",
+      "status": "PASS"
+    },
+    {
+      "id": "EVENTS_UNIQUE",
+      "status": "PASS"
+    },
+    {
+      "id": "COMMENTS_UNIQUE",
+      "status": "PASS"
+    },
+    {
+      "id": "QGV_SCOPE_BOUNDARY",
+      "status": "PASS"
+    },
+    {
+      "id": "CHART_SCOPE_BOUNDARY",
+      "status": "PASS"
+    },
+    {
+      "id": "PLATFORM_SOURCE_ADOPTION_FALSE",
+      "status": "PASS"
+    },
+    {
+      "id": "MAIN_AUTOMATIONS_UNCHANGED",
+      "status": "PASS"
+    },
+    {
+      "id": "WRITE_SCOPE_COORD_ONLY",
+      "status": "PASS"
+    }
+  ],
+  "source_hash_verification": {
+    "source_hashes": {
+      "directive": "07580cceb0e3f9cc8a6f9ecf84d298e208685fae1812a99d64db74361a6886a1",
+      "qgv_comment": "69ef327be4be9484d2c34efd792252883705fc0b5d1dc073f7ded3807e29eaa9",
+      "platform_comment": "0d1b83583d8e2cccf3a2f8f8286301b635ae72d00dc74195a2e45b3ba68d5ab9",
+      "platform_event": "8c126e928814cf7b1299bff1bcb2f7977f767aa3b1a7278b4ac9fb1b5982d00e",
+      "platform_receipt": "805c0e26e69149c9af6499e650f0401e1b3e26bbb8b890ec0d7ed9ec93e65e12",
+      "platform_policy": "242bfffb6d53134410da8dcec1b63b9610b789a95fb8ef318c6e4526495df93d",
+      "platform_state": "c88f17638d0b86b62aeed8cc163d20c4332e8f1105478ac423937758315a7c87"
+    },
+    "status": "PASS",
+    "checks": 7
+  },
+  "qgv": {
+    "manifest_payloads_verified": 13,
+    "positive": 1,
+    "negative": 5,
+    "verdict": "PASS_INACTIVE_SCOPE_ONLY",
+    "manifest_sha256": "ea3dedd70dab0fd27762a7eb0ff95a1ff2aa3963bcc4f6fab75966ff08f75c42",
+    "completion_sha256": "c1dd8f9c1a1f75c3e891d9b0618cc70b7336bb742db4ee28b9d2481523ddd88d",
+    "main_return_sha256": "b7166d9228e6fc879ad29eb107bbf994d11390c58af11bf2114a6589c9af3cf3",
+    "control_sha256": "023c721f058981240b1bbc745023ecb6b891eaf8532f27199b7fd37610f994f5",
+    "production_blockers_closed": 0,
+    "previous_tests_rerun": 0
+  },
+  "chart": {
+    "receipt_hashes": 10,
+    "component_git_blobs": 9,
+    "persisted_screenshot_git_blobs": 2,
+    "status": "PASS_SAMPLE_INTAKE_ONLY",
+    "product_gate_closure": 0
+  },
+  "independent_review": "d3_boundary_review; prior fresh read-only review plus final claim review",
+  "not_run": [
+    "Full repository regression",
+    "Repeat59/79/30QGVaudit",
+    "Chartbrowser replay",
+    "PlatformProducttests",
+    "ProductionE2E",
+    "Canonical merge"
+  ],
+  "product_gates_closed": 0,
+  "owner_branches_written": 0,
+  "canonical_written": false,
+  "publish_parent": "4135f38c80dfc8db6f629cbff1542ffb44da0cdd",
+  "policy_input_global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981"
+}

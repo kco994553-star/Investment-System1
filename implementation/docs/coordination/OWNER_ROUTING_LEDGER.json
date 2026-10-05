@@ -5,7 +5,7 @@
   "fresh_scope": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global": "e36bec9be6be3bdf60ac7fd4ef8379a2ba93a7ae",
-    "chart": "5288d038e800c09ca40af0604a947911c4370d9e",
+    "chart": "cda174542f1a1ae95345726f308c24b60262c03b",
     "chart_lease": {
       "status": "HELD",
       "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
@@ -19,11 +19,12 @@
       "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
       "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
     },
-    "global_input": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8",
+    "global_input": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
     "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
-    "qgv_reconciliation": "ebd7ca3d476767af9ff0c92f89cfd132a570c2b3",
-    "platform_specialist": "8f80395f25119af6b2d78e0d41fc168d515f4746"
+    "qgv_reconciliation": "06e5f163a4f871ab99c767a46673c19da5d5ad1c",
+    "platform_specialist": "e52cd0686800557b963892c4d18870c13a1aaee7",
+    "global_publication_parent": "4135f38c80dfc8db6f629cbff1542ffb44da0cdd"
   },
   "summary": {
     "lane_a_open": 6,
@@ -989,6 +990,79 @@
         "hops": "0/2 UNVERIFIED"
       },
       "production_gate_closed": false
+    },
+    {
+      "id": "MAIN-QGV-PRINCIPLES-AB07-20261005",
+      "state": "CLOSED",
+      "history": [
+        "FOUND",
+        "RECEIVED",
+        "EVIDENCE_READY",
+        "CONSUMED",
+        "CLOSED"
+      ],
+      "authoritative_owner": "QGV independent audit/scoped principle contract only",
+      "source_head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+      "evidence": "evidence/main_d3_delegation_2026-10-05/QGV_PRINCIPLE_RETURN.json",
+      "main_comment_id": 5991476557,
+      "scope": "B2/B3/B5/B6 inactive principle contract;4contractgates/2boundedacceptances",
+      "production_gate_closed": false,
+      "next_action": "No repeat approved principle question; consume actualowner/method/source return separately"
+    },
+    {
+      "id": "MAIN-CHART-MAGICPATH-V013-20261005",
+      "state": "CLOSED",
+      "history": [
+        "FOUND",
+        "RECEIVED",
+        "EVIDENCE_READY",
+        "CONSUMED",
+        "CLOSED"
+      ],
+      "authoritative_owner": "Chart Work SAMPLE scope",
+      "source_head": "d84afa219221e31ca78f5759360ae97489a0c8d2",
+      "current_head": "cda174542f1a1ae95345726f308c24b60262c03b",
+      "evidence": "evidence/main_d3_delegation_2026-10-05/CHART_RETURN.json",
+      "scope": "Native SAMPLE and bounded fallback only;1deliveryacceptance",
+      "production_gate_closed": false,
+      "next_action": "No duplicate SAMPLE/browser; actualsource/Product/fullwrite-set andFPIAgovernance remaindependencies"
+    },
+    {
+      "id": "MAIN-PLATFORM-D3-POLICY-20261005",
+      "state": "CLOSED",
+      "history": [
+        "FOUND",
+        "RECEIVED",
+        "EVIDENCE_READY",
+        "CONSUMED",
+        "CLOSED"
+      ],
+      "authoritative_owner": "Platform independent specialist",
+      "source_head": "ed525110358861e347c6c05e004035f359b9b63c",
+      "evidence": "evidence/main_d3_delegation_2026-10-05/PLATFORM_RETURN.json",
+      "main_comment_id": 5991485958,
+      "scope": "Policy and firstevent/Globalintake only",
+      "source_owner_ack": false,
+      "source_adoption": false,
+      "production_gate_closed": false,
+      "next_action": "Actualimplementation return only; preserve activeACK/linkmetadata lease"
+    },
+    {
+      "id": "MAIN-PLATFORM-POLICY-LINK-20261005",
+      "state": "IN_PROGRESS",
+      "history": [
+        "FOUND",
+        "ROUTED",
+        "RECEIVED",
+        "IN_PROGRESS"
+      ],
+      "authoritative_owner": "Platform independent specialist docs only",
+      "delivery_comment_id": 5991485958,
+      "current_head": "e52cd0686800557b963892c4d18870c13a1aaee7",
+      "evidence": "evidence/main_d3_delegation_2026-10-05/PLATFORM_RETURN.json",
+      "request": "Correct rootCURRENT_HANDOFF policy relative link",
+      "acceptance": "Owner publishes exactmetadata fix/hash/readback; no Product closure",
+      "next_action": "Consume finalownerreturn; do not duplicate active writer"
     }
   ],
   "wake_up": "Main PR41 synchronize and API-authored PR17 comment events observed; self-comment deduplicated. Other owner wake/receipt unverified.",
@@ -1107,20 +1181,169 @@
     "integration": "BLOCKED"
   },
   "chart_current_lease": {
-    "status": "ACTIVE",
-    "run_id": "manual-chart-magicpath-primary-2026-10-05T080033754Z",
-    "owner": "/root Chart owner",
-    "owner_branch": "codex/chart-contract-mcp-api-v0-1",
-    "acquired_at_utc": "2026-10-05T08:00:33.754Z",
-    "expires_at_utc": "2026-10-05T09:00:33.754Z",
-    "source_start_head": "8fc47b0a3c9a262718b706519d6d91a051629636",
-    "reason": "User-authorized MagicPath primary + automatic local fallback policy; existing SAMPLE renderer build/browser/evidence only",
-    "write_set": [
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/**",
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    "status": "NONE",
+    "last_run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
+    "released_after_verified_publication": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+    "released_at_utc": "2026-10-05T09:18:52.550Z",
+    "reason": "Verified scoped reference repair complete; no lease held for exactCI/ownerdependency",
+    "release_commit_note": "Current containingHEAD resolved via Git"
+  },
+  "chart_v013_return": {
+    "schema": "main-chart-v013-return-consumption-v1",
+    "recorded_at_utc": "2026-10-05T09:23:18Z",
+    "source_head": "d84afa219221e31ca78f5759360ae97489a0c8d2",
+    "current_owner_head": "cda174542f1a1ae95345726f308c24b60262c03b",
+    "reference_repair_head": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+    "status": "CONSUMED_CLOSED_SAMPLE_ONLY",
+    "source_path": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md",
+    "verification": {
+      "receipt_hashes": 10,
+      "component_git_blobs": 9,
+      "persisted_screenshot_git_blobs": 2,
+      "status": "PASS_SAMPLE_INTAKE_ONLY",
+      "product_gate_closure": 0
+    },
+    "owner_browser_evidence_reused": 18,
+    "main_browser_replay": 0,
+    "component_id": "457764208520613888",
+    "revision_id": "457764208524808192",
+    "decision_sha256": "7743ef04790e6b9356b10e8d6be0168e4a4c2efe02e65a6f78830578cc42f9e0",
+    "validation_sha256": "efaf94527420a6d0190b3b95d1193acb0f459429728879f959e6b23fcc6ca15f",
+    "original_write_set_sha256": "2344935db7b76aee93f0bc4c1929fab3a38a5844fa432c54913db03ad8750c68",
+    "corrected_write_set_sha256": "bb684544013d9e939dca2bc2687f87b0079412b012808011895fd660e94fde5b",
+    "owner_d3_a_executed": 1,
+    "main_new_d3_a_approval": 0,
+    "sample_delivery_acceptance_consumed": 1,
+    "production_gates_closed": 0,
+    "production_gates_remaining": 6,
+    "market_admitted": 0,
+    "market_total": 19,
+    "actual": "NOT_AVAILABLE_NO_TARGET_FALLBACK",
+    "production_e2e": "NOT_RUN",
+    "actual_chart_merge_result_fpia": "NOT_RUN",
+    "lease": {
+      "status": "NONE",
+      "last_run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
+      "released_after_verified_publication": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+      "released_at_utc": "2026-10-05T09:18:52.550Z",
+      "reason": "Verified scoped reference repair complete; no lease held for exactCI/ownerdependency",
+      "release_commit_note": "Current containingHEAD resolved via Git"
+    },
+    "delivery": "Global intake only; no additional source-app message under latest confirmation instruction",
+    "limits": "9 source Git blobs and2 persisted mobile screenshot Git blobs checked; owner compiled/browser results reused, not a Main runtime/browser rerun. D3-A operational fallback does not grant product/source/governance authority."
+  },
+  "qgv_principle_return": {
+    "schema": "main-qgv-principle-return-consumption-v1",
+    "recorded_at_utc": "2026-10-05T09:23:18Z",
+    "source_head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+    "current_owner_head": "06e5f163a4f871ab99c767a46673c19da5d5ad1c",
+    "current_owner_lease": {
+      "token": "qgv-d3-delegation-muv0w6ea",
+      "owner": "QGV-independent-audit-D3-Delegated-Policy-v1.0",
+      "task": "POLICY_AND_PENDING_SCOPE_RECLASSIFICATION",
+      "input_review_head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+      "claimed_at_utc": "2026-10-05T09:03:52.930Z",
+      "expires_at_utc": "2026-10-05T09:33:52.930Z"
+    },
+    "status": "CONSUMED_CLOSED_SCOPE_ONLY",
+    "source_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/MAIN_RETURN.json",
+    "verification": {
+      "manifest_payloads_verified": 13,
+      "positive": 1,
+      "negative": 5,
+      "verdict": "PASS_INACTIVE_SCOPE_ONLY",
+      "manifest_sha256": "ea3dedd70dab0fd27762a7eb0ff95a1ff2aa3963bcc4f6fab75966ff08f75c42",
+      "completion_sha256": "c1dd8f9c1a1f75c3e891d9b0618cc70b7336bb742db4ee28b9d2481523ddd88d",
+      "main_return_sha256": "b7166d9228e6fc879ad29eb107bbf994d11390c58af11bf2114a6589c9af3cf3",
+      "control_sha256": "023c721f058981240b1bbc745023ecb6b891eaf8532f27199b7fd37610f994f5",
+      "production_blockers_closed": 0,
+      "previous_tests_rerun": 0
+    },
+    "approval_sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+    "contract_sha256": "5343ad6e188a7ad67057703f8bafade0119a04206b7168aabfb402f4f8061b1b",
+    "new_owner_checks_reused": 25,
+    "prior_checks_reused_not_rerun": [
+      59,
+      79,
+      30
     ],
-    "protected_writes": 0,
-    "release_responsibility": "After verified scoped publication; no lease held for tool quota/owner gate"
-  }
+    "contract_authority_gates_consumed": 4,
+    "bounded_acceptance_consumed": 2,
+    "main_owner_return_consumption_closed": 1,
+    "production_gates_closed": 0,
+    "actual_scheduler_hops_credited": 0,
+    "delivery": {
+      "pr": 44,
+      "comment_id": 5991476557,
+      "body_sha256": "69ef327be4be9484d2c34efd792252883705fc0b5d1dc073f7ded3807e29eaa9",
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-5991476557"
+    },
+    "owner_ack_after_delivery": "UNVERIFIED",
+    "limits": "Inactive declaration contract only; actual producer/aggregate/cohort/PIT/runtime/score/methodology/production not validated or activated",
+    "missing_data_owner_preserved": "4fb08a05728d83519b72a2bd995669f0cb06003a / qgv-b47-muupb538"
+  },
+  "platform_policy_return": {
+    "schema": "main-platform-policy-return-consumption-v1",
+    "recorded_at_utc": "2026-10-05T09:23:18Z",
+    "policy_head": "ed525110358861e347c6c05e004035f359b9b63c",
+    "event_receipt_head": "edd9b0eb7fcb714c0025aec0aa2a736cd040e6ed",
+    "current_specialist_head": "e52cd0686800557b963892c4d18870c13a1aaee7",
+    "source_implementation_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "status": "CONSUMED_POLICY_AND_FIRST_EVENT_SCOPE_ONLY",
+    "policy_receipt_path": "implementation/docs/product_platform/automation/evidence/D3_DELEGATION_RECEIPT_2026-10-05.json",
+    "policy_receipt_sha256": "805c0e26e69149c9af6499e650f0401e1b3e26bbb8b890ec0d7ed9ec93e65e12",
+    "policy_file_sha256": "242bfffb6d53134410da8dcec1b63b9610b789a95fb8ef318c6e4526495df93d",
+    "state_sha256_at_completed_policy": "c88f17638d0b86b62aeed8cc163d20c4332e8f1105478ac423937758315a7c87",
+    "event_receipt_path": "implementation/docs/product_platform/automation/evidence/event_18584e20_2026-10-05.json",
+    "event_receipt_sha256": "8c126e928814cf7b1299bff1bcb2f7977f767aa3b1a7278b4ac9fb1b5982d00e",
+    "event_receipt_git_blob": "ca4040d60182f075a3ec1307494de53754c565fb",
+    "checks_reused": "24 structural +7file policy readback; no repeated Product audit/test",
+    "classification": "D1 explicit policy adoption PP-DA-001",
+    "actual_d3_a_conversions": 0,
+    "pending_concrete_decisions": 0,
+    "product_blockers_remaining": 9,
+    "product_blockers_closed": 0,
+    "implementation_owner_ack": false,
+    "source_adoption": false,
+    "current_followup": {
+      "status": "IN_PROGRESS_OWNER_METADATA_ONLY",
+      "main_comment_consumed_target": 5991485958,
+      "lease": {
+        "run_id": "platform-main-policy-link-b2bb0c30-20261005",
+        "writer": "Product Platform independent specialist audit /root",
+        "scope": [
+          "implementation/docs/product_platform/CURRENT_HANDOFF.md",
+          "implementation/docs/product_platform/automation/STATE.json",
+          "implementation/docs/product_platform/automation/CHECKPOINT.md",
+          "implementation/docs/product_platform/automation/evidence/main_policy_return_5991485958_2026-10-05.json"
+        ],
+        "acquired_at_utc": "2026-10-05T09:14:28.305Z",
+        "expires_at_utc": "2026-10-05T09:44:28.305Z",
+        "parent": "ed525110358861e347c6c05e004035f359b9b63c",
+        "source_fingerprints": {
+          "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
+          "global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+          "main_comment_id": 5991485958,
+          "receipt_sha256": "805c0e26e69149c9af6499e650f0401e1b3e26bbb8b890ec0d7ed9ec93e65e12",
+          "task_input": "ef659579cf9ac83a3aec831958e9e3876e949896177a78610151558177a0f23e"
+        }
+      },
+      "minor_relative_link": "Owner correction requested; not claimed closed at e52 lease-only HEAD"
+    },
+    "automation": {
+      "event_enabled": true,
+      "followup_enabled": false,
+      "followup_configured_hours": 2,
+      "activation": "CONFIGURED_ONLY_PLUS_FIRST_EVENT_INVOCATION_AND_MAIN_HANDOFF_INTAKE",
+      "material_unattended_product_execution": "NOT_VERIFIED"
+    },
+    "delivery": {
+      "pr": 45,
+      "comment_id": 5991485958,
+      "body_sha256": "0d1b83583d8e2cccf3a2f8f8286301b635ae72d00dc74195a2e45b3ba68d5ab9",
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5991485958"
+    },
+    "limits": "Main ACK/specialist policy consumption is not implementation-owner acceptance; preserve owner's cadence/enablement and active metadata lease."
+  },
+  "authority": "CDR-023 D1/D2/D3-A/D3-R with prior explicitowner/Main boundaries"
 }

@@ -4,12 +4,16 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-031 (exact-7215 CI 6/7 success consumed; Track-C pending) |
-| Recorded | 2026-10-05T08:56:34.503Z; exact Global parent `fe9492a` |
+| Index revision | GSI-032 (D3-A/R policy and scoped QGV/Chart/Platform return consumption) |
+| Recorded | 2026-10-05T09:23:18Z; exact publication parent `4135f38c80dfc8db6f629cbff1542ffb44da0cdd` |
 | Writer | GPT Work `gpt-work-main-2026-10-05-3a80dcef6444`; CDR-018 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
 | Canonical | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca` (= `origin/HEAD`; unchanged since 2026-09-28) |
 | Operating contract | `CLAUDE_CODE_WORKER_CONTRACT_v1.0` at PR #21 exact HEAD `f1b5afb` is the operational routing SSoT (CDR-001). PR #20 is SUPERSEDED_DUPLICATE (not merged, retained) |
+
+## Current authority override · CDR-023 · 2026-10-05T09:23:18Z
+
+**D1 / D2 / D3-A / D3-R** replaces conflicting unqualified “only paid D3” summaries retained below. Concrete approved SSoT proof for allten conditions is mandatory; new material methods/numeric policy, protection relaxation and all twelve user exclusions remainreserved; uncertain=D3-R. Existing named Main/owner protected boundaries stayeffective. Classify→autoapprove→execute→verify→receipt→SSoT→re-evaluate→continue; oneRlane cannotstopindependentwork. No automatic owner assignment, evidence fabrication or canonicalmerge permission.
 
 **Decision authority (CDR-015, 2026-10-05 12:15 KST):** classifications below that read USER_DECISION_REQUIRED or "not approved" were made under the earlier authority. Under CDR-015 they are D2 for the responsible Work (decide with evidence, record reason/impact/verification/recovery), except paid resources (D3). Reclassification in progress; PIW decisions go to `PIW_DECISION_RECORDS.md`.
 
@@ -210,3 +214,8 @@ Exact7215 P01 run37284465856/job111679954752 SUCCESS, full native 2242PASS consu
 
 ## GSI-031 · 2026-10-05 08:56:34 UTC
 Exact7215 five additional workflows SUCCESS, each full-native 2242PASS; with P01 total6/7 consumed. Track-C run37284465900 RUNNING; no rerun. MainREADY0, leaseNULL, productgatesclosed0, candidateNOT_READY; CI≠authority/GIE/exact-merge acceptance.
+
+
+## GSI-032 · 2026-10-05T09:23:18Z
+
+CDR023/PIWD013 explicitD3delegation applied. QGVab07 principlescontractconsumed4gates/2boundedacceptances with13pins+1positive5negative; Chartd84nativeSAMPLE+cdalinkrepair consumed1deliveryacceptance (10pins/9components/2screens); Platformed525policy+eddinvocation/Globalreturn consumed,9Productblockers/sourceadoptionfalse. ActualMainnewD3-A approvals0; ownerChartfallback1. Productgatesclosed0,Chart6OPEN/Market0of19; canonicalNOT_READY. MainREADY0/leaseNULL;#47exact7215 sixofsevenSUCCESS,TrackC37284465900attempt1pending. ActiveQGVpolicy andPlatformmetadata leasespreserved. See evidence/main_d3_delegation_2026-10-05/.

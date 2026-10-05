@@ -1173,3 +1173,8 @@ Recorded effect (routing writer's reading; the user wording above governs):
 - D1/D2/D3 follow the current authority policy (CDR-015 as narrowed by CDR-016 §13 and this entry); a past D3 label is not a reason to stop, and a protected semantic change is not lowered to D2.
 - Leases and concurrency: active writers' branches are not written; no other owner's branch is overwritten; no force push or history rewrite; no write lease is held while waiting on long CI.
 
+
+
+## Additive current authority · CDR-023 · 2026-10-05T09:23:18Z
+
+The user's D3 Delegated Approval Policy v1.0 is now the live operating authority with D1/D2/D3-A/D3-R, preserving explicit scoped/Main protections. Historical broad CDR015 wording above is not blanket permission. Fullverbatimsource and ten conditions/twelve reserved categories: [USER_DIRECTIVE.md](../main_d3_delegation_2026-10-05/USER_DIRECTIVE.md). Decision/alternatives/alignment/protection/verification/rollback and pending reclassification: [DECISION_RECEIPT.json](../main_d3_delegation_2026-10-05/DECISION_RECEIPT.json). Do not re-ask approved designs; do not manufacture owner facts/evidence or ignore named canonical restriction. D3-R waits only the dependentlane. Existing CDR022 autonomous loop continues with D3-A included.
