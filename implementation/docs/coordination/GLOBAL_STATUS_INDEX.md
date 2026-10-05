@@ -4,12 +4,23 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-033 (FPIA 7/7 terminal and completed QGV/Platform return consumption) |
-| Recorded | 2026-10-05T09:47:00Z; exact publication parent `087f4c1f2ea54b5a8182aea8cb3b1a0ca5b5aa2b` |
+| Index revision | GSI-034 (Autonomous Governance v1.1 adopted; Gate A gaps registered; D3 reclassification started) |
+| Recorded | 2026-10-05; exact publication parent `0e55e464c34b33dab096be524745eb62bccabefa` |
 | Writer | GPT Work `gpt-work-main-2026-10-05-3a80dcef6444`; CDR-018 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
 | Canonical | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca` (= `origin/HEAD`; unchanged since 2026-09-28) |
 | Operating contract | `CLAUDE_CODE_WORKER_CONTRACT_v1.0` at PR #21 exact HEAD `f1b5afb` is the operational routing SSoT (CDR-001). PR #20 is SUPERSEDED_DUPLICATE (not merged, retained) |
+
+
+## Current authority delta · GSI-034 · 2026-10-05
+
+| Scope | Exact state | Classification |
+|---|---|---|
+| Autonomous governance | CDR-024, adopted v1.1; PR #48 merged to Global `82de599` | ADOPTED_COMMON_SSOT |
+| Post-merge receipt | CDR-025 | APPEND_ONLY_EXECUTION_RECEIPT |
+| Hard-Guard Gap register | `governance/AUTONOMY_HARD_GUARD_GAPS_v1.1.md` | 11 gaps; Gate A NOT_VERIFIED; unattended RUN disabled |
+| Pending D3 reclassification | `governance/PENDING_D3_RECLASSIFICATION_v1.1.md` | STARTED; no new D3-A execution |
+| Canonical | `b8e39a2` | unchanged |
 
 ## Current evidence delta · GSI-033 · 2026-10-05T09:47:00Z
 
