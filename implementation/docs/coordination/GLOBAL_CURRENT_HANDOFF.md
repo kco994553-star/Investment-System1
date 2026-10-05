@@ -1,3 +1,11 @@
+## Current checkpoint · GCH-021 · 2026-10-05 07:56:57 UTC
+
+**CONTINUE_READY_D006_APPLICABILITY**. Draft #47 exact `9abeb376614dcd14c30f23bb7a99e4652edf0d83` publishes execution coverage consumer and CI runtime observer. 207 targeted/negative/affected PASS, prior 683 unchanged-scope evidence reused. Runtime receipt remains an observation, authentication NOT_VERIFIED; integration BLOCKED. #47 attempt1 Actions pending, #46 exact6fea terminal7/7SUCCESS remains separately bound.
+
+PIW-D004 optional PR28 omission CLOSED only at exact9ab subject: all14 optional executable paths absent from nontruncated tree; all412 PR28 changed files inspected, PR28 not ancestor. Full future merge-result acceptance remains OPEN. D006 ancestry applies independently of branch spelling, but workflow branch-prefix condition remains READY implementation, not CLOSED.
+
+Platform specialist `8599558dd1ec7e546ab46c230557ccf9e844e171` / comment5990208500 explicitly consumed Main5989810728. Audit coordination gap closed; actual source owner ACK/adoption UNVERIFIED, combined Platform/Web blockers9, product closure0. Chart `8fc47b0a3c9a262718b706519d6d91a051629636` consumed Global7dac coverage handoff; gates0/6. QGV inactive evidence reused, no production method chosen. Canonical b8e39a2 unchanged; candidate NOT_READY. Runtime implementation lease released; no shared lease held during CI wait. Evidence: `evidence/main_runtime_receipt_2026-10-05/RECEIPT.json`.
+
 ## Current checkpoint · GCH-020 · 2026-10-05T07:22:30.181Z
 
 **CHECKPOINT_CONTINUE** under CDR-022. Canonical unchanged `b8e39a2196a6d7794a04a0cd5393c68329e126ca`; exact input Global `f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8`. This containing output commit is the watermark; do not self-trigger solely on this docs publication.

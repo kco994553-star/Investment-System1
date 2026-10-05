@@ -25,22 +25,23 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "PIW_D001_D002_RUNTIME_RECEIPT_IN_PROGRESS",
+  "execution_state": "CONTINUE_READY_D006_APPLICABILITY",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
-    "global_input": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8",
+    "global_input": "76df9e6a71fa91ff5ee260bc6087185facae3779",
     "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
-    "chart": "a5cf1a1862aac7340dabfe169f4383da89f610cb",
+    "chart": "8fc47b0a3c9a262718b706519d6d91a051629636",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
     "qgv_missing": "4fb08a05728d83519b72a2bd995669f0cb06003a",
     "qgv_reconciliation": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
     "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
     "platform_independent_audit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
     "platform_pr45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
-    "platform_specialist": "8f80395f25119af6b2d78e0d41fc168d515f4746",
+    "platform_specialist": "8599558dd1ec7e546ab46c230557ccf9e844e171",
     "web": "fb086eac4321140493ce554a541343cebbb81ed6",
     "qgv_pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
-    "execution_coverage": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497"
+    "execution_coverage": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
+    "fpia_proposal": "9abeb376614dcd14c30f23bb7a99e4652edf0d83"
   },
   "automations": {
     "state": "EVENT_DELIVERED_AND_CONSUMED",
@@ -65,14 +66,7 @@
     "followup_delivery_observed": true
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": {
-    "token": "main-fpia-runtime-binding-20261005-3a80dcef6444",
-    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "acquired_at": "2026-10-05T07:27:10.155Z",
-    "expires_at": "2026-10-05T07:57:10.155Z",
-    "scope": "PIW-D001/D002 workflow execution-source receipt; isolated FPIA proposal",
-    "reason": "Next READY under CDR-022; no owner scope takeover"
-  },
+  "lease": null,
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -117,13 +111,62 @@
     5989173684,
     5989182963,
     5989651392,
-    5989810728
+    5989810728,
+    5990208500
   ],
-  "pending_ci": [],
+  "pending_ci": [
+    {
+      "run_id": 37279107069,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107172,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107212,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107247,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107113,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107162,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107194,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    }
+  ],
   "next_runnable_backlog": [
-    "PIW-D001/D002 independently accepted verifier/launcher and workflow execution-source binding in Main-only additive proposal scope",
-    "PIW-D004 exact optional-importer attribution/omission candidate",
-    "PIW-D006 branch-independent applicability and exact future merge-result receipt"
+    "PIW-D006 branch-independent workflow applicability implementation; preserve raw FPIA semantics"
   ],
   "next_dependency_gates": [
     "Chart 6 Lane A gates and 8 Lane B evidence families remain open until exact owner evidence",
@@ -131,14 +174,13 @@
     "QGV HOP1 manifest and active owner lease; no Main production semantic decision"
   ],
   "last_lease": {
-    "token": "main-fpia-coverage-20261005-3a80dcef6444",
+    "token": "main-fpia-runtime-binding-20261005-3a80dcef6444",
     "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "acquired_at": "2026-10-05T06:55:50.301Z",
-    "expires_at": "2026-10-05T07:25:50.301Z",
-    "scope": "PIW-D003/D005 read-only execution coverage consumer; Global evidence",
-    "reason": "Runnable authorized bounded proposal; no owner scope takeover",
-    "released_at": "2026-10-05T07:22:30.181Z",
-    "release_reason": "Bounded coverage implementation and exact terminal CI consumed; re-evaluate D1/D2 under CDR-022; no long CI lease"
+    "acquired_at": "2026-10-05T07:27:10.155Z",
+    "expires_at": "2026-10-05T07:57:10.155Z",
+    "scope": "PIW-D001/D002 workflow execution-source receipt; isolated FPIA proposal",
+    "reason": "Runtime observer published; no CI wait under shared lease",
+    "released_at_utc": "2026-10-05 07:56:57 UTC"
   },
   "publication_dedup_rule": "Containing docs-only Global commit is the output watermark; do not create another commit merely to store its own SHA. Fresh-read this state and compare external input hashes.",
   "dependency_fingerprint_files": [
@@ -148,19 +190,9 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": {
-    "token": "main-fpia-runtime-binding-20261005-3a80dcef6444",
-    "branch": "codex/fpia-execution-coverage-2026-10-05",
-    "input_head": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
-    "write_set": [
-      ".github/workflows/track-c-fpia.yml",
-      "implementation/tools/integration/track_c_fpia_ci_receipt.py",
-      "implementation/tests/test_integration_fpia_ci_receipt.py"
-    ],
-    "lane": "CRITICAL"
-  },
+  "active_scoped_execution": null,
   "last_terminal_ci_evidence": "evidence/main_execution_coverage_2026-10-05/RECEIPT.json",
-  "last_checkpoint_at_utc": "2026-10-05T07:22:30.181Z",
+  "last_checkpoint_at_utc": "2026-10-05 07:56:57 UTC",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
   "dependency_content_hash": "f546de5793bcfccc71682f5261d22dddc01e4654870981fbbd402746d06ebcd2",
   "execution_budget": {

@@ -1,0 +1,196 @@
+{
+  "schema": "main-runtime-checkpoint-v1",
+  "at_utc": "2026-10-05 07:56:57 UTC",
+  "global_parent": "76df9e6a71fa91ff5ee260bc6087185facae3779",
+  "proposal_head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+  "proposal_tree": "5b3ad79d9c13fdaa58d8534d09b5e014daa78045",
+  "pr": 47,
+  "publication": "TREE_IDENTICAL",
+  "verification": {
+    "lane": "CRITICAL",
+    "executed": "207 targeted/negative/affected PASS; 19observer+165identity+16coverage+7self",
+    "reused": "683 unchanged affected coverage evidence; existing6fea CI2184 separately pinned",
+    "full_regression": "NOT_REPEATED_UNCHANGED_SCOPE",
+    "history": [
+      "14 missing-implementation RED",
+      "4 blob decode FAIL repaired",
+      "3 self-constraint FAIL repaired without weakening tests"
+    ],
+    "authentication": "NOT_VERIFIED",
+    "integration": "BLOCKED"
+  },
+  "d004": {
+    "status": "CLOSED_EXACT_SUBJECT_OMISSION_ONLY",
+    "pr28_head": "b20d1786aa8e8fe13476e9c0e83cf7b50794e409",
+    "inventory_count": 412,
+    "optional_paths": [
+      {
+        "path": "implementation/docs/codex_takeover/evidence/adoption/probe.py",
+        "pr28_blob": "8885eab83907a418cf8eb2c713b5ad5a3ed85d64",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/adoption/run_audit.py",
+        "pr28_blob": "261e531b07c7fa095a37d5fd1c0fe805247a7624",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/c28-evidence-32-33/replay_fingerprints.py",
+        "pr28_blob": "23bca0b8385aaca5e3d0432fefc4c374842a10ce",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/c28-evidence-32-33/review_proposals.py",
+        "pr28_blob": "50d17ce38f00d3679535ac5b41dae8b5d252d4da",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/gsup-v2/actions-review/parse_execution_receipts.py",
+        "pr28_blob": "1f3d85a24969e6d00ad967e80856eb5f2e41676a",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/integration-final-2026-10-03/f1-actions-review/f1-scoped-evidence/independent-review/independent_probes.py",
+        "pr28_blob": "61383b69422a56f7362d17e2776a2e8a92d2f046",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/integration-final-2026-10-03/web-g3-owner-review/new-owner-branch-review/finalize_receipt.py",
+        "pr28_blob": "f5586f75295f3b73d67357a50e92e5ada9da99a1",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/integration-final-2026-10-03/web-g3-owner-review/new-owner-branch-review/prepare_probe.py",
+        "pr28_blob": "986e58a98efcdf54c26dd9b2e3c1a6ea625198a6",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/integration-final-2026-10-03/web-g3-owner-review/readonly_policy_oracle.py",
+        "pr28_blob": "8da08aa2363a4b3f75505beb41684afc44235781",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/integration-final-2026-10-03/web-g3-owner-review/reproduce_g3.py",
+        "pr28_blob": "c39af391d3ab30337b199a796c652fad6becb5d8",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/integration-final-2026-10-03/web-g3-owner-review/upstream-2b53b27/finalize_review.py",
+        "pr28_blob": "a9728ed7fc050a4bd52acb1c898fad0939006566",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/integration-final-2026-10-03/web-g3-owner-review/upstream-2b53b27/producer_policy_parity.py",
+        "pr28_blob": "6438d199915027f29b0748d0bd5e0c817b82136b",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/integration-final-2026-10-03/web-g3-owner-review/upstream-2b53b27/review_upstream.py",
+        "pr28_blob": "b85a1dc55a24e257fb4ca5763730d2b805fda1ae",
+        "subject_blob": null,
+        "omitted": true
+      },
+      {
+        "path": "implementation/docs/codex_takeover/evidence/track_c/independent_c8_audit.py",
+        "pr28_blob": "852c9896bb0a9edda6a8c4cf058bcd173aab42f5",
+        "subject_blob": null,
+        "omitted": true
+      }
+    ],
+    "proposal_tree_truncated": false,
+    "pr28_ancestor": false
+  },
+  "d006": {
+    "status": "READY_IMPLEMENTATION",
+    "reference": "b9e01a976a0e9efcd1f2d3a5d3503d2795cc5565",
+    "reference_ancestor_of_proposal": true,
+    "branch_prefix_condition": "STILL_PRESENT_NOT_FIXED"
+  },
+  "platform": {
+    "head": "8599558dd1ec7e546ab46c230557ccf9e844e171",
+    "comment_id": 5990208500,
+    "main_comment_consumed": 5989810728,
+    "status": "CONSUMED",
+    "source_owner_ack": false,
+    "source_adoption": false,
+    "combined_blockers": 9,
+    "closed_product_blockers": 0
+  },
+  "chart": {
+    "head": "8fc47b0a3c9a262718b706519d6d91a051629636",
+    "global_7dac_consumed": true,
+    "closed": 0,
+    "total": 6
+  },
+  "pending_ci": [
+    {
+      "run_id": 37279107069,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107172,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107212,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107247,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107113,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107162,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "run_id": 37279107194,
+      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null
+    }
+  ],
+  "metrics": {
+    "integration_packaging_closed": 1,
+    "coordination_receipt_closed": 1,
+    "product_blockers_closed": 0,
+    "new_product_blockers": 0,
+    "product_net_reduction": 0
+  },
+  "canonical_merge": "NOT_AUTHORIZED"
+}

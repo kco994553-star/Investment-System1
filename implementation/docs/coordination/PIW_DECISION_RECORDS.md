@@ -94,3 +94,11 @@ Overall current disposition: **INTEGRATION_ACCEPTANCE_BLOCKED**. No unsupported 
 - Decision: read-only consumer pins exact subject and externally selected result anchor, strictly parses JSON and verifies canonical result digest. It reports explicit dynamic/external/descendant limitations; every v2 result remains fail-closed, even rawFPIA_PASS. No executor, no dependency invocation, no semantic rewrite.
 - Verification: initial15RED; final16targeted +683affected PASS; current exact6feaartifact consumed and COVERAGE_BLOCKED, result6261005636109c32705ae7a4e9266a1cac3ddab588ce96dcbcab8ac893231500. CI7/7currentSUCCESS consumed without rerun. Existing source evidence2019 reused only for unchanged scope; currentCI2184 separately identified. Independent accepted verifier/launcher/runtime/source coverage still OPEN.
 - Impact/recovery: no canonical/owner-source/production/Frozen modification. Revert additive proposal independently if defective; preserve first failures, raw runs and historical receipts. Main continues remaining READY tasks; not whole Work WAIT.
+
+## PIWD-009 · Runtime execution source observer · 2026-10-05 07:56:57 UTC
+
+CDR015/018/021/022 D2 CRITICAL additive Main proposal at9ab/#47: observes actual workflow SHA/ref vs subject, run/attempt, Git blob verifier hashes and launcher; missing/dirty/untracked/symlink data fails closed. 207 scoped checks PASS after preserved14RED/4decodeFAIL/3selfFAIL history. API TREE_IDENTICAL, not COMMIT_IDENTICAL. Authority acceptance remains OPEN; observer is not attestation. Shared lease released, CI waiting does not consume lease.
+
+## PIWD-010 · Optional PR28 omission · 2026-10-05 07:56:57 UTC
+
+Existing PIW-D004 omission option verified exact9ab tree5b3ad: complete412-file PR28 inventory; 14optional executable audit/importer paths absent, PR28notancestor. CLOSED for exact subject packaging only. History preserved, no whitelist, no future merge-result/authentication acceptance. D006 currentR ancestry independently confirmed; branch-prefix automation repair still READY.

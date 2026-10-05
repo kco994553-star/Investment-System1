@@ -944,7 +944,20 @@
       "state": "CLOSED",
       "verified_scope": "13/13 artifacts hash+bytes; 23 synthetic checks reused; audit return consumption only",
       "source_implementation_closure": false,
-      "next_action": "No repeated audit; consume actual source owner adoption only when returned"
+      "next_action": "No repeated audit; consume actual source owner adoption only when returned",
+      "owner_consumption_comment_id": 5990208500,
+      "last_consumed_revision": "8599558dd1ec7e546ab46c230557ccf9e844e171"
+    },
+    {
+      "id": "MAIN-FPIA-D004-OMISSION-9AB-20261005",
+      "authoritative_owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "state": "CLOSED",
+      "request_status": "VERIFIED",
+      "source_HEAD": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "scope": "PR28 optional audit/importer omission exact subject only",
+      "evidence": "evidence/main_runtime_receipt_2026-10-05/RECEIPT.json",
+      "acceptance": "14 PR28 optional .py paths absent; complete412-file PR28 inventory and nontruncated proposal tree; PR28 not ancestor",
+      "future_candidate_acceptance": "NOT_VERIFIED"
     }
   ],
   "wake_up": "Main PR41 synchronize and API-authored PR17 comment events observed; self-comment deduplicated. Other owner wake/receipt unverified.",
@@ -1005,7 +1018,7 @@
   },
   "verification_policy": "CDR-021 / main_convergence EXECUTION_POLICY.md",
   "chart_gate_rejudgement": {
-    "head": "40a5c266322d36dbf30a683f6f632508352145bc",
+    "head": "8fc47b0a3c9a262718b706519d6d91a051629636",
     "CLOSED": 0,
     "total": 6,
     "gates": {
@@ -1026,5 +1039,15 @@
     "migration": "NOT_APPROVED",
     "source_owner_lease": "qgv-b47-muupb538 preserved; no release evidence",
     "actual_hops": "0/2 UNVERIFIED"
+  },
+  "platform_specialist_consumption": {
+    "head": "8599558dd1ec7e546ab46c230557ccf9e844e171",
+    "comment_id": 5990208500,
+    "main_comment_consumed": 5989810728,
+    "status": "CONSUMED",
+    "source_owner_ack": false,
+    "source_adoption": false,
+    "combined_blockers": 9,
+    "closed_product_blockers": 0
   }
 }
