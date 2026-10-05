@@ -20,7 +20,9 @@ jobs:
           python-version: "3.11"
       - name: Unit tests
         working-directory: implementation
-        run: python -m unittest tests.test_autonomy_gate_a_guard -v
+        run: |
+          python -m unittest tests.test_autonomy_gate_a_guard -v
+          python -m unittest tests.test_autonomy_executor_gate -v
       - name: Resolve comparison base
         id: base
         shell: bash
