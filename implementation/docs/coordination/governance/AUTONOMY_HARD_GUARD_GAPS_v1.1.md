@@ -17,9 +17,9 @@ Rules:
 
 | ID | Protection area | Gate | Initial status | Current evidence | Next verification |
 |---|---|---|---|---|---|
-| HG-01 | Frozen/history/evidence destruction | A | NOT_VERIFIED | v1.1 policy only; implementation evidence not yet admitted | inspect freeze/path guard, branch protection, no-force enforcement and tests |
-| HG-02 | canonical mutation | A | NOT_VERIFIED | canonical unchanged at b8e39a2; hard guard itself not yet verified | inspect PR/check/CODEOWNERS/branch-rules enforcement |
-| HG-03 | runaway/cost control | A | NOT_VERIFIED | v1.1 Kill Switch/hard-stop policy adopted; implementation evidence not yet verified | locate AUTONOMY_MODE control and executable enforcement/readback |
+| HG-01 | Frozen/history/evidence destruction | A | PARTIAL_VERIFIED | PR #50 exact head `65a6c9d`; run `37300641046` SUCCESS; registry + fail-closed diff guard + negative tests verified. Required-check / GitHub-side enforcement still unverified | verify branch/ruleset required enforcement and protected integration/canonical path |
+| HG-02 | canonical mutation | A | NOT_VERIFIED | canonical unchanged at `b8e39a2`; branch-protection API read returned 403 `Resource not accessible by integration`; repository ruleset read empty is non-conclusive | inspect/configure branch protection/rulesets with admin-capable user/Claude Code credential and prove PR/check/no-force/no-delete enforcement |
+| HG-03 | runaway/cost control | A | PARTIAL_VERIFIED | PR #50 exact head `65a6c9d`; `AUTONOMY_MODE=READ_ONLY`, operating values 5/7200s/3 and readback tests verified in run `37300641046` | wire actual executor start/publish checks and prove RUN/PAUSE/READ_ONLY + task/lease/repair limits in E2E |
 | HG-04 | real trade/order/fund movement | P | NOT_VERIFIED | no authorization inferred; credential/module isolation not verified | verify no order credential in agent environment and separate execution authority |
 | HG-05 | financial credential/authority expansion | P | NOT_VERIFIED | no credential-access evidence admitted | verify secret isolation and .env read/write protection |
 | HG-06 | Holdout consumption | P | NOT_VERIFIED | Holdout remains unconsumed by current project records; hard access separation not verified | verify storage/permissions/access logging |
@@ -31,11 +31,13 @@ Rules:
 
 ## Gate A status
 
-- HG-01: NOT_VERIFIED
+- HG-01: PARTIAL_VERIFIED
 - HG-02: NOT_VERIFIED
-- HG-03: NOT_VERIFIED
+- HG-03: PARTIAL_VERIFIED
 
 Gate A: **CLOSED / UNATTENDED AUTONOMY DISABLED**
+
+Latest bounded evidence: `governance/evidence/GATE_A_PR50_VERIFICATION_2026-10-05.md`. HG-02 is currently permission-blocked for authoritative GitHub-side verification; do not downgrade or fabricate it.
 
 User-observed/session execution remains allowed under v1.1. Read-only watcher behavior remains separate from unattended executor activation.
 
