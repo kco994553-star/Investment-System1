@@ -15,9 +15,11 @@
     "expires_at_utc": "2026-10-05T05:29:20.657Z",
     "ttl_minutes": 30,
     "scope": "EXACT_HEAD_CI_CONSUMPTION",
-    "verified_remote_acquisition": false,
+    "verified_remote_acquisition": true,
     "acquisition_parent_head": "8bdcbfbf703bb26451b6f6fd63c511cb3863a2f2",
-    "reason": "Consume terminal exact-head Product Platform validation hardening CI"
+    "reason": "Consume terminal exact-head Product Platform validation hardening CI",
+    "acquisition_commit": "4ab96898b8cc7295bef8de45fd7f2987be446e8f",
+    "verified_at_utc": "2026-10-05T04:59:36.743Z"
   },
   "pending_ci": [
     {
