@@ -25,7 +25,7 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "WAIT_DEPENDENCY_READY_D1_D2_D3_A_0",
+  "execution_state": "IN_PROGRESS_CDR024_STATE_RECONCILIATION",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_input": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
@@ -68,7 +68,15 @@
     "followup_delivery_observed": true
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": null,
+  "lease": {
+    "token": "main-cdr024-state-reconcile-20261005-fc8a83eeb8fe",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "acquired_at": "2026-10-05T10:11:00Z",
+    "expires_at": "2026-10-05T12:11:00Z",
+    "ttl_hours": 2,
+    "scope": "Main coordination state/ledger/history coherence after user-approved CDR-024 Global merge",
+    "source_parent": "13a15a2df529cbe54a52dcd4430f4bd06d919937"
+  },
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
