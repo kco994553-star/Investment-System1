@@ -1,0 +1,226 @@
+{
+  "schema": "main-d3-delegation-receipt-v1",
+  "recorded_at_utc": "2026-10-05T09:23:18Z",
+  "decision_id": "PIWD-013",
+  "decision": "Adopt explicit user D3-A/D3-R policy without expanding underlying product or owner authority; fresh-reclassify actual pending evidence and owner dependencies",
+  "classification": "D1_EXPLICIT_USER_DIRECTIVE",
+  "user_directive_ref": "USER_DIRECTIVE.md",
+  "user_directive_sha256": "07580cceb0e3f9cc8a6f9ecf84d298e208685fae1812a99d64db74361a6886a1",
+  "user_submission_timestamp": "UNAVAILABLE_NOT_INVENTED",
+  "source_heads": {
+    "global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "fpia": "7215a9f60ad7128b1748f405051eac684298614f",
+    "qgv_completed": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+    "qgv_current": "06e5f163a4f871ab99c767a46673c19da5d5ad1c",
+    "chart": "cda174542f1a1ae95345726f308c24b60262c03b",
+    "platform_policy": "ed525110358861e347c6c05e004035f359b9b63c",
+    "platform_owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "chart_completed": "d84afa219221e31ca78f5759360ae97489a0c8d2",
+    "platform_current": "e52cd0686800557b963892c4d18870c13a1aaee7"
+  },
+  "approved_ssot": [
+    "CDR-015 narrowed by CDR-016§13/017/018",
+    "CDR-020 convergence",
+    "CDR-021 proportional verification",
+    "CDR-022 autonomous loop",
+    "PIW-D001..D006 disposition decisions",
+    "QGV exactab07 explicit bounded principle approval"
+  ],
+  "conditions": [
+    "approved_purpose_and_design_preserved",
+    "no_new_investment_economic_scoring_meaning",
+    "no_protection_relaxation",
+    "PIT_no_lookahead_provenance_Frozen_history_preserved",
+    "no_security_tenant_financial_authority_expansion",
+    "no_actual_trade_order_funds",
+    "no_history_evidence_delete_rewrite",
+    "reasonably_rollbackable",
+    "deterministic_or_independently_verifiable",
+    "most_conservative_SSoT_aligned_option"
+  ],
+  "reserved": [
+    "paid_or_new_paid_resource",
+    "actual_trade_order_fund_transfer",
+    "actual_financial_credentials_or_permission_expansion",
+    "Holdout_first_or_reuse",
+    "Official_LIVE",
+    "PIT_no_lookahead_relaxation",
+    "destructive_Frozen_history_evidence_change",
+    "security_tenant_isolation_relaxation",
+    "irreversible_delete_migration",
+    "new_material_QGV_13F_backtest_investment_methodology",
+    "new_material_numeric_threshold_default_cutoff_weight",
+    "unproven_SSoT_alignment"
+  ],
+  "unknown_alignment": "D3-R",
+  "decision_receipt_required_fields": [
+    "decision",
+    "approved_ssot_and_authority",
+    "alternatives",
+    "design_alignment",
+    "protection_preservation",
+    "verification",
+    "rollback"
+  ],
+  "alternatives": [
+    {
+      "option": "Keep every old D3 label pending",
+      "rejected": "Existing approved principles and disposition decisions would be reopened without cause"
+    },
+    {
+      "option": "Approve every apparently reasonable action",
+      "rejected": "No concrete SSoT alignment proof and protected boundaries could be bypassed"
+    },
+    {
+      "option": "Classify exact proposed scope against latest approved SSoT; unknown reserved; evidence/ownership gaps remain dependencies",
+      "selected": true
+    }
+  ],
+  "design_alignment": "Only operational approval routing/traceability and exact scoped result consumption; no score/economic/numeric/runtime/security/source authority changes",
+  "protection_checks": {
+    "approved_purpose_and_design_preserved": true,
+    "no_new_investment_economic_scoring_meaning": true,
+    "no_protection_relaxation": true,
+    "PIT_no_lookahead_provenance_Frozen_history_preserved": true,
+    "no_security_tenant_financial_authority_expansion": true,
+    "no_actual_trade_order_funds": true,
+    "no_history_evidence_delete_rewrite": true,
+    "reasonably_rollbackable": true,
+    "deterministic_or_independently_verifiable": true,
+    "most_conservative_SSoT_aligned_option": true
+  },
+  "reclassification": [
+    {
+      "id": "FPIA_D001_D002",
+      "classification": "D2",
+      "state": "WAIT_DEPENDENCY",
+      "basis": "PIW-D001/D002/D007/D009 at exact Global; already disposition-decided",
+      "waiting": "Independent accepted verifier/launcher + exact Actions job/runtime binding; self-declaration not acceptance"
+    },
+    {
+      "id": "FPIA_D003_D005",
+      "classification": "D2",
+      "state": "WAIT_DEPENDENCY",
+      "basis": "PIW-D003/D005/D008; existing approved fail-closed coverage consumers",
+      "waiting": "Immutable external bytes/provenance and actual descendant execution coverage; unanalysed execution cannot become PASS"
+    },
+    {
+      "id": "FPIA_D004",
+      "classification": "D2",
+      "state": "DONE_EXACT_SCOPE_ONLY",
+      "basis": "PIWD-010 exact9ab optional packaging omission only; not relabelled as new-head/future acceptance"
+    },
+    {
+      "id": "FPIA_D006",
+      "classification": "D2",
+      "state": "WAIT_DEPENDENCY",
+      "basis": "PIWD-011/012; exact7215 bounded implementation and6CI successes",
+      "waiting": "run37284465900 attempt1 terminal; governance and exact merge-result acceptance separate"
+    },
+    {
+      "id": "QGV_B2_B3_B5_B6_PRINCIPLES",
+      "classification": "EXPLICIT_USER_APPROVED_D1_D2",
+      "state": "DONE_CONSUMED_SCOPE_ONLY",
+      "basis": "exactab07 explicit approval4b531ea + contract5343ad6e + manifest13bytes/blobs verified +1positive5negative PASS",
+      "production_closure": 0
+    },
+    {
+      "id": "QGV_ACTUAL_METHOD_NUMERIC_ASSESSMENT",
+      "classification": "D3-R",
+      "state": "D3_REQUIRED",
+      "basis": "Exact approved principles exclude actual formula/rubric/threshold/factor binding/cohort/grants/runtime/migration; new methodology/numeric policy reserved"
+    },
+    {
+      "id": "CHART_CURRENT_SOURCE_AUTHORITY",
+      "classification": "D1_D2_OWNER_DEPENDENCY",
+      "state": "WAIT_DEPENDENCY",
+      "basis": "CDR016§§3-7 unchanged TARGET/ACTUAL and issuer/security/dated listing contracts",
+      "waiting": "Portfolio/Identity owner unassigned; Product/full write-set/source returns absent; current Chart lease released; six production gates open",
+      "d3_a_conversion": "NOT_GRANTED_NO_EXACT_PROPOSED_RETURN"
+    },
+    {
+      "id": "PLATFORM_PROTECTIVE_REPAIR",
+      "classification": "D3-A_ELIGIBLE_NOT_GRANTED",
+      "state": "WAIT_DEPENDENCY",
+      "basis": "Existing read-only/provenance contract + published SA01/SA02 candidate; latest PP-DA-001",
+      "waiting": "Accountable implementation owner/write-set/source adoption; Main does not duplicate owner implementation"
+    },
+    {
+      "id": "PLATFORM_D3_POLICY_RETURN",
+      "classification": "D1",
+      "state": "DONE_CONSUMED_POLICY_ONLY",
+      "basis": "exacted525 receipt805c0e26;24owner structural checks reused, pinned metadata verified",
+      "pending_conversions": 0,
+      "production_closure": 0
+    },
+    {
+      "id": "CANONICAL_MERGE",
+      "classification": "D3-R_PROTECTED_MAIN_BOUNDARY",
+      "state": "D3_REQUIRED",
+      "basis": "CDR016§13/018/020/022; no exact merge authorization; new general delegation does not lift named Main restriction"
+    },
+    {
+      "id": "PROTECTED_LIVE_COST_CREDENTIAL_HISTORY",
+      "classification": "D3-R",
+      "state": "D3_REQUIRED_IF_PROPOSED",
+      "basis": "All twelve explicit user exclusions; actual trade/order/funds remain forbidden in Main"
+    },
+    {
+      "id": "CHART_SAMPLE_FALLBACK",
+      "classification": "OWNER_D3-A_ALREADY_EXECUTED",
+      "state": "DONE_CONSUMED_SAMPLE_ONLY",
+      "basis": "User MagicPath primary/auto local fallback; Chart v0.9/v0.12 exactSAMPLE reused; d84 decision7743/validationefaf; cda root10hash+9components+2screens pins PASS",
+      "production_closure": 0,
+      "main_new_approval": false
+    }
+  ],
+  "actual_new_main_d3_a_approvals": 0,
+  "owner_classification_in_progress": [
+    "QGV active06e5 policy lease; Platform e52 MainACK/link metadata lease"
+  ],
+  "owner_policy_consumed": "Platform ed525 D1; Chart d84/cda D1policy and boundedSAMPLE D3-A fallback return; no source adoption",
+  "verification": {
+    "scope": "Policy metadata + immutable scoped return consumption only; no full audit or repository regression",
+    "qgv": {
+      "manifest_payloads_verified": 13,
+      "positive": 1,
+      "negative": 5,
+      "verdict": "PASS_INACTIVE_SCOPE_ONLY",
+      "manifest_sha256": "ea3dedd70dab0fd27762a7eb0ff95a1ff2aa3963bcc4f6fab75966ff08f75c42",
+      "completion_sha256": "c1dd8f9c1a1f75c3e891d9b0618cc70b7336bb742db4ee28b9d2481523ddd88d",
+      "main_return_sha256": "b7166d9228e6fc879ad29eb107bbf994d11390c58af11bf2114a6589c9af3cf3",
+      "control_sha256": "023c721f058981240b1bbc745023ecb6b891eaf8532f27199b7fd37610f994f5",
+      "production_blockers_closed": 0,
+      "previous_tests_rerun": 0
+    },
+    "platform_receipt_sha256": "805c0e26e69149c9af6499e650f0401e1b3e26bbb8b890ec0d7ed9ec93e65e12",
+    "platform_structural_reused": "24/24 external policy-only",
+    "independent_boundary_review": "d3_boundary_review PASS_WITH_LIMITS; stale unqualified CDR015 summary must be visibly superseded",
+    "structural_checks": "See VERIFICATION.json generated after all new payloads are assembled",
+    "chart": {
+      "receipt_hashes": 10,
+      "component_git_blobs": 9,
+      "persisted_screenshot_git_blobs": 2,
+      "status": "PASS_SAMPLE_INTAKE_ONLY",
+      "product_gate_closure": 0
+    }
+  },
+  "rollback": "Append a superseding decision and ordinary descendant revert of these Main coordination files only; preserve CDR/PIW/history/CI failures and owner sources. Do not erase this decision or force history.",
+  "failure_history": [
+    {
+      "kind": "RETRY_TOOL_ARGUMENT_SIZE",
+      "original": "First in-memory independent verification transport rejected Argument list too long before execution",
+      "repair": "Bounded payload to13output files +CONTROL/package/tree entries; read-only verifier exited0",
+      "semantic_failure": false
+    }
+  ],
+  "remaining": {
+    "ready_main_d1_d2_d3_a": 0,
+    "production_gates_closed": 0,
+    "canonical_candidate": "NOT_READY",
+    "wait_ci": "37284465900 attempt1 exact7215",
+    "wait_owner": "QGV/Platform active scoped metadata returns; actual source/Portfolio/Identity/Product/Platform adoption and external data",
+    "main_lease": null
+  }
+}

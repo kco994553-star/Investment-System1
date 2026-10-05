@@ -1,0 +1,63 @@
+{
+  "schema": "main-platform-policy-return-consumption-v1",
+  "recorded_at_utc": "2026-10-05T09:23:18Z",
+  "policy_head": "ed525110358861e347c6c05e004035f359b9b63c",
+  "event_receipt_head": "edd9b0eb7fcb714c0025aec0aa2a736cd040e6ed",
+  "current_specialist_head": "e52cd0686800557b963892c4d18870c13a1aaee7",
+  "source_implementation_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+  "status": "CONSUMED_POLICY_AND_FIRST_EVENT_SCOPE_ONLY",
+  "policy_receipt_path": "implementation/docs/product_platform/automation/evidence/D3_DELEGATION_RECEIPT_2026-10-05.json",
+  "policy_receipt_sha256": "805c0e26e69149c9af6499e650f0401e1b3e26bbb8b890ec0d7ed9ec93e65e12",
+  "policy_file_sha256": "242bfffb6d53134410da8dcec1b63b9610b789a95fb8ef318c6e4526495df93d",
+  "state_sha256_at_completed_policy": "c88f17638d0b86b62aeed8cc163d20c4332e8f1105478ac423937758315a7c87",
+  "event_receipt_path": "implementation/docs/product_platform/automation/evidence/event_18584e20_2026-10-05.json",
+  "event_receipt_sha256": "8c126e928814cf7b1299bff1bcb2f7977f767aa3b1a7278b4ac9fb1b5982d00e",
+  "event_receipt_git_blob": "ca4040d60182f075a3ec1307494de53754c565fb",
+  "checks_reused": "24 structural +7file policy readback; no repeated Product audit/test",
+  "classification": "D1 explicit policy adoption PP-DA-001",
+  "actual_d3_a_conversions": 0,
+  "pending_concrete_decisions": 0,
+  "product_blockers_remaining": 9,
+  "product_blockers_closed": 0,
+  "implementation_owner_ack": false,
+  "source_adoption": false,
+  "current_followup": {
+    "status": "IN_PROGRESS_OWNER_METADATA_ONLY",
+    "main_comment_consumed_target": 5991485958,
+    "lease": {
+      "run_id": "platform-main-policy-link-b2bb0c30-20261005",
+      "writer": "Product Platform independent specialist audit /root",
+      "scope": [
+        "implementation/docs/product_platform/CURRENT_HANDOFF.md",
+        "implementation/docs/product_platform/automation/STATE.json",
+        "implementation/docs/product_platform/automation/CHECKPOINT.md",
+        "implementation/docs/product_platform/automation/evidence/main_policy_return_5991485958_2026-10-05.json"
+      ],
+      "acquired_at_utc": "2026-10-05T09:14:28.305Z",
+      "expires_at_utc": "2026-10-05T09:44:28.305Z",
+      "parent": "ed525110358861e347c6c05e004035f359b9b63c",
+      "source_fingerprints": {
+        "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
+        "global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+        "main_comment_id": 5991485958,
+        "receipt_sha256": "805c0e26e69149c9af6499e650f0401e1b3e26bbb8b890ec0d7ed9ec93e65e12",
+        "task_input": "ef659579cf9ac83a3aec831958e9e3876e949896177a78610151558177a0f23e"
+      }
+    },
+    "minor_relative_link": "Owner correction requested; not claimed closed at e52 lease-only HEAD"
+  },
+  "automation": {
+    "event_enabled": true,
+    "followup_enabled": false,
+    "followup_configured_hours": 2,
+    "activation": "CONFIGURED_ONLY_PLUS_FIRST_EVENT_INVOCATION_AND_MAIN_HANDOFF_INTAKE",
+    "material_unattended_product_execution": "NOT_VERIFIED"
+  },
+  "delivery": {
+    "pr": 45,
+    "comment_id": 5991485958,
+    "body_sha256": "0d1b83583d8e2cccf3a2f8f8286301b635ae72d00dc74195a2e45b3ba68d5ab9",
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5991485958"
+  },
+  "limits": "Main ACK/specialist policy consumption is not implementation-owner acceptance; preserve owner's cadence/enablement and active metadata lease."
+}
