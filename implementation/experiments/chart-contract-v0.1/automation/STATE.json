@@ -437,22 +437,17 @@
     "fpia_tool_governance": "OWNER_ACTION_REQUIRED_FINAL_REVIEW_DECISION_GIE"
   },
   "lease": {
-    "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
-    "run_id": null,
+    "status": "HELD",
+    "run_id": "manual-chart-fixture-review-20261005T052509016Z",
     "holder_kind": "MANUAL_ROOT",
-    "acquired_at_utc": "2026-10-05T04:50:05.736Z",
-    "expires_at_utc": "2026-10-05T05:20:05.736Z",
-    "ttl_minutes": 30,
+    "acquired_at_utc": "2026-10-05T05:25:09.016Z",
+    "expires_at_utc": "2026-10-05T06:25:09.016Z",
+    "ttl_minutes": 60,
     "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
     "verified_remote_acquisition": true,
-    "acquisition_parent_head": "a5403a969021021cd3f489173603bc657365097f",
-    "reason": "Exact pending FPIA run just reached terminal SUCCESS; consume receipt and clear CI queue without governance promotion",
-    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
-    "acquisition_commit": "7ba5f2dac74487d1ce504e80081213e23894cc09",
-    "verified_at_utc": "2026-10-05T04:53:10.015213+00:00",
-    "previous_run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
-    "released_at_utc": "2026-10-05T04:55:05.915Z",
-    "verified_published_packet": "395a24eef42fde2ddec8831808daba5e768d72e2"
+    "acquisition_parent_head": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+    "reason": "User selected dedicated SAMPLE review canvas; repair missing-to-zero fixture display and verify existing approved lab UI; fresh owner intake",
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
   },
   "publication": {
     "status": "V08_DIAGNOSTIC_LATE_INTAKE_AND_FPIA_TERMINAL_PUBLICATION_VERIFIED",
@@ -849,6 +844,27 @@
         "previous_run_id": "manual-chart-portable-preflight-20261005T041827682Z",
         "released_at_utc": "2026-10-05T04:47:13.892913+00:00",
         "verified_published_packet": "c552d0108091bb48ec851e42f43e6ae852d4bdba"
+      }
+    },
+    {
+      "state_at_commit": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+      "lease": {
+        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+        "run_id": null,
+        "holder_kind": "MANUAL_ROOT",
+        "acquired_at_utc": "2026-10-05T04:50:05.736Z",
+        "expires_at_utc": "2026-10-05T05:20:05.736Z",
+        "ttl_minutes": 30,
+        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+        "verified_remote_acquisition": true,
+        "acquisition_parent_head": "a5403a969021021cd3f489173603bc657365097f",
+        "reason": "Exact pending FPIA run just reached terminal SUCCESS; consume receipt and clear CI queue without governance promotion",
+        "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+        "acquisition_commit": "7ba5f2dac74487d1ce504e80081213e23894cc09",
+        "verified_at_utc": "2026-10-05T04:53:10.015213+00:00",
+        "previous_run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
+        "released_at_utc": "2026-10-05T04:55:05.915Z",
+        "verified_published_packet": "395a24eef42fde2ddec8831808daba5e768d72e2"
       }
     }
   ],
