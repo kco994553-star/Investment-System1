@@ -1,17 +1,7 @@
 {
   "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
-  "status": "D3_POLICY_APPLIED_MAIN_PRINCIPLE_CONSUMPTION_CLOSED_READY0",
-  "lease": {
-    "lane_id": "QGV_ARCHITECTURE_RECONCILIATION_AUDIT",
-    "token": "qgv-resume-v11-muv4iuqa",
-    "holder": "QGV-independent-audit-user-session-2026-10-05",
-    "target_branch": "codex/qgv-architecture-reconciliation-review-2026-10-05",
-    "task": "CDR024_V11_ADOPTION_AND_MAIN_INTAKE_RECONCILIATION",
-    "input_review_head": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
-    "acquired_at_utc": "2026-10-05T10:45:29.746Z",
-    "ttl_seconds": 7200,
-    "expires_at_utc": "2026-10-05T12:45:29.746Z"
-  },
+  "status": "V11_OPERATIONAL_AUTHORITY_ADOPTED_CURRENT_MAIN_INTAKE_RECONCILED_READY0",
+  "lease": null,
   "tasks": [
     "LATEST_POLICY_AND_PENDING_RECLASSIFICATION",
     "AUTOMATION_PROMPT_AUTHORITY_ALIGNMENT",
@@ -26,16 +16,15 @@
   "manual_execution": true,
   "actual_scheduler_hops_credited": 0,
   "d3_scope": "Latest D3-A concrete evidenced alignment; D3-R reserved economic/numeric/protection/unproven scope. Earlier principle-only exclusions preserved in history, not treated as unconditional future label gates.",
-  "last_lease_token": "qgv-main-consume-muv1hf6g",
+  "last_lease_token": "qgv-resume-v11-muv4iuqa",
   "completion": {
-    "task_id": "EXACT_MAIN_PRINCIPLE_RETURN_CONSUMPTION",
-    "status": "COMPLETED_ACCEPTED_TRACKING_ONLY",
-    "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/returns/COMPLETION_RECEIPT.json",
-    "receipt_sha256": "2fa00057e15c77f2ad925ae0300e135653b687b17e882ee5fe7cb673bff969c1",
-    "new_distinct_checks": 8,
-    "tracking_items_closed": 1,
-    "production_blockers_closed": 0,
-    "scheduler_hops": 0,
+    "task_id": "CDR024_V11_OPERATIONAL_ADOPTION_AND_MAIN_INTAKE_RECONCILIATION",
+    "status": "COMPLETED_ACCEPTED_OPERATIONAL_SCOPE_ONLY",
+    "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/COMPLETION_RECEIPT.json",
+    "receipt_sha256": "baa96b60f83df06e1be98b7889d52f31ed41cb787d8a441147b0c45cf7c19686",
+    "new_distinct_checks": 12,
+    "new_production_blockers_closed": 0,
+    "new_D3_A": 0,
     "remaining_READY": 0
   },
   "d3_decisions": [
@@ -111,11 +100,17 @@
     "policy_id": "QGV-SSOT-AUTONOMOUS-EXECUTION-LOOP-2026-10-05",
     "policy_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/execution_loop/POLICY.json",
     "policy_sha256": "5037e5dcaa0ca55afff4e6641de418d9542507786d1ad06c6ad851142bbd3ce8",
-    "task_board_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/returns/TASK_BOARD.json",
-    "status": "AUTHORIZED_READY_ZERO_WAIT_SOURCE_OWNER_RESERVED",
+    "task_board_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/TASK_BOARD.json",
+    "status": "V11_USER_SESSION_ALLOWED_READY0_WAIT_DEPENDENCY_RESERVED",
     "production_enabled": false,
     "scheduler_hops": 0,
-    "remaining_READY": 0
+    "remaining_READY": 0,
+    "common_authority_ref": {
+      "head": "1596649912554116196c1ad3c1d41797219f5241",
+      "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+      "sha256": "e193544159babd5ccb7d74671d9925fa6fd4de406a0e215cda1b08b2264dba3b",
+      "git_blob_sha": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
+    }
   },
   "released_lease_history": [
     {
@@ -165,6 +160,21 @@
       },
       "released_at_utc": "2026-10-05T09:22:19.922161+00:00",
       "reason": "Exact returned Main receipt consumed; only own review lease."
+    },
+    {
+      "lease": {
+        "lane_id": "QGV_ARCHITECTURE_RECONCILIATION_AUDIT",
+        "token": "qgv-resume-v11-muv4iuqa",
+        "holder": "QGV-independent-audit-user-session-2026-10-05",
+        "target_branch": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+        "task": "CDR024_V11_ADOPTION_AND_MAIN_INTAKE_RECONCILIATION",
+        "input_review_head": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+        "acquired_at_utc": "2026-10-05T10:45:29.746Z",
+        "ttl_seconds": 7200,
+        "expires_at_utc": "2026-10-05T12:45:29.746Z"
+      },
+      "released_at_utc": "2026-10-05T10:54:02.382849+00:00",
+      "reason": "Own bounded user-session governance/reconciliation task completed; independent verification and final publication required. Missing-Data owner lease unchanged."
     }
   ],
   "semantic_completion_preserved": {
@@ -255,6 +265,21 @@
         "independent_review": "PASS_WITH_LIMITS",
         "operational_acceptance_closed": 2,
         "new_D3_A_approvals": 0
+      }
+    },
+    {
+      "input_head": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+      "status": "D3_POLICY_APPLIED_MAIN_PRINCIPLE_CONSUMPTION_CLOSED_READY0",
+      "completion": {
+        "task_id": "EXACT_MAIN_PRINCIPLE_RETURN_CONSUMPTION",
+        "status": "COMPLETED_ACCEPTED_TRACKING_ONLY",
+        "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/returns/COMPLETION_RECEIPT.json",
+        "receipt_sha256": "2fa00057e15c77f2ad925ae0300e135653b687b17e882ee5fe7cb673bff969c1",
+        "new_distinct_checks": 8,
+        "tracking_items_closed": 1,
+        "production_blockers_closed": 0,
+        "scheduler_hops": 0,
+        "remaining_READY": 0
       }
     }
   ],
@@ -375,5 +400,168 @@
     "Missing_Data_owner_return_ack": "NOT_EVIDENCED",
     "scheduler_hops": 0,
     "failure_history": []
-  }
+  },
+  "prior_cbb_completion_preserved": {
+    "task_id": "EXACT_MAIN_PRINCIPLE_RETURN_CONSUMPTION",
+    "status": "COMPLETED_ACCEPTED_TRACKING_ONLY",
+    "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/returns/COMPLETION_RECEIPT.json",
+    "receipt_sha256": "2fa00057e15c77f2ad925ae0300e135653b687b17e882ee5fe7cb673bff969c1",
+    "new_distinct_checks": 8,
+    "tracking_items_closed": 1,
+    "production_blockers_closed": 0,
+    "scheduler_hops": 0,
+    "remaining_READY": 0
+  },
+  "common_operational_authority": {
+    "id": "QGV-CDR024-V11-SCOPED-ADOPTION-2026-10-05",
+    "classification": "D1",
+    "state": "ADOPTED_OPERATIONAL_GOVERNANCE_ONLY",
+    "recorded_at_utc": "2026-10-05T10:48:56.488780+00:00",
+    "authority_decision": "CDR-024",
+    "identity_clarification": "CDR-026",
+    "canonical_authority": {
+      "head": "1596649912554116196c1ad3c1d41797219f5241",
+      "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+      "sha256": "e193544159babd5ccb7d74671d9925fa6fd4de406a0e215cda1b08b2264dba3b",
+      "git_blob_sha": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
+    },
+    "approval_register": {
+      "head": "1596649912554116196c1ad3c1d41797219f5241",
+      "path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+      "sha256": "27329fc02ea91cb4ab00e42f774092f6211ee1119bd9d1c9dce67c9c967cee9c",
+      "git_blob_sha": "c1d7c9c45ae65516cef01e6481aee91e5b7c4aad"
+    },
+    "historical_adopted_blob": "89b48bca0aeeff54bdc0fc97d6ee768e5f0e326c",
+    "current_merged_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+    "operation": "Use already user-adopted common SSoT v1.1 for this scoped QGV audit; preserve original scoped policy/history and narrower methodology boundaries.",
+    "semantic_delta": "NONE",
+    "alternatives": [
+      "Apply adopted common governance with exact merged-file pin (selected)",
+      "Keep old scoped operational authority despite material common adoption (stale)"
+    ],
+    "operating_values": {
+      "maximum_tasks_per_cycle": 5,
+      "lease_ttl_seconds": 7200,
+      "deadlock_escalation_ttl_multiple": 2,
+      "repair_round_cap": 3,
+      "digest_decision_limit": 10,
+      "digest_max_days": 7,
+      "module_decision_limit_per_window": 5,
+      "rolling_windows": 3,
+      "veto_hours": 72,
+      "dependent_chain_depth_during_veto": 3,
+      "token_budget": null
+    },
+    "no_new_values_selected": true,
+    "protection_boundaries_preserved": [
+      "QGV_METHOD_AND_NUMERIC_POLICY",
+      "PIT_NO_LOOKAHEAD_PROVENANCE",
+      "FROZEN_HISTORY_EVIDENCE",
+      "SECURITY_TENANT_FINANCIAL_PERMISSIONS",
+      "HOLDOUT",
+      "OFFICIAL_LIVE",
+      "CANONICAL_MERGE",
+      "OWNER_SINGLE_WRITER"
+    ],
+    "execution_mode": "USER_OBSERVED_SESSION_ONLY",
+    "hard_guard_input": {
+      "head": "1596649912554116196c1ad3c1d41797219f5241",
+      "path": "implementation/docs/coordination/governance/AUTONOMY_HARD_GUARD_GAPS_v1.1.md",
+      "sha256": "e091014187f28f49a793199a444842db002341f3218a093bfdb8760edbff4ead",
+      "git_blob_sha": "1018ff50fc8e624be3b1c9ab403337a4dfc9bb02"
+    },
+    "gate_A": "NOT_VERIFIED_UNATTENDED_DISABLED",
+    "kill_switch": {
+      "control_locator": "NOT_YET_IMPLEMENTATION_VERIFIED_BY_MAIN",
+      "session_permission": "CDR-024 and PART G explicitly allow user-observed/session execution before Gate A",
+      "agent_control_change": false,
+      "unattended_activation": false
+    },
+    "d3_A_requirements": [
+      "26A escalation triggers",
+      "26B independent execution",
+      "26C digest/veto drift limits",
+      "26D reversible no-loss rollback",
+      "26F conservative semantic_delta synthesis"
+    ],
+    "new_d3_A_approvals": 0,
+    "runtime_or_method_authorization": false,
+    "rollback": "Normal revert of scoped operational locator/metadata; common adopted policy and historic evidence remain in immutable history. No external-system side effect.",
+    "verification_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/VERIFICATION.json",
+    "independent_review_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/INDEPENDENT_REVIEW.json"
+  },
+  "current_Main_intake": {
+    "id": "QGV-MAIN-CBB-INTAKE-RECONCILIATION-2026-10-05",
+    "classification": "D1",
+    "input_review_head": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+    "Main_receipt": {
+      "head": "1596649912554116196c1ad3c1d41797219f5241",
+      "path": "implementation/docs/coordination/evidence/main_terminal_7215_2026-10-05/OWNER_RETURNS.json",
+      "sha256": "4cb06a68ed52232fcbc5cc945eda7e500be3cad8d6f459016a14e03fed318e3b",
+      "git_blob_sha": "94225b22a378a888edc5ff4a040413c93e02aad2"
+    },
+    "current_audit_return": "CONSUMED_BY_MAIN",
+    "Main_reported_payload_identity_checks": 22,
+    "owner_reported_tracking_checks": 8,
+    "Main_bound_fields": {
+      "control_sha256": "f72bb606445dfa2f0f1ec2951dc9b1c416c0606e3668107f1903fe9a7d80a91f",
+      "completion_receipt_sha256": "2fa00057e15c77f2ad925ae0300e135653b687b17e882ee5fe7cb673bff969c1",
+      "manifest_sha256": "6c67b8ff5f6be588337d1119555f017bf798c8e7f223936f31dd942d30016ea7",
+      "remaining_reserved_groups": 10,
+      "production_blockers_closed": 0,
+      "ready": 0,
+      "lease": null
+    },
+    "policy_specific_ack": "NOT_EVIDENCED",
+    "policy_specific_wait_preserved": true,
+    "reason": "Generic current-return consumption does not override the receipt explicit main_policy_return_ack=NOT_EVIDENCED.",
+    "prior_principle_consumption": "CLOSED_PREVIOUSLY_NOT_CREDITED_AGAIN",
+    "new_owner_return_closures": 0,
+    "new_production_blockers_closed": 0,
+    "reconciled_statuses": {
+      "global_governance": "CURRENT",
+      "old_scoped_operational_policy": "HISTORICAL_SUPERSEDED_WHERE_COMMON_V11_MORE_SPECIFIC",
+      "old_methodology_approvals": "CURRENT_UNCHANGED",
+      "Missing_Data_owner": "CURRENT_HELD_LEASE",
+      "scheduler_last_readback": "HISTORICAL_CURRENT_CONFIGURATION_UNVERIFIED"
+    },
+    "RD3_03": {
+      "source": {
+        "head": "1596649912554116196c1ad3c1d41797219f5241",
+        "path": "implementation/docs/coordination/governance/PENDING_D3_RECLASSIFICATION_v1.1.md",
+        "sha256": "b2a1e54c8b507b7d70f5eb1b3036058d7b96fe48e2d73b8a63beb421bb543d30",
+        "git_blob_sha": "a556817d4819ed2ec06823a7721927f6f330b975"
+      },
+      "classification": "D3_A_CANDIDATE_ONLY",
+      "state": "WAIT_DEPENDENCY",
+      "semantic_delta": "UNCLEAR_NO_CONCRETE_RUNTIME_DIFF",
+      "required": [
+        "exact approved-semantics pin",
+        "exact bounded consumer/runtime diff",
+        "rollback plan",
+        "Main coordination",
+        "26B independent verification"
+      ],
+      "automatic_approval": false
+    },
+    "scheduler": {
+      "peek_result": "EMPTY_CURRENT_CONFIGURATION_NOT_VISIBLE",
+      "configuration_changed": false,
+      "last_verified_configuration": "READ_ONLY_WATCHER_ENABLED_EXECUTOR_PAUSED",
+      "unattended_activation": false,
+      "genuine_execution_hops": 0,
+      "required_hops": 2,
+      "status": "UNVERIFIED"
+    },
+    "lookup_failure_history": [
+      {
+        "step": "Interpret Global policy contents response as contents-API object",
+        "failure": "TypeError: string indices must be integers",
+        "classification": "REPLAN",
+        "repair": "Use original raw UTF-8 wire content and validate against current tree Git blob; retained original encoded response; no remote mutation on parsing failure"
+      }
+    ]
+  },
+  "scheduler_configuration_current": "UNVERIFIED_PRIVATE_LOOKUP_EMPTY",
+  "unattended_execution_enabled": false
 }

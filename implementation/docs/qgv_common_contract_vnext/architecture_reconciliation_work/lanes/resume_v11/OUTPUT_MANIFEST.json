@@ -1,0 +1,77 @@
+{
+  "parent": "02c41495b1e80cc9326ddcd318cc2652c341cfbe",
+  "files": [
+    {
+      "local_file": "AUTHORITY_RECEIPT.json",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/AUTHORITY_RECEIPT.json",
+      "sha256": "daceea260703bbb06e282287d12a1097075fea062259bd9a6f851a5ac85d9b30",
+      "git_blob_sha": "edb48dd96e7a1b7c4f79d60ed1f290c48e146b3f"
+    },
+    {
+      "local_file": "COMPLETION_RECEIPT.json",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/COMPLETION_RECEIPT.json",
+      "sha256": "baa96b60f83df06e1be98b7889d52f31ed41cb787d8a441147b0c45cf7c19686",
+      "git_blob_sha": "4232e4652cf549e4e702b7a8859913d78c160fc5"
+    },
+    {
+      "local_file": "CONTROL.final.json",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/CONTROL.json",
+      "sha256": "869bd5700750d40c0372e796f25659977b552156c1aef1066784d902cd26457e",
+      "git_blob_sha": "76ee4bdf45d658dbbc8e63adbf4366f43b05be15"
+    },
+    {
+      "local_file": "CURRENT_HANDOFF.md",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md",
+      "sha256": "aa8d707ef7b4a24cf03975d64f79b4b022023eb64176ea2e8904b5b3bc1eb210",
+      "git_blob_sha": "0ae556f9c2d0f370d2872ede7e1a7b2b1bebc682"
+    },
+    {
+      "local_file": "DECISION_REGISTER.md",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/DECISION_REGISTER.md",
+      "sha256": "279a57e8f6b77fcfa167ac694753892fbf5371ac15b703bd20a18fedb5444010",
+      "git_blob_sha": "ee6163f1449b2e5eefd7b421541405b5f8bf593d"
+    },
+    {
+      "local_file": "EVIDENCE_REUSE.json",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/EVIDENCE_REUSE.json",
+      "sha256": "0b465f7d0aa537242c45a5c7cdb1d124ca8f37794f89061ff5c258129a8c45f3",
+      "git_blob_sha": "66fd3cdc671ceeb17959f42a8d4629c3da7d5f31"
+    },
+    {
+      "local_file": "FRESH_INTAKE.json",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/FRESH_INTAKE.json",
+      "sha256": "a331c35d96f12aa2ac84ae907b3c569b844029c5cc2a1bf8e24fa6f3ddcc8275",
+      "git_blob_sha": "e4392cc4ae6d35c098ac106aca7f8a6332b8f216"
+    },
+    {
+      "local_file": "INDEPENDENT_REVIEW.json",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/INDEPENDENT_REVIEW.json",
+      "sha256": "a6a00c7a9bb5ebd68f81ac18e2e91eb36ae98b8128f55dd9eb13a92486557d81",
+      "git_blob_sha": "d53582c73c397007e32196e328f469c510284ae4"
+    },
+    {
+      "local_file": "STATE_RECONCILIATION.json",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/STATE_RECONCILIATION.json",
+      "sha256": "bf42e094651f6f6f648065bcdc32f24cfe16a9ff03f860c7db0a9049f0d7fc3d",
+      "git_blob_sha": "49e85bfcddcacbafae5b541e87b3fd42da6affb8"
+    },
+    {
+      "local_file": "TASK_BOARD.json",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/TASK_BOARD.json",
+      "sha256": "3af49d4bbf3360515b1556709f042711026dbd10295adee41ed57351c064713b",
+      "git_blob_sha": "593dbb4704c8d5a86d200f0a0ed48fd1419cfe67"
+    },
+    {
+      "local_file": "VERIFICATION.json",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/VERIFICATION.json",
+      "sha256": "c309061797431a5d974f28a053385e3009e3e855df9b33cd2de5113eb526ef55",
+      "git_blob_sha": "157abcc0fd0d1ff4a93a199a78f7783da7155e02"
+    }
+  ],
+  "history_preserving": true,
+  "source_app_notifications": 0,
+  "other_owner_writes": 0,
+  "Global_writes": 0,
+  "runtime_source_changes": 0,
+  "production_enabled": false
+}

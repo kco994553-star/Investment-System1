@@ -1,0 +1,22 @@
+{
+  "task_id": "CDR024_V11_OPERATIONAL_ADOPTION_AND_MAIN_INTAKE_RECONCILIATION",
+  "classification": "D1",
+  "status": "COMPLETED_ACCEPTED_OPERATIONAL_SCOPE_ONLY",
+  "input_review_head": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+  "claim_head": "02c41495b1e80cc9326ddcd318cc2652c341cfbe",
+  "tasks_completed": 2,
+  "new_checks": 12,
+  "verification_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/VERIFICATION.json",
+  "verification_sha256": "c309061797431a5d974f28a053385e3009e3e855df9b33cd2de5113eb526ef55",
+  "independent_review_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/INDEPENDENT_REVIEW.json",
+  "independent_review_sha256": "a6a00c7a9bb5ebd68f81ac18e2e91eb36ae98b8128f55dd9eb13a92486557d81",
+  "original_checks_reused": 193,
+  "new_production_blockers_closed": 0,
+  "existing_production_blocker_categories": 3,
+  "remaining_reserved_groups": 10,
+  "new_owner_return_closures": 0,
+  "new_D3_A": 0,
+  "remaining_READY": 0,
+  "scheduler_hops": 0,
+  "output_manifest_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/OUTPUT_MANIFEST.json"
+}

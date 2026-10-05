@@ -1,3 +1,32 @@
+# Current QGV continuation — common v1.1 adopted; latest Main intake reconciled
+
+**STATUS: SESSION_GOVERNANCE_V11_APPLIED / READY0 / WAIT_DEPENDENCY_AND_D3_R / PRODUCTION_INACTIVE.**
+Fresh inputs: review `cbb4655d84ec8b5c0aec1c56e654c2a70e61badf`; Global `1596649912554116196c1ad3c1d41797219f5241`; Missing-Data `4fb08a05728d83519b72a2bd995669f0cb06003a`; canonical `b8e39a2196a6d7794a04a0cd5393c68329e126ca`.
+
+Common authority is CDR-024 / Autonomous Execution & Decision Authority SSoT v1.1. CDR-026 pins the adopted merged file to Git blob `4736bbcb508ce1f4310fbe96cbcfdd8e080b275f`; earlier adopted-file identity is historical. Exact receipt, register, task board and verification are in `lanes/resume_v11/`. Apply adopted5-task cycle cap,2-hour own lease TTL,3 repair-round cap and independent semantic_delta/Digest/Veto requirements. No new operating values or investment semantics were selected.
+
+## Actual bounded work
+
+Applied common operational authority to this scoped audit and reconciled latest Main intake. Main's exact `main_terminal_7215_2026-10-05/OWNER_RETURNS.json` consumes current cbb-return and binds3 original return hashes. It explicitly retains policy-specific ACK `NOT_EVIDENCED`; that WAIT item stays open. Prior principle consumption was already closed and is not credited again. Production blockers closed0; three existing production blocker categories and10 Reserved decision groups remain.
+
+Original59/79/30/25 checks are reused at original scope after78 unchanged artifact identities. No full regression, Actions dispatch, runtime implementation, score/history migration, Holdout, canonical merge or Official/LIVE activation. Independent specialist reviews authority/receipt boundaries and current input identities; final validation and exact publication/readback remain separately evidenced.
+
+## Remaining dependencies and continuation
+
+- Missing-Data owner `4fb08a05728d83519b72a2bd995669f0cb06003a` still has protected `qgv-b47-muupb538`; no authoritative release/accepted return. Resume only on owner return/release with exact source/validator/output receipt; do not steal or expire its lease.
+- Exact DATA-G-01..05/AUTH-G-06 raw/period/share/vintage/PIT evidence remains absent. Resume on exact returned data or materially recovered transport; verify original requested hashes before consumption.
+- Main policy-specific ACK remains NOT_EVIDENCED despite generic current-return intake. Resume on policy-specific receipt; do not relabel generic intake as ACK.
+- Main RD3-03 is D3-A CANDIDATE only. Need exact approved-semantics/runtime diff/rollback/Main coordination/26B verification. Completed inactive reference carriage is not a new runtime candidate.
+- Ten Reserved methodology/numeric/assessment/unproven production groups remain; unchanged questions are not repeatedly reopened.
+
+Gate A HG01..03 remains NOT_VERIFIED in Main's hard-guard register. User-observed/session execution is permitted by CDR-024; unattended RUN remains disabled. No kill switch or scheduler configuration was changed. Private automation lookup returned no visible tasks; last verified watcher-enabled/executor-paused configuration is historical, current configuration UNVERIFIED. Real scheduler continuation remains0/2 UNVERIFIED.
+
+Current D1/D2/D3-A READY0, independent READY0, bounded repair0, immediately consumable owner/CI0 and scoped closure0 after publication. On a genuine Work/session wake, use fresh STATUS/ref/evidence hashes and execute newly READY tasks under v1.1; watcher only signals. Main owns integration. This publication has no source-app notification, Global write or other-owner mutation. Only this review lease is released with final publication.
+
+---
+
+# Preserved previous scoped checkpoint — exact bytes follow
+
 # Current Main principle-return receipt consumed — exact bounded closure
 
 Main receipt 5991476557 at 2026-10-05T09:10:28Z acknowledges the exact completed ab07f6a B2/B3/B5/B6 principle-only return. This Work verified all four quoted approval/contract/completion/manifest hashes and bounded packet/actor/scope: 8/8 FAST checks PASS. Tracking item CLOSED1. No prior 25/59/79/30 audit rerun, production blocker closure or scheduler-hop credit.
