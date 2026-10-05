@@ -1581,3 +1581,53 @@ User wording (verbatim):
 > Protection boundary 유지
 > Decision traceability 유지
 > 이다.
+
+## CDR-024 · Autonomous Execution & Decision Authority SSoT v1.1 adoption
+
+- Status: **USER_DECIDED / ADOPTED_COMMON_SSOT**
+- Recorded: 2026-10-05
+- Class: **D3-R — explicit user adoption**
+- Scope: Common autonomous execution / decision-authority governance for Main, Chart, QGV, Product Platform and future participating Works.
+- Supersedes operationally: PR #48 v1.0 proposal and CDR-023 policy details where v1.1 is more specific. CDR-023 history is retained; its D1/D2/D3-A/D3-R principle remains incorporated by v1.1.
+- Adopted file: implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md
+- Adopted file blob: 89b48bca0aeeff54bdc0fc97d6ee768e5f0e326c
+- Historical v1.0 file: implementation/docs/coordination/policies/AUTONOMOUS_EXECUTION_DECISION_AUTHORITY_SSoT_v1.0.md — retained and marked SUPERSEDED; body/history not deleted.
+- PR: #48, branch governance/autonomous-execution-decision-authority-v1.
+
+User wording (verbatim):
+
+> Status: ADOPTED COMMON SSoT (v1.1)
+
+The immediately preceding user directive also stated:
+
+> 깃헙ssot 루프를 업데이트하자
+
+Decision:
+
+- Adopt Autonomous Execution & Decision Authority SSoT v1.1 as the common operational governance SSoT.
+- Confirm operating values without future re-question unless a D3-R change is proposed:
+  - cycle maximum tasks = 5;
+  - lease TTL = 2 hours;
+  - lease deadlock escalation = TTL × 2;
+  - repair/retest cap = 3 rounds;
+  - D3-A Digest window = 10 decisions or 1 week, whichever occurs first;
+  - same module/contract D3-A cap = 5 per Digest window;
+  - rolling pattern display = previous 3 windows;
+  - veto window = 72 hours;
+  - dependent D3-A chain depth during veto = 3;
+  - per-cycle token budget remains unset until observable and separately user-decided.
+- Unattended autonomous execution remains disabled until PART G Gate A is satisfied. User-observed/session execution may follow v1.1 immediately.
+- Watchers are read-only wake-up mechanisms, not executors; watcher failure must not mutate Work ownership/state.
+- TTL expiry alone never authorizes lease takeover.
+- D3-A requires SSoT alignment, rollbackability, semantic_delta classification and independent re-adjudication; conservative synthesis governs.
+- Hard-Guard states are evidence-based. NOT_VERIFIED / NOT_IMPLEMENTED are Hard-Guard Gaps and become blocking only at their defined Gate, unless G2 immediate-blocker evidence is actually observed.
+- Existing pending D3 decisions are to be reclassified under §§25, 26A and 26F. D3-R blocks only dependent lanes; independent D1/D2/D3-A work continues.
+- No canonical merge, Holdout consumption, Official/LIVE promotion, production deployment, paid-resource use, real credential activation, trade/order/fund transfer, PIT relaxation, Frozen/history destruction or protected owner takeover is authorized by this adoption itself.
+
+Follow-ups:
+
+1. Register PART G G3 hard-guard gaps with evidence-based states.
+2. Reclassify open D3 decisions under v1.1.
+3. Verify Gate A controls before enabling unattended AUTONOMY_MODE=RUN.
+4. Pilot one lane for 1–2 weeks and adjust only from operational evidence; operating-value changes remain D3-R.
+
