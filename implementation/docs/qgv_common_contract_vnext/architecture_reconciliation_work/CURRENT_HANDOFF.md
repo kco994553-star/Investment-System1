@@ -1,3 +1,277 @@
+# QGV SSoT Autonomous Execution Loop — bounded closure; actual WAIT/D3 checkpoint
+
+STATUS: BOUNDED_D1_D2_ACCEPTANCE_CLOSED / READY_0 / WAIT_DEPENDENCY_AND_D3 / PRODUCTION_INACTIVE.
+Explicit execution authority: user SSoT Autonomous Execution Loop v1.0 received2026-10-05T16:15:54+09:00.
+Review input19e4e47d3f8fc02fb35d33399f7b052317896b62; lease claimf504ff6db699236bfb8c827992c3fb80f2145c46; execution policy published4a6ddd567f3fab32d8fa6793daf9027e9d8b26f6.
+Resolve the actual authenticated review ref for delivery HEAD. This is the independent audit evidence branch, not a Missing-Data owner successor or canonical candidate.
+
+## Actual execution and closure
+
+Executed the existing READY task BOUND_G_C_SHARED_LOCAL_SCOPE_FIXTURE after policy publication, rather than ending at policy/configuration reporting. See lanes/execution_loop/scope/HANDOFF.md, portable dependency_scope_probe.py, frozen input pins, compact fixture spec/digests, final verification and retained attempt receipts.
+
+STANDARD targeted compatibility/negative/affected composition checks30/30 PASS. Root independently reran the final script and all30 cases plus three compact output files matched exactly. Prior G/C59 checks and G/V evidence are reused at their original immutable pins, not rerun. All29 frozen semantic input Git blobs remain unchanged. The probe imports the existing inactive C checker; it performs no scoring, runtime admission, weighting, calibration or genuine PIT/OOS replay.
+
+Acceptance closed1: exact declared local/shared reason and dependency carriage through producer→aggregate→consumer. Local legacy G2 METHOD_MISMATCH remains within its declared G2 scope; shared synthetic Q/G PIT rejection does not blanket-reject V. Eight G candidates stay UNASSESSED/UNCOMPUTED. Structural PASS never authorizes ranking. Production blockers closed0, new production blockers0, net domain blocker categories3: invalid numeric consumer admission, actual/historical method identity, real source/period/share/vintage/PIT closure. Policy/configuration is not product completion.
+
+## Reconciliation and Main return
+
+Fresh relevant actual refs: canonicalb8e39a2196a6d7794a04a0cd5393c68329e126ca; Globalf03ac7134b3eede061a85b1f0ef2b6e9ab5631e8; Missing-Data owner4fb08a05728d83519b72a2bd995669f0cb06003a; PR44cb1906b207623168fd70f3dcdb5b30f2d82d807d; PR4211d2f25ef8bef3459ca969f50eec190099f15ecb. PR44 exact2/2 and PR42 exact7/7 terminal-success runs were read and reused; no new Actions/current-review CI PASS is claimed.
+
+Main already consumed cba198e G1/G2/G-C return at PR44 comment5989173684. This does not acknowledge the Missing-Data owner's pending return. MAIN-QGV-HOP1-20261005 and the Missing-Data scope-consumption relay remain SENT_NOT_ACKNOWLEDGED. New audit return is published in lanes/execution_loop/MAIN_RETURN.json; Main consumption of this new return remains NOT_EVIDENCED. Main owns integration. Global and other-owner branch writes0.
+
+## Finite source recovery and failure history
+
+The existing DATA-G-01 required hash is19ef503a5770f5660964b3c3aea6937579d9b359da344afe6a9adf59c63d26ff. Two relevant preserved Track A archive packages were resolved; their bytes could not be inspected because download returned HTTP502 on the initial attempt and one finite retry. ARCHIVED_SOURCE_RECOVERY.json records WAIT_DEPENDENCY_TOOL_TRANSPORT, not restored raw data. No latest/revised current source was substituted, and no Frozen archive or original manifest was rewritten. DATA-G-01..05 and AUTH-G-06 remain unresolved.
+
+Operational lookup404s were replanned to the actual Global branch/coordination paths. Automation prompt updates changed titles; title-only repair restored original labels and final exact readback. First and refined scope attempts each passed30/30; preserved attempt receipts are not summed as60 new checks. Old large repeated fixture JSON is superseded by compact deterministic spec/digests. No duplicate broad audit, same-tree488/full repository regression, extra reviewer panel or new CI/canary was run.
+
+## WAIT/D3 and next automatic action
+
+TASK_BOARD.json records READY D1/D20, independent READY0, bounded repair0, immediately consumable owner return0, new relevant terminal CI0, SSoT closure0 after final remote readback. Scope fixture is DONE and no new synthetic task family is manufactured.
+
+WAIT dependencies:
+- Missing-Data owner4fb08a0 still holds qgv-b47-muupb538; authoritative release/termination and accepted HOP1 manifest/receipt are absent. Do not steal or expire this lease. Resume on authenticated owner return/release, then exact validator/source/output consumption; HOP2 requires a distinct genuine scheduled execution.
+- Exact archived raw/vintage/share/period evidence is absent, with archive transport502 twice. Resume when provider availability materially changes or an authorized owner returns exact bytes. Verify the required raw hash first, then perform only source-row/period/vintage comparability evidence. Do not blind-retry an unchanged failed fingerprint.
+
+D3 remains method/horizon/numerics/G2 alternative, B2/B3/B5/B6 authority/criteria/activation, V1/V2 and production migration. Minimal next user bundle remains the existing bounded B2/B3/B5/B6 reference/scope/consumer-purpose contract in lanes/semantic/root/DECISION_PACKAGE.md; concrete criteria/cutoffs/runtime/migration are excluded. G1/G2 economic meanings are APPROVED and not reopened. Existing scores/history remain preserved, method selection and migration NOT_APPROVED, B1 actual roles0/20, Composite literal(Q+G)/2.
+
+Existing QGV automatic audit and CI/State follow-up prompts now execute the full SSoT loop and re-enter on material relevant changes while preserving schedule/target/enabled/timezone/title. Configuration readback is PASS; genuine scheduler continuation is0/2 UNVERIFIED and manual/configuration credit0. Own review lease is released atomically in final publication. Future execution fresh-reads the task board and receipts, consumes real owner/CI/decision changes, executes only newly READY authorized work and updates this scoped evidence; no user 'continue' is needed for D1/D2.
+
+---
+
+# Previous published scoped checkpoints — retained verbatim below
+
+# QGV SSoT execution loop — policy published; bounded scope lane in progress
+
+STATUS: EXECUTION_POLICY_APPLIED / READY_TASK_EXECUTING / NO_PRODUCTION_SEMANTIC_CHANGE.
+Explicit user authority: SSoT Autonomous Execution Loop v1.0, 2026-10-05T16:15:54+09:00.
+Input review 19e4e47d3f8fc02fb35d33399f7b052317896b62; own lease claim f504ff6db699236bfb8c827992c3fb80f2145c46.
+Policy: lanes/execution_loop/POLICY.json and POLICY.md. Current finite task board: lanes/execution_loop/TASK_BOARD.json.
+
+Existing automatic QGV audit and CI/State follow-up prompts now use Fresh Read → Reconcile → Discover → Execute → Verify → Publish → update scoped SSoT → Re-evaluate → next READY task. Exact configuration readback preserves existing schedule, conversation, enabled state, timezone and title. Prompt-update title drift was repaired and retained in AUTOMATION_READBACK.json. This is configuration evidence, not genuine scheduler execution.
+
+The 29 frozen semantic artifacts match current authenticated review-tree blobs; prior G/C59 and G/V evidence are reused at original pins. New policy targeted consistency PASS. FAST/STANDARD stop ends only task verification, not the Work if another authorized READY lane remains.
+
+The existing G/C artifact-bound shared-versus-local scope fixture remains IN_PROGRESS independently of the Missing-Data owner's active lease. That owner remains4fb08a0 with qgv-b47-muupb538 and no authoritative release/accepted canary. No owner STATE, Global, production, score/history or method is changed. Genuine scheduler continuation remains0/2 UNVERIFIED; manual/configuration credit0.
+
+Main consumption of prior cba198e G1/G2/G-C return is independently observed at PR44 comment5989173684. The relayed HOP1 and Missing-Data scope-consumption packets are still SENT without authenticated owner acknowledgement. Relevant exact PR44 2/2 and PR42 7/7 completed-success runs are retained; no rerun/new-HEAD PASS.
+
+Current next action: finish the already-defined finite scope fixture, verify the changed surface, publish its bounded acceptance return, then re-evaluate all lanes. Current state is not an overall WAIT checkpoint. Actual methods, B2/B3/B5/B6 authority/criteria/runtime, V1/V2 and migration remain D3.
+
+---
+
+# Previous scoped checkpoints — immutable history preserved below
+
+# QGV Risk-Proportional Verification — current operational checkpoint
+
+STATUS: APPLIED / FAST_POLICY_RECORD_PASS / INDEPENDENT_AUDITOR / QGV_SEMANTICS_UNCHANGED.
+User authority: QGV-RISK-PROPORTIONAL-VERIFICATION-2026-10-05, received 2026-10-05T15:11:50+09:00.
+Source checkpoint: cba198e77370ccb214956015aa7cc490e73307ac; policy first published at dc2dce6d538d4d66b71f98b59dc47b873312f7d9.
+Policy: [POLICY.md](lanes/verification_policy/POLICY.md), [POLICY.json](lanes/verification_policy/POLICY.json).
+Evidence: [COMPLETION_RECEIPT.json](lanes/verification_policy/COMPLETION_RECEIPT.json).
+
+- Verification Lane: FAST for this docs/configuration-only policy. Actual affected semantics, rather than filename, determine future lanes.
+- Semantic changes: 0. G1/G2 approved meanings, M1–M5 and B4/B7 principles, methods-unselected and inactive production boundaries remain intact.
+- Reused evidence: prior exact G/C 59 checks and independent PASS_WITH_LIMITS stay at immutable source/output pins. Earlier G/V evidence is retained. Prior evidence is not relabeled as current-HEAD CI.
+- New verification: 22 targeted policy assertions PASS; two existing follow-up instruction readbacks exact, with schedule/target/enabled/timezone/title unchanged. Configuration validation is not scheduler execution or Actions PASS.
+- Skipped expensive verification: duplicate G/V/G/C audits, same-tree 488 full regression, new critical adversarial run and extra agents. No methodology/runtime surface changed.
+- Findings closed: 0. Findings opened: 0. Net QGV blockers: change 0; existing consumer admission, method lineage and real-source/PIT blockers remain.
+- D3: no new decision for this approved operational policy. Actual method/numeric/consumer activation/migration decisions remain pending; V1/V2 pending.
+- Agent budget: one QGV auditor; add one independent specialist only when needed; further reviewers only for distinct necessary CRITICAL perspectives.
+- Main dispositions: PASS for policy adoption; existing BLOCKER/D3_REQUIRED remain below. Main/authorized owner retains implementation and integration.
+- Scheduler: 0/2 / UNVERIFIED. This policy update credits zero scheduler hops. Versioned task/acceptance, authentic execution evidence and owner lease safeguards remain unchanged.
+
+FAST: targeted → PASS → stop. STANDARD: targeted → compatibility → affected regression → stop.
+CRITICAL retains strong verification and independent review for methodology, V meaning, composition, missing data, numeric defaults, calibration, PIT/OOS and historical meaning.
+Reuse requires exact semantic source HEAD/tree, contract, input, dependencies and scope. New semantic/input drift reopens only affected evidence. Full regression remains appropriate for methodology/shared runtime/composite/calibration milestone/production candidate/unknown scope.
+
+Next executable task remains the existing bounded G/C shared-versus-local scope integration fixture work, subject to exact input/dependency pins and authorized owner lease. Real source-only vintage work awaits existing bounded data/authority requests. This policy creates no new methodology task, production selection, watcher or decision package.
+
+---
+
+# QGV G1/G2 approved semantics and G/C evidence — current scoped handoff
+
+STATUS: G1_G2_SEMANTIC_APPROVED / D1_D2_G_C_COMPARISON_COMPLETE_INACTIVE / METHODS_UNSELECTED.
+This checkpoint supersedes old next-step and unresolved-intent prose only. Prior G/V
+audit, simulations, source, prior/history and earlier approval evidence are preserved.
+
+## Approved semantic contract
+
+G1 SEMANTIC: APPROVED — LONG-HORIZON REALIZED GROWTH.
+LEGACY METHOD: REVENUE_YOY = LEGACY / INTERIM_PROXY.
+G2 SEMANTIC: APPROVED — NO AUTOMATIC CROSS-METRIC SUBSTITUTION WITHOUT SEMANTIC AUTHORITY.
+LEGACY EPS FALLBACK: FCF / PRIOR REVENUE - 1 = LEGACY / METHOD_MISMATCH.
+METHOD SELECTION: NOT_APPROVED.
+MIGRATION: NOT_APPROVED.
+
+Read lanes/semantic/root/approval.json and SEMANTIC_CONTRACT.md. Approval authority
+is the explicit user instruction received2026-10-05T14:16:16+09:00, not technical
+PASS/CI/Handoff. Approval was authenticated on this review branch at
+2ba29b048c8601145c4a2cca0f85299c07262286; approval SHA256
+5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c.
+The current contract clarifies that future-candidate PIT prerequisites do not
+retroactively judge legacy history. Exact approval-claim input remains archived.
+
+Existing Factor IDs next_3_5y_growth and eps_fcf_per_share_growth are unchanged.
+Symbolic legacy aliases are inactive audit descriptors; actual production
+method_id/version remain unregistered. Same factor with a future distinct method/
+version must retain separate evaluation lineage. No old score is recalculated,
+relabeled in production or given invented historical attribution.
+
+## Authoritative source and delivery
+
+- Evidence-only branch: codex/qgv-architecture-reconciliation-review-2026-10-05.
+  Fresh authenticated input4d53aa3047ba397cda992d2e784316a9d889bc22; own semantic
+  approval/lease claim2ba29b048c8601145c4a2cca0f85299c07262286.
+  Resolve actual remote ref for the final evidence delivery HEAD; no self-SHA is invented.
+- Audited source owner: codex/qgv-missing-data-decision-gate-2026-10-05 @
+  4fb08a05728d83519b72a2bd995669f0cb06003a. Its shared owner lease
+  qgv-b47-muupb538 remains active for B4/B7 work at intake. Termination/release
+  is NOT_EVIDENCED by authenticated owner STATE. Unpublished owner files are context.
+  This Work neither steals/expires that lease nor modifies owner STATE/plan/receipt.
+- Canonical/default b8e39a2196a6d7794a04a0cd5393c68329e126ca.
+  PR44 Draft/Open/unmerged cb1906b207623168fd70f3dcdb5b30f2d82d807d.
+  PR42 Draft/Open/unmerged11d2f25ef8bef3459ca969f50eec190099f15ecb.
+- Global fresh-read e36bec9be6be3bdf60ac7fd4ef8379a2ba93a7ae → publication
+  observation7a29f5aa0620a0e1a889d1e41ab2823c41bce17b. GCH-018 adds Main's
+  Draft PR46 compound FPIA identity consumer tools/tests; actual authentication
+  NOT_VERIFIED, integration acceptance BLOCKED. It grants no QGV production semantics
+  and does not silently substitute this Work's historical source pins. Main's routing
+  already distinguishes independent QGV reconciliation from unfinished owner receipt.
+  Current narrow QGV limits prevail over historical broader CDR-015 delegation.
+  Global and other owner branches are read-only.
+- Prior27 local artifact contents match authenticated4d53 remote Git blobs.
+  Source owner/PR44/PR42/canonical inputs were unchanged. Original G/V evidence
+  is reused; broad audit/M1–M5/Remote Recovery and old79 checks are not repeated.
+- Own lanes/CONTROL.json lease is released by final scoped evidence publication.
+  The Missing-Data owner lease is separate. Read fresh_intake.json and COMPLETION_RECEIPT.json.
+
+## LANE G — bounded candidate comparison
+
+Read lanes/semantic/g/G_METHOD_CANDIDATE_COMPARISON.md, G_CANDIDATE_MATRIX.json
+and G_CANDIDATE_SOURCE_REQUESTS.json. Eight finite entries cover legacy plus
+three G1 families and G2 A–D.
+
+| Candidate | Independent technical disposition |
+|---|---|
+| Legacy last revenue YoY | KEEP_ARCHIVAL_ONLY; not authoritative long-horizon target |
+| Realized endpoint summary | REJECT as standalone magnitude-and-persistence method; component investigation remains possible |
+| Matched realized period sequence | MORE_EVIDENCE_REQUIRED; summary/window/normalization unselected |
+| Separate magnitude/persistence assessments | ALIGN candidate to approved meaning; no extra factor, score, blend or selected formula |
+| G2 A — unavailable | Principle-compatible contract candidate; no zero/N/A/denominator/ranking implication |
+| G2 B — comparable per-share alternative | MORE_EVIDENCE_REQUIRED; units do not establish EPS equivalence |
+| G2 C — distinct cash-flow method | MORE_EVIDENCE_REQUIRED; requires separate economic/method authority |
+| G2 D — conditional applicability | MORE_EVIDENCE_REQUIRED; missing/favorable values cannot select N/A or a substitute |
+
+G1 comparison covers economic meaning,3Y/5Y input identities, PIT/vintage/
+restatement, sparse/young/cyclical/sector inputs and reproducibility. G2 covers
+claim/share basis, capital structure/dilution, volatility/domain, PIT and missingness.
+Synthetic paths with identical endpoints have different persistence; the same
+latest pair hides differing older history. Later revisions preserve source identity
+and cannot become then-known historical observations. Per-share EPS/cash-flow
+quantities can move in opposite directions. These are input-property diagnostics.
+
+All candidate factor scores, aggregate/composite/order, calibrated confidence,
+real3Y/5Y stability and sector bias estimates are UNCOMPUTED. No new formula,
+CAGR/mean/median, horizon, count, interpolation, forecast inclusion or numeric
+default is supplied. Six finite source/authority requests identify missing exact
+archived bytes, realized-period vintages, earnings/share/corporate actions,
+cash-flow definitions and method/applicability/admission authority.
+
+Real cached-source replay remains NOT_RUN_SOURCE_BLOB_ABSENT. Historical source
+closure and runtime identity/version dispatch remain migration blockers. Future
+PIT claims require each consumed period/source/as_of/available_at/published_at/
+method-version; latest restatements cannot be substituted into historical runs.
+
+## LANE C — Result Admission & Consumer Safety
+
+Read lanes/semantic/consumer/CONTRACT.md, assessment_ref_carrier.schema.json,
+SOURCE_AUTHORITY_MATRIX.json and CONTRACT_ACCEPTANCE_RESULTS.json.
+
+One inactive reference/scope bundle preserves independent B2/B3/B5/B6 clauses.
+Producer method/input/source/context and nine assessment refs remain distinct:
+method identity, applicability, evidence admission, provenance, PIT, coverage,
+confidence, completeness and scoring validity. Aggregate and consumer bind exact
+upstream result/assessment refs; consumer purpose/namespace/policy/admission is
+separate. A correctly hashed unrelated document cannot stand in for a method,
+input, result or assessment. The consumer does not rescore economics.
+
+UNASSESSED is unknown, not VALID and not necessarily INVALID. REJECTED
+VERSION_MISMATCH/CALCULATION_ERROR can retain the literal numeric diagnostic
+and original reason, with semantic validity/admission NOT_EVALUATED. Structure
+PASS grants no ranking, portfolio, publication or Official authority. Unknown
+applicability is not N/A; N/A proof and denominator permission are distinct.
+Weights/Profile cannot waive relevant shared/local evidence or mutate Official.
+
+Critical blocker persists: existing numeric VERSION_MISMATCH/CALCULATION_ERROR
+and incomplete method/validity evidence can reach reducers/ranking. G economic
+improvement does not make production migration ready while producer assessment
+and consumer admission authority remain absent. Existing hashes/coarse versions,
+source/PIT guards, research disclosure and P01 grant boundaries are preserved.
+
+Fixture limitations: expected synthetic registry, one-child aggregate, empty
+withheld inventory and no admitted-positive policy path. No real applicability,
+confidence/completeness/coverage method, genuine PIT replay, general aggregate
+evaluator, runtime assessment producer or ranking policy is implemented.
+Schema is JSON-parsed; no JSONSchema engine acceptance is claimed.
+
+## B1, V and completion evidence
+
+G1 economic intent and G2 substitution boundary now have explicit semantic
+authority. This adds evidence without approving a concrete method or input role.
+B1 remains MORE_EVIDENCE_REQUIRED; actual requiredness0/20, candidate promotions0.
+Original3 SUPPORTED/10 PROPOSED/7 UNRESOLVED inventory stays historical.
+
+V1/V2 remain PENDING. Seven identities, research prior/history and accepted V
+score sensitivity, weight-order reversal, peer-cohort sensitivity and sparse-history
+contribution-loss evidence remain unchanged. V2 residual metadata methodology
+belongs in existing B2/B3/B5/B6; inactive shared metadata ALIGN and approved
+B4/B7/M1–M5 need no redundant approvals.
+
+G21 + C38 =59 distinct new focused inactive checks PASS; root independently
+reproduced all four G JSON and three C JSON byte-for-byte. These are not economic
+score validation, real PIT/OOS, Actions or genuine scheduler hops. Independent
+review and exact-output acceptance are separately pinned in the completion receipt.
+Protected source/golden/history and previous evidence are compared by final
+remote tree readback; only the authorized scoped Handoff/control are superseded.
+New review Actions/full integration/production migration NOT_RUN. Holdout UNCONSUMED.
+
+## Remaining D3 and next executable work
+
+Read lanes/semantic/root/DECISION_PACKAGE.md. Recommended next minimum bundle:
+existing B2/B3/B5/B6 reference/scope/purpose contract only. Concrete predicates,
+quality rubrics, roles, completeness/confidence/coverage methods, cohort criteria,
+ranking activation/cutoffs and implementation/migration remain separate.
+
+G1 actual method/input/window/domain/normalizer/weight and G2 A–D selection or
+replacement input/predicate are still unapproved. V production selection,
+Composite, WeightOverride runtime, recalculation/history migration, Official/
+grants, PR44/canonical merge, Holdout and PIT relaxation remain protected.
+Literal Composite remains(Q+G)/2. Production migration has not started.
+
+Next independent D1/D2: exact G/C descriptor hashes → bounded shared-versus-local
+producer/aggregate/consumer scope-integration fixtures, preserving unknown/rejected
+reasons without numeric criteria/runtime dispatch. Real G source-only vintage
+bundle is data-dependent on the six exact requests; absent inputs hold only that
+path. Do not repeat completed audits or expand the finite scheduler canary.
+
+## Scheduler separation
+
+0/2 / UNVERIFIED. Manual scheduler hops credited0.
+Remote owner tree has no accepted HOP1/HOP2 output/receipt at intake; HOP1 remains
+blocked by the active owner lease, not waived by this Work. Verify actual owner
+completion/release through authoritative state before the normal next execution.
+Two distinct genuine scheduler executions and exact accepted HOP1→HOP2 linkage
+are still required. Unexposed execution IDs/expected watch evidence are not invented.
+No scheduler STATE, task plan, prompts, cadence or Global Handoff was changed here.
+
+
+Fresh resume: review4a6ddd567f3fab32d8fa6793daf9027e9d8b26f6; Global76df9e6a71fa91ff5ee260bc6087185facae3779 read-only. Owner, PR44/42 and29 semantic blob pins unchanged; no new owner ACK or QGV policy authority. Resume-only scope repro30/30 and compact output/case byte equality verified; previous59/79/488 not rerun. See RESUME_INTAKE.json.
+
+---
+
+# Previous published checkpoints — exact bytes preserved
+
 # QGV SSoT execution loop — policy published; bounded scope lane in progress
 
 STATUS: EXECUTION_POLICY_APPLIED / READY_TASK_EXECUTING / NO_PRODUCTION_SEMANTIC_CHANGE.

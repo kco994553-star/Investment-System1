@@ -1,14 +1,7 @@
 {
   "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
-  "status": "IN_PROGRESS_SSOT_LOOP_POLICY_AND_G_C_SCOPE_FIXTURE",
-  "lease": {
-    "token": "qgv-ssot-muuxaley-nleyl46w0x",
-    "owner": "QGV_SSoT_autonomous_loop_manual_execution",
-    "task": "APPROVED_EXECUTION_POLICY_AND_BOUND_G_C_SCOPE_FIXTURE",
-    "input_review_head": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
-    "claimed_at_utc": "2026-10-05T07:23:07.114Z",
-    "expires_at_utc": "2026-10-05T07:53:07.114Z"
-  },
+  "status": "BOUND_G_C_SCOPE_FIXTURE_COMPLETE_READY0_WAIT_DEPENDENCY_D3",
+  "lease": null,
   "tasks": [
     "G1_G2_APPROVED_SEMANTIC_CONTRACT",
     "G1_G2_METHOD_FAMILY_COMPARISON",
@@ -23,19 +16,20 @@
   "manual_execution": true,
   "actual_scheduler_hops_credited": 0,
   "d3_scope": "Current explicit user request: no semantic replacement, numeric adoption, runtime wiring, migration, historical rewrite, PIT/Frozen/Holdout/Official change or canonical/PR merge",
-  "last_lease_token": "qgv-rpv-1fcae4e93ee74420b0a0316bece43610",
+  "last_lease_token": "qgv-ssot-muuxaley-nleyl46w0x",
   "completion": {
-    "task_id": "QGV_G1_G2_SEMANTIC_CANDIDATE_AND_CONSUMER_CONVERGENCE",
-    "task_fingerprint": "8cdd1af81b68e7056fe0041f84fe59689b1954b54a92cc6b7c9d71c703921d50",
+    "task_id": "BOUND_G_C_SHARED_LOCAL_SCOPE_FIXTURE",
+    "task_fingerprint": "0a6f01b60afad4bca0f4f8a031d07debfea47df0b3b1982528902f0dd0b7ada6",
     "status": "COMPLETED_ACCEPTED_INACTIVE_EVIDENCE_ONLY",
-    "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/COMPLETION_RECEIPT.json",
-    "receipt_sha256": "5fb357791cfe49a58ad2d0993939604d107f918e778b4f26304683fbbb5894fa",
-    "acceptance_validator_sha256": "e0c63011e26d906d0d5b7808e516c4db9f6fe1f9ce231083d1b6106c5bbd6eac",
-    "output_manifest_sha256": "47fa4124d5f36d3d72ca201d2f39b0ee924428edf8b2befef0c0a411618b50b0",
-    "new_checks": 59,
+    "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/execution_loop/COMPLETION_RECEIPT.json",
+    "new_distinct_checks": 30,
+    "bounded_acceptance_closed": 1,
+    "production_blockers_closed": 0,
     "production_enabled": false,
-    "actual_scheduler_hops": 0,
-    "next_task": "Exact G/C artifact-bound shared-versus-local scope integration fixtures; real source-only vintage bundle awaits six bounded exact data/authority requests"
+    "scheduler_hops": 0,
+    "next_task": "Fresh-read material owner/source/decision change; no synthetic third task",
+    "receipt_sha256": "6fc395c8d65e913c7fdac9cafaf0a99b24de8d5437d5e677e59771dc228afd5d",
+    "output_manifest_sha256": "b084ae4790959ae2040f61412052952fcf611cd7ab1fa9a5d7a53977f370466d"
   },
   "d3_decisions": [
     "G1_ACTUAL_METHOD_INPUT_HORIZON_NUMERIC_SELECTION",
@@ -95,8 +89,36 @@
     "policy_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/execution_loop/POLICY.json",
     "policy_sha256": "5037e5dcaa0ca55afff4e6641de418d9542507786d1ad06c6ad851142bbd3ce8",
     "task_board_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/execution_loop/TASK_BOARD.json",
-    "status": "POLICY_PUBLISHED_SCOPE_FIXTURE_IN_PROGRESS",
+    "status": "BOUNDED_ACCEPTANCE_CLOSED_WAIT_DEPENDENCY_D3",
     "production_enabled": false,
-    "scheduler_hops": 0
+    "scheduler_hops": 0,
+    "remaining_READY": 0
+  },
+  "released_lease_history": [
+    {
+      "lease": {
+        "token": "qgv-ssot-muuxaley-nleyl46w0x",
+        "owner": "QGV_SSoT_autonomous_loop_manual_execution",
+        "task": "APPROVED_EXECUTION_POLICY_AND_BOUND_G_C_SCOPE_FIXTURE",
+        "input_review_head": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+        "claimed_at_utc": "2026-10-05T07:23:07.114Z",
+        "expires_at_utc": "2026-10-05T07:53:07.114Z"
+      },
+      "released_at_utc": "2026-10-05T07:46:01.392290+00:00",
+      "reason": "Existing bounded task completed and published; not owner lease"
+    }
+  ],
+  "semantic_completion_preserved": {
+    "task_id": "QGV_G1_G2_SEMANTIC_CANDIDATE_AND_CONSUMER_CONVERGENCE",
+    "task_fingerprint": "8cdd1af81b68e7056fe0041f84fe59689b1954b54a92cc6b7c9d71c703921d50",
+    "status": "COMPLETED_ACCEPTED_INACTIVE_EVIDENCE_ONLY",
+    "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/COMPLETION_RECEIPT.json",
+    "receipt_sha256": "5fb357791cfe49a58ad2d0993939604d107f918e778b4f26304683fbbb5894fa",
+    "acceptance_validator_sha256": "e0c63011e26d906d0d5b7808e516c4db9f6fe1f9ce231083d1b6106c5bbd6eac",
+    "output_manifest_sha256": "47fa4124d5f36d3d72ca201d2f39b0ee924428edf8b2befef0c0a411618b50b0",
+    "new_checks": 59,
+    "production_enabled": false,
+    "actual_scheduler_hops": 0,
+    "next_task": "Exact G/C artifact-bound shared-versus-local scope integration fixtures; real source-only vintage bundle awaits six bounded exact data/authority requests"
   }
 }

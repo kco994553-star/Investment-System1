@@ -1,0 +1,685 @@
+{
+  "artifact_kind": "FINITE_INACTIVE_SCOPE_FIXTURE_SPEC",
+  "runtime_enabled": false,
+  "frozen_C_template_attachment": {
+    "artifact_ref": {
+      "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/synthetic_carrier.json",
+      "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+      "sha256": "8741c846d06f84abf3c5dd78e705fe47e827727af0af85e547289d4c9406bd64",
+      "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/synthetic_carrier.json"
+    },
+    "json_pointer": "",
+    "role": "SYNTHETIC_TEMPLATE_ONLY",
+    "genuine_raw_data_claim": false
+  },
+  "frozen_C_reference_attachment": {
+    "artifact_ref": {
+      "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/synthetic_reference_contents.json",
+      "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+      "sha256": "491491d708f2822bb4e9d0aa2f4ffc8811d06d7eb42647532317b49753e2c616",
+      "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/synthetic_reference_contents.json"
+    },
+    "json_pointer": "",
+    "role": "SYNTHETIC_REFERENCE_TEMPLATE_ONLY",
+    "genuine_raw_data_claim": false
+  },
+  "declaration": {
+    "kind": "inactive_dependency_declaration",
+    "context": {
+      "subject_id": "SYNTHETIC_COMPANY",
+      "as_of": "2024-12-31T00:00:00+00:00",
+      "decision_time": "2024-12-31T00:00:00+00:00",
+      "namespace": "SANDBOX",
+      "configuration_ref": null
+    },
+    "axes": [
+      "Q",
+      "G",
+      "V"
+    ],
+    "rows": [
+      {
+        "dependency_id": "FIXTURE_SHARED_CONTEXT",
+        "scope_class": "SHARED",
+        "affected_axes": [
+          "Q",
+          "G",
+          "V"
+        ],
+        "role": "Synthetic common subject/context only",
+        "affected_factor_ids": {
+          "Q": [
+            "FIXTURE_ONLY_Q_FACTOR"
+          ],
+          "G": [
+            "eps_fcf_per_share_growth"
+          ],
+          "V": [
+            "FIXTURE_ONLY_V_FACTOR"
+          ]
+        }
+      },
+      {
+        "dependency_id": "FIXTURE_SHARED_QG_PIT",
+        "scope_class": "SHARED",
+        "affected_axes": [
+          "Q",
+          "G"
+        ],
+        "role": "Declared synthetic shared fundamental-vintage obligation; no actual Q/G data equivalence claimed",
+        "affected_factor_ids": {
+          "Q": [
+            "FIXTURE_ONLY_Q_FACTOR"
+          ],
+          "G": [
+            "eps_fcf_per_share_growth"
+          ]
+        }
+      },
+      {
+        "dependency_id": "FIXTURE_Q_LOCAL_INPUT",
+        "scope_class": "LOCAL",
+        "affected_axes": [
+          "Q"
+        ],
+        "role": "Synthetic Q evidence obligation only",
+        "affected_factor_ids": {
+          "Q": [
+            "FIXTURE_ONLY_Q_FACTOR"
+          ]
+        }
+      },
+      {
+        "dependency_id": "FIXTURE_G_LOCAL_METHOD",
+        "scope_class": "LOCAL",
+        "affected_axes": [
+          "G"
+        ],
+        "role": "Local legacy G2 mismatch; candidate methods remain unselected",
+        "affected_factor_ids": {
+          "G": [
+            "eps_fcf_per_share_growth"
+          ]
+        }
+      },
+      {
+        "dependency_id": "FIXTURE_V_LOCAL_SOURCE",
+        "scope_class": "LOCAL",
+        "affected_axes": [
+          "V"
+        ],
+        "role": "Synthetic V source obligation only; no actual V quote supplied",
+        "affected_factor_ids": {
+          "V": [
+            "FIXTURE_ONLY_V_FACTOR"
+          ]
+        }
+      }
+    ],
+    "runtime_enabled": false,
+    "declaration_status": "SYNTHETIC_SCOPE_FIXTURE_ONLY",
+    "authority_claim": "No production dependency inventory or cross-axis equivalence established",
+    "evidence_attachments": [
+      {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/CONTRACT.md",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "7618a8f67ea794056ef05eb09317165855ece13e5cca70df17a549680a675ff8",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/CONTRACT.md"
+        },
+        "json_pointer": null,
+        "role": "INACTIVE_REFERENCE_CONTRACT",
+        "genuine_raw_data_claim": false
+      },
+      {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/synthetic_carrier.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "8741c846d06f84abf3c5dd78e705fe47e827727af0af85e547289d4c9406bd64",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/synthetic_carrier.json"
+        },
+        "json_pointer": "",
+        "role": "SYNTHETIC_TEMPLATE_ONLY",
+        "genuine_raw_data_claim": false
+      },
+      {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/synthetic_reference_contents.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "491491d708f2822bb4e9d0aa2f4ffc8811d06d7eb42647532317b49753e2c616",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/synthetic_reference_contents.json"
+        },
+        "json_pointer": "",
+        "role": "SYNTHETIC_REFERENCE_TEMPLATE_ONLY",
+        "genuine_raw_data_claim": false
+      },
+      {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "bf52ed54f5789c665d5923fa9f865158814c32caa2ad335a07b40620009301e4",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json"
+        },
+        "json_pointer": "/candidates",
+        "role": "UNSELECTED_CANDIDATE_DESCRIPTORS",
+        "genuine_raw_data_claim": false
+      },
+      {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "af622045a4c516e54bfcc0ba0fb8cb0760826710e0eec155ba4fc078ea2b1d59",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json"
+        },
+        "json_pointer": "/requests",
+        "role": "UNRESOLVED_DATA_AND_AUTHORITY_REQUESTS",
+        "genuine_raw_data_claim": false
+      },
+      {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_DIAGNOSTICS.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "ee097d49ba1ca58f7e596a46f9628d75cc7648533cbc98641b800cd0211903c7",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_DIAGNOSTICS.json"
+        },
+        "json_pointer": "/PIT_vintage_cases",
+        "role": "SYNTHETIC_DIAGNOSTICS_ONLY",
+        "genuine_raw_data_claim": false
+      },
+      {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/SEMANTIC_CONTRACT.md",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "818be17270af0d43a88005dd5a9cc5f392234742332267bb96d80dac0e0c57a4",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/SEMANTIC_CONTRACT.md"
+        },
+        "json_pointer": null,
+        "role": "APPROVED_MEANING_ONLY_METHODS_INACTIVE",
+        "genuine_raw_data_claim": false
+      }
+    ]
+  },
+  "axis_factor_scopes": {
+    "Q": [
+      "FIXTURE_ONLY_Q_FACTOR"
+    ],
+    "G": [
+      "eps_fcf_per_share_growth"
+    ],
+    "V": [
+      "FIXTURE_ONLY_V_FACTOR"
+    ]
+  },
+  "scenario_event_ids": {
+    "LOCAL_G": [
+      "LOCAL_G_METHOD_MISMATCH"
+    ],
+    "SHARED_QG": [
+      "SHARED_QG_PIT_REJECTION"
+    ],
+    "COMBINED": [
+      "LOCAL_G_METHOD_MISMATCH",
+      "SHARED_QG_PIT_REJECTION"
+    ],
+    "LOCAL_V": [
+      "LOCAL_V_SOURCE_REJECTION"
+    ]
+  },
+  "original_reason_cases": {
+    "LOCAL_G_METHOD_MISMATCH": {
+      "kind": "inactive_rejection_reason",
+      "event_id": "LOCAL_G_METHOD_MISMATCH",
+      "dependency_id": "FIXTURE_G_LOCAL_METHOD",
+      "assessment": "scoring_validity",
+      "affected_axes": [
+        "G"
+      ],
+      "disposition": "REJECTED",
+      "reason_code": "METHOD_MISMATCH",
+      "original_reason": "Legacy G2 FCF / prior revenue - 1 is LEGACY / METHOD_MISMATCH; supplied local diagnostic reason, no candidate admission",
+      "evidence_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/SEMANTIC_CONTRACT.md",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "818be17270af0d43a88005dd5a9cc5f392234742332267bb96d80dac0e0c57a4",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/SEMANTIC_CONTRACT.md"
+        },
+        "json_pointer": null,
+        "role": "APPROVED_MEANING_ONLY_METHODS_INACTIVE",
+        "genuine_raw_data_claim": false
+      },
+      "genuine_data_evaluated": false,
+      "affected_factor_ids": {
+        "G": [
+          "eps_fcf_per_share_growth"
+        ]
+      }
+    },
+    "SHARED_QG_PIT_REJECTION": {
+      "kind": "inactive_rejection_reason",
+      "event_id": "SHARED_QG_PIT_REJECTION",
+      "dependency_id": "FIXTURE_SHARED_QG_PIT",
+      "assessment": "pit",
+      "affected_axes": [
+        "Q",
+        "G"
+      ],
+      "disposition": "REJECTED",
+      "reason_code": "SYNTHETIC_PIT_REJECTION",
+      "original_reason": "Supplied synthetic shared PIT rejection: future_published marker retained; genuine archived source vintage remains unavailable",
+      "evidence_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_DIAGNOSTICS.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "ee097d49ba1ca58f7e596a46f9628d75cc7648533cbc98641b800cd0211903c7",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_DIAGNOSTICS.json"
+        },
+        "json_pointer": "/PIT_vintage_cases/2",
+        "role": "ORIGINAL_SYNTHETIC_FUTURE_PUBLISHED_CASE",
+        "genuine_raw_data_claim": false
+      },
+      "genuine_data_evaluated": false,
+      "affected_factor_ids": {
+        "Q": [
+          "FIXTURE_ONLY_Q_FACTOR"
+        ],
+        "G": [
+          "eps_fcf_per_share_growth"
+        ]
+      }
+    },
+    "LOCAL_V_SOURCE_REJECTION": {
+      "kind": "inactive_rejection_reason",
+      "event_id": "LOCAL_V_SOURCE_REJECTION",
+      "dependency_id": "FIXTURE_V_LOCAL_SOURCE",
+      "assessment": "provenance",
+      "affected_axes": [
+        "V"
+      ],
+      "disposition": "REJECTED",
+      "reason_code": "SYNTHETIC_LOCAL_SOURCE_REJECTION",
+      "original_reason": "Supplied synthetic V-local source rejection; no real V source or producer assessed",
+      "evidence_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/synthetic_reference_contents.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "491491d708f2822bb4e9d0aa2f4ffc8811d06d7eb42647532317b49753e2c616",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/synthetic_reference_contents.json"
+        },
+        "json_pointer": "",
+        "role": "SYNTHETIC_REFERENCE_TEMPLATE_ONLY",
+        "genuine_raw_data_claim": false
+      },
+      "genuine_data_evaluated": false,
+      "affected_factor_ids": {
+        "V": [
+          "FIXTURE_ONLY_V_FACTOR"
+        ]
+      }
+    }
+  },
+  "g_candidate_evidence": [
+    {
+      "kind": "g_candidate_evidence",
+      "candidate_id": "G1-LEGACY",
+      "factor_id": "next_3_5y_growth",
+      "method_id": null,
+      "method_version": null,
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "disposition": "UNASSESSED",
+      "runtime_enabled": false,
+      "production_eligibility": "NOT_AUTHORIZED",
+      "descriptor_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "bf52ed54f5789c665d5923fa9f865158814c32caa2ad335a07b40620009301e4",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json"
+        },
+        "json_pointer": "/candidates/0",
+        "role": "CANDIDATE_EVIDENCE_NOT_ASSESSMENT",
+        "genuine_raw_data_claim": false
+      },
+      "source_requests_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "af622045a4c516e54bfcc0ba0fb8cb0760826710e0eec155ba4fc078ea2b1d59",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json"
+        },
+        "json_pointer": "/requests",
+        "role": "UNRESOLVED_DATA_AND_AUTHORITY_REQUESTS",
+        "genuine_raw_data_claim": false
+      }
+    },
+    {
+      "kind": "g_candidate_evidence",
+      "candidate_id": "G1-ENDPOINT",
+      "factor_id": "next_3_5y_growth",
+      "method_id": null,
+      "method_version": null,
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "disposition": "UNASSESSED",
+      "runtime_enabled": false,
+      "production_eligibility": "NOT_AUTHORIZED",
+      "descriptor_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "bf52ed54f5789c665d5923fa9f865158814c32caa2ad335a07b40620009301e4",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json"
+        },
+        "json_pointer": "/candidates/1",
+        "role": "CANDIDATE_EVIDENCE_NOT_ASSESSMENT",
+        "genuine_raw_data_claim": false
+      },
+      "source_requests_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "af622045a4c516e54bfcc0ba0fb8cb0760826710e0eec155ba4fc078ea2b1d59",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json"
+        },
+        "json_pointer": "/requests",
+        "role": "UNRESOLVED_DATA_AND_AUTHORITY_REQUESTS",
+        "genuine_raw_data_claim": false
+      }
+    },
+    {
+      "kind": "g_candidate_evidence",
+      "candidate_id": "G1-SERIES",
+      "factor_id": "next_3_5y_growth",
+      "method_id": null,
+      "method_version": null,
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "disposition": "UNASSESSED",
+      "runtime_enabled": false,
+      "production_eligibility": "NOT_AUTHORIZED",
+      "descriptor_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "bf52ed54f5789c665d5923fa9f865158814c32caa2ad335a07b40620009301e4",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json"
+        },
+        "json_pointer": "/candidates/2",
+        "role": "CANDIDATE_EVIDENCE_NOT_ASSESSMENT",
+        "genuine_raw_data_claim": false
+      },
+      "source_requests_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "af622045a4c516e54bfcc0ba0fb8cb0760826710e0eec155ba4fc078ea2b1d59",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json"
+        },
+        "json_pointer": "/requests",
+        "role": "UNRESOLVED_DATA_AND_AUTHORITY_REQUESTS",
+        "genuine_raw_data_claim": false
+      }
+    },
+    {
+      "kind": "g_candidate_evidence",
+      "candidate_id": "G1-MAGNITUDE-PERSISTENCE",
+      "factor_id": "next_3_5y_growth",
+      "method_id": null,
+      "method_version": null,
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "disposition": "UNASSESSED",
+      "runtime_enabled": false,
+      "production_eligibility": "NOT_AUTHORIZED",
+      "descriptor_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "bf52ed54f5789c665d5923fa9f865158814c32caa2ad335a07b40620009301e4",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json"
+        },
+        "json_pointer": "/candidates/3",
+        "role": "CANDIDATE_EVIDENCE_NOT_ASSESSMENT",
+        "genuine_raw_data_claim": false
+      },
+      "source_requests_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "af622045a4c516e54bfcc0ba0fb8cb0760826710e0eec155ba4fc078ea2b1d59",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json"
+        },
+        "json_pointer": "/requests",
+        "role": "UNRESOLVED_DATA_AND_AUTHORITY_REQUESTS",
+        "genuine_raw_data_claim": false
+      }
+    },
+    {
+      "kind": "g_candidate_evidence",
+      "candidate_id": "G2-A",
+      "factor_id": "eps_fcf_per_share_growth",
+      "method_id": null,
+      "method_version": null,
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "disposition": "UNASSESSED",
+      "runtime_enabled": false,
+      "production_eligibility": "NOT_AUTHORIZED",
+      "descriptor_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "bf52ed54f5789c665d5923fa9f865158814c32caa2ad335a07b40620009301e4",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json"
+        },
+        "json_pointer": "/candidates/4",
+        "role": "CANDIDATE_EVIDENCE_NOT_ASSESSMENT",
+        "genuine_raw_data_claim": false
+      },
+      "source_requests_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "af622045a4c516e54bfcc0ba0fb8cb0760826710e0eec155ba4fc078ea2b1d59",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json"
+        },
+        "json_pointer": "/requests",
+        "role": "UNRESOLVED_DATA_AND_AUTHORITY_REQUESTS",
+        "genuine_raw_data_claim": false
+      }
+    },
+    {
+      "kind": "g_candidate_evidence",
+      "candidate_id": "G2-B",
+      "factor_id": "eps_fcf_per_share_growth",
+      "method_id": null,
+      "method_version": null,
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "disposition": "UNASSESSED",
+      "runtime_enabled": false,
+      "production_eligibility": "NOT_AUTHORIZED",
+      "descriptor_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "bf52ed54f5789c665d5923fa9f865158814c32caa2ad335a07b40620009301e4",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json"
+        },
+        "json_pointer": "/candidates/5",
+        "role": "CANDIDATE_EVIDENCE_NOT_ASSESSMENT",
+        "genuine_raw_data_claim": false
+      },
+      "source_requests_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "af622045a4c516e54bfcc0ba0fb8cb0760826710e0eec155ba4fc078ea2b1d59",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json"
+        },
+        "json_pointer": "/requests",
+        "role": "UNRESOLVED_DATA_AND_AUTHORITY_REQUESTS",
+        "genuine_raw_data_claim": false
+      }
+    },
+    {
+      "kind": "g_candidate_evidence",
+      "candidate_id": "G2-C",
+      "factor_id": "eps_fcf_per_share_growth",
+      "method_id": null,
+      "method_version": null,
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "disposition": "UNASSESSED",
+      "runtime_enabled": false,
+      "production_eligibility": "NOT_AUTHORIZED",
+      "descriptor_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "bf52ed54f5789c665d5923fa9f865158814c32caa2ad335a07b40620009301e4",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json"
+        },
+        "json_pointer": "/candidates/6",
+        "role": "CANDIDATE_EVIDENCE_NOT_ASSESSMENT",
+        "genuine_raw_data_claim": false
+      },
+      "source_requests_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "af622045a4c516e54bfcc0ba0fb8cb0760826710e0eec155ba4fc078ea2b1d59",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json"
+        },
+        "json_pointer": "/requests",
+        "role": "UNRESOLVED_DATA_AND_AUTHORITY_REQUESTS",
+        "genuine_raw_data_claim": false
+      }
+    },
+    {
+      "kind": "g_candidate_evidence",
+      "candidate_id": "G2-D",
+      "factor_id": "eps_fcf_per_share_growth",
+      "method_id": null,
+      "method_version": null,
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "disposition": "UNASSESSED",
+      "runtime_enabled": false,
+      "production_eligibility": "NOT_AUTHORIZED",
+      "descriptor_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "bf52ed54f5789c665d5923fa9f865158814c32caa2ad335a07b40620009301e4",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json"
+        },
+        "json_pointer": "/candidates/7",
+        "role": "CANDIDATE_EVIDENCE_NOT_ASSESSMENT",
+        "genuine_raw_data_claim": false
+      },
+      "source_requests_attachment": {
+        "artifact_ref": {
+          "id": "REVIEW_ARTIFACT:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json",
+          "version": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+          "sha256": "af622045a4c516e54bfcc0ba0fb8cb0760826710e0eec155ba4fc078ea2b1d59",
+          "locator": "review://19e4e47d3f8fc02fb35d33399f7b052317896b62/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json"
+        },
+        "json_pointer": "/requests",
+        "role": "UNRESOLVED_DATA_AND_AUTHORITY_REQUESTS",
+        "genuine_raw_data_claim": false
+      }
+    }
+  ],
+  "materialization": "The pinned probe deterministically regenerates the complete reference DAG and producer/aggregate/consumer carriers in memory; full repeated JSON is not published",
+  "limits": "G representative child is G2 only; G1 descriptors remain UNASSESSED evidence. Q/V scopes are synthetic, not actual production factor inventories. No scoring or admission."
+}

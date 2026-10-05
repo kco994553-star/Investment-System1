@@ -1,0 +1,127 @@
+{
+  "record_kind": "FINITE_SSOT_LOOP_OUTPUT_MANIFEST",
+  "outputs": [
+    {
+      "relative_path": "POLICY.json",
+      "sha256": "5037e5dcaa0ca55afff4e6641de418d9542507786d1ad06c6ad851142bbd3ce8",
+      "git_blob_sha": "b3830b1b24a85601a83e5d92d915a9c369874c7d",
+      "bytes": 4704
+    },
+    {
+      "relative_path": "POLICY.md",
+      "sha256": "c50e905908ce965df07d7d5163a4f6c77007666ae513198a1ee9b35ae14f705e",
+      "git_blob_sha": "fb6ddb9bc9ced435e4314f6125a21c53556b7cd1",
+      "bytes": 3181
+    },
+    {
+      "relative_path": "POLICY_VERIFICATION.json",
+      "sha256": "3211de2c8a8993f1ca437e5df804c383b534181c8866dde46d3555f955dbcc74",
+      "git_blob_sha": "52c66e575d82fd3af043a9a1bfda7cbcbfb89f44",
+      "bytes": 509
+    },
+    {
+      "relative_path": "AUTOMATION_READBACK.json",
+      "sha256": "9d2185f0d19d2f12ad932f2f61c97bb27a116be231c6645cf6d81d9b796aa018",
+      "git_blob_sha": "a21454a2054be4d45d821902cea6ca3f96dd15d7",
+      "bytes": 1244
+    },
+    {
+      "relative_path": "FRESH_INTAKE.json",
+      "sha256": "2cbe338a16cc0d36c73c73b6cbb982450e59c2c692863096a93f0ac74864eb20",
+      "git_blob_sha": "d0198a0cb02971c1c7ef961d91af2b27983c7c87",
+      "bytes": 6140
+    },
+    {
+      "relative_path": "TASK_BOARD.json",
+      "sha256": "122ef9e630691c865f783fdc0defe28aef4914fc5ac1197317d7a80750b84ce9",
+      "git_blob_sha": "30acee8bb68aa55e01cdc8e6edcd30cbf40fe1ba",
+      "bytes": 6917
+    },
+    {
+      "relative_path": "ARCHIVED_SOURCE_RECOVERY.json",
+      "sha256": "a7f18e08b4dfb38c706c29f7d760e872e1c2fcbcc12f3795d5cee36f1cbc74d4",
+      "git_blob_sha": "a15fde08cb0891a2bb0a342f5b2c3d8d273c0214",
+      "bytes": 1660
+    },
+    {
+      "relative_path": "ROOT_VERIFICATION.json",
+      "sha256": "26d5bd176fe3a295d90bb1f90f92c829a5690bacc67c7d986ae36ced0b15bcb0",
+      "git_blob_sha": "39037c192fd65d0947b0b75771468b531d6ec8e5",
+      "bytes": 1003
+    },
+    {
+      "relative_path": "MAIN_RETURN.json",
+      "sha256": "ef63bfab7c87923756715d3257c2248dfbb8396a8cb3e914d6bad5979812c966",
+      "git_blob_sha": "6d5929197341281e91ee3743dfe7d8f161b5711f",
+      "bytes": 3648
+    },
+    {
+      "relative_path": "scope/dependency_scope_probe.py",
+      "sha256": "80bbd7f2fae59de7d5996c67842e04386cb6243d4196f953639de937d622f045",
+      "git_blob_sha": "9d5ddcb5fb46242196f178a2433ab66a4e61f8ae",
+      "bytes": 43356
+    },
+    {
+      "relative_path": "scope/FROZEN_INPUT_PINS.json",
+      "sha256": "2e723b62b798e5e2be7f2136e6e772dc595ecb105f3b070774fde0f6198ec53e",
+      "git_blob_sha": "da19de2750762ef49416e1d50d251e0b5f10333c",
+      "bytes": 11768
+    },
+    {
+      "relative_path": "scope/INPUT_PINS.json",
+      "sha256": "f4f8d7cd0bfacfcf095f1c0fe0dab3b4f30c76d272b6c274c62620d38d9f51f8",
+      "git_blob_sha": "bb25fe745da573e8bc1aeb4361a3abca9cbe1b30",
+      "bytes": 12071
+    },
+    {
+      "relative_path": "scope/SCOPE_FIXTURE_SPEC.json",
+      "sha256": "741b3b99ea490ca27fc9a78bf80f922152e2e3eba2fbf6f91ad29a153b963c02",
+      "git_blob_sha": "d4ee057d08a6c96d944b211e2d75bacf697d6e65",
+      "bytes": 31814
+    },
+    {
+      "relative_path": "scope/SCOPE_FIXTURE_DIGESTS.json",
+      "sha256": "e480d35a86a0f4cee84d618b72533448f0ce99511791b92ac08df320b66ad8ac",
+      "git_blob_sha": "019bd9166ccc2a56e9b2a266264d84351755e511",
+      "bytes": 931
+    },
+    {
+      "relative_path": "scope/SCOPE_VERIFICATION.json",
+      "sha256": "682ea9675a66f1af90b4a0f07f8e4fc510f69e0af4dbbef48651a5ab892a44cd",
+      "git_blob_sha": "391911f9c23afc83bb1d226c0af73a5d995dc628",
+      "bytes": 13303
+    },
+    {
+      "relative_path": "scope/ATTEMPT_01_RESULTS.json",
+      "sha256": "134290c10b9c7bde929faeac8d8f8a9e345df9716abc0df9a903a28d3d6eb327",
+      "git_blob_sha": "c85ef132ef3600ecb3c08b058db6a3572e1f886b",
+      "bytes": 12007
+    },
+    {
+      "relative_path": "scope/ATTEMPT_02_RESULTS.json",
+      "sha256": "682ea9675a66f1af90b4a0f07f8e4fc510f69e0af4dbbef48651a5ab892a44cd",
+      "git_blob_sha": "391911f9c23afc83bb1d226c0af73a5d995dc628",
+      "bytes": 13303
+    },
+    {
+      "relative_path": "scope/HANDOFF.md",
+      "sha256": "3f7fe9ff4102403ebc3661680356713f89d1874fc599fa46b427216208229fb3",
+      "git_blob_sha": "16c1e927d3ed7d94e7f2331f4cd78d5075c9f6b3",
+      "bytes": 5162
+    },
+    {
+      "relative_path": "RESUME_INTAKE.json",
+      "sha256": "7ef7d487b6a0e645df0a15cf544fd0e9df015e7851edd33d18b68b2e2f66bba0",
+      "git_blob_sha": "f713cec51eff3aaac9ec420f3a76cd9937c04726",
+      "bytes": 41626
+    },
+    {
+      "relative_path": "RESUME_VERIFICATION.json",
+      "sha256": "1551397ac1e4c5b178d90205e85b29975e797df4c00541e8669e2a1409a4e820",
+      "git_blob_sha": "54c5a3be75499998d19b2c2f397aa41e149062e7",
+      "bytes": 1937
+    }
+  ],
+  "runtime_enabled": false,
+  "non_self_referential": "Receipt/manifest/Handoff/CONTROL hashes anchored by authenticated publication tree"
+}

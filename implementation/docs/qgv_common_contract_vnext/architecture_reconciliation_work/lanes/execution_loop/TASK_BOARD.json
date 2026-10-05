@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "IN_PROGRESS",
+  "status": "POST_PUBLICATION_WAIT_D3_AND_DEPENDENCY",
   "source_review_head": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
   "manual_scheduler_credit": 0,
   "tasks": [
@@ -13,13 +13,14 @@
     },
     {
       "id": "BOUND_G_C_SHARED_LOCAL_SCOPE_FIXTURE",
-      "state": "IN_PROGRESS",
+      "state": "DONE",
       "authority": "Existing G/C scoped Handoff next executable task",
       "lane": "STANDARD",
       "dependencies": [
         "29 exact immutable semantic artifacts"
       ],
-      "acceptance": "Finite inactive composition positive/negative/compatibility checks and source pin verification; no production admission"
+      "acceptance": "Finite inactive composition positive/negative/compatibility checks and source pin verification; no production admission",
+      "acceptance_result": "30/30 distinct checks PASS, root independently reproduced; compact outputs byte-identical; semantic validity/admission NOT_EVALUATED"
     },
     {
       "id": "SOURCE_VINTAGE_G_METHOD_EVIDENCE",
@@ -116,5 +117,57 @@
       "owner_acknowledgement": "NOT_EVIDENCED"
     }
   ],
-  "next_automatic_action": "Finish finite scope fixture, publish and re-evaluate; if zero READY persist exact WAIT/D3 and resume triggers without new synthetic work"
+  "next_automatic_action": "On material source/owner/decision change, fresh-read exact scope: consume genuine owner manifest/receipt or archived raw matching required hash; run only affected source-lineage/contract closure allowed by that authority. Consumer policy approval is the smallest pending user bundle. No repeat of completed scope fixture without invalidation.",
+  "history": [
+    {
+      "task": "APPLY_SSOT_EXECUTION_LOOP",
+      "from": "READY",
+      "to": "DONE",
+      "evidence": "POLICY_VERIFICATION.json + AUTOMATION_READBACK.json; published policy 4a6ddd567f3fab32d8fa6793daf9027e9d8b26f6"
+    },
+    {
+      "task": "BOUND_G_C_SHARED_LOCAL_SCOPE_FIXTURE",
+      "from": "READY",
+      "to": "IN_PROGRESS",
+      "evidence": "Own review lease claim f504ff6db699236bfb8c827992c3fb80f2145c46"
+    },
+    {
+      "task": "BOUND_G_C_SHARED_LOCAL_SCOPE_FIXTURE",
+      "from": "IN_PROGRESS",
+      "to": "VERIFIED",
+      "evidence": "scope/SCOPE_VERIFICATION.json + ROOT_VERIFICATION.json;30 distinct checks"
+    },
+    {
+      "task": "BOUND_G_C_SHARED_LOCAL_SCOPE_FIXTURE",
+      "from": "VERIFIED",
+      "to": "DONE",
+      "closure_condition": "Exact protected-tree and output-blob verification + final ref readback"
+    },
+    {
+      "task": "BOUND_G_C_SHARED_LOCAL_SCOPE_FIXTURE",
+      "from": "VERIFIED_LOCAL_UNPUBLISHED",
+      "to": "VERIFIED_READY_FOR_FINAL_PUBLICATION",
+      "evidence": "RESUME_INTAKE.json; current29 remote pins and30-case resume repro"
+    }
+  ],
+  "archive_recovery": {
+    "state": "WAIT_DEPENDENCY",
+    "ref": "ARCHIVED_SOURCE_RECOVERY.json",
+    "attempts": 2,
+    "result": "HTTP_502_DOWNLOAD_FAILED",
+    "content_verified": false,
+    "expected_raw_sha256": "19ef503a5770f5660964b3c3aea6937579d9b359da344afe6a9adf59c63d26ff"
+  },
+  "wait_check": {
+    "ready_d1_d2": 0,
+    "independent_lane_ready": 0,
+    "bounded_repair_ready": 0,
+    "owner_return_consumable": 0,
+    "ci_terminal_consumable": 0,
+    "ssot_closure_ready": 0,
+    "assessment_phase": "All closure outputs in this atomic publication; final remote readback and relevant-ref reconciliation required before reporting"
+  },
+  "no_new_synthetic_task_after_acceptance": true,
+  "publication_input_head": "4a6ddd567f3fab32d8fa6793daf9027e9d8b26f6",
+  "fresh_resume_verification_ref": "RESUME_VERIFICATION.json"
 }
