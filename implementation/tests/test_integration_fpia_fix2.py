@@ -8,6 +8,9 @@ Every adversarial probe of the previous verification round is pinned here with i
 component/status: S0-S19, S21, S24 (spoof workflows), F1-E5 (a ref named like "rejected") and the
 F4 --out reuse. Open user decisions are pinned as current behaviour, not decided: D3-b (a job id/name
 collision alone is a note, S17) and D3-c (dynamically constructed invocations are NOT_CLAIMED, S15/S16).
+Fix round 3 (H1/H2) changed the reason texts pinned here (identity keys, mention-based detection) and S15,
+whose string-built path names the C6 tool literally, is now found by the mention rule (see
+test_integration_fpia_fix3.py); no other expectation changed.
 """
 import hashlib
 import json
@@ -42,21 +45,21 @@ def _wd(wd):
 # (probe id, files added to T0, expected static findings {(id, path)}, expected reason fragment or None)
 PROBES = [
     ("S0_name_exact", {WF + "probe-a.yml": _wf("name: track-c-evl-validation")},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name equals"),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name claims the Track C identity"),
     ("S1_name_comment", {WF + "probe-a.yml": _wf("name: track-c-evl-validation # same name, YAML comment")},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name equals"),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name claims the Track C identity"),
     ("S2_name_nextline", {WF + "probe-a.yml": _wf("name:\n  track-c-evl-validation")},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name equals"),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name claims the Track C identity"),
     ("S3_name_quotedkey", {WF + "probe-a.yml": _wf('"name": track-c-evl-validation')},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name equals"),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name claims the Track C identity"),
     ("S4_name_tag", {WF + "probe-a.yml": _wf("name: !!str track-c-evl-validation")},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name equals"),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name claims the Track C identity"),
     ("S5_name_case", {WF + "probe-a.yml": _wf("name: Track-C-EVL-Validation")},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "after normalisation"),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name claims the Track C identity"),
     ("S6_name_homoglyph", {WF + "probe-a.yml": _wf("name: track-c-evl-validat\u0456on")},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "after normalisation"),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name claims the Track C identity"),
     ("S7_name_zwsp", {WF + "probe-a.yml": _wf("name: track-c-evl-validation\u200b")},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "after normalisation"),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name claims the Track C identity"),
     ("S8_noname_samefile", {WF + "track-c-evl-validation.yaml": _wf(None)},
      {("AC-32.spoof", WF + "track-c-evl-validation.yaml")}, "filename stem"),
     ("S8b_case_filename", {WF + "Track-C-EVL-Validation.yml": _wf(None)},
@@ -67,24 +70,27 @@ PROBES = [
      {("AC-32.spoof", WF + "probe-a.yml")}, "via scripts/ci_probe.sh"),
     ("S10_wd_tools", {WF + "probe-a.yml": _wf("name: probe", extra_job=_wd("implementation/tools"),
                                               steps=["      - run: PYTHONPATH=../src:.. python %s" % C6_NAME])},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "runs a Track C tool or module: " + C6),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "mentions Track C scope: tool " + C6_NAME),
     ("S11_shell_quote", {WF + "probe-a.yml": _wf("name: probe", steps=[
         '      - run: PYTHONPATH=implementation/src:implementation python implementation/too"ls"/%s' % C6_NAME])},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "runs a Track C tool or module: " + C6),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "names a Track C file: " + C6),
     ("S12_yaml_escape", {WF + "probe-a.yml": _wf("name: probe", steps=[
         '      - run: "python implementation\\x2Ftools\\x2F%s"' % C6_NAME])},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "runs a Track C tool or module: " + C6),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "names a Track C file: " + C6),
     ("S13_pytest_k", {WF + "probe-a.yml": _wf("name: probe", extra_job=_wd("implementation"),
                                               steps=["      - run: PYTHONPATH=src python -m pytest -q -k evl_c6"])},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "runs a Track C test selection: pytest -k evl_c6"),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "selects Track C tests: -k evl_c6"),
     ("S14_control_direct", {WF + "probe-a.yml": _wf("name: probe", extra_job=_wd("implementation"),
                                                     steps=["      - run: PYTHONPATH=src:. python tools/%s" % C6_NAME])},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "references a Track C namespace path"),
-    # D3-c (open user decision): dynamically constructed invocations are NOT_CLAIMED - pinned as not found
+     {("AC-32.spoof", WF + "probe-a.yml")}, "names a Track C file: " + C6),
+    # D3-c (open user decision): dynamically constructed invocations are NOT_CLAIMED. Fix round 3: S15's
+    # string-built path still names the C6 tool's basename literally, so the mention rule (H2) finds it as a
+    # side effect (pinned as current behaviour; no detection claim). S16's computed module name stays
+    # not found.
     ("S15_indirect_py", {WF + "probe-a.yml": _wf("name: probe", steps=["      - run: python scripts/probe_runner.py"]),
                          "scripts/probe_runner.py": 'import subprocess, sys\nsubprocess.run([sys.executable, '
                                                     '"implementation/tools/" + "%s"], check=True)\n' % C6_NAME},
-     set(), None),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "mentions Track C scope"),
     ("S16_dyn_import", {WF + "probe-a.yml": _wf("name: probe", steps=[
         "      - run: PYTHONPATH=implementation/src python scripts/dyn.py"]),
                         "scripts/dyn.py": 'import importlib\nm = importlib.import_module("investment_system." + '
@@ -94,10 +100,10 @@ PROBES = [
     ("S17_job_collision", {WF + "probe-a.yml": _wf("name: probe", job="validate", extra_job=["    name: validate"])},
      set(), None),
     ("S18_comment_plus_validate", {WF + "probe-a.yml": _wf("name: track-c-evl-validation # same name", job="validate")},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name equals"),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name claims the Track C identity"),
     ("S19_escape_plus_validate", {WF + "probe-a.yml": _wf("name: probe", job="validate", steps=[
         '      - run: "python implementation\\x2Ftools\\x2F%s"' % C6_NAME])},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "runs a Track C tool or module: " + C6),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "names a Track C file: " + C6),
     ("S21_composite_action", {WF + "probe-a.yml": _wf("name: probe", steps=["      - uses: actions/checkout@v4",
                                                                             "      - uses: ./.github/actions/tc"]),
                               ".github/actions/tc/action.yml": "name: tc\nruns:\n  using: composite\n  steps:\n    - run: "
@@ -106,7 +112,7 @@ PROBES = [
     ("S24_combined_spoof", {WF + "probe-a.yml": _wf("name: track-c-evl-validation # spoof", job="validate", steps=[
         "      - uses: actions/checkout@v4",
         '      - run: "PYTHONPATH=implementation/src:implementation python implementation\\x2Ftools\\x2F%s"' % C6_NAME])},
-     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name equals"),
+     {("AC-32.spoof", WF + "probe-a.yml")}, "workflow name claims the Track C identity"),
 ]
 
 
@@ -225,13 +231,13 @@ def test_yaml_loader_unavailable_is_not_run(tmp_path, monkeypatch):
 G2_FOUND = [
     ("node_id", _wf("name: probe", extra_job=_wd("implementation"),
                     steps=["      - run: python -m pytest -q tests/test_evl_c6_basic.py::test_c6_acceptance"]), {},
-     "runs a Track C test selection"),
+     "names a Track C file: implementation/tests/test_evl_c6_basic.py"),
     ("track_c_dir_glob", _wf("name: probe", extra_job=_wd("implementation"),
                              steps=["      - run: python -m pytest tests/test_evl_c[0-9]*.py tests/test_other_capability.py"]),
-     {}, "runs a Track C test selection"),
+     {}, "glob matches Track C paths: tests/test_evl_c[0-9]*.py"),
     ("k_function_name", _wf("name: probe", extra_job=_wd("implementation"),
                             steps=["      - run: python -m pytest -q tests -k holdout_boundary"]), {},
-     "runs a Track C test selection"),
+     "selects Track C tests: -k holdout_boundary"),
     ("reusable_workflow", _wf("name: probe", steps=["      - run: echo ok"]).replace(
         "  check:\n", "  call:\n    uses: ./.github/workflows/zz-reusable.yml\n  check:\n"),
      {WF + "zz-reusable.yml": "name: zz\non: [workflow_call]\njobs:\n  r:\n    runs-on: ubuntu-latest\n    steps:\n"
@@ -246,18 +252,18 @@ G2_FOUND = [
     ("heredoc_python", _wf("name: probe", steps=["      - run: |", "          python - <<'PY'",
                                                  "          import subprocess",
                                                  "          subprocess.run(['python', '%s'])" % C6, "          PY"]), {},
-     "runs a Track C tool or module"),
+     "names a Track C file: " + C6),
     ("script_cycle", _wf("name: probe", steps=["      - run: bash scripts/a.sh"]),
      {"scripts/a.sh": "bash scripts/b.sh\n", "scripts/b.sh": "bash scripts/a.sh\npython %s\n" % C6},
      "via scripts/b.sh"),
     ("with_input", _wf("name: probe", steps=["      - uses: some/action@v1", "        with:",
                                              "          script: python %s" % C6]), {},
-     "references a Track C namespace path"),
+     "names a Track C file: " + C6),
     ("python_m_module", _wf("name: probe", extra_job=_wd("implementation"),
                             steps=["      - run: python -m tools.%s" % C6_NAME[:-3]]), {},
-     "runs a Track C tool or module: " + C6),
+     "runs a Track C module: -m tools." + C6_NAME[:-3]),
     ("workspace_prefix", _wf("name: probe", steps=["      - run: python ${{ github.workspace }}/%s" % C6]), {},
-     "runs a Track C tool or module: " + C6),
+     "names a Track C file: " + C6),
 ]
 
 

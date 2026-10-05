@@ -98,14 +98,14 @@ class Runner:
                 "sites": [list(s) for s in sites], "counterfactual_module": str(self.counterfactual),
                 "probe_dir": str(run_dir / "tmp" / "probe")}
         spec.update(spec_extra or {})
-        (run_dir / "spec.json").write_text(json.dumps(spec, sort_keys=True))
+        (run_dir / "spec.json").write_text(json.dumps(spec, sort_keys=True), encoding="utf-8")
         cmd = [self.python, "-I", "-B", "-X", "pycache_prefix=" + str(run_dir / "pycache"),
                str(self.launcher), str(run_dir / "spec.json")]
         env = self.env(run_dir, pythonpath)
         proc = subprocess.run(cmd, cwd=str(cwd), env=env, capture_output=True)
         trace = None
         if (run_dir / "trace.json").exists():
-            trace = json.loads((run_dir / "trace.json").read_text())
+            trace = json.loads((run_dir / "trace.json").read_text(encoding="utf-8"))
         tr = os.path.realpath(str(tree_root))
         allowed_sp = sorted({os.path.relpath(os.path.realpath(p), tr) if os.path.realpath(p) != tr else ""
                              for p in spec["sys_path"] if os.path.realpath(p).startswith(tr)})

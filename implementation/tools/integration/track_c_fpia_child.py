@@ -23,7 +23,8 @@ import pathlib  # noqa: E402
 import runpy  # noqa: E402
 import traceback  # noqa: E402
 
-SPEC = json.load(open(sys.argv[1]))
+with open(sys.argv[1], encoding="utf-8") as _spec:
+    SPEC = json.load(_spec)
 TRACE = {"profile": SPEC["profile"], "startup_modules": _STARTUP, "events": [],
          "flags": {k: getattr(sys.flags, k) for k in ("isolated", "ignore_environment", "no_user_site",
                                                          "dont_write_bytecode", "safe_path", "no_site")},
@@ -291,7 +292,7 @@ def main():
         TRACE["path_hooks"] = [getattr(h, "__qualname__", type(h).__qualname__) for h in sys.path_hooks]
         TRACE["rc"] = rc
         sys.stdout.flush()
-        with open(SPEC["trace"], "w") as handle:
+        with open(SPEC["trace"], "w", encoding="utf-8") as handle:
             json.dump(TRACE, handle, sort_keys=True, default=str)
     return rc
 

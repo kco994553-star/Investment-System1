@@ -94,7 +94,9 @@ jobs:
               print("%s: %s" % (name, value))
           print("result_sha256: %s" % doc["result_sha256"])
           PY
-          # G4: recheck the written output and its side files (informational; never changes the exit code)
+          # G4/H4: recheck the written output and its side files and print run_sha256 (integrity of the
+          # written run section, not authentication - open decision D3-a); informational, never changes
+          # the exit code
           python implementation/tools/integration/track_c_fpia.py --verify-output "$out/fpia.json" \
             > "$out/fpia-verify.txt" 2>&1 || true
           {
@@ -107,12 +109,12 @@ jobs:
             echo '```'
             cat "$out/fpia-summary.txt"
             cat "$out/fpia-status.txt"
-            tail -n 1 "$out/fpia-verify.txt"
+            tail -n 2 "$out/fpia-verify.txt"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           cat "$out/fpia-summary.txt"
           cat "$out/fpia-status.txt"
-          tail -n 1 "$out/fpia-verify.txt"
+          tail -n 2 "$out/fpia-verify.txt"
           exit $rc
       - uses: actions/upload-artifact@v4
         if: always()

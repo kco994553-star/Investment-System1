@@ -322,7 +322,7 @@ def nfc_fold(s):
 
 
 def complement_static(sb, T, R, Vs, v_applies, proj, av, tcm_all, config_names, config_dirs,
-                      track_c_workflow, attributed_paths, info=None):
+                      track_c_workflow, attributed_paths, info=None, av_all=None, repo_ids=(), verifier_self=None):
     """Findings for files of T outside paths(R) ∪ A_V (the complement). ``info`` (a dict) receives the
     workflow analysis record and any NOT_RUN reasons of the static layer."""
     tT, tR = sb.tree(T), sb.tree(R)
@@ -377,7 +377,8 @@ def complement_static(sb, T, R, Vs, v_applies, proj, av, tcm_all, config_names, 
     findings.extend(shadowing(set(tT), reference, complement))
     # complement workflows that claim Track C identity or run Track C paths (review MEDIUM)
     findings.extend(workflow_spoof(sb, T, Vs, v_applies, complement, track_c_workflow, proj, av,
-                                   R=R, tcm=tcm_all, info=info))
+                                   R=R, tcm=tcm_all, info=info, av_all=av_all, repo_ids=repo_ids,
+                                   verifier_self=verifier_self))
     return complement, findings
 
 
@@ -459,27 +460,40 @@ def closure_identity(sb, T, R, Vs, v_applies, proj, av, orders):
     return findings, checked
 
 
-def workflow_spoof(sb, T, Vs, v_applies, complement, track_c_workflow, proj, av, R=None, tcm=None, info=None):
-    """AC-32.spoof (fix round F5; fix round 2 G1/G2). Spoofing is a complement workflow that claims the
-    Track C workflow identity - its YAML ``name``/``run-name`` or its filename stem equals the Track C
-    workflow's name or stem after normalisation (NFKC, casefold, Default_Ignorable removal, UTS #39
-    skeleton; see track_c_fpia_workflows) - or that runs/references Track C paths: Track C tools, Track C
-    test selections, A_V, resolved after YAML decoding with working-directory, shell tokenisation, local
-    scripts, local composite actions and reusable workflows followed. A file that is not valid YAML for
-    GitHub is fail-closed. A name/stem claim is FOUND regardless of other content unless the file is
-    byte-identical to the authenticated R/V Track C workflow. A generic job id/name collision alone is not
-    spoofing (note only; open decision D3-b); pytest over the whole suite is a note. Attribution is limited
-    to V's Track C additions: a workflow V added that carries A_V content, byte-identical in T to an
-    applicable authenticated V; a workflow claiming the Track C identity is never attributable.
-    Dynamically constructed invocations are not claimed (D3-c)."""
+def workflow_spoof(sb, T, Vs, v_applies, complement, track_c_workflow, proj, av, R=None, tcm=None, info=None,
+                   av_all=None, repo_ids=(), verifier_self=None):
+    """AC-32.spoof (fix round F5; fix round 2 G1/G2; fix round 3 H1/H2). Spoofing is a complement workflow
+    that claims the Track C workflow identity or that can run Track C scope.
+
+    H1: GitHub constant expressions in ``name``/``run-name`` are folded; a non-foldable expression there is
+    FOUND fail-closed (identity not statically determinable). Identity keys (track_c_fpia_workflows.
+    identity_keys: NFKC/skeleton forms, casefolded, everything but ASCII [a-z0-9] deleted) of the Track C
+    workflow's name/run-name and filename stem are compared as SUBSTRINGS of the keys of the workflow's
+    name, run-name and filename stem. A claim is FOUND regardless of other content unless the file is
+    byte-identical to the authenticated R/V Track C workflow.
+
+    H2: a conservative over-approximation that does not depend on resolving cd, working-directory, shell
+    flags, wrappers or quoting: any mention of the Track C mention set M (built from R and A_V only) in the
+    workflow or in any in-tree file it can reach, any import of a Track C module, glob over Track C paths,
+    path naming a Track C file, pytest -k/-m selection of Track C tests, and any same-repository remote
+    workflow/action is FOUND (track_c_fpia_workflows.Scan). The fix-round-2 resolver output is kept as
+    evidence (``resolver_reasons``) and for the whole-suite note; it never decides the verdict. A file
+    that is not valid YAML for GitHub is fail-closed. A generic job id/name collision alone is not
+    spoofing (note only; open decision D3-b); pytest over the whole suite is a note. Attribution is
+    unchanged: a V-added workflow carrying A_V content, byte-identical in T to an applicable authenticated
+    V; a workflow claiming the Track C identity is never attributable. Dynamically constructed invocations
+    are not claimed (D3-c); code from outside T is not analysed (D3-e)."""
     out = []
     info = {} if info is None else info
+    av_all = set(av) if av_all is None else set(av_all)
     tT = sb.tree(T)
     rec = info.setdefault("workflow_analysis", {})
     rec.update({"loader": fw.loader_info(), "confusable_source": fw.CONFUSABLE_SOURCE,
                 "dynamic_invocation_detection": fw.DYNAMIC_INVOCATION_DETECTION,
                 "dynamic_non_claim": fw.DYNAMIC_NON_CLAIM, "job_collision_policy": fw.JOB_COLLISION_POLICY,
-                "notes": [], "analysed": []})
+                "out_of_tree_code_analysis": fw.OUT_OF_TREE_CODE_ANALYSIS, "out_of_tree_note": fw.OUT_OF_TREE_NOTE,
+                "mention_rule": fw.MENTION_RULE, "notes": [], "analysed": [], "out_of_tree_references": [],
+                "self_placement": [], "reached": {}})
     workflows = [p for p in complement if fw.is_workflow_path(p)]
     if fw.yaml is None:
         info.setdefault("not_run", []).append("AC-32.spoof workflow analysis: YAML loader (PyYAML) unavailable")
@@ -504,48 +518,93 @@ def workflow_spoof(sb, T, Vs, v_applies, complement, track_c_workflow, proj, av,
                 return out
             continue
         for n in ident["names"]:
+            n = fw.fold_expressions(n)[0]
             if n not in tc_names:
                 tc_names.append(n)
         for j in ident["job_ids"] + ident["job_names"]:
             if j not in tc_jobs:
                 tc_jobs.append(j)
     tc_ids = tc_names + [fw.stem(track_c_workflow)]
-    rec["track_c_identity"] = {"names": tc_names, "filename_stem": fw.stem(track_c_workflow), "job_ids_names": tc_jobs}
-    ns_paths = [q for q in list(proj.classes) + sorted(av) if proj.ns(q)]
-    ctx = fw.Context(set(tT), lambda q: sb.blob(tT[q].sha) if tT[q].type == "blob" else b"", proj.ns, av,
-                     tcm or set(), references_track_c, ns_paths)
+    rec["track_c_identity"] = {"names": tc_names, "filename_stem": fw.stem(track_c_workflow), "job_ids_names": tc_jobs,
+                               "identity_keys": sorted(k for v in tc_ids for k in fw.identity_keys(v) if k)}
+    # the Track C mention set M (authenticated references only: R and A_V)
+    tR = sb.tree(R) if R is not None else {}
+    tool_paths = sorted(set(getattr(proj, "tools", {}) or {}) | {p for p in tR if fd.glob_match(p, fd.TOOL_GLOB)})
+    test_paths = sorted(p for p in set(tR) | av_all if p.endswith(".py") and fw._is_test_name(p.rsplit("/", 1)[-1])
+                        and (proj.ns(p) or p in av_all))
+    mentions = fw.build_mentions(tool_paths, test_paths, tcm or set(), av_all, track_c_workflow)
+    rec["mention_set"] = mentions.record()
+    ns_paths = [q for q in list(proj.classes) + sorted(av_all) if proj.ns(q)]
+    read = lambda q: sb.blob(tT[q].sha) if q in tT and tT[q].type == "blob" else b""  # noqa: E731
+    resolver_ctx = fw.Context(set(tT), read, proj.ns, av, tcm or set(), references_track_c, ns_paths)
+    names_ctx = fw.Context(set(tT), read, proj.ns, av_all, tcm or set(), references_track_c, ns_paths)
+    sctx = fw.ScanContext(set(tT), read, lambda q: tT[q].sha if q in tT else None, proj.ns, av_all, mentions,
+                          tcm or set(), references_track_c, names_ctx.tc_tests, names_ctx.test_files, ns_paths,
+                          track_c_workflow, repo_ids, verifier_self, names_ctx.names_track_c_tests)
+    if verifier_self is not None:
+        rec["self_placement_rule"] = verifier_self.record()
     rec["status"] = "PASS"
     for p in workflows:
-        data = sb.blob(tT[p].sha) if tT[p].type == "blob" else b""
+        data = read(p)
         rec["analysed"].append(p)
         if tT[p].sha in tc_blobs:
             rec["notes"].append({"path": p, "notes": ["byte-identical to the authenticated Track C workflow"]})
             continue
-        reasons, claims, ident, analysis = [], [], None, fw.Analysis(ctx, p)
+        reasons, claims, ident, root = [], [], None, None
         try:
-            ident, analysis = fw.analyse(ctx, p, data)
+            root = fw.load(data)
+            ident = fw.identity(root)
         except fw.Unparseable as exc:
             reasons.append("unparseable workflow (fail-closed): %s" % exc)
-        # name / filename-stem claims (G1)
-        values = [("name", n) for n in (ident["names"] if ident else [])] + [("filename stem", fw.stem(p))]
+        # H1: name / run-name / filename-stem identity claims
+        values = ([("name", v) for v in fw.scalars(root, "name")] + [("run-name", v) for v in fw.scalars(root, "run-name")]
+                  if ident else [])
         for field, value in values:
-            for target in tc_ids:
-                how = fw.same_name(value, target)
-                if how:
-                    claims.append({"field": field, "value": value, "equals": target, "match": how})
-                    break
+            folded, bad = fw.fold_expressions(value)
+            if bad:
+                claims.append({"field": field, "value": value, "not_statically_determinable": bad})
+                reasons.append("workflow %s identity not statically determinable (non-foldable expression %s; "
+                               "fail-closed): %r" % (field, bad[0], value))
+                continue
+            hit = fw.identity_claim(folded, tc_ids)
+            if hit:
+                claims.append({"field": field, "value": value, "folded": folded, "track_c_key": hit[0], "key": hit[1]})
+        hit = fw.identity_claim(fw.stem(p), tc_ids)
+        if hit:
+            claims.append({"field": "filename stem", "value": fw.stem(p), "track_c_key": hit[0], "key": hit[1]})
         for c in claims:
-            reasons.append("workflow %s equals the Track C workflow name or filename stem%s: %r" % (
-                c["field"], "" if c["match"] == "exact" else " after normalisation (%s)" % c["match"], c["value"]))
-        # the pre-existing raw-text token rule (YAML comments included), then the decoded analysis (G2)
-        analysis.scan_text(data.decode("utf-8", "replace"), [""], "")
-        reasons += [x for x in analysis.reasons if x not in reasons]
-        if analysis.notes:
-            rec["notes"].append({"path": p, "notes": analysis.notes})
+            if "track_c_key" in c:
+                reasons.append("workflow %s claims the Track C identity (identity key %r contains the Track C key "
+                               "%r): %r" % (c["field"], c["key"], c["track_c_key"], c["value"]))
+        # H2: mentions of Track C scope in the workflow and every in-tree file it can reach
+        scan = fw.Scan(sctx, p).run(data, root)
+        reasons += [x for x in scan.reasons if x not in reasons]
+        # fix-round-2 resolver: evidence and the whole-suite note only (never the verdict)
+        resolver = fw.Analysis(resolver_ctx, p)
+        resolver.visited.add(p)
+        try:
+            if ident:
+                resolver.workflow_body(root, ident)
+            resolver.scan_text(data.decode("utf-8", "replace"), [""], "")
+        except RecursionError:
+            resolver.note("resolver evidence incomplete (recursion)")
+        notes = resolver.notes + [n for n in scan.notes if n not in resolver.notes]
+        if notes:
+            rec["notes"].append({"path": p, "notes": notes})
+        for u in scan.out_of_tree:
+            item = {"workflow": p, "in": u["in"], "uses": u["uses"]}
+            if item not in rec["out_of_tree_references"]:
+                rec["out_of_tree_references"].append(item)
+        for s in scan.self_placement:
+            item = {"workflow": p, "path": s["path"], "blob": s["blob"]}
+            if item not in rec["self_placement"]:
+                rec["self_placement"].append(item)
+        if scan.reached:
+            rec["reached"][p] = sorted(scan.reached)
         if not reasons:
             continue
         claims_name = bool(claims)
-        av_ref = analysis.av_ref
+        av_ref = scan.av_ref
         attributed_to = [V for V in Vs if not claims_name and av_ref and v_applies.get(V)
                          and sb.tree(V).get(p) == tT[p]]
         if not attributed_to:
@@ -555,10 +614,12 @@ def workflow_spoof(sb, T, Vs, v_applies, complement, track_c_workflow, proj, av,
                  "attribution", "path": p, "reasons": reasons}
             if claims:
                 f["identity_claims"] = claims
-            if analysis.followed:
-                f["followed"] = analysis.followed
-            if analysis.references:
-                f["track_c_references"] = sorted(analysis.references)
+            if scan.reached:
+                f["reached"] = sorted(scan.reached)
+            if scan.references:
+                f["track_c_references"] = sorted(scan.references)
+            if resolver.reasons:
+                f["resolver_reasons"] = resolver.reasons
             if collision:
                 f["job_id_collision_note"] = collision
             out.append(f)

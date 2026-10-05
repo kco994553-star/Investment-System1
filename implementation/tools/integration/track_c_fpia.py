@@ -29,6 +29,18 @@ dynamically constructed invocations are NOT_CLAIMED); fetch status lines are par
 result_sha256 does not depend on the interpreter or venv location (paths written as <python>,
 <site-packages>, <stdlib>, <venv>; real values in run.path_tokens); authority transport is disclosed by
 environment-variable name only (run.authority_transport).
+
+Fix round 3: AC-32.spoof identity uses folded GitHub constant expressions and substring identity keys
+(non-foldable name/run-name expressions are FOUND fail-closed), and what a complement workflow can run is
+a conservative over-approximation: any mention of the authenticated Track C mention set in the workflow
+or in any in-tree file it can reach is FOUND, whatever cd/working-directory/shell flags surround it
+(track_c_fpia_workflows; dynamic invocations stay NOT_CLAIMED, D3-c; code from outside T is NOT_ANALYSED,
+D3-e; both are named in the summary line whenever their fields are non-empty). The work directory,
+TMPDIR and the interpreter directory are resolved once (realpath) and pytest's per-user basetemp is
+written as pytest-of-<user>, so neither a symlinked venv or TMPDIR nor the OS user changes the verdict or
+result_sha256. --verify-output rejects duplicate JSON keys and non-basename side-file names, reads and
+writes UTF-8 whatever the locale, and prints run_sha256 (integrity of the run section, not
+authentication, D3-a); an --out whose directory is missing or not writable is refused before the audit.
 """
 from __future__ import annotations
 
@@ -130,6 +142,7 @@ def interpreter_path_tokens():
                 pairs.setdefault(v, token)
 
     add(sys.executable, "<python>")
+    add(canonical_interpreter(), "<python>")
     paths = sysconfig.get_paths()
     for key in ("purelib", "platlib"):
         add(paths.get(key), "<site-packages>")
@@ -140,6 +153,21 @@ def interpreter_path_tokens():
     if sys.prefix != sys.base_prefix:
         add(sys.prefix, "<venv>")
     return sorted(pairs.items(), key=lambda kv: (-len(kv[0]), kv[0]))
+
+
+def canonical_interpreter():
+    """The verifier interpreter reached through its resolved directory (H3): a venv entered through a
+    symlinked path is the same venv; children are started with this path so that every path they report
+    (sys.prefix, pytest, plugins) is already resolved and compares realpath to realpath."""
+    exe = sys.executable
+    return os.path.join(os.path.realpath(os.path.dirname(exe)), os.path.basename(exe))
+
+
+# pytest's per-user base temporary directory (pytest-of-<OS user>) inside FPIA's own child runs (under
+# <work>) carries the OS user name, which is not part of what is audited: hashed fields carry the token
+# pytest-of-<user> instead (H3). Paths outside the work directory are left as they are.
+_BASETEMP_RX = re.compile(r"(<work>/(?:[^/\\\s'\"]+/)*?)pytest-of-[^/\\\s'\"]+")
+_BASETEMP_BRX = re.compile(rb"(<work>/(?:[^/\\\s'\"]+/)*?)pytest-of-[^/\\\s'\"]+")
 
 
 def _env_path_rx():
@@ -156,10 +184,14 @@ def _env_path_rx():
 
 def normalise_env_paths(value):
     e = _env_path_rx()
-    if isinstance(value, str) and e["rx"] is not None:
-        return e["rx"].sub(lambda m: e["map"][m.group(0)], value)
-    if isinstance(value, bytes) and e["brx"] is not None:
-        return e["brx"].sub(lambda m: e["bmap"][m.group(0)], value)
+    if isinstance(value, str):
+        if e["rx"] is not None:
+            value = e["rx"].sub(lambda m: e["map"][m.group(0)], value)
+        return _BASETEMP_RX.sub(r"\1pytest-of-<user>", value) if "pytest-of-" in value else value
+    if isinstance(value, bytes):
+        if e["brx"] is not None:
+            value = e["brx"].sub(lambda m: e["bmap"][m.group(0)], value)
+        return _BASETEMP_BRX.sub(rb"\1pytest-of-<user>", value) if b"pytest-of-" in value else value
     return value
 
 
@@ -172,10 +204,10 @@ def path_token_record():
 
 def normalise_work(raw, work):
     """Replace the (resolved and as-given) work-directory path by ``<work>`` and the interpreter/site
-    paths by their tokens in raw bytes."""
+    paths and pytest's per-user basetemp by their tokens in raw bytes."""
     out = raw
-    for w in sorted({str(Path(work).resolve()), os.path.abspath(str(work))}, key=len, reverse=True):
-        out = out.replace(w.encode(), b"<work>")
+    for w in sorted({os.path.realpath(str(work)), os.path.abspath(str(work))}, key=len, reverse=True):
+        out = out.replace(os.fsencode(w), b"<work>")
     return normalise_env_paths(out)
 
 
@@ -232,11 +264,25 @@ def summary_line(result):
         hist += " (replayed %d records + %d CI logs; %d byte-protected only)" % (
             len(h["scope"]["replayed_records"]), len(h["scope"]["replayed_ci_logs"]), len(h["byte_protected_only"]))
     ci_text = "%s (%s)" % (st.get("code_identity"), "; ".join(pairs)) if pairs else str(st.get("code_identity"))
-    return " | ".join([result["fpia"]["status"], ci_text,
-                       "%s [BRANCH_FROZEN_VALIDATION, verbatim]" % st.get("frozen_tools_on_T"),
-                       hist, str(st.get("track_c_projection")),
-                       str(st.get("integration_interference")),
-                       "v2_binding %s" % st.get("v2_binding"), "full_regression %s" % st.get("full_regression")])
+    parts = [result["fpia"]["status"], ci_text,
+             "%s [BRANCH_FROZEN_VALIDATION, verbatim]" % st.get("frozen_tools_on_T"),
+             hist, str(st.get("track_c_projection")),
+             str(st.get("integration_interference")),
+             "v2_binding %s" % st.get("v2_binding"), "full_regression %s" % st.get("full_regression")]
+    return " | ".join(parts + open_non_claims(result))
+
+
+def open_non_claims(result):
+    """Fix round 3 (S16 finding): the summary never reads as a plain PASS without the open non-claims
+    whose fields are non-empty: D3-c when complement workflows were analysed, D3-e when they reference
+    code from outside T."""
+    wa = (result.get("integration_interference") or {}).get("workflow_analysis") or {}
+    out = []
+    if wa.get("analysed"):
+        out.append("dynamic_invocation_detection %s (D3-c)" % wa.get("dynamic_invocation_detection"))
+    if wa.get("out_of_tree_references"):
+        out.append("out_of_tree_code_analysis %s (D3-e)" % wa.get("out_of_tree_code_analysis"))
+    return out
 
 
 # ---- the audit ----------------------------------------------------------------------------------------
@@ -244,13 +290,15 @@ class Audit:
     def __init__(self, repo, tree, register_commit, cdr, work, options):
         self.repo = str(Path(repo).resolve())
         self.tree_arg, self.register_arg, self.cdr = tree, register_commit, cdr
-        self.work = Path(work)
+        # H3: the work directory is resolved once; every path derived from it compares realpath to realpath
+        self.work = Path(os.path.realpath(str(work)))
         self.opts = dict(DEFAULT_OPTIONS, **(options or {}))
         unknown = sorted(set(self.opts) - set(DEFAULT_OPTIONS))
         if unknown:
             raise ValueError("unknown FPIA options: %s" % unknown)
         self.sb = fgit.Sandbox(self.work / "sandbox")
-        self.runner = frun.Runner(self.work / "exec", autoload_disabled=self.opts["plugin_autoload_disabled"])
+        self.runner = frun.Runner(self.work / "exec", python=canonical_interpreter(),
+                                  autoload_disabled=self.opts["plugin_autoload_disabled"])
         self.result = {"schema": SCHEMA, "statuses": {}, "checks": {}, "equality_claims": [],
                        "non_claims": NON_CLAIMS, "latent_policy_notes": LATENT_POLICY_NOTES,
                        "ordering_note": fchk.overlay_ordering_note()}
@@ -602,16 +650,26 @@ class Audit:
         if not sb.is_ancestor(R, T):
             # G6: distinguish "Track C not integrated in this tree" from a landing that brought Track C
             # content without R's ancestry; the status is FAIL in both cases (never relabelled)
+            # H6: every Track C-namespace path at T counts, including paths that are not in R
             tT = sb.tree(T)
-            present = sorted(p for p in sb.tree(R) if self.proj.ns(p) and p in tT)
-            if not present:
-                add("AC-04", "FAIL", "R is not an ancestor of T: R is absent from T's history and no Track C "
-                    "projection path of R is present at T (Track C not integrated in this tree)",
-                    case="R_ABSENT_TRACK_C_NOT_INTEGRATED", track_c_paths_present_at_T=0)
-            else:
+            tR = sb.tree(R)
+            present = sorted(p for p in tR if self.proj.ns(p) and p in tT)
+            ns_at_T = sorted(p for p in tT if self.proj.ns(p))
+            outside_R = [p for p in ns_at_T if p not in tR]
+            counts = {"track_c_paths_present_at_T": len(ns_at_T), "track_c_paths_of_R_present_at_T": len(present),
+                      "track_c_paths_not_in_R_present_at_T": len(outside_R)}
+            if not ns_at_T:
+                add("AC-04", "FAIL", "R is not an ancestor of T: R is absent from T's history and no Track C-namespace "
+                    "path is present at T (Track C not integrated in this tree)",
+                    case="R_ABSENT_TRACK_C_NOT_INTEGRATED", **counts)
+            elif present:
                 add("AC-04", "FAIL", "R is not an ancestor of T although Track C projection paths of R are present "
                     "at T (squash or non-merge-preserving landing)", case="NON_MERGE_PRESERVING_LANDING",
-                    track_c_paths_present_at_T=len(present), examples=present[:5])
+                    examples=present[:5], **counts)
+            else:
+                add("AC-04", "FAIL", "R is not an ancestor of T: R is absent from T's history, and Track C-namespace "
+                    "paths that are not in R are present at T", case="R_ABSENT_TRACK_C_NAMESPACE_PATHS_PRESENT",
+                    examples=outside_R[:5], **counts)
             status = "FAIL"
         for V in self.Vs:
             if not sb.is_ancestor(R, V):
@@ -749,10 +807,16 @@ class Audit:
                     tcm_all.add(dname)
         self.tcm_all = tcm_all
         static_info = {}
+        # H2: this repository's identity (same-repository remote workflows are fail-closed) and the running
+        # verifier's own files (self-placement)
+        self.repo_ids = sorted({x for x in (fw.repo_identity(fauth.AUTHORITY_REMOTE),
+                                            fw.repo_identity(self.opts["authority_remote"])) if x})
+        self.verifier_self = fw.VerifierSelf(frun.HERE, fgit.base_env(self.work))
         comp, findings = fchk.complement_static(sb, T, R, self.Vs, self.v_applies, self.proj,
                                                 {p for p in self.av if any(self.v_applies.get(V) for V in self.Vs)},
                                                 tcm_all, self.config_names or [], config_dirs,
-                                                fd.TRACK_C_WORKFLOW, None, info=static_info)
+                                                fd.TRACK_C_WORKFLOW, None, info=static_info, av_all=set(self.av),
+                                                repo_ids=self.repo_ids, verifier_self=self.verifier_self)
         # G1/G2: a static layer that could not run (e.g. no YAML loader) is NOT_RUN, never NONE
         self.static_not_run = list(static_info.get("not_run", []))
         self.complement = set(comp)
@@ -774,6 +838,7 @@ class Audit:
                                          "config_names": self.config_names, "config_dirs": sorted(config_dirs),
                                          "workflow_analysis": static_info.get("workflow_analysis"),
                                          "dynamic_invocation_detection": fw.DYNAMIC_INVOCATION_DETECTION,
+                                         "out_of_tree_code_analysis": fw.OUT_OF_TREE_CODE_ANALYSIS,
                                          "static_not_run": self.static_not_run}
 
     # -- runtime provenance (AC-36, AC-29, review LOW) ---------------------------------------------------
@@ -816,7 +881,7 @@ class Audit:
                            "committed checkout", "verifier": verifier})
             status = "NOT_RUN"
         anc = []
-        p = self.work.resolve()
+        p = self.work
         for d in [p, *p.parents]:
             for n in (self.config_names or []) + ["setup.py", "conftest.py"]:
                 if (d / n).is_file():
@@ -863,7 +928,7 @@ class Audit:
     def pytest_args(self, root, step_args, rootdir_rel, extra=()):
         empty = self.work / "pytest-empty.ini"
         if not empty.exists():
-            empty.write_text("[pytest]\n")
+            empty.write_text("[pytest]\n", encoding="utf-8")
         args = list(step_args)
         if self.opts["pytest_config_pinning"]:
             rd = str(root / rootdir_rel) if rootdir_rel else str(root)
@@ -903,7 +968,8 @@ class Audit:
 
     def plugin_findings(self, session, root):
         out = []
-        pytest_dir = os.path.dirname(os.path.dirname(session.get("pytest_file") or "")) if session.get("pytest_file") else None
+        pytest_dir = (os.path.dirname(os.path.dirname(os.path.realpath(session["pytest_file"])))
+                      if session.get("pytest_file") else None)
         for p in session.get("plugins", []):
             if p.get("fpia"):
                 continue
@@ -2110,11 +2176,26 @@ def junit_view(outcomes, rootdir_rel):
     return out
 
 
-def verifier_provenance(here, home):
-    """FPIA's own files (blob ids), commit and clean-checkout status (review LOW)."""
+def verifier_files(here):
+    """Every file under the verifier directory (track_c_fpia*.py, the vendored _vendor/** loader and
+    anything else there), as {relative path: blob id}. Interpreter bytecode caches (__pycache__/, *.pyc)
+    are not verifier source and are not listed (H7)."""
     here = Path(here)
-    files = sorted(p for p in here.iterdir() if p.name.startswith("track_c_fpia") and p.suffix == ".py")
-    out = {"files": {p.name: fgit.blob_id(p.read_bytes()) for p in files}}
+    out = {}
+    for p in sorted(here.rglob("*")):
+        rel = p.relative_to(here)
+        if "__pycache__" in rel.parts or p.suffix in (".pyc", ".pyo") or not p.is_file():
+            continue
+        out[rel.as_posix()] = fgit.blob_id(p.read_bytes())
+    return out
+
+
+def verifier_provenance(here, home):
+    """FPIA's own files (blob ids of every file under the verifier directory, H7), commit and
+    clean-checkout status (review LOW)."""
+    here = Path(here)
+    out = {"files": verifier_files(here),
+           "files_rule": "every file under the verifier directory except __pycache__/ and *.pyc/*.pyo"}
     env = fgit.base_env(home)
     try:
         top = subprocess.run(["git", "-C", str(here), "rev-parse", "--show-toplevel"], capture_output=True,
@@ -2180,6 +2261,11 @@ def output_preflight(out):
         return None
     o = Path(out)
     vdir = o.parent / (o.name + VERBATIM_DIR_SUFFIX)
+    parent = o.parent if str(o.parent) else Path(".")
+    if not parent.is_dir():
+        return "the directory of --out (%s) does not exist" % parent
+    if not os.access(str(parent), os.W_OK | os.X_OK):
+        return "the directory of --out (%s) is not writable" % parent
     if o.is_dir():
         return "--out %s is a directory" % o
     if o.exists() and o.stat().st_size:
@@ -2190,27 +2276,71 @@ def output_preflight(out):
     return None
 
 
+class DuplicateKeys(ValueError):
+    """A JSON object with a repeated key (two readers could see different values)."""
+
+
+def _no_duplicate_keys(pairs):
+    seen, dup = {}, []
+    for k, v in pairs:
+        if k in seen:
+            dup.append(k)
+        seen[k] = v
+    if dup:
+        raise DuplicateKeys("duplicate JSON keys: %s" % sorted(set(dup))[:10])
+    return seen
+
+
+def plain_basename(name):
+    """Side-file names must be plain basenames: no '/', '\\', '..', NUL, not empty, not '.'."""
+    return (isinstance(name, str) and name not in ("", ".", "..") and "/" not in name and "\\" not in name
+            and ".." not in name and "\0" not in name)
+
+
+def run_sha256(doc):
+    """sha256 of the canonical ``run`` section: integrity of what was written next to the result, not
+    authentication (open decision D3-a); the run section stays outside result_sha256 (it holds times)."""
+    return sha256(canonical_bytes(doc.get("run")))
+
+
 def verify_output(path, expect_result_sha256=None):
-    """Recheck a written FPIA output (``--verify-output``): result_sha256 against the canonical bytes of
-    ``result``, every side file named in ``result.frozen_tools_on_T.steps[].verbatim`` (sha256 and bytes),
-    no unreferenced file in ``<out>.verbatim/`` and, when given, result_sha256 against an external anchor
-    (e.g. the CI log line). Returns (status, report): VERIFIED, MISMATCH or NOT_RUN (unreadable)."""
+    """Recheck a written FPIA output (``--verify-output``): no duplicate JSON keys anywhere, result_sha256
+    against the canonical bytes of ``result``, every side file named in
+    ``result.frozen_tools_on_T.steps[].verbatim`` (plain basenames only; sha256 and bytes), no unreferenced
+    file in ``<out>.verbatim/``, the recorded run_sha256 (when present) against the canonical ``run``
+    section and, when given, result_sha256 against an external anchor (e.g. the CI log line). Every read
+    is UTF-8 whatever the locale. Returns (status, report): VERIFIED, MISMATCH or NOT_RUN (unreadable)."""
     p = Path(path)
     rep = {"path": str(p), "checks": [], "not_verifiable": [
         "run.verbatim_raw (raw streams are not stored; outside result_sha256)",
         "a consistent re-hash of result and side files is detected only against an external anchor "
-        "(--expect-result-sha256)"]}
+        "(--expect-result-sha256)",
+        "run_sha256 is the integrity of the written run section, not authentication (open decision D3-a)"]}
 
     def check(name, ok, **extra):
         rep["checks"].append(dict({"check": name, "status": "PASS" if ok else "MISMATCH"}, **extra))
 
     try:
-        doc = json.loads(p.read_text())
-        result = doc["result"]
-        recorded = doc["result_sha256"]
-    except (OSError, ValueError, KeyError, TypeError) as exc:
+        raw = p.read_bytes().decode("utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
         rep["error"] = "unreadable FPIA output: %s" % exc
         return "NOT_RUN", rep
+    try:
+        doc = json.loads(raw, object_pairs_hook=_no_duplicate_keys)
+    except DuplicateKeys as exc:
+        check("no duplicate JSON keys", False, detail=str(exc))
+        rep["status"] = "MISMATCH"
+        return "MISMATCH", rep
+    except ValueError as exc:
+        rep["error"] = "unreadable FPIA output: %s" % exc
+        return "NOT_RUN", rep
+    try:
+        result = doc["result"]
+        recorded = doc["result_sha256"]
+    except (KeyError, TypeError) as exc:
+        rep["error"] = "unreadable FPIA output: %s" % exc
+        return "NOT_RUN", rep
+    check("no duplicate JSON keys", True)
     rep["schema"] = doc.get("schema")
     check("schema", doc.get("schema") == SCHEMA)
     actual = sha256(canonical_bytes(result))
@@ -2218,17 +2348,24 @@ def verify_output(path, expect_result_sha256=None):
     if expect_result_sha256 is not None:
         check("result_sha256 equals the external anchor", recorded == expect_result_sha256,
               expected=expect_result_sha256)
-    steps = ((result.get("frozen_tools_on_T") or {}).get("steps") or [])
+    rep["run_sha256"] = run_sha256(doc)
+    if "run_sha256" in doc:
+        check("run_sha256 equals sha256(canonical run)", doc["run_sha256"] == rep["run_sha256"],
+              recorded=doc["run_sha256"], actual=rep["run_sha256"])
+    steps = ((result.get("frozen_tools_on_T") or {}).get("steps") or []) if isinstance(result, dict) else []
     referenced = {}
     for st in steps:
         for kind in ("stdout", "stderr"):
-            v = (st.get("verbatim") or {}).get(kind)
+            v = (st.get("verbatim") or {}).get(kind) if isinstance(st, dict) else None
             if isinstance(v, dict):
                 referenced[v.get("file")] = v
     vdir = p.parent / (p.name + VERBATIM_DIR_SUFFIX)
     present = sorted(x.name for x in vdir.iterdir()) if vdir.is_dir() else []
     for name, v in sorted(referenced.items(), key=lambda kv: str(kv[0])):
-        f = vdir / str(name)
+        if not plain_basename(name):
+            check("side file name is a plain basename: %r" % (name,), False)
+            continue
+        f = vdir / name
         if not f.is_file():
             check("side file present: %s" % name, False)
             continue
@@ -2236,7 +2373,7 @@ def verify_output(path, expect_result_sha256=None):
         check("side file sha256/bytes: %s" % name, sha256(data) == v.get("sha256") and len(data) == v.get("bytes"),
               recorded={"sha256": v.get("sha256"), "bytes": v.get("bytes")},
               actual={"sha256": sha256(data), "bytes": len(data)})
-    extra = sorted(set(present) - set(referenced))
+    extra = sorted(set(present) - {n for n in referenced if plain_basename(n)})
     check("no unreferenced side files", not extra, unreferenced=extra)
     status = "VERIFIED" if all(c["status"] == "PASS" for c in rep["checks"]) else "MISMATCH"
     rep["status"] = status
@@ -2256,7 +2393,9 @@ def run_fpia(repo, tree, register_commit, cdr, out=None, work_dir=None, keep_wor
                 "run": {"started_utc": datetime.datetime.fromtimestamp(started, datetime.timezone.utc).isoformat(),
                         "argv": sys.argv, "output_refused": refused, "written": False}}
     created = work_dir is None
-    work = Path(work_dir) if work_dir else Path(tempfile.mkdtemp(prefix="track-c-fpia-"))
+    # H3: TMPDIR and the work directory are resolved once (realpath); everything below compares realpath
+    work = (Path(os.path.realpath(work_dir)) if work_dir
+            else Path(tempfile.mkdtemp(prefix="track-c-fpia-", dir=os.path.realpath(tempfile.gettempdir()))))
     if not created and work.exists() and any(work.iterdir()):
         raise SystemExit("--work-dir must be empty or new")
     work.mkdir(parents=True, exist_ok=True)
@@ -2293,10 +2432,15 @@ def run_fpia(repo, tree, register_commit, cdr, out=None, work_dir=None, keep_wor
             vdir = Path(out).parent / (Path(out).name + VERBATIM_DIR_SUFFIX)
             vdir.mkdir(parents=True, exist_ok=True)
             for name, data in sorted(files.items()):
+                if not plain_basename(name):
+                    raise ValueError("side-file name is not a plain basename: %r" % (name,))
                 (vdir / name).write_bytes(data)
             doc["run"]["verbatim_dir"] = str(vdir)
             doc["run"]["verbatim_files"] = sorted(files)
-        Path(out).write_text(json.dumps(doc, indent=1, sort_keys=True, ensure_ascii=False) + "\n")
+        doc["run_sha256"] = run_sha256(doc)
+        Path(out).write_bytes((json.dumps(doc, indent=1, sort_keys=True, ensure_ascii=False) + "\n").encode("utf-8"))
+    else:
+        doc["run_sha256"] = run_sha256(doc)
     if not keep_work:
         shutil.rmtree(work, ignore_errors=True)
     return doc
@@ -2311,14 +2455,26 @@ class _Parser(argparse.ArgumentParser):
         raise SystemExit(2)
 
 
+def _emit(text):
+    """stdout as UTF-8 whatever the locale (H4)."""
+    out = getattr(sys.stdout, "buffer", None)
+    if out is None:
+        print(text)
+        return
+    sys.stdout.flush()
+    out.write((text + "\n").encode("utf-8"))
+    out.flush()
+
+
 def verify_main(argv):
     p = _Parser(description="Recheck a written FPIA output and its side files", allow_abbrev=False)
     p.add_argument("--verify-output", required=True)
     p.add_argument("--expect-result-sha256")
     a = p.parse_args(argv)
     status, rep = verify_output(a.verify_output, a.expect_result_sha256)
-    print(json.dumps(rep, indent=1, sort_keys=True))
-    print("fpia-output: %s" % status)
+    _emit(json.dumps(rep, indent=1, sort_keys=True))
+    _emit("run_sha256: %s (integrity of the written run section, not authentication; D3-a)" % rep.get("run_sha256"))
+    _emit("fpia-output: %s" % status)
     return {"VERIFIED": 0, "MISMATCH": 1}.get(status, 2)
 
 
@@ -2336,7 +2492,7 @@ def main(argv=None):
     p.add_argument("--keep-work", action="store_true")
     a = p.parse_args(argv)
     doc = run_fpia(a.repo, a.tree, a.register_commit, a.cdr, out=a.out, work_dir=a.work_dir, keep_work=a.keep_work)
-    print(doc["result"].get("summary", doc["result"]["fpia"]["status"]))
+    _emit(doc["result"].get("summary", doc["result"]["fpia"]["status"]))
     return EXIT[doc["result"]["fpia"]["status"]]
 
 

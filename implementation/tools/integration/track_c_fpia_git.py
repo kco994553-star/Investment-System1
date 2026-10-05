@@ -38,8 +38,9 @@ IGNORED_NETWORK_ENV_NAMES = ("HTTP_PROXY", "http_proxy", "ALL_PROXY", "all_proxy
 # [(<reason>)]" - and a refusal is the flag column "!", the summary "[rejected]" or a reason field
 # naming "rejected"; ref names (e.g. a branch feature/rejected-ideas) are never matched as text.
 STATUS_LINE = re.compile(r"^ (?P<flag>[ +\-t*!=]) (?P<summary>\[[^\]]*\]|\S+)\s+(?P<src>\S+)\s+->\s+(?P<dst>\S+)"
-                         r"(?:\s+\((?P<reason>[^()]*)\))?\s*$")
-SHALLOW_REJECTION = re.compile(r"^warning: rejected (?P<ref>\S+) because (?P<why>.+)$")
+                         r"(?:\s+\((?P<reason>[^()]*)\))?\s*$", re.ASCII)
+# H5: ASCII whitespace only - ref names may contain U+2028/U+2029/U+0085, which \s would otherwise split on
+SHALLOW_REJECTION = re.compile(r"^warning: rejected (?P<ref>\S+) because (?P<why>.+)$", re.ASCII)
 REJECTED_REASON = re.compile(r"\brejected\b", re.I)
 
 
@@ -71,7 +72,9 @@ def rejected_lines(stderr_text):
     lines, ``warning: rejected <ref> because ...`` lines and status lines whose flag column is ``!``,
     whose summary is ``[rejected]`` or whose reason field names a rejection (G3)."""
     out = []
-    for line in stderr_text.splitlines():
+    # H5: git's own line terminators only (LF, and CR for progress overwrites). str.splitlines() would also
+    # split inside ref names containing U+2028/U+2029/U+0085 (allowed in ref names) and hide a refusal.
+    for line in (seg for raw in stderr_text.split("\n") for seg in raw.split("\r")):
         if line.startswith(("remote:", "hint:")):
             continue
         if line.lower().startswith("error:") or SHALLOW_REJECTION.match(line):
@@ -130,7 +133,7 @@ class Sandbox:
                            ("fetch.writeCommitGraph", "false"), ("protocol.file.allow", "always")):
             self.run(["config", key, value])
         (self.git_dir / "info").mkdir(exist_ok=True)
-        (self.git_dir / "info" / "attributes").write_text(NEUTRAL_ATTRIBUTES)
+        (self.git_dir / "info" / "attributes").write_text(NEUTRAL_ATTRIBUTES, encoding="utf-8")
 
     # -- low level -----------------------------------------------------------------------
     def run(self, args, *, git_dir=True, input=None, env=None, check=True, cwd=None, text=False):
@@ -222,7 +225,9 @@ class Sandbox:
         if proc.returncode != 0:
             raise GitError("ls-remote failed: " + proc.stderr.decode(errors="replace").strip()[-400:])
         refs = {}
-        for line in proc.stdout.decode().splitlines():
+        for line in proc.stdout.decode().split("\n"):
+            if not line:
+                continue
             sha, ref = line.split("\t", 1)
             refs[ref] = sha
         return refs
@@ -366,7 +371,8 @@ class Sandbox:
         if not scratch.exists():
             self.run(["init", "--bare", "-q", str(scratch)], git_dir=False)
             (scratch / "objects" / "info").mkdir(parents=True, exist_ok=True)
-            (scratch / "objects" / "info" / "alternates").write_text(str(self.git_dir / "objects") + "\n")
+            (scratch / "objects" / "info" / "alternates").write_text(str(self.git_dir / "objects") + "\n",
+                                                                     encoding="utf-8")
         cmd = [self.git_bin, "--git-dir", str(scratch), "check-attr", "--source=" + source, "-a", "-z", "--stdin"]
         proc = subprocess.run(cmd, input=data.encode("utf-8", "surrogateescape"), capture_output=True, env=self.env)
         if proc.returncode != 0:
@@ -408,13 +414,14 @@ class Sandbox:
         gd = dest / ".git"
         self.run(["init", "-q", str(dest)], git_dir=False, cwd=str(self.root))
         (gd / "objects" / "info").mkdir(parents=True, exist_ok=True)
-        (gd / "objects" / "info" / "alternates").write_text(str((self.git_dir / "objects").resolve()) + "\n")
+        (gd / "objects" / "info" / "alternates").write_text(str((self.git_dir / "objects").resolve()) + "\n",
+                                                            encoding="utf-8")
         (gd / "info").mkdir(exist_ok=True)
-        (gd / "info" / "attributes").write_text(NEUTRAL_ATTRIBUTES)
+        (gd / "info" / "attributes").write_text(NEUTRAL_ATTRIBUTES, encoding="utf-8")
         for key, value in (("core.commitGraph", "false"), ("core.autocrlf", "false"),
                            ("core.fsmonitor", "false"), ("core.hooksPath", os.devnull), ("gc.auto", "0")):
             self.run(["--git-dir", str(gd), "config", key, value], git_dir=False)
-        (gd / "HEAD").write_text(commit + "\n")
+        (gd / "HEAD").write_text(commit + "\n", encoding="utf-8")
         for name in list((gd / "refs" / "heads").iterdir()) if (gd / "refs" / "heads").exists() else []:
             name.unlink()
         for ref, sha in sorted((refs or {}).items()):
@@ -432,7 +439,7 @@ class Sandbox:
         gd = Path(dest) / ".git"
         out = self.run(["--git-dir", str(gd), "for-each-ref", "--format=%(refname) %(objectname)"],
                        git_dir=False).stdout.decode()
-        return sorted(out.splitlines())
+        return sorted(x for x in out.split("\n") if x)
 
 
 def verify_tree(dest: Path, entries, allowed_extra_dirs=()):
