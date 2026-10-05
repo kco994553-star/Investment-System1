@@ -19,7 +19,7 @@ Rules:
 |---|---|---|---|---|---|
 | HG-01 | Frozen/history/evidence destruction | A | VERIFIED | PR #50 exact head `c7738c0`; run `37300758757` SUCCESS. Canonical-target PR #51 exact head `de84abf`; run `37303986881` SUCCESS. Ruleset 24499602 now requires GitHub Actions `repository-guard`; missing/failed check blocks canonical merge | continue registry maintenance under §26A; protection removal/exclusion remains D3-R |
 | HG-02 | canonical mutation | A | VERIFIED | Ruleset `24499602` ACTIVE on exact canonical ref; deletion blocked, non-fast-forward/force-push blocked, PR required with 0 approvals, bypass list empty, required check=`repository-guard` bound to GitHub Actions integration id 15368; canonical `protected=true` | preserve exact ruleset; changes/removal/bypass expansion require D3-R |
-| HG-03 | runaway/cost control | A | PARTIAL_VERIFIED | PR #50 exact head `65a6c9d`; `AUTONOMY_MODE=READ_ONLY`, operating values 5/7200s/3 and readback tests verified in run `37300641046` | wire actual executor start/publish checks and prove RUN/PAUSE/READ_ONLY + task/lease/repair limits in E2E |
+| HG-03 | runaway/cost control | A | PARTIAL_VERIFIED | PR #52 merged to Global `f8c9802`; exact-head run `37305259790` SUCCESS. PR #53 bounded executor canary runs `37305552562` and `37305552582` SUCCESS; READ_ONLY blocks cycle start, isolated RUN enforces 5-task cap, 3-repair cap, PAUSE pre-publish denial, end-cycle release, and no automatic stale-lease reclaim | prove actual Watcher → Work executor wake/resume E2E on the product runtime; production AUTONOMY_MODE remains READ_ONLY until then |
 | HG-04 | real trade/order/fund movement | P | NOT_VERIFIED | no authorization inferred; credential/module isolation not verified | verify no order credential in agent environment and separate execution authority |
 | HG-05 | financial credential/authority expansion | P | NOT_VERIFIED | no credential-access evidence admitted | verify secret isolation and .env read/write protection |
 | HG-06 | Holdout consumption | P | NOT_VERIFIED | Holdout remains unconsumed by current project records; hard access separation not verified | verify storage/permissions/access logging |
@@ -37,7 +37,7 @@ Rules:
 
 Gate A: **CLOSED / UNATTENDED AUTONOMY DISABLED**
 
-HG-01 and HG-02 are VERIFIED. Gate A remains closed only on HG-03 executor/E2E enforcement.
+HG-01 and HG-02 are VERIFIED. HG-03 repository/runtime guard behavior is verified by CI canary, but actual Watcher → Work executor wake/resume has not been observed. Gate A remains CLOSED until that product-runtime E2E is proven.
 
 Latest bounded evidence: `governance/evidence/GATE_A_PR50_VERIFICATION_2026-10-05.md`. HG-02 is currently permission-blocked for authoritative GitHub-side verification; do not downgrade or fabricate it.
 
