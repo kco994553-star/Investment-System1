@@ -1,38 +1,53 @@
 {
   "schema": "MAIN_D006_APPLICABILITY_RECEIPT/1",
-  "observed_at_utc": "2026-10-05 08:19:50 UTC",
+  "observed_at_utc": "2026-10-05 08:43:02 UTC",
   "authority": "CDR015 D1/D2 narrowed016§13/017/018; risk021; continuation022",
   "publication": {
     "pr": 47,
     "branch": "codex/fpia-execution-coverage-2026-10-05",
-    "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
-    "parent": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
-    "tree": "ce6a9092cbeb79f7ac55626b7d8931061167cd4d",
+    "head": "7215a9f60ad7128b1748f405051eac684298614f",
+    "parent": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+    "tree": "d5a61fad01b84ef5e84daf2949572911a14a6782",
     "comparison": "TREE_IDENTICAL",
     "commit_identical": "NOT_CLAIMED",
     "changed_paths": [
-      ".github/workflows/track-c-fpia.yml",
-      "implementation/tools/integration/track_c_fpia_applicability.py",
-      "implementation/tests/test_integration_fpia_applicability.py",
-      "implementation/tools/integration/track_c_fpia_ci_receipt.py",
-      "implementation/tests/test_integration_fpia_ci_receipt.py"
+      "implementation/tests/test_integration_fpia_fix2.py"
     ],
+    "scope": "CI-discovered stale legacy workflow regression repair; approved D006 semantics unchanged",
     "raw_fpia_core_changed": false
   },
   "verification": {
     "lane": "CRITICAL",
-    "affected_tests": 229,
+    "affected_tests": 294,
     "failures": 0,
-    "applicability_tests": 20,
-    "independent_review": "All4boundedfindings addressed; no remaining material finding in corrected areas; actual CI/futuremerge pending",
-    "actual_cdr_loader": "2synthetic source-auth tests; no production authority claim",
-    "full_repo_rerun": false,
+    "independent_review": "Prior bounded D006 review remains satisfied; this repair only updates the stale regression contract",
+    "current_local": "RED reproduced; corrected single test GREEN; affected suite 294/294 PASS in 64.27s",
+    "full_repo_rerun_current_head": false,
+    "prior_head_full_repo": {
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "confirmed_runs": [
+        {
+          "run_id": 37282319537,
+          "job_id": 111673018387,
+          "result": "1 failed / 2241 passed in 658.21s"
+        },
+        {
+          "run_id": 37282319630,
+          "job_id": 111673019058,
+          "result": "1 failed / 2241 passed in 773.90s"
+        }
+      ],
+      "failure": "tests/test_integration_fpia_fix2.py::test_workflow_pull_request_scope_integration_branches",
+      "classification": "STALE_REGRESSION_CONTRACT",
+      "root_cause": "Legacy test required a job-level integration-branch if gate removed by approved branch-independent authenticated applicability",
+      "correction": "Assert every pull request reaches authenticated applicability and the raw audit runs only when applicability output is true"
+    },
     "history": [
-      "13initial RED missing implementation",
-      "1existing complement check FAIL with219PASS; generic namespace fixture repaired without weakening constraints",
-      "5review negative cases RED before correction",
-      "2observer source/subject cases RED before correction",
-      "Final229PASS"
+      "Initial D006 RED/review failures and final 229PASS at 50fa preserved",
+      "Exact50fa CI first exposed stale legacy workflow branch-gate regression; p01 run37282319537 1FAIL/2241PASS",
+      "US-equity run37282319630 independently reproduced the same test and 1FAIL/2241PASS",
+      "RED reproduced locally; corrected single test GREEN; affected294PASS",
+      "Exact7215 CI7 attempt1 created automatically; no duplicate rerun requested"
     ],
     "real_history_preflight": {
       "status": "UNAVAILABLE",
@@ -42,125 +57,146 @@
   },
   "ci": [
     {
-      "run_id": 37282319537,
+      "run_id": 37284465856,
       "name": "p01-research-publication",
-      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
       "attempt": 1,
       "status": "in_progress",
       "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465856"
+    },
+    {
+      "run_id": 37284465900,
+      "name": "track-c-fpia",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465900"
+    },
+    {
+      "run_id": 37284465865,
+      "name": "qgv-invalidation-binding",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465865"
+    },
+    {
+      "run_id": 37284465941,
+      "name": "sec-primary-disclosure",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465941"
+    },
+    {
+      "run_id": 37284465967,
+      "name": "us-equity-session",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465967"
+    },
+    {
+      "run_id": 37284465977,
+      "name": "technical-real-model",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465977"
+    },
+    {
+      "run_id": 37284466007,
+      "name": "technical-real-producer",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284466007"
+    }
+  ],
+  "prior_head_ci": [
+    {
+      "run_id": 37282319537,
+      "name": "p01-research-publication",
+      "status": "completed",
+      "conclusion": "failure",
+      "job_id": 111673018387,
+      "detail": "1 failed / 2241 passed; stale legacy workflow branch-gate test confirmed",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319537"
     },
     {
       "run_id": 37282319630,
       "name": "us-equity-session",
+      "status": "completed",
+      "conclusion": "failure",
+      "job_id": 111673019058,
+      "detail": "1 failed / 2241 passed; same stale legacy workflow branch-gate test confirmed",
       "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
       "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319630"
+    },
+    {
+      "run_id": 37282319562,
+      "name": "track-c-fpia",
       "status": "in_progress",
       "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319630"
+      "job_id": null,
+      "detail": "superseded-head run still nonterminal",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319562"
     },
     {
       "run_id": 37282319526,
       "name": "qgv-invalidation-binding",
+      "status": "completed",
+      "conclusion": "failure",
+      "job_id": 111673018831,
+      "detail": "full native pytest regression step failed; exact failing assertion not separately re-downloaded",
       "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
       "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319526"
     },
     {
       "run_id": 37282319547,
       "name": "technical-real-producer",
+      "status": "completed",
+      "conclusion": "failure",
+      "job_id": 111673018421,
+      "detail": "full native pytest regression step failed; exact failing assertion not separately re-downloaded",
       "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
       "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319547"
     },
     {
       "run_id": 37282319536,
       "name": "sec-primary-disclosure",
+      "status": "completed",
+      "conclusion": "failure",
+      "job_id": 111673018286,
+      "detail": "full native pytest regression step failed; exact failing assertion not separately re-downloaded",
       "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
       "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319536"
-    },
-    {
-      "run_id": 37282319562,
-      "name": "track-c-fpia",
-      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319562"
     },
     {
       "run_id": 37282319529,
       "name": "technical-real-model",
+      "status": "completed",
+      "conclusion": "failure",
+      "job_id": 111673862479,
+      "detail": "full native pytest regression step failed; exact failing assertion not separately re-downloaded",
       "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
       "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319529"
-    }
-  ],
-  "prior_head_ci": [
-    {
-      "run_id": 37279107247,
-      "name": "track-c-fpia",
-      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null
-    },
-    {
-      "run_id": 37279107172,
-      "name": "qgv-invalidation-binding",
-      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
-      "attempt": 1,
-      "status": "completed",
-      "conclusion": "success"
-    },
-    {
-      "run_id": 37279107069,
-      "name": "sec-primary-disclosure",
-      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
-      "attempt": 1,
-      "status": "completed",
-      "conclusion": "success"
-    },
-    {
-      "run_id": 37279107113,
-      "name": "p01-research-publication",
-      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
-      "attempt": 1,
-      "status": "completed",
-      "conclusion": "success"
-    },
-    {
-      "run_id": 37279107162,
-      "name": "technical-real-producer",
-      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
-      "attempt": 1,
-      "status": "completed",
-      "conclusion": "success"
-    },
-    {
-      "run_id": 37279107212,
-      "name": "technical-real-model",
-      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
-      "attempt": 1,
-      "status": "completed",
-      "conclusion": "success"
-    },
-    {
-      "run_id": 37279107194,
-      "name": "us-equity-session",
-      "head": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
-      "attempt": 1,
-      "status": "completed",
-      "conclusion": "success"
     }
   ],
   "same_run_rerun_requested": false,
@@ -194,7 +230,7 @@
     {
       "id": "D006localimplementation",
       "state": "DONE",
-      "scope": "Bounded source/workflow implementation verified and published; full CI/exactmerge gate not closed"
+      "scope": "Bounded applicability implementation and stale regression repair verified locally and published; exact-head CI/exact-merge gate remains open"
     },
     {
       "id": "D001D002runtimeacceptance",
@@ -209,12 +245,12 @@
     {
       "id": "D004exactpackaging",
       "state": "DONE",
-      "scope": "14optionalPR28paths absent exact50fa tree; futurecombinedsubject stillpending"
+      "scope": "14 optional PR28 paths absent exact7215 proposal tree lineage; future combined subject still pending"
     },
     {
       "id": "CIcurrenthead",
       "state": "WAIT_DEPENDENCY",
-      "needs": "7attempt1 nonterminal runs; consume onterminal without duplicate rerun"
+      "needs": "Exact7215 attempt1 has 7 nonterminal runs; consume terminal results without duplicate rerun"
     },
     {
       "id": "Chart",
@@ -243,12 +279,40 @@
     "canonical_candidate": "NOT_READY"
   },
   "resume_triggers": [
-    "Exact50faCI terminal/artifact",
+    "Exact7215 CI terminal/artifact",
     "New independent verifier authority/runtime/external coverage evidence",
     "Chart/QGV bounded owner return/lease release with actual output",
     "ActualPlatformWebadoption/ACK",
     "PortfolioIdentityexplicit accountable owner",
     "Materialapproved decision/canonical change"
   ],
-  "next_automatic_action": "Fresh-read exact material delta, consume terminal/owner evidence, repair authorized scoped failure, then re-evaluate; no repeated unchanged audit/poll"
+  "next_automatic_action": "Consume exact7215 terminal results; if failure, classify and repair within D1/D2, else preserve CI PASS separately from authority/GIE/exact-merge acceptance",
+  "prior_publication": {
+    "pr": 47,
+    "branch": "codex/fpia-execution-coverage-2026-10-05",
+    "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+    "parent": "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+    "tree": "ce6a9092cbeb79f7ac55626b7d8931061167cd4d",
+    "comparison": "TREE_IDENTICAL",
+    "commit_identical": "NOT_CLAIMED",
+    "changed_paths": [
+      ".github/workflows/track-c-fpia.yml",
+      "implementation/tools/integration/track_c_fpia_applicability.py",
+      "implementation/tests/test_integration_fpia_applicability.py",
+      "implementation/tools/integration/track_c_fpia_ci_receipt.py",
+      "implementation/tests/test_integration_fpia_ci_receipt.py"
+    ],
+    "raw_fpia_core_changed": false
+  },
+  "ci_failure_repair": {
+    "state": "VERIFIED_LOCAL_PUBLISHED_CI_PENDING",
+    "failure_head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+    "repair_head": "7215a9f60ad7128b1748f405051eac684298614f",
+    "repair_parent": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+    "repair_tree": "d5a61fad01b84ef5e84daf2949572911a14a6782",
+    "failing_test": "tests/test_integration_fpia_fix2.py::test_workflow_pull_request_scope_integration_branches",
+    "classification": "REPAIR",
+    "semantic_change": false,
+    "exact_head_ci_count": 7
+  }
 }

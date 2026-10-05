@@ -105,3 +105,12 @@ Existing PIW-D004 omission option verified exact9ab tree5b3ad: complete412-file 
 
 ## PIWD-011 · D006 bounded implementation and source-checkout correction · 2026-10-05 08:19:50 UTC
 D2CRITICAL under015/016/017/018/021/022. Exact50fa7f49080b3fa3d1808f9745d8f97770d1c9df treece6a9092cbeb79f7ac55626b7d8931061167cd4d, fiveboundedfiles; existingrawcoreunchanged. Local229PASS, independent4findingsaddressed. DefaultexistingCDRauthloader only; noreferenceoverride. RealGitpreflightUNAVAILABLE/CIpending; acceptance notgranted. Legacyobservercalls retain SUBJECTbinding; explicitworkflowmode bindsworkflowSHA and preservesactualsubject. Conservative unresolvedimports/calls/executionBLOCKED; preTrackCoutsideNOTRUNneverPASS. D006implementation VERIFIED inproposal, fullgateOPENuntilexactCI/authority/actualintegrationresult. PreserveallFAILhistory/revertboundedproposalonly. QGVscopeacceptanceconsumed separately, noQGVmethodorproductionapproval.
+
+
+## PIWD-012 · CI-discovered stale workflow regression repair · 2026-10-05 08:43:02 UTC
+
+- **Decision/authority:** Under CDR-015 D1/D2 as narrowed by CDR-016 §13, CDR-017/018 and risk/continuation CDR-021/022, repair the legacy regression test on the existing approved D006 proposal. This is a bounded test-contract correction, not a new methodology or production decision.
+- **Reason:** Exact-50fa Actions run `37282319537` failed 1/2242 because the legacy test required a job-level integration-branch gate. D006 intentionally removed that gate so every pull request reaches authenticated applicability; retaining the old assertion would reinstate branch-name dependence. Run `37282319630` independently reproduced the same failing test.
+- **Impact:** Only `implementation/tests/test_integration_fpia_fix2.py` changed. Draft #47 exact `7215a9f60ad7128b1748f405051eac684298614f`, parent `50fa7f49080b3fa3d1808f9745d8f97770d1c9df`, tree `d5a61fad01b84ef5e84daf2949572911a14a6782`; raw FPIA logic, Frozen/PIT/Holdout, QGV production semantics, canonical state, owner contracts and production authority are unchanged.
+- **Verification:** Original CI failures preserved; RED reproduced locally; corrected single test GREEN; affected suite 294/294 PASS. Seven exact-7215 Actions runs are nonterminal; CI PASS is not claimed and no duplicate rerun was requested.
+- **Recovery:** Revert the single test-only commit if independent evidence shows the contract is wrong; never restore branch-name gating as a substitute for authenticated applicability. Preserve all prior failures and exact-head run receipts.

@@ -25,10 +25,10 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "WAIT_MATERIAL_CI_AND_OWNER_RETURN_READY_0",
+  "execution_state": "WAIT_EXACT_7215_CI_AND_OWNER_RETURN_READY_0",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
-    "global_input": "e4e70811a775b8cfbe197576853b538a1f9d68bf",
+    "global_input": "8acb3c25046310ebe24e87a3eb253948129a5ee9",
     "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
     "chart": "5288d038e800c09ca40af0604a947911c4370d9e",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
@@ -41,7 +41,7 @@
     "web": "fb086eac4321140493ce554a541343cebbb81ed6",
     "qgv_pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
     "execution_coverage": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
-    "fpia_proposal": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df"
+    "fpia_proposal": "7215a9f60ad7128b1748f405051eac684298614f"
   },
   "automations": {
     "state": "EVENT_DELIVERED_AND_CONSUMED",
@@ -106,7 +106,8 @@
     "39fb3710-c08e-11f1-9eb0-c63ec1a4511b",
     "18584e20-c090-11f1-9b73-43ef0de39283",
     "1a5f8fd0-c090-11f1-90c4-9d7fe3129817",
-    "2dc98e40-c095-11f1-9006-226a5234071e"
+    "2dc98e40-c095-11f1-9006-226a5234071e",
+    "90a42ff0-c097-11f1-9450-ecc32d891f05"
   ],
   "last_processed_comment_ids": [
     5988265306,
@@ -126,67 +127,67 @@
   ],
   "pending_ci": [
     {
-      "run_id": 37282319537,
+      "run_id": 37284465856,
       "name": "p01-research-publication",
-      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
       "attempt": 1,
       "status": "in_progress",
       "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319537"
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465856"
     },
     {
-      "run_id": 37282319630,
-      "name": "us-equity-session",
-      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319630"
-    },
-    {
-      "run_id": 37282319526,
-      "name": "qgv-invalidation-binding",
-      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319526"
-    },
-    {
-      "run_id": 37282319547,
-      "name": "technical-real-producer",
-      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319547"
-    },
-    {
-      "run_id": 37282319536,
-      "name": "sec-primary-disclosure",
-      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319536"
-    },
-    {
-      "run_id": 37282319562,
+      "run_id": 37284465900,
       "name": "track-c-fpia",
-      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
       "attempt": 1,
       "status": "in_progress",
       "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319562"
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465900"
     },
     {
-      "run_id": 37282319529,
-      "name": "technical-real-model",
-      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "run_id": 37284465865,
+      "name": "qgv-invalidation-binding",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
       "attempt": 1,
       "status": "in_progress",
       "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319529"
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465865"
+    },
+    {
+      "run_id": 37284465941,
+      "name": "sec-primary-disclosure",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465941"
+    },
+    {
+      "run_id": 37284465967,
+      "name": "us-equity-session",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465967"
+    },
+    {
+      "run_id": 37284465977,
+      "name": "technical-real-model",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465977"
+    },
+    {
+      "run_id": 37284466007,
+      "name": "technical-real-producer",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284466007"
     }
   ],
   "next_runnable_backlog": [],
@@ -214,86 +215,82 @@
   ],
   "active_scoped_execution": null,
   "last_terminal_ci_evidence": "evidence/main_execution_coverage_2026-10-05/RECEIPT.json",
-  "last_checkpoint_at_utc": "2026-10-05 08:19:50 UTC",
+  "last_checkpoint_at_utc": "2026-10-05 08:43:02 UTC",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
-  "dependency_content_hash": "b7b98051d43277ac1e698eae3670766368959aaa57adb7d182095c16cd6e2556",
+  "dependency_content_hash": "43f0d8a897921429b2895e9f30b3e94e5a42e35577d06ad6fcdcd18a54e054c5",
   "execution_budget": {
     "new_agents": 0,
     "repeat_audits": 0,
     "local_full_repo_rerun": false,
-    "affected_FPIA": 683,
+    "affected_FPIA": 294,
     "net_blocker_reduction_current_delta": 0
   },
   "last_terminal_ci": [
     {
-      "id": 37272321129,
-      "name": "technical-real-producer",
-      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
-      "attempt": 1,
-      "status": "completed",
-      "conclusion": "success",
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321129",
-      "workflow_path": ".github/workflows/technical-real-producer.yml"
-    },
-    {
-      "id": 37272321224,
-      "name": "technical-real-model",
-      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
-      "attempt": 1,
-      "status": "completed",
-      "conclusion": "success",
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321224",
-      "workflow_path": ".github/workflows/technical-real-model.yml"
-    },
-    {
-      "id": 37272321138,
+      "run_id": 37282319537,
       "name": "p01-research-publication",
-      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
-      "attempt": 1,
       "status": "completed",
-      "conclusion": "success",
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321138",
-      "workflow_path": ".github/workflows/p01-research-publication.yml"
+      "conclusion": "failure",
+      "job_id": 111673018387,
+      "detail": "1 failed / 2241 passed; stale legacy workflow branch-gate test confirmed",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319537"
     },
     {
-      "id": 37272321213,
-      "name": "sec-primary-disclosure",
-      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
-      "attempt": 1,
-      "status": "completed",
-      "conclusion": "success",
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321213",
-      "workflow_path": ".github/workflows/sec-primary-disclosure.yml"
-    },
-    {
-      "id": 37272321210,
-      "name": "qgv-invalidation-binding",
-      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
-      "attempt": 1,
-      "status": "completed",
-      "conclusion": "success",
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321210",
-      "workflow_path": ".github/workflows/qgv-invalidation-binding.yml"
-    },
-    {
-      "id": 37272321179,
+      "run_id": 37282319630,
       "name": "us-equity-session",
-      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
-      "attempt": 1,
       "status": "completed",
-      "conclusion": "success",
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321179",
-      "workflow_path": ".github/workflows/us-equity-session.yml"
+      "conclusion": "failure",
+      "job_id": 111673019058,
+      "detail": "1 failed / 2241 passed; same stale legacy workflow branch-gate test confirmed",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319630"
     },
     {
-      "id": 37272321137,
-      "name": "track-c-fpia",
-      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
-      "attempt": 1,
+      "run_id": 37282319526,
+      "name": "qgv-invalidation-binding",
       "status": "completed",
-      "conclusion": "success",
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321137",
-      "workflow_path": ".github/workflows/track-c-fpia.yml"
+      "conclusion": "failure",
+      "job_id": 111673018831,
+      "detail": "full native pytest regression step failed; exact failing assertion not separately re-downloaded",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319526"
+    },
+    {
+      "run_id": 37282319547,
+      "name": "technical-real-producer",
+      "status": "completed",
+      "conclusion": "failure",
+      "job_id": 111673018421,
+      "detail": "full native pytest regression step failed; exact failing assertion not separately re-downloaded",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319547"
+    },
+    {
+      "run_id": 37282319536,
+      "name": "sec-primary-disclosure",
+      "status": "completed",
+      "conclusion": "failure",
+      "job_id": 111673018286,
+      "detail": "full native pytest regression step failed; exact failing assertion not separately re-downloaded",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319536"
+    },
+    {
+      "run_id": 37282319529,
+      "name": "technical-real-model",
+      "status": "completed",
+      "conclusion": "failure",
+      "job_id": 111673862479,
+      "detail": "full native pytest regression step failed; exact failing assertion not separately re-downloaded",
+      "head": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37282319529"
     }
   ],
   "autonomous_execution_policy": {
@@ -303,7 +300,7 @@
     "wait_dependencies": [
       "D001D002runtimeacceptance: Exact new runtime receipt/Actions job ID plus independent verifier authority/attestation; declaration cannot manufacture missing independent acceptance",
       "D003D005coverage: Immutable external execution/content and actual descendant/runtime coverage; current additive consumer reportsBLOCKED",
-      "CIcurrenthead: 7attempt1 nonterminal runs; consume onterminal without duplicate rerun",
+      "CIcurrenthead: exact7215 attempt1 has 7 nonterminal runs; consume terminal results without duplicate rerun",
       "Chart: Active MagicPath/localfallback ownerlease5288; source/identity ownerunassigned; gates6open; no Mainduplicate",
       "QGV: Active boundedcontract ownerreturn; preserved MissingDatalease; noMainmethodselection",
       "PlatformWeb: Source owner ACK/adoption and boundedWebactualreturn; specialist5990208500consumed notimplementationadoption"
