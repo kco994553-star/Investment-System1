@@ -63,14 +63,14 @@
       "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
       "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
       "36": "fb086eac4321140493ce554a541343cebbb81ed6",
-      "41": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+      "41": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
       "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
       "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
       "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
       "46": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
     },
-    "observed_at_utc": "2026-10-05T05:57:20.531Z",
-    "owner_output_head": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+    "observed_at_utc": "2026-10-05T06:37:31.129Z",
+    "owner_output_head": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
     "event_watermarks": {
       "17": {
         "issue_comments": {
@@ -390,12 +390,16 @@
     ],
     "qgv_architecture_head": "2ba29b048c8601145c4a2cca0f85299c07262286",
     "exact_fpia_terminal": {
-      "run": 37260997788,
+      "pr": 46,
+      "run": 37267962000,
       "attempt": 1,
-      "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "job": 111628676484,
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
       "status": "completed",
-      "conclusion": "success",
-      "observed_at_utc": "2026-10-05T04:53:10.015213+00:00"
+      "conclusion": "failure",
+      "observed_at_utc": "2026-10-05T06:37:31.129Z",
+      "result_sha256": "3f7b27e7fc9c1d25fc9dc66cc9db76f37ad43b338289a3022c3c7012d263b41d",
+      "artifact_digest": "sha256:13d7f067019af8530e7a2aaabc21201ffa39018f472b15dbb8510d75c219728c"
     },
     "platform_owner_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
     "platform_storage_auth_audit_head": "11dba838c6e27430aa07957f69e4ae8b270c999b",
@@ -466,67 +470,52 @@
     ]
   },
   "last_processed": {
-    "source_head": "4752bca2d58a61ef5821a0556b6480fc527fac80",
-    "owner_head": "c21d47d8d5d0c59b1ae9795258fc21cb3667a127",
-    "processed_at_utc": "2026-10-05T06:27:01.193Z",
-    "run_id": "manual-chart-risk-policy-20261005T061947755Z",
+    "source_head": "40a5c266322d36dbf30a683f6f632508352145bc",
+    "owner_head": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
+    "processed_at_utc": "2026-10-05T06:37:31.129Z",
+    "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
     "input_heads": {
       "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
       "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
       "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
       "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
       "36": "fb086eac4321140493ce554a541343cebbb81ed6",
-      "41": "c21d47d8d5d0c59b1ae9795258fc21cb3667a127",
+      "41": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
       "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
       "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
       "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
       "46": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
     },
-    "global_head": "9cd598c5564827418115ebb15c1c88a0e7811bab",
-    "qgv_architecture_head": "2ba29b048c8601145c4a2cca0f85299c07262286",
-    "platform_owner_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
-    "platform_storage_auth_audit_head": "11dba838c6e27430aa07957f69e4ae8b270c999b",
-    "approval_effective_kst": "2026-10-05T14:18:36+09:00",
-    "status": "RISK_POLICY_ADOPTED_EXISTING_PRODUCT_EVIDENCE_REUSED_NO_NEW_PRODUCTION_GATE_CLOSURE",
+    "global_head": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+    "status": "PR46_EXACT_FPIA_TERMINAL_FAILURE_CONSUMED_QUEUE_CLEARED_OWNER_ACTION_REQUIRED",
     "evidence_refs": [
-      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md"
+      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/HANDOFF.md"
     ],
-    "ci_terminal_claim": false,
-    "semantic_input_fingerprint": "ed2f3a1be326fdc9d918dfbc9a158a917d03dc18411e1ae20f3f6301e6fc16f2",
-    "ci_terminal_observations": {
-      "latest_a3_non_FPIA_FAILURE": 6,
-      "latest_a3_FPIA": "IN_PROGRESS",
-      "integration_bundle_success_claim": false
+    "ci_terminal_claim": true,
+    "governance_closure": false,
+    "actual_chart_merge_result_fpia": "NOT_RUN",
+    "metrics": {
+      "requirements_closed": 0,
+      "blockers_closed": 0,
+      "new_chart_product_blockers": 0,
+      "vertical_slice_progress": "UNCHANGED_IMPLEMENTATION_NOT_READY",
+      "production_ready_contracts": 0,
+      "frontend_ready_contracts": "SAMPLE_ONLY_PREVIOUSLY_VERIFIED"
     },
-    "policy_version": "chart-v0.10",
-    "new_product_verification": false
-  },
-  "pending": [
-    {
-      "kind": "READ_ONLY_OWNER_DEPENDENCY_CI",
+    "semantic_input_fingerprint_subject": {
       "pr": 46,
-      "owner_head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
-      "runs": [
-        {
-          "id": 37267962000,
-          "name": "track-c-fpia",
-          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
-          "attempt": 1,
-          "status": "in_progress",
-          "conclusion": null,
-          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000"
-        }
-      ],
-      "last_observed_at_utc": "2026-10-05T05:59:21.347883+00:00",
-      "required_disposition": "Re-read exact run+attempt+head/job/log; consume actual terminal status; six other owner workflows already failed with two deterministic D002 self-constraint regressions. No retry/dispatch/owner branch write. Terminal CI does not close A-G3.",
-      "evidence_refs": [
-        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_LATE_STATUS.json",
-        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json"
-      ]
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "run": 37267962000,
+      "attempt": 1,
+      "job": 111628676484,
+      "status": "completed",
+      "conclusion": "failure",
+      "result_sha256": "3f7b27e7fc9c1d25fc9dc66cc9db76f37ad43b338289a3022c3c7012d263b41d",
+      "remaining_gates": 6
     }
-  ],
+  },
+  "pending": [],
   "readiness": {
     "scope": "OFFLINE_PREFLIGHT_VERIFIED_PRODUCTION_OWNER_GATED",
     "lane_a": "IMPLEMENTATION_NOT_READY",
@@ -556,12 +545,12 @@
       "A-S3": "OWNER_ACTION_REQUIRED",
       "A-G1": "OWNER_ACTION_REQUIRED",
       "A-G2": "PARTIALLY_RESOLVED",
-      "A-G3": "PARTIALLY_RESOLVED"
+      "A-G3": "OWNER_ACTION_REQUIRED"
     },
     "current_independent_repairs": "IMPLEMENTED_VERIFIED",
     "production_owner_dependency_count": 6,
-    "fpia_owner_ci": "CURRENT_A3_6_FAILURE_1_RUNNING_PRIOR_213_SUCCESS_HISTORICAL_ONLY",
-    "fpia_tool_governance": "PARTIALLY_RESOLVED_AUTHENTICATION_TECHNICAL_GIE_ADMISSIBILITY_PENDING",
+    "fpia_owner_ci": "CURRENT_PR46_A3E3F6C_7_OF_7_FAILURE_EXACT_FPIA_TERMINAL_FAILURE",
+    "fpia_tool_governance": "BLOCKED_CURRENT_SUBJECT_FPIA_FAIL_GOVERNANCE_NOT_CLOSED_OWNER_ACTION_REQUIRED",
     "sample_renderer": "IMPLEMENTED_VERIFIED",
     "latest_run_metrics": {
       "requirements_closed": 0,
@@ -571,11 +560,12 @@
       "vertical_slice_progress": "Existing SAMPLE implemented/verified; policy adopted; no new product code",
       "production_ready_contracts": "NONE_ADMITTED_FOR_CURRENT_TARGET_SLICE",
       "frontend_ready_contracts": "EXISTING_VERIFIED_SAMPLE_RENDERER_AND_FIXTURE_ONLY"
-    }
+    },
+    "actual_chart_merge_result_fpia": "NOT_RUN"
   },
   "lease": {
-    "status": "HELD",
-    "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
+    "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+    "run_id": null,
     "holder_kind": "CI_FOLLOWUP_AUTOMATION",
     "acquired_at_utc": "2026-10-05T06:32:43.306Z",
     "expires_at_utc": "2026-10-05T07:02:43.306Z",
@@ -586,11 +576,14 @@
     "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
     "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
     "acquisition_commit": "40a5c266322d36dbf30a683f6f632508352145bc",
-    "verified_at_utc": "2026-10-05T06:36:14.933Z"
+    "verified_at_utc": "2026-10-05T06:36:14.933Z",
+    "previous_run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
+    "released_at_utc": "2026-10-05T06:37:31.129Z",
+    "verified_published_packet": "01a150a2b640c188436fe8cd4fc988a2482c57f8"
   },
   "publication": {
-    "status": "V010_RISK_POLICY_AND_EXISTING_TASK_PROMPTS_VERIFIED",
-    "latest_published_owner_head": "c21d47d8d5d0c59b1ae9795258fc21cb3667a127",
+    "status": "V011_PR46_FPIA_TERMINAL_FAILURE_PUBLICATION_VERIFIED",
+    "latest_published_owner_head": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
     "scoped_output_paths": [
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
       "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
@@ -699,7 +692,9 @@
       "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
       "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md",
       "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json"
+      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/HANDOFF.md"
     ],
     "output_sha256": {
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "0811cedd14d37341f9486e6f4c0c64cbdbaab9da5eb2068764075744e6d075b8",
@@ -1176,6 +1171,27 @@
         "verified_published_packet": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
         "verified_at_utc": "2026-10-05T05:54:56.485Z"
       }
+    },
+    {
+      "state_at_commit": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
+      "lease": {
+        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+        "run_id": null,
+        "holder_kind": "CI_FOLLOWUP_AUTOMATION",
+        "acquired_at_utc": "2026-10-05T06:32:43.306Z",
+        "expires_at_utc": "2026-10-05T07:02:43.306Z",
+        "ttl_minutes": 30,
+        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+        "verified_remote_acquisition": true,
+        "acquisition_parent_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
+        "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
+        "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+        "acquisition_commit": "40a5c266322d36dbf30a683f6f632508352145bc",
+        "verified_at_utc": "2026-10-05T06:36:14.933Z",
+        "previous_run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
+        "released_at_utc": "2026-10-05T06:37:31.129Z",
+        "verified_published_packet": "01a150a2b640c188436fe8cd4fc988a2482c57f8"
+      }
     }
   ],
   "automation_audit": {
@@ -1346,6 +1362,47 @@
         }
       },
       "reason": "Preserve verified v09 product evidence before policy-only v010 continuation"
+    },
+    {
+      "checkpoint": {
+        "source_head": "4752bca2d58a61ef5821a0556b6480fc527fac80",
+        "owner_head": "c21d47d8d5d0c59b1ae9795258fc21cb3667a127",
+        "processed_at_utc": "2026-10-05T06:27:01.193Z",
+        "run_id": "manual-chart-risk-policy-20261005T061947755Z",
+        "input_heads": {
+          "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+          "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+          "41": "c21d47d8d5d0c59b1ae9795258fc21cb3667a127",
+          "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+          "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+          "46": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
+        },
+        "global_head": "9cd598c5564827418115ebb15c1c88a0e7811bab",
+        "qgv_architecture_head": "2ba29b048c8601145c4a2cca0f85299c07262286",
+        "platform_owner_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+        "platform_storage_auth_audit_head": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+        "approval_effective_kst": "2026-10-05T14:18:36+09:00",
+        "status": "RISK_POLICY_ADOPTED_EXISTING_PRODUCT_EVIDENCE_REUSED_NO_NEW_PRODUCTION_GATE_CLOSURE",
+        "evidence_refs": [
+          "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/HANDOFF.md",
+          "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json",
+          "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md"
+        ],
+        "ci_terminal_claim": false,
+        "semantic_input_fingerprint": "ed2f3a1be326fdc9d918dfbc9a158a917d03dc18411e1ae20f3f6301e6fc16f2",
+        "ci_terminal_observations": {
+          "latest_a3_non_FPIA_FAILURE": 6,
+          "latest_a3_FPIA": "IN_PROGRESS",
+          "integration_bundle_success_claim": false
+        },
+        "policy_version": "chart-v0.10",
+        "new_product_verification": false
+      },
+      "immutable_state_ref": "40a5c266322d36dbf30a683f6f632508352145bc:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
     }
   ],
   "pending_history": [
@@ -1387,10 +1444,40 @@
       "disposition": "NEW_EXACT_A3_CI_DELTA_6_FAILURES_CONSUMED_ONE_RUNNING",
       "receipt": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json",
       "consumed_at_utc": "2026-10-05T05:57:20.531Z"
+    },
+    {
+      "immutable_state_ref": "40a5c266322d36dbf30a683f6f632508352145bc:implementation/experiments/chart-contract-v0.1/automation/STATE.json",
+      "pending": [
+        {
+          "kind": "READ_ONLY_OWNER_DEPENDENCY_CI",
+          "pr": 46,
+          "owner_head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "runs": [
+            {
+              "id": 37267962000,
+              "name": "track-c-fpia",
+              "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+              "attempt": 1,
+              "status": "in_progress",
+              "conclusion": null,
+              "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000"
+            }
+          ],
+          "last_observed_at_utc": "2026-10-05T05:59:21.347883+00:00",
+          "required_disposition": "Re-read exact run+attempt+head/job/log; consume actual terminal status; six other owner workflows already failed with two deterministic D002 self-constraint regressions. No retry/dispatch/owner branch write. Terminal CI does not close A-G3.",
+          "evidence_refs": [
+            "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_LATE_STATUS.json",
+            "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json"
+          ]
+        }
+      ],
+      "disposition": "EXACT_TERMINAL_FAILURE_CONSUMED_NO_RETRY_OTHER_OWNER_ACTION_REQUIRED",
+      "consumed_at_utc": "2026-10-05T06:37:31.129Z",
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json"
     }
   ],
   "prepared_publication": {
-    "status": "PREPARED_UNPUBLISHED",
+    "status": "VERIFIED_REMOTE_PUBLICATION",
     "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
     "source_start_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
     "subject_head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
@@ -1400,7 +1487,9 @@
       "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/HANDOFF.md",
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
     ],
-    "do_not_advance_processed_before_remote_verification": true
+    "do_not_advance_processed_before_remote_verification": true,
+    "evidence_commit": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
+    "verified_at_utc": "2026-10-05T06:37:31.129Z"
   },
   "owner_actions_current": {
     "fpia_latest_source": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
