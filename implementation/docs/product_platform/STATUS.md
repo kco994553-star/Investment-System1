@@ -1,5 +1,7 @@
 # Product Platform independent audit — 2026-10-05
 
+Current authoritative scoped checkpoint: [automation/STATE.json](automation/STATE.json) and [automation/CHECKPOINT.md](automation/CHECKPOINT.md). They record current owner78a5146, exact Main audit consumption receipt5989810728,9 Product blockers, and lane-specific READY/WAIT/trigger conditions. The capability/intake tables below preserve the historical17244b4 harness checkpoint; stale pins/early pending CI/old construction findings must not override the current source-pinned state. New loop policy is [SSOT_EXECUTION_LOOP.md](automation/SSOT_EXECUTION_LOOP.md).
+
 Overall: **PARTIAL**. The separate synthetic harness has verified bounded negative gates; no real financial-account platform, production integration or institutional security claim is made. A successful mock is not a real capability receipt.
 
 This is an independent review packet on `codex/product-platform-foundation-2026-10-05`, based on canonical `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. New source lives only in `investment_system.product_platform`. Fresh owner `codex/product-platform-audit-v1` publishes a separate `investment_system.platform` contract; it remains read-only. See OWNER_FINDINGS.md for historical import failures and successor validation findings. The owner's live completion is never inferred from this tool's tests. Audit-only auth/API fixtures do not advance the admitted Product Auth/API implementation status.
@@ -23,7 +25,7 @@ This is an independent review packet on `codex/product-platform-foundation-2026-
 
 Production blockers are not all user decisions. Owner import/validation repairs, accepted contract/read route, real schema documentation, closed-source mapping, complete accounting fixture and audit coverage are eligible independent D1/D2 owner work. Actual credential/account connection, production auth, tenant-policy or protected semantic changes, paid connector, trade execution, canonical/deploy remain D3 under the latest user direction.
 
-## Fresh upstream intake
+## Historical upstream intake — retained, not current authority
 
 | Read-only dependency | Exact subject | Rejudgement |
 |---|---|---|

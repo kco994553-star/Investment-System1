@@ -1,0 +1,96 @@
+{
+  "schema": "platform-ssot-loop-bootstrap-receipt-v1",
+  "observed_at_utc": "2026-10-05T07:38:31.333831+00:00",
+  "parent": "8f80395f25119af6b2d78e0d41fc168d515f4746",
+  "publication_identity": "containing commit; remote and local staged tree must match",
+  "verification": "PASS: structural queue/WAIT/boundary/link checks; no Product test execution",
+  "checks": {
+    "all_task_classes_valid": true,
+    "no_ready_tasks": true,
+    "six_wait_guards_zero": true,
+    "nine_deduplicated_blockers_wait": true,
+    "metric_arithmetic": true,
+    "ten_capabilities_valid": true,
+    "consumer_is_separate_from_source_adoption": true,
+    "config_readbacks_all_true": true,
+    "event_filter_narrow": true,
+    "unattended_not_overclaimed": true,
+    "no_source_or_D3_changes": true,
+    "no_tests_replayed": true,
+    "link:SSOT_EXECUTION_LOOP.md:STATE.json": true,
+    "link:CHECKPOINT.md:SSOT_EXECUTION_LOOP.md": true,
+    "link:CHECKPOINT.md:STATE.json": true
+  },
+  "Main_receipt": 5989810728,
+  "immutable_fixture_receipt_revalidated_this_execution": {
+    "head": "8f80395f25119af6b2d78e0d41fc168d515f4746",
+    "artifacts": 13,
+    "sha256_and_bytes": "PASS",
+    "scope": "reuse published synthetic23; not actual runtime"
+  },
+  "candidate_patch_revalidated_this_execution": {
+    "head": "b517a09856e9c7414887ae15d496ef6370f243c2",
+    "sha256": "ecec8109aec1edffe0d59cbcd62f79668b4356e7ebce93226067701c2ab971f1",
+    "result": "PASS",
+    "scope": "reuse published disposable12; no actual owner adoption"
+  },
+  "failure_history": [
+    {
+      "kind": "RETRY/tool URL",
+      "original": "Branch GET using encoded slash returned HTTPError",
+      "recovery": "Approved repository branches collection GET succeeded; exact branch pins obtained",
+      "Product_finding": false
+    }
+  ],
+  "prior_failure_history_preserved": [
+    "Original SA01/SA02 expected-RED receipts",
+    "Statement fixture RED17failures/2errors/1control and FIRST_GREEN20 then GREEN23 remain at exact previous commit"
+  ],
+  "scheduler_proof": {
+    "create_and_prompt_readback": "PASS",
+    "trigger_filter_readback": "NOT_EXPOSED",
+    "actual_event_delivery_or_unattended_action": "NOT_VERIFIED"
+  },
+  "artifact_manifest": [
+    {
+      "path": "implementation/docs/product_platform/AUDIT_EXECUTION_POLICY.md",
+      "sha256": "0bac7f34bb0367ac8337aa8e7998a6cae14547dc06c11b3582b5465c1e428fca",
+      "bytes": 4317
+    },
+    {
+      "path": "implementation/docs/product_platform/CURRENT_HANDOFF.md",
+      "sha256": "920e682f1cea2f34e17478c82e4c1432f9a7df52c7df0767412fc6365e135fe7",
+      "bytes": 7188
+    },
+    {
+      "path": "implementation/docs/product_platform/STATUS.md",
+      "sha256": "3e772e0b716f63a40df2a2f331540c50e8fbdc87896e7209585927846506c3a5",
+      "bytes": 7318
+    },
+    {
+      "path": "implementation/docs/product_platform/automation/SSOT_EXECUTION_LOOP.md",
+      "sha256": "c7bf5cee233a6e59f1e918d576462567e13cb255433b062c067c58a04f6641e8",
+      "bytes": 7573
+    },
+    {
+      "path": "implementation/docs/product_platform/automation/CHECKPOINT.md",
+      "sha256": "02d0459a0a2d6580b55199233a6f13c4bf54d0d7e691c1e68f2b17ea5b559963",
+      "bytes": 6037
+    },
+    {
+      "path": "implementation/docs/product_platform/automation/STATE.json",
+      "sha256": "0151760a182138b411ed31243646012d42ee6e902b5624dd5358b568717f42f5",
+      "bytes": 27952
+    },
+    {
+      "path": "implementation/docs/product_platform/automation/EXECUTOR_PROMPT.md",
+      "sha256": "b9b58e8cc36ba82fcd7bedf32fe59c4f41c81c3af3b716d242b016b85c071677",
+      "bytes": 8421
+    },
+    {
+      "path": "implementation/docs/product_platform/automation/evidence/Main_receipt_5989810728.json",
+      "sha256": "841f9df0e577863acbce2ebb46b561f959c258ad5fabb610c9030c1179b46b06",
+      "bytes": 2431
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Independent Product Platform audit handoff
 
-Branch: `codex/product-platform-foundation-2026-10-05`; base canonical `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. Exact publication HEAD is the containing Git commit/PR metadata, never a fabricated self-reference. STATUS.md contains the capability matrix; AUDIT_EXECUTION_POLICY.md contains the latest D1/D2/D3 boundary.
+Current audit branch: `codex/product-platform-storage-auth-review-2026-10-05`; base canonical `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. Historical fixture source/PR45 head remains `codex/product-platform-foundation-2026-10-05` at17244b4. Exact publication HEAD is the containing Git commit/PR metadata, never a fabricated self-reference. The [autonomous loop state](automation/STATE.json) and [checkpoint](automation/CHECKPOINT.md) are the current scoped queue/capability/receipt references; old reports remain historical.
 
 The original attached build Work was narrowed by the latest user to independent audit. New fixture-only implementation is retained as a bounded audit tool. No production owner source is replaced. No canonical merge, deployment, real credential, tenant policy or investment calculation-method change occurred.
 
@@ -19,6 +19,8 @@ Current CDR-018 Main coordinator, GPT Work `gpt-work-main-2026-10-05-3a80dcef644
 | Integration identity | Integration/FPIA owner | Exact integrated-result SHA, code identity, authenticated manifest and independent FPIA receipt | Local tests and old-byte preservation do not replace merge-result FPIA; no canonical merge performed here |
 
 ## Current risk-proportional checkpoint
+
+Controlling loop supplement: user's 2026-10-05 16:15:41KST [SSoT Autonomous Execution Loop](automation/SSOT_EXECUTION_LOOP.md). Fresh-read→reconcile→discover every approved lane→execute/verify/publish→update SSoT→re-evaluate repeats until actual WAIT/D3/DONE. Main receipt5989810728 consumes exact8f80395 fixture and b517a098 patch; its artifact hashes match. This supersedes the earlier “Main receipt unconfirmed” statement below for the audit-return consumer only. Source owner ACK/adoption stays unconfirmed; source78a5146 unchanged. Main consumption acceptance1 is closed separately from9 Product blockers still open. Event/follow-up share one writer/queue and exact input dedup; no new competing implementation. See [current WAIT references and triggers](automation/STATE.json).
 
 The user directive received 2026-10-05 15:13:43 Asia/Seoul supersedes conflicting execution defaults: [policy](audits/risk_proportional_2026-10-05/POLICY.md), [capability and blocker report](audits/risk_proportional_2026-10-05/REPORT.md), [Main routing packet](audits/risk_proportional_2026-10-05/MAIN_HANDOFF.md). Owner78a5146 is unchanged; PPF-003 and blank-identity PPF-005 were already independently closed at prior evidence11dba838. Trusted runtime ownership remains open. Two SA01/SA02 source patch candidates pass12 affected checks in a disposable copy; owner adoption/closure remains pending. Reuse prior RED/security/CI receipts, no full repository regression by default, one auditor, no repeated Supabase search (NOT_CONFIRMED / NOT_RUN). The report defines9 tracked blocker groups, zero new/closed this run; candidate preparation is not Product closure.
 
