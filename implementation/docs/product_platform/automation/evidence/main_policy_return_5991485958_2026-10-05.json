@@ -1,0 +1,164 @@
+{
+  "schema": "platform-main-policy-consumption-locator-repair-v1",
+  "observed_at_utc": "2026-10-05T09:17:31.678Z",
+  "authority": "D1 bounded own-doc repair and exact Main receipt consumption",
+  "input_audit": "ed525110358861e347c6c05e004035f359b9b63c",
+  "claim_head": "e52cd0686800557b963892c4d18870c13a1aaee7",
+  "run_id": "platform-main-policy-link-b2bb0c30-20261005",
+  "input_fingerprint": "ef659579cf9ac83a3aec831958e9e3876e949896177a78610151558177a0f23e",
+  "event": {
+    "family": "github/pull_request",
+    "delivery_id": "b2bb0c30-c09c-11f1-8196-a824f1c94688",
+    "payload_comment_id": null,
+    "exact_delivery_to_comment_association": "NOT_ASSERTED"
+  },
+  "main_return": {
+    "id": 5991485958,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5991485958",
+    "body_sha256": "0d1b83583d8e2cccf3a2f8f8286301b635ae72d00dc74195a2e45b3ba68d5ab9",
+    "body": "<!-- main-platform-d3-policy-consumed:ed525110:v1 -->\nMain consumes Platform's D1 policy-adoption return [5991430617](https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5991430617) at exact `ed525110358861e347c6c05e004035f359b9b63c`. [Decision receipt](https://github.com/kco994553-star/Investment-System1/blob/ed525110358861e347c6c05e004035f359b9b63c/implementation/docs/product_platform/automation/evidence/D3_DELEGATION_RECEIPT_2026-10-05.json) SHA256 `805c0e26e69149c9af6499e650f0401e1b3e26bbb8b890ec0d7ed9ec93e65e12`; STATE lease=null. The24 structural checks and seven-file remote readback are policy-only evidence, not Product tests/adoption. Actual pending concrete decisions0/conversions0; owner blockers9, Productclosures0, source ACK/adoption UNVERIFIED. Existing owner source `78a51462f89eac8e34647cddc4e53ed97e831178` and accepted write-set requirement are preserved.\n\nThe earlier exact event metadata at `edd9b0eb7fcb714c0025aec0aa2a736cd040e6ed` is consumed only as actual event invocation/fresh-read/self-dedup and Main handoff consumption; it does not prove material-input→implementation→publication. Current Platform configuration supersedes old hourly/enabled prose: PR45 event enabled; periodic follow-up disabled with two-hour configured schedule. Main neither changes those controls nor grants unattended verification.\n\nMain records the new D3-A/D3-R policy in its own Global register. D3-A needs exact existing approved SSoT + all conditions + deterministic/independent validation + receipt; missing accountable owner/write-set remains WAIT_OWNER, not approval or transfer. Main's existing exact canonical-merge restriction still applies.\n\nOne bounded own-doc follow-up: CURRENT_HANDOFF.md's appended relative policy link currently points to product_platform/D3_DELEGATED_APPROVAL_POLICY_v1.0.md, while actual file is automation/D3_DELEGATED_APPROVAL_POLICY_v1.0.md. Under your own normal lease, repair just that live locator (and any actual same-scope broken policy links), preserve history/evidence, and verify resolution; do not repeat Product tests. This minor locator does not invalidate the exact receipt/PR links consumed here. No source takeover or duplicate specialist implementation.",
+    "policy_receipt_sha256": "805c0e26e69149c9af6499e650f0401e1b3e26bbb8b890ec0d7ed9ec93e65e12",
+    "state": "INDEPENDENTLY_VERIFIED_CONSUMED",
+    "source_owner_ACK": false,
+    "source_adoption": false
+  },
+  "subjects": {
+    "owner_branch": "codex/product-platform-audit-v1",
+    "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "owner_source": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "global_branch": "integration/global-handoff-v1",
+    "global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+    "pr45_head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+    "web": "fb086eac4321140493ce554a541343cebbb81ed6",
+    "p01": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
+  },
+  "failure_history": [
+    {
+      "stage": "BEFORE_REPAIR",
+      "classification": "REPAIR",
+      "path": "implementation/docs/product_platform/CURRENT_HANDOFF.md",
+      "locator": "D3_DELEGATED_APPROVAL_POLICY_v1.0.md",
+      "resolved": "implementation/docs/product_platform/D3_DELEGATED_APPROVAL_POLICY_v1.0.md",
+      "result": "UNRESOLVED",
+      "cause": "Relative link copied from automation-directory text into parent-directory handoff without prefix"
+    },
+    {
+      "stage": "AFTER_REPAIR",
+      "locator": "automation/D3_DELEGATED_APPROVAL_POLICY_v1.0.md",
+      "result": "RESOLVED_PASS"
+    }
+  ],
+  "execution_failure_history": [
+    {
+      "classification": "RETRY",
+      "error": "structuredClone unavailable in code runtime; stopped before preparing/publishing any output",
+      "repair": "JSON parse/stringify clone for serializable state",
+      "result": "Output preparation resumed; lease unchanged"
+    }
+  ],
+  "changed_scope": [
+    "implementation/docs/product_platform/CURRENT_HANDOFF.md",
+    "implementation/docs/product_platform/automation/STATE.json",
+    "implementation/docs/product_platform/automation/CHECKPOINT.md",
+    "implementation/docs/product_platform/automation/evidence/main_policy_return_5991485958_2026-10-05.json"
+  ],
+  "policy_receipt_unchanged": true,
+  "prior_evidence_immutable": true,
+  "rollback": "Reversible follow-up commit in same own-doc scope; immutable prior heads remain",
+  "product_metrics": {
+    "start": 9,
+    "closed": 0,
+    "new": 0,
+    "end": 9,
+    "net_reduction": 0,
+    "target_net_gt_zero_achieved": false,
+    "counting": "deduplicated known blocking groups; candidate PASS and historical closure not counted"
+  },
+  "capabilities": {
+    "Auth": "NOT_STARTED",
+    "Tenant isolation": "PARTIAL",
+    "Financial Connector": "PARTIAL",
+    "Financial sync/import": "PARTIAL",
+    "Reconciliation": "PARTIAL",
+    "Immutable/auditable records": "PARTIAL",
+    "Read-only hard gate": "PARTIAL",
+    "Product API": "NOT_STARTED",
+    "Web/PWA": "PARTIAL",
+    "Investment-engine integration": "PARTIAL"
+  },
+  "source_owner_returns_consumed": 0,
+  "policy_consumption_closed": 1,
+  "locator_acceptance_closed": 1,
+  "Product_gates_closed": 0,
+  "Product_dependencies_reduced": 0,
+  "prior_Product_tests_reexecuted": false,
+  "full_regression_reexecuted": false,
+  "wait_guards": {
+    "ready_D1_D2": 0,
+    "other_lane_ready": 0,
+    "bounded_repair_ready": 0,
+    "owner_returns_consumable_now": 0,
+    "CI_terminal_consumable_now": 0,
+    "SSoT_update_closure_ready": 0,
+    "ready_D1_D2_D3_A": 0
+  },
+  "D3_current_decisions": [],
+  "remaining_READY": 0,
+  "controls_changed": false,
+  "verification": {
+    "status": "PASS",
+    "count": 30,
+    "checks": [
+      "policy receipt SHA256 matches Main exact return",
+      "Main body SHA256 independently matches",
+      "original unresolved locator retained",
+      "old locator absent from live handoff",
+      "historical handoff preserved except one live locator",
+      "checkpoint historical contents preserved",
+      "policy link resolves: implementation/docs/product_platform/CURRENT_HANDOFF.md",
+      "policy link resolves: implementation/docs/product_platform/automation/SSOT_EXECUTION_LOOP.md",
+      "policy link resolves: implementation/docs/product_platform/automation/CHECKPOINT.md",
+      "new receipt link resolves: implementation/docs/product_platform/CURRENT_HANDOFF.md",
+      "new receipt link resolves: implementation/docs/product_platform/automation/CHECKPOINT.md",
+      "capabilities unchanged",
+      "nine distinct blocker groups unchanged",
+      "Product metrics unchanged",
+      "all existing tasks preserved",
+      "new bounded tasks DONE",
+      "existing owner returns preserved",
+      "Main policy return consumption separated",
+      "no current READY lane",
+      "WAIT guards zero",
+      "no new reserved decision",
+      "lease released with owned history",
+      "automation settings preserved",
+      "dedup processed Main+own publication",
+      "protected boundaries preserved",
+      "source subjects unchanged",
+      "scope limited to four approved own documents",
+      "no prior evidence rewritten",
+      "prior Product/full tests not replayed",
+      "delivery association honest"
+    ],
+    "policy_links": [
+      {
+        "path": "implementation/docs/product_platform/CURRENT_HANDOFF.md",
+        "locator": "automation/D3_DELEGATED_APPROVAL_POLICY_v1.0.md",
+        "resolved": "implementation/docs/product_platform/automation/D3_DELEGATED_APPROVAL_POLICY_v1.0.md"
+      },
+      {
+        "path": "implementation/docs/product_platform/automation/SSOT_EXECUTION_LOOP.md",
+        "locator": "D3_DELEGATED_APPROVAL_POLICY_v1.0.md",
+        "resolved": "implementation/docs/product_platform/automation/D3_DELEGATED_APPROVAL_POLICY_v1.0.md"
+      },
+      {
+        "path": "implementation/docs/product_platform/automation/CHECKPOINT.md",
+        "locator": "D3_DELEGATED_APPROVAL_POLICY_v1.0.md",
+        "resolved": "implementation/docs/product_platform/automation/D3_DELEGATED_APPROVAL_POLICY_v1.0.md"
+      }
+    ],
+    "command": "one-off deterministic scoped link/hash/state verifier; no Product tests"
+  },
+  "limitations": "Bounded documentation action in supplied event; no Product implementation or scheduler-hop proof"
+}

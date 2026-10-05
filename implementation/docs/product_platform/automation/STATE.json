@@ -1,9 +1,9 @@
 {
   "schema": "platform-ssot-autonomous-execution-state-v1",
-  "observed_at_utc": "2026-10-05T09:05:13.520Z",
+  "observed_at_utc": "2026-10-05T09:17:31.678Z",
   "directive_received_at_kst": "2026-10-05T16:15:41+09:00",
   "role": "Product Platform independent specialist audit",
-  "execution_state": "IN_PROGRESS",
+  "execution_state": "WAIT_DEPENDENCY",
   "acceptance_complete": false,
   "publication_branch": "codex/product-platform-storage-auth-review-2026-10-05",
   "publication_identity": "Containing commit; publication completed on branch before this checkpoint is authoritative",
@@ -110,6 +110,12 @@
       "subject": "Current automation followup enablement",
       "classification": "CURRENT",
       "conclusion": "Fresh actual settings supersede historical enabled/hourly text: followup disabled, interval two hours; preserved unchanged. PR45 event enabled; material continuation unverified."
+    },
+    {
+      "subject": "Main D3 policy consumption and bounded locator return",
+      "classification": "CURRENT",
+      "ref": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5991485958",
+      "conclusion": "Policy receipt consumed independently; one wrong relative live policy locator repaired. Not source-owner ACK or Product closure."
     }
   ],
   "capabilities": {
@@ -278,9 +284,11 @@
     "new_implementation_owner_source_returns_consumed": 0,
     "Product_gates_closed": 0,
     "Product_integration_dependencies_reduced": 0,
-    "automation_acceptance_criteria_closed_this_run": 1,
+    "automation_acceptance_criteria_closed_this_run": 0,
     "automation_closed_scope": "First event invocation/fresh-read/self-dedup no-op only; no Product closure",
-    "loop_handoff_Main_consumption_closed_this_run": 1
+    "loop_handoff_Main_consumption_closed_this_run": 0,
+    "policy_consumption_acceptance_closed_this_run": 1,
+    "locator_acceptance_closed_this_run": 1
   },
   "owner_actions_remaining": 9,
   "patch_ready_owner_actions": 2,
@@ -312,6 +320,23 @@
       "implementation_owner_ACK": "UNVERIFIED",
       "source_adoption": "NOT_CONFIRMED",
       "required_return": "Accountable writer plus accepted contracts.py/affected-test write set; actual source adoption"
+    },
+    {
+      "id": "D3-policy-Main-consumer-ed525110",
+      "scope": "Policy adoption receipt only; no Product source adoption",
+      "state": "CLOSED",
+      "observed_transitions": [
+        {
+          "state": "SENT",
+          "comment_id": 5991430617
+        },
+        {
+          "state": "CONSUMED",
+          "comment_id": 5991485958
+        }
+      ],
+      "acceptance": "Exact audit head and immutable policy receipt SHA256 independently match; Main ACK not implementation owner ACK",
+      "unobserved_intermediate_states_not_invented": true
     }
   ],
   "last_processed_comment_ids": [
@@ -319,7 +344,9 @@
     5989182963,
     5989651392,
     5989810728,
-    5990208500
+    5990208500,
+    5991430617,
+    5991485958
   ],
   "self_publication_markers": [
     "platform-ssot-loop",
@@ -486,6 +513,20 @@
       "classification": "DONE",
       "reference": "https://github.com/kco994553-star/Investment-System1/blob/19a1c3a1470cd974983fd489760516ee247a40b4/implementation/docs/coordination/evidence/main_runtime_receipt_2026-10-05/RECEIPT.json",
       "acceptance": "Exact8599558, own comment5990208500 and prior Main5989810728 match; source_ack/adoption false retained; bounded independent metadata verification"
+    },
+    {
+      "id": "consume:main-D3-policy-5991485958",
+      "classification": "DONE",
+      "risk": "FAST",
+      "reference": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5991485958",
+      "acceptance": "Main's exact ed525110 policy receipt SHA256 matches; policy-only consumer closure"
+    },
+    {
+      "id": "repair:current-policy-relative-locator",
+      "classification": "DONE",
+      "risk": "FAST",
+      "reference": "automation/evidence/main_policy_return_5991485958_2026-10-05.json",
+      "acceptance": "One live locator repaired to automation/D3_DELEGATED_APPROVAL_POLICY_v1.0.md; every policy Markdown link in own scope resolves; historical evidence preserved"
     }
   ],
   "ready_tasks": [],
@@ -514,26 +555,7 @@
     "SSoT_update_closure_ready": 0,
     "ready_D1_D2_D3_A": 0
   },
-  "lease": {
-    "run_id": "platform-main-policy-link-b2bb0c30-20261005",
-    "writer": "Product Platform independent specialist audit /root",
-    "scope": [
-      "implementation/docs/product_platform/CURRENT_HANDOFF.md",
-      "implementation/docs/product_platform/automation/STATE.json",
-      "implementation/docs/product_platform/automation/CHECKPOINT.md",
-      "implementation/docs/product_platform/automation/evidence/main_policy_return_5991485958_2026-10-05.json"
-    ],
-    "acquired_at_utc": "2026-10-05T09:14:28.305Z",
-    "expires_at_utc": "2026-10-05T09:44:28.305Z",
-    "parent": "ed525110358861e347c6c05e004035f359b9b63c",
-    "source_fingerprints": {
-      "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
-      "global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
-      "main_comment_id": 5991485958,
-      "receipt_sha256": "805c0e26e69149c9af6499e650f0401e1b3e26bbb8b890ec0d7ed9ec93e65e12",
-      "task_input": "ef659579cf9ac83a3aec831958e9e3876e949896177a78610151558177a0f23e"
-    }
-  },
+  "lease": null,
   "lease_protocol": {
     "scope": "This audit branch only",
     "claim": "Exact fresh parent commit, force=false update/readback before write-producing READY; losing child re-reads",
@@ -654,14 +676,16 @@
   },
   "next_automatic_action": "On material owner/source/contract/CI/approved-decision/tool-target change, fresh-read and reconcile; consume actual return with proportional verification, publish/rejudge blocker, then execute every newly READY approved task. No unchanged-state busy loop or duplicate owner implementation",
   "last_execution": {
-    "run_id": "platform-d3-delegation-2026-10-05T090201094Z",
-    "parent": "edd9b0eb7fcb714c0025aec0aa2a736cd040e6ed",
-    "claim_head": "376295ce5112afadc6aa9ef75072709fc3ba4c09",
-    "execution": "USER_POLICY_ADOPTION_AND_PENDING_RECLASSIFICATION",
+    "run_id": "platform-main-policy-link-b2bb0c30-20261005",
+    "parent": "ed525110358861e347c6c05e004035f359b9b63c",
+    "claim_head": "e52cd0686800557b963892c4d18870c13a1aaee7",
+    "execution": "MAIN_POLICY_RECEIPT_CONSUMPTION_AND_BOUNDED_LOCATOR_REPAIR",
     "Product_blockers_closed": 0,
     "owner_source_returns_consumed": 0,
     "prior_tests_reexecuted": false,
-    "ownership_changed": false
+    "ownership_changed": false,
+    "evidence": "automation/evidence/main_policy_return_5991485958_2026-10-05.json",
+    "input_fingerprint": "ef659579cf9ac83a3aec831958e9e3876e949896177a78610151558177a0f23e"
   },
   "decision_reclassification": {
     "pending_concrete_decisions_start": 0,
@@ -695,6 +719,31 @@
       "scope": "Future canonical/deploy action",
       "classification": "CASE_BY_CASE_NOT_GRANTED",
       "reason": "No concrete action in this audit write set; independently satisfy all D3-A conditions or retain D3-R"
+    }
+  ],
+  "lease_history": [
+    {
+      "run_id": "platform-main-policy-link-b2bb0c30-20261005",
+      "writer": "Product Platform independent specialist audit /root",
+      "scope": [
+        "implementation/docs/product_platform/CURRENT_HANDOFF.md",
+        "implementation/docs/product_platform/automation/STATE.json",
+        "implementation/docs/product_platform/automation/CHECKPOINT.md",
+        "implementation/docs/product_platform/automation/evidence/main_policy_return_5991485958_2026-10-05.json"
+      ],
+      "acquired_at_utc": "2026-10-05T09:14:28.305Z",
+      "expires_at_utc": "2026-10-05T09:44:28.305Z",
+      "parent": "ed525110358861e347c6c05e004035f359b9b63c",
+      "source_fingerprints": {
+        "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
+        "global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+        "main_comment_id": 5991485958,
+        "receipt_sha256": "805c0e26e69149c9af6499e650f0401e1b3e26bbb8b890ec0d7ed9ec93e65e12",
+        "task_input": "ef659579cf9ac83a3aec831958e9e3876e949896177a78610151558177a0f23e"
+      },
+      "claim_head": "e52cd0686800557b963892c4d18870c13a1aaee7",
+      "released_at_utc": "2026-10-05T09:17:31.678Z",
+      "result": "Bounded own-doc repair and policy consumer receipt; Product WAIT_DEPENDENCY"
     }
   ]
 }
