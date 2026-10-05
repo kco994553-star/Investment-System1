@@ -1,3 +1,183 @@
+# QGV G1/G2 approved semantics and G/C evidence — current scoped handoff
+
+STATUS: G1_G2_SEMANTIC_APPROVED / D1_D2_G_C_COMPARISON_COMPLETE_INACTIVE / METHODS_UNSELECTED.
+This checkpoint supersedes old next-step and unresolved-intent prose only. Prior G/V
+audit, simulations, source, prior/history and earlier approval evidence are preserved.
+
+## Approved semantic contract
+
+G1 SEMANTIC: APPROVED — LONG-HORIZON REALIZED GROWTH.
+LEGACY METHOD: REVENUE_YOY = LEGACY / INTERIM_PROXY.
+G2 SEMANTIC: APPROVED — NO AUTOMATIC CROSS-METRIC SUBSTITUTION WITHOUT SEMANTIC AUTHORITY.
+LEGACY EPS FALLBACK: FCF / PRIOR REVENUE - 1 = LEGACY / METHOD_MISMATCH.
+METHOD SELECTION: NOT_APPROVED.
+MIGRATION: NOT_APPROVED.
+
+Read lanes/semantic/root/approval.json and SEMANTIC_CONTRACT.md. Approval authority
+is the explicit user instruction received2026-10-05T14:16:16+09:00, not technical
+PASS/CI/Handoff. Approval was authenticated on this review branch at
+2ba29b048c8601145c4a2cca0f85299c07262286; approval SHA256
+5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c.
+The current contract clarifies that future-candidate PIT prerequisites do not
+retroactively judge legacy history. Exact approval-claim input remains archived.
+
+Existing Factor IDs next_3_5y_growth and eps_fcf_per_share_growth are unchanged.
+Symbolic legacy aliases are inactive audit descriptors; actual production
+method_id/version remain unregistered. Same factor with a future distinct method/
+version must retain separate evaluation lineage. No old score is recalculated,
+relabeled in production or given invented historical attribution.
+
+## Authoritative source and delivery
+
+- Evidence-only branch: codex/qgv-architecture-reconciliation-review-2026-10-05.
+  Fresh authenticated input4d53aa3047ba397cda992d2e784316a9d889bc22; own semantic
+  approval/lease claim2ba29b048c8601145c4a2cca0f85299c07262286.
+  Resolve actual remote ref for the final evidence delivery HEAD; no self-SHA is invented.
+- Audited source owner: codex/qgv-missing-data-decision-gate-2026-10-05 @
+  4fb08a05728d83519b72a2bd995669f0cb06003a. Its shared owner lease
+  qgv-b47-muupb538 remains active for B4/B7 work at intake. Termination/release
+  is NOT_EVIDENCED by authenticated owner STATE. Unpublished owner files are context.
+  This Work neither steals/expires that lease nor modifies owner STATE/plan/receipt.
+- Canonical/default b8e39a2196a6d7794a04a0cd5393c68329e126ca.
+  PR44 Draft/Open/unmerged cb1906b207623168fd70f3dcdb5b30f2d82d807d.
+  PR42 Draft/Open/unmerged11d2f25ef8bef3459ca969f50eec190099f15ecb.
+- Global fresh-read e36bec9be6be3bdf60ac7fd4ef8379a2ba93a7ae → publication
+  observation7a29f5aa0620a0e1a889d1e41ab2823c41bce17b. GCH-018 adds Main's
+  Draft PR46 compound FPIA identity consumer tools/tests; actual authentication
+  NOT_VERIFIED, integration acceptance BLOCKED. It grants no QGV production semantics
+  and does not silently substitute this Work's historical source pins. Main's routing
+  already distinguishes independent QGV reconciliation from unfinished owner receipt.
+  Current narrow QGV limits prevail over historical broader CDR-015 delegation.
+  Global and other owner branches are read-only.
+- Prior27 local artifact contents match authenticated4d53 remote Git blobs.
+  Source owner/PR44/PR42/canonical inputs were unchanged. Original G/V evidence
+  is reused; broad audit/M1–M5/Remote Recovery and old79 checks are not repeated.
+- Own lanes/CONTROL.json lease is released by final scoped evidence publication.
+  The Missing-Data owner lease is separate. Read fresh_intake.json and COMPLETION_RECEIPT.json.
+
+## LANE G — bounded candidate comparison
+
+Read lanes/semantic/g/G_METHOD_CANDIDATE_COMPARISON.md, G_CANDIDATE_MATRIX.json
+and G_CANDIDATE_SOURCE_REQUESTS.json. Eight finite entries cover legacy plus
+three G1 families and G2 A–D.
+
+| Candidate | Independent technical disposition |
+|---|---|
+| Legacy last revenue YoY | KEEP_ARCHIVAL_ONLY; not authoritative long-horizon target |
+| Realized endpoint summary | REJECT as standalone magnitude-and-persistence method; component investigation remains possible |
+| Matched realized period sequence | MORE_EVIDENCE_REQUIRED; summary/window/normalization unselected |
+| Separate magnitude/persistence assessments | ALIGN candidate to approved meaning; no extra factor, score, blend or selected formula |
+| G2 A — unavailable | Principle-compatible contract candidate; no zero/N/A/denominator/ranking implication |
+| G2 B — comparable per-share alternative | MORE_EVIDENCE_REQUIRED; units do not establish EPS equivalence |
+| G2 C — distinct cash-flow method | MORE_EVIDENCE_REQUIRED; requires separate economic/method authority |
+| G2 D — conditional applicability | MORE_EVIDENCE_REQUIRED; missing/favorable values cannot select N/A or a substitute |
+
+G1 comparison covers economic meaning,3Y/5Y input identities, PIT/vintage/
+restatement, sparse/young/cyclical/sector inputs and reproducibility. G2 covers
+claim/share basis, capital structure/dilution, volatility/domain, PIT and missingness.
+Synthetic paths with identical endpoints have different persistence; the same
+latest pair hides differing older history. Later revisions preserve source identity
+and cannot become then-known historical observations. Per-share EPS/cash-flow
+quantities can move in opposite directions. These are input-property diagnostics.
+
+All candidate factor scores, aggregate/composite/order, calibrated confidence,
+real3Y/5Y stability and sector bias estimates are UNCOMPUTED. No new formula,
+CAGR/mean/median, horizon, count, interpolation, forecast inclusion or numeric
+default is supplied. Six finite source/authority requests identify missing exact
+archived bytes, realized-period vintages, earnings/share/corporate actions,
+cash-flow definitions and method/applicability/admission authority.
+
+Real cached-source replay remains NOT_RUN_SOURCE_BLOB_ABSENT. Historical source
+closure and runtime identity/version dispatch remain migration blockers. Future
+PIT claims require each consumed period/source/as_of/available_at/published_at/
+method-version; latest restatements cannot be substituted into historical runs.
+
+## LANE C — Result Admission & Consumer Safety
+
+Read lanes/semantic/consumer/CONTRACT.md, assessment_ref_carrier.schema.json,
+SOURCE_AUTHORITY_MATRIX.json and CONTRACT_ACCEPTANCE_RESULTS.json.
+
+One inactive reference/scope bundle preserves independent B2/B3/B5/B6 clauses.
+Producer method/input/source/context and nine assessment refs remain distinct:
+method identity, applicability, evidence admission, provenance, PIT, coverage,
+confidence, completeness and scoring validity. Aggregate and consumer bind exact
+upstream result/assessment refs; consumer purpose/namespace/policy/admission is
+separate. A correctly hashed unrelated document cannot stand in for a method,
+input, result or assessment. The consumer does not rescore economics.
+
+UNASSESSED is unknown, not VALID and not necessarily INVALID. REJECTED
+VERSION_MISMATCH/CALCULATION_ERROR can retain the literal numeric diagnostic
+and original reason, with semantic validity/admission NOT_EVALUATED. Structure
+PASS grants no ranking, portfolio, publication or Official authority. Unknown
+applicability is not N/A; N/A proof and denominator permission are distinct.
+Weights/Profile cannot waive relevant shared/local evidence or mutate Official.
+
+Critical blocker persists: existing numeric VERSION_MISMATCH/CALCULATION_ERROR
+and incomplete method/validity evidence can reach reducers/ranking. G economic
+improvement does not make production migration ready while producer assessment
+and consumer admission authority remain absent. Existing hashes/coarse versions,
+source/PIT guards, research disclosure and P01 grant boundaries are preserved.
+
+Fixture limitations: expected synthetic registry, one-child aggregate, empty
+withheld inventory and no admitted-positive policy path. No real applicability,
+confidence/completeness/coverage method, genuine PIT replay, general aggregate
+evaluator, runtime assessment producer or ranking policy is implemented.
+Schema is JSON-parsed; no JSONSchema engine acceptance is claimed.
+
+## B1, V and completion evidence
+
+G1 economic intent and G2 substitution boundary now have explicit semantic
+authority. This adds evidence without approving a concrete method or input role.
+B1 remains MORE_EVIDENCE_REQUIRED; actual requiredness0/20, candidate promotions0.
+Original3 SUPPORTED/10 PROPOSED/7 UNRESOLVED inventory stays historical.
+
+V1/V2 remain PENDING. Seven identities, research prior/history and accepted V
+score sensitivity, weight-order reversal, peer-cohort sensitivity and sparse-history
+contribution-loss evidence remain unchanged. V2 residual metadata methodology
+belongs in existing B2/B3/B5/B6; inactive shared metadata ALIGN and approved
+B4/B7/M1–M5 need no redundant approvals.
+
+G21 + C38 =59 distinct new focused inactive checks PASS; root independently
+reproduced all four G JSON and three C JSON byte-for-byte. These are not economic
+score validation, real PIT/OOS, Actions or genuine scheduler hops. Independent
+review and exact-output acceptance are separately pinned in the completion receipt.
+Protected source/golden/history and previous evidence are compared by final
+remote tree readback; only the authorized scoped Handoff/control are superseded.
+New review Actions/full integration/production migration NOT_RUN. Holdout UNCONSUMED.
+
+## Remaining D3 and next executable work
+
+Read lanes/semantic/root/DECISION_PACKAGE.md. Recommended next minimum bundle:
+existing B2/B3/B5/B6 reference/scope/purpose contract only. Concrete predicates,
+quality rubrics, roles, completeness/confidence/coverage methods, cohort criteria,
+ranking activation/cutoffs and implementation/migration remain separate.
+
+G1 actual method/input/window/domain/normalizer/weight and G2 A–D selection or
+replacement input/predicate are still unapproved. V production selection,
+Composite, WeightOverride runtime, recalculation/history migration, Official/
+grants, PR44/canonical merge, Holdout and PIT relaxation remain protected.
+Literal Composite remains(Q+G)/2. Production migration has not started.
+
+Next independent D1/D2: exact G/C descriptor hashes → bounded shared-versus-local
+producer/aggregate/consumer scope-integration fixtures, preserving unknown/rejected
+reasons without numeric criteria/runtime dispatch. Real G source-only vintage
+bundle is data-dependent on the six exact requests; absent inputs hold only that
+path. Do not repeat completed audits or expand the finite scheduler canary.
+
+## Scheduler separation
+
+0/2 / UNVERIFIED. Manual scheduler hops credited0.
+Remote owner tree has no accepted HOP1/HOP2 output/receipt at intake; HOP1 remains
+blocked by the active owner lease, not waived by this Work. Verify actual owner
+completion/release through authoritative state before the normal next execution.
+Two distinct genuine scheduler executions and exact accepted HOP1→HOP2 linkage
+are still required. Unexposed execution IDs/expected watch evidence are not invented.
+No scheduler STATE, task plan, prompts, cadence or Global Handoff was changed here.
+
+---
+
+# Historical semantic approval claim and G/V evidence — preserved below
+
 # QGV G1/G2 semantic continuation — current scoped checkpoint
 
 STATUS: G1_G2_SEMANTIC_APPROVED / METHOD_SELECTION_NOT_APPROVED / D1_D2_IN_PROGRESS / INACTIVE.

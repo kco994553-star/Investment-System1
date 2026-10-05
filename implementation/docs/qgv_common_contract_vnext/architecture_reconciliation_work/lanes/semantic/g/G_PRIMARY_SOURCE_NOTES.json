@@ -1,0 +1,26 @@
+{
+  "kind": "PRIMARY_ACCOUNTING_METHODOLOGY_CONTEXT",
+  "retrieved_in_current_execution": true,
+  "purpose": "Support explicit economic numerator/share-basis and cash-flow definition distinctions; no production method or legal policy adoption",
+  "sources": [
+    {
+      "title": "IFRS Foundation — IAS 33 Earnings per Share overview",
+      "url": "https://www.ifrs.org/issued-standards/list-of-standards/ias-33-earnings-per-share/",
+      "web_reference": "turn1view1",
+      "supporting_section": "About, paragraphs describing EPS numerator/weighted denominator, basic/diluted presentation and denominator effects",
+      "paraphrase": "EPS has an earnings numerator and period-weighted share denominator. Basic/diluted basis and share transactions affect comparability. This supports explicitly binding numerator, claim and share basis rather than treating every per-share quantity as equivalent.",
+      "scope_caveat": "Accounting methodology context; not proof of any issuer input, actual QGV method authority or past data availability"
+    },
+    {
+      "title": "SEC Corporation Finance — Non-GAAP Financial Measures interpretations",
+      "url": "https://www.sec.gov/rules-regulations/staff-guidance/corporation-finance-interpretations/non-gaap-financial-measures",
+      "web_reference": "turn2view0",
+      "supporting_section": "Questions 102.05 and 102.07; page last update December 13, 2022",
+      "paraphrase": "The guidance distinguishes per-share performance measures from cash-generation liquidity measures and notes that free cash flow lacks a uniform definition. This supports distinct economic measurement identity and an explicit description of cash-flow construction.",
+      "scope_caveat": "The filing-presentation rule is not declared to govern this personal diagnostic app; no legal determination, production restriction or automatic applicability policy is created"
+    }
+  ],
+  "verbatim_quotes": [],
+  "non_primary_search_results_used": false,
+  "production_enabled": false
+}

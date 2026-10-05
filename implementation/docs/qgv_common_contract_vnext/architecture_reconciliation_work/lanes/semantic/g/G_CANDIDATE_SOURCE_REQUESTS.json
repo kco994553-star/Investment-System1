@@ -1,0 +1,116 @@
+{
+  "approval_sha256": "5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c",
+  "authoritative_owner_assignments": "UNRESOLVED; requested roles do not claim ownership",
+  "count": 6,
+  "kind": "FINITE_INACTIVE_DATA_AUTHORITY_REQUESTS",
+  "new_formula": null,
+  "prior_evidence_hashes": {
+    "G_LINEAGE_REPLAY.json": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3",
+    "G_METHOD_REPLAY_MANIFEST.json": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f",
+    "G_SOURCE_READINESS_MATRIX.json": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+  },
+  "production_enabled": false,
+  "requests": [
+    {
+      "acceptance": [
+        "Exact archived byte hash match",
+        "Restoration recorded as evidence; no latest-data substitution"
+      ],
+      "known_available": {
+        "blob_exists": false,
+        "constraint": "Manifest/STORE_INDEX historical disk-count claim is not proof that this checkout has bytes; no re-fetch attempted",
+        "expected_blob_path": "implementation/data/raw/blobs/companyfacts__0001045810",
+        "manifest_path": "implementation/data/raw/manifests/companyfacts__0001045810.json",
+        "manifest_sha256": "455239c4f2c473a44fdcd5555ac9968e4da74e8b52938fdf2cdf7cb1c4adcf1a",
+        "recorded_blob_sha256": "19ef503a5770f5660964b3c3aea6937579d9b359da344afe6a9adf59c63d26ff",
+        "recorded_fetch_time": "2026-09-25T08:29:08.581610+00:00",
+        "status": "NOT_RUN_SOURCE_BLOB_ABSENT"
+      },
+      "needed": [
+        "Archived companyfacts bytes matching recorded blob SHA256",
+        "Original manifest/fetch/source provenance"
+      ],
+      "next_action_if_supplied": "Source-row vintage/period extraction only; no candidate scores",
+      "request_id": "DATA-G-01",
+      "requested_owner_role": "Authorized source-data/ingestion owner; assignment unresolved",
+      "scope": "G1+G2 exact archived real source bytes"
+    },
+    {
+      "acceptance": [
+        "Each observed row ties to archived source and as_of",
+        "Gaps/young history/period changes explicit",
+        "No minimum count, interpolation or 3Y/5Y selection implied"
+      ],
+      "known_available": "Current/prior source shape and quarterly monitor anchor; no actual full real source bytes in prior replay",
+      "needed": [
+        "All available dated realized-period rows with concepts/units/start/end/fiscal context",
+        "Original and revised vintage references with exact publication/availability precision"
+      ],
+      "next_action_if_supplied": "Inactive realized input comparability/window sensitivity evidence only",
+      "request_id": "DATA-G-02",
+      "requested_owner_role": "Fundamental-period data owner; assignment unresolved",
+      "scope": "G1 observed realized history"
+    },
+    {
+      "acceptance": [
+        "Same declared economic claim/accounting basis for paired observations",
+        "No current-share shortcut or hindsight corporate-action substitution"
+      ],
+      "known_available": "Existing EPS producer concepts and synthetic pair; actual comparable share/claim evidence absent",
+      "needed": [
+        "Paired attributable earnings/EPS and basic/diluted denominator basis",
+        "Issuer/security/splits/issuance/buybacks/restatement source lineage"
+      ],
+      "next_action_if_supplied": "Source comparability evidence; B family economic equivalence still needs authority",
+      "request_id": "DATA-G-03",
+      "requested_owner_role": "Earnings/share/corporate-action data owner; assignment unresolved",
+      "scope": "G2 earnings/share comparability"
+    },
+    {
+      "acceptance": [
+        "Separate earnings versus cash-generation meaning preserved",
+        "Constructed versus directly supplied cash-flow method lineage explicit"
+      ],
+      "known_available": "Direct FCF or CFO-abs(CAPEX) source shape; no scored prior-FCF/share pair",
+      "needed": [
+        "Exact current/prior cash-flow component definitions, concepts, currency and periods",
+        "Any proposed per-share numerator claim/basis and source vintages"
+      ],
+      "next_action_if_supplied": "Inactive input readiness; no automatic EPS substitution or new formula",
+      "request_id": "DATA-G-04",
+      "requested_owner_role": "Cash-flow data owner plus G-method authority; assignments unresolved",
+      "scope": "G2 separate cash-generation inputs"
+    },
+    {
+      "acceptance": [
+        "Missing evidence remains unknown",
+        "No data/favorable-score-triggered N/A or denominator exclusion"
+      ],
+      "known_available": "Current G profile Boolean exists but is not applicability authority",
+      "needed": [
+        "Issuer/sector/economic context from dated source",
+        "Predicate authority if a conditional family is later selected"
+      ],
+      "next_action_if_supplied": "Inactive applicability evidence comparison; production predicate unapproved",
+      "request_id": "DATA-G-05",
+      "requested_owner_role": "QGV applicability/sector authority under B2; assignment unresolved",
+      "scope": "Method-specific context/applicability evidence"
+    },
+    {
+      "acceptance": [
+        "Separate method/version and result lineage",
+        "No archived rewrite, profile method override or ranking activation by implication"
+      ],
+      "known_available": "G1/G2 economic principles approved; all eight candidate methods still unselected",
+      "needed": [
+        "Exact future method/domain/window/normalization contract",
+        "Dependent B2/B3/B5/B6 result/consumer contract"
+      ],
+      "next_action_if_supplied": "Only specifically approved scope may proceed; this comparison does not migrate production",
+      "request_id": "AUTH-G-06",
+      "requested_owner_role": "User D3/QGV semantic and consumer authority",
+      "scope": "Concrete method/input/admission package"
+    }
+  ],
+  "scheduler_hops_added": 0
+}

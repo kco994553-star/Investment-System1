@@ -18,11 +18,13 @@ observed branches in evidence; production method IDs/versions remain unregistere
 Future approved methods must use distinguishable immutable method/version refs
 under the same factor, following B4. A source hash is not semantic authority.
 
-Every historical observation requires a traceable period, source, evaluation
+For a future candidate's PIT/replay claim, every consumed historical observation
+requires a traceable period, source, evaluation
 as_of, available_at, published_at and method/version. A revised/restated vintage
 known later cannot be backdated into an earlier evaluation. A latest-known series
 cannot prove historical PIT reproducibility. Missing vintage evidence remains
-unresolved rather than being silently filled from current data.
+unresolved rather than being silently filled from current data. This prerequisite
+does not retroactively judge legacy results with incomplete archived attribution.
 
 Existing scores/results remain literal legacy history. New semantic approval
 does not certify archived method attribution, rewrite old payloads or

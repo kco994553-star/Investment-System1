@@ -1,0 +1,261 @@
+{
+  "status": "INACTIVE_SOURCE_AND_AUTHORITY_MATRIX",
+  "remote_authentication_performed_by": "Root fresh-read and GitHub API recursive tree; 27/27 predecessor blobs reported matched",
+  "child_remote_authentication": "NOT_PERFORMED",
+  "approved_semantic_record": {
+    "local_path": "/workspace/scratch/5f9c0923784f/qgv-semantic-lanes-output/root/approval.json",
+    "sha256": "5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c",
+    "local_sha_verified": true,
+    "root_authenticated_remote_commit": "2ba29b048c8601145c4a2cca0f85299c07262286",
+    "remote_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/approval.json",
+    "authority_scope": "G1/G2 meaning only; not methods/formulas/admission/migration"
+  },
+  "semantic_contract_record": {
+    "local_path": "/workspace/scratch/5f9c0923784f/qgv-semantic-lanes-output/root/SEMANTIC_CONTRACT.md",
+    "sha256": "818be17270af0d43a88005dd5a9cc5f392234742332267bb96d80dac0e0c57a4",
+    "status": "Root supplied authenticated semantic context; local bytes hashed"
+  },
+  "reused_predecessor_artifacts": [
+    {
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/QGV_CONSISTENCY_MATRIX.md",
+      "sha256": "9fccaa63e04b2c904bf19a3c90ca123263476c61c63077b8125b7e467d42a681",
+      "local_sha_verified": true,
+      "remote_authority_context": "Root authenticated predecessor Git blobs at4d53; no independent remote read by this child",
+      "predecessor_commit": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+      "runtime_probes_rerun": false
+    },
+    {
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/CONSUMER_SAFETY_DELTA.md",
+      "sha256": "d137dd43e7d5b4c3dc01d28fbf6b3a516236f265ebb7bdf8c8aca6be1b4a6f40",
+      "local_sha_verified": true,
+      "remote_authority_context": "Root authenticated predecessor Git blobs at4d53; no independent remote read by this child",
+      "predecessor_commit": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+      "runtime_probes_rerun": false
+    },
+    {
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/consumer_lineage_probe.py",
+      "sha256": "949d3a9dae77bac380d724eed6dfe96a0d96da3e9a39cb3c9d24aa6feaf52b50",
+      "local_sha_verified": true,
+      "remote_authority_context": "Root authenticated predecessor Git blobs at4d53; no independent remote read by this child",
+      "predecessor_commit": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+      "runtime_probes_rerun": false
+    },
+    {
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/lineage_probe_results.json",
+      "sha256": "ac462d2b942c493b3898d23ecdb619be7dbc2744fc8b571085d1c83eb0d7a69b",
+      "local_sha_verified": true,
+      "remote_authority_context": "Root authenticated predecessor Git blobs at4d53; no independent remote read by this child",
+      "predecessor_commit": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+      "runtime_probes_rerun": false
+    },
+    {
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/source_evidence.json",
+      "sha256": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "local_sha_verified": true,
+      "remote_authority_context": "Root authenticated predecessor Git blobs at4d53; no independent remote read by this child",
+      "predecessor_commit": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+      "runtime_probes_rerun": false
+    },
+    {
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/V_INDEPENDENT_REVIEW.md",
+      "sha256": "41debae3695e99af95be489669e87fccbdcf83edb6ddd42ba7278a59b7587a0e",
+      "local_sha_verified": true,
+      "remote_authority_context": "Root authenticated predecessor Git blobs at4d53; no independent remote read by this child",
+      "predecessor_commit": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+      "runtime_probes_rerun": false
+    },
+    {
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/V_INDEPENDENT_REVIEW_EVIDENCE.json",
+      "sha256": "ba85a8adaa6e257c8abceb834750b3b0a22c071014f42e6341e02b4964f239f3",
+      "local_sha_verified": true,
+      "remote_authority_context": "Root authenticated predecessor Git blobs at4d53; no independent remote read by this child",
+      "predecessor_commit": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+      "runtime_probes_rerun": false
+    }
+  ],
+  "owner_published_inactive_sources": [
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/contract_record.schema.json",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/contract_record.schema.json",
+      "sha256": "0caa8345f611c65389786b5eaa55e60484ca8efe8fb77d55cd4746431455e962",
+      "local_bytes_equal_git_source": true,
+      "source_commit": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "authority": "Published inactive source/design; recommendations are not approval except explicit principle approval record"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/CONTRACT.md",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/CONTRACT.md",
+      "sha256": "5203e09c36c612aa573789a5cdf8bcf1fb76f26fad105171e21b31828e13f76b",
+      "local_bytes_equal_git_source": true,
+      "source_commit": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "authority": "Published inactive source/design; recommendations are not approval except explicit principle approval record"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/approval.json",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/approval.json",
+      "sha256": "65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf",
+      "local_bytes_equal_git_source": true,
+      "source_commit": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "authority": "Published inactive source/design; recommendations are not approval except explicit principle approval record"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "sha256": "d673cbbe55317af632e1ce6acf626b8aa572087ee4fc882094961240bb5b1867",
+      "local_bytes_equal_git_source": true,
+      "source_commit": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "authority": "Published inactive source/design; recommendations are not approval except explicit principle approval record"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/CONSUMER_PROFILE_REVIEW.md",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/CONSUMER_PROFILE_REVIEW.md",
+      "sha256": "4d911d4662312fe88f405917aec664fe023277a144327edceb673f0b3f064ac4",
+      "local_bytes_equal_git_source": true,
+      "source_commit": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "authority": "Published inactive source/design; recommendations are not approval except explicit principle approval record"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/B4_REVIEW.md",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/B4_REVIEW.md",
+      "sha256": "46248a360163c66347fe733e6a24130a650d91e5e5161e03dc187f752536ed37",
+      "local_bytes_equal_git_source": true,
+      "source_commit": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "authority": "Published inactive source/design; recommendations are not approval except explicit principle approval record"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/factor_roles.json",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/factor_roles.json",
+      "sha256": "fcca6d59c6f735202c6b6e6d5e45e5ed2a06423759184ff949162677a49b78b1",
+      "local_bytes_equal_git_source": true,
+      "source_commit": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "authority": "Published inactive source/design; recommendations are not approval except explicit principle approval record"
+    }
+  ],
+  "reused_production_source_receipts_locally_verified": [
+    {
+      "path": "implementation/src/investment_system/contracts/models.py",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/contracts/models.py",
+      "sha256": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+      "local_sha_verified": true,
+      "source_commit": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "prior_exact_blob_equivalence": true,
+      "comparison_receipt_sha256": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "new_runtime_execution": false
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/analysis.py",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/qgv/analysis.py",
+      "sha256": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+      "local_sha_verified": true,
+      "source_commit": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "prior_exact_blob_equivalence": true,
+      "comparison_receipt_sha256": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "new_runtime_execution": false
+    },
+    {
+      "path": "implementation/src/investment_system/qgv_producer/record.py",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/qgv_producer/record.py",
+      "sha256": "525fa0b082a0012c20b11adbd6f15dfdd7446494fd90c19322275983d899b948",
+      "local_sha_verified": true,
+      "source_commit": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "prior_exact_blob_equivalence": true,
+      "comparison_receipt_sha256": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "new_runtime_execution": false
+    },
+    {
+      "path": "implementation/src/investment_system/qgv_producer/batch.py",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/qgv_producer/batch.py",
+      "sha256": "9b8be7b1def6b9d98290a937c4278d8ece11b8d6794030c6cd0881a65380e95c",
+      "local_sha_verified": true,
+      "source_commit": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "prior_exact_blob_equivalence": true,
+      "comparison_receipt_sha256": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "new_runtime_execution": false
+    },
+    {
+      "path": "implementation/src/investment_system/leaderboard_producer/qgv_input.py",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/leaderboard_producer/qgv_input.py",
+      "sha256": "b65a36cbf486cfb932c8148a49043b0bc1045e30f7a0fefc13faddd756fde3f2",
+      "local_sha_verified": true,
+      "source_commit": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "prior_exact_blob_equivalence": true,
+      "comparison_receipt_sha256": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "new_runtime_execution": false
+    },
+    {
+      "path": "implementation/src/investment_system/leaderboard_producer/rank.py",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/leaderboard_producer/rank.py",
+      "sha256": "e66b8029811eddbf7fa250232cdda6d94837f7e7393b7c96c65513d6477a822a",
+      "local_sha_verified": true,
+      "source_commit": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "prior_exact_blob_equivalence": true,
+      "comparison_receipt_sha256": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "new_runtime_execution": false
+    },
+    {
+      "path": "implementation/src/investment_system/publication/qgv_binding.py",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/publication/qgv_binding.py",
+      "sha256": "f28d94273d94a1bad06daff308182f7cde7f66ec235b2e47882994e591c85853",
+      "local_sha_verified": true,
+      "source_commit": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "prior_exact_blob_equivalence": true,
+      "comparison_receipt_sha256": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "new_runtime_execution": false
+    },
+    {
+      "path": "implementation/src/investment_system/publication/extractors.py",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/publication/extractors.py",
+      "sha256": "d88b3b745964d7fcd41630144eb4a72f384acdd27edc667fad73c3926a20a47b",
+      "local_sha_verified": true,
+      "source_commit": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "prior_exact_blob_equivalence": true,
+      "comparison_receipt_sha256": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "new_runtime_execution": false
+    },
+    {
+      "path": "implementation/src/investment_system/publication/predicate.py",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/publication/predicate.py",
+      "sha256": "c4b10daa9857af9dfc393d79111d9894a72f5344ca27b2b6681ea0c3b95b2b96",
+      "local_sha_verified": true,
+      "source_commit": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "prior_exact_blob_equivalence": true,
+      "comparison_receipt_sha256": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "new_runtime_execution": false
+    },
+    {
+      "path": "implementation/src/investment_system/publication/authorization.py",
+      "local_path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/publication/authorization.py",
+      "sha256": "36786fc7d585d51a77fe50e483af76b9d994ae6c76063c712da94faab12e5aa2",
+      "local_sha_verified": true,
+      "source_commit": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "prior_exact_blob_equivalence": true,
+      "comparison_receipt_sha256": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "new_runtime_execution": false
+    }
+  ],
+  "owner_unpublished_identity_admission_output": {
+    "status": "CONTEXT_ONLY_NOT_AUTHENTICATED_COMPLETION",
+    "remote_owner_commit": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "read_only_path": "/workspace/scratch/5f9c0923784f/qgv-missing-data-gate/implementation/docs/qgv_common_contract_vnext/missing_data_gate",
+    "no_authority_inferred": true
+  },
+  "authority_status": {
+    "M1_M5": "PRINCIPLES_APPROVED",
+    "B4_B7": "PRINCIPLES_APPROVED",
+    "G1_G2": "ECONOMIC_MEANING_APPROVED",
+    "B1_actual_requiredness": "MORE_EVIDENCE_REQUIRED_0_OF_20_ASSIGNED",
+    "B2_B3_B5_B6": "PROPOSED_UNAPPROVED",
+    "V1_V2": "PENDING",
+    "production_method_registration": "UNREGISTERED",
+    "activation": "NOT_AUTHORIZED"
+  },
+  "protection": {
+    "production_changed": false,
+    "owner_state_changed": false,
+    "global_handoff_changed": false,
+    "old_evidence_files_changed": false,
+    "old_runtime_probes_rerun": false,
+    "scheduler_hops_counted": 0
+  },
+  "limitations": "SHA/content equivalence is not semantic authority, authentic archived attribution, actual runtime acceptance, full CI or genuine PIT. Source-independent method registry, positive admitted assessment/cohort criteria and real input-vintage replay remain unimplemented."
+}

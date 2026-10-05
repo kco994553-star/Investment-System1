@@ -1,0 +1,82 @@
+{
+  "status": "INACTIVE_CONTRACT_EVIDENCE_FROZEN",
+  "artifacts": [
+    {
+      "name": "CONTRACT.md",
+      "sha256": "7618a8f67ea794056ef05eb09317165855ece13e5cca70df17a549680a675ff8",
+      "bytes": 13874
+    },
+    {
+      "name": "assessment_ref_carrier.schema.json",
+      "sha256": "5f37fde7dafac0e3c8eb0128f64359acc53c4427673c5783040ab502ce044fc6",
+      "bytes": 12376
+    },
+    {
+      "name": "SOURCE_AUTHORITY_MATRIX.json",
+      "sha256": "793b8ce6dab4f432b61246a7303f3fa75461063f880bd381aed6755d55f66a79",
+      "bytes": 16340
+    },
+    {
+      "name": "contract_acceptance_probe.py",
+      "sha256": "948340515c6ac749fb115e15b375bd3308a6bb51b23d04370286ff563b31813f",
+      "bytes": 26727
+    },
+    {
+      "name": "CONTRACT_ACCEPTANCE_RESULTS.json",
+      "sha256": "946dae38b5f33bf7ce47763ccd8780b2f9f7713d37efbc501ce596fb4b8ab386",
+      "bytes": 9539
+    },
+    {
+      "name": "synthetic_carrier.json",
+      "sha256": "8741c846d06f84abf3c5dd78e705fe47e827727af0af85e547289d4c9406bd64",
+      "bytes": 10372
+    },
+    {
+      "name": "synthetic_reference_contents.json",
+      "sha256": "491491d708f2822bb4e9d0aa2f4ffc8811d06d7eb42647532317b49753e2c616",
+      "bytes": 26687
+    }
+  ],
+  "verification": {
+    "fresh_finite_fixture_assertions_passed": 38,
+    "failed": 0,
+    "command": "PYTHONDONTWRITEBYTECODE=1 python contract_acceptance_probe.py --output-dir <isolated-output>",
+    "exit_code": 0,
+    "script_hash_matches_results": true,
+    "canonical_fixture_digest_matches": true,
+    "synthetic_registry_content_hashes_match": true,
+    "schema_parsed_as_json": true,
+    "common_contract_ref_and_namespace_reused_exactly": true,
+    "jsonschema_engine_executed": false,
+    "independent_read_only_review": "Source/results read; no independent suite rerun by child",
+    "root_reproduction": "PENDING_ROOT_RECEIPT"
+  },
+  "authority": {
+    "remote_approval_commit": "2ba29b048c8601145c4a2cca0f85299c07262286",
+    "approval_sha256": "5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c",
+    "predecessor_commit": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+    "root_authenticated_remote_context": true,
+    "child_independent_remote_read": false,
+    "B2_B3_B5_B6": "PROPOSED_UNAPPROVED"
+  },
+  "scope": {
+    "scoring_executed": false,
+    "production_source_imported": false,
+    "production_predicate_implemented": false,
+    "consumer_criteria_selected": false,
+    "method_registration_selected": false,
+    "b1_requiredness_assignments": 0,
+    "production_migration_started": false,
+    "scheduler_hops_counted": 0,
+    "old_runtime_characterization_rerun": false
+  },
+  "limitations": [
+    "Finite synthetic trusted-reference/content/type/relationship checks only",
+    "No affirmative admitted semantic or consumer-policy path",
+    "No actual applicability/completeness/coverage/confidence method",
+    "No general multi-child/withheld aggregate evaluator",
+    "No actual remote content resolver or source-independent runtime method registry",
+    "No input-period/source coverage proof or genuine PIT replay",
+    "No P01 authorization or WeightOverride runtime wiring"
+  ]
+}

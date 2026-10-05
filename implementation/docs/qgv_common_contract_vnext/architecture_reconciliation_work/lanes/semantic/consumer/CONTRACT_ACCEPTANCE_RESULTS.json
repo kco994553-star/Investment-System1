@@ -1,0 +1,293 @@
+{
+  "status": "INACTIVE_FIXTURE_CARRIER_ACCEPTANCE_PASS",
+  "checks_passed": 38,
+  "checks_failed": 0,
+  "cases": [
+    {
+      "case": "C01_linked_UNASSESSED_diagnostic_carrier",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C02_missing_exact_source_ref",
+      "expected": "SOURCE_CLOSURE_MISMATCH",
+      "actual": "SOURCE_CLOSURE_MISMATCH",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C03_unresolved_reference",
+      "expected": "UNRESOLVED_REFERENCE",
+      "actual": "UNRESOLVED_REFERENCE",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C04_conflicting_id_version_content",
+      "expected": "CONFLICTING_OR_STALE_REFERENCE",
+      "actual": "CONFLICTING_OR_STALE_REFERENCE",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C05_trusted_content_drift",
+      "expected": "REFERENCE_CONTENT_DRIFT",
+      "actual": "REFERENCE_CONTENT_DRIFT",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C06_stale_subject_context",
+      "expected": "SCOPE_CONTEXT_MISMATCH",
+      "actual": "SCOPE_CONTEXT_MISMATCH",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C07_scope_expanded_to_other_axis",
+      "expected": "AGGREGATE_SCOPE_EXPANSION",
+      "actual": "AGGREGATE_SCOPE_EXPANSION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C08_independent_confidence_replaced_by_coverage",
+      "expected": "ASSESSMENT_MEANING_SUBSTITUTION",
+      "actual": "ASSESSMENT_MEANING_SUBSTITUTION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C09_consumer_namespace_mismatch",
+      "expected": "CONSUMER_CONTEXT_OR_SCOPE_MISMATCH",
+      "actual": "CONSUMER_CONTEXT_OR_SCOPE_MISMATCH",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C10_consumer_method_validity_ref_substitution",
+      "expected": "CONSUMER_ASSESSMENT_REFERENCE_MISMATCH",
+      "actual": "CONSUMER_ASSESSMENT_REFERENCE_MISMATCH",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C11_missing_validity_ref_with_reason_diagnostic",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C12_missing_validity_ref_without_reason",
+      "expected": "UNASSESSED_ASSESSMENT_REASON",
+      "actual": "UNASSESSED_ASSESSMENT_REASON",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C13_nonfinite_numeric_NaN",
+      "expected": "NONFINITE_OR_INVALID_LITERAL",
+      "actual": "NONFINITE_OR_INVALID_LITERAL",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C14_nonfinite_numeric_Infinity",
+      "expected": "NONFINITE_OR_INVALID_LITERAL",
+      "actual": "NONFINITE_OR_INVALID_LITERAL",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C15_numeric_bool_not_score",
+      "expected": "NONFINITE_OR_INVALID_LITERAL",
+      "actual": "NONFINITE_OR_INVALID_LITERAL",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C16_literal_score_mutation",
+      "expected": "LEGACY_LITERAL_MUTATION",
+      "actual": "LEGACY_LITERAL_MUTATION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C17_READY_numeric_promoted_via_rank_flag",
+      "expected": "CARRIER_SHAPE_NO_ELIGIBILITY_FLAG",
+      "actual": "CARRIER_SHAPE_NO_ELIGIBILITY_FLAG",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C18_unassessed_DIAGNOSTIC_promoted_ranking_purpose",
+      "expected": "UNASSESSED_CONSUMER_PURPOSE_PROMOTION",
+      "actual": "UNASSESSED_CONSUMER_PURPOSE_PROMOTION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C19_missing_child_assessment_inventory",
+      "expected": "AGGREGATE_CHILD_ASSESSMENT_DROP",
+      "actual": "AGGREGATE_CHILD_ASSESSMENT_DROP",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C20_zero_weight_keeps_all_obligations",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C21_zero_weight_cannot_drop_PIT_ref",
+      "expected": "ZERO_OR_PROFILE_SEMANTIC_WAIVER",
+      "actual": "ZERO_OR_PROFILE_SEMANTIC_WAIVER",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C22_custom_cannot_replace_method",
+      "expected": "ZERO_OR_PROFILE_SEMANTIC_WAIVER",
+      "actual": "ZERO_OR_PROFILE_SEMANTIC_WAIVER",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C23_equal_numeric_Official_Custom_isolation",
+      "expected": "OFFICIAL_CUSTOM_CONTEXT_COLLAPSE",
+      "actual": "OFFICIAL_CUSTOM_CONTEXT_COLLAPSE",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C24_activation_request_rejected",
+      "expected": "PRODUCTION_ACTIVATION_FORBIDDEN",
+      "actual": "PRODUCTION_ACTIVATION_FORBIDDEN",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C25_missing_publication_is_not_grant",
+      "expected": "PUBLICATION_AUTHORITY_NOT_GRANTED",
+      "actual": "PUBLICATION_AUTHORITY_NOT_GRANTED",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C26_REJECTED_VERSION_MISMATCH_retains_numeric_diagnostic",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {
+        "retained_legacy_numeric": 70.0,
+        "retained_disposition": "REJECTED",
+        "retained_reason": "Original VERSION_MISMATCH marker retained; no consumer admission",
+        "semantic_validity": "NOT_EVALUATED",
+        "consumer_admission": "NOT_EVALUATED"
+      }
+    },
+    {
+      "case": "C27_REJECTED_CALCULATION_ERROR_retains_numeric_diagnostic",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {
+        "retained_legacy_numeric": 70.0,
+        "retained_disposition": "REJECTED",
+        "retained_reason": "Original CALCULATION_ERROR marker retained; no consumer admission",
+        "semantic_validity": "NOT_EVALUATED",
+        "consumer_admission": "NOT_EVALUATED"
+      }
+    },
+    {
+      "case": "C28_REJECTED_VERSION_MISMATCH_cannot_be_promoted_rankable",
+      "expected": "UNASSESSED_CONSUMER_PURPOSE_PROMOTION",
+      "actual": "UNASSESSED_CONSUMER_PURPOSE_PROMOTION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C29_authenticated_input_contract_cross_method_link",
+      "expected": "INPUT_CONTRACT_METHOD_CROSS_BINDING",
+      "actual": "INPUT_CONTRACT_METHOD_CROSS_BINDING",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C30_authenticated_method_cross_factor_link",
+      "expected": "METHOD_FACTOR_CROSS_BINDING",
+      "actual": "METHOD_FACTOR_CROSS_BINDING",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C31_authenticated_source_type_substitution",
+      "expected": "SOURCE_REFERENCE_MEANING_SUBSTITUTION",
+      "actual": "SOURCE_REFERENCE_MEANING_SUBSTITUTION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C32_whitespace_is_not_unassessed_reason",
+      "expected": "UNASSESSED_ASSESSMENT_REASON",
+      "actual": "UNASSESSED_ASSESSMENT_REASON",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C33_authenticated_result_type_substitution",
+      "expected": "RESULT_REFERENCE_MEANING_SUBSTITUTION",
+      "actual": "RESULT_REFERENCE_MEANING_SUBSTITUTION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C34_normalization_factor_identity_substitution",
+      "expected": "NORMALIZATION_REFERENCE_TYPE",
+      "actual": "NORMALIZATION_REFERENCE_TYPE",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C35_fallback_identity_type_substitution",
+      "expected": "FALLBACK_REFERENCE_TYPE",
+      "actual": "FALLBACK_REFERENCE_TYPE",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C36_authenticated_normalization_cross_method_link",
+      "expected": "FALLBACK_NORMALIZATION_METHOD_CROSS_BINDING",
+      "actual": "FALLBACK_NORMALIZATION_METHOD_CROSS_BINDING",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C37_missing_consumer_identity",
+      "expected": "CONSUMER_IDENTITY_REQUIRED",
+      "actual": "CONSUMER_IDENTITY_REQUIRED",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "C38_missing_consumer_version",
+      "expected": "CONSUMER_IDENTITY_REQUIRED",
+      "actual": "CONSUMER_IDENTITY_REQUIRED",
+      "pass": true,
+      "observations": {}
+    }
+  ],
+  "script_sha256": "948340515c6ac749fb115e15b375bd3308a6bb51b23d04370286ff563b31813f",
+  "fixture_carrier_sha256": "c93e8097f0923146971ece121d962eaa05fdb174ca06d62cc73e7325332e0df4",
+  "production_semantics_changed": false,
+  "scoring_executed": false,
+  "consumer_policy_activated": false,
+  "scheduler_hops_counted": 0,
+  "b1_roles_assigned": 0,
+  "limits": "SYNTHETIC reference/content/scope relationships only. Not a JSONSchema engine, trusted remote artifact resolver, QGV evaluator, production predicate, completeness/coverage/confidence/ranking method, P01 authorizer or real PIT validation. Preserving refs under zero/profile is a fixture comparison, not WeightOverride wiring. Assertions are new contract tests, not rerun runtime characterization."
+}

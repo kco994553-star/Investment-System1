@@ -1,0 +1,780 @@
+[
+  {
+    "ref": {
+      "id": "SYNTHETIC_factor",
+      "version": "fixture-v1",
+      "sha256": "ab78b98b351bd88822a467963995a292514ce42a71bf824afee15c7f2dbfcc01",
+      "locator": "fixture://factor"
+    },
+    "body": {
+      "kind": "factor_identity",
+      "factor_id": "revenue_growth"
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_method",
+      "version": "fixture-v1",
+      "sha256": "f8ebeb7c1631e47e48d669a0c2964fcd5b222546561fef63fa0463011f9ace52",
+      "locator": "fixture://method"
+    },
+    "body": {
+      "kind": "method_identity",
+      "factor_ref": {
+        "id": "SYNTHETIC_factor",
+        "version": "fixture-v1",
+        "sha256": "ab78b98b351bd88822a467963995a292514ce42a71bf824afee15c7f2dbfcc01",
+        "locator": "fixture://factor"
+      },
+      "source": "synthetic characterization only"
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_method_version",
+      "version": "fixture-v1",
+      "sha256": "fb0e76c564e4c90be661cb26ed1eb196eceab30ab4cc47ec0157fb05ae99d089",
+      "locator": "fixture://method_version"
+    },
+    "body": {
+      "kind": "method_version",
+      "method_ref": {
+        "id": "SYNTHETIC_method",
+        "version": "fixture-v1",
+        "sha256": "f8ebeb7c1631e47e48d669a0c2964fcd5b222546561fef63fa0463011f9ace52",
+        "locator": "fixture://method"
+      }
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_input_contract",
+      "version": "fixture-v1",
+      "sha256": "c2b13cb268136ef0b269ff5e734481f062da728da669523365000b7ffa0e12bb",
+      "locator": "fixture://input_contract"
+    },
+    "body": {
+      "kind": "input_contract",
+      "periods": "unassessed",
+      "method_ref": {
+        "id": "SYNTHETIC_method",
+        "version": "fixture-v1",
+        "sha256": "f8ebeb7c1631e47e48d669a0c2964fcd5b222546561fef63fa0463011f9ace52",
+        "locator": "fixture://method"
+      }
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_scope",
+      "version": "fixture-v1",
+      "sha256": "e1418690c63045a2317ba5476c6b20e2450683aaea3b86171ed997ecbc1f4914",
+      "locator": "fixture://scope"
+    },
+    "body": {
+      "kind": "scope",
+      "context": {
+        "subject_id": "SYNTHETIC_COMPANY",
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "decision_time": "2024-12-31T00:00:00+00:00",
+        "namespace": "SANDBOX",
+        "configuration_ref": null
+      },
+      "axis": "G",
+      "factor_ids": [
+        "revenue_growth"
+      ],
+      "input_ids": [
+        "SYNTHETIC_RAW"
+      ],
+      "shared_dependency_ids": []
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_source",
+      "version": "fixture-v1",
+      "sha256": "eda906010ab1c1b0b073afebe89cb7672bee1beba92692ed16008e8694fc3288",
+      "locator": "fixture://source"
+    },
+    "body": {
+      "kind": "source",
+      "source_status": "SYNTHETIC_ONLY",
+      "available_at": "2024-12-31T00:00:00+00:00",
+      "published_at": "2024-12-31T00:00:00+00:00"
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_legacy_result",
+      "version": "fixture-v1",
+      "sha256": "27d0e18224e3b9abdd18d36feaf08d9ce39795018f9110ba2263bb4e645b0fb7",
+      "locator": "fixture://legacy_result"
+    },
+    "body": {
+      "kind": "legacy_result",
+      "context": {
+        "subject_id": "SYNTHETIC_COMPANY",
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "decision_time": "2024-12-31T00:00:00+00:00",
+        "namespace": "SANDBOX",
+        "configuration_ref": null
+      },
+      "scope_ref": {
+        "id": "SYNTHETIC_scope",
+        "version": "fixture-v1",
+        "sha256": "e1418690c63045a2317ba5476c6b20e2450683aaea3b86171ed997ecbc1f4914",
+        "locator": "fixture://scope"
+      },
+      "legacy_numeric": 70.0,
+      "legacy_coverage_literal": "READY",
+      "source_refs": [
+        {
+          "id": "SYNTHETIC_source",
+          "version": "fixture-v1",
+          "sha256": "eda906010ab1c1b0b073afebe89cb7672bee1beba92692ed16008e8694fc3288",
+          "locator": "fixture://source"
+        }
+      ]
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_method_identity",
+      "version": "fixture-v1",
+      "sha256": "09a98889a1b2c5c23bad6c3a0b7fd9512da8acefd24fa6114f79311d9c2caef6",
+      "locator": "fixture://method_identity"
+    },
+    "body": {
+      "kind": "method_identity",
+      "context": {
+        "subject_id": "SYNTHETIC_COMPANY",
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "decision_time": "2024-12-31T00:00:00+00:00",
+        "namespace": "SANDBOX",
+        "configuration_ref": null
+      },
+      "scope_ref": {
+        "id": "SYNTHETIC_scope",
+        "version": "fixture-v1",
+        "sha256": "e1418690c63045a2317ba5476c6b20e2450683aaea3b86171ed997ecbc1f4914",
+        "locator": "fixture://scope"
+      },
+      "producer_result_ref": {
+        "id": "SYNTHETIC_legacy_result",
+        "version": "fixture-v1",
+        "sha256": "27d0e18224e3b9abdd18d36feaf08d9ce39795018f9110ba2263bb4e645b0fb7",
+        "locator": "fixture://legacy_result"
+      },
+      "method_binding_refs": [
+        {
+          "factor_ref": {
+            "id": "SYNTHETIC_factor",
+            "version": "fixture-v1",
+            "sha256": "ab78b98b351bd88822a467963995a292514ce42a71bf824afee15c7f2dbfcc01",
+            "locator": "fixture://factor"
+          },
+          "method_ref": {
+            "id": "SYNTHETIC_method",
+            "version": "fixture-v1",
+            "sha256": "f8ebeb7c1631e47e48d669a0c2964fcd5b222546561fef63fa0463011f9ace52",
+            "locator": "fixture://method"
+          },
+          "method_version_ref": {
+            "id": "SYNTHETIC_method_version",
+            "version": "fixture-v1",
+            "sha256": "fb0e76c564e4c90be661cb26ed1eb196eceab30ab4cc47ec0157fb05ae99d089",
+            "locator": "fixture://method_version"
+          },
+          "input_contract_ref": {
+            "id": "SYNTHETIC_input_contract",
+            "version": "fixture-v1",
+            "sha256": "c2b13cb268136ef0b269ff5e734481f062da728da669523365000b7ffa0e12bb",
+            "locator": "fixture://input_contract"
+          },
+          "fallback_ref": null,
+          "normalization_ref": null
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "SYNTHETIC_source",
+          "version": "fixture-v1",
+          "sha256": "eda906010ab1c1b0b073afebe89cb7672bee1beba92692ed16008e8694fc3288",
+          "locator": "fixture://source"
+        }
+      ],
+      "policy_ref": null,
+      "disposition": "UNASSESSED",
+      "reason": "SYNTHETIC carrier; actual domain authority is not assigned"
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_applicability",
+      "version": "fixture-v1",
+      "sha256": "a49aa6b3109077b911a025784388144d83b3306b77a5834bd41e81f27b4a4e4d",
+      "locator": "fixture://applicability"
+    },
+    "body": {
+      "kind": "applicability",
+      "context": {
+        "subject_id": "SYNTHETIC_COMPANY",
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "decision_time": "2024-12-31T00:00:00+00:00",
+        "namespace": "SANDBOX",
+        "configuration_ref": null
+      },
+      "scope_ref": {
+        "id": "SYNTHETIC_scope",
+        "version": "fixture-v1",
+        "sha256": "e1418690c63045a2317ba5476c6b20e2450683aaea3b86171ed997ecbc1f4914",
+        "locator": "fixture://scope"
+      },
+      "producer_result_ref": {
+        "id": "SYNTHETIC_legacy_result",
+        "version": "fixture-v1",
+        "sha256": "27d0e18224e3b9abdd18d36feaf08d9ce39795018f9110ba2263bb4e645b0fb7",
+        "locator": "fixture://legacy_result"
+      },
+      "method_binding_refs": [
+        {
+          "factor_ref": {
+            "id": "SYNTHETIC_factor",
+            "version": "fixture-v1",
+            "sha256": "ab78b98b351bd88822a467963995a292514ce42a71bf824afee15c7f2dbfcc01",
+            "locator": "fixture://factor"
+          },
+          "method_ref": {
+            "id": "SYNTHETIC_method",
+            "version": "fixture-v1",
+            "sha256": "f8ebeb7c1631e47e48d669a0c2964fcd5b222546561fef63fa0463011f9ace52",
+            "locator": "fixture://method"
+          },
+          "method_version_ref": {
+            "id": "SYNTHETIC_method_version",
+            "version": "fixture-v1",
+            "sha256": "fb0e76c564e4c90be661cb26ed1eb196eceab30ab4cc47ec0157fb05ae99d089",
+            "locator": "fixture://method_version"
+          },
+          "input_contract_ref": {
+            "id": "SYNTHETIC_input_contract",
+            "version": "fixture-v1",
+            "sha256": "c2b13cb268136ef0b269ff5e734481f062da728da669523365000b7ffa0e12bb",
+            "locator": "fixture://input_contract"
+          },
+          "fallback_ref": null,
+          "normalization_ref": null
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "SYNTHETIC_source",
+          "version": "fixture-v1",
+          "sha256": "eda906010ab1c1b0b073afebe89cb7672bee1beba92692ed16008e8694fc3288",
+          "locator": "fixture://source"
+        }
+      ],
+      "policy_ref": null,
+      "disposition": "UNASSESSED",
+      "reason": "SYNTHETIC carrier; actual domain authority is not assigned"
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_evidence_admission",
+      "version": "fixture-v1",
+      "sha256": "db44c0a531861b43841d5ab65a92736edb932e46eab894137f0de7245beef282",
+      "locator": "fixture://evidence_admission"
+    },
+    "body": {
+      "kind": "evidence_admission",
+      "context": {
+        "subject_id": "SYNTHETIC_COMPANY",
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "decision_time": "2024-12-31T00:00:00+00:00",
+        "namespace": "SANDBOX",
+        "configuration_ref": null
+      },
+      "scope_ref": {
+        "id": "SYNTHETIC_scope",
+        "version": "fixture-v1",
+        "sha256": "e1418690c63045a2317ba5476c6b20e2450683aaea3b86171ed997ecbc1f4914",
+        "locator": "fixture://scope"
+      },
+      "producer_result_ref": {
+        "id": "SYNTHETIC_legacy_result",
+        "version": "fixture-v1",
+        "sha256": "27d0e18224e3b9abdd18d36feaf08d9ce39795018f9110ba2263bb4e645b0fb7",
+        "locator": "fixture://legacy_result"
+      },
+      "method_binding_refs": [
+        {
+          "factor_ref": {
+            "id": "SYNTHETIC_factor",
+            "version": "fixture-v1",
+            "sha256": "ab78b98b351bd88822a467963995a292514ce42a71bf824afee15c7f2dbfcc01",
+            "locator": "fixture://factor"
+          },
+          "method_ref": {
+            "id": "SYNTHETIC_method",
+            "version": "fixture-v1",
+            "sha256": "f8ebeb7c1631e47e48d669a0c2964fcd5b222546561fef63fa0463011f9ace52",
+            "locator": "fixture://method"
+          },
+          "method_version_ref": {
+            "id": "SYNTHETIC_method_version",
+            "version": "fixture-v1",
+            "sha256": "fb0e76c564e4c90be661cb26ed1eb196eceab30ab4cc47ec0157fb05ae99d089",
+            "locator": "fixture://method_version"
+          },
+          "input_contract_ref": {
+            "id": "SYNTHETIC_input_contract",
+            "version": "fixture-v1",
+            "sha256": "c2b13cb268136ef0b269ff5e734481f062da728da669523365000b7ffa0e12bb",
+            "locator": "fixture://input_contract"
+          },
+          "fallback_ref": null,
+          "normalization_ref": null
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "SYNTHETIC_source",
+          "version": "fixture-v1",
+          "sha256": "eda906010ab1c1b0b073afebe89cb7672bee1beba92692ed16008e8694fc3288",
+          "locator": "fixture://source"
+        }
+      ],
+      "policy_ref": null,
+      "disposition": "UNASSESSED",
+      "reason": "SYNTHETIC carrier; actual domain authority is not assigned"
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_provenance",
+      "version": "fixture-v1",
+      "sha256": "49f7615a565465f9369eb0c00e6316f0de7b79ca06433159588f6fc81c708c26",
+      "locator": "fixture://provenance"
+    },
+    "body": {
+      "kind": "provenance",
+      "context": {
+        "subject_id": "SYNTHETIC_COMPANY",
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "decision_time": "2024-12-31T00:00:00+00:00",
+        "namespace": "SANDBOX",
+        "configuration_ref": null
+      },
+      "scope_ref": {
+        "id": "SYNTHETIC_scope",
+        "version": "fixture-v1",
+        "sha256": "e1418690c63045a2317ba5476c6b20e2450683aaea3b86171ed997ecbc1f4914",
+        "locator": "fixture://scope"
+      },
+      "producer_result_ref": {
+        "id": "SYNTHETIC_legacy_result",
+        "version": "fixture-v1",
+        "sha256": "27d0e18224e3b9abdd18d36feaf08d9ce39795018f9110ba2263bb4e645b0fb7",
+        "locator": "fixture://legacy_result"
+      },
+      "method_binding_refs": [
+        {
+          "factor_ref": {
+            "id": "SYNTHETIC_factor",
+            "version": "fixture-v1",
+            "sha256": "ab78b98b351bd88822a467963995a292514ce42a71bf824afee15c7f2dbfcc01",
+            "locator": "fixture://factor"
+          },
+          "method_ref": {
+            "id": "SYNTHETIC_method",
+            "version": "fixture-v1",
+            "sha256": "f8ebeb7c1631e47e48d669a0c2964fcd5b222546561fef63fa0463011f9ace52",
+            "locator": "fixture://method"
+          },
+          "method_version_ref": {
+            "id": "SYNTHETIC_method_version",
+            "version": "fixture-v1",
+            "sha256": "fb0e76c564e4c90be661cb26ed1eb196eceab30ab4cc47ec0157fb05ae99d089",
+            "locator": "fixture://method_version"
+          },
+          "input_contract_ref": {
+            "id": "SYNTHETIC_input_contract",
+            "version": "fixture-v1",
+            "sha256": "c2b13cb268136ef0b269ff5e734481f062da728da669523365000b7ffa0e12bb",
+            "locator": "fixture://input_contract"
+          },
+          "fallback_ref": null,
+          "normalization_ref": null
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "SYNTHETIC_source",
+          "version": "fixture-v1",
+          "sha256": "eda906010ab1c1b0b073afebe89cb7672bee1beba92692ed16008e8694fc3288",
+          "locator": "fixture://source"
+        }
+      ],
+      "policy_ref": null,
+      "disposition": "UNASSESSED",
+      "reason": "SYNTHETIC carrier; actual domain authority is not assigned"
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_pit",
+      "version": "fixture-v1",
+      "sha256": "d718ba83c458d62933fcab5473b54159634204d7f9e31cf0c60b0c42da0b268f",
+      "locator": "fixture://pit"
+    },
+    "body": {
+      "kind": "pit",
+      "context": {
+        "subject_id": "SYNTHETIC_COMPANY",
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "decision_time": "2024-12-31T00:00:00+00:00",
+        "namespace": "SANDBOX",
+        "configuration_ref": null
+      },
+      "scope_ref": {
+        "id": "SYNTHETIC_scope",
+        "version": "fixture-v1",
+        "sha256": "e1418690c63045a2317ba5476c6b20e2450683aaea3b86171ed997ecbc1f4914",
+        "locator": "fixture://scope"
+      },
+      "producer_result_ref": {
+        "id": "SYNTHETIC_legacy_result",
+        "version": "fixture-v1",
+        "sha256": "27d0e18224e3b9abdd18d36feaf08d9ce39795018f9110ba2263bb4e645b0fb7",
+        "locator": "fixture://legacy_result"
+      },
+      "method_binding_refs": [
+        {
+          "factor_ref": {
+            "id": "SYNTHETIC_factor",
+            "version": "fixture-v1",
+            "sha256": "ab78b98b351bd88822a467963995a292514ce42a71bf824afee15c7f2dbfcc01",
+            "locator": "fixture://factor"
+          },
+          "method_ref": {
+            "id": "SYNTHETIC_method",
+            "version": "fixture-v1",
+            "sha256": "f8ebeb7c1631e47e48d669a0c2964fcd5b222546561fef63fa0463011f9ace52",
+            "locator": "fixture://method"
+          },
+          "method_version_ref": {
+            "id": "SYNTHETIC_method_version",
+            "version": "fixture-v1",
+            "sha256": "fb0e76c564e4c90be661cb26ed1eb196eceab30ab4cc47ec0157fb05ae99d089",
+            "locator": "fixture://method_version"
+          },
+          "input_contract_ref": {
+            "id": "SYNTHETIC_input_contract",
+            "version": "fixture-v1",
+            "sha256": "c2b13cb268136ef0b269ff5e734481f062da728da669523365000b7ffa0e12bb",
+            "locator": "fixture://input_contract"
+          },
+          "fallback_ref": null,
+          "normalization_ref": null
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "SYNTHETIC_source",
+          "version": "fixture-v1",
+          "sha256": "eda906010ab1c1b0b073afebe89cb7672bee1beba92692ed16008e8694fc3288",
+          "locator": "fixture://source"
+        }
+      ],
+      "policy_ref": null,
+      "disposition": "UNASSESSED",
+      "reason": "SYNTHETIC carrier; actual domain authority is not assigned"
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_coverage",
+      "version": "fixture-v1",
+      "sha256": "d66a0d16118c476954618a306bcbe5480cc7928e51dfcc035a1fbb1a4a56a089",
+      "locator": "fixture://coverage"
+    },
+    "body": {
+      "kind": "coverage",
+      "context": {
+        "subject_id": "SYNTHETIC_COMPANY",
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "decision_time": "2024-12-31T00:00:00+00:00",
+        "namespace": "SANDBOX",
+        "configuration_ref": null
+      },
+      "scope_ref": {
+        "id": "SYNTHETIC_scope",
+        "version": "fixture-v1",
+        "sha256": "e1418690c63045a2317ba5476c6b20e2450683aaea3b86171ed997ecbc1f4914",
+        "locator": "fixture://scope"
+      },
+      "producer_result_ref": {
+        "id": "SYNTHETIC_legacy_result",
+        "version": "fixture-v1",
+        "sha256": "27d0e18224e3b9abdd18d36feaf08d9ce39795018f9110ba2263bb4e645b0fb7",
+        "locator": "fixture://legacy_result"
+      },
+      "method_binding_refs": [
+        {
+          "factor_ref": {
+            "id": "SYNTHETIC_factor",
+            "version": "fixture-v1",
+            "sha256": "ab78b98b351bd88822a467963995a292514ce42a71bf824afee15c7f2dbfcc01",
+            "locator": "fixture://factor"
+          },
+          "method_ref": {
+            "id": "SYNTHETIC_method",
+            "version": "fixture-v1",
+            "sha256": "f8ebeb7c1631e47e48d669a0c2964fcd5b222546561fef63fa0463011f9ace52",
+            "locator": "fixture://method"
+          },
+          "method_version_ref": {
+            "id": "SYNTHETIC_method_version",
+            "version": "fixture-v1",
+            "sha256": "fb0e76c564e4c90be661cb26ed1eb196eceab30ab4cc47ec0157fb05ae99d089",
+            "locator": "fixture://method_version"
+          },
+          "input_contract_ref": {
+            "id": "SYNTHETIC_input_contract",
+            "version": "fixture-v1",
+            "sha256": "c2b13cb268136ef0b269ff5e734481f062da728da669523365000b7ffa0e12bb",
+            "locator": "fixture://input_contract"
+          },
+          "fallback_ref": null,
+          "normalization_ref": null
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "SYNTHETIC_source",
+          "version": "fixture-v1",
+          "sha256": "eda906010ab1c1b0b073afebe89cb7672bee1beba92692ed16008e8694fc3288",
+          "locator": "fixture://source"
+        }
+      ],
+      "policy_ref": null,
+      "disposition": "UNASSESSED",
+      "reason": "SYNTHETIC carrier; actual domain authority is not assigned"
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_confidence",
+      "version": "fixture-v1",
+      "sha256": "b2b6d2fe03a8eb2b725bf62ca9cd3100c5378a3c7b48430e19b1d5bb9d119e1a",
+      "locator": "fixture://confidence"
+    },
+    "body": {
+      "kind": "confidence",
+      "context": {
+        "subject_id": "SYNTHETIC_COMPANY",
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "decision_time": "2024-12-31T00:00:00+00:00",
+        "namespace": "SANDBOX",
+        "configuration_ref": null
+      },
+      "scope_ref": {
+        "id": "SYNTHETIC_scope",
+        "version": "fixture-v1",
+        "sha256": "e1418690c63045a2317ba5476c6b20e2450683aaea3b86171ed997ecbc1f4914",
+        "locator": "fixture://scope"
+      },
+      "producer_result_ref": {
+        "id": "SYNTHETIC_legacy_result",
+        "version": "fixture-v1",
+        "sha256": "27d0e18224e3b9abdd18d36feaf08d9ce39795018f9110ba2263bb4e645b0fb7",
+        "locator": "fixture://legacy_result"
+      },
+      "method_binding_refs": [
+        {
+          "factor_ref": {
+            "id": "SYNTHETIC_factor",
+            "version": "fixture-v1",
+            "sha256": "ab78b98b351bd88822a467963995a292514ce42a71bf824afee15c7f2dbfcc01",
+            "locator": "fixture://factor"
+          },
+          "method_ref": {
+            "id": "SYNTHETIC_method",
+            "version": "fixture-v1",
+            "sha256": "f8ebeb7c1631e47e48d669a0c2964fcd5b222546561fef63fa0463011f9ace52",
+            "locator": "fixture://method"
+          },
+          "method_version_ref": {
+            "id": "SYNTHETIC_method_version",
+            "version": "fixture-v1",
+            "sha256": "fb0e76c564e4c90be661cb26ed1eb196eceab30ab4cc47ec0157fb05ae99d089",
+            "locator": "fixture://method_version"
+          },
+          "input_contract_ref": {
+            "id": "SYNTHETIC_input_contract",
+            "version": "fixture-v1",
+            "sha256": "c2b13cb268136ef0b269ff5e734481f062da728da669523365000b7ffa0e12bb",
+            "locator": "fixture://input_contract"
+          },
+          "fallback_ref": null,
+          "normalization_ref": null
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "SYNTHETIC_source",
+          "version": "fixture-v1",
+          "sha256": "eda906010ab1c1b0b073afebe89cb7672bee1beba92692ed16008e8694fc3288",
+          "locator": "fixture://source"
+        }
+      ],
+      "policy_ref": null,
+      "disposition": "UNASSESSED",
+      "reason": "SYNTHETIC carrier; actual domain authority is not assigned"
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_completeness",
+      "version": "fixture-v1",
+      "sha256": "49fa4c7db80d99895b35725a365c080ef286cbfa765515c93aa9ccfbe462f02e",
+      "locator": "fixture://completeness"
+    },
+    "body": {
+      "kind": "completeness",
+      "context": {
+        "subject_id": "SYNTHETIC_COMPANY",
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "decision_time": "2024-12-31T00:00:00+00:00",
+        "namespace": "SANDBOX",
+        "configuration_ref": null
+      },
+      "scope_ref": {
+        "id": "SYNTHETIC_scope",
+        "version": "fixture-v1",
+        "sha256": "e1418690c63045a2317ba5476c6b20e2450683aaea3b86171ed997ecbc1f4914",
+        "locator": "fixture://scope"
+      },
+      "producer_result_ref": {
+        "id": "SYNTHETIC_legacy_result",
+        "version": "fixture-v1",
+        "sha256": "27d0e18224e3b9abdd18d36feaf08d9ce39795018f9110ba2263bb4e645b0fb7",
+        "locator": "fixture://legacy_result"
+      },
+      "method_binding_refs": [
+        {
+          "factor_ref": {
+            "id": "SYNTHETIC_factor",
+            "version": "fixture-v1",
+            "sha256": "ab78b98b351bd88822a467963995a292514ce42a71bf824afee15c7f2dbfcc01",
+            "locator": "fixture://factor"
+          },
+          "method_ref": {
+            "id": "SYNTHETIC_method",
+            "version": "fixture-v1",
+            "sha256": "f8ebeb7c1631e47e48d669a0c2964fcd5b222546561fef63fa0463011f9ace52",
+            "locator": "fixture://method"
+          },
+          "method_version_ref": {
+            "id": "SYNTHETIC_method_version",
+            "version": "fixture-v1",
+            "sha256": "fb0e76c564e4c90be661cb26ed1eb196eceab30ab4cc47ec0157fb05ae99d089",
+            "locator": "fixture://method_version"
+          },
+          "input_contract_ref": {
+            "id": "SYNTHETIC_input_contract",
+            "version": "fixture-v1",
+            "sha256": "c2b13cb268136ef0b269ff5e734481f062da728da669523365000b7ffa0e12bb",
+            "locator": "fixture://input_contract"
+          },
+          "fallback_ref": null,
+          "normalization_ref": null
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "SYNTHETIC_source",
+          "version": "fixture-v1",
+          "sha256": "eda906010ab1c1b0b073afebe89cb7672bee1beba92692ed16008e8694fc3288",
+          "locator": "fixture://source"
+        }
+      ],
+      "policy_ref": null,
+      "disposition": "UNASSESSED",
+      "reason": "SYNTHETIC carrier; actual domain authority is not assigned"
+    }
+  },
+  {
+    "ref": {
+      "id": "SYNTHETIC_scoring_validity",
+      "version": "fixture-v1",
+      "sha256": "4e5fee7286bd0c39a6329407a1a6269fc3c9ddc2b050bcbc5fa1cfd1a19255ca",
+      "locator": "fixture://scoring_validity"
+    },
+    "body": {
+      "kind": "scoring_validity",
+      "context": {
+        "subject_id": "SYNTHETIC_COMPANY",
+        "as_of": "2024-12-31T00:00:00+00:00",
+        "decision_time": "2024-12-31T00:00:00+00:00",
+        "namespace": "SANDBOX",
+        "configuration_ref": null
+      },
+      "scope_ref": {
+        "id": "SYNTHETIC_scope",
+        "version": "fixture-v1",
+        "sha256": "e1418690c63045a2317ba5476c6b20e2450683aaea3b86171ed997ecbc1f4914",
+        "locator": "fixture://scope"
+      },
+      "producer_result_ref": {
+        "id": "SYNTHETIC_legacy_result",
+        "version": "fixture-v1",
+        "sha256": "27d0e18224e3b9abdd18d36feaf08d9ce39795018f9110ba2263bb4e645b0fb7",
+        "locator": "fixture://legacy_result"
+      },
+      "method_binding_refs": [
+        {
+          "factor_ref": {
+            "id": "SYNTHETIC_factor",
+            "version": "fixture-v1",
+            "sha256": "ab78b98b351bd88822a467963995a292514ce42a71bf824afee15c7f2dbfcc01",
+            "locator": "fixture://factor"
+          },
+          "method_ref": {
+            "id": "SYNTHETIC_method",
+            "version": "fixture-v1",
+            "sha256": "f8ebeb7c1631e47e48d669a0c2964fcd5b222546561fef63fa0463011f9ace52",
+            "locator": "fixture://method"
+          },
+          "method_version_ref": {
+            "id": "SYNTHETIC_method_version",
+            "version": "fixture-v1",
+            "sha256": "fb0e76c564e4c90be661cb26ed1eb196eceab30ab4cc47ec0157fb05ae99d089",
+            "locator": "fixture://method_version"
+          },
+          "input_contract_ref": {
+            "id": "SYNTHETIC_input_contract",
+            "version": "fixture-v1",
+            "sha256": "c2b13cb268136ef0b269ff5e734481f062da728da669523365000b7ffa0e12bb",
+            "locator": "fixture://input_contract"
+          },
+          "fallback_ref": null,
+          "normalization_ref": null
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "SYNTHETIC_source",
+          "version": "fixture-v1",
+          "sha256": "eda906010ab1c1b0b073afebe89cb7672bee1beba92692ed16008e8694fc3288",
+          "locator": "fixture://source"
+        }
+      ],
+      "policy_ref": null,
+      "disposition": "UNASSESSED",
+      "reason": "SYNTHETIC carrier; actual domain authority is not assigned"
+    }
+  }
+]
