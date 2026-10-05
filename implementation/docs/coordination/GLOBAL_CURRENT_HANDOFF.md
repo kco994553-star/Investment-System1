@@ -1,3 +1,15 @@
+# GCH-028 · Autonomous Governance v1.1 adopted; Gate A gaps registered; D3 reclassification started · 2026-10-05
+
+**Authority is now CDR-024 / Autonomous Execution & Decision Authority SSoT v1.1.** PR #48 was merged to Global at `82de599ee90a6beabd774dd22e7e2b939ff75b44`; CDR-025 records the post-merge exact state append-only. Canonical/default remains `b8e39a2196a6d7794a04a0cd5393c68329e126ca`.
+
+- Adopted SSoT: `implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md`.
+- Historical v1.0 retained and marked SUPERSEDED; no history deletion/rewrite.
+- PART G Hard-Guard Gap register created: `governance/AUTONOMY_HARD_GUARD_GAPS_v1.1.md`. Eleven guards are baseline `NOT_VERIFIED`; Gate A guards HG-01/HG-02/HG-03 are not yet verified, so unattended `AUTONOMY_MODE=RUN` remains disabled. User-observed/session execution remains allowed.
+- Pending-D3 reclassification started: `governance/PENDING_D3_RECLASSIFICATION_v1.1.md`. Initial pass separates confirmed D3-R groups from one D3-A candidate and three evidence/dependency items that should not be escalated merely because they are blocked.
+- No new D3-A candidate was executed in this checkpoint. No method/numeric/grant/canonical merge/deployment/credential/Holdout/Official-LIVE/irreversible migration authority was created.
+- Next Main priority: verify Gate A hard guards with exact repository/behavior evidence, then continue affected pending-D3 reclassification/independent verification within the five-task cycle cap.
+
+---
 # GCH-027 · FPIA 7/7 terminal; QGV/Platform returns consumed · 2026-10-05T09:47:00Z
 
 **Authority remains CDR-023 (D1/D2/D3-A/D3-R).** This checkpoint consumes terminal and owner evidence only; it grants no canonical merge, production semantics, Holdout, Official/LIVE, credential, paid-resource or transaction authority.
