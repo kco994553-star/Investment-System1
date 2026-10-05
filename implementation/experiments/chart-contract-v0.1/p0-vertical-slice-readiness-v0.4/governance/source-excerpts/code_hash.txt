@@ -1,0 +1,261 @@
+"""C8 partially approved foundation contracts. No statistical/role decisions.
+
+Real calibration, research admission and full C8 Freeze remain closed. Explicit
+missing configuration is a prerequisite, never a financial numeric default.
+"""
+from copy import deepcopy
+from datetime import datetime
+from hashlib import sha1, sha256
+import json
+from pathlib import Path
+
+from .ledger import canonical_json
+from .metrics import METRIC_VERSION
+from .selection_contracts import metric_registration
+from .splits import aware, POLICY_ID as SPLIT_POLICY
+from .walkforward import digest
+
+POLICY = "TC-C8-PACKAGE-A-PARTIAL-2026-10-02"
+APPROVAL_BLOB = "20e364090c1fed426760b854c1d25752e83416b5"
+APPROVAL_PATH = Path(__file__).resolve().parents[3] / "reports" / "track_c_c8_partial_approval_2026-10-02.json"
+SCOPE = "SYNTHETIC_SOFTWARE_VALIDATION"
+FIXTURE_SCOPE = "SYNTHETIC_SOFTWARE_VALIDATION_ONLY"
+METHOD = "C8_APPROVED_FOUNDATION_v1"
+BLOCKED = ("A6", "A8", "A10", "REAL_RESEARCH_CONFIGURATION")
+ECONOMIC_ORDER = ("nominal", "real", "risk_free_excess", "premium", "opportunity_cost", "risk_adjusted")
+CONTROLS = ("RANDOM_RANKING", "RANDOMIZED_WEIGHTS", "EQUAL_SIMPLE", "MARKET_CAP")
+OPERATIONS = ("CAL_FIT", "THRESHOLD_CHOICE", "CAL_VERIFY", "CONTROL_EVIDENCE", "ECONOMIC_EVIDENCE")
+UNIVERSAL = ("PIT", "PROVENANCE", "LINEAGE", "COMPLETE_LEDGER", "SCOPE",
+             "TAX_MODE", "INVALIDATION", "HOLDOUT_ISOLATION", "FROZEN_CANDIDATES")
+
+
+class IntegrityFailure(ValueError):
+    """Observed protocol/integrity violation; cannot be offset by returns."""
+
+
+class MissingPrerequisite(ValueError):
+    """Legitimate missing support or unapproved policy: NOT_RUN."""
+
+
+def instant(value):
+    value = datetime.fromisoformat(value) if isinstance(value, str) else value
+    aware(value)
+    return value
+
+
+def identity(value):
+    if not isinstance(value, str) or not value.strip():
+        raise IntegrityFailure("nonempty identity/provenance required")
+    return value
+
+
+def finite_number(value):
+    import math
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        raise IntegrityFailure("finite numeric value required")
+    return value
+
+
+def authority():
+    raw = APPROVAL_PATH.read_bytes()
+    actual = sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+    if actual != APPROVAL_BLOB:
+        raise IntegrityFailure("changed/missing current partial approval authority")
+    record = json.loads(raw)
+    if (record["record_id"] != POLICY or record["package_status"] != "PARTIALLY_APPROVED_APPROVED_FOUNDATION_ONLY"
+            or record["C0_C7"] != "SOFTWARE_FROZEN_PRESERVED"
+            or record["real_research_configuration"] != "PROPOSED_NOT_APPROVED_NOT_ACTIVE"
+            or any(record["clauses"][a]["status"] != "PROPOSED_NOT_APPROVED_NOT_ACTIVE"
+                   for a in ("A6", "A8", "A10"))):
+        raise IntegrityFailure("partial authority cannot activate missing policies")
+    return record
+
+
+def code_hash():
+    root = Path(__file__).resolve().parents[1]
+    return sha256(b"".join(p.relative_to(root).as_posix().encode() + b"\0" + p.read_bytes()
+                          for p in sorted(root.rglob("*.py")))).hexdigest()
+
+
+def metric_identity(metric_id, view, name, direction):
+    result = metric_registration(metric_id, view, name, direction)
+    result["provenance"] = "C8_CALIBRATION_C3_METRICS"
+    return result
+
+
+def canonical_metric(metric):
+    """Only frozen C3 identities; no newly invented economic derivations."""
+    p = metric["path"]
+    if len(p) == 3 and p[0] == "views":
+        expected = metric_identity(metric["metric_id"], p[1], p[2], metric["direction"])
+    elif len(p) == 2 and p[0] in ("benchmark", "risk_free"):
+        expected = metric_identity(metric["metric_id"], p[0], p[1], metric["direction"])
+    elif len(p) == 1:
+        expected = metric_identity(metric["metric_id"], None, p[0], metric["direction"])
+    else:
+        raise IntegrityFailure("unapproved metric path/formula")
+    if metric != expected or metric["version"] != METRIC_VERSION or metric["direction"] not in ("min", "max"):
+        raise IntegrityFailure("exact metric formula/version/units/direction required")
+    return deepcopy(metric)
+
+
+def validate_threshold_registry(registry):
+    """Registration machinery only; no graph, stability or threshold fitting."""
+    if registry is None:
+        return None
+    expected = {"configuration_scope", "version", "range", "grid", "sensitivity",
+                "plateau", "graph_universe", "adjacency", "tolerance",
+                "rounding_rule", "rounding_support", "vectors", "fixture_fit_support"}
+    if set(registry) != expected or registry["configuration_scope"] != FIXTURE_SCOPE:
+        raise IntegrityFailure("explicit complete fixture-only threshold registration required")
+    for name in ("version", "range", "grid", "sensitivity", "plateau", "graph_universe",
+                 "adjacency", "tolerance", "rounding_rule", "rounding_support"):
+        if registry[name] is None or registry[name] == "" or registry[name] == {}:
+            raise MissingPrerequisite("missing pre-result threshold definition: " + name)
+    vectors = registry["vectors"]
+    if not vectors or set(registry["fixture_fit_support"]) != set(vectors):
+        raise MissingPrerequisite("complete explicitly declared fixture support required")
+    for vector_id, values in vectors.items():
+        identity(vector_id)
+        if not isinstance(values, dict) or not values:
+            raise IntegrityFailure("named nonempty threshold vector required")
+        for name, value in values.items():
+            identity(name)
+            finite_number(value)
+        support = registry["fixture_fit_support"][vector_id]
+        if set(support) != {"rounded_vector", "support_ref"}:
+            raise IntegrityFailure("preregistered rounding support required")
+        if set(support["rounded_vector"]) != set(values):
+            raise IntegrityFailure("rounding coordinate coverage mismatch")
+        for value in support["rounded_vector"].values():
+            finite_number(value)
+        identity(support["support_ref"])
+    digest(registry)
+    return deepcopy(registry)
+
+
+def validate_economic_registry(gates):
+    if tuple(g["stage"] for g in gates) != ECONOMIC_ORDER:
+        raise IntegrityFailure("exact noncompensating economic gate order required")
+    for gate in gates:
+        if set(gate) != {"stage", "metric", "limit", "comparator", "configuration_scope", "authority_ref"}:
+            raise IntegrityFailure("exact economic identity/config fields required")
+        if gate["configuration_scope"] != FIXTURE_SCOPE:
+            raise MissingPrerequisite("actual economic configuration is not approved")
+        if gate["metric"] is not None:
+            canonical_metric(gate["metric"])
+        if gate["limit"] is not None:
+            finite_number(gate["limit"])
+        if gate["comparator"] not in ("<", "<=", ">", ">="):
+            raise IntegrityFailure("explicit economic comparator required")
+        identity(gate["authority_ref"])
+    return deepcopy(gates)
+
+
+def validate_plan(plan):
+    p = deepcopy(plan)
+    fields = {"schema", "policy", "approval_blob", "scope", "configuration_scope",
+              "temporal_origin", "registered_at", "ledger_id", "campaign_id",
+              "access_registry_id", "code_hash", "dataset_vintage", "upstream_snapshot_hash",
+              "family_members", "representative_ties", "cohort_metadata", "model_instances",
+              "used_outcomes", "datasets", "holdout_boundary", "horizon_contracts",
+              "rebalance_schedule", "budget", "threshold_registration", "controls", "economic_gates", "tax_mode"}
+    if set(p) != fields:
+        raise IntegrityFailure("missing/unknown C8 registration fields")
+    record = authority()
+    if p["tax_mode"] != "EXCLUDED":
+        raise IntegrityFailure("Official/software evidence remains Pre-Tax")
+    if p["scope"] != SCOPE or p["configuration_scope"] != FIXTURE_SCOPE or p["temporal_origin"] != "SIMULATED":
+        raise MissingPrerequisite("real calibration/validation is not authorized")
+    if p["schema"] != METHOD or p["policy"] != POLICY or p["approval_blob"] != APPROVAL_BLOB:
+        raise IntegrityFailure("methodology/version/authority mismatch")
+    if instant(p["registered_at"]) < instant(record["approval_recorded_at_kst"]):
+        raise IntegrityFailure("registration precedes actual policy approval")
+    if p["code_hash"] != code_hash():
+        raise IntegrityFailure("current code identity mismatch")
+    for field in ("ledger_id", "campaign_id", "access_registry_id", "dataset_vintage", "upstream_snapshot_hash"):
+        identity(p[field])
+    family = p["family_members"]
+    if not family or family != sorted(set(family)):
+        raise IntegrityFailure("complete unique preregistered family required")
+    meta = p["cohort_metadata"]
+    required = {(m, v) for m in ("ROLLING", "EXPANDING") for v in ("PRIMARY", "REBALANCE_GAP_STRESS")}
+    if {(v["mode"], v["variant"]) for v in meta.values()} != required:
+        raise MissingPrerequisite("all required cohorts/folds must be retained")
+    if set(p["horizon_contracts"]) != set(meta) or set(p["model_instances"]) != set(meta):
+        raise MissingPrerequisite("complete horizon/model-instance coverage required")
+    for cohort, declaration in p["horizon_contracts"].items():
+        if declaration["policy_id"] != SPLIT_POLICY or type(declaration["max_label_horizon_microseconds"]) is not int or declaration["max_label_horizon_microseconds"] <= 0:
+            raise IntegrityFailure("unchanged approved label horizon required")
+        identity(declaration["schedule_id"])
+        if set(p["model_instances"][cohort]) != set(family):
+            raise IntegrityFailure("complete frozen candidate instances required")
+    if set(p["representative_ties"]) != {"Aggressive", "Balanced", "Defensive"}:
+        raise IntegrityFailure("all exact C7 profile ties required")
+    for ties in p["representative_ties"].values():
+        if not ties or ties != sorted(set(ties)) or not set(ties) <= set(family):
+            raise IntegrityFailure("representatives must remain in registered family")
+    if type(p["budget"]["max_attempts"]) is not int or p["budget"]["max_attempts"] <= 0 or set(p["budget"]) != {"max_attempts", "unit"}:
+        raise IntegrityFailure("explicit positive fixture budget required")
+    if p["budget"]["unit"] != "ONE_REGISTERED_COMPLETE_FAMILY_PROTOCOL_ATTEMPT":
+        raise IntegrityFailure("attempt unit mismatch")
+    if set(p["datasets"]) != {"CAL_FIT", "CAL_VERIFY"}:
+        raise IntegrityFailure("Holdout/Development cannot become calibration dataset roles")
+    schedule = [instant(t) for t in p["rebalance_schedule"]]
+    if schedule != sorted(set(schedule)) or not schedule:
+        raise IntegrityFailure("registered chronological rebalance schedule required")
+    fit, verify = p["datasets"]["CAL_FIT"], p["datasets"]["CAL_VERIFY"]
+    for role, data in p["datasets"].items():
+        required_fields = {"dataset_id", "role", "scope", "synthetic", "source_role", "source_id",
+                           "vintage", "lineage_ids", "available_at", "window", "samples",
+                           "content_hash", "manifest_hash"}
+        if set(data) != required_fields or data["role"] != role or data["source_role"] != "OUTER_C8_CALIBRATION":
+            raise IntegrityFailure("exact independent calibration dataset identity required")
+        if data["scope"] != SCOPE or data["synthetic"] is not True:
+            raise IntegrityFailure("scope discriminator does not qualify real inputs")
+        for key in ("dataset_id", "source_id", "vintage", "content_hash", "manifest_hash"):
+            identity(data[key])
+        instant(data["available_at"])
+        if not data["lineage_ids"] or not data["samples"]:
+            raise MissingPrerequisite("actual fixture lineage/sample support missing")
+        if instant(data["window"]["start"]) >= instant(data["window"]["end"]):
+            raise IntegrityFailure("empty calibration window")
+        ids = [s["sample_id"] for s in data["samples"]]
+        if len(set(ids)) != len(ids):
+            raise IntegrityFailure("duplicate outcome identities")
+        for sample in data["samples"]:
+            identity(sample["sample_id"])
+        manifest = {k: v for k, v in data.items() if k not in ("manifest_hash", "content_hash")}
+        if digest(manifest) != data["manifest_hash"]:
+            raise IntegrityFailure("dataset manifest hash mismatch")
+    if fit["dataset_id"] == verify["dataset_id"] or fit["content_hash"] == verify["content_hash"]:
+        raise IntegrityFailure("FIT/VERIFY identity cannot be substituted")
+    if instant(fit["window"]["end"]) > instant(verify["window"]["start"]) or instant(verify["window"]["end"]) > instant(p["holdout_boundary"]):
+        raise IntegrityFailure("overlapping calibration/Holdout boundary")
+    if instant(verify["window"]["start"]) not in schedule or schedule.index(instant(verify["window"]["start"])) == 0:
+        raise IntegrityFailure("VERIFY needs registered preceding rebalance")
+    used_ids = set(p["used_outcomes"]["sample_ids"])
+    used_end = max(instant(w["end"]) for w in p["used_outcomes"]["windows"])
+    if instant(fit["window"]["start"]) < used_end:
+        raise IntegrityFailure("C4/C7 target intervals cannot be fresh confirmation")
+    fit_ids = {s["sample_id"] for s in fit["samples"]}
+    verify_ids = {s["sample_id"] for s in verify["samples"]}
+    if used_ids & (fit_ids | verify_ids) or fit_ids & verify_ids:
+        raise IntegrityFailure("selected/used outcome identity reused")
+    validate_threshold_registry(p["threshold_registration"])
+    controls = p["controls"]
+    if tuple(c["control_id"] for c in controls) != CONTROLS:
+        raise MissingPrerequisite("all preregistered negative controls required")
+    for control in controls:
+        if set(control) != {"control_id", "construction_ref", "seed", "direction", "metric", "effect_limit"}:
+            raise IntegrityFailure("exact control identity required")
+        identity(control["construction_ref"])
+        if type(control["seed"]) is not int or control["direction"] not in ("min", "max"):
+            raise IntegrityFailure("registered control seed/direction required")
+        canonical_metric(control["metric"])
+        if control["effect_limit"] is not None:
+            finite_number(control["effect_limit"])
+    validate_economic_registry(p["economic_gates"])
+    digest(p)
+    return p
+

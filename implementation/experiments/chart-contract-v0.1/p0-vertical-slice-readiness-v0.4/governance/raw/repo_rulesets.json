@@ -1,0 +1,26 @@
+{
+  "key": "repo_rulesets",
+  "url": "https://api.github.com/repos/kco994553-star/Investment-System1/rulesets",
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "content": "[]",
+      "title": "rulesets",
+      "modified_date": null,
+      "url": "https://api.github.com/repos/kco994553-star/Investment-System1/rulesets",
+      "display_url": "https://api.github.com/repos/kco994553-star/Investment-System1/rulesets",
+      "display_title": "rulesets",
+      "structuredContent": {
+        "title": "rulesets",
+        "content": "[]",
+        "display_url": "https://api.github.com/repos/kco994553-star/Investment-System1/rulesets"
+      }
+    },
+    "isError": false
+  }
+}

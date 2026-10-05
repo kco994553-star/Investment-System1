@@ -1,0 +1,886 @@
+{
+  "status": "SOURCE_REFERENCE_REPLAY_VERIFIED_PRODUCTION_ROOT_NOT_ADMITTED",
+  "scope": "OFFLINE_DIAGNOSTIC_ONLY_NO_PRODUCTION_IMPLEMENTATION_OR_ADOPTION",
+  "baseline_refs": {
+    "pr41_baseline": "581c61c4af859f6cbdc3418209bba9be7bbc76a3",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "cdr012_trial": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+    "pr42_fpia": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+    "global_handoff": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e"
+  },
+  "authoritative_authored_values_source": {
+    "path": "QGV Portfolio · Specification v1.1.md",
+    "section": "2. Official Baseline",
+    "version": "Portfolio v1.1",
+    "date_label": "2026-09-14",
+    "date_role": "DOCUMENT_BASELINE_LABEL_NOT_PROVEN_EFFECTIVE_OR_AVAILABLE_TIME"
+  },
+  "production_current_target_root_status": "NOT_AVAILABLE_NOT_ADMITTED",
+  "authoritative_production_portfolio_id": null,
+  "production_current_applicable_period": null,
+  "actual": {
+    "status": "NOT_AVAILABLE",
+    "root": null,
+    "fallback_to_target": false
+  },
+  "numeric_diagnostic_context": {
+    "input": "Decimal from exact authored numeric tokens; Python binary floats never imported",
+    "precision": 50,
+    "rounding_performed": false,
+    "policy_status": "OFFLINE_DIAGNOSTIC_NOT_ADOPTED_PRODUCTION_NUMERIC_POLICY"
+  },
+  "validation": {
+    "constituent_count": 19,
+    "holding_total_percent": "100.0",
+    "cash_percent": "0",
+    "total_percent": "100.0",
+    "total_decimal_ratio": "1.000",
+    "total_exact_fraction": "1",
+    "reference_total_units": 10000,
+    "source_weight_agreement": "19/19",
+    "single_partition_membership": "19/19",
+    "theme_count": 4,
+    "theme_counts": {
+      "반도체 장비": 5,
+      "AI·반도체": 5,
+      "Big Tech": 3,
+      "기타산업": 6
+    },
+    "theme_total_percent": {
+      "반도체 장비": "30.0",
+      "AI·반도체": "25",
+      "Big Tech": "20",
+      "기타산업": "25.0"
+    },
+    "authored_group_total_percent": {
+      "반도체 장비": "30",
+      "AI·반도체": "25",
+      "Big Tech": "20",
+      "기타산업": "25"
+    },
+    "source_pins_verified": 16,
+    "negative_cases_rejected": [
+      "duplicate_identity",
+      "missing_constituent",
+      "source_weight_drift",
+      "nonfinite_weight",
+      "unknown_membership",
+      "same_total_wrong_group"
+    ],
+    "production_L5_status": "NOT_RUN"
+  },
+  "duplicate_sources": {
+    "official_fixture": "19 exact weights agree; REFERENCE_FIXTURE role, cannot be production root",
+    "preserved_chart_reference": "19 weights and authored groups agree; TARGET/USER_SPEC_REFERENCE, all security IDs unresolved",
+    "us_working_fixture": {
+      "constituents": 17,
+      "unrenormalized_weight_mass_decimal": "0.905",
+      "scope": "PROVISIONAL_US_WORKING_SEPARATE_17_CONSTITUENT_FIXTURE_NOT_CURRENT_19_TARGET",
+      "missing": [
+        "tokyo_electron",
+        "hanmi"
+      ]
+    },
+    "ModelPortfolioSnapshot": "Contract only; no admitted 19-row production constructor found in inspected source refs"
+  },
+  "membership_matrix": [
+    {
+      "company_id": "asml",
+      "authored_label": "ASML",
+      "reference_constituent_id": "reference:company:asml",
+      "label": "ASML Holding",
+      "target_weight_decimal_ratio": "0.09",
+      "target_weight_exact_fraction": "9/100",
+      "target_weight_percent": "9",
+      "reference_weight_units": 900,
+      "strategy_theme_name": "반도체 장비",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 15
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 19,
+          "literal": "0.09"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 15
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/0"
+        }
+      ]
+    },
+    {
+      "company_id": "lrcx",
+      "authored_label": "LRCX",
+      "reference_constituent_id": "reference:company:lrcx",
+      "label": "Lam Research",
+      "target_weight_decimal_ratio": "0.06",
+      "target_weight_exact_fraction": "3/50",
+      "target_weight_percent": "6",
+      "reference_weight_units": 600,
+      "strategy_theme_name": "반도체 장비",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 15
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 20,
+          "literal": "0.06"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 16
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/1"
+        }
+      ]
+    },
+    {
+      "company_id": "klac",
+      "authored_label": "KLAC",
+      "reference_constituent_id": "reference:company:klac",
+      "label": "KLA Corporation",
+      "target_weight_decimal_ratio": "0.055",
+      "target_weight_exact_fraction": "11/200",
+      "target_weight_percent": "5.5",
+      "reference_weight_units": 550,
+      "strategy_theme_name": "반도체 장비",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 15
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 21,
+          "literal": "0.055"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 17
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/2"
+        }
+      ]
+    },
+    {
+      "company_id": "tokyo_electron",
+      "authored_label": "TEL",
+      "reference_constituent_id": "reference:company:tokyo_electron",
+      "label": "Tokyo Electron Limited · 시장 식별 미확정",
+      "target_weight_decimal_ratio": "0.05",
+      "target_weight_exact_fraction": "1/20",
+      "target_weight_percent": "5",
+      "reference_weight_units": 500,
+      "strategy_theme_name": "반도체 장비",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 15
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 22,
+          "literal": "0.05"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 18
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/3"
+        }
+      ]
+    },
+    {
+      "company_id": "hanmi",
+      "authored_label": "한미반도체",
+      "reference_constituent_id": "reference:company:hanmi",
+      "label": "Hanmi Semiconductor",
+      "target_weight_decimal_ratio": "0.045",
+      "target_weight_exact_fraction": "9/200",
+      "target_weight_percent": "4.5",
+      "reference_weight_units": 450,
+      "strategy_theme_name": "반도체 장비",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 15
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 23,
+          "literal": "0.045"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 28
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/4"
+        }
+      ]
+    },
+    {
+      "company_id": "nvda",
+      "authored_label": "NVDA",
+      "reference_constituent_id": "reference:company:nvda",
+      "label": "NVIDIA Corporation",
+      "target_weight_decimal_ratio": "0.08",
+      "target_weight_exact_fraction": "2/25",
+      "target_weight_percent": "8",
+      "reference_weight_units": 800,
+      "strategy_theme_name": "AI·반도체",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 16
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 24,
+          "literal": "0.08"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 29
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/5"
+        }
+      ]
+    },
+    {
+      "company_id": "amd",
+      "authored_label": "AMD",
+      "reference_constituent_id": "reference:company:amd",
+      "label": "Advanced Micro Devices",
+      "target_weight_decimal_ratio": "0.05",
+      "target_weight_exact_fraction": "1/20",
+      "target_weight_percent": "5",
+      "reference_weight_units": 500,
+      "strategy_theme_name": "AI·반도체",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 16
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 25,
+          "literal": "0.05"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 30
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/6"
+        }
+      ]
+    },
+    {
+      "company_id": "avgo",
+      "authored_label": "AVGO",
+      "reference_constituent_id": "reference:company:avgo",
+      "label": "Broadcom",
+      "target_weight_decimal_ratio": "0.05",
+      "target_weight_exact_fraction": "1/20",
+      "target_weight_percent": "5",
+      "reference_weight_units": 500,
+      "strategy_theme_name": "AI·반도체",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 16
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 26,
+          "literal": "0.05"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 31
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/7"
+        }
+      ]
+    },
+    {
+      "company_id": "qcom",
+      "authored_label": "QCOM",
+      "reference_constituent_id": "reference:company:qcom",
+      "label": "Qualcomm",
+      "target_weight_decimal_ratio": "0.04",
+      "target_weight_exact_fraction": "1/25",
+      "target_weight_percent": "4",
+      "reference_weight_units": 400,
+      "strategy_theme_name": "AI·반도체",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 16
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 27,
+          "literal": "0.04"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 32
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/8"
+        }
+      ]
+    },
+    {
+      "company_id": "intc",
+      "authored_label": "INTC",
+      "reference_constituent_id": "reference:company:intc",
+      "label": "Intel",
+      "target_weight_decimal_ratio": "0.03",
+      "target_weight_exact_fraction": "3/100",
+      "target_weight_percent": "3",
+      "reference_weight_units": 300,
+      "strategy_theme_name": "AI·반도체",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 16
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 28,
+          "literal": "0.03"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 33
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/9"
+        }
+      ]
+    },
+    {
+      "company_id": "msft",
+      "authored_label": "MSFT",
+      "reference_constituent_id": "reference:company:msft",
+      "label": "Microsoft",
+      "target_weight_decimal_ratio": "0.07",
+      "target_weight_exact_fraction": "7/100",
+      "target_weight_percent": "7",
+      "reference_weight_units": 700,
+      "strategy_theme_name": "Big Tech",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 17
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 29,
+          "literal": "0.07"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 34
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/10"
+        }
+      ]
+    },
+    {
+      "company_id": "googl",
+      "authored_label": "GOOGL",
+      "reference_constituent_id": "reference:company:googl",
+      "label": "Alphabet",
+      "target_weight_decimal_ratio": "0.07",
+      "target_weight_exact_fraction": "7/100",
+      "target_weight_percent": "7",
+      "reference_weight_units": 700,
+      "strategy_theme_name": "Big Tech",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 17
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 30,
+          "literal": "0.07"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 35
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/11"
+        }
+      ]
+    },
+    {
+      "company_id": "amzn",
+      "authored_label": "AMZN",
+      "reference_constituent_id": "reference:company:amzn",
+      "label": "Amazon",
+      "target_weight_decimal_ratio": "0.06",
+      "target_weight_exact_fraction": "3/50",
+      "target_weight_percent": "6",
+      "reference_weight_units": 600,
+      "strategy_theme_name": "Big Tech",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 17
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 31,
+          "literal": "0.06"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 36
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/12"
+        }
+      ]
+    },
+    {
+      "company_id": "rtx",
+      "authored_label": "RTX",
+      "reference_constituent_id": "reference:company:rtx",
+      "label": "RTX Corporation",
+      "target_weight_decimal_ratio": "0.06",
+      "target_weight_exact_fraction": "3/50",
+      "target_weight_percent": "6",
+      "reference_weight_units": 600,
+      "strategy_theme_name": "기타산업",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 18
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 32,
+          "literal": "0.06"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 37
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/13"
+        }
+      ]
+    },
+    {
+      "company_id": "stry",
+      "authored_label": "Stryker",
+      "reference_constituent_id": "reference:company:stry",
+      "label": "Stryker",
+      "target_weight_decimal_ratio": "0.055",
+      "target_weight_exact_fraction": "11/200",
+      "target_weight_percent": "5.5",
+      "reference_weight_units": 550,
+      "strategy_theme_name": "기타산업",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 18
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 33,
+          "literal": "0.055"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 38
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/14"
+        }
+      ]
+    },
+    {
+      "company_id": "etn",
+      "authored_label": "Eaton",
+      "reference_constituent_id": "reference:company:etn",
+      "label": "Eaton",
+      "target_weight_decimal_ratio": "0.05",
+      "target_weight_exact_fraction": "1/20",
+      "target_weight_percent": "5",
+      "reference_weight_units": 500,
+      "strategy_theme_name": "기타산업",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 18
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 34,
+          "literal": "0.05"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 39
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/15"
+        }
+      ]
+    },
+    {
+      "company_id": "hubb",
+      "authored_label": "Hubbell",
+      "reference_constituent_id": "reference:company:hubb",
+      "label": "Hubbell",
+      "target_weight_decimal_ratio": "0.035",
+      "target_weight_exact_fraction": "7/200",
+      "target_weight_percent": "3.5",
+      "reference_weight_units": 350,
+      "strategy_theme_name": "기타산업",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 18
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 35,
+          "literal": "0.035"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 40
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/16"
+        }
+      ]
+    },
+    {
+      "company_id": "gev",
+      "authored_label": "GE Vernova",
+      "reference_constituent_id": "reference:company:gev",
+      "label": "GE Vernova",
+      "target_weight_decimal_ratio": "0.03",
+      "target_weight_exact_fraction": "3/100",
+      "target_weight_percent": "3",
+      "reference_weight_units": 300,
+      "strategy_theme_name": "기타산업",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 18
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 36,
+          "literal": "0.03"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 41
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/17"
+        }
+      ]
+    },
+    {
+      "company_id": "rok",
+      "authored_label": "Rockwell",
+      "reference_constituent_id": "reference:company:rok",
+      "label": "Rockwell Automation",
+      "target_weight_decimal_ratio": "0.02",
+      "target_weight_exact_fraction": "1/50",
+      "target_weight_percent": "2",
+      "reference_weight_units": 200,
+      "strategy_theme_name": "기타산업",
+      "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+      "authored_membership_evidence_status": "READY_REFERENCE_ONLY",
+      "production_assignment_status": "PARTIAL_NOT_ADOPTED",
+      "production_security_id": null,
+      "production_security_binding_status": "NOT_AVAILABLE",
+      "taxonomy_version_observed_reference": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+      "adopted_taxonomy_version": null,
+      "assignment_revision_id": null,
+      "effective_from": null,
+      "effective_to": null,
+      "source_available_at": null,
+      "applicable_period_status": "UNKNOWN",
+      "sources": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "line": 18
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "line": 37,
+          "literal": "0.02"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/identifiers.py",
+          "line": 42
+        },
+        {
+          "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+          "pointer": "/holdings/18"
+        }
+      ]
+    }
+  ]
+}
