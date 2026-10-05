@@ -210,3 +210,14 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 ## GCH-016 · 2026-10-05T13:35:27+09:00 · Main transfer CDR-018
 
 User-designated successor `gpt-work-main-2026-10-05-3a80dcef6444` inherits Global `b3532a2ebbe95310bbf222937466eb04a0211263`. Old writer authority superseded; external runtime status unknown, not terminated here. Fresh-parent non-force publication only; owners and existing automations untouched. FPIA #42 actual11d2f25/audit in progress; GIE-014 unavailable. Platform c9e1adb exists; QGV reconciliation17a442e7. No canonical/semantic promotion. Exact state: MAIN_TAKEOVER_STATE.json.
+
+
+## GCH-017 · 2026-10-05T13:54:27+09:00 · successor repair / owner routing / resumption checkpoint
+
+- Retained CDR018 Main designation. External Claude shutdown UNKNOWN; scope leases preserved. Publication uses fresh parent `af264713b99471fb554e06e8d321f5039be47b47`, non-force update only.
+- Recovered PR42 terminal audit SUCCESS; GIE014 previously UNAVAILABLE, now reconstructed from fresh observed evidence and bounded new tests without claiming lost results.
+- Published draft PR46 remote2135962a / localfaf1fb3, tree728dbcea identical, commit identities distinct. Literal execution-source false PASS repaired; independent review retained. New exact-head CI still running.
+- Recorded six D2 governance dispositions without promoting decisions to implementation or acceptance. Canonical/Frozen/PIT/production boundaries preserved.
+- Read back six actual routing comments; stored packet/body hashes, dependency states and Main-side conditional Web planning acceptance. Chart6 gates remain open; source authorities unassigned.
+- Consumed fresh Platform/QGV/Chart updates as recorded in the ledger, distinguishing owner contracts from independent audits and comment delivery from scoped receipt.
+- Main-only resumption configuration and event/followup receipts verified at their observed level; standalone unattended completion unverified. Existing scoped reservations untouched. Processed IDs prevent self-trigger replay; lease released for CI wait.

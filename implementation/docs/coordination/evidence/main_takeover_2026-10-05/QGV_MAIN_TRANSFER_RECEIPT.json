@@ -1,0 +1,77 @@
+{
+  "schema": "qgv-main-transfer-receipt-evidence-v1",
+  "source_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+  "repository": "kco994553-star/Investment-System1",
+  "scope": "independent QGV reconciliation Work only; not Missing-Data owner receipt",
+  "main_transfer_receipt": "CONSUMED_EXPLICIT_IN_COMMITTED_SCOPED_EVIDENCE",
+  "consumed_decision": "CDR-018",
+  "consumed_global_heads": [
+    "6d029732e6bee02038a25685badb937b2666d04e",
+    "af264713b99471fb554e06e8d321f5039be47b47"
+  ],
+  "pr44_comment_5988271804_consumption": "NOT_EVIDENCED_IN_INSPECTED_RECEIPT_SOURCES",
+  "comment_delivery_or_wakeup_claimed": false,
+  "sources": [
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/4d53aa3047ba397cda992d2e784316a9d889bc22/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md",
+      "sha256": "dd750d41e69693549ca21cb0428a91d70276ee7102e60a773b82ff0d9a6c8c96",
+      "bytes": 16407,
+      "comment_id_literal_present": false,
+      "excerpts": [
+        "- Actual audited QGV owner: codex/qgv-missing-data-decision-gate-2026-10-05 @ 4fb08a05728d83519b72a2bd995669f0cb06003a. Its qgv-b47-muupb538 lease remains active/read-only to this Work. Unpublished local owner B4/B7/admission outputs were context, not authenticated completed delivery.",
+        "- Evidence-only delivery branch: codex/qgv-architecture-reconciliation-review-2026-10-05. Resolve its actual remote ref for the commit delivering this checkpoint. It is not canonical or the Missing-Data owner STATE. Own lanes/CONTROL.json lease is released by the evidence publication.",
+        "- Global fresh-read progressed b3532a2ebbe95310bbf222937466eb04a0211263 → 6d029732e6bee02038a25685badb937b2666d04e (CDR-018 Main transfer) → af264713b99471fb554e06e8d321f5039be47b47 (Main state/configuration and own routing lease only). QGV semantics stay scoped and protected. Global was not written."
+      ]
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/CONTROL.json",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/4d53aa3047ba397cda992d2e784316a9d889bc22/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/CONTROL.json",
+      "sha256": "5b0d766bb110f8cc730af25b5e33c8dbb33b127c5eda95b2cfd76ca0268c21da",
+      "bytes": 1498,
+      "comment_id_literal_present": false,
+      "parsed_excerpt": {
+        "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
+        "status": "D1_D2_EVIDENCE_COMPLETE_INACTIVE",
+        "lease": null,
+        "authorized_write_paths": [
+          "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/",
+          "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md"
+        ],
+        "other_owner_branch_read_only": "codex/qgv-missing-data-decision-gate-2026-10-05",
+        "production_enabled": false,
+        "manual_execution": true,
+        "actual_scheduler_hops_credited": 0,
+        "last_lease_token": "qgv-gv-lanes-ce04703e5823"
+      }
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/root/fresh_intake.json",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/4d53aa3047ba397cda992d2e784316a9d889bc22/implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/root/fresh_intake.json",
+      "sha256": "e153777821c54245d0b43396541f0127d84b373e4f24268719534c6e405afab9",
+      "bytes": 3347,
+      "comment_id_literal_present": false,
+      "parsed_excerpt": {
+        "execution_kind": "MANUAL_WORK_D1_D2",
+        "source_owner_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "global_intake_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+        "global_refreshed_head": "af264713b99471fb554e06e8d321f5039be47b47",
+        "material_global_delta": {
+          "decision": "CDR-018",
+          "effect": "Main coordinator/writer transfer only; QGV production semantics remain scoped and D3",
+          "global_written": false,
+          "latest_configuration_delta": "6d029→af264 modifies only Main state/own routing lease and automation configuration; no QGV semantics approval"
+        },
+        "owner_lease": {
+          "token": "qgv-b47-muupb538",
+          "owner": "manual-B4-B7-explicit-user-approval",
+          "input_owner_head": "36b6b1840fe4bd22d7bb310407e2cea4050e0c2d",
+          "task": "approved-identity-invariants-and-admission-consolidation",
+          "claimed_at_kst": "2026-10-05T12:39:35.838071+09:00",
+          "expiry": null,
+          "mutated": false
+        }
+      }
+    }
+  ]
+}

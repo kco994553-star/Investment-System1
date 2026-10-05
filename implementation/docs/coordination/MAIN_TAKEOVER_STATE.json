@@ -25,14 +25,20 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "IN_PROGRESS_ROUTING_AND_EVIDENCE",
+  "execution_state": "CHECKPOINT_READY_CI_PENDING_D2_BACKLOG",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
-    "global_input": "b3532a2ebbe95310bbf222937466eb04a0211263",
-    "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+    "global_input": "af264713b99471fb554e06e8d321f5039be47b47",
+    "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+    "chart": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+    "fpia_successor": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "qgv_missing": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "qgv_reconciliation": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+    "platform": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+    "platform_independent_audit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
   },
   "automations": {
-    "state": "CONFIGURED_ONLY",
+    "state": "EVENT_DELIVERED_AND_CONSUMED",
     "event_id": "6ac3299d5f708191a81a83bc0b967ee6",
     "followup_id": "6ac329b131888191848558ca33c73811",
     "conversation_id": "6ac32807-c708-83ee-bb72-8af0a5537b68",
@@ -42,19 +48,131 @@
     "verified_at_kst": "2026-10-05T13:39:07+09:00",
     "unsupported_direct_events": [
       "CI completion",
-      "Global-only push",
-      "bot/API-comment wake-up not proven"
+      "Global-only push"
     ],
     "followup": "hourly delta-only checks",
-    "existing_owner_automations_modified": false
+    "existing_owner_automations_modified": false,
+    "verified_paths": [
+      "PR synchronize→Main fresh read→bounded handoff verification",
+      "API-authored owner-account comment→Main readback→self-event dedup"
+    ],
+    "standalone_unattended_continuation": "UNVERIFIED; event and followup were coalesced into this active Main writer",
+    "followup_delivery_observed": true
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": {
+  "lease": null,
+  "last_processed_event_ids": [
+    "b3b45590-c076-11f1-9878-3bcc8f58670c",
+    "6d001840-c077-11f1-8d6f-701149cf3529",
+    "6e18b430-c077-11f1-9a49-15fdaf70dce6",
+    "6e364e50-c077-11f1-9b07-b13f4a06d8cc",
+    "6f6901f0-c077-11f1-8908-b813acfaad02",
+    "86756dc0-c077-11f1-815a-4b5b85a1cc85",
+    "870e2b50-c077-11f1-8323-020a2db0ad0f",
+    "9b513df0-c077-11f1-9ead-8367b5a44822",
+    "a52e4430-c077-11f1-87ee-6aadee7e4cf1",
+    "ea6fe940-c077-11f1-8771-9c00da60a34e",
+    "3d9f3ad0-c078-11f1-8633-383e1f8a1664",
+    "c082c480-c078-11f1-8341-4176060628fa",
+    "12077350-c079-11f1-8365-c26c461ca142"
+  ],
+  "last_processed_comment_ids": [
+    5988265306,
+    5988265466,
+    5988265604,
+    5988265763,
+    5988271804,
+    5988271956
+  ],
+  "pending_ci": [
+    {
+      "id": 37264932370,
+      "name": "us-equity-session",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932370"
+    },
+    {
+      "id": 37264932313,
+      "name": "p01-research-publication",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932313"
+    },
+    {
+      "id": 37264932317,
+      "name": "sec-primary-disclosure",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932317"
+    },
+    {
+      "id": 37264932324,
+      "name": "technical-real-model",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932324"
+    },
+    {
+      "id": 37264932310,
+      "name": "technical-real-producer",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932310"
+    },
+    {
+      "id": 37264932346,
+      "name": "qgv-invalidation-binding",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932346"
+    },
+    {
+      "id": 37264932348,
+      "name": "track-c-fpia",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932348"
+    }
+  ],
+  "next_runnable_backlog": [
+    "Implement and independently validate PIW-D001..006 acceptance obligations on FPIA successor after fresh scope/lease check; no canonical/Frozen changes",
+    "Consume existing PR46 CI run IDs/attempts; do not rerun merely to collect a result",
+    "Consume actual owner receipts and route material deltas; do not promote comment delivery to receipt"
+  ],
+  "next_dependency_gates": [
+    "Chart 6 Lane A gates and 8 Lane B evidence families remain open until exact owner evidence",
+    "Portfolio/Identity authoritative owners unassigned",
+    "QGV HOP1 manifest and active owner lease; no Main production semantic decision"
+  ],
+  "last_lease": {
     "token": "main-intake-routing-20261005-3a80dcef6444",
     "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
     "acquired_at": "2026-10-05T13:39:07+09:00",
     "expires_at": "2026-10-05T14:09:07+09:00",
     "scope": "Global coordination + routing publication; independent FPIA repair remains successor-only",
-    "reason": "Active manual intake; event/followup must not start a concurrent shared writer"
-  }
+    "reason": "Active manual intake; event/followup must not start a concurrent shared writer",
+    "released_at": "2026-10-05T04:55:37.638238+00:00",
+    "release_reason": "Bounded implementation/routing checkpoint published; no shared lease retained for long CI wait"
+  },
+  "publication_dedup_rule": "Containing docs-only Global commit is the output watermark; do not create another commit merely to store its own SHA. Fresh-read this state and compare external input hashes.",
+  "dependency_fingerprint_files": [
+    "OWNER_ROUTING_LEDGER.json",
+    "evidence/main_takeover_2026-10-05/REMOTE_RECEIPTS.json",
+    "evidence/main_takeover_2026-10-05/CHART_TERMINAL_INTAKE.json"
+  ]
 }

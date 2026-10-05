@@ -4,7 +4,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-022 (CDR-015 decision authority delegation recorded; open items under reclassification; FPIA fix round 3 running) |
+| Index revision | GSI-023 (CDR-018 takeover; FPIA successor PR46; exact owner routing ledger) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | GPT Work `gpt-work-main-2026-10-05-3a80dcef6444`; CDR-018 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
@@ -13,9 +13,22 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 **Decision authority (CDR-015, 2026-10-05 12:15 KST):** classifications below that read USER_DECISION_REQUIRED or "not approved" were made under the earlier authority. Under CDR-015 they are D2 for the responsible Work (decide with evidence, record reason/impact/verification/recovery), except paid resources (D3). Reclassification in progress; PIW decisions go to `PIW_DECISION_RECORDS.md`.
 
-## Current override · CDR-018
+## Current override · GCH-017 / CDR-018
 
-Primary writer transferred to GPT Work. FPIA actual HEAD `11d2f25` / exact audit still running. Platform `codex/product-platform-audit-v1` exists at `c9e1adb`; QGV reconciliation `17a442e7`; Chart `ebeb8b1`. Later owner/scoped evidence supersedes the older rows below. Authority is CDR-015 **narrowed by CDR-016 §13 and CDR-017**, not cost-only D3 for this Work. No capability is newly canonical/operational by this coordination change.
+The current Integration authority is CDR-015 **as narrowed by CDR-016 §13 / CDR-017 / CDR-018**; the earlier broad decision paragraph and old labels do not override these limits. Current evidence is `GLOBAL_CURRENT_HANDOFF.md`, `MAIN_TAKEOVER_STATE.json`, `OWNER_ROUTING_LEDGER.json`, and GIE-014.
+
+| Capability | Fresh branch evidence | Integration disposition |
+|---|---|---|
+| FPIA | PR42 11d2f25 existing audit SUCCESS; PR46 2135962a bounded literal-source repair published, exact-head CI pending | Governance + actual merge-result acceptance OPEN; PIW-D001..006 technical obligations pending |
+| Chart | Latest scoped HEAD/lease in Main state; v0.8 diagnostic repair independently source-checked | 6 Lane A gates OPEN; Lane B 0/19, 8 evidence families; no production admission |
+| Portfolio / Identity | No bounded authoritative owner claim found | OWNER_UNASSIGNED; memory/ticker aliases are not an admitted source |
+| Product / Web / US Session | Requests delivered to PR17/36/18; exact comment IDs/hashes in ledger | Await actual scoped owner artifacts; Main A-G2 acceptance is conditional planning only |
+| QGV missing/reconciliation | Missing owner4fb08a0 active lease; independent review uses separate branch | No Main production semantic decision; HOP1 actual canary evidence remains dependency |
+| Platform contract | c9e1adb, run37263497936 SUCCESS | Contract layer only; Auth/API NOT_STARTED; runtime/durable reconciliation obligations remain |
+| Platform independent audit | PR45 17244b4, push37264194566 + PR37264197708 SUCCESS | Synthetic harness PARTIAL; not authoritative owner replacement; PPF003–006 OPEN |
+| Main automated resumption | Enabled readback plus actual delivered/coalesced events | Separate unattended end-to-end continuation UNVERIFIED; no duplicate executor |
+
+No canonical/integration readiness is implied by docs publication. Historical table rows below are preserved and superseded by newer scoped evidence where they differ.
 
 ## 1. Maturity scale and state columns
 

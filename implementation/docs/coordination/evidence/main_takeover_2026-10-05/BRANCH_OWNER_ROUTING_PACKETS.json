@@ -1,0 +1,163 @@
+{
+  "created_at_kst": "2026-10-05T13:43:35+09:00",
+  "packets": [
+    {
+      "id": "MAIN-PLATFORM-CI-20261005",
+      "finding": "Existing exact-head CI finished; scoped handoff still lists collection as next action",
+      "authoritative_owner": "Product Platform Audit Work",
+      "required_artifact": "Scoped CI consumption receipt",
+      "exact_path_branch_pr": {
+        "branch": "codex/product-platform-audit-v1",
+        "head": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+        "pr": null,
+        "path": "implementation/docs/product_platform_audit/CURRENT_HANDOFF.md"
+      },
+      "acceptance_criteria": [
+        "consume run37263497936 job111615381958 exact c9e1adb",
+        "targeted platform/TrackB and full regression successful",
+        "do not rerun without new code/failure",
+        "contract CI is not auth/tenant-service/account E2E"
+      ],
+      "evidence": {
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37263497936",
+        "state": "REMOTE_VERIFIED",
+        "source": "GitHub run/jobs/workflow readback"
+      },
+      "dependencies": [],
+      "state": "EVIDENCE_READY",
+      "delivery_channel": "Global coordination packet (existing Platform automation fresh-reads Global)",
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "Platform owner consumes exact CI and appends own receipt; Main re-reads"
+    },
+    {
+      "id": "MAIN-QGV-HOP1-20261005",
+      "finding": "G lineage reconciliation needs accepted owner HOP1 manifest",
+      "authoritative_owner": "QGV missing-data owner; downstream reconciliation Work",
+      "required_artifact": "automation/canary/hop1_method_replay_manifest.json plus accepted receipt",
+      "exact_path_branch_pr": {
+        "branch": "codex/qgv-missing-data-decision-gate-2026-10-05",
+        "head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "pr": null,
+        "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/STATE.json"
+      },
+      "acceptance_criteria": [
+        "use existing CANARY_ACCEPTANCE and CONTINUATION_PROTOCOL",
+        "all20 legacy methods covered with pinned source/authority/validator/output digest",
+        "owner owns and releases its active qgv-b47-muupb538 lease",
+        "reconciliation consumes accepted output digest",
+        "manual Main work is not either scheduler hop"
+      ],
+      "dependencies": [
+        "owner active nonexpiring lease",
+        "accepted real scheduler HOP1"
+      ],
+      "state": "FOUND",
+      "delivery_channel": "Global material dependency input; PR44 registered secondary channel",
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "Owner finishes existing lease; accepted manifest routed to reconciliation; independent V work may continue"
+    },
+    {
+      "id": "MAIN-PLATFORM-P01-20261005",
+      "finding": "Account/user page permission must be distinguished from research-publication grant",
+      "authoritative_owner": "Product/P01 capability",
+      "required_artifact": "bounded account-page applicability response",
+      "exact_path_branch_pr": {
+        "branch": "feature/p01-research-publication-v1",
+        "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "pr": 17
+      },
+      "acceptance_criteria": [
+        "separate principal/tenant private account read from QGV research grant/veto/currentness",
+        "no actual credentials or grant activation",
+        "exact reusable contract paths and unresolved owner declared"
+      ],
+      "dependencies": [],
+      "state": "FOUND",
+      "delivery_channel": "PR17",
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "P01 owner returns bounded applicability"
+    },
+    {
+      "id": "MAIN-PLATFORM-API-20261005",
+      "finding": "Authenticated API projection/runtime owner not established",
+      "authoritative_owner": "Web/Product and Platform scoped Works; runtime implementer unassigned",
+      "required_artifact": "accepted inactive projection contract and exact owner/write-set/base",
+      "exact_path_branch_pr": {
+        "branch": "integration/web/production-state-presentation-v1",
+        "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "pr": 36
+      },
+      "acceptance_criteria": [
+        "tenant/read-only gates",
+        "upstream bundle/source version/state/reason preservation",
+        "no browser financial or QGV recomputation",
+        "no production auth activation"
+      ],
+      "dependencies": [
+        "P01 applicability",
+        "explicit runtime owner claim"
+      ],
+      "state": "FOUND",
+      "delivery_channel": "PR36",
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "Bounded owner acceptance; existing audit continues"
+    },
+    {
+      "id": "MAIN-PLATFORM-IDENTITY-20261005",
+      "finding": "Imported ACTUAL position identity owner not established",
+      "authoritative_owner": null,
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "required_artifact": "Issuer→Security→dated Listing authoritative binding",
+      "exact_path_branch_pr": {
+        "branch": null,
+        "pr": null
+      },
+      "acceptance_criteria": [
+        "identity/share class/date/venue/currency/source provenance",
+        "unresolved mapping fail-closed",
+        "ACTUAL separated from Chart TARGET"
+      ],
+      "dependencies": [
+        "explicit identity owner claim"
+      ],
+      "state": "FOUND",
+      "delivery_channel": "Global unresolved-owner packet",
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "Resolve bounded accountable owner; never infer ticker identity"
+    },
+    {
+      "id": "MAIN-PLATFORM-FPIA-20261005",
+      "finding": "Future production package needs exact integration subject audit",
+      "authoritative_owner": "GPT Main Integration",
+      "required_artifact": "owner-proposed source/base/write-set then exact-result FPIA",
+      "exact_path_branch_pr": {
+        "branch": "codex/product-platform-audit-v1",
+        "head": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+        "pr": null
+      },
+      "acceptance_criteria": [
+        "do not block independent contract/design on future FPIA",
+        "no branchCI→canonical acceptance promotion"
+      ],
+      "dependencies": [
+        "actual production package proposal"
+      ],
+      "state": "FOUND",
+      "delivery_channel": "Global coordination",
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "Deferred until production package exists"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "delivery_id": "b3b45590-c076-11f1-9878-3bcc8f58670c",
+  "event": "pull_request.synchronize",
+  "pr": 41,
+  "received_at_kst": "2026-10-05T13:39:18+09:00",
+  "consumed_at_kst": "2026-10-05T13:43:35+09:00",
+  "old_head": "ebeb8b1f2693703d33cff2610c277c7ce3dcbb18",
+  "fresh_head": "52e751501cb95ab3150398dc45586035276ab0d2",
+  "main_parent_at_read": "af264713b99471fb554e06e8d321f5039be47b47",
+  "disposition": "COALESCED_INTO_ACTIVE_MAIN_WORK_NO_DUPLICATE_WRITER",
+  "verification": "EVENT_DELIVERED_AND_FRESH_READ_CONFIRMED; separate unattended-run completion not claimed",
+  "additional_coalesced_event_ids": [
+    "6e18b430-c077-11f1-9a49-15fdaf70dce6",
+    "6e364e50-c077-11f1-9b07-b13f4a06d8cc",
+    "6f6901f0-c077-11f1-8908-b813acfaad02",
+    "86756dc0-c077-11f1-815a-4b5b85a1cc85",
+    "870e2b50-c077-11f1-8323-020a2db0ad0f",
+    "9b513df0-c077-11f1-9ead-8367b5a44822",
+    "a52e4430-c077-11f1-87ee-6aadee7e4cf1",
+    "ea6fe940-c077-11f1-8771-9c00da60a34e",
+    "3d9f3ad0-c078-11f1-8633-383e1f8a1664"
+  ],
+  "comment_events": "Matched previously posted and read-back comment IDs; no duplicate posts or owner receipts inferred",
+  "followup": "Delivered to same active writer; no second executor"
+}

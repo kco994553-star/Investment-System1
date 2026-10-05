@@ -1,0 +1,41 @@
+{
+  "id": "MAIN-CHART-AG2-INTEGRATION-20261005",
+  "status": "ADOPTED_CONDITIONAL_INTEGRATION_PLANNING_ONLY",
+  "source_global": "af264713",
+  "source_chart": "52e751501cb95ab3150398dc45586035276ab0d2",
+  "authority_refs": [
+    "CDR-016",
+    "CDR-017",
+    "CDR-018"
+  ],
+  "accepting_role": "Primary Integration Coordinator only",
+  "candidate_review_base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+  "conditionally_accepted_plan_paths": [
+    "implementation/src/investment_system/product/web_assets/target-theme.html",
+    "implementation/src/investment_system/product/web_assets/target-theme-chart.js",
+    "implementation/src/investment_system/product/web_assets/target-theme.css"
+  ],
+  "conditions": [
+    "Product applicability and current subject/read authority adopted",
+    "Portfolio and Identity source receipts verified",
+    "Chart/Web exact per-file writer and scope acceptance",
+    "No protected source/digest or existing owner source changes in this plan",
+    "Fresh final assembled subject and applicable exact merge-result FPIA",
+    "No canonical merge/production activation from this receipt"
+  ],
+  "all_gate_a_g2_closed": false,
+  "reason": "Smallest v0.5/v0.8 additive asset route avoids existing Web/P01 protected files while preserving a single accepted source/result/authority path. It reduces integration-side ambiguity without pretending other owner acceptance.",
+  "alternatives_considered": [
+    "Broad existing app.js/locale/style edits deferred",
+    "Protected web_mvp/assembler edits not necessary for ordinary asset copying",
+    "No new package Python merely to create a page"
+  ],
+  "impact": "Coordination/planning only. No source edits, grants, policy activation or asset implementation. If later package source needed, code identity divergence must be separately checked.",
+  "verification": "Three candidate paths absent at exact review base; Chart v0.8 source/evidence hash and AST verification PASS. No repeated runtime tests.",
+  "recovery": "Withdraw or supersede conditional planning receipt additively if base/source/authority/owner acceptance changes; no deployed behavior to roll back.",
+  "publication_receipt": {
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-5988265604",
+    "id": 5988265604,
+    "created_at": "2026-10-05T04:44:20Z"
+  }
+}

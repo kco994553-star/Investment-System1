@@ -1,0 +1,214 @@
+{
+  "created_at": "2026-10-05T04:47:02.905Z",
+  "deliveries": [
+    {
+      "pr": 17,
+      "id": 5988265306,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/17#issuecomment-5988265306",
+      "created_at": "2026-10-05T04:44:18Z",
+      "body": "<!-- main-takeover-routing:chart-a-g1:20261005:v1 -->\nMain takeover dependency packet — 2026-10-05. Chart #41 current inspected v0.8 HEAD `52e751501cb95ab3150398dc45586035276ab0d2`; Global `af264713b99471fb554e06e8d321f5039be47b47`; existing CDR-015 is narrowed by CDR-016 §13 and CDR-017; CDR-018 records the Main writer transfer. This is an owner-return request and integration planning receipt where explicitly stated; it is not a grant or canonical merge instruction. Preserve owner lease/write-set and all historical evidence. Return a receipt with packet ID, accepting owner role/session, exact owner branch+HEAD, immutable artifact path/hash, decision/authority reference, acceptance result or missing input, and source version consumed. A comment delivery does not prove receipt or automatic wake-up.\n\nA-G1: Product/P01 applicability for the user-authored current TARGET Strategy Theme.\n\nConsume [owner interface request](https://github.com/kco994553-star/Investment-System1/blob/52e751501cb95ab3150398dc45586035276ab0d2/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md) and [machine-readable decision input](https://github.com/kco994553-star/Investment-System1/blob/52e751501cb95ab3150398dc45586035276ab0d2/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json). PR #17 remains `21039a0a7f9677b123abd8587fd8d89784a73a3c`, IMPLEMENTATION BASELINE / INTEGRATION WAIT; active research/Frozen/Live grants NONE. No current TARGET authority success route has been evidenced.\n\nPlease return applicability A/B/C with an adopted policy reference: A = existing P01 authority can be reused; B = separate Target/Product authority is needed; C = current contract is insufficient to decide. For B/C the owner must present the minimum required contract. These are response labels for the existing owner question, not new runtime enums or an assumed grant. Include admitted subject/read interface and module/mount; immutable preimage/hash recomputation and root/catalog/assignment revisions; current authority/invalidation and explicit clock; denial/unresolved response with no renderable allocation; lossless lexical-decimal serialization; exact consumer acceptance. If no current Product owner is assigned, explicitly return OWNER_UNASSIGNED and required authority, not a fabricated acceptance.\n\nReceipt closes A-G1 only after Chart authenticates and consumes its actual evidence. A-S1/S2/S3, A-G2 and A-G3 remain distinct. Main does not request a research-display grant merely because this is a chart.\n\n\nMain transfer authority: [CDR-018 and current coordination](https://github.com/kco994553-star/Investment-System1/tree/af264713b99471fb554e06e8d321f5039be47b47/implementation/docs/coordination). Source/investment/publication policy is not expanded by this routing.\n\nSeparate Platform input (MAIN-PLATFORM-P01-20261005): Product Platform `c9e1adb` also requests a bounded applicability answer for authenticated private account/user-authored pages. Distinguish principal/tenant read permission and source rights from P01 QGV research-display grant/veto/currentness. Return exact reusable paths and exclusions; do not activate a grant, actual account or production auth. This separate ACTUAL/account use case must not become a prerequisite for Chart TARGET Theme."
+    },
+    {
+      "pr": 18,
+      "id": 5988265466,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/18#issuecomment-5988265466",
+      "created_at": "2026-10-05T04:44:19Z",
+      "body": "<!-- main-takeover-routing:chart-lane-b-session:20261005:v1 -->\nMain takeover dependency packet — 2026-10-05. Chart #41 current inspected v0.8 HEAD `52e751501cb95ab3150398dc45586035276ab0d2`; Global `af264713b99471fb554e06e8d321f5039be47b47`; existing CDR-015 is narrowed by CDR-016 §13 and CDR-017; CDR-018 records the Main writer transfer. This is an owner-return request and integration planning receipt where explicitly stated; it is not a grant or canonical merge instruction. Preserve owner lease/write-set and all historical evidence. Return a receipt with packet ID, accepting owner role/session, exact owner branch+HEAD, immutable artifact path/hash, decision/authority reference, acceptance result or missing input, and source version consumed. A comment delivery does not prove receipt or automatic wake-up.\n\nLane B B03/B04: exact US session/calendar evidence return; independent from current Target Theme.\n\nConsume [immutable owner actions](https://github.com/kco994553-star/Investment-System1/blob/52e751501cb95ab3150398dc45586035276ab0d2/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json) and [reuse contract](https://github.com/kco994553-star/Investment-System1/blob/52e751501cb95ab3150398dc45586035276ab0d2/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md). Fresh PR #18 remains `2c088cea34314af0ccc33fd2e2dc1ccf21502cb4`; its scoped status says no exchange-issued vintage replayed end to end. Existing comment 5950833091 is final-head CI evidence, not a real calendar receipt.\n\nReturn B03 calendar body/ID/hash, source notice bytes/hash, explicit dated OPEN/CLOSED rows/open-close-breaks-exceptions, source-backed row_available_at, IANA timezone/tzdata version and venue/coverage completeness. For B04 additionally return the admitted security+dated listing relation, original raw hashes and per-bar source-index/provider-label/session join; identify unresolved dates and reasons. Reuse the existing US v1 binder. Its close guard is a no-lookahead lower bound, not the bar's historical available_at. Fixture vintage cannot substitute for exchange evidence, and US rules must not be copied to JP/KR.\n\nIf real calendar evidence is not available, return DATA_BLOCKED with the exact missing artifact/source rather than promoting synthetic readiness. JP/KR owner remains unassigned in observed routing. Market stays 0/19 until its own eight families are evidenced; none of them becomes a new current TARGET Theme prerequisite.\n\n\nMain transfer authority: [CDR-018 and current coordination](https://github.com/kco994553-star/Investment-System1/tree/af264713b99471fb554e06e8d321f5039be47b47/implementation/docs/coordination). Source/investment/publication policy is not expanded by this routing."
+    },
+    {
+      "pr": 36,
+      "id": 5988265604,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-5988265604",
+      "created_at": "2026-10-05T04:44:20Z",
+      "body": "<!-- main-takeover-routing:chart-a-g2:20261005:v1 -->\nMain takeover dependency packet — 2026-10-05. Chart #41 current inspected v0.8 HEAD `52e751501cb95ab3150398dc45586035276ab0d2`; Global `af264713b99471fb554e06e8d321f5039be47b47`; existing CDR-015 is narrowed by CDR-016 §13 and CDR-017; CDR-018 records the Main writer transfer. This is an owner-return request and integration planning receipt where explicitly stated; it is not a grant or canonical merge instruction. Preserve owner lease/write-set and all historical evidence. Return a receipt with packet ID, accepting owner role/session, exact owner branch+HEAD, immutable artifact path/hash, decision/authority reference, acceptance result or missing input, and source version consumed. A comment delivery does not prove receipt or automatic wake-up.\n\nA-G2: Web/Product/Integration exact base and path acceptance for the first TARGET Theme slice.\n\nConsume [bounded additive interface proposal](https://github.com/kco994553-star/Investment-System1/blob/52e751501cb95ab3150398dc45586035276ab0d2/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md) and [full candidate matrix](https://github.com/kco994553-star/Investment-System1/blob/52e751501cb95ab3150398dc45586035276ab0d2/implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/governance/IMPLEMENTATION_PATH_MATRIX.json). PR #36 is `fb086eac4321140493ce554a541343cebbb81ed6`, a previously verified presentation branch owned by the previous Primary Integration Writer. CDR-018 transfers the integration coordinator role to this Main. The transfer record limits current writes to coordination and a collision-checked FPIA successor; this packet therefore does not authorize edits to existing Web source or the PR #36 branch.\n\nMain records **Integration-side conditional planning acceptance**, ID `MAIN-CHART-AG2-INTEGRATION-20261005`: review base `acaf1b5a82859ac2750a130ebe88f8b4d272ac66` (existing #40 trial), restricted to the three new ordinary Target Theme HTML/JS/CSS asset paths listed below. They do not exist on that exact base and are outside the seven protected P01 digest paths and Python code_hash. This accepts the additive integration approach only. It is not production activation, final assembled-tree acceptance, source admission, Web writer authorization or canonical merge approval. The final integrated subject will need a fresh exact HEAD and the applicable FPIA result.\n\nProduct/Web/Chart owners still return their exact selected source/read route, accepted files/per-file writer and lease, P01 applicability dependency and required checks. The independently selected route must use a single persisted payload and current authority assessment; do not create a new financial calculator in the page. The narrower v0.5 additive proposal is `product/chart_api.py`, optional `tools/serve_chart_api.py`, and independent `product/web_assets/target-theme.html`, `target-theme-chart.js`, `target-theme.css`. Prefix production files with `implementation/src/investment_system/` and tools with `implementation/`. Existing build copies ordinary assets; that does not establish a data/authority service. `publication/extractors.py` is optional only if its owner accepts P01 reuse. Package Python changes code identity even without editing the seven protected P01 digest paths.\n\nThe broad v0.4 `app.js`/locale/style candidate is not silently selected over v0.5. Preserve TARGET versus ACTUAL, no actual_weight fallback, no independent browser aggregation. Do not edit protected Web validators/assembler or repin digests without their actual authority. Any actual Web source writer must have an explicit bounded write-set/lease before editing; the previous external Claude runtime is not claimed stopped. Chart may consume a proposed write-set now; complete A-G2 acceptance remains conditional on every affected owner's actual receipt.\n\n\nMain transfer authority: [CDR-018 and current coordination](https://github.com/kco994553-star/Investment-System1/tree/af264713b99471fb554e06e8d321f5039be47b47/implementation/docs/coordination). Source/investment/publication policy is not expanded by this routing.\n\nSeparate Platform input (MAIN-PLATFORM-API-20261005): Platform `c9e1adb` needs an inactive shared API projection contract and an explicit future runtime owner/base/write-set. Preserve tenant/read-only denial, source/bundle version and supplied state/reason; do not recalculate financial/QGV values in the browser. This is owner coordination/design only, not production auth activation or ownership of your existing protected paths."
+    },
+    {
+      "pr": 41,
+      "id": 5988265763,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/41#issuecomment-5988265763",
+      "created_at": "2026-10-05T04:44:21Z",
+      "body": "<!-- main-takeover-routing:chart-coordinator-intake:20261005:v1 -->\nMain takeover dependency packet — 2026-10-05. Chart #41 current inspected v0.8 HEAD `52e751501cb95ab3150398dc45586035276ab0d2`; Global `af264713b99471fb554e06e8d321f5039be47b47`; existing CDR-015 is narrowed by CDR-016 §13 and CDR-017; CDR-018 records the Main writer transfer. This is an owner-return request and integration planning receipt where explicitly stated; it is not a grant or canonical merge instruction. Preserve owner lease/write-set and all historical evidence. Return a receipt with packet ID, accepting owner role/session, exact owner branch+HEAD, immutable artifact path/hash, decision/authority reference, acceptance result or missing input, and source version consumed. A comment delivery does not prove receipt or automatic wake-up.\n\nMain has consumed your existing PR #42 handoff comment [5986162506](https://github.com/kco994553-star/Investment-System1/pull/42#issuecomment-5986162506), including A-G1/A-G2. It is a routing request, not a closing owner receipt. Fresh PR #17/#19/#34/#36/#41 discussions contain no owner closing receipt; #18 contains only the old CI note. Six pre-code gates remain OPEN / zero CLOSED; Lane B remains 0/19 and eight separate evidence families.\n\nA-S1 TARGET root, A-S2 common 19 Security/share-form binding, and A-S3 Theme revision: actual current accountable owner/session/branch assignment is not evidenced by the fresh Global index, available remote refs or canonical Personal handoff. Preserve OWNER_UNASSIGNED (routing gap), not an invented Portfolio/Identity owner or metadata #7 surrogate. Existing authored 30/25/20/25 reference, `official_v11()` fixture, ticker/CIK/search metadata and arithmetic100% do not admit a current source. Main will obtain an explicit bounded owner claim/write-set before treating any source action as assigned. Reuse [existing request](https://github.com/kco994553-star/Investment-System1/blob/52e751501cb95ab3150398dc45586035276ab0d2/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json).\n\nIntegration-side conditional plan acceptance is prepared for PR #36 against review base `acaf1b5a82859ac2750a130ebe88f8b4d272ac66` and only the three new ordinary Target Theme assets. This is not complete A-G2 closure, which still requires Product/source and affected owner receipts.\n\nKnown delivery destinations for bounded requests are Product/P01 #17 (A-G1), Web #36 with Main (A-G2), US Session #18 (Lane B B03/B04), and Main/FPIA #42 (A-G3). Delivery/receipt/action/evidence/consumption/closure are separate. Reconsume the exact returned source artifacts through v0.6 preflight and actual owner authentication; filled slots or CLI0 alone are not closure. FPIA CI alone is not governance or future Chart merge-result FPIA.\n\nSTATE at the inspected HEAD reports lease `manual-chart-portable-preflight-20261005T041827682Z`, status RUNNING, recorded expiry `2026-10-05T04:48:27.682Z` at inspected #41 HEAD. Main leaves your branch/write-set unchanged. v0.8 has completed the portable replay and malformed JSON/reference-replay diagnostic repairs. Main independently checks its source/input hashes, nine-case AST preservation and normal/-O receipt consistency without repeating the runtime tests; no production gate is closed. Your enabled hourly audit already reads Global-only material deltas; PR comment delivery wake-up is not proven. Notify Main with a receipt/artifact reference when the current repair checkpoint or owner return is ready.\n\n\nMain transfer authority: [CDR-018 and current coordination](https://github.com/kco994553-star/Investment-System1/tree/af264713b99471fb554e06e8d321f5039be47b47/implementation/docs/coordination). Source/investment/publication policy is not expanded by this routing."
+    }
+  ],
+  "qgv": {
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-5988271804",
+    "body": "<!-- main-takeover-routing:qgv-hop1:20261005:v1 -->\nMain dependency relay under CDR-018; PR #44 is a registered intake channel, not the missing-data owner branch and not a production activation request.\n\nFresh missing-data owner: `codex/qgv-missing-data-decision-gate-2026-10-05` @ `4fb08a05728d83519b72a2bd995669f0cb06003a`; independent reconciliation @ `17a442e7b247e9426e6bc1ee8e91e3cc2f541505`. Main preserves the non-expiring `qgv-b47-muupb538` owner lease; no owner state is changed or stolen.\n\nRequired dependency MAIN-QGV-HOP1-20261005: complete the already-defined HOP1 legacy-method manifest and its accepted scheduler receipt under `implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/`, using the existing CANARY_ACCEPTANCE.md and CONTINUATION_PROTOCOL.md. Return exact source/authority/validator/output hashes and current owner-control checkpoint. All20 legacy methods must be represented without new methods, requiredness roles or defaults. Reconciliation consumes that accepted digest for G input-lineage work. HOP2 remains a distinct real scheduler execution; manual Main intake cannot count as either hop.\n\nThe canary artifact was absent at the inspected owner HEAD and scheduler continuity remains 0/2 UNVERIFIED. Independent V alternative work may continue. Main does not select QGV production semantics. Receipt must name the packet, owner branch/HEAD, artifact/hash and acceptance result; delivery is not receipt or closure. Main Global intake: https://github.com/kco994553-star/Investment-System1/tree/af264713b99471fb554e06e8d321f5039be47b47/implementation/docs/coordination",
+    "user": {
+      "login": "kco994553-star",
+      "name": "kco994553-star",
+      "email": null,
+      "avatar_url": "https://avatars.githubusercontent.com/u/331178773?v=4",
+      "id": 331178773
+    },
+    "id": 5988271804,
+    "pull_request_review_id": null,
+    "in_reply_to_id": null,
+    "created_at": "2026-10-05T04:45:00Z",
+    "updated_at": "2026-10-05T04:45:00Z",
+    "review": null,
+    "side": null,
+    "line": null,
+    "start_line": null,
+    "path": null,
+    "body_html": "\n<p dir=\"auto\">Main dependency relay under CDR-018; PR <a class=\"issue-link js-issue-link\" data-error-text=\"Failed to load title\" data-id=\"5704412515\" data-permission-text=\"Title is private\" data-url=\"https://github.com/kco994553-star/Investment-System1/issues/44\" data-hovercard-type=\"pull_request\" data-hovercard-url=\"/kco994553-star/Investment-System1/pull/44/hovercard\" href=\"https://github.com/kco994553-star/Investment-System1/pull/44\">#44</a> is a registered intake channel, not the missing-data owner branch and not a production activation request.</p>\n<p dir=\"auto\">Fresh missing-data owner: <code class=\"notranslate\">codex/qgv-missing-data-decision-gate-2026-10-05</code> @ <code class=\"notranslate\">4fb08a05728d83519b72a2bd995669f0cb06003a</code>; independent reconciliation @ <code class=\"notranslate\">17a442e7b247e9426e6bc1ee8e91e3cc2f541505</code>. Main preserves the non-expiring <code class=\"notranslate\">qgv-b47-muupb538</code> owner lease; no owner state is changed or stolen.</p>\n<p dir=\"auto\">Required dependency MAIN-QGV-HOP1-20261005: complete the already-defined HOP1 legacy-method manifest and its accepted scheduler receipt under <code class=\"notranslate\">implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/</code>, using the existing CANARY_ACCEPTANCE.md and CONTINUATION_PROTOCOL.md. Return exact source/authority/validator/output hashes and current owner-control checkpoint. All20 legacy methods must be represented without new methods, requiredness roles or defaults. Reconciliation consumes that accepted digest for G input-lineage work. HOP2 remains a distinct real scheduler execution; manual Main intake cannot count as either hop.</p>\n<p dir=\"auto\">The canary artifact was absent at the inspected owner HEAD and scheduler continuity remains 0/2 UNVERIFIED. Independent V alternative work may continue. Main does not select QGV production semantics. Receipt must name the packet, owner branch/HEAD, artifact/hash and acceptance result; delivery is not receipt or closure. Main Global intake: <a href=\"https://github.com/kco994553-star/Investment-System1/tree/af264713b99471fb554e06e8d321f5039be47b47/implementation/docs/coordination\">https://github.com/kco994553-star/Investment-System1/tree/af264713b99471fb554e06e8d321f5039be47b47/implementation/docs/coordination</a></p>"
+  },
+  "importer": {
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/28#issuecomment-5988271956",
+    "body": "<!-- main-takeover-routing:fpia-importer-attribution:20261005:v1 -->\nMain recovered the FPIA AC21/L3 attribution dependency under CDR-018. PR28 exact inspected HEAD `b20d1786aa8e8fe13476e9c0e83cf7b50794e409` contains executable audit evidence, including `implementation/docs/codex_takeover/evidence/track_c/independent_c8_audit.py`, which imports Track C.\n\nPreserve all existing historical files and evidence. For code integration, this optional evidence branch can remain outside the subject and be cited by immutable URL; that is not deletion or a new acceptance exception. If these executable importers must enter an actual integration subject, return a generic source-bound attribution/authority and execution-isolation receipt identifying exact file/blob, intended use, accepting owner and evidence. Branch authorship alone is not authority; no PR/path whitelist or superficial rename is allowed.\n\nThis is a bounded packaging/attribution request, not authorization to change Frozen source, numerical methods, the existing AC21 rejection, or canonical. Reply with exact artifact/HEAD and dependency disposition. Main will verify the returned evidence before changing the gate.",
+    "user": {
+      "login": "kco994553-star",
+      "name": "kco994553-star",
+      "email": null,
+      "avatar_url": "https://avatars.githubusercontent.com/u/331178773?v=4",
+      "id": 331178773
+    },
+    "id": 5988271956,
+    "pull_request_review_id": null,
+    "in_reply_to_id": null,
+    "created_at": "2026-10-05T04:45:01Z",
+    "updated_at": "2026-10-05T04:45:01Z",
+    "review": null,
+    "side": null,
+    "line": null,
+    "start_line": null,
+    "path": null,
+    "body_html": "\n<p dir=\"auto\">Main recovered the FPIA AC21/L3 attribution dependency under CDR-018. PR28 exact inspected HEAD <code class=\"notranslate\">b20d1786aa8e8fe13476e9c0e83cf7b50794e409</code> contains executable audit evidence, including <code class=\"notranslate\">implementation/docs/codex_takeover/evidence/track_c/independent_c8_audit.py</code>, which imports Track C.</p>\n<p dir=\"auto\">Preserve all existing historical files and evidence. For code integration, this optional evidence branch can remain outside the subject and be cited by immutable URL; that is not deletion or a new acceptance exception. If these executable importers must enter an actual integration subject, return a generic source-bound attribution/authority and execution-isolation receipt identifying exact file/blob, intended use, accepting owner and evidence. Branch authorship alone is not authority; no PR/path whitelist or superficial rename is allowed.</p>\n<p dir=\"auto\">This is a bounded packaging/attribution request, not authorization to change Frozen source, numerical methods, the existing AC21 rejection, or canonical. Reply with exact artifact/HEAD and dependency disposition. Main will verify the returned evidence before changing the gate.</p>"
+  },
+  "fpia_prior_run": {
+    "id": 37260997788,
+    "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+    "status": "completed",
+    "conclusion": "success",
+    "attempt": 1,
+    "updated_at": "2026-10-05T04:41:34Z"
+  },
+  "fpia_successor": {
+    "pr": 46,
+    "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "local": "faf1fb3496583a80f9a5fa99c2a56bcf11e89f14",
+    "tree": "728dbceabbf360488088b0d53fcaa0bed420d3d4",
+    "runs": [
+      {
+        "id": 37264932370,
+        "name": "us-equity-session",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "status": "in_progress",
+        "conclusion": null,
+        "attempt": 1
+      },
+      {
+        "id": 37264932313,
+        "name": "p01-research-publication",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "status": "in_progress",
+        "conclusion": null,
+        "attempt": 1
+      },
+      {
+        "id": 37264932317,
+        "name": "sec-primary-disclosure",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "status": "in_progress",
+        "conclusion": null,
+        "attempt": 1
+      },
+      {
+        "id": 37264932324,
+        "name": "technical-real-model",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "status": "in_progress",
+        "conclusion": null,
+        "attempt": 1
+      },
+      {
+        "id": 37264932310,
+        "name": "technical-real-producer",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "status": "in_progress",
+        "conclusion": null,
+        "attempt": 1
+      },
+      {
+        "id": 37264932346,
+        "name": "qgv-invalidation-binding",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "status": "in_progress",
+        "conclusion": null,
+        "attempt": 1
+      },
+      {
+        "id": 37264932348,
+        "name": "track-c-fpia",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "status": "in_progress",
+        "conclusion": null,
+        "attempt": 1
+      }
+    ]
+  },
+  "successor_ci_latest": [
+    {
+      "id": 37264932370,
+      "name": "us-equity-session",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932370"
+    },
+    {
+      "id": 37264932313,
+      "name": "p01-research-publication",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932313"
+    },
+    {
+      "id": 37264932317,
+      "name": "sec-primary-disclosure",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932317"
+    },
+    {
+      "id": 37264932324,
+      "name": "technical-real-model",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932324"
+    },
+    {
+      "id": 37264932310,
+      "name": "technical-real-producer",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932310"
+    },
+    {
+      "id": 37264932346,
+      "name": "qgv-invalidation-binding",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932346"
+    },
+    {
+      "id": 37264932348,
+      "name": "track-c-fpia",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932348"
+    }
+  ]
+}

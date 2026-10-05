@@ -4,7 +4,7 @@ Routing/index SSoT only. This file is not a calculation, policy, approval or pub
 
 | Field | Value |
 |---|---|
-| Handoff ID | GCH-016 · Main transfer; prior GCH-015 state preserved below/history |
+| Handoff ID | GCH-017 · takeover, FPIA successor and routed owner evidence; history preserved |
 | Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011; GCH-009 after GIE-010; GCH-010 after CDR-012; GCH-011 after GIE-011; GCH-012 after CDR-013; GCH-013 after GIE-012; GCH-014 after CDR-014 (2026-10-04); GCH-014a/014b FPIA fix rounds (2026-10-04/05); GCH-015 after CDR-015 (2026-10-05 12:15 KST) |
 | Primary Integration Writer | GPT Work `gpt-work-main-2026-10-05-3a80dcef6444`; user transfer CDR-018, 2026-10-05T13:35:27+09:00 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md` |
@@ -13,15 +13,18 @@ Routing/index SSoT only. This file is not a calculation, policy, approval or pub
 | Operating contract | `CLAUDE_CODE_WORKER_CONTRACT_v1.0` at **PR #21 exact HEAD** `f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798` (blob `617ef6d4…`) is the operational routing SSoT (CDR-001). PR #20 is SUPERSEDED_DUPLICATE: not merged, history retained, §J exception not adopted. #21 canonical merge is not approved |
 | Supersedes | nothing. The root `Investment-System1 · CURRENT_HANDOFF.md` remains the canonical Track A/historical handoff, and Track C appends to it on its own branches. It is older than the current parallel state and is not edited here |
 
-## Current checkpoint · GCH-016 · 2026-10-05T13:35:27+09:00
+## Current checkpoint · GCH-017 · 2026-10-05T13:54:27+09:00
 
-**TAKEOVER_ACTIVE** after explicit user transfer and collision inventory. See `MAIN_TAKEOVER_STATE.json` and CDR-018. External Claude runtime termination is UNKNOWN; no shutdown is claimed. The previous writer designation is superseded, and every future write rechecks the remote parent.
+**TAKEOVER_ACTIVE / BOUNDED_REPAIR_PUBLISHED / INTEGRATION_ACCEPTANCE_BLOCKED**. Main is the only designated Global writer under CDR-018. Previous Claude runtime shutdown remains UNKNOWN; no shutdown is claimed. Remote parent is rechecked before every non-force update.
 
-Canonical remains `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. FPIA PR #42 actual HEAD is `11d2f25ef8bef3459ca969f50eec190099f15ecb` (fix3); run 37260997788 attempt 1 is running. Its PR body and the historical FPIA rows below still describe fix2 and are not current evidence. GIE-014 was not present in inherited Global; missing independent/completeness evidence is being recovered, not assumed.
+- Canonical/default remains `b8e39a2196a6d7794a04a0cd5393c68329e126ca`.
+- FPIA PR42 `11d2f25` run37260997788 attempt1 is SUCCESS. A newly reproduced literal-source false PASS was repaired in draft successor PR46 `2135962a`; affected local regression 308 passed plus separate end-to-end and independent probes. Its seven existing exact-head CI runs remain pending at this checkpoint; no rerun. See `evidence/GIE-014_main_takeover_fpia_2026-10-05.md`.
+- PIW-D001..006 resolve actual D2 decision questions, with technical implementation/evidence still pending. CI PASS does not close GIE/governance or exact merge acceptance.
+- Owner routing has six read-back repository comments and conditional Main-side A-G2 planning acceptance. Portfolio/Identity authority is OWNER_UNASSIGNED. Chart's six Lane A gates remain OPEN, Lane B 0/19 admitted across eight evidence families. Later owner intake revisions are pinned in `OWNER_ROUTING_LEDGER.json` / `MAIN_TAKEOVER_STATE.json`.
+- Product Platform contract owner `c9e1adb` has terminal CI SUCCESS; independent PR45 `17244b4` also has terminal CI SUCCESS. They are separate owners/namespaces; Auth/API production readiness is not established. PPF003–006 remain open. QGV missing-data owner `4fb08a0` retains its active lease; independent reconciliation receipt is tracked separately.
+- Main event and followup deliveries were observed and coalesced into the existing writer. Readback configuration and delivered events are established; standalone unattended end-to-end continuation remains UNVERIFIED. Existing scoped automations were preserved. State records processed heads, event/comment IDs, hashes and existing run IDs to suppress duplicates.
 
-Product Platform branch **exists** at `c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9`; earlier absence reports are historical. QGV reconciliation has advanced to `17a442e7b247e9426e6bc1ee8e91e3cc2f541505`; missing-data owner remains `4fb08a05728d83519b72a2bd995669f0cb06003a`. Chart PR #41 is `ebeb8b1f2693703d33cff2610c277c7ce3dcbb18`, with its separate owner lease preserved.
-
-**Current authority:** CDR-015 as narrowed by CDR-016 §13 / CDR-017 / CDR-018. The older broad CDR-015 summaries and old D3 labels below cannot override these later restrictions. All historical sections remain useful source context, not a fresh gate verdict. Main-only event/resume configuration and routing receipts will be appended after actual tool readback.
+**Current authority:** CDR-015 as narrowed by CDR-016 §13 / CDR-017 / CDR-018. Broad historical summaries below do not authorize canonical merge, Frozen/history changes, Holdout, PIT relaxation, Official/LIVE, protected owner contracts, QGV production semantics, real credentials/accounts/production auth, paid resources or trades. Historical WAITING/D3 labels are not current evidence; use the ledger, GIE-014 and exact scoped returns. Main's temporary shared lease is released at publication, with backlog preserved for the next eligible execution.
 
 ## 1. Read next
 

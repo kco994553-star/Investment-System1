@@ -1,0 +1,18 @@
+{
+  "checked_at_utc": "2026-10-05T04:38:51.963147+00:00",
+  "repository_reads_only": true,
+  "remote_writes": 0,
+  "source_root_fields_non_null": 0,
+  "constituent_count": 19,
+  "row_owner_fields_non_null": 0,
+  "ledger_entries": 14,
+  "packet_hashes": {
+    "pr36_routing_packet.md": "e31708df56cd957a98d238f87db259d8ac965383e9b9c131a7675415859d44a4",
+    "pr18_routing_packet.md": "49a797307a5ec601f69c8cdf9192212d8056d2b99bbd1a83f41812cb672151ac",
+    "pr41_routing_packet.md": "f2d7c5bf272b02062f0d6c02821c2dc1328235c3fad30975f1107c70515a5c7c",
+    "pr17_routing_packet.md": "6750b7d67ea4f6279456b6289de4dbee5ad22d03cf38355626ae12a579cc678c"
+  },
+  "result": "NO_AUTHENTICATED_CLOSURE_RECEIPT_FOUND; PACKETS_PROPOSED_NOT_DELIVERED",
+  "scope": "Chart v0.7 handoff + v0.5 owner request + Global routing + PR17/18/19/34/36/41/42 discussions + scoped P01/US Session/Entity Metadata/Personal statuses; not a repository-wide absence proof",
+  "successor_review": "chart_v08_independent_verification.json"
+}

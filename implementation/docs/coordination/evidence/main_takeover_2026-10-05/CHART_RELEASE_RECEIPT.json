@@ -1,0 +1,104 @@
+{
+  "head": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+  "lease": {
+    "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+    "run_id": null,
+    "holder_kind": "MANUAL_ROOT",
+    "acquired_at_utc": "2026-10-05T04:50:05.736Z",
+    "expires_at_utc": "2026-10-05T05:20:05.736Z",
+    "ttl_minutes": 30,
+    "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+    "verified_remote_acquisition": true,
+    "acquisition_parent_head": "a5403a969021021cd3f489173603bc657365097f",
+    "reason": "Exact pending FPIA run just reached terminal SUCCESS; consume receipt and clear CI queue without governance promotion",
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+    "acquisition_commit": "7ba5f2dac74487d1ce504e80081213e23894cc09",
+    "verified_at_utc": "2026-10-05T04:53:10.015213+00:00",
+    "previous_run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
+    "released_at_utc": "2026-10-05T04:55:05.915Z",
+    "verified_published_packet": "395a24eef42fde2ddec8831808daba5e768d72e2"
+  },
+  "last_processed": {
+    "source_head": "a5403a969021021cd3f489173603bc657365097f",
+    "owner_head": "395a24eef42fde2ddec8831808daba5e768d72e2",
+    "processed_at_utc": "2026-10-05T04:55:05.915Z",
+    "run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
+    "input_heads": {
+      "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "41": "395a24eef42fde2ddec8831808daba5e768d72e2",
+      "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
+    },
+    "global_head": "af264713b99471fb554e06e8d321f5039be47b47",
+    "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "qgv_architecture_head": "17a442e7b247e9426e6bc1ee8e91e3cc2f541505",
+    "approval_effective_kst": "2026-10-05T13:13:37+09:00",
+    "status": "EXACT_FPIA_TERMINAL_SUCCESS_CONSUMED_QUEUE_CLEARED_GOVERNANCE_OWNER_GATED",
+    "evidence_refs": [
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json"
+    ],
+    "ci_terminal_claim": true,
+    "governance_closure": false,
+    "actual_chart_merge_result_fpia": "NOT_RUN",
+    "semantic_input_fingerprint_subject": {
+      "global": "af264713b99471fb554e06e8d321f5039be47b47",
+      "fpia_head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "run": 37260997788,
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "result_sha256": "bec51ed8f57db64ebd6239fc6cb25437b87cfd3fbc3e64c1e7de25214f83633d",
+      "remaining_gates": 6
+    },
+    "semantic_input_fingerprint": "6d81a843c55dd5c441fa99e9101edeee6fe6198cdeaad05ee49ffbfc02b37778"
+  },
+  "pending": [],
+  "readiness": {
+    "scope": "OFFLINE_PREFLIGHT_VERIFIED_PRODUCTION_OWNER_GATED",
+    "lane_a": "IMPLEMENTATION_NOT_READY",
+    "precode_gates_open": [
+      "A-S1",
+      "A-S2",
+      "A-S3",
+      "A-G1",
+      "A-G2",
+      "A-G3"
+    ],
+    "open_count": 6,
+    "closed_count": 0,
+    "lane_b_admitted_symbols": 0,
+    "lane_b_total_symbols": 19,
+    "production_tests": "NOT_RUN",
+    "chart_merge_result_fpia": "NOT_RUN",
+    "qgv_common_contract": "INACTIVE_SPEC_ONLY",
+    "new_chart_d3": false,
+    "preflight_unittest_pass": 33,
+    "preflight_cli_pass": 6,
+    "portable_probe_pass": 9,
+    "portable_optimized_probe_pass": 9,
+    "gate_statuses": {
+      "A-S1": "OWNER_ACTION_REQUIRED",
+      "A-S2": "OWNER_ACTION_REQUIRED",
+      "A-S3": "OWNER_ACTION_REQUIRED",
+      "A-G1": "OWNER_ACTION_REQUIRED",
+      "A-G2": "OWNER_ACTION_REQUIRED",
+      "A-G3": "PARTIALLY_RESOLVED"
+    },
+    "current_independent_repairs": "IMPLEMENTED_VERIFIED",
+    "production_owner_dependency_count": 6,
+    "fpia_owner_ci": "7_OF_7_SUCCESS_EXACT_11d2f25",
+    "fpia_tool_governance": "OWNER_ACTION_REQUIRED_FINAL_REVIEW_DECISION_GIE"
+  },
+  "delta_paths": [
+    "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+  ],
+  "event": "12077350-c079-11f1-8365-c26c461ca142"
+}

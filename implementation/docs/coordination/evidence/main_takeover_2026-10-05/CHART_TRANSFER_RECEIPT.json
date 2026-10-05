@@ -1,0 +1,106 @@
+{
+  "schema": "main-chart-delta-reconsumption-v1",
+  "observed_at_utc": "2026-10-05T04:53:07.238639+00:00",
+  "head": "7ba5f2dac74487d1ce504e80081213e23894cc09",
+  "previous_reviewed_head": "52e751501cb95ab3150398dc45586035276ab0d2",
+  "changed_paths": [
+    "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+    "implementation/experiments/chart-contract-v0.1/automation/STATE.json",
+    "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md",
+    "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json",
+    "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json",
+    "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/WRITE_SET.json"
+  ],
+  "source_runtime_change": false,
+  "remote_writes": 0,
+  "runtime_tests_run": 0,
+  "consumed": {
+    "CDR-018": {
+      "evidenced": true,
+      "global_head": "af264713b99471fb554e06e8d321f5039be47b47",
+      "writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "artifact": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json",
+      "observed_at_kst": "2026-10-05T13:43:25+09:00"
+    },
+    "Platform_PR45": {
+      "evidenced": true,
+      "head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+      "artifact": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json",
+      "classification": "DOWNSTREAM_CHART_CONSUMER_AND_OWNER_OVERLAP_NOT_TARGET_PREREQUISITE"
+    },
+    "comment_5988265763": {
+      "delivered": true,
+      "delivery_time_utc": "2026-10-05T04:44:21Z",
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/41#issuecomment-5988265763",
+      "recorded_consumption_in_changed_artifacts": false,
+      "meaning": "No consumption receipt seen in inspected state/handoffs; late intake was observed before delivery. Do not infer unread forever or a broken trigger."
+    },
+    "conditional_integration_acceptance": {
+      "id": "MAIN-CHART-AG2-INTEGRATION-20261005",
+      "recorded_consumption_in_changed_artifacts": false
+    }
+  },
+  "publication_receipts": [
+    "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json",
+    "implementation/experiments/chart-contract-v0.1/automation/STATE.json:last_processed"
+  ],
+  "gate_change": {
+    "before_open": 6,
+    "after_open": 6,
+    "newly_closed": 0,
+    "lane_b_admitted": 0,
+    "lane_b_total": 19
+  },
+  "current_lease": {
+    "status": "RUNNING",
+    "run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
+    "holder_kind": "MANUAL_ROOT",
+    "acquired_at_utc": "2026-10-05T04:50:05.736Z",
+    "expires_at_utc": "2026-10-05T05:20:05.736Z",
+    "ttl_minutes": 30,
+    "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+    "verified_remote_acquisition": false,
+    "acquisition_parent_head": "a5403a969021021cd3f489173603bc657365097f",
+    "reason": "Exact pending FPIA run just reached terminal SUCCESS; consume receipt and clear CI queue without governance promotion",
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
+  },
+  "completed_previous_run": {
+    "source_head": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+    "owner_head": "c552d0108091bb48ec851e42f43e6ae852d4bdba",
+    "processed_at_utc": "2026-10-05T04:47:13.892913+00:00",
+    "run_id": "manual-chart-portable-preflight-20261005T041827682Z",
+    "input_heads": {
+      "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "41": "c552d0108091bb48ec851e42f43e6ae852d4bdba",
+      "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
+    },
+    "global_head": "af264713b99471fb554e06e8d321f5039be47b47",
+    "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "qgv_architecture_head": "17a442e7b247e9426e6bc1ee8e91e3cc2f541505",
+    "approval_effective_kst": "2026-10-05T13:13:37+09:00",
+    "status": "INDEPENDENT_DIAGNOSTIC_REPAIRS_IMPLEMENTED_VERIFIED_LATE_OWNER_EVIDENCE_RECONSUMED",
+    "evidence_refs": [
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json"
+    ],
+    "ci_terminal_claim": false,
+    "semantic_input_fingerprint": "86a374fbf00c231f289f7607e0f4705c283f35aa582004ca1a9d263a20fc2548"
+  },
+  "fpia_terminal_intake": "New lease says terminal SUCCESS receipt is being consumed; a completed updated terminal receipt is not yet present in this inspected head. CI alone cannot close A-G3.",
+  "comment_watermark": {
+    "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+    "observed_at_utc": "2026-10-05T01:17:25Z",
+    "observed_count": 0,
+    "last_id": 0,
+    "items": []
+  },
+  "next_exact_action": "Observe current owner run publication; then consume A-G2 conditional acceptance/posted Main packet receipt if present. No duplicate comment or owner branch write."
+}

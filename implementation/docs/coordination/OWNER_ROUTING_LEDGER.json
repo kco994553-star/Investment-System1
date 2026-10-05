@@ -1,0 +1,843 @@
+{
+  "schema": "main-owner-routing-ledger-v1",
+  "kind": "LIVE_ROUTING_LEDGER",
+  "created_at_utc": "2026-10-05T04:42:49.051352+00:00",
+  "fresh_scope": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "global": "af264713b99471fb554e06e8d321f5039be47b47",
+    "chart": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+    "chart_lease": {
+      "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+      "run_id": null,
+      "holder_kind": "MANUAL_ROOT",
+      "acquired_at_utc": "2026-10-05T04:50:05.736Z",
+      "expires_at_utc": "2026-10-05T05:20:05.736Z",
+      "ttl_minutes": 30,
+      "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+      "verified_remote_acquisition": true,
+      "acquisition_parent_head": "a5403a969021021cd3f489173603bc657365097f",
+      "reason": "Exact pending FPIA run just reached terminal SUCCESS; consume receipt and clear CI queue without governance promotion",
+      "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+      "acquisition_commit": "7ba5f2dac74487d1ce504e80081213e23894cc09",
+      "verified_at_utc": "2026-10-05T04:53:10.015213+00:00",
+      "previous_run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
+      "released_at_utc": "2026-10-05T04:55:05.915Z",
+      "verified_published_packet": "395a24eef42fde2ddec8831808daba5e768d72e2"
+    }
+  },
+  "summary": {
+    "lane_a_open": 6,
+    "lane_a_closed": 0,
+    "lane_b_admitted": 0,
+    "lane_b_total": 19,
+    "lane_b_families": 8
+  },
+  "known_historical_delivery": {
+    "comment_id": 5986162506,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/42#issuecomment-5986162506",
+    "created_at": "2026-10-05T00:40:32Z",
+    "meaning": "Chart request delivered to prior Main; current Main re-consumed. Not owner acceptance."
+  },
+  "comment_inventory": {
+    "17": 0,
+    "18": [
+      5950833091
+    ],
+    "19": 0,
+    "34": 0,
+    "36": 0,
+    "41": 0,
+    "42": [
+      5986162506
+    ]
+  },
+  "transition_order": [
+    "FOUND",
+    "ROUTED",
+    "RECEIVED",
+    "IN_PROGRESS",
+    "EVIDENCE_READY",
+    "CONSUMED",
+    "CLOSED"
+  ],
+  "entries": [
+    {
+      "id": "MAIN-CHART-A-S1-20261005",
+      "finding": "A-S1",
+      "authoritative_owner": null,
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "exact_path_branch_pr": {
+        "branch": null,
+        "head": null,
+        "pr": null
+      },
+      "acceptance_criteria": "Owner-admitted current TARGET root+revision: exact19 rows, cash, current applicability, independently evidenced availability, source/hash/use, completeness+denominator.",
+      "dependencies": [],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": null,
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "FOUND",
+      "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+      "production_gate": "OPEN"
+    },
+    {
+      "id": "MAIN-CHART-A-S2-20261005",
+      "finding": "A-S2",
+      "authoritative_owner": null,
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "exact_path_branch_pr": {
+        "branch": null,
+        "head": null,
+        "pr": null
+      },
+      "acceptance_criteria": "Exact19 root-row to reviewed company/issuer/common security mapping, share form, dated provenance/revision, C25/D29 preserved; no ticker-generated identity.",
+      "dependencies": [
+        "A-S1 root binding"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": null,
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "FOUND",
+      "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+      "production_gate": "OPEN"
+    },
+    {
+      "id": "MAIN-CHART-A-S3-20261005",
+      "finding": "A-S3",
+      "authoritative_owner": null,
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "exact_path_branch_pr": {
+        "branch": null,
+        "head": null,
+        "pr": null
+      },
+      "acceptance_criteria": "Adopted user-defined Theme catalog/concepts/version and complete security assignment revision; source/hash/validity+root binding, authored30/25/20/25 preserved.",
+      "dependencies": [
+        "A-S1",
+        "A-S2"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": null,
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "FOUND",
+      "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+      "production_gate": "OPEN"
+    },
+    {
+      "id": "MAIN-CHART-A-G1-20261005",
+      "finding": "A-G1",
+      "authoritative_owner": "Product/P01 capability; current individual session unconfirmed",
+      "owner_assignment": "RESOLVED_CAPABILITY_ROUTE",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json",
+      "exact_path_branch_pr": {
+        "branch": "feature/p01-research-publication-v1",
+        "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "pr": 17
+      },
+      "acceptance_criteria": "Policy applicability A/B/C, exact subject/current authority/read route, hash recomputation, explicit clock, denial clears values; source admission and grant distinct.",
+      "dependencies": [
+        "A-S1",
+        "A-S2",
+        "A-S3"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/17#issuecomment-5988265306",
+      "delivered_at": "2026-10-05T04:44:18Z",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "ROUTED",
+      "next_action": "Owner supplies source-bound acceptance artifact; Main verifies then Chart re-consumes",
+      "production_gate": "OPEN",
+      "delivery_comment_id": 5988265306,
+      "delivery_body_sha256": "219c87643e46bf46a2bcaa48453958a64f49347188f217cbb19e8f7f281b2971"
+    },
+    {
+      "id": "MAIN-CHART-A-G2-20261005",
+      "finding": "A-G2",
+      "authoritative_owner": "Web capability previously Primary Integration Writer; full cross-owner acceptance pending",
+      "owner_assignment": "RESOLVED_CAPABILITY_ROUTE",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/governance/IMPLEMENTATION_PATH_MATRIX.json",
+      "exact_path_branch_pr": {
+        "branch": "integration/web/production-state-presentation-v1",
+        "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "pr": 36
+      },
+      "acceptance_criteria": "Exact base+selected paths+per-path writer+lease+P01 route/digest impact+code identity+checks+future merge-result FPIA; all affected owners accept.",
+      "dependencies": [
+        "A-G1",
+        "writer transfer",
+        "Chart/Portfolio/Product/Web/Integration receipts"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-5988265604",
+      "delivered_at": "2026-10-05T04:44:20Z",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "ROUTED",
+      "next_action": "Owner supplies source-bound acceptance artifact; Main verifies then Chart re-consumes",
+      "production_gate": "OPEN",
+      "integration_side_conditional_acceptance_ref": "MAIN-CHART-AG2-INTEGRATION-20261005",
+      "integration_side_status": "ADOPTED_CONDITIONAL_PLANNING_ONLY",
+      "delivery_comment_id": 5988265604,
+      "delivery_body_sha256": "bdbb491a262fdbda87b1e0258a1381adbf0158ee4808ecce62cf45319fa8e2b1"
+    },
+    {
+      "id": "MAIN-CHART-A-G3-20261005",
+      "finding": "A-G3",
+      "authoritative_owner": "GPT Work Main Integration",
+      "owner_assignment": "RESOLVED_CAPABILITY_ROUTE",
+      "required_artifact": "implementation/docs/coordination/evidence/GIE-014_main_takeover_fpia_2026-10-05.md",
+      "exact_path_branch_pr": {
+        "branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "pr": 46
+      },
+      "acceptance_criteria": "Final exact tool head Actions plus independent/adversarial/completeness evidence; current authority decisions a-e/G7 and GIE closure; future Chart result audit separate.",
+      "dependencies": [
+        "FPIA fix3 review",
+        "CDR-015/016/017 scoped decisions"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/42",
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "IN_PROGRESS",
+      "next_action": "Consume PR46 new-head CI; implement/verify PIW-D001..006 obligations; exact Chart result audit later",
+      "production_gate": "OPEN"
+    },
+    {
+      "id": "MAIN-CHART-B01-20261005",
+      "finding": "B01",
+      "authoritative_owner": null,
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "exact_path_branch_pr": {
+        "branch": null,
+        "head": null,
+        "pr": null
+      },
+      "acceptance_criteria": [
+        "Every priced instrument has an explicit common identity record and evidence-bound issuer relation",
+        "No CIK/company alias/ticker-generated ID substitution",
+        "Tokyo domestic vs ADR and ASML venue/form remain explicit"
+      ],
+      "dependencies": [
+        "existing issuer_id/security_id",
+        "issuer→security relation",
+        "economic instrument/share class/form",
+        "effective interval",
+        "source ID/path/hash",
+        "evidence available_at",
+        "admission authority/scope"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": null,
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "FOUND",
+      "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+      "production_gate": "OPEN"
+    },
+    {
+      "id": "MAIN-CHART-B02-20261005",
+      "finding": "B02",
+      "authoritative_owner": null,
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "exact_path_branch_pr": {
+        "branch": null,
+        "head": null,
+        "pr": null
+      },
+      "acceptance_criteria": [
+        "Each admitted raw interval joins one verified dated listing/provider relation",
+        "No ticker reuse/venue/regime stitching without admitted continuity",
+        "No backwards application of current ticker map"
+      ],
+      "dependencies": [
+        "existing listing_id/security_id",
+        "ticker/MIC/currency",
+        "valid_from/valid_to",
+        "provider symbol/series interval",
+        "ticker changes/reuse/delisting/relisting continuity",
+        "GEV when-issued vs regular-way evidence",
+        "source/hash/availability/admission"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": null,
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "FOUND",
+      "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+      "production_gate": "OPEN"
+    },
+    {
+      "id": "MAIN-CHART-B03-20261005",
+      "finding": "B03",
+      "authoritative_owner": "US Session PR18 for US scope only; other roles unassigned",
+      "owner_assignment": "PARTIAL_US_ONLY",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "exact_path_branch_pr": {
+        "branch": "feature/us-equity-session-v1",
+        "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "pr": 18
+      },
+      "acceptance_criteria": [
+        "No absent date/weekday/holiday rule invention",
+        "Real calendar notice bytes verified; availability is source-backed",
+        "JPX/KRX supported separately; US v1 not copied"
+      ],
+      "dependencies": [
+        "calendar body/hash/ID",
+        "real source notices bytes/hash",
+        "explicit dated OPEN/CLOSED rows",
+        "open/close/breaks/exceptions",
+        "row_available_at meaning/evidence",
+        "IANA timezone/tzdata version",
+        "venue and coverage completeness"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/18#issuecomment-5988265466",
+      "delivered_at": "2026-10-05T04:44:19Z",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "ROUTED",
+      "next_action": "Owner supplies source-bound acceptance artifact; Main verifies then Chart re-consumes",
+      "production_gate": "OPEN",
+      "delivery_comment_id": 5988265466,
+      "delivery_body_sha256": "b6846638d591437159001865e85bbeb7cfd759e89d9b3252360c40ee7a17f969"
+    },
+    {
+      "id": "MAIN-CHART-B04-20261005",
+      "finding": "B04",
+      "authoritative_owner": "US Session PR18 for US scope only; other roles unassigned",
+      "owner_assignment": "PARTIAL_US_ONLY",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "exact_path_branch_pr": {
+        "branch": "feature/us-equity-session-v1",
+        "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "pr": 18
+      },
+      "acceptance_criteria": [
+        "Every input row retains original index and immutable source pointers",
+        "US binder refuses unverified joins/transfers/reuse/order/unknown exchange",
+        "KRX CSAT09:00 source label vs actual10:00 remains unresolved unless supported mapping",
+        "Session eligibility is not source publication eligibility"
+      ],
+      "dependencies": [
+        "B01/B02 admitted exact relation",
+        "B03 admitted calendar vintage",
+        "original raw bytes/hash",
+        "per-bar date/provider-label/session relation",
+        "decision time and owner scope",
+        "conflict/absence/continuity reasons"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/18#issuecomment-5988265466",
+      "delivered_at": "2026-10-05T04:44:19Z",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "ROUTED",
+      "next_action": "Owner supplies source-bound acceptance artifact; Main verifies then Chart re-consumes",
+      "production_gate": "OPEN",
+      "delivery_comment_id": 5988265466,
+      "delivery_body_sha256": "b6846638d591437159001865e85bbeb7cfd759e89d9b3252360c40ee7a17f969"
+    },
+    {
+      "id": "MAIN-CHART-B05-20261005",
+      "finding": "B05",
+      "authoritative_owner": null,
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "exact_path_branch_pr": {
+        "branch": null,
+        "head": null,
+        "pr": null
+      },
+      "acceptance_criteria": [
+        "Each candle field has admitted source/transform basis",
+        "Adjclose does not substitute OHLC or supply adjusted volume",
+        "No approved mcap scalar assumption adopted as full-candle evidence"
+      ],
+      "dependencies": [
+        "per O/H/L/C/V/adjclose source semantics",
+        "raw vs split/dividend adjustment",
+        "volume basis",
+        "provider transform/basis/version",
+        "known source revisions/finality policy",
+        "source/hash/coverage/evidence availability"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": null,
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "FOUND",
+      "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+      "production_gate": "OPEN"
+    },
+    {
+      "id": "MAIN-CHART-B06-20261005",
+      "finding": "B06",
+      "authoritative_owner": null,
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "exact_path_branch_pr": {
+        "branch": null,
+        "head": null,
+        "pr": null
+      },
+      "acceptance_criteria": [
+        "Reviewed NVDA event can be referenced inside its own admitted scope",
+        "GE parent event never supplies GEV common identity",
+        "Provider empty/events-not-requested does not assert certified no-actions",
+        "A complete ledger is required before a complete historical basis claim"
+      ],
+      "dependencies": [
+        "identity-continuous action ledger",
+        "event kind/security scope",
+        "announcement/record/ex/legal effect/adjusted-trading times",
+        "provider event labels distinct from legal dates",
+        "source/hash/version/completeness",
+        "actual event availability",
+        "transform linkage where applicable"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": null,
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "FOUND",
+      "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+      "production_gate": "OPEN"
+    },
+    {
+      "id": "MAIN-CHART-B07-20261005",
+      "finding": "B07",
+      "authoritative_owner": null,
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "exact_path_branch_pr": {
+        "branch": null,
+        "head": null,
+        "pr": null
+      },
+      "acceptance_criteria": [
+        "Absence remains NOT_AVAILABLE with value null",
+        "Bar open/close/current fetch/calendar availability never substitutes per-bar availability",
+        "No retroactive present observation or PIT relaxation"
+      ],
+      "dependencies": [
+        "actual historical bar/action publication or access receipt",
+        "vintage/revision ID/hash",
+        "finality/version",
+        "event/provider/session/observed/available/knowledge/ingestion roles",
+        "date precision and applicable interval",
+        "source-supported evidence"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": null,
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "FOUND",
+      "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+      "production_gate": "OPEN"
+    },
+    {
+      "id": "MAIN-CHART-B08-20261005",
+      "finding": "B08",
+      "authoritative_owner": null,
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "exact_path_branch_pr": {
+        "branch": null,
+        "head": null,
+        "pr": null
+      },
+      "acceptance_criteria": [
+        "Source state backed by exact feed evidence",
+        "Exchange open/closed and last print do not imply historical row state",
+        "Feed LIVE never grants Product Official/LIVE authority"
+      ],
+      "dependencies": [
+        "exact endpoint/feed/response/row state",
+        "source documentation/version/hash",
+        "state time/availability",
+        "LIVE/DELAYED/CLOSE/UNKNOWN semantics",
+        "delay/finality evidence and scope"
+      ],
+      "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "source_decision": [
+        "CDR-015",
+        "CDR-016 §13",
+        "CDR-017",
+        "user takeover directive 2026-10-05"
+      ],
+      "delivery_channel": null,
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "FOUND",
+      "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+      "production_gate": "OPEN"
+    },
+    {
+      "id": "MAIN-PLATFORM-CI-20261005",
+      "finding": "Existing exact-head CI finished; scoped handoff still lists collection as next action",
+      "authoritative_owner": "Product Platform Audit Work",
+      "required_artifact": "Scoped CI consumption receipt",
+      "exact_path_branch_pr": {
+        "branch": "codex/product-platform-audit-v1",
+        "head": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+        "pr": null,
+        "path": "implementation/docs/product_platform_audit/CURRENT_HANDOFF.md"
+      },
+      "acceptance_criteria": [
+        "consume run37263497936 job111615381958 exact c9e1adb",
+        "targeted platform/TrackB and full regression successful",
+        "do not rerun without new code/failure",
+        "contract CI is not auth/tenant-service/account E2E"
+      ],
+      "evidence": {
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37263497936",
+        "state": "REMOTE_VERIFIED",
+        "source": "GitHub run/jobs/workflow readback"
+      },
+      "dependencies": [],
+      "state": "EVIDENCE_READY",
+      "delivery_channel": "Global coordination packet (existing Platform automation fresh-reads Global)",
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "Platform owner consumes exact CI and appends own receipt; Main re-reads",
+      "source_HEAD": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+      "source_decision": [
+        "CDR-016",
+        "CDR-017",
+        "CDR-018"
+      ]
+    },
+    {
+      "id": "MAIN-QGV-HOP1-20261005",
+      "finding": "G lineage reconciliation needs accepted owner HOP1 manifest",
+      "authoritative_owner": "QGV missing-data owner; downstream reconciliation Work",
+      "required_artifact": "automation/canary/hop1_method_replay_manifest.json plus accepted receipt",
+      "exact_path_branch_pr": {
+        "branch": "codex/qgv-missing-data-decision-gate-2026-10-05",
+        "head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "pr": null,
+        "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/STATE.json"
+      },
+      "acceptance_criteria": [
+        "use existing CANARY_ACCEPTANCE and CONTINUATION_PROTOCOL",
+        "all20 legacy methods covered with pinned source/authority/validator/output digest",
+        "owner owns and releases its active qgv-b47-muupb538 lease",
+        "reconciliation consumes accepted output digest",
+        "manual Main work is not either scheduler hop"
+      ],
+      "dependencies": [
+        "owner active nonexpiring lease",
+        "accepted real scheduler HOP1"
+      ],
+      "state": "ROUTED",
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-5988271804",
+      "delivered_at": "2026-10-05T04:45:00Z",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "Owner finishes existing lease; accepted manifest routed to reconciliation; independent V work may continue",
+      "delivery_comment_id": 5988271804,
+      "source_HEAD": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "source_decision": [
+        "CDR-016",
+        "CDR-017",
+        "CDR-018"
+      ]
+    },
+    {
+      "id": "MAIN-PLATFORM-P01-20261005",
+      "finding": "Account/user page permission must be distinguished from research-publication grant",
+      "authoritative_owner": "Product/P01 capability",
+      "required_artifact": "bounded account-page applicability response",
+      "exact_path_branch_pr": {
+        "branch": "feature/p01-research-publication-v1",
+        "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "pr": 17
+      },
+      "acceptance_criteria": [
+        "separate principal/tenant private account read from QGV research grant/veto/currentness",
+        "no actual credentials or grant activation",
+        "exact reusable contract paths and unresolved owner declared"
+      ],
+      "dependencies": [],
+      "state": "ROUTED",
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/17#issuecomment-5988265306",
+      "delivered_at": "2026-10-05T04:44:18Z",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "P01 owner returns bounded applicability",
+      "delivery_comment_id": 5988265306,
+      "source_HEAD": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "source_decision": [
+        "CDR-016",
+        "CDR-017",
+        "CDR-018"
+      ]
+    },
+    {
+      "id": "MAIN-PLATFORM-API-20261005",
+      "finding": "Authenticated API projection/runtime owner not established",
+      "authoritative_owner": "Web/Product and Platform scoped Works; runtime implementer unassigned",
+      "required_artifact": "accepted inactive projection contract and exact owner/write-set/base",
+      "exact_path_branch_pr": {
+        "branch": "integration/web/production-state-presentation-v1",
+        "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "pr": 36
+      },
+      "acceptance_criteria": [
+        "tenant/read-only gates",
+        "upstream bundle/source version/state/reason preservation",
+        "no browser financial or QGV recomputation",
+        "no production auth activation"
+      ],
+      "dependencies": [
+        "P01 applicability",
+        "explicit runtime owner claim"
+      ],
+      "state": "ROUTED",
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-5988265604",
+      "delivered_at": "2026-10-05T04:44:20Z",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "Bounded owner acceptance; existing audit continues",
+      "delivery_comment_id": 5988265604,
+      "source_HEAD": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "source_decision": [
+        "CDR-016",
+        "CDR-017",
+        "CDR-018"
+      ]
+    },
+    {
+      "id": "MAIN-PLATFORM-IDENTITY-20261005",
+      "finding": "Imported ACTUAL position identity owner not established",
+      "authoritative_owner": null,
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "required_artifact": "Issuer→Security→dated Listing authoritative binding",
+      "exact_path_branch_pr": {
+        "branch": null,
+        "pr": null
+      },
+      "acceptance_criteria": [
+        "identity/share class/date/venue/currency/source provenance",
+        "unresolved mapping fail-closed",
+        "ACTUAL separated from Chart TARGET"
+      ],
+      "dependencies": [
+        "explicit identity owner claim"
+      ],
+      "state": "FOUND",
+      "delivery_channel": "Global unresolved-owner packet",
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "Resolve bounded accountable owner; never infer ticker identity",
+      "source_HEAD": null,
+      "source_decision": [
+        "CDR-016",
+        "CDR-017",
+        "CDR-018"
+      ]
+    },
+    {
+      "id": "MAIN-PLATFORM-FPIA-20261005",
+      "finding": "Future production package needs exact integration subject audit",
+      "authoritative_owner": "GPT Main Integration",
+      "required_artifact": "owner-proposed source/base/write-set then exact-result FPIA",
+      "exact_path_branch_pr": {
+        "branch": "codex/product-platform-audit-v1",
+        "head": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+        "pr": null
+      },
+      "acceptance_criteria": [
+        "do not block independent contract/design on future FPIA",
+        "no branchCI→canonical acceptance promotion"
+      ],
+      "dependencies": [
+        "actual production package proposal"
+      ],
+      "state": "FOUND",
+      "delivery_channel": "Global coordination",
+      "delivered_at": null,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "Deferred until production package exists",
+      "source_HEAD": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+      "source_decision": [
+        "CDR-016",
+        "CDR-017",
+        "CDR-018"
+      ]
+    },
+    {
+      "id": "MAIN-FPIA-IMPORTER-20261005",
+      "finding": "PR28 unowned executable evidence attribution",
+      "authoritative_owner": "PR28 audit/evidence owner",
+      "required_artifact": "generic source-bound authority/execution-isolation receipt, or omit optional branch from exact code subject",
+      "exact_path_branch_pr": {
+        "branch": "codex/takeover-integration-2026-10-03",
+        "head": "b20d1786aa8e8fe13476e9c0e83cf7b50794e409",
+        "pr": 28
+      },
+      "acceptance_criteria": [
+        "preserve historical evidence",
+        "no PR/path whitelist",
+        "exact candidate source/attribution verified"
+      ],
+      "dependencies": [],
+      "source_HEAD": "b20d1786aa8e8fe13476e9c0e83cf7b50794e409",
+      "source_decision": [
+        "PIW-D004"
+      ],
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/28#issuecomment-5988271956",
+      "delivered_at": "2026-10-05T04:45:01Z",
+      "delivery_comment_id": 5988271956,
+      "receipt": null,
+      "last_consumed_revision": null,
+      "state": "ROUTED",
+      "next_action": "Owner returns bounded attribution if future subject needs this optional branch"
+    }
+  ],
+  "wake_up": "Main PR41 synchronize and API-authored PR17 comment events observed; self-comment deduplicated. Other owner wake/receipt unverified.",
+  "owner_assignment_procedure": "Main records explicit accountable owner/session, bounded branch+write-set, lease acceptance and receiving handoff before routing source implementation. Never infer ownership from common GitHub login, generic module names or audit branch name.",
+  "platform_pr45": {
+    "head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+    "classification": "INDEPENDENT_SYNTHETIC_AUDIT_NOT_OWNER_SUCCESSOR",
+    "receipt_of_cdr018": "NOT_OBSERVED",
+    "packet": "evidence/main_takeover_2026-10-05/PLATFORM_PR45_INTAKE.md",
+    "delivery": "GLOBAL_PACKET_READY; no additional source-app confirmation comment in coalesced run",
+    "ci_runs": [
+      37264197708,
+      37264194566
+    ],
+    "ci_status": "SUCCESS_ATTEMPT_1",
+    "open_findings": [
+      "PPF003",
+      "PPF004",
+      "PPF005",
+      "PPF006"
+    ]
+  },
+  "main_transfer_receipts": {
+    "Chart": {
+      "state": "CONSUMED",
+      "head": "c552d0108091bb48ec851e42f43e6ae852d4bdba",
+      "evidence": "evidence/main_takeover_2026-10-05/CHART_TRANSFER_RECEIPT.json",
+      "scope": "CDR018 coordinator transfer only; not Main routing comment or full A-G2 acceptance"
+    },
+    "QGV_reconciliation": {
+      "state": "CONSUMED",
+      "head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+      "scope": "CDR018 coordinator transfer only; not missing-data owner",
+      "evidence": "evidence/main_takeover_2026-10-05/QGV_MAIN_TRANSFER_RECEIPT.json"
+    }
+  },
+  "chart_fpia_terminal": {
+    "state": "CONSUMED",
+    "head": "395a24eef42fde2ddec8831808daba5e768d72e2",
+    "run": 37260997788,
+    "attempt": 1,
+    "evidence": "evidence/main_takeover_2026-10-05/CHART_TERMINAL_INTAKE.json",
+    "gate_impact": "CI wait removed; A-G3 and all six root gates remain OPEN"
+  }
+}
