@@ -25,7 +25,7 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "WAIT_DEPENDENCY_READY_D1_D2_D3_A_0",
+  "execution_state": "IN_PROGRESS_TERMINAL_AND_OWNER_RETURN_CONSUMPTION",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_input": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
@@ -67,7 +67,14 @@
     "followup_delivery_observed": true
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": null,
+  "lease": {
+    "token": "main-terminal-return-consume-20261005-fc8a83eeb8fe",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "acquired_at": "2026-10-05T09:42:00Z",
+    "expires_at": "2026-10-05T09:52:00Z",
+    "scope": "Main coordination only: exact FPIA terminal CI, QGV/Platform completed returns, PR48 proposal intake",
+    "source_parent": "c3f9f3c9d1faeba5e1a60e4aef7291a549f0b990"
+  },
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -178,7 +185,13 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": null,
+  "active_scoped_execution": {
+    "kind": "MAIN_COORDINATION_CHECKPOINT",
+    "started_at_utc": "2026-10-05T09:42:00Z",
+    "allowed_write_set": [
+      "implementation/docs/coordination/**"
+    ]
+  },
   "last_terminal_ci_evidence": "evidence/main_execution_coverage_2026-10-05/RECEIPT.json",
   "last_checkpoint_at_utc": "2026-10-05T09:23:18Z",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
