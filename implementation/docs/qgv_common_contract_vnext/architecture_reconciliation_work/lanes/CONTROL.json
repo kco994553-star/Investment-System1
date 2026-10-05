@@ -1,7 +1,14 @@
 {
   "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
-  "status": "D3_DELEGATED_POLICY_APPLIED_PENDING_RECLASSIFIED_READY0",
-  "lease": null,
+  "status": "RUNNING_EXACT_MAIN_PRINCIPLE_RETURN_CONSUMPTION",
+  "lease": {
+    "token": "qgv-main-consume-muv1hf6g",
+    "owner": "QGV-independent-audit-Main-return-consumption",
+    "task": "EXACT_AB07_MAIN_PRINCIPLE_RETURN_CLOSURE",
+    "input_review_head": "7fdfc449bc99c374526f6d9ac3646790a5b9f17b",
+    "claimed_at_utc": "2026-10-05T09:20:24.088Z",
+    "expires_at_utc": "2026-10-05T09:40:24.088Z"
+  },
   "tasks": [
     "LATEST_POLICY_AND_PENDING_RECLASSIFICATION",
     "AUTOMATION_PROMPT_AUTHORITY_ALIGNMENT",
