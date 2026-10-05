@@ -619,3 +619,461 @@ Recorded effect (routing writer's reading; the user wording above governs):
 - **Self-decision records:** decisions taken under this delegation are recorded with reason, impact, verification and recovery. The Primary Integration Writer records its own in `PIW_DECISION_RECORDS.md` (this directory); capability owners record theirs in their scoped Decision Registers.
 - **Integration cadence:** verified small bundles are integrated step by step, without waiting for the whole project.
 - **Ownership:** changes to another owner's branch or scoped records still follow the existing routing and single-writer rules. Scoped owners adopt this entry at their next fresh read; the Primary Integration Writer does not write their scoped registers or handoffs.
+
+## CDR-016 · Chart PR #41 production blockers: owner routing directive; protected boundaries for this Work
+
+| Field | Value |
+|---|---|
+| Status | **USER_DECIDED** (operating directive for the Integration / Claude Main Work) |
+| Decided at | 2026-10-05 12:43 KST (2026-10-05T03:43Z; user message in session `session_019znshzTYgyBnuuBmSxdPFN`, after GCH-015 / `d92363f`) |
+| Relates to | CDR-015 (decision authority), CDR-014 (FPIA), PR #41 (Chart) |
+
+User wording (verbatim):
+
+> Investment-System1 Integration / Claude Main Work를 최신 GitHub 실제 상태에서 계속 진행한다.
+>
+> 이번 작업의 추가 목표는 Chart PR #41이 확인한 production blocker 6개를
+> 각 authoritative owner에게 정확히 routing하고,
+> 이미 해결 가능한 것은 Integration에서 검증하여 Chart Work가 다시 진행될 수 있게 만드는 것이다.
+>
+> 새 Chart 기능을 Integration Work에서 직접 구현하는 것이 목적이 아니다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 0. FRESH GITHUB / HANDOFF FIRST
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 시작 시 반드시 GitHub를 fresh fetch/read한다.
+>
+> 다음 순서로 실제 상태를 복원한다.
+>
+> 1. canonical/default + exact HEAD
+> 2. integration/global-handoff-v1
+> 3. GLOBAL_CURRENT_HANDOFF
+> 4. GLOBAL_STATUS_INDEX
+> 5. COORDINATION_DECISION_REGISTER
+> 6. Integration/FPIA scoped handoff
+> 7. Chart PR #41 + Chart scoped handoff
+> 8. Portfolio owner handoff
+> 9. Identity owner handoff
+> 10. Product/P01 handoff
+> 11. Web owner handoff
+> 12. QGV owner handoff
+> 13. Decision / Approval / Evidence / Conflict registers
+> 14. 관련 PR / branch / Actions / reviews
+> 15. ownership / write-set / dependency
+>
+> 과거 SHA보다 실제 GitHub가 우선한다.
+>
+> 다른 owner의 구현을 중복하지 않는다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 1. CHART CURRENT CHECKPOINT
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 마지막 Chart 보고 기준:
+>
+> PR #41
+> last observed HEAD:
+> 74df6784071137bdca911964af94c8e1b6928c92
+>
+> 단 반드시 fresh-read한다.
+>
+> Chart Lane A:
+> IMPLEMENTATION_NOT_READY
+>
+> production blockers:
+> 정확히 6개
+>
+> 1. authoritative TARGET root
+> 2. Security mapping
+> 3. Theme revision/version
+> 4. Product authority
+> 5. owner write-set acceptance
+> 6. FPIA governance/admissibility
+>
+> 마지막 분류:
+>
+> 1~5 = OWNER_ACTION_REQUIRED
+> 6 = USER_D3_REQUIRED / existing Integration D3/G7 dependency
+>
+> Chart Work 자체에서 가능한 독립 검증은 현재 소진된 것으로 보고됐다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 2. OBJECTIVE
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 6개 blocker를 단순히 Global Handoff에 다시 나열하지 않는다.
+>
+> 각 blocker에 대해:
+>
+> - authoritative owner를 확정
+> - owner가 제공해야 할 exact artifact/evidence 결정
+> - 이미 repository에 존재하는지 fresh 확인
+> - 존재하면 Chart-compatible 여부 검증
+> - 없으면 owner action으로 routing
+> - 완료 조건 정의
+> - dependency ordering 정의
+>
+> 를 수행한다.
+>
+> 목표는 Chart Work가 다음 실행에서
+> 6개 blocker를 실제로 줄일 수 있도록 만드는 것이다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 3. BLOCKER 1 — AUTHORITATIVE TARGET ROOT
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> Portfolio owner를 확인한다.
+>
+> Chart가 요구하는 최소 receipt:
+>
+> - portfolio_id
+> - portfolio_version
+> - effective_at
+> - current TARGET constituent set
+> - security reference
+> - target_weight
+> - denominator
+> - completeness
+> - provenance/source
+> - authoritative-root declaration
+>
+> 현재 repository에 이미 equivalent authoritative object가 있으면
+> 새 object를 만들지 말고 재사용 가능성을 검증한다.
+>
+> 없다면 Portfolio owner action으로 routing한다.
+>
+> 현재 Strategy Theme target:
+>
+> 반도체 장비 30
+> AI·반도체 25
+> Big Tech 20
+> 기타산업 25
+>
+> 는 Chart에서 Decimal 합계 100.000%까지 검증됐지만,
+> 이 사실만으로 authoritative root가 되는 것은 아니다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 4. BLOCKER 2 — SECURITY MAPPING
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> Identity owner를 확인한다.
+>
+> 기존 공통:
+>
+> Issuer → Security → dated Listing
+>
+> contract를 재사용한다.
+>
+> Chart Target constituents 전체에 대해 최소:
+>
+> portfolio constituent
+> → internal security_id
+> → correct share/security form
+> → dated listing
+>
+> binding을 제공해야 한다.
+>
+> ticker-only identity는 허용하지 않는다.
+>
+> 19개 전체에 대한 mapping receipt 또는
+> Chart가 deterministic하게 조회할 authoritative path를 제공한다.
+>
+> 새 Chart 전용 identity layer를 만들지 않는다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 5. BLOCKER 3 — STRATEGY THEME REVISION
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> Portfolio/Classification owner를 확정한다.
+>
+> Strategy Theme는 GICS가 아니다.
+>
+> User-defined Strategy Theme / Portfolio Bucket이다.
+>
+> 필요한 최소 contract:
+>
+> - theme taxonomy/catalog id
+> - version
+> - effective_at
+> - assignment
+> - completeness
+> - provenance
+> - TARGET root binding
+>
+> 현재 네 bucket의 경제적 의미를 새로 바꾸지 않는다.
+>
+> 단순 version/provenance 구조라면 기존 승인 범위에서
+> D1/D2로 해결 가능한지 먼저 판단한다.
+>
+> 새 정책 결정이 아니라 기존 Target classification의 identity/version 문제라면
+> 불필요하게 D3로 올리지 않는다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 6. BLOCKER 4 — PRODUCT AUTHORITY
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> P01/Product owner에게 다음 질문을 명시적으로 routing한다.
+>
+> "현재 P01 research-display/publication authority contract가
+> user-authored TARGET Portfolio visualization에 적용 가능한가?"
+>
+> 가능한 답은 최소:
+>
+> A. 기존 P01 authority 재사용 가능
+> B. 별도 Target/Product authority 필요
+> C. 현재 contract로는 판단 불가
+>
+> 중 하나여야 한다.
+>
+> A라면 exact authority/read route와 predicate를 evidence로 남긴다.
+>
+> B/C라면 필요한 최소 contract를 owner가 제시한다.
+>
+> Chart Work가 임의로 publication policy를 만들게 하지 않는다.
+>
+> Source/data rights와 Product authority를 분리한다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 7. BLOCKER 5 — OWNER WRITE-SET ACCEPTANCE
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> Chart Target Strategy Theme vertical slice의 최소 write-set을
+> Chart scoped handoff에서 읽는다.
+>
+> 각 파일/경로에 대해 owner matrix를 만든다.
+>
+> 최소:
+>
+> - Chart owner
+> - Portfolio owner
+> - Product owner
+> - Web/P01 owner
+> - Integration owner
+> - Track C/FPIA impact
+>
+> 를 판정한다.
+>
+> 목표는:
+>
+> "누가 어떤 파일을 수정해도 되는지"
+>
+> 를 명시적으로 확정하는 것이다.
+>
+> 가능하면 Chart owner가 자신의 branch에서 구현하고,
+> 다른 owner는 contract/acceptance만 제공하는 구조를 우선한다.
+>
+> 다른 owner가 Chart 기능 자체를 중복 구현하게 하지 않는다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 8. BLOCKER 6 — FPIA GOVERNANCE / ADMISSIBILITY
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 이 항목은 현재 Integration critical path다.
+>
+> PR #42 및 successor/FPIA work를 fresh-read한다.
+>
+> 특히 최신 Global에 기록된:
+>
+> - adversarial findings
+> - environment-dependent judgement
+> - round-3 fix
+> - existing D3
+> - G7
+> - GIE closure
+>
+> 상태를 정확히 복원한다.
+>
+> 다음을 구분한다.
+>
+> FPIA implementation
+> CI PASS
+> independent review
+> adversarial review
+> D3 closure
+> G7 closure
+> GIE closure
+> canonical applicability
+> Chart exact-result FPIA
+>
+> 현재 owner 수정/검증으로 해결 가능한 것은 자동 진행한다.
+>
+> 실제 새로운 semantic/governance D3만 사용자에게 요청한다.
+>
+> 과거 D3라는 이유만으로 재질문하지 말고
+> 이미 사용자가 승인한 것이 있는지 Decision Register와 현재 대화를 대조한다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 9. ROUTING OUTPUT
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 각 blocker를 다음 형태로 기록한다.
+>
+> BLOCKER
+> OWNER
+> CURRENT STATE
+> REQUIRED ARTIFACT
+> EXACT PATH/PR
+> ACCEPTANCE CRITERIA
+> DEPENDENCY
+> CAN PROCEED NOW?
+> NEXT OWNER ACTION
+>
+> 가능하면 owner가 바로 소비할 수 있는 작은 packet/receipt 형태로 만든다.
+>
+> 단순 prose 요청보다 machine/checkable evidence를 우선한다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 10. PARALLELISM
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 독립적인 owner action은 병렬 routing한다.
+>
+> 예:
+>
+> Portfolio:
+> TARGET root + Theme revision
+>
+> Identity:
+> Security mapping
+>
+> Product/P01:
+> authority applicability
+>
+> Web/Product:
+> write-set acceptance
+>
+> Integration:
+> FPIA closure
+>
+> 서로 dependency가 없는 것은 순차적으로 기다리지 않는다.
+>
+> 하지만 같은 파일을 여러 owner가 수정하게 만들지 않는다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 11. CHART AUTOMATION GAP
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> Chart Work가 확인한 automation gap도 Integration coordination 관점에서 처리한다.
+>
+> 확인된 문제:
+>
+> PR dependency 변화는 wake-up 대상이지만
+> Global branch에만 기록된 material dependency 변화는
+> Chart Work를 즉시 깨우지 못할 수 있다.
+>
+> 새 automation framework를 만들지 않는다.
+>
+> 대신 가능한 최소 해결책을 판단한다.
+>
+> 우선순위:
+>
+> 1. 기존 Chart event automation이 Global material dependency change를 소비할 수 있는지
+> 2. 불가능하면 Global writer가 Chart-relevant owner receipt/decision을
+>    Chart가 감시하는 기존 경로에 전달할 수 있는지
+> 3. 그래도 불가능하면 최소 polling/watch 보완
+>
+> 모든 Global commit마다 Chart를 재실행하는 방식은 피한다.
+>
+> Chart blocker와 관련된 material semantic delta만 trigger 대상이어야 한다.
+>
+> automation 자체가 프로젝트 병목이 되지 않게 한다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 12. AUTO-CONTINUE
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> D1/D2에서는 owner routing만 하고 멈추지 않는다.
+>
+> 현재 Work가 직접 해결 가능한:
+>
+> - FPIA repair
+> - regression
+> - review response
+> - evidence
+> - routing packet
+> - coordination record
+> - owner handoff
+>
+> 는 계속 수행한다.
+>
+> 장시간 Actions는 run_id/head_sha/attempt를 기록하고
+> 다음 check로 넘긴다.
+>
+> 실제 D3에서만 사용자에게 돌아온다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 13. PROTECTED BOUNDARIES
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 명시적 승인 없이:
+>
+> - canonical merge
+> - Frozen semantics 변경
+> - Holdout 소비
+> - PIT/no-lookahead 완화
+> - Official/LIVE 승격
+> - 유료 결제
+> - 다른 owner의 protected contract 임의 변경
+>
+> 을 하지 않는다.
+>
+> Global Handoff는 Primary Integration Writer 권한을 따른다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 14. COMPLETION CONDITION
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 이번 작업은 다음 중 하나까지 계속한다.
+>
+> A.
+> 6개 Chart blocker 중 owner evidence로 실제 blocker가 감소
+>
+> B.
+> 각 blocker가 정확한 owner에게 routing되고
+> machine/checkable acceptance artifact가 준비됨
+>
+> C.
+> Integration/FPIA의 실제 D3가 남아 사용자 결정 필요
+>
+> 단순히:
+>
+> "Chart는 6개 blocker를 기다리고 있다"
+>
+> 라고 다시 보고하고 종료하지 않는다.
+>
+> ━━━━━━━━━━━━━━━━━━━━
+> 15. FINAL REPORT
+> ━━━━━━━━━━━━━━━━━━━━
+>
+> 다음 순서로 보고한다.
+>
+> 1. Fresh canonical / Global / Integration HEAD
+> 2. FPIA 현재 상태
+> 3. Chart #41 현재 HEAD
+> 4. 6 blocker owner-routing matrix
+> 5. 이번에 즉시 해결한 blocker
+> 6. owner에게 전달한 action
+> 7. 병렬 진행 중인 owner action
+> 8. 남은 blocker count
+> 9. FPIA D3/G7/GIE 상태
+> 10. Chart automation gap 처리 결과
+> 11. Chart Work 자동 재개 조건
+> 12. 새로운 USER_D3_REQUIRED
+> 13. next exact integration step
+>
+> 마지막에 반드시 답한다.
+>
+> - Chart blocker가 6개에서 몇 개로 줄었는가?
+> - 줄지 않았다면 각 blocker를 실제로 누가 해결 중인가?
+> - Chart Work가 다시 자동/수동 재개되어야 하는 정확한 trigger는 무엇인가?
+> - 사용자 결정 없이 지금 더 진행할 수 있는 Integration 작업이 남아 있는가?
+>
+> 사용자 결정 없이 진행 가능한 일이 남아 있다면 자동으로 계속 진행한다.
+
+Recorded effect (routing writer's reading; the user wording above governs):
+
+- The Integration Work routes each of Chart PR #41's six production blockers to its authoritative owner with an exact, machine-checkable request and acceptance criteria, verifies any artifact that already exists in the repository for Chart compatibility, and does not implement Chart features or duplicate another owner's implementation.
+- Fixed meanings for the routing: the Strategy Theme is a user-defined Strategy Theme / Portfolio Bucket, not GICS, and the economic meaning of the four buckets (반도체 장비 30, AI·반도체 25, Big Tech 20, 기타산업 25) is not changed; a Chart-side Decimal sum of 100.000% does not make an authoritative root; security identity reuses Issuer → Security → dated Listing and ticker-only identity is not accepted; no Chart-only identity layer; Product authority is separate from source/data rights, and the Product/P01 owner answers the applicability question with A, B or C.
+- Blocker 6 (FPIA governance/admissibility) is the Integration critical path. Items previously labelled D3 are not re-asked when CDR-015 already delegates them.
+- **Protected boundaries (§13) for this Work.** CDR-015 delegated canonical merges, numeric configuration, publication and deployment as D2; §13 of this later directive lists canonical merge, a Frozen semantics change, Holdout consumption, PIT/no-lookahead relaxation, Official/LIVE promotion, paid payment and arbitrary change of another owner's protected contract as actions not taken without explicit approval. Until the user reconciles the two, the Primary Integration Writer applies the narrower rule: none of those actions is taken in this Work without an explicit user approval naming it. CDR-015 otherwise stays in force (D1/D2 self-decision for everything else, D3 = cost).

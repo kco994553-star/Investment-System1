@@ -194,3 +194,9 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - Earlier approvals and records preserved. New append-only `PIW_DECISION_RECORDS.md` for the Primary Integration Writer's own D2 decisions (reason, impact, verification, recovery).
 - Open items, including FPIA D3-a … D3-e and the G7 interpretation, are being reclassified and decided under CDR-015; verified small bundles will be integrated step by step. FPIA fix round 3 continues without restart.
 - Canonical `b8e39a2` unchanged at this entry. Maturity transitions: none.
+
+## GCH-015a · 2026-10-05 12:43 KST · CDR-016 recorded (Chart PR #41 blocker routing directive)
+
+- User directive recorded verbatim as CDR-016: route Chart PR #41's six production blockers (TARGET root, security mapping, Strategy Theme revision, Product authority, owner write-set acceptance, FPIA governance/admissibility) to their authoritative owners with machine-checkable requests and acceptance criteria; verify existing artifacts; do not implement Chart features or duplicate owners' work; handle the Chart automation gap minimally.
+- §13 of the directive lists canonical merge and other protected actions as not taken without explicit approval; until the user reconciles it with CDR-015, the Primary Integration Writer applies the narrower rule in this Work.
+- Fresh state: canonical `b8e39a2`; handoff `d92363f`; PR #41 `74df678`; PR #42 `523e702` (fix round 3 running); PR #43 `4c5f7ff`; PR #44 `cb1906b`.
