@@ -561,10 +561,18 @@
     "figma_sample": "EDITABLE_CREATED_STRUCTURAL_PASS_POST_FIX_VISUAL_TOOL_QUOTA_BLOCKED"
   },
   "lease": {
-    "status": "NONE",
-    "last_run_id": "manual-chart-magicpath-primary-2026-10-05T080033754Z",
-    "released_at_utc": "2026-10-05T09:00:20.069Z",
-    "reason": "Safe checkpoint; completed MagicPath build/browser work preserved, not yet falsely marked published"
+    "status": "ACTIVE",
+    "run_id": "manual-chart-magicpath-d3a-2026-10-05T090050954Z",
+    "owner": "/root Chart owner",
+    "acquired_at_utc": "2026-10-05T09:00:50.954Z",
+    "expires_at_utc": "2026-10-05T09:45:50.954Z",
+    "source_start_head": "ca067990f5a81e06c23171bb92238e22f4eede9b",
+    "write_set": [
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/**",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    ],
+    "reason": "Publish already verified MagicPath SAMPLE build + latest D3-A/R policy and fresh owner receipts; no protected production changes"
   },
   "publication": {
     "status": "V012_EDITABLE_FIGMA_AND_LATE_GLOBAL_MAIN_COVERAGE_RECEIPT_VERIFIED",
