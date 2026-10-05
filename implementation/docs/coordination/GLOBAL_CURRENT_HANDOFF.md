@@ -4,8 +4,8 @@ Routing/index SSoT only. This file is not a calculation, policy, approval or pub
 
 | Field | Value |
 |---|---|
-| Handoff ID | GCH-014 (supersedes GCH-013 as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
-| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011; GCH-009 after GIE-010; GCH-010 after CDR-012; GCH-011 after GIE-011; GCH-012 after CDR-013; GCH-013 after GIE-012; GCH-014 after CDR-014 (2026-10-04) |
+| Handoff ID | GCH-014b (supersedes GCH-014a as the current handoff; every earlier entry is kept in GLOBAL_HANDOFF_HISTORY) |
+| Recorded | GCH-001 2026-10-03T01:18:13Z (`b118b68`); GCH-002 after CDR-001..003; GCH-007 2026-10-03 after GIE-008; GCH-008 after CDR-010/011; GCH-009 after GIE-010; GCH-010 after CDR-012; GCH-011 after GIE-011; GCH-012 after CDR-013; GCH-013 after GIE-012; GCH-014 after CDR-014 (2026-10-04); GCH-014a/014b FPIA fix rounds (2026-10-04/05) |
 | Primary Integration Writer | Claude Code session `session_019znshzTYgyBnuuBmSxdPFN`, designated by the user on 2026-10-03 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md` |
 | Canonical branch / HEAD | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca`. This matches the last independent audit checkpoint, and canonical has not moved since 2026-09-28 |
@@ -73,8 +73,14 @@ Decided and in execution:
 - **Still open (USER_DECISION_REQUIRED, not decided here):**
   - (F1 scope question RESOLVED — NO ADDITIONAL CHANGE by CDR-013: M-B statistic only.)
   - **MAC-X1 decided by CDR-014:** Track C integration acceptance on each canonical/integration merge-result SHA is a hardened Frozen Projection Identity Audit (FPIA). Frozen records stay exact-tree history; code identity is reported SAME/DIVERGED and never normalised; references are authenticated through the CDR-014 manifest; GIE-012 §5-2…5-5 recommendations approved. Implementation and verification in progress on a new PIW branch.
+    - State 2026-10-05: Draft PR #42 `integration/fpia-hardened-v1` @ `523e702` (fix round 2 `babf0a4` + vendored pure-Python PyYAML 6.0.1 so owner CI without PyYAML runs the FPIA tests). CI 7/7 green on `523e702` (6 owner workflows 1774 passed each; track-c-fpia FPIA_PASS / CODE_IDENTITY_DIVERGED, result_sha256 `d85ecc4b…`). Real runs at `523e702`: `acaf1b5` PASS/DIVERGED, `b9e01a9` PASS/SAME, S24 and S1 spoof trees FAIL.
+    - Not yet final: the round-2 adversarial review found an end-to-end AC-32.spoof bypass (invisible trailing character in the workflow name plus a rooted `cd ${{ github.workspace }}/…`; FPIA_PASS on a spoofing tree) and environment-dependent verdicts (symlinked venv or TMPDIR flips PASS to FAIL). Fix round 3 (workflow `wf_bdfed701-366`) replaces shell resolution with conservative identity keys and mention-based detection; results go to GIE-014.
+    - Open decisions recorded on PR #42 (not decided): D3-a verifier authentication in CI; D3-b job-id collision rule; D3-c dynamically constructed invocations as a non-claim; D3-d #28 attribution; D3-e (new candidate) code that runs from outside T (remote reusable workflows of other repositories, third-party actions, container images); G7 interpretation "FPIA applies to merge results containing R".
   - Track C landing vehicle (`b9e01a9` lineage, the #31/#35 stack, or a #30-based combined merge) and MAC-X1 (Track C acceptance tooling on integrated trees) from GIE-009.
   - Scope of #21, #37, #28 and docs/qgv-context for any canonical-merge package.
+  - Routing received (not decided, not adopted as CDRs; the wording did not come to the Primary Integration Writer from the user directly):
+    - PR #43 (Draft, Codex, `codex/github-write-path-policy-2026-10-04` @ `4c5f7ff`, base this branch): one new file recording a user-attested GitHub API write-path instruction for all workers. Not merged here; the user can confirm it as a CDR.
+    - PR #41 Chart owner checkpoint `1a79c4b`, handoff comment on PR #42 (2026-10-05T00:40Z): asks routing of A-G1 (Product/P01/Personal applicability and the admitted current-TARGET authority/read interface) and A-G2 (owner-approved integration base and write set); notes that future package Python changes Track C code identity. PR #44 `cb1906b` is spec-only.
 
 Not approved (CDR-006/007 list): α, B, L / block rule, seed, effect floor, minimum support, size tolerance, dependence envelope / margin, real source taxonomy/default, real CAL_VERIFY access, C8 foundation ↔ G-SUP registry unification, Holdout, C8 SOFTWARE FROZEN, publication grant, Official, LIVE, canonical merge.
 

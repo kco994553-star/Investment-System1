@@ -179,3 +179,11 @@ This file is separate from root `Investment-System1 · HANDOFF_HISTORY.md`. That
 - Defects found and being fixed on the same branch (no new D3): a shallow `--repo` turned an environment NOT_RUN into a frozen-tool FAIL with FPIA_PASS; canonical ref taken from the caller repo; a v2 label; truncated verbatim output; workflow attribution scope; the FPIA workflow cannot run until it has a trigger outside the default branch.
 - The independent CDR-012 oracle is persisted under `evidence/GIE-013_cdr012_independent_oracle/` so the CDR-014 §12 replay stays reproducible.
 - Canonical `b8e39a2` unchanged. Maturity transitions: none.
+
+## GCH-014b · 2026-10-05 · FPIA PR #42 at 523e702 (CI green); fix round 3 running; routing received
+
+- Fix round 2 (`babf0a4`): YAML-read workflow identity, reference resolution, structural fetch status, `--out` refusal and `--verify-output`, venv-independent result_sha256, AC-04 wording, PR trigger scoped to integration/**, transport disclosure. It turned the six owner workflows red because they install only pytest and numpy; `523e702` vendors pure-Python PyYAML 6.0.1 (upstream sdist, byte for byte, `cyaml.py` left out). CI 7/7 green on `523e702`; Tier 1 256, Tier 2 9, full suite 1773 passed without PyYAML.
+- The round-2 adversarial review found an end-to-end AC-32.spoof bypass (FPIA_PASS on a spoofing tree), 22 D1 and 41 D2 detection gaps, environment-dependent verdicts and verifier gaps, plus a new decision candidate D3-e (code that runs from outside T). Fix round 3 started (`wf_bdfed701-366`).
+- A container restart killed the round-2 verifiers; they were resumed from the workflow journal and completed.
+- Routing received: PR #43 (Codex write-path instruction), PR #41 Chart owner comment on PR #42 (A-G1/A-G2), PR #44 spec-only. Not adopted as decisions.
+- Canonical `b8e39a2` unchanged. Maturity transitions: none.
