@@ -1,7 +1,14 @@
 {
   "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
-  "status": "RISK_PROPORTIONAL_VERIFICATION_APPLIED_G1_G2_G_C_COMPLETE_INACTIVE",
-  "lease": null,
+  "status": "IN_PROGRESS_SSOT_LOOP_POLICY_AND_G_C_SCOPE_FIXTURE",
+  "lease": {
+    "token": "qgv-ssot-muuxaley-nleyl46w0x",
+    "owner": "QGV_SSoT_autonomous_loop_manual_execution",
+    "task": "APPROVED_EXECUTION_POLICY_AND_BOUND_G_C_SCOPE_FIXTURE",
+    "input_review_head": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+    "claimed_at_utc": "2026-10-05T07:23:07.114Z",
+    "expires_at_utc": "2026-10-05T07:53:07.114Z"
+  },
   "tasks": [
     "G1_G2_APPROVED_SEMANTIC_CONTRACT",
     "G1_G2_METHOD_FAMILY_COMPARISON",
@@ -84,4 +91,3 @@
     "new_d3_decision_required": false
   }
 }
-
