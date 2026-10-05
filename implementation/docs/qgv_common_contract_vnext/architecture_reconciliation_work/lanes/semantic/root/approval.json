@@ -1,0 +1,53 @@
+{
+  "approval_id": "QGV-G1-G2-SEMANTICS-2026-10-05",
+  "status": "APPROVED_SEMANTIC_CONTRACT_ONLY",
+  "authority": "Explicit current user instruction in this QGV Work conversation",
+  "user_instruction_received_at_kst": "2026-10-05T14:16:16+09:00",
+  "timestamp_basis": "Platform-provided user submission time; not scheduler execution evidence",
+  "G1": {
+    "status": "APPROVED",
+    "economic_target": "LONG_HORIZON_REALIZED_GROWTH",
+    "user_text": "장기 실현 성장(Long-horizon realized growth)",
+    "meaning": "Magnitude and persistence of actual observed enterprise growth over multiple historical periods",
+    "legacy_revenue_yoy": "LEGACY / INTERIM_PROXY",
+    "semantic_equivalence_to_3_5y_authoritative_method": false,
+    "factor_identity_policy": "Preserve existing next_3_5y_growth identity; LONG_HORIZON_GROWTH is the approved meaning, not an authorized production rename"
+  },
+  "G2": {
+    "status": "APPROVED",
+    "principle": "NO_AUTOMATIC_CROSS_METRIC_SUBSTITUTION_WITHOUT_SEMANTIC_AUTHORITY",
+    "user_text": "EPS가 unavailable이라는 이유만으로 경제적 의미가 다른 metric을 자동 substitute하지 않는다.",
+    "alternative_requires": "Semantic equivalence evidence or an explicitly approved alternative method",
+    "legacy_expression": "FCF / prior revenue - 1",
+    "legacy_classification": "LEGACY METHOD / METHOD_MISMATCH",
+    "eps_growth_semantic_equivalence": false,
+    "future_families_authorized_for_comparison_only": ["FACTOR_UNAVAILABLE", "ECONOMICALLY_COMPARABLE_PER_SHARE_GROWTH", "SEPARATE_CASH_FLOW_GROWTH_METHOD", "CONDITIONAL_APPLICABILITY"]
+  },
+  "identity": {
+    "principle_authority": "Previously explicitly approved B4 Method/Version Identity and B7 Profile Boundary principles",
+    "same_factor_distinct_method_version": true,
+    "legacy_symbolic_method_aliases": "Audit-sidecar descriptors only; not runtime registration or proof of archived attribution",
+    "profile_cannot_replace_method": true
+  },
+  "PIT": {
+    "no_lookahead_preserved": true,
+    "observation_fields": ["period", "source", "as_of", "available_at", "published_at", "method_id", "method_version"],
+    "revised_restated_vintages": "Never use hindsight revised/restated data as if known at the historical evaluation time"
+  },
+  "history": {
+    "existing_payloads_preserved": true,
+    "new_semantics_retroactively_applied": false,
+    "historical_method_attribution_requires_exact_archived_evidence": true,
+    "historical_score_rewrite": false
+  },
+  "authorized_next_work": ["G1/G2 inactive method candidate comparison", "B2/B3/B5/B6 inactive Result Admission & Consumer Safety convergence", "Score-neutral synthetic/invariant evidence", "Scoped approval, Decision Package and Handoff publication"],
+  "method_selection": "NOT_APPROVED",
+  "migration": "NOT_APPROVED",
+  "V1": "PENDING",
+  "V2": "PENDING",
+  "not_approved": ["Actual G formula", "3Y versus 5Y numeric selection", "CAGR", "Mean or median aggregation", "Revenue/EPS/FCF combination", "Historical period requirement", "Minimum observation count", "Forward estimate inclusion", "EPS replacement metric", "Normalization", "Weights", "Existing score recalculation", "Historical migration", "V production method", "Composite", "WeightOverride runtime", "Ranking cutoff or activation", "N/A production binding", "Actual requiredness", "PR44 or canonical merge", "Holdout", "PIT relaxation"],
+  "runtime_enabled": false,
+  "production_migration_authorized": false,
+  "scheduler_actual_hops_credited": 0,
+  "predecessor_evidence_commit": "4d53aa3047ba397cda992d2e784316a9d889bc22"
+}

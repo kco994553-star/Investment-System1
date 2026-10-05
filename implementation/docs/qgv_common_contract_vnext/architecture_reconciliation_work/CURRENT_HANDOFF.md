@@ -1,3 +1,23 @@
+# QGV G1/G2 semantic continuation — current scoped checkpoint
+
+STATUS: G1_G2_SEMANTIC_APPROVED / METHOD_SELECTION_NOT_APPROVED / D1_D2_IN_PROGRESS / INACTIVE.
+
+- G1 SEMANTIC: APPROVED — LONG-HORIZON REALIZED GROWTH.
+- LEGACY METHOD: REVENUE_YOY = LEGACY / INTERIM_PROXY.
+- G2 SEMANTIC: APPROVED — NO AUTOMATIC CROSS-METRIC SUBSTITUTION WITHOUT SEMANTIC AUTHORITY.
+- LEGACY EPS FALLBACK: FCF / PRIOR REVENUE - 1 = LEGACY / METHOD_MISMATCH.
+- METHOD SELECTION: NOT_APPROVED. MIGRATION: NOT_APPROVED.
+- Approval and contract: lanes/semantic/root/approval.json and SEMANTIC_CONTRACT.md.
+- Independent next authorized lanes: G1/G2 method candidate comparison and B2/B3/B5/B6 inactive Result Admission & Consumer Safety convergence.
+- VERSION_MISMATCH / CALCULATION_ERROR numeric admission is a critical migration blocker.
+- V1/V2 PENDING; existing V evidence preserved. B1 remains MORE_EVIDENCE_REQUIRED, requiredness0/20.
+- Other-owner Missing-Data STATE lease remains active at4fb08a0; no termination evidence, no release/takeover. Own evidence-branch control lease is separate.
+- Scheduler0/2 UNVERIFIED; this manual continuation credits0 hops. No production migration begins.
+
+The new approval supersedes prior unresolved G1/G2 intent prose only. Earlier evidence follows unchanged.
+
+---
+
 # QGV G/V evidence lanes — current scoped handoff
 
 STATUS: D1_D2_GV_LINEAGE_IMPACT_COMPLETE / INDEPENDENT_REVIEW_PASS_WITH_LIMITS / INACTIVE.
