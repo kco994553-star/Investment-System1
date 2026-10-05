@@ -115,7 +115,7 @@ def inspect_packet(packet, baseline, repo, decision_time) -> dict:
         right = {k: v for k, v in baseline.items() if k not in {"root_owner_return", "constituents"}}
         if json_bytes(left) != json_bytes(right):
             issue("REQUEST_METADATA_CHANGED", "/", "preserved request metadata differs")
-    except (TypeError, ValueError, OverflowError) as exc:
+    except (TypeError, ValueError, OverflowError, RecursionError) as exc:
         issue("INVALID_JSON_VALUE", "/", str(exc))
 
     rows = packet.get("constituents")
@@ -144,7 +144,7 @@ def inspect_packet(packet, baseline, repo, decision_time) -> dict:
         try:
             if json_bytes(preserved) != json_bytes(source):
                 issue("IMMUTABLE_ROW_CHANGED", path, "observed source/provenance must not be rewritten")
-        except (TypeError, ValueError, OverflowError) as exc:
+        except (TypeError, ValueError, OverflowError, RecursionError) as exc:
             issue("INVALID_JSON_VALUE", path, str(exc))
     if seen != set(expected):
         issue("ROW_COMPLETENESS", "/constituents", "missing original source row keys")
@@ -170,36 +170,39 @@ def inspect_packet(packet, baseline, repo, decision_time) -> dict:
 
     # Exact rational replay is diagnostic only. It is not the domain calculator
     # and does not choose a production Decimal context or rounding policy.
-    try:
-        if any(x["severity"] == "ERROR" for x in findings):
-            raise ValueError("immutable source checks failed; untrusted allocation is not evaluated")
-        totals = {}
-        total = Fraction(0)
-        for row in original:
-            weight = row["observed_target_weight"]
-            ratio = exact_decimal(weight["decimal_ratio"])
-            percent = exact_decimal(weight["percent"])
-            if not isinstance(weight["exact_fraction"], str):
-                raise ValueError("exact fraction must be a string")
-            if ratio > 1 or ratio * 100 != percent or ratio != Fraction(weight["exact_fraction"]):
-                raise ValueError("ratio, percent and exact fraction disagree")
-            theme = row["observed_theme_name"]
-            totals[theme] = totals.get(theme, Fraction(0)) + ratio
-            total += ratio
-        allocation = baseline["observed_candidate_allocation"]
-        cash = exact_decimal(allocation["cash_target_percent"]) / 100
-        expected_totals = {name: exact_decimal(n) / 100
-                           for name, n in allocation["reference_theme_total_percent"].items()}
-        if total + cash != 1 or totals != expected_totals:
-            raise ValueError("exact total/Theme partition differs from original request")
-        report["reference_diagnostic"] = {
-            "weight_basis": "TARGET_AUTHORED_REFERENCE_ONLY",
-            "constituent_count": len(rows), "total_exact_fraction": str(total + cash),
-            "theme_total_exact_fraction": {k: str(v) for k, v in totals.items()},
-            "is_renderable_production_data": False,
-        }
-    except (ValueError, InvalidOperation, ZeroDivisionError, KeyError, TypeError, OverflowError) as exc:
-        issue("INVALID_REFERENCE_ALLOCATION", "/constituents", str(exc))
+    if any(x["severity"] == "ERROR" for x in findings):
+        report["reference_replay"] = "NOT_RUN_SOURCE_INVALID"
+    else:
+        try:
+            totals = {}
+            total = Fraction(0)
+            for row in original:
+                weight = row["observed_target_weight"]
+                ratio = exact_decimal(weight["decimal_ratio"])
+                percent = exact_decimal(weight["percent"])
+                if not isinstance(weight["exact_fraction"], str):
+                    raise ValueError("exact fraction must be a string")
+                if ratio > 1 or ratio * 100 != percent or ratio != Fraction(weight["exact_fraction"]):
+                    raise ValueError("ratio, percent and exact fraction disagree")
+                theme = row["observed_theme_name"]
+                totals[theme] = totals.get(theme, Fraction(0)) + ratio
+                total += ratio
+            allocation = baseline["observed_candidate_allocation"]
+            cash = exact_decimal(allocation["cash_target_percent"]) / 100
+            expected_totals = {name: exact_decimal(n) / 100
+                               for name, n in allocation["reference_theme_total_percent"].items()}
+            if total + cash != 1 or totals != expected_totals:
+                raise ValueError("exact total/Theme partition differs from original request")
+            report["reference_diagnostic"] = {
+                "weight_basis": "TARGET_AUTHORED_REFERENCE_ONLY",
+                "constituent_count": len(rows), "total_exact_fraction": str(total + cash),
+                "theme_total_exact_fraction": {k: str(v) for k, v in totals.items()},
+                "is_renderable_production_data": False,
+            }
+            report["reference_replay"] = "COMPLETED_DIAGNOSTIC"
+        except (ValueError, InvalidOperation, ZeroDivisionError, KeyError, TypeError, OverflowError) as exc:
+            report["reference_replay"] = "FAILED"
+            issue("INVALID_REFERENCE_ALLOCATION", "/constituents", str(exc))
 
     def owner_fields(value, template, path):
         if not isinstance(value, dict):
@@ -302,7 +305,7 @@ def main() -> int:
     try:
         original = git_bytes(args.repo, SOURCE_COMMIT, REQUEST_PATH)
         baseline = strict_json(original)
-    except (ValueError, OSError, subprocess.CalledProcessError) as exc:
+    except (ValueError, OSError, subprocess.CalledProcessError, RecursionError) as exc:
         result = inspect_packet(None, {}, args.repo, args.decision_time)
         result["findings"].append({"code": "PINNED_BASELINE_UNAVAILABLE", "path": REQUEST_PATH,
                                    "severity": "ERROR", "message": str(exc)})
@@ -312,7 +315,7 @@ def main() -> int:
         try:
             candidate_bytes = args.packet.read_bytes()
             packet = strict_json(candidate_bytes)
-        except (ValueError, OSError) as exc:
+        except (ValueError, OSError, RecursionError) as exc:
             result = inspect_packet(None, baseline, args.repo, args.decision_time)
             result["findings"].append({"code": "PACKET_READ_FAILED", "path": str(args.packet),
                                        "severity": "ERROR", "message": str(exc)})

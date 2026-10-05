@@ -1,0 +1,267 @@
+{
+  "kind": "PRESERVED_INITIAL_INDEPENDENT_OBSERVATION",
+  "note": "Captured before current diagnostic repair; initial lease/draft/code-hash wording belongs to the recorded observation. Final disposition and verification are in HANDOFF/VALIDATION_RECEIPT/GATES_AND_GAPS.",
+  "observation": {
+    "schema": "CHART_GOVERNANCE_DIFFERENTIAL_V08_DRAFT",
+    "captured_at_utc": "2026-10-05T04:19:26.567Z",
+    "read_only_repository": true,
+    "published": false,
+    "baseline": {
+      "chart": "32069065a0c4a62e4390d76675eb9c7681456c87",
+      "global": "b3532a2ebbe95310bbf222937466eb04a0211263",
+      "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+    },
+    "authority": {
+      "CDR015": "Former FPIA D3-a..e/G7 delegated to responsible owner D2; not user reapproval merely due old label",
+      "CDR016_017": "Narrower protected canonical/Frozen/Holdout/PIT/Official/LIVE/other-owner contract boundaries stay; Chart latest scoped execution policy2026-10-05T13:01:31+09:00 controls",
+      "PIW_decision_record": "Header/rules only, no actual decision entry at exact Global b3532a2",
+      "new_actual_Chart_D3": "NONE_IDENTIFIED"
+    },
+    "gates": [
+      {
+        "id": "A-G1",
+        "status": "OWNER_ACTION_REQUIRED",
+        "changed": false,
+        "owner": "Product/Personal/P01",
+        "reason": "No owner returned applicability A/B/C, adopted TARGET subject/read route or current authority receipt; delegation/routing not admission",
+        "next_exact_action": "Owner cites existing P01 reuse route A, minimum alternate route B, or unresolved C, with exact subject/hash/dependencies/currentauthority/denial controls",
+        "chart_can_close_directly": false
+      },
+      {
+        "id": "A-G2",
+        "status": "OWNER_ACTION_REQUIRED",
+        "changed": false,
+        "owner": "Web/Product/API/Portfolio/Integration",
+        "reason": "No actual exact integration base/write-set acceptance or output path supplied",
+        "next_exact_action": "Return selected actual read-product route and accepted minimal exact file matrix; new standalone HTML/JS/CSS do not require protectedbuilder/assembler modification",
+        "chart_can_close_directly": false
+      },
+      {
+        "id": "A-G3",
+        "status": "PARTIALLY_RESOLVED",
+        "changed": true,
+        "owner": "Primary Integration Writer/FPIA",
+        "reason": "Round3 nine-file H1-H7 repair published11d2f25;6/7exactheadruns succeeded, FPIArun37260997788 stillinprogress; finalreview/governance/GIE/ownerdecisionreceipt absent",
+        "next_exact_action": "Finish exactheadCI, authenticate currentverifier, finalindependent/adversarial/completeness/GIE receipt, record delegatedD2decisions for priora-e/G7 where needed, acceptfuture actualChartmergeresultFPIA",
+        "remaining_gate_open": true,
+        "USER_D3_REQUIRED": false,
+        "chart_can_close_directly": false
+      }
+    ],
+    "owner_receipts": {
+      "raw_PR42_issue_comments": "onepriorChartcomment5986162506; noownerreturn",
+      "raw_PR42_reviews": 0,
+      "raw_PR42_inline_comments": 0,
+      "raw_PR17_and_PR41_issue_comments": 0,
+      "PIW_decisions": 0,
+      "current_TARGET_or_write_set_acceptance": "NOT_FOUND"
+    },
+    "freshness_conflicts": {
+      "PR42_body_head": "body still labels523e702/oldopenuserdecisions; actualmetadata+Git11d2f25 priority",
+      "Global_and_scoped_historical_FPIA_labels": "oldUSER_D3_REQUIRED text superseded withindelegatedscope, retainedhistory mustnot erase"
+    },
+    "independent_chart_work": [
+      {
+        "priority": "PRIMARY_ROOT_IN_PROGRESS",
+        "item": "Portable successor for nine-probe runner: explicitrepo/robustcheckedroot selection and outputoutsidehistoricalscriptdirectory; preservev07archive",
+        "D1": true,
+        "other_owner_required": false
+      },
+      {
+        "priority": "LOW_OPTIONAL",
+        "item": "CLI malformeddeepJSON structuredfailure robustness",
+        "reproduced": true,
+        "probe": {
+          "packet_bytes": 20023,
+          "nested_arrays": 10000,
+          "returncode": 1,
+          "stdout_bytes": 0,
+          "error": "RecursionError maximum recursion depth exceeded while decoding a JSON array from a unicode string"
+        },
+        "impact": "DiagnosticCLI aborts without structuredINVALID result; no productionadmission or gateclosure occurred",
+        "minimum_possible_repair": "Catch parserRecursionError intoexistingPACKET_READ_FAILED/INVALID response; no newly chosen depth/resource/numericthreshold",
+        "note": "Lowerpriority than realportabilityfix; do not expandintoproductionDoS framework"
+      }
+    ],
+    "prohibited_now": [
+      "repo writes underotherlivelease",
+      "otherownerbranchmodify",
+      "reviews/comments/dispatch",
+      "admitrootfromclaims",
+      "treatoldCIasround3CI",
+      "protectedboundarybypass"
+    ],
+    "evidence": {
+      "resume42info": {
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/42",
+        "number": 42,
+        "state": "open",
+        "merged": false,
+        "mergeable": true,
+        "draft": true,
+        "body": "**Draft proposal. Not a merge request.** Canonical merge is `USER_DECISION_REQUIRED` (Worker Contract §D12). Nothing here approves C8 Freeze, numeric configuration, CAL_VERIFY, Holdout access, a publication grant, Official/LIVE, the #17 digest repin or any Frozen-evidence rewrite.\n\nHead: `523e702a806a718d163cfbf62aa3fc29d8c3ef3c` = `465354a` (fix round 1) + **fix round 2** `babf0a41dd8a740190743ee1e27289b17d8118d3` (G1-G7, F2; this round) + `523e702` (vendored pure-Python PyYAML 6.0.1, pushed by a concurrent writer of the same PIW session after the owner CI failure on `babf0a4`; see *PyYAML packaging* below). All fast-forward, no force. Base `integration/cdr012-successor-trial-2026-10-04` @ `acaf1b5` (unchanged).\n\n## Open user decisions (not implemented; current behaviour kept and recorded)\n- **D3-a** Verifier authentication in CI: pin the auditor to a user-named FPIA version. Today the PR CI runs the PR head's own `track_c_fpia*.py`; `runtime_provenance.verifier` records the commit and blobs only.\n- **D3-b** Restore a content-independent job-id collision rule for spoof detection. Today a job id/name collision with the Track C workflow (e.g. `validate`) is a note (`job_id_collision_note`) on a real finding only; probe S17 is pinned as *not found*.\n- **D3-c** Declare dynamically constructed invocations (string-built paths, paths in shell variables, importlib with computed names) a non-claim. Today they are not detected and the result says so: `integration_interference.dynamic_invocation_detection = NOT_CLAIMED` plus a constant non-claim; probes S15/S16 are pinned as *not found*.\n- **D3-d** #28 attribution (`implementation/docs/codex_takeover/evidence/track_c/independent_c8_audit.py` is an unattributed importer of Track C modules; the T28 merge gives `FPIA_FAIL`). Unchanged; still FOUND.\n\n### Interpretation note for G7 (pending the user's confirmation)\n> `track-c-fpia.yml` now runs its audit job on `pull_request` only when the PR's base or head branch matches `integration/**` (PIW integration / trial merge results); other PRs get a skipped job, not a red check. `workflow_dispatch` is unchanged. This reflects the recommended interpretation **\"FPIA applies to merge results containing R\"**, pending the user's confirmation. It relabels nothing: a tree without R is still `authority FAIL` / `FPIA_FAIL` when audited.\n\n## Fix round 2 (verified findings at `465354a6479810a175fbefe32ef2c993b1e214c2`)\nEach item has Tier 1 regressions in `implementation/tests/test_integration_fpia_fix2.py` that **fail on `465354a6479810a175fbefe32ef2c993b1e214c2` and pass on `523e702a806a718d163cfbf62aa3fc29d8c3ef3c`** (run against an extract of the `465354a` FPIA sources: 59 of the 65 new tests fail there; the 6 that pass are guards/controls listed below). Every adversarial probe of the previous round is pinned with its expected component/status. No other semantics change. No new numeric threshold/default/tolerance; no PR-specific or hard-coded SHA exception (self-tests enforce both). Frozen tools a60c4c5f / 6b9362d0 / e587a8d5 unchanged.\n\n| # | Finding (severity) | Fix | Regression tests (state on `465354a`) |\n|---|---|---|---|\n| G1 | AC-32 spoof name read with a line regex; YAML-equivalent names of the Track C workflow got through (MEDIUM; S1-S4, S18, S24 end to end `FPIA_PASS`) | Workflow files are read with PyYAML 6.0.1 (installed and pinned at `babf0a4`; the vendored pure-Python copy since `523e702`) (`safe_load` as validity gate, `compose` with the pure-Python SafeLoader, so comments, next-line values, quoted keys, tags, block scalars, anchors and duplicate keys resolve as YAML does). Not valid YAML for GitHub (unloadable, top level not a mapping, no jobs mapping) -> FOUND `unparseable workflow (fail-closed)`. The workflow `name`/`run-name` and the filename stem are compared with the Track C workflow's name and stem after NFKC + casefold + removal of Default_Ignorable code points + the UTS #39 confusable skeleton; two orders are compared (casefold before / after the skeleton) and either equality counts. Confusable source: the UTS #39 prototype table extracted once from the system ICU 74.2 (libicu74 74.2-1ubuntu3.1, Unicode 15.1.0 security data) with `uspoof_getSkeleton`, ASCII prototypes of NFKC-stable code points (654 code points, 142 groups) plus the Default_Ignorable ranges from the same ICU, embedded and documented in `track_c_fpia_workflows.py`; nothing is downloaded at run time. A name/stem claim is FOUND regardless of other content and never attributable, unless the file is byte-identical to the authenticated R / applicable V Track C workflow (then a note). Job ids/names are read and stay a note (D3-b). | `test_adversarial_spoof_probe_pinned[S0..S8b,S18,S24]` (S1-S8, S18, S24: no finding on `465354a`; S8b: only AC-19), `test_s24_end_to_end_component_status` (`INTEGRATION_INTERFERENCE_FOUND`, `FPIA_FAIL`; was NOT_RUN/none), `test_yaml_equivalent_name_claims_found[9 forms]` (8 not found), `test_byte_identical_track_c_workflow_copy_is_not_a_claim`, `test_yaml_loader_unavailable_is_not_run` (no loader -> static analysis NOT_RUN, never NONE), `test_s17_s18_s19_collision_is_a_note_only`; guards passing on both: `test_unparseable_workflow_fail_closed`, the plain quoted-name form, `test_normalisation_helpers_and_confusable_source` |\n| G2 | Track C tool/test runs found only as literal path tokens of the raw workflow text (MEDIUM; S9-S13, S19, S21) | After YAML decoding, every scalar (run, working-directory, uses, with, env, ...) is scanned with the pre-existing token rule; run steps are tokenised with `shlex` (quoting, `cd`, env assignments, wrappers, heredocs, `bash -c`, `python -c`/`-m`/`-`); working-directory and `${{ github.workspace }}` are resolved; local sh/bash/python scripts invoked from run steps, local composite actions and reusable workflows (`uses: ./...`) are followed recursively with a cycle guard and scanned the same way (Python: string literals, argv lists starting with an interpreter or `sys.executable`, Track C imports). pytest selections that target Track C tests (`-k`/`-m` naming Track C test modules, test names or markers; node ids or paths of Track C tests; directories holding only Track C tests) are Track C test invocations -> FOUND unless attributed. pytest with no selection, or over a directory that also holds other capabilities' tests, is a note (`workflow_analysis.notes`). `dynamic_invocation_detection: NOT_CLAIMED` (D3-c). Findings carry `followed` and `track_c_references`. | `test_adversarial_spoof_probe_pinned[S9..S13,S19,S21]` (no finding on `465354a`), `test_complement_workflow_running_track_c_found[node_id, track_c_dir_glob, k_function_name, reusable_workflow, python_argv_list, inline_python_import, heredoc_python, script_cycle, python_m_module, workspace_prefix]` (not found or wrong reason), `test_whole_suite_run_is_a_note_not_a_spoof[4]` (no note record); D3 pins `S14` (control), `S15`, `S16`, `S17` fail on `465354a` only for the missing `dynamic_invocation_detection` key (their findings are unchanged); guards passing on both: `[with_input]`, `test_other_capability_selection_is_not_a_spoof` |\n| G3 | Fetch rejection detected by a word match: a branch `feature/rejected-ideas` made FPIA NOT_RUN (LOW; F1-E5) | `git fetch` status lines are parsed structurally (` <flag> <summary> <from> -> <to> [(<reason>)]`): a refusal is flag `!`, summary `[rejected]` or a reason field naming `rejected`; plus `warning: rejected <ref> because ...` and `error:` lines. Ref names are never matched as text. | `test_rejected_lines_structural`, `test_branch_named_rejected_is_not_a_fetch_rejection` (F1-E5 pin: GitError on `465354a`); guard `test_real_rejection_at_exit_zero_still_not_run` (a `!` line at exit 0 still raises; passes on both) |\n| G4 | A reused `--out` left stale side files next to a new result; no side-file verifier (LOW; F4 reuse, F4 T1-T4) | An existing non-empty `--out`, an `--out` directory, or an existing non-empty `<out>.verbatim/` is refused before anything runs: `FPIA_NOT_RUN` (`output refused: ...`), exit 2, nothing written. New `track_c_fpia.py --verify-output <json> [--expect-result-sha256 <hex>]` rechecks `result_sha256` against the canonical result bytes, every side file's sha256/bytes, and that no unreferenced file sits in `<out>.verbatim/`; a consistent re-hash forgery is caught only with the external anchor (stated in the report; `run.verbatim_raw` stays unverifiable). The CI audit step runs it (informational). `run.verbatim_files` lists the side files written. | `test_out_reuse_refused_never_stale_side_files` (F4 reuse pin), `test_verify_output_detects_tampering` (T0 VERIFIED, T1 byte flip, T2 swap, T3 extra file, T4 forgery vs anchor, unreadable -> NOT_RUN; CLI exit codes 0/1/2) |\n| G5 | `result_sha256` depended on the interpreter/venv location (`spawns[].argv[0]`, `site_startup_hooks[].file`) (LOW) | Every hashed string and every side file has the verifier interpreter, site-packages, stdlib and venv paths written as `<python>`, `<site-packages>`, `<stdlib>`, `<venv>` (at a path boundary only, longest first); the real values are in `run.path_tokens`. | `test_env_paths_scrubbed_to_tokens`, `test_result_sha256_independent_of_venv_location` (two venv clones with identical packages at different paths, runtime_provenance PASS in both: identical `result_sha256`; different on `465354a`) |\n| G6 | AC-04 wording for a tree without Track C; `NOT_RUN ()` in short-circuit summaries (LOW / cosmetic) | R not an ancestor of T: `case = R_ABSENT_TRACK_C_NOT_INTEGRATED` (\"R is absent from T's history and no Track C projection path of R is present at T (Track C not integrated in this tree)\") vs `case = NON_MERGE_PRESERVING_LANDING` (Track C projection paths of R present without R's ancestry), with `track_c_paths_present_at_T`. Status stays FAIL in both. The summary prints `NOT_RUN` without empty parentheses. | `test_ac04_distinguishes_absent_track_c_from_non_merge_landing` (pre-Track C tree and squash landing), `test_summary_without_site_values_has_no_empty_parentheses` |\n| G7 | PR trigger would put a red check on pre-Track C capability PRs (operational; interpretation pending) | Job-level `if:` - `workflow_dispatch`, or PR base or head ref starting with `integration/` (equivalent to `integration/**`; a `branches:` filter cannot express a head-branch match). See the interpretation note above. (`babf0a4` also pinned PyYAML==6.0.1 in the install step; `523e702` removed the pin because the loader is now vendored.) | `test_workflow_pull_request_scope_integration_branches` |\n| F2 | Authority transport not disclosed for ls-remote / canonical query (LOW) | `run.authority_transport.queries[]` (op, label, remote, network, rc, `proxy_or_ca_env_passed`, `proxy_or_ca_env_present`, `ignored_proxy_like_env_present`) for every authority fetch and ls-remote, and the same fields in `run.canonical_ref_query`; names only, never values (`values_recorded: false`). | `test_authority_transport_names_recorded_without_values` |\n\nPinned probes of the previous round (`test_adversarial_spoof_probe_pinned`, synthetic world, exact expected static findings): S0 FOUND (control), S1 FOUND, S2 FOUND, S3 FOUND, S4 FOUND, S5 FOUND (N1), S6 FOUND (N1, Cyrillic U+0456), S7 FOUND (N1, ZWSP), S8 FOUND (filename stem), S8b FOUND + AC-19, S9 FOUND (via `scripts/ci_probe.sh`), S10 FOUND (working-directory), S11 FOUND (shell quoting), S12 FOUND (`\\x2F`), S13 FOUND (`-k evl_c6`), S14 FOUND (control), **S15 not found (D3-c)**, **S16 not found (D3-c)**, **S17 not found (D3-b)**, S18 FOUND (+ collision note), S19 FOUND (+ collision note), S21 FOUND (via the composite action), S24 FOUND -> `INTEGRATION_INTERFERENCE_FOUND`, `FPIA_FAIL`. F1-E5: authority PASS. F4 reuse: refused, nothing written.\n\nThe same probes on the previous round's real variant mirror (static phase with the unmodified `Audit.run()` path) give the same results; real trees are unchanged: `acaf1b5` 0 static findings, `b9e01a9` 0, `dc0bf79` 0, `465354a` 0 (the FPIA workflow and `track_c_fpia.py`, followed, raise nothing), L1/L2 0, T28 only the #28 importer (AC-21), `0d31e06` only `codex-integration-readiness.yml` (AC-32.spoof) plus its 20 AC-21 findings; F3a/F3b/F3d/F3h identical finding counts to the previous round.\n### Diff vs `465354a`\n27 files, +7647 / -78. `babf0a4` (fix round 2): 6 files, +1731 / -78 - new `track_c_fpia_workflows.py` (+781) and `test_integration_fpia_fix2.py` (+576); modified `track_c_fpia.py` (+220/-18), `track_c_fpia_checks.py` (+102/-54), `track_c_fpia_git.py` (+37/-4), `track-c-fpia.yml` (+15/-2). `523e702` (vendoring): 24 files, +5925 / -9 - `_vendor/` (README, `__init__`, 17 PyYAML files), new `test_integration_fpia_vendor.py` (+59), `track_c_fpia_workflows.py` (+7/-3), `test_integration_fpia_self.py` (+7/-1), `test_integration_fpia_fix2.py` (+3/-3), `track-c-fpia.yml` (+2/-2, PyYAML no longer installed). Still only FPIA paths (`tools/integration/track_c_fpia*.py`, `tools/integration/_vendor/`, `tests/*integration_fpia*`, `track-c-fpia.yml`); 0 40-hex literals in the added non-vendored lines. Branch total vs `acaf1b5`: 45 files, +15794 / -0, all new.\n\n| File | Bytes | sha256 @ `523e702a806a718d163cfbf62aa3fc29d8c3ef3c` | vs `465354a` | Role |\n|---|---|---|---|---|\n| `.github/workflows/track-c-fpia.yml` | 5752 | `5c45601febcba3fc50a7aad7791cc4a5c82f2feb1cf3ecc99d7947d136f800b2` | modified | pull_request (scope integration/**, G7) + workflow_dispatch, read-only workflow; runs --verify-output |\n| `implementation/tests/integration_fpia_real_history_checks.py` | 11008 | `792c544dbe64aebe9e4bf18afafba8065caeeb041df7e640848627ed48ffa386` | unchanged | Tier 2 real-history adversarial checks (explicit run) |\n| `implementation/tests/integration_fpia_testkit.py` | 35151 | `6d0b7e57d16fd1cee060ff1baeecc64f5709d3eec7ecd618bad206f372619dee` | unchanged | synthetic world W built from the real tool sources |\n| `implementation/tests/test_integration_fpia_auth.py` | 10248 | `cce2f36351708109b998e87eb54da45f94556a7df5bb6c664be7dba04ddb0581` | unchanged | Tier 1 tests |\n| `implementation/tests/test_integration_fpia_bytecode_imports.py` | 6722 | `847238e4a646d45d5415d4f1fda0767c0a0b95ceb628742b52e11fb01d1eec6a` | unchanged | Tier 1 tests |\n| `implementation/tests/test_integration_fpia_code_identity.py` | 4344 | `a2594e7f52f73086877366964afc9e6d2e4dce151f1cdd32f1305f0394ee7ef1` | unchanged | Tier 1 tests |\n| `implementation/tests/test_integration_fpia_env_runtime.py` | 5768 | `ce91ec991e865cb4e5848b786927cdb12e34cb8579955537b5ad164eac76048e` | unchanged | Tier 1 tests |\n| `implementation/tests/test_integration_fpia_environment.py` | 8161 | `55b6c60d6a69136fdac4c1a89360c0662e24233fc351168cb14bfe8d382d5deb` | unchanged | Tier 1 tests |\n| `implementation/tests/test_integration_fpia_fix2.py` | 34763 | `fe3db80a0bf98af82b9f1760616d0dc76dad9f214bfb4b951bf26b06f24e02c3` | new | Tier 1 tests: fix round 2 (G1-G7, F2) and every pinned adversarial probe |\n| `implementation/tests/test_integration_fpia_historical.py` | 7997 | `cc10aa37c1149e0a86f844dff904432678909bbd48fcd71c6aa84248febd36bb` | unchanged | Tier 1 tests |\n| `implementation/tests/test_integration_fpia_projection.py` | 10652 | `bba88932a4630a463ff73a26a5e5a2c2fd252ecfeeab0ca7b04b6ee1956f8826` | unchanged | Tier 1 tests |\n| `implementation/tests/test_integration_fpia_provenance.py` | 5424 | `45f66c1d712501eaaf823912cb58e5ebbb768f79452a3e6a4046075379bc48c5` | unchanged | Tier 1 tests |\n| `implementation/tests/test_integration_fpia_pytest_integrity.py` | 9102 | `e4e3bfdab3c28a034470e658e58594f251030335ffd99da73df0922fa7fc350c` | unchanged | Tier 1 tests |\n| `implementation/tests/test_integration_fpia_self.py` | 7255 | `b59c0fa66080a7941727b10f325a8fd4cfd4aeee46c2f8ff3ed17add33c77796` | modified | Tier 1 tests |\n| `implementation/tests/test_integration_fpia_status_contract.py` | 9374 | `0298c02d92342391fc8fdf808d87621534a611e557a5bcd8480b78df053fd56e` | unchanged | Tier 1 tests |\n| `implementation/tests/test_integration_fpia_v2.py` | 12762 | `be5ebb2908931a21c1c1ac7e4ce445b212307b942effc26a5ccf66debdc582ca` | unchanged | Tier 1 tests |\n| `implementation/tests/test_integration_fpia_vendor.py` | 2946 | `ba218dab4f6219b8124b2c37d86b0ef4703d77fea3935c13b6b9f8a98e7284c2` | new | Tier 1 tests: vendored files pinned to the README digests, no bytecode, both import modes - added by 523e702 |\n| `implementation/tools/integration/_vendor/README.md` | 2505 | `0d9087ec4a12e25ad90feb547a456f417e5adb46abc2a56bb8b4d251c3a39864` | new | provenance of the vendored PyYAML 6.0.1 (sdist sha256, per-file digests) - added by 523e702 |\n| `implementation/tools/integration/_vendor/__init__.py` | 94 | `7cbe1d12729c0149d87ae0c13e4322c8513b5a0db9e53d6d469573f65e4e7a09` | new | vendor package marker - added by 523e702 |\n| `implementation/tools/integration/track_c_fpia.py` | 135297 | `2b51bf4ea2318a08a9b4cb109db1544564c170dab5d0786d1ee89f93d97b1969` | modified | CLI (+ --verify-output), Audit phases, decision table, schema TRACK_C_FPIA/2, path tokens, --out refusal |\n| `implementation/tools/integration/track_c_fpia_auth.py` | 12683 | `95167ea2d328fb987ad012506a86d430e59c03728165ce0e93c5c0f28e1a755c` | unchanged | CDR manifest authentication, register provenance, DR linkage |\n| `implementation/tools/integration/track_c_fpia_checks.py` | 27895 | `24fb86bf5d3ae1bb1cff5c6625c83d229ceb985fa57c5f0c73bf167e5e476183` | modified | projection classes, A_V closure, provenance, static checks, AC-32.spoof |\n| `implementation/tools/integration/track_c_fpia_child.py` | 14266 | `96f37feee8df491c55eebd9ee7ee8229e538da0b3a79acd630ba933fc8c30043` | unchanged | hardened child launcher |\n| `implementation/tools/integration/track_c_fpia_counterfactual.py` | 1264 | `2cd98eaaec29872ae7f09e3df460851668ef279df3633e0bffd4eb83b1bdbd8c` | unchanged | fail-only normalised-code-identity pins |\n| `implementation/tools/integration/track_c_fpia_derive.py` | 50465 | `37e7b68a09888550c4175292c154ec2e03577fac176c2895367ead2a1a22aa1e` | unchanged | AST ToolModel, Track C workflow parser, import closure, Frozen universe |\n| `implementation/tools/integration/track_c_fpia_git.py` | 24477 | `65ae8f8ca07adc13f7d0c2fe5a761f9059264efaa3e72b61939af7fb7889c3e3` | modified | sandbox (fsck-verified fetch, structural rejection parsing, transport log), raw-blob materialisation |\n| `implementation/tools/integration/track_c_fpia_runner.py` | 21675 | `1d3e2fb7bdf5a7fe264d6caa6d0afcf1d6fb161691be2d9a2d51105d232eb087` | unchanged | runner, environment whitelist, trace/spawn/session checks |\n| `implementation/tools/integration/track_c_fpia_workflows.py` | 35479 | `c90d2ecbb7df322c4071403cb578a1455da101c3057c97e371691ed67bafccab` | new | YAML workflow identity, name normalisation (UTS #39 table), reference resolution (G1/G2); imports the vendored PyYAML since 523e702 |\n| `implementation/tools/integration/_vendor/yaml/*` (17 files: LICENSE + 16 modules) | 214756 total | per-file sha256 in `_vendor/README.md` (equal to upstream PyYAML-6.0.1 `lib/yaml/`), pinned by `test_integration_fpia_vendor.py` | new (`523e702`) | vendored pure-Python PyYAML 6.0.1 (`cyaml.py` left out) |\n\n### PyYAML packaging (why the head is `523e702`, not only `babf0a4`)\n`babf0a4` pinned PyYAML 6.0.1 in `track-c-fpia.yml` and imported an installed PyYAML. On PR CI the six other `pull_request` workflows (p01-research-publication, qgv-invalidation-binding, sec-primary-disclosure, technical-real-model, technical-real-producer, us-equity-session) run the whole native suite with pytest and numpy only, and **60 FPIA tests failed there** (p01 job: 60 failed, 1710 passed; reproduced locally in a pytest+numpy venv: the same 60). The `track-c-fpia` audit of the same head passed. A concurrent writer of the same PIW session then pushed `523e702` (*vendor pure-Python PyYAML 6.0.1 so the FPIA tests run where PyYAML is not installed*): `_vendor/yaml` = `lib/yaml/*.py` of the upstream PyYAML-6.0.1 sdist byte for byte (sdist sha256 `bfdf460b...`, per-file digests in `_vendor/README.md`, `cyaml.py` left out), `track_c_fpia_workflows.py` imports only that copy, the install-step pin is removed, `test_integration_fpia_vendor.py` pins the files. This fix2 task had prepared an alternative follow-up (`118cb3c`: skip the YAML-dependent tests where PyYAML is absent, `FPIA_REQUIRE_YAML=1` in FPIA CI); it was **not pushed** because `523e702` had already landed and makes it redundant. Detection logic is unchanged by `523e702`.\n\n### Verification (exact SHAs)\nEnvironment: Python 3.11.15, pytest 9.1.1, numpy 2.3.5, PyYAML 6.0.1 (private venv), git 2.43.0, private full (non-shallow) clone.\n\n| Run | Command (from `implementation/`) | Result |\n|---|---|---|\n| Tier 1 @ `babf0a4` (committed) | `PYTHONPATH=src python -B -m pytest -q -p no:cacheprovider tests/test_integration_fpia_*.py` | **252 passed** (187 + 65 new), 0 failed, 0 skipped, 492 s |\n| Tier 2 @ `babf0a4` | `FPIA_REQUIRE_HISTORY=1 PYTHONPATH=src python -B -m pytest -q -p no:cacheprovider tests/integration_fpia_real_history_checks.py` | **9 passed**, 0 failed, 0 skipped, 775 s |\n| New tests against the `465354a` FPIA sources | `tests/test_integration_fpia_fix2.py` in an extract of `465354a` | **59 failed, 6 passed** (guards/controls: quoted-name form, unparseable fail-closed, normalisation helpers, `with:` input, other-capability selection, `!` rejection at exit 0) |\n| Static screen @ `babf0a4` sources (unmodified `Audit.run()` to `static_phase`) | the previous round's 23 S-variants, F3a/b/d/h and real trees | as listed above (S15/S16/S17 not found; all other S FOUND; real trees unchanged) |\n| Tier 1 @ `523e702a806a718d163cfbf62aa3fc29d8c3ef3c` (venv with PyYAML installed) | as above | **256 passed (252 + 4 vendor tests), 0 failed, 0 skipped, 485 s** |\n| Tier 1 @ `523e702a806a718d163cfbf62aa3fc29d8c3ef3c` (venv with pytest + numpy only, as the owner workflows) | as above | **256 passed, 0 failed, 0 skipped, 481 s (was 60 failed at `babf0a4` in the same venv)** |\n| Tier 2 @ `523e702a806a718d163cfbf62aa3fc29d8c3ef3c` | as above | **9 passed, 0 failed, 0 skipped, 763 s** |\n\n**Real CLI, determinism across interpreter locations (G5)**, from the clean committed checkout `babf0a4` (default options, real authority remote, `--register-commit f362926... --cdr CDR-014`), T = `acaf1b5a82859ac2750a130ebe88f8b4d272ac66`, run twice: (A) the private venv, (B) a byte copy of that venv at a different path (`.../alt/elsewhere/venv-b`):\n\n| Run | Exit | Duration | `result_sha256` | `--verify-output` (anchor = A) |\n|---|---|---|---|---|\n| A | 0 | 1479.0 s | `67c0ca582b060937103a2497885dfeecd66540207f6961580bdb1b7b97462dfb` | VERIFIED |\n| B | 0 | 1820.5 s | `67c0ca582b060937103a2497885dfeecd66540207f6961580bdb1b7b97462dfb` | VERIFIED |\n\nThe two `result` sections are identical (0 differing paths); the previous round's runs of the same T differed only by the venv path (`888f6f7a...` vs `d86de46e...`). Both:\n```\nFPIA_PASS | CODE_IDENTITY_DIVERGED (code_hash R 0ef3a900 -> T df34b84f; CODE R 2ed79c3c -> T d0c02ac2) | FROZEN_TOOLS_ON_T_FAIL [BRANCH_FROZEN_VALIDATION, verbatim] | HISTORICAL_FROZEN_IDENTITY_PRESERVED (replayed 4 records + 4 CI logs; 27 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_NONE | v2_binding PASS | full_regression PASS\n```\n- 0 static findings (complement 451; 14 complement workflows analysed with the installed PyYAML 6.0.1 used by `babf0a4`; 10 carry whole-suite notes), `dynamic_invocation_detection: NOT_CLAIMED`; full regression 1517 tests, 0 failures, 837 Track C nodes; verifier `babf0a4`, clean.\n- `spawns[].argv[0]` = `<python>`; `site_startup_hooks` = `<site-packages>/distutils-precedence.pth`, `<stdlib>/sitecustomize.py`; real paths only in `run.path_tokens`.\n- F2: `run.authority_transport` lists the authority fetch and the canonical ls-remote with `proxy_or_ca_env_present: true` and the names `CURL_CA_BUNDLE, GIT_SSL_CAINFO, HTTPS_PROXY, NO_PROXY, SSL_CERT_FILE, https_proxy, no_proxy` (passed) and `REQUESTS_CA_BUNDLE` (present, not passed); no values recorded. Canonical premise `b8e39a2196a6d7794a04a0cd5393c68329e126ca` from `git ls-remote` of the authority remote.\n- Verdict unchanged from `465354a` (`FPIA_PASS`, DIVERGED, FROZEN_TOOLS_ON_T_FAIL, v2 PASS); the 6 verbatim side files are written as before.\n\n**GitHub Actions on `babf0a4`** (event `pull_request`): `track-c-fpia` run [37230761722](https://github.com/kco994553-star/Investment-System1/actions/runs/37230761722) (job 111519708773, T = `babf0a4`, register commit = authority handoff tip `9d9b2b2...`) **success**: `FPIA_PASS | CODE_IDENTITY_DIVERGED | FROZEN_TOOLS_ON_T_FAIL | HISTORICAL_FROZEN_IDENTITY_PRESERVED (4 + 4; 27 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_NONE | v2_binding PASS | full_regression PASS`, `result_sha256` `41d430a85c0fb0c125bfcdd834949b7be3407385c70771fc19202d2bc3ccb641`, `fpia-output: VERIFIED`, artifact 11314871435 (10 files). The six other `pull_request` workflows **failed** (60 FPIA tests without PyYAML; see *PyYAML packaging*).\n\n**GitHub Actions on `523e702a806a718d163cfbf62aa3fc29d8c3ef3c`**: all 7 `pull_request` workflows **success**. `track-c-fpia` run [37234682864](https://github.com/kco994553-star/Investment-System1/actions/runs/37234682864) (job 111531323882, T = `523e702`, register commit = authority handoff tip `9d9b2b2...`): `FPIA_PASS | CODE_IDENTITY_DIVERGED (code_hash R 0ef3a900 -> T df34b84f; CODE R 2ed79c3c -> T d0c02ac2) | FROZEN_TOOLS_ON_T_FAIL [BRANCH_FROZEN_VALIDATION, verbatim] | HISTORICAL_FROZEN_IDENTITY_PRESERVED (replayed 4 records + 4 CI logs; 27 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_NONE | v2_binding PASS | full_regression PASS`, `result_sha256` `d85ecc4b4913b31efb61dc2417898d6a51f3d9f7398d9b17bce7f233d847c520`, `fpia-output: VERIFIED`, artifact 11315618718 (10 files). p01-research-publication 37234682866, qgv-invalidation-binding 37234682853, sec-primary-disclosure 37234682890, technical-real-model 37234682865, technical-real-producer 37234682873, us-equity-session 37234682891: success.\n\n---\n\n## Earlier rounds (condensed; the full previous text is in this description's edit history)\n- **Fix round 1** (`465354a`, F1-F7): shallow/incomplete `--repo` -> NOT_RUN (never a determinate result); canonical ref from `git ls-remote` of the authority remote; `v2_binding FAIL` for A_V-type paths without V ancestry; complete frozen-tool streams as `<out>.verbatim/` side files; AC-32 attribution limited to V's Track C additions (job-id collision alone not a spoof); `pull_request` trigger; `byte_protected_only` disclosure. Tier 1 187 passed, Tier 2 9 passed; CLI `acaf1b5` `FPIA_PASS` (`888f6f7a...`); CI run 37214415914 `FPIA_PASS` (`926e77b8...`). Its interpretation note (FPIA certifies merge results that contain the authenticated Track C reference; a tree without it is authority FAIL = Track C absent, not violated; pre-Track C merges are gated by their own capability evidence; no relabel to PASS) stands, now with the G6 wording.\n- **Initial commit** (`dc0bf79`): Tier 1 173 passed; Tier 2 9 passed; targeted Track C + v2 837 passed; full regression 1690 passed (1 deselected network node); CLI `b9e01a9` `FPIA_PASS | CODE_IDENTITY_SAME | FROZEN_TOOLS_ON_T_PASS` (`e3bded68...`), `acaf1b5` `FPIA_PASS | CODE_IDENTITY_DIVERGED | FROZEN_TOOLS_ON_T_FAIL` (`f14ff0fb...`).\n\n## Authority\n- **CDR-014** (USER_DECIDED, user wording verbatim) in `origin/integration/global-handoff-v1` @ `f362926` (handoff tip now carries it unchanged), `implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md` § `## CDR-014`, including its `fpia-reference-manifest` block (Track C reference quoted as `b9e01a9`; v2 reference `c9e0fa7e...`; `acaf1b5` is only a verification subject).\n- Inputs: GIE-012 (root cause, first FPIA design, adversarial reviews rv1/rv2), the hardened plan and its review (all required changes adopted per the PIW ruling: full regression is a PASS conjunct; the normalised-code-identity reproduction is a FAIL-ONLY counterfactual), and the verification of `dc0bf79` (v-baseline-40 / v-tamper / v-regression) whose defects are fixed in fix round 1, and the fix-round verification of `465354a` (v-real, v-adversarial S1-S24/F1-F4, completeness) whose findings G1-G7/F2 are fixed in fix round 2.\n- Worker Contract §C/§D/§K/§N.\n\n## Contract\n`python implementation/tools/integration/track_c_fpia.py --repo PATH --tree <T> --register-commit <G> --cdr CDR-014 --out FILE.json [--work-dir DIR] [--keep-work]`\n`python implementation/tools/integration/track_c_fpia.py --verify-output FILE.json [--expect-result-sha256 <64-hex>]` (G4; exit 0 VERIFIED, 1 MISMATCH, 2 unreadable)\n- **No reference-SHA options.** R and V come only from the authenticated manifest. The handoff tip and the canonical ref value come from the authority remote, never from `--repo`; a later manifest naming other references gives NOT_RUN. Transport disclosure by variable name only (F2).\n- `--repo` must be a complete, non-shallow repository; otherwise NOT_RUN. All git work runs in a sandbox populated by fsck-verified fetches whose status lines are parsed for refused ref updates (G3). Trees are materialised from raw blobs and verified.\n- `--out` must be new or empty and `<out>.verbatim/` absent or empty (G4); otherwise `FPIA_NOT_RUN`, nothing written.\n- Exit codes: 0 `FPIA_PASS`, 1 `FPIA_FAIL`, 2 `FPIA_NOT_RUN`. Output schema `TRACK_C_FPIA/2` with a canonical `result` and `result_sha256` (independent of work directory and interpreter/venv location, G5); side files `<out>.verbatim/`.\n- **Statuses** (CDR-014 §10 + FROZEN_TOOLS_ON_T): `HISTORICAL_FROZEN_IDENTITY_PRESERVED|NOT_PRESERVED`, `CODE_IDENTITY_SAME|DIVERGED`, `TRACK_C_PROJECTION_PRESERVED|NOT_PRESERVED`, `INTEGRATION_INTERFERENCE_NONE|FOUND`, `FROZEN_TOOLS_ON_T_PASS|FAIL` (separate verbatim BRANCH_FROZEN_VALIDATION class, never converted), `v2_binding PASS|FAIL|NOT_APPLICABLE`, `FPIA_PASS|FAIL|NOT_RUN`.\n- **Decision table** (unchanged). Conjuncts: authority, runtime provenance, historical, projection, interference, v2 binding, full regression. `authority != PASS` short-circuits; then FAIL over NOT_RUN. A static layer that cannot run (no YAML loader) makes interference NOT_RUN.\n\n## Acceptance criteria -> tests\nThe AC -> test table of the previous revision (AC-01 ... AC-43) is unchanged. Fix round 2 adds: AC-04 `fix2::test_ac04_distinguishes_absent_track_c_from_non_merge_landing`; AC-01/AC-03 `fix2::test_rejected_lines_structural`, `test_branch_named_rejected_is_not_a_fetch_rejection`, `test_real_rejection_at_exit_zero_still_not_run`, `test_authority_transport_names_recorded_without_values`; AC-32 `fix2::test_adversarial_spoof_probe_pinned[S0..S24]`, `test_s24_end_to_end_component_status`, `test_yaml_equivalent_name_claims_found[...]`, `test_unparseable_workflow_fail_closed`, `test_byte_identical_track_c_workflow_copy_is_not_a_claim`, `test_complement_workflow_running_track_c_found[...]`, `test_whole_suite_run_is_a_note_not_a_spoof[...]`, `test_other_capability_selection_is_not_a_spoof`, `test_yaml_loader_unavailable_is_not_run`, `test_out_reuse_refused_never_stale_side_files`, `test_verify_output_detects_tampering`; AC-38 `fix2::test_env_paths_scrubbed_to_tokens`, `test_result_sha256_independent_of_venv_location`; AC-41 `fix2::test_workflow_pull_request_scope_integration_branches`; AC-43 the D3-c non-claim (`test_s24_end_to_end_component_status`).\n\nThe adversarial regressions pinned in the initial commit (rv1 #1-#5, rv2 #1-#7, plan-review HIGH/MEDIUM/LOW, positive controls PC1/PC3) and the fix-round-1 regressions are unchanged and all pass at `523e702a806a718d163cfbf62aa3fc29d8c3ef3c`.\n\n## What this does NOT change or claim\n- No edit to any frozen tool (`track_c_c6_acceptance.py` a60c4c5f, `track_c_c7_acceptance.py` 6b9362d0, `track_c_c8_partial_acceptance.py` e587a8d5), Frozen record, approval record, owner or Codex branch, or PR #40; no history rewrite; no force-push.\n- Not C6/C7/C8 acceptance by the frozen tools on T; not a Frozen PASS; not C8 Freeze; not merge approval; the Frozen hashes are not claimed for T. Track C acceptance is not weakened: G1/G2 widen what is FOUND; G3 removes a false NOT_RUN only for ref names; G4 refuses instead of overwriting; G5/G6/F2 are normalisation, wording and disclosure; G7 changes only which PRs trigger the CI job.\n- Open user decisions D3-a/b/c/d are not implemented (see above); D3-b and D3-c are pinned as current behaviour.\n- No new numeric threshold, default or tolerance: every comparison is exact (self-test enforced). `timeout-minutes: 150` is a CI job limit, not an FPIA comparison.\n- **No PR-specific or hard-coded SHA exceptions** in code, tests or the workflow (self-test scans all of them; 0 40-hex literals in the added lines).\n- Latent fail-closed policy notes (recorded in every result, not relaxed): L1-L5 unchanged.\n\n## NOT_RUN\n- **CLI audits at `523e702a806a718d163cfbf62aa3fc29d8c3ef3c`: NOT_RUN locally** (the local real CLI runs above are at `babf0a4`; `523e702` changes only the loader packaging). The PR CI `track-c-fpia` audit of the head itself ran (success, `FPIA_PASS`, above).\n- **CLI runs of `b9e01a9`, the shallow clone, L1/L2/T28 and `b8e39a2` at the new head: NOT_RUN** (one audit at a time); `b8e39a2`/squash wording and the probes are covered by Tier 1 and by the static screen.\n- **Plain full regression outside FPIA at `523e702a806a718d163cfbf62aa3fc29d8c3ef3c`: NOT_RUN locally** (the owner workflows on `523e702` ran the native suite; see above).\n- **Independent adversarial/completeness review of fix round 2 and of `523e702`: NOT_RUN.**\n- **Real MITM of the authority remote: NOT_RUN** (F2 is disclosure only).\n- **GIE evidence recording on `integration/global-handoff-v1`: NOT_RUN** (PIW action).\n- **Download of the CI artifacts: NOT_RUN** (the blob host is not reachable from this sandbox; CI values are from the job logs).\n- **Live-network node `tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2`: NOT_RUN locally** (single fixed deselection).\n- **Open user decisions D3-a/b/c/d: not decided** (listed at the top).\n- **Canonical merge: `USER_DECISION_REQUIRED`.**\n\nState: **Draft**; `BRANCH_STATE` = `integration/fpia-hardened-v1` @ `523e702a806a718d163cfbf62aa3fc29d8c3ef3c` (fast-forward from `465354a`); `INTEGRATION_STATE` = not integrated; `CANONICAL_STATE` = unchanged (`b8e39a2`). Canonical merge = `USER_DECISION_REQUIRED`.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nhttps://claude.ai/code/session_019znshzTYgyBnuuBmSxdPFN",
+        "title": "[proposal] Hardened Track C FPIA (CDR-014): integration acceptance on merge-result SHAs; frozen tools unchanged",
+        "base": "integration/cdr012-successor-trial-2026-10-04",
+        "base_sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+        "head": "integration/fpia-hardened-v1",
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "head_repo_id": 1379547477,
+        "head_repo_full_name": "kco994553-star/Investment-System1",
+        "merge_commit_sha": "531c812141d81c0144c1e821511eb66edda6b1ab",
+        "user": {
+          "login": "kco994553-star",
+          "name": "kco994553-star",
+          "email": null,
+          "avatar_url": "https://avatars.githubusercontent.com/u/331178773?v=4",
+          "id": 331178773
+        },
+        "requested_reviewers": null,
+        "requested_team_reviewers": null,
+        "diff": null,
+        "comments": null,
+        "created_at": "2026-10-04T11:42:10Z",
+        "updated_at": "2026-10-05T03:50:02Z",
+        "closed_at": null,
+        "merged_at": null,
+        "commits": 5,
+        "changed_files": 46,
+        "additions": 17926,
+        "deletions": 0,
+        "display_url": "https://github.com/kco994553-star/Investment-System1/pull/42",
+        "display_title": "[proposal] Hardened Track C FPIA (CDR-014): integration acceptance on merge-result SHAs; frozen tools unchanged"
+      },
+      "resume42runs": {
+        "workflow_runs": [
+          {
+            "id": 37260997662,
+            "name": "technical-real-producer",
+            "status": "completed",
+            "conclusion": "success",
+            "run_number": 30,
+            "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997662/jobs",
+            "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997662/logs",
+            "workflow_id": 372087969
+          },
+          {
+            "id": 37260997773,
+            "name": "technical-real-model",
+            "status": "completed",
+            "conclusion": "success",
+            "run_number": 27,
+            "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997773/jobs",
+            "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997773/logs",
+            "workflow_id": 372119674
+          },
+          {
+            "id": 37260997788,
+            "name": "track-c-fpia",
+            "status": "in_progress",
+            "conclusion": null,
+            "run_number": 4,
+            "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997788/jobs",
+            "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997788/logs",
+            "workflow_id": 374693747
+          },
+          {
+            "id": 37260997660,
+            "name": "sec-primary-disclosure",
+            "status": "completed",
+            "conclusion": "success",
+            "run_number": 22,
+            "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997660/jobs",
+            "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997660/logs",
+            "workflow_id": 372894520
+          },
+          {
+            "id": 37260997658,
+            "name": "us-equity-session",
+            "status": "completed",
+            "conclusion": "success",
+            "run_number": 25,
+            "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997658/jobs",
+            "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997658/logs",
+            "workflow_id": 372899684
+          },
+          {
+            "id": 37260997655,
+            "name": "qgv-invalidation-binding",
+            "status": "completed",
+            "conclusion": "success",
+            "run_number": 21,
+            "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997655/jobs",
+            "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997655/logs",
+            "workflow_id": 373058481
+          },
+          {
+            "id": 37260997708,
+            "name": "p01-research-publication",
+            "status": "completed",
+            "conclusion": "success",
+            "run_number": 23,
+            "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997708/jobs",
+            "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37260997708/logs",
+            "workflow_id": 372992558
+          }
+        ]
+      },
+      "resumeissues/42/comments": {
+        "url": "https://api.github.com/repos/kco994553-star/Investment-System1/issues/42/comments?per_page=100",
+        "count": 1,
+        "items": [
+          {
+            "id": 5986162506,
+            "updated_at": "2026-10-05T00:40:32Z",
+            "body": "<!-- chart-owner-handoff:v0.5 -->\nChart owner handoff — bounded P0 closure packets; no integration/merge approval.\n\nPR #41 checkpoint `1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c` on `codex/chart-contract-mcp-api-v0-1`, canonical/merge-base `b8e39a2196a6d7794a04a0cd5393c68329e126ca`, ahead9/behind0. [Scoped handoff](https://github.com/kco994553-star/Investment-System1/tree/1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md) · [delta and dependency graph](https://github.com/kco994553-star/Investment-System1/tree/1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md). Earlier audits/raw/5 anomalies/81+24+8 inventory preserved; only scoped evidence/own automation state and original scoped HANDOFF append changed.\n\nTarget Theme remains IMPLEMENTATION_NOT_READY: six distinct gates OPEN/zero CLOSED. Target/Personal + Identity + Theme owner return inputs for A-S1 current root, A-S2 exact19 security/share-form mapping, A-S3 adopted Theme revision are [here](https://github.com/kco994553-star/Investment-System1/tree/1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json). Source reference30/25/20/25 and exact100% are preserved; no current root/date/ID/authority invented. Actual/GICS/Type/Market are not Target prerequisites.\n\nOWNER_ACTION_REQUIRED — please route A-G1 Product/P01/Personal applicability + actual admitted current-TARGET subject/authority/read interface, and A-G2 exact owner-approved integration base/write set. [Concrete interface receipt](https://github.com/kco994553-star/Investment-System1/tree/1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md). P01 research-display is not assumed to govern user-authored current TARGET; no grant is requested/issued. Existing serializer accepts tagged decimal strings; independent HTML/JS/CSS copy can avoid protected validator/assembler edits, but no Chart API/authority success path exists yet. Future package Python affects Track C code_hash; optional protected edits affect P01 digest too.\n\nA-G3 remains with Integration: existing D3-a/b/c/d, G7 interpretation, final-head independent/completeness/adversarial review and GIE closure. PR42's7 green workflows/FPIA_PASS on523e702 are preserved, not governance closure or future Chart merge-result FPIA. This is a Chart handoff, not an independent FPIA review. PR44 remains INACTIVE/SPEC-ONLY.\n\nMarket admission remains0/19 with8 evidence families. [Existing owner capability/receipts](https://github.com/kco994553-star/Investment-System1/tree/1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md): reuse PR18 US session code, not a second engine; session close is a no-lookahead lower bound, not historical available_at.\n\nEvidence checks: source packet8PASS; Market195checksPASS;27 existing P01/QGV functionsPASS with mini_pytest shim, not pytest/production/FPIA. Production Chart tests/exact merge-result FPIA NOT_RUN. Automatic continuation is scoped to this Work; Global single-writer and every other owner branch stay read-only. No protected/package/Frozen/Holdout/PIT relaxation/grant/Official/LIVE/payment/deployment/canonical merge.\n"
+          }
+        ]
+      },
+      "resumepulls/42/reviews": {
+        "url": "https://api.github.com/repos/kco994553-star/Investment-System1/pulls/42/reviews?per_page=100",
+        "count": 0,
+        "items": []
+      },
+      "resumepulls/42/comments": {
+        "url": "https://api.github.com/repos/kco994553-star/Investment-System1/pulls/42/comments?per_page=100",
+        "count": 0,
+        "items": []
+      },
+      "resumeissues/41/comments": {
+        "url": "https://api.github.com/repos/kco994553-star/Investment-System1/issues/41/comments?per_page=100",
+        "count": 0,
+        "items": []
+      },
+      "resumeissues/17/comments": {
+        "url": "https://api.github.com/repos/kco994553-star/Investment-System1/issues/17/comments?per_page=100",
+        "count": 0,
+        "items": []
+      }
+    },
+    "source_pins": [
+      {
+        "head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+        "path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+        "sha256": "c46b5f581cbdbc8f277e392a4e58bd62b83485bf664ac0cb02135455c4ced103",
+        "bytes": 68162
+      },
+      {
+        "head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+        "path": "implementation/docs/coordination/PIW_DECISION_RECORDS.md",
+        "sha256": "a771653926263f77dee95c7f48f9cba7f07041d65393d3acf2fbc3821929d463",
+        "bytes": 1173
+      },
+      {
+        "head": "32069065a0c4a62e4390d76675eb9c7681456c87",
+        "path": "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
+        "sha256": "8a297da09ba107dce84c022d269a3cd163525ea86070c9eb3aa6b84880eaf9a4",
+        "bytes": 7832
+      },
+      {
+        "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "path": ".github/workflows/track-c-fpia.yml",
+        "sha256": "69725979c1c99cab49e4b0af87284075f9be18635bffd312e253b5fa8bcf2105",
+        "bytes": 5879
+      }
+    ]
+  }
+}

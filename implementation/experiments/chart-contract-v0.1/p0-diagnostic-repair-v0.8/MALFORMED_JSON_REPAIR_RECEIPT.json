@@ -1,0 +1,26 @@
+{
+  "scope": "MALFORMED_JSON_DIAGNOSTIC_REPAIR_ONLY_NO_ADMISSION",
+  "captured_at_utc": "2026-10-05T04:22:15.917924+00:00",
+  "tool_path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
+  "tool_sha256_at_test": "5ddfeaced404821d15f9a53cde0d4ee87f742f18e976e390764fd25a4d8364c1",
+  "test_path": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_diagnostic_repairs.py",
+  "test_sha256": "24b3e6a0f901c8768770eef97d0d92e3231f0cb1516ef7c44ad70ee6b9a3c674",
+  "initial_failure_path": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ORIGINAL_MALFORMED_JSON_FAILURE.json",
+  "initial_failure_sha256": "54e153b53f487067b20fc08b6c6428988e437e2cdb1e5a3e85dfa5f3fcc44b4a",
+  "changes": [
+    "Catch existing Python parser/canonicalizer RecursionError in main baseline load, packet load and two json_bytes diagnostic exception handlers",
+    "Emit existing INVALID/PACKET_READ_FAILED diagnostics with exit2 rather than uncaught traceback"
+  ],
+  "new_depth_or_resource_threshold": false,
+  "production_schema_or_admission_change": false,
+  "gate_closure": false,
+  "arithmetic_edits_by_this_agent": false,
+  "negative_CLI_test": {
+    "count": 1,
+    "passed": 1,
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ".\n----------------------------------------------------------------------\nRan 1 test in 0.047s\n\nOK\n"
+  },
+  "root_consolidated_regression": "PENDING_ROOT_RUN"
+}

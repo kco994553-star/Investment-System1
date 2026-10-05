@@ -1,0 +1,30 @@
+{
+  "scope": "PRESERVED_AUTHORED_REFERENCE_ONLY_NOT_AUTHORITATIVE_TARGET_ADMISSION",
+  "recorded_at_kst": "2026-10-05T13:26:58.374945+09:00",
+  "source": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+  "source_sha256": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c",
+  "decimal_context": {
+    "precision": 28,
+    "rounding": "ROUND_HALF_EVEN",
+    "traps": [
+      "Inexact",
+      "Rounded",
+      "InvalidOperation",
+      "FloatOperation",
+      "Overflow"
+    ]
+  },
+  "constituents": 19,
+  "theme_percent": {
+    "반도체 장비": "30.0",
+    "AI·반도체": "25",
+    "Big Tech": "20",
+    "기타산업": "25.0"
+  },
+  "security_percent": "100.0",
+  "cash_percent": "0",
+  "total_percent": "100.0",
+  "exact_total_100": true,
+  "authoritative_root_returned": false,
+  "production_payload": null
+}

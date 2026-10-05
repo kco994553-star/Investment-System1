@@ -1,0 +1,165 @@
+{
+  "scope": "FRESH_OWNER_EVIDENCE_REJUDGEMENT_NOT_AUTHORITY_ISSUANCE",
+  "recorded_at_kst": "2026-10-05T13:31:28.729505+09:00",
+  "lane_a": {
+    "status": "IMPLEMENTATION_NOT_READY",
+    "remaining_blockers": 6,
+    "resolved": 0,
+    "gates": [
+      {
+        "id": "A-S1",
+        "name": "authoritative TARGET root",
+        "owner": "Portfolio/Target source",
+        "previous_evidence": "No adopted current TARGET root; authored reference is not source admission",
+        "branch": "codex/chart-contract-mcp-api-v0-1",
+        "pr": 41,
+        "head": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+        "latest_evidence": "SOURCE_RECHECK: seven compared source/Personal blobs unchanged; root15 owner-return fields null; Decimal reference100.0% verified",
+        "delta": "CDR016 routes root to Portfolio; no admitted root returned",
+        "status": "OWNER_ACTION_REQUIRED",
+        "next_action": "Owner returns current portfolio_id/version/effective/available_at, full19 security constituents+cash/completeness/denominator/weights/provenance and adopted receipt path",
+        "chart_can_close_directly": false,
+        "chart_can_continue_independent_diagnostic_work": true
+      },
+      {
+        "id": "A-S2",
+        "name": "Security mapping",
+        "owner": "Identity plus Portfolio root-row relationship",
+        "branch": "ccr-41677301-10nj3u",
+        "pr": 7,
+        "head": "a013f1c1758642f90a65fe11df69fc234c143a48",
+        "adoption": {
+          "pr": 33,
+          "head": "9626ab06cd2b93cdd250159347cdda5d08f76e03"
+        },
+        "previous_evidence": "Common Issuer→Security→dated Listing exists but no reviewed Target19 relation",
+        "latest_evidence": "Common identity/Personal contract bytes unchanged;19 internal security owner slots null",
+        "delta": "Latest common implementation reused, no Chart identity system added",
+        "status": "OWNER_ACTION_REQUIRED",
+        "next_action": "Owner returns deterministic root-row→Issuer/common Security/share-form relations, reviewed evidence/path; uncertain mappings remain rejected; ticker is not primary identity",
+        "chart_can_close_directly": false,
+        "chart_can_continue_independent_diagnostic_work": true
+      },
+      {
+        "id": "A-S3",
+        "name": "Strategy Theme revision/version",
+        "owner": "Portfolio/Classification",
+        "branch": "codex/chart-contract-mcp-api-v0-1",
+        "pr": 41,
+        "head": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+        "previous_evidence": "User-authored four groups observed; catalog/version/current full assignment not adopted",
+        "latest_evidence": "Taxonomy/version/root-bound assignment owner slots19 remain null; authored30/25/20/25 preserved",
+        "delta": "Owner delegation permits mechanical version/provenance decision as D2; no actual revision receipt supplied",
+        "status": "OWNER_ACTION_REQUIRED",
+        "next_action": "Owner adopts User-defined Strategy Theme / Portfolio Bucket taxonomy_id/version/effective/assignment/provenance/completeness bound to admitted root/common Security; no new economic/GICS meaning",
+        "chart_can_close_directly": false,
+        "chart_can_continue_independent_diagnostic_work": true
+      },
+      {
+        "id": "A-G1",
+        "name": "Product authority",
+        "owner": "Product/Personal/P01 Publication",
+        "branch": "integration/fpia-hardened-v1",
+        "pr": 42,
+        "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "direct_owner_refs": {
+          "P01_PR17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "P01_PR19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "Web_PR34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+          "Personal_PR36": "fb086eac4321140493ce554a541343cebbb81ed6"
+        },
+        "previous_evidence": "Research-display/publication authority applicability to user-authored TARGET was not decided",
+        "latest_evidence": "Fresh Product/Web/Global routing and comments have no adopted applicability/subject/read authority receipt; PIW decision register no entries",
+        "delta": "Known existing source/API hooks are reused; Source rights and Product publication are separate",
+        "status": "OWNER_ACTION_REQUIRED",
+        "next_action": "Answer explicitly whether existing P01 research-display/publication applies to user-authored TARGET. Return accepted route A existing/B owner-adopted personal route/C unresolved, exact subject/hash/dependencies/current authority and denial/invalidation behavior; no grant implied",
+        "chart_can_close_directly": false,
+        "chart_can_continue_independent_diagnostic_work": true
+      },
+      {
+        "id": "A-G2",
+        "name": "owner write-set acceptance",
+        "owner": "Web/Product/API/Portfolio/Integration",
+        "branch": "integration/global-handoff-v1",
+        "pr": null,
+        "head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+        "previous_evidence": "No accepted exact base and first slice file write-set",
+        "latest_evidence": "Fresh routing requests owner output; no actual accepted route/base/file matrix",
+        "delta": "Additive ordinary Web assets can avoid protected validator/assembler edits; package Python not required just to add page; accepted data/read route still needed",
+        "status": "OWNER_ACTION_REQUIRED",
+        "next_action": "Owners return adopted source/read route and exact integration base + smallest full source/document/API/Web/test file matrix; accept stated owner/protected/digest/code_hash impact. Candidate assets alone do not authorize serving allocation",
+        "chart_can_close_directly": false,
+        "chart_can_continue_independent_diagnostic_work": true
+      },
+      {
+        "id": "A-G3",
+        "name": "FPIA governance/integration admissibility",
+        "owner": "Primary Integration Writer/FPIA",
+        "branch": "integration/fpia-hardened-v1",
+        "pr": 42,
+        "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "previous_evidence": "Old CI success/old D3 labels did not close independent/adversarial/GIE governance",
+        "latest_evidence": "Round3 H1-H7 nine-file implementation;6/7exact-headActions success,run37260997788attempt1in_progress/null; rawreviews0; no final closure/adopted decision receipt",
+        "delta": "Implementation advanced; old D3-a…e/G7 delegated to ownerD2 by CDR015; exact latest scoped protected boundaries retain force",
+        "status": "PARTIALLY_RESOLVED",
+        "dependency": "OWNER_ACTION_REQUIRED",
+        "next_action": "Integration finishes exacthead CI and independent/adversarial review, current verifier/canonical applicability/GIE/decision closure with receipts; specifies actual future Chart merge-result FPIA condition. Do not equate old CI PASS with governance closure",
+        "chart_can_close_directly": false,
+        "chart_can_continue_independent_diagnostic_work": true
+      }
+    ]
+  },
+  "lane_b": {
+    "eight_gaps": {
+      "security_identity": "BLOCKED",
+      "listing_identity_history": "BLOCKED",
+      "exchange_session_timezone": "PARTIAL",
+      "dated_session_join": "BLOCKED",
+      "adjustment_basis": "PARTIAL",
+      "corporate_action_basis": "PARTIAL",
+      "historical_available_at": "NOT_AVAILABLE",
+      "quote_state": "UNKNOWN"
+    },
+    "admitted": 0,
+    "symbols": 19,
+    "immutable_raw_rows": 23155,
+    "new_collection": 0,
+    "US_contract_applied_to_JPX_KRX": false,
+    "anomalies": [
+      {
+        "subject": "Tokyo 2022-05-17",
+        "status": "UNKNOWN",
+        "original_preserved": true
+      },
+      {
+        "subject": "Hanmi 2024-01-15",
+        "status": "UNKNOWN",
+        "original_preserved": true
+      },
+      {
+        "subject": "Hanmi 2024-10-14",
+        "status": "UNKNOWN",
+        "original_preserved": true
+      },
+      {
+        "subject": "Hanmi 2025-04-09",
+        "status": "UNKNOWN",
+        "original_preserved": true
+      },
+      {
+        "subject": "Hanmi 2025-09-19 missing",
+        "status": "UNKNOWN",
+        "original_preserved": true
+      }
+    ]
+  },
+  "new_chart_user_d3": false,
+  "actual": "NOT_AVAILABLE",
+  "target_fallback": false,
+  "QGV": "INACTIVE_SPEC_ONLY",
+  "all_inventory_counts_unchanged": {
+    "Core": 81,
+    "Extended": 24,
+    "ResearchCandidate": 8
+  }
+}

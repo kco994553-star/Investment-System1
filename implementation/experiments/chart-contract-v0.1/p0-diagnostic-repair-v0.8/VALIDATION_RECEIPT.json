@@ -1,0 +1,84 @@
+{
+  "recorded_at_kst": "2026-10-05T13:31:28.729505+09:00",
+  "scope": "CHART_OWNED_DIAGNOSTIC_REPAIR_ONLY",
+  "tool_sha256": "5ddfeaced404821d15f9a53cde0d4ee87f742f18e976e390764fd25a4d8364c1",
+  "fresh_results": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6 -v",
+      "tests": 29,
+      "pass": 29,
+      "exit": 0
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8 -v",
+      "tests": 4,
+      "pass": 4,
+      "exit": 0
+    },
+    {
+      "case": "portable replay normal",
+      "pass": 9,
+      "exit": 0,
+      "receipt": "PORTABLE_REPLAY_NORMAL.json"
+    },
+    {
+      "case": "portable replay Python-O",
+      "pass": 9,
+      "exit": 0,
+      "receipt": "PORTABLE_REPLAY_OPTIMIZED.json"
+    },
+    {
+      "case": "optimized wrong-status negative",
+      "outcome": "PASS",
+      "observed_exit": 1,
+      "receipt": "PORTABLE_OPTIMIZED_MISMATCH_PROBE.json"
+    },
+    {
+      "case": "optimized wrong-input-hash negative",
+      "outcome": "PASS",
+      "observed_exit": 2,
+      "receipt": "PORTABLE_INPUT_HASH_MISMATCH_PROBE.json"
+    },
+    {
+      "case": "repo/output guards",
+      "pass": 4,
+      "receipt": "PORTABLE_REVIEW.json"
+    },
+    {
+      "case": "current owner packet",
+      "expected": "INCOMPLETE exit3",
+      "outcome": "PASS",
+      "open_count": 6,
+      "payload": null,
+      "receipt": "CURRENT_INPUT_DIAGNOSTIC.json"
+    },
+    {
+      "case": "Decimal authored reference total",
+      "outcome": "PASS",
+      "total": "100.0%",
+      "receipt": "DECIMAL_REFERENCE_VERIFY.json"
+    }
+  ],
+  "historical_not_rerun": [
+    "75 Chart Node tests",
+    "6 original CLI smokes",
+    "195 Market integrity checks/68evidence files",
+    "production E2E",
+    "Chart merge-result FPIA"
+  ],
+  "independent_review": "PORTABLE_REVIEW.json",
+  "original_failures_preserved": [
+    "ORIGINAL_MALFORMED_JSON_FAILURE.json",
+    "REFERENCE_REPLAY_REPAIR_RECEIPT.json",
+    "PORTABLE_REVIEW.json:PORTABLE-R1",
+    "CLI_EXPECTATION_CORRECTION.json",
+    "PORTABLE_INPUT_HASH_MISMATCH_PROBE.json:initial_test_history"
+  ],
+  "production_gate_closures": 0,
+  "production_actions": "NOT_RUN",
+  "prepublication_state_preparation_history": {
+    "initial": "KeyError owned_output_paths before STATE write",
+    "classification": "LOCAL_PREPARATION_FIELD_NAME_ERROR_NO_REMOTE_MUTATION",
+    "repair": "Use actual scoped_output_paths from existing STATE; do not change schema"
+  }
+}

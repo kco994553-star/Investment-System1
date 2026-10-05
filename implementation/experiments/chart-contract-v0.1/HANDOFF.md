@@ -87,3 +87,27 @@ prerequisites are the current stopping condition; no new Chart D3 is selected.
 ## Scoped successor — dependency continuation v0.7
 
 See [current checkpoint](p0-dependency-continuation-v0.7/HANDOFF.md) and [execution policy](p0-dependency-continuation-v0.7/EXECUTION_POLICY.md). Global CDR-015/016/017 and FPIA round-3 exact head are dependency inputs; 6 source/Product/write-set/governance gates remain open and Market admission stays0/19. Actual audit Main and CI tasks are enabled, old event task paused; latest user authorizes approved-write-set implementation automatically after actual closure. Earlier evidence stays historical.
+
+
+## 2026-10-05 continuation — diagnostic repair v0.8
+
+Fresh takeover a0ad46bb and verified shared lease ebeb8b1f; canonical/merge-base
+b8e39a21, Global b3532a2e, FPIA42 actual11d2f25.
+[Scoped handoff](p0-diagnostic-repair-v0.8/HANDOFF.md) preserves all history and
+records six-gate/eight-gap rejudgment. Three actual independent diagnostic
+repairs implemented: structured malformed JSON failure, truthful unattempted
+reference replay status, and portable source-pinned nine-probe replay with
+optimization-safe checks. Fresh33/33 unit tests;9/9 normal+9/9 optimized probes;
+negative/guard checks PASS. Prior production/Market tests remain historical.
+Lane A IMPLEMENTATION_NOT_READY6 remaining (A-G3 PARTIALLY_RESOLVED); no new
+Chart D3. Lane B0/19, eight gap families, five UNKNOWN anomalies untouched.
+PR42 six successful runs plus exact FPIA run37260997788attempt1 in progress;
+final owner review/governance/GIE still absent. Existing Main/CI automation
+remains enabled and Global-aware; prior writer release and43/43 output hashes
+verified; no current reproducible framework failure. Current independent
+repairs completed while only production owner dependencies wait.
+Next: consume exact owner/CI evidence, authenticate adopted returns, rejudge;
+when6close automatically implement accepted exact write set through E2E and
+required actual-result FPIA. No material delta/action means read-only no-op.
+Exact publication/coordination SHA and byte verification resolve from subsequent
+PUBLICATION_RECEIPT/STATE and actual PR41 ref.
