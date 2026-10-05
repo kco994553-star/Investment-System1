@@ -565,22 +565,17 @@
     "sample_renderer": "IMPLEMENTED_VERIFIED"
   },
   "lease": {
-    "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
-    "run_id": null,
+    "status": "ACTIVE",
+    "run_id": "manual-chart-risk-policy-20261005T061947755Z",
     "holder_kind": "MANUAL_ROOT",
-    "acquired_at_utc": "2026-10-05T05:25:09.016Z",
-    "expires_at_utc": "2026-10-05T06:25:09.016Z",
-    "ttl_minutes": 60,
+    "acquired_at_utc": "2026-10-05T06:19:47.755Z",
+    "expires_at_utc": "2026-10-05T06:49:47.755Z",
+    "ttl_minutes": 30,
     "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": true,
-    "acquisition_parent_head": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
-    "reason": "User selected dedicated SAMPLE review canvas; repair missing-to-zero fixture display and verify existing approved lab UI; fresh owner intake",
-    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
-    "previous_run_id": "manual-chart-fixture-review-20261005T052509016Z",
-    "acquisition_commit": "eedab5922db453a7b11a851cf57844064ce00f3f",
-    "released_at_utc": "2026-10-05T05:57:20.531Z",
-    "verified_published_packet": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
-    "verified_at_utc": "2026-10-05T05:54:56.485Z"
+    "verified_remote_acquisition": false,
+    "acquisition_parent_head": "4752bca2d58a61ef5821a0556b6480fc527fac80",
+    "reason": "Adopt user Risk-Proportional Verification at existing safe checkpoint; update existing task prompts, scoped policy and evidence reuse; no product reruns",
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
   },
   "publication": {
     "status": "V09_SAMPLE_FIXTURE_AND_FRESH_LATE_OWNER_PUBLICATION_VERIFIED",
@@ -1104,6 +1099,27 @@
         "previous_run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
         "released_at_utc": "2026-10-05T04:55:05.915Z",
         "verified_published_packet": "395a24eef42fde2ddec8831808daba5e768d72e2"
+      }
+    },
+    {
+      "recorded_at_utc": "2026-10-05T06:19:47.755Z",
+      "lease": {
+        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+        "run_id": null,
+        "holder_kind": "MANUAL_ROOT",
+        "acquired_at_utc": "2026-10-05T05:25:09.016Z",
+        "expires_at_utc": "2026-10-05T06:25:09.016Z",
+        "ttl_minutes": 60,
+        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+        "verified_remote_acquisition": true,
+        "acquisition_parent_head": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+        "reason": "User selected dedicated SAMPLE review canvas; repair missing-to-zero fixture display and verify existing approved lab UI; fresh owner intake",
+        "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+        "previous_run_id": "manual-chart-fixture-review-20261005T052509016Z",
+        "acquisition_commit": "eedab5922db453a7b11a851cf57844064ce00f3f",
+        "released_at_utc": "2026-10-05T05:57:20.531Z",
+        "verified_published_packet": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+        "verified_at_utc": "2026-10-05T05:54:56.485Z"
       }
     }
   ],
