@@ -561,12 +561,21 @@
     "figma_sample": "EDITABLE_CREATED_STRUCTURAL_PASS_POST_FIX_VISUAL_TOOL_QUOTA_BLOCKED"
   },
   "lease": {
-    "status": "NONE",
-    "last_run_id": "manual-chart-late-global-20261005T072727874Z",
-    "released_after_verified_publication": "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
-    "released_at_utc": "2026-10-05T07:31:00.597Z",
-    "reason": "Authorized independent work and late source-return consumption complete; no lease held for quota/owner prerequisites",
-    "release_commit_note": "Resolve containing commit via Git/PR metadata; never self-embed"
+    "status": "ACTIVE",
+    "run_id": "manual-chart-magicpath-primary-2026-10-05T080033754Z",
+    "owner": "/root Chart owner",
+    "owner_branch": "codex/chart-contract-mcp-api-v0-1",
+    "acquired_at_utc": "2026-10-05T08:00:33.754Z",
+    "expires_at_utc": "2026-10-05T09:00:33.754Z",
+    "source_start_head": "8fc47b0a3c9a262718b706519d6d91a051629636",
+    "reason": "User-authorized MagicPath primary + automatic local fallback policy; existing SAMPLE renderer build/browser/evidence only",
+    "write_set": [
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/**",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    ],
+    "protected_writes": 0,
+    "release_responsibility": "After verified scoped publication; no lease held for tool quota/owner gate"
   },
   "publication": {
     "status": "V012_EDITABLE_FIGMA_AND_LATE_GLOBAL_MAIN_COVERAGE_RECEIPT_VERIFIED",
