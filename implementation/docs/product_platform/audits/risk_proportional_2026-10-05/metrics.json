@@ -1,0 +1,218 @@
+{
+  "schema": "platform-risk-proportional-checkpoint-v1",
+  "observed_at_utc": "2026-10-05T06:24:45.278704+00:00",
+  "user_directive_received_kst": "2026-10-05T15:13:43+09:00",
+  "publication_branch": "codex/product-platform-storage-auth-review-2026-10-05",
+  "publication_identity": "containing commit; no fabricated self reference",
+  "parent_audit": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+  "subjects": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "global": "9cd598c5564827418115ebb15c1c88a0e7811bab",
+    "main_successor": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
+  },
+  "risk": "CRITICAL underlying ref-integrity/read-only invariants; bounded disposable candidate only",
+  "agent_budget": {
+    "auditors": 1,
+    "additional_security_verifiers": 0,
+    "reason": "known bounded counterexamples; no unresolved cross-user ambiguity in new candidate scope"
+  },
+  "blocker_metrics": {
+    "start": 9,
+    "closed": 0,
+    "new": 0,
+    "end": 9,
+    "net_reduction": 0,
+    "target_net_gt_zero_achieved": false,
+    "counting": "deduplicated known blocking groups; candidate PASS and historical closure not counted"
+  },
+  "blockers": [
+    {
+      "id": "PPA-F01",
+      "scope": "Auth/session/revocation",
+      "owner": "Platform auth owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "trusted login/session/revocation implementation and security evidence",
+      "patch_ready": false
+    },
+    {
+      "id": "PPA-F02+PPF-005-runtime",
+      "scope": "Trusted user+tenant ownership",
+      "owner": "Platform runtime/security owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "cross-user/tenant object access and runtime database enforcement",
+      "patch_ready": false
+    },
+    {
+      "id": "PPA-F03",
+      "scope": "Actual connector lifecycle",
+      "owner": "Financial connector owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "approved provider consent/token/revocation/checkpoint/pagination; actual connection is D3",
+      "patch_ready": false
+    },
+    {
+      "id": "PPA-F04",
+      "scope": "Authenticated Product API",
+      "owner": "Platform API owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "trusted authorized API boundary and relevant negatives",
+      "patch_ready": false
+    },
+    {
+      "id": "PPA-F05+PPF-006",
+      "scope": "Durable authenticated raw ledger",
+      "owner": "Platform records owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "exact original bytes/hash binding and append-only correction/replay evidence",
+      "patch_ready": false
+    },
+    {
+      "id": "PPF-004+SA-03+SA-04",
+      "scope": "Financial reconciliation completeness",
+      "owner": "Platform reconciliation owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "financial opening/transactions/closing completeness and source-version conflict admission contract",
+      "patch_ready": false
+    },
+    {
+      "id": "SA-01",
+      "scope": "Hash-case ref identity",
+      "owner": "Platform contracts owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "adopt bounded candidate or equivalent; independent affected successor acceptance",
+      "patch_ready": true
+    },
+    {
+      "id": "SA-02",
+      "scope": "Inherited read-only interface drift",
+      "owner": "Platform contracts owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "adopt bounded candidate or equivalent; inherited write/masked read negatives",
+      "patch_ready": true
+    },
+    {
+      "id": "PPA-F08",
+      "scope": "Web ACTUAL/TARGET availability",
+      "owner": "Existing Web owner routed by Main",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "missing ACTUAL remains unavailable; explicit TARGET context and affected tests",
+      "patch_ready": false
+    }
+  ],
+  "verified_product_capabilities": [],
+  "capabilities": {
+    "Auth": "NOT_STARTED",
+    "Tenant isolation": "PARTIAL",
+    "Financial Connector": "PARTIAL",
+    "Financial sync/import": "PARTIAL",
+    "Reconciliation": "PARTIAL",
+    "Immutable/auditable records": "PARTIAL",
+    "Read-only hard gate": "PARTIAL",
+    "Product API": "NOT_STARTED",
+    "Web/PWA": "PARTIAL",
+    "Investment-engine integration": "PARTIAL"
+  },
+  "owner_actions_remaining": 9,
+  "patch_ready_owner_actions": 2,
+  "main_receipt": "NOT_CONFIRMED",
+  "owner_adoption": "NOT_CONFIRMED",
+  "tool_blocked_items": [
+    {
+      "tool": "Supabase",
+      "scope": "remote audit only",
+      "adoption": "NOT_CONFIRMED",
+      "execution": "NOT_RUN",
+      "reason": "no approved DEV project URL/ref and environment mapping",
+      "provider_neutral_work_blocked": false,
+      "discovery_repeated": false
+    }
+  ],
+  "new_verification": {
+    "counts": {
+      "failed": 0,
+      "passed": 12
+    },
+    "base_sha256": "b13686d8ce134ccb61ef78c51d178597404e7a3401e7b22240dcc47c01d0aa7b",
+    "candidate_sha256": "4a120b6c5f5e866b9105e94b5ab06256a0da41551848b26f0eb94c438dd57314",
+    "patch_application": "PASS disposable copy; git apply --check then git apply",
+    "python": "3.12.14",
+    "runner": "pinned reviewed modules; owner mini_pytest shim; not pytest",
+    "production": false
+  },
+  "reuse": {
+    "original_RED_rerun": false,
+    "old_78_controls_rerun": false,
+    "synthetic_84_rerun": false,
+    "repository_396_rerun": false,
+    "owner_405_rerun": false,
+    "browser_rerun": false,
+    "Supabase_discovery_rerun": false
+  },
+  "tools_used": [
+    "GitHub MCP",
+    "local Git/Python",
+    "existing Automations prompt update"
+  ],
+  "skills_and_docs": "Prior Context7 Python3.11 docs and relevant Superpowers current-stage procedures retained; no new docs query or design restart",
+  "write_boundary": {
+    "candidate_applied_to": "disposable copy only",
+    "owner_branch": false,
+    "canonical": false,
+    "Global": false,
+    "harness_source": false,
+    "actual_accounts_credentials": false,
+    "production_auth": false,
+    "tenant_policy": false,
+    "paid_resource": false,
+    "protected_semantic": false,
+    "deployment": false
+  },
+  "artifact_manifest": [
+    {
+      "path": "implementation/docs/product_platform/audits/risk_proportional_2026-10-05/MAIN_HANDOFF.md",
+      "sha256": "08fbf298e45b48695744f32f5ea746951710d19d7377ea412e11b5e7ecd37336",
+      "bytes": 4338
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/risk_proportional_2026-10-05/POLICY.md",
+      "sha256": "2a87f5c583bb22a1a945f37c462798b6dfbd5319c6bdc8bbdfd4a0aebd527383",
+      "bytes": 4760
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/risk_proportional_2026-10-05/REPORT.md",
+      "sha256": "b357bd2988823cbc3b6cc9a557e7a4a7f0497ff294f0b5e605043d293200f1b3",
+      "bytes": 5999
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/risk_proportional_2026-10-05/SA01_SA02_candidate.patch",
+      "sha256": "ecec8109aec1edffe0d59cbcd62f79668b4356e7ebce93226067701c2ab971f1",
+      "bytes": 898
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/risk_proportional_2026-10-05/candidate_verification.json",
+      "sha256": "e92ed851a26e1d2502b56cd382761281c02a2aa23788dc36f2646fa76f21929a",
+      "bytes": 4619
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/risk_proportional_2026-10-05/candidate_verification.txt",
+      "sha256": "e92ed851a26e1d2502b56cd382761281c02a2aa23788dc36f2646fa76f21929a",
+      "bytes": 4619
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/risk_proportional_2026-10-05/verify_candidate.py",
+      "sha256": "60d62ce9195c77b257bd6d15ccc38b1830d9503d8a0e495c10e593a4c98f3b54",
+      "bytes": 5045
+    },
+    {
+      "path": "implementation/docs/product_platform/CURRENT_HANDOFF.md",
+      "sha256": "b984bcbd3bac422d50dc8057ad1ffe7712538b185280865c8d7599096e7d4da9",
+      "bytes": 5475
+    },
+    {
+      "path": "implementation/docs/product_platform/AUDIT_EXECUTION_POLICY.md",
+      "sha256": "35f7d43103e07667e71dd0e543e9afc6c45e3d2abe2a532504e0cc7bcecda880",
+      "bytes": 3685
+    }
+  ]
+}

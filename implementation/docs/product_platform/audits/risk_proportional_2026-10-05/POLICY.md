@@ -1,0 +1,23 @@
+# Risk-Proportional Verification — Product Platform independent audit
+
+Authority: explicit user directive received 2026-10-05 15:13:43 Asia/Seoul. This policy applies from this checkpoint and supersedes conflicting earlier audit execution defaults. Preserve completed work, owner/write-set boundaries, historical evidence and D1/D2 autonomy. This Work owns independent specialist audit and bounded fixture/test/evidence candidates, not large Product Platform implementation or whole integration.
+
+| Risk | Scope | Default verification and stopping rule |
+|---|---|---|
+| CRITICAL | Authentication; session/revocation; tenant isolation; cross-user access; financial read-only gate; secrets/credentials; financial integrity/provenance; reconciliation integrity; authorization; production financial connection | Relevant negative/adversarial tests, affected security regression and evidence sufficient for the actual boundary. Never infer runtime enforcement from fixture or caller-supplied identity. Close only on an exact implemented successor meeting acceptance. |
+| STANDARD | Account/Position/Transaction domain, sync, idempotency, Product API, FinancialConnector abstraction, portfolio adapter, AuditEvent, background jobs | Targeted tests → relevant negatives → affected regression → close. Security-sensitive portions inherit CRITICAL. No full repository regression by default. |
+| FAST | Mock connector, fixture, synthetic account, documentation, non-semantic schema metadata, isolated UI, bounded adapter | Targeted deterministic test → close the scoped task. A synthetic test of a CRITICAL invariant still preserves that invariant's negative coverage. |
+
+Audit-to-action: reuse a sufficient pinned reproduction; prepare an actionable D1/D2 repair candidate, verify relevant negatives, route exact source/diff/tests/acceptance to Main, and retest the affected owner successor once it exists. Do not replay the same original counterexample, broad scan or regression because the policy/tool catalog changed. No HEAD change and no independently eligible unfinished action means no new audit/evidence commit or notification. Source, test, workflow, dependency or trust-boundary changes invalidate only their affected receipts; new evidence can justify broader checks.
+
+General audit budget: one auditor. For an actual unresolved security/cross-user ambiguity, at most one additional independent security verifier. Ordinary documentation, known fixture counterexamples and source-patch packaging do not justify parallel agents.
+
+Supabase without approved adoption evidence: **NOT_CONFIRMED / NOT_RUN**. Reuse the prior adoption receipt; no repeated discovery. Continue provider-neutral work. Switch to targeted read-only remote audit only when an actual approved DEV project URL/ref and development-versus-production mapping are in owner handoff. Exposed plugins do not prove service readiness. Backend replacement, resource creation or tenant-policy changes are not authorized by a connection.
+
+Every meaningful execution reports the named capability matrix using NOT_STARTED / DESIGN_ONLY / PARTIAL / IMPLEMENTED / VERIFIED / BLOCKED. Report actual verified scope, not just overall PARTIAL. Record a deduplicated blocker inventory, start/closed/new/end/net, verified capabilities, owner actions remaining and tool-blocked items. Define net reduction as closed minus new; require exact closure evidence. Candidate PASS, prepared delivery, owner receipt and owner-source closure are separate states and never interchangeable. The target is Net Platform Blocker Reduction > 0; if the target is unmet, report that plainly.
+
+D1/D2 read-only audit, local mocks/fixtures, bounded repair candidates and their tests/evidence proceed automatically. Other owner branches, Global and canonical remain read-only here. Route validated findings/candidates to current Main under CDR-018, GPT Work gpt-work-main-2026-10-05-3a80dcef6444; CDR-017's historical Claude designation is superseded. Owner adoption requires its accepted write set and exact return artifact; a null lease is not permission to take over.
+
+D3 remains actual credentials/financial accounts, production auth activation, tenant policy changes, paid resources/connectors, trade execution, protected semantics, canonical changes and deployment. A D3 blocks only its dependent action. Tenant isolation, Auth, read-only, secrets, provenance, reconciliation and cross-user negative testing stay strict.
+
+Preserve first-use purpose/target/read-or-change explanations, actual library-version Context7 docs, current-stage-only Superpowers, and one primary Figma OR MagicPath per screen. GitHub remains source/contract/verification authority; tool absence cannot halt independent provider-neutral work.

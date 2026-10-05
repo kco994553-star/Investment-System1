@@ -1,0 +1,130 @@
+{
+  "base_sha256": "b13686d8ce134ccb61ef78c51d178597404e7a3401e7b22240dcc47c01d0aa7b",
+  "candidate_sha256": "4a120b6c5f5e866b9105e94b5ab06256a0da41551848b26f0eb94c438dd57314",
+  "checks": [
+    {
+      "name": "affected_owner_test_identity_and_reference_values_reject_blank_or_malformed",
+      "observation": null,
+      "result": "PASS"
+    },
+    {
+      "name": "affected_owner_test_import_is_idempotent_and_same_version_content_change_fails",
+      "observation": null,
+      "result": "PASS"
+    },
+    {
+      "name": "affected_owner_test_import_rejects_cross_tenant",
+      "observation": null,
+      "result": "PASS"
+    },
+    {
+      "name": "affected_owner_test_normalized_record_rejects_malformed_lineage_at_construction",
+      "observation": null,
+      "result": "PASS"
+    },
+    {
+      "name": "affected_owner_test_read_only_gate_is_exact_and_detects_broker_contract_drift",
+      "observation": null,
+      "result": "PASS"
+    },
+    {
+      "name": "affected_owner_test_reconciliation_lineage_and_full_coverage",
+      "observation": null,
+      "result": "PASS"
+    },
+    {
+      "name": "affected_owner_test_reconciliation_rejects_duplicate_and_cross_tenant_outputs",
+      "observation": null,
+      "result": "PASS"
+    },
+    {
+      "name": "affected_owner_test_source_record_requires_provenance_time_and_hash",
+      "observation": null,
+      "result": "PASS"
+    },
+    {
+      "name": "affected_owner_test_tenant_scope_is_fail_closed",
+      "observation": null,
+      "result": "PASS"
+    },
+    {
+      "name": "SA01_actual_patched_digest_identity",
+      "observation": {
+        "missing": [],
+        "orphan": [],
+        "passed": true
+      },
+      "result": "PASS"
+    },
+    {
+      "name": "SA02_actual_patched_inherited_write_and_masked_read_denial",
+      "observation": {
+        "disabled_read_denial": "ReadOnlyViolation",
+        "inherited_trade_denial": "ReadOnlyViolation",
+        "original_direct_gate": "PASS"
+      },
+      "result": "PASS"
+    },
+    {
+      "name": "SA01_canonical_ref_hash_and_frozen_after_construction",
+      "observation": "FrozenInstanceError",
+      "result": "PASS"
+    }
+  ],
+  "counts": {
+    "failed": 0,
+    "passed": 12
+  },
+  "dependency_manifest": [
+    {
+      "bytes": 1944,
+      "git_blob": "685e2d6024a6a0bac2183458a01832e2df63a6ab",
+      "path": "implementation/src/investment_system/personal/versioning.py",
+      "sha256": "af84bfd95e198c3e1c29381ca9d688728da8a7a128dec4994da49d5186416def"
+    },
+    {
+      "bytes": 988,
+      "git_blob": "0ee6796efb0ab97e781852509953f3e30e3f16d2",
+      "path": "implementation/src/investment_system/personal/quality.py",
+      "sha256": "b6cefc19927bb3da00060920174de0f2d21dd7616299d9ebd81ad65870a349b7"
+    },
+    {
+      "bytes": 7484,
+      "git_blob": "b564215fd1a0ceecb32033e5da377f58f9fa4b0b",
+      "path": "implementation/src/investment_system/personal/weights.py",
+      "sha256": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5"
+    },
+    {
+      "bytes": 4257,
+      "git_blob": "495e472fd87ea75ffc4a71e4169aec249cb25a99",
+      "path": "implementation/src/investment_system/personal/ports.py",
+      "sha256": "a4fa05cc660db1779eb44babbbb8568f0c97723dc1b74a722f977f338be670fb"
+    },
+    {
+      "bytes": 4765,
+      "git_blob": "a6edf4e4a8eb234f9863139acf4e354f40ddd48a",
+      "path": "implementation/tools/mini_pytest.py",
+      "sha256": "c24c3bb38fa3242b43578ff9c3c92e3f66a71fdcf63d9eb279112c3f1c3a4d28"
+    },
+    {
+      "bytes": 5130,
+      "git_blob": "3aaf216f840e304bab36981012e884bd8d302b96",
+      "path": "implementation/tests/test_product_platform_contracts.py",
+      "sha256": "2c910c860eb14d06e1b31ccc8a3673870884f0b0ac8efb6ef5f0910729c4a364"
+    }
+  ],
+  "original_RED": "REUSED prior source-pinned receipt; NOT_RERUN",
+  "owner_adopted": false,
+  "owner_pin": "78a51462f89eac8e34647cddc4e53ed97e831178",
+  "owner_source_mutated": false,
+  "patch_application": "PASS disposable copy; git apply --check then git apply",
+  "patch_sha256": "ecec8109aec1edffe0d59cbcd62f79668b4356e7ebce93226067701c2ab971f1",
+  "prior_receipt_sha256": "a1bd74574ffa292b4ed62b105ce06c775ca814dba5040c7671fae327e68cf190",
+  "production_verified": false,
+  "python": "3.12.14",
+  "repository_regression_rerun": false,
+  "runner_sha256": "60d62ce9195c77b257bd6d15ccc38b1830d9503d8a0e495c10e593a4c98f3b54",
+  "schema": "platform-transferable-candidate-verification-v1",
+  "scope": "candidate source bytes only; mini_pytest shim, not pytest; no real auth/provider/DB/network",
+  "source_path": "implementation/src/investment_system/platform/contracts.py"
+}
