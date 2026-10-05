@@ -25,7 +25,7 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "IN_PROGRESS_TERMINAL_AND_OWNER_RETURN_CONSUMPTION",
+  "execution_state": "WAIT_DEPENDENCY_READY_D1_D2_D3_A_0",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_input": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
@@ -33,16 +33,17 @@
     "chart": "cda174542f1a1ae95345726f308c24b60262c03b",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
     "qgv_missing": "4fb08a05728d83519b72a2bd995669f0cb06003a",
-    "qgv_reconciliation": "06e5f163a4f871ab99c767a46673c19da5d5ad1c",
+    "qgv_reconciliation": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
     "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
     "platform_independent_audit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
     "platform_pr45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
-    "platform_specialist": "e52cd0686800557b963892c4d18870c13a1aaee7",
+    "platform_specialist": "5e5fd1508a7f197a1168333bb13c45b8088a48ba",
     "web": "fb086eac4321140493ce554a541343cebbb81ed6",
     "qgv_pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
     "execution_coverage": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
     "fpia_proposal": "7215a9f60ad7128b1748f405051eac684298614f",
-    "global_publication_parent": "4135f38c80dfc8db6f629cbff1542ffb44da0cdd"
+    "global_publication_parent": "4135f38c80dfc8db6f629cbff1542ffb44da0cdd",
+    "authority_proposal": "3af2078c81ffb8901d82a49f90d219a367266b4f"
   },
   "automations": {
     "state": "EVENT_DELIVERED_AND_CONSUMED",
@@ -67,14 +68,7 @@
     "followup_delivery_observed": true
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": {
-    "token": "main-terminal-return-consume-20261005-fc8a83eeb8fe",
-    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "acquired_at": "2026-10-05T09:42:00Z",
-    "expires_at": "2026-10-05T09:52:00Z",
-    "scope": "Main coordination only: exact FPIA terminal CI, QGV/Platform completed returns, PR48 proposal intake",
-    "source_parent": "c3f9f3c9d1faeba5e1a60e4aef7291a549f0b990"
-  },
+  "lease": null,
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -148,34 +142,24 @@
     5991476557,
     5991485958
   ],
-  "pending_ci": [
-    {
-      "run_id": 37284465900,
-      "name": "track-c-fpia",
-      "head": "7215a9f60ad7128b1748f405051eac684298614f",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465900"
-    }
-  ],
+  "pending_ci": [],
   "next_runnable_backlog": [],
   "next_dependency_gates": [
-    "FPIA accepted independent verifier/launcher/runtime attestation and exact execution coverage; raw PASS/observer is not acceptance",
-    "Exact7215 TrackC run37284465900 attempt1 nonterminal; sixSUCCESSconsumed; no rerun",
-    "Chart sixproduction gates: Portfolio/Identity OWNER_UNASSIGNED; actual source/Product/fullwrite-set missing; completedSAMPLEd84/cdaconsumed, noexecutor",
-    "QGV actualmethod/numeric R or missing source facts; activepolicylease06e5 preserved; completedprinciplesab07consumed",
-    "Platform actualsource owner adoption/ACK and Webactualreturn; completedpolicyed525/invocationeddconsumed; e52metadataACK/linkleaseactive"
+    "FPIA accepted independent verifier/launcher/runtime authority, GIE/governance and exact merge-result acceptance; CI/raw PASS is not closure",
+    "Chart six production gates: Portfolio/Identity OWNER_UNASSIGNED; actual source/Product/full write-set missing",
+    "QGV actual method/numeric/source/cohort/runtime production gates remain D3-R or owner dependencies; policy tracking return consumed",
+    "Platform source-owner actual adoption/ACK and Product capability evidence remain absent; documentation locator return consumed",
+    "Draft PR48 authority document remains PROPOSED_NOT_ADOPTED pending exact reconciliation and explicit adoption"
   ],
   "last_lease": {
-    "token": "main-d3-policy-20261005-3a80dcef6444",
+    "token": "main-terminal-return-consume-20261005-fc8a83eeb8fe",
     "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "acquired_at": "2026-10-05 09:20:55 UTC",
-    "expires_at": "2026-10-05T09:35:00Z",
-    "scope": "Main coordination only: explicit policy record and exact completed returns",
-    "source_parent": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
-    "released_at_utc": "2026-10-05T09:23:18Z",
-    "reason": "Policy/return verification completed, lease released with fast-forward checkpoint; never held while CI/owner waiting"
+    "acquired_at": "2026-10-05T09:42:00Z",
+    "expires_at": "2026-10-05T09:52:00Z",
+    "scope": "Main coordination only: exact FPIA terminal CI, QGV/Platform completed returns, PR48 proposal intake",
+    "source_parent": "c3f9f3c9d1faeba5e1a60e4aef7291a549f0b990",
+    "released_at_utc": "2026-10-05T09:47:00Z",
+    "reason": "Terminal CI and bounded owner returns consumed; no runnable Main backlog"
   },
   "publication_dedup_rule": "Fresh heads/dependency hashes/exact comment-event IDs/run attempts + consumed immutable returns; own docs-only ref movement with no READY/material delta is a no-op. Last publication identity resolves from containing commit, not fabricated self-reference.",
   "dependency_fingerprint_files": [
@@ -185,15 +169,9 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": {
-    "kind": "MAIN_COORDINATION_CHECKPOINT",
-    "started_at_utc": "2026-10-05T09:42:00Z",
-    "allowed_write_set": [
-      "implementation/docs/coordination/**"
-    ]
-  },
-  "last_terminal_ci_evidence": "evidence/main_execution_coverage_2026-10-05/RECEIPT.json",
-  "last_checkpoint_at_utc": "2026-10-05T09:23:18Z",
+  "active_scoped_execution": null,
+  "last_terminal_ci_evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
+  "last_checkpoint_at_utc": "2026-10-05T09:47:00Z",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
   "dependency_content_hash": "5d3835968822791c72ea8e6174ac530bd6d7ba98b603f1396089145dab672f62",
   "execution_budget": {
@@ -204,6 +182,20 @@
     "net_blocker_reduction_current_delta": 0
   },
   "last_terminal_ci": [
+    {
+      "run_id": 37284465900,
+      "name": "track-c-fpia",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679955410,
+      "artifact_id": 11335872268,
+      "artifact_sha256": "7d8247a5d23c372a8868064179519b5321488a9041a227f030b2c43bff53167b",
+      "result_sha256": "6b2b238454c8e2da30734e768845b5414005edacd8c4d9466f54b0dcb6b13902",
+      "acceptance": "TECHNICAL_PASS_ONLY",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465900"
+    },
     {
       "run_id": 37284465967,
       "name": "us-equity-session",
@@ -342,11 +334,11 @@
     "decision": "CDR-022",
     "ready_tasks": [],
     "wait_dependencies": [
-      "FPIA accepted independent verifier/launcher/runtime attestation and exact execution coverage; raw PASS/observer is not acceptance",
-      "Exact7215 TrackC run37284465900 attempt1 nonterminal; sixSUCCESSconsumed; no rerun",
-      "Chart sixproduction gates: Portfolio/Identity OWNER_UNASSIGNED; actual source/Product/fullwrite-set missing; completedSAMPLEd84/cdaconsumed, noexecutor",
-      "QGV actualmethod/numeric R or missing source facts; activepolicylease06e5 preserved; completedprinciplesab07consumed",
-      "Platform actualsource owner adoption/ACK and Webactualreturn; completedpolicyed525/invocationeddconsumed; e52metadataACK/linkleaseactive"
+      "FPIA accepted independent verifier/launcher/runtime authority, GIE/governance and exact merge-result acceptance; CI/raw PASS is not closure",
+      "Chart six production gates: Portfolio/Identity OWNER_UNASSIGNED; actual source/Product/full write-set missing",
+      "QGV actual method/numeric/source/cohort/runtime production gates remain D3-R or owner dependencies; policy tracking return consumed",
+      "Platform source-owner actual adoption/ACK and Product capability evidence remain absent; documentation locator return consumed",
+      "Draft PR48 authority document remains PROPOSED_NOT_ADOPTED pending exact reconciliation and explicit adoption"
     ],
     "stop_rule": "WAIT only when READY=0 including repair, returns, CI consumption and SSoT updates; real D3 remains protected",
     "no_busy_polling": true,
@@ -429,5 +421,14 @@
     "product_gates_closed": 0,
     "main_new_d3_a_approvals": 0,
     "owner_chart_d3_a_executed": 1
+  },
+  "terminal_and_return_checkpoint": {
+    "recorded_at_utc": "2026-10-05T09:47:00Z",
+    "fpia": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
+    "owner_returns": "evidence/main_terminal_7215_2026-10-05/OWNER_RETURNS.json",
+    "pr48": "evidence/main_terminal_7215_2026-10-05/PR48_INTAKE.json",
+    "ci_success": 7,
+    "ci_total": 7,
+    "production_gates_closed": 0
   }
 }

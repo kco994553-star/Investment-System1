@@ -4,7 +4,7 @@
   "created_at_utc": "2026-10-05T04:42:49.051352+00:00",
   "fresh_scope": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
-    "global": "e36bec9be6be3bdf60ac7fd4ef8379a2ba93a7ae",
+    "global": "087f4c1f2ea54b5a8182aea8cb3b1a0ca5b5aa2b",
     "chart": "cda174542f1a1ae95345726f308c24b60262c03b",
     "chart_lease": {
       "status": "HELD",
@@ -22,9 +22,10 @@
     "global_input": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
     "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
-    "qgv_reconciliation": "06e5f163a4f871ab99c767a46673c19da5d5ad1c",
-    "platform_specialist": "e52cd0686800557b963892c4d18870c13a1aaee7",
-    "global_publication_parent": "4135f38c80dfc8db6f629cbff1542ffb44da0cdd"
+    "qgv_reconciliation": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+    "platform_specialist": "5e5fd1508a7f197a1168333bb13c45b8088a48ba",
+    "global_publication_parent": "4135f38c80dfc8db6f629cbff1542ffb44da0cdd",
+    "authority_proposal": "3af2078c81ffb8901d82a49f90d219a367266b4f"
   },
   "summary": {
     "lane_a_open": 6,
@@ -1049,20 +1050,79 @@
     },
     {
       "id": "MAIN-PLATFORM-POLICY-LINK-20261005",
-      "state": "IN_PROGRESS",
+      "state": "CLOSED",
       "history": [
         "FOUND",
         "ROUTED",
         "RECEIVED",
-        "IN_PROGRESS"
+        "IN_PROGRESS",
+        "EVIDENCE_READY",
+        "CONSUMED",
+        "CLOSED"
       ],
       "authoritative_owner": "Platform independent specialist docs only",
       "delivery_comment_id": 5991485958,
-      "current_head": "e52cd0686800557b963892c4d18870c13a1aaee7",
-      "evidence": "evidence/main_d3_delegation_2026-10-05/PLATFORM_RETURN.json",
+      "current_head": "5e5fd1508a7f197a1168333bb13c45b8088a48ba",
+      "evidence": "evidence/main_terminal_7215_2026-10-05/OWNER_RETURNS.json",
       "request": "Correct rootCURRENT_HANDOFF policy relative link",
       "acceptance": "Owner publishes exactmetadata fix/hash/readback; no Product closure",
-      "next_action": "Consume finalownerreturn; do not duplicate active writer"
+      "next_action": "Actual source-owner adoption/ACK and Product capability evidence only",
+      "return_comment_id": 5991612285
+    },
+    {
+      "id": "MAIN-FPIA-7215-TERMINAL-20261005",
+      "state": "CLOSED",
+      "history": [
+        "FOUND",
+        "ROUTED",
+        "RECEIVED",
+        "IN_PROGRESS",
+        "EVIDENCE_READY",
+        "CONSUMED",
+        "CLOSED"
+      ],
+      "authoritative_owner": "FPIA successor PR #47",
+      "source_head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "run_id": 37284465900,
+      "attempt": 1,
+      "evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
+      "scope": "Terminal CI and raw FPIA evidence consumption only",
+      "production_gate_closed": false,
+      "next_action": "Independent verifier/launcher/runtime, GIE/governance and exact merge-result acceptance"
+    },
+    {
+      "id": "MAIN-QGV-D3-POLICY-RETURN-20261005",
+      "state": "CLOSED",
+      "history": [
+        "FOUND",
+        "RECEIVED",
+        "EVIDENCE_READY",
+        "CONSUMED",
+        "CLOSED"
+      ],
+      "authoritative_owner": "QGV architecture reconciliation",
+      "source_head": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+      "evidence": "evidence/main_terminal_7215_2026-10-05/OWNER_RETURNS.json",
+      "scope": "Policy and Main-principle tracking return only",
+      "production_gate_closed": false,
+      "next_action": "Actual method/numeric/source/runtime evidence only"
+    },
+    {
+      "id": "MAIN-PR48-AUTHORITY-PROPOSAL-20261005",
+      "state": "CLOSED",
+      "history": [
+        "FOUND",
+        "RECEIVED",
+        "EVIDENCE_READY",
+        "CONSUMED",
+        "CLOSED"
+      ],
+      "authoritative_owner": "Main coordination proposal",
+      "source_head": "3af2078c81ffb8901d82a49f90d219a367266b4f",
+      "evidence": "evidence/main_terminal_7215_2026-10-05/PR48_INTAKE.json",
+      "scope": "D1 proposal intake only; no adoption",
+      "production_gate_closed": false,
+      "next_action": "Reconcile against CDR-023 and require explicit adoption for proposed authority changes"
     }
   ],
   "wake_up": "Main PR41 synchronize and API-authored PR17 comment events observed; self-comment deduplicated. Other owner wake/receipt unverified.",
@@ -1146,10 +1206,9 @@
     "actual_hops": "0/2 UNVERIFIED"
   },
   "platform_specialist_consumption": {
-    "head": "8599558dd1ec7e546ab46c230557ccf9e844e171",
-    "comment_id": 5990208500,
-    "main_comment_consumed": 5989810728,
-    "status": "CONSUMED",
+    "head": "5e5fd1508a7f197a1168333bb13c45b8088a48ba",
+    "comment_id": 5991612285,
+    "status": "POLICY_AND_LOCATOR_CLOSED",
     "source_owner_ack": false,
     "source_adoption": false,
     "combined_blockers": 9,
@@ -1345,5 +1404,24 @@
     },
     "limits": "Main ACK/specialist policy consumption is not implementation-owner acceptance; preserve owner's cadence/enablement and active metadata lease."
   },
-  "authority": "CDR-023 D1/D2/D3-A/D3-R with prior explicitowner/Main boundaries"
+  "authority": "CDR-023 D1/D2/D3-A/D3-R with prior explicitowner/Main boundaries",
+  "fpia_terminal": {
+    "head": "7215a9f60ad7128b1748f405051eac684298614f",
+    "run_id": 37284465900,
+    "attempt": 1,
+    "status": "SUCCESS_CONSUMED",
+    "acceptance": "TECHNICAL_PASS_ONLY",
+    "evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json"
+  },
+  "qgv_policy_return": {
+    "head": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+    "status": "TRACKING_CLOSED",
+    "production_closures": 0,
+    "ready": 0
+  },
+  "pr48_proposal": {
+    "head": "3af2078c81ffb8901d82a49f90d219a367266b4f",
+    "status": "PROPOSED_NOT_ADOPTED",
+    "evidence": "evidence/main_terminal_7215_2026-10-05/PR48_INTAKE.json"
+  }
 }

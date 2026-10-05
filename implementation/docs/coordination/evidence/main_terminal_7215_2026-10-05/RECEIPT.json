@@ -1,0 +1,68 @@
+{
+  "schema": "main-fpia-terminal-consumption-v1",
+  "recorded_at_utc": "2026-10-05T09:47:00Z",
+  "classification": "D1",
+  "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+  "pr": 47,
+  "workflow": {
+    "run_id": 37284465900,
+    "attempt": 1,
+    "name": "track-c-fpia",
+    "status": "completed",
+    "conclusion": "success",
+    "job_id": 111679955410,
+    "workflow_merge_sha": "84792523ec131a0ff01c4185e85c89fd9cab8649"
+  },
+  "exact_head_workflows": {
+    "success": 7,
+    "total": 7,
+    "re_run": false
+  },
+  "steps": {
+    "applicability": "success",
+    "tier_1": "skipped",
+    "tier_2": "skipped",
+    "fpia_audit": "success",
+    "workflow_source_observation": "success",
+    "artifact_upload": "success"
+  },
+  "artifact": {
+    "id": 11335872268,
+    "name": "track-c-fpia-7215a9f60ad7128b1748f405051eac684298614f",
+    "size_bytes": 63100,
+    "zip_sha256": "7d8247a5d23c372a8868064179519b5321488a9041a227f030b2c43bff53167b",
+    "expires_at": "2027-01-03T08:34:26Z",
+    "files": 12,
+    "fpia_json_sha256": "897699b04f055beaa376b0638905e507f63a036ef03bfb922deb5a0f36ae640d",
+    "fpia_result_sha256": "6b2b238454c8e2da30734e768845b5414005edacd8c4d9466f54b0dcb6b13902",
+    "run_sha256": "f4c2962b7b16693cbdbc09363cd9d3071c94ce13b29ff32d6dbf0ded4daa6837",
+    "applicability_json_sha256": "44d88fd524e4eee10f69d83f144826c3c8bbb5ab24242f53dc64cb6a3f1fa80e",
+    "ci_receipt_sha256": "7a9b816d527be8284ba4b102daf9323863c479039c45a7d98444758916cff04d"
+  },
+  "result": {
+    "fpia": "FPIA_PASS",
+    "authority": "PASS",
+    "code_identity": "CODE_IDENTITY_DIVERGED",
+    "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+    "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+    "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+    "integration_interference": "INTEGRATION_INTERFERENCE_NONE",
+    "v2_binding": "PASS",
+    "full_regression": "PASS",
+    "dynamic_invocation_detection": "NOT_CLAIMED",
+    "out_of_tree_code_analysis": "NOT_ANALYSED"
+  },
+  "acceptance": {
+    "technical_ci": "PASS",
+    "raw_fpia": "PASS",
+    "independent_verifier_launcher_runtime": "OPEN",
+    "gie_governance": "OPEN",
+    "exact_merge_result": "NOT_RUN",
+    "integration_candidate": "NOT_READY"
+  },
+  "limitations": [
+    "Tier 1 and Tier 2 steps were skipped by authenticated applicability flow and are not called PASS.",
+    "Workflow-source observation has authority NOT_VERIFIED and integration acceptance BLOCKED.",
+    "No CI rerun, canonical merge, Holdout use, Frozen rewrite or production promotion was performed."
+  ]
+}

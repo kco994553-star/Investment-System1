@@ -4,12 +4,22 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-032 (D3-A/R policy and scoped QGV/Chart/Platform return consumption) |
-| Recorded | 2026-10-05T09:23:18Z; exact publication parent `4135f38c80dfc8db6f629cbff1542ffb44da0cdd` |
+| Index revision | GSI-033 (FPIA 7/7 terminal and completed QGV/Platform return consumption) |
+| Recorded | 2026-10-05T09:47:00Z; exact publication parent `087f4c1f2ea54b5a8182aea8cb3b1a0ca5b5aa2b` |
 | Writer | GPT Work `gpt-work-main-2026-10-05-3a80dcef6444`; CDR-018 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
 | Canonical | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca` (= `origin/HEAD`; unchanged since 2026-09-28) |
 | Operating contract | `CLAUDE_CODE_WORKER_CONTRACT_v1.0` at PR #21 exact HEAD `f1b5afb` is the operational routing SSoT (CDR-001). PR #20 is SUPERSEDED_DUPLICATE (not merged, retained) |
+
+## Current evidence delta · GSI-033 · 2026-10-05T09:47:00Z
+
+| Scope | Exact state | Classification |
+|---|---|---|
+| FPIA successor | PR #47 `7215a9f`; seven of seven exact-head workflows SUCCESS; Track-C run `37284465900` attempt 1 SUCCESS | CI/raw FPIA PASS; independent authority, GIE/governance and exact merge-result remain OPEN |
+| QGV return | `cbb4655`; 22/22 identities, lease null, READY 0 | Tracking closure 1; production closure 0 |
+| Platform return | `5e5fd15`; locator repair + Main receipt consumption, 30 checks, lease null, READY 0 | Documentation acceptances 2; Product closure 0 |
+| Authority proposal | Draft PR #48 `3af2078` | PROPOSED_NOT_ADOPTED; D1 intake only |
+| Canonical candidate | `NOT_READY` | canonical unchanged; no merge/grant |
 
 ## Current authority override · CDR-023 · 2026-10-05T09:23:18Z
 

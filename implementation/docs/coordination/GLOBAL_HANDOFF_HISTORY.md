@@ -278,3 +278,12 @@ After policy/return publication: MainREADY D1/D2/D3-A=0, sharedlease=null, no ac
 
 ---
 
+
+## GCH-027 · 2026-10-05T09:47:00Z · FPIA terminal and completed owner returns
+
+- Consumed PR #47 exact-head Track-C FPIA run `37284465900` attempt 1 as the seventh SUCCESS workflow. Artifact ZIP and internal result hashes verified; no rerun.
+- Preserved separation between technical CI/raw FPIA and independent verifier/launcher/runtime, GIE/governance and exact merge-result acceptance.
+- Consumed QGV `cbb4655` tracking closure and Platform `5e5fd15` documentation/locator closure. Production gate net closure: 0.
+- Recorded Draft PR #48 `3af2078` as proposal-only evidence; did not merge or adopt it.
+- Canonical unchanged. No source takeover, Holdout, PIT relaxation, Frozen/history rewrite, Official/LIVE, credentials, paid resources or transactions.
+- Main READY D1/D2/D3-A: 0; integration candidate: NOT_READY; lease released.

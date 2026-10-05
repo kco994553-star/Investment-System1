@@ -1,0 +1,48 @@
+{
+  "schema": "main-owner-return-consumption-v1",
+  "recorded_at_utc": "2026-10-05T09:47:00Z",
+  "classification": "D1",
+  "qgv": {
+    "head": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+    "status": "COMPLETED_ACCEPTED_TRACKING_ONLY",
+    "control_sha256": "f72bb606445dfa2f0f1ec2951dc9b1c416c0606e3668107f1903fe9a7d80a91f",
+    "completion_receipt_sha256": "2fa00057e15c77f2ad925ae0300e135653b687b17e882ee5fe7cb673bff969c1",
+    "manifest_sha256": "6c67b8ff5f6be588337d1119555f017bf798c8e7f223936f31dd942d30016ea7",
+    "manifest_payloads_verified": 22,
+    "new_checks": 8,
+    "tracking_items_closed": 1,
+    "production_blockers_closed": 0,
+    "new_d3_a_approvals": 0,
+    "remaining_reserved_groups": 10,
+    "lease": null,
+    "ready": 0,
+    "main_policy_return_ack": "NOT_EVIDENCED"
+  },
+  "platform": {
+    "head": "5e5fd1508a7f197a1168333bb13c45b8088a48ba",
+    "status": "COMPLETED_BOUNDED_DOC_RETURN",
+    "state_sha256": "e7104c4c57e783f128854f0f0640e93ed80d9ad26118cad7a699f541671171ca",
+    "return_sha256": "5dff5e54a2c38a05a3860053daf6458614ef380b60c3e9e2a2e8f41793bffb80",
+    "main_comment_id": 5991485958,
+    "return_comment_id": 5991612285,
+    "checks": 30,
+    "policy_consumption_closed": 1,
+    "locator_acceptance_closed": 1,
+    "product_gates_closed": 0,
+    "source_owner_ack": false,
+    "source_adoption": false,
+    "lease": null,
+    "ready": 0
+  },
+  "conclusion": {
+    "owner_returns_consumed": 2,
+    "production_gates_closed": 0,
+    "main_ready_d1_d2_d3_a": 0,
+    "canonical_candidate": "NOT_READY"
+  },
+  "boundaries": [
+    "No QGV method, numeric, cohort, PIT or runtime production authorization.",
+    "No Platform source adoption, capability closure or scheduler end-to-end verification.",
+    "No owner source branch or protected contract changed by Main."
+  ]
+}

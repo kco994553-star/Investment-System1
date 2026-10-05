@@ -1,0 +1,27 @@
+{
+  "schema": "main-proposal-intake-v1",
+  "recorded_at_utc": "2026-10-05T09:47:00Z",
+  "classification": "D1_PROPOSAL_INTAKE_ONLY",
+  "pr": 48,
+  "head": "3af2078c81ffb8901d82a49f90d219a367266b4f",
+  "draft": true,
+  "file": "implementation/docs/coordination/policies/AUTONOMOUS_EXECUTION_DECISION_AUTHORITY_SSoT_v1.0.md",
+  "file_git_blob": "2a5755dc05093414fc34baf62a1830e231e21a67",
+  "file_sha256": "c825850a515a79b22cd304080e132ed41f9351b79fda9a33bef89d07ef70678b",
+  "status": "PROPOSED_NOT_ADOPTED",
+  "reasons": [
+    "The file self-identifies as PROPOSED COMMON SSoT.",
+    "Its inherited Decision Register ends at CDR-022 and does not contain CDR-023.",
+    "The PR is a sibling of current Global, not a descendant, and has no explicit adoption receipt."
+  ],
+  "reconciliation_required": [
+    "SSoT precedence must not override current explicit user authority, Decision Registers or protected owner contracts.",
+    "D3-R blocks only dependent lanes; independent READY work continues.",
+    "D3-A must preserve the exact CDR-023 ten-condition protection test.",
+    "Watcher-only scheduling, new reservations and project-DONE requirements remain proposals."
+  ],
+  "actions": [
+    "Recorded as bounded proposal evidence.",
+    "No merge, adoption, automation reconfiguration, canonical update or source-app message."
+  ]
+}
