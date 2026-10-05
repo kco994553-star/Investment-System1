@@ -1,0 +1,212 @@
+{
+  "owner_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "integration_head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+  "source_checks": [
+    {
+      "path": "implementation/src/investment_system/contracts/models.py",
+      "sha": "2367d2ee2dfffa60482ba2f4cb671ece09340b1e",
+      "integration_sha": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+      "match": false
+    },
+    {
+      "path": "implementation/src/investment_system/contracts/raw.py",
+      "sha": "7660d70b6a7fa860b5f7b3f8f93a68d86c95d6bf",
+      "integration_sha": "7660d70b6a7fa860b5f7b3f8f93a68d86c95d6bf",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/personal/__init__.py",
+      "sha": "7bcf75b7c4c697723bdfc49958d5c04695481b7d",
+      "integration_sha": "7bcf75b7c4c697723bdfc49958d5c04695481b7d",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/personal/fit.py",
+      "sha": "4a6264c01ec20a865baecdfebba68873251dd125",
+      "integration_sha": "4a6264c01ec20a865baecdfebba68873251dd125",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/personal/money.py",
+      "sha": "119b29dfec8ff50471bfbddca2591ff44fc7d291",
+      "integration_sha": "119b29dfec8ff50471bfbddca2591ff44fc7d291",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/personal/portfolio.py",
+      "sha": "9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e",
+      "integration_sha": "9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/personal/ports.py",
+      "sha": "495e472fd87ea75ffc4a71e4169aec249cb25a99",
+      "integration_sha": "495e472fd87ea75ffc4a71e4169aec249cb25a99",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/personal/quality.py",
+      "sha": "0ee6796efb0ab97e781852509953f3e30e3f16d2",
+      "integration_sha": "0ee6796efb0ab97e781852509953f3e30e3f16d2",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/personal/security.py",
+      "sha": "4bba65c8092c4a29f0974ab35eac975c3b06f1da",
+      "integration_sha": "4bba65c8092c4a29f0974ab35eac975c3b06f1da",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/personal/timecontract.py",
+      "sha": "0310a7e16bd86308ebcf90888032572269daf14b",
+      "integration_sha": "0310a7e16bd86308ebcf90888032572269daf14b",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/personal/versioning.py",
+      "sha": "685e2d6024a6a0bac2183458a01832e2df63a6ab",
+      "integration_sha": "685e2d6024a6a0bac2183458a01832e2df63a6ab",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/personal/weights.py",
+      "sha": "b564215fd1a0ceecb32033e5da377f58f9fa4b0b",
+      "integration_sha": "b564215fd1a0ceecb32033e5da377f58f9fa4b0b",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/__init__.py",
+      "sha": "d1030bf59f796c0caa5467f8028c05aa64af5a85",
+      "integration_sha": "d1030bf59f796c0caa5467f8028c05aa64af5a85",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/analysis.py",
+      "sha": "fc91d9fc7f9803759cbff07f59bfb325aae150b4",
+      "integration_sha": "fc91d9fc7f9803759cbff07f59bfb325aae150b4",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/book.py",
+      "sha": "227cbc13de59731925255fd852d75c26a96509e8",
+      "integration_sha": "227cbc13de59731925255fd852d75c26a96509e8",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/compatibility.py",
+      "sha": "0c67cdfc4d574f0abcff14be15d842825966a524",
+      "integration_sha": "0c67cdfc4d574f0abcff14be15d842825966a524",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/factors.py",
+      "sha": "20c6fb2d1383a100c54e5b4ef6d64ff553449690",
+      "integration_sha": "20c6fb2d1383a100c54e5b4ef6d64ff553449690",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/financial_issuer.py",
+      "sha": "2e73ee0977f4d28094bb41c99614d9ab48a03997",
+      "integration_sha": "2e73ee0977f4d28094bb41c99614d9ab48a03997",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/g_horizon.py",
+      "sha": "d69a9dcf77e33ac3532f3468973cca9156861a67",
+      "integration_sha": "d69a9dcf77e33ac3532f3468973cca9156861a67",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/html_sample.py",
+      "sha": "b4eea11a411f5128e061e27584e2c42fe6126854",
+      "integration_sha": "b4eea11a411f5128e061e27584e2c42fe6126854",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/identifiers.py",
+      "sha": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+      "integration_sha": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/leaderboard.py",
+      "sha": "2670d81b67fa309cd4fb305926fd8169991c4f20",
+      "integration_sha": "2670d81b67fa309cd4fb305926fd8169991c4f20",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/pipeline.py",
+      "sha": "6b89f2aac4cb270850a32d74609110c28442d383",
+      "integration_sha": "6b89f2aac4cb270850a32d74609110c28442d383",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/portfolio.py",
+      "sha": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+      "integration_sha": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/quarterly_series.py",
+      "sha": "ff532b30d6581a33771e765fdf7edf91ab0ae0e5",
+      "integration_sha": "ff532b30d6581a33771e765fdf7edf91ab0ae0e5",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/raw_map.py",
+      "sha": "038c1c6027da0da83c734cb8ca28d16d93a92e62",
+      "integration_sha": "038c1c6027da0da83c734cb8ca28d16d93a92e62",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/scoring.py",
+      "sha": "05672d2cde18b4d3563579ce57aadc64cb0182f8",
+      "integration_sha": "05672d2cde18b4d3563579ce57aadc64cb0182f8",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/simulation.py",
+      "sha": "01ed3c3f10b1b949dea3c43ab124cf41764a8a7f",
+      "integration_sha": "01ed3c3f10b1b949dea3c43ab124cf41764a8a7f",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/track_record.py",
+      "sha": "d67ba42a5a51f1cb57b2d15282a89a7c7faf320d",
+      "integration_sha": "d67ba42a5a51f1cb57b2d15282a89a7c7faf320d",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/us_live.py",
+      "sha": "392d9184c938e712d053be605d59f2da393ab5db",
+      "integration_sha": "392d9184c938e712d053be605d59f2da393ab5db",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/contracts/strategy.py",
+      "sha": "7c1d482f81a58a1e277cbb19b0e57b9238b777c0",
+      "integration_sha": "7c1d482f81a58a1e277cbb19b0e57b9238b777c0",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/providers/sec_companyfacts.py",
+      "sha": "61b98c01b3799763060b85b02454eb19d732225c",
+      "integration_sha": "61b98c01b3799763060b85b02454eb19d732225c",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/providers/sec_vintage.py",
+      "sha": "559a155e123405b2dca63614d08ef2000a9cdc6a",
+      "integration_sha": "559a155e123405b2dca63614d08ef2000a9cdc6a",
+      "match": true
+    },
+    {
+      "path": "implementation/src/investment_system/validation/historical.py",
+      "sha": "ffade49fa31b2fc738dbe099afcf67980501c0ca",
+      "integration_sha": "ffade49fa31b2fc738dbe099afcf67980501c0ca",
+      "match": true
+    }
+  ],
+  "difference_characterization": "Only TechnicalSnapshot and MacroSnapshot optional lineage fields; QGV dataclasses unchanged. Full integration NOT_RUN.",
+  "production_change": false
+}

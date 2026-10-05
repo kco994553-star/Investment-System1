@@ -1,0 +1,52 @@
+{
+  "source_owner_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "global": "5e33b30ce47b1875ae3b91fb3ba25d3158947e66",
+  "pr44": {
+    "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "state": "DRAFT_OPEN_SPEC_ONLY"
+  },
+  "pr42": {
+    "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+    "state": "DRAFT_OPEN"
+  },
+  "owner_state": {
+    "ref": "https://raw.githubusercontent.com/kco994553-star/Investment-System1/4fb08a05728d83519b72a2bd995669f0cb06003a/implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/STATE.json",
+    "lease": {
+      "token": "qgv-b47-muupb538",
+      "owner": "manual-B4-B7-explicit-user-approval",
+      "input_owner_head": "36b6b1840fe4bd22d7bb310407e2cea4050e0c2d",
+      "task": "approved-identity-invariants-and-admission-consolidation",
+      "claimed_at_kst": "2026-10-05T12:39:35.838071+09:00",
+      "expiry": null
+    },
+    "status": "RUNNING_B4_B7_INACTIVE_CONTRACT_AND_CONSOLIDATION",
+    "decisions": {
+      "QCC-P01.M1": "APPROVED_PRINCIPLES_ONLY",
+      "QCC-P01.M2": "APPROVED_PRINCIPLES_ONLY",
+      "QCC-P01.M3": "APPROVED_PRINCIPLES_ONLY",
+      "QCC-P01.M4": "APPROVED_PRINCIPLES_ONLY",
+      "QCC-P01.M5": "APPROVED_PRINCIPLES_ONLY"
+    },
+    "next_task": "QGV_AUTO_HOP1_LEGACY_METHOD_MANIFEST",
+    "pending_ci": [],
+    "scheduler_artifact_status": "No accepted HOP1/HOP2 artifacts at this pinned remote source"
+  },
+  "remote_owner_handoff": {
+    "source_sha256": "662af14b52663892bec74b7ed3339c4b6bc45080401fd0de2101a9d637a608e3",
+    "locator": "https://raw.githubusercontent.com/kco994553-star/Investment-System1/4fb08a05728d83519b72a2bd995669f0cb06003a/implementation/docs/qgv_common_contract_vnext/missing_data_gate/CURRENT_HANDOFF.md"
+  },
+  "global_handoff": {
+    "source_sha256": "3cd83e5c40d3add976a0696272962673942f27cd893c5a7b83c04fafee6fa995",
+    "locator": "https://raw.githubusercontent.com/kco994553-star/Investment-System1/5e33b30ce47b1875ae3b91fb3ba25d3158947e66/implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md"
+  },
+  "global_status_index": {
+    "source_sha256": "866fa2a9eb12d21b15e8fe91cb35adae3a1399f89e9aa53fcec916f81aff8f7e",
+    "locator": "https://raw.githubusercontent.com/kco994553-star/Investment-System1/5e33b30ce47b1875ae3b91fb3ba25d3158947e66/implementation/docs/coordination/GLOBAL_STATUS_INDEX.md"
+  },
+  "global_decision_register": {
+    "source_sha256": "eb3f0e1cab1bf2606653955d4cd4ae579be430f1a257ecbf3682ff5d21442a9d",
+    "locator": "https://raw.githubusercontent.com/kco994553-star/Investment-System1/5e33b30ce47b1875ae3b91fb3ba25d3158947e66/implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md"
+  },
+  "authority_resolution": "Current explicit Work D1/D2-only design scope prevails over broader Global CDR-015 execution labels. B4/B7 explicit user principles already approved; owner remote recording in progress, not yet published at intake."
+}
