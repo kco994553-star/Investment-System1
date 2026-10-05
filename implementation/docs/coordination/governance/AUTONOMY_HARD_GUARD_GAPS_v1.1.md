@@ -17,8 +17,8 @@ Rules:
 
 | ID | Protection area | Gate | Initial status | Current evidence | Next verification |
 |---|---|---|---|---|---|
-| HG-01 | Frozen/history/evidence destruction | A | PARTIAL_VERIFIED | PR #50 exact head `65a6c9d`; run `37300641046` SUCCESS; registry + fail-closed diff guard + negative tests verified. Required-check / GitHub-side enforcement still unverified | verify branch/ruleset required enforcement and protected integration/canonical path |
-| HG-02 | canonical mutation | A | NOT_VERIFIED | canonical unchanged at `b8e39a2`; branch-protection API read returned 403 `Resource not accessible by integration`; repository ruleset read empty is non-conclusive | inspect/configure branch protection/rulesets with admin-capable user/Claude Code credential and prove PR/check/no-force/no-delete enforcement |
+| HG-01 | Frozen/history/evidence destruction | A | VERIFIED | PR #50 exact head `c7738c0`; run `37300758757` SUCCESS. Canonical-target PR #51 exact head `de84abf`; run `37303986881` SUCCESS. Ruleset 24499602 now requires GitHub Actions `repository-guard`; missing/failed check blocks canonical merge | continue registry maintenance under §26A; protection removal/exclusion remains D3-R |
+| HG-02 | canonical mutation | A | VERIFIED | Ruleset `24499602` ACTIVE on exact canonical ref; deletion blocked, non-fast-forward/force-push blocked, PR required with 0 approvals, bypass list empty, required check=`repository-guard` bound to GitHub Actions integration id 15368; canonical `protected=true` | preserve exact ruleset; changes/removal/bypass expansion require D3-R |
 | HG-03 | runaway/cost control | A | PARTIAL_VERIFIED | PR #50 exact head `65a6c9d`; `AUTONOMY_MODE=READ_ONLY`, operating values 5/7200s/3 and readback tests verified in run `37300641046` | wire actual executor start/publish checks and prove RUN/PAUSE/READ_ONLY + task/lease/repair limits in E2E |
 | HG-04 | real trade/order/fund movement | P | NOT_VERIFIED | no authorization inferred; credential/module isolation not verified | verify no order credential in agent environment and separate execution authority |
 | HG-05 | financial credential/authority expansion | P | NOT_VERIFIED | no credential-access evidence admitted | verify secret isolation and .env read/write protection |
@@ -31,11 +31,13 @@ Rules:
 
 ## Gate A status
 
-- HG-01: PARTIAL_VERIFIED
-- HG-02: NOT_VERIFIED
+- HG-01: VERIFIED
+- HG-02: VERIFIED
 - HG-03: PARTIAL_VERIFIED
 
 Gate A: **CLOSED / UNATTENDED AUTONOMY DISABLED**
+
+HG-01 and HG-02 are VERIFIED. Gate A remains closed only on HG-03 executor/E2E enforcement.
 
 Latest bounded evidence: `governance/evidence/GATE_A_PR50_VERIFICATION_2026-10-05.md`. HG-02 is currently permission-blocked for authoritative GitHub-side verification; do not downgrade or fabricate it.
 
