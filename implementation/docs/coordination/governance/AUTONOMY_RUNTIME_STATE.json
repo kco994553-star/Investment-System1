@@ -1,0 +1,11 @@
+{
+  "schema": "autonomy-runtime-state-v1",
+  "cycle_id": null,
+  "holder": null,
+  "branch": null,
+  "started_at_epoch": null,
+  "lease_expires_at_epoch": null,
+  "tasks_used": 0,
+  "repair_rounds": {},
+  "status": "IDLE"
+}
