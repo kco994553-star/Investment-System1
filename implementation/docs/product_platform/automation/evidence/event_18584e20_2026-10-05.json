@@ -1,0 +1,147 @@
+{
+  "schema": "platform-event-invocation-receipt-v1",
+  "observed_at_utc": "2026-10-05T07:59:12.646Z",
+  "run_id": "platform-event-18584e20-c090-11f1-9b73-43ef0de39283",
+  "event": {
+    "repository": "kco994553-star/Investment-System1",
+    "pr": 45,
+    "event_type": "issue_comment",
+    "action": "created",
+    "delivery_id": "18584e20-c090-11f1-9b73-43ef0de39283",
+    "actor": "kco994553-star",
+    "comment_id_in_payload": null
+  },
+  "association": "Payload omits comment ID; no exact delivery-to-comment association is claimed. Complete current PR discussion was read, including all conversation/inline/review entries returned by connector.",
+  "discussion_observed": [
+    {
+      "id": 5988659420,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5988659420",
+      "created_at": "2026-10-05T05:27:00Z",
+      "marker": "<!-- main-platform-reconsume:78a51462:ppf003-005:v1 -->"
+    },
+    {
+      "id": 5989182963,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5989182963",
+      "created_at": "2026-10-05T06:19:13Z",
+      "marker": "<!-- main-platform-audit-return:11dba838:sa01-sa02:v1 -->"
+    },
+    {
+      "id": 5989651392,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5989651392",
+      "created_at": "2026-10-05T06:57:58Z",
+      "marker": "<!-- platform-audit-return:8f80395f:statement-fixture:rpv-v1 -->"
+    },
+    {
+      "id": 5989810728,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5989810728",
+      "created_at": "2026-10-05T07:10:59Z",
+      "marker": "<!-- main-platform-fixture-consumed:8f80395f:v1 -->"
+    },
+    {
+      "id": 5990208500,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5990208500",
+      "created_at": "2026-10-05T07:40:52Z",
+      "marker": "<!-- platform-ssot-loop:8599558dd1ec7e546ab46c230557ccf9e844e171:v1 -->"
+    }
+  ],
+  "new_item": {
+    "id": 5990208500,
+    "marker": "<!-- platform-ssot-loop:8599558dd1ec7e546ab46c230557ccf9e844e171:v1 -->",
+    "classification": "OWN_CONTROL_PUBLICATION",
+    "publication": "8599558dd1ec7e546ab46c230557ccf9e844e171",
+    "contains_material_owner_source_return": false
+  },
+  "fresh_refs": {
+    "owner_branch": "codex/product-platform-audit-v1",
+    "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "owner_source": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "global_branch": "integration/global-handoff-v1",
+    "global": "76df9e6a71fa91ff5ee260bc6087185facae3779",
+    "pr45_head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+    "web": "fb086eac4321140493ce554a541343cebbb81ed6",
+    "p01": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
+  },
+  "audit_input": "8599558dd1ec7e546ab46c230557ccf9e844e171",
+  "lease_claim": "08409c50747a85d019c57e659c8c1670a8b6e485",
+  "source_and_owner_contract": "CURRENT_UNCHANGED",
+  "global_routing": "Owner SA01/SA02 still SENT, source adoption false; P01/API runtime/identity/Web owner returns absent",
+  "decision": "CDR018/019/021/022 current; existing boundaries preserved",
+  "reuse": "Prior exact fixture/patch/CI receipts unchanged; no test execution or broad regression",
+  "execution_proof": {
+    "event_invocation_and_fresh_read": "OBSERVED",
+    "justified_noop_self_dedup": "OBSERVED",
+    "claim_nonforce_and_remote_readback": "VERIFIED",
+    "material_change_to_implementation_to_publication": "NOT_VERIFIED",
+    "followup_scheduler_hop": "NOT_VERIFIED"
+  },
+  "product_metrics": {
+    "start": 9,
+    "closed": 0,
+    "new": 0,
+    "end": 9,
+    "net_reduction": 0,
+    "target_net_gt_zero_achieved": false,
+    "counting": "deduplicated known blocking groups; candidate PASS and historical closure not counted"
+  },
+  "capabilities": {
+    "Auth": "NOT_STARTED",
+    "Tenant isolation": "PARTIAL",
+    "Financial Connector": "PARTIAL",
+    "Financial sync/import": "PARTIAL",
+    "Reconciliation": "PARTIAL",
+    "Immutable/auditable records": "PARTIAL",
+    "Read-only hard gate": "PARTIAL",
+    "Product API": "NOT_STARTED",
+    "Web/PWA": "PARTIAL",
+    "Investment-engine integration": "PARTIAL"
+  },
+  "verified_product_capabilities": 0,
+  "owner_actions": 9,
+  "tool_blocked": 1,
+  "wait_guards": {
+    "ready_D1_D2": 0,
+    "other_lane_ready": 0,
+    "bounded_repair_ready": 0,
+    "owner_returns_consumable_now": 0,
+    "CI_terminal_consumable_now": 0,
+    "SSoT_update_closure_ready": 0
+  },
+  "D3_current": [],
+  "failure_history": [
+    {
+      "kind": "RETRY_METADATA_PARSING",
+      "original": "Attempted structuredContent.result.content; connector exposes structuredContent.content",
+      "repair": "Inspected wrapper keys then parsed actual content; no write issued before correction"
+    },
+    {
+      "kind": "RETRY_LOCAL_SCOPE_READ",
+      "original": "Relative local read used scratch cwd, and local audit checkout lacks Global coordination files",
+      "repair": "Used explicit workdir/login=false and exact GitHub Global authoritative paths; no source change"
+    }
+  ],
+  "next": "WAIT_DEPENDENCY; execute affected acceptance only on exact owner return/write-set/source change. No further record or notification for same self/control inputs.",
+  "metadata_verification": {
+    "result": "PASS",
+    "checks": 17,
+    "scope": "queue/wait guards/dedup/historical receipts/authority boundaries; Product tests NOT_RUN",
+    "diff_check": "PASS"
+  },
+  "artifact_manifest": [
+    {
+      "path": "implementation/docs/product_platform/automation/STATE.json",
+      "bytes": 29432,
+      "sha256": "7e2c6f3d9a0a908c74577a94952dd7891a8d6746c24e85fc0c3234dd0b5ab013"
+    },
+    {
+      "path": "implementation/docs/product_platform/automation/CHECKPOINT.md",
+      "bytes": 7510,
+      "sha256": "b660cf64288b408455f8031c58bbe970ed1cbd425de803f0af2e4f9c39efe871"
+    },
+    {
+      "path": "implementation/docs/product_platform/CURRENT_HANDOFF.md",
+      "bytes": 8043,
+      "sha256": "b5db534be52de9fecfc6a11074af269c338574c6b2ba82da0289b050ba3cfe0c"
+    }
+  ]
+}

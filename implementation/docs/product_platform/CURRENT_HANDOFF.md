@@ -47,3 +47,7 @@ python implementation/tools/product_platform/run_local.py --db /tmp/platform-aud
 ```
 
 The launcher binds loopback only; synthetic IDs and data are clearly marked DEMO. The DB path must be outside the repository. Production cookie/TLS/IdP/financial credentials are not configured.
+
+## First event invocation receipt — 2026-10-05
+
+[Invocation receipt](automation/evidence/event_18584e20_2026-10-05.json) records one genuine PR45 webhook execution, fresh GitHub reads and justified own-publication dedup. The only previously unrecorded discussion item is own marker5990208500 at8599558; owner78a5146, Global76df9e6, canonicalb8e39a2 and relevant Web/P01 refs are unchanged. Product blockers remain9, source returns consumed0, READY0, current D3 decisions0. No Product tests or source changes. Material-change→implementation→publication continuation and the hourly followup hop remain NOT_VERIFIED. This receipt closes only first-event invocation/no-op acceptance, not Product readiness; it is recorded once without another PR comment. Future unchanged self/control events produce no repeated lease, evidence commit or notification.
