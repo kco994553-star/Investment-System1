@@ -1,0 +1,228 @@
+{
+  "schema": "main-convergence-delta-v1",
+  "observed_at_utc": "2026-10-05T06:22:21.928Z",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "global_input": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+  "lease_commit": "9cd598c5564827418115ebb15c1c88a0e7811bab",
+  "owner_heads": {
+    "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+    "chart": "40a5c266322d36dbf30a683f6f632508352145bc",
+    "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "platform_pr45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+    "platform_specialist": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+    "web": "fb086eac4321140493ce554a541343cebbb81ed6",
+    "qgv_pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "qgv_missing": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "qgv_reconciliation": "dc2dce6d538d4d66b71f98b59dc47b873312f7d9"
+  },
+  "runs": [
+    {
+      "id": 37267962003,
+      "name": "qgv-invalidation-binding",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/qgv-invalidation-binding.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962003"
+    },
+    {
+      "id": 37267962024,
+      "name": "us-equity-session",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/us-equity-session.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962024"
+    },
+    {
+      "id": 37267962000,
+      "name": "track-c-fpia",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/track-c-fpia.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000"
+    },
+    {
+      "id": 37267961987,
+      "name": "p01-research-publication",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/p01-research-publication.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961987"
+    },
+    {
+      "id": 37267961909,
+      "name": "sec-primary-disclosure",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/sec-primary-disclosure.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961909"
+    },
+    {
+      "id": 37267962109,
+      "name": "technical-real-producer",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/technical-real-producer.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962109"
+    },
+    {
+      "id": 37267961900,
+      "name": "technical-real-model",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/technical-real-model.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961900"
+    }
+  ],
+  "reused_evidence": [
+    {
+      "scope": "unchanged application/full regression input from2135962",
+      "tests": 2019,
+      "receipt": "../main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
+      "limitation": "Not new HEAD CI; added/changed FPIA tool/tests require affected verification; one disclosed optional-live SEC node deselected"
+    },
+    {
+      "scope": "Platform contract construction closure",
+      "head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+      "audit": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+      "result": "AUDIT_VERIFIED_EXTERNAL",
+      "checks": "9 focused +78 independent; existing22/405 CI; previous7 Main probes",
+      "limits": "runtime ownership/completeness/durable/API not closed"
+    },
+    {
+      "scope": "QGV inactive G/C convergence",
+      "head": "cba198e77370ccb214956015aa7cc490e73307ac",
+      "latest": "dc2dce6d538d4d66b71f98b59dc47b873312f7d9",
+      "result": "AUDIT_VERIFIED_EXTERNAL",
+      "published_checks": 59,
+      "main_checks": "30 exact artifact/ref hashes matched; completion receipt bound to CONTROL; latest delta only policy/CONTROL",
+      "limits": "inactive only; no selected methods/migration/runtime/actual hops"
+    },
+    {
+      "scope": "Chart sample UI",
+      "head": "4752bca2d58a61ef5821a0556b6480fc527fac80",
+      "evidence_packet": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+      "result": "SPECIALIST_SAMPLE_EVIDENCE_REUSED",
+      "owner_checks": "75 Node;3 new viewport captures;6 existing browser runs;5 independent negative cases",
+      "limits": "production gates0/6; no production implementation acceptance"
+    }
+  ],
+  "owner_routes": {
+    "qgv": {
+      "comment_id": 5989173684,
+      "state": "SENT",
+      "marker": "main-qgv-semantic-intake:cba198e7:v1"
+    },
+    "platform": {
+      "comment_id": 5989182963,
+      "state": "SENT",
+      "marker": "main-platform-audit-return:11dba838:sa01-sa02:v1"
+    },
+    "web": {
+      "comment_id": 5988663367,
+      "state": "SENT",
+      "receipt": null
+    }
+  },
+  "tool_use": [
+    "GitHub MCP read/write within Main scope",
+    "Superpowers systematic-debugging/test-driven-development/using-git-worktrees/verification-before-completion",
+    "Local Git/Python/pytest"
+  ],
+  "skipped": [
+    "No repeated QGV broad audit or59 checks",
+    "No Platform full audit/405 rerun",
+    "No Chart browser/UI rerun",
+    "No local full repository2019 rerun",
+    "No new agents/services/deployment"
+  ],
+  "new_d3": [],
+  "canonical_candidate": "NOT_READY",
+  "self_event": "92123980-c084-11f1-80ad-2889d202d0a6 coalesced; matches read-back Main comment5989173684, no duplicate executor",
+  "new_runs": [
+    {
+      "id": 37272321213,
+      "name": "sec-primary-disclosure",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321213",
+      "workflow_path": ".github/workflows/sec-primary-disclosure.yml"
+    },
+    {
+      "id": 37272321138,
+      "name": "p01-research-publication",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321138",
+      "workflow_path": ".github/workflows/p01-research-publication.yml"
+    },
+    {
+      "id": 37272321129,
+      "name": "technical-real-producer",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321129",
+      "workflow_path": ".github/workflows/technical-real-producer.yml"
+    },
+    {
+      "id": 37272321179,
+      "name": "us-equity-session",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321179",
+      "workflow_path": ".github/workflows/us-equity-session.yml"
+    },
+    {
+      "id": 37272321210,
+      "name": "qgv-invalidation-binding",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321210",
+      "workflow_path": ".github/workflows/qgv-invalidation-binding.yml"
+    },
+    {
+      "id": 37272321224,
+      "name": "technical-real-model",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321224",
+      "workflow_path": ".github/workflows/technical-real-model.yml"
+    },
+    {
+      "id": 37272321137,
+      "name": "track-c-fpia",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321137",
+      "workflow_path": ".github/workflows/track-c-fpia.yml"
+    }
+  ],
+  "chart_delta": "Risk-policy documentation/coordination only; prior SAMPLE source/evidence unchanged"
+}

@@ -5,18 +5,24 @@
   "fresh_scope": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global": "e36bec9be6be3bdf60ac7fd4ef8379a2ba93a7ae",
-    "chart": "eedab5922db453a7b11a851cf57844064ce00f3f",
+    "chart": "40a5c266322d36dbf30a683f6f632508352145bc",
     "chart_lease": {
       "status": "HELD",
-      "run_id": "manual-chart-fixture-review-20261005T052509016Z",
-      "acquired_at_utc": "2026-10-05T05:25:09.016Z",
-      "expires_at_utc": "2026-10-05T06:25:09.016Z",
-      "reason": "Owner dedicated SAMPLE canvas/missing-to-zero repair; no gate closure yet",
-      "main_action": "PRESERVED_NO_DUPLICATE_WRITER"
+      "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
+      "holder_kind": "CI_FOLLOWUP_AUTOMATION",
+      "acquired_at_utc": "2026-10-05T06:32:43.306Z",
+      "expires_at_utc": "2026-10-05T07:02:43.306Z",
+      "ttl_minutes": 30,
+      "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+      "verified_remote_acquisition": false,
+      "acquisition_parent_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
+      "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
+      "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
     },
-    "global_input": "e36bec9be6be3bdf60ac7fd4ef8379a2ba93a7ae",
+    "global_input": "9cd598c5564827418115ebb15c1c88a0e7811bab",
     "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
-    "fpia_successor": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
+    "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+    "qgv_reconciliation": "dc2dce6d538d4d66b71f98b59dc47b873312f7d9"
   },
   "summary": {
     "lane_a_open": 6,
@@ -70,7 +76,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -80,7 +86,8 @@
       "last_consumed_revision": null,
       "state": "FOUND",
       "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
-      "production_gate": "OPEN"
+      "production_gate": "OPEN",
+      "request_status": "BLOCKED"
     },
     {
       "id": "MAIN-CHART-A-S2-20261005",
@@ -100,7 +107,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -110,7 +117,8 @@
       "last_consumed_revision": null,
       "state": "FOUND",
       "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
-      "production_gate": "OPEN"
+      "production_gate": "OPEN",
+      "request_status": "BLOCKED"
     },
     {
       "id": "MAIN-CHART-A-S3-20261005",
@@ -131,7 +139,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -141,7 +149,8 @@
       "last_consumed_revision": null,
       "state": "FOUND",
       "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
-      "production_gate": "OPEN"
+      "production_gate": "OPEN",
+      "request_status": "BLOCKED"
     },
     {
       "id": "MAIN-CHART-A-G1-20261005",
@@ -163,7 +172,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -175,7 +184,8 @@
       "next_action": "Owner supplies source-bound acceptance artifact; Main verifies then Chart re-consumes",
       "production_gate": "OPEN",
       "delivery_comment_id": 5988265306,
-      "delivery_body_sha256": "219c87643e46bf46a2bcaa48453958a64f49347188f217cbb19e8f7f281b2971"
+      "delivery_body_sha256": "219c87643e46bf46a2bcaa48453958a64f49347188f217cbb19e8f7f281b2971",
+      "request_status": "SENT"
     },
     {
       "id": "MAIN-CHART-A-G2-20261005",
@@ -197,7 +207,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -211,7 +221,8 @@
       "integration_side_conditional_acceptance_ref": "MAIN-CHART-AG2-INTEGRATION-20261005",
       "integration_side_status": "ADOPTED_CONDITIONAL_PLANNING_ONLY",
       "delivery_comment_id": 5988265604,
-      "delivery_body_sha256": "bdbb491a262fdbda87b1e0258a1381adbf0158ee4808ecce62cf45319fa8e2b1"
+      "delivery_body_sha256": "bdbb491a262fdbda87b1e0258a1381adbf0158ee4808ecce62cf45319fa8e2b1",
+      "request_status": "SENT"
     },
     {
       "id": "MAIN-CHART-A-G3-20261005",
@@ -221,7 +232,7 @@
       "required_artifact": "implementation/docs/coordination/evidence/GIE-014_main_takeover_fpia_2026-10-05.md",
       "exact_path_branch_pr": {
         "branch": "codex/fpia-fix3-literal-repair-2026-10-05",
-        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
         "pr": 46
       },
       "acceptance_criteria": "Final exact tool head Actions plus independent/adversarial/completeness evidence; current authority decisions a-e/G7 and GIE closure; future Chart result audit separate.",
@@ -232,7 +243,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -241,8 +252,9 @@
       "receipt": null,
       "last_consumed_revision": null,
       "state": "IN_PROGRESS",
-      "next_action": "Consume PR46 new-head CI; implement/verify PIW-D001..006 obligations; exact Chart result audit later",
-      "production_gate": "OPEN"
+      "next_action": "Consume existing new exactHEAD7CI; verifier authorization/coverage/admissibility +final assembled-result acceptance remain; priora3 FPIA_FAIL retained",
+      "production_gate": "OPEN",
+      "request_status": "IN_PROGRESS"
     },
     {
       "id": "MAIN-CHART-B01-20261005",
@@ -262,7 +274,7 @@
       ],
       "dependencies": [
         "existing issuer_id/security_id",
-        "issuer→security relation",
+        "issuer\u2192security relation",
         "economic instrument/share class/form",
         "effective interval",
         "source ID/path/hash",
@@ -272,7 +284,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -282,7 +294,8 @@
       "last_consumed_revision": null,
       "state": "FOUND",
       "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
-      "production_gate": "OPEN"
+      "production_gate": "OPEN",
+      "request_status": "BLOCKED"
     },
     {
       "id": "MAIN-CHART-B02-20261005",
@@ -312,7 +325,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -322,7 +335,8 @@
       "last_consumed_revision": null,
       "state": "FOUND",
       "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
-      "production_gate": "OPEN"
+      "production_gate": "OPEN",
+      "request_status": "BLOCKED"
     },
     {
       "id": "MAIN-CHART-B03-20261005",
@@ -352,7 +366,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -364,7 +378,8 @@
       "next_action": "Owner supplies source-bound acceptance artifact; Main verifies then Chart re-consumes",
       "production_gate": "OPEN",
       "delivery_comment_id": 5988265466,
-      "delivery_body_sha256": "b6846638d591437159001865e85bbeb7cfd759e89d9b3252360c40ee7a17f969"
+      "delivery_body_sha256": "b6846638d591437159001865e85bbeb7cfd759e89d9b3252360c40ee7a17f969",
+      "request_status": "SENT"
     },
     {
       "id": "MAIN-CHART-B04-20261005",
@@ -394,7 +409,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -406,7 +421,8 @@
       "next_action": "Owner supplies source-bound acceptance artifact; Main verifies then Chart re-consumes",
       "production_gate": "OPEN",
       "delivery_comment_id": 5988265466,
-      "delivery_body_sha256": "b6846638d591437159001865e85bbeb7cfd759e89d9b3252360c40ee7a17f969"
+      "delivery_body_sha256": "b6846638d591437159001865e85bbeb7cfd759e89d9b3252360c40ee7a17f969",
+      "request_status": "SENT"
     },
     {
       "id": "MAIN-CHART-B05-20261005",
@@ -435,7 +451,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -445,7 +461,8 @@
       "last_consumed_revision": null,
       "state": "FOUND",
       "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
-      "production_gate": "OPEN"
+      "production_gate": "OPEN",
+      "request_status": "BLOCKED"
     },
     {
       "id": "MAIN-CHART-B06-20261005",
@@ -476,7 +493,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -486,7 +503,8 @@
       "last_consumed_revision": null,
       "state": "FOUND",
       "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
-      "production_gate": "OPEN"
+      "production_gate": "OPEN",
+      "request_status": "BLOCKED"
     },
     {
       "id": "MAIN-CHART-B07-20261005",
@@ -515,7 +533,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -525,7 +543,8 @@
       "last_consumed_revision": null,
       "state": "FOUND",
       "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
-      "production_gate": "OPEN"
+      "production_gate": "OPEN",
+      "request_status": "BLOCKED"
     },
     {
       "id": "MAIN-CHART-B08-20261005",
@@ -553,7 +572,7 @@
       "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
       "source_decision": [
         "CDR-015",
-        "CDR-016 §13",
+        "CDR-016 \u00a713",
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
@@ -563,7 +582,8 @@
       "last_consumed_revision": null,
       "state": "FOUND",
       "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
-      "production_gate": "OPEN"
+      "production_gate": "OPEN",
+      "request_status": "BLOCKED"
     },
     {
       "id": "MAIN-PLATFORM-CI-20261005",
@@ -611,7 +631,8 @@
         "CDR-016",
         "CDR-017",
         "CDR-018"
-      ]
+      ],
+      "request_status": "VERIFIED"
     },
     {
       "id": "MAIN-QGV-HOP1-20261005",
@@ -647,7 +668,8 @@
         "CDR-016",
         "CDR-017",
         "CDR-018"
-      ]
+      ],
+      "request_status": "SENT"
     },
     {
       "id": "MAIN-PLATFORM-P01-20261005",
@@ -677,7 +699,8 @@
         "CDR-016",
         "CDR-017",
         "CDR-018"
-      ]
+      ],
+      "request_status": "SENT"
     },
     {
       "id": "MAIN-PLATFORM-API-20261005",
@@ -711,14 +734,15 @@
         "CDR-016",
         "CDR-017",
         "CDR-018"
-      ]
+      ],
+      "request_status": "SENT"
     },
     {
       "id": "MAIN-PLATFORM-IDENTITY-20261005",
       "finding": "Imported ACTUAL position identity owner not established",
       "authoritative_owner": null,
       "owner_assignment": "OWNER_UNASSIGNED",
-      "required_artifact": "Issuer→Security→dated Listing authoritative binding",
+      "required_artifact": "Issuer\u2192Security\u2192dated Listing authoritative binding",
       "exact_path_branch_pr": {
         "branch": null,
         "pr": null
@@ -742,7 +766,8 @@
         "CDR-016",
         "CDR-017",
         "CDR-018"
-      ]
+      ],
+      "request_status": "BLOCKED"
     },
     {
       "id": "MAIN-PLATFORM-FPIA-20261005",
@@ -756,7 +781,7 @@
       },
       "acceptance_criteria": [
         "do not block independent contract/design on future FPIA",
-        "no branchCI→canonical acceptance promotion"
+        "no branchCI\u2192canonical acceptance promotion"
       ],
       "dependencies": [
         "actual production package proposal"
@@ -772,7 +797,8 @@
         "CDR-016",
         "CDR-017",
         "CDR-018"
-      ]
+      ],
+      "request_status": "BLOCKED"
     },
     {
       "id": "MAIN-FPIA-IMPORTER-20261005",
@@ -800,7 +826,8 @@
       "receipt": null,
       "last_consumed_revision": null,
       "state": "ROUTED",
-      "next_action": "Owner returns bounded attribution if future subject needs this optional branch"
+      "next_action": "Owner returns bounded attribution if future subject needs this optional branch",
+      "request_status": "SENT"
     },
     {
       "id": "MAIN-PLATFORM-PPF-RETURN-20261005",
@@ -813,7 +840,7 @@
         "path": "implementation/docs/product_platform_audit/CURRENT_HANDOFF.md",
         "pr": null
       },
-      "state": "ROUTED",
+      "state": "CONSUMED",
       "source_receipt": "Platform owner consumed PR45 exact17244b4; Main independently verified7affectedprobes",
       "acceptance_criteria": [
         "audit re-consumes exact source603d1c64 and immutable hash",
@@ -825,15 +852,21 @@
       "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5988659420",
       "delivery_body_sha256": "bbad9a80395fd60f94526c35c852beb184a22acc46b590dc94ebede1862361ba",
       "delivered_at": "2026-10-05T05:27:00Z",
-      "receipt": null,
-      "last_consumed_revision": null,
-      "next_action": "Independent scoped audit returns exact-head re-consumption/finding decisions; comment alone not receipt",
+      "receipt": {
+        "head": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+        "source": "78a51462f89eac8e34647cddc4e53ed97e831178",
+        "scope": "PPF003 malformed reference/lineage +PPF005 blank identity construction only",
+        "evidence": "specialist9+78 checks and oldCI22/405; no relevant owner source drift"
+      },
+      "last_consumed_revision": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+      "next_action": "Separate runtime/completeness/durable/API and newSA01/SA02 owner return remain open",
       "destination": {
         "pr": 45,
         "branch": "codex/product-platform-foundation-2026-10-05",
         "head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
         "role": "independent scoped re-consumption"
-      }
+      },
+      "request_status": "VERIFIED"
     },
     {
       "id": "MAIN-PLATFORM-WEB-PPAF08-20261005",
@@ -860,7 +893,32 @@
       "delivered_at": "2026-10-05T05:27:23Z",
       "receipt": null,
       "last_consumed_revision": null,
-      "next_action": "Accountable Web owner returns scope acceptance or OWNER_UNASSIGNED; Main does not seize protected source"
+      "next_action": "Accountable Web owner returns scope acceptance or OWNER_UNASSIGNED; Main does not seize protected source",
+      "request_status": "SENT"
+    },
+    {
+      "id": "MAIN-PLATFORM-SA01-SA02-20261005",
+      "state": "ROUTED",
+      "request_status": "SENT",
+      "authoritative_owner": "Platform implementation owner; current audit-return PR45",
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5989182963",
+      "comment_id": 5989182963,
+      "receipt": null,
+      "acceptance_criteria": "SA01 digest representation repair; SA02 inherited method admission repair",
+      "next_action": "Exact accountable owner return required; delivery is not ACK or execution",
+      "delivery_body_sha256": "9467eae1a30f6bf23fdcf1000e3e4be5ceffdab64c71789f0e2a078e5b279b11"
+    },
+    {
+      "id": "MAIN-QGV-G1G2-RETURN-20261005",
+      "state": "ROUTED",
+      "request_status": "SENT",
+      "authoritative_owner": "QGV missing-data/reconciliation owners",
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-5989173684",
+      "comment_id": 5989173684,
+      "receipt": null,
+      "acceptance_criteria": "Consume authenticated G1/G2 intent approval +inactiveG/C package; do not select methods",
+      "next_action": "Exact accountable owner return required; delivery is not ACK or execution",
+      "delivery_body_sha256": "2be18d5aa66dc27bb428c1a58e5c65daf446562d8433daf511fe5fd6c1ef6e66"
     }
   ],
   "wake_up": "Main PR41 synchronize and API-authored PR17 comment events observed; self-comment deduplicated. Other owner wake/receipt unverified.",
@@ -908,10 +966,39 @@
   "platform_delta": {
     "head": "78a51462f89eac8e34647cddc4e53ed97e831178",
     "main_independent_probes": "7/7 PASS",
-    "PPF003": "CONTRACT_VALIDATION_CLOSED_BY_MAIN; SCOPED_RECONSUMPTION_PENDING",
-    "PPF005": "BLANK_IDENTITY_CLOSED; TRUSTED_RUNTIME_OPEN",
+    "PPF003": "AUDIT_VERIFIED_EXTERNAL_CONSTRUCTION_SCOPE",
+    "PPF005": "BLANK_IDENTITY_VERIFIED_EXTERNAL_RUNTIME_OPEN",
     "PPF004": "OPEN",
     "PPF006": "OPEN",
-    "production_capability": "NOT_VERIFIED"
+    "production_capability": "NOT_VERIFIED",
+    "new_owner_action": [
+      "SA01",
+      "SA02"
+    ],
+    "audit_head": "11dba838c6e27430aa07957f69e4ae8b270c999b"
+  },
+  "verification_policy": "CDR-021 / main_convergence EXECUTION_POLICY.md",
+  "chart_gate_rejudgement": {
+    "head": "40a5c266322d36dbf30a683f6f632508352145bc",
+    "CLOSED": 0,
+    "total": 6,
+    "gates": {
+      "A-S1": "BLOCKED",
+      "A-S2": "BLOCKED",
+      "A-S3": "BLOCKED",
+      "A-G1": "OWNER_ACTION_PENDING",
+      "A-G2": "OWNER_ACTION_PENDING",
+      "A-G3": "OPEN"
+    },
+    "reasons": "S1/S2/S3 authoritative owners unassigned;G1 applicability/readroute absent;G2 conditional planning only;G3 FPIA technical/governance unfinished"
+  },
+  "qgv_delta": {
+    "head": "dc2dce6d538d4d66b71f98b59dc47b873312f7d9",
+    "status": "AUDIT_VERIFIED_EXTERNAL_INACTIVE",
+    "G1_G2_intent": "APPROVED_SCOPED_USER_RECORD",
+    "actual_methods": "NOT_SELECTED",
+    "migration": "NOT_APPROVED",
+    "source_owner_lease": "qgv-b47-muupb538 preserved; no release evidence",
+    "actual_hops": "0/2 UNVERIFIED"
   }
 }

@@ -1,0 +1,62 @@
+{
+  "policy": "v1.0",
+  "new_agents_started": 0,
+  "ownership": {
+    "Main": "implementation/integration coordinator",
+    "QGV Audit": "specialist evidence",
+    "Platform Audit": "specialist evidence",
+    "Chart Audit": "specialist evidence",
+    "Claude Monitor": "global independent monitor, not Main writer"
+  },
+  "work": [
+    {
+      "work": "FPIA D002 self-constraint repair + receipt chain",
+      "lane": "CRITICAL",
+      "owner": "Main",
+      "verification": "172 targeted/self +667 affected +9132 boundary equivalence; old failure archive/result/run/side hashes and29 verifier blobs verified",
+      "reused": "2019 unchanged application-input regression context; original165 independent review scope; not newHEAD CI",
+      "skipped": "local full repository, new review/completeness panel",
+      "why": "Two-file shape-equivalent change and existing valid unchanged-source specialist evidence"
+    },
+    {
+      "work": "Chart SAMPLE/UI",
+      "lane": "FAST",
+      "owner": "Chart Audit",
+      "verification": "published specialist evidence reused; source unchanged through policy/coordination delta",
+      "skipped": "Main browser/Python/FPIA repeats"
+    },
+    {
+      "work": "Chart production contract/adapter",
+      "lane": "STANDARD",
+      "owner": "Chart owner",
+      "status": "6 gates pending; no production start",
+      "critical_boundary": "PIT/Auth protected checks remain CRITICAL"
+    },
+    {
+      "work": "Platform contracts/API/sync",
+      "lane": "STANDARD",
+      "owner": "Platform owner; specialist Platform Audit",
+      "status": "construction subfindings verified external;SA01 needs owner repair;runtime/durable/completeness/API open"
+    },
+    {
+      "work": "Platform Auth/Tenant/read-only",
+      "lane": "CRITICAL",
+      "owner": "Platform Audit + implementation owner",
+      "status": "SA02 routed; no Main duplicate source edits"
+    },
+    {
+      "work": "QGV semantic/methodology",
+      "lane": "CRITICAL",
+      "owner": "QGV Audit/source owner",
+      "verification": "30 artifact/ref hashes +completion receipt;59 published specialist checks reused",
+      "status": "G1/G2 semantic intent approved; methods/runtime/migration pending",
+      "access": "read-only dependency"
+    },
+    {
+      "work": "Global docs/routing",
+      "lane": "FAST",
+      "owner": "Main",
+      "verification": "JSON parse, exact pins, unique routing IDs/hash/comment readback, exact-parent non-force publication"
+    }
+  ]
+}

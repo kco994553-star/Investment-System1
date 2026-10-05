@@ -4,7 +4,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-024 (PIW-D002 finite implementation; terminal CI; Platform/Chart current receipts) |
+| Index revision | GSI-025 (bounded CI repair; external evidence reuse; candidate convergence) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | GPT Work `gpt-work-main-2026-10-05-3a80dcef6444`; CDR-018 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
@@ -13,23 +13,11 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 **Decision authority (CDR-015, 2026-10-05 12:15 KST):** classifications below that read USER_DECISION_REQUIRED or "not approved" were made under the earlier authority. Under CDR-015 they are D2 for the responsible Work (decide with evidence, record reason/impact/verification/recovery), except paid resources (D3). Reclassification in progress; PIW decisions go to `PIW_DECISION_RECORDS.md`.
 
-## Current override · GCH-018 / CDR-018 / CDR-019
+## Current override · GCH-019 / CDR-020 / CDR-021
 
-Current authority is CDR-015 **narrowed by CDR-016 §13/CDR-017/CDR-018**. Tool guidance CDR-019 changes no owner or approval boundary. Historical broad labels below are superseded where scoped evidence differs.
+CDR-015 is narrowed byCDR-016§13/CDR-017/CDR-018. Latest convergence/proportional-verification policy expands no protected authority. Read GCH-019 and evidence/main_convergence_2026-10-05/INTAKE.json/FPIA_RECEIPT.json/LANES.json/CANONICAL_CANDIDATE.md. Historical oldheads/WAIT/D3 labels below do not override exact source/approval/owner returns.
 
-| Capability | Fresh evidence | Integration disposition |
-|---|---|---|
-| FPIA | PR46 old2135962a CI7/7SUCCESS; new`a3e3f6cf5452d056de2df7845a17014765aa3ff3` additive compound consumer165testsPASS, newCIpending | Authentication/governance/exact merge acceptance BLOCKED; consistency utility only |
-| Chart | `eedab5922db453a7b11a851cf57844064ce00f3f` STATE-only active SAMPLE repair lease; no gate closure | 6LaneA OPEN; LaneB0/19,8families; owner scope preserved |
-| Portfolio/Identity | No bounded authoritative owner claim | OWNER_UNASSIGNED |
-| Product/Web/Session | Existing PR17/18/36 requests; precise PPAF08 PR36comment5988663367 | Delivery not receipt; protected Web source not seized |
-| QGV | Missing4fb08a0 active lease; separate reconciliation4d53aa3 | HOP1 receipt dependency; Main selects no production semantics |
-| Platform owner | `78a51462f89eac8e34647cddc4e53ed97e831178` source603d1c64; existingCI22/405PASS;7Mainindependent probes | PPF003+blankidentitysubfinding repaired; runtimeauth/financial/durablestore OPEN |
-| Platform independent audit | PR45 17244b4; returncomment5988659420 delivered/readback | Await scoped re-consumption; synthetic harness not owner replacement |
-| Tool discovery | Context7docs/Superpowerscurrentphase; Linear0projects,no matchingissues,read-only | No invented service target; connection not completion |
-| Main continuation | Existing events coalesced with same Main writer, IDs retained | Standalone unattended END_TO_END_VERIFIED unclaimed; no duplicate executor |
-
-Evidence: current Main state/ledger and `evidence/main_tools_2026-10-05/`. No canonical readiness from docs or test count.
+FPIAold a3e3CI7FAILURE and rawFPIA_FAIL preserved; new6fea6c7f repair667affectedPASS,new7CIpending. Authentication/admissibility/exact finalresult open. Chartproduction0/6;WebACTUALfallback1OPEN. Platformconstruction2subfindingsVERIFIED_EXTERNAL;4broadruntime/completeness/durable/API gaps +2newSA01/SA02 owneractions remain. QGVG1/G2intentapproved in scopedrecord;methods/migration/runtimepending. Canonicalunchanged,candidateNOT_READY. Newagents0, no repeated specialist/fullrepo audit. Mainsharedlease released duringCIwait.
 
 ## 1. Maturity scale and state columns
 

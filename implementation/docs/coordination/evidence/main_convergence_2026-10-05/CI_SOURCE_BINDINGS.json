@@ -1,0 +1,120 @@
+{
+  "workflow": {
+    "path": ".github/workflows/track-c-fpia.yml",
+    "source": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "blob": "92002c471830932a1c240006d2a6152bdacb2c1f"
+  },
+  "verifier": {
+    "path": "implementation/tools/integration/track_c_fpia.py",
+    "source": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "blob": "94212f9592806c091b68db35c8f0c5513deecc57"
+  },
+  "artifact": {
+    "id": 11328740798,
+    "node_id": "MDg6QXJ0aWZhY3QxMTMyODc0MDc5OA==",
+    "name": "track-c-fpia-a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "size_in_bytes": 58572,
+    "url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11328740798",
+    "archive_download_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11328740798/zip",
+    "expired": false,
+    "digest": "sha256:13d7f067019af8530e7a2aaabc21201ffa39018f472b15dbb8510d75c219728c",
+    "created_at": "2026-10-05T06:21:28Z",
+    "updated_at": "2026-10-05T06:21:28Z",
+    "expires_at": "2027-01-03T05:28:43Z",
+    "workflow_run": {
+      "id": 37267962000,
+      "repository_id": 1379547477,
+      "head_repository_id": 1379547477,
+      "head_branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+      "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
+    }
+  },
+  "old_runs": [
+    {
+      "id": 37267962003,
+      "name": "qgv-invalidation-binding",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/qgv-invalidation-binding.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962003"
+    },
+    {
+      "id": 37267962024,
+      "name": "us-equity-session",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/us-equity-session.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962024"
+    },
+    {
+      "id": 37267962000,
+      "name": "track-c-fpia",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/track-c-fpia.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000"
+    },
+    {
+      "id": 37267961987,
+      "name": "p01-research-publication",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/p01-research-publication.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961987"
+    },
+    {
+      "id": 37267961909,
+      "name": "sec-primary-disclosure",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/sec-primary-disclosure.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961909"
+    },
+    {
+      "id": 37267962109,
+      "name": "technical-real-producer",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/technical-real-producer.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962109"
+    },
+    {
+      "id": 37267961900,
+      "name": "technical-real-model",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "workflow_path": ".github/workflows/technical-real-model.yml",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961900"
+    }
+  ],
+  "new_head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+  "new_tree": "f1f7f01daf98e0f913b36d86b29e6099f53e4817",
+  "new_file_blobs": [
+    {
+      "path": "implementation/tools/integration/track_c_fpia_evidence_identity.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e6a4d589be4798dc069bb7de5281fa5c288dd582"
+    },
+    {
+      "path": "implementation/tests/test_integration_fpia_evidence_identity.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fdeb07dbb2bccbaa923906e45ebf486e34e590f5"
+    }
+  ]
+}

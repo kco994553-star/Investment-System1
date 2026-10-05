@@ -1,0 +1,30 @@
+{
+  "scope": "current intake code-defect delta; not total system blockers",
+  "blockers_start": 2,
+  "closed": 2,
+  "new": 2,
+  "net_blocker_reduction": 0,
+  "remaining_in_scope": 2,
+  "closed_ids": [
+    "D002_NUMERIC_SHAPE_SELF_CONSTRAINT",
+    "D002_SYNTHETIC_SHA_LITERAL_SELF_CONSTRAINT"
+  ],
+  "new_ids": [
+    "PLATFORM_SA01_DIGEST_CASE",
+    "PLATFORM_SA02_INHERITED_CALLABLE_ADMISSION"
+  ],
+  "closure_level": "local implementation +affected verification; successorCI still pending",
+  "implementations_completed": 1,
+  "verification_completed": [
+    "172 targeted/self",
+    "667 affected",
+    "9132 shape-boundary comparisons",
+    "failed artifact integrity +29 Git blob identities",
+    "30 QGV artifact/ref hashes"
+  ],
+  "new_audit_agents": 0,
+  "reused_specialist_checks": true,
+  "user_interventions_required": 0,
+  "tool_block": "initial cached runtime AC36NOT_RUN; isolated pinned reinstall resolved; no tool wait holds shared lease",
+  "ci_wait": "new7runs pending; release shared lease"
+}

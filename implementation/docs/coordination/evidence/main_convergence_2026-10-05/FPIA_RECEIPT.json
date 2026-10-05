@@ -1,0 +1,213 @@
+{
+  "schema": "main-fpia-terminal-and-repair-v1",
+  "old_head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+  "run_id": 37267962000,
+  "attempt": 1,
+  "job_id": 111628676484,
+  "terminal": "FAILURE",
+  "artifact_id": 11328740798,
+  "archive_sha256": "13d7f067019af8530e7a2aaabc21201ffa39018f472b15dbb8510d75c219728c",
+  "result_sha256": "3f7b27e7fc9c1d25fc9dc66cc9db76f37ad43b338289a3022c3c7012d263b41d",
+  "run_sha256": "74ec3f52f48c6aa9101527c50f657c86958812d36f6ba0b132e06eb53ee8cd4b",
+  "side_file_hashes_verified": 6,
+  "verifier": {
+    "clean": true,
+    "commit": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "dirty": [],
+    "files": {
+      "_vendor/README.md": "12c753ee29cca2b5ab772eba3c2aef8dd9fe6c1a",
+      "_vendor/__init__.py": "4693f619a0c8ee99561981d47145f382adbd7c24",
+      "_vendor/yaml/LICENSE": "2f1b8e15e5627d92f0521605c9870bc8e5505cb4",
+      "_vendor/yaml/__init__.py": "824936194774d34cd5e7816e519d00517612e7b4",
+      "_vendor/yaml/composer.py": "6d15cb40e3b4198819c91c6f8d8b32807fcf53b2",
+      "_vendor/yaml/constructor.py": "619acd3070a4845c653fcf22a626e05158035bc2",
+      "_vendor/yaml/dumper.py": "6aadba551f3836b02f4752277f4b3027073defad",
+      "_vendor/yaml/emitter.py": "a664d011162af69184df2f8e59ab7feec818f7c7",
+      "_vendor/yaml/error.py": "b796b4dc519512c4825ff539a2e6aa20f4d370d0",
+      "_vendor/yaml/events.py": "f79ad389cb6c9517e391dcd25534866bc9ccd36a",
+      "_vendor/yaml/loader.py": "e90c11224c38e559cdf0cb205f0692ebd4fb8681",
+      "_vendor/yaml/nodes.py": "c4f070c41e1fb1bc01af27d69329e92dded38908",
+      "_vendor/yaml/parser.py": "13a5995d292045d0f865a99abf692bd35dc87814",
+      "_vendor/yaml/reader.py": "774b0219b5932a0ee1c27e637371de5ba8d9cb16",
+      "_vendor/yaml/representer.py": "808ca06dfbd60c9a23eb079151b74a82ef688749",
+      "_vendor/yaml/resolver.py": "3522bdaaf6358110b608f4e6503b9d314c82d887",
+      "_vendor/yaml/scanner.py": "de925b07f1eaec33c9c305a8a69f9eb7ac5983c5",
+      "_vendor/yaml/serializer.py": "fe911e67ae7a739abb491fbbc6834b9c37bbda4b",
+      "_vendor/yaml/tokens.py": "4d0b48a394ac8c019b401516a12f688df361cf90",
+      "track_c_fpia.py": "94212f9592806c091b68db35c8f0c5513deecc57",
+      "track_c_fpia_auth.py": "93a46aa8820a1d2d57a48a9de80420a18b3dcefc",
+      "track_c_fpia_checks.py": "7a5829044ac1f3649391156bc8145ba967072ce5",
+      "track_c_fpia_child.py": "e5d06fed89e334f803bbfa95928540d5ba2f7e40",
+      "track_c_fpia_counterfactual.py": "bf431ce78218590445458721d9b6371f4614f93d",
+      "track_c_fpia_derive.py": "fc1831e9c74ef7671ff2b7e40c0da7e003345ad9",
+      "track_c_fpia_evidence_identity.py": "5b4ed76a580f07f4f7e3690de7f68236524cf108",
+      "track_c_fpia_git.py": "20a970d83d73ef0a25a99d5d2a37d2fd7ff2c286",
+      "track_c_fpia_runner.py": "e26ee8e29751f245796b723682836d985dd2aceb",
+      "track_c_fpia_workflows.py": "c3195cd38ebd4a01b2eb74c3ba590ca9da0eb7db"
+    },
+    "files_rule": "every file under the verifier directory except __pycache__/ and *.pyc/*.pyo"
+  },
+  "verifier_git_blob_comparison": "29/29 MATCH",
+  "workflow_blob": "92002c471830932a1c240006d2a6152bdacb2c1f",
+  "authority_register": "e36bec9be6be3bdf60ac7fd4ef8379a2ba93a7ae",
+  "authority_register_blob": "ed7b25d9d6c0ce8790ef4c4b0ab912d0c0b2bb43",
+  "subject": {
+    "tree": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "tree_object": "cdade46e1c9402a90272fbe325d6e04398b7b5ea"
+  },
+  "raw_verdict": {
+    "reasons": [
+      "full_regression FAIL"
+    ],
+    "status": "FPIA_FAIL"
+  },
+  "full_regression": {
+    "collect_errors": [],
+    "counts": {
+      "errors": 0,
+      "failures": 2,
+      "skipped": 0,
+      "tests": 2184
+    },
+    "deselect_rule": {
+      "file": "implementation/tests/test_raw_and_providers.py",
+      "node": "tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2",
+      "present_at_T": true,
+      "rule": "honoured only while its file is byte-identical to R's (PIW ruling); disclosed deviation",
+      "valid": true
+    },
+    "deselected": [
+      "implementation/tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2"
+    ],
+    "junit": {
+      "errors": 0,
+      "failures": 2,
+      "skipped": 0,
+      "tests": 2184
+    },
+    "non_track_c_failures": [
+      "implementation/tests/test_integration_fpia_self.py::test_no_numeric_thresholds",
+      "implementation/tests/test_integration_fpia_self.py::test_no_sha_or_pr_literals"
+    ],
+    "rc": 1,
+    "status": "FAIL",
+    "track_c_nodes": 837
+  },
+  "statuses": {
+    "authority": "PASS",
+    "code_identity": "CODE_IDENTITY_DIVERGED",
+    "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+    "full_regression": "FAIL",
+    "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+    "integration_interference": "INTEGRATION_INTERFERENCE_NONE",
+    "runtime_provenance": "PASS",
+    "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+    "v2_binding": "PASS"
+  },
+  "old_head_success_claim": false,
+  "new_head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+  "new_tree": "f1f7f01daf98e0f913b36d86b29e6099f53e4817",
+  "repair": {
+    "scope": "two existing D002 tool/test files only",
+    "targeted_consumer_and_self": 172,
+    "affected_fpia": 667,
+    "boundary_equivalence_comparisons": 9132,
+    "all_pass": true,
+    "initial_environment_run": "42 FAILED /623 PASS; cached target installation missed RECORD script files; NOT_RUN, not product regression evidence",
+    "environment_repair": "reinstall pinned pytest9.1.1/numpy2.3.5 into isolated venv; single affected control1PASS before rerun",
+    "python": "3.12.14",
+    "elapsed_affected_seconds": 472.04,
+    "tree_identical": true,
+    "commit_identical_claim": false,
+    "affected_log": {
+      "path": "AFFECTED_FPIA_667_PASS.log",
+      "sha256": "00e94723a879e425f01d403ebf9146cbfdfb7bbbe4dbe223f74bf8e4b06d3fd2"
+    }
+  },
+  "trace_chain": {
+    "authority": "CDR014 authenticated registere36; current D1/D2 CDR015 narrowed016/017/018",
+    "verifier": "exact GitHub29 blobs matched; independently authorized launcher/trust still OPEN",
+    "subject": "a3e3 commit/tree matched",
+    "execution": "run37267962000 attempt1 job111628676484 terminalFAILURE",
+    "artifact": "archive11328740798 digest matched",
+    "result": "canonical result/run and6 side hashes matched",
+    "receipt": "this failure receipt, no green relabel",
+    "global_handoff": "containing output commit links this receipt"
+  },
+  "governance": "INTEGRATION_ACCEPTANCE_BLOCKED",
+  "new_head_ci": "PENDING_SEPARATE_EXACT_HEAD",
+  "reused_full_regression": "Old2135962a2019 evidence only for unchanged application input; source delta two tool/test files; no newhead CI claim",
+  "skip_reason": "No broad subsystem/full repository rerun, no new agents; changed FPIA scope667 justified by actual CI failures",
+  "new_runs": [
+    {
+      "id": 37272321213,
+      "name": "sec-primary-disclosure",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321213",
+      "workflow_path": ".github/workflows/sec-primary-disclosure.yml"
+    },
+    {
+      "id": 37272321138,
+      "name": "p01-research-publication",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321138",
+      "workflow_path": ".github/workflows/p01-research-publication.yml"
+    },
+    {
+      "id": 37272321129,
+      "name": "technical-real-producer",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321129",
+      "workflow_path": ".github/workflows/technical-real-producer.yml"
+    },
+    {
+      "id": 37272321179,
+      "name": "us-equity-session",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321179",
+      "workflow_path": ".github/workflows/us-equity-session.yml"
+    },
+    {
+      "id": 37272321210,
+      "name": "qgv-invalidation-binding",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321210",
+      "workflow_path": ".github/workflows/qgv-invalidation-binding.yml"
+    },
+    {
+      "id": 37272321224,
+      "name": "technical-real-model",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321224",
+      "workflow_path": ".github/workflows/technical-real-model.yml"
+    },
+    {
+      "id": 37272321137,
+      "name": "track-c-fpia",
+      "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37272321137",
+      "workflow_path": ".github/workflows/track-c-fpia.yml"
+    }
+  ]
+}
