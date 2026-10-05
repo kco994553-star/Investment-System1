@@ -63,21 +63,29 @@
       "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
       "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
       "36": "fb086eac4321140493ce554a541343cebbb81ed6",
-      "41": "c552d0108091bb48ec851e42f43e6ae852d4bdba",
+      "41": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
       "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
       "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
-      "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
+      "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+      "46": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
     },
-    "observed_at_utc": "2026-10-05T04:44:51.252205+00:00",
-    "owner_output_head": "395a24eef42fde2ddec8831808daba5e768d72e2",
+    "observed_at_utc": "2026-10-05T05:57:20.531Z",
+    "owner_output_head": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
     "event_watermarks": {
       "17": {
         "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
+          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
+          "observed_at_utc": "2026-10-05T05:23:14.033Z",
+          "observed_count": 1,
+          "last_id": 5988265306,
+          "items": [
+            {
+              "id": 5988265306,
+              "updated_at": null,
+              "body_sha256": "219c87643e46bf46a2bcaa48453958a64f49347188f217cbb19e8f7f281b2971"
+            }
+          ],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
         },
         "reviews": {
           "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
@@ -96,17 +104,23 @@
       },
       "18": {
         "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 1,
-          "last_id": 5950833091,
+          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
+          "observed_at_utc": "2026-10-05T05:23:14.033Z",
+          "observed_count": 2,
+          "last_id": 5988265466,
           "items": [
             {
               "id": 5950833091,
-              "updated_at": "2026-10-02T10:54:13Z",
+              "updated_at": null,
               "body_sha256": "e7354fd9eb298954e750257b8fa8f58f5ffec8526587ed566fea2faee841e185"
+            },
+            {
+              "id": 5988265466,
+              "updated_at": null,
+              "body_sha256": "b6846638d591437159001865e85bbeb7cfd759e89d9b3252360c40ee7a17f969"
             }
-          ]
+          ],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
         },
         "reviews": {
           "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
@@ -125,11 +139,12 @@
       },
       "19": {
         "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
+          "observed_at_utc": "2026-10-05T05:23:14.033Z",
           "observed_count": 0,
           "last_id": 0,
-          "items": []
+          "items": [],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
         },
         "reviews": {
           "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
@@ -148,11 +163,12 @@
       },
       "34": {
         "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
+          "observed_at_utc": "2026-10-05T05:23:14.033Z",
           "observed_count": 0,
           "last_id": 0,
-          "items": []
+          "items": [],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
         },
         "reviews": {
           "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
@@ -171,11 +187,18 @@
       },
       "36": {
         "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
+          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
+          "observed_at_utc": "2026-10-05T05:23:14.033Z",
+          "observed_count": 1,
+          "last_id": 5988265604,
+          "items": [
+            {
+              "id": 5988265604,
+              "updated_at": null,
+              "body_sha256": "bdbb491a262fdbda87b1e0258a1381adbf0158ee4808ecce62cf45319fa8e2b1"
+            }
+          ],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
         },
         "reviews": {
           "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
@@ -194,11 +217,18 @@
       },
       "41": {
         "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
+          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
+          "observed_at_utc": "2026-10-05T05:23:14.033Z",
+          "observed_count": 1,
+          "last_id": 5988265763,
+          "items": [
+            {
+              "id": 5988265763,
+              "updated_at": "2026-10-05T04:44:21Z",
+              "body_sha256": "79cab015f3b63869db83e28a5734d3d31cfae07f04aef5d3a54eec8ec8c50d6d"
+            }
+          ],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
         },
         "reviews": {
           "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
@@ -266,9 +296,19 @@
           "last_id": 0,
           "items": []
         }
+      },
+      "45": {
+        "issue_comments": {
+          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
+          "observed_at_utc": "2026-10-05T05:23:14.033Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": [],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
+        }
       }
     },
-    "global_head": "af264713b99471fb554e06e8d321f5039be47b47",
+    "global_head": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
     "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
     "global_semantic_refs": [
       "CDR-015",
@@ -301,10 +341,11 @@
         "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
         "name": "track-c-fpia",
         "event": "pull_request",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "attempt": 1,
-        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997788"
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997788",
+        "status_source": "Prior exact terminal receipt preserved at v0.8"
       },
       {
         "id": 37260997660,
@@ -347,7 +388,7 @@
         "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997708"
       }
     ],
-    "qgv_architecture_head": "17a442e7b247e9426e6bc1ee8e91e3cc2f541505",
+    "qgv_architecture_head": "2ba29b048c8601145c4a2cca0f85299c07262286",
     "exact_fpia_terminal": {
       "run": 37260997788,
       "attempt": 1,
@@ -355,51 +396,137 @@
       "status": "completed",
       "conclusion": "success",
       "observed_at_utc": "2026-10-05T04:53:10.015213+00:00"
-    }
+    },
+    "platform_owner_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "platform_storage_auth_audit_head": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+    "latest_PR46_runs": [
+      {
+        "id": 37267962000,
+        "name": "track-c-fpia",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "in_progress",
+        "conclusion": null,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000"
+      },
+      {
+        "id": 37267962003,
+        "name": "qgv-invalidation-binding",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962003"
+      },
+      {
+        "id": 37267962024,
+        "name": "us-equity-session",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962024"
+      },
+      {
+        "id": 37267961987,
+        "name": "p01-research-publication",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961987"
+      },
+      {
+        "id": 37267961909,
+        "name": "sec-primary-disclosure",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961909"
+      },
+      {
+        "id": 37267962109,
+        "name": "technical-real-producer",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962109"
+      },
+      {
+        "id": 37267961900,
+        "name": "technical-real-model",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961900"
+      }
+    ]
   },
   "last_processed": {
-    "source_head": "a5403a969021021cd3f489173603bc657365097f",
-    "owner_head": "395a24eef42fde2ddec8831808daba5e768d72e2",
-    "processed_at_utc": "2026-10-05T04:55:05.915Z",
-    "run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
+    "source_head": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+    "owner_head": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+    "processed_at_utc": "2026-10-05T05:57:20.531Z",
+    "run_id": "manual-chart-fixture-review-20261005T052509016Z",
     "input_heads": {
       "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
       "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
       "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
       "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
       "36": "fb086eac4321140493ce554a541343cebbb81ed6",
-      "41": "395a24eef42fde2ddec8831808daba5e768d72e2",
+      "41": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
       "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
       "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
-      "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
+      "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+      "46": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
     },
-    "global_head": "af264713b99471fb554e06e8d321f5039be47b47",
-    "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
-    "qgv_architecture_head": "17a442e7b247e9426e6bc1ee8e91e3cc2f541505",
-    "approval_effective_kst": "2026-10-05T13:13:37+09:00",
-    "status": "EXACT_FPIA_TERMINAL_SUCCESS_CONSUMED_QUEUE_CLEARED_GOVERNANCE_OWNER_GATED",
+    "global_head": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+    "qgv_architecture_head": "2ba29b048c8601145c4a2cca0f85299c07262286",
+    "platform_owner_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "platform_storage_auth_audit_head": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+    "approval_effective_kst": "2026-10-05T14:18:36+09:00",
+    "status": "INDEPENDENT_SAMPLE_RENDERER_IMPLEMENTED_VERIFIED_FRESH_OWNER_INTAKE_COMPLETE_SIX_PRODUCTION_GATES_OPEN",
     "evidence_refs": [
-      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GATES_AND_GAPS.json",
-      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json"
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/INDEPENDENT_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json"
     ],
-    "ci_terminal_claim": true,
-    "governance_closure": false,
-    "actual_chart_merge_result_fpia": "NOT_RUN",
-    "semantic_input_fingerprint_subject": {
-      "global": "af264713b99471fb554e06e8d321f5039be47b47",
-      "fpia_head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
-      "run": 37260997788,
-      "attempt": 1,
-      "status": "completed",
-      "conclusion": "success",
-      "result_sha256": "bec51ed8f57db64ebd6239fc6cb25437b87cfd3fbc3e64c1e7de25214f83633d",
-      "remaining_gates": 6
-    },
-    "semantic_input_fingerprint": "6d81a843c55dd5c441fa99e9101edeee6fe6198cdeaad05ee49ffbfc02b37778"
+    "ci_terminal_claim": false,
+    "semantic_input_fingerprint": "8725e6dc12163dbf8a4ecb44d46fd6eb73e35d6fa5b6b108784273f6ef00bc33",
+    "ci_terminal_observations": {
+      "latest_a3_non_FPIA_FAILURE": 6,
+      "latest_a3_FPIA": "IN_PROGRESS",
+      "integration_bundle_success_claim": false
+    }
   },
-  "pending": [],
+  "pending": [
+    {
+      "kind": "READ_ONLY_OWNER_DEPENDENCY_CI",
+      "pr": 46,
+      "owner_head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "runs": [
+        {
+          "id": 37267962000,
+          "name": "track-c-fpia",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "in_progress",
+          "conclusion": null,
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000"
+        }
+      ],
+      "last_observed_at_utc": "2026-10-05T05:59:21.347883+00:00",
+      "required_disposition": "Re-read exact run+attempt+head/job/log; consume actual terminal status; six other owner workflows already failed with two deterministic D002 self-constraint regressions. No retry/dispatch/owner branch write. Terminal CI does not close A-G3.",
+      "evidence_refs": [
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_LATE_STATUS.json",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json"
+      ]
+    }
+  ],
   "readiness": {
     "scope": "OFFLINE_PREFLIGHT_VERIFIED_PRODUCTION_OWNER_GATED",
     "lane_a": "IMPLEMENTATION_NOT_READY",
@@ -438,8 +565,8 @@
     "sample_renderer": "IMPLEMENTED_VERIFIED"
   },
   "lease": {
-    "status": "HELD",
-    "run_id": "manual-chart-fixture-review-20261005T052509016Z",
+    "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+    "run_id": null,
     "holder_kind": "MANUAL_ROOT",
     "acquired_at_utc": "2026-10-05T05:25:09.016Z",
     "expires_at_utc": "2026-10-05T06:25:09.016Z",
@@ -448,11 +575,16 @@
     "verified_remote_acquisition": true,
     "acquisition_parent_head": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
     "reason": "User selected dedicated SAMPLE review canvas; repair missing-to-zero fixture display and verify existing approved lab UI; fresh owner intake",
-    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+    "previous_run_id": "manual-chart-fixture-review-20261005T052509016Z",
+    "acquisition_commit": "eedab5922db453a7b11a851cf57844064ce00f3f",
+    "released_at_utc": "2026-10-05T05:57:20.531Z",
+    "verified_published_packet": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+    "verified_at_utc": "2026-10-05T05:54:56.485Z"
   },
   "publication": {
-    "status": "V08_DIAGNOSTIC_LATE_INTAKE_AND_FPIA_TERMINAL_PUBLICATION_VERIFIED",
-    "latest_published_owner_head": "395a24eef42fde2ddec8831808daba5e768d72e2",
+    "status": "V09_SAMPLE_FIXTURE_AND_FRESH_LATE_OWNER_PUBLICATION_VERIFIED",
+    "latest_published_owner_head": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
     "scoped_output_paths": [
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
       "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
@@ -525,10 +657,43 @@
       "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MALFORMED_JSON_REPAIR_RECEIPT.json",
       "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json",
       "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json"
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/AUTOMATION_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_CANDLES.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_EXISTING_PORTFOLIO.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_LATE_STATUS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/DECIMAL_REFERENCE_VERIFY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/DOCS_AND_VERSION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FPIA_CURRENT_HEAD_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FPIA_TERMINAL_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/INDEPENDENT_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/LATE_OWNER_INTAKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/MAGICPATH_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/NODE_75_PASS.log",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/OPTIONAL_OWNER_DELTA.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_BROWSER_PATH_FAILURE.log",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_EMPTY_CATALOG_FAILURE.log",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_MISSING_ZERO_FAILURE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_MISSING_ZERO_FAILURE.log",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/REVIEW_CLOSURE_PROBES.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/WRITE_SET.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/baseline-1280.png",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/demo-1280.png",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/reference-1280.png",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/reference-390.png",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/fixture_browser_test.cjs",
+      "implementation/experiments/chart-contract-v0.1/page.html",
+      "implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+      "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs"
     ],
     "output_sha256": {
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "467d8874cca23079bbb9e16e2d81820ad3dbeb4b959e0af85b6be4fd4bcc7c8b",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "d9cd1f8aedad88efe6a4801d2b27d7516da8250646253d90033f98905c47a4cc",
       "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md": "1226884d3afb4cbd571ca2f34639c31d934dd87baec5cd7894970dc284c3ea79",
       "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json": "754a8d97e82af9d2b79fd6bf495d803f85112b3c7cea75666ea794860cfecef0",
       "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json": "699dd0c832c105666420adfd9c3be0c9863cf3392992dc8f561280cb7417decb",
@@ -599,7 +764,40 @@
       "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MALFORMED_JSON_REPAIR_RECEIPT.json": "fe4eafd3418775742cc52e6e88063dcc0ec82eb7e2ef945de8d17ac66abe26b4",
       "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json": "1f2e0c7d6b00fa9145f546c67ebc358af256e5e6a06cf0e130df360116aae24c",
       "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json": "bd5e29ff8c0c3f78e1e4dd740dd5ea825f8b96c59da3eab4cf18ddac5a02740f",
-      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json": "0d34e29b3186a4b4121f8541d34b478d95ac9302c7409a55f11d790f0e942eb6"
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json": "0d34e29b3186a4b4121f8541d34b478d95ac9302c7409a55f11d790f0e942eb6",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/AUTOMATION_RECHECK.json": "a39718e0bda470778a1097d83ed0276f15a1de34556a9e41aa895f24d001df25",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_CANDLES.json": "97542489b878925db5833728c06df1b0178d5e28163fa777d317368c12f2e614",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_EXISTING_PORTFOLIO.json": "6fa1659d9eb753ec3bf9d3a36e050d40b610e1036cda30ed96f3fb317889cdb3",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_REVIEW.json": "209ea26a1c990f72bebad89e8142253b4d7f30578e77d8d2a746bb2e400958ba",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json": "90eae08265c9e99be6c8f6ebdb8b845f0e30e6b07cf8d615dac3dd2f43545b34",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_LATE_STATUS.json": "36cd7153828670aa0ab5d544fb6ed52ec7b40dbe6cf4934bae0927343d7d045c",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/DECIMAL_REFERENCE_VERIFY.json": "69c9d7f78bc19aa31919edafcb4463bb63ce52e192fbf2a429af76df1297c919",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/DOCS_AND_VERSION_RECEIPT.json": "545da2b76a514b5432cc06e71b092cfd071ea36be0e9dbe5fc3e658b6e473a0c",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FPIA_CURRENT_HEAD_RECEIPT.json": "32e988158c14e516afa4842e3909287df93174fe4ef743619c6aa131fd3f6884",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FPIA_TERMINAL_RECEIPT.json": "f03fc6e57b7c51c344b3b429e0c69b4769c0f66c312f4ba9ee0e1c7e95d121d1",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json": "917ffc6c3f4b25c859132bfe39decc1757b591a7bdae40349c7ec00c65995b06",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/GATES_AND_GAPS.json": "e593d695bf82ccd7a74053df05a4e2553bf0769a6d0f974d1e935cc1f9924be7",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/HANDOFF.md": "707387334ddf8cbc095ffd483809aab9b6e35f9d41cd81b2e5b1e353ef324a19",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/INDEPENDENT_REVIEW.json": "b90cf9d494ccb976d26a3638778305f46ab1d3cca962ee97cb53b024073e4d0a",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/LATE_OWNER_INTAKE.json": "b18fab2bb93d235608adfea9ce32cb1d756e205f625575701ab63851e0204a8d",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/MAGICPATH_RECEIPT.json": "39fca6e09418fdfb44ef288d914c22819ef37426f430572f616254edf501726f",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/NODE_75_PASS.log": "f9752faf003a288825de60264de8c7e27c00200c3dc7f3259dc3af84fc78c18a",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/OPTIONAL_OWNER_DELTA.json": "e0dc0157d336a911a8645d3652d181de6b93ae84182da039933e7c442079bd0a",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_BROWSER_PATH_FAILURE.log": "23d401c49c765592264862a26006e9bd7f65b92b3d874fc973770b4486a4584a",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_EMPTY_CATALOG_FAILURE.log": "81b5a6106efb2c13c84b3a84fa6324ec309a31631daa3fe9157d16f933834d35",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_MISSING_ZERO_FAILURE.json": "40089c470d465ec225892a0a099b5568c27d3ea26f055e83b2168d46b80a03b5",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_MISSING_ZERO_FAILURE.log": "f5c0d79bac6d87dbe81d97096375e4f6d2697cf2a44f4a52af1a424c9f859997",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/REVIEW_CLOSURE_PROBES.json": "e6806d3d1314b06a77d132d8df11ede45b42ac71f7293fe88da2536aa3e01b03",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/VALIDATION_RECEIPT.json": "9dae94405e131bc9afba300e7230dda81594da280591eba1e4534ec7880151d1",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/WRITE_SET.json": "89052fd3a3bc0e8c3b1a1e585492b36881217fd0fb511762707017132c39b337",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/baseline-1280.png": "e83a32c89910fa8acda68314fe150992c7ffac48a96745f9063bf5faa2038a82",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/demo-1280.png": "4a021314538c412efb8e030110afc627629008d082d032f5247324ee47aa55dd",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/reference-1280.png": "5757129040497fecf9b5dbbbb959185fc007649d65c89c42bb14679b852535e6",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/reference-390.png": "f4b485768fd1f5c33d3111e8d47e9b446c6e01054f8a5ecdeb0535779bd816f9",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/fixture_browser_test.cjs": "7f295d0b18cfad6a937eb77d990116ef1f1332bd25c63c6455c8e7d0f648bfc8",
+      "implementation/experiments/chart-contract-v0.1/page.html": "80d549d2c2040ccac633059f642c3dc2a7b11f5f05484dd456c08a621efea7d2",
+      "implementation/experiments/chart-contract-v0.1/portfolio_app.js": "ab6e2ea167d95d04619b096ce8f3518de6128d7f248d4967424761ffe2eb4016",
+      "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs": "b4bf3053b40b9bdfc14874fb377ed9820bca64efe7c9b7062f1284d4c8dd7c9a"
     },
     "retained_comment_ids": [
       5986162506
@@ -618,7 +816,9 @@
       "c552d0108091bb48ec851e42f43e6ae852d4bdba",
       "a5403a969021021cd3f489173603bc657365097f",
       "7ba5f2dac74487d1ce504e80081213e23894cc09",
-      "395a24eef42fde2ddec8831808daba5e768d72e2"
+      "395a24eef42fde2ddec8831808daba5e768d72e2",
+      "eedab5922db453a7b11a851cf57844064ce00f3f",
+      "166cf26ad2d2982bf890e5b4446019d7f873ff6d"
     ],
     "update_after_publish": "Only after remote HEAD/file bytes and output hashes are verified. STATE.json itself is excluded from output fingerprint; current commit identity cannot be self-embedded.",
     "bootstrap_verified_owner_head": "df1743b22680cd6d56dd286fd737cb053a7175ad",
@@ -639,16 +839,27 @@
       {
         "head": "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
         "immutable_state_ref": "1e8c24c6f77030425b3dbf59ef8aa6539cafd748:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+      },
+      {
+        "head": "395a24eef42fde2ddec8831808daba5e768d72e2",
+        "immutable_state_ref": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
       }
     ],
-    "latest_evidence_tree": "80298739f57a136b702cb00ad8c29efe367d7000",
+    "latest_evidence_tree": "adb737446af201790ea65de3a462d2db433d8e22",
     "verification": {
       "exact_written_bytes_match_remote": true,
-      "written_files": 6,
+      "text_written_files": 31,
+      "binary_blob_identity_verified": 4,
+      "exact_staged_tree_matches_remote": true,
       "prior_prefix_preservation": true,
       "unintended_paths": 0,
-      "output_hashes_verified": 72,
-      "verified_at_utc": "2026-10-05T04:55:05.915Z"
+      "output_hashes_verified": 105,
+      "verified_at_utc": "2026-10-05T05:54:56.485Z"
+    },
+    "current_PR41_Actions": {
+      "source_head": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+      "runs": [],
+      "production_Chart_FPIA": "NOT_RUN"
     }
   },
   "self_update_filter": {
@@ -675,7 +886,8 @@
       "a5403a969021021cd3f489173603bc657365097f",
       "7ba5f2dac74487d1ce504e80081213e23894cc09",
       "395a24eef42fde2ddec8831808daba5e768d72e2",
-      "eedab5922db453a7b11a851cf57844064ce00f3f"
+      "eedab5922db453a7b11a851cf57844064ce00f3f",
+      "166cf26ad2d2982bf890e5b4446019d7f873ff6d"
     ],
     "owned_comment_marker": "<!-- chart-owner-handoff:v0.5 -->",
     "retained_owned_comment_ids": [
@@ -773,26 +985,44 @@
   "automations_current_inventory": [
     {
       "id": "6ac2ef0621908191909a27af4c91f101",
+      "team_id": null,
       "title": "Chart CI 후속 확인",
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "timing_mode": "condition_watch",
+      "display_schedule": null,
       "is_enabled": true,
       "conversation_id": "6ac2ef20-372c-83ee-9857-3ed62a8ed411",
-      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
-      "updated_at": "2026-10-05T04:06:23.012375+00:00"
+      "default_timezone": "Asia/Seoul",
+      "next_run_time": null,
+      "last_run_time": "2026-10-05T04:13:31.266951+00:00",
+      "updated_at": "2026-10-05T04:13:52.713596+00:00"
     },
     {
       "id": "6ac31fca7bb4819183997a9f17f432cb",
+      "team_id": null,
       "title": "Chart 감사 자동진행",
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T035654Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "timing_mode": "condition_watch",
+      "display_schedule": null,
       "is_enabled": true,
       "conversation_id": "6ac21e38-55f8-83ee-97af-8b9e30c57c11",
-      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T035654Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
-      "updated_at": "2026-10-05T04:06:21.977053+00:00"
+      "default_timezone": "Asia/Seoul",
+      "next_run_time": null,
+      "last_run_time": "2026-10-05T04:46:00.604597+00:00",
+      "updated_at": "2026-10-05T04:46:23.509522+00:00"
     },
     {
       "id": "6ac2eeedb21c81919f04168d69672f0a",
+      "team_id": null,
       "title": "Chart PR 이벤트 재개",
+      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+      "timing_mode": "condition_watch",
+      "display_schedule": null,
       "is_enabled": false,
       "conversation_id": "6ac2f2a6-6938-83ec-8ea0-52e22ad3194f",
-      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+      "default_timezone": "Asia/Seoul",
+      "next_run_time": null,
+      "last_run_time": "2026-10-05T03:51:11.384912+00:00",
       "updated_at": "2026-10-05T03:56:36.583970+00:00"
     }
   ],
@@ -878,12 +1108,17 @@
     }
   ],
   "automation_audit": {
-    "classification": "WORKING_AS_DESIGNED",
-    "pending_classification": "NO_PENDING_CI_OWNER_EVIDENCE_ONLY",
-    "historical_global_intake": "PR-only coverage limit now addressed by enabled hourly Global-aware Main",
-    "productive_post_prompt_execution": "UNVERIFIED",
-    "no_framework_repair_found": true,
-    "proof": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/AUTOMATION_RECHECK.json"
+    "classification": "UNKNOWN",
+    "coordination_classification": "WORKING_AS_DESIGNED",
+    "scheduled_invocation": "OBSERVED_LAST_MAIN_04_46_CI_04_13",
+    "productive_scheduled_completion_after_latest_input": "UNVERIFIED",
+    "no_repeatable_framework_failure_found": true,
+    "trigger_missed_proven": false,
+    "previous_event": "INTENTIONALLY_PAUSED_SUPERSEDED",
+    "current_pending": "ONE_EXACT_FPIA_RUN_CI_FOLLOWUP_ONLY",
+    "latest_dependency_watermarks": "ADOPTED_ONLY_AFTER_VERIFIED_PUBLICATION",
+    "task_configuration_modified": false,
+    "proof": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/AUTOMATION_RECHECK.json"
   },
   "dependency_classifications": {
     "45": "DOWNSTREAM_CHART_CONSUMER_OWNER_OVERLAP_NOT_TARGET_PREREQUISITE"
@@ -952,6 +1187,51 @@
         "semantic_input_fingerprint": "86a374fbf00c231f289f7607e0f4705c283f35aa582004ca1a9d263a20fc2548"
       },
       "immutable_state_ref": "a5403a969021021cd3f489173603bc657365097f:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    },
+    {
+      "checkpoint": {
+        "source_head": "a5403a969021021cd3f489173603bc657365097f",
+        "owner_head": "395a24eef42fde2ddec8831808daba5e768d72e2",
+        "processed_at_utc": "2026-10-05T04:55:05.915Z",
+        "run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
+        "input_heads": {
+          "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+          "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+          "41": "395a24eef42fde2ddec8831808daba5e768d72e2",
+          "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+          "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
+        },
+        "global_head": "af264713b99471fb554e06e8d321f5039be47b47",
+        "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "qgv_architecture_head": "17a442e7b247e9426e6bc1ee8e91e3cc2f541505",
+        "approval_effective_kst": "2026-10-05T13:13:37+09:00",
+        "status": "EXACT_FPIA_TERMINAL_SUCCESS_CONSUMED_QUEUE_CLEARED_GOVERNANCE_OWNER_GATED",
+        "evidence_refs": [
+          "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md",
+          "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json",
+          "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GATES_AND_GAPS.json",
+          "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json"
+        ],
+        "ci_terminal_claim": true,
+        "governance_closure": false,
+        "actual_chart_merge_result_fpia": "NOT_RUN",
+        "semantic_input_fingerprint_subject": {
+          "global": "af264713b99471fb554e06e8d321f5039be47b47",
+          "fpia_head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "run": 37260997788,
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "result_sha256": "bec51ed8f57db64ebd6239fc6cb25437b87cfd3fbc3e64c1e7de25214f83633d",
+          "remaining_gates": 6
+        },
+        "semantic_input_fingerprint": "6d81a843c55dd5c441fa99e9101edeee6fe6198cdeaad05ee49ffbfc02b37778"
+      },
+      "immutable_state_ref": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
     }
   ],
   "pending_history": [
@@ -986,10 +1266,17 @@
       "disposition": "EXACT_COMPLETED_SUCCESS_CONSUMED",
       "consumed_at_utc": "2026-10-05T04:53:10.015213+00:00",
       "receipt": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json"
+    },
+    {
+      "immutable_state_ref": "166cf26ad2d2982bf890e5b4446019d7f873ff6d:implementation/experiments/chart-contract-v0.1/automation/STATE.json",
+      "pending": [],
+      "disposition": "NEW_EXACT_A3_CI_DELTA_6_FAILURES_CONSUMED_ONE_RUNNING",
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json",
+      "consumed_at_utc": "2026-10-05T05:57:20.531Z"
     }
   ],
   "prepared_publication": {
-    "status": "PREPARED_UNPUBLISHED",
+    "status": "VERIFIED_REMOTE_PUBLICATION",
     "run_id": "manual-chart-fixture-review-20261005T052509016Z",
     "source_start_head": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
     "preparation_parent": "eedab5922db453a7b11a851cf57844064ce00f3f",
@@ -1036,6 +1323,79 @@
     "optional_owner_heads": {
       "qgv_architecture": "2ba29b048c8601145c4a2cca0f85299c07262286",
       "platform_storage_auth_audit": "11dba838c6e27430aa07957f69e4ae8b270c999b"
+    },
+    "verified_head": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+    "verified_at_utc": "2026-10-05T05:54:56.485Z"
+  },
+  "owner_actions_current": {
+    "fpia_latest_source": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "owner": "Main/Integration",
+    "ci_failures": [
+      {
+        "id": 37267962003,
+        "name": "qgv-invalidation-binding",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962003"
+      },
+      {
+        "id": 37267962024,
+        "name": "us-equity-session",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962024"
+      },
+      {
+        "id": 37267961987,
+        "name": "p01-research-publication",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961987"
+      },
+      {
+        "id": 37267961909,
+        "name": "sec-primary-disclosure",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961909"
+      },
+      {
+        "id": 37267962109,
+        "name": "technical-real-producer",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962109"
+      },
+      {
+        "id": 37267961900,
+        "name": "technical-real-model",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961900"
+      }
+    ],
+    "root_cause": "D002 numeric threshold512 and literal40hex fixtures violate existing self-constraints; all6fullsuites2FAILED/2183PASSED",
+    "required": "Owner repairs own additive files and verifies full constraints/regression/successor CI; authenticated evidence/admissibility still required",
+    "chart_mutation_allowed": false,
+    "new_chart_D3": false
+  },
+  "coordination_repair_history": [
+    {
+      "scope": "CURRENT_RELEASE_SCRATCH_PREPARATION",
+      "failure": "apply_patch rejected delete/add same file operations; no mutation",
+      "repair": "Rewrote scratch release draft with Python; validate content, fingerprint and hashes before API publication"
     }
-  }
+  ]
 }
