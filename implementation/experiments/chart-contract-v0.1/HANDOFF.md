@@ -49,3 +49,36 @@ This append supersedes earlier routing only; all preceding historical statements
 Read [v0.5 scoped HANDOFF](p0-slice-owner-closure-v0.5/HANDOFF.md) and [bounded delta](p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md), then the preserved v0.4 readiness report. Target IMPLEMENTATION_NOT_READY remains six distinct gates OPEN/zero CLOSED; Market admission0/19 with eight evidence families. Concrete owner-return packets and existing capability limits now define exact next inputs. No broad audit or requirement expansion.
 
 Actual automatic continuation is configured in this same conversation: [scoped runbook/state/setup receipts](automation/RUNBOOK.md). PR events and pending-CI follow-up are separate; no pending CI exists. Approval/ownership protections persist. All Global and other owner branches remain read-only. No production code, package/protected/Frozen change or merge authorization is created.
+
+## Executable owner-return preflight successor — v0.6
+
+The current user continuation authorizes independent Chart-owned implementation
+and verification. Read [v0.6 scoped HANDOFF](p0-receipt-preflight-v0.6/HANDOFF.md)
+and [CLI usage](p0-receipt-preflight-v0.6/README.md) after the preserved v0.5
+owner packets. The earlier evidence-only phase restriction does not prohibit
+this additive offline tool. Source/Product/Web/Integration owner acceptance,
+Frozen protections and prohibited canonical merge remain separate requirements.
+
+Fresh intake was PR41 `a89ac6dd4336027ddab52b145ab87e3bc5edb3e5`. No owner
+gate closed: IMPLEMENTATION_NOT_READY / 6 OPEN / 0 CLOSED; Market admission0/19.
+New returned-slot preflight closes a tooling gap in v0.4's null-security-only
+reference replay. It verifies preserved source/joins/weights/time and reports
+untrusted filled claims without authenticating or publishing them. Final
+29 unittest cases and6 actual CLI cases PASS; earlier75 Node experiment cases
+re-executed PASS. Original current input remains INCOMPLETE (expected exit3).
+Production L1→L5, browser/API, Actions and exact Chart merge-result FPIA are
+NOT_RUN unless separately observed at the final subject; no production success
+is inferred from these diagnostic tests.
+
+Exact publication/evidence identities and source preservation are in the new
+checkpoint's receipts and PR metadata. Prior audit/raw/anomaly/acceptance history
+is unchanged. Only own Chart scope is written; no package or P01 digest impact.
+Actual task inventory confirms both existing resume tasks enabled, with their
+returned conversation IDs differing from the old setup record. Task IDs and
+shared lease remain the routing controls; no task is recreated or moved.
+
+Next: receive the six source/authority/write-set/FPIA owner receipts, run this
+preflight at explicit decision time, verify actual owner evidence separately,
+then rejudge the existing minimal production plan. A filled packet/CLI0 still
+means INPUT_COMPLETE_UNAUTHENTICATED, not IMPLEMENTATION_READY. Other-owner
+prerequisites are the current stopping condition; no new Chart D3 is selected.

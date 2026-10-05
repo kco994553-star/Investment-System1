@@ -1,0 +1,52 @@
+{
+  "scope": "Chart-owned offline preflight only",
+  "reviewers": [
+    "target_closure independent adversarial author",
+    "authority_scope independent integrity/edge reviewer",
+    "market_closure read-only existing evidence replay"
+  ],
+  "final_unittest": {
+    "pass": 29,
+    "fail": 0,
+    "runner": "stdlib unittest",
+    "synthetic": "Filled claims are fictional negative authority controls only"
+  },
+  "resolved_findings": [
+    {
+      "id": "R1",
+      "finding": "Whitespace-only owner slot diagnosed INVALID instead of absent INCOMPLETE",
+      "resolution": "Whitespace-only strings treated as MISSING; original values preserved",
+      "initial_test_result": "20/21 PASS; one failing classification assertion",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "R2",
+      "finding": "Unhashable observed Theme could raise after source mismatch",
+      "resolution": "Type guard preserves INVALID machine report",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "R3",
+      "finding": "Null-like malformed non-null owner body classified INCOMPLETE",
+      "resolution": "None remains INCOMPLETE; non-object non-null INVALID",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "R4",
+      "finding": "Changed untrusted huge Decimal exponent might reach Fraction allocation",
+      "resolution": "Immutable/source errors block numeric evaluation; replay only original pinned rows; regression asserts exact_decimal never called",
+      "status": "RESOLVED"
+    },
+    {
+      "id": "R5",
+      "finding": "Open-ended root versus finite assignment interval and unhashable row keys",
+      "resolution": "Explicit half-open coverage and typed row-key checks; falsey end substitutes rejected",
+      "status": "RESOLVED"
+    }
+  ],
+  "blocking_findings": 0,
+  "source_admission": "NOT_PERFORMED",
+  "production_readiness": "IMPLEMENTATION_NOT_READY",
+  "remaining_gates": 6,
+  "other_owner_writes": 0
+}
