@@ -7,32 +7,9 @@
     "fpia_pr_42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
     "independent_audit_pr_45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
   },
-  "lease": {
-    "status": "RUNNING",
-    "run_id": "platform-ci-followup-20261005T045920657Z",
-    "holder_kind": "AUTOMATION_CI_FOLLOWUP",
-    "acquired_at_utc": "2026-10-05T04:59:20.657Z",
-    "expires_at_utc": "2026-10-05T05:29:20.657Z",
-    "ttl_minutes": 30,
-    "scope": "EXACT_HEAD_CI_CONSUMPTION",
-    "verified_remote_acquisition": true,
-    "acquisition_parent_head": "8bdcbfbf703bb26451b6f6fd63c511cb3863a2f2",
-    "reason": "Consume terminal exact-head Product Platform validation hardening CI",
-    "acquisition_commit": "4ab96898b8cc7295bef8de45fd7f2987be446e8f",
-    "verified_at_utc": "2026-10-05T04:59:36.743Z"
-  },
-  "pending_ci": [
-    {
-      "workflow": "product-platform-audit",
-      "run_id": 37265731093,
-      "head_sha": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37265731093"
-    }
-  ],
-  "checkpoint": "validation_hardening_published_pending_exact_head_ci",
+  "lease": null,
+  "pending_ci": [],
+  "checkpoint": "validation_hardening_ci_verified",
   "validation_hardening": {
     "focused_tests": "9/9 PASS after expected RED reproductions",
     "local_full_regression": "NOT_COMPLETED_CREDENTIAL_EXPOSURE_GUARD",
@@ -48,6 +25,30 @@
     ],
     "production_capability_promoted": false,
     "publication_head": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
-    "published_at_utc": "2026-10-05T04:58:43.450Z"
-  }
+    "published_at_utc": "2026-10-05T04:58:43.450Z",
+    "ci_verified": true,
+    "ci_targeted": "22/22 PASS",
+    "ci_full_regression": "405/405 PASS"
+  },
+  "last_ci_observation": {
+    "workflow": "product-platform-audit",
+    "run_id": 37265731093,
+    "head_sha": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "targeted": "22/22 PASS",
+    "full_regression": "405/405 PASS",
+    "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37265731093",
+    "observed_at_utc": "2026-10-05T05:00:10.871Z"
+  },
+  "lease_history": [
+    {
+      "run_id": "platform-ci-followup-20261005T045920657Z",
+      "acquisition_commit": "4ab96898b8cc7295bef8de45fd7f2987be446e8f",
+      "verified_at_utc": "2026-10-05T04:59:36.743Z",
+      "released_at_utc": "2026-10-05T05:00:10.871Z",
+      "result": "EXACT_HEAD_CI_SUCCESS"
+    }
+  ]
 }
