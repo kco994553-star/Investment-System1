@@ -25,15 +25,36 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "IDLE_NO_SHARED_WRITE_LEASE_HELD",
+  "execution_state": "IN_PROGRESS_ROUTING_AND_EVIDENCE",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_input": "b3532a2ebbe95310bbf222937466eb04a0211263",
     "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
   },
   "automations": {
-    "state": "NOT_CONFIGURED",
-    "end_to_end_verified": false
+    "state": "CONFIGURED_ONLY",
+    "event_id": "6ac3299d5f708191a81a83bc0b967ee6",
+    "followup_id": "6ac329b131888191848558ca33c73811",
+    "conversation_id": "6ac32807-c708-83ee-bb72-8af0a5537b68",
+    "event_enabled": true,
+    "followup_enabled": true,
+    "end_to_end_verified": false,
+    "verified_at_kst": "2026-10-05T13:39:07+09:00",
+    "unsupported_direct_events": [
+      "CI completion",
+      "Global-only push",
+      "bot/API-comment wake-up not proven"
+    ],
+    "followup": "hourly delta-only checks",
+    "existing_owner_automations_modified": false
   },
-  "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667"
+  "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
+  "lease": {
+    "token": "main-intake-routing-20261005-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "acquired_at": "2026-10-05T13:39:07+09:00",
+    "expires_at": "2026-10-05T14:09:07+09:00",
+    "scope": "Global coordination + routing publication; independent FPIA repair remains successor-only",
+    "reason": "Active manual intake; event/followup must not start a concurrent shared writer"
+  }
 }
