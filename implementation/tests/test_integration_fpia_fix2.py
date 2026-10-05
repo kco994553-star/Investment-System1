@@ -542,20 +542,22 @@ def test_summary_without_site_values_has_no_empty_parentheses():
 
 
 # ---- G7: PR trigger scope; PyYAML vendored, not installed ----------------------------------------------------
-def test_workflow_pull_request_scope_integration_branches():
+def test_workflow_pull_request_scope_uses_authenticated_applicability():
     yaml = fw.yaml
     path = tk.REPO_ROOT / ".github" / "workflows" / "track-c-fpia.yml"
     doc = yaml.safe_load(path.read_text())
     on = doc.get("on", doc.get(True))
     assert "pull_request" in on and "workflow_dispatch" in on
-    assert not (on["pull_request"] or {}).get("branches")          # head-branch matches must still trigger
-    cond = " ".join(doc["jobs"]["fpia"]["if"].split())
-    assert cond == ("github.event_name == 'workflow_dispatch' || "
-                    "startsWith(github.event.pull_request.base.ref, 'integration/') || "
-                    "startsWith(github.event.pull_request.head.ref, 'integration/')")
+    assert not (on["pull_request"] or {}).get("branches")
+    job = doc["jobs"]["fpia"]
+    assert "if" not in job  # every PR must reach the authenticated applicability preflight
+    applicability = next(s for s in job["steps"] if s.get("id") == "applicability")
+    assert applicability["name"] == "Branch-independent authenticated applicability"
+    audit = next(s for s in job["steps"] if s.get("name", "").startswith("FPIA audit"))
+    assert " ".join(audit["if"].split()) == "steps.applicability.outputs.applies == 'true'"
     install = [s["run"] for s in doc["jobs"]["fpia"]["steps"] if "pip install" in s.get("run", "")]
     assert install and "PyYAML" not in install[0] and "pytest==9.1.1" in install[0]   # the audit uses _vendor/yaml
-    assert "FPIA applies to merge results containing R" in path.read_text()
+    assert "authenticated ancestry/content/import applicability" in path.read_text()
 
 
 # ---- F2: authority transport disclosure (names only) ---------------------------------------------------------
