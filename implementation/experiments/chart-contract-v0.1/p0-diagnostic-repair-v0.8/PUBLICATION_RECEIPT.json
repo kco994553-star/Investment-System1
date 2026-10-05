@@ -1,0 +1,40 @@
+{
+  "scope": "VERIFIED_FIRST_PUBLICATION_AND_LATE_INTAKE_COORDINATION_RECEIPT",
+  "verified_at_kst": "2026-10-05T13:44:51.252223+09:00",
+  "first_published_head": "52e751501cb95ab3150398dc45586035276ab0d2",
+  "first_tree": "55a15b13c59e8f51f63462d483b35d73abfcc472",
+  "parent": "ebeb8b1f2693703d33cff2610c277c7ce3dcbb18",
+  "first_written_files": 29,
+  "first_output_hashes_verified": 69,
+  "GitHub_ref_exact_match": true,
+  "GitHub_tree_equals_reviewed_local_staged_tree": true,
+  "verbatim_GitHub_commit_fetched_and_fast_forwarded": true,
+  "remote_commit_objects_equal_worktree_bytes": true,
+  "prior_handoff_prefix_preserved": true,
+  "protected_or_outside_scope_paths": 0,
+  "independent_prepublication_review": {
+    "final": "PASS",
+    "reviewed_tree": "55a15b13c59e8f51f63462d483b35d73abfcc472",
+    "initial_findings": [
+      "Unpublished hashes bound to older verified subject",
+      "Planned receipt listed as actual write"
+    ],
+    "repairs": [
+      "Move prepared outputs to PREPARED_UNPUBLISHED until remote verification",
+      "Separate deferred receipt from actual29-file set"
+    ]
+  },
+  "transport_history": {
+    "initial": "Python Unicode-character count compared with JavaScript UTF16 units",
+    "observed": "Mismatch by one surrogate unit; no remote branch mutation",
+    "repair": "Verify Unicode codepoint count then parse payload; exact remote tree identity confirms all bytes",
+    "result": "PASS"
+  },
+  "late_material_intake": "LATE_OWNER_INTAKE.json",
+  "first_actions": "0 exact-head Chart runs at API read; production Actions/E2E/FPIA NOT_RUN",
+  "lane_a_remaining": 6,
+  "lane_b_admitted": 0,
+  "new_chart_d3": false,
+  "followup_publication_head": "Resolved from actual descendant commit and later STATE; not self-embedded",
+  "lease_release": "Only after exact followup HEAD/tree/bytes verification"
+}

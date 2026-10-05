@@ -204,3 +204,33 @@ failure or stuck lease requires a repair.
 
 Publication identity, byte verification, final ahead/behind and lease release are
 recorded by the subsequent exact receipt/STATE. Global handoff remains with PIW.
+
+## Late material intake consumed before lease release
+
+After initial v0.8 publication52e751501cb95ab3150398dc45586035276ab0d2
+(tree55a15b13c59e8f51f63462d483b35d73abfcc472), exact remote/local bytes and
+all69 output hashes were verified. The subsequent fresh read caught Global
+af264713b99471fb554e06e8d321f5039be47b47 and newly opened Product Platform
+PR45 at17244b4f1be0d3b2423d91f76af8b0ad2c262a65.
+
+CDR018/GCH016 transfers Primary Integration Writer to
+gpt-work-main-2026-10-05-3a80dcef6444. The Chart lease and scope are preserved;
+no actual source/Product/write-set/FPIA closure receipt arrived. Main automation
+is CONFIGURED_ONLY/end-to-end false; old external runtime termination UNKNOWN.
+Owner routing/FPIA closure now belongs to that successor, not the former writer.
+
+PR45 is a downstream Chart consumer/owner overlap, not a new Target prerequisite.
+Its synthetic harness returns TARGET NOT_AVAILABLE and Chart NOT_AVAILABLE
+(AUTHORITATIVE_TARGET_NOT_CONNECTED / OWNER_CONTRACT_OR_PUBLICATION_DEPENDENCY);
+its synthetic security/listing IDs cannot replace Target19 owner identities.
+It awaits admitted ChartDocument and Product/Web contract/write-set. Two exact
+PR45 Actions are terminal SUCCESS; no production authority/Chart gate closure.
+No duplicated Platform feature was implemented. QGV17a442e adds only a lease
+claim, no Chart source/contract delta. Fresh open PR count is40.
+
+Final readiness remains six unresolved Target gates,0/19 Market admission, no
+new Chart D3. PR41 comments/reviews/inline remain0 at the late read. Exact pending
+FPIA run37260997788attempt1/11d2f25 stays in progress. LATE_OWNER_INTAKE and
+PUBLICATION_RECEIPT supersede the earlier39-PR/GCH015 intake for current routing.
+Final implementation/evidence and coordination HEADs resolve from publication
+and subsequent release STATE; no self SHA is invented.

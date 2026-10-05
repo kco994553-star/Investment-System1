@@ -111,3 +111,8 @@ when6close automatically implement accepted exact write set through E2E and
 required actual-result FPIA. No material delta/action means read-only no-op.
 Exact publication/coordination SHA and byte verification resolve from subsequent
 PUBLICATION_RECEIPT/STATE and actual PR41 ref.
+
+Late v0.8 intake: Global af264713 (CDR018/GCH016) transfers PIW to successor GPT;
+PR45 17244b4 synthetic Platform harness is a downstream Chart consumer, no
+Target gate closure/new prerequisite. Latest open count40. See v0.8 appended
+handoff/LATE_OWNER_INTAKE/PUBLICATION_RECEIPT for fresh verified routing.

@@ -65,10 +65,11 @@
       "36": "fb086eac4321140493ce554a541343cebbb81ed6",
       "41": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
       "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
-      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
     },
-    "observed_at_utc": "2026-10-05T04:29:58Z",
-    "owner_output_head": "32069065a0c4a62e4390d76675eb9c7681456c87",
+    "observed_at_utc": "2026-10-05T04:44:51.252205+00:00",
+    "owner_output_head": "52e751501cb95ab3150398dc45586035276ab0d2",
     "event_watermarks": {
       "17": {
         "issue_comments": {
@@ -267,7 +268,7 @@
         }
       }
     },
-    "global_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+    "global_head": "af264713b99471fb554e06e8d321f5039be47b47",
     "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
     "global_semantic_refs": [
       "CDR-015",
@@ -345,7 +346,8 @@
         "attempt": 1,
         "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997708"
       }
-    ]
+    ],
+    "qgv_architecture_head": "17a442e7b247e9426e6bc1ee8e91e3cc2f541505"
   },
   "last_processed": {
     "source_head": "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
@@ -451,321 +453,8 @@
     "verified_at_utc": "2026-10-05T04:18:27.682Z"
   },
   "publication": {
-    "status": "V07_CONTINUATION_POLICY_AND_DEPENDENCY_CHECKPOINT_VERIFIED",
-    "latest_published_owner_head": "32069065a0c4a62e4390d76675eb9c7681456c87",
-    "scoped_output_paths": [
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
-      "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/INDEPENDENT_REVIEW.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_HANDOFF_ROUTING.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/AUTHORITY_ARTIFACT_MANIFEST_v0.5.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/EXISTING_AUTHORITY_INTERFACE_DIAGNOSTIC_v0.5.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/replay_existing_authority.py",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/OWNER_PACKET_CONSISTENCY.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_DELTA_EVIDENCE.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_SOURCE_OWNER_CLOSURE_PACKET_v0.5.md",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/EXISTING_CAPABILITY_PINS_v0.5.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/LANE_B_VERIFY_RECEIPT_v0.5.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CLI_SMOKE.json",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CURRENT_INPUT_DIAGNOSTIC.json",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/EVENT_STREAMS_OBSERVED.json",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FINAL_UNITTEST.log",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FRESH_BASELINE.json",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INDEPENDENT_REVIEW.json",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INITIAL_INPUT_DIAGNOSTIC.json",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/README.md",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/VALIDATION_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_review_edges.py",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
-      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json",
-      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json",
-      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/reproduce_nine_preflight_probes.py.txt"
-    ],
-    "output_sha256": {
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "0752747e6954bb52c1e1bb9d833e82135e9068d3e58c0cbbb1df4d59c2992ccb",
-      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md": "1226884d3afb4cbd571ca2f34639c31d934dd87baec5cd7894970dc284c3ea79",
-      "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json": "754a8d97e82af9d2b79fd6bf495d803f85112b3c7cea75666ea794860cfecef0",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json": "699dd0c832c105666420adfd9c3be0c9863cf3392992dc8f561280cb7417decb",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json": "3bb3c6ee5b7d5016f3acb7651ebd020a8508a0a8243a8340ddc059f0c0c77cfc",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md": "568eeeec27b63b3da41c6a16584e5727ee79bc47e0afa88caa86f9d53349eaf5",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/INDEPENDENT_REVIEW.json": "ba09a028ce6c73bf4e365028ed48faba508e1e076b21186bb9a04485c4d2739f",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md": "4b33475fcfe7528b3beb29acffb0c818fade656a2317a00aa88218730373b607",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_HANDOFF_ROUTING.json": "514c7ddfd9e46b1a5b0f26ad7cb798dcc67efc51518218bbcf8ec6a38f787b83",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/AUTHORITY_ARTIFACT_MANIFEST_v0.5.json": "43daa13655f929249ec0ad2137a8f44316e66f985a41f327dfaf1c442ed18d0d",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/EXISTING_AUTHORITY_INTERFACE_DIAGNOSTIC_v0.5.json": "dde5503cd37c840f3127011d88cdf1b9c5a25a6c3d39a52fe60e95113a50a513",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json": "62b10722f88d242cc1a0aa8f590fe1cbac1ea0eeb3833dff4ce66b42c1a1d4fb",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md": "0b15e87e97c9bdb5cafc6efd4c9cab88efa01e9521eaa65a72fac15d723ee028",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/replay_existing_authority.py": "21300a2f55b8f27b3436b4467e507cfd27dccb7200d7cedf50e083b81005d12a",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/OWNER_PACKET_CONSISTENCY.json": "a6a96fe495ae5775c60054283ef5f20d152ed9bcbd6fb8b5c5b24285144f4f42",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_DELTA_EVIDENCE.json": "7d8aff4b12017797cf89e8f00d1ccea852da95e6382fe037f4ca4e842009633f",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_SOURCE_OWNER_CLOSURE_PACKET_v0.5.md": "f5019aa52649dc83bee5c41616e53d299d6cbd12fa64212be5f0c0cb9b5f48a7",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/EXISTING_CAPABILITY_PINS_v0.5.json": "9ee1dbaba37d1984d5428f8aada1b3d88f93c1ff77a0781ea19405bf39beab82",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json": "d274b1e8cc127aff34a5f1bf654cb969328df96753e503bd463d215ac8693545",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/LANE_B_VERIFY_RECEIPT_v0.5.json": "10725c567a78dae4c0ba7f0433e74be943efa47a846c228b7d5eb9041e218c65",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json": "96500808ea2b47b58c6d7a0ff7f7c2141e096467ee379f1a609afb5a0cf628d6",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md": "da9eb10534a98c57418fc09bcac0cfbd4c43fef58875b3bde3248c2f4693369f",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py": "72e7960e878fda278ec2562c66690265ab28c14c647aaefd2c63907618d1f67f",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CLI_SMOKE.json": "7a86993addf952d871e3940557128969616efd0b2bf2ac75a48bd71a9705c65b",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CURRENT_INPUT_DIAGNOSTIC.json": "2a0af6419e050cf214343c12ca755255c3e59e04e84ca4d6e4bb31e48c261302",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/EVENT_STREAMS_OBSERVED.json": "7c22a86c9a16ee94ef972970235f5d3a2d97af8c423328031256ad854c8d1af3",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FINAL_UNITTEST.log": "8dd054ae0a3f2a5833bb0ac24532fc4d580cabbab5ab31d95b137b2cf16cc368",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FRESH_BASELINE.json": "4efb6998e1440a359f7e1c7bd833b559cd504575a8dd7701f67e02ec673f8269",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md": "08c665ff35fccdf31fdaec2c2078dc4b0d6c93a6864df03653029a355fd356e2",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INDEPENDENT_REVIEW.json": "7dcdf9d69b98468ae0f75ad6ee1b1eb011000d4514c8a36c46c96be74712603d",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INITIAL_INPUT_DIAGNOSTIC.json": "476b5edaf3474105d45c3dc345e363c7d7746b8b1f61c504c43de3b0b02d4769",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/README.md": "03552cb11208784abd9a48693669c02c328636871c22215d23f29030a5479fb7",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/VALIDATION_RECEIPT.json": "539c09fa4d08f0a81832472f4202252a142162f8d4fa4edf51fa7599399a8d1a",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py": "ca3a8bf5af7e2618a6e362b38d45d6ac59a2b6c5de9dda5bcb3423f89f90d6c3",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py": "39721807f2f032b31182cba1478fecbb00c79e20ba4bd4817fd4c5e8c7edf184",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_review_edges.py": "417c1267b270be7e74aa6eb07c5078a6abfd7fbb5a72d949dabf73cb88b1bdf9",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json": "79683e0e1034810a174d056f786cf22c3ad32f862de60209d7be8d38b6727237",
-      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md": "8a297da09ba107dce84c022d269a3cd163525ea86070c9eb3aa6b84880eaf9a4",
-      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md": "178170d313766970182a6f49a5793b946c17928a8a9c78cec7d52b8ca85bac71",
-      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json": "1f1cc6bcfbcfcebbe1566cc4f1974c4c174832e3050a38b0b98e21e1bd322976",
-      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json": "337e4c907e4c0f89375494c68ed850beedbdde748d33af14a15f53f6d131a81b",
-      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/reproduce_nine_preflight_probes.py.txt": "c6a0e6303275e1fdc47cc3b182e3faff787a9cea12907be692af37b5633a3844"
-    },
-    "retained_comment_ids": [
-      5986162506
-    ],
-    "commit_ids": [
-      "df1743b22680cd6d56dd286fd737cb053a7175ad",
-      "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
-      "ce978a5bebb17abd5b6072cdbc6f2db82cf21b18",
-      "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
-      "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
-      "74df6784071137bdca911964af94c8e1b6928c92",
-      "1e8c24c6f77030425b3dbf59ef8aa6539cafd748",
-      "32069065a0c4a62e4390d76675eb9c7681456c87"
-    ],
-    "update_after_publish": "Only after remote HEAD/file bytes and output hashes are verified. STATE.json itself is excluded from output fingerprint; current commit identity cannot be self-embedded.",
-    "bootstrap_verified_owner_head": "df1743b22680cd6d56dd286fd737cb053a7175ad",
-    "retained_comments": [
-      {
-        "pr": 42,
-        "id": 5986162506,
-        "url": "https://github.com/kco994553-star/Investment-System1/pull/42#issuecomment-5986162506",
-        "body_sha256": "914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f"
-      }
-    ],
-    "coordination_head_note": "State release containing this receipt is resolved from current PR/Git metadata, not self-embedded.",
-    "previous_checkpoint_receipts": [
-      {
-        "head": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
-        "immutable_state_ref": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
-      },
-      {
-        "head": "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
-        "immutable_state_ref": "1e8c24c6f77030425b3dbf59ef8aa6539cafd748:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
-      }
-    ],
-    "latest_evidence_tree": "356efdd6458a62396b9b1f288c1b9a13424e0fdb",
-    "verification": {
-      "exact_written_bytes_match_remote": true,
-      "written_files": 8,
-      "prior_prefix_preservation": true,
-      "unintended_paths": 0,
-      "verified_at_utc": "2026-10-05T04:14:14.034Z"
-    }
-  },
-  "self_update_filter": {
-    "automation_titles": [
-      "Chart PR 이벤트 재개",
-      "Chart CI 후속 확인"
-    ],
-    "owned_commit_prefixes": [
-      "[chart-owner-resume]",
-      "[chart-owner-checkpoint]"
-    ],
-    "retained_owned_commit_ids": [
-      "df1743b22680cd6d56dd286fd737cb053a7175ad",
-      "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
-      "ce978a5bebb17abd5b6072cdbc6f2db82cf21b18",
-      "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
-      "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
-      "74df6784071137bdca911964af94c8e1b6928c92",
-      "1e8c24c6f77030425b3dbf59ef8aa6539cafd748",
-      "32069065a0c4a62e4390d76675eb9c7681456c87"
-    ],
-    "owned_comment_marker": "<!-- chart-owner-handoff:v0.5 -->",
-    "retained_owned_comment_ids": [
-      5986162506
-    ],
-    "require_comment_marker_and_retained_returned_id": true,
-    "connected_account_login_is_not_ownership_proof": true,
-    "allowlisted_write_scopes": [
-      "implementation/experiments/chart-contract-v0.1/automation/",
-      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/",
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/",
-      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/",
-      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/"
-    ],
-    "do_not_ignore_dependency_semantics_from_an_owned_checkpoint": true,
-    "require_current_comment_body_sha256_match": true,
-    "edited_own_comments": "Read semantic change; retained ID/marker alone never suppresses modified content.",
-    "retained_owned_comments": [
-      {
-        "id": 5986162506,
-        "body_sha256": "914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f",
-        "marker": "<!-- chart-owner-handoff:v0.5 -->"
-      }
-    ]
-  },
-  "fingerprint_policy": {
-    "include": "Relevant fresh dependency source/head/authority/decision changes, relevant comment or review revisions, scoped owner source inputs, and pending exact-subject CI state.; Global-only Chart-relevant source/decision/receipt blob fingerprints independently of PR HEAD. Ignore unrelated Global/index clocks.",
-    "exclude_paths": [
-      "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
-    ],
-    "exclude_only_attributed_self_updates": true,
-    "output_exclusion": "Mutable lease timestamps and state commit identity do not create a work delta by themselves.",
-    "no_op": "No semantic delta and no actionable pending item means no lease acquisition, no state/commit/comment/PR write."
-  },
-  "atomic_protocol": {
-    "provider_lock_available": false,
-    "required_remote_operation": "Fresh owner HEAD→commit whose only parent is that HEAD→non-force fast-forward update_ref→verify exact remote SHA and lease run_id/expiry.",
-    "compare_and_swap_condition": "If competing divergent commit moves owner ref, update_ref fails; do not force or automatically rebase lease/output onto the winner. Re-read and remain read-only.",
-    "renewal": "While unexpired, fresh-read remote state and verify same run_id before publishing renewal with new parent/current HEAD and same-holder expiry.",
-    "expiry": "Expired or mismatching run_id prevents every mutation; fresh evaluation and a new verified atomic acquisition are required.",
-    "missing_atomic_capability": "Read-only audit is allowed; every write must be abstained from."
-  },
-  "forbidden_actions": [
-    "canonical_merge",
-    "other_owner_branch_write",
-    "Global_Handoff_write",
-    "Frozen_change",
-    "Track_C_code_hash_or_P01_digest_repin",
-    "grant_issue",
-    "Official_or_LIVE_promotion",
-    "Holdout_access",
-    "PIT_relaxation",
-    "QGV_semantic_activation",
-    "paid_action",
-    "unaccepted_cross_owner_or_protected_production_write_set"
-  ],
-  "workflow_rule": "Reuse prior audit/history. Process only a real bounded material delta or actionable pending CI; decisions/readiness never advance from scheduling alone.",
-  "verification_ref": "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json",
-  "automation_delivery_observed": {
-    "synchronize_webhooks_seen": [
-      {
-        "id": "c6a58c40-c054-11f1-8074-9ef8b625a3b4",
-        "event": "synchronize",
-        "pr": 41,
-        "own_commit": "df1743b22680cd6d56dd286fd737cb053a7175ad"
-      },
-      {
-        "id": "285358a0-c055-11f1-9070-7a3eabeb507d",
-        "event": "synchronize",
-        "pr": 41,
-        "own_commit": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c"
-      }
-    ],
-    "event_delivery_into_this_chat": "OBSERVED",
-    "review_comment_merge_delivery_test": "NOT_RUN",
-    "self_event_processing": "No duplicate production/evidence work; live manual lease and narrow attribution preserved."
-  },
-  "approval_pins": {
-    "explicit_user_scope": "2026-10-05 latest Chart continuation through success within Chart-owned scope; no canonical merge/Frozen/Holdout/PIT/Official or other-owner writes",
-    "global_routing_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
-    "worker_routing_pr21": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
-    "fpia_governance": "DEPENDENCY_BLOCKED_ROUND3_REVIEW_AND_CLOSURE",
-    "qgv": "INACTIVE_SPEC_ONLY",
-    "production_continuation": "All6actual owner gates close -> implement approved exact write-set through deterministic validation/E2E/required actual-result FPIA/handoff autonomously. Protected production/new policy/canonical/Frozen/PIT/Official and other explicit current scoped D3 boundaries need actual approval; wider previous Global delegation cannot override later explicit Chart boundary.",
-    "latest_scope_handoff": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md",
-    "latest_scoped_user_policy_effective_kst": "2026-10-05T13:01:31+09:00"
-  },
-  "automations_current_inventory": [
-    {
-      "id": "6ac2ef0621908191909a27af4c91f101",
-      "title": "Chart CI 후속 확인",
-      "is_enabled": true,
-      "conversation_id": "6ac2ef20-372c-83ee-9857-3ed62a8ed411",
-      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
-      "updated_at": "2026-10-05T04:06:23.012375+00:00"
-    },
-    {
-      "id": "6ac31fca7bb4819183997a9f17f432cb",
-      "title": "Chart 감사 자동진행",
-      "is_enabled": true,
-      "conversation_id": "6ac21e38-55f8-83ee-97af-8b9e30c57c11",
-      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T035654Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
-      "updated_at": "2026-10-05T04:06:21.977053+00:00"
-    },
-    {
-      "id": "6ac2eeedb21c81919f04168d69672f0a",
-      "title": "Chart PR 이벤트 재개",
-      "is_enabled": false,
-      "conversation_id": "6ac2f2a6-6938-83ec-8ea0-52e22ad3194f",
-      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
-      "updated_at": "2026-10-05T03:56:36.583970+00:00"
-    }
-  ],
-  "automation_conversation_discrepancy": "Actual tool conversation IDs differ from v0.5 setup conversation ID; IDs/enabled state fresh verified; tasks not moved/recreated.",
-  "execution_policy": {
-    "version": "chart-v0.7",
-    "path": "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
-    "authority": "Latest explicit user Chart instruction 2026-10-05T13:01:31+09:00",
-    "global_only_semantic_change_is_input": true,
-    "after_all_six_closed": "AUTOMATIC_APPROVED_WRITE_SET_PRODUCTION_VERTICAL_SLICE",
-    "actual_D3_boundary_preserved": true,
-    "latest_user_continuation_kst": "2026-10-05T13:13:37+09:00",
-    "independent_d1_d2_completion": "Diagnostic implementation/verification/evidence/handoff proceeds while owner CI/input dependencies remain"
-  },
-  "lease_history": [
-    {
-      "state_at_commit": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
-      "lease": {
-        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
-        "run_id": null,
-        "holder_kind": "MANUAL_ROOT",
-        "acquired_at_utc": "2026-10-05T03:03:26.899Z",
-        "expires_at_utc": "2026-10-05T05:02:54.234Z",
-        "ttl_minutes": 60,
-        "allowed_automatic_ttl_minutes": 30,
-        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-        "verified_remote_acquisition": true,
-        "acquisition_parent_head": "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
-        "mutual_exclusion": "PROTOCOL_NOT_PROVIDER_GUARANTEE",
-        "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease.",
-        "acquisition_commit": "74df6784071137bdca911964af94c8e1b6928c92",
-        "verified_at_utc": "2026-10-05T04:02:54.236Z",
-        "verified_published_packet": "32069065a0c4a62e4390d76675eb9c7681456c87",
-        "previous_run_id": "manual-chart-dependency-delta-20261005T030326898Z",
-        "reason": "Current user authorizes durable Global-only dependency intake and automatic approved-write-set production continuation; renewal before expiry",
-        "renewed_at_utc": "2026-10-05T04:02:54.236Z",
-        "released_at_utc": "2026-10-05T04:14:14.034Z"
-      }
-    }
-  ],
-  "automation_audit": {
-    "classification": "WORKING_AS_DESIGNED",
-    "pending_classification": "CI_FOLLOWUP_ONLY",
-    "historical_global_intake": "PR-only coverage limit now addressed by enabled hourly Global-aware Main",
-    "productive_post_prompt_execution": "UNVERIFIED",
-    "no_framework_repair_found": true,
-    "proof": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/AUTOMATION_RECHECK.json"
-  },
-  "prepared_publication": {
-    "status": "PREPARED_UNPUBLISHED",
-    "parent_head": "ebeb8b1f2693703d33cff2610c277c7ce3dcbb18",
+    "status": "V08_FIRST_DIAGNOSTIC_PUBLICATION_VERIFIED",
+    "latest_published_owner_head": "52e751501cb95ab3150398dc45586035276ab0d2",
     "scoped_output_paths": [
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
       "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
@@ -908,6 +597,384 @@
       "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MARKET_RECHECK.json": "59b5ffacf5c9c62805c69f0a766ae6563119658a246bbe8b5b0150b304303317",
       "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MALFORMED_JSON_REPAIR_RECEIPT.json": "fe4eafd3418775742cc52e6e88063dcc0ec82eb7e2ef945de8d17ac66abe26b4"
     },
-    "note": "Not an adopted verified publication; move into current publication only after exact remote commit/tree/bytes verification."
+    "retained_comment_ids": [
+      5986162506
+    ],
+    "commit_ids": [
+      "df1743b22680cd6d56dd286fd737cb053a7175ad",
+      "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
+      "ce978a5bebb17abd5b6072cdbc6f2db82cf21b18",
+      "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
+      "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+      "74df6784071137bdca911964af94c8e1b6928c92",
+      "1e8c24c6f77030425b3dbf59ef8aa6539cafd748",
+      "32069065a0c4a62e4390d76675eb9c7681456c87",
+      "ebeb8b1f2693703d33cff2610c277c7ce3dcbb18",
+      "52e751501cb95ab3150398dc45586035276ab0d2"
+    ],
+    "update_after_publish": "Only after remote HEAD/file bytes and output hashes are verified. STATE.json itself is excluded from output fingerprint; current commit identity cannot be self-embedded.",
+    "bootstrap_verified_owner_head": "df1743b22680cd6d56dd286fd737cb053a7175ad",
+    "retained_comments": [
+      {
+        "pr": 42,
+        "id": 5986162506,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/42#issuecomment-5986162506",
+        "body_sha256": "914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f"
+      }
+    ],
+    "coordination_head_note": "State release containing this receipt is resolved from current PR/Git metadata, not self-embedded.",
+    "previous_checkpoint_receipts": [
+      {
+        "head": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
+        "immutable_state_ref": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+      },
+      {
+        "head": "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
+        "immutable_state_ref": "1e8c24c6f77030425b3dbf59ef8aa6539cafd748:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+      }
+    ],
+    "latest_evidence_tree": "55a15b13c59e8f51f63462d483b35d73abfcc472",
+    "verification": {
+      "exact_written_bytes_match_remote": true,
+      "written_files": 29,
+      "prior_prefix_preservation": true,
+      "unintended_paths": 0,
+      "output_hashes_verified": 69,
+      "verified_at_utc": "2026-10-05T04:44:51.252205+00:00"
+    }
+  },
+  "self_update_filter": {
+    "automation_titles": [
+      "Chart PR 이벤트 재개",
+      "Chart CI 후속 확인"
+    ],
+    "owned_commit_prefixes": [
+      "[chart-owner-resume]",
+      "[chart-owner-checkpoint]"
+    ],
+    "retained_owned_commit_ids": [
+      "df1743b22680cd6d56dd286fd737cb053a7175ad",
+      "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
+      "ce978a5bebb17abd5b6072cdbc6f2db82cf21b18",
+      "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
+      "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+      "74df6784071137bdca911964af94c8e1b6928c92",
+      "1e8c24c6f77030425b3dbf59ef8aa6539cafd748",
+      "32069065a0c4a62e4390d76675eb9c7681456c87",
+      "ebeb8b1f2693703d33cff2610c277c7ce3dcbb18",
+      "52e751501cb95ab3150398dc45586035276ab0d2"
+    ],
+    "owned_comment_marker": "<!-- chart-owner-handoff:v0.5 -->",
+    "retained_owned_comment_ids": [
+      5986162506
+    ],
+    "require_comment_marker_and_retained_returned_id": true,
+    "connected_account_login_is_not_ownership_proof": true,
+    "allowlisted_write_scopes": [
+      "implementation/experiments/chart-contract-v0.1/automation/",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/"
+    ],
+    "do_not_ignore_dependency_semantics_from_an_owned_checkpoint": true,
+    "require_current_comment_body_sha256_match": true,
+    "edited_own_comments": "Read semantic change; retained ID/marker alone never suppresses modified content.",
+    "retained_owned_comments": [
+      {
+        "id": 5986162506,
+        "body_sha256": "914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f",
+        "marker": "<!-- chart-owner-handoff:v0.5 -->"
+      }
+    ]
+  },
+  "fingerprint_policy": {
+    "include": "Relevant fresh dependency source/head/authority/decision changes, relevant comment or review revisions, scoped owner source inputs, and pending exact-subject CI state.; Global-only Chart-relevant source/decision/receipt blob fingerprints independently of PR HEAD. Ignore unrelated Global/index clocks.",
+    "exclude_paths": [
+      "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    ],
+    "exclude_only_attributed_self_updates": true,
+    "output_exclusion": "Mutable lease timestamps and state commit identity do not create a work delta by themselves.",
+    "no_op": "No semantic delta and no actionable pending item means no lease acquisition, no state/commit/comment/PR write."
+  },
+  "atomic_protocol": {
+    "provider_lock_available": false,
+    "required_remote_operation": "Fresh owner HEAD→commit whose only parent is that HEAD→non-force fast-forward update_ref→verify exact remote SHA and lease run_id/expiry.",
+    "compare_and_swap_condition": "If competing divergent commit moves owner ref, update_ref fails; do not force or automatically rebase lease/output onto the winner. Re-read and remain read-only.",
+    "renewal": "While unexpired, fresh-read remote state and verify same run_id before publishing renewal with new parent/current HEAD and same-holder expiry.",
+    "expiry": "Expired or mismatching run_id prevents every mutation; fresh evaluation and a new verified atomic acquisition are required.",
+    "missing_atomic_capability": "Read-only audit is allowed; every write must be abstained from."
+  },
+  "forbidden_actions": [
+    "canonical_merge",
+    "other_owner_branch_write",
+    "Global_Handoff_write",
+    "Frozen_change",
+    "Track_C_code_hash_or_P01_digest_repin",
+    "grant_issue",
+    "Official_or_LIVE_promotion",
+    "Holdout_access",
+    "PIT_relaxation",
+    "QGV_semantic_activation",
+    "paid_action",
+    "unaccepted_cross_owner_or_protected_production_write_set"
+  ],
+  "workflow_rule": "Reuse prior audit/history. Process only a real bounded material delta or actionable pending CI; decisions/readiness never advance from scheduling alone.",
+  "verification_ref": "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json",
+  "automation_delivery_observed": {
+    "synchronize_webhooks_seen": [
+      {
+        "id": "c6a58c40-c054-11f1-8074-9ef8b625a3b4",
+        "event": "synchronize",
+        "pr": 41,
+        "own_commit": "df1743b22680cd6d56dd286fd737cb053a7175ad"
+      },
+      {
+        "id": "285358a0-c055-11f1-9070-7a3eabeb507d",
+        "event": "synchronize",
+        "pr": 41,
+        "own_commit": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c"
+      }
+    ],
+    "event_delivery_into_this_chat": "OBSERVED",
+    "review_comment_merge_delivery_test": "NOT_RUN",
+    "self_event_processing": "No duplicate production/evidence work; live manual lease and narrow attribution preserved."
+  },
+  "approval_pins": {
+    "explicit_user_scope": "2026-10-05 latest Chart continuation through success within Chart-owned scope; no canonical merge/Frozen/Holdout/PIT/Official or other-owner writes",
+    "global_routing_head": "af264713b99471fb554e06e8d321f5039be47b47",
+    "worker_routing_pr21": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
+    "fpia_governance": "DEPENDENCY_BLOCKED_ROUND3_REVIEW_AND_CLOSURE",
+    "qgv": "INACTIVE_SPEC_ONLY",
+    "production_continuation": "All6actual owner gates close -> implement approved exact write-set through deterministic validation/E2E/required actual-result FPIA/handoff autonomously. Protected production/new policy/canonical/Frozen/PIT/Official and other explicit current scoped D3 boundaries need actual approval; wider previous Global delegation cannot override later explicit Chart boundary.",
+    "latest_scope_handoff": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md",
+    "latest_scoped_user_policy_effective_kst": "2026-10-05T13:01:31+09:00",
+    "current_primary_integration_writer": "gpt-work-main-2026-10-05-3a80dcef6444"
+  },
+  "automations_current_inventory": [
+    {
+      "id": "6ac2ef0621908191909a27af4c91f101",
+      "title": "Chart CI 후속 확인",
+      "is_enabled": true,
+      "conversation_id": "6ac2ef20-372c-83ee-9857-3ed62a8ed411",
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "updated_at": "2026-10-05T04:06:23.012375+00:00"
+    },
+    {
+      "id": "6ac31fca7bb4819183997a9f17f432cb",
+      "title": "Chart 감사 자동진행",
+      "is_enabled": true,
+      "conversation_id": "6ac21e38-55f8-83ee-97af-8b9e30c57c11",
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T035654Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "updated_at": "2026-10-05T04:06:21.977053+00:00"
+    },
+    {
+      "id": "6ac2eeedb21c81919f04168d69672f0a",
+      "title": "Chart PR 이벤트 재개",
+      "is_enabled": false,
+      "conversation_id": "6ac2f2a6-6938-83ec-8ea0-52e22ad3194f",
+      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+      "updated_at": "2026-10-05T03:56:36.583970+00:00"
+    }
+  ],
+  "automation_conversation_discrepancy": "Actual tool conversation IDs differ from v0.5 setup conversation ID; IDs/enabled state fresh verified; tasks not moved/recreated.",
+  "execution_policy": {
+    "version": "chart-v0.7",
+    "path": "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
+    "authority": "Latest explicit user Chart instruction 2026-10-05T13:01:31+09:00",
+    "global_only_semantic_change_is_input": true,
+    "after_all_six_closed": "AUTOMATIC_APPROVED_WRITE_SET_PRODUCTION_VERTICAL_SLICE",
+    "actual_D3_boundary_preserved": true,
+    "latest_user_continuation_kst": "2026-10-05T13:13:37+09:00",
+    "independent_d1_d2_completion": "Diagnostic implementation/verification/evidence/handoff proceeds while owner CI/input dependencies remain"
+  },
+  "lease_history": [
+    {
+      "state_at_commit": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+      "lease": {
+        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+        "run_id": null,
+        "holder_kind": "MANUAL_ROOT",
+        "acquired_at_utc": "2026-10-05T03:03:26.899Z",
+        "expires_at_utc": "2026-10-05T05:02:54.234Z",
+        "ttl_minutes": 60,
+        "allowed_automatic_ttl_minutes": 30,
+        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+        "verified_remote_acquisition": true,
+        "acquisition_parent_head": "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+        "mutual_exclusion": "PROTOCOL_NOT_PROVIDER_GUARANTEE",
+        "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease.",
+        "acquisition_commit": "74df6784071137bdca911964af94c8e1b6928c92",
+        "verified_at_utc": "2026-10-05T04:02:54.236Z",
+        "verified_published_packet": "32069065a0c4a62e4390d76675eb9c7681456c87",
+        "previous_run_id": "manual-chart-dependency-delta-20261005T030326898Z",
+        "reason": "Current user authorizes durable Global-only dependency intake and automatic approved-write-set production continuation; renewal before expiry",
+        "renewed_at_utc": "2026-10-05T04:02:54.236Z",
+        "released_at_utc": "2026-10-05T04:14:14.034Z"
+      }
+    }
+  ],
+  "automation_audit": {
+    "classification": "WORKING_AS_DESIGNED",
+    "pending_classification": "CI_FOLLOWUP_ONLY",
+    "historical_global_intake": "PR-only coverage limit now addressed by enabled hourly Global-aware Main",
+    "productive_post_prompt_execution": "UNVERIFIED",
+    "no_framework_repair_found": true,
+    "proof": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/AUTOMATION_RECHECK.json"
+  },
+  "prepared_publication": {
+    "status": "PREPARED_UNPUBLISHED_LATE_INTAKE_FOLLOWUP",
+    "parent_head": "52e751501cb95ab3150398dc45586035276ab0d2",
+    "scoped_output_paths": [
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
+      "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/INDEPENDENT_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_HANDOFF_ROUTING.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/AUTHORITY_ARTIFACT_MANIFEST_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/EXISTING_AUTHORITY_INTERFACE_DIAGNOSTIC_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/replay_existing_authority.py",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/OWNER_PACKET_CONSISTENCY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_DELTA_EVIDENCE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_SOURCE_OWNER_CLOSURE_PACKET_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/EXISTING_CAPABILITY_PINS_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/LANE_B_VERIFY_RECEIPT_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CLI_SMOKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CURRENT_INPUT_DIAGNOSTIC.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/EVENT_STREAMS_OBSERVED.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FINAL_UNITTEST.log",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FRESH_BASELINE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INDEPENDENT_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INITIAL_INPUT_DIAGNOSTIC.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/README.md",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_review_edges.py",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/reproduce_nine_preflight_probes.py.txt",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/REFERENCE_REPLAY_REPAIR_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/AUTOMATION_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/README.md",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/DIAGNOSTIC_INPUT_PINS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REPLAY_OPTIMIZED.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_OPTIMIZED_MISMATCH_PROBE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/replay_preflight_probes.py",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/DECIMAL_REFERENCE_VERIFY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_INPUT_HASH_MISMATCH_PROBE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ORIGINAL_MALFORMED_JSON_FAILURE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REPLAY_NORMAL.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/SOURCE_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ARCHIVED_RUN_OBSERVATION.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_reference_replay_status.py",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/CLI_EXPECTATION_CORRECTION.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_diagnostic_repairs.py",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/CURRENT_INPUT_DIAGNOSTIC.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/WRITE_SET.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FRESH_GITHUB_READ.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GOVERNANCE_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MARKET_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MALFORMED_JSON_REPAIR_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json"
+    ],
+    "output_sha256": {
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "005401ba40c9bc9c8f169ff0955990db9e8eb361c64fc7c40143e6ffe58e72f0",
+      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md": "1226884d3afb4cbd571ca2f34639c31d934dd87baec5cd7894970dc284c3ea79",
+      "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json": "754a8d97e82af9d2b79fd6bf495d803f85112b3c7cea75666ea794860cfecef0",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json": "699dd0c832c105666420adfd9c3be0c9863cf3392992dc8f561280cb7417decb",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json": "3bb3c6ee5b7d5016f3acb7651ebd020a8508a0a8243a8340ddc059f0c0c77cfc",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md": "568eeeec27b63b3da41c6a16584e5727ee79bc47e0afa88caa86f9d53349eaf5",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/INDEPENDENT_REVIEW.json": "ba09a028ce6c73bf4e365028ed48faba508e1e076b21186bb9a04485c4d2739f",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md": "4b33475fcfe7528b3beb29acffb0c818fade656a2317a00aa88218730373b607",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_HANDOFF_ROUTING.json": "514c7ddfd9e46b1a5b0f26ad7cb798dcc67efc51518218bbcf8ec6a38f787b83",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/AUTHORITY_ARTIFACT_MANIFEST_v0.5.json": "43daa13655f929249ec0ad2137a8f44316e66f985a41f327dfaf1c442ed18d0d",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/EXISTING_AUTHORITY_INTERFACE_DIAGNOSTIC_v0.5.json": "dde5503cd37c840f3127011d88cdf1b9c5a25a6c3d39a52fe60e95113a50a513",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json": "62b10722f88d242cc1a0aa8f590fe1cbac1ea0eeb3833dff4ce66b42c1a1d4fb",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md": "0b15e87e97c9bdb5cafc6efd4c9cab88efa01e9521eaa65a72fac15d723ee028",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/replay_existing_authority.py": "21300a2f55b8f27b3436b4467e507cfd27dccb7200d7cedf50e083b81005d12a",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/OWNER_PACKET_CONSISTENCY.json": "a6a96fe495ae5775c60054283ef5f20d152ed9bcbd6fb8b5c5b24285144f4f42",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_DELTA_EVIDENCE.json": "7d8aff4b12017797cf89e8f00d1ccea852da95e6382fe037f4ca4e842009633f",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_SOURCE_OWNER_CLOSURE_PACKET_v0.5.md": "f5019aa52649dc83bee5c41616e53d299d6cbd12fa64212be5f0c0cb9b5f48a7",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/EXISTING_CAPABILITY_PINS_v0.5.json": "9ee1dbaba37d1984d5428f8aada1b3d88f93c1ff77a0781ea19405bf39beab82",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json": "d274b1e8cc127aff34a5f1bf654cb969328df96753e503bd463d215ac8693545",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/LANE_B_VERIFY_RECEIPT_v0.5.json": "10725c567a78dae4c0ba7f0433e74be943efa47a846c228b7d5eb9041e218c65",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json": "96500808ea2b47b58c6d7a0ff7f7c2141e096467ee379f1a609afb5a0cf628d6",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md": "da9eb10534a98c57418fc09bcac0cfbd4c43fef58875b3bde3248c2f4693369f",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py": "72e7960e878fda278ec2562c66690265ab28c14c647aaefd2c63907618d1f67f",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CLI_SMOKE.json": "7a86993addf952d871e3940557128969616efd0b2bf2ac75a48bd71a9705c65b",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CURRENT_INPUT_DIAGNOSTIC.json": "2a0af6419e050cf214343c12ca755255c3e59e04e84ca4d6e4bb31e48c261302",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/EVENT_STREAMS_OBSERVED.json": "7c22a86c9a16ee94ef972970235f5d3a2d97af8c423328031256ad854c8d1af3",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FINAL_UNITTEST.log": "8dd054ae0a3f2a5833bb0ac24532fc4d580cabbab5ab31d95b137b2cf16cc368",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FRESH_BASELINE.json": "4efb6998e1440a359f7e1c7bd833b559cd504575a8dd7701f67e02ec673f8269",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md": "08c665ff35fccdf31fdaec2c2078dc4b0d6c93a6864df03653029a355fd356e2",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INDEPENDENT_REVIEW.json": "7dcdf9d69b98468ae0f75ad6ee1b1eb011000d4514c8a36c46c96be74712603d",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INITIAL_INPUT_DIAGNOSTIC.json": "476b5edaf3474105d45c3dc345e363c7d7746b8b1f61c504c43de3b0b02d4769",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/README.md": "03552cb11208784abd9a48693669c02c328636871c22215d23f29030a5479fb7",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/VALIDATION_RECEIPT.json": "539c09fa4d08f0a81832472f4202252a142162f8d4fa4edf51fa7599399a8d1a",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py": "5ddfeaced404821d15f9a53cde0d4ee87f742f18e976e390764fd25a4d8364c1",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py": "39721807f2f032b31182cba1478fecbb00c79e20ba4bd4817fd4c5e8c7edf184",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_review_edges.py": "417c1267b270be7e74aa6eb07c5078a6abfd7fbb5a72d949dabf73cb88b1bdf9",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json": "79683e0e1034810a174d056f786cf22c3ad32f862de60209d7be8d38b6727237",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md": "8a297da09ba107dce84c022d269a3cd163525ea86070c9eb3aa6b84880eaf9a4",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md": "178170d313766970182a6f49a5793b946c17928a8a9c78cec7d52b8ca85bac71",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json": "1f1cc6bcfbcfcebbe1566cc4f1974c4c174832e3050a38b0b98e21e1bd322976",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json": "337e4c907e4c0f89375494c68ed850beedbdde748d33af14a15f53f6d131a81b",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/reproduce_nine_preflight_probes.py.txt": "c6a0e6303275e1fdc47cc3b182e3faff787a9cea12907be692af37b5633a3844",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/REFERENCE_REPLAY_REPAIR_RECEIPT.json": "8fbcfb0ce04528e8055b987b1d81a1c7b49d7724f4e766dd369df3ac018d9905",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/AUTOMATION_RECHECK.json": "463da11084cfcf5f09ce575092deb1d061d2e2c937207012d594fae2854ba085",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/README.md": "fb9a6913dacc65a401a95661ef5049b77958544762239e11ca13ca053a93a65d",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/DIAGNOSTIC_INPUT_PINS.json": "3295568f8a03db29a920307a98d3346283d96b9356f470b218465dfa336a21dc",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REPLAY_OPTIMIZED.json": "8845051ed4a82d67c1d181623b8f4379880c8b719457ad8f6207761e4c046335",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_OPTIMIZED_MISMATCH_PROBE.json": "777e2a5aa5c11cc510018abaeaa364be554b302af62b1fa2f36d7ff8473676c5",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/replay_preflight_probes.py": "dcec8bbffbf5be647048b348b9feb2a71c981bd20505c5de95871721739daad5",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/DECIMAL_REFERENCE_VERIFY.json": "6ac7c963c1b5673c2bf4c94f703175e7a9836dab89c14f4edf201efffa58526c",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GATES_AND_GAPS.json": "8e32bdf04cd2852ec0d6f17fbcfa5f68f0c37f7647caf98b9ada8937f04b941f",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md": "b043f84ea3e3bc4734a418fa881f5b623556dbce72dc6d51156da14f6850cf25",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REVIEW.json": "d4856fa5def2dc9e78a58895dcf8d0ed31eec5311376c28bd50bf86e1923ff30",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_INPUT_HASH_MISMATCH_PROBE.json": "fd0774ce1a97e33b3766b99192a06f8f7da9d5aeb2e4890f727157ad49f13352",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ORIGINAL_MALFORMED_JSON_FAILURE.json": "54e153b53f487067b20fc08b6c6428988e437e2cdb1e5a3e85dfa5f3fcc44b4a",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REPLAY_NORMAL.json": "24171aafe04392790229cbd74ea1f6476ff1d1015a0ba8d2c24ef03532bc5adf",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/SOURCE_RECHECK.json": "be3f366dde148af13da35193d31af80759a62410779c62313f50bdb8c5c41598",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ARCHIVED_RUN_OBSERVATION.json": "c04d5e719c4908cc950719c09aaad8815fdb7bf0719a4fa2ed79028c88e50799",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_reference_replay_status.py": "8c36acc65d892a86e42ba8277a25aa0155834c55e2f3d9d36b10512274bed208",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/CLI_EXPECTATION_CORRECTION.json": "c74001ad3a04ecf9f15d2cf789400d74171f3aa6990e565d7560db49be275e7a",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_diagnostic_repairs.py": "24b3e6a0f901c8768770eef97d0d92e3231f0cb1516ef7c44ad70ee6b9a3c674",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/CURRENT_INPUT_DIAGNOSTIC.json": "acebcefa6ae94ba16911dc512682a7180d61b95cabf3d7994c6d02a451c5a7e3",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/WRITE_SET.json": "f434ff750602e9bec44c78e51140cfe25a564ca46c00d9cd935760070dc1d99a",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FRESH_GITHUB_READ.json": "8ca7d0f946196512e03f5e972ae5b72232f9a293e8ea869ae0c8c9b02b9913ca",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/VALIDATION_RECEIPT.json": "c3c3c3fc75f7eb2daf7513a767d0a43b6ec57a532b5f3ce8fab625ce4c3b0b24",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GOVERNANCE_RECHECK.json": "1da5fff339fbfbe002ebf6b6badb2ad586d560e6fd143f7e09fe5c95364ce54e",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MARKET_RECHECK.json": "59b5ffacf5c9c62805c69f0a766ae6563119658a246bbe8b5b0150b304303317",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MALFORMED_JSON_REPAIR_RECEIPT.json": "fe4eafd3418775742cc52e6e88063dcc0ec82eb7e2ef945de8d17ac66abe26b4",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json": "1f2e0c7d6b00fa9145f546c67ebc358af256e5e6a06cf0e130df360116aae24c",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json": "bd5e29ff8c0c3f78e1e4dd740dd5ea825f8b96c59da3eab4cf18ddac5a02740f"
+    },
+    "note": "Final current manifest is adopted only after exact followup remote verification; published first manifest remains bound to its immutable first SHA."
+  },
+  "dependency_classifications": {
+    "45": "DOWNSTREAM_CHART_CONSUMER_OWNER_OVERLAP_NOT_TARGET_PREREQUISITE"
   }
 }
