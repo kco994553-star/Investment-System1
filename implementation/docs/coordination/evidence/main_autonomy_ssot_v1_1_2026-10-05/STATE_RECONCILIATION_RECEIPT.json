@@ -1,0 +1,71 @@
+{
+  "schema": "main-autonomy-ssot-v1.1-state-reconciliation-v1",
+  "recorded_at_utc": "2026-10-05T10:12:00Z",
+  "classification": "D1 execution of explicit CDR-024 adoption",
+  "writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+  "source": {
+    "claim_parent": "aaedbed36c30411195679eaddc06ad7e4d2ff9e5",
+    "preclaim_global": "13a15a2df529cbe54a52dcd4430f4bd06d919937",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "pr": 48,
+    "pr_final_head": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
+    "merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
+    "sync_merge": "18e79a9a320b2a7b21a9fa2daad95d4e5d6eb5b3"
+  },
+  "identities": {
+    "decision_register_blob": "4ead1ef620d7b4f5addbb201681242020d0d55ca",
+    "historical_v1_0_blob": "425c0b647073c16b021fb501c71b78c2d0248320",
+    "adopted_v1_1_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
+  },
+  "decision": {
+    "cdr024_preserved": true,
+    "cdr025_preserved": true,
+    "cdr026_appended": true,
+    "main_state_reconciled": true,
+    "owner_ledger_reconciled": true
+  },
+  "enforcement": {
+    "hard_guard_gaps": 11,
+    "gate_a": "NOT_VERIFIED_DISABLED",
+    "watcher": "READ_ONLY_WAKE_UP",
+    "unattended_executor": "DISABLED_PENDING_GATE_A"
+  },
+  "pending_d3": {
+    "d3_r": 7,
+    "d3_a_candidate": 1,
+    "wait_dependency": 3,
+    "executed": 0,
+    "candidate_note": "RD3-03 is not approved/executed until exact semantics pin, rollback and independent §26B PASS"
+  },
+  "validation": {
+    "prior_cdr_prefix_preserved": true,
+    "prior_history_prefix_preserved": true,
+    "cdr024_count": 1,
+    "cdr025_count": 1,
+    "cdr026_count": 1,
+    "gch028_count": 1,
+    "piwd014_count": 1,
+    "lease_released": true,
+    "ready_tasks": 0,
+    "coordination_only_write_set": true
+  },
+  "boundaries": [
+    "canonical unchanged",
+    "Holdout untouched",
+    "Official/LIVE untouched",
+    "no production activation",
+    "no paid resource",
+    "no credentials",
+    "no trade/order/fund transfer",
+    "no PIT/no-lookahead relaxation",
+    "no Frozen/history/evidence destruction",
+    "no protected-owner takeover",
+    "no QGV production semantic decision"
+  ],
+  "rollback": "Append-only clarification and mutable live-state reconciliation can be superseded by later exact evidence; history is not rewritten.",
+  "publication": {
+    "parent": "aaedbed36c30411195679eaddc06ad7e4d2ff9e5",
+    "non_force_fast_forward_required": true,
+    "lease_released": true
+  }
+}

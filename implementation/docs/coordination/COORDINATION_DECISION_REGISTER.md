@@ -1648,3 +1648,13 @@ Follow-ups:
 - No CDR-024 rewrite is performed by this receipt. This entry records the post-merge exact state append-only.
 - No canonical merge, Holdout consumption, Official/LIVE promotion, production deployment, paid-resource activation, real credential activation, trade/order/fund transfer, PIT relaxation, Frozen/history destruction or protected-owner takeover is authorized by this receipt.
 - Next execution under CDR-024: register PART G Hard-Guard Gaps and begin pending D3 reclassification under §§25, 26A, 26F.
+
+## CDR-026 · CDR-024 merged-file identity clarification
+
+- Status: **EXECUTED / APPEND_ONLY_CLARIFICATION**
+- Recorded: 2026-10-05
+- Class: D1 evidence clarification under CDR-024; no new authority.
+- CDR-024 is not edited. Its earlier adopted-file blob remains historical pre-merge evidence.
+- PR #48 final head: `1d2c8195ffb936c56ba91d9fe41e627ef172a5e7`; Global merge result: `82de599ee90a6beabd774dd22e7e2b939ff75b44`.
+- Exact merged-file identities: decision register `4ead1ef620d7b4f5addbb201681242020d0d55ca`; historical v1.0 `425c0b647073c16b021fb501c71b78c2d0248320`; adopted v1.1 `4736bbcb508ce1f4310fbe96cbcfdd8e080b275f`.
+- No canonical merge, Holdout, Official/LIVE, production, paid resource, credential, financial operation, PIT relaxation, Frozen/history destruction, protected-owner takeover, or QGV production-semantic authority is granted.

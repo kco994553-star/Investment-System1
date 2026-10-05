@@ -19,13 +19,15 @@
       "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
       "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
     },
-    "global_input": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+    "global_input": "13a15a2df529cbe54a52dcd4430f4bd06d919937",
     "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
     "qgv_reconciliation": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
     "platform_specialist": "5e5fd1508a7f197a1168333bb13c45b8088a48ba",
-    "global_publication_parent": "4135f38c80dfc8db6f629cbff1542ffb44da0cdd",
-    "authority_proposal": "3af2078c81ffb8901d82a49f90d219a367266b4f"
+    "global_publication_parent": "aaedbed36c30411195679eaddc06ad7e4d2ff9e5",
+    "authority_proposal": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
+    "global_merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
+    "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
   },
   "summary": {
     "lane_a_open": 6,
@@ -1123,9 +1125,60 @@
       "scope": "D1 proposal intake only; no adoption",
       "production_gate_closed": false,
       "next_action": "Reconcile against CDR-023 and require explicit adoption for proposed authority changes"
+    },
+    {
+      "id": "MAIN-CDR024-ADOPTION-20261005",
+      "state": "CLOSED",
+      "history": [
+        "FOUND",
+        "RECEIVED",
+        "EVIDENCE_READY",
+        "CONSUMED",
+        "CLOSED"
+      ],
+      "authoritative_owner": "User / Main governance",
+      "decision": "CDR-024",
+      "source_head": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
+      "merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
+      "evidence": "implementation/docs/coordination/evidence/main_autonomy_ssot_v1_1_2026-10-05/STATE_RECONCILIATION_RECEIPT.json",
+      "scope": "Exact v1.1 adoption and append-only receipt; protected boundaries unchanged"
+    },
+    {
+      "id": "MAIN-HARD-GUARD-GAPS-20261005",
+      "state": "IN_PROGRESS",
+      "history": [
+        "FOUND",
+        "RECEIVED",
+        "IN_PROGRESS"
+      ],
+      "authoritative_owner": "Main governance coordination with scoped owners",
+      "source_head": "13a15a2df529cbe54a52dcd4430f4bd06d919937",
+      "evidence": "implementation/docs/coordination/governance/AUTONOMY_HARD_GUARD_GAPS_v1.1.md",
+      "gap_count": 11,
+      "gate_a": "NOT_VERIFIED_DISABLED",
+      "next_action": "Owners provide exact enforcement evidence; no unattended RUN before Gate A"
+    },
+    {
+      "id": "MAIN-PENDING-D3-RECLASS-20261005",
+      "state": "IN_PROGRESS",
+      "history": [
+        "FOUND",
+        "RECEIVED",
+        "IN_PROGRESS"
+      ],
+      "authoritative_owner": "Main classification; scoped semantic owners retained",
+      "source_head": "13a15a2df529cbe54a52dcd4430f4bd06d919937",
+      "evidence": "implementation/docs/coordination/governance/PENDING_D3_RECLASSIFICATION_v1.1.md",
+      "classification": {
+        "d3_r": 7,
+        "d3_a_candidate": 1,
+        "wait_dependency": 3,
+        "executed": 0
+      },
+      "next_action": "RD3-03 only after exact semantics pin, rollback and independent §26B PASS; no protected lane auto-executed"
     }
   ],
-  "wake_up": "Main PR41 synchronize and API-authored PR17 comment events observed; self-comment deduplicated. Other owner wake/receipt unverified.",
+  "wake_up": "Webhook events are wake-ups only. Under CDR-024/v1.1, watchers are read-only and unattended execution remains disabled until Gate A; exact SSoT evidence controls reconciliation.",
   "owner_assignment_procedure": "Main records explicit accountable owner/session, bounded branch+write-set, lease acceptance and receiving handoff before routing source implementation. Never infer ownership from common GitHub login, generic module names or audit branch name.",
   "platform_pr45": {
     "head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
@@ -1404,7 +1457,7 @@
     },
     "limits": "Main ACK/specialist policy consumption is not implementation-owner acceptance; preserve owner's cadence/enablement and active metadata lease."
   },
-  "authority": "CDR-023 D1/D2/D3-A/D3-R with prior explicitowner/Main boundaries",
+  "authority": "CDR-024 adopted Autonomous Execution & Decision Authority SSoT v1.1; CDR-023 retained where incorporated; protected owner/Main boundaries unchanged",
   "fpia_terminal": {
     "head": "7215a9f60ad7128b1748f405051eac684298614f",
     "run_id": 37284465900,
@@ -1421,7 +1474,41 @@
   },
   "pr48_proposal": {
     "head": "3af2078c81ffb8901d82a49f90d219a367266b4f",
-    "status": "PROPOSED_NOT_ADOPTED",
-    "evidence": "evidence/main_terminal_7215_2026-10-05/PR48_INTAKE.json"
+    "status": "HISTORICAL_SUPERSEDED_BY_CDR024",
+    "evidence": "evidence/main_terminal_7215_2026-10-05/PR48_INTAKE.json",
+    "superseded_by": "CDR-024 / PR #48 merged",
+    "final_head": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
+    "merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44"
+  },
+  "pr48_adoption": {
+    "state": "CLOSED",
+    "history": [
+      "FOUND",
+      "RECEIVED",
+      "EVIDENCE_READY",
+      "CONSUMED",
+      "CLOSED"
+    ],
+    "decision": "CDR-024",
+    "pr": 48,
+    "final_head": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
+    "merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
+    "final_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+    "scope": "Global governance adoption only; no canonical or protected operation grant"
+  },
+  "governance_v1_1": {
+    "decision": "CDR-024",
+    "status": "ADOPTED",
+    "merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
+    "hard_guard_gaps": 11,
+    "gate_a": "NOT_VERIFIED_DISABLED",
+    "pending_d3": {
+      "d3_r": 7,
+      "d3_a_candidate": 1,
+      "wait_dependency": 3,
+      "executed": 0
+    },
+    "watcher": "READ_ONLY",
+    "unattended_executor": "DISABLED_PENDING_GATE_A"
   }
 }

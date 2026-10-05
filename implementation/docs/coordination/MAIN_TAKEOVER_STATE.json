@@ -3,7 +3,7 @@
   "writer_identity": "gpt-work-main-2026-10-05-3a80dcef6444",
   "status": "TAKEOVER_ACTIVE",
   "effective_at_kst": "2026-10-05T13:35:27+09:00",
-  "authority": "User applied attached Main Takeover v1.0; CDR-018; CDR-023 D3-A/D3-R explicit policy",
+  "authority": "CDR-018 successor Primary Integration Writer under CDR-024 adopted Autonomous Execution & Decision Authority SSoT v1.1; CDR-023 retained where incorporated",
   "inherited_global_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
   "previous_writer": "Claude Code session session_019znshzTYgyBnuuBmSxdPFN",
   "previous_writer_authority": "SUPERSEDED_BY_EXPLICIT_USER_TRANSFER",
@@ -25,10 +25,10 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "IN_PROGRESS_CDR024_STATE_RECONCILIATION",
+  "execution_state": "WAIT_READY_0_GATE_A_DISABLED",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
-    "global_input": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+    "global_input": "13a15a2df529cbe54a52dcd4430f4bd06d919937",
     "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
     "chart": "cda174542f1a1ae95345726f308c24b60262c03b",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
@@ -42,11 +42,14 @@
     "qgv_pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
     "execution_coverage": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
     "fpia_proposal": "7215a9f60ad7128b1748f405051eac684298614f",
-    "global_publication_parent": "4135f38c80dfc8db6f629cbff1542ffb44da0cdd",
-    "authority_proposal": "3af2078c81ffb8901d82a49f90d219a367266b4f"
+    "global_publication_parent": "aaedbed36c30411195679eaddc06ad7e4d2ff9e5",
+    "authority_proposal": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
+    "global_merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
+    "authority_sync_merge": "18e79a9a320b2a7b21a9fa2daad95d4e5d6eb5b3",
+    "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
   },
   "automations": {
-    "state": "EVENT_DELIVERED_AND_CONSUMED",
+    "state": "CONFIGURED_READ_ONLY_WAKE_UP",
     "event_id": "6ac3299d5f708191a81a83bc0b967ee6",
     "followup_id": "6ac329b131888191848558ca33c73811",
     "conversation_id": "6ac32807-c708-83ee-bb72-8af0a5537b68",
@@ -65,18 +68,12 @@
       "API-authored owner-account comment→Main readback→self-event dedup"
     ],
     "standalone_unattended_continuation": "UNVERIFIED; event and followup were coalesced into this active Main writer",
-    "followup_delivery_observed": true
+    "followup_delivery_observed": true,
+    "role_under_cdr024": "READ_ONLY_WATCHER",
+    "unattended_executor": "DISABLED_PENDING_GATE_A"
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": {
-    "token": "main-cdr024-state-reconcile-20261005-fc8a83eeb8fe",
-    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "acquired_at": "2026-10-05T10:11:00Z",
-    "expires_at": "2026-10-05T12:11:00Z",
-    "ttl_hours": 2,
-    "scope": "Main coordination state/ledger/history coherence after user-approved CDR-024 Global merge",
-    "source_parent": "13a15a2df529cbe54a52dcd4430f4bd06d919937"
-  },
+  "lease": null,
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -129,7 +126,15 @@
     "984b5bb0-c09d-11f1-9fc4-f5e3108b6d39",
     "9aa81060-c09d-11f1-8f00-2b62864d6a21",
     "cafe7bf0-c09d-11f1-8746-b0299598401e",
-    "df42ee20-c09d-11f1-986c-963c04d79f01"
+    "df42ee20-c09d-11f1-986c-963c04d79f01",
+    "0c4d49b0-c0a3-11f1-95cf-fbd550c67001",
+    "2376b360-c0a3-11f1-98ed-c29efce585d6",
+    "94dc16d0-c0a3-11f1-8ab3-fa99b40ed775",
+    "b0b68570-c0a3-11f1-8104-11a7b8b1fbad",
+    "b0fb2f90-c0a3-11f1-9d37-935f67e7d5bb",
+    "06153a20-c0a4-11f1-86c5-4879e4819143",
+    "2109dca0-c0a4-11f1-90e2-53b4fb35ee3f",
+    "44934df0-c0a4-11f1-85ed-053f7d504596"
   ],
   "last_processed_comment_ids": [
     5988265306,
@@ -153,21 +158,23 @@
   "pending_ci": [],
   "next_runnable_backlog": [],
   "next_dependency_gates": [
-    "FPIA accepted independent verifier/launcher/runtime authority, GIE/governance and exact merge-result acceptance; CI/raw PASS is not closure",
-    "Chart six production gates: Portfolio/Identity OWNER_UNASSIGNED; actual source/Product/full write-set missing",
-    "QGV actual method/numeric/source/cohort/runtime production gates remain D3-R or owner dependencies; policy tracking return consumed",
-    "Platform source-owner actual adoption/ACK and Product capability evidence remain absent; documentation locator return consumed",
-    "Draft PR48 authority document remains PROPOSED_NOT_ADOPTED pending exact reconciliation and explicit adoption"
+    "Gate A remains NOT_VERIFIED/DISABLED: HG-01 exact lease CAS, HG-02 scope-isolation enforcement, and HG-03 unattended budget/stop controls require evidence before AUTONOMY_MODE=RUN",
+    "FPIA remains open for accepted independent verifier/launcher/runtime authority, GIE/governance and exact merge-result acceptance; technical CI PASS is separate",
+    "Chart retains six production gates; Portfolio/Identity remain OWNER_UNASSIGNED and no protected scope is taken by Main",
+    "QGV reclassification: 7 D3-R, RD3-03 D3-A candidate only pending exact semantics pin, rollback and independent §26B PASS; 3 WAIT_DEPENDENCY; 0 executed",
+    "Platform source-owner adoption/ACK and production-capability evidence remain absent; read-only watcher policy applies"
   ],
   "last_lease": {
-    "token": "main-terminal-return-consume-20261005-fc8a83eeb8fe",
+    "token": "main-cdr024-state-reconcile-20261005-fc8a83eeb8fe",
     "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "acquired_at": "2026-10-05T09:42:00Z",
-    "expires_at": "2026-10-05T09:52:00Z",
-    "scope": "Main coordination only: exact FPIA terminal CI, QGV/Platform completed returns, PR48 proposal intake",
-    "source_parent": "c3f9f3c9d1faeba5e1a60e4aef7291a549f0b990",
-    "released_at_utc": "2026-10-05T09:47:00Z",
-    "reason": "Terminal CI and bounded owner returns consumed; no runnable Main backlog"
+    "acquired_at": "2026-10-05T10:11:00Z",
+    "expires_at": "2026-10-05T12:11:00Z",
+    "ttl_hours": 2,
+    "scope": "Main coordination state/ledger/history coherence after user-approved CDR-024 Global merge",
+    "source_parent": "13a15a2df529cbe54a52dcd4430f4bd06d919937",
+    "claim_commit": "aaedbed36c30411195679eaddc06ad7e4d2ff9e5",
+    "released_at_utc": "2026-10-05T10:12:00Z",
+    "reason": "Append-only adoption identity/state reconciliation completed; READY=0 and no lease retained for waiting"
   },
   "publication_dedup_rule": "Fresh heads/dependency hashes/exact comment-event IDs/run attempts + consumed immutable returns; own docs-only ref movement with no READY/material delta is a no-op. Last publication identity resolves from containing commit, not fabricated self-reference.",
   "dependency_fingerprint_files": [
@@ -179,7 +186,7 @@
   ],
   "active_scoped_execution": null,
   "last_terminal_ci_evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
-  "last_checkpoint_at_utc": "2026-10-05T09:47:00Z",
+  "last_checkpoint_at_utc": "2026-10-05T10:12:00Z",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
   "dependency_content_hash": "5d3835968822791c72ea8e6174ac530bd6d7ba98b603f1396089145dab672f62",
   "execution_budget": {
@@ -338,76 +345,57 @@
     }
   ],
   "autonomous_execution_policy": {
-    "version": "SSoT Autonomous Execution Loop v1.0",
-    "decision": "CDR-022",
-    "ready_tasks": [],
-    "wait_dependencies": [
-      "FPIA accepted independent verifier/launcher/runtime authority, GIE/governance and exact merge-result acceptance; CI/raw PASS is not closure",
-      "Chart six production gates: Portfolio/Identity OWNER_UNASSIGNED; actual source/Product/full write-set missing",
-      "QGV actual method/numeric/source/cohort/runtime production gates remain D3-R or owner dependencies; policy tracking return consumed",
-      "Platform source-owner actual adoption/ACK and Product capability evidence remain absent; documentation locator return consumed",
-      "Draft PR48 authority document remains PROPOSED_NOT_ADOPTED pending exact reconciliation and explicit adoption"
+    "version": "Autonomous Execution & Decision Authority SSoT v1.1",
+    "decision": "CDR-024",
+    "status": "ADOPTED_COMMON_SSOT",
+    "adopted_file": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+    "adopted_final_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+    "historical_v1_0_blob": "425c0b647073c16b021fb501c71b78c2d0248320",
+    "operational_values": {
+      "cycle_max_tasks": 5,
+      "lease_ttl_hours": 2,
+      "deadlock_escalation": "TTL×2",
+      "repair_retest_cap": 3,
+      "d3_a_digest": "10 decisions or 1 week",
+      "same_module_contract_cap": 5,
+      "rolling_windows": 3,
+      "veto_hours": 72,
+      "dependent_chain_depth": 3,
+      "per_cycle_token_budget": "UNSET"
+    },
+    "unattended_autonomy": {
+      "mode": "DISABLED_PENDING_GATE_A",
+      "gate_a": "NOT_VERIFIED",
+      "hard_guard_gap_file": "implementation/docs/coordination/governance/AUTONOMY_HARD_GUARD_GAPS_v1.1.md",
+      "hard_guard_gap_blob": "1018ff50fc8e624be3b1c9ab403337a4dfc9bb02",
+      "gap_count": 11
+    },
+    "watcher": {
+      "role": "READ_ONLY_WAKE_UP",
+      "executor": false,
+      "may_mutate_state": false,
+      "may_acquire_lease": false
+    },
+    "pending_d3_reclassification": {
+      "file": "implementation/docs/coordination/governance/PENDING_D3_RECLASSIFICATION_v1.1.md",
+      "blob": "a556817d4819ed2ec06823a7721927f6f330b975",
+      "d3_r": 7,
+      "d3_a_candidate": 1,
+      "wait_dependency": 3,
+      "executed": 0
+    },
+    "protected_boundaries": [
+      "no canonical merge grant",
+      "no Holdout consumption",
+      "no Official/LIVE or production promotion",
+      "no paid resources or credentials",
+      "no trades/orders/fund transfers",
+      "no PIT/no-lookahead relaxation",
+      "no destructive Frozen/history/evidence change",
+      "no owner-scope takeover"
     ],
-    "stop_rule": "WAIT only when READY=0 including repair, returns, CI consumption and SSoT updates; real D3 remains protected",
-    "no_busy_polling": true,
-    "delegated_approval": {
-      "version": "D3 Delegated Approval Policy v1.0",
-      "decision": "CDR-023",
-      "receipt": "evidence/main_d3_delegation_2026-10-05/DECISION_RECEIPT.json",
-      "classes": [
-        "D1",
-        "D2",
-        "D3-A",
-        "D3-R"
-      ],
-      "conditions": [
-        "approved_purpose_and_design_preserved",
-        "no_new_investment_economic_scoring_meaning",
-        "no_protection_relaxation",
-        "PIT_no_lookahead_provenance_Frozen_history_preserved",
-        "no_security_tenant_financial_authority_expansion",
-        "no_actual_trade_order_funds",
-        "no_history_evidence_delete_rewrite",
-        "reasonably_rollbackable",
-        "deterministic_or_independently_verifiable",
-        "most_conservative_SSoT_aligned_option"
-      ],
-      "reserved": [
-        "paid_or_new_paid_resource",
-        "actual_trade_order_fund_transfer",
-        "actual_financial_credentials_or_permission_expansion",
-        "Holdout_first_or_reuse",
-        "Official_LIVE",
-        "PIT_no_lookahead_relaxation",
-        "destructive_Frozen_history_evidence_change",
-        "security_tenant_isolation_relaxation",
-        "irreversible_delete_migration",
-        "new_material_QGV_13F_backtest_investment_methodology",
-        "new_material_numeric_threshold_default_cutoff_weight",
-        "unproven_SSoT_alignment"
-      ],
-      "unknown": "D3-R",
-      "loop": [
-        "CLASSIFY",
-        "AUTO-APPROVE",
-        "EXECUTE",
-        "VERIFY",
-        "DECISION RECEIPT",
-        "UPDATE SSoT",
-        "RE-EVALUATE",
-        "CONTINUE"
-      ],
-      "receipt_fields": [
-        "decision",
-        "approved_ssot_and_authority",
-        "alternatives",
-        "design_alignment",
-        "protection_preservation",
-        "verification",
-        "rollback"
-      ],
-      "owner_boundaries_preserved": true
-    }
+    "ready_tasks": [],
+    "stop_rule": "WAIT only because READY=0; resume on material terminal CI, verified owner return, blocker transition, or evidenced D3-A readiness"
   },
   "wait_conditions": {
     "ready_main_d1_d2": 0,
@@ -418,7 +406,14 @@
     "remaining_ssot_update": 0,
     "product_gate_net_closed": 0,
     "canonical_candidate": "NOT_READY",
-    "ready_main_d1_d2_d3_a": 0
+    "ready_main_d1_d2_d3_a": 0,
+    "gate_a": "NOT_VERIFIED_DISABLED",
+    "pending_d3_reclassification": {
+      "d3_r": 7,
+      "d3_a_candidate": 1,
+      "wait_dependency": 3,
+      "executed": 0
+    }
   },
   "delegation_return_checkpoint": {
     "decision": "CDR-023",
@@ -438,5 +433,30 @@
     "ci_success": 7,
     "ci_total": 7,
     "production_gates_closed": 0
+  },
+  "governance_checkpoint": {
+    "decision": "CDR-024",
+    "merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
+    "proposal_head": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
+    "exact_blobs": {
+      "decision_register": "4ead1ef620d7b4f5addbb201681242020d0d55ca",
+      "historical_v1_0": "425c0b647073c16b021fb501c71b78c2d0248320",
+      "adopted_v1_1": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
+    },
+    "hard_guard_gaps": 11,
+    "gate_a": "NOT_VERIFIED_DISABLED",
+    "pending_d3": {
+      "d3_r": 7,
+      "d3_a_candidate": 1,
+      "wait_dependency": 3,
+      "executed": 0
+    },
+    "receipt": "implementation/docs/coordination/evidence/main_autonomy_ssot_v1_1_2026-10-05/STATE_RECONCILIATION_RECEIPT.json"
+  },
+  "dependency_fingerprint": {
+    "basis": "CDR-024 merged identities + hard-guard and pending-D3 blobs",
+    "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+    "hard_guard_blob": "1018ff50fc8e624be3b1c9ab403337a4dfc9bb02",
+    "pending_d3_blob": "a556817d4819ed2ec06823a7721927f6f330b975"
   }
 }

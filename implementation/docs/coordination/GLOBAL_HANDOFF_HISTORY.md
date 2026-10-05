@@ -287,3 +287,12 @@ After policy/return publication: MainREADY D1/D2/D3-A=0, sharedlease=null, no ac
 - Recorded Draft PR #48 `3af2078` as proposal-only evidence; did not merge or adopt it.
 - Canonical unchanged. No source takeover, Holdout, PIT relaxation, Frozen/history rewrite, Official/LIVE, credentials, paid resources or transactions.
 - Main READY D1/D2/D3-A: 0; integration candidate: NOT_READY; lease released.
+
+## GCH-028 · 2026-10-05 · Autonomous Governance v1.1 adoption and initial enforcement inventory
+
+- CDR-024 was executed by merging PR #48 to Global as `82de599ee90a6beabd774dd22e7e2b939ff75b44`; PR head `1d2c8195ffb936c56ba91d9fe41e627ef172a5e7`.
+- CDR-025 records the merge receipt; CDR-026 clarifies exact merged-file identities without rewriting CDR-024.
+- Exact merged blobs: decision register `4ead1ef620d7b4f5addbb201681242020d0d55ca`; historical v1.0 `425c0b647073c16b021fb501c71b78c2d0248320`; adopted v1.1 `4736bbcb508ce1f4310fbe96cbcfdd8e080b275f`.
+- Initial enforcement inventory: 11 Hard-Guard Gaps; Gate A NOT_VERIFIED; unattended `AUTONOMY_MODE=RUN` disabled; watchers read-only.
+- Pending-D3 reclassification: 7 D3-R, 1 D3-A candidate (not approved/executed), 3 WAIT_DEPENDENCY, 0 executed.
+- Canonical, Holdout, Official/LIVE, production, paid-resource, credential, PIT/Frozen/history and protected-owner boundaries remain unchanged.
