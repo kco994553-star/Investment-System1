@@ -1,0 +1,24 @@
+{
+  "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
+  "status": "RUNNING_MANUAL_D1_D2",
+  "lease": {
+    "token": "qgv-gv-lanes-ce04703e5823",
+    "owner": "this-QGV-manual-Work",
+    "claimed_at_kst": "2026-10-05T13:28:53.197907+09:00",
+    "parent_head": "df5c70447dfa83805395b7cbbcacbc2024e77f3d"
+  },
+  "tasks": [
+    "G_INPUT_METHOD_LINEAGE_AUDIT",
+    "V_ALTERNATIVE_IMPACT_ANALYSIS",
+    "COMMON_CONTRACT_CONSUMER_SAFETY_EVIDENCE"
+  ],
+  "authorized_write_paths": [
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/",
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md"
+  ],
+  "other_owner_branch_read_only": "codex/qgv-missing-data-decision-gate-2026-10-05",
+  "production_enabled": false,
+  "manual_execution": true,
+  "actual_scheduler_hops_credited": 0,
+  "d3_scope": "Current explicit user request: no semantic replacement, numeric adoption, runtime wiring, migration, historical rewrite, PIT/Frozen/Holdout/Official change or canonical/PR merge"
+}
