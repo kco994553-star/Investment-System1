@@ -12,8 +12,15 @@
     "pr_events": "6ac2f22087288191abd144fb4a7655f8",
     "ci_followup": "6ac2efbd34fc8191a60dccbbe338c291"
   },
-  "status": "IDLE_BINDING_PACKAGE_READY_HOP1_EXECUTABLE",
-  "lease": null,
+  "status": "RUNNING_B4_B7_INACTIVE_CONTRACT_AND_CONSOLIDATION",
+  "lease": {
+    "token": "qgv-b47-muupb538",
+    "owner": "manual-B4-B7-explicit-user-approval",
+    "input_owner_head": "36b6b1840fe4bd22d7bb310407e2cea4050e0c2d",
+    "task": "approved-identity-invariants-and-admission-consolidation",
+    "claimed_at_kst": "2026-10-05T12:39:35.838071+09:00",
+    "expiry": null
+  },
   "pending_runs": [],
   "pending_long_tests": [],
   "last_observed_heads": {
@@ -571,3 +578,4 @@
     "global_write": false
   }
 }
+
