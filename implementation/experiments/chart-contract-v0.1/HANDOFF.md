@@ -162,3 +162,8 @@ Global `7dac637f499a0771b3eb54da24295624f0803558` / CDR-022 consumed; Main cover
 Native SAMPLE component457764208520613888/revision457764208524808192 IMPLEMENTED_VERIFIED. Exact-built browser18/18PASS (1280/390), ACTUAL fourNOT_AVAILABLE/SVG0, originalfinancialSAMPLE preserved. Full scoped handoff/evidence: p0-magicpath-review-v0.13/HANDOFF.md. MagicPath primary; quota/unavailable→existingGitHubrenderer/localbrowser artifacts automatically, no payment/duplicateFigma. Figma historicalfinalvisual remainsNOT_RUN.
 
 Latest user D1/D2/D3-A/D3-R policy adopted with exact DECISION_RECEIPT; no newD3-R request and no ownerboundary takeover. Latest Globala83fccc + PR47exact7215 read:6/7ActionsSUCCESS, FPIA37284465900attempt1pending; prior46hash-verifiedrawPASS remains separately bound. Sixproductiongates OPEN,0closed; Market0/19,8gapstates unchanged. SAMPLEimplementation/evidence continues independently; currentTARGET production IMPLEMENTATION_NOT_READY. Rootpublicationhash refreshed after actualAPI/Gitreadback; historicalreceipts preserved.
+
+
+## Current checkpoint · v0.14 exact terminal / adopted policy
+
+[Full scoped handoff](p0-terminal-policy-v0.14/HANDOFF.md): PR47 exact7215 terminalSUCCESS consumed; CDR024 adopted v1.1 current binding; scheduled read-only policy overlay verified with current Main disabled/CI enabled preserved. Production six gates remain owner-dependent,0 closed; Market0/19. Existing native MagicPath SAMPLE/evidence reused. Actual Chart FPIA NOT_RUN; Main-verified Gate A required for unattended executor; user-observed scoped work completed. Exact containing HEAD via Git metadata; STATE evidence pointer follows verified readback.

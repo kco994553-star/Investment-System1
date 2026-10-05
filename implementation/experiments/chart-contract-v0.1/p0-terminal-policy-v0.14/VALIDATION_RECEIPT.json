@@ -1,0 +1,97 @@
+{
+  "scope": "v0.14 targeted metadata/integrity verification; no UI/financial semantics modified",
+  "recorded_at_utc": "2026-10-05T10:47:21.246Z",
+  "command": "python /workspace/scratch/9de0281e56bb/verify-chart-v014.py",
+  "checks": [
+    {
+      "name": "queued exact PR47 subject/head/attempt/run matches live result",
+      "result": "PASS"
+    },
+    {
+      "name": "terminal success rather than inherited pending",
+      "result": "PASS"
+    },
+    {
+      "name": "seven exact-query owner workflows successful",
+      "result": "PASS"
+    },
+    {
+      "name": "live artifact id/head/digest matches owner immutable receipt",
+      "result": "PASS"
+    },
+    {
+      "name": "Tier1 Tier2 remain SKIPPED never promoted PASS",
+      "result": "PASS"
+    },
+    {
+      "name": "no CI success-to-governance or Chart FPIA promotion",
+      "result": "PASS"
+    },
+    {
+      "name": "all fresh Global source SHA256 and git blobs authenticated",
+      "result": "PASS"
+    },
+    {
+      "name": "adopted merged v1.1 exact blob matches CDR026",
+      "result": "PASS"
+    },
+    {
+      "name": "no new D3-A self-approval or new concrete Chart D3-R",
+      "result": "PASS"
+    },
+    {
+      "name": "Gate A not spuriously closed by prompt",
+      "result": "PASS"
+    },
+    {
+      "name": "task titles cadence enablement preserved exactly",
+      "result": "PASS"
+    },
+    {
+      "name": "Main paused CI active old event paused readback",
+      "result": "PASS"
+    },
+    {
+      "name": "only two existing prompt overlays no event re-enable",
+      "result": "PASS"
+    },
+    {
+      "name": "six production gates remain evidence-dependent",
+      "result": "PASS"
+    },
+    {
+      "name": "eight Market gaps preserved and no false admission",
+      "result": "PASS"
+    },
+    {
+      "name": "ACTUAL unavailable no TARGET fallback",
+      "result": "PASS"
+    },
+    {
+      "name": "five anomaly causes remain UNKNOWN",
+      "result": "PASS"
+    },
+    {
+      "name": "append-only existing HANDOFF.md",
+      "result": "PASS"
+    },
+    {
+      "name": "append-only existing automation/RUNBOOK.md",
+      "result": "PASS"
+    },
+    {
+      "name": "original financial renderer unchanged",
+      "result": "PASS"
+    },
+    {
+      "name": "every written file stays non-protected Chart experiment scope",
+      "result": "PASS"
+    }
+  ],
+  "passed": 21,
+  "failed": 0,
+  "reused_browser": "v0.13 unchanged native SAMPLE18/18 PASS, not rerun",
+  "full_regression": "NOT_RUN_NOT_REQUIRED_METADATA_SCOPE",
+  "Chart_production_E2E": "NOT_RUN",
+  "actual_Chart_FPIA": "NOT_RUN"
+}
