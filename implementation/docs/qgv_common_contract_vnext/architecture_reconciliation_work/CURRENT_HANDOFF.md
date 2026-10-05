@@ -1,3 +1,15 @@
+# Current Main principle-return receipt consumed — exact bounded closure
+
+Main receipt 5991476557 at 2026-10-05T09:10:28Z acknowledges the exact completed ab07f6a B2/B3/B5/B6 principle-only return. This Work verified all four quoted approval/contract/completion/manifest hashes and bounded packet/actor/scope: 8/8 FAST checks PASS. Tracking item CLOSED1. No prior 25/59/79/30 audit rerun, production blocker closure or scheduler-hop credit.
+
+Record: lanes/delegated_approval/returns/PRINCIPLE_MAIN_CONSUMPTION.json; completion, original Main receipt and validation are adjacent. Current TASK_BOARD.json and root CONTROL point to this successor. Original policy receipt at 7fdfc449bc99c374526f6d9ac3646790a5b9f17b and all earlier checkpoints remain preserved.
+
+Main consumption of the prior principle packet is now CLOSED. Main acknowledgement of the newer delegated-policy packet and Missing-Data owner return remain NOT_EVIDENCED. Missing-Data4fb08a0/qgv-b47-muupb538 remains protected. Current D1/D2/D3-A READY0; remaining source/owner dependencies and10 Reserved decision groups unchanged. Net production blocker categories3; executor still paused and read-only watcher enabled; real canary0/2 UNVERIFIED. Re-enter execution on exact material source/owner/decision/candidate changes.
+
+---
+
+# Preserved previous policy checkpoint — exact bytes follow
+
 # Current D3 Delegated Approval Policy v1.0 — operational adoption
 
 STATUS: D1/D2/D3-A/D3-R APPLIED / PENDING SCOPE RECLASSIFIED / READY=0 AFTER PUBLICATION / PRODUCTION INACTIVE.

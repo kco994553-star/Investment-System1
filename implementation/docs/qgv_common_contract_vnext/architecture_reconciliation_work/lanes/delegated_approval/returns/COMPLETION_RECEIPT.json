@@ -1,0 +1,16 @@
+{
+  "task_id": "EXACT_MAIN_PRINCIPLE_RETURN_CONSUMPTION",
+  "classification": "D1",
+  "status": "COMPLETED_ACCEPTED_TRACKING_ONLY",
+  "input_policy_head": "7fdfc449bc99c374526f6d9ac3646790a5b9f17b",
+  "Main_receipt_id": 5991476557,
+  "closure_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/returns/PRINCIPLE_MAIN_CONSUMPTION.json",
+  "closure_sha256": "509cd0fb92e895cac4683640d48890c64aab4cc0329997562d26dc1d391bd5f4",
+  "validation_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/returns/CLOSURE_VERIFICATION.json",
+  "validation_sha256": "1f6b598c8c9a16c830c660f395ffa74480aa5bd7fc37fd448abfcec9c837bd95",
+  "new_checks": 8,
+  "tracking_items_closed": 1,
+  "production_blockers_closed": 0,
+  "scheduler_hops": 0,
+  "remaining_READY": 0
+}
