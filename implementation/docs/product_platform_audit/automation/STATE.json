@@ -7,7 +7,18 @@
     "fpia_pr_42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
     "independent_audit_pr_45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
   },
-  "lease": null,
+  "lease": {
+    "status": "RUNNING",
+    "run_id": "platform-ci-followup-20261005T045920657Z",
+    "holder_kind": "AUTOMATION_CI_FOLLOWUP",
+    "acquired_at_utc": "2026-10-05T04:59:20.657Z",
+    "expires_at_utc": "2026-10-05T05:29:20.657Z",
+    "ttl_minutes": 30,
+    "scope": "EXACT_HEAD_CI_CONSUMPTION",
+    "verified_remote_acquisition": false,
+    "acquisition_parent_head": "8bdcbfbf703bb26451b6f6fd63c511cb3863a2f2",
+    "reason": "Consume terminal exact-head Product Platform validation hardening CI"
+  },
   "pending_ci": [
     {
       "workflow": "product-platform-audit",
