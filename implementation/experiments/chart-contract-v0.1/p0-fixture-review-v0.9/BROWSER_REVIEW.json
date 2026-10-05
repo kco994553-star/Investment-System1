@@ -1,0 +1,63 @@
+{
+  "scope": "SAMPLE_ONLY",
+  "production_admission": false,
+  "results": [
+    {
+      "width": 360,
+      "result": "PASS",
+      "checks": [
+        "four-distinct-dimensions",
+        "missing-is-not-zero",
+        "sample-target-label",
+        "time-unit-denominator",
+        "GICS-unavailable",
+        "reference-theme-exact-100",
+        "actual-denied-clears-target",
+        "fictional-overlap-105-vs-partition-100",
+        "known-zero-and-partial-lower-bound",
+        "null-and-wrong-basis-denied",
+        "ineligible-denied-no-stale-svg",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "width": 390,
+      "result": "PASS",
+      "checks": [
+        "four-distinct-dimensions",
+        "missing-is-not-zero",
+        "sample-target-label",
+        "time-unit-denominator",
+        "GICS-unavailable",
+        "reference-theme-exact-100",
+        "actual-denied-clears-target",
+        "fictional-overlap-105-vs-partition-100",
+        "known-zero-and-partial-lower-bound",
+        "null-and-wrong-basis-denied",
+        "ineligible-denied-no-stale-svg",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "width": 1280,
+      "result": "PASS",
+      "checks": [
+        "four-distinct-dimensions",
+        "missing-is-not-zero",
+        "sample-target-label",
+        "time-unit-denominator",
+        "GICS-unavailable",
+        "reference-theme-exact-100",
+        "actual-denied-clears-target",
+        "fictional-overlap-105-vs-partition-100",
+        "known-zero-and-partial-lower-bound",
+        "null-and-wrong-basis-denied",
+        "ineligible-denied-no-stale-svg",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    }
+  ]
+}

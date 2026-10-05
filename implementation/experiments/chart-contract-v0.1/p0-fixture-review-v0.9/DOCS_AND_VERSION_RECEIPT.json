@@ -1,0 +1,47 @@
+{
+  "kind": "VERSION_PINNED_OFFICIAL_DOC_LOOKUP",
+  "installed": {
+    "library": "lightweight-charts",
+    "version": "5.2.1",
+    "playwright": "1.58.2",
+    "font": "@fontsource/noto-sans-kr@5.3.0"
+  },
+  "context7": {
+    "resolve_called": true,
+    "selected_id": "/tradingview/lightweight-charts/v5.2.0",
+    "available_index_version": "5.2.0",
+    "exact_5_2_1_indexed": false,
+    "query_calls": 2,
+    "topics": [
+      "v5 addSeries standalone API",
+      "WhitespaceData versus numeric zero"
+    ],
+    "limitation": "Returned examples include version5.1 docs under v5.2.0 tag and one master type. No exact5.2.1 indexing claim."
+  },
+  "exact_official_tag": [
+    {
+      "repo": "tradingview/lightweight-charts",
+      "ref": "v5.2.1",
+      "path": "package.json",
+      "blob": "5b53c2427004a09f899e95aba54a81460359472e"
+    },
+    {
+      "repo": "tradingview/lightweight-charts",
+      "ref": "v5.2.1",
+      "path": "website/docs/migrations/from-v4-to-v5.md",
+      "blob": "1c8d6873939fbb152adb51cde8283bedd8b3494a"
+    },
+    {
+      "repo": "tradingview/lightweight-charts",
+      "ref": "v5.2.1",
+      "path": "src/model/data-consumer.ts",
+      "blob": "77f62957963f9d5fbe42b8ee6816e49ca98d3eb6"
+    }
+  ],
+  "verified_use": {
+    "existing_candles": "createChart and addSeries(CandlestickSeries/HistogramSeries) v5 standalone",
+    "missing_histogram": "time-only WhitespaceData; a supplied0 remains numeric0",
+    "portfolio": "Existing native SVG helper retained; no new chart library or dependency upgrade",
+    "exact_installed_typings": "addSeries signatures; HistogramData|WhitespaceData; version()"
+  }
+}

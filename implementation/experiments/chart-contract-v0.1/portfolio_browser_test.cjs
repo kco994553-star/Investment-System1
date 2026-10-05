@@ -19,7 +19,7 @@ const fs=require('node:fs'),path=require('node:path');
    assert.equal(demo.data_state,'DEMO');assert.equal(demo.types.exposures.reduce((n,e)=>n+e.member_units,0),105);
    assert(demo.types.exposures.every(e=>e.member_units+e.non_member_units+e.unknown_units+e.cash_units===100));
    assert.equal(demo.overlap.buckets.reduce((n,b)=>n+b.units,0),100);
-   assert.match(await page.locator('#portfolio-charts').innerText(),/Growth 65% \/ Quality 40%/);
+   assert.match(await page.locator('#portfolio-charts').innerText(),/Growth 65% 하한\(최소\) \/ Quality 40% 하한\(최소\)/);
    assert.match(await page.locator('#portfolio-charts').innerText(),/\[Growth\] \+ \[Quality\]/);
    assert.match(await page.locator('#portfolio-state').innerText(),/가상 기업/);
    assert.equal(await page.locator('#portfolio-charts svg[role="img"]').count(),3);

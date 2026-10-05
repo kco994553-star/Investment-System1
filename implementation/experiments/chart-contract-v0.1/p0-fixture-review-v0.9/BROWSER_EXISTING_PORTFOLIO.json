@@ -1,0 +1,59 @@
+{
+  "scope": "REFERENCE_TARGET_AND_FICTIONAL_PORTFOLIO",
+  "results": [
+    {
+      "width": 360,
+      "result": "PASS",
+      "checks": [
+        "reference-19-exact-groups",
+        "no-inferred-types-or-security",
+        "fictional-105-percent",
+        "unknown-cash-denominator",
+        "exact-set-partition",
+        "three-SVGs",
+        "scope-labels",
+        "inventory-113-search-filter",
+        "reference-restore",
+        "observed-blocked",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "width": 390,
+      "result": "PASS",
+      "checks": [
+        "reference-19-exact-groups",
+        "no-inferred-types-or-security",
+        "fictional-105-percent",
+        "unknown-cash-denominator",
+        "exact-set-partition",
+        "three-SVGs",
+        "scope-labels",
+        "inventory-113-search-filter",
+        "reference-restore",
+        "observed-blocked",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "width": 1280,
+      "result": "PASS",
+      "checks": [
+        "reference-19-exact-groups",
+        "no-inferred-types-or-security",
+        "fictional-105-percent",
+        "unknown-cash-denominator",
+        "exact-set-partition",
+        "three-SVGs",
+        "scope-labels",
+        "inventory-113-search-filter",
+        "reference-restore",
+        "observed-blocked",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    }
+  ]
+}

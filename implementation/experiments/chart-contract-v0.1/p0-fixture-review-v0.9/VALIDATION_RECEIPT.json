@@ -1,0 +1,74 @@
+{
+  "scope": "EXPERIMENT_ONLY_SAMPLE_UI",
+  "status": "IMPLEMENTED_VERIFIED",
+  "library": "Lightweight Charts5.2.1",
+  "playwright": "1.58.2",
+  "actual_chromium": "153.0.8010.0 via @sparticuz/chromium153.0.0",
+  "node_contract_tests": {
+    "pass": 75,
+    "fail": 0,
+    "receipt": "NODE_75_PASS.log"
+  },
+  "browser": {
+    "review_viewports": [
+      360,
+      390,
+      1280
+    ],
+    "new_check_groups_per_viewport": 13,
+    "existing_portfolio_check_groups_per_viewport": 12,
+    "candle_check_groups_per_viewport": 12,
+    "independent_closure_cases": 5,
+    "page_errors": 0,
+    "overflow": false,
+    "production_E2E": "NOT_RUN"
+  },
+  "first_failure_history": [
+    {
+      "stage": "normal Playwright install",
+      "exit_code": 1,
+      "attempts": 5,
+      "browser": "Chrome for Testing145.0.7632.6 / build1208",
+      "url": "https://cdn.playwright.dev/builds/cft/145.0.7632.6/linux64/chrome-linux64.zip",
+      "error": "End of central directory record signature not found; received0MiB truncated/nonzip response",
+      "disposition": "Classified environment download failure; reused documented fallback without changing lock"
+    },
+    {
+      "stage": "fallback module path",
+      "exit_code": 1,
+      "error": "ERR_MODULE_NOT_FOUND build/cjs/index.js; actual package exports build/index.js",
+      "receipt": "ORIGINAL_BROWSER_PATH_FAILURE.log",
+      "disposition": "Corrected actual package export"
+    },
+    {
+      "stage": "fallback package extractor",
+      "exit_code": 1,
+      "error": "EINVAL chown /tmp/fonts",
+      "disposition": "Decompressed installed trusted npm brotli archives into scratch runtime using tar --no-same-owner; no package modification"
+    },
+    {
+      "stage": "missing type regression baseline",
+      "result": "EXPECTED_RED",
+      "receipt": "ORIGINAL_MISSING_ZERO_FAILURE.log"
+    },
+    {
+      "stage": "empty catalog independent regression",
+      "result": "EXPECTED_RED",
+      "receipt": "ORIGINAL_EMPTY_CATALOG_FAILURE.log"
+    }
+  ],
+  "verification_limits": [
+    "Browser fallback differs from Playwright default pinned browser145; actual version153 recorded",
+    "Projection-only known-zero/partial probes are display fixtures, not source adoption",
+    "No production source/auth/grant/renderer build or actual Chart merge-result FPIA run"
+  ],
+  "protected_paths_written": 0,
+  "raw_rows_modified": 0,
+  "inventory_expansion": 0,
+  "tested_source_sha256": {
+    "portfolio_app.js": "ab6e2ea167d95d04619b096ce8f3518de6128d7f248d4967424761ffe2eb4016",
+    "page.html": "80d549d2c2040ccac633059f642c3dc2a7b11f5f05484dd456c08a621efea7d2",
+    "portfolio_browser_test.cjs": "b4bf3053b40b9bdfc14874fb377ed9820bca64efe7c9b7062f1284d4c8dd7c9a",
+    "fixture_browser_test.cjs": "7f295d0b18cfad6a937eb77d990116ef1f1332bd25c63c6455c8e7d0f648bfc8"
+  }
+}

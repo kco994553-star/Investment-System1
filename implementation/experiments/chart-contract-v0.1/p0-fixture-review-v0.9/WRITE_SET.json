@@ -1,0 +1,377 @@
+{
+  "scope": "USER_AUTHORIZED_CHART_EXPERIMENT_SAMPLE_REUSE_NO_PRODUCTION_ADMISSION",
+  "base": "eedab5922db453a7b11a851cf57844064ce00f3f",
+  "actual_write_set": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/automation/STATE.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/AUTOMATION_RECHECK.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_CANDLES.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_EXISTING_PORTFOLIO.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_REVIEW.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_LATE_STATUS.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/DECIMAL_REFERENCE_VERIFY.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/DOCS_AND_VERSION_RECEIPT.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FPIA_CURRENT_HEAD_RECEIPT.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FPIA_TERMINAL_RECEIPT.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/GATES_AND_GAPS.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/HANDOFF.md",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/INDEPENDENT_REVIEW.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/LATE_OWNER_INTAKE.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/MAGICPATH_RECEIPT.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/NODE_75_PASS.log",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/OPTIONAL_OWNER_DELTA.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_BROWSER_PATH_FAILURE.log",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_EMPTY_CATALOG_FAILURE.log",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_MISSING_ZERO_FAILURE.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_MISSING_ZERO_FAILURE.log",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/REVIEW_CLOSURE_PROBES.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/VALIDATION_RECEIPT.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/WRITE_SET.json",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/baseline-1280.png",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/demo-1280.png",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/reference-1280.png",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/reference-390.png",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/fixture_browser_test.cjs",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/page.html",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+      "owner": "Chart",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": false,
+      "Portfolio_owner_impact": false,
+      "Integration_owner_impact": false
+    }
+  ],
+  "production_candidates": {
+    "status": "CONDITIONAL_PLANNING_ONLY_NOT_ACCEPTED_FOR_EXECUTION",
+    "review_base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+    "minimum_asset_paths": [
+      "implementation/src/investment_system/product/web_assets/target-theme.html",
+      "implementation/src/investment_system/product/web_assets/target-theme-chart.js",
+      "implementation/src/investment_system/product/web_assets/target-theme.css"
+    ],
+    "asset_properties": {
+      "owner": "Chart/Web per-file acceptance pending",
+      "protected": false,
+      "P01_digest_impact": false,
+      "Track_C_package_code_hash_impact": false,
+      "Web_owner_impact": true,
+      "Portfolio_owner_impact": "Source/contract acceptance required, no source edit inferred",
+      "Integration_owner_impact": true
+    },
+    "acceptance": "Full current base, source/Product route and each writer/lease not supplied; do not edit/serve these assets",
+    "existing_full_proposals_preserved": "p0-diagnostic-repair-v0.8/WRITE_SET.json",
+    "no_new_package_python_proposed": true
+  }
+}

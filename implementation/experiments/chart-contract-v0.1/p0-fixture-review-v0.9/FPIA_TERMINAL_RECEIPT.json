@@ -1,0 +1,433 @@
+{
+  "scope": "READ_ONLY_PR46_TERMINAL_CI_INTAKE",
+  "repository": "kco994553-star/Investment-System1",
+  "observed_at_utc": "2026-10-05T05:31:17.267Z",
+  "pr": {
+    "number": 46,
+    "head_branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+    "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "base_branch": "integration/fpia-hardened-v1",
+    "base_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/46"
+  },
+  "source_head_actions": {
+    "all_exact_head": true,
+    "all_attempt_one": true,
+    "all_completed_success": true,
+    "count": 7,
+    "runs": [
+      {
+        "id": 37264932317,
+        "name": "sec-primary-disclosure",
+        "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "run_attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "workflow_path": ".github/workflows/sec-primary-disclosure.yml",
+        "updated_at": "2026-10-05T04:58:19Z",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932317"
+      },
+      {
+        "id": 37264932370,
+        "name": "us-equity-session",
+        "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "run_attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "workflow_path": ".github/workflows/us-equity-session.yml",
+        "updated_at": "2026-10-05T04:59:11Z",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932370"
+      },
+      {
+        "id": 37264932346,
+        "name": "qgv-invalidation-binding",
+        "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "run_attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "workflow_path": ".github/workflows/qgv-invalidation-binding.yml",
+        "updated_at": "2026-10-05T04:58:53Z",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932346"
+      },
+      {
+        "id": 37264932313,
+        "name": "p01-research-publication",
+        "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "run_attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "workflow_path": ".github/workflows/p01-research-publication.yml",
+        "updated_at": "2026-10-05T05:00:46Z",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932313"
+      },
+      {
+        "id": 37264932324,
+        "name": "technical-real-model",
+        "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "run_attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "workflow_path": ".github/workflows/technical-real-model.yml",
+        "updated_at": "2026-10-05T05:02:22Z",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932324"
+      },
+      {
+        "id": 37264932310,
+        "name": "technical-real-producer",
+        "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "run_attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "workflow_path": ".github/workflows/technical-real-producer.yml",
+        "updated_at": "2026-10-05T05:04:43Z",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932310"
+      },
+      {
+        "id": 37264932348,
+        "name": "track-c-fpia",
+        "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "run_attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "workflow_path": ".github/workflows/track-c-fpia.yml",
+        "updated_at": "2026-10-05T05:17:46Z",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932348"
+      }
+    ]
+  },
+  "fpia_run": {
+    "id": 37264932348,
+    "attempt": 1,
+    "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "event": "pull_request",
+    "workflow_path": ".github/workflows/track-c-fpia.yml",
+    "status": "completed",
+    "conclusion": "success",
+    "check_suite_id": 100932725958,
+    "updated_at": "2026-10-05T05:17:46Z",
+    "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932348"
+  },
+  "fpia_jobs": {
+    "endpoint": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37264932348/attempts/1/jobs?per_page=100",
+    "total_count": 1,
+    "jobs": [
+      {
+        "id": 111619607882,
+        "name": "fpia",
+        "run_attempt": 1,
+        "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-05T04:45:58Z",
+        "completed_at": "2026-10-05T05:17:45Z",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932348/job/111619607882",
+        "steps": [
+          {
+            "number": 1,
+            "name": "Set up job",
+            "conclusion": "success",
+            "started_at": "2026-10-05T04:45:59Z",
+            "completed_at": "2026-10-05T04:46:01Z"
+          },
+          {
+            "number": 2,
+            "name": "Free runner disk (an audit needs about 5 GB of work space)",
+            "conclusion": "success",
+            "started_at": "2026-10-05T04:46:01Z",
+            "completed_at": "2026-10-05T04:47:58Z"
+          },
+          {
+            "number": 3,
+            "name": "Run actions/checkout@v4",
+            "conclusion": "success",
+            "started_at": "2026-10-05T04:47:58Z",
+            "completed_at": "2026-10-05T04:48:00Z"
+          },
+          {
+            "number": 4,
+            "name": "Fetch every branch for the object store (read-only)",
+            "conclusion": "success",
+            "started_at": "2026-10-05T04:48:00Z",
+            "completed_at": "2026-10-05T04:48:00Z"
+          },
+          {
+            "number": 5,
+            "name": "Run actions/setup-python@v5",
+            "conclusion": "success",
+            "started_at": "2026-10-05T04:48:00Z",
+            "completed_at": "2026-10-05T04:48:00Z"
+          },
+          {
+            "number": 6,
+            "name": "Install pinned runtime (FPIA's workflow loader is the vendored PyYAML 6.0.1, AC-32.spoof)",
+            "conclusion": "success",
+            "started_at": "2026-10-05T04:48:00Z",
+            "completed_at": "2026-10-05T04:48:06Z"
+          },
+          {
+            "number": 7,
+            "name": "FPIA Tier 1 tests",
+            "conclusion": "skipped",
+            "started_at": "2026-10-05T04:48:06Z",
+            "completed_at": "2026-10-05T04:48:06Z"
+          },
+          {
+            "number": 8,
+            "name": "FPIA Tier 2 real-history checks (must not skip)",
+            "conclusion": "skipped",
+            "started_at": "2026-10-05T04:48:06Z",
+            "completed_at": "2026-10-05T04:48:06Z"
+          },
+          {
+            "number": 9,
+            "name": "FPIA audit (the job fails only on FPIA_FAIL or FPIA_NOT_RUN)",
+            "conclusion": "success",
+            "started_at": "2026-10-05T04:48:06Z",
+            "completed_at": "2026-10-05T05:17:42Z"
+          },
+          {
+            "number": 10,
+            "name": "Run actions/upload-artifact@v4",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:17:42Z",
+            "completed_at": "2026-10-05T05:17:43Z"
+          },
+          {
+            "number": 19,
+            "name": "Post Run actions/setup-python@v5",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:17:43Z",
+            "completed_at": "2026-10-05T05:17:43Z"
+          },
+          {
+            "number": 20,
+            "name": "Post Run actions/checkout@v4",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:17:43Z",
+            "completed_at": "2026-10-05T05:17:43Z"
+          },
+          {
+            "number": 21,
+            "name": "Complete job",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:17:43Z",
+            "completed_at": "2026-10-05T05:17:43Z"
+          }
+        ]
+      }
+    ]
+  },
+  "log_receipt": {
+    "source_job_id": 111619607882,
+    "representation": "GitHub connector decoded job log content UTF-8; digest is this observed representation, not original ZIP bytes",
+    "lines": [
+      "2026-10-05T04:48:06.6866062Z \u001b[36;1mecho \"audit subject T=$tree register_commit=$register cdr=$cdr event=$GITHUB_EVENT_NAME\"\u001b[0m",
+      "2026-10-05T04:48:06.6869547Z \u001b[36;1mprint(\"result_sha256: %s\" % doc[\"result_sha256\"])\u001b[0m",
+      "2026-10-05T04:48:06.6869928Z \u001b[36;1m# G4/H4: recheck the written output and its side files and print run_sha256 (integrity of the\u001b[0m",
+      "2026-10-05T04:48:06.6871867Z \u001b[36;1m  echo \"Subject T: $tree (event $GITHUB_EVENT_NAME). CODE_IDENTITY_DIVERGED is reported as fact;\"\u001b[0m",
+      "2026-10-05T04:48:06.6872223Z \u001b[36;1m  echo \"FROZEN_TOOLS_ON_T is a separate verbatim BRANCH_FROZEN_VALIDATION class; exit 0 is not a\"\u001b[0m",
+      "2026-10-05T04:48:06.9623036Z audit subject T=2135962a1e6fd19c3acd220a30c6464431eddf95 register_commit=af264713b99471fb554e06e8d321f5039be47b47 cdr=CDR-014 event=pull_request",
+      "2026-10-05T05:17:42.2482122Z FPIA_PASS | CODE_IDENTITY_DIVERGED (code_hash R 0ef3a900 -> T df34b84f; CODE R 2ed79c3c -> T d0c02ac2) | FROZEN_TOOLS_ON_T_FAIL [BRANCH_FROZEN_VALIDATION, verbatim] | HISTORICAL_FROZEN_IDENTITY_PRESERVED (replayed 4 records + 4 CI logs; 27 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_NONE | v2_binding PASS | full_regression PASS | dynamic_invocation_detection NOT_CLAIMED (D3-c) | out_of_tree_code_analysis NOT_ANALYSED (D3-e)",
+      "2026-10-05T05:17:42.2489354Z code_identity: CODE_IDENTITY_DIVERGED",
+      "2026-10-05T05:17:42.2489613Z frozen_tools_on_T: FROZEN_TOOLS_ON_T_FAIL",
+      "2026-10-05T05:17:42.2489796Z full_regression: PASS",
+      "2026-10-05T05:17:42.2490214Z integration_interference: INTEGRATION_INTERFERENCE_NONE",
+      "2026-10-05T05:17:42.2490561Z track_c_projection: TRACK_C_PROJECTION_PRESERVED",
+      "2026-10-05T05:17:42.2490727Z v2_binding: PASS",
+      "2026-10-05T05:17:42.2490933Z result_sha256: 992fd396abc47d03f3075b717f2640f78654fd9f92bf00f936135631dc67409f",
+      "2026-10-05T05:17:42.2497782Z run_sha256: 4198136fb7cc9d5376320631c8b52bbe28a013680c1b814b81132f5a272e90f4 (integrity of the written run section, not authentication; D3-a)",
+      "2026-10-05T05:17:42.2498280Z fpia-output: VERIFIED"
+    ],
+    "decoded_utf8_bytes": 34037,
+    "decoded_utf8_sha256": "1ba3a01ffd31a946d39d949da9cc99aa5daca85298b899ca717f732be6277695"
+  },
+  "actual_audit": {
+    "subject_head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "register_commit": "af264713b99471fb554e06e8d321f5039be47b47",
+    "cdr": "CDR-014",
+    "summary_status": "FPIA_PASS",
+    "code_identity": "CODE_IDENTITY_DIVERGED",
+    "frozen_tools": "FROZEN_TOOLS_ON_T_FAIL / BRANCH_FROZEN_VALIDATION verbatim preserved",
+    "historical_frozen_identity": "PRESERVED",
+    "track_c_projection": "PRESERVED",
+    "integration_interference": "NONE",
+    "v2_binding": "PASS",
+    "full_regression": "PASS",
+    "dynamic_invocation_detection": "NOT_CLAIMED",
+    "out_of_tree_code_analysis": "NOT_ANALYSED",
+    "tier1_workflow_step": "SKIPPED",
+    "tier2_workflow_step": "SKIPPED",
+    "result_sha256": "992fd396abc47d03f3075b717f2640f78654fd9f92bf00f936135631dc67409f",
+    "run_sha256": "4198136fb7cc9d5376320631c8b52bbe28a013680c1b814b81132f5a272e90f4",
+    "hash_authority": "INTEGRITY_ONLY / NOT_AUTHENTICATION"
+  },
+  "artifacts": {
+    "verification": "GITHUB_METADATA_VERIFIED; archive not downloaded or independently hashed",
+    "items": [
+      {
+        "id": 11327061190,
+        "name": "track-c-fpia-2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "size_in_bytes": 58397,
+        "url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11327061190",
+        "archive_download_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11327061190/zip",
+        "expired": false,
+        "created_at": "2026-10-05T05:17:43Z",
+        "expires_at": "2027-01-03T04:45:55Z",
+        "updated_at": "2026-10-05T05:17:43Z",
+        "digest": "sha256:ff7f5eed1fb62bb7325f459671fb3ceac69119c09afdb406b027c38293831b84",
+        "workflow_run": {
+          "id": 37264932348,
+          "repository_id": 1379547477,
+          "head_repository_id": 1379547477,
+          "head_branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+          "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95"
+        }
+      }
+    ]
+  },
+  "raw_github_review_counts": {
+    "pulls/46/reviews": 0,
+    "pulls/46/comments": 0,
+    "issues/46/comments": 0
+  },
+  "governance": {
+    "latest_global_head": "426c8bb750a5237403fee8336be4714548752094",
+    "latest_global_handoff": "GCH-017",
+    "decision_records": "implementation/docs/coordination/PIW_DECISION_RECORDS.md",
+    "piw_d001_to_d006_status": "D2_DISPOSITION_DECIDED / IMPLEMENTATION_AND_EVIDENCE_PENDING",
+    "integration_acceptance": "BLOCKED",
+    "bounded_repair_independent_review": "PR46 owner evidence has 10 independent controls PASS and bounded repair approval; whole FPIA review/adoption closure is not established by this CI receipt",
+    "gie014": "BOUNDED_REPAIR_VERIFIED; successor CI_PENDING label superseded by exact fresh terminal run; INTEGRATION_ACCEPTANCE_BLOCKED remains",
+    "a_g3_status": "PARTIALLY_RESOLVED",
+    "lane_a_open_count": 6,
+    "remaining_owner_action": [
+      "Accepted immutable verifier/runtime manifest and substitution-negative evidence (PIW-D001)",
+      "Compound workflow/source/run/attempt/job/subject/verifier receipt binding and consumer validation (PIW-D002)",
+      "Dynamic executable coverage closure or immutable noninterference evidence (PIW-D003)",
+      "Actual candidate importer dependency and generic attribution evidence (PIW-D004)",
+      "External executable source influence inventory and coverage/negative substitution evidence (PIW-D005)",
+      "Branch-independent Track C applicability receipt and actual exact-result FPIA (PIW-D006)",
+      "Independent/adversarial whole-FPIA evidence and GIE technical adoption closure"
+    ],
+    "user_d3_required_by_this_ci": false,
+    "chart_actual_merge_result_fpia": "NOT_RUN",
+    "canonical_acceptance": "NOT_CLAIMED"
+  },
+  "boundaries": {
+    "repo_changed": false,
+    "remote_changed": false,
+    "tests_executed_here": false,
+    "actions_dispatched": false,
+    "comments_posted": false
+  },
+  "workflow_source": {
+    "path": ".github/workflows/track-c-fpia.yml",
+    "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "git_blob": "92002c471830932a1c240006d2a6152bdacb2c1f",
+    "sha256": "69725979c1c99cab49e4b0af87284075f9be18635bffd312e253b5fa8bcf2105",
+    "verifier_origin": "Subject PR46 tree invokes its own verifier; CI receipt alone is not independently accepted verifier authority"
+  },
+  "bounded_repair_source_evidence": {
+    "head_sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "summary_path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/summary.json",
+    "summary_sha256": "795677db47385b1f977c6d3a606adba157d6c2a2493c2e831ab25a0758f8cfdc",
+    "checked_count": 15,
+    "all_match": true,
+    "checks": [
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/README.md",
+        "expected_sha256": "abb6d73ac51b64a28c78916e9086c30e9d22df632cd1c026e637008ef0253ba6",
+        "actual_sha256": "abb6d73ac51b64a28c78916e9086c30e9d22df632cd1c026e637008ef0253ba6",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/affected_after_308_pass_2_deselected.log",
+        "expected_sha256": "c26f9cf4fcc4bb5d674b72d6f5da4795781f58a4dccd13c36658517fce1f7951",
+        "actual_sha256": "c26f9cf4fcc4bb5d674b72d6f5da4795781f58a4dccd13c36658517fce1f7951",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/aggregate_after.json",
+        "expected_sha256": "3e40c4f8a854254dc56f7b8e9eeb9e417673e07834cdeaf8440979809a09218c",
+        "actual_sha256": "3e40c4f8a854254dc56f7b8e9eeb9e417673e07834cdeaf8440979809a09218c",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/aggregate_before.json",
+        "expected_sha256": "57763a3fceae075f64e84ceeb0398a7950e276f3977c10803404bbbdaa6d2086",
+        "actual_sha256": "57763a3fceae075f64e84ceeb0398a7950e276f3977c10803404bbbdaa6d2086",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/aggregate_probe.py.txt",
+        "expected_sha256": "80dfbc7a5f5b264cb3cbfaeb82629fa1685a0d3dc11b20057a45f97170b24400",
+        "actual_sha256": "80dfbc7a5f5b264cb3cbfaeb82629fa1685a0d3dc11b20057a45f97170b24400",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/baseline_fix3_234_pass.log",
+        "expected_sha256": "f6c465b50cc4ee0b9b44ea52eb2069cdae3bd15fc665dce7c0af85d5114d0eb8",
+        "actual_sha256": "f6c465b50cc4ee0b9b44ea52eb2069cdae3bd15fc665dce7c0af85d5114d0eb8",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/excluded_initial_wrong_source.json",
+        "expected_sha256": "3e40c4f8a854254dc56f7b8e9eeb9e417673e07834cdeaf8440979809a09218c",
+        "actual_sha256": "3e40c4f8a854254dc56f7b8e9eeb9e417673e07834cdeaf8440979809a09218c",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/independent_review_10_pass.json",
+        "expected_sha256": "d9ac85a4a5eb5ec7c63dab9bc45c3247e47328bd4bbd494dd06b5a464772fe14",
+        "actual_sha256": "d9ac85a4a5eb5ec7c63dab9bc45c3247e47328bd4bbd494dd06b5a464772fe14",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/independent_review_probe.py.txt",
+        "expected_sha256": "2dfe7bc062514db2e4885db9853dcc316f49733a0837e4cd23a83976ab7a2d54",
+        "actual_sha256": "2dfe7bc062514db2e4885db9853dcc316f49733a0837e4cd23a83976ab7a2d54",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/independent_scanner_before.json",
+        "expected_sha256": "7010e52e6f285ca094f6b66db4b1b0f54796e3f828403ee2437b589f612576c2",
+        "actual_sha256": "7010e52e6f285ca094f6b66db4b1b0f54796e3f828403ee2437b589f612576c2",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/independent_scanner_probe.py.txt",
+        "expected_sha256": "7bc2f44e11b47b0c3bda7e8a301f553b6c680cb07ebad7853f2d045dbfc56cae",
+        "actual_sha256": "7bc2f44e11b47b0c3bda7e8a301f553b6c680cb07ebad7853f2d045dbfc56cae",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/new_end_to_end_1_pass.log",
+        "expected_sha256": "1ef2cb2c6cbbd7a71a02b4b055e60893e7119481fac7f83343eff1c8a1e2161a",
+        "actual_sha256": "1ef2cb2c6cbbd7a71a02b4b055e60893e7119481fac7f83343eff1c8a1e2161a",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/new_regressions_before_7_fail_4_pass.log",
+        "expected_sha256": "1f38ff119bb30ee14770bf2e30cd7fd08fffd5cd9c68c9c0c363e7f17c0897c7",
+        "actual_sha256": "1f38ff119bb30ee14770bf2e30cd7fd08fffd5cd9c68c9c0c363e7f17c0897c7",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/prior_head_ci_snapshot.json",
+        "expected_sha256": "1f1d054b9079407d60b5a601c73ed7475a27c54d1889377e9b151a16c73f9f81",
+        "actual_sha256": "1f1d054b9079407d60b5a601c73ed7475a27c54d1889377e9b151a16c73f9f81",
+        "match": true
+      },
+      {
+        "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/self_constraints_7_pass.log",
+        "expected_sha256": "93b77313c8371251646bf1569859693a16172d389204109ab4cb35717c1db318",
+        "actual_sha256": "93b77313c8371251646bf1569859693a16172d389204109ab4cb35717c1db318",
+        "match": true
+      }
+    ],
+    "interpretation": "Raw Git blobs at published exact PR46 head match owner manifest; integrity does not establish whole-governance acceptance"
+  }
+}

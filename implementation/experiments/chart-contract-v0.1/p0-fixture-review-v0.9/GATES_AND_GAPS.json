@@ -1,0 +1,286 @@
+{
+  "scope": "FRESH_OWNER_REJUDGEMENT_NOT_AUTHORITY",
+  "recorded_at_utc": "2026-10-05T05:44:57.107224+00:00",
+  "lane_a": {
+    "status": "IMPLEMENTATION_NOT_READY",
+    "remaining_blockers": 6,
+    "resolved": 0,
+    "gates": [
+      {
+        "id": "A-S1",
+        "name": "Authoritative current TARGET root",
+        "status": "OWNER_ACTION_REQUIRED",
+        "production_gate": "OPEN",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "delta": "Current Global ledger explicitly records no accountable owner claim/receipt. Existing15 root owner-return fields remain null.",
+        "evidence": [
+          "OWNER_ROUTING_LEDGER:MAIN-CHART-A-S1-20261005",
+          "TARGET_OWNER_ADMISSION_REQUEST.json",
+          "Platform contracts/portfolio_input.py REFERENCE_FIXTURE"
+        ],
+        "next_action": "Main obtains explicit bounded source-owner/session/branch/write-set/lease claim; owner returns immutable current TARGET root/version/effective applicability/source-backed availability, exact19 rows+cash, denominator/completeness/provenance and adoption. Chart authenticates returned root, does not invent it.",
+        "previous_blocker_evidence": "No adopted current TARGET root; authored reference is not source admission",
+        "latest_reason": "OWNER_UNASSIGNED/FOUND; authoritative owner claim and root receipt remain null.",
+        "latest_exact_Global": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+        "chart_can_close_directly": false,
+        "chart_can_continue_independent_work": true,
+        "owner_exact_ref": {
+          "branch": null,
+          "head": null,
+          "pr": null
+        },
+        "latest_evidence_files": [
+          "FRESH_OWNER_INTAKE.json",
+          "LATE_OWNER_INTAKE.json"
+        ]
+      },
+      {
+        "id": "A-S2",
+        "name": "Reviewed common Security/share-form bindings",
+        "status": "OWNER_ACTION_REQUIRED",
+        "production_gate": "OPEN",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "delta": "No19-row adopted relation. Common Issuer→Security→dated Listing capability and metadata exist; metadata scope does not authorize Target identity.",
+        "evidence": [
+          "OWNER_ROUTING_LEDGER:MAIN-CHART-A-S2-20261005",
+          "TARGET_OWNER_ADMISSION_REQUEST.json nineteen owner_return.security_id null",
+          "Entity Metadata CONTRACT.md search-only scope",
+          "personal/security.py CompanyLink proposed"
+        ],
+        "next_action": "Assign bounded authoritative identity owner; reuse explicit common security namespace for reviewed all19 root-row↔issuer/security/share-form evidence and revision. Reject uncertain/ticker-only/CIK-only relations.",
+        "previous_blocker_evidence": "Common Issuer→Security→dated Listing exists but no reviewed Target19 relation",
+        "latest_reason": "OWNER_UNASSIGNED/FOUND; reviewed19 common security/share-form relation receipt remains null.",
+        "latest_exact_Global": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+        "chart_can_close_directly": false,
+        "chart_can_continue_independent_work": true,
+        "owner_exact_ref": {
+          "branch": null,
+          "head": null,
+          "pr": null
+        },
+        "latest_evidence_files": [
+          "FRESH_OWNER_INTAKE.json",
+          "LATE_OWNER_INTAKE.json"
+        ]
+      },
+      {
+        "id": "A-S3",
+        "name": "Adopted Strategy Theme catalog/assignment revisions",
+        "status": "OWNER_ACTION_REQUIRED",
+        "production_gate": "OPEN",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "delta": "Authored30/25/20/25 and19 relations still reference values, with catalog/version/assignment owner slots unadmitted.",
+        "evidence": [
+          "OWNER_ROUTING_LEDGER:MAIN-CHART-A-S3-20261005",
+          "TARGET_OWNER_ADMISSION_REQUEST.json"
+        ],
+        "next_action": "Accountable source/classification owner adopts user-defined Strategy Theme/Portfolio Bucket catalog/concepts/version and complete assignment revision bound to admitted root+common Security, preserving authored economic meaning.",
+        "previous_blocker_evidence": "User-authored four groups observed; catalog/version/current full assignment not adopted",
+        "latest_reason": "OWNER_UNASSIGNED/FOUND; adopted catalog/assignment/root binding receipt remains null.",
+        "latest_exact_Global": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+        "chart_can_close_directly": false,
+        "chart_can_continue_independent_work": true,
+        "owner_exact_ref": {
+          "branch": null,
+          "head": null,
+          "pr": null
+        },
+        "latest_evidence_files": [
+          "FRESH_OWNER_INTAKE.json",
+          "LATE_OWNER_INTAKE.json"
+        ]
+      },
+      {
+        "id": "A-G1",
+        "name": "Product applicability/exact subject/current read authority",
+        "status": "OWNER_ACTION_REQUIRED",
+        "production_gate": "OPEN",
+        "owner_assignment": "RESOLVED_CAPABILITY_ROUTE_INDIVIDUAL_SESSION_UNCONFIRMED",
+        "delta": "Main delivered A/B/C applicability question to PR17 comment5988265306; no actual owner answer/adopted subject/read route. P01 grants NONE are not themselves a reason to impose research grant on TARGET.",
+        "evidence": [
+          "OWNER_ROUTING_LEDGER:MAIN-CHART-A-G1-20261005",
+          "OWNER_INTERFACE_DECISION_INPUT_v0.5.json",
+          "research_publication CONTRACT.md and STATUS.md",
+          "fresh PR17 discussion"
+        ],
+        "next_action": "Product/P01 returns applicability A existing/B separate Target route/C insufficient with adopted policy reference, exact subject/preimage/hash/root/catalog/assignment dependencies, explicit clock/current authority/invalidation and denial clearing. Chart consumes exact owner evidence. Private account Platform applicability must not become current TARGET prerequisite.",
+        "previous_blocker_evidence": "Research-display/publication authority applicability to user-authored TARGET was not decided",
+        "latest_reason": "P01 applicability request ROUTED with null receipt/consumed revision. New Platform CI acceptance is not a TARGET applicability/current subject/read authority adoption.",
+        "latest_exact_Global": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+        "chart_can_close_directly": false,
+        "chart_can_continue_independent_work": true,
+        "owner_exact_ref": {
+          "branch": "feature/p01-research-publication-v1",
+          "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "pr": 17
+        },
+        "latest_evidence_files": [
+          "FRESH_OWNER_INTAKE.json",
+          "LATE_OWNER_INTAKE.json"
+        ]
+      },
+      {
+        "id": "A-G2",
+        "name": "Accepted exact integration base/full per-file write set",
+        "status": "PARTIALLY_RESOLVED",
+        "production_gate": "OPEN",
+        "dependency": "OWNER_ACTION_REQUIRED",
+        "owner_assignment": "RESOLVED_CAPABILITY_ROUTE_FULL_CROSS_OWNER_ACCEPTANCE_PENDING",
+        "delta": "Main adopted conditional Integration planning receipt for acaf1b5 review base and only3ordinary Target Theme assets. all_gate_a_g2_closed=false; full source/Product/Chart/Web owner acceptance absent.",
+        "evidence": [
+          "INTEGRATION_SIDE_CONDITIONAL_ACCEPTANCE.json",
+          "OWNER_ROUTING_LEDGER:MAIN-CHART-A-G2-20261005",
+          "fresh PR36 comment5988265604",
+          "WRITE_SET.json route-dependent proposals"
+        ],
+        "next_action": "Consume conditional receipt as planning evidence; after source/read-route adoption obtain actual current base and smallest full file subset/per-file writer+lease from all affected owners, protected/digest/package code_hash impacts and required final checks. Assets copied by existing build do not provide admitted allocation service.",
+        "previous_blocker_evidence": "No accepted exact base and first slice file write-set",
+        "latest_reason": "Conditional integration planning receipt exact blob766ef029 unchanged; all_gate_a_g2_closed=false. New PPAF08 route asks protected Web writer scope and actual/target separation; no owner acceptance.",
+        "latest_exact_Global": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+        "chart_can_close_directly": false,
+        "chart_can_continue_independent_work": true,
+        "owner_exact_ref": {
+          "branch": "integration/web/production-state-presentation-v1",
+          "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+          "pr": 36
+        },
+        "latest_evidence_files": [
+          "FRESH_OWNER_INTAKE.json",
+          "LATE_OWNER_INTAKE.json"
+        ]
+      },
+      {
+        "id": "A-G3",
+        "name": "FPIA governance/admissibility/review/G7/GIE",
+        "status": "PARTIALLY_RESOLVED",
+        "production_gate": "OPEN",
+        "dependency": "OWNER_ACTION_REQUIRED",
+        "owner_assignment": "GPT_WORK_MAIN_INTEGRATION",
+        "delta": "PR42 CI wait already removed by prior Chart intake; new PIW-D001..006 decide operational a-e/G7 questions. PR46 bounded literal-source repair/review and seven fresh terminal success runs advance tool verification, but actual technical acceptance obligations pending.; PIW-D007/D002 consumer implemented, authenticated actual receipt not supplied; exact new head CI pending",
+        "evidence": [
+          "PIW_DECISION_RECORDS.md",
+          "GIE-014_main_takeover_fpia_2026-10-05.md",
+          "FPIA_GOVERNANCE_INDEPENDENT_REVIEW.md",
+          "PR46 independent_review_10_pass.json",
+          "fresh PR46 workflow-run API"
+        ],
+        "next_action": "Main consumes existing exact213 runs/attempt/job/artifact; implements/verifies accepted verifier/launcher/runtime, compound evidence identity, dynamic execution coverage, generic importer attribution or real omission, external source closure and branch-independent TrackC applicability; adopts final independent/adversarial/governance/GIE receipts. Future actual Chart assembled merge-result audit remains separate.",
+        "previous_blocker_evidence": "Old CI success/old D3 labels did not close independent/adversarial/GIE governance",
+        "latest_reason": "PIW-D007 supersedes PIW-D002 technical status only for finite consistency consumer. AuthenticationNOT_VERIFIED/actual_authenticated_receiptNOT_SUPPLIED/integrationBLOCKED. New exactheadCIpending; PIW-D001/D003-D006 plus authenticatedD002/finalGIE/actualChartresult remain pending.",
+        "latest_exact_Global": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+        "chart_can_close_directly": false,
+        "chart_can_continue_independent_work": true,
+        "owner_exact_ref": {
+          "branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+          "pr": 46,
+          "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
+        },
+        "latest_evidence_files": [
+          "FRESH_OWNER_INTAKE.json",
+          "LATE_OWNER_INTAKE.json"
+        ],
+        "latest_ci": "6FAILED exacta3e3/attempt1; FPIA37267962000 running. Two D002 self-constraint regressions per failedfullsuite, not environment. Owner repair and finaltechnical/auth/GIE acceptance remain."
+      }
+    ]
+  },
+  "lane_b": {
+    "admitted": 0,
+    "total": 19,
+    "evidence_families": 8,
+    "immutable_rows": 23155,
+    "new_collection": 0,
+    "raw_replay_rerun": false,
+    "market_production_admission": false,
+    "gaps": [
+      {
+        "id": "B01",
+        "family": "internal Security identity",
+        "status": "BLOCKED",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "delta": "No admitted exact common economic instrument/share form relations; metadata search contract and current SEC associations are insufficient.",
+        "next_action": "Bounded Identity owner returns explicit common issuer/security relation, form/class, validity/evidence availability and admission scope."
+      },
+      {
+        "id": "B02",
+        "family": "dated Listing/provider relation",
+        "status": "BLOCKED",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "delta": "No source-bound listing/security/provider interval continuity; GEV when-issued/regular-way and Tokyo/ASML share-form distinctions preserved.",
+        "next_action": "Owner admits dated listing+MIC/currency/provider symbol intervals and continuity, with source/hash/availability; never apply current map backwards."
+      },
+      {
+        "id": "B03",
+        "family": "exchange/session/timezone",
+        "status": "PARTIAL",
+        "owner_assignment": "US_SESSION_PR18_US_ONLY_OTHER_ROLES_UNASSIGNED",
+        "delta": "Existing US contract reusable; routing request5988265466 not a real exchange vintage receipt. JPX/KRX separate, no US copy.",
+        "next_action": "US owner returns actual exchange-calendar body/notices/hash, explicit dated rows/exceptions/timezone/tzdata/source-backed row availability; assign JP/KR evidence owners independently."
+      },
+      {
+        "id": "B04",
+        "family": "dated session join",
+        "status": "BLOCKED",
+        "owner_assignment": "US_SESSION_PR18_US_ONLY_OTHER_ROLES_UNASSIGNED",
+        "delta": "No per-bar admitted listing/calendar/raw index join. KRX CSAT raw09:00 vs official10:00 remains unresolved.",
+        "next_action": "Reuse binder afterB01/B02/B03 evidence; bind all original indices/provider dates to admitted sessions with explicit missing/conflict reasons. Close guard not historical available_at."
+      },
+      {
+        "id": "B05",
+        "family": "adjustment basis",
+        "status": "PARTIAL",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "delta": "No adopted perOHLCV/adjclose source-transform/volume/finality basis from new Global or Product changes.",
+        "next_action": "Evidence owner supplies exact each-field raw/split/dividend transform basis/version/hash/coverage and availability. Adjclose or mcap scalar cannot substitute whole candles."
+      },
+      {
+        "id": "B06",
+        "family": "corporate-action basis",
+        "status": "PARTIAL",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "delta": "Reviewed bounded NVDA event/provider candidates preserved; no complete identity-continuous ledger or transform closure returned.",
+        "next_action": "Owner admits security-scoped legal/action clocks/source/version/completeness/actual availability and transform linkage. GE parent notGEV identity; empty provider events not certified no-actions."
+      },
+      {
+        "id": "B07",
+        "family": "historical available_at",
+        "status": "NOT_AVAILABLE",
+        "value": null,
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "delta": "No actual historical perbar/action publication or access receipts. Current fetch/calendar open-close clocks cannot fill absent history.",
+        "next_action": "Return source-supported historical vintage/revision/finality/knowledge/access evidence; otherwise retain null NOT_AVAILABLE with no PIT relaxation."
+      },
+      {
+        "id": "B08",
+        "family": "quote/feed state",
+        "status": "UNKNOWN",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "delta": "No exact endpoint/response/row source-state evidence returned. Exchange open/last print not feed-state or ProductLIVE grant.",
+        "next_action": "Owner returns exact source state semantics/docs/hash/time/delay/finality/scope; preserve UNKNOWN until then."
+      }
+    ],
+    "anomalies_preserved": [
+      "Tokyo2022-05-17",
+      "Hanmi2024-01-15",
+      "Hanmi2024-10-14",
+      "Hanmi2025-04-09",
+      "Hanmi2025-09-19 missing"
+    ],
+    "anomaly_cause": "UNKNOWN",
+    "status_basis": "Fresh relevant owner/routing evidence inspected; preserved immutable Market evidence reused. This is no new19x8 raw audit."
+  },
+  "actual": "NOT_AVAILABLE",
+  "target_fallback": false,
+  "new_chart_user_d3": false,
+  "inventory": {
+    "Core": 81,
+    "Extended": 24,
+    "ResearchCandidate": 8
+  },
+  "production_l1_l5": {
+    "L1": "REFERENCE_VERIFIED_CURRENT_TARGET_SOURCE_IDENTITY_THEME_OWNER_GATED",
+    "L2": "DIAGNOSTIC_IMPLEMENTED_PRODUCTION_AGGREGATION_NOT_IMPLEMENTED",
+    "L3": "PROPOSAL_RETAINED_PRODUCT_API_NOT_ADOPTED",
+    "L4": "SAMPLE_RENDERER_IMPLEMENTED_VERIFIED_PRODUCTION_RENDERER_NOT_IMPLEMENTED",
+    "L5": "SAMPLE_BROWSER_VERIFIED_PRODUCTION_E2E_ACTUAL_CHART_FPIA_NOT_RUN"
+  }
+}

@@ -123,3 +123,10 @@ verbatimFrozen-toolsFAIL and nonclaims retained. Completed run consumed and
 pending queue cleared with history. A-G3 remainsPARTIALLY_RESOLVED awaiting
 finalownerreview/decision/GIE; sixTargetgates/Market0of19/no newChartD3.
 See v0.8 FPIA_TERMINAL_RECEIPT and terminal handoff append.
+
+
+## 2026-10-05 v0.9 — SAMPLE UI repairs, exact late owner intake
+
+History-preserving continuation: [scoped handoff](p0-fixture-review-v0.9/HANDOFF.md). Fresh start b6f15eef; verified lease/preparation eedab592; canonical b8e39a2. Global GCH0187a29 / PR46a3e3 consumed, old213 CI PASS preserved onlyoldsubject.6production gates remain OPEN (G2/G3partial),Market0/19/eightgaps,ACTUAL NOT_AVAILABLE. Existing SAMPLE renderer reused and repaired;75NodePASS,3new viewport runs and6existing browser runsPASS;5independent closure casesPASS. Context7 actual5.2.1 official cross-check and user-selected private MagicPath screenshot canvas complete. No production/source/protected/package/Global changes or newD3. Exact verified publication HEAD/hashes resolve from automation/STATE.json after remote verification.
+
+Late exact CI observation: current a3e3 has six non-FPIA workflow failures (new D002 self-constraint regression), FPIA remains running; prior213 success is not latest-subject PASS. Optional QGV2ba semantics-only/storage-auth11dba audit do not close Chart source/authority gates.
