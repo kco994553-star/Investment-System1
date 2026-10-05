@@ -49,14 +49,14 @@
   },
   "last_observed": {
     "input_heads": {
-      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
-      "42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
-      "41": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
-      "36": "fb086eac4321140493ce554a541343cebbb81ed6",
-      "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
-      "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
       "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
-      "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
+      "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "41": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
+      "42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
     },
     "observed_at_utc": "2026-10-05T01:17:25Z",
     "owner_output_head": "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
@@ -266,14 +266,14 @@
     "processed_at_utc": "2026-10-05T01:17:25Z",
     "run_id": "manual-root-v06-20261005005901",
     "input_heads": {
-      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
-      "42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
-      "41": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
-      "36": "fb086eac4321140493ce554a541343cebbb81ed6",
-      "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
-      "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
       "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
-      "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
+      "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "41": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
+      "42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
     },
     "event_watermarks": {
       "17": {
@@ -504,24 +504,23 @@
     "preflight_cli_pass": 6
   },
   "lease": {
-    "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
-    "run_id": null,
+    "status": "RUNNING",
+    "run_id": "manual-chart-dependency-delta-20261005T030326898Z",
     "holder_kind": "MANUAL_ROOT",
-    "acquired_at_utc": "2026-10-05T00:59:01Z",
-    "expires_at_utc": "2026-10-05T01:59:01.000Z",
+    "acquired_at_utc": "2026-10-05T03:03:26.899Z",
+    "expires_at_utc": "2026-10-05T04:03:26.899Z",
     "ttl_minutes": 60,
     "allowed_automatic_ttl_minutes": 30,
     "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": true,
-    "acquisition_parent_head": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
+    "verified_remote_acquisition": false,
+    "acquisition_parent_head": "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
     "mutual_exclusion": "PROTOCOL_NOT_PROVIDER_GUARANTEE",
     "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease.",
     "acquisition_commit": "ce978a5bebb17abd5b6072cdbc6f2db82cf21b18",
     "verified_at_utc": "2026-10-05T00:37:38.114590+00:00",
-    "released_at_utc": "2026-10-05T01:17:25Z",
     "verified_published_packet": "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
     "previous_run_id": "manual-root-v06-20261005005901",
-    "reason": "Current user continuation: bounded executable owner-return preflight gap; no source gate closure or package/protected production change"
+    "reason": "Material FPIA GCH014b adversarial findings; restore previously authorized Chart continuation watches"
   },
   "publication": {
     "status": "V06_PREFLIGHT_PACKET_AND_HANDOFF_VERIFIED",
