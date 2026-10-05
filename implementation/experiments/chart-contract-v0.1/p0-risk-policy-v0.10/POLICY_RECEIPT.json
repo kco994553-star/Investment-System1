@@ -1,0 +1,134 @@
+{
+  "kind": "SCOPED_POLICY_ADOPTION_NOT_PRODUCT_IMPLEMENTATION",
+  "recorded_at_utc": "2026-10-05T06:23:05.563Z",
+  "authority": "Latest explicit user Risk-Proportional Verification instruction, 2026-10-05",
+  "source_head": "4752bca2d58a61ef5821a0556b6480fc527fac80",
+  "lease_head": "d187495286697d1e3ceab31d33bc2d0f5e56fd8f",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "global": "9cd598c5564827418115ebb15c1c88a0e7811bab",
+  "global_delta": {
+    "type": "MAIN_SCOPED_REPAIR_LEASE_ONLY",
+    "changed_paths": [
+      "implementation/docs/coordination/MAIN_TAKEOVER_STATE.json"
+    ],
+    "chart_gate_closure": false,
+    "owner_repair_write_set": [
+      "implementation/tools/integration/track_c_fpia_evidence_identity.py",
+      "implementation/tests/test_integration_fpia_evidence_identity.py"
+    ]
+  },
+  "pr46": {
+    "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "run_id": 37267962000,
+    "attempt": 1,
+    "status": "in_progress",
+    "conclusion": null,
+    "actual_chart_merge_result_fpia": "NOT_RUN"
+  },
+  "tasks": [
+    {
+      "id": "6ac2ef0621908191909a27af4c91f101",
+      "title": "Chart CI 후속 확인",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "last_run": "2026-10-05T05:57:06.819156+00:00",
+      "exact_prompt_match": true
+    },
+    {
+      "id": "6ac31fca7bb4819183997a9f17f432cb",
+      "title": "Chart 감사 자동진행",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T035654Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "last_run": "2026-10-05T06:18:46.483035+00:00",
+      "exact_prompt_match": true
+    }
+  ],
+  "automation_audit": {
+    "classification": "UNKNOWN",
+    "coordination": "WORKING_AS_DESIGNED",
+    "invocation_observed": true,
+    "productive_scheduled_completion": "UNVERIFIED",
+    "trigger_missed_proven": false,
+    "framework_repair": false
+  },
+  "policy": {
+    "path": "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md",
+    "classes": [
+      "FAST",
+      "STANDARD",
+      "CRITICAL"
+    ],
+    "full_regression_by_default": false,
+    "agent_budget": {
+      "default": 1,
+      "optional_backend_pit_verifier": 1,
+      "agents_spawned_this_run": 0
+    },
+    "evidence_reuse": true,
+    "version": "chart-v0.10"
+  },
+  "metrics": {
+    "requirements_closed": 0,
+    "blockers_closed": 0,
+    "new_blockers": 0,
+    "lane_a_remaining_blockers": 6,
+    "vertical_slice_progress": "Existing SAMPLE implemented/verified; policy adopted; no new product code",
+    "production_ready_contracts": "NONE_ADMITTED_FOR_CURRENT_TARGET_SLICE",
+    "frontend_ready_contracts": "EXISTING_VERIFIED_SAMPLE_RENDERER_AND_FIXTURE_ONLY"
+  },
+  "verification": {
+    "changed_scope": "POLICY_TASK_PROMPTS_SCOPED_HANDOFF_STATE_ONLY",
+    "prior_evidence_subject": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+    "prior_output_hashes_checked": 105,
+    "prior_output_mismatches": 0,
+    "renderer_sha256": "ab6e2ea167d95d04619b096ce8f3518de6128d7f248d4967424761ffe2eb4016",
+    "node_contract_evidence": "REUSED_75_OF_75_PASS_NOT_RERUN",
+    "browser_evidence": "REUSED_V09_SAMPLE_3_VIEWPORTS_AND_EXISTING_PORTFOLIO_CANDLES_NOT_RERUN",
+    "market_raw_collection_rerun": false,
+    "python_regression_run": false,
+    "fpia_run": false,
+    "protected_paths_changed": 0,
+    "task_exact_prompt_readback": true,
+    "task_schedules_enabled_unchanged": true,
+    "local_checks": "PASS_JSON_PREFIX_SCOPE_HASH_PENDING_GATE_AND_PREPUBLICATION_INVARIANTS",
+    "unchanged_prior_outputs_after_doc_append": 103,
+    "new_product_test_runs": 0,
+    "actual_changed_paths": [
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
+      "implementation/experiments/chart-contract-v0.1/automation/STATE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md",
+      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json"
+    ]
+  },
+  "lane_a_statuses": {
+    "A-S1": "OWNER_ACTION_REQUIRED",
+    "A-S2": "OWNER_ACTION_REQUIRED",
+    "A-S3": "OWNER_ACTION_REQUIRED",
+    "A-G1": "OWNER_ACTION_REQUIRED",
+    "A-G2": "PARTIALLY_RESOLVED",
+    "A-G3": "PARTIALLY_RESOLVED"
+  },
+  "lane_b_statuses": {
+    "B01": "BLOCKED",
+    "B02": "BLOCKED",
+    "B03": "PARTIAL",
+    "B04": "BLOCKED",
+    "B05": "PARTIAL",
+    "B06": "PARTIAL",
+    "B07": "NOT_AVAILABLE",
+    "B08": "UNKNOWN"
+  },
+  "market_admitted": 0,
+  "market_total": 19,
+  "actual": "NOT_AVAILABLE",
+  "new_user_d3": false,
+  "tools_used": [
+    "GitHub read/scoped Git object publication",
+    "Automations peek/update exact existing Main and CI",
+    "Local git/Python metadata and hash verification",
+    "Superpowers verification-before-completion current phase only"
+  ],
+  "optional_tools_this_run": "No new Context7/MagicPath/Figma calls needed; v09 exact-version and screenshot review evidence reused"
+}
