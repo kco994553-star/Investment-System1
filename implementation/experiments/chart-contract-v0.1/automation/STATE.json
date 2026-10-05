@@ -562,12 +562,17 @@
     "figma_sample": "EDITABLE_CREATED_STRUCTURAL_PASS_POST_FIX_VISUAL_TOOL_QUOTA_BLOCKED"
   },
   "lease": {
-    "status": "NONE",
-    "last_run_id": "manual-chart-figma-20261005T064515261Z",
-    "released_after_verified_publication": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
-    "released_at_utc": "2026-10-05T07:23:44.868132+00:00",
-    "release_commit_note": "Containing exact release commit is resolved from current Git/PR metadata, never self-embedded",
-    "reason": "Optional Figma quota visualcheck and production ownerreturns remain external; independent scope published"
+    "status": "HELD",
+    "run_id": "manual-chart-late-global-20261005T072727874Z",
+    "holder_kind": "MANUAL_ROOT",
+    "acquired_at_utc": "2026-10-05T07:27:27.874Z",
+    "expires_at_utc": "2026-10-05T07:47:27.874Z",
+    "ttl_minutes": 20,
+    "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+    "verified_remote_acquisition": false,
+    "acquisition_parent_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
+    "reason": "Consume actual late Global7dac Main execution-coverage receipt/CDR022; no new audits or product code",
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
   },
   "publication": {
     "status": "V012_FIGMA_EDITABLE_STRUCTURAL_AND_PR46_TECHNICAL_PASS_PUBLICATION_VERIFIED",
