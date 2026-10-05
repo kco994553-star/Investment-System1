@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "scope": "QGV_MISSING_DATA_GATE_AUTOMATION_INFRASTRUCTURE_ONLY",
+  "repository": "kco994553-star/Investment-System1",
+  "owner_branch": "codex/qgv-missing-data-decision-gate-2026-10-05",
+  "owner_paths": [
+    "implementation/docs/qgv_common_contract_vnext/missing_data_gate/"
+  ],
+  "owner_pr_number": null,
+  "conversation_id": "6ac230f1-0ff0-83ee-a932-45244e2c4afe",
+  "automation_ids": {
+    "pr_events": "6ac2f22087288191abd144fb4a7655f8",
+    "ci_followup": "6ac2efbd34fc8191a60dccbbe338c291"
+  },
+  "status": "IDLE_WAITING_FOR_M1_M5_POLICY_DECISION",
+  "lease": null,
+  "pending_runs": [],
+  "pending_long_tests": [],
+  "last_observed_heads": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "pr42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+    "global_routing": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e"
+  },
+  "last_processed_heads": {
+    "pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "pr42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+  },
+  "seed_event_inventory": {
+    "pr44_comments": [],
+    "pr44_reviews": [],
+    "pr44_inline": [],
+    "pr42_comments": [
+      {
+        "id": 5986162506,
+        "updated_at": "2026-10-05T00:40:32Z",
+        "author": "kco994553-star"
+      }
+    ],
+    "pr42_reviews": [],
+    "pr42_inline": []
+  },
+  "known_ci_evidence": [
+    {
+      "run_id": 37245014376,
+      "head_sha": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "conclusion": "success",
+      "scope": "PR44 prior publication"
+    },
+    {
+      "run_id": 37245037812,
+      "head_sha": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "conclusion": "success",
+      "scope": "PR44 prior publication"
+    }
+  ],
+  "phase_b_ci": "NOT_RUN",
+  "webhook_configuration": "CREATE_AND_UPDATE_SUCCESS_ENABLED",
+  "webhook_delivery": "NOT_TESTED",
+  "decisions": {
+    "QCC-P01.M1": "PROPOSED_NOT_APPROVED",
+    "QCC-P01.M2": "PROPOSED_NOT_APPROVED",
+    "QCC-P01.M3": "PROPOSED_NOT_APPROVED",
+    "QCC-P01.M4": "PROPOSED_NOT_APPROVED",
+    "QCC-P01.M5": "PROPOSED_NOT_APPROVED"
+  },
+  "approval_source": "Explicit user messages and authenticated scoped approval records; PR reviews/merges do not independently grant semantic authority",
+  "protected": {
+    "production_change_allowed": false,
+    "canonical_merge_allowed": false,
+    "pr44_merge_allowed": false,
+    "holdout_consumed": false,
+    "paid_purchase_allowed": false
+  },
+  "delivery_head": "Resolve remote owner ref; deliberately not self-referential"
+}

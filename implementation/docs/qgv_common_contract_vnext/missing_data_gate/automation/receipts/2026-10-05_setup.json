@@ -1,0 +1,31 @@
+{
+  "kind": "AUTOMATION_SETUP_AND_MANUAL_BASELINE_RECEIPT",
+  "repository": "kco994553-star/Investment-System1",
+  "automation_ids": {
+    "pr_events": "6ac2f22087288191abd144fb4a7655f8",
+    "ci_followup": "6ac2efbd34fc8191a60dccbbe338c291"
+  },
+  "conversation_id": "6ac230f1-0ff0-83ee-a932-45244e2c4afe",
+  "enabled_verified": true,
+  "trigger_pr_numbers": [
+    44,
+    42
+  ],
+  "trigger_families": [
+    "opened",
+    "ready_for_review",
+    "closed/merge",
+    "synchronize",
+    "submitted human reviews",
+    "created human conversation/inline comments"
+  ],
+  "ci_followup": "HOURLY separate condition watch",
+  "delivery_test": "NOT_TESTED",
+  "pending_runs": [],
+  "seed_comment_5986162506": {
+    "disposition": "NO_ACTION",
+    "reason": "Read-only Chart handoff; no QGV semantics/integration HEAD/user approval delta"
+  },
+  "policy_state": "M1-M5 RECOMMENDED_NOT_APPROVED_INACTIVE",
+  "mutations": "Additive own-scoped docs/state only; all pre-existing tracked files preserved"
+}
