@@ -1,3 +1,26 @@
+# Current D3 Delegated Approval Policy v1.0 — operational adoption
+
+STATUS: D1/D2/D3-A/D3-R APPLIED / PENDING SCOPE RECLASSIFIED / READY=0 AFTER PUBLICATION / PRODUCTION INACTIVE.
+Latest direct user authority 2026-10-05T17:59:16+09:00. Fresh review input ab07f6aa4d3734a929f4e6253567e97b64fcb595; Global a83fcccf053bf202ddf77d1c3e73aabb7cf1e981; owner 4fb08a05728d83519b72a2bd995669f0cb06003a; canonical b8e39a2196a6d7794a04a0cd5393c68329e126ca.
+
+Current policy: lanes/delegated_approval/POLICY.json and DECISION_REGISTER.md. Exact decisions, alternatives, protection/rollback: DECISION_RECEIPT.json. Pending scope: PENDING_RECLASSIFICATION.json. These operational records supersede conflicting old blanket D3 and historical broader CDR-015 wording; all prior checkpoints follow preserved byte-for-byte.
+
+Already approved G1/G2 and B2/B3/B5/B6 principles remain closed. Faithful exact reference/scope alignment qualifies for delegated execution when concretely evidenced; its completed inactive acceptance is reused. Actual methods, factor roles, predicates, assessment/cohort criteria and material numerics remain D3-R. Generic runtime/migration/merge is currently unproven, not automatically approved. No new result-affecting or production D3-A decision is issued. Ten prior unresolved policy groups are classified D3-R with individual reasons; these are decision groups, not ten production blockers.
+
+Risk lane FAST for operational docs/configuration. Prior 59+79+30+25=193 checks reuse original exact evidence, with no rerun/new-HEAD CI claim. Targeted delivery verification and one independent specialist review are recorded in this lane. No shared runtime/method/code/score/history, full regression, new Actions, real PIT/OOS or canary execution.
+
+Production blockers closed 0; original 3 categories remain invalid numeric consumer admission, actual/historical method identity, real source/period/share/vintage/PIT closure. New production findings 0. Operational policy reconciliation and prompt alignment do not count as product completion.
+
+Both existing automation prompts contain current authority. Latest scheduler architecture is preserved: active READ-ONLY WAKE-UP WATCHER; executor PAUSED. Schedule/title/target/timezone/enabled flags unchanged. Configuration readback is not execution; actual canary remains 0/2 UNVERIFIED.
+
+Main return: lanes/delegated_approval/MAIN_RETURN.json. Earlier ab07f6a principle-return consumption and owner ACK remain NOT_EVIDENCED; comments 5989173684/5990706291 acknowledge only older G1/G2 and scope results. Missing-Data owner qgv-b47-muupb538 has no authenticated release and remains read-only. Global writes 0. Only this review's own lease is released in final publication.
+
+Waiting on exact source/vintage bytes or material archive transport recovery, authenticated owner return/release, Main consumption and concrete Reserved decisions/candidates. On material changes, fresh-reconcile and execute all READY D1/D2/D3-A without renewed approval. Do not retry unchanged archive failures, repeat completed audits, steal owner leases or manufacture scheduler hops. See TASK_BOARD.json. No active executor is claimed from watcher configuration.
+
+---
+
+# Preserved prior scoped checkpoints — exact prior bytes follow
+
 # Current QGV principle approval and bounded contract closure — 2026-10-05T08:20:35.503409+00:00
 
 STATUS: B2/B3/B5/B6 PRINCIPLES APPROVED / INACTIVE CONTRACT ACCEPTANCE CLOSED /

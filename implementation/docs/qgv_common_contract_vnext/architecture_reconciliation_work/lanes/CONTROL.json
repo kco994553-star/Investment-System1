@@ -1,18 +1,11 @@
 {
   "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
-  "status": "RUNNING_D3_DELEGATED_POLICY_AND_PENDING_RECLASSIFICATION",
-  "lease": {
-    "token": "qgv-d3-delegation-muv0w6ea",
-    "owner": "QGV-independent-audit-D3-Delegated-Policy-v1.0",
-    "task": "POLICY_AND_PENDING_SCOPE_RECLASSIFICATION",
-    "input_review_head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
-    "claimed_at_utc": "2026-10-05T09:03:52.930Z",
-    "expires_at_utc": "2026-10-05T09:33:52.930Z"
-  },
+  "status": "D3_DELEGATED_POLICY_APPLIED_PENDING_RECLASSIFIED_READY0",
+  "lease": null,
   "tasks": [
-    "B2_B3_B5_B6_EXACT_APPROVAL_REGISTER",
-    "APPROVED_PRINCIPLES_OBLIGATION_COMPILATION",
-    "SCOPED_CURRENT_STATUS_AND_AUDIT_RETURN"
+    "LATEST_POLICY_AND_PENDING_RECLASSIFICATION",
+    "AUTOMATION_PROMPT_AUTHORITY_ALIGNMENT",
+    "SCOPED_POLICY_RETURN"
   ],
   "authorized_write_paths": [
     "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/",
@@ -22,21 +15,21 @@
   "production_enabled": false,
   "manual_execution": true,
   "actual_scheduler_hops_credited": 0,
-  "d3_scope": "Current explicit B2/B3/B5/B6 approval is semantic/contract principles only; numeric policy, individual factor binding, runtime activation, score/history migration and canonical merge excluded; remaining prior protected gates unchanged",
-  "last_lease_token": "qgv-b2356-muuz0tbz",
+  "d3_scope": "Latest D3-A concrete evidenced alignment; D3-R reserved economic/numeric/protection/unproven scope. Earlier principle-only exclusions preserved in history, not treated as unconditional future label gates.",
+  "last_lease_token": "qgv-d3-delegation-muv0w6ea",
   "completion": {
-    "task_id": "B2_B3_B5_B6_APPROVED_PRINCIPLE_CONTRACT_CLOSURE",
-    "task_fingerprint": "9ea45e1d34b4c2a23d931615d03e1f01e12819d852823768610b51575e747ef1",
-    "status": "COMPLETED_ACCEPTED_INACTIVE_CONTRACT_ONLY",
-    "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/COMPLETION_RECEIPT.json",
-    "receipt_sha256": "c1dd8f9c1a1f75c3e891d9b0618cc70b7336bb742db4ee28b9d2481523ddd88d",
-    "output_manifest_sha256": "ea3dedd70dab0fd27762a7eb0ff95a1ff2aa3963bcc4f6fab75966ff08f75c42",
-    "new_distinct_checks": 25,
-    "contract_authority_gates_closed": 4,
+    "task_id": "D3_DELEGATED_POLICY_AND_PENDING_SCOPE_RECLASSIFICATION",
+    "status": "COMPLETED_ACCEPTED_POLICY_ONLY",
+    "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/DECISION_RECEIPT.json",
     "production_blockers_closed": 0,
     "production_enabled": false,
     "scheduler_hops": 0,
-    "remaining_READY": 0
+    "remaining_READY": 0,
+    "receipt_sha256": "5ecea0a59289793a6fe4cfb8f141f207fdab16d44855bedbcffbb27aa68fe4d6",
+    "new_distinct_checks": 30,
+    "independent_review": "PASS_WITH_LIMITS",
+    "operational_acceptance_closed": 2,
+    "new_D3_A_approvals": 0
   },
   "d3_decisions": [
     "G1_ACTUAL_METHOD_INPUT_HORIZON_NUMERIC_SELECTION",
@@ -111,8 +104,8 @@
     "policy_id": "QGV-SSOT-AUTONOMOUS-EXECUTION-LOOP-2026-10-05",
     "policy_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/execution_loop/POLICY.json",
     "policy_sha256": "5037e5dcaa0ca55afff4e6641de418d9542507786d1ad06c6ad851142bbd3ce8",
-    "task_board_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/TASK_BOARD.json",
-    "status": "APPROVED_PRINCIPLES_CLOSED_WAIT_DEPENDENCY_RESIDUAL_D3",
+    "task_board_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/TASK_BOARD.json",
+    "status": "AUTHORIZED_READY_ZERO_WAIT_SOURCE_OWNER_RESERVED",
     "production_enabled": false,
     "scheduler_hops": 0,
     "remaining_READY": 0
@@ -141,6 +134,18 @@
       },
       "released_at_utc": "2026-10-05T08:20:35.503409+00:00",
       "reason": "Approved principle recording and bounded inactive acceptance complete; only this review lease"
+    },
+    {
+      "lease": {
+        "token": "qgv-d3-delegation-muv0w6ea",
+        "owner": "QGV-independent-audit-D3-Delegated-Policy-v1.0",
+        "task": "POLICY_AND_PENDING_SCOPE_RECLASSIFICATION",
+        "input_review_head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+        "claimed_at_utc": "2026-10-05T09:03:52.930Z",
+        "expires_at_utc": "2026-10-05T09:33:52.930Z"
+      },
+      "released_at_utc": "2026-10-05T09:13:45.927229+00:00",
+      "reason": "Only this bounded delegated-policy review lease; policy/verification publication, no owner lease mutation."
     }
   ],
   "semantic_completion_preserved": {
@@ -183,6 +188,37 @@
         "output_manifest_sha256": "b084ae4790959ae2040f61412052952fcf611cd7ab1fa9a5d7a53977f370466d"
       },
       "V1_V2": "PENDING"
+    },
+    {
+      "input_head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+      "status": "B2_B3_B5_B6_PRINCIPLES_APPROVED_CONTRACT_ACCEPTANCE_CLOSED_READY0",
+      "d3_decisions": [
+        "G1_ACTUAL_METHOD_INPUT_HORIZON_NUMERIC_SELECTION",
+        "G2_ALTERNATIVE_METHOD_APPLICABILITY_SELECTION",
+        "B1_ACTUAL_FACTOR_REQUIREDNESS",
+        "B2_ACTUAL_PREDICATES_BINDINGS_EXCLUSIONS_DENOMINATOR",
+        "B3_ACTUAL_RUBRICS_CUTOFFS_BINDINGS_RUNTIME_ENFORCEMENT",
+        "B5_ACTUAL_ASSESSMENT_METHODS_CRITERIA_FACTOR_ROLES",
+        "B6_ACTUAL_CONSUMER_COHORT_COMPATIBILITY_CRITERIA_GRANTS_RUNTIME",
+        "V1_METHOD_NORMALIZATION_FAMILIES",
+        "V2_ACTUAL_ASSESSMENT_METHODOLOGY",
+        "PRODUCTION_ACTIVATION_SCORE_HISTORY_MIGRATION_CANONICAL_MERGE"
+      ],
+      "completion": {
+        "task_id": "B2_B3_B5_B6_APPROVED_PRINCIPLE_CONTRACT_CLOSURE",
+        "task_fingerprint": "9ea45e1d34b4c2a23d931615d03e1f01e12819d852823768610b51575e747ef1",
+        "status": "COMPLETED_ACCEPTED_INACTIVE_CONTRACT_ONLY",
+        "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/COMPLETION_RECEIPT.json",
+        "receipt_sha256": "c1dd8f9c1a1f75c3e891d9b0618cc70b7336bb742db4ee28b9d2481523ddd88d",
+        "output_manifest_sha256": "ea3dedd70dab0fd27762a7eb0ff95a1ff2aa3963bcc4f6fab75966ff08f75c42",
+        "new_distinct_checks": 25,
+        "contract_authority_gates_closed": 4,
+        "production_blockers_closed": 0,
+        "production_enabled": false,
+        "scheduler_hops": 0,
+        "remaining_READY": 0
+      },
+      "authority_scope": "Current explicit B2/B3/B5/B6 approval is semantic/contract principles only; numeric policy, individual factor binding, runtime activation, score/history migration and canonical merge excluded; remaining prior protected gates unchanged"
     }
   ],
   "current_approval_exclusions": [
@@ -205,5 +241,42 @@
     "owner_implementation_return": "NOT_EVIDENCED",
     "old_30_cases_rerun": 0,
     "production_blockers_closed": 0
+  },
+  "delegated_approval": {
+    "policy_id": "INVESTMENT-SYSTEM1-D3-DELEGATED-APPROVAL",
+    "version": "1.0",
+    "policy_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/POLICY.json",
+    "policy_sha256": "42ece375d617676db05d4085545b3be7b2ba47d22525cb341f294311a21e3635",
+    "decision_register_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/DECISION_REGISTER.md",
+    "classification_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/PENDING_RECLASSIFICATION.json",
+    "latest_user_authority": "2026-10-05T17:59:16+09:00",
+    "new_D3_A_approvals": 0
+  },
+  "d3_R_decisions": [
+    "G1_ACTUAL_METHOD_INPUT_HORIZON_NUMERIC_SELECTION",
+    "G2_ALTERNATIVE_METHOD_APPLICABILITY_SELECTION",
+    "B1_ACTUAL_FACTOR_REQUIREDNESS",
+    "B2_ACTUAL_PREDICATES_BINDINGS_EXCLUSIONS_DENOMINATOR",
+    "B3_ACTUAL_RUBRICS_CUTOFFS_BINDINGS_RUNTIME_ENFORCEMENT",
+    "B5_ACTUAL_ASSESSMENT_METHODS_CRITERIA_FACTOR_ROLES",
+    "B6_ACTUAL_CONSUMER_COHORT_COMPATIBILITY_CRITERIA_GRANTS_RUNTIME",
+    "V1_METHOD_NORMALIZATION_FAMILIES",
+    "V2_ACTUAL_ASSESSMENT_METHODOLOGY",
+    "PRODUCTION_ACTIVATION_SCORE_HISTORY_MIGRATION_CANONICAL_MERGE"
+  ],
+  "d3_A_ready_decisions": [],
+  "prior_principle_completion_preserved": {
+    "task_id": "B2_B3_B5_B6_APPROVED_PRINCIPLE_CONTRACT_CLOSURE",
+    "task_fingerprint": "9ea45e1d34b4c2a23d931615d03e1f01e12819d852823768610b51575e747ef1",
+    "status": "COMPLETED_ACCEPTED_INACTIVE_CONTRACT_ONLY",
+    "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/COMPLETION_RECEIPT.json",
+    "receipt_sha256": "c1dd8f9c1a1f75c3e891d9b0618cc70b7336bb742db4ee28b9d2481523ddd88d",
+    "output_manifest_sha256": "ea3dedd70dab0fd27762a7eb0ff95a1ff2aa3963bcc4f6fab75966ff08f75c42",
+    "new_distinct_checks": 25,
+    "contract_authority_gates_closed": 4,
+    "production_blockers_closed": 0,
+    "production_enabled": false,
+    "scheduler_hops": 0,
+    "remaining_READY": 0
   }
 }

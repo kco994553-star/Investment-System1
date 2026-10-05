@@ -1,0 +1,133 @@
+{
+  "lane": "FAST",
+  "scope": "Operational docs/configuration/authority trace only",
+  "checks": 30,
+  "passed": 30,
+  "failed": 0,
+  "results": [
+    {
+      "id": "latest_explicit_authority_and_four_classes",
+      "passed": true
+    },
+    {
+      "id": "reserved_protection_and_new_meaning_complete",
+      "passed": true
+    },
+    {
+      "id": "all_delegated_conditions_and_uncertain_reserved",
+      "passed": true
+    },
+    {
+      "id": "full_decision_receipt_trace",
+      "passed": true
+    },
+    {
+      "id": "each_original_pending_group_classified_once",
+      "passed": true
+    },
+    {
+      "id": "unresolved_concrete_methods_criteria_reserved",
+      "passed": true
+    },
+    {
+      "id": "completed_faithful_scope_not_reexecuted",
+      "passed": true
+    },
+    {
+      "id": "exact_input_binding:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md",
+      "passed": true
+    },
+    {
+      "id": "exact_input_binding:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/DECISION_REGISTER.md",
+      "passed": true
+    },
+    {
+      "id": "exact_input_binding:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+      "passed": true
+    },
+    {
+      "id": "exact_input_binding:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+      "passed": true
+    },
+    {
+      "id": "full_prior_handoff_preserved",
+      "passed": true
+    },
+    {
+      "id": "protected_control:semantic_approvals",
+      "passed": true
+    },
+    {
+      "id": "protected_control:method_selection",
+      "passed": true
+    },
+    {
+      "id": "protected_control:migration",
+      "passed": true
+    },
+    {
+      "id": "protected_control:V1_V2",
+      "passed": true
+    },
+    {
+      "id": "protected_control:current_approval_exclusions",
+      "passed": true
+    },
+    {
+      "id": "protected_control:prior_scope_Main_consumption",
+      "passed": true
+    },
+    {
+      "id": "protected_control:verification_policy",
+      "passed": true
+    },
+    {
+      "id": "old_completion_preserved",
+      "passed": true
+    },
+    {
+      "id": "own_lease_only_released",
+      "passed": true
+    },
+    {
+      "id": "both_prompts_and_all_controls_preserved",
+      "passed": true
+    },
+    {
+      "id": "watcher_not_executor",
+      "passed": true
+    },
+    {
+      "id": "no_scheduler_execution_credit",
+      "passed": true
+    },
+    {
+      "id": "193_original_checks_no_rerun",
+      "passed": true
+    },
+    {
+      "id": "reused_principle_blobs_unchanged",
+      "passed": true
+    },
+    {
+      "id": "no_production_promotion_or_progress_inflation",
+      "passed": true
+    },
+    {
+      "id": "all_authorized_ready_exhausted",
+      "passed": true
+    },
+    {
+      "id": "no_new_main_or_owner_ack",
+      "passed": true
+    },
+    {
+      "id": "json_serialization_complete",
+      "passed": true
+    }
+  ],
+  "method_numeric_runtime_change": false,
+  "full_regression": "SKIPPED",
+  "Actions": "NOT_RUN",
+  "prior_evidence_reruns": 0
+}
