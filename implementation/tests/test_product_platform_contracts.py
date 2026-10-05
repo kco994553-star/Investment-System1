@@ -11,6 +11,7 @@ from investment_system.platform.contracts import (
     ReadOnlyViolation,
     RecordIntegrityError,
     SourceRecord,
+    SourceRecordRef,
     TenantContext,
     TenantIsolationError,
     enforce_read_only_operation,
@@ -65,6 +66,22 @@ def test_tenant_scope_is_fail_closed():
         require_tenant(ctx, "")
 
 
+def test_identity_and_reference_values_reject_blank_or_malformed():
+    for tenant_id, principal_id in ((" ", "u1"), ("t1", "\t")):
+        with pytest.raises(ValueError):
+            TenantContext(tenant_id, principal_id)
+
+    with pytest.raises(ValueError):
+        SourceRecordRef("t1", " ", "r1", "v1", H)
+    with pytest.raises(ValueError):
+        SourceRecordRef("t1", "conn", "r1", "v1", "bad")
+    with pytest.raises(ValueError):
+        SourceRecord(
+            "t1", "conn", "acct", "r1", "v1", "POSITION",
+            T0, T0, T0, " ", "fixture://t1/r1/v1", H,
+        )
+
+
 def test_source_record_requires_provenance_time_and_hash():
     assert row().ref.payload_sha256 == H
     with pytest.raises(ValueError):
@@ -112,6 +129,13 @@ def test_reconciliation_lineage_and_full_coverage():
         (NormalizedFinancialRecord("t1", "n", "POSITION", (missing,)),),
     )
     assert not report["passed"] and report["missing"] == (missing,)
+
+
+def test_normalized_record_rejects_malformed_lineage_at_construction():
+    with pytest.raises(ValueError):
+        NormalizedFinancialRecord("t1", "n1", "POSITION", (42,))
+    with pytest.raises(ValueError):
+        NormalizedFinancialRecord("t1", " ", "POSITION", (row().ref,))
 
 
 def test_reconciliation_rejects_duplicate_and_cross_tenant_outputs():

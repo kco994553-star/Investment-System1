@@ -3,8 +3,9 @@
   "owner_branch": "codex/product-platform-audit-v1",
   "last_processed": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
-    "global": "b3532a2ebbe95310bbf222937466eb04a0211263",
-    "fpia_pr_42": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+    "global": "af264713b99471fb554e06e8d321f5039be47b47",
+    "fpia_pr_42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+    "independent_audit_pr_45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
   },
   "lease": {
     "status": "RUNNING",
@@ -21,5 +22,20 @@
     "verified_at_utc": "2026-10-05T04:52:43.632Z"
   },
   "pending_ci": [],
-  "checkpoint": "validation_hardening_lease_claim"
+  "checkpoint": "validation_hardening_ready_for_exact_head_ci",
+  "validation_hardening": {
+    "focused_tests": "9/9 PASS after expected RED reproductions",
+    "local_full_regression": "NOT_COMPLETED_CREDENTIAL_EXPOSURE_GUARD",
+    "closed_findings": [
+      "PPF-003_MALFORMED_REFERENCE_AND_LINEAGE_ADMISSION",
+      "PPF-005_BLANK_IDENTITY_CONTRACT_ADMISSION"
+    ],
+    "still_open": [
+      "TRUSTED_RUNTIME_OWNERSHIP",
+      "PPF-004_FINANCIAL_COMPLETENESS",
+      "PPF-006_DURABLE_AUTHENTICATED_RECORDS",
+      "AUTHENTICATED_PRODUCT_API"
+    ],
+    "production_capability_promoted": false
+  }
 }

@@ -61,3 +61,14 @@ Primary Integration Coordinator should route:
 - Integration/FPIA: acceptance once package-level production code is proposed.
 
 No paid connector or real credential action is requested.
+
+## Validation hardening successor
+
+The independent audit packet on Draft PR #45 was reconsumed at exact HEAD `17244b4f1be0d3b2423d91f76af8b0ad2c262a65`. Its synthetic 84-test harness remains audit-only and does not become Product authority.
+
+- **Closed at this owner successor:** malformed/blank `SourceRecordRef`, non-reference normalized lineage, and whitespace tenant/principal/provenance admission. Invalid values now fail at immutable object construction rather than later with `AttributeError` inside reconciliation.
+- **Still open:** trusted runtime auth→principal→tenant ownership, financial amount/completeness reconciliation, durable externally authenticated append-only storage, real connector consent/token/revocation/checkpoint/pagination, and authenticated Product API.
+- **Unchanged security boundary:** connector operation allowlist remains explicit; unknown/write/trade/funds methods fail closed.
+- **Web owner action:** PR #36 still requires removal of `actual_weight ?? target_weight`; absent ACTUAL remains `NOT_AVAILABLE` and cannot fall back to TARGET.
+
+Verification on the scoped owner source: focused `mini_pytest` moved from two expected RED reproductions to **9/9 PASS**. A local broad run was not completed after the execution guard identified a potential credential-bearing external adapter path; the exact-head GitHub Actions run is required before full-regression success is claimed. No production capability is promoted to VERIFIED.

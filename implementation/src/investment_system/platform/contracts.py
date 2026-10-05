@@ -18,14 +18,26 @@ class RecordIntegrityError(ValueError):
     pass
 
 
+def _require_nonblank(name, value):
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{name} required")
+
+
+def _require_sha256(name, value):
+    _require_nonblank(name, value)
+    digest = value.lower()
+    if len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest):
+        raise ValueError(f"invalid {name}")
+
+
 @dataclass(frozen=True)
 class TenantContext:
     tenant_id: str
     principal_id: str
 
     def __post_init__(self):
-        if not self.tenant_id or not self.principal_id:
-            raise ValueError("tenant_id and principal_id required")
+        _require_nonblank("tenant_id", self.tenant_id)
+        _require_nonblank("principal_id", self.principal_id)
 
 
 def require_tenant(ctx, tenant_id):
@@ -83,6 +95,11 @@ class SourceRecordRef:
     source_version: str
     payload_sha256: str
 
+    def __post_init__(self):
+        for name in ("tenant_id", "connection_id", "source_record_id", "source_version"):
+            _require_nonblank(name, getattr(self, name))
+        _require_sha256("payload_sha256", self.payload_sha256)
+
 
 @dataclass(frozen=True)
 class SourceRecord:
@@ -111,15 +128,26 @@ class SourceRecord:
             self.raw_payload_ref,
             self.payload_sha256,
         )
-        if any(not value for value in vals):
-            raise ValueError("source identity/provenance required")
+        for name, value in zip(
+            (
+                "tenant_id",
+                "connection_id",
+                "account_id",
+                "source_record_id",
+                "source_version",
+                "record_type",
+                "source",
+                "raw_payload_ref",
+                "payload_sha256",
+            ),
+            vals,
+        ):
+            _require_nonblank(name, value)
         for name in ("observed_at", "available_at", "ingested_at"):
             _aware(name, getattr(self, name))
         if self.observed_at > self.available_at or self.available_at > self.ingested_at:
             raise ValueError("invalid source time order")
-        digest = self.payload_sha256.lower()
-        if len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest):
-            raise ValueError("invalid sha256")
+        _require_sha256("payload_sha256", self.payload_sha256)
 
     @property
     def ref(self):
@@ -170,8 +198,14 @@ class NormalizedFinancialRecord:
     source_refs: tuple
 
     def __post_init__(self):
-        if not self.tenant_id or not self.normalized_id or not self.record_type or not self.source_refs:
-            raise ValueError("normalized identity and lineage required")
+        for name in ("tenant_id", "normalized_id", "record_type"):
+            _require_nonblank(name, getattr(self, name))
+        if (
+            not isinstance(self.source_refs, tuple)
+            or not self.source_refs
+            or any(not isinstance(ref, SourceRecordRef) for ref in self.source_refs)
+        ):
+            raise ValueError("source_refs must be a non-empty tuple of SourceRecordRef")
 
 
 def reconcile_records(ctx, sources, rows):
