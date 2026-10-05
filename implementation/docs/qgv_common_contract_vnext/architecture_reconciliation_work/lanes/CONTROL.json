@@ -1,7 +1,14 @@
 {
   "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
-  "status": "BOUND_G_C_SCOPE_FIXTURE_COMPLETE_READY0_WAIT_DEPENDENCY_D3",
-  "lease": null,
+  "status": "RUNNING_B2_B3_B5_B6_PRINCIPLE_APPROVAL_AND_BOUNDED_CONTRACT_CLOSURE",
+  "lease": {
+    "token": "qgv-b2356-muuz0tbz",
+    "owner": "QGV-independent-audit-explicit-B2-B3-B5-B6-approval",
+    "task": "PRINCIPLE_RECORD_AND_AUTHORITY_OBLIGATION_CLOSURE",
+    "input_review_head": "16f58f20a29516e45e202aee7d3b27b8a1378d5c",
+    "claimed_at_utc": "2026-10-05T08:11:30.047Z",
+    "expires_at_utc": "2026-10-05T08:41:30.047Z"
+  },
   "tasks": [
     "G1_G2_APPROVED_SEMANTIC_CONTRACT",
     "G1_G2_METHOD_FAMILY_COMPARISON",
@@ -15,7 +22,7 @@
   "production_enabled": false,
   "manual_execution": true,
   "actual_scheduler_hops_credited": 0,
-  "d3_scope": "Current explicit user request: no semantic replacement, numeric adoption, runtime wiring, migration, historical rewrite, PIT/Frozen/Holdout/Official change or canonical/PR merge",
+  "d3_scope": "Current explicit B2/B3/B5/B6 approval is semantic/contract principles only; numeric policy, individual factor binding, runtime activation, score/history migration and canonical merge excluded; remaining prior protected gates unchanged",
   "last_lease_token": "qgv-ssot-muuxaley-nleyl46w0x",
   "completion": {
     "task_id": "BOUND_G_C_SHARED_LOCAL_SCOPE_FIXTURE",
