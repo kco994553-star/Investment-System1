@@ -1,0 +1,14 @@
+........................................................................ [ 30%]
+........................................................................ [ 61%]
+........................................................................ [ 92%]
+..................                                                       [100%]
+============================= slowest 8 durations ==============================
+36.57s call     tests/test_integration_fpia_fix3.py::test_symlinked_venv_tmpdir_and_user_give_same_verdict_and_sha
+4.68s call     tests/test_integration_fpia_fix3.py::test_round2_d1_d2_all_found
+4.52s call     tests/test_integration_fpia_fix3.py::test_run_section_hash_recorded_printed_and_checked
+4.32s call     tests/test_integration_fpia_fix3.py::test_verify_rejects_duplicate_keys_and_non_basename_side_files
+1.65s call     tests/test_integration_fpia_fix3.py::test_round2_variant_pinned[Y35]
+1.50s call     tests/test_integration_fpia_fix3.py::test_round2_variant_pinned[Y36]
+1.25s call     tests/test_integration_fpia_fix3.py::test_s24v2_end_to_end_component_status
+1.16s setup    tests/test_integration_fpia_fix3.py::test_round2_variant_pinned[C00]
+234 passed in 71.22s (0:01:11)

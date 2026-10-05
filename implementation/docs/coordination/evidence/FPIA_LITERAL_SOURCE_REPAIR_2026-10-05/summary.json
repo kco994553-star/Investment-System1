@@ -1,0 +1,76 @@
+{
+  "recorded_at": "2026-10-05T04:44:22.095183+00:00",
+  "base_head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+  "branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+  "authority": "D1 bounded implementation/evidence repair under takeover scope and CDR-014/016/017; no governance adoption",
+  "verifier_runtime": {
+    "python": "3.12.14",
+    "pytest": "9.1.1",
+    "numpy": "2.3.5",
+    "ci_python": "3.11",
+    "runtime_equivalence_to_ci": "NOT_CLAIMED"
+  },
+  "tests": {
+    "baseline_fix3": {
+      "passed": 234,
+      "failed": 0
+    },
+    "new_regressions_before": {
+      "failed": 7,
+      "passed": 4
+    },
+    "affected_after": {
+      "passed": 308,
+      "failed": 0,
+      "deselected": 2
+    },
+    "new_e2e_after": {
+      "passed": 1,
+      "failed": 0
+    },
+    "self_constraints": {
+      "passed": 7,
+      "failed": 0
+    }
+  },
+  "deselected": [
+    "test_integration_fpia_fix3.py::test_symlinked_venv_tmpdir_and_user_give_same_verdict_and_sha",
+    "test_integration_fpia_fix2.py::test_result_sha256_independent_of_venv_location"
+  ],
+  "e2e": {
+    "same_subject": "e6fde4628c1154e5ff840729949daa5ff8284faf",
+    "same_register": "d2ccd9252f3680b4828fe13648f8a45f1d3dc88c",
+    "before": "FPIA_PASS",
+    "after": "FPIA_FAIL",
+    "finding": "AC-32.spoof",
+    "both_runtime_provenance": "PASS",
+    "both_full_regression": "PASS"
+  },
+  "protected_scope_changed": false,
+  "remote_publication": "NOT_PERFORMED_BY_REPAIR_WORKER",
+  "new_ci": "NOT_STARTED_BY_REPAIR_WORKER",
+  "complete_external_code_analysis": "NOT_CLAIMED",
+  "artifact_sha256": {
+    "README.md": "abb6d73ac51b64a28c78916e9086c30e9d22df632cd1c026e637008ef0253ba6",
+    "affected_after_308_pass_2_deselected.log": "c26f9cf4fcc4bb5d674b72d6f5da4795781f58a4dccd13c36658517fce1f7951",
+    "aggregate_after.json": "3e40c4f8a854254dc56f7b8e9eeb9e417673e07834cdeaf8440979809a09218c",
+    "aggregate_before.json": "57763a3fceae075f64e84ceeb0398a7950e276f3977c10803404bbbdaa6d2086",
+    "aggregate_probe.py.txt": "80dfbc7a5f5b264cb3cbfaeb82629fa1685a0d3dc11b20057a45f97170b24400",
+    "baseline_fix3_234_pass.log": "f6c465b50cc4ee0b9b44ea52eb2069cdae3bd15fc665dce7c0af85d5114d0eb8",
+    "excluded_initial_wrong_source.json": "3e40c4f8a854254dc56f7b8e9eeb9e417673e07834cdeaf8440979809a09218c",
+    "independent_review_10_pass.json": "d9ac85a4a5eb5ec7c63dab9bc45c3247e47328bd4bbd494dd06b5a464772fe14",
+    "independent_review_probe.py.txt": "2dfe7bc062514db2e4885db9853dcc316f49733a0837e4cd23a83976ab7a2d54",
+    "independent_scanner_before.json": "7010e52e6f285ca094f6b66db4b1b0f54796e3f828403ee2437b589f612576c2",
+    "independent_scanner_probe.py.txt": "7bc2f44e11b47b0c3bda7e8a301f553b6c680cb07ebad7853f2d045dbfc56cae",
+    "new_end_to_end_1_pass.log": "1ef2cb2c6cbbd7a71a02b4b055e60893e7119481fac7f83343eff1c8a1e2161a",
+    "new_regressions_before_7_fail_4_pass.log": "1f38ff119bb30ee14770bf2e30cd7fd08fffd5cd9c68c9c0c363e7f17c0897c7",
+    "prior_head_ci_snapshot.json": "1f1d054b9079407d60b5a601c73ed7475a27c54d1889377e9b151a16c73f9f81",
+    "self_constraints_7_pass.log": "93b77313c8371251646bf1569859693a16172d389204109ab4cb35717c1db318"
+  },
+  "independent_review": {
+    "result": "APPROVE_BOUNDED_SCOPE",
+    "passed": 10,
+    "failed": 0,
+    "source": "independent_review_10_pass.json"
+  }
+}

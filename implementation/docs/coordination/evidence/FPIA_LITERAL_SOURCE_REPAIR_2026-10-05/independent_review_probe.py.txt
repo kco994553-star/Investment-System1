@@ -1,0 +1,40 @@
+import hashlib, json, tempfile
+from pathlib import Path
+from tests import integration_fpia_testkit as tk
+from tests.test_integration_fpia_fix3 import Battery, _outcome, TOOL, WF, wf
+
+root = Path(tempfile.mkdtemp(prefix='fpia-independent-'))
+w = tk.variant(root)
+b = Battery(w.audit(w.c['T0']))
+variants = [
+ ('wd_quoted_suffixless', {WF:wf(['run: bash "run commands.txt"\n  working-directory: ci']), 'ci/run commands.txt':'python '+TOOL+'\n'}, 'FOUND'),
+ ('nested_python_to_shell', {WF:wf(['run: python ci/start.txt']), 'ci/start.txt':'import subprocess\nsubprocess.run(["bash", "ci/next data.txt"])\n', 'ci/next data.txt':'python '+TOOL+'\n'}, 'FOUND'),
+ ('source_suffixless', {WF:wf(['run: source ci/start.txt']), 'ci/start.txt':'python '+TOOL+'\n'}, 'FOUND'),
+ ('unreached_data_only', {WF:wf(['run: echo ordinary']), 'ci/data.txt':'python '+TOOL+'\n'}, 'NOT_FOUND'),
+ ('cat_quoted_data_only', {WF:wf(['run: cat "ci/data text.txt"']), 'ci/data text.txt':'python '+TOOL+'\n'}, 'NOT_FOUND'),
+ ('dynamic_literal_mention_sideeffect', {WF:wf(['run: python ci/start.txt']), 'ci/start.txt':'import subprocess\nsubprocess.run(["python", "implementation/tools/" + "track_c_c6_acceptance.py"])\n'}, 'FOUND'),
+ ('dynamic_computed_control', {WF:wf(['run: python ci/start.txt']), 'ci/start.txt':'import subprocess\nsubprocess.run(["python", "".join(map(chr, '+repr(list(map(ord, TOOL)))+'))])\n'}, 'NOT_FOUND'),
+ ('yaml_alias_job_service', {WF:wf(['run: echo ordinary'], extra_top='env:\n  IMG: &img alpine:3.20\n', job_extra='    container: *img\n    services:\n      data:\n        image: redis:7\n')}, 'NOT_FOUND'),
+ ('expression_image_evidence', {WF:wf(['run: echo ordinary'], job_extra='    container: ${{ matrix.image }}\n')}, 'NOT_FOUND'),
+ ('nested_workflow_images', {WF:'name: probe\non: [push]\njobs:\n  check:\n    uses: ./.github/workflows/reused.yml\n', '.github/workflows/reused.yml':wf(['run: echo ordinary'], name='ordinary', job_extra='    container: alpine:3.20\n')}, 'NOT_FOUND'),
+]
+results=[]
+for name,files,expected in variants:
+    got,spoof,findings,info=_outcome(b, {'files':files})
+    wa=info['workflow_analysis']
+    assert got==expected, (name,got,expected,findings)
+    assert wa['out_of_tree_code_analysis']=='NOT_ANALYSED'
+    assert wa['dynamic_invocation_detection']=='NOT_CLAIMED'
+    if name=='yaml_alias_job_service':
+        refs=[r for r in wa['out_of_tree_references'] if r['workflow']==WF]
+        assert refs==[{'workflow':WF,'in':WF,'kind':'job_container','job':'check','image':'alpine:3.20'}, {'workflow':WF,'in':WF,'kind':'service_container','job':'check','service':'data','image':'redis:7'}], refs
+    if name=='expression_image_evidence':
+        refs=[r for r in wa['out_of_tree_references'] if r['workflow']==WF]
+        assert refs==[{'workflow':WF,'in':WF,'kind':'job_container','job':'check','image':'${{ matrix.image }}'}],refs
+    if name=='nested_workflow_images':
+        assert any(r.get('in')=='.github/workflows/reused.yml' and r.get('kind')=='job_container' and r.get('image')=='alpine:3.20' for r in wa['out_of_tree_references'])
+    results.append({'case':name,'expected':expected,'actual':got,'status':'PASS','reached':wa.get('reached',{}),'out_of_tree':wa['out_of_tree_references']})
+sources={p:hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in ['tools/integration/track_c_fpia_checks.py','tools/integration/track_c_fpia_workflows.py']}
+report={'scope':'Independent bounded literal-source and external image evidence review; no whole-FPIA PASS claim','source_sha256':sources,'results':results,'pass_count':len(results),'base_head':'11d2f25ef8bef3459ca969f50eec190099f15ecb'}
+Path('/workspace/scratch/3a80dcef6444/fpia-independent-literal-review.json').write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps({'status':'PASS','count':len(results),'source_sha256':sources}))

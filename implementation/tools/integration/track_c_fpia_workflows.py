@@ -56,9 +56,12 @@ authenticated V; never for identity claims). Files that are
 byte-identical to the running FPIA verifier's own files (its directory, or Python files importing it,
 at the current version or any version on the verifier checkout's history) are the auditor itself
 (self-placement) and are not scanned; authenticating the verifier is open decision D3-a. The
-fix-round-2 resolver (shell tokenisation, working-directory, followed scripts) still runs and its
-output is kept as evidence (``resolver_reasons``) and for the whole-suite note; it never decides the
-verdict. pytest over the whole suite stays a note.
+fix-round-2 resolver (shell tokenisation, working-directory, followed scripts) still runs. Its
+positively resolved literal execution sources additionally seed the mention scan, even when their
+filenames contain spaces or lack a code suffix; a resolver miss cannot remove a scan source. Its
+reasons are kept as evidence (``resolver_reasons``) and for the whole-suite note; they never decide the
+verdict. pytest over the whole suite stays a note. Explicit job container and service images are
+recorded as out-of-tree references, without inspecting or declaring the external code safe.
 
 Non-claims (open user decisions, current behaviour kept): dynamically constructed invocations
 (string-built paths, paths in shell variables, importlib with computed names) are not claimed to be
@@ -1409,9 +1412,11 @@ class Scan:
         return "" if p == root else " (via %s)" % p
 
     # -- entry --------------------------------------------------------------------------------------
-    def run(self, data, root_node):
+    def run(self, data, root_node, literal_sources=()):
         self.visited.add(self.path)
         self.scan_file(self.path, data, False, root_node=root_node, yaml_kind="workflow")
+        for p in literal_sources:
+            self.enqueue(p, False, via=self.path, force=True)
         while self.queue:
             p, ctx_pytest, kind = self.queue.popleft()
             self.queued.discard(p)
@@ -1470,6 +1475,7 @@ class Scan:
             decoded = [fold_expressions(v)[0] for v in all_scalars(root_node)]
             variants.append("\n".join(decoded))
             self.uses_of(root_node, p, where)
+            self.container_images_of(root_node, p)
         pytest_ctx = pytest_ctx or any("pytest" in v.casefold() or "py.test" in v.casefold() for v in variants)
         if p.endswith(".py"):
             names = fd.module_imports(data, p, fd.STATIC_ROOTS)
@@ -1629,6 +1635,27 @@ class Scan:
         for u in uses_values(root_node):
             u, _ = fold_expressions(u.strip())
             self.uses(u, p, where)
+
+    def container_images_of(self, root_node, p):
+        """Record literal YAML image declarations, never a safety or executability verdict.
+
+        Only jobs.<job>.container and jobs.<job>.services.<service>.image are declarations;
+        an unrelated action's with.image input is not inferred to launch a container.
+        """
+        for jobs in get_all(root_node, "jobs"):
+            for job_id, job in _items(jobs):
+                for container in get_all(job, "container"):
+                    for value in (scalars(container) if isinstance(container, yaml.ScalarNode)
+                                  else scalars(container, "image")):
+                        image, _ = fold_expressions(value)
+                        self.out_of_tree.append({"in": p, "kind": "job_container", "job": job_id,
+                                                 "image": image})
+                for services in get_all(job, "services"):
+                    for service_id, service in _items(services):
+                        for value in scalars(service, "image"):
+                            image, _ = fold_expressions(value)
+                            self.out_of_tree.append({"in": p, "kind": "service_container", "job": job_id,
+                                                     "service": service_id, "image": image})
 
     def uses(self, u, p, where):
         ctx = self.ctx

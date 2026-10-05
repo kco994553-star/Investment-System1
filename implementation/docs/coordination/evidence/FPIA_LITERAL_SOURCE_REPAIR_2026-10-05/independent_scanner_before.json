@@ -1,0 +1,90 @@
+{
+  "literal_bash_txt": {
+    "reasons": [],
+    "reached": [],
+    "out_of_tree": [],
+    "resolver_reasons": [
+      "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py (via ci/commands.txt)",
+      "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via ci/commands.txt)"
+    ],
+    "resolver_followed": [
+      "ci/commands.txt"
+    ]
+  },
+  "literal_python_txt": {
+    "reasons": [],
+    "reached": [],
+    "out_of_tree": [],
+    "resolver_reasons": [
+      "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py (via ci/commands.txt)",
+      "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via ci/commands.txt)"
+    ],
+    "resolver_followed": [
+      "ci/commands.txt"
+    ]
+  },
+  "quoted_bash_space": {
+    "reasons": [],
+    "reached": [],
+    "out_of_tree": [],
+    "resolver_reasons": [
+      "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py (via ci/run commands.sh)",
+      "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via ci/run commands.sh)"
+    ],
+    "resolver_followed": [
+      "ci/run commands.sh"
+    ]
+  },
+  "benign_txt_read_control": {
+    "reasons": [],
+    "reached": [],
+    "out_of_tree": [],
+    "resolver_reasons": [],
+    "resolver_followed": []
+  },
+  "literal_bash_sh_control": {
+    "reasons": [
+      "mentions Track C scope: tool track_c_c6_acceptance.py (via ci/commands.sh)",
+      "names a Track C file: implementation/tools/track_c_c6_acceptance.py (via ci/commands.sh)"
+    ],
+    "reached": [
+      "ci/commands.sh"
+    ],
+    "out_of_tree": [],
+    "resolver_reasons": [
+      "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py (via ci/commands.sh)",
+      "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via ci/commands.sh)"
+    ],
+    "resolver_followed": [
+      "ci/commands.sh"
+    ]
+  },
+  "job_container_scalar": {
+    "reasons": [],
+    "reached": [],
+    "out_of_tree": [],
+    "resolver_reasons": [],
+    "resolver_followed": []
+  },
+  "job_container_map": {
+    "reasons": [],
+    "reached": [],
+    "out_of_tree": [],
+    "resolver_reasons": [],
+    "resolver_followed": []
+  },
+  "service_image": {
+    "reasons": [],
+    "reached": [],
+    "out_of_tree": [],
+    "resolver_reasons": [],
+    "resolver_followed": []
+  },
+  "pip_install": {
+    "reasons": [],
+    "reached": [],
+    "out_of_tree": [],
+    "resolver_reasons": [],
+    "resolver_followed": []
+  }
+}

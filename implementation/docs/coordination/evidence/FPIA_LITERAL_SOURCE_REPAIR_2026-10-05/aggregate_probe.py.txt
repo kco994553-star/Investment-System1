@@ -1,0 +1,12 @@
+import json,sys,tempfile
+from pathlib import Path
+sys.path[:0]=[sys.argv[1],'/workspace/scratch/3a80dcef6444/fpia-review/implementation']
+from tools.integration import track_c_fpia as fpia
+assert fpia.__file__.startswith(sys.argv[1]), fpia.__file__
+from tests import integration_fpia_testkit as tk
+w=tk.variant(Path(tempfile.mkdtemp(prefix='fpia-literal-e2e-')))
+files={'.github/workflows/literal.yml':'name: ordinary-check\non: [push]\njobs:\n  check:\n    runs-on: ubuntu-latest\n    steps:\n      - run: bash ci/commands.txt\n', 'ci/commands.txt':'python implementation/tools/track_c_c6_acceptance.py\n'}
+T=w.git.change(w.c['T0'],files,'literal script counterexample')
+G=w.register(w.c['R0'],[w.c['V0']],[T])
+r=w.fpia(T,G)
+print(json.dumps({'verifier_source':fpia.__file__,'T':T,'G':G,'fpia':r['fpia'],'statuses':r['statuses'],'static_findings':r['integration_interference'].get('static_findings',[]),'summary':r['summary']},indent=2))

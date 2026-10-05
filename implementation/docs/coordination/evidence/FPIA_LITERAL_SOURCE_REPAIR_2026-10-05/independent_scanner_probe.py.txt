@@ -1,0 +1,33 @@
+import json, sys
+sys.path.insert(0, '/workspace/scratch/3a80dcef6444/fpia-review/implementation')
+from tools.integration import track_c_fpia_workflows as fw
+from tools.integration import track_c_fpia_checks as fc
+from tools.integration import track_c_fpia_git as fg
+TC='.github/workflows/track-c-evl-validation.yml'
+TOOL='implementation/tools/track_c_c6_acceptance.py'
+WF='.github/workflows/probe.yml'
+def workflow(run, extra=''):
+ return 'name: unrelated\non: [push]\njobs:\n  check:\n    runs-on: ubuntu-latest\n'+extra+'    steps:\n      - run: '+run+'\n'
+cases={
+ 'literal_bash_txt':(workflow('bash ci/commands.txt'), {'ci/commands.txt':'python '+TOOL+'\n'}),
+ 'literal_python_txt':(workflow('python ci/commands.txt'), {'ci/commands.txt':"import subprocess\nsubprocess.run(['python', '"+TOOL+"'])\n"}),
+ 'quoted_bash_space':(workflow('bash "ci/run commands.sh"'), {'ci/run commands.sh':'python '+TOOL+'\n'}),
+ 'benign_txt_read_control':(workflow('cat ci/commands.txt'), {'ci/commands.txt':'python '+TOOL+'\n'}),
+ 'literal_bash_sh_control':(workflow('bash ci/commands.sh'), {'ci/commands.sh':'python '+TOOL+'\n'}),
+ 'job_container_scalar':(workflow('echo ok','    container: alpine:3.20\n'),{}),
+ 'job_container_map':(workflow('echo ok','    container:\n      image: alpine:3.20\n'),{}),
+ 'service_image':(workflow('echo ok','    services:\n      data:\n        image: redis:7\n'),{}),
+ 'pip_install':(workflow('pip install thirdparty-package==1.0'),{}),
+}
+results={}
+for cid,(wf,added) in cases.items():
+ files={TC:'name: track-c-evl-validation\non: [push]\njobs:\n  validate:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ok\n', TOOL:'print("acceptance")\n',WF:wf,**added}
+ blobs={p:d.encode() for p,d in files.items()}
+ ns=lambda p:p==TOOL
+ read=lambda p:blobs[p]
+ ctx=fw.ScanContext(files,read,lambda p:fg.blob_id(read(p)),ns,(),fw.build_mentions([TOOL],[],set(),set(),TC),set(),fc.references_track_c,set(),set(),[TOOL],TC,set(),None,lambda k,v:False)
+ scan=fw.Scan(ctx,WF).run(read(WF),fw.load(read(WF)))
+ resolver=fw.Context(set(files),read,ns,set(),set(),fc.references_track_c,[TOOL])
+ _,r=fw.analyse(resolver,WF,read(WF))
+ results[cid]={'reasons':scan.reasons,'reached':scan.reached,'out_of_tree':scan.out_of_tree,'resolver_reasons':r.reasons,'resolver_followed':r.followed}
+print(json.dumps(results,indent=2))

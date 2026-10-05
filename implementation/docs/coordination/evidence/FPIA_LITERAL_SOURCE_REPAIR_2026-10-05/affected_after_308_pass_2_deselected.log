@@ -1,0 +1,15 @@
+........................................................................ [ 23%]
+........................................................................ [ 46%]
+........................................................................ [ 70%]
+........................................................................ [ 93%]
+....................                                                     [100%]
+============================= slowest 8 durations ==============================
+5.18s call     tests/test_integration_fpia_fix3.py::test_verify_rejects_duplicate_keys_and_non_basename_side_files
+4.92s call     tests/test_integration_fpia_fix2.py::test_verify_output_detects_tampering
+4.89s call     tests/test_integration_fpia_fix3.py::test_run_section_hash_recorded_printed_and_checked
+4.61s call     tests/test_integration_fpia_fix2.py::test_authority_transport_names_recorded_without_values
+4.47s call     tests/test_integration_fpia_fix3.py::test_round2_d1_d2_all_found
+4.46s call     tests/test_integration_fpia_fix2.py::test_out_reuse_refused_never_stale_side_files
+1.68s call     tests/test_integration_fpia_fix3.py::test_round2_variant_pinned[Y35]
+1.59s call     tests/test_integration_fpia_fix3.py::test_round2_variant_pinned[Y36]
+308 passed, 2 deselected in 79.29s (0:01:19)

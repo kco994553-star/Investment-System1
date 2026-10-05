@@ -1,0 +1,176 @@
+FFFF...FFF.                                                              [100%]
+=================================== FAILURES ===================================
+____ test_literal_executable_source_is_scanned[bash ci/commands.txt-files0] ____
+
+battery = <tests.test_integration_fpia_fix3.Battery object at 0x7f11e2061a30>
+command = 'bash ci/commands.txt'
+files = {'ci/commands.txt': 'python implementation/tools/track_c_c6_acceptance.py\n'}
+
+    @pytest.mark.parametrize("command,files", [
+        ("bash ci/commands.txt", {"ci/commands.txt": "python " + TOOL + "\n"}),
+        ("python ci/commands.txt", {"ci/commands.txt":
+            "import subprocess\nsubprocess.run(['python', '" + TOOL + "'])\n"}),
+        ('bash "ci/run commands.sh"', {"ci/run commands.sh": "python " + TOOL + "\n"}),
+        ("bash ci/entry.sh", {"ci/entry.sh": "bash ci/nested.txt\n",
+                               "ci/nested.txt": "python " + TOOL + "\n"}),
+    ])
+    def test_literal_executable_source_is_scanned(battery, command, files):
+        got, spoof, _, info = _outcome(battery, {"files": {WF: wf(["run: " + command]), **files}})
+>       assert got == "FOUND", (command, info["workflow_analysis"])
+E       AssertionError: ('bash ci/commands.txt', {'loader': {'module': 'yaml', 'version': '6.0.1', 'source': 'vendored (_vendor/yaml)', 'with_...tlib with computed names) are not claimed to be detected by the static spoof analysis (open user decision D3-c)', ...})
+E       assert 'NOT_FOUND' == 'FOUND'
+E         
+E         - FOUND
+E         + NOT_FOUND
+
+tests/test_integration_fpia_literal_sources.py:21: AssertionError
+___ test_literal_executable_source_is_scanned[python ci/commands.txt-files1] ___
+
+battery = <tests.test_integration_fpia_fix3.Battery object at 0x7f11e2061a30>
+command = 'python ci/commands.txt'
+files = {'ci/commands.txt': "import subprocess\nsubprocess.run(['python', 'implementation/tools/track_c_c6_acceptance.py'])\n"}
+
+    @pytest.mark.parametrize("command,files", [
+        ("bash ci/commands.txt", {"ci/commands.txt": "python " + TOOL + "\n"}),
+        ("python ci/commands.txt", {"ci/commands.txt":
+            "import subprocess\nsubprocess.run(['python', '" + TOOL + "'])\n"}),
+        ('bash "ci/run commands.sh"', {"ci/run commands.sh": "python " + TOOL + "\n"}),
+        ("bash ci/entry.sh", {"ci/entry.sh": "bash ci/nested.txt\n",
+                               "ci/nested.txt": "python " + TOOL + "\n"}),
+    ])
+    def test_literal_executable_source_is_scanned(battery, command, files):
+        got, spoof, _, info = _outcome(battery, {"files": {WF: wf(["run: " + command]), **files}})
+>       assert got == "FOUND", (command, info["workflow_analysis"])
+E       AssertionError: ('python ci/commands.txt', {'loader': {'module': 'yaml', 'version': '6.0.1', 'source': 'vendored (_vendor/yaml)', 'wit...tlib with computed names) are not claimed to be detected by the static spoof analysis (open user decision D3-c)', ...})
+E       assert 'NOT_FOUND' == 'FOUND'
+E         
+E         - FOUND
+E         + NOT_FOUND
+
+tests/test_integration_fpia_literal_sources.py:21: AssertionError
+_ test_literal_executable_source_is_scanned[bash "ci/run commands.sh"-files2] __
+
+battery = <tests.test_integration_fpia_fix3.Battery object at 0x7f11e2061a30>
+command = 'bash "ci/run commands.sh"'
+files = {'ci/run commands.sh': 'python implementation/tools/track_c_c6_acceptance.py\n'}
+
+    @pytest.mark.parametrize("command,files", [
+        ("bash ci/commands.txt", {"ci/commands.txt": "python " + TOOL + "\n"}),
+        ("python ci/commands.txt", {"ci/commands.txt":
+            "import subprocess\nsubprocess.run(['python', '" + TOOL + "'])\n"}),
+        ('bash "ci/run commands.sh"', {"ci/run commands.sh": "python " + TOOL + "\n"}),
+        ("bash ci/entry.sh", {"ci/entry.sh": "bash ci/nested.txt\n",
+                               "ci/nested.txt": "python " + TOOL + "\n"}),
+    ])
+    def test_literal_executable_source_is_scanned(battery, command, files):
+        got, spoof, _, info = _outcome(battery, {"files": {WF: wf(["run: " + command]), **files}})
+>       assert got == "FOUND", (command, info["workflow_analysis"])
+E       AssertionError: ('bash "ci/run commands.sh"', {'loader': {'module': 'yaml', 'version': '6.0.1', 'source': 'vendored (_vendor/yaml)', '...tlib with computed names) are not claimed to be detected by the static spoof analysis (open user decision D3-c)', ...})
+E       assert 'NOT_FOUND' == 'FOUND'
+E         
+E         - FOUND
+E         + NOT_FOUND
+
+tests/test_integration_fpia_literal_sources.py:21: AssertionError
+______ test_literal_executable_source_is_scanned[bash ci/entry.sh-files3] ______
+
+battery = <tests.test_integration_fpia_fix3.Battery object at 0x7f11e2061a30>
+command = 'bash ci/entry.sh'
+files = {'ci/entry.sh': 'bash ci/nested.txt\n', 'ci/nested.txt': 'python implementation/tools/track_c_c6_acceptance.py\n'}
+
+    @pytest.mark.parametrize("command,files", [
+        ("bash ci/commands.txt", {"ci/commands.txt": "python " + TOOL + "\n"}),
+        ("python ci/commands.txt", {"ci/commands.txt":
+            "import subprocess\nsubprocess.run(['python', '" + TOOL + "'])\n"}),
+        ('bash "ci/run commands.sh"', {"ci/run commands.sh": "python " + TOOL + "\n"}),
+        ("bash ci/entry.sh", {"ci/entry.sh": "bash ci/nested.txt\n",
+                               "ci/nested.txt": "python " + TOOL + "\n"}),
+    ])
+    def test_literal_executable_source_is_scanned(battery, command, files):
+        got, spoof, _, info = _outcome(battery, {"files": {WF: wf(["run: " + command]), **files}})
+>       assert got == "FOUND", (command, info["workflow_analysis"])
+E       AssertionError: ('bash ci/entry.sh', {'loader': {'module': 'yaml', 'version': '6.0.1', 'source': 'vendored (_vendor/yaml)', 'with_liby...tlib with computed names) are not claimed to be detected by the static spoof analysis (open user decision D3-c)', ...})
+E       assert 'NOT_FOUND' == 'FOUND'
+E         
+E         - FOUND
+E         + NOT_FOUND
+
+tests/test_integration_fpia_literal_sources.py:21: AssertionError
+_ test_explicit_external_images_recorded_without_safety_claim[    container: alpine:3.20\n-expected0] _
+
+battery = <tests.test_integration_fpia_fix3.Battery object at 0x7f11e2061a30>
+extra = '    container: alpine:3.20\n'
+expected = [('job_container', 'alpine:3.20')]
+
+    @pytest.mark.parametrize("extra,expected", [
+        ("    container: alpine:3.20\n", [("job_container", "alpine:3.20")]),
+        ("    container:\n      image: alpine:3.20\n", [("job_container", "alpine:3.20")]),
+        ("    services:\n      data:\n        image: redis:7\n", [("service_container", "redis:7")]),
+    ])
+    def test_explicit_external_images_recorded_without_safety_claim(battery, extra, expected):
+        got, _, findings, info = _outcome(battery, {"files": {WF: wf(["run: echo ordinary"], job_extra=extra)}})
+        assert got == "NOT_FOUND" and not findings
+        wa = info["workflow_analysis"]
+        refs = [r for r in wa["out_of_tree_references"] if r["workflow"] == WF]
+>       assert sorted((r["kind"], r["image"]) for r in refs) == expected
+E       AssertionError: assert [] == [('job_contai...alpine:3.20')]
+E         
+E         Right contains one more item: ('job_container', 'alpine:3.20')
+E         Use -v to get more diff
+
+tests/test_integration_fpia_literal_sources.py:46: AssertionError
+_ test_explicit_external_images_recorded_without_safety_claim[    container:\n      image: alpine:3.20\n-expected1] _
+
+battery = <tests.test_integration_fpia_fix3.Battery object at 0x7f11e2061a30>
+extra = '    container:\n      image: alpine:3.20\n'
+expected = [('job_container', 'alpine:3.20')]
+
+    @pytest.mark.parametrize("extra,expected", [
+        ("    container: alpine:3.20\n", [("job_container", "alpine:3.20")]),
+        ("    container:\n      image: alpine:3.20\n", [("job_container", "alpine:3.20")]),
+        ("    services:\n      data:\n        image: redis:7\n", [("service_container", "redis:7")]),
+    ])
+    def test_explicit_external_images_recorded_without_safety_claim(battery, extra, expected):
+        got, _, findings, info = _outcome(battery, {"files": {WF: wf(["run: echo ordinary"], job_extra=extra)}})
+        assert got == "NOT_FOUND" and not findings
+        wa = info["workflow_analysis"]
+        refs = [r for r in wa["out_of_tree_references"] if r["workflow"] == WF]
+>       assert sorted((r["kind"], r["image"]) for r in refs) == expected
+E       AssertionError: assert [] == [('job_contai...alpine:3.20')]
+E         
+E         Right contains one more item: ('job_container', 'alpine:3.20')
+E         Use -v to get more diff
+
+tests/test_integration_fpia_literal_sources.py:46: AssertionError
+_ test_explicit_external_images_recorded_without_safety_claim[    services:\n      data:\n        image: redis:7\n-expected2] _
+
+battery = <tests.test_integration_fpia_fix3.Battery object at 0x7f11e2061a30>
+extra = '    services:\n      data:\n        image: redis:7\n'
+expected = [('service_container', 'redis:7')]
+
+    @pytest.mark.parametrize("extra,expected", [
+        ("    container: alpine:3.20\n", [("job_container", "alpine:3.20")]),
+        ("    container:\n      image: alpine:3.20\n", [("job_container", "alpine:3.20")]),
+        ("    services:\n      data:\n        image: redis:7\n", [("service_container", "redis:7")]),
+    ])
+    def test_explicit_external_images_recorded_without_safety_claim(battery, extra, expected):
+        got, _, findings, info = _outcome(battery, {"files": {WF: wf(["run: echo ordinary"], job_extra=extra)}})
+        assert got == "NOT_FOUND" and not findings
+        wa = info["workflow_analysis"]
+        refs = [r for r in wa["out_of_tree_references"] if r["workflow"] == WF]
+>       assert sorted((r["kind"], r["image"]) for r in refs) == expected
+E       AssertionError: assert [] == [('service_co...', 'redis:7')]
+E         
+E         Right contains one more item: ('service_container', 'redis:7')
+E         Use -v to get more diff
+
+tests/test_integration_fpia_literal_sources.py:46: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_integration_fpia_literal_sources.py::test_literal_executable_source_is_scanned[bash ci/commands.txt-files0]
+FAILED tests/test_integration_fpia_literal_sources.py::test_literal_executable_source_is_scanned[python ci/commands.txt-files1]
+FAILED tests/test_integration_fpia_literal_sources.py::test_literal_executable_source_is_scanned[bash "ci/run commands.sh"-files2]
+FAILED tests/test_integration_fpia_literal_sources.py::test_literal_executable_source_is_scanned[bash ci/entry.sh-files3]
+FAILED tests/test_integration_fpia_literal_sources.py::test_explicit_external_images_recorded_without_safety_claim[    container: alpine:3.20\n-expected0]
+FAILED tests/test_integration_fpia_literal_sources.py::test_explicit_external_images_recorded_without_safety_claim[    container:\n      image: alpine:3.20\n-expected1]
+FAILED tests/test_integration_fpia_literal_sources.py::test_explicit_external_images_recorded_without_safety_claim[    services:\n      data:\n        image: redis:7\n-expected2]
+7 failed, 4 passed in 2.31s

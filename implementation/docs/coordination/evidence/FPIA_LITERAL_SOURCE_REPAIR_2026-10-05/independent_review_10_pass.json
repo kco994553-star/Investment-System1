@@ -1,0 +1,296 @@
+{
+  "scope": "Independent bounded literal-source and external image evidence review; no whole-FPIA PASS claim",
+  "source_sha256": {
+    "tools/integration/track_c_fpia_checks.py": "a062e713d6ab544ba6c2ebb72e95815a476bececb370e137afd6edbbf6f82bf3",
+    "tools/integration/track_c_fpia_workflows.py": "cff7927f0ecc5bb897bbc2f17b1383f43b1893144e659a1387caccb79b3a2a98"
+  },
+  "results": [
+    {
+      "case": "wd_quoted_suffixless",
+      "expected": "FOUND",
+      "actual": "FOUND",
+      "status": "PASS",
+      "reached": {
+        ".github/workflows/probe-a.yml": [
+          "ci/run commands.txt"
+        ],
+        ".github/workflows/rig-news.yml": [
+          "implementation/tests/test_rig_news.py"
+        ]
+      },
+      "out_of_tree": [
+        {
+          "workflow": ".github/workflows/codex-test-readiness.yml",
+          "in": ".github/workflows/codex-test-readiness.yml",
+          "uses": "actions/checkout@v4"
+        },
+        {
+          "workflow": ".github/workflows/rig-news.yml",
+          "in": ".github/workflows/rig-news.yml",
+          "uses": "actions/checkout@v4"
+        }
+      ]
+    },
+    {
+      "case": "nested_python_to_shell",
+      "expected": "FOUND",
+      "actual": "FOUND",
+      "status": "PASS",
+      "reached": {
+        ".github/workflows/probe-a.yml": [
+          "ci/next data.txt",
+          "ci/start.txt"
+        ],
+        ".github/workflows/rig-news.yml": [
+          "implementation/tests/test_rig_news.py"
+        ]
+      },
+      "out_of_tree": [
+        {
+          "workflow": ".github/workflows/codex-test-readiness.yml",
+          "in": ".github/workflows/codex-test-readiness.yml",
+          "uses": "actions/checkout@v4"
+        },
+        {
+          "workflow": ".github/workflows/rig-news.yml",
+          "in": ".github/workflows/rig-news.yml",
+          "uses": "actions/checkout@v4"
+        }
+      ]
+    },
+    {
+      "case": "source_suffixless",
+      "expected": "FOUND",
+      "actual": "FOUND",
+      "status": "PASS",
+      "reached": {
+        ".github/workflows/probe-a.yml": [
+          "ci/start.txt"
+        ],
+        ".github/workflows/rig-news.yml": [
+          "implementation/tests/test_rig_news.py"
+        ]
+      },
+      "out_of_tree": [
+        {
+          "workflow": ".github/workflows/codex-test-readiness.yml",
+          "in": ".github/workflows/codex-test-readiness.yml",
+          "uses": "actions/checkout@v4"
+        },
+        {
+          "workflow": ".github/workflows/rig-news.yml",
+          "in": ".github/workflows/rig-news.yml",
+          "uses": "actions/checkout@v4"
+        }
+      ]
+    },
+    {
+      "case": "unreached_data_only",
+      "expected": "NOT_FOUND",
+      "actual": "NOT_FOUND",
+      "status": "PASS",
+      "reached": {
+        ".github/workflows/rig-news.yml": [
+          "implementation/tests/test_rig_news.py"
+        ]
+      },
+      "out_of_tree": [
+        {
+          "workflow": ".github/workflows/codex-test-readiness.yml",
+          "in": ".github/workflows/codex-test-readiness.yml",
+          "uses": "actions/checkout@v4"
+        },
+        {
+          "workflow": ".github/workflows/rig-news.yml",
+          "in": ".github/workflows/rig-news.yml",
+          "uses": "actions/checkout@v4"
+        }
+      ]
+    },
+    {
+      "case": "cat_quoted_data_only",
+      "expected": "NOT_FOUND",
+      "actual": "NOT_FOUND",
+      "status": "PASS",
+      "reached": {
+        ".github/workflows/rig-news.yml": [
+          "implementation/tests/test_rig_news.py"
+        ]
+      },
+      "out_of_tree": [
+        {
+          "workflow": ".github/workflows/codex-test-readiness.yml",
+          "in": ".github/workflows/codex-test-readiness.yml",
+          "uses": "actions/checkout@v4"
+        },
+        {
+          "workflow": ".github/workflows/rig-news.yml",
+          "in": ".github/workflows/rig-news.yml",
+          "uses": "actions/checkout@v4"
+        }
+      ]
+    },
+    {
+      "case": "dynamic_literal_mention_sideeffect",
+      "expected": "FOUND",
+      "actual": "FOUND",
+      "status": "PASS",
+      "reached": {
+        ".github/workflows/probe-a.yml": [
+          "ci/start.txt"
+        ],
+        ".github/workflows/rig-news.yml": [
+          "implementation/tests/test_rig_news.py"
+        ]
+      },
+      "out_of_tree": [
+        {
+          "workflow": ".github/workflows/codex-test-readiness.yml",
+          "in": ".github/workflows/codex-test-readiness.yml",
+          "uses": "actions/checkout@v4"
+        },
+        {
+          "workflow": ".github/workflows/rig-news.yml",
+          "in": ".github/workflows/rig-news.yml",
+          "uses": "actions/checkout@v4"
+        }
+      ]
+    },
+    {
+      "case": "dynamic_computed_control",
+      "expected": "NOT_FOUND",
+      "actual": "NOT_FOUND",
+      "status": "PASS",
+      "reached": {
+        ".github/workflows/probe-a.yml": [
+          "ci/start.txt"
+        ],
+        ".github/workflows/rig-news.yml": [
+          "implementation/tests/test_rig_news.py"
+        ]
+      },
+      "out_of_tree": [
+        {
+          "workflow": ".github/workflows/codex-test-readiness.yml",
+          "in": ".github/workflows/codex-test-readiness.yml",
+          "uses": "actions/checkout@v4"
+        },
+        {
+          "workflow": ".github/workflows/rig-news.yml",
+          "in": ".github/workflows/rig-news.yml",
+          "uses": "actions/checkout@v4"
+        }
+      ]
+    },
+    {
+      "case": "yaml_alias_job_service",
+      "expected": "NOT_FOUND",
+      "actual": "NOT_FOUND",
+      "status": "PASS",
+      "reached": {
+        ".github/workflows/rig-news.yml": [
+          "implementation/tests/test_rig_news.py"
+        ]
+      },
+      "out_of_tree": [
+        {
+          "workflow": ".github/workflows/codex-test-readiness.yml",
+          "in": ".github/workflows/codex-test-readiness.yml",
+          "uses": "actions/checkout@v4"
+        },
+        {
+          "workflow": ".github/workflows/probe-a.yml",
+          "in": ".github/workflows/probe-a.yml",
+          "kind": "job_container",
+          "job": "check",
+          "image": "alpine:3.20"
+        },
+        {
+          "workflow": ".github/workflows/probe-a.yml",
+          "in": ".github/workflows/probe-a.yml",
+          "kind": "service_container",
+          "job": "check",
+          "service": "data",
+          "image": "redis:7"
+        },
+        {
+          "workflow": ".github/workflows/rig-news.yml",
+          "in": ".github/workflows/rig-news.yml",
+          "uses": "actions/checkout@v4"
+        }
+      ]
+    },
+    {
+      "case": "expression_image_evidence",
+      "expected": "NOT_FOUND",
+      "actual": "NOT_FOUND",
+      "status": "PASS",
+      "reached": {
+        ".github/workflows/rig-news.yml": [
+          "implementation/tests/test_rig_news.py"
+        ]
+      },
+      "out_of_tree": [
+        {
+          "workflow": ".github/workflows/codex-test-readiness.yml",
+          "in": ".github/workflows/codex-test-readiness.yml",
+          "uses": "actions/checkout@v4"
+        },
+        {
+          "workflow": ".github/workflows/probe-a.yml",
+          "in": ".github/workflows/probe-a.yml",
+          "kind": "job_container",
+          "job": "check",
+          "image": "${{ matrix.image }}"
+        },
+        {
+          "workflow": ".github/workflows/rig-news.yml",
+          "in": ".github/workflows/rig-news.yml",
+          "uses": "actions/checkout@v4"
+        }
+      ]
+    },
+    {
+      "case": "nested_workflow_images",
+      "expected": "NOT_FOUND",
+      "actual": "NOT_FOUND",
+      "status": "PASS",
+      "reached": {
+        ".github/workflows/probe-a.yml": [
+          ".github/workflows/reused.yml"
+        ],
+        ".github/workflows/rig-news.yml": [
+          "implementation/tests/test_rig_news.py"
+        ]
+      },
+      "out_of_tree": [
+        {
+          "workflow": ".github/workflows/codex-test-readiness.yml",
+          "in": ".github/workflows/codex-test-readiness.yml",
+          "uses": "actions/checkout@v4"
+        },
+        {
+          "workflow": ".github/workflows/probe-a.yml",
+          "in": ".github/workflows/reused.yml",
+          "kind": "job_container",
+          "job": "check",
+          "image": "alpine:3.20"
+        },
+        {
+          "workflow": ".github/workflows/reused.yml",
+          "in": ".github/workflows/reused.yml",
+          "kind": "job_container",
+          "job": "check",
+          "image": "alpine:3.20"
+        },
+        {
+          "workflow": ".github/workflows/rig-news.yml",
+          "in": ".github/workflows/rig-news.yml",
+          "uses": "actions/checkout@v4"
+        }
+      ]
+    }
+  ],
+  "pass_count": 10,
+  "base_head": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+}

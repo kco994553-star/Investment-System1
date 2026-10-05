@@ -477,7 +477,9 @@ def workflow_spoof(sb, T, Vs, v_applies, complement, track_c_workflow, proj, av,
     workflow or in any in-tree file it can reach, any import of a Track C module, glob over Track C paths,
     path naming a Track C file, pytest -k/-m selection of Track C tests, and any same-repository remote
     workflow/action is FOUND (track_c_fpia_workflows.Scan). The fix-round-2 resolver output is kept as
-    evidence (``resolver_reasons``) and for the whole-suite note; it never decides the verdict. A file
+    evidence (``resolver_reasons``) and for the whole-suite note; its positively resolved literal
+    execution sources also seed the mention scan, regardless of filename extension. Resolver reasons
+    never decide the verdict. A file
     that is not valid YAML for GitHub is fail-closed. A generic job id/name collision alone is not
     spoofing (note only; open decision D3-b); pytest over the whole suite is a note. Attribution is
     unchanged: a V-added workflow carrying A_V content, byte-identical in T to an applicable authenticated
@@ -576,10 +578,8 @@ def workflow_spoof(sb, T, Vs, v_applies, complement, track_c_workflow, proj, av,
             if "track_c_key" in c:
                 reasons.append("workflow %s claims the Track C identity (identity key %r contains the Track C key "
                                "%r): %r" % (c["field"], c["key"], c["track_c_key"], c["value"]))
-        # H2: mentions of Track C scope in the workflow and every in-tree file it can reach
-        scan = fw.Scan(sctx, p).run(data, root)
-        reasons += [x for x in scan.reasons if x not in reasons]
-        # fix-round-2 resolver: evidence and the whole-suite note only (never the verdict)
+        # The resolver contributes known literal execution sources, including quoted paths and
+        # interpreter inputs without a code suffix. Its reasons remain evidence, not the verdict.
         resolver = fw.Analysis(resolver_ctx, p)
         resolver.visited.add(p)
         try:
@@ -588,11 +588,14 @@ def workflow_spoof(sb, T, Vs, v_applies, complement, track_c_workflow, proj, av,
             resolver.scan_text(data.decode("utf-8", "replace"), [""], "")
         except RecursionError:
             resolver.note("resolver evidence incomplete (recursion)")
+        # H2 remains an over-approximation: resolver misses cannot remove anything the scan reaches.
+        scan = fw.Scan(sctx, p).run(data, root, literal_sources=resolver.followed)
+        reasons += [x for x in scan.reasons if x not in reasons]
         notes = resolver.notes + [n for n in scan.notes if n not in resolver.notes]
         if notes:
             rec["notes"].append({"path": p, "notes": notes})
         for u in scan.out_of_tree:
-            item = {"workflow": p, "in": u["in"], "uses": u["uses"]}
+            item = {"workflow": p, **u}
             if item not in rec["out_of_tree_references"]:
                 rec["out_of_tree_references"].append(item)
         for s in scan.self_placement:

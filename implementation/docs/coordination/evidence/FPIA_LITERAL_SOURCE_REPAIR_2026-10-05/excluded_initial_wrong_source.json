@@ -1,0 +1,45 @@
+{
+  "verifier_source": "/workspace/scratch/3a80dcef6444/fpia-review/implementation/tools/integration/track_c_fpia.py",
+  "T": "e6fde4628c1154e5ff840729949daa5ff8284faf",
+  "G": "d2ccd9252f3680b4828fe13648f8a45f1d3dc88c",
+  "fpia": {
+    "reasons": [
+      "integration_interference INTEGRATION_INTERFERENCE_FOUND"
+    ],
+    "status": "FPIA_FAIL"
+  },
+  "statuses": {
+    "authority": "PASS",
+    "code_identity": "CODE_IDENTITY_DIVERGED",
+    "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+    "full_regression": "PASS",
+    "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+    "integration_interference": "INTEGRATION_INTERFERENCE_FOUND",
+    "runtime_provenance": "PASS",
+    "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+    "v2_binding": "PASS"
+  },
+  "static_findings": [
+    {
+      "finding": "complement workflow claims or runs Track C scope without attribution",
+      "id": "AC-32.spoof",
+      "path": ".github/workflows/literal.yml",
+      "reached": [
+        "ci/commands.txt"
+      ],
+      "reasons": [
+        "mentions Track C scope: module tools.track_c_c6_acceptance (via ci/commands.txt)",
+        "names a Track C file: implementation/tools/track_c_c6_acceptance.py (via ci/commands.txt)"
+      ],
+      "resolver_reasons": [
+        "references a Track C namespace path: implementation/tools/track_c_c6_acceptance.py (via ci/commands.txt)",
+        "runs a Track C tool or module: implementation/tools/track_c_c6_acceptance.py (via ci/commands.txt)"
+      ],
+      "track_c_references": [
+        "mention-module: tools.track_c_c6_acceptance (via ci/commands.txt)",
+        "ns-file: implementation/tools/track_c_c6_acceptance.py (via ci/commands.txt)"
+      ]
+    }
+  ],
+  "summary": "FPIA_FAIL | CODE_IDENTITY_DIVERGED (code_hash R 287bf178 -> T 000f296c; CODE R 4fca4a61 -> T 555dd247) | FROZEN_TOOLS_ON_T_FAIL [BRANCH_FROZEN_VALIDATION, verbatim] | HISTORICAL_FROZEN_IDENTITY_PRESERVED (replayed 4 records + 4 CI logs; 1 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_FOUND | v2_binding PASS | full_regression PASS | dynamic_invocation_detection NOT_CLAIMED (D3-c) | out_of_tree_code_analysis NOT_ANALYSED (D3-e)"
+}
