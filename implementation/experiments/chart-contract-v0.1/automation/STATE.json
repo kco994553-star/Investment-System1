@@ -63,14 +63,14 @@
       "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
       "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
       "36": "fb086eac4321140493ce554a541343cebbb81ed6",
-      "41": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
+      "41": "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
       "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
       "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
       "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
       "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6"
     },
-    "observed_at_utc": "2026-10-05T07:23:44.868132+00:00",
-    "owner_output_head": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
+    "observed_at_utc": "2026-10-05T07:31:00.597Z",
+    "owner_output_head": "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
     "event_watermarks": {
       "17": {
         "issue_comments": {
@@ -470,10 +470,10 @@
     ]
   },
   "last_processed": {
-    "source_head": "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
-    "owner_head": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
-    "processed_at_utc": "2026-10-05T07:23:44.868132+00:00",
-    "run_id": "manual-chart-figma-20261005T064515261Z",
+    "source_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
+    "owner_head": "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
+    "processed_at_utc": "2026-10-05T07:31:00.597Z",
+    "run_id": "manual-chart-late-global-20261005T072727874Z",
     "input_heads": {
       "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
       "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
@@ -486,12 +486,11 @@
       "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
       "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6"
     },
-    "global_head": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8",
-    "status": "FIGMA_EDITABLE_SAMPLE_STRUCTURAL_VERIFIED_POST_FIX_VISUAL_QUOTA_BLOCKED_PR46_EXACT_FPIA_PASS_CONSUMED",
+    "global_head": "7dac637f499a0771b3eb54da24295624f0803558",
+    "status": "LATE_MAIN_COVERAGE_RECEIPT_CDR022_CONSUMED_GATES6_UNCHANGED_READY_INDEPENDENT0",
     "evidence_refs": [
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json"
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md"
     ],
     "ci_terminal_claim": true,
     "governance_closure": false,
@@ -545,7 +544,7 @@
     "current_independent_repairs": "IMPLEMENTED_VERIFIED",
     "production_owner_dependency_count": 6,
     "fpia_owner_ci": "PR46_6FEA_7_OF_7_SUCCESS_ARTIFACT_FPIA_PASS_HASH_VERIFIED",
-    "fpia_tool_governance": "CURRENT_REVIEW_GOVERNANCE_GIE_CANONICAL_APPLICABILITY_OWNER_ACTION_REQUIRED",
+    "fpia_tool_governance": "MAIN_BOUNDED_CONSUMER_IMPLEMENTED_CURRENT_COVERAGE_BLOCKED_AUTHENTICATION_UNVERIFIED_GOVERNANCE_0_OF_6_OWNER_ACTION_REQUIRED",
     "sample_renderer": "IMPLEMENTED_VERIFIED",
     "latest_run_metrics": {
       "requirements_closed": 0,
@@ -562,22 +561,16 @@
     "figma_sample": "EDITABLE_CREATED_STRUCTURAL_PASS_POST_FIX_VISUAL_TOOL_QUOTA_BLOCKED"
   },
   "lease": {
-    "status": "HELD",
-    "run_id": "manual-chart-late-global-20261005T072727874Z",
-    "holder_kind": "MANUAL_ROOT",
-    "acquired_at_utc": "2026-10-05T07:27:27.874Z",
-    "expires_at_utc": "2026-10-05T07:47:27.874Z",
-    "ttl_minutes": 20,
-    "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": true,
-    "acquisition_parent_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
-    "reason": "Consume actual late Global7dac Main execution-coverage receipt/CDR022; no new audits or product code",
-    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
-    "acquisition_commit": "5ad8432cefcf12a802395bc349cc34abd7a2eb45"
+    "status": "NONE",
+    "last_run_id": "manual-chart-late-global-20261005T072727874Z",
+    "released_after_verified_publication": "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
+    "released_at_utc": "2026-10-05T07:31:00.597Z",
+    "reason": "Authorized independent work and late source-return consumption complete; no lease held for quota/owner prerequisites",
+    "release_commit_note": "Resolve containing commit via Git/PR metadata; never self-embed"
   },
   "publication": {
-    "status": "V012_FIGMA_EDITABLE_STRUCTURAL_AND_PR46_TECHNICAL_PASS_PUBLICATION_VERIFIED",
-    "latest_published_owner_head": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
+    "status": "V012_EDITABLE_FIGMA_AND_LATE_GLOBAL_MAIN_COVERAGE_RECEIPT_VERIFIED",
+    "latest_published_owner_head": "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
     "scoped_output_paths": [
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
       "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
@@ -624,6 +617,7 @@
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json",
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/GATES_AND_GAPS.json",
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json",
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/SOURCE_VIEW.json",
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/VALIDATION_RECEIPT.json",
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json",
@@ -700,7 +694,7 @@
       "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs"
     ],
     "output_sha256": {
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "637bc08332ec20ede69180706edfd4c4c49fa4c0ad73eb4db6743b062eeeac27",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "aed7f626f4c81ea3174b9383a859ea6cd6e4a2860935e9e22b54dd6ba54e27c3",
       "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md": "857fe06cfbfb7b2fedb4c189da0b0705eb1636dbce9c4b043bbe22404a7a4319",
       "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json": "754a8d97e82af9d2b79fd6bf495d803f85112b3c7cea75666ea794860cfecef0",
       "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json": "699dd0c832c105666420adfd9c3be0c9863cf3392992dc8f561280cb7417decb",
@@ -815,10 +809,11 @@
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json": "0b63213cd7eeaa23a1b11ee5f80096a1a081f12a53716c90343b837ba83987b6",
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json": "2c2792b6694e32ec9ad1cfb8b9b585ecaace9ae51a313e0ace3b0c6f5f4cded8",
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/GATES_AND_GAPS.json": "1104d448c3dd08a7a07698de9c3310d0ff3ce6ff6dad3e62eadfe046982aab9b",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "c33306c865112950f4881ebc83676ca58b8e0a951eddb3b39ee4624e3846b57c",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "677dc6c52a5066dbdd1237c34c4958b522cee5d78caff31eb0397185086cc3c3",
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/SOURCE_VIEW.json": "5f0987ad86b4cfb3e50a28facf3141e1ab75f5ab0ecf53a1bd05924d73bd192a",
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/VALIDATION_RECEIPT.json": "ce0431f5a991ff9dd376d6794b8118a654473279cd39e00271e8c8cba82bbb4a",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json": "197bc50dc796b1c5de98b57fefaec7279dae737e2f2471e474b9bf2cc22192f7"
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json": "197bc50dc796b1c5de98b57fefaec7279dae737e2f2471e474b9bf2cc22192f7",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json": "c37a32a43dc7a1a5ec54d671152a58b8a4ef623957f1a62e3961098d7ae95fa3"
     },
     "retained_comment_ids": [
       5986162506
@@ -845,7 +840,9 @@
       "a5cf1a1862aac7340dabfe169f4383da89f610cb",
       "f3ec522d20c44ee30eb334c20e15014fc036f66f",
       "01a150a2b640c188436fe8cd4fc988a2482c57f8",
-      "cff8172625ab8602a75b334cddf5fd5c0dc942d3"
+      "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+      "5ad8432cefcf12a802395bc349cc34abd7a2eb45",
+      "3c8610bb2e2862b532c46d0ef304d061e7932f9e"
     ],
     "update_after_publish": "Only after remote HEAD/file bytes and output hashes are verified. STATE.json itself is excluded from output fingerprint; current commit identity cannot be self-embedded.",
     "bootstrap_verified_owner_head": "df1743b22680cd6d56dd286fd737cb053a7175ad",
@@ -876,7 +873,7 @@
         "immutable_state_ref": "4752bca2d58a61ef5821a0556b6480fc527fac80:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
       }
     ],
-    "latest_evidence_tree": "4ac737219ab66b6ceae8c3f6dcdb8a893f581ce5",
+    "latest_evidence_tree": "41278e685bb86446a940a99b0a958b8345c7dd82",
     "verification": {
       "exact_written_bytes_match_remote": true,
       "text_written_files": 11,
@@ -892,7 +889,9 @@
       "postfix_figma_visual": "NOT_RUN_TOOL_QUOTA_BLOCKED",
       "task_exact_prompt_readback": true,
       "task_schedules_enabled_unchanged": true,
-      "verified_at_utc": "2026-10-05T07:23:44.868132+00:00"
+      "verified_at_utc": "2026-10-05T07:23:44.868132+00:00",
+      "late_exact_written_files": 4,
+      "late_Global": "7dac637f499a0771b3eb54da24295624f0803558"
     },
     "current_PR41_Actions": {
       "source_head": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
@@ -933,7 +932,9 @@
       "a5cf1a1862aac7340dabfe169f4383da89f610cb",
       "f3ec522d20c44ee30eb334c20e15014fc036f66f",
       "01a150a2b640c188436fe8cd4fc988a2482c57f8",
-      "cff8172625ab8602a75b334cddf5fd5c0dc942d3"
+      "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+      "5ad8432cefcf12a802395bc349cc34abd7a2eb45",
+      "3c8610bb2e2862b532c46d0ef304d061e7932f9e"
     ],
     "owned_comment_marker": "<!-- chart-owner-handoff:v0.5 -->",
     "retained_owned_comment_ids": [
@@ -1272,6 +1273,21 @@
       "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
       "acquisition_commit": "a5cf1a1862aac7340dabfe169f4383da89f610cb",
       "release_reason": "Authorized independent Figma/native/source browser/evidence checkpoint published and verified; no lease held on optional quota or owner governance"
+    },
+    {
+      "status": "VERIFIED_ACQUIRED_AND_RELEASED",
+      "run_id": "manual-chart-late-global-20261005T072727874Z",
+      "holder_kind": "MANUAL_ROOT",
+      "acquired_at_utc": "2026-10-05T07:27:27.874Z",
+      "expires_at_utc": "2026-10-05T07:47:27.874Z",
+      "ttl_minutes": 20,
+      "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+      "verified_remote_acquisition": true,
+      "acquisition_parent_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
+      "reason": "Consume actual late Global7dac Main execution-coverage receipt/CDR022; no new audits or product code",
+      "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+      "acquisition_commit": "5ad8432cefcf12a802395bc349cc34abd7a2eb45",
+      "release_reason": "Late actual Main return consumed; independentREADY0, optional toolaccess and accountableownerinputs external"
     }
   ],
   "automation_audit": {
@@ -1552,6 +1568,34 @@
         "result_sha256": "3f7b27e7fc9c1d25fc9dc66cc9db76f37ad43b338289a3022c3c7012d263b41d",
         "remaining_gates": 6
       }
+    },
+    {
+      "source_head": "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+      "owner_head": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
+      "processed_at_utc": "2026-10-05T07:23:44.868132+00:00",
+      "run_id": "manual-chart-figma-20261005T064515261Z",
+      "input_heads": {
+        "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+        "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+        "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "41": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
+        "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+        "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+        "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6"
+      },
+      "global_head": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8",
+      "status": "FIGMA_EDITABLE_SAMPLE_STRUCTURAL_VERIFIED_POST_FIX_VISUAL_QUOTA_BLOCKED_PR46_EXACT_FPIA_PASS_CONSUMED",
+      "evidence_refs": [
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json"
+      ],
+      "ci_terminal_claim": true,
+      "governance_closure": false,
+      "actual_chart_merge_result_fpia": "NOT_RUN"
     }
   ],
   "pending_history": [
@@ -1626,16 +1670,16 @@
     }
   ],
   "prepared_publication": {
-    "status": "PREPARED_REMOTE_VERIFICATION_PENDING",
+    "status": "VERIFIED_REMOTE_PUBLICATION",
     "run_id": "manual-chart-late-global-20261005T072727874Z",
     "source_start_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
     "preparation_parent": "5ad8432cefcf12a802395bc349cc34abd7a2eb45",
     "Global": "7dac637f499a0771b3eb54da24295624f0803558",
     "PR46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
     "output_sha256": {
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json": "9e9fb2f5247a0248fd54e6f31b3ec9023977d232d72980bd4827a9c8cd60b64b",
-      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "e7e4e08bc9454aa72e54ea1e87e99a04efa9a3d7ddbc46460a1f18a97abaf02d",
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "6d4843bbff28e7b68784695bf4bd3b8f86abbb207aba428abbcd954240c97923"
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json": "c37a32a43dc7a1a5ec54d671152a58b8a4ef623957f1a62e3961098d7ae95fa3",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "677dc6c52a5066dbdd1237c34c4958b522cee5d78caff31eb0397185086cc3c3",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "aed7f626f4c81ea3174b9383a859ea6cd6e4a2860935e9e22b54dd6ba54e27c3"
     },
     "evidence_paths": [
       "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json",
@@ -1643,7 +1687,9 @@
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
     ],
     "do_not_advance_processed_before_remote_verification": true,
-    "remaining_production_gates": 6
+    "remaining_production_gates": 6,
+    "evidence_commit": "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
+    "verified_at_utc": "2026-10-05T07:31:00.597Z"
   },
   "owner_actions_current": {
     "fpia_latest_source": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
@@ -1651,7 +1697,9 @@
     "ci_failures": [],
     "technical_ci": "7_OF_7_SUCCESS_FPIA_PASS",
     "governance_closure": false,
-    "next_action": "Current review/coverage/launcher/admissibility/GIE receipt; no Chart duplicate Main implementation"
+    "next_action": "Current review/coverage/launcher/admissibility/GIE receipt; no Chart duplicate Main implementation",
+    "coverage_proposal": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
+    "coverage_status": "COVERAGE_BLOCKED"
   },
   "coordination_repair_history": [
     {
@@ -1664,6 +1712,12 @@
       "failure": "Immediate post-update PR41 GET had previous head; no retry mutation performed",
       "repair": "Fresh ref,branch,PR,commit and git ls-remote all matched f3ec522; all11writtenbytes verified",
       "classification": "TRANSIENT_READ_PROPAGATION",
+      "initial_failure_preserved": true
+    },
+    {
+      "scope": "LATE_INTAKE_SCRATCH",
+      "failure": "Local variable text shadowed output helper after files prepared; no ref mutation from failed script",
+      "repair": "Resumed saved prepared content; exact4remote files verified",
       "initial_failure_preserved": true
     }
   ],
