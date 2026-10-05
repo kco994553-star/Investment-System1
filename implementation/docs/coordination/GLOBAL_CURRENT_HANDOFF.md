@@ -1,3 +1,7 @@
+# GCH-024 · First exact-7215 CI success consumed · 2026-10-05 08:53:30 UTC
+
+Exact-head run `37284465856` (`p01-research-publication`, attempt1) completed SUCCESS. Job `111679954752` completed its full-native-pytest step with **2242 passed in 910.35s**. This independently confirms the stale regression repair on the GitHub merge-result checkout for that workflow; it does not grant verifier authority, GIE/governance closure, or future exact merge-result acceptance. Six exact-7215 runs remain nonterminal and no duplicate rerun was requested. Main READY=0, lease=null, product gates closed=0, candidate NOT_READY.
+
 # GCH-023 · FPIA CI failure consumed and bounded repair published · 2026-10-05 08:43:02 UTC
 
 Exact FPIA Draft #47 moved by non-force fast-forward from `50fa7f49080b3fa3d1808f9745d8f97770d1c9df` to `7215a9f60ad7128b1748f405051eac684298614f` (tree `d5a61fad01b84ef5e84daf2949572911a14a6782`). Exact-50fa CI exposed a stale legacy regression contract: the test still required the removed integration-branch job-level gate even though approved D006 now runs authenticated ancestry/content/import applicability on every pull request. P01 run `37282319537` and US-equity run `37282319630` each recorded 1 failed / 2241 passed and the same failing test; four other completed workflows failed in their full-native-pytest step, while the superseded Track-C run remained nonterminal at observation. Failure history is preserved.

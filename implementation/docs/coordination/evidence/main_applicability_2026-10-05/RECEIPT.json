@@ -1,6 +1,6 @@
 {
   "schema": "MAIN_D006_APPLICABILITY_RECEIPT/1",
-  "observed_at_utc": "2026-10-05 08:43:02 UTC",
+  "observed_at_utc": "2026-10-05 08:53:30 UTC",
   "authority": "CDR015 D1/D2 narrowed016§13/017/018; risk021; continuation022",
   "publication": {
     "pr": 47,
@@ -61,8 +61,10 @@
       "name": "p01-research-publication",
       "head": "7215a9f60ad7128b1748f405051eac684298614f",
       "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679954752,
+      "tests": "2242 passed in 910.35s",
       "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465856"
     },
     {
@@ -250,7 +252,7 @@
     {
       "id": "CIcurrenthead",
       "state": "WAIT_DEPENDENCY",
-      "needs": "Exact7215 attempt1 has 7 nonterminal runs; consume terminal results without duplicate rerun"
+      "needs": "Exact7215 p01 SUCCESS consumed with job111679954752 and 2242PASS; 6 attempt1 runs remain nonterminal"
     },
     {
       "id": "Chart",
@@ -279,14 +281,14 @@
     "canonical_candidate": "NOT_READY"
   },
   "resume_triggers": [
-    "Exact7215 CI terminal/artifact",
+    "Remaining exact7215 CI6 terminal/artifact",
     "New independent verifier authority/runtime/external coverage evidence",
     "Chart/QGV bounded owner return/lease release with actual output",
     "ActualPlatformWebadoption/ACK",
     "PortfolioIdentityexplicit accountable owner",
     "Materialapproved decision/canonical change"
   ],
-  "next_automatic_action": "Consume exact7215 terminal results; if failure, classify and repair within D1/D2, else preserve CI PASS separately from authority/GIE/exact-merge acceptance",
+  "next_automatic_action": "Consume remaining exact7215 terminal results; if failure, classify and repair within D1/D2, else preserve all seven CI receipts separately from authority/GIE/exact-merge acceptance",
   "prior_publication": {
     "pr": 47,
     "branch": "codex/fpia-execution-coverage-2026-10-05",
@@ -314,5 +316,18 @@
     "classification": "REPAIR",
     "semantic_change": false,
     "exact_head_ci_count": 7
-  }
+  },
+  "exact_head_terminal_consumed": [
+    {
+      "run_id": 37284465856,
+      "name": "p01-research-publication",
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "job_id": 111679954752,
+      "tests": "2242 passed in 910.35s",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465856"
+    }
+  ]
 }

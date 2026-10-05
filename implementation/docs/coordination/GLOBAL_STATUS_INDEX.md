@@ -4,8 +4,8 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-029 (exact-50fa CI failure repair; exact-7215 retry pending) |
-| Recorded | 2026-10-05T08:43:02Z; exact Global parent `8acb3c2` |
+| Index revision | GSI-030 (first exact-7215 CI success consumed; six pending) |
+| Recorded | 2026-10-05T08:53:30.902Z; exact Global parent `112aaae` |
 | Writer | GPT Work `gpt-work-main-2026-10-05-3a80dcef6444`; CDR-018 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
 | Canonical | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca` (= `origin/HEAD`; unchanged since 2026-09-28) |
@@ -202,3 +202,7 @@ D006 proposal50fa local229PASS/CI7RUNNING; QGV29pins+5hashverified returnconsume
 
 ## GSI-029 · 2026-10-05 08:43:02 UTC
 Exact50fa CI failure consumed: two logs confirm the same stale branch-gate regression (each1FAIL/2241PASS); four other workflows failed at full-pytest and Track-C old run remained nonterminal. Test-only repair published Draft#47 exact7215/tree d5a61f; RED→singleGREEN; affected294/294PASS. Exact7215CI7 RUNNING, no duplicate rerun. MainREADY0, leaseNULL, productgatesclosed0, candidateNOT_READY. Exact receipt: `evidence/main_applicability_2026-10-05/RECEIPT.json`.
+
+
+## GSI-030 · 2026-10-05 08:53:30 UTC
+Exact7215 P01 run37284465856/job111679954752 SUCCESS, full native 2242PASS consumed. Remaining exact-head CI6 RUNNING; no rerun. CI success is not authority/GIE/exact-merge acceptance. MainREADY0, leaseNULL, productgatesclosed0, candidateNOT_READY.
