@@ -8,6 +8,8 @@ MODULE_PATH = Path(__file__).resolve().parents[1] / "tools" / "autonomy_executor
 spec = importlib.util.spec_from_file_location("autonomy_executor_gate", MODULE_PATH)
 gate = importlib.util.module_from_spec(spec)
 assert spec.loader is not None
+import sys
+sys.modules[spec.name] = gate
 spec.loader.exec_module(gate)
 
 
